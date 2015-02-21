@@ -38,6 +38,7 @@ public class KickstarterClient {
 
   public Observable<List<Project>> fetchProjects () {
     return service.fetchProjects()
+      .retry(3)
       .map(envelope -> envelope.projects);
   }
 

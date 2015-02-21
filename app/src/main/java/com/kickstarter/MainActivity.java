@@ -4,6 +4,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import com.kickstarter.Services.KickstarterClient;
+import com.kickstarter.Models.Project;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -11,6 +13,14 @@ public class MainActivity extends ActionBarActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+
+    KickstarterClient client = new KickstarterClient();
+    client.fetchProjects()
+      //.flatMap(projects -> rx.Observable.from(projects))
+      .flatMap(rx.Observable::from)
+      //.map(project -> project.name())
+      .map(Project::name)
+      .forEach(System.out::println);
   }
 
   @Override

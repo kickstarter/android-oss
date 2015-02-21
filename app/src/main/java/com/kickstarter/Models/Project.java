@@ -1,8 +1,5 @@
 package com.kickstarter.Models;
 
-/**
- * Created by brandon on 2/21/15.
- */
 public class Project {
   private final Integer id;
   private final String name;

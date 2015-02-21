@@ -10,9 +10,6 @@ import rx.Observable;
 import com.kickstarter.Models.Project;
 import java.util.List;
 
-/**
- * Created by brandon on 2/21/15.
- */
 public class KickstarterClient {
   private final KickstarterService service;
 

@@ -1,13 +1,9 @@
-package com.kickstarter.Services;
-
-import java.util.ArrayList;
+package com.kickstarter.services;
 
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
-import retrofit.http.GET;
-import retrofit.http.Query;
 import rx.Observable;
-import com.kickstarter.Models.Project;
+import com.kickstarter.models.Project;
 import java.util.List;
 
 public class KickstarterClient {
@@ -37,18 +33,5 @@ public class KickstarterClient {
     return service.fetchProjects()
       .retry(3)
       .map(envelope -> envelope.projects);
-  }
-
-  private interface KickstarterService {
-    @GET("/v1/discover")
-    Observable<DiscoverEnvelope> fetchProjects ();
-  }
-
-  /**
-   * A lightweight class whose scheme resembles that
-   * of the API response for discovery endpoints.
-   */
-  private class DiscoverEnvelope {
-    public List<Project> projects;
   }
 }

@@ -4,8 +4,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.kickstarter.Services.KickstarterClient;
-import com.kickstarter.Models.Project;
+import com.kickstarter.services.KickstarterClient;
+import com.kickstarter.models.Project;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -18,7 +18,7 @@ public class MainActivity extends ActionBarActivity {
     client.fetchProjects()
       //.flatMap(projects -> rx.Observable.from(projects))
       .flatMap(rx.Observable::from)
-      //.map(project -> project.name())
+//      .map(project -> project.name())
       .map(Project::name)
       .forEach(System.out::println);
   }

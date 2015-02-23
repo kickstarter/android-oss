@@ -1,4 +1,4 @@
-package com.kickstarter.Models;
+package com.kickstarter.models;
 
 public class Project {
   private final Integer id;

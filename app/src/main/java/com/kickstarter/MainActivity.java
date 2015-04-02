@@ -1,26 +1,42 @@
 package com.kickstarter;
 
+import android.app.Activity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.kickstarter.services.KickstarterClient;
 import com.kickstarter.models.Project;
+import java.util.List;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Activity {
+  private RecyclerView recyclerView;
+  private RecyclerView.Adapter adapter;
+  private RecyclerView.LayoutManager layoutManager;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
+    recyclerView = (RecyclerView) findViewById(R.id.project_list);
+
+    // use this setting to improve performance if you know that changes
+    // in content do not change the layout size of the RecyclerView
+    recyclerView.setHasFixedSize(true);
+
+    // use a linear layout manager
+    layoutManager = new LinearLayoutManager(this);
+    recyclerView.setLayoutManager(layoutManager);
+
     KickstarterClient client = new KickstarterClient();
-    client.fetchProjects()
-      //.flatMap(projects -> rx.Observable.from(projects))
-      .flatMap(rx.Observable::from)
-//      .map(project -> project.name())
-      .map(Project::name)
-      .forEach(System.out::println);
+    List<Project> projects = client.fetchProjects().toBlocking().last();
+
+    // specify an adapter
+    adapter = new ProjectAdapter(projects);
+    recyclerView.setAdapter(adapter);
   }
 
   @Override

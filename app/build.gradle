@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.kickstarter"
-        minSdkVersion 15
+        minSdkVersion 21
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
@@ -27,6 +27,8 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.android.support:cardview-v7:21.0.3'
+    compile 'com.android.support:recyclerview-v7:21.0.3'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'org.immutables:gson:2.0.2'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.3.0'

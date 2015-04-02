@@ -10,11 +10,6 @@ public class Project {
     this.name = name;
   }
 
-  // TODO: there's gotta be a better way to do getters in Java.
-  public Integer id () {
-    return this.id;
-  }
-  public String name () {
-    return this.name;
-  }
+  public Integer id() { return id; }
+  public String name() { return this.name; }
 }

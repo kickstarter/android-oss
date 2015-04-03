@@ -29,6 +29,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
   public void onBindViewHolder(ProjectViewHolder projectViewHolder, int i) {
     Project project = projects.get(i);
     projectViewHolder.vCategory.setText(project.category().name());
+    projectViewHolder.vLocation.setText(project.location().name());
     projectViewHolder.vName.setText(project.name());
 
     Uri uri = Uri.parse(project.photo().full());
@@ -47,12 +48,14 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
 
   public static class ProjectViewHolder extends RecyclerView.ViewHolder {
     protected TextView vCategory;
+    protected TextView vLocation;
     protected TextView vName;
     protected SimpleDraweeView vPhoto;
 
     public ProjectViewHolder(View v) {
       super(v);
       vCategory = (TextView) v.findViewById(R.id.category);
+      vLocation= (TextView) v.findViewById(R.id.location);
       vName = (TextView) v.findViewById(R.id.name);
       vPhoto = (SimpleDraweeView) v.findViewById(R.id.photo);
     }

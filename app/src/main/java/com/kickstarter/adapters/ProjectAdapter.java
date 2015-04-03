@@ -1,4 +1,4 @@
-package com.kickstarter;
+package com.kickstarter.adapters;
 
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.kickstarter.R;
 import com.kickstarter.models.Project;
 
 import java.util.List;
@@ -31,6 +32,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
 
     Uri uri = Uri.parse(project.photo().full());
     projectViewHolder.vPhoto.setImageURI(uri);
+    projectViewHolder.vPhoto.setAspectRatio(1.33f);
   }
 
 

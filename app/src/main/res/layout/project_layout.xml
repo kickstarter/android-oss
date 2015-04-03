@@ -2,9 +2,10 @@
 <android.support.v7.widget.CardView
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:card_view="http://schemas.android.com/apk/res-auto"
+  xmlns:fresco="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  card_view:cardCornerRadius="4dp"
+  card_view:cardCornerRadius="0dp"
   card_view:cardBackgroundColor="@android:color/transparent"
   android:layout_margin="5dp">
 
@@ -14,8 +15,15 @@
 
     <com.facebook.drawee.view.SimpleDraweeView
       android:id="@+id/photo"
-      android:layout_width="130dp"
-      android:layout_height="130dp" />
+      android:adjustViewBounds="true"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      fresco:roundedCornerRadius="4dp"
+      fresco:roundTopLeft="true"
+      fresco:roundTopRight="true"
+      fresco:roundBottomLeft="false"
+      fresco:roundBottomRight="false"
+     />
 
     <TextView
       android:id="@+id/name"
@@ -23,12 +31,17 @@
       android:fontFamily="'Helvetica Neue', Helvetica, Arial, 'Liberation Sans', FreeSans, sans-serif"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:gravity="bottom"
       android:text="Name"
       android:textStyle="bold"
       android:textColor="#ffffff"
-      android:textSize="16dp"
-      android:layout_marginTop="10dp"
-      android:layout_marginLeft="5dp" />
+      android:textSize="16sp"
+      android:layout_alignLeft="@+id/photo"
+      android:layout_alignTop="@+id/photo"
+      android:layout_alignRight="@+id/photo"
+      android:layout_alignBottom="@+id/photo"
+      android:padding="5dp"
+    />
 
   </RelativeLayout>
 </android.support.v7.widget.CardView>

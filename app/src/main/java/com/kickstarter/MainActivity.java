@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.kickstarter.adapters.ProjectAdapter;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.KickstarterClient;
 

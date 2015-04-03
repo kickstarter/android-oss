@@ -35,7 +35,7 @@
       <TextView
         android:id="@+id/name"
         android:background="@android:color/transparent"
-        android:fontFamily="'Helvetica Neue', Helvetica, Arial, 'Liberation Sans', FreeSans, sans-serif"
+        android:fontFamily="Roboto Medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -43,7 +43,7 @@
         android:gravity="bottom"
         android:text="Name"
         android:textStyle="bold"
-        android:textColor="#ffffff"
+        android:textColor="@color/white"
         android:textSize="16sp"
         android:padding="5dp"
         />

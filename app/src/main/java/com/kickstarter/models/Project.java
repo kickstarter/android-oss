@@ -1,32 +1,20 @@
 package com.kickstarter.models;
 
 public class Project {
-  private final Category category;
-  private final Integer id;
-  private final String name;
-  private final Photo photo;
-
-  public Project(final Category category,
-                 final Integer id,
-                 final String name,
-                 final Photo photo) {
-    this.category = category;
-    this.id = id;
-    this.name = name;
-    this.photo = photo;
-  }
+  private final Category category = null;
+  private final Integer id = null;
+  private final Location location = null;
+  private final String name = null;
+  private final Photo photo = null;
 
   public Category category() { return category; }
   public Integer id() { return id; }
+  public Location location() { return location; }
   public String name() { return this.name; }
   public Photo photo() { return this.photo; }
 
   public class Photo {
-    private final String full;
-
-    public Photo(final String full) {
-      this.full = full;
-    }
+    private final String full = null;
 
     public String full() { return this.full; }
   }

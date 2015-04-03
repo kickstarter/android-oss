@@ -10,43 +10,67 @@
   android:layout_margin="5dp">
 
   <RelativeLayout
-    android:layout_width="320dp"
-    android:layout_height="240dp">
-
-    <com.facebook.drawee.view.SimpleDraweeView
-      android:id="@+id/photo"
-      android:adjustViewBounds="true"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      fresco:roundedCornerRadius="4dp"
-      fresco:roundTopLeft="true"
-      fresco:roundTopRight="true"
-      fresco:roundBottomLeft="false"
-      fresco:roundBottomRight="false"
-     />
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <RelativeLayout
+      android:id="@+id/photo_section"
+      android:layout_width="320dp"
+      android:layout_height="240dp">
+
+      <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/photo"
+        android:adjustViewBounds="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        fresco:roundedCornerRadius="4dp"
+        fresco:roundTopLeft="true"
+        fresco:roundTopRight="true"
+        fresco:roundBottomLeft="false"
+        fresco:roundBottomRight="false"
+       />
+
+      <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignLeft="@+id/photo"
+        android:layout_alignBottom="@+id/photo"
+        android:background="@drawable/gradient">
+
+        <TextView
+          android:id="@+id/name"
+          android:background="@android:color/transparent"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentBottom="true"
+          android:layout_alignParentLeft="true"
+          android:gravity="bottom"
+          android:text="Name"
+          android:textStyle="bold"
+          android:textColor="@color/white"
+          android:textSize="16sp"
+          android:padding="5dp"
+          />
+      </RelativeLayout>
+     </RelativeLayout>
+
+    <RelativeLayout
+      android:layout_below="@id/photo_section"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:layout_alignParentLeft="true"
-      android:layout_alignParentBottom="true"
-      android:background="@drawable/gradient">
+      android:layout_height="wrap_content"
+      android:background="@color/white">
 
       <TextView
-        android:id="@+id/name"
-        android:background="@android:color/transparent"
-        android:fontFamily="Roboto Medium"
+        android:id="@+id/category"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:gravity="bottom"
-        android:text="Name"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        android:padding="5dp"
-        />
+        android:paddingBottom="9dp"
+        android:paddingLeft="6dp"
+        android:paddingRight="6dp"
+        android:paddingTop="9dp"
+        android:text="Category"
+        android:textColor="@color/text_dark"
+       />
     </RelativeLayout>
 
   </RelativeLayout>

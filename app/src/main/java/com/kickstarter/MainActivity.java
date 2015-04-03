@@ -6,8 +6,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.kickstarter.services.KickstarterClient;
+
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.kickstarter.models.Project;
+import com.kickstarter.services.KickstarterClient;
+
 import java.util.List;
 
 public class MainActivity extends Activity {
@@ -18,9 +21,10 @@ public class MainActivity extends Activity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
+    Fresco.initialize(getApplicationContext());
+    setContentView(R.layout.main_layout);
 
-    recyclerView = (RecyclerView) findViewById(R.id.project_list);
+    recyclerView = (RecyclerView) findViewById(R.id.projects);
 
     // use this setting to improve performance if you know that changes
     // in content do not change the layout size of the RecyclerView
@@ -41,7 +45,7 @@ public class MainActivity extends Activity {
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     // Inflate the menu; this adds items to the action bar if it is present.
-    getMenuInflater().inflate(R.menu.menu_main, menu);
+    getMenuInflater().inflate(R.menu.main_menu, menu);
     return true;
   }
 

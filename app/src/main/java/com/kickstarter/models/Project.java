@@ -12,10 +12,4 @@ public class Project {
   public Location location() { return location; }
   public String name() { return this.name; }
   public Photo photo() { return this.photo; }
-
-  public class Photo {
-    private final String full = null;
-
-    public String full() { return this.full; }
-  }
 }

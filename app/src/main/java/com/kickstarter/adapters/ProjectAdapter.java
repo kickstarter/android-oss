@@ -32,7 +32,6 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
 
     Uri uri = Uri.parse(project.photo().full());
     projectViewHolder.vPhoto.setImageURI(uri);
-    projectViewHolder.vPhoto.setAspectRatio(1.33f);
   }
 
 

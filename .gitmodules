@@ -1,0 +1,3 @@
+[submodule "vendor/ionicons"]
+	path = vendor/ionicons
+	url = https://github.com/kickstarter/ionicons

@@ -7,9 +7,9 @@
 # For more details, see
 #   http://developer.android.com/guide/developing/tools/proguard.html
 
-# Add any project_layout specific keep options here:
+# Add any view_project_card specific keep options here:
 
-# If your project_layout uses WebView with JS, uncomment the following
+# If your view_project_card uses WebView with JS, uncomment the following
 # and specify the fully qualified class name to the JavaScript interface
 # class:
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {

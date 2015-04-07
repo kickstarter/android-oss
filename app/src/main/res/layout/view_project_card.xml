@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
+<com.kickstarter.ui.ProjectCardView
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:card_view="http://schemas.android.com/apk/res-auto"
   xmlns:fresco="http://schemas.android.com/apk/res-auto"
@@ -66,17 +66,39 @@
     >
 
       <TextView
-        android:id="@+id/category"
+        android:id="@+id/category_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingRight="3dp"
+        android:text="\uf2aa"
+        android:textColor="@color/text_dark"
+      />
+
+      <TextView
+        android:id="@+id/category"
+        android:layout_toRightOf="@id/category_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="3dp"
         android:paddingRight="3dp"
         android:text="Category"
         android:textColor="@color/text_dark"
        />
 
       <TextView
-        android:id="@+id/location"
+        android:id="@+id/location_icon"
         android:layout_toRightOf="@id/category"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="6dp"
+        android:paddingRight="3dp"
+        android:text="\uf1ff"
+        android:textColor="@color/text_dark"
+        />
+
+      <TextView
+        android:id="@+id/location"
+        android:layout_toRightOf="@id/location_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="3dp"
@@ -86,4 +108,4 @@
     </RelativeLayout>
 
   </RelativeLayout>
-</android.support.v7.widget.CardView>
+</com.kickstarter.ui.ProjectCardView>

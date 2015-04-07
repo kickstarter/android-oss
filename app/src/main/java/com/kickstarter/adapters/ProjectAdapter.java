@@ -41,7 +41,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ProjectV
   public ProjectViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
     View itemView = LayoutInflater.
       from(viewGroup.getContext()).
-      inflate(R.layout.project_layout, viewGroup, false);
+      inflate(R.layout.view_project_card, viewGroup, false);
 
     return new ProjectViewHolder(itemView);
   }

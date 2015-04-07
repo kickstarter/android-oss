@@ -9,11 +9,11 @@ import com.kickstarter.R;
 
 public class ProjectCardView extends android.support.v7.widget.CardView {
   public ProjectCardView(Context context) {
-    this(context, null, 0);
+    super(context);
   }
 
   public ProjectCardView(Context context, AttributeSet attrs) {
-    this(context, attrs, 0);
+    super(context, attrs);
   }
 
   public ProjectCardView(Context context, AttributeSet attrs, int defStyleAttr) {

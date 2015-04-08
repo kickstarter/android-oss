@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.kickstarter.ui.ProjectCardView
+<android.support.v7.widget.CardView
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:card_view="http://schemas.android.com/apk/res-auto"
   xmlns:fresco="http://schemas.android.com/apk/res-auto"
@@ -65,7 +65,7 @@
       android:paddingTop="9dp"
     >
 
-      <TextView
+      <com.kickstarter.views.IonIconTextView
         android:id="@+id/category_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
         android:textColor="@color/text_dark"
        />
 
-      <TextView
+      <com.kickstarter.views.IonIconTextView
         android:id="@+id/location_icon"
         android:layout_toRightOf="@id/category"
         android:layout_width="wrap_content"
@@ -108,4 +108,4 @@
     </RelativeLayout>
 
   </RelativeLayout>
-</com.kickstarter.ui.ProjectCardView>
+</android.support.v7.widget.CardView>

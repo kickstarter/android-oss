@@ -1,7 +1,6 @@
-package com.kickstarter.ui;
+package com.kickstarter;
 
 import android.app.Activity;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,18 +8,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.kickstarter.BaseActivity;
-import com.kickstarter.R;
 import com.kickstarter.adapters.ProjectAdapter;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.KickstarterClient;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
-public class DiscoveryActivity extends BaseActivity {
-  @Inject LocationManager locationManager;
+public class DiscoveryActivity extends Activity {
   private RecyclerView recyclerView;
   private RecyclerView.Adapter adapter;
   private RecyclerView.LayoutManager layoutManager;
@@ -28,10 +22,9 @@ public class DiscoveryActivity extends BaseActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    // After the super.onCreate call we are guaranteed our injections are available
-
+    ((KsrApplication) getApplication()).component().inject(this);
     Fresco.initialize(getApplicationContext());
-    setContentView(R.layout.activity_discovery);
+    setContentView(R.layout.discovery_layout);
 
     recyclerView = (RecyclerView) findViewById(R.id.projects);
 

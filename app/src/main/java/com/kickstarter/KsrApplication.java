@@ -2,29 +2,33 @@ package com.kickstarter;
 
 import android.app.Application;
 
-import java.util.Arrays;
-import java.util.List;
+import com.kickstarter.views.IonIconTextView;
 
-import dagger.ObjectGraph;
+import javax.inject.Singleton;
 
-public final class KsrApplication extends Application {
-  private ObjectGraph applicationGraph;
+import dagger.Component;
+
+public class KsrApplication extends Application {
+  @Singleton
+  @Component(modules = KsrApplicationModule.class)
+  public interface ApplicationComponent {
+    void inject(KsrApplication application);
+    void inject(DiscoveryActivity activity);
+    void inject(IonIconTextView view);
+  }
+
+  private ApplicationComponent component;
 
   @Override public void onCreate() {
     super.onCreate();
 
-    applicationGraph = ObjectGraph.create(getModules().toArray());
+    component = DaggerKsrApplication_ApplicationComponent.builder()
+      .ksrApplicationModule(new KsrApplicationModule(this))
+      .build();
+    component().inject(this);
   }
 
-  // We could use this to add additional modules in development or test
-  // versions of the application
-  protected List<Object> getModules() {
-    return Arrays.asList(
-      new AndroidModule(this)
-    );
-  }
-
-  ObjectGraph getApplicationGraph() {
-    return applicationGraph;
+  public ApplicationComponent component() {
+    return component;
   }
 }

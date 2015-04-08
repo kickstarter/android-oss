@@ -19,7 +19,7 @@ public class KsrApplicationModule {
     return application;
   }
 
-  @Provides @Singleton FontManager provideFontManager() {
-    return new FontManager(application);
+  @Provides @Singleton Font provideFont() {
+    return new Font(application);
   }
 }

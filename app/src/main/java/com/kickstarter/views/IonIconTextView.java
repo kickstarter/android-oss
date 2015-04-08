@@ -4,13 +4,13 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-import com.kickstarter.FontManager;
+import com.kickstarter.Font;
 import com.kickstarter.KsrApplication;
 
 import javax.inject.Inject;
 
 public class IonIconTextView extends TextView {
-  @Inject FontManager fontManager;
+  @Inject Font font;
 
   public IonIconTextView(Context context) {
     super(context);
@@ -28,6 +28,6 @@ public class IonIconTextView extends TextView {
   protected void onFinishInflate() {
     super.onFinishInflate();
     ((KsrApplication) getContext().getApplicationContext()).component().inject(this);
-    setTypeface(fontManager.getIonIconTypeface());
+    setTypeface(font.getIonIconTypeface());
   }
 }

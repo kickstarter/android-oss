@@ -14,7 +14,7 @@ import com.kickstarter.services.KickstarterClient;
 
 import java.util.List;
 
-public class MainActivity extends Activity {
+public class DiscoveryActivity extends Activity {
   private RecyclerView recyclerView;
   private RecyclerView.Adapter adapter;
   private RecyclerView.LayoutManager layoutManager;
@@ -22,8 +22,9 @@ public class MainActivity extends Activity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    ((KsrApplication) getApplication()).component().inject(this);
     Fresco.initialize(getApplicationContext());
-    setContentView(R.layout.main_layout);
+    setContentView(R.layout.discovery_layout);
 
     recyclerView = (RecyclerView) findViewById(R.id.projects);
 

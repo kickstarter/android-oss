@@ -27,8 +27,7 @@
         fresco:roundTopLeft="true"
         fresco:roundTopRight="true"
         fresco:roundBottomLeft="false"
-        fresco:roundBottomRight="false"
-       />
+        fresco:roundBottomRight="false"/>
 
       <RelativeLayout
         android:layout_width="match_parent"
@@ -49,8 +48,7 @@
           android:textStyle="bold"
           android:textColor="@color/white"
           android:textSize="16sp"
-          android:padding="5dp"
-          />
+          android:padding="5dp"/>
       </RelativeLayout>
      </RelativeLayout>
 
@@ -62,8 +60,7 @@
       android:paddingBottom="9dp"
       android:paddingLeft="6dp"
       android:paddingRight="6dp"
-      android:paddingTop="9dp"
-    >
+      android:paddingTop="9dp">
 
       <com.kickstarter.views.IonIconTextView
         android:id="@+id/category_icon"
@@ -71,8 +68,7 @@
         android:layout_height="wrap_content"
         android:paddingRight="3dp"
         android:text="@string/ion_pricetag"
-        android:textColor="@color/text_dark"
-      />
+        android:textColor="@color/text_dark"/>
 
       <TextView
         android:id="@+id/category"
@@ -82,8 +78,7 @@
         android:paddingLeft="3dp"
         android:paddingRight="3dp"
         android:text="Category"
-        android:textColor="@color/text_dark"
-       />
+        android:textColor="@color/text_dark"/>
 
       <com.kickstarter.views.IonIconTextView
         android:id="@+id/location_icon"
@@ -93,8 +88,7 @@
         android:paddingLeft="6dp"
         android:paddingRight="3dp"
         android:text="@string/ion_location"
-        android:textColor="@color/text_dark"
-        />
+        android:textColor="@color/text_dark"/>
 
       <TextView
         android:id="@+id/location"
@@ -103,8 +97,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="3dp"
         android:text="Location"
-        android:textColor="@color/text_dark"
-        />
+        android:textColor="@color/text_dark"/>
     </RelativeLayout>
 
   </RelativeLayout>

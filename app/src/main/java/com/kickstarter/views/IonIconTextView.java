@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-import com.kickstarter.Font;
+import com.kickstarter.libs.Font;
 import com.kickstarter.KsrApplication;
 
 import javax.inject.Inject;
@@ -28,6 +28,6 @@ public class IonIconTextView extends TextView {
   protected void onFinishInflate() {
     super.onFinishInflate();
     ((KsrApplication) getContext().getApplicationContext()).component().inject(this);
-    setTypeface(font.getIonIconTypeface());
+    setTypeface(font.ionIconTypeface());
   }
 }

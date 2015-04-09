@@ -6,4 +6,5 @@
 
   <string name="ion_location">\uf1ff</string>
   <string name="ion_pricetag">\uf2aa</string>
+  <string name="title_activity_project">View Project</string>
 </resources>

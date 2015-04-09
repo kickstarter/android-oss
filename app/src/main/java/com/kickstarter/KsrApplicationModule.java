@@ -2,6 +2,8 @@ package com.kickstarter;
 
 import android.app.Application;
 
+import com.kickstarter.libs.Font;
+
 import javax.inject.Singleton;
 
 import dagger.Module;

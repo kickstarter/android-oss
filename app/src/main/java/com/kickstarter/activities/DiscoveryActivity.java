@@ -1,4 +1,4 @@
-package com.kickstarter;
+package com.kickstarter.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -8,7 +8,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.kickstarter.adapters.ProjectAdapter;
+import com.kickstarter.KsrApplication;
+import com.kickstarter.R;
+import com.kickstarter.adapters.DiscoveryAdapter;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.KickstarterClient;
 
@@ -40,7 +42,7 @@ public class DiscoveryActivity extends Activity {
     List<Project> projects = client.fetchProjects().toBlocking().last();
 
     // specify an adapter
-    adapter = new ProjectAdapter(projects);
+    adapter = new DiscoveryAdapter(projects);
     recyclerView.setAdapter(adapter);
   }
 

@@ -1,4 +1,4 @@
-package com.kickstarter;
+package com.kickstarter.libs;
 
 import android.app.Application;
 import android.graphics.Typeface;
@@ -10,7 +10,7 @@ public class Font {
     this.ionIconTypeface = Typeface.createFromAsset(application.getAssets(), "fonts/ionicons.ttf");
   }
 
-  public Typeface getIonIconTypeface() {
+  public Typeface ionIconTypeface() {
     return ionIconTypeface;
   }
 }

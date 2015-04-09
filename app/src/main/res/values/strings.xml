@@ -1,6 +1,9 @@
 <resources>
-    <string name="app_name">Kickstarter</string>
+  <string name="app_name">Kickstarter</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+  <string name="hello_world">Hello world!</string>
+  <string name="action_settings">Settings</string>
+
+  <string name="ion_location">\uf1ff</string>
+  <string name="ion_pricetag">\uf2aa</string>
 </resources>

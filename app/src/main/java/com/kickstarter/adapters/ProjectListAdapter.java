@@ -1,9 +1,5 @@
 package com.kickstarter.adapters;
 
-import android.content.Intent;
-import android.net.Uri;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +8,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kickstarter.R;
-import com.kickstarter.activities.DiscoveryActivity;
-import com.kickstarter.activities.ProjectDetailActivity;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.DiscoveryPresenter;
 import com.squareup.picasso.Picasso;
@@ -54,6 +48,11 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
     return new ViewHolder(view, presenter);
   }
 
+  @Override
+  public int getItemCount() {
+    return projects.size();
+  }
+
   public static class ViewHolder extends RecyclerView.ViewHolder {
     protected @InjectView(R.id.category) TextView category;
     protected @InjectView(R.id.location) TextView location;
@@ -88,41 +87,6 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
 
     public ImageView photo() {
       return photo;
-    }
-  }
-
-
-  @Override
-  public int getItemCount() {
-    return projects.size();
-  }
-
-  public static class ProjectViewHolder extends RecyclerView.ViewHolder {
-    protected TextView vCategory;
-    protected TextView vLocation;
-    protected TextView vName;
-    protected ImageView vPhoto;
-    public View view;
-    public Project currentProject;
-
-    public ProjectViewHolder(View view) {
-      super(view);
-      vCategory = (TextView) view.findViewById(R.id.category);
-      vLocation = (TextView) view.findViewById(R.id.location);
-      vName = (TextView) view.findViewById(R.id.name);
-      vPhoto = (ImageView) view.findViewById(R.id.photo);
-
-      this.view = view;
-      view.setOnClickListener((View v) -> {
-        Intent intent = new Intent(v.getContext(), ProjectDetailActivity.class);
-        intent.putExtra("project", currentProject);
-        Pair<View, String> p1 = Pair.create(vCategory, "category");
-        Pair<View, String> p2 = Pair.create(vPhoto, "photo");
-        // The cast here is evil, figure out how to fix it
-        ActivityOptionsCompat options = ActivityOptionsCompat.
-          makeSceneTransitionAnimation((DiscoveryActivity) v.getContext(), p1, p2);
-        v.getContext().startActivity(intent, options.toBundle());
-      });
     }
   }
 }

@@ -1,4 +1,4 @@
-package com.kickstarter.activities;
+package com.kickstarter.ui.activities;
 
 import android.app.Activity;
 import android.content.Intent;

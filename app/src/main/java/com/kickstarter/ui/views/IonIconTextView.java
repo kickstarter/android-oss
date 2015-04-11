@@ -1,4 +1,4 @@
-package com.kickstarter.views;
+package com.kickstarter.ui.views;
 
 import android.content.Context;
 import android.util.AttributeSet;

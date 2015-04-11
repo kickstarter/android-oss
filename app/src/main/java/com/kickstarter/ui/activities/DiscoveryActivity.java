@@ -1,4 +1,4 @@
-package com.kickstarter.activities;
+package com.kickstarter.ui.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -10,7 +10,7 @@ import com.kickstarter.R;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.DiscoveryPresenter;
 import com.kickstarter.services.KickstarterClient;
-import com.kickstarter.adapters.ProjectListAdapter;
+import com.kickstarter.ui.adapters.ProjectListAdapter;
 
 import java.util.List;
 

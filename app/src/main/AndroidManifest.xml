@@ -12,7 +12,7 @@
     android:label="@string/app_name"
     android:theme="@style/AppTheme">
     <activity
-      android:name=".activities.DiscoveryActivity"
+      android:name=".ui.activities.DiscoveryActivity"
       android:label="@string/app_name"
       android:launchMode="singleTop">
       <intent-filter>
@@ -22,12 +22,12 @@
       </intent-filter>
     </activity>
     <activity
-      android:name=".activities.ProjectDetailActivity"
+      android:name=".ui.activities.ProjectDetailActivity"
       android:label="@string/title_activity_project"
-      android:parentActivityName=".activities.DiscoveryActivity">
+      android:parentActivityName=".ui.activities.DiscoveryActivity">
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
-        android:value=".activities.DiscoveryActivity"/>
+        android:value=".ui.activities.DiscoveryActivity"/>
     </activity>
   </application>
 

@@ -4,9 +4,9 @@ import android.content.Intent;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
 
-import com.kickstarter.activities.DiscoveryActivity;
-import com.kickstarter.activities.ProjectDetailActivity;
-import com.kickstarter.adapters.ProjectListAdapter;
+import com.kickstarter.ui.activities.DiscoveryActivity;
+import com.kickstarter.ui.activities.ProjectDetailActivity;
+import com.kickstarter.ui.adapters.ProjectListAdapter;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.KickstarterClient;
 

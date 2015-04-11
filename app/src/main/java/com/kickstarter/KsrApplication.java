@@ -3,8 +3,8 @@ package com.kickstarter;
 import android.app.Application;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.kickstarter.activities.DiscoveryActivity;
-import com.kickstarter.views.IonIconTextView;
+import com.kickstarter.ui.activities.DiscoveryActivity;
+import com.kickstarter.ui.views.IonIconTextView;
 
 import javax.inject.Singleton;
 

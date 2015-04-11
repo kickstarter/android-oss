@@ -22,12 +22,12 @@
       </intent-filter>
     </activity>
     <activity
-      android:name=".activities.ProjectActivity"
+      android:name=".activities.ProjectDetailActivity"
       android:label="@string/title_activity_project"
       android:parentActivityName=".activities.DiscoveryActivity">
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
-        android:value="com.kickstarter.activities.DiscoveryActivity"/>
+        android:value=".activities.DiscoveryActivity"/>
     </activity>
   </application>
 

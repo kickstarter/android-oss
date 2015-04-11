@@ -5,7 +5,8 @@ import android.os.Parcelable;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 
-@ParcelablePlease public class Project implements Parcelable {
+@ParcelablePlease
+public class Project implements Parcelable {
   Category category = null;
   Integer id = null;
   Location location = null;

@@ -4,67 +4,43 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
-import android.view.MenuItem;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
 import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
-import com.kickstarter.adapters.DiscoveryAdapter;
 import com.kickstarter.models.Project;
+import com.kickstarter.presenters.DiscoveryPresenter;
 import com.kickstarter.services.KickstarterClient;
+import com.kickstarter.adapters.ProjectListAdapter;
 
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 public class DiscoveryActivity extends Activity {
-  private RecyclerView recyclerView;
-  private RecyclerView.Adapter adapter;
-  private RecyclerView.LayoutManager layoutManager;
+  RecyclerView recyclerView;
+  ProjectListAdapter adapter;
+  DiscoveryPresenter presenter;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    presenter = new DiscoveryPresenter(this);
+
+    // Injection
+    ButterKnife.inject(this);
     ((KsrApplication) getApplication()).component().inject(this);
-    Fresco.initialize(getApplicationContext());
+
+    // Setup recycler view
     setContentView(R.layout.discovery_layout);
+    recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+    recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    recyclerView = (RecyclerView) findViewById(R.id.projects);
+    presenter.onCreate();
+  }
 
-    // use this setting to improve performance if you know that changes
-    // in content do not change the layout size of the RecyclerView
-    recyclerView.setHasFixedSize(true);
-
-    // use a linear layout manager
-    layoutManager = new LinearLayoutManager(this);
-    recyclerView.setLayoutManager(layoutManager);
-
-    KickstarterClient client = new KickstarterClient();
-    List<Project> projects = client.fetchProjects().toBlocking().last();
-
-    // specify an adapter
-    adapter = new DiscoveryAdapter(projects);
+  public void setProjects(List<Project> projects) {
+    adapter = new ProjectListAdapter(projects, presenter);
     recyclerView.setAdapter(adapter);
-  }
-
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    // Inflate the menu; this adds items to the action bar if it is present.
-    getMenuInflater().inflate(R.menu.main_menu, menu);
-    return true;
-  }
-
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    // Handle action bar item clicks here. The action bar will
-    // automatically handle clicks on the Home/Up button, so long
-    // as you specify a parent activity in AndroidManifest.xml.
-    int id = item.getItemId();
-
-    //noinspection SimplifiableIfStatement
-    if (id == R.id.action_settings) {
-      return true;
-    }
-
-    return super.onOptionsItemSelected(item);
   }
 }

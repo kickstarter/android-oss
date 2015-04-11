@@ -2,7 +2,6 @@
 <android.support.v7.widget.CardView
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:card_view="http://schemas.android.com/apk/res-auto"
-  xmlns:fresco="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   card_view:cardCornerRadius="0dp"
@@ -18,16 +17,12 @@
       android:layout_width="320dp"
       android:layout_height="240dp">
 
-      <com.facebook.drawee.view.SimpleDraweeView
+      <ImageView
         android:id="@+id/photo"
         android:adjustViewBounds="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        fresco:roundedCornerRadius="4dp"
-        fresco:roundTopLeft="true"
-        fresco:roundTopRight="true"
-        fresco:roundBottomLeft="false"
-        fresco:roundBottomRight="false"/>
+        android:transitionName="photo"/>
 
       <RelativeLayout
         android:layout_width="match_parent"
@@ -75,6 +70,7 @@
         android:layout_toRightOf="@id/category_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:transitionName="category"
         android:paddingLeft="3dp"
         android:paddingRight="3dp"
         android:text="Category"

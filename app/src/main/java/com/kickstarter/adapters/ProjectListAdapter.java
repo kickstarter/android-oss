@@ -35,7 +35,9 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
     viewHolder.category.setText(project.category().name());
     viewHolder.location.setText(project.location().name());
     viewHolder.name.setText(project.name());
-    Picasso.with(viewHolder.view.getContext()).load(project.photo().full()).into(viewHolder.photo);
+    Picasso.with(viewHolder.view.getContext()).
+      load(project.photo().full()).
+      into(viewHolder.photo);
   }
 
   // Create the view

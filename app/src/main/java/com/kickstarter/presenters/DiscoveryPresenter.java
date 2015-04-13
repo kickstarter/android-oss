@@ -13,16 +13,25 @@ import com.kickstarter.services.KickstarterClient;
 import java.util.List;
 
 public class DiscoveryPresenter {
-  private DiscoveryActivity view; // TODO: Move this to interface, e.g. discoveryView
+  private DiscoveryActivity view;
+  private List<Project> projects;
 
-  public DiscoveryPresenter(DiscoveryActivity discoveryActivity) {
-    this.view = discoveryActivity;
+  public DiscoveryPresenter() {
+    KickstarterClient client = new KickstarterClient();
+    projects = client.fetchProjects().toBlocking().last(); // TODO: Don't block
   }
 
-  public void onCreate() {
-    KickstarterClient client = new KickstarterClient();
-    List<Project> projects = client.fetchProjects().toBlocking().last();
-    view.setProjects(projects);
+  public void onTakeView(DiscoveryActivity view) {
+    this.view = view;
+    publish();
+  }
+
+  public void publish() {
+    if (view != null) {
+      if (projects != null) {
+        view.onItemsNext(projects);
+      }
+    }
   }
 
   public void onProjectClicked(Project project, ProjectListAdapter.ViewHolder viewHolder) {

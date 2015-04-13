@@ -20,12 +20,11 @@ import butterknife.InjectView;
 public class DiscoveryActivity extends Activity {
   RecyclerView recyclerView;
   ProjectListAdapter adapter;
-  DiscoveryPresenter presenter;
+  private static DiscoveryPresenter presenter;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    presenter = new DiscoveryPresenter(this);
 
     // Injection
     ButterKnife.inject(this);
@@ -36,10 +35,22 @@ public class DiscoveryActivity extends Activity {
     recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    presenter.onCreate();
+    if (presenter == null) {
+      presenter = new DiscoveryPresenter();
+    }
+    presenter.onTakeView(this);
   }
 
-  public void setProjects(List<Project> projects) {
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+
+    presenter.onTakeView(null);
+    if (isFinishing())
+      presenter = null;
+  }
+
+  public void onItemsNext(List<Project> projects) {
     adapter = new ProjectListAdapter(projects, presenter);
     recyclerView.setAdapter(adapter);
   }

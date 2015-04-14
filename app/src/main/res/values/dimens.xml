@@ -1,5 +1,29 @@
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
+  <!-- Keylines
+    http://www.google.com/design/spec/layout/metrics-keylines.html#metrics-keylines-keylines-spacing -->
+  <dimen name="keyline_1">16dp</dimen>
+  <dimen name="keyline_1_half">8dp</dimen>
+  <dimen name="keyline_2">72dp</dimen>
+
+  <!-- Cards -->
+  <dimen name="card_corner_radius">2dp</dimen>
+  <dimen name="card_margin_x">8dp</dimen>
+  <dimen name="card_margin_y">4dp</dimen>
+  <dimen name="card_padding_action">8dp</dimen>
+  <dimen name="card_padding_action_half">4dp</dimen>
+
+  <!-- Material typography
+    http://www.google.com/design/spec/style/typography.html#typography-styles -->
+  <dimen name="body_1">14sp</dimen>
+  <dimen name="body_2">13sp</dimen>
+  <dimen name="button">14sp</dimen>
+  <dimen name="caption">12sp</dimen>
+  <dimen name="display_1">34sp</dimen>
+  <dimen name="display_2">45sp</dimen>
+  <dimen name="display_3">56sp</dimen>
+  <dimen name="display_4">112sp</dimen>
+  <dimen name="headline">24sp</dimen>
+  <dimen name="menu">14sp</dimen>
+  <dimen name="subhead">16sp</dimen>
+  <dimen name="title">20sp</dimen>
 </resources>

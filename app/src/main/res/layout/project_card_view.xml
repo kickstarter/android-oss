@@ -49,51 +49,66 @@
       </RelativeLayout>
      </RelativeLayout>
 
-    <RelativeLayout
+    <LinearLayout
       android:background="@color/white"
       android:layout_below="@id/photo_section"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:padding="@dimen/keyline_1">
+      android:padding="@dimen/keyline_1"
+      android:orientation="vertical">
 
-      <com.kickstarter.ui.views.IonIconTextView
-        android:id="@+id/category_icon"
+      <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingRight="@dimen/card_padding_action_half"
-        android:text="@string/ion_pricetag"
-        android:textColor="@color/text_dark"/>
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/keyline_1_half">
 
-      <TextView
-        android:id="@+id/category"
-        android:layout_toRightOf="@id/category_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:transitionName="category"
-        android:paddingLeft="@dimen/card_padding_action_half"
-        android:paddingRight="@dimen/card_padding_action"
-        android:text="Category"
-        android:textColor="@color/text_dark"/>
+        <com.kickstarter.ui.views.IonIconTextView
+          android:id="@+id/category_icon"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_vertical"
+          android:paddingRight="@dimen/card_padding_action_half"
+          android:text="@string/ion_pricetag"
+          android:textColor="@color/text_dark"/>
 
-      <com.kickstarter.ui.views.IonIconTextView
-        android:id="@+id/location_icon"
-        android:layout_toRightOf="@id/category"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/card_padding_action"
-        android:paddingRight="@dimen/card_padding_action_half"
-        android:text="@string/ion_location"
-        android:textColor="@color/text_dark"/>
+        <TextView
+          android:id="@+id/category"
+          android:layout_gravity="center_vertical"
+          android:layout_toRightOf="@id/category_icon"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:transitionName="category"
+          android:paddingLeft="@dimen/card_padding_action_half"
+          android:paddingRight="@dimen/card_padding_action"
+          android:text="Category"
+          android:textColor="@color/text_dark"/>
 
-      <TextView
-        android:id="@+id/location"
-        android:layout_toRightOf="@id/location_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/card_padding_action_half"
-        android:text="Location"
-        android:textColor="@color/text_dark"/>
-    </RelativeLayout>
+        <com.kickstarter.ui.views.IonIconTextView
+          android:id="@+id/location_icon"
+          android:layout_gravity="center_vertical"
+          android:layout_toRightOf="@id/category"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:paddingLeft="@dimen/card_padding_action"
+          android:paddingRight="@dimen/card_padding_action_half"
+          android:text="@string/ion_location"
+          android:textSize="@dimen/title"
+          android:textColor="@color/text_dark"/>
+
+        <TextView
+          android:id="@+id/location"
+          android:layout_gravity="center_vertical"
+          android:layout_toRightOf="@id/location_icon"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:paddingLeft="@dimen/card_padding_action_half"
+          android:text="Location"
+          android:textColor="@color/text_dark"/>
+
+      </LinearLayout>
+
+    </LinearLayout>
 
   </RelativeLayout>
 </android.support.v7.widget.CardView>

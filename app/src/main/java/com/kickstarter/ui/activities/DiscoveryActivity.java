@@ -23,7 +23,6 @@ import butterknife.InjectView;
 public class DiscoveryActivity extends ActionBarActivity {
   ProjectListAdapter adapter;
   private static DiscoveryPresenter presenter;
-  private DiscoverySpinnerAdapter spinnerAdapter = new DiscoverySpinnerAdapter();
   @InjectView(R.id.category_spinner) Spinner spinner;
   @InjectView(R.id.recyclerView) RecyclerView recyclerView;
   @InjectView(R.id.toolbar) Toolbar toolbar;

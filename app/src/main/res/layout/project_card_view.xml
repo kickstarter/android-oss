@@ -42,7 +42,6 @@
           android:layout_alignParentBottom="true"
           android:layout_alignParentLeft="true"
           android:gravity="bottom"
-          android:text="Name"
           android:textColor="@color/white"
           android:textSize="@dimen/title"
           android:padding="@dimen/keyline_1"/>
@@ -81,7 +80,6 @@
           android:transitionName="category"
           android:paddingLeft="@dimen/card_padding_action_half"
           android:paddingRight="@dimen/card_padding_action"
-          android:text="Category"
           android:textColor="@color/text_dark"/>
 
         <com.kickstarter.ui.views.IonIconTextView
@@ -103,7 +101,6 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:paddingLeft="@dimen/card_padding_action_half"
-          android:text="Location"
           android:textColor="@color/text_dark"/>
 
       </LinearLayout>
@@ -117,6 +114,88 @@
         android:paddingTop="@dimen/keyline_1_half"
         android:paddingBottom="@dimen/keyline_1_half"
         android:progress="50" />
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:orientation="vertical"
+          android:paddingRight="@dimen/keyline_1">
+
+          <TextView
+            android:id="@+id/backers_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_dark" />
+
+          <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/backers"
+            android:textColor="@color/dark_gray" />
+        </LinearLayout>
+
+        <LinearLayout
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:orientation="vertical"
+          android:paddingRight="@dimen/keyline_1">
+
+          <TextView
+            android:id="@+id/pledged"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_dark" />
+
+          <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/pledged_of"
+              android:textColor="@color/dark_gray" />
+            <TextView
+              android:id="@+id/goal"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textColor="@color/dark_gray" />
+          </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:orientation="vertical"
+          android:paddingRight="@dimen/keyline_1">
+          <TextView
+            android:id="@+id/deadline_countdown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_dark" />
+          <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+              android:id="@+id/deadline_countdown_unit"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textColor="@color/dark_gray" />
+            <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/to_go"
+              android:textColor="@color/dark_gray" />
+          </LinearLayout>
+        </LinearLayout>
+
+      </LinearLayout>
 
     </LinearLayout>
 

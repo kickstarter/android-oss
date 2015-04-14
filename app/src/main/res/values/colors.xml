@@ -13,7 +13,7 @@
 
   <!-- Kickstarter colors -->
   <color name="blue">#00a0ff</color>
-  <color name="blue_dark">#081245</color>
+  <color name="dark_blue">#081245</color>
   <color name="green">#2bde73</color>
   <color name="light_gray">#f7fafa</color>
   <color name="gray">#d9d9de</color>

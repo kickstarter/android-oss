@@ -27,6 +27,10 @@ android {
     lintOptions {
         disable 'InvalidPackage'
     }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+    }
 }
 
 dependencies {
@@ -48,6 +52,7 @@ dependencies {
     compile 'io.reactivex:rxjava:1.0.8'
     ***REMOVED***
     compile 'org.immutables:gson:2.0.2'
+    compile 'net.danlew:android.joda:2.7.2'
 }
 
 buildscript {

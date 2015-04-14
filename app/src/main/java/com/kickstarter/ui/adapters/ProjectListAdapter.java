@@ -13,7 +13,9 @@ import com.kickstarter.models.Project;
 import com.kickstarter.presenters.DiscoveryPresenter;
 import com.squareup.picasso.Picasso;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -33,8 +35,14 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
     final Project project = projects.get(i);
     viewHolder.project = project;
 
+    // TODO: Extract number formatting into helpers
+    viewHolder.backers_count.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(project.backersCount()));
     viewHolder.category.setText(project.category().name());
+    viewHolder.deadline_countdown.setText(Integer.toString(project.deadlineCountdown()));
+    viewHolder.deadline_countdown_unit.setText(project.deadlineCountdownUnit());
+    viewHolder.goal.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(project.goal()));
     viewHolder.location.setText(project.location().name());
+    viewHolder.pledged.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(project.pledged()));
     viewHolder.name.setText(project.name());
     viewHolder.percentageFunded.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
     Picasso.with(viewHolder.view.getContext()).
@@ -58,9 +66,14 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
   }
 
   public static class ViewHolder extends RecyclerView.ViewHolder {
+    protected @InjectView(R.id.backers_count) TextView backers_count;
     protected @InjectView(R.id.category) TextView category;
+    protected @InjectView(R.id.deadline_countdown) TextView deadline_countdown;
+    protected @InjectView(R.id.deadline_countdown_unit) TextView deadline_countdown_unit;
+    protected @InjectView(R.id.goal) TextView goal;
     protected @InjectView(R.id.location) TextView location;
     protected @InjectView(R.id.name) TextView name;
+    protected @InjectView(R.id.pledged) TextView pledged;
     protected @InjectView(R.id.percentage_funded) ProgressBar percentageFunded;
     protected @InjectView(R.id.photo) ImageView photo;
     protected View view;

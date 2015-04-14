@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.kickstarter.R;
@@ -35,6 +36,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
     viewHolder.category.setText(project.category().name());
     viewHolder.location.setText(project.location().name());
     viewHolder.name.setText(project.name());
+    viewHolder.percentageFunded.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
     Picasso.with(viewHolder.view.getContext()).
       load(project.photo().full()).
       into(viewHolder.photo);
@@ -59,6 +61,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
     protected @InjectView(R.id.category) TextView category;
     protected @InjectView(R.id.location) TextView location;
     protected @InjectView(R.id.name) TextView name;
+    protected @InjectView(R.id.percentage_funded) ProgressBar percentageFunded;
     protected @InjectView(R.id.photo) ImageView photo;
     protected View view;
     protected Project project;
@@ -85,6 +88,10 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
 
     public TextView name() {
       return name;
+    }
+
+    public ProgressBar percentageFunded() {
+      return percentageFunded;
     }
 
     public ImageView photo() {

@@ -7,4 +7,24 @@
   <string name="ion_location">\uf1ff</string>
   <string name="ion_pricetag">\uf2aa</string>
   <string name="title_activity_project">View Project</string>
+
+  <string-array name="categories_array">
+    <item>Staff Picks</item>
+    <item>Starred</item>
+    <item>Everything</item>
+    <item>Art</item>
+    <item>Comics</item>
+    <item>Craft</item>
+    <item>Design</item>
+    <item>Fashion</item>
+    <item>Film &amp; Video</item>
+    <item>Food</item>
+    <item>Games</item>
+    <item>Journalism</item>
+    <item>Music</item>
+    <item>Photography</item>
+    <item>Publishing</item>
+    <item>Technology</item>
+    <item>Theater</item>
+  </string-array>
 </resources>

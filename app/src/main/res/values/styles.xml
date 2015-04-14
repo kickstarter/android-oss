@@ -1,11 +1,32 @@
 <resources>
-  <style name="AppTheme" parent="android:Theme.Material">
-    <!-- Shared view activity animations -->
+  <style name="KsrTheme" parent="Theme.AppCompat.Light.NoActionBar">
+  <!-- Shared view activity animations -->
     <item name="android:windowContentTransitions">true</item>
     <item name="android:windowAllowEnterTransitionOverlap">true</item>
     <item name="android:windowAllowReturnTransitionOverlap">true</item>
+
     <!-- Toolbar -->
+    <!-- Using toolbar, so disable the action bar -->
     <item name="android:windowNoTitle">true</item>
     <item name="android:windowActionBar">false</item>
+
+    <!-- More on Color Palette:
+      http://www.google.com/design/spec/style/color.html#color-color-palette
+      http://developer.android.com/training/material/theme.html#ColorPalette -->
+    <!-- colorPrimary is used for the default action bar background -->
+    <item name="colorPrimary">@color/primary</item>
+    <!-- colorPrimaryDark is used for the status bar -->
+    <item name="colorPrimaryDark">@color/primary_dark</item>
+    <!-- colorAccent is used as the default value for colorControlActivated which
+      is used to tint widgets -->
+    <item name="android:colorAccent">@color/accent_2</item>
+    <item name="android:textColorLink">@color/accent_2</item>
+    <item name="android:textColorPrimary">@color/text_primary</item>
+    <item name="android:textColor">@color/text_secondary</item>
+    <item name="android:windowBackground">@color/white</item>
+  </style>
+
+  <style name="KsrTheme.Discovery" parent="KsrTheme">
+    <item name="android:windowBackground">@color/light_gray</item>
   </style>
 </resources>

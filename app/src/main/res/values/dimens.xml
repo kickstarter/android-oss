@@ -6,7 +6,7 @@
   <dimen name="keyline_2">72dp</dimen>
 
   <!-- Cards -->
-  <dimen name="card_corner_radius">2dp</dimen>
+  <dimen name="card_corner_radius">0dp</dimen>
   <dimen name="card_margin_x">8dp</dimen>
   <dimen name="card_margin_y">4dp</dimen>
   <dimen name="card_padding_action">8dp</dimen>

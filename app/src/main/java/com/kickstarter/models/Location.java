@@ -8,10 +8,11 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 @ParcelablePlease public class Location implements Parcelable {
   Integer id = null;
   String name = null;
+  String displayable_name = null;
 
   public Integer id() { return id; }
   public String name() { return name; }
-
+  public String displayableName() { return displayable_name; }
 
   @Override public int describeContents() {
     return 0;

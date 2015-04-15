@@ -41,7 +41,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
     viewHolder.deadline_countdown.setText(Integer.toString(project.deadlineCountdown()));
     viewHolder.deadline_countdown_unit.setText(project.deadlineCountdownUnit());
     viewHolder.goal.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(project.goal()));
-    viewHolder.location.setText(project.location().name());
+    viewHolder.location.setText(project.location().displayableName());
     viewHolder.pledged.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(project.pledged()));
     viewHolder.name.setText(project.name());
     viewHolder.percentageFunded.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));

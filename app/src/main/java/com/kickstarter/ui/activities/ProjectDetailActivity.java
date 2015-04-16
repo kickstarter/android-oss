@@ -67,7 +67,7 @@ public class ProjectDetailActivity extends Activity {
 
   @Override
   public void onBackPressed() {
-    Animation slideAnim = AnimationUtils.loadAnimation(this, R.anim.slide_out_bottom);
+    Animation slideAnim = AnimationUtils.loadAnimation(this, R.anim.slide_out_right);
     slideAnim.setFillAfter(true);
     slideAnim.setAnimationListener(new Animation.AnimationListener() {
       public void onAnimationStart(Animation paramAnimation) { }

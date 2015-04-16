@@ -40,6 +40,6 @@ public class DiscoveryPresenter {
     Intent intent = new Intent(view, ProjectDetailActivity.class);
     intent.putExtra("project", project);
     view.startActivity(intent);
-    view.overridePendingTransition(R.anim.slide_in_bottom, 0);
+    view.overridePendingTransition(R.anim.slide_in_right, 0);
   }
 }

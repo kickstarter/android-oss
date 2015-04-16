@@ -44,7 +44,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
     viewHolder.location.setText(project.location().displayableName());
     viewHolder.pledged.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(project.pledged()));
     viewHolder.name.setText(project.name());
-    viewHolder.percentageFunded.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
+    viewHolder.percentage_funded.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
     Picasso.with(viewHolder.view.getContext()).
       load(project.photo().full()).
       into(viewHolder.photo);
@@ -74,7 +74,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
     protected @InjectView(R.id.location) TextView location;
     protected @InjectView(R.id.name) TextView name;
     protected @InjectView(R.id.pledged) TextView pledged;
-    protected @InjectView(R.id.percentage_funded) ProgressBar percentageFunded;
+    protected @InjectView(R.id.percentage_funded) ProgressBar percentage_funded;
     protected @InjectView(R.id.photo) ImageView photo;
     protected View view;
     protected Project project;
@@ -89,26 +89,6 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
       view.setOnClickListener((View v) -> {
         this.presenter.onProjectClicked(project, this);
       });
-    }
-
-    public TextView category() {
-      return category;
-    }
-
-    public TextView location() {
-      return location;
-    }
-
-    public TextView name() {
-      return name;
-    }
-
-    public ProgressBar percentageFunded() {
-      return percentageFunded;
-    }
-
-    public ImageView photo() {
-      return photo;
     }
   }
 }

@@ -10,6 +10,9 @@
     <item name="android:windowNoTitle">true</item>
     <item name="android:windowActionBar">false</item>
 
+    <!-- Spinner -->
+    <item name="android:spinnerItemStyle">@style/KsrTheme.SpinnerItem</item>
+
     <!-- More on Color Palette:
       http://www.google.com/design/spec/style/color.html#color-color-palette
       http://developer.android.com/training/material/theme.html#ColorPalette -->
@@ -24,6 +27,10 @@
     <item name="android:textColorPrimary">@color/text_primary</item>
     <item name="android:textColor">@color/text_secondary</item>
     <item name="android:windowBackground">@color/white</item>
+  </style>
+
+  <style name="KsrTheme.SpinnerItem" parent="@android:style/Widget.TextView.SpinnerItem">
+    <item name="android:textColor">@color/white</item>
   </style>
 
   <style name="KsrTheme.Transparent" parent="KsrTheme">

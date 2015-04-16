@@ -14,6 +14,7 @@ import java.util.Date;
 @ParcelablePlease
 public class Project implements Parcelable {
   Integer backers_count = null;
+  String blurb = null;
   Category category = null;
   Integer deadline = null;
   Float goal = null;
@@ -22,8 +23,10 @@ public class Project implements Parcelable {
   String name = null;
   Float pledged = null;
   Photo photo = null;
+  User creator = null;
 
   public Integer backersCount() { return backers_count; }
+  public String blurb() { return blurb; }
   public Category category() { return category; }
   public Integer deadline() { return deadline; }
   public Float goal() { return goal; }
@@ -32,6 +35,7 @@ public class Project implements Parcelable {
   public String name() { return name; }
   public Float pledged() { return pledged; }
   public Photo photo() { return photo; }
+  public User creator() { return creator; }
 
   public Float percentageFunded() {
     if (goal > 0.0f)

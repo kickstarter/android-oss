@@ -26,7 +26,8 @@
     <activity
       android:name=".ui.activities.ProjectDetailActivity"
       android:label="@string/title_activity_project"
-      android:parentActivityName=".ui.activities.DiscoveryActivity">
+      android:parentActivityName=".ui.activities.DiscoveryActivity"
+      android:theme="@style/KsrTheme.ProjectDetail">
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
         android:value=".ui.activities.DiscoveryActivity"/>

@@ -26,8 +26,16 @@
     <item name="android:windowBackground">@color/white</item>
   </style>
 
+  <style name="KsrTheme.Transparent" parent="KsrTheme">
+    <item name="android:windowIsTranslucent">true</item>
+    <item name="android:windowBackground">@android:color/transparent</item>
+  </style>
+
   <style name="KsrTheme.Discovery" parent="KsrTheme">
     <item name="android:windowBackground">@color/light_gray</item>
+  </style>
+
+  <style name="KsrTheme.ProjectDetail" parent="KsrTheme.Transparent">
   </style>
 
   <style name="KsrProgressBar" parent="android:Widget.ProgressBar.Horizontal">

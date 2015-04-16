@@ -15,42 +15,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <RelativeLayout
-      android:id="@+id/photo_section"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent">
-
-      <ImageView
-        android:id="@+id/photo"
-        android:adjustViewBounds="true"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:transitionName="photo"/>
-
-      <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:layout_alignLeft="@+id/photo"
-        android:layout_alignBottom="@+id/photo"
-        android:background="@drawable/gradient">
-
-        <TextView
-          android:id="@+id/name"
-          android:background="@android:color/transparent"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_alignParentBottom="true"
-          android:layout_alignParentLeft="true"
-          android:gravity="bottom"
-          android:textColor="@color/white"
-          android:textSize="@dimen/title"
-          android:padding="@dimen/keyline_1"/>
-      </RelativeLayout>
-     </RelativeLayout>
+    <include layout="@layout/project_card_photo_layout" />
 
     <LinearLayout
       android:background="@color/white"
-      android:layout_below="@id/photo_section"
+      android:layout_below="@id/project_card_photo"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:padding="@dimen/keyline_1"

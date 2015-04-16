@@ -1,9 +1,11 @@
 package com.kickstarter.presenters;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
 
+import com.kickstarter.R;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.ProjectDetailActivity;
 import com.kickstarter.ui.adapters.ProjectListAdapter;
@@ -37,10 +39,7 @@ public class DiscoveryPresenter {
   public void onProjectClicked(Project project, ProjectListAdapter.ViewHolder viewHolder) {
     Intent intent = new Intent(view, ProjectDetailActivity.class);
     intent.putExtra("project", project);
-    ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-      view,
-      Pair.create(viewHolder.category(), "category"),
-      Pair.create(viewHolder.photo(), "photo"));
-    view.startActivity(intent, options.toBundle());
+    view.startActivity(intent);
+    view.overridePendingTransition(R.anim.slide_in_bottom, 0);
   }
 }

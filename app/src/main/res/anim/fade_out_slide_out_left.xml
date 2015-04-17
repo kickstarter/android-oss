@@ -7,7 +7,7 @@
     android:duration="@android:integer/config_longAnimTime" />
   <translate
     android:fromXDelta="0"
-    android:toXDelta="-100%"
+    android:toXDelta="-50%"
     android:duration="@android:integer/config_longAnimTime"
     android:interpolator="@android:anim/decelerate_interpolator" />
 </set>

@@ -48,8 +48,6 @@ public class DiscoveryActivity extends ActionBarActivity {
     // Setup recycler view
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    setupWindowAnimations();
-
     if (presenter == null) {
       presenter = new DiscoveryPresenter();
     }
@@ -87,11 +85,6 @@ public class DiscoveryActivity extends ActionBarActivity {
       public void onNothingSelected(AdapterView<?> adapterView) {
       }
     });
-  }
-
-  void setupWindowAnimations() {
-    Fade fade = new Fade();
-    getWindow().setExitTransition(fade);
   }
 
   public void onItemsNext(List<Project> projects) {

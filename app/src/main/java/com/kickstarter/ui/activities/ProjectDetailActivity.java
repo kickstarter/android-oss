@@ -91,18 +91,8 @@ public class ProjectDetailActivity extends Activity {
 
   @Override
   public void onBackPressed() {
-    // More details: http://stackoverflow.com/a/27913721
-    Animation slideAnim = AnimationUtils.loadAnimation(this, R.anim.slide_out_right);
-    slideAnim.setFillAfter(true);
-    slideAnim.setAnimationListener(new Animation.AnimationListener() {
-      public void onAnimationStart(Animation paramAnimation) { }
-      public void onAnimationRepeat(Animation paramAnimation) { }
-      public void onAnimationEnd(Animation paramAnimation) {
-        finish();
-        overridePendingTransition(0, 0);
-      }
-    });
-    ViewGroup view = (ViewGroup) findViewById(android.R.id.content);
-    view.startAnimation(slideAnim);
+    super.onBackPressed();
+
+    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
   }
 }

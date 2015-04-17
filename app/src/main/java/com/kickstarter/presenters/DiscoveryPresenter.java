@@ -37,6 +37,6 @@ public class DiscoveryPresenter {
     Intent intent = new Intent(view, ProjectDetailActivity.class);
     intent.putExtra("project", project);
     view.startActivity(intent);
-    view.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    view.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 }

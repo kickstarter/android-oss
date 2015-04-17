@@ -5,7 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kickstarter.R;
@@ -16,6 +18,7 @@ import com.squareup.picasso.Picasso;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -32,6 +35,9 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
   // Attach data to the view
   @Override
   public void onBindViewHolder(final ViewHolder viewHolder, final int i) {
+    // The viewHolder is recycled for different projects, so be careful with
+    // conditionals - if you mutate a view for one project, you should set it back
+    // to the default when the view is recycled.
     final Project project = projects.get(i);
     viewHolder.project = project;
 
@@ -48,6 +54,10 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
     Picasso.with(viewHolder.view.getContext()).
       load(project.photo().full()).
       into(viewHolder.photo);
+
+    int potd_visible = project.isPotdToday() ? View.VISIBLE : View.INVISIBLE;
+    viewHolder.photo_gradient.setVisibility(potd_visible);
+    viewHolder.potd_group.setVisibility(potd_visible);
   }
 
   // Create the view
@@ -76,6 +86,8 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
     protected @InjectView(R.id.pledged) TextView pledged;
     protected @InjectView(R.id.percentage_funded) ProgressBar percentage_funded;
     protected @InjectView(R.id.photo) ImageView photo;
+    protected @InjectView(R.id.photo_gradient) RelativeLayout photo_gradient;
+    protected @InjectView(R.id.potd_group) LinearLayout potd_group;
     protected View view;
     protected Project project;
     protected DiscoveryPresenter presenter;

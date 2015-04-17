@@ -7,6 +7,7 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.kickstarter.R;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 
 import java.util.Date;
@@ -16,26 +17,38 @@ public class Project implements Parcelable {
   Integer backers_count = null;
   String blurb = null;
   Category category = null;
-  Integer deadline = null;
+  DateTime deadline = null;
   Float goal = null;
   Integer id = null;
+  DateTime launched_at = null;
   Location location = null;
   String name = null;
   Float pledged = null;
   Photo photo = null;
+  DateTime potd_at = null;
   User creator = null;
 
   public Integer backersCount() { return backers_count; }
   public String blurb() { return blurb; }
   public Category category() { return category; }
-  public Integer deadline() { return deadline; }
+  public User creator() { return creator; }
+  public DateTime deadline() { return deadline; }
   public Float goal() { return goal; }
   public Integer id() { return id; }
+  public DateTime launchedAt() { return launched_at; }
   public Location location() { return location; }
   public String name() { return name; }
   public Float pledged() { return pledged; }
   public Photo photo() { return photo; }
-  public User creator() { return creator; }
+
+  public boolean isPotdToday() {
+    if (potd_at == null) {
+      return false;
+    }
+
+    DateTime startOfDayUTC = new DateTime(DateTimeZone.UTC).withTime(0, 0, 0, 0);
+    return startOfDayUTC.isEqual(potd_at.withZone(DateTimeZone.UTC));
+  }
 
   public Float percentageFunded() {
     if (goal > 0.0f)
@@ -45,7 +58,7 @@ public class Project implements Parcelable {
   }
 
   public Long timeIntervalUntilDeadline() {
-    Duration duration = new Duration(new DateTime(), new DateTime(deadline * 1000L));
+    Duration duration = new Duration(new DateTime(), deadline);
     return Math.max(0L, duration.getStandardSeconds());
   }
 
@@ -76,6 +89,7 @@ public class Project implements Parcelable {
     return "days";
   }
 
+  // Parcelable
   @Override public int describeContents() {
     return 0;
   }

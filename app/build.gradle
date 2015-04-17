@@ -54,7 +54,6 @@ dependencies {
     compile 'io.reactivex:rxandroid:0.24.0'
     compile 'io.reactivex:rxjava:1.0.8'
     ***REMOVED***
-    compile 'org.immutables:gson:2.0.2'
     compile 'net.danlew:android.joda:2.7.2'
 }
 

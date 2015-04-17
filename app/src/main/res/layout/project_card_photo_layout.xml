@@ -11,22 +11,45 @@
     android:layout_height="match_parent"/>
 
   <RelativeLayout
+    android:id="@+id/photo_gradient"
     android:layout_width="match_parent"
     android:layout_height="180dp"
     android:layout_alignLeft="@+id/photo"
     android:layout_alignBottom="@+id/photo"
-    android:background="@drawable/gradient">
+    android:background="@drawable/gradient"
+    android:visibility="invisible">
 
-    <TextView
-      android:id="@+id/name"
-      android:background="@android:color/transparent"
+    <LinearLayout
+      android:id="@+id/potd_group"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_alignParentBottom="true"
       android:layout_alignParentLeft="true"
-      android:gravity="bottom"
-      android:textColor="@color/white"
-      android:textSize="@dimen/title"
-      android:padding="@dimen/keyline_1"/>
+      android:orientation="horizontal"
+      android:padding="@dimen/keyline_1"
+      android:visibility="invisible">
+
+      <com.kickstarter.ui.views.IonIconTextView
+        android:id="@+id/potd_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:paddingRight="@dimen/card_padding_action_half"
+        android:text="@string/ion_heart"
+        android:textColor="@color/green"
+        android:textSize="@dimen/subhead"/>
+
+      <TextView
+        android:id="@+id/potd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:paddingLeft="@dimen/card_padding_action_half"
+        android:text="@string/project_of_the_day"
+        android:textColor="@color/white"
+        android:textSize="@dimen/subhead"/>
+
+    </LinearLayout>
+
   </RelativeLayout>
 </RelativeLayout>

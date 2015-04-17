@@ -2,8 +2,16 @@ package com.kickstarter.services;
 
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
+import retrofit.converter.GsonConverter;
 import rx.Observable;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.kickstarter.DateTimeTypeConverter;
 import com.kickstarter.models.Project;
+
+import org.joda.time.DateTime;
+
 import java.util.List;
 
 public class KickstarterClient {
@@ -19,7 +27,12 @@ public class KickstarterClient {
       }
     };
 
+    Gson gson = new GsonBuilder()
+      .registerTypeAdapter(DateTime.class, new DateTimeTypeConverter())
+      .create();
+
     RestAdapter restAdapter = new RestAdapter.Builder()
+      .setConverter(new GsonConverter(gson))
       // TODO: extract this so we can switch HQ envs within the app. It's very useful.
       .setEndpoint("https://***REMOVED***")
       .setRequestInterceptor(requestInterceptor)

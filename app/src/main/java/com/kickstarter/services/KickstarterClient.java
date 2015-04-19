@@ -8,11 +8,10 @@ import rx.Observable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kickstarter.libs.DateTimeTypeConverter;
+import com.kickstarter.models.DiscoveryParams;
 import com.kickstarter.models.Project;
 
 import org.joda.time.DateTime;
-
-import java.util.List;
 
 public class KickstarterClient {
   private final KickstarterService service;
@@ -42,10 +41,9 @@ public class KickstarterClient {
     service = restAdapter.create(KickstarterService.class);
   }
 
-  public Observable<List<Project>> fetchProjects() {
-    return service.fetchProjects()
-      .retry(3)
-      .map(envelope -> envelope.projects);
+  public Observable<ApiResponses.DiscoverEnvelope> fetchProjects(DiscoveryParams params) {
+    return service.fetchProjects(params.queryParams())
+      .retry(3);
   }
 
   public Observable<Project> fetchProject(final Project project) {

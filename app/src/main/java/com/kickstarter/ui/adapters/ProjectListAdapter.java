@@ -18,7 +18,6 @@ import com.squareup.picasso.Picasso;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;

@@ -3,6 +3,7 @@ package com.kickstarter.presenters;
 import android.content.Intent;
 
 import com.kickstarter.R;
+import com.kickstarter.models.DiscoveryParams;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.KickstarterClient;
 import com.kickstarter.ui.activities.DiscoveryActivity;
@@ -17,7 +18,11 @@ public class DiscoveryPresenter {
 
   public DiscoveryPresenter() {
     KickstarterClient client = new KickstarterClient();
-    projects = client.fetchProjects().toBlocking().last(); // TODO: Don't block
+
+    DiscoveryParams initial_params = new DiscoveryParams(true, DiscoveryParams.Sort.MAGIC);
+    projects = client.fetchProjects(initial_params)
+      .map(envelope -> envelope.projects)
+      .toBlocking().last(); // TODO: Don't block
   }
 
   public void onTakeView(DiscoveryActivity view) {

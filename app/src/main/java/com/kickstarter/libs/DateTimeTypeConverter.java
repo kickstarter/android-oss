@@ -1,4 +1,4 @@
-package com.kickstarter;
+package com.kickstarter.libs;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;

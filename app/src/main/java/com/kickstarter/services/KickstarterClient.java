@@ -7,7 +7,7 @@ import rx.Observable;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.kickstarter.DateTimeTypeConverter;
+import com.kickstarter.libs.DateTimeTypeConverter;
 import com.kickstarter.models.Project;
 
 import org.joda.time.DateTime;

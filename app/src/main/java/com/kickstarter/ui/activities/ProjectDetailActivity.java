@@ -2,29 +2,14 @@ package com.kickstarter.ui.activities;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.transition.Explode;
-import android.transition.Fade;
-import android.transition.Slide;
-import android.transition.Transition;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.kickstarter.R;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.ProjectDetailPresenter;
-import com.kickstarter.services.KickstarterClient;
 import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;

@@ -2,7 +2,6 @@ package com.kickstarter;
 
 import android.app.Application;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.views.IonIconTextView;
 
@@ -31,8 +30,6 @@ public class KsrApplication extends Application {
       .ksrApplicationModule(new KsrApplicationModule(this))
       .build();
     component().inject(this);
-
-    Fresco.initialize(getApplicationContext());
   }
 
   public ApplicationComponent component() {

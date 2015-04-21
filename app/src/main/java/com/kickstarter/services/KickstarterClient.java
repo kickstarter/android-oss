@@ -42,9 +42,13 @@ public class KickstarterClient {
     service = restAdapter.create(KickstarterService.class);
   }
 
-  public Observable<List<Project>> fetchProjects () {
+  public Observable<List<Project>> fetchProjects() {
     return service.fetchProjects()
       .retry(3)
       .map(envelope -> envelope.projects);
+  }
+
+  public Observable<Project> fetchProject(final Project project) {
+    return Observable.just(project).mergeWith(service.fetchProject(project.id()));
   }
 }

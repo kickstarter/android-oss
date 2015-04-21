@@ -24,6 +24,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.kickstarter.R;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.ProjectDetailPresenter;
+import com.kickstarter.services.KickstarterClient;
 import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
@@ -34,6 +35,7 @@ import butterknife.InjectView;
 
 public class ProjectDetailActivity extends Activity {
   static ProjectDetailPresenter presenter;
+
   protected @InjectView(R.id.backers_count) TextView backers_count;
   protected @InjectView(R.id.blurb) TextView blurb;
   protected @InjectView(R.id.category) TextView category;
@@ -54,13 +56,11 @@ public class ProjectDetailActivity extends Activity {
     setContentView(R.layout.project_detail_layout);
     ButterKnife.inject(this);
 
-    // TODO: What if the view is destroyed - will this be called again?
-    // What happens to the intent?
     Intent intent = getIntent();
-    Project project = intent.getExtras().getParcelable("project");
+    final Project project = intent.getExtras().getParcelable("project");
 
     if (presenter == null) {
-      presenter = new ProjectDetailPresenter(project);
+      presenter = ProjectDetailPresenter.create(project);
     }
     presenter.onTakeView(this);
   }
@@ -70,8 +70,9 @@ public class ProjectDetailActivity extends Activity {
     super.onDestroy();
 
     presenter.onTakeView(null);
-    if (isFinishing())
+    if (isFinishing()) {
       presenter = null;
+    }
   }
 
   public void show(Project project) {

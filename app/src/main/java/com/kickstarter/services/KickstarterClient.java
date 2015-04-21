@@ -48,7 +48,7 @@ public class KickstarterClient {
       .map(envelope -> envelope.projects);
   }
 
-  public Observable<Project> fetchProject(Integer id) {
+  public Observable<Project> fetchProject(final Integer id) {
     return service.fetchProject(id);
   }
 }

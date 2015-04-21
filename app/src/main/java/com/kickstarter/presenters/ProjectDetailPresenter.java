@@ -10,12 +10,10 @@ import rx.subjects.PublishSubject;
 
 public class ProjectDetailPresenter {
   private ProjectDetailActivity view;
-  private Project project;
-  final private PublishSubject<Void> viewTaken;
+  private final PublishSubject<Void> viewTaken;
 
-  public ProjectDetailPresenter(Project project) {
+  public ProjectDetailPresenter(final Project project) {
     KickstarterClient client = new KickstarterClient(); // TODO: Inject
-    this.project = project;
     this.viewTaken = PublishSubject.create();
 
     Observable.combineLatest(
@@ -25,7 +23,6 @@ public class ProjectDetailPresenter {
     )
     .observeOn(AndroidSchedulers.mainThread())
     .subscribe(p -> {
-      this.project = p;
       if (view != null) {
         view.show(p);
       }

@@ -54,8 +54,6 @@ public class ProjectDetailActivity extends Activity {
     setContentView(R.layout.project_detail_layout);
     ButterKnife.inject(this);
 
-    // TODO: What if the view is destroyed - will this be called again?
-    // What happens to the intent?
     Intent intent = getIntent();
     Project project = intent.getExtras().getParcelable("project");
 

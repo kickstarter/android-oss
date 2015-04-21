@@ -1,6 +1,5 @@
 package com.kickstarter.presenters;
 
-import com.facebook.common.internal.VisibleForTesting;
 import com.kickstarter.libs.RxUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.KickstarterClient;

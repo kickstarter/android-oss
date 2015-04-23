@@ -19,17 +19,17 @@ public class DiscoveryParams {
     }
   }
 
-  private final Boolean staff_picks;
+  private final boolean staff_picks;
   private final Sort sort;
 
-  public DiscoveryParams(Boolean staff_picks, Sort sort) {
+  public DiscoveryParams(boolean staff_picks, Sort sort) {
     this.staff_picks = staff_picks;
     this.sort = sort;
   }
 
   public ImmutableMap<String, String> queryParams () {
     return ImmutableMap.of(
-      "staff_picks", staff_picks.toString(),
+      "staff_picks", String.valueOf(staff_picks),
       "sort", sort.toString(),
       "include_potd", staff_picks ? "true" : ""
     );

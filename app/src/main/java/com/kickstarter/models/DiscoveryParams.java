@@ -15,7 +15,7 @@ public class DiscoveryParams {
         case NEWEST:      return "newest";
         case MOST_FUNDED: return "most_funded";
       }
-      return "";
+      throw new AssertionError("Unhandled sort");
     }
   }
 

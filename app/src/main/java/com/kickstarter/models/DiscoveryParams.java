@@ -27,7 +27,7 @@ public class DiscoveryParams {
     this.sort = sort;
   }
 
-  public ImmutableMap<String, String> queryParams () {
+  public ImmutableMap<String, String> queryParams() {
     return ImmutableMap.of(
       "staff_picks", String.valueOf(staff_picks),
       "sort", sort.toString(),

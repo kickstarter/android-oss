@@ -8,8 +8,6 @@ import com.kickstarter.models.Project;
 
 import org.joda.time.DateTime;
 
-import java.util.List;
-
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;

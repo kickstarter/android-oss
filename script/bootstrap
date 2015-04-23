@@ -1,14 +1,14 @@
 #!/usr/bin/env sh
 
-ANDROID_STUDIO_PATH="${HOME}/Library/Preferences/AndroidStudio"
+ANDROID_STUDIO_PREFERENCES_PATH="${HOME}/Library/Preferences/AndroidStudio"
 
-if [ ! -d $ANDROID_STUDIO_PATH ]; then
-  echo "Android Studio expected in ${ANDROID_STUDIO_PATH}"
+if [ ! -d $ANDROID_STUDIO_PREFERENCES_PATH ]; then
+  echo "Android Studio expected in ${ANDROID_STUDIO_PREFERENCES_PATH}"
   exit 1
 fi
 
 # Update Kickstarter style
-ANDROID_STYLE_PATH="${ANDROID_STUDIO_PATH}/codestyles/Kickstarter.xml"
+ANDROID_STYLE_PATH="${ANDROID_STUDIO_PREFERENCES_PATH}/codestyles/Kickstarter.xml"
 REPOSITORY_STYLE_PATH="script/style/Kickstarter.xml"
 
 cmp -s "${ANDROID_STYLE_PATH}" "${REPOSITORY_STYLE_PATH}"
@@ -22,6 +22,6 @@ if [ $? -ne 0 ]; then
 fi
 
 # Remove author from new files
-cat /dev/null > "${ANDROID_STUDIO_PATH}/fileTemplates/includes/File Header.java"
+cat /dev/null > "${ANDROID_STUDIO_PREFERENCES_PATH}/fileTemplates/includes/File Header.java"
 
 echo "Bootstrap complete!"

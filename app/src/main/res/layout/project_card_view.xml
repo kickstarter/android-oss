@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/text_dark"
         android:textSize="@dimen/title"
-        android:paddingBottom="@dimen/keyline_1"/>
+        android:paddingBottom="@dimen/keyline_1" />
 
       <LinearLayout
         android:layout_width="wrap_content"
@@ -46,7 +46,7 @@
           android:layout_gravity="center_vertical"
           android:paddingRight="@dimen/card_padding_action_half"
           android:text="@string/ion_pricetag"
-          android:textColor="@color/text_dark"/>
+          android:textColor="@color/text_dark" />
 
         <TextView
           android:id="@+id/category"
@@ -55,7 +55,7 @@
           android:layout_height="wrap_content"
           android:paddingLeft="@dimen/card_padding_action_half"
           android:paddingRight="@dimen/card_padding_action"
-          android:textColor="@color/text_dark"/>
+          android:textColor="@color/text_dark" />
 
         <com.kickstarter.ui.views.IonIconTextView
           android:id="@+id/location_icon"
@@ -67,7 +67,7 @@
           android:paddingRight="@dimen/card_padding_action_half"
           android:text="@string/ion_location"
           android:textSize="@dimen/title"
-          android:textColor="@color/text_dark"/>
+          android:textColor="@color/text_dark" />
 
         <TextView
           android:id="@+id/location"
@@ -76,7 +76,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:paddingLeft="@dimen/card_padding_action_half"
-          android:textColor="@color/text_dark"/>
+          android:textColor="@color/text_dark" />
 
       </LinearLayout>
 

@@ -18,7 +18,6 @@ import com.squareup.picasso.Picasso;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -42,7 +41,8 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
     viewHolder.project = project;
 
     // TODO: Extract number formatting into helpers
-    viewHolder.backers_count.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(project.backersCount()));
+    viewHolder.backers_count.setText(NumberFormat.getNumberInstance(Locale.getDefault())
+      .format(project.backersCount()));
     viewHolder.category.setText(project.category().name());
     viewHolder.deadline_countdown.setText(Integer.toString(project.deadlineCountdown()));
     viewHolder.deadline_countdown_unit.setText(project.deadlineCountdownUnit());

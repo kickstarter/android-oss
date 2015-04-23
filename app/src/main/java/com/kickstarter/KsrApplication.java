@@ -22,7 +22,8 @@ public class KsrApplication extends Application {
 
   private ApplicationComponent component;
 
-  @Override public void onCreate() {
+  @Override
+  public void onCreate() {
     super.onCreate();
     JodaTimeAndroid.init(this);
 

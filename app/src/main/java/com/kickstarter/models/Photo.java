@@ -5,18 +5,21 @@ import android.os.Parcelable;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 
-@ParcelablePlease public class Photo implements Parcelable {
+@ParcelablePlease
+public class Photo implements Parcelable {
   String full = null;
   String small = null;
 
   public String full() { return this.full; }
   public String small() { return this.small; }
 
-  @Override public int describeContents() {
+  @Override
+  public int describeContents() {
     return 0;
   }
 
-  @Override public void writeToParcel(Parcel dest, int flags) {
+  @Override
+  public void writeToParcel(Parcel dest, int flags) {
     PhotoParcelablePlease.writeToParcel(this, dest, flags);
   }
 

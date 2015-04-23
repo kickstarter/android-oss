@@ -10,7 +10,7 @@
     android:id="@+id/photo"
     android:adjustViewBounds="true"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"/>
+    android:layout_height="wrap_content" />
 
   <LinearLayout
     android:layout_width="match_parent"
@@ -25,24 +25,26 @@
       android:layout_height="wrap_content"
       android:textColor="@color/text_dark"
       android:textSize="@dimen/headline"
-      android:paddingBottom="@dimen/keyline_1_half"/>
+      android:paddingBottom="@dimen/keyline_1_half" />
 
     <LinearLayout
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:paddingBottom="@dimen/keyline_1_half">
+
       <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/by_"
         android:textColor="@color/text_dark"
-        android:textSize="@dimen/caption"/>
+        android:textSize="@dimen/caption" />
+
       <TextView
         android:id="@+id/creator_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/text_dark"
-        android:textSize="@dimen/caption"/>
+        android:textSize="@dimen/caption" />
     </LinearLayout>
 
     <TextView
@@ -51,7 +53,7 @@
       android:layout_height="wrap_content"
       android:textColor="@color/text_dark"
       android:textSize="@dimen/body_1"
-      android:paddingBottom="@dimen/keyline_1_half"/>
+      android:paddingBottom="@dimen/keyline_1_half" />
 
     <LinearLayout
       android:layout_width="wrap_content"
@@ -66,7 +68,7 @@
         android:layout_gravity="center_vertical"
         android:paddingRight="@dimen/card_padding_action_half"
         android:text="@string/ion_pricetag"
-        android:textColor="@color/text_dark"/>
+        android:textColor="@color/text_dark" />
 
       <TextView
         android:id="@+id/category"
@@ -76,7 +78,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/card_padding_action_half"
         android:paddingRight="@dimen/card_padding_action"
-        android:textColor="@color/text_dark"/>
+        android:textColor="@color/text_dark" />
 
       <com.kickstarter.ui.views.IonIconTextView
         android:id="@+id/location_icon"
@@ -88,7 +90,7 @@
         android:paddingRight="@dimen/card_padding_action_half"
         android:text="@string/ion_location"
         android:textSize="@dimen/title"
-        android:textColor="@color/text_dark"/>
+        android:textColor="@color/text_dark" />
 
       <TextView
         android:id="@+id/location"
@@ -97,7 +99,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/card_padding_action_half"
-        android:textColor="@color/text_dark"/>
+        android:textColor="@color/text_dark" />
 
     </LinearLayout>
 

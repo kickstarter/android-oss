@@ -4,13 +4,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
-import com.kickstarter.R;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
-
-import java.util.Date;
 
 @ParcelablePlease
 public class Project implements Parcelable {
@@ -51,8 +48,9 @@ public class Project implements Parcelable {
   }
 
   public Float percentageFunded() {
-    if (goal > 0.0f)
+    if (goal > 0.0f) {
       return (pledged / goal) * 100.0f;
+    }
 
     return 0.0f;
   }
@@ -90,11 +88,13 @@ public class Project implements Parcelable {
   }
 
   // Parcelable
-  @Override public int describeContents() {
+  @Override
+  public int describeContents() {
     return 0;
   }
 
-  @Override public void writeToParcel(Parcel dest, int flags) {
+  @Override
+  public void writeToParcel(Parcel dest, int flags) {
     ProjectParcelablePlease.writeToParcel(this, dest, flags);
   }
 

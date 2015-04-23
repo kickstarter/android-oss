@@ -4,8 +4,8 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-import com.kickstarter.libs.Font;
 import com.kickstarter.KsrApplication;
+import com.kickstarter.libs.Font;
 
 import javax.inject.Inject;
 

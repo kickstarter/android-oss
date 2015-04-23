@@ -1,6 +1,7 @@
 package com.kickstarter.services;
 
 import com.kickstarter.models.Project;
+
 import java.util.List;
 
 /*package*/ class ApiResponses {

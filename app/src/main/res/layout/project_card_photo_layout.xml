@@ -8,7 +8,7 @@
     android:id="@+id/photo"
     android:adjustViewBounds="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+    android:layout_height="match_parent" />
 
   <RelativeLayout
     android:id="@+id/photo_gradient"
@@ -37,7 +37,7 @@
         android:paddingRight="@dimen/card_padding_action_half"
         android:text="@string/ion_heart"
         android:textColor="@color/green"
-        android:textSize="@dimen/subhead"/>
+        android:textSize="@dimen/subhead" />
 
       <TextView
         android:id="@+id/potd"
@@ -47,7 +47,7 @@
         android:paddingLeft="@dimen/card_padding_action_half"
         android:text="@string/project_of_the_day"
         android:textColor="@color/white"
-        android:textSize="@dimen/subhead"/>
+        android:textSize="@dimen/subhead" />
 
     </LinearLayout>
 

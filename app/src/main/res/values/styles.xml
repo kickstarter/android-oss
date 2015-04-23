@@ -1,6 +1,7 @@
 <resources>
+
   <style name="KsrTheme" parent="Theme.AppCompat.Light.NoActionBar">
-  <!-- Shared view activity animations -->
+    <!-- Shared view activity animations -->
     <item name="android:windowContentTransitions">true</item>
     <item name="android:windowAllowEnterTransitionOverlap">true</item>
     <item name="android:windowAllowReturnTransitionOverlap">true</item>

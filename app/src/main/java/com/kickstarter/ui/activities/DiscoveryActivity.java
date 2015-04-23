@@ -54,8 +54,9 @@ public class DiscoveryActivity extends ActionBarActivity {
     super.onDestroy();
 
     presenter.onTakeView(null);
-    if (isFinishing())
+    if (isFinishing()) {
       presenter = null;
+    }
   }
 
   protected void createToolbar() {

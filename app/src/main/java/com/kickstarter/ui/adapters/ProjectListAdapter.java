@@ -41,7 +41,8 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
     viewHolder.project = project;
 
     // TODO: Extract number formatting into helpers
-    viewHolder.backers_count.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(project.backersCount()));
+    viewHolder.backers_count.setText(NumberFormat.getNumberInstance(Locale.getDefault())
+      .format(project.backersCount()));
     viewHolder.category.setText(project.category().name());
     viewHolder.deadline_countdown.setText(Integer.toString(project.deadlineCountdown()));
     viewHolder.deadline_countdown_unit.setText(project.deadlineCountdownUnit());

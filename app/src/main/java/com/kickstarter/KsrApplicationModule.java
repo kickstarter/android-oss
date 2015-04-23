@@ -17,11 +17,15 @@ public class KsrApplicationModule {
     this.application = application;
   }
 
-  @Provides @Singleton Application application() {
+  @Provides
+  @Singleton
+  Application application() {
     return application;
   }
 
-  @Provides @Singleton Font provideFont() {
+  @Provides
+  @Singleton
+  Font provideFont() {
     return new Font(application);
   }
 }

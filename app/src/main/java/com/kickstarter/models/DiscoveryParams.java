@@ -9,11 +9,16 @@ public class DiscoveryParams {
     @Override
     public String toString() {
       switch (this) {
-        case MAGIC:       return "magic";
-        case POPULAR:     return "popularity";
-        case ENDING_SOON: return "end_date";
-        case NEWEST:      return "newest";
-        case MOST_FUNDED: return "most_funded";
+        case MAGIC:
+          return "magic";
+        case POPULAR:
+          return "popularity";
+        case ENDING_SOON:
+          return "end_date";
+        case NEWEST:
+          return "newest";
+        case MOST_FUNDED:
+          return "most_funded";
       }
       throw new AssertionError("Unhandled sort");
     }
@@ -27,7 +32,7 @@ public class DiscoveryParams {
     this.sort = sort;
   }
 
-  public ImmutableMap<String, String> queryParams () {
+  public ImmutableMap<String, String> queryParams() {
     return ImmutableMap.of(
       "staff_picks", String.valueOf(staff_picks),
       "sort", sort.toString(),

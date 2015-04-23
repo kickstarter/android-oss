@@ -1,14 +1,14 @@
 package com.kickstarter.services;
 
-import retrofit.http.GET;
-import retrofit.http.Path;
-import retrofit.http.QueryMap;
-import rx.Observable;
-
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiResponses.DiscoverEnvelope;
 
 import java.util.Map;
+
+import retrofit.http.GET;
+import retrofit.http.Path;
+import retrofit.http.QueryMap;
+import rx.Observable;
 
 /*package*/ interface KickstarterService {
   @GET("/v1/discover")

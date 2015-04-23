@@ -5,7 +5,8 @@ import android.os.Parcelable;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 
-@ParcelablePlease public class Category implements Parcelable {
+@ParcelablePlease
+public class Category implements Parcelable {
   Integer id = null;
   String name = null;
 
@@ -13,11 +14,13 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
   public String name() { return this.name; }
 
 
-  @Override public int describeContents() {
+  @Override
+  public int describeContents() {
     return 0;
   }
 
-  @Override public void writeToParcel(Parcel dest, int flags) {
+  @Override
+  public void writeToParcel(Parcel dest, int flags) {
     CategoryParcelablePlease.writeToParcel(this, dest, flags);
   }
 

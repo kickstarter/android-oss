@@ -1,0 +1,27 @@
+#!/usr/bin/env sh
+
+ANDROID_STUDIO_PATH="${HOME}/Library/Preferences/AndroidStudio"
+
+if [ ! -d $ANDROID_STUDIO_PATH ]; then
+  echo "Android Studio expected in ${ANDROID_STUDIO_PATH}"
+  exit 1
+fi
+
+# Update Kickstarter style
+ANDROID_STYLE_PATH="${ANDROID_STUDIO_PATH}/codestyles/Kickstarter.xml"
+REPOSITORY_STYLE_PATH="script/style/Kickstarter.xml"
+
+cmp -s "${ANDROID_STYLE_PATH}" "${REPOSITORY_STYLE_PATH}"
+if [ $? -ne 0 ]; then
+  if [ ! -f $ANDROID_STYLE_PATH ]; then
+    echo "Created Android Studio code style, change to the Kickstarter scheme in Preferences > Code Style"
+  else
+    echo "Updated Kickstarter style, restart Android Studio to apply changes"
+  fi
+  cp $REPOSITORY_STYLE_PATH $ANDROID_STYLE_PATH
+fi
+
+# Remove author from new files
+cat /dev/null > "${ANDROID_STUDIO_PATH}/fileTemplates/includes/File Header.java"
+
+echo "Bootstrap complete!"

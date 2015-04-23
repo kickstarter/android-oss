@@ -6,4 +6,5 @@
 4. Import the project. Open Android Studio, then click `File > Import Project` and
    select `build.gradle` in the root of the repository
 5. Start up the app. Click `Run > Run 'app'`. After the project builds you'll be
-   prompted to build or launch an emulator - use `Nexus 5 API 21 x86`.
+   prompted to build or launch an emulator - use `Nexus 5 API 21 x86` for the
+   device.

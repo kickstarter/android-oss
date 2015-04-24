@@ -17,6 +17,7 @@ import java.util.Locale;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import timber.log.Timber;
 
 public class ProjectDetailActivity extends Activity {
   static ProjectDetailPresenter presenter;
@@ -37,6 +38,7 @@ public class ProjectDetailActivity extends Activity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    Timber.d("Activity onCreate");
 
     setContentView(R.layout.project_detail_layout);
     ButterKnife.inject(this);
@@ -53,6 +55,7 @@ public class ProjectDetailActivity extends Activity {
   @Override
   protected void onDestroy() {
     super.onDestroy();
+    Timber.d("Activity onDestroy");
 
     presenter.onTakeView(null);
     if (isFinishing()) {
@@ -78,6 +81,7 @@ public class ProjectDetailActivity extends Activity {
   @Override
   public void onBackPressed() {
     super.onBackPressed();
+    Timber.d("Activity onBackPressed");
 
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }

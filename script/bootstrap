@@ -24,4 +24,13 @@ fi
 # Remove author from new files
 cat /dev/null > "${ANDROID_STUDIO_PREFERENCES_PATH}/fileTemplates/includes/File Header.java"
 
+# Install/update pidcat. Can also install pidcat via brew, but it's way out of date
+curl -s "https://raw.githubusercontent.com/JakeWharton/pidcat/660a8197f55cd7bc53f53a2b34014ac6df1c0ceb/pidcat.py" > /tmp/pidcat
+chmod +x /tmp/pidcat
+cmp -s /tmp/pidcat /usr/local/bin/pidcat
+if [ $? -ne 0 ]; then
+  echo "Updating pidcat"
+  mv /tmp/pidcat /usr/local/bin/pidcat
+fi
+
 echo "Bootstrap complete!"

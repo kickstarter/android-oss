@@ -34,8 +34,12 @@ proguard/
 
 # Android Studio
 .idea
-#.idea/workspace.xml - remove # and delete .idea if it better suit your needs.
+#.idea/workspace.xml - remove # and delete .idea if it better suit your needs
 .gradle
 build/
 
 app/app.iml
+
+# Contains API secret, re-generates itself like spyware via Android Studio
+# Fabric plugin
+app/fabric.properties

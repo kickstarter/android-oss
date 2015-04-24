@@ -60,8 +60,6 @@ public class DiscoveryActivity extends ActionBarActivity {
   }
 
   protected void createToolbar() {
-    setSupportActionBar(toolbar);
-
     // Simple_spinner_item and simple_spinner_dropdown_item are provided by the
     // platform, they can be replaced when we want to customize the spinner's appearance.
     ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,

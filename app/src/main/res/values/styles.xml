@@ -13,6 +13,7 @@
 
     <!-- Spinner -->
     <item name="android:spinnerItemStyle">@style/KsrTheme.SpinnerItem</item>
+    <item name="android:spinnerStyle">@style/KsrTheme.Spinner</item>
 
     <!-- More on Color Palette:
       http://www.google.com/design/spec/style/color.html#color-color-palette
@@ -28,6 +29,11 @@
     <item name="android:textColorPrimary">@color/text_primary</item>
     <item name="android:textColor">@color/text_secondary</item>
     <item name="android:windowBackground">@color/white</item>
+  </style>
+
+  <style name="KsrTheme.Spinner" parent="android:Widget">
+    <item name="android:background">@drawable/ksr_spinner</item>
+    <item name="android:clickable">true</item>
   </style>
 
   <style name="KsrTheme.SpinnerItem" parent="@android:style/Widget.TextView.SpinnerItem">

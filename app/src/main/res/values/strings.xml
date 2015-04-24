@@ -7,7 +7,9 @@
   <string name="days">days</string>
   <string name="ion_heart">\uf141</string>
   <string name="ion_location">\uf1ff</string>
+  <string name="ion_locked">\uf200</string>
   <string name="ion_pricetag">\uf2aa</string>
+  <string name="log_in">Log In</string>
   <string name="pledged_of_">pledged of\u0020</string>
   <string name="project_of_the_day">Project of the day!</string>
   <string name="title_activity_project">View Project</string>

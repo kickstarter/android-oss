@@ -1,4 +1,10 @@
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
 apply plugin: 'com.neenbedankt.android-apt'
 
 android {
@@ -19,6 +25,8 @@ android {
         }
         debug {
             debuggable true
+            applicationIdSuffix '.dev'
+            versionNameSuffix '-dev'
         }
     }
 
@@ -47,6 +55,7 @@ dependencies {
     compile 'com.hannesdorfmann.parcelableplease:annotation:1.0.1'
     apt 'com.hannesdorfmann.parcelableplease:processor:1.0.1'
     compile 'com.jakewharton:butterknife:6.1.0'
+    compile 'com.jakewharton.timber:timber:3.0.1'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.3.0'
     compile 'com.squareup.okhttp:okhttp:2.3.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
@@ -55,15 +64,20 @@ dependencies {
     compile 'io.reactivex:rxjava:1.0.8'
     ***REMOVED***
     compile 'net.danlew:android.joda:2.7.2'
+    compile('com.crashlytics.sdk.android:crashlytics:2.2.3@aar') {
+        transitive = true;
+    }
 }
 
 buildscript {
     repositories {
         mavenCentral()
+        maven { url 'https://maven.fabric.io/public' }
     }
 
     dependencies {
         classpath 'me.tatarka:gradle-retrolambda:2.5.0'
+        classpath 'io.fabric.tools:gradle:1.+'
     }
 }
 

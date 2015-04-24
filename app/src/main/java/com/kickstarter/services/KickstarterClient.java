@@ -2,6 +2,7 @@ package com.kickstarter.services;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.kickstarter.BuildConfig;
 import com.kickstarter.libs.DateTimeTypeConverter;
 import com.kickstarter.models.DiscoveryParams;
 import com.kickstarter.models.Project;
@@ -35,7 +36,7 @@ public class KickstarterClient {
         // TODO: extract this so we can switch HQ envs within the app. It's very useful.
       .setEndpoint("https://***REMOVED***")
       .setRequestInterceptor(requestInterceptor)
-      .setLogLevel(RestAdapter.LogLevel.FULL)
+      .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE)
       .build();
 
     service = restAdapter.create(KickstarterService.class);

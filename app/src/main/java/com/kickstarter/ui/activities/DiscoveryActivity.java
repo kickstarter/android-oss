@@ -20,6 +20,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import timber.log.Timber;
 
 public class DiscoveryActivity extends ActionBarActivity {
   ProjectListAdapter adapter;
@@ -31,6 +32,7 @@ public class DiscoveryActivity extends ActionBarActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    Timber.d("Activity onCreate");
 
     setContentView(R.layout.discovery_layout);
 
@@ -52,6 +54,7 @@ public class DiscoveryActivity extends ActionBarActivity {
   @Override
   protected void onDestroy() {
     super.onDestroy();
+    Timber.d("Activity onDestroy");
 
     presenter.onTakeView(null);
     if (isFinishing()) {

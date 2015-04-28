@@ -3,8 +3,9 @@ package com.kickstarter.libs;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 
-public class BaseActivity<PresenterType extends Presenter> extends Activity {
+public class BaseActivity<PresenterType extends Presenter> extends AppCompatActivity {
   protected PresenterType presenter;
   private static final String PRESENTER_KEY = "presenter";
 

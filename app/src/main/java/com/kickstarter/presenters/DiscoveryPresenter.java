@@ -3,6 +3,7 @@ package com.kickstarter.presenters;
 import android.content.Intent;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.Presenter;
 import com.kickstarter.models.DiscoveryParams;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.KickstarterClient;
@@ -12,8 +13,10 @@ import com.kickstarter.ui.adapters.ProjectListAdapter;
 
 import java.util.List;
 
-public class DiscoveryPresenter {
-  private DiscoveryActivity view;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+
+public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
   private List<Project> projects;
 
   public DiscoveryPresenter() {
@@ -23,25 +26,18 @@ public class DiscoveryPresenter {
     projects = client.fetchProjects(initial_params)
       .map(envelope -> envelope.projects)
       .toBlocking().last(); // TODO: Don't block
-  }
 
-  public void onTakeView(DiscoveryActivity view) {
-    this.view = view;
-    publish();
-  }
-
-  public void publish() {
-    if (view != null) {
-      if (projects != null) {
-        view.onItemsNext(projects);
-      }
-    }
+    Subscription subscription = viewSubject
+      .filter(v -> v != null)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(v -> v.onItemsNext(projects));
+    subscriptions.add(subscription);
   }
 
   public void onProjectClicked(Project project, ProjectListAdapter.ViewHolder viewHolder) {
-    Intent intent = new Intent(view, ProjectDetailActivity.class);
+    Intent intent = new Intent(view(), ProjectDetailActivity.class);
     intent.putExtra("project", project);
-    view.startActivity(intent);
-    view.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+    view().startActivity(intent);
+    view().overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 }

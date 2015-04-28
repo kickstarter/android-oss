@@ -12,11 +12,25 @@ public class BaseActivity<PresenterType extends Presenter> extends Activity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    RequiresPresenter annotation = getClass().getAnnotation(RequiresPresenter.class);
-    Class<PresenterType> presenterClass = annotation == null ? null : (Class<PresenterType>) annotation.value();
-    if (presenterClass != null) {
-      presenter = Presenters.getInstance().fetch(presenterClass,
-        savedInstanceState == null ? null : savedInstanceState.getBundle(PRESENTER_KEY));
+    fetchPresenter(savedInstanceState);
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+
+    fetchPresenter(null);
+    if (presenter != null) {
+      presenter.onResume(this);
+    }
+  }
+
+  @Override
+  protected void onPause() {
+    super.onPause();
+
+    if (presenter != null) {
+      presenter.onPause();
     }
   }
 
@@ -36,10 +50,22 @@ public class BaseActivity<PresenterType extends Presenter> extends Activity {
   protected void onSaveInstanceState(@NonNull Bundle outState) {
     super.onSaveInstanceState(outState);
 
-    Bundle presenterEnvelope = presenter != null ?
-      Presenters.getInstance().saveEnvelope(presenter) :
-      null;
+    Bundle presenterEnvelope = new Bundle();
+    if (presenter != null) {
+      Presenters.getInstance().save(presenter, presenterEnvelope);
+    }
 
     outState.putBundle(PRESENTER_KEY, presenterEnvelope);
+  }
+
+  private void fetchPresenter(Bundle presenterEnvelope) {
+    if (presenter == null) {
+      RequiresPresenter annotation = getClass().getAnnotation(RequiresPresenter.class);
+      Class<PresenterType> presenterClass = annotation == null ? null : (Class<PresenterType>) annotation.value();
+      if (presenterClass != null) {
+        presenter = Presenters.getInstance().fetch(presenterClass,
+          presenterEnvelope == null ? null : presenterEnvelope.getBundle(PRESENTER_KEY));
+      }
+    }
   }
 }

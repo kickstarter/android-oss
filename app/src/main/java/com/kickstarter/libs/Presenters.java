@@ -42,11 +42,12 @@ public class Presenters {
     presenters.inverse().remove(presenter);
   }
 
-  public Bundle saveEnvelope(Presenter presenter) {
-    Bundle envelope = new Bundle();
+  public void save(Presenter presenter, Bundle envelope) {
     envelope.putString(PRESENTER_ID_KEY, presenters.inverse().get(presenter));
-    envelope.putBundle(PRESENTER_STATE_KEY, presenter.saveState());
-    return envelope;
+
+    Bundle state = new Bundle();
+    presenter.save(state);
+    envelope.putBundle(PRESENTER_STATE_KEY, state);
   }
 
   protected String fetchId(Bundle savedInstanceState) {

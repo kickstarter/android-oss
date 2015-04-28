@@ -7,14 +7,14 @@ import com.google.common.collect.HashBiMap;
 
 import java.util.UUID;
 
-public class PresenterManager {
+public class Presenters {
   private static final String PRESENTER_ID_KEY = "presenter_id";
   private static final String PRESENTER_STATE_KEY = "presenter_state";
 
-  private static PresenterManager instance = new PresenterManager();
+  private static Presenters instance = new Presenters();
   private BiMap<String, Presenter> presenters = HashBiMap.create();
 
-  public static PresenterManager getInstance() {
+  public static Presenters getInstance() {
     return instance;
   }
 
@@ -42,14 +42,11 @@ public class PresenterManager {
     presenters.inverse().remove(presenter);
   }
 
-  public Bundle save(Presenter presenter) {
-    // TODO: Refactor this snot
-    Bundle bundle = new Bundle();
-    bundle.putString(PRESENTER_ID_KEY, presenters.inverse().get(presenter));
-    Bundle presenterState = new Bundle();
-    presenter.onSave(presenterState);
-    bundle.putBundle(PRESENTER_STATE_KEY, presenterState);
-    return bundle;
+  public Bundle saveEnvelope(Presenter presenter) {
+    Bundle envelope = new Bundle();
+    envelope.putString(PRESENTER_ID_KEY, presenters.inverse().get(presenter));
+    envelope.putBundle(PRESENTER_STATE_KEY, presenter.saveState());
+    return envelope;
   }
 
   protected String fetchId(Bundle savedInstanceState) {

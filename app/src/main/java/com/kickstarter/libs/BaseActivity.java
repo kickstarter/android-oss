@@ -15,7 +15,7 @@ public class BaseActivity<PresenterType extends Presenter> extends Activity {
     RequiresPresenter annotation = getClass().getAnnotation(RequiresPresenter.class);
     Class<PresenterType> presenterClass = annotation == null ? null : (Class<PresenterType>) annotation.value();
     if (presenterClass != null) {
-      presenter = PresenterManager.getInstance().fetch(presenterClass,
+      presenter = Presenters.getInstance().fetch(presenterClass,
         savedInstanceState == null ? null : savedInstanceState.getBundle(PRESENTER_KEY));
     }
   }
@@ -26,7 +26,7 @@ public class BaseActivity<PresenterType extends Presenter> extends Activity {
 
     if (isFinishing()) {
       if (presenter != null) {
-        PresenterManager.getInstance().destroy(presenter);
+        Presenters.getInstance().destroy(presenter);
         presenter = null;
       }
     }
@@ -35,8 +35,11 @@ public class BaseActivity<PresenterType extends Presenter> extends Activity {
   @Override
   protected void onSaveInstanceState(@NonNull Bundle outState) {
     super.onSaveInstanceState(outState);
-    Bundle bundle = presenter == null ? null : PresenterManager.getInstance().save(presenter);
-    outState.putBundle(PRESENTER_KEY, bundle);
 
+    Bundle presenterEnvelope = presenter != null ?
+      Presenters.getInstance().saveEnvelope(presenter) :
+      null;
+
+    outState.putBundle(PRESENTER_KEY, presenterEnvelope);
   }
 }

@@ -7,5 +7,12 @@ public class Presenter<ViewType> {
 
   protected void onCreate(Bundle savedInstanceState) {}
   protected void onDestroy() {}
-  protected void onSave(Bundle state) {}
+
+  /*
+   * This should be overridden for presenters that have state to persist.
+   */
+  public Bundle saveState() {
+    Bundle bundle = new Bundle();
+    return bundle;
+  }
 }

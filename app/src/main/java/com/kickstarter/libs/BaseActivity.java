@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 public class BaseActivity<PresenterType extends Presenter> extends Activity {
-  private PresenterType presenter;
+  protected PresenterType presenter;
   private static final String PRESENTER_KEY = "presenter";
 
   @Override

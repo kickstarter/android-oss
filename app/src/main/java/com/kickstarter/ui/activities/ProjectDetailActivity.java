@@ -1,6 +1,5 @@
 package com.kickstarter.ui.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -8,6 +7,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.ProjectDetailPresenter;
 import com.squareup.picasso.Picasso;
@@ -19,9 +20,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import timber.log.Timber;
 
-public class ProjectDetailActivity extends Activity {
-  static ProjectDetailPresenter presenter;
-
+@RequiresPresenter(ProjectDetailPresenter.class)
+public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> {
   protected @InjectView(R.id.backers_count) TextView backers_count;
   protected @InjectView(R.id.blurb) TextView blurb;
   protected @InjectView(R.id.category) TextView category;
@@ -45,22 +45,7 @@ public class ProjectDetailActivity extends Activity {
 
     Intent intent = getIntent();
     final Project project = intent.getExtras().getParcelable("project");
-
-    if (presenter == null) {
-      presenter = ProjectDetailPresenter.create(project);
-    }
-    presenter.onTakeView(this);
-  }
-
-  @Override
-  protected void onDestroy() {
-    super.onDestroy();
-    Timber.d("Activity onDestroy");
-
-    presenter.onTakeView(null);
-    if (isFinishing()) {
-      presenter = null;
-    }
+    presenter.takeProject(project);
   }
 
   public void show(Project project) {

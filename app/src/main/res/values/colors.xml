@@ -4,11 +4,9 @@
   <color name="primary">#081B5C</color>
   <color name="primary_dark">@color/dark_blue</color>
   <color name="primary_light">@color/md_blue_100</color>
-  <color name="accent_1">#1837D1</color>
-  <color name="accent_1_light">@color/md_blue_A100</color>
-  <color name="accent_2">@color/md_pink_A400</color>
-  <color name="text_primary">#D9FFFFFF</color>
-  <color name="text_secondary">#D9000000</color>
+  <color name="accent">@color/blue</color>
+  <color name="text_primary">@color/text_dark</color>
+  <color name="text_secondary">@color/dark_gray</color>
 
   <!-- Kickstarter colors -->
   <color name="blue">#00a0ff</color>

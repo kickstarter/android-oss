@@ -38,7 +38,6 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    Timber.d("Activity onCreate");
 
     setContentView(R.layout.project_detail_layout);
     ButterKnife.inject(this);
@@ -66,7 +65,7 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
   @Override
   public void onBackPressed() {
     super.onBackPressed();
-    Timber.d("Activity onBackPressed");
+    Timber.d("onBackPressed %s", this.toString());
 
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }

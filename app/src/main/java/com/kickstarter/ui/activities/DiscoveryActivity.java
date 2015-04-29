@@ -33,7 +33,6 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    Timber.d("Activity onCreate");
 
     setContentView(R.layout.discovery_layout);
 
@@ -45,12 +44,6 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
 
     // Setup recycler view
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
-  }
-
-  @Override
-  protected void onDestroy() {
-    super.onDestroy();
-    Timber.d("Activity onDestroy");
   }
 
   protected void createToolbar() {
@@ -76,6 +69,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
   }
 
   public void onItemsNext(List<Project> projects) {
+    Timber.d("onItemsNext %s", this.toString());
     adapter = new ProjectListAdapter(projects, presenter);
     recyclerView.setAdapter(adapter);
   }

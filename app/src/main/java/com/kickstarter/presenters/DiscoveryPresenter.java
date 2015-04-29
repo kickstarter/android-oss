@@ -1,6 +1,7 @@
 package com.kickstarter.presenters;
 
 import android.content.Intent;
+import android.os.Bundle;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.Presenter;
@@ -15,12 +16,15 @@ import java.util.List;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import timber.log.Timber;
 
 public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
+  private static final KickstarterClient client = new KickstarterClient();
   private List<Project> projects;
 
-  public DiscoveryPresenter() {
-    KickstarterClient client = new KickstarterClient();
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
 
     DiscoveryParams initial_params = new DiscoveryParams(true, DiscoveryParams.Sort.MAGIC);
     projects = client.fetchProjects(initial_params)
@@ -35,6 +39,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
   }
 
   public void onProjectClicked(Project project, ProjectListAdapter.ViewHolder viewHolder) {
+    Timber.d("onProjectClicked %s", this.toString());
     Intent intent = new Intent(view(), ProjectDetailActivity.class);
     intent.putExtra("project", project);
     view().startActivity(intent);

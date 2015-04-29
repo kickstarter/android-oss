@@ -6,7 +6,8 @@ import com.kickstarter.BuildConfig;
 import com.kickstarter.libs.DateTimeTypeConverter;
 import com.kickstarter.models.DiscoveryParams;
 import com.kickstarter.models.Project;
-import com.kickstarter.services.ApiResponses.*;
+import com.kickstarter.services.ApiResponses.AccessTokenEnvelope;
+import com.kickstarter.services.ApiResponses.DiscoverEnvelope;
 
 import org.joda.time.DateTime;
 
@@ -47,5 +48,13 @@ public class KickstarterClient {
 
   public Observable<Project> fetchProject(final Project project) {
     return Observable.just(project).mergeWith(service.fetchProject(project.id()));
+  }
+
+  public Observable<AccessTokenEnvelope> login(final String email, final String password) {
+    return login(email, password, "");
+  }
+
+  public Observable<AccessTokenEnvelope> login(final String email, final String password, final String code) {
+    return service.login(email, password, code);
   }
 }

@@ -19,13 +19,10 @@ public class KickstarterClient {
   private final KickstarterService service;
 
   public KickstarterClient() {
-    RequestInterceptor requestInterceptor = new RequestInterceptor() {
-      @Override
-      public void intercept(RequestInterceptor.RequestFacade request) {
-        request.addHeader("Accept", "application/json");
-        // TODO: extract this so that it's easy to swap client_id for different HQ envs.
-        request.addQueryParam("client_id", "***REMOVED***");
-      }
+    RequestInterceptor requestInterceptor = request -> {
+      request.addHeader("Accept", "application/json");
+      // TODO: extract this so that it's easy to swap client_id for different HQ envs.
+      request.addQueryParam("client_id", "***REMOVED***");
     };
 
     Gson gson = new GsonBuilder()

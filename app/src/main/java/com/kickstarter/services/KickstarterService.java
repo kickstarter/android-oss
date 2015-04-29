@@ -1,7 +1,8 @@
 package com.kickstarter.services;
 
 import com.kickstarter.models.Project;
-import com.kickstarter.services.ApiResponses.*;
+import com.kickstarter.services.ApiResponses.AccessTokenEnvelope;
+import com.kickstarter.services.ApiResponses.DiscoverEnvelope;
 
 import java.util.Map;
 

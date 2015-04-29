@@ -11,8 +11,8 @@ public class Presenters {
   private static final String PRESENTER_ID_KEY = "presenter_id";
   private static final String PRESENTER_STATE_KEY = "presenter_state";
 
-  private static Presenters instance = new Presenters();
-  private BiMap<String, Presenter> presenters = HashBiMap.create();
+  private static final Presenters instance = new Presenters();
+  private final BiMap<String, Presenter> presenters = HashBiMap.create();
 
   public static Presenters getInstance() {
     return instance;

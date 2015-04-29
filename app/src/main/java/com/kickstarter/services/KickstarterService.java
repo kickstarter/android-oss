@@ -1,7 +1,7 @@
 package com.kickstarter.services;
 
 import com.kickstarter.models.Project;
-import com.kickstarter.services.ApiResponses.DiscoverEnvelope;
+import com.kickstarter.services.ApiResponses.*;
 
 import java.util.Map;
 

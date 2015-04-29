@@ -6,6 +6,7 @@ import com.kickstarter.BuildConfig;
 import com.kickstarter.libs.DateTimeTypeConverter;
 import com.kickstarter.models.DiscoveryParams;
 import com.kickstarter.models.Project;
+import com.kickstarter.services.ApiResponses.*;
 
 import org.joda.time.DateTime;
 
@@ -42,7 +43,7 @@ public class KickstarterClient {
     service = restAdapter.create(KickstarterService.class);
   }
 
-  public Observable<ApiResponses.DiscoverEnvelope> fetchProjects(DiscoveryParams params) {
+  public Observable<DiscoverEnvelope> fetchProjects(DiscoveryParams params) {
     return service.fetchProjects(params.queryParams())
       .retry(3);
   }

@@ -33,6 +33,9 @@
         android:value=".ui.activities.DiscoveryActivity" />
     </activity>
 
+    <activity
+      android:name=".ui.activities.LoginToutActivity" />
+
     <meta-data
       android:name="io.fabric.ApiKey"
       android:value="bc1ad0ee879f77e88f7526c32ca0cbef853d671d" />

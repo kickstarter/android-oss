@@ -1,6 +1,7 @@
 package com.kickstarter.ui.views;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
@@ -10,9 +11,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.kickstarter.R;
+import com.kickstarter.ui.activities.LoginToutActivity;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import timber.log.Timber;
 
 public class DiscoveryToolbar extends Toolbar {
   @InjectView(R.id.category_spinner) Spinner spinner;
@@ -36,10 +39,16 @@ public class DiscoveryToolbar extends Toolbar {
     super.onFinishInflate();
     ButterKnife.inject(this);
 
-    createSpinner();
+    initializeSpinner();
+
+    login_group.setOnClickListener(v -> {
+      Timber.d("login_group onClick");
+      Intent intent = new Intent(getContext(), LoginToutActivity.class);
+      getContext().startActivity(intent);
+    });
   }
 
-  protected void createSpinner() {
+  protected void initializeSpinner() {
     ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
       R.array.categories_array,
       android.R.layout.simple_spinner_item);

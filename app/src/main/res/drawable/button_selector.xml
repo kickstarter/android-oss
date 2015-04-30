@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+  <!-- Pressed -->
+  <item android:drawable="@color/accent_alpha_20" android:state_pressed="true" />
+  <!-- Selected -->
+  <item android:drawable="@color/accent_alpha_20" android:state_selected="true" />
+  <!-- Focus -->
+  <item android:drawable="@color/accent_alpha_20" android:state_focused="true" />
+  <!-- Default -->
+  <item android:drawable="@color/primary" />
+</selector>

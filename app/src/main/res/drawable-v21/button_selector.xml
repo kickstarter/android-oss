@@ -1,0 +1,4 @@
+<ripple
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:color="@color/accent_alpha_20">
+</ripple>

@@ -20,14 +20,17 @@
     <LinearLayout
       android:id="@+id/login_group"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_height="match_parent"
+      android:background="@drawable/button_selector"
       android:orientation="horizontal"
       android:layout_alignParentRight="true"
-      android:layout_centerVertical="true">
+      android:paddingLeft="@dimen/keyline_1"
+      android:paddingRight="@dimen/keyline_1">
 
       <com.kickstarter.ui.views.IonIconTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:paddingRight="@dimen/keyline_1"
         android:text="@string/ion_locked"
         android:textColor="@color/white"
@@ -36,7 +39,7 @@
       <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingRight="@dimen/keyline_1"
+        android:layout_gravity="center_vertical"
         android:text="@string/log_in"
         android:textSize="@dimen/menu"
         android:textColor="@color/white" />

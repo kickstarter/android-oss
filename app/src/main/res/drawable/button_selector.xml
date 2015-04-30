@@ -1,3 +1,7 @@
+<!--
+Highlights the background on focus/press/select. In API 21+ this is unused
+in favor of a ripple effect (see drawable-v21/button_selector.xml).
+-->
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
   <item android:drawable="@color/accent_alpha_20" android:state_focused="true" />

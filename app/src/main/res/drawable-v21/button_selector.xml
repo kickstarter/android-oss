@@ -1,4 +1,9 @@
+<!--
+  This is an unmasked ripple, it draws into the parent background.
+
+  e.g. if A nests B, and B uses android:background="@drawable/button_selector", then the ripple will
+  extend beyond B into A.
+-->
 <ripple
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:color="@color/accent_alpha_20">
-</ripple>
+  android:color="@color/accent_alpha_20" />

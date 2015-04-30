@@ -32,9 +32,11 @@
         android:name="android.support.PARENT_ACTIVITY"
         android:value=".ui.activities.DiscoveryActivity" />
     </activity>
-      <meta-data
-        android:name="io.fabric.ApiKey"
-        android:value="bc1ad0ee879f77e88f7526c32ca0cbef853d671d" />
-    </application>
+
+    <meta-data
+      android:name="io.fabric.ApiKey"
+      android:value="bc1ad0ee879f77e88f7526c32ca0cbef853d671d" />
+
+  </application>
 
 </manifest>

@@ -27,7 +27,7 @@ public class LoginToutActivity extends AppCompatActivity {
     ButterKnife.inject(this);
 
     login_button.setOnClickListener(v -> {
-      Timber.d("login_button onClick");
+      Timber.d("login_button clicked");
       Intent intent = new Intent(this, LoginActivity.class);
       startActivity(intent);
     });

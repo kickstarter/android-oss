@@ -28,25 +28,15 @@
       android:textSize="@dimen/title"
       android:text="@string/Sign_up_or_log_in_with_your_Facebook_account" />
 
-    <!--
     <com.facebook.login.widget.LoginButton
-      android:id="@+id/login_button"
+      android:id="@+id/facebook_login_button"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:paddingBottom="@dimen/keyline_1"
+      android:layout_gravity="center_horizontal"
+      android:paddingBottom="12dp"
+      android:paddingTop="12dp"
       android:layout_marginLeft="@dimen/keyline_1"
       android:layout_marginRight="@dimen/keyline_1" />
-      -->
-
-    <!-- Temporary button -->
-    <Button
-      android:layout_width="match_parent"
-      android:layout_height="50dp"
-      android:background="#3F5BB0"
-      android:textColor="@color/white"
-      android:text="@string/Log_in_with_Facebook"
-      android:layout_marginLeft="@dimen/keyline_1_half"
-      android:layout_marginRight="@dimen/keyline_1_half" />
 
     <TextView
       android:layout_width="wrap_content"
@@ -85,12 +75,14 @@
       android:layout_gravity="center_horizontal">
 
       <Button
+        android:id="@+id/login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/keyline_1_half"
         android:text="@string/Log_in" />
 
       <Button
+        android:id="@+id/sign_up_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/keyline_1_half"

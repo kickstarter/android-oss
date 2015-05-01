@@ -1,6 +1,11 @@
 <resources>
   <string name="app_name">Kickstarter</string>
 
+  <!-- Settings -->
+  <!-- TODO: Kickstarter test app (development mode) -->
+  <string name="facebook_app_id">10153359799336694</string>
+
+  <!-- User-facing strings -->
   <string name="action_settings">Settings</string>
   <string name="backers">backers</string>
   <string name="by_">by\u0020</string>
@@ -15,7 +20,6 @@
   <string name="ion_locked">\uf200</string>
   <string name="ion_pricetag">\uf2aa</string>
   <string name="Log_in">Log In</string>
-  <string name="Log_in_with_Facebook">Log In with Facebook</string>
   <string name="pledged_of_">pledged of\u0020</string>
   <string name="project_of_the_day">Project of the day!</string>
   <string name="Sign_up">Sign up</string>

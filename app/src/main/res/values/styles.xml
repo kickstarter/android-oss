@@ -28,7 +28,7 @@
     <item name="android:textColorLink">@color/accent</item>
     <item name="android:textColorPrimary">@color/text_primary</item>
     <item name="android:textColor">@color/text_secondary</item>
-    <item name="android:windowBackground">@color/white</item>
+    <item name="android:windowBackground">@color/window_background</item>
   </style>
 
   <style name="KsrTheme.Spinner" parent="android:Widget">
@@ -42,6 +42,10 @@
 
   <style name="KsrTheme.Discovery" parent="KsrTheme">
     <item name="android:windowBackground">@color/light_gray</item>
+  </style>
+
+  <style name="KsrTheme.LoginToutActivity" parent="KsrTheme">
+    <item name="android:statusBarColor">@color/gray</item>
   </style>
 
   <style name="KsrProgressBar" parent="android:Widget.ProgressBar.Horizontal">

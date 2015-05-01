@@ -8,6 +8,7 @@
   <color name="text_primary">@color/text_dark</color>
   <color name="text_secondary">@color/dark_gray</color>
   <color name="accent_alpha_20">@color/blue_alpha_20</color>
+  <color name="window_background">@color/white</color>
 
   <!-- Kickstarter colors -->
   <color name="blue">#00a0ff</color>

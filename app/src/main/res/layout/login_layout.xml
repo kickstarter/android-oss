@@ -48,6 +48,7 @@
       android:id="@+id/password"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/keyline_1_half"
       android:singleLine="true"
       android:hint="@string/Password"
       android:password="false"
@@ -55,13 +56,17 @@
 
     <Button
       android:id="@+id/login_button"
+      android:layout_marginTop="@dimen/keyline_1_half"
+      android:layout_marginBottom="@dimen/keyline_1_half"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      style="@style/KsrButtonRaisedGreen"
       android:text="@string/Log_in" />
       
     <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/keyline_1_half"
       android:text="@string/Forgot_your_password"/>
 
   </LinearLayout>

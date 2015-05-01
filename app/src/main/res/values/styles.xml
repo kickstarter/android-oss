@@ -56,4 +56,9 @@
     <item name="android:indeterminateOnly">false</item>
     <item name="android:progressDrawable">@drawable/ksr_progress_bar_horizontal</item>
   </style>
+
+  <style name="KsrButtonRaisedGreen">
+    <item name="android:background">@color/green</item>
+    <item name="android:textColor">@color/white</item>
+  </style>
 </resources>

@@ -79,6 +79,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/keyline_1_half"
+        style="?android:attr/borderlessButtonStyle"
         android:text="@string/Log_in" />
 
       <Button
@@ -86,6 +87,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/keyline_1_half"
+        style="?android:attr/borderlessButtonStyle"
         android:text="@string/Sign_up" />
 
     </LinearLayout>

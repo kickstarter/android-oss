@@ -16,7 +16,7 @@
     android:layout_height="180dp"
     android:layout_alignLeft="@+id/photo"
     android:layout_alignBottom="@+id/photo"
-    android:background="@drawable/gradient"
+    android:background="@drawable/photo_gradient"
     android:visibility="invisible">
 
     <LinearLayout

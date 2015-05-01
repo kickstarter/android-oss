@@ -34,7 +34,8 @@
     </activity>
 
     <activity
-      android:name=".ui.activities.LoginToutActivity" />
+      android:name=".ui.activities.LoginToutActivity"
+      android:theme="@style/KsrTheme.LoginToutActivity" />
 
     <meta-data
       android:name="io.fabric.ApiKey"

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.kickstarter.ui.views.LoginToutToolbar
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/toolbar"
+  android:layout_width="match_parent"
+  android:layout_height="?attr/actionBarSize"
+  android:background="@color/light_gray"
+  android:paddingLeft="@dimen/keyline_1"
+  android:paddingRight="@dimen/keyline_1"
+  app:contentInsetLeft="0dp"
+  app:contentInsetStart="0dp"
+  android:elevation="1dp">
+
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- TODO: Investigate replacing with VectorDrawable once vectors make
+    it into a compat library (currently v21). -->
+    <ImageView
+      android:layout_width="130dp"
+      android:layout_height="15.34dp"
+      android:layout_centerInParent="true"
+      android:src="@drawable/logo" />
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerVertical="true"
+      android:layout_alignParentRight="true"
+      android:textColor="@color/green"
+      android:textSize="@dimen/menu"
+      android:text="@string/Help" />
+
+  </RelativeLayout>
+</com.kickstarter.ui.views.LoginToutToolbar>

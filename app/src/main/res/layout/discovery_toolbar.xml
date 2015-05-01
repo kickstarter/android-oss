@@ -46,5 +46,24 @@
 
     </LinearLayout>
 
+    <LinearLayout
+      android:id="@+id/current_user_group"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:layout_alignParentRight="true"
+      android:paddingLeft="@dimen/keyline_1"
+      android:paddingRight="@dimen/keyline_1"
+      android:visibility="invisible">
+
+      <TextView
+        android:id="@+id/current_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textColor="@color/white"
+        android:textSize="@dimen/menu" />
+
+    </LinearLayout>
+
   </RelativeLayout>
 </com.kickstarter.ui.views.DiscoveryToolbar>

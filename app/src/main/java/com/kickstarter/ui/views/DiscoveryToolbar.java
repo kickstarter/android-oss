@@ -9,8 +9,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.kickstarter.R;
+import com.kickstarter.models.User;
 import com.kickstarter.ui.activities.LoginToutActivity;
 
 import butterknife.ButterKnife;
@@ -20,6 +22,8 @@ import timber.log.Timber;
 public class DiscoveryToolbar extends Toolbar {
   @InjectView(R.id.category_spinner) Spinner spinner;
   @InjectView(R.id.login_group) ViewGroup login_group;
+  @InjectView(R.id.current_user_group) ViewGroup current_user_group;
+  @InjectView(R.id.current_user_name) TextView current_user_name;
   @InjectView(R.id.toolbar) Toolbar toolbar;
 
   public DiscoveryToolbar(final Context context) {
@@ -39,6 +43,7 @@ public class DiscoveryToolbar extends Toolbar {
     super.onFinishInflate();
     ButterKnife.inject(this);
 
+    toggleLogin();
     initializeSpinner();
 
     login_group.setOnClickListener(v -> {
@@ -46,6 +51,17 @@ public class DiscoveryToolbar extends Toolbar {
       Intent intent = new Intent(getContext(), LoginToutActivity.class);
       getContext().startActivity(intent);
     });
+  }
+
+  protected void toggleLogin() {
+    if (User.haveCurrent()) {
+      login_group.setVisibility(INVISIBLE);
+      current_user_group.setVisibility(VISIBLE);
+      current_user_name.setText(User.current().name());
+    } else {
+      current_user_group.setVisibility(INVISIBLE);
+      login_group.setVisibility(VISIBLE);
+    }
   }
 
   protected void initializeSpinner() {

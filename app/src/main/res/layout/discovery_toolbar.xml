@@ -40,7 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:text="@string/log_in"
+        android:text="@string/Log_in"
         android:textSize="@dimen/menu"
         android:textColor="@color/white" />
 

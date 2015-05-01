@@ -4,6 +4,8 @@
   <dimen name="keyline_1">16dp</dimen>
   <dimen name="keyline_1_half">8dp</dimen>
   <dimen name="keyline_2">72dp</dimen>
+  <dimen name="keyline_2_half">36dp</dimen>
+  <dimen name="keyline_2_three_quarters">54dp</dimen>
 
   <!-- Cards -->
   <dimen name="card_corner_radius">0dp</dimen>

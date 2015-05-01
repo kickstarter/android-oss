@@ -10,7 +10,7 @@
   android:paddingRight="@dimen/keyline_1"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
-  android:elevation="1dp">
+  android:elevation="2dp">
 
   <RelativeLayout
     android:layout_width="match_parent"

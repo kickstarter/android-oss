@@ -4,17 +4,27 @@
   <string name="action_settings">Settings</string>
   <string name="backers">backers</string>
   <string name="by_">by\u0020</string>
+  <string name="By_signing_up_you_agree_to_our">
+    By signing up you agree to our terms of use, privacy policy, and cookie policy. We\'ll never post
+    anything without your permission.
+  </string>
   <string name="days">days</string>
   <string name="Help">Help</string>
   <string name="ion_heart">\uf141</string>
   <string name="ion_location">\uf1ff</string>
   <string name="ion_locked">\uf200</string>
   <string name="ion_pricetag">\uf2aa</string>
-  <string name="log_in">Log In</string>
+  <string name="Log_in">Log In</string>
+  <string name="Log_in_with_Facebook">Log In with Facebook</string>
   <string name="pledged_of_">pledged of\u0020</string>
   <string name="project_of_the_day">Project of the day!</string>
+  <string name="Sign_up">Sign up</string>
+  <string name="Sign_up_or_log_in_with_your_Facebook_account">
+    Sign up or log in with your Facebook account or email address below:
+  </string>
   <string name="title_activity_project">View Project</string>
   <string name="_to_go">\u0020to go</string>
+  <string name="Use_your_email_address">Use your email address:</string>
 
   <string-array name="categories_array">
     <item>Staff Picks</item>

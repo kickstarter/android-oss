@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@color/light_gray"
+  android:gravity="center_horizontal">
+
+  <include layout="@layout/login_toolbar" />
+
+  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:paddingLeft="@dimen/keyline_1"
+    android:paddingRight="@dimen/keyline_1"
+    android:gravity="center_horizontal">
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/keyline_2_half"
+      android:layout_marginBottom="@dimen/keyline_1_half"
+      android:gravity="center"
+      android:textColor="@color/text_dark"
+      android:textSize="@dimen/title"
+      android:text="@string/Nice_to_see_you_again" />
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/keyline_1_half"
+      android:layout_marginBottom="@dimen/keyline_2_half"
+      android:gravity="center"
+      android:textColor="@color/dark_gray"
+      android:textSize="@dimen/subhead"
+      android:text="@string/Are_those_new_shoes" />
+    
+    <EditText
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:inputType="textEmailAddress"
+      android:singleLine="true"
+      android:hint="@string/Email_address" />
+
+    <EditText
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:hint="@string/Password" />
+
+    <Button
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/Log_in" />
+      
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/Forgot_your_password"/>
+
+  </LinearLayout>
+
+</LinearLayout>

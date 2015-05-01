@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
@@ -10,6 +11,7 @@ import com.kickstarter.R;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import timber.log.Timber;
 
 public class LoginToutActivity extends AppCompatActivity {
   @InjectView(R.id.login_button) Button login_button;
@@ -23,6 +25,12 @@ public class LoginToutActivity extends AppCompatActivity {
 
     setContentView(R.layout.login_tout_layout);
     ButterKnife.inject(this);
+
+    login_button.setOnClickListener(v -> {
+      Timber.d("login_button onClick");
+      Intent intent = new Intent(this, LoginActivity.class);
+      startActivity(intent);
+    });
   }
 
   @Override

@@ -7,6 +7,9 @@
 
   <!-- User-facing strings -->
   <string name="action_settings">Settings</string>
+  <string name="Are_those_new_shoes">
+    Are those new shoes? If they're not new, they look really shiny and beautiful.
+  </string>
   <string name="backers">backers</string>
   <string name="by_">by\u0020</string>
   <string name="By_signing_up_you_agree_to_our">
@@ -14,12 +17,16 @@
     anything without your permission.
   </string>
   <string name="days">days</string>
+  <string name="Email_address">Email address</string>
+  <string name="Forgot_your_password">Forgot your password?</string>
   <string name="Help">Help</string>
   <string name="ion_heart">\uf141</string>
   <string name="ion_location">\uf1ff</string>
   <string name="ion_locked">\uf200</string>
   <string name="ion_pricetag">\uf2aa</string>
-  <string name="Log_in">Log In</string>
+  <string name="Log_in">Log in</string>
+  <string name="Nice_to_see_you_again">Nice to see you again.</string>
+  <string name="Password">Password</string>
   <string name="pledged_of_">pledged of\u0020</string>
   <string name="project_of_the_day">Project of the day!</string>
   <string name="Sign_up">Sign up</string>

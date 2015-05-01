@@ -40,6 +40,10 @@
       android:name=".ui.activities.LoginToutActivity"
       android:theme="@style/KsrTheme.LoginToutActivity" />
 
+    <activity
+      android:name=".ui.activities.LoginActivity"
+      android:theme="@style/KsrTheme.LoginActivity" />
+
     <meta-data
       android:name="io.fabric.ApiKey"
       android:value="bc1ad0ee879f77e88f7526c32ca0cbef853d671d" />

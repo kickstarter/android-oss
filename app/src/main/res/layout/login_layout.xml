@@ -51,8 +51,8 @@
       android:layout_marginBottom="@dimen/keyline_1_half"
       android:singleLine="true"
       android:hint="@string/Password"
-      android:password="false"
-      android:inputType="textPassword" />
+      android:inputType="textPassword"
+      android:fontFamily="sans-serif" />
 
     <Button
       android:id="@+id/login_button"

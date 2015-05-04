@@ -2,11 +2,11 @@ package com.kickstarter.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiResponses.AccessTokenEnvelope;
 import com.kickstarter.services.KickstarterClient;
@@ -15,7 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import timber.log.Timber;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
   @InjectView(R.id.email_address) TextView email_address;
   @InjectView(R.id.password) TextView password;
   @InjectView(R.id.login_button) Button login_button;
@@ -36,6 +36,13 @@ public class LoginActivity extends AppCompatActivity {
       Intent intent = new Intent(this, DiscoveryActivity.class);
       startActivity(intent);
     });
+  }
 
+  @Override
+  public void onBackPressed() {
+    super.onBackPressed();
+    Timber.d("onBackPressed %s", toString());
+
+    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 }

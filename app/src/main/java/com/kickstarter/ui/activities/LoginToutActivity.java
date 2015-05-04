@@ -2,18 +2,18 @@ package com.kickstarter.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.kickstarter.R;
+import com.kickstarter.libs.BaseActivity;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import timber.log.Timber;
 
-public class LoginToutActivity extends AppCompatActivity {
+public class LoginToutActivity extends BaseActivity {
   @InjectView(R.id.login_button) Button login_button;
   @InjectView(R.id.sign_up_button) Button signup_button;
 
@@ -30,6 +30,7 @@ public class LoginToutActivity extends AppCompatActivity {
       Timber.d("login_button clicked");
       Intent intent = new Intent(this, LoginActivity.class);
       startActivity(intent);
+      overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
     });
   }
 

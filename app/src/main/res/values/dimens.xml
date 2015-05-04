@@ -28,6 +28,5 @@
   <dimen name="menu">14sp</dimen>
   <dimen name="subhead">16sp</dimen>
   <dimen name="title">20sp</dimen>
-
   <dimen name="progress_bar_min_height">6dp</dimen>
 </resources>

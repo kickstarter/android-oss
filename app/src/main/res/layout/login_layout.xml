@@ -22,8 +22,8 @@
       android:layout_marginTop="@dimen/keyline_2_half"
       android:layout_marginBottom="@dimen/keyline_1_half"
       android:gravity="center"
+      android:textAppearance="@style/TextAppearance.AppCompat.Title"
       android:textColor="@color/text_dark"
-      android:textSize="@dimen/title"
       android:text="@string/Nice_to_see_you_again" />
 
     <TextView
@@ -33,7 +33,6 @@
       android:layout_marginBottom="@dimen/keyline_2_half"
       android:gravity="center"
       android:textColor="@color/dark_gray"
-      android:textSize="@dimen/subhead"
       android:text="@string/Are_those_new_shoes" />
     
     <EditText
@@ -49,18 +48,18 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginBottom="@dimen/keyline_1_half"
+      android:fontFamily="sans-serif"
       android:singleLine="true"
       android:hint="@string/Password"
-      android:inputType="textPassword"
-      android:fontFamily="sans-serif" />
+      android:inputType="textPassword" />
 
     <Button
+      style="@style/KsrButtonRaisedGreen"
       android:id="@+id/login_button"
       android:layout_marginTop="@dimen/keyline_1_half"
       android:layout_marginBottom="@dimen/keyline_1_half"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      style="@style/KsrButtonRaisedGreen"
       android:text="@string/Log_in" />
       
     <TextView

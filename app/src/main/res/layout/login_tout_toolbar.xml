@@ -29,8 +29,8 @@
       android:layout_height="wrap_content"
       android:layout_centerVertical="true"
       android:layout_alignParentRight="true"
+      android:textAppearance="@style/TextAppearance.AppCompat.Menu"
       android:textColor="@color/green"
-      android:textSize="@dimen/menu"
       android:text="@string/Help" />
 
   </RelativeLayout>

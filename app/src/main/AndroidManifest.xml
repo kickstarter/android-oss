@@ -19,7 +19,7 @@
       android:name=".ui.activities.DiscoveryActivity"
       android:label="@string/app_name"
       android:launchMode="singleTop"
-      android:theme="@style/KsrTheme.Discovery">
+      android:theme="@style/DiscoveryActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
@@ -38,11 +38,11 @@
 
     <activity
       android:name=".ui.activities.LoginToutActivity"
-      android:theme="@style/KsrTheme.LoginToutActivity" />
+      android:theme="@style/LoginToutActivity" />
 
     <activity
       android:name=".ui.activities.LoginActivity"
-      android:theme="@style/KsrTheme.LoginActivity" />
+      android:theme="@style/LoginActivity" />
 
     <meta-data
       android:name="io.fabric.ApiKey"

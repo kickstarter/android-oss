@@ -25,7 +25,7 @@
       android:paddingBottom="@dimen/keyline_1"
       android:gravity="center_horizontal"
       android:textColor="@color/text_dark"
-      android:textSize="@dimen/title"
+      android:textAppearance="@style/TextAppearance.AppCompat.Title"
       android:text="@string/Sign_up_or_log_in_with_your_Facebook_account" />
 
     <com.facebook.login.widget.LoginButton
@@ -43,8 +43,8 @@
       android:layout_height="wrap_content"
       android:paddingTop="@dimen/keyline_1"
       android:gravity="center_horizontal"
+      android:textAppearance="@style/TextAppearance.AppCompat.Caption"
       android:textColor="@color/dark_gray"
-      android:textSize="@dimen/caption"
       android:text="@string/By_signing_up_you_agree_to_our" />
 
   </LinearLayout>
@@ -63,8 +63,8 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:textColor="@color/dark_gray"
-      android:textSize="@dimen/title"
       android:text="@string/Use_your_email_address"
+      android:textAppearance="@style/TextAppearance.AppCompat.Title"
       android:layout_gravity="center_horizontal" />
 
     <LinearLayout

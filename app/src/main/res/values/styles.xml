@@ -44,7 +44,8 @@
   </style>
 
   <!--
-  More on styles: http://blog.danlew.net/2014/11/19/styles-on-android/
+  Typography: http://www.google.com/design/spec/style/typography.html#typography-styles
+  Style advice: http://blog.danlew.net/2014/11/19/styles-on-android/
   -->
   <style name="KsrSpinner" parent="android:Widget">
     <item name="android:background">@drawable/ksr_spinner</item>

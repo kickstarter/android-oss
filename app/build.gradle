@@ -68,7 +68,7 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'io.reactivex:rxandroid:0.24.0'
-    compile 'io.reactivex:rxjava:1.0.8'
+    compile 'io.reactivex:rxjava:1.0.10'
     ***REMOVED***
     compile 'net.danlew:android.joda:2.7.2'
     compile('com.crashlytics.sdk.android:crashlytics:2.2.3@aar') {

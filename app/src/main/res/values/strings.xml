@@ -1,6 +1,10 @@
 <resources>
   <string name="app_name">Kickstarter</string>
 
+  <!-- Settings -->
+  <string name="hockey_app_id">ecdab725861a76c38d60b5ae44dbe9f2</string>
+
+  <!-- User-facing strings -->
   <string name="action_settings">Settings</string>
   <string name="backers">backers</string>
   <string name="by_">by\u0020</string>

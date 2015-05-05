@@ -25,13 +25,6 @@ public class LoginToutActivity extends BaseActivity {
 
     setContentView(R.layout.login_tout_layout);
     ButterKnife.inject(this);
-
-    login_button.setOnClickListener(v -> {
-      Timber.d("login_button clicked");
-      Intent intent = new Intent(this, LoginActivity.class);
-      startActivity(intent);
-      overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
-    });
   }
 
   @Override
@@ -54,5 +47,13 @@ public class LoginToutActivity extends BaseActivity {
      * This hits the Facebook API, we can remove it once login is working.
     */
     AppEventsLogger.deactivateApp(this);
+  }
+
+  public void loginButtonOnClick(final View v) {
+    Timber.d("login_button clicked");
+
+    Intent intent = new Intent(this, LoginActivity.class);
+    startActivity(intent);
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 }

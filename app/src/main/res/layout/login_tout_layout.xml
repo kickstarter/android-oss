@@ -33,6 +33,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_gravity="center_horizontal"
+      android:onClick="loginButtonOnClick"
       android:paddingTop="12dp"
       android:paddingBottom="12dp"
       android:layout_marginLeft="@dimen/keyline_1"

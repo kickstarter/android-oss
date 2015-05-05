@@ -60,6 +60,7 @@
       android:layout_marginBottom="@dimen/keyline_1_half"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:onClick="loginButtonOnClick"
       android:text="@string/Log_in" />
 
     <TextView

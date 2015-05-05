@@ -2,6 +2,7 @@ package com.kickstarter.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -32,17 +33,6 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.login_layout);
     ButterKnife.inject(this);
-
-    login_button.setOnClickListener(v -> {
-      Timber.d("login_button clicked");
-
-      KickstarterClient client = new KickstarterClient();
-      AccessTokenEnvelope envelope = client.login(email_address.getText().toString(), password.getText().toString()).toBlocking().last();
-      User.setCurrent(envelope.user);
-
-      Intent intent = new Intent(this, DiscoveryActivity.class);
-      startActivity(intent);
-    });
   }
 
   @Override
@@ -51,5 +41,11 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
     Timber.d("onBackPressed %s", toString());
 
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
+  }
+
+  public void loginButtonOnClick(View v) {
+    Timber.d("login_button clicked");
+
+    presenter.login(email_address.getText().toString(), password.getText().toString());
   }
 }

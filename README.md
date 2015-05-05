@@ -26,12 +26,3 @@ Or filter using tags (regexps allowed):
 ```
 pidcat -t "\w*Activity" com.kickstarter.dev
 ```
-
-# Setting up Fabric/Crash Analytics
-
-1. Request an invite to [fabric.io](http://fabric.io) in #native-squad
-2. Once the invite has been received, follow the onboarding instructions to install
-   the Fabric plugin for Android Studio.
-
-Once the plugin is setup, an API secret will be generated in `app/fabric.properties`.
-Crashes are only sent in release mode.

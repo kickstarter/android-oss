@@ -2,12 +2,12 @@ package com.kickstarter;
 
 import android.app.Application;
 
-import com.crashlytics.android.Crashlytics;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.views.IonIconTextView;
 
-import io.fabric.sdk.android.Fabric;
 import net.danlew.android.joda.JodaTimeAndroid;
+import net.hockeyapp.android.CrashManager;
+import net.hockeyapp.android.CrashManagerListener;
 
 import javax.inject.Singleton;
 
@@ -29,11 +29,15 @@ public class KsrApplication extends Application {
   public void onCreate() {
     super.onCreate();
 
-    // Log in debug mode, send to Crashlytics in production
+    // Log in debug mode, send to Hockey in production
     if (BuildConfig.DEBUG) {
       Timber.plant(new Timber.DebugTree());
     } else {
-      Fabric.with(this, new Crashlytics());
+      CrashManager.register(this, getResources().getString(R.string.hockey_app_id), new CrashManagerListener() {
+        public boolean shouldAutoUploadCrashes() {
+          return true;
+        }
+      });
     }
 
     JodaTimeAndroid.init(this);

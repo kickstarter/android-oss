@@ -2,8 +2,9 @@
   <string name="app_name">Kickstarter</string>
 
   <!-- Settings -->
-  <!-- TODO: Kickstarter test app (development mode) -->
+  <!-- TODO: Switch app_id in different environments. The app_id here is the Kickstarter app in development mode. -->
   <string name="facebook_app_id">10153359799336694</string>
+  <string name="hockey_app_id">ecdab725861a76c38d60b5ae44dbe9f2</string>
 
   <!-- User-facing strings -->
   <string name="action_settings">Settings</string>

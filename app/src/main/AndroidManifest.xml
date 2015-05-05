@@ -44,15 +44,12 @@
       android:name=".ui.activities.LoginActivity"
       android:theme="@style/LoginActivity" />
 
-    <meta-data
-      android:name="io.fabric.ApiKey"
-      android:value="bc1ad0ee879f77e88f7526c32ca0cbef853d671d" />
-
     <activity android:name="com.facebook.FacebookActivity"
       android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
       android:theme="@android:style/Theme.Translucent.NoTitleBar"
       android:label="@string/app_name" />
 
+    <activity android:name="net.hockeyapp.android.UpdateActivity" />
   </application>
 
 </manifest>

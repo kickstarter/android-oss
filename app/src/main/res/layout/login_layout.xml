@@ -54,14 +54,14 @@
       android:inputType="textPassword" />
 
     <Button
-      style="@style/KsrButtonRaisedGreen"
       android:id="@+id/login_button"
+      android:enabled="false"
       android:layout_marginTop="@dimen/keyline_1_half"
       android:layout_marginBottom="@dimen/keyline_1_half"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="@string/Log_in" />
-      
+
     <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"

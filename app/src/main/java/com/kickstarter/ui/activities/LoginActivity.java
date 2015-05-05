@@ -25,7 +25,7 @@ import timber.log.Timber;
 public class LoginActivity extends BaseActivity<LoginPresenter> {
   public @InjectView(R.id.email_address) TextView email_address;
   public @InjectView(R.id.password) TextView password;
-  @InjectView(R.id.login_button) Button login_button;
+  public @InjectView(R.id.login_button) Button login_button;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {

@@ -28,7 +28,7 @@ public class LoginPresenter extends Presenter<LoginActivity> {
 
     Subscription subscription = RxUtils.combineLatestPair(email, password)
       .map(p -> LoginPresenter.isValid(p.first.text(), p.second.text()))
-      .subscribe(isValid -> Timber.d("valid: " + isValid.toString()));
+      .subscribe(isValid -> view().login_button.setEnabled(isValid));
 
     subscriptions.add(subscription);
   }

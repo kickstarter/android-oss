@@ -26,6 +26,7 @@
   <string name="ion_locked">\uf200</string>
   <string name="ion_pricetag">\uf2aa</string>
   <string name="Log_in">Log in</string>
+  <string name="Login_does_not_match_any_of_our_records">Login does not match any of our records.</string>
   <string name="Nice_to_see_you_again">Nice to see you again.</string>
   <string name="Password">Password</string>
   <string name="pledged_of_">pledged of\u0020</string>

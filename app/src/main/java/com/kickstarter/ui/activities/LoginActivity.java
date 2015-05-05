@@ -29,8 +29,9 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
   public @InjectView(R.id.login_button) Button login_button;
 
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
+  protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
     setContentView(R.layout.login_layout);
     ButterKnife.inject(this);
   }
@@ -43,7 +44,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
-  public void loginButtonOnClick(View v) {
+  public void loginButtonOnClick(final View v) {
     Timber.d("login_button clicked");
 
     presenter.login(email_address.getText().toString(), password.getText().toString());

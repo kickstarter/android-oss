@@ -49,6 +49,10 @@ public class Presenter<ViewType> {
     return this.view;
   }
 
+  protected boolean hasView() {
+    return this.view != null;
+  }
+
   public void save(Bundle state) {
     Timber.d("save %s", this.toString());
     // TODO

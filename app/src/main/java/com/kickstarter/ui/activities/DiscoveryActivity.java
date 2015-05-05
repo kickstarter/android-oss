@@ -29,7 +29,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
   @InjectView(R.id.recyclerView) RecyclerView recyclerView;
 
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
+  protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.discovery_layout);
@@ -40,7 +40,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
   }
 
-  public void onItemsNext(List<Project> projects) {
+  public void onItemsNext(final List<Project> projects) {
     Timber.d("onItemsNext %s", this.toString());
     adapter = new ProjectListAdapter(projects, presenter);
     recyclerView.setAdapter(adapter);

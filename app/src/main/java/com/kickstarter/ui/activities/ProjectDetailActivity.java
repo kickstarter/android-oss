@@ -36,7 +36,7 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
   protected @InjectView(R.id.pledged) TextView pledged;
 
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
+  protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.project_detail_layout);
@@ -47,7 +47,7 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     presenter.takeProject(project);
   }
 
-  public void show(Project project) {
+  public void show(final Project project) {
     backers_count.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(project.backersCount()));
     blurb.setText(project.blurb());
     creator_name.setText(project.creator().name());

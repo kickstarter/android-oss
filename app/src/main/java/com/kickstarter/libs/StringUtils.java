@@ -5,7 +5,7 @@ import android.util.Patterns;
 public class StringUtils {
   private StringUtils() {}
 
-  public static boolean isEmail(CharSequence str) {
+  public static boolean isEmail(final CharSequence str) {
     return Patterns.EMAIL_ADDRESS.matcher(str).matches();
   }
 }

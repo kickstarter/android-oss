@@ -41,7 +41,7 @@ public class KickstarterClient {
     service = restAdapter.create(KickstarterService.class);
   }
 
-  public Observable<DiscoverEnvelope> fetchProjects(DiscoveryParams params) {
+  public Observable<DiscoverEnvelope> fetchProjects(final DiscoveryParams params) {
     return service.fetchProjects(params.queryParams())
       .retry(3);
   }

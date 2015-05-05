@@ -74,12 +74,12 @@ public class DiscoveryToolbar extends Toolbar {
     // onItemSelected will fire immediately with the default selection
     spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
       @Override
-      public void onItemSelected(AdapterView<?> spinner, View view, int position, long itemId) {
+      public void onItemSelected(final AdapterView<?> spinner, final View view, final int position, final long itemId) {
         String item = spinner.getItemAtPosition(position).toString();
       }
 
       @Override
-      public void onNothingSelected(AdapterView<?> adapterView) {
+      public void onNothingSelected(final AdapterView<?> adapterView) {
       }
     });
   }

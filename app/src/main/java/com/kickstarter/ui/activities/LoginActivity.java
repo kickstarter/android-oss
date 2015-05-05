@@ -15,6 +15,10 @@ import com.kickstarter.services.KickstarterClient;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import rx.Observable;
+import rx.android.view.ViewObservable;
+import rx.android.widget.OnTextChangeEvent;
+import rx.android.widget.WidgetObservable;
 import timber.log.Timber;
 
 @RequiresPresenter(LoginPresenter.class)
@@ -33,9 +37,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
       Timber.d("login_button clicked");
 
       KickstarterClient client = new KickstarterClient();
-      AccessTokenEnvelope envelope = client.login(email_address.getText().toString(), password.getText().toString())
-        .toBlocking()
-        .last();
+      AccessTokenEnvelope envelope = client.login(email_address.getText().toString(), password.getText().toString()).toBlocking().last();
       User.setCurrent(envelope.user);
 
       Intent intent = new Intent(this, DiscoveryActivity.class);

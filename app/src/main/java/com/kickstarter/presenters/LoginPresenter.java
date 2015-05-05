@@ -1,10 +1,10 @@
 package com.kickstarter.presenters;
 
 import android.os.Bundle;
-import android.util.Patterns;
 
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.RxUtils;
+import com.kickstarter.libs.StringUtils;
 import com.kickstarter.ui.activities.LoginActivity;
 
 import rx.Observable;
@@ -27,10 +27,13 @@ public class LoginPresenter extends Presenter<LoginActivity> {
       .flatMap(v -> WidgetObservable.text(v.password));
 
     Subscription subscription = RxUtils.combineLatestPair(email, password)
-      .map(pair -> Patterns.EMAIL_ADDRESS.matcher(pair.first.text()).matches() && pair.second.text().length() > 0)
-      .filter(r -> r == true)
-      .subscribe(o -> Timber.d("valid"));
+      .map(p -> LoginPresenter.isValid(p.first.text(), p.second.text()))
+      .subscribe(isValid -> Timber.d("valid: " + isValid.toString()));
 
     subscriptions.add(subscription);
+  }
+
+  public static boolean isValid(CharSequence email, CharSequence password) {
+    return StringUtils.isEmail(email)  && password.length() > 0;
   }
 }

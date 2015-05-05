@@ -65,6 +65,7 @@ public class LoginPresenter extends Presenter<LoginActivity> {
           if (hasView()) {
             Context context = view().getApplicationContext();
 
+            // TODO: Check error, e.g. is it a connection timeout?
             Toast toast = Toast.makeText(context,
               context.getResources().getString(R.string.Login_does_not_match_any_of_our_records),
               Toast.LENGTH_LONG);

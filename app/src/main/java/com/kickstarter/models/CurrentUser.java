@@ -50,25 +50,3 @@ public class CurrentUser {
     return sharedPreferences(context).edit();
   }
 }
-
-/*
-  public static void setCurrent(final User user) {
-    currentUser = user;
-  }
-
-  public static void unsetCurrent() {
-    currentUser = null;
-  }
-
-  public static User current() {
-    return currentUser;
-  }
-
-  public static boolean haveCurrent() {
-    return currentUser != null;
-  }
-
-  public boolean isCurrent() {
-    return this.id == User.current().id();
-  }
-*/

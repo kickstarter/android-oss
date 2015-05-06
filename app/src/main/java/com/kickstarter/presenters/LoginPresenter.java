@@ -11,18 +11,15 @@ import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.RxUtils;
 import com.kickstarter.libs.StringUtils;
 import com.kickstarter.models.CurrentUser;
-import com.kickstarter.models.User;
 import com.kickstarter.services.ApiResponses.AccessTokenEnvelope;
 import com.kickstarter.services.KickstarterClient;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.LoginActivity;
 
 import rx.Observable;
-import rx.Observer;
 import rx.android.widget.OnTextChangeEvent;
 import rx.android.widget.WidgetObservable;
 import rx.subjects.PublishSubject;
-import timber.log.Timber;
 
 public class LoginPresenter extends Presenter<LoginActivity> {
   private static final KickstarterClient client = new KickstarterClient();

@@ -21,11 +21,14 @@
   <string name="Email_address">Email address</string>
   <string name="Forgot_your_password">Forgot your password?</string>
   <string name="Help">Help</string>
+  <string name="ion_android_more_vertical">\uf397</string>
   <string name="ion_heart">\uf141</string>
   <string name="ion_location">\uf1ff</string>
   <string name="ion_locked">\uf200</string>
   <string name="ion_pricetag">\uf2aa</string>
   <string name="Log_in">Log in</string>
+  <string name="Log_out">Log out</string>
+  <string name="Logged_out">Logged out</string>
   <string name="Login_does_not_match_any_of_our_records">Login does not match any of our records.</string>
   <string name="Nice_to_see_you_again">Nice to see you again.</string>
   <string name="Password">Password</string>
@@ -39,7 +42,7 @@
   <string name="_to_go">\u0020to go</string>
   <string name="Use_your_email_address">Use your email address:</string>
 
-  <string-array name="categories_array">
+  <string-array name="spinner_categories_array">
     <item>Staff Picks</item>
     <item>Starred</item>
     <item>Everything</item>

@@ -2,6 +2,7 @@ package com.kickstarter.ui.views;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
@@ -9,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kickstarter.R;
 import com.kickstarter.models.CurrentUser;
@@ -21,10 +22,9 @@ import butterknife.InjectView;
 import timber.log.Timber;
 
 public class DiscoveryToolbar extends Toolbar {
-  @InjectView(R.id.category_spinner) Spinner spinner;
+  @InjectView(R.id.category_spinner) Spinner category_spinner;
   @InjectView(R.id.login_group) ViewGroup login_group;
   @InjectView(R.id.current_user_group) ViewGroup current_user_group;
-  @InjectView(R.id.current_user_name) TextView current_user_name;
   @InjectView(R.id.toolbar) Toolbar toolbar;
 
   public DiscoveryToolbar(final Context context) {
@@ -45,36 +45,56 @@ public class DiscoveryToolbar extends Toolbar {
     ButterKnife.inject(this);
 
     toggleLogin();
-    initializeSpinner();
-
-    login_group.setOnClickListener(v -> {
-      Timber.d("login_group onClick");
-      Intent intent = new Intent(getContext(), LoginToutActivity.class);
-      getContext().startActivity(intent);
-    });
+    initializeCategorySpinner();
   }
 
   protected void toggleLogin() {
-    User user = CurrentUser.getUser(getContext());
+    User user = CurrentUser.getUser(getContext().getApplicationContext());
     if (user != null) {
       login_group.setVisibility(INVISIBLE);
       current_user_group.setVisibility(VISIBLE);
-      current_user_name.setText(user.name());
+      current_user_group.setOnClickListener(v -> {
+        PopupMenu popup = new PopupMenu(v.getContext(), current_user_group);
+        popup.getMenuInflater().inflate(R.menu.current_user_menu, popup.getMenu());
+
+        popup.setOnMenuItemClickListener(item -> {
+          switch (item.getItemId()) {
+            case R.id.logout:
+              CurrentUser.unset(v.getContext());
+              Toast.makeText(
+                v.getContext(),
+                R.string.Logged_out,
+                Toast.LENGTH_SHORT
+              ).show();
+              toggleLogin();
+              break;
+          }
+
+          return true;
+        });
+
+        popup.show();
+      });
     } else {
       current_user_group.setVisibility(INVISIBLE);
       login_group.setVisibility(VISIBLE);
+      login_group.setOnClickListener(v -> {
+        Timber.d("login_group clicked");
+        Intent intent = new Intent(getContext(), LoginToutActivity.class);
+        getContext().startActivity(intent);
+      });
     }
   }
 
-  protected void initializeSpinner() {
+  protected void initializeCategorySpinner() {
     ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
-      R.array.categories_array,
+      R.array.spinner_categories_array,
       android.R.layout.simple_spinner_item);
     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-    spinner.setAdapter(adapter);
+    category_spinner.setAdapter(adapter);
 
     // onItemSelected will fire immediately with the default selection
-    spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+    category_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
       @Override
       public void onItemSelected(final AdapterView<?> spinner, final View view, final int position, final long itemId) {
         String item = spinner.getItemAtPosition(position).toString();

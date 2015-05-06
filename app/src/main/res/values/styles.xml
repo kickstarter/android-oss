@@ -43,10 +43,7 @@
     <item name="android:statusBarColor">@color/gray</item>
   </style>
 
-  <!--
-  Typography: http://www.google.com/design/spec/style/typography.html#typography-styles
-  Style advice: http://blog.danlew.net/2014/11/19/styles-on-android/
-  -->
+  <!-- Style advice: http://blog.danlew.net/2014/11/19/styles-on-android/ -->
   <style name="KsrSpinner" parent="android:Widget">
     <item name="android:background">@drawable/ksr_spinner</item>
     <item name="android:clickable">true</item>

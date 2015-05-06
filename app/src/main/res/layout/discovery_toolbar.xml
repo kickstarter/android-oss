@@ -55,11 +55,12 @@
       android:paddingRight="@dimen/keyline_1"
       android:visibility="invisible">
 
-      <TextView
+      <com.kickstarter.ui.views.IonIconTextView
         android:id="@+id/current_user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:text="@string/ion_android_more_vertical"
         android:textAppearance="@style/TextAppearance.AppCompat.Menu"
         android:textColor="@color/white" />
 

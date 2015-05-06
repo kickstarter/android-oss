@@ -17,9 +17,11 @@ import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.LoginActivity;
 
 import rx.Observable;
+import rx.Observer;
 import rx.android.widget.OnTextChangeEvent;
 import rx.android.widget.WidgetObservable;
 import rx.subjects.PublishSubject;
+import timber.log.Timber;
 
 public class LoginPresenter extends Presenter<LoginActivity> {
   private static final KickstarterClient client = new KickstarterClient();
@@ -39,26 +41,29 @@ public class LoginPresenter extends Presenter<LoginActivity> {
 
     final Observable<Pair<String, String>> emailAndPassword =
       RxUtils.combineLatestPair(email, password)
-        .map(v -> Pair.create(v.first.text().toString(), v.second.text().toString()));
+      .map(v -> Pair.create(v.first.text().toString(), v.second.text().toString()));
 
     final Observable<Boolean> isValid = emailAndPassword
       .map(v -> LoginPresenter.isValid(v.first, v.second));
 
-    final Observable<AccessTokenEnvelope> accessToken = login
-      .withLatestFrom(emailAndPassword, (l, v) -> v)
-      .flatMap(v -> client.login(v.first, v.second));
+    final Observable<Pair<String, String>> submit = login
+      .withLatestFrom(emailAndPassword, (l, v) -> v);
 
-    subscribeTo(accessToken, this::success, this::error);
-
+    subscribeTo(submit, this::submit);
     subscribeTo(isValid, valid -> view().setFormEnabled(valid));
   }
 
-  private static boolean isValid(final CharSequence email, final CharSequence password) {
+  private static boolean isValid(final String email, final String password) {
     return StringUtils.isEmail(email) && password.length() > 0;
   }
 
   public void login() {
     login.onNext(null);
+  }
+
+  private void submit(final Pair<String, String> emailPassword) {
+    client.login(emailPassword.first, emailPassword.second)
+      .subscribe(this::success, this::error);
   }
 
   private void success(final AccessTokenEnvelope envelope) {

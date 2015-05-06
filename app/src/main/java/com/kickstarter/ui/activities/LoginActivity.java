@@ -49,7 +49,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
     presenter.login();
   }
 
-  public void setFormEnabled(boolean enabled) {
+  public void setFormEnabled(final boolean enabled) {
     login_button.setEnabled(enabled);
   }
 }

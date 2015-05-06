@@ -10,6 +10,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.RxUtils;
 import com.kickstarter.libs.StringUtils;
+import com.kickstarter.models.CurrentUser;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiResponses.AccessTokenEnvelope;
 import com.kickstarter.services.KickstarterClient;
@@ -67,10 +68,11 @@ public class LoginPresenter extends Presenter<LoginActivity> {
   }
 
   private void success(final AccessTokenEnvelope envelope) {
-
-    User.setCurrent(envelope.user);
-    Intent intent = new Intent(view(), DiscoveryActivity.class);
-    view().startActivity(intent);
+    if (hasView()) {
+      CurrentUser.set(view().getApplicationContext(), envelope.user, envelope.access_token);
+      Intent intent = new Intent(view(), DiscoveryActivity.class);
+      view().startActivity(intent);
+    }
   }
 
   private void error(final Throwable e) {

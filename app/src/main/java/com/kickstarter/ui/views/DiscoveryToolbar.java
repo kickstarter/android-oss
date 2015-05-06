@@ -12,6 +12,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.kickstarter.R;
+import com.kickstarter.models.CurrentUser;
 import com.kickstarter.models.User;
 import com.kickstarter.ui.activities.LoginToutActivity;
 
@@ -54,10 +55,11 @@ public class DiscoveryToolbar extends Toolbar {
   }
 
   protected void toggleLogin() {
-    if (User.haveCurrent()) {
+    User user = CurrentUser.getUser(getContext());
+    if (user != null) {
       login_group.setVisibility(INVISIBLE);
       current_user_group.setVisibility(VISIBLE);
-      current_user_name.setText(User.current().name());
+      current_user_name.setText(user.name());
     } else {
       current_user_group.setVisibility(INVISIBLE);
       login_group.setVisibility(VISIBLE);

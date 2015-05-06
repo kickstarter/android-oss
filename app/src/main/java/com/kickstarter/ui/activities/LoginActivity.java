@@ -51,7 +51,5 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
 
   public void setFormEnabled(boolean enabled) {
     login_button.setEnabled(enabled);
-    // TODO: figure this out
-    // login_button.setBackgroundColor(getResources().getColor(enabled ? R.color.green : R.color.gray));
   }
 }

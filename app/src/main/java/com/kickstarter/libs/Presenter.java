@@ -55,7 +55,7 @@ public class Presenter<ViewType> {
     return this.view != null;
   }
 
-  public void addSubscription (Subscription subscription) {
+  public void addSubscription (final Subscription subscription) {
     subscriptions.add(subscription);
   }
 

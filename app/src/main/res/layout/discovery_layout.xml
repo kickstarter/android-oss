@@ -6,7 +6,7 @@
   android:orientation="vertical"
   tools:context=".MainActivity">
 
-  <include layout="@layout/toolbar" />
+  <include layout="@layout/discovery_toolbar" />
 
   <android.support.v7.widget.RecyclerView
     android:id="@+id/recyclerView"

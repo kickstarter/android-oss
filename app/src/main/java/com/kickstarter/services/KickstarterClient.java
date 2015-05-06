@@ -6,6 +6,8 @@ import com.kickstarter.BuildConfig;
 import com.kickstarter.libs.DateTimeTypeConverter;
 import com.kickstarter.models.DiscoveryParams;
 import com.kickstarter.models.Project;
+import com.kickstarter.services.ApiResponses.AccessTokenEnvelope;
+import com.kickstarter.services.ApiResponses.DiscoverEnvelope;
 
 import org.joda.time.DateTime;
 
@@ -18,13 +20,10 @@ public class KickstarterClient {
   private final KickstarterService service;
 
   public KickstarterClient() {
-    RequestInterceptor requestInterceptor = new RequestInterceptor() {
-      @Override
-      public void intercept(RequestInterceptor.RequestFacade request) {
-        request.addHeader("Accept", "application/json");
-        // TODO: extract this so that it's easy to swap client_id for different HQ envs.
-        request.addQueryParam("client_id", "***REMOVED***");
-      }
+    RequestInterceptor requestInterceptor = request -> {
+      request.addHeader("Accept", "application/json");
+      // TODO: extract this so that it's easy to swap client_id for different HQ envs.
+      request.addQueryParam("client_id", "***REMOVED***");
     };
 
     Gson gson = new GsonBuilder()
@@ -42,12 +41,20 @@ public class KickstarterClient {
     service = restAdapter.create(KickstarterService.class);
   }
 
-  public Observable<ApiResponses.DiscoverEnvelope> fetchProjects(DiscoveryParams params) {
+  public Observable<DiscoverEnvelope> fetchProjects(final DiscoveryParams params) {
     return service.fetchProjects(params.queryParams())
       .retry(3);
   }
 
   public Observable<Project> fetchProject(final Project project) {
     return Observable.just(project).mergeWith(service.fetchProject(project.id()));
+  }
+
+  public Observable<AccessTokenEnvelope> login(final String email, final String password) {
+    return login(email, password, "");
+  }
+
+  public Observable<AccessTokenEnvelope> login(final String email, final String password, final String code) {
+    return service.login(email, password, code);
   }
 }

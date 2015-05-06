@@ -17,6 +17,6 @@ public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
       .filter(v -> v.second != null)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(v -> v.second.show(v.first));
-    subscriptions.add(subscription);
+    addSubscription(subscription);
   }
 }

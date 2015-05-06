@@ -12,8 +12,8 @@
     <item name="android:windowActionBar">false</item>
 
     <!-- Spinner -->
-    <item name="android:spinnerItemStyle">@style/KsrTheme.SpinnerItem</item>
-    <item name="android:spinnerStyle">@style/KsrTheme.Spinner</item>
+    <item name="android:spinnerItemStyle">@style/KsrSpinnerItem</item>
+    <item name="android:spinnerStyle">@style/KsrSpinner</item>
 
     <!-- More on Color Palette:
       http://www.google.com/design/spec/style/color.html#color-color-palette
@@ -28,23 +28,35 @@
     <item name="android:textColorLink">@color/accent</item>
     <item name="android:textColorPrimary">@color/text_primary</item>
     <item name="android:textColor">@color/text_secondary</item>
-    <item name="android:windowBackground">@color/white</item>
+    <item name="android:windowBackground">@color/window_background</item>
   </style>
 
-  <style name="KsrTheme.Spinner" parent="android:Widget">
+  <style name="DiscoveryActivity" parent="KsrTheme">
+    <item name="android:windowBackground">@color/light_gray</item>
+  </style>
+
+  <style name="LoginToutActivity" parent="KsrTheme">
+    <item name="android:statusBarColor">@color/gray</item>
+  </style>
+
+  <style name="LoginActivity" parent="KsrTheme">
+    <item name="android:statusBarColor">@color/gray</item>
+  </style>
+
+  <!--
+  Typography: http://www.google.com/design/spec/style/typography.html#typography-styles
+  Style advice: http://blog.danlew.net/2014/11/19/styles-on-android/
+  -->
+  <style name="KsrSpinner" parent="android:Widget">
     <item name="android:background">@drawable/ksr_spinner</item>
     <item name="android:clickable">true</item>
   </style>
 
-  <style name="KsrTheme.SpinnerItem" parent="@android:style/Widget.TextView.SpinnerItem">
+  <style name="KsrSpinnerItem" parent="@android:style/Widget.TextView.SpinnerItem">
     <item name="android:textColor">@color/white</item>
   </style>
 
-  <style name="KsrTheme.Discovery" parent="KsrTheme">
-    <item name="android:windowBackground">@color/light_gray</item>
-  </style>
-
-  <style name="KsrProgressBar" parent="android:Widget.ProgressBar.Horizontal">
+  <style name="KsrProgressBar" parent="Base.Widget.AppCompat.ProgressBar">
     <item name="android:indeterminateOnly">false</item>
     <item name="android:progressDrawable">@drawable/ksr_progress_bar_horizontal</item>
   </style>

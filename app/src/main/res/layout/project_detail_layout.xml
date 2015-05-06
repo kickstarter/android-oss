@@ -23,8 +23,8 @@
       android:id="@+id/name"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:textAppearance="@style/TextAppearance.AppCompat.Headline"
       android:textColor="@color/text_dark"
-      android:textSize="@dimen/headline"
       android:paddingBottom="@dimen/keyline_1_half" />
 
     <LinearLayout
@@ -36,23 +36,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/by_"
-        android:textColor="@color/text_dark"
-        android:textSize="@dimen/caption" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+        android:textColor="@color/text_dark" />
 
       <TextView
         android:id="@+id/creator_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/text_dark"
-        android:textSize="@dimen/caption" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+        android:textColor="@color/text_dark" />
     </LinearLayout>
 
     <TextView
       android:id="@+id/blurb"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:textAppearance="@style/TextAppearance.AppCompat.Body2"
       android:textColor="@color/text_dark"
-      android:textSize="@dimen/body_1"
       android:paddingBottom="@dimen/keyline_1_half" />
 
     <LinearLayout
@@ -89,7 +89,6 @@
         android:paddingLeft="@dimen/card_padding_action"
         android:paddingRight="@dimen/card_padding_action_half"
         android:text="@string/ion_location"
-        android:textSize="@dimen/title"
         android:textColor="@color/text_dark" />
 
       <TextView
@@ -104,10 +103,10 @@
     </LinearLayout>
 
     <ProgressBar
+      style="@style/KsrProgressBar"
       android:id="@+id/percentage_funded"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      style="@style/KsrProgressBar"
       android:minHeight="@dimen/progress_bar_min_height"
       android:paddingTop="@dimen/keyline_1_half"
       android:paddingBottom="@dimen/keyline_1_half"

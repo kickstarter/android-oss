@@ -23,7 +23,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
   private List<Project> projects;
 
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
+  protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     DiscoveryParams initial_params = new DiscoveryParams(true, DiscoveryParams.Sort.MAGIC);
@@ -35,10 +35,10 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
       .filter(v -> v != null)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(v -> v.onItemsNext(projects));
-    subscriptions.add(subscription);
+    addSubscription(subscription);
   }
 
-  public void onProjectClicked(Project project, ProjectListAdapter.ViewHolder viewHolder) {
+  public void onProjectClicked(final Project project, final ProjectListAdapter.ViewHolder viewHolder) {
     Timber.d("onProjectClicked %s", this.toString());
     Intent intent = new Intent(view(), ProjectDetailActivity.class);
     intent.putExtra("project", project);

@@ -5,9 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kickstarter.R;
@@ -86,8 +84,8 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
     protected @InjectView(R.id.pledged) TextView pledged;
     protected @InjectView(R.id.percentage_funded) ProgressBar percentage_funded;
     protected @InjectView(R.id.photo) ImageView photo;
-    protected @InjectView(R.id.photo_gradient) RelativeLayout photo_gradient;
-    protected @InjectView(R.id.potd_group) LinearLayout potd_group;
+    protected @InjectView(R.id.photo_gradient) ViewGroup photo_gradient;
+    protected @InjectView(R.id.potd_group) ViewGroup potd_group;
     protected View view;
     protected Project project;
     protected DiscoveryPresenter presenter;

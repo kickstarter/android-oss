@@ -5,6 +5,7 @@
 
   <uses-permission android:name="android.permission.INTERNET" />
 
+
   <application
     android:name=".KsrApplication"
     android:allowBackup="true"
@@ -12,11 +13,13 @@
     android:label="@string/app_name"
     android:theme="@style/KsrTheme">
 
+    <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+
     <activity
       android:name=".ui.activities.DiscoveryActivity"
       android:label="@string/app_name"
       android:launchMode="singleTop"
-      android:theme="@style/KsrTheme.Discovery">
+      android:theme="@style/DiscoveryActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
@@ -32,6 +35,19 @@
         android:name="android.support.PARENT_ACTIVITY"
         android:value=".ui.activities.DiscoveryActivity" />
     </activity>
+
+    <activity
+      android:name=".ui.activities.LoginToutActivity"
+      android:theme="@style/LoginToutActivity" />
+
+    <activity
+      android:name=".ui.activities.LoginActivity"
+      android:theme="@style/LoginActivity" />
+
+    <activity android:name="com.facebook.FacebookActivity"
+      android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+      android:theme="@android:style/Theme.Translucent.NoTitleBar"
+      android:label="@string/app_name" />
 
     <activity android:name="net.hockeyapp.android.UpdateActivity" />
   </application>

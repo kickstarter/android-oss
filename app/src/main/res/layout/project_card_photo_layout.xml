@@ -16,7 +16,7 @@
     android:layout_height="180dp"
     android:layout_alignLeft="@+id/photo"
     android:layout_alignBottom="@+id/photo"
-    android:background="@drawable/gradient"
+    android:background="@drawable/photo_gradient"
     android:visibility="invisible">
 
     <LinearLayout
@@ -36,8 +36,8 @@
         android:layout_gravity="center_vertical"
         android:paddingRight="@dimen/card_padding_action_half"
         android:text="@string/ion_heart"
-        android:textColor="@color/green"
-        android:textSize="@dimen/subhead" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@color/green" />
 
       <TextView
         android:id="@+id/potd"
@@ -46,8 +46,8 @@
         android:layout_gravity="center_vertical"
         android:paddingLeft="@dimen/card_padding_action_half"
         android:text="@string/project_of_the_day"
-        android:textColor="@color/white"
-        android:textSize="@dimen/subhead" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@color/white" />
 
     </LinearLayout>
 

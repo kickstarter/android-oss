@@ -50,7 +50,7 @@ public class LoginPresenter extends Presenter<LoginActivity> {
 
     subscribeTo(accessToken, this::success, this::error);
 
-    subscribeTo(isValid, valid -> view().login_button.setEnabled(valid));
+    subscribeTo(isValid, valid -> view().setFormEnabled(valid));
   }
 
   private static boolean isValid(final CharSequence email, final CharSequence password) {

@@ -70,7 +70,8 @@ public class LoginPresenter extends Presenter<LoginActivity> {
   private void success(final AccessTokenEnvelope envelope) {
     if (hasView()) {
       CurrentUser.set(view().getApplicationContext(), envelope.user, envelope.access_token);
-      Intent intent = new Intent(view(), DiscoveryActivity.class);
+      Intent intent = new Intent(view(), DiscoveryActivity.class)
+        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
       view().startActivity(intent);
     }
   }

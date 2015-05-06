@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.kickstarter.R;
 import com.kickstarter.models.CurrentUser;
 import com.kickstarter.models.User;
+import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.LoginToutActivity;
 
 import butterknife.ButterKnife;
@@ -60,13 +61,7 @@ public class DiscoveryToolbar extends Toolbar {
         popup.setOnMenuItemClickListener(item -> {
           switch (item.getItemId()) {
             case R.id.logout:
-              CurrentUser.unset(v.getContext());
-              Toast.makeText(
-                v.getContext(),
-                R.string.Logged_out,
-                Toast.LENGTH_SHORT
-              ).show();
-              toggleLogin();
+              logout(v);
               break;
           }
 
@@ -104,5 +99,12 @@ public class DiscoveryToolbar extends Toolbar {
       public void onNothingSelected(final AdapterView<?> adapterView) {
       }
     });
+  }
+
+  protected void logout(final View v) {
+    CurrentUser.unset(getContext().getApplicationContext());
+    Intent intent = new Intent(getContext(), DiscoveryActivity.class)
+      .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+    v.getContext().startActivity(intent);
   }
 }

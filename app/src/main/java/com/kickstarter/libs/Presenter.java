@@ -47,15 +47,15 @@ public class Presenter<ViewType> {
     viewSubject.onNext(view);
   }
 
-  protected ViewType view() {
+  protected final ViewType view() {
     return this.view;
   }
 
-  protected boolean hasView() {
+  protected final boolean hasView() {
     return this.view != null;
   }
 
-  public void addSubscription (final Subscription subscription) {
+  public final void addSubscription (final Subscription subscription) {
     subscriptions.add(subscription);
   }
 
@@ -77,7 +77,7 @@ public class Presenter<ViewType> {
     return s;
   }
 
-  public void save(Bundle state) {
+  public final void save(Bundle state) {
     Timber.d("save %s", this.toString());
     // TODO
   }

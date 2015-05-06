@@ -35,7 +35,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
       .filter(v -> v != null)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(v -> v.onItemsNext(projects));
-    subscriptions.add(subscription);
+    addSubscription(subscription);
   }
 
   public void onProjectClicked(final Project project, final ProjectListAdapter.ViewHolder viewHolder) {

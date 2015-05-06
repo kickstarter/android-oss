@@ -47,6 +47,6 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
   public void loginButtonOnClick(final View v) {
     Timber.d("login_button clicked");
 
-    presenter.login(email_address.getText().toString(), password.getText().toString());
+    presenter.login();
   }
 }

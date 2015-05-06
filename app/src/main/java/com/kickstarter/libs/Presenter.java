@@ -7,13 +7,15 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.functions.Action0;
+import rx.functions.Action1;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 public class Presenter<ViewType> {
   private ViewType view;
   protected final PublishSubject<ViewType> viewSubject = PublishSubject.create();
-  protected final List<Subscription> subscriptions = new ArrayList<>();
+  private final List<Subscription> subscriptions = new ArrayList<>();
 
   protected void onCreate(Bundle savedInstanceState) {
     Timber.d("onCreate %s", this.toString());
@@ -51,6 +53,28 @@ public class Presenter<ViewType> {
 
   protected boolean hasView() {
     return this.view != null;
+  }
+
+  public void addSubscription (Subscription subscription) {
+    subscriptions.add(subscription);
+  }
+
+  public final <T> Subscription subscribeTo(final Observable<T> ob, final Action1<? super T> onNext) {
+    Subscription s = ob.subscribe(onNext);
+    subscriptions.add(s);
+    return s;
+  }
+
+  public final <T> Subscription subscribeTo(final Observable<T> ob, final Action1<? super T> onNext, final Action1<Throwable> onError) {
+    Subscription s = ob.subscribe(onNext, onError);
+    subscriptions.add(s);
+    return s;
+  }
+
+  public final <T> Subscription subscribeTo(final Observable<T> ob, final Action1<? super T> onNext, final Action1<Throwable> onError, final Action0 onComplete) {
+    Subscription s = ob.subscribe(onNext, onError, onComplete);
+    subscriptions.add(s);
+    return s;
   }
 
   public void save(Bundle state) {

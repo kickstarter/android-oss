@@ -26,9 +26,8 @@
       <com.kickstarter.ui.views.IonIconTextView
         android:id="@+id/activity_feed_button"
         android:layout_width="@dimen/button_icon_fixed_width"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:gravity="center_horizontal"
+        android:layout_height="match_parent"
+        android:gravity="center"
         android:paddingLeft="@dimen/keyline_1_half"
         android:paddingRight="@dimen/keyline_1_half"
         android:background="@drawable/button_selector"
@@ -40,14 +39,15 @@
         android:id="@+id/login_group"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:background="@drawable/button_selector"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/keyline_1"
         android:paddingRight="@dimen/keyline_1">
 
         <com.kickstarter.ui.views.IonIconTextView
           android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center_vertical"
+          android:layout_height="match_parent"
+          android:gravity="center"
           android:paddingRight="@dimen/keyline_1"
           android:text="@string/ion_locked"
           android:textAppearance="@style/TextAppearance.AppCompat.Menu"
@@ -55,8 +55,8 @@
 
         <TextView
           android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center_vertical"
+          android:layout_height="match_parent"
+          android:gravity="center"
           android:text="@string/Log_in"
           android:textAppearance="@style/TextAppearance.AppCompat.Menu"
           android:textColor="@color/white" />
@@ -66,9 +66,8 @@
       <com.kickstarter.ui.views.IonIconTextView
         android:id="@+id/current_user_button"
         android:layout_width="@dimen/button_icon_fixed_width"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:gravity="center_horizontal"
+        android:layout_height="match_parent"
+        android:gravity="center"
         android:paddingLeft="@dimen/keyline_1_half"
         android:paddingRight="@dimen/keyline_1_half"
         android:background="@drawable/button_selector"

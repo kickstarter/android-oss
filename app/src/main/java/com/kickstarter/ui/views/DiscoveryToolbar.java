@@ -42,6 +42,7 @@ public class DiscoveryToolbar extends Toolbar {
   @Override
   protected void onFinishInflate() {
     super.onFinishInflate();
+
     ButterKnife.inject(this);
 
     toggleLogin();
@@ -81,9 +82,15 @@ public class DiscoveryToolbar extends Toolbar {
   }
 
   protected void initializeCategorySpinner() {
-    ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
-      R.array.spinner_categories_array,
-      android.R.layout.simple_spinner_item);
+    ArrayAdapter<CharSequence> adapter;
+    if (!isInEditMode()) {
+      adapter = ArrayAdapter.createFromResource(getContext(),
+        R.array.spinner_categories_array,
+        android.R.layout.simple_spinner_item);
+    } else {
+      String sample_data[] = {"Staff Picks"};
+      adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, sample_data);
+    }
     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     category_spinner.setAdapter(adapter);
 

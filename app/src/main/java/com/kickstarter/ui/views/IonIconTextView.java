@@ -27,6 +27,11 @@ public class IonIconTextView extends TextView {
   @Override
   protected void onFinishInflate() {
     super.onFinishInflate();
+
+    if (isInEditMode()) {
+      return;
+    }
+
     ((KsrApplication) getContext().getApplicationContext()).component().inject(this);
     setTypeface(font.ionIconTypeface());
   }

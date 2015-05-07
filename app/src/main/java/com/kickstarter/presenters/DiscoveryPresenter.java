@@ -26,7 +26,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
   protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    DiscoveryParams initial_params = new DiscoveryParams(true, DiscoveryParams.Sort.MAGIC);
+    DiscoveryParams initial_params = DiscoveryParams.params();
     projects = client.fetchProjects(initial_params)
       .map(envelope -> envelope.projects)
       .toBlocking().last(); // TODO: Don't block

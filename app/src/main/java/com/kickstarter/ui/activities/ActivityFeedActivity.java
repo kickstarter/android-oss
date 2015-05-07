@@ -15,7 +15,7 @@ public class ActivityFeedActivity extends BaseActivity {
       // TODO: Show different layout if no activities exist
       setContentView(R.layout.activity_feed_layout);
     } else {
-      setContentView(R.layout.logged_out_activity_feed_layout);
+      setContentView(R.layout.empty_activity_feed_layout);
     }
   }
 }

@@ -2,11 +2,44 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="vertical"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
+  android:layout_height="match_parent"
+  android:gravity="center_horizontal"
+  android:background="@drawable/gray_gradient">
+
+  <com.kickstarter.ui.views.IonIconTextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/ion_flash"
+    android:textSize="@dimen/display_4"
+    android:paddingTop="@dimen/keyline_2_half"
+    android:paddingBottom="@dimen/keyline_1_half" />
 
   <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="logged out activity feed layout" />
+    android:paddingTop="@dimen/keyline_1_half"
+    android:paddingBottom="@dimen/keyline_1_half"
+    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+    android:text="@string/Activity_empty" />
+
+  <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+    android:paddingTop="@dimen/keyline_1_half"
+    android:paddingBottom="@dimen/keyline_1"
+    android:text="@string/When_you_back_a_project_or_follow_a_friend"
+    android:gravity="center_horizontal"
+    android:paddingLeft="@dimen/keyline_2_half"
+    android:paddingRight="@dimen/keyline_2_half" />
+  
+  <Button
+    android:id="@+id/discover_projects_button"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:onClick="discoverProjectsButtonOnClick"
+    android:text="@string/Discover_projects"
+    android:padding="@dimen/keyline_1"
+    android:layout_marginTop="@dimen/keyline_1_half" />
 
 </LinearLayout>

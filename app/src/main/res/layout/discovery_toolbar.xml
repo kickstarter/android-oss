@@ -25,11 +25,12 @@
 
       <com.kickstarter.ui.views.IonIconTextView
         android:id="@+id/activity_feed_button"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/button_icon_fixed_width"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:paddingLeft="@dimen/keyline_1"
-        android:paddingRight="@dimen/keyline_1"
+        android:gravity="center_horizontal"
+        android:paddingLeft="@dimen/keyline_1_half"
+        android:paddingRight="@dimen/keyline_1_half"
         android:background="@drawable/button_selector"
         android:text="@string/ion_flash"
         android:textAppearance="@style/TextAppearance.AppCompat.Menu"
@@ -39,7 +40,6 @@
         android:id="@+id/login_group"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="@drawable/button_selector"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/keyline_1"
         android:paddingRight="@dimen/keyline_1">
@@ -63,25 +63,19 @@
 
       </LinearLayout>
 
-      <LinearLayout
-        android:id="@+id/current_user_group"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+      <com.kickstarter.ui.views.IonIconTextView
+        android:id="@+id/current_user_button"
+        android:layout_width="@dimen/button_icon_fixed_width"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_horizontal"
+        android:paddingLeft="@dimen/keyline_1_half"
+        android:paddingRight="@dimen/keyline_1_half"
         android:background="@drawable/button_selector"
-        android:paddingLeft="@dimen/keyline_1"
-        android:paddingRight="@dimen/keyline_1"
-        android:visibility="gone">
-
-        <com.kickstarter.ui.views.IonIconTextView
-          android:id="@+id/current_user_name"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center_vertical"
-          android:text="@string/ion_android_more_vertical"
-          android:textAppearance="@style/TextAppearance.AppCompat.Menu"
-          android:textColor="@color/white" />
-
-        </LinearLayout>
+        android:text="@string/ion_android_more_vertical"
+        android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+        android:textColor="@color/white"
+        android:visibility="gone" />
 
     </LinearLayout>
 

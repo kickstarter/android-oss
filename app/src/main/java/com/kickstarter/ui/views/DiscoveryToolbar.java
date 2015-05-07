@@ -26,8 +26,8 @@ import timber.log.Timber;
 public class DiscoveryToolbar extends Toolbar {
   @InjectView(R.id.activity_feed_button) TextView activity_feed_button;
   @InjectView(R.id.category_spinner) Spinner category_spinner;
+  @InjectView(R.id.current_user_button) TextView current_user_button;
   @InjectView(R.id.login_group) ViewGroup login_group;
-  @InjectView(R.id.current_user_group) ViewGroup current_user_group;
   @InjectView(R.id.toolbar) Toolbar toolbar;
 
   public DiscoveryToolbar(final Context context) {
@@ -62,9 +62,9 @@ public class DiscoveryToolbar extends Toolbar {
     User user = CurrentUser.getUser(getContext().getApplicationContext());
     if (user != null) {
       login_group.setVisibility(GONE);
-      current_user_group.setVisibility(VISIBLE);
-      current_user_group.setOnClickListener(v -> {
-        PopupMenu popup = new PopupMenu(v.getContext(), current_user_group);
+      current_user_button.setVisibility(VISIBLE);
+      current_user_button.setOnClickListener(v -> {
+        PopupMenu popup = new PopupMenu(v.getContext(), current_user_button);
         popup.getMenuInflater().inflate(R.menu.current_user_menu, popup.getMenu());
 
         popup.setOnMenuItemClickListener(item -> {
@@ -80,7 +80,7 @@ public class DiscoveryToolbar extends Toolbar {
         popup.show();
       });
     } else {
-      current_user_group.setVisibility(GONE);
+      current_user_button.setVisibility(GONE);
       login_group.setVisibility(VISIBLE);
       login_group.setOnClickListener(v -> {
         Timber.d("login_group clicked");

@@ -42,6 +42,10 @@ public class CurrentUser {
     editor.apply();
   }
 
+  public static boolean exists(final Context context) {
+    return sharedPreferences(context).contains(USER_KEY);
+  }
+
   private static SharedPreferences sharedPreferences(final Context context) {
     return PreferenceManager.getDefaultSharedPreferences(context);
   }

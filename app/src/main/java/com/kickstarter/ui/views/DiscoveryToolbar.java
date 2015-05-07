@@ -10,10 +10,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.models.CurrentUser;
 import com.kickstarter.models.User;
+import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.LoginToutActivity;
 
@@ -22,6 +24,7 @@ import butterknife.InjectView;
 import timber.log.Timber;
 
 public class DiscoveryToolbar extends Toolbar {
+  @InjectView(R.id.activity_feed_button) TextView activity_feed_button;
   @InjectView(R.id.category_spinner) Spinner category_spinner;
   @InjectView(R.id.login_group) ViewGroup login_group;
   @InjectView(R.id.current_user_group) ViewGroup current_user_group;
@@ -46,12 +49,18 @@ public class DiscoveryToolbar extends Toolbar {
 
     toggleLogin();
     initializeCategorySpinner();
+
+    activity_feed_button.setOnClickListener(v -> {
+      Timber.d("activity_feed_button clicked");
+      Intent intent = new Intent(getContext(), ActivityFeedActivity.class);
+      getContext().startActivity(intent);
+    });
   }
 
   protected void toggleLogin() {
     User user = CurrentUser.getUser(getContext().getApplicationContext());
     if (user != null) {
-      login_group.setVisibility(INVISIBLE);
+      login_group.setVisibility(GONE);
       current_user_group.setVisibility(VISIBLE);
       current_user_group.setOnClickListener(v -> {
         PopupMenu popup = new PopupMenu(v.getContext(), current_user_group);
@@ -70,7 +79,7 @@ public class DiscoveryToolbar extends Toolbar {
         popup.show();
       });
     } else {
-      current_user_group.setVisibility(INVISIBLE);
+      current_user_group.setVisibility(GONE);
       login_group.setVisibility(VISIBLE);
       login_group.setOnClickListener(v -> {
         Timber.d("login_group clicked");

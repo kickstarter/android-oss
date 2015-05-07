@@ -93,7 +93,7 @@ public class DiscoveryParams {
     page_count = builder.page_count;
   }
 
-  private Builder builder() {
+  public Builder builder() {
     return new Builder()
       .staff_picks(staff_picks)
       .starred(starred)

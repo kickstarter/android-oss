@@ -22,6 +22,8 @@ public class KickstarterClient {
   public KickstarterClient() {
     RequestInterceptor requestInterceptor = request -> {
       request.addHeader("Accept", "application/json");
+      request.addHeader("Kickstarter-Android-App", "1"); // TODO
+      // TODO: Look at Retrofit user agent
       // TODO: extract this so that it's easy to swap client_id for different HQ envs.
       request.addQueryParam("client_id", "***REMOVED***");
     };

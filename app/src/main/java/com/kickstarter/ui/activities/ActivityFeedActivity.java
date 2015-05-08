@@ -16,7 +16,7 @@ public class ActivityFeedActivity extends BaseActivity {
   @InjectView(R.id.discover_projects_button) Button discover_projects_button;
 
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
+  protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     if (CurrentUser.exists(this)) {

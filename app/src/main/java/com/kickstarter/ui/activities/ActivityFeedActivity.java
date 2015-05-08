@@ -31,9 +31,6 @@ public class ActivityFeedActivity extends BaseActivity {
   }
 
   public void discoverProjectsButtonOnClick(final View view) {
-    // Ideally we could pop DiscoveryActivity back to the front with
-    // FLAG_ACTIVITY_REORDER_TO_FRONT, but there's a long-standing bug:
-    // https://code.google.com/p/android/issues/detail?id=63570#c2
     Intent intent = new Intent(this, DiscoveryActivity.class);
     startActivity(intent);
   }

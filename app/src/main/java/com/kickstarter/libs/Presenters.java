@@ -37,7 +37,7 @@ public class Presenters {
     return (T) presenter;
   }
 
-  public void destroy(Presenter presenter) {
+  public void destroy(final Presenter presenter) {
     presenter.onDestroy();
     presenters.inverse().remove(presenter);
   }

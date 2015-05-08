@@ -1,9 +1,12 @@
 package com.kickstarter;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.views.IonIconTextView;
+import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 import net.hockeyapp.android.CrashManager;
@@ -24,6 +27,7 @@ public class KsrApplication extends Application {
   }
 
   private ApplicationComponent component;
+  private RefWatcher refWatcher;
 
   @Override
   public void onCreate() {
@@ -40,6 +44,7 @@ public class KsrApplication extends Application {
       });
     }
 
+    refWatcher = LeakCanary.install(this);
     JodaTimeAndroid.init(this);
 
     component = DaggerKsrApplication_ApplicationComponent.builder()
@@ -50,5 +55,10 @@ public class KsrApplication extends Application {
 
   public ApplicationComponent component() {
     return component;
+  }
+
+  public static RefWatcher getRefWatcher(final Context context) {
+    KsrApplication application = (KsrApplication) context.getApplicationContext();
+    return application.refWatcher;
   }
 }

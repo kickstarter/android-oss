@@ -18,14 +18,6 @@ import dagger.Component;
 import timber.log.Timber;
 
 public class KsrApplication extends Application {
-  @Singleton
-  @Component(modules = KsrApplicationModule.class)
-  public interface ApplicationComponent {
-    void inject(KsrApplication application);
-    void inject(DiscoveryActivity activity);
-    void inject(IonIconTextView view);
-  }
-
   private ApplicationComponent component;
   private RefWatcher refWatcher;
 
@@ -47,10 +39,9 @@ public class KsrApplication extends Application {
     refWatcher = LeakCanary.install(this);
     JodaTimeAndroid.init(this);
 
-    component = DaggerKsrApplication_ApplicationComponent.builder()
-      .ksrApplicationModule(new KsrApplicationModule(this))
+    component = DaggerApplicationComponent.builder()
+      .applicationModule(new ApplicationModule(this))
       .build();
-    component().inject(this);
   }
 
   public ApplicationComponent component() {

@@ -37,6 +37,7 @@
 
       <com.kickstarter.ui.views.IonIconTextView
         android:id="@+id/login_button"
+        android:background="@drawable/button_selector"
         android:layout_width="@dimen/button_icon_fixed_width"
         android:layout_height="match_parent"
         android:gravity="center"

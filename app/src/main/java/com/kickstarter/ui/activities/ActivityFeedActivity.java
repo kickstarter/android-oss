@@ -11,9 +11,10 @@ import com.kickstarter.models.CurrentUser;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 
 public class ActivityFeedActivity extends BaseActivity {
-  @InjectView(R.id.discover_projects_button) Button discover_projects_button;
+  @Optional @InjectView(R.id.discover_projects_button) Button discover_projects_button;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {

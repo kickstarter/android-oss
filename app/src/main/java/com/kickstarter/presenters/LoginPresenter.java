@@ -17,6 +17,7 @@ import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.LoginActivity;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.android.widget.OnTextChangeEvent;
 import rx.android.widget.WidgetObservable;
 import rx.subjects.PublishSubject;
@@ -61,6 +62,7 @@ public class LoginPresenter extends Presenter<LoginActivity> {
 
   private void submit(final Pair<String, String> emailPassword) {
     client.login(emailPassword.first, emailPassword.second)
+      .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::success, this::error);
   }
 
@@ -75,11 +77,9 @@ public class LoginPresenter extends Presenter<LoginActivity> {
 
   private void error(final Throwable e) {
     if (hasView()) {
-      Context context = view().getApplicationContext();
-
       // TODO: Check error, e.g. is it a connection timeout?
-      Toast toast = Toast.makeText(context,
-        context.getResources().getString(R.string.Login_does_not_match_any_of_our_records),
+      Toast toast = Toast.makeText(view(),
+        view().getResources().getString(R.string.Login_does_not_match_any_of_our_records),
         Toast.LENGTH_LONG);
       toast.show();
     }

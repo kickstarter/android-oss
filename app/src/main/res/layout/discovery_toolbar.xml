@@ -35,33 +35,15 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Menu"
         android:textColor="@color/white" />
 
-      <LinearLayout
-        android:id="@+id/login_group"
+      <com.kickstarter.ui.views.IonIconTextView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="@drawable/button_selector"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/keyline_1"
-        android:paddingRight="@dimen/keyline_1">
+        android:gravity="center"
+        android:paddingRight="@dimen/keyline_1"
+        android:text="@string/ion_locked"
+        android:textAppearance="@style/TextAppearance.AppCompat.Menu"
+        android:textColor="@color/white" />
 
-        <com.kickstarter.ui.views.IonIconTextView
-          android:layout_width="wrap_content"
-          android:layout_height="match_parent"
-          android:gravity="center"
-          android:paddingRight="@dimen/keyline_1"
-          android:text="@string/ion_locked"
-          android:textAppearance="@style/TextAppearance.AppCompat.Menu"
-          android:textColor="@color/white" />
-
-        <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="match_parent"
-          android:gravity="center"
-          android:text="@string/Log_in"
-          android:textAppearance="@style/TextAppearance.AppCompat.Menu"
-          android:textColor="@color/white" />
-
-      </LinearLayout>
 
       <com.kickstarter.ui.views.IonIconTextView
         android:id="@+id/current_user_button"

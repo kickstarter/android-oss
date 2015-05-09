@@ -6,18 +6,20 @@ import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
 import com.kickstarter.models.CurrentUser;
 import com.kickstarter.models.User;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.LoginToutActivity;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -29,6 +31,7 @@ public class DiscoveryToolbar extends Toolbar {
   @InjectView(R.id.current_user_button) TextView current_user_button;
   @InjectView(R.id.login_button) TextView login_button;
   @InjectView(R.id.toolbar) Toolbar toolbar;
+  @Inject CurrentUser currentUser;
 
   public DiscoveryToolbar(final Context context) {
     super(context);
@@ -47,6 +50,7 @@ public class DiscoveryToolbar extends Toolbar {
     super.onFinishInflate();
 
     ButterKnife.inject(this);
+    ((KsrApplication) getContext().getApplicationContext()).component().inject(this);
 
     toggleLogin();
     initializeCategorySpinner();
@@ -59,7 +63,7 @@ public class DiscoveryToolbar extends Toolbar {
   }
 
   protected void toggleLogin() {
-    User user = CurrentUser.getUser(getContext().getApplicationContext());
+    User user = currentUser.getUser();
     if (user != null) {
       login_button.setVisibility(GONE);
       current_user_button.setVisibility(VISIBLE);
@@ -117,7 +121,7 @@ public class DiscoveryToolbar extends Toolbar {
   }
 
   protected void logout(final View v) {
-    CurrentUser.unset(getContext().getApplicationContext());
+    currentUser.unset();
     Intent intent = new Intent(getContext(), DiscoveryActivity.class)
       .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
     v.getContext().startActivity(intent);

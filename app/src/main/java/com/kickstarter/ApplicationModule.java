@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.kickstarter.libs.Font;
+import com.kickstarter.libs.ForApplication;
+import com.kickstarter.models.CurrentUser;
 
 import javax.inject.Singleton;
 
@@ -21,6 +23,7 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
+  @ForApplication
   Application application() {
     return application;
   }
@@ -35,5 +38,11 @@ public class ApplicationModule {
   @Singleton
   SharedPreferences provideSharedPreferences() {
     return PreferenceManager.getDefaultSharedPreferences(application);
+  }
+
+  @Provides
+  @Singleton
+  CurrentUser provideCurrentUser() {
+    return new CurrentUser(application);
   }
 }

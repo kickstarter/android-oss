@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import com.kickstarter.libs.Font;
 import com.kickstarter.libs.ForApplication;
 import com.kickstarter.models.CurrentUser;
+import com.kickstarter.services.KickstarterClient;
 
 import javax.inject.Singleton;
 
@@ -44,5 +45,11 @@ public class ApplicationModule {
   @Singleton
   CurrentUser provideCurrentUser(final SharedPreferences sharedPreferences) {
     return new CurrentUser(sharedPreferences);
+  }
+
+  @Provides
+  @Singleton
+  KickstarterClient provideKickstarterClient(final CurrentUser currentUser) {
+    return new KickstarterClient(currentUser);
   }
 }

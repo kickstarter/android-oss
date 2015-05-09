@@ -1,5 +1,6 @@
 package com.kickstarter.libs;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ public class Presenter<ViewType> {
   protected final PublishSubject<ViewType> viewSubject = PublishSubject.create();
   private final List<Subscription> subscriptions = new ArrayList<>();
 
-  protected void onCreate(Bundle savedInstanceState) {
+  protected void onCreate(final Context context, final Bundle savedInstanceState) {
     Timber.d("onCreate %s", this.toString());
     onDropView();
   }

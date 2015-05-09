@@ -26,13 +26,14 @@ import rx.android.widget.WidgetObservable;
 import rx.subjects.PublishSubject;
 
 public class LoginPresenter extends Presenter<LoginActivity> {
-  private static final KickstarterClient client = new KickstarterClient();
+  @Inject KickstarterClient client;
   @Inject CurrentUser currentUser;
   private final PublishSubject<Void> login = PublishSubject.create();
 
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+  protected void onCreate(final Context context, Bundle savedInstanceState) {
+    super.onCreate(context, savedInstanceState);
+    ((KsrApplication) context.getApplicationContext()).component().inject(this);
 
     final Observable<OnTextChangeEvent> email = viewSubject
       .filter(v -> v != null)
@@ -54,11 +55,6 @@ public class LoginPresenter extends Presenter<LoginActivity> {
 
     subscribeTo(submit, this::submit);
     subscribeTo(isValid, valid -> view().setFormEnabled(valid));
-  }
-
-  protected void onTakeView(final LoginActivity view) {
-    super.onTakeView(view);
-    ((KsrApplication) view.getApplicationContext()).component().inject(this);
   }
 
   private static boolean isValid(final String email, final String password) {

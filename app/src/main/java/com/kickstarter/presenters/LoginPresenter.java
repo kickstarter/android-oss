@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Pair;
 import android.widget.Toast;
 
+import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.RxUtils;
@@ -16,6 +17,8 @@ import com.kickstarter.services.KickstarterClient;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.LoginActivity;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.android.widget.OnTextChangeEvent;
@@ -24,6 +27,7 @@ import rx.subjects.PublishSubject;
 
 public class LoginPresenter extends Presenter<LoginActivity> {
   private static final KickstarterClient client = new KickstarterClient();
+  @Inject CurrentUser currentUser;
   private final PublishSubject<Void> login = PublishSubject.create();
 
   @Override
@@ -52,6 +56,11 @@ public class LoginPresenter extends Presenter<LoginActivity> {
     subscribeTo(isValid, valid -> view().setFormEnabled(valid));
   }
 
+  protected void onTakeView(final LoginActivity view) {
+    super.onTakeView(view);
+    ((KsrApplication) view.getApplicationContext()).component().inject(this);
+  }
+
   private static boolean isValid(final String email, final String password) {
     return StringUtils.isEmail(email) && password.length() > 0;
   }
@@ -68,7 +77,7 @@ public class LoginPresenter extends Presenter<LoginActivity> {
 
   private void success(final AccessTokenEnvelope envelope) {
     if (hasView()) {
-      CurrentUser.set(view().getApplicationContext(), envelope.user, envelope.access_token);
+      currentUser.set(envelope.user, envelope.access_token);
       Intent intent = new Intent(view(), DiscoveryActivity.class)
         .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
       view().startActivity(intent);

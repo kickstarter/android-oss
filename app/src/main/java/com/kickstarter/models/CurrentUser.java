@@ -13,44 +13,48 @@ public class CurrentUser {
   private static final String ACCESS_TOKEN_KEY = "access_token";
 
   private static final Gson gson = new Gson();
+  private Context context;
 
-  private CurrentUser() {}
-
-  public static User getUser(final Context context) {
-    return gson.fromJson(sharedPreferences(context).getString(USER_KEY, null), User.class);
+  public CurrentUser(final Context context) {
+    this.context = context;
   }
 
-  public static String getToken(final Context context) {
-    return sharedPreferences(context).getString(ACCESS_TOKEN_KEY, null);
+  public User getUser() {
+    return gson.fromJson(sharedPreferences().getString(USER_KEY, null), User.class);
   }
 
-  public static void set(final Context context, final User user, final String access_token) {
+  public String getToken() {
+    return sharedPreferences().getString(ACCESS_TOKEN_KEY, null);
+  }
+
+  public void set(final User user, final String access_token) {
     Timber.d("Set current user to %s", user.name());
 
-    SharedPreferences.Editor editor = sharedPreferencesEditor(context);
+    SharedPreferences.Editor editor = sharedPreferencesEditor();
     editor.putString(USER_KEY, gson.toJson(user, User.class));
     editor.putString(ACCESS_TOKEN_KEY, access_token);
     editor.apply();
   }
 
-  public static void unset(final Context context) {
+  public void unset() {
     Timber.d("Unset current user");
 
-    SharedPreferences.Editor editor = sharedPreferencesEditor(context);
+    SharedPreferences.Editor editor = sharedPreferencesEditor();
     editor.remove(USER_KEY);
     editor.remove(ACCESS_TOKEN_KEY);
     editor.apply();
   }
 
-  public static boolean exists(final Context context) {
-    return sharedPreferences(context).contains(USER_KEY);
+  public boolean exists() {
+    return sharedPreferences().contains(USER_KEY);
   }
 
-  private static SharedPreferences sharedPreferences(final Context context) {
+  // TODO: Inject shared preferences
+  private SharedPreferences sharedPreferences() {
     return PreferenceManager.getDefaultSharedPreferences(context);
   }
 
-  private static SharedPreferences.Editor sharedPreferencesEditor(final Context context) {
-    return sharedPreferences(context).edit();
+  private SharedPreferences.Editor sharedPreferencesEditor() {
+    return sharedPreferences().edit();
   }
 }

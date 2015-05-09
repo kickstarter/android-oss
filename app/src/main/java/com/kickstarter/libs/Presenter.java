@@ -19,7 +19,7 @@ public class Presenter<ViewType> {
 
   protected void onCreate(Bundle savedInstanceState) {
     Timber.d("onCreate %s", this.toString());
-    onTakeView(null);
+    onDropView();
   }
 
   protected void onResume(ViewType view) {
@@ -29,7 +29,7 @@ public class Presenter<ViewType> {
 
   protected void onPause() {
     Timber.d("onPause %s", this.toString());
-    onTakeView(null);
+    onDropView();
   }
 
   protected void onDestroy() {
@@ -41,10 +41,16 @@ public class Presenter<ViewType> {
     viewSubject.onCompleted();
   }
 
-  protected void onTakeView(ViewType view) {
-    Timber.d("onTakeView %s %s", this.toString(), (view != null ? view.toString() : "null"));
+  protected void onTakeView(final ViewType view) {
+    Timber.d("onTakeView %s %s", this.toString(), view.toString());
     this.view = view;
     viewSubject.onNext(view);
+  }
+
+  protected void onDropView() {
+    Timber.d("onDropView %s", this.toString());
+    this.view = null;
+    viewSubject.onNext(null);
   }
 
   protected final ViewType view() {

@@ -18,7 +18,7 @@
   <!-- button_icon_fixed_width is useful when we want to place several icons next to each
   other where they all take up the same width. This helps with UI effects like ripples that
   use the button size to calculate the ripple radius. -->
-  <dimen name="button_icon_fixed_width">42dp</dimen>
+  <dimen name="button_icon_fixed_width">54dp</dimen>
 
   <!-- Material typography
     http://www.google.com/design/spec/style/typography.html#typography-styles -->

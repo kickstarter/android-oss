@@ -2,6 +2,7 @@ package com.kickstarter;
 
 import android.app.Activity;
 
+import com.kickstarter.models.CurrentUser;
 import com.kickstarter.presenters.LoginPresenter;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
@@ -16,6 +17,7 @@ import dagger.Component;
 @Component(modules = {ApplicationModule.class})
 public interface ApplicationComponent {
   void inject(KsrApplication application);
+  void inject(CurrentUser current_user);
   void inject(ActivityFeedActivity activity);
   void inject(DiscoveryActivity activity);
   void inject(DiscoveryToolbar toolbar);

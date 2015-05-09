@@ -1,12 +1,8 @@
 package com.kickstarter.models;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
-import com.kickstarter.KsrApplication;
-
-import javax.inject.Inject;
 
 import timber.log.Timber;
 
@@ -15,10 +11,10 @@ public class CurrentUser {
   private static final String ACCESS_TOKEN_KEY = "access_token";
 
   private static final Gson gson = new Gson();
-  @Inject SharedPreferences sharedPreferences;
+  private final SharedPreferences sharedPreferences;
 
-  public CurrentUser(final Context context) {
-    ((KsrApplication) context.getApplicationContext()).component().inject(this);
+  public CurrentUser(final SharedPreferences sharedPreferences) {
+    this.sharedPreferences = sharedPreferences;
   }
 
   public User getUser() {

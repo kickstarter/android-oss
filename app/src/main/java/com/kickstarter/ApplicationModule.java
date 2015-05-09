@@ -42,7 +42,7 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  CurrentUser provideCurrentUser() {
-    return new CurrentUser(application);
+  CurrentUser provideCurrentUser(final SharedPreferences sharedPreferences) {
+    return new CurrentUser(sharedPreferences);
   }
 }

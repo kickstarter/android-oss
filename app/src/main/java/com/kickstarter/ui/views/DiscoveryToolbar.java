@@ -49,6 +49,10 @@ public class DiscoveryToolbar extends Toolbar {
   protected void onFinishInflate() {
     super.onFinishInflate();
 
+    if (isInEditMode()) {
+      return;
+    }
+
     ButterKnife.inject(this);
     ((KsrApplication) getContext().getApplicationContext()).component().inject(this);
 

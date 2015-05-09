@@ -16,13 +16,13 @@ import dagger.Component;
 @Singleton
 @Component(modules = {ApplicationModule.class})
 public interface ApplicationComponent {
-  void inject(KsrApplication application);
   void inject(CurrentUser current_user);
   void inject(ActivityFeedActivity activity);
   void inject(DiscoveryActivity activity);
   void inject(DiscoveryToolbar toolbar);
   void inject(DiscoveryPresenter presenter);
   void inject(IonIconTextView view);
+  void inject(KsrApplication application);
   void inject(LoginPresenter presenter);
   void inject(ProjectDetailPresenter presenter);
 }

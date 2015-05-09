@@ -57,6 +57,11 @@ public class LoginPresenter extends Presenter<LoginActivity> {
     subscribeTo(isValid, valid -> view().setFormEnabled(valid));
   }
 
+  protected void onTakeView(final LoginActivity view) {
+    super.onTakeView(view);
+    ((KsrApplication) view.getApplicationContext()).component().inject(this);
+  }
+
   private static boolean isValid(final String email, final String password) {
     return StringUtils.isEmail(email) && password.length() > 0;
   }

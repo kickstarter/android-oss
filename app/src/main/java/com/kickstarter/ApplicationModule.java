@@ -7,7 +7,10 @@ import android.preference.PreferenceManager;
 import com.kickstarter.libs.Font;
 import com.kickstarter.libs.ForApplication;
 import com.kickstarter.models.CurrentUser;
+<<<<<<< HEAD
 import com.kickstarter.services.KickstarterClient;
+=======
+>>>>>>> 4deca83a27ca24c5500f7958646481c65001ffb2
 
 import javax.inject.Singleton;
 

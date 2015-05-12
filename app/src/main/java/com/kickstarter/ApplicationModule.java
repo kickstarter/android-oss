@@ -1,10 +1,14 @@
 package com.kickstarter;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.kickstarter.libs.Font;
+import com.kickstarter.libs.ForApplication;
+import com.kickstarter.models.CurrentUser;
+import com.kickstarter.services.KickstarterClient;
 
 import javax.inject.Singleton;
 
@@ -21,7 +25,8 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  Application application() {
+  @ForApplication
+  Context provideApplicationContext() {
     return application;
   }
 
@@ -35,5 +40,17 @@ public class ApplicationModule {
   @Singleton
   SharedPreferences provideSharedPreferences() {
     return PreferenceManager.getDefaultSharedPreferences(application);
+  }
+
+  @Provides
+  @Singleton
+  CurrentUser provideCurrentUser(final SharedPreferences sharedPreferences) {
+    return new CurrentUser(sharedPreferences);
+  }
+
+  @Provides
+  @Singleton
+  KickstarterClient provideKickstarterClient(final CurrentUser currentUser) {
+    return new KickstarterClient(currentUser);
   }
 }

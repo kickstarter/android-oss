@@ -5,22 +5,30 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.models.CurrentUser;
+import com.kickstarter.presenters.ActivityFeedPresenter;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
 
-public class ActivityFeedActivity extends BaseActivity {
+@RequiresPresenter(ActivityFeedPresenter.class)
+public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
   @Optional @InjectView(R.id.discover_projects_button) Button discover_projects_button;
+  @Inject CurrentUser currentUser;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    if (CurrentUser.exists(this)) {
+    ((KsrApplication) getApplication()).component().inject(this);
+    if (currentUser.exists()) {
       // TODO: Show different layout if no activities exist
       setContentView(R.layout.activity_feed_layout);
     } else {

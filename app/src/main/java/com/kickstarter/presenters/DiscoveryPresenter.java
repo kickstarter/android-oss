@@ -1,8 +1,10 @@
 package com.kickstarter.presenters;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.models.DiscoveryParams;
@@ -14,17 +16,20 @@ import com.kickstarter.ui.adapters.ProjectListAdapter;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
-  private static final KickstarterClient client = new KickstarterClient();
+  @Inject KickstarterClient client;
   private List<Project> projects;
 
   @Override
-  protected void onCreate(final Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+  protected void onCreate(final Context context, final Bundle savedInstanceState) {
+    super.onCreate(context, savedInstanceState);
+    ((KsrApplication) context.getApplicationContext()).component().inject(this);
 
     DiscoveryParams initial_params = DiscoveryParams.params();
     projects = client.fetchProjects(initial_params)

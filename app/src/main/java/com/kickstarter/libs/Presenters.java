@@ -1,5 +1,6 @@
 package com.kickstarter.libs;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import com.google.common.collect.BiMap;
@@ -19,7 +20,9 @@ public class Presenters {
   }
 
   @SuppressWarnings("unchecked")
-  public <T extends Presenter> T fetch(Class<T> presenterClass, Bundle savedInstanceState) {
+  public <T extends Presenter> T fetch(final Context context,
+    final Class<T> presenterClass,
+    final Bundle savedInstanceState) {
     String id = fetchId(savedInstanceState);
     Presenter presenter = presenters.get(id);
 
@@ -31,7 +34,7 @@ public class Presenters {
         throw new RuntimeException(e);
       }
       presenters.put(id, presenter);
-      presenter.onCreate(savedInstanceState == null ? null : savedInstanceState.getBundle(PRESENTER_STATE_KEY));
+      presenter.onCreate(context, BundleUtils.maybeGetBundle(savedInstanceState, PRESENTER_STATE_KEY));
     }
 
     return (T) presenter;

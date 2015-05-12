@@ -70,8 +70,9 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
       RequiresPresenter annotation = getClass().getAnnotation(RequiresPresenter.class);
       Class<PresenterType> presenterClass = annotation == null ? null : (Class<PresenterType>) annotation.value();
       if (presenterClass != null) {
-        presenter = Presenters.getInstance().fetch(presenterClass,
-          presenterEnvelope == null ? null : presenterEnvelope.getBundle(PRESENTER_KEY));
+        presenter = Presenters.getInstance().fetch(this,
+          presenterClass,
+          BundleUtils.maybeGetBundle(presenterEnvelope, PRESENTER_KEY));
       }
     }
   }

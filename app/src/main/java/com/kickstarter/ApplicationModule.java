@@ -1,6 +1,7 @@
 package com.kickstarter;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
@@ -25,7 +26,7 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @ForApplication
-  Application application() {
+  Context provideApplicationContext() {
     return application;
   }
 

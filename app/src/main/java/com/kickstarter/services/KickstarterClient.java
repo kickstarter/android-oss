@@ -24,30 +24,42 @@ public class KickstarterClient {
   public KickstarterClient(final CurrentUser currentUser) {
     this.currentUser = currentUser;
 
-    RequestInterceptor requestInterceptor = request -> {
+    service = kickstarterService();
+  }
+
+  private KickstarterService kickstarterService() {
+    return restAdapter().create(KickstarterService.class);
+  }
+
+  private RestAdapter restAdapter() {
+    return new RestAdapter.Builder()
+      .setConverter(gsonConverter())
+        // TODO: extract this so we can switch HQ envs within the app. It's very useful.
+      .setEndpoint("https://***REMOVED***")
+      .setRequestInterceptor(requestInterceptor())
+      .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE)
+      .build();
+  }
+
+  private GsonConverter gsonConverter() {
+    Gson gson = new GsonBuilder()
+      .registerTypeAdapter(DateTime.class, new DateTimeTypeConverter())
+      .create();
+
+    return new GsonConverter(gson);
+  }
+
+  private RequestInterceptor requestInterceptor() {
+    return request -> {
       request.addHeader("Accept", "application/json");
       request.addHeader("Kickstarter-Android-App", "1"); // TODO: Kickstarter app side
       // TODO: Look at Retrofit user agent
       // TODO: extract this so that it's easy to swap client_id for different HQ envs.
       request.addQueryParam("client_id", "***REMOVED***");
-      if (currentUser.exists()) {
-        request.addQueryParam("oauth_token", currentUser.getToken());
+      if (this.currentUser.exists()) {
+        request.addQueryParam("oauth_token", this.currentUser.getToken());
       }
     };
-
-    Gson gson = new GsonBuilder()
-      .registerTypeAdapter(DateTime.class, new DateTimeTypeConverter())
-      .create();
-
-    RestAdapter restAdapter = new RestAdapter.Builder()
-      .setConverter(new GsonConverter(gson))
-        // TODO: extract this so we can switch HQ envs within the app. It's very useful.
-      .setEndpoint("https://***REMOVED***")
-      .setRequestInterceptor(requestInterceptor)
-      .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE)
-      .build();
-
-    service = restAdapter.create(KickstarterService.class);
   }
 
   public Observable<DiscoverEnvelope> fetchProjects(final DiscoveryParams params) {

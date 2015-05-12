@@ -34,7 +34,7 @@ public class Presenters {
         throw new RuntimeException(e);
       }
       presenters.put(id, presenter);
-      presenter.onCreate(context, savedInstanceState == null ? null : savedInstanceState.getBundle(PRESENTER_STATE_KEY));
+      presenter.onCreate(context, BundleUtils.maybeGetBundle(savedInstanceState, PRESENTER_STATE_KEY);
     }
 
     return (T) presenter;

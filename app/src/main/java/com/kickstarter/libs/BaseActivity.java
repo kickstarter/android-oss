@@ -72,7 +72,7 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
       if (presenterClass != null) {
         presenter = Presenters.getInstance().fetch(this,
           presenterClass,
-          presenterEnvelope == null ? null : presenterEnvelope.getBundle(PRESENTER_KEY));
+          BundleUtils.maybeGetBundle(presenterEnvelope, PRESENTER_KEY);
       }
     }
   }

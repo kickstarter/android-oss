@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/toolbar"
+  android:layout_width="match_parent"
+  android:layout_height="?attr/actionBarSize"
+  android:background="@color/light_gray"
+  android:paddingLeft="@dimen/keyline_1"
+  android:paddingRight="@dimen/keyline_1"
+  app:contentInsetLeft="0dp"
+  app:contentInsetStart="0dp"
+  android:elevation="2dp">
+
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <!-- TODO: Investigate replacing with VectorDrawable once vectors make
+    it into a compat library (currently v21). -->
+    <ImageView
+      android:layout_width="130dp"
+      android:layout_height="15.34dp"
+      android:layout_centerInParent="true"
+      android:src="@drawable/logo" />
+
+  </RelativeLayout>
+</android.support.v7.widget.Toolbar>

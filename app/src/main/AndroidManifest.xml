@@ -47,6 +47,9 @@
       android:name=".ui.activities.LoginActivity"
       android:theme="@style/LoginActivity" />
 
+    <activity
+      android:name=".ui.activities.TwoFactorActivity" />
+
     <activity android:name="com.facebook.FacebookActivity"
       android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
       android:theme="@android:style/Theme.Translucent.NoTitleBar"

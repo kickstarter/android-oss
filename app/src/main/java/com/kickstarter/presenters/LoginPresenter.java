@@ -12,10 +12,12 @@ import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.RxUtils;
 import com.kickstarter.libs.StringUtils;
 import com.kickstarter.models.CurrentUser;
+import com.kickstarter.services.ApiError;
 import com.kickstarter.services.ApiResponses.AccessTokenEnvelope;
 import com.kickstarter.services.KickstarterClient;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.LoginActivity;
+import com.kickstarter.ui.activities.TwoFactorActivity;
 
 import javax.inject.Inject;
 
@@ -81,10 +83,38 @@ public class LoginPresenter extends Presenter<LoginActivity> {
   }
 
   private void error(final Throwable e) {
+    if (!hasView()) {
+      return;
+    }
+
+    if (e instanceof ApiError) {
+      ApiError api_error = (ApiError) e;
+      switch (api_error.errorEnvelope().ksrCode()) {
+        case TFA_FAILED:
+          startTwoFactorActivity(); // TODO: Pass some param?
+          break;
+        case INVALID_XAUTH_LOGIN:
+          toast(R.string.Login_does_not_match_any_of_our_records);
+          break;
+        default:
+          toast(R.string.Unable_to_login);
+          break;
+      }
+    } else {
+      toast(R.string.Unable_to_login);
+    }
+  }
+
+  private void startTwoFactorActivity() {
+    Intent intent = new Intent(view(), TwoFactorActivity.class);
+    //intent.putExtra("project", project);
+    view().startActivity(intent);
+  }
+
+  private void toast(final int id) {
     if (hasView()) {
-      // TODO: Check error, e.g. is it a connection timeout?
       Toast toast = Toast.makeText(view(),
-        view().getResources().getString(R.string.Login_does_not_match_any_of_our_records),
+        view().getResources().getString(id),
         Toast.LENGTH_LONG);
       toast.show();
     }

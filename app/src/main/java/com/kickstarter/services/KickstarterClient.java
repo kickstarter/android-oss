@@ -9,11 +9,15 @@ import com.kickstarter.models.DiscoveryParams;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiResponses.AccessTokenEnvelope;
 import com.kickstarter.services.ApiResponses.DiscoverEnvelope;
+import com.kickstarter.services.ApiResponses.ErrorEnvelope;
 
 import org.joda.time.DateTime;
 
+import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import retrofit.converter.GsonConverter;
 import rx.Observable;
 
@@ -23,8 +27,24 @@ public class KickstarterClient {
 
   public KickstarterClient(final CurrentUser currentUser) {
     this.currentUser = currentUser;
-
     service = kickstarterService();
+  }
+
+  public Observable<DiscoverEnvelope> fetchProjects(final DiscoveryParams params) {
+    return service.fetchProjects(params.queryParams())
+      .retry(3);
+  }
+
+  public Observable<Project> fetchProject(final Project project) {
+    return Observable.just(project).mergeWith(service.fetchProject(project.id()));
+  }
+
+  public Observable<AccessTokenEnvelope> login(final String email, final String password) {
+    return login(email, password, "");
+  }
+
+  public Observable<AccessTokenEnvelope> login(final String email, final String password, final String code) {
+    return service.login(email, password, code);
   }
 
   private KickstarterService kickstarterService() {
@@ -36,9 +56,19 @@ public class KickstarterClient {
       .setConverter(gsonConverter())
         // TODO: extract this so we can switch HQ envs within the app. It's very useful.
       .setEndpoint("https://***REMOVED***")
+      .setErrorHandler(errorHandler())
       .setRequestInterceptor(requestInterceptor())
       .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE)
       .build();
+  }
+
+  private ErrorHandler errorHandler() {
+    return cause -> {
+      ErrorEnvelope envelope = (ErrorEnvelope) cause.getBodyAs(ErrorEnvelope.class);
+      return new ApiError(cause, envelope);
+      // todo handle non-api error
+      // return cause;
+    };
   }
 
   private GsonConverter gsonConverter() {
@@ -60,22 +90,5 @@ public class KickstarterClient {
         request.addQueryParam("oauth_token", this.currentUser.getToken());
       }
     };
-  }
-
-  public Observable<DiscoverEnvelope> fetchProjects(final DiscoveryParams params) {
-    return service.fetchProjects(params.queryParams())
-      .retry(3);
-  }
-
-  public Observable<Project> fetchProject(final Project project) {
-    return Observable.just(project).mergeWith(service.fetchProject(project.id()));
-  }
-
-  public Observable<AccessTokenEnvelope> login(final String email, final String password) {
-    return login(email, password, "");
-  }
-
-  public Observable<AccessTokenEnvelope> login(final String email, final String password, final String code) {
-    return service.login(email, password, code);
   }
 }

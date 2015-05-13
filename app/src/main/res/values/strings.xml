@@ -10,17 +10,18 @@
   <string name="Activity_empty">Activity empty</string>
   <string name="action_settings">Settings</string>
   <string name="Are_those_new_shoes">
-    Are those new shoes? If they\’re not new, they look really shiny and beautiful.
+    Are those new shoes? If they\'re not new, they look really shiny and beautiful.
   </string>
   <string name="backers">backers</string>
   <string name="by_">by\u0020</string>
   <string name="By_signing_up_you_agree_to_our">
-    By signing up you agree to our terms of use, privacy policy, and cookie policy. We\’ll never post
+    By signing up you agree to our terms of use, privacy policy, and cookie policy. We\'ll never post
     anything without your permission.
   </string>
   <string name="days">days</string>
   <string name="Discover_projects">Discover projects</string>
   <string name="Email_address">Email address</string>
+  <string name="Enter_code">Enter code</string>
   <string name="Forgot_your_password">Forgot your password?</string>
   <string name="Help">Help</string>
   <string name="ion_android_more_vertical">\uf397</string>
@@ -35,15 +36,23 @@
   <string name="Login_does_not_match_any_of_our_records">Login does not match any of our records.</string>
   <string name="Nice_to_see_you_again">Nice to see you again.</string>
   <string name="Password">Password</string>
+  <string name="Please_enter_your_verification_code_to_continue">
+    Please enter your verification code to continue.
+  </string>
   <string name="pledged_of_">pledged of\u0020</string>
   <string name="project_of_the_day">Project of the day!</string>
+  <string name="Resend">Resend</string>
   <string name="Sign_up">Sign up</string>
   <string name="Sign_up_or_log_in_with_your_Facebook_account">
     Sign up or log in with your Facebook account or email address below:
   </string>
+  <string name="Submit">Submit</string>
   <string name="title_activity_project">View Project</string>
   <string name="_to_go">\u0020to go</string>
+  <!-- TODO: Replace generic Unable_to_login_error with specific errors -->
+  <string name="Unable_to_login">Unable to login</string>
   <string name="Use_your_email_address">Use your email address:</string>
+  <string name="Verify">Verify</string>
   <string name="When_you_back_a_project_or_follow_a_friend">
     When you back a project or follow a friend, their activity will show up here.
   </string>

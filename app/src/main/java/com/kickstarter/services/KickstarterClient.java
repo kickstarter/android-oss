@@ -66,8 +66,7 @@ public class KickstarterClient {
     return cause -> {
       ErrorEnvelope envelope = (ErrorEnvelope) cause.getBodyAs(ErrorEnvelope.class);
       return new ApiError(cause, envelope);
-      // todo handle non-api error
-      // return cause;
+      // TODO: Handle non-api error (e.g. bad connection)
     };
   }
 

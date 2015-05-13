@@ -91,7 +91,7 @@ public class LoginPresenter extends Presenter<LoginActivity> {
       ApiError api_error = (ApiError) e;
       switch (api_error.errorEnvelope().ksrCode()) {
         case TFA_FAILED:
-          startTwoFactorActivity(); // TODO: Pass some param?
+          startTwoFactorActivity();
           break;
         case INVALID_XAUTH_LOGIN:
           toast(R.string.Login_does_not_match_any_of_our_records);
@@ -107,7 +107,6 @@ public class LoginPresenter extends Presenter<LoginActivity> {
 
   private void startTwoFactorActivity() {
     Intent intent = new Intent(view(), TwoFactorActivity.class);
-    //intent.putExtra("project", project);
     view().startActivity(intent);
   }
 

@@ -110,8 +110,8 @@ public class LoginPresenter extends Presenter<LoginActivity> {
     Intent intent = new Intent(view(), TwoFactorActivity.class);
     // TODO: Fetching the details from the view seems a little dirty, it would be nice if we
     // could pass along the email and password that generated the event.
-    intent.putExtra("email", view().email.getText());
-    intent.putExtra("password", view().password.getText());
+    intent.putExtra("email", view().email.getText().toString());
+    intent.putExtra("password", view().password.getText().toString());
     view().startActivity(intent);
   }
 

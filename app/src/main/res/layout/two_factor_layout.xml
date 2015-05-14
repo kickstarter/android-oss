@@ -58,13 +58,13 @@ android:gravity="center_horizontal">
         android:text="@string/Resend" />
 
       <Button
-        android:id="@+id/submit_button"
+        android:id="@+id/login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_marginLeft="@dimen/keyline_1_half"
         android:enabled="false"
-        android:onClick="submitButtonOnClick"
+        android:onClick="loginButtonOnClick"
         android:text="@string/Submit" />
 
     </LinearLayout>

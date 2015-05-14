@@ -19,32 +19,31 @@ import timber.log.Timber;
 public class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
   public @InjectView(R.id.code) EditText code;
   public @InjectView(R.id.resend_button) Button resend_button;
-  public @InjectView(R.id.submit_button) Button submit_button;
-  private String email;
-  private String password;
+  public @InjectView(R.id.login_button) Button login_button;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    Intent intent = getIntent();
-    email = intent.getExtras().getString("email");
-    password = intent.getExtras().getString("password");
-
     setContentView(R.layout.two_factor_layout);
     ButterKnife.inject(this);
+
+    Intent intent = getIntent();
+    String email = intent.getExtras().getString("email");
+    String password = intent.getExtras().getString("password");
+    presenter.takeEmailAndPassword(email, password);
   }
 
-  public void setSubmitEnabled(final boolean enabled) {
-    submit_button.setEnabled(enabled);
+  public void setLoginEnabled(final boolean enabled) {
+    login_button.setEnabled(enabled);
   }
 
   public void resendButtonOnClick(final View v) {
     Timber.d("resendButtonOnClick");
   }
 
-  public void submitButtonOnClick(final View v) {
-    Timber.d("submitButtonOnClick");
-    presenter.submit();
+  public void loginButtonOnClick(final View v) {
+    Timber.d("loginButtonOnClick");
+    presenter.login();
   }
 }

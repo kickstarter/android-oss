@@ -16,6 +16,7 @@ import org.joda.time.DateTime;
 import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
+import retrofit.RetrofitError;
 import retrofit.converter.GsonConverter;
 import rx.Observable;
 
@@ -62,9 +63,13 @@ public class KickstarterClient {
 
   private ErrorHandler errorHandler() {
     return cause -> {
-      ErrorEnvelope envelope = (ErrorEnvelope) cause.getBodyAs(ErrorEnvelope.class);
-      return new ApiError(cause, envelope);
-      // TODO: Handle non-api error (e.g. bad connection)
+      if (cause.getKind() == RetrofitError.Kind.HTTP) {
+        ErrorEnvelope envelope = (ErrorEnvelope) cause.getBodyAs(ErrorEnvelope.class);
+        return new ApiError(cause, envelope);
+      } else {
+        // NETWORK or UNEXPECTED error.
+        return cause;
+      }
     };
   }
 

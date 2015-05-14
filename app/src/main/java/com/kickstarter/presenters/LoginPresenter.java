@@ -21,6 +21,7 @@ import com.kickstarter.ui.activities.TwoFactorActivity;
 
 import javax.inject.Inject;
 
+import retrofit.RetrofitError;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.android.widget.OnTextChangeEvent;
@@ -83,26 +84,38 @@ public class LoginPresenter extends Presenter<LoginActivity> {
   }
 
   private void error(final Throwable e) {
+    // TODO: Most of the logic here could be extracted, it will be shared
+    // by many API error methods.
     if (!hasView()) {
       return;
     }
 
     if (e instanceof ApiError) {
-      ApiError api_error = (ApiError) e;
-      switch (api_error.errorEnvelope().ksrCode()) {
-        case TFA_REQUIRED:
-        case TFA_FAILED:
-          startTwoFactorActivity();
-          break;
-        case INVALID_XAUTH_LOGIN:
-          toast(R.string.Login_does_not_match_any_of_our_records);
-          break;
-        default:
-          toast(R.string.Unable_to_login);
-          break;
+      handleApiError((ApiError) e);
+    } else if (e instanceof RetrofitError) {
+      RetrofitError retrofitError = (RetrofitError) e;
+      if (retrofitError.getKind() == RetrofitError.Kind.NETWORK) {
+        toast(R.string.Unable_to_connect);
+      } else {
+        throw new RuntimeException(e);
       }
     } else {
-      toast(R.string.Unable_to_login);
+      throw new RuntimeException(e);
+    }
+  }
+
+  private void handleApiError(final ApiError apiError) {
+    switch (apiError.errorEnvelope().ksrCode()) {
+      case TFA_REQUIRED:
+      case TFA_FAILED:
+        startTwoFactorActivity();
+        break;
+      case INVALID_XAUTH_LOGIN:
+        toast(R.string.Login_does_not_match_any_of_our_records);
+        break;
+      default:
+        toast(R.string.Unable_to_login);
+        break;
     }
   }
 

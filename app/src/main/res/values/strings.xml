@@ -49,7 +49,7 @@
   <string name="Submit">Submit</string>
   <string name="title_activity_project">View Project</string>
   <string name="_to_go">\u0020to go</string>
-  <!-- TODO: Replace generic Unable_to_login_error with specific errors -->
+  <string name="Unable_to_connect">Unable to connect</string>
   <string name="Unable_to_login">Unable to login</string>
   <string name="Use_your_email_address">Use your email address:</string>
   <string name="Verify">Verify</string>

@@ -39,7 +39,7 @@ public class LoginPresenter extends Presenter<LoginActivity> {
 
     final Observable<OnTextChangeEvent> email = viewSubject
       .filter(v -> v != null)
-      .flatMap(v -> WidgetObservable.text(v.email_address));
+      .flatMap(v -> WidgetObservable.text(v.email));
 
     final Observable<OnTextChangeEvent> password = viewSubject
       .filter(v -> v != null)

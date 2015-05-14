@@ -51,7 +51,7 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
   }
 
   private static boolean isValid(final String code) {
-    return code.length() > 0; // TODO: Should this be >= 4?
+    return code.length() > 0;
   }
 
   public void login() {

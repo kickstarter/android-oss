@@ -90,6 +90,7 @@ public class LoginPresenter extends Presenter<LoginActivity> {
     if (e instanceof ApiError) {
       ApiError api_error = (ApiError) e;
       switch (api_error.errorEnvelope().ksrCode()) {
+        case TFA_REQUIRED:
         case TFA_FAILED:
           startTwoFactorActivity();
           break;

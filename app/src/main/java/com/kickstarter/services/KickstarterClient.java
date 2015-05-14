@@ -16,8 +16,6 @@ import org.joda.time.DateTime;
 import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import retrofit.converter.GsonConverter;
 import rx.Observable;
 
@@ -40,7 +38,7 @@ public class KickstarterClient {
   }
 
   public Observable<AccessTokenEnvelope> login(final String email, final String password) {
-    return login(email, password, "");
+    return service.login(email, password);
   }
 
   public Observable<AccessTokenEnvelope> login(final String email, final String password, final String code) {
@@ -85,8 +83,8 @@ public class KickstarterClient {
       // TODO: Look at Retrofit user agent
       // TODO: extract this so that it's easy to swap client_id for different HQ envs.
       request.addQueryParam("client_id", "***REMOVED***");
-      if (this.currentUser.exists()) {
-        request.addQueryParam("oauth_token", this.currentUser.getToken());
+      if (currentUser.exists()) {
+        request.addQueryParam("oauth_token", currentUser.getToken());
       }
     };
   }

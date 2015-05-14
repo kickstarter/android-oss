@@ -12,6 +12,7 @@ public class ErrorEnvelope {
   public enum ErrorCode {
     INVALID_XAUTH_LOGIN,
     TFA_FAILED,
+    TFA_REQUIRED,
     UNKNOWN
   }
 

@@ -35,11 +35,7 @@
     <item name="android:windowBackground">@color/light_gray</item>
   </style>
 
-  <style name="LoginToutActivity" parent="KsrTheme">
-    <item name="android:statusBarColor">@color/gray</item>
-  </style>
-
-  <style name="LoginActivity" parent="KsrTheme">
+  <style name="Login" parent="KsrTheme">
     <item name="android:statusBarColor">@color/gray</item>
   </style>
 

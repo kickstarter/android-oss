@@ -6,8 +6,11 @@ import android.os.Bundle;
 import android.util.Pair;
 
 import com.kickstarter.KsrApplication;
+import com.kickstarter.R;
+import com.kickstarter.libs.ApiErrorHandler;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.models.CurrentUser;
+import com.kickstarter.services.ApiError;
 import com.kickstarter.services.ApiResponses.AccessTokenEnvelope;
 import com.kickstarter.services.KickstarterClient;
 import com.kickstarter.ui.activities.DiscoveryActivity;
@@ -68,6 +71,23 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
   }
 
   private void error(final Throwable e) {
+    if (!hasView()) {
+      return;
+    }
+
+    new ApiErrorHandler(e, view()) {
+      @Override
+      public void handleApiError(final ApiError api_error) {
+        switch (api_error.errorEnvelope().ksrCode()) {
+          case TFA_FAILED:
+            displayError(R.string.The_code_provided_does_not_match);
+            break;
+          default:
+            displayError(R.string.Unable_to_login);
+            break;
+        }
+      }
+    }.handleError();
   }
 
   private void submit(final LoginCredentials loginCredentials) {

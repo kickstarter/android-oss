@@ -47,6 +47,7 @@
     Sign up or log in with your Facebook account or email address below:
   </string>
   <string name="Submit">Submit</string>
+  <string name="The_code_provided_does_not_match">The code provided does not match.</string>
   <string name="title_activity_project">View Project</string>
   <string name="_to_go">\u0020to go</string>
   <string name="Unable_to_connect">Unable to connect</string>

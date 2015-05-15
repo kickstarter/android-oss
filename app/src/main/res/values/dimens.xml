@@ -36,4 +36,8 @@
   <dimen name="title">20sp</dimen>
 
   <dimen name="progress_bar_min_height">6dp</dimen>
+
+  <!-- Photos -->
+  <dimen name="activity_feed_photo_width">72dp</dimen>
+  <dimen name="activity_feed_photo_height">72dp</dimen>
 </resources>

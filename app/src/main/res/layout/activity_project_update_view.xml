@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:background="@color/white"
+  android:layout_marginTop="@dimen/keyline_1_half"
+  android:layout_marginBottom="@dimen/keyline_1_half"
+  android:paddingLeft="@dimen/keyline_1"
+  android:paddingRight="@dimen/keyline_1"
+  android:paddingBottom="@dimen/keyline_1"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/keyline_1"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <ImageView
+      android:id="@+id/project_photo"
+      android:adjustViewBounds="true"
+      android:background="#cc3333"
+      android:layout_marginRight="@dimen/keyline_1_half"
+      android:layout_width="@dimen/activity_feed_photo_width"
+      android:layout_height="@dimen/activity_feed_photo_height" />
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="@dimen/keyline_1_half"
+      android:text="McSweeney's: New Books, New Magazines, and a Whole Lot More"
+      android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+  </LinearLayout>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+      android:layout_marginTop="@dimen/keyline_1"
+      android:layout_marginBottom="@dimen/keyline_1_half"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <TextView
+        android:id="@+id/update_sequence"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Update #4"
+        android:textColor="@color/green"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
+
+      <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="19 hours ago"
+        android:textColor="@color/dark_gray"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
+    </RelativeLayout>
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/keyline_1_half"
+      android:layout_="@+id/update_sequence"
+      android:text="Our 50 Most-Read Humor Pieces Ever"
+      android:textAppearance="@style/TextAppearance.AppCompat.Title"
+      android:textColor="@color/text_dark" />
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/keyline_1_half"
+        android:text="For the month of our Kickstarter, we're counting down the 50 most-read pieces ever published on McSweeney's Internet Tendency. We just arrived at number 33, Classic Movies Charged to Not Be Sexist by Blythe Robertson. You can check out the whole countdown at Twitter at https://twitter.com/mcsweeneys ! We also thought you might like to see what some other Tendency contributors have to say about..."/>
+
+  </LinearLayout>
+
+</LinearLayout>

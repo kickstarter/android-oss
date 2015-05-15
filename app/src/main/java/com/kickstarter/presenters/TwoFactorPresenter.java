@@ -106,13 +106,11 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
     subscribeTo(e, this::success, this::error);
   }
 
-  private void resendSuccess(final AccessTokenEnvelope envelope) {}
-  private void resendError(final Throwable e) {} // TODO: We could notify on connection error
-
   private void resendSubmit(final Pair<String, String> emailAndPassword) {
-    Observable<AccessTokenEnvelope> e = client.login(emailAndPassword.first, emailAndPassword.second)
+    Observable<AccessTokenEnvelope> envelope = client.login(emailAndPassword.first, emailAndPassword.second)
       .observeOn(AndroidSchedulers.mainThread());
-    subscribeTo(e, this::resendSuccess, this::resendError);
+    // TODO: We could notify on connection error
+    subscribeTo(envelope, (final AccessTokenEnvelope e) -> {}, (final Throwable error) -> {});
   }
 
   private class LoginCredentials {

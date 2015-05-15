@@ -5,6 +5,8 @@
   android:layout_height="match_parent"
   android:gravity="center_horizontal">
 
+  <include layout="@layout/activity_project_state_changed_view" />
+
   <include layout="@layout/activity_friend_backing_view" />
 
   <include layout="@layout/activity_project_update_view" />

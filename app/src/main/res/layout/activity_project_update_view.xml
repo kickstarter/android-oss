@@ -66,7 +66,6 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginBottom="@dimen/keyline_1_half"
-      android:layout_="@+id/update_sequence"
       android:text="Our 50 Most-Read Humor Pieces Ever"
       android:textAppearance="@style/TextAppearance.AppCompat.Title"
       android:textColor="@color/text_dark" />

@@ -66,6 +66,12 @@ public class Presenter<ViewType> {
     subscriptions.add(subscription);
   }
 
+  public final <T> Subscription subscribeTo(final Observable<T> ob) {
+    Subscription s = ob.subscribe();
+    subscriptions.add(s);
+    return s;
+  }
+
   public final <T> Subscription subscribeTo(final Observable<T> ob, final Action1<? super T> onNext) {
     Subscription s = ob.subscribe(onNext);
     subscriptions.add(s);

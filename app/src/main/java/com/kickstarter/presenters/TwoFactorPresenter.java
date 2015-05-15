@@ -27,6 +27,7 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
   @Inject CurrentUser currentUser;
   @Inject KickstarterClient client;
   private final PublishSubject<Void> login = PublishSubject.create();
+  private final PublishSubject<Void> resend = PublishSubject.create();
 
   @Override
   protected void onCreate(final Context context, final Bundle savedInstanceState) {
@@ -49,12 +50,21 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
       .withLatestFrom(code, (s, c) -> c)
       .withLatestFrom(emailAndPassword, (c, ep) -> new LoginCredentials(ep.first, ep.second, c));
 
+    final Observable<Pair<String, String>> r = resend
+      .withLatestFrom(emailAndPassword, (v, ep) -> ep);
+
+
+    subscribeTo(r, this::resendSubmit);
     subscribeTo(submit, this::submit);
     subscribeTo(isValid, valid -> view().setLoginEnabled(valid));
   }
 
   private static boolean isValid(final String code) {
     return code.length() > 0;
+  }
+
+  public void resend() {
+    resend.onNext(null);
   }
 
   public void login() {
@@ -91,9 +101,18 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
   }
 
   private void submit(final LoginCredentials loginCredentials) {
-    client.login(loginCredentials.email(), loginCredentials.password(), loginCredentials.code())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::success, this::error);
+    Observable<AccessTokenEnvelope> e = client.login(loginCredentials.email(), loginCredentials.password(), loginCredentials.code())
+      .observeOn(AndroidSchedulers.mainThread());
+    subscribeTo(e, this::success, this::error);
+  }
+
+  private void resendSuccess(final AccessTokenEnvelope envelope) {}
+  private void resendError(final Throwable e) {} // TODO: We could notify on connection error
+
+  private void resendSubmit(final Pair<String, String> emailAndPassword) {
+    Observable<AccessTokenEnvelope> e = client.login(emailAndPassword.first, emailAndPassword.second)
+      .observeOn(AndroidSchedulers.mainThread());
+    subscribeTo(e, this::resendSuccess, this::resendError);
   }
 
   private class LoginCredentials {

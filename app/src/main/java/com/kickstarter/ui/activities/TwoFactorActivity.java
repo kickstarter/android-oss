@@ -40,6 +40,7 @@ public class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
 
   public void resendButtonOnClick(final View v) {
     Timber.d("resendButtonOnClick");
+    presenter.resend();
   }
 
   public void loginButtonOnClick(final View v) {

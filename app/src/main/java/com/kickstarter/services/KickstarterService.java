@@ -22,6 +22,10 @@ import rx.Observable;
 
   @POST("/xauth/access_token")
   public Observable<AccessTokenEnvelope> login(@Query("email") String email,
+    @Query("password") String password);
+
+  @POST("/xauth/access_token")
+  public Observable<AccessTokenEnvelope> login(@Query("email") String email,
     @Query("password") String password,
     @Query("code") String code);
 }

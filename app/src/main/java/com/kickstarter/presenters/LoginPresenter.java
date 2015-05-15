@@ -4,18 +4,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Pair;
-import android.widget.Toast;
 
 import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.ApiErrorHandler;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.RxUtils;
 import com.kickstarter.libs.StringUtils;
 import com.kickstarter.models.CurrentUser;
+import com.kickstarter.services.ApiError;
 import com.kickstarter.services.ApiResponses.AccessTokenEnvelope;
 import com.kickstarter.services.KickstarterClient;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.LoginActivity;
+import com.kickstarter.ui.activities.TwoFactorActivity;
 
 import javax.inject.Inject;
 
@@ -37,7 +39,7 @@ public class LoginPresenter extends Presenter<LoginActivity> {
 
     final Observable<OnTextChangeEvent> email = viewSubject
       .filter(v -> v != null)
-      .flatMap(v -> WidgetObservable.text(v.email_address));
+      .flatMap(v -> WidgetObservable.text(v.email));
 
     final Observable<OnTextChangeEvent> password = viewSubject
       .filter(v -> v != null)
@@ -81,12 +83,36 @@ public class LoginPresenter extends Presenter<LoginActivity> {
   }
 
   private void error(final Throwable e) {
-    if (hasView()) {
-      // TODO: Check error, e.g. is it a connection timeout?
-      Toast toast = Toast.makeText(view(),
-        view().getResources().getString(R.string.Login_does_not_match_any_of_our_records),
-        Toast.LENGTH_LONG);
-      toast.show();
+    if (!hasView()) {
+      return;
     }
+
+    new ApiErrorHandler(e, view()) {
+      @Override
+      public void handleApiError(final ApiError api_error) {
+        switch (api_error.errorEnvelope().ksrCode()) {
+          case TFA_REQUIRED:
+          case TFA_FAILED:
+            startTwoFactorActivity();
+            break;
+          case INVALID_XAUTH_LOGIN:
+            displayError(R.string.Login_does_not_match_any_of_our_records);
+            break;
+          default:
+            displayError(R.string.Unable_to_login);
+            break;
+        }
+
+      }
+    }.handleError();
+  }
+
+  private void startTwoFactorActivity() {
+    Intent intent = new Intent(view(), TwoFactorActivity.class);
+    // TODO: Fetching the details from the view seems a little dirty, it would be nice if we
+    // could pass along the email and password that generated the event.
+    intent.putExtra("email", view().email.getText().toString());
+    intent.putExtra("password", view().password.getText().toString());
+    view().startActivity(intent);
   }
 }

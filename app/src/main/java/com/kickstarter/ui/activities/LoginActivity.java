@@ -16,7 +16,7 @@ import timber.log.Timber;
 
 @RequiresPresenter(LoginPresenter.class)
 public class LoginActivity extends BaseActivity<LoginPresenter> {
-  public @InjectView(R.id.email_address) TextView email_address;
+  public @InjectView(R.id.email) TextView email;
   public @InjectView(R.id.password) TextView password;
   public @InjectView(R.id.login_button) Button login_button;
 

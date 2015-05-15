@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:orientation="vertical"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="@color/light_gray"
+android:gravity="center_horizontal">
+
+  <include layout="@layout/two_factor_toolbar" />
+
+  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:layout_marginLeft="@dimen/keyline_2_half"
+    android:layout_marginRight="@dimen/keyline_2_half">
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/keyline_2_half"
+      android:layout_marginBottom="@dimen/keyline_1_half"
+      android:gravity="center"
+      android:textAppearance="@style/TextAppearance.AppCompat.Title"
+      android:textColor="@color/text_dark"
+      android:text="@string/Verify" />
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/keyline_1_half"
+      android:layout_marginBottom="@dimen/keyline_2_half"
+      android:textColor="@color/dark_gray"
+      android:text="@string/Please_enter_your_verification_code_to_continue" />
+
+    <EditText
+      android:id="@+id/code"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:gravity="center"
+      android:inputType="number"
+      android:singleLine="true"
+      android:hint="@string/Enter_code" />
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/keyline_1_half"
+      android:layout_marginBottom="@dimen/keyline_1_half">
+
+      <Button
+        android:id="@+id/resend_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginRight="@dimen/keyline_1_half"
+        android:onClick="resendButtonOnClick"
+        android:text="@string/Resend" />
+
+      <Button
+        android:id="@+id/login_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginLeft="@dimen/keyline_1_half"
+        android:enabled="false"
+        android:onClick="loginButtonOnClick"
+        android:text="@string/Submit" />
+
+    </LinearLayout>
+
+  </LinearLayout>
+
+</LinearLayout>

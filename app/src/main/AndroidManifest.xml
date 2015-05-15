@@ -41,11 +41,15 @@
 
     <activity
       android:name=".ui.activities.LoginToutActivity"
-      android:theme="@style/LoginToutActivity" />
+      android:theme="@style/Login" />
 
     <activity
       android:name=".ui.activities.LoginActivity"
-      android:theme="@style/LoginActivity" />
+      android:theme="@style/Login" />
+
+    <activity
+      android:name=".ui.activities.TwoFactorActivity"
+    android:theme="@style/Login" />
 
     <activity android:name="com.facebook.FacebookActivity"
       android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"

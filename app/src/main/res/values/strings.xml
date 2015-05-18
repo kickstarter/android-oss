@@ -22,6 +22,7 @@
   <string name="Discover_projects">Discover projects</string>
   <string name="Email_address">Email address</string>
   <string name="Enter_code">Enter code</string>
+  <string name="Follow">Follow</string>
   <string name="Forgot_your_password">Forgot your password?</string>
   <string name="Help">Help</string>
   <string name="ion_android_more_vertical">\uf397</string>
@@ -30,6 +31,7 @@
   <string name="ion_location">\uf1ff</string>
   <string name="ion_locked">\uf200</string>
   <string name="ion_pricetag">\uf2aa</string>
+  <string name="is_following_you">is following you!</string>
   <string name="Log_in">Log in</string>
   <string name="Log_out">Log out</string>
   <string name="Logged_out">Logged out</string>

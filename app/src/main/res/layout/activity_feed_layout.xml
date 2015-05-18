@@ -8,6 +8,8 @@
     android:layout_height="wrap_content"
     android:gravity="center_horizontal">
 
+    <include layout="@layout/activity_friend_follow_view" />
+
     <include layout="@layout/activity_project_state_changed_view" />
 
     <include layout="@layout/activity_friend_backing_view" />

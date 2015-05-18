@@ -1,7 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.kickstarter.ui.views.ActivityFriendFollowView
+  xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="vertical"
+  android:background="@color/white"
+  android:layout_marginTop="@dimen/keyline_1_half"
+  android:layout_marginBottom="@dimen/keyline_1_half"
+  android:paddingLeft="@dimen/keyline_1"
+  android:paddingRight="@dimen/keyline_1"
+  android:paddingBottom="@dimen/keyline_1"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
+  android:layout_height="wrap_content">
 
-</LinearLayout>
+  <LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/keyline_1_half"
+    android:layout_marginBottom="@dimen/keyline_1_half"
+    android:gravity="center_vertical">
+
+    <ImageView
+      android:id="@+id/backer_photo"
+      android:adjustViewBounds="true"
+      android:background="#cc3333"
+      android:layout_marginRight="@dimen/keyline_1_half"
+      android:layout_width="@dimen/activity_feed_photo_width"
+      android:layout_height="@dimen/activity_feed_photo_height" />
+
+    <TextView
+      android:id="@+id/follow_text"
+      android:bufferType="spannable"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="@dimen/keyline_1_half"
+      android:layout_marginRight="@dimen/keyline_1_half"
+      android:text="Username is following you!"
+      android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+      android:textColor="@color/text_dark"
+      android:layout_weight="1"/>
+
+    <Button
+      android:id="@+id/follow_button"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/Follow"
+      android:layout_marginLeft="@dimen/keyline_1_half" />
+
+  </LinearLayout>
+
+</com.kickstarter.ui.views.ActivityFriendFollowView>

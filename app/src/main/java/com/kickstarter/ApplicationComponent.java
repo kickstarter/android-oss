@@ -1,6 +1,7 @@
 package com.kickstarter;
 
 import com.kickstarter.models.CurrentUser;
+import com.kickstarter.presenters.ActivityFeedPresenter;
 import com.kickstarter.presenters.DiscoveryPresenter;
 import com.kickstarter.presenters.LoginPresenter;
 import com.kickstarter.presenters.ProjectDetailPresenter;
@@ -18,6 +19,7 @@ import dagger.Component;
 @Component(modules = {ApplicationModule.class})
 public interface ApplicationComponent {
   void inject(ActivityFeedActivity activity);
+  void inject(ActivityFeedPresenter presenter);
   void inject(CurrentUser current_user);
   void inject(DiscoveryActivity activity);
   void inject(DiscoveryToolbar toolbar);

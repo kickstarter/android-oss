@@ -4,26 +4,26 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.Presenter;
 import com.kickstarter.models.Activity;
 import com.kickstarter.presenters.ActivityFeedPresenter;
+import com.kickstarter.ui.view_holders.ActivityListViewHolder;
+import com.kickstarter.ui.view_holders.FriendBackingViewHolder;
+import com.kickstarter.ui.view_holders.FriendFollowViewHolder;
+import com.kickstarter.ui.view_holders.ProjectStateChangedViewHolder;
+import com.kickstarter.ui.view_holders.ProjectUpdateViewHolder;
 
 import java.util.List;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.Optional;
-
-public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapter.ViewHolder> {
+public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListViewHolder> {
   private List<Activity> activities;
   private ActivityFeedPresenter presenter;
 
-  private static final int VIEW_TYPE_DEFAULT = 0;
-  private static final int VIEW_TYPE_FRIEND_BACKING = 1;
-  private static final int VIEW_TYPE_FRIEND_FOLLOW = 2;
+  private static final int VIEW_TYPE_FRIEND_BACKING = 0;
+  private static final int VIEW_TYPE_FRIEND_FOLLOW = 1;
+  private static final int VIEW_TYPE_PROJECT_STATE_CHANGED = 2;
+  private static final int VIEW_TYPE_PROJECT_UPDATE = 3;
 
   public ActivityListAdapter(final List<Activity> activities, final ActivityFeedPresenter presenter) {
     this.activities = activities;
@@ -32,34 +32,34 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
 
   @Override
   public int getItemViewType(final int position) {
-    switch(activities.get(position).category()) {
-      case UPDATE:
-        return VIEW_TYPE_DEFAULT;
+    Activity activity = activities.get(position);
+    switch(activity.category()) {
+      case BACKING:
+        return VIEW_TYPE_FRIEND_BACKING;
+      case FOLLOW:
+        return VIEW_TYPE_FRIEND_FOLLOW;
       case SUCCESS:
       case LAUNCH:
       case FAILURE:
       case CANCELLATION:
       case SUSPENSION:
       case RESUME:
-        return VIEW_TYPE_DEFAULT;
-      case FOLLOW:
-        return VIEW_TYPE_FRIEND_FOLLOW;
-      case BACKING:
-        return VIEW_TYPE_FRIEND_BACKING;
+        return VIEW_TYPE_PROJECT_STATE_CHANGED;
+      case UPDATE:
+        return VIEW_TYPE_PROJECT_UPDATE;
       default:
-        // TODO: Should raise RuntimeException?
-        return VIEW_TYPE_DEFAULT;
+        throw new RuntimeException("Unhandled view type for activity: " + activity.toString());
     }
   }
 
   @Override
-  public void onBindViewHolder(final ViewHolder view_holder, final int i) {
+  public void onBindViewHolder(final ActivityListViewHolder view_holder, final int i) {
     final Activity activity = activities.get(i);
     view_holder.onBind(activity);
   }
 
   @Override
-  public ViewHolder onCreateViewHolder(final ViewGroup view_group, final int view_type) {
+  public ActivityListViewHolder onCreateViewHolder(final ViewGroup view_group, final int view_type) {
     LayoutInflater layout_inflater = LayoutInflater.from(view_group.getContext());
 
     final View view;
@@ -70,69 +70,19 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
       case VIEW_TYPE_FRIEND_FOLLOW:
         view = layout_inflater.inflate(R.layout.activity_friend_follow_view, view_group, false);
         return new FriendFollowViewHolder(view, presenter);
+      case VIEW_TYPE_PROJECT_STATE_CHANGED:
+        view = layout_inflater.inflate(R.layout.activity_project_state_changed_view, view_group, false);
+        return new ProjectStateChangedViewHolder(view, presenter);
+      case VIEW_TYPE_PROJECT_UPDATE:
+        view = layout_inflater.inflate(R.layout.activity_project_update_view, view_group, false);
+        return new ProjectUpdateViewHolder(view, presenter);
       default:
-        view = layout_inflater.inflate(R.layout.activity_view, view_group, false);
-        return new DefaultViewHolder(view, presenter);
+        throw new RuntimeException("Unhandled view type: " + view_type);
     }
   }
 
   @Override
   public int getItemCount() {
     return activities.size();
-  }
-
-  public static class ViewHolder extends RecyclerView.ViewHolder {
-    protected Activity activity;
-    protected View view;
-    protected Presenter presenter;
-
-    public ViewHolder(final View view, final ActivityFeedPresenter presenter) {
-      super(view);
-
-      this.view = view;
-      this.presenter = presenter;
-    }
-
-    // Subclasses should override this
-    // TODO: Make it an abstract class
-    public void onBind(final Activity activity) {
-      this.activity = activity;
-    }
-  }
-
-  public static class DefaultViewHolder extends ViewHolder {
-    @Optional @InjectView(R.id.id) TextView id;
-
-    public DefaultViewHolder(final View view, final ActivityFeedPresenter presenter) {
-      super(view, presenter);
-      ButterKnife.inject(this, view);
-    }
-  }
-
-  public static class FriendBackingViewHolder extends ViewHolder {
-    @InjectView(R.id.project_name) TextView project_name;
-
-    public FriendBackingViewHolder(final View view, final ActivityFeedPresenter presenter) {
-      super(view, presenter);
-      ButterKnife.inject(this, view);
-    }
-
-    @Override
-    public void onBind(final Activity activity) {
-      super.onBind(activity);
-      project_name.setText(activity.category().toString());
-    }
-  }
-
-  public static class FriendFollowViewHolder extends ViewHolder {
-    public FriendFollowViewHolder(final View view, final ActivityFeedPresenter presenter) {
-      super(view, presenter);
-      ButterKnife.inject(this, view);
-    }
-
-    @Override
-    public void onBind(final Activity activity) {
-      super.onBind(activity);
-    }
   }
 }

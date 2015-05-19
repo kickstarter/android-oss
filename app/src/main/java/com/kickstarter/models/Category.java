@@ -13,7 +13,6 @@ public class Category implements Parcelable {
   public Integer id() { return id; }
   public String name() { return this.name; }
 
-
   @Override
   public int describeContents() {
     return 0;

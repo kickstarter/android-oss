@@ -15,10 +15,15 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.Optional;
 
 public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapter.ViewHolder> {
   private List<Activity> activities;
   private ActivityFeedPresenter presenter;
+
+  private static final int VIEW_TYPE_DEFAULT = 0;
+  private static final int VIEW_TYPE_FRIEND_BACKING = 1;
+  private static final int VIEW_TYPE_FRIEND_FOLLOW = 2;
 
   public ActivityListAdapter(final List<Activity> activities, final ActivityFeedPresenter presenter) {
     this.activities = activities;
@@ -26,19 +31,49 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
   }
 
   @Override
-  public void onBindViewHolder(final ViewHolder view_holder, final int i) {
-    final Activity activity = activities.get(i);
-    view_holder.activity = activity;
-    view_holder.id.setText(Integer.toString(activity.id()));
+  public int getItemViewType(final int position) {
+    switch(activities.get(position).category()) {
+      case UPDATE:
+        return VIEW_TYPE_DEFAULT;
+      case SUCCESS:
+      case LAUNCH:
+      case FAILURE:
+      case CANCELLATION:
+      case SUSPENSION:
+      case RESUME:
+        return VIEW_TYPE_DEFAULT;
+      case FOLLOW:
+        return VIEW_TYPE_FRIEND_FOLLOW;
+      case BACKING:
+        return VIEW_TYPE_FRIEND_BACKING;
+      default:
+        // TODO: Should raise RuntimeException?
+        return VIEW_TYPE_DEFAULT;
+    }
   }
 
   @Override
-  public ViewHolder onCreateViewHolder(final ViewGroup viewGroup, final int i) {
-    View view = LayoutInflater.
-      from(viewGroup.getContext()).
-      inflate(R.layout.activity_view, viewGroup, false);
+  public void onBindViewHolder(final ViewHolder view_holder, final int i) {
+    final Activity activity = activities.get(i);
+    view_holder.onBind(activity);
+  }
 
-    return new ViewHolder(view, presenter);
+  @Override
+  public ViewHolder onCreateViewHolder(final ViewGroup view_group, final int view_type) {
+    LayoutInflater layout_inflater = LayoutInflater.from(view_group.getContext());
+
+    final View view;
+    switch (view_type) {
+      case VIEW_TYPE_FRIEND_BACKING:
+        view = layout_inflater.inflate(R.layout.activity_friend_backing_view, view_group, false);
+        return new FriendBackingViewHolder(view, presenter);
+      case VIEW_TYPE_FRIEND_FOLLOW:
+        view = layout_inflater.inflate(R.layout.activity_friend_follow_view, view_group, false);
+        return new FriendFollowViewHolder(view, presenter);
+      default:
+        view = layout_inflater.inflate(R.layout.activity_view, view_group, false);
+        return new DefaultViewHolder(view, presenter);
+    }
   }
 
   @Override
@@ -47,7 +82,6 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
   }
 
   public static class ViewHolder extends RecyclerView.ViewHolder {
-    @InjectView(R.id.id) TextView id;
     protected Activity activity;
     protected View view;
     protected Presenter presenter;
@@ -57,7 +91,48 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListAdapte
 
       this.view = view;
       this.presenter = presenter;
+    }
+
+    // Subclasses should override this
+    // TODO: Make it an abstract class
+    public void onBind(final Activity activity) {
+      this.activity = activity;
+    }
+  }
+
+  public static class DefaultViewHolder extends ViewHolder {
+    @Optional @InjectView(R.id.id) TextView id;
+
+    public DefaultViewHolder(final View view, final ActivityFeedPresenter presenter) {
+      super(view, presenter);
       ButterKnife.inject(this, view);
+    }
+  }
+
+  public static class FriendBackingViewHolder extends ViewHolder {
+    @InjectView(R.id.project_name) TextView project_name;
+
+    public FriendBackingViewHolder(final View view, final ActivityFeedPresenter presenter) {
+      super(view, presenter);
+      ButterKnife.inject(this, view);
+    }
+
+    @Override
+    public void onBind(final Activity activity) {
+      super.onBind(activity);
+      project_name.setText(activity.category().toString());
+    }
+  }
+
+  public static class FriendFollowViewHolder extends ViewHolder {
+    public FriendFollowViewHolder(final View view, final ActivityFeedPresenter presenter) {
+      super(view, presenter);
+      ButterKnife.inject(this, view);
+    }
+
+    @Override
+    public void onBind(final Activity activity) {
+      super.onBind(activity);
     }
   }
 }

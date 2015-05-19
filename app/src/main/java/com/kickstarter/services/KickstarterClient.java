@@ -31,6 +31,7 @@ public class KickstarterClient {
   }
 
   public Observable<ActivityEnvelope> fetchActivities() {
+    // TODO: Filter categories.
     return service.fetchActivities().retry(3);
   }
 

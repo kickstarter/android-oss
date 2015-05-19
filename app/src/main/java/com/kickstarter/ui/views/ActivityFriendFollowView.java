@@ -1,10 +1,10 @@
 package com.kickstarter.ui.views;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.text.Spannable;
 import android.text.style.StyleSpan;
 import android.util.AttributeSet;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kickstarter.R;
@@ -12,23 +12,19 @@ import com.kickstarter.R;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class ActivityFriendFollowView extends LinearLayout {
+public class ActivityFriendFollowView extends CardView {
   @InjectView(R.id.follow_text) TextView follow_text;
 
   public ActivityFriendFollowView(Context context) {
-    this(context, null);
+    super(context);
   }
 
   public ActivityFriendFollowView(Context context, AttributeSet attrs) {
-    this(context, attrs, 0);
+    super(context, attrs);
   }
 
   public ActivityFriendFollowView(Context context, AttributeSet attrs, int defStyleAttr) {
-    this(context, attrs, defStyleAttr, 0);
-  }
-
-  public ActivityFriendFollowView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-    super(context, attrs, defStyleAttr, defStyleRes);
+    super(context, attrs, defStyleAttr);
   }
 
   @Override

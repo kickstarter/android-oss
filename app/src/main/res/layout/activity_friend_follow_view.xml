@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.kickstarter.ui.views.ActivityFriendFollowView
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
-  android:background="@color/white"
-  android:layout_marginTop="@dimen/keyline_1_half"
-  android:layout_marginBottom="@dimen/keyline_1_half"
-  android:paddingLeft="@dimen/keyline_1"
-  android:paddingRight="@dimen/keyline_1"
-  android:paddingBottom="@dimen/keyline_1"
+  xmlns:card_view="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
-  android:layout_height="wrap_content">
+  android:layout_height="wrap_content"
+  card_view:cardCornerRadius="@dimen/card_corner_radius"
+  card_view:cardBackgroundColor="@android:color/transparent"
+  android:layout_marginLeft="@dimen/card_margin_x"
+  android:layout_marginRight="@dimen/card_margin_x"
+  android:layout_marginTop="@dimen/card_margin_y"
+  android:layout_marginBottom="@dimen/card_margin_y">
 
   <LinearLayout
     android:orientation="horizontal"

@@ -9,9 +9,30 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 public class Category implements Parcelable {
   Integer id = null;
   String name = null;
+  Integer parent_id = null;
 
-  public Integer id() { return id; }
-  public String name() { return this.name; }
+  public Integer id() {
+    return id;
+  }
+
+  public String name() {
+    return name;
+  }
+
+  public Integer parent_id() {
+    return parent_id;
+  }
+
+  // TODO: Should be able to grab a Category rather than dealing with Integers. That would require loading all the
+  // categories (probably on start-up). There is a bunch of work to do on categories, probably best to tackle it all
+  // at once.
+  public Integer root_id() {
+    return isRootValue() ? id() : parent_id();
+  }
+
+  public boolean isRootValue() {
+    return parent_id() == 0;
+  }
 
   @Override
   public int describeContents() {

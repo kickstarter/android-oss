@@ -80,7 +80,7 @@
       </LinearLayout>
 
       <ImageView
-        android:background="#ccccff"
+        android:id="@+id/project_photo"
         android:layout_marginLeft="@dimen/keyline_1_half"
         android:layout_width="@dimen/activity_feed_photo_width"
         android:layout_height="@dimen/activity_feed_photo_height" />

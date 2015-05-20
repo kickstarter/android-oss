@@ -36,7 +36,9 @@ public class FriendBackingViewHolder extends ActivityListViewHolder {
       .into(avatar);
     creator_name.setText(view.getResources().getString(R.string.by_) + activity.project().creator().name());
     project_name.setText(activity.project().name());
-    title.setText(StringUtils.friendBackingActivityTitle(view.getContext(), activity.user().name(), activity.project().category().root_id()));
+    title.setText(StringUtils.friendBackingActivityTitle(view.getContext(),
+      activity.user().name(),
+      activity.project().category().root_id()));
   }
 }
 

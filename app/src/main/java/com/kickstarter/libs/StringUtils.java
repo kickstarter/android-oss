@@ -13,7 +13,7 @@ public class StringUtils {
   }
 
   // TODO: Take category instead of id
-  public static String friendBackingActivityTitleFor(final Context context, final String friend_name, final Integer category_id) {
+  public static String friendBackingActivityTitle(final Context context, final String friend_name, final Integer category_id) {
     final String str;
 
     // TODO: Would be nice to switch on a category enum

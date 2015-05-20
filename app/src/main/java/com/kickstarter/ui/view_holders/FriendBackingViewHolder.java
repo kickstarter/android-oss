@@ -14,6 +14,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class FriendBackingViewHolder extends ActivityListViewHolder {
+  @InjectView(R.id.creator_name) TextView creator_name;
   @InjectView(R.id.project_name) TextView project_name;
   @InjectView(R.id.avatar) ImageView avatar;
 
@@ -25,6 +26,9 @@ public class FriendBackingViewHolder extends ActivityListViewHolder {
   @Override
   public void onBind(final Activity activity) {
     super.onBind(activity);
+
+    creator_name.setText(view.getResources().getString(R.string.by_) + activity.project().creator().name());
+    project_name.setText(activity.project().name());
     Picasso.with(view.getContext())
       .load(activity.user().avatar().small())
       .transform(new CircleTransform())

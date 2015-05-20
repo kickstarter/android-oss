@@ -26,20 +26,21 @@ import android.graphics.Paint;
 import com.squareup.picasso.Transformation;
 
 public class CircleTransform implements Transformation {
+  private int x;
+  private int y;
+
   @Override
   public Bitmap transform(Bitmap source) {
     int size = Math.min(source.getWidth(), source.getHeight());
 
-    int x = (source.getWidth() - size) / 2;
-    int y = (source.getHeight() - size) / 2;
+    this.x = (source.getWidth() - size) / 2;
+    this.y = (source.getHeight() - size) / 2;
 
     Bitmap squaredBitmap = Bitmap.createBitmap(source, x, y, size, size);
     if (squaredBitmap != source) {
       source.recycle();
     }
 
-    // BUG: If the image is a transparent GIF, it will load with black pixels in place of
-    // transparent pixels.
     Bitmap.Config config = source.getConfig() != null ? source.getConfig() : Bitmap.Config.ARGB_8888;
     Bitmap bitmap = Bitmap.createBitmap(size, size, config);
 
@@ -58,6 +59,6 @@ public class CircleTransform implements Transformation {
 
   @Override
   public String key() {
-    return "circle";
+    return "circle(x=" + x + ",y=" + y + ")";
   }
 }

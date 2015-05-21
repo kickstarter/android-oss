@@ -40,6 +40,8 @@
   <!-- Photos -->
   <dimen name="activity_feed_avatar_width">54dp</dimen>
   <dimen name="activity_feed_avatar_height">54dp</dimen>
-  <dimen name="activity_feed_photo_width">96dp</dimen>
-  <dimen name="activity_feed_photo_height">72dp</dimen>
+  <dimen name="activity_feed_small_photo_width">96dp</dimen>
+  <dimen name="activity_feed_small_photo_height">72dp</dimen>
+  <dimen name="activity_feed_medium_photo_width">120dp</dimen>
+  <dimen name="activity_feed_medium_photo_height">90dp</dimen>
 </resources>

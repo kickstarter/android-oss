@@ -4,10 +4,13 @@
   xmlns:card_view="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
+  card_view:cardElevation="0dp"
   card_view:cardCornerRadius="@dimen/card_corner_radius"
-  card_view:cardBackgroundColor="@android:color/transparent"
-  android:layout_marginLeft="@dimen/card_margin_x"
-  android:layout_marginRight="@dimen/card_margin_x"
+  card_view:cardBackgroundColor="@color/white"
+  card_view:contentPaddingTop="@dimen/keyline_1"
+  card_view:contentPaddingBottom="@dimen/keyline_1"
+  card_view:contentPaddingLeft="@dimen/keyline_1"
+  card_view:contentPaddingRight="@dimen/keyline_1"
   android:layout_marginTop="@dimen/card_margin_y"
   android:layout_marginBottom="@dimen/card_margin_y">
 
@@ -35,8 +38,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/keyline_1_half"
-        android:text="McSweeney's: New Books, New Magazines, and a Whole Lot More"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+        android:text="Project Name"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:id="@+id/project_name" />
 
     </LinearLayout>
 
@@ -55,7 +59,7 @@
           android:id="@+id/update_sequence"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="Update #4"
+          android:text="Update #"
           android:textColor="@color/green"
           android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
 
@@ -63,24 +67,27 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_alignParentRight="true"
-          android:text="19 hours ago"
+          android:text="Timestamp"
           android:textColor="@color/dark_gray"
-          android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
+          android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+          android:id="@+id/timestamp" />
       </RelativeLayout>
 
       <TextView
+        android:id="@+id/update_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/keyline_1_half"
-        android:text="Our 50 Most-Read Humor Pieces Ever"
+        android:text="Update Title"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
         android:textColor="@color/text_dark" />
 
         <TextView
+          android:id="@+id/update_body"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/keyline_1_half"
-          android:text="For the month of our Kickstarter, we're counting down the 50 most-read pieces ever published on McSweeney's Internet Tendency. We just arrived at number 33, Classic Movies Charged to Not Be Sexist by Blythe Robertson. You can check out the whole countdown at Twitter at https://twitter.com/mcsweeneys ! We also thought you might like to see what some other Tendency contributors have to say about..."/>
+          android:text="Update Body"/>
 
     </LinearLayout>
 

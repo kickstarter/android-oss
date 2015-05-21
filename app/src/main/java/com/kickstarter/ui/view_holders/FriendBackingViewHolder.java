@@ -30,7 +30,6 @@ public class FriendBackingViewHolder extends ActivityListViewHolder {
   public void onBind(final Activity activity) {
     super.onBind(activity);
 
-
     Picasso.with(view.getContext())
       .load(activity.user().avatar().small())
       .transform(new CircleTransform())

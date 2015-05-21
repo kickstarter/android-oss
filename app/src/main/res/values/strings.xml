@@ -40,6 +40,8 @@
   <string name="friend_name_backed_publishing_project">%1$s backed a Publishing project</string>
   <string name="friend_name_backed_technology_project">%1$s backed a Technology project</string>
   <string name="friend_name_backed_theater_project">%1$s backed a Theater project</string>
+  <string name="funded">funded</string>
+  <string name="goal">goal</string>
   <string name="Help">Help</string>
   <string name="ion_android_more_vertical">\uf397</string>
   <string name="ion_flash">\uf137</string>
@@ -48,6 +50,7 @@
   <string name="ion_locked">\uf200</string>
   <string name="ion_pricetag">\uf2aa</string>
   <string name="is_following_you">is following you!</string>
+  <string name="Launched">Launched</string>
   <string name="Log_in">Log in</string>
   <string name="Log_out">Log out</string>
   <string name="Logged_out">Logged out</string>
@@ -58,9 +61,11 @@
     Please enter your verification code to continue.
   </string>
   <string name="pledged_of_">pledged of\u0020</string>
+  <string name="pledged_of_goal">pledged of %1$s</string>
   <string name="project_of_the_day">Project of the day!</string>
   <string name="project_was_cancelled_by_its_creator">%1$s was cancelled by its creator.</string>
   <string name="project_was_not_successfully_funded">%1$s was not successfully funded.</string>
+  <string name="project_was_successfully_funded">%1$s was successfully funded!</string>
   <string name="project_resumed">%1$s resumed.</string>
   <string name="project_was_suspended">%1$s was suspended.</string>
   <string name="Resend">Resend</string>

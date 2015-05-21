@@ -2,9 +2,17 @@ package com.kickstarter.libs;
 
 import org.joda.time.DateTime;
 import org.joda.time.Period;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 
 public class DateTimeUtils {
   public static int THIRTY_DAYS_IN_SECONDS = 60 * 60 * 24 * 30;
+
+  public static DateTimeFormatter defaultFormatter() {
+    // Wrapper to make this easier to refactor later.
+    return DateTimeFormat.forPattern("yyyy/MM/dd");
+  }
 
   public static String relativeDateInWords(final DateTime date_time) {
     return relativeDateInWords(date_time, true, true, THIRTY_DAYS_IN_SECONDS);
@@ -75,7 +83,7 @@ public class DateTimeUtils {
     } else if (seconds_difference < threshold) {
       return in_string + days_difference + " days" + ago_string;
     } else {
-      return date_time.toString();
+      return date_time.toString(defaultFormatter());
     }
   }
 }

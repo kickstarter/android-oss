@@ -4,11 +4,15 @@ import android.text.style.UpdateAppearance;
 
 import com.google.common.base.Enums;
 
+import org.joda.time.DateTime;
+
 public class Activity {
   String category = null;
+  DateTime created_at = null;
   Integer id = null;
   Project project = null;
   Update update = null;
+  DateTime updated_at = null;
   User user = null;
 
   public enum Category {
@@ -37,8 +41,12 @@ public class Activity {
     return Enums.getIfPresent(Category.class, category.toUpperCase()).or(Category.UNKNOWN);
   }
 
+  public DateTime createdAt() {
+    return created_at;
+  }
+
   public Integer id() {
-    return this.id;
+    return id;
   }
 
   public Project project() {
@@ -47,6 +55,10 @@ public class Activity {
 
   public Update update() {
     return update;
+  }
+
+  public DateTime updatedAt() {
+    return updated_at;
   }
 
   public User user() {

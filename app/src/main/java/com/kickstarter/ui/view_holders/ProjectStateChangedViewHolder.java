@@ -34,9 +34,6 @@ public class ProjectStateChangedViewHolder extends ActivityListViewHolder {
 
   public String titleText(final Activity activity) {
     switch (activity.category()) {
-      case LAUNCH:
-        // TODO: Switch to "You launched a project" if current user launched
-        return view.getResources().getString(R.string.creator_launched_a_project, activity.user().name(), activity.project().name());
       case FAILURE:
         return view.getResources().getString(R.string.project_was_not_successfully_funded, activity.project().name());
       case CANCELLATION:

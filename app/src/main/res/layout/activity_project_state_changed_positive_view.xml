@@ -2,6 +2,7 @@
 <android.support.v7.widget.CardView
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:card_view="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/card_view"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   card_view:cardBackgroundColor="@color/green_darken_10"
@@ -23,18 +24,20 @@
     android:adjustViewBounds="true" />
 
   <LinearLayout
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/keyline_1"
     android:layout_gravity="center"
     android:orientation="vertical">
 
     <TextView
+      android:id="@+id/title"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_gravity="center"
       android:layout_marginBottom="@dimen/keyline_1"
-      android:text="CLI for MySQL/MariaDB was successfully funded!"
       android:gravity="center"
+      android:text="Title"
       android:textAppearance="@style/TextAppearance.AppCompat.Title"
       android:textColor="@color/white" />
 
@@ -51,17 +54,19 @@
         android:orientation="vertical">
 
         <TextView
+          android:id="@+id/left_stat_first"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="$4,804"
+          android:text="Left Stat First"
           android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
           android:textColor="@color/white"
           android:textStyle="bold" />
 
         <TextView
+          android:id="@+id/left_stat_second"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="pledged of $3,000"
+          android:text="Left Stat Second"
           android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
           android:textColor="@color/white" />
 
@@ -75,17 +80,19 @@
         android:orientation="vertical">
 
         <TextView
+          android:id="@+id/right_stat_first"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="Funded"
+          android:text="Right Stat First"
           android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
           android:textColor="@color/white"
           android:textStyle="bold" />
 
         <TextView
+          android:id="@+id/right_stat_second"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="May 6, 2015"
+          android:text="Right Stat Second"
           android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
           android:textColor="@color/white" />
       </LinearLayout>

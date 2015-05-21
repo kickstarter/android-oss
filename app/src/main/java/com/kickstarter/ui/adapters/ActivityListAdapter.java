@@ -40,12 +40,12 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListViewHo
         return VIEW_TYPE_FRIEND_BACKING;
       case FOLLOW:
         return VIEW_TYPE_FRIEND_FOLLOW;
-      case LAUNCH:
       case FAILURE:
       case CANCELLATION:
       case SUSPENSION:
       case RESUME:
         return VIEW_TYPE_PROJECT_STATE_CHANGED;
+      case LAUNCH:
       case SUCCESS:
         return VIEW_TYPE_PROJECT_STATE_CHANGED_POSITIVE;
       case UPDATE:

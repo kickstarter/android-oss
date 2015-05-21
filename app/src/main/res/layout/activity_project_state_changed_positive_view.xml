@@ -4,16 +4,29 @@
   xmlns:card_view="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
+  card_view:cardBackgroundColor="@color/green_darken_10"
   card_view:cardCornerRadius="@dimen/card_corner_radius"
-  card_view:cardBackgroundColor="@android:color/transparent"
   android:layout_marginLeft="@dimen/card_margin_x"
   android:layout_marginRight="@dimen/card_margin_x"
   android:layout_marginTop="@dimen/card_margin_y"
   android:layout_marginBottom="@dimen/card_margin_y">
 
-  <LinearLayout
+  <ImageView
+    android:id="@+id/project_photo"
+    android:alpha="0.2"
     android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:layout_margin="0dp"
+    android:layout_gravity="center_vertical"
+    android:cropToPadding="false"
+    android:scaleType="centerCrop"
+    android:adjustViewBounds="true" />
+
+  <LinearLayout
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_margin="@dimen/keyline_1"
+    android:layout_gravity="center"
     android:orientation="vertical">
 
     <TextView
@@ -29,7 +42,6 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/keyline_1"
-      android:layout_marginBottom="@dimen/keyline_1"
       android:orientation="horizontal">
 
       <LinearLayout
@@ -42,14 +54,15 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="$4,804"
-          android:textAppearance="@style/TextAppearance.AppCompat.Title"
-          android:textColor="@color/white" />
+          android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+          android:textColor="@color/white"
+          android:textStyle="bold" />
 
         <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="pledged of $3,000"
-          android:textAppearance="@style/TextAppearance.AppCompat.Title"
+          android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
           android:textColor="@color/white" />
 
       </LinearLayout>
@@ -65,14 +78,15 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="Funded"
-          android:textAppearance="@style/TextAppearance.AppCompat.Title"
-          android:textColor="@color/white" />
+          android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+          android:textColor="@color/white"
+          android:textStyle="bold" />
 
         <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="May 6, 2015"
-          android:textAppearance="@style/TextAppearance.AppCompat.Title"
+          android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
           android:textColor="@color/white" />
       </LinearLayout>
 

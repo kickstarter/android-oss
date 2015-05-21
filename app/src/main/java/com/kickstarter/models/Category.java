@@ -19,7 +19,7 @@ public class Category implements Parcelable {
     return name;
   }
 
-  public Integer parent_id() {
+  public Integer parentId() {
     return parent_id;
   }
 
@@ -27,11 +27,11 @@ public class Category implements Parcelable {
   // categories (probably on start-up). There is a bunch of work to do on categories, probably best to tackle it all
   // at once.
   public Integer root_id() {
-    return isRootValue() ? id() : parent_id();
+    return isRootValue() ? id() : parentId();
   }
 
   public boolean isRootValue() {
-    return parent_id() == 0;
+    return parentId() == null || parentId() == 0;
   }
 
   @Override

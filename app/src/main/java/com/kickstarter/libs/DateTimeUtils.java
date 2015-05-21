@@ -79,22 +79,3 @@ public class DateTimeUtils {
     }
   }
 }
-
-/*
-  else if (daysDiff == 1.0)
-  {
-    return _KS(@"dates.yesterday", @"yesterday");
-  }
-  else if (secondsDiff < threshold)
-  {
-    if (shortText)	return [NSString stringWithFormat:@"%@%.0f %@%@", inString, daysDiff, _KS(@"dates.units.days", @"days"), agoString];
-    else			return [NSString stringWithFormat:@"%@%.0f %@%@", inString, daysDiff, _KS(@"dates.units.days", @"days"), agoString];
-  }
-  else
-  {
-    return [self formattedStringWithStyle:NSDateFormatterMediumStyle timeStyle:NSDateFormatterNoStyle];
-  }
-
-  return @"";
-}
- */

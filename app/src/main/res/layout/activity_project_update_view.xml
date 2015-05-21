@@ -29,7 +29,6 @@
       <ImageView
         android:id="@+id/project_photo"
         android:adjustViewBounds="true"
-        android:background="#cc3333"
         android:layout_marginRight="@dimen/keyline_1_half"
         android:layout_width="@dimen/activity_feed_small_photo_width"
         android:layout_height="@dimen/activity_feed_small_photo_height" />

@@ -8,6 +8,7 @@ public class Activity {
   String category = null;
   Integer id = null;
   Project project = null;
+  Update update = null;
   User user = null;
 
   public enum Category {
@@ -42,6 +43,10 @@ public class Activity {
 
   public Project project() {
     return project;
+  }
+
+  public Update update() {
+    return update;
   }
 
   public User user() {

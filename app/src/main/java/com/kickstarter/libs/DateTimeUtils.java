@@ -2,6 +2,7 @@ package com.kickstarter.libs;
 
 import org.joda.time.DateTime;
 import org.joda.time.Period;
+import org.joda.time.Seconds;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
@@ -33,9 +34,9 @@ public class DateTimeUtils {
     // TODO: This method is a quick translation from our iOS code, but it needs another pass, e.g.: we should
     // extract these strings, look into JodaTime to see if we can clean anything up..
     DateTime now = new DateTime();
-    Period period = new Period(date_time, now);
-    Integer seconds_difference = period.toStandardSeconds().getSeconds();
-    Integer days_difference = period.toStandardDays().getDays();
+    Seconds seconds = Seconds.secondsBetween(now, date_time);
+    Integer seconds_difference = seconds.getSeconds();
+    Integer days_difference = seconds.toStandardDays().getDays();
 
     String ago_string = "";
     String in_string = "";

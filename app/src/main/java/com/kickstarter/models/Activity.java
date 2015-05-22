@@ -1,7 +1,5 @@
 package com.kickstarter.models;
 
-import android.text.style.UpdateAppearance;
-
 import com.google.common.base.Enums;
 
 import org.joda.time.DateTime;

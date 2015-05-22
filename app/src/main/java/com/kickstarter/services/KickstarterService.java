@@ -5,6 +5,7 @@ import com.kickstarter.services.ApiResponses.AccessTokenEnvelope;
 import com.kickstarter.services.ApiResponses.ActivityEnvelope;
 import com.kickstarter.services.ApiResponses.DiscoverEnvelope;
 
+import java.util.List;
 import java.util.Map;
 
 import retrofit.http.GET;
@@ -16,7 +17,7 @@ import rx.Observable;
 
 /*package*/ interface KickstarterService {
   @GET("/v1/activities")
-  Observable<ActivityEnvelope> fetchActivities();
+  Observable<ActivityEnvelope> fetchActivities(@Query("categories[]") List<String> categories);
 
   @GET("/v1/discover")
   Observable<DiscoverEnvelope> fetchProjects(@QueryMap Map<String, String> params);

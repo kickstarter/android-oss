@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.kickstarter.KsrApplication;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.models.Activity;
+import com.kickstarter.models.ActivityFeedParams;
 import com.kickstarter.services.KickstarterClient;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 
@@ -25,7 +26,7 @@ public class ActivityFeedPresenter extends Presenter<ActivityFeedActivity> {
     super.onCreate(context, savedInstanceState);
     ((KsrApplication) context.getApplicationContext()).component().inject(this);
 
-    activities = client.fetchActivities()
+    activities = client.fetchActivities(new ActivityFeedParams())
       .map(envelope -> envelope.activities)
       .toBlocking().last(); // TODO: Don't block
 

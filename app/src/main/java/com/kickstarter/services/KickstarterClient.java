@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kickstarter.BuildConfig;
 import com.kickstarter.libs.DateTimeTypeConverter;
+import com.kickstarter.models.ActivityFeedParams;
 import com.kickstarter.models.CurrentUser;
 import com.kickstarter.models.DiscoveryParams;
 import com.kickstarter.models.Project;
@@ -30,9 +31,8 @@ public class KickstarterClient {
     service = kickstarterService();
   }
 
-  public Observable<ActivityEnvelope> fetchActivities() {
-    // TODO: Filter categories.
-    return service.fetchActivities().retry(3);
+  public Observable<ActivityEnvelope> fetchActivities(final ActivityFeedParams params) {
+    return service.fetchActivities(params.queryParams()).retry(3);
   }
 
   public Observable<DiscoverEnvelope> fetchProjects(final DiscoveryParams params) {

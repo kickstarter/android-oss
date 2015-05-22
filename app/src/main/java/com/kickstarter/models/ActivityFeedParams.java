@@ -14,8 +14,7 @@ public class ActivityFeedParams {
       Activity.Category.LAUNCH,
       Activity.Category.SUCCESS,
       Activity.Category.UPDATE,
-      Activity.Category.FOLLOW,
-      Activity.Category.WATCH
+      Activity.Category.FOLLOW
     );
   }
 

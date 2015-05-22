@@ -6,9 +6,8 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   card_view:cardBackgroundColor="@color/green_darken_10"
+  card_view:cardElevation="0dp"
   card_view:cardCornerRadius="@dimen/card_corner_radius"
-  android:layout_marginLeft="@dimen/card_margin_x"
-  android:layout_marginRight="@dimen/card_margin_x"
   android:layout_marginTop="@dimen/card_margin_y"
   android:layout_marginBottom="@dimen/card_margin_y">
 

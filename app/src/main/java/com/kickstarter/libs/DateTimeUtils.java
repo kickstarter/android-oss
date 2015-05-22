@@ -30,9 +30,8 @@ public class DateTimeUtils {
     final boolean short_text,
     final boolean explain,
     final int threshold) {
-    // TODO: This method is a quick translation from our iOS code, but it could use another pass.
-    // There is probably some nice cleanup we can do using JodaTime.
-    // TODO: Extract strings
+    // TODO: This method is a quick translation from our iOS code, but it needs another pass, e.g.: we should
+    // extract these strings, look into JodaTime to see if we can clean anything up..
     DateTime now = new DateTime();
     Period period = new Period(date_time, now);
     Integer seconds_difference = period.toStandardSeconds().getSeconds();

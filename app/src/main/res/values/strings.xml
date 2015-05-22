@@ -49,7 +49,6 @@
   <string name="ion_location">\uf1ff</string>
   <string name="ion_locked">\uf200</string>
   <string name="ion_pricetag">\uf2aa</string>
-  <string name="is_following_you">is following you!</string>
   <string name="Launched">Launched</string>
   <string name="Log_in">Log in</string>
   <string name="Log_out">Log out</string>
@@ -81,6 +80,7 @@
   <string name="Unable_to_login">Unable to login</string>
   <string name="Update_sequence">Update #%1$d</string>
   <string name="Use_your_email_address">Use your email address:</string>
+  <string name="username_is_following_you">%1$s is following you!</string>
   <string name="Verify">Verify</string>
   <string name="When_you_back_a_project_or_follow_a_friend">
     When you back a project or follow a friend, their activity will show up here.

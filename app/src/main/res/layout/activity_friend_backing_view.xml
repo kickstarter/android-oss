@@ -28,7 +28,6 @@
 
       <ImageView
         android:id="@+id/avatar"
-        android:background="@android:color/transparent"
         android:adjustViewBounds="true"
         android:layout_marginRight="@dimen/keyline_1_half"
         android:layout_width="@dimen/activity_feed_avatar_width"

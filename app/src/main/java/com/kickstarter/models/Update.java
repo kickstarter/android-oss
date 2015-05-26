@@ -19,7 +19,7 @@ public class Update {
   DateTime updated_at = null;
   Boolean visible = null;
 
-  static final int TRUNCATED_BODY_LENGTH = 400;
+  private static final int TRUNCATED_BODY_LENGTH = 400;
 
   public String body() {
     return body;

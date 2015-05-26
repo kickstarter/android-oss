@@ -16,7 +16,8 @@
     <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
 
     <activity
-      android:name=".ui.activities.ActivityFeedActivity" />
+      android:name=".ui.activities.ActivityFeedActivity"
+      android:theme="@style/ActivityFeedActivity" />
 
     <activity
       android:name=".ui.activities.DiscoveryActivity"

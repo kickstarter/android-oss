@@ -18,11 +18,30 @@
     By signing up you agree to our terms of use, privacy policy, and cookie policy. We’ll never post
     anything without your permission.
   </string>
+  <string name="creator_launched_a_project">%1$s launched a project: %2$s</string>
   <string name="days">days</string>
   <string name="Discover_projects">Discover projects</string>
   <string name="Email_address">Email address</string>
   <string name="Enter_code">Enter code</string>
+  <string name="Follow">Follow</string>
   <string name="Forgot_your_password">Forgot your password?</string>
+  <string name="friend_name_backed_art_project">%1$s backed an Art project</string>
+  <string name="friend_name_backed_comics_project">%1$s backed a Comics project</string>
+  <string name="friend_name_backed_crafts_project">%1$s backed a Crafts project</string>
+  <string name="friend_name_backed_dance_project">%1$s backed a Dance project</string>
+  <string name="friend_name_backed_design_project">%1$s backed a Design project</string>
+  <string name="friend_name_backed_fashion_project">%1$s backed a Fashion project</string>
+  <string name="friend_name_backed_film_project">%1$s backed a Film \u0026 Video project</string>
+  <string name="friend_name_backed_food_project">%1$s backed a Food project</string>
+  <string name="friend_name_backed_games_project">%1$s backed a Games project</string>
+  <string name="friend_name_backed_journalism_project">%1$s backed a Journalism project</string>
+  <string name="friend_name_backed_music_project">%1$s backed a Music project</string>
+  <string name="friend_name_backed_photography_project">%1$s backed a Photography project</string>
+  <string name="friend_name_backed_publishing_project">%1$s backed a Publishing project</string>
+  <string name="friend_name_backed_technology_project">%1$s backed a Technology project</string>
+  <string name="friend_name_backed_theater_project">%1$s backed a Theater project</string>
+  <string name="funded">funded</string>
+  <string name="goal">goal</string>
   <string name="Help">Help</string>
   <string name="ion_android_more_vertical">\uf397</string>
   <string name="ion_flash">\uf137</string>
@@ -30,6 +49,7 @@
   <string name="ion_location">\uf1ff</string>
   <string name="ion_locked">\uf200</string>
   <string name="ion_pricetag">\uf2aa</string>
+  <string name="Launched">Launched</string>
   <string name="Log_in">Log in</string>
   <string name="Log_out">Log out</string>
   <string name="Logged_out">Logged out</string>
@@ -40,7 +60,13 @@
     Please enter your verification code to continue.
   </string>
   <string name="pledged_of_">pledged of\u0020</string>
+  <string name="pledged_of_goal">pledged of %1$s</string>
   <string name="project_of_the_day">Project of the day!</string>
+  <string name="project_was_cancelled_by_its_creator">%1$s was cancelled by its creator.</string>
+  <string name="project_was_not_successfully_funded">%1$s was not successfully funded.</string>
+  <string name="project_was_successfully_funded">%1$s was successfully funded!</string>
+  <string name="project_resumed">%1$s resumed.</string>
+  <string name="project_was_suspended">%1$s was suspended.</string>
   <string name="Resend">Resend</string>
   <string name="Sign_up">Sign up</string>
   <string name="Sign_up_or_log_in_with_your_Facebook_account">
@@ -52,11 +78,14 @@
   <string name="_to_go">\u0020to go</string>
   <string name="Unable_to_connect">Unable to connect</string>
   <string name="Unable_to_login">Unable to login</string>
+  <string name="Update_sequence">Update #%1$d</string>
   <string name="Use_your_email_address">Use your email address:</string>
+  <string name="username_is_following_you">%1$s is following you!</string>
   <string name="Verify">Verify</string>
   <string name="When_you_back_a_project_or_follow_a_friend">
     When you back a project or follow a friend, their activity will show up here.
   </string>
+  <string name="You_launched_a_project">You launched a project: %1$s</string>
 
   <string-array name="spinner_categories_array">
     <item>Staff Picks</item>

@@ -3,11 +3,15 @@ package com.kickstarter.services;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kickstarter.BuildConfig;
+import com.kickstarter.libs.ActivityCategoryTypeConverter;
 import com.kickstarter.libs.DateTimeTypeConverter;
+import com.kickstarter.models.Activity;
+import com.kickstarter.models.ActivityFeedParams;
 import com.kickstarter.models.CurrentUser;
 import com.kickstarter.models.DiscoveryParams;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiResponses.AccessTokenEnvelope;
+import com.kickstarter.services.ApiResponses.ActivityEnvelope;
 import com.kickstarter.services.ApiResponses.DiscoverEnvelope;
 import com.kickstarter.services.ApiResponses.ErrorEnvelope;
 
@@ -27,6 +31,10 @@ public class KickstarterClient {
   public KickstarterClient(final CurrentUser currentUser) {
     this.currentUser = currentUser;
     service = kickstarterService();
+  }
+
+  public Observable<ActivityEnvelope> fetchActivities(final ActivityFeedParams params) {
+    return service.fetchActivities(params.queryParams()).retry(3);
   }
 
   public Observable<DiscoverEnvelope> fetchProjects(final DiscoveryParams params) {
@@ -75,6 +83,7 @@ public class KickstarterClient {
 
   private GsonConverter gsonConverter() {
     Gson gson = new GsonBuilder()
+      .registerTypeAdapter(Activity.Category.class, new ActivityCategoryTypeConverter())
       .registerTypeAdapter(DateTime.class, new DateTimeTypeConverter())
       .create();
 

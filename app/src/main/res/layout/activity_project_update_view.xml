@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:card_view="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  card_view:cardElevation="0dp"
+  card_view:cardCornerRadius="@dimen/card_corner_radius"
+  card_view:cardBackgroundColor="@color/white"
+  card_view:contentPaddingTop="@dimen/keyline_1"
+  card_view:contentPaddingBottom="@dimen/keyline_1"
+  card_view:contentPaddingLeft="@dimen/keyline_1"
+  card_view:contentPaddingRight="@dimen/keyline_1"
+  android:layout_marginTop="@dimen/card_margin_y"
+  android:layout_marginBottom="@dimen/card_margin_y">
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/keyline_1"
+      android:gravity="center_vertical"
+      android:orientation="horizontal">
+
+      <ImageView
+        android:id="@+id/project_photo"
+        android:adjustViewBounds="true"
+        android:layout_marginRight="@dimen/keyline_1_half"
+        android:layout_width="@dimen/activity_feed_small_photo_width"
+        android:layout_height="@dimen/activity_feed_small_photo_height" />
+
+      <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/keyline_1_half"
+        android:text="Project Name"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:id="@+id/project_name" />
+
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
+
+      <RelativeLayout
+        android:layout_marginTop="@dimen/keyline_1"
+        android:layout_marginBottom="@dimen/keyline_1_half"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+          android:id="@+id/update_sequence"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Update #"
+          android:textColor="@color/green"
+          android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentRight="true"
+          android:text="Timestamp"
+          android:textColor="@color/dark_gray"
+          android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+          android:id="@+id/timestamp" />
+      </RelativeLayout>
+
+      <TextView
+        android:id="@+id/update_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/keyline_1_half"
+        android:text="Update Title"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:textColor="@color/text_dark" />
+
+        <TextView
+          android:id="@+id/update_body"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/keyline_1_half"
+          android:text="Update Body"/>
+
+    </LinearLayout>
+
+  </LinearLayout>
+</android.support.v7.widget.CardView>

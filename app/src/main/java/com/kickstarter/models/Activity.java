@@ -1,11 +1,9 @@
 package com.kickstarter.models;
 
-import com.google.common.base.Enums;
-
 import org.joda.time.DateTime;
 
 public class Activity {
-  String category = null;
+  Category category = null;
   DateTime created_at = null;
   Integer id = null;
   Project project = null;
@@ -36,7 +34,7 @@ public class Activity {
   }
 
   public Category category() {
-    return Enums.getIfPresent(Category.class, category.toUpperCase()).or(Category.UNKNOWN);
+    return category;
   }
 
   public DateTime createdAt() {

@@ -3,7 +3,9 @@ package com.kickstarter.services;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kickstarter.BuildConfig;
+import com.kickstarter.libs.ActivityCategoryTypeConverter;
 import com.kickstarter.libs.DateTimeTypeConverter;
+import com.kickstarter.models.Activity;
 import com.kickstarter.models.ActivityFeedParams;
 import com.kickstarter.models.CurrentUser;
 import com.kickstarter.models.DiscoveryParams;
@@ -81,6 +83,7 @@ public class KickstarterClient {
 
   private GsonConverter gsonConverter() {
     Gson gson = new GsonBuilder()
+      .registerTypeAdapter(Activity.Category.class, new ActivityCategoryTypeConverter())
       .registerTypeAdapter(DateTime.class, new DateTimeTypeConverter())
       .create();
 

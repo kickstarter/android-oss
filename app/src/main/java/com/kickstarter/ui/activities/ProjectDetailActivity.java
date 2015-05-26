@@ -42,7 +42,7 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     setContentView(R.layout.project_detail_layout);
     ButterKnife.inject(this);
 
-    Intent intent = getIntent();
+    final Intent intent = getIntent();
     final Project project = intent.getExtras().getParcelable("project");
     presenter.takeProject(project);
   }

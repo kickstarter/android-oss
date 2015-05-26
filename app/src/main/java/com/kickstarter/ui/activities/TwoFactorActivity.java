@@ -28,7 +28,7 @@ public class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
     setContentView(R.layout.two_factor_layout);
     ButterKnife.inject(this);
 
-    Intent intent = getIntent();
+    final Intent intent = getIntent();
     String email = intent.getExtras().getString("email");
     String password = intent.getExtras().getString("password");
     presenter.takeEmailAndPassword(email, password);

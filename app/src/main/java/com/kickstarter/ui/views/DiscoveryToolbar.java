@@ -67,12 +67,12 @@ public class DiscoveryToolbar extends Toolbar {
   }
 
   protected void toggleLogin() {
-    User user = currentUser.getUser();
+    final User user = currentUser.getUser();
     if (user != null) {
       login_button.setVisibility(GONE);
       current_user_button.setVisibility(VISIBLE);
       current_user_button.setOnClickListener(v -> {
-        PopupMenu popup = new PopupMenu(v.getContext(), current_user_button);
+        final PopupMenu popup = new PopupMenu(v.getContext(), current_user_button);
         popup.getMenuInflater().inflate(R.menu.current_user_menu, popup.getMenu());
 
         popup.setOnMenuItemClickListener(item -> {
@@ -99,13 +99,13 @@ public class DiscoveryToolbar extends Toolbar {
   }
 
   protected void initializeCategorySpinner() {
-    ArrayAdapter<CharSequence> adapter;
+    final ArrayAdapter<CharSequence> adapter;
     if (!isInEditMode()) {
       adapter = ArrayAdapter.createFromResource(getContext(),
         R.array.spinner_categories_array,
         android.R.layout.simple_spinner_item);
     } else {
-      String sample_data[] = {"Staff Picks"};
+      final String sample_data[] = {"Staff Picks"};
       adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, sample_data);
     }
     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -115,7 +115,7 @@ public class DiscoveryToolbar extends Toolbar {
     category_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
       @Override
       public void onItemSelected(final AdapterView<?> spinner, final View view, final int position, final long itemId) {
-        String item = spinner.getItemAtPosition(position).toString();
+        final String item = spinner.getItemAtPosition(position).toString();
       }
 
       @Override
@@ -126,7 +126,7 @@ public class DiscoveryToolbar extends Toolbar {
 
   protected void logout(final View v) {
     currentUser.unset();
-    Intent intent = new Intent(getContext(), DiscoveryActivity.class)
+    final Intent intent = new Intent(getContext(), DiscoveryActivity.class)
       .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
     v.getContext().startActivity(intent);
   }

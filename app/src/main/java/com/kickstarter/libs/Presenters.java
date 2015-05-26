@@ -23,7 +23,7 @@ public class Presenters {
   public <T extends Presenter> T fetch(final Context context,
     final Class<T> presenterClass,
     final Bundle savedInstanceState) {
-    String id = fetchId(savedInstanceState);
+    final String id = fetchId(savedInstanceState);
     Presenter presenter = presenters.get(id);
 
     if (presenter == null) {
@@ -45,15 +45,15 @@ public class Presenters {
     presenters.inverse().remove(presenter);
   }
 
-  public void save(Presenter presenter, Bundle envelope) {
+  public void save(final Presenter presenter, final Bundle envelope) {
     envelope.putString(PRESENTER_ID_KEY, presenters.inverse().get(presenter));
 
-    Bundle state = new Bundle();
+    final Bundle state = new Bundle();
     presenter.save(state);
     envelope.putBundle(PRESENTER_STATE_KEY, state);
   }
 
-  protected String fetchId(Bundle savedInstanceState) {
+  protected String fetchId(final Bundle savedInstanceState) {
     return savedInstanceState != null ?
       savedInstanceState.getString(PRESENTER_ID_KEY) :
       UUID.randomUUID().toString();

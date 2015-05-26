@@ -8,7 +8,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
 public class DateTimeUtils {
-  public static int THIRTY_DAYS_IN_SECONDS = 60 * 60 * 24 * 30;
+  public final static int THIRTY_DAYS_IN_SECONDS = 60 * 60 * 24 * 30;
 
   public static DateTimeFormatter defaultFormatter() {
     // Wrapper to make this easier to refactor later.
@@ -33,8 +33,8 @@ public class DateTimeUtils {
     final int threshold) {
     // TODO: This method is a quick translation from our iOS code, but it needs another pass, e.g.: we should
     // extract these strings, look into JodaTime to see if we can clean anything up..
-    DateTime now = new DateTime();
-    Seconds seconds = Seconds.secondsBetween(date_time, now);
+    final DateTime now = new DateTime();
+    final Seconds seconds = Seconds.secondsBetween(date_time, now);
     Integer seconds_difference = seconds.getSeconds();
     Integer days_difference = seconds.toStandardDays().getDays();
 

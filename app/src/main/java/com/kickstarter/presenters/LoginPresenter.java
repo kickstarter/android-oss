@@ -76,7 +76,7 @@ public class LoginPresenter extends Presenter<LoginActivity> {
   private void success(final AccessTokenEnvelope envelope) {
     if (hasView()) {
       currentUser.set(envelope.user, envelope.access_token);
-      Intent intent = new Intent(view(), DiscoveryActivity.class)
+      final Intent intent = new Intent(view(), DiscoveryActivity.class)
         .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
       view().startActivity(intent);
     }
@@ -108,7 +108,7 @@ public class LoginPresenter extends Presenter<LoginActivity> {
   }
 
   private void startTwoFactorActivity() {
-    Intent intent = new Intent(view(), TwoFactorActivity.class);
+    final Intent intent = new Intent(view(), TwoFactorActivity.class);
     // TODO: Fetching the details from the view seems a little dirty, it would be nice if we
     // could pass along the email and password that generated the event.
     intent.putExtra("email", view().email.getText().toString());

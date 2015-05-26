@@ -49,7 +49,7 @@ public class KsrApplication extends Application {
   }
 
   public static RefWatcher getRefWatcher(final Context context) {
-    KsrApplication application = (KsrApplication) context.getApplicationContext();
+    final KsrApplication application = (KsrApplication) context.getApplicationContext();
     return application.refWatcher;
   }
 }

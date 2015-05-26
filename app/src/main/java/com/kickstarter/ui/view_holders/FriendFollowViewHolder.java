@@ -34,7 +34,7 @@ public class FriendFollowViewHolder extends ActivityListViewHolder {
       .into(avatar);
 
     title.setText(view.getResources().getString(R.string.username_is_following_you, activity.user().name()));
-    Spannable title_str = (Spannable) title.getText();
+    final Spannable title_str = (Spannable) title.getText();
     title_str.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
       0,
       activity.user().name().length(),

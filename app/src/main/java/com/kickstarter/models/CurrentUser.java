@@ -28,7 +28,7 @@ public class CurrentUser {
   public void set(final User user, final String access_token) {
     Timber.d("Set current user to %s", user.name());
 
-    SharedPreferences.Editor editor = sharedPreferences.edit();
+    final SharedPreferences.Editor editor = sharedPreferences.edit();
     editor.putString(USER_KEY, gson.toJson(user, User.class));
     editor.putString(ACCESS_TOKEN_KEY, access_token);
     editor.apply();
@@ -37,7 +37,7 @@ public class CurrentUser {
   public void unset() {
     Timber.d("Unset current user");
 
-    SharedPreferences.Editor editor = sharedPreferences.edit();
+    final SharedPreferences.Editor editor = sharedPreferences.edit();
     editor.remove(USER_KEY);
     editor.remove(ACCESS_TOKEN_KEY);
     editor.apply();

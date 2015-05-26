@@ -34,7 +34,7 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListViewHo
 
   @Override
   public int getItemViewType(final int position) {
-    Activity activity = activities.get(position);
+    final Activity activity = activities.get(position);
     switch(activity.category()) {
       case BACKING:
         return VIEW_TYPE_FRIEND_BACKING;
@@ -63,7 +63,7 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListViewHo
 
   @Override
   public ActivityListViewHolder onCreateViewHolder(final ViewGroup view_group, final int view_type) {
-    LayoutInflater layout_inflater = LayoutInflater.from(view_group.getContext());
+    final LayoutInflater layout_inflater = LayoutInflater.from(view_group.getContext());
 
     final View view;
     switch (view_type) {

@@ -12,15 +12,15 @@ import javax.inject.Inject;
 public class IonIconTextView extends TextView {
   @Inject Font font;
 
-  public IonIconTextView(Context context) {
+  public IonIconTextView(final Context context) {
     super(context);
   }
 
-  public IonIconTextView(Context context, AttributeSet attrs) {
+  public IonIconTextView(final Context context, final AttributeSet attrs) {
     super(context, attrs);
   }
 
-  public IonIconTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+  public IonIconTextView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
     super(context, attrs, defStyleAttr);
   }
 

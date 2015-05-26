@@ -49,7 +49,7 @@ public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
   }
 
   public void discoverProjectsButtonOnClick(final View view) {
-    Intent intent = new Intent(this, DiscoveryActivity.class);
+    final Intent intent = new Intent(this, DiscoveryActivity.class);
     startActivity(intent);
   }
 

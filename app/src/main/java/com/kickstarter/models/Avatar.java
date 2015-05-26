@@ -22,6 +22,7 @@ public class Avatar implements Parcelable {
   public String medium() {
     return medium;
   }
+
   @Override
   public int describeContents() { return 0; }
 

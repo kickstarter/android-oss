@@ -57,7 +57,7 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
     super.onSaveInstanceState(outState);
     Timber.d("onSaveInstanceState %s", this.toString());
 
-    Bundle presenterEnvelope = new Bundle();
+    final Bundle presenterEnvelope = new Bundle();
     if (presenter != null) {
       Presenters.getInstance().save(presenter, presenterEnvelope);
     }
@@ -67,8 +67,8 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
 
   private final void fetchPresenter(Bundle presenterEnvelope) {
     if (presenter == null) {
-      RequiresPresenter annotation = getClass().getAnnotation(RequiresPresenter.class);
-      Class<PresenterType> presenterClass = annotation == null ? null : (Class<PresenterType>) annotation.value();
+      final RequiresPresenter annotation = getClass().getAnnotation(RequiresPresenter.class);
+      final Class<PresenterType> presenterClass = annotation == null ? null : (Class<PresenterType>) annotation.value();
       if (presenterClass != null) {
         presenter = Presenters.getInstance().fetch(this,
           presenterClass,

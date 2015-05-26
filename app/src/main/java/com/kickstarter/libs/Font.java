@@ -6,7 +6,7 @@ import android.graphics.Typeface;
 public class Font {
   private Typeface ionIconTypeface;
 
-  public Font(Application application) {
+  public Font(final Application application) {
     this.ionIconTypeface = Typeface.createFromAsset(application.getAssets(), "fonts/ionicons.ttf");
   }
 

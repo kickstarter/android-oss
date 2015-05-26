@@ -72,7 +72,7 @@ public class KickstarterClient {
   private ErrorHandler errorHandler() {
     return cause -> {
       if (cause.getKind() == RetrofitError.Kind.HTTP) {
-        ErrorEnvelope envelope = (ErrorEnvelope) cause.getBodyAs(ErrorEnvelope.class);
+        final ErrorEnvelope envelope = (ErrorEnvelope) cause.getBodyAs(ErrorEnvelope.class);
         return new ApiError(cause, envelope);
       } else {
         // NETWORK or UNEXPECTED error.
@@ -82,7 +82,7 @@ public class KickstarterClient {
   }
 
   private GsonConverter gsonConverter() {
-    Gson gson = new GsonBuilder()
+    final Gson gson = new GsonBuilder()
       .registerTypeAdapter(Activity.Category.class, new ActivityCategoryTypeConverter())
       .registerTypeAdapter(DateTime.class, new DateTimeTypeConverter())
       .create();

@@ -30,7 +30,7 @@ public class ActivityFeedPresenter extends Presenter<ActivityFeedActivity> {
       .map(envelope -> envelope.activities)
       .toBlocking().last(); // TODO: Don't block
 
-    Subscription subscription = viewSubject
+    final Subscription subscription = viewSubject
       .filter(v -> v != null)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(v -> v.onItemsNext(activities));

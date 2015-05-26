@@ -25,7 +25,7 @@ public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
   }
 
   public void takeProject(final Project project) {
-    Subscription subscription = RxUtils.combineLatestPair(client.fetchProject(project), viewSubject)
+    final Subscription subscription = RxUtils.combineLatestPair(client.fetchProject(project), viewSubject)
       .filter(v -> v.second != null)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(v -> v.second.show(v.first));

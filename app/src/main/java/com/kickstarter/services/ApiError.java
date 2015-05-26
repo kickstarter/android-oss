@@ -5,8 +5,8 @@ import retrofit.RetrofitError;
 
 
 public class ApiError extends RuntimeException {
-  private RetrofitError retrofitError;
-  private ErrorEnvelope errorEnvelope;
+  private final RetrofitError retrofitError;
+  private final ErrorEnvelope errorEnvelope;
 
   ApiError(final RetrofitError retrofitError, final ErrorEnvelope errorEnvelope) {
     this.retrofitError = retrofitError;

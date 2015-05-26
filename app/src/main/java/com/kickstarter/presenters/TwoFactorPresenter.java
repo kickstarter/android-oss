@@ -74,7 +74,7 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
   private void success(final AccessTokenEnvelope envelope) {
     if (hasView()) {
       currentUser.set(envelope.user, envelope.access_token);
-      Intent intent = new Intent(view(), DiscoveryActivity.class)
+      final Intent intent = new Intent(view(), DiscoveryActivity.class)
         .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
       view().startActivity(intent);
     }

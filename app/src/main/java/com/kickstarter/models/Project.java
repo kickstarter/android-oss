@@ -43,7 +43,7 @@ public class Project implements Parcelable {
       return false;
     }
 
-    DateTime startOfDayUTC = new DateTime(DateTimeZone.UTC).withTime(0, 0, 0, 0);
+    final DateTime startOfDayUTC = new DateTime(DateTimeZone.UTC).withTime(0, 0, 0, 0);
     return startOfDayUTC.isEqual(potd_at.withZone(DateTimeZone.UTC));
   }
 
@@ -56,12 +56,12 @@ public class Project implements Parcelable {
   }
 
   public Long timeIntervalUntilDeadline() {
-    Duration duration = new Duration(new DateTime(), deadline);
+    final Duration duration = new Duration(new DateTime(), deadline);
     return Math.max(0L, duration.getStandardSeconds());
   }
 
   public Integer deadlineCountdown() {
-    Long seconds = timeIntervalUntilDeadline();
+    final Long seconds = timeIntervalUntilDeadline();
     if (seconds <= 120.0) {
       return seconds.intValue(); // seconds
     } else if (seconds <= 120.0 * 60.0) {
@@ -74,7 +74,7 @@ public class Project implements Parcelable {
 
   public String deadlineCountdownUnit() {
     // TODO: Extract into string resource - needs context for lookup though
-    Long seconds = timeIntervalUntilDeadline();
+    final Long seconds = timeIntervalUntilDeadline();
     if (seconds <= 1.0 && seconds > 0.0) {
       return "secs";
     } else if (seconds <= 120.0) {

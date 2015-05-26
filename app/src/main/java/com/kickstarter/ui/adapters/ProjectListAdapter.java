@@ -53,15 +53,14 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
       load(project.photo().full()).
       into(viewHolder.photo);
 
-    int potd_visible = project.isPotdToday() ? View.VISIBLE : View.INVISIBLE;
+    final int potd_visible = project.isPotdToday() ? View.VISIBLE : View.INVISIBLE;
     viewHolder.photo_gradient.setVisibility(potd_visible);
     viewHolder.potd_group.setVisibility(potd_visible);
   }
 
-  // Create the view
   @Override
   public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-    View view = LayoutInflater.
+    final View view = LayoutInflater.
       from(viewGroup.getContext()).
       inflate(R.layout.project_card_view, viewGroup, false);
 

@@ -23,7 +23,7 @@ public class Presenter<ViewType> {
     onDropView();
   }
 
-  protected void onResume(ViewType view) {
+  protected void onResume(final ViewType view) {
     Timber.d("onResume %s", this.toString());
     onTakeView(view);
   }
@@ -35,7 +35,7 @@ public class Presenter<ViewType> {
 
   protected void onDestroy() {
     Timber.d("onDestroy %s", this.toString());
-    for (Subscription subscription : subscriptions) {
+    for (final Subscription subscription : subscriptions) {
       subscription.unsubscribe();
     }
 
@@ -73,24 +73,24 @@ public class Presenter<ViewType> {
   }
 
   public final <T> Subscription subscribeTo(final Observable<T> ob, final Action1<? super T> onNext) {
-    Subscription s = ob.subscribe(onNext);
+    final Subscription s = ob.subscribe(onNext);
     subscriptions.add(s);
     return s;
   }
 
   public final <T> Subscription subscribeTo(final Observable<T> ob, final Action1<? super T> onNext, final Action1<Throwable> onError) {
-    Subscription s = ob.subscribe(onNext, onError);
+    final Subscription s = ob.subscribe(onNext, onError);
     subscriptions.add(s);
     return s;
   }
 
   public final <T> Subscription subscribeTo(final Observable<T> ob, final Action1<? super T> onNext, final Action1<Throwable> onError, final Action0 onComplete) {
-    Subscription s = ob.subscribe(onNext, onError, onComplete);
+    final Subscription s = ob.subscribe(onNext, onError, onComplete);
     subscriptions.add(s);
     return s;
   }
 
-  public final void save(Bundle state) {
+  public final void save(final Bundle state) {
     Timber.d("save %s", this.toString());
     // TODO
   }

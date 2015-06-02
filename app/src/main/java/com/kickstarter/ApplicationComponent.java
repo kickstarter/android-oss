@@ -9,7 +9,7 @@ import com.kickstarter.presenters.TwoFactorPresenter;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.views.DiscoveryToolbar;
-import com.kickstarter.ui.views.IonIconTextView;
+import com.kickstarter.ui.views.IconTextView;
 
 import javax.inject.Singleton;
 
@@ -24,7 +24,7 @@ public interface ApplicationComponent {
   void inject(DiscoveryActivity activity);
   void inject(DiscoveryToolbar toolbar);
   void inject(DiscoveryPresenter presenter);
-  void inject(IonIconTextView view);
+  void inject(IconTextView view);
   void inject(KsrApplication application);
   void inject(LoginPresenter presenter);
   void inject(ProjectDetailPresenter presenter);

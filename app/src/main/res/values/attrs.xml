@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <declare-styleable name="IconTextView">
+    <attr name="iconType">
+      <enum name="material" value="0" />
+      <enum name="ion" value="1" />
+    </attr>
+  </declare-styleable>
+</resources>

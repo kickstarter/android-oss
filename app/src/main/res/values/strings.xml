@@ -43,12 +43,6 @@
   <string name="funded">funded</string>
   <string name="goal">goal</string>
   <string name="Help">Help</string>
-  <string name="ion_android_more_vertical">\uf397</string>
-  <string name="ion_flash">\uf137</string>
-  <string name="ion_heart">\uf141</string>
-  <string name="ion_location">\uf1ff</string>
-  <string name="ion_locked">\uf200</string>
-  <string name="ion_pricetag">\uf2aa</string>
   <string name="Launched">Launched</string>
   <string name="Log_in">Log in</string>
   <string name="Log_out">Log out</string>

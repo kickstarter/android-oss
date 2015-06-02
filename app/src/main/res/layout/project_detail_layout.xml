@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:icon_text_view="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
@@ -61,13 +62,14 @@
       android:orientation="horizontal"
       android:paddingBottom="@dimen/keyline_1_half">
 
-      <com.kickstarter.ui.views.IonIconTextView
+      <com.kickstarter.ui.views.IconTextView
+        icon_text_view:iconType="material"
         android:id="@+id/category_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:paddingRight="@dimen/card_padding_action_half"
-        android:text="@string/ion_pricetag"
+        android:text="local_offer"
         android:textColor="@color/text_dark" />
 
       <TextView
@@ -80,7 +82,8 @@
         android:paddingRight="@dimen/card_padding_action"
         android:textColor="@color/text_dark" />
 
-      <com.kickstarter.ui.views.IonIconTextView
+      <com.kickstarter.ui.views.IconTextView
+        icon_text_view:iconType="material"
         android:id="@+id/location_icon"
         android:layout_gravity="center_vertical"
         android:layout_toRightOf="@id/category"
@@ -88,7 +91,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/card_padding_action"
         android:paddingRight="@dimen/card_padding_action_half"
-        android:text="@string/ion_location"
+        android:text="location_on"
         android:textColor="@color/text_dark" />
 
       <TextView

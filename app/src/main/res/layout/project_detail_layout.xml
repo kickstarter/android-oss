@@ -1,120 +1,167 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:icon_text_view="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/main_content"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:orientation="vertical"
-  android:background="@android:color/background_dark"
-  tools:context="com.kickstarter.ui.activities.ProjectDetailActivity">
+  android:fitsSystemWindows="true">
 
-  <ImageView
-    android:id="@+id/photo"
-    android:adjustViewBounds="true"
+  <android.support.design.widget.AppBarLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" />
+    android:layout_height="256dp"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    android:fitsSystemWindows="true">
 
-  <LinearLayout
+    <android.support.design.widget.CollapsingToolbarLayout
+      android:id="@+id/collapsing_toolbar_layout"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      app:layout_scrollFlags="scroll|exitUntilCollapsed"
+      android:fitsSystemWindows="true"
+      app:contentScrim="?attr/colorPrimary">
+
+      <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        app:layout_collapseMode="parallax">
+
+        <ImageView
+          android:id="@+id/photo"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:scaleType="centerCrop"/>
+
+        <View
+          android:id="@+id/photo_gradient"
+          android:layout_width="match_parent"
+          android:layout_height="180dp"
+          android:layout_alignLeft="@+id/photo"
+          android:layout_alignBottom="@+id/photo"
+          android:background="@drawable/photo_gradient"/>
+
+      </RelativeLayout>
+
+      <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:layout_collapseMode="pin" />
+
+    </android.support.design.widget.CollapsingToolbarLayout>
+
+  </android.support.design.widget.AppBarLayout>
+
+  <android.support.v4.widget.NestedScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:padding="@dimen/keyline_1"
-    android:orientation="vertical">
-
-    <TextView
-      android:id="@+id/name"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-      android:textColor="@color/text_dark"
-      android:paddingBottom="@dimen/keyline_1_half" />
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <LinearLayout
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:paddingBottom="@dimen/keyline_1_half">
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      android:padding="@dimen/keyline_1">
 
-      <TextView
+      <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/by_"
-        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-        android:textColor="@color/text_dark" />
+        android:paddingBottom="@dimen/keyline_1_half">
+
+        <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/by_"
+          android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+          android:textColor="@color/text_dark" />
+
+        <TextView
+          android:id="@+id/creator_name"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+          android:textColor="@color/text_dark" />
+      </LinearLayout>
 
       <TextView
-        android:id="@+id/creator_name"
+        android:id="@+id/blurb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textColor="@color/text_dark"
+        android:paddingBottom="@dimen/keyline_1_half" />
+
+      <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-        android:textColor="@color/text_dark" />
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/keyline_1_half">
+
+        <com.kickstarter.ui.views.IconTextView
+          icon_text_view:iconType="material"
+          android:id="@+id/category_icon"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_vertical"
+          android:paddingRight="@dimen/card_padding_action_half"
+          android:text="local_offer"
+          android:textColor="@color/text_dark" />
+
+        <TextView
+          android:id="@+id/category"
+          android:layout_gravity="center_vertical"
+          android:layout_toRightOf="@id/category_icon"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:paddingLeft="@dimen/card_padding_action_half"
+          android:paddingRight="@dimen/card_padding_action"
+          android:textColor="@color/text_dark" />
+
+        <com.kickstarter.ui.views.IconTextView
+          icon_text_view:iconType="material"
+          android:id="@+id/location_icon"
+          android:layout_gravity="center_vertical"
+          android:layout_toRightOf="@id/category"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:paddingLeft="@dimen/card_padding_action"
+          android:paddingRight="@dimen/card_padding_action_half"
+          android:text="location_on"
+          android:textColor="@color/text_dark" />
+
+        <TextView
+          android:id="@+id/location"
+          android:layout_gravity="center_vertical"
+          android:layout_toRightOf="@id/location_icon"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:paddingLeft="@dimen/card_padding_action_half"
+          android:textColor="@color/text_dark" />
+
+      </LinearLayout>
+
+      <ProgressBar
+        style="@style/KsrProgressBar"
+        android:id="@+id/percentage_funded"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/progress_bar_min_height"
+        android:paddingTop="@dimen/keyline_1_half"
+        android:paddingBottom="@dimen/keyline_1_half"
+        android:progress="50" />
+
+      <include layout="@layout/project_stats_layout" />
+
+      <TextView
+        android:id="@+id/placeholder_text"
+        android:layout_width="match_parent"
+        android:layout_height="500dp" />
+
     </LinearLayout>
 
-    <TextView
-      android:id="@+id/blurb"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-      android:textColor="@color/text_dark"
-      android:paddingBottom="@dimen/keyline_1_half" />
+  </android.support.v4.widget.NestedScrollView>
 
-    <LinearLayout
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      android:paddingBottom="@dimen/keyline_1_half">
-
-      <com.kickstarter.ui.views.IconTextView
-        icon_text_view:iconType="material"
-        android:id="@+id/category_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:paddingRight="@dimen/card_padding_action_half"
-        android:text="local_offer"
-        android:textColor="@color/text_dark" />
-
-      <TextView
-        android:id="@+id/category"
-        android:layout_gravity="center_vertical"
-        android:layout_toRightOf="@id/category_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/card_padding_action_half"
-        android:paddingRight="@dimen/card_padding_action"
-        android:textColor="@color/text_dark" />
-
-      <com.kickstarter.ui.views.IconTextView
-        icon_text_view:iconType="material"
-        android:id="@+id/location_icon"
-        android:layout_gravity="center_vertical"
-        android:layout_toRightOf="@id/category"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/card_padding_action"
-        android:paddingRight="@dimen/card_padding_action_half"
-        android:text="location_on"
-        android:textColor="@color/text_dark" />
-
-      <TextView
-        android:id="@+id/location"
-        android:layout_gravity="center_vertical"
-        android:layout_toRightOf="@id/location_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/card_padding_action_half"
-        android:textColor="@color/text_dark" />
-
-    </LinearLayout>
-
-    <ProgressBar
-      style="@style/KsrProgressBar"
-      android:id="@+id/percentage_funded"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:minHeight="@dimen/progress_bar_min_height"
-      android:paddingTop="@dimen/keyline_1_half"
-      android:paddingBottom="@dimen/keyline_1_half"
-      android:progress="50" />
-
-    <include layout="@layout/project_stats_layout" />
-  </LinearLayout>
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

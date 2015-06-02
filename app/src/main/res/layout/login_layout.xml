@@ -34,24 +34,36 @@
       android:gravity="center"
       android:textColor="@color/dark_gray"
       android:text="@string/Are_those_new_shoes" />
-    
-    <EditText
-      android:id="@+id/email"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:inputType="textEmailAddress"
-      android:singleLine="true"
-      android:hint="@string/Email_address" />
 
-    <EditText
-      android:id="@+id/password"
+    <android.support.design.widget.TextInputLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginBottom="@dimen/keyline_1_half"
-      android:fontFamily="sans-serif"
-      android:singleLine="true"
-      android:hint="@string/Password"
-      android:inputType="textPassword" />
+      android:layout_height="wrap_content">
+
+      <EditText
+        android:id="@+id/email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:singleLine="true"
+        android:hint="@string/Email_address" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <EditText
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/keyline_1_half"
+        android:fontFamily="sans-serif"
+        android:singleLine="true"
+        android:hint="@string/Password"
+        android:inputType="textPassword" />
+
+    </android.support.design.widget.TextInputLayout>
 
     <Button
       android:id="@+id/login_button"

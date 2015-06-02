@@ -3,7 +3,7 @@ package com.kickstarter.ui.activities;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.EditText;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
@@ -16,8 +16,8 @@ import timber.log.Timber;
 
 @RequiresPresenter(LoginPresenter.class)
 public class LoginActivity extends BaseActivity<LoginPresenter> {
-  public @InjectView(R.id.email) TextView email;
-  public @InjectView(R.id.password) TextView password;
+  public @InjectView(R.id.email) EditText email;
+  public @InjectView(R.id.password) EditText password;
   public @InjectView(R.id.login_button) Button login_button;
 
   @Override

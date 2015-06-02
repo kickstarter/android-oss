@@ -3,8 +3,6 @@ package com.kickstarter;
 import android.app.Application;
 import android.content.Context;
 
-import com.kickstarter.ui.activities.DiscoveryActivity;
-import com.kickstarter.ui.views.IonIconTextView;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
@@ -12,9 +10,6 @@ import net.danlew.android.joda.JodaTimeAndroid;
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.CrashManagerListener;
 
-import javax.inject.Singleton;
-
-import dagger.Component;
 import timber.log.Timber;
 
 public class KsrApplication extends Application {

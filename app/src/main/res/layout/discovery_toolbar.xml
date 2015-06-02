@@ -1,5 +1,6 @@
 <com.kickstarter.ui.views.DiscoveryToolbar
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:icon_text_view="http://schemas.android.com/apk/res-auto"
   android:id="@+id/toolbar"
   android:layout_width="match_parent"
   android:layout_height="?attr/actionBarSize"
@@ -23,34 +24,36 @@
       android:layout_alignParentRight="true"
       android:orientation="horizontal">
 
-      <com.kickstarter.ui.views.IonIconTextView
+      <com.kickstarter.ui.views.IconTextView
         android:id="@+id/activity_feed_button"
+        icon_text_view:iconType="material"
         android:layout_width="@dimen/button_icon_fixed_width"
         android:layout_height="match_parent"
         android:gravity="center"
         android:background="@drawable/button_selector"
-        android:text="@string/ion_flash"
+        android:text="flash_on"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
         android:textColor="@color/white" />
 
-      <com.kickstarter.ui.views.IonIconTextView
+      <com.kickstarter.ui.views.IconTextView
         android:id="@+id/login_button"
         android:background="@drawable/button_selector"
         android:layout_width="@dimen/button_icon_fixed_width"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="@string/ion_locked"
+        android:text="lock"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
         android:textColor="@color/white" />
 
 
-      <com.kickstarter.ui.views.IonIconTextView
+      <com.kickstarter.ui.views.IconTextView
         android:id="@+id/current_user_button"
+        icon_text_view:iconType="material"
         android:layout_width="@dimen/button_icon_fixed_width"
         android:layout_height="match_parent"
         android:gravity="center"
         android:background="@drawable/button_selector"
-        android:text="@string/ion_android_more_vertical"
+        android:text="more_vert"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
         android:textColor="@color/white"
         android:visibility="gone" />

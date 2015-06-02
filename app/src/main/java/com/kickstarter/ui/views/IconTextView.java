@@ -33,7 +33,6 @@ public class IconTextView extends TextView {
     this(context, attrs, defStyleAttr, 0);
   }
 
-  @SuppressWarnings("deprecation")
   public IconTextView(final Context context, final AttributeSet attrs, final int defStyleAttr, final int defStyleRes) {
     super(context, attrs, defStyleAttr, defStyleRes);
     initialize(context, attrs, defStyleAttr, defStyleRes);

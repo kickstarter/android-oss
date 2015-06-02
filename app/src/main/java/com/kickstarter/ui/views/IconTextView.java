@@ -52,6 +52,7 @@ public class IconTextView extends TextView {
     }
 
     ((KsrApplication) getContext().getApplicationContext()).component().inject(this);
+
     switch (iconType) {
       case MATERIAL:
         setTypeface(font.materialIconsTypeface());

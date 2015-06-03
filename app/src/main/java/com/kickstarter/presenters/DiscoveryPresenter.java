@@ -13,6 +13,7 @@ import com.kickstarter.services.KickstarterClient;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.ProjectDetailActivity;
 import com.kickstarter.ui.adapters.ProjectListAdapter;
+import com.kickstarter.ui.view_holders.ProjectListViewHolder;
 
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
     addSubscription(subscription);
   }
 
-  public void onProjectClicked(final Project project, final ProjectListAdapter.ViewHolder viewHolder) {
+  public void onProjectClicked(final Project project, final ProjectListViewHolder viewHolder) {
     Timber.d("onProjectClicked %s", this.toString());
     Intent intent = new Intent(view(), ProjectDetailActivity.class);
     intent.putExtra("project", project);

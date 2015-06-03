@@ -28,7 +28,7 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
   protected @InjectView(R.id.blurb) TextView blurb;
   protected @InjectView(R.id.category) TextView category;
   protected @InjectView(R.id.creator_name) TextView creator_name;
-  protected @InjectView(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsing_toolbar_layout;
+  protected @InjectView(R.id.collapsing_toolbar_layout) CollapsingToolbarLayout collapsing_toolbar_layout;
   protected @InjectView(R.id.deadline_countdown) TextView deadline_countdown;
   protected @InjectView(R.id.deadline_countdown_unit) TextView deadline_countdown_unit;
   protected @InjectView(R.id.goal) TextView goal;

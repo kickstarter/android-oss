@@ -16,7 +16,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <include layout="@layout/project_card_photo_layout" />
+    <include layout="@layout/project_card_photo_view" />
 
     <LinearLayout
       android:background="@color/white"
@@ -92,7 +92,7 @@
         android:paddingBottom="@dimen/keyline_1_half"
         android:progress="50" />
 
-      <include layout="@layout/project_stats_layout" />
+      <include layout="@layout/project_stats_view" />
 
     </LinearLayout>
 

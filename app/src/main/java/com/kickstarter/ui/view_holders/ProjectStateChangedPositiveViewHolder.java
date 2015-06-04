@@ -1,8 +1,6 @@
 package com.kickstarter.ui.view_holders;
 
 import android.support.v7.widget.CardView;
-import android.text.Spannable;
-import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;

@@ -15,9 +15,9 @@ public class Project implements Parcelable {
   Integer backers_count = null;
   String blurb = null;
   Category category = null;
-  String country = null; // e.g. US
-  String currency = null; // e.g. USD
-  String currency_symbol = null; // e.g. $
+  String country = null; // e.g.: US
+  String currency = null; // e.g.: USD
+  String currency_symbol = null; // e.g.: $
   Boolean currency_trailing_code = false;
   DateTime deadline = null;
   Float goal = null;

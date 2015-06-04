@@ -1,6 +1,7 @@
 package com.kickstarter;
 
-import com.kickstarter.models.CurrentUser;
+import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.Money;
 import com.kickstarter.presenters.ActivityFeedPresenter;
 import com.kickstarter.presenters.DiscoveryPresenter;
 import com.kickstarter.presenters.LoginPresenter;
@@ -8,6 +9,7 @@ import com.kickstarter.presenters.ProjectDetailPresenter;
 import com.kickstarter.presenters.TwoFactorPresenter;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
+import com.kickstarter.ui.view_holders.ProjectListViewHolder;
 import com.kickstarter.ui.views.DiscoveryToolbar;
 import com.kickstarter.ui.views.IconTextView;
 
@@ -27,6 +29,8 @@ public interface ApplicationComponent {
   void inject(IconTextView view);
   void inject(KsrApplication application);
   void inject(LoginPresenter presenter);
+  void inject(Money money);
   void inject(ProjectDetailPresenter presenter);
+  void inject(ProjectListViewHolder viewHolder);
   void inject(TwoFactorPresenter presenter);
 }

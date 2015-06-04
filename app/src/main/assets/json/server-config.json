@@ -1,0 +1,1094 @@
+{
+  "strings": {
+    "277": {
+      "tabbar": {
+        "discover": "Discover",
+        "activity": "Activity",
+        "profile": "Profile",
+        "login": "Log in",
+        "dashboard": "Dashboard"
+      },
+      "discovery": {
+        "recommended": "Staff Picks",
+        "popular": "Popular",
+        "saved": "Starred",
+        "friends": "Friends",
+        "search": "Search",
+        "search_placeholder": "Documentary, Science, RPG, ...",
+        "search_cancel": "Cancel",
+        "nearby": "Nearby",
+        "location": {
+          "disabled_state": {
+            "title": "Turn on location services",
+            "message": "To use this feature, go to your iPhone settings and turn Location Services ON for Kickstarter."
+          }
+        },
+        "logged_out_tout": {
+          "title": "Fund and follow\ncreativity",
+          "how_it_works": "How Kickstarter works",
+          "facebook_button": "Sign up with Facebook"
+        },
+        "empty_states": {
+          "saved": {
+            "logged_in": {
+              "title": "Starred Projects",
+              "message": "When you star a project we’ll send you a reminder email 48 hours before it ends.",
+              "button": "Discover projects"
+            },
+            "logged_out": {
+              "title": "Starred Projects",
+              "message": "When you star a project we’ll send you a reminder email 48 hours before it ends.",
+              "button": "Log in"
+            }
+          }
+        },
+        "baseball_card": {
+          "metadata": {
+            "potd": "Project of the day!",
+            "starred": "You starred this project.",
+            "backer": "You’re a backer!"
+          },
+          "status_banner": {
+            "successful": "Successfully funded!",
+            "failed": "Funding unsuccessful %@",
+            "canceled": "Funding canceled"
+          }
+        },
+        "filters": {
+          "favorites": {
+            "remove": "Remove"
+          }
+        }
+      },
+      "activity": {
+        "empty_state": {
+          "logged_in": {
+            "title": "Activity empty",
+            "message": "When you back a project or follow a friend, their activity will show up here.",
+            "button": "Discover projects"
+          },
+          "logged_out": {
+            "title": "Activity empty",
+            "message": "When you back a project or follow a friend, their activity will show up here.",
+            "button": "Discover projects"
+          }
+        },
+        "success": {
+          "message_bold": "Thanks to you and %@,",
+          "message_normal": "%@ has been successfully funded."
+        },
+        "launch": {
+          "message_bold": "%@ launched a project:\n",
+          "message_normal": "%@"
+        }
+      },
+      "profile": {
+        "projects": {
+          "empty_state": {
+            "message": "You haven’t backed any projects yet.\nLet’s change that!",
+            "button": "Discover projects"
+          }
+        },
+        "settings": {
+          "backer": {
+            "title": "Projects you back",
+            "project_updates": "Project updates",
+            "notifications": "Manage project notifications"
+          },
+          "social": {
+            "title": "Social notifications",
+            "followers": "New followers",
+            "friend_backs": "Friend backs a project"
+          },
+          "creator": {
+            "title": "Creator notifications",
+            "pledges": "New pledges",
+            "comments": "New comments",
+            "likes": "New likes"
+          },
+          "newsletter": {
+            "title": "Newsletters",
+            "weekly": "Projects We Love",
+            "promo": "Kickstarter news and events",
+            "happening": "Happening Now"
+          },
+          "about": {
+            "title": "About",
+            "contact": "Contact",
+            "how_it_works": "How Kickstarter works",
+            "terms": "Terms of Use",
+            "privacy": "Privacy Policy",
+            "cookie": "Cookie Policy"
+          },
+          "logout_alert": {
+            "title": "Log out",
+            "message": "Are you sure you want to log out?",
+            "confirm_button": "Log out",
+            "cancel_button": "Cancel"
+          },
+          "rating": {
+            "title": "We’re all ears!",
+            "rate_us": "Rate us in the App Store!",
+            "message": "Thanks for using the Kickstarter app.\nIf you have a moment, would you mind rating your experience?\nWe'd appreciate it!",
+            "option": {
+              "rate_now": "Rate It Now",
+              "remind_later": "Remind Me Later",
+              "no_thanks": "No, Thanks"
+            }
+          }
+        }
+      },
+      "support_email": {
+        "to": "app@kickstarter.com",
+        "subject": "Hello Kickstarter App Support",
+        "body": "How can we help you? Please try to be as specific as possible.\n\n\n\n\n--------\n",
+        "noemail": {
+          "title": "Support",
+          "message": "Looks like you don’t have an e-mail account on your device. Please contact us at app@kickstarter.com."
+        }
+      },
+      "login_tout": {
+        "help_sheet": {
+          "how_it_works": "How Kickstarter works",
+          "contact": "Contact",
+          "terms": "Terms of Use",
+          "privacy": "Privacy Policy",
+          "cookie": "Cookie Policy",
+          "cancel": "Cancel"
+        },
+        "default_intent": {
+          "title": "Sign up or log in with your Facebook account or email address below:",
+          "facebook_button": "Log in or sign up",
+          "detail": "We’ll never post anything without your permission.",
+          "traditional_title": "Use your email address:",
+          "traditional_login_button": "Log in",
+          "traditional_signup_button": "Sign up"
+        },
+        "save_intent": {
+          "title": "Log in to star this project and we’ll remind you about it before it ends.",
+          "facebook_button": "Log in or sign up",
+          "detail": "We’ll never post anything without your permission.",
+          "traditional_title": "Use your email address:",
+          "traditional_login_button": "Log in",
+          "traditional_signup_button": "Sign up"
+        },
+        "back_intent": {
+          "title": "A Kickstarter account is required to continue.",
+          "facebook_button": "Log in or sign up",
+          "detail": "We’ll never post anything without your permission.",
+          "traditional_title": "Use your email address:",
+          "traditional_login_button": "Log in",
+          "traditional_signup_button": "Sign up"
+        },
+        "message_creator_intent": {
+          "title": "To message a creator, you need to be logged in.",
+          "facebook_button": "Log in or sign up",
+          "detail": "We’ll never post anything without your permission.",
+          "traditional_title": "Use your email address:",
+          "traditional_login_button": "Log in",
+          "traditional_signup_button": "Sign up"
+        },
+        "generic_intent": {
+          "title": "Whoa there! You must log in to your Kickstarter account to continue. Sign up or log in with your email address or Facebook account below.",
+          "facebook_button": "Log in or sign up",
+          "detail": "We’ll never post anything without your permission.",
+          "traditional_title": "Use your email address:",
+          "traditional_login_button": "Log in",
+          "traditional_signup_button": "Sign up"
+        },
+        "errors": {
+          "facebook": {
+            "settings_disabled": {
+              "title": "Permission denied",
+              "message": "It seems that you have denied Kickstarter access to your Facebook account. Please go to Settings > Facebook and toggle access."
+            },
+            "generic_error": {
+              "title": "Facebook login",
+              "message": "Couldn’t log into Facebook."
+            },
+            "invalid_token": {
+              "title": "Facebook login",
+              "message": "There was a problem logging you in with Facebook.\n\nThis is commonly fixed by going to iOS Settings > Facebook and toggling access for Kickstarter."
+            }
+          }
+        }
+      },
+      "login": {
+        "title": "Nice to see you again.",
+        "detail": "Are those new shoes? If they’re not new, they look really shiny and beautiful.",
+        "button": "Log in",
+        "forgot_password": "Forgot your password?",
+        "one_password": "1Password"
+      },
+      "forgot_password": {
+        "title": "Forgot your password?",
+        "detail": "Tell us the email you used to sign up and we’ll get you logged in.",
+        "button": "Reset my password",
+        "confirmation": "We’ve sent an email to %@ with instructions to reset your password.",
+        "error": "Sorry, we don’t know that email address. Try again?"
+      },
+      "signup": {
+        "navbar_title": "Sign up",
+        "newsletter_bold": "Discover new projects",
+        "newsletter_normal": " with our weekly newsletter.",
+        "button": "Sign up"
+      },
+      "facebook_confirmation": {
+        "navbar_title": "Sign up",
+        "title": "Welcome to Kickstarter!",
+        "detail": "Before we make your new account, please double check that we got the right email address from your Facebook profile:",
+        "newsletter_bold": "Discover projects",
+        "newsletter_normal": " with our weekly newsletter.",
+        "button": "Create new account",
+        "wrong_account_title": "Already have a Kickstarter account?",
+        "wrong_account_button": "Log in with your email here."
+      },
+      "two_factor": {
+        "title": "Verify",
+        "message": "Please enter your verification code to continue.",
+        "code_placeholder": "Enter code"
+      },
+      "amazon": {
+        "one_password_nav_button": "1Password"
+      },
+      "project": {
+        "back_button": "Back this project",
+        "manage_button": "Manage pledge",
+        "view_button": "View pledge",
+        "comments": {
+          "empty_state": {
+            "backer": {
+              "title": "No comments",
+              "message": "Aw, how sad. Be the first backer to leave a comment on this project.",
+              "button": "Leave a comment"
+            },
+            "non_backer": {
+              "title": "No comments",
+              "message": "Aw, how sad. Become a backer to leave a comment."
+            },
+            "logged_out": {
+              "title": "No comments",
+              "message": "Aw, how sad. Become a backer to leave a comment."
+            }
+          }
+        },
+        "updates": {
+          "empty_state": {
+            "backer": {
+              "title": "No updates",
+              "message": "Backers are notified when there are new project updates."
+            },
+            "non_backer": {
+              "title": "No updates",
+              "message": "Backers are notified when there are new project updates."
+            },
+            "logged_out": {
+              "title": "No updates",
+              "message": "Backers are notified when there are new project updates."
+            }
+          }
+        },
+        "checkout": {
+          "backing": {
+            "navbar_title": "Back this project"
+          },
+          "manage": {
+            "navbar_title": "Manage pledge"
+          },
+          "finalizing": {
+            "title": "Processing",
+            "message": "We’re finalizing your pledge to %@. It’ll be just a moment!"
+          },
+          "timeout": {
+            "message": "How embarrassing. This appears to be taking longer than usual. We will email you once your pledge is finalized.",
+            "button": "OK"
+          },
+          "failed": {
+            "button": "Return to project"
+          },
+          "share": {
+            "navbar_title": "Congratulations",
+            "title": "You’re a backer!",
+            "message": "You are now an official backer of %@!",
+            "custom_message_title": "YOU BACKED THIS PROJECT",
+            "custom_message_placeholder": "Add an optional message…",
+            "button": "Share",
+            "skip_button": "Skip",
+            "facebook": null,
+            "twitter": {
+              "account_confirm_title": "Which account do you want to tweet from?",
+              "default_message": "I just backed %@ on @Kickstarter %@"
+            },
+            "link": {
+              "alert_title": "",
+              "alert_message": "The project’s URL has been copied to your clipboard:\n\n%@",
+              "alert_button": "OK"
+            },
+            "errors": {
+              "no_twitter_alert": {
+                "title": "No Twitter Account Found",
+                "message": "You don’t seem to have a Twitter account connected."
+              }
+            }
+          }
+        }
+      },
+      "backer_modal": {
+        "send_backer_message_button": "Send message",
+        "send_creator_message_button": "Message creator",
+        "view_messages": "View messages",
+        "pledge_title": "Pledge",
+        "reward_title": "Reward",
+        "shipping_title": "Shipping",
+        "status_title": "Status",
+        "missing_location_name": "N/A"
+      },
+      "update": {
+        "comments": {
+          "empty_state": {
+            "backer": {
+              "title": "No comments",
+              "message": "Aw, how sad. Be the first backer to leave a comment on this update.",
+              "button": "Leave a comment"
+            },
+            "non_backer": {
+              "title": "No comments",
+              "message": "Aw, how sad. Become a backer to leave a comment."
+            },
+            "logged_out": {
+              "title": "No comments"
+            }
+          }
+        }
+      },
+      "rewards": {
+        "shipping_preferences": {
+          "location": {
+            "unrestricted": "Shipping anywhere in the world"
+          }
+        }
+      },
+      "messages": {
+        "search": {
+          "placeholder": "Search messages"
+        },
+        "empty_state": {
+          "title": "No messages",
+          "message_creator": "You have not sent a message to this backer.",
+          "message_backer": "You have not sent a message to the creator."
+        }
+      },
+      "dashboard": {
+        "graphs": {
+          "funding": {
+            "title": "FUNDING PROGRESS"
+          },
+          "rewards": {
+            "title": "REWARDS"
+          },
+          "referrers": {
+            "title": "REFERRERS"
+          },
+          "video": {
+            "title": "VIDEO PLAYS"
+          }
+        },
+        "post_update_button": {
+          "label": "Post update",
+          "no_updates_subtitle": "You haven’t posted an update yet.",
+          "last_update_recent_subtitle": "Last updated on %@ (%@).",
+          "last_update_old_subtitle": "Last updated on %@."
+        },
+        "post_update": {
+          "compose": {
+            "navbar_close_button": "Close",
+            "navbar_preview_button": "Preview",
+            "title_placeholder": "Title",
+            "body_placeholder": "Body",
+            "public_label": "Public",
+            "private_label": "Backers only",
+            "attachments_button": "Attachments",
+            "no_attachments_placeholder": "No attachments",
+            "new_media_button": "Take a new photo/video",
+            "choose_media_button": "Choose from camera roll"
+          },
+          "preview": {
+            "navbar_title": "Preview",
+            "navbar_edit_button": "Edit",
+            "navbar_publish_button": "Publish",
+            "confirmation_alert": {
+              "title": "Ready?",
+              "message": "This will notify %@ that a new update is available. Are you sure you want to post?",
+              "cancel_button": "Cancel",
+              "confirm_button": "Let’s do it!"
+            }
+          }
+        }
+      },
+      "surveys": {
+        "unanswered_tout": {
+          "message": "%@",
+          "button": "Respond to survey"
+        }
+      },
+      "invalid_api_client_alert": {
+        "title": "Please Upgrade",
+        "message": "You seem to be using a really old version of the app. Please upgrade from the App Store to continue using.",
+        "cancel": "Cancel",
+        "upgrade": "Upgrade"
+      }
+    },
+    "484": {
+      "project": {
+        "checkout": {
+          "share": {
+            "twitter": {
+              "default_message": "I just backed %@ on @Kickstarter"
+            }
+          }
+        }
+      }
+    }
+  },
+  "itunes_link": "https://itunes.apple.com/app/apple-store/id596961532?ls=1&mt=8&pt=1073458",
+  "app_id": 596961532,
+  "features": {
+    "elasticsearch": true,
+    "koala_tracking": true,
+    "mixpanel_tracking": true,
+    "security_history_read": true,
+    "security_history_write": true,
+    "redshift": true,
+    "advanced_discovery_es": true,
+    "ios_crashlytics": true,
+    "ios_mixpanel": true,
+    "ios_koala": true,
+    "DE": true,
+    "FR": true,
+    "ES": true,
+    "handbook_hero": true,
+    "password_reset_banner": true,
+    "play_page": true,
+    "watch_page": true,
+    "intl_shipping": true,
+    "nyt_film": true,
+    "recaptcha": true
+  },
+  "launched_countries": [
+    {
+      "name": "US",
+      "currency_code": "USD",
+      "currency_symbol": "$",
+      "trailing_code": true
+    },
+    {
+      "name": "GB",
+      "currency_code": "GBP",
+      "currency_symbol": "£",
+      "trailing_code": false
+    },
+    {
+      "name": "CA",
+      "currency_code": "CAD",
+      "currency_symbol": "$",
+      "trailing_code": true
+    },
+    {
+      "name": "AU",
+      "currency_code": "AUD",
+      "currency_symbol": "$",
+      "trailing_code": true
+    },
+    {
+      "name": "NZ",
+      "currency_code": "NZD",
+      "currency_symbol": "$",
+      "trailing_code": true
+    },
+    {
+      "name": "NL",
+      "currency_code": "EUR",
+      "currency_symbol": "€",
+      "trailing_code": false
+    },
+    {
+      "name": "SE",
+      "currency_code": "SEK",
+      "currency_symbol": "kr",
+      "trailing_code": true
+    },
+    {
+      "name": "DK",
+      "currency_code": "DKK",
+      "currency_symbol": "kr",
+      "trailing_code": true
+    },
+    {
+      "name": "NO",
+      "currency_code": "NOK",
+      "currency_symbol": "kr",
+      "trailing_code": true
+    },
+    {
+      "name": "IE",
+      "currency_code": "EUR",
+      "currency_symbol": "€",
+      "trailing_code": false
+    },
+    {
+      "name": "DE",
+      "currency_code": "EUR",
+      "currency_symbol": "€",
+      "trailing_code": false
+    },
+    {
+      "name": "FR",
+      "currency_code": "EUR",
+      "currency_symbol": "€",
+      "trailing_code": false
+    },
+    {
+      "name": "ES",
+      "currency_code": "EUR",
+      "currency_symbol": "€",
+      "trailing_code": false
+    }
+  ],
+  "ab_experiments": {
+    "discover_sorts_vs_subcategories": "experimental",
+    "the_shining": "experimental",
+    "barry_lyndon": "control",
+    "doctor_strangelove_or_how_i_learned_to_stop_worrying_and_love_the_bomb": "control",
+    "herbs_showdown": "coriander",
+    "usd_conversion_on_project2": "experimental",
+    "native_ios_aa": "experimental",
+    "native_iphone_read_more": "control",
+    "native_iphone_horiz_vs_vert": "control",
+    "default_to_reward_tab": "experimental",
+    "responsive_reward_project": "control"
+  },
+  "koala": {
+    "tracking_endpoint": "https://***REMOVED***/native"
+  },
+  "stripe": {
+    "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"
+  },
+  "colors": {
+    "1": {
+      "value": 16760235,
+      "hex": "FFBDAB",
+      "rgb": [
+        255,
+        189,
+        171
+      ]
+    },
+    "3": {
+      "value": 16776056,
+      "hex": "FFFB78",
+      "rgb": [
+        255,
+        251,
+        120
+      ]
+    },
+    "6": {
+      "value": 10917369,
+      "hex": "A695F9",
+      "rgb": [
+        166,
+        149,
+        249
+      ]
+    },
+    "7": {
+      "value": 2577151,
+      "hex": "2752FF",
+      "rgb": [
+        39,
+        82,
+        255
+      ]
+    },
+    "9": {
+      "value": 16752598,
+      "hex": "FF9FD6",
+      "rgb": [
+        255,
+        159,
+        214
+      ]
+    },
+    "10": {
+      "value": 16725570,
+      "hex": "FF3642",
+      "rgb": [
+        255,
+        54,
+        66
+      ]
+    },
+    "11": {
+      "value": 16734574,
+      "hex": "FF596E",
+      "rgb": [
+        255,
+        89,
+        110
+      ]
+    },
+    "12": {
+      "value": 51627,
+      "hex": "00C9AB",
+      "rgb": [
+        0,
+        201,
+        171
+      ]
+    },
+    "13": {
+      "value": 1228010,
+      "hex": "12BCEA",
+      "rgb": [
+        18,
+        188,
+        234
+      ]
+    },
+    "14": {
+      "value": 10878931,
+      "hex": "A5FFD3",
+      "rgb": [
+        165,
+        255,
+        211
+      ]
+    },
+    "15": {
+      "value": 58341,
+      "hex": "00E3E5",
+      "rgb": [
+        0,
+        227,
+        229
+      ]
+    },
+    "16": {
+      "value": 6526716,
+      "hex": "6396FC",
+      "rgb": [
+        99,
+        150,
+        252
+      ]
+    },
+    "17": {
+      "value": 16743775,
+      "hex": "FF7D5F",
+      "rgb": [
+        255,
+        125,
+        95
+      ]
+    },
+    "18": {
+      "value": 14867664,
+      "hex": "E2DCD0",
+      "rgb": [
+        226,
+        220,
+        208
+      ]
+    },
+    "26": {
+      "value": 16744876,
+      "hex": "FF81AC",
+      "rgb": [
+        255,
+        129,
+        172
+      ]
+    },
+    "244": {
+      "value": 6222811,
+      "hex": "5EF3DB",
+      "rgb": [
+        94,
+        243,
+        219
+      ]
+    },
+    "245": {
+      "value": 16757610,
+      "hex": "FFB36A",
+      "rgb": [
+        255,
+        179,
+        106
+      ]
+    },
+    "green-light": {
+      "value": 14612448,
+      "hex": "DEF7E0",
+      "rgb": [
+        222,
+        247,
+        224
+      ]
+    },
+    "green": {
+      "value": 2874995,
+      "cmyk": [
+        65,
+        0,
+        78,
+        0
+      ],
+      "pms": "7479 U",
+      "hex": "2BDE73",
+      "rgb": [
+        43,
+        222,
+        115
+      ]
+    },
+    "green-dark": {
+      "value": 991493,
+      "cmyk": [
+        74,
+        55,
+        80,
+        76
+      ],
+      "pms": "560 U",
+      "hex": "0F2105",
+      "rgb": [
+        15,
+        33,
+        5
+      ]
+    },
+    "grey-light": {
+      "value": 16251642,
+      "hex": "F7FAFA",
+      "rgb": [
+        247,
+        250,
+        250
+      ]
+    },
+    "grey": {
+      "value": 14277086,
+      "hex": "D9D9DE",
+      "rgb": [
+        217,
+        217,
+        222
+      ]
+    },
+    "grey-dark": {
+      "value": 8553863,
+      "hex": "828587",
+      "rgb": [
+        130,
+        133,
+        135
+      ]
+    },
+    "grey-medium": {
+      "value": 14277086,
+      "hex": "D9D9DE",
+      "rgb": [
+        217,
+        217,
+        222
+      ]
+    },
+    "blue-light": {
+      "value": 15267583,
+      "hex": "E8F6FF",
+      "rgb": [
+        232,
+        246,
+        255
+      ]
+    },
+    "blue": {
+      "value": 41215,
+      "hex": "00A0FF",
+      "rgb": [
+        0,
+        160,
+        255
+      ]
+    },
+    "blue-dark": {
+      "value": 528965,
+      "hex": "081245",
+      "rgb": [
+        8,
+        18,
+        69
+      ]
+    },
+    "red-light": {
+      "value": 16772336,
+      "hex": "FFECF0",
+      "rgb": [
+        255,
+        236,
+        240
+      ]
+    },
+    "red": {
+      "value": 16580667,
+      "hex": "FD003B",
+      "rgb": [
+        253,
+        0,
+        59
+      ]
+    },
+    "yellow": {
+      "value": 16777161,
+      "hex": "FFFFC9",
+      "rgb": [
+        255,
+        255,
+        201
+      ]
+    },
+    "white": {
+      "value": 16777215,
+      "hex": "FFFFFF",
+      "rgb": [
+        255,
+        255,
+        255
+      ]
+    },
+    "green-hover": {
+      "value": 2536024,
+      "hex": "26B258",
+      "rgb": [
+        38,
+        178,
+        88
+      ]
+    },
+    "blue-hover": {
+      "value": 362697,
+      "hex": "0588C9",
+      "rgb": [
+        5,
+        136,
+        201
+      ]
+    },
+    "grey-hover": {
+      "value": 11513775,
+      "hex": "AFAFAF",
+      "rgb": [
+        175,
+        175,
+        175
+      ]
+    },
+    "red-hover": {
+      "value": 14352452,
+      "hex": "DB0044",
+      "rgb": [
+        219,
+        0,
+        68
+      ]
+    },
+    "facebook": {
+      "value": 3889560,
+      "hex": "3B5998",
+      "rgb": [
+        59,
+        89,
+        152
+      ]
+    },
+    "twitter": {
+      "value": 44269,
+      "hex": "00ACED",
+      "rgb": [
+        0,
+        172,
+        237
+      ]
+    },
+    "tumblr": {
+      "value": 3688283,
+      "hex": "38475B",
+      "rgb": [
+        56,
+        71,
+        91
+      ]
+    },
+    "art": {
+      "value": 16760235,
+      "hex": "FFBDAB",
+      "rgb": [
+        255,
+        189,
+        171
+      ]
+    },
+    "civic": {
+      "value": 16757610,
+      "hex": "FFB36A",
+      "rgb": [
+        255,
+        179,
+        106
+      ]
+    },
+    "comedy": {
+      "value": 6222811,
+      "hex": "5EF3DB",
+      "rgb": [
+        94,
+        243,
+        219
+      ]
+    },
+    "comics": {
+      "value": 16776056,
+      "hex": "FFFB78",
+      "rgb": [
+        255,
+        251,
+        120
+      ]
+    },
+    "crafts": {
+      "value": 16744876,
+      "hex": "FF81AC",
+      "rgb": [
+        255,
+        129,
+        172
+      ]
+    },
+    "dance": {
+      "value": 10917369,
+      "hex": "A695F9",
+      "rgb": [
+        166,
+        149,
+        249
+      ]
+    },
+    "design": {
+      "value": 2577151,
+      "hex": "2752FF",
+      "rgb": [
+        39,
+        82,
+        255
+      ]
+    },
+    "fashion": {
+      "value": 16752598,
+      "hex": "FF9FD6",
+      "rgb": [
+        255,
+        159,
+        214
+      ]
+    },
+    "film": {
+      "value": 16734574,
+      "hex": "FF596E",
+      "rgb": [
+        255,
+        89,
+        110
+      ]
+    },
+    "food": {
+      "value": 16725570,
+      "hex": "FF3642",
+      "rgb": [
+        255,
+        54,
+        66
+      ]
+    },
+    "games": {
+      "value": 51627,
+      "hex": "00C9AB",
+      "rgb": [
+        0,
+        201,
+        171
+      ]
+    },
+    "journalism": {
+      "value": 1228010,
+      "hex": "12BCEA",
+      "rgb": [
+        18,
+        188,
+        234
+      ]
+    },
+    "music": {
+      "value": 10878931,
+      "hex": "A5FFD3",
+      "rgb": [
+        165,
+        255,
+        211
+      ]
+    },
+    "photography": {
+      "value": 58341,
+      "hex": "00E3E5",
+      "rgb": [
+        0,
+        227,
+        229
+      ]
+    },
+    "publishing": {
+      "value": 14867664,
+      "hex": "E2DCD0",
+      "rgb": [
+        226,
+        220,
+        208
+      ]
+    },
+    "technology": {
+      "value": 6526716,
+      "hex": "6396FC",
+      "rgb": [
+        99,
+        150,
+        252
+      ]
+    },
+    "theater": {
+      "value": 16743775,
+      "hex": "FF7D5F",
+      "rgb": [
+        255,
+        125,
+        95
+      ]
+    }
+  },
+  "dependencies": {
+    "crashlytics": true,
+    "new_relic": false,
+    "mixpanel": true,
+    "hockey_app": false
+  },
+  "country_code": "US"
+}

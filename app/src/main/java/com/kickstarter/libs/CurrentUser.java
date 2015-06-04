@@ -1,8 +1,9 @@
-package com.kickstarter.models;
+package com.kickstarter.libs;
 
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
+import com.kickstarter.models.User;
 
 import timber.log.Timber;
 

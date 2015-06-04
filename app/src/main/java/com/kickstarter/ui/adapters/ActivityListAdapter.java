@@ -11,8 +11,8 @@ import com.kickstarter.presenters.ActivityFeedPresenter;
 import com.kickstarter.ui.view_holders.ActivityListViewHolder;
 import com.kickstarter.ui.view_holders.FriendBackingViewHolder;
 import com.kickstarter.ui.view_holders.FriendFollowViewHolder;
-import com.kickstarter.ui.view_holders.ProjectStateChangedViewHolder;
 import com.kickstarter.ui.view_holders.ProjectStateChangedPositiveViewHolder;
+import com.kickstarter.ui.view_holders.ProjectStateChangedViewHolder;
 import com.kickstarter.ui.view_holders.ProjectUpdateViewHolder;
 
 import java.util.List;

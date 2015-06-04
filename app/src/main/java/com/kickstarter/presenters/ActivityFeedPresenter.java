@@ -6,7 +6,7 @@ import android.os.Bundle;
 import com.kickstarter.KsrApplication;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.models.Activity;
-import com.kickstarter.models.ActivityFeedParams;
+import com.kickstarter.services.ActivityFeedParams;
 import com.kickstarter.services.KickstarterClient;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 

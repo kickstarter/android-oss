@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
-import com.kickstarter.models.CurrentUser;
+import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.models.User;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;

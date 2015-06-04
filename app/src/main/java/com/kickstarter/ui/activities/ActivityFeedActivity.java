@@ -10,9 +10,9 @@ import android.widget.Button;
 import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.models.Activity;
-import com.kickstarter.models.CurrentUser;
 import com.kickstarter.presenters.ActivityFeedPresenter;
 import com.kickstarter.ui.adapters.ActivityListAdapter;
 

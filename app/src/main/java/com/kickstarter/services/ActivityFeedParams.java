@@ -1,4 +1,6 @@
-package com.kickstarter.models;
+package com.kickstarter.services;
+
+import com.kickstarter.models.Activity;
 
 import java.util.ArrayList;
 import java.util.EnumSet;

@@ -7,13 +7,17 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.Money;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.DiscoveryPresenter;
 import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
 import java.util.Locale;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -35,11 +39,14 @@ public class ProjectListViewHolder extends RecyclerView.ViewHolder {
   protected View view;
   protected Project project;
   protected DiscoveryPresenter presenter;
+  @Inject Money money;
 
   public ProjectListViewHolder(View view, DiscoveryPresenter presenter) {
     super(view);
     this.view = view;
     this.presenter = presenter;
+
+    ((KsrApplication) view.getContext().getApplicationContext()).component().inject(this);
     ButterKnife.inject(this, view);
 
     view.setOnClickListener((View v) -> {
@@ -56,7 +63,7 @@ public class ProjectListViewHolder extends RecyclerView.ViewHolder {
     category.setText(project.category().name());
     deadline_countdown.setText(Integer.toString(project.deadlineCountdown()));
     deadline_countdown_unit.setText(project.deadlineCountdownUnit());
-    goal.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(project.goal()));
+    goal.setText(project.formattedGoal(money));
     location.setText(project.location().displayableName());
     pledged.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(project.pledged()));
     name.setText(project.name());

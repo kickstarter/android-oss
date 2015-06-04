@@ -3,11 +3,14 @@ package com.kickstarter;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.AssetManager;
 import android.preference.PreferenceManager;
 
+import com.kickstarter.libs.ConfigLoader;
+import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Font;
 import com.kickstarter.libs.ForApplication;
-import com.kickstarter.models.CurrentUser;
+import com.kickstarter.libs.Money;
 import com.kickstarter.services.KickstarterClient;
 
 import javax.inject.Singleton;
@@ -32,8 +35,26 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  Font provideFont() {
-    return new Font(application);
+  AssetManager provideAssetManager() {
+    return application.getAssets();
+  }
+
+  @Provides
+  @Singleton
+  ConfigLoader provideConfigLoader(final AssetManager assetManager, final SharedPreferences sharedPreferences) {
+    return new ConfigLoader(assetManager, sharedPreferences);
+  }
+
+  @Provides
+  @Singleton
+  Font provideFont(final AssetManager assetManager) {
+    return new Font(assetManager);
+  }
+
+  @Provides
+  @Singleton
+  Money provideMoney(final ConfigLoader configLoader) {
+    return new Money(configLoader);
   }
 
   @Provides

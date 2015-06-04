@@ -7,12 +7,11 @@ import android.os.Bundle;
 import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.Presenter;
-import com.kickstarter.models.DiscoveryParams;
 import com.kickstarter.models.Project;
+import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.KickstarterClient;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.ProjectDetailActivity;
-import com.kickstarter.ui.adapters.ProjectListAdapter;
 import com.kickstarter.ui.view_holders.ProjectListViewHolder;
 
 import java.util.List;

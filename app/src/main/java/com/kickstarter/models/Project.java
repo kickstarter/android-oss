@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
+import com.kickstarter.libs.Money;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -14,6 +15,10 @@ public class Project implements Parcelable {
   Integer backers_count = null;
   String blurb = null;
   Category category = null;
+  String country = null; // e.g. US
+  String currency = null; // e.g. USD
+  String currency_symbol = null; // e.g. $
+  Boolean currency_trailing_code = false;
   DateTime deadline = null;
   Float goal = null;
   Integer id = null;
@@ -29,6 +34,10 @@ public class Project implements Parcelable {
   public String blurb() { return blurb; }
   public Category category() { return category; }
   public User creator() { return creator; }
+  public String country() { return country; }
+  public String currency() { return currency; }
+  public String currencySymbol() { return currency_symbol; }
+  public Boolean currencyTrailingCode() { return currency_trailing_code; }
   public DateTime deadline() { return deadline; }
   public Float goal() { return goal; }
   public Integer id() { return id; }
@@ -45,6 +54,10 @@ public class Project implements Parcelable {
 
     final DateTime startOfDayUTC = new DateTime(DateTimeZone.UTC).withTime(0, 0, 0, 0);
     return startOfDayUTC.isEqual(potd_at.withZone(DateTimeZone.UTC));
+  }
+
+  public String formattedGoal(final Money money) {
+    return money.formatted(goal, country, currency_symbol, currency);
   }
 
   public Float percentageFunded() {

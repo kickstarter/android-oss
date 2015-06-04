@@ -1,6 +1,7 @@
-package com.kickstarter.models;
+package com.kickstarter.services;
 
 import com.google.common.collect.ImmutableMap;
+import com.kickstarter.models.Category;
 
 public class DiscoveryParams {
   private final boolean staff_picks;

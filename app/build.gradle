@@ -52,24 +52,24 @@ dependencies {
     compile 'com.android.support:design:22.2.0'
     compile 'com.android.support:recyclerview-v7:22.2.0'
     compile 'com.facebook.android:facebook-android-sdk:4.0.1'
-    compile 'com.google.dagger:dagger:2.0'
-    apt 'com.google.dagger:dagger-compiler:2.0'
-    compile 'com.google.guava:guava:18.0'
-    compile 'com.hannesdorfmann.parcelableplease:annotation:1.0.1'
-    apt 'com.hannesdorfmann.parcelableplease:processor:1.0.1'
-    compile 'com.jakewharton:butterknife:6.1.0'
-    compile 'com.jakewharton.timber:timber:3.0.1'
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.3'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3'
+    compile 'com.google.dagger:dagger:2.0' // Dependency injection
+    apt 'com.google.dagger:dagger-compiler:2.0' // Dependency injection
+    compile 'com.google.guava:guava:18.0' // Google's Java core libraries
+    compile 'com.hannesdorfmann.parcelableplease:annotation:1.0.1' // Parceler helper
+    apt 'com.hannesdorfmann.parcelableplease:processor:1.0.1' // Parceler helper
+    compile 'com.jakewharton:butterknife:6.1.0' // View injection
+    compile 'com.jakewharton.timber:timber:3.0.1' // Logging
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.3' // Memory leak detection
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3' // Memory leak detection
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.3.0'
     compile 'com.squareup.okhttp:okhttp:2.3.0'
-    compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.squareup.retrofit:retrofit:1.9.0'
+    compile 'com.squareup.picasso:picasso:2.5.2' // Image library
+    compile 'com.squareup.retrofit:retrofit:1.9.0' // REST client
     compile 'io.reactivex:rxandroid:0.24.0'
     compile 'io.reactivex:rxjava:1.0.10'
+    compile 'net.danlew:android.joda:2.7.2' // Android version of JodaTime
+    compile 'net.hockeyapp.android:HockeySDK:3.5.0-b.4' // Crash reporting
     ***REMOVED***
-    compile 'net.danlew:android.joda:2.7.2'
-    compile 'net.hockeyapp.android:HockeySDK:3.5.0-b.4'
 }
 
 buildscript {

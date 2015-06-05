@@ -1,0 +1,18 @@
+general:
+    artifacts:
+        - /home/ubuntu/android/app/build/outputs/
+        - /home/ubuntu/android/app/build/reports/
+
+machine:
+  java:
+      version: oraclejdk8
+
+dependencies:
+  override:
+    - echo y | android update sdk --no-ui --all --filter build-tools-22.0.1,extra-android-m2repository,extra-google-m2repository,extra-android-support
+    - ./gradlew dependencies
+
+test:
+  override:
+    - ./gradlew clean assemble -PdisablePreDex
+    - ./gradlew test

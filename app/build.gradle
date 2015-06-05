@@ -70,6 +70,11 @@ dependencies {
     compile 'net.danlew:android.joda:2.7.2' // Android version of JodaTime
     compile 'net.hockeyapp.android:HockeySDK:3.5.0-b.4' // Crash reporting
     ***REMOVED***
+
+    // Testing
+    testCompile 'junit:junit:4.12' // Unit testing
+    testCompile 'org.mockito:mockito-core:1.10.19' // Mocking framework
+    testCompile "org.robolectric:robolectric:3.0-rc3" // Test implementations of Android libraries
 }
 
 buildscript {
@@ -78,7 +83,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'me.tatarka:gradle-retrolambda:2.5.0'
+        classpath 'me.tatarka:gradle-retrolambda:3.1.0'
     }
 }
 

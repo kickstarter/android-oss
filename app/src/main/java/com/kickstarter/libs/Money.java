@@ -10,31 +10,17 @@ public class Money {
     this.configLoader = configLoader;
   }
 
-  public String formatted(final Float amount, final String country, final String currencySymbol, final String currencyCode) {
-    return formatted(amount, country, currencySymbol, currencyCode, false);
-  }
-
-  public boolean currencyIsDuplicatedWithSymbol(final String symbol, final String code) {
-    final Config config = configLoader.current();
-
-    // TODO: Cache the results?
-    int dupes = 0;
-    for (Config.LaunchedCountry country : config.launchedCountries()) {
-      if (country.currencySymbol().equals(symbol) && !country.currencyCode().equals(code)) {
-        ++dupes;
-      }
-    }
-
-    return dupes > 1; // TODO: Why is this > 1 and not >= 1? Should explain what the method is doing a little more.
-  }
-
   public String formattedNumber(final Float number) {
     // TODO: Should use appropriate locale
     // TODO: Could take bool to abbreviate (e.g. 100k instead of 100,000)
     return NumberFormat.getInstance(Locale.getDefault()).format(number);
   }
 
-  public String formatted(final Float amount,
+  public String formattedCurrency(final Float amount, final String country, final String currencySymbol, final String currencyCode) {
+    return formattedCurrency(amount, country, currencySymbol, currencyCode, false);
+  }
+
+  public String formattedCurrency(final Float amount,
     final String country,
     final String currencySymbol,
     final String currencyCode,
@@ -58,5 +44,19 @@ public class Money {
       builder.append(" " + currencyCode);
     }
     return builder.toString();
+  }
+
+  protected boolean currencyIsDuplicatedWithSymbol(final String symbol, final String code) {
+    final Config config = configLoader.current();
+
+    // TODO: Cache the results?
+    int dupes = 0;
+    for (Config.LaunchedCountry country : config.launchedCountries()) {
+      if (country.currencySymbol().equals(symbol) && !country.currencyCode().equals(code)) {
+        ++dupes;
+      }
+    }
+
+    return dupes > 1; // TODO: Why is this > 1 and not >= 1? Should explain what the method is doing a little more.
   }
 }

@@ -57,7 +57,11 @@ public class Project implements Parcelable {
   }
 
   public String formattedGoal(final Money money) {
-    return money.formatted(goal, country, currency_symbol, currency);
+    return money.formattedCurrency(goal, country, currency_symbol, currency);
+  }
+
+  public String formattedPledged(final Money money) {
+    return money.formattedCurrency(pledged, country, currency_symbol, currency);
   }
 
   public Float percentageFunded() {

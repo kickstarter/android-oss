@@ -28,7 +28,6 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.discovery_layout);
     ButterKnife.inject(this);
-    ((KsrApplication) getApplication()).component().inject(this);
 
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
   }

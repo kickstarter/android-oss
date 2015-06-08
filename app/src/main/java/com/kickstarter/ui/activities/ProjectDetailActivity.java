@@ -8,8 +8,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.Money;
 import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.ProjectDetailPresenter;
@@ -17,6 +19,8 @@ import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
 import java.util.Locale;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -37,6 +41,7 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
   protected @InjectView(R.id.photo) ImageView photo;
   protected @InjectView(R.id.pledged) TextView pledged;
   protected @InjectView(R.id.toolbar) Toolbar toolbar;
+  @Inject Money money;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
@@ -44,6 +49,7 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
 
     setContentView(R.layout.project_detail_layout);
     ButterKnife.inject(this);
+    ((KsrApplication) getApplication()).component().inject(this);
 
     setSupportActionBar(toolbar);
 
@@ -61,11 +67,11 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     category.setText(project.category().name());
     deadline_countdown.setText(Integer.toString(project.deadlineCountdown()));
     deadline_countdown_unit.setText(project.deadlineCountdownUnit());
-    goal.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(project.goal()));
+    goal.setText(project.formattedGoal(money));
     location.setText(project.location().displayableName());
     percentage_funded.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
     Picasso.with(this).load(project.photo().full()).into(photo);
-    pledged.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(project.pledged()));
+    pledged.setText(project.formattedPledged(money));
   }
 
   @Override

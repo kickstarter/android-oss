@@ -57,7 +57,6 @@ public class ProjectListViewHolder extends RecyclerView.ViewHolder {
   public void onBind(final Project project) {
     this.project = project;
 
-    // TODO: Extract number formatting into helpers
     backers_count.setText(NumberFormat.getNumberInstance(Locale.getDefault())
       .format(project.backersCount()));
     category.setText(project.category().name());
@@ -65,7 +64,7 @@ public class ProjectListViewHolder extends RecyclerView.ViewHolder {
     deadline_countdown_unit.setText(project.deadlineCountdownUnit());
     goal.setText(project.formattedGoal(money));
     location.setText(project.location().displayableName());
-    pledged.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(project.pledged()));
+    pledged.setText(project.formattedPledged(money));
     name.setText(project.name());
     percentage_funded.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
     Picasso.with(view.getContext()).

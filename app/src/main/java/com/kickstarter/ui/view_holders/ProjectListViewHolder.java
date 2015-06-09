@@ -62,9 +62,9 @@ public class ProjectListViewHolder extends RecyclerView.ViewHolder {
     category.setText(project.category().name());
     deadline_countdown.setText(Integer.toString(project.deadlineCountdown()));
     deadline_countdown_unit.setText(project.deadlineCountdownUnit());
-    goal.setText(project.formattedGoal(money));
+    goal.setText(money.formattedCurrency(project.goal(), project.currencyOptions(), true));
     location.setText(project.location().displayableName());
-    pledged.setText(project.formattedPledged(money));
+    pledged.setText(money.formattedCurrency(project.pledged(), project.currencyOptions()));
     name.setText(project.name());
     percentage_funded.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
     Picasso.with(view.getContext()).

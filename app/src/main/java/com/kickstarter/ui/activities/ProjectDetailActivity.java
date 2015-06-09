@@ -67,11 +67,11 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     category.setText(project.category().name());
     deadline_countdown.setText(Integer.toString(project.deadlineCountdown()));
     deadline_countdown_unit.setText(project.deadlineCountdownUnit());
-    goal.setText(project.formattedGoal(money));
+    goal.setText(money.formattedCurrency(project.goal(), project.currencyOptions(), true));
     location.setText(project.location().displayableName());
     percentage_funded.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
     Picasso.with(this).load(project.photo().full()).into(photo);
-    pledged.setText(project.formattedPledged(money));
+    pledged.setText(money.formattedCurrency(project.pledged(), project.currencyOptions()));
   }
 
   @Override

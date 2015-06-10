@@ -12,7 +12,9 @@ android {
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -36,11 +38,18 @@ android {
 
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
+        exclude 'LICENSE.txt'
     }
 
     signingConfigs {
         debug {
             storeFile file("debug.keystore")
+        }
+    }
+
+    sourceSets {
+        androidTest {
+            java.srcDir file('src/androidTest')
         }
     }
 }
@@ -51,6 +60,7 @@ dependencies {
     compile 'com.android.support:cardview-v7:22.2.0'
     compile 'com.android.support:design:22.2.0'
     compile 'com.android.support:recyclerview-v7:22.2.0'
+    compile 'com.android.support:support-annotations:22.2.0'
     compile 'com.facebook.android:facebook-android-sdk:4.0.1'
     compile 'com.google.dagger:dagger:2.0'
     apt 'com.google.dagger:dagger-compiler:2.0'
@@ -75,6 +85,9 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:1.10.19'
     testCompile 'org.robolectric:robolectric:3.0-rc3'
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2'
+    androidTestCompile 'com.android.support.test:rules:0.3'
+    androidTestCompile 'com.android.support.test:runner:0.3'
 }
 
 buildscript {

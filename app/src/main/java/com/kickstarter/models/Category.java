@@ -26,7 +26,7 @@ public class Category implements Parcelable {
   // TODO: Should be able to grab a Category rather than dealing with Integers. That would require loading all the
   // categories (probably on start-up). There is a bunch of work to do on categories, probably best to tackle it all
   // at once.
-  public Integer root_id() {
+  public Integer rootId() {
     return isRootValue() ? id() : parentId();
   }
 

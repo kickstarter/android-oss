@@ -5,14 +5,18 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.DateTimeUtils;
+import com.kickstarter.libs.Money;
 import com.kickstarter.models.Activity;
 import com.kickstarter.presenters.ActivityFeedPresenter;
 import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
 import java.util.Locale;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -25,10 +29,12 @@ public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolde
   @InjectView(R.id.right_stat_first) TextView right_stat_first;
   @InjectView(R.id.right_stat_second) TextView right_stat_second;
   @InjectView(R.id.title) TextView title;
+  @Inject Money money;
 
   public ProjectStateChangedPositiveViewHolder(final View view, final ActivityFeedPresenter presenter) {
     super(view, presenter);
     ButterKnife.inject(this, view);
+    ((KsrApplication) view.getContext().getApplicationContext()).component().inject(this);
   }
 
   @Override
@@ -38,7 +44,7 @@ public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolde
     switch (activity.category()) {
       case LAUNCH:
         card_view.setCardBackgroundColor(view.getResources().getColor(R.color.blue_darken_10));
-        left_stat_first.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(activity.project().goal()));
+        left_stat_first.setText(money.formattedCurrency(activity.project().goal(), activity.project().currencyOptions()));
         left_stat_second.setText(view.getResources().getString(R.string.goal));
         right_stat_first.setText(view.getResources().getString(R.string.Launched));
         right_stat_second.setText(activity.project().launchedAt().toString(DateTimeUtils.defaultFormatter()));
@@ -47,9 +53,10 @@ public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolde
         break;
       case SUCCESS:
         card_view.setCardBackgroundColor(view.getResources().getColor(R.color.green_darken_10));
-        left_stat_first.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(activity.project().pledged()));
+        left_stat_first.setText(money.formattedCurrency(activity.project().pledged(), activity.project().currencyOptions()));
         left_stat_second.setText(view.getResources().getString(
-          R.string.pledged_of_goal, NumberFormat.getNumberInstance(Locale.getDefault()).format(activity.project().goal())));
+          R.string.pledged_of_goal,
+          money.formattedCurrency(activity.project().goal(), activity.project().currencyOptions(), true)));
         right_stat_first.setText(view.getResources().getString(R.string.funded));
         right_stat_second.setText(activity.createdAt().toString(DateTimeUtils.defaultFormatter()));
         title.setText(view.getResources().getString(R.string.project_was_successfully_funded, activity.project().name()));

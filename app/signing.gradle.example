@@ -1,4 +1,4 @@
-# Fetch details from Passpack entry `android-kickstarter-keystore`.
+// Fetch details from Passpack entry `android-kickstarter-keystore`.
 ext.signing = [
     storeFilePath : "",
     storePassword : "",

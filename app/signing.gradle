@@ -1,6 +1,0 @@
-ext.signing = [
-    storeFilePath : "",
-    storePassword : "",
-    keyAlias : "",
-    keyPassword : ""
-]

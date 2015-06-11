@@ -7,6 +7,9 @@ if [ ! -d $ANDROID_STUDIO_PREFERENCES_PATH ]; then
   exit 1
 fi
 
+# Signing config
+test -e app/signing.gradle || cp app/signing.gradle.example app/signing.gradle
+
 # Update Kickstarter style
 ANDROID_STYLE_PATH="${ANDROID_STUDIO_PREFERENCES_PATH}/codestyles/Kickstarter.xml"
 REPOSITORY_STYLE_PATH="script/style/Kickstarter.xml"

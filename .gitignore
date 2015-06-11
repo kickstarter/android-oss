@@ -46,3 +46,5 @@ app/fabric.properties
 
 # Keystore for signing release builds
 app/kickstarter.keystore
+# Credentials for accessing kickstarter.keystore
+app/signing.gradle

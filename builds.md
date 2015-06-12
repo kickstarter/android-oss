@@ -32,7 +32,8 @@ into source control, because if somebody obtained it they could potentially
 bruteforce the password. We also don't want to commit the credentials - if our
 keystore was exposed, it would make accessing it much easier.
 
-The keystore is backed up in S3: `s3://ksr-android`. The credentials are stored
-in passpack under `android-kickstarter-keystore`. The keystore can be copied from
+The keystore is backed up in S3:
+`s3://android-ksr-keystores/kickstarter.keystore`. The credentials are stored
+in passpack under `Android - Keystore`. The keystore can be copied from
 S3 into `app/kickstarter.keystore`, and the credentials saved into `app/signing.gradle`.
 The keystore and credentials are in `.gitignore` so local changes won't be committed.

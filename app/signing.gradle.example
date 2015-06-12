@@ -1,7 +1,7 @@
-// Details from Passpack entry `android-kickstarter-keystore`.
+// Details from Passpack entry `Android - Keystore`.
 ext.signing = [
-    storeFilePath : "",
+    storeFilePath : "kickstarter.keystore",
     storePassword : "",
-    keyAlias : "",
+    keyAlias : "kickstarter",
     keyPassword : ""
 ]

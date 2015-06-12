@@ -9,16 +9,17 @@ There are two build types: `debug` and `release`. In local development we'll
 typically be generating debug builds. Release builds are for when we want to
 distribute the application to other users. The [Android Tools
 site](http://tools.android.com/tech-docs/new-build-system/user-guide#TOC-Build-Types)
-has more on the difference between debug and release builds.
+has more on the difference between debug and release builds. Debug builds will
+have features that assist with debugging and testing, like the ability to change
+endpoints.
+
 
 ## Product flavors
 
 There are two product flavors: `internal` and `external`. The internal product
 flavor is for distribution to internal or trusted users. In iOS, we use beta
-builds for this purpose. The internal build will have features that assist with
-debugging and testing, like the ability to change endpoints.
-
-External builds are for distribution on the Google Play store.
+builds for this purpose. External builds are for distribution on the Google Play
+store.
 
 ## Signing packages
 

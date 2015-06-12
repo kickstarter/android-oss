@@ -5,8 +5,8 @@ flavor.
 
 ## Build types
 
-There are two build types: `debug` and `release`. We'll typically be generating
-debug builds in local development. Release builds are for when we want to
+There are two build types: `debug` and `release`. In local development we'll
+typically be generating debug builds. Release builds are for when we want to
 distribute the application to other users. The [Android Tools
 site](http://tools.android.com/tech-docs/new-build-system/user-guide#TOC-Build-Types)
 has more on the difference between debug and release builds.

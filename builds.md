@@ -28,8 +28,8 @@ password.
 
 Release builds are signed using `app/kickstarter.keystore`. The credentials
 should be stored in `app/signing.gradle`. We don't want to commit the keystore
-or credentials into source control, so this requires a manual process to set
-them up.
+or credentials into source control, so a manual process is required to set them
+up.
 
 The keystore is backed up in S3:
 `s3://android-ksr-keystores/kickstarter.keystore`. The credentials are stored

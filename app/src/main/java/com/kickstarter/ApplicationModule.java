@@ -3,9 +3,12 @@ package com.kickstarter;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.preference.PreferenceManager;
 
+import com.kickstarter.libs.Build;
 import com.kickstarter.libs.ConfigLoader;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Font;
@@ -28,6 +31,12 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
+  Application provideApplication() {
+    return application;
+  }
+
+  @Provides
+  @Singleton
   @ForApplication
   Context provideApplicationContext() {
     return application;
@@ -37,6 +46,12 @@ public class ApplicationModule {
   @Singleton
   AssetManager provideAssetManager() {
     return application.getAssets();
+  }
+
+  @Provides
+  @Singleton
+  Build provideBuild(final PackageInfo packageInfo) {
+    return new Build(packageInfo);
   }
 
   @Provides
@@ -59,6 +74,21 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
+  PackageInfo providePackageInfo(final Application application) {
+    try {
+      return application.getPackageManager().getPackageInfo(application.getPackageName(), 0);
+    } catch (PackageManager.NameNotFoundException e) {
+      e.printStackTrace();
+      throw new RuntimeException();
+    }
+  }
+
+  String providePackageName(final Application application) {
+    return application.getPackageName();
+  }
+
+  @Provides
+  @Singleton
   SharedPreferences provideSharedPreferences() {
     return PreferenceManager.getDefaultSharedPreferences(application);
   }
@@ -71,7 +101,7 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  KickstarterClient provideKickstarterClient(final CurrentUser currentUser) {
-    return new KickstarterClient(currentUser);
+  KickstarterClient provideKickstarterClient(final Build build, final CurrentUser currentUser) {
+    return new KickstarterClient(build, currentUser);
   }
 }

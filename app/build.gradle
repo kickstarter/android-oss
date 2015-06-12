@@ -8,8 +8,8 @@ def versionPatch = 0
 
 def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
 def date = new Date();
-def buildDate = date.format("yyyy-MM-dd'T'HH:mm'Z'", TimeZone.getTimeZone("UTC"))
-def buildTimestamp = (date.getTime() / 1000).toInteger()
+def buildDate = date.format("yyyy-MM-dd'T'HH:mm:ss'Z'", TimeZone.getTimeZone("UTC"))
+def privateVersion = new File("app/version_code.txt").text.toInteger()
 def isCircle = "true".equals(System.getenv("CIRCLECI"))
 
 ext.signing = [
@@ -36,8 +36,8 @@ android {
         buildConfigField "String", "GIT_SHA", "\"${gitSha}\""
         buildConfigField "String", "BUILD_DATE", "\"${buildDate}\""
 
-        // Version code is an internal version number
-        versionCode buildTimestamp
+        // Version code is an internal/private version number
+        versionCode privateVersion
         // Version name is shown to users
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
     }

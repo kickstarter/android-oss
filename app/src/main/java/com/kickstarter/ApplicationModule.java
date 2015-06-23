@@ -14,7 +14,7 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Font;
 import com.kickstarter.libs.ForApplication;
 import com.kickstarter.libs.Money;
-import com.kickstarter.services.KickstarterClient;
+import com.kickstarter.services.ApiClient;
 
 import javax.inject.Singleton;
 
@@ -101,7 +101,7 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  KickstarterClient provideKickstarterClient(final Build build, final CurrentUser currentUser) {
-    return new KickstarterClient(build, currentUser);
+  ApiClient provideApiClient(final Build build, final CurrentUser currentUser) {
+    return new ApiClient(build, currentUser);
   }
 }

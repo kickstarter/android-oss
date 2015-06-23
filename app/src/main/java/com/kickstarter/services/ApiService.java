@@ -15,7 +15,7 @@ import retrofit.http.Query;
 import retrofit.http.QueryMap;
 import rx.Observable;
 
-/*package*/ interface KickstarterService {
+/*package*/ interface ApiService {
   @GET("/v1/activities")
   Observable<ActivityEnvelope> fetchActivities(@Query("categories[]") List<String> categories);
 

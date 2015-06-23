@@ -22,17 +22,16 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.converter.GsonConverter;
 import rx.Observable;
-import timber.log.Timber;
 
-public class KickstarterClient {
+public class ApiClient {
   private final Build build;
-  private final KickstarterService service;
+  private final ApiService service;
   private final CurrentUser currentUser;
 
-  public KickstarterClient(final Build build, final CurrentUser currentUser) {
+  public ApiClient(final Build build, final CurrentUser currentUser) {
     this.build = build;
     this.currentUser = currentUser;
-    service = kickstarterService();
+    service = apiService();
   }
 
   public Observable<ActivityEnvelope> fetchActivities(final ActivityFeedParams params) {
@@ -56,8 +55,8 @@ public class KickstarterClient {
     return service.login(email, password, code);
   }
 
-  private KickstarterService kickstarterService() {
-    return restAdapter().create(KickstarterService.class);
+  private ApiService apiService() {
+    return restAdapter().create(ApiService.class);
   }
 
   private RestAdapter restAdapter() {

@@ -9,7 +9,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
-import com.kickstarter.services.KickstarterClient;
+import com.kickstarter.services.ApiClient;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.ProjectDetailActivity;
 import com.kickstarter.ui.view_holders.ProjectListViewHolder;
@@ -23,7 +23,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
-  @Inject KickstarterClient client;
+  @Inject ApiClient client;
   private List<Project> projects;
 
   @Override

@@ -7,7 +7,7 @@ import com.kickstarter.KsrApplication;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.models.Activity;
 import com.kickstarter.services.ActivityFeedParams;
-import com.kickstarter.services.KickstarterClient;
+import com.kickstarter.services.ApiClient;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 
 import java.util.List;
@@ -18,7 +18,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 public class ActivityFeedPresenter extends Presenter<ActivityFeedActivity> {
-  @Inject KickstarterClient client;
+  @Inject ApiClient client;
   private List<Activity> activities;
 
   @Override

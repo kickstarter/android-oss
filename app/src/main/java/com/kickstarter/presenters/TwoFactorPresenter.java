@@ -12,7 +12,7 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.services.ApiError;
 import com.kickstarter.services.ApiResponses.AccessTokenEnvelope;
-import com.kickstarter.services.KickstarterClient;
+import com.kickstarter.services.ApiClient;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.TwoFactorActivity;
 
@@ -25,7 +25,7 @@ import rx.subjects.PublishSubject;
 
 public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
   @Inject CurrentUser currentUser;
-  @Inject KickstarterClient client;
+  @Inject ApiClient client;
   private final PublishSubject<Void> login = PublishSubject.create();
   private final PublishSubject<Void> resend = PublishSubject.create();
 

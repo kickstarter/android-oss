@@ -25,12 +25,15 @@ import rx.Observable;
 
 public class ApiClient {
   private final Build build;
+  private final String clientId;
   private final ApiService service;
   private final CurrentUser currentUser;
 
-  public ApiClient(final Build build, final CurrentUser currentUser) {
+  public ApiClient(final Build build, final String clientId, final CurrentUser currentUser) {
     this.build = build;
+    this.clientId = clientId;
     this.currentUser = currentUser;
+
     service = apiService();
   }
 
@@ -95,12 +98,14 @@ public class ApiClient {
     return request -> {
       request.addHeader("Accept", "application/json");
       request.addHeader("Kickstarter-Android-App", build.versionCode().toString());
-      // TODO: Look at Retrofit user agent
-      // TODO: extract this so that it's easy to swap client_id for different HQ envs.
-      request.addQueryParam("client_id", "***REMOVED***");
+      request.addQueryParam("client_id", clientId());
       if (currentUser.exists()) {
         request.addQueryParam("oauth_token", currentUser.getToken());
       }
     };
+  }
+
+  private String clientId() {
+    return clientId;
   }
 }

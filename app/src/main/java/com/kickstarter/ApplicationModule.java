@@ -56,6 +56,14 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
+  String provideClientId() {
+    // TODO: Switch based on environment
+    return "***REMOVED***";
+  }
+
+
+  @Provides
+  @Singleton
   ConfigLoader provideConfigLoader(final AssetManager assetManager, final SharedPreferences sharedPreferences) {
     return new ConfigLoader(assetManager, sharedPreferences);
   }
@@ -101,7 +109,7 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  ApiClient provideApiClient(final Build build, final CurrentUser currentUser) {
-    return new ApiClient(build, currentUser);
+  ApiClient provideApiClient(final Build build, final String clientId, final CurrentUser currentUser) {
+    return new ApiClient(build, clientId, currentUser);
   }
 }

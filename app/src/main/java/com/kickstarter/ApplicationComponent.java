@@ -8,7 +8,6 @@ import com.kickstarter.presenters.LoginPresenter;
 import com.kickstarter.presenters.ProjectDetailPresenter;
 import com.kickstarter.presenters.TwoFactorPresenter;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
-import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.ProjectDetailActivity;
 import com.kickstarter.ui.view_holders.ProjectListViewHolder;
 import com.kickstarter.ui.view_holders.ProjectStateChangedPositiveViewHolder;

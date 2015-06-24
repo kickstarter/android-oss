@@ -15,6 +15,7 @@ import com.kickstarter.libs.Font;
 import com.kickstarter.libs.ForApplication;
 import com.kickstarter.libs.Money;
 import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.KickstarterClient;
 
 import javax.inject.Singleton;
 
@@ -33,6 +34,12 @@ public class ApplicationModule {
   @Singleton
   Application provideApplication() {
     return application;
+  }
+
+  @Provides
+  @Singleton
+  ApiClient provideApiClient(final Build build, final String clientId, final CurrentUser currentUser) {
+    return new ApiClient(build, clientId, currentUser);
   }
 
   @Provides
@@ -76,6 +83,12 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
+  KickstarterClient provideKickstarterClient(final Build build) {
+    return new KickstarterClient(build);
+  }
+
+  @Provides
+  @Singleton
   Money provideMoney(final ConfigLoader configLoader) {
     return new Money(configLoader);
   }
@@ -105,11 +118,5 @@ public class ApplicationModule {
   @Singleton
   CurrentUser provideCurrentUser(final SharedPreferences sharedPreferences) {
     return new CurrentUser(sharedPreferences);
-  }
-
-  @Provides
-  @Singleton
-  ApiClient provideApiClient(final Build build, final String clientId, final CurrentUser currentUser) {
-    return new ApiClient(build, clientId, currentUser);
   }
 }

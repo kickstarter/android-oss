@@ -14,7 +14,7 @@ public interface BuildCheck {
       .filter(v -> v.second != null)
       .filter(v -> v.first.newerBuildAvailable())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(v -> v.second.showBuildAlert()); // TODO: Pass build info
+      .subscribe(v -> v.second.showBuildAlert(v.first));
 
     presenter.addSubscription(subscription);
   };

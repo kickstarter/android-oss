@@ -7,6 +7,7 @@ import com.kickstarter.services.ApiResponses.InternalBuildEnvelope;
 
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
+import retrofit.client.Response;
 import retrofit.converter.GsonConverter;
 import rx.Observable;
 
@@ -30,7 +31,6 @@ public class KickstarterClient {
   private RestAdapter restAdapter() {
     return new RestAdapter.Builder()
       .setConverter(gsonConverter())
-      //.setEndpoint("http://10.0.3.2:3000/")
       .setEndpoint("http://ksr.10.0.3.2.xip.io/")
       .setRequestInterceptor(requestInterceptor())
       .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE)
@@ -45,6 +45,7 @@ public class KickstarterClient {
     return request -> {
       request.addHeader("Accept", "application/json");
       request.addHeader("Kickstarter-Android-App", build.versionCode().toString());
+      request.addHeader("User-Agent", "Kickstarter Android Mobile"); // TODO: Tablet? Version? etc.
     };
   }
 }

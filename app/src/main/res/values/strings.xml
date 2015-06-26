@@ -13,14 +13,17 @@
     Are those new shoes? If they’re not new, they look really shiny and beautiful.
   </string>
   <string name="backers">backers</string>
+  <string name="Build">Build</string>
   <string name="by_">by\u0020</string>
   <string name="By_signing_up_you_agree_to_our">
     By signing up you agree to our terms of use, privacy policy, and cookie policy. We’ll never post
     anything without your permission.
   </string>
+  <string name="Changelog">Changelog</string>
   <string name="creator_launched_a_project">%1$s launched a project: %2$s</string>
   <string name="days">days</string>
   <string name="Discover_projects">Discover projects</string>
+  <string name="Download_build">Download Build</string>
   <string name="Email_address">Email address</string>
   <string name="Enter_code">Enter code</string>
   <string name="Follow">Follow</string>
@@ -43,12 +46,19 @@
   <string name="funded">funded</string>
   <string name="goal">goal</string>
   <string name="Help">Help</string>
+  <string name="Instructions">Instructions</string>
   <string name="Launched">Launched</string>
   <string name="Log_in">Log in</string>
   <string name="Log_out">Log out</string>
   <string name="Logged_out">Logged out</string>
   <string name="Login_does_not_match_any_of_our_records">Login does not match any of our records.</string>
   <string name="Nice_to_see_you_again">Nice to see you again.</string>
+  <string name="Open_downloads_folder">Open Downloads folder</string>
+  <string name="A_request_has_been_made_to_download_the_latest_build">
+    A request has been made to download the latest build. When the request has completed, open your downloads
+    folder and tap the .apk file to install.\n\nYou must enable the option to allow installation of apps from
+    unknown sources in the security settings of your device.
+  </string>
   <string name="Password">Password</string>
   <string name="Please_enter_your_verification_code_to_continue">
     Please enter your verification code to continue.

@@ -12,6 +12,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.DiscoveryPresenter;
+import com.kickstarter.services.ApiResponses.InternalBuildEnvelope;
 import com.kickstarter.ui.adapters.ProjectListAdapter;
 
 import java.util.List;
@@ -40,16 +41,14 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
     recyclerView.setAdapter(adapter);
   }
 
-  public void showBuildAlert() {
+  public void showBuildAlert(final InternalBuildEnvelope envelope) {
     new AlertDialog.Builder(this)
       .setTitle("Upgrade app")
-      .setMessage("Download upgrade?")
+      .setMessage("A newer build is available. Download upgrade?")
       .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-        Uri webpage = Uri.parse("TODO");
-        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
-        if (intent.resolveActivity(getPackageManager()) != null) {
-          startActivity(intent);
-        }
+        Intent intent = new Intent(this, DownloadBetaActivity.class)
+          .putExtra("internalBuildEnvelope", envelope);
+        startActivity(intent);
       })
       .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
       })

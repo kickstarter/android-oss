@@ -20,7 +20,7 @@ public class Presenter<ViewType> {
 
   protected void onCreate(final Context context, final Bundle savedInstanceState) {
     Timber.d("onCreate %s", this.toString());
-    onDropView();
+    dropView();
   }
 
   protected void onResume(final ViewType view) {
@@ -30,7 +30,7 @@ public class Presenter<ViewType> {
 
   protected void onPause() {
     Timber.d("onPause %s", this.toString());
-    onDropView();
+    dropView();
   }
 
   protected void onDestroy() {
@@ -48,8 +48,8 @@ public class Presenter<ViewType> {
     viewSubject.onNext(view);
   }
 
-  protected void onDropView() {
-    Timber.d("onDropView %s", this.toString());
+  protected void dropView() {
+    Timber.d("dropView %s", this.toString());
     this.view = null;
     viewSubject.onNext(null);
   }
@@ -60,6 +60,10 @@ public class Presenter<ViewType> {
 
   protected final boolean hasView() {
     return this.view != null;
+  }
+
+  public final PublishSubject<ViewType> viewSubject() {
+    return viewSubject;
   }
 
   public final void addSubscription (final Subscription subscription) {

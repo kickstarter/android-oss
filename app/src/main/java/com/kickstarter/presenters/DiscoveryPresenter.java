@@ -6,10 +6,12 @@ import android.os.Bundle;
 
 import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.models.Project;
-import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.DiscoveryParams;
+import com.kickstarter.services.KickstarterClient;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.ProjectDetailActivity;
 import com.kickstarter.ui.view_holders.ProjectListViewHolder;
@@ -18,12 +20,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
-  @Inject ApiClient client;
+  @Inject ApiClient apiClient;
+  @Inject KickstarterClient kickstarterClient;
+  @Inject BuildCheck buildCheck;
   private List<Project> projects;
 
   @Override
@@ -31,16 +34,17 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
     super.onCreate(context, savedInstanceState);
     ((KsrApplication) context.getApplicationContext()).component().inject(this);
 
+    buildCheck.bind(this, kickstarterClient);
+
     DiscoveryParams initial_params = DiscoveryParams.params();
-    projects = client.fetchProjects(initial_params)
+    projects = apiClient.fetchProjects(initial_params)
       .map(envelope -> envelope.projects)
       .toBlocking().last(); // TODO: Don't block
 
-    Subscription subscription = viewSubject
+    addSubscription(viewSubject
       .filter(v -> v != null)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(v -> v.onItemsNext(projects));
-    addSubscription(subscription);
+      .subscribe(v -> v.onItemsNext(projects)));
   }
 
   public void onProjectClicked(final Project project, final ProjectListViewHolder viewHolder) {

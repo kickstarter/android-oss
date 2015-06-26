@@ -14,13 +14,7 @@ import com.kickstarter.ui.view_holders.ProjectStateChangedPositiveViewHolder;
 import com.kickstarter.ui.views.DiscoveryToolbar;
 import com.kickstarter.ui.views.IconTextView;
 
-import javax.inject.Singleton;
-
-import dagger.Component;
-
-@Singleton
-@Component(modules = {ApplicationModule.class})
-public interface ApplicationComponent {
+public interface ApplicationGraph {
   void inject(ActivityFeedActivity activity);
   void inject(ActivityFeedPresenter presenter);
   void inject(CurrentUser current_user);

@@ -1,6 +1,5 @@
 package com.kickstarter.services;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kickstarter.BuildConfig;
 import com.kickstarter.libs.Build;
@@ -31,7 +30,8 @@ public class KickstarterClient {
   private RestAdapter restAdapter() {
     return new RestAdapter.Builder()
       .setConverter(gsonConverter())
-      .setEndpoint("https://www.kickstarter.com")
+      //.setEndpoint("http://10.0.3.2:3000/")
+      .setEndpoint("http://ksr.10.0.3.2.xip.io/")
       .setRequestInterceptor(requestInterceptor())
       .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE)
       .build();

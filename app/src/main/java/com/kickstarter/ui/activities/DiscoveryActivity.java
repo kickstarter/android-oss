@@ -1,6 +1,9 @@
 package com.kickstarter.ui.activities;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -35,5 +38,22 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
     Timber.d("onItemsNext %s", this.toString());
     adapter = new ProjectListAdapter(projects, presenter);
     recyclerView.setAdapter(adapter);
+  }
+
+  public void showBuildAlert() {
+    new AlertDialog.Builder(this)
+      .setTitle("Upgrade app")
+      .setMessage("Download upgrade?")
+      .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+        Uri webpage = Uri.parse("TODO");
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+          startActivity(intent);
+        }
+      })
+      .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+      })
+      .setIcon(android.R.drawable.ic_dialog_alert)
+      .show();
   }
 }

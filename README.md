@@ -25,7 +25,7 @@ a better way to view logs, the bootstrap script installs `pidcat`.
 You can get the log firehose by running:
 
 ```
-pidcat com.kickstarter.dev
+pidcat com.kickstarter.kickstarter.internal.debug
 ```
 
 Or filter using tags (regexps allowed):

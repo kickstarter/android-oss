@@ -36,3 +36,18 @@ pidcat -t "\w*Activity" com.kickstarter.dev
 
 If you encounter an error when starting pidcat, make sure the Android platform tools
 are in your `PATH`.
+
+# Access local Kickstarter via an emulator
+
+We can make this easier, but for now:
+
+1. In the Kickstarter app, edit `config/config.yml` so that the API url matches
+   the endpoint your emulator will use, e.g.: `api_url: 'api.ksr.10.0.3.2.xip.io'`
+2. Ensure `config/initializers/canonical_host_middleware.rb` is ignoring the
+   endpoints the emulator will use to hit the site and API, e.g. `ksr.10.0.3.2.xip.io`
+   and `api.ksr.10.0.3.2.xip.io`.
+3. Edit the endpoints in the Android app's `KickstarterClient` and `ApiClient`
+   classes so they point to the correct location.
+
+If it's not working properly, you can use your emulator's browser to hit
+endpoints and debug.

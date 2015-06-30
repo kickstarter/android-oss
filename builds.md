@@ -21,7 +21,7 @@ flavor is for distribution to internal or trusted users. In iOS, we use beta
 builds for this purpose. External builds are for distribution on the Google Play
 store.
 
-## Audience for builds
+## Build variants
 
 * `internalDebug`: Mobile product team
 * `internalRelease`: Kickstarter staff

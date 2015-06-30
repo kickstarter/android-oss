@@ -21,6 +21,14 @@ flavor is for distribution to internal or trusted users. In iOS, we use beta
 builds for this purpose. External builds are for distribution on the Google Play
 store.
 
+## Audience for builds
+
+* internalDebug: Mobile product team
+* internalRelease: Kickstarter staff
+* externalDebug: Likely won't be used much, could be useful if we establish
+  a formal QA process as a check before public release
+* externalRelease: Public users, distributed via Play store
+
 ## Signing packages
 
 Debug builds are signed using `app/debug.keystore`. Creating debug builds

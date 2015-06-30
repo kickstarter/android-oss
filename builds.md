@@ -23,11 +23,11 @@ store.
 
 ## Audience for builds
 
-* internalDebug: Mobile product team
-* internalRelease: Kickstarter staff
-* externalDebug: Likely won't be used much, could be useful if we establish
+* `internalDebug`: Mobile product team
+* `internalRelease`: Kickstarter staff
+* `externalDebug`: Likely won't be used much, could be useful if we establish
   a formal QA process as a check before public release
-* externalRelease: Public users, distributed via Play store
+* `externalRelease`: Public users, distributed via Play store
 
 ## Signing packages
 

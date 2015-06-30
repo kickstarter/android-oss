@@ -1,5 +1,7 @@
 package com.kickstarter;
 
+import com.kickstarter.libs.BuildCheck;
+
 import dagger.Module;
 import dagger.Provides;
 

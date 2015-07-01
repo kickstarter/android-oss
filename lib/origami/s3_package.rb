@@ -25,7 +25,7 @@ module Origami
     protected
 
     def package_key
-      "#{version}/#{version}.pkg"
+      "#{version}/#{version}.apk"
     end
   end
 end

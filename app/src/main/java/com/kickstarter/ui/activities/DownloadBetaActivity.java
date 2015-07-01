@@ -20,6 +20,7 @@ public class DownloadBetaActivity extends AppCompatActivity {
   @InjectView(R.id.build) TextView build;
   @InjectView(R.id.changelog) TextView changelog;
   @InjectView(R.id.open_downloads_button) Button openDownloadsButton;
+  InternalBuildEnvelope internalBuildEnvelope;
 
   @Override
   public void onCreate(final Bundle savedInstanceState) {
@@ -29,10 +30,10 @@ public class DownloadBetaActivity extends AppCompatActivity {
     ButterKnife.inject(this);
 
     final Intent intent = getIntent();
-    final InternalBuildEnvelope envelope = intent.getExtras().getParcelable("internalBuildEnvelope");
+    internalBuildEnvelope = intent.getExtras().getParcelable("internalBuildEnvelope");
 
-    build.setText(envelope.build().toString());
-    changelog.setText(envelope.changelog());
+    build.setText(internalBuildEnvelope.build().toString());
+    changelog.setText(internalBuildEnvelope.changelog());
 
     requestDownload();
   }
@@ -45,7 +46,7 @@ public class DownloadBetaActivity extends AppCompatActivity {
 
   private void requestDownload() {
     final Intent intent = new Intent(Intent.ACTION_VIEW)
-      .setData(Uri.parse("http://ksr.10.0.3.2.xip.io/mobile/beta/newest"));
+      .setData(Uri.parse("http://ksr.10.0.3.2.xip.io/mobile/beta/builds/" + internalBuildEnvelope.build()));
     startActivity(intent);
   }
 }

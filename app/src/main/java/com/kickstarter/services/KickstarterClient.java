@@ -45,7 +45,16 @@ public class KickstarterClient {
     return request -> {
       request.addHeader("Accept", "application/json");
       request.addHeader("Kickstarter-Android-App", build.versionCode().toString());
-      request.addHeader("User-Agent", "Kickstarter Android Mobile"); // TODO: Tablet? Version? etc.
+
+      // TODO: Check whether device is mobile or tablet, append to user agent
+      final StringBuilder userAgent = new StringBuilder()
+        .append("Kickstarter Android Mobile Variant/")
+        .append(build.variant())
+        .append(" Code/")
+        .append(build.versionCode())
+        .append(" Version/")
+        .append(build.versionName());
+      request.addHeader("User-Agent", userAgent.toString());
     };
   }
 }

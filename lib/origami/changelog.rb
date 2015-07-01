@@ -6,6 +6,7 @@ module Origami
       @variant, @version = variant, version
     end
 
+    # Capture and publish the changelog for a package to a list in S3.
     def publish
       Origami.say "Publishing changelog for #{variant} package with version #{version}"
 

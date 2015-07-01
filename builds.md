@@ -1,25 +1,23 @@
 # Builds
 
-We have many kinds of packages, the package depends on the build type and product
+We have many build variants, the variant depends on the build type and product
 flavor.
 
 ## Build types
 
 There are two build types: `debug` and `release`. In local development we'll
 typically be generating debug builds. Release builds are for when we want to
-distribute the application to other users. The [Android Tools
+distribute the application outside the development team. The [Android Tools
 site](http://tools.android.com/tech-docs/new-build-system/user-guide#TOC-Build-Types)
 has more on the difference between debug and release builds. Debug builds will
 have features that assist with debugging and testing, like the ability to change
 endpoints.
 
-
 ## Product flavors
 
 There are two product flavors: `internal` and `external`. The internal product
 flavor is for distribution to internal or trusted users. In iOS, we use beta
-builds for this purpose. External builds are for distribution on the Google Play
-store.
+builds for this purpose.
 
 ## Build variants
 
@@ -45,3 +43,8 @@ The keystore is backed up in S3:
 in passpack under `Android - Keystore`. The keystore can be copied from
 S3 into `app/kickstarter.keystore`, and the credentials saved into `app/signing.gradle`.
 The keystore and credentials are in `.gitignore` so local changes won't be committed.
+
+# Releasing
+
+There's a command-line tool in this repository named Origami. Run `bin/origami
+--help` to get started, more documentation on this to come.

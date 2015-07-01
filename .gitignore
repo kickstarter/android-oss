@@ -48,3 +48,9 @@ app/fabric.properties
 app/kickstarter.keystore
 # Credentials for accessing kickstarter.keystore
 app/signing.gradle
+
+# Credentials for uploading builds to S3
+config/s3.yml
+
+# Temp file for writing changelogs
+.CHANGELOG.tmp

@@ -17,12 +17,16 @@ module Origami
       }
       body = (current_builds.select{|b| b[:build] != version} + [build]).to_yaml
 
-      object = Origami.s3_client.put_object(body: body, bucket: Origami.bucket, key: key)
+      object = Origami.s3_client.put_object(body: body, bucket: Origami.bucket, key: 'builds.yaml')
 
-      Origami.say "Changelog published 👌"
+      Origami.say "Changelog published"
     end
 
     protected
+
+    def current_builds
+      @current_builds ||= BuildList.new.fetch
+    end
 
     def changelog
       return @changelog if defined? @changelog
@@ -45,17 +49,6 @@ module Origami
       File.delete(file_name)
 
       @changelog
-    end
-
-    def current_builds
-      return @current_builds if defined? @current_builds
-
-      object = Origami.s3_client.get_object(bucket: Origami.bucket, key: key)
-      @current_builds = YAML::load(object.body.read)
-    end
-
-    def key
-      'builds.yaml'
     end
 
     def strip_commented_lines(str)

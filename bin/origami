@@ -1,0 +1,49 @@
+#!/usr/bin/env ruby
+
+$:.unshift File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib'))
+require 'origami'
+require_relative '../config/initializer'
+require 'commander'
+
+class OrigamiApplication
+  include Commander::Methods
+
+  def run
+    program :name, 'Origami'
+    program :version, '0.0.1'
+    program :description, 'Command-line tool for deploying the Kickstarter Android app'
+
+    %w(internalDebug externalDebug internalRelease).each do |variant|
+      command variant do |c|
+        c.syntax = "origami #{variant}"
+        c.description = "Submit a new #{variant} build to S3"
+        c.action do |args, options|
+          version = Origami::VersionCode.new.bump
+          file_path = Origami::Build.new(variant).compile
+          Origami::S3Package.new(variant: variant, version: version, file_path: file_path).upload
+          Origami::Changelog.new(variant: variant, version: version).publish
+          Origami.say "All done! 👌"
+        end
+      end
+    end
+
+    command :externalRelease do |c|
+      c.syntax = 'origami externalRelease'
+      c.description = 'Submit a new externalRelease build to the Play Store'
+      c.action do |args, options|
+      end
+    end
+
+    command :builds do |c|
+      c.syntax = "origami builds"
+      c.description = "Show list of published builds"
+      c.action do |args, options|
+        puts Origami::BuildList.new.fetch.to_yaml
+      end
+    end
+
+    run!
+  end
+end
+
+OrigamiApplication.new.run if $0 == __FILE__

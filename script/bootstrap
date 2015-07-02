@@ -1,15 +1,23 @@
 #!/usr/bin/env sh
 
+function announce {
+  str=$1
+  ruby -e "print \"\033[0;32m$1\033[0m\n\""
+}
+
+announce "Starting bootstrap\n"
+
 ANDROID_STUDIO_PREFERENCES_PATH="${HOME}/Library/Preferences/AndroidStudio"
 
 if [ ! -d $ANDROID_STUDIO_PREFERENCES_PATH ]; then
-  echo "Android Studio expected in ${ANDROID_STUDIO_PREFERENCES_PATH}"
+  announce "Android Studio expected in ${ANDROID_STUDIO_PREFERENCES_PATH}"
   exit 1
 fi
 
 # Signing config
 test -e app/signing.gradle || cp app/signing.gradle.example app/signing.gradle
 
+announce "Running bundle install\n"
 bundle install
 
 script/bootstrap_configs
@@ -21,9 +29,9 @@ REPOSITORY_STYLE_PATH="script/style/Kickstarter.xml"
 cmp -s "${ANDROID_STYLE_PATH}" "${REPOSITORY_STYLE_PATH}"
 if [ $? -ne 0 ]; then
   if [ ! -f $ANDROID_STYLE_PATH ]; then
-    echo "Created Android Studio code style, change to the Kickstarter scheme in Preferences > Code Style"
+    announce "Created Android Studio code style, change to the Kickstarter scheme in Preferences > Code Style\n"
   else
-    echo "Updated Kickstarter style, restart Android Studio to apply changes"
+    announce "Updated Kickstarter style, restart Android Studio to apply changes\n"
   fi
   cp $REPOSITORY_STYLE_PATH $ANDROID_STYLE_PATH
 fi
@@ -36,8 +44,18 @@ curl -s "https://raw.githubusercontent.com/JakeWharton/pidcat/660a8197f55cd7bc53
 chmod +x /tmp/pidcat
 cmp -s /tmp/pidcat /usr/local/bin/pidcat
 if [ $? -ne 0 ]; then
-  echo "Updating pidcat"
+  announce "Updating pidcat\n"
   mv /tmp/pidcat /usr/local/bin/pidcat
 fi
 
-echo "Bootstrap complete!"
+if [ ! -e "app/kickstarter.keystore" ]; then
+  announce "File \`app/kickstarter.keystore\` does not exist, this will prevent you from creating release builds."
+  announce "To fix this, download the keystore from \`s3://android-ksr-keystores/kickstarter.keystore\` to \`app/kickstarter.keystore\`.\n"
+fi
+
+if [ ! -e "app/signing.gradle" ]; then
+  announce "File \`app/signing.gradle\` does not exist, this will prevent you from creating release builds."
+  announce "To fix this, copy the example keystore from \`app/signing.gradle.example\` to \`app/signing.gradle\` then fill out the file with the correct credentials. These can be found in passpack under the entry Android - Keystore.\n"
+fi
+
+announce "Bootstrap complete!"

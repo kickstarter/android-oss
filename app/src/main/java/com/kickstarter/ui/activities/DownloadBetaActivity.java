@@ -46,7 +46,7 @@ public class DownloadBetaActivity extends AppCompatActivity {
 
   private void requestDownload() {
     final Intent intent = new Intent(Intent.ACTION_VIEW)
-      .setData(Uri.parse("http://ksr.10.0.3.2.xip.io/mobile/beta/builds/" + internalBuildEnvelope.build()));
+      .setData(Uri.parse("https://www.kickstarter.com/mobile/beta/builds/" + internalBuildEnvelope.build()));
     startActivity(intent);
   }
 }

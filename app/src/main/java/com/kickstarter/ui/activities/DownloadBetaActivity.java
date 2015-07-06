@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.kickstarter.R;
@@ -19,7 +18,6 @@ import timber.log.Timber;
 public class DownloadBetaActivity extends AppCompatActivity {
   @InjectView(R.id.build) TextView build;
   @InjectView(R.id.changelog) TextView changelog;
-  @InjectView(R.id.open_downloads_button) Button openDownloadsButton;
   InternalBuildEnvelope internalBuildEnvelope;
 
   @Override

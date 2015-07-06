@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.kickstarter.libs.CurrencyOptions;
-import com.kickstarter.libs.Money;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;

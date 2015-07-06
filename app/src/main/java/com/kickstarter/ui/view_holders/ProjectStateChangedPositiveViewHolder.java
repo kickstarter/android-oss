@@ -13,9 +13,6 @@ import com.kickstarter.models.Activity;
 import com.kickstarter.presenters.ActivityFeedPresenter;
 import com.squareup.picasso.Picasso;
 
-import java.text.NumberFormat;
-import java.util.Locale;
-
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;

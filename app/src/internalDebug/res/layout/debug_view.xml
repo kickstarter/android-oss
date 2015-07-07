@@ -19,7 +19,7 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:textAppearance="@style/TextAppearance.AppCompat.Title"
-      android:textColor="@color/white"
+      android:textColor="@color/dark_gray"
       android:text="@string/Network" />
 
   </TableRow>
@@ -36,7 +36,7 @@
       android:layout_height="wrap_content"
       android:text="@string/Endpoint"
       android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-      android:textColor="@color/white"
+      android:textColor="@color/dark_gray"
       android:layout_column="0" />
 
     <TextView
@@ -60,7 +60,7 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:textAppearance="@style/TextAppearance.AppCompat.Title"
-      android:textColor="@color/white"
+      android:textColor="@color/dark_gray"
       android:text="@string/Build_information" />
 
   </TableRow>
@@ -77,10 +77,11 @@
       android:layout_height="wrap_content"
       android:text="@string/Variant"
       android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-      android:textColor="@color/white"
+      android:textColor="@color/dark_gray"
       android:layout_column="0" />
 
     <TextView
+      android:id="@+id/variant"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -101,10 +102,11 @@
       android:layout_height="wrap_content"
       android:text="@string/Version_code"
       android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-      android:textColor="@color/white"
+      android:textColor="@color/dark_gray"
       android:layout_column="0" />
 
     <TextView
+      android:id="@+id/version_code"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -125,10 +127,11 @@
       android:layout_height="wrap_content"
       android:text="@string/Version_name"
       android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-      android:textColor="@color/white"
+      android:textColor="@color/dark_gray"
       android:layout_column="0" />
 
     <TextView
+      android:id="@+id/version_name"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -149,10 +152,11 @@
       android:layout_height="wrap_content"
       android:text="@string/Build_date"
       android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-      android:textColor="@color/white"
+      android:textColor="@color/dark_gray"
       android:layout_column="0" />
 
     <TextView
+      android:id="@+id/build_date"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -173,10 +177,11 @@
       android:layout_height="wrap_content"
       android:text="@string/Sha"
       android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-      android:textColor="@color/white"
+      android:textColor="@color/dark_gray"
       android:layout_column="0" />
 
     <TextView
+      android:id="@+id/sha"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:textAppearance="@style/TextAppearance.AppCompat.Body1"

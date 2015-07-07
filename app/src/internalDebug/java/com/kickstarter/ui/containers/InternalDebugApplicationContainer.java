@@ -1,7 +1,6 @@
 package com.kickstarter.ui.containers;
 
 import android.app.Activity;
-import android.support.v4.widget.DrawerLayout;
 import android.view.ViewGroup;
 
 import com.kickstarter.R;

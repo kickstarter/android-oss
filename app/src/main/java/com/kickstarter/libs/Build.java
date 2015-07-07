@@ -4,11 +4,22 @@ import android.content.pm.PackageInfo;
 
 import com.kickstarter.BuildConfig;
 
+import org.joda.time.DateTime;
+
 public class Build {
   final PackageInfo packageInfo;
 
   public Build(final PackageInfo packageInfo) {
     this.packageInfo = packageInfo;
+  }
+
+  public String date() {
+    // TODO: Convert to DateTime
+    return BuildConfig.BUILD_DATE;
+  }
+
+  public String sha() {
+    return BuildConfig.GIT_SHA;
   }
 
   public Integer versionCode() {

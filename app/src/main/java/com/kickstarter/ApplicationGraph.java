@@ -8,6 +8,7 @@ import com.kickstarter.presenters.LoginPresenter;
 import com.kickstarter.presenters.ProjectDetailPresenter;
 import com.kickstarter.presenters.TwoFactorPresenter;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
+import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.ProjectDetailActivity;
 import com.kickstarter.ui.view_holders.ProjectListViewHolder;
 import com.kickstarter.ui.view_holders.ProjectStateChangedPositiveViewHolder;
@@ -18,6 +19,7 @@ public interface ApplicationGraph {
   void inject(ActivityFeedActivity activity);
   void inject(ActivityFeedPresenter presenter);
   void inject(CurrentUser current_user);
+  void inject(DiscoveryActivity activity);
   void inject(DiscoveryToolbar toolbar);
   void inject(DiscoveryPresenter presenter);
   void inject(IconTextView view);

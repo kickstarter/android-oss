@@ -16,6 +16,7 @@ import com.kickstarter.libs.ForApplication;
 import com.kickstarter.libs.Money;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.KickstarterClient;
+import com.kickstarter.ui.containers.ApplicationContainer;
 
 import javax.inject.Singleton;
 

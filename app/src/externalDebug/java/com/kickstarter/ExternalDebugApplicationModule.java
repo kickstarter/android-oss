@@ -7,6 +7,12 @@ import dagger.Provides;
 
 @Module(includes = ApplicationModule.class)
 public class ExternalDebugApplicationModule {
+  @Singleton
+  @Provides
+  ApplicationContainer provideApplicationContainer() {
+    return ApplicationContainer.DEFAULT;
+  }
+
   @Provides
   BuildCheck provideBuildCheck() {
     return BuildCheck.DEFAULT;

@@ -5,7 +5,10 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 
+import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RequiresPresenter;
@@ -13,8 +16,11 @@ import com.kickstarter.models.Project;
 import com.kickstarter.presenters.DiscoveryPresenter;
 import com.kickstarter.services.ApiResponses.InternalBuildEnvelope;
 import com.kickstarter.ui.adapters.ProjectListAdapter;
+import com.kickstarter.ui.containers.ApplicationContainer;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -23,13 +29,21 @@ import timber.log.Timber;
 @RequiresPresenter(DiscoveryPresenter.class)
 public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
   ProjectListAdapter adapter;
+
+  @Inject ApplicationContainer applicationContainer;
+
   @InjectView(R.id.recyclerView) RecyclerView recyclerView;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.discovery_layout);
-    ButterKnife.inject(this);
+
+    ((KsrApplication) getApplication()).component().inject(this);
+    final ViewGroup container = applicationContainer.bind(this);
+    final LayoutInflater layoutInflater = getLayoutInflater();
+
+    layoutInflater.inflate(R.layout.discovery_layout, container);
+    ButterKnife.inject(this, container);
 
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
   }

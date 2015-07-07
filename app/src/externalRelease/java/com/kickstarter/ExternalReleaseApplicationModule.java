@@ -8,6 +8,12 @@ import dagger.Provides;
 
 @Module(includes = ApplicationModule.class)
 public class ExternalReleaseApplicationModule {
+  @Singleton
+  @Provides
+  ApplicationContainer provideApplicationContainer() {
+    return ApplicationContainer.DEFAULT;
+  }
+
   @Provides
   BuildCheck provideBuildCheck() {
     return new NoopBuildCheck();

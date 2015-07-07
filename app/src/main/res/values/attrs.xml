@@ -6,4 +6,8 @@
       <enum name="ion" value="1" />
     </attr>
   </declare-styleable>
+
+  <declare-styleable name="NonConsumingScrimInsetsView">
+    <attr name="insetForeground" />
+  </declare-styleable>
 </resources>

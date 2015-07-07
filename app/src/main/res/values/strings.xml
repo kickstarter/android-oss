@@ -14,6 +14,8 @@
   </string>
   <string name="backers">backers</string>
   <string name="Build">Build</string>
+  <string name="Build_date">Build Date</string>
+  <string name="Build_information">Build Information</string>
   <string name="by_">by\u0020</string>
   <string name="By_signing_up_you_agree_to_our">
     By signing up you agree to our terms of use, privacy policy, and cookie policy. We’ll never post
@@ -25,6 +27,7 @@
   <string name="Discover_projects">Discover projects</string>
   <string name="Download_build">Download Build</string>
   <string name="Email_address">Email address</string>
+  <string name="Endpoint">Endpoint</string>
   <string name="Enter_code">Enter code</string>
   <string name="Follow">Follow</string>
   <string name="Forgot_your_password">Forgot your password?</string>
@@ -52,6 +55,7 @@
   <string name="Log_out">Log out</string>
   <string name="Logged_out">Logged out</string>
   <string name="Login_does_not_match_any_of_our_records">Login does not match any of our records.</string>
+  <string name="Network">Network</string>
   <string name="Nice_to_see_you_again">Nice to see you again.</string>
   <string name="Open_downloads_folder">Open Downloads folder</string>
   <string name="A_request_has_been_made_to_download_the_latest_build">
@@ -72,6 +76,7 @@
   <string name="project_resumed">%1$s resumed.</string>
   <string name="project_was_suspended">%1$s was suspended.</string>
   <string name="Resend">Resend</string>
+  <string name="Sha">SHA</string>
   <string name="Sign_up">Sign up</string>
   <string name="Sign_up_or_log_in_with_your_Facebook_account">
     Sign up or log in with your Facebook account or email address below:
@@ -85,7 +90,10 @@
   <string name="Update_sequence">Update #%1$d</string>
   <string name="Use_your_email_address">Use your email address:</string>
   <string name="username_is_following_you">%1$s is following you!</string>
+  <string name="Variant">Variant</string>
   <string name="Verify">Verify</string>
+  <string name="Version_code">Version Code</string>
+  <string name="Version_name">Version Name</string>
   <string name="When_you_back_a_project_or_follow_a_friend">
     When you back a project or follow a friend, their activity will show up here.
   </string>
@@ -109,5 +117,12 @@
     <item>Publishing</item>
     <item>Technology</item>
     <item>Theater</item>
+  </string-array>
+
+  <string-array name="endpoints_array">
+    <item>Production</item>
+    <item>Staging</item>
+    <item>Local</item>
+    <item>Custom</item>
   </string-array>
 </resources>

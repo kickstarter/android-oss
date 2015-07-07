@@ -1,6 +1,7 @@
 package com.kickstarter.ui.containers;
 
 import android.app.Activity;
+import android.support.v4.widget.DrawerLayout;
 import android.view.ViewGroup;
 
 import com.kickstarter.R;
@@ -14,8 +15,8 @@ public class InternalDebugApplicationContainer implements ApplicationContainer {
   public ViewGroup bind(final Activity activity) {
     activity.setContentView(R.layout.debug_drawer_layout);
 
-    ViewGroup drawer = findById(activity, R.id.debug_drawer);
-    DebugView debugView = new DebugView(activity);
+    final ViewGroup drawer = findById(activity, R.id.debug_drawer);
+    final DebugView debugView = new DebugView(activity);
     drawer.addView(debugView);
 
     return findById(activity, R.id.debug_content);

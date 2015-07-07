@@ -9,6 +9,7 @@
   <color name="text_secondary">@color/dark_gray</color>
   <color name="accent_alpha_20">@color/blue_alpha_20</color>
   <color name="window_background">@color/white</color>
+  <color name="debug_background">#EE222222</color>
 
   <!-- Kickstarter colors -->
   <color name="blue">#00a0ff</color>
@@ -20,6 +21,8 @@
   <color name="text_dark">#0f2105</color>
   <color name="white">@android:color/white</color>
   <color name="transparent">@android:color/transparent</color>
+  <color name="art">#ffbdab</color>
+  <color name="food">#ff3642</color>
 
   <!-- Kickstarter colors with hex opacity:
     http://stackoverflow.com/questions/5445085/understanding-colors-in-android-6-characters/11019879#11019879 -->

@@ -1,4 +1,6 @@
 <resources>
+  <style name="None">
+  </style>
 
   <style name="KsrTheme" parent="Theme.AppCompat.Light.NoActionBar">
     <!-- Shared view activity animations -->
@@ -37,6 +39,8 @@
   </style>
 
   <style name="DiscoveryActivity" parent="KsrTheme">
+    <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    <item name="android:statusBarColor">@android:color/transparent</item>
     <item name="android:windowBackground">@color/light_gray</item>
   </style>
 
@@ -62,5 +66,29 @@
   <style name="KsrProgressBar" parent="Base.Widget.AppCompat.ProgressBar">
     <item name="android:indeterminateOnly">false</item>
     <item name="android:progressDrawable">@drawable/ksr_progress_bar_horizontal</item>
+  </style>
+
+  <style name="Widget.U2020.DebugDrawer.Header" parent="None">
+    <item name="android:paddingBottom">2dp</item>
+    <item name="android:textColor">?android:attr/textColorSecondary</item>
+    <item name="android:textAllCaps">true</item>
+    <item name="android:textSize">13sp</item>
+    <item name="android:layout_marginTop">24dp</item>
+    <item name="android:layout_marginBottom">2dp</item>
+    <!--<item name="android:background">@drawable/debug_drawer_header_bg</item>-->
+  </style>
+
+  <style name="Widget.U2020.DebugDrawer.RowWidget" parent="None">
+    <item name="android:minHeight">26dp</item>
+    <item name="android:layout_marginTop">4dp</item>
+  </style>
+  <style name="Widget.U2020.DebugDrawer.RowTitle" parent="Widget.U2020.DebugDrawer.RowWidget">
+    <item name="android:layout_marginRight">16dp</item>
+    <item name="android:textColor">?android:attr/textColorSecondary</item>
+    <item name="android:textSize">16sp</item>
+  </style>
+  <style name="Widget.U2020.DebugDrawer.RowValue" parent="Widget.U2020.DebugDrawer.RowWidget">
+    <item name="android:textColor">?android:attr/textColorPrimary</item>
+    <item name="android:textSize">16sp</item>
   </style>
 </resources>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  <group android:checkableBehavior="single">
+    <item
+      android:id="@+id/navigation_item_1"
+      android:checked="true"
+      android:title="nav 1"/>
+    <item
+      android:id="@+id/navigation_item_2"
+      android:title="nav 2"/>
+  </group>
+</menu>

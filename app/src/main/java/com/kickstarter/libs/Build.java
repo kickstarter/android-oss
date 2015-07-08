@@ -7,8 +7,6 @@ import com.kickstarter.BuildConfig;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
-import java.util.TimeZone;
-
 public class Build {
   final PackageInfo packageInfo;
 

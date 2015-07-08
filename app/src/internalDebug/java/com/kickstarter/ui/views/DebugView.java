@@ -11,8 +11,6 @@ import com.kickstarter.R;
 import com.kickstarter.libs.Build;
 
 import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 
 import javax.inject.Inject;
 

@@ -1,193 +1,208 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout
+<LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:padding="@dimen/keyline_1"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:layout_centerInParent="true"
-  android:stretchColumns="*">
+  android:padding="@dimen/keyline_1"
+  android:orientation="vertical">
 
-  <TableRow
-    android:layout_marginTop="@dimen/keyline_1_half"
-    android:layout_marginBottom="@dimen/keyline_1_half"
-    android:layout_width="match_parent"
+  <TextView
+    android:layout_marginBottom="@dimen/keyline_1"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:weightSum="1" >
+    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+    android:textColor="@color/dark_gray"
+    android:text="@string/Development_settings" />
 
-    <TextView
-      android:layout_span="2"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:textAppearance="@style/TextAppearance.AppCompat.Title"
-      android:textColor="@color/dark_gray"
-      android:text="@string/Network" />
-
-  </TableRow>
-
-  <TableRow
-    android:layout_marginTop="@dimen/keyline_1_half"
-    android:layout_marginBottom="@dimen/keyline_1_half"
+  <TableLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:weightSum="1" >
+    android:layout_height="match_parent"
+    android:layout_centerInParent="true"
+    android:stretchColumns="*">
 
-    <TextView
-      android:layout_width="0dp"
+    <TableRow
+      android:layout_marginTop="@dimen/keyline_1_half"
+      android:layout_marginBottom="@dimen/keyline_1_half"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@string/Endpoint"
-      android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-      android:textColor="@color/dark_gray"
-      android:layout_column="0" />
+      android:weightSum="1" >
 
-    <TextView
-      android:layout_width="0dp"
+      <TextView
+        android:layout_span="2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@color/dark_gray"
+        android:text="@string/Network" />
+
+    </TableRow>
+
+    <TableRow
+      android:layout_marginTop="@dimen/keyline_1_half"
+      android:layout_marginBottom="@dimen/keyline_1_half"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-      android:textColor="@color/white"
-      android:layout_column="1" />
+      android:weightSum="1" >
 
-  </TableRow>
+      <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/Endpoint"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/dark_gray"
+        android:layout_column="0" />
 
-  <TableRow
-    android:layout_marginTop="@dimen/keyline_1_half"
-    android:layout_marginBottom="@dimen/keyline_1_half"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:weightSum="1" >
+      <Spinner
+        android:id="@+id/endpoint_spinner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/white"
+        android:layout_column="1" />
 
-    <TextView
-      android:layout_span="2"
-      android:layout_width="0dp"
+    </TableRow>
+
+    <TableRow
+      android:layout_marginTop="@dimen/keyline_1_half"
+      android:layout_marginBottom="@dimen/keyline_1_half"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:textAppearance="@style/TextAppearance.AppCompat.Title"
-      android:textColor="@color/dark_gray"
-      android:text="@string/Build_information" />
+      android:weightSum="1" >
 
-  </TableRow>
+      <TextView
+        android:layout_span="2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@color/dark_gray"
+        android:text="@string/Build_information" />
 
-  <TableRow
-    android:layout_marginTop="@dimen/keyline_1_half"
-    android:layout_marginBottom="@dimen/keyline_1_half"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:weightSum="1" >
+    </TableRow>
 
-    <TextView
-      android:layout_width="0dp"
+    <TableRow
+      android:layout_marginTop="@dimen/keyline_1_half"
+      android:layout_marginBottom="@dimen/keyline_1_half"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@string/Variant"
-      android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-      android:textColor="@color/dark_gray"
-      android:layout_column="0" />
+      android:weightSum="1" >
 
-    <TextView
-      android:id="@+id/variant"
-      android:layout_width="0dp"
+      <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/Variant"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/dark_gray"
+        android:layout_column="0" />
+
+      <TextView
+        android:id="@+id/variant"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/white"
+        android:layout_column="1" />
+
+    </TableRow>
+
+    <TableRow
+      android:layout_marginTop="@dimen/keyline_1_half"
+      android:layout_marginBottom="@dimen/keyline_1_half"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-      android:textColor="@color/white"
-      android:layout_column="1" />
+      android:weightSum="1" >
 
-  </TableRow>
+      <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/Version_code"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/dark_gray"
+        android:layout_column="0" />
 
-  <TableRow
-    android:layout_marginTop="@dimen/keyline_1_half"
-    android:layout_marginBottom="@dimen/keyline_1_half"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:weightSum="1" >
+      <TextView
+        android:id="@+id/version_code"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/white"
+        android:layout_column="1" />
 
-    <TextView
-      android:layout_width="0dp"
+    </TableRow>
+
+    <TableRow
+      android:layout_marginTop="@dimen/keyline_1_half"
+      android:layout_marginBottom="@dimen/keyline_1_half"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@string/Version_code"
-      android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-      android:textColor="@color/dark_gray"
-      android:layout_column="0" />
+      android:weightSum="1" >
 
-    <TextView
-      android:id="@+id/version_code"
-      android:layout_width="0dp"
+      <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/Version_name"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/dark_gray"
+        android:layout_column="0" />
+
+      <TextView
+        android:id="@+id/version_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/white"
+        android:layout_column="1" />
+
+    </TableRow>
+
+    <TableRow
+      android:layout_marginTop="@dimen/keyline_1_half"
+      android:layout_marginBottom="@dimen/keyline_1_half"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-      android:textColor="@color/white"
-      android:layout_column="1" />
+      android:weightSum="1" >
 
-  </TableRow>
+      <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/Build_date"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/dark_gray"
+        android:layout_column="0" />
 
-  <TableRow
-    android:layout_marginTop="@dimen/keyline_1_half"
-    android:layout_marginBottom="@dimen/keyline_1_half"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:weightSum="1" >
+      <TextView
+        android:id="@+id/build_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/white"
+        android:layout_column="1" />
 
-    <TextView
-      android:layout_width="0dp"
+    </TableRow>
+
+    <TableRow
+      android:layout_marginTop="@dimen/keyline_1_half"
+      android:layout_marginBottom="@dimen/keyline_1_half"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="@string/Version_name"
-      android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-      android:textColor="@color/dark_gray"
-      android:layout_column="0" />
+      android:weightSum="1" >
 
-    <TextView
-      android:id="@+id/version_name"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-      android:textColor="@color/white"
-      android:layout_column="1" />
+      <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/Sha"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/dark_gray"
+        android:layout_column="0" />
 
-  </TableRow>
+      <TextView
+        android:id="@+id/sha"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/white"
+        android:layout_column="1" />
 
-  <TableRow
-    android:layout_marginTop="@dimen/keyline_1_half"
-    android:layout_marginBottom="@dimen/keyline_1_half"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:weightSum="1" >
+    </TableRow>
 
-    <TextView
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:text="@string/Build_date"
-      android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-      android:textColor="@color/dark_gray"
-      android:layout_column="0" />
-
-    <TextView
-      android:id="@+id/build_date"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-      android:textColor="@color/white"
-      android:layout_column="1" />
-
-  </TableRow>
-
-  <TableRow
-    android:layout_marginTop="@dimen/keyline_1_half"
-    android:layout_marginBottom="@dimen/keyline_1_half"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:weightSum="1" >
-
-    <TextView
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:text="@string/Sha"
-      android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-      android:textColor="@color/dark_gray"
-      android:layout_column="0" />
-
-    <TextView
-      android:id="@+id/sha"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-      android:textColor="@color/white"
-      android:layout_column="1" />
-
-  </TableRow>
-
-</TableLayout>
+  </TableLayout>
+</LinearLayout>

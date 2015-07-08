@@ -4,11 +4,14 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.ApiEndpoints;
 import com.kickstarter.libs.Build;
+import com.kickstarter.libs.EnumAdapter;
 
 import org.joda.time.format.DateTimeFormat;
 
@@ -21,6 +24,7 @@ public class DebugView extends FrameLayout {
   @Inject Build build;
 
   @InjectView(R.id.build_date) TextView buildDate;
+  @InjectView(R.id.endpoint_spinner) Spinner endpointSpinner;
   @InjectView(R.id.sha) TextView sha;
   @InjectView(R.id.variant) TextView variant;
   @InjectView(R.id.version_code) TextView versionCode;
@@ -42,6 +46,18 @@ public class DebugView extends FrameLayout {
     LayoutInflater.from(context).inflate(R.layout.debug_view, this);
     ButterKnife.inject(this);
 
+    setupNetworkSection();
+    setupBuildInformationSection();
+  }
+
+  private void setupNetworkSection() {
+    final EnumAdapter<ApiEndpoints> endpointAdapter =
+      new EnumAdapter<>(getContext(), ApiEndpoints.class);
+    // TODO: Set current selection
+    endpointSpinner.setAdapter(endpointAdapter);
+  }
+
+  private void setupBuildInformationSection() {
     buildDate.setText(build.dateTime().toString(DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss aa zzz")));
     sha.setText(build.sha());
     variant.setText(build.variant());

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kickstarter.BuildConfig;
 import com.kickstarter.libs.ActivityCategoryTypeConverter;
+import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.DateTimeTypeConverter;
@@ -16,6 +17,7 @@ import com.kickstarter.services.ApiResponses.ErrorEnvelope;
 
 import org.joda.time.DateTime;
 
+import retrofit.Endpoint;
 import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
@@ -24,12 +26,14 @@ import retrofit.converter.GsonConverter;
 import rx.Observable;
 
 public class ApiClient {
+  private final ApiEndpoint apiEndpoint;
   private final Build build;
   private final String clientId;
-  private final ApiService service;
   private final CurrentUser currentUser;
+  private final ApiService service;
 
-  public ApiClient(final Build build, final String clientId, final CurrentUser currentUser) {
+  public ApiClient(final ApiEndpoint apiEndpoint, final Build build, final String clientId, final CurrentUser currentUser) {
+    this.apiEndpoint = apiEndpoint;
     this.build = build;
     this.clientId = clientId;
     this.currentUser = currentUser;
@@ -65,8 +69,7 @@ public class ApiClient {
   private RestAdapter restAdapter() {
     return new RestAdapter.Builder()
       .setConverter(gsonConverter())
-        // TODO: extract this so we can switch HQ envs within the app. It's very useful.
-      .setEndpoint("https://***REMOVED***")
+      .setEndpoint(apiEndpoint.url)
       .setErrorHandler(errorHandler())
       .setRequestInterceptor(requestInterceptor())
       .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE)

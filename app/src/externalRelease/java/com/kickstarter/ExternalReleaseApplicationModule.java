@@ -15,6 +15,12 @@ public class ExternalReleaseApplicationModule {
   }
 
   @Provides
+  @Singleton
+  ApiEndpoint provideApiEndpoint() {
+    return ApiEndpoint.PRODUCTION;
+  }
+
+  @Provides
   BuildCheck provideBuildCheck() {
     return new NoopBuildCheck();
   }

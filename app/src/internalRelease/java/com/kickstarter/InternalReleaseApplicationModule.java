@@ -14,6 +14,12 @@ public class InternalReleaseApplicationModule {
   }
 
   @Provides
+  @Singleton
+  ApiEndpoint provideApiEndpoint() {
+    return ApiEndpoint.PRODUCTION;
+  }
+
+  @Provides
   BuildCheck provideBuildCheck() {
     return BuildCheck.DEFAULT;
   }

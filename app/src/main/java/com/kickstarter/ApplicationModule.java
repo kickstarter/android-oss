@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.preference.PreferenceManager;
 
+import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.ConfigLoader;
 import com.kickstarter.libs.CurrentUser;
@@ -16,6 +17,7 @@ import com.kickstarter.libs.ForApplication;
 import com.kickstarter.libs.Money;
 import com.kickstarter.libs.preferences.StringPreference;
 import com.kickstarter.libs.qualifiers.AccessTokenPreference;
+import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
 import com.kickstarter.libs.qualifiers.UserPreference;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.KickstarterClient;
@@ -24,6 +26,8 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import retrofit.Endpoint;
+import retrofit.Endpoints;
 
 @Module
 public class ApplicationModule {
@@ -48,8 +52,8 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  ApiClient provideApiClient(final Build build, final String clientId, final CurrentUser currentUser) {
-    return new ApiClient(build, clientId, currentUser);
+  ApiClient provideApiClient(final ApiEndpoint apiEndpoint, final Build build, final String clientId, final CurrentUser currentUser) {
+    return new ApiClient(apiEndpoint, build, clientId, currentUser);
   }
 
   @Provides
@@ -73,11 +77,11 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  String provideClientId() {
-    // TODO: Switch based on environment
-    return "***REMOVED***";
+  String provideClientId(final ApiEndpoint apiEndpoint) {
+    return apiEndpoint == ApiEndpoint.PRODUCTION ?
+      "***REMOVED***" :
+      "***REMOVED***";
   }
-
 
   @Provides
   @Singleton
@@ -87,8 +91,8 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  CurrentUser provideCurrentUser(@UserPreference StringPreference userPreference,
-    @AccessTokenPreference StringPreference accessTokenPreference) {
+  CurrentUser provideCurrentUser(@UserPreference final StringPreference userPreference,
+    @AccessTokenPreference final StringPreference accessTokenPreference) {
     return new CurrentUser(userPreference, accessTokenPreference);
   }
 

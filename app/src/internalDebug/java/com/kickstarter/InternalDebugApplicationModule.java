@@ -16,15 +16,16 @@ import dagger.Provides;
 
 @Module(includes = ApplicationModule.class)
 public class InternalDebugApplicationModule {
-  @Singleton
   @Provides
+  @Singleton
   ApplicationContainer provideApplicationContainer() {
     return new InternalDebugApplicationContainer();
   }
 
   @Provides
-  BuildCheck provideBuildCheck() {
-    return BuildCheck.DEFAULT;
+  @Singleton
+  ApiEndpoint provideApiEndpoint(@ApiEndpointPreference final StringPreference apiEndpointPreference) {
+    return ApiEndpoint.from(apiEndpointPreference.get());
   }
 
   @Provides
@@ -32,5 +33,10 @@ public class InternalDebugApplicationModule {
   @ApiEndpointPreference
   StringPreference provideApiEndpointPreference(final SharedPreferences sharedPreferences) {
     return new StringPreference(sharedPreferences, "debug_api_endpoint", ApiEndpoint.PRODUCTION.url);
+  }
+
+  @Provides
+  BuildCheck provideBuildCheck() {
+    return BuildCheck.DEFAULT;
   }
 }

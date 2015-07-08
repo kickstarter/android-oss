@@ -28,7 +28,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class DebugView extends FrameLayout {
+public class DebugDrawer extends FrameLayout {
   @Inject @ApiEndpointPreference StringPreference apiEndpointPreference;
   @Inject Build build;
 
@@ -39,20 +39,20 @@ public class DebugView extends FrameLayout {
   @InjectView(R.id.version_code) TextView versionCode;
   @InjectView(R.id.version_name) TextView versionName;
 
-  public DebugView(final Context context) {
+  public DebugDrawer(final Context context) {
     this(context, null);
   }
 
-  public DebugView(final Context context, final AttributeSet attrs) {
+  public DebugDrawer(final Context context, final AttributeSet attrs) {
     this(context, attrs, 0);
   }
 
-  public DebugView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
+  public DebugDrawer(final Context context, final AttributeSet attrs, final int defStyleAttr) {
     super(context, attrs, defStyleAttr);
 
     ((KsrApplication) getContext().getApplicationContext()).component().inject(this);
 
-    LayoutInflater.from(context).inflate(R.layout.debug_view, this);
+    LayoutInflater.from(context).inflate(R.layout.debug_drawer_view, this);
     ButterKnife.inject(this);
 
     setupNetworkSection();

@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.view.ViewGroup;
 
 import com.kickstarter.R;
-import com.kickstarter.ui.views.DebugView;
+import com.kickstarter.ui.views.DebugDrawer;
 
 import static butterknife.ButterKnife.findById;
 
@@ -12,11 +12,11 @@ public class InternalDebugApplicationContainer implements ApplicationContainer {
 
   @Override
   public ViewGroup bind(final Activity activity) {
-    activity.setContentView(R.layout.debug_drawer_layout);
+    activity.setContentView(R.layout.container_layout);
 
-    final ViewGroup drawer = findById(activity, R.id.debug_drawer);
-    final DebugView debugView = new DebugView(activity);
-    drawer.addView(debugView);
+    final ViewGroup viewGroup = findById(activity, R.id.debug_drawer);
+    final DebugDrawer debugDrawer = new DebugDrawer(activity);
+    viewGroup.addView(debugDrawer);
 
     return findById(activity, R.id.debug_content);
   }

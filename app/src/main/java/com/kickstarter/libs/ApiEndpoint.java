@@ -1,6 +1,6 @@
 package com.kickstarter.libs;
 
-public enum ApiEndpoints {
+public enum ApiEndpoint {
   PRODUCTION("Production", "https://***REMOVED***"),
   STAGING("Staging", "https://***REMOVED***"),
   LOCAL("Local", "http://api.ksr.10.0.3.2.xip.io"),
@@ -9,7 +9,7 @@ public enum ApiEndpoints {
   public final String name;
   public final String url;
 
-  ApiEndpoints(final String name, final String url) {
+  ApiEndpoint(final String name, final String url) {
     this.name = name;
     this.url = url;
   }
@@ -18,8 +18,8 @@ public enum ApiEndpoints {
     return name;
   }
 
-  public static ApiEndpoints from(final String endpoint) {
-    for (ApiEndpoints value : values()) {
+  public static ApiEndpoint from(final String endpoint) {
+    for (ApiEndpoint value : values()) {
       if (value.url != null && value.url.equals(endpoint)) {
         return value;
       }

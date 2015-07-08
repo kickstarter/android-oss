@@ -1,6 +1,5 @@
 package com.kickstarter.libs;
 
-import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 
 import com.google.gson.Gson;
@@ -12,15 +11,13 @@ import timber.log.Timber;
 
 public class ConfigLoader {
   private final AssetManager assetManager;
-  private final SharedPreferences sharedPreferences;
   private Config config;
   private final Gson gson = new Gson();
 
   private final static String ASSET_PATH = "json/server-config.json";
 
-  public ConfigLoader(final AssetManager assetManager, final SharedPreferences sharedPreferences) {
+  public ConfigLoader(final AssetManager assetManager) {
     this.assetManager = assetManager;
-    this.sharedPreferences = sharedPreferences;
 
     final String json = loadJsonFromAssets();
     this.config = deserializeJson(json);

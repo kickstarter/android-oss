@@ -3,48 +3,44 @@ package com.kickstarter.libs;
 import android.content.SharedPreferences;
 
 import com.google.gson.Gson;
+import com.kickstarter.libs.preferences.StringPreference;
 import com.kickstarter.models.User;
 
 import timber.log.Timber;
 
 public class CurrentUser {
-  private static final String USER_KEY = "user";
-  private static final String ACCESS_TOKEN_KEY = "access_token";
-
   private static final Gson gson = new Gson();
-  private final SharedPreferences sharedPreferences;
+  private final StringPreference userPreference;
+  private final StringPreference accessTokenPreference;
 
-  public CurrentUser(final SharedPreferences sharedPreferences) {
-    this.sharedPreferences = sharedPreferences;
+  public CurrentUser(final StringPreference userPreference, final StringPreference accessTokenPreference) {
+    this.userPreference = userPreference;
+    this.accessTokenPreference = accessTokenPreference;
   }
 
   public User getUser() {
-    return gson.fromJson(sharedPreferences.getString(USER_KEY, null), User.class);
+    return gson.fromJson(userPreference.get(), User.class);
   }
 
-  public String getToken() {
-    return sharedPreferences.getString(ACCESS_TOKEN_KEY, null);
+  public String getAccessToken() {
+    return accessTokenPreference.get();
   }
 
   public void set(final User user, final String access_token) {
     Timber.d("Set current user to %s", user.name());
 
-    final SharedPreferences.Editor editor = sharedPreferences.edit();
-    editor.putString(USER_KEY, gson.toJson(user, User.class));
-    editor.putString(ACCESS_TOKEN_KEY, access_token);
-    editor.apply();
+    userPreference.set(gson.toJson(user, User.class));
+    accessTokenPreference.set(access_token);
   }
 
   public void unset() {
     Timber.d("Unset current user");
 
-    final SharedPreferences.Editor editor = sharedPreferences.edit();
-    editor.remove(USER_KEY);
-    editor.remove(ACCESS_TOKEN_KEY);
-    editor.apply();
+    userPreference.delete();
+    accessTokenPreference.delete();
   }
 
   public boolean exists() {
-    return sharedPreferences.contains(USER_KEY);
+    return userPreference.isSet();
   }
 }

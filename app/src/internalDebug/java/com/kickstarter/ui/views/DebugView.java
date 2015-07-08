@@ -3,15 +3,20 @@ package com.kickstarter.ui.views;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.jakewharton.processphoenix.ProcessPhoenix;
 import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
-import com.kickstarter.libs.ApiEndpoints;
+import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.EnumAdapter;
+import com.kickstarter.libs.preferences.StringPreference;
+import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
 
 import org.joda.time.format.DateTimeFormat;
 
@@ -21,6 +26,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class DebugView extends FrameLayout {
+  @Inject @ApiEndpointPreference StringPreference apiEndpointPreference;
   @Inject Build build;
 
   @InjectView(R.id.build_date) TextView buildDate;
@@ -51,10 +57,27 @@ public class DebugView extends FrameLayout {
   }
 
   private void setupNetworkSection() {
-    final EnumAdapter<ApiEndpoints> endpointAdapter =
-      new EnumAdapter<>(getContext(), ApiEndpoints.class);
-    // TODO: Set current selection
+    final ApiEndpoint currentApiEndpoint = ApiEndpoint.from(apiEndpointPreference.get());
+    final EnumAdapter<ApiEndpoint> endpointAdapter =
+      new EnumAdapter<>(getContext(), ApiEndpoint.class);
     endpointSpinner.setAdapter(endpointAdapter);
+    endpointSpinner.setSelection(currentApiEndpoint.ordinal());
+    endpointSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+      @Override
+      public void onItemSelected(final AdapterView<?> adapterView, final View view, final int position, final long id) {
+        final ApiEndpoint selected = endpointAdapter.getItem(position);
+        if (selected != currentApiEndpoint) {
+          if (selected == ApiEndpoint.CUSTOM) {
+            // TODO: Show custom endpoint dialog
+          } else {
+            setEndpointAndRelaunch(selected.url);
+          }
+        }
+      }
+
+      @Override
+      public void onNothingSelected(final AdapterView<?> adapterView) {}
+    });
   }
 
   private void setupBuildInformationSection() {
@@ -63,5 +86,10 @@ public class DebugView extends FrameLayout {
     variant.setText(build.variant());
     versionCode.setText(build.versionCode().toString());
     versionName.setText(build.versionName());
+  }
+
+  private void setEndpointAndRelaunch(final String endpoint) {
+    apiEndpointPreference.set(endpoint);
+    ProcessPhoenix.triggerRebirth(getContext());
   }
 }

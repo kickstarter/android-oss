@@ -14,9 +14,11 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Font;
 import com.kickstarter.libs.ForApplication;
 import com.kickstarter.libs.Money;
+import com.kickstarter.libs.preferences.StringPreference;
+import com.kickstarter.libs.qualifiers.AccessTokenPreference;
+import com.kickstarter.libs.qualifiers.UserPreference;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.KickstarterClient;
-import com.kickstarter.ui.containers.ApplicationContainer;
 
 import javax.inject.Singleton;
 
@@ -29,6 +31,13 @@ public class ApplicationModule {
 
   public ApplicationModule(final Application application) {
     this.application = application;
+  }
+
+  @Provides
+  @Singleton
+  @AccessTokenPreference
+  StringPreference provideAccessTokenPreference(final SharedPreferences sharedPreferences) {
+    return new StringPreference(sharedPreferences, "access_token");
   }
 
   @Provides
@@ -72,8 +81,15 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  ConfigLoader provideConfigLoader(final AssetManager assetManager, final SharedPreferences sharedPreferences) {
-    return new ConfigLoader(assetManager, sharedPreferences);
+  ConfigLoader provideConfigLoader(final AssetManager assetManager) {
+    return new ConfigLoader(assetManager);
+  }
+
+  @Provides
+  @Singleton
+  CurrentUser provideCurrentUser(@UserPreference StringPreference userPreference,
+    @AccessTokenPreference StringPreference accessTokenPreference) {
+    return new CurrentUser(userPreference, accessTokenPreference);
   }
 
   @Provides
@@ -117,7 +133,8 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  CurrentUser provideCurrentUser(final SharedPreferences sharedPreferences) {
-    return new CurrentUser(sharedPreferences);
+  @UserPreference
+  StringPreference provideUserPreference(final SharedPreferences sharedPreferences) {
+    return new StringPreference(sharedPreferences, "user");
   }
 }

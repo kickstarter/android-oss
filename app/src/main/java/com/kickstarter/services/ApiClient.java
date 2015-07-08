@@ -100,7 +100,7 @@ public class ApiClient {
       request.addHeader("Kickstarter-Android-App", build.versionCode().toString());
       request.addQueryParam("client_id", clientId());
       if (currentUser.exists()) {
-        request.addQueryParam("oauth_token", currentUser.getToken());
+        request.addQueryParam("oauth_token", currentUser.getAccessToken());
       }
     };
   }

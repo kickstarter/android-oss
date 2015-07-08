@@ -39,8 +39,6 @@
   </style>
 
   <style name="DiscoveryActivity" parent="KsrTheme">
-    <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-    <item name="android:statusBarColor">@android:color/transparent</item>
     <item name="android:windowBackground">@color/light_gray</item>
   </style>
 

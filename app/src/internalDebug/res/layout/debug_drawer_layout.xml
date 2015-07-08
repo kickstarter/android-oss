@@ -12,22 +12,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" />
 
-  <com.kickstarter.ui.views.NonConsumingScrimInsetsFrameLayout
+  <ScrollView
+    android:id="@+id/debug_drawer"
+    android:background="@color/debug_background"
     android:layout_width="290dp"
     android:layout_height="match_parent"
     android:layout_gravity="end"
     android:elevation="7dp"
-    android:background="@color/debug_background"
     android:fitsSystemWindows="true"
-    app:insetForeground="#4000">
-
-    <ScrollView
-      android:id="@+id/debug_drawer"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:fitsSystemWindows="true"
-      android:clipToPadding="false" />
-
-  </com.kickstarter.ui.views.NonConsumingScrimInsetsFrameLayout>
+    android:clipToPadding="false" />
 
 </android.support.v4.widget.DrawerLayout>

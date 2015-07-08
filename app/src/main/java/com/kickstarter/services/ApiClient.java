@@ -17,7 +17,6 @@ import com.kickstarter.services.ApiResponses.ErrorEnvelope;
 
 import org.joda.time.DateTime;
 
-import retrofit.Endpoint;
 import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;

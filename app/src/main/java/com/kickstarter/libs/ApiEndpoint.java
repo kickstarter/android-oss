@@ -6,8 +6,8 @@ public enum ApiEndpoint {
   LOCAL("Local", "http://api.ksr.10.0.3.2.xip.io"),
   CUSTOM("Custom", null);
 
-  public final String name;
-  public final String url;
+  public String name;
+  public String url;
 
   ApiEndpoint(final String name, final String url) {
     this.name = name;
@@ -18,12 +18,14 @@ public enum ApiEndpoint {
     return name;
   }
 
-  public static ApiEndpoint from(final String endpoint) {
+  public static ApiEndpoint from(final String url) {
     for (ApiEndpoint value : values()) {
-      if (value.url != null && value.url.equals(endpoint)) {
+      if (value.url != null && value.url.equals(url)) {
         return value;
       }
     }
-    return CUSTOM;
+    ApiEndpoint endpoint = CUSTOM;
+    endpoint.url = url;
+    return endpoint;
   }
 }

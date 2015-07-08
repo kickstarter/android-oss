@@ -1,14 +1,17 @@
 package com.kickstarter.ui.views;
 
 import android.content.Context;
+import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.common.base.Strings;
 import com.jakewharton.processphoenix.ProcessPhoenix;
 import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
@@ -68,7 +71,7 @@ public class DebugView extends FrameLayout {
         final ApiEndpoint selected = endpointAdapter.getItem(position);
         if (selected != currentApiEndpoint) {
           if (selected == ApiEndpoint.CUSTOM) {
-            // TODO: Show custom endpoint dialog
+            showCustomEndpointDialog(currentApiEndpoint.ordinal(), "https://");
           } else {
             setEndpointAndRelaunch(selected.url);
           }
@@ -86,6 +89,39 @@ public class DebugView extends FrameLayout {
     variant.setText(build.variant());
     versionCode.setText(build.versionCode().toString());
     versionName.setText(build.versionName());
+  }
+
+  private void showCustomEndpointDialog(final int originalSelection, final String defaultUrl) {
+    final View view = LayoutInflater.from(getContext().getApplicationContext()).inflate(R.layout.api_endpoint_layout, null);
+    final EditText url = ButterKnife.findById(view, R.id.url);
+    url.setText(defaultUrl);
+    url.setSelection(url.length());
+
+    new AlertDialog.Builder(getContext())
+      .setTitle("Set API Endpoint")
+      .setView(view)
+      .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+        String inputUrl = url.getText().toString();
+        if (!Strings.isNullOrEmpty(inputUrl)) {
+          // Remove trailing '/'
+          if (inputUrl.charAt(inputUrl.length() - 1) == '/') {
+            inputUrl = inputUrl.substring(0, inputUrl.length() - 1);
+          }
+          setEndpointAndRelaunch(inputUrl);
+        } else {
+          endpointSpinner.setSelection(originalSelection);
+        }
+      })
+      .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+        endpointSpinner.setSelection(originalSelection);
+        dialog.cancel();
+      })
+      .setOnCancelListener(dialogInterface -> {
+        // TODO: Is this redundant?
+        endpointSpinner.setSelection(originalSelection);
+      })
+      .setIcon(android.R.drawable.ic_dialog_alert)
+      .show();
   }
 
   private void setEndpointAndRelaunch(final String endpoint) {

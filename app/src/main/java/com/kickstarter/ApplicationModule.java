@@ -17,7 +17,6 @@ import com.kickstarter.libs.ForApplication;
 import com.kickstarter.libs.Money;
 import com.kickstarter.libs.preferences.StringPreference;
 import com.kickstarter.libs.qualifiers.AccessTokenPreference;
-import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
 import com.kickstarter.libs.qualifiers.UserPreference;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.KickstarterClient;
@@ -26,8 +25,6 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import retrofit.Endpoint;
-import retrofit.Endpoints;
 
 @Module
 public class ApplicationModule {

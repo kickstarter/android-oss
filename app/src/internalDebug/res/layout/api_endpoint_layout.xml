@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:padding="@dimen/keyline_1">
+
+  <TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/keyline_1"
+    android:text="@string/Enter_the_base_url_of_the_api"
+    android:textColor="@color/dark_gray" />
+
+  <EditText
+    android:id="@+id/url"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:singleLine="true"
+    android:textColor="@color/text_dark" />
+
+</LinearLayout>

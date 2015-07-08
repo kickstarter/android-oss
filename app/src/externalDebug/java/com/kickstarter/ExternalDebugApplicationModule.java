@@ -1,6 +1,10 @@
 package com.kickstarter;
 
+import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.BuildCheck;
+import com.kickstarter.ui.containers.ApplicationContainer;
+
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;

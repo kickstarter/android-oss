@@ -10,6 +10,10 @@ import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.Build;
 
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
+
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
@@ -40,7 +44,7 @@ public class DebugView extends FrameLayout {
     LayoutInflater.from(context).inflate(R.layout.debug_view, this);
     ButterKnife.inject(this);
 
-    buildDate.setText(build.date());
+    buildDate.setText(build.dateTime().toString(DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss aa zzz")));
     sha.setText(build.sha());
     variant.setText(build.variant());
     versionCode.setText(build.versionCode().toString());

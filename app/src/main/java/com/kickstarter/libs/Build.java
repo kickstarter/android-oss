@@ -5,6 +5,9 @@ import android.content.pm.PackageInfo;
 import com.kickstarter.BuildConfig;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+
+import java.util.TimeZone;
 
 public class Build {
   final PackageInfo packageInfo;
@@ -13,9 +16,8 @@ public class Build {
     this.packageInfo = packageInfo;
   }
 
-  public String date() {
-    // TODO: Convert to DateTime
-    return BuildConfig.BUILD_DATE;
+  public DateTime dateTime() {
+    return new DateTime(BuildConfig.BUILD_DATE, DateTimeZone.UTC).withZone(DateTimeZone.getDefault());
   }
 
   public String sha() {

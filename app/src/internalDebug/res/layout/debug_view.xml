@@ -11,7 +11,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:textAppearance="@style/TextAppearance.AppCompat.Title"
-    android:textColor="@color/dark_gray"
+    android:textColor="@color/light_gray"
     android:text="@string/Development_settings" />
 
   <TableLayout
@@ -32,7 +32,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:textColor="@color/dark_gray"
+        android:textColor="@color/light_gray"
         android:text="@string/Network" />
 
     </TableRow>
@@ -74,7 +74,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:textColor="@color/dark_gray"
+        android:textColor="@color/light_gray"
         android:text="@string/Build_information" />
 
     </TableRow>

@@ -1,4 +1,4 @@
-module Origami
+module Milkrun
   class S3Package
     attr_reader :variant, :version, :file_path
 
@@ -8,18 +8,18 @@ module Origami
 
     # Uploads a build to S3.
     def upload
-      Origami.say "Uploading package to #{Origami.bucket} bucket"
+      Milkrun.say "Uploading package to #{Milkrun.bucket} bucket"
 
       File.open(file_path, 'rb') do |file|
-        Origami.s3_client.put_object(
+        Milkrun.s3_client.put_object(
           body: file,
-          bucket: Origami.bucket,
+          bucket: Milkrun.bucket,
           content_type: "application/vnd.android.package-archive",
           key: package_key
         )
       end
 
-      Origami.say "Package uploaded to s3://#{Origami.bucket}/#{package_key}"
+      Milkrun.say "Package uploaded to s3://#{Milkrun.bucket}/#{package_key}"
     end
 
     protected

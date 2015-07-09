@@ -1,4 +1,4 @@
-module Origami
+module Milkrun
   class Changelog
     attr_reader :variant, :version
 
@@ -8,7 +8,7 @@ module Origami
 
     # Capture and publish the changelog for a package to a list in S3.
     def publish
-      Origami.say "Publishing changelog for #{variant} package with version #{version}"
+      Milkrun.say "Publishing changelog for #{variant} package with version #{version}"
 
       build = {
         'build' => version,
@@ -17,9 +17,9 @@ module Origami
       }
       body = (current_builds.select{|b| b[:build] != version} + [build]).to_yaml
 
-      object = Origami.s3_client.put_object(body: body, bucket: Origami.bucket, key: 'builds.yaml')
+      object = Milkrun.s3_client.put_object(body: body, bucket: Milkrun.bucket, key: 'builds.yaml')
 
-      Origami.say "Changelog published"
+      Milkrun.say "Changelog published"
     end
 
     protected

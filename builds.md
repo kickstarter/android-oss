@@ -46,5 +46,5 @@ The keystore and credentials are in `.gitignore` so local changes won't be commi
 
 # Releasing
 
-There's a command-line tool in this repository named Origami. Run `bin/origami
+There's a command-line tool in this repository named Milkrun. Run `bin/milkrun
 --help` to get started, more documentation on this to come.

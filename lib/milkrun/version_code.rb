@@ -1,11 +1,11 @@
-module Origami
+module Milkrun
   class VersionCode
     # Bump the version code using the current timestamp.
     #
     # Returns the new version code String.
     def bump
       version = Time.now.strftime("%y%m%d%H%M").to_i
-      Origami.say "Bumping version to #{version} ✊"
+      Milkrun.say "Bumping version to #{version} ✊"
       File.open(path, "w") do |f|
         f.puts(version)
       end
@@ -20,7 +20,7 @@ module Origami
     protected
 
     def path
-      Origami.app_dir + 'version_code.txt'
+      Milkrun.app_dir + 'version_code.txt'
     end
   end
 end

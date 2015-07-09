@@ -1,44 +1,44 @@
 #!/usr/bin/env ruby
 
 $:.unshift File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib'))
-require 'origami'
+require 'milkrun'
 require_relative '../config/initializer'
 require 'commander'
 
-class OrigamiApplication
+class MilkrunApplication
   include Commander::Methods
 
   def run
-    program :name, 'Origami'
+    program :name, 'Milkrun'
     program :version, '0.0.1'
     program :description, 'Command-line tool for deploying the Kickstarter Android app'
 
     %w(internalDebug externalDebug internalRelease).each do |variant|
       command variant do |c|
-        c.syntax = "origami #{variant}"
+        c.syntax = "milkrun #{variant}"
         c.description = "Submit a new #{variant} build to S3"
         c.action do |args, options|
-          version = Origami::VersionCode.new.bump
-          file_path = Origami::Build.new(variant).compile
-          Origami::S3Package.new(variant: variant, version: version, file_path: file_path).upload
-          Origami::Changelog.new(variant: variant, version: version).publish
-          Origami.say "All done! 👌"
+          version = Milkrun::VersionCode.new.bump
+          file_path = Milkrun::Build.new(variant).compile
+          Milkrun::S3Package.new(variant: variant, version: version, file_path: file_path).upload
+          Milkrun::Changelog.new(variant: variant, version: version).publish
+          Milkrun.say "All done! 👌"
         end
       end
     end
 
     command :externalRelease do |c|
-      c.syntax = 'origami externalRelease'
+      c.syntax = 'milkrun externalRelease'
       c.description = 'Submit a new externalRelease build to the Play Store'
       c.action do |args, options|
       end
     end
 
     command :builds do |c|
-      c.syntax = "origami builds"
+      c.syntax = "milkrun builds"
       c.description = "Show list of published builds"
       c.action do |args, options|
-        puts Origami::BuildList.new.fetch.to_yaml
+        puts Milkrun::BuildList.new.fetch.to_yaml
       end
     end
 
@@ -46,4 +46,4 @@ class OrigamiApplication
   end
 end
 
-OrigamiApplication.new.run if $0 == __FILE__
+MilkrunApplication.new.run if $0 == __FILE__

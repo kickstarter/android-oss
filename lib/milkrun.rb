@@ -8,13 +8,13 @@ require 'pathname'
 require 'rainbow'
 require 'rainbow/ext/string'
 
-require 'origami/build'
-require 'origami/build_list'
-require 'origami/changelog'
-require 'origami/s3_package'
-require 'origami/version_code'
+require 'milkrun/build'
+require 'milkrun/build_list'
+require 'milkrun/changelog'
+require 'milkrun/s3_package'
+require 'milkrun/version_code'
 
-module Origami
+module Milkrun
   def self.app_dir
     project_dir + 'app'
   end
@@ -33,7 +33,7 @@ module Origami
     @log = Logger.new(STDOUT)
     @log.formatter = proc do |severity, datetime, progname, msg|
       time = datetime.strftime("%H:%M:%S")
-      "[#{time} Origami]: #{msg}\n"
+      "[#{time} Milkrun]: #{msg}\n"
     end
     @log
   end

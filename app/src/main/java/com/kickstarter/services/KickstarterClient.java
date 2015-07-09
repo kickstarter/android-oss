@@ -1,7 +1,5 @@
 package com.kickstarter.services;
 
-import android.util.Base64;
-
 import com.google.gson.GsonBuilder;
 import com.kickstarter.BuildConfig;
 import com.kickstarter.libs.Build;

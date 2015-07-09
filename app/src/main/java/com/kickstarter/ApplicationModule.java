@@ -27,7 +27,6 @@ import dagger.Module;
 import dagger.Provides;
 import retrofit.Endpoint;
 import retrofit.Endpoints;
-import timber.log.Timber;
 
 @Module
 public class ApplicationModule {

@@ -25,6 +25,9 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import retrofit.Endpoint;
+import retrofit.Endpoints;
+import timber.log.Timber;
 
 @Module
 public class ApplicationModule {
@@ -95,14 +98,24 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
+  Endpoint provideEndpoint(final ApiEndpoint apiEndpoint) {
+    final String url = (apiEndpoint == ApiEndpoint.PRODUCTION) ?
+      "https://www.kickstarter.com" :
+      apiEndpoint.url.replaceAll("(?<=\\Ahttps?:\\/\\/)api.", "");
+
+    return Endpoints.newFixedEndpoint(url);
+  }
+
+  @Provides
+  @Singleton
   Font provideFont(final AssetManager assetManager) {
     return new Font(assetManager);
   }
 
   @Provides
   @Singleton
-  KickstarterClient provideKickstarterClient(final Build build) {
-    return new KickstarterClient(build);
+  KickstarterClient provideKickstarterClient(final Build build, final Endpoint endpoint) {
+    return new KickstarterClient(build, endpoint);
   }
 
   @Provides

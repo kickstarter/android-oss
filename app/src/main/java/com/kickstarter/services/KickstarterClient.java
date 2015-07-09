@@ -5,6 +5,9 @@ import com.kickstarter.BuildConfig;
 import com.kickstarter.libs.Build;
 import com.kickstarter.services.ApiResponses.InternalBuildEnvelope;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import retrofit.Endpoint;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
@@ -48,9 +51,10 @@ public class KickstarterClient {
       request.addHeader("Accept", "application/json");
       request.addHeader("Kickstarter-Android-App", build.versionCode().toString());
 
-      // Check if the URL contains kickstarter.com, but not www - if so, it's almost
-      // certainly a Hivequeen environment with basic auth in front of it.
-      if (endpoint.getUrl().matches("\\Ahttps:\\/\\/(?=.*kickstarter.com)(?!.*www).*")) {
+      // Add authorization if it's a Hivequeen environment (not production).
+      final Matcher matcher = Pattern.compile("\\Ahttps:\\/\\/([a-z]+)\\.kickstarter.com\\z")
+        .matcher(endpoint.getUrl());
+      if (matcher.matches() && !matcher.group(1).equals("www")) {
         request.addHeader("Authorization", "Basic ZnV6enk6d3V6enk=");
       }
 

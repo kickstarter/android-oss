@@ -22,7 +22,7 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:background="@color/white"
-      android:paddingTop="@dimen/keyline_1"
+      android:paddingTop="@dimen/keyline_1_half"
       android:paddingLeft="@dimen/keyline_1"
       android:paddingRight="@dimen/keyline_1"
       android:orientation="vertical">
@@ -31,7 +31,7 @@
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textColor="@color/text_dark"
         android:paddingBottom="@dimen/keyline_1_half" />
 
@@ -60,7 +60,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/keyline_1_half"
-        android:layout_marginBottom="@dimen/keyline_1"
+        android:layout_marginBottom="@dimen/keyline_1_half"
         android:textSize="17sp"
         android:textColor="@color/text_dark"
         android:paddingBottom="@dimen/keyline_1_half" />
@@ -125,6 +125,12 @@
         android:progress="50" />
 
       <include layout="@layout/project_stats_view" />
+
+      <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/keyline_1"
+        android:text="@string/Back_this_project" />
 
       <View
         android:layout_width="match_parent"

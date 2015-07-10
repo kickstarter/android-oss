@@ -47,8 +47,7 @@
   </style>
 
   <style name="ProjectDetailActivity" parent="KsrTheme">
-    <item name="android:statusBarColor">@color/black_alpha_30</item>
-    <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    <item name="android:statusBarColor">@color/black</item>
   </style>
 
   <!-- Style advice: http://blog.danlew.net/2014/11/19/styles-on-android/ -->

@@ -12,6 +12,7 @@
   <color name="debug_background">#EE222222</color>
 
   <!-- Kickstarter colors -->
+  <color name="black">#000000</color>
   <color name="blue">#00a0ff</color>
   <color name="dark_blue">#081245</color>
   <color name="green">#2bde73</color>

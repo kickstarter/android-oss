@@ -1,16 +1,12 @@
 package com.kickstarter.ui.activities;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.view.Window;
 
 import com.kickstarter.KsrApplication;
 import com.kickstarter.R;

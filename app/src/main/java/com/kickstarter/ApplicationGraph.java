@@ -14,6 +14,7 @@ import com.kickstarter.ui.view_holders.ProjectListViewHolder;
 import com.kickstarter.ui.view_holders.ProjectStateChangedPositiveViewHolder;
 import com.kickstarter.ui.views.DiscoveryToolbar;
 import com.kickstarter.ui.views.IconTextView;
+import com.kickstarter.ui.views.TiemposTextView;
 
 public interface ApplicationGraph {
   void inject(ActivityFeedActivity activity);
@@ -30,5 +31,6 @@ public interface ApplicationGraph {
   void inject(ProjectDetailPresenter presenter);
   void inject(ProjectListViewHolder viewHolder);
   void inject(ProjectStateChangedPositiveViewHolder viewHolder);
+  void inject(TiemposTextView view);
   void inject(TwoFactorPresenter presenter);
 }

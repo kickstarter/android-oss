@@ -2,8 +2,6 @@ package com.kickstarter.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -32,15 +30,14 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
   protected @InjectView(R.id.blurb) TextView blurb;
   protected @InjectView(R.id.category) TextView category;
   protected @InjectView(R.id.creator_name) TextView creator_name;
-  protected @InjectView(R.id.collapsing_toolbar_layout) CollapsingToolbarLayout collapsing_toolbar_layout;
   protected @InjectView(R.id.deadline_countdown) TextView deadline_countdown;
   protected @InjectView(R.id.deadline_countdown_unit) TextView deadline_countdown_unit;
   protected @InjectView(R.id.goal) TextView goal;
   protected @InjectView(R.id.location) TextView location;
+  protected @InjectView(R.id.name) TextView name;
   protected @InjectView(R.id.percentage_funded) ProgressBar percentage_funded;
   protected @InjectView(R.id.photo) ImageView photo;
   protected @InjectView(R.id.pledged) TextView pledged;
-  protected @InjectView(R.id.toolbar) Toolbar toolbar;
   @Inject Money money;
 
   @Override
@@ -51,16 +48,12 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     ButterKnife.inject(this);
     ((KsrApplication) getApplication()).component().inject(this);
 
-    setSupportActionBar(toolbar);
-
     final Intent intent = getIntent();
     final Project project = intent.getExtras().getParcelable("project");
     presenter.takeProject(project);
   }
 
   public void show(final Project project) {
-    collapsing_toolbar_layout.setTitle(project.name());
-
     backers_count.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(project.backersCount()));
     blurb.setText(project.blurb());
     creator_name.setText(project.creator().name());
@@ -69,6 +62,7 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     deadline_countdown_unit.setText(project.deadlineCountdownUnit());
     goal.setText(money.formattedCurrency(project.goal(), project.currencyOptions(), true));
     location.setText(project.location().displayableName());
+    name.setText(project.name());
     percentage_funded.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
     Picasso.with(this).load(project.photo().full()).into(photo);
     pledged.setText(money.formattedCurrency(project.pledged(), project.currencyOptions()));

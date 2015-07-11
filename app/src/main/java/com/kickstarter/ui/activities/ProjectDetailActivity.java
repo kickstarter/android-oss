@@ -2,6 +2,7 @@ package com.kickstarter.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -74,5 +75,10 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     Timber.d("onBackPressed %s", this.toString());
 
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
+  }
+
+  public void backProjectButtonOnClick(final View v) {
+    Timber.d("backProjectButtonOnClick");
+    presenter.takeBackProjectClick();
   }
 }

@@ -20,6 +20,10 @@
       android:theme="@style/ActivityFeedActivity" />
 
     <activity
+      android:name=".ui.activities.CheckoutActivity"
+      android:theme="@style/CheckoutActivity" />
+
+    <activity
       android:name=".ui.activities.DiscoveryActivity"
       android:label="@string/app_name"
       android:launchMode="singleTop"

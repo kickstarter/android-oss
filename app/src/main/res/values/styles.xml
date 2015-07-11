@@ -38,6 +38,11 @@
     <item name="android:windowBackground">@drawable/gray_gradient</item>
   </style>
 
+  <style name="CheckoutActivity" parent="KsrTheme">
+    <item name="android:statusBarColor">@color/gray</item>
+    <item name="android:windowBackground">@color/white</item>
+  </style>
+
   <style name="DiscoveryActivity" parent="KsrTheme">
     <item name="android:windowBackground">@color/light_gray</item>
   </style>

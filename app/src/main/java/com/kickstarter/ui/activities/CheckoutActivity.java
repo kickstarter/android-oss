@@ -8,6 +8,7 @@ import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.presenters.CheckoutPresenter;
 
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 @RequiresPresenter(CheckoutPresenter.class)
 public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
@@ -17,5 +18,13 @@ public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
 
     setContentView(R.layout.checkout_layout);
     ButterKnife.inject(this);
+  }
+
+  @Override
+  public void onBackPressed() {
+    super.onBackPressed();
+    Timber.d("onBackPressed");
+
+    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 }

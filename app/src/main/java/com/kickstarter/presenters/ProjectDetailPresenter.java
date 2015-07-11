@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.kickstarter.KsrApplication;
+import com.kickstarter.R;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.RxUtils;
 import com.kickstarter.models.Project;
@@ -51,5 +52,6 @@ public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
     final Intent intent = new Intent(view(), CheckoutActivity.class);
     intent.putExtra("project", project);
     view().startActivity(intent);
+    view().overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 }

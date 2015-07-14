@@ -1,5 +1,6 @@
 package com.kickstarter.models;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -12,23 +13,25 @@ import org.joda.time.Duration;
 
 @ParcelablePlease
 public class Project implements Parcelable {
-  Integer backers_count = null;
-  String blurb = null;
-  Category category = null;
-  String country = null; // e.g.: US
-  String currency = null; // e.g.: USD
-  String currency_symbol = null; // e.g.: $
-  Boolean currency_trailing_code = false;
-  DateTime deadline = null;
-  Float goal = null;
-  Integer id = null;
-  DateTime launched_at = null;
-  Location location = null;
-  String name = null;
-  Float pledged = null;
-  Photo photo = null;
-  DateTime potd_at = null;
-  User creator = null;
+  public Integer backers_count = null;
+  public String blurb = null;
+  public Category category = null;
+  public String country = null; // e.g.: US
+  public String currency = null; // e.g.: USD
+  public String currency_symbol = null; // e.g.: $
+  public Boolean currency_trailing_code = false;
+  public DateTime deadline = null;
+  public Float goal = null;
+  public Integer id = null;
+  public DateTime launched_at = null;
+  public Location location = null;
+  public String name = null;
+  public Float pledged = null;
+  public Photo photo = null;
+  public DateTime potd_at = null;
+  public String slug = null;
+  public User creator = null;
+  public Urls urls = null;
 
   public Integer backersCount() { return backers_count; }
   public String blurb() { return blurb; }
@@ -46,6 +49,53 @@ public class Project implements Parcelable {
   public String name() { return name; }
   public Float pledged() { return pledged; }
   public Photo photo() { return photo; }
+  public String slug() { return slug; }
+  public Urls urls() { return urls; }
+  public String webProjectUrl() { return urls().web().project(); }
+
+  @ParcelablePlease
+  public static class Urls implements Parcelable {
+    public Web web = null;
+
+    public Web web() {
+      return web;
+    }
+
+    @ParcelablePlease
+    public static class Web implements Parcelable {
+      public String project = null;
+      public String rewards = null;
+
+      public String project() { return project; }
+      public String rewards() { return rewards; }
+
+      @Override
+      public int describeContents() { return 0; }
+      @Override
+      public void writeToParcel(Parcel dest, int flags) {com.kickstarter.models.WebParcelablePlease.writeToParcel(this, dest, flags);}
+      public static final Creator<Web> CREATOR = new Creator<Web>() {
+        public Web createFromParcel(Parcel source) {
+          Web target = new Web();
+          com.kickstarter.models.WebParcelablePlease.readFromParcel(target, source);
+          return target;
+        }
+        public Web[] newArray(int size) {return new Web[size];}
+      };
+    }
+
+    @Override
+    public int describeContents() { return 0; }
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {com.kickstarter.models.UrlsParcelablePlease.writeToParcel(this, dest, flags);}
+    public static final Creator<Urls> CREATOR = new Creator<Urls>() {
+      public Urls createFromParcel(Parcel source) {
+        Urls target = new Urls();
+        com.kickstarter.models.UrlsParcelablePlease.readFromParcel(target, source);
+        return target;
+      }
+      public Urls[] newArray(int size) {return new Urls[size];}
+    };
+  }
 
   public CurrencyOptions currencyOptions() {
     return new CurrencyOptions(country, currency_symbol, currency);
@@ -98,6 +148,10 @@ public class Project implements Parcelable {
       return "hours";
     }
     return "days";
+  }
+
+  public String secureWebProjectUrl() {
+    return Uri.parse(webProjectUrl()).buildUpon().scheme("https").build().toString();
   }
 
   // Parcelable

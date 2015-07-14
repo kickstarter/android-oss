@@ -7,9 +7,10 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 
 @ParcelablePlease
 public class User implements Parcelable {
-  Avatar avatar = null;
-  Integer id = null;
-  String name = null;
+  public Avatar avatar = null;
+  public Integer id = null;
+  public String name = null;
+  public String uid = null;
 
   public Avatar avatar() {
     return avatar;
@@ -21,6 +22,10 @@ public class User implements Parcelable {
 
   public String name() {
     return name;
+  }
+
+  public String uid() {
+    return uid;
   }
 
   @Override

@@ -21,7 +21,7 @@ public class KsrApplication extends Application {
     super.onCreate();
 
     // Log in debug mode, send to Hockey in production
-    if (BuildConfig.DEBUG) {
+    if (BuildConfig.DEBUG || isInUnitTests()) {
       Timber.plant(new Timber.DebugTree());
     } else {
       CrashManager.register(this, getResources().getString(R.string.hockey_app_id), new CrashManagerListener() {
@@ -31,7 +31,10 @@ public class KsrApplication extends Application {
       });
     }
 
-    refWatcher = LeakCanary.install(this);
+    if (!isInUnitTests()) {
+      refWatcher = LeakCanary.install(this);
+    }
+
     JodaTimeAndroid.init(this);
 
     component = DaggerApplicationComponent.builder()
@@ -46,5 +49,9 @@ public class KsrApplication extends Application {
   public static RefWatcher getRefWatcher(final Context context) {
     final KsrApplication application = (KsrApplication) context.getApplicationContext();
     return application.refWatcher;
+  }
+
+  protected boolean isInUnitTests() {
+    return false;
   }
 }

@@ -35,4 +35,9 @@
 
   </android.support.v7.widget.Toolbar>
 
+  <com.kickstarter.ui.views.KickstarterWebView
+    android:id="@+id/web_view"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" />
+
 </LinearLayout>

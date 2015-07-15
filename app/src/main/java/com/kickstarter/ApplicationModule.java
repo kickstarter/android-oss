@@ -20,6 +20,7 @@ import com.kickstarter.libs.qualifiers.AccessTokenPreference;
 import com.kickstarter.libs.qualifiers.UserPreference;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.KickstarterClient;
+import com.kickstarter.services.KickstarterWebViewClient;
 
 import javax.inject.Singleton;
 
@@ -115,6 +116,12 @@ public class ApplicationModule {
   @Singleton
   KickstarterClient provideKickstarterClient(final Build build, final Endpoint endpoint) {
     return new KickstarterClient(build, endpoint);
+  }
+
+  @Provides
+  @Singleton
+  KickstarterWebViewClient provideKickstarterWebViewClient(final Build build) {
+    return new KickstarterWebViewClient(build);
   }
 
   @Provides

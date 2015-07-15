@@ -29,14 +29,7 @@ public class KickstarterWebViewClient extends WebViewClient {
 
   @Override
   public WebResourceResponse shouldInterceptRequest(final WebView view, final WebResourceRequest request) {
-    // TODO: Check injected host rather than 'www.kickstarter.com' - e.g. if we change endpoints
-    // TODO: Fix up support for lower API versions
-    if (!request.getUrl().getHost().equals("www.kickstarter.com")) {
-      return null;
-    }
-
-    // TODO: Add more endpoints, make pattern matching more robust
-    if (!Pattern.compile("/pledge/new").matcher(request.getUrl().toString()).find()) {
+    if (!shouldIntercept(request)) {
       return null;
     }
 
@@ -44,33 +37,14 @@ public class KickstarterWebViewClient extends WebViewClient {
     httpGet.setHeader("Kickstarter-Android-App", build.versionCode().toString());
     try {
       final HttpResponse response = new DefaultHttpClient().execute(httpGet);
-      Header contentType = response.getEntity().getContentType();
-      String mimeType = null;
-      String encoding = null;
-      if (contentType != null) {
-        // Extract mime and encoding from string, e.g. "text/html; charset=utf-8"
-        final Pattern pattern = Pattern.compile("([\\w\\/]+); charset=([\\w/-]+)");
-        final Matcher matcher = pattern.matcher(contentType.getValue());
-        if (matcher.matches()) {
-          mimeType = matcher.group(1);
-          encoding = matcher.group(2).toUpperCase();
-        }
-      }
+      final MimeHeaders mimeHeaders = new MimeHeaders(response.getEntity().getContentType());
 
-      final Map<String,String> responseHeaders = new HashMap<String,String>();
-      final HeaderIterator iterator = response.headerIterator();
-      while(iterator.hasNext()) {
-        Header header = iterator.nextHeader();
-        responseHeaders.put(header.getName(), header.getValue());
-      }
-
-      InputStream data = response.getEntity().getContent();
-      return new WebResourceResponse(mimeType,
-        encoding,
+      return new WebResourceResponse(mimeHeaders.type,
+        mimeHeaders.encoding,
         response.getStatusLine().getStatusCode(),
         response.getStatusLine().getReasonPhrase(),
-        responseHeaders,
-        data);
+        headers(response),
+        response.getEntity().getContent());
     } catch (IOException e) {
       e.printStackTrace();
       return null;
@@ -80,5 +54,46 @@ public class KickstarterWebViewClient extends WebViewClient {
   @Override
   public boolean shouldOverrideUrlLoading(final WebView view, final String url) {
     return false;
+  }
+
+  protected boolean shouldIntercept(final WebResourceRequest request) {
+    // TODO: Check injected host rather than 'www.kickstarter.com' - e.g. if we change endpoints
+    // TODO: Fix up support for lower API versions
+    if (!request.getUrl().getHost().equals("www.kickstarter.com")) {
+      return false;
+    }
+
+    // TODO: Add more endpoints, make pattern matching more robust
+    return Pattern.compile("/pledge/new").matcher(request.getUrl().toString()).find();
+  }
+
+  protected Map<String,String> headers(final HttpResponse response) {
+    final Map<String,String> headers = new HashMap<String,String>();
+    final HeaderIterator iterator = response.headerIterator();
+    while(iterator.hasNext()) {
+      Header header = iterator.nextHeader();
+      headers.put(header.getName(), header.getValue());
+    }
+    return headers;
+  }
+
+
+  public class MimeHeaders {
+    public String type = null;
+    public String encoding = null;
+
+    public MimeHeaders(final Header header) {
+      if (header == null) {
+        return;
+      }
+
+      // Extract mime and encoding from string, e.g. "text/html; charset=utf-8"
+      final Pattern pattern = Pattern.compile("([\\w\\/]+); charset=([\\w/-]+)");
+      final Matcher matcher = pattern.matcher(header.getValue());
+      if (matcher.matches()) {
+        type = matcher.group(1);
+        encoding = matcher.group(2).toUpperCase();
+      }
+    }
   }
 }

@@ -1,7 +1,6 @@
 package com.kickstarter.services;
 
 import android.net.Uri;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;

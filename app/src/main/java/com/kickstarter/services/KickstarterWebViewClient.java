@@ -14,7 +14,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -88,8 +87,8 @@ public class KickstarterWebViewClient extends WebViewClient {
       }
 
       // Extract mime and encoding from string, e.g. "text/html; charset=utf-8"
-      final Pattern pattern = Pattern.compile("([\\w\\/]+); charset=([\\w/-]+)");
-      final Matcher matcher = pattern.matcher(header.getValue());
+      final Matcher matcher = Pattern.compile("([\\w\\/]+); charset=([\\w/-]+)")
+        .matcher(header.getValue());
       if (matcher.matches()) {
         type = matcher.group(1);
         encoding = matcher.group(2).toUpperCase();

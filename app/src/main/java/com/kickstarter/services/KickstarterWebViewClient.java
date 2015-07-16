@@ -48,7 +48,6 @@ public class KickstarterWebViewClient extends WebViewClient {
   }
 
   protected boolean isInterceptable(final String url) {
-    // TODO: Check injected host rather than 'www.kickstarter.com' - i.e. if we change endpoints
     final Uri uri = Uri.parse(url);
     if (!uri.getHost().equals(Uri.parse(webEndpoint).getHost())) {
       return false;

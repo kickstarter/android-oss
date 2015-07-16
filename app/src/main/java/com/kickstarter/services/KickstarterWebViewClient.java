@@ -29,7 +29,7 @@ public class KickstarterWebViewClient extends WebViewClient {
 
   @Override
   public WebResourceResponse shouldInterceptRequest(final WebView view, final WebResourceRequest request) {
-    if (!shouldIntercept(request)) {
+    if (!isInterceptable(request)) {
       return null;
     }
 
@@ -56,7 +56,7 @@ public class KickstarterWebViewClient extends WebViewClient {
     return false;
   }
 
-  protected boolean shouldIntercept(final WebResourceRequest request) {
+  protected boolean isInterceptable(final WebResourceRequest request) {
     // TODO: Check injected host rather than 'www.kickstarter.com' - e.g. if we change endpoints
     // TODO: Fix up support for lower API versions
     if (!request.getUrl().getHost().equals("www.kickstarter.com")) {

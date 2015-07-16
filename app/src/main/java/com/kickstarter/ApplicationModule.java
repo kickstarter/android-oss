@@ -18,6 +18,7 @@ import com.kickstarter.libs.Money;
 import com.kickstarter.libs.preferences.StringPreference;
 import com.kickstarter.libs.qualifiers.AccessTokenPreference;
 import com.kickstarter.libs.qualifiers.UserPreference;
+import com.kickstarter.libs.qualifiers.WebEndpoint;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.KickstarterClient;
 import com.kickstarter.services.KickstarterWebViewClient;
@@ -98,12 +99,13 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  Endpoint provideEndpoint(final ApiEndpoint apiEndpoint) {
+  @WebEndpoint
+  String provideWebEndpoint(final ApiEndpoint apiEndpoint) {
     final String url = (apiEndpoint == ApiEndpoint.PRODUCTION) ?
       "https://www.kickstarter.com" :
       apiEndpoint.url.replaceAll("(?<=\\Ahttps?:\\/\\/)api.", "");
 
-    return Endpoints.newFixedEndpoint(url);
+    return url;
   }
 
   @Provides
@@ -114,14 +116,14 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  KickstarterClient provideKickstarterClient(final Build build, final Endpoint endpoint) {
-    return new KickstarterClient(build, endpoint);
+  KickstarterClient provideKickstarterClient(final Build build, @WebEndpoint final String webEndpoint) {
+    return new KickstarterClient(build, webEndpoint);
   }
 
   @Provides
   @Singleton
-  KickstarterWebViewClient provideKickstarterWebViewClient(final Build build) {
-    return new KickstarterWebViewClient(build);
+  KickstarterWebViewClient provideKickstarterWebViewClient(final Build build, @WebEndpoint final String webEndpoint) {
+    return new KickstarterWebViewClient(build, webEndpoint);
   }
 
   @Provides

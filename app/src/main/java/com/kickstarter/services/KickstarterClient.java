@@ -16,10 +16,10 @@ import rx.Observable;
 
 public class KickstarterClient {
   private final Build build;
-  private final Endpoint endpoint;
+  private final String endpoint;
   private final KickstarterService service;
 
-  public KickstarterClient(final Build build, final Endpoint endpoint) {
+  public KickstarterClient(final Build build, final String endpoint) {
     this.build = build;
     this.endpoint = endpoint;
     service = kickstarterService();
@@ -53,7 +53,7 @@ public class KickstarterClient {
 
       // Add authorization if it's a Hivequeen environment (not production).
       final Matcher matcher = Pattern.compile("\\Ahttps:\\/\\/([a-z]+)\\.kickstarter.com\\z")
-        .matcher(endpoint.getUrl());
+        .matcher(endpoint);
       if (matcher.matches() && !matcher.group(1).equals("www")) {
         request.addHeader("Authorization", "Basic ZnV6enk6d3V6enk=");
       }

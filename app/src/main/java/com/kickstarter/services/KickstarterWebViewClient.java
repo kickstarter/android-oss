@@ -22,9 +22,11 @@ import java.util.regex.Pattern;
 
 public class KickstarterWebViewClient extends WebViewClient {
   private final Build build;
+  private final String webEndpoint;
 
-  public KickstarterWebViewClient(final Build build) {
+  public KickstarterWebViewClient(final Build build, final String webEndpoint) {
     this.build = build;
+    this.webEndpoint = webEndpoint;
   }
 
   @Override
@@ -49,7 +51,7 @@ public class KickstarterWebViewClient extends WebViewClient {
   protected boolean isInterceptable(final String url) {
     // TODO: Check injected host rather than 'www.kickstarter.com' - i.e. if we change endpoints
     final Uri uri = Uri.parse(url);
-    if (!uri.getHost().equals("www.kickstarter.com")) {
+    if (!uri.getHost().equals(Uri.parse(webEndpoint).getHost())) {
       return false;
     }
 

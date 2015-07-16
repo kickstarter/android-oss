@@ -1,5 +1,6 @@
 package com.kickstarter.services;
 
+import android.net.Uri;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
@@ -27,45 +28,40 @@ public class KickstarterWebViewClient extends WebViewClient {
   }
 
   @Override
-  public WebResourceResponse shouldInterceptRequest(final WebView view, final WebResourceRequest request) {
-    if (!isInterceptable(request)) {
+  public WebResourceResponse shouldInterceptRequest(final WebView view, final String url) {
+    if (!isInterceptable(url)) {
       return null;
     }
 
-    final HttpGet httpGet = new HttpGet(request.getUrl().toString());
+    final HttpGet httpGet = new HttpGet(url);
     httpGet.setHeader("Kickstarter-Android-App", build.versionCode().toString());
     try {
       final HttpResponse response = new DefaultHttpClient().execute(httpGet);
       final MimeHeaders mimeHeaders = new MimeHeaders(response.getEntity().getContentType());
 
-      return new WebResourceResponse(mimeHeaders.type,
-        mimeHeaders.encoding,
-        response.getStatusLine().getStatusCode(),
-        response.getStatusLine().getReasonPhrase(),
-        headers(response),
-        response.getEntity().getContent());
+      return new WebResourceResponse(mimeHeaders.type, mimeHeaders.encoding, response.getEntity().getContent());
     } catch (IOException e) {
       e.printStackTrace();
       return null;
     }
   }
 
-  @Override
-  public boolean shouldOverrideUrlLoading(final WebView view, final String url) {
-    return false;
-  }
-
-  protected boolean isInterceptable(final WebResourceRequest request) {
-    // TODO: Check injected host rather than 'www.kickstarter.com' - e.g. if we change endpoints
-    // TODO: Fix up support for lower API versions
-    if (!request.getUrl().getHost().equals("www.kickstarter.com")) {
+  protected boolean isInterceptable(final String url) {
+    // TODO: Check injected host rather than 'www.kickstarter.com' - i.e. if we change endpoints
+    final Uri uri = Uri.parse(url);
+    if (!uri.getHost().equals("www.kickstarter.com")) {
       return false;
     }
 
-    // TODO: Add more endpoints, make pattern matching more robust
-    return Pattern.compile("/pledge/new").matcher(request.getUrl().toString()).find();
+    return isProjectNewPledgeUrl(uri);
   }
 
+  protected boolean isProjectNewPledgeUrl(final Uri uri) {
+    return Pattern.compile("\\A\\/projects/[a-zA-Z0-9_-]+\\/[a-zA-Z0-9_-]+\\/pledge\\/new\\z")
+      .matcher(uri.getPath()).matches();
+  }
+
+  // Unused, useful if we use new WebResourceResponse constructor added in API 21
   protected Map<String,String> headers(final HttpResponse response) {
     final Map<String,String> headers = new HashMap<String,String>();
     final HeaderIterator iterator = response.headerIterator();
@@ -87,7 +83,7 @@ public class KickstarterWebViewClient extends WebViewClient {
       }
 
       // Extract mime and encoding from string, e.g. "text/html; charset=utf-8"
-      final Matcher matcher = Pattern.compile("([\\w\\/]+); charset=([\\w/-]+)")
+      final Matcher matcher = Pattern.compile("(\\A[\\w\\/]+); charset=([\\w/-]+)\\z")
         .matcher(header.getValue());
       if (matcher.matches()) {
         type = matcher.group(1);

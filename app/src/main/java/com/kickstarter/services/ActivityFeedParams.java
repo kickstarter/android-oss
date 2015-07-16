@@ -23,9 +23,7 @@ public class ActivityFeedParams {
   public List<String> queryParams() {
     final List<String> params = new ArrayList<>();
     for (Activity.Category category : categories()) {
-      if (category.toString().toLowerCase().equals("launch")) {
-        params.add(category.toString().toLowerCase());
-      }
+      params.add(category.toString().toLowerCase());
     }
     return params;
   }

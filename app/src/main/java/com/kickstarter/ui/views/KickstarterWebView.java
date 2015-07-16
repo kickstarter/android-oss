@@ -20,12 +20,6 @@ public class KickstarterWebView extends WebView {
     this(context, attrs, android.R.attr.webViewStyle);
   }
 
-  /**
-   * Construct a new WebView with layout parameters and a default style.
-   * @param context A Context object used to access application assets.
-   * @param attrs An AttributeSet passed to our parent.
-   * @param defStyle The default style resource ID.
-   */
   public KickstarterWebView(final Context context, final AttributeSet attrs, final int defStyle) {
     super(context, attrs, defStyle);
 

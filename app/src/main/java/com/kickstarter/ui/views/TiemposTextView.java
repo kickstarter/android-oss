@@ -13,20 +13,27 @@ public class TiemposTextView extends TextView {
   @Inject Font font;
 
   public TiemposTextView(final Context context) {
-    this(context, null);
+    super(context);
+    initialize(context, null, 0, 0);
   }
 
   public TiemposTextView(final Context context, final AttributeSet attrs) {
-    this(context, attrs, 0);
+    super(context, attrs);
+    initialize(context, attrs, 0, 0);
   }
 
   public TiemposTextView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
-    this(context, attrs, defStyleAttr, 0);
+    super(context, attrs, defStyleAttr);
+    initialize(context, attrs, defStyleAttr, 0);
   }
 
+  @SuppressWarnings("deprecation")
   public TiemposTextView(final Context context, final AttributeSet attrs, final int defStyleAttr, final int defStyleRes) {
     super(context, attrs, defStyleAttr, defStyleRes);
+    initialize(context, attrs, defStyleAttr, defStyleRes);
   }
+
+  void initialize(final Context context, final AttributeSet attrs, final int defStyleAttr, final int defStyleRes) {}
 
   @Override
   protected void onFinishInflate() {

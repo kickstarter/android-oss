@@ -22,17 +22,21 @@ public class IconTextView extends TextView {
   private int iconType;
 
   public IconTextView(final Context context) {
-    this(context, null);
+    super(context);
+    initialize(context, null, 0, 0);
   }
 
   public IconTextView(final Context context, final AttributeSet attrs) {
-    this(context, attrs, 0);
+    super(context, attrs);
+    initialize(context, attrs, 0, 0);
   }
 
   public IconTextView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
-    this(context, attrs, defStyleAttr, 0);
+    super(context, attrs, defStyleAttr);
+    initialize(context, attrs, defStyleAttr, 0);
   }
 
+  @SuppressWarnings("deprecation")
   public IconTextView(final Context context, final AttributeSet attrs, final int defStyleAttr, final int defStyleRes) {
     super(context, attrs, defStyleAttr, defStyleRes);
     initialize(context, attrs, defStyleAttr, defStyleRes);

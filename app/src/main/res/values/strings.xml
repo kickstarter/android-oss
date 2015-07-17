@@ -32,7 +32,7 @@
   <string name="Endpoint">Endpoint</string>
   <string name="Enter_code">Enter code</string>
   <string name="Enter_the_base_url_of_the_api">Enter the base URL of the API you’d like to use.\n\n
-    e.g.: https://api-christopher.kickstarter.com</string>
+    e.g.: https://api-christopher.***REMOVED***</string>
   <string name="Follow">Follow</string>
   <string name="Forgot_your_password">Forgot your password?</string>
   <string name="friend_name_backed_art_project">%1$s backed an Art project</string>

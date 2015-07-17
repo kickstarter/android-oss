@@ -51,8 +51,8 @@ public class KickstarterClient {
       request.addHeader("Accept", "application/json");
       request.addHeader("Kickstarter-Android-App", build.versionCode().toString());
 
-      // Add authorization if it's a Hivequeen environment (not production).
-      final Matcher matcher = Pattern.compile("\\Ahttps:\\/\\/([a-z]+)\\.kickstarter.com\\z")
+      // Add authorization if it's a Hivequeen environment.
+      final Matcher matcher = Pattern.compile("\\Ahttps:\\/\\/([a-z]+)\\.***REMOVED***\\z")
         .matcher(endpoint);
       if (matcher.matches() && !matcher.group(1).equals("www")) {
         request.addHeader("Authorization", "Basic ZnV6enk6d3V6enk=");

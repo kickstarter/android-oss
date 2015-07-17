@@ -122,8 +122,10 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  KickstarterWebViewClient provideKickstarterWebViewClient(final Build build, @WebEndpoint final String webEndpoint) {
-    return new KickstarterWebViewClient(build, webEndpoint);
+  KickstarterWebViewClient provideKickstarterWebViewClient(final Build build,
+    final CurrentUser currentUser,
+    @WebEndpoint final String webEndpoint) {
+    return new KickstarterWebViewClient(build, currentUser, webEndpoint);
   }
 
   @Provides

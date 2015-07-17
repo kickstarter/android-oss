@@ -1,11 +1,13 @@
 package com.kickstarter.services;
 
 import android.net.Uri;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.kickstarter.libs.Build;
+import com.kickstarter.libs.CurrentUser;
 
 import org.apache.http.Header;
 import org.apache.http.HeaderIterator;
@@ -19,23 +21,29 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import timber.log.Timber;
+
 public class KickstarterWebViewClient extends WebViewClient {
   private final Build build;
+  private final CurrentUser currentUser;
   private final String webEndpoint;
 
-  public KickstarterWebViewClient(final Build build, final String webEndpoint) {
+  public KickstarterWebViewClient(final Build build, final CurrentUser currentUser, final String webEndpoint) {
     this.build = build;
+    this.currentUser = currentUser;
     this.webEndpoint = webEndpoint;
   }
 
   @Override
   public WebResourceResponse shouldInterceptRequest(final WebView view, final String url) {
-    if (!isInterceptable(url)) {
+    final Uri baseUri = Uri.parse(url);
+    if (!isInterceptable(baseUri)) {
       return null;
     }
 
-    final HttpGet httpGet = new HttpGet(url);
+    final HttpGet httpGet = new HttpGet(buildUri(baseUri).toString());
     httpGet.setHeader("Kickstarter-Android-App", build.versionCode().toString());
+    Timber.d("Intercepting request: %s", httpGet.getURI().toString());
     try {
       final HttpResponse response = new DefaultHttpClient().execute(httpGet);
       final MimeHeaders mimeHeaders = new MimeHeaders(response.getEntity().getContentType());
@@ -47,13 +55,16 @@ public class KickstarterWebViewClient extends WebViewClient {
     }
   }
 
-  protected boolean isInterceptable(final String url) {
-    final Uri uri = Uri.parse(url);
-    if (!uri.getHost().equals(Uri.parse(webEndpoint).getHost())) {
-      return false;
+  protected Uri buildUri(final Uri uri) {
+    final Uri.Builder uriBuilder = uri.buildUpon();
+    if (currentUser.exists()) {
+      uriBuilder.appendQueryParameter("oauth_token", currentUser.getAccessToken());
     }
+    return uriBuilder.build();
+  }
 
-    return isProjectNewPledgeUrl(uri);
+  protected boolean isInterceptable(final Uri uri) {
+    return uri.getHost().equals(Uri.parse(webEndpoint).getHost());
   }
 
   protected boolean isProjectNewPledgeUrl(final Uri uri) {

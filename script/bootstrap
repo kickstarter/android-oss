@@ -7,7 +7,7 @@ function announce {
 
 announce "Starting bootstrap\n"
 
-ANDROID_STUDIO_PREFERENCES_PATH="${HOME}/Library/Preferences/AndroidStudio"
+ANDROID_STUDIO_PREFERENCES_PATH="${HOME}/Library/Preferences/AndroidStudio1.2"
 
 if [ ! -d $ANDROID_STUDIO_PREFERENCES_PATH ]; then
   announce "Android Studio expected in ${ANDROID_STUDIO_PREFERENCES_PATH}"
@@ -23,6 +23,7 @@ bundle install
 script/bootstrap_configs
 
 # Update Kickstarter style
+mkdir -p "${ANDROID_STUDIO_PREFERENCES_PATH}/codestyles"
 ANDROID_STYLE_PATH="${ANDROID_STUDIO_PREFERENCES_PATH}/codestyles/Kickstarter.xml"
 REPOSITORY_STYLE_PATH="script/style/Kickstarter.xml"
 
@@ -37,7 +38,10 @@ if [ $? -ne 0 ]; then
 fi
 
 # Remove author from new files
-cat /dev/null > "${ANDROID_STUDIO_PREFERENCES_PATH}/fileTemplates/includes/File Header.java"
+FILE_HEADER_PATH="${ANDROID_STUDIO_PREFERENCES_PATH}/fileTemplates/includes/File Header.java"
+if [ -f "$FILE_HEADER_PATH" ]; then
+  cat /dev/null > $FILE_HEADER_PATH
+fi
 
 # Install/update pidcat. Can also install pidcat via brew, but it's way out of date
 curl -s "https://raw.githubusercontent.com/JakeWharton/pidcat/660a8197f55cd7bc53f53a2b34014ac6df1c0ceb/pidcat.py" > /tmp/pidcat

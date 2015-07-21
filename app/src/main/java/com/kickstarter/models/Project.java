@@ -28,6 +28,7 @@ public class Project implements Parcelable {
   public String name = null;
   public Float pledged = null;
   public Photo photo = null;
+  public Video video = null;
   public DateTime potd_at = null;
   public String slug = null;
   public User creator = null;
@@ -49,6 +50,7 @@ public class Project implements Parcelable {
   public String name() { return name; }
   public Float pledged() { return pledged; }
   public Photo photo() { return photo; }
+  public Video video() { return video; }
   public String slug() { return slug; }
   public Urls urls() { return urls; }
   public String webProjectUrl() { return urls().web().project(); }

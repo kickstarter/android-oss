@@ -11,11 +11,8 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <ImageView
-      android:id="@+id/photo"
-      android:adjustViewBounds="true"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content" />
+    <include android:id="@+id/video"
+      layout="@layout/project_media_header" />
 
     <LinearLayout
       android:layout_width="match_parent"

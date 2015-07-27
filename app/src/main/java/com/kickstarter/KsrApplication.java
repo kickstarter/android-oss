@@ -10,10 +10,14 @@ import net.danlew.android.joda.JodaTimeAndroid;
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.CrashManagerListener;
 
+import java.net.CookieHandler;
+import java.net.CookieManager;
+
 import timber.log.Timber;
 
 public class KsrApplication extends Application {
   private ApplicationComponent component;
+  private CookieManager cookieManager;
   private RefWatcher refWatcher;
 
   @Override
@@ -37,6 +41,10 @@ public class KsrApplication extends Application {
 
     JodaTimeAndroid.init(this);
 
+    // TODO: Set cookie handler using dagger?
+    cookieManager = new CookieManager();
+    CookieHandler.setDefault(cookieManager);
+
     component = DaggerApplicationComponent.builder()
       .applicationModule(new ApplicationModule(this))
       .build();
@@ -53,5 +61,9 @@ public class KsrApplication extends Application {
 
   protected boolean isInUnitTests() {
     return false;
+  }
+
+  public CookieManager getCookieManager() {
+    return cookieManager;
   }
 }

@@ -16,10 +16,8 @@ import com.kickstarter.ui.activities.ProjectDetailActivity;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
-import timber.log.Timber;
 
 public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
   @Inject ApiClient client;

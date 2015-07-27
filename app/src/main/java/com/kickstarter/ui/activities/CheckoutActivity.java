@@ -2,6 +2,7 @@ package com.kickstarter.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 
 import com.kickstarter.R;
@@ -29,11 +30,6 @@ public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
     final Project project = intent.getExtras().getParcelable("project");
     final String url = intent.getExtras().getString("url");
 
-    // TODO: Shift these into KickstarterWebView
-    // Look at security recommendations in https://labs.mwrinfosecurity.com/blog/2012/04/23/adventures-with-android-webviews/
-    webView.getSettings().setJavaScriptEnabled(true);
-    webView.getSettings().setAllowFileAccess(false);
-    //webview.getSettings().setPluginsEnabled(false);
     webView.loadUrl(url);
   }
 

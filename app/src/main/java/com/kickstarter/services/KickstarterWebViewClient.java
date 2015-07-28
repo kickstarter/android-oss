@@ -90,7 +90,6 @@ public class KickstarterWebViewClient extends WebViewClient {
     Request.Builder requestBuilder = new Request.Builder().url(url);
 
     RequestBody requestBody = null;
-    // TODO: Handle PUT, etc
     if (httpMethod().equals("POST")) {
       requestBody = RequestBody.create(MediaType.parse("application/x-www-form-urlencoded; charset=utf-8"), formContents.serialized);
     }

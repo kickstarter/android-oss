@@ -153,7 +153,7 @@ public class Project implements Parcelable {
   }
 
   public String secureWebProjectUrl() {
-    return Uri.parse(webProjectUrl()).buildUpon().scheme("http").build().toString();
+    return Uri.parse(webProjectUrl()).buildUpon().scheme("https").build().toString();
   }
 
   public String newPledgeUrl() {

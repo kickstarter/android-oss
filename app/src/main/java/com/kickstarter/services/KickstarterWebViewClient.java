@@ -1,7 +1,6 @@
 package com.kickstarter.services;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
@@ -10,9 +9,8 @@ import android.webkit.WebViewClient;
 import com.kickstarter.KsrApplication;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.FormContents;
 import com.kickstarter.libs.IOUtils;
-import com.kickstarter.libs.WebViewJavascriptInterface;
-import com.kickstarter.ui.activities.LoginToutActivity;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -36,7 +34,7 @@ public class KickstarterWebViewClient extends WebViewClient {
   private final Build build;
   private final CurrentUser currentUser;
   private final String webEndpoint;
-  private WebViewJavascriptInterface.FormContents formContents = null;
+  private FormContents formContents = null;
 
   public KickstarterWebViewClient(final Build build, final CurrentUser currentUser, final String webEndpoint) {
     this.build = build;
@@ -63,9 +61,7 @@ public class KickstarterWebViewClient extends WebViewClient {
 
       // TODO: Move into handler
       if (isSignupUri(Uri.parse(response.request().urlString()))) {
-        final Context context = view.getContext();
-        Intent intent = new Intent(context, LoginToutActivity.class);
-        context.startActivity(intent);
+        return noopWebResourceResponse();
       }
 
       InputStream body = response.body().byteStream();
@@ -82,7 +78,7 @@ public class KickstarterWebViewClient extends WebViewClient {
     }
   }
 
-  public void setFormContents(final WebViewJavascriptInterface.FormContents formContents) {
+  public void setFormContents(final FormContents formContents) {
     this.formContents = formContents;
   }
 
@@ -162,6 +158,10 @@ public class KickstarterWebViewClient extends WebViewClient {
     return isKickstarterUri(uri) &&
       Pattern.compile("\\A\\/projects/[a-zA-Z0-9_-]+\\/[a-zA-Z0-9_-]+\\/pledge\\/new\\z")
         .matcher(uri.getPath()).matches();
+  }
+
+  protected WebResourceResponse noopWebResourceResponse() throws IOException {
+    return new WebResourceResponse("application/JavaScript", "utf-8", new ByteArrayInputStream("".getBytes("UTF-8")));
   }
 
   public class MimeHeaders {

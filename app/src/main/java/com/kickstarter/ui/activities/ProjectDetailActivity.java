@@ -46,6 +46,8 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
   protected @InjectView(R.id.project_detail_video) VideoView video;
   protected @InjectView(R.id.play_button_overlay) ImageView play_button;
   protected @InjectView(R.id.pledged) TextView pledged;
+  protected @InjectView(R.id.avatar) ImageView avatar;
+  protected @InjectView(R.id.avatar_name) TextView avatar_name;
 
   @Inject Money money;
 
@@ -80,6 +82,10 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     else {
       Picasso.with(this).load(project.photo().full()).into(photo);
     }
+
+    // Creator information
+    Picasso.with(this).load(project.creator().avatar().medium()).into(avatar);
+    avatar_name.setText(project.creator().name());
   }
 
   @Override

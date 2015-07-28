@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/keyline_1"
+                android:paddingLeft="@dimen/keyline_1"
+                android:paddingRight="@dimen/keyline_1"
+                android:paddingTop="@dimen/keyline_1">
+
+  <RelativeLayout
+    android:id="@+id/creator_info"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/keyline_1"
+    android:paddingTop="@dimen/keyline_1">
+
+    <TextView
+      android:id="@+id/created_by"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Created by: "/>
+
+    <TextView
+      android:id="@+id/avatar_name"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/created_by"
+      android:text="Milky Chris"/>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+      android:id="@+id/avatar"
+      android:layout_width="100dp"
+      android:layout_height="100dp"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentRight="true"
+      android:src="@drawable/chris"/>
+  </RelativeLayout>
+
+  <!-- for campaign, update, and comments. will need icons-->
+  <android.support.v7.widget.RecyclerView
+    android:id="@+id/creator_links"
+    android:paddingTop="@dimen/keyline_1"
+    android:paddingBottom="@dimen/keyline_1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/creator_info"
+    android:divider="@color/gray"
+    android:dividerHeight="1dp">
+  </android.support.v7.widget.RecyclerView>
+
+  <TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/creator_links"
+    android:paddingTop="@dimen/keyline_1"
+    android:paddingBottom="@dimen/keyline_1"
+    android:text="This project will only be funded if..."/>
+
+
+</RelativeLayout>

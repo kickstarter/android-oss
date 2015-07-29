@@ -2,21 +2,18 @@ package com.kickstarter.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.models.Project;
-import com.kickstarter.presenters.CheckoutPresenter;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import timber.log.Timber;
 
-@RequiresPresenter(CheckoutPresenter.class)
-public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
+public class CheckoutActivity extends BaseActivity {
   @InjectView(R.id.web_view) WebView webView;
 
   @Override

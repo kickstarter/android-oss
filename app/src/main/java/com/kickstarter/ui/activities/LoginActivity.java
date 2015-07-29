@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -26,6 +27,10 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
 
     setContentView(R.layout.login_layout);
     ButterKnife.inject(this);
+
+    final Intent intent = getIntent();
+    Timber.d("onCreate, forward is " + intent.getBooleanExtra("forward", false));
+    presenter.takeForwardFlag(intent.getBooleanExtra("forward", false));
   }
 
   @Override

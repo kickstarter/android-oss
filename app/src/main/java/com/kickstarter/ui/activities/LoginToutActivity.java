@@ -8,13 +8,17 @@ import android.widget.Button;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.kickstarter.R;
+import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.RequiresPresenter;
+import com.kickstarter.presenters.LoginToutPresenter;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import timber.log.Timber;
 
-public class LoginToutActivity extends BaseActivity {
+@RequiresPresenter(LoginToutPresenter.class)
+public class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
   @InjectView(R.id.login_button) Button login_button;
   @InjectView(R.id.sign_up_button) Button signup_button;
 
@@ -26,6 +30,10 @@ public class LoginToutActivity extends BaseActivity {
 
     setContentView(R.layout.login_tout_layout);
     ButterKnife.inject(this);
+
+    final Intent intent = getIntent();
+    Timber.d("onCreate, forward is " + intent.getBooleanExtra("forward", false));
+    presenter.takeForwardFlag(intent.getBooleanExtra("forward", false));
   }
 
   @Override
@@ -50,11 +58,18 @@ public class LoginToutActivity extends BaseActivity {
     AppEventsLogger.deactivateApp(this);
   }
 
-  public void loginButtonOnClick(final View v) {
-    Timber.d("login_button clicked");
+  public void loginButtonOnClick(final View view) {
+    presenter.takeLoginButtonClick();
+  }
 
-    Intent intent = new Intent(this, LoginActivity.class);
-    startActivity(intent);
-    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  @Override
+  protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
+    Timber.d("onActivityResult, requestCode is " + requestCode);
+    if (requestCode != ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_LOGIN_ACTIVITY_FORWARD) {
+      return;
+    }
+
+    setResult(resultCode, intent);
+    finish();
   }
 }

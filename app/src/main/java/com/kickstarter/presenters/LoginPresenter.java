@@ -1,5 +1,6 @@
 package com.kickstarter.presenters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,11 +27,13 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.android.widget.OnTextChangeEvent;
 import rx.android.widget.WidgetObservable;
 import rx.subjects.PublishSubject;
+import timber.log.Timber;
 
 public class LoginPresenter extends Presenter<LoginActivity> {
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
   private final PublishSubject<Void> login = PublishSubject.create();
+  private boolean forwardFlag = false;
 
   @Override
   protected void onCreate(final Context context, Bundle savedInstanceState) {
@@ -59,6 +62,10 @@ public class LoginPresenter extends Presenter<LoginActivity> {
     subscribeTo(isValid, valid -> view().setFormEnabled(valid));
   }
 
+  public void takeForwardFlag(final boolean forwardFlag) {
+    this.forwardFlag = forwardFlag;
+  }
+
   private static boolean isValid(final String email, final String password) {
     return StringUtils.isEmail(email) && password.length() > 0;
   }
@@ -74,11 +81,19 @@ public class LoginPresenter extends Presenter<LoginActivity> {
   }
 
   private void success(final AccessTokenEnvelope envelope) {
+    currentUser.set(envelope.user, envelope.access_token);
+
     if (hasView()) {
-      currentUser.set(envelope.user, envelope.access_token);
-      final Intent intent = new Intent(view(), DiscoveryActivity.class)
-        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-      view().startActivity(intent);
+      if (forwardFlag) {
+        Timber.d("Success, finishing activity");
+        view().setResult(Activity.RESULT_OK);
+        view().finish();
+      } else {
+        Timber.d("Success, jumping back to discovery");
+        final Intent intent = new Intent(view(), DiscoveryActivity.class)
+          .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        view().startActivity(intent);
+      }
     }
   }
 

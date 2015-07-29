@@ -11,6 +11,7 @@ import com.kickstarter.libs.Build;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.FormContents;
 import com.kickstarter.libs.IOUtils;
+import com.kickstarter.ui.activities.CheckoutActivity;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -61,6 +62,7 @@ public class KickstarterWebViewClient extends WebViewClient {
 
       // TODO: Move into handler
       if (isSignupUri(Uri.parse(response.request().urlString()))) {
+        ((CheckoutActivity) view.getContext()).onSignupUriRequest();
         return noopWebResourceResponse();
       }
 

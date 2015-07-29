@@ -161,7 +161,8 @@ public class KickstarterWebViewClient extends WebViewClient {
   }
 
   protected WebResourceResponse noopWebResourceResponse() throws IOException {
-    return new WebResourceResponse("application/javascript", null, new ByteArrayInputStream(new byte[0]));
+    return new WebResourceResponse("application/JavaScript", null, new ByteArrayInputStream(new byte[0]));
+
   }
 
   public class MimeHeaders {

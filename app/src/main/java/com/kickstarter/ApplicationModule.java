@@ -14,6 +14,7 @@ import com.kickstarter.libs.ConfigLoader;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Font;
 import com.kickstarter.libs.ForApplication;
+import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.Money;
 import com.kickstarter.libs.preferences.StringPreference;
 import com.kickstarter.libs.qualifiers.AccessTokenPreference;
@@ -135,6 +136,12 @@ public class ApplicationModule {
     final CurrentUser currentUser,
     @WebEndpoint final String webEndpoint) {
     return new KickstarterWebViewClient(build, currentUser, webEndpoint);
+  }
+
+  @Provides
+  @Singleton
+  Logout provideLogout(final CurrentUser currentUser) {
+    return new Logout(currentUser);
   }
 
   @Provides

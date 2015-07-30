@@ -61,8 +61,13 @@ public class KickstarterWebViewClient extends WebViewClient {
       final MimeHeaders mimeHeaders = new MimeHeaders(response.body().contentType().toString());
 
       // TODO: Move into handler
-      if (isSignupUri(Uri.parse(response.request().urlString()))) {
+      final Uri lastRequestUri = Uri.parse(response.request().urlString());
+      if (isSignupUri(lastRequestUri)) {
+        // TODO: Is this safe to call from here? (threading)
         ((CheckoutActivity) view.getContext()).onSignupUriRequest();
+        return noopWebResourceResponse();
+      } else if (isCheckoutThanksUri(lastRequestUri)) {
+        ((CheckoutActivity) view.getContext()).onCheckoutThanksUriRequest();
         return noopWebResourceResponse();
       }
 
@@ -156,7 +161,20 @@ public class KickstarterWebViewClient extends WebViewClient {
     return isKickstarterUri(uri) && uri.getPath().equals("/signup");
   }
 
+  protected boolean isCheckoutThanksUri(final Uri uri) {
+    // e.g. /projects/slug-1/slug-2/checkouts/1/thanks
+    return isKickstarterUri(uri) &&
+      Pattern.compile("\\A\\/cakes\\z")
+        .matcher(uri.getPath()).matches();
+    /*
+    return isKickstarterUri(uri) &&
+      Pattern.compile("\\A\\/projects/[a-zA-Z0-9_-]+\\/[a-zA-Z0-9_-]+\\/checkouts\\/\\d+\\/thanks\\z")
+        .matcher(uri.getPath()).matches();
+        */
+  }
+
   protected boolean isProjectNewPledgeUri(final Uri uri) {
+    // e.g. /projects/slug-1/slug-2/pledge/new
     return isKickstarterUri(uri) &&
       Pattern.compile("\\A\\/projects/[a-zA-Z0-9_-]+\\/[a-zA-Z0-9_-]+\\/pledge\\/new\\z")
         .matcher(uri.getPath()).matches();

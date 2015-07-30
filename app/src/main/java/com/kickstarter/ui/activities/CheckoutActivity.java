@@ -8,14 +8,17 @@ import android.webkit.WebView;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.models.Project;
+import com.kickstarter.presenters.CheckoutPresenter;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import timber.log.Timber;
 
-public class CheckoutActivity extends BaseActivity {
-  @InjectView(R.id.web_view) WebView webView;
+@RequiresPresenter(CheckoutPresenter.class)
+public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
+  public @InjectView(R.id.web_view) WebView webView;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
@@ -25,8 +28,7 @@ public class CheckoutActivity extends BaseActivity {
     ButterKnife.inject(this);
 
     final Intent intent = getIntent();
-    final Project project = intent.getExtras().getParcelable("project");
-    final String url = intent.getExtras().getString("url");
+    presenter.takeProject(intent.getExtras().getParcelable("project"));
 
     webView.loadUrl(url);
   }
@@ -47,6 +49,11 @@ public class CheckoutActivity extends BaseActivity {
       ActivityRequestCodes.CHECKOUT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
   }
 
+  public void onCheckoutThanksUriRequest() {
+    Timber.d("onCheckoutThanksUriRequest");
+    presenter.takeCheckoutThanksUriRequest();
+  }
+
   @Override
   protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
     Timber.d("onActivityResult, requestCode is " + requestCode);
@@ -59,7 +66,6 @@ public class CheckoutActivity extends BaseActivity {
       return;
     }
 
-    // In API < 19, can call loadUrl() with string "javascript:fn()"
-    webView.evaluateJavascript("root.checkout_next();", null);
+    presenter.takeLoginSuccess();
   }
 }

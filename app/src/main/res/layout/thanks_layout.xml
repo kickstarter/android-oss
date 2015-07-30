@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <include layout="@layout/thanks_toolbar" />
+
+  <TextView
+    android:background="@color/dark_blue"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/keyline_2_half"
+    android:paddingBottom="@dimen/keyline_2_half"
+    android:textColor="@color/white"
+    android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+    android:text="@string/Woo_hoo"
+    android:gravity="center_vertical|center_horizontal" />
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_margin="@dimen/keyline_1">
+
+    <TextView
+      android:id="@+id/backed_project"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+      android:text="You_just_backed" />
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingTop="@dimen/keyline_1"
+      android:orientation="horizontal"
+      android:layout_gravity="center_horizontal">
+
+      <Button
+        android:id="@+id/facebook_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginRight="@dimen/keyline_1_half"
+        android:text="Facebook Stub" />
+
+      <Button
+        android:id="@+id/twitter_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginLeft="@dimen/keyline_1_half"
+        android:text="Twitter Stub" />
+
+    </LinearLayout>
+
+    <Button
+      android:id="@+id/share_more_button"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:onClick="onShareMoreClick"
+      android:text="@string/More" />
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/keyline_1"
+      android:text="@string/Looking_for_more_projects"
+      android:textColor="@color/text_dark"
+      android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+      />
+
+  </LinearLayout>
+
+</LinearLayout>

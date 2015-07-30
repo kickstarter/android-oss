@@ -2,14 +2,23 @@ package com.kickstarter.presenters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Pair;
 
+import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.RxUtils;
 import com.kickstarter.models.Project;
+import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.ThanksActivity;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -17,40 +26,50 @@ import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 public class ThanksPresenter extends Presenter<ThanksActivity> {
-  private final PublishSubject<Void> shareMoreClick = PublishSubject.create();
+  private final PublishSubject<Void> shareClick = PublishSubject.create();
   private final PublishSubject<Void> doneClick = PublishSubject.create();
 
+  @Inject ApiClient apiClient;
+
+  @Override
+  protected void onCreate(final Context context, final Bundle savedInstanceState) {
+    super.onCreate(context, savedInstanceState);
+    ((KsrApplication) context.getApplicationContext()).component().inject(this);
+  }
+
   public void takeProject(final Project project) {
-    final Observable<Project> p = Observable.just(project);
+    final Observable<Pair<ThanksActivity, Project>> viewAndProject = RxUtils.combineLatestPair(viewSubject, Observable.just(project))
+      .filter(vp -> vp.first != null);
 
-    final Observable<Project> projectShareClick =
-
-    final Observable<Pair<Project, ThanksActivity>> projectAndActivity = RxUtils.combineLatestPair(p, viewSubject)
-        .filter(pair -> pair.second != null);
-
-
-    // TODO: Load recommendations
-
-    addSubscription(RxUtils.combineLatestPair(p, viewSubject)
+    addSubscription(viewAndProject
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(pair -> pair.second.show(pair.first)));
+      .subscribe(vp -> vp.first.show(vp.second)));
 
-    addSubscription(doneClick
+    addSubscription(shareClick.withLatestFrom(viewAndProject, (click, pair) -> pair)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(pair -> done(pair.first)));
+      .subscribe(vp -> share(vp.first, vp.second)));
 
-    addSubscription(shareMoreClick
+    addSubscription(doneClick.withLatestFrom(viewAndProject, (click, pair) -> pair)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(pair -> share(pair.first.second, pair.first.first)));
+      .subscribe(vp -> done(vp.first)));
+
+    // TODO: Replace with proper call for recommended projects
+    DiscoveryParams initial_params = DiscoveryParams.params();
+    Observable<List<Project>> recommendedProjects = apiClient.fetchProjects(initial_params)
+      .map(envelope -> envelope.projects);
+
+    addSubscription(RxUtils.combineLatestPair(viewSubject.filter(v -> v != null), recommendedProjects)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(vp -> vp.first.showRecommendedProjects(vp.second)));
   }
 
   public void takeDoneClick() {
     doneClick.onNext(null);
   }
 
-  public void takeShareMoreClick() {
-    Timber.d("takeShareMoreClick");
-    shareMoreClick.onNext(null);
+  public void takeShareClick() {
+    Timber.d("takeShareClick");
+    shareClick.onNext(null);
   }
 
   private void share(final Context context, final Project project) {

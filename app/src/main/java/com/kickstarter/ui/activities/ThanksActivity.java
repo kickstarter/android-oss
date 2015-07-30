@@ -11,6 +11,8 @@ import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.ThanksPresenter;
 
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import timber.log.Timber;
@@ -36,13 +38,17 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
     backedProject.setText(getResources().getString(R.string.You_just_backed, project.name()));
   }
 
+  public void showRecommendedProjects(final List<Project> projects) {
+
+  }
+
   public void onDoneClick(final View view) {
     Timber.d("onDoneClick");
     presenter.takeDoneClick();
   }
 
-  public void onShareMoreClick(final View view) {
-    Timber.d("onShareMoreClick");
-    presenter.takeShareMoreClick();
+  public void onShareClick(final View view) {
+    Timber.d("onShareClick");
+    presenter.takeShareClick();
   }
 }

@@ -57,10 +57,10 @@
     </LinearLayout>
 
     <Button
-      android:id="@+id/share_more_button"
+      android:id="@+id/share_button"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:onClick="onShareMoreClick"
+      android:onClick="onShareClick"
       android:text="@string/More" />
 
     <TextView

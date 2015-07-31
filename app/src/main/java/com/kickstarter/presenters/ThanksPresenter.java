@@ -54,9 +54,9 @@ public class ThanksPresenter extends Presenter<ThanksActivity> implements MiniPr
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> done(vp.first)));
 
-    // TODO: Replace with proper call for recommended projects
-    DiscoveryParams initial_params = DiscoveryParams.params();
-    Observable<List<Project>> recommendedProjects = apiClient.fetchProjects(initial_params)
+    // TODO: Should use the project category root
+    DiscoveryParams params = new DiscoveryParams.Builder().category(project.category()).build();
+    Observable<List<Project>> recommendedProjects = apiClient.fetchProjects(params)
       .map(envelope -> envelope.projects);
 
     addSubscription(RxUtils.combineLatestPair(viewSubject.filter(v -> v != null), recommendedProjects)

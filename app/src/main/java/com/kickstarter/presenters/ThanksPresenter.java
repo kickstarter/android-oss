@@ -14,9 +14,10 @@ import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.ThanksActivity;
+import com.kickstarter.ui.delegates.MiniProjectsDelegate;
+import com.kickstarter.ui.view_holders.MiniProjectsViewHolder;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -25,7 +26,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
-public class ThanksPresenter extends Presenter<ThanksActivity> {
+public class ThanksPresenter extends Presenter<ThanksActivity> implements MiniProjectsDelegate {
   private final PublishSubject<Void> shareClick = PublishSubject.create();
   private final PublishSubject<Void> doneClick = PublishSubject.create();
 
@@ -89,5 +90,9 @@ public class ThanksPresenter extends Presenter<ThanksActivity> {
     final Intent intent = new Intent(context, DiscoveryActivity.class)
       .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
     context.startActivity(intent);
+  }
+
+  public void onProjectClicked(final Project project, final MiniProjectsViewHolder viewHolder) {
+    Timber.d("Project clicked");
   }
 }

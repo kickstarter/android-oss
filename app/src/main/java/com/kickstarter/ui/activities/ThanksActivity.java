@@ -2,6 +2,8 @@ package com.kickstarter.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
@@ -10,6 +12,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.ThanksPresenter;
+import com.kickstarter.ui.adapters.MiniProjectsAdapter;
 
 import java.util.List;
 
@@ -20,6 +23,9 @@ import timber.log.Timber;
 @RequiresPresenter(ThanksPresenter.class)
 public class ThanksActivity extends BaseActivity<ThanksPresenter> {
   @InjectView(R.id.backed_project) TextView backedProject;
+  @InjectView(R.id.recommended_projects_recycler_view) RecyclerView recommendedProjectsRecyclerView;
+
+  MiniProjectsAdapter miniProjectsAdapter;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
@@ -27,6 +33,10 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
 
     setContentView(R.layout.thanks_layout);
     ButterKnife.inject(this);
+
+    final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+    layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+    recommendedProjectsRecyclerView.setLayoutManager(layoutManager);
 
     final Intent intent = getIntent();
     presenter.takeProject(intent.getExtras().getParcelable("project"));
@@ -39,7 +49,9 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
   }
 
   public void showRecommendedProjects(final List<Project> projects) {
-
+    Timber.d("showRecommendedProjects");
+    miniProjectsAdapter = new MiniProjectsAdapter(projects, presenter);
+    recommendedProjectsRecyclerView.setAdapter(miniProjectsAdapter);
   }
 
   public void onDoneClick(final View view) {

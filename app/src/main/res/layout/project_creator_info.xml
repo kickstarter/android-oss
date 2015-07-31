@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:paddingBottom="@dimen/keyline_1"
-                android:paddingLeft="@dimen/keyline_1"
-                android:paddingRight="@dimen/keyline_1"
-                android:paddingTop="@dimen/keyline_1">
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical"
+  android:paddingBottom="@dimen/keyline_1"
+  android:paddingLeft="@dimen/keyline_1"
+  android:paddingRight="@dimen/keyline_1"
+  android:paddingTop="@dimen/keyline_1">
 
   <RelativeLayout
     android:id="@+id/creator_info"

@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.presenters.LoginPresenter;
@@ -48,5 +49,16 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
 
   public void setFormEnabled(final boolean enabled) {
     login_button.setEnabled(enabled);
+  }
+
+  @Override
+  protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
+    Timber.d("onActivityResult, requestCode is " + requestCode);
+    if (requestCode != ActivityRequestCodes.LOGIN_ACTIVITY_TWO_FACTOR_ACTIVITY_FORWARD) {
+      return;
+    }
+
+    setResult(resultCode, intent);
+    finish();
   }
 }

@@ -32,6 +32,8 @@ public class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
     String email = intent.getExtras().getString("email");
     String password = intent.getExtras().getString("password");
     presenter.takeEmailAndPassword(email, password);
+    Timber.d("onCreate, forward is " + intent.getBooleanExtra("forward", false));
+    presenter.takeForwardFlag(intent.getBooleanExtra("forward", false));
   }
 
   public void setLoginEnabled(final boolean enabled) {

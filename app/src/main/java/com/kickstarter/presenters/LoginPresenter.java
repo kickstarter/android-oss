@@ -8,6 +8,7 @@ import android.util.Pair;
 
 import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.ApiErrorHandler;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
@@ -128,6 +129,12 @@ public class LoginPresenter extends Presenter<LoginActivity> {
     // could pass along the email and password that generated the event.
     intent.putExtra("email", view().email.getText().toString());
     intent.putExtra("password", view().password.getText().toString());
-    view().startActivity(intent);
+    if (forwardFlag) {
+      intent.putExtra("forward", forwardFlag);
+      view().startActivityForResult(intent,
+        ActivityRequestCodes.LOGIN_ACTIVITY_TWO_FACTOR_ACTIVITY_FORWARD);
+    } else {
+      view().startActivity(intent);
+    }
   }
 }

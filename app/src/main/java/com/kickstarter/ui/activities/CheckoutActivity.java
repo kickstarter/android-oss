@@ -28,6 +28,7 @@ public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
     ButterKnife.inject(this);
 
     final Intent intent = getIntent();
+    final String url = intent.getExtras().getString("url");
     presenter.takeProject(intent.getExtras().getParcelable("project"));
 
     webView.loadUrl(url);

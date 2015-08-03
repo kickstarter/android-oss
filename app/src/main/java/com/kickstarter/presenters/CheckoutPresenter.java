@@ -21,7 +21,7 @@ public class CheckoutPresenter extends Presenter<CheckoutActivity> {
   private Project project;
 
   @Override
-  protected void onCreate(final Context context, Bundle savedInstanceState) {
+  protected void onCreate(final Context context, final Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
 
     RxUtils.combineLatestPair(viewSubject, loginSuccess)

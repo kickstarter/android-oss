@@ -69,11 +69,14 @@ public class Project implements Parcelable {
       return web;
     }
 
+
     @ParcelablePlease
     public static class Web implements Parcelable {
       public String project = null;
       public String rewards = null;
 
+      public String creatorBio() { return project + "/creator_bio"; }
+      public String description() { return project + "/description"; }
       public String project() { return project; }
       public String rewards() { return rewards; }
 

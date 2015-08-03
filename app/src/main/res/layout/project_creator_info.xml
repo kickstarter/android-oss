@@ -19,14 +19,13 @@
       android:id="@+id/created_by"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="Created by: "/>
+      android:text="@string/Created_by"/>
 
     <TextView
       android:id="@+id/avatar_name"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_below="@id/created_by"
-      android:text="Milky Chris"/>
+      android:layout_below="@id/created_by" />
 
     <de.hdodenhof.circleimageview.CircleImageView
       android:id="@+id/avatar"
@@ -34,11 +33,11 @@
       android:layout_height="100dp"
       android:layout_alignParentEnd="true"
       android:layout_alignParentRight="true"
-      android:src="@drawable/chris"/>
+      android:scaleType="centerCrop" />
   </RelativeLayout>
 
   <!-- for campaign, update, and comments. will need icons-->
-  <android.support.v7.widget.RecyclerView
+  <ListView
     android:id="@+id/creator_links"
     android:paddingTop="@dimen/keyline_1"
     android:paddingBottom="@dimen/keyline_1"
@@ -47,10 +46,11 @@
     android:layout_below="@id/creator_info"
     android:divider="@color/gray"
     android:dividerHeight="1dp">
-  </android.support.v7.widget.RecyclerView>
+  </ListView>
 
   <TextView
     android:id="@+id/fund_message"
+    android:textColor="@color/text_secondary"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_below="@id/creator_links"

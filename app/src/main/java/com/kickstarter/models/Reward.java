@@ -4,12 +4,15 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
+import com.kickstarter.libs.DateTimeUtils;
+
+import org.joda.time.DateTime;
 
 @ParcelablePlease
 public class Reward implements Parcelable {
   String reward = null;
   Integer limit = null;
-  Integer estimated_delivery_on = null;
+  DateTime estimated_delivery_on = null;
   Boolean shipping_enabled = null;
   Integer id = null;
   String shipping_preference = null;
@@ -21,7 +24,7 @@ public class Reward implements Parcelable {
   public Integer backers_count() {
     return backers_count;
   }
-  public Integer estimated_delivery_on() {
+  public DateTime estimated_delivery_on() {
     return estimated_delivery_on;
   }
   public Integer id() {

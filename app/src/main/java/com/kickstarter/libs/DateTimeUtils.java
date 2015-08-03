@@ -18,6 +18,10 @@ public class DateTimeUtils {
     return DateTimeFormat.forPattern("MMMM dd, yyyy 'at' h:mm a.");
   }
 
+  public static DateTimeFormatter estimatedDeliveryOn() {
+    return DateTimeFormat.forPattern("MMMM yyyy");
+  }
+
   public static String relativeDateInWords(final DateTime date_time) {
     return relativeDateInWords(date_time, true, true, THIRTY_DAYS_IN_SECONDS);
   }

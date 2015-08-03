@@ -47,7 +47,7 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
   protected @InjectView(R.id.deadline_countdown_unit) TextView deadline_countdown_unit;
   protected @InjectView(R.id.goal) TextView goal;
   protected @InjectView(R.id.location) TextView location;
-  protected @InjectView(R.id.name) TextView name;
+  protected @InjectView(R.id.project_name) TextView project_name;
   protected @InjectView(R.id.percentage_funded) ProgressBar percentage_funded;
   protected @InjectView(R.id.project_detail_photo) ImageView photo;
   protected @InjectView(R.id.project_detail_video) VideoView video;

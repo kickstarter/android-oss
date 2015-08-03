@@ -41,8 +41,8 @@ public class CheckoutPresenter extends Presenter<CheckoutActivity> {
   }
 
   public void takeCheckoutThanksUriRequest() {
-    final Intent intent = new Intent(view(), ThanksActivity.class);
-    intent.putExtra("project", project);
+    final Intent intent = new Intent(view(), ThanksActivity.class)
+      .putExtra("project", project);
     view().startActivity(intent);
   }
 

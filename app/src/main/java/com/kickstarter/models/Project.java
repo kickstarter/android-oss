@@ -24,7 +24,7 @@ public class Project implements Parcelable {
   public Boolean currency_trailing_code = false;
   public DateTime deadline = null;
   public Float goal = null;
-  public Integer id = null; // pid in the database
+  public Integer id = null; // in the Kickstarter app, this is project.pid not project.id
   public DateTime launched_at = null;
   public Location location = null;
   public String name = null;

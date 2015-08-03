@@ -159,6 +159,7 @@ public class Project implements Parcelable {
   }
 
   public String secureWebProjectUrl() {
+    // TODO: Just use http with local env
     return Uri.parse(webProjectUrl()).buildUpon().scheme("https").build().toString();
   }
 

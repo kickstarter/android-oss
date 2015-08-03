@@ -24,7 +24,7 @@ public class Project implements Parcelable {
   public Boolean currency_trailing_code = false;
   public DateTime deadline = null;
   public Float goal = null;
-  public Integer id = null;
+  public Integer id = null; // pid in the database
   public DateTime launched_at = null;
   public Location location = null;
   public String name = null;

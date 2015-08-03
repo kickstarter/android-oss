@@ -55,7 +55,10 @@ public class ThanksPresenter extends Presenter<ThanksActivity> implements MiniPr
       .subscribe(vp -> done(vp.first)));
 
     // TODO: Should use the project category root
-    DiscoveryParams params = new DiscoveryParams.Builder().category(project.category()).build();
+    DiscoveryParams params = new DiscoveryParams.Builder()
+      .category(project.category())
+      .backed(-1)
+      .build();
     Observable<List<Project>> recommendedProjects = apiClient.fetchProjects(params)
       .map(envelope -> envelope.projects);
 

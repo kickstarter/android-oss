@@ -47,7 +47,11 @@ public class CheckoutPresenter extends Presenter<CheckoutActivity> {
   }
 
   private void checkoutNext(final CheckoutActivity activity) {
-    // In API < 19, can call loadUrl() with string "javascript:fn()"
-    activity.webView.evaluateJavascript("root.checkout_next();", null);
+    final String javascript = "root.checkout_next();";
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+      activity.webView.evaluateJavascript(javascript, null);
+    } else {
+      activity.webView.loadUrl("javascript:" + javascript);
+    }
   }
 }

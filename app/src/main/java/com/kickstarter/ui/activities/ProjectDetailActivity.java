@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.DateTimeUtils;
 import com.kickstarter.libs.Money;
 import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.models.Project;

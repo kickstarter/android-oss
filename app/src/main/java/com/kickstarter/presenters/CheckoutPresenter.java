@@ -37,20 +37,16 @@ public class CheckoutPresenter extends Presenter<CheckoutActivity> {
   }
 
   public void takeLoginSuccess() {
-    Timber.d("takeLoginSuccess");
     loginSuccess.onNext(null);
   }
 
   public void takeCheckoutThanksUriRequest() {
-    Timber.d("takeCheckoutThanksUriRequest");
     final Intent intent = new Intent(view(), ThanksActivity.class);
     intent.putExtra("project", project);
     view().startActivity(intent);
   }
 
   private void checkoutNext(final CheckoutActivity activity) {
-    Timber.d("checkoutNext");
-
     // In API < 19, can call loadUrl() with string "javascript:fn()"
     activity.webView.evaluateJavascript("root.checkout_next();", null);
   }

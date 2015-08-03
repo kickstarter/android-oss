@@ -70,26 +70,39 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     final Intent intent = getIntent();
     final Project project = intent.getExtras().getParcelable("project");
     presenter.takeProject(project);
+
+//    rewardsRecyclerView.setHasFixedSize(true);
+//    rewardsRecyclerView.getLayoutParams().height = 2000; // todo: WIP
+//    rewardsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
   }
 
   public void show(final Project project) {
+    final ClickableSpan readMoreClick = clickSpanToWebView(project.urls().web().description());
+    final String read_more_string = getString(R.string.Read_more);
+    final SpannableString blurb_span = new SpannableString(project.blurb() + " " + read_more_string);
+    final int read_more_start = blurb_span.length() - read_more_string.length();
+    blurb_span.setSpan(readMoreClick, read_more_start, blurb_span.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    blurb.setText(blurb_span);
+    blurb.setMovementMethod(LinkMovementMethod.getInstance());  // need this for clicks
+
+    final ClickableSpan creatorNameClick = clickSpanToWebView(project.urls().web().creatorBio());
+    final SpannableString creator_name_span = new SpannableString(project.creator().name());
+    creator_name_span.setSpan(creatorNameClick, 0, creator_name_span.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    creator_name.setText(creator_name_span);
+    creator_name.setMovementMethod(LinkMovementMethod.getInstance());
+
+    // Project information
     backers_count.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(project.backersCount()));
-    blurb.setText(project.blurb());
-    creator_name.setText(project.creator().name());
     category.setText(project.category().name());
     deadline_countdown.setText(Integer.toString(project.deadlineCountdown()));
     deadline_countdown_unit.setText(project.deadlineCountdownUnit());
     goal.setText(money.formattedCurrency(project.goal(), project.currencyOptions(), true));
     location.setText(project.location().displayableName());
-    name.setText(project.name());
+    project_name.setText(project.name());
     percentage_funded.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
     pledged.setText(money.formattedCurrency(project.pledged(), project.currencyOptions()));
-    if ( project.video() != null ) {
-      loadVideo(project.video(), video);
-    }
-    else {
-      Picasso.with(this).load(project.photo().full()).into(photo);
-    }
+    if ( project.video() != null ) loadVideo(project.video(), video);
+    else Picasso.with(this).load(project.photo().full()).into(photo);
 
     // Creator information
     Picasso.with(this).load(project.creator().avatar().medium()).into(avatar);
@@ -97,6 +110,31 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     fund_message.setText(String.format(getString(R.string.This_project_will_only_be_funded_if),
       money.formattedCurrency(project.goal(), project.currencyOptions(), true),
       project.deadline().toString(DateTimeUtils.writtenDeadline())));
+
+//    if (project.rewards() != null) {
+//      rewardListAdapter = new RewardListAdapter(project.rewards());
+//      rewardsRecyclerView.setAdapter(rewardListAdapter);  // todo
+//    }
+  }
+
+  // Opens the URL parameter in a KickstarterWebView
+  public ClickableSpan clickSpanToWebView(String url) {
+    return new ClickableSpan() {
+
+      @Override
+      public void onClick(View view) {
+        final Intent intent = new Intent(view.getContext(), DisplayWebViewActivity.class);
+        intent.putExtra("url", url);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+      }
+
+      @Override
+      public void updateDrawState(TextPaint link) {
+        link.setColor(getResources().getColor(R.color.text_primary));
+        link.setUnderlineText(true);
+      }
+    };
   }
 
   @Override

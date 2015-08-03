@@ -5,9 +5,9 @@ import com.kickstarter.models.Category;
 
 public class DiscoveryParams {
   private final boolean staff_picks;
-  private final boolean starred;
-  private final boolean backed;
-  private final boolean social;
+  private final int starred;
+  private final int backed;
+  private final int social;
   private final Category category;
   private final Sort sort;
   private final int page;
@@ -35,9 +35,9 @@ public class DiscoveryParams {
 
   public static class Builder {
     private boolean staff_picks = false;
-    private boolean starred = false;
-    private boolean backed = false;
-    private boolean social = false;
+    private int starred = 0;
+    private int backed = 0;
+    private int social = 0;
     private Category category = null;
     private Sort sort = Sort.MAGIC;
     private int page = 1;
@@ -53,15 +53,15 @@ public class DiscoveryParams {
       staff_picks = v;
       return this;
     }
-    public Builder starred(final boolean v) {
+    public Builder starred(final int v) {
       starred = v;
       return this;
     }
-    public Builder backed(final boolean v) {
+    public Builder backed(final int v) {
       backed = v;
       return this;
     }
-    public Builder social(final boolean v) {
+    public Builder social(final int v) {
       social = v;
       return this;
     }
@@ -120,6 +120,7 @@ public class DiscoveryParams {
       .put("staff_picks", String.valueOf(staff_picks))
       .put("starred", String.valueOf(starred))
       .put("backed", String.valueOf(backed))
+      .put("social", String.valueOf(social))
       .put("sort", sort.toString())
       .put("page", String.valueOf(page))
       .put("page_count", String.valueOf(page_count))

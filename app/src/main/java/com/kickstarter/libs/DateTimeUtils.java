@@ -13,6 +13,11 @@ public class DateTimeUtils {
     return DateTimeFormat.forPattern("yyyy/MM/dd");
   }
 
+  // i.e. August 20, 2015 at 7:45 PM.
+  public static DateTimeFormatter writtenDeadline() {
+    return DateTimeFormat.forPattern("MMMM dd, yyyy 'at' h:mm a.");
+  }
+
   public static String relativeDateInWords(final DateTime date_time) {
     return relativeDateInWords(date_time, true, true, THIRTY_DAYS_IN_SECONDS);
   }

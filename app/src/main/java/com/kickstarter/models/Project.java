@@ -33,6 +33,7 @@ public class Project implements Parcelable {
   public String slug = null;
   public User creator = null;
   public Urls urls = null;
+  public List<Reward> rewards = null;
 
   public Integer backersCount() { return backers_count; }
   public String blurb() { return blurb; }
@@ -54,6 +55,9 @@ public class Project implements Parcelable {
   public String slug() { return slug; }
   public Urls urls() { return urls; }
   public String webProjectUrl() { return urls().web().project(); }
+  public List<Reward> rewards() {
+    return rewards;
+  }
 
   @ParcelablePlease
   public static class Urls implements Parcelable {

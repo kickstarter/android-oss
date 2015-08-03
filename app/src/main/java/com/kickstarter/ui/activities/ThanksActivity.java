@@ -12,7 +12,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.ThanksPresenter;
-import com.kickstarter.ui.adapters.MiniProjectsAdapter;
+import com.kickstarter.ui.adapters.ProjectCardMiniAdapter;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
   @InjectView(R.id.backed_project) TextView backedProject;
   @InjectView(R.id.recommended_projects_recycler_view) RecyclerView recommendedProjectsRecyclerView;
 
-  MiniProjectsAdapter miniProjectsAdapter;
+  ProjectCardMiniAdapter projectCardMiniAdapter;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
@@ -43,15 +43,13 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
   }
 
   public void show(final Project project) {
-    // TODO: The project name should be in bold and dark text, but doing that in Android
-    // is tricky.
+    // TODO: Bold project name
     backedProject.setText(getResources().getString(R.string.You_just_backed, project.name()));
   }
 
   public void showRecommendedProjects(final List<Project> projects) {
-    Timber.d("showRecommendedProjects");
-    miniProjectsAdapter = new MiniProjectsAdapter(projects, presenter);
-    recommendedProjectsRecyclerView.setAdapter(miniProjectsAdapter);
+    projectCardMiniAdapter = new ProjectCardMiniAdapter(this, projects);
+    recommendedProjectsRecyclerView.setAdapter(projectCardMiniAdapter);
   }
 
   public void onDoneClick(final View view) {

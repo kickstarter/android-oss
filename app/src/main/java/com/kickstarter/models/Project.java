@@ -11,6 +11,8 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 
+import java.util.List;
+
 @ParcelablePlease
 public class Project implements Parcelable {
   public Integer backers_count = null;

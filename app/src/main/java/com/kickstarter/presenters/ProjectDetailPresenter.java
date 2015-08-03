@@ -30,7 +30,6 @@ public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
   }
 
   public void takeProject(final Project project) {
-
     final Observable<Project> latestProject = client.fetchProject(project).startWith(project);
 
     addSubscription(RxUtils.combineLatestPair(latestProject, viewSubject)

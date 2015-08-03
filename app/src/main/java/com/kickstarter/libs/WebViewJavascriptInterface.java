@@ -12,8 +12,8 @@ public class WebViewJavascriptInterface {
   }
 
   @JavascriptInterface
-  public void setFormContents(final String serialized, final String method, final String encodingType, final String authenticityToken) {
-    kickstarterWebViewClient.setFormContents(new FormContents(serialized, method, encodingType, authenticityToken));
+  public void setFormContents(final String serialized, final String method, final String encodingType) {
+    kickstarterWebViewClient.setFormContents(new FormContents(serialized, method, encodingType));
   }
 }
 

@@ -12,8 +12,7 @@
 
     WebViewJavascriptInterface.setFormContents($form.serialize(),
       form.attributes['method'] === undefined ? null : form.attributes['method'].value,
-      form.attributes['enctype'] === undefined ? null : form.attributes['enctype'].value,
-      $('meta[name="csrf-token"]').attr('content'));
+      form.attributes['enctype'] === undefined ? null : form.attributes['enctype'].value);
 
     form._submit();
   }

@@ -33,12 +33,17 @@ import timber.log.Timber;
 
 public class KickstarterWebViewClient extends WebViewClient {
   private final Build build;
+  private final CookieManager cookieManager;
   private final CurrentUser currentUser;
   private final String webEndpoint;
   private FormContents formContents = null;
 
-  public KickstarterWebViewClient(final Build build, final CurrentUser currentUser, final String webEndpoint) {
+  public KickstarterWebViewClient(final Build build,
+    final CookieManager cookieManager,
+    final CurrentUser currentUser,
+    final String webEndpoint) {
     this.build = build;
+    this.cookieManager = cookieManager;
     this.currentUser = currentUser;
     this.webEndpoint = webEndpoint;
   }
@@ -49,9 +54,7 @@ public class KickstarterWebViewClient extends WebViewClient {
       return null;
     }
 
-    OkHttpClient client = new OkHttpClient();
-    // TODO: Not this
-    CookieManager cookieManager = ((KsrApplication) view.getContext().getApplicationContext()).getCookieManager();
+    final OkHttpClient client = new OkHttpClient();
     client.setCookieHandler(cookieManager);
 
     try {

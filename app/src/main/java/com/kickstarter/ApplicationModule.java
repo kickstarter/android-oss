@@ -24,21 +24,12 @@ import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.KickstarterClient;
 import com.kickstarter.services.KickstarterWebViewClient;
 
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.BasicHttpParams;
+import java.net.CookieManager;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import retrofit.Endpoint;
-import retrofit.Endpoints;
 
 @Module
 public class ApplicationModule {
@@ -102,6 +93,12 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
+  CookieManager provideCookieManager() {
+    return new CookieManager();
+  }
+
+  @Provides
+  @Singleton
   CurrentUser provideCurrentUser(@UserPreference final StringPreference userPreference,
     @AccessTokenPreference final StringPreference accessTokenPreference) {
     return new CurrentUser(userPreference, accessTokenPreference);
@@ -133,15 +130,16 @@ public class ApplicationModule {
   @Provides
   @Singleton
   KickstarterWebViewClient provideKickstarterWebViewClient(final Build build,
+    final CookieManager cookieManager,
     final CurrentUser currentUser,
     @WebEndpoint final String webEndpoint) {
-    return new KickstarterWebViewClient(build, currentUser, webEndpoint);
+    return new KickstarterWebViewClient(build, cookieManager, currentUser, webEndpoint);
   }
 
   @Provides
   @Singleton
-  Logout provideLogout(final CurrentUser currentUser) {
-    return new Logout(currentUser);
+  Logout provideLogout(final CookieManager cookieManager, final CurrentUser currentUser) {
+    return new Logout(cookieManager, currentUser);
   }
 
   @Provides

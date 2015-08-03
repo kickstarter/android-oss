@@ -7,16 +7,16 @@ import com.kickstarter.KsrApplication;
 import java.net.CookieManager;
 
 public class Logout {
+  private final CookieManager cookieManager;
   private final CurrentUser currentUser;
 
-  public Logout(final CurrentUser currentUser) {
+  public Logout(final CookieManager cookieManager, final CurrentUser currentUser) {
+    this.cookieManager = cookieManager;
     this.currentUser = currentUser;
   }
 
   public void execute(final Context context) {
     currentUser.unset();
-    // TODO: Inject cookie manager
-    CookieManager cookieManager = ((KsrApplication) context.getApplicationContext()).getCookieManager();
     cookieManager.getCookieStore().removeAll();
   }
 }

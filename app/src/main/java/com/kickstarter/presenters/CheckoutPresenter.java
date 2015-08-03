@@ -29,7 +29,7 @@ public class CheckoutPresenter extends Presenter<CheckoutActivity> {
       .take(1)
       .map(pair -> pair.first)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(a -> checkoutNext(a));
+      .subscribe(this::checkoutNext);
   }
 
   public void takeProject(final Project project) {

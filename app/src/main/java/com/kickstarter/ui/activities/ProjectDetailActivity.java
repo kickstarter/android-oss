@@ -101,8 +101,12 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     project_name.setText(project.name());
     percentage_funded.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
     pledged.setText(money.formattedCurrency(project.pledged(), project.currencyOptions()));
-    if ( project.video() != null ) loadVideo(project.video(), video);
-    else Picasso.with(this).load(project.photo().full()).into(photo);
+    if ( project.video() != null ) {
+      loadVideo(project.video(), video);
+    }
+    else {
+      Picasso.with(this).load(project.photo().full()).into(photo);
+    }
 
     // Creator information
     Picasso.with(this).load(project.creator().avatar().medium()).into(avatar);

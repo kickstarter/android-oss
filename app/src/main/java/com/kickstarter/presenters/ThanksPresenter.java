@@ -48,15 +48,17 @@ public class ThanksPresenter extends Presenter<ThanksActivity> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startShareIntent(vp.second)));
 
-    addSubscription(doneClick.withLatestFrom(viewAndProject, (click, pair) -> pair)
+    addSubscription(RxUtils.combineLatestPair(viewSubject.filter(v -> v != null), doneClick)
+      .map(vp -> vp.first)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.startDiscoveryActivity()));
+      .subscribe(ThanksActivity::startDiscoveryActivity));
 
     // TODO: Should use the project category root
     DiscoveryParams params = new DiscoveryParams.Builder()
       .category(project.category())
       .backed(-1)
       .build();
+
     Observable<List<Project>> recommendedProjects = apiClient.fetchProjects(params)
       .map(envelope -> envelope.projects);
 

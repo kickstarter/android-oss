@@ -38,13 +38,12 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
     layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
     recommendedProjectsRecyclerView.setLayoutManager(layoutManager);
 
-    final Intent intent = getIntent();
-    presenter.takeProject(intent.getExtras().getParcelable("project"));
+    presenter.takeProject(getIntent().getExtras().getParcelable("project"));
   }
 
   public void show(final Project project) {
     // TODO: Bold project name
-    backedProject.setText(getResources().getString(R.string.You_just_backed, project.name()));
+    backedProject.setText(getString(R.string.You_just_backed, project.name()));
   }
 
   public void showRecommendedProjects(final List<Project> projects) {
@@ -53,12 +52,27 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
   }
 
   public void onDoneClick(final View view) {
-    Timber.d("onDoneClick");
     presenter.takeDoneClick();
   }
 
   public void onShareClick(final View view) {
-    Timber.d("onShareClick");
     presenter.takeShareClick();
+  }
+
+  public void startShareIntent(final Project project) {
+    final Intent intent = new Intent(android.content.Intent.ACTION_SEND)
+      .setType("text/plain")
+      .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
+      .putExtra(Intent.EXTRA_TEXT, getString(R.string.I_just_backed_project_on_Kickstarter,
+        project.name(),
+        project.secureWebProjectUrl()));
+
+    startActivity(Intent.createChooser(intent, getString(R.string.Share_this_project)));
+  }
+
+  public void startDiscoveryActivity() {
+    final Intent intent = new Intent(this, DiscoveryActivity.class)
+      .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+    startActivity(intent);
   }
 }

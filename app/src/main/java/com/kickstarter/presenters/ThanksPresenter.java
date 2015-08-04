@@ -46,11 +46,11 @@ public class ThanksPresenter extends Presenter<ThanksActivity> {
 
     addSubscription(shareClick.withLatestFrom(viewAndProject, (click, pair) -> pair)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> share(vp.first, vp.second)));
+      .subscribe(vp -> vp.first.startShareIntent(vp.second)));
 
     addSubscription(doneClick.withLatestFrom(viewAndProject, (click, pair) -> pair)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> done(vp.first)));
+      .subscribe(vp -> vp.first.startDiscoveryActivity()));
 
     // TODO: Should use the project category root
     DiscoveryParams params = new DiscoveryParams.Builder()
@@ -71,23 +71,6 @@ public class ThanksPresenter extends Presenter<ThanksActivity> {
 
   public void takeShareClick() {
     shareClick.onNext(null);
-  }
-
-  private void share(final Context context, final Project project) {
-    final Intent intent = new Intent(android.content.Intent.ACTION_SEND)
-      .setType("text/plain")
-      .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
-      .putExtra(Intent.EXTRA_TEXT, context.getResources()
-        .getString(R.string.I_just_backed_project_on_Kickstarter, project.name(), project
-          .secureWebProjectUrl()));
-
-    context.startActivity(Intent.createChooser(intent, context.getResources().getString(R.string.Share_this_project)));
-  }
-
-  private void done(final Context context) {
-    final Intent intent = new Intent(context, DiscoveryActivity.class)
-      .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-    context.startActivity(intent);
   }
 
   // TODO: Hook this up

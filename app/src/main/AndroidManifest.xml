@@ -35,6 +35,8 @@
       </intent-filter>
     </activity>
 
+    <activity android:name=".ui.activities.DisplayWebViewActivity" />
+
     <activity android:name=".ui.activities.DownloadBetaActivity" />
 
     <activity

@@ -25,5 +25,6 @@ public class KickstarterWebView extends WebView {
 
     ((KsrApplication) context.getApplicationContext()).component().inject(this);
     setWebViewClient(client);
+    getSettings().setJavaScriptEnabled(true);
   }
 }

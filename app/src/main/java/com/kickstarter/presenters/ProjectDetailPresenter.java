@@ -24,6 +24,7 @@ import timber.log.Timber;
 public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
   @Inject ApiClient client;
   private final PublishSubject<Void> backProjectClick = PublishSubject.create();
+  private final PublishSubject<Void> shareClick = PublishSubject.create();
 
   @Override
   protected void onCreate(final Context context, final Bundle savedInstanceState) {
@@ -42,10 +43,18 @@ public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
     addSubscription(RxUtils.combineLatestPair(latestProject, backProjectClick)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(v -> back(v.first)));
+
+    addSubscription(RxUtils.combineLatestPair(latestProject, shareClick)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(v -> share(v.first)));
   }
 
   public void takeBackProjectClick() {
     backProjectClick.onNext(null);
+  }
+
+  public void takeShareClick() {
+    shareClick.onNext(null);
   }
 
   protected void back(final Project project) {
@@ -54,5 +63,13 @@ public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
     intent.putExtra("url", project.newPledgeUrl());
     view().startActivity(intent);
     view().overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  // todo: limit the apps you can share to, format string
+  private void share(final Project project) {
+    final Intent intent = new Intent(Intent.ACTION_SEND)
+      .setType("text/plain")
+      .putExtra(Intent.EXTRA_TEXT, project.name() + ", via " + project.urls().web().project());
+    view().startActivity(intent);
   }
 }

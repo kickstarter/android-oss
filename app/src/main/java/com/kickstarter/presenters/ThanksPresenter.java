@@ -70,12 +70,10 @@ public class ThanksPresenter extends Presenter<ThanksActivity> {
   }
 
   public void takeShareClick() {
-    Timber.d("takeShareClick");
     shareClick.onNext(null);
   }
 
   private void share(final Context context, final Project project) {
-    Timber.d("Share intent");
     final Intent intent = new Intent(android.content.Intent.ACTION_SEND)
       .setType("text/plain")
       .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
@@ -87,7 +85,6 @@ public class ThanksPresenter extends Presenter<ThanksActivity> {
   }
 
   private void done(final Context context) {
-    Timber.d("Done intent");
     final Intent intent = new Intent(context, DiscoveryActivity.class)
       .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
     context.startActivity(intent);

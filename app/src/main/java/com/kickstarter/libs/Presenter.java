@@ -15,8 +15,8 @@ import timber.log.Timber;
 
 public class Presenter<ViewType> {
   private ViewType view;
-  protected final PublishSubject<ViewType> viewSubject = PublishSubject.create();
   protected final PublishSubject<ViewType> viewChange = PublishSubject.create();
+  protected final Observable<ViewType> viewSubject = viewChange.filter(v -> v != null);
   private final List<Subscription> subscriptions = new ArrayList<>();
 
   protected void onCreate(final Context context, final Bundle savedInstanceState) {
@@ -39,17 +39,12 @@ public class Presenter<ViewType> {
     for (final Subscription subscription : subscriptions) {
       subscription.unsubscribe();
     }
-
-    viewSubject.onCompleted();
     viewChange.onCompleted();
   }
 
   protected void onTakeView(final ViewType view) {
     Timber.d("onTakeView %s %s", this.toString(), view.toString());
     this.view = view;
-    if (hasView()) {
-      viewSubject.onNext(view);
-    }
     viewChange.onNext(view);
   }
 
@@ -67,7 +62,7 @@ public class Presenter<ViewType> {
     return this.view != null;
   }
 
-  public final PublishSubject<ViewType> viewSubject() {
+  public final Observable<ViewType> viewSubject() {
     return viewSubject;
   }
   public final PublishSubject<ViewType> viewChange() {

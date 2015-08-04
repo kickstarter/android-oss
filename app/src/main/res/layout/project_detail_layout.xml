@@ -24,7 +24,7 @@
       android:orientation="vertical">
 
       <TextView
-        android:id="@+id/name"
+        android:id="@+id/project_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"

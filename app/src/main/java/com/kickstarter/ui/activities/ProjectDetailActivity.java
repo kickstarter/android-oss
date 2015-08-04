@@ -10,6 +10,7 @@ import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.text.style.UnderlineSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.MediaController;
@@ -81,12 +82,14 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     final String read_more_string = getString(R.string.Read_more);
     final SpannableString blurb_span = new SpannableString(project.blurb() + " " + read_more_string);
     final int read_more_start = blurb_span.length() - read_more_string.length();
-    blurb_span.setSpan(readMoreClick, read_more_start, blurb_span.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    blurb_span.setSpan(new UnderlineSpan(), read_more_start, blurb_span.length(), 0);
+    blurb_span.setSpan(readMoreClick, 0, blurb_span.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
     blurb.setText(blurb_span);
-    blurb.setMovementMethod(LinkMovementMethod.getInstance());  // need this for clicks
+    blurb.setMovementMethod(LinkMovementMethod.getInstance());
 
     final ClickableSpan creatorNameClick = clickSpanToWebView(project.urls().web().creatorBio());
     final SpannableString creator_name_span = new SpannableString(project.creator().name());
+    creator_name_span.setSpan(new UnderlineSpan(), 0, creator_name_span.length(), 0);
     creator_name_span.setSpan(creatorNameClick, 0, creator_name_span.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     creator_name.setText(creator_name_span);
     creator_name.setMovementMethod(LinkMovementMethod.getInstance());
@@ -136,7 +139,6 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
       @Override
       public void updateDrawState(TextPaint link) {
         link.setColor(getResources().getColor(R.color.text_primary));
-        link.setUnderlineText(true);
       }
     };
   }
@@ -151,25 +153,25 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
 
   public void loadVideo(Video video, VideoView videoView) {
     Picasso.with(this).load(video.frame()).into(photo); // todo: make this loading smoother
-    Uri video_uri = Uri.parse(video.base());
+    final Uri video_uri = Uri.parse(video.base());
     videoView.setVideoURI(video_uri);
     videoView.setMediaController(new MediaController(this));
 
-    // todo: do we need a listener here?
-    play_button.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        photo.setVisibility(View.GONE);
-        play_button.setVisibility(View.GONE);
-        videoView.start();
-      }
+    play_button.setOnClickListener((View v) -> {
+      photo.setVisibility(View.GONE);
+      play_button.setVisibility(View.GONE);
+      videoView.start();
     });
+  }
+
+  public void shareOnClick(final View v) {
+    final Intent shareIntent = new Intent(Intent.ACTION_SEND);
+    shareIntent.setType("text/plain");  // todo: enable content sharing
+    startActivity(Intent.createChooser(shareIntent, "Share via"));
   }
 
   public void backProjectButtonOnClick(final View v) {
     Timber.d("backProjectButtonOnClick");
     presenter.takeBackProjectClick();
   }
-
-
 }

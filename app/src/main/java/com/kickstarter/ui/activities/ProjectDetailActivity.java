@@ -128,11 +128,10 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
   }
 
   // Opens the URL parameter in a KickstarterWebView
-  public ClickableSpan clickSpanToWebView(String url) {
+  public ClickableSpan clickSpanToWebView(final String url) {
     return new ClickableSpan() {
-
       @Override
-      public void onClick(View view) {
+      public void onClick(final View view) {
         final Intent intent = new Intent(view.getContext(), DisplayWebViewActivity.class);
         intent.putExtra("url", url);
         startActivity(intent);
@@ -140,7 +139,7 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
       }
 
       @Override
-      public void updateDrawState(TextPaint link) {
+      public void updateDrawState(final TextPaint link) {
         link.setColor(getResources().getColor(R.color.text_primary));
       }
     };

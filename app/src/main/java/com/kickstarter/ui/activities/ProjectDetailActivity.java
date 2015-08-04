@@ -40,23 +40,26 @@ import timber.log.Timber;
 
 @RequiresPresenter(ProjectDetailPresenter.class)
 public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> {
-  protected @InjectView(R.id.backers_count) TextView backers_count;
+//  RewardListAdapter rewardListAdapter;
+//  @InjectView(R.id.rewards_recycler_view) RecyclerView rewardsRecyclerView;
+
+  protected @InjectView(R.id.backers_count) TextView backersCount;
   protected @InjectView(R.id.blurb) TextView blurb;
   protected @InjectView(R.id.category) TextView category;
-  protected @InjectView(R.id.creator_name) TextView creator_name;
-  protected @InjectView(R.id.deadline_countdown) TextView deadline_countdown;
-  protected @InjectView(R.id.deadline_countdown_unit) TextView deadline_countdown_unit;
+  protected @InjectView(R.id.creator_name) TextView creatorName;
+  protected @InjectView(R.id.deadline_countdown) TextView deadlineCountdown;
+  protected @InjectView(R.id.deadline_countdown_unit) TextView deadlineCountdownUnit;
   protected @InjectView(R.id.goal) TextView goal;
   protected @InjectView(R.id.location) TextView location;
-  protected @InjectView(R.id.project_name) TextView project_name;
-  protected @InjectView(R.id.percentage_funded) ProgressBar percentage_funded;
+  protected @InjectView(R.id.project_name) TextView projectName;
+  protected @InjectView(R.id.percentage_funded) ProgressBar percentageFunded;
   protected @InjectView(R.id.project_detail_photo) ImageView photo;
   protected @InjectView(R.id.project_detail_video) VideoView video;
-  protected @InjectView(R.id.play_button_overlay) ImageView play_button;
+  protected @InjectView(R.id.play_button_overlay) ImageView playButton;
   protected @InjectView(R.id.pledged) TextView pledged;
   protected @InjectView(R.id.avatar) ImageView avatar;
-  protected @InjectView(R.id.avatar_name) TextView avatar_name;
-  protected @InjectView(R.id.fund_message) TextView fund_message;
+  protected @InjectView(R.id.avatar_name) TextView avatarName;
+  protected @InjectView(R.id.fund_message) TextView fundMessage;
 
   @Inject Money money;
 
@@ -79,30 +82,30 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
 
   public void show(final Project project) {
     final ClickableSpan readMoreClick = clickSpanToWebView(project.urls().web().description());
-    final String read_more_string = getString(R.string.Read_more);
-    final SpannableString blurb_span = new SpannableString(project.blurb() + " " + read_more_string);
-    final int read_more_start = blurb_span.length() - read_more_string.length();
-    blurb_span.setSpan(new UnderlineSpan(), read_more_start, blurb_span.length(), 0);
-    blurb_span.setSpan(readMoreClick, 0, blurb_span.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-    blurb.setText(blurb_span);
+    final String readMoreString = getString(R.string.Read_more);
+    final SpannableString blurbSpan = new SpannableString(project.blurb() + " " + readMoreString);
+    final int readMoreStart = blurbSpan.length() - readMoreString.length();
+    blurbSpan.setSpan(new UnderlineSpan(), readMoreStart, blurbSpan.length(), 0);
+    blurbSpan.setSpan(readMoreClick, 0, blurbSpan.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+    blurb.setText(blurbSpan);
     blurb.setMovementMethod(LinkMovementMethod.getInstance());
 
     final ClickableSpan creatorNameClick = clickSpanToWebView(project.urls().web().creatorBio());
-    final SpannableString creator_name_span = new SpannableString(project.creator().name());
-    creator_name_span.setSpan(new UnderlineSpan(), 0, creator_name_span.length(), 0);
-    creator_name_span.setSpan(creatorNameClick, 0, creator_name_span.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-    creator_name.setText(creator_name_span);
-    creator_name.setMovementMethod(LinkMovementMethod.getInstance());
+    final SpannableString creatorNameSpan = new SpannableString(project.creator().name());
+    creatorNameSpan.setSpan(new UnderlineSpan(), 0, creatorNameSpan.length(), 0);
+    creatorNameSpan.setSpan(creatorNameClick, 0, creatorNameSpan.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    creatorName.setText(creatorNameSpan);
+    creatorName.setMovementMethod(LinkMovementMethod.getInstance());
 
     // Project information
-    backers_count.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(project.backersCount()));
+    backersCount.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(project.backersCount()));
     category.setText(project.category().name());
-    deadline_countdown.setText(Integer.toString(project.deadlineCountdown()));
-    deadline_countdown_unit.setText(project.deadlineCountdownUnit());
+    deadlineCountdown.setText(Integer.toString(project.deadlineCountdown()));
+    deadlineCountdownUnit.setText(project.deadlineCountdownUnit());
     goal.setText(money.formattedCurrency(project.goal(), project.currencyOptions(), true));
     location.setText(project.location().displayableName());
-    project_name.setText(project.name());
-    percentage_funded.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
+    projectName.setText(project.name());
+    percentageFunded.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
     pledged.setText(money.formattedCurrency(project.pledged(), project.currencyOptions()));
     if ( project.video() != null ) {
       loadVideo(project.video(), video);
@@ -113,8 +116,8 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
 
     // Creator information
     Picasso.with(this).load(project.creator().avatar().medium()).into(avatar);
-    avatar_name.setText(project.creator().name());
-    fund_message.setText(String.format(getString(R.string.This_project_will_only_be_funded_if),
+    avatarName.setText(project.creator().name());
+    fundMessage.setText(String.format(getString(R.string.This_project_will_only_be_funded_if),
       money.formattedCurrency(project.goal(), project.currencyOptions(), true),
       project.deadline().toString(DateTimeUtils.writtenDeadline())));
 
@@ -157,9 +160,9 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     videoView.setVideoURI(video_uri);
     videoView.setMediaController(new MediaController(this));
 
-    play_button.setOnClickListener((View v) -> {
+    playButton.setOnClickListener((View v) -> {
       photo.setVisibility(View.GONE);
-      play_button.setVisibility(View.GONE);
+      playButton.setVisibility(View.GONE);
       videoView.start();
     });
   }

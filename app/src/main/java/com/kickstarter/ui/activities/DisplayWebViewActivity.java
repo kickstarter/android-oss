@@ -11,9 +11,9 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class DisplayWebViewActivity extends BaseActivity {
-  @InjectView(R.id.generic_webview) KickstarterWebView webview;
+  @InjectView(R.id.generic_webview) KickstarterWebView webView;
 
-  public void onCreate(Bundle savedInstanceState) {
+  public void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.webview_layout);
     ButterKnife.inject(this);
@@ -21,8 +21,7 @@ public class DisplayWebViewActivity extends BaseActivity {
     final Intent intent = getIntent();
     final String url = intent.getExtras().getString("url");
 
-    webview.getSettings().setJavaScriptEnabled(true);
-    webview.loadUrl(url);
+    webView.loadUrl(url);
   }
 
   @Override

@@ -37,13 +37,6 @@
         android:layout_marginBottom="@dimen/keyline_1_half">
 
         <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/by_"
-          android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-          android:textColor="@color/text_dark" />
-
-        <TextView
           android:id="@+id/creator_name"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -59,6 +52,8 @@
         android:layout_marginBottom="@dimen/keyline_1_half"
         android:textSize="17sp"
         android:textColor="@color/text_dark"
+        android:onClick="blurbOnClick"
+        android:clickable="true"
         android:paddingBottom="@dimen/keyline_1_half" />
 
       <LinearLayout

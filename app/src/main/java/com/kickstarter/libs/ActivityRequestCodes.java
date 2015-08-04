@@ -2,7 +2,7 @@ package com.kickstarter.libs;
 
 public class ActivityRequestCodes {
   /*
-   * Format for this, if activity A starts activity B:
+   * Format for this - if activity A starts activity B:
    *
    * ACTIVITY_A_ACTIVITY_B_REASON
    *

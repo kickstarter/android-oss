@@ -26,7 +26,7 @@
       android:layout_height="90dp"
       android:layout_alignLeft="@+id/photo"
       android:layout_alignBottom="@+id/photo"
-      android:background="@drawable/photo_gradient_darker">
+      android:background="@drawable/photo_gradient_dark">
 
       <TextView
         android:id="@+id/name"

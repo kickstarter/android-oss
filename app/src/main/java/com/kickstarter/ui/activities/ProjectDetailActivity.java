@@ -77,7 +77,7 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     final SpannableString blurbSpan = new SpannableString(project.blurb() + " " + readMoreString);
     final int readMoreStart = blurbSpan.length() - readMoreString.length();
     blurbSpan.setSpan(new UnderlineSpan(), readMoreStart, blurbSpan.length(), 0);
-    blurbSpan.setSpan(readMoreClick, 0, blurbSpan.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+    blurbSpan.setSpan(readMoreClick, 0, blurbSpan.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     blurb.setText(blurbSpan);
     blurb.setMovementMethod(LinkMovementMethod.getInstance());
 

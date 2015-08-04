@@ -59,14 +59,11 @@ public class KickstarterWebViewClient extends WebViewClient {
     try {
       final Request request = buildRequest(url);
       final Response response = client.newCall(request).execute();
-
       final MimeHeaders mimeHeaders = new MimeHeaders(response.body().contentType().toString());
 
-      // TODO: Move into handler
+      // TODO: Refactor, this is gross
       final Uri lastRequestUri = Uri.parse(response.request().urlString());
       if (isSignupUri(lastRequestUri)) {
-        // TODO: Is this safe to call from here? (threading)
-        Timber.d("Triggered isSignupUri");
         ((CheckoutActivity) view.getContext()).onSignupUriRequest();
         return noopWebResourceResponse();
       } else if (isCheckoutThanksUri(lastRequestUri)) {
@@ -74,11 +71,7 @@ public class KickstarterWebViewClient extends WebViewClient {
         return noopWebResourceResponse();
       }
 
-      InputStream body = response.body().byteStream();
-
-      if (mimeHeaders.type != null && mimeHeaders.type.equals("text/html")) {
-        body = bodyWithWebViewJavascript(view.getContext(), body);
-      }
+      final InputStream body = constructBody(view.getContext(), response, mimeHeaders);
 
       return new WebResourceResponse(mimeHeaders.type, mimeHeaders.encoding, body);
     } catch (IOException e) {
@@ -86,6 +79,16 @@ public class KickstarterWebViewClient extends WebViewClient {
     } finally {
       formContents = null; // TODO: Should unset this much earlier?
     }
+  }
+
+  protected InputStream constructBody(final Context context, final Response response, final MimeHeaders mimeHeaders) throws IOException {
+    InputStream body = response.body().byteStream();
+
+    if (mimeHeaders.type != null && mimeHeaders.type.equals("text/html")) {
+      body = insertWebViewJavascript(context, body);
+    }
+
+    return body;
   }
 
   public void setFormContents(final FormContents formContents) {
@@ -97,12 +100,13 @@ public class KickstarterWebViewClient extends WebViewClient {
 
     RequestBody requestBody = null;
     if (httpMethod().equals("POST")) {
-      requestBody = RequestBody.create(MediaType.parse("application/x-www-form-urlencoded; charset=utf-8"), formContents.serialized);
+      requestBody = RequestBody.create(MediaType.parse("application/x-www-form-urlencoded; charset=utf-8"),
+        formContents.serialized);
     }
 
+    // TODO: All this header code is duplicated, refactor
     requestBuilder.addHeader("Kickstarter-Android-App", build.versionCode().toString());
 
-    // Add authorization if it's a Hivequeen environment. TODO: Inject this
     final Matcher matcher = Pattern.compile("\\Ahttps:\\/\\/([a-z]+)\\.***REMOVED***\\z")
       .matcher(webEndpoint);
     if (matcher.matches() && !matcher.group(1).equals("www")) {
@@ -128,7 +132,7 @@ public class KickstarterWebViewClient extends WebViewClient {
     return requestBuilder.build();
   }
 
-  protected InputStream bodyWithWebViewJavascript(final Context context, final InputStream originalBody) throws IOException {
+  protected InputStream insertWebViewJavascript(final Context context, final InputStream originalBody) throws IOException {
     final Document document = Jsoup.parse(new String(IOUtils.readFully(originalBody)));
     document.outputSettings().prettyPrint(true);
 
@@ -180,7 +184,6 @@ public class KickstarterWebViewClient extends WebViewClient {
 
   protected WebResourceResponse noopWebResourceResponse() throws IOException {
     return new WebResourceResponse("application/JavaScript", null, new ByteArrayInputStream(new byte[0]));
-
   }
 
   public class MimeHeaders {

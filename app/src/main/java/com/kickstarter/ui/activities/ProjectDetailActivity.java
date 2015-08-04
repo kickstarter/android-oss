@@ -110,9 +110,11 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     pledged.setText(money.formattedCurrency(project.pledged(), project.currencyOptions()));
     if ( project.video() != null ) {
       loadVideo(project.video(), video);
+      playButton.setVisibility(View.VISIBLE);
     }
     else {
       Picasso.with(this).load(project.photo().full()).into(photo);
+      playButton.setVisibility(View.GONE);
     }
 
     // Creator information

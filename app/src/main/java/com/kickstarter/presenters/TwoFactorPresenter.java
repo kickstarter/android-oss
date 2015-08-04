@@ -30,7 +30,7 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
   @Inject ApiClient client;
   private final PublishSubject<Void> login = PublishSubject.create();
   private final PublishSubject<Void> resend = PublishSubject.create();
-  private boolean forwardFlag = false;
+  private boolean forward = false;
 
   @Override
   protected void onCreate(final Context context, final Bundle savedInstanceState) {
@@ -47,7 +47,7 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
       .map(v -> v.text().toString());
 
     final Observable<Boolean> isValid = code
-      .map(c -> TwoFactorPresenter.isValid(c));
+      .map(TwoFactorPresenter::isValid);
 
     final Observable<LoginCredentials> submit = login
       .withLatestFrom(code, (s, c) -> c)
@@ -62,8 +62,8 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
     subscribeTo(isValid, valid -> view().setLoginEnabled(valid));
   }
 
-  public void takeForwardFlag(final boolean forwardFlag) {
-    this.forwardFlag = forwardFlag;
+  public void takeForward(final boolean forward) {
+    this.forward = forward;
   }
 
   private static boolean isValid(final String code) {
@@ -82,15 +82,7 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
     currentUser.set(envelope.user, envelope.access_token);
 
     if (hasView()) {
-      if (forwardFlag) {
-        Timber.d("Success, finishing activity");
-        view().setResult(Activity.RESULT_OK);
-        view().finish();
-      } else {
-        final Intent intent = new Intent(view(), DiscoveryActivity.class)
-          .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        view().startActivity(intent);
-      }
+      view().onSuccess(forward);
     }
   }
 

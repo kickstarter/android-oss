@@ -170,9 +170,7 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
   }
 
   public void shareOnClick(final View v) {
-    final Intent shareIntent = new Intent(Intent.ACTION_SEND);
-    shareIntent.setType("text/plain");  // todo: enable content sharing
-    startActivity(Intent.createChooser(shareIntent, "Share via"));
+    presenter.takeShareClick();
   }
 
   public void backProjectButtonOnClick(final View v) {

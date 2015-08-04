@@ -25,6 +25,7 @@ import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Video;
 import com.kickstarter.presenters.ProjectDetailPresenter;
+import com.kickstarter.ui.adapters.RewardListAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
@@ -38,6 +39,9 @@ import timber.log.Timber;
 
 @RequiresPresenter(ProjectDetailPresenter.class)
 public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> {
+  RewardListAdapter rewardListAdapter;
+  @InjectView(R.id.rewards_recycler_view) RecyclerView rewardsRecyclerView;
+
   protected @InjectView(R.id.backers_count) TextView backersCount;
   protected @InjectView(R.id.blurb) TextView blurb;
   protected @InjectView(R.id.category) TextView category;

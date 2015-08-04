@@ -13,27 +13,18 @@ import com.kickstarter.ui.activities.LoginToutActivity;
 import timber.log.Timber;
 
 public class LoginToutPresenter extends Presenter<LoginToutActivity> {
-  private boolean forwardFlag = false;
+  private boolean forward = false;
 
   @Override
   protected void onCreate(final Context context, Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
   }
 
-  public void takeForwardFlag(final boolean forwardFlag) {
-    this.forwardFlag = forwardFlag;
+  public void takeForward(final boolean forward) {
+    this.forward = forward;
   }
 
   public void takeLoginButtonClick() {
-    final Intent intent = new Intent(view(), LoginActivity.class);
-    if (forwardFlag) {
-      Timber.d("Starting login activity with forward flag");
-      intent.putExtra("forward", true);
-      view().startActivityForResult(intent,
-        ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_LOGIN_ACTIVITY_FORWARD);
-    } else {
-      view().startActivity(intent);
-    }
-    view().overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+    view().startLoginActivity(forward);
   }
 }

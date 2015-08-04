@@ -133,4 +133,7 @@
     <item>Technology</item>
     <item>Theater</item>
   </string-array>
+
+  <!-- Intent strings -->
+  <string name="intent_forward">com.kickstarter.kickstarter.intent_forward</string>
 </resources>

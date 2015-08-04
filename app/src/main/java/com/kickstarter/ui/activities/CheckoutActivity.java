@@ -37,27 +37,33 @@ public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
   @Override
   public void onBackPressed() {
     super.onBackPressed();
-    Timber.d("onBackPressed");
 
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
   public void onSignupUriRequest() {
-    Timber.d("onSignupUriRequest");
+    presenter.takeSignupUriRequest();
+  }
+
+  public void startLoginToutActivity() {
     final Intent intent = new Intent(this, LoginToutActivity.class)
-      .putExtra("forward", true);
+      .putExtra(getString(R.string.intent_forward), true);
     startActivityForResult(intent,
       ActivityRequestCodes.CHECKOUT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
   }
 
   public void onCheckoutThanksUriRequest() {
-    Timber.d("onCheckoutThanksUriRequest");
     presenter.takeCheckoutThanksUriRequest();
+  }
+
+  public void startThanksActivity(final Project project) {
+    final Intent intent = new Intent(this, ThanksActivity.class)
+      .putExtra("project", project);
+    startActivity(intent);
   }
 
   @Override
   protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
-    Timber.d("onActivityResult, requestCode is " + requestCode);
     if (requestCode != ActivityRequestCodes.CHECKOUT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED) {
       return;
     }

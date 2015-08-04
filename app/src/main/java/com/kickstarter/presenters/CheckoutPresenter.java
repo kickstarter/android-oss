@@ -40,10 +40,12 @@ public class CheckoutPresenter extends Presenter<CheckoutActivity> {
     loginSuccess.onNext(null);
   }
 
+  public void takeSignupUriRequest() {
+    view().startLoginToutActivity();
+  }
+
   public void takeCheckoutThanksUriRequest() {
-    final Intent intent = new Intent(view(), ThanksActivity.class)
-      .putExtra("project", project);
-    view().startActivity(intent);
+    view().startThanksActivity(project);
   }
 
   private void checkoutNext(final CheckoutActivity activity) {

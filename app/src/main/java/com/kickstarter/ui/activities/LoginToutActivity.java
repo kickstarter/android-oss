@@ -31,9 +31,7 @@ public class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
     setContentView(R.layout.login_tout_layout);
     ButterKnife.inject(this);
 
-    final Intent intent = getIntent();
-    Timber.d("onCreate, forward is " + intent.getBooleanExtra("forward", false));
-    presenter.takeForwardFlag(intent.getBooleanExtra("forward", false));
+    presenter.takeForward(getIntent().getBooleanExtra(getString(R.string.intent_forward), false));
   }
 
   @Override
@@ -62,9 +60,20 @@ public class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
     presenter.takeLoginButtonClick();
   }
 
+  public void startLoginActivity(final boolean forward) {
+    final Intent intent = new Intent(this, LoginActivity.class);
+    if (forward) {
+      intent.putExtra(getString(R.string.intent_forward), true);
+      startActivityForResult(intent,
+        ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_LOGIN_ACTIVITY_FORWARD);
+    } else {
+      startActivity(intent);
+    }
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
   @Override
   protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
-    Timber.d("onActivityResult, requestCode is " + requestCode);
     if (requestCode != ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_LOGIN_ACTIVITY_FORWARD) {
       return;
     }

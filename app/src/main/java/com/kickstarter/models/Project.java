@@ -68,7 +68,7 @@ public class Project implements Parcelable {
     public Web web() {
       return web;
     }
-    
+
     @ParcelablePlease
     public static class Web implements Parcelable {
       public String project = null;

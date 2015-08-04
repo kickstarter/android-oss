@@ -22,7 +22,6 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-
 public class ProjectListViewHolder extends RecyclerView.ViewHolder {
   protected @InjectView(R.id.backers_count) TextView backers_count;
   protected @InjectView(R.id.category) TextView category;

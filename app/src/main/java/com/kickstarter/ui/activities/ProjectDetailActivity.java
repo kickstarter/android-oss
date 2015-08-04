@@ -3,6 +3,8 @@ package com.kickstarter.ui.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -73,6 +75,10 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     final Intent intent = getIntent();
     final Project project = intent.getExtras().getParcelable("project");
     presenter.takeProject(project);
+
+    rewardsRecyclerView.setHasFixedSize(true);
+    rewardsRecyclerView.getLayoutParams().height = 2000; // todo: WIP
+    rewardsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
   }
 
   public void show(final Project project) {
@@ -115,6 +121,11 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     fundMessage.setText(String.format(getString(R.string.This_project_will_only_be_funded_if),
       money.formattedCurrency(project.goal(), project.currencyOptions(), true),
       project.deadline().toString(DateTimeUtils.writtenDeadline())));
+
+    if (project.rewards() != null) {
+      rewardListAdapter = new RewardListAdapter(project.rewards());
+      rewardsRecyclerView.setAdapter(rewardListAdapter);  // todo
+    }
   }
 
   // Opens the URL parameter in a KickstarterWebView

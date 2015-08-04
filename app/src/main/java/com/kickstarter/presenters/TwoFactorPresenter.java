@@ -1,8 +1,6 @@
 package com.kickstarter.presenters;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Pair;
 
@@ -14,7 +12,6 @@ import com.kickstarter.libs.Presenter;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.ApiError;
 import com.kickstarter.services.ApiResponses.AccessTokenEnvelope;
-import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.TwoFactorActivity;
 
 import javax.inject.Inject;
@@ -23,7 +20,6 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.android.widget.WidgetObservable;
 import rx.subjects.PublishSubject;
-import timber.log.Timber;
 
 public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
   @Inject CurrentUser currentUser;

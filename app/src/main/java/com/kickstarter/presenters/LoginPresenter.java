@@ -94,7 +94,7 @@ public class LoginPresenter extends Presenter<LoginActivity> {
         switch (api_error.errorEnvelope().ksrCode()) {
           case TFA_REQUIRED:
           case TFA_FAILED:
-            startTwoFactorActivity();
+            view().startTwoFactorActivity(forward);
             break;
           case INVALID_XAUTH_LOGIN:
             displayError(R.string.Login_does_not_match_any_of_our_records);
@@ -106,9 +106,5 @@ public class LoginPresenter extends Presenter<LoginActivity> {
 
       }
     }.handleError();
-  }
-
-  private void startTwoFactorActivity() {
-    view().startTwoFactorActivity(forward);
   }
 }

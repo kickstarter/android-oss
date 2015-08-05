@@ -120,10 +120,12 @@
             android:textColor="@color/text_dark" />
 
           <Button
+            android:background="@drawable/button_share"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:text="@string/Share"
+            android:textAllCaps="false"
             android:onClick="shareOnClick" />
         </RelativeLayout>
 
@@ -156,5 +158,8 @@
     android:layout_marginTop="@dimen/keyline_1"
     android:onClick="backProjectButtonOnClick"
     android:layout_alignParentBottom="true"
+    android:background="@drawable/button_green"
+    android:textColor="@color/white"
+    android:textAllCaps="false"
     android:text="@string/Back_this_project" />
 </RelativeLayout>

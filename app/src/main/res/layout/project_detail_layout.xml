@@ -116,16 +116,17 @@
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/card_padding_action_half"
             android:layout_centerInParent="true"
-            android:textColor="@color/text_dark" />
+            android:textColor="@color/text_dark"/>
 
+          <!-- todo: set correct button size-->
           <Button
             android:background="@drawable/button_share"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
             android:layout_alignParentRight="true"
             android:text="@string/Share"
             android:textAllCaps="false"
-            android:onClick="shareOnClick" />
+            android:onClick="shareOnClick"/>
         </RelativeLayout>
 
         <ProgressBar
@@ -151,14 +152,51 @@
     </LinearLayout>
   </ScrollView>
 
-  <Button
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/keyline_1"
-    android:onClick="backProjectButtonOnClick"
+  <RelativeLayout
     android:layout_alignParentBottom="true"
-    android:background="@drawable/button_green"
-    android:textColor="@color/white"
-    android:textAllCaps="false"
-    android:text="@string/Back_this_project" />
+    android:elevation="2dp"
+    android:background="@color/white"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+
+    <com.kickstarter.ui.views.IconTextView
+      icon_text_view:iconType="material"
+      android:id="@+id/exit_icon"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_vertical"
+      android:paddingLeft="@dimen/keyline_1"
+      android:text="close"
+      android:layout_alignParentLeft="true"
+      android:layout_alignParentStart="true"
+      android:layout_centerVertical="true"
+      android:textColor="@drawable/text_selector"
+      android:onClick="closeProjectClick"/>
+
+    <!-- todo: set correct button size-->
+    <Button
+      android:layout_width="150dp"
+      android:layout_height="30dp"
+      android:layout_centerInParent="true"
+      android:layout_marginTop="@dimen/keyline_1"
+      android:onClick="backProjectButtonOnClick"
+      android:background="@drawable/button_green"
+      android:textColor="@color/white"
+      android:textAllCaps="false"
+      android:text="@string/Back_this_project"/>
+
+    <com.kickstarter.ui.views.IconTextView
+      icon_text_view:iconType="material"
+      android:id="@+id/star_icon"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_vertical"
+      android:paddingRight="@dimen/keyline_1"
+      android:text="star"
+      android:layout_alignParentRight="true"
+      android:layout_alignParentEnd="true"
+      android:layout_centerVertical="true"
+      android:textColor="@drawable/text_selector"
+      android:onClick="starProjectClick"/>
+  </RelativeLayout>
 </RelativeLayout>

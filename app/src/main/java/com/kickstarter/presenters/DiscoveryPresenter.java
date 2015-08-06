@@ -42,7 +42,6 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
       .toBlocking().last(); // TODO: Don't block
 
     addSubscription(viewSubject
-      .filter(v -> v != null)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(v -> v.onItemsNext(projects)));
   }

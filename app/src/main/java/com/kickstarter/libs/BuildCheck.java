@@ -11,7 +11,6 @@ public interface BuildCheck {
 
   BuildCheck DEFAULT = (presenter, client) -> {
     final Subscription subscription = RxUtils.combineLatestPair(client.pingBeta(), presenter.viewSubject())
-      .filter(v -> v.second != null)
       .filter(v -> v.first.newerBuildAvailable())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(v -> v.second.showBuildAlert(v.first));

@@ -116,20 +116,29 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     });
   }
 
-  public void shareOnClick(final View v) {
-    final Intent shareIntent = new Intent(Intent.ACTION_SEND);
-    shareIntent.setType("text/plain");  // todo: enable content sharing
-    startActivity(Intent.createChooser(shareIntent, "Share via"));
-  }
-
   public void backProjectButtonOnClick(final View v) {
     Timber.d("backProjectButtonOnClick");
     presenter.takeBackProjectClick();
   }
 
-  public void blurbOnClick(final View v) {
-    final Intent intent = new Intent(v.getContext(), DisplayWebViewActivity.class);
-//    intent.putExtra("url", url);
+  public void onBlurbClick(final View v) {
+    presenter.takeBlurbClick();
+  }
+
+  public void onCreatorNameClick(final View v) {
+    presenter.takeCreatorNameClick();
+  }
+
+  public void showProjectDescription(final Project project) {
+    final Intent intent = new Intent(this, DisplayWebViewActivity.class);
+    intent.putExtra("url", project.urls().web().description());
+    startActivity(intent);
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  public void showCreatorBio(final Project project) {
+    final Intent intent = new Intent(this, DisplayWebViewActivity.class);
+    intent.putExtra("url", project.urls().web().creatorBio());
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }

@@ -34,14 +34,16 @@
       <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/keyline_1_half">
+        android:layout_marginBottom="@dimen/keyline_1_half" >
 
         <TextView
           android:id="@+id/creator_name"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-          android:textColor="@color/text_dark" />
+          android:textColor="@color/text_dark"
+          android:clickable="true"
+          android:onClick="onCreatorNameClick" />
       </LinearLayout>
 
       <com.kickstarter.ui.views.TiemposTextView
@@ -52,7 +54,7 @@
         android:layout_marginBottom="@dimen/keyline_1_half"
         android:textSize="17sp"
         android:textColor="@color/text_dark"
-        android:onClick="blurbOnClick"
+        android:onClick="onBlurbClick"
         android:clickable="true"
         android:paddingBottom="@dimen/keyline_1_half" />
 

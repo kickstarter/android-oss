@@ -31,7 +31,7 @@ public class KickstarterWebView extends WebView {
     getSettings().setJavaScriptEnabled(true);
     getSettings().setAllowFileAccess(false);
 
-    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+    if (android.os.Build.VERSION.SDK_INT >= 19) {
       setWebContentsDebuggingEnabled(true);
     }
 

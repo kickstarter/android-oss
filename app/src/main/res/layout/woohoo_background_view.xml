@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- TODO: Static background -->
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/woohoo_background"
+  android:layout_width="350dp"
+  android:layout_height="150dp"
+  android:background="@drawable/woohoo"
+  android:alpha="0"
+  android:layout_centerHorizontal="true"
+  android:layout_centerVertical="true"
+  android:orientation="horizontal" />

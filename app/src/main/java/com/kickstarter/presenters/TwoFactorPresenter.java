@@ -1,7 +1,6 @@
 package com.kickstarter.presenters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Pair;
 
@@ -13,7 +12,6 @@ import com.kickstarter.libs.Presenter;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.ApiError;
 import com.kickstarter.services.ApiResponses.AccessTokenEnvelope;
-import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.TwoFactorActivity;
 
 import javax.inject.Inject;
@@ -28,6 +26,7 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
   @Inject ApiClient client;
   private final PublishSubject<Void> login = PublishSubject.create();
   private final PublishSubject<Void> resend = PublishSubject.create();
+  private boolean forward = false;
 
   @Override
   protected void onCreate(final Context context, final Bundle savedInstanceState) {
@@ -39,12 +38,11 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
     final Observable<Pair<String, String>> emailAndPassword = Observable.just(Pair.create(email, password));
 
     final Observable<String> code = viewSubject
-      .filter(v -> v != null)
       .flatMap(v -> WidgetObservable.text(v.code))
       .map(v -> v.text().toString());
 
     final Observable<Boolean> isValid = code
-      .map(c -> TwoFactorPresenter.isValid(c));
+      .map(TwoFactorPresenter::isValid);
 
     final Observable<LoginCredentials> submit = login
       .withLatestFrom(code, (s, c) -> c)
@@ -57,6 +55,10 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
     subscribeTo(r, this::resendSubmit);
     subscribeTo(submit, this::submit);
     subscribeTo(isValid, valid -> view().setLoginEnabled(valid));
+  }
+
+  public void takeForward(final boolean forward) {
+    this.forward = forward;
   }
 
   private static boolean isValid(final String code) {
@@ -72,11 +74,10 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
   }
 
   private void success(final AccessTokenEnvelope envelope) {
+    currentUser.set(envelope.user, envelope.access_token);
+
     if (hasView()) {
-      currentUser.set(envelope.user, envelope.access_token);
-      final Intent intent = new Intent(view(), DiscoveryActivity.class)
-        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-      view().startActivity(intent);
+      view().onSuccess(forward);
     }
   }
 

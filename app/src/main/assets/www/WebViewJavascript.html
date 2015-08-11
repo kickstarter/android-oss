@@ -1,0 +1,19 @@
+<script language="JavaScript">
+  HTMLFormElement.prototype._submit = HTMLFormElement.prototype.submit;
+  HTMLFormElement.prototype.submit = androidInterceptSubmit;
+
+  window.addEventListener('submit', function(e) {
+    androidInterceptSubmit(e);
+  }, true);
+
+  function androidInterceptSubmit(e) {
+    var form = e ? e.target : this,
+      $form = $(form);
+
+    WebViewJavascriptInterface.setFormContents($form.serialize(),
+      form.attributes['method'] === undefined ? null : form.attributes['method'].value,
+      form.attributes['enctype'] === undefined ? null : form.attributes['enctype'].value);
+
+    form._submit();
+  }
+</script>

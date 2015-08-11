@@ -112,7 +112,7 @@
     When you back a project or follow a friend, their activity will show up here.
   </string>
   <string name="Woo_hoo">Woo-hoo!</string>
-  <string name="You_just_backed">You just backed %1$s. Share this project with friends to help it along!</string>
+  <string name="You_just_backed">You just backed &lt;b>%1$s&lt;/b>. Share this project with friends to help it along!</string>
   <string name="You_launched_a_project">You launched a project: %1$s</string>
 
   <string-array name="spinner_categories_array">

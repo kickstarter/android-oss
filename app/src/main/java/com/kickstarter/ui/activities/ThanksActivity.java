@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
 
@@ -42,8 +43,7 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
   }
 
   public void show(final Project project) {
-    // TODO: Bold project name
-    backedProject.setText(getString(R.string.You_just_backed, project.name()));
+    backedProject.setText(Html.fromHtml(getString(R.string.You_just_backed, project.name())));
   }
 
   public void showRecommendedProjects(final List<Project> projects) {

@@ -82,6 +82,7 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
   }
 
   public void show(final Project project) {
+    // todo: replace with strings.xml interpolation + observables
     final ClickableSpan readMoreClick = clickSpanToWebView(project.urls().web().description());
     final String readMoreString = getString(R.string.Read_more);
     final SpannableString blurbSpan = new SpannableString(project.blurb() + " " + readMoreString);

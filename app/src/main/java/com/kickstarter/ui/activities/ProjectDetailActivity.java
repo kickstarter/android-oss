@@ -149,22 +149,6 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     };
   }
 
-  @Override
-  public void onBackPressed() {
-    super.onBackPressed();
-    Timber.d("onBackPressed %s", this.toString());
-    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
-  }
-
-  public void closeProjectClick(View v) {
-    super.onBackPressed();
-    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
-  }
-
-  // todo
-  public void starProjectClick(View v) {
-  }
-
   public void loadVideo(Video video, VideoView videoView) {
     Picasso.with(this).load(video.frame()).into(photo); // todo: make this loading smoother
     final Uri video_uri = Uri.parse(video.base());
@@ -178,12 +162,40 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     });
   }
 
-  public void shareOnClick(final View v) {
-    presenter.takeShareClick();
+  @Override
+  public void onBackPressed() {
+    super.onBackPressed();
+    Timber.d("onBackPressed %s", this.toString());
+    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
   public void backProjectButtonOnClick(final View v) {
     Timber.d("backProjectButtonOnClick");
     presenter.takeBackProjectClick();
+  }
+
+  public void campaignClick(final View v) {
+
+  }
+
+  public void closeProjectClick(final View v) {
+    super.onBackPressed();
+    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
+  }
+
+  public void commentsClick(final View v) {
+
+  }
+
+  // todo
+  public void starProjectClick(final View v) {
+  }
+
+  public void shareOnClick(final View v) {
+    presenter.takeShareClick();
+  }
+
+  public void updatesClick(final View v) {
+
   }
 }

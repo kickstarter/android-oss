@@ -7,12 +7,12 @@
 
   <ScrollView
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent" >
 
     <LinearLayout
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
-      android:orientation="vertical">
+      android:orientation="vertical" >
 
       <include android:id="@+id/video"
         layout="@layout/project_media_header" />
@@ -24,7 +24,7 @@
         android:paddingTop="@dimen/keyline_1_half"
         android:paddingLeft="@dimen/keyline_1"
         android:paddingRight="@dimen/keyline_1"
-        android:orientation="vertical">
+        android:orientation="vertical" >
 
         <TextView
           android:id="@+id/project_name"
@@ -36,7 +36,7 @@
         <LinearLayout
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/keyline_1_half">
+          android:layout_marginBottom="@dimen/keyline_1_half" >
 
           <TextView
             android:layout_width="wrap_content"
@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-            android:textColor="@color/text_dark" />
+            android:textColor="@drawable/text_selector" />
         </LinearLayout>
 
         <com.kickstarter.ui.views.TiemposTextView
@@ -61,14 +61,14 @@
           android:layout_marginTop="@dimen/keyline_1_half"
           android:layout_marginBottom="@dimen/keyline_1_half"
           android:textSize="17sp"
-          android:textColor="@color/text_dark"
+          android:textColor="@drawable/text_selector"
           android:paddingBottom="@dimen/keyline_1_half" />
 
         <RelativeLayout
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:orientation="horizontal"
-          android:paddingBottom="@dimen/keyline_1_half">
+          android:paddingBottom="@dimen/keyline_1_half" >
 
           <com.kickstarter.ui.views.IconTextView
             icon_text_view:iconType="material"
@@ -116,7 +116,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/card_padding_action_half"
             android:layout_centerInParent="true"
-            android:textColor="@color/text_dark"/>
+            android:textColor="@color/text_dark" />
 
           <!-- todo: set correct button size-->
           <Button
@@ -126,7 +126,7 @@
             android:layout_alignParentRight="true"
             android:text="@string/Share"
             android:textAllCaps="false"
-            android:onClick="shareOnClick"/>
+            android:onClick="shareOnClick" />
         </RelativeLayout>
 
         <ProgressBar
@@ -147,17 +147,16 @@
       <android.support.v7.widget.RecyclerView
         android:id="@+id/rewards_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-      </android.support.v7.widget.RecyclerView>
+        android:layout_height="wrap_content" />
     </LinearLayout>
   </ScrollView>
 
   <RelativeLayout
     android:layout_alignParentBottom="true"
     android:elevation="2dp"
-    android:background="@color/white"
+    android:background="@color/md_white_1000"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content" >
 
     <com.kickstarter.ui.views.IconTextView
       icon_text_view:iconType="material"
@@ -165,25 +164,26 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="center_vertical"
+      android:textSize="@dimen/abc_text_size_large_material"
       android:paddingLeft="@dimen/keyline_1"
-      android:text="close"
+      android:text="share"
       android:layout_alignParentLeft="true"
       android:layout_alignParentStart="true"
       android:layout_centerVertical="true"
       android:textColor="@drawable/text_selector"
-      android:onClick="closeProjectClick"/>
+      android:onClick="shareOnClick" />
 
     <!-- todo: set correct button size-->
     <Button
-      android:layout_width="150dp"
-      android:layout_height="30dp"
+      android:layout_width="175dp"
+      android:layout_height="35dp"
       android:layout_centerInParent="true"
       android:layout_marginTop="@dimen/keyline_1"
       android:onClick="backProjectButtonOnClick"
       android:background="@drawable/button_green"
       android:textColor="@color/white"
       android:textAllCaps="false"
-      android:text="@string/Back_this_project"/>
+      android:text="@string/Back_this_project" />
 
     <com.kickstarter.ui.views.IconTextView
       icon_text_view:iconType="material"
@@ -191,12 +191,13 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="center_vertical"
+      android:textSize="@dimen/abc_text_size_large_material"
       android:paddingRight="@dimen/keyline_1"
       android:text="star"
       android:layout_alignParentRight="true"
       android:layout_alignParentEnd="true"
       android:layout_centerVertical="true"
       android:textColor="@drawable/text_selector"
-      android:onClick="starProjectClick"/>
+      android:onClick="starProjectClick" />
   </RelativeLayout>
 </RelativeLayout>

@@ -2,9 +2,11 @@ package com.kickstarter.ui.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
 import com.kickstarter.KsrApplication;
+import com.kickstarter.libs.WebViewJavascriptInterface;
 import com.kickstarter.services.KickstarterWebViewClient;
 
 import javax.inject.Inject;
@@ -25,6 +27,14 @@ public class KickstarterWebView extends WebView {
 
     ((KsrApplication) context.getApplicationContext()).component().inject(this);
     setWebViewClient(client);
+    setWebChromeClient(new WebChromeClient());
     getSettings().setJavaScriptEnabled(true);
+    getSettings().setAllowFileAccess(false);
+
+    if (android.os.Build.VERSION.SDK_INT >= 19) {
+      setWebContentsDebuggingEnabled(true);
+    }
+
+    addJavascriptInterface(new WebViewJavascriptInterface(this.client), "WebViewJavascriptInterface");
   }
 }

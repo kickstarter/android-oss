@@ -19,6 +19,7 @@ import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.EnumAdapter;
+import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.preferences.StringPreference;
 import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
 
@@ -33,6 +34,7 @@ public class DebugDrawer extends FrameLayout {
   @Inject @ApiEndpointPreference StringPreference apiEndpointPreference;
   @Inject Build build;
   @Inject CurrentUser currentUser;
+  @Inject Logout logout;
 
   @InjectView(R.id.build_date) TextView buildDate;
   @InjectView(R.id.endpoint_spinner) Spinner endpointSpinner;
@@ -128,7 +130,7 @@ public class DebugDrawer extends FrameLayout {
 
   private void setEndpointAndRelaunch(final String endpoint) {
     apiEndpointPreference.set(endpoint);
-    currentUser.unset();
+    logout.execute(getContext());
     ProcessPhoenix.triggerRebirth(getContext());
   }
 }

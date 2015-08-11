@@ -8,11 +8,22 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 @ParcelablePlease
 public class Photo implements Parcelable {
   String full = null;
+  String ed = null;
+  String med = null;
   String little = null;
   String small = null;
+  String thumb = null;
 
   public String full() {
     return full;
+  }
+
+  public String ed() {
+    return ed;
+  }
+
+  public String med() {
+    return med;
   }
 
   public String little() {
@@ -21,6 +32,10 @@ public class Photo implements Parcelable {
 
   public String small() {
     return small;
+  }
+
+  public String thumb() {
+    return thumb;
   }
 
   @Override

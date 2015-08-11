@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -32,6 +33,7 @@ public class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
     String email = intent.getExtras().getString("email");
     String password = intent.getExtras().getString("password");
     presenter.takeEmailAndPassword(email, password);
+    presenter.takeForward(intent.getBooleanExtra(getString(R.string.intent_forward), false));
   }
 
   public void setLoginEnabled(final boolean enabled) {
@@ -46,5 +48,17 @@ public class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
   public void loginButtonOnClick(final View v) {
     Timber.d("loginButtonOnClick");
     presenter.login();
+  }
+
+  public void onSuccess(final boolean forward) {
+    if (forward) {
+      setResult(Activity.RESULT_OK);
+      finish();
+    } else {
+      final Intent intent = new Intent(this, DiscoveryActivity.class)
+        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+      startActivity(intent);
+    }
+
   }
 }

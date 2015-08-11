@@ -22,7 +22,9 @@
     By signing up you agree to our terms of use, privacy policy, and cookie policy. We’ll never post
     anything without your permission.
   </string>
+  <string name="Campaign">Campaign</string>
   <string name="Changelog">Changelog</string>
+  <string name="Comments">Comments</string>
   <string name="creator_launched_a_project">%1$s launched a project: %2$s</string>
   <string name="Created_by">Created by</string>
   <string name="days">days</string>
@@ -98,6 +100,7 @@
   <string name="Unable_to_connect">Unable to connect</string>
   <string name="Unable_to_login">Unable to login</string>
   <string name="Update_sequence">Update #%1$d</string>
+  <string name="Updates">Updates</string>
   <string name="Use_your_email_address">Use your email address:</string>
   <string name="username_is_following_you">%1$s is following you!</string>
   <string name="Variant">Variant</string>

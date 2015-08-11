@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.Logout;
 import com.kickstarter.models.User;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
@@ -32,6 +33,7 @@ public class DiscoveryToolbar extends Toolbar {
   @InjectView(R.id.login_button) TextView login_button;
   @InjectView(R.id.toolbar) Toolbar toolbar;
   @Inject CurrentUser currentUser;
+  @Inject Logout logout;
 
   public DiscoveryToolbar(final Context context) {
     super(context);
@@ -78,7 +80,11 @@ public class DiscoveryToolbar extends Toolbar {
         popup.setOnMenuItemClickListener(item -> {
           switch (item.getItemId()) {
             case R.id.logout:
-              logout(v);
+              final Context context = v.getContext();
+              logout.execute(context);
+              final Intent intent = new Intent(context, DiscoveryActivity.class)
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+              context.startActivity(intent);
               break;
           }
 
@@ -122,12 +128,5 @@ public class DiscoveryToolbar extends Toolbar {
       public void onNothingSelected(final AdapterView<?> adapterView) {
       }
     });
-  }
-
-  protected void logout(final View v) {
-    currentUser.unset();
-    final Intent intent = new Intent(getContext(), DiscoveryActivity.class)
-      .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-    v.getContext().startActivity(intent);
   }
 }

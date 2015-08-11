@@ -12,7 +12,7 @@
     icon_text_view:iconType="material"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="flash"
+    android:text="flash_on"
     android:textSize="@dimen/display_4"
     android:paddingTop="@dimen/keyline_2_half"
     android:paddingBottom="@dimen/keyline_1_half" />

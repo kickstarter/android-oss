@@ -116,6 +116,7 @@ public class DiscoveryParams {
 
   public ImmutableMap<String, String> queryParams() {
     return ImmutableMap.<String, String>builder()
+      .put("category_id", String.valueOf(category != null ? category.id() : ""))
       .put("staff_picks", String.valueOf(staff_picks))
       .put("starred", String.valueOf(starred))
       .put("backed", String.valueOf(backed))

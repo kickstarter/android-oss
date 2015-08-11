@@ -28,6 +28,7 @@ import com.kickstarter.models.Project;
 import com.kickstarter.models.Video;
 import com.kickstarter.presenters.ProjectDetailPresenter;
 import com.kickstarter.ui.adapters.RewardListAdapter;
+import com.kickstarter.ui.views.IconTextView;
 import com.squareup.picasso.Picasso;
 
 import java.text.NumberFormat;
@@ -56,7 +57,7 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
   protected @InjectView(R.id.percentage_funded) ProgressBar percentageFunded;
   protected @InjectView(R.id.project_detail_photo) ImageView photo;
   protected @InjectView(R.id.project_detail_video) VideoView video;
-  protected @InjectView(R.id.play_button_overlay) ImageView playButton;
+  protected @InjectView(R.id.play_button_overlay) IconTextView playButton;
   protected @InjectView(R.id.pledged) TextView pledged;
   protected @InjectView(R.id.avatar) ImageView avatar;
   protected @InjectView(R.id.avatar_name) TextView avatarName;
@@ -149,6 +150,7 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     };
   }
 
+  // todo: handle this with the presenter
   public void loadVideo(Video video, VideoView videoView) {
     Picasso.with(this).load(video.frame()).into(photo); // todo: make this loading smoother
     final Uri video_uri = Uri.parse(video.base());

@@ -6,6 +6,7 @@ import com.kickstarter.presenters.ActivityFeedPresenter;
 import com.kickstarter.presenters.DiscoveryPresenter;
 import com.kickstarter.presenters.LoginPresenter;
 import com.kickstarter.presenters.ProjectDetailPresenter;
+import com.kickstarter.presenters.ThanksPresenter;
 import com.kickstarter.presenters.TwoFactorPresenter;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
@@ -35,6 +36,7 @@ public interface ApplicationGraph {
   void inject(ProjectListViewHolder viewHolder);
   void inject(ProjectStateChangedPositiveViewHolder viewHolder);
   void inject(RewardListViewHolder viewHolder);
+  void inject(ThanksPresenter presenter);
   void inject(TiemposTextView view);
   void inject(TwoFactorPresenter presenter);
 }

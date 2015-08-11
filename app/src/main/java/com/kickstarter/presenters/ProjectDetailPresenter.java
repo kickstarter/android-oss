@@ -16,10 +16,8 @@ import com.kickstarter.ui.activities.ProjectDetailActivity;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
-import timber.log.Timber;
 
 public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
   @Inject ApiClient client;
@@ -33,7 +31,7 @@ public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
   }
 
   public void takeProject(final Project project) {
-    final Observable<Project> latestProject = Observable.merge(Observable.just(project), client.fetchProject(project));
+    final Observable<Project> latestProject = client.fetchProject(project).startWith(project);
 
     addSubscription(RxUtils.combineLatestPair(latestProject, viewSubject)
       .observeOn(AndroidSchedulers.mainThread())

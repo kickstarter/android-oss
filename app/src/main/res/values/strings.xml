@@ -30,6 +30,7 @@
   <string name="days">days</string>
   <string name="Development_settings">Development Settings</string>
   <string name="Discover_projects">Discover projects</string>
+  <string name="Done">Done</string>
   <string name="Download_build">Download Build</string>
   <string name="Email_address">Email address</string>
   <string name="Endpoint">Endpoint</string>
@@ -57,12 +58,15 @@
   <string name="funded">funded</string>
   <string name="goal">goal</string>
   <string name="Help">Help</string>
+  <string name="I_just_backed_project_on_Kickstarter">I just backed %1$s on Kickstarter: %2$s</string>
   <string name="Instructions">Instructions</string>
   <string name="Launched">Launched</string>
   <string name="Log_in">Log in</string>
   <string name="Log_out">Log out</string>
   <string name="Logged_out">Logged out</string>
   <string name="Login_does_not_match_any_of_our_records">Login does not match any of our records.</string>
+  <string name="Looking_for_more_projects">Looking for more projects? Check these out.</string>
+  <string name="More">More</string>
   <string name="Network">Network</string>
   <string name="Nice_to_see_you_again">Nice to see you again.</string>
   <string name="Open_downloads_folder">Open Downloads folder</string>
@@ -87,6 +91,7 @@
   <string name="Resend">Resend</string>
   <string name="Sha">SHA</string>
   <string name="Share">Share</string>
+  <string name="Share_this_project">Share this project</string>
   <string name="Sign_up">Sign up</string>
   <string name="Sign_up_or_log_in_with_your_Facebook_account">
     Sign up or log in with your Facebook account or email address below:
@@ -110,6 +115,8 @@
   <string name="When_you_back_a_project_or_follow_a_friend">
     When you back a project or follow a friend, their activity will show up here.
   </string>
+  <string name="Woo_hoo">Woo-hoo!</string>
+  <string name="You_just_backed">You just backed &lt;b>%1$s&lt;/b>. Share this project with friends to help it along!</string>
   <string name="You_launched_a_project">You launched a project: %1$s</string>
 
   <string-array name="spinner_categories_array">
@@ -132,4 +139,7 @@
     <item>Technology</item>
     <item>Theater</item>
   </string-array>
+
+  <!-- Intent strings -->
+  <string name="intent_forward">com.kickstarter.kickstarter.intent_forward</string>
 </resources>

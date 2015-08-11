@@ -36,11 +36,9 @@ public class LoginPresenter extends Presenter<LoginActivity> {
     ((KsrApplication) context.getApplicationContext()).component().inject(this);
 
     final Observable<OnTextChangeEvent> email = viewSubject
-      .filter(v -> v != null)
       .flatMap(v -> WidgetObservable.text(v.email));
 
     final Observable<OnTextChangeEvent> password = viewSubject
-      .filter(v -> v != null)
       .flatMap(v -> WidgetObservable.text(v.password));
 
     final Observable<Pair<String, String>> emailAndPassword =

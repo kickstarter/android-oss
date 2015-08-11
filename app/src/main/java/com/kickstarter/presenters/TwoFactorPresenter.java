@@ -38,7 +38,6 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
     final Observable<Pair<String, String>> emailAndPassword = Observable.just(Pair.create(email, password));
 
     final Observable<String> code = viewSubject
-      .filter(v -> v != null)
       .flatMap(v -> WidgetObservable.text(v.code))
       .map(v -> v.text().toString());
 

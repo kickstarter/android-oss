@@ -35,6 +35,7 @@
   <string name="Enter_code">Enter code</string>
   <string name="Enter_the_base_url_of_the_api">Enter the base URL of the API you’d like to use.\n\n
     e.g.: https://api-christopher.***REMOVED***</string>
+  <string name="Estimated_delivery">Estimated Delivery</string>
   <string name="Follow">Follow</string>
   <string name="Forgot_your_password">Forgot your password?</string>
   <string name="friend_name_backed_art_project">%1$s backed an Art project</string>
@@ -84,6 +85,7 @@
   <string name="project_was_successfully_funded">%1$s was successfully funded!</string>
   <string name="project_resumed">%1$s resumed.</string>
   <string name="project_was_suspended">%1$s was suspended.</string>
+  <string name="Read_more">Read\u00A0more</string>
   <string name="Resend">Resend</string>
   <string name="Sha">SHA</string>
   <string name="Share_this_project">Share this project</string>

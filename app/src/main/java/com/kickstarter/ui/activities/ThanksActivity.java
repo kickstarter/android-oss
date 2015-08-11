@@ -7,7 +7,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kickstarter.R;
@@ -21,13 +20,12 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import timber.log.Timber;
 
 @RequiresPresenter(ThanksPresenter.class)
 public class ThanksActivity extends BaseActivity<ThanksPresenter> {
   @InjectView(R.id.backed_project) TextView backedProject;
   @InjectView(R.id.recommended_projects_recycler_view) RecyclerView recommendedProjectsRecyclerView;
-  @InjectView(R.id.woohoo_background) LinearLayout woohooBackground;
+  @InjectView(R.id.woohoo_background) View woohooBackground;
 
   ProjectCardMiniAdapter projectCardMiniAdapter;
 

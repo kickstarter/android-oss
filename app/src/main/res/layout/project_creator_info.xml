@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
+  xmlns:icon_text_view="http://schemas.android.com/apk/res-auto"
   android:orientation="vertical"
   android:paddingBottom="@dimen/keyline_1"
   android:paddingLeft="@dimen/keyline_1"
@@ -15,6 +16,7 @@
     android:paddingBottom="@dimen/keyline_1"
     android:paddingTop="@dimen/keyline_1">
 
+    <!-- todo: update string resource so just one textview -->
     <TextView
       android:id="@+id/created_by"
       android:layout_width="wrap_content"
@@ -23,21 +25,23 @@
 
     <TextView
       android:id="@+id/avatar_name"
+      android:text="Name Name"
+      android:layout_centerVertical="true"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_below="@id/created_by" />
+      android:layout_height="wrap_content"/>
 
+    <!-- todo: circle dimensions-->
     <de.hdodenhof.circleimageview.CircleImageView
       android:id="@+id/avatar"
       android:layout_width="100dp"
       android:layout_height="100dp"
       android:layout_alignParentEnd="true"
       android:layout_alignParentRight="true"
-      android:scaleType="centerCrop" />
+      android:scaleType="centerCrop"/>
   </RelativeLayout>
 
-  <!-- for campaign, update, and comments. will need icons-->
-  <ListView
+  <LinearLayout
+    android:orientation="vertical"
     android:id="@+id/creator_links"
     android:paddingTop="@dimen/keyline_1"
     android:paddingBottom="@dimen/keyline_1"
@@ -46,7 +50,86 @@
     android:layout_below="@id/creator_info"
     android:divider="@color/gray"
     android:dividerHeight="1dp">
-  </ListView>
+
+    <RelativeLayout
+      android:id="@+id/campaign"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:onClick="campaignClick">
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:textColor="@drawable/text_selector"
+        android:text="@string/Campaign"/>
+
+      <com.kickstarter.ui.views.IconTextView
+        icon_text_view:iconType="material"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="chevron_right"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:textColor="@drawable/text_selector"/>
+    </RelativeLayout>
+
+    <include layout="@layout/horizontal_line_view"/>
+
+    <RelativeLayout
+      android:id="@+id/updates"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:onClick="updatesClick">
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:textColor="@drawable/text_selector"
+        android:text="@string/Updates"/>
+
+      <com.kickstarter.ui.views.IconTextView
+        icon_text_view:iconType="material"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="error"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:textColor="@drawable/text_selector"/>
+    </RelativeLayout>
+
+    <include layout="@layout/horizontal_line_view"/>
+
+    <RelativeLayout
+      android:id="@+id/comments"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:onClick="commentsClick">
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:textColor="@drawable/text_selector"
+        android:text="@string/Comments"/>
+
+      <com.kickstarter.ui.views.IconTextView
+        icon_text_view:iconType="material"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="error"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:textColor="@drawable/text_selector"/>
+    </RelativeLayout>
+  </LinearLayout>
 
   <TextView
     android:id="@+id/fund_message"
@@ -55,6 +138,6 @@
     android:layout_height="wrap_content"
     android:layout_below="@id/creator_links"
     android:paddingTop="@dimen/keyline_1"
-    android:paddingBottom="@dimen/keyline_1" />
+    android:paddingBottom="@dimen/keyline_1"/>
 
 </RelativeLayout>

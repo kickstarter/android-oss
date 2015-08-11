@@ -3,12 +3,7 @@ package com.kickstarter.ui.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextPaint;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.text.style.UnderlineSpan;
+import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.MediaController;
@@ -72,23 +67,10 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
   }
 
   public void show(final Project project) {
-    final ClickableSpan readMoreClick = clickSpanToWebView(project.urls().web().description());
-    final String readMoreString = getString(R.string.Read_more);
-    final SpannableString blurbSpan = new SpannableString(project.blurb() + " " + readMoreString);
-    final int readMoreStart = blurbSpan.length() - readMoreString.length();
-    blurbSpan.setSpan(new UnderlineSpan(), readMoreStart, blurbSpan.length(), 0);
-    blurbSpan.setSpan(readMoreClick, 0, blurbSpan.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-    blurb.setText(blurbSpan);
-    blurb.setMovementMethod(LinkMovementMethod.getInstance());
-
-    final ClickableSpan creatorNameClick = clickSpanToWebView(project.urls().web().creatorBio());
-    final SpannableString creatorNameSpan = new SpannableString(project.creator().name());
-    creatorNameSpan.setSpan(new UnderlineSpan(), 0, creatorNameSpan.length(), 0);
-    creatorNameSpan.setSpan(creatorNameClick, 0, creatorNameSpan.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-    creatorName.setText(creatorNameSpan);
-    creatorName.setMovementMethod(LinkMovementMethod.getInstance());
 
     // Project information
+    blurb.setText(Html.fromHtml(getString(R.string.Blurb_read_more, project.blurb())));
+    creatorName.setText(Html.fromHtml(getString(R.string.by_creator, project.creator().name())));
     backersCount.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(project.backersCount()));
     category.setText(project.category().name());
     deadlineCountdown.setText(Integer.toString(project.deadlineCountdown()));
@@ -113,24 +95,6 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
       project.deadline().toString(DateTimeUtils.writtenDeadline())));
   }
 
-  // Opens the URL parameter in a KickstarterWebView
-  public ClickableSpan clickSpanToWebView(final String url) {
-    return new ClickableSpan() {
-      @Override
-      public void onClick(final View view) {
-        final Intent intent = new Intent(view.getContext(), DisplayWebViewActivity.class);
-        intent.putExtra("url", url);
-        startActivity(intent);
-        overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
-      }
-
-      @Override
-      public void updateDrawState(final TextPaint link) {
-        link.setColor(getResources().getColor(R.color.text_primary));
-      }
-    };
-  }
-
   @Override
   public void onBackPressed() {
     super.onBackPressed();
@@ -152,14 +116,30 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     });
   }
 
-  public void shareOnClick(final View v) {
-    final Intent shareIntent = new Intent(Intent.ACTION_SEND);
-    shareIntent.setType("text/plain");  // todo: enable content sharing
-    startActivity(Intent.createChooser(shareIntent, "Share via"));
-  }
-
   public void backProjectButtonOnClick(final View v) {
     Timber.d("backProjectButtonOnClick");
     presenter.takeBackProjectClick();
+  }
+
+  public void onBlurbClick(final View v) {
+    presenter.takeBlurbClick();
+  }
+
+  public void onCreatorNameClick(final View v) {
+    presenter.takeCreatorNameClick();
+  }
+
+  public void showProjectDescription(final Project project) {
+    final Intent intent = new Intent(this, DisplayWebViewActivity.class);
+    intent.putExtra("url", project.urls().web().description());
+    startActivity(intent);
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  public void showCreatorBio(final Project project) {
+    final Intent intent = new Intent(this, DisplayWebViewActivity.class);
+    intent.putExtra("url", project.urls().web().creatorBio());
+    startActivity(intent);
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 }

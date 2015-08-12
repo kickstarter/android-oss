@@ -19,7 +19,7 @@ public class DisplayWebViewActivity extends BaseActivity {
     ButterKnife.inject(this);
 
     final Intent intent = getIntent();
-    final String url = intent.getExtras().getString("url");
+    final String url = intent.getExtras().getString(getString(R.string.intent_url));
 
     webView.loadUrl(url);
   }

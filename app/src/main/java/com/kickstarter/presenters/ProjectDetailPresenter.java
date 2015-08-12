@@ -40,9 +40,9 @@ public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(pair -> pair.second.show(pair.first)));
 
-    addSubscription(RxUtils.combineLatestPair(latestProject, backProjectClick)
+    addSubscription(RxUtils.takeWhen(viewAndProject, backProjectClick)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(pair -> back(pair.first)));
+      .subscribe(vp -> vp.first.startCheckoutActivity(vp.second)));
 
     addSubscription(blurbClick.withLatestFrom(viewAndProject, (click, pair) -> pair)
       .observeOn(AndroidSchedulers.mainThread())
@@ -63,13 +63,5 @@ public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
 
   public void takeCreatorNameClick(){
     creatorNameClick.onNext(null);
-  }
-
-  protected void back(final Project project) {
-    final Intent intent = new Intent(view(), CheckoutActivity.class);
-    intent.putExtra("project", project);
-    intent.putExtra("url", project.newPledgeUrl());
-    view().startActivity(intent);
-    view().overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 }

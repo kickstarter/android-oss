@@ -30,10 +30,11 @@ public class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
     ButterKnife.inject(this);
 
     final Intent intent = getIntent();
-    String email = intent.getExtras().getString("email");
-    String password = intent.getExtras().getString("password");
+    final String email = intent.getExtras().getString(getString(R.string.intent_email));
+    final String password = intent.getExtras().getString(getString(R.string.intent_password));
+    final boolean forward = intent.getBooleanExtra(getString(R.string.intent_forward), false);
     presenter.takeEmailAndPassword(email, password);
-    presenter.takeForward(intent.getBooleanExtra(getString(R.string.intent_forward), false));
+    presenter.takeForward(forward);
   }
 
   public void setLoginEnabled(final boolean enabled) {

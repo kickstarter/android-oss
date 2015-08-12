@@ -49,7 +49,6 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
   }
 
   public void onItemsNext(final List<Project> projects) {
-    Timber.d("onItemsNext %s", this.toString());
     adapter = new ProjectListAdapter(projects, presenter);
     recyclerView.setAdapter(adapter);
   }
@@ -67,7 +66,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
       .setMessage("A newer build is available. Download upgrade?")
       .setPositiveButton(android.R.string.yes, (dialog, which) -> {
         Intent intent = new Intent(this, DownloadBetaActivity.class)
-          .putExtra("internalBuildEnvelope", envelope);
+          .putExtra(getString(R.string.intent_internal_build_envelope), envelope);
         startActivity(intent);
       })
       .setNegativeButton(android.R.string.cancel, (dialog, which) -> {

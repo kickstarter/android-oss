@@ -45,7 +45,7 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
 
     displayWoohooBackground();
 
-    presenter.takeProject(getIntent().getExtras().getParcelable("project"));
+    presenter.takeProject(getIntent().getExtras().getParcelable(getString(R.string.intent_project)));
   }
 
   public void show(final Project project) {

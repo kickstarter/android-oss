@@ -27,8 +27,8 @@ public class DownloadBetaActivity extends AppCompatActivity {
     setContentView(R.layout.download_beta_layout);
     ButterKnife.inject(this);
 
-    final Intent intent = getIntent();
-    internalBuildEnvelope = intent.getExtras().getParcelable("internalBuildEnvelope");
+    internalBuildEnvelope = getIntent().getExtras()
+      .getParcelable(getString(R.string.intent_internal_build_envelope));
 
     build.setText(internalBuildEnvelope.build().toString());
     changelog.setText(internalBuildEnvelope.changelog());
@@ -37,9 +37,8 @@ public class DownloadBetaActivity extends AppCompatActivity {
   }
 
   public void openDownloadsOnClick(final View v) {
-    Timber.d("openDownloadsOnClick triggered");
-    final Intent i = new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS);
-    startActivity(i);
+    final Intent intent = new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS);
+    startActivity(intent);
   }
 
   private void requestDownload() {

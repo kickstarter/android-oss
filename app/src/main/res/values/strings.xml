@@ -139,7 +139,10 @@
   </string-array>
 
   <!-- Intent strings, prefix intents used within the app with `ksr.` -->
+  <string name="intent_email">ksr.intent_email</string>
   <string name="intent_forward">ksr.intent_forward</string>
+  <string name="intent_internal_build_envelope">ksr.intent_build_envelope</string>
+  <string name="intent_password">ksr.intent_password</string>
   <string name="intent_project">ksr.intent_project</string>
   <string name="intent_url">ksr.intent_url</string>
 

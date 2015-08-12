@@ -7,6 +7,6 @@
   android:layout_height="150dp"
   android:src="@drawable/woohoo"
   android:scaleType="centerCrop"
-  android:alpha="1"
+  android:alpha="0"
   android:layout_centerHorizontal="true"
   android:layout_centerVertical="true" />

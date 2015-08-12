@@ -17,7 +17,9 @@
   <string name="Build">Build</string>
   <string name="Build_date">Build Date</string>
   <string name="Build_information">Build Information</string>
+  <string name="Blurb_read_more">%1$s &lt;u>Read\u00A0more&lt;/u></string>
   <string name="by_">by\u0020</string>
+  <string name="by_creator">by &lt;u>%1$s&lt;/u></string>
   <string name="By_signing_up_you_agree_to_our">
     By signing up you agree to our terms of use, privacy policy, and cookie policy. We’ll never post
     anything without your permission.
@@ -26,7 +28,7 @@
   <string name="Changelog">Changelog</string>
   <string name="Comments">Comments</string>
   <string name="creator_launched_a_project">%1$s launched a project: %2$s</string>
-  <string name="Created_by">Created by</string>
+  <string name="Created_by">Created by&lt;br>&lt;b>%1$s&lt;/b></string>
   <string name="days">days</string>
   <string name="Development_settings">Development Settings</string>
   <string name="Discover_projects">Discover projects</string>
@@ -87,9 +89,6 @@
   <string name="project_was_successfully_funded">%1$s was successfully funded!</string>
   <string name="project_resumed">%1$s resumed.</string>
   <string name="project_was_suspended">%1$s was suspended.</string>
-  <string name="by_creator">by &lt;u>%1$s&lt;/u></string>
-  <string name="Read_more">Read\u00A0more</string>
-  <string name="Blurb_read_more">%1$s &lt;u>Read\u00A0more&lt;/u></string>
   <string name="Resend">Resend</string>
   <string name="Sha">SHA</string>
   <string name="Share">Share</string>

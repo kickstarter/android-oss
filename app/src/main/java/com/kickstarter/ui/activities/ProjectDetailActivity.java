@@ -3,8 +3,6 @@ package com.kickstarter.ui.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,7 +20,6 @@ import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Video;
 import com.kickstarter.presenters.ProjectDetailPresenter;
-import com.kickstarter.ui.adapters.RewardListAdapter;
 import com.kickstarter.ui.views.IconTextView;
 import com.squareup.picasso.Picasso;
 
@@ -37,9 +34,6 @@ import timber.log.Timber;
 
 @RequiresPresenter(ProjectDetailPresenter.class)
 public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> {
-  RewardListAdapter rewardListAdapter;
-  @InjectView(R.id.rewards_recycler_view) RecyclerView rewardsRecyclerView;
-
   protected @InjectView(R.id.backers_count) TextView backersCount;
   protected @InjectView(R.id.blurb) TextView blurb;
   protected @InjectView(R.id.category) TextView category;
@@ -71,10 +65,6 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     final Intent intent = getIntent();
     final Project project = intent.getExtras().getParcelable("project");
     presenter.takeProject(project);
-
-    rewardsRecyclerView.setHasFixedSize(true);
-    rewardsRecyclerView.getLayoutParams().height = 2000; // todo: WIP
-    rewardsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
   }
 
   public void show(final Project project) {
@@ -106,11 +96,6 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     fundMessage.setText(String.format(getString(R.string.This_project_will_only_be_funded_if),
       money.formattedCurrency(project.goal(), project.currencyOptions(), true),
       project.deadline().toString(DateTimeUtils.writtenDeadline())));
-
-    if (project.rewards() != null) {
-      rewardListAdapter = new RewardListAdapter(project.rewards());
-      rewardsRecyclerView.setAdapter(rewardListAdapter);  // todo
-    }
   }
 
   @Override

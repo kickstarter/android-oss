@@ -142,12 +142,8 @@
         <include layout="@layout/project_stats_view" />
 
         <include layout="@layout/project_creator_info" />
+        
       </LinearLayout>
-
-      <android.support.v7.widget.RecyclerView
-        android:id="@+id/rewards_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
     </LinearLayout>
   </ScrollView>
 

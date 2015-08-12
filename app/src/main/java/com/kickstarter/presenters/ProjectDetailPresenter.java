@@ -3,6 +3,7 @@ package com.kickstarter.presenters;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Pair;
 
 import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
@@ -23,6 +24,8 @@ public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
   @Inject ApiClient client;
   private final PublishSubject<Void> backProjectClick = PublishSubject.create();
   private final PublishSubject<Void> shareClick = PublishSubject.create();
+  private final PublishSubject<Void> blurbClick = PublishSubject.create();
+  private final PublishSubject<Void> creatorNameClick = PublishSubject.create();
 
   @Override
   protected void onCreate(final Context context, final Bundle savedInstanceState) {
@@ -31,11 +34,12 @@ public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
   }
 
   public void takeProject(final Project project) {
-    final Observable<Project> latestProject = client.fetchProject(project).startWith(project);
+    final Observable<Project> latestProject = Observable.merge(Observable.just(project), client.fetchProject(project));
+    final Observable<Pair<ProjectDetailActivity, Project>> viewAndProject = RxUtils.combineLatestPair(viewSubject, Observable.just(project));
 
     addSubscription(RxUtils.combineLatestPair(latestProject, viewSubject)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(v -> v.second.show(v.first)));
+      .subscribe(pair -> pair.second.show(pair.first)));
 
     addSubscription(RxUtils.combineLatestPair(latestProject, backProjectClick)
       .observeOn(AndroidSchedulers.mainThread())
@@ -43,7 +47,15 @@ public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
 
     addSubscription(RxUtils.combineLatestPair(latestProject, shareClick)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(v -> share(v.first)));
+      .subscribe(pair -> back(pair.first)));
+
+    addSubscription(blurbClick.withLatestFrom(viewAndProject, (click, pair) -> pair)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(vp -> vp.first.showProjectDescription(vp.second)));
+
+    addSubscription(creatorNameClick.withLatestFrom(viewAndProject, (click, pair) -> pair)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(vp -> vp.first.showCreatorBio(vp.second)));
   }
 
   public void takeBackProjectClick() {
@@ -52,6 +64,14 @@ public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
 
   public void takeShareClick() {
     shareClick.onNext(null);
+  }
+
+  public void takeBlurbClick() {
+    blurbClick.onNext(null);
+  }
+
+  public void takeCreatorNameClick(){
+    creatorNameClick.onNext(null);
   }
 
   protected void back(final Project project) {

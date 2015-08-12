@@ -87,7 +87,9 @@
   <string name="project_was_successfully_funded">%1$s was successfully funded!</string>
   <string name="project_resumed">%1$s resumed.</string>
   <string name="project_was_suspended">%1$s was suspended.</string>
+  <string name="by_creator">by &lt;u>%1$s&lt;/u></string>
   <string name="Read_more">Read\u00A0more</string>
+  <string name="Blurb_read_more">%1$s &lt;u>Read\u00A0more&lt;/u></string>
   <string name="Resend">Resend</string>
   <string name="Sha">SHA</string>
   <string name="Share">Share</string>

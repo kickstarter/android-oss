@@ -39,19 +39,13 @@
           android:layout_marginBottom="@dimen/keyline_1_half" >
 
           <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/by_"
-            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-            android:textColor="@color/text_dark" />
-
-          <TextView
             android:id="@+id/creator_name"
-            android:clickable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-            android:textColor="@drawable/text_selector" />
+            android:textColor="@color/text_dark"
+            android:clickable="true"
+            android:onClick="onCreatorNameClick" />
         </LinearLayout>
 
         <com.kickstarter.ui.views.TiemposTextView
@@ -61,7 +55,9 @@
           android:layout_marginTop="@dimen/keyline_1_half"
           android:layout_marginBottom="@dimen/keyline_1_half"
           android:textSize="17sp"
-          android:textColor="@drawable/text_selector"
+          android:textColor="@color/text_dark"
+          android:onClick="onBlurbClick"
+          android:clickable="true"
           android:paddingBottom="@dimen/keyline_1_half" />
 
         <RelativeLayout
@@ -142,7 +138,7 @@
         <include layout="@layout/project_stats_view" />
 
         <include layout="@layout/project_creator_info" />
-        
+
       </LinearLayout>
     </LinearLayout>
   </ScrollView>

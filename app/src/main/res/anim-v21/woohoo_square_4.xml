@@ -14,6 +14,6 @@
     android:duration="@string/woohoo_duration"
     android:propertyName="rotation"
     android:valueFrom="50"
-    android:valueTo="35" />
+    android:valueTo="25" />
 </set>
 

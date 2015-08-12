@@ -1,12 +1,15 @@
 package com.kickstarter.ui.activities;
 
 import android.content.Intent;
-import android.graphics.drawable.AnimatedVectorDrawable;
+import android.graphics.drawable.Animatable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kickstarter.R;
@@ -25,7 +28,7 @@ import butterknife.InjectView;
 public class ThanksActivity extends BaseActivity<ThanksPresenter> {
   @InjectView(R.id.backed_project) TextView backedProject;
   @InjectView(R.id.recommended_projects_recycler_view) RecyclerView recommendedProjectsRecyclerView;
-  @InjectView(R.id.woohoo_background) View woohooBackground;
+  @InjectView(R.id.woohoo_background) ImageView woohooBackground;
 
   ProjectCardMiniAdapter projectCardMiniAdapter;
 
@@ -80,9 +83,12 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
   }
 
   private void displayWoohooBackground() {
-    woohooBackground.animate().setDuration(Long.parseLong(getString(R.string.woohoo_duration))).alpha(1);
-    if (android.os.Build.VERSION.SDK_INT >= 21) {
-      ((AnimatedVectorDrawable) woohooBackground.getBackground()).start();
-    }
+    new Handler().postDelayed(() -> {
+        woohooBackground.animate().setDuration(Long.parseLong(getString(R.string.woohoo_duration))).alpha(1);
+        final Drawable drawable = woohooBackground.getDrawable();
+        if (drawable instanceof Animatable) {
+          ((Animatable) drawable).start();
+        }
+      }, 500);
   }
 }

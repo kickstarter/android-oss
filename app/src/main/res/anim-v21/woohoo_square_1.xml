@@ -13,6 +13,6 @@
   <objectAnimator
     android:duration="@string/woohoo_duration"
     android:propertyName="rotation"
-    android:valueFrom="45"
+    android:valueFrom="30"
     android:valueTo="60" />
 </set>

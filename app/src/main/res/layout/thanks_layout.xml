@@ -7,16 +7,29 @@
 
   <include layout="@layout/thanks_toolbar" />
 
-  <TextView
-    android:background="@color/dark_blue"
+  <RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/keyline_2_half"
-    android:paddingBottom="@dimen/keyline_2_half"
-    android:textColor="@color/white"
-    android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-    android:text="@string/Woo_hoo"
-    android:gravity="center_vertical|center_horizontal" />
+    android:background="@color/dark_blue">
+
+    <include layout="@layout/woohoo_background_view" />
+
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/transparent"
+      android:layout_centerVertical="true"
+      android:layout_centerHorizontal="true"
+      android:paddingTop="46dp"
+      android:paddingBottom="46dp"
+      android:textColor="@color/white"
+      android:textSize="30sp"
+      android:text="@string/Woo_hoo"
+      android:layout_gravity="center"
+      android:gravity="center_vertical|center_horizontal" />
+
+  </RelativeLayout>
 
   <LinearLayout
     android:layout_width="match_parent"

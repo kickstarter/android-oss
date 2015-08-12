@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageView
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:background="@color/dark_blue"
+  android:id="@+id/woohoo_background"
+  android:layout_width="match_parent"
+  android:layout_height="150dp"
+  android:src="@drawable/woohoo_animated_vector"
+  android:alpha="0"
+  android:layout_centerHorizontal="true"
+  android:layout_centerVertical="true"
+  android:orientation="horizontal" />

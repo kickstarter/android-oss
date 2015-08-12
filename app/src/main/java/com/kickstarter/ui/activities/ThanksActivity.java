@@ -1,11 +1,15 @@
 package com.kickstarter.ui.activities;
 
 import android.content.Intent;
+import android.graphics.drawable.Animatable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kickstarter.R;
@@ -19,12 +23,12 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import timber.log.Timber;
 
 @RequiresPresenter(ThanksPresenter.class)
 public class ThanksActivity extends BaseActivity<ThanksPresenter> {
   @InjectView(R.id.backed_project) TextView backedProject;
   @InjectView(R.id.recommended_projects_recycler_view) RecyclerView recommendedProjectsRecyclerView;
+  @InjectView(R.id.woohoo_background) ImageView woohooBackground;
 
   ProjectCardMiniAdapter projectCardMiniAdapter;
 
@@ -38,6 +42,8 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
     final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
     layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
     recommendedProjectsRecyclerView.setLayoutManager(layoutManager);
+
+    displayWoohooBackground();
 
     presenter.takeProject(getIntent().getExtras().getParcelable("project"));
   }
@@ -74,5 +80,15 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
     final Intent intent = new Intent(this, DiscoveryActivity.class)
       .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
     startActivity(intent);
+  }
+
+  private void displayWoohooBackground() {
+    new Handler().postDelayed(() -> {
+        woohooBackground.animate().setDuration(Long.parseLong(getString(R.string.woohoo_duration))).alpha(1);
+        final Drawable drawable = woohooBackground.getDrawable();
+        if (drawable instanceof Animatable) {
+          ((Animatable) drawable).start();
+        }
+      }, 500);
   }
 }

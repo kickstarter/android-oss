@@ -1,5 +1,6 @@
 package com.kickstarter.ui.adapters;
 
+import android.support.annotation.IntDef;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,17 +16,23 @@ import com.kickstarter.ui.view_holders.ProjectStateChangedPositiveViewHolder;
 import com.kickstarter.ui.view_holders.ProjectStateChangedViewHolder;
 import com.kickstarter.ui.view_holders.ProjectUpdateViewHolder;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 
 public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListViewHolder> {
   private List<Activity> activities;
   private ActivityFeedPresenter presenter;
 
-  private static final int VIEW_TYPE_FRIEND_BACKING = 0;
-  private static final int VIEW_TYPE_FRIEND_FOLLOW = 1;
-  private static final int VIEW_TYPE_PROJECT_STATE_CHANGED = 2;
-  private static final int VIEW_TYPE_PROJECT_STATE_CHANGED_POSITIVE = 3;
-  private static final int VIEW_TYPE_PROJECT_UPDATE = 4;
+  private static final int FRIEND_BACKING = 0;
+  private static final int FRIEND_FOLLOW = 1;
+  private static final int PROJECT_STATE_CHANGED = 2;
+  private static final int PROJECT_STATE_CHANGED_POSITIVE = 3;
+  private static final int PROJECT_UPDATE = 4;
+
+  @IntDef({FRIEND_BACKING, FRIEND_FOLLOW, PROJECT_STATE_CHANGED, PROJECT_STATE_CHANGED_POSITIVE, PROJECT_UPDATE})
+  @Retention(RetentionPolicy.SOURCE)
+  public @interface ViewType {}
 
   public ActivityListAdapter(final List<Activity> activities, final ActivityFeedPresenter presenter) {
     this.activities = activities;
@@ -33,23 +40,23 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListViewHo
   }
 
   @Override
-  public int getItemViewType(final int position) {
+  public @ViewType int getItemViewType(final int position) {
     final Activity activity = activities.get(position);
     switch(activity.category()) {
       case BACKING:
-        return VIEW_TYPE_FRIEND_BACKING;
+        return FRIEND_BACKING;
       case FOLLOW:
-        return VIEW_TYPE_FRIEND_FOLLOW;
+        return FRIEND_FOLLOW;
       case FAILURE:
       case CANCELLATION:
       case SUSPENSION:
       case RESUME:
-        return VIEW_TYPE_PROJECT_STATE_CHANGED;
+        return PROJECT_STATE_CHANGED;
       case LAUNCH:
       case SUCCESS:
-        return VIEW_TYPE_PROJECT_STATE_CHANGED_POSITIVE;
+        return PROJECT_STATE_CHANGED_POSITIVE;
       case UPDATE:
-        return VIEW_TYPE_PROJECT_UPDATE;
+        return PROJECT_UPDATE;
       default:
         throw new RuntimeException("Unhandled view type for activity: " + activity.toString());
     }
@@ -62,24 +69,24 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListViewHo
   }
 
   @Override
-  public ActivityListViewHolder onCreateViewHolder(final ViewGroup view_group, final int view_type) {
+  public ActivityListViewHolder onCreateViewHolder(final ViewGroup view_group, final @ViewType int view_type) {
     final LayoutInflater layout_inflater = LayoutInflater.from(view_group.getContext());
 
     final View view;
     switch (view_type) {
-      case VIEW_TYPE_FRIEND_BACKING:
+      case FRIEND_BACKING:
         view = layout_inflater.inflate(R.layout.activity_friend_backing_view, view_group, false);
         return new FriendBackingViewHolder(view, presenter);
-      case VIEW_TYPE_FRIEND_FOLLOW:
+      case FRIEND_FOLLOW:
         view = layout_inflater.inflate(R.layout.activity_friend_follow_view, view_group, false);
         return new FriendFollowViewHolder(view, presenter);
-      case VIEW_TYPE_PROJECT_STATE_CHANGED:
+      case PROJECT_STATE_CHANGED:
         view = layout_inflater.inflate(R.layout.activity_project_state_changed_view, view_group, false);
         return new ProjectStateChangedViewHolder(view, presenter);
-      case VIEW_TYPE_PROJECT_STATE_CHANGED_POSITIVE:
+      case PROJECT_STATE_CHANGED_POSITIVE:
         view = layout_inflater.inflate(R.layout.activity_project_state_changed_positive_view, view_group, false);
         return new ProjectStateChangedPositiveViewHolder(view, presenter);
-      case VIEW_TYPE_PROJECT_UPDATE:
+      case PROJECT_UPDATE:
         view = layout_inflater.inflate(R.layout.activity_project_update_view, view_group, false);
         return new ProjectUpdateViewHolder(view, presenter);
       default:

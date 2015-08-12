@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+  android:width="350dp"
+  android:height="150dp"
+  android:viewportWidth="350"
+  android:viewportHeight="150">
+  <path
+    android:fillColor="@color/dark_blue"
+    android:pathData="M 0 0 h 350 v 150 h -350 v -150 Z" />
+  <group
+    android:name="square_1"
+    android:pivotX="0"
+    android:pivotY="45">
+    <path
+      android:fillColor="@color/light_gray"
+      android:pathData="M -15 30 h 30 v 30 h -30 v 0 Z" />
+  </group>
+  <group
+    android:name="square_2"
+    android:pivotX="53"
+    android:pivotY="150">
+    <path
+      android:fillColor="@color/technology"
+      android:pathData="M 38 135 h 30 v 30 h -30 v 0 Z" />
+  </group>
+  <group
+    android:name="square_3"
+    android:pivotX="116"
+    android:pivotY="143">
+    <path
+      android:fillColor="@color/light_green"
+      android:pathData="M 101 128 h 30 v 30 h -30 v 0 Z" />
+  </group>
+  <group
+    android:name="square_4"
+    android:pivotX="122"
+    android:pivotY="0">
+    <path
+      android:fillColor="@color/film"
+      android:pathData="M 107 -15 h 30 v 30 h -30 v 0 Z" />
+  </group>
+  <group
+    android:name="square_5"
+    android:pivotX="245"
+    android:pivotY="139">
+    <path
+      android:fillColor="@color/art"
+      android:pathData="M 230 124 h 30 v 30 h -30 v 0 Z" />
+  </group>
+  <group
+    android:name="square_6"
+    android:pivotX="298"
+    android:pivotY="14">
+    <path
+      android:fillColor="@color/comics"
+      android:pathData="M 283 -1 h 30 v 30 h -30 v 0 Z" />
+  </group>
+  <group
+    android:name="square_7"
+    android:pivotX="315"
+    android:pivotY="135">
+    <path
+      android:fillColor="@color/green"
+      android:pathData="M 300 120 h 30 v 30 h -30 v 0 Z," />
+  </group>
+</vector>

@@ -43,11 +43,11 @@ public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
 
     addSubscription(RxUtils.combineLatestPair(latestProject, backProjectClick)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(v -> back(v.first)));
+      .subscribe(pair -> back(pair.first)));
 
     addSubscription(RxUtils.combineLatestPair(latestProject, shareClick)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(pair -> back(pair.first)));
+      .subscribe(pair -> share(pair.first)));
 
     addSubscription(blurbClick.withLatestFrom(viewAndProject, (click, pair) -> pair)
       .observeOn(AndroidSchedulers.mainThread())

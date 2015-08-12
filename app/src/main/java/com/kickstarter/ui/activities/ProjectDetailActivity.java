@@ -62,7 +62,7 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     ((KsrApplication) getApplication()).component().inject(this);
 
     final Intent intent = getIntent();
-    final Project project = intent.getExtras().getParcelable("project");
+    final Project project = intent.getExtras().getParcelable(getString(R.string.intent_project));
     presenter.takeProject(project);
   }
 

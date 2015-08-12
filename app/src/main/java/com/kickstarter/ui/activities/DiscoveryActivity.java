@@ -54,6 +54,13 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
     recyclerView.setAdapter(adapter);
   }
 
+  public void startProjectDetailActivity(final Project project) {
+    final Intent intent = new Intent(this, ProjectDetailActivity.class)
+      .putExtra(getString(R.string.intent_project), project);
+    startActivity(intent);
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
   public void showBuildAlert(final InternalBuildEnvelope envelope) {
     new AlertDialog.Builder(this)
       .setTitle("Upgrade app")

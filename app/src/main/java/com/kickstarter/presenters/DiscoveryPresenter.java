@@ -8,6 +8,7 @@ import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.Presenter;
+import com.kickstarter.libs.RxUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.DiscoveryParams;
@@ -21,13 +22,16 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.android.schedulers.AndroidSchedulers;
+import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
   @Inject ApiClient apiClient;
   @Inject KickstarterClient kickstarterClient;
   @Inject BuildCheck buildCheck;
+
   private List<Project> projects;
+  private final PublishSubject<Project> projectClick = PublishSubject.create();
 
   @Override
   protected void onCreate(final Context context, final Bundle savedInstanceState) {
@@ -44,13 +48,14 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
     addSubscription(viewSubject
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(v -> v.onItemsNext(projects)));
+
+    addSubscription(RxUtils.combineLatestPair(viewSubject, projectClick)
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(pair -> pair.first.startProjectDetailActivity(pair.second))
+    );
   }
 
-  public void onProjectClicked(final Project project, final ProjectListViewHolder viewHolder) {
-    Timber.d("onProjectClicked %s", this.toString());
-    Intent intent = new Intent(view(), ProjectDetailActivity.class);
-    intent.putExtra("project", project);
-    view().startActivity(intent);
-    view().overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  public void takeProjectClick(final Project project) {
+    projectClick.onNext(project);
   }
 }

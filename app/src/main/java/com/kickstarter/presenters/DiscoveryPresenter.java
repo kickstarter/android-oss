@@ -50,9 +50,9 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(v -> v.onItemsNext(projects)));
 
-    addSubscription(projectClick.withLatestFrom(viewSubject, (project, view) -> new Pair<>(view, project))
+    addSubscription(RxUtils.takePairWhen(viewSubject, projectClick)
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(pair -> pair.first.startProjectDetailActivity(pair.second))
+        .subscribe(viewAndProject -> viewAndProject.first.startProjectDetailActivity(viewAndProject.second))
     );
   }
 

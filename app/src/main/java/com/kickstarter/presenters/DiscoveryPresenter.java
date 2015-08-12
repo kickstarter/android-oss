@@ -3,6 +3,7 @@ package com.kickstarter.presenters;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Pair;
 
 import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
@@ -49,7 +50,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(v -> v.onItemsNext(projects)));
 
-    addSubscription(RxUtils.combineLatestPair(viewSubject, projectClick)
+    addSubscription(projectClick.withLatestFrom(viewSubject, (project, view) -> new Pair<>(view, project))
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(pair -> pair.first.startProjectDetailActivity(pair.second))
     );

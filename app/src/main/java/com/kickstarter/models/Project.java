@@ -18,6 +18,7 @@ public class Project implements Parcelable {
   public Integer backers_count = null;
   public String blurb = null;
   public Category category = null;
+  public Integer comments_count = null;
   public String country = null; // e.g.: US
   public String currency = null; // e.g.: USD
   public String currency_symbol = null; // e.g.: $
@@ -34,6 +35,7 @@ public class Project implements Parcelable {
   public DateTime potd_at = null;
   public String slug = null;
   public User creator = null;
+  public Integer updates_count = null;
   public Urls urls = null;
   public List<Reward> rewards = null;
 
@@ -41,6 +43,7 @@ public class Project implements Parcelable {
   public String blurb() { return blurb; }
   public Category category() { return category; }
   public User creator() { return creator; }
+  public Integer commentsCount() { return comments_count; }
   public String country() { return country; }
   public String currency() { return currency; }
   public String currencySymbol() { return currency_symbol; }
@@ -55,6 +58,7 @@ public class Project implements Parcelable {
   public Photo photo() { return photo; }
   public Video video() { return video; }
   public String slug() { return slug; }
+  public Integer updatesCount() { return updates_count; }
   public Urls urls() { return urls; }
   public String webProjectUrl() { return urls().web().project(); }
   public List<Reward> rewards() {
@@ -73,11 +77,14 @@ public class Project implements Parcelable {
     public static class Web implements Parcelable {
       public String project = null;
       public String rewards = null;
+      public String updates = null;
 
+      public String comments() { return project + "/comments"; }
       public String creatorBio() { return project + "/creator_bio"; }
       public String description() { return project + "/description"; }
       public String project() { return project; }
       public String rewards() { return rewards; }
+      public String updates() { return updates; }
 
       @Override
       public int describeContents() { return 0; }

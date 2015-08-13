@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.MediaController;
@@ -38,6 +39,7 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
   protected @InjectView(R.id.blurb) TextView blurb;
   protected @InjectView(R.id.category) TextView category;
   protected @InjectView(R.id.creator_name) TextView creatorName;
+  protected @InjectView(R.id.comments_count) TextView commentsCount;
   protected @InjectView(R.id.deadline_countdown) TextView deadlineCountdown;
   protected @InjectView(R.id.deadline_countdown_unit) TextView deadlineCountdownUnit;
   protected @InjectView(R.id.goal) TextView goal;
@@ -49,8 +51,9 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
   protected @InjectView(R.id.play_button_overlay) IconTextView playButton;
   protected @InjectView(R.id.pledged) TextView pledged;
   protected @InjectView(R.id.avatar) ImageView avatar;
-  protected @InjectView(R.id.avatar_name) TextView avatarName;
+  protected @InjectView(R.id.created_by) TextView createdBy;
   protected @InjectView(R.id.fund_message) TextView fundMessage;
+  protected @InjectView(R.id.updates_count) TextView updatesCount;
 
   @Inject Money money;
 
@@ -68,6 +71,10 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
   }
 
   public void show(final Project project) {
+
+    Log.d("TEST", "project " + project);
+    Log.d("TEST", "backers " + project.backersCount());
+    Log.d("TEST", "count " + project.commentsCount());  // null on first hit
 
     // Project information
     blurb.setText(Html.fromHtml(getString(R.string.Blurb_read_more, project.blurb())));
@@ -92,10 +99,13 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
 
     // Creator information
     Picasso.with(this).load(project.creator().avatar().medium()).into(avatar);
-    avatarName.setText(project.creator().name());
+    createdBy.setText(Html.fromHtml(getString(R.string.Created_by, project.creator().name())));
     fundMessage.setText(String.format(getString(R.string.This_project_will_only_be_funded_if),
       money.formattedCurrency(project.goal(), project.currencyOptions(), true),
       project.deadline().toString(DateTimeUtils.writtenDeadline())));
+
+//    commentsCount.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(project.commentsCount()));
+//    updatesCount.setText(Integer.toString(project.updatesCount()));
   }
 
   @Override
@@ -124,17 +134,8 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     presenter.takeBackProjectClick();
   }
 
-  public void campaignClick(final View v) {
-
-  }
-
-  public void closeProjectClick(final View v) {
-    super.onBackPressed();
-    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
-  }
-
   public void commentsClick(final View v) {
-
+    presenter.takeCommentsClick();
   }
 
   // todo
@@ -146,15 +147,31 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
   }
 
   public void updatesClick(final View v) {
-
+    presenter.takeUpdatesClick();
   }
 
+  // todo: refactor this name
   public void onBlurbClick(final View v) {
     presenter.takeBlurbClick();
   }
 
   public void onCreatorNameClick(final View v) {
     presenter.takeCreatorNameClick();
+  }
+
+  // todo: one function with switch cases? this is really repetitive
+  public void showCreatorBio(final Project project) {
+    final Intent intent = new Intent(this, DisplayWebViewActivity.class);
+    intent.putExtra("url", project.urls().web().creatorBio());
+    startActivity(intent);
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  public void showComments(final Project project) {
+    final Intent intent = new Intent(this, DisplayWebViewActivity.class);
+    intent.putExtra("url", project.urls().web().comments());
+    startActivity(intent);
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   public void showProjectDescription(final Project project) {
@@ -164,9 +181,9 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
-  public void showCreatorBio(final Project project) {
+  public void showUpdates(final Project project) {
     final Intent intent = new Intent(this, DisplayWebViewActivity.class);
-    intent.putExtra("url", project.urls().web().creatorBio());
+    intent.putExtra("url", project.urls().web().updates());
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }

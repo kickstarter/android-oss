@@ -6,6 +6,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
 import com.kickstarter.KsrApplication;
+import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.WebViewJavascriptInterface;
 import com.kickstarter.services.KickstarterWebViewClient;
 
@@ -31,7 +32,7 @@ public class KickstarterWebView extends WebView {
     getSettings().setJavaScriptEnabled(true);
     getSettings().setAllowFileAccess(false);
 
-    if (android.os.Build.VERSION.SDK_INT >= 19) {
+    if (ApiCapabilities.canDebugWebViews()) {
       setWebContentsDebuggingEnabled(true);
     }
 

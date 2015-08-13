@@ -23,9 +23,11 @@ import rx.subjects.PublishSubject;
 public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
   @Inject ApiClient client;
   private final PublishSubject<Void> backProjectClick = PublishSubject.create();
-  private final PublishSubject<Void> shareClick = PublishSubject.create();
   private final PublishSubject<Void> blurbClick = PublishSubject.create();
+  private final PublishSubject<Void> commentsClick = PublishSubject.create();
   private final PublishSubject<Void> creatorNameClick = PublishSubject.create();
+  private final PublishSubject<Void> shareClick = PublishSubject.create();
+  private final PublishSubject<Void> updatesClick = PublishSubject.create();
 
   @Override
   protected void onCreate(final Context context, final Bundle savedInstanceState) {
@@ -33,6 +35,7 @@ public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
     ((KsrApplication) context.getApplicationContext()).component().inject(this);
   }
 
+  // todo: cut the repetition
   public void takeProject(final Project project) {
     final Observable<Project> latestProject = Observable.merge(Observable.just(project), client.fetchProject(project));
     final Observable<Pair<ProjectDetailActivity, Project>> viewAndProject = RxUtils.combineLatestPair(viewSubject, Observable.just(project));
@@ -53,25 +56,41 @@ public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showProjectDescription(vp.second)));
 
+    addSubscription(commentsClick.withLatestFrom(viewAndProject, (click, pair) -> pair)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(vp -> vp.first.showComments(vp.second)));
+
     addSubscription(creatorNameClick.withLatestFrom(viewAndProject, (click, pair) -> pair)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showCreatorBio(vp.second)));
+
+    addSubscription(updatesClick.withLatestFrom(viewAndProject, (click, pair) -> pair)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(vp -> vp.first.showUpdates(vp.second)));
   }
 
   public void takeBackProjectClick() {
     backProjectClick.onNext(null);
   }
 
-  public void takeShareClick() {
-    shareClick.onNext(null);
-  }
-
   public void takeBlurbClick() {
     blurbClick.onNext(null);
   }
 
+  public void takeCommentsClick() {
+    commentsClick.onNext(null);
+  }
+
   public void takeCreatorNameClick(){
     creatorNameClick.onNext(null);
+  }
+
+  public void takeShareClick() {
+    shareClick.onNext(null);
+  }
+
+  public void takeUpdatesClick() {
+    updatesClick.onNext(null);
   }
 
   protected void back(final Project project) {

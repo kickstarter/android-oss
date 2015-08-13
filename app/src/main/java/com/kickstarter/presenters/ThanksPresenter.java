@@ -44,7 +44,7 @@ public class ThanksPresenter extends Presenter<ThanksActivity> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.show(vp.second)));
 
-    addSubscription(shareClick.withLatestFrom(viewAndProject, (click, pair) -> pair)
+    addSubscription(RxUtils.takeWhen(viewAndProject, shareClick)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startShareIntent(vp.second)));
 

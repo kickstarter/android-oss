@@ -62,7 +62,7 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     ((KsrApplication) getApplication()).component().inject(this);
 
     final Intent intent = getIntent();
-    final Project project = intent.getExtras().getParcelable("project");
+    final Project project = intent.getExtras().getParcelable(getString(R.string.intent_project));
     presenter.takeProject(project);
   }
 
@@ -117,7 +117,6 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
   }
 
   public void backProjectButtonOnClick(final View v) {
-    Timber.d("backProjectButtonOnClick");
     presenter.takeBackProjectClick();
   }
 
@@ -130,15 +129,24 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
   }
 
   public void showProjectDescription(final Project project) {
-    final Intent intent = new Intent(this, DisplayWebViewActivity.class);
-    intent.putExtra("url", project.urls().web().description());
+    startWebViewActivity(project.urls().web().description());
+  }
+
+  public void showCreatorBio(final Project project) {
+    startWebViewActivity(project.urls().web().creatorBio());
+  }
+
+  public void startCheckoutActivity(final Project project) {
+    final Intent intent = new Intent(this, CheckoutActivity.class)
+      .putExtra(getString(R.string.intent_project), project)
+      .putExtra(getString(R.string.intent_url), project.newPledgeUrl());
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
-  public void showCreatorBio(final Project project) {
-    final Intent intent = new Intent(this, DisplayWebViewActivity.class);
-    intent.putExtra("url", project.urls().web().creatorBio());
+  private void startWebViewActivity(final String url) {
+    final Intent intent = new Intent(this, DisplayWebViewActivity.class)
+      .putExtra(getString(R.string.intent_url), url);
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }

@@ -2,7 +2,6 @@ package com.kickstarter.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.webkit.WebView;
 
 import com.kickstarter.R;
@@ -14,7 +13,6 @@ import com.kickstarter.presenters.CheckoutPresenter;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import timber.log.Timber;
 
 @RequiresPresenter(CheckoutPresenter.class)
 public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
@@ -28,8 +26,8 @@ public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
     ButterKnife.inject(this);
 
     final Intent intent = getIntent();
-    final String url = intent.getExtras().getString("url");
-    presenter.takeProject(intent.getExtras().getParcelable("project"));
+    final String url = intent.getExtras().getString(getString(R.string.intent_url));
+    presenter.takeProject(intent.getExtras().getParcelable(getString(R.string.intent_project)));
 
     webView.loadUrl(url);
   }
@@ -58,7 +56,7 @@ public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
 
   public void startThanksActivity(final Project project) {
     final Intent intent = new Intent(this, ThanksActivity.class)
-      .putExtra("project", project);
+      .putExtra(getString(R.string.intent_project), project);
     startActivity(intent);
   }
 

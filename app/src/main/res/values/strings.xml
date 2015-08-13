@@ -138,8 +138,14 @@
     <item>Theater</item>
   </string-array>
 
-  <!-- Intent strings -->
+  <!-- Intent strings. Requires package prefix:
+    http://developer.android.com/reference/android/content/Intent.html#putExtra%28java.lang.String,%20boolean%29 -->
+  <string name="intent_email">com.kickstarter.kickstarter.intent_email</string>
   <string name="intent_forward">com.kickstarter.kickstarter.intent_forward</string>
+  <string name="intent_internal_build_envelope">com.kickstarter.kickstarter.intent_build_envelope</string>
+  <string name="intent_password">com.kickstarter.kickstarter.intent_password</string>
+  <string name="intent_project">com.kickstarter.kickstarter.intent_project</string>
+  <string name="intent_url">com.kickstarter.kickstarter.intent_url</string>
 
   <!-- Animation strings -->
   <string name="woohoo_duration">2000</string>

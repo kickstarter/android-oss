@@ -27,7 +27,6 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
   @Inject KickstarterClient kickstarterClient;
   @Inject BuildCheck buildCheck;
 
-  private List<Project> projects;
   private final PublishSubject<Project> projectClick = PublishSubject.create();
 
   @Override

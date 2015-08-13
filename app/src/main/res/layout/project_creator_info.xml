@@ -4,10 +4,7 @@
   android:layout_height="match_parent"
   xmlns:icon_text_view="http://schemas.android.com/apk/res-auto"
   android:orientation="vertical"
-  android:paddingBottom="@dimen/keyline_1"
-  android:paddingLeft="@dimen/keyline_1"
-  android:paddingRight="@dimen/keyline_1"
-  android:paddingTop="@dimen/keyline_1">
+  android:padding="@dimen/keyline_1" >
 
   <RelativeLayout
     android:id="@+id/creator_info"
@@ -16,19 +13,13 @@
     android:paddingBottom="@dimen/keyline_1"
     android:paddingTop="@dimen/keyline_1">
 
-    <!-- todo: update string resource so just one textview -->
     <TextView
       android:id="@+id/created_by"
+      android:textSize="@dimen/abc_text_size_medium_material"
+      android:textColor="@color/text_primary"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="@string/Created_by"/>
-
-    <TextView
-      android:id="@+id/avatar_name"
-      android:text="Name Name"
-      android:layout_centerVertical="true"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"/>
+      android:layout_centerVertical="true" />
 
     <!-- todo: circle dimensions-->
     <de.hdodenhof.circleimageview.CircleImageView
@@ -37,7 +28,7 @@
       android:layout_height="100dp"
       android:layout_alignParentEnd="true"
       android:layout_alignParentRight="true"
-      android:scaleType="centerCrop"/>
+      android:scaleType="centerCrop" />
   </RelativeLayout>
 
   <LinearLayout
@@ -49,85 +40,119 @@
     android:layout_height="wrap_content"
     android:layout_below="@id/creator_info"
     android:divider="@color/gray"
-    android:dividerHeight="1dp">
+    android:dividerHeight="1dp" >
 
     <RelativeLayout
       android:id="@+id/campaign"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:onClick="campaignClick">
+      android:onClick="onBlurbClick" >
 
       <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
         android:textColor="@drawable/text_selector"
-        android:text="@string/Campaign"/>
+        android:textSize="@dimen/abc_text_size_medium_material"
+        android:text="@string/Campaign" />
 
       <com.kickstarter.ui.views.IconTextView
         icon_text_view:iconType="material"
+        android:textSize="@dimen/abc_text_size_display_1_material"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="chevron_right"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:textColor="@drawable/text_selector"/>
+        android:textColor="@color/dark_gray" />
     </RelativeLayout>
 
-    <include layout="@layout/horizontal_line_view"/>
+    <include layout="@layout/horizontal_line_view" />
 
     <RelativeLayout
       android:id="@+id/updates"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:onClick="updatesClick">
+      android:onClick="updatesClick" >
 
       <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:textColor="@drawable/text_selector"
-        android:text="@string/Updates"/>
+        android:textSize="@dimen/abc_text_size_medium_material"
+        android:text="@string/Updates" />
 
       <com.kickstarter.ui.views.IconTextView
         icon_text_view:iconType="material"
+        android:textSize="@dimen/abc_text_size_display_1_material"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="error"
+        android:text="brightness_1"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:textColor="@drawable/text_selector"/>
+        android:textColor="@color/dark_gray" />
+
+      <!-- todo: replace with icon?-->
+      <TextView
+        android:layout_centerVertical="true"
+        android:textSize="@dimen/abc_text_size_large_material"
+        android:id="@+id/updates_count"
+        android:text="0"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white" />
     </RelativeLayout>
 
-    <include layout="@layout/horizontal_line_view"/>
+    <include layout="@layout/horizontal_line_view" />
 
     <RelativeLayout
       android:id="@+id/comments"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:onClick="commentsClick">
+      android:onClick="commentsClick" >
 
       <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
         android:textColor="@drawable/text_selector"
-        android:text="@string/Comments"/>
+        android:textSize="@dimen/abc_text_size_medium_material"
+        android:text="@string/Comments" />
 
       <com.kickstarter.ui.views.IconTextView
         icon_text_view:iconType="material"
+        android:textSize="@dimen/abc_text_size_display_1_material"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="error"
+        android:text="brightness_1"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:textColor="@drawable/text_selector"/>
+        android:textColor="@color/dark_gray" >
+      </com.kickstarter.ui.views.IconTextView>
+
+      <!-- todo: replace with icon?-->
+      <TextView
+        android:layout_centerVertical="true"
+        android:textSize="@dimen/abc_text_size_large_material"
+        android:id="@+id/comments_count"
+        android:text="0"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white" />
     </RelativeLayout>
   </LinearLayout>
 

@@ -5,9 +5,11 @@
   android:layout_height="fill_parent"
   android:layout_width="match_parent" >
 
+  <!-- todo: dynamic bottom margin-->
   <ScrollView
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:layout_marginBottom="20dp">
 
     <LinearLayout
       android:layout_width="fill_parent"
@@ -137,16 +139,19 @@
 
         <include layout="@layout/project_stats_view" />
 
+        <include layout="@layout/horizontal_line_view" />
+
         <include layout="@layout/project_creator_info" />
 
       </LinearLayout>
     </LinearLayout>
   </ScrollView>
 
+  <!-- todo: formatting values-->
   <RelativeLayout
     android:layout_alignParentBottom="true"
     android:elevation="2dp"
-    android:background="@color/md_white_1000"
+    android:background="@color/window_background"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" >
 

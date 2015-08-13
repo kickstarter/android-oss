@@ -63,8 +63,8 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
 
   public void startTwoFactorActivity(final boolean forward) {
     final Intent intent = new Intent(this, TwoFactorActivity.class)
-      .putExtra("email", email.getText().toString())
-      .putExtra("password", password.getText().toString())
+      .putExtra(getString(R.string.intent_email), email.getText().toString())
+      .putExtra(getString(R.string.intent_password), password.getText().toString())
       .putExtra(getString(R.string.intent_forward), forward);
     if (forward) {
       startActivityForResult(intent, ActivityRequestCodes.LOGIN_ACTIVITY_TWO_FACTOR_ACTIVITY_FORWARD);

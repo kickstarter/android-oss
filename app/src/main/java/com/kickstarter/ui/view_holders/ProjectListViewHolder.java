@@ -49,7 +49,7 @@ public class ProjectListViewHolder extends RecyclerView.ViewHolder {
     ButterKnife.inject(this, view);
 
     view.setOnClickListener((View v) -> {
-      this.presenter.onProjectClicked(project, this);
+      this.presenter.takeProjectClick(project);
     });
   }
 

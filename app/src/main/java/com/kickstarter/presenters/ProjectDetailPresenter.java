@@ -38,15 +38,16 @@ public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
   // todo: cut the repetition
   public void takeProject(final Project project) {
     final Observable<Project> latestProject = Observable.merge(Observable.just(project), client.fetchProject(project));
-    final Observable<Pair<ProjectDetailActivity, Project>> viewAndProject = RxUtils.combineLatestPair(viewSubject, Observable.just(project));
+    final Observable<Pair<ProjectDetailActivity, Project>> viewAndProject =
+      RxUtils.combineLatestPair(viewSubject, latestProject);
 
     addSubscription(RxUtils.combineLatestPair(latestProject, viewSubject)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(pair -> pair.second.show(pair.first)));
 
-    addSubscription(RxUtils.combineLatestPair(latestProject, backProjectClick)
+    addSubscription(backProjectClick.withLatestFrom(viewAndProject, (click, pair) -> pair)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(pair -> back(pair.first)));
+      .subscribe(vp -> vp.first.startCheckoutActivity(vp.second)));
 
     addSubscription(RxUtils.combineLatestPair(latestProject, shareClick)
       .observeOn(AndroidSchedulers.mainThread())

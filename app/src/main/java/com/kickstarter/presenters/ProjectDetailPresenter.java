@@ -31,8 +31,8 @@ public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
 
   public void takeProject(final Project project) {
     final Observable<Project> latestProject = Observable.merge(Observable.just(project), client.fetchProject(project));
-    final Observable<Pair<ProjectDetailActivity, Project>> viewAndProject = RxUtils.combineLatestPair(viewSubject,
-      Observable.just(project));
+    final Observable<Pair<ProjectDetailActivity, Project>> viewAndProject =
+      RxUtils.combineLatestPair(viewSubject, latestProject);
 
     addSubscription(RxUtils.combineLatestPair(latestProject, viewSubject)
       .observeOn(AndroidSchedulers.mainThread())

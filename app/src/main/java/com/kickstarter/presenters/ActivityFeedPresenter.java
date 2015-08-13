@@ -28,7 +28,7 @@ public class ActivityFeedPresenter extends Presenter<ActivityFeedActivity> {
     super.onCreate(context, savedInstanceState);
     ((KsrApplication) context.getApplicationContext()).component().inject(this);
 
-    Observable<List<Activity>> activities = client.fetchActivities(new ActivityFeedParams())
+    final Observable<List<Activity>> activities = client.fetchActivities(new ActivityFeedParams())
       .map(envelope -> envelope.activities);
 
     final Observable<Pair<ActivityFeedActivity, List<Activity>>> viewAndActivities =

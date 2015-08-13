@@ -36,7 +36,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
 
     buildCheck.bind(this, kickstarterClient);
 
-    DiscoveryParams initialParams = DiscoveryParams.params();
+    final DiscoveryParams initialParams = DiscoveryParams.params();
 
     final Observable<List<Project>> projects = apiClient.fetchProjects(initialParams)
       .map(envelope -> envelope.projects);

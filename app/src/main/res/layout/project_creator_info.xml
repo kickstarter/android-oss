@@ -87,29 +87,19 @@
         android:textColor="@drawable/text_selector"
         android:textSize="@dimen/abc_text_size_medium_material"
         android:text="@string/Updates" />
-
-      <com.kickstarter.ui.views.IconTextView
-        icon_text_view:iconType="material"
-        android:textSize="@dimen/abc_text_size_display_1_material"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="brightness_1"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:textColor="@color/dark_gray" />
-
-      <!-- todo: replace with icon?-->
+      
+      <!-- todo: replace with icon-->
       <TextView
+        android:layout_marginRight="32dp"
         android:layout_centerVertical="true"
         android:textSize="@dimen/abc_text_size_large_material"
         android:id="@+id/updates_count"
         android:text="0"
+        android:textColor="@color/white"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white" />
+        android:layout_height="wrap_content" />
     </RelativeLayout>
 
     <include layout="@layout/horizontal_line_view" />
@@ -130,19 +120,7 @@
         android:textSize="@dimen/abc_text_size_medium_material"
         android:text="@string/Comments" />
 
-      <com.kickstarter.ui.views.IconTextView
-        icon_text_view:iconType="material"
-        android:textSize="@dimen/abc_text_size_display_1_material"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="brightness_1"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:textColor="@color/dark_gray" >
-      </com.kickstarter.ui.views.IconTextView>
-
-      <!-- todo: replace with icon?-->
+      <!-- todo: replace with icon-->
       <TextView
         android:layout_centerVertical="true"
         android:textSize="@dimen/abc_text_size_large_material"
@@ -151,8 +129,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white" />
+        android:layout_height="wrap_content" />
     </RelativeLayout>
   </LinearLayout>
 

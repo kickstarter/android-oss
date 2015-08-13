@@ -45,10 +45,11 @@ public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(pair -> pair.second.show(pair.first)));
 
-    addSubscription(backProjectClick.withLatestFrom(viewAndProject, (click, pair) -> pair)
+    addSubscription(RxUtils.takeWhen(viewAndProject, backProjectClick)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startCheckoutActivity(vp.second)));
 
+//<<<<<<< HEAD
     addSubscription(RxUtils.combineLatestPair(latestProject, shareClick)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(pair -> share(pair.first)));
@@ -62,6 +63,13 @@ public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
       .subscribe(vp -> vp.first.showComments(vp.second)));
 
     addSubscription(creatorNameClick.withLatestFrom(viewAndProject, (click, pair) -> pair)
+//=======
+//    addSubscription(RxUtils.takeWhen(viewAndProject, blurbClick)
+//      .observeOn(AndroidSchedulers.mainThread())
+//      .subscribe(vp -> vp.first.showProjectDescription(vp.second)));
+//
+//    addSubscription(RxUtils.takeWhen(viewAndProject, creatorNameClick)
+//>>>>>>> f9d6f940bdca70510a8de8ad35fa235639963aeb
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showCreatorBio(vp.second)));
 

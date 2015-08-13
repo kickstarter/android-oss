@@ -9,6 +9,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ApiErrorHandler;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
+import com.kickstarter.libs.RxUtils;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.ApiError;
 import com.kickstarter.services.ApiResponses.AccessTokenEnvelope;
@@ -24,8 +25,8 @@ import rx.subjects.PublishSubject;
 public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
   @Inject CurrentUser currentUser;
   @Inject ApiClient client;
-  private final PublishSubject<Void> login = PublishSubject.create();
-  private final PublishSubject<Void> resend = PublishSubject.create();
+  private final PublishSubject<Void> loginClick = PublishSubject.create();
+  private final PublishSubject<Void> resendClick = PublishSubject.create();
   private boolean forward = false;
 
   @Override
@@ -44,15 +45,12 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
     final Observable<Boolean> isValid = code
       .map(TwoFactorPresenter::isValid);
 
-    final Observable<LoginCredentials> submit = login
-      .withLatestFrom(code, (s, c) -> c)
+    final Observable<LoginCredentials> submit = RxUtils.takeWhen(code, loginClick)
       .withLatestFrom(emailAndPassword, (c, ep) -> new LoginCredentials(ep.first, ep.second, c));
 
-    final Observable<Pair<String, String>> r = resend
-      .withLatestFrom(emailAndPassword, (v, ep) -> ep);
+    final Observable<Pair<String, String>> resend = RxUtils.takeWhen(emailAndPassword, resendClick);
 
-
-    subscribeTo(r, this::resendSubmit);
+    subscribeTo(resend, this::resendSubmit);
     subscribeTo(submit, this::submit);
     subscribeTo(isValid, valid -> view().setLoginEnabled(valid));
   }
@@ -65,12 +63,12 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
     return code.length() > 0;
   }
 
-  public void resend() {
-    resend.onNext(null);
+  public void takeLoginClick() {
+    loginClick.onNext(null);
   }
 
-  public void login() {
-    login.onNext(null);
+  public void takeResendClick() {
+    resendClick.onNext(null);
   }
 
   private void success(final AccessTokenEnvelope envelope) {

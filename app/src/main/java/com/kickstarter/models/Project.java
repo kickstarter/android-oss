@@ -180,26 +180,16 @@ public class Project implements Parcelable {
     return Uri.parse(secureWebProjectUrl()).buildUpon().appendEncodedPath("pledge/edit").toString();
   }
 
-  // Parcelable
   @Override
-  public int describeContents() {
-    return 0;
-  }
-
+  public int describeContents() { return 0; }
   @Override
-  public void writeToParcel(Parcel dest, int flags) {
-    ProjectParcelablePlease.writeToParcel(this, dest, flags);
-  }
-
+  public void writeToParcel(Parcel dest, int flags) {ProjectParcelablePlease.writeToParcel(this, dest, flags);}
   public static final Creator<Project> CREATOR = new Creator<Project>() {
     public Project createFromParcel(Parcel source) {
       Project target = new Project();
       ProjectParcelablePlease.readFromParcel(target, source);
       return target;
     }
-
-    public Project[] newArray(int size) {
-      return new Project[size];
-    }
+    public Project[] newArray(int size) {return new Project[size];}
   };
 }

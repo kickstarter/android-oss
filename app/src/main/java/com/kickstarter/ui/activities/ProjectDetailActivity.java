@@ -72,10 +72,6 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
 
   public void show(final Project project) {
 
-    Log.d("TEST", "project " + project);
-    Log.d("TEST", "backers " + project.backersCount());
-    Log.d("TEST", "count " + project.commentsCount());  // null on first hit
-
     // Project information
     blurb.setText(Html.fromHtml(getString(R.string.Blurb_read_more, project.blurb())));
     creatorName.setText(Html.fromHtml(getString(R.string.by_creator, project.creator().name())));
@@ -104,8 +100,13 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
       money.formattedCurrency(project.goal(), project.currencyOptions(), true),
       project.deadline().toString(DateTimeUtils.writtenDeadline())));
 
-//    commentsCount.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(project.commentsCount()));
-//    updatesCount.setText(Integer.toString(project.updatesCount()));
+    // is there a better way to do this
+    if (project.updatesCount() != null) {
+      updatesCount.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(project.updatesCount()));
+    }
+    if (project.commentsCount() != null) {
+      commentsCount.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(project.commentsCount()));
+    }
   }
 
   @Override
@@ -117,7 +118,7 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
   }
 
   public void loadVideo(Video video, VideoView videoView) {
-    Picasso.with(this).load(video.frame()).into(photo); // todo: make this loading smoother
+    Picasso.with(this).load(video.frame()).into(photo);
     final Uri video_uri = Uri.parse(video.base());
     videoView.setVideoURI(video_uri);
     videoView.setMediaController(new MediaController(this));
@@ -159,10 +160,7 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
   }
 
   public void showComments(final Project project) {
-    final Intent intent = new Intent(this, DisplayWebViewActivity.class);
-    intent.putExtra("url", project.urls().web().comments());
-    startActivity(intent);
-    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+    // todo: native views for comments
   }
 
   public void showProjectDescription(final Project project) {
@@ -173,17 +171,16 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     startWebViewActivity(project.urls().web().creatorBio());
   }
 
+  public void showUpdates(final Project project) {
+    startWebViewActivity(project.urls().web().updates());
+  }
+
   public void startCheckoutActivity(final Project project) {
     final Intent intent = new Intent(this, CheckoutActivity.class)
       .putExtra(getString(R.string.intent_project), project)
       .putExtra(getString(R.string.intent_url), project.newPledgeUrl());
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
-  }
-
-  public void showUpdates(final Project project) {
-    final Intent intent = new Intent(this, DisplayWebViewActivity.class);
-    intent.putExtra("url", project.urls().web().updates());
   }
 
   private void startWebViewActivity(final String url) {

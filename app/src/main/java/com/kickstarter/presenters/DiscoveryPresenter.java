@@ -1,12 +1,10 @@
 package com.kickstarter.presenters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Pair;
 
 import com.kickstarter.KsrApplication;
-import com.kickstarter.R;
 import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.RxUtils;
@@ -15,23 +13,20 @@ import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.KickstarterClient;
 import com.kickstarter.ui.activities.DiscoveryActivity;
-import com.kickstarter.ui.activities.ProjectDetailActivity;
-import com.kickstarter.ui.view_holders.ProjectListViewHolder;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
-import timber.log.Timber;
 
 public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
   @Inject ApiClient apiClient;
   @Inject KickstarterClient kickstarterClient;
   @Inject BuildCheck buildCheck;
 
-  private List<Project> projects;
   private final PublishSubject<Project> projectClick = PublishSubject.create();
 
   @Override
@@ -41,14 +36,17 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
 
     buildCheck.bind(this, kickstarterClient);
 
-    DiscoveryParams initial_params = DiscoveryParams.params();
-    projects = apiClient.fetchProjects(initial_params)
-      .map(envelope -> envelope.projects)
-      .toBlocking().last(); // TODO: Don't block
+    final DiscoveryParams initialParams = DiscoveryParams.params();
 
-    addSubscription(viewSubject
+    final Observable<List<Project>> projects = apiClient.fetchProjects(initialParams)
+      .map(envelope -> envelope.projects);
+
+    final Observable<Pair<DiscoveryActivity, List<Project>>> viewAndProjects =
+      RxUtils.combineLatestPair(viewSubject, projects);
+
+    addSubscription(viewAndProjects
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(v -> v.onItemsNext(projects)));
+      .subscribe(vp -> vp.first.onItemsNext(vp.second)));
 
     addSubscription(RxUtils.takePairWhen(viewSubject, projectClick)
         .observeOn(AndroidSchedulers.mainThread())

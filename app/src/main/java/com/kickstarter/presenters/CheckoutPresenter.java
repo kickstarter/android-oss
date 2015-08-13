@@ -24,10 +24,8 @@ public class CheckoutPresenter extends Presenter<CheckoutActivity> {
   protected void onCreate(final Context context, final Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
 
-    RxUtils.combineLatestPair(viewSubject, loginSuccess)
-      .filter(pair -> pair.first != null)
+    RxUtils.takeWhen(viewSubject, loginSuccess)
       .take(1)
-      .map(pair -> pair.first)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::checkoutNext);
   }

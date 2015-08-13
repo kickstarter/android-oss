@@ -38,15 +38,15 @@ public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(pair -> pair.second.show(pair.first)));
 
-    addSubscription(backProjectClick.withLatestFrom(viewAndProject, (click, pair) -> pair)
+    addSubscription(RxUtils.takeWhen(viewAndProject, backProjectClick)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startCheckoutActivity(vp.second)));
 
-    addSubscription(blurbClick.withLatestFrom(viewAndProject, (click, pair) -> pair)
+    addSubscription(RxUtils.takeWhen(viewAndProject, blurbClick)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showProjectDescription(vp.second)));
 
-    addSubscription(creatorNameClick.withLatestFrom(viewAndProject, (click, pair) -> pair)
+    addSubscription(RxUtils.takeWhen(viewAndProject, creatorNameClick)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showCreatorBio(vp.second)));
   }

@@ -27,7 +27,7 @@ import rx.subjects.PublishSubject;
 public class LoginPresenter extends Presenter<LoginActivity> {
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
-  private final PublishSubject<Void> login = PublishSubject.create();
+  private final PublishSubject<Void> loginClick = PublishSubject.create();
   private boolean forward = false;
 
   @Override
@@ -43,16 +43,20 @@ public class LoginPresenter extends Presenter<LoginActivity> {
 
     final Observable<Pair<String, String>> emailAndPassword =
       RxUtils.combineLatestPair(email, password)
-      .map(v -> Pair.create(v.first.text().toString(), v.second.text().toString()));
+      .map(ep -> Pair.create(ep.first.text().toString(), ep.second.text().toString()));
 
     final Observable<Boolean> isValid = emailAndPassword
-      .map(v -> LoginPresenter.isValid(v.first, v.second));
+      .map(ep -> LoginPresenter.isValid(ep.first, ep.second));
 
-    final Observable<Pair<String, String>> submit = login
-      .withLatestFrom(emailAndPassword, (l, v) -> v);
+    addSubscription(RxUtils.combineLatestPair(viewSubject, isValid)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(viewAndValid -> viewAndValid.first.setFormEnabled(viewAndValid.second))
+    );
 
-    subscribeTo(submit, this::submit);
-    subscribeTo(isValid, valid -> view().setFormEnabled(valid));
+    addSubscription(RxUtils.takeWhen(emailAndPassword, loginClick)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(ep -> submit(ep.first, ep.second))
+    );
   }
 
   public void takeForward(final boolean forward) {
@@ -63,12 +67,12 @@ public class LoginPresenter extends Presenter<LoginActivity> {
     return StringUtils.isEmail(email) && password.length() > 0;
   }
 
-  public void login() {
-    login.onNext(null);
+  public void takeLoginClick() {
+    loginClick.onNext(null);
   }
 
-  private void submit(final Pair<String, String> emailPassword) {
-    client.login(emailPassword.first, emailPassword.second)
+  private void submit(final String email, final String password) {
+    client.login(email, password)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::success, this::error);
   }

@@ -21,7 +21,7 @@ import timber.log.Timber;
 public class LoginActivity extends BaseActivity<LoginPresenter> {
   public @InjectView(R.id.email) EditText email;
   public @InjectView(R.id.password) EditText password;
-  public @InjectView(R.id.login_button) Button login_button;
+  public @InjectView(R.id.login_button) Button loginButton;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
@@ -36,7 +36,6 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
   @Override
   public void onBackPressed() {
     super.onBackPressed();
-    Timber.d("onBackPressed %s", toString());
 
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
@@ -53,12 +52,11 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
   }
 
   public void loginButtonOnClick(final View v) {
-    Timber.d("login_button clicked");
-    presenter.login();
+    presenter.takeLoginClick();
   }
 
   public void setFormEnabled(final boolean enabled) {
-    login_button.setEnabled(enabled);
+    loginButton.setEnabled(enabled);
   }
 
   public void startTwoFactorActivity(final boolean forward) {

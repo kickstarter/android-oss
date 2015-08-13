@@ -42,13 +42,11 @@ public class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
   }
 
   public void resendButtonOnClick(final View v) {
-    Timber.d("resendButtonOnClick");
-    presenter.resend();
+    presenter.takeResendClick();
   }
 
   public void loginButtonOnClick(final View v) {
-    Timber.d("loginButtonOnClick");
-    presenter.login();
+    presenter.takeLoginClick();
   }
 
   public void onSuccess(final boolean forward) {

@@ -50,7 +50,7 @@ public class ApiClient {
   }
 
   public Observable<Project> fetchProject(final Project project) {
-    return Observable.just(project).mergeWith(service.fetchProject(project.id()));
+    return service.fetchProject(project.id()).startWith(project);
   }
 
   public Observable<AccessTokenEnvelope> login(final String email, final String password) {

@@ -32,7 +32,7 @@ public class KickstarterWebView extends WebView {
     getSettings().setJavaScriptEnabled(true);
     getSettings().setAllowFileAccess(false);
 
-    if (ApiCapabilities.canDebugWebViews()) {
+    if (ApiCapabilities.debugWebViews()) {
       setWebContentsDebuggingEnabled(true);
     }
 

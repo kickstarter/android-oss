@@ -1,11 +1,11 @@
 package com.kickstarter.libs;
 
 public class ApiCapabilities {
-  public static boolean canDebugWebViews() {
+  public static boolean debugWebViews() {
     return android.os.Build.VERSION.SDK_INT >= 19;
   }
 
-  public static boolean canEvaluateJavascript() {
+  public static boolean evaluateJavascript() {
     return android.os.Build.VERSION.SDK_INT >= 19;
   }
 }

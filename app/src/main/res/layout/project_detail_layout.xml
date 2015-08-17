@@ -47,7 +47,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Caption"
             android:textColor="@color/text_dark"
             android:clickable="true"
-            android:onClick="onCreatorNameClick" />
+            android:onClick="creatorNameOnClick" />
         </LinearLayout>
 
         <com.kickstarter.ui.views.TiemposTextView
@@ -58,7 +58,7 @@
           android:layout_marginBottom="@dimen/keyline_1_half"
           android:textSize="17sp"
           android:textColor="@color/text_dark"
-          android:onClick="onBlurbClick"
+          android:onClick="blurbOnClick"
           android:clickable="true"
           android:paddingBottom="@dimen/keyline_1_half" />
 

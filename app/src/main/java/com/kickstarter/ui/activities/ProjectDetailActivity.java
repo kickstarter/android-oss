@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.MediaController;
@@ -100,7 +99,6 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
       money.formattedCurrency(project.goal(), project.currencyOptions(), true),
       project.deadline().toString(DateTimeUtils.writtenDeadline())));
 
-    // is there a better way to do this
     if (project.updatesCount() != null) {
       updatesCount.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(project.updatesCount()));
     }
@@ -150,12 +148,11 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     presenter.takeUpdatesClick();
   }
 
-  // todo: refactor this name
-  public void onBlurbClick(final View v) {
+  public void blurbOnClick(final View v) {
     presenter.takeBlurbClick();
   }
 
-  public void onCreatorNameClick(final View v) {
+  public void creatorNameOnClick(final View v) {
     presenter.takeCreatorNameClick();
   }
 

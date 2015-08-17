@@ -46,7 +46,7 @@
       android:id="@+id/campaign"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:onClick="onBlurbClick" >
+      android:onClick="blurbOnClick" >
 
       <TextView
         android:layout_width="match_parent"
@@ -87,15 +87,13 @@
         android:textColor="@drawable/text_selector"
         android:textSize="@dimen/abc_text_size_medium_material"
         android:text="@string/Updates" />
-      
+
       <!-- todo: replace with icon-->
       <TextView
-        android:layout_marginRight="32dp"
         android:layout_centerVertical="true"
         android:textSize="@dimen/abc_text_size_large_material"
         android:id="@+id/updates_count"
         android:text="0"
-        android:textColor="@color/white"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"

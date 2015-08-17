@@ -35,7 +35,6 @@ public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
     ((KsrApplication) context.getApplicationContext()).component().inject(this);
   }
 
-  // todo: cut the repetition
   public void takeProject(final Project project) {
     final Observable<Project> latestProject = client.fetchProject(project);
     final Observable<Pair<ProjectDetailActivity, Project>> viewAndProject =

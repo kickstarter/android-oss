@@ -48,23 +48,23 @@ public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startCheckoutActivity(vp.second)));
 
-    addSubscription(RxUtils.combineLatestPair(latestProject, shareClick)
+    addSubscription(RxUtils.takeWhen(viewAndProject, shareClick)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(pair -> share(pair.first)));
+      .subscribe(vp -> vp.first.startShareIntent(vp.second)));
 
-    addSubscription(blurbClick.withLatestFrom(viewAndProject, (click, pair) -> pair)
+    addSubscription(RxUtils.takeWhen(viewAndProject, blurbClick)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showProjectDescription(vp.second)));
 
-    addSubscription(commentsClick.withLatestFrom(viewAndProject, (click, pair) -> pair)
+    addSubscription(RxUtils.takeWhen(viewAndProject, commentsClick)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showComments(vp.second)));
 
-    addSubscription(creatorNameClick.withLatestFrom(viewAndProject, (click, pair) -> pair)
+    addSubscription(RxUtils.takeWhen(viewAndProject, creatorNameClick)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showCreatorBio(vp.second)));
 
-    addSubscription(updatesClick.withLatestFrom(viewAndProject, (click, pair) -> pair)
+    addSubscription(RxUtils.takeWhen(viewAndProject, updatesClick)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showUpdates(vp.second)));
   }

@@ -92,20 +92,4 @@ public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
   public void takeUpdatesClick() {
     updatesClick.onNext(null);
   }
-
-  protected void back(final Project project) {
-    final Intent intent = new Intent(view(), CheckoutActivity.class);
-    intent.putExtra("project", project);
-    intent.putExtra("url", project.newPledgeUrl());
-    view().startActivity(intent);
-    view().overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
-  }
-
-  // todo: limit the apps you can share to, format string
-  private void share(final Project project) {
-    final Intent intent = new Intent(Intent.ACTION_SEND)
-      .setType("text/plain")
-      .putExtra(Intent.EXTRA_TEXT, project.name() + ", via " + project.urls().web().project());
-    view().startActivity(intent);
-  }
 }

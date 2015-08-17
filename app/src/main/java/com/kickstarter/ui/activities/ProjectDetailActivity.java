@@ -180,6 +180,14 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
+  // todo: limit the apps you can share to, format string
+  public void startShareIntent(final Project project) {
+    final Intent intent = new Intent(Intent.ACTION_SEND)
+      .setType("text/plain")
+      .putExtra(Intent.EXTRA_TEXT, project.name() + ", via " + project.urls().web().project());
+    startActivity(intent);
+  }
+
   private void startWebViewActivity(final String url) {
     final Intent intent = new Intent(this, DisplayWebViewActivity.class)
       .putExtra(getString(R.string.intent_url), url);

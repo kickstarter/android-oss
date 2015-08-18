@@ -19,6 +19,12 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
   }
 
   @Override
+  protected void onStart() {
+    super.onStart();
+    Timber.d("onStart %s", this.toString());
+  }
+
+  @Override
   protected void onResume() {
     super.onResume();
     Timber.d("onResume %s", this.toString());
@@ -37,6 +43,12 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
     if (presenter != null) {
       presenter.onPause();
     }
+  }
+
+  @Override
+  protected void onStop() {
+    super.onStop();
+    Timber.d("onStop %s", this.toString());
   }
 
   @Override

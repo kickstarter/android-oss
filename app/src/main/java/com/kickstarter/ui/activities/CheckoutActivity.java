@@ -13,6 +13,7 @@ import com.kickstarter.presenters.CheckoutPresenter;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import timber.log.Timber;
 
 @RequiresPresenter(CheckoutPresenter.class)
 public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
@@ -70,6 +71,8 @@ public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
       finish();
       return;
     }
+
+    Timber.d("onActivityResult", this.toString());
 
     presenter.takeLoginSuccess();
   }

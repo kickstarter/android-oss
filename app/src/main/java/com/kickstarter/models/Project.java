@@ -68,9 +68,13 @@ public class Project implements Parcelable {
   @ParcelablePlease
   public static class Urls implements Parcelable {
     public Web web = null;
+    public Api api = null;
 
     public Web web() {
       return web;
+    }
+    public Api api() {
+      return api;
     }
 
     @ParcelablePlease
@@ -79,7 +83,6 @@ public class Project implements Parcelable {
       public String rewards = null;
       public String updates = null;
 
-      public String comments() { return project + "/comments"; }
       public String creatorBio() { return project + "/creator_bio"; }
       public String description() { return project + "/description"; }
       public String project() { return project; }
@@ -97,6 +100,26 @@ public class Project implements Parcelable {
           return target;
         }
         public Web[] newArray(int size) {return new Web[size];}
+      };
+    }
+
+    @ParcelablePlease
+    public static class Api implements Parcelable {
+      public String comments = null;
+
+      public String comments() { return comments; }
+
+      @Override
+      public int describeContents() { return 0; }
+      @Override
+      public void writeToParcel(Parcel dest, int flags) {com.kickstarter.models.ApiParcelablePlease.writeToParcel(this, dest, flags);}
+      public static final Creator<Api> CREATOR = new Creator<Api>() {
+        public Api createFromParcel(Parcel source) {
+          Api target = new Api();
+          com.kickstarter.models.ApiParcelablePlease.readFromParcel(target, source);
+          return target;
+        }
+        public Api[] newArray(int size) {return new Api[size];}
       };
     }
 

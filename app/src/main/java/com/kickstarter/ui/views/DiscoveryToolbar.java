@@ -15,6 +15,7 @@ import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Logout;
+import com.kickstarter.libs.RxUtils;
 import com.kickstarter.models.User;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
@@ -24,16 +25,20 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public class DiscoveryToolbar extends Toolbar {
-  @InjectView(R.id.activity_feed_button) TextView activity_feed_button;
-  @InjectView(R.id.category_spinner) Spinner category_spinner;
-  @InjectView(R.id.current_user_button) TextView current_user_button;
-  @InjectView(R.id.login_button) TextView login_button;
+  @InjectView(R.id.activity_feed_button) TextView activityFeedButton;
+  @InjectView(R.id.category_spinner) Spinner categorySpinner;
+  @InjectView(R.id.current_user_button) TextView currentUserButton;
+  @InjectView(R.id.login_button) TextView loginButton;
   @InjectView(R.id.toolbar) Toolbar toolbar;
   @Inject CurrentUser currentUser;
   @Inject Logout logout;
+
+  Subscription loginSubscription;
 
   public DiscoveryToolbar(final Context context) {
     super(context);
@@ -50,6 +55,7 @@ public class DiscoveryToolbar extends Toolbar {
   @Override
   protected void onFinishInflate() {
     super.onFinishInflate();
+    Timber.d("onFinishInflate");
 
     if (isInEditMode()) {
       return;
@@ -58,50 +64,51 @@ public class DiscoveryToolbar extends Toolbar {
     ButterKnife.inject(this);
     ((KsrApplication) getContext().getApplicationContext()).component().inject(this);
 
-    toggleLogin();
     initializeCategorySpinner();
 
-    activity_feed_button.setOnClickListener(v -> {
+    activityFeedButton.setOnClickListener(v -> {
       Timber.d("activity_feed_button clicked");
       Intent intent = new Intent(getContext(), ActivityFeedActivity.class);
       getContext().startActivity(intent);
     });
   }
 
-  protected void toggleLogin() {
-    final User user = currentUser.getUser();
-    if (user != null) {
-      login_button.setVisibility(GONE);
-      current_user_button.setVisibility(VISIBLE);
-      current_user_button.setOnClickListener(v -> {
-        final PopupMenu popup = new PopupMenu(v.getContext(), current_user_button);
-        popup.getMenuInflater().inflate(R.menu.current_user_menu, popup.getMenu());
+  protected void showLoggedInMenu(final User user) {
+    Timber.d("showLoggedInMenu");
+    loginButton.setVisibility(GONE);
+    currentUserButton.setVisibility(VISIBLE);
+    currentUserButton.setOnClickListener(v -> {
+      final PopupMenu popup = new PopupMenu(v.getContext(), currentUserButton);
+      popup.getMenuInflater().inflate(R.menu.current_user_menu, popup.getMenu());
 
-        popup.setOnMenuItemClickListener(item -> {
-          switch (item.getItemId()) {
-            case R.id.logout:
-              final Context context = v.getContext();
-              logout.execute(context);
-              final Intent intent = new Intent(context, DiscoveryActivity.class)
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-              context.startActivity(intent);
-              break;
-          }
+      popup.setOnMenuItemClickListener(item -> {
+        switch (item.getItemId()) {
+          case R.id.logout:
+            final Context context = v.getContext();
+            logout.execute(context);
+            final Intent intent = new Intent(context, DiscoveryActivity.class)
+              .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            context.startActivity(intent);
+            break;
+        }
 
-          return true;
-        });
-
-        popup.show();
+        return true;
       });
-    } else {
-      current_user_button.setVisibility(GONE);
-      login_button.setVisibility(VISIBLE);
-      login_button.setOnClickListener(v -> {
-        Timber.d("login_button clicked");
-        Intent intent = new Intent(getContext(), LoginToutActivity.class);
-        getContext().startActivity(intent);
-      });
-    }
+
+      popup.show();
+    });
+  }
+
+  protected void showLoggedOutMenu() {
+    Timber.d("showLoggedOutMenu");
+    currentUserButton.setVisibility(GONE);
+    loginButton.setVisibility(VISIBLE);
+    loginButton.setOnClickListener(v -> {
+      Timber.d("loginButton clicked");
+      Intent intent = new Intent(getContext(), LoginToutActivity.class);
+      getContext().startActivity(intent);
+    });
+
   }
 
   protected void initializeCategorySpinner() {
@@ -115,10 +122,10 @@ public class DiscoveryToolbar extends Toolbar {
       adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, sample_data);
     }
     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-    category_spinner.setAdapter(adapter);
+    categorySpinner.setAdapter(adapter);
 
     // onItemSelected will fire immediately with the default selection
-    category_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+    categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
       @Override
       public void onItemSelected(final AdapterView<?> spinner, final View view, final int position, final long itemId) {
         final String item = spinner.getItemAtPosition(position).toString();
@@ -128,5 +135,27 @@ public class DiscoveryToolbar extends Toolbar {
       public void onNothingSelected(final AdapterView<?> adapterView) {
       }
     });
+  }
+
+  @Override
+  protected void onAttachedToWindow() {
+    super.onAttachedToWindow();
+    Timber.d("onAttachedToWindow");
+
+    if (currentUser.getUser() == null) {
+      showLoggedOutMenu();
+    }
+
+    loginSubscription = currentUser.loggedInUser()
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::showLoggedInMenu);
+  }
+
+  @Override
+  protected void onDetachedFromWindow() {
+    super.onDetachedFromWindow();
+    Timber.d("onDetachedFromWindow");
+
+    loginSubscription.unsubscribe();
   }
 }

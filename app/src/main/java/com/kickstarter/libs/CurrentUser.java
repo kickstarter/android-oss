@@ -57,15 +57,23 @@ public class CurrentUser {
     return userPreference.isSet();
   }
 
-  public Observable<User> userSubject() {
+  public Observable<User> observable() {
     return userSubject.mergeWith(Observable.just(currentUser));
   }
 
-  public Observable<Boolean> loginEvent() {
+  public Observable<Boolean> loginChange() {
     return userSubject.buffer(2, 1)
       .map(prevAndNewUser -> {
         final User[] users = prevAndNewUser.toArray(new User[prevAndNewUser.size()]);
         return users[0] == null && users[1] != null;
       });
+  }
+
+  public Observable<User> loggedInUser() {
+    return observable().filter(user -> user != null);
+  }
+
+  public Observable<User> loggedOutUser() {
+    return observable().filter(user -> user == null);
   }
 }

@@ -58,7 +58,7 @@ public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
 
     addSubscription(RxUtils.takeWhen(viewAndProject, commentsClick)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.showComments(vp.second)));
+      .subscribe(vp -> vp.first.startCommentsActivity(vp.second)));
 
     addSubscription(RxUtils.takeWhen(viewAndProject, creatorNameClick)
       .observeOn(AndroidSchedulers.mainThread())

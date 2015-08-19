@@ -14,9 +14,6 @@ import com.kickstarter.models.Project;
 import com.kickstarter.presenters.DiscoveryPresenter;
 import com.squareup.picasso.Picasso;
 
-import java.text.NumberFormat;
-import java.util.Locale;
-
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
@@ -56,8 +53,7 @@ public class ProjectListViewHolder extends RecyclerView.ViewHolder {
   public void onBind(final Project project) {
     this.project = project;
 
-    backers_count.setText(NumberFormat.getNumberInstance(Locale.getDefault())
-      .format(project.backersCount()));
+    backers_count.setText(project.formattedBackersCount());
     category.setText(project.category().name());
     deadline_countdown.setText(Integer.toString(project.deadlineCountdown()));
     deadline_countdown_unit.setText(project.deadlineCountdownUnit());

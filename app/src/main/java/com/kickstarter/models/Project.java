@@ -6,6 +6,7 @@ import android.os.Parcelable;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.kickstarter.libs.CurrencyOptions;
+import com.kickstarter.libs.NumberUtils;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -40,10 +41,15 @@ public class Project implements Parcelable {
   public List<Reward> rewards = null;
 
   public Integer backersCount() { return backers_count; }
+  public String formattedBackersCount() {
+    return NumberUtils.numberWithDelimiter(backers_count);
+  }
   public String blurb() { return blurb; }
   public Category category() { return category; }
   public User creator() { return creator; }
-  public Integer commentsCount() { return comments_count; }
+  public String formattedCommentsCount() {
+    return NumberUtils.numberWithDelimiter(comments_count);
+  }
   public String country() { return country; }
   public String currency() { return currency; }
   public String currencySymbol() { return currency_symbol; }
@@ -58,7 +64,9 @@ public class Project implements Parcelable {
   public Photo photo() { return photo; }
   public Video video() { return video; }
   public String slug() { return slug; }
-  public Integer updatesCount() { return updates_count; }
+  public String formattedUpdatesCount() {
+    return NumberUtils.numberWithDelimiter(updates_count);
+  }
   public Urls urls() { return urls; }
   public String webProjectUrl() { return urls().web().project(); }
   public List<Reward> rewards() {

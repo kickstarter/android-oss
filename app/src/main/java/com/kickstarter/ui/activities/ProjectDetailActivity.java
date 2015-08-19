@@ -23,9 +23,6 @@ import com.kickstarter.presenters.ProjectDetailPresenter;
 import com.kickstarter.ui.views.IconTextView;
 import com.squareup.picasso.Picasso;
 
-import java.text.NumberFormat;
-import java.util.Locale;
-
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
@@ -74,7 +71,7 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     // Project information
     blurb.setText(Html.fromHtml(getString(R.string.Blurb_read_more, project.blurb())));
     creatorName.setText(Html.fromHtml(getString(R.string.by_creator, project.creator().name())));
-    backersCount.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(project.backersCount()));
+    backersCount.setText(project.formattedBackersCount());
     category.setText(project.category().name());
     deadlineCountdown.setText(Integer.toString(project.deadlineCountdown()));
     deadlineCountdownUnit.setText(project.deadlineCountdownUnit());
@@ -94,17 +91,12 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
 
     // Creator information
     Picasso.with(this).load(project.creator().avatar().medium()).into(avatar);
-    createdBy.setText(Html.fromHtml(getString(R.string.Created_by, project.creator().name())));
+    createdBy.setText(Html.fromHtml(getString(R.string.Created_by_, project.creator().name())));
     fundMessage.setText(String.format(getString(R.string.This_project_will_only_be_funded_if),
       money.formattedCurrency(project.goal(), project.currencyOptions(), true),
       project.deadline().toString(DateTimeUtils.writtenDeadline())));
-
-    if (project.updatesCount() != null) {
-      updatesCount.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(project.updatesCount()));
-    }
-    if (project.commentsCount() != null) {
-      commentsCount.setText(NumberFormat.getNumberInstance(Locale.getDefault()).format(project.commentsCount()));
-    }
+    updatesCount.setText(project.formattedUpdatesCount());
+    commentsCount.setText(project.formattedCommentsCount());
   }
 
   @Override

@@ -2,8 +2,6 @@ package com.kickstarter.libs;
 
 import android.content.Context;
 
-import com.kickstarter.KsrApplication;
-
 import java.net.CookieManager;
 
 public class Logout {
@@ -16,6 +14,7 @@ public class Logout {
   }
 
   public void execute(final Context context) {
+    // TODO: Could subscribe to stream?
     currentUser.unset();
     cookieManager.getCookieStore().removeAll();
   }

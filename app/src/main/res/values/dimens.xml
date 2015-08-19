@@ -13,7 +13,7 @@
   <dimen name="grid_11">88dp</dimen>
 
   <!-- Kickstarter typography-->
-  <!-- todo: naming conventions: temp are prefixed with ksr_-->
+  <!-- todo: naming conventions: temp names are prefixed with ksr_-->
   <!-- todo: 14sp is the default now-->
   <dimen name="ksr_mini_stats">13sp</dimen>
   <dimen name="ksr_caption">14sp</dimen>

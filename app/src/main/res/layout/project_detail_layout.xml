@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
-        android:layout_marginTop="@dimen/grid_3"
+        android:paddingTop="@dimen/grid_3"
         android:paddingLeft="@dimen/grid_3"
         android:paddingRight="@dimen/grid_3"
         android:orientation="vertical" >
@@ -35,7 +35,7 @@
           android:layout_height="wrap_content"
           android:textSize="@dimen/title"
           android:textColor="@color/text_dark"
-          android:layout_marginBottom="@dimen/grid_1" />
+          android:paddingBottom="@dimen/grid_1_half" />
 
         <LinearLayout
           android:layout_width="wrap_content"
@@ -153,6 +153,7 @@
 
         <include layout="@layout/project_stats_view" />
 
+        <!-- todo: fill screen with this-->
         <include layout="@layout/horizontal_line_view" />
 
         <include layout="@layout/project_creator_info" />

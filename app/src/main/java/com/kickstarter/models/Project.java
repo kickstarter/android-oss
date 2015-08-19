@@ -68,7 +68,17 @@ public class Project implements Parcelable {
     return NumberUtils.numberWithDelimiter(updates_count);
   }
   public Urls urls() { return urls; }
+  public String creatorBioUrl() {
+    return urls().web().creatorBio();
+  }
+  public String descriptionUrl() {
+    return urls().web().description();
+  }
   public String webProjectUrl() { return urls().web().project(); }
+  public String updatesUrl() {
+    return urls().web().updates();
+  }
+
   public List<Reward> rewards() {
     return rewards;
   }
@@ -91,8 +101,8 @@ public class Project implements Parcelable {
       public String rewards = null;
       public String updates = null;
 
-      public String creatorBio() { return project + "/creator_bio"; }
-      public String description() { return project + "/description"; }
+      public String creatorBio() { return Uri.parse(project()).buildUpon().appendEncodedPath("/creator_bio").toString(); }
+      public String description() { return Uri.parse(project()).buildUpon().appendEncodedPath("/description").toString(); }
       public String project() { return project; }
       public String rewards() { return rewards; }
       public String updates() { return updates; }

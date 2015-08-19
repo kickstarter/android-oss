@@ -148,20 +148,16 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     presenter.takeCreatorNameClick();
   }
 
-  public void showComments(final Project project) {
-    // todo: native views for comments
-  }
-
   public void showProjectDescription(final Project project) {
-    startWebViewActivity(project.urls().web().description());
+    startWebViewActivity(project.descriptionUrl());
   }
 
   public void showCreatorBio(final Project project) {
-    startWebViewActivity(project.urls().web().creatorBio());
+    startWebViewActivity(project.creatorBioUrl());
   }
 
   public void showUpdates(final Project project) {
-    startWebViewActivity(project.urls().web().updates());
+    startWebViewActivity(project.updatesUrl());
   }
 
   public void startCheckoutActivity(final Project project) {

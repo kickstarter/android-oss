@@ -1,8 +1,38 @@
 <resources>
+  <!-- TODO: replace with Kickstarter dimens-->
+  <!-- Kickstarter eight-point grid keylines-->
+  <dimen name="grid_1_half">4dp</dimen>
+  <dimen name="grid_1">8dp</dimen>
+  <dimen name="grid_2">16dp</dimen>
+  <dimen name="grid_3">24dp</dimen>
+  <dimen name="grid_4">32dp</dimen>
+  <dimen name="grid_5">40dp</dimen>
+  <dimen name="grid_8">64dp</dimen>
+  <dimen name="grid_10">80dp</dimen>
+  <dimen name="grid_11_half">44dp</dimen>
+  <dimen name="grid_11">88dp</dimen>
+
+  <!-- Kickstarter typography-->
+  <!-- todo: naming conventions: temp are prefixed with ksr_-->
+  <!-- todo: 14sp is the default now-->
+  <dimen name="ksr_mini_stats">13sp</dimen>
+  <dimen name="ksr_caption">14sp</dimen>
+  <dimen name="ksr_subhead">15sp</dimen>
+  <dimen name="ksr_name">16dp</dimen>
+  <dimen name="body">17sp</dimen>
+  <dimen name="ksr_stats">18sp</dimen>
+
+  <!-- Kickstarter photos-->
+  <dimen name="project_detail_avatar_width">@dimen/grid_8</dimen>
+  <dimen name="project_detail_avatar_height">@dimen/grid_8</dimen>
+
+  <!-- Kickstarter & Material values-->
+  <dimen name="ksr_card_elevation">4dp</dimen>
+
   <!-- Keylines
     http://www.google.com/design/spec/layout/metrics-keylines.html#metrics-keylines-keylines-spacing -->
-  <dimen name="keyline_1">16dp</dimen>
   <dimen name="keyline_1_half">8dp</dimen>
+  <dimen name="keyline_1">16dp</dimen>
   <dimen name="keyline_2">72dp</dimen>
   <dimen name="keyline_2_half">36dp</dimen>
   <dimen name="keyline_2_three_quarters">54dp</dimen>

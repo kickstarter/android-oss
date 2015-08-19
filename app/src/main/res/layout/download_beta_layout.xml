@@ -3,7 +3,7 @@
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:layout_margin="@dimen/keyline_1">
+  android:layout_margin="@dimen/grid_3">
 
   <TextView
     android:layout_width="wrap_content"
@@ -26,7 +26,7 @@
   <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/keyline_1"
+    android:layout_marginTop="@dimen/grid_3"
     android:layout_marginBottom="@dimen/keyline_1_half"
     android:text="@string/Changelog"
     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
@@ -44,7 +44,7 @@
   <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/keyline_1"
+    android:layout_marginTop="@dimen/grid_3"
     android:layout_marginBottom="@dimen/keyline_1_half"
     android:text="@string/Instructions"
     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
@@ -62,7 +62,7 @@
     android:id="@+id/open_downloads_button"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/keyline_1"
+    android:layout_marginTop="@dimen/grid_3"
     android:layout_gravity="center_horizontal"
     android:onClick="openDownloadsOnClick"
     android:paddingTop="12dp"

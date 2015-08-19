@@ -6,8 +6,8 @@
   android:layout_width="match_parent"
   android:layout_height="?attr/actionBarSize"
   android:background="@color/light_gray"
-  android:paddingLeft="@dimen/keyline_1"
-  android:paddingRight="@dimen/keyline_1"
+  android:paddingLeft="@dimen/grid_3"
+  android:paddingRight="@dimen/grid_3"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
   android:elevation="2dp">

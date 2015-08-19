@@ -4,23 +4,25 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:paddingTop="@dimen/keyline_1"
-  android:paddingBottom="@dimen/keyline_1"
+  android:paddingTop="@dimen/grid_3"
+  android:paddingBottom="@dimen/grid_3"
   android:orientation="horizontal">
 
   <LinearLayout
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingRight="@dimen/keyline_1">
+    android:paddingRight="@dimen/grid_3">
 
     <TextView
       android:id="@+id/backers_count"
+      android:textSize="@dimen/ksr_stats"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:textColor="@color/text_dark" />
 
     <TextView
+      android:textSize="@dimen/ksr_mini_stats"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/backers"
@@ -31,10 +33,11 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingRight="@dimen/keyline_1">
+    android:paddingRight="@dimen/grid_3">
 
     <TextView
       android:id="@+id/pledged"
+      android:textSize="@dimen/ksr_stats"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:textColor="@color/text_dark" />
@@ -62,10 +65,11 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingRight="@dimen/keyline_1">
+    android:paddingRight="@dimen/grid_3">
 
     <TextView
       android:id="@+id/deadline_countdown"
+      android:textSize="@dimen/ksr_stats"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:textColor="@color/text_dark" />

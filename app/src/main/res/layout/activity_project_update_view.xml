@@ -7,10 +7,10 @@
   card_view:cardElevation="0dp"
   card_view:cardCornerRadius="@dimen/card_corner_radius"
   card_view:cardBackgroundColor="@color/white"
-  card_view:contentPaddingTop="@dimen/keyline_1"
-  card_view:contentPaddingBottom="@dimen/keyline_1"
-  card_view:contentPaddingLeft="@dimen/keyline_1"
-  card_view:contentPaddingRight="@dimen/keyline_1"
+  card_view:contentPaddingTop="@dimen/grid_3"
+  card_view:contentPaddingBottom="@dimen/grid_3"
+  card_view:contentPaddingLeft="@dimen/grid_3"
+  card_view:contentPaddingRight="@dimen/grid_3"
   android:layout_marginTop="@dimen/card_margin_y"
   android:layout_marginBottom="@dimen/card_margin_y">
 
@@ -22,7 +22,7 @@
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="@dimen/keyline_1"
+      android:layout_marginBottom="@dimen/grid_3"
       android:gravity="center_vertical"
       android:orientation="horizontal">
 
@@ -49,7 +49,7 @@
       android:orientation="vertical">
 
       <RelativeLayout
-        android:layout_marginTop="@dimen/keyline_1"
+        android:layout_marginTop="@dimen/grid_3"
         android:layout_marginBottom="@dimen/keyline_1_half"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

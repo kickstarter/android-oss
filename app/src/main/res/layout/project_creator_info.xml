@@ -34,8 +34,8 @@
   <LinearLayout
     android:orientation="vertical"
     android:id="@+id/creator_links"
-    android:paddingTop="@dimen/keyline_1"
-    android:paddingBottom="@dimen/keyline_1"
+    android:paddingTop="@dimen/grid_3"
+    android:paddingBottom="@dimen/grid_3"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_below="@id/creator_info"
@@ -45,7 +45,7 @@
     <RelativeLayout
       android:id="@+id/campaign"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="@dimen/grid_11_half"
       android:onClick="blurbOnClick" >
 
       <TextView
@@ -75,7 +75,7 @@
     <RelativeLayout
       android:id="@+id/updates"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="@dimen/grid_11_half"
       android:onClick="updatesClick" >
 
       <TextView
@@ -105,7 +105,7 @@
     <RelativeLayout
       android:id="@+id/comments"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:layout_height="@dimen/grid_11_half"
       android:onClick="commentsClick" >
 
       <TextView
@@ -137,7 +137,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_below="@id/creator_links"
-    android:paddingTop="@dimen/keyline_1"
-    android:paddingBottom="@dimen/keyline_1"/>
+    android:paddingTop="@dimen/grid_3"
+    android:paddingBottom="@dimen/grid_3"/>
 
 </RelativeLayout>

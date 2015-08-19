@@ -35,7 +35,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_margin="@dimen/keyline_1">
+    android:layout_margin="@dimen/grid_3">
 
     <TextView
       android:id="@+id/backed_project"
@@ -47,7 +47,7 @@
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:paddingTop="@dimen/keyline_1"
+      android:paddingTop="@dimen/grid_3"
       android:orientation="horizontal"
       android:layout_gravity="center_horizontal">
 
@@ -79,7 +79,7 @@
     <TextView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/keyline_1"
+      android:layout_marginTop="@dimen/grid_3"
       android:text="@string/Looking_for_more_projects"
       android:textColor="@color/text_dark"
       android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"

@@ -28,7 +28,7 @@
       android:layout_alignParentBottom="true"
       android:layout_alignParentLeft="true"
       android:orientation="horizontal"
-      android:padding="@dimen/keyline_1"
+      android:padding="@dimen/grid_2"
       android:visibility="invisible">
 
       <com.kickstarter.ui.views.IconTextView

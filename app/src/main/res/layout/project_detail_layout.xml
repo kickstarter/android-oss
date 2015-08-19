@@ -9,7 +9,7 @@
   <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="20dp">
+    android:layout_marginBottom="@dimen/grid_3">
 
     <LinearLayout
       android:layout_width="fill_parent"
@@ -52,11 +52,12 @@
 
         <com.kickstarter.ui.views.TiemposTextView
           android:id="@+id/blurb"
+          android:text="Blurb"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/keyline_1_half"
-          android:layout_marginBottom="@dimen/keyline_1_half"
-          android:textSize="17sp"
+          android:layout_marginTop="@dimen/grid_3"
+          android:layout_marginBottom="@dimen/grid_3"
+          android:textSize="@dimen/body"
           android:textColor="@color/text_dark"
           android:onClick="blurbOnClick"
           android:clickable="true"
@@ -65,29 +66,30 @@
         <RelativeLayout
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:orientation="horizontal"
-          android:paddingBottom="@dimen/keyline_1_half" >
+          android:orientation="horizontal" >
 
           <com.kickstarter.ui.views.IconTextView
             icon_text_view:iconType="material"
             android:id="@+id/category_icon"
+            android:textSize="@dimen/ksr_caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:paddingRight="@dimen/card_padding_action_half"
-            android:text="local_offer"
+            android:paddingRight="@dimen/grid_1_half"
+            android:text="@string/local_offer_icon"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:textColor="@color/text_dark" />
 
           <TextView
             android:id="@+id/category"
+            android:textSize="@dimen/ksr_caption"
             android:layout_gravity="center_vertical"
             android:layout_toRightOf="@id/category_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/card_padding_action_half"
-            android:paddingRight="@dimen/card_padding_action"
+            android:paddingLeft="@dimen/grid_1_half"
+            android:paddingRight="@dimen/grid_1"
             android:layout_centerInParent="true"
             android:layout_centerVertical="true"
             android:textColor="@color/text_dark" />
@@ -95,32 +97,35 @@
           <com.kickstarter.ui.views.IconTextView
             icon_text_view:iconType="material"
             android:id="@+id/location_icon"
+            android:textSize="@dimen/ksr_caption"
             android:layout_gravity="center_vertical"
             android:layout_toRightOf="@id/category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/card_padding_action"
-            android:paddingRight="@dimen/card_padding_action_half"
-            android:text="location_on"
+            android:paddingLeft="@dimen/grid_1"
+            android:paddingRight="@dimen/grid_1_half"
+            android:text="@string/location_on_icon"
             android:layout_centerInParent="true"
             android:layout_centerHorizontal="true"
             android:textColor="@color/text_dark" />
 
           <TextView
             android:id="@+id/location"
+            android:textSize="@dimen/ksr_caption"
             android:layout_gravity="center_vertical"
             android:layout_toRightOf="@id/location_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/card_padding_action_half"
+            android:paddingLeft="@dimen/grid_1_half"
             android:layout_centerInParent="true"
             android:textColor="@color/text_dark" />
 
           <!-- todo: set correct button size-->
           <Button
             android:background="@drawable/button_share"
-            android:layout_width="80dp"
-            android:layout_height="40dp"
+            android:textSize="@dimen/ksr_caption"
+            android:layout_width="@dimen/grid_10"
+            android:layout_height="@dimen/grid_4"
             android:layout_alignParentRight="true"
             android:text="@string/Share"
             android:textAllCaps="false"
@@ -162,8 +167,8 @@
       android:layout_height="wrap_content"
       android:layout_gravity="center_vertical"
       android:textSize="@dimen/abc_text_size_large_material"
-      android:paddingLeft="@dimen/keyline_1"
-      android:text="share"
+      android:paddingLeft="@dimen/grid_3"
+      android:text="@string/share_icon"
       android:layout_alignParentLeft="true"
       android:layout_alignParentStart="true"
       android:layout_centerVertical="true"
@@ -175,7 +180,7 @@
       android:layout_width="175dp"
       android:layout_height="35dp"
       android:layout_centerInParent="true"
-      android:layout_marginTop="@dimen/keyline_1"
+      android:layout_marginTop="@dimen/grid_3"
       android:onClick="backProjectButtonOnClick"
       android:background="@drawable/button_green"
       android:textColor="@color/white"
@@ -189,8 +194,8 @@
       android:layout_height="wrap_content"
       android:layout_gravity="center_vertical"
       android:textSize="@dimen/abc_text_size_large_material"
-      android:paddingRight="@dimen/keyline_1"
-      android:text="star"
+      android:paddingRight="@dimen/grid_3"
+      android:text="@string/star_icon"
       android:layout_alignParentRight="true"
       android:layout_alignParentEnd="true"
       android:layout_centerVertical="true"

@@ -64,7 +64,7 @@ public class CurrentUser {
   public Observable<Boolean> loginEvent() {
     return userSubject.buffer(2, 1)
       .map(prevAndNewUser -> {
-        final Object[] users = prevAndNewUser.toArray();
+        final User[] users = prevAndNewUser.toArray(new User[prevAndNewUser.size()]);
         return users[0] == null && users[1] != null;
       });
   }

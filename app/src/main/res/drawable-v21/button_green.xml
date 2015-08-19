@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
   android:color="@color/green_darken_10">
-  <item android:drawable="@color/green"/>
-  <item android:drawable="@drawable/button_green_normal"/>
+  <item>
+    <shape>
+      <corners android:radius="@dimen/button_corner_radius"/>
+      <solid android:color="@color/green" />
+    </shape>
+  </item>
 </ripple>
 

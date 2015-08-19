@@ -23,28 +23,30 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
-        android:paddingTop="@dimen/keyline_1_half"
-        android:paddingLeft="@dimen/keyline_1"
-        android:paddingRight="@dimen/keyline_1"
+        android:layout_marginTop="@dimen/grid_3"
+        android:paddingLeft="@dimen/grid_3"
+        android:paddingRight="@dimen/grid_3"
         android:orientation="vertical" >
 
         <TextView
           android:id="@+id/project_name"
+          android:text="Project Name"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-          android:paddingBottom="@dimen/keyline_1_half" />
+          android:textSize="@dimen/title"
+          android:textColor="@color/text_dark"
+          android:layout_marginBottom="@dimen/grid_1" />
 
         <LinearLayout
           android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/keyline_1_half" >
+          android:layout_height="wrap_content" >
 
           <TextView
             android:id="@+id/creator_name"
+            android:text="Creator Name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+            android:textSize="@dimen/ksr_caption"
             android:textColor="@color/text_dark"
             android:clickable="true"
             android:onClick="creatorNameOnClick" />
@@ -138,8 +140,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:minHeight="@dimen/progress_bar_min_height"
-          android:paddingTop="@dimen/keyline_1_half"
-          android:paddingBottom="@dimen/keyline_1_half"
+          android:layout_marginTop="@dimen/grid_3"
           android:progress="50" />
 
         <include layout="@layout/project_stats_view" />
@@ -152,10 +153,9 @@
     </LinearLayout>
   </ScrollView>
 
-  <!-- todo: formatting values-->
   <RelativeLayout
     android:layout_alignParentBottom="true"
-    android:elevation="2dp"
+    android:elevation="@dimen/ksr_card_elevation"
     android:background="@color/window_background"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" >

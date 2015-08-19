@@ -3,29 +3,27 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   xmlns:icon_text_view="http://schemas.android.com/apk/res-auto"
-  android:orientation="vertical"
-  android:padding="@dimen/keyline_1" >
+  android:orientation="vertical" >
 
   <RelativeLayout
     android:id="@+id/creator_info"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/keyline_1"
-    android:paddingTop="@dimen/keyline_1">
+    android:paddingBottom="@dimen/grid_3"
+    android:paddingTop="@dimen/grid_3">
 
     <TextView
       android:id="@+id/created_by"
-      android:textSize="@dimen/abc_text_size_medium_material"
-      android:textColor="@color/text_primary"
+      android:textSize="@dimen/ksr_subhead"
+      android:textColor="@color/text_dark"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_centerVertical="true" />
+      android:layout_centerVertical="true"/>
 
-    <!-- todo: circle dimensions-->
     <de.hdodenhof.circleimageview.CircleImageView
       android:id="@+id/avatar"
-      android:layout_width="100dp"
-      android:layout_height="100dp"
+      android:layout_width="@dimen/project_detail_avatar_width"
+      android:layout_height="@dimen/project_detail_avatar_height"
       android:layout_alignParentEnd="true"
       android:layout_alignParentRight="true"
       android:scaleType="centerCrop" />
@@ -55,15 +53,15 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:textColor="@drawable/text_selector"
-        android:textSize="@dimen/abc_text_size_medium_material"
+        android:textSize="@dimen/body"
         android:text="@string/Campaign" />
 
       <com.kickstarter.ui.views.IconTextView
         icon_text_view:iconType="material"
-        android:textSize="@dimen/abc_text_size_display_1_material"
+        android:textSize="@dimen/body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="chevron_right"
+        android:text="@string/chevron_right_icon"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
@@ -85,15 +83,14 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:textColor="@drawable/text_selector"
-        android:textSize="@dimen/abc_text_size_medium_material"
+        android:textSize="@dimen/body"
         android:text="@string/Updates" />
 
       <!-- todo: replace with icon-->
       <TextView
         android:layout_centerVertical="true"
-        android:textSize="@dimen/abc_text_size_large_material"
+        android:textSize="@dimen/body"
         android:id="@+id/updates_count"
-        android:text="0"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"
@@ -115,15 +112,14 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:textColor="@drawable/text_selector"
-        android:textSize="@dimen/abc_text_size_medium_material"
+        android:textSize="@dimen/body"
         android:text="@string/Comments" />
 
       <!-- todo: replace with icon-->
       <TextView
         android:layout_centerVertical="true"
-        android:textSize="@dimen/abc_text_size_large_material"
+        android:textSize="@dimen/body"
         android:id="@+id/comments_count"
-        android:text="0"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"

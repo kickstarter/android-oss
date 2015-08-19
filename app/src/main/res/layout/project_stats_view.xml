@@ -48,12 +48,14 @@
       android:orientation="horizontal">
 
       <TextView
+        android:textSize="@dimen/ksr_mini_stats"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/pledged_of_"
         android:textColor="@color/dark_gray" />
 
       <TextView
+        android:textSize="@dimen/ksr_mini_stats"
         android:id="@+id/goal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -86,6 +88,7 @@
         android:textColor="@color/dark_gray" />
 
       <TextView
+        android:textSize="@dimen/ksr_mini_stats"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/_to_go"

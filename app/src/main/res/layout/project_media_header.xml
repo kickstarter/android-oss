@@ -27,9 +27,6 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:textSize="@dimen/notification_large_icon_height"
-    android:text="play_circle_outline"
+    android:text="@string/play_circle_outline_icon"
     android:textColor="@color/white" />
-
-
-
 </FrameLayout>

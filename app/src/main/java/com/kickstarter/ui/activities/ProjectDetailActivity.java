@@ -80,12 +80,14 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     projectName.setText(project.name());
     percentageFunded.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
     pledged.setText(money.formattedCurrency(project.pledged(), project.currencyOptions()));
+    Picasso.with(this).load(project.photo().full()).into(photo);
+
+    // WIP VideoView & MediaController
     if ( project.video() != null ) {
       loadVideo(project.video(), video);
       playButton.setVisibility(View.VISIBLE);
     }
     else {
-      Picasso.with(this).load(project.photo().full()).into(photo);
       playButton.setVisibility(View.GONE);
     }
 
@@ -108,7 +110,6 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
   }
 
   public void loadVideo(Video video, VideoView videoView) {
-    Picasso.with(this).load(video.frame()).into(photo);
     final Uri video_uri = Uri.parse(video.base());
     videoView.setVideoURI(video_uri);
     videoView.setMediaController(new MediaController(this));

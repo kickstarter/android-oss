@@ -17,7 +17,6 @@ import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.Build;
-import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.EnumAdapter;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.preferences.StringPreference;
@@ -33,7 +32,6 @@ import butterknife.InjectView;
 public class DebugDrawer extends FrameLayout {
   @Inject @ApiEndpointPreference StringPreference apiEndpointPreference;
   @Inject Build build;
-  @Inject CurrentUser currentUser;
   @Inject Logout logout;
 
   @InjectView(R.id.build_date) TextView buildDate;

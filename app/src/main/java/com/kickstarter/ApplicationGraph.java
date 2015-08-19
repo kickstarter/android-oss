@@ -21,7 +21,7 @@ import com.kickstarter.ui.views.TiemposTextView;
 public interface ApplicationGraph {
   void inject(ActivityFeedActivity activity);
   void inject(ActivityFeedPresenter presenter);
-  void inject(CurrentUser current_user);
+  void inject(CurrentUser currentUser);
   void inject(DiscoveryActivity activity);
   void inject(DiscoveryToolbar toolbar);
   void inject(DiscoveryPresenter presenter);

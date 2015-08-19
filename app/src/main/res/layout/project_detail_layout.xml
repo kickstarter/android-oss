@@ -111,27 +111,35 @@
             android:layout_centerHorizontal="true"
             android:textColor="@color/text_dark" />
 
-          <TextView
-            android:id="@+id/location"
-            android:textSize="@dimen/ksr_caption"
-            android:layout_gravity="center_vertical"
-            android:layout_toRightOf="@id/location_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/grid_1_half"
-            android:layout_centerInParent="true"
-            android:textColor="@color/text_dark" />
-
           <!-- todo: set correct button size-->
           <Button
+            android:id="@+id/share_button"
             android:background="@drawable/button_share"
             android:textSize="@dimen/ksr_caption"
             android:layout_width="@dimen/grid_10"
             android:layout_height="@dimen/grid_4"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:text="@string/Share"
             android:textAllCaps="false"
             android:onClick="shareOnClick" />
+
+          <TextView
+            android:id="@+id/location"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textSize="@dimen/ksr_caption"
+            android:layout_gravity="center_vertical"
+            android:layout_toRightOf="@id/location_icon"
+            android:layout_toEndOf="@id/location_icon"
+            android:layout_toLeftOf="@id/share_button"
+            android:layout_toStartOf="@id/share_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/grid_1_half"
+            android:paddingRight="@dimen/grid_1"
+            android:layout_centerInParent="true"
+            android:textColor="@color/text_dark" />
         </RelativeLayout>
 
         <ProgressBar

@@ -30,7 +30,6 @@
 
         <TextView
           android:id="@+id/project_name"
-          android:text="Project Name"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:textSize="@dimen/title"
@@ -43,7 +42,6 @@
 
           <TextView
             android:id="@+id/creator_name"
-            android:text="Creator Name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/ksr_caption"
@@ -54,7 +52,6 @@
 
         <com.kickstarter.ui.views.TiemposTextView
           android:id="@+id/blurb"
-          android:text="Blurb"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/grid_3"

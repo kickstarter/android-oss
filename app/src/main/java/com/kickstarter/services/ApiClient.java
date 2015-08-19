@@ -71,7 +71,7 @@ public class ApiClient {
       .setEndpoint(apiEndpoint.url)
       .setErrorHandler(errorHandler())
       .setRequestInterceptor(requestInterceptor())
-      .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.FULL : RestAdapter.LogLevel.NONE)
+      .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.HEADERS_AND_ARGS : RestAdapter.LogLevel.NONE)
       .build();
   }
 

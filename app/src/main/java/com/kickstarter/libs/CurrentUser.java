@@ -22,6 +22,11 @@ public class CurrentUser {
     this.userPreference = userPreference;
 
     userSubject.subscribe(user -> currentUser = user);
+    userSubject
+      .skip(1)
+      .filter(user -> user != null)
+      .subscribe(user -> userPreference.set(gson.toJson(user, User.class)));
+
     userSubject.onNext(gson.fromJson(userPreference.get(), User.class));
   }
 
@@ -33,17 +38,18 @@ public class CurrentUser {
     return accessTokenPreference.get();
   }
 
-  public void set(final User newUser, final String accessToken) {
-    Timber.d("Set current user to %s", newUser.name());
+  public void login(final User newUser, final String accessToken) {
+    Timber.d("Login user %s", newUser.name());
 
-    userPreference.set(gson.toJson(newUser, User.class));
+    accessTokenPreference.set(accessToken);
     userSubject.onNext(newUser);
   }
 
-  public void unset() {
-    Timber.d("Unset current user");
+  public void logout() {
+    Timber.d("Logout current user");
 
     userPreference.delete();
+    accessTokenPreference.delete();
     userSubject.onNext(null);
   }
 

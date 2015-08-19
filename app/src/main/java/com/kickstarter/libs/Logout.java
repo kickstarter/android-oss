@@ -15,7 +15,7 @@ public class Logout {
 
   public void execute(final Context context) {
     // TODO: Could subscribe to stream?
-    currentUser.unset();
+    currentUser.logout();
     cookieManager.getCookieStore().removeAll();
   }
 }

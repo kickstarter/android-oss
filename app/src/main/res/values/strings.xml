@@ -28,7 +28,8 @@
   <string name="Changelog">Changelog</string>
   <string name="Comments">Comments</string>
   <string name="creator_launched_a_project">%1$s launched a project: %2$s</string>
-  <string name="Created_by">Created by&lt;br>&lt;b>%1$s&lt;/b></string>
+  <string name="Created_by">Created by</string>
+  <string name="Created_by_">Created by&lt;br>&lt;b>%1$s&lt;/b></string>
   <string name="days">days</string>
   <string name="Development_settings">Development Settings</string>
   <string name="Discover_projects">Discover projects</string>
@@ -92,6 +93,7 @@
   <string name="Resend">Resend</string>
   <string name="Sha">SHA</string>
   <string name="Share">Share</string>
+  <string name="share_intent">"%1$s, via %2$s"</string>
   <string name="Share_this_project">Share this project</string>
   <string name="Sign_up">Sign up</string>
   <string name="Sign_up_or_log_in_with_your_Facebook_account">
@@ -148,6 +150,7 @@
   <string name="intent_internal_build_envelope">com.kickstarter.kickstarter.intent_build_envelope</string>
   <string name="intent_password">com.kickstarter.kickstarter.intent_password</string>
   <string name="intent_project">com.kickstarter.kickstarter.intent_project</string>
+  <string name="intent_share_type">"text/plain"</string>
   <string name="intent_url">com.kickstarter.kickstarter.intent_url</string>
 
   <!-- Animation strings -->

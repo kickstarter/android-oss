@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!-- Icon naming convention from https://www.google.com/design/icons/ -->
+  <string name="chevron_right_icon">chevron_right</string>
+  <string name="favorite_icon">favorite</string>
+  <string name="local_offer_icon">local_offer</string>
+  <string name="location_on_icon">location_on</string>
+  <string name="play_circle_outline_icon">play_circle_outline</string>
+  <string name="share_icon">share</string>
+  <string name="star_icon">star</string>
+</resources>

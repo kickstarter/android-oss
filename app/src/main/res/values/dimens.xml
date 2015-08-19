@@ -18,7 +18,7 @@
   <dimen name="ksr_mini_stats">13sp</dimen>
   <dimen name="ksr_caption">14sp</dimen>
   <dimen name="ksr_subhead">15sp</dimen>
-  <dimen name="ksr_name">16dp</dimen>
+  <dimen name="ksr_name">16sp</dimen>
   <dimen name="body">17sp</dimen>
   <dimen name="ksr_stats">18sp</dimen>
 

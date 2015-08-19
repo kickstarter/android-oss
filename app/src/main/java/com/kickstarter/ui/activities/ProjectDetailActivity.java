@@ -47,7 +47,7 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
   protected @InjectView(R.id.play_button_overlay) IconTextView playButton;
   protected @InjectView(R.id.pledged) TextView pledged;
   protected @InjectView(R.id.avatar) ImageView avatar;
-  protected @InjectView(R.id.created_by) TextView createdBy;
+  protected @InjectView(R.id.avatar_name) TextView avatarName;
   protected @InjectView(R.id.fund_message) TextView fundMessage;
   protected @InjectView(R.id.updates_count) TextView updatesCount;
 
@@ -93,7 +93,7 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
 
     // Creator information
     Picasso.with(this).load(project.creator().avatar().medium()).into(avatar);
-    createdBy.setText(Html.fromHtml(getString(R.string.Created_by_, project.creator().name())));
+    avatarName.setText(project.creator().name());
     fundMessage.setText(String.format(getString(R.string.This_project_will_only_be_funded_if),
       money.formattedCurrency(project.goal(), project.currencyOptions(), true),
       project.deadline().toString(DateTimeUtils.writtenDeadline())));

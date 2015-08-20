@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:icon_text_view="http://schemas.android.com/tools"
+  android:orientation="vertical"
+  android:background="@color/window_background"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_alignParentBottom="true"
+  android:elevation="@dimen/ksr_card_elevation">
+
+  <com.kickstarter.ui.views.IconTextView
+    icon_text_view:iconType="material"
+    android:id="@+id/exit_icon"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:textSize="@dimen/abc_text_size_large_material"
+    android:paddingLeft="@dimen/grid_3"
+    android:text="@string/share_icon"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentStart="true"
+    android:layout_centerVertical="true"
+    android:textColor="@drawable/text_selector"
+    android:onClick="shareOnClick" />
+
+  <!-- todo: correct button size-->
+  <Button
+    android:layout_width="175dp"
+    android:layout_height="35dp"
+    android:layout_centerInParent="true"
+    android:layout_marginTop="@dimen/grid_3"
+    android:onClick="backProjectButtonOnClick"
+    android:background="@drawable/button_green"
+    android:textColor="@color/white"
+    android:textAllCaps="false"
+    android:text="@string/Back_this_project" />
+
+  <com.kickstarter.ui.views.IconTextView
+    icon_text_view:iconType="material"
+    android:id="@+id/star_icon"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:textSize="@dimen/abc_text_size_large_material"
+    android:paddingRight="@dimen/grid_3"
+    android:text="@string/star_icon"
+    android:layout_alignParentRight="true"
+    android:layout_alignParentEnd="true"
+    android:layout_centerVertical="true"
+    android:textColor="@drawable/text_selector"
+    android:onClick="starProjectClick" />
+
+</RelativeLayout>

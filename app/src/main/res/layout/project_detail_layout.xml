@@ -9,7 +9,7 @@
   <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="@dimen/grid_3">
+    android:paddingBottom="@dimen/grid_3">
 
     <LinearLayout
       android:layout_width="fill_parent"
@@ -150,62 +150,15 @@
 
         <include layout="@layout/project_stats_view" />
 
-        <!-- todo: fill screen with this-->
-        <include layout="@layout/horizontal_line_view" />
-
-        <include layout="@layout/project_creator_info" />
-
       </LinearLayout>
+
+      <include layout="@layout/horizontal_line_view" />
+
+      <include layout="@layout/project_creator_info" />
+
     </LinearLayout>
   </ScrollView>
 
-  <RelativeLayout
-    android:layout_alignParentBottom="true"
-    android:elevation="@dimen/ksr_card_elevation"
-    android:background="@color/window_background"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content" >
+  <include layout="@layout/project_back_toolbar"/>
 
-    <com.kickstarter.ui.views.IconTextView
-      icon_text_view:iconType="material"
-      android:id="@+id/exit_icon"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_gravity="center_vertical"
-      android:textSize="@dimen/abc_text_size_large_material"
-      android:paddingLeft="@dimen/grid_3"
-      android:text="@string/share_icon"
-      android:layout_alignParentLeft="true"
-      android:layout_alignParentStart="true"
-      android:layout_centerVertical="true"
-      android:textColor="@drawable/text_selector"
-      android:onClick="shareOnClick" />
-
-    <!-- todo: set correct button size-->
-    <Button
-      android:layout_width="175dp"
-      android:layout_height="35dp"
-      android:layout_centerInParent="true"
-      android:layout_marginTop="@dimen/grid_3"
-      android:onClick="backProjectButtonOnClick"
-      android:background="@drawable/button_green"
-      android:textColor="@color/white"
-      android:textAllCaps="false"
-      android:text="@string/Back_this_project" />
-
-    <com.kickstarter.ui.views.IconTextView
-      icon_text_view:iconType="material"
-      android:id="@+id/star_icon"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_gravity="center_vertical"
-      android:textSize="@dimen/abc_text_size_large_material"
-      android:paddingRight="@dimen/grid_3"
-      android:text="@string/star_icon"
-      android:layout_alignParentRight="true"
-      android:layout_alignParentEnd="true"
-      android:layout_centerVertical="true"
-      android:textColor="@drawable/text_selector"
-      android:onClick="starProjectClick" />
-  </RelativeLayout>
 </RelativeLayout>

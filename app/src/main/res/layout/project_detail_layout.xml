@@ -5,11 +5,11 @@
   android:layout_height="fill_parent"
   android:layout_width="match_parent" >
 
-  <!-- todo: dynamic bottom margin-->
+  <!-- todo: dynamic bottom margin, height of back toolbar-->
   <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/grid_3">
+    android:paddingBottom="@dimen/grid_8">
 
     <LinearLayout
       android:layout_width="fill_parent"

@@ -54,7 +54,7 @@ public class CurrentUser {
   }
 
   public boolean exists() {
-    return userPreference.isSet();
+    return getUser() != null;
   }
 
   public Observable<User> observable() {

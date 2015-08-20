@@ -85,7 +85,7 @@ public class DiscoveryToolbar extends Toolbar {
         switch (item.getItemId()) {
           case R.id.logout:
             final Context context = v.getContext();
-            logout.execute(context);
+            logout.execute();
             final Intent intent = new Intent(context, DiscoveryActivity.class)
               .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             context.startActivity(intent);

@@ -13,8 +13,7 @@ public class Logout {
     this.currentUser = currentUser;
   }
 
-  public void execute(final Context context) {
-    // TODO: Could subscribe to stream?
+  public void execute() {
     currentUser.logout();
     cookieManager.getCookieStore().removeAll();
   }

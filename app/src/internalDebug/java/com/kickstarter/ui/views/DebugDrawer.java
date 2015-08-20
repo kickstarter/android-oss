@@ -128,7 +128,7 @@ public class DebugDrawer extends FrameLayout {
 
   private void setEndpointAndRelaunch(final String endpoint) {
     apiEndpointPreference.set(endpoint);
-    logout.execute(getContext());
+    logout.execute();
     ProcessPhoenix.triggerRebirth(getContext());
   }
 }

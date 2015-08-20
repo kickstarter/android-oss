@@ -169,11 +169,8 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
-  // todo: build comments activity
   public void startCommentsActivity(final Project project) {
-    final Intent intent = new Intent(this, CommentsActivity.class)
-      .putExtra(getString(R.string.intent_url), project.urls().api().comments());
-    startActivity(intent);
+    // todo: build comments activity
   }
 
   // todo: limit the apps you can share to

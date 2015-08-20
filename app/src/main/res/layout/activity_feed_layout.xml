@@ -6,8 +6,6 @@
   android:orientation="vertical"
   tools:context=".ActivityFeedActivity">
 
-  <!--<include layout="@layout/activity_toolbar" />-->
-
   <android.support.v7.widget.RecyclerView
     android:id="@+id/recyclerView"
     android:layout_width="match_parent"

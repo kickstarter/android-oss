@@ -99,9 +99,9 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  CurrentUser provideCurrentUser(@UserPreference final StringPreference userPreference,
-    @AccessTokenPreference final StringPreference accessTokenPreference) {
-    return new CurrentUser(userPreference, accessTokenPreference);
+  CurrentUser provideCurrentUser(@AccessTokenPreference final StringPreference accessTokenPreference,
+    @UserPreference final StringPreference userPreference) {
+    return new CurrentUser(accessTokenPreference, userPreference);
   }
 
   @Provides

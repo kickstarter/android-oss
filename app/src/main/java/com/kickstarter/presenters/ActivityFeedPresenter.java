@@ -30,6 +30,7 @@ public class ActivityFeedPresenter extends Presenter<ActivityFeedActivity> {
     ((KsrApplication) context.getApplicationContext()).component().inject(this);
 
     final Observable<List<Activity>> activities = currentUser.loggedInUser()
+      .take(1)
       .flatMap(user -> client.fetchActivities(new ActivityFeedParams()))
       .map(envelope -> envelope.activities);
 

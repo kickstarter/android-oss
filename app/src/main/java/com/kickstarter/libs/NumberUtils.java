@@ -9,7 +9,7 @@ public class NumberUtils {
   private NumberUtils(){}
 
   @Nullable
-  public static String numberWithDelimiter(Integer integer) {
+  public static String numberWithDelimiter(final Integer integer) {
     if (integer != null) {
       return NumberFormat.getNumberInstance(Locale.getDefault()).format(integer);
     }

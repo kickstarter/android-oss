@@ -28,6 +28,8 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
   @Inject BuildCheck buildCheck;
 
   private final PublishSubject<Project> projectClick = PublishSubject.create();
+  private final PublishSubject<Void> paginationSubject = PublishSubject.create();
+  private final PublishSubject<DiscoveryParams> params = PublishSubject.create();
 
   @Override
   protected void onCreate(final Context context, final Bundle savedInstanceState) {
@@ -36,13 +38,11 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
 
     buildCheck.bind(this, kickstarterClient);
 
-    final DiscoveryParams initialParams = DiscoveryParams.params();
-
-    final Observable<List<Project>> projects = apiClient.fetchProjects(initialParams)
-      .map(envelope -> envelope.projects);
+    final Observable<List<Project>> projects = params
+      .switchMap(this::projectsWithPagination);
 
     final Observable<Pair<DiscoveryActivity, List<Project>>> viewAndProjects =
-      RxUtils.combineLatestPair(viewSubject, projects);
+      RxUtils.takePairWhen(viewSubject, projects);
 
     addSubscription(viewAndProjects
       .observeOn(AndroidSchedulers.mainThread())
@@ -50,11 +50,61 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
 
     addSubscription(RxUtils.takePairWhen(viewSubject, projectClick)
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(viewAndProject -> viewAndProject.first.startProjectDetailActivity(viewAndProject.second))
+        .subscribe(vp -> vp.first.startProjectDetailActivity(vp.second))
     );
+
+    // TODO: We shouldn't have to do this, but BehaviorSubject and scan
+    // don't seem to play well together:
+    // https://github.com/ReactiveX/RxJava/issues/3168
+    params.onNext(DiscoveryParams.params());
+    paginationSubject.onNext(null);
+  }
+
+  /**
+   * Given the params for the first page of a discovery search, returns an
+   * observable of pages of projects. A new page of projects is emitted
+   * whenever `paginationSubject` emits.
+   */
+  private Observable<List<Project>> projectsWithPagination(final DiscoveryParams firstPageParams) {
+    return paramsWithPagination(firstPageParams)
+      .concatMap(this::projectsFromParams)
+      ;
+  }
+
+  /**
+   * Given the params for the first page of a discovery search, returns
+   * an observable of params for each pagination. A new param is emitted
+   * whenever `paginationSubject` emits.
+   */
+  private Observable<DiscoveryParams> paramsWithPagination(final DiscoveryParams firstPageParams) {
+    return paginationSubject
+      .scan(firstPageParams, (currentPage, paging) -> currentPage.nextPage())
+      ;
+  }
+
+  /**
+   * Given params for a discovery search, returns an observable of the
+   * page of projects received from the api.
+   *
+   * Note: This ignores any api errors.
+   */
+  private Observable<List<Project>> projectsFromParams(final DiscoveryParams params) {
+    return apiClient.fetchProjects(params)
+      .retry(2)
+      .onErrorResumeNext(e -> Observable.empty())
+      .map(envelope -> envelope.projects)
+      ;
   }
 
   public void takeProjectClick(final Project project) {
     projectClick.onNext(project);
+  }
+
+  public void takeParams(final DiscoveryParams firstPageParams) {
+    params.onNext(firstPageParams);
+  }
+
+  public void takeNextPage() {
+    paginationSubject.onNext(null);
   }
 }

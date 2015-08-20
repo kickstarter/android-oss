@@ -7,10 +7,9 @@
   android:layout_height="match_parent"
   card_view:cardCornerRadius="@dimen/card_corner_radius"
   card_view:cardBackgroundColor="@android:color/transparent"
-  android:layout_marginLeft="@dimen/card_margin_x"
-  android:layout_marginRight="@dimen/card_margin_x"
-  android:layout_marginTop="@dimen/card_margin_y"
-  android:layout_marginBottom="@dimen/card_margin_y">
+  android:layout_marginLeft="@dimen/grid_2"
+  android:layout_marginRight="@dimen/grid_2"
+  android:layout_marginTop="@dimen/grid_3" >
 
   <RelativeLayout
     android:layout_width="match_parent"
@@ -23,7 +22,9 @@
       android:layout_below="@id/project_card_photo"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:padding="@dimen/keyline_1"
+      android:paddingTop="@dimen/grid_2"
+      android:paddingLeft="@dimen/grid_2"
+      android:paddingRight="@dimen/grid_2"
       android:orientation="vertical">
 
       <TextView
@@ -31,14 +32,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/text_dark"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title"
-        android:paddingBottom="@dimen/keyline_1" />
+        android:textSize="@dimen/title"
+        android:paddingBottom="@dimen/grid_2" />
 
       <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/keyline_1_half">
+        android:paddingBottom="@dimen/grid_2">
 
         <com.kickstarter.ui.views.IconTextView
           icon_text_view:iconType="material"
@@ -46,7 +47,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="center_vertical"
-          android:paddingRight="@dimen/card_padding_action_half"
+          android:paddingRight="@dimen/grid_1_half"
           android:text="local_offer"
           android:textColor="@color/text_dark" />
 
@@ -55,8 +56,8 @@
           android:layout_gravity="center_vertical"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:paddingLeft="@dimen/card_padding_action_half"
-          android:paddingRight="@dimen/card_padding_action"
+          android:paddingLeft="@dimen/grid_1_half"
+          android:paddingRight="@dimen/grid_1"
           android:textColor="@color/text_dark" />
 
         <com.kickstarter.ui.views.IconTextView
@@ -66,18 +67,20 @@
           android:layout_toRightOf="@id/category"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:paddingLeft="@dimen/card_padding_action"
-          android:paddingRight="@dimen/card_padding_action_half"
+          android:paddingLeft="@dimen/grid_1"
+          android:paddingRight="@dimen/grid_1_half"
           android:text="location_on"
           android:textColor="@color/text_dark" />
 
         <TextView
           android:id="@+id/location"
+          android:ellipsize="end"
+          android:singleLine="true"
           android:layout_gravity="center_vertical"
           android:layout_toRightOf="@id/location_icon"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:paddingLeft="@dimen/card_padding_action_half"
+          android:paddingLeft="@dimen/grid_1_half"
           android:textColor="@color/text_dark" />
 
       </LinearLayout>
@@ -88,8 +91,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="@dimen/progress_bar_min_height"
-        android:paddingTop="@dimen/keyline_1_half"
-        android:paddingBottom="@dimen/keyline_1_half"
+        android:paddingTop="@dimen/grid_1"
         android:progress="50" />
 
       <include layout="@layout/project_stats_view" />

@@ -28,7 +28,7 @@
       android:layout_alignParentBottom="true"
       android:layout_alignParentLeft="true"
       android:orientation="horizontal"
-      android:padding="@dimen/keyline_1"
+      android:padding="@dimen/grid_2"
       android:visibility="invisible">
 
       <com.kickstarter.ui.views.IconTextView
@@ -38,8 +38,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:paddingRight="@dimen/card_padding_action_half"
-        android:text="favorite"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:text="@string/favorite_icon"
+        android:textSize="@dimen/body"
         android:textColor="@color/green" />
 
       <TextView
@@ -49,7 +49,7 @@
         android:layout_gravity="center_vertical"
         android:paddingLeft="@dimen/card_padding_action_half"
         android:text="@string/project_of_the_day"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textSize="@dimen/body"
         android:textColor="@color/white" />
 
     </LinearLayout>

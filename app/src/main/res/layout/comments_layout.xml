@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <RelativeLayout
+    android:id="@+id/comments_header"
+    android:layout_width="match_parent"
+    android:gravity="center"
+    android:layout_height="@dimen/grid_10">
+
+    <ImageView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content" />
+
+    <TextView
+      android:id="@+id/project_name"
+      android:text="Project Name"
+      android:textStyle="bold"
+      android:layout_centerHorizontal="true"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textColor="@color/white" />
+
+    <TextView
+      android:id="@+id/creator_name"
+      android:text="Creator Name"
+      android:layout_centerHorizontal="true"
+      android:layout_below="@id/project_name"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textColor="@color/white" />
+
+  </RelativeLayout>
+
+  <android.support.v7.widget.RecyclerView
+    android:id="@+id/comments_list"
+    android:layout_below="@id/comments_header"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"/>
+
+</RelativeLayout>

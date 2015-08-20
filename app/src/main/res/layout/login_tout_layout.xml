@@ -11,8 +11,8 @@
     android:id="@+id/facebook_group"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/keyline_1"
-    android:paddingRight="@dimen/keyline_1"
+    android:paddingLeft="@dimen/grid_3"
+    android:paddingRight="@dimen/grid_3"
     android:paddingTop="@dimen/keyline_2_half"
     android:paddingBottom="@dimen/keyline_2_three_quarters"
     android:background="@color/window_background"
@@ -22,7 +22,7 @@
     <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:paddingBottom="@dimen/keyline_1"
+      android:paddingBottom="@dimen/grid_3"
       android:gravity="center_horizontal"
       android:textColor="@color/text_dark"
       android:textAppearance="@style/TextAppearance.AppCompat.Title"
@@ -35,13 +35,13 @@
       android:layout_gravity="center_horizontal"
       android:paddingTop="12dp"
       android:paddingBottom="12dp"
-      android:layout_marginLeft="@dimen/keyline_1"
-      android:layout_marginRight="@dimen/keyline_1" />
+      android:layout_marginLeft="@dimen/grid_3"
+      android:layout_marginRight="@dimen/grid_3" />
 
     <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:paddingTop="@dimen/keyline_1"
+      android:paddingTop="@dimen/grid_3"
       android:gravity="center_horizontal"
       android:textAppearance="@style/TextAppearance.AppCompat.Caption"
       android:textColor="@color/dark_gray"
@@ -54,10 +54,10 @@
     android:layout_height="fill_parent"
     android:background="@color/light_gray"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/keyline_1"
-    android:paddingRight="@dimen/keyline_1"
+    android:paddingLeft="@dimen/grid_3"
+    android:paddingRight="@dimen/grid_3"
     android:paddingTop="@dimen/keyline_2_half"
-    android:paddingBottom="@dimen/keyline_1">
+    android:paddingBottom="@dimen/grid_3">
 
     <TextView
       android:layout_width="wrap_content"
@@ -70,7 +70,7 @@
     <LinearLayout
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:paddingTop="@dimen/keyline_1"
+      android:paddingTop="@dimen/grid_3"
       android:orientation="horizontal"
       android:layout_gravity="center_horizontal">
 

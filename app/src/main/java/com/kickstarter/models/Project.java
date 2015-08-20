@@ -6,6 +6,7 @@ import android.os.Parcelable;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.kickstarter.libs.CurrencyOptions;
+import com.kickstarter.libs.NumberUtils;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -18,6 +19,7 @@ public class Project implements Parcelable {
   public Integer backers_count = null;
   public String blurb = null;
   public Category category = null;
+  public Integer comments_count = null;
   public String country = null; // e.g.: US
   public String currency = null; // e.g.: USD
   public String currency_symbol = null; // e.g.: $
@@ -34,13 +36,20 @@ public class Project implements Parcelable {
   public DateTime potd_at = null;
   public String slug = null;
   public User creator = null;
+  public Integer updates_count = null;
   public Urls urls = null;
   public List<Reward> rewards = null;
 
   public Integer backersCount() { return backers_count; }
+  public String formattedBackersCount() {
+    return NumberUtils.numberWithDelimiter(backers_count);
+  }
   public String blurb() { return blurb; }
   public Category category() { return category; }
   public User creator() { return creator; }
+  public String formattedCommentsCount() {
+    return NumberUtils.numberWithDelimiter(comments_count);
+  }
   public String country() { return country; }
   public String currency() { return currency; }
   public String currencySymbol() { return currency_symbol; }
@@ -55,8 +64,21 @@ public class Project implements Parcelable {
   public Photo photo() { return photo; }
   public Video video() { return video; }
   public String slug() { return slug; }
+  public String formattedUpdatesCount() {
+    return NumberUtils.numberWithDelimiter(updates_count);
+  }
   public Urls urls() { return urls; }
+  public String creatorBioUrl() {
+    return urls().web().creatorBio();
+  }
+  public String descriptionUrl() {
+    return urls().web().description();
+  }
   public String webProjectUrl() { return urls().web().project(); }
+  public String updatesUrl() {
+    return urls().web().updates();
+  }
+
   public List<Reward> rewards() {
     return rewards;
   }
@@ -64,20 +86,26 @@ public class Project implements Parcelable {
   @ParcelablePlease
   public static class Urls implements Parcelable {
     public Web web = null;
+    public Api api = null;
 
     public Web web() {
       return web;
     }
-    
+    public Api api() {
+      return api;
+    }
+
     @ParcelablePlease
     public static class Web implements Parcelable {
       public String project = null;
       public String rewards = null;
+      public String updates = null;
 
-      public String creatorBio() { return project + "/creator_bio"; }
-      public String description() { return project + "/description"; }
+      public String creatorBio() { return Uri.parse(project()).buildUpon().appendEncodedPath("/creator_bio").toString(); }
+      public String description() { return Uri.parse(project()).buildUpon().appendEncodedPath("/description").toString(); }
       public String project() { return project; }
       public String rewards() { return rewards; }
+      public String updates() { return updates; }
 
       @Override
       public int describeContents() { return 0; }
@@ -90,6 +118,26 @@ public class Project implements Parcelable {
           return target;
         }
         public Web[] newArray(int size) {return new Web[size];}
+      };
+    }
+
+    @ParcelablePlease
+    public static class Api implements Parcelable {
+      public String comments = null;
+
+      public String comments() { return comments; }
+
+      @Override
+      public int describeContents() { return 0; }
+      @Override
+      public void writeToParcel(Parcel dest, int flags) {com.kickstarter.models.ApiParcelablePlease.writeToParcel(this, dest, flags);}
+      public static final Creator<Api> CREATOR = new Creator<Api>() {
+        public Api createFromParcel(Parcel source) {
+          Api target = new Api();
+          com.kickstarter.models.ApiParcelablePlease.readFromParcel(target, source);
+          return target;
+        }
+        public Api[] newArray(int size) {return new Api[size];}
       };
     }
 
@@ -173,26 +221,16 @@ public class Project implements Parcelable {
     return Uri.parse(secureWebProjectUrl()).buildUpon().appendEncodedPath("pledge/edit").toString();
   }
 
-  // Parcelable
   @Override
-  public int describeContents() {
-    return 0;
-  }
-
+  public int describeContents() { return 0; }
   @Override
-  public void writeToParcel(Parcel dest, int flags) {
-    ProjectParcelablePlease.writeToParcel(this, dest, flags);
-  }
-
+  public void writeToParcel(Parcel dest, int flags) {ProjectParcelablePlease.writeToParcel(this, dest, flags);}
   public static final Creator<Project> CREATOR = new Creator<Project>() {
     public Project createFromParcel(Parcel source) {
       Project target = new Project();
       ProjectParcelablePlease.readFromParcel(target, source);
       return target;
     }
-
-    public Project[] newArray(int size) {
-      return new Project[size];
-    }
+    public Project[] newArray(int size) {return new Project[size];}
   };
 }

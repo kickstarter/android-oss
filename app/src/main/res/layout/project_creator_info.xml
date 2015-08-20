@@ -2,51 +2,140 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
+  xmlns:icon_text_view="http://schemas.android.com/apk/res-auto"
   android:orientation="vertical"
-  android:paddingBottom="@dimen/keyline_1"
-  android:paddingLeft="@dimen/keyline_1"
-  android:paddingRight="@dimen/keyline_1"
-  android:paddingTop="@dimen/keyline_1">
+  android:paddingRight="@dimen/grid_3"
+  android:paddingLeft="@dimen/grid_3">
 
   <RelativeLayout
     android:id="@+id/creator_info"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/keyline_1"
-    android:paddingTop="@dimen/keyline_1">
+    android:paddingBottom="@dimen/grid_3"
+    android:paddingTop="@dimen/grid_3">
 
     <TextView
       android:id="@+id/created_by"
+      android:text="@string/Created_by"
+      android:paddingTop="@dimen/grid_1"
+      android:textSize="@dimen/ksr_subhead"
+      android:textColor="@color/text_dark"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="@string/Created_by"/>
+      android:layout_height="wrap_content" />
 
     <TextView
       android:id="@+id/avatar_name"
+      android:textSize="@dimen/ksr_name"
+      android:textStyle="bold"
+      android:layout_below="@id/created_by"
+      android:textColor="@color/text_dark"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_below="@id/created_by" />
+      android:layout_height="wrap_content" />
 
     <de.hdodenhof.circleimageview.CircleImageView
       android:id="@+id/avatar"
-      android:layout_width="100dp"
-      android:layout_height="100dp"
+      android:layout_width="@dimen/project_detail_avatar_width"
+      android:layout_height="@dimen/project_detail_avatar_height"
       android:layout_alignParentEnd="true"
       android:layout_alignParentRight="true"
       android:scaleType="centerCrop" />
   </RelativeLayout>
 
-  <!-- for campaign, update, and comments. will need icons-->
-  <ListView
+  <LinearLayout
+    android:orientation="vertical"
     android:id="@+id/creator_links"
-    android:paddingTop="@dimen/keyline_1"
-    android:paddingBottom="@dimen/keyline_1"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_below="@id/creator_info"
     android:divider="@color/gray"
-    android:dividerHeight="1dp">
-  </ListView>
+    android:dividerHeight="1dp" >
+
+    <RelativeLayout
+      android:id="@+id/campaign"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/grid_11_half"
+      android:onClick="blurbOnClick" >
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:textColor="@drawable/text_selector"
+        android:textSize="@dimen/body"
+        android:text="@string/Campaign" />
+
+      <com.kickstarter.ui.views.IconTextView
+        icon_text_view:iconType="material"
+        android:textSize="@dimen/body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/chevron_right_icon"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:textColor="@color/dark_gray" />
+    </RelativeLayout>
+
+    <include layout="@layout/horizontal_line_view" />
+
+    <RelativeLayout
+      android:id="@+id/updates"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/grid_11_half"
+      android:onClick="updatesClick" >
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:textColor="@drawable/text_selector"
+        android:textSize="@dimen/body"
+        android:text="@string/Updates" />
+
+      <!-- todo: replace with icon-->
+      <TextView
+        android:layout_centerVertical="true"
+        android:textSize="@dimen/body"
+        android:id="@+id/updates_count"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+    <include layout="@layout/horizontal_line_view" />
+
+    <RelativeLayout
+      android:id="@+id/comments"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/grid_11_half"
+      android:onClick="commentsClick" >
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:textColor="@drawable/text_selector"
+        android:textSize="@dimen/body"
+        android:text="@string/Comments" />
+
+      <!-- todo: replace with icon-->
+      <TextView
+        android:layout_centerVertical="true"
+        android:textSize="@dimen/body"
+        android:id="@+id/comments_count"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    </RelativeLayout>
+  </LinearLayout>
 
   <TextView
     android:id="@+id/fund_message"
@@ -54,7 +143,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_below="@id/creator_links"
-    android:paddingTop="@dimen/keyline_1"
-    android:paddingBottom="@dimen/keyline_1" />
+    android:paddingTop="@dimen/grid_3"
+    android:paddingBottom="@dimen/grid_3"/>
 
 </RelativeLayout>

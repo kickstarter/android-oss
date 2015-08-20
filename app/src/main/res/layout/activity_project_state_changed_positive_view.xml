@@ -25,7 +25,7 @@
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/keyline_1"
+    android:layout_margin="@dimen/grid_3"
     android:layout_gravity="center"
     android:orientation="vertical">
 
@@ -34,7 +34,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="center"
-      android:layout_marginBottom="@dimen/keyline_1"
+      android:layout_marginBottom="@dimen/grid_3"
       android:gravity="center"
       android:text="Title"
       android:textAppearance="@style/TextAppearance.AppCompat.Title"
@@ -43,7 +43,7 @@
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/keyline_1"
+      android:layout_marginTop="@dimen/grid_3"
       android:orientation="horizontal">
 
       <LinearLayout

@@ -159,6 +159,6 @@
     </LinearLayout>
   </ScrollView>
 
-  <include layout="@layout/project_back_toolbar"/>
+  <include layout="@layout/project_bottom_toolbar"/>
 
 </RelativeLayout>

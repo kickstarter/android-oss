@@ -7,6 +7,7 @@
   <dimen name="grid_3">24dp</dimen>
   <dimen name="grid_4">32dp</dimen>
   <dimen name="grid_5">40dp</dimen>
+  <dimen name="grid_7">56dp</dimen>
   <dimen name="grid_8">64dp</dimen>
   <dimen name="grid_10">80dp</dimen>
   <dimen name="grid_11_half">44dp</dimen>
@@ -25,6 +26,8 @@
   <!-- Kickstarter photos-->
   <dimen name="project_detail_avatar_width">@dimen/grid_8</dimen>
   <dimen name="project_detail_avatar_height">@dimen/grid_8</dimen>
+  <dimen name="comments_feed_avatar_width">@dimen/grid_7</dimen>
+  <dimen name="comments_feed_avatar_height">@dimen/grid_7</dimen>
 
   <!-- Kickstarter & Material values-->
   <dimen name="ksr_card_elevation">4dp</dimen>

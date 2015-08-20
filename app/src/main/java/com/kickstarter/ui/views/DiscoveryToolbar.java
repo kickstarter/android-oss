@@ -55,7 +55,6 @@ public class DiscoveryToolbar extends Toolbar {
   @Override
   protected void onFinishInflate() {
     super.onFinishInflate();
-    Timber.d("onFinishInflate");
 
     if (isInEditMode()) {
       return;
@@ -67,14 +66,12 @@ public class DiscoveryToolbar extends Toolbar {
     initializeCategorySpinner();
 
     activityFeedButton.setOnClickListener(v -> {
-      Timber.d("activity_feed_button clicked");
       Intent intent = new Intent(getContext(), ActivityFeedActivity.class);
       getContext().startActivity(intent);
     });
   }
 
   protected void showLoggedInMenu(final User user) {
-    Timber.d("showLoggedInMenu");
     loginButton.setVisibility(GONE);
     currentUserButton.setVisibility(VISIBLE);
     currentUserButton.setOnClickListener(v -> {
@@ -100,11 +97,9 @@ public class DiscoveryToolbar extends Toolbar {
   }
 
   protected void showLoggedOutMenu() {
-    Timber.d("showLoggedOutMenu");
     currentUserButton.setVisibility(GONE);
     loginButton.setVisibility(VISIBLE);
     loginButton.setOnClickListener(v -> {
-      Timber.d("loginButton clicked");
       Intent intent = new Intent(getContext(), LoginToutActivity.class);
       getContext().startActivity(intent);
     });
@@ -140,7 +135,6 @@ public class DiscoveryToolbar extends Toolbar {
   @Override
   protected void onAttachedToWindow() {
     super.onAttachedToWindow();
-    Timber.d("onAttachedToWindow");
 
     if (currentUser.getUser() == null) {
       showLoggedOutMenu();
@@ -154,7 +148,6 @@ public class DiscoveryToolbar extends Toolbar {
   @Override
   protected void onDetachedFromWindow() {
     super.onDetachedFromWindow();
-    Timber.d("onDetachedFromWindow");
 
     loginSubscription.unsubscribe();
   }

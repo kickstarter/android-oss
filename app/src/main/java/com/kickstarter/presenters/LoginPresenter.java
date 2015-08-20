@@ -78,7 +78,7 @@ public class LoginPresenter extends Presenter<LoginActivity> {
   }
 
   private void success(final AccessTokenEnvelope envelope) {
-    currentUser.set(envelope.user, envelope.access_token);
+    currentUser.login(envelope.user, envelope.access_token);
 
     if (hasView()) {
       view().onSuccess(forward);

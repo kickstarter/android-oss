@@ -23,7 +23,6 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
-import timber.log.Timber;
 
 @RequiresPresenter(ActivityFeedPresenter.class)
 public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
@@ -37,14 +36,10 @@ public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
     super.onCreate(savedInstanceState);
 
     ((KsrApplication) getApplication()).component().inject(this);
-    if (currentUser.exists()) {
-      // TODO: Show different layout if no activities exist
-      setContentView(R.layout.activity_feed_layout);
-    } else {
-      setContentView(R.layout.empty_activity_feed_layout);
-    }
-
+    final int layout = currentUser.exists() ? R.layout.activity_feed_layout : R.layout.empty_activity_feed_layout;
+    setContentView(layout);
     ButterKnife.inject(this);
+
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
   }
 
@@ -54,7 +49,6 @@ public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
   }
 
   public void onItemsNext(final List<Activity> activities) {
-    Timber.d("onItemsNext %s", this.toString());
     adapter = new ActivityListAdapter(activities, presenter);
     recyclerView.setAdapter(adapter);
   }

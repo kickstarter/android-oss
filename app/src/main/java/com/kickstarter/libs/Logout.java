@@ -2,8 +2,6 @@ package com.kickstarter.libs;
 
 import android.content.Context;
 
-import com.kickstarter.KsrApplication;
-
 import java.net.CookieManager;
 
 public class Logout {
@@ -15,8 +13,8 @@ public class Logout {
     this.currentUser = currentUser;
   }
 
-  public void execute(final Context context) {
-    currentUser.unset();
+  public void execute() {
+    currentUser.logout();
     cookieManager.getCookieStore().removeAll();
   }
 }

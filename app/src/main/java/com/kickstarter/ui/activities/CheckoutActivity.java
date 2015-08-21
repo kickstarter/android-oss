@@ -10,6 +10,13 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.CheckoutPresenter;
+import com.kickstarter.services.KickstarterUri;
+import com.kickstarter.services.ResponseHandler;
+import com.kickstarter.ui.views.KickstarterWebView;
+import com.squareup.okhttp.Response;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -17,7 +24,7 @@ import timber.log.Timber;
 
 @RequiresPresenter(CheckoutPresenter.class)
 public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
-  public @InjectView(R.id.web_view) WebView webView;
+  public @InjectView(R.id.web_view) KickstarterWebView webView;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
@@ -30,6 +37,11 @@ public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
     final String url = intent.getExtras().getString(getString(R.string.intent_url));
     presenter.takeProject(intent.getExtras().getParcelable(getString(R.string.intent_project)));
 
+    webView.client().registerResponseHandlers(Arrays.asList(
+      new ResponseHandler(KickstarterUri::isSignupUri, this::handleSignupUriRequest),
+      new ResponseHandler(KickstarterUri::isCheckoutThanksUri, this::handleCheckoutThanksUriRequest)
+    ));
+
     webView.loadUrl(url);
   }
 
@@ -40,19 +52,11 @@ public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
-  public void onSignupUriRequest() {
-    presenter.takeSignupUriRequest();
-  }
-
   public void startLoginToutActivity() {
     final Intent intent = new Intent(this, LoginToutActivity.class)
       .putExtra(getString(R.string.intent_forward), true);
     startActivityForResult(intent,
       ActivityRequestCodes.CHECKOUT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
-  }
-
-  public void onCheckoutThanksUriRequest() {
-    presenter.takeCheckoutThanksUriRequest();
   }
 
   public void startThanksActivity(final Project project) {
@@ -76,4 +80,16 @@ public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
 
     presenter.takeLoginSuccess();
   }
+
+  private boolean handleSignupUriRequest(final Response response, final WebView webView) {
+    presenter.takeSignupUriRequest();
+    return true;
+  }
+
+
+  private boolean handleCheckoutThanksUriRequest(final Response response, final WebView webView) {
+    presenter.takeCheckoutThanksUriRequest();
+    return true;
+  }
+
 }

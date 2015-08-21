@@ -10,7 +10,6 @@ import com.kickstarter.libs.Build;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.FormContents;
 import com.kickstarter.libs.IOUtils;
-import com.kickstarter.ui.activities.CheckoutActivity;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -25,6 +24,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.CookieManager;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,6 +37,7 @@ public class KickstarterWebViewClient extends WebViewClient {
   private final CookieManager cookieManager;
   private final CurrentUser currentUser;
   private final String webEndpoint;
+  private final List<ResponseHandler> responseHandlers = new ArrayList<>();
   private FormContents formContents = null;
 
   public KickstarterWebViewClient(final Build build,
@@ -45,6 +48,8 @@ public class KickstarterWebViewClient extends WebViewClient {
     this.cookieManager = cookieManager;
     this.currentUser = currentUser;
     this.webEndpoint = webEndpoint;
+
+    initializeResponseHandlers();
   }
 
   @Override
@@ -61,13 +66,7 @@ public class KickstarterWebViewClient extends WebViewClient {
       final Response response = client.newCall(request).execute();
       final MimeHeaders mimeHeaders = new MimeHeaders(response.body().contentType().toString());
 
-      // TODO: Refactor, this is gross
-      final Uri lastRequestUri = Uri.parse(response.request().urlString());
-      if (isSignupUri(lastRequestUri)) {
-        ((CheckoutActivity) view.getContext()).onSignupUriRequest();
-        return noopWebResourceResponse();
-      } else if (isCheckoutThanksUri(lastRequestUri)) {
-        ((CheckoutActivity) view.getContext()).onCheckoutThanksUriRequest();
+      if (handleResponse(response, view)) {
         return noopWebResourceResponse();
       }
 
@@ -157,33 +156,44 @@ public class KickstarterWebViewClient extends WebViewClient {
   }
 
   protected boolean isInterceptable(final Uri uri) {
-    return isKickstarterUri(uri);
-  }
-
-  protected boolean isKickstarterUri(final Uri uri) {
-    return uri.getHost().equals(Uri.parse(webEndpoint).getHost());
-  }
-
-  protected boolean isSignupUri(final Uri uri) {
-    return isKickstarterUri(uri) && uri.getPath().equals("/signup");
-  }
-
-  protected boolean isCheckoutThanksUri(final Uri uri) {
-    // e.g. /projects/slug-1/slug-2/checkouts/1/thanks
-    return isKickstarterUri(uri) &&
-      Pattern.compile("\\A\\/projects/[a-zA-Z0-9_-]+\\/[a-zA-Z0-9_-]+\\/checkouts\\/\\d+\\/thanks\\z")
-        .matcher(uri.getPath()).matches();
-  }
-
-  protected boolean isProjectNewPledgeUri(final Uri uri) {
-    // e.g. /projects/slug-1/slug-2/pledge/new
-    return isKickstarterUri(uri) &&
-      Pattern.compile("\\A\\/projects/[a-zA-Z0-9_-]+\\/[a-zA-Z0-9_-]+\\/pledge\\/new\\z")
-        .matcher(uri.getPath()).matches();
+    return KickstarterUri.isKickstarterUri(uri, webEndpoint);
   }
 
   protected WebResourceResponse noopWebResourceResponse() throws IOException {
     return new WebResourceResponse("application/JavaScript", null, new ByteArrayInputStream(new byte[0]));
+  }
+
+  private void initializeResponseHandlers() {
+    Collections.addAll(responseHandlers,
+      new ResponseHandler(KickstarterUri::isProjectUri, this::startProjectDetailActivity)
+    );
+  }
+
+  // The order of response handlers is important - we iterate through the response handlers
+  // sequentially until a match is found.
+  public void registerResponseHandlers(final List<ResponseHandler> responseHandlers) {
+    this.responseHandlers.addAll(0, responseHandlers);
+  }
+
+  private boolean startProjectDetailActivity(final Response response, final WebView webView) {
+//    final Context context = webView.getContext();
+//    final Intent intent = new Intent(context, ProjectDetailActivity.class);
+//    // TODO: Pass project intent
+//    context.startActivity(intent);
+//    return true;
+    return false;
+  }
+
+
+  private boolean handleResponse(final Response response, final WebView webView) {
+    final Uri uri = Uri.parse(response.request().urlString());
+    for (final ResponseHandler responseHandler : responseHandlers) {
+      if (responseHandler.matches(uri, webEndpoint) && responseHandler.action(response, webView)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   public class MimeHeaders {

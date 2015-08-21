@@ -80,6 +80,16 @@ public class KickstarterWebViewClient extends WebViewClient {
     }
   }
 
+  // The order of response handlers is important - we iterate through the response handlers
+  // sequentially until a match is found.
+  public void registerResponseHandlers(final List<ResponseHandler> responseHandlers) {
+    this.responseHandlers.addAll(0, responseHandlers);
+  }
+
+  public void setFormContents(final FormContents formContents) {
+    this.formContents = formContents;
+  }
+
   protected InputStream constructBody(final Context context, final Response response, final MimeHeaders mimeHeaders) throws IOException {
     InputStream body = response.body().byteStream();
 
@@ -88,10 +98,6 @@ public class KickstarterWebViewClient extends WebViewClient {
     }
 
     return body;
-  }
-
-  public void setFormContents(final FormContents formContents) {
-    this.formContents = formContents;
   }
 
   protected Request buildRequest(final String url) {
@@ -169,18 +175,9 @@ public class KickstarterWebViewClient extends WebViewClient {
     );
   }
 
-  // The order of response handlers is important - we iterate through the response handlers
-  // sequentially until a match is found.
-  public void registerResponseHandlers(final List<ResponseHandler> responseHandlers) {
-    this.responseHandlers.addAll(0, responseHandlers);
-  }
-
   private boolean startProjectDetailActivity(final Response response, final WebView webView) {
-//    final Context context = webView.getContext();
-//    final Intent intent = new Intent(context, ProjectDetailActivity.class);
-//    // TODO: Pass project intent
-//    context.startActivity(intent);
-//    return true;
+    // TODO: Start project activity. Would only be able to extract the slug of a project
+    // though, that's not enough data to properly load the activity.
     return false;
   }
 

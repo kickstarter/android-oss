@@ -2,7 +2,6 @@ package com.kickstarter.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.webkit.WebView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
@@ -10,13 +9,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.CheckoutPresenter;
-import com.kickstarter.services.KickstarterUri;
-import com.kickstarter.services.ResponseHandler;
 import com.kickstarter.ui.views.KickstarterWebView;
-import com.squareup.okhttp.Response;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -35,14 +28,8 @@ public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
 
     final Intent intent = getIntent();
     final String url = intent.getExtras().getString(getString(R.string.intent_url));
-    presenter.takeProject(intent.getExtras().getParcelable(getString(R.string.intent_project)));
-
-    webView.client().registerResponseHandlers(Arrays.asList(
-      new ResponseHandler(KickstarterUri::isSignupUri, this::handleSignupUriRequest),
-      new ResponseHandler(KickstarterUri::isCheckoutThanksUri, this::handleCheckoutThanksUriRequest)
-    ));
-
-    webView.loadUrl(url);
+    final Project project = intent.getExtras().getParcelable(getString(R.string.intent_project));
+    presenter.initialize(project, url);
   }
 
   @Override
@@ -80,16 +67,4 @@ public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
 
     presenter.takeLoginSuccess();
   }
-
-  private boolean handleSignupUriRequest(final Response response, final WebView webView) {
-    presenter.takeSignupUriRequest();
-    return true;
-  }
-
-
-  private boolean handleCheckoutThanksUriRequest(final Response response, final WebView webView) {
-    presenter.takeCheckoutThanksUriRequest();
-    return true;
-  }
-
 }

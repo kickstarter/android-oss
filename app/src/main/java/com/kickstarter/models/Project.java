@@ -83,6 +83,16 @@ public class Project implements Parcelable {
     return rewards;
   }
 
+  static public Project createFromParam(final String param) {
+    final Project project = new Project();
+    if (param.matches("^[0-9]*$")) {
+      project.id = Integer.parseInt(param);
+    } else {
+      project.slug = param;
+    }
+    return project;
+  }
+
   @ParcelablePlease
   public static class Urls implements Parcelable {
     public Web web = null;
@@ -206,6 +216,16 @@ public class Project implements Parcelable {
       return "hours";
     }
     return "days";
+  }
+
+  public boolean isDisplayable() {
+    // A project might not be displayable if it was constructed manually, e.g. if it was created by parsing a project
+    // param into a project POJO.
+    return name != null;
+  }
+
+  public String param() {
+    return id != null ? id.toString() : slug;
   }
 
   public String secureWebProjectUrl() {

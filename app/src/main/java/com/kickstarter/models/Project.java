@@ -219,8 +219,6 @@ public class Project implements Parcelable {
   }
 
   public boolean isDisplayable() {
-    // A project might not be displayable if it was constructed manually, e.g. if it was created by parsing a project
-    // param into a project POJO.
     return name != null;
   }
 

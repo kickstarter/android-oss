@@ -9,6 +9,7 @@ import com.kickstarter.libs.Build;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.DateTimeTypeConverter;
 import com.kickstarter.models.Activity;
+import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiResponses.AccessTokenEnvelope;
 import com.kickstarter.services.ApiResponses.ActivityEnvelope;

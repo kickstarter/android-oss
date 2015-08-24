@@ -154,6 +154,20 @@
 
       <include layout="@layout/horizontal_line_view" />
 
+      <!-- todo: populate this list with friend backers-->
+      <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ListView
+          android:visibility="gone"
+          android:id="@+id/friend_backing_list"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content" />
+
+      </LinearLayout>
+
       <include layout="@layout/project_creator_info" />
 
     </LinearLayout>

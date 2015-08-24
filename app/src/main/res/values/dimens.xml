@@ -7,8 +7,10 @@
   <dimen name="grid_3">24dp</dimen>
   <dimen name="grid_4">32dp</dimen>
   <dimen name="grid_5">40dp</dimen>
+  <dimen name="grid_6">48dp</dimen>
   <dimen name="grid_7">56dp</dimen>
   <dimen name="grid_8">64dp</dimen>
+  <dimen name="grid_9">72dp</dimen>
   <dimen name="grid_10">80dp</dimen>
   <dimen name="grid_11_half">44dp</dimen>
   <dimen name="grid_11">88dp</dimen>
@@ -22,12 +24,6 @@
   <dimen name="ksr_name">16sp</dimen>
   <dimen name="body">17sp</dimen>
   <dimen name="ksr_stats">18sp</dimen>
-
-  <!-- Kickstarter photos-->
-  <dimen name="project_detail_avatar_width">@dimen/grid_8</dimen>
-  <dimen name="project_detail_avatar_height">@dimen/grid_8</dimen>
-  <dimen name="comments_feed_avatar_width">@dimen/grid_7</dimen>
-  <dimen name="comments_feed_avatar_height">@dimen/grid_7</dimen>
 
   <!-- Kickstarter & Material values-->
   <dimen name="ksr_card_elevation">4dp</dimen>
@@ -79,4 +75,8 @@
   <dimen name="activity_feed_small_photo_height">72dp</dimen>
   <dimen name="activity_feed_medium_photo_width">120dp</dimen>
   <dimen name="activity_feed_medium_photo_height">90dp</dimen>
+  <dimen name="comments_feed_avatar_width">@dimen/grid_7</dimen>
+  <dimen name="comments_feed_avatar_height">@dimen/grid_7</dimen>
+  <dimen name="project_detail_avatar_width">@dimen/grid_8</dimen>
+  <dimen name="project_detail_avatar_height">@dimen/grid_8</dimen>
 </resources>

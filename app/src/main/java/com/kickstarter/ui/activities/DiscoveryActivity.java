@@ -33,7 +33,7 @@ import rx.subjects.PublishSubject;
 public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
   final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
   final ArrayList<Project> projects = new ArrayList<>();
-  final ProjectListAdapter adapter = new ProjectListAdapter(projects, presenter);
+  ProjectListAdapter adapter;
   final PublishSubject<Integer> visibleItem = PublishSubject.create();
   final PublishSubject<Integer> itemCount = PublishSubject.create();
   Subscription pageSubscription;
@@ -53,6 +53,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
     layoutInflater.inflate(R.layout.discovery_layout, container);
     ButterKnife.inject(this, container);
 
+    adapter = new ProjectListAdapter(projects, presenter);
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);
 

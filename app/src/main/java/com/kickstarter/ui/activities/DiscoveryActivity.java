@@ -33,7 +33,7 @@ import rx.subjects.PublishSubject;
 public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
   ProjectListAdapter adapter;
   LinearLayoutManager layoutManager;
-  final ArrayList<Project> projects = new ArrayList<>();
+  final List<Project> projects = new ArrayList<>();
   final PublishSubject<Integer> visibleItem = PublishSubject.create();
   final PublishSubject<Integer> itemCount = PublishSubject.create();
   Subscription pageSubscription;
@@ -84,7 +84,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
   }
 
   public void onItemsNext(final List<Project> newProjects) {
-    for (final Project newProject: newProjects){
+    for (final Project newProject: newProjects) {
       if (! projects.contains(newProject)) {
         projects.add(newProject);
       }

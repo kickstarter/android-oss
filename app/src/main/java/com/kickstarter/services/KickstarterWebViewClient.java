@@ -37,7 +37,7 @@ public class KickstarterWebViewClient extends WebViewClient {
   private final CookieManager cookieManager;
   private final CurrentUser currentUser;
   private final String webEndpoint;
-  private final List<ResponseHandler> responseHandlers = new ArrayList<>();
+  private final List<RequestHandler> requestHandlers = new ArrayList<>();
   private FormContents formContents = null;
 
   public KickstarterWebViewClient(final Build build,
@@ -63,13 +63,21 @@ public class KickstarterWebViewClient extends WebViewClient {
 
     try {
       final Request request = buildRequest(url);
-      final Response response = client.newCall(request).execute();
-      final MimeHeaders mimeHeaders = new MimeHeaders(response.body().contentType().toString());
 
-      if (handleResponse(response, view)) {
+      if (handleRequest(request, view)) {
         return noopWebResourceResponse();
       }
 
+      final Response response = client.newCall(request).execute();
+
+      // response.request() may be different to the initial request. e.g.: If a logged out user tries to pledge,
+      // the backend will respond with a redirect to login - response.request().url() would contain a login URL,
+      // not a pledge URL.
+      if (handleRequest(response.request(), view)) {
+        return noopWebResourceResponse();
+      }
+
+      final MimeHeaders mimeHeaders = new MimeHeaders(response.body().contentType().toString());
       final InputStream body = constructBody(view.getContext(), response, mimeHeaders);
 
       return new WebResourceResponse(mimeHeaders.type, mimeHeaders.encoding, body);
@@ -80,10 +88,10 @@ public class KickstarterWebViewClient extends WebViewClient {
     }
   }
 
-  // The order of response handlers is important - we iterate through the response handlers
+  // The order of request handlers is important - we iterate through the request handlers
   // sequentially until a match is found.
-  public void registerResponseHandlers(final List<ResponseHandler> responseHandlers) {
-    this.responseHandlers.addAll(0, responseHandlers);
+  public void registerRequestHandlers(final List<RequestHandler> requestHandlers) {
+    this.requestHandlers.addAll(0, requestHandlers);
   }
 
   public void setFormContents(final FormContents formContents) {
@@ -170,22 +178,22 @@ public class KickstarterWebViewClient extends WebViewClient {
   }
 
   private void initializeResponseHandlers() {
-    Collections.addAll(responseHandlers,
-      new ResponseHandler(KickstarterUri::isProjectUri, this::startProjectDetailActivity)
+    Collections.addAll(requestHandlers,
+      new RequestHandler(KickstarterUri::isProjectUri, this::startProjectDetailActivity)
     );
   }
 
-  private boolean startProjectDetailActivity(final Response response, final WebView webView) {
+  private boolean startProjectDetailActivity(final Request request, final WebView webView) {
     // TODO: Start project activity. Would only be able to extract the slug of a project
     // though, that's not enough data to properly load the activity.
     return false;
   }
 
 
-  private boolean handleResponse(final Response response, final WebView webView) {
-    final Uri uri = Uri.parse(response.request().urlString());
-    for (final ResponseHandler responseHandler : responseHandlers) {
-      if (responseHandler.matches(uri, webEndpoint) && responseHandler.action(response, webView)) {
+  private boolean handleRequest(final Request request, final WebView webView) {
+    final Uri uri = Uri.parse(request.urlString());
+    for (final RequestHandler requestHandler : requestHandlers) {
+      if (requestHandler.matches(uri, webEndpoint) && requestHandler.action(request, webView)) {
         return true;
       }
     }

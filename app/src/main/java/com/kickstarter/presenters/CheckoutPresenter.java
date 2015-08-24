@@ -28,7 +28,7 @@ public class CheckoutPresenter extends Presenter<CheckoutActivity> {
   protected void onCreate(final Context context, final Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
 
-    addSubscription(RxUtils.combineLatestPair(viewSubject(), url)
+    addSubscription(RxUtils.combineLatestPair(viewSubject, url)
       .take(1)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vu -> startWebView(vu.first, vu.second)));

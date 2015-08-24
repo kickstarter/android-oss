@@ -12,23 +12,31 @@ import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RequiresPresenter;
+import com.kickstarter.libs.RxUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.DiscoveryPresenter;
 import com.kickstarter.services.ApiResponses.InternalBuildEnvelope;
 import com.kickstarter.ui.adapters.ProjectListAdapter;
 import com.kickstarter.ui.containers.ApplicationContainer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import timber.log.Timber;
+import rx.Subscription;
+import rx.subjects.PublishSubject;
 
 @RequiresPresenter(DiscoveryPresenter.class)
 public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
+  final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+  final ArrayList<Project> projects = new ArrayList<>();
   ProjectListAdapter adapter;
+  final PublishSubject<Integer> visibleItem = PublishSubject.create();
+  final PublishSubject<Integer> itemCount = PublishSubject.create();
+  Subscription pageSubscription;
 
   @Inject ApplicationContainer applicationContainer;
 
@@ -45,12 +53,47 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
     layoutInflater.inflate(R.layout.discovery_layout, container);
     ButterKnife.inject(this, container);
 
-    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    adapter = new ProjectListAdapter(projects, presenter);
+    recyclerView.setLayoutManager(layoutManager);
+    recyclerView.setAdapter(adapter);
+
+    pageSubscription = RxUtils.combineLatestPair(visibleItem, itemCount)
+      .distinctUntilChanged()
+      .filter(itemAndCount -> itemAndCount.first == itemAndCount.second - 2)
+      .subscribe(itemAndCount -> presenter.takeNextPage());
+
+    recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+      @Override
+      public void onScrolled(final RecyclerView recyclerView, final int dx, final int dy) {
+        final int visibleItemCount = layoutManager.getChildCount();
+        final int totalItemCount = layoutManager.getItemCount();
+        final int pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
+
+        visibleItem.onNext(visibleItemCount + pastVisibleItems);
+        itemCount.onNext(totalItemCount);
+      }
+    });
   }
 
-  public void onItemsNext(final List<Project> projects) {
-    adapter = new ProjectListAdapter(projects, presenter);
-    recyclerView.setAdapter(adapter);
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    recyclerView.clearOnScrollListeners();
+    pageSubscription.unsubscribe();
+  }
+
+  public void onItemsNext(final List<Project> newProjects) {
+    for (Project newProject: newProjects){
+      if (! projects.contains(newProject)) {
+        projects.add(newProject);
+      }
+    }
+    adapter.notifyDataSetChanged();
+  }
+
+  public void clearItems() {
+    projects.clear();
+    adapter.notifyDataSetChanged();
   }
 
   public void startProjectDetailActivity(final Project project) {

@@ -73,7 +73,7 @@ public class KickstarterWebViewClient extends WebViewClient {
       // response.request() may be different to the initial request. e.g.: If a logged out user tries to pledge,
       // the backend will respond with a redirect to login - response.request().url() would contain a login URL,
       // not a pledge URL.
-      if (handleRequest(response.request(), view)) {
+      if (!request.equals(response.request()) && handleRequest(response.request(), view)) {
         return noopWebResourceResponse();
       }
 

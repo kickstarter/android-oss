@@ -127,4 +127,9 @@ public class DiscoveryParams {
       .put("include_potd", staff_picks && page == 0 ? "true" : "")
       .build();
   }
+
+  @Override
+  public String toString () {
+    return queryParams().toString();
+  }
 }

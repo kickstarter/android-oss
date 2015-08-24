@@ -14,14 +14,10 @@ import com.kickstarter.models.Project;
 import com.kickstarter.presenters.DiscoveryPresenter;
 import com.squareup.picasso.Picasso;
 
-import java.text.NumberFormat;
-import java.util.Locale;
-
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-
 
 public class ProjectListViewHolder extends RecyclerView.ViewHolder {
   protected @InjectView(R.id.backers_count) TextView backers_count;
@@ -49,16 +45,13 @@ public class ProjectListViewHolder extends RecyclerView.ViewHolder {
     ((KsrApplication) view.getContext().getApplicationContext()).component().inject(this);
     ButterKnife.inject(this, view);
 
-    view.setOnClickListener((View v) -> {
-      this.presenter.takeProjectClick(project);
-    });
+    view.setOnClickListener((final View v) -> presenter.takeProjectClick(project));
   }
 
   public void onBind(final Project project) {
     this.project = project;
 
-    backers_count.setText(NumberFormat.getNumberInstance(Locale.getDefault())
-      .format(project.backersCount()));
+    backers_count.setText(project.formattedBackersCount());
     category.setText(project.category().name());
     deadline_countdown.setText(Integer.toString(project.deadlineCountdown()));
     deadline_countdown_unit.setText(project.deadlineCountdownUnit());

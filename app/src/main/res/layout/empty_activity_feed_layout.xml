@@ -30,7 +30,7 @@
     android:layout_height="wrap_content"
     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
     android:paddingTop="@dimen/keyline_1_half"
-    android:paddingBottom="@dimen/keyline_1"
+    android:paddingBottom="@dimen/grid_3"
     android:text="@string/When_you_back_a_project_or_follow_a_friend"
     android:gravity="center_horizontal"
     android:paddingLeft="@dimen/keyline_2_half"
@@ -42,7 +42,7 @@
     android:layout_height="wrap_content"
     android:onClick="discoverProjectsButtonOnClick"
     android:text="@string/Discover_projects"
-    android:padding="@dimen/keyline_1"
+    android:padding="@dimen/grid_3"
     android:layout_marginTop="@dimen/keyline_1_half" />
 
   <android.support.v7.widget.RecyclerView

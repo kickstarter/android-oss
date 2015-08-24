@@ -128,7 +128,6 @@ public class ApplicationModule {
   }
 
   @Provides
-  @Singleton
   KickstarterWebViewClient provideKickstarterWebViewClient(final Build build,
     final CookieManager cookieManager,
     final CurrentUser currentUser,

@@ -45,9 +45,7 @@ public class ProjectListViewHolder extends RecyclerView.ViewHolder {
     ((KsrApplication) view.getContext().getApplicationContext()).component().inject(this);
     ButterKnife.inject(this, view);
 
-    view.setOnClickListener((View v) -> {
-      this.presenter.takeProjectClick(project);
-    });
+    view.setOnClickListener((final View v) -> presenter.takeProjectClick(project));
   }
 
   public void onBind(final Project project) {

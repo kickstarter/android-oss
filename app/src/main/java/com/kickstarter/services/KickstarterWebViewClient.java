@@ -10,7 +10,6 @@ import com.kickstarter.libs.Build;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.FormContents;
 import com.kickstarter.libs.IOUtils;
-import com.kickstarter.ui.activities.CheckoutActivity;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -25,6 +24,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.CookieManager;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,6 +37,7 @@ public class KickstarterWebViewClient extends WebViewClient {
   private final CookieManager cookieManager;
   private final CurrentUser currentUser;
   private final String webEndpoint;
+  private final List<RequestHandler> requestHandlers = new ArrayList<>();
   private FormContents formContents = null;
 
   public KickstarterWebViewClient(final Build build,
@@ -45,6 +48,8 @@ public class KickstarterWebViewClient extends WebViewClient {
     this.cookieManager = cookieManager;
     this.currentUser = currentUser;
     this.webEndpoint = webEndpoint;
+
+    initializeResponseHandlers();
   }
 
   @Override
@@ -58,19 +63,21 @@ public class KickstarterWebViewClient extends WebViewClient {
 
     try {
       final Request request = buildRequest(url);
-      final Response response = client.newCall(request).execute();
-      final MimeHeaders mimeHeaders = new MimeHeaders(response.body().contentType().toString());
 
-      // TODO: Refactor, this is gross
-      final Uri lastRequestUri = Uri.parse(response.request().urlString());
-      if (isSignupUri(lastRequestUri)) {
-        ((CheckoutActivity) view.getContext()).onSignupUriRequest();
-        return noopWebResourceResponse();
-      } else if (isCheckoutThanksUri(lastRequestUri)) {
-        ((CheckoutActivity) view.getContext()).onCheckoutThanksUriRequest();
+      if (handleRequest(request, view)) {
         return noopWebResourceResponse();
       }
 
+      final Response response = client.newCall(request).execute();
+
+      // response.request() may be different to the initial request. e.g.: If a logged out user tries to pledge,
+      // the backend will respond with a redirect to login - response.request().url() would contain a login URL,
+      // not a pledge URL.
+      if (!request.equals(response.request()) && handleRequest(response.request(), view)) {
+        return noopWebResourceResponse();
+      }
+
+      final MimeHeaders mimeHeaders = new MimeHeaders(response.body().contentType().toString());
       final InputStream body = constructBody(view.getContext(), response, mimeHeaders);
 
       return new WebResourceResponse(mimeHeaders.type, mimeHeaders.encoding, body);
@@ -81,6 +88,16 @@ public class KickstarterWebViewClient extends WebViewClient {
     }
   }
 
+  // The order of request handlers is important - we iterate through the request handlers
+  // sequentially until a match is found.
+  public void registerRequestHandlers(final List<RequestHandler> requestHandlers) {
+    this.requestHandlers.addAll(0, requestHandlers);
+  }
+
+  public void setFormContents(final FormContents formContents) {
+    this.formContents = formContents;
+  }
+
   protected InputStream constructBody(final Context context, final Response response, final MimeHeaders mimeHeaders) throws IOException {
     InputStream body = response.body().byteStream();
 
@@ -89,10 +106,6 @@ public class KickstarterWebViewClient extends WebViewClient {
     }
 
     return body;
-  }
-
-  public void setFormContents(final FormContents formContents) {
-    this.formContents = formContents;
   }
 
   protected Request buildRequest(final String url) {
@@ -157,33 +170,35 @@ public class KickstarterWebViewClient extends WebViewClient {
   }
 
   protected boolean isInterceptable(final Uri uri) {
-    return isKickstarterUri(uri);
-  }
-
-  protected boolean isKickstarterUri(final Uri uri) {
-    return uri.getHost().equals(Uri.parse(webEndpoint).getHost());
-  }
-
-  protected boolean isSignupUri(final Uri uri) {
-    return isKickstarterUri(uri) && uri.getPath().equals("/signup");
-  }
-
-  protected boolean isCheckoutThanksUri(final Uri uri) {
-    // e.g. /projects/slug-1/slug-2/checkouts/1/thanks
-    return isKickstarterUri(uri) &&
-      Pattern.compile("\\A\\/projects/[a-zA-Z0-9_-]+\\/[a-zA-Z0-9_-]+\\/checkouts\\/\\d+\\/thanks\\z")
-        .matcher(uri.getPath()).matches();
-  }
-
-  protected boolean isProjectNewPledgeUri(final Uri uri) {
-    // e.g. /projects/slug-1/slug-2/pledge/new
-    return isKickstarterUri(uri) &&
-      Pattern.compile("\\A\\/projects/[a-zA-Z0-9_-]+\\/[a-zA-Z0-9_-]+\\/pledge\\/new\\z")
-        .matcher(uri.getPath()).matches();
+    return KickstarterUri.isKickstarterUri(uri, webEndpoint);
   }
 
   protected WebResourceResponse noopWebResourceResponse() throws IOException {
     return new WebResourceResponse("application/JavaScript", null, new ByteArrayInputStream(new byte[0]));
+  }
+
+  private void initializeResponseHandlers() {
+    Collections.addAll(requestHandlers,
+      new RequestHandler(KickstarterUri::isProjectUri, this::startProjectDetailActivity)
+    );
+  }
+
+  private boolean startProjectDetailActivity(final Request request, final WebView webView) {
+    // TODO: Start project activity. Would only be able to extract the slug of a project
+    // though, that's not enough data to properly load the activity.
+    return false;
+  }
+
+
+  private boolean handleRequest(final Request request, final WebView webView) {
+    final Uri uri = Uri.parse(request.urlString());
+    for (final RequestHandler requestHandler : requestHandlers) {
+      if (requestHandler.matches(uri, webEndpoint) && requestHandler.action(request, webView)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   public class MimeHeaders {

@@ -2,7 +2,6 @@ package com.kickstarter.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.webkit.WebView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
@@ -10,6 +9,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.CheckoutPresenter;
+import com.kickstarter.ui.views.KickstarterWebView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -17,7 +17,7 @@ import timber.log.Timber;
 
 @RequiresPresenter(CheckoutPresenter.class)
 public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
-  public @InjectView(R.id.web_view) WebView webView;
+  public @InjectView(R.id.web_view) KickstarterWebView webView;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
@@ -28,9 +28,8 @@ public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
 
     final Intent intent = getIntent();
     final String url = intent.getExtras().getString(getString(R.string.intent_url));
-    presenter.takeProject(intent.getExtras().getParcelable(getString(R.string.intent_project)));
-
-    webView.loadUrl(url);
+    final Project project = intent.getExtras().getParcelable(getString(R.string.intent_project));
+    presenter.initialize(project, url);
   }
 
   @Override
@@ -40,19 +39,11 @@ public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
-  public void onSignupUriRequest() {
-    presenter.takeSignupUriRequest();
-  }
-
   public void startLoginToutActivity() {
     final Intent intent = new Intent(this, LoginToutActivity.class)
       .putExtra(getString(R.string.intent_forward), true);
     startActivityForResult(intent,
       ActivityRequestCodes.CHECKOUT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
-  }
-
-  public void onCheckoutThanksUriRequest() {
-    presenter.takeCheckoutThanksUriRequest();
   }
 
   public void startThanksActivity(final Project project) {

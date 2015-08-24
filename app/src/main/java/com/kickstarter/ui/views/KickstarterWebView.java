@@ -38,4 +38,8 @@ public class KickstarterWebView extends WebView {
 
     addJavascriptInterface(new WebViewJavascriptInterface(this.client), "WebViewJavascriptInterface");
   }
+
+  public KickstarterWebViewClient client() {
+    return client;
+  }
 }

@@ -28,7 +28,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
   @Inject BuildCheck buildCheck;
 
   private final PublishSubject<Project> projectClick = PublishSubject.create();
-  private final PublishSubject<Void> paginationSubject = PublishSubject.create();
+  private final PublishSubject<Void> nextPage = PublishSubject.create();
   private final PublishSubject<DiscoveryParams> params = PublishSubject.create();
 
   @Override
@@ -61,13 +61,13 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
     // don't seem to play well together:
     // https://github.com/ReactiveX/RxJava/issues/3168
     params.onNext(DiscoveryParams.params());
-    paginationSubject.onNext(null);
+    nextPage.onNext(null);
   }
 
   /**
    * Given the params for the first page of a discovery search, returns an
    * observable of pages of projects. A new page of projects is emitted
-   * whenever `paginationSubject` emits.
+   * whenever `nextPage` emits.
    */
   private Observable<List<Project>> projectsWithPagination(final DiscoveryParams firstPageParams) {
     return paramsWithPagination(firstPageParams)
@@ -78,11 +78,11 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
   /**
    * Given the params for the first page of a discovery search, returns
    * an observable of params for each pagination. A new param is emitted
-   * whenever `paginationSubject` emits.
+   * whenever `nextPage` emits.
    */
   private Observable<DiscoveryParams> paramsWithPagination(final DiscoveryParams firstPageParams) {
-    return paginationSubject
-      .scan(firstPageParams, (currentPage, paging) -> currentPage.nextPage())
+    return nextPage
+      .scan(firstPageParams, (currentPage, __) -> currentPage.nextPage())
       ;
   }
 
@@ -110,6 +110,6 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
   }
 
   public void takeNextPage() {
-    paginationSubject.onNext(null);
+    nextPage.onNext(null);
   }
 }

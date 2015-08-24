@@ -85,9 +85,9 @@ public class Project implements Parcelable {
 
   static public Project createFromParam(final String param) {
     final Project project = new Project();
-    if (param.matches("^[0-9]*$")) {
+    try {
       project.id = Integer.parseInt(param);
-    } else {
+    } catch (NumberFormatException e) {
       project.slug = param;
     }
     return project;

@@ -192,7 +192,6 @@ public class KickstarterWebViewClient extends WebViewClient {
     if (!matcher.find()) {
       return false;
     }
-
     final Context context = webView.getContext();
     final Intent intent = new Intent(context, ProjectDetailActivity.class)
       .putExtra(context.getString(R.string.intent_project), Project.createFromParam(matcher.group()));

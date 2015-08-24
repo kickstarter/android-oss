@@ -16,6 +16,7 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import rx.Observable;
@@ -23,19 +24,18 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
 public class CheckoutPresenter extends Presenter<CheckoutActivity> {
-  private final PublishSubject<Void> loginSuccess = PublishSubject.create();
-
   private Project project;
-  private PublishSubject<String> url = PublishSubject.create();
+  private final PublishSubject<Void> loginSuccess = PublishSubject.create();
+  private final PublishSubject<String> url = PublishSubject.create();
 
   @Override
   protected void onCreate(final Context context, final Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
 
     addSubscription(RxUtils.combineLatestPair(viewSubject(), url)
-        .take(1)
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(vu -> startWebView(vu.first, vu.second)));
+      .take(1)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(vu -> startWebView(vu.first, vu.second)));
 
     addSubscription(RxUtils.combineLatestPair(viewChange, loginSuccess)
       .filter(viewChangeAndLoginSuccess -> viewChangeAndLoginSuccess.first != null)
@@ -57,10 +57,10 @@ public class CheckoutPresenter extends Presenter<CheckoutActivity> {
   private void startWebView(final CheckoutActivity activity, final String url) {
     final KickstarterWebView webView = activity.webView;
 
-    final List<RequestHandler> requestHandlers = new ArrayList<>();
-    requestHandlers.add(new RequestHandler(KickstarterUri::isCheckoutThanksUri, this::handleCheckoutThanksUriRequest));
-    requestHandlers.add(new RequestHandler(KickstarterUri::isSignupUri, this::handleSignupUriRequest));
-    webView.client().registerRequestHandlers(requestHandlers);
+    webView.client().registerRequestHandlers(Arrays.asList(
+      new RequestHandler(KickstarterUri::isCheckoutThanksUri, this::handleCheckoutThanksUriRequest),
+      new RequestHandler(KickstarterUri::isSignupUri, this::handleSignupUriRequest)
+    ));
 
     webView.loadUrl(url);
   }

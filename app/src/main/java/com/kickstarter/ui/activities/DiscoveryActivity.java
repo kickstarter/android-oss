@@ -82,7 +82,16 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
   }
 
   public void onItemsNext(final List<Project> newProjects) {
-    projects.addAll(newProjects);
+    for (Project newProject: newProjects){
+      if (! projects.contains(newProject)) {
+        projects.add(newProject);
+      }
+    }
+    adapter.notifyDataSetChanged();
+  }
+
+  public void clearItems() {
+    projects.clear();
     adapter.notifyDataSetChanged();
   }
 

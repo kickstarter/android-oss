@@ -44,6 +44,10 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
     final Observable<Pair<DiscoveryActivity, List<Project>>> viewAndProjects =
       RxUtils.takePairWhen(viewSubject, projects);
 
+    addSubscription(
+      RxUtils.takeWhen(viewSubject, params).subscribe(DiscoveryActivity::clearItems)
+    );
+
     addSubscription(viewAndProjects
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.onItemsNext(vp.second)));

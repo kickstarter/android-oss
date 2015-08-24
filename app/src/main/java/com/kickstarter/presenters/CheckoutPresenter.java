@@ -13,13 +13,9 @@ import com.kickstarter.services.RequestHandler;
 import com.kickstarter.ui.activities.CheckoutActivity;
 import com.kickstarter.ui.views.KickstarterWebView;
 import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 

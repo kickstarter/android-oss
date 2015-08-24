@@ -67,7 +67,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
   /**
    * Given the params for the first page of a discovery search, returns an
    * observable of pages of projects. A new page of projects is emitted
-   * whenever `paginationSubject` emits.
+   * whenever `nextPage` emits.
    */
   private Observable<List<Project>> projectsWithPagination(final DiscoveryParams firstPageParams) {
     return paramsWithPagination(firstPageParams)
@@ -78,11 +78,11 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
   /**
    * Given the params for the first page of a discovery search, returns
    * an observable of params for each pagination. A new param is emitted
-   * whenever `paginationSubject` emits.
+   * whenever `nextPage` emits.
    */
   private Observable<DiscoveryParams> paramsWithPagination(final DiscoveryParams firstPageParams) {
     return nextPage
-      .scan(firstPageParams, (currentPage, paging) -> currentPage.nextPage())
+      .scan(firstPageParams, (currentPage, __) -> currentPage.nextPage())
       ;
   }
 

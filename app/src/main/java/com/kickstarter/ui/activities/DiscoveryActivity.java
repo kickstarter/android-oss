@@ -28,7 +28,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import rx.Subscription;
 import rx.subjects.PublishSubject;
-import timber.log.Timber;
 
 @RequiresPresenter(DiscoveryPresenter.class)
 public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {

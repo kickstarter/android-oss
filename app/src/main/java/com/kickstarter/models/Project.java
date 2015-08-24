@@ -21,6 +21,7 @@ public class Project implements Parcelable {
   public Category category = null;
   public Integer comments_count = null;
   public String country = null; // e.g.: US
+  public DateTime created_at = null;
   public String currency = null; // e.g.: USD
   public String currency_symbol = null; // e.g.: $
   public Boolean currency_trailing_code = false;
@@ -39,6 +40,7 @@ public class Project implements Parcelable {
   public Integer updates_count = null;
   public Urls urls = null;
   public List<Reward> rewards = null;
+  public DateTime updated_at = null;
 
   public Integer backersCount() { return backers_count; }
   public String formattedBackersCount() {
@@ -219,7 +221,7 @@ public class Project implements Parcelable {
   }
 
   public boolean isDisplayable() {
-    return name != null;
+    return created_at != null;
   }
 
   public String param() {

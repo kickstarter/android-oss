@@ -97,7 +97,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
       .retry(2)
       .onErrorResumeNext(e -> Observable.empty())
       .map(envelope -> envelope.projects)
-      .takeUntil(projects -> projects.size() == 0)
+      .takeUntil(List::isEmpty)
       ;
   }
 

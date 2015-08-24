@@ -30,6 +30,7 @@
   <string name="creator_launched_a_project">%1$s launched a project: %2$s</string>
   <string name="Created_by">Created by</string>
   <string name="Created_by_">Created by&lt;br>&lt;b>%1$s&lt;/b></string>
+  <string name="Creator">Creator</string>
   <string name="days">days</string>
   <string name="Development_settings">Development Settings</string>
   <string name="Discover_projects">Discover projects</string>

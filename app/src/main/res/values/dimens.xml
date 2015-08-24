@@ -27,6 +27,7 @@
 
   <!-- Kickstarter & Material values-->
   <dimen name="ksr_card_elevation">4dp</dimen>
+  <dimen name="ksr_text_view_corner_radius">2dp</dimen>
 
   <!-- Keylines
     http://www.google.com/design/spec/layout/metrics-keylines.html#metrics-keylines-keylines-spacing -->

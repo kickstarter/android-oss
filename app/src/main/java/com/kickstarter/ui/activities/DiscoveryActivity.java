@@ -84,7 +84,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
   }
 
   public void onItemsNext(final List<Project> newProjects) {
-    for (Project newProject: newProjects){
+    for (final Project newProject: newProjects){
       if (! projects.contains(newProject)) {
         projects.add(newProject);
       }

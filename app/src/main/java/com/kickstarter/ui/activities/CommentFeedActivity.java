@@ -48,14 +48,13 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     // todo: put this in a show() and hook up with subscription
     Intent intent = getIntent();
     Project project = intent.getExtras().getParcelable((getString(R.string.intent_project)));
-    presenter.takeProjectComments(project);
-
+    presenter.takeProjectComments(project); // yeah don't put this in the activity
     projectName.setText(project.name());
     creatorName.setText(project.creator().name());
     Picasso.with(getApplicationContext()).load(project.photo().full()).into(projectBackground);
   }
 
-  public void showComments(final List<Comment> comments) {
+  public void show(final List<Comment> comments) {
     layoutManager = new LinearLayoutManager(this);
     adapter = new CommentListAdapter(comments, presenter);
     recyclerView.setLayoutManager(layoutManager);

@@ -46,7 +46,7 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> {
 
     addSubscription(viewAndComments
     .observeOn(AndroidSchedulers.mainThread())
-    .subscribe(vp -> vp.first.showComments(vp.second)));
+    .subscribe(vp -> vp.first.show(vp.second)));
   }
 
   // shows when currentUser is a backer

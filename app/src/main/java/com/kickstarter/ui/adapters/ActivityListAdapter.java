@@ -63,34 +63,34 @@ public class ActivityListAdapter extends RecyclerView.Adapter<ActivityListViewHo
   }
 
   @Override
-  public void onBindViewHolder(final ActivityListViewHolder view_holder, final int i) {
+  public void onBindViewHolder(final ActivityListViewHolder viewHolder, final int i) {
     final Activity activity = activities.get(i);
-    view_holder.onBind(activity);
+    viewHolder.onBind(activity);
   }
 
   @Override
-  public ActivityListViewHolder onCreateViewHolder(final ViewGroup view_group, final @ViewType int view_type) {
-    final LayoutInflater layout_inflater = LayoutInflater.from(view_group.getContext());
+  public ActivityListViewHolder onCreateViewHolder(final ViewGroup viewGroup, final @ViewType int viewType) {
+    final LayoutInflater layoutInflater = LayoutInflater.from(viewGroup.getContext());
 
     final View view;
-    switch (view_type) {
+    switch (viewType) {
       case FRIEND_BACKING:
-        view = layout_inflater.inflate(R.layout.activity_friend_backing_view, view_group, false);
+        view = layoutInflater.inflate(R.layout.activity_friend_backing_view, viewGroup, false);
         return new FriendBackingViewHolder(view, presenter);
       case FRIEND_FOLLOW:
-        view = layout_inflater.inflate(R.layout.activity_friend_follow_view, view_group, false);
+        view = layoutInflater.inflate(R.layout.activity_friend_follow_view, viewGroup, false);
         return new FriendFollowViewHolder(view, presenter);
       case PROJECT_STATE_CHANGED:
-        view = layout_inflater.inflate(R.layout.activity_project_state_changed_view, view_group, false);
+        view = layoutInflater.inflate(R.layout.activity_project_state_changed_view, viewGroup, false);
         return new ProjectStateChangedViewHolder(view, presenter);
       case PROJECT_STATE_CHANGED_POSITIVE:
-        view = layout_inflater.inflate(R.layout.activity_project_state_changed_positive_view, view_group, false);
+        view = layoutInflater.inflate(R.layout.activity_project_state_changed_positive_view, viewGroup, false);
         return new ProjectStateChangedPositiveViewHolder(view, presenter);
       case PROJECT_UPDATE:
-        view = layout_inflater.inflate(R.layout.activity_project_update_view, view_group, false);
+        view = layoutInflater.inflate(R.layout.activity_project_update_view, viewGroup, false);
         return new ProjectUpdateViewHolder(view, presenter);
       default:
-        throw new RuntimeException("Unhandled view type: " + view_type);
+        throw new RuntimeException("Unhandled view type: " + viewType);
     }
   }
 

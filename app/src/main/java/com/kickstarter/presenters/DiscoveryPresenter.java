@@ -71,7 +71,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
    */
   private Observable<List<Project>> projectsWithPagination(final DiscoveryParams firstPageParams) {
     return paramsWithPagination(firstPageParams)
-      .concatMap(this::projectsFromParams)
+      .switchMap(this::projectsFromParams)
       .takeUntil(List::isEmpty)
       ;
   }

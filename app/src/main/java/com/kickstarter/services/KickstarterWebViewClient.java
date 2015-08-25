@@ -1,15 +1,19 @@
 package com.kickstarter.services;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.kickstarter.R;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.FormContents;
 import com.kickstarter.libs.IOUtils;
+import com.kickstarter.models.Project;
+import com.kickstarter.ui.activities.ProjectDetailActivity;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -184,11 +188,17 @@ public class KickstarterWebViewClient extends WebViewClient {
   }
 
   private boolean startProjectDetailActivity(final Request request, final WebView webView) {
-    // TODO: Start project activity. Would only be able to extract the slug of a project
-    // though, that's not enough data to properly load the activity.
-    return false;
-  }
+    final Matcher matcher = Pattern.compile("[a-zA-Z0-9_-]+\\z").matcher(Uri.parse(request.urlString()).getPath());
+    if (!matcher.find()) {
+      return false;
+    }
+    final Context context = webView.getContext();
+    final Intent intent = new Intent(context, ProjectDetailActivity.class)
+      .putExtra(context.getString(R.string.intent_project), Project.createFromParam(matcher.group()));
+    context.startActivity(intent);
 
+    return true;
+  }
 
   private boolean handleRequest(final Request request, final WebView webView) {
     final Uri uri = Uri.parse(request.urlString());

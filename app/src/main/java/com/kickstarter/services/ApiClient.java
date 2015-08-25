@@ -50,7 +50,7 @@ public class ApiClient {
   }
 
   public Observable<Project> fetchProject(final Project project) {
-    return service.fetchProject(project.id()).startWith(project);
+    return service.fetchProject(project.param()).startWith(project);
   }
 
   public Observable<AccessTokenEnvelope> login(final String email, final String password) {

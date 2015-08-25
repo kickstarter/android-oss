@@ -36,7 +36,9 @@ public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
   }
 
   public void takeProject(final Project project) {
-    final Observable<Project> latestProject = client.fetchProject(project);
+    final Observable<Project> latestProject = client.fetchProject(project)
+      .filter(Project::isDisplayable);
+
     final Observable<Pair<ProjectDetailActivity, Project>> viewAndProject =
       RxUtils.combineLatestPair(viewSubject, latestProject);
 

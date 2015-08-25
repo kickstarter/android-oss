@@ -62,7 +62,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
     pageSubscription = RxUtils.combineLatestPair(visibleItem, itemCount)
       .distinctUntilChanged()
       .filter(this::closeToBottom)
-      .subscribe(itemAndCount -> presenter.takeNextPage());
+      .subscribe(__ -> presenter.takeNextPage());
 
     recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
       @Override

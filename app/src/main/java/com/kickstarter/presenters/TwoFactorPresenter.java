@@ -2,6 +2,7 @@ package com.kickstarter.presenters;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.KsrApplication;
@@ -27,16 +28,11 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
   @Inject ApiClient client;
   private final PublishSubject<Void> loginClick = PublishSubject.create();
   private final PublishSubject<Void> resendClick = PublishSubject.create();
-  private boolean forward = false;
 
   @Override
   protected void onCreate(final Context context, final Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KsrApplication) context.getApplicationContext()).component().inject(this);
-  }
-
-  public void takeEmailAndPassword(final String email, final String password) {
-    final Observable<Pair<String, String>> emailAndPassword = Observable.just(Pair.create(email, password));
 
     final Observable<String> code = viewSubject
       .flatMap(v -> WidgetObservable.text(v.code))
@@ -45,21 +41,36 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
     final Observable<Boolean> isValid = code
       .map(TwoFactorPresenter::isValid);
 
-    final Observable<LoginCredentials> submit = RxUtils.takeWhen(code, loginClick)
-      .withLatestFrom(emailAndPassword, (c, ep) -> new LoginCredentials(ep.first, ep.second, c));
+    final Observable<Pair<TwoFactorActivity, String>> viewAndCode =
+      RxUtils.combineLatestPair(viewSubject, code);
 
-    final Observable<Pair<String, String>> resend = RxUtils.takeWhen(emailAndPassword, resendClick);
+    final Observable<AccessTokenEnvelope> tokenEnvelope = RxUtils.takeWhen(viewAndCode, loginClick)
+      .switchMap(vc -> submit(vc.first.email(), vc.first.password(), vc.second));
 
-    subscribeTo(resend, this::resendSubmit);
-    subscribeTo(submit, this::submit);
-    subscribeTo(isValid, valid -> view().setLoginEnabled(valid));
+    addSubscription(
+      RxUtils.combineLatestPair(viewSubject, isValid)
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(viewAndValid -> viewAndValid.first.setLoginEnabled(viewAndValid.second))
+    );
+
+    addSubscription(
+      RxUtils.combineLatestPair(viewSubject, tokenEnvelope)
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(
+          viewAndEnvelope -> success(viewAndEnvelope.second, viewAndEnvelope.first),
+          this::error
+        )
+    );
+
+    addSubscription(
+      RxUtils.takeWhen(viewSubject, resendClick)
+        .switchMap(view -> resendCode(view.email(), view.password()))
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe()
+    );
   }
 
-  public void takeForward(final boolean forward) {
-    this.forward = forward;
-  }
-
-  private static boolean isValid(final String code) {
+  private static boolean isValid(@NonNull final String code) {
     return code.length() > 0;
   }
 
@@ -71,12 +82,9 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
     resendClick.onNext(null);
   }
 
-  private void success(final AccessTokenEnvelope envelope) {
+  private void success(@NonNull final AccessTokenEnvelope envelope, @NonNull final TwoFactorActivity view) {
     currentUser.login(envelope.user, envelope.access_token);
-
-    if (hasView()) {
-      view().onSuccess(forward);
-    }
+    view.onSuccess();
   }
 
   private void error(final Throwable e) {
@@ -99,40 +107,11 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
     }.handleError();
   }
 
-  private void submit(final LoginCredentials loginCredentials) {
-    Observable<AccessTokenEnvelope> e = client.login(loginCredentials.email(), loginCredentials.password(), loginCredentials.code())
-      .observeOn(AndroidSchedulers.mainThread());
-    subscribeTo(e, this::success, this::error);
+  private Observable<AccessTokenEnvelope> submit(final String email, final String password, final String code) {
+    return client.login(email, password, code);
   }
 
-  private void resendSubmit(final Pair<String, String> emailAndPassword) {
-    Observable<AccessTokenEnvelope> envelope = client.login(emailAndPassword.first, emailAndPassword.second)
-      .observeOn(AndroidSchedulers.mainThread());
-    // TODO: We could notify on connection error
-    subscribeTo(envelope, (final AccessTokenEnvelope e) -> {}, (final Throwable error) -> {});
-  }
-
-  private class LoginCredentials {
-    private final String email;
-    private final String password;
-    private final String code;
-
-    public LoginCredentials(final String email, final String password, final String code) {
-      this.email = email;
-      this.password = password;
-      this.code = code;
-    }
-
-    public String email() {
-      return email;
-    }
-
-    public String password() {
-      return password;
-    }
-
-    public String code() {
-      return code;
-    }
+  private Observable<AccessTokenEnvelope> resendCode(final String email, final String password) {
+    return client.login(email, password);
   }
 }

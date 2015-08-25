@@ -5,16 +5,18 @@ import android.os.Parcelable;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 
+import org.joda.time.DateTime;
+
 @ParcelablePlease
 public class Comment implements Parcelable {
   public String body = null;
-  public String created_at = null;
+  public DateTime created_at = null;
   public Author author = null;
 
   public String body() {
     return body;
   }
-  public String createdAt() {
+  public DateTime createdAt() {
     return created_at;
   }
   public Author author() {

@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.DateTimeUtils;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.models.Comment;
 import com.kickstarter.presenters.CommentFeedPresenter;
@@ -46,7 +47,7 @@ public class CommentListViewHolder extends RecyclerView.ViewHolder {
 
     Picasso.with(view.getContext()).load(comment.author().avatar().small()).into(avatar);
     name.setText(comment.author().name());
-    postDate.setText(comment.createdAt());
+    postDate.setText(DateTimeUtils.relativeDateInWords(comment.createdAt(), false, true));
     commentBody.setText(comment.body());
 
     // todo: set creator_label VISIBLE if creator's comment

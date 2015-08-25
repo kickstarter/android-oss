@@ -169,15 +169,20 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
+  // todo: WORKING ON:
   public void startCommentsActivity(final Project project) {
-    // todo: build comments activity
+    final Intent intent = new Intent(this, CommentFeedActivity.class)
+      .putExtra(getString(R.string.intent_project), project)
+      .putExtra(getString(R.string.intent_comment), project.urls().api().comments());
+    startActivity(intent);
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   // todo: limit the apps you can share to
   public void startShareIntent(final Project project) {
     final Intent intent = new Intent(Intent.ACTION_SEND)
       .setType(getString(R.string.intent_share_type))
-      .putExtra(Intent.EXTRA_TEXT, String.format(getString(R.string.share_intent), project.name(), project.webProjectUrl()));
+      .putExtra(Intent.EXTRA_TEXT, String.format(getString(R.string.share_message), project.name(), project.webProjectUrl()));
     startActivity(intent);
   }
 

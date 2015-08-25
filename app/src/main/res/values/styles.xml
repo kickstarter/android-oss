@@ -43,6 +43,10 @@
     <item name="android:windowBackground">@color/white</item>
   </style>
 
+  <style name="CommentFeedActivity" parent="KsrTheme">
+    <item name="android:windowBackground">@color/white</item>
+  </style>
+
   <style name="DiscoveryActivity" parent="KsrTheme">
     <item name="android:windowBackground">@color/light_gray</item>
   </style>

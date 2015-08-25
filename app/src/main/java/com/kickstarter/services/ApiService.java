@@ -3,6 +3,7 @@ package com.kickstarter.services;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiResponses.AccessTokenEnvelope;
 import com.kickstarter.services.ApiResponses.ActivityEnvelope;
+import com.kickstarter.services.ApiResponses.CommentEnvelope;
 import com.kickstarter.services.ApiResponses.DiscoverEnvelope;
 
 import java.util.List;

@@ -172,8 +172,7 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
   // todo: WORKING ON:
   public void startCommentsActivity(final Project project) {
     final Intent intent = new Intent(this, CommentFeedActivity.class)
-      .putExtra(getString(R.string.intent_project), project)
-      .putExtra(getString(R.string.intent_comment), project.urls().api().comments());
+      .putExtra(getString(R.string.intent_project), project);
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }

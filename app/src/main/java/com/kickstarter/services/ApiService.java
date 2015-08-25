@@ -19,6 +19,10 @@ import rx.Observable;
   @GET("/v1/activities")
   Observable<ActivityEnvelope> fetchActivities(@Query("categories[]") List<String> categories);
 
+  // todo: either this, with known path, or {url} with the api url from project
+  @GET("/v1/projects/{id}/comments")
+  Observable<CommentEnvelope> fetchComments(@Path("id") Integer id);
+
   @GET("/v1/discover")
   Observable<DiscoverEnvelope> fetchProjects(@QueryMap Map<String, String> params);
 

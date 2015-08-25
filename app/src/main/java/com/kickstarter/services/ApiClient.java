@@ -9,10 +9,10 @@ import com.kickstarter.libs.Build;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.DateTimeTypeConverter;
 import com.kickstarter.models.Activity;
-import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiResponses.AccessTokenEnvelope;
 import com.kickstarter.services.ApiResponses.ActivityEnvelope;
+import com.kickstarter.services.ApiResponses.CommentEnvelope;
 import com.kickstarter.services.ApiResponses.DiscoverEnvelope;
 import com.kickstarter.services.ApiResponses.ErrorEnvelope;
 
@@ -43,6 +43,10 @@ public class ApiClient {
 
   public Observable<ActivityEnvelope> fetchActivities(final ActivityFeedParams params) {
     return service.fetchActivities(params.queryParams()).retry(3);
+  }
+
+  public Observable<CommentEnvelope> fetchComments(final Project project){
+    return service.fetchComments(project.id());
   }
 
   public Observable<DiscoverEnvelope> fetchProjects(final DiscoveryParams params) {

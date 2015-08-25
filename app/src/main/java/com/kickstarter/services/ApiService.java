@@ -27,8 +27,8 @@ import rx.Observable;
   @GET("/v1/discover")
   Observable<DiscoverEnvelope> fetchProjects(@QueryMap Map<String, String> params);
 
-  @GET("/v1/projects/{id}")
-  public Observable<Project> fetchProject(@Path("id") Integer id);
+  @GET("/v1/projects/{param}")
+  public Observable<Project> fetchProject(@Path("param") String param);
 
   @POST("/xauth/access_token")
   public Observable<AccessTokenEnvelope> login(@Query("email") String email,

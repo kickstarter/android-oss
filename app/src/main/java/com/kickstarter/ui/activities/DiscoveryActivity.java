@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -60,8 +61,8 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
 
     pageSubscription = RxUtils.combineLatestPair(visibleItem, itemCount)
       .distinctUntilChanged()
-      .filter(itemAndCount -> itemAndCount.first == itemAndCount.second - 2)
-      .subscribe(itemAndCount -> presenter.takeNextPage());
+      .filter(this::closeToBottom)
+      .subscribe(__ -> presenter.takeNextPage());
 
     recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
       @Override
@@ -117,5 +118,9 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
       })
       .setIcon(android.R.drawable.ic_dialog_alert)
       .show();
+  }
+
+  private boolean closeToBottom(final Pair<Integer, Integer> itemAndCount) {
+    return itemAndCount.first == itemAndCount.second - 2;
   }
 }

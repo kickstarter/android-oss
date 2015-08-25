@@ -94,7 +94,7 @@
   <string name="Resend">Resend</string>
   <string name="Sha">SHA</string>
   <string name="Share">Share</string>
-  <string name="share_intent">"%1$s, via %2$s"</string>
+  <string name="share_message">"%1$s, via %2$s"</string>
   <string name="Share_this_project">Share this project</string>
   <string name="Sign_up">Sign up</string>
   <string name="Sign_up_or_log_in_with_your_Facebook_account">
@@ -146,6 +146,7 @@
 
   <!-- Intent strings. Requires package prefix:
     http://developer.android.com/reference/android/content/Intent.html#putExtra%28java.lang.String,%20boolean%29 -->
+  <string name="intent_comment">com.kickstarter.kickstarter.intent_comment</string>
   <string name="intent_email">com.kickstarter.kickstarter.intent_email</string>
   <string name="intent_forward">com.kickstarter.kickstarter.intent_forward</string>
   <string name="intent_internal_build_envelope">com.kickstarter.kickstarter.intent_build_envelope</string>

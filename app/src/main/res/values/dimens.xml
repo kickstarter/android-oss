@@ -14,6 +14,7 @@
   <dimen name="grid_10">80dp</dimen>
   <dimen name="grid_11_half">44dp</dimen>
   <dimen name="grid_11">88dp</dimen>
+  <dimen name="grid_12">96dp</dimen>
 
   <!-- Kickstarter typography-->
   <!-- todo: naming conventions: temp names are prefixed with ksr_-->

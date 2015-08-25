@@ -33,6 +33,7 @@
     <item name="android:windowBackground">@color/window_background</item>
   </style>
 
+  <!-- todo: customize these themes, or delete if unused -->
   <style name="ActivityFeedActivity" parent="KsrTheme">
     <item name="android:statusBarColor">@color/gray</item>
     <item name="android:windowBackground">@drawable/gray_gradient</item>

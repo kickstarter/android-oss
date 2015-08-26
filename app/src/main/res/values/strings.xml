@@ -12,6 +12,7 @@
   <string name="Are_those_new_shoes">
     Are those new shoes? If they’re not new, they look really shiny and beautiful.
   </string>
+  <string name="Awh_how_sad">Awh, how sad. Become a backer to leave a comment.</string>
   <string name="Back_this_project">Back this project</string>
   <string name="backers">backers</string>
   <string name="Build">Build</string>
@@ -26,6 +27,7 @@
   </string>
   <string name="Campaign">Campaign</string>
   <string name="Changelog">Changelog</string>
+  <string name="Comment">Comment</string>
   <string name="Comments">Comments</string>
   <string name="creator_launched_a_project">%1$s launched a project: %2$s</string>
   <string name="Created_by">Created by</string>
@@ -65,6 +67,7 @@
   <string name="I_just_backed_project_on_Kickstarter">I just backed %1$s on Kickstarter: %2$s</string>
   <string name="Instructions">Instructions</string>
   <string name="Launched">Launched</string>
+  <string name="Leave_a_comment">Leave a comment</string>
   <string name="Log_in">Log in</string>
   <string name="Log_out">Log out</string>
   <string name="Logged_out">Logged out</string>
@@ -72,6 +75,7 @@
   <string name="Looking_for_more_projects">Looking for more projects? Check these out.</string>
   <string name="More">More</string>
   <string name="Network">Network</string>
+  <string name="No_comments">No comments</string>
   <string name="Nice_to_see_you_again">Nice to see you again.</string>
   <string name="Open_downloads_folder">Open Downloads folder</string>
   <string name="A_request_has_been_made_to_download_the_latest_build">
@@ -120,6 +124,7 @@
     When you back a project or follow a friend, their activity will show up here.
   </string>
   <string name="Woo_hoo">Woo-hoo!</string>
+  <string name="You">You</string>
   <string name="You_just_backed">You just backed &lt;b>%1$s&lt;/b>. Share this project with friends to help it along!</string>
   <string name="You_launched_a_project">You launched a project: %1$s</string>
 

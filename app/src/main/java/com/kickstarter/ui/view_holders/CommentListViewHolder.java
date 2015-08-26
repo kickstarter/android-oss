@@ -27,7 +27,7 @@ public class CommentListViewHolder extends RecyclerView.ViewHolder {
   protected Presenter presenter;
 
   protected @InjectView(R.id.avatar) ImageView avatar;
-  protected @InjectView(R.id.creator_label) TextView creatorLabel;  // refactor to creatorTag?
+  protected @InjectView(R.id.creator_label) TextView creatorLabel;
   protected @InjectView(R.id.name) TextView name;
   protected @InjectView(R.id.post_date) TextView postDate;
   protected @InjectView(R.id.comment_body) TextView commentBody;

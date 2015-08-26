@@ -24,9 +24,9 @@ import butterknife.InjectView;
 
 @RequiresPresenter(CommentFeedPresenter.class)
 public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
-  @InjectView(R.id.project_background) ImageView projectBackground;
-  @InjectView(R.id.project_name) TextView projectName;
-  @InjectView(R.id.creator_name) TextView creatorName;
+  @InjectView(R.id.context_photo) ImageView projectContextImageView;
+  @InjectView(R.id.project_name) TextView projectNameTextView;
+  @InjectView(R.id.creator_name) TextView creatorNameTextView;
   @InjectView(R.id.comment_feed_recycler_view) RecyclerView recyclerView;
   // todo: add subjects for pagination
 
@@ -42,9 +42,9 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     final Intent intent = getIntent();
 
     project = intent.getParcelableExtra(getString(R.string.intent_project));
-    projectName.setText(project.name());
-    creatorName.setText(project.creator().name());
-    Picasso.with(getApplicationContext()).load(project.photo().full()).into(projectBackground);
+    projectNameTextView.setText(project.name());
+    creatorNameTextView.setText(project.creator().name());
+    Picasso.with(getApplicationContext()).load(project.photo().full()).into(projectContextImageView);
     presenter.takeProject(project);
   }
 

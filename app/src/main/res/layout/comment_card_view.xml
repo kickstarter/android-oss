@@ -24,8 +24,20 @@
       android:gravity="center"
       android:textColor="@color/white"
       android:layout_below="@id/avatar"
-      android:background="@drawable/text_view_background"
+      android:background="@drawable/text_view_green_background"
       android:text="@string/Creator"
+      android:layout_width="@dimen/grid_7"
+      android:layout_height="wrap_content" />
+
+    <TextView
+      android:id="@+id/user_label"
+      android:visibility="gone"
+      android:layout_marginTop="@dimen/grid_2"
+      android:gravity="center"
+      android:textColor="@color/white"
+      android:layout_below="@id/avatar"
+      android:background="@drawable/text_view_blue_background"
+      android:text="@string/You"
       android:layout_width="@dimen/grid_7"
       android:layout_height="wrap_content" />
 

@@ -2,7 +2,6 @@ package com.kickstarter.presenters;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Pair;
 
 import com.kickstarter.KsrApplication;
@@ -34,19 +33,18 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> {
     ((KsrApplication) context.getApplicationContext()).component().inject(this);
   }
 
-  // Set this list with the adapter
-  public void takeProjectComments(final Project project) {
-
-    // get the comments from api
+  // todo: add pagination to comments
+  public void takeProject(final Project project) {
     final Observable<List<Comment>> comments = client.fetchProjectComments(project)
-      .map(envelope -> envelope.comments);
+      .map(envelope -> envelope.comments)
+      .takeUntil(List::isEmpty);
 
     final Observable<Pair<CommentFeedActivity, List<Comment>>> viewAndComments =
       RxUtils.takePairWhen(viewSubject, comments);
 
     addSubscription(viewAndComments
-    .observeOn(AndroidSchedulers.mainThread())
-    .subscribe(vp -> vp.first.show(vp.second)));
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(vc -> vc.first.showComments(vc.second)));
   }
 
   // shows when currentUser is a backer

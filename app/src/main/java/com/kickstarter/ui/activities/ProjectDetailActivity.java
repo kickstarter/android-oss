@@ -84,7 +84,7 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
 
     // WIP VideoView & MediaController
     if ( project.video() != null ) {
-      loadVideo(project.video(), video);
+//      loadVideo(project.video(), video);
       playButton.setVisibility(View.VISIBLE);
     }
     else {
@@ -109,6 +109,9 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
+  // todo: setting the VideoView uri here prevents the activity from GC'ing
+  // VideoView either needs to be set independent of XML, or better
+  // just use ExoPlayer library
   public void loadVideo(Video video, VideoView videoView) {
     final Uri video_uri = Uri.parse(video.base());
     videoView.setVideoURI(video_uri);

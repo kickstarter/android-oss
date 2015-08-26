@@ -11,7 +11,8 @@ import org.joda.time.DateTime;
 public class Comment implements Parcelable {
   public String body = null;
   public DateTime created_at = null;
-  public Author author = null;
+  public User author = null;
+  public Integer id = null;
 
   public String body() {
     return body;
@@ -19,36 +20,13 @@ public class Comment implements Parcelable {
   public DateTime createdAt() {
     return created_at;
   }
-  public Author author() {
+  public User author() {
     return author;
   }
-
-  @ParcelablePlease
-  public static class Author implements Parcelable {
-    public String name = null;
-    public Avatar avatar = null;
-
-    public String name() {
-      return name;
-    }
-    public Avatar avatar () {
-      return avatar;
-    }
-
-    @Override
-    public int describeContents() { return 0; }
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {com.kickstarter.models.AuthorParcelablePlease.writeToParcel(this, dest, flags);}
-    public static final Creator<Author> CREATOR = new Creator<Author>() {
-      public Author createFromParcel(Parcel source) {
-        Author target = new Author();
-        com.kickstarter.models.AuthorParcelablePlease.readFromParcel(target, source);
-        return target;
-      }
-      public Author[] newArray(int size) {return new Author[size];}
-    };
+  public Integer id() {
+    return id;
   }
-
+  
   @Override
   public int describeContents() { return 0; }
   @Override

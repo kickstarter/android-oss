@@ -1,17 +1,18 @@
 package com.kickstarter.ui.view_holders;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.CommentUtils;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.DateTimeUtils;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.models.Comment;
+import com.kickstarter.models.Project;
 import com.kickstarter.presenters.CommentFeedPresenter;
 import com.squareup.picasso.Picasso;
 
@@ -42,8 +43,18 @@ public class CommentListViewHolder extends RecyclerView.ViewHolder {
     ButterKnife.inject(this, view);
   }
 
-  public void onBind(final Comment comment) {
+  public void onBind(final Comment comment, final Project project) {
     this.comment = comment;
+
+    if (CommentUtils.isUserAuthor(comment, currentUser.getUser())) {
+      // todo: create current user textview
+    }
+    if (CommentUtils.isUserAuthor(comment, project.creator())) {
+      creatorLabel.setVisibility(View.VISIBLE);
+    }
+    else {
+      creatorLabel.setVisibility(View.GONE);
+    }
 
     Picasso.with(view.getContext()).load(comment.author().avatar().small()).into(avatar);
     name.setText(comment.author().name());

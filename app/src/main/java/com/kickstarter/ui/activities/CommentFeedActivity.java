@@ -27,12 +27,10 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
   @InjectView(R.id.project_background) ImageView projectBackground;
   @InjectView(R.id.project_name) TextView projectName;
   @InjectView(R.id.creator_name) TextView creatorName;
-
-  CommentListAdapter adapter;
-  LinearLayoutManager layoutManager;
-
-  // todo: add subjects for pagination
   @InjectView(R.id.comment_feed_recycler_view) RecyclerView recyclerView;
+  // todo: add subjects for pagination
+
+  private Project project;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
@@ -41,18 +39,18 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     setContentView(R.layout.comment_feed_layout);
     ButterKnife.inject(this);
 
-    // todo: put this in a show() and hook up with subscription
-    Intent intent = getIntent();
-    Project project = intent.getExtras().getParcelable((getString(R.string.intent_project)));
-    presenter.takeProjectComments(project); // yeah don't put this in the activity
+    final Intent intent = getIntent();
+
+    project = intent.getParcelableExtra(getString(R.string.intent_project));
     projectName.setText(project.name());
     creatorName.setText(project.creator().name());
     Picasso.with(getApplicationContext()).load(project.photo().full()).into(projectBackground);
+    presenter.takeProject(project);
   }
 
-  public void show(final List<Comment> comments) {
-    layoutManager = new LinearLayoutManager(this);
-    adapter = new CommentListAdapter(comments, presenter);
+  public void showComments(final List<Comment> comments) {
+    final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+    final CommentListAdapter adapter = new CommentListAdapter(comments, project, presenter);
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);
     recyclerView.setAdapter(adapter);

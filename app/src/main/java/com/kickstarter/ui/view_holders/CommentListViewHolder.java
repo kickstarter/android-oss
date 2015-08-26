@@ -47,21 +47,20 @@ public class CommentListViewHolder extends RecyclerView.ViewHolder {
   public void onBind(final Comment comment, final Project project) {
     this.comment = comment;
 
-    if (CommentUtils.isUserAuthor(comment, currentUser.getUser())) {
-      // todo: create current user textview
-    }
     if (CommentUtils.isUserAuthor(comment, project.creator())) {
       creatorLabel.setVisibility(View.VISIBLE);
     }
+    else if (CommentUtils.isUserAuthor(comment, currentUser.getUser())) {
+      userLabelTextView.setVisibility(View.VISIBLE);
+    }
     else {
       creatorLabel.setVisibility(View.GONE);
+      userLabelTextView.setVisibility(View.GONE);
     }
 
     Picasso.with(view.getContext()).load(comment.author().avatar().small()).into(avatar);
     name.setText(comment.author().name());
     postDate.setText(DateTimeUtils.relativeDateInWords(comment.createdAt(), false, true));
     commentBody.setText(comment.body());
-
-    // todo: set creator_label VISIBLE if creator's comment
   }
 }

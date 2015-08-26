@@ -26,6 +26,10 @@ public class KickstarterWebView extends WebView {
   public KickstarterWebView(final Context context, final AttributeSet attrs, final int defStyle) {
     super(context, attrs, defStyle);
 
+    if (isInEditMode()) {
+      return;
+    }
+
     ((KsrApplication) context.getApplicationContext()).component().inject(this);
     setWebViewClient(client);
     setWebChromeClient(new WebChromeClient());

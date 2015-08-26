@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent" >
+
+  <android.support.v7.widget.Toolbar
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="@color/light_gray"
+    android:paddingLeft="@dimen/grid_2"
+    android:paddingRight="@dimen/grid_2"
+    app:contentInsetLeft="0dp"
+    app:contentInsetStart="0dp"
+    android:elevation="2dp">
+
+    <include layout="@layout/toolbar_kickstarter_logo" />
+  </android.support.v7.widget.Toolbar>
+
+  <com.kickstarter.ui.views.KickstarterWebView
+    android:id="@+id/kickstarter_web_view"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" />
+</LinearLayout>
+

@@ -38,6 +38,9 @@
 
     <activity android:name=".ui.activities.DownloadBetaActivity" />
 
+    <activity android:name=".ui.activities.HelpActivity"
+      android:theme="@style/HelpActivity" />
+
     <activity
       android:name=".ui.activities.ProjectDetailActivity"
       android:label="@string/title_activity_project"

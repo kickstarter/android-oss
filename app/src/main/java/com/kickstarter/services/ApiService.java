@@ -3,7 +3,7 @@ package com.kickstarter.services;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiResponses.AccessTokenEnvelope;
 import com.kickstarter.services.ApiResponses.ActivityEnvelope;
-import com.kickstarter.services.ApiResponses.CommentEnvelope;
+import com.kickstarter.services.ApiResponses.CommentsEnvelope;
 import com.kickstarter.services.ApiResponses.DiscoverEnvelope;
 
 import java.util.List;
@@ -20,9 +20,8 @@ import rx.Observable;
   @GET("/v1/activities")
   Observable<ActivityEnvelope> fetchActivities(@Query("categories[]") List<String> categories);
 
-  // todo: either this, with known path, or {url} with the api url from project
   @GET("/v1/projects/{param}/comments")
-  Observable<CommentEnvelope> fetchProjectComments(@Path("param") String id);
+  Observable<CommentsEnvelope> fetchProjectComments(@Path("param") String id);
 
   @GET("/v1/discover")
   Observable<DiscoverEnvelope> fetchProjects(@QueryMap Map<String, String> params);

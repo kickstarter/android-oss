@@ -4,11 +4,11 @@ import com.kickstarter.models.Comment;
 
 import java.util.List;
 
-public class CommentEnvelope {
+public class CommentsEnvelope {
   public final List<Comment> comments;
   public final UrlsEnvelope urls;
 
-  private CommentEnvelope(final List<Comment> comments, final UrlsEnvelope urls) {
+  private CommentsEnvelope(final List<Comment> comments, final UrlsEnvelope urls) {
     this.comments = comments;
     this.urls = urls;
   }
@@ -20,12 +20,12 @@ public class CommentEnvelope {
     }
 
     public static class ApiEnvelope {
-      public final String more_comments;
-      public final String newer_comments;
+      public final String moreComments;
+      public final String newerComments;
 
-      private ApiEnvelope(final String more_comments, final String newer_comments) {
-        this.more_comments = more_comments;
-        this.newer_comments = newer_comments;
+      private ApiEnvelope(final String moreComments, final String newerComments) {
+        this.moreComments = moreComments;
+        this.newerComments = newerComments;
       }
     }
   }

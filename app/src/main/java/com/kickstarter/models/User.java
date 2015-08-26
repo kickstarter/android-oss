@@ -2,13 +2,14 @@ package com.kickstarter.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 
 @ParcelablePlease
 public class User implements Parcelable {
   public Avatar avatar = null;
-  public Integer id = null;
+  @NonNull public Integer id = null;
   public String name = null;
   public String uid = null;
 

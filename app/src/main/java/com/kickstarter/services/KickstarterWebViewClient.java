@@ -1,5 +1,6 @@
 package com.kickstarter.services;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -192,10 +193,11 @@ public class KickstarterWebViewClient extends WebViewClient {
     if (!matcher.find()) {
       return false;
     }
-    final Context context = webView.getContext();
-    final Intent intent = new Intent(context, ProjectDetailActivity.class)
-      .putExtra(context.getString(R.string.intent_project), Project.createFromParam(matcher.group()));
-    context.startActivity(intent);
+    final Activity activity = (Activity) webView.getContext();
+    final Intent intent = new Intent(activity, ProjectDetailActivity.class)
+      .putExtra(activity.getString(R.string.intent_project), Project.createFromParam(matcher.group()))
+      .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    activity.startActivity(intent);
 
     return true;
   }

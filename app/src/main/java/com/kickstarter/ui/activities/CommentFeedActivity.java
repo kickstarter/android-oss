@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
@@ -15,7 +13,6 @@ import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.CommentFeedPresenter;
 import com.kickstarter.ui.adapters.CommentListAdapter;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -24,9 +21,6 @@ import butterknife.InjectView;
 
 @RequiresPresenter(CommentFeedPresenter.class)
 public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
-  @InjectView(R.id.context_photo) ImageView projectContextImageView;
-  @InjectView(R.id.project_name) TextView projectNameTextView;
-  @InjectView(R.id.creator_name) TextView creatorNameTextView;
   @InjectView(R.id.comment_feed_recycler_view) RecyclerView recyclerView;
   // todo: add subjects for pagination
 
@@ -42,9 +36,6 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     final Intent intent = getIntent();
 
     project = intent.getParcelableExtra(getString(R.string.intent_project));
-    projectNameTextView.setText(project.name());
-    creatorNameTextView.setText(project.creator().name());
-    Picasso.with(getApplicationContext()).load(project.photo().full()).into(projectContextImageView);
     presenter.takeProject(project);
   }
 

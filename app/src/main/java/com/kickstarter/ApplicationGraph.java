@@ -13,6 +13,7 @@ import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.CommentFeedActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.ProjectDetailActivity;
+import com.kickstarter.ui.view_holders.ProjectContextViewHolder;
 import com.kickstarter.ui.view_holders.CommentListViewHolder;
 import com.kickstarter.ui.view_holders.ProjectListViewHolder;
 import com.kickstarter.ui.view_holders.ProjectStateChangedPositiveViewHolder;
@@ -36,6 +37,7 @@ public interface ApplicationGraph {
   void inject(KsrApplication application);
   void inject(LoginPresenter presenter);
   void inject(Money money);
+  void inject(ProjectContextViewHolder viewHolder);
   void inject(ProjectDetailActivity activity);
   void inject(ProjectDetailPresenter presenter);
   void inject(ProjectListViewHolder viewHolder);

@@ -39,10 +39,10 @@
     <activity android:name=".ui.activities.DownloadBetaActivity" />
 
     <activity
-      android:name=".ui.activities.ProjectDetailActivity"
+      android:name=".ui.activities.ProjectActivity"
       android:label="@string/title_activity_project"
       android:parentActivityName=".ui.activities.DiscoveryActivity"
-      android:theme="@style/ProjectDetailActivity">
+      android:theme="@style/ProjectActivity">
       <!-- Parent activity meta-data to support 4.0 and lower -->
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"

@@ -54,7 +54,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
 
     addSubscription(RxUtils.takePairWhen(viewSubject, projectClick)
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(vp -> vp.first.startProjectDetailActivity(vp.second))
+        .subscribe(vp -> vp.first.startProjectActivity(vp.second))
     );
 
     // TODO: We shouldn't have to do this, but BehaviorSubject and scan

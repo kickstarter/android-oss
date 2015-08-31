@@ -19,7 +19,7 @@ import com.kickstarter.libs.Money;
 import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Video;
-import com.kickstarter.presenters.ProjectDetailPresenter;
+import com.kickstarter.presenters.ProjectPresenter;
 import com.kickstarter.ui.views.IconTextView;
 import com.squareup.picasso.Picasso;
 
@@ -29,8 +29,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import timber.log.Timber;
 
-@RequiresPresenter(ProjectDetailPresenter.class)
-public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> {
+@RequiresPresenter(ProjectPresenter.class)
+public class ProjectActivity extends BaseActivity<ProjectPresenter> {
   protected @InjectView(R.id.backers_count) TextView backersCount;
   protected @InjectView(R.id.blurb) TextView blurb;
   protected @InjectView(R.id.category) TextView category;
@@ -57,7 +57,7 @@ public class ProjectDetailActivity extends BaseActivity<ProjectDetailPresenter> 
   protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    setContentView(R.layout.project_detail_layout);
+    setContentView(R.layout.project_layout);
     ButterKnife.inject(this);
     ((KsrApplication) getApplication()).component().inject(this);
 

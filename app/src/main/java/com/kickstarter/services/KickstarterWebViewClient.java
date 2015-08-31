@@ -14,6 +14,7 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.FormContents;
 import com.kickstarter.libs.IOUtils;
 import com.kickstarter.models.Project;
+import com.kickstarter.ui.activities.DisplayWebViewActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
@@ -41,6 +42,7 @@ public class KickstarterWebViewClient extends WebViewClient {
   private final Build build;
   private final CookieManager cookieManager;
   private final CurrentUser currentUser;
+  private boolean initialPageLoad = true;
   private final String webEndpoint;
   private final List<RequestHandler> requestHandlers = new ArrayList<>();
   private FormContents formContents = null;
@@ -54,7 +56,12 @@ public class KickstarterWebViewClient extends WebViewClient {
     this.currentUser = currentUser;
     this.webEndpoint = webEndpoint;
 
-    initializeResponseHandlers();
+    initializeRequestHandlers();
+  }
+
+  @Override
+  public void onPageFinished(final WebView view, final String url) {
+    initialPageLoad = false;
   }
 
   @Override
@@ -182,10 +189,22 @@ public class KickstarterWebViewClient extends WebViewClient {
     return new WebResourceResponse("application/JavaScript", null, new ByteArrayInputStream(new byte[0]));
   }
 
-  private void initializeResponseHandlers() {
+  private void initializeRequestHandlers() {
     Collections.addAll(requestHandlers,
+      new RequestHandler(KickstarterUri::isModalUri, this::startModalWebViewActivity),
       new RequestHandler(KickstarterUri::isProjectUri, this::startProjectActivity)
     );
+  }
+
+  private boolean startModalWebViewActivity(final Request request, final WebView webView) {
+    final Activity context = (Activity) webView.getContext();
+    final Intent intent = new Intent(context, DisplayWebViewActivity.class)
+      .putExtra(context.getString(R.string.intent_url), request.urlString())
+      .putExtra(context.getString(R.string.intent_right_bar_button), DisplayWebViewActivity.RIGHT_BAR_BUTTON_CLOSE);
+    context.startActivity(intent);
+    context.overridePendingTransition(R.anim.slide_in_bottom, R.anim.fade_out);
+
+    return true;
   }
 
   private boolean startProjectActivity(final Request request, final WebView webView) {
@@ -203,6 +222,12 @@ public class KickstarterWebViewClient extends WebViewClient {
   }
 
   private boolean handleRequest(final Request request, final WebView webView) {
+    if (initialPageLoad) {
+      // Avoid infinite loop where webView.loadUrl is intercepted, invoking a new activity, which is the same URL
+      // and therefore also intercepted.
+      return false;
+    }
+
     final Uri uri = Uri.parse(request.urlString());
     for (final RequestHandler requestHandler : requestHandlers) {
       if (requestHandler.matches(uri, webEndpoint) && requestHandler.action(request, webView)) {

@@ -5,6 +5,14 @@ import android.net.Uri;
 import java.util.regex.Pattern;
 
 public class KickstarterUri {
+  public static boolean isCookiesUri(final Uri uri, final String webEndpoint) {
+    return isKickstarterUri(uri, webEndpoint) && uri.getPath().equals("/cookies");
+  }
+
+  public static boolean isHelloUri(final Uri uri, final String webEndpoint) {
+    return isKickstarterUri(uri, webEndpoint) && uri.getPath().equals("/hello");
+  }
+
  public static boolean isKickstarterUri(final Uri uri, final String webEndpoint) {
     return uri.getHost().equals(Uri.parse(webEndpoint).getHost());
   }
@@ -21,8 +29,20 @@ public class KickstarterUri {
     return isKickstarterUri(uri, webEndpoint) && CHECKOUT_THANKS_PATTERN.matcher(uri.getPath()).matches();
   }
 
-  protected boolean isProjectNewPledgeUri(final Uri uri, final String webEndpoint) {
+  public static boolean isModalUri(final Uri uri, final String webEndpoint) {
+    return isKickstarterUri(uri, webEndpoint) && uri.getQueryParameter("modal") != null && uri.getQueryParameter("modal").equals("true");
+  }
+
+  public static boolean isPrivacyUri(final Uri uri, final String webEndpoint) {
+    return isKickstarterUri(uri, webEndpoint) && uri.getPath().equals("/privacy");
+  }
+
+  public static boolean isProjectNewPledgeUri(final Uri uri, final String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && NEW_PLEDGE_PATTERN.matcher(uri.getPath()).matches();
+  }
+
+  public static boolean isTermsOfUseUri(final Uri uri, final String webEndpoint) {
+    return isKickstarterUri(uri, webEndpoint) && uri.getPath().equals("/terms-of-use");
   }
 
   // /projects/slug-1/slug-2

@@ -34,9 +34,13 @@
       </intent-filter>
     </activity>
 
-    <activity android:name=".ui.activities.DisplayWebViewActivity" />
+    <activity android:name=".ui.activities.DisplayWebViewActivity"
+      android:theme="@style/DisplayWebViewActivity" />
 
     <activity android:name=".ui.activities.DownloadBetaActivity" />
+
+    <activity android:name=".ui.activities.HelpActivity"
+      android:theme="@style/HelpActivity" />
 
     <activity
       android:name=".ui.activities.ProjectActivity"

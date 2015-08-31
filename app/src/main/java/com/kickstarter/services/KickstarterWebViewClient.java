@@ -54,7 +54,7 @@ public class KickstarterWebViewClient extends WebViewClient {
     this.currentUser = currentUser;
     this.webEndpoint = webEndpoint;
 
-    initializeResponseHandlers();
+    initializeRequestHandlers();
   }
 
   @Override
@@ -182,7 +182,7 @@ public class KickstarterWebViewClient extends WebViewClient {
     return new WebResourceResponse("application/JavaScript", null, new ByteArrayInputStream(new byte[0]));
   }
 
-  private void initializeResponseHandlers() {
+  private void initializeRequestHandlers() {
     Collections.addAll(requestHandlers,
       new RequestHandler(KickstarterUri::isProjectUri, this::startProjectDetailActivity)
     );

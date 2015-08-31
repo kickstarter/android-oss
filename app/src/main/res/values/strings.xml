@@ -26,6 +26,7 @@
   </string>
   <string name="Campaign">Campaign</string>
   <string name="Changelog">Changelog</string>
+  <string name="Close">Close</string>
   <string name="Comments">Comments</string>
   <string name="creator_launched_a_project">%1$s launched a project: %2$s</string>
   <string name="Created_by">Created by</string>
@@ -151,6 +152,7 @@
   <string name="intent_help_type">com.kickstarter.kickstarter.intent_help_type</string>
   <string name="intent_password">com.kickstarter.kickstarter.intent_password</string>
   <string name="intent_project">com.kickstarter.kickstarter.intent_project</string>
+  <string name="intent_right_bar_button">com.kickstarter.kickstarter.intent_right_bar_button</string>
   <string name="intent_share_type">"text/plain"</string>
   <string name="intent_url">com.kickstarter.kickstarter.intent_url</string>
 

@@ -29,6 +29,10 @@ public class KickstarterUri {
     return isKickstarterUri(uri, webEndpoint) && CHECKOUT_THANKS_PATTERN.matcher(uri.getPath()).matches();
   }
 
+  public static boolean isModalUri(final Uri uri, final String webEndpoint) {
+    return isKickstarterUri(uri, webEndpoint) && uri.getQueryParameter("modal") != null && uri.getQueryParameter("modal").equals("true");
+  }
+
   public static boolean isPrivacyUri(final Uri uri, final String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && uri.getPath().equals("/privacy");
   }

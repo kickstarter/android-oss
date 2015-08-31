@@ -26,14 +26,13 @@ public class CommentListViewHolder extends RecyclerView.ViewHolder {
   protected View view;
   protected Presenter presenter;
 
-  protected @InjectView(R.id.avatar) ImageView avatar;
-  protected @InjectView(R.id.creator_label) TextView creatorLabel;
-  protected @InjectView(R.id.user_label) TextView userLabelTextView;
-  protected @InjectView(R.id.name) TextView name;
-  protected @InjectView(R.id.post_date) TextView postDate;
-  protected @InjectView(R.id.comment_body) TextView commentBody;
+  public @InjectView(R.id.avatar) ImageView avatar;
+  public @InjectView(R.id.creator_label) TextView creatorLabel;
+  public @InjectView(R.id.user_label) TextView userLabelTextView;
+  public @InjectView(R.id.name) TextView name;
+  public @InjectView(R.id.post_date) TextView postDate;
+  public @InjectView(R.id.comment_body) TextView commentBody;
   @Inject CurrentUser currentUser;  //check if backed project
-
 
   public CommentListViewHolder(final View view, final CommentFeedPresenter presenter) {
     super(view);

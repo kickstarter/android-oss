@@ -184,11 +184,7 @@ public class KickstarterWebViewClient extends WebViewClient {
 
   private void initializeResponseHandlers() {
     Collections.addAll(requestHandlers,
-      new RequestHandler(KickstarterUri::isCookiesUri, this::showCookies),
-      new RequestHandler(KickstarterUri::isHelloUri, this::showHowItWorks),
-      new RequestHandler(KickstarterUri::isPrivacyUri, this::showPrivacy),
-      new RequestHandler(KickstarterUri::isProjectUri, this::startProjectDetailActivity),
-      new RequestHandler(KickstarterUri::isTermsOfUseUri, this::showTermsOfUse)
+      new RequestHandler(KickstarterUri::isProjectUri, this::startProjectDetailActivity)
     );
   }
 
@@ -200,35 +196,6 @@ public class KickstarterWebViewClient extends WebViewClient {
     final Context context = webView.getContext();
     final Intent intent = new Intent(context, ProjectDetailActivity.class)
       .putExtra(context.getString(R.string.intent_project), Project.createFromParam(matcher.group()));
-    context.startActivity(intent);
-
-    return true;
-  }
-
-  private boolean showCookies(final Request request, final WebView webView) {
-    return startHelpActivity(request, webView, HelpActivity.HELP_TYPE_COOKIE_POLICY);
-  }
-
-  private boolean showHowItWorks(final Request request, final WebView webView) {
-    return startHelpActivity(request, webView, HelpActivity.HELP_TYPE_HOW_IT_WORKS);
-  }
-
-  private boolean showPrivacy(final Request request, final WebView webView) {
-    return startHelpActivity(request, webView, HelpActivity.HELP_TYPE_PRIVACY);
-  }
-
-  private boolean showTermsOfUse(final Request request, final WebView webView) {
-    return startHelpActivity(request, webView, HelpActivity.HELP_TYPE_TERMS);
-  }
-
-  private boolean startHelpActivity(final Request request, final WebView webView, final @HelpActivity.HelpType int helpType) {
-    final Context context = webView.getContext();
-    if (context.getClass().equals(HelpActivity.class)) {
-      return false;
-    }
-
-    final Intent intent = new Intent(context, HelpActivity.class)
-      .putExtra(context.getString(R.string.intent_help_type), helpType);
     context.startActivity(intent);
 
     return true;

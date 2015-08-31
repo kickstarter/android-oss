@@ -1,18 +1,15 @@
 package com.kickstarter.presenters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Pair;
 
 import com.kickstarter.KsrApplication;
-import com.kickstarter.R;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.RxUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClient;
-import com.kickstarter.ui.activities.CheckoutActivity;
-import com.kickstarter.ui.activities.ProjectDetailActivity;
+import com.kickstarter.ui.activities.ProjectActivity;
 
 import javax.inject.Inject;
 
@@ -20,7 +17,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
+public class ProjectPresenter extends Presenter<ProjectActivity> {
   @Inject ApiClient client;
   private final PublishSubject<Void> backProjectClick = PublishSubject.create();
   private final PublishSubject<Void> blurbClick = PublishSubject.create();
@@ -39,7 +36,7 @@ public class ProjectDetailPresenter extends Presenter<ProjectDetailActivity> {
     final Observable<Project> latestProject = client.fetchProject(project)
       .filter(Project::isDisplayable);
 
-    final Observable<Pair<ProjectDetailActivity, Project>> viewAndProject =
+    final Observable<Pair<ProjectActivity, Project>> viewAndProject =
       RxUtils.combineLatestPair(viewSubject, latestProject);
 
     addSubscription(viewAndProject

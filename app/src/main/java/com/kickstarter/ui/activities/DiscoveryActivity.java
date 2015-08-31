@@ -98,8 +98,8 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
     adapter.notifyDataSetChanged();
   }
 
-  public void startProjectDetailActivity(final Project project) {
-    final Intent intent = new Intent(this, ProjectDetailActivity.class)
+  public void startProjectActivity(final Project project) {
+    final Intent intent = new Intent(this, ProjectActivity.class)
       .putExtra(getString(R.string.intent_project), project);
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);

@@ -15,8 +15,7 @@ import com.kickstarter.libs.FormContents;
 import com.kickstarter.libs.IOUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.activities.DisplayWebViewActivity;
-import com.kickstarter.ui.activities.HelpActivity;
-import com.kickstarter.ui.activities.ProjectDetailActivity;
+import com.kickstarter.ui.activities.ProjectActivity;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -193,7 +192,7 @@ public class KickstarterWebViewClient extends WebViewClient {
   private void initializeRequestHandlers() {
     Collections.addAll(requestHandlers,
       new RequestHandler(KickstarterUri::isModalUri, this::startModalWebViewActivity),
-      new RequestHandler(KickstarterUri::isProjectUri, this::startProjectDetailActivity)
+      new RequestHandler(KickstarterUri::isProjectUri, this::startProjectActivity)
     );
   }
 
@@ -208,15 +207,16 @@ public class KickstarterWebViewClient extends WebViewClient {
     return true;
   }
 
-  private boolean startProjectDetailActivity(final Request request, final WebView webView) {
+  private boolean startProjectActivity(final Request request, final WebView webView) {
     final Matcher matcher = Pattern.compile("[a-zA-Z0-9_-]+\\z").matcher(Uri.parse(request.urlString()).getPath());
     if (!matcher.find()) {
       return false;
     }
-    final Context context = webView.getContext();
-    final Intent intent = new Intent(context, ProjectDetailActivity.class)
-      .putExtra(context.getString(R.string.intent_project), Project.createFromParam(matcher.group()));
-    context.startActivity(intent);
+    final Activity activity = (Activity) webView.getContext();
+    final Intent intent = new Intent(activity, ProjectActivity.class)
+      .putExtra(activity.getString(R.string.intent_project), Project.createFromParam(matcher.group()))
+      .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    activity.startActivity(intent);
 
     return true;
   }

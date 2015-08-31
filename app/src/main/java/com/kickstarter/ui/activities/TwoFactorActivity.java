@@ -28,13 +28,6 @@ public class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
 
     setContentView(R.layout.two_factor_layout);
     ButterKnife.inject(this);
-
-    final Intent intent = getIntent();
-    final String email = intent.getExtras().getString(getString(R.string.intent_email));
-    final String password = intent.getExtras().getString(getString(R.string.intent_password));
-    final boolean forward = intent.getBooleanExtra(getString(R.string.intent_forward), false);
-    presenter.takeEmailAndPassword(email, password);
-    presenter.takeForward(forward);
   }
 
   public void setLoginEnabled(final boolean enabled) {
@@ -49,8 +42,8 @@ public class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
     presenter.takeLoginClick();
   }
 
-  public void onSuccess(final boolean forward) {
-    if (forward) {
+  public void onSuccess() {
+    if (forward()) {
       setResult(Activity.RESULT_OK);
       finish();
     } else {
@@ -58,6 +51,17 @@ public class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
         .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
       startActivity(intent);
     }
+  }
 
+  public String email () {
+    return getIntent().getExtras().getString(getString(R.string.intent_email));
+  }
+
+  public String password () {
+    return getIntent().getExtras().getString(getString(R.string.intent_password));
+  }
+
+  public boolean forward () {
+    return getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
   }
 }

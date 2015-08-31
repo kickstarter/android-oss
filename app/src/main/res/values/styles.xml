@@ -61,7 +61,7 @@
     <item name="android:statusBarColor">@color/gray</item>
   </style>
 
-  <style name="ProjectDetailActivity" parent="KsrTheme">
+  <style name="ProjectActivity" parent="KsrTheme">
     <item name="android:statusBarColor">@color/black</item>
   </style>
 

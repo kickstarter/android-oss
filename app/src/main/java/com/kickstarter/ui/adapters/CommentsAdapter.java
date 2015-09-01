@@ -28,7 +28,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   }
 
   @Override
-  public int getItemViewType(int position) {
+  public int getItemViewType(final int position) {
     if (projectContextDelegate.isForViewType(position)) {
       return projectContextDelegate.viewType();
     }
@@ -51,7 +51,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
   @Override
   public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
-    int viewType = viewHolder.getItemViewType();
+    final int viewType = viewHolder.getItemViewType();
     switch (viewType) {
       case VIEW_TYPE_CONTEXT:
         projectContextDelegate.onBindViewHolder(viewHolder);

@@ -9,10 +9,10 @@ import com.kickstarter.models.Project;
 import com.kickstarter.ui.view_holders.ProjectContextViewHolder;
 
 public class ProjectContextAdapterDelegate {
-  private int viewType;
-  private Project project;
+  final private int viewType;
+  final private Project project;
 
-  public ProjectContextAdapterDelegate(int viewType, Project project) {
+  public ProjectContextAdapterDelegate(final int viewType, final Project project) {
     this.viewType = viewType;
     this.project = project;
   }
@@ -21,17 +21,17 @@ public class ProjectContextAdapterDelegate {
     return viewType;
   }
 
-  public boolean isForViewType(int position) {
+  public boolean isForViewType(final int position) {
     return (position == 0);  // we want the header to be the first item
   }
 
-  public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup) {
-    LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
+  public RecyclerView.ViewHolder onCreateViewHolder(final ViewGroup viewGroup) {
+    final LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
     return new ProjectContextViewHolder(inflater.inflate(R.layout.project_context_view, viewGroup, false));
   }
 
-  public void onBindViewHolder(RecyclerView.ViewHolder holder) {
-    ProjectContextViewHolder contextHolder = (ProjectContextViewHolder) holder;
+  public void onBindViewHolder(final RecyclerView.ViewHolder holder) {
+    final ProjectContextViewHolder contextHolder = (ProjectContextViewHolder) holder;
     contextHolder.onBind(project);
   }
 }

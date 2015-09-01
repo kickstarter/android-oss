@@ -13,9 +13,9 @@ import com.kickstarter.ui.view_holders.CommentListViewHolder;
 import java.util.List;
 
 public class CommentAdapterDelegate {
-  private int viewType;
-  private Project project;
-  private CommentFeedPresenter presenter;
+  private final int viewType;
+  private final Project project;
+  private final CommentFeedPresenter presenter;
 
   public CommentAdapterDelegate(final int viewType, final Project project, final CommentFeedPresenter presenter) {
     this.viewType = viewType;
@@ -27,18 +27,18 @@ public class CommentAdapterDelegate {
     return viewType;
   }
 
-  public boolean isForViewType(List items, int position) {
+  public boolean isForViewType(final List items, final int position) {
     return items.get(position) instanceof Comment;  // this doesn't do anything
   }
 
-  public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup) {
-    LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
+  public RecyclerView.ViewHolder onCreateViewHolder(final ViewGroup viewGroup) {
+    final LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
     return new CommentListViewHolder(inflater.inflate(R.layout.comment_card_view, viewGroup, false), presenter);
   }
 
-  public void onBindViewHolder(List items, int position, RecyclerView.ViewHolder viewHolder) {
-    Comment comment = (Comment) items.get(position);  // comments are passed in anyways
-    CommentListViewHolder commentsHolder = (CommentListViewHolder) viewHolder;
+  public void onBindViewHolder(final List items, final int position, final RecyclerView.ViewHolder viewHolder) {
+    final Comment comment = (Comment) items.get(position);  // comments are passed in anyways
+    final CommentListViewHolder commentsHolder = (CommentListViewHolder) viewHolder;
     commentsHolder.onBind(comment, project);
   }
 }

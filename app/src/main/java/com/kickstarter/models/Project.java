@@ -244,7 +244,6 @@ public class Project implements Parcelable {
     return new StringBuilder(deadlineCountdown(context))
       .append(context.getString(R.string._to_go))
       .toString();
-
   }
 
   public String deadlineCountdown(final Context context) {

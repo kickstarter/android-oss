@@ -12,7 +12,7 @@
   <string name="Are_those_new_shoes">
     Are those new shoes? If they’re not new, they look really shiny and beautiful.
   </string>
-  <string name="Awh_how_sad">Awh, how sad. Become a backer to leave a comment.</string>
+  <string name="Aw_how_sad">Aw, how sad. Become a backer to leave a comment.</string>
   <string name="Back_this_project">Back this project</string>
   <string name="backers">backers</string>
   <string name="Build">Build</string>
@@ -27,11 +27,8 @@
   </string>
   <string name="Campaign">Campaign</string>
   <string name="Changelog">Changelog</string>
-<<<<<<< HEAD
   <string name="Comment">Comment</string>
-=======
   <string name="Close">Close</string>
->>>>>>> fef5935802918a510f235f9a2031f6131b66c438
   <string name="Comments">Comments</string>
   <string name="creator_launched_a_project">%1$s launched a project: %2$s</string>
   <string name="Created_by">Created by</string>

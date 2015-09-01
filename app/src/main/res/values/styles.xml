@@ -52,11 +52,21 @@
     <item name="android:windowBackground">@color/light_gray</item>
   </style>
 
+  <style name="DisplayWebViewActivity" parent="KsrTheme">
+    <item name="android:statusBarColor">@color/gray</item>
+    <item name="android:windowBackground">@color/white</item>
+  </style>
+
+  <style name="HelpActivity" parent="KsrTheme">
+    <item name="android:statusBarColor">@color/gray</item>
+    <item name="android:windowBackground">@color/white</item>
+  </style>
+
   <style name="Login" parent="KsrTheme">
     <item name="android:statusBarColor">@color/gray</item>
   </style>
 
-  <style name="ProjectDetailActivity" parent="KsrTheme">
+  <style name="ProjectActivity" parent="KsrTheme">
     <item name="android:statusBarColor">@color/black</item>
   </style>
 

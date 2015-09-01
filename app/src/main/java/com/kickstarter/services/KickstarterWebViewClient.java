@@ -1,5 +1,6 @@
 package com.kickstarter.services;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -13,7 +14,8 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.FormContents;
 import com.kickstarter.libs.IOUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.ui.activities.ProjectDetailActivity;
+import com.kickstarter.ui.activities.DisplayWebViewActivity;
+import com.kickstarter.ui.activities.ProjectActivity;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -40,6 +42,7 @@ public class KickstarterWebViewClient extends WebViewClient {
   private final Build build;
   private final CookieManager cookieManager;
   private final CurrentUser currentUser;
+  private boolean initialPageLoad = true;
   private final String webEndpoint;
   private final List<RequestHandler> requestHandlers = new ArrayList<>();
   private FormContents formContents = null;
@@ -53,7 +56,12 @@ public class KickstarterWebViewClient extends WebViewClient {
     this.currentUser = currentUser;
     this.webEndpoint = webEndpoint;
 
-    initializeResponseHandlers();
+    initializeRequestHandlers();
+  }
+
+  @Override
+  public void onPageFinished(final WebView view, final String url) {
+    initialPageLoad = false;
   }
 
   @Override
@@ -181,26 +189,45 @@ public class KickstarterWebViewClient extends WebViewClient {
     return new WebResourceResponse("application/JavaScript", null, new ByteArrayInputStream(new byte[0]));
   }
 
-  private void initializeResponseHandlers() {
+  private void initializeRequestHandlers() {
     Collections.addAll(requestHandlers,
-      new RequestHandler(KickstarterUri::isProjectUri, this::startProjectDetailActivity)
+      new RequestHandler(KickstarterUri::isModalUri, this::startModalWebViewActivity),
+      new RequestHandler(KickstarterUri::isProjectUri, this::startProjectActivity)
     );
   }
 
-  private boolean startProjectDetailActivity(final Request request, final WebView webView) {
+  private boolean startModalWebViewActivity(final Request request, final WebView webView) {
+    final Activity context = (Activity) webView.getContext();
+    final Intent intent = new Intent(context, DisplayWebViewActivity.class)
+      .putExtra(context.getString(R.string.intent_url), request.urlString())
+      .putExtra(context.getString(R.string.intent_right_bar_button), DisplayWebViewActivity.RIGHT_BAR_BUTTON_CLOSE);
+    context.startActivity(intent);
+    context.overridePendingTransition(R.anim.slide_in_bottom, R.anim.fade_out);
+
+    return true;
+  }
+
+  private boolean startProjectActivity(final Request request, final WebView webView) {
     final Matcher matcher = Pattern.compile("[a-zA-Z0-9_-]+\\z").matcher(Uri.parse(request.urlString()).getPath());
     if (!matcher.find()) {
       return false;
     }
-    final Context context = webView.getContext();
-    final Intent intent = new Intent(context, ProjectDetailActivity.class)
-      .putExtra(context.getString(R.string.intent_project), Project.createFromParam(matcher.group()));
-    context.startActivity(intent);
+    final Activity activity = (Activity) webView.getContext();
+    final Intent intent = new Intent(activity, ProjectActivity.class)
+      .putExtra(activity.getString(R.string.intent_project), Project.createFromParam(matcher.group()))
+      .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    activity.startActivity(intent);
 
     return true;
   }
 
   private boolean handleRequest(final Request request, final WebView webView) {
+    if (initialPageLoad) {
+      // Avoid infinite loop where webView.loadUrl is intercepted, invoking a new activity, which is the same URL
+      // and therefore also intercepted.
+      return false;
+    }
+
     final Uri uri = Uri.parse(request.urlString());
     for (final RequestHandler requestHandler : requestHandlers) {
       if (requestHandler.matches(uri, webEndpoint) && requestHandler.action(request, webView)) {

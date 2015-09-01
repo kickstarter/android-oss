@@ -1,96 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
-  <include layout="@layout/thanks_toolbar" />
-
-  <RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/dark_blue">
-
-    <include layout="@layout/woohoo_background_view" />
-
-    <TextView
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:background="@color/transparent"
-      android:layout_centerVertical="true"
-      android:layout_centerHorizontal="true"
-      android:paddingTop="46dp"
-      android:paddingBottom="46dp"
-      android:textColor="@color/white"
-      android:textSize="30sp"
-      android:text="@string/Woo_hoo"
-      android:layout_gravity="center"
-      android:gravity="center_vertical|center_horizontal" />
-
-  </RelativeLayout>
-
   <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_margin="@dimen/grid_3">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <TextView
-      android:id="@+id/backed_project"
+    <include layout="@layout/thanks_toolbar" />
+
+    <RelativeLayout
+      xmlns:android="http://schemas.android.com/apk/res/android"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
-      android:text="You_just_backed" />
+      android:background="@color/dark_blue">
+
+      <include layout="@layout/woohoo_background_view" />
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="46dp"
+        android:paddingBottom="46dp"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        android:text="@string/Woo_hoo"
+        android:layout_gravity="center"
+        android:gravity="center_vertical|center_horizontal" />
+
+    </RelativeLayout>
 
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:paddingTop="@dimen/grid_3"
-      android:orientation="horizontal"
-      android:layout_gravity="center_horizontal">
+      android:orientation="vertical"
+      android:layout_margin="@dimen/grid_3">
 
-      <Button
-        android:id="@+id/facebook_button"
+      <TextView
+        android:id="@+id/backed_project"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginRight="@dimen/keyline_1_half"
-        android:text="Facebook Stub" />
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+        android:text="You_just_backed" />
 
-      <Button
-        android:id="@+id/twitter_button"
+      <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginLeft="@dimen/keyline_1_half"
-        android:text="Twitter Stub" />
+        android:paddingTop="@dimen/grid_3"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal">
+
+        <Button
+          android:id="@+id/facebook_button"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:layout_marginRight="@dimen/keyline_1_half"
+          android:text="Facebook Stub" />
+
+        <Button
+          android:id="@+id/twitter_button"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:layout_marginLeft="@dimen/keyline_1_half"
+          android:text="Twitter Stub" />
+
+      </LinearLayout>
+
+      <Button
+        android:id="@+id/share_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onShareClick"
+        android:text="@string/More" />
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_3"
+        android:text="@string/Looking_for_more_projects"
+        android:textColor="@color/text_dark"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
+        />
 
     </LinearLayout>
 
-    <Button
-      android:id="@+id/share_button"
+    <android.support.v7.widget.RecyclerView
+      android:id="@+id/recommended_projects_recycler_view"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:onClick="onShareClick"
-      android:text="@string/More" />
-
-    <TextView
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/grid_3"
-      android:text="@string/Looking_for_more_projects"
-      android:textColor="@color/text_dark"
-      android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
-      />
+      android:layout_height="128dp"
+      android:scrollbars="horizontal" />
 
   </LinearLayout>
 
-  <android.support.v7.widget.RecyclerView
-    android:id="@+id/recommended_projects_recycler_view"
-    android:layout_width="match_parent"
-    android:layout_height="128dp"
-    android:scrollbars="horizontal" />
-
-</LinearLayout>
+</ScrollView>

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
-  android:layout_height="@dimen/grid_10">
+  android:layout_height="@dimen/grid_10"
+  android:background="@drawable/button_selector"
+  android:id="@+id/project_context_view">
 
   <ImageView
     android:id="@+id/context_photo"

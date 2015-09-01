@@ -39,7 +39,10 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical"
-      android:layout_margin="@dimen/grid_3">
+      android:layout_marginBottom="@dimen/grid_1"
+      android:layout_marginLeft="@dimen/grid_2"
+      android:layout_marginRight="@dimen/grid_2"
+      android:layout_marginTop="@dimen/grid_2">
 
       <TextView
         android:id="@+id/backed_project"

@@ -74,7 +74,7 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
     backersCount.setText(project.formattedBackersCount());
     category.setText(project.category().name());
     deadlineCountdown.setText(Integer.toString(project.deadlineCountdownValue()));
-    deadlineCountdownUnit.setText(project.deadlineCountdownUnit());
+    deadlineCountdownUnit.setText(project.deadlineCountdownUnit(this));
     goal.setText(money.formattedCurrency(project.goal(), project.currencyOptions(), true));
     location.setText(project.location().displayableName());
     projectName.setText(project.name());

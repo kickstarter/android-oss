@@ -250,7 +250,7 @@ public class Project implements Parcelable {
   public String deadlineCountdown(final Context context) {
     return new StringBuilder().append(deadlineCountdownValue())
       .append(" ")
-      .append(deadlineCountdownUnit())
+      .append(deadlineCountdownUnit(context))
       .toString();
   }
 
@@ -271,19 +271,18 @@ public class Project implements Parcelable {
     return (int) Math.floor(seconds / 60.0 / 60.0 / 24.0); // days
   }
 
-  public String deadlineCountdownUnit() {
-    // TODO: Extract into string resource - needs context for lookup though
+  public String deadlineCountdownUnit(final Context context) {
     final Long seconds = timeIntervalUntilDeadline();
     if (seconds <= 1.0 && seconds > 0.0) {
-      return "secs";
+      return context.getString(R.string.secs);
     } else if (seconds <= 120.0) {
-      return "secs";
+      return context.getString(R.string.secs);
     } else if (seconds <= 120.0 * 60.0) {
-      return "mins";
+      return context.getString(R.string.mins);
     } else if (seconds <= 72.0 * 60.0 * 60.0) {
-      return "hours";
+      return context.getString(R.string.hours);
     }
-    return "days";
+    return context.getString(R.string.days);
   }
 
   public boolean isDisplayable() {

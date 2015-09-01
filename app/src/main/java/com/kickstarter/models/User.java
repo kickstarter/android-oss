@@ -9,7 +9,7 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 @ParcelablePlease
 public class User implements Parcelable {
   public Avatar avatar = null;
-  @NonNull public Integer id = null;
+  public Integer id = null;
   public String name = null;
   public String uid = null;
 

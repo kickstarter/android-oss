@@ -23,8 +23,8 @@
   <color name="pink">#ffecf0</color>
   <color name="text_dark">#0f2105</color>
   <color name="transparent">@android:color/transparent</color>
-  <color name="yellow">#ffffc9</color>
   <color name="white">@android:color/white</color>
+  <color name="yellow">#ffffc9</color>
 
   <!-- Category colors -->
   <color name="art">#ffbdab</color>

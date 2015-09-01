@@ -1,10 +1,13 @@
 package com.kickstarter.models;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.StringDef;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
+import com.kickstarter.R;
 import com.kickstarter.libs.CurrencyOptions;
 import com.kickstarter.libs.NumberUtils;
 
@@ -12,6 +15,8 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 
 @ParcelablePlease
@@ -35,6 +40,7 @@ public class Project implements Parcelable {
   public Photo photo = null;
   public Video video = null;
   public DateTime potd_at = null;
+  public @State String state = null;
   public String slug = null;
   public User creator = null;
   public Integer updates_count = null;
@@ -64,6 +70,7 @@ public class Project implements Parcelable {
   public String name() { return name; }
   public Float pledged() { return pledged; }
   public Photo photo() { return photo; }
+  public @State String state() { return state; }
   public Video video() { return video; }
   public String slug() { return slug; }
   public String formattedUpdatesCount() {
@@ -80,6 +87,19 @@ public class Project implements Parcelable {
   public String updatesUrl() {
     return urls().web().updates();
   }
+
+  public static final String STATE_STARTED      = "started";
+  public static final String STATE_SUBMITTED    = "submitted";
+  public static final String STATE_LIVE         = "live";
+  public static final String STATE_SUCCESSFUL   = "successful";
+  public static final String STATE_FAILED       = "failed";
+  public static final String STATE_CANCELED     = "canceled";
+  public static final String STATE_SUSPENDED    = "suspended";
+  public static final String STATE_PURGED       = "purged";
+
+  @Retention(RetentionPolicy.SOURCE)
+  @StringDef({STATE_STARTED, STATE_SUBMITTED, STATE_LIVE, STATE_SUCCESSFUL, STATE_FAILED, STATE_CANCELED, STATE_SUSPENDED, STATE_PURGED})
+  public @interface State {}
 
   public List<Reward> rewards() {
     return rewards;
@@ -171,6 +191,21 @@ public class Project implements Parcelable {
     return new CurrencyOptions(country, currency_symbol, currency);
   }
 
+  /** Returns whether the project is in a canceled state. */
+  public boolean isCanceled() {
+    return STATE_CANCELED.equals(state);
+  }
+
+  /** Returns whether the project is in a failed state. */
+  public boolean isFailed() {
+    return STATE_FAILED.equals(state);
+  }
+
+  /** Returns whether the project is in a live state. */
+  public boolean isLive() {
+    return STATE_LIVE.equals(state);
+  }
+
   public boolean isPotdToday() {
     if (potd_at == null) {
       return false;
@@ -178,6 +213,31 @@ public class Project implements Parcelable {
 
     final DateTime startOfDayUTC = new DateTime(DateTimeZone.UTC).withTime(0, 0, 0, 0);
     return startOfDayUTC.isEqual(potd_at.withZone(DateTimeZone.UTC));
+  }
+
+  /** Returns whether the project is in a purged state. */
+  public boolean isPurged() {
+    return STATE_PURGED.equals(state);
+  }
+
+  /** Returns whether the project is in a live state. */
+  public boolean isStarted() {
+    return STATE_STARTED.equals(state);
+  }
+
+  /** Returns whether the project is in a submitted state. */
+  public boolean isSubmitted() {
+    return STATE_SUBMITTED.equals(state);
+  }
+
+  /** Returns whether the project is in a suspended state. */
+  public boolean isSuspended() {
+    return STATE_SUSPENDED.equals(state);
+  }
+
+  /** Returns whether the project is in a successful state. */
+  public boolean isSuccessful() {
+    return STATE_SUCCESSFUL.equals(state);
   }
 
   public Float percentageFunded() {
@@ -188,13 +248,53 @@ public class Project implements Parcelable {
     return 0.0f;
   }
 
-  public Long timeIntervalUntilDeadline() {
-    final Duration duration = new Duration(new DateTime(), deadline);
-    return Math.max(0L, duration.getStandardSeconds());
+  /**
+   * Returns a String describing the time remaining for a project, e.g.
+   * 25 minutes to go, 8 days to go.
+   *
+   * @param  context an Android context.
+   * @return         the String time remaining.
+   */
+  public String timeToGo(final Context context) {
+    return new StringBuilder(deadlineCountdown(context))
+      .append(context.getString(R.string._to_go))
+      .toString();
   }
 
-  public Integer deadlineCountdown() {
-    final Long seconds = timeIntervalUntilDeadline();
+  /**
+   * Returns time until project reaches deadline along with the unit,
+   * e.g. 25 minutes, 8 days.
+   *
+   * @param  context an Android context.
+   * @return         the String time remaining.
+   */
+  public String deadlineCountdown(final Context context) {
+    return new StringBuilder().append(deadlineCountdownValue())
+      .append(" ")
+      .append(deadlineCountdownUnit(context))
+      .toString();
+  }
+
+  /**
+   * Returns time until project reaches deadline in seconds, or 0 if the
+   * project has already finished.
+   *
+   * @return the Long number of seconds remaining.
+   */
+  public Long timeInSecondsUntilDeadline() {
+    return Math.max(0L,
+      new Duration(new DateTime(), deadline).getStandardSeconds());
+  }
+
+  /**
+   * Returns time remaining until project reaches deadline in either seconds,
+   * minutes, hours or days. A time unit is chosen such that the number is
+   * readable, e.g. 5 minutes would be preferred to 300 seconds.
+   *
+   * @return the Integer time remaining.
+   */
+  public Integer deadlineCountdownValue() {
+    final Long seconds = timeInSecondsUntilDeadline();
     if (seconds <= 120.0) {
       return seconds.intValue(); // seconds
     } else if (seconds <= 120.0 * 60.0) {
@@ -205,19 +305,25 @@ public class Project implements Parcelable {
     return (int) Math.floor(seconds / 60.0 / 60.0 / 24.0); // days
   }
 
-  public String deadlineCountdownUnit() {
-    // TODO: Extract into string resource - needs context for lookup though
-    final Long seconds = timeIntervalUntilDeadline();
+  /**
+   * Returns the most appropriate unit for the time remaining until the project
+   * reaches its deadline.
+   *
+   * @param  context an Android context.
+   * @return         the String unit.
+   */
+  public String deadlineCountdownUnit(final Context context) {
+    final Long seconds = timeInSecondsUntilDeadline();
     if (seconds <= 1.0 && seconds > 0.0) {
-      return "secs";
+      return context.getString(R.string.secs);
     } else if (seconds <= 120.0) {
-      return "secs";
+      return context.getString(R.string.secs);
     } else if (seconds <= 120.0 * 60.0) {
-      return "mins";
+      return context.getString(R.string.mins);
     } else if (seconds <= 72.0 * 60.0 * 60.0) {
-      return "hours";
+      return context.getString(R.string.hours);
     }
-    return "days";
+    return context.getString(R.string.days);
   }
 
   public boolean isDisplayable() {

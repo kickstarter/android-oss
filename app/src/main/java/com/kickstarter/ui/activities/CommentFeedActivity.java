@@ -24,8 +24,6 @@ import butterknife.OnClick;
 @RequiresPresenter(CommentFeedPresenter.class)
 public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
   @InjectView(R.id.comment_feed_recycler_view) RecyclerView recyclerView;
-  // todo: add subjects for pagination
-
   private Project project;
 
   @Override

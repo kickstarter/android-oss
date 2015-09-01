@@ -12,8 +12,9 @@ import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.CommentFeedPresenter;
-import com.kickstarter.ui.adapters.CommentListAdapter;
+import com.kickstarter.ui.adapters.CommentsAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -35,14 +36,14 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     ButterKnife.inject(this);
 
     final Intent intent = getIntent();
-
     project = intent.getParcelableExtra(getString(R.string.intent_project));
     presenter.takeProject(project);
   }
 
+  // provide the data source to the adapter here
   public void showComments(final List<Comment> comments) {
     final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-    final CommentListAdapter adapter = new CommentListAdapter(comments, project, presenter);
+    final CommentsAdapter adapter = new CommentsAdapter(comments, project, presenter);
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);
   }

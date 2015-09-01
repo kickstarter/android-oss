@@ -18,6 +18,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 @RequiresPresenter(CommentFeedPresenter.class)
 public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
@@ -44,10 +45,10 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     final CommentListAdapter adapter = new CommentListAdapter(comments, project, presenter);
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);
-    recyclerView.setAdapter(adapter);
   }
 
   @Override
+  @OnClick({R.id.nav_back_button})
   public void onBackPressed() {
     super.onBackPressed();
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);

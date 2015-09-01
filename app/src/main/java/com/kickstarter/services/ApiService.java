@@ -21,7 +21,7 @@ import rx.Observable;
   Observable<ActivityEnvelope> fetchActivities(@Query("categories[]") List<String> categories);
 
   @GET("/v1/projects/{param}/comments")
-  Observable<CommentsEnvelope> fetchProjectComments(@Path("param") String id);
+  Observable<CommentsEnvelope> fetchProjectComments(@Path("param") String param);
 
   @GET("/v1/discover")
   Observable<DiscoverEnvelope> fetchProjects(@QueryMap Map<String, String> params);

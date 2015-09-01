@@ -29,7 +29,6 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    ((KsrApplication) getApplication()).component().inject(this);
     setContentView(R.layout.comment_feed_layout);
     ButterKnife.inject(this);
 
@@ -38,7 +37,6 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     presenter.takeProject(project);
   }
 
-  // provide the data source to the adapter here
   public void showComments(final List<Comment> comments) {
     final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
     final CommentsAdapter adapter = new CommentsAdapter(comments, project, presenter);
@@ -47,7 +45,7 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
   }
 
   @Override
-  @OnClick({R.id.nav_back_button})
+  @OnClick(R.id.nav_back_button)
   public void onBackPressed() {
     super.onBackPressed();
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);

@@ -45,7 +45,7 @@ public class ApiClient {
     return service.fetchActivities(params.queryParams()).retry(3);
   }
 
-  public Observable<CommentsEnvelope> fetchProjectComments(final Project project){
+  public Observable<CommentsEnvelope> fetchProjectComments(final Project project) {
     return service.fetchProjectComments(project.param());
   }
 

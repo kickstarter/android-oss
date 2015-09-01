@@ -94,7 +94,8 @@
     <android.support.v7.widget.RecyclerView
       android:id="@+id/recommended_projects_recycler_view"
       android:layout_width="match_parent"
-      android:layout_height="128dp"
+      android:layout_height="150dp"
+      android:layout_marginBottom="@dimen/grid_2"
       android:scrollbars="horizontal" />
 
   </LinearLayout>

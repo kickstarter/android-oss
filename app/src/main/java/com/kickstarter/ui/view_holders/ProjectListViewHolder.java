@@ -53,7 +53,7 @@ public class ProjectListViewHolder extends RecyclerView.ViewHolder {
 
     backers_count.setText(project.formattedBackersCount());
     category.setText(project.category().name());
-    deadline_countdown.setText(Integer.toString(project.deadlineCountdown()));
+    deadline_countdown.setText(Integer.toString(project.deadlineCountdownValue()));
     deadline_countdown_unit.setText(project.deadlineCountdownUnit());
     goal.setText(money.formattedCurrency(project.goal(), project.currencyOptions(), true));
     location.setText(project.location().displayableName());

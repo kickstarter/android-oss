@@ -26,8 +26,8 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
       android:id="@+id/avatar"
-      android:layout_width="@dimen/project_detail_avatar_width"
-      android:layout_height="@dimen/project_detail_avatar_height"
+      android:layout_width="@dimen/project_avatar_width"
+      android:layout_height="@dimen/project_avatar_height"
       android:layout_alignParentEnd="true"
       android:layout_alignParentRight="true"
       android:scaleType="centerCrop" />

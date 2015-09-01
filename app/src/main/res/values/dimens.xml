@@ -79,6 +79,6 @@
   <dimen name="activity_feed_medium_photo_height">90dp</dimen>
   <dimen name="comments_feed_avatar_width">@dimen/grid_7</dimen>
   <dimen name="comments_feed_avatar_height">@dimen/grid_7</dimen>
-  <dimen name="project_detail_avatar_width">@dimen/grid_8</dimen>
-  <dimen name="project_detail_avatar_height">@dimen/grid_8</dimen>
+  <dimen name="project_avatar_width">@dimen/grid_8</dimen>
+  <dimen name="project_avatar_height">@dimen/grid_8</dimen>
 </resources>

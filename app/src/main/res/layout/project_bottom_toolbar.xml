@@ -32,7 +32,7 @@
 
     <Button
       android:id="@+id/back_project_button"
-      style="@style/KsrPledgeButton"
+      style="@style/KsrButton"
       android:visibility="visible"
       android:onClick="backProjectButtonOnClick"
       android:background="@drawable/button_green"
@@ -40,7 +40,7 @@
 
     <Button
       android:id="@+id/manage_pledge_button"
-      style="@style/KsrPledgeButton"
+      style="@style/KsrButton"
       android:visibility="gone"
       android:background="@drawable/button_blue"
       android:text="@string/Manage_pledge" />

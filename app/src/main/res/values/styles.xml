@@ -91,12 +91,14 @@
     <item name="android:progressDrawable">@drawable/ksr_progress_bar_horizontal</item>
   </style>
 
-  <style name="KsrPledgeButton" parent="Base.Widget.AppCompat.Button">
+  <style name="KsrButton" parent="Base.Widget.AppCompat.Button">
     <item name="android:textColor">@color/white</item>
     <item name="android:layout_centerInParent">true</item>
     <item name="android:layout_width">@dimen/grid_20</item>
     <item name="android:layout_height">@dimen/grid_4</item>
     <item name="android:layout_marginTop">@dimen/grid_3</item>
+    <item name="android:paddingLeft">@dimen/grid_3</item>
+    <item name="android:paddingRight">@dimen/grid_3</item>
   </style>
 
 </resources>

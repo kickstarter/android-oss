@@ -8,7 +8,8 @@
   android:background="@color/light_gray"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
-  android:elevation="2dp">
+  android:elevation="2dp"
+  xmlns:icon_text_view="http://schemas.android.com/tools">
 
   <RelativeLayout
     android:layout_width="match_parent"
@@ -16,6 +17,7 @@
     android:gravity="center_vertical">
 
     <com.kickstarter.ui.views.IconTextView
+      icon_text_view:iconType="material"
       android:id="@+id/nav_back_button"
       android:paddingLeft="@dimen/grid_3"
       android:background="@drawable/button_selector"

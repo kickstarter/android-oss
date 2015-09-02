@@ -9,6 +9,7 @@
   <string name="local_offer_icon">local_offer</string>
   <string name="location_on_icon">location_on</string>
   <string name="lock_icon">lock</string>
+  <string name="mode_comment_icon">mode_comment</string>
   <string name="more_vert_icon">more_vert</string>
   <string name="play_circle_outline_icon">play_circle_outline</string>
   <string name="share_icon">share</string>

@@ -55,4 +55,8 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
   public void projectContextClick(View view) {
     onBackPressed();
   }
+
+  public void publicCommentClick(View view) {
+
+  }
 }

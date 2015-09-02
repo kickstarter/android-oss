@@ -74,8 +74,8 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
     creatorName.setText(Html.fromHtml(getString(R.string.by_creator, project.creator().name())));
     backersCount.setText(project.formattedBackersCount());
     category.setText(project.category().name());
-    deadlineCountdown.setText(Integer.toString(project.deadlineCountdown()));
-    deadlineCountdownUnit.setText(project.deadlineCountdownUnit());
+    deadlineCountdown.setText(Integer.toString(project.deadlineCountdownValue()));
+    deadlineCountdownUnit.setText(project.deadlineCountdownUnit(this));
     goal.setText(money.formattedCurrency(project.goal(), project.currencyOptions(), true));
     location.setText(project.location().displayableName());
     projectName.setText(project.name());

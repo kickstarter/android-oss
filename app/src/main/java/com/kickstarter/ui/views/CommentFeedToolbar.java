@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 public class CommentFeedToolbar extends Toolbar {
   @InjectView(R.id.comment_button) TextView commentButton;
@@ -43,5 +44,6 @@ public class CommentFeedToolbar extends Toolbar {
   @OnClick(R.id.comment_button)
   public void postComment() {
     // if logged in, post
+    Timber.d("post comment");
   }
 }

@@ -14,6 +14,7 @@ import android.widget.VideoView;
 import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.CircleTransform;
 import com.kickstarter.libs.DateTimeUtils;
 import com.kickstarter.libs.Money;
 import com.kickstarter.libs.RequiresPresenter;
@@ -92,7 +93,10 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
     }
 
     // Creator information
-    Picasso.with(this).load(project.creator().avatar().medium()).into(avatar);
+    Picasso.with(this).load(project.creator().avatar()
+      .medium())
+      .transform(new CircleTransform())
+      .into(avatar);
     avatarName.setText(project.creator().name());
     fundMessage.setText(String.format(getString(R.string.This_project_will_only_be_funded_if),
       money.formattedCurrency(project.goal(), project.currencyOptions(), true),

@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.CircleTransform;
 import com.kickstarter.libs.CommentUtils;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.DateTimeUtils;
@@ -57,7 +58,11 @@ public class CommentListViewHolder extends RecyclerView.ViewHolder {
       userLabelTextView.setVisibility(View.GONE);
     }
 
-    Picasso.with(view.getContext()).load(comment.author().avatar().small()).into(avatar);
+    Picasso.with(view.getContext()).load(comment.author()
+      .avatar()
+      .small())
+      .transform(new CircleTransform())
+      .into(avatar);
     name.setText(comment.author().name());
     postDate.setText(DateTimeUtils.relativeDateInWords(comment.createdAt(), false, true));
     commentBody.setText(comment.body());

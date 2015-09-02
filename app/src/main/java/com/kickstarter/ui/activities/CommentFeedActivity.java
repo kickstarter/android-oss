@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
@@ -49,5 +50,9 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
   public void onBackPressed() {
     super.onBackPressed();
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
+  }
+
+  public void projectContextClick(View view) {
+    onBackPressed();
   }
 }

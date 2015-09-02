@@ -2,8 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="@dimen/grid_10"
-  android:background="@drawable/button_selector"
-  android:id="@+id/project_context_view">
+  android:id="@+id/project_context_view"
+  android:clickable="true"
+  android:onClick="projectContextClick">
 
   <ImageView
     android:id="@+id/context_photo"

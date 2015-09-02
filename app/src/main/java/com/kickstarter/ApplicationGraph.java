@@ -22,6 +22,7 @@ import com.kickstarter.ui.views.CommentFeedToolbar;
 import com.kickstarter.ui.views.DiscoveryToolbar;
 import com.kickstarter.ui.views.IconTextView;
 import com.kickstarter.ui.views.KickstarterWebView;
+import com.kickstarter.ui.views.ProjectBottomToolbar;
 import com.kickstarter.ui.views.TiemposTextView;
 
 public interface ApplicationGraph {
@@ -41,6 +42,7 @@ public interface ApplicationGraph {
   void inject(KsrApplication application);
   void inject(LoginPresenter presenter);
   void inject(Money money);
+  void inject(ProjectBottomToolbar toolbar);
   void inject(ProjectContextViewHolder viewHolder);
   void inject(ProjectActivity activity);
   void inject(ProjectPresenter presenter);

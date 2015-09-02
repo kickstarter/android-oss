@@ -60,7 +60,7 @@
           android:textColor="@color/text_dark"
           android:onClick="blurbOnClick"
           android:clickable="true"
-          android:paddingBottom="@dimen/keyline_1_half" />
+          android:paddingBottom="@dimen/grid_1" />
 
         <RelativeLayout
           android:layout_width="wrap_content"

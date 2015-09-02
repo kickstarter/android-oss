@@ -1,5 +1,4 @@
 <resources>
-  <!-- TODO: replace with Kickstarter dimens-->
   <!-- Kickstarter eight-point grid keylines-->
   <dimen name="grid_1_half">4dp</dimen>
   <dimen name="grid_1">8dp</dimen>
@@ -11,14 +10,15 @@
   <dimen name="grid_7">56dp</dimen>
   <dimen name="grid_8">64dp</dimen>
   <dimen name="grid_9">72dp</dimen>
+  <dimen name="grid_9_half">36dp</dimen>
   <dimen name="grid_10">80dp</dimen>
   <dimen name="grid_11_half">44dp</dimen>
   <dimen name="grid_11">88dp</dimen>
   <dimen name="grid_12">96dp</dimen>
+  <dimen name="grid_20">160dp</dimen>
 
   <!-- Kickstarter typography-->
   <!-- todo: naming conventions: temp names are prefixed with ksr_-->
-  <!-- todo: 14sp is the default now-->
   <dimen name="ksr_mini_stats">13sp</dimen>
   <dimen name="ksr_caption">14sp</dimen>
   <dimen name="ksr_subhead">15sp</dimen>
@@ -27,23 +27,16 @@
   <dimen name="ksr_stats">18sp</dimen>
 
   <!-- Kickstarter & Material values-->
-  <dimen name="ksr_card_elevation">4dp</dimen>
-  <dimen name="ksr_text_view_corner_radius">4dp</dimen>
-
-  <!-- Keylines
-    http://www.google.com/design/spec/layout/metrics-keylines.html#metrics-keylines-keylines-spacing -->
-  <dimen name="keyline_1_half">8dp</dimen>
-  <dimen name="keyline_1">16dp</dimen>
-  <dimen name="keyline_2">72dp</dimen>
-  <dimen name="keyline_2_half">36dp</dimen>
-  <dimen name="keyline_2_three_quarters">54dp</dimen>
+  <dimen name="ksr_card_elevation">@dimen/grid_1_half</dimen>
+  <dimen name="ksr_text_view_corner_radius">@dimen/grid_1_half</dimen>
+  <dimen name="ksr_toolbar_elevation">@dimen/grid_1_half</dimen>
 
   <!-- Cards -->
   <dimen name="card_corner_radius">0dp</dimen>
-  <dimen name="card_margin_x">@dimen/keyline_1</dimen>
-  <dimen name="card_margin_y">@dimen/keyline_1_half</dimen>
-  <dimen name="card_padding_action">8dp</dimen>
-  <dimen name="card_padding_action_half">4dp</dimen>
+  <dimen name="card_margin_x">@dimen/grid_2</dimen>
+  <dimen name="card_margin_y">@dimen/grid_1</dimen>
+  <dimen name="card_padding_action">@dimen/grid_1</dimen>
+  <dimen name="card_padding_action_half">@dimen/grid_1_half</dimen>
 
   <!-- Buttons -->
   <!-- button_icon_fixed_width is useful when we want to place several icons next to each

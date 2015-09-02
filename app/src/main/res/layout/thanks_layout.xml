@@ -60,7 +60,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:layout_marginRight="@dimen/keyline_1_half"
+          android:layout_marginRight="@dimen/grid_1"
           android:text="Facebook Stub" />
 
         <Button
@@ -68,7 +68,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:layout_marginLeft="@dimen/keyline_1_half"
+          android:layout_marginLeft="@dimen/grid_1"
           android:text="Twitter Stub" />
 
       </LinearLayout>

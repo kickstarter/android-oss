@@ -29,14 +29,14 @@
       <ImageView
         android:id="@+id/project_photo"
         android:adjustViewBounds="true"
-        android:layout_marginRight="@dimen/keyline_1_half"
+        android:layout_marginRight="@dimen/grid_1"
         android:layout_width="@dimen/activity_feed_small_photo_width"
         android:layout_height="@dimen/activity_feed_small_photo_height" />
 
       <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/keyline_1_half"
+        android:layout_marginLeft="@dimen/grid_1"
         android:text="Project Name"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:id="@+id/project_name" />
@@ -50,7 +50,7 @@
 
       <RelativeLayout
         android:layout_marginTop="@dimen/grid_3"
-        android:layout_marginBottom="@dimen/keyline_1_half"
+        android:layout_marginBottom="@dimen/grid_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -76,7 +76,7 @@
         android:id="@+id/update_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/keyline_1_half"
+        android:layout_marginBottom="@dimen/grid_1"
         android:text="Update Title"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
         android:textColor="@color/text_dark" />
@@ -85,7 +85,7 @@
           android:id="@+id/update_body"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/keyline_1_half"
+          android:layout_marginTop="@dimen/grid_1"
           android:text="Update Body"/>
 
     </LinearLayout>

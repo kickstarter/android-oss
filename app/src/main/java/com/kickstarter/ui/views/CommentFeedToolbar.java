@@ -1,16 +1,13 @@
 package com.kickstarter.ui.views;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
-import com.kickstarter.libs.CurrentUser;
-
-import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -19,7 +16,6 @@ import timber.log.Timber;
 
 public class CommentFeedToolbar extends Toolbar {
   @InjectView(R.id.comment_button) TextView commentButton;
-  @Inject CurrentUser currentUser;
 
   public CommentFeedToolbar(final Context context) {
     super(context);
@@ -37,13 +33,15 @@ public class CommentFeedToolbar extends Toolbar {
   protected void onFinishInflate() {
     super.onFinishInflate();
     ButterKnife.inject(this);
-    ((KsrApplication) getContext().getApplicationContext()).component().inject(this);
   }
 
   @Nullable
   @OnClick(R.id.comment_button)
   public void postComment() {
-    // if logged in, post
     Timber.d("post comment");
+
+    Dialog dialog = new Dialog(getContext());
+    dialog.setTitle("Leave a comment");
+    dialog.show();
   }
 }

@@ -11,6 +11,7 @@ import android.widget.Button;
 import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.models.Project;
 
 import javax.inject.Inject;
 
@@ -19,20 +20,22 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-public class ProjectBottomToolbar extends Toolbar {
+public class ProjectActionToolbar extends Toolbar {
   @InjectView(R.id.back_project_button) Button backProjectButton;
   @InjectView(R.id.manage_pledge_button) Button managePledgeButton;
   @Inject CurrentUser currentUser;
 
-  public ProjectBottomToolbar(final Context context) {
+  // pass in an observable Project
+
+  public ProjectActionToolbar(final Context context) {
     super(context);
   }
 
-  public ProjectBottomToolbar(final Context context, final AttributeSet attrs) {
+  public ProjectActionToolbar(final Context context, final AttributeSet attrs) {
     super(context, attrs);
   }
 
-  public ProjectBottomToolbar(final Context context, final AttributeSet attrs, final int defStyleAttr) {
+  public ProjectActionToolbar(final Context context, final AttributeSet attrs, final int defStyleAttr) {
     super(context, attrs, defStyleAttr);
   }
 
@@ -40,6 +43,5 @@ public class ProjectBottomToolbar extends Toolbar {
   protected void onFinishInflate() {
     super.onFinishInflate();
     ButterKnife.inject(this);
-//    ((KsrApplication) getContext().getApplicationContext()).component().inject(this);
   }
 }

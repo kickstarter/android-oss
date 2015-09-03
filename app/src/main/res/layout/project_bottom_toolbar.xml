@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.kickstarter.ui.views.ProjectBottomToolbar
+<com.kickstarter.ui.views.ProjectActionToolbar
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:icon_text_view="http://schemas.android.com/tools"
   xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -61,4 +61,4 @@
 
   </RelativeLayout>
 
-</com.kickstarter.ui.views.ProjectBottomToolbar>
+</com.kickstarter.ui.views.ProjectActionToolbar>

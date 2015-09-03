@@ -1,12 +1,14 @@
 package com.kickstarter.ui.activities;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RequiresPresenter;
@@ -14,28 +16,48 @@ import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.CommentFeedPresenter;
 import com.kickstarter.ui.adapters.CommentsAdapter;
+import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.Optional;
 
 @RequiresPresenter(CommentFeedPresenter.class)
 public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
-  @InjectView(R.id.comment_feed_recycler_view) RecyclerView recyclerView;
+  @Optional @InjectView(R.id.comment_button) TextView commentButton;
+  @Optional @InjectView(R.id.comment_feed_recycler_view) RecyclerView recyclerView;
+  @Optional @InjectView(R.id.context_photo) ImageView projectPhotoImageView;
+  @Optional @InjectView(R.id.project_name) TextView projectNameTextView;
+  @Optional @InjectView(R.id.creator_name) TextView creatorNameTextView;
   private Project project;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.comment_feed_layout);
-    ButterKnife.inject(this);
-
     final Intent intent = getIntent();
     project = intent.getParcelableExtra(getString(R.string.intent_project));
-    presenter.takeProject(project);
+    final int layout = (project.comments_count == 0) ? R.layout.empty_comment_feed_layout : R.layout.comment_feed_layout;
+    setContentView(layout);
+    ButterKnife.inject(this);
+
+    // messy WIP
+//    commentButton.setVisibility(project.isBacking() ? View.VISIBLE : View.GONE);  // move this to toolbar activity
+    if (project.comments_count != 0) {
+      presenter.takeProject(project);
+    }
+    else {
+      showProjectContext(project);
+    }
+  }
+
+  public void showProjectContext(Project project) {
+    Picasso.with(getApplicationContext()).load(project.photo().full())
+      .into(projectPhotoImageView);
+    projectNameTextView.setText(project.name());
+    creatorNameTextView.setText(project.creator().name());
   }
 
   public void showComments(final List<Comment> comments) {
@@ -46,7 +68,7 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
   }
 
   @Override
-  @OnClick(R.id.nav_back_button)
+  @Optional @OnClick(R.id.nav_back_button)
   public void onBackPressed() {
     super.onBackPressed();
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
@@ -57,6 +79,8 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
   }
 
   public void publicCommentClick(View view) {
-
+    final Dialog dialog = new Dialog(view.getContext());
+    dialog.setTitle("Post Public Comment");
+    dialog.show();
   }
 }

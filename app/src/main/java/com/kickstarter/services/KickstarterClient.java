@@ -1,5 +1,7 @@
 package com.kickstarter.services;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kickstarter.BuildConfig;
 import com.kickstarter.libs.Build;
@@ -43,7 +45,11 @@ public class KickstarterClient {
   }
 
   private GsonConverter gsonConverter() {
-    return new GsonConverter(new GsonBuilder().create());
+    final Gson gson = new GsonBuilder()
+      .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+      .create();
+
+    return new GsonConverter(gson);
   }
 
   private RequestInterceptor requestInterceptor() {

@@ -3,16 +3,16 @@ package com.kickstarter.libs;
 import java.util.List;
 
 public class Config {
-  String country_code;
-  List<LaunchedCountry> launched_countries;
+  String countryCode;
+  List<LaunchedCountry> launchedCountries;
 
   public static class Builder {
-    private final String country_code;
-    private final List<LaunchedCountry> launched_countries;
+    private final String countryCode;
+    private final List<LaunchedCountry> launchedCountries;
 
-    public Builder(final String country_code, final List<LaunchedCountry> launched_countries) {
-      this.country_code = country_code;
-      this.launched_countries = launched_countries;
+    public Builder(final String countryCode, final List<LaunchedCountry> launchedCountries) {
+      this.countryCode = countryCode;
+      this.launchedCountries = launchedCountries;
     }
 
     public Config build() {
@@ -21,17 +21,17 @@ public class Config {
   }
 
   private Config(final Builder builder) {
-    this.country_code = builder.country_code;
-    this.launched_countries = builder.launched_countries;
+    this.countryCode = builder.countryCode;
+    this.launchedCountries = builder.launchedCountries;
 
   }
 
   public String countryCode() {
-    return country_code;
+    return countryCode;
   }
 
   List<LaunchedCountry> launchedCountries() {
-    return launched_countries;
+    return launchedCountries;
   }
 
   public boolean currencyIsDuplicatedWithSymbol(final String symbol, final String code) {
@@ -48,18 +48,18 @@ public class Config {
 
   public static class LaunchedCountry {
     String name;
-    String currency_code;
-    String currency_symbol;
-    Boolean trailing_code;
+    String currencyCode;
+    String currencySymbol;
+    Boolean trailingCode;
 
     public LaunchedCountry(final String name,
-      final String currency_code,
-      final String currency_symbol,
-      final boolean trailing_code) {
+      final String currencyCode,
+      final String currencySymbol,
+      final boolean trailingCode) {
       this.name = name;
-      this.currency_code = currency_code;
-      this.currency_symbol = currency_symbol;
-      this.trailing_code = trailing_code;
+      this.currencyCode = currencyCode;
+      this.currencySymbol = currencySymbol;
+      this.trailingCode = trailingCode;
     }
 
     public String name() {
@@ -67,15 +67,15 @@ public class Config {
     }
 
     public String currencyCode() {
-      return currency_code;
+      return currencyCode;
     }
 
     public String currencySymbol() {
-      return currency_symbol;
+      return currencySymbol;
     }
 
     public Boolean trailingCode() {
-      return trailing_code;
+      return trailingCode;
     }
   }
 }

@@ -13,8 +13,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class ProjectStateChangedViewHolder extends ActivityListViewHolder {
-  @InjectView(R.id.title) TextView title;
-  @InjectView(R.id.project_photo) ImageView project_photo;
+  @InjectView(R.id.title) TextView titleTextView;
+  @InjectView(R.id.project_photo) ImageView projectPhotoImageView;
 
   public ProjectStateChangedViewHolder(final View view, final ActivityFeedPresenter presenter) {
     super(view, presenter);
@@ -27,9 +27,9 @@ public class ProjectStateChangedViewHolder extends ActivityListViewHolder {
 
     Picasso.with(view.getContext())
       .load(activity.project().photo().little())
-      .into(project_photo);
+      .into(projectPhotoImageView);
 
-    title.setText(titleText(activity));
+    titleTextView.setText(titleText(activity));
   }
 
   public String titleText(final Activity activity) {

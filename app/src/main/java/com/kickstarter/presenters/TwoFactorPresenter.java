@@ -35,7 +35,7 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
     ((KsrApplication) context.getApplicationContext()).component().inject(this);
 
     final Observable<String> code = viewSubject
-      .flatMap(v -> WidgetObservable.text(v.code))
+      .flatMap(v -> WidgetObservable.text(v.codeEditText))
       .map(v -> v.text().toString());
 
     final Observable<Boolean> isValid = code
@@ -83,7 +83,7 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
   }
 
   private void success(@NonNull final AccessTokenEnvelope envelope, @NonNull final TwoFactorActivity view) {
-    currentUser.login(envelope.user, envelope.access_token);
+    currentUser.login(envelope.user, envelope.accessToken);
     view.onSuccess();
   }
 

@@ -20,9 +20,9 @@ public class DiscoverEnvelope {
     }
 
     public static class ApiEnvelope {
-      public final String more_projects;
-      private ApiEnvelope(final String more_projects) {
-        this.more_projects = more_projects;
+      public final String moreProjects;
+      private ApiEnvelope(final String moreProjects) {
+        this.moreProjects = moreProjects;
       }
     }
   }

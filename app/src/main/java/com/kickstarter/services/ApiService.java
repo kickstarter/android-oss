@@ -26,11 +26,11 @@ import rx.Observable;
   public Observable<Project> fetchProject(@Path("param") String param);
 
   @POST("/xauth/access_token")
-  public Observable<AccessTokenEnvelope> login(@Query("email") String email,
+  public Observable<AccessTokenEnvelope> login(@Query("emailEditText") String email,
     @Query("password") String password);
 
   @POST("/xauth/access_token")
-  public Observable<AccessTokenEnvelope> login(@Query("email") String email,
+  public Observable<AccessTokenEnvelope> login(@Query("emailEditText") String email,
     @Query("password") String password,
     @Query("code") String code);
 }

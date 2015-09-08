@@ -5,9 +5,9 @@ import com.google.common.base.Enums;
 import java.util.List;
 
 public class ErrorEnvelope {
-  private final List<String> error_messages;
-  private final Integer http_code;
-  private final String ksr_code;
+  private final List<String> errorMessages;
+  private final Integer httpCode;
+  private final String ksrCode;
 
   public enum ErrorCode {
     INVALID_XAUTH_LOGIN,
@@ -16,21 +16,21 @@ public class ErrorEnvelope {
     UNKNOWN
   }
 
-  private ErrorEnvelope(final List<String> error_messages, final Integer http_code, final String ksr_code) {
-    this.error_messages = error_messages;
-    this.http_code = http_code;
-    this.ksr_code = ksr_code;
+  private ErrorEnvelope(final List<String> errorMessages, final Integer httpCode, final String ksrCode) {
+    this.errorMessages = errorMessages;
+    this.httpCode = httpCode;
+    this.ksrCode = ksrCode;
   }
 
   public List<String> errorMessages() {
-    return error_messages;
+    return errorMessages;
   }
 
   public Integer httpCode() {
-    return http_code;
+    return httpCode;
   }
 
   public ErrorCode ksrCode() {
-    return Enums.getIfPresent(ErrorCode.class, ksr_code.toUpperCase()).or(ErrorCode.UNKNOWN);
+    return Enums.getIfPresent(ErrorCode.class, ksrCode.toUpperCase()).or(ErrorCode.UNKNOWN);
   }
 }

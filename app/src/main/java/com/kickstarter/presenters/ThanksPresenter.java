@@ -53,7 +53,7 @@ public class ThanksPresenter extends Presenter<ThanksActivity> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(ThanksActivity::startDiscoveryActivity));
 
-    // TODO: Should use the project category root
+    // TODO: Should use the project categoryTextView root
     final DiscoveryParams params = new DiscoveryParams.Builder()
       .category(project.category())
       .backed(-1)

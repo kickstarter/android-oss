@@ -9,11 +9,11 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 public class Location implements Parcelable {
   Integer id = null;
   String name = null;
-  String displayable_name = null;
+  String displayableName = null;
 
   public Integer id() { return id; }
   public String name() { return name; }
-  public String displayableName() { return displayable_name; }
+  public String displayableName() { return displayableName; }
 
   @Override
   public int describeContents() {

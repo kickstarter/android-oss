@@ -13,11 +13,10 @@ import com.kickstarter.services.ApiResponses.InternalBuildEnvelope;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import timber.log.Timber;
 
 public class DownloadBetaActivity extends AppCompatActivity {
-  @InjectView(R.id.build) TextView build;
-  @InjectView(R.id.changelog) TextView changelog;
+  @InjectView(R.id.build) TextView buildTextView;
+  @InjectView(R.id.changelog) TextView changelogTextView;
   InternalBuildEnvelope internalBuildEnvelope;
 
   @Override
@@ -30,8 +29,8 @@ public class DownloadBetaActivity extends AppCompatActivity {
     internalBuildEnvelope = getIntent().getExtras()
       .getParcelable(getString(R.string.intent_internal_build_envelope));
 
-    build.setText(internalBuildEnvelope.build().toString());
-    changelog.setText(internalBuildEnvelope.changelog());
+    buildTextView.setText(internalBuildEnvelope.build().toString());
+    changelogTextView.setText(internalBuildEnvelope.changelog());
 
     requestDownload();
   }

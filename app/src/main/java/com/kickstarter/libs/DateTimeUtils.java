@@ -22,26 +22,26 @@ public class DateTimeUtils {
     return DateTimeFormat.forPattern("MMMM yyyy");
   }
 
-  public static String relativeDateInWords(final DateTime date_time) {
-    return relativeDateInWords(date_time, true, true, THIRTY_DAYS_IN_SECONDS);
+  public static String relativeDateInWords(final DateTime dateTime) {
+    return relativeDateInWords(dateTime, true, true, THIRTY_DAYS_IN_SECONDS);
   }
 
-  public static String relativeDateInWords(final DateTime date_time, final boolean short_text) {
-    return relativeDateInWords(date_time, short_text, true, THIRTY_DAYS_IN_SECONDS);
+  public static String relativeDateInWords(final DateTime dateTime, final boolean shortText) {
+    return relativeDateInWords(dateTime, shortText, true, THIRTY_DAYS_IN_SECONDS);
   }
 
-  public static String relativeDateInWords(final DateTime date_time, final boolean short_text, final boolean explain) {
-    return relativeDateInWords(date_time, short_text, explain, THIRTY_DAYS_IN_SECONDS);
+  public static String relativeDateInWords(final DateTime dateTime, final boolean shortText, final boolean explain) {
+    return relativeDateInWords(dateTime, shortText, explain, THIRTY_DAYS_IN_SECONDS);
   }
 
-  public static String relativeDateInWords(final DateTime date_time,
-    final boolean short_text,
+  public static String relativeDateInWords(final DateTime dateTime,
+    final boolean shortText,
     final boolean explain,
     final int threshold) {
     // TODO: This method is a quick translation from our iOS code, but it needs another pass, e.g.: we should
     // extract these strings, look into JodaTime to see if we can clean anything up..
     final DateTime now = new DateTime();
-    final Seconds seconds = Seconds.secondsBetween(date_time, now);
+    final Seconds seconds = Seconds.secondsBetween(dateTime, now);
     Integer seconds_difference = seconds.getSeconds();
     Integer days_difference = seconds.toStandardDays().getDays();
 
@@ -66,22 +66,22 @@ public class DateTimeUtils {
     if (seconds_difference < 3600) {
       int minutes_difference = (int) Math.floor(seconds_difference / 60.0);
       if (minutes_difference == 1) {
-        return short_text ?
+        return shortText ?
           in_string + "1 min" + ago_string :
           in_string + "1 minute" + ago_string;
       } else {
-        return short_text ?
+        return shortText ?
           minutes_difference + " mins" + ago_string :
           minutes_difference + " minutes" + ago_string;
       }
     } else if (seconds_difference < 86400) {
       int hours_difference = (int) Math.floor(seconds_difference / 60.0 / 60.0);
       if (hours_difference == 1) {
-        return short_text ?
+        return shortText ?
           in_string + "1 hr" + ago_string :
           in_string + "1 hour" + ago_string;
       } else {
-        return short_text ?
+        return shortText ?
           in_string + hours_difference + " hrs" + ago_string :
           in_string + hours_difference + " hours" + ago_string;
       }
@@ -90,7 +90,7 @@ public class DateTimeUtils {
     } else if (seconds_difference < threshold) {
       return in_string + days_difference + " days" + ago_string;
     } else {
-      return date_time.toString(defaultFormatter());
+      return dateTime.toString(defaultFormatter());
     }
   }
 }

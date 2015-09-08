@@ -16,8 +16,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class FriendFollowViewHolder extends ActivityListViewHolder {
-  @InjectView(R.id.avatar) ImageView avatar;
-  @InjectView(R.id.title) TextView title;
+  @InjectView(R.id.avatar) ImageView avatarImageView;
+  @InjectView(R.id.title) TextView titleTextView;
 
   public FriendFollowViewHolder(final View view, final ActivityFeedPresenter presenter) {
     super(view, presenter);
@@ -31,11 +31,11 @@ public class FriendFollowViewHolder extends ActivityListViewHolder {
     Picasso.with(view.getContext())
       .load(activity.user().avatar().small())
       .transform(new CircleTransform())
-      .into(avatar);
+      .into(avatarImageView);
 
-    title.setText(view.getResources().getString(R.string.username_is_following_you, activity.user().name()));
-    final Spannable title_str = (Spannable) title.getText();
-    title_str.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
+    titleTextView.setText(view.getResources().getString(R.string.username_is_following_you, activity.user().name()));
+    final Spannable titleStr = (Spannable) titleTextView.getText();
+    titleStr.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
       0,
       activity.user().name().length(),
       Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

@@ -19,13 +19,13 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolder {
-  @InjectView(R.id.card_view) CardView card_view;
-  @InjectView(R.id.left_stat_first) TextView left_stat_first;
-  @InjectView(R.id.left_stat_second) TextView left_stat_second;
-  @InjectView(R.id.project_photo) ImageView project_photo;
-  @InjectView(R.id.right_stat_first) TextView right_stat_first;
-  @InjectView(R.id.right_stat_second) TextView right_stat_second;
-  @InjectView(R.id.title) TextView title;
+  @InjectView(R.id.card_view) CardView cardView;
+  @InjectView(R.id.left_stat_first) TextView leftStatFirstTextView;
+  @InjectView(R.id.left_stat_second) TextView leftStatSecondTextView;
+  @InjectView(R.id.project_photo) ImageView projectPhotoImageView;
+  @InjectView(R.id.right_stat_first) TextView rightStatFirstTextView;
+  @InjectView(R.id.right_stat_second) TextView rightStatSecondTextView;
+  @InjectView(R.id.title) TextView titleTextView;
   @Inject Money money;
 
   public ProjectStateChangedPositiveViewHolder(final View view, final ActivityFeedPresenter presenter) {
@@ -40,37 +40,40 @@ public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolde
 
     switch (activity.category()) {
       case LAUNCH:
-        card_view.setCardBackgroundColor(view.getResources().getColor(R.color.blue_darken_10));
-        left_stat_first.setText(money.formattedCurrency(activity.project().goal(), activity.project().currencyOptions()));
-        left_stat_second.setText(view.getResources().getString(R.string.goal));
-        right_stat_first.setText(view.getResources().getString(R.string.Launched));
-        right_stat_second.setText(activity.project().launchedAt().toString(DateTimeUtils.defaultFormatter()));
-        title.setText(view.getResources().getString(
+        cardView.setCardBackgroundColor(view.getResources().getColor(R.color.blue_darken_10));
+        leftStatFirstTextView.setText(money.formattedCurrency(activity.project().goal(), activity.project()
+          .currencyOptions()));
+        leftStatSecondTextView.setText(view.getResources().getString(R.string.goal));
+        rightStatFirstTextView.setText(view.getResources().getString(R.string.Launched));
+        rightStatSecondTextView.setText(activity.project().launchedAt().toString(DateTimeUtils.defaultFormatter()));
+        titleTextView.setText(view.getResources().getString(
           R.string.creator_launched_a_project, activity.user().name(), activity.project().name()));
         break;
       case SUCCESS:
-        card_view.setCardBackgroundColor(view.getResources().getColor(R.color.green_darken_10));
-        left_stat_first.setText(money.formattedCurrency(activity.project().pledged(), activity.project().currencyOptions()));
-        left_stat_second.setText(view.getResources().getString(
+        cardView.setCardBackgroundColor(view.getResources().getColor(R.color.green_darken_10));
+        leftStatFirstTextView.setText(money.formattedCurrency(activity.project().pledged(), activity.project()
+          .currencyOptions()));
+        leftStatSecondTextView.setText(view.getResources().getString(
           R.string.pledged_of_goal,
           money.formattedCurrency(activity.project().goal(), activity.project().currencyOptions(), true)));
-        right_stat_first.setText(view.getResources().getString(R.string.funded));
-        right_stat_second.setText(activity.createdAt().toString(DateTimeUtils.defaultFormatter()));
-        title.setText(view.getResources().getString(R.string.project_was_successfully_funded, activity.project().name()));
+        rightStatFirstTextView.setText(view.getResources().getString(R.string.funded));
+        rightStatSecondTextView.setText(activity.createdAt().toString(DateTimeUtils.defaultFormatter()));
+        titleTextView.setText(view.getResources()
+          .getString(R.string.project_was_successfully_funded, activity.project().name()));
         break;
       default:
-        card_view.setCardBackgroundColor(view.getResources().getColor(R.color.green_darken_10));
-        left_stat_first.setText("");
-        left_stat_second.setText("");
-        right_stat_first.setText("");
-        right_stat_second.setText("");
-        title.setText("");
+        cardView.setCardBackgroundColor(view.getResources().getColor(R.color.green_darken_10));
+        leftStatFirstTextView.setText("");
+        leftStatSecondTextView.setText("");
+        rightStatFirstTextView.setText("");
+        rightStatSecondTextView.setText("");
+        titleTextView.setText("");
     }
     // TODO: Switch to "You launched a project" if current user launched
     //return view.getResources().getString(R.string.creator_launched_a_project, activity.user().name(), activity.project().name());
 
     Picasso.with(view.getContext())
       .load(activity.project().photo().full())
-      .into(project_photo);
+      .into(projectPhotoImageView);
   }
 }

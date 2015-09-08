@@ -27,7 +27,7 @@ import butterknife.Optional;
 @RequiresPresenter(ActivityFeedPresenter.class)
 public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
   ActivityListAdapter adapter;
-  @Optional @InjectView(R.id.discover_projects_button) Button discover_projects_button;
+  @Optional @InjectView(R.id.discover_projects_button) Button discoverProjectsButton;
   @Optional @InjectView(R.id.recyclerView) RecyclerView recyclerView;
   @Inject CurrentUser currentUser;
 

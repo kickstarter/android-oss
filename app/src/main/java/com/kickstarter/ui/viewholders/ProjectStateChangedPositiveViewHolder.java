@@ -17,6 +17,7 @@ import com.squareup.picasso.Picasso;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import butterknife.BindColor;
 import butterknife.ButterKnife;
 
 public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolder {
@@ -27,6 +28,8 @@ public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolde
   @Bind(R.id.right_stat_first) TextView rightStatFirstTextView;
   @Bind(R.id.right_stat_second) TextView rightStatSecondTextView;
   @Bind(R.id.title) TextView titleTextView;
+  @BindColor(R.color.blue_darken_10) int blueDarken10;
+  @BindColor(R.color.green_darken_10) int greenDarken10;
   @Inject Money money;
 
   public ProjectStateChangedPositiveViewHolder(final View view, final ActivityFeedPresenter presenter) {
@@ -41,7 +44,7 @@ public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolde
 
     switch (activity.category()) {
       case LAUNCH:
-        cardView.setCardBackgroundColor(view.getResources().getColor(R.color.blue_darken_10));
+        cardView.setCardBackgroundColor(blueDarken10);
         leftStatFirstTextView.setText(money.formattedCurrency(activity.project().goal(), activity.project()
           .currencyOptions()));
         leftStatSecondTextView.setText(view.getResources().getString(R.string.goal));
@@ -51,7 +54,7 @@ public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolde
           R.string.creator_launched_a_project, activity.user().name(), activity.project().name()));
         break;
       case SUCCESS:
-        cardView.setCardBackgroundColor(view.getResources().getColor(R.color.green_darken_10));
+        cardView.setCardBackgroundColor(greenDarken10);
         leftStatFirstTextView.setText(money.formattedCurrency(activity.project().pledged(), activity.project()
           .currencyOptions()));
         leftStatSecondTextView.setText(view.getResources().getString(
@@ -63,7 +66,7 @@ public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolde
           .getString(R.string.project_was_successfully_funded, activity.project().name()));
         break;
       default:
-        cardView.setCardBackgroundColor(view.getResources().getColor(R.color.green_darken_10));
+        cardView.setCardBackgroundColor(greenDarken10);
         leftStatFirstTextView.setText("");
         leftStatSecondTextView.setText("");
         rightStatFirstTextView.setText("");

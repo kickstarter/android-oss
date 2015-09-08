@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.kickstarter.R;
-import com.kickstarter.services.ApiResponses.InternalBuildEnvelope;
+import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

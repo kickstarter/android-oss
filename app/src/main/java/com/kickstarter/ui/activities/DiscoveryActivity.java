@@ -16,7 +16,7 @@ import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.libs.RxUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.DiscoveryPresenter;
-import com.kickstarter.services.ApiResponses.InternalBuildEnvelope;
+import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.adapters.ProjectListAdapter;
 import com.kickstarter.ui.containers.ApplicationContainer;
 

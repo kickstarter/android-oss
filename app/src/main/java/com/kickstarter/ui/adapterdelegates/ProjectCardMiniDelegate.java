@@ -1,4 +1,4 @@
-package com.kickstarter.ui.adapter_delegates;
+package com.kickstarter.ui.adapterdelegates;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;

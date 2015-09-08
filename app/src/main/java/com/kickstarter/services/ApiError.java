@@ -1,6 +1,6 @@
 package com.kickstarter.services;
 
-import com.kickstarter.services.ApiResponses.ErrorEnvelope;
+import com.kickstarter.services.apiresponses.ErrorEnvelope;
 
 import retrofit.RetrofitError;
 

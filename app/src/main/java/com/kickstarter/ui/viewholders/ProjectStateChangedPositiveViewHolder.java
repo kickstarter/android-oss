@@ -1,4 +1,4 @@
-package com.kickstarter.ui.view_holders;
+package com.kickstarter.ui.viewholders;
 
 import android.support.v7.widget.CardView;
 import android.view.View;
@@ -11,26 +11,27 @@ import com.kickstarter.libs.DateTimeUtils;
 import com.kickstarter.libs.Money;
 import com.kickstarter.models.Activity;
 import com.kickstarter.presenters.ActivityFeedPresenter;
+import com.kickstarter.ui.viewholders.ActivityListViewHolder;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolder {
-  @InjectView(R.id.card_view) CardView cardView;
-  @InjectView(R.id.left_stat_first) TextView leftStatFirstTextView;
-  @InjectView(R.id.left_stat_second) TextView leftStatSecondTextView;
-  @InjectView(R.id.project_photo) ImageView projectPhotoImageView;
-  @InjectView(R.id.right_stat_first) TextView rightStatFirstTextView;
-  @InjectView(R.id.right_stat_second) TextView rightStatSecondTextView;
-  @InjectView(R.id.title) TextView titleTextView;
+  @Bind(R.id.card_view) CardView cardView;
+  @Bind(R.id.left_stat_first) TextView leftStatFirstTextView;
+  @Bind(R.id.left_stat_second) TextView leftStatSecondTextView;
+  @Bind(R.id.project_photo) ImageView projectPhotoImageView;
+  @Bind(R.id.right_stat_first) TextView rightStatFirstTextView;
+  @Bind(R.id.right_stat_second) TextView rightStatSecondTextView;
+  @Bind(R.id.title) TextView titleTextView;
   @Inject Money money;
 
   public ProjectStateChangedPositiveViewHolder(final View view, final ActivityFeedPresenter presenter) {
     super(view, presenter);
-    ButterKnife.inject(this, view);
+    ButterKnife.bind(this, view);
     ((KsrApplication) view.getContext().getApplicationContext()).component().inject(this);
   }
 

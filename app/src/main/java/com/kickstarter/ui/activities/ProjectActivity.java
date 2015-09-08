@@ -25,31 +25,31 @@ import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import timber.log.Timber;
 
 @RequiresPresenter(ProjectPresenter.class)
 public class ProjectActivity extends BaseActivity<ProjectPresenter> {
-  protected @InjectView(R.id.backers_count) TextView backersCountTextView;
-  protected @InjectView(R.id.blurb) TextView blurbTextView;
-  protected @InjectView(R.id.category) TextView categoryTextView;
-  protected @InjectView(R.id.creator_name) TextView creatorNameTextView;
-  protected @InjectView(R.id.comments_count) TextView commentsCountTextView;
-  protected @InjectView(R.id.deadline_countdown) TextView deadlineCountdownTextView;
-  protected @InjectView(R.id.deadline_countdown_unit) TextView deadlineCountdownUnitTextView;
-  protected @InjectView(R.id.goal) TextView goalTextView;
-  protected @InjectView(R.id.location) TextView locationTextView;
-  protected @InjectView(R.id.project_name) TextView projectNameTextView;
-  protected @InjectView(R.id.percentage_funded) ProgressBar percentageFundedProgressBar;
-  protected @InjectView(R.id.project_detail_photo) ImageView photoImageView;
-  protected @InjectView(R.id.project_detail_video) VideoView videoView;
-  protected @InjectView(R.id.play_button_overlay) IconTextView playButtonIconTextView;
-  protected @InjectView(R.id.pledged) TextView pledgedTextView;
-  protected @InjectView(R.id.avatar) ImageView avatarImageView;
-  protected @InjectView(R.id.avatar_name) TextView avatarNameTextView;
-  protected @InjectView(R.id.fund_message) TextView fundMessageTextView;
-  protected @InjectView(R.id.updates_count) TextView updatesCountTextView;
+  protected @Bind(R.id.backers_count) TextView backersCountTextView;
+  protected @Bind(R.id.blurb) TextView blurbTextView;
+  protected @Bind(R.id.category) TextView categoryTextView;
+  protected @Bind(R.id.creator_name) TextView creatorNameTextView;
+  protected @Bind(R.id.comments_count) TextView commentsCountTextView;
+  protected @Bind(R.id.deadline_countdown) TextView deadlineCountdownTextView;
+  protected @Bind(R.id.deadline_countdown_unit) TextView deadlineCountdownUnitTextView;
+  protected @Bind(R.id.goal) TextView goalTextView;
+  protected @Bind(R.id.location) TextView locationTextView;
+  protected @Bind(R.id.project_name) TextView projectNameTextView;
+  protected @Bind(R.id.percentage_funded) ProgressBar percentageFundedProgressBar;
+  protected @Bind(R.id.project_detail_photo) ImageView photoImageView;
+  protected @Bind(R.id.project_detail_video) VideoView videoView;
+  protected @Bind(R.id.play_button_overlay) IconTextView playButtonIconTextView;
+  protected @Bind(R.id.pledged) TextView pledgedTextView;
+  protected @Bind(R.id.avatar) ImageView avatarImageView;
+  protected @Bind(R.id.avatar_name) TextView avatarNameTextView;
+  protected @Bind(R.id.fund_message) TextView fundMessageTextView;
+  protected @Bind(R.id.updates_count) TextView updatesCountTextView;
 
   @Inject Money money;
 
@@ -58,7 +58,7 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.project_layout);
-    ButterKnife.inject(this);
+    ButterKnife.bind(this);
     ((KsrApplication) getApplication()).component().inject(this);
 
     final Intent intent = getIntent();

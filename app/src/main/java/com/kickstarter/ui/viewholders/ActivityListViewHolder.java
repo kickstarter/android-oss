@@ -1,4 +1,4 @@
-package com.kickstarter.ui.view_holders;
+package com.kickstarter.ui.viewholders;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

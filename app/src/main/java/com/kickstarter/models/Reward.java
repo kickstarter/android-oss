@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
-import com.kickstarter.libs.DateTimeUtils;
 
 import org.joda.time.DateTime;
 

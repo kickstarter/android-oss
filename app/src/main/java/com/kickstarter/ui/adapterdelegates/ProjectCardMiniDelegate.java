@@ -14,8 +14,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class ProjectCardMiniDelegate {
 
@@ -46,14 +46,14 @@ public class ProjectCardMiniDelegate {
 
   static class ProjectCardMiniViewHolder extends RecyclerView.ViewHolder {
     final View view;
-    public @InjectView(R.id.time_to_go_text_view) TextView timeToGoTextView;
-    public @InjectView(R.id.name) TextView nameTextView;
-    public @InjectView(R.id.photo) ImageView photoImageView;
+    public @Bind(R.id.time_to_go_text_view) TextView timeToGoTextView;
+    public @Bind(R.id.name) TextView nameTextView;
+    public @Bind(R.id.photo) ImageView photoImageView;
 
     public ProjectCardMiniViewHolder(final View view) {
       super(view);
       this.view = view;
-      ButterKnife.inject(this, view);
+      ButterKnife.bind(this, view);
     }
 
     public void onBind(final Project project) {

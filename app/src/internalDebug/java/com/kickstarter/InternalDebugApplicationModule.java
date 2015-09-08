@@ -2,10 +2,10 @@ package com.kickstarter;
 
 import android.content.SharedPreferences;
 
-import com.kickstarter.libs.preferences.StringPreference;
-import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.BuildCheck;
+import com.kickstarter.libs.preferences.StringPreference;
+import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
 import com.kickstarter.ui.containers.ApplicationContainer;
 import com.kickstarter.ui.containers.InternalDebugApplicationContainer;
 

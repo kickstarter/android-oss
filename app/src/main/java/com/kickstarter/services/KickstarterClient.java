@@ -10,7 +10,6 @@ import com.kickstarter.services.ApiResponses.InternalBuildEnvelope;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import retrofit.Endpoint;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;

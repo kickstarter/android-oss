@@ -1,4 +1,4 @@
-package com.kickstarter.ui.view_holders;
+package com.kickstarter.ui.viewholders;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -16,22 +16,22 @@ import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class ProjectListViewHolder extends RecyclerView.ViewHolder {
-  protected @InjectView(R.id.backers_count) TextView backersCountTextView;
-  protected @InjectView(R.id.category) TextView categoryTextView;
-  protected @InjectView(R.id.deadline_countdown) TextView deadlineCountdownTextView;
-  protected @InjectView(R.id.deadline_countdown_unit) TextView deadlineCountdownUnitTextView;
-  protected @InjectView(R.id.goal) TextView goalTextView;
-  protected @InjectView(R.id.location) TextView locationTextView;
-  protected @InjectView(R.id.name) TextView nameTextView;
-  protected @InjectView(R.id.pledged) TextView pledgedTextView;
-  protected @InjectView(R.id.percentage_funded) ProgressBar percentageFundedProgressBar;
-  protected @InjectView(R.id.photo) ImageView photoImageView;
-  protected @InjectView(R.id.photo_gradient) ViewGroup photoGradientViewGroup;
-  protected @InjectView(R.id.potd_group) ViewGroup potdViewGroup;
+  protected @Bind(R.id.backers_count) TextView backersCountTextView;
+  protected @Bind(R.id.category) TextView categoryTextView;
+  protected @Bind(R.id.deadline_countdown) TextView deadlineCountdownTextView;
+  protected @Bind(R.id.deadline_countdown_unit) TextView deadlineCountdownUnitTextView;
+  protected @Bind(R.id.goal) TextView goalTextView;
+  protected @Bind(R.id.location) TextView locationTextView;
+  protected @Bind(R.id.name) TextView nameTextView;
+  protected @Bind(R.id.pledged) TextView pledgedTextView;
+  protected @Bind(R.id.percentage_funded) ProgressBar percentageFundedProgressBar;
+  protected @Bind(R.id.photo) ImageView photoImageView;
+  protected @Bind(R.id.photo_gradient) ViewGroup photoGradientViewGroup;
+  protected @Bind(R.id.potd_group) ViewGroup potdViewGroup;
   protected View view;
   protected Project project;
   protected DiscoveryPresenter presenter;
@@ -43,7 +43,7 @@ public class ProjectListViewHolder extends RecyclerView.ViewHolder {
     this.presenter = presenter;
 
     ((KsrApplication) view.getContext().getApplicationContext()).component().inject(this);
-    ButterKnife.inject(this, view);
+    ButterKnife.bind(this, view);
 
     view.setOnClickListener((final View v) -> presenter.takeProjectClick(project));
   }

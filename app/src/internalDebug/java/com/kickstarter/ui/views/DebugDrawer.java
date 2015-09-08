@@ -26,20 +26,20 @@ import org.joda.time.format.DateTimeFormat;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class DebugDrawer extends FrameLayout {
   @Inject @ApiEndpointPreference StringPreference apiEndpointPreference;
   @Inject Build build;
   @Inject Logout logout;
 
-  @InjectView(R.id.build_date) TextView buildDate;
-  @InjectView(R.id.endpoint_spinner) Spinner endpointSpinner;
-  @InjectView(R.id.sha) TextView sha;
-  @InjectView(R.id.variant) TextView variant;
-  @InjectView(R.id.version_code) TextView versionCode;
-  @InjectView(R.id.version_name) TextView versionName;
+  @Bind(R.id.build_date) TextView buildDate;
+  @Bind(R.id.endpoint_spinner) Spinner endpointSpinner;
+  @Bind(R.id.sha) TextView sha;
+  @Bind(R.id.variant) TextView variant;
+  @Bind(R.id.version_code) TextView versionCode;
+  @Bind(R.id.version_name) TextView versionName;
 
   public DebugDrawer(final Context context) {
     this(context, null);
@@ -55,7 +55,7 @@ public class DebugDrawer extends FrameLayout {
     ((KsrApplication) getContext().getApplicationContext()).component().inject(this);
 
     LayoutInflater.from(context).inflate(R.layout.debug_drawer_view, this);
-    ButterKnife.inject(this);
+    ButterKnife.bind(this);
 
     setupNetworkSection();
     setupBuildInformationSection();

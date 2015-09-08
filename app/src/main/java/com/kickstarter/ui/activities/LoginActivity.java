@@ -13,21 +13,21 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.presenters.LoginPresenter;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 @RequiresPresenter(LoginPresenter.class)
 public class LoginActivity extends BaseActivity<LoginPresenter> {
-  public @InjectView(R.id.email) EditText emailEditText;
-  public @InjectView(R.id.password) EditText passwordEditText;
-  public @InjectView(R.id.login_button) Button loginButton;
+  public @Bind(R.id.email) EditText emailEditText;
+  public @Bind(R.id.password) EditText passwordEditText;
+  public @Bind(R.id.login_button) Button loginButton;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.login_layout);
-    ButterKnife.inject(this);
+    ButterKnife.bind(this);
 
     presenter.takeForward(getIntent().getBooleanExtra(getString(R.string.intent_forward), false));
   }

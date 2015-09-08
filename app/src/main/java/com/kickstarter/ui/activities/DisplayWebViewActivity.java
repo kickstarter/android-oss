@@ -13,12 +13,12 @@ import com.kickstarter.ui.views.KickstarterWebView;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class DisplayWebViewActivity extends BaseActivity {
-  @InjectView(R.id.close_text_view) TextView closeTextView;
-  @InjectView(R.id.generic_webview) KickstarterWebView webView;
+  @Bind(R.id.close_text_view) TextView closeTextView;
+  @Bind(R.id.generic_webview) KickstarterWebView webView;
 
   public static final int RIGHT_BAR_BUTTON_NONE = 0;
   public static final int RIGHT_BAR_BUTTON_CLOSE = 1;
@@ -30,7 +30,7 @@ public class DisplayWebViewActivity extends BaseActivity {
   public void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.webview_layout);
-    ButterKnife.inject(this);
+    ButterKnife.bind(this);
 
     final Intent intent = getIntent();
     final String url = intent.getExtras().getString(getString(R.string.intent_url));

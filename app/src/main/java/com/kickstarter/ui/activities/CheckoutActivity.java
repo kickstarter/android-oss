@@ -11,20 +11,20 @@ import com.kickstarter.models.Project;
 import com.kickstarter.presenters.CheckoutPresenter;
 import com.kickstarter.ui.views.KickstarterWebView;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import timber.log.Timber;
 
 @RequiresPresenter(CheckoutPresenter.class)
 public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
-  public @InjectView(R.id.web_view) KickstarterWebView webView;
+  public @Bind(R.id.web_view) KickstarterWebView webView;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.checkout_layout);
-    ButterKnife.inject(this);
+    ButterKnife.bind(this);
 
     final Intent intent = getIntent();
     final String url = intent.getExtras().getString(getString(R.string.intent_url));

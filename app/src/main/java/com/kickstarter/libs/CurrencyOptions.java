@@ -2,13 +2,13 @@ package com.kickstarter.libs;
 
 public class CurrencyOptions {
   final String country;
-  final String currency_symbol;
-  final String currency_code;
+  final String currencySymbol;
+  final String currencyCode;
 
-  public CurrencyOptions(final String country, final String currency_symbol, final String currency_code) {
+  public CurrencyOptions(final String country, final String currencySymbol, final String currencyCode) {
     this.country = country;
-    this.currency_symbol = currency_symbol;
-    this.currency_code = currency_code;
+    this.currencySymbol = currencySymbol;
+    this.currencyCode = currencyCode;
   }
 
   public String country() {
@@ -16,10 +16,10 @@ public class CurrencyOptions {
   }
 
   public String currencySymbol() {
-    return currency_symbol;
+    return currencySymbol;
   }
 
   public String currencyCode() {
-    return currency_code;
+    return currencyCode;
   }
 }

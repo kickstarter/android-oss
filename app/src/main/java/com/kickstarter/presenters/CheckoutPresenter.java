@@ -73,7 +73,7 @@ public class CheckoutPresenter extends Presenter<CheckoutActivity> {
 
   private void checkoutNext(final CheckoutActivity activity) {
     final String javascript = "root.checkout_next();";
-    if (ApiCapabilities.evaluateJavascript()) {
+    if (ApiCapabilities.canEvaluateJavascript()) {
       activity.webView.evaluateJavascript(javascript, null);
     } else {
       activity.webView.loadUrl("javascript:" + javascript);

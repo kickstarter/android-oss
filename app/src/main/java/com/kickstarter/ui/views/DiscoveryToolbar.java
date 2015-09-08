@@ -113,8 +113,8 @@ public class DiscoveryToolbar extends Toolbar {
         R.array.spinner_categories_array,
         android.R.layout.simple_spinner_item);
     } else {
-      final String sample_data[] = {"Staff Picks"};
-      adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, sample_data);
+      final String sampleData[] = {"Staff Picks"};
+      adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, sampleData);
     }
     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     categorySpinner.setAdapter(adapter);

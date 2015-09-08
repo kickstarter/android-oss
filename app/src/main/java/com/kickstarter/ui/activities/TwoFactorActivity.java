@@ -18,9 +18,9 @@ import timber.log.Timber;
 
 @RequiresPresenter(TwoFactorPresenter.class)
 public class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
-  public @InjectView(R.id.code) EditText code;
-  public @InjectView(R.id.resend_button) Button resend_button;
-  public @InjectView(R.id.login_button) Button login_button;
+  public @InjectView(R.id.code) EditText codeEditText;
+  public @InjectView(R.id.resend_button) Button resendButton;
+  public @InjectView(R.id.login_button) Button loginButton;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
@@ -31,7 +31,7 @@ public class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
   }
 
   public void setLoginEnabled(final boolean enabled) {
-    login_button.setEnabled(enabled);
+    loginButton.setEnabled(enabled);
   }
 
   public void resendButtonOnClick(final View v) {

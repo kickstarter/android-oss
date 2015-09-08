@@ -4,11 +4,11 @@ import org.joda.time.DateTime;
 
 public class Activity {
   Category category = null;
-  DateTime created_at = null;
+  DateTime createdAt = null;
   Integer id = null;
   Project project = null;
   Update update = null;
-  DateTime updated_at = null;
+  DateTime updatedAt = null;
   User user = null;
 
   public enum Category {
@@ -38,7 +38,7 @@ public class Activity {
   }
 
   public DateTime createdAt() {
-    return created_at;
+    return createdAt;
   }
 
   public Integer id() {
@@ -54,7 +54,7 @@ public class Activity {
   }
 
   public DateTime updatedAt() {
-    return updated_at;
+    return updatedAt;
   }
 
   public User user() {

@@ -36,10 +36,10 @@ public class LoginPresenter extends Presenter<LoginActivity> {
     ((KsrApplication) context.getApplicationContext()).component().inject(this);
 
     final Observable<OnTextChangeEvent> email = viewSubject
-      .flatMap(v -> WidgetObservable.text(v.email));
+      .flatMap(v -> WidgetObservable.text(v.emailEditText));
 
     final Observable<OnTextChangeEvent> password = viewSubject
-      .flatMap(v -> WidgetObservable.text(v.password));
+      .flatMap(v -> WidgetObservable.text(v.passwordEditText));
 
     final Observable<Pair<String, String>> emailAndPassword =
       RxUtils.combineLatestPair(email, password)
@@ -78,7 +78,7 @@ public class LoginPresenter extends Presenter<LoginActivity> {
   }
 
   private void success(final AccessTokenEnvelope envelope) {
-    currentUser.login(envelope.user, envelope.access_token);
+    currentUser.login(envelope.user, envelope.accessToken);
 
     if (hasView()) {
       view().onSuccess(forward);
@@ -92,8 +92,8 @@ public class LoginPresenter extends Presenter<LoginActivity> {
 
     new ApiErrorHandler(e, view()) {
       @Override
-      public void handleApiError(final ApiError api_error) {
-        switch (api_error.errorEnvelope().ksrCode()) {
+      public void handleApiError(final ApiError apiError) {
+        switch (apiError.errorEnvelope().ksrCode()) {
           case TFA_REQUIRED:
           case TFA_FAILED:
             view().startTwoFactorActivity(forward);

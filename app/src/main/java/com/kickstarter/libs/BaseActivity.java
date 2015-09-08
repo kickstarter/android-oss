@@ -11,7 +11,7 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
   private static final String PRESENTER_KEY = "presenter";
 
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
+  protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Timber.d("onCreate %s", this.toString());
 
@@ -65,7 +65,7 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
   }
 
   @Override
-  protected void onSaveInstanceState(@NonNull Bundle outState) {
+  protected void onSaveInstanceState(@NonNull final Bundle outState) {
     super.onSaveInstanceState(outState);
     Timber.d("onSaveInstanceState %s", this.toString());
 
@@ -77,7 +77,7 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
     outState.putBundle(PRESENTER_KEY, presenterEnvelope);
   }
 
-  private final void fetchPresenter(Bundle presenterEnvelope) {
+  private final void fetchPresenter(final Bundle presenterEnvelope) {
     if (presenter == null) {
       final RequiresPresenter annotation = getClass().getAnnotation(RequiresPresenter.class);
       final Class<PresenterType> presenterClass = annotation == null ? null : (Class<PresenterType>) annotation.value();

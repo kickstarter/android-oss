@@ -19,8 +19,8 @@ import timber.log.Timber;
 
 @RequiresPresenter(LoginToutPresenter.class)
 public class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
-  @InjectView(R.id.login_button) Button login_button;
-  @InjectView(R.id.sign_up_button) Button signup_button;
+  @InjectView(R.id.login_button) Button loginButton;
+  @InjectView(R.id.sign_up_button) Button signupButton;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {

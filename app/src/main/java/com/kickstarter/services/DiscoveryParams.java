@@ -4,14 +4,14 @@ import com.google.common.collect.ImmutableMap;
 import com.kickstarter.models.Category;
 
 public class DiscoveryParams {
-  private final boolean staff_picks;
+  private final boolean staffPicks;
   private final int starred;
   private final int backed;
   private final int social;
   private final Category category;
   private final Sort sort;
   private final int page;
-  private final int page_count;
+  private final int perPage;
 
   public enum Sort {
     MAGIC, POPULAR, ENDING_SOON, NEWEST, MOST_FUNDED;
@@ -34,14 +34,14 @@ public class DiscoveryParams {
   }
 
   public static class Builder {
-    private boolean staff_picks = false;
+    private boolean staffPicks = false;
     private int starred = 0;
     private int backed = 0;
     private int social = 0;
     private Category category = null;
     private Sort sort = Sort.MAGIC;
     private int page = 1;
-    private int page_count = 15;
+    private int perPage = 15;
 
     public DiscoveryParams build() {
       return new DiscoveryParams(this);
@@ -49,8 +49,8 @@ public class DiscoveryParams {
 
     public Builder() {
     }
-    public Builder staff_picks(final boolean v) {
-      staff_picks = v;
+    public Builder staffPicks(final boolean v) {
+      staffPicks = v;
       return this;
     }
     public Builder starred(final int v) {
@@ -77,33 +77,33 @@ public class DiscoveryParams {
       page = v;
       return this;
     }
-    public Builder page_count(final int v) {
-      page_count = v;
+    public Builder perPage(final int v) {
+      perPage = v;
       return this;
     }
   }
 
   private DiscoveryParams(final Builder builder) {
-    staff_picks = builder.staff_picks;
+    staffPicks = builder.staffPicks;
     starred = builder.starred;
     backed = builder.backed;
     social = builder.social;
     category = builder.category;
     sort = builder.sort;
     page = builder.page;
-    page_count = builder.page_count;
+    perPage = builder.perPage;
   }
 
   public Builder builder() {
     return new Builder()
-      .staff_picks(staff_picks)
+      .staffPicks(staffPicks)
       .starred(starred)
       .backed(backed)
       .social(social)
       .category(category)
       .sort(sort)
       .page(page)
-      .page_count(page_count);
+      .perPage(perPage);
   }
 
   public static DiscoveryParams params() {
@@ -117,14 +117,14 @@ public class DiscoveryParams {
   public ImmutableMap<String, String> queryParams() {
     return ImmutableMap.<String, String>builder()
       .put("category_id", String.valueOf(category != null ? category.id() : ""))
-      .put("staff_picks", String.valueOf(staff_picks))
+      .put("staff_picks", String.valueOf(staffPicks))
       .put("starred", String.valueOf(starred))
       .put("backed", String.valueOf(backed))
       .put("social", String.valueOf(social))
       .put("sort", sort.toString())
       .put("page", String.valueOf(page))
-      .put("page_count", String.valueOf(page_count))
-      .put("include_potd", staff_picks && page == 0 ? "true" : "")
+      .put("per_page", String.valueOf(perPage))
+      .put("include_potd", staffPicks && page == 0 ? "true" : "")
       .build();
   }
 

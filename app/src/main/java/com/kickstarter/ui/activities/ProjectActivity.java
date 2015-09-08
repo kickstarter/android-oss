@@ -31,25 +31,25 @@ import timber.log.Timber;
 
 @RequiresPresenter(ProjectPresenter.class)
 public class ProjectActivity extends BaseActivity<ProjectPresenter> {
-  protected @InjectView(R.id.backers_count) TextView backersCount;
-  protected @InjectView(R.id.blurb) TextView blurb;
-  protected @InjectView(R.id.category) TextView category;
-  protected @InjectView(R.id.creator_name) TextView creatorName;
-  protected @InjectView(R.id.comments_count) TextView commentsCount;
-  protected @InjectView(R.id.deadline_countdown) TextView deadlineCountdown;
-  protected @InjectView(R.id.deadline_countdown_unit) TextView deadlineCountdownUnit;
-  protected @InjectView(R.id.goal) TextView goal;
-  protected @InjectView(R.id.location) TextView location;
-  protected @InjectView(R.id.project_name) TextView projectName;
-  protected @InjectView(R.id.percentage_funded) ProgressBar percentageFunded;
-  protected @InjectView(R.id.project_detail_photo) ImageView photo;
-  protected @InjectView(R.id.project_detail_video) VideoView video;
-  protected @InjectView(R.id.play_button_overlay) IconTextView playButton;
-  protected @InjectView(R.id.pledged) TextView pledged;
-  protected @InjectView(R.id.avatar) ImageView avatar;
-  protected @InjectView(R.id.avatar_name) TextView avatarName;
-  protected @InjectView(R.id.fund_message) TextView fundMessage;
-  protected @InjectView(R.id.updates_count) TextView updatesCount;
+  protected @InjectView(R.id.backers_count) TextView backersCountTextView;
+  protected @InjectView(R.id.blurb) TextView blurbTextView;
+  protected @InjectView(R.id.category) TextView categoryTextView;
+  protected @InjectView(R.id.creator_name) TextView creatorNameTextView;
+  protected @InjectView(R.id.comments_count) TextView commentsCountTextView;
+  protected @InjectView(R.id.deadline_countdown) TextView deadlineCountdownTextView;
+  protected @InjectView(R.id.deadline_countdown_unit) TextView deadlineCountdownUnitTextView;
+  protected @InjectView(R.id.goal) TextView goalTextView;
+  protected @InjectView(R.id.location) TextView locationTextView;
+  protected @InjectView(R.id.project_name) TextView projectNameTextView;
+  protected @InjectView(R.id.percentage_funded) ProgressBar percentageFundedProgressBar;
+  protected @InjectView(R.id.project_detail_photo) ImageView photoImageView;
+  protected @InjectView(R.id.project_detail_video) VideoView videoView;
+  protected @InjectView(R.id.play_button_overlay) IconTextView playButtonIconTextView;
+  protected @InjectView(R.id.pledged) TextView pledgedTextView;
+  protected @InjectView(R.id.avatar) ImageView avatarImageView;
+  protected @InjectView(R.id.avatar_name) TextView avatarNameTextView;
+  protected @InjectView(R.id.fund_message) TextView fundMessageTextView;
+  protected @InjectView(R.id.updates_count) TextView updatesCountTextView;
 
   @Inject Money money;
 
@@ -69,36 +69,36 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
   public void show(final Project project) {
 
     // Project information
-    blurb.setText(Html.fromHtml(getString(R.string.Blurb_read_more, project.blurb())));
-    creatorName.setText(Html.fromHtml(getString(R.string.by_creator, project.creator().name())));
-    backersCount.setText(project.formattedBackersCount());
-    category.setText(project.category().name());
-    deadlineCountdown.setText(Integer.toString(project.deadlineCountdownValue()));
-    deadlineCountdownUnit.setText(project.deadlineCountdownUnit(this));
-    goal.setText(money.formattedCurrency(project.goal(), project.currencyOptions(), true));
-    location.setText(project.location().displayableName());
-    projectName.setText(project.name());
-    percentageFunded.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
-    pledged.setText(money.formattedCurrency(project.pledged(), project.currencyOptions()));
-    Picasso.with(this).load(project.photo().full()).into(photo);
+    blurbTextView.setText(Html.fromHtml(getString(R.string.Blurb_read_more, project.blurb())));
+    creatorNameTextView.setText(Html.fromHtml(getString(R.string.by_creator, project.creator().name())));
+    backersCountTextView.setText(project.formattedBackersCount());
+    categoryTextView.setText(project.category().name());
+    deadlineCountdownTextView.setText(Integer.toString(project.deadlineCountdownValue()));
+    deadlineCountdownUnitTextView.setText(project.deadlineCountdownUnit(this));
+    goalTextView.setText(money.formattedCurrency(project.goal(), project.currencyOptions(), true));
+    locationTextView.setText(project.location().displayableName());
+    projectNameTextView.setText(project.name());
+    percentageFundedProgressBar.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
+    pledgedTextView.setText(money.formattedCurrency(project.pledged(), project.currencyOptions()));
+    Picasso.with(this).load(project.photo().full()).into(photoImageView);
 
     // WIP VideoView & MediaController
     if ( project.video() != null ) {
-      loadVideo(project.video(), video);
-      playButton.setVisibility(View.VISIBLE);
+      loadVideo(project.video(), videoView);
+      playButtonIconTextView.setVisibility(View.VISIBLE);
     }
     else {
-      playButton.setVisibility(View.GONE);
+      playButtonIconTextView.setVisibility(View.GONE);
     }
 
     // Creator information
-    Picasso.with(this).load(project.creator().avatar().medium()).into(avatar);
-    avatarName.setText(project.creator().name());
-    fundMessage.setText(String.format(getString(R.string.This_project_will_only_be_funded_if),
+    Picasso.with(this).load(project.creator().avatar().medium()).into(avatarImageView);
+    avatarNameTextView.setText(project.creator().name());
+    fundMessageTextView.setText(String.format(getString(R.string.This_project_will_only_be_funded_if),
       money.formattedCurrency(project.goal(), project.currencyOptions(), true),
       project.deadline().toString(DateTimeUtils.writtenDeadline())));
-    updatesCount.setText(project.formattedUpdatesCount());
-    commentsCount.setText(project.formattedCommentsCount());
+    updatesCountTextView.setText(project.formattedUpdatesCount());
+    commentsCountTextView.setText(project.formattedCommentsCount());
   }
 
   @Override
@@ -110,13 +110,13 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
   }
 
   public void loadVideo(Video video, VideoView videoView) {
-    final Uri video_uri = Uri.parse(video.base());
-    videoView.setVideoURI(video_uri);
+    final Uri videoUri = Uri.parse(video.base());
+    videoView.setVideoURI(videoUri);
     videoView.setMediaController(new MediaController(this));
 
-    playButton.setOnClickListener((View v) -> {
-      photo.setVisibility(View.GONE);
-      playButton.setVisibility(View.GONE);
+    playButtonIconTextView.setOnClickListener((View v) -> {
+      photoImageView.setVisibility(View.GONE);
+      playButtonIconTextView.setVisibility(View.GONE);
       videoView.start();
     });
   }

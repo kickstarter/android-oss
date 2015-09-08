@@ -1,6 +1,7 @@
 package com.kickstarter.ui.views;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -27,6 +28,7 @@ import org.joda.time.format.DateTimeFormat;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import butterknife.BindDrawable;
 import butterknife.ButterKnife;
 
 public class DebugDrawer extends FrameLayout {
@@ -40,6 +42,7 @@ public class DebugDrawer extends FrameLayout {
   @Bind(R.id.variant) TextView variant;
   @Bind(R.id.version_code) TextView versionCode;
   @Bind(R.id.version_name) TextView versionName;
+  @BindDrawable(android.R.drawable.ic_dialog_alert) Drawable icDialogAlertDrawable;
 
   public DebugDrawer(final Context context) {
     this(context, null);
@@ -122,7 +125,7 @@ public class DebugDrawer extends FrameLayout {
         // TODO: Is this redundant?
         endpointSpinner.setSelection(originalSelection);
       })
-      .setIcon(android.R.drawable.ic_dialog_alert)
+      .setIcon(icDialogAlertDrawable)
       .show();
   }
 

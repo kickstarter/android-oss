@@ -108,7 +108,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
   public void showBuildAlert(final InternalBuildEnvelope envelope) {
     new AlertDialog.Builder(this)
       .setTitle("Upgrade app")
-      .setMessage("A newer buildTextView is available. Download upgrade?")
+      .setMessage("A newer build is available. Download upgrade?")
       .setPositiveButton(android.R.string.yes, (dialog, which) -> {
         Intent intent = new Intent(this, DownloadBetaActivity.class)
           .putExtra(getString(R.string.intent_internal_build_envelope), envelope);

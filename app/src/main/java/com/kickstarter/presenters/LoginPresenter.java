@@ -92,8 +92,8 @@ public class LoginPresenter extends Presenter<LoginActivity> {
 
     new ApiErrorHandler(e, view()) {
       @Override
-      public void handleApiError(final ApiError api_error) {
-        switch (api_error.errorEnvelope().ksrCode()) {
+      public void handleApiError(final ApiError apiError) {
+        switch (apiError.errorEnvelope().ksrCode()) {
           case TFA_REQUIRED:
           case TFA_FAILED:
             view().startTwoFactorActivity(forward);

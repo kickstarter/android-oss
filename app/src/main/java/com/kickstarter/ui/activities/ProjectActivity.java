@@ -110,8 +110,8 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
   }
 
   public void loadVideo(Video video, VideoView videoView) {
-    final Uri video_uri = Uri.parse(video.base());
-    videoView.setVideoURI(video_uri);
+    final Uri videoUri = Uri.parse(video.base());
+    videoView.setVideoURI(videoUri);
     videoView.setMediaController(new MediaController(this));
 
     playButtonIconTextView.setOnClickListener((View v) -> {

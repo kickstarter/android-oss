@@ -42,53 +42,53 @@ public class DateTimeUtils {
     // extract these strings, look into JodaTime to see if we can clean anything up..
     final DateTime now = new DateTime();
     final Seconds seconds = Seconds.secondsBetween(dateTime, now);
-    Integer seconds_difference = seconds.getSeconds();
-    Integer days_difference = seconds.toStandardDays().getDays();
+    Integer secondsDifference = seconds.getSeconds();
+    Integer daysDifference = seconds.toStandardDays().getDays();
 
-    String ago_string = "";
-    String in_string = "";
-    if (seconds_difference < 0 && explain) {
-      in_string += "in ";
+    String agoString = "";
+    String inString = "";
+    if (secondsDifference < 0 && explain) {
+      inString += "in ";
     }
-    if (seconds_difference > 0 && explain) {
-      ago_string += " ago";
+    if (secondsDifference > 0 && explain) {
+      agoString += " ago";
     }
 
-    if (seconds_difference >= 0 && seconds_difference <= 60) {
+    if (secondsDifference >= 0 && secondsDifference <= 60) {
       return "just now";
-    } else if (seconds_difference >= -60 && seconds_difference <= 0) {
+    } else if (secondsDifference >= -60 && secondsDifference <= 0) {
       return "right now";
     }
 
-    seconds_difference = Math.abs(seconds_difference);
-    days_difference = Math.abs(days_difference);
+    secondsDifference = Math.abs(secondsDifference);
+    daysDifference = Math.abs(daysDifference);
 
-    if (seconds_difference < 3600) {
-      int minutes_difference = (int) Math.floor(seconds_difference / 60.0);
-      if (minutes_difference == 1) {
+    if (secondsDifference < 3600) {
+      int minutesDifference = (int) Math.floor(secondsDifference / 60.0);
+      if (minutesDifference == 1) {
         return shortText ?
-          in_string + "1 min" + ago_string :
-          in_string + "1 minute" + ago_string;
+          inString + "1 min" + agoString :
+          inString + "1 minute" + agoString;
       } else {
         return shortText ?
-          minutes_difference + " mins" + ago_string :
-          minutes_difference + " minutes" + ago_string;
+          minutesDifference + " mins" + agoString :
+          minutesDifference + " minutes" + agoString;
       }
-    } else if (seconds_difference < 86400) {
-      int hours_difference = (int) Math.floor(seconds_difference / 60.0 / 60.0);
-      if (hours_difference == 1) {
+    } else if (secondsDifference < 86400) {
+      int hoursDifference = (int) Math.floor(secondsDifference / 60.0 / 60.0);
+      if (hoursDifference == 1) {
         return shortText ?
-          in_string + "1 hr" + ago_string :
-          in_string + "1 hour" + ago_string;
+          inString + "1 hr" + agoString :
+          inString + "1 hour" + agoString;
       } else {
         return shortText ?
-          in_string + hours_difference + " hrs" + ago_string :
-          in_string + hours_difference + " hours" + ago_string;
+          inString + hoursDifference + " hrs" + agoString :
+          inString + hoursDifference + " hours" + agoString;
       }
-    } else if (days_difference == 1) {
+    } else if (daysDifference == 1) {
       return "yesterday";
-    } else if (seconds_difference < threshold) {
-      return in_string + days_difference + " days" + ago_string;
+    } else if (secondsDifference < threshold) {
+      return inString + daysDifference + " days" + agoString;
     } else {
       return dateTime.toString(defaultFormatter());
     }

@@ -32,7 +32,7 @@ public abstract class ApiErrorHandler {
     }
   }
 
-  public abstract void handleApiError(ApiError api_error);
+  public abstract void handleApiError(final ApiError apiError);
 
   public void displayError(final int id) {
     // Toast by default, but this could be overridden

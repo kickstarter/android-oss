@@ -94,8 +94,8 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
 
     new ApiErrorHandler(e, view()) {
       @Override
-      public void handleApiError(final ApiError api_error) {
-        switch (api_error.errorEnvelope().ksrCode()) {
+      public void handleApiError(final ApiError apiError) {
+        switch (apiError.errorEnvelope().ksrCode()) {
           case TFA_FAILED:
             displayError(R.string.The_code_provided_does_not_match);
             break;

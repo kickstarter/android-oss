@@ -12,11 +12,11 @@ public class StringUtils {
     return Patterns.EMAIL_ADDRESS.matcher(str).matches();
   }
 
-  // TODO: Take categoryTextView instead of id
+  // TODO: Take category instead of id
   public static String friendBackingActivityTitle(final Context context, final String friendName, final Integer categoryId) {
     final String str;
 
-    // TODO: Would be nice to switch on a categoryTextView enum
+    // TODO: Would be nice to switch on a category enum
     switch (categoryId) {
       case 1: str = context.getResources().getString(R.string.friend_name_backed_art_project, friendName); break;
       case 3: str = context.getResources().getString(R.string.friend_name_backed_comics_project, friendName); break;

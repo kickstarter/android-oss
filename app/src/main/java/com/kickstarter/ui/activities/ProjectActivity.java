@@ -170,7 +170,7 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
   }
 
   public void startCommentsActivity(final Project project) {
-    // todo: buildTextView comments activity
+    // todo: build comments activity
   }
 
   // todo: limit the apps you can share to

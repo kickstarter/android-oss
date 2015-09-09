@@ -1,4 +1,4 @@
-package com.kickstarter.ui.view_holders;
+package com.kickstarter.ui.viewholders;
 
 import android.text.Spannable;
 import android.text.style.StyleSpan;
@@ -12,16 +12,16 @@ import com.kickstarter.models.Activity;
 import com.kickstarter.presenters.ActivityFeedPresenter;
 import com.squareup.picasso.Picasso;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class FriendFollowViewHolder extends ActivityListViewHolder {
-  @InjectView(R.id.avatar) ImageView avatarImageView;
-  @InjectView(R.id.title) TextView titleTextView;
+  @Bind(R.id.avatar) ImageView avatarImageView;
+  @Bind(R.id.title) TextView titleTextView;
 
   public FriendFollowViewHolder(final View view, final ActivityFeedPresenter presenter) {
     super(view, presenter);
-    ButterKnife.inject(this, view);
+    ButterKnife.bind(this, view);
   }
 
   @Override

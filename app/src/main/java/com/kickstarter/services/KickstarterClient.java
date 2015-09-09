@@ -5,12 +5,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kickstarter.BuildConfig;
 import com.kickstarter.libs.Build;
-import com.kickstarter.services.ApiResponses.InternalBuildEnvelope;
+import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import retrofit.Endpoint;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;

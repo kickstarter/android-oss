@@ -1,4 +1,4 @@
-package com.kickstarter.ui.view_holders;
+package com.kickstarter.ui.viewholders;
 
 import android.support.v7.widget.CardView;
 import android.view.View;
@@ -15,22 +15,25 @@ import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
+import butterknife.BindColor;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolder {
-  @InjectView(R.id.card_view) CardView cardView;
-  @InjectView(R.id.left_stat_first) TextView leftStatFirstTextView;
-  @InjectView(R.id.left_stat_second) TextView leftStatSecondTextView;
-  @InjectView(R.id.project_photo) ImageView projectPhotoImageView;
-  @InjectView(R.id.right_stat_first) TextView rightStatFirstTextView;
-  @InjectView(R.id.right_stat_second) TextView rightStatSecondTextView;
-  @InjectView(R.id.title) TextView titleTextView;
+  @Bind(R.id.card_view) CardView cardView;
+  @Bind(R.id.left_stat_first) TextView leftStatFirstTextView;
+  @Bind(R.id.left_stat_second) TextView leftStatSecondTextView;
+  @Bind(R.id.project_photo) ImageView projectPhotoImageView;
+  @Bind(R.id.right_stat_first) TextView rightStatFirstTextView;
+  @Bind(R.id.right_stat_second) TextView rightStatSecondTextView;
+  @Bind(R.id.title) TextView titleTextView;
+  @BindColor(R.color.blue_darken_10) int blueDarken10Color;
+  @BindColor(R.color.green_darken_10) int greenDarken10Color;
   @Inject Money money;
 
   public ProjectStateChangedPositiveViewHolder(final View view, final ActivityFeedPresenter presenter) {
     super(view, presenter);
-    ButterKnife.inject(this, view);
+    ButterKnife.bind(this, view);
     ((KsrApplication) view.getContext().getApplicationContext()).component().inject(this);
   }
 
@@ -40,7 +43,7 @@ public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolde
 
     switch (activity.category()) {
       case LAUNCH:
-        cardView.setCardBackgroundColor(view.getResources().getColor(R.color.blue_darken_10));
+        cardView.setCardBackgroundColor(blueDarken10Color);
         leftStatFirstTextView.setText(money.formattedCurrency(activity.project().goal(), activity.project()
           .currencyOptions()));
         leftStatSecondTextView.setText(view.getResources().getString(R.string.goal));
@@ -50,7 +53,7 @@ public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolde
           R.string.creator_launched_a_project, activity.user().name(), activity.project().name()));
         break;
       case SUCCESS:
-        cardView.setCardBackgroundColor(view.getResources().getColor(R.color.green_darken_10));
+        cardView.setCardBackgroundColor(greenDarken10Color);
         leftStatFirstTextView.setText(money.formattedCurrency(activity.project().pledged(), activity.project()
           .currencyOptions()));
         leftStatSecondTextView.setText(view.getResources().getString(
@@ -62,7 +65,7 @@ public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolde
           .getString(R.string.project_was_successfully_funded, activity.project().name()));
         break;
       default:
-        cardView.setCardBackgroundColor(view.getResources().getColor(R.color.green_darken_10));
+        cardView.setCardBackgroundColor(greenDarken10Color);
         leftStatFirstTextView.setText("");
         leftStatSecondTextView.setText("");
         rightStatFirstTextView.setText("");

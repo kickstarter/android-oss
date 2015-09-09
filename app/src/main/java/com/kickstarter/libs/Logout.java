@@ -1,7 +1,5 @@
 package com.kickstarter.libs;
 
-import android.content.Context;
-
 import java.net.CookieManager;
 
 public class Logout {

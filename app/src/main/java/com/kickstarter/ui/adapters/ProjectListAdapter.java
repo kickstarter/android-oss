@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import com.kickstarter.R;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.DiscoveryPresenter;
-import com.kickstarter.ui.view_holders.ProjectListViewHolder;
+import com.kickstarter.ui.viewholders.ProjectListViewHolder;
 
 import java.util.List;
 

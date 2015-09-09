@@ -1,4 +1,4 @@
-package com.kickstarter.ui.view_holders;
+package com.kickstarter.ui.viewholders;
 
 import android.view.View;
 import android.widget.ImageView;
@@ -11,19 +11,19 @@ import com.kickstarter.models.Activity;
 import com.kickstarter.presenters.ActivityFeedPresenter;
 import com.squareup.picasso.Picasso;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class FriendBackingViewHolder extends ActivityListViewHolder {
-  @InjectView(R.id.avatar) ImageView avatarImageView;
-  @InjectView(R.id.creator_name) TextView creatorNameTextView;
-  @InjectView(R.id.project_name) TextView projectNameTextView;
-  @InjectView(R.id.project_photo) ImageView projectPhotoImageView;
-  @InjectView(R.id.title) TextView titleTextView;
+  @Bind(R.id.avatar) ImageView avatarImageView;
+  @Bind(R.id.creator_name) TextView creatorNameTextView;
+  @Bind(R.id.project_name) TextView projectNameTextView;
+  @Bind(R.id.project_photo) ImageView projectPhotoImageView;
+  @Bind(R.id.title) TextView titleTextView;
 
   public FriendBackingViewHolder(final View view, final ActivityFeedPresenter presenter) {
     super(view, presenter);
-    ButterKnife.inject(this, view);
+    ButterKnife.bind(this, view);
   }
 
   @Override

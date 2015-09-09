@@ -9,12 +9,12 @@ import android.view.ViewGroup;
 import com.kickstarter.R;
 import com.kickstarter.models.Activity;
 import com.kickstarter.presenters.ActivityFeedPresenter;
-import com.kickstarter.ui.view_holders.ActivityListViewHolder;
-import com.kickstarter.ui.view_holders.FriendBackingViewHolder;
-import com.kickstarter.ui.view_holders.FriendFollowViewHolder;
-import com.kickstarter.ui.view_holders.ProjectStateChangedPositiveViewHolder;
-import com.kickstarter.ui.view_holders.ProjectStateChangedViewHolder;
-import com.kickstarter.ui.view_holders.ProjectUpdateViewHolder;
+import com.kickstarter.ui.viewholders.ActivityListViewHolder;
+import com.kickstarter.ui.viewholders.FriendBackingViewHolder;
+import com.kickstarter.ui.viewholders.FriendFollowViewHolder;
+import com.kickstarter.ui.viewholders.ProjectStateChangedPositiveViewHolder;
+import com.kickstarter.ui.viewholders.ProjectStateChangedViewHolder;
+import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

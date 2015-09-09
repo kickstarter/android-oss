@@ -11,10 +11,10 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.DateTimeTypeConverter;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
-import com.kickstarter.services.ApiResponses.AccessTokenEnvelope;
-import com.kickstarter.services.ApiResponses.ActivityEnvelope;
-import com.kickstarter.services.ApiResponses.DiscoverEnvelope;
-import com.kickstarter.services.ApiResponses.ErrorEnvelope;
+import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
+import com.kickstarter.services.apiresponses.ActivityEnvelope;
+import com.kickstarter.services.apiresponses.DiscoverEnvelope;
+import com.kickstarter.services.apiresponses.ErrorEnvelope;
 
 import org.joda.time.DateTime;
 

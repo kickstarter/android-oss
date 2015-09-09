@@ -16,7 +16,7 @@ import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.libs.RxUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.DiscoveryPresenter;
-import com.kickstarter.services.ApiResponses.InternalBuildEnvelope;
+import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.adapters.ProjectListAdapter;
 import com.kickstarter.ui.containers.ApplicationContainer;
 
@@ -25,8 +25,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import rx.Subscription;
 import rx.subjects.PublishSubject;
 
@@ -41,7 +41,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
 
   @Inject ApplicationContainer applicationContainer;
 
-  @InjectView(R.id.recyclerView) RecyclerView recyclerView;
+  @Bind(R.id.recyclerView) RecyclerView recyclerView;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
@@ -52,7 +52,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
     final LayoutInflater layoutInflater = getLayoutInflater();
 
     layoutInflater.inflate(R.layout.discovery_layout, container);
-    ButterKnife.inject(this, container);
+    ButterKnife.bind(this, container);
 
     layoutManager = new LinearLayoutManager(this);
     adapter = new ProjectListAdapter(projects, presenter);

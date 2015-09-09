@@ -12,7 +12,7 @@
   <include layout="@layout/project_context_view"/>
 
   <LinearLayout
-    android:gravity="center_horizontal"
+    android:gravity="center_horizontal|center_vertical"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -23,6 +23,7 @@
       android:gravity="center_horizontal"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:textSize="@dimen/display_4"
       android:text="@string/mode_comment_icon"
       android:paddingBottom="@dimen/grid_3" />
 

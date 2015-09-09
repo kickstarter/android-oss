@@ -69,10 +69,18 @@
         <Button
           android:id="@+id/twitter_button"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_weight="1"
           android:layout_marginLeft="@dimen/grid_1"
-          android:text="Twitter Stub" />
+          android:layout_height="@dimen/grid_5"
+          android:layout_weight="1"
+          android:paddingLeft="@dimen/grid_1"
+          android:paddingRight="@dimen/grid_2"
+          android:background="@drawable/button_twitter_blue"
+          android:drawableLeft="@drawable/ic_social_twitter"
+          android:drawableStart="@drawable/ic_social_twitter"
+          android:text="@string/Tweet"
+          android:textAllCaps="false"
+          android:textAppearance="@style/TextAppearance.AppCompat.Button"
+          android:textColor="@color/white" />
 
       </LinearLayout>
 
@@ -81,7 +89,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="onShareClick"
-        android:text="@string/More" />
+        android:text="@string/More"
+        android:textAllCaps="false" />
 
       <TextView
         android:layout_width="match_parent"

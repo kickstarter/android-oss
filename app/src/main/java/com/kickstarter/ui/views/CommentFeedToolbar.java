@@ -1,6 +1,5 @@
 package com.kickstarter.ui.views;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
@@ -9,13 +8,15 @@ import android.widget.TextView;
 
 import com.kickstarter.R;
 
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
-import timber.log.Timber;
 
 public class CommentFeedToolbar extends Toolbar {
   @Bind(R.id.comment_button) TextView commentButton;
+
+  // set project observable here
+  Context context;
 
   public CommentFeedToolbar(final Context context) {
     super(context);
@@ -33,15 +34,12 @@ public class CommentFeedToolbar extends Toolbar {
   protected void onFinishInflate() {
     super.onFinishInflate();
     ButterKnife.bind(this);
+    context = getContext();
   }
 
   @Nullable
   @OnClick(R.id.comment_button)
-  public void postComment() {
-    Timber.d("post comment");
-
-    Dialog dialog = new Dialog(getContext());
-    dialog.setTitle("Leave a comment");
-    dialog.show();
+  public void showCommentDialog() {
+    // reuse from activity
   }
 }

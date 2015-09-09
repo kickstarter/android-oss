@@ -1,11 +1,13 @@
 package com.kickstarter.ui.activities;
 
-import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,8 +23,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 @RequiresPresenter(CommentFeedPresenter.class)
@@ -43,8 +45,7 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     setContentView(layout);
     ButterKnife.bind(this);
 
-    // messy WIP
-//    commentButtonTextView.setVisibility(project.isBacking() ? View.VISIBLE : View.GONE);  // move this to toolbar activity
+    // messy WIP---move to Toolbar, set project observable
     if (project.commentsCount != 0) {
       presenter.takeProject(project);
     }
@@ -53,6 +54,7 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     }
   }
 
+  // this may be removed with adapter implementation
   public void showProjectContext(Project project) {
     Picasso.with(getApplicationContext()).load(project.photo().full())
       .into(projectPhotoImageView);
@@ -78,9 +80,16 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     onBackPressed();
   }
 
-  public void publicCommentClick(View view) {
-    final Dialog dialog = new Dialog(view.getContext());
-    dialog.setTitle("Post Public Comment");
-    dialog.show();
+  public void publicCommentClick(final View view) {
+    final LayoutInflater layoutInflater = getLayoutInflater();
+    final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+    builder.setTitle(getString(R.string.Public_comment));
+    builder.setView(layoutInflater.inflate(R.layout.comment_dialog, null))
+      .setPositiveButton(getString(R.string.Post), (DialogInterface dialog, int which) -> {
+      })
+      .setNegativeButton(getString(R.string.Cancel), (DialogInterface dialog, int which) -> {
+      });
+
+    builder.show();
   }
 }

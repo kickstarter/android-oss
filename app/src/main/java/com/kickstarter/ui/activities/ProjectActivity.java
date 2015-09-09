@@ -121,6 +121,7 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
     videoView.setVideoURI(videoUri);
     videoView.setMediaController(new MediaController(this));
 
+    // replace with @OnClick
     playButtonIconTextView.setOnClickListener((View v) -> {
       photoImageView.setVisibility(View.GONE);
       playButtonIconTextView.setVisibility(View.GONE);

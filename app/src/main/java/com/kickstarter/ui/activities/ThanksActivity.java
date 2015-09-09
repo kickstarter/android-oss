@@ -87,15 +87,17 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
   }
 
   public void startFacebookShareIntent(final Project project) {
-    if (ShareDialog.canShow(ShareLinkContent.class)) {
-      ShareLinkContent content = new ShareLinkContent.Builder()
-        .setContentTitle(project.name())
-        .setContentDescription(shareString(project))
-        .setContentUrl(Uri.parse(project.secureWebProjectUrl()))
-        .build();
-
-      shareDialog.show(content);
+    if (!ShareDialog.canShow(ShareLinkContent.class)) {
+      return;
     }
+
+    final ShareLinkContent content = new ShareLinkContent.Builder()
+      .setContentTitle(project.name())
+      .setContentDescription(shareString(project))
+      .setContentUrl(Uri.parse(project.secureWebProjectUrl()))
+      .build();
+
+    shareDialog.show(content);
   }
 
   public void startShareIntent(final Project project) {

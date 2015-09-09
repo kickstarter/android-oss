@@ -77,7 +77,7 @@
           android:id="@+id/twitter_button"
           android:layout_width="match_parent"
           android:layout_height="@dimen/grid_5"
-          android:layout_marginLeft="@dimen/keyline_1_half"
+          android:layout_marginLeft="@dimen/grid_1"
           android:layout_marginRight="3dp"
           android:layout_weight="1"
           android:paddingLeft="@dimen/grid_1"

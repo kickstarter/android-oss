@@ -28,7 +28,7 @@
       android:minHeight="@dimen/activity_feed_medium_photo_height"
       android:layout_weight="1"
       android:gravity="center"
-      android:padding="@dimen/keyline_1_half"
+      android:padding="@dimen/grid_1"
       android:background="@color/dark_gray">
 
       <TextView

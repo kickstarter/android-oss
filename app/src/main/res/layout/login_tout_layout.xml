@@ -13,8 +13,8 @@
     android:layout_height="wrap_content"
     android:paddingLeft="@dimen/grid_3"
     android:paddingRight="@dimen/grid_3"
-    android:paddingTop="@dimen/keyline_2_half"
-    android:paddingBottom="@dimen/keyline_2_three_quarters"
+    android:paddingTop="@dimen/grid_9_half"
+    android:paddingBottom="@dimen/grid_7"
     android:background="@color/window_background"
     android:elevation="1dp"
     android:orientation="vertical">
@@ -56,7 +56,7 @@
     android:orientation="vertical"
     android:paddingLeft="@dimen/grid_3"
     android:paddingRight="@dimen/grid_3"
-    android:paddingTop="@dimen/keyline_2_half"
+    android:paddingTop="@dimen/grid_9_half"
     android:paddingBottom="@dimen/grid_3">
 
     <TextView
@@ -78,7 +78,7 @@
         android:id="@+id/login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/keyline_1_half"
+        android:layout_marginRight="@dimen/grid_1"
         android:onClick="loginButtonOnClick"
         style="?android:attr/borderlessButtonStyle"
         android:text="@string/Log_in" />
@@ -87,7 +87,7 @@
         android:id="@+id/sign_up_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/keyline_1_half"
+        android:layout_marginLeft="@dimen/grid_1"
         style="?android:attr/borderlessButtonStyle"
         android:text="@string/Sign_up" />
 

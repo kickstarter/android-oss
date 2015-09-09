@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.kickstarter.ui.views.CommentFeedToolbar
+  android:id="@+id/toolbar"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="?attr/actionBarSize"
+  android:background="@color/light_gray"
+  app:contentInsetLeft="0dp"
+  app:contentInsetStart="0dp"
+  android:elevation="2dp"
+  xmlns:icon_text_view="http://schemas.android.com/tools">
+
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical">
+
+    <com.kickstarter.ui.views.IconTextView
+      icon_text_view:iconType="material"
+      android:id="@+id/nav_back_button"
+      android:paddingLeft="@dimen/grid_3"
+      android:background="@drawable/button_selector"
+      android:gravity="center_vertical"
+      android:textAppearance="@style/TextAppearance.AppCompat.Title"
+      android:layout_alignParentStart="true"
+      android:layout_alignParentLeft="true"
+      android:layout_width="@dimen/button_icon_fixed_width"
+      android:layout_height="match_parent"
+      android:textColor="@color/dark_gray"
+      android:text="@string/arrow_back"/>
+
+    <TextView
+      android:id="@+id/comment_button"
+      android:visibility="gone"
+      android:background="@drawable/button_selector"
+      android:paddingRight="@dimen/grid_3"
+      android:gravity="center_vertical"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentRight="true"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:textColor="@color/green"
+      android:text="@string/Comment" />
+  </RelativeLayout>
+</com.kickstarter.ui.views.CommentFeedToolbar>

@@ -12,6 +12,7 @@
   <string name="Are_those_new_shoes">
     Are those new shoes? If they’re not new, they look really shiny and beautiful.
   </string>
+  <string name="Aw_how_sad">Aw, how sad. Become a backer to leave a comment.</string>
   <string name="Back_this_project">Back this project</string>
   <string name="backers">backers</string>
   <string name="Build">Build</string>
@@ -25,12 +26,15 @@
     anything without your permission.
   </string>
   <string name="Campaign">Campaign</string>
+  <string name="Cancel">Cancel</string>
   <string name="Changelog">Changelog</string>
+  <string name="Comment">Comment</string>
   <string name="Close">Close</string>
   <string name="Comments">Comments</string>
   <string name="creator_launched_a_project">%1$s launched a project: %2$s</string>
   <string name="Created_by">Created by</string>
   <string name="Created_by_">Created by&lt;br>&lt;b>%1$s&lt;/b></string>
+  <string name="Creator">Creator</string>
   <string name="days">days</string>
   <string name="Development_settings">Development Settings</string>
   <string name="Discover_projects">Discover projects</string>
@@ -66,14 +70,17 @@
   <string name="I_just_backed_project_on_Kickstarter">I just backed %1$s on Kickstarter: %2$s</string>
   <string name="Instructions">Instructions</string>
   <string name="Launched">Launched</string>
+  <string name="Leave_a_comment">Leave a comment</string>
   <string name="Log_in">Log in</string>
   <string name="Log_out">Log out</string>
   <string name="Logged_out">Logged out</string>
   <string name="Login_does_not_match_any_of_our_records">Login does not match any of our records.</string>
   <string name="Looking_for_more_projects">Looking for more projects? Check these out.</string>
+  <string name="Manage_pledge">Manage pledge</string>
   <string name="mins">mins</string>
   <string name="More">More</string>
   <string name="Network">Network</string>
+  <string name="No_comments">No comments</string>
   <string name="Nice_to_see_you_again">Nice to see you again.</string>
   <string name="Open_downloads_folder">Open Downloads folder</string>
   <string name="A_request_has_been_made_to_download_the_latest_build">
@@ -87,17 +94,19 @@
   </string>
   <string name="pledged_of_">pledged of\u0020</string>
   <string name="pledged_of_goal">pledged of %1$s</string>
+  <string name="Post">Post</string>
   <string name="project_of_the_day">Project of the day!</string>
   <string name="project_was_cancelled_by_its_creator">%1$s was cancelled by its creator.</string>
   <string name="project_was_not_successfully_funded">%1$s was not successfully funded.</string>
   <string name="project_was_successfully_funded">%1$s was successfully funded!</string>
   <string name="project_resumed">%1$s resumed.</string>
   <string name="project_was_suspended">%1$s was suspended.</string>
+  <string name="Public_comment">Public comment</string>
   <string name="Resend">Resend</string>
   <string name="secs">secs</string>
   <string name="Sha">SHA</string>
   <string name="Share">Share</string>
-  <string name="share_intent">"%1$s, via %2$s"</string>
+  <string name="share_message">"%1$s, via %2$s"</string>
   <string name="Share_this_project">Share this project</string>
   <string name="Sign_up">Sign up</string>
   <string name="Sign_up_or_log_in_with_your_Facebook_account">
@@ -124,6 +133,7 @@
     When you back a project or follow a friend, their activity will show up here.
   </string>
   <string name="Woo_hoo">Woo-hoo!</string>
+  <string name="You">You</string>
   <string name="You_just_backed">You just backed &lt;b>%1$s&lt;/b>. Share this project with friends to help it along!</string>
   <string name="You_launched_a_project">You launched a project: %1$s</string>
 
@@ -150,6 +160,7 @@
 
   <!-- Intent strings. Requires package prefix:
     http://developer.android.com/reference/android/content/Intent.html#putExtra%28java.lang.String,%20boolean%29 -->
+  <string name="intent_comment">com.kickstarter.kickstarter.intent_comment</string>
   <string name="intent_email">com.kickstarter.kickstarter.intent_email</string>
   <string name="intent_forward">com.kickstarter.kickstarter.intent_forward</string>
   <string name="intent_internal_build_envelope">com.kickstarter.kickstarter.intent_build_envelope</string>

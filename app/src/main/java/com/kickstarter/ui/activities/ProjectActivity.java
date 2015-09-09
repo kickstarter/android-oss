@@ -14,6 +14,7 @@ import android.widget.VideoView;
 import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.CircleTransform;
 import com.kickstarter.libs.DateTimeUtils;
 import com.kickstarter.libs.Money;
 import com.kickstarter.libs.RequiresPresenter;
@@ -84,7 +85,7 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
 
     // WIP VideoView & MediaController
     if ( project.video() != null ) {
-      loadVideo(project.video(), videoView);
+//      loadVideo(project.video(), videoView);
       playButtonIconTextView.setVisibility(View.VISIBLE);
     }
     else {
@@ -92,7 +93,10 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
     }
 
     // Creator information
-    Picasso.with(this).load(project.creator().avatar().medium()).into(avatarImageView);
+    Picasso.with(this).load(project.creator().avatar()
+      .medium())
+      .transform(new CircleTransform())
+      .into(avatarImageView);
     avatarNameTextView.setText(project.creator().name());
     fundMessageTextView.setText(String.format(getString(R.string.This_project_will_only_be_funded_if),
       money.formattedCurrency(project.goal(), project.currencyOptions(), true),
@@ -109,11 +113,15 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
+  // todo: setting the VideoView uri here prevents the activity from GC'ing
+  // VideoView either needs to be set independent of XML, or better
+  // just use ExoPlayer library
   public void loadVideo(Video video, VideoView videoView) {
     final Uri videoUri = Uri.parse(video.base());
     videoView.setVideoURI(videoUri);
     videoView.setMediaController(new MediaController(this));
 
+    // replace with @OnClick
     playButtonIconTextView.setOnClickListener((View v) -> {
       photoImageView.setVisibility(View.GONE);
       playButtonIconTextView.setVisibility(View.GONE);
@@ -169,15 +177,19 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
+  // todo: WORKING ON:
   public void startCommentsActivity(final Project project) {
-    // todo: build comments activity
+    final Intent intent = new Intent(this, CommentFeedActivity.class)
+      .putExtra(getString(R.string.intent_project), project);
+    startActivity(intent);
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   // todo: limit the apps you can share to
   public void startShareIntent(final Project project) {
     final Intent intent = new Intent(Intent.ACTION_SEND)
       .setType(getString(R.string.intent_share_type))
-      .putExtra(Intent.EXTRA_TEXT, String.format(getString(R.string.share_intent), project.name(), project.webProjectUrl()));
+      .putExtra(Intent.EXTRA_TEXT, String.format(getString(R.string.share_message), project.name(), project.webProjectUrl()));
     startActivity(intent);
   }
 

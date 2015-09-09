@@ -1,43 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView
+  xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="vertical"
   android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:padding="@dimen/grid_3">
+  android:layout_height="wrap_content">
 
-  <de.hdodenhof.circleimageview.CircleImageView
-    android:id="@+id/avatar"
-    android:layout_alignParentStart="true"
-    android:layout_alignParentLeft="true"
-    android:layout_width="@dimen/comments_feed_avatar_width"
-    android:layout_height="@dimen/comments_feed_avatar_height" />
-
-  <TextView
-    android:paddingLeft="@dimen/grid_2"
-    android:layout_toRightOf="@id/avatar"
-    android:layout_alignParentTop="true"
-    android:textColor="@color/text_primary"
-    android:id="@+id/name"
-    android:textStyle="bold"
+  <RelativeLayout
+    android:padding="@dimen/grid_3"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content" />
+    android:layout_height="wrap_content">
 
-  <TextView
-    android:id="@+id/post_date"
-    android:textColor="@color/text_secondary"
-    android:layout_alignParentEnd="true"
-    android:layout_alignParentRight="true"
-    android:layout_alignParentTop="true"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content" />
+    <ImageView
+      android:id="@+id/avatar"
+      android:layout_alignParentStart="true"
+      android:layout_alignParentLeft="true"
+      android:layout_width="@dimen/comments_feed_avatar_width"
+      android:layout_height="@dimen/comments_feed_avatar_height" />
 
-  <TextView
-    android:id="@+id/comment"
-    android:textColor="@color/text_primary"
-    android:padding="@dimen/grid_2"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_below="@id/name"
-    android:layout_toRightOf="@id/avatar"/>
+    <TextView
+      android:id="@+id/creator_label"
+      android:visibility="gone"
+      android:layout_marginTop="@dimen/grid_2"
+      android:gravity="center"
+      android:textColor="@color/white"
+      android:layout_below="@id/avatar"
+      android:background="@drawable/text_view_green_background"
+      android:text="@string/Creator"
+      android:layout_width="@dimen/grid_7"
+      android:layout_height="wrap_content" />
 
-</RelativeLayout>
+    <TextView
+      android:id="@+id/user_label"
+      android:visibility="gone"
+      android:layout_marginTop="@dimen/grid_2"
+      android:gravity="center"
+      android:textColor="@color/white"
+      android:layout_below="@id/avatar"
+      android:background="@drawable/text_view_blue_background"
+      android:text="@string/You"
+      android:layout_width="@dimen/grid_7"
+      android:layout_height="wrap_content" />
+
+    <TextView
+      android:id="@+id/post_date"
+      android:textColor="@color/text_secondary"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentRight="true"
+      android:layout_alignParentTop="true"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content" />
+
+    <TextView
+      android:id="@+id/name"
+      android:paddingLeft="@dimen/grid_2"
+      android:layout_toRightOf="@id/avatar"
+      android:layout_toEndOf="@id/avatar"
+      android:layout_toLeftOf="@id/post_date"
+      android:layout_toStartOf="@id/post_date"
+      android:ellipsize="end"
+      android:layout_alignParentTop="true"
+      android:textColor="@color/text_primary"
+      android:textStyle="bold"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content" />
+
+    <TextView
+      android:id="@+id/comment_body"
+      android:textColor="@color/text_primary"
+      android:padding="@dimen/grid_2"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/name"
+      android:layout_toRightOf="@id/avatar"/>
+
+  </RelativeLayout>
+</android.support.v7.widget.CardView>

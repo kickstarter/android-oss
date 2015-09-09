@@ -25,8 +25,6 @@ public class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
   protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    FacebookSdk.sdkInitialize(this.getApplicationContext());
-
     setContentView(R.layout.login_tout_layout);
     ButterKnife.bind(this);
 

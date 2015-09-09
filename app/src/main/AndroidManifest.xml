@@ -69,10 +69,16 @@
       android:name=".ui.activities.TwoFactorActivity"
       android:theme="@style/Login" />
 
-    <activity android:name="com.facebook.FacebookActivity"
+    <activity
+      android:name="com.facebook.FacebookActivity"
       android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
       android:theme="@android:style/Theme.Translucent.NoTitleBar"
       android:label="@string/app_name" />
+
+    <provider
+      android:authorities="com.facebook.app.FacebookContentProvider10153359799336694"
+      android:name="com.facebook.FacebookContentProvider"
+      android:exported="true"/>
 
     <activity android:name="net.hockeyapp.android.UpdateActivity" />
   </application>

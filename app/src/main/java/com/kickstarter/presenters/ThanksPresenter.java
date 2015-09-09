@@ -22,6 +22,7 @@ import rx.subjects.PublishSubject;
 
 public class ThanksPresenter extends Presenter<ThanksActivity> {
   private final PublishSubject<Void> doneClick = PublishSubject.create();
+  private final PublishSubject<Void> facebookClick = PublishSubject.create();
   private final PublishSubject<Void> shareClick = PublishSubject.create();
   private final PublishSubject<Void> twitterClick = PublishSubject.create();
 
@@ -40,6 +41,10 @@ public class ThanksPresenter extends Presenter<ThanksActivity> {
     addSubscription(viewAndProject
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.show(vp.second)));
+
+    addSubscription(RxUtils.takeWhen(viewAndProject, facebookClick)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(vp -> vp.first.startFacebookShareIntent(vp.second)));
 
     addSubscription(RxUtils.takeWhen(viewAndProject, shareClick)
       .observeOn(AndroidSchedulers.mainThread())
@@ -70,6 +75,10 @@ public class ThanksPresenter extends Presenter<ThanksActivity> {
 
   public void takeDoneClick() {
     doneClick.onNext(null);
+  }
+
+  public void takeFacebookClick() {
+    facebookClick.onNext(null);
   }
 
   public void takeShareClick() {

@@ -3,6 +3,7 @@ package com.kickstarter.ui.activities;
 import android.content.Intent;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +13,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.CallbackManager;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RequiresPresenter;
@@ -32,7 +36,9 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
   @Bind(R.id.recommended_projects_recycler_view) RecyclerView recommendedProjectsRecyclerView;
   @Bind(R.id.woohoo_background) ImageView woohooBackgroundImageView;
 
+  CallbackManager facebookCallbackManager;
   ProjectCardMiniAdapter projectCardMiniAdapter;
+  ShareDialog shareDialog;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
@@ -40,6 +46,9 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
 
     setContentView(R.layout.thanks_layout);
     ButterKnife.bind(this);
+
+    facebookCallbackManager = CallbackManager.Factory.create(); // TODO: Use this to track Facebook shares
+    shareDialog = new ShareDialog(this);
 
     final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
     layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -67,9 +76,26 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
     presenter.takeShareClick();
   }
 
+  @OnClick(R.id.facebook_button)
+  public void onFacebookButtonClick(final View view) {
+    presenter.takeFacebookClick();
+  }
+
   @OnClick(R.id.twitter_button)
   public void onTwitterButtonClick(final View view) {
     presenter.takeTwitterClick();
+  }
+
+  public void startFacebookShareIntent(final Project project) {
+    if (ShareDialog.canShow(ShareLinkContent.class)) {
+      ShareLinkContent content = new ShareLinkContent.Builder()
+        .setContentTitle(project.name())
+        .setContentDescription(shareString(project))
+        .setContentUrl(Uri.parse(project.secureWebProjectUrl()))
+        .build();
+
+      shareDialog.show(content);
+    }
   }
 
   public void startShareIntent(final Project project) {

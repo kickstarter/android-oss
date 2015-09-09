@@ -15,7 +15,7 @@
  *
  */
 
-package com.kickstarter.libs;
+package com.kickstarter.libs.vendor;
 
 import android.content.Context;
 import android.content.Intent;
@@ -47,7 +47,7 @@ public class TweetComposer {
     private Uri imageUri;
 
     /**
-     * Initializes a new {@link com.kickstarter.libs.TweetComposer.Builder}
+     * Initializes a new {@link TweetComposer.Builder}
      */
     public Builder(Context context) {
       if (context == null) {
@@ -106,7 +106,7 @@ public class TweetComposer {
     }
 
     /**
-     * Creates {@link android.content.Intent} based on data in {@link com.kickstarter.libs.TweetComposer.Builder}
+     * Creates {@link android.content.Intent} based on data in {@link TweetComposer.Builder}
      * @return an Intent to the Twitter for Android or a web intent.
      */
     public Intent createIntent() {
@@ -168,7 +168,7 @@ public class TweetComposer {
     }
 
     /**
-     * Starts the intent created in {@link com.kickstarter.libs.TweetComposer.Builder#createIntent()}
+     * Starts the intent created in {@link TweetComposer.Builder#createIntent()}
      */
     public void show() {
       final Intent intent = createIntent();

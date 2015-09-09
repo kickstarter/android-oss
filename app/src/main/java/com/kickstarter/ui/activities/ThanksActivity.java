@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RequiresPresenter;
-import com.kickstarter.libs.TweetComposer;
+import com.kickstarter.libs.vendor.TweetComposer;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.ThanksPresenter;
 import com.kickstarter.ui.adapters.ProjectCardMiniAdapter;

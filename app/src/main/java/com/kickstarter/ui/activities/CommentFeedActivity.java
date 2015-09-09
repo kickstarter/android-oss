@@ -3,6 +3,7 @@ package com.kickstarter.ui.activities;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -67,7 +68,7 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
   }
 
   @Override
-  @Optional @OnClick(R.id.nav_back_button)
+  @Nullable @OnClick(R.id.nav_back_button)
   public void onBackPressed() {
     super.onBackPressed();
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);

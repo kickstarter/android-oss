@@ -10,12 +10,12 @@ import android.widget.TextView;
 import com.kickstarter.R;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import timber.log.Timber;
 
 public class CommentFeedToolbar extends Toolbar {
-  @InjectView(R.id.comment_button) TextView commentButton;
+  @Bind(R.id.comment_button) TextView commentButton;
 
   public CommentFeedToolbar(final Context context) {
     super(context);
@@ -32,7 +32,7 @@ public class CommentFeedToolbar extends Toolbar {
   @Override
   protected void onFinishInflate() {
     super.onFinishInflate();
-    ButterKnife.inject(this);
+    ButterKnife.bind(this);
   }
 
   @Nullable

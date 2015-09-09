@@ -20,7 +20,6 @@ public class CommentsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   CommentAdapterDelegate commentFeedDelegate;
   ProjectContextAdapterDelegate projectContextDelegate;
 
-  // comments is the data source of the adapter
   public CommentsAdapter(final List<Comment> comments, final Project project, final CommentFeedPresenter presenter) {
     this.comments = comments;
     commentFeedDelegate = new CommentAdapterDelegate(VIEW_TYPE_COMMENT, project, presenter);

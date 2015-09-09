@@ -4,25 +4,19 @@ package com.kickstarter.ui.views;
 import android.content.Context;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 
-import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.CurrentUser;
-import com.kickstarter.models.Project;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
-import timber.log.Timber;
 
 public class ProjectActionToolbar extends Toolbar {
-  @InjectView(R.id.back_project_button) Button backProjectButton;
-  @InjectView(R.id.manage_pledge_button) Button managePledgeButton;
+  @Bind(R.id.back_project_button) Button backProjectButton;
+  @Bind(R.id.manage_pledge_button) Button managePledgeButton;
   @Inject CurrentUser currentUser;
 
   // pass in an observable Project
@@ -42,6 +36,6 @@ public class ProjectActionToolbar extends Toolbar {
   @Override
   protected void onFinishInflate() {
     super.onFinishInflate();
-    ButterKnife.inject(this);
+    ButterKnife.bind(this);
   }
 }

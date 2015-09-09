@@ -9,7 +9,7 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 public class Category implements Parcelable {
   Integer id = null;
   String name = null;
-  Integer parent_id = null;
+  Integer parentId = null;
 
   public Integer id() {
     return id;
@@ -20,7 +20,7 @@ public class Category implements Parcelable {
   }
 
   public Integer parentId() {
-    return parent_id;
+    return parentId;
   }
 
   // TODO: Should be able to grab a Category rather than dealing with Integers. That would require loading all the

@@ -1,4 +1,4 @@
-package com.kickstarter.ui.view_holders;
+package com.kickstarter.ui.viewholders;
 
 import android.view.View;
 import android.widget.ImageView;
@@ -7,18 +7,19 @@ import android.widget.TextView;
 import com.kickstarter.R;
 import com.kickstarter.models.Activity;
 import com.kickstarter.presenters.ActivityFeedPresenter;
+import com.kickstarter.ui.viewholders.ActivityListViewHolder;
 import com.squareup.picasso.Picasso;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class ProjectStateChangedViewHolder extends ActivityListViewHolder {
-  @InjectView(R.id.title) TextView title;
-  @InjectView(R.id.project_photo) ImageView project_photo;
+  @Bind(R.id.title) TextView titleTextView;
+  @Bind(R.id.project_photo) ImageView projectPhotoImageView;
 
   public ProjectStateChangedViewHolder(final View view, final ActivityFeedPresenter presenter) {
     super(view, presenter);
-    ButterKnife.inject(this, view);
+    ButterKnife.bind(this, view);
   }
 
   @Override
@@ -27,9 +28,9 @@ public class ProjectStateChangedViewHolder extends ActivityListViewHolder {
 
     Picasso.with(view.getContext())
       .load(activity.project().photo().little())
-      .into(project_photo);
+      .into(projectPhotoImageView);
 
-    title.setText(titleText(activity));
+    titleTextView.setText(titleText(activity));
   }
 
   public String titleText(final Activity activity) {

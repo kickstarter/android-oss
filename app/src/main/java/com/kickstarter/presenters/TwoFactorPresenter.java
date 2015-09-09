@@ -13,7 +13,7 @@ import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.RxUtils;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.ApiError;
-import com.kickstarter.services.ApiResponses.AccessTokenEnvelope;
+import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.ui.activities.TwoFactorActivity;
 
 import javax.inject.Inject;
@@ -35,7 +35,7 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
     ((KsrApplication) context.getApplicationContext()).component().inject(this);
 
     final Observable<String> code = viewSubject
-      .flatMap(v -> WidgetObservable.text(v.code))
+      .flatMap(v -> WidgetObservable.text(v.codeEditText))
       .map(v -> v.text().toString());
 
     final Observable<Boolean> isValid = code
@@ -83,7 +83,7 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
   }
 
   private void success(@NonNull final AccessTokenEnvelope envelope, @NonNull final TwoFactorActivity view) {
-    currentUser.login(envelope.user, envelope.access_token);
+    currentUser.login(envelope.user, envelope.accessToken);
     view.onSuccess();
   }
 
@@ -94,8 +94,8 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
 
     new ApiErrorHandler(e, view()) {
       @Override
-      public void handleApiError(final ApiError api_error) {
-        switch (api_error.errorEnvelope().ksrCode()) {
+      public void handleApiError(final ApiError apiError) {
+        switch (apiError.errorEnvelope().ksrCode()) {
           case TFA_FAILED:
             displayError(R.string.The_code_provided_does_not_match);
             break;

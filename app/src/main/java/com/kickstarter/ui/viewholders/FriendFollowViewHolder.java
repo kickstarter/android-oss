@@ -1,4 +1,4 @@
-package com.kickstarter.ui.view_holders;
+package com.kickstarter.ui.viewholders;
 
 import android.text.Spannable;
 import android.text.style.StyleSpan;
@@ -12,16 +12,16 @@ import com.kickstarter.models.Activity;
 import com.kickstarter.presenters.ActivityFeedPresenter;
 import com.squareup.picasso.Picasso;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class FriendFollowViewHolder extends ActivityListViewHolder {
-  @InjectView(R.id.avatar) ImageView avatar;
-  @InjectView(R.id.title) TextView title;
+  @Bind(R.id.avatar) ImageView avatarImageView;
+  @Bind(R.id.title) TextView titleTextView;
 
   public FriendFollowViewHolder(final View view, final ActivityFeedPresenter presenter) {
     super(view, presenter);
-    ButterKnife.inject(this, view);
+    ButterKnife.bind(this, view);
   }
 
   @Override
@@ -31,11 +31,11 @@ public class FriendFollowViewHolder extends ActivityListViewHolder {
     Picasso.with(view.getContext())
       .load(activity.user().avatar().small())
       .transform(new CircleTransform())
-      .into(avatar);
+      .into(avatarImageView);
 
-    title.setText(view.getResources().getString(R.string.username_is_following_you, activity.user().name()));
-    final Spannable title_str = (Spannable) title.getText();
-    title_str.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
+    titleTextView.setText(view.getResources().getString(R.string.username_is_following_you, activity.user().name()));
+    final Spannable titleStr = (Spannable) titleTextView.getText();
+    titleStr.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
       0,
       activity.user().name().length(),
       Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

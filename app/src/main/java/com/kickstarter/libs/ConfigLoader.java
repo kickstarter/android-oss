@@ -2,7 +2,9 @@ package com.kickstarter.libs;
 
 import android.content.res.AssetManager;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +14,8 @@ import timber.log.Timber;
 public class ConfigLoader {
   private final AssetManager assetManager;
   private Config config;
-  private final Gson gson = new Gson();
+  private final Gson gson = new GsonBuilder()
+    .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
 
   private final static String ASSET_PATH = "json/server-config.json";
 

@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 
 import com.kickstarter.R;
 import com.kickstarter.models.Project;
-import com.kickstarter.ui.view_holders.ProjectContextViewHolder;
+import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
 
 public class ProjectContextAdapterDelegate {
   final private int viewType;

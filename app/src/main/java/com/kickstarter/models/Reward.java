@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
-import com.kickstarter.libs.DateTimeUtils;
 
 import org.joda.time.DateTime;
 
@@ -12,26 +11,26 @@ import org.joda.time.DateTime;
 public class Reward implements Parcelable {
   String reward = null;
   Integer limit = null;
-  DateTime estimated_delivery_on = null;
-  Boolean shipping_enabled = null;
+  DateTime estimatedDeliveryOn = null;
+  Boolean shippingEnabled = null;
   Integer id = null;
-  String shipping_preference = null;
-  String shipping_summary = null;
-  Integer backers_count = null;
+  String shippingPreference = null;
+  String shippingSummary = null;
+  Integer backersCount = null;
   Integer minimum = null;
   String description = null;
 
-  public Integer backers_count() {
-    return backers_count;
+  public Integer backersCount() {
+    return backersCount;
   }
-  public DateTime estimated_delivery_on() {
-    return estimated_delivery_on;
+  public DateTime estimatedDeliveryOn() {
+    return estimatedDeliveryOn;
   }
   public Integer id() {
     return id;
   }
-  public String shipping_preference() {
-    return shipping_preference;
+  public String shippingPreference() {
+    return shippingPreference;
   }
   public Integer limit() {
     return limit;
@@ -42,11 +41,11 @@ public class Reward implements Parcelable {
   public String description() {
     return description;
   }
-  public Boolean shipping_enabled() {
-    return shipping_enabled;
+  public Boolean shippingEnabled() {
+    return shippingEnabled;
   }
-  public String shipping_summary() {
-    return shipping_summary;
+  public String shippingSummary() {
+    return shippingSummary;
   }
 
   @Override

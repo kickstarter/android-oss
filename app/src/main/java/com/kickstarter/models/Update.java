@@ -6,17 +6,17 @@ import org.joda.time.DateTime;
 
 public class Update {
   String body = null;
-  Integer comments_count = null;
-  Boolean has_liked = null;
+  Integer commentsCount = null;
+  Boolean hasLiked = null;
   Integer id = null;
-  Integer likes_count = null;
-  Integer project_id = null;
-  DateTime published_at = null;
+  Integer likesCount = null;
+  Integer projectId = null;
+  DateTime publishedAt = null;
   Integer sequence = null;
   String title = null;
   User user = null;
-  Integer update_id = null;
-  DateTime updated_at = null;
+  Integer updateId = null;
+  DateTime updatedAt = null;
   Boolean visible = null;
 
   private static final int TRUNCATED_BODY_LENGTH = 400;
@@ -26,11 +26,11 @@ public class Update {
   }
 
   public Integer commentsCount() {
-    return comments_count;
+    return commentsCount;
   }
 
   public Boolean hasLiked() {
-    return has_liked;
+    return hasLiked;
   }
 
   public Integer id() {
@@ -38,15 +38,15 @@ public class Update {
   }
 
   public Integer likesCount() {
-    return likes_count;
+    return likesCount;
   }
 
   public Integer projectId() {
-    return project_id;
+    return projectId;
   }
 
   public DateTime publishedAt() {
-    return published_at;
+    return publishedAt;
   }
 
   public Integer sequence() {
@@ -71,11 +71,11 @@ public class Update {
   }
 
   public Integer updateId() {
-    return update_id;
+    return updateId;
   }
 
   public DateTime updatedAt() {
-    return updated_at;
+    return updatedAt;
   }
 
   public Boolean visible() {

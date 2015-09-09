@@ -17,16 +17,16 @@ public class TestUtils {
     return configLoader;
   }
 
-  static Config createConfig(final String country_code) {
-    final List<Config.LaunchedCountry> launched_countries = new ArrayList<Config.LaunchedCountry>();
-    launched_countries.add(new Config.LaunchedCountry("US", "USD", "$", true));
-    launched_countries.add(new Config.LaunchedCountry("GB", "GBP", "£", false));
-    launched_countries.add(new Config.LaunchedCountry("CA", "CAD", "$", true));
-    return new Config.Builder(country_code, launched_countries).build();
+  static Config createConfig(final String countryCode) {
+    final List<Config.LaunchedCountry> launchedCountries = new ArrayList<Config.LaunchedCountry>();
+    launchedCountries.add(new Config.LaunchedCountry("US", "USD", "$", true));
+    launchedCountries.add(new Config.LaunchedCountry("GB", "GBP", "£", false));
+    launchedCountries.add(new Config.LaunchedCountry("CA", "CAD", "$", true));
+    return new Config.Builder(countryCode, launchedCountries).build();
 
   }
 
-  static Money createMoney(final String country_code) {
-    return new Money(mockConfigLoader(createConfig(country_code)));
+  static Money createMoney(final String countryCode) {
+    return new Money(mockConfigLoader(createConfig(countryCode)));
   }
 }

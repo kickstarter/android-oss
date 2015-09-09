@@ -2,6 +2,7 @@ package com.kickstarter.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -20,15 +21,14 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.Optional;
 
 @RequiresPresenter(ActivityFeedPresenter.class)
 public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
   ActivityListAdapter adapter;
-  @Optional @InjectView(R.id.discover_projects_button) Button discover_projects_button;
-  @Optional @InjectView(R.id.recyclerView) RecyclerView recyclerView;
+  @Nullable @Bind(R.id.discover_projects_button) Button discoverProjectsButton;
+  @Nullable @Bind(R.id.recyclerView) RecyclerView recyclerView;
   @Inject CurrentUser currentUser;
 
   @Override
@@ -38,7 +38,7 @@ public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
     ((KsrApplication) getApplication()).component().inject(this);
     final int layout = currentUser.exists() ? R.layout.activity_feed_layout : R.layout.empty_activity_feed_layout;
     setContentView(layout);
-    ButterKnife.inject(this);
+    ButterKnife.bind(this);
 
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
   }

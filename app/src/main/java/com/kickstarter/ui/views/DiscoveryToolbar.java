@@ -15,7 +15,6 @@ import com.kickstarter.KsrApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Logout;
-import com.kickstarter.libs.RxUtils;
 import com.kickstarter.models.User;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
@@ -23,18 +22,17 @@ import com.kickstarter.ui.activities.LoginToutActivity;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import timber.log.Timber;
 
 public class DiscoveryToolbar extends Toolbar {
-  @InjectView(R.id.activity_feed_button) TextView activityFeedButton;
-  @InjectView(R.id.category_spinner) Spinner categorySpinner;
-  @InjectView(R.id.current_user_button) TextView currentUserButton;
-  @InjectView(R.id.login_button) TextView loginButton;
-  @InjectView(R.id.toolbar) Toolbar toolbar;
+  @Bind(R.id.activity_feed_button) TextView activityFeedButton;
+  @Bind(R.id.category_spinner) Spinner categorySpinner;
+  @Bind(R.id.current_user_button) TextView currentUserButton;
+  @Bind(R.id.login_button) TextView loginButton;
+  @Bind(R.id.toolbar) Toolbar toolbar;
   @Inject CurrentUser currentUser;
   @Inject Logout logout;
 
@@ -60,7 +58,7 @@ public class DiscoveryToolbar extends Toolbar {
       return;
     }
 
-    ButterKnife.inject(this);
+    ButterKnife.bind(this);
     ((KsrApplication) getContext().getApplicationContext()).component().inject(this);
 
     initializeCategorySpinner();
@@ -113,8 +111,8 @@ public class DiscoveryToolbar extends Toolbar {
         R.array.spinner_categories_array,
         android.R.layout.simple_spinner_item);
     } else {
-      final String sample_data[] = {"Staff Picks"};
-      adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, sample_data);
+      final String sampleData[] = {"Staff Picks"};
+      adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, sampleData);
     }
     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     categorySpinner.setAdapter(adapter);

@@ -8,7 +8,7 @@ import com.kickstarter.R;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.CommentFeedPresenter;
-import com.kickstarter.ui.view_holders.CommentListViewHolder;
+import com.kickstarter.ui.viewholders.CommentListViewHolder;
 
 import java.util.List;
 

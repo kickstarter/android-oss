@@ -21,59 +21,59 @@ import java.util.List;
 
 @ParcelablePlease
 public class Project implements Parcelable {
-  public Integer backers_count = null;
+  public Integer backersCount = null;
   public String blurb = null;
   public Category category = null;
-  public Integer comments_count = null;
+  public Integer commentsCount = null;
   public String country = null; // e.g.: US
-  public DateTime created_at = null;
+  public DateTime createdAt = null;
   public String currency = null; // e.g.: USD
-  public String currency_symbol = null; // e.g.: $
-  public Boolean currency_trailing_code = false;
+  public String currencySymbol = null; // e.g.: $
+  public Boolean currencyTrailingCode = false;
   public DateTime deadline = null;
   public Float goal = null;
   public Integer id = null; // in the Kickstarter app, this is project.pid not project.id
-  public DateTime launched_at = null;
+  public DateTime launchedAt = null;
   public Location location = null;
   public String name = null;
   public Float pledged = null;
   public Photo photo = null;
   public Video video = null;
-  public DateTime potd_at = null;
+  public DateTime potdAt = null;
   public @State String state = null;
   public String slug = null;
   public User creator = null;
-  public Integer updates_count = null;
+  public Integer updatesCount = null;
   public Urls urls = null;
   public List<Reward> rewards = null;
-  public DateTime updated_at = null;
-  public Boolean is_backing = null;
-  public Boolean is_starred = null;
+  public Boolean isBacking = null;
+  public Boolean isStarred = null;
+  public DateTime updatedAt = null;
 
-  public Integer backersCount() { return backers_count; }
+  public Integer backersCount() { return backersCount; }
   public String formattedBackersCount() {
-    return NumberUtils.numberWithDelimiter(backers_count);
+    return NumberUtils.numberWithDelimiter(backersCount);
   }
   public String blurb() { return blurb; }
   public Category category() { return category; }
   public User creator() { return creator; }
   public String formattedCommentsCount() {
-    return NumberUtils.numberWithDelimiter(comments_count);
+    return NumberUtils.numberWithDelimiter(commentsCount);
   }
   public String country() { return country; }
   public String currency() { return currency; }
-  public String currencySymbol() { return currency_symbol; }
-  public Boolean currencyTrailingCode() { return currency_trailing_code; }
+  public String currencySymbol() { return currencySymbol; }
+  public Boolean currencyTrailingCode() { return currencyTrailingCode; }
   public DateTime deadline() { return deadline; }
   public Float goal() { return goal; }
   public Integer id() { return id; }
   public Boolean isBacking() {
-    return is_backing;
+    return isBacking;
   }
   public Boolean isStarred() {
-    return is_starred;
+    return isStarred;
   }
-  public DateTime launchedAt() { return launched_at; }
+  public DateTime launchedAt() { return launchedAt; }
   public Location location() { return location; }
   public String name() { return name; }
   public Float pledged() { return pledged; }
@@ -82,7 +82,7 @@ public class Project implements Parcelable {
   public Video video() { return video; }
   public String slug() { return slug; }
   public String formattedUpdatesCount() {
-    return NumberUtils.numberWithDelimiter(updates_count);
+    return NumberUtils.numberWithDelimiter(updatesCount);
   }
   public Urls urls() { return urls; }
   public String creatorBioUrl() {
@@ -196,7 +196,7 @@ public class Project implements Parcelable {
   }
 
   public CurrencyOptions currencyOptions() {
-    return new CurrencyOptions(country, currency_symbol, currency);
+    return new CurrencyOptions(country, currencySymbol, currency);
   }
 
   /** Returns whether the project is in a canceled state. */
@@ -215,12 +215,12 @@ public class Project implements Parcelable {
   }
 
   public boolean isPotdToday() {
-    if (potd_at == null) {
+    if (potdAt == null) {
       return false;
     }
 
     final DateTime startOfDayUTC = new DateTime(DateTimeZone.UTC).withTime(0, 0, 0, 0);
-    return startOfDayUTC.isEqual(potd_at.withZone(DateTimeZone.UTC));
+    return startOfDayUTC.isEqual(potdAt.withZone(DateTimeZone.UTC));
   }
 
   /** Returns whether the project is in a purged state. */
@@ -335,7 +335,7 @@ public class Project implements Parcelable {
   }
 
   public boolean isDisplayable() {
-    return created_at != null;
+    return createdAt != null;
   }
 
   public String param() {

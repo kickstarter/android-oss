@@ -1,5 +1,6 @@
 package com.kickstarter.services;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kickstarter.BuildConfig;
@@ -10,11 +11,11 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.DateTimeTypeConverter;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
-import com.kickstarter.services.ApiResponses.AccessTokenEnvelope;
-import com.kickstarter.services.ApiResponses.ActivityEnvelope;
-import com.kickstarter.services.ApiResponses.CommentsEnvelope;
-import com.kickstarter.services.ApiResponses.DiscoverEnvelope;
-import com.kickstarter.services.ApiResponses.ErrorEnvelope;
+import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
+import com.kickstarter.services.apiresponses.ActivityEnvelope;
+import com.kickstarter.services.apiresponses.CommentsEnvelope;
+import com.kickstarter.services.apiresponses.DiscoverEnvelope;
+import com.kickstarter.services.apiresponses.ErrorEnvelope;
 
 import org.joda.time.DateTime;
 
@@ -94,6 +95,7 @@ public class ApiClient {
 
   private GsonConverter gsonConverter() {
     final Gson gson = new GsonBuilder()
+      .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
       .registerTypeAdapter(Activity.Category.class, new ActivityCategoryTypeConverter())
       .registerTypeAdapter(DateTime.class, new DateTimeTypeConverter())
       .create();

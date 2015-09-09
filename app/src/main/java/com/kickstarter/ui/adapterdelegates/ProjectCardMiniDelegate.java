@@ -1,4 +1,4 @@
-package com.kickstarter.ui.adapter_delegates;
+package com.kickstarter.ui.adapterdelegates;
 
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
@@ -14,8 +14,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class ProjectCardMiniDelegate {
 
@@ -46,18 +46,18 @@ public class ProjectCardMiniDelegate {
 
   static class ProjectCardMiniViewHolder extends RecyclerView.ViewHolder {
     final View view;
-    public @InjectView(R.id.time_to_go_text_view) TextView timeToGoTextView;
-    public @InjectView(R.id.name) TextView name;
-    public @InjectView(R.id.photo) ImageView photo;
+    public @Bind(R.id.time_to_go_text_view) TextView timeToGoTextView;
+    public @Bind(R.id.name) TextView nameTextView;
+    public @Bind(R.id.photo) ImageView photoImageView;
 
     public ProjectCardMiniViewHolder(final View view) {
       super(view);
       this.view = view;
-      ButterKnife.inject(this, view);
+      ButterKnife.bind(this, view);
     }
 
     public void onBind(final Project project) {
-      name.setText(project.name());
+      nameTextView.setText(project.name());
 
       if (project.isLive()) {
         timeToGoTextView.setText(project.timeToGo(view.getContext()));
@@ -66,7 +66,7 @@ public class ProjectCardMiniDelegate {
         timeToGoTextView.setVisibility(View.GONE);
       }
 
-      Picasso.with(view.getContext()).load(project.photo().med()).into(photo);
+      Picasso.with(view.getContext()).load(project.photo().med()).into(photoImageView);
     }
   }
 }

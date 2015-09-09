@@ -1,4 +1,4 @@
-package com.kickstarter.services.ApiResponses;
+package com.kickstarter.services.apiresponses;
 
 import com.kickstarter.models.Comment;
 

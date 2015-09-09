@@ -1,4 +1,4 @@
-package com.kickstarter.services.ApiResponses;
+package com.kickstarter.services.apiresponses;
 
 import com.kickstarter.models.Activity;
 
@@ -20,12 +20,12 @@ public class ActivityEnvelope {
     }
 
     public static class ApiEnvelope {
-      public final String more_activities;
-      public final String newer_activities;
+      public final String moreActivities;
+      public final String newerActivities;
 
-      private ApiEnvelope(final String more_activities, final String newer_activities) {
-        this.more_activities = more_activities;
-        this.newer_activities = newer_activities;
+      private ApiEnvelope(final String moreActivities, final String newerActivities) {
+        this.moreActivities = moreActivities;
+        this.newerActivities = newerActivities;
       }
     }
   }

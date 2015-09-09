@@ -21,14 +21,14 @@ import com.kickstarter.ui.adapters.ProjectCardMiniAdapter;
 
 import java.util.List;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 @RequiresPresenter(ThanksPresenter.class)
 public class ThanksActivity extends BaseActivity<ThanksPresenter> {
-  @InjectView(R.id.backed_project) TextView backedProject;
-  @InjectView(R.id.recommended_projects_recycler_view) RecyclerView recommendedProjectsRecyclerView;
-  @InjectView(R.id.woohoo_background) ImageView woohooBackground;
+  @Bind(R.id.backed_project) TextView backedProjectTextView;
+  @Bind(R.id.recommended_projects_recycler_view) RecyclerView recommendedProjectsRecyclerView;
+  @Bind(R.id.woohoo_background) ImageView woohooBackgroundImageView;
 
   ProjectCardMiniAdapter projectCardMiniAdapter;
 
@@ -37,7 +37,7 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.thanks_layout);
-    ButterKnife.inject(this);
+    ButterKnife.bind(this);
 
     final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
     layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -49,7 +49,7 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
   }
 
   public void show(final Project project) {
-    backedProject.setText(Html.fromHtml(getString(R.string.You_just_backed, project.name())));
+    backedProjectTextView.setText(Html.fromHtml(getString(R.string.You_just_backed, project.name())));
   }
 
   public void showRecommendedProjects(final List<Project> projects) {
@@ -84,8 +84,8 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
 
   private void displayWoohooBackground() {
     new Handler().postDelayed(() -> {
-        woohooBackground.animate().setDuration(Long.parseLong(getString(R.string.woohoo_duration))).alpha(1);
-        final Drawable drawable = woohooBackground.getDrawable();
+        woohooBackgroundImageView.animate().setDuration(Long.parseLong(getString(R.string.woohoo_duration))).alpha(1);
+        final Drawable drawable = woohooBackgroundImageView.getDrawable();
         if (drawable instanceof Animatable) {
           ((Animatable) drawable).start();
         }

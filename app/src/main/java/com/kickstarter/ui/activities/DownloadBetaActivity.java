@@ -9,15 +9,14 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.kickstarter.R;
-import com.kickstarter.services.ApiResponses.InternalBuildEnvelope;
+import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
-import timber.log.Timber;
 
 public class DownloadBetaActivity extends AppCompatActivity {
-  @InjectView(R.id.build) TextView build;
-  @InjectView(R.id.changelog) TextView changelog;
+  @Bind(R.id.build) TextView buildTextView;
+  @Bind(R.id.changelog) TextView changelogTextView;
   InternalBuildEnvelope internalBuildEnvelope;
 
   @Override
@@ -25,13 +24,13 @@ public class DownloadBetaActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.download_beta_layout);
-    ButterKnife.inject(this);
+    ButterKnife.bind(this);
 
     internalBuildEnvelope = getIntent().getExtras()
       .getParcelable(getString(R.string.intent_internal_build_envelope));
 
-    build.setText(internalBuildEnvelope.build().toString());
-    changelog.setText(internalBuildEnvelope.changelog());
+    buildTextView.setText(internalBuildEnvelope.build().toString());
+    changelogTextView.setText(internalBuildEnvelope.changelog());
 
     requestDownload();
   }

@@ -1,6 +1,5 @@
 package com.kickstarter.ui.activities;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
@@ -18,8 +17,8 @@ import java.lang.annotation.RetentionPolicy;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 @RequiresPresenter(HelpPresenter.class)
 public class HelpActivity extends BaseActivity<HelpPresenter> {
@@ -33,7 +32,7 @@ public class HelpActivity extends BaseActivity<HelpPresenter> {
   @Retention(RetentionPolicy.SOURCE)
   public @interface HelpType {}
 
-  @InjectView(R.id.kickstarter_web_view) KickstarterWebView kickstarterWebView;
+  @Bind(R.id.kickstarter_web_view) KickstarterWebView kickstarterWebView;
 
   @Inject @WebEndpoint String webEndpoint;
 
@@ -43,7 +42,7 @@ public class HelpActivity extends BaseActivity<HelpPresenter> {
 
     ((KsrApplication) getApplicationContext()).component().inject(this);
     setContentView(R.layout.help_layout);
-    ButterKnife.inject(this);
+    ButterKnife.bind(this);
 
     @HelpType int helpType = getIntent().getExtras().getInt(getString(R.string.intent_help_type));
     final String url = getUrlForHelpType(helpType);

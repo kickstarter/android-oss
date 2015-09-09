@@ -1,4 +1,4 @@
-package com.kickstarter.services.ApiResponses;
+package com.kickstarter.services.apiresponses;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -9,7 +9,7 @@ import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 public class InternalBuildEnvelope implements Parcelable {
   Integer build;
   String changelog;
-  Boolean newer_build_available;
+  Boolean newerBuildAvailable;
 
   public Integer build() {
     return build;
@@ -20,7 +20,7 @@ public class InternalBuildEnvelope implements Parcelable {
   }
 
   public Boolean newerBuildAvailable() {
-    return newer_build_available;
+    return newerBuildAvailable;
   }
 
   @Override

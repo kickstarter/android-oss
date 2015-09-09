@@ -123,11 +123,11 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
 
   private void displayWoohooBackground() {
     new Handler().postDelayed(() -> {
-        woohooBackgroundImageView.animate().setDuration(Long.parseLong(getString(R.string.woohoo_duration))).alpha(1);
-        final Drawable drawable = woohooBackgroundImageView.getDrawable();
-        if (drawable instanceof Animatable) {
-          ((Animatable) drawable).start();
-        }
-      }, 500);
+      woohooBackgroundImageView.animate().setDuration(Long.parseLong(getString(R.string.woohoo_duration))).alpha(1);
+      final Drawable drawable = woohooBackgroundImageView.getDrawable();
+      if (drawable instanceof Animatable) {
+        ((Animatable) drawable).start();
+      }
+    }, 500);
   }
 }

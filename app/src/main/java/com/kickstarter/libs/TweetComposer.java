@@ -1,5 +1,3 @@
-package com.kickstarter.libs;
-
 /*
  * Copyright (C) 2015 Twitter, Inc.
  *
@@ -16,6 +14,8 @@ package com.kickstarter.libs;
  * limitations under the License.
  *
  */
+
+package com.kickstarter.libs;
 
 import android.content.Context;
 import android.content.Intent;

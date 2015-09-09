@@ -26,6 +26,7 @@
     anything without your permission.
   </string>
   <string name="Campaign">Campaign</string>
+  <string name="Cancel">Cancel</string>
   <string name="Changelog">Changelog</string>
   <string name="Comment">Comment</string>
   <string name="Close">Close</string>
@@ -93,12 +94,14 @@
   </string>
   <string name="pledged_of_">pledged of\u0020</string>
   <string name="pledged_of_goal">pledged of %1$s</string>
+  <string name="Post">Post</string>
   <string name="project_of_the_day">Project of the day!</string>
   <string name="project_was_cancelled_by_its_creator">%1$s was cancelled by its creator.</string>
   <string name="project_was_not_successfully_funded">%1$s was not successfully funded.</string>
   <string name="project_was_successfully_funded">%1$s was successfully funded!</string>
   <string name="project_resumed">%1$s resumed.</string>
   <string name="project_was_suspended">%1$s was suspended.</string>
+  <string name="Public_comment">Public comment</string>
   <string name="Resend">Resend</string>
   <string name="secs">secs</string>
   <string name="Sha">SHA</string>

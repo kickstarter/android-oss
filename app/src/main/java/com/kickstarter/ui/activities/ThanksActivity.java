@@ -21,14 +21,14 @@ import com.kickstarter.ui.adapters.ProjectCardMiniAdapter;
 
 import java.util.List;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 @RequiresPresenter(ThanksPresenter.class)
 public class ThanksActivity extends BaseActivity<ThanksPresenter> {
-  @InjectView(R.id.backed_project) TextView backedProjectTextView;
-  @InjectView(R.id.recommended_projects_recycler_view) RecyclerView recommendedProjectsRecyclerView;
-  @InjectView(R.id.woohoo_background) ImageView woohooBackgroundImageView;
+  @Bind(R.id.backed_project) TextView backedProjectTextView;
+  @Bind(R.id.recommended_projects_recycler_view) RecyclerView recommendedProjectsRecyclerView;
+  @Bind(R.id.woohoo_background) ImageView woohooBackgroundImageView;
 
   ProjectCardMiniAdapter projectCardMiniAdapter;
 
@@ -37,7 +37,7 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.thanks_layout);
-    ButterKnife.inject(this);
+    ButterKnife.bind(this);
 
     final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
     layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);

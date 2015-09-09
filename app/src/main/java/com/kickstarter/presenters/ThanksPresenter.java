@@ -1,18 +1,15 @@
 package com.kickstarter.presenters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Pair;
 
 import com.kickstarter.KsrApplication;
-import com.kickstarter.R;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.RxUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.DiscoveryParams;
-import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.ThanksActivity;
 
 import java.util.List;
@@ -22,7 +19,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
-import timber.log.Timber;
 
 public class ThanksPresenter extends Presenter<ThanksActivity> {
   private final PublishSubject<Void> shareClick = PublishSubject.create();

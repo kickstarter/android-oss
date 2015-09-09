@@ -13,14 +13,13 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.presenters.LoginToutPresenter;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
-import timber.log.Timber;
 
 @RequiresPresenter(LoginToutPresenter.class)
 public class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
-  @InjectView(R.id.login_button) Button loginButton;
-  @InjectView(R.id.sign_up_button) Button signupButton;
+  @Bind(R.id.login_button) Button loginButton;
+  @Bind(R.id.sign_up_button) Button signupButton;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
@@ -29,7 +28,7 @@ public class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
     FacebookSdk.sdkInitialize(this.getApplicationContext());
 
     setContentView(R.layout.login_tout_layout);
-    ButterKnife.inject(this);
+    ButterKnife.bind(this);
 
     presenter.takeForward(getIntent().getBooleanExtra(getString(R.string.intent_forward), false));
   }

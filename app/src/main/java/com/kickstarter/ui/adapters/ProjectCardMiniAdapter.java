@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
-import com.kickstarter.ui.adapter_delegates.ProjectCardMiniDelegate;
+import com.kickstarter.ui.adapterdelegates.ProjectCardMiniDelegate;
 
 import java.util.List;
 

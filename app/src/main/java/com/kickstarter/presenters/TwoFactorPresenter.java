@@ -13,7 +13,7 @@ import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.RxUtils;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.ApiError;
-import com.kickstarter.services.ApiResponses.AccessTokenEnvelope;
+import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.ui.activities.TwoFactorActivity;
 
 import javax.inject.Inject;

@@ -12,22 +12,21 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.presenters.TwoFactorPresenter;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
-import timber.log.Timber;
 
 @RequiresPresenter(TwoFactorPresenter.class)
 public class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
-  public @InjectView(R.id.code) EditText codeEditText;
-  public @InjectView(R.id.resend_button) Button resendButton;
-  public @InjectView(R.id.login_button) Button loginButton;
+  public @Bind(R.id.code) EditText codeEditText;
+  public @Bind(R.id.resend_button) Button resendButton;
+  public @Bind(R.id.login_button) Button loginButton;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.two_factor_layout);
-    ButterKnife.inject(this);
+    ButterKnife.bind(this);
   }
 
   public void setLoginEnabled(final boolean enabled) {

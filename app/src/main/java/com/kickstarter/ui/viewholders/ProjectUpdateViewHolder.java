@@ -1,4 +1,4 @@
-package com.kickstarter.ui.view_holders;
+package com.kickstarter.ui.viewholders;
 
 import android.view.View;
 import android.widget.ImageView;
@@ -10,20 +10,20 @@ import com.kickstarter.models.Activity;
 import com.kickstarter.presenters.ActivityFeedPresenter;
 import com.squareup.picasso.Picasso;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 
 public class ProjectUpdateViewHolder extends ActivityListViewHolder {
-  @InjectView(R.id.project_name) TextView projectNameTextView;
-  @InjectView(R.id.project_photo) ImageView projectPhotoImageView;
-  @InjectView(R.id.timestamp) TextView timestampTextView;
-  @InjectView(R.id.update_body) TextView updateBodyTextView;
-  @InjectView(R.id.update_sequence) TextView updateSequenceTextView;
-  @InjectView(R.id.update_title) TextView updateTitleTextView;
+  @Bind(R.id.project_name) TextView projectNameTextView;
+  @Bind(R.id.project_photo) ImageView projectPhotoImageView;
+  @Bind(R.id.timestamp) TextView timestampTextView;
+  @Bind(R.id.update_body) TextView updateBodyTextView;
+  @Bind(R.id.update_sequence) TextView updateSequenceTextView;
+  @Bind(R.id.update_title) TextView updateTitleTextView;
 
   public ProjectUpdateViewHolder(final View view, final ActivityFeedPresenter presenter) {
     super(view, presenter);
-    ButterKnife.inject(this, view);
+    ButterKnife.bind(this, view);
   }
 
   @Override

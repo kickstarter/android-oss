@@ -1,6 +1,6 @@
 package com.kickstarter.services;
 
-import com.kickstarter.services.ApiResponses.InternalBuildEnvelope;
+import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 
 import retrofit.http.GET;
 import rx.Observable;

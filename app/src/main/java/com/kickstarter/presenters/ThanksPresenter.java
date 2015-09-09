@@ -25,8 +25,9 @@ import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 public class ThanksPresenter extends Presenter<ThanksActivity> {
-  private final PublishSubject<Void> shareClick = PublishSubject.create();
   private final PublishSubject<Void> doneClick = PublishSubject.create();
+  private final PublishSubject<Void> shareClick = PublishSubject.create();
+  private final PublishSubject<Void> twitterClick = PublishSubject.create();
 
   @Inject ApiClient apiClient;
 
@@ -47,6 +48,10 @@ public class ThanksPresenter extends Presenter<ThanksActivity> {
     addSubscription(RxUtils.takeWhen(viewAndProject, shareClick)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startShareIntent(vp.second)));
+
+    addSubscription(RxUtils.takeWhen(viewAndProject, twitterClick)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(vp -> vp.first.startTwitterShareIntent(vp.second)));
 
     addSubscription(RxUtils.combineLatestPair(viewSubject.filter(v -> v != null), doneClick)
       .map(vp -> vp.first)
@@ -73,6 +78,10 @@ public class ThanksPresenter extends Presenter<ThanksActivity> {
 
   public void takeShareClick() {
     shareClick.onNext(null);
+  }
+
+  public void takeTwitterClick() {
+    twitterClick.onNext(null);
   }
 
   // TODO: Hook this up

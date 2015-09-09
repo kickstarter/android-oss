@@ -50,9 +50,12 @@
   <color name="black_alpha_30">#4D000000</color>
   <color name="blue_alpha_20">#3300a0ff</color>
 
-  <!-- Kickstarter colors lightened/darkened
+  <!-- Colors lightened/darkened
     TODO: Write helper to do this at runtime, until then you can punch the base color into http://www.hexcolortool.com/
     and click darken/lighten X% -->
   <color name="green_darken_10">#12C55A</color>
   <color name="blue_darken_10">#0087E6</color>
+
+  <!-- Third-party colors -->
+  <color name="twitter_blue">#00aced</color>
 </resources>

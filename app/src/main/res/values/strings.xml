@@ -108,6 +108,7 @@
   <string name="This_project_will_only_be_funded_if">
     This project will only be funded if at least %1$s is pledged by %2$s</string>
   <string name="title_activity_project">View Project</string>
+  <string name="Tweet">Tweet</string>
   <string name="_to_go">\u0020to go</string>
   <string name="Unable_to_connect">Unable to connect</string>
   <string name="Unable_to_login">Unable to login</string>

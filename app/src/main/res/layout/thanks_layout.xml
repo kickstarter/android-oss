@@ -69,10 +69,18 @@
         <Button
           android:id="@+id/twitter_button"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_weight="1"
+          android:layout_height="@dimen/grid_5"
           android:layout_marginLeft="@dimen/keyline_1_half"
-          android:text="Twitter Stub" />
+          android:layout_weight="1"
+          android:paddingLeft="@dimen/grid_1"
+          android:paddingRight="@dimen/grid_2"
+          android:textAllCaps="false"
+          android:background="@drawable/button_twitter_blue"
+          android:drawableLeft="@drawable/ic_social_twitter"
+          android:drawableStart="@drawable/ic_social_twitter"
+          android:text="@string/Tweet"
+          android:textAppearance="@style/TextAppearance.AppCompat.Button"
+          android:textColor="@color/white" />
 
       </LinearLayout>
 

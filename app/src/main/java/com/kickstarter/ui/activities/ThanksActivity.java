@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RequiresPresenter;
+import com.kickstarter.libs.TweetComposer;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.ThanksPresenter;
 import com.kickstarter.ui.adapters.ProjectCardMiniAdapter;
@@ -23,6 +24,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 @RequiresPresenter(ThanksPresenter.class)
 public class ThanksActivity extends BaseActivity<ThanksPresenter> {
@@ -65,21 +67,32 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
     presenter.takeShareClick();
   }
 
+  @OnClick(R.id.twitter_button)
+  public void onTwitterButtonClick(final View view) {
+    presenter.takeTwitterClick();
+  }
+
   public void startShareIntent(final Project project) {
     final Intent intent = new Intent(android.content.Intent.ACTION_SEND)
       .setType("text/plain")
       .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
-      .putExtra(Intent.EXTRA_TEXT, getString(R.string.I_just_backed_project_on_Kickstarter,
-        project.name(),
-        project.secureWebProjectUrl()));
+      .putExtra(Intent.EXTRA_TEXT, shareString(project));
 
     startActivity(Intent.createChooser(intent, getString(R.string.Share_this_project)));
+  }
+
+  public void startTwitterShareIntent(final Project project) {
+    new TweetComposer.Builder(this).text(shareString(project)).show();
   }
 
   public void startDiscoveryActivity() {
     final Intent intent = new Intent(this, DiscoveryActivity.class)
       .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
     startActivity(intent);
+  }
+
+  private String shareString(final Project project) {
+    return getString(R.string.I_just_backed_project_on_Kickstarter, project.name(), project.secureWebProjectUrl());
   }
 
   private void displayWoohooBackground() {

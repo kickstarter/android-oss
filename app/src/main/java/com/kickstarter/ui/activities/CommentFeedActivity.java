@@ -21,17 +21,16 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
-import butterknife.Optional;
 
 @RequiresPresenter(CommentFeedPresenter.class)
 public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
-  @Optional @InjectView(R.id.comment_button) TextView commentButton;
-  @Optional @InjectView(R.id.comment_feed_recycler_view) RecyclerView recyclerView;
-  @Optional @InjectView(R.id.context_photo) ImageView projectPhotoImageView;
-  @Optional @InjectView(R.id.project_name) TextView projectNameTextView;
-  @Optional @InjectView(R.id.creator_name) TextView creatorNameTextView;
+  @Nullable @Bind(R.id.comment_button) TextView commentButtonTextView;
+  @Nullable @Bind(R.id.comment_feed_recycler_view) RecyclerView recyclerView;
+  @Nullable @Bind(R.id.context_photo) ImageView projectPhotoImageView;
+  @Nullable @Bind(R.id.project_name) TextView projectNameTextView;
+  @Nullable @Bind(R.id.creator_name) TextView creatorNameTextView;
   private Project project;
 
   @Override
@@ -39,13 +38,13 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     super.onCreate(savedInstanceState);
     final Intent intent = getIntent();
     project = intent.getParcelableExtra(getString(R.string.intent_project));
-    final int layout = (project.comments_count == 0) ? R.layout.empty_comment_feed_layout : R.layout.comment_feed_layout;
+    final int layout = (project.commentsCount == 0) ? R.layout.empty_comment_feed_layout : R.layout.comment_feed_layout;
     setContentView(layout);
-    ButterKnife.inject(this);
+    ButterKnife.bind(this);
 
     // messy WIP
-//    commentButton.setVisibility(project.isBacking() ? View.VISIBLE : View.GONE);  // move this to toolbar activity
-    if (project.comments_count != 0) {
+//    commentButtonTextView.setVisibility(project.isBacking() ? View.VISIBLE : View.GONE);  // move this to toolbar activity
+    if (project.commentsCount != 0) {
       presenter.takeProject(project);
     }
     else {

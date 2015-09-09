@@ -10,7 +10,7 @@ import org.joda.time.DateTime;
 @ParcelablePlease
 public class Comment implements Parcelable {
   public String body = null;
-  public DateTime created_at = null;
+  public DateTime createdAt = null;
   public User author = null;
   public Integer id = null;
 
@@ -18,7 +18,7 @@ public class Comment implements Parcelable {
     return body;
   }
   public DateTime createdAt() {
-    return created_at;
+    return createdAt;
   }
   public User author() {
     return author;

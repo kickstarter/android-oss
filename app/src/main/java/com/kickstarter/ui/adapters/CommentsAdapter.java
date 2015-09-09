@@ -6,8 +6,8 @@ import android.view.ViewGroup;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.CommentFeedPresenter;
-import com.kickstarter.ui.adapter_delegates.CommentAdapterDelegate;
-import com.kickstarter.ui.adapter_delegates.ProjectContextAdapterDelegate;
+import com.kickstarter.ui.adapterdelegates.CommentAdapterDelegate;
+import com.kickstarter.ui.adapterdelegates.ProjectContextAdapterDelegate;
 
 import java.util.List;
 

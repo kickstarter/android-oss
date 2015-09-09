@@ -25,7 +25,6 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.List;
 
 /**
@@ -175,10 +174,6 @@ public class TweetComposer {
       final Intent intent = createIntent();
       context.startActivity(intent);
     }
-  }
-
-  protected Boolean doInBackground() {
-    return true;
   }
 }
 

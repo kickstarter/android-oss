@@ -73,10 +73,18 @@
       android:name=".ui.activities.TwoFactorActivity"
       android:theme="@style/Login" />
 
-    <activity android:name="com.facebook.FacebookActivity"
+    <activity
+      android:name="com.facebook.FacebookActivity"
       android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
       android:theme="@android:style/Theme.Translucent.NoTitleBar"
       android:label="@string/app_name" />
+
+    <!-- The number after FacebookContentProvider is the Facebook app id. If you change
+      the id, also remember to adjust facebook_app_id in strings.xml. -->
+    <provider
+      android:authorities="com.facebook.app.FacebookContentProvider69103156693"
+      android:name="com.facebook.FacebookContentProvider"
+      android:exported="true"/>
 
     <activity android:name="net.hockeyapp.android.UpdateActivity" />
   </application>

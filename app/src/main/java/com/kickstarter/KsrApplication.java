@@ -3,6 +3,7 @@ package com.kickstarter;
 import android.app.Application;
 import android.content.Context;
 
+import com.facebook.FacebookSdk;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
@@ -49,6 +50,8 @@ public class KsrApplication extends Application {
     component().inject(this);
 
     CookieHandler.setDefault(cookieManager);
+
+    FacebookSdk.sdkInitialize(this);
   }
 
   public ApplicationComponent component() {

@@ -3,6 +3,7 @@ package com.kickstarter.ui.activities;
 import android.content.Intent;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +13,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.CallbackManager;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.model.ShareOpenGraphAction;
+import com.facebook.share.model.ShareOpenGraphContent;
+import com.facebook.share.model.ShareOpenGraphObject;
+import com.facebook.share.widget.ShareDialog;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RequiresPresenter;
@@ -32,7 +39,9 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
   @Bind(R.id.recommended_projects_recycler_view) RecyclerView recommendedProjectsRecyclerView;
   @Bind(R.id.woohoo_background) ImageView woohooBackgroundImageView;
 
+  CallbackManager facebookCallbackManager;
   ProjectCardMiniAdapter projectCardMiniAdapter;
+  ShareDialog shareDialog;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
@@ -40,6 +49,9 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
 
     setContentView(R.layout.thanks_layout);
     ButterKnife.bind(this);
+
+    facebookCallbackManager = CallbackManager.Factory.create(); // TODO: Use this to track Facebook shares
+    shareDialog = new ShareDialog(this);
 
     final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
     layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -67,9 +79,40 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
     presenter.takeShareClick();
   }
 
+  @OnClick(R.id.facebook_button)
+  public void onFacebookButtonClick(final View view) {
+    presenter.takeFacebookClick();
+  }
+
   @OnClick(R.id.twitter_button)
   public void onTwitterButtonClick(final View view) {
     presenter.takeTwitterClick();
+  }
+
+  public void startFacebookShareIntent(final Project project) {
+    if (!ShareDialog.canShow(ShareLinkContent.class)) {
+      return;
+    }
+
+    final ShareOpenGraphObject object = new ShareOpenGraphObject.Builder()
+      .putString("og:type", "kickstarter:project")
+      .putString("og:title", project.name())
+      .putString("og:description", project.blurb())
+      .putString("og:image", project.photo().small())
+      .putString("og:url", project.webProjectUrl())
+      .build();
+
+    final ShareOpenGraphAction action = new ShareOpenGraphAction.Builder()
+      .setActionType("kickstarter:back")
+      .putObject("project", object)
+      .build();
+
+    final ShareOpenGraphContent content = new ShareOpenGraphContent.Builder()
+      .setPreviewPropertyName("project")
+      .setAction(action)
+      .build();
+
+    shareDialog.show(content);
   }
 
   public void startShareIntent(final Project project) {
@@ -97,11 +140,11 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
 
   private void displayWoohooBackground() {
     new Handler().postDelayed(() -> {
-        woohooBackgroundImageView.animate().setDuration(Long.parseLong(getString(R.string.woohoo_duration))).alpha(1);
-        final Drawable drawable = woohooBackgroundImageView.getDrawable();
-        if (drawable instanceof Animatable) {
-          ((Animatable) drawable).start();
-        }
-      }, 500);
+      woohooBackgroundImageView.animate().setDuration(Long.parseLong(getString(R.string.woohoo_duration))).alpha(1);
+      final Drawable drawable = woohooBackgroundImageView.getDrawable();
+      if (drawable instanceof Animatable) {
+        ((Animatable) drawable).start();
+      }
+    }, 500);
   }
 }

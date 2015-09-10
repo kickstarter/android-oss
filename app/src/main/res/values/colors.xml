@@ -57,5 +57,6 @@
   <color name="blue_darken_10">#0087E6</color>
 
   <!-- Third-party colors -->
+  <color name="facebook_blue">#3b5998</color>
   <color name="twitter_blue">#00aced</color>
 </resources>

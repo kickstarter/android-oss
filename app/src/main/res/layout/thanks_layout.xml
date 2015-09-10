@@ -61,20 +61,28 @@
         <Button
           android:id="@+id/facebook_button"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"
+          android:layout_height="@dimen/grid_5"
+          android:layout_marginLeft="@dimen/grid_1"
           android:layout_weight="1"
-          android:layout_marginRight="@dimen/grid_1"
-          android:text="Facebook Stub" />
+          android:paddingRight="@dimen/grid_3"
+          android:background="@drawable/button_facebook"
+          android:drawableLeft="@drawable/ic_social_facebook"
+          android:drawableStart="@drawable/ic_social_facebook"
+          android:text="@string/Share"
+          android:textAllCaps="false"
+          android:textAppearance="@style/TextAppearance.AppCompat.Button"
+          android:textColor="@color/white" />
 
         <Button
           android:id="@+id/twitter_button"
           android:layout_width="match_parent"
           android:layout_marginLeft="@dimen/grid_1"
           android:layout_height="@dimen/grid_5"
+          android:layout_marginRight="3dp"
           android:layout_weight="1"
           android:paddingLeft="@dimen/grid_1"
           android:paddingRight="@dimen/grid_2"
-          android:background="@drawable/button_twitter_blue"
+          android:background="@drawable/button_twitter"
           android:drawableLeft="@drawable/ic_social_twitter"
           android:drawableStart="@drawable/ic_social_twitter"
           android:text="@string/Tweet"
@@ -86,6 +94,7 @@
 
       <Button
         android:id="@+id/share_button"
+        android:layout_marginLeft="@dimen/grid_1_half"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="onShareClick"

@@ -41,7 +41,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
 
   @Inject ApplicationContainer applicationContainer;
 
-  @Bind(R.id.recyclerView) RecyclerView recyclerView;
+  @Bind(R.id.recycler_view) RecyclerView recyclerView;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {

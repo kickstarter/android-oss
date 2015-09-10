@@ -28,7 +28,7 @@ import butterknife.ButterKnife;
 public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
   ActivityListAdapter adapter;
   @Nullable @Bind(R.id.discover_projects_button) Button discoverProjectsButton;
-  @Nullable @Bind(R.id.recyclerView) RecyclerView recyclerView;
+  @Nullable @Bind(R.id.recycler_view) RecyclerView recyclerView;
   @Inject CurrentUser currentUser;
 
   @Override

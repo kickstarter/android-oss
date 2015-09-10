@@ -1,5 +1,6 @@
 package com.kickstarter.ui.viewholders;
 
+import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,23 +27,25 @@ public class ProjectStateChangedViewHolder extends ActivityListViewHolder {
   public void onBind(final Activity activity) {
     super.onBind(activity);
 
-    Picasso.with(view.getContext())
+    final Context context = view.getContext();
+
+    Picasso.with(context)
       .load(activity.project().photo().little())
       .into(projectPhotoImageView);
 
-    titleTextView.setText(titleText(activity));
+    titleTextView.setText(titleText(context, activity));
   }
 
-  public String titleText(final Activity activity) {
+  public String titleText(final Context context, final Activity activity) {
     switch (activity.category()) {
       case FAILURE:
-        return view.getResources().getString(R.string.project_was_not_successfully_funded, activity.project().name());
+        return context.getString(R.string.project_was_not_successfully_funded, activity.project().name());
       case CANCELLATION:
-        return view.getResources().getString(R.string.project_was_cancelled_by_its_creator, activity.project().name());
+        return context.getString(R.string.project_was_cancelled_by_its_creator, activity.project().name());
       case SUSPENSION:
-        return view.getResources().getString(R.string.project_was_suspended, activity.project().name());
+        return context.getString(R.string.project_was_suspended, activity.project().name());
       case RESUME:
-        return view.getResources().getString(R.string.project_resumed, activity.project().name());
+        return context.getString(R.string.project_resumed, activity.project().name());
       default:
         return "";
     }

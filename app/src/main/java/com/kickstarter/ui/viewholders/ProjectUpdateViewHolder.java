@@ -1,5 +1,6 @@
 package com.kickstarter.ui.viewholders;
 
+import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,13 +31,15 @@ public class ProjectUpdateViewHolder extends ActivityListViewHolder {
   public void onBind(final Activity activity) {
     super.onBind(activity);
 
+    final Context context = view.getContext();
+
     projectNameTextView.setText(activity.project().name());
     Picasso.with(view.getContext())
       .load(activity.project().photo().little())
       .into(projectPhotoImageView);
     timestampTextView.setText(DateTimeUtils.relativeDateInWords(activity.update().publishedAt(), false, true));
     updateBodyTextView.setText(activity.update().truncatedBody());
-    updateSequenceTextView.setText(view.getResources().getString(R.string.Update_sequence, activity.update().sequence()));
+    updateSequenceTextView.setText(context.getString(R.string.Update_sequence, activity.update().sequence()));
     updateTitleTextView.setText(activity.update().title());
   }
 }

@@ -1,5 +1,6 @@
 package com.kickstarter.ui.viewholders;
 
+import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,16 +31,18 @@ public class FriendBackingViewHolder extends ActivityListViewHolder {
   public void onBind(final Activity activity) {
     super.onBind(activity);
 
-    Picasso.with(view.getContext())
+    final Context context = view.getContext();
+
+    Picasso.with(context)
       .load(activity.user().avatar().small())
       .transform(new CircleTransform())
       .into(avatarImageView);
-    creatorNameTextView.setText(view.getResources().getString(R.string.by_) + activity.project().creator().name());
+    creatorNameTextView.setText(context.getString(R.string.by_) + activity.project().creator().name());
     projectNameTextView.setText(activity.project().name());
-    Picasso.with(view.getContext())
+    Picasso.with(context)
       .load(activity.project().photo().little())
       .into(projectPhotoImageView);
-    titleTextView.setText(StringUtils.friendBackingActivityTitle(view.getContext(),
+    titleTextView.setText(StringUtils.friendBackingActivityTitle(context,
       activity.user().name(),
       activity.project().category().rootId()));
   }

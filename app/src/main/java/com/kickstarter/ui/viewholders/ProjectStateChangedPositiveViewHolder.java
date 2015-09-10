@@ -1,5 +1,6 @@
 package com.kickstarter.ui.viewholders;
 
+import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.ImageView;
@@ -41,27 +42,29 @@ public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolde
   public void onBind(final Activity activity) {
     super.onBind(activity);
 
+    final Context context = view.getContext();
+
     switch (activity.category()) {
       case LAUNCH:
         cardView.setCardBackgroundColor(blueDarken10Color);
         leftStatFirstTextView.setText(money.formattedCurrency(activity.project().goal(), activity.project()
           .currencyOptions()));
-        leftStatSecondTextView.setText(view.getResources().getString(R.string.goal));
-        rightStatFirstTextView.setText(view.getResources().getString(R.string.Launched));
+        leftStatSecondTextView.setText(context.getString(R.string.goal));
+        rightStatFirstTextView.setText(context.getString(R.string.Launched));
         rightStatSecondTextView.setText(activity.project().launchedAt().toString(DateTimeUtils.defaultFormatter()));
-        titleTextView.setText(view.getResources().getString(
+        titleTextView.setText(context.getString(
           R.string.creator_launched_a_project, activity.user().name(), activity.project().name()));
         break;
       case SUCCESS:
         cardView.setCardBackgroundColor(greenDarken10Color);
         leftStatFirstTextView.setText(money.formattedCurrency(activity.project().pledged(), activity.project()
           .currencyOptions()));
-        leftStatSecondTextView.setText(view.getResources().getString(
+        leftStatSecondTextView.setText(context.getString(
           R.string.pledged_of_goal,
           money.formattedCurrency(activity.project().goal(), activity.project().currencyOptions(), true)));
-        rightStatFirstTextView.setText(view.getResources().getString(R.string.funded));
+        rightStatFirstTextView.setText(context.getString(R.string.funded));
         rightStatSecondTextView.setText(activity.createdAt().toString(DateTimeUtils.defaultFormatter()));
-        titleTextView.setText(view.getResources()
+        titleTextView.setText(context
           .getString(R.string.project_was_successfully_funded, activity.project().name()));
         break;
       default:
@@ -73,9 +76,9 @@ public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolde
         titleTextView.setText("");
     }
     // TODO: Switch to "You launched a project" if current user launched
-    //return view.getResources().getString(R.string.creator_launched_a_project, activity.user().name(), activity.project().name());
+    //return context.getString(R.string.creator_launched_a_project, activity.user().name(), activity.project().name());
 
-    Picasso.with(view.getContext())
+    Picasso.with(context)
       .load(activity.project().photo().full())
       .into(projectPhotoImageView);
   }

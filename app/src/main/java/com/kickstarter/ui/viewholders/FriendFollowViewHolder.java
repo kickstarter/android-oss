@@ -1,5 +1,6 @@
 package com.kickstarter.ui.viewholders;
 
+import android.content.Context;
 import android.text.Spannable;
 import android.text.style.StyleSpan;
 import android.view.View;
@@ -28,12 +29,14 @@ public class FriendFollowViewHolder extends ActivityListViewHolder {
   public void onBind(final Activity activity) {
     super.onBind(activity);
 
-    Picasso.with(view.getContext())
+    final Context context = view.getContext();
+
+    Picasso.with(context)
       .load(activity.user().avatar().small())
       .transform(new CircleTransform())
       .into(avatarImageView);
 
-    titleTextView.setText(view.getResources().getString(R.string.username_is_following_you, activity.user().name()));
+    titleTextView.setText(context.getString(R.string.username_is_following_you, activity.user().name()));
     final Spannable titleStr = (Spannable) titleTextView.getText();
     titleStr.setSpan(new StyleSpan(android.graphics.Typeface.BOLD),
       0,

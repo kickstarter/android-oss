@@ -31,7 +31,7 @@ public class KsrApplication extends Application {
     if (BuildConfig.DEBUG || isInUnitTests()) {
       Timber.plant(new Timber.DebugTree());
     } else {
-      CrashManager.register(this, getResources().getString(R.string.hockey_app_id), new CrashManagerListener() {
+      CrashManager.register(this, getString(R.string.hockey_app_id), new CrashManagerListener() {
         public boolean shouldAutoUploadCrashes() {
           return true;
         }

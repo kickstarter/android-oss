@@ -36,7 +36,7 @@ public abstract class ApiErrorHandler {
 
   public void displayError(final int id) {
     // Toast by default, but this could be overridden
-    final Toast toast = Toast.makeText(context, context.getResources().getString(id), Toast.LENGTH_LONG);
+    final Toast toast = Toast.makeText(context, context.getString(id), Toast.LENGTH_LONG);
     toast.show();
   }
 }

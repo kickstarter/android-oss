@@ -15,6 +15,9 @@ import android.widget.TextView;
 
 import com.facebook.CallbackManager;
 import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.model.ShareOpenGraphAction;
+import com.facebook.share.model.ShareOpenGraphContent;
+import com.facebook.share.model.ShareOpenGraphObject;
 import com.facebook.share.widget.ShareDialog;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
@@ -91,10 +94,22 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
       return;
     }
 
-    final ShareLinkContent content = new ShareLinkContent.Builder()
-      .setContentTitle(project.name())
-      .setContentDescription(shareString(project))
-      .setContentUrl(Uri.parse(project.secureWebProjectUrl()))
+    final ShareOpenGraphObject object = new ShareOpenGraphObject.Builder()
+      .putString("og:type", "kickstarter:project")
+      .putString("og:title", project.name())
+      .putString("og:description", project.blurb())
+      .putString("og:image", project.photo().small())
+      .putString("og:url", project.webProjectUrl())
+      .build();
+
+    final ShareOpenGraphAction action = new ShareOpenGraphAction.Builder()
+      .setActionType("kickstarter:back")
+      .putObject("project", object)
+      .build();
+
+    final ShareOpenGraphContent content = new ShareOpenGraphContent.Builder()
+      .setPreviewPropertyName("project")
+      .setAction(action)
       .build();
 
     shareDialog.show(content);

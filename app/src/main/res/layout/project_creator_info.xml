@@ -12,7 +12,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/grid_3"
-    android:paddingTop="@dimen/grid_3">
+    android:paddingTop="@dimen/grid_3"
+    android:onClick="creatorNameOnClick">
 
     <TextView
       android:id="@+id/created_by"
@@ -23,8 +24,21 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
+    <ImageView
+      android:id="@+id/avatar"
+      android:layout_width="@dimen/project_avatar_width"
+      android:layout_height="@dimen/project_avatar_height"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentRight="true"
+      android:scaleType="centerCrop" />
+
     <TextView
       android:id="@+id/avatar_name"
+      android:layout_alignParentStart="true"
+      android:layout_alignParentLeft="true"
+      android:layout_toLeftOf="@id/avatar"
+      android:layout_toStartOf="@id/avatar"
+      android:ellipsize="marquee"
       android:textSize="@dimen/ksr_name"
       android:textStyle="bold"
       android:layout_below="@id/created_by"
@@ -32,13 +46,6 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
-    <de.hdodenhof.circleimageview.CircleImageView
-      android:id="@+id/avatar"
-      android:layout_width="@dimen/project_detail_avatar_width"
-      android:layout_height="@dimen/project_detail_avatar_height"
-      android:layout_alignParentEnd="true"
-      android:layout_alignParentRight="true"
-      android:scaleType="centerCrop" />
   </RelativeLayout>
 
   <LinearLayout

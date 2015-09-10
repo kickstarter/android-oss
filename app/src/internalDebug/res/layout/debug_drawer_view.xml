@@ -21,8 +21,8 @@
     android:stretchColumns="*">
 
     <TableRow
-      android:layout_marginTop="@dimen/keyline_1_half"
-      android:layout_marginBottom="@dimen/keyline_1_half"
+      android:layout_marginTop="@dimen/grid_1"
+      android:layout_marginBottom="@dimen/grid_1"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:weightSum="1" >
@@ -38,8 +38,8 @@
     </TableRow>
 
     <TableRow
-      android:layout_marginTop="@dimen/keyline_1_half"
-      android:layout_marginBottom="@dimen/keyline_1_half"
+      android:layout_marginTop="@dimen/grid_1"
+      android:layout_marginBottom="@dimen/grid_1"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:weightSum="1" >
@@ -63,8 +63,8 @@
     </TableRow>
 
     <TableRow
-      android:layout_marginTop="@dimen/keyline_1_half"
-      android:layout_marginBottom="@dimen/keyline_1_half"
+      android:layout_marginTop="@dimen/grid_1"
+      android:layout_marginBottom="@dimen/grid_1"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:weightSum="1" >
@@ -80,8 +80,8 @@
     </TableRow>
 
     <TableRow
-      android:layout_marginTop="@dimen/keyline_1_half"
-      android:layout_marginBottom="@dimen/keyline_1_half"
+      android:layout_marginTop="@dimen/grid_1"
+      android:layout_marginBottom="@dimen/grid_1"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:weightSum="1" >
@@ -105,8 +105,8 @@
     </TableRow>
 
     <TableRow
-      android:layout_marginTop="@dimen/keyline_1_half"
-      android:layout_marginBottom="@dimen/keyline_1_half"
+      android:layout_marginTop="@dimen/grid_1"
+      android:layout_marginBottom="@dimen/grid_1"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:weightSum="1" >
@@ -130,8 +130,8 @@
     </TableRow>
 
     <TableRow
-      android:layout_marginTop="@dimen/keyline_1_half"
-      android:layout_marginBottom="@dimen/keyline_1_half"
+      android:layout_marginTop="@dimen/grid_1"
+      android:layout_marginBottom="@dimen/grid_1"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:weightSum="1" >
@@ -155,8 +155,8 @@
     </TableRow>
 
     <TableRow
-      android:layout_marginTop="@dimen/keyline_1_half"
-      android:layout_marginBottom="@dimen/keyline_1_half"
+      android:layout_marginTop="@dimen/grid_1"
+      android:layout_marginBottom="@dimen/grid_1"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:weightSum="1" >
@@ -180,8 +180,8 @@
     </TableRow>
 
     <TableRow
-      android:layout_marginTop="@dimen/keyline_1_half"
-      android:layout_marginBottom="@dimen/keyline_1_half"
+      android:layout_marginTop="@dimen/grid_1"
+      android:layout_marginBottom="@dimen/grid_1"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:weightSum="1" >

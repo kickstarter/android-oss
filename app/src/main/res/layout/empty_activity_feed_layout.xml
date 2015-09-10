@@ -12,16 +12,16 @@
     icon_text_view:iconType="material"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="flash_on"
+    android:text="@string/flash_on_icon"
     android:textSize="@dimen/display_4"
-    android:paddingTop="@dimen/keyline_2_half"
-    android:paddingBottom="@dimen/keyline_1_half" />
+    android:paddingTop="@dimen/grid_5"
+    android:paddingBottom="@dimen/grid_1" />
 
   <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/keyline_1_half"
-    android:paddingBottom="@dimen/keyline_1_half"
+    android:paddingTop="@dimen/grid_1"
+    android:paddingBottom="@dimen/grid_1"
     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
     android:text="@string/Activity_empty" />
 
@@ -29,12 +29,12 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-    android:paddingTop="@dimen/keyline_1_half"
+    android:paddingTop="@dimen/grid_1"
     android:paddingBottom="@dimen/grid_3"
     android:text="@string/When_you_back_a_project_or_follow_a_friend"
     android:gravity="center_horizontal"
-    android:paddingLeft="@dimen/keyline_2_half"
-    android:paddingRight="@dimen/keyline_2_half" />
+    android:paddingLeft="@dimen/grid_5"
+    android:paddingRight="@dimen/grid_5" />
   
   <Button
     android:id="@+id/discover_projects_button"
@@ -43,7 +43,7 @@
     android:onClick="discoverProjectsButtonOnClick"
     android:text="@string/Discover_projects"
     android:padding="@dimen/grid_3"
-    android:layout_marginTop="@dimen/keyline_1_half" />
+    android:layout_marginTop="@dimen/grid_1" />
 
   <android.support.v7.widget.RecyclerView
     android:id="@+id/recyclerView"

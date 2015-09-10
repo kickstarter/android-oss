@@ -46,6 +46,8 @@ public class Project implements Parcelable {
   public Integer updatesCount = null;
   public Urls urls = null;
   public List<Reward> rewards = null;
+  public Boolean isBacking = null;
+  public Boolean isStarred = null;
   public DateTime updatedAt = null;
 
   public Integer backersCount() { return backersCount; }
@@ -65,6 +67,12 @@ public class Project implements Parcelable {
   public DateTime deadline() { return deadline; }
   public Float goal() { return goal; }
   public Integer id() { return id; }
+  public Boolean isBacking() {
+    return isBacking;
+  }
+  public Boolean isStarred() {
+    return isStarred;
+  }
   public DateTime launchedAt() { return launchedAt; }
   public Location location() { return location; }
   public String name() { return name; }

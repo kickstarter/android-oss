@@ -2,6 +2,7 @@ package com.kickstarter.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 

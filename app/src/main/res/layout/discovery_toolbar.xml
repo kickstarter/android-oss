@@ -16,12 +16,14 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_alignParentLeft="true"
+      android:layout_alignParentStart="true"
       android:layout_centerVertical="true" />
 
     <LinearLayout
       android:layout_width="wrap_content"
       android:layout_height="match_parent"
       android:layout_alignParentRight="true"
+      android:layout_alignParentEnd="true"
       android:orientation="horizontal">
 
       <com.kickstarter.ui.views.IconTextView
@@ -31,7 +33,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:background="@drawable/button_selector"
-        android:text="flash_on"
+        android:text="@string/flash_on_icon"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
         android:textColor="@color/white" />
 
@@ -41,7 +43,7 @@
         android:layout_width="@dimen/button_icon_fixed_width"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="lock"
+        android:text="@string/lock_icon"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
         android:textColor="@color/white" />
 
@@ -53,7 +55,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:background="@drawable/button_selector"
-        android:text="more_vert"
+        android:text="@string/more_vert_icon"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
         android:textColor="@color/white"
         android:visibility="gone" />

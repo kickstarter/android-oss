@@ -13,6 +13,7 @@ import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
+import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 
@@ -43,6 +44,10 @@ public class ApiClient {
 
   public Observable<ActivityEnvelope> fetchActivities(final ActivityFeedParams params) {
     return service.fetchActivities(params.queryParams()).retry(3);
+  }
+
+  public Observable<CommentsEnvelope> fetchProjectComments(final Project project) {
+    return service.fetchProjectComments(project.param());
   }
 
   public Observable<DiscoverEnvelope> fetchProjects(final DiscoveryParams params) {

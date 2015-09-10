@@ -3,9 +3,9 @@
 
   <!-- Settings -->
 
-  <!-- TODO: Switch app_id in different environments. The app_id here is the Kickstarter app in development mode.
-    The app id is also replicated for FacebookContentProvider in AndroidManifest.xml -->
-  <string name="facebook_app_id">10153359799336694</string>
+  <!-- The app id is duplicated for FacebookContentProvider in AndroidManifest.xml. If you
+    modify this id, remember to change it there as well. -->
+  <string name="facebook_app_id">69103156693</string>
   <string name="hockey_app_id">ecdab725861a76c38d60b5ae44dbe9f2</string>
 
   <!-- User-facing strings -->

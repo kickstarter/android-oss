@@ -75,8 +75,10 @@
       android:theme="@android:style/Theme.Translucent.NoTitleBar"
       android:label="@string/app_name" />
 
+    <!-- The number after FacebookContentProvider is the Facebook app id. If you change
+      the id, also remember to adjust facebook_app_id in strings.xml. -->
     <provider
-      android:authorities="com.facebook.app.FacebookContentProvider10153359799336694"
+      android:authorities="com.facebook.app.FacebookContentProvider69103156693"
       android:name="com.facebook.FacebookContentProvider"
       android:exported="true"/>
 

@@ -1,6 +1,8 @@
 package com.kickstarter.libs;
 
 public class ApiCapabilities {
+  private ApiCapabilities() {}
+
   public static boolean canDebugWebViews() {
     return android.os.Build.VERSION.SDK_INT >= 19;
   }

@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 
-@RunWith(KsrRobolectricGradleTestRunner.class)
+@RunWith(KSRobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class ProjectTest extends TestCase {
   Project projectWithSecureUrl() {

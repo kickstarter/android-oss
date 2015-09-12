@@ -11,7 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.VideoView;
 
-import com.kickstarter.KsrApplication;
+import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.CircleTransform;
@@ -60,7 +60,7 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
 
     setContentView(R.layout.project_layout);
     ButterKnife.bind(this);
-    ((KsrApplication) getApplication()).component().inject(this);
+    ((KSApplication) getApplication()).component().inject(this);
 
     final Intent intent = getIntent();
     final Project project = intent.getExtras().getParcelable(getString(R.string.intent_project));

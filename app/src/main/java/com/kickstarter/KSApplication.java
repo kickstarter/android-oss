@@ -18,7 +18,7 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-public class KsrApplication extends Application {
+public class KSApplication extends Application {
   private ApplicationComponent component;
   private RefWatcher refWatcher;
   @Inject CookieManager cookieManager;
@@ -59,7 +59,7 @@ public class KsrApplication extends Application {
   }
 
   public static RefWatcher getRefWatcher(final Context context) {
-    final KsrApplication application = (KsrApplication) context.getApplicationContext();
+    final KSApplication application = (KSApplication) context.getApplicationContext();
     return application.refWatcher;
   }
 

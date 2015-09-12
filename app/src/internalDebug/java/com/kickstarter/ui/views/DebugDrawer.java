@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.google.common.base.Strings;
 import com.jakewharton.processphoenix.ProcessPhoenix;
-import com.kickstarter.KsrApplication;
+import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.Build;
@@ -55,7 +55,7 @@ public class DebugDrawer extends FrameLayout {
   public DebugDrawer(final Context context, final AttributeSet attrs, final int defStyleAttr) {
     super(context, attrs, defStyleAttr);
 
-    ((KsrApplication) getContext().getApplicationContext()).component().inject(this);
+    ((KSApplication) getContext().getApplicationContext()).component().inject(this);
 
     LayoutInflater.from(context).inflate(R.layout.debug_drawer_view, this);
     ButterKnife.bind(this);

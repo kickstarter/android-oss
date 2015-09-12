@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Pair;
 
-import com.kickstarter.KsrApplication;
+import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ApiErrorHandler;
 import com.kickstarter.libs.CurrentUser;
@@ -33,7 +33,7 @@ public class LoginPresenter extends Presenter<LoginActivity> {
   @Override
   protected void onCreate(final Context context, Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
-    ((KsrApplication) context.getApplicationContext()).component().inject(this);
+    ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     final Observable<OnTextChangeEvent> email = viewSubject
       .flatMap(v -> WidgetObservable.text(v.emailEditText));

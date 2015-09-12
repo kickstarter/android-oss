@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Pair;
 
-import com.kickstarter.KsrApplication;
+import com.kickstarter.KSApplication;
 import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.RxUtils;
@@ -34,7 +34,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
   @Override
   protected void onCreate(final Context context, final Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
-    ((KsrApplication) context.getApplicationContext()).component().inject(this);
+    ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     buildCheck.bind(this, kickstarterClient);
 

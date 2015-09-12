@@ -4,7 +4,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
 
-import com.kickstarter.KsrApplication;
+import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RequiresPresenter;
@@ -40,7 +40,7 @@ public class HelpActivity extends BaseActivity<HelpPresenter> {
   protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    ((KsrApplication) getApplicationContext()).component().inject(this);
+    ((KSApplication) getApplicationContext()).component().inject(this);
     setContentView(R.layout.help_layout);
     ButterKnife.bind(this);
 

@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.kickstarter.KsrApplication;
+import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.DateTimeUtils;
 import com.kickstarter.libs.Money;
@@ -35,7 +35,7 @@ public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolde
   public ProjectStateChangedPositiveViewHolder(final View view, final ActivityFeedPresenter presenter) {
     super(view, presenter);
     ButterKnife.bind(this, view);
-    ((KsrApplication) view.getContext().getApplicationContext()).component().inject(this);
+    ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
   }
 
   @Override

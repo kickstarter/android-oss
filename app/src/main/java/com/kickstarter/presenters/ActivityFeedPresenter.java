@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Pair;
 
-import com.kickstarter.KsrApplication;
+import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.RxUtils;
@@ -27,7 +27,7 @@ public class ActivityFeedPresenter extends Presenter<ActivityFeedActivity> {
   @Override
   protected void onCreate(final Context context, final Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
-    ((KsrApplication) context.getApplicationContext()).component().inject(this);
+    ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     final Observable<List<Activity>> activities = currentUser.loggedInUser()
       .take(1)

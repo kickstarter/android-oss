@@ -5,7 +5,7 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-import com.kickstarter.KsrApplication;
+import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.Font;
 
@@ -55,7 +55,7 @@ public class IconTextView extends TextView {
       return;
     }
 
-    ((KsrApplication) getContext().getApplicationContext()).component().inject(this);
+    ((KSApplication) getContext().getApplicationContext()).component().inject(this);
 
     switch (iconType) {
       case MATERIAL:

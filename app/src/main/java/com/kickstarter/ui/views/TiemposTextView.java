@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-import com.kickstarter.KsrApplication;
+import com.kickstarter.KSApplication;
 import com.kickstarter.libs.Font;
 
 import javax.inject.Inject;
@@ -43,7 +43,7 @@ public class TiemposTextView extends TextView {
       return;
     }
 
-    ((KsrApplication) getContext().getApplicationContext()).component().inject(this);
+    ((KSApplication) getContext().getApplicationContext()).component().inject(this);
     setTypeface(font.tiemposTypeface());
   }
 }

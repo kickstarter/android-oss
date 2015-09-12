@@ -1,6 +1,6 @@
 package com.kickstarter;
 
-public class TestKsrApplication extends KsrApplication {
+public class TestKSApplication extends KSApplication {
   protected boolean isInUnitTests() {
     return true;
   }

@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
-import com.kickstarter.KsrApplication;
+import com.kickstarter.KSApplication;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.WebViewJavascriptInterface;
 import com.kickstarter.services.KickstarterWebViewClient;
@@ -30,7 +30,7 @@ public class KickstarterWebView extends WebView {
       return;
     }
 
-    ((KsrApplication) context.getApplicationContext()).component().inject(this);
+    ((KSApplication) context.getApplicationContext()).component().inject(this);
     setWebViewClient(client);
     setWebChromeClient(new WebChromeClient());
     getSettings().setJavaScriptEnabled(true);

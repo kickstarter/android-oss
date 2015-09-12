@@ -39,7 +39,7 @@ public interface ApplicationGraph {
   void inject(HelpActivity activity);
   void inject(IconTextView view);
   void inject(KickstarterWebView view);
-  void inject(KsrApplication application);
+  void inject(KSApplication application);
   void inject(LoginPresenter presenter);
   void inject(Money money);
   void inject(ProjectActionToolbar toolbar);

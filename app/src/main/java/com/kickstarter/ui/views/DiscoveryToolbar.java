@@ -11,7 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.kickstarter.KsrApplication;
+import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Logout;
@@ -59,7 +59,7 @@ public class DiscoveryToolbar extends Toolbar {
     }
 
     ButterKnife.bind(this);
-    ((KsrApplication) getContext().getApplicationContext()).component().inject(this);
+    ((KSApplication) getContext().getApplicationContext()).component().inject(this);
 
     initializeCategorySpinner();
 

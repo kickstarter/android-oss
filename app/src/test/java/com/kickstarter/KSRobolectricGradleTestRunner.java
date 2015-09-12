@@ -12,10 +12,10 @@ import org.robolectric.util.ReflectionHelpers;
  * Mostly based on https://github.com/robolectric/robolectric/blob/b4d324353c92496e8eb65792b17da695ff78b22f/robolectric/src/main/java/org/robolectric/RobolectricGradleTestRunner.java
  * Modifications from https://github.com/robolectric/robolectric/issues/1430#issuecomment-102546421
  */
-public class KsrRobolectricGradleTestRunner extends RobolectricTestRunner {
+public class KSRobolectricGradleTestRunner extends RobolectricTestRunner {
   private static final String BUILD_OUTPUT = "build/intermediates";
 
-  public KsrRobolectricGradleTestRunner(Class<?> testClass) throws InitializationError {
+  public KSRobolectricGradleTestRunner(Class<?> testClass) throws InitializationError {
     super(testClass);
   }
 

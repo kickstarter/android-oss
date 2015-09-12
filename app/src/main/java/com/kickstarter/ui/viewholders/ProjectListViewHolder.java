@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.kickstarter.KsrApplication;
+import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.Money;
 import com.kickstarter.models.Project;
@@ -42,7 +42,7 @@ public class ProjectListViewHolder extends RecyclerView.ViewHolder {
     this.view = view;
     this.presenter = presenter;
 
-    ((KsrApplication) view.getContext().getApplicationContext()).component().inject(this);
+    ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
     ButterKnife.bind(this, view);
 
     view.setOnClickListener((final View v) -> presenter.takeProjectClick(project));

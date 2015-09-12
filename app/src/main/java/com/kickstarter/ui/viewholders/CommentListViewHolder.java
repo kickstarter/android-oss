@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.kickstarter.KsrApplication;
+import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.CircleTransform;
 import com.kickstarter.libs.CommentUtils;
@@ -40,7 +40,7 @@ public class CommentListViewHolder extends RecyclerView.ViewHolder {
     this.view = view;
     this.presenter = presenter;
 
-    ((KsrApplication) view.getContext().getApplicationContext()).component().inject(this);
+    ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
     ButterKnife.bind(this, view);
   }
 

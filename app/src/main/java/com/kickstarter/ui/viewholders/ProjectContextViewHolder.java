@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.kickstarter.KsrApplication;
+import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.models.Project;
 import com.squareup.picasso.Picasso;
@@ -24,7 +24,7 @@ public class ProjectContextViewHolder extends RecyclerView.ViewHolder{
   public ProjectContextViewHolder(final View view) {
     super(view);
     this.view = view;
-    ((KsrApplication) view.getContext().getApplicationContext()).component().inject(this);
+    ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
     ButterKnife.bind(this, view);
   }
 

@@ -8,7 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 
-import com.kickstarter.KsrApplication;
+import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.CurrentUser;
@@ -35,7 +35,7 @@ public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
   protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    ((KsrApplication) getApplication()).component().inject(this);
+    ((KSApplication) getApplication()).component().inject(this);
     final int layout = currentUser.exists() ? R.layout.activity_feed_layout : R.layout.empty_activity_feed_layout;
     setContentView(layout);
     ButterKnife.bind(this);

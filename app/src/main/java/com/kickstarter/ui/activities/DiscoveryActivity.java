@@ -9,7 +9,7 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.kickstarter.KsrApplication;
+import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RequiresPresenter;
@@ -47,7 +47,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
   protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    ((KsrApplication) getApplication()).component().inject(this);
+    ((KSApplication) getApplication()).component().inject(this);
     final ViewGroup container = applicationContainer.bind(this);
     final LayoutInflater layoutInflater = getLayoutInflater();
 

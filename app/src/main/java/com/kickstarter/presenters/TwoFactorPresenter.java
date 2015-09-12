@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 
-import com.kickstarter.KsrApplication;
+import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ApiErrorHandler;
 import com.kickstarter.libs.CurrentUser;
@@ -32,7 +32,7 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
   @Override
   protected void onCreate(final Context context, final Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
-    ((KsrApplication) context.getApplicationContext()).component().inject(this);
+    ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     final Observable<String> code = viewSubject
       .flatMap(v -> WidgetObservable.text(v.codeEditText))

@@ -132,6 +132,10 @@ public class DiscoveryToolbar extends Toolbar {
   protected void onAttachedToWindow() {
     super.onAttachedToWindow();
 
+    if (isInEditMode()) {
+      return;
+    }
+
     if (currentUser.getUser() == null) {
       showLoggedOutMenu();
     }
@@ -144,6 +148,10 @@ public class DiscoveryToolbar extends Toolbar {
   @Override
   protected void onDetachedFromWindow() {
     super.onDetachedFromWindow();
+
+    if (isInEditMode()) {
+      return;
+    }
 
     loginSubscription.unsubscribe();
   }

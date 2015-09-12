@@ -13,6 +13,7 @@ import org.robolectric.util.ReflectionHelpers;
  * Modifications from https://github.com/robolectric/robolectric/issues/1430#issuecomment-102546421
  */
 public class KSRobolectricGradleTestRunner extends RobolectricTestRunner {
+  public static final int DEFAULT_SDK = 21;
   private static final String BUILD_OUTPUT = "build/intermediates";
 
   public KSRobolectricGradleTestRunner(Class<?> testClass) throws InitializationError {

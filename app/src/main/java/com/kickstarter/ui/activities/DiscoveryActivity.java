@@ -133,7 +133,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
 
   private void setStatusBarColor() {
     if (ApiCapabilities.canSetStatusBarColor()) {
-      Window window = getWindow();
+      final Window window = getWindow();
       window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
       window.setStatusBarColor(discoveryToolbarColor);
     }

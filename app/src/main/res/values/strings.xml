@@ -3,8 +3,7 @@
 
   <!-- Settings -->
 
-  <!-- The app id is duplicated for FacebookContentProvider in AndroidManifest.xml. If you
-    modify this id, remember to change it there as well. -->
+  <!-- Facebook production app id -->
   <string name="facebook_app_id">69103156693</string>
   <string name="hockey_app_id">ecdab725861a76c38d60b5ae44dbe9f2</string>
 

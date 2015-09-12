@@ -63,10 +63,8 @@ public class DiscoveryToolbar extends Toolbar {
 
     initializeCategorySpinner();
 
-    activityFeedButton.setOnClickListener(v -> {
-      Intent intent = new Intent(getContext(), ActivityFeedActivity.class);
-      getContext().startActivity(intent);
-    });
+    activityFeedButton.setOnClickListener(v -> getContext()
+      .startActivity(new Intent(getContext(), ActivityFeedActivity.class)));
   }
 
   protected void showLoggedInMenu(final User user) {

@@ -9,6 +9,7 @@
   <color name="accent_alpha_20">@color/blue_alpha_20</color>
   <color name="window_background">@color/white</color>
   <color name="debug_background">#EE222222</color>
+  <color name="discovery_toolbar">#FF083E8F</color>
 
   <!-- Kickstarter colors -->
   <color name="black">#000000</color>

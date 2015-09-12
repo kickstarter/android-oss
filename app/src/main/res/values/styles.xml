@@ -50,6 +50,7 @@
   </style>
 
   <style name="DiscoveryActivity" parent="KsrTheme">
+    <item name="android:statusBarColor">@color/discovery_toolbar</item>
     <item name="android:windowBackground">@color/light_gray</item>
   </style>
 
@@ -83,6 +84,7 @@
   </style>
 
   <style name="KsrSpinnerItem" parent="@android:style/Widget.TextView.SpinnerItem">
+    <item name="android:textSize">18sp</item>
     <item name="android:textColor">@color/white</item>
   </style>
 

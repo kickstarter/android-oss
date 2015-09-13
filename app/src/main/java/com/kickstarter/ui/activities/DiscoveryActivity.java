@@ -15,6 +15,7 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.KSColorUtils;
 import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.libs.RxUtils;
 import com.kickstarter.models.Project;
@@ -135,7 +136,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
     if (ApiCapabilities.canSetStatusBarColor()) {
       final Window window = getWindow();
       window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-      window.setStatusBarColor(discoveryToolbarColor);
+      window.setStatusBarColor(KSColorUtils.darken(discoveryToolbarColor, 0.15f));
     }
   }
 }

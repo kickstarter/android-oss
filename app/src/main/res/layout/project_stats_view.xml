@@ -14,7 +14,7 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingRight="@dimen/grid_3">
+    android:paddingRight="@dimen/grid_2">
 
     <TextView
       android:id="@+id/backers_count"
@@ -35,7 +35,7 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingRight="@dimen/grid_3">
+    android:paddingRight="@dimen/grid_2">
 
     <TextView
       android:id="@+id/pledged"
@@ -69,7 +69,7 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingRight="@dimen/grid_2">
+    android:paddingRight="@dimen/grid_1">
 
     <TextView
       android:id="@+id/deadline_countdown"
@@ -86,6 +86,7 @@
 
       <TextView
         android:id="@+id/deadline_countdown_unit"
+        android:textSize="@dimen/ksr_mini_stats"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/dark_gray" />

@@ -8,9 +8,12 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.libs.RxUtils;
@@ -26,6 +29,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import butterknife.BindColor;
 import butterknife.ButterKnife;
 import rx.Subscription;
 import rx.subjects.PublishSubject;
@@ -41,6 +45,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
 
   @Inject ApplicationContainer applicationContainer;
 
+  @BindColor(R.color.discovery_toolbar) int discoveryToolbarColor;
   @Bind(R.id.recycler_view) RecyclerView recyclerView;
 
   @Override
@@ -53,6 +58,8 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
 
     layoutInflater.inflate(R.layout.discovery_layout, container);
     ButterKnife.bind(this, container);
+
+    setStatusBarColor();
 
     layoutManager = new LinearLayoutManager(this);
     adapter = new ProjectListAdapter(projects, presenter);
@@ -122,5 +129,13 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
 
   private boolean closeToBottom(final Pair<Integer, Integer> itemAndCount) {
     return itemAndCount.first == itemAndCount.second - 2;
+  }
+
+  private void setStatusBarColor() {
+    if (ApiCapabilities.canSetStatusBarColor()) {
+      final Window window = getWindow();
+      window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+      window.setStatusBarColor(discoveryToolbarColor);
+    }
   }
 }

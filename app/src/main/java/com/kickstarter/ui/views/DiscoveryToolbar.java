@@ -64,8 +64,8 @@ public class DiscoveryToolbar extends Toolbar {
     initializeCategorySpinner();
 
     activityFeedButton.setOnClickListener(v -> {
-      Intent intent = new Intent(getContext(), ActivityFeedActivity.class);
-      getContext().startActivity(intent);
+      final Context context = getContext();
+      context.startActivity(new Intent(context, ActivityFeedActivity.class));
     });
   }
 
@@ -134,6 +134,10 @@ public class DiscoveryToolbar extends Toolbar {
   protected void onAttachedToWindow() {
     super.onAttachedToWindow();
 
+    if (isInEditMode()) {
+      return;
+    }
+
     if (currentUser.getUser() == null) {
       showLoggedOutMenu();
     }
@@ -146,6 +150,10 @@ public class DiscoveryToolbar extends Toolbar {
   @Override
   protected void onDetachedFromWindow() {
     super.onDetachedFromWindow();
+
+    if (isInEditMode()) {
+      return;
+    }
 
     loginSubscription.unsubscribe();
   }

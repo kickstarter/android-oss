@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Pair;
 
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ApiErrorHandler;
@@ -20,8 +21,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.android.widget.OnTextChangeEvent;
-import rx.android.widget.WidgetObservable;
 import rx.subjects.PublishSubject;
 
 public class LoginPresenter extends Presenter<LoginActivity> {
@@ -35,15 +34,15 @@ public class LoginPresenter extends Presenter<LoginActivity> {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    final Observable<OnTextChangeEvent> email = viewSubject
-      .flatMap(v -> WidgetObservable.text(v.emailEditText));
+    final Observable<CharSequence> email = viewSubject
+      .flatMap(v -> RxTextView.textChanges(v.emailEditText));
 
-    final Observable<OnTextChangeEvent> password = viewSubject
-      .flatMap(v -> WidgetObservable.text(v.passwordEditText));
+    final Observable<CharSequence> password = viewSubject
+      .flatMap(v -> RxTextView.textChanges(v.passwordEditText));
 
     final Observable<Pair<String, String>> emailAndPassword =
       RxUtils.combineLatestPair(email, password)
-      .map(ep -> Pair.create(ep.first.text().toString(), ep.second.text().toString()));
+      .map(ep -> Pair.create(ep.first.toString(), ep.second.toString()));
 
     final Observable<Boolean> isValid = emailAndPassword
       .map(ep -> LoginPresenter.isValid(ep.first, ep.second));

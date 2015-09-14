@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ApiErrorHandler;
@@ -20,7 +21,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.android.widget.WidgetObservable;
 import rx.subjects.PublishSubject;
 
 public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
@@ -35,8 +35,8 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     final Observable<String> code = viewSubject
-      .flatMap(v -> WidgetObservable.text(v.codeEditText))
-      .map(v -> v.text().toString());
+      .flatMap(v -> RxTextView.textChanges(v.codeEditText))
+      .map(CharSequence::toString);
 
     final Observable<Boolean> isValid = code
       .map(TwoFactorPresenter::isValid);

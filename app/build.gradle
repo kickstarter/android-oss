@@ -25,7 +25,7 @@ if (file('signing.gradle').exists()) {
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.0"
+    buildToolsVersion "23.0.1"
 
     defaultConfig {
         applicationId "com.kickstarter"

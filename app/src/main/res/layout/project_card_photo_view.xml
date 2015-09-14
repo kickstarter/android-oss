@@ -2,6 +2,8 @@
 <RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:icon_text_view="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  tools:showIn="@layout/project_card_view"
   android:id="@+id/project_card_photo"
   android:layout_width="match_parent"
   android:layout_height="match_parent">

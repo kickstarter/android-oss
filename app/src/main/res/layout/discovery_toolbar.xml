@@ -2,12 +2,12 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:icon_text_view="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
+  tools:showIn="@layout/discovery_layout"
   android:id="@+id/toolbar"
   android:layout_width="match_parent"
   android:layout_height="?attr/actionBarSize"
   android:background="@color/discovery_toolbar"
-  android:elevation="3dp"
-  tools:showIn="@layout/discovery_layout">
+  android:elevation="3dp">
 
   <RelativeLayout
     android:layout_width="match_parent"

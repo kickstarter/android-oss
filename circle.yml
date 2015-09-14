@@ -11,7 +11,7 @@ machine:
 
 dependencies:
   override:
-    - echo y | android update sdk --no-ui --all --filter build-tools-22.0.1,extra-android-m2repository,extra-google-m2repository,extra-android-support
+    - echo y | android update sdk --no-ui --all --filter build-tools-23.0.1,extra-android-m2repository,extra-google-m2repository,extra-android-support
     - ./gradlew dependencies
 
 test:

@@ -3,6 +3,7 @@ package com.kickstarter.ui.activities;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -11,8 +12,12 @@ import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSColorUtils;
 import com.kickstarter.libs.RequiresPresenter;
+import com.kickstarter.models.Category;
 import com.kickstarter.presenters.DiscoveryFilterPresenter;
 import com.kickstarter.ui.adapters.DiscoveryFilterAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.BindColor;
@@ -21,6 +26,7 @@ import butterknife.OnClick;
 
 @RequiresPresenter(DiscoveryFilterPresenter.class)
 public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresenter> {
+  final List<Category> categories = new ArrayList<>();
   DiscoveryFilterAdapter adapter;
   LinearLayoutManager layoutManager;
 
@@ -35,7 +41,7 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
     ButterKnife.bind(this);
 
     layoutManager = new LinearLayoutManager(this);
-    adapter = new DiscoveryFilterAdapter();
+    adapter = new DiscoveryFilterAdapter(categories);
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);
 
@@ -47,11 +53,20 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
     onBackPressed();
   }
 
+  public void onItemsNext(final List<Category> newCategories) {
+    for (final Category newCategory: newCategories) {
+      if (! categories.contains(newCategory)) {
+        categories.add(newCategory);
+      }
+    }
+    adapter.notifyDataSetChanged();
+  }
+
   private void setStatusBarColor() {
     if (ApiCapabilities.canSetStatusBarColor()) {
       final Window window = getWindow();
       window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-      window.setStatusBarColor(darkBlueGradientStartColor);
+      window.setStatusBarColor(KSColorUtils.darken(darkBlueGradientStartColor, 0.15f));
     }
   }
 }

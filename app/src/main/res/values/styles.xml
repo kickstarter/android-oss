@@ -54,7 +54,6 @@
   </style>
 
   <style name="DiscoveryFilterActivity" parent="KsrTheme">
-    <item name="android:statusBarColor">@color/gray</item>
   </style>
 
   <style name="DisplayWebViewActivity" parent="KsrTheme">

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content">
+
+  <LinearLayout
+    android:id="@+id/vertical_line_group"
+    android:layout_width="wrap_content"
+    android:layout_height="fill_parent"
+    android:layout_marginEnd="@dimen/grid_1"
+    android:layout_marginRight="@dimen/grid_1"
+    android:layout_marginStart="@dimen/grid_1_half"
+    android:layout_marginLeft="@dimen/grid_1_half">
+
+    <include layout="@layout/vertical_line_view_thick" />
+
+  </LinearLayout>
+
+  <TextView
+    android:id="@+id/filter_text_view"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/grid_1_half"
+    android:paddingBottom="@dimen/grid_1_half"
+    android:textColor="@color/white" />
+
+</LinearLayout>

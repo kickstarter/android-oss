@@ -8,11 +8,15 @@ import com.kickstarter.R;
 import com.kickstarter.models.Category;
 
 import butterknife.Bind;
+import butterknife.BindColor;
 import butterknife.ButterKnife;
 
 public class DiscoveryFilterViewHolder extends RecyclerView.ViewHolder {
   protected View view;
-  @Bind(R.id.category_name_text_view) TextView categoryNameTextView;
+  @Bind(R.id.filter_text_view) TextView filterTextView;
+  @Bind(R.id.vertical_line_group) View verticalLineGroup;
+  @Bind(R.id.vertical_line_view_thick) View verticalLineView;
+  @BindColor(R.color.white) int whiteColor;
 
   public DiscoveryFilterViewHolder(final View view) {
     super(view);
@@ -21,6 +25,7 @@ public class DiscoveryFilterViewHolder extends RecyclerView.ViewHolder {
   }
 
   public void onBind(final Category category) {
-    categoryNameTextView.setText(category.name());
+    filterTextView.setText(category.name());
+    verticalLineView.setBackgroundColor(whiteColor);
   }
 }

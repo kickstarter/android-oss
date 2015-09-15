@@ -37,6 +37,8 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
   protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
+    // TODO: Pass discovery filter params
+
     setContentView(R.layout.discovery_filter_layout);
     ButterKnife.bind(this);
 

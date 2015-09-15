@@ -12,9 +12,8 @@
     android:id="@+id/recycler_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="8dp"
-    android:paddingTop="4dp"
-    android:paddingBottom="4dp"
+    android:layout_marginLeft="@dimen/grid_1"
+    android:layout_marginStart="@dimen/grid_1"
     android:scrollbars="vertical" />
 
   <com.kickstarter.ui.views.IconTextView
@@ -23,7 +22,7 @@
     android:layout_height="wrap_content"
     android:layout_alignParentTop="true"
     android:layout_alignParentRight="true"
-    android:layout_margin="8dp"
+    android:layout_margin="@dimen/grid_1"
     android:text="@string/close"
     android:textColor="@color/white"
     android:textSize="28sp"

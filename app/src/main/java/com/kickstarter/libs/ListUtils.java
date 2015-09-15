@@ -18,7 +18,8 @@ public class ListUtils {
   }
 
   /**
-   * Concats the second argument onto the end of the first.
+   * Concats the second argument onto the end of the first without mutating
+   * either list.
    */
   public static <T> List<T> concat(final List<T> xs, final List<T> ys) {
     final List<T> zs = new ArrayList<>(xs);
@@ -41,7 +42,7 @@ public class ListUtils {
 
   /**
    * Concats the distinct elements of the second argument onto the end of the
-   * first.
+   * first without mutating either list.
    */
   public static <T> List<T> concatDistinct(final List<T> xs, final List<T> ys) {
     final List<T> zs = new ArrayList<>(xs);

@@ -33,6 +33,38 @@ public class DiscoveryParams {
     }
   }
 
+  public boolean staffPicks() {
+    return staffPicks;
+  }
+
+  public int starred() {
+    return starred;
+  }
+
+  public int backed() {
+    return backed;
+  }
+
+  public int social() {
+    return social;
+  }
+
+  public Category category() {
+    return category;
+  }
+
+  public Sort sort() {
+    return sort;
+  }
+
+  public int page() {
+    return page;
+  }
+
+  public int perPage() {
+    return perPage;
+  }
+
   public static class Builder {
     private boolean staffPicks = false;
     private int starred = 0;

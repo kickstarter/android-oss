@@ -152,7 +152,7 @@
 
       </LinearLayout>
 
-      <include layout="@layout/horizontal_line_view" />
+      <include layout="@layout/horizontal_line_thin_view" />
 
       <!-- todo: populate this list with friend backers-->
       <LinearLayout

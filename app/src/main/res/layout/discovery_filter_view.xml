@@ -13,7 +13,7 @@
     android:layout_marginStart="@dimen/grid_1_half"
     android:layout_marginLeft="@dimen/grid_1_half">
 
-    <include layout="@layout/vertical_line_view_thick" />
+    <include layout="@layout/vertical_line_medium_view" />
 
   </LinearLayout>
 

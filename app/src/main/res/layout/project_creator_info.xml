@@ -88,7 +88,7 @@
         android:textColor="@color/dark_gray" />
     </RelativeLayout>
 
-    <include layout="@layout/horizontal_line_view" />
+    <include layout="@layout/horizontal_line_thin_view" />
 
     <RelativeLayout
       android:id="@+id/updates"
@@ -117,7 +117,7 @@
         android:layout_height="wrap_content" />
     </RelativeLayout>
 
-    <include layout="@layout/horizontal_line_view" />
+    <include layout="@layout/horizontal_line_thin_view" />
 
     <RelativeLayout
       android:id="@+id/comments"

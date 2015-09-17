@@ -3,11 +3,8 @@ package com.kickstarter.presenters;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Pair;
-import android.view.View;
 
-import com.jakewharton.rxbinding.view.RxView;
 import com.kickstarter.KSApplication;
-import com.kickstarter.R;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.RxUtils;
@@ -21,7 +18,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
-import timber.log.Timber;
 
 public class ProjectPresenter extends Presenter<ProjectActivity> {
   @Inject ApiClient client;

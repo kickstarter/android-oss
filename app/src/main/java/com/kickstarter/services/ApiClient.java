@@ -47,16 +47,19 @@ public class ApiClient {
   }
 
   public Observable<CommentsEnvelope> fetchProjectComments(final Project project) {
-    return service.fetchProjectComments(project.param());
+    return service.fetchProjectComments(project.param())
+      .share();
   }
 
   public Observable<DiscoverEnvelope> fetchProjects(final DiscoveryParams params) {
     return service.fetchProjects(params.queryParams())
-      .retry(3);
+      .retry(3)
+      .share();
   }
 
   public Observable<Project> fetchProject(final Project project) {
-    return service.fetchProject(project.param()).startWith(project);
+    return service.fetchProject(project.param()).startWith(project)
+      .share();
   }
 
   public Observable<AccessTokenEnvelope> login(final String email, final String password) {

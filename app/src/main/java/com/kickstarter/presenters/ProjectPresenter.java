@@ -34,9 +34,8 @@ public class ProjectPresenter extends Presenter<ProjectActivity> {
   }
 
   public void takeProject(final Project project) {
-    final ConnectableObservable<Project> latestProject = client.fetchProject(project)
-      .filter(Project::isDisplayable)
-      .publish();
+    final Observable<Project> latestProject = client.fetchProject(project)
+      .filter(Project::isDisplayable);
 
     final Observable<Pair<ProjectActivity, Project>> viewAndProject =
       RxUtils.combineLatestPair(viewSubject, latestProject);
@@ -68,8 +67,6 @@ public class ProjectPresenter extends Presenter<ProjectActivity> {
     addSubscription(RxUtils.takeWhen(viewAndProject, updatesClick)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showUpdates(vp.second)));
-
-    addSubscription(latestProject.connect());
   }
 
   public void takeBackProjectClick() {

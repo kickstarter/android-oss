@@ -36,10 +36,9 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> {
 
   // todo: add pagination to comments
   public void takeProject(final Project project) {
-    final ConnectableObservable<List<Comment>> comments = client.fetchProjectComments(project)
+    final Observable<List<Comment>> comments = client.fetchProjectComments(project)
       .map(envelope -> envelope.comments)
-      .takeUntil(List::isEmpty)
-      .publish();
+      .takeUntil(List::isEmpty);
 
     final Observable<Pair<CommentFeedActivity, List<Comment>>> viewAndComments =
       RxUtils.takePairWhen(viewSubject, comments);
@@ -47,8 +46,6 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> {
     addSubscription(viewAndComments
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vc -> vc.first.showComments(vc.second)));
-
-    addSubscription(comments.connect());
   }
 
   // shows when currentUser is a backer

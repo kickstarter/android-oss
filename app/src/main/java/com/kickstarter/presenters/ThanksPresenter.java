@@ -66,15 +66,12 @@ public class ThanksPresenter extends Presenter<ThanksActivity> {
       .backed(-1)
       .build();
 
-    final ConnectableObservable<List<Project>> recommendedProjects = apiClient.fetchProjects(params)
-      .map(envelope -> envelope.projects)
-      .publish();
+    final Observable<List<Project>> recommendedProjects = apiClient.fetchProjects(params)
+      .map(envelope -> envelope.projects);
 
     addSubscription(RxUtils.combineLatestPair(viewSubject.filter(v -> v != null), recommendedProjects)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showRecommendedProjects(vp.second)));
-
-    addSubscription(recommendedProjects.connect());
   }
 
   public void takeDoneClick() {

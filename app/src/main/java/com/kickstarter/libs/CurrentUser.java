@@ -30,8 +30,14 @@ public class CurrentUser {
     userSubject.onNext(gson.fromJson(userPreference.get(), User.class));
   }
 
+  @Deprecated
   public User getUser() {
     return currentUser;
+  }
+
+  @Deprecated
+  public boolean exists() {
+    return getUser() != null;
   }
 
   public String getAccessToken() {
@@ -51,10 +57,6 @@ public class CurrentUser {
     userPreference.delete();
     accessTokenPreference.delete();
     userSubject.onNext(null);
-  }
-
-  public boolean exists() {
-    return getUser() != null;
   }
 
   public Observable<User> observable() {

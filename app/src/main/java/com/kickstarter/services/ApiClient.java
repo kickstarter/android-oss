@@ -45,33 +45,33 @@ public class ApiClient {
   public Observable<ActivityEnvelope> fetchActivities(final ActivityFeedParams params) {
     return service.fetchActivities(params.queryParams())
       .retry(3)
-      .share();
+      .replay().refCount();
   }
 
   public Observable<CommentsEnvelope> fetchProjectComments(final Project project) {
     return service.fetchProjectComments(project.param())
-      .share();
+      .replay().refCount();
   }
 
   public Observable<DiscoverEnvelope> fetchProjects(final DiscoveryParams params) {
     return service.fetchProjects(params.queryParams())
       .retry(3)
-      .share();
+      .replay().refCount();
   }
 
   public Observable<Project> fetchProject(final Project project) {
     return service.fetchProject(project.param()).startWith(project)
-      .share();
+      .replay().refCount();
   }
 
   public Observable<AccessTokenEnvelope> login(final String email, final String password) {
     return service.login(email, password)
-      .share();
+      .replay().refCount();
   }
 
   public Observable<AccessTokenEnvelope> login(final String email, final String password, final String code) {
     return service.login(email, password, code)
-      .share();
+      .replay().refCount();
   }
 
   private ApiService apiService() {

@@ -69,8 +69,7 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     recyclerView.setAdapter(adapter);
   }
 
-  @Override
-  @Nullable @OnClick(R.id.nav_back_button)
+  @OnClick(R.id.nav_back_button)
   public void onBackPressed() {
     super.onBackPressed();
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
@@ -80,6 +79,7 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     onBackPressed();
   }
 
+  @Nullable @OnClick(R.id.leave_comment_button)
   public void publicCommentClick(final View view) {
     final LayoutInflater layoutInflater = getLayoutInflater();
     final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());

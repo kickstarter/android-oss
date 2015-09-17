@@ -28,6 +28,7 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import timber.log.Timber;
 
 @RequiresPresenter(ProjectPresenter.class)
@@ -141,20 +142,23 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
   public void starProjectClick(final View v) {
   }
 
-  public void shareOnClick(final View v) {
-    presenter.takeShareClick();
-  }
-
   public void updatesClick(final View v) {
     presenter.takeUpdatesClick();
   }
 
-  public void blurbOnClick(final View v) {
+  @OnClick(R.id.blurb)
+  public void blurbOnClick() {
     presenter.takeBlurbClick();
   }
 
-  public void creatorNameOnClick(final View v) {
+  @OnClick(R.id.creator_name)
+  public void creatorNameOnClick() {
     presenter.takeCreatorNameClick();
+  }
+
+  @OnClick({R.id.share_icon, R.id.share_button})
+  public void shareProject() {
+    presenter.takeShareClick();
   }
 
   public void showProjectDescription(final Project project) {

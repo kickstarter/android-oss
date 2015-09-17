@@ -44,11 +44,10 @@
       android:text="@string/Aw_how_sad"/>
 
     <Button
-      android:id="@+id/button"
+      android:id="@+id/leave_comment_button"
       style="@style/KsrButton"
       android:background="@drawable/button_green"
-      android:text="@string/Leave_a_comment"
-      android:onClick="publicCommentClick"/>
+      android:text="@string/Leave_a_comment"/>
 
   </LinearLayout>
 

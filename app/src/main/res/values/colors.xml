@@ -3,7 +3,7 @@
   <!-- App colors -->
   <color name="primary">#081B5C</color>
   <color name="primary_dark">@color/dark_blue</color>
-  <color name="accent">@color/blue</color>
+  <color name="accent">@color/green</color>
   <color name="text_primary">@color/text_dark</color>
   <color name="text_secondary">@color/dark_gray</color>
   <color name="accent_alpha_20">@color/blue_alpha_20</color>

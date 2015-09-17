@@ -3,16 +3,19 @@ package com.kickstarter.ui.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.CircleTransform;
 import com.kickstarter.libs.DateTimeUtils;
@@ -51,6 +54,7 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
   protected @Bind(R.id.avatar_name) TextView avatarNameTextView;
   protected @Bind(R.id.fund_message) TextView fundMessageTextView;
   protected @Bind(R.id.updates_count) TextView updatesCountTextView;
+  protected @Bind(R.id.star_icon) IconTextView starIconTextView;
 
   @Inject Money money;
 
@@ -103,6 +107,9 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
       project.deadline().toString(DateTimeUtils.writtenDeadline())));
     updatesCountTextView.setText(project.formattedUpdatesCount());
     commentsCountTextView.setText(project.formattedCommentsCount());
+
+    int starColor = (project.isStarred()) ? R.color.green : R.color.dark_gray;
+    starIconTextView.setTextColor(ContextCompat.getColor(this, starColor));
   }
 
   @Override
@@ -139,6 +146,8 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
 
   // todo
   public void starProjectClick(final View v) {
+    Timber.d("starProjectClick");
+    presenter.takeStarClick();
   }
 
   public void shareOnClick(final View v) {
@@ -167,6 +176,11 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
 
   public void showUpdates(final Project project) {
     startWebViewActivity(project.updatesUrl());
+  }
+
+  public void showStarPrompt() {
+    final Toast toast = Toast.makeText(this, R.string.Well_remind_you_48_hours, Toast.LENGTH_LONG);
+    toast.show();
   }
 
   public void startCheckoutActivity(final Project project) {
@@ -198,5 +212,20 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
       .putExtra(getString(R.string.intent_url), url);
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  public void startLoginToutActivity() {
+    Intent intent = new Intent(this, LoginToutActivity.class)
+      .putExtra(getString(R.string.intent_forward), true);
+    startActivityForResult(intent, ActivityRequestCodes.PROJECT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
+  }
+
+  @Override
+  protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
+    if (resultCode != RESULT_OK) {
+      finish();
+    } else {
+      presenter.takeLoginSuccess();
+    }
   }
 }

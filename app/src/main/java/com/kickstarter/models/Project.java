@@ -29,7 +29,7 @@ public class Project implements Parcelable {
   public DateTime createdAt = null;
   public String currency = null; // e.g.: USD
   public String currencySymbol = null; // e.g.: $
-  public Boolean currencyTrailingCode = false;
+  public boolean currencyTrailingCode = false;
   public DateTime deadline = null;
   public Float goal = null;
   public Integer id = null; // in the Kickstarter app, this is project.pid not project.id
@@ -46,8 +46,8 @@ public class Project implements Parcelable {
   public Integer updatesCount = null;
   public Urls urls = null;
   public List<Reward> rewards = null;
-  public Boolean isBacking = null;
-  public Boolean isStarred = null;
+  public boolean isBacking = false;
+  public boolean isStarred = false;
   public DateTime updatedAt = null;
 
   public Integer backersCount() { return backersCount; }
@@ -63,14 +63,14 @@ public class Project implements Parcelable {
   public String country() { return country; }
   public String currency() { return currency; }
   public String currencySymbol() { return currencySymbol; }
-  public Boolean currencyTrailingCode() { return currencyTrailingCode; }
+  public boolean currencyTrailingCode() { return currencyTrailingCode; }
   public DateTime deadline() { return deadline; }
   public Float goal() { return goal; }
   public Integer id() { return id; }
-  public Boolean isBacking() {
+  public boolean isBacking() {
     return isBacking;
   }
-  public Boolean isStarred() {
+  public boolean isStarred() {
     return isStarred;
   }
   public DateTime launchedAt() { return launchedAt; }

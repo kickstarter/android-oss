@@ -91,18 +91,15 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
     pageSubscription.unsubscribe();
   }
 
-  public void onItemsNext(final List<Project> newProjects) {
-    for (final Project newProject: newProjects) {
-      if (! projects.contains(newProject)) {
-        projects.add(newProject);
-      }
-    }
-    adapter.notifyDataSetChanged();
+  public void loadProjects(final List<Project> newProjects) {
+    final int oldProjectsSize = projects.size();
+    projects.clear();
+    projects.addAll(newProjects);
+    adapter.notifyItemRangeInserted(oldProjectsSize, projects.size());
   }
 
   public void clearItems() {
-    projects.clear();
-    adapter.notifyDataSetChanged();
+    loadProjects(new ArrayList<>());
   }
 
   public void startProjectActivity(final Project project) {

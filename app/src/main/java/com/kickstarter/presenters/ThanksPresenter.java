@@ -18,6 +18,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.observables.ConnectableObservable;
 import rx.subjects.PublishSubject;
 
 public class ThanksPresenter extends Presenter<ThanksActivity> {
@@ -65,12 +66,15 @@ public class ThanksPresenter extends Presenter<ThanksActivity> {
       .backed(-1)
       .build();
 
-    final Observable<List<Project>> recommendedProjects = apiClient.fetchProjects(params)
-      .map(envelope -> envelope.projects);
+    final ConnectableObservable<List<Project>> recommendedProjects = apiClient.fetchProjects(params)
+      .map(envelope -> envelope.projects)
+      .publish();
 
     addSubscription(RxUtils.combineLatestPair(viewSubject.filter(v -> v != null), recommendedProjects)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showRecommendedProjects(vp.second)));
+
+    addSubscription(recommendedProjects.connect());
   }
 
   public void takeDoneClick() {

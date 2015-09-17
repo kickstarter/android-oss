@@ -15,6 +15,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.observables.ConnectableObservable;
 import rx.subjects.PublishSubject;
 
 public class ProjectPresenter extends Presenter<ProjectActivity> {
@@ -33,8 +34,9 @@ public class ProjectPresenter extends Presenter<ProjectActivity> {
   }
 
   public void takeProject(final Project project) {
-    final Observable<Project> latestProject = client.fetchProject(project)
-      .filter(Project::isDisplayable);
+    final ConnectableObservable<Project> latestProject = client.fetchProject(project)
+      .filter(Project::isDisplayable)
+      .publish();
 
     final Observable<Pair<ProjectActivity, Project>> viewAndProject =
       RxUtils.combineLatestPair(viewSubject, latestProject);
@@ -66,6 +68,8 @@ public class ProjectPresenter extends Presenter<ProjectActivity> {
     addSubscription(RxUtils.takeWhen(viewAndProject, updatesClick)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showUpdates(vp.second)));
+
+    addSubscription(latestProject.connect());
   }
 
   public void takeBackProjectClick() {

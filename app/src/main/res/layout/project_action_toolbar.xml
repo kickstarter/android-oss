@@ -49,6 +49,13 @@
       android:background="@drawable/button_blue"
       android:text="@string/Manage_pledge" />
 
+    <Button
+      android:id="@+id/view_pledge_button"
+      style="@style/KsrButton"
+      android:visibility="gone"
+      android:background="@drawable/button_blue"
+      android:text="@string/View_pledge" />
+
     <com.kickstarter.ui.views.IconTextView
       icon_text_view:iconType="material"
       android:id="@+id/star_icon"

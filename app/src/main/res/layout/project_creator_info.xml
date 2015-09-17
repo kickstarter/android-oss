@@ -78,7 +78,7 @@
 
       <com.kickstarter.ui.views.IconTextView
         icon_text_view:iconType="material"
-        android:textSize="@dimen/body"
+        android:textSize="@dimen/headline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/chevron_right_icon"
@@ -106,11 +106,13 @@
         android:textSize="@dimen/body"
         android:text="@string/Updates" />
 
-      <!-- todo: replace with icon-->
       <TextView
-        android:layout_centerVertical="true"
-        android:textSize="@dimen/body"
         android:id="@+id/updates_count"
+        android:background="@drawable/text_view_circle_background"
+        android:gravity="center"
+        android:layout_centerVertical="true"
+        android:textSize="@dimen/ksr_caption"
+        android:textColor="@color/white"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"
@@ -135,11 +137,13 @@
         android:textSize="@dimen/body"
         android:text="@string/Comments" />
 
-      <!-- todo: replace with icon-->
       <TextView
-        android:layout_centerVertical="true"
-        android:textSize="@dimen/body"
         android:id="@+id/comments_count"
+        android:background="@drawable/text_view_circle_background"
+        android:gravity="center"
+        android:layout_centerVertical="true"
+        android:textSize="@dimen/ksr_caption"
+        android:textColor="@color/white"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"

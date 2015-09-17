@@ -12,6 +12,13 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/grid_12"/>
 
+  <View
+    android:id="@+id/overlay"
+    android:alpha="0.6"
+    android:background="@color/black"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/grid_12" />
+
   <RelativeLayout
     android:padding="@dimen/grid_1"
     android:layout_centerInParent="true"

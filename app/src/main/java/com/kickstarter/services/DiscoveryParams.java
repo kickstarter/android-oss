@@ -2,6 +2,7 @@ package com.kickstarter.services;
 
 import com.google.common.collect.ImmutableMap;
 import com.kickstarter.models.Category;
+import com.kickstarter.presenters.DiscoveryPresenter;
 
 public class DiscoveryParams {
   private final boolean staffPicks;
@@ -139,7 +140,10 @@ public class DiscoveryParams {
   }
 
   public static DiscoveryParams params() {
-    return new Builder().build();
+    final DiscoveryParams p = new Builder()
+      .staffPicks(true)
+      .build();
+    return p;
   }
 
   public DiscoveryParams nextPage () {
@@ -156,7 +160,7 @@ public class DiscoveryParams {
       .put("sort", sort.toString())
       .put("page", String.valueOf(page))
       .put("per_page", String.valueOf(perPage))
-      .put("include_potd", staffPicks && page == 0 ? "true" : "")
+      .put("include_potd", staffPicks && page == 1 ? "true" : "")
       .build();
   }
 

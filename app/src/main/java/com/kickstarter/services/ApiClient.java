@@ -47,7 +47,9 @@ public class ApiClient {
   }
 
   public Observable<ActivityEnvelope> fetchActivities(final ActivityFeedParams params) {
-    return service.fetchActivities(params.queryParams()).retry(3);
+    return service.fetchActivities(params.queryParams())
+      .retry(3)
+      .replay().refCount();
   }
 
   public Observable<List<Category>> fetchCategories() {
@@ -55,24 +57,29 @@ public class ApiClient {
   }
 
   public Observable<CommentsEnvelope> fetchProjectComments(final Project project) {
-    return service.fetchProjectComments(project.param());
+    return service.fetchProjectComments(project.param())
+      .replay().refCount();
   }
 
   public Observable<DiscoverEnvelope> fetchProjects(final DiscoveryParams params) {
     return service.fetchProjects(params.queryParams())
-      .retry(3);
+      .retry(3)
+      .replay().refCount();
   }
 
   public Observable<Project> fetchProject(final Project project) {
-    return service.fetchProject(project.param()).startWith(project);
+    return service.fetchProject(project.param()).startWith(project)
+      .replay().refCount();
   }
 
   public Observable<AccessTokenEnvelope> login(final String email, final String password) {
-    return service.login(email, password);
+    return service.login(email, password)
+      .replay().refCount();
   }
 
   public Observable<AccessTokenEnvelope> login(final String email, final String password, final String code) {
-    return service.login(email, password, code);
+    return service.login(email, password, code)
+      .replay().refCount();
   }
 
   private ApiService apiService() {

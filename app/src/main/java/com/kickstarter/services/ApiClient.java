@@ -43,7 +43,9 @@ public class ApiClient {
   }
 
   public Observable<ActivityEnvelope> fetchActivities(final ActivityFeedParams params) {
-    return service.fetchActivities(params.queryParams()).retry(3);
+    return service.fetchActivities(params.queryParams())
+      .retry(3)
+      .share();
   }
 
   public Observable<CommentsEnvelope> fetchProjectComments(final Project project) {
@@ -63,11 +65,13 @@ public class ApiClient {
   }
 
   public Observable<AccessTokenEnvelope> login(final String email, final String password) {
-    return service.login(email, password);
+    return service.login(email, password)
+      .share();
   }
 
   public Observable<AccessTokenEnvelope> login(final String email, final String password, final String code) {
-    return service.login(email, password, code);
+    return service.login(email, password, code)
+      .share();
   }
 
   private ApiService apiService() {

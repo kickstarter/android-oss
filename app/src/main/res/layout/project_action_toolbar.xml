@@ -6,7 +6,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   tools:showIn="@layout/project_layout"
   android:layout_width="match_parent"
-  android:layout_height="wrap_content"
+  android:layout_height="?attr/actionBarSize"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
   android:background="@color/window_background"

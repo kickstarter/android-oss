@@ -146,7 +146,6 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
 
   // todo
   public void starProjectClick(final View v) {
-    Timber.d("starProjectClick");
     presenter.takeStarClick();
   }
 

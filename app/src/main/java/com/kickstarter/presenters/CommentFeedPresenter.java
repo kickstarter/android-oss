@@ -19,7 +19,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.observables.ConnectableObservable;
 import rx.subjects.PublishSubject;
 
 public class CommentFeedPresenter extends Presenter<CommentFeedActivity> {

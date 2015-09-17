@@ -7,6 +7,7 @@ import android.util.Pair;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.RxUtils;
+import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.DiscoveryParams;
@@ -67,10 +68,21 @@ public class ThanksPresenter extends Presenter<ThanksActivity> {
 
     final Observable<List<Project>> recommendedProjects = apiClient.fetchProjects(params)
       .map(envelope -> envelope.projects);
+    final Observable<Category> rootCategory = apiClient.fetchCategory(project.category())
+      .map(Category::root);
+    final Observable<Pair<List<Project>, Category>> projectsAndRootCategory =
+      RxUtils.zipPair(recommendedProjects, rootCategory);
 
-    addSubscription(RxUtils.combineLatestPair(viewSubject.filter(v -> v != null), recommendedProjects)
+    addSubscription(
+      RxUtils.combineLatestPair(viewSubject, projectsAndRootCategory)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.showRecommendedProjects(vp.second)));
+      .subscribe(vpc -> {
+        ThanksActivity view = vpc.first;
+        List<Project> projects = vpc.second.first;
+        Category category = vpc.second.second;
+        view.showRecommendedProjects(projects, category);
+      })
+    );
   }
 
   public void takeDoneClick() {

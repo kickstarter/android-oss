@@ -23,6 +23,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.libs.vendor.TweetComposer;
+import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.ThanksPresenter;
 import com.kickstarter.ui.adapters.ProjectCardMiniAdapter;
@@ -66,7 +67,7 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
     backedProjectTextView.setText(Html.fromHtml(getString(R.string.You_just_backed, project.name())));
   }
 
-  public void showRecommendedProjects(final List<Project> projects) {
+  public void showRecommendedProjects(final List<Project> projects, final Category rootCategory) {
     projectCardMiniAdapter = new ProjectCardMiniAdapter(this, projects);
     recommendedProjectsRecyclerView.setAdapter(projectCardMiniAdapter);
   }

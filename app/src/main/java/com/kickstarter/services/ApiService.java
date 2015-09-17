@@ -1,5 +1,6 @@
 package com.kickstarter.services;
 
+import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
@@ -28,6 +29,9 @@ import rx.Observable;
 
   @GET("/v1/projects/{param}")
   public Observable<Project> fetchProject(@Path("param") String param);
+
+  @GET("/v1/categories/{param}")
+  public Observable<Category> fetchCategory(@Path("id") Integer id);
 
   @POST("/xauth/access_token")
   public Observable<AccessTokenEnvelope> login(@Query("email") String email,

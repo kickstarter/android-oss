@@ -10,6 +10,7 @@ public class Category implements Parcelable {
   Integer id = null;
   String name = null;
   Integer parentId = null;
+  Category parent = null;
 
   public Integer id() {
     return id;
@@ -23,15 +24,23 @@ public class Category implements Parcelable {
     return parentId;
   }
 
+  public Category parent() {
+    return parent;
+  }
+
   // TODO: Should be able to grab a Category rather than dealing with Integers. That would require loading all the
   // categories (probably on start-up). There is a bunch of work to do on categories, probably best to tackle it all
   // at once.
   public Integer rootId() {
-    return isRootValue() ? id() : parentId();
+    return isRoot() ? id() : parentId();
   }
 
-  public boolean isRootValue() {
+  public boolean isRoot() {
     return parentId() == null || parentId() == 0;
+  }
+
+  public Category root() {
+    return parent == null ? this : parent;
   }
 
   @Override

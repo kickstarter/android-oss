@@ -23,4 +23,11 @@ public class RxUtils {
   public static <F, S> Observable<F> takeWhen(final Observable<F> ob1, final Observable<S> ob2) {
     return ob2.withLatestFrom(ob1, (x, y) -> y);
   }
+
+  /**
+   * Zips two observables up into an observable of pairs.
+   */
+  public static <F, S> Observable<Pair<F, S>> zipPair(final Observable<F> ob1, final Observable<S> ob2) {
+    return Observable.zip(ob1, ob2, Pair::new);
+  }
 }

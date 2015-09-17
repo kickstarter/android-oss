@@ -30,7 +30,7 @@
       android:layout_width="@dimen/button_icon_fixed_width"
       android:layout_height="match_parent"
       android:textColor="@color/dark_gray"
-      android:text="@string/arrow_back"/>
+      android:text="@string/arrow_back_icon"/>
 
     <TextView
       android:id="@+id/comment_button"

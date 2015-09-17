@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <!-- Icon naming convention from https://www.google.com/design/icons/ -->
-  <string name="arrow_back">arrow_back</string>
+  <string name="arrow_back_icon">arrow_back</string>
   <string name="chevron_right_icon">chevron_right</string>
   <string name="create_icon">create</string>
   <string name="favorite_icon">favorite</string>

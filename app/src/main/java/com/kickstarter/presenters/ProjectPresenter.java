@@ -46,12 +46,12 @@ public class ProjectPresenter extends Presenter<ProjectActivity> {
       .filter(u -> u == null);
 
     final Observable<Project> projectOnUserChangeStar = loggedInUserOnStarClick
-      .switchMap(__ -> client.toggleProjectStar(initialProject))
+      .switchMap(__ -> toggleProjectStar(initialProject))
       .share();
 
     final Observable<Project> starredProjectOnLoginSuccess = loginSuccess
       .take(1)
-      .flatMap(__ -> client.starProject(initialProject))
+      .switchMap(__ -> starProject(initialProject))
       .share();
 
     final Observable<Project> project = client.fetchProject(initialProject)
@@ -63,12 +63,17 @@ public class ProjectPresenter extends Presenter<ProjectActivity> {
     final Observable<Pair<ProjectActivity, Project>> viewAndProject =
       RxUtils.combineLatestPair(viewSubject, project);
 
-    addSubscription(viewAndProject
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.show(vp.second)));
+    addSubscription(
+      viewAndProject
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(vp -> vp.first.show(vp.second))
+    );
 
     addSubscription(
-      RxUtils.takePairWhen(viewSubject, projectOnUserChangeStar.mergeWith(starredProjectOnLoginSuccess))
+      RxUtils.takePairWhen(
+        viewSubject,
+        projectOnUserChangeStar.mergeWith(starredProjectOnLoginSuccess)
+      )
         .filter(vp -> vp.second.isStarred())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(vp -> vp.first.showStarPrompt())
@@ -135,5 +140,15 @@ public class ProjectPresenter extends Presenter<ProjectActivity> {
 
   public void takeStarClick() {
     starClick.onNext(null);
+  }
+
+  public Observable<Project> starProject(final Project project) {
+    return client.starProject(project)
+      .onErrorResumeNext(Observable.empty());
+  }
+
+  public Observable<Project> toggleProjectStar(final Project project) {
+    return client.toggleProjectStar(project)
+      .onErrorResumeNext(Observable.empty());
   }
 }

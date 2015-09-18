@@ -37,7 +37,6 @@
       android:id="@+id/back_project_button"
       style="@style/KsrButton"
       android:visibility="visible"
-      android:onClick="backProjectButtonOnClick"
       android:background="@drawable/button_green"
       android:text="@string/Back_this_project" />
 

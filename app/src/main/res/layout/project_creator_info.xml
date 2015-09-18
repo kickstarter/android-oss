@@ -15,8 +15,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/grid_3"
-    android:paddingTop="@dimen/grid_3"
-    android:onClick="creatorNameOnClick">
+    android:paddingTop="@dimen/grid_3">
 
     <TextView
       android:id="@+id/created_by"
@@ -63,8 +62,7 @@
     <RelativeLayout
       android:id="@+id/campaign"
       android:layout_width="match_parent"
-      android:layout_height="@dimen/grid_11_half"
-      android:onClick="blurbOnClick" >
+      android:layout_height="@dimen/grid_11_half" >
 
       <TextView
         android:layout_width="match_parent"
@@ -93,8 +91,7 @@
     <RelativeLayout
       android:id="@+id/updates"
       android:layout_width="match_parent"
-      android:layout_height="@dimen/grid_11_half"
-      android:onClick="updatesClick" >
+      android:layout_height="@dimen/grid_11_half" >
 
       <TextView
         android:layout_width="match_parent"
@@ -124,8 +121,7 @@
     <RelativeLayout
       android:id="@+id/comments"
       android:layout_width="match_parent"
-      android:layout_height="@dimen/grid_11_half"
-      android:onClick="commentsClick" >
+      android:layout_height="@dimen/grid_11_half" >
 
       <TextView
         android:layout_width="match_parent"

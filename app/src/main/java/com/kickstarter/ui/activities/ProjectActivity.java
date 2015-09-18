@@ -130,28 +130,27 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
     });
   }
 
-  public void backProjectButtonOnClick(final View v) {
+  @OnClick(R.id.back_project_button)
+  public void backProjectButtonOnClick() {
     presenter.takeBackProjectClick();
   }
 
-  public void commentsClick(final View v) {
+  @OnClick(R.id.comments)
+  public void commentsClick() {
     presenter.takeCommentsClick();
   }
 
-  // todo
-  public void starProjectClick(final View v) {
-  }
-
-  public void updatesClick(final View v) {
+  @OnClick(R.id.updates)
+  public void updatesClick() {
     presenter.takeUpdatesClick();
   }
 
-  @OnClick(R.id.blurb)
+  @OnClick({R.id.blurb, R.id.campaign})
   public void blurbOnClick() {
     presenter.takeBlurbClick();
   }
 
-  @OnClick(R.id.creator_name)
+  @OnClick({R.id.creator_name, R.id.creator_info})
   public void creatorNameOnClick() {
     presenter.takeCreatorNameClick();
   }

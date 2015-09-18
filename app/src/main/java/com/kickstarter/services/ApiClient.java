@@ -16,6 +16,7 @@ import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
+import com.kickstarter.services.apiresponses.StarEnvelope;
 
 import org.joda.time.DateTime;
 
@@ -44,34 +45,38 @@ public class ApiClient {
 
   public Observable<ActivityEnvelope> fetchActivities(final ActivityFeedParams params) {
     return service.fetchActivities(params.queryParams())
-      .retry(3)
-      .replay().refCount();
+      .retry(3);
   }
 
   public Observable<CommentsEnvelope> fetchProjectComments(final Project project) {
-    return service.fetchProjectComments(project.param())
-      .replay().refCount();
+    return service.fetchProjectComments(project.param());
   }
 
   public Observable<DiscoverEnvelope> fetchProjects(final DiscoveryParams params) {
     return service.fetchProjects(params.queryParams())
-      .retry(3)
-      .replay().refCount();
+      .retry(3);
   }
 
   public Observable<Project> fetchProject(final Project project) {
-    return service.fetchProject(project.param()).startWith(project)
-      .replay().refCount();
+    return service.fetchProject(project.param()).startWith(project);
   }
 
   public Observable<AccessTokenEnvelope> login(final String email, final String password) {
-    return service.login(email, password)
-      .replay().refCount();
+    return service.login(email, password);
   }
 
   public Observable<AccessTokenEnvelope> login(final String email, final String password, final String code) {
-    return service.login(email, password, code)
-      .replay().refCount();
+    return service.login(email, password, code);
+  }
+
+  public Observable<Project> starProject(final Project project) {
+    return service.starProject(project.param())
+      .map(StarEnvelope::project);
+  }
+
+  public Observable<Project> toggleProjectStar(final Project project) {
+    return service.toggleProjectStar(project.param())
+      .map(StarEnvelope::project);
   }
 
   private ApiService apiService() {

@@ -71,11 +71,13 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
     recommendedProjectsRecyclerView.setAdapter(projectCardMiniAdapter);
   }
 
-  public void onDoneClick(final View view) {
+  @OnClick(R.id.done_button)
+  public void onDoneClick() {
     presenter.takeDoneClick();
   }
 
-  public void onShareClick(final View view) {
+  @OnClick(R.id.share_button)
+  public void onShareClick() {
     presenter.takeShareClick();
   }
 

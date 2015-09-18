@@ -75,10 +75,6 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
-  public void projectContextClick(View view) {
-    onBackPressed();
-  }
-
   @Nullable @OnClick(R.id.leave_comment_button)
   public void publicCommentClick(final View view) {
     final LayoutInflater layoutInflater = getLayoutInflater();

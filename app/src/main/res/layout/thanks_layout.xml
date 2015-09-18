@@ -97,7 +97,6 @@
         android:layout_marginLeft="@dimen/grid_1_half"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="onShareClick"
         android:text="@string/More"
         android:textAllCaps="false" />
 

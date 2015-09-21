@@ -6,12 +6,13 @@
   tools:showIn="@layout/project_layout"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:orientation="vertical"
-  android:paddingRight="@dimen/grid_3"
-  android:paddingLeft="@dimen/grid_3">
+  android:orientation="vertical">
 
   <RelativeLayout
     android:id="@+id/creator_info"
+    android:paddingLeft="@dimen/grid_3"
+    android:paddingRight="@dimen/grid_3"
+    android:background="@drawable/tap_indicator"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/grid_3"
@@ -51,6 +52,8 @@
   </RelativeLayout>
 
   <LinearLayout
+    android:paddingLeft="@dimen/grid_3"
+    android:paddingRight="@dimen/grid_3"
     android:orientation="vertical"
     android:id="@+id/creator_links"
     android:layout_width="match_parent"
@@ -65,11 +68,12 @@
       android:layout_height="@dimen/grid_11_half" >
 
       <TextView
+        android:id="@+id/campaign_text_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
+        android:gravity="center_vertical"
         android:textColor="@drawable/text_selector"
         android:textSize="@dimen/body"
         android:text="@string/Campaign" />
@@ -95,8 +99,8 @@
 
       <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:textColor="@drawable/text_selector"
@@ -125,10 +129,10 @@
 
       <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
+        android:gravity="center_vertical"
         android:textColor="@drawable/text_selector"
         android:textSize="@dimen/body"
         android:text="@string/Comments" />

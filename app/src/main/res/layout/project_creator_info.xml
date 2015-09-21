@@ -15,8 +15,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/grid_3"
-    android:paddingTop="@dimen/grid_3"
-    android:onClick="creatorNameOnClick">
+    android:paddingTop="@dimen/grid_3">
 
     <TextView
       android:id="@+id/created_by"
@@ -63,8 +62,7 @@
     <RelativeLayout
       android:id="@+id/campaign"
       android:layout_width="match_parent"
-      android:layout_height="@dimen/grid_11_half"
-      android:onClick="blurbOnClick" >
+      android:layout_height="@dimen/grid_11_half" >
 
       <TextView
         android:layout_width="match_parent"
@@ -78,7 +76,7 @@
 
       <com.kickstarter.ui.views.IconTextView
         icon_text_view:iconType="material"
-        android:textSize="@dimen/body"
+        android:textSize="@dimen/headline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/chevron_right_icon"
@@ -93,8 +91,7 @@
     <RelativeLayout
       android:id="@+id/updates"
       android:layout_width="match_parent"
-      android:layout_height="@dimen/grid_11_half"
-      android:onClick="updatesClick" >
+      android:layout_height="@dimen/grid_11_half" >
 
       <TextView
         android:layout_width="match_parent"
@@ -106,11 +103,13 @@
         android:textSize="@dimen/body"
         android:text="@string/Updates" />
 
-      <!-- todo: replace with icon-->
       <TextView
-        android:layout_centerVertical="true"
-        android:textSize="@dimen/body"
         android:id="@+id/updates_count"
+        android:background="@drawable/text_view_circle_background"
+        android:gravity="center"
+        android:layout_centerVertical="true"
+        android:textSize="@dimen/ksr_caption"
+        android:textColor="@color/white"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"
@@ -122,8 +121,7 @@
     <RelativeLayout
       android:id="@+id/comments"
       android:layout_width="match_parent"
-      android:layout_height="@dimen/grid_11_half"
-      android:onClick="commentsClick" >
+      android:layout_height="@dimen/grid_11_half" >
 
       <TextView
         android:layout_width="match_parent"
@@ -135,11 +133,13 @@
         android:textSize="@dimen/body"
         android:text="@string/Comments" />
 
-      <!-- todo: replace with icon-->
       <TextView
-        android:layout_centerVertical="true"
-        android:textSize="@dimen/body"
         android:id="@+id/comments_count"
+        android:background="@drawable/text_view_circle_background"
+        android:gravity="center"
+        android:layout_centerVertical="true"
+        android:textSize="@dimen/ksr_caption"
+        android:textColor="@color/white"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"

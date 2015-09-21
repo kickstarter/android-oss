@@ -129,9 +129,11 @@
   <string name="Use_your_email_address">Use your email address:</string>
   <string name="username_is_following_you">%1$s is following you!</string>
   <string name="Variant">Variant</string>
+  <string name="View_pledge">View pledge</string>
   <string name="Verify">Verify</string>
   <string name="Version_code">Version Code</string>
   <string name="Version_name">Version Name</string>
+  <string name="Well_remind_you_48_hours">We\'ll remind you 48 hours before this project ends!</string>
   <string name="When_you_back_a_project_or_follow_a_friend">
     When you back a project or follow a friend, their activity will show up here.
   </string>

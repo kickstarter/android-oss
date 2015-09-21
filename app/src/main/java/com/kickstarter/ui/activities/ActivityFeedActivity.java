@@ -23,11 +23,11 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 @RequiresPresenter(ActivityFeedPresenter.class)
 public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
   ActivityListAdapter adapter;
-  @Nullable @Bind(R.id.discover_projects_button) Button discoverProjectsButton;
   @Nullable @Bind(R.id.recycler_view) RecyclerView recyclerView;
   @Inject CurrentUser currentUser;
 
@@ -43,7 +43,8 @@ public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
   }
 
-  public void discoverProjectsButtonOnClick(final View view) {
+  @Nullable @OnClick(R.id.discover_projects_button)
+  public void discoverProjectsButtonOnClick() {
     final Intent intent = new Intent(this, DiscoveryActivity.class);
     startActivity(intent);
   }

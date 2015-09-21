@@ -9,7 +9,7 @@
   <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/grid_8">
+    android:paddingBottom="?attr/actionBarSize">
 
     <LinearLayout
       android:layout_width="fill_parent"
@@ -46,8 +46,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/ksr_caption"
             android:textColor="@color/text_dark"
-            android:clickable="true"
-            android:onClick="creatorNameOnClick" />
+            android:clickable="true" />
         </LinearLayout>
 
         <com.kickstarter.ui.views.TiemposTextView
@@ -58,7 +57,6 @@
           android:layout_marginBottom="@dimen/grid_3"
           android:textSize="@dimen/body"
           android:textColor="@color/text_dark"
-          android:onClick="blurbOnClick"
           android:clickable="true"
           android:paddingBottom="@dimen/grid_1" />
 
@@ -117,9 +115,7 @@
             android:layout_height="@dimen/grid_4"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:text="@string/Share"
-            android:textAllCaps="false"
-            android:onClick="shareOnClick" />
+            android:text="@string/Share" />
 
           <TextView
             android:id="@+id/location"
@@ -173,6 +169,6 @@
     </LinearLayout>
   </ScrollView>
 
-  <include layout="@layout/project_bottom_toolbar"/>
+  <include layout="@layout/project_action_toolbar"/>
 
 </RelativeLayout>

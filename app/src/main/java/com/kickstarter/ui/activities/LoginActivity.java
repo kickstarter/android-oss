@@ -15,6 +15,7 @@ import com.kickstarter.presenters.LoginPresenter;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 @RequiresPresenter(LoginPresenter.class)
 public class LoginActivity extends BaseActivity<LoginPresenter> {
@@ -50,7 +51,8 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
     }
   }
 
-  public void loginButtonOnClick(final View v) {
+  @OnClick(R.id.login_button)
+  public void loginButtonOnClick() {
     presenter.takeLoginClick();
   }
 

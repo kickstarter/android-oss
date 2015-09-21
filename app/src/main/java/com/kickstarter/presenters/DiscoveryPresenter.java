@@ -6,6 +6,7 @@ import android.util.Pair;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.BuildCheck;
+import com.kickstarter.libs.ListUtils;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.RxUtils;
 import com.kickstarter.models.Project;
@@ -14,6 +15,7 @@ import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.KickstarterClient;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -42,7 +44,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
       .switchMap(this::projectsWithPagination);
 
     final Observable<Pair<DiscoveryActivity, List<Project>>> viewAndProjects =
-      RxUtils.takePairWhen(viewSubject, projects);
+      RxUtils.combineLatestPair(viewSubject, projects);
 
     addSubscription(
       RxUtils.takeWhen(viewSubject, params).subscribe(DiscoveryActivity::clearItems)
@@ -50,7 +52,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
 
     addSubscription(viewAndProjects
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.onItemsNext(vp.second)));
+      .subscribe(vp -> vp.first.loadProjects(vp.second)));
 
     addSubscription(RxUtils.takePairWhen(viewSubject, projectClick)
         .observeOn(AndroidSchedulers.mainThread())
@@ -60,6 +62,8 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
     // TODO: We shouldn't have to do this, but BehaviorSubject and scan
     // don't seem to play well together:
     // https://github.com/ReactiveX/RxJava/issues/3168
+    // This apparently fixes it:
+    // https://github.com/ReactiveX/RxJava/pull/3171
     params.onNext(DiscoveryParams.params());
     nextPage.onNext(null);
   }
@@ -73,6 +77,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
     return paramsWithPagination(firstPageParams)
       .switchMap(this::projectsFromParams)
       .takeUntil(List::isEmpty)
+      .scan(ListUtils::concatDistinct)
       ;
   }
 
@@ -98,7 +103,21 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
       .retry(2)
       .onErrorResumeNext(e -> Observable.empty())
       .map(envelope -> envelope.projects)
+      .map(this::bumpPOTDToFront)
       ;
+  }
+
+  /**
+   * Give a list of projects, finds if it contains the POTD and if so
+   * bumps it to the front of the list.
+   */
+  private List<Project> bumpPOTDToFront(final List<Project> projects) {
+
+    return Observable.from(projects)
+      .reduce(new ArrayList<>(), (final List<Project> accum, final Project p) -> {
+        return p.isPotdToday() ? ListUtils.prepend(accum, p) : ListUtils.append(accum, p);
+      })
+      .toBlocking().single();
   }
 
   public void takeProjectClick(final Project project) {

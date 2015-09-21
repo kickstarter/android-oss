@@ -27,12 +27,12 @@
       android:src="@drawable/logo" />
 
     <TextView
+      android:id="@+id/done_button"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_centerVertical="true"
       android:layout_alignParentRight="true"
       android:clickable="true"
-      android:onClick="onDoneClick"
       android:textAppearance="@style/TextAppearance.AppCompat.Menu"
       android:textColor="@color/green"
       android:text="@string/Done" />

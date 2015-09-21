@@ -3,6 +3,7 @@ package com.kickstarter.ui.activities;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -14,6 +15,7 @@ import com.kickstarter.libs.KSColorUtils;
 import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.models.Category;
 import com.kickstarter.presenters.DiscoveryFilterPresenter;
+import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.adapters.DiscoveryFilterAdapter;
 
 import java.util.ArrayList;
@@ -26,7 +28,7 @@ import butterknife.OnClick;
 
 @RequiresPresenter(DiscoveryFilterPresenter.class)
 public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresenter> {
-  final List<Category> categories = new ArrayList<>();
+  final List<DiscoveryParams> discoveryParams = new ArrayList<>();
   DiscoveryFilterAdapter adapter;
   LinearLayoutManager layoutManager;
 
@@ -37,17 +39,19 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
   protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    // TODO: Pass discovery filter params
+    // TODO: Pass params from discovery
 
     setContentView(R.layout.discovery_filter_layout);
     ButterKnife.bind(this);
 
     layoutManager = new LinearLayoutManager(this);
-    adapter = new DiscoveryFilterAdapter(categories);
+    adapter = new DiscoveryFilterAdapter(discoveryParams);
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);
 
     setStatusBarColor();
+
+    presenter.initialize(new DiscoveryParams.Builder().build());
   }
 
   @OnClick(R.id.close_button)
@@ -55,12 +59,9 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
     onBackPressed();
   }
 
-  public void onItemsNext(final List<Category> newCategories) {
-    for (final Category newCategory: newCategories) {
-      if (! categories.contains(newCategory)) {
-        categories.add(newCategory);
-      }
-    }
+  public void loadDiscoveryParams(final List<DiscoveryParams> newDiscoveryParams) {
+    discoveryParams.clear();
+    discoveryParams.addAll(newDiscoveryParams);
     adapter.notifyDataSetChanged();
   }
 

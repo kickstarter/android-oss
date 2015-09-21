@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.models.Category;
+import com.kickstarter.services.DiscoveryParams;
 
 import butterknife.Bind;
 import butterknife.BindColor;
@@ -24,8 +25,18 @@ public class DiscoveryFilterViewHolder extends RecyclerView.ViewHolder {
     ButterKnife.bind(this, view);
   }
 
-  public void onBind(final Category category) {
-    filterTextView.setText(category.name());
+  public void onBind(final DiscoveryParams params) {
+    verticalLineView.setVisibility(View.GONE);
+
+    if (params.category() != null) {
+      final Category category = params.category();
+      if (!category.isRoot()) {
+        verticalLineView.setVisibility(View.VISIBLE);
+      }
+    }
+
+    filterTextView.setText(params.filterString(view.getContext()));
+
     verticalLineView.setBackgroundColor(whiteColor);
   }
 }

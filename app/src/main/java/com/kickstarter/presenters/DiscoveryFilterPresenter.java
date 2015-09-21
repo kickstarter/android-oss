@@ -2,12 +2,14 @@ package com.kickstarter.presenters;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Pair;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.RxUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.activities.DiscoveryFilterActivity;
 
 import java.util.List;
@@ -16,6 +18,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.observables.GroupedObservable;
 
 public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity> {
   @Inject ApiClient apiClient;
@@ -24,12 +27,36 @@ public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity>
   protected void onCreate(final Context context, final Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
+  }
 
-    final Observable<List<Category>> categories = apiClient.fetchCategories();
+  protected List<DiscoveryParams> categoriesToDiscoveryParams(final List<Category> initialCategories) {
+    final Observable<Category> categories = Observable.from(initialCategories)
+      .toSortedList(Category::discoveryFilterCompareTo)
+      .flatMap(Observable::from);
 
-    RxUtils.combineLatestPair(viewChange, categories)
-      .filter(vc -> vc.first != null)
+    final Observable<GroupedObservable<Integer, Category>> groupedCategories = categories.groupBy(Category::rootId);
+
+    // TODO: Add social sort when there is a current user
+    final Observable<DiscoveryParams> discoveryParams = Observable.concat(groupedCategories)
+      .map(c -> new DiscoveryParams.Builder().category(c).build())
+      .startWith(
+        new DiscoveryParams.Builder().staffPicks(true).build(),
+        new DiscoveryParams.Builder().starred(1).build(),
+        new DiscoveryParams.Builder().build() // "Everything" sort
+      );
+
+    return discoveryParams.toList().toBlocking().single();
+  }
+
+  public void initialize(final DiscoveryParams initialDiscoveryParams) {
+    final Observable<List<DiscoveryParams>> discoveryParams = apiClient.fetchCategories()
+      .map(this::categoriesToDiscoveryParams);
+
+    final Observable<Pair<DiscoveryFilterActivity, List<DiscoveryParams>>> viewAndDiscoveryParams =
+      RxUtils.combineLatestPair(viewSubject, discoveryParams);
+
+    addSubscription(viewAndDiscoveryParams
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vc -> vc.first.onItemsNext(vc.second));
+      .subscribe(vd -> vd.first.loadDiscoveryParams(vd.second)));
   }
 }

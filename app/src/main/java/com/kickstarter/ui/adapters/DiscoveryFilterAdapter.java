@@ -7,14 +7,16 @@ import android.view.ViewGroup;
 
 import com.kickstarter.R;
 import com.kickstarter.models.Category;
+import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.viewholders.DiscoveryFilterViewHolder;
 
 import java.util.List;
 
 public class DiscoveryFilterAdapter extends RecyclerView.Adapter<DiscoveryFilterViewHolder> {
-  private List<Category> categories;
-  public DiscoveryFilterAdapter(final List<Category> categories) {
-    this.categories = categories;
+  private List<DiscoveryParams> discoveryParams;
+
+  public DiscoveryFilterAdapter(final List<DiscoveryParams> discoveryParams) {
+    this.discoveryParams = discoveryParams;
   }
 
   @Override
@@ -28,11 +30,11 @@ public class DiscoveryFilterAdapter extends RecyclerView.Adapter<DiscoveryFilter
 
   @Override
   public void onBindViewHolder(final DiscoveryFilterViewHolder viewHolder, final int position) {
-    viewHolder.onBind(categories.get(position));
+    viewHolder.onBind(discoveryParams.get(position));
   }
 
   @Override
   public int getItemCount() {
-    return categories.size();
+    return discoveryParams.size();
   }
 }

@@ -64,7 +64,6 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/grid_3"
     android:layout_gravity="center_horizontal"
-    android:onClick="openDownloadsOnClick"
     android:paddingTop="12dp"
     android:paddingBottom="12dp"
     android:text="@string/Open_downloads_folder" />

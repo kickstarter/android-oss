@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  tools:showIn="@layout/empty_comment_feed_layout"
   android:layout_width="match_parent"
   android:layout_height="@dimen/grid_10"
   android:id="@+id/project_context_view"
-  android:clickable="true"
-  android:onClick="projectContextClick">
+  android:clickable="true">
 
   <ImageView
     android:id="@+id/context_photo"

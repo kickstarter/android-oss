@@ -15,6 +15,7 @@ import java.lang.annotation.RetentionPolicy;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class DisplayWebViewActivity extends BaseActivity {
   @Bind(R.id.close_text_view) TextView closeTextView;
@@ -29,7 +30,7 @@ public class DisplayWebViewActivity extends BaseActivity {
 
   public void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.webview_layout);
+    setContentView(R.layout.web_view_layout);
     ButterKnife.bind(this);
 
     final Intent intent = getIntent();
@@ -54,7 +55,8 @@ public class DisplayWebViewActivity extends BaseActivity {
     overrideExitTransition();
   }
 
-  public void closeTextViewOnClick(final View view) {
+  @OnClick(R.id.close_text_view)
+  public void closeTextViewOnClick() {
     finish();
     overrideExitTransition();
   }

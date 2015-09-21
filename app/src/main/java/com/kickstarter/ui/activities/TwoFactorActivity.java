@@ -14,6 +14,7 @@ import com.kickstarter.presenters.TwoFactorPresenter;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 @RequiresPresenter(TwoFactorPresenter.class)
 public class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
@@ -33,11 +34,13 @@ public class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
     loginButton.setEnabled(enabled);
   }
 
-  public void resendButtonOnClick(final View v) {
+  @OnClick(R.id.resend_button)
+  public void resendButtonOnClick() {
     presenter.takeResendClick();
   }
 
-  public void loginButtonOnClick(final View v) {
+  @OnClick(R.id.login_button)
+  public void loginButtonOnClick() {
     presenter.takeLoginClick();
   }
 

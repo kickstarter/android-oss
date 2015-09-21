@@ -55,7 +55,6 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_marginRight="@dimen/grid_1"
-        android:onClick="resendButtonOnClick"
         android:text="@string/Resend" />
 
       <Button
@@ -65,7 +64,6 @@
         android:layout_weight="1"
         android:layout_marginLeft="@dimen/grid_1"
         android:enabled="false"
-        android:onClick="loginButtonOnClick"
         android:text="@string/Submit" />
 
     </LinearLayout>

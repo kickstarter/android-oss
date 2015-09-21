@@ -31,6 +31,7 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import timber.log.Timber;
 
 @RequiresPresenter(ProjectPresenter.class)
@@ -136,33 +137,39 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
     });
   }
 
-  public void backProjectButtonOnClick(final View v) {
+  @OnClick(R.id.back_project_button)
+  public void backProjectButtonOnClick() {
     presenter.takeBackProjectClick();
   }
 
-  public void commentsClick(final View v) {
+  @OnClick(R.id.comments)
+  public void commentsClick() {
     presenter.takeCommentsClick();
   }
 
-  // todo
-  public void starProjectClick(final View v) {
+  @OnClick(R.id.star_icon)
+  public void starProjectClick() {
     presenter.takeStarClick();
   }
 
-  public void shareOnClick(final View v) {
-    presenter.takeShareClick();
-  }
-
-  public void updatesClick(final View v) {
+  @OnClick(R.id.updates)
+  public void updatesClick() {
     presenter.takeUpdatesClick();
   }
 
-  public void blurbOnClick(final View v) {
+  @OnClick({R.id.blurb, R.id.campaign})
+  public void blurbOnClick() {
     presenter.takeBlurbClick();
   }
 
-  public void creatorNameOnClick(final View v) {
+  @OnClick({R.id.creator_name, R.id.creator_info})
+  public void creatorNameOnClick() {
     presenter.takeCreatorNameClick();
+  }
+
+  @OnClick({R.id.share_icon, R.id.share_button})
+  public void shareProject() {
+    presenter.takeShareClick();
   }
 
   public void showProjectDescription(final Project project) {

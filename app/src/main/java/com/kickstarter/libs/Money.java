@@ -13,7 +13,8 @@ public class Money {
   public String formattedNumber(final Float number) {
     // TODO: Should use appropriate locale
     // TODO: Could take bool to abbreviate (e.g. 100k instead of 100,000)
-    return NumberFormat.getInstance(Locale.getDefault()).format(number);
+    return NumberFormat.getInstance(Locale.getDefault())
+      .format(number.intValue());
   }
 
   public String formattedCurrency(final float amount, final CurrencyOptions currencyOptions) {

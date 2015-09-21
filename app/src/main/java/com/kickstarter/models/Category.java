@@ -10,6 +10,8 @@ public class Category implements Parcelable {
   Integer id = null;
   String name = null;
   Integer parentId = null;
+  Integer position = null;
+  Category parent = null;
 
   public Integer id() {
     return id;
@@ -23,15 +25,37 @@ public class Category implements Parcelable {
     return parentId;
   }
 
+  public Integer position() {
+    return position;
+  }
+
   // TODO: Should be able to grab a Category rather than dealing with Integers. That would require loading all the
   // categories (probably on start-up). There is a bunch of work to do on categories, probably best to tackle it all
   // at once.
   public Integer rootId() {
-    return isRootValue() ? id() : parentId();
+    return isRoot() ? id() : parentId();
   }
 
-  public boolean isRootValue() {
+  public Category parent() {
+    return parent;
+  }
+
+  public boolean isRoot() {
     return parentId() == null || parentId() == 0;
+  }
+
+  public int discoveryFilterCompareTo(final Category category) {
+    if (isRoot()) {
+      return name.compareTo(category.root().name());
+    } else if (category.isRoot()) {
+      return root().name().compareTo(category.name());
+    }
+
+    return name.compareTo(category.name());
+  }
+
+  public Category root() {
+    return parent == null ? this : parent;
   }
 
   @Override

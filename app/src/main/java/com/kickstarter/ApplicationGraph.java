@@ -13,7 +13,7 @@ import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.CommentFeedActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
-import com.kickstarter.ui.viewholders.CommentListViewHolder;
+import com.kickstarter.ui.viewholders.CommentViewHolder;
 import com.kickstarter.ui.activities.HelpActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.kickstarter.ui.views.CommentFeedToolbar;
@@ -31,7 +31,7 @@ public interface ApplicationGraph {
   void inject(CommentFeedActivity activity);
   void inject(CommentFeedPresenter presenter);
   void inject(CommentFeedToolbar toolbar);
-  void inject(CommentListViewHolder viewHolder);
+  void inject(CommentViewHolder viewHolder);
   void inject(CurrentUser currentUser);
   void inject(DiscoveryActivity activity);
   void inject(DiscoveryToolbar toolbar);

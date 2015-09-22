@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,9 +19,10 @@ import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.CommentFeedPresenter;
-import com.kickstarter.ui.adapters.CommentsAdapter;
+import com.kickstarter.ui.adapters.CommentFeedAdapter;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -62,9 +64,13 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     creatorNameTextView.setText(project.creator().name());
   }
 
-  public void showComments(final List<Comment> comments) {
+  public void loadProjectComments(final Project project, final List<Comment> comments) {
     final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-    final CommentsAdapter adapter = new CommentsAdapter(comments, project, presenter);
+    final List<Pair<Project, Comment>> projectAndComments = new ArrayList<>(comments.size());
+    for (final Comment comment : comments) {
+      projectAndComments.add(Pair.create(project, comment));
+    }
+    final CommentFeedAdapter adapter = new CommentFeedAdapter(project, projectAndComments);
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);
   }

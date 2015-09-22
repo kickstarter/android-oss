@@ -19,20 +19,6 @@ public abstract class KsrAdapter extends RecyclerView.Adapter<KsrViewHolder> {
 
   protected abstract int layout(final SectionRow sectionRow);
 
-  /*
-  protected KsrViewHolder headerViewHolder() {
-    return null;
-  }
-
-  protected List<?> headerData() {
-    return null;
-  }
-
-  private boolean hasHeader() {
-    return headerData() != null;
-  }
-  */
-
   protected abstract KsrViewHolder viewHolder(final int layout, final View view);
 
   @Override

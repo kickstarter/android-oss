@@ -8,8 +8,6 @@ import android.widget.TextView;
 import com.kickstarter.R;
 import com.kickstarter.libs.CircleTransform;
 import com.kickstarter.libs.StringUtils;
-import com.kickstarter.models.Activity;
-import com.kickstarter.presenters.ActivityFeedPresenter;
 import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
@@ -22,14 +20,14 @@ public class FriendBackingViewHolder extends ActivityListViewHolder {
   @Bind(R.id.project_photo) ImageView projectPhotoImageView;
   @Bind(R.id.title) TextView titleTextView;
 
-  public FriendBackingViewHolder(final View view, final ActivityFeedPresenter presenter) {
-    super(view, presenter);
+  public FriendBackingViewHolder(final View view) {
+    super(view);
     ButterKnife.bind(this, view);
   }
 
   @Override
-  public void onBind(final Activity activity) {
-    super.onBind(activity);
+  public void onBind(final Object datum) {
+    super.onBind(datum);
 
     final Context context = view.getContext();
 

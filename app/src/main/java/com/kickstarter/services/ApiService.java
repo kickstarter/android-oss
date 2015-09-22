@@ -32,7 +32,7 @@ import rx.Observable;
   @GET("/v1/projects/{param}")
   public Observable<Project> fetchProject(@Path("param") String param);
 
-  @GET("/v1/categories/{param}")
+  @GET("/v1/categories/{id}")
   public Observable<Category> fetchCategory(@Path("id") Integer id);
 
   @POST("/xauth/access_token")

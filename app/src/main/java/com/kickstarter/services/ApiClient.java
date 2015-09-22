@@ -63,8 +63,7 @@ public class ApiClient {
   }
 
   public Observable<Category> fetchCategory(final Category category) {
-    return service.fetchCategory(category.id())
-      .share();
+    return service.fetchCategory(category.id());
   }
 
   public Observable<AccessTokenEnvelope> login(final String email, final String password) {

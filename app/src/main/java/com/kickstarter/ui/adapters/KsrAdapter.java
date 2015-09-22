@@ -89,6 +89,9 @@ public abstract class KsrAdapter extends RecyclerView.Adapter<KsrViewHolder> {
     return layoutInflater.inflate(viewType, viewGroup, false);
   }
 
+  /**
+   * SectionRows allow RecyclerViews to be structured into one or more sections. Sections can contain one or more rows.
+   */
   protected class SectionRow {
     private int section;
     private int row;

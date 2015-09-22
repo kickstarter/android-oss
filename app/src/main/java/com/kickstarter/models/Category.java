@@ -1,16 +1,25 @@
 package com.kickstarter.models;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
+import com.kickstarter.R;
+import com.kickstarter.libs.KSColorUtils;
 
 @ParcelablePlease
 public class Category implements Parcelable {
+  Integer color = null;
   Integer id = null;
   String name = null;
   Integer parentId = null;
   Category parent = null;
+
+  public Integer color() {
+    return KSColorUtils.setAlpha(color, 255);
+  }
 
   public Integer id() {
     return id;
@@ -41,6 +50,11 @@ public class Category implements Parcelable {
 
   public Category root() {
     return parent == null ? this : parent;
+  }
+
+  public int overlayTextColor(final Context context) {
+    final Resources resources = context.getResources();
+    return KSColorUtils.isLight(color()) ? resources.getColor(R.color.text_dark) : resources.getColor(R.color.white);
   }
 
   @Override

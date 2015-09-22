@@ -14,8 +14,8 @@ public class Category implements Parcelable {
   Integer color = null;
   Integer id = null;
   String name = null;
-  Integer parentId = null;
   Category parent = null;
+  Integer parentId = null;
   Integer projectsCount = null;
 
   public Integer color() {
@@ -26,12 +26,17 @@ public class Category implements Parcelable {
     return id;
   }
 
+  public boolean isRoot() {
+    return parentId() == null || parentId() == 0;
+  }
+
   public String name() {
     return name;
   }
 
-  public Integer parentId() {
-    return parentId;
+  public int overlayTextColor(final Context context) {
+    final Resources resources = context.getResources();
+    return KSColorUtils.isLight(color()) ? resources.getColor(R.color.text_dark) : resources.getColor(R.color.white);
   }
 
   public Category parent() {
@@ -43,28 +48,17 @@ public class Category implements Parcelable {
     return parent;
   }
 
+
+  public Integer parentId() {
+    return parentId;
+  }
+
   public Integer projectsCount() {
     return projectsCount;
   }
 
-  // TODO: Should be able to grab a Category rather than dealing with Integers. That would require loading all the
-  // categories (probably on start-up). There is a bunch of work to do on categories, probably best to tackle it all
-  // at once.
-  public Integer rootId() {
-    return isRoot() ? id() : parentId();
-  }
-
-  public boolean isRoot() {
-    return parentId() == null || parentId() == 0;
-  }
-
   public Category root() {
     return isRoot() ? this : parent();
-  }
-
-  public int overlayTextColor(final Context context) {
-    final Resources resources = context.getResources();
-    return KSColorUtils.isLight(color()) ? resources.getColor(R.color.text_dark) : resources.getColor(R.color.white);
   }
 
   @Override

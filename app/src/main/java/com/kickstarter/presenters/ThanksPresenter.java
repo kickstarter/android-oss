@@ -23,7 +23,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
-import timber.log.Timber;
 
 public class ThanksPresenter extends Presenter<ThanksActivity> implements ThanksAdapter.Delegate {
   private final PublishSubject<Void> doneClick = PublishSubject.create();

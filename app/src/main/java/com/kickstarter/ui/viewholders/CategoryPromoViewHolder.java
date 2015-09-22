@@ -18,7 +18,7 @@ public class CategoryPromoViewHolder extends KsrViewHolder {
   @Bind(R.id.explore_text_view) TextView exploreTextView;
   @Bind(R.id.live_projects_text_view) TextView liveProjectsTextView;
 
-  public interface Delegate{
+  public interface Delegate {
     void categoryPromoClick(final CategoryPromoViewHolder viewHolder, final Category category);
   }
 

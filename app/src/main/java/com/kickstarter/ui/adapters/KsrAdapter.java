@@ -19,6 +19,7 @@ public abstract class KsrAdapter extends RecyclerView.Adapter<KsrViewHolder> {
 
   protected abstract int layout(final SectionRow sectionRow);
 
+  /*
   protected KsrViewHolder headerViewHolder() {
     return null;
   }
@@ -30,6 +31,7 @@ public abstract class KsrAdapter extends RecyclerView.Adapter<KsrViewHolder> {
   private boolean hasHeader() {
     return headerData() != null;
   }
+  */
 
   protected abstract KsrViewHolder viewHolder(final int layout, final View view);
 
@@ -59,12 +61,12 @@ public abstract class KsrAdapter extends RecyclerView.Adapter<KsrViewHolder> {
     return itemCount;
   }
 
-  private Object objectFromPosition(final int position) {
-    return objectFromSectionRow(sectionRowFromPosition(position));
-  }
-
   protected Object objectFromSectionRow(final SectionRow sectionRow) {
     return data.get(sectionRow.section()).get(sectionRow.row());
+  }
+
+  private Object objectFromPosition(final int position) {
+    return objectFromSectionRow(sectionRowFromPosition(position));
   }
 
   private SectionRow sectionRowFromPosition(final int position) {

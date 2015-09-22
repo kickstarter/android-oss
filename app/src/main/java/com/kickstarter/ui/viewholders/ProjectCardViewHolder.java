@@ -1,6 +1,5 @@
 package com.kickstarter.ui.viewholders;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -19,7 +18,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class ProjectListViewHolder extends RecyclerView.ViewHolder {
+public class ProjectCardViewHolder extends KsrViewHolder {
   protected @Bind(R.id.backers_count) TextView backersCountTextView;
   protected @Bind(R.id.category) TextView categoryTextView;
   protected @Bind(R.id.deadline_countdown) TextView deadlineCountdownTextView;
@@ -32,24 +31,25 @@ public class ProjectListViewHolder extends RecyclerView.ViewHolder {
   protected @Bind(R.id.photo) ImageView photoImageView;
   protected @Bind(R.id.photo_gradient) ViewGroup photoGradientViewGroup;
   protected @Bind(R.id.potd_group) ViewGroup potdViewGroup;
-  protected View view;
   protected Project project;
+  private final Delegate delegate;
   protected DiscoveryPresenter presenter;
   @Inject Money money;
 
-  public ProjectListViewHolder(View view, DiscoveryPresenter presenter) {
+  public interface Delegate {
+    void projectClick(final ProjectCardViewHolder viewHolder, final Project project);
+  }
+
+  public ProjectCardViewHolder(final View view, final Delegate delegate) {
     super(view);
-    this.view = view;
-    this.presenter = presenter;
+    this.delegate = delegate;
 
     ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
     ButterKnife.bind(this, view);
-
-    view.setOnClickListener((final View v) -> presenter.takeProjectClick(project));
   }
 
-  public void onBind(final Project project) {
-    this.project = project;
+  public void onBind(final Object datum) {
+    this.project = (Project) datum;
 
     backersCountTextView.setText(project.formattedBackersCount());
     categoryTextView.setText(project.category().name());
@@ -67,6 +67,10 @@ public class ProjectListViewHolder extends RecyclerView.ViewHolder {
     final int potdVisible = project.isPotdToday() ? View.VISIBLE : View.INVISIBLE;
     photoGradientViewGroup.setVisibility(potdVisible);
     potdViewGroup.setVisibility(potdVisible);
+  }
 
+  @Override
+  public void onClick(final View view) {
+    delegate.projectClick(this, project);
   }
 }

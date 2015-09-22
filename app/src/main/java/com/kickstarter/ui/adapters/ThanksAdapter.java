@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class ThanksAdapter extends KsrAdapter {
-  final Delegate delegate;
+  private final Delegate delegate;
 
   public interface Delegate extends CategoryPromoViewHolder.Delegate, ProjectCardMiniViewHolder.Delegate {}
 

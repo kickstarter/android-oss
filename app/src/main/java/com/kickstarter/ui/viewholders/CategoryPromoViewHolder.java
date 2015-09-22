@@ -13,7 +13,7 @@ import butterknife.ButterKnife;
 
 public class CategoryPromoViewHolder extends KsrViewHolder {
   private Category category;
-  final Delegate delegate;
+  private final Delegate delegate;
   @Bind(R.id.card_view) CardView cardView;
   @Bind(R.id.explore_text_view) TextView exploreTextView;
   @Bind(R.id.live_projects_text_view) TextView liveProjectsTextView;

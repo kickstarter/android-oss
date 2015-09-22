@@ -16,6 +16,7 @@ public class Category implements Parcelable {
   String name = null;
   Integer parentId = null;
   Category parent = null;
+  Integer projectsCount = null;
 
   public Integer color() {
     return KSColorUtils.setAlpha(color, 255);
@@ -34,7 +35,16 @@ public class Category implements Parcelable {
   }
 
   public Category parent() {
+    if (parent == null) {
+      parent = new Category();
+      parent.id = parentId;
+    }
+
     return parent;
+  }
+
+  public Integer projectsCount() {
+    return projectsCount;
   }
 
   // TODO: Should be able to grab a Category rather than dealing with Integers. That would require loading all the
@@ -49,7 +59,7 @@ public class Category implements Parcelable {
   }
 
   public Category root() {
-    return parent == null ? this : parent;
+    return isRoot() ? this : parent();
   }
 
   public int overlayTextColor(final Context context) {

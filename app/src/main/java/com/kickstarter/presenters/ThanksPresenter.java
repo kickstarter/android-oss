@@ -12,6 +12,9 @@ import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.activities.ThanksActivity;
+import com.kickstarter.ui.adapters.ThanksAdapter;
+import com.kickstarter.ui.viewholders.CategoryPromoViewHolder;
+import com.kickstarter.ui.viewholders.ProjectCardMiniViewHolder;
 
 import java.util.List;
 
@@ -20,12 +23,15 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
+import timber.log.Timber;
 
-public class ThanksPresenter extends Presenter<ThanksActivity> {
+public class ThanksPresenter extends Presenter<ThanksActivity> implements ThanksAdapter.Delegate {
   private final PublishSubject<Void> doneClick = PublishSubject.create();
   private final PublishSubject<Void> facebookClick = PublishSubject.create();
   private final PublishSubject<Void> shareClick = PublishSubject.create();
   private final PublishSubject<Void> twitterClick = PublishSubject.create();
+  private final PublishSubject<Project> projectCardMiniClick = PublishSubject.create();
+  private final PublishSubject<Category> categoryPromoClick = PublishSubject.create();
 
   @Inject ApiClient apiClient;
 
@@ -55,21 +61,28 @@ public class ThanksPresenter extends Presenter<ThanksActivity> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startTwitterShareIntent(vp.second)));
 
+    addSubscription(RxUtils.takePairWhen(viewChange, projectCardMiniClick)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(vp -> vp.first.startProjectIntent(vp.second)));
+
+    addSubscription(RxUtils.takePairWhen(viewChange, categoryPromoClick)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(vp -> vp.first.startDiscoveryCategoryIntent(vp.second)));
+
     addSubscription(RxUtils.combineLatestPair(viewSubject.filter(v -> v != null), doneClick)
       .map(vp -> vp.first)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(ThanksActivity::startDiscoveryActivity));
 
-    // TODO: Should use the project category root
     final DiscoveryParams params = new DiscoveryParams.Builder()
-      .category(project.category())
+      .category(project.category().root())
       .backed(-1)
+      .perPage(3)
       .build();
 
     final Observable<List<Project>> recommendedProjects = apiClient.fetchProjects(params)
       .map(envelope -> envelope.projects);
-    final Observable<Category> rootCategory = apiClient.fetchCategory(project.category())
-      .map(Category::root);
+    final Observable<Category> rootCategory = apiClient.fetchCategory(project.category().root());
     final Observable<Pair<List<Project>, Category>> projectsAndRootCategory =
       RxUtils.zipPair(recommendedProjects, rootCategory);
 
@@ -77,10 +90,10 @@ public class ThanksPresenter extends Presenter<ThanksActivity> {
       RxUtils.combineLatestPair(viewSubject, projectsAndRootCategory)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vpc -> {
-        ThanksActivity view = vpc.first;
-        List<Project> projects = vpc.second.first;
-        Category category = vpc.second.second;
-        view.showRecommendedProjects(projects, category);
+        final ThanksActivity view = vpc.first;
+        final List<Project> projects = vpc.second.first;
+        final Category category = vpc.second.second;
+        view.showRecommended(projects, category);
       })
     );
   }
@@ -101,8 +114,13 @@ public class ThanksPresenter extends Presenter<ThanksActivity> {
     twitterClick.onNext(null);
   }
 
-  // TODO: Hook this up
-/*  public void onProjectClicked(final Project project, final MiniProjectsViewHolder viewHolder) {
-    Timber.d("Project clicked");
-  }*/
+  @Override
+  public void categoryPromoClick(final CategoryPromoViewHolder viewHolder, final Category category) {
+    categoryPromoClick.onNext(category);
+  }
+
+  @Override
+  public void projectCardMiniClick(final ProjectCardMiniViewHolder viewHolder, final Project project) {
+    projectCardMiniClick.onNext(project);
+  }
 }

@@ -17,8 +17,14 @@ public abstract class KsrAdapter extends RecyclerView.Adapter<KsrViewHolder> {
     return data;
   }
 
+  /**
+   * Fetch the layout id associated with a sectionRow.
+   */
   protected abstract int layout(final SectionRow sectionRow);
 
+  /**
+   * Returns a new KsrViewHolder given a layout and view.
+   */
   protected abstract KsrViewHolder viewHolder(final int layout, final View view);
 
   @Override
@@ -47,10 +53,16 @@ public abstract class KsrAdapter extends RecyclerView.Adapter<KsrViewHolder> {
     return itemCount;
   }
 
+  /**
+   * Gets the data object associated with a sectionRow.
+   */
   protected Object objectFromSectionRow(final SectionRow sectionRow) {
     return data.get(sectionRow.section()).get(sectionRow.row());
   }
 
+  /**
+   * Gets the data object associated with a position.
+   */
   private Object objectFromPosition(final int position) {
     return objectFromSectionRow(sectionRowFromPosition(position));
   }

@@ -13,8 +13,16 @@ public abstract class KsrViewHolder extends RecyclerView.ViewHolder implements V
     view.setOnClickListener(this);
   }
 
+  /**
+   * No-op click implementation. Subclasses should override this method to implement click handling.
+   */
   @Override
   public void onClick(final View view) {
   }
+
+  /**
+   * Populate a view with data. Subclasses should override this method and cast the Object to the
+   * appropriate type.
+   */
   abstract public void onBind(final Object datum);
 }

@@ -1,6 +1,5 @@
 package com.kickstarter.ui.viewholders;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
@@ -12,31 +11,43 @@ import butterknife.Bind;
 import butterknife.BindColor;
 import butterknife.ButterKnife;
 
-public class DiscoveryFilterViewHolder extends RecyclerView.ViewHolder {
-  protected View view;
+public class DiscoveryFilterViewHolder extends KsrViewHolder {
+  private DiscoveryParams discoveryParams;
+  private final Delegate delegate;
   @Bind(R.id.filter_text_view) TextView filterTextView;
   @Bind(R.id.vertical_line_group) View verticalLineGroup;
   @Bind(R.id.vertical_line_view_thick) View verticalLineView;
   @BindColor(R.color.white) int whiteColor;
 
-  public DiscoveryFilterViewHolder(final View view) {
+  public interface Delegate {
+    void discoveryFilterClick(final DiscoveryFilterViewHolder viewHolder, final DiscoveryParams discoveryParams);
+  }
+
+  public DiscoveryFilterViewHolder(final View view, final Delegate delegate) {
     super(view);
-    this.view = view;
+    this.delegate = delegate;
     ButterKnife.bind(this, view);
   }
 
-  public void onBind(final DiscoveryParams params) {
+  public void onBind(final Object datum) {
+    discoveryParams = (DiscoveryParams) datum;
+
     verticalLineView.setVisibility(View.GONE);
 
-    if (params.category() != null) {
-      final Category category = params.category();
+    if (discoveryParams.category() != null) {
+      final Category category = discoveryParams.category();
       if (!category.isRoot()) {
         verticalLineView.setVisibility(View.VISIBLE);
       }
     }
 
-    filterTextView.setText(params.filterString(view.getContext()));
+    filterTextView.setText(discoveryParams.filterString(view.getContext()));
 
     verticalLineView.setBackgroundColor(whiteColor);
+  }
+
+  @Override
+  public void onClick(final View view) {
+    delegate.discoveryFilterClick(this, discoveryParams);
   }
 }

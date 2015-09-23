@@ -9,32 +9,27 @@ import com.kickstarter.R;
 import com.kickstarter.models.Category;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.viewholders.DiscoveryFilterViewHolder;
+import com.kickstarter.ui.viewholders.KsrViewHolder;
 
 import java.util.List;
 
-public class DiscoveryFilterAdapter extends RecyclerView.Adapter<DiscoveryFilterViewHolder> {
+public class DiscoveryFilterAdapter extends KsrAdapter {
   private List<DiscoveryParams> discoveryParams;
+  private final Delegate delegate;
 
-  public DiscoveryFilterAdapter(final List<DiscoveryParams> discoveryParams) {
-    this.discoveryParams = discoveryParams;
+  public interface Delegate extends DiscoveryFilterViewHolder.Delegate {}
+
+  public DiscoveryFilterAdapter(final List<DiscoveryParams> discoveryParams, final Delegate delegate) {
+    data().add(discoveryParams);
+    this.delegate = delegate;
   }
 
-  @Override
-  public DiscoveryFilterViewHolder onCreateViewHolder(final ViewGroup viewGroup, final int viewType) {
-    final View view = LayoutInflater
-      .from(viewGroup.getContext())
-      .inflate(R.layout.discovery_filter_view, viewGroup, false);
-
-    return new DiscoveryFilterViewHolder(view);
+  protected int layout(final SectionRow sectionRow) {
+    return R.layout.discovery_filter_view;
   }
 
-  @Override
-  public void onBindViewHolder(final DiscoveryFilterViewHolder viewHolder, final int position) {
-    viewHolder.onBind(discoveryParams.get(position));
-  }
+  protected KsrViewHolder viewHolder(final int layout, final View view) {
+    return new DiscoveryFilterViewHolder(view, delegate);
 
-  @Override
-  public int getItemCount() {
-    return discoveryParams.size();
   }
 }

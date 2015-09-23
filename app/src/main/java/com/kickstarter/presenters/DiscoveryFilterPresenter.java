@@ -11,6 +11,8 @@ import com.kickstarter.models.Category;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.activities.DiscoveryFilterActivity;
+import com.kickstarter.ui.adapters.DiscoveryFilterAdapter;
+import com.kickstarter.ui.viewholders.DiscoveryFilterViewHolder;
 
 import java.util.List;
 
@@ -19,9 +21,12 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.observables.GroupedObservable;
+import rx.subjects.PublishSubject;
+import timber.log.Timber;
 
-public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity> {
+public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity> implements DiscoveryFilterAdapter.Delegate {
   @Inject ApiClient apiClient;
+  private final PublishSubject<DiscoveryParams> discoveryFilterClick = PublishSubject.create();
 
   @Override
   protected void onCreate(final Context context, final Bundle savedInstanceState) {
@@ -42,7 +47,7 @@ public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity>
       .startWith(
         new DiscoveryParams.Builder().staffPicks(true).build(),
         new DiscoveryParams.Builder().starred(1).build(),
-        new DiscoveryParams.Builder().build() // "Everything" sort
+        new DiscoveryParams.Builder().build() // Everything sort
       );
 
     return discoveryParams.toList().toBlocking().single();
@@ -58,5 +63,14 @@ public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity>
     addSubscription(viewAndDiscoveryParams
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vd -> vd.first.loadDiscoveryParams(vd.second)));
+
+    addSubscription(discoveryFilterClick
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(p -> Timber.d("Filter clicked: " + p.toString()))
+    );
+  }
+
+  public void discoveryFilterClick(final DiscoveryFilterViewHolder viewHolder, final DiscoveryParams discoveryParams) {
+    discoveryFilterClick.onNext(discoveryParams);
   }
 }

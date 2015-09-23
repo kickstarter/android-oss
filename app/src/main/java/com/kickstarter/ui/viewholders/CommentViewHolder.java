@@ -26,11 +26,11 @@ public class CommentViewHolder extends KsrViewHolder {
   private Comment comment;
 
   public @Bind(R.id.avatar) ImageView avatarImageView;
-  public @Bind(R.id.creator_label) TextView creatorLabel;
+  public @Bind(R.id.creator_label) TextView creatorLabelTextView;
   public @Bind(R.id.user_label) TextView userLabelTextView;
-  public @Bind(R.id.name) TextView name;
-  public @Bind(R.id.post_date) TextView postDate;
-  public @Bind(R.id.comment_body) TextView commentBody;
+  public @Bind(R.id.name) TextView nameTextView;
+  public @Bind(R.id.post_date) TextView postDateTextView;
+  public @Bind(R.id.comment_body) TextView commentBodyTextView;
   @Inject CurrentUser currentUser;  //check if backed project
 
   public CommentViewHolder(final View view) {
@@ -47,11 +47,11 @@ public class CommentViewHolder extends KsrViewHolder {
 
     final Context context = view.getContext();
 
-    creatorLabel.setVisibility(View.GONE);
+    creatorLabelTextView.setVisibility(View.GONE);
     userLabelTextView.setVisibility(View.GONE);
 
     if (CommentUtils.isUserAuthor(comment, project.creator())) {
-      creatorLabel.setVisibility(View.VISIBLE);
+      creatorLabelTextView.setVisibility(View.VISIBLE);
     } else if (CommentUtils.isUserAuthor(comment, currentUser.getUser())) {
       userLabelTextView.setVisibility(View.VISIBLE);
     }
@@ -61,8 +61,8 @@ public class CommentViewHolder extends KsrViewHolder {
       .small())
       .transform(new CircleTransform())
       .into(avatarImageView);
-    name.setText(comment.author().name());
-    postDate.setText(DateTimeUtils.relativeDateInWords(comment.createdAt(), false, true));
-    commentBody.setText(comment.body());
+    nameTextView.setText(comment.author().name());
+    postDateTextView.setText(DateTimeUtils.relativeDateInWords(comment.createdAt(), false, true));
+    commentBodyTextView.setText(comment.body());
   }
 }

@@ -7,6 +7,12 @@ import junit.framework.TestCase;
 import static com.kickstarter.TestUtils.createMoney;
 
 public class MoneyTest extends TestCase {
+  public void testFormattedCurrencyForFlooredValue() {
+    assertEquals("120", createMoney("US").formattedNumber(120.01f));
+    assertEquals("120", createMoney("US").formattedNumber(120.50f));
+    assertEquals("120", createMoney("US").formattedNumber(120.99f));
+  }
+
   public void testFormattedCurrencyForUSCurrencyAndUSUser() {
     assertEquals("$120", createMoney("US").formattedCurrency(120.0f, USCurrencyOptions()));
   }

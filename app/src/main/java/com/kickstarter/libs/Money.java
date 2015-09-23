@@ -14,7 +14,7 @@ public class Money {
     // TODO: Should use appropriate locale
     // TODO: Could take bool to abbreviate (e.g. 100k instead of 100,000)
     return NumberFormat.getInstance(Locale.getDefault())
-      .format(number.intValue());
+      .format(Math.floor(number));
   }
 
   public String formattedCurrency(final float amount, final CurrencyOptions currencyOptions) {

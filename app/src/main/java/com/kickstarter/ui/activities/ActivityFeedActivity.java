@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.widget.Button;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
@@ -15,7 +13,7 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.models.Activity;
 import com.kickstarter.presenters.ActivityFeedPresenter;
-import com.kickstarter.ui.adapters.ActivityListAdapter;
+import com.kickstarter.ui.adapters.ActivityFeedAdapter;
 
 import java.util.List;
 
@@ -27,7 +25,7 @@ import butterknife.OnClick;
 
 @RequiresPresenter(ActivityFeedPresenter.class)
 public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
-  ActivityListAdapter adapter;
+  ActivityFeedAdapter adapter;
   @Nullable @Bind(R.id.recycler_view) RecyclerView recyclerView;
   @Inject CurrentUser currentUser;
 
@@ -50,7 +48,7 @@ public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
   }
 
   public void onItemsNext(final List<Activity> activities) {
-    adapter = new ActivityListAdapter(activities, presenter);
+    adapter = new ActivityFeedAdapter(activities);
     recyclerView.setAdapter(adapter);
   }
 }

@@ -22,12 +22,12 @@ import com.kickstarter.presenters.CommentFeedPresenter;
 import com.kickstarter.ui.adapters.CommentFeedAdapter;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
 
 @RequiresPresenter(CommentFeedPresenter.class)
 public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
@@ -66,10 +66,9 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
 
   public void loadProjectComments(final Project project, final List<Comment> comments) {
     final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-    final List<Pair<Project, Comment>> projectAndComments = new ArrayList<>(comments.size());
-    for (final Comment comment : comments) {
-      projectAndComments.add(Pair.create(project, comment));
-    }
+    final List<Pair<Project, Comment>> projectAndComments = Observable.from(comments)
+      .map(comment -> Pair.create(project, comment))
+      .toList().toBlocking().single();
     final CommentFeedAdapter adapter = new CommentFeedAdapter(project, projectAndComments);
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);

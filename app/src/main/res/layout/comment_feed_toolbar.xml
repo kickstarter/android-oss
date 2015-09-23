@@ -23,7 +23,7 @@
       android:id="@+id/nav_back_button"
       android:paddingLeft="@dimen/grid_3"
       android:paddingRight="@dimen/grid_3"
-      android:background="@drawable/button_selector"
+      android:background="@drawable/tap_indicator"
       android:gravity="center_vertical"
       android:textAppearance="@style/TextAppearance.AppCompat.Title"
       android:layout_alignParentStart="true"
@@ -36,7 +36,7 @@
     <TextView
       android:id="@+id/comment_button"
       android:visibility="gone"
-      android:background="@drawable/button_selector"
+      android:background="@drawable/tap_indicator"
       android:paddingRight="@dimen/grid_3"
       android:paddingLeft="@dimen/grid_3"
       android:gravity="center_vertical"

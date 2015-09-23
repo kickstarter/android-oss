@@ -27,7 +27,7 @@
   <dimen name="ksr_stats">18sp</dimen>
 
   <!-- Kickstarter & Material values-->
-  <dimen name="ksr_card_elevation">@dimen/grid_1_half</dimen>
+  <dimen name="ksr_card_elevation">2dp</dimen>
   <dimen name="ksr_text_view_corner_radius">@dimen/grid_1_half</dimen>
   <dimen name="ksr_toolbar_elevation">@dimen/grid_1_half</dimen>
 

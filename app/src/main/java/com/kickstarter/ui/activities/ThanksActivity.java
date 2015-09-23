@@ -3,7 +3,6 @@ package com.kickstarter.ui.activities;
 import android.content.Intent;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,15 +22,17 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.libs.vendor.TweetComposer;
+import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.ThanksPresenter;
-import com.kickstarter.ui.adapters.ProjectCardMiniAdapter;
+import com.kickstarter.ui.adapters.ThanksAdapter;
 
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 @RequiresPresenter(ThanksPresenter.class)
 public class ThanksActivity extends BaseActivity<ThanksPresenter> {
@@ -40,7 +41,7 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
   @Bind(R.id.woohoo_background) ImageView woohooBackgroundImageView;
 
   CallbackManager facebookCallbackManager;
-  ProjectCardMiniAdapter projectCardMiniAdapter;
+  ThanksAdapter adapter;
   ShareDialog shareDialog;
 
   @Override
@@ -66,9 +67,9 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
     backedProjectTextView.setText(Html.fromHtml(getString(R.string.You_just_backed, project.name())));
   }
 
-  public void showRecommendedProjects(final List<Project> projects) {
-    projectCardMiniAdapter = new ProjectCardMiniAdapter(this, projects);
-    recommendedProjectsRecyclerView.setAdapter(projectCardMiniAdapter);
+  public void showRecommended(final List<Project> projects, final Category category) {
+    adapter = new ThanksAdapter(projects, category, presenter);
+    recommendedProjectsRecyclerView.setAdapter(adapter);
   }
 
   @OnClick(R.id.done_button)
@@ -130,10 +131,21 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
     new TweetComposer.Builder(this).text(shareString(project)).show();
   }
 
+  public void startDiscoveryCategoryIntent(final Category category) {
+    Timber.d("Category name: " + category.name()); // TODO
+  }
+
   public void startDiscoveryActivity() {
     final Intent intent = new Intent(this, DiscoveryActivity.class)
       .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
     startActivity(intent);
+  }
+
+  public void startProjectIntent(final Project project) {
+    final Intent intent = new Intent(this, ProjectActivity.class)
+      .putExtra(getString(R.string.intent_project), project);
+    startActivity(intent);
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   private String shareString(final Project project) {

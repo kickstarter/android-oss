@@ -10,8 +10,6 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.DateTimeUtils;
 import com.kickstarter.libs.Money;
-import com.kickstarter.models.Activity;
-import com.kickstarter.presenters.ActivityFeedPresenter;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
@@ -32,15 +30,15 @@ public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolde
   @BindColor(R.color.green_darken_10) int greenDarken10Color;
   @Inject Money money;
 
-  public ProjectStateChangedPositiveViewHolder(final View view, final ActivityFeedPresenter presenter) {
-    super(view, presenter);
+  public ProjectStateChangedPositiveViewHolder(final View view) {
+    super(view);
     ButterKnife.bind(this, view);
     ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
   }
 
   @Override
-  public void onBind(final Activity activity) {
-    super.onBind(activity);
+  public void onBind(final Object datum) {
+    super.onBind(datum);
 
     final Context context = view.getContext();
 

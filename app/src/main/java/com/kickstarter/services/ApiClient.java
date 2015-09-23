@@ -10,6 +10,7 @@ import com.kickstarter.libs.Build;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.DateTimeTypeConverter;
 import com.kickstarter.models.Activity;
+import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
@@ -59,6 +60,10 @@ public class ApiClient {
 
   public Observable<Project> fetchProject(final Project project) {
     return service.fetchProject(project.param()).startWith(project);
+  }
+
+  public Observable<Category> fetchCategory(final Category category) {
+    return service.fetchCategory(category.id());
   }
 
   public Observable<AccessTokenEnvelope> login(final String email, final String password) {

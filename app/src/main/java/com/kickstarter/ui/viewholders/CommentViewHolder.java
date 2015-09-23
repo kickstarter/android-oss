@@ -1,6 +1,7 @@
 package com.kickstarter.ui.viewholders;
 
-import android.support.v7.widget.RecyclerView;
+import android.content.Context;
+import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -11,21 +12,18 @@ import com.kickstarter.libs.CircleTransform;
 import com.kickstarter.libs.CommentUtils;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.DateTimeUtils;
-import com.kickstarter.libs.Presenter;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
-import com.kickstarter.presenters.CommentFeedPresenter;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 
-public class CommentListViewHolder extends RecyclerView.ViewHolder {
-  protected Comment comment;
-  protected View view;
-  protected Presenter presenter;
+public class CommentViewHolder extends KsrViewHolder {
+  private Project project;
+  private Comment comment;
 
   public @Bind(R.id.avatar) ImageView avatarImageView;
   public @Bind(R.id.creator_label) TextView creatorLabel;
@@ -35,30 +33,30 @@ public class CommentListViewHolder extends RecyclerView.ViewHolder {
   public @Bind(R.id.comment_body) TextView commentBody;
   @Inject CurrentUser currentUser;  //check if backed project
 
-  public CommentListViewHolder(final View view, final CommentFeedPresenter presenter) {
+  public CommentViewHolder(final View view) {
     super(view);
-    this.view = view;
-    this.presenter = presenter;
 
     ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
     ButterKnife.bind(this, view);
   }
 
-  public void onBind(final Comment comment, final Project project) {
-    this.comment = comment;
+  public void onBind(final Object datum) {
+    final Pair<Project, Comment> projectAndComment = (Pair<Project, Comment>) datum;
+    project = projectAndComment.first;
+    comment = projectAndComment.second;
+
+    final Context context = view.getContext();
+
+    creatorLabel.setVisibility(View.GONE);
+    userLabelTextView.setVisibility(View.GONE);
 
     if (CommentUtils.isUserAuthor(comment, project.creator())) {
       creatorLabel.setVisibility(View.VISIBLE);
-    }
-    else if (CommentUtils.isUserAuthor(comment, currentUser.getUser())) {
+    } else if (CommentUtils.isUserAuthor(comment, currentUser.getUser())) {
       userLabelTextView.setVisibility(View.VISIBLE);
     }
-    else {
-      creatorLabel.setVisibility(View.GONE);
-      userLabelTextView.setVisibility(View.GONE);
-    }
 
-    Picasso.with(view.getContext()).load(comment.author()
+    Picasso.with(context).load(comment.author()
       .avatar()
       .small())
       .transform(new CircleTransform())

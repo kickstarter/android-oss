@@ -48,6 +48,7 @@
   <string name="Enter_the_base_url_of_the_api">Enter the base URL of the API you’d like to use.\n\n
     e.g.: https://api-christopher.***REMOVED***</string>
   <string name="Estimated_delivery">Estimated Delivery</string>
+  <string name="Explore_Category">Explore %1$s</string>
   <string name="Follow">Follow</string>
   <string name="Forgot_your_password">Forgot your password?</string>
   <string name="friend_name_backed_art_project">%1$s backed an Art project</string>
@@ -84,6 +85,7 @@
   <string name="Network">Network</string>
   <string name="No_comments">No comments</string>
   <string name="Nice_to_see_you_again">Nice to see you again.</string>
+  <string name="Number_live_projects">%1$s live projects</string>
   <string name="Open_downloads_folder">Open Downloads folder</string>
   <string name="A_request_has_been_made_to_download_the_latest_build">
     A request has been made to download the latest build. When the request has completed, open your downloads

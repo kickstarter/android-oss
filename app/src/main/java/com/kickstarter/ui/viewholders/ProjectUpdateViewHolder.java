@@ -7,8 +7,6 @@ import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.DateTimeUtils;
-import com.kickstarter.models.Activity;
-import com.kickstarter.presenters.ActivityFeedPresenter;
 import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
@@ -22,14 +20,14 @@ public class ProjectUpdateViewHolder extends ActivityListViewHolder {
   @Bind(R.id.update_sequence) TextView updateSequenceTextView;
   @Bind(R.id.update_title) TextView updateTitleTextView;
 
-  public ProjectUpdateViewHolder(final View view, final ActivityFeedPresenter presenter) {
-    super(view, presenter);
+  public ProjectUpdateViewHolder(final View view) {
+    super(view);
     ButterKnife.bind(this, view);
   }
 
   @Override
-  public void onBind(final Activity activity) {
-    super.onBind(activity);
+  public void onBind(final Object datum) {
+    super.onBind(datum);
 
     final Context context = view.getContext();
 

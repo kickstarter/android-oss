@@ -13,9 +13,8 @@ import com.squareup.picasso.Picasso;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 
-public class ProjectContextViewHolder extends RecyclerView.ViewHolder{
-  protected View view;
-  protected Project project;
+public class ProjectContextViewHolder extends KsrViewHolder {
+  private Project project;
 
   public @Bind(R.id.context_photo) ImageView projectContextImageView;
   public @Bind(R.id.project_name) TextView projectNameTextView;
@@ -23,13 +22,13 @@ public class ProjectContextViewHolder extends RecyclerView.ViewHolder{
 
   public ProjectContextViewHolder(final View view) {
     super(view);
-    this.view = view;
+
     ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
     ButterKnife.bind(this, view);
   }
 
-  public void onBind(final Project project) {
-    this.project = project;
+  public void onBind(final Object datum) {
+    this.project = (Project) datum;
 
     Picasso.with(view.getContext()).load(project.photo().full()).into(projectContextImageView);
     projectNameTextView.setText(project.name());

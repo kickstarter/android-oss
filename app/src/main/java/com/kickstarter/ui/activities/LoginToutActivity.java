@@ -15,6 +15,7 @@ import com.kickstarter.presenters.LoginToutPresenter;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 @RequiresPresenter(LoginToutPresenter.class)
 public class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
@@ -53,7 +54,8 @@ public class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
     AppEventsLogger.deactivateApp(this);
   }
 
-  public void loginButtonOnClick(final View view) {
+  @OnClick(R.id.login_button)
+  public void loginButtonOnClick() {
     presenter.takeLoginButtonClick();
   }
 

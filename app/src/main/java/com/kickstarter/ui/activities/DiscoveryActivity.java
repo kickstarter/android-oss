@@ -21,7 +21,7 @@ import com.kickstarter.libs.RxUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.DiscoveryPresenter;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
-import com.kickstarter.ui.adapters.ProjectListAdapter;
+import com.kickstarter.ui.adapters.DiscoveryAdapter;
 import com.kickstarter.ui.containers.ApplicationContainer;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ import rx.subjects.PublishSubject;
 
 @RequiresPresenter(DiscoveryPresenter.class)
 public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
-  ProjectListAdapter adapter;
+  DiscoveryAdapter adapter;
   LinearLayoutManager layoutManager;
   final List<Project> projects = new ArrayList<>();
   final PublishSubject<Integer> visibleItem = PublishSubject.create();
@@ -63,7 +63,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
     setStatusBarColor();
 
     layoutManager = new LinearLayoutManager(this);
-    adapter = new ProjectListAdapter(projects, presenter);
+    adapter = new DiscoveryAdapter(projects, presenter);
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);
 

@@ -14,6 +14,8 @@ import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.KickstarterClient;
 import com.kickstarter.ui.activities.DiscoveryActivity;
+import com.kickstarter.ui.adapters.DiscoveryAdapter;
+import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +26,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
+public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements DiscoveryAdapter.Delegate {
   @Inject ApiClient apiClient;
   @Inject KickstarterClient kickstarterClient;
   @Inject BuildCheck buildCheck;
@@ -120,7 +122,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> {
       .toBlocking().single();
   }
 
-  public void takeProjectClick(final Project project) {
+  public void projectClick(final ProjectCardViewHolder viewHolder, final Project project) {
     projectClick.onNext(project);
   }
 

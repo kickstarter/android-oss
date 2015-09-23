@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,7 +19,7 @@ import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.CommentFeedPresenter;
-import com.kickstarter.ui.adapters.CommentsAdapter;
+import com.kickstarter.ui.adapters.CommentFeedAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -26,6 +27,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
 
 @RequiresPresenter(CommentFeedPresenter.class)
 public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
@@ -62,24 +64,23 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     creatorNameTextView.setText(project.creator().name());
   }
 
-  public void showComments(final List<Comment> comments) {
+  public void loadProjectComments(final Project project, final List<Comment> comments) {
     final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-    final CommentsAdapter adapter = new CommentsAdapter(comments, project, presenter);
+    final List<Pair<Project, Comment>> projectAndComments = Observable.from(comments)
+      .map(comment -> Pair.create(project, comment))
+      .toList().toBlocking().single();
+    final CommentFeedAdapter adapter = new CommentFeedAdapter(project, projectAndComments);
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);
   }
 
-  @Override
-  @Nullable @OnClick(R.id.nav_back_button)
+  @OnClick(R.id.nav_back_button)
   public void onBackPressed() {
     super.onBackPressed();
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
-  public void projectContextClick(View view) {
-    onBackPressed();
-  }
-
+  @Nullable @OnClick(R.id.leave_comment_button)
   public void publicCommentClick(final View view) {
     final LayoutInflater layoutInflater = getLayoutInflater();
     final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());

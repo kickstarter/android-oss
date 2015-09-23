@@ -188,8 +188,7 @@ public class DiscoveryParams {
   }
 
   public ImmutableMap<String, String> queryParams() {
-    // TODO: Nearby, lat long
-    return ImmutableMap.<String, String>builder()
+    final ImmutableMap.Builder<String, String> builder = new ImmutableMap.Builder<String, String>()
       .put("category_id", String.valueOf(category != null ? category.id() : ""))
       .put("woe_id", String.valueOf(location != null ? location.id() : ""))
       .put("staff_picks", String.valueOf(staffPicks))
@@ -198,9 +197,13 @@ public class DiscoveryParams {
       .put("social", String.valueOf(social))
       .put("sort", sort.toString())
       .put("page", String.valueOf(page))
-      .put("per_page", String.valueOf(perPage))
-      .put("include_potd", staffPicks && page == 1 ? "true" : "")
-      .build();
+      .put("per_page", String.valueOf(perPage));
+
+    if (staffPicks && page == 1) {
+      builder.put("include_potd", "true");
+    }
+
+    return builder.build();
   }
 
   @Override

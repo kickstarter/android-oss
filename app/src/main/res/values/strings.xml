@@ -50,6 +50,7 @@
     e.g.: https://api-christopher.***REMOVED***</string>
   <string name="Estimated_delivery">Estimated Delivery</string>
   <string name="Everything">Everything</string>
+  <string name="Explore_Category">Explore %1$s</string>
   <string name="Follow">Follow</string>
   <string name="Forgot_your_password">Forgot your password?</string>
   <string name="friend_name_backed_art_project">%1$s backed an Art project</string>
@@ -88,6 +89,7 @@
   <string name="Network">Network</string>
   <string name="No_comments">No comments</string>
   <string name="Nice_to_see_you_again">Nice to see you again.</string>
+  <string name="Number_live_projects">%1$s live projects</string>
   <string name="Open_downloads_folder">Open Downloads folder</string>
   <string name="A_request_has_been_made_to_download_the_latest_build">
     A request has been made to download the latest build. When the request has completed, open your downloads
@@ -135,9 +137,11 @@
   <string name="Use_your_email_address">Use your email address:</string>
   <string name="username_is_following_you">%1$s is following you!</string>
   <string name="Variant">Variant</string>
+  <string name="View_pledge">View pledge</string>
   <string name="Verify">Verify</string>
   <string name="Version_code">Version Code</string>
   <string name="Version_name">Version Name</string>
+  <string name="Well_remind_you_48_hours">We\'ll remind you 48 hours before this project ends!</string>
   <string name="When_you_back_a_project_or_follow_a_friend">
     When you back a project or follow a friend, their activity will show up here.
   </string>

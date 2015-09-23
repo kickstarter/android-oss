@@ -13,6 +13,7 @@ import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class DownloadBetaActivity extends AppCompatActivity {
   @Bind(R.id.build) TextView buildTextView;
@@ -35,6 +36,7 @@ public class DownloadBetaActivity extends AppCompatActivity {
     requestDownload();
   }
 
+  @OnClick(R.id.open_downloads_button)
   public void openDownloadsOnClick(final View v) {
     final Intent intent = new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS);
     startActivity(intent);

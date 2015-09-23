@@ -1,47 +1,26 @@
 package com.kickstarter.models;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
+import com.kickstarter.R;
+import com.kickstarter.libs.KSColorUtils;
 
 @ParcelablePlease
 public class Category implements Parcelable {
+  Integer color = null;
   Integer id = null;
   String name = null;
+  Category parent = null;
   Integer parentId = null;
   Integer position = null;
-  Category parent = null;
+  Integer projectsCount = null;
 
-  public Integer id() {
-    return id;
-  }
-
-  public String name() {
-    return name;
-  }
-
-  public Integer parentId() {
-    return parentId;
-  }
-
-  public Integer position() {
-    return position;
-  }
-
-  // TODO: Should be able to grab a Category rather than dealing with Integers. That would require loading all the
-  // categories (probably on start-up). There is a bunch of work to do on categories, probably best to tackle it all
-  // at once.
-  public Integer rootId() {
-    return isRoot() ? id() : parentId();
-  }
-
-  public Category parent() {
-    return parent;
-  }
-
-  public boolean isRoot() {
-    return parentId() == null || parentId() == 0;
+  public Integer color() {
+    return KSColorUtils.setAlpha(color, 255);
   }
 
   public int discoveryFilterCompareTo(final Category category) {
@@ -54,8 +33,45 @@ public class Category implements Parcelable {
     return name.compareTo(category.name());
   }
 
+  public Integer id() {
+    return id;
+  }
+
+  public boolean isRoot() {
+    return parentId() == null || parentId() == 0;
+  }
+
+  public String name() {
+    return name;
+  }
+
+  public int overlayTextColor(final Context context) {
+    final Resources resources = context.getResources();
+    return KSColorUtils.isLight(color()) ? resources.getColor(R.color.text_dark) : resources.getColor(R.color.white);
+  }
+
+  public Category parent() {
+    if (parent == null) {
+      parent = new Category();
+      parent.id = parentId;
+    }
+
+    return parent;
+  }
+
+  public Integer parentId() {
+    return parentId;
+  }
+
+  public Integer position() {
+    return position;
+  }
+  public Integer projectsCount() {
+    return projectsCount;
+  }
+
   public Category root() {
-    return parent == null ? this : parent;
+    return isRoot() ? this : parent();
   }
 
   @Override

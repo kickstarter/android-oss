@@ -74,6 +74,10 @@ public class Category implements Parcelable {
     return isRoot() ? this : parent();
   }
 
+  public Integer rootId() {
+    return isRoot() ? id() : parentId();
+  }
+
   @Override
   public int describeContents() {
     return 0;

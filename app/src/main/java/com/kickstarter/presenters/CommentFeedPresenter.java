@@ -23,6 +23,7 @@ import rx.subjects.PublishSubject;
 
 public class CommentFeedPresenter extends Presenter<CommentFeedActivity> {
   private final PublishSubject<Void> postCommentClick = PublishSubject.create();
+  private final PublishSubject<Void> nextPage = PublishSubject.create();
 
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
@@ -31,6 +32,11 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> {
   protected void onCreate(final Context context, final Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
+
+    // Pagination
+
+
+    nextPage.onNext(null);
   }
 
   // todo: add pagination to comments
@@ -46,8 +52,4 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> {
       .subscribe(vc -> vc.first.loadProjectComments(project, vc.second)));
   }
 
-  // shows when currentUser is a backer
-  public void postCommentOnClick(final Project project) {
-
-  }
 }

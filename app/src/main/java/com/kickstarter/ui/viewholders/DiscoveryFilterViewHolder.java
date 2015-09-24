@@ -32,12 +32,12 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
   public void onBind(final Object datum) {
     discoveryParams = (DiscoveryParams) datum;
 
-    verticalLineView.setVisibility(View.GONE);
+    verticalLineGroup.setVisibility(View.GONE);
 
     if (discoveryParams.category() != null) {
       final Category category = discoveryParams.category();
       if (!category.isRoot()) {
-        verticalLineView.setVisibility(View.VISIBLE);
+        verticalLineGroup.setVisibility(View.VISIBLE);
       }
     }
 

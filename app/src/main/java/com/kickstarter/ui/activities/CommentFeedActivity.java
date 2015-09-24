@@ -36,36 +36,31 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
   @Nullable @Bind(R.id.context_photo) ImageView projectPhotoImageView;
   @Nullable @Bind(R.id.project_name) TextView projectNameTextView;
   @Nullable @Bind(R.id.creator_name) TextView creatorNameTextView;
-  private Project project;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     final Intent intent = getIntent();
-    project = intent.getParcelableExtra(getString(R.string.intent_project));
-    final int layout = (project.commentsCount == 0) ? R.layout.empty_comment_feed_layout : R.layout.comment_feed_layout;
+    final Project project = intent.getParcelableExtra(getString(R.string.intent_project));
+
+    final int layout = (project.hasComments()) ? R.layout.comment_feed_layout : R.layout.empty_comment_feed_layout;
     setContentView(layout);
     ButterKnife.bind(this);
 
-    // messy WIP---move to Toolbar, set project observable
-    if (project.commentsCount != 0) {
+    // Inflating the Project Context:
+    // we can't really avoid this because the empty feed layout
+    // is a linear layout and with no datum, the view holder
+    // is not called ¯\_(ツ)_/¯
+    if (project.hasComments()) {
       presenter.takeProject(project);
-    }
-    else {
+    } else {
       showProjectContext(project);
     }
   }
 
-  // this may be removed with adapter implementation
-  public void showProjectContext(Project project) {
-    Picasso.with(getApplicationContext()).load(project.photo().full())
-      .into(projectPhotoImageView);
-    projectNameTextView.setText(project.name());
-    creatorNameTextView.setText(project.creator().name());
-  }
-
   public void loadProjectComments(final Project project, final List<Comment> comments) {
     final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+
     final List<Pair<Project, Comment>> projectAndComments = Observable.from(comments)
       .map(comment -> Pair.create(project, comment))
       .toList().toBlocking().single();
@@ -90,7 +85,13 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
       })
       .setNegativeButton(getString(R.string.Cancel), (DialogInterface dialog, int which) -> {
       });
-
     builder.show();
+  }
+
+  public void showProjectContext(final Project project) {
+    Picasso.with(getApplicationContext()).load(project.photo().full())
+      .into(projectPhotoImageView);
+    projectNameTextView.setText(project.name());
+    creatorNameTextView.setText(project.creator().name());
   }
 }

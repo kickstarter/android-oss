@@ -114,4 +114,11 @@ public class Category implements Parcelable {
       return new Category[size];
     }
   };
+
+  public boolean equals(final Category category) {
+    if (id == null || category.id == null) {
+      return false;
+    }
+    return true;
+  }
 }

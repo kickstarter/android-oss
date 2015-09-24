@@ -29,7 +29,7 @@
     <item name="colorAccent">@color/accent</item>
     <item name="android:textColorLink">@color/accent</item>
     <item name="android:textColorPrimary">@color/text_primary</item>
-    <item name="android:textColor">@color/text_secondary</item>
+    <item name="android:textColor">@color/text_primary</item>
     <item name="android:windowBackground">@color/window_background</item>
     <item name="android:textAllCaps">false</item>
   </style>
@@ -101,6 +101,11 @@
     <item name="android:layout_marginTop">@dimen/grid_3</item>
     <item name="android:paddingLeft">@dimen/grid_3</item>
     <item name="android:paddingRight">@dimen/grid_3</item>
+  </style>
+
+  <style name="subheadBold" parent="TextAppearance.AppCompat">
+    <item name="android:textStyle">bold</item>
+    <item name="android:textSize">@dimen/subhead</item>
   </style>
 
 </resources>

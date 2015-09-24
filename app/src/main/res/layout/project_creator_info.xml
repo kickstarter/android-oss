@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:icon_text_view="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   tools:showIn="@layout/project_layout"
   android:layout_width="match_parent"
@@ -79,7 +78,6 @@
         android:text="@string/Campaign" />
 
       <com.kickstarter.ui.views.IconTextView
-        icon_text_view:iconType="material"
         android:textSize="@dimen/headline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

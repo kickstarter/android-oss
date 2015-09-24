@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:icon_text_view="http://schemas.android.com/apk/res-auto"
   android:layout_height="fill_parent"
   android:layout_width="match_parent" >
 
@@ -66,7 +65,6 @@
           android:orientation="horizontal" >
 
           <com.kickstarter.ui.views.IconTextView
-            icon_text_view:iconType="material"
             android:id="@+id/category_icon"
             android:textSize="@dimen/ksr_caption"
             android:layout_width="wrap_content"
@@ -92,7 +90,6 @@
             android:textColor="@color/text_dark" />
 
           <com.kickstarter.ui.views.IconTextView
-            icon_text_view:iconType="material"
             android:id="@+id/location_icon"
             android:textSize="@dimen/ksr_caption"
             android:layout_gravity="center_vertical"

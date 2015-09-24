@@ -2,7 +2,6 @@
 <android.support.v7.widget.CardView
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:card_view="http://schemas.android.com/apk/res-auto"
-  xmlns:icon_text_view="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   card_view:cardCornerRadius="@dimen/card_corner_radius"
@@ -45,7 +44,6 @@
         android:paddingBottom="@dimen/grid_2">
 
         <com.kickstarter.ui.views.IconTextView
-          icon_text_view:iconType="material"
           android:id="@+id/category_icon"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -64,7 +62,6 @@
           android:textColor="@color/text_dark" />
 
         <com.kickstarter.ui.views.IconTextView
-          icon_text_view:iconType="material"
           android:id="@+id/location_icon"
           android:layout_gravity="center_vertical"
           android:layout_toRightOf="@id/category"

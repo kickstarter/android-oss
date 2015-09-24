@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -63,6 +64,13 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
     discoveryParams.clear();
     discoveryParams.addAll(newDiscoveryParams);
     adapter.notifyDataSetChanged();
+  }
+
+  public void startDiscoveryActivity(final DiscoveryParams newDiscoveryParams) {
+    // TODO: WIP, need to pass through params in intent
+    final Intent intent = new Intent(this, DiscoveryActivity.class)
+      .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+    startActivity(intent);
   }
 
   private void setStatusBarColor() {

@@ -5,3 +5,4 @@
   <item android:drawable="@color/light_gray" android:state_selected="true" />
   <item android:drawable="@color/gray" />
 </selector>
+

@@ -4,7 +4,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.kickstarter.R;
-import com.kickstarter.models.Category;
 import com.kickstarter.services.DiscoveryParams;
 
 import butterknife.Bind;
@@ -14,6 +13,7 @@ import butterknife.ButterKnife;
 public class DiscoveryFilterViewHolder extends KsrViewHolder {
   private DiscoveryParams discoveryParams;
   private final Delegate delegate;
+  @Bind(R.id.discovery_filter_view) View discoveryFilterView;
   @Bind(R.id.filter_text_view) TextView filterTextView;
   @Bind(R.id.vertical_line_group) View verticalLineGroup;
   @Bind(R.id.vertical_line_view_thick) View verticalLineView;
@@ -32,22 +32,24 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
   public void onBind(final Object datum) {
     discoveryParams = (DiscoveryParams) datum;
 
-    verticalLineGroup.setVisibility(View.GONE);
-
-    if (discoveryParams.category() != null) {
-      final Category category = discoveryParams.category();
-      if (!category.isRoot()) {
-        verticalLineGroup.setVisibility(View.VISIBLE);
-      }
+    verticalLineView.setBackgroundColor(whiteColor);
+    if (isSubcategory()) {
+      verticalLineGroup.setVisibility(View.VISIBLE);
+      discoveryFilterView.setPadding(0, 0, 0, 0);
+    } else {
+      verticalLineGroup.setVisibility(View.GONE);
+      discoveryFilterView.setPadding(0, 5, 0, 10);
     }
 
     filterTextView.setText(discoveryParams.filterString(view.getContext()));
-
-    verticalLineView.setBackgroundColor(whiteColor);
   }
 
   @Override
   public void onClick(final View view) {
     delegate.discoveryFilterClick(this, discoveryParams);
+  }
+
+  private boolean isSubcategory() {
+    return discoveryParams.category() != null && !discoveryParams.category().isRoot();
   }
 }

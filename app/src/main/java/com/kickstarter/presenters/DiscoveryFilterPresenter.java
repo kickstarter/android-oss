@@ -22,7 +22,6 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.observables.GroupedObservable;
 import rx.subjects.PublishSubject;
-import timber.log.Timber;
 
 public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity> implements DiscoveryFilterAdapter.Delegate {
   @Inject ApiClient apiClient;
@@ -64,9 +63,9 @@ public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity>
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vd -> vd.first.loadDiscoveryParams(vd.second)));
 
-    addSubscription(discoveryFilterClick
+    addSubscription(RxUtils.takePairWhen(viewSubject, discoveryFilterClick)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(p -> Timber.d("Filter clicked: " + p.toString()))
+      .subscribe(vp -> vp.first.startDiscoveryActivity(vp.second))
     );
   }
 

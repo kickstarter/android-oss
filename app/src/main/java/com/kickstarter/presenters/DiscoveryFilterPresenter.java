@@ -33,25 +33,6 @@ public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity>
     ((KSApplication) context.getApplicationContext()).component().inject(this);
   }
 
-  protected List<DiscoveryParams> categoriesToDiscoveryParams(final List<Category> initialCategories) {
-    final Observable<Category> categories = Observable.from(initialCategories)
-      .toSortedList(Category::discoveryFilterCompareTo)
-      .flatMap(Observable::from);
-
-    final Observable<GroupedObservable<Integer, Category>> groupedCategories = categories.groupBy(Category::rootId);
-
-    // TODO: Add social sort when there is a current user
-    final Observable<DiscoveryParams> discoveryParams = Observable.concat(groupedCategories)
-      .map(c -> new DiscoveryParams.Builder().category(c).build())
-      .startWith(
-        new DiscoveryParams.Builder().staffPicks(true).build(),
-        new DiscoveryParams.Builder().starred(1).build(),
-        new DiscoveryParams.Builder().build() // Everything sort
-      );
-
-    return discoveryParams.toList().toBlocking().single();
-  }
-
   public void initialize(final DiscoveryParams initialDiscoveryParams) {
     final Observable<List<DiscoveryParams>> discoveryParams = apiClient.fetchCategories()
       .map(this::categoriesToDiscoveryParams);
@@ -71,5 +52,24 @@ public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity>
 
   public void discoveryFilterClick(final DiscoveryFilterViewHolder viewHolder, final DiscoveryParams discoveryParams) {
     discoveryFilterClick.onNext(discoveryParams);
+  }
+
+  protected List<DiscoveryParams> categoriesToDiscoveryParams(final List<Category> initialCategories) {
+    final Observable<Category> categories = Observable.from(initialCategories)
+      .toSortedList(Category::discoveryFilterCompareTo)
+      .flatMap(Observable::from);
+
+    final Observable<GroupedObservable<Integer, Category>> groupedCategories = categories.groupBy(Category::rootId);
+
+    // TODO: Add social sort when there is a current user
+    final Observable<DiscoveryParams> discoveryParams = Observable.concat(groupedCategories)
+      .map(c -> new DiscoveryParams.Builder().category(c).build())
+      .startWith(
+        new DiscoveryParams.Builder().staffPicks(true).build(),
+        new DiscoveryParams.Builder().starred(1).build(),
+        new DiscoveryParams.Builder().build() // Everything sort
+      );
+
+    return discoveryParams.toList().toBlocking().single();
   }
 }

@@ -3,7 +3,9 @@
   <!-- Icon naming convention from https://www.google.com/design/icons/ -->
   <string name="arrow_back_icon">arrow_back</string>
   <string name="chevron_right_icon">chevron_right</string>
+  <string name="close">close</string>
   <string name="create_icon">create</string>
+  <string name="expand_more">expand_more</string>
   <string name="favorite_icon">favorite</string>
   <string name="flash_on_icon">flash_on</string>
   <string name="local_offer_icon">local_offer</string>

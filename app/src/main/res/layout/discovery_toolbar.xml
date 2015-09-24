@@ -13,13 +13,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Spinner
-      android:id="@+id/category_spinner"
+    <LinearLayout
+      android:id="@+id/filter_button"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_height="match_parent"
+      android:background="?attr/selectableItemBackgroundBorderless"
+      android:orientation="horizontal"
+      android:gravity="center"
       android:layout_alignParentLeft="true"
       android:layout_alignParentStart="true"
-      android:layout_centerVertical="true" />
+      android:layout_centerVertical="true">
+
+      <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/grid_1_half"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:text="@string/Staff_Picks" />
+
+      <com.kickstarter.ui.views.IconTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/expand_more"
+        android:textColor="@color/white"
+        android:textSize="28sp"
+        icon_text_view:iconType="material" />
+
+    </LinearLayout>
 
     <LinearLayout
       android:layout_width="wrap_content"

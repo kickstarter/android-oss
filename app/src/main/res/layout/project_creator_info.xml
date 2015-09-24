@@ -12,7 +12,7 @@
     android:id="@+id/creator_info"
     android:paddingLeft="@dimen/grid_3"
     android:paddingRight="@dimen/grid_3"
-    android:background="@drawable/tap_indicator_masked"
+    android:background="@drawable/click_indicator_light_masked"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/grid_3"
@@ -90,7 +90,7 @@
         android:textColor="@color/dark_gray" />
     </RelativeLayout>
 
-    <include layout="@layout/horizontal_line_view" />
+    <include layout="@layout/horizontal_line_thin_view" />
 
     <RelativeLayout
       android:id="@+id/updates"
@@ -120,7 +120,7 @@
         android:layout_height="wrap_content" />
     </RelativeLayout>
 
-    <include layout="@layout/horizontal_line_view" />
+    <include layout="@layout/horizontal_line_thin_view" />
 
     <RelativeLayout
       android:id="@+id/comments"

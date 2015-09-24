@@ -4,6 +4,7 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Money;
 import com.kickstarter.presenters.ActivityFeedPresenter;
 import com.kickstarter.presenters.CommentFeedPresenter;
+import com.kickstarter.presenters.DiscoveryFilterPresenter;
 import com.kickstarter.presenters.DiscoveryPresenter;
 import com.kickstarter.presenters.LoginPresenter;
 import com.kickstarter.presenters.ProjectPresenter;
@@ -35,6 +36,7 @@ public interface ApplicationGraph {
   void inject(CurrentUser currentUser);
   void inject(DiscoveryActivity activity);
   void inject(DiscoveryToolbar toolbar);
+  void inject(DiscoveryFilterPresenter presenter);
   void inject(DiscoveryPresenter presenter);
   void inject(HelpActivity activity);
   void inject(IconTextView view);

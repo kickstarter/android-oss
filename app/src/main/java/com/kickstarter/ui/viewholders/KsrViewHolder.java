@@ -3,6 +3,8 @@ package com.kickstarter.ui.viewholders;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import timber.log.Timber;
+
 public abstract class KsrViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
   protected final View view;
 
@@ -18,6 +20,7 @@ public abstract class KsrViewHolder extends RecyclerView.ViewHolder implements V
    */
   @Override
   public void onClick(final View view) {
+    Timber.d("Default KsrViewHolder onClick event");
   }
 
   /**

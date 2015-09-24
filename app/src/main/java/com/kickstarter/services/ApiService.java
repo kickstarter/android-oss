@@ -4,6 +4,7 @@ import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
+import com.kickstarter.services.apiresponses.CategoriesEnvelope;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.StarEnvelope;
@@ -22,6 +23,9 @@ import rx.Observable;
 /*package*/ interface ApiService {
   @GET("/v1/activities")
   Observable<ActivityEnvelope> fetchActivities(@Query("categories[]") List<String> categories);
+
+  @GET("/v1/categories")
+  Observable<CategoriesEnvelope> fetchCategories();
 
   @GET("/v1/projects/{param}/comments")
   Observable<CommentsEnvelope> fetchProjectComments(@Path("param") String param);

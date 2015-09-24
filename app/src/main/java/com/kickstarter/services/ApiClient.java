@@ -14,12 +14,15 @@ import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
+import com.kickstarter.services.apiresponses.CategoriesEnvelope;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.services.apiresponses.StarEnvelope;
 
 import org.joda.time.DateTime;
+
+import java.util.List;
 
 import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
@@ -47,6 +50,10 @@ public class ApiClient {
   public Observable<ActivityEnvelope> fetchActivities(final ActivityFeedParams params) {
     return service.fetchActivities(params.queryParams())
       .retry(3);
+  }
+
+  public Observable<List<Category>> fetchCategories() {
+    return service.fetchCategories().map(CategoriesEnvelope::categories);
   }
 
   public Observable<CommentsEnvelope> fetchProjectComments(final Project project) {

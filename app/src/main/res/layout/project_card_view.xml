@@ -7,7 +7,7 @@
   android:layout_height="match_parent"
   card_view:cardCornerRadius="@dimen/card_corner_radius"
   card_view:cardBackgroundColor="@color/transparent"
-  android:foreground="@drawable/tap_indicator"
+  android:foreground="@drawable/click_indicator_light"
   android:elevation="@dimen/ksr_card_elevation"
   android:layout_marginLeft="@dimen/grid_3"
   android:layout_marginRight="@dimen/grid_3"

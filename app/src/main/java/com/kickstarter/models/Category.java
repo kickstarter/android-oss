@@ -4,33 +4,39 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSColorUtils;
 
 @ParcelablePlease
-public class Category implements Parcelable {
-  Integer color = null;
-  Integer id = null;
-  String name = null;
-  Category parent = null;
-  Integer parentId = null;
-  Integer position = null;
-  Integer projectsCount = null;
+public class Category implements Comparable<Category>, Parcelable {
+  public Integer color = null;
+  public Integer id = null;
+  public String name = null;
+  public Category parent = null;
+  public Integer parentId = null;
+  public Integer position = null;
+  public Integer projectsCount = null;
+  public String slug = null;
 
   public Integer color() {
     return KSColorUtils.setAlpha(color, 255);
   }
 
-  public int discoveryFilterCompareTo(final Category category) {
-    if (isRoot()) {
-      return name.compareTo(category.root().name());
-    } else if (category.isRoot()) {
-      return root().name().compareTo(category.name());
+  public int compareTo(@NonNull final Category other) {
+    if (id().equals(other.id())) {
+      return 0;
     }
 
-    return name.compareTo(category.name());
+    if (isRoot() && id().equals(other.rootId())) {
+      return -1;
+    } else if (!isRoot() && rootId().equals(other.id())) {
+      return 1;
+    }
+
+    return root().name().compareTo(other.root().name());
   }
 
   public Integer id() {
@@ -59,6 +65,11 @@ public class Category implements Parcelable {
     return parent;
   }
 
+  public void parent(@NonNull final Category parent) {
+    this.parent = parent;
+    parentId = parent.id();
+  }
+
   public Integer parentId() {
     return parentId;
   }
@@ -76,6 +87,10 @@ public class Category implements Parcelable {
 
   public Integer rootId() {
     return isRoot() ? id() : parentId();
+  }
+
+  public String slug() {
+    return slug;
   }
 
   @Override

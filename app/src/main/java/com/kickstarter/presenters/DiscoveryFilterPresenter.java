@@ -36,7 +36,7 @@ public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity>
 
   protected List<DiscoveryParams> categoriesToDiscoveryParams(final List<Category> initialCategories) {
     final Observable<Category> categories = Observable.from(initialCategories)
-      .toSortedList(Category::discoveryFilterCompareTo)
+      .toSortedList(Category::compareTo)
       .flatMap(Observable::from);
 
     final Observable<GroupedObservable<Integer, Category>> groupedCategories = categories.groupBy(Category::rootId);

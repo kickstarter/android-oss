@@ -6,6 +6,7 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   app:cardCornerRadius="4dp"
   app:cardBackgroundColor="@android:color/transparent"
+  android:foreground="@drawable/click_indicator_light_masked"
   android:elevation="2dp"
   android:layout_margin="@dimen/grid_2">
 

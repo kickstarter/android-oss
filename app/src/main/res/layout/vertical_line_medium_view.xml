@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="horizontal"
+  android:layout_width="wrap_content"
+  android:layout_height="fill_parent"
+  android:paddingLeft="@dimen/grid_1_half"
+  android:paddingRight="@dimen/grid_1_half" >
+
+  <View
+    android:id="@+id/vertical_line_view_thick"
+    android:layout_width="2dp"
+    android:layout_height="fill_parent"
+    android:background="@color/gray" />
+</LinearLayout>
+

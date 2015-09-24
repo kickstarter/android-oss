@@ -18,18 +18,19 @@ import com.kickstarter.libs.Logout;
 import com.kickstarter.models.User;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
+import com.kickstarter.ui.activities.DiscoveryFilterActivity;
 import com.kickstarter.ui.activities.LoginToutActivity;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 public class DiscoveryToolbar extends Toolbar {
   @Bind(R.id.activity_feed_button) TextView activityFeedButton;
-  @Bind(R.id.category_spinner) Spinner categorySpinner;
   @Bind(R.id.current_user_button) TextView currentUserButton;
   @Bind(R.id.login_button) TextView loginButton;
   @Bind(R.id.toolbar) Toolbar toolbar;
@@ -61,13 +62,18 @@ public class DiscoveryToolbar extends Toolbar {
     ButterKnife.bind(this);
     ((KSApplication) getContext().getApplicationContext()).component().inject(this);
 
-    initializeCategorySpinner();
-
     activityFeedButton.setOnClickListener(v -> {
       final Context context = getContext();
       context.startActivity(new Intent(context, ActivityFeedActivity.class));
     });
   }
+
+  @OnClick(R.id.filter_button)
+  public void startDiscoveryFilterActivity(final View view) {
+    final Context context = getContext();
+    context.startActivity(new Intent(context, DiscoveryFilterActivity.class));
+  }
+
 
   protected void showLoggedInMenu(final User user) {
     loginButton.setVisibility(GONE);
@@ -102,32 +108,6 @@ public class DiscoveryToolbar extends Toolbar {
       getContext().startActivity(intent);
     });
 
-  }
-
-  protected void initializeCategorySpinner() {
-    final ArrayAdapter<CharSequence> adapter;
-    if (!isInEditMode()) {
-      adapter = ArrayAdapter.createFromResource(getContext(),
-        R.array.spinner_categories_array,
-        android.R.layout.simple_spinner_item);
-    } else {
-      final String sampleData[] = {"Staff Picks"};
-      adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, sampleData);
-    }
-    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-    categorySpinner.setAdapter(adapter);
-
-    // onItemSelected will fire immediately with the default selection
-    categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-      @Override
-      public void onItemSelected(final AdapterView<?> spinner, final View view, final int position, final long itemId) {
-        final String item = spinner.getItemAtPosition(position).toString();
-      }
-
-      @Override
-      public void onNothingSelected(final AdapterView<?> adapterView) {
-      }
-    });
   }
 
   @Override

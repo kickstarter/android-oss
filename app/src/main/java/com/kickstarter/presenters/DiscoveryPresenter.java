@@ -122,7 +122,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
       .toBlocking().single();
   }
 
-  public void projectClick(final ProjectCardViewHolder viewHolder, final Project project) {
+  public void projectCardClick(final ProjectCardViewHolder viewHolder, final Project project) {
     projectClick.onNext(project);
   }
 

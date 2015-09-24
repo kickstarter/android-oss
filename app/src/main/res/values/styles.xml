@@ -27,6 +27,7 @@
     <!-- colorAccent is used as the default value for colorControlActivated which
       is used to tint widgets -->
     <item name="colorAccent">@color/accent</item>
+    <item name="android:colorControlHighlight">@color/accent_alpha_20</item>
     <item name="android:textColorLink">@color/accent</item>
     <item name="android:textColorPrimary">@color/text_primary</item>
     <item name="android:textColor">@color/text_primary</item>
@@ -50,8 +51,9 @@
   </style>
 
   <style name="DiscoveryActivity" parent="KsrTheme">
-    <item name="android:statusBarColor">@color/discovery_toolbar</item>
-    <item name="android:windowBackground">@color/light_gray</item>
+  </style>
+
+  <style name="DiscoveryFilterActivity" parent="KsrTheme">
   </style>
 
   <style name="DisplayWebViewActivity" parent="KsrTheme">

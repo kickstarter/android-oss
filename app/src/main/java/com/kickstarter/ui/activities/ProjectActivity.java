@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.MediaController;
@@ -24,6 +27,7 @@ import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Video;
 import com.kickstarter.presenters.ProjectPresenter;
+import com.kickstarter.ui.adapters.RewardListAdapter;
 import com.kickstarter.ui.views.IconTextView;
 import com.squareup.picasso.Picasso;
 
@@ -36,6 +40,9 @@ import timber.log.Timber;
 
 @RequiresPresenter(ProjectPresenter.class)
 public class ProjectActivity extends BaseActivity<ProjectPresenter> {
+  RewardListAdapter rewardListAdapter;
+  @Bind(R.id.rewards_recycler_view) RecyclerView rewardsRecyclerView;
+
   protected @Bind(R.id.backers_count) TextView backersCountTextView;
   protected @Bind(R.id.blurb) TextView blurbTextView;
   protected @Bind(R.id.category) TextView categoryTextView;
@@ -70,6 +77,11 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
     final Intent intent = getIntent();
     final Project project = intent.getExtras().getParcelable(getString(R.string.intent_project));
     presenter.takeProject(project);
+
+    // WIP
+    rewardsRecyclerView.setHasFixedSize(true);
+    rewardsRecyclerView.getLayoutParams().height = 2000; // todo: WIP
+    rewardsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
   }
 
   public void show(final Project project) {
@@ -88,15 +100,6 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
     pledgedTextView.setText(money.formattedCurrency(project.pledged(), project.currencyOptions()));
     Picasso.with(this).load(project.photo().full()).into(photoImageView);
 
-    // WIP VideoView & MediaController
-    if ( project.video() != null ) {
-//      loadVideo(project.video(), videoView);
-      playButtonIconTextView.setVisibility(View.VISIBLE);
-    }
-    else {
-      playButtonIconTextView.setVisibility(View.GONE);
-    }
-
     // Creator information
     Picasso.with(this).load(project.creator().avatar()
       .medium())
@@ -111,6 +114,13 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
 
     int starColor = (project.isStarred()) ? R.color.green : R.color.dark_gray;
     starIconTextView.setTextColor(ContextCompat.getColor(this, starColor));
+
+    //////
+    if (project.rewards() != null) {
+      Log.d("TEST", "project has rewards");
+      rewardListAdapter = new RewardListAdapter(project.rewards());
+      rewardsRecyclerView.setAdapter(rewardListAdapter);  // todo
+    }
   }
 
   @Override

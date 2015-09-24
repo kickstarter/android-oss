@@ -16,6 +16,7 @@
   </string>
   <string name="Aw_how_sad">Aw, how sad. Become a backer to leave a comment.</string>
   <string name="Back_this_project">Back this project</string>
+  <string name="Backing">Backing</string>
   <string name="backers">backers</string>
   <string name="Build">Build</string>
   <string name="Build_date">Build Date</string>
@@ -48,6 +49,7 @@
   <string name="Enter_the_base_url_of_the_api">Enter the base URL of the API you’d like to use.\n\n
     e.g.: https://api-christopher.***REMOVED***</string>
   <string name="Estimated_delivery">Estimated Delivery</string>
+  <string name="Everything">Everything</string>
   <string name="Explore_Category">Explore %1$s</string>
   <string name="Follow">Follow</string>
   <string name="Forgot_your_password">Forgot your password?</string>
@@ -66,6 +68,7 @@
   <string name="friend_name_backed_publishing_project">%1$s backed a Publishing project</string>
   <string name="friend_name_backed_technology_project">%1$s backed a Technology project</string>
   <string name="friend_name_backed_theater_project">%1$s backed a Theater project</string>
+  <string name="Friends_Backed">Friends Backed</string>
   <string name="funded">funded</string>
   <string name="goal">goal</string>
   <string name="Help">Help</string>
@@ -82,6 +85,7 @@
   <string name="Manage_pledge">Manage pledge</string>
   <string name="mins">mins</string>
   <string name="More">More</string>
+  <string name="Nearby">Nearby</string>
   <string name="Network">Network</string>
   <string name="No_comments">No comments</string>
   <string name="Nice_to_see_you_again">Nice to see you again.</string>
@@ -116,6 +120,8 @@
   <string name="Sign_up_or_log_in_with_your_Facebook_account">
     Sign up or log in with your Facebook account or email address below:
   </string>
+  <string name="Staff_Picks">Staff Picks</string>
+  <string name="Starred">Starred</string>
   <string name="Submit">Submit</string>
   <string name="The_code_provided_does_not_match">The code provided does not match.</string>
   <string name="This_project_will_only_be_funded_if">

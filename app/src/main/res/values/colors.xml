@@ -41,7 +41,7 @@
   <color name="games">#00c9ab</color>
   <color name="journalism">#12bcea</color>
   <color name="music">#a5ffd3</color>
-  <color name="photograph">#00e3e5</color>
+  <color name="photography">#00e3e5</color>
   <color name="publishing">#e2dcd0</color>
   <color name="technology">#6396fc</color>
   <color name="theater">#ff7d5f</color>
@@ -56,6 +56,9 @@
     and click darken/lighten X% -->
   <color name="green_darken_10">#12C55A</color>
   <color name="blue_darken_10">#0087E6</color>
+
+  <color name="dark_blue_gradient_start">#081245</color>
+  <color name="dark_blue_gradient_end">#062e6a</color>
 
   <!-- Third-party colors -->
   <color name="facebook_blue">#3b5998</color>

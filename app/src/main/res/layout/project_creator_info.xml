@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:icon_text_view="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   tools:showIn="@layout/project_layout"
   android:layout_width="match_parent"
@@ -12,7 +11,7 @@
     android:id="@+id/creator_info"
     android:paddingLeft="@dimen/grid_3"
     android:paddingRight="@dimen/grid_3"
-    android:background="@drawable/tap_indicator_masked"
+    android:background="@drawable/click_indicator_light_masked"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/grid_3"
@@ -79,7 +78,6 @@
         android:text="@string/Campaign" />
 
       <com.kickstarter.ui.views.IconTextView
-        icon_text_view:iconType="material"
         android:textSize="@dimen/headline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -90,7 +88,7 @@
         android:textColor="@color/dark_gray" />
     </RelativeLayout>
 
-    <include layout="@layout/horizontal_line_view" />
+    <include layout="@layout/horizontal_line_thin_view" />
 
     <RelativeLayout
       android:id="@+id/updates"
@@ -120,7 +118,7 @@
         android:layout_height="wrap_content" />
     </RelativeLayout>
 
-    <include layout="@layout/horizontal_line_view" />
+    <include layout="@layout/horizontal_line_thin_view" />
 
     <RelativeLayout
       android:id="@+id/comments"

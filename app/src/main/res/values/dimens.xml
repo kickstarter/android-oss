@@ -25,6 +25,7 @@
   <dimen name="ksr_name">16sp</dimen>
   <dimen name="body">17sp</dimen>
   <dimen name="ksr_stats">18sp</dimen>
+  <dimen name="title">20sp</dimen>
 
   <!-- Kickstarter & Material values-->
   <dimen name="ksr_card_elevation">2dp</dimen>
@@ -59,7 +60,6 @@
   <dimen name="headline">24sp</dimen>
   <dimen name="menu">14sp</dimen>
   <dimen name="subhead">16sp</dimen>
-  <dimen name="title">20sp</dimen>
 
   <dimen name="progress_bar_min_height">6dp</dimen>
 

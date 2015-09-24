@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  app:cardCornerRadius="4dp"
+  app:cardBackgroundColor="@android:color/transparent"
+  android:elevation="2dp"
+  android:layout_margin="@dimen/grid_2">
+
+  <RelativeLayout
+    android:padding="@dimen/grid_2"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <TextView
+      android:id="@+id/pledge_minimum"
+      android:textAppearance="@style/subheadBold"
+      android:paddingBottom="@dimen/grid_2"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="Pledge $1 or more"/>
+
+    <RelativeLayout
+      android:id="@+id/backer_info"
+      android:layout_below="@id/pledge_minimum"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <com.kickstarter.ui.views.IconTextView
+        app:iconType="ss_kickstarter"
+        android:id="@+id/backer_badge"
+        android:textSize="@dimen/title"
+        android:paddingRight="@dimen/grid_1"
+        android:paddingEnd="@dimen/grid_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:text="@string/backer_icon"
+        android:textColor="@color/green" />
+
+      <TextView
+        android:id="@+id/reward_backers_count"
+        android:layout_toEndOf="@id/backer_badge"
+        android:layout_toRightOf="@id/backer_badge"
+        android:textStyle="bold"
+        android:layout_centerVertical="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="backers"/>
+
+    </RelativeLayout>
+
+    <TextView
+      android:id="@+id/reward_description"
+      android:layout_below="@id/backer_info"
+      android:textSize="@dimen/body"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingTop="@dimen/grid_2"
+      android:paddingBottom="@dimen/grid_2"
+      android:text="blurb"/>
+
+    <TextView
+      android:id="@+id/estimated_delivery"
+      android:layout_below="@id/reward_description"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textSize="@dimen/ksr_subhead"
+      android:text="@string/Estimated_delivery"
+      android:paddingBottom="@dimen/grid_1_half"
+      android:textColor="@color/text_secondary"/>
+
+    <TextView
+      android:id="@+id/estimated_delivery_date"
+      android:layout_below="@id/estimated_delivery"
+      android:text="February 2016"
+      android:textSize="@dimen/ksr_subhead"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content" />
+
+  </RelativeLayout>
+
+</android.support.v7.widget.CardView>

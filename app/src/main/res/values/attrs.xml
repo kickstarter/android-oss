@@ -4,6 +4,7 @@
     <attr name="iconType">
       <enum name="material" value="0" />
       <enum name="ion" value="1" />
+      <enum name="ss_kickstarter" value="2" />
     </attr>
   </declare-styleable>
 </resources>

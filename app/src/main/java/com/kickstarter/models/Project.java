@@ -66,6 +66,9 @@ public class Project implements Parcelable {
   public boolean currencyTrailingCode() { return currencyTrailingCode; }
   public DateTime deadline() { return deadline; }
   public Float goal() { return goal; }
+  public boolean hasComments() {
+    return commentsCount != 0;
+  }
   public Integer id() { return id; }
   public boolean isBacking() {
     return isBacking;

@@ -1,6 +1,5 @@
 package com.kickstarter.ui.viewholders;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,8 +9,8 @@ import com.kickstarter.R;
 import com.kickstarter.models.Project;
 import com.squareup.picasso.Picasso;
 
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class ProjectContextViewHolder extends KsrViewHolder {
   private Project project;

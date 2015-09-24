@@ -36,8 +36,7 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> {
   // todo: add pagination to comments
   public void takeProject(final Project project) {
     final Observable<List<Comment>> comments = client.fetchProjectComments(project)
-      .map(envelope -> envelope.comments)
-      .takeUntil(List::isEmpty);
+      .map(envelope -> envelope.comments);
 
     final Observable<Pair<CommentFeedActivity, List<Comment>>> viewAndComments =
       RxUtils.takePairWhen(viewSubject, comments);

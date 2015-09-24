@@ -5,10 +5,9 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:gravity="center_horizontal"
-  android:id="@+id/empty_comment_feed_layout" >
+  android:id="@+id/empty_comment_feed_layout">
 
   <include layout="@layout/comment_feed_toolbar"/>
-
   <include layout="@layout/project_context_view"/>
 
   <LinearLayout

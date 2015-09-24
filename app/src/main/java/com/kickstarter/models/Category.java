@@ -11,7 +11,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.KSColorUtils;
 
 @ParcelablePlease
-public class Category implements Comparable<Category>, Parcelable {
+public class Category implements Parcelable {
   public Integer color = null;
   public Integer id = null;
   public String name = null;
@@ -25,12 +25,12 @@ public class Category implements Comparable<Category>, Parcelable {
     return KSColorUtils.setAlpha(color, 255);
   }
 
-  public int compareTo(@NonNull final Category other) {
-    if (id().equals(other.id())) {
+  public int discoveryFilterCompareTo(@NonNull final Category other) {
+    if (id.equals(other.id())) {
       return 0;
     }
 
-    if (isRoot() && id().equals(other.rootId())) {
+    if (isRoot() && id.equals(other.rootId())) {
       return -1;
     } else if (!isRoot() && rootId().equals(other.id())) {
       return 1;

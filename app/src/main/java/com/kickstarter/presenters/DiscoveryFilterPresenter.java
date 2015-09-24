@@ -35,7 +35,7 @@ public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity>
 
   protected List<DiscoveryParams> categoriesToDiscoveryParams(final List<Category> initialCategories) {
     final Observable<Category> categories = Observable.from(initialCategories)
-      .toSortedList(Category::compareTo)
+      .toSortedList(Category::discoveryFilterCompareTo)
       .flatMap(Observable::from);
 
     final Observable<GroupedObservable<Integer, Category>> groupedCategories = categories.groupBy(Category::rootId);
@@ -64,8 +64,8 @@ public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity>
       .subscribe(vd -> vd.first.loadDiscoveryParams(vd.second)));
 
     addSubscription(RxUtils.takePairWhen(viewSubject, discoveryFilterClick)
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.startDiscoveryActivity(vp.second))
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(vp -> vp.first.startDiscoveryActivity(vp.second))
     );
   }
 

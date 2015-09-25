@@ -22,16 +22,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class ProjectViewHolder extends KsrViewHolder {
-  private Project project;
-  private final Delegate delegate;
-
-  public interface Delegate {
-    void takeBlurbClick();
-    void takeCommentsClick();
-    void takeCreatorNameClick();
-    void takeShareClick();
-    void takeUpdatesClick();
-  }
 
 //  protected @Nullable @Bind(R.id.play_button_overlay) IconTextView playButtonIconTextView;
 //  protected @Nullable @Bind(R.id.project_detail_video) VideoView videoView;
@@ -52,8 +42,18 @@ public class ProjectViewHolder extends KsrViewHolder {
   protected @Bind(R.id.avatar_name) TextView avatarNameTextView;
   protected @Bind(R.id.fund_message) TextView fundMessageTextView;
   protected @Bind(R.id.updates_count) TextView updatesCountTextView;
-
   @Inject Money money;
+
+  private Project project;
+  private final Delegate delegate;
+
+  public interface Delegate {
+    void takeBlurbClick();
+    void takeCommentsClick();
+    void takeCreatorNameClick();
+    void takeShareClick();
+    void takeUpdatesClick();
+  }
 
   public ProjectViewHolder(final View view, final ProjectViewHolder.Delegate delegate) {
     super(view);

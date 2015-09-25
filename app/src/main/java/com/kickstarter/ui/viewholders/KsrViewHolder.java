@@ -15,10 +15,6 @@ public abstract class KsrViewHolder extends RecyclerView.ViewHolder implements V
     view.setOnClickListener(this);
   }
 
-  public View view() {
-    return view;
-  }
-
   /**
    * No-op click implementation. Subclasses should override this method to implement click handling.
    */

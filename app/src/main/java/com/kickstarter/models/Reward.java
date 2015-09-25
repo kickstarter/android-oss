@@ -9,16 +9,16 @@ import org.joda.time.DateTime;
 
 @ParcelablePlease
 public class Reward implements Parcelable {
-  String reward = null;
-  Integer limit = null;
-  DateTime estimatedDeliveryOn = null;
-  Boolean shippingEnabled = null;
-  Integer id = null;
-  String shippingPreference = null;
-  String shippingSummary = null;
-  Integer backersCount = null;
-  Integer minimum = null;
-  String description = null;
+  public String reward = null;
+  public Integer limit = null;
+  public DateTime estimatedDeliveryOn = null;
+  public boolean shippingEnabled = false;
+  public Integer id = null;
+  public String shippingPreference = null;
+  public String shippingSummary = null;
+  public Integer backersCount = null;
+  public Integer minimum = null;
+  public String description = null;
 
   public Integer backersCount() {
     return backersCount;
@@ -26,8 +26,15 @@ public class Reward implements Parcelable {
   public DateTime estimatedDeliveryOn() {
     return estimatedDeliveryOn;
   }
+
   public Integer id() {
     return id;
+  }
+  public boolean hasReward() {
+    return id != 0;
+  }
+  public boolean isNoReward() {
+    return id == 0;
   }
   public String shippingPreference() {
     return shippingPreference;
@@ -41,7 +48,7 @@ public class Reward implements Parcelable {
   public String description() {
     return description;
   }
-  public Boolean shippingEnabled() {
+  public boolean shippingEnabled() {
     return shippingEnabled;
   }
   public String shippingSummary() {

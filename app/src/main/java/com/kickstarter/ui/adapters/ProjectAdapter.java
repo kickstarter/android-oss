@@ -16,7 +16,7 @@ import java.util.List;
 public class ProjectAdapter extends KsrAdapter {
   private final Delegate delegate;
 
-  public interface Delegate extends ProjectViewHolder.Delegate {}
+  public interface Delegate extends ProjectViewHolder.Delegate, RewardViewHolder.Delegate {}
 
   public ProjectAdapter(final Project project, final List<Pair<Project, Reward>> projectAndRewards, final Delegate delegate) {
     this.delegate = delegate;
@@ -36,7 +36,7 @@ public class ProjectAdapter extends KsrAdapter {
 
   protected KsrViewHolder viewHolder(final int layout, final View view) {
     if (layout == R.layout.reward_card_view) {
-      return new RewardViewHolder(view);
+      return new RewardViewHolder(view, delegate);
     }
     return new ProjectViewHolder(view, delegate);
   }

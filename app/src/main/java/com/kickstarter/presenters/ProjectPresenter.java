@@ -9,10 +9,12 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.RxUtils;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.Reward;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.kickstarter.ui.adapters.ProjectAdapter;
+import com.kickstarter.ui.viewholders.RewardViewHolder;
 
 import javax.inject.Inject;
 
@@ -30,6 +32,7 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
   private final PublishSubject<Void> shareClick = PublishSubject.create();
   private final PublishSubject<Void> updatesClick = PublishSubject.create();
   private final PublishSubject<Void> loginSuccess = PublishSubject.create();
+  private final PublishSubject<Reward> rewardClick = PublishSubject.create();
   private final PublishSubject<Void> starClick = PublishSubject.create();
 
   @Override
@@ -109,6 +112,10 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
     addSubscription(RxUtils.takeWhen(viewAndProject, updatesClick)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showUpdates(vp.second)));
+  }
+
+  public void rewardCardClick(final RewardViewHolder viewHolder, final Reward reward) {
+    rewardClick.onNext(reward);
   }
 
   public void takeBackProjectClick() {

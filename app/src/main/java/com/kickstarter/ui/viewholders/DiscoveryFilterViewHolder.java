@@ -38,8 +38,6 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
     discoveryParams = pair.first;
     style = pair.second;
 
-    delegate.discoveryFilterConfigure(this, discoveryParams);
-
     verticalLineView.setBackgroundColor(whiteColor);
     if (isSubcategory()) {
       verticalLineGroup.setVisibility(View.VISIBLE);

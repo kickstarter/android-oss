@@ -59,9 +59,8 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
     return categoryDiscoveryParams(initialCategories)
       .startWith(filterDiscoveryParams())
       .map(paramsList -> {
-        return Observable.from(paramsList).map(p -> {
-          return Pair.create(p, new DiscoveryFilterStyle.Builder().build());
-        }).toList().toBlocking().single();
+        return Observable.from(paramsList)
+          .map(p -> Pair.create(p, new DiscoveryFilterStyle.Builder().build())).toList().toBlocking().single();
       });
   }
 

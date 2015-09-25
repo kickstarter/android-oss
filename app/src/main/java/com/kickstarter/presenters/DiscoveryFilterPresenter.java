@@ -52,7 +52,4 @@ public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity>
   public void discoveryFilterClick(final DiscoveryFilterViewHolder viewHolder, final DiscoveryParams discoveryParams) {
     discoveryFilterClick.onNext(discoveryParams);
   }
-
-  public void discoveryFilterConfigure(final DiscoveryFilterViewHolder viewHolder, final DiscoveryParams discoveryParams) {
-  }
 }

@@ -25,7 +25,6 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
 
   public interface Delegate {
     void discoveryFilterClick(final DiscoveryFilterViewHolder viewHolder, final DiscoveryParams discoveryParams);
-    void discoveryFilterConfigure(final DiscoveryFilterViewHolder viewHolder, final DiscoveryParams discoveryParams);
   }
 
   public DiscoveryFilterViewHolder(final View view, final Delegate delegate) {

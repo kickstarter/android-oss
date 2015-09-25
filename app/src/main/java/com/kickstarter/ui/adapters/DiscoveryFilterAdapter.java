@@ -44,7 +44,7 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
   public void takeCategories(final List<Category> initialCategories) {
     data().clear();
 
-    data().addAll(discoveryParamsSections(initialCategories).toList().toBlocking().single());
+    data().addAll(paramsSections(initialCategories).toList().toBlocking().single());
     data().add(1, Collections.singletonList(null)); // Category divider
 
     notifyDataSetChanged();
@@ -53,11 +53,11 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
   /**
    * Returns an Observable where each item is a list of params/style pairs.
    */
-  protected Observable<List<Pair<DiscoveryParams, DiscoveryFilterStyle>>> discoveryParamsSections(final List<Category> initialCategories) {
-    return categoryDiscoveryParams(initialCategories)
-      .startWith(filterDiscoveryParams())
-      .map(paramsList -> {
-        return Observable.from(paramsList)
+  protected Observable<List<Pair<DiscoveryParams, DiscoveryFilterStyle>>> paramsSections(final List<Category> initialCategories) {
+    return categoryParams(initialCategories)
+      .startWith(filterParams())
+      .map(l -> {
+        return Observable.from(l)
           .map(p -> Pair.create(p, new DiscoveryFilterStyle.Builder().build())).toList().toBlocking().single();
       });
   }
@@ -65,7 +65,7 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
   /**
    * Params for the top section of filters.
    */
-  protected Observable<List<DiscoveryParams>> filterDiscoveryParams() {
+  protected Observable<List<DiscoveryParams>> filterParams() {
     // TODO: Add social filter
     return Observable.just(
       new DiscoveryParams.Builder().staffPicks(true).build(),
@@ -82,7 +82,7 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
    * Art
    *  - All of Art
    */
-  protected Observable<List<DiscoveryParams>> categoryDiscoveryParams(final List<Category> initialCategories) {
+  protected Observable<List<DiscoveryParams>> categoryParams(final List<Category> initialCategories) {
     final Observable<Category> categories = Observable.from(initialCategories);
 
     final Observable<DiscoveryParams> params = categories

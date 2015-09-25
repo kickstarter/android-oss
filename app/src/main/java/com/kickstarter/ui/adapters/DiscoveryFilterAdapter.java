@@ -44,46 +44,58 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
   public void takeCategories(final List<Category> initialCategories) {
     data().clear();
 
-    Observable<List<Pair<DiscoveryParams, DiscoveryFilterStyle>>> sections = categoryDiscoveryParams(initialCategories)
+    discoveryParamsSections(initialCategories)
+      .subscribe(s -> data().add(s)).unsubscribe();
+
+    data().add(1, Collections.singletonList(null)); // Category divider
+
+    notifyDataSetChanged();
+  }
+
+  /**
+   * Returns an Observable where each item is a list of params/style pairs.
+   */
+  protected Observable<List<Pair<DiscoveryParams, DiscoveryFilterStyle>>> discoveryParamsSections(final List<Category> initialCategories) {
+    return categoryDiscoveryParams(initialCategories)
       .startWith(filterDiscoveryParams())
       .map(paramsList -> {
         return Observable.from(paramsList).map(p -> {
           return Pair.create(p, new DiscoveryFilterStyle.Builder().build());
         }).toList().toBlocking().single();
       });
-
-    sections.subscribe(s -> data().add(s)).unsubscribe();
-    data().add(1, Collections.singletonList(null)); // Category divider
-
-    notifyDataSetChanged();
   }
 
+  /**
+   * Params for the top section of filters.
+   */
   protected Observable<List<DiscoveryParams>> filterDiscoveryParams() {
+    // TODO: Add social filter
     return Observable.just(
       new DiscoveryParams.Builder().staffPicks(true).build(),
       new DiscoveryParams.Builder().starred(1).build(),
-      new DiscoveryParams.Builder().build() // Everything sort
+      new DiscoveryParams.Builder().build() // Everything filter
     ).toList();
   }
 
+  /**
+   * Transforms a list of categories into an Observable list of params.
+   *
+   * Each list of params has a duplicate root category. The duplicate will be used as a nested row under the
+   * root downstream, e.g.:
+   * Art
+   *  - All of Art
+   */
   protected Observable<List<DiscoveryParams>> categoryDiscoveryParams(final List<Category> initialCategories) {
     final Observable<Category> categories = Observable.from(initialCategories);
     final Observable<Category> rootCategories = categories.filter(Category::isRoot);
 
-    /* Insert duplicate root categories. The duplicate will be used as a nested row under the root downstream, e.g.:
-     * Art
-     *  - All of Art
-     */
     final Observable<DiscoveryParams> params = categories.concatWith(rootCategories)
       .map(c -> new DiscoveryParams.Builder().category(c).build())
       .toSortedList((p1, p2) -> p1.category().discoveryFilterCompareTo(p2.category()))
       .flatMap(Observable::from);
 
-    final Observable<List<DiscoveryParams>> groupedParams = params
-      .groupBy(p -> p.category().rootId())
+    return params.groupBy(p -> p.category().rootId())
       .map(Observable::toList)
       .flatMap(l -> l);
-
-    return groupedParams;
   }
 }

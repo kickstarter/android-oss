@@ -1,18 +1,22 @@
 package com.kickstarter.ui.viewholders;
 
+import android.util.Pair;
 import android.view.View;
 import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.services.DiscoveryParams;
+import com.kickstarter.ui.DiscoveryFilterStyle;
 
 import butterknife.Bind;
 import butterknife.BindColor;
 import butterknife.ButterKnife;
 
 public class DiscoveryFilterViewHolder extends KsrViewHolder {
-  private DiscoveryParams discoveryParams;
   private final Delegate delegate;
+  private DiscoveryParams discoveryParams;
+  private DiscoveryFilterStyle style;
+
   @Bind(R.id.discovery_filter_view) View discoveryFilterView;
   @Bind(R.id.filter_text_view) TextView filterTextView;
   @Bind(R.id.vertical_line_group) View verticalLineGroup;
@@ -21,6 +25,7 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
 
   public interface Delegate {
     void discoveryFilterClick(final DiscoveryFilterViewHolder viewHolder, final DiscoveryParams discoveryParams);
+    void discoveryFilterConfigure(final DiscoveryFilterViewHolder viewHolder, final DiscoveryParams discoveryParams);
   }
 
   public DiscoveryFilterViewHolder(final View view, final Delegate delegate) {
@@ -30,7 +35,11 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
   }
 
   public void onBind(final Object datum) {
-    discoveryParams = (DiscoveryParams) datum;
+    final Pair<DiscoveryParams, DiscoveryFilterStyle> pair = (Pair<DiscoveryParams, DiscoveryFilterStyle>) datum;
+    discoveryParams = pair.first;
+    style = pair.second;
+
+    delegate.discoveryFilterConfigure(this, discoveryParams);
 
     verticalLineView.setBackgroundColor(whiteColor);
     if (isSubcategory()) {

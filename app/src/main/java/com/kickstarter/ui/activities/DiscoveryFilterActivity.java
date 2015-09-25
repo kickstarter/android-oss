@@ -29,7 +29,6 @@ import butterknife.OnClick;
 
 @RequiresPresenter(DiscoveryFilterPresenter.class)
 public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresenter> {
-  final List<DiscoveryParams> discoveryParams = new ArrayList<>();
   DiscoveryFilterAdapter adapter;
   LinearLayoutManager layoutManager;
 
@@ -40,13 +39,11 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
   protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    // TODO: Pass params from discovery
-
     setContentView(R.layout.discovery_filter_layout);
     ButterKnife.bind(this);
 
     layoutManager = new LinearLayoutManager(this);
-    adapter = new DiscoveryFilterAdapter(discoveryParams, presenter);
+    adapter = new DiscoveryFilterAdapter(presenter, DiscoveryParams.params()); // TODO: Get params from discovery
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);
 
@@ -60,10 +57,8 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
     onBackPressed();
   }
 
-  public void loadDiscoveryParams(final List<DiscoveryParams> newDiscoveryParams) {
-    discoveryParams.clear();
-    discoveryParams.addAll(newDiscoveryParams);
-    adapter.notifyDataSetChanged();
+  public void loadCategories(final List<Category> categories) {
+    adapter.takeCategories(categories);
   }
 
   public void startDiscoveryActivity(final DiscoveryParams newDiscoveryParams) {

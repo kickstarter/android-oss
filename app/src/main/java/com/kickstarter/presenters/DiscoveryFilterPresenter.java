@@ -34,15 +34,14 @@ public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity>
   }
 
   public void initialize(final DiscoveryParams initialDiscoveryParams) {
-    final Observable<List<DiscoveryParams>> discoveryParams = apiClient.fetchCategories()
-      .map(this::categoriesToDiscoveryParams);
+    final Observable<List<Category>> categories = apiClient.fetchCategories();
 
-    final Observable<Pair<DiscoveryFilterActivity, List<DiscoveryParams>>> viewAndDiscoveryParams =
-      RxUtils.combineLatestPair(viewSubject, discoveryParams);
+    final Observable<Pair<DiscoveryFilterActivity, List<Category>>> viewAndCategories =
+      RxUtils.combineLatestPair(viewSubject, categories);
 
-    addSubscription(viewAndDiscoveryParams
+    addSubscription(viewAndCategories
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vd -> vd.first.loadDiscoveryParams(vd.second)));
+      .subscribe(vc -> vc.first.loadCategories(vc.second)));
 
     addSubscription(RxUtils.takePairWhen(viewSubject, discoveryFilterClick)
         .observeOn(AndroidSchedulers.mainThread())
@@ -54,22 +53,6 @@ public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity>
     discoveryFilterClick.onNext(discoveryParams);
   }
 
-  protected List<DiscoveryParams> categoriesToDiscoveryParams(final List<Category> initialCategories) {
-    final Observable<Category> categories = Observable.from(initialCategories)
-      .toSortedList(Category::discoveryFilterCompareTo)
-      .flatMap(Observable::from);
-
-    final Observable<GroupedObservable<Integer, Category>> groupedCategories = categories.groupBy(Category::rootId);
-
-    // TODO: Add social sort when there is a current user
-    final Observable<DiscoveryParams> discoveryParams = Observable.concat(groupedCategories)
-      .map(c -> new DiscoveryParams.Builder().category(c).build())
-      .startWith(
-        new DiscoveryParams.Builder().staffPicks(true).build(),
-        new DiscoveryParams.Builder().starred(1).build(),
-        new DiscoveryParams.Builder().build() // Everything sort
-      );
-
-    return discoveryParams.toList().toBlocking().single();
+  public void discoveryFilterConfigure(final DiscoveryFilterViewHolder viewHolder, final DiscoveryParams discoveryParams) {
   }
 }

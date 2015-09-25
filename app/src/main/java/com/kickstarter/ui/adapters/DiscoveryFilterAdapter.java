@@ -52,11 +52,10 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
         }).toList().toBlocking().single();
       }).toList().toBlocking().single();
 
-    data().add(sections.get(0));
-    data().add(Collections.singletonList(null));        // Category divider
-    for (final List<Pair<DiscoveryParams, DiscoveryFilterStyle>> section : sections.subList(1, sections.size())) {
+    for (final List<Pair<DiscoveryParams, DiscoveryFilterStyle>> section : sections) {
       data().add(section);
     }
+    data().add(1, Collections.singletonList(null)); // Category divider
 
     notifyDataSetChanged();
   }

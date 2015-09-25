@@ -12,6 +12,8 @@ import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.ui.activities.ProjectActivity;
+import com.kickstarter.ui.adapters.ProjectAdapter;
+import com.kickstarter.ui.viewholders.ProjectViewHolder;
 
 import javax.inject.Inject;
 
@@ -19,7 +21,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public class ProjectPresenter extends Presenter<ProjectActivity> {
+public class ProjectPresenter extends Presenter<ProjectActivity> implements ProjectAdapter.Delegate {
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
   private final PublishSubject<Void> backProjectClick = PublishSubject.create();

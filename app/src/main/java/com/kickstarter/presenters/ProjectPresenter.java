@@ -13,7 +13,6 @@ import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.kickstarter.ui.adapters.ProjectAdapter;
-import com.kickstarter.ui.viewholders.ProjectViewHolder;
 
 import javax.inject.Inject;
 

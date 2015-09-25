@@ -41,17 +41,14 @@ public class RewardViewHolder extends KsrViewHolder {
 
     final Context context = view.getContext();
 
-    // todo: handle null values of rewards[0]
-    if (reward.id() != 0) {
-      minimum.setText(String.format(
-        context.getString(R.string.Pledge_or_more),
-        money.formattedCurrency(reward.minimum(), project.currencyOptions())));
-      backers_count.setText(String.format(
-          context.getString(R.string._backers),
-          reward.backersCount().toString())); // check Integer formatting
-      description.setText(reward.description());
-      estimated_delivery.setText(
-        reward.estimatedDeliveryOn().toString(DateTimeUtils.estimatedDeliveryOn()));
-    }
+    minimum.setText(String.format(
+      context.getString(R.string.Pledge_or_more),
+      money.formattedCurrency(reward.minimum(), project.currencyOptions())));
+    backers_count.setText(String.format(
+        context.getString(R.string._backers),
+        reward.backersCount().toString())); // check Integer formatting
+    description.setText(reward.description());
+    estimated_delivery.setText(
+      reward.estimatedDeliveryOn().toString(DateTimeUtils.estimatedDeliveryOn()));
   }
 }

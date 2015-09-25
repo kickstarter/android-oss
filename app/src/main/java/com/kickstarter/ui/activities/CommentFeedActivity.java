@@ -57,7 +57,7 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
   }
 
   // this may be removed with adapter implementation
-  public void showProjectContext(Project project) {
+  public void showProjectContext(final Project project) {
     Picasso.with(getApplicationContext()).load(project.photo().full())
       .into(projectPhotoImageView);
     projectNameTextView.setText(project.name());

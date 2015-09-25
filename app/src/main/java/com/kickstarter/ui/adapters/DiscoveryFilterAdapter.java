@@ -87,9 +87,9 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
    */
   protected Observable<List<DiscoveryParams>> categoryDiscoveryParams(final List<Category> initialCategories) {
     final Observable<Category> categories = Observable.from(initialCategories);
-    final Observable<Category> rootCategories = categories.filter(Category::isRoot);
 
-    final Observable<DiscoveryParams> params = categories.concatWith(rootCategories)
+    final Observable<DiscoveryParams> params = categories
+      .concatWith(categories.filter(Category::isRoot)) // Add the duplicate root category
       .map(c -> new DiscoveryParams.Builder().category(c).build())
       .toSortedList((p1, p2) -> p1.category().discoveryFilterCompareTo(p2.category()))
       .flatMap(Observable::from);

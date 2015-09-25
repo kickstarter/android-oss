@@ -44,9 +44,7 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
   public void takeCategories(final List<Category> initialCategories) {
     data().clear();
 
-    discoveryParamsSections(initialCategories)
-      .subscribe(s -> data().add(s)).unsubscribe();
-
+    data().addAll(discoveryParamsSections(initialCategories).toList().toBlocking().single());
     data().add(1, Collections.singletonList(null)); // Category divider
 
     notifyDataSetChanged();

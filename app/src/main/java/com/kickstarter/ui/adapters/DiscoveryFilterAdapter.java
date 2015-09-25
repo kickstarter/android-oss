@@ -44,17 +44,15 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
   public void takeCategories(final List<Category> initialCategories) {
     data().clear();
 
-    List<List<Pair<DiscoveryParams, DiscoveryFilterStyle>>> sections = categoryDiscoveryParams(initialCategories)
+    Observable<List<Pair<DiscoveryParams, DiscoveryFilterStyle>>> sections = categoryDiscoveryParams(initialCategories)
       .startWith(filterDiscoveryParams())
       .map(paramsList -> {
         return Observable.from(paramsList).map(p -> {
           return Pair.create(p, new DiscoveryFilterStyle.Builder().build());
         }).toList().toBlocking().single();
-      }).toList().toBlocking().single();
+      });
 
-    for (final List<Pair<DiscoveryParams, DiscoveryFilterStyle>> section : sections) {
-      data().add(section);
-    }
+    sections.subscribe(s -> data().add(s)).unsubscribe();
     data().add(1, Collections.singletonList(null)); // Category divider
 
     notifyDataSetChanged();

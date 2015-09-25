@@ -33,7 +33,7 @@ import rx.Observable;
 @RequiresPresenter(ProjectPresenter.class)
 public class ProjectActivity extends BaseActivity<ProjectPresenter> {
   @Bind(R.id.rewards_recycler_view) RecyclerView rewardsRecyclerView;
-  @Nullable @Bind(R.id.star_icon) IconTextView starIconTextView;
+  @Bind(R.id.star_icon) IconTextView starIconTextView;
 
   @Inject Money money;
 

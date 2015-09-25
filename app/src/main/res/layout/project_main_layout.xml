@@ -6,6 +6,9 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
+  <include
+    layout="@layout/project_media_header"/>
+
   <LinearLayout
     android:id="@+id/project_info"
     android:layout_width="match_parent"

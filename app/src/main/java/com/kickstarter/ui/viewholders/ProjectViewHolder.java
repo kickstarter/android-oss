@@ -25,7 +25,7 @@ public class ProjectViewHolder extends KsrViewHolder {
 
 //  protected @Nullable @Bind(R.id.play_button_overlay) IconTextView playButtonIconTextView;
 //  protected @Nullable @Bind(R.id.project_detail_video) VideoView videoView;
-//  protected @Bind(R.id.project_detail_photo) ImageView photoImageView;
+  protected @Bind(R.id.project_detail_photo) ImageView photoImageView;
   protected @Bind(R.id.project_name) TextView projectNameTextView;
   protected @Bind(R.id.creator_name) TextView creatorNameTextView;
   protected @Bind(R.id.blurb) TextView blurbTextView;
@@ -69,7 +69,7 @@ public class ProjectViewHolder extends KsrViewHolder {
     final Context context = view.getContext();
 
     /* Video */
-//    Picasso.with(context).load(project.photo().full()).into(photoImageView);
+    Picasso.with(context).load(project.photo().full()).into(photoImageView);
 
     /* Project */
     blurbTextView.setText(Html.fromHtml(context.getString(R.string.Blurb_read_more, project.blurb())));

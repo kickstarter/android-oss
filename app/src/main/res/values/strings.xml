@@ -100,6 +100,7 @@
   <string name="Please_enter_your_verification_code_to_continue">
     Please enter your verification code to continue.
   </string>
+  <string name="Pledge_or_more">Pledge %1$s or more</string>
   <string name="pledged_of_">pledged of\u0020</string>
   <string name="pledged_of_goal">pledged of %1$s</string>
   <string name="Post">Post</string>

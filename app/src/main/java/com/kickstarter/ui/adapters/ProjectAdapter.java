@@ -27,7 +27,7 @@ public class ProjectAdapter extends KsrAdapter {
 
   protected int layout(final SectionRow sectionRow) {
     if (sectionRow.section() == 0) {
-      return R.layout.project_no_rewards_layout;
+      return R.layout.project_main_layout;
     }
     else {
       return R.layout.reward_card_view;

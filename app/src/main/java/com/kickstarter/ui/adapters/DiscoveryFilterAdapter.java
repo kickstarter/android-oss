@@ -56,10 +56,8 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
   protected Observable<List<Pair<DiscoveryParams, DiscoveryFilterStyle>>> paramsSections(final List<Category> initialCategories) {
     return categoryParams(initialCategories)
       .startWith(filterParams())
-      .map(l -> {
-        return Observable.from(l)
-          .map(p -> Pair.create(p, new DiscoveryFilterStyle.Builder().build())).toList().toBlocking().single();
-      });
+      .map(l -> Observable.from(l)
+        .map(p -> Pair.create(p, new DiscoveryFilterStyle.Builder().build())).toList().toBlocking().single());
   }
 
   /**

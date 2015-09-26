@@ -1,11 +1,14 @@
 package com.kickstarter.services;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kickstarter.BuildConfig;
 import com.kickstarter.libs.ActivityCategoryTypeConverter;
 import com.kickstarter.libs.ApiEndpoint;
+import com.kickstarter.libs.AutoParcelAdapterFactory;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.DateTimeTypeConverter;
@@ -24,6 +27,7 @@ import org.joda.time.DateTime;
 
 import java.util.List;
 
+import auto.parcel.AutoParcel;
 import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
@@ -65,8 +69,12 @@ public class ApiClient {
       .retry(3);
   }
 
-  public Observable<Project> fetchProject(final Project project) {
-    return service.fetchProject(project.param()).startWith(project);
+  public Observable<Project> fetchProject(@NonNull final String param) {
+    return service.fetchProject(param);
+  }
+
+  public Observable<Project> fetchProject(@NonNull final Project project) {
+    return fetchProject(project.param()).startWith(project);
   }
 
   public Observable<Category> fetchCategory(final Category category) {
@@ -122,6 +130,7 @@ public class ApiClient {
       .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
       .registerTypeAdapter(Activity.Category.class, new ActivityCategoryTypeConverter())
       .registerTypeAdapter(DateTime.class, new DateTimeTypeConverter())
+      .registerTypeAdapterFactory(new AutoParcelAdapterFactory())
       .create();
 
     return new GsonConverter(gson);

@@ -117,6 +117,8 @@ dependencies {
     compile 'com.google.guava:guava:18.0'
     compile 'com.hannesdorfmann.parcelableplease:annotation:1.0.1'
     apt 'com.hannesdorfmann.parcelableplease:processor:1.0.1'
+    compile 'com.github.frankiesardo:auto-parcel:0.3.1'
+    apt 'com.github.frankiesardo:auto-parcel-processor:0.3.1'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.jakewharton:process-phoenix:1.0.0'
     compile 'com.jakewharton.timber:timber:3.0.1'

@@ -214,7 +214,7 @@ public class KickstarterWebViewClient extends WebViewClient {
     }
     final Activity activity = (Activity) webView.getContext();
     final Intent intent = new Intent(activity, ProjectActivity.class)
-      .putExtra(activity.getString(R.string.intent_project), Project.createFromParam(matcher.group()))
+      .putExtra(activity.getString(R.string.intent_project_param), matcher.group())
       .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     activity.startActivity(intent);
 

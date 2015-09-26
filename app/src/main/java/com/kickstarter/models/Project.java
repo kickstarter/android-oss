@@ -152,11 +152,9 @@ public abstract class Project implements Parcelable {
 
     @AutoParcel @AutoGson
     public abstract static class Web implements Parcelable {
-      // TODO: Full project serializer seems to replace the urls hash with a new hash just containing updates,
-      // possible bug?
-      @Nullable public abstract String project();
+      public abstract String project();
       @Nullable public abstract String projectShort();
-      @Nullable public abstract String rewards();
+      public abstract String rewards();
       @Nullable public abstract String updates();
 
       @AutoParcel.Builder

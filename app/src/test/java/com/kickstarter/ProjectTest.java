@@ -13,8 +13,9 @@ import org.robolectric.annotation.Config;
 @Config(constants = BuildConfig.class, sdk = KSRobolectricGradleTestRunner.DEFAULT_SDK)
 public class ProjectTest extends TestCase {
   Project projectWithSecureUrl() {
+    final String projectUrl = "https://www.kickstarter.com/projects/foo/bar";
     final Project.Urls urls = Project.Urls.builder()
-      .web(Project.Urls.Web.builder().project("https://www.kickstarter.com/projects/foo/bar").build())
+      .web(Project.Urls.Web.builder().project(projectUrl).rewards(projectUrl + "/rewards").build())
       .build();
 
     return ProjectFactory.project().urls(urls).build();
@@ -22,8 +23,10 @@ public class ProjectTest extends TestCase {
 
   @Test
   public void testSecureWebProjectUrl() {
+    final String projectUrl = "http://www.kickstarter.com/projects/foo/bar";
+
     final Project.Urls urls = Project.Urls.builder()
-      .web(Project.Urls.Web.builder().project("https://www.kickstarter.com/projects/foo/bar").build())
+      .web(Project.Urls.Web.builder().project(projectUrl).rewards(projectUrl + "/rewards").build())
       .build();
 
     final Project project = ProjectFactory.project().urls(urls).build();

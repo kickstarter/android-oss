@@ -8,6 +8,8 @@ import java.util.EnumSet;
 import java.util.List;
 
 public class ActivityFeedParams {
+  public ActivityFeedParams() {}
+
   public List<String> queryParams() {
     return Arrays.asList(
       Activity.CATEGORY_BACKING,

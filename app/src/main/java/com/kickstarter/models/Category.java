@@ -20,10 +20,29 @@ abstract public class Category implements Parcelable {
   public abstract long id();
   public abstract String name();
   @Nullable public abstract Category parent();
-  @Nullable public abstract Integer parentId();
+  @Nullable public abstract Long parentId();
   public abstract int position();
   @Nullable public abstract Integer projectsCount();
   public abstract String slug();
+
+  @AutoParcel.Builder
+  public abstract static class Builder {
+    public abstract Builder color(int __);
+    public abstract Builder id(long __);
+    public abstract Builder name(String __);
+    public abstract Builder parent(Category __);
+    public abstract Builder parentId(Long __);
+    public abstract Builder position(int __);
+    public abstract Builder projectsCount(Integer __);
+    public abstract Builder slug(String __);
+    public abstract Category build();
+  }
+
+  public static Builder builder() {
+    return new AutoParcel_Category.Builder();
+  }
+
+  public abstract Builder toBuilder();
 
   public int colorWithAlpha() {
     return KSColorUtils.setAlpha(color(), 255);

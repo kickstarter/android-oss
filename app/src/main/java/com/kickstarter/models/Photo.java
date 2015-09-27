@@ -1,9 +1,7 @@
 package com.kickstarter.models;
 
-import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.kickstarter.libs.AutoGson;
 
 import auto.parcel.AutoParcel;

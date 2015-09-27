@@ -2,12 +2,10 @@ package com.kickstarter.models;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.kickstarter.R;
 import com.kickstarter.libs.AutoGson;
 import com.kickstarter.libs.KSColorUtils;

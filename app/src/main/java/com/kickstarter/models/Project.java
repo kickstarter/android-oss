@@ -22,7 +22,7 @@ import java.util.List;
 
 import auto.parcel.AutoParcel;
 
-@AutoParcel @AutoGson
+@AutoGson @AutoParcel
 public abstract class Project implements Parcelable {
   public abstract int backersCount();
   public abstract String blurb();

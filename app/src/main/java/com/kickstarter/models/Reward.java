@@ -1,63 +1,46 @@
 package com.kickstarter.models;
 
-import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
-import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
+import com.kickstarter.libs.AutoGson;
 
 import org.joda.time.DateTime;
 
-@ParcelablePlease
-public class Reward implements Parcelable {
-  String reward = null;
-  Integer limit = null;
-  DateTime estimatedDeliveryOn = null;
-  Boolean shippingEnabled = null;
-  Integer id = null;
-  String shippingPreference = null;
-  String shippingSummary = null;
-  Integer backersCount = null;
-  Integer minimum = null;
-  String description = null;
+import auto.parcel.AutoParcel;
 
-  public Integer backersCount() {
-    return backersCount;
-  }
-  public DateTime estimatedDeliveryOn() {
-    return estimatedDeliveryOn;
-  }
-  public Integer id() {
-    return id;
-  }
-  public String shippingPreference() {
-    return shippingPreference;
-  }
-  public Integer limit() {
-    return limit;
-  }
-  public Integer minimum() {
-    return minimum;
-  }
-  public String description() {
-    return description;
-  }
-  public Boolean shippingEnabled() {
-    return shippingEnabled;
-  }
-  public String shippingSummary() {
-    return shippingSummary;
+@AutoGson @AutoParcel
+public abstract class Reward implements Parcelable {
+  @Nullable public abstract Integer backersCount();
+  @Nullable public abstract String description();
+  public abstract long id();
+  @Nullable public abstract Integer limit();
+  public abstract float minimum();
+  @Nullable public abstract DateTime estimatedDeliveryOn();
+  public abstract String reward();
+  @Nullable public abstract Boolean shippingEnabled();
+  @Nullable public abstract String shippingPreference();
+  @Nullable public abstract String shippingSummary();
+
+
+  @AutoParcel.Builder
+  public abstract static class Builder {
+    public abstract Builder backersCount(Integer __);
+    public abstract Builder description(String __);
+    public abstract Builder id(long __);
+    public abstract Builder limit(Integer __);
+    public abstract Builder minimum(float __);
+    public abstract Builder estimatedDeliveryOn(DateTime __);
+    public abstract Builder reward(String __);
+    public abstract Builder shippingEnabled(Boolean __);
+    public abstract Builder shippingPreference(String __);
+    public abstract Builder shippingSummary(String __);
+    public abstract Reward builder();
   }
 
-  @Override
-  public int describeContents() { return 0; }
-  @Override
-  public void writeToParcel(Parcel dest, int flags) {RewardParcelablePlease.writeToParcel(this, dest, flags);}
-  public static final Creator<Reward> CREATOR = new Creator<Reward>() {
-    public Reward createFromParcel(Parcel source) {
-      Reward target = new Reward();
-      RewardParcelablePlease.readFromParcel(target, source);
-      return target;
-    }
-    public Reward[] newArray(int size) {return new Reward[size];}
-  };
+  public static Builder builder() {
+    return new AutoParcel_Reward.Builder();
+  }
+
+  public abstract Builder toBuilder();
 }

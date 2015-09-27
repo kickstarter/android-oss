@@ -6,7 +6,8 @@ import com.kickstarter.libs.AutoGson;
 
 import auto.parcel.AutoParcel;
 
-@AutoGson @AutoParcel
+@AutoGson
+@AutoParcel
 public abstract class Video implements Parcelable {
   public abstract String base();
   public abstract String frame();

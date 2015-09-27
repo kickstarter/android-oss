@@ -12,7 +12,8 @@ import com.kickstarter.libs.KSColorUtils;
 
 import auto.parcel.AutoParcel;
 
-@AutoParcel @AutoGson
+@AutoParcel
+@AutoGson
 abstract public class Category implements Parcelable {
   public abstract int color();
   public abstract long id();

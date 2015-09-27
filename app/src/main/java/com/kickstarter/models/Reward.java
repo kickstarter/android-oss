@@ -9,7 +9,8 @@ import org.joda.time.DateTime;
 
 import auto.parcel.AutoParcel;
 
-@AutoGson @AutoParcel
+@AutoGson
+@AutoParcel
 public abstract class Reward implements Parcelable {
   @Nullable public abstract Integer backersCount();
   @Nullable public abstract String description();

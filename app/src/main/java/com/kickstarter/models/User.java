@@ -7,7 +7,8 @@ import com.kickstarter.libs.AutoGson;
 
 import auto.parcel.AutoParcel;
 
-@AutoGson @AutoParcel
+@AutoGson
+@AutoParcel
 public abstract class User implements Parcelable {
   public abstract Avatar avatar();
   public abstract long id();

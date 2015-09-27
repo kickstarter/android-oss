@@ -22,7 +22,8 @@ import java.util.List;
 
 import auto.parcel.AutoParcel;
 
-@AutoGson @AutoParcel
+@AutoGson
+@AutoParcel
 public abstract class Project implements Parcelable {
   public abstract int backersCount();
   public abstract String blurb();
@@ -136,7 +137,8 @@ public abstract class Project implements Parcelable {
     return urls().web().project();
   }
 
-  @AutoParcel @AutoGson
+  @AutoParcel
+  @AutoGson
   public abstract static class Urls implements Parcelable {
     public abstract Web web();
     @Nullable public abstract Api api();
@@ -152,7 +154,8 @@ public abstract class Project implements Parcelable {
       return new AutoParcel_Project_Urls.Builder();
     }
 
-    @AutoParcel @AutoGson
+    @AutoParcel
+    @AutoGson
     public abstract static class Web implements Parcelable {
       public abstract String project();
       @Nullable public abstract String projectShort();
@@ -187,7 +190,8 @@ public abstract class Project implements Parcelable {
       }
     }
 
-    @AutoParcel @AutoGson
+    @AutoParcel
+    @AutoGson
     public abstract static class Api implements Parcelable {
       @Nullable public abstract String project();
       @Nullable public abstract String comments();

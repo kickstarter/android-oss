@@ -13,7 +13,8 @@ import java.lang.annotation.RetentionPolicy;
 
 import auto.parcel.AutoParcel;
 
-@AutoGson @AutoParcel
+@AutoGson
+@AutoParcel
 public abstract class Activity implements Parcelable {
   @Category public abstract String category();
   public abstract DateTime createdAt();

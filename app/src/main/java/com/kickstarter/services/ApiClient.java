@@ -74,8 +74,12 @@ public class ApiClient {
     return fetchProject(project.param()).startWith(project);
   }
 
-  public Observable<Category> fetchCategory(final Category category) {
-    return service.fetchCategory(category.id());
+  public Observable<Category> fetchCategory(final long id) {
+    return service.fetchCategory(id);
+  }
+
+  public Observable<Category> fetchCategory(@NonNull final Category category) {
+    return fetchCategory(category.id());
   }
 
   public Observable<AccessTokenEnvelope> login(final String email, final String password) {

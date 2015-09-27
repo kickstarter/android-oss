@@ -13,11 +13,10 @@ public class StringUtils {
   }
 
   // TODO: Take category instead of id
-  public static String friendBackingActivityTitle(final Context context, final String friendName, final Integer categoryId) {
+  public static String friendBackingActivityTitle(final Context context, final String friendName, final long categoryId) {
     final String str;
 
-    // TODO: Would be nice to switch on a category enum
-    switch (categoryId) {
+    switch ((int) categoryId) {
       case 1: str = context.getString(R.string.friend_name_backed_art_project, friendName); break;
       case 3: str = context.getString(R.string.friend_name_backed_comics_project, friendName); break;
       case 26: str = context.getString(R.string.friend_name_backed_crafts_project, friendName); break;

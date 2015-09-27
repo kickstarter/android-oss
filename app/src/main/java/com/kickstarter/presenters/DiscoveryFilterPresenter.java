@@ -59,7 +59,7 @@ public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity>
       .toSortedList(Category::discoveryFilterCompareTo)
       .flatMap(Observable::from);
 
-    final Observable<GroupedObservable<Integer, Category>> groupedCategories = categories.groupBy(Category::rootId);
+    final Observable<GroupedObservable<Long, Category>> groupedCategories = categories.groupBy(Category::rootId);
 
     // TODO: Add social sort when there is a current user
     final Observable<DiscoveryParams> discoveryParams = Observable.concat(groupedCategories)

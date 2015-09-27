@@ -1,61 +1,54 @@
 package com.kickstarter.models;
 
+import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.text.Html;
+
+import com.kickstarter.libs.AutoGson;
 
 import org.joda.time.DateTime;
 
-public class Update {
-  String body = null;
-  Integer commentsCount = null;
-  Boolean hasLiked = null;
-  Integer id = null;
-  Integer likesCount = null;
-  Integer projectId = null;
-  DateTime publishedAt = null;
-  Integer sequence = null;
-  String title = null;
-  User user = null;
-  Integer updateId = null;
-  DateTime updatedAt = null;
-  Boolean visible = null;
+import auto.parcel.AutoParcel;
 
+@AutoGson
+@AutoParcel
+public abstract class Update implements Parcelable {
+  public abstract String body();
+  @Nullable public abstract Integer commentsCount();
+  @Nullable public abstract Boolean hasLiked();
+  public abstract long id();
+  @Nullable public abstract Integer likesCount();
+  public abstract long projectId();
+  @Nullable public abstract DateTime publishedAt();
+  public abstract int sequence();
+  public abstract String title();
+  @Nullable public abstract User user();
+  @Nullable public abstract DateTime updatedAt();
+  @Nullable public abstract Boolean visible();
+
+  @AutoParcel.Builder
+  public abstract static class Builder {
+    public abstract Builder body(String __);
+    public abstract Builder commentsCount(Integer __);
+    public abstract Builder hasLiked(Boolean __);
+    public abstract Builder id(long __);
+    public abstract Builder likesCount(Integer __);
+    public abstract Builder projectId(long __);
+    public abstract Builder publishedAt(DateTime __);
+    public abstract Builder sequence(int __);
+    public abstract Builder title(String __);
+    public abstract Builder user(User __);
+    public abstract Builder updatedAt(DateTime __);
+    public abstract Builder visible(Boolean __);
+    public abstract Update build();
+  }
+
+  public static Builder builder() {
+    return new AutoParcel_Update.Builder();
+  }
+
+  public abstract Builder toBuilder();
   private static final int TRUNCATED_BODY_LENGTH = 400;
-
-  public String body() {
-    return body;
-  }
-
-  public Integer commentsCount() {
-    return commentsCount;
-  }
-
-  public Boolean hasLiked() {
-    return hasLiked;
-  }
-
-  public Integer id() {
-    return id;
-  }
-
-  public Integer likesCount() {
-    return likesCount;
-  }
-
-  public Integer projectId() {
-    return projectId;
-  }
-
-  public DateTime publishedAt() {
-    return publishedAt;
-  }
-
-  public Integer sequence() {
-    return sequence;
-  }
-
-  public String title() {
-    return title;
-  }
 
   public String truncatedBody() {
     String str = Html.fromHtml(body()).toString();
@@ -64,21 +57,5 @@ public class Update {
     }
 
     return str;
-  }
-
-  public User user() {
-    return user;
-  }
-
-  public Integer updateId() {
-    return updateId;
-  }
-
-  public DateTime updatedAt() {
-    return updatedAt;
-  }
-
-  public Boolean visible() {
-    return visible;
   }
 }

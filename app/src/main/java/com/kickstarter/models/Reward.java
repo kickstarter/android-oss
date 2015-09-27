@@ -23,7 +23,6 @@ public abstract class Reward implements Parcelable {
   @Nullable public abstract String shippingPreference();
   @Nullable public abstract String shippingSummary();
 
-
   @AutoParcel.Builder
   public abstract static class Builder {
     public abstract Builder backersCount(Integer __);

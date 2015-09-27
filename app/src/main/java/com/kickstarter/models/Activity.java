@@ -39,6 +39,8 @@ public abstract class Activity implements Parcelable {
     return new AutoParcel_Activity.Builder();
   }
 
+  public abstract Builder toBuilder();
+
   public static final String CATEGORY_WATCH               = "watch";
   public static final String CATEGORY_RESUME              = "resume";
   public static final String CATEGORY_UPDATE              = "update";

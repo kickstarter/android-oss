@@ -18,7 +18,7 @@ public class ProjectTest extends TestCase {
       .web(Project.Urls.Web.builder().project(projectUrl).rewards(projectUrl + "/rewards").build())
       .build();
 
-    return ProjectFactory.project().urls(urls).build();
+    return ProjectFactory.project().toBuilder().urls(urls).build();
   }
 
   @Test
@@ -29,7 +29,7 @@ public class ProjectTest extends TestCase {
       .web(Project.Urls.Web.builder().project(projectUrl).rewards(projectUrl + "/rewards").build())
       .build();
 
-    final Project project = ProjectFactory.project().urls(urls).build();
+    final Project project = ProjectFactory.project().toBuilder().urls(urls).build();
 
     assertEquals("https://www.kickstarter.com/projects/foo/bar", project.secureWebProjectUrl());
   }

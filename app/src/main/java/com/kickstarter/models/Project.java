@@ -93,6 +93,8 @@ public abstract class Project implements Parcelable {
       .rewards(new ArrayList<>());
   }
 
+  public abstract Builder toBuilder();
+
   public static final String STATE_STARTED      = "started";
   public static final String STATE_SUBMITTED    = "submitted";
   public static final String STATE_LIVE         = "live";

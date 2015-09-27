@@ -6,7 +6,7 @@ import com.kickstarter.models.User;
 import org.joda.time.DateTime;
 
 public class ProjectFactory {
-  public static Project.Builder project() {
+  public static Project project() {
     final User creator = UserFactory.creator();
     final String slug = "slug-1";
     final String projectUrl = "https://www.kickstarter.com/projects/" + creator.uid() + "/" + slug;
@@ -32,6 +32,7 @@ public class ProjectFactory {
       .state(Project.STATE_LIVE)
       .slug(slug)
       .updatedAt(DateTime.now())
-      .urls(Project.Urls.builder().web(web).build());
+      .urls(Project.Urls.builder().web(web).build())
+      .build();
   }
 }

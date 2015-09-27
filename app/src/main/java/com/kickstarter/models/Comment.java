@@ -10,8 +10,7 @@ import org.joda.time.DateTime;
 
 import auto.parcel.AutoParcel;
 
-@AutoParcel
-@AutoGson
+@AutoGson @AutoParcel
 public abstract class Comment implements Parcelable {
   public abstract User author();
   public abstract String body();

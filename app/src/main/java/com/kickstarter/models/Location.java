@@ -8,7 +8,7 @@ import com.kickstarter.libs.AutoGson;
 
 import auto.parcel.AutoParcel;
 
-@AutoParcel @AutoGson
+@AutoGson @AutoParcel
 public abstract class Location implements Parcelable {
   public abstract String displayableName();
   public abstract long id();

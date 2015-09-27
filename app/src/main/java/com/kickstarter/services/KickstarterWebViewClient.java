@@ -13,7 +13,6 @@ import com.kickstarter.libs.Build;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.FormContents;
 import com.kickstarter.libs.IOUtils;
-import com.kickstarter.models.Project;
 import com.kickstarter.ui.activities.DisplayWebViewActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.squareup.okhttp.MediaType;

@@ -141,8 +141,8 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  KickstarterClient provideKickstarterClient(final Build build, @WebEndpoint final String webEndpoint) {
-    return new KickstarterClient(build, webEndpoint);
+  KickstarterClient provideKickstarterClient(final Build build, final Gson gson, @WebEndpoint final String webEndpoint) {
+    return new KickstarterClient(build, gson, webEndpoint);
   }
 
   @Provides

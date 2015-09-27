@@ -10,15 +10,17 @@ import timber.log.Timber;
 
 public class CurrentUser {
   private final StringPreference accessTokenPreference;
-  private static final Gson gson = new Gson();
+  private final Gson gson;
   private final StringPreference userPreference;
 
   private final PublishSubject<User> userSubject = PublishSubject.create();
   private User currentUser;
 
   public CurrentUser(final StringPreference accessTokenPreference,
+    final Gson gson,
     final StringPreference userPreference) {
     this.accessTokenPreference = accessTokenPreference;
+    this.gson = gson;
     this.userPreference = userPreference;
 
     userSubject.subscribe(user -> currentUser = user);

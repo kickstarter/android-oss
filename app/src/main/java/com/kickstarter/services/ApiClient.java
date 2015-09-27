@@ -2,15 +2,11 @@ package com.kickstarter.services;
 
 import android.support.annotation.NonNull;
 
-import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.kickstarter.BuildConfig;
 import com.kickstarter.libs.ApiEndpoint;
-import com.kickstarter.libs.AutoParcelAdapterFactory;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.CurrentUser;
-import com.kickstarter.libs.DateTimeTypeConverter;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
@@ -20,8 +16,6 @@ import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.services.apiresponses.StarEnvelope;
-
-import org.joda.time.DateTime;
 
 import java.util.List;
 
@@ -37,13 +31,19 @@ public class ApiClient {
   private final Build build;
   private final String clientId;
   private final CurrentUser currentUser;
+  private final Gson gson;
   private final ApiService service;
 
-  public ApiClient(final ApiEndpoint apiEndpoint, final Build build, final String clientId, final CurrentUser currentUser) {
+  public ApiClient(final ApiEndpoint apiEndpoint,
+    final Build build,
+    final String clientId,
+    final CurrentUser currentUser,
+    final Gson gson) {
     this.apiEndpoint = apiEndpoint;
     this.build = build;
     this.clientId = clientId;
     this.currentUser = currentUser;
+    this.gson = gson;
 
     service = apiService();
   }
@@ -123,12 +123,6 @@ public class ApiClient {
   }
 
   private GsonConverter gsonConverter() {
-    final Gson gson = new GsonBuilder()
-      .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-      .registerTypeAdapter(DateTime.class, new DateTimeTypeConverter())
-      .registerTypeAdapterFactory(new AutoParcelAdapterFactory())
-      .create();
-
     return new GsonConverter(gson);
   }
 

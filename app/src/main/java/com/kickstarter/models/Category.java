@@ -16,14 +16,14 @@ import auto.parcel.AutoParcel;
 
 @AutoParcel @AutoGson
 abstract public class Category implements Parcelable {
-  abstract public int color();
-  abstract public long id();
-  abstract public String name();
-  @Nullable abstract public Category parent();
-  @Nullable abstract public Integer parentId();
-  abstract public int position();
-  @Nullable abstract public Integer projectsCount();
-  abstract public String slug();
+  public abstract int color();
+  public abstract long id();
+  public abstract String name();
+  @Nullable public abstract Category parent();
+  @Nullable public abstract Integer parentId();
+  public abstract int position();
+  @Nullable public abstract Integer projectsCount();
+  public abstract String slug();
 
   public int colorWithAlpha() {
     return KSColorUtils.setAlpha(color(), 255);

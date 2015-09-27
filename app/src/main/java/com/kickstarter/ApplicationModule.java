@@ -137,7 +137,6 @@ public class ApplicationModule {
       .registerTypeAdapter(DateTime.class, new DateTimeTypeConverter())
       .registerTypeAdapterFactory(new AutoParcelAdapterFactory())
       .create();
-
   }
 
   @Provides

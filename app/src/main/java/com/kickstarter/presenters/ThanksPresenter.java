@@ -73,7 +73,7 @@ public class ThanksPresenter extends Presenter<ThanksActivity> implements Thanks
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(ThanksActivity::startDiscoveryActivity));
 
-    final DiscoveryParams params = new DiscoveryParams.Builder()
+    final DiscoveryParams params = DiscoveryParams.builder()
       .category(project.category().root())
       .backed(-1)
       .perPage(3)

@@ -40,8 +40,6 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
   protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    // TODO: Pass params from discovery
-
     setContentView(R.layout.discovery_filter_layout);
     ButterKnife.bind(this);
 
@@ -52,7 +50,7 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
 
     setStatusBarColor();
 
-    presenter.initialize(new DiscoveryParams.Builder().build());
+    presenter.initialize(DiscoveryParams.builder().build()); // TODO: Replace with params from discovery intent
   }
 
   @OnClick(R.id.close_button)

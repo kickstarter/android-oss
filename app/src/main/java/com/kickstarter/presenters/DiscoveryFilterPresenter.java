@@ -63,11 +63,11 @@ public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity>
 
     // TODO: Add social sort when there is a current user
     final Observable<DiscoveryParams> discoveryParams = Observable.concat(groupedCategories)
-      .map(c -> new DiscoveryParams.Builder().category(c).build())
+      .map(c -> DiscoveryParams.builder().category(c).build())
       .startWith(
-        new DiscoveryParams.Builder().staffPicks(true).build(),
-        new DiscoveryParams.Builder().starred(1).build(),
-        new DiscoveryParams.Builder().build() // Everything sort
+        DiscoveryParams.builder().staffPicks(true).build(),
+        DiscoveryParams.builder().starred(1).build(),
+        DiscoveryParams.builder().build() // Everything sort
       );
 
     return discoveryParams.toList().toBlocking().single();

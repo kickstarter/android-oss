@@ -19,7 +19,7 @@ public abstract class Location implements Parcelable {
     public abstract Builder displayableName(String __);
     public abstract Builder id(long __);
     public abstract Builder name(String __);
-    public abstract Location builder();
+    public abstract Location build();
   }
 
   public static Builder builder() {

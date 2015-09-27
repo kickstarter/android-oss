@@ -25,7 +25,7 @@ public abstract class Photo implements Parcelable {
     public abstract Builder med(String __);
     public abstract Builder small(String __);
     public abstract Builder thumb(String __);
-    public abstract Photo builder();
+    public abstract Photo build();
   }
 
   public static Builder builder() {

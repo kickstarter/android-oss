@@ -23,7 +23,7 @@ public abstract class Comment implements Parcelable {
     public abstract Builder body(String __);
     public abstract Builder createdAt(DateTime __);
     public abstract Builder id(long __);
-    public abstract Comment builder();
+    public abstract Comment build();
   }
 
   public static Builder builder() {

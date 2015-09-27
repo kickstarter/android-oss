@@ -35,7 +35,7 @@ public abstract class Reward implements Parcelable {
     public abstract Builder shippingEnabled(Boolean __);
     public abstract Builder shippingPreference(String __);
     public abstract Builder shippingSummary(String __);
-    public abstract Reward builder();
+    public abstract Reward build();
   }
 
   public static Builder builder() {

@@ -1,53 +1,31 @@
 package com.kickstarter.models;
 
-import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
+import com.kickstarter.libs.AutoGson;
 
-@ParcelablePlease
-public class User implements Parcelable {
-  public Avatar avatar = null;
-  public Integer id = null;
-  public String name = null;
-  public String uid = null;
+import auto.parcel.AutoParcel;
 
-  public Avatar avatar() {
-    return avatar;
+@AutoGson @AutoParcel
+public abstract class User implements Parcelable {
+  public abstract Avatar avatar();
+  public abstract long id();
+  public abstract String name();
+  @Nullable public abstract String uid();
+
+  @AutoParcel.Builder
+  public abstract static class Builder {
+    public abstract Builder avatar(Avatar __);
+    public abstract Builder id(long __);
+    public abstract Builder name(String __);
+    public abstract Builder uid(String __);
+    public abstract User build();
   }
 
-  public Integer id() {
-    return id;
+  public static Builder builder() {
+    return new AutoParcel_User.Builder();
   }
 
-  public String name() {
-    return name;
-  }
-
-  public String uid() {
-    return uid;
-  }
-
-  @Override
-  public int describeContents() {
-    return 0;
-  }
-
-  @Override
-  public void writeToParcel(Parcel dest, int flags) {
-    UserParcelablePlease.writeToParcel(this, dest, flags);
-  }
-
-  public static final Creator<User> CREATOR = new Creator<User>() {
-    public User createFromParcel(Parcel source) {
-      User target = new User();
-      UserParcelablePlease.readFromParcel(target, source);
-      return target;
-    }
-
-    public User[] newArray(int size) {
-      return new User[size];
-    }
-  };
+  public abstract Builder toBuilder();
 }

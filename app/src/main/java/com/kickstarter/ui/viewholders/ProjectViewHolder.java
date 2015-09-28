@@ -64,7 +64,7 @@ public class ProjectViewHolder extends KsrViewHolder {
   }
 
   @Override
-  public void onBind(Object datum) {
+  public void onBind(final Object datum) {
     project = (Project) datum;
     final Context context = view.getContext();
 

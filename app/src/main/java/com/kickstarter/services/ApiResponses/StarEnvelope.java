@@ -1,17 +1,16 @@
 package com.kickstarter.services.apiresponses;
 
+import android.os.Parcelable;
+
+import com.kickstarter.libs.AutoGson;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 
-public class StarEnvelope {
-  private User user;
-  private Project project;
+import auto.parcel.AutoParcel;
 
-  public User user() {
-    return user;
-  }
-
-  public Project project() {
-    return project;
-  }
+@AutoGson
+@AutoParcel
+public abstract class StarEnvelope implements Parcelable {
+  public abstract User user();
+  public abstract Project project();
 }

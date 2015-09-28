@@ -83,7 +83,7 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
   }
 
   private void success(@NonNull final AccessTokenEnvelope envelope, @NonNull final TwoFactorActivity view) {
-    currentUser.login(envelope.user, envelope.accessToken);
+    currentUser.login(envelope.user(), envelope.accessToken());
     view.onSuccess();
   }
 

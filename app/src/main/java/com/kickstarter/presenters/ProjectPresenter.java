@@ -2,6 +2,7 @@ package com.kickstarter.presenters;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.KSApplication;
@@ -37,8 +38,7 @@ public class ProjectPresenter extends Presenter<ProjectActivity> {
     ((KSApplication) context.getApplicationContext()).component().inject(this);
   }
 
-  public void takeProject(final Project initialProject) {
-
+  public void initialize(@Nullable final Project initialProject, @Nullable final String param) {
     final Observable<User> loggedInUserOnStarClick = RxUtils.takeWhen(currentUser.observable(), starClick)
       .filter(u -> u != null);
 
@@ -54,10 +54,9 @@ public class ProjectPresenter extends Presenter<ProjectActivity> {
       .switchMap(__ -> starProject(initialProject))
       .share();
 
-    final Observable<Project> project = client.fetchProject(initialProject)
+    final Observable<Project> project = initialProject != null ? client.fetchProject(initialProject) : client.fetchProject(param)
       .mergeWith(projectOnUserChangeStar)
       .mergeWith(starredProjectOnLoginSuccess)
-      .filter(Project::isDisplayable)
       .share();
 
     final Observable<Pair<ProjectActivity, Project>> viewAndProject =

@@ -18,10 +18,12 @@ import rx.Observable;
 public class KickstarterClient {
   private final Build build;
   private final String endpoint;
+  private final Gson gson;
   private final KickstarterService service;
 
-  public KickstarterClient(final Build build, final String endpoint) {
+  public KickstarterClient(final Build build, final Gson gson, final String endpoint) {
     this.build = build;
+    this.gson = gson;
     this.endpoint = endpoint;
     service = kickstarterService();
   }
@@ -44,10 +46,6 @@ public class KickstarterClient {
   }
 
   private GsonConverter gsonConverter() {
-    final Gson gson = new GsonBuilder()
-      .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-      .create();
-
     return new GsonConverter(gson);
   }
 

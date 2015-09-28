@@ -1,39 +1,29 @@
 package com.kickstarter.models;
 
-import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
+import com.kickstarter.libs.AutoGson;
 
-@ParcelablePlease
-public class Location implements Parcelable {
-  Integer id = null;
-  String name = null;
-  String displayableName = null;
+import auto.parcel.AutoParcel;
 
-  public Integer id() { return id; }
-  public String name() { return name; }
-  public String displayableName() { return displayableName; }
+@AutoGson
+@AutoParcel
+public abstract class Location implements Parcelable {
+  public abstract String displayableName();
+  public abstract long id();
+  public abstract String name();
 
-  @Override
-  public int describeContents() {
-    return 0;
+  @AutoParcel.Builder
+  public abstract static class Builder {
+    public abstract Builder displayableName(String __);
+    public abstract Builder id(long __);
+    public abstract Builder name(String __);
+    public abstract Location build();
   }
 
-  @Override
-  public void writeToParcel(Parcel dest, int flags) {
-    LocationParcelablePlease.writeToParcel(this, dest, flags);
+  public static Builder builder() {
+    return new AutoParcel_Location.Builder();
   }
 
-  public static final Creator<Location> CREATOR = new Creator<Location>() {
-    public Location createFromParcel(Parcel source) {
-      Location target = new Location();
-      LocationParcelablePlease.readFromParcel(target, source);
-      return target;
-    }
-
-    public Location[] newArray(int size) {
-      return new Location[size];
-    }
-  };
+  public abstract Builder toBuilder();
 }

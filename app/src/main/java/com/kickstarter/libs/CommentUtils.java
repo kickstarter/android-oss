@@ -12,6 +12,6 @@ public class CommentUtils {
   }
 
   public static boolean isUserAuthor(@NonNull final Comment comment, @Nullable final User user) {
-    return user != null && comment.author().id().equals(user.id());
+    return user != null && comment.author().id() == user.id();
   }
 }

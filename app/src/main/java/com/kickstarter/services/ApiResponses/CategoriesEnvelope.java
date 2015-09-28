@@ -1,13 +1,16 @@
 package com.kickstarter.services.apiresponses;
 
+import android.os.Parcelable;
+
+import com.kickstarter.libs.AutoGson;
 import com.kickstarter.models.Category;
 
 import java.util.List;
 
-public class CategoriesEnvelope {
-  private List<Category> categories;
+import auto.parcel.AutoParcel;
 
-  public List<Category> categories() {
-    return categories;
-  }
+@AutoGson
+@AutoParcel
+public abstract class CategoriesEnvelope implements Parcelable {
+  public abstract List<Category> categories();
 }

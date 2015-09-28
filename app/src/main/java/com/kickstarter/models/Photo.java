@@ -1,62 +1,35 @@
 package com.kickstarter.models;
 
-import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
+import com.kickstarter.libs.AutoGson;
 
-@ParcelablePlease
-public class Photo implements Parcelable {
-  String full = null;
-  String ed = null;
-  String med = null;
-  String little = null;
-  String small = null;
-  String thumb = null;
+import auto.parcel.AutoParcel;
 
-  public String full() {
-    return full;
+@AutoGson
+@AutoParcel
+public abstract class Photo implements Parcelable {
+  public abstract String ed();
+  public abstract String full();
+  public abstract String little();
+  public abstract String med();
+  public abstract String small();
+  public abstract String thumb();
+
+  @AutoParcel.Builder
+  public abstract static class Builder {
+    public abstract Builder ed(String __);
+    public abstract Builder full(String __);
+    public abstract Builder little(String __);
+    public abstract Builder med(String __);
+    public abstract Builder small(String __);
+    public abstract Builder thumb(String __);
+    public abstract Photo build();
   }
 
-  public String ed() {
-    return ed;
+  public static Builder builder() {
+    return new AutoParcel_Photo.Builder();
   }
 
-  public String med() {
-    return med;
-  }
-
-  public String little() {
-    return little;
-  }
-
-  public String small() {
-    return small;
-  }
-
-  public String thumb() {
-    return thumb;
-  }
-
-  @Override
-  public int describeContents() {
-    return 0;
-  }
-
-  @Override
-  public void writeToParcel(Parcel dest, int flags) {
-    PhotoParcelablePlease.writeToParcel(this, dest, flags);
-  }
-
-  public static final Creator<Photo> CREATOR = new Creator<Photo>() {
-    public Photo createFromParcel(Parcel source) {
-      Photo target = new Photo();
-      PhotoParcelablePlease.readFromParcel(target, source);
-      return target;
-    }
-
-    public Photo[] newArray(int size) {
-      return new Photo[size];
-    }
-  };
+  public abstract Builder toBuilder();
 }

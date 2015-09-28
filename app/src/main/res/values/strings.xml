@@ -182,6 +182,7 @@
   <string name="intent_help_type">com.kickstarter.kickstarter.intent_help_type</string>
   <string name="intent_password">com.kickstarter.kickstarter.intent_password</string>
   <string name="intent_project">com.kickstarter.kickstarter.intent_project</string>
+  <string name="intent_project_param">com.kickstarter.kickstarter.intent_project_param</string>
   <string name="intent_right_bar_button">com.kickstarter.kickstarter.intent_right_bar_button</string>
   <string name="intent_share_type">"text/plain"</string>
   <string name="intent_url">com.kickstarter.kickstarter.intent_url</string>

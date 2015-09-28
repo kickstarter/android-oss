@@ -43,12 +43,12 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     super.onCreate(savedInstanceState);
     final Intent intent = getIntent();
     project = intent.getParcelableExtra(getString(R.string.intent_project));
-    final int layout = (project.commentsCount == 0) ? R.layout.empty_comment_feed_layout : R.layout.comment_feed_layout;
+    final int layout = (project.commentsCount() == null || project.commentsCount() == 0) ? R.layout.empty_comment_feed_layout : R.layout.comment_feed_layout;
     setContentView(layout);
     ButterKnife.bind(this);
 
     // messy WIP---move to Toolbar, set project observable
-    if (project.commentsCount != 0) {
+    if (project.commentsCount() != null) {
       presenter.takeProject(project);
     }
     else {

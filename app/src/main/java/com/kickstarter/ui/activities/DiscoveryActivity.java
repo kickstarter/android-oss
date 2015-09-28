@@ -2,6 +2,7 @@ package com.kickstarter.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -110,7 +111,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
-  public void showBuildAlert(final InternalBuildEnvelope envelope) {
+  public void showBuildAlert(@NonNull final InternalBuildEnvelope envelope) {
     new AlertDialog.Builder(this)
       .setTitle(getString(R.string.Upgrade_app))
       .setMessage(getString(R.string.A_newer_build_is_available))

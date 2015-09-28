@@ -37,7 +37,7 @@ import rx.Observable;
   Observable<Project> fetchProject(@Path("param") String param);
 
   @GET("/v1/categories/{id}")
-  Observable<Category> fetchCategory(@Path("id") Integer id);
+  Observable<Category> fetchCategory(@Path("id") long id);
 
   @POST("/xauth/access_token")
   Observable<AccessTokenEnvelope> login(@Query("email") String email,

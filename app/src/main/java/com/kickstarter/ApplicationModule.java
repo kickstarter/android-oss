@@ -8,10 +8,15 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.preference.PreferenceManager;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.kickstarter.libs.ApiEndpoint;
+import com.kickstarter.libs.AutoParcelAdapterFactory;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.ConfigLoader;
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.DateTimeTypeConverter;
 import com.kickstarter.libs.Font;
 import com.kickstarter.libs.ForApplication;
 import com.kickstarter.libs.Logout;
@@ -23,6 +28,8 @@ import com.kickstarter.libs.qualifiers.WebEndpoint;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.KickstarterClient;
 import com.kickstarter.services.KickstarterWebViewClient;
+
+import org.joda.time.DateTime;
 
 import java.net.CookieManager;
 
@@ -54,8 +61,8 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  ApiClient provideApiClient(final ApiEndpoint apiEndpoint, final Build build, final String clientId, final CurrentUser currentUser) {
-    return new ApiClient(apiEndpoint, build, clientId, currentUser);
+  ApiClient provideApiClient(final ApiEndpoint apiEndpoint, final Build build, final String clientId, final CurrentUser currentUser, final Gson gson) {
+    return new ApiClient(apiEndpoint, build, clientId, currentUser, gson);
   }
 
   @Provides
@@ -100,8 +107,9 @@ public class ApplicationModule {
   @Provides
   @Singleton
   CurrentUser provideCurrentUser(@AccessTokenPreference final StringPreference accessTokenPreference,
+    final Gson gson,
     @UserPreference final StringPreference userPreference) {
-    return new CurrentUser(accessTokenPreference, userPreference);
+    return new CurrentUser(accessTokenPreference, gson, userPreference);
   }
 
   @Provides
@@ -123,8 +131,18 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  KickstarterClient provideKickstarterClient(final Build build, @WebEndpoint final String webEndpoint) {
-    return new KickstarterClient(build, webEndpoint);
+  Gson provideGson(final AssetManager assetManager) {
+    return new GsonBuilder()
+      .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+      .registerTypeAdapter(DateTime.class, new DateTimeTypeConverter())
+      .registerTypeAdapterFactory(new AutoParcelAdapterFactory())
+      .create();
+  }
+
+  @Provides
+  @Singleton
+  KickstarterClient provideKickstarterClient(final Build build, final Gson gson, @WebEndpoint final String webEndpoint) {
+    return new KickstarterClient(build, gson, webEndpoint);
   }
 
   @Provides

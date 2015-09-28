@@ -11,6 +11,7 @@ import com.kickstarter.libs.RxUtils;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.ui.activities.CommentFeedActivity;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> {
   // todo: add pagination to comments
   public void takeProject(final Project project) {
     final Observable<List<Comment>> comments = client.fetchProjectComments(project)
-      .map(envelope -> envelope.comments)
+      .map(CommentsEnvelope::comments)
       .takeUntil(List::isEmpty);
 
     final Observable<Pair<CommentFeedActivity, List<Comment>>> viewAndComments =

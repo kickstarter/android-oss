@@ -47,19 +47,40 @@ public class RewardViewHolder extends KsrViewHolder {
 
     final Context context = view.getContext();
 
-    minimum.setText(String.format(
+    minimumTextView.setText(String.format(
       context.getString(R.string.Pledge_or_more),
       money.formattedCurrency(reward.minimum(), project.currencyOptions())));
-    backers_count.setText(String.format(
+    backersCountTextView.setText(String.format(
       context.getString(R.string._backers),
-      reward.backersCount().toString())); // check Integer formatting
-    description.setText(reward.description());
-    estimated_delivery.setText(
+      Integer.toString(reward.backersCount()))); // check Integer formatting
+    descriptionTextView.setText(reward.description());
+    estimatedDeliveryTextView.setText(
       reward.estimatedDeliveryOn().toString(DateTimeUtils.estimatedDeliveryOn()));
   }
 
   // todo:
   @Override
   public void onClick(final View view) {
+    //    Uri rewardSelectedUrl = Uri.withAppendedPath(project.urls().web().project(),
+    //      "/pledge/new?backing[backer_reward_id]={id}&clicked_reward=true");
+
+    //    [backer_reward_id] = {id}
+
+    //    something like:
+
+    //    backing: {
+    //      backer_reward_id: 1
+    //    }
+
+    /*
+    ENDPOINT:
+
+    project.urls.web.project + /pledge/new?backing[backer_reward_id]={id}&clicked_reward=true
+
+    */
+
+    // must we go through the delegate here?
+    // we can, to go through the project activity, which then DisplayWebViewActivity
+    // can be used
   }
 }

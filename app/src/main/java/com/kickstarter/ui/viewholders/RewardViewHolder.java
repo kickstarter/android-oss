@@ -18,10 +18,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class RewardViewHolder extends KsrViewHolder {
-  protected @Bind(R.id.pledge_minimum) TextView minimum;
-  protected @Bind(R.id.reward_backers_count) TextView backers_count;
-  protected @Bind(R.id.reward_description) TextView description;
-  protected @Bind(R.id.estimated_delivery) TextView estimated_delivery;
+  protected @Bind(R.id.pledge_minimum) TextView minimumTextView;
+  protected @Bind(R.id.reward_backers_count) TextView backersCountTextView;
+  protected @Bind(R.id.reward_description) TextView descriptionTextView;
+  protected @Bind(R.id.estimated_delivery_date) TextView estimatedDeliveryTextView;
   @Inject Money money;
 
   private final Delegate delegate;

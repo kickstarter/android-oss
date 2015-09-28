@@ -66,7 +66,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
     // https://github.com/ReactiveX/RxJava/issues/3168
     // This apparently fixes it:
     // https://github.com/ReactiveX/RxJava/pull/3171
-    params.onNext(DiscoveryParams.params());
+    params.onNext(DiscoveryParams.builder().staffPicks(true).build());
     nextPage.onNext(null);
   }
 

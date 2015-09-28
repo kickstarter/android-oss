@@ -13,7 +13,6 @@ import com.kickstarter.libs.Build;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.FormContents;
 import com.kickstarter.libs.IOUtils;
-import com.kickstarter.models.Project;
 import com.kickstarter.ui.activities.DisplayWebViewActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.squareup.okhttp.MediaType;
@@ -214,7 +213,7 @@ public class KickstarterWebViewClient extends WebViewClient {
     }
     final Activity activity = (Activity) webView.getContext();
     final Intent intent = new Intent(activity, ProjectActivity.class)
-      .putExtra(activity.getString(R.string.intent_project), Project.createFromParam(matcher.group()))
+      .putExtra(activity.getString(R.string.intent_project_param), matcher.group())
       .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     activity.startActivity(intent);
 

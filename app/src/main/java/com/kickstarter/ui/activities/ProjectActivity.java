@@ -68,8 +68,9 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
     ((KSApplication) getApplication()).component().inject(this);
 
     final Intent intent = getIntent();
-    final Project project = intent.getExtras().getParcelable(getString(R.string.intent_project));
-    presenter.takeProject(project);
+    final Project project = intent.getParcelableExtra(getString(R.string.intent_project));
+    final String param = intent.getStringExtra(getString(R.string.intent_project_param));
+    presenter.initialize(project, param);
   }
 
   public void show(final Project project) {

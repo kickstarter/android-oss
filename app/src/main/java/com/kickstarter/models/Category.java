@@ -2,116 +2,81 @@ package com.kickstarter.models;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
 import com.kickstarter.R;
+import com.kickstarter.libs.AutoGson;
 import com.kickstarter.libs.KSColorUtils;
 
-@ParcelablePlease
-public class Category implements Parcelable {
-  public Integer color = null;
-  public Integer id = null;
-  public String name = null;
-  public Category parent = null;
-  public Integer parentId = null;
-  public Integer position = null;
-  public Integer projectsCount = null;
-  public String slug = null;
+import auto.parcel.AutoParcel;
 
-  public Integer color() {
-    return KSColorUtils.setAlpha(color, 255);
+@AutoParcel
+@AutoGson
+abstract public class Category implements Parcelable {
+  public abstract int color();
+  public abstract long id();
+  public abstract String name();
+  @Nullable public abstract Category parent();
+  @Nullable public abstract Long parentId();
+  public abstract int position();
+  @Nullable public abstract Integer projectsCount();
+  public abstract String slug();
+
+  @AutoParcel.Builder
+  public abstract static class Builder {
+    public abstract Builder color(int __);
+    public abstract Builder id(long __);
+    public abstract Builder name(String __);
+    public abstract Builder parent(Category __);
+    public abstract Builder parentId(Long __);
+    public abstract Builder position(int __);
+    public abstract Builder projectsCount(Integer __);
+    public abstract Builder slug(String __);
+    public abstract Category build();
+  }
+
+  public static Builder builder() {
+    return new AutoParcel_Category.Builder();
+  }
+
+  public abstract Builder toBuilder();
+
+  public int colorWithAlpha() {
+    return KSColorUtils.setAlpha(color(), 255);
   }
 
   public int discoveryFilterCompareTo(@NonNull final Category other) {
-    if (id.equals(other.id())) {
+    if (id() == other.id()) {
       return 0;
     }
 
-    if (isRoot() && id.equals(other.rootId())) {
+    if (isRoot() && id() == other.rootId()) {
       return -1;
-    } else if (!isRoot() && rootId().equals(other.id())) {
+    } else if (!isRoot() && rootId() == other.id()) {
       return 1;
     }
 
     return root().name().compareTo(other.root().name());
   }
 
-  public Integer id() {
-    return id;
-  }
-
   public boolean isRoot() {
     return parentId() == null || parentId() == 0;
   }
 
-  public String name() {
-    return name;
-  }
-
   public int overlayTextColor(final Context context) {
     final Resources resources = context.getResources();
-    return KSColorUtils.isLight(color()) ? resources.getColor(R.color.text_dark) : resources.getColor(R.color.white);
-  }
-
-  public Category parent() {
-    if (parent == null) {
-      parent = new Category();
-      parent.id = parentId;
-    }
-
-    return parent;
-  }
-
-  public void parent(@NonNull final Category parent) {
-    this.parent = parent;
-    parentId = parent.id();
-  }
-
-  public Integer parentId() {
-    return parentId;
-  }
-
-  public Integer position() {
-    return position;
-  }
-  public Integer projectsCount() {
-    return projectsCount;
+    return KSColorUtils.isLight(colorWithAlpha()) ?
+      resources.getColor(R.color.text_dark) :
+      resources.getColor(R.color.white);
   }
 
   public Category root() {
     return isRoot() ? this : parent();
   }
 
-  public Integer rootId() {
+  public long rootId() {
     return isRoot() ? id() : parentId();
   }
-
-  public String slug() {
-    return slug;
-  }
-
-  @Override
-  public int describeContents() {
-    return 0;
-  }
-
-  @Override
-  public void writeToParcel(Parcel dest, int flags) {
-    CategoryParcelablePlease.writeToParcel(this, dest, flags);
-  }
-
-  public static final Creator<Category> CREATOR = new Creator<Category>() {
-    public Category createFromParcel(Parcel source) {
-      Category target = new Category();
-      CategoryParcelablePlease.readFromParcel(target, source);
-      return target;
-    }
-
-    public Category[] newArray(int size) {
-      return new Category[size];
-    }
-  };
 }

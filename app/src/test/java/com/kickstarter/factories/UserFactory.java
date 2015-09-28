@@ -4,16 +4,15 @@ import com.kickstarter.models.User;
 
 public class UserFactory {
   public static User user() {
-    User user = new User();
-    user.id = 1;
-    user.uid = "1234567890";
-
-    return user;
+    return User.builder()
+      .avatar(AvatarFactory.avatar())
+      .id(1)
+      .name("Sammy Sosa")
+      .uid("1234567890")
+      .build();
   }
 
   public static User creator() {
-    User user = user();
-
-    return user;
+    return user();
   }
 }

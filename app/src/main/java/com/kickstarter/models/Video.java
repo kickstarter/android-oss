@@ -1,53 +1,31 @@
 package com.kickstarter.models;
 
-import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
+import com.kickstarter.libs.AutoGson;
 
-@ParcelablePlease
-public class Video implements Parcelable {
-    String high = null;
-    String base = null;
-    String webm = null;
+import auto.parcel.AutoParcel;
 
-    public String frame() {
-        return frame;
-    }
+@AutoGson
+@AutoParcel
+public abstract class Video implements Parcelable {
+  public abstract String base();
+  public abstract String frame();
+  public abstract String high();
+  public abstract String webm();
 
-    public String high() {
-        return high;
-    }
+  @AutoParcel.Builder
+  public abstract static class Builder {
+    public abstract Builder base(String __);
+    public abstract Builder frame(String __);
+    public abstract Builder high(String __);
+    public abstract Builder webm(String __);
+    public abstract Video build();
+  }
 
-    public String base() {
-        return base;
-    }
+  public static Builder builder() {
+    return new AutoParcel_Video.Builder();
+  }
 
-    public String webm() {
-        return webm;
-    }
-
-    String frame = null;    // image layover
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        VideoParcelablePlease.writeToParcel(this, dest, flags);
-    }
-
-    public static final Creator<Video> CREATOR = new Creator<Video>() {
-        public Video createFromParcel(Parcel source) {
-            Video target = new Video();
-            VideoParcelablePlease.readFromParcel(target, source);
-            return target;
-        }
-
-        public Video[] newArray(int size) {
-            return new Video[size];
-        }
-    };
+  public abstract Builder toBuilder();
 }

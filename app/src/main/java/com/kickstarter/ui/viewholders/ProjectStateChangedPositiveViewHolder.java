@@ -10,6 +10,7 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.DateTimeUtils;
 import com.kickstarter.libs.Money;
+import com.kickstarter.models.Activity;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
@@ -43,7 +44,7 @@ public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolde
     final Context context = view.getContext();
 
     switch (activity.category()) {
-      case LAUNCH:
+      case Activity.CATEGORY_LAUNCH:
         cardView.setCardBackgroundColor(blueDarken10Color);
         leftStatFirstTextView.setText(money.formattedCurrency(activity.project().goal(), activity.project()
           .currencyOptions()));
@@ -53,7 +54,7 @@ public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolde
         titleTextView.setText(context.getString(
           R.string.creator_launched_a_project, activity.user().name(), activity.project().name()));
         break;
-      case SUCCESS:
+      case Activity.CATEGORY_SUCCESS:
         cardView.setCardBackgroundColor(greenDarken10Color);
         leftStatFirstTextView.setText(money.formattedCurrency(activity.project().pledged(), activity.project()
           .currencyOptions()));

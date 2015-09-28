@@ -1,6 +1,5 @@
 <com.kickstarter.ui.views.DiscoveryToolbar
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:icon_text_view="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   tools:showIn="@layout/discovery_layout"
   android:id="@+id/toolbar"
@@ -37,8 +36,7 @@
         android:layout_height="wrap_content"
         android:text="@string/expand_more"
         android:textColor="@color/white"
-        android:textSize="28sp"
-        icon_text_view:iconType="material" />
+        android:textSize="28sp" />
 
     </LinearLayout>
 
@@ -51,7 +49,6 @@
 
       <com.kickstarter.ui.views.IconTextView
         android:id="@+id/activity_feed_button"
-        icon_text_view:iconType="material"
         android:layout_width="@dimen/button_icon_fixed_width"
         android:layout_height="match_parent"
         android:gravity="center"
@@ -73,7 +70,6 @@
 
       <com.kickstarter.ui.views.IconTextView
         android:id="@+id/current_user_button"
-        icon_text_view:iconType="material"
         android:layout_width="@dimen/button_icon_fixed_width"
         android:layout_height="match_parent"
         android:gravity="center"

@@ -42,7 +42,7 @@ public class FriendBackingViewHolder extends ActivityListViewHolder {
       .into(projectPhotoImageView);
     titleTextView.setText(StringUtils.friendBackingActivityTitle(context,
       activity.user().name(),
-      activity.project().category().root().id()));
+      activity.project().category().rootId()));
   }
 }
 

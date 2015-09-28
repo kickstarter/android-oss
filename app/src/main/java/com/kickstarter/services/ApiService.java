@@ -34,17 +34,17 @@ import rx.Observable;
   Observable<DiscoverEnvelope> fetchProjects(@QueryMap Map<String, String> params);
 
   @GET("/v1/projects/{param}")
-  public Observable<Project> fetchProject(@Path("param") String param);
+  Observable<Project> fetchProject(@Path("param") String param);
 
   @GET("/v1/categories/{id}")
-  public Observable<Category> fetchCategory(@Path("id") Integer id);
+  Observable<Category> fetchCategory(@Path("id") long id);
 
   @POST("/xauth/access_token")
-  public Observable<AccessTokenEnvelope> login(@Query("email") String email,
+  Observable<AccessTokenEnvelope> login(@Query("email") String email,
     @Query("password") String password);
 
   @POST("/xauth/access_token")
-  public Observable<AccessTokenEnvelope> login(@Query("email") String email,
+  Observable<AccessTokenEnvelope> login(@Query("email") String email,
     @Query("password") String password,
     @Query("code") String code);
 

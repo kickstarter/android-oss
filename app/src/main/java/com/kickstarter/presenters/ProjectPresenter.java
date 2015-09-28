@@ -58,7 +58,7 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
       .switchMap(__ -> starProject(initialProject))
       .share();
 
-    final Observable<Project> project = initialProject != null ? client.fetchProject(initialProject) : client.fetchProject(param)
+    final Observable<Project> project = (initialProject != null ? client.fetchProject(initialProject) : client.fetchProject(param))
       .mergeWith(projectOnUserChangeStar)
       .mergeWith(starredProjectOnLoginSuccess)
       .share();

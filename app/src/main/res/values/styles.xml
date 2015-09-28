@@ -98,7 +98,8 @@
   <style name="KsrButton" parent="Base.Widget.AppCompat.Button">
     <item name="android:textColor">@color/white</item>
     <item name="android:layout_centerInParent">true</item>
-    <item name="android:layout_width">@dimen/grid_20</item>
+    <item name="android:singleLine">true</item>
+    <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">@dimen/grid_4</item>
     <item name="android:layout_marginTop">@dimen/grid_3</item>
     <item name="android:paddingLeft">@dimen/grid_3</item>

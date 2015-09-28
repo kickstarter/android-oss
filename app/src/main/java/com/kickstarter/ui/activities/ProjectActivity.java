@@ -61,7 +61,7 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
       final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
       final List<Pair<Project, Reward>> projectAndRewards = Observable.from(rewards)
         .map(reward -> Pair.create(project, reward))
-        .filter(projectRewardPair -> projectRewardPair.second.hasReward())
+        .filter(projectRewardPair -> !projectRewardPair.second.isNoReward())
         .toList().toBlocking().single();
 
       final ProjectAdapter adapter = new ProjectAdapter(project, projectAndRewards, presenter);

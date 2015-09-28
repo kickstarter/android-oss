@@ -30,9 +30,6 @@ public class Reward implements Parcelable {
   public Integer id() {
     return id;
   }
-  public boolean hasReward() {
-    return id != 0;
-  }
   public boolean isNoReward() {
     return id == 0;
   }

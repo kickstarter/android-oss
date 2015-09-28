@@ -20,8 +20,7 @@
       android:textAppearance="@style/subheadBold"
       android:paddingBottom="@dimen/grid_2"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:text="Pledge $1 or more"/>
+      android:layout_height="wrap_content"/>
 
     <RelativeLayout
       android:id="@+id/backer_info"
@@ -39,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:text="@string/backer_icon"
-        android:textColor="@color/green" />
+        android:textColor="@color/green"/>
 
       <TextView
         android:id="@+id/reward_backers_count"
@@ -48,8 +47,7 @@
         android:textStyle="bold"
         android:layout_centerVertical="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="backers"/>
+        android:layout_height="wrap_content"/>
 
     </RelativeLayout>
 
@@ -60,8 +58,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:paddingTop="@dimen/grid_2"
-      android:paddingBottom="@dimen/grid_2"
-      android:text="blurb"/>
+      android:paddingBottom="@dimen/grid_2"/>
 
     <TextView
       android:id="@+id/estimated_delivery"
@@ -69,14 +66,12 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:textSize="@dimen/ksr_subhead"
-      android:text="@string/Estimated_delivery"
       android:paddingBottom="@dimen/grid_1_half"
       android:textColor="@color/text_secondary"/>
 
     <TextView
       android:id="@+id/estimated_delivery_date"
       android:layout_below="@id/estimated_delivery"
-      android:text="February 2016"
       android:textSize="@dimen/ksr_subhead"
       android:layout_width="match_parent"
       android:layout_height="wrap_content" />

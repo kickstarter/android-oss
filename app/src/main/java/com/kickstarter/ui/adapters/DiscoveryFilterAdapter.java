@@ -66,9 +66,9 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
   protected Observable<List<DiscoveryParams>> filterParams() {
     // TODO: Add social filter
     return Observable.just(
-      new DiscoveryParams.Builder().staffPicks(true).build(),
-      new DiscoveryParams.Builder().starred(1).build(),
-      new DiscoveryParams.Builder().build() // Everything filter
+      DiscoveryParams.builder().staffPicks(true).build(),
+      DiscoveryParams.builder().starred(1).build(),
+      DiscoveryParams.builder().build() // Everything filter
     ).toList();
   }
 
@@ -85,7 +85,7 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
 
     final Observable<DiscoveryParams> params = categories
       .concatWith(categories.filter(Category::isRoot)) // Add the duplicate root category
-      .map(c -> new DiscoveryParams.Builder().category(c).build())
+      .map(c -> DiscoveryParams.builder().category(c).build())
       .toSortedList((p1, p2) -> p1.category().discoveryFilterCompareTo(p2.category()))
       .flatMap(Observable::from);
 

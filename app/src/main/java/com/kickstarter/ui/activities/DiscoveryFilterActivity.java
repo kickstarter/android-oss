@@ -43,7 +43,7 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
     ButterKnife.bind(this);
 
     layoutManager = new LinearLayoutManager(this);
-    adapter = new DiscoveryFilterAdapter(presenter, DiscoveryParams.params()); // TODO: Get params from discovery
+    adapter = new DiscoveryFilterAdapter(presenter, DiscoveryParams.builder().build()); // TODO: Get params from discovery
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);
 

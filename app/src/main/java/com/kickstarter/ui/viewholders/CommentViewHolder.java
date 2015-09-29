@@ -1,6 +1,8 @@
 package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
@@ -24,6 +26,7 @@ import butterknife.ButterKnife;
 public class CommentViewHolder extends KsrViewHolder {
   private Project project;
   private Comment comment;
+  private final Delegate delegate;
 
   public @Bind(R.id.avatar) ImageView avatarImageView;
   public @Bind(R.id.creator_label) TextView creatorLabel;
@@ -33,9 +36,13 @@ public class CommentViewHolder extends KsrViewHolder {
   public @Bind(R.id.comment_body) TextView commentBody;
   @Inject CurrentUser currentUser;  //check if backed project
 
-  public CommentViewHolder(final View view) {
-    super(view);
+  public interface Delegate {
+    void commentClick(final CommentViewHolder viewHolder, final Comment comment);
+  }
 
+  public CommentViewHolder(final View view, final Delegate delegate) {
+    super(view);
+    this.delegate = delegate;
     ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
     ButterKnife.bind(this, view);
   }
@@ -64,5 +71,10 @@ public class CommentViewHolder extends KsrViewHolder {
     name.setText(comment.author().name());
     postDate.setText(DateTimeUtils.relativeDateInWords(comment.createdAt(), false, true));
     commentBody.setText(comment.body());
+  }
+
+  @Override
+  public void onClick(final View view) {
+    delegate.commentClick(this, comment);
   }
 }

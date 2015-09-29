@@ -47,7 +47,6 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     setContentView(layout);
     ButterKnife.bind(this);
 
-    // messy WIP---move to Toolbar, set project observable
     if (project.commentsCount() != null) {
       presenter.takeProject(project);
     }
@@ -69,7 +68,7 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     final List<Pair<Project, Comment>> projectAndComments = Observable.from(comments)
       .map(comment -> Pair.create(project, comment))
       .toList().toBlocking().single();
-    final CommentFeedAdapter adapter = new CommentFeedAdapter(project, projectAndComments);
+    final CommentFeedAdapter adapter = new CommentFeedAdapter(project, projectAndComments, presenter);
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);
   }
@@ -92,5 +91,11 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
       });
 
     builder.show();
+  }
+
+  public void testActivity() {
+    final Intent intent = new Intent(this, DisplayWebViewActivity.class)
+      .putExtra(getString(R.string.intent_url), "https://www.kickstarter.com");
+    startActivity(intent);
   }
 }

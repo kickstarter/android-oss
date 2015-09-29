@@ -13,6 +13,9 @@ import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.ui.activities.CommentFeedActivity;
+import com.kickstarter.ui.adapters.CommentFeedAdapter;
+import com.kickstarter.ui.viewholders.CommentViewHolder;
+import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
 
 import java.util.List;
 
@@ -22,8 +25,9 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public class CommentFeedPresenter extends Presenter<CommentFeedActivity> {
-  private final PublishSubject<Void> postCommentClick = PublishSubject.create();
+public class CommentFeedPresenter extends Presenter<CommentFeedActivity> implements CommentFeedAdapter.Delegate {
+  private final PublishSubject<Comment> testCommentClick = PublishSubject.create();
+  private final PublishSubject<Project> contextClick = PublishSubject.create();
 
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
@@ -46,10 +50,24 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> {
     addSubscription(viewAndComments
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vc -> vc.first.loadProjectComments(project, vc.second)));
+
+    // works
+    addSubscription(RxUtils.takePairWhen(viewSubject, testCommentClick)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(vc -> vc.first.testActivity())
+    );
+
+    addSubscription(RxUtils.takePairWhen(viewSubject, contextClick)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(vc -> vc.first.onBackPressed())
+    );
   }
 
-  // shows when currentUser is a backer
-  public void postCommentOnClick(final Project project) {
+  public void commentClick(final CommentViewHolder viewHolder, final Comment comment) {
+    testCommentClick.onNext(comment);
+  }
 
+  public void contextClick(final ProjectContextViewHolder viewHolder, final Project project) {
+    contextClick.onNext(project);
   }
 }

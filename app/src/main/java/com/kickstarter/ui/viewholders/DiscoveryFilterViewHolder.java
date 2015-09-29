@@ -1,5 +1,6 @@
 package com.kickstarter.ui.viewholders;
 
+import android.content.Context;
 import android.graphics.Typeface;
 import android.util.Pair;
 import android.view.View;
@@ -40,6 +41,7 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
     final DiscoveryFilterAdapter.Filter filter = (DiscoveryFilterAdapter.Filter) datum;
     params = filter.params();
     style = filter.style();
+    final Context context = view.getContext();
 
     if (style.primary()) {
       discoveryFilterView.setPadding(0, 5, 0, 10);
@@ -65,13 +67,21 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
       discoveryFilterView.setLayoutParams(layoutParams);
     }
 
+    String text = params.filterString(view.getContext());
+    if (isNestedRoot()) {
+      text = context.getString(R.string.All_of_Category, text);
+    }
 
-    filterTextView.setText(params.filterString(view.getContext()));
+    filterTextView.setText(text);
     verticalLineView.setBackgroundColor(whiteColor);
   }
 
   @Override
   public void onClick(final View view) {
     delegate.discoveryFilterClick(this, params);
+  }
+
+  protected boolean isNestedRoot() {
+    return !style.primary() && params.category() != null && params.category().isRoot();
   }
 }

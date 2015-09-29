@@ -43,6 +43,7 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
       .map(CommentsEnvelope::comments)
       .takeUntil(List::isEmpty);
 
+    // we want this to be a combineLatestPair
     final Observable<Pair<CommentFeedActivity, List<Comment>>> viewAndComments =
       RxUtils.takePairWhen(viewSubject, comments);
 

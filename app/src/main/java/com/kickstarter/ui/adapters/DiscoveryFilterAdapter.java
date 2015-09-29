@@ -9,6 +9,7 @@ import com.kickstarter.libs.AutoGson;
 import com.kickstarter.models.Category;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.DiscoveryFilterStyle;
+import com.kickstarter.ui.viewholders.DiscoveryFilterDividerViewHolder;
 import com.kickstarter.ui.viewholders.DiscoveryFilterViewHolder;
 import com.kickstarter.ui.viewholders.EmptyViewHolder;
 import com.kickstarter.ui.viewholders.KsrViewHolder;
@@ -41,7 +42,7 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
 
   protected KsrViewHolder viewHolder(final int layout, @NonNull final View view) {
     if (layout == R.layout.discovery_filter_divider_view) {
-      return new EmptyViewHolder(view); // TODO: Might need to make a view holder here that toggles white or dark text
+      return new DiscoveryFilterDividerViewHolder(view);
     }
     return new DiscoveryFilterViewHolder(view, delegate);
   }

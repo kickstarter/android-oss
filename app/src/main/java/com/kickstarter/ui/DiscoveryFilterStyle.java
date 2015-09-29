@@ -1,33 +1,26 @@
 package com.kickstarter.ui;
 
-public class DiscoveryFilterStyle {
-  private final boolean primary;
+import android.os.Parcelable;
 
-  public boolean primary() {
-    return primary;
+import auto.parcel.AutoParcel;
+
+@AutoParcel
+public abstract class DiscoveryFilterStyle implements Parcelable {
+  public abstract boolean primary();
+  public abstract boolean selected();
+  public abstract boolean visible();
+
+  @AutoParcel.Builder
+  public abstract static class Builder {
+    public abstract Builder primary(boolean __);
+    public abstract Builder selected(boolean __);
+    public abstract Builder visible(boolean __);
+    public abstract DiscoveryFilterStyle build();
   }
 
-  public static class Builder {
-    private boolean primary = false;
-
-    public Builder() {}
-
-    public DiscoveryFilterStyle build() {
-      return new DiscoveryFilterStyle(this);
-    }
-
-    public Builder primary(final boolean primary) {
-      this.primary = primary;
-      return this;
-    }
+  public static Builder builder() {
+    return new AutoParcel_DiscoveryFilterStyle.Builder();
   }
 
-  private DiscoveryFilterStyle(final Builder builder) {
-    primary = builder.primary;
-  }
-
-  public Builder builder() {
-    return new Builder()
-      .primary(primary);
-  }
+  public abstract Builder toBuilder();
 }

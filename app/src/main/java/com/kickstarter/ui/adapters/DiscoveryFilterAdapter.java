@@ -11,8 +11,10 @@ import com.kickstarter.ui.viewholders.DiscoveryFilterViewHolder;
 import com.kickstarter.ui.viewholders.EmptyViewHolder;
 import com.kickstarter.ui.viewholders.KsrViewHolder;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.TreeMap;
 
 import rx.Observable;
 
@@ -57,7 +59,7 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
     return categoryParams(initialCategories)
       .startWith(filterParams())
       .map(l -> Observable.from(l)
-        .map(p -> Pair.create(p, new DiscoveryFilterStyle.Builder().build())).toList().toBlocking().single());
+        .map(p -> Pair.create(p, DiscoveryFilterStyle.builder().primary(true).selected(true).visible(true).build())).toList().toBlocking().single());
   }
 
   /**
@@ -89,8 +91,18 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
       .toSortedList((p1, p2) -> p1.category().discoveryFilterCompareTo(p2.category()))
       .flatMap(Observable::from);
 
-    return params.groupBy(p -> p.category().rootId())
-      .map(Observable::toList)
-      .flatMap(l -> l);
+    // RxJava has groupBy. groupBy creates an Observable of GroupedObservables - the Observable doesn't complete
+    // until all the GroupedObservables have been subscribed to and completed. It's quite confusing to work with,
+    // refactor with caution.
+    TreeMap<String, ArrayList<DiscoveryParams>> groupedParams = params.reduce(new TreeMap<String, ArrayList<DiscoveryParams>>(), (hash, p) -> {
+      final String key = p.category().root().name();
+      if (!hash.containsKey(key)) {
+        hash.put(key, new ArrayList<DiscoveryParams>());
+      }
+      hash.get(key).add(p);
+      return hash;
+    }).toBlocking().single();
+
+    return Observable.from(new ArrayList(groupedParams.values()));
   }
 }

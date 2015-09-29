@@ -9,6 +9,7 @@ import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.ListUtils;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.RxUtils;
+import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.DiscoveryParams;
@@ -17,20 +18,27 @@ import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.adapters.DiscoveryAdapter;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 
+import java.io.ObjectInputValidation;
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
+import timber.log.Timber;
 
 public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements DiscoveryAdapter.Delegate {
   @Inject ApiClient apiClient;
   @Inject KickstarterClient kickstarterClient;
   @Inject BuildCheck buildCheck;
 
+  private final PublishSubject<Void> filterButtonClick = PublishSubject.create();
   private final PublishSubject<Project> projectClick = PublishSubject.create();
   private final PublishSubject<Void> nextPage = PublishSubject.create();
   private final PublishSubject<DiscoveryParams> params = PublishSubject.create();
@@ -48,13 +56,17 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
     final Observable<Pair<DiscoveryActivity, List<Project>>> viewAndProjects =
       RxUtils.combineLatestPair(viewSubject, projects);
 
-    addSubscription(
-      RxUtils.takeWhen(viewSubject, params).subscribe(DiscoveryActivity::clearItems)
-    );
+    final Observable<Pair<DiscoveryActivity, DiscoveryParams>> viewAndParams =
+      RxUtils.combineLatestPair(viewSubject, params);
 
     addSubscription(viewAndProjects
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.loadProjects(vp.second)));
+
+    addSubscription(RxUtils.takeWhen(viewAndParams, filterButtonClick)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(vp -> vp.first.startDiscoveryFilterActivity(vp.second)));
+
 
     addSubscription(RxUtils.takePairWhen(viewSubject, projectClick)
         .observeOn(AndroidSchedulers.mainThread())
@@ -79,7 +91,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
     return paramsWithPagination(firstPageParams)
       .switchMap(this::projectsFromParams)
       .takeUntil(List::isEmpty)
-      .scan(ListUtils::concatDistinct)
+      .scan(new ArrayList<Project>(), ListUtils::concatDistinct)
       ;
   }
 
@@ -122,12 +134,17 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
       .toBlocking().single();
   }
 
+  public void filterButtonClick() {
+    filterButtonClick.onNext(null);
+  }
+
   public void projectCardClick(final ProjectCardViewHolder viewHolder, final Project project) {
     projectClick.onNext(project);
   }
 
   public void takeParams(final DiscoveryParams firstPageParams) {
     params.onNext(firstPageParams);
+    takeNextPage();
   }
 
   public void takeNextPage() {

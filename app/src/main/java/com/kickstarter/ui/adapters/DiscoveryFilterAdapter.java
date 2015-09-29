@@ -117,9 +117,9 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
     return categories
       .filter(this::isRootSelected)
       .map(c -> Filter.builder()
-          .params(DiscoveryParams.builder().category(c).build())
-          .style((DiscoveryFilterStyle.builder().primary(false).selected(isSelected(c)).visible(true)).build())
-          .build());
+        .params(DiscoveryParams.builder().category(c).build())
+        .style((DiscoveryFilterStyle.builder().primary(false).selected(isSelected(c)).visible(true)).build())
+        .build());
   }
 
   protected boolean isSelected(@NonNull final Category category) {

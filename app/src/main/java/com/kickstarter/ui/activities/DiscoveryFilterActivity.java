@@ -1,11 +1,10 @@
 package com.kickstarter.ui.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Pair;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -19,7 +18,6 @@ import com.kickstarter.presenters.DiscoveryFilterPresenter;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.adapters.DiscoveryFilterAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -43,7 +41,9 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
     ButterKnife.bind(this);
 
     layoutManager = new LinearLayoutManager(this);
-    adapter = new DiscoveryFilterAdapter(presenter, DiscoveryParams.builder().build()); // TODO: Get params from discovery
+    final Intent intent = getIntent();
+    final DiscoveryParams discoveryParams = intent.getParcelableExtra(getString(R.string.intent_discovery_params));
+    adapter = new DiscoveryFilterAdapter(presenter, discoveryParams);
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);
 
@@ -62,10 +62,9 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
   }
 
   public void startDiscoveryActivity(final DiscoveryParams newDiscoveryParams) {
-    // TODO: WIP, need to pass through params in intent
-    final Intent intent = new Intent(this, DiscoveryActivity.class)
-      .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-    startActivity(intent);
+    final Intent intent = new Intent().putExtra(getString(R.string.intent_discovery_params), newDiscoveryParams);
+    setResult(Activity.RESULT_OK, intent);
+    finish();
   }
 
   private void setStatusBarColor() {

@@ -3,6 +3,7 @@ package com.kickstarter.ui.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +15,7 @@ import android.view.WindowManager;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSColorUtils;
@@ -21,6 +23,7 @@ import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.libs.RxUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.DiscoveryPresenter;
+import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.adapters.DiscoveryAdapter;
 import com.kickstarter.ui.containers.ApplicationContainer;
@@ -97,11 +100,18 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
     final int oldProjectsSize = projects.size();
     projects.clear();
     projects.addAll(newProjects);
-    adapter.notifyItemRangeInserted(oldProjectsSize, projects.size());
+    adapter.notifyDataSetChanged();
   }
 
   public void clearItems() {
     loadProjects(new ArrayList<>());
+  }
+
+  public void startDiscoveryFilterActivity(@NonNull final DiscoveryParams discoveryParams) {
+    final Intent intent = new Intent(this, DiscoveryFilterActivity.class)
+      .putExtra(getString(R.string.intent_discovery_params), discoveryParams);
+
+    startActivityForResult(intent, ActivityRequestCodes.DISCOVERY_ACTIVITY_DISCOVERY_FILTER_ACTIVITY_SELECT_FILTER);
   }
 
   public void startProjectActivity(final Project project) {
@@ -110,6 +120,20 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
+
+  @Override
+  protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
+    if (requestCode != ActivityRequestCodes.DISCOVERY_ACTIVITY_DISCOVERY_FILTER_ACTIVITY_SELECT_FILTER) {
+      return;
+    }
+
+    if (resultCode != RESULT_OK) {
+      return;
+    }
+
+    presenter.takeParams(intent.getExtras().getParcelable(getString(R.string.intent_discovery_params)));
+  }
+
 
   public void showBuildAlert(@NonNull final InternalBuildEnvelope envelope) {
     new AlertDialog.Builder(this)

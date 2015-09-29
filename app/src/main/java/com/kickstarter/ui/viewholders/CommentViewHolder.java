@@ -26,7 +26,6 @@ import butterknife.ButterKnife;
 public class CommentViewHolder extends KsrViewHolder {
   private Project project;
   private Comment comment;
-  private final Delegate delegate;
 
   public @Bind(R.id.avatar) ImageView avatarImageView;
   public @Bind(R.id.creator_label) TextView creatorLabel;
@@ -36,13 +35,8 @@ public class CommentViewHolder extends KsrViewHolder {
   public @Bind(R.id.comment_body) TextView commentBody;
   @Inject CurrentUser currentUser;  //check if backed project
 
-  public interface Delegate {
-    void commentClick(final CommentViewHolder viewHolder, final Comment comment);
-  }
-
-  public CommentViewHolder(final View view, final Delegate delegate) {
+  public CommentViewHolder(final View view) {
     super(view);
-    this.delegate = delegate;
     ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
     ButterKnife.bind(this, view);
   }
@@ -71,10 +65,5 @@ public class CommentViewHolder extends KsrViewHolder {
     name.setText(comment.author().name());
     postDate.setText(DateTimeUtils.relativeDateInWords(comment.createdAt(), false, true));
     commentBody.setText(comment.body());
-  }
-
-  @Override
-  public void onClick(final View view) {
-    delegate.commentClick(this, comment);
   }
 }

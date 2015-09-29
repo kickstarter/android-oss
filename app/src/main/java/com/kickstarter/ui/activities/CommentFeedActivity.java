@@ -55,14 +55,6 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     }
   }
 
-  // this may be removed with adapter implementation
-  public void showProjectContext(final Project project) {
-    Picasso.with(getApplicationContext()).load(project.photo().full())
-      .into(projectPhotoImageView);
-    projectNameTextView.setText(project.name());
-    creatorNameTextView.setText(project.creator().name());
-  }
-
   public void loadProjectComments(final Project project, final List<Comment> comments) {
     final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
     final List<Pair<Project, Comment>> projectAndComments = Observable.from(comments)

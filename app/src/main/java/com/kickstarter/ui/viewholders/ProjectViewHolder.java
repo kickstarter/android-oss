@@ -44,9 +44,6 @@ public class ProjectViewHolder extends KsrViewHolder {
   protected @Bind(R.id.updates_count) TextView updatesCountTextView;
   @Inject Money money;
 
-  private Project project;
-  private final Delegate delegate;
-
   public interface Delegate {
     void takeBlurbClick();
     void takeCommentsClick();

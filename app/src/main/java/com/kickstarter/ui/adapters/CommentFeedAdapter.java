@@ -16,7 +16,7 @@ import java.util.List;
 public class CommentFeedAdapter extends KsrAdapter {
   private final Delegate delegate;
 
-  public interface Delegate extends CommentViewHolder.Delegate, ProjectContextViewHolder.Delegate {}
+  public interface Delegate extends ProjectContextViewHolder.Delegate {}
 
   public CommentFeedAdapter(final Project project, final List<Pair<Project, Comment>> projectAndComments,
     final Delegate delegate) {
@@ -37,6 +37,6 @@ public class CommentFeedAdapter extends KsrAdapter {
     if (layout == R.layout.project_context_view) {
       return new ProjectContextViewHolder(view, delegate);
     }
-    return new CommentViewHolder(view, delegate);
+    return new CommentViewHolder(view);
   }
 }

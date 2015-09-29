@@ -1,17 +1,14 @@
 package com.kickstarter.ui.adapters;
 
 import android.support.annotation.NonNull;
-import android.util.Pair;
 import android.view.View;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.AutoGson;
 import com.kickstarter.models.Category;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.DiscoveryFilterStyle;
 import com.kickstarter.ui.viewholders.DiscoveryFilterDividerViewHolder;
 import com.kickstarter.ui.viewholders.DiscoveryFilterViewHolder;
-import com.kickstarter.ui.viewholders.EmptyViewHolder;
 import com.kickstarter.ui.viewholders.KsrViewHolder;
 
 import java.util.ArrayList;
@@ -24,13 +21,13 @@ import rx.Observable;
 
 public class DiscoveryFilterAdapter extends KsrAdapter {
   private final Delegate delegate;
-  private DiscoveryParams selectedDiscoveryParams;
+  private DiscoveryParams selectedParams;
 
   public interface Delegate extends DiscoveryFilterViewHolder.Delegate {}
 
-  public DiscoveryFilterAdapter(@NonNull final Delegate delegate, @NonNull final DiscoveryParams selectedDiscoveryParams) {
+  public DiscoveryFilterAdapter(@NonNull final Delegate delegate, @NonNull final DiscoveryParams selectedParams) {
     this.delegate = delegate;
-    this.selectedDiscoveryParams = selectedDiscoveryParams;
+    this.selectedParams = selectedParams;
   }
 
   protected int layout(@NonNull final SectionRow sectionRow) {
@@ -112,15 +109,33 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
   protected Observable<Filter> primaryCategoryFilters(@NonNull final Observable<Category> rootCategories) {
     return rootCategories.map(c -> Filter.builder()
       .params(DiscoveryParams.builder().category(c).build())
-      .style((DiscoveryFilterStyle.builder().primary(true).selected(false).visible(true)).build())
-      .build()); // TODO: Change selected
+      .style((DiscoveryFilterStyle.builder().primary(true).selected(isRootSelected(c)).visible(true)).build())
+      .build());
   }
 
   protected Observable<Filter> secondaryCategoryFilters(@NonNull final Observable<Category> categories) {
-    return categories.map(c -> Filter.builder()
-      .params(DiscoveryParams.builder().category(c).build())
-      .style((DiscoveryFilterStyle.builder().primary(false).selected(false).visible(true)).build())
-      .build()); // TODO: Change visible, selected
+    return categories
+      .filter(this::isRootSelected)
+      .map(c -> Filter.builder()
+          .params(DiscoveryParams.builder().category(c).build())
+          .style((DiscoveryFilterStyle.builder().primary(false).selected(isSelected(c)).visible(true)).build())
+          .build());
+  }
+
+  protected boolean isSelected(@NonNull final Category category) {
+    if (selectedParams.category() == null) {
+      return false;
+    }
+
+    return selectedParams.category().id() == category.id();
+  }
+
+  protected boolean isRootSelected(@NonNull final Category category) {
+    if (selectedParams.category() == null) {
+      return false;
+    }
+
+    return selectedParams.category().rootId() == category.rootId();
   }
 
   @AutoParcel

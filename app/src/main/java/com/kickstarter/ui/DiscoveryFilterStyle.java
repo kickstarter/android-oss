@@ -23,4 +23,8 @@ public abstract class DiscoveryFilterStyle implements Parcelable {
   }
 
   public abstract Builder toBuilder();
+
+  public boolean invisible() {
+    return !visible();
+  }
 }

@@ -24,7 +24,7 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
   @Bind(R.id.discovery_filter_view) View discoveryFilterView;
   @Bind(R.id.filter_text_view) TextView filterTextView;
   @Bind(R.id.vertical_line_group) View verticalLineGroup;
-  @Bind(R.id.vertical_line_medium_view) View verticalLineView;
+  @Bind(R.id.vertical_line_thin_view) View verticalLineView;
   @BindColor(R.color.white) int whiteColor;
 
   public interface Delegate {

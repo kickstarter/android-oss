@@ -62,6 +62,7 @@
 
     <TextView
       android:id="@+id/estimated_delivery"
+      android:text="@string/Estimated_delivery"
       android:layout_below="@id/reward_description"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

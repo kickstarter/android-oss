@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.kickstarter.R;
@@ -43,25 +42,9 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
     style = filter.style();
     final Context context = view.getContext();
 
-    setFont();
-
-    if (style.primary()) {
-      discoveryFilterView.setPadding(0, 5, 0, 10);
-      verticalLineGroup.setVisibility(View.GONE);
-    } else {
-      discoveryFilterView.setPadding(0, 0, 0, 0);
-      verticalLineGroup.setVisibility(View.VISIBLE);
-    }
-
-    if (style.visible()) {
-      discoveryFilterView.setVisibility(View.VISIBLE);
-      final ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-      discoveryFilterView.setLayoutParams(layoutParams);
-    } else {
-      discoveryFilterView.setVisibility(View.GONE);
-      final ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(0, 0);
-      discoveryFilterView.setLayoutParams(layoutParams);
-    }
+    setFilterTextViewStyle();
+    setPadding();
+    setVerticalLineStyle();
 
     String text = params.filterString(view.getContext());
     if (isNestedRoot()) {
@@ -81,7 +64,7 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
     return !style.primary() && params.category() != null && params.category().isRoot();
   }
 
-  protected void setFont() {
+  protected void setFilterTextViewStyle() {
     // TODO: Cache fonts
     if (style.selected()) {
       filterTextView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
@@ -99,6 +82,22 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
       filterTextView.setAlpha(0.8f);
     } else {
       filterTextView.setAlpha(1.0f);
+    }
+  }
+
+  protected void setVerticalLineStyle() {
+    if (style.primary() && !style.selected()) {
+      verticalLineGroup.setVisibility(View.GONE);
+    } else {
+      verticalLineGroup.setVisibility(View.VISIBLE);
+    }
+  }
+
+  protected void setPadding() {
+    if (style.primary() && !style.selected()) {
+      discoveryFilterView.setPadding(0, 5, 0, 10);
+    } else {
+      discoveryFilterView.setPadding(0, 0, 0, 0);
     }
   }
 }

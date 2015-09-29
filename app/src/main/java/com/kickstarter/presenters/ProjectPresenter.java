@@ -113,7 +113,7 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
       .subscribe(vp -> vp.first.showUpdates(vp.second)));
   }
 
-  public void rewardCardClick(final RewardViewHolder viewHolder, final Reward reward) {
+  public void takeRewardClick(final RewardViewHolder viewHolder, final Reward reward) {
     rewardClick.onNext(reward);
   }
 

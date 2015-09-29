@@ -54,21 +54,18 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
   public void show(final Project project) {
     int starColor = (project.isStarred()) ? R.color.green : R.color.dark_gray;
     starIconTextView.setTextColor(ContextCompat.getColor(this, starColor));
-    loadProjectRewards(project, project.rewards());
   }
 
   public void loadProjectRewards(final Project project, final List<Reward> rewards) {
-    if (project.rewards() != null) {
-      final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-      final List<Pair<Project, Reward>> projectAndRewards = Observable.from(rewards)
-        .map(reward -> Pair.create(project, reward))
-        .filter(projectRewardPair -> !projectRewardPair.second.isNoReward())
-        .toList().toBlocking().single();
+    final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+    final List<Pair<Project, Reward>> projectAndRewards = Observable.from(rewards)
+      .map(reward -> Pair.create(project, reward))
+      .filter(projectRewardPair -> !projectRewardPair.second.isNoReward())
+      .toList().toBlocking().single();
 
-      final ProjectAdapter adapter = new ProjectAdapter(project, projectAndRewards, presenter);
-      rewardsRecyclerView.setLayoutManager(layoutManager);
-      rewardsRecyclerView.setAdapter(adapter);
-    }
+    final ProjectAdapter adapter = new ProjectAdapter(project, projectAndRewards, presenter);
+    rewardsRecyclerView.setLayoutManager(layoutManager);
+    rewardsRecyclerView.setAdapter(adapter);
   }
 
   @Override

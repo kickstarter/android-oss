@@ -88,6 +88,12 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
         .subscribe(ProjectActivity::startLoginToutActivity)
     );
 
+    addSubscription(viewAndProject
+      .filter(vp -> vp.second.hasRewards())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(vp -> vp.first.loadProjectRewards(vp.second, vp.second.rewards()))
+    );
+
     addSubscription(RxUtils.takeWhen(viewAndProject, backProjectClick)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startCheckoutActivity(vp.second)));

@@ -215,6 +215,10 @@ public abstract class Project implements Parcelable {
     return new CurrencyOptions(country(), currencySymbol(), currency());
   }
 
+  public boolean hasRewards() {
+    return rewards() != null;
+  }
+
   /** Returns whether the project is in a canceled state. */
   public boolean isCanceled() {
     return STATE_CANCELED.equals(state());

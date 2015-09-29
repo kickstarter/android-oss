@@ -2,7 +2,7 @@ package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.util.Pair;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -37,7 +37,7 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
     ButterKnife.bind(this, view);
   }
 
-  public void onBind(final Object datum) {
+  public void onBind(@NonNull final Object datum) {
     final DiscoveryFilterAdapter.Filter filter = (DiscoveryFilterAdapter.Filter) datum;
     params = filter.params();
     style = filter.style();
@@ -77,7 +77,7 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
   }
 
   @Override
-  public void onClick(final View view) {
+  public void onClick(@NonNull final View view) {
     delegate.discoveryFilterClick(this, params);
   }
 

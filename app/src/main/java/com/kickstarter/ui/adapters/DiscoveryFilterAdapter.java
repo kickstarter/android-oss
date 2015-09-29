@@ -46,7 +46,7 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
     return new DiscoveryFilterViewHolder(view, delegate);
   }
 
-  public void takeCategories(final List<Category> initialCategories) {
+  public void takeCategories(@NonNull final List<Category> initialCategories) {
     data().clear();
 
     data().addAll(paramsSections(initialCategories).toList().toBlocking().single());
@@ -90,7 +90,6 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
 
     final Observable<Filter> filters = primaryCategoryFilters(categories.filter(Category::isRoot))
       .concatWith(secondaryCategoryFilters(categories))
-      //.map(c -> DiscoveryParams.builder().category(c).build())
       .toSortedList((f1, f2) -> f1.params().category().discoveryFilterCompareTo(f2.params().category()))
       .flatMap(Observable::from);
 

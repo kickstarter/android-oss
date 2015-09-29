@@ -24,14 +24,14 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
   @Bind(R.id.discovery_filter_view) View discoveryFilterView;
   @Bind(R.id.filter_text_view) TextView filterTextView;
   @Bind(R.id.vertical_line_group) View verticalLineGroup;
-  @Bind(R.id.vertical_line_view_thick) View verticalLineView;
+  @Bind(R.id.vertical_line_medium_view) View verticalLineView;
   @BindColor(R.color.white) int whiteColor;
 
   public interface Delegate {
     void discoveryFilterClick(final DiscoveryFilterViewHolder viewHolder, final DiscoveryParams discoveryParams);
   }
 
-  public DiscoveryFilterViewHolder(final View view, final Delegate delegate) {
+  public DiscoveryFilterViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
     super(view);
     this.delegate = delegate;
     ButterKnife.bind(this, view);
@@ -43,18 +43,14 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
     style = filter.style();
     final Context context = view.getContext();
 
+    setFont();
+
     if (style.primary()) {
       discoveryFilterView.setPadding(0, 5, 0, 10);
       verticalLineGroup.setVisibility(View.GONE);
     } else {
       discoveryFilterView.setPadding(0, 0, 0, 0);
       verticalLineGroup.setVisibility(View.VISIBLE);
-    }
-
-    if (style.selected()) {
-      filterTextView.setTypeface(null, Typeface.BOLD);
-    } else {
-      filterTextView.setTypeface(null, Typeface.NORMAL);
     }
 
     if (style.visible()) {
@@ -83,5 +79,26 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
 
   protected boolean isNestedRoot() {
     return !style.primary() && params.category() != null && params.category().isRoot();
+  }
+
+  protected void setFont() {
+    // TODO: Cache fonts
+    if (style.selected()) {
+      filterTextView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+    } else {
+      filterTextView.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
+    }
+
+    if (style.primary()) {
+      filterTextView.setTextSize(18.0f);
+    } else {
+      filterTextView.setTextSize(16.0f);
+    }
+
+    if (!style.selected() && !style.primary()) {
+      filterTextView.setAlpha(0.8f);
+    } else {
+      filterTextView.setAlpha(1.0f);
+    }
   }
 }

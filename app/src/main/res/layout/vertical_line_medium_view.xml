@@ -7,7 +7,7 @@
   android:paddingRight="@dimen/grid_1_half" >
 
   <View
-    android:id="@+id/vertical_line_view_thick"
+    android:id="@+id/vertical_line_medium_view"
     android:layout_width="2dp"
     android:layout_height="fill_parent"
     android:background="@color/gray" />

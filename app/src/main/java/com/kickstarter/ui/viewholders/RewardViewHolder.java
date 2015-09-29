@@ -1,6 +1,7 @@
 package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Pair;
 import android.view.View;
 import android.widget.TextView;
@@ -29,10 +30,10 @@ public class RewardViewHolder extends KsrViewHolder {
   private Reward reward;
 
   public interface Delegate {
-    void takeRewardClick(final RewardViewHolder viewHolder, final Reward reward);
+    void takeRewardClick(@NonNull final RewardViewHolder viewHolder, @NonNull final Reward reward);
   }
 
-  public RewardViewHolder(final View view, final Delegate delegate) {
+  public RewardViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
     super(view);
     this.delegate = delegate;
 
@@ -40,7 +41,7 @@ public class RewardViewHolder extends KsrViewHolder {
     ButterKnife.bind(this, view);
   }
 
-  public void onBind(final Object datum) {
+  public void onBind(@NonNull final Object datum) {
     final Pair<Project, Reward> projectAndReward = (Pair<Project, Reward>) datum;
     project = projectAndReward.first;
     reward = projectAndReward.second;
@@ -60,7 +61,7 @@ public class RewardViewHolder extends KsrViewHolder {
 
   // todo:
   @Override
-  public void onClick(final View view) {
+  public void onClick(@NonNull final View view) {
     delegate.takeRewardClick(this, reward);
   }
 }

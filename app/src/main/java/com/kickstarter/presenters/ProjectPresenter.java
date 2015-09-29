@@ -2,6 +2,7 @@ package com.kickstarter.presenters;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
@@ -37,7 +38,7 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
   private final PublishSubject<Void> starClick = PublishSubject.create();
 
   @Override
-  protected void onCreate(final Context context, final Bundle savedInstanceState) {
+  protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
   }
@@ -113,7 +114,7 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
       .subscribe(vp -> vp.first.showUpdates(vp.second)));
   }
 
-  public void takeRewardClick(final RewardViewHolder viewHolder, final Reward reward) {
+  public void takeRewardClick(@NonNull final RewardViewHolder viewHolder, @NonNull final Reward reward) {
     rewardClick.onNext(reward);
   }
 
@@ -149,12 +150,12 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
     starClick.onNext(null);
   }
 
-  public Observable<Project> starProject(final Project project) {
+  public Observable<Project> starProject(@NonNull final Project project) {
     return client.starProject(project)
       .onErrorResumeNext(Observable.empty());
   }
 
-  public Observable<Project> toggleProjectStar(final Project project) {
+  public Observable<Project> toggleProjectStar(@NonNull final Project project) {
     return client.toggleProjectStar(project)
       .onErrorResumeNext(Observable.empty());
   }

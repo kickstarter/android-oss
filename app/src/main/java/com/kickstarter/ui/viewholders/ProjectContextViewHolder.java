@@ -1,5 +1,6 @@
 package com.kickstarter.ui.viewholders;
 
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,16 +22,16 @@ public class ProjectContextViewHolder extends KsrViewHolder {
   public @Bind(R.id.creator_name) TextView creatorNameTextView;
 
   public interface Delegate {
-    void contextClick(final ProjectContextViewHolder viewHolder, final Project project);
+    void contextClick(@NonNull final ProjectContextViewHolder viewHolder, @NonNull final Project project);
   }
 
-  public ProjectContextViewHolder(final View view, final Delegate delegate) {
+  public ProjectContextViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
     super(view);
     this.delegate = delegate;
     ButterKnife.bind(this, view);
   }
 
-  public void onBind(final Object datum) {
+  public void onBind(@NonNull final Object datum) {
     this.project = (Project) datum;
 
     Picasso.with(view.getContext()).load(project.photo().full()).into(projectContextImageView);
@@ -39,7 +40,7 @@ public class ProjectContextViewHolder extends KsrViewHolder {
   }
 
   @Override
-  public void onClick(final View view) {
+  public void onClick(@NonNull final View view) {
     delegate.contextClick(this, project);
   }
 }

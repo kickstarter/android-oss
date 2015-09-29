@@ -2,6 +2,8 @@ package com.kickstarter.presenters;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.KSApplication;
@@ -32,13 +34,13 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
   @Inject CurrentUser currentUser;
 
   @Override
-  protected void onCreate(final Context context, final Bundle savedInstanceState) {
+  protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
   }
 
   // todo: add pagination to comments
-  public void takeProject(final Project project) {
+  public void takeProject(@NonNull final Project project) {
     final Observable<List<Comment>> comments = client.fetchProjectComments(project)
       .map(CommentsEnvelope::comments)
       .takeUntil(List::isEmpty);
@@ -57,7 +59,7 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
     );
   }
 
-  public void contextClick(final ProjectContextViewHolder viewHolder, final Project project) {
+  public void contextClick(@NonNull final ProjectContextViewHolder viewHolder, @NonNull final Project project) {
     contextClick.onNext(project);
   }
 }

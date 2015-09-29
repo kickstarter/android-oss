@@ -3,6 +3,7 @@ package com.kickstarter.ui.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -39,7 +40,7 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
   private Project project;
 
   @Override
-  protected void onCreate(final Bundle savedInstanceState) {
+  protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     final Intent intent = getIntent();
     project = intent.getParcelableExtra(getString(R.string.intent_project));
@@ -55,7 +56,7 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     }
   }
 
-  public void loadProjectComments(final Project project, final List<Comment> comments) {
+  public void loadProjectComments(@NonNull final Project project, @Nullable final List<Comment> comments) {
     final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
     final List<Pair<Project, Comment>> projectAndComments = Observable.from(comments)
       .map(comment -> Pair.create(project, comment))
@@ -66,7 +67,7 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
   }
 
   // this may be removed with adapter implementation
-  public void showProjectContext(final Project project) {
+  public void showProjectContext(@NonNull final Project project) {
     Picasso.with(getApplicationContext()).load(project.photo().full())
       .into(projectPhotoImageView);
     projectNameTextView.setText(project.name());
@@ -81,7 +82,7 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
   }
 
   @Nullable @OnClick(R.id.leave_comment_button)
-  public void publicCommentClick(final View view) {
+  public void publicCommentClick(@NonNull final View view) {
     final LayoutInflater layoutInflater = getLayoutInflater();
     final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
     builder.setTitle(getString(R.string.Public_comment));

@@ -2,6 +2,7 @@ package com.kickstarter.presenters;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
@@ -37,7 +38,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
   private final PublishSubject<DiscoveryParams> params = PublishSubject.create();
 
   @Override
-  protected void onCreate(final Context context, @Nullable final Bundle savedInstanceState) {
+  protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 

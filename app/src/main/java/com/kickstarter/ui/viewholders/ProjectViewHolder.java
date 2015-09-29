@@ -1,6 +1,7 @@
 package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
@@ -54,14 +55,14 @@ public class ProjectViewHolder extends KsrViewHolder {
     void takeUpdatesClick();
   }
 
-  public ProjectViewHolder(final View view, final ProjectViewHolder.Delegate delegate) {
+  public ProjectViewHolder(@NonNull final View view, @NonNull final ProjectViewHolder.Delegate delegate) {
     super(view);
     this.delegate = delegate;
     ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
     ButterKnife.bind(this, view);
   }
 
-  public void onBind(final Object datum) {
+  public void onBind(@NonNull final Object datum) {
     this.project = (Project) datum;
     final Context context = view.getContext();
 

@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Pair;
 import android.widget.Toast;
 
 import com.kickstarter.KSApplication;
@@ -16,31 +15,28 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.Money;
 import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.models.Project;
-import com.kickstarter.models.Reward;
 import com.kickstarter.presenters.ProjectPresenter;
 import com.kickstarter.ui.adapters.ProjectAdapter;
 import com.kickstarter.ui.views.IconTextView;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.Observable;
 
 @RequiresPresenter(ProjectPresenter.class)
 public class ProjectActivity extends BaseActivity<ProjectPresenter> {
+  private ProjectAdapter adapter;
+
   @Bind(R.id.rewards_recycler_view) RecyclerView rewardsRecyclerView;
   @Bind(R.id.star_icon) IconTextView starIconTextView;
 
   @Inject Money money;
 
   @Override
-  protected void onCreate(final Bundle savedInstanceState) {
+  protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
     setContentView(R.layout.project_layout);
     ButterKnife.bind(this);
     ((KSApplication) getApplication()).component().inject(this);
@@ -49,23 +45,16 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
     final Project project = intent.getParcelableExtra(getString(R.string.intent_project));
     final String param = intent.getStringExtra(getString(R.string.intent_project_param));
     presenter.initialize(project, param);
+
+    adapter = new ProjectAdapter(presenter);
+    rewardsRecyclerView.setAdapter(adapter);
+    rewardsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
   }
 
   public void show(final Project project) {
     int starColor = (project.isStarred()) ? R.color.green : R.color.dark_gray;
     starIconTextView.setTextColor(ContextCompat.getColor(this, starColor));
-  }
-
-  public void loadProjectRewards(final Project project, final List<Reward> rewards) {
-    final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-    final List<Pair<Project, Reward>> projectAndRewards = Observable.from(rewards)
-      .map(reward -> Pair.create(project, reward))
-      .filter(projectRewardPair -> !projectRewardPair.second.isNoReward())
-      .toList().toBlocking().single();
-
-    final ProjectAdapter adapter = new ProjectAdapter(project, projectAndRewards, presenter);
-    rewardsRecyclerView.setLayoutManager(layoutManager);
-    rewardsRecyclerView.setAdapter(adapter);
+    adapter.takeProject(project);
   }
 
   @Override

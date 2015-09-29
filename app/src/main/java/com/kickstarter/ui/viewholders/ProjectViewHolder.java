@@ -58,14 +58,12 @@ public class ProjectViewHolder extends KsrViewHolder {
   public ProjectViewHolder(final View view, final ProjectViewHolder.Delegate delegate) {
     super(view);
     this.delegate = delegate;
-
     ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
     ButterKnife.bind(this, view);
   }
 
-  @Override
   public void onBind(final Object datum) {
-    project = (Project) datum;
+    this.project = (Project) datum;
     final Context context = view.getContext();
 
     /* Video */

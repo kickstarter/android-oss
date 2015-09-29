@@ -65,7 +65,16 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     recyclerView.setAdapter(adapter);
   }
 
-  @OnClick(R.id.nav_back_button)
+  // this may be removed with adapter implementation
+  public void showProjectContext(final Project project) {
+    Picasso.with(getApplicationContext()).load(project.photo().full())
+      .into(projectPhotoImageView);
+    projectNameTextView.setText(project.name());
+    creatorNameTextView.setText(project.creator().name());
+  }
+
+  @Nullable
+  @OnClick({R.id.nav_back_button, R.id.project_context_view})
   public void onBackPressed() {
     super.onBackPressed();
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);

@@ -14,15 +14,19 @@ import butterknife.ButterKnife;
 
 public class ProjectContextViewHolder extends KsrViewHolder {
   private Project project;
+  private final Delegate delegate;
 
   public @Bind(R.id.context_photo) ImageView projectContextImageView;
   public @Bind(R.id.project_name) TextView projectNameTextView;
   public @Bind(R.id.creator_name) TextView creatorNameTextView;
 
-  public ProjectContextViewHolder(final View view) {
-    super(view);
+  public interface Delegate {
+    void contextClick(final ProjectContextViewHolder viewHolder, final Project project);
+  }
 
-    ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
+  public ProjectContextViewHolder(final View view, final Delegate delegate) {
+    super(view);
+    this.delegate = delegate;
     ButterKnife.bind(this, view);
   }
 
@@ -32,5 +36,10 @@ public class ProjectContextViewHolder extends KsrViewHolder {
     Picasso.with(view.getContext()).load(project.photo().full()).into(projectContextImageView);
     projectNameTextView.setText(project.name());
     creatorNameTextView.setText(project.creator().name());
+  }
+
+  @Override
+  public void onClick(final View view) {
+    delegate.contextClick(this, project);
   }
 }

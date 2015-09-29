@@ -44,7 +44,10 @@ public abstract class Reward implements Parcelable {
 
   public abstract Builder toBuilder();
 
-  public boolean isReward() { return this.id() != 0; }
+  public boolean isReward() {
+    return this.id() != 0;
+  }
+
   public boolean isNoReward() {
     return this.id() == 0;
   }

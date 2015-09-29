@@ -93,10 +93,4 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
 
     builder.show();
   }
-
-  public void testActivity() {
-    final Intent intent = new Intent(this, DisplayWebViewActivity.class)
-      .putExtra(getString(R.string.intent_url), "https://www.kickstarter.com");
-    startActivity(intent);
-  }
 }

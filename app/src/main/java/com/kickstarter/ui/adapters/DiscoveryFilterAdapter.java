@@ -1,9 +1,11 @@
 package com.kickstarter.ui.adapters;
 
+import android.support.annotation.NonNull;
 import android.util.Pair;
 import android.view.View;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.AutoGson;
 import com.kickstarter.models.Category;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.DiscoveryFilterStyle;
@@ -16,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.TreeMap;
 
+import auto.parcel.AutoParcel;
 import rx.Observable;
 
 public class DiscoveryFilterAdapter extends KsrAdapter {
@@ -24,19 +27,19 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
 
   public interface Delegate extends DiscoveryFilterViewHolder.Delegate {}
 
-  public DiscoveryFilterAdapter(final Delegate delegate, final DiscoveryParams selectedDiscoveryParams) {
+  public DiscoveryFilterAdapter(@NonNull final Delegate delegate, @NonNull final DiscoveryParams selectedDiscoveryParams) {
     this.delegate = delegate;
     this.selectedDiscoveryParams = selectedDiscoveryParams;
   }
 
-  protected int layout(final SectionRow sectionRow) {
+  protected int layout(@NonNull final SectionRow sectionRow) {
     if (sectionRow.section() == 1) {
       return R.layout.discovery_filter_divider_view;
     }
     return R.layout.discovery_filter_view;
   }
 
-  protected KsrViewHolder viewHolder(final int layout, final View view) {
+  protected KsrViewHolder viewHolder(final int layout, @NonNull final View view) {
     if (layout == R.layout.discovery_filter_divider_view) {
       return new EmptyViewHolder(view); // TODO: Might need to make a view holder here that toggles white or dark text
     }
@@ -55,22 +58,22 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
   /**
    * Returns an Observable where each item is a list of params/style pairs.
    */
-  protected Observable<List<Pair<DiscoveryParams, DiscoveryFilterStyle>>> paramsSections(final List<Category> initialCategories) {
-    return categoryParams(initialCategories)
-      .startWith(filterParams())
-      .map(l -> Observable.from(l)
-        .map(p -> Pair.create(p, DiscoveryFilterStyle.builder().primary(true).selected(true).visible(true).build())).toList().toBlocking().single());
+  protected Observable<List<Filter>> paramsSections(@NonNull final List<Category> initialCategories) {
+    return categoryFilters(initialCategories)
+      .startWith(topFilters());
   }
 
   /**
    * Params for the top section of filters.
    */
-  protected Observable<List<DiscoveryParams>> filterParams() {
+  protected Observable<List<Filter>> topFilters() {
+    final DiscoveryFilterStyle style = DiscoveryFilterStyle.builder().primary(true).selected(false).visible(true).build();
+
     // TODO: Add social filter
     return Observable.just(
-      DiscoveryParams.builder().staffPicks(true).build(),
-      DiscoveryParams.builder().starred(1).build(),
-      DiscoveryParams.builder().build() // Everything filter
+      Filter.builder().params(DiscoveryParams.builder().staffPicks(true).build()).style(style).build(),
+      Filter.builder().params(DiscoveryParams.builder().starred(1).build()).style(style).build(),
+      Filter.builder().params(DiscoveryParams.builder().build()).style(style).build() // Everything filter
     ).toList();
   }
 
@@ -82,27 +85,58 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
    * Art
    *  - All of Art
    */
-  protected Observable<List<DiscoveryParams>> categoryParams(final List<Category> initialCategories) {
+  protected Observable<List<Filter>> categoryFilters(@NonNull final List<Category> initialCategories) {
     final Observable<Category> categories = Observable.from(initialCategories);
 
-    final Observable<DiscoveryParams> params = categories
-      .concatWith(categories.filter(Category::isRoot)) // Add the duplicate root category
-      .map(c -> DiscoveryParams.builder().category(c).build())
-      .toSortedList((p1, p2) -> p1.category().discoveryFilterCompareTo(p2.category()))
+    final Observable<Filter> filters = primaryCategoryFilters(categories.filter(Category::isRoot))
+      .concatWith(secondaryCategoryFilters(categories))
+      //.map(c -> DiscoveryParams.builder().category(c).build())
+      .toSortedList((f1, f2) -> f1.params().category().discoveryFilterCompareTo(f2.params().category()))
       .flatMap(Observable::from);
 
     // RxJava has groupBy. groupBy creates an Observable of GroupedObservables - the Observable doesn't complete
     // until all the GroupedObservables have been subscribed to and completed. It's quite confusing to work with,
     // refactor with caution.
-    TreeMap<String, ArrayList<DiscoveryParams>> groupedParams = params.reduce(new TreeMap<String, ArrayList<DiscoveryParams>>(), (hash, p) -> {
-      final String key = p.category().root().name();
+    TreeMap<String, ArrayList<Filter>> groupedFilters = filters.reduce(new TreeMap<String, ArrayList<Filter>>(), (hash, filter) -> {
+      final String key = filter.params().category().root().name();
       if (!hash.containsKey(key)) {
-        hash.put(key, new ArrayList<DiscoveryParams>());
+        hash.put(key, new ArrayList<Filter>());
       }
-      hash.get(key).add(p);
+      hash.get(key).add(filter);
       return hash;
     }).toBlocking().single();
 
-    return Observable.from(new ArrayList(groupedParams.values()));
+    return Observable.from(new ArrayList(groupedFilters.values()));
+  }
+
+  protected Observable<Filter> primaryCategoryFilters(@NonNull final Observable<Category> rootCategories) {
+    return rootCategories.map(c -> Filter.builder()
+      .params(DiscoveryParams.builder().category(c).build())
+      .style((DiscoveryFilterStyle.builder().primary(true).selected(false).visible(true)).build())
+      .build()); // TODO: Change selected
+  }
+
+  protected Observable<Filter> secondaryCategoryFilters(@NonNull final Observable<Category> categories) {
+    return categories.map(c -> Filter.builder()
+      .params(DiscoveryParams.builder().category(c).build())
+      .style((DiscoveryFilterStyle.builder().primary(false).selected(false).visible(true)).build())
+      .build()); // TODO: Change visible, selected
+  }
+
+  @AutoParcel
+  public abstract static class Filter {
+    public abstract DiscoveryParams params();
+    public abstract DiscoveryFilterStyle style();
+
+    @AutoParcel.Builder
+    public abstract static class Builder {
+      public abstract Builder params(DiscoveryParams __);
+      public abstract Builder style(DiscoveryFilterStyle __);
+      public abstract Filter build();
+    }
+
+    public static Builder builder() {
+      return new AutoParcel_DiscoveryFilterAdapter_Filter.Builder();
+    }
   }
 }

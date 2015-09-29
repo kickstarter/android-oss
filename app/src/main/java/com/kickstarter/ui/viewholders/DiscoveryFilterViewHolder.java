@@ -1,12 +1,15 @@
 package com.kickstarter.ui.viewholders;
 
+import android.graphics.Typeface;
 import android.util.Pair;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.DiscoveryFilterStyle;
+import com.kickstarter.ui.adapters.DiscoveryFilterAdapter;
 
 import butterknife.Bind;
 import butterknife.BindColor;
@@ -14,7 +17,7 @@ import butterknife.ButterKnife;
 
 public class DiscoveryFilterViewHolder extends KsrViewHolder {
   private final Delegate delegate;
-  private DiscoveryParams discoveryParams;
+  private DiscoveryParams params;
   private DiscoveryFilterStyle style;
 
   @Bind(R.id.discovery_filter_view) View discoveryFilterView;
@@ -34,28 +37,41 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
   }
 
   public void onBind(final Object datum) {
-    final Pair<DiscoveryParams, DiscoveryFilterStyle> pair = (Pair<DiscoveryParams, DiscoveryFilterStyle>) datum;
-    discoveryParams = pair.first;
-    style = pair.second;
+    final DiscoveryFilterAdapter.Filter filter = (DiscoveryFilterAdapter.Filter) datum;
+    params = filter.params();
+    style = filter.style();
 
-    verticalLineView.setBackgroundColor(whiteColor);
-    if (isSubcategory()) {
-      verticalLineGroup.setVisibility(View.VISIBLE);
-      discoveryFilterView.setPadding(0, 0, 0, 0);
-    } else {
-      verticalLineGroup.setVisibility(View.GONE);
+    if (style.primary()) {
       discoveryFilterView.setPadding(0, 5, 0, 10);
+      verticalLineGroup.setVisibility(View.GONE);
+    } else {
+      discoveryFilterView.setPadding(0, 0, 0, 0);
+      verticalLineGroup.setVisibility(View.VISIBLE);
     }
 
-    filterTextView.setText(discoveryParams.filterString(view.getContext()));
+    if (style.selected()) {
+      filterTextView.setTypeface(null, Typeface.BOLD);
+    } else {
+      filterTextView.setTypeface(null, Typeface.NORMAL);
+    }
+
+    if (style.visible()) {
+      discoveryFilterView.setVisibility(View.VISIBLE);
+      final ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+      discoveryFilterView.setLayoutParams(layoutParams);
+    } else {
+      discoveryFilterView.setVisibility(View.GONE);
+      final ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(0, 0);
+      discoveryFilterView.setLayoutParams(layoutParams);
+    }
+
+
+    filterTextView.setText(params.filterString(view.getContext()));
+    verticalLineView.setBackgroundColor(whiteColor);
   }
 
   @Override
   public void onClick(final View view) {
-    delegate.discoveryFilterClick(this, discoveryParams);
-  }
-
-  private boolean isSubcategory() {
-    return discoveryParams.category() != null && !discoveryParams.category().isRoot();
+    delegate.discoveryFilterClick(this, params);
   }
 }

@@ -22,7 +22,7 @@ public class ProjectContextViewHolder extends KsrViewHolder {
   public @Bind(R.id.creator_name) TextView creatorNameTextView;
 
   public interface Delegate {
-    void contextClick(@NonNull final ProjectContextViewHolder viewHolder, @NonNull final Project project);
+    void projectContextClicked();
   }
 
   public ProjectContextViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
@@ -41,6 +41,6 @@ public class ProjectContextViewHolder extends KsrViewHolder {
 
   @Override
   public void onClick(@NonNull final View view) {
-    delegate.contextClick(this, project);
+    delegate.projectContextClicked();
   }
 }

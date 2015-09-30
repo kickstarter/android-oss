@@ -156,7 +156,7 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
     creatorNameClick.onNext(null);
   }
 
-  public void takeRewardClick(@NonNull final RewardViewHolder viewHolder, @NonNull final Reward reward) {
+  public void rewardClicked(@NonNull final RewardViewHolder viewHolder, @NonNull final Reward reward) {
     rewardClick.onNext(reward);
   }
 

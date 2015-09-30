@@ -62,33 +62,30 @@ public class RewardViewHolder extends KsrViewHolder {
     descriptionTextView.setText(reward.description());
     estimatedDeliveryTextView.setText(
       reward.estimatedDeliveryOn().toString(DateTimeUtils.estimatedDeliveryOn()));
-    setRewardCardLabels(context);
+
+    toggleTextViews();
   }
 
-  public void setRewardCardLabels(@NonNull final Context context) {
-
-    // Move this if logic to presenter
-    if (reward.isLimited()) {
-      limitedLabelTextView.setVisibility(View.VISIBLE);
-      limitedLabelTextView.setText(String.format(context.getString(
-          R.string.Limited_left_of),
+  // Move this if logic to presenter
+  public void toggleTextViews() {
+    if (reward.isAllGone()) {
+      allGoneTextView.setVisibility(View.VISIBLE);
+      limitedTextView.setVisibility(View.GONE);
+    }
+    else if (reward.isLimited()) {
+      limitedTextView.setVisibility(View.VISIBLE);
+      allGoneTextView.setVisibility(View.GONE);
+      limitedTextView.setText(String.format(context.getString(R.string.Limited_left_of),
         reward.remaining(),
         reward.limit()
       ));
     }
-
-    else if (reward.isAllGone()) {
-      allGoneLabelTextView.setVisibility(View.VISIBLE);
-      view.setAlpha(0.2f);
-      view.setClickable(false);
-    }
-
     // todo: implement project.backing().rewardId()
-//    if (project.backingRewardId() == reward.id()) {
-//      selectedLabelTextView.setVisibility(View.VISIBLE);
-//      greenOverlayView.setVisibility(View.VISIBLE);
-//      view.setAlpha(0.4f);
-//    }
+    //    if (project.backingRewardId() == reward.id()) {
+    //      selectedLabelTextView.setVisibility(View.VISIBLE);
+    //      greenOverlayView.setVisibility(View.VISIBLE);
+    //      view.setAlpha(0.4f);
+    //    }
   }
 
   @Override

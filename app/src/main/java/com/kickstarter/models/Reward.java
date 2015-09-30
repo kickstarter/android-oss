@@ -47,7 +47,7 @@ public abstract class Reward implements Parcelable {
   public abstract Builder toBuilder();
 
   public boolean isAllGone() {
-    return this.remaining() != null && this.remaining() == 0;
+    return this.remaining() != null && Integer.valueOf(this.remaining()) == 0;
   }
 
   public boolean isLimited() {

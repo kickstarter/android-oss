@@ -114,17 +114,9 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
   }
 
   public void startRewardSelectedCheckout(@NonNull final Project project, @NonNull final Reward reward) {
-    final Uri newPledgeBaseUri = Uri.parse(project.newPledgeUrl());
-
-    final String rewardSelectedUrl = newPledgeBaseUri.buildUpon().scheme("https")
-      .appendQueryParameter("backing[backer_reward_id]", String.valueOf(reward.id()))
-      .appendQueryParameter("clicked_reward", "true")
-      .build()
-      .toString();
-
     final Intent intent = new Intent(this, CheckoutActivity.class)
       .putExtra(getString(R.string.intent_project), project)
-      .putExtra(getString(R.string.intent_url), rewardSelectedUrl);
+      .putExtra(getString(R.string.intent_url), project.rewardSelectedUrl(reward));
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }

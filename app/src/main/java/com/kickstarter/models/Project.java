@@ -370,4 +370,13 @@ public abstract class Project implements Parcelable {
   public String editPledgeUrl() {
     return Uri.parse(secureWebProjectUrl()).buildUpon().appendEncodedPath("pledge/edit").toString();
   }
+
+  public String rewardSelectedUrl(final Reward reward) {
+    return Uri.parse(newPledgeUrl())
+      .buildUpon().scheme("https")
+      .appendQueryParameter("backing[backer_reward_id]", String.valueOf(reward.id()))
+      .appendQueryParameter("clicked_reward", "true")
+      .build()
+      .toString();
+  }
 }

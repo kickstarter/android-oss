@@ -40,19 +40,11 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
     final DiscoveryFilterAdapter.Filter filter = (DiscoveryFilterAdapter.Filter) datum;
     params = filter.params();
     style = filter.style();
-    final Context context = view.getContext();
 
     setFilterTextViewStyle();
     setPadding();
+    setText();
     setVerticalLineStyle();
-
-    String text = params.filterString(view.getContext());
-    if (isNestedRoot()) {
-      text = context.getString(R.string.All_of_Category, text);
-    }
-
-    filterTextView.setText(text);
-    verticalLineView.setBackgroundColor(whiteColor);
   }
 
   @Override
@@ -60,7 +52,7 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
     delegate.discoveryFilterClick(this, params);
   }
 
-  protected boolean isNestedRoot() {
+  protected boolean isSecondaryCategoryRoot() {
     return !style.primary() && params.category() != null && params.category().isRoot();
   }
 
@@ -85,19 +77,30 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
     }
   }
 
-  protected void setVerticalLineStyle() {
-    if (style.primary() && !style.selected()) {
-      verticalLineGroup.setVisibility(View.GONE);
-    } else {
-      verticalLineGroup.setVisibility(View.VISIBLE);
-    }
-  }
-
   protected void setPadding() {
     if (style.primary() && !style.selected()) {
       discoveryFilterView.setPadding(0, 5, 0, 10);
     } else {
       discoveryFilterView.setPadding(0, 0, 0, 0);
     }
+  }
+
+  protected void setText() {
+    String text = params.filterString(view.getContext());
+    if (isSecondaryCategoryRoot()) {
+      text = view.getContext().getString(R.string.All_of_Category, text);
+    }
+
+    filterTextView.setText(text);
+  }
+
+  protected void setVerticalLineStyle() {
+    if (style.primary() && !style.selected()) {
+      verticalLineGroup.setVisibility(View.GONE);
+    } else {
+      verticalLineGroup.setVisibility(View.VISIBLE);
+    }
+
+    verticalLineView.setBackgroundColor(whiteColor);
   }
 }

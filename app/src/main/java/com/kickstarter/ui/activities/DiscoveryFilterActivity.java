@@ -41,8 +41,7 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
     ButterKnife.bind(this);
 
     layoutManager = new LinearLayoutManager(this);
-    final Intent intent = getIntent();
-    final DiscoveryParams discoveryParams = intent.getParcelableExtra(getString(R.string.intent_discovery_params));
+    final DiscoveryParams discoveryParams = getIntent().getParcelableExtra(getString(R.string.intent_discovery_params));
     adapter = new DiscoveryFilterAdapter(presenter, discoveryParams);
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);

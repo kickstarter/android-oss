@@ -72,7 +72,6 @@ public class DiscoveryToolbar extends Toolbar {
     activity.presenter().filterButtonClick();
   }
 
-
   public void loadParams(@NonNull final DiscoveryParams params) {
     filterTextView.setText(params.filterString(getContext()));
   }

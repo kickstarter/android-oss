@@ -7,7 +7,7 @@
   app:cardElevation="@dimen/ksr_card_elevation"
   app:cardCornerRadius="4dp"
   app:cardBackgroundColor="@android:color/transparent"
-  android:foreground="@drawable/click_indicator_green"
+  android:foreground="@drawable/click_indicator_light"
   android:layout_margin="@dimen/grid_2">
 
   <View

@@ -44,13 +44,6 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
   }
 
   public void initialize(@Nullable final Project initialProject, @Nullable final String param) {
-    final Observable<Reward> rewardOnLoggedInUserClick = RxUtils.takePairWhen(currentUser.observable(), rewardClick)
-      .filter(ur -> ur.first != null)
-      .map(ur -> ur.second);
-
-    final Observable<User> loggedOutUserOnRewardClick = RxUtils.takeWhen(currentUser.observable(), rewardClick)
-      .filter(u -> u == null);
-
     final Observable<User> loggedInUserOnStarClick = RxUtils.takeWhen(currentUser.observable(), starClick)
       .filter(u -> u != null);
 
@@ -97,13 +90,7 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
     );
 
     addSubscription(
-      RxUtils.takeWhen(viewSubject, loggedOutUserOnRewardClick)
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(ProjectActivity::startLoginToutActivity)
-    );
-
-    addSubscription(
-      RxUtils.takePairWhen(viewAndProject, rewardOnLoggedInUserClick)
+      RxUtils.takePairWhen(viewAndProject, rewardClick)
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(vpr -> {
           final ProjectActivity view = vpr.first.first;
@@ -112,8 +99,6 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
           view.startRewardSelectedCheckout(p, r);
         })
     );
-
-    // todo loginSuccess with reward click
 
     addSubscription(RxUtils.takeWhen(viewAndProject, backProjectClick)
       .observeOn(AndroidSchedulers.mainThread())

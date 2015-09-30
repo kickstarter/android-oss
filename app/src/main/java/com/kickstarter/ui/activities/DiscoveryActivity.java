@@ -3,7 +3,6 @@ package com.kickstarter.ui.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,6 +26,7 @@ import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.adapters.DiscoveryAdapter;
 import com.kickstarter.ui.containers.ApplicationContainer;
+import com.kickstarter.ui.views.DiscoveryToolbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +51,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
   @Inject ApplicationContainer applicationContainer;
 
   @BindColor(R.color.discovery_toolbar) int discoveryToolbarColor;
+  @Bind(R.id.discovery_toolbar) DiscoveryToolbar discoveryToolbar;
   @Bind(R.id.recycler_view) RecyclerView recyclerView;
 
   @Override
@@ -96,7 +97,11 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
     pageSubscription.unsubscribe();
   }
 
-  public void loadProjects(final List<Project> newProjects) {
+  public DiscoveryToolbar discoveryToolbar() {
+    return discoveryToolbar;
+  }
+
+  public void loadProjects(@NonNull final List<Project> newProjects) {
     final int oldProjectsSize = projects.size();
     projects.clear();
     projects.addAll(newProjects);
@@ -107,9 +112,9 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
     loadProjects(new ArrayList<>());
   }
 
-  public void startDiscoveryFilterActivity(@NonNull final DiscoveryParams discoveryParams) {
+  public void startDiscoveryFilterActivity(@NonNull final DiscoveryParams params) {
     final Intent intent = new Intent(this, DiscoveryFilterActivity.class)
-      .putExtra(getString(R.string.intent_discovery_params), discoveryParams);
+      .putExtra(getString(R.string.intent_discovery_params), params);
 
     startActivityForResult(intent, ActivityRequestCodes.DISCOVERY_ACTIVITY_DISCOVERY_FILTER_ACTIVITY_SELECT_FILTER);
   }
@@ -131,7 +136,8 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
       return;
     }
 
-    presenter.takeParams(intent.getExtras().getParcelable(getString(R.string.intent_discovery_params)));
+    final DiscoveryParams params = intent.getExtras().getParcelable(getString(R.string.intent_discovery_params));
+    presenter.takeParams(params);
   }
 
 

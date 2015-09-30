@@ -1,11 +1,10 @@
 package com.kickstarter.ui.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Pair;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -19,7 +18,6 @@ import com.kickstarter.presenters.DiscoveryFilterPresenter;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.adapters.DiscoveryFilterAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -29,7 +27,6 @@ import butterknife.OnClick;
 
 @RequiresPresenter(DiscoveryFilterPresenter.class)
 public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresenter> {
-  final List<DiscoveryParams> discoveryParams = new ArrayList<>();
   DiscoveryFilterAdapter adapter;
   LinearLayoutManager layoutManager;
 
@@ -44,7 +41,8 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
     ButterKnife.bind(this);
 
     layoutManager = new LinearLayoutManager(this);
-    adapter = new DiscoveryFilterAdapter(discoveryParams, presenter);
+    final DiscoveryParams discoveryParams = getIntent().getParcelableExtra(getString(R.string.intent_discovery_params));
+    adapter = new DiscoveryFilterAdapter(presenter, discoveryParams);
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);
 
@@ -58,17 +56,14 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
     onBackPressed();
   }
 
-  public void loadDiscoveryParams(final List<DiscoveryParams> newDiscoveryParams) {
-    discoveryParams.clear();
-    discoveryParams.addAll(newDiscoveryParams);
-    adapter.notifyDataSetChanged();
+  public void loadCategories(final List<Category> categories) {
+    adapter.takeCategories(categories);
   }
 
   public void startDiscoveryActivity(final DiscoveryParams newDiscoveryParams) {
-    // TODO: WIP, need to pass through params in intent
-    final Intent intent = new Intent(this, DiscoveryActivity.class)
-      .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-    startActivity(intent);
+    final Intent intent = new Intent().putExtra(getString(R.string.intent_discovery_params), newDiscoveryParams);
+    setResult(Activity.RESULT_OK, intent);
+    finish();
   }
 
   private void setStatusBarColor() {

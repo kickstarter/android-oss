@@ -2,7 +2,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
   tools:showIn="@layout/discovery_layout"
-  android:id="@+id/toolbar"
+  android:id="@+id/discovery_toolbar"
   android:layout_width="match_parent"
   android:layout_height="?attr/actionBarSize"
   android:background="@color/discovery_toolbar"
@@ -24,12 +24,12 @@
       android:layout_centerVertical="true">
 
       <TextView
+        android:id="@+id/filter_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/grid_1_half"
         android:textSize="20sp"
-        android:textColor="@color/white"
-        android:text="@string/Staff_Picks" />
+        android:textColor="@color/white" />
 
       <com.kickstarter.ui.views.IconTextView
         android:layout_width="wrap_content"

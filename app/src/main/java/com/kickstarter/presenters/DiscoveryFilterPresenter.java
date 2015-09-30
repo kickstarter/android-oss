@@ -34,15 +34,14 @@ public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity>
   }
 
   public void initialize(final DiscoveryParams initialDiscoveryParams) {
-    final Observable<List<DiscoveryParams>> discoveryParams = apiClient.fetchCategories()
-      .map(this::categoriesToDiscoveryParams);
+    final Observable<List<Category>> categories = apiClient.fetchCategories();
 
-    final Observable<Pair<DiscoveryFilterActivity, List<DiscoveryParams>>> viewAndDiscoveryParams =
-      RxUtils.combineLatestPair(viewSubject, discoveryParams);
+    final Observable<Pair<DiscoveryFilterActivity, List<Category>>> viewAndCategories =
+      RxUtils.combineLatestPair(viewSubject, categories);
 
-    addSubscription(viewAndDiscoveryParams
+    addSubscription(viewAndCategories
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vd -> vd.first.loadDiscoveryParams(vd.second)));
+      .subscribe(vc -> vc.first.loadCategories(vc.second)));
 
     addSubscription(RxUtils.takePairWhen(viewSubject, discoveryFilterClick)
         .observeOn(AndroidSchedulers.mainThread())
@@ -52,24 +51,5 @@ public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity>
 
   public void discoveryFilterClick(final DiscoveryFilterViewHolder viewHolder, final DiscoveryParams discoveryParams) {
     discoveryFilterClick.onNext(discoveryParams);
-  }
-
-  protected List<DiscoveryParams> categoriesToDiscoveryParams(final List<Category> initialCategories) {
-    final Observable<Category> categories = Observable.from(initialCategories)
-      .toSortedList(Category::discoveryFilterCompareTo)
-      .flatMap(Observable::from);
-
-    final Observable<GroupedObservable<Long, Category>> groupedCategories = categories.groupBy(Category::rootId);
-
-    // TODO: Add social sort when there is a current user
-    final Observable<DiscoveryParams> discoveryParams = Observable.concat(groupedCategories)
-      .map(c -> DiscoveryParams.builder().category(c).build())
-      .startWith(
-        DiscoveryParams.builder().staffPicks(true).build(),
-        DiscoveryParams.builder().starred(1).build(),
-        DiscoveryParams.builder().build() // Everything sort
-      );
-
-    return discoveryParams.toList().toBlocking().single();
   }
 }

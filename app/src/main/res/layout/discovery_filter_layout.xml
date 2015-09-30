@@ -17,11 +17,12 @@
 
   <com.kickstarter.ui.views.IconTextView
     android:id="@+id/close_button"
+    android:background="@drawable/click_indicator_dark"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_alignParentTop="true"
     android:layout_alignParentRight="true"
-    android:layout_margin="@dimen/grid_1"
+    android:padding="@dimen/grid_1"
     android:text="@string/close"
     android:textColor="@color/white"
     android:textSize="28sp" />

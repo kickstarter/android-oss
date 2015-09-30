@@ -108,9 +108,14 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
   }
 
   protected Observable<Filter> primaryCategoryFilters(@NonNull final Observable<Category> rootCategories) {
+    final DiscoveryFilterStyle.Builder styleBuilder = DiscoveryFilterStyle.builder()
+      .primary(true)
+      .showLiveProjectsCount(true)
+      .visible(true);
+
     return rootCategories.map(c -> Filter.builder()
       .params(DiscoveryParams.builder().category(c).build())
-      .style((DiscoveryFilterStyle.builder().primary(true).selected(isRootSelected(c)).visible(true)).build())
+      .style(styleBuilder.selected(isRootSelected(c)).build())
       .build());
   }
 

@@ -6,7 +6,7 @@
   android:layout_width="fill_parent"
   android:layout_height="wrap_content">
 
-  <LinearLayout
+ <LinearLayout
     android:id="@+id/vertical_line_group"
     android:layout_width="wrap_content"
     android:layout_height="fill_parent"
@@ -16,16 +16,35 @@
     android:layout_marginLeft="@dimen/grid_1_half">
 
     <include layout="@layout/vertical_line_medium_view" />
-
   </LinearLayout>
 
-  <TextView
-    android:id="@+id/filter_text_view"
-    android:layout_width="fill_parent"
+  <RelativeLayout
     android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
     android:background="@drawable/click_indicator_dark_masked"
     android:paddingTop="@dimen/grid_1_half"
-    android:paddingBottom="@dimen/grid_1_half"
-    android:textColor="@color/white" />
+    android:paddingBottom="@dimen/grid_1_half">
+
+    <TextView
+      android:id="@+id/filter_text_view"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentLeft="true"
+      android:textSize="18sp"
+      android:textColor="@color/white" />
+
+    <TextView
+      android:id="@+id/category_live_project_count_view"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="2dp"
+      android:alpha="0.8"
+      android:fontFamily="sans-serif-light"
+      android:layout_toRightOf="@+id/filter_text_view"
+      android:layout_marginLeft="@dimen/grid_1_half"
+      android:textSize="11sp"
+      android:textColor="@color/white" />
+
+  </RelativeLayout>
 
 </LinearLayout>

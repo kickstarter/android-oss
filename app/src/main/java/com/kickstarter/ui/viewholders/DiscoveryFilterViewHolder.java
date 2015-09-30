@@ -24,6 +24,7 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
   private DiscoveryFilterStyle style;
 
   @Bind(R.id.discovery_filter_view) View discoveryFilterView;
+  @Bind(R.id.category_live_project_count_view) TextView categoryLiveProjectCountTextView;
   @Bind(R.id.filter_text_view) TextView filterTextView;
   @Bind(R.id.vertical_line_group) View verticalLineGroup;
   @Bind(R.id.vertical_line_medium_view) View verticalLineView;
@@ -45,9 +46,9 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
     params = filter.params();
     style = filter.style();
 
-    setFilterTextViewStyle();
+    setCategoryLiveProjectCountTextView();
+    setFilterTextView();
     setPadding();
-    setText();
     setVerticalLineStyle();
   }
 
@@ -56,11 +57,17 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
     delegate.discoveryFilterClick(this, params);
   }
 
-  protected boolean isSecondaryCategoryRoot() {
-    return !style.primary() && params.category() != null && params.category().isRoot();
+  protected void setCategoryLiveProjectCountTextView() {
+    if (style.showLiveProjectsCount()) {
+      categoryLiveProjectCountTextView.setVisibility(View.VISIBLE);
+      categoryLiveProjectCountTextView.setText(params.category().projectsCount().toString());
+    } else {
+      categoryLiveProjectCountTextView.setVisibility(View.GONE);
+      categoryLiveProjectCountTextView.setText("");
+    }
   }
 
-  protected void setFilterTextViewStyle() {
+  protected void setFilterTextView() {
     if (style.selected()) {
       filterTextView.setTypeface(font.sansSerifTypeface());
     } else {
@@ -78,6 +85,13 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
     } else {
       filterTextView.setAlpha(1.0f);
     }
+
+    String text = params.filterString(view.getContext());
+    if (isSecondaryCategoryRoot()) {
+      text = view.getContext().getString(R.string.All_of_Category, text);
+    }
+
+    filterTextView.setText(text);
   }
 
   protected void setPadding() {
@@ -88,15 +102,6 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
     }
   }
 
-  protected void setText() {
-    String text = params.filterString(view.getContext());
-    if (isSecondaryCategoryRoot()) {
-      text = view.getContext().getString(R.string.All_of_Category, text);
-    }
-
-    filterTextView.setText(text);
-  }
-
   protected void setVerticalLineStyle() {
     if (style.primary() && !style.selected()) {
       verticalLineGroup.setVisibility(View.GONE);
@@ -105,5 +110,9 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
     }
 
     verticalLineView.setBackgroundColor(whiteColor);
+  }
+
+  protected boolean isSecondaryCategoryRoot() {
+    return !style.primary() && params.category() != null && params.category().isRoot();
   }
 }

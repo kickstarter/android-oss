@@ -1,7 +1,6 @@
 package com.kickstarter.ui.activities;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -78,7 +77,7 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
 
   @OnClick(R.id.share_icon)
   public void shareProject() {
-    presenter.projectShareClicked();
+    presenter.takeShareClick();
   }
 
   public void showProjectDescription(@NonNull final Project project) {

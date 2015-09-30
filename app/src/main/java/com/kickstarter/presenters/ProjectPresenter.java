@@ -150,6 +150,10 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
     shareClick.onNext(null);
   }
 
+  public void takeShareClick() {
+    shareClick.onNext(null);
+  }
+
   public void takeStarClick() {
     starClick.onNext(null);
   }

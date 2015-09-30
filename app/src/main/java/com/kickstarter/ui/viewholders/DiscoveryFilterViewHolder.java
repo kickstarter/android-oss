@@ -6,10 +6,14 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
 
+import com.kickstarter.KSApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.Font;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.DiscoveryFilterStyle;
 import com.kickstarter.ui.adapters.DiscoveryFilterAdapter;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.BindColor;
@@ -17,6 +21,7 @@ import butterknife.ButterKnife;
 
 public class DiscoveryFilterViewHolder extends KsrViewHolder {
   private final Delegate delegate;
+  @Inject Font font;
   private DiscoveryParams params;
   private DiscoveryFilterStyle style;
 
@@ -34,6 +39,7 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
     super(view);
     this.delegate = delegate;
     ButterKnife.bind(this, view);
+    ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
   }
 
   public void onBind(@NonNull final Object datum) {
@@ -59,9 +65,9 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
   protected void setFilterTextViewStyle() {
     // TODO: Cache fonts
     if (style.selected()) {
-      filterTextView.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+      filterTextView.setTypeface(font.sansSerifTypeface());
     } else {
-      filterTextView.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
+      filterTextView.setTypeface(font.sansSerifLightTypeface());
     }
 
     if (style.primary()) {

@@ -11,14 +11,6 @@
   android:foreground="@drawable/click_indicator_light"
   android:layout_margin="@dimen/grid_2">
 
-  <View
-    android:id="@+id/green_overlay"
-    android:visibility="gone"
-    android:alpha="0.2"
-    android:background="@color/green"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" />
-
   <RelativeLayout
     android:id="@+id/reward_card_info"
     android:paddingBottom="@dimen/grid_2"
@@ -92,7 +84,7 @@
 
       <TextView
         android:id="@+id/all_gone"
-        android:background="@color/gray"
+        android:background="@color/dark_gray"
         android:visibility="gone"
         android:text="@string/All_gone"
         android:layout_width="wrap_content"

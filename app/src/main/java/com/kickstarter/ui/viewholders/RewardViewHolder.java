@@ -26,7 +26,6 @@ public class RewardViewHolder extends KsrViewHolder {
   protected @Bind(R.id.selected) TextView selectedTextView;
   protected @Bind(R.id.limited) TextView limitedTextView;
   protected @Bind(R.id.all_gone) TextView allGoneTextView;
-  protected @Bind(R.id.green_overlay) View greenOverlayView;
 
   @Inject Money money;
 

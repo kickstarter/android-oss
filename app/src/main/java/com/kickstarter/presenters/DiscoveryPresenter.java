@@ -9,6 +9,7 @@ import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.ListUtils;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.RxUtils;
+import com.kickstarter.models.Empty;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.DiscoveryParams;
@@ -33,7 +34,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
 
   private final PublishSubject<Void> filterButtonClick = PublishSubject.create();
   private final PublishSubject<Project> projectClick = PublishSubject.create();
-  private final PublishSubject<Void> nextPage = PublishSubject.create();
+  private final PublishSubject<Empty> nextPage = PublishSubject.create();
   private final PublishSubject<DiscoveryParams> params = PublishSubject.create();
 
   @Override
@@ -75,7 +76,6 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
     // This apparently fixes it:
     // https://github.com/ReactiveX/RxJava/pull/3171
     params.onNext(DiscoveryParams.builder().staffPicks(true).build());
-    nextPage.onNext(null);
   }
 
   /**
@@ -99,6 +99,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
    */
   private Observable<DiscoveryParams> paramsWithPagination(final DiscoveryParams firstPageParams) {
     return nextPage
+      .startWith(Empty.create())
       .scan(firstPageParams, (currentPage, __) -> currentPage.nextPage())
       ;
   }
@@ -141,10 +142,9 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
 
   public void takeParams(final DiscoveryParams firstPageParams) {
     params.onNext(firstPageParams);
-    takeNextPage();
   }
 
   public void takeNextPage() {
-    nextPage.onNext(null);
+    nextPage.onNext(Empty.create());
   }
 }

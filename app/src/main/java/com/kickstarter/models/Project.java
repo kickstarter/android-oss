@@ -215,6 +215,10 @@ public abstract class Project implements Parcelable {
     return new CurrencyOptions(country(), currencySymbol(), currency());
   }
 
+  public boolean hasComments() {
+    return this.commentsCount() != null && Integer.valueOf(this.commentsCount()) != 0;
+  }
+
   public boolean hasRewards() {
     return rewards() != null;
   }

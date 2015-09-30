@@ -18,27 +18,31 @@
 
     <com.kickstarter.ui.views.IconTextView
       android:id="@+id/icon"
+      android:textColor="@color/text_secondary"
       android:gravity="center_horizontal"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:textSize="@dimen/display_4"
-      android:text="@string/mode_comment_icon"
-      android:paddingBottom="@dimen/grid_3" />
+      android:text="@string/mode_comment_icon" />
 
     <TextView
       android:id="@+id/no_comments"
+      android:textColor="@color/text_secondary"
       android:gravity="center_horizontal"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:textStyle="bold"
       android:text="@string/No_comments"
-      android:paddingBottom="@dimen/grid_3"/>
+      android:padding="@dimen/grid_3"/>
 
     <TextView
       android:id="@+id/message"
+      android:textColor="@color/text_secondary"
       android:gravity="center_horizontal"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:paddingLeft="@dimen/grid_3"
+      android:paddingRight="@dimen/grid_2"
       android:text="@string/Aw_how_sad"/>
 
     <Button

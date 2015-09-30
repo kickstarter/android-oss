@@ -10,14 +10,38 @@
   android:foreground="@drawable/click_indicator_green"
   android:layout_margin="@dimen/grid_2">
 
+  <View
+    android:id="@+id/green_overlay"
+    android:visibility="gone"
+    android:alpha="0.2"
+    android:background="@color/green"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+
   <RelativeLayout
-    android:padding="@dimen/grid_2"
+    android:id="@+id/reward_card_info"
+    android:paddingBottom="@dimen/grid_2"
+    android:paddingLeft="@dimen/grid_2"
+    android:paddingRight="@dimen/grid_2"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
 
     <TextView
+      android:id="@+id/selected_label"
+      android:visibility="gone"
+      android:paddingLeft="@dimen/grid_1"
+      android:paddingRight="@dimen/grid_1"
+      android:textColor="@color/white"
+      android:background="@color/green"
+      android:text="@string/You_selected"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content" />
+
+    <TextView
       android:id="@+id/pledge_minimum"
+      android:layout_below="@id/selected_label"
       android:textAppearance="@style/subheadBold"
+      android:paddingTop="@dimen/grid_2"
       android:paddingBottom="@dimen/grid_2"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"/>
@@ -51,9 +75,33 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+      android:id="@+id/limited_reward_labels"
+      android:layout_below="@id/backer_info"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content">
+
+      <TextView
+        android:id="@+id/limited_label"
+        android:background="@color/yellow"
+        android:visibility="gone"
+        android:text="@string/Limited_left_of"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+      <TextView
+        android:id="@+id/all_gone_label"
+        android:background="@color/gray"
+        android:visibility="gone"
+        android:text="@string/All_gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
     <TextView
       android:id="@+id/reward_description"
-      android:layout_below="@id/backer_info"
+      android:layout_below="@id/limited_reward_labels"
       android:textSize="@dimen/body"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

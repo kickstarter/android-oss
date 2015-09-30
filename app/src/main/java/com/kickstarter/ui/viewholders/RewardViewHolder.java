@@ -23,6 +23,11 @@ public class RewardViewHolder extends KsrViewHolder {
   protected @Bind(R.id.reward_backers_count) TextView backersCountTextView;
   protected @Bind(R.id.reward_description) TextView descriptionTextView;
   protected @Bind(R.id.estimated_delivery_date) TextView estimatedDeliveryTextView;
+  protected @Bind(R.id.selected_label) TextView selectedLabelTextView;
+  protected @Bind(R.id.limited_label) TextView limitedLabelTextView;
+  protected @Bind(R.id.all_gone_label) TextView allGoneLabelTextView;
+  protected @Bind(R.id.green_overlay) View greenOverlayView;
+
   @Inject Money money;
 
   private final Delegate delegate;
@@ -57,9 +62,35 @@ public class RewardViewHolder extends KsrViewHolder {
     descriptionTextView.setText(reward.description());
     estimatedDeliveryTextView.setText(
       reward.estimatedDeliveryOn().toString(DateTimeUtils.estimatedDeliveryOn()));
+
+    setRewardCardLabels(context);
   }
 
-  // todo:
+  public void setRewardCardLabels(@NonNull final Context context) {
+
+    if (reward.isLimited()) {
+      limitedLabelTextView.setVisibility(View.VISIBLE);
+      limitedLabelTextView.setText(String.format(context.getString(
+          R.string.Limited_left_of),
+        reward.remaining(),
+        reward.limit()
+      ));
+    }
+
+    else if (reward.isAllGone()) {
+      allGoneLabelTextView.setVisibility(View.VISIBLE);
+      view.setAlpha(0.2f);
+      view.setClickable(false);
+    }
+
+    // todo: implement project.backing().rewardId()
+//    if (project.backingRewardId() == reward.id()) {
+//      selectedLabelTextView.setVisibility(View.VISIBLE);
+//      greenOverlayView.setVisibility(View.VISIBLE);
+//      view.setAlpha(0.4f);
+//    }
+  }
+
   @Override
   public void onClick(@NonNull final View view) {
     delegate.takeRewardClick(this, reward);

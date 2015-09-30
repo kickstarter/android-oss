@@ -23,13 +23,14 @@ public class RewardViewHolder extends KsrViewHolder {
   protected @Bind(R.id.reward_backers_count) TextView backersCountTextView;
   protected @Bind(R.id.reward_description) TextView descriptionTextView;
   protected @Bind(R.id.estimated_delivery_date) TextView estimatedDeliveryTextView;
-  protected @Bind(R.id.selected_label) TextView selectedLabelTextView;
-  protected @Bind(R.id.limited_label) TextView limitedLabelTextView;
-  protected @Bind(R.id.all_gone_label) TextView allGoneLabelTextView;
+  protected @Bind(R.id.selected) TextView selectedTextView;
+  protected @Bind(R.id.limited) TextView limitedTextView;
+  protected @Bind(R.id.all_gone) TextView allGoneTextView;
   protected @Bind(R.id.green_overlay) View greenOverlayView;
 
   @Inject Money money;
 
+  private final Context context;
   private final Delegate delegate;
   private Project project;
   private Reward reward;
@@ -41,8 +42,9 @@ public class RewardViewHolder extends KsrViewHolder {
   public RewardViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
     super(view);
     this.delegate = delegate;
+    this.context = view.getContext();
 
-    ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
+    ((KSApplication) context.getApplicationContext()).component().inject(this);
     ButterKnife.bind(this, view);
   }
 
@@ -50,8 +52,6 @@ public class RewardViewHolder extends KsrViewHolder {
     final Pair<Project, Reward> projectAndReward = (Pair<Project, Reward>) datum;
     project = projectAndReward.first;
     reward = projectAndReward.second;
-
-    final Context context = view.getContext();
 
     minimumTextView.setText(String.format(
       context.getString(R.string.Pledge_or_more),

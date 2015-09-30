@@ -27,7 +27,7 @@
     android:layout_height="wrap_content" >
 
     <TextView
-      android:id="@+id/selected_label"
+      android:id="@+id/selected"
       android:visibility="gone"
       android:paddingLeft="@dimen/grid_1"
       android:paddingRight="@dimen/grid_1"
@@ -39,7 +39,7 @@
 
     <TextView
       android:id="@+id/pledge_minimum"
-      android:layout_below="@id/selected_label"
+      android:layout_below="@id/selected"
       android:textAppearance="@style/subheadBold"
       android:paddingTop="@dimen/grid_2"
       android:paddingBottom="@dimen/grid_2"
@@ -82,7 +82,7 @@
       android:layout_height="wrap_content">
 
       <TextView
-        android:id="@+id/limited_label"
+        android:id="@+id/limited"
         android:background="@color/yellow"
         android:visibility="gone"
         android:text="@string/Limited_left_of"
@@ -90,7 +90,7 @@
         android:layout_height="wrap_content" />
 
       <TextView
-        android:id="@+id/all_gone_label"
+        android:id="@+id/all_gone"
         android:background="@color/gray"
         android:visibility="gone"
         android:text="@string/All_gone"

@@ -65,20 +65,33 @@ public class RewardViewHolder extends KsrViewHolder {
     toggleTextViews();
   }
 
-  // Move this if logic to presenter
+  /**
+   * Refreshes toggle-able views of each reward card so that it draws correctly each onBind.
+   */
+  public void invalidateCardView() {
+    limitedTextView.setVisibility(View.GONE);
+    allGoneTextView.setVisibility(View.GONE);
+    view.setAlpha(1);
+    view.setClickable(true);
+  }
+
+  // Move this if- logic to ProjectPresenter
   public void toggleTextViews() {
+    invalidateCardView();
+
     if (reward.isAllGone()) {
       allGoneTextView.setVisibility(View.VISIBLE);
-      limitedTextView.setVisibility(View.GONE);
+      view.setAlpha(0.3f);
+      view.setClickable(false);
     }
     else if (reward.isLimited()) {
       limitedTextView.setVisibility(View.VISIBLE);
-      allGoneTextView.setVisibility(View.GONE);
       limitedTextView.setText(String.format(context.getString(R.string.Limited_left_of),
         reward.remaining(),
         reward.limit()
       ));
     }
+
     // todo: implement project.backing().rewardId()
     //    if (project.backingRewardId() == reward.id()) {
     //      selectedLabelTextView.setVisibility(View.VISIBLE);

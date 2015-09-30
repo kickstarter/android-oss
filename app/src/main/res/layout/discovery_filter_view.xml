@@ -2,7 +2,8 @@
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:id="@+id/discovery_filter_view"
-  android:layout_width="wrap_content"
+  android:layout_marginRight="@dimen/grid_2"
+  android:layout_width="fill_parent"
   android:layout_height="wrap_content">
 
   <LinearLayout
@@ -20,9 +21,9 @@
 
   <TextView
     android:id="@+id/filter_text_view"
-    android:layout_width="wrap_content"
+    android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/click_indicator_dark"
+    android:background="@drawable/click_indicator_dark_masked"
     android:paddingTop="@dimen/grid_1_half"
     android:paddingBottom="@dimen/grid_1_half"
     android:textColor="@color/white" />

@@ -12,4 +12,5 @@ public class ActivityRequestCodes {
   public final static int LOGIN_TOUT_ACTIVITY_LOGIN_ACTIVITY_FORWARD = 2;
   public final static int LOGIN_ACTIVITY_TWO_FACTOR_ACTIVITY_FORWARD = 3;
   public final static int PROJECT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED = 4;
+  public final static int DISCOVERY_ACTIVITY_DISCOVERY_FILTER_ACTIVITY_SELECT_FILTER = 5;
 }

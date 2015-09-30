@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="horizontal"
   android:layout_width="wrap_content"
@@ -7,9 +6,9 @@
   android:paddingRight="@dimen/grid_1_half" >
 
   <View
-    android:id="@+id/vertical_line_medium_view"
-    android:layout_width="1.5dp"
+    android:id="@+id/vertical_line_thin_view"
+    android:layout_width="1dp"
     android:layout_height="fill_parent"
     android:background="@color/gray" />
-</LinearLayout>
 
+</LinearLayout>

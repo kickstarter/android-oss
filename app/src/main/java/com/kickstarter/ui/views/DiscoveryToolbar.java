@@ -2,13 +2,11 @@ package com.kickstarter.ui.views;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
@@ -16,9 +14,9 @@ import com.kickstarter.R;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.models.User;
+import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
-import com.kickstarter.ui.activities.DiscoveryFilterActivity;
 import com.kickstarter.ui.activities.LoginToutActivity;
 
 import javax.inject.Inject;
@@ -32,8 +30,8 @@ import rx.android.schedulers.AndroidSchedulers;
 public class DiscoveryToolbar extends Toolbar {
   @Bind(R.id.activity_feed_button) TextView activityFeedButton;
   @Bind(R.id.current_user_button) TextView currentUserButton;
+  @Bind(R.id.filter_text_view) TextView filterTextView;
   @Bind(R.id.login_button) TextView loginButton;
-  @Bind(R.id.toolbar) Toolbar toolbar;
   @Inject CurrentUser currentUser;
   @Inject Logout logout;
 
@@ -69,11 +67,14 @@ public class DiscoveryToolbar extends Toolbar {
   }
 
   @OnClick(R.id.filter_button)
-  public void startDiscoveryFilterActivity(final View view) {
-    final Context context = getContext();
-    context.startActivity(new Intent(context, DiscoveryFilterActivity.class));
+  public void filterButtonClick(@NonNull final View view) {
+    final DiscoveryActivity activity = (DiscoveryActivity) getContext();
+    activity.presenter().filterButtonClick();
   }
 
+  public void loadParams(@NonNull final DiscoveryParams params) {
+    filterTextView.setText(params.filterString(getContext()));
+  }
 
   protected void showLoggedInMenu(final User user) {
     loginButton.setVisibility(GONE);

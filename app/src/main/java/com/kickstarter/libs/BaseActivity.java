@@ -10,6 +10,16 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
   protected PresenterType presenter;
   private static final String PRESENTER_KEY = "presenter";
 
+  /**
+   * Get presenter.
+   *
+   * @deprecated TODO: Refactor parent/child presenters for activities and their views.
+   */
+  @Deprecated
+  public PresenterType presenter() {
+    return presenter;
+  }
+
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);

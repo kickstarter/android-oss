@@ -91,7 +91,8 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
     return paramsWithPagination(firstPageParams)
       .switchMap(this::projectsFromParams)
       .takeUntil(List::isEmpty)
-      .scan(new ArrayList<Project>(), ListUtils::concatDistinct)
+      .startWith(new ArrayList<Project>())
+      .scan(ListUtils::concatDistinct)
       ;
   }
 

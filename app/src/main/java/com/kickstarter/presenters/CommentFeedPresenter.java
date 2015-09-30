@@ -28,7 +28,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
 public class CommentFeedPresenter extends Presenter<CommentFeedActivity> implements CommentFeedAdapter.Delegate {
-  private final PublishSubject<Project> contextClick = PublishSubject.create();
+  private final PublishSubject<Void> contextClick = PublishSubject.create();
 
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
@@ -53,13 +53,13 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vc -> vc.first.loadProjectComments(project, vc.second)));
 
-    addSubscription(RxUtils.takePairWhen(viewSubject, contextClick)
+    addSubscription(RxUtils.takeWhen(viewSubject, contextClick)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vc -> vc.first.onBackPressed())
+      .subscribe(CommentFeedActivity::onBackPressed)
     );
   }
 
-  public void contextClick(@NonNull final ProjectContextViewHolder viewHolder, @NonNull final Project project) {
-    contextClick.onNext(project);
+  public void projectContextClicked() {
+    contextClick.onNext(null);
   }
 }

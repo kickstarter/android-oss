@@ -78,7 +78,7 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
 
   @OnClick(R.id.share_icon)
   public void shareProject() {
-    presenter.takeShareClick();
+    presenter.projectShareClicked();
   }
 
   public void showProjectDescription(@NonNull final Project project) {

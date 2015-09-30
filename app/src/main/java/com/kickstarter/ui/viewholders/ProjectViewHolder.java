@@ -48,11 +48,11 @@ public class ProjectViewHolder extends KsrViewHolder {
   @Inject Money money;
 
   public interface Delegate {
-    void takeBlurbClick();
-    void takeCommentsClick();
-    void takeCreatorNameClick();
-    void takeShareClick();
-    void takeUpdatesClick();
+    void projectBlurbClicked(@NonNull final ProjectViewHolder viewHolder);
+    void projectCommentsClicked(@NonNull final ProjectViewHolder viewHolder);
+    void projectCreatorNameClicked(@NonNull final ProjectViewHolder viewHolder);
+    void projectShareClicked(@NonNull final ProjectViewHolder viewHolder);
+    void projectUpdatesClicked(@NonNull final ProjectViewHolder viewHolder);
   }
 
   public ProjectViewHolder(@NonNull final View view, @NonNull final ProjectViewHolder.Delegate delegate) {
@@ -97,26 +97,26 @@ public class ProjectViewHolder extends KsrViewHolder {
 
   @OnClick({R.id.blurb, R.id.campaign})
   public void blurbClick() {
-    delegate.takeBlurbClick();
+    delegate.projectBlurbClicked(this);
   }
 
   @OnClick(R.id.comments)
   public void commentsClick() {
-    delegate.takeCommentsClick();
+    delegate.projectCommentsClicked(this);
   }
 
   @OnClick({R.id.creator_name, R.id.creator_info})
   public void creatorNameClick() {
-    delegate.takeCreatorNameClick();
+    delegate.projectCreatorNameClicked(this);
   }
 
   @OnClick(R.id.updates)
   public void updatesClick() {
-    delegate.takeUpdatesClick();
+    delegate.projectUpdatesClicked(this);
   }
 
   @OnClick(R.id.share_button)
   public void shareProjectClick() {
-    delegate.takeShareClick();
+    delegate.projectShareClicked(this);
   }
 }

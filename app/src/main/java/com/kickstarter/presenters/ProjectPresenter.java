@@ -16,6 +16,7 @@ import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.kickstarter.ui.adapters.ProjectAdapter;
+import com.kickstarter.ui.viewholders.ProjectViewHolder;
 import com.kickstarter.ui.viewholders.RewardViewHolder;
 
 import javax.inject.Inject;
@@ -129,15 +130,15 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
     backProjectClick.onNext(null);
   }
 
-  public void takeBlurbClick() {
+  public void projectBlurbClicked(@NonNull final ProjectViewHolder viewHolder) {
     blurbClick.onNext(null);
   }
 
-  public void takeCommentsClick() {
+  public void projectCommentsClicked(@NonNull final ProjectViewHolder viewHolder) {
     commentsClick.onNext(null);
   }
 
-  public void takeCreatorNameClick(){
+  public void projectCreatorNameClicked(@NonNull final ProjectViewHolder viewHolder){
     creatorNameClick.onNext(null);
   }
 
@@ -145,7 +146,7 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
     rewardClick.onNext(reward);
   }
 
-  public void takeShareClick() {
+  public void projectShareClicked(@NonNull final ProjectViewHolder viewHolder) {
     shareClick.onNext(null);
   }
 
@@ -153,7 +154,7 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
     starClick.onNext(null);
   }
 
-  public void takeUpdatesClick() {
+  public void projectUpdatesClicked(@NonNull final ProjectViewHolder viewHolder) {
     updatesClick.onNext(null);
   }
 

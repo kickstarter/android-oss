@@ -81,8 +81,6 @@ public abstract class DiscoveryParams implements Parcelable {
 
   public ImmutableMap<String, String> queryParams() {
     final ImmutableMap.Builder<String, String> builder = new ImmutableMap.Builder<String, String>()
-      .put("category_id", String.valueOf(category() != null ? category().id() : ""))
-      .put("woe_id", String.valueOf(location() != null ? location().id() : ""))
       .put("staff_picks", String.valueOf(staffPicks()))
       .put("starred", String.valueOf(starred()))
       .put("backed", String.valueOf(backed()))
@@ -90,6 +88,14 @@ public abstract class DiscoveryParams implements Parcelable {
       .put("sort", sort().toString())
       .put("page", String.valueOf(page()))
       .put("per_page", String.valueOf(perPage()));
+
+    if (category() != null) {
+      builder.put("category_id", String.valueOf(category().id()));
+    }
+
+    if (location() != null) {
+      builder.put("woe_id", String.valueOf(location().id()));
+    }
 
     if (staffPicks() && page() == 1) {
       builder.put("include_potd", "true");

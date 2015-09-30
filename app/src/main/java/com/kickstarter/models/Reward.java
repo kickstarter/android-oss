@@ -18,6 +18,7 @@ public abstract class Reward implements Parcelable {
   @Nullable public abstract Integer limit();
   public abstract float minimum();
   @Nullable public abstract DateTime estimatedDeliveryOn();
+  @Nullable public abstract Integer remaining();
   public abstract String reward();
   @Nullable public abstract Boolean shippingEnabled();
   @Nullable public abstract String shippingPreference();
@@ -31,6 +32,7 @@ public abstract class Reward implements Parcelable {
     public abstract Builder limit(Integer __);
     public abstract Builder minimum(float __);
     public abstract Builder estimatedDeliveryOn(DateTime __);
+    public abstract Builder remaining(Integer __);
     public abstract Builder reward(String __);
     public abstract Builder shippingEnabled(Boolean __);
     public abstract Builder shippingPreference(String __);
@@ -43,6 +45,14 @@ public abstract class Reward implements Parcelable {
   }
 
   public abstract Builder toBuilder();
+
+  public boolean isAllGone() {
+    return this.remaining() != null && this.remaining() == 0;
+  }
+
+  public boolean isLimited() {
+    return this.limit() != null && !this.isAllGone();
+  }
 
   public boolean isReward() {
     return this.id() != 0;

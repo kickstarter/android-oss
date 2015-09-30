@@ -61,7 +61,6 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
   }
 
   protected void setFilterTextViewStyle() {
-    // TODO: Cache fonts
     if (style.selected()) {
       filterTextView.setTypeface(font.sansSerifTypeface());
     } else {

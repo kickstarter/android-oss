@@ -62,12 +62,12 @@ public class RewardViewHolder extends KsrViewHolder {
     descriptionTextView.setText(reward.description());
     estimatedDeliveryTextView.setText(
       reward.estimatedDeliveryOn().toString(DateTimeUtils.estimatedDeliveryOn()));
-
     setRewardCardLabels(context);
   }
 
   public void setRewardCardLabels(@NonNull final Context context) {
 
+    // Move this if logic to presenter
     if (reward.isLimited()) {
       limitedLabelTextView.setVisibility(View.VISIBLE);
       limitedLabelTextView.setText(String.format(context.getString(

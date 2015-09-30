@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.kickstarter.R;
 import com.kickstarter.models.Category;
+import com.kickstarter.models.Empty;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.DiscoveryFilterStyle;
 import com.kickstarter.ui.viewholders.DiscoveryFilterDividerViewHolder;
@@ -48,7 +49,7 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
     data().clear();
 
     data().addAll(paramsSections(initialCategories).toList().toBlocking().single());
-    data().add(1, Collections.singletonList(null)); // Category divider
+    data().add(1, Collections.singletonList(Empty.create())); // Category divider
 
     notifyDataSetChanged();
   }

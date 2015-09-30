@@ -54,6 +54,8 @@ public interface ApplicationGraph {
   void inject(ProjectPresenter __);
   void inject(ProjectCardViewHolder __);
   void inject(ProjectStateChangedPositiveViewHolder __);
+  void inject(ProjectViewHolder __);
+  void inject(RewardViewHolder __);
   void inject(ThanksPresenter __);
   void inject(TiemposTextView __);
   void inject(TwoFactorPresenter __);

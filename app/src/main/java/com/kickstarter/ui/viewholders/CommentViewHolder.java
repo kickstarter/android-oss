@@ -1,6 +1,9 @@
 package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
@@ -33,14 +36,13 @@ public class CommentViewHolder extends KsrViewHolder {
   public @Bind(R.id.comment_body) TextView commentBody;
   @Inject CurrentUser currentUser;  //check if backed project
 
-  public CommentViewHolder(final View view) {
+  public CommentViewHolder(@NonNull final View view) {
     super(view);
-
     ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
     ButterKnife.bind(this, view);
   }
 
-  public void onBind(final Object datum) {
+  public void onBind(@NonNull final Object datum) {
     final Pair<Project, Comment> projectAndComment = (Pair<Project, Comment>) datum;
     project = projectAndComment.first;
     comment = projectAndComment.second;

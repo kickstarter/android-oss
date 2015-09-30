@@ -21,6 +21,7 @@
 
   <com.kickstarter.ui.views.IconTextView
     android:id="@+id/play_button_overlay"
+    android:visibility="gone"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"

@@ -14,9 +14,15 @@ import java.util.Collections;
 import java.util.List;
 
 public class CommentFeedAdapter extends KsrAdapter {
-  public CommentFeedAdapter(final Project project, final List<Pair<Project, Comment>> projectAndComments) {
+  private final Delegate delegate;
+
+  public interface Delegate extends ProjectContextViewHolder.Delegate {}
+
+  public CommentFeedAdapter(final Project project, final List<Pair<Project, Comment>> projectAndComments,
+    final Delegate delegate) {
     data().add(Collections.singletonList(project));
     data().add(projectAndComments);
+    this.delegate = delegate;
   }
 
   protected int layout(final SectionRow sectionRow) {
@@ -29,7 +35,7 @@ public class CommentFeedAdapter extends KsrAdapter {
 
   protected KsrViewHolder viewHolder(final int layout, final View view) {
     if (layout == R.layout.project_context_view) {
-      return new ProjectContextViewHolder(view);
+      return new ProjectContextViewHolder(view, delegate);
     }
     return new CommentViewHolder(view);
   }

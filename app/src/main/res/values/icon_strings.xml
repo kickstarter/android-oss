@@ -16,4 +16,8 @@
   <string name="play_circle_outline_icon">play_circle_outline</string>
   <string name="share_icon">share</string>
   <string name="star_icon">star</string>
+
+  <!-- ss-kickstarter icon names from https://www.kickstarter.com/admin/style_guide -->
+  <string name="backer_icon">backer</string>
+
 </resources>

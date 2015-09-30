@@ -3,6 +3,7 @@ package com.kickstarter.ui.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -39,16 +40,15 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
   private Project project;
 
   @Override
-  protected void onCreate(final Bundle savedInstanceState) {
+  protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     final Intent intent = getIntent();
     project = intent.getParcelableExtra(getString(R.string.intent_project));
-    final int layout = (project.commentsCount() == null || project.commentsCount() == 0) ? R.layout.empty_comment_feed_layout : R.layout.comment_feed_layout;
+    final int layout = (project.hasComments()) ? R.layout.comment_feed_layout : R.layout.empty_comment_feed_layout;
     setContentView(layout);
     ButterKnife.bind(this);
 
-    // messy WIP---move to Toolbar, set project observable
-    if (project.commentsCount() != null) {
+    if (project.hasComments()) {
       presenter.takeProject(project);
     }
     else {
@@ -56,32 +56,33 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     }
   }
 
+  public void loadProjectComments(@NonNull final Project project, @Nullable final List<Comment> comments) {
+    final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+    final List<Pair<Project, Comment>> projectAndComments = Observable.from(comments)
+      .map(comment -> Pair.create(project, comment))
+      .toList().toBlocking().single();
+    final CommentFeedAdapter adapter = new CommentFeedAdapter(project, projectAndComments, presenter);
+    recyclerView.setLayoutManager(layoutManager);
+    recyclerView.setAdapter(adapter);
+  }
+
   // this may be removed with adapter implementation
-  public void showProjectContext(Project project) {
+  public void showProjectContext(@NonNull final Project project) {
     Picasso.with(getApplicationContext()).load(project.photo().full())
       .into(projectPhotoImageView);
     projectNameTextView.setText(project.name());
     creatorNameTextView.setText(project.creator().name());
   }
 
-  public void loadProjectComments(final Project project, final List<Comment> comments) {
-    final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-    final List<Pair<Project, Comment>> projectAndComments = Observable.from(comments)
-      .map(comment -> Pair.create(project, comment))
-      .toList().toBlocking().single();
-    final CommentFeedAdapter adapter = new CommentFeedAdapter(project, projectAndComments);
-    recyclerView.setLayoutManager(layoutManager);
-    recyclerView.setAdapter(adapter);
-  }
-
-  @OnClick(R.id.nav_back_button)
+  @Nullable
+  @OnClick({R.id.nav_back_button, R.id.project_context_view})
   public void onBackPressed() {
     super.onBackPressed();
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
   @Nullable @OnClick(R.id.leave_comment_button)
-  public void publicCommentClick(final View view) {
+  public void publicCommentClick(@NonNull final View view) {
     final LayoutInflater layoutInflater = getLayoutInflater();
     final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
     builder.setTitle(getString(R.string.Public_comment));

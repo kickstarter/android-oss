@@ -215,6 +215,14 @@ public abstract class Project implements Parcelable {
     return new CurrencyOptions(country(), currencySymbol(), currency());
   }
 
+  public boolean hasComments() {
+    return this.commentsCount() != null && Integer.valueOf(this.commentsCount()) != 0;
+  }
+
+  public boolean hasRewards() {
+    return rewards() != null;
+  }
+
   /** Returns whether the project is in a canceled state. */
   public boolean isCanceled() {
     return STATE_CANCELED.equals(state());
@@ -365,5 +373,14 @@ public abstract class Project implements Parcelable {
 
   public String editPledgeUrl() {
     return Uri.parse(secureWebProjectUrl()).buildUpon().appendEncodedPath("pledge/edit").toString();
+  }
+
+  public String rewardSelectedUrl(final Reward reward) {
+    return Uri.parse(newPledgeUrl())
+      .buildUpon().scheme("https")
+      .appendQueryParameter("backing[backer_reward_id]", String.valueOf(reward.id()))
+      .appendQueryParameter("clicked_reward", "true")
+      .build()
+      .toString();
   }
 }

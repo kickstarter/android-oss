@@ -44,6 +44,13 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
   }
 
   public void initialize(@Nullable final Project initialProject, @Nullable final String param) {
+    final Observable<Reward> rewardOnLoggedInUserClick = RxUtils.takePairWhen(currentUser.observable(), rewardClick)
+      .filter(ur -> ur.first != null)
+      .map(ur -> ur.second);
+
+    final Observable<User> loggedOutUserOnRewardClick = RxUtils.takeWhen(currentUser.observable(), rewardClick)
+      .filter(u -> u == null);
+
     final Observable<User> loggedInUserOnStarClick = RxUtils.takeWhen(currentUser.observable(), starClick)
       .filter(u -> u != null);
 
@@ -89,6 +96,25 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
         .subscribe(ProjectActivity::startLoginToutActivity)
     );
 
+    addSubscription(
+      RxUtils.takeWhen(viewSubject, loggedOutUserOnRewardClick)
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(ProjectActivity::startLoginToutActivity)
+    );
+
+    addSubscription(
+      RxUtils.takePairWhen(viewAndProject, rewardOnLoggedInUserClick)
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(vpr -> {
+          final ProjectActivity view = vpr.first.first;
+          final Project p = vpr.first.second;
+          final Reward r = vpr.second;
+          view.startRewardSelectedCheckout(p, r);
+        })
+    );
+
+    // todo loginSuccess with reward click
+
     addSubscription(RxUtils.takeWhen(viewAndProject, backProjectClick)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startCheckoutActivity(vp.second)));
@@ -114,10 +140,6 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
       .subscribe(vp -> vp.first.showUpdates(vp.second)));
   }
 
-  public void takeRewardClick(@NonNull final RewardViewHolder viewHolder, @NonNull final Reward reward) {
-    rewardClick.onNext(reward);
-  }
-
   public void takeBackProjectClick() {
     backProjectClick.onNext(null);
   }
@@ -134,8 +156,16 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
     creatorNameClick.onNext(null);
   }
 
+  public void takeRewardClick(@NonNull final RewardViewHolder viewHolder, @NonNull final Reward reward) {
+    rewardClick.onNext(reward);
+  }
+
   public void takeShareClick() {
     shareClick.onNext(null);
+  }
+
+  public void takeStarClick() {
+    starClick.onNext(null);
   }
 
   public void takeUpdatesClick() {
@@ -144,10 +174,6 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
 
   public void takeLoginSuccess() {
     loginSuccess.onNext(null);
-  }
-
-  public void takeStarClick() {
-    starClick.onNext(null);
   }
 
   public Observable<Project> starProject(@NonNull final Project project) {

@@ -1,6 +1,7 @@
 package com.kickstarter.ui.activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,6 +17,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.Money;
 import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.Reward;
 import com.kickstarter.presenters.ProjectPresenter;
 import com.kickstarter.ui.adapters.ProjectAdapter;
 import com.kickstarter.ui.views.IconTextView;
@@ -107,6 +109,22 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
   public void startCommentsActivity(@NonNull final Project project) {
     final Intent intent = new Intent(this, CommentFeedActivity.class)
       .putExtra(getString(R.string.intent_project), project);
+    startActivity(intent);
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  public void startRewardSelectedCheckout(@NonNull final Project project, @NonNull final Reward reward) {
+    final Uri newPledgeBaseUri = Uri.parse(project.newPledgeUrl());
+
+    final String rewardSelectedUrl = newPledgeBaseUri.buildUpon().scheme("https")
+      .appendQueryParameter("backing[backer_reward_id]", String.valueOf(reward.id()))
+      .appendQueryParameter("clicked_reward", "true")
+      .build()
+      .toString();
+
+    final Intent intent = new Intent(this, CheckoutActivity.class)
+      .putExtra(getString(R.string.intent_project), project)
+      .putExtra(getString(R.string.intent_url), rewardSelectedUrl);
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }

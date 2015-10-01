@@ -8,12 +8,14 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.models.Comment;
@@ -68,22 +70,25 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
   }
 
   public void commentFeedLogin() {
-    final Intent intent = new Intent(this, LoginToutActivity.class);
-    startActivity(intent);
+    final Intent intent = new Intent(this, LoginToutActivity.class)
+      .putExtra(getString(R.string.intent_forward), true);
+    startActivityForResult(intent, ActivityRequestCodes.COMMENT_FEED_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
   }
 
+  // This has to stay here because logged in backers can be on either an
+  // empty or non-empty comment feed view.
   @Nullable
   @OnClick(R.id.comment_button_backing)
-  public void publicCommentClick(@NonNull final View view) {
-    final LayoutInflater layoutInflater = getLayoutInflater();
-    final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+  public void publicCommentClick() {
+    
+  }
 
-    builder.setTitle(getString(R.string.Public_comment));
-    builder.setView(layoutInflater.inflate(R.layout.comment_dialog, null))
-      .setPositiveButton(getString(R.string.Post), (DialogInterface dialog, int which) -> {
-      })
-      .setNegativeButton(getString(R.string.Cancel), (DialogInterface dialog, int which) -> {
-      });
-    builder.show();
+  @Override
+  protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
+    if (resultCode != RESULT_OK) {
+      finish();
+    } else {
+      presenter.takeLoginSuccess();
+    }
   }
 }

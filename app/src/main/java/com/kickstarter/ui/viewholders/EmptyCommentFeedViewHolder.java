@@ -9,6 +9,7 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.User;
 
 import javax.inject.Inject;
 
@@ -36,13 +37,17 @@ public class EmptyCommentFeedViewHolder extends KsrViewHolder {
 
   public void onBind(@NonNull final Object datum) {
     project = (Project) datum;
-
-    // show login button if logged out user
+    currentUser.observable().subscribe(this::toggleLoginButtonVisibility);
   }
 
   @Nullable
   @OnClick(R.id.comment_feed_login_button)
   public void emptyCommentFeedLogin() {
     delegate.emptyCommentFeedLoginClicked(this);
+  }
+
+  public void toggleLoginButtonVisibility(@Nullable final User user) {
+    final int visibility = (user == null) ? View.VISIBLE : View.GONE;
+    commentFeedLoginButton.setVisibility(visibility);
   }
 }

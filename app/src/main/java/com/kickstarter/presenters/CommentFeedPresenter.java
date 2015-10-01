@@ -29,6 +29,7 @@ import rx.subjects.PublishSubject;
 public class CommentFeedPresenter extends Presenter<CommentFeedActivity> implements CommentFeedAdapter.Delegate {
   private final PublishSubject<Void> contextClick = PublishSubject.create();
   private final PublishSubject<Void> loginClick = PublishSubject.create();
+  private final PublishSubject<Void> loginSuccess = PublishSubject.create();
 
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
@@ -62,11 +63,15 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
     );
   }
 
+  public void emptyCommentFeedLoginClicked(@NonNull final EmptyCommentFeedViewHolder viewHolder) {
+    loginClick.onNext(null);
+  }
+
   public void projectContextClicked() {
     contextClick.onNext(null);
   }
 
-  public void emptyCommentFeedLoginClicked(final EmptyCommentFeedViewHolder viewHolder) {
-    loginClick.onNext(null);
+  public void takeLoginSuccess() {
+    loginSuccess.onNext(null);
   }
 }

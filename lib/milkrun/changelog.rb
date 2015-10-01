@@ -42,8 +42,7 @@ module Milkrun
         )
       end
 
-      # Note: Only tested with vim
-      system(ENV['EDITOR'], file_name)
+      system("#{ENV['EDITOR'] || 'vim'} #{file_name}")
       @changelog = strip_commented_lines(File.read(file_name)).strip
       raise "Must provide release notes" if changelog.length == 0
       File.delete(file_name)

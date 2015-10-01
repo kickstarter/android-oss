@@ -2,6 +2,8 @@ package com.kickstarter.presenters;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.KSApplication;
@@ -9,9 +11,13 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.RxUtils;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.Reward;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.ui.activities.ProjectActivity;
+import com.kickstarter.ui.adapters.ProjectAdapter;
+import com.kickstarter.ui.viewholders.ProjectViewHolder;
+import com.kickstarter.ui.viewholders.RewardViewHolder;
 
 import javax.inject.Inject;
 
@@ -19,7 +25,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public class ProjectPresenter extends Presenter<ProjectActivity> {
+public class ProjectPresenter extends Presenter<ProjectActivity> implements ProjectAdapter.Delegate {
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
   private final PublishSubject<Void> backProjectClick = PublishSubject.create();
@@ -29,16 +35,16 @@ public class ProjectPresenter extends Presenter<ProjectActivity> {
   private final PublishSubject<Void> shareClick = PublishSubject.create();
   private final PublishSubject<Void> updatesClick = PublishSubject.create();
   private final PublishSubject<Void> loginSuccess = PublishSubject.create();
+  private final PublishSubject<Reward> rewardClick = PublishSubject.create();
   private final PublishSubject<Void> starClick = PublishSubject.create();
 
   @Override
-  protected void onCreate(final Context context, final Bundle savedInstanceState) {
+  protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
   }
 
-  public void takeProject(final Project initialProject) {
-
+  public void initialize(@Nullable final Project initialProject, @Nullable final String param) {
     final Observable<User> loggedInUserOnStarClick = RxUtils.takeWhen(currentUser.observable(), starClick)
       .filter(u -> u != null);
 
@@ -54,10 +60,9 @@ public class ProjectPresenter extends Presenter<ProjectActivity> {
       .switchMap(__ -> starProject(initialProject))
       .share();
 
-    final Observable<Project> project = client.fetchProject(initialProject)
+    final Observable<Project> project = (initialProject != null ? client.fetchProject(initialProject) : client.fetchProject(param))
       .mergeWith(projectOnUserChangeStar)
       .mergeWith(starredProjectOnLoginSuccess)
-      .filter(Project::isDisplayable)
       .share();
 
     final Observable<Pair<ProjectActivity, Project>> viewAndProject =
@@ -83,6 +88,17 @@ public class ProjectPresenter extends Presenter<ProjectActivity> {
       RxUtils.takeWhen(viewSubject, loggedOutUserOnStarClick)
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(ProjectActivity::startLoginToutActivity)
+    );
+
+    addSubscription(
+      RxUtils.takePairWhen(viewAndProject, rewardClick)
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(vpr -> {
+          final ProjectActivity view = vpr.first.first;
+          final Project p = vpr.first.second;
+          final Reward r = vpr.second;
+          view.startRewardSelectedCheckout(p, r);
+        })
     );
 
     addSubscription(RxUtils.takeWhen(viewAndProject, backProjectClick)
@@ -114,23 +130,35 @@ public class ProjectPresenter extends Presenter<ProjectActivity> {
     backProjectClick.onNext(null);
   }
 
-  public void takeBlurbClick() {
+  public void projectBlurbClicked(@NonNull final ProjectViewHolder viewHolder) {
     blurbClick.onNext(null);
   }
 
-  public void takeCommentsClick() {
+  public void projectCommentsClicked(@NonNull final ProjectViewHolder viewHolder) {
     commentsClick.onNext(null);
   }
 
-  public void takeCreatorNameClick(){
+  public void projectCreatorNameClicked(@NonNull final ProjectViewHolder viewHolder){
     creatorNameClick.onNext(null);
+  }
+
+  public void rewardClicked(@NonNull final RewardViewHolder viewHolder, @NonNull final Reward reward) {
+    rewardClick.onNext(reward);
+  }
+
+  public void projectShareClicked(@NonNull final ProjectViewHolder viewHolder) {
+    shareClick.onNext(null);
   }
 
   public void takeShareClick() {
     shareClick.onNext(null);
   }
 
-  public void takeUpdatesClick() {
+  public void takeStarClick() {
+    starClick.onNext(null);
+  }
+
+  public void projectUpdatesClicked(@NonNull final ProjectViewHolder viewHolder) {
     updatesClick.onNext(null);
   }
 
@@ -138,16 +166,12 @@ public class ProjectPresenter extends Presenter<ProjectActivity> {
     loginSuccess.onNext(null);
   }
 
-  public void takeStarClick() {
-    starClick.onNext(null);
-  }
-
-  public Observable<Project> starProject(final Project project) {
+  public Observable<Project> starProject(@NonNull final Project project) {
     return client.starProject(project)
       .onErrorResumeNext(Observable.empty());
   }
 
-  public Observable<Project> toggleProjectStar(final Project project) {
+  public Observable<Project> toggleProjectStar(@NonNull final Project project) {
     return client.toggleProjectStar(project)
       .onErrorResumeNext(Observable.empty());
   }

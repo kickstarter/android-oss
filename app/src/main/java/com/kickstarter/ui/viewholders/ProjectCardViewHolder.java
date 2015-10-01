@@ -37,7 +37,7 @@ public class ProjectCardViewHolder extends KsrViewHolder {
   @Inject Money money;
 
   public interface Delegate {
-    void projectClick(final ProjectCardViewHolder viewHolder, final Project project);
+    void projectCardClick(final ProjectCardViewHolder viewHolder, final Project project);
   }
 
   public ProjectCardViewHolder(final View view, final Delegate delegate) {
@@ -71,6 +71,6 @@ public class ProjectCardViewHolder extends KsrViewHolder {
 
   @Override
   public void onClick(final View view) {
-    delegate.projectClick(this, project);
+    delegate.projectCardClick(this, project);
   }
 }

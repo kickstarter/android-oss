@@ -2,6 +2,7 @@ package com.kickstarter.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,15 +14,19 @@ import android.view.WindowManager;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.KSColorUtils;
 import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.libs.RxUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.DiscoveryPresenter;
+import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.adapters.DiscoveryAdapter;
 import com.kickstarter.ui.containers.ApplicationContainer;
+import com.kickstarter.ui.views.DiscoveryToolbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +51,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
   @Inject ApplicationContainer applicationContainer;
 
   @BindColor(R.color.discovery_toolbar) int discoveryToolbarColor;
+  @Bind(R.id.discovery_toolbar) DiscoveryToolbar discoveryToolbar;
   @Bind(R.id.recycler_view) RecyclerView recyclerView;
 
   @Override
@@ -91,15 +97,26 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
     pageSubscription.unsubscribe();
   }
 
-  public void loadProjects(final List<Project> newProjects) {
+  public DiscoveryToolbar discoveryToolbar() {
+    return discoveryToolbar;
+  }
+
+  public void loadProjects(@NonNull final List<Project> newProjects) {
     final int oldProjectsSize = projects.size();
     projects.clear();
     projects.addAll(newProjects);
-    adapter.notifyItemRangeInserted(oldProjectsSize, projects.size());
+    adapter.notifyDataSetChanged();
   }
 
   public void clearItems() {
     loadProjects(new ArrayList<>());
+  }
+
+  public void startDiscoveryFilterActivity(@NonNull final DiscoveryParams params) {
+    final Intent intent = new Intent(this, DiscoveryFilterActivity.class)
+      .putExtra(getString(R.string.intent_discovery_params), params);
+
+    startActivityForResult(intent, ActivityRequestCodes.DISCOVERY_ACTIVITY_DISCOVERY_FILTER_ACTIVITY_SELECT_FILTER);
   }
 
   public void startProjectActivity(final Project project) {
@@ -109,7 +126,22 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
-  public void showBuildAlert(final InternalBuildEnvelope envelope) {
+  @Override
+  protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
+    if (requestCode != ActivityRequestCodes.DISCOVERY_ACTIVITY_DISCOVERY_FILTER_ACTIVITY_SELECT_FILTER) {
+      return;
+    }
+
+    if (resultCode != RESULT_OK) {
+      return;
+    }
+
+    final DiscoveryParams params = intent.getExtras().getParcelable(getString(R.string.intent_discovery_params));
+    presenter.takeParams(params);
+  }
+
+
+  public void showBuildAlert(@NonNull final InternalBuildEnvelope envelope) {
     new AlertDialog.Builder(this)
       .setTitle(getString(R.string.Upgrade_app))
       .setMessage(getString(R.string.A_newer_build_is_available))
@@ -132,7 +164,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
     if (ApiCapabilities.canSetStatusBarColor()) {
       final Window window = getWindow();
       window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-      window.setStatusBarColor(discoveryToolbarColor);
+      window.setStatusBarColor(KSColorUtils.darken(discoveryToolbarColor, 0.15f));
     }
   }
 }

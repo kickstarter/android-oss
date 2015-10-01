@@ -1,32 +1,30 @@
 package com.kickstarter.services.apiresponses;
 
+import android.os.Parcelable;
+
+import com.kickstarter.libs.AutoGson;
 import com.kickstarter.models.Activity;
 
 import java.util.List;
 
-public class ActivityEnvelope {
-  public final List<Activity> activities;
-  public final UrlsEnvelope urls;
+import auto.parcel.AutoParcel;
 
-  private ActivityEnvelope(final List<Activity> activities, final UrlsEnvelope urls) {
-    this.activities = activities;
-    this.urls = urls;
-  }
+@AutoGson
+@AutoParcel
+public abstract class ActivityEnvelope implements Parcelable {
+  public abstract List<Activity> activities();
+  public abstract UrlsEnvelope urls();
 
-  public static class UrlsEnvelope {
-    public final ApiEnvelope api;
-    private UrlsEnvelope(final ApiEnvelope api) {
-      this.api = api;
-    }
+  @AutoGson
+  @AutoParcel
+  public abstract static class UrlsEnvelope implements Parcelable {
+    public abstract ApiEnvelope api();
 
-    public static class ApiEnvelope {
-      public final String moreActivities;
-      public final String newerActivities;
-
-      private ApiEnvelope(final String moreActivities, final String newerActivities) {
-        this.moreActivities = moreActivities;
-        this.newerActivities = newerActivities;
-      }
+    @AutoGson
+    @AutoParcel
+    public abstract static class ApiEnvelope implements Parcelable {
+      public abstract String moreActivities();
+      public abstract String newerActivities();
     }
   }
 }

@@ -10,12 +10,16 @@
   <!-- User-facing strings -->
   <string name="Activity_empty">Activity empty</string>
   <string name="action_settings">Settings</string>
+  <string name="All_gone">All gone</string>
+  <string name="All_of_Category">All of %1$s</string>
   <string name="A_newer_build_is_available">A newer build is available. Download upgrade?</string>
   <string name="Are_those_new_shoes">
     Are those new shoes? If they’re not new, they look really shiny and beautiful.
   </string>
   <string name="Aw_how_sad">Aw, how sad. Become a backer to leave a comment.</string>
   <string name="Back_this_project">Back this project</string>
+  <string name="Backing">Backing</string>
+  <string name="_backers">%1$s backers</string>
   <string name="backers">backers</string>
   <string name="Build">Build</string>
   <string name="Build_date">Build Date</string>
@@ -29,6 +33,7 @@
   </string>
   <string name="Campaign">Campaign</string>
   <string name="Cancel">Cancel</string>
+  <string name="Categories">Categories</string>
   <string name="Changelog">Changelog</string>
   <string name="Comment">Comment</string>
   <string name="Close">Close</string>
@@ -48,6 +53,7 @@
   <string name="Enter_the_base_url_of_the_api">Enter the base URL of the API you’d like to use.\n\n
     e.g.: https://api-christopher.***REMOVED***</string>
   <string name="Estimated_delivery">Estimated Delivery</string>
+  <string name="Everything">Everything</string>
   <string name="Explore_Category">Explore %1$s</string>
   <string name="Follow">Follow</string>
   <string name="Forgot_your_password">Forgot your password?</string>
@@ -66,6 +72,7 @@
   <string name="friend_name_backed_publishing_project">%1$s backed a Publishing project</string>
   <string name="friend_name_backed_technology_project">%1$s backed a Technology project</string>
   <string name="friend_name_backed_theater_project">%1$s backed a Theater project</string>
+  <string name="Friends_Backed">Friends Backed</string>
   <string name="funded">funded</string>
   <string name="goal">goal</string>
   <string name="Help">Help</string>
@@ -74,6 +81,7 @@
   <string name="Instructions">Instructions</string>
   <string name="Launched">Launched</string>
   <string name="Leave_a_comment">Leave a comment</string>
+  <string name="Limited_left_of">Limited (%1$s left of %2$s)</string>
   <string name="Log_in">Log in</string>
   <string name="Log_out">Log out</string>
   <string name="Logged_out">Logged out</string>
@@ -82,6 +90,7 @@
   <string name="Manage_pledge">Manage pledge</string>
   <string name="mins">mins</string>
   <string name="More">More</string>
+  <string name="Nearby">Nearby</string>
   <string name="Network">Network</string>
   <string name="No_comments">No comments</string>
   <string name="Nice_to_see_you_again">Nice to see you again.</string>
@@ -96,6 +105,7 @@
   <string name="Please_enter_your_verification_code_to_continue">
     Please enter your verification code to continue.
   </string>
+  <string name="Pledge_or_more">Pledge %1$s or more</string>
   <string name="pledged_of_">pledged of\u0020</string>
   <string name="pledged_of_goal">pledged of %1$s</string>
   <string name="Post">Post</string>
@@ -116,6 +126,8 @@
   <string name="Sign_up_or_log_in_with_your_Facebook_account">
     Sign up or log in with your Facebook account or email address below:
   </string>
+  <string name="Staff_Picks">Staff Picks</string>
+  <string name="Starred">Starred</string>
   <string name="Submit">Submit</string>
   <string name="The_code_provided_does_not_match">The code provided does not match.</string>
   <string name="This_project_will_only_be_funded_if">
@@ -143,6 +155,7 @@
   <string name="You">You</string>
   <string name="You_just_backed">You just backed &lt;b>%1$s&lt;/b>. Share this project with friends to help it along!</string>
   <string name="You_launched_a_project">You launched a project: %1$s</string>
+  <string name="You_selected">You selected</string>
 
   <string-array name="spinner_categories_array">
     <item>Staff Picks</item>
@@ -168,12 +181,14 @@
   <!-- Intent strings. Requires package prefix:
     http://developer.android.com/reference/android/content/Intent.html#putExtra%28java.lang.String,%20boolean%29 -->
   <string name="intent_comment">com.kickstarter.kickstarter.intent_comment</string>
+  <string name="intent_discovery_params">com.kickstarter.kickstarter.intent_discovery_params</string>
   <string name="intent_email">com.kickstarter.kickstarter.intent_email</string>
   <string name="intent_forward">com.kickstarter.kickstarter.intent_forward</string>
   <string name="intent_internal_build_envelope">com.kickstarter.kickstarter.intent_build_envelope</string>
   <string name="intent_help_type">com.kickstarter.kickstarter.intent_help_type</string>
   <string name="intent_password">com.kickstarter.kickstarter.intent_password</string>
   <string name="intent_project">com.kickstarter.kickstarter.intent_project</string>
+  <string name="intent_project_param">com.kickstarter.kickstarter.intent_project_param</string>
   <string name="intent_right_bar_button">com.kickstarter.kickstarter.intent_right_bar_button</string>
   <string name="intent_share_type">"text/plain"</string>
   <string name="intent_url">com.kickstarter.kickstarter.intent_url</string>

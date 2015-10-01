@@ -73,7 +73,7 @@ public class ThanksPresenter extends Presenter<ThanksActivity> implements Thanks
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(ThanksActivity::startDiscoveryActivity));
 
-    final DiscoveryParams params = new DiscoveryParams.Builder()
+    final DiscoveryParams params = DiscoveryParams.builder()
       .category(project.category().root())
       .backed(-1)
       .perPage(3)
@@ -81,7 +81,7 @@ public class ThanksPresenter extends Presenter<ThanksActivity> implements Thanks
 
     final Observable<List<Project>> recommendedProjects = apiClient.fetchProjects(params)
       .map(envelope -> envelope.projects);
-    final Observable<Category> rootCategory = apiClient.fetchCategory(project.category().root());
+    final Observable<Category> rootCategory = apiClient.fetchCategory(project.category().rootId());
     final Observable<Pair<List<Project>, Category>> projectsAndRootCategory =
       RxUtils.zipPair(recommendedProjects, rootCategory);
 

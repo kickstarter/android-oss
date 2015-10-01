@@ -50,7 +50,7 @@ public class ProjectCardMiniViewHolder extends KsrViewHolder {
   }
 
   @Override
-  public void onClick(View view) {
+  public void onClick(final View view) {
     delegate.projectCardMiniClick(this, project);
   }
 }

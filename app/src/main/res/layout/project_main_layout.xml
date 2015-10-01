@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  android:orientation="vertical"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/project_scroll_view"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <include
+    layout="@layout/project_media_header"/>
+
+  <LinearLayout
+    android:id="@+id/project_info"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:paddingTop="@dimen/grid_3"
+    android:paddingLeft="@dimen/grid_3"
+    android:paddingRight="@dimen/grid_3"
+    android:orientation="vertical" >
+
+    <TextView
+      android:id="@+id/project_name"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textSize="@dimen/title"
+      android:textColor="@color/text_dark"
+      android:paddingBottom="@dimen/grid_1_half" />
+
+    <TextView
+      android:id="@+id/creator_name"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textSize="@dimen/ksr_caption"
+      android:textColor="@color/text_dark"
+      android:clickable="true" />
+
+    <com.kickstarter.ui.views.TiemposTextView
+      android:id="@+id/blurb"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/grid_3"
+      android:layout_marginBottom="@dimen/grid_3"
+      android:textSize="@dimen/body"
+      android:textColor="@color/text_dark"
+      android:clickable="true"
+      android:paddingBottom="@dimen/grid_1" />
+
+    <RelativeLayout
+      android:id="@+id/category_share_bar"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal" >
+
+      <com.kickstarter.ui.views.IconTextView
+        android:id="@+id/category_icon"
+        android:textSize="@dimen/ksr_caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:paddingRight="@dimen/grid_1_half"
+        android:paddingEnd="@dimen/grid_1_half"
+        android:text="@string/local_offer_icon"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:textColor="@color/text_dark" />
+
+      <TextView
+        android:id="@+id/category"
+        android:textSize="@dimen/ksr_caption"
+        android:layout_gravity="center_vertical"
+        android:layout_toRightOf="@id/category_icon"
+        android:layout_toEndOf="@id/category_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/grid_1_half"
+        android:paddingRight="@dimen/grid_1"
+        android:paddingEnd="@dimen/grid_1_half"
+        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
+        android:textColor="@color/text_dark" />
+
+      <com.kickstarter.ui.views.IconTextView
+        android:id="@+id/location_icon"
+        android:textSize="@dimen/ksr_caption"
+        android:layout_gravity="center_vertical"
+        android:layout_toRightOf="@id/category"
+        android:layout_toEndOf="@id/category"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/grid_1"
+        android:paddingEnd="@dimen/grid_1_half"
+        android:paddingRight="@dimen/grid_1_half"
+        android:text="@string/location_on_icon"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/text_dark" />
+
+      <TextView
+        android:id="@+id/location"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textSize="@dimen/ksr_caption"
+        android:layout_gravity="center_vertical"
+        android:layout_toRightOf="@id/location_icon"
+        android:layout_toEndOf="@id/location_icon"
+        android:layout_toLeftOf="@+id/share_button"
+        android:layout_toStartOf="@+id/share_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/grid_1_half"
+        android:paddingRight="@dimen/grid_1"
+        android:paddingEnd="@dimen/grid_1"
+        android:layout_centerInParent="true"
+        android:textColor="@color/text_dark" />
+
+      <Button
+        android:id="@+id/share_button"
+        android:background="@drawable/button_share"
+        android:textSize="@dimen/ksr_caption"
+        android:layout_width="@dimen/grid_10"
+        android:layout_height="@dimen/grid_4"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:text="@string/Share" />
+    </RelativeLayout>
+
+    <ProgressBar
+      style="@style/KsrProgressBar"
+      android:id="@+id/percentage_funded"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:minHeight="@dimen/progress_bar_min_height"
+      android:layout_marginTop="@dimen/grid_3"
+      android:progress="50" />
+
+    <include layout="@layout/project_stats_view" />
+
+  </LinearLayout>
+
+  <include layout="@layout/horizontal_line_thin_view" />
+
+  <!-- todo: populate this list with friend backers-->
+  <LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ListView
+      android:visibility="gone"
+      android:id="@+id/friend_backing_list"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content" />
+
+  </LinearLayout>
+
+  <include layout="@layout/project_creator_info" />
+
+</LinearLayout>

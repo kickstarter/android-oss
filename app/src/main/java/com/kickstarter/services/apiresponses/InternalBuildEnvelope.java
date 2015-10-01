@@ -1,38 +1,29 @@
 package com.kickstarter.services.apiresponses;
 
-import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
-import com.hannesdorfmann.parcelableplease.annotation.ParcelablePlease;
+import com.kickstarter.libs.AutoGson;
 
-@ParcelablePlease
-public class InternalBuildEnvelope implements Parcelable {
-  Integer build;
-  String changelog;
-  Boolean newerBuildAvailable;
+import auto.parcel.AutoParcel;
 
-  public Integer build() {
-    return build;
+@AutoGson @AutoParcel
+public abstract class InternalBuildEnvelope implements Parcelable {
+  @Nullable public abstract Integer build();
+  @Nullable public abstract String changelog();
+  public abstract boolean newerBuildAvailable();
+
+  @AutoParcel.Builder
+  public abstract static class Builder {
+    public abstract Builder build(Integer __);
+    public abstract Builder changelog(String __);
+    public abstract Builder newerBuildAvailable(boolean __);
+    public abstract InternalBuildEnvelope build();
   }
 
-  public String changelog() {
-    return changelog;
+  public static Builder builder() {
+    return new AutoParcel_InternalBuildEnvelope.Builder();
   }
 
-  public Boolean newerBuildAvailable() {
-    return newerBuildAvailable;
-  }
-
-  @Override
-  public int describeContents() { return 0; }
-  @Override
-  public void writeToParcel(Parcel dest, int flags) {InternalBuildEnvelopeParcelablePlease.writeToParcel(this, dest, flags);}
-  public static final Creator<InternalBuildEnvelope> CREATOR = new Creator<InternalBuildEnvelope>() {
-    public InternalBuildEnvelope createFromParcel(Parcel source) {
-      InternalBuildEnvelope target = new InternalBuildEnvelope();
-      InternalBuildEnvelopeParcelablePlease.readFromParcel(target, source);
-      return target;
-    }
-    public InternalBuildEnvelope[] newArray(int size) {return new InternalBuildEnvelope[size];}
-  };
+  public abstract Builder toBuilder();
 }

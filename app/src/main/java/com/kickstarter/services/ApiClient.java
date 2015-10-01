@@ -1,25 +1,23 @@
 package com.kickstarter.services;
 
-import com.google.gson.FieldNamingPolicy;
+import android.support.annotation.NonNull;
+
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.kickstarter.BuildConfig;
-import com.kickstarter.libs.ActivityCategoryTypeConverter;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.CurrentUser;
-import com.kickstarter.libs.DateTimeTypeConverter;
-import com.kickstarter.models.Activity;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
+import com.kickstarter.services.apiresponses.CategoriesEnvelope;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.services.apiresponses.StarEnvelope;
 
-import org.joda.time.DateTime;
+import java.util.List;
 
 import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
@@ -33,13 +31,19 @@ public class ApiClient {
   private final Build build;
   private final String clientId;
   private final CurrentUser currentUser;
+  private final Gson gson;
   private final ApiService service;
 
-  public ApiClient(final ApiEndpoint apiEndpoint, final Build build, final String clientId, final CurrentUser currentUser) {
+  public ApiClient(final ApiEndpoint apiEndpoint,
+    final Build build,
+    final String clientId,
+    final CurrentUser currentUser,
+    final Gson gson) {
     this.apiEndpoint = apiEndpoint;
     this.build = build;
     this.clientId = clientId;
     this.currentUser = currentUser;
+    this.gson = gson;
 
     service = apiService();
   }
@@ -47,6 +51,10 @@ public class ApiClient {
   public Observable<ActivityEnvelope> fetchActivities(final ActivityFeedParams params) {
     return service.fetchActivities(params.queryParams())
       .retry(3);
+  }
+
+  public Observable<List<Category>> fetchCategories() {
+    return service.fetchCategories().map(CategoriesEnvelope::categories);
   }
 
   public Observable<CommentsEnvelope> fetchProjectComments(final Project project) {
@@ -58,12 +66,20 @@ public class ApiClient {
       .retry(3);
   }
 
-  public Observable<Project> fetchProject(final Project project) {
-    return service.fetchProject(project.param()).startWith(project);
+  public Observable<Project> fetchProject(@NonNull final String param) {
+    return service.fetchProject(param);
   }
 
-  public Observable<Category> fetchCategory(final Category category) {
-    return service.fetchCategory(category.id());
+  public Observable<Project> fetchProject(@NonNull final Project project) {
+    return fetchProject(project.param()).startWith(project);
+  }
+
+  public Observable<Category> fetchCategory(final long id) {
+    return service.fetchCategory(id);
+  }
+
+  public Observable<Category> fetchCategory(@NonNull final Category category) {
+    return fetchCategory(category.id());
   }
 
   public Observable<AccessTokenEnvelope> login(final String email, final String password) {
@@ -111,12 +127,6 @@ public class ApiClient {
   }
 
   private GsonConverter gsonConverter() {
-    final Gson gson = new GsonBuilder()
-      .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-      .registerTypeAdapter(Activity.Category.class, new ActivityCategoryTypeConverter())
-      .registerTypeAdapter(DateTime.class, new DateTimeTypeConverter())
-      .create();
-
     return new GsonConverter(gson);
   }
 

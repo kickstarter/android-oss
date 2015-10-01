@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="horizontal"
+  android:gravity="center_vertical"
+  android:layout_marginRight="@dimen/grid_2"
+  android:layout_width="fill_parent"
+  android:layout_height="@dimen/grid_6">
+
+  <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="@dimen/grid_2"
+    android:textColor="@color/white"
+    android:text="@string/Categories" />
+
+  <include layout="@layout/horizontal_line_thin_view" />
+
+</LinearLayout>

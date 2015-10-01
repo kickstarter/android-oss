@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.kickstarter.ui.views.ProjectActionToolbar
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:icon_text_view="http://schemas.android.com/tools"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   tools:showIn="@layout/project_layout"
@@ -18,7 +17,6 @@
     android:layout_height="match_parent">
 
     <com.kickstarter.ui.views.IconTextView
-      icon_text_view:iconType="material"
       android:id="@+id/share_icon"
       android:paddingLeft="@dimen/grid_3"
       android:paddingRight="@dimen/grid_3"
@@ -30,7 +28,7 @@
       android:layout_alignParentLeft="true"
       android:layout_alignParentStart="true"
       android:layout_centerVertical="true"
-      android:background="@drawable/tap_indicator"
+      android:background="@drawable/click_indicator_light"
       android:textColor="@color/dark_gray" />
 
     <Button
@@ -55,7 +53,6 @@
       android:text="@string/View_pledge" />
 
     <com.kickstarter.ui.views.IconTextView
-      icon_text_view:iconType="material"
       android:id="@+id/star_icon"
       android:paddingLeft="@dimen/grid_3"
       android:paddingRight="@dimen/grid_3"
@@ -67,7 +64,7 @@
       android:layout_alignParentRight="true"
       android:layout_alignParentEnd="true"
       android:layout_centerVertical="true"
-      android:background="@drawable/tap_indicator"
+      android:background="@drawable/click_indicator_light"
       android:textColor="@color/dark_gray" />
 
   </RelativeLayout>

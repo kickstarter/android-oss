@@ -2,6 +2,7 @@ package com.kickstarter.presenters;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
@@ -76,8 +77,8 @@ public class LoginPresenter extends Presenter<LoginActivity> {
       .subscribe(this::success, this::error);
   }
 
-  private void success(final AccessTokenEnvelope envelope) {
-    currentUser.login(envelope.user, envelope.accessToken);
+  private void success(@NonNull final AccessTokenEnvelope envelope) {
+    currentUser.login(envelope.user(), envelope.accessToken());
 
     if (hasView()) {
       view().onSuccess(forward);

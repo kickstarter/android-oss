@@ -5,8 +5,7 @@
   android:layout_height="match_parent">
 
   <EditText
-    android:paddingTop="@dimen/grid_3"
-    android:paddingBottom="@dimen/grid_3"
+    android:padding="@dimen/grid_3"
     android:id="@+id/comment"
     android:background="@color/white"
     android:inputType="textAutoCorrect"

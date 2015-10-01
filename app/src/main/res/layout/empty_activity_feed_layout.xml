@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:icon_text_view="http://schemas.android.com/apk/res-auto"
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
@@ -9,7 +8,6 @@
   android:background="@drawable/gray_gradient">
 
   <com.kickstarter.ui.views.IconTextView
-    icon_text_view:iconType="material"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:text="@string/flash_on_icon"

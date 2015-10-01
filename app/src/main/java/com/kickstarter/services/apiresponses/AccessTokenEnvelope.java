@@ -1,13 +1,15 @@
 package com.kickstarter.services.apiresponses;
 
+import android.os.Parcelable;
+
+import com.kickstarter.libs.AutoGson;
 import com.kickstarter.models.User;
 
-public class AccessTokenEnvelope {
-  public final String accessToken;
-  public final User user;
+import auto.parcel.AutoParcel;
 
-  private AccessTokenEnvelope(final String accessToken, final User user) {
-    this.accessToken = accessToken;
-    this.user = user;
-  }
+@AutoGson
+@AutoParcel
+public abstract class AccessTokenEnvelope implements Parcelable {
+  public abstract String accessToken();
+  public abstract User user();
 }

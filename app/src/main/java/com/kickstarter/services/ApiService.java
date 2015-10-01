@@ -4,6 +4,7 @@ import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
+import com.kickstarter.services.apiresponses.CategoriesEnvelope;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.StarEnvelope;
@@ -23,6 +24,9 @@ import rx.Observable;
   @GET("/v1/activities")
   Observable<ActivityEnvelope> fetchActivities(@Query("categories[]") List<String> categories);
 
+  @GET("/v1/categories")
+  Observable<CategoriesEnvelope> fetchCategories();
+
   @GET("/v1/projects/{param}/comments")
   Observable<CommentsEnvelope> fetchProjectComments(@Path("param") String param);
 
@@ -30,17 +34,17 @@ import rx.Observable;
   Observable<DiscoverEnvelope> fetchProjects(@QueryMap Map<String, String> params);
 
   @GET("/v1/projects/{param}")
-  public Observable<Project> fetchProject(@Path("param") String param);
+  Observable<Project> fetchProject(@Path("param") String param);
 
   @GET("/v1/categories/{id}")
-  public Observable<Category> fetchCategory(@Path("id") Integer id);
+  Observable<Category> fetchCategory(@Path("id") long id);
 
   @POST("/xauth/access_token")
-  public Observable<AccessTokenEnvelope> login(@Query("email") String email,
+  Observable<AccessTokenEnvelope> login(@Query("email") String email,
     @Query("password") String password);
 
   @POST("/xauth/access_token")
-  public Observable<AccessTokenEnvelope> login(@Query("email") String email,
+  Observable<AccessTokenEnvelope> login(@Query("email") String email,
     @Query("password") String password,
     @Query("code") String code);
 

@@ -10,8 +10,7 @@
   android:background="@color/light_gray"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
-  android:elevation="@dimen/ksr_toolbar_elevation"
-  xmlns:icon_text_view="http://schemas.android.com/tools">
+  android:elevation="@dimen/ksr_toolbar_elevation">
 
   <RelativeLayout
     android:layout_width="match_parent"
@@ -19,11 +18,10 @@
     android:gravity="center_vertical">
 
     <com.kickstarter.ui.views.IconTextView
-      icon_text_view:iconType="material"
       android:id="@+id/nav_back_button"
       android:paddingLeft="@dimen/grid_3"
       android:paddingRight="@dimen/grid_3"
-      android:background="@drawable/tap_indicator"
+      android:background="@drawable/click_indicator_light"
       android:gravity="center_vertical"
       android:textAppearance="@style/TextAppearance.AppCompat.Title"
       android:layout_alignParentStart="true"
@@ -36,7 +34,7 @@
     <TextView
       android:id="@+id/comment_button"
       android:visibility="gone"
-      android:background="@drawable/tap_indicator"
+      android:background="@drawable/click_indicator_light"
       android:paddingRight="@dimen/grid_3"
       android:paddingLeft="@dimen/grid_3"
       android:gravity="center_vertical"

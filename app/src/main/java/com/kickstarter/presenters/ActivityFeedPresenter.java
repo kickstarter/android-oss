@@ -11,6 +11,7 @@ import com.kickstarter.libs.RxUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.services.ActivityFeedParams;
 import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public class ActivityFeedPresenter extends Presenter<ActivityFeedActivity> {
     final Observable<List<Activity>> activities = currentUser.loggedInUser()
       .take(1)
       .flatMap(user -> client.fetchActivities(new ActivityFeedParams()))
-      .map(envelope -> envelope.activities);
+      .map(ActivityEnvelope::activities);
 
     final Observable<Pair<ActivityFeedActivity, List<Activity>>> viewAndActivities =
       RxUtils.combineLatestPair(viewSubject, activities);

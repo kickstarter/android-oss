@@ -1,6 +1,7 @@
 package com.kickstarter.services;
 
 import com.kickstarter.models.Category;
+import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
@@ -47,6 +48,12 @@ import rx.Observable;
   Observable<AccessTokenEnvelope> login(@Query("email") String email,
     @Query("password") String password,
     @Query("code") String code);
+
+  @POST("/v1/projects/{param}/comments/")
+  Observable<Comment> postProjectComment(@Query("body") String body);
+
+  @POST("/v1/projects/{param}/updates/{id}/comments")
+  Observable<Comment> postUpdateComment(@Query("body") String body);
 
   @PUT("/v1/projects/{param}/star")
   Observable<StarEnvelope> starProject(@Path("param") String param);

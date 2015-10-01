@@ -8,6 +8,7 @@ import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.models.Category;
+import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
@@ -48,7 +49,7 @@ public class ApiClient {
     service = apiService();
   }
 
-  public Observable<ActivityEnvelope> fetchActivities(final ActivityFeedParams params) {
+  public Observable<ActivityEnvelope> fetchActivities(@NonNull final ActivityFeedParams params) {
     return service.fetchActivities(params.queryParams())
       .retry(3);
   }
@@ -57,11 +58,11 @@ public class ApiClient {
     return service.fetchCategories().map(CategoriesEnvelope::categories);
   }
 
-  public Observable<CommentsEnvelope> fetchProjectComments(final Project project) {
+  public Observable<CommentsEnvelope> fetchProjectComments(@NonNull final Project project) {
     return service.fetchProjectComments(project.param());
   }
 
-  public Observable<DiscoverEnvelope> fetchProjects(final DiscoveryParams params) {
+  public Observable<DiscoverEnvelope> fetchProjects(@NonNull final DiscoveryParams params) {
     return service.fetchProjects(params.queryParams())
       .retry(3);
   }
@@ -74,7 +75,7 @@ public class ApiClient {
     return fetchProject(project.param()).startWith(project);
   }
 
-  public Observable<Category> fetchCategory(final long id) {
+  public Observable<Category> fetchCategory(@NonNull final long id) {
     return service.fetchCategory(id);
   }
 
@@ -82,20 +83,25 @@ public class ApiClient {
     return fetchCategory(category.id());
   }
 
-  public Observable<AccessTokenEnvelope> login(final String email, final String password) {
+  public Observable<AccessTokenEnvelope> login(@NonNull final String email, @NonNull final String password) {
     return service.login(email, password);
   }
 
-  public Observable<AccessTokenEnvelope> login(final String email, final String password, final String code) {
+  public Observable<AccessTokenEnvelope> login(@NonNull final String email, @NonNull final String password,
+    @NonNull final String code) {
     return service.login(email, password, code);
   }
 
-  public Observable<Project> starProject(final Project project) {
+  public Observable<Comment> postProjectComment(@NonNull final Comment comment) {
+    return service.postProjectComment(comment.body());
+  }
+
+  public Observable<Project> starProject(@NonNull final Project project) {
     return service.starProject(project.param())
       .map(StarEnvelope::project);
   }
 
-  public Observable<Project> toggleProjectStar(final Project project) {
+  public Observable<Project> toggleProjectStar(@NonNull final Project project) {
     return service.toggleProjectStar(project.param())
       .map(StarEnvelope::project);
   }

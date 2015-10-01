@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,19 +20,19 @@ import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.CommentFeedPresenter;
 import com.kickstarter.ui.adapters.CommentFeedAdapter;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.Observable;
 
 @RequiresPresenter(CommentFeedPresenter.class)
 public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
-  @Nullable @Bind(R.id.comment_button) TextView commentButtonTextView;
-  @Nullable @Bind(R.id.comment_feed_recycler_view) RecyclerView recyclerView;
+  private CommentFeedAdapter adapter;
+
+  @Bind(R.id.comment_button_backing) TextView commentButtonTextView;
+  @Bind(R.id.comment_feed_recycler_view) RecyclerView recyclerView; // rename
   @Nullable @Bind(R.id.context_photo) ImageView projectPhotoImageView;
   @Nullable @Bind(R.id.project_name) TextView projectNameTextView;
   @Nullable @Bind(R.id.creator_name) TextView creatorNameTextView;
@@ -41,40 +40,24 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    final Intent intent = getIntent();
-    final Project project = intent.getParcelableExtra(getString(R.string.intent_project));
-    final int layout = (project.hasComments()) ? R.layout.comment_feed_layout : R.layout.empty_comment_feed_layout;
-    setContentView(layout);
+    setContentView(R.layout.comment_feed_layout);
     ButterKnife.bind(this);
 
-    // Inflating the Project Context:
-    // we can't really avoid this because the empty feed layout
-    // is a linear layout and with no datum, the view holder
-    // is not called ¯\_(ツ)_/¯
-    if (project.hasComments()) {
-      presenter.takeProject(project);
-    } else {
-      showProjectContext(project);
+    final Intent intent = getIntent();
+    final Project project = intent.getParcelableExtra(getString(R.string.intent_project));
+    presenter.initialize(project);
+
+    adapter = new CommentFeedAdapter(presenter, project);
+    recyclerView.setAdapter(adapter);
+    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+    if (project.isBacking()) {
+      commentButtonTextView.setVisibility(View.VISIBLE);
     }
   }
 
-  public void loadProjectComments(@NonNull final Project project, @Nullable final List<Comment> comments) {
-    final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-
-    final List<Pair<Project, Comment>> projectAndComments = Observable.from(comments)
-      .map(comment -> Pair.create(project, comment))
-      .toList().toBlocking().single();
-    final CommentFeedAdapter adapter = new CommentFeedAdapter(project, projectAndComments, presenter);
-    recyclerView.setLayoutManager(layoutManager);
-    recyclerView.setAdapter(adapter);
-  }
-
-  // this may be removed with adapter implementation
-  public void showProjectContext(@NonNull final Project project) {
-    Picasso.with(getApplicationContext()).load(project.photo().full())
-      .into(projectPhotoImageView);
-    projectNameTextView.setText(project.name());
-    creatorNameTextView.setText(project.creator().name());
+  public void show(@NonNull final Project project, @Nullable final List<Comment> comments) {
+    adapter.takeProjectComments(project, comments);
   }
 
   @Nullable

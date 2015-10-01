@@ -28,6 +28,7 @@ import rx.subjects.PublishSubject;
 
 public class CommentFeedPresenter extends Presenter<CommentFeedActivity> implements CommentFeedAdapter.Delegate {
   private final PublishSubject<Void> contextClick = PublishSubject.create();
+  private final PublishSubject<Void> loginClick = PublishSubject.create();
 
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
@@ -39,26 +40,33 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
   }
 
   // todo: add pagination to comments
-  public void takeProject(@NonNull final Project project) {
+  public void initialize(@NonNull final Project project) {
     final Observable<List<Comment>> comments = client.fetchProjectComments(project)
-      .map(CommentsEnvelope::comments)
-      .takeUntil(List::isEmpty);
+      .map(CommentsEnvelope::comments);
 
-    // we want this to be a combineLatestPair
     final Observable<Pair<CommentFeedActivity, List<Comment>>> viewAndComments =
-      RxUtils.takePairWhen(viewSubject, comments);
+      RxUtils.combineLatestPair(viewSubject, comments);
 
     addSubscription(viewAndComments
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vc -> vc.first.loadProjectComments(project, vc.second)));
+      .subscribe(vc -> vc.first.show(project, vc.second)));
 
     addSubscription(RxUtils.takeWhen(viewSubject, contextClick)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(CommentFeedActivity::onBackPressed)
     );
+
+    addSubscription(RxUtils.takeWhen(viewSubject, loginClick)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(CommentFeedActivity::commentFeedLogin)
+    );
   }
 
   public void projectContextClicked() {
     contextClick.onNext(null);
+  }
+
+  public void emptyCommentFeedLoginClicked(final EmptyCommentFeedViewHolder viewHolder) {
+    loginClick.onNext(null);
   }
 }

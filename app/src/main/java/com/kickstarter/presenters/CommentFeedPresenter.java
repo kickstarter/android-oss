@@ -16,8 +16,7 @@ import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.ui.activities.CommentFeedActivity;
 import com.kickstarter.ui.adapters.CommentFeedAdapter;
-import com.kickstarter.ui.viewholders.CommentViewHolder;
-import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
+import com.kickstarter.ui.viewholders.EmptyCommentFeedViewHolder;
 
 import java.util.List;
 

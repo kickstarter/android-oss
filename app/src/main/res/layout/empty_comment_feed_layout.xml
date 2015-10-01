@@ -1,55 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:gravity="center_horizontal"
-  android:id="@+id/empty_comment_feed_layout">
+  android:layout_centerVertical="true">
 
-  <include layout="@layout/comment_feed_toolbar"/>
-  <include layout="@layout/project_context_view"/>
-
-  <LinearLayout
-    android:gravity="center_horizontal|center_vertical"
-    android:orientation="vertical"
+  <com.kickstarter.ui.views.IconTextView
+    android:id="@+id/icon"
+    android:textColor="@color/text_secondary"
+    android:gravity="center_horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:textSize="@dimen/display_4"
+    android:text="@string/mode_comment_icon" />
 
-    <com.kickstarter.ui.views.IconTextView
-      android:id="@+id/icon"
-      android:textColor="@color/text_secondary"
-      android:gravity="center_horizontal"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:textSize="@dimen/display_4"
-      android:text="@string/mode_comment_icon" />
+  <TextView
+    android:id="@+id/no_comments"
+    android:textColor="@color/text_secondary"
+    android:gravity="center_horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textStyle="bold"
+    android:text="@string/No_comments"
+    android:padding="@dimen/grid_2"/>
 
-    <TextView
-      android:id="@+id/no_comments"
-      android:textColor="@color/text_secondary"
-      android:gravity="center_horizontal"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:textStyle="bold"
-      android:text="@string/No_comments"
-      android:padding="@dimen/grid_3"/>
+  <TextView
+    android:id="@+id/message"
+    android:textColor="@color/text_secondary"
+    android:gravity="center_horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/grid_2"
+    android:paddingRight="@dimen/grid_2"
+    android:text="@string/Aw_how_sad"/>
 
-    <TextView
-      android:id="@+id/message"
-      android:textColor="@color/text_secondary"
-      android:gravity="center_horizontal"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:paddingLeft="@dimen/grid_3"
-      android:paddingRight="@dimen/grid_2"
-      android:text="@string/Aw_how_sad"/>
-
-    <Button
-      android:id="@+id/leave_comment_button"
-      style="@style/KsrButton"
-      android:background="@drawable/button_green"
-      android:text="@string/Leave_a_comment"/>
-
-  </LinearLayout>
+  <Button
+    android:id="@+id/comment_feed_login_button"
+    android:visibility="gone"
+    style="@style/KsrButton"
+    android:text="@string/Log_in"/>
 
 </LinearLayout>

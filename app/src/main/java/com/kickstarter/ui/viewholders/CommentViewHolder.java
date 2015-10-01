@@ -1,9 +1,8 @@
 package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.util.Log;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,6 +22,7 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class CommentViewHolder extends KsrViewHolder {
   private Project project;
@@ -66,5 +66,11 @@ public class CommentViewHolder extends KsrViewHolder {
     nameTextView.setText(comment.author().name());
     postDateTextView.setText(DateTimeUtils.relativeDateInWords(comment.createdAt(), false, true));
     commentBodyTextView.setText(comment.body());
+  }
+
+  @Nullable
+  @OnClick(R.id.comment_button_backing)
+  public void postComment() {
+
   }
 }

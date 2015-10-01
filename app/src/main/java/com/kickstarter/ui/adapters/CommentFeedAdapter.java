@@ -1,5 +1,6 @@
 package com.kickstarter.ui.adapters;
 
+import android.support.annotation.NonNull;
 import android.util.Pair;
 import android.view.View;
 

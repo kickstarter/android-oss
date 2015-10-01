@@ -67,10 +67,17 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
-  @Nullable @OnClick(R.id.leave_comment_button)
+  public void commentFeedLogin() {
+    final Intent intent = new Intent(this, LoginToutActivity.class);
+    startActivity(intent);
+  }
+
+  @Nullable
+  @OnClick(R.id.comment_button_backing)
   public void publicCommentClick(@NonNull final View view) {
     final LayoutInflater layoutInflater = getLayoutInflater();
     final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+
     builder.setTitle(getString(R.string.Public_comment));
     builder.setView(layoutInflater.inflate(R.layout.comment_dialog, null))
       .setPositiveButton(getString(R.string.Post), (DialogInterface dialog, int which) -> {

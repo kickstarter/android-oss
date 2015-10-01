@@ -13,7 +13,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class CommentFeedToolbar extends Toolbar {
-  @Bind(R.id.comment_button) TextView commentButton;
+  @Bind(R.id.comment_button_backing) TextView commentButton;
 
   // set project observable here
   Context context;
@@ -38,7 +38,7 @@ public class CommentFeedToolbar extends Toolbar {
   }
 
   @Nullable
-  @OnClick(R.id.comment_button)
+  @OnClick(R.id.comment_button_backing)
   public void showCommentDialog() {
     // reuse from activity
   }

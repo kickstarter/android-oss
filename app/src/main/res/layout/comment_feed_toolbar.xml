@@ -32,7 +32,7 @@
       android:text="@string/arrow_back_icon"/>
 
     <TextView
-      android:id="@+id/comment_button"
+      android:id="@+id/comment_button_backing"
       android:visibility="gone"
       android:background="@drawable/click_indicator_light"
       android:paddingRight="@dimen/grid_3"

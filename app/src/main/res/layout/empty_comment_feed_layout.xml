@@ -4,7 +4,8 @@
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:layout_centerVertical="true">
+  android:paddingTop="@dimen/grid_8"
+  android:gravity="center">
 
   <com.kickstarter.ui.views.IconTextView
     android:id="@+id/icon"
@@ -37,7 +38,7 @@
 
   <Button
     android:id="@+id/comment_feed_login_button"
-    android:visibility="gone"
+    android:visibility="visible"
     style="@style/KsrButton"
     android:text="@string/Log_in"/>
 

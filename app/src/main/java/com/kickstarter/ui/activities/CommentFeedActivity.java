@@ -1,18 +1,14 @@
 package com.kickstarter.ui.activities;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
@@ -20,6 +16,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.User;
 import com.kickstarter.presenters.CommentFeedPresenter;
 import com.kickstarter.ui.adapters.CommentFeedAdapter;
 
@@ -49,17 +46,17 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     final Project project = intent.getParcelableExtra(getString(R.string.intent_project));
     presenter.initialize(project);
 
-    adapter = new CommentFeedAdapter(presenter, project);
+    adapter = new CommentFeedAdapter(presenter);
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
+  }
 
+  public void show(@NonNull final Project project, @NonNull final List<Comment> comments,
+    @Nullable final User user) {
     if (project.isBacking()) {
       commentButtonTextView.setVisibility(View.VISIBLE);
     }
-  }
-
-  public void show(@NonNull final Project project, @Nullable final List<Comment> comments) {
-    adapter.takeProjectComments(project, comments);
+    adapter.takeProjectComments(project, comments, user);
   }
 
   @Nullable
@@ -75,12 +72,10 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     startActivityForResult(intent, ActivityRequestCodes.COMMENT_FEED_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
   }
 
-  // This has to stay here because logged in backers can be on either an
-  // empty or non-empty comment feed view.
   @Nullable
   @OnClick(R.id.comment_button_backing)
   public void publicCommentClick() {
-    
+    // coming soon in the next PR
   }
 
   @Override

@@ -73,11 +73,6 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(CommentFeedActivity::commentFeedLogin)
     );
-
-    addSubscription(RxUtils.combineLatestPair(viewSubject, currentUser.observable())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe()
-    );
   }
 
   public void emptyCommentFeedLoginClicked(@NonNull final EmptyCommentFeedViewHolder viewHolder) {

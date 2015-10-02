@@ -1,6 +1,5 @@
 package com.kickstarter.ui.activities;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,11 +7,13 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
@@ -32,6 +33,7 @@ import butterknife.OnClick;
 @RequiresPresenter(CommentFeedPresenter.class)
 public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
   private CommentFeedAdapter adapter;
+  private Project project;
 
   @Bind(R.id.comment_button_backing) TextView commentButtonTextView;
   @Bind(R.id.comment_feed_recycler_view) RecyclerView recyclerView; // rename
@@ -46,7 +48,7 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     ButterKnife.bind(this);
 
     final Intent intent = getIntent();
-    final Project project = intent.getParcelableExtra(getString(R.string.intent_project));
+    project = intent.getParcelableExtra(getString(R.string.intent_project));
     presenter.initialize(project);
 
     adapter = new CommentFeedAdapter(presenter, project);
@@ -75,12 +77,54 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     startActivityForResult(intent, ActivityRequestCodes.COMMENT_FEED_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
   }
 
-  // This has to stay here because logged in backers can be on either an
-  // empty or non-empty comment feed view.
-  @Nullable
   @OnClick(R.id.comment_button_backing)
-  public void publicCommentClick() {
-    
+  public void showCommentDialog() {
+    // todo: grab project from presenter rather than activity to have latest project
+    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    builder.setView(getLayoutInflater().inflate(R.layout.comment_dialog, null));
+
+    final AlertDialog dialog = builder.create();
+    dialog.show();
+    dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+
+    /* Toolbar actions */
+    final TextView projectNameTextView = ButterKnife.findById(dialog, R.id.comment_project_name);
+    final TextView cancelButtonTextView = ButterKnife.findById(dialog, R.id.cancel_button);
+    final EditText commentBodyEditText = ButterKnife.findById(dialog, R.id.comment_body);
+    final TextView postCommentTextView = ButterKnife.findById(dialog, R.id.post_button);
+
+    projectNameTextView.setText(project.name());
+    cancelButtonTextView.setOnClickListener((final View v) -> dialog.dismiss());
+    postCommentTextView.setEnabled(false);
+
+    commentBodyEditText.addTextChangedListener(
+      // Set a text watcher to check for null comment body
+      new TextWatcher() {
+        @Override
+        public void beforeTextChanged(@NonNull final CharSequence charSequence, int start, int count, int after) {
+        }
+        @Override
+        public void onTextChanged(@NonNull final CharSequence charSequence, int start, int before, int count) {
+          togglePostTextView(postCommentTextView, charSequence);
+        }
+        @Override
+        public void afterTextChanged(final Editable editable) {
+        }
+      }
+    );
+
+    postCommentTextView.setOnClickListener((final View v) -> {
+      presenter.postCommentOnClick(commentBodyEditText.getText().toString());
+      dialog.dismiss();
+    });
+  }
+
+  public void togglePostTextView(@NonNull final TextView textView, @NonNull final CharSequence charSequence) {
+    if (charSequence.length() > 0) {
+      textView.setEnabled(true);
+    } else {
+      textView.setEnabled(false);
+    }
   }
 
   @Override

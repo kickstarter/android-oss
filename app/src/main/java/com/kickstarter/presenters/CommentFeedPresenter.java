@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
+import android.widget.Toast;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
@@ -54,17 +55,27 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
 
     addSubscription(RxUtils.takeWhen(viewSubject, contextClick)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(CommentFeedActivity::onBackPressed)
-    );
+      .subscribe(CommentFeedActivity::onBackPressed));
 
     addSubscription(RxUtils.takeWhen(viewSubject, loginClick)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(CommentFeedActivity::commentFeedLogin)
-    );
+      .subscribe(CommentFeedActivity::commentFeedLogin));
   }
 
   public void emptyCommentFeedLoginClicked(@NonNull final EmptyCommentFeedViewHolder viewHolder) {
     loginClick.onNext(null);
+  }
+
+  public void postCommentOnClick(@NonNull final String body) {
+    client.postProjectComment(body)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::showToastOnSuccess);
+  }
+
+  private void showToastOnSuccess(@Nullable final Comment comment) {
+    final String message = (comment == null) ? "Comment could not be posted" : "Comment posted!";
+    final Toast toast = Toast.makeText(view().getApplicationContext(), message, Toast.LENGTH_LONG);
+    toast.show();
   }
 
   public void projectContextClicked() {

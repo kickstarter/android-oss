@@ -49,6 +49,8 @@ public class ApiClient {
     service = apiService();
   }
 
+  // TODO: map null values back to an empty array so app doesn't crash on API responses
+
   public Observable<ActivityEnvelope> fetchActivities(@NonNull final ActivityFeedParams params) {
     return service.fetchActivities(params.queryParams())
       .retry(3);

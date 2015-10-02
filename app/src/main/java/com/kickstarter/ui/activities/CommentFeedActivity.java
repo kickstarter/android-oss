@@ -21,6 +21,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.User;
 import com.kickstarter.presenters.CommentFeedPresenter;
 import com.kickstarter.ui.adapters.CommentFeedAdapter;
 
@@ -51,17 +52,17 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     project = intent.getParcelableExtra(getString(R.string.intent_project));
     presenter.initialize(project);
 
-    adapter = new CommentFeedAdapter(presenter, project);
+    adapter = new CommentFeedAdapter(presenter);
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
+  }
 
+  public void show(@NonNull final Project project, @NonNull final List<Comment> comments,
+    @Nullable final User user) {
     if (project.isBacking()) {
       commentButtonTextView.setVisibility(View.VISIBLE);
     }
-  }
-
-  public void show(@NonNull final Project project, @Nullable final List<Comment> comments) {
-    adapter.takeProjectComments(project, comments);
+    adapter.takeProjectComments(project, comments, user);
   }
 
   @Nullable

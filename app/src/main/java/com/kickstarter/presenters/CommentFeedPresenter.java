@@ -50,7 +50,7 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
     final Observable<List<Comment>> comments = client.fetchProjectComments(initialProject)
       .map(CommentsEnvelope::comments);
 
-    Observable<List<?>> viewCommentsProject = Observable.combineLatest(
+    final Observable<List<?>> viewCommentsProject = Observable.combineLatest(
       Arrays.asList(viewSubject, comments, project),
       Arrays::asList);
 

@@ -61,6 +61,8 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     @Nullable final User user) {
     if (project.isBacking()) {
       commentButtonTextView.setVisibility(View.VISIBLE);
+    } else {
+      commentButtonTextView.setVisibility(View.GONE);
     }
     adapter.takeProjectComments(project, comments, user);
   }

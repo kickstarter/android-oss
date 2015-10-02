@@ -52,9 +52,6 @@ import rx.Observable;
   @POST("/v1/projects/{param}/comments/")
   Observable<Comment> postProjectComment(@Query("body") String body);
 
-  @POST("/v1/projects/{param}/updates/{id}/comments")
-  Observable<Comment> postUpdateComment(@Query("body") String body);
-
   @PUT("/v1/projects/{param}/star")
   Observable<StarEnvelope> starProject(@Path("param") String param);
 

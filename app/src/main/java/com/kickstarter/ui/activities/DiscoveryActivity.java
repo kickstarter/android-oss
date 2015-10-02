@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
@@ -57,6 +58,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
   @BindColor(R.color.discovery_status_bar) int discoveryStatusBarColor;
   @BindColor(R.color.discovery_toolbar) int discoveryToolbarColor;
   @BindDrawable(R.drawable.dark_blue_gradient) Drawable darkBlueGradientDrawable;
+  @Bind(R.id.discovery_layout) LinearLayout discoveryLayout;
   @Bind(R.id.discovery_toolbar) DiscoveryToolbar discoveryToolbar;
   @Bind(R.id.recycler_view) RecyclerView recyclerView;
 
@@ -99,10 +101,6 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
     super.onDestroy();
     recyclerView.clearOnScrollListeners();
     pageSubscription.unsubscribe();
-  }
-
-  public DiscoveryToolbar discoveryToolbar() {
-    return discoveryToolbar;
   }
 
   public void loadProjects(@NonNull final List<Project> newProjects) {

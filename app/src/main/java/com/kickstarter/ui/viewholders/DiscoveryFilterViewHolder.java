@@ -13,6 +13,7 @@ import com.kickstarter.ui.adapters.DiscoveryFilterAdapter;
 
 import javax.inject.Inject;
 
+import auto.parcel.AutoParcel;
 import butterknife.Bind;
 import butterknife.BindColor;
 import butterknife.ButterKnife;
@@ -28,7 +29,8 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
   @Bind(R.id.filter_text_view) TextView filterTextView;
   @Bind(R.id.vertical_line_group) View verticalLineGroup;
   @Bind(R.id.vertical_line_medium_view) View verticalLineView;
-  @BindColor(R.color.white) int whiteColor;
+  @BindColor(R.color.text_dark) int darkColor;
+  @BindColor(R.color.white) int lightColor;
 
   public interface Delegate {
     void discoveryFilterClick(final DiscoveryFilterViewHolder viewHolder, final DiscoveryParams discoveryParams);
@@ -42,7 +44,7 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
   }
 
   public void onBind(@NonNull final Object datum) {
-    final DiscoveryFilterAdapter.Filter filter = (DiscoveryFilterAdapter.Filter) datum;
+    final Filter filter = (Filter) datum;
     params = filter.params();
     style = filter.style();
 
@@ -58,6 +60,8 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
   }
 
   protected void setCategoryLiveProjectCountTextView() {
+    categoryLiveProjectCountTextView.setTextColor(foregroundColor());
+
     if (style.showLiveProjectsCount()) {
       categoryLiveProjectCountTextView.setVisibility(View.VISIBLE);
       categoryLiveProjectCountTextView.setText(params.category().projectsCount().toString());
@@ -68,6 +72,8 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
   }
 
   protected void setFilterTextView() {
+    filterTextView.setTextColor(foregroundColor());
+
     if (style.selected()) {
       filterTextView.setTypeface(font.sansSerifTypeface());
     } else {
@@ -109,10 +115,31 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
       verticalLineGroup.setVisibility(View.VISIBLE);
     }
 
-    verticalLineView.setBackgroundColor(whiteColor);
+    verticalLineView.setBackgroundColor(foregroundColor());
+  }
+
+  protected int foregroundColor() {
+    return style.light() ? lightColor : darkColor;
   }
 
   protected boolean isSecondaryCategoryRoot() {
     return !style.primary() && params.category() != null && params.category().isRoot();
+  }
+
+  @AutoParcel
+  public abstract static class Filter {
+    public abstract DiscoveryParams params();
+    public abstract DiscoveryFilterStyle style();
+
+    @AutoParcel.Builder
+    public abstract static class Builder {
+      public abstract Builder params(DiscoveryParams __);
+      public abstract Builder style(DiscoveryFilterStyle __);
+      public abstract Filter build();
+    }
+
+    public static Builder builder() {
+      return new AutoParcel_DiscoveryFilterViewHolder_Filter.Builder();
+    }
   }
 }

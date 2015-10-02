@@ -4,8 +4,8 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.KSColorUtils;
 import com.kickstarter.models.Category;
-import com.kickstarter.models.Empty;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.DiscoveryFilterStyle;
 import com.kickstarter.ui.viewholders.DiscoveryFilterDividerViewHolder;
@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.TreeMap;
 
-import auto.parcel.AutoParcel;
 import rx.Observable;
 
 public class DiscoveryFilterAdapter extends KsrAdapter {
@@ -49,7 +48,7 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
     data().clear();
 
     data().addAll(paramsSections(initialCategories).toList().toBlocking().single());
-    data().add(1, Collections.singletonList(Empty.create())); // Category divider
+    data().add(1, Collections.singletonList(DiscoveryFilterDividerViewHolder.Divider.builder().light(light()).build()));
 
     notifyDataSetChanged();
   }
@@ -57,7 +56,7 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
   /**
    * Returns an Observable where each item is a list of params/style pairs.
    */
-  protected Observable<List<Filter>> paramsSections(@NonNull final List<Category> initialCategories) {
+  protected Observable<List<DiscoveryFilterViewHolder.Filter>> paramsSections(@NonNull final List<Category> initialCategories) {
     return categoryFilters(initialCategories)
       .startWith(topFilters());
   }
@@ -65,14 +64,19 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
   /**
    * Params for the top section of filters.
    */
-  protected Observable<List<Filter>> topFilters() {
-    final DiscoveryFilterStyle style = DiscoveryFilterStyle.builder().primary(true).selected(false).visible(true).build();
+  protected Observable<List<DiscoveryFilterViewHolder.Filter>> topFilters() {
+    final DiscoveryFilterStyle style = DiscoveryFilterStyle.builder()
+      .light(light())
+      .primary(true)
+      .selected(false)
+      .visible(true)
+      .build();
 
     // TODO: Add social filter
     return Observable.just(
-      Filter.builder().params(DiscoveryParams.builder().staffPicks(true).build()).style(style).build(),
-      Filter.builder().params(DiscoveryParams.builder().starred(1).build()).style(style).build(),
-      Filter.builder().params(DiscoveryParams.builder().build()).style(style).build() // Everything filter
+      DiscoveryFilterViewHolder.Filter.builder().params(DiscoveryParams.builder().staffPicks(true).build()).style(style).build(),
+      DiscoveryFilterViewHolder.Filter.builder().params(DiscoveryParams.builder().starred(1).build()).style(style).build(),
+      DiscoveryFilterViewHolder.Filter.builder().params(DiscoveryParams.builder().build()).style(style).build() // Everything filter
     ).toList();
   }
 
@@ -84,10 +88,10 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
    * Art
    *  - All of Art
    */
-  protected Observable<List<Filter>> categoryFilters(@NonNull final List<Category> initialCategories) {
+  protected Observable<List<DiscoveryFilterViewHolder.Filter>> categoryFilters(@NonNull final List<Category> initialCategories) {
     final Observable<Category> categories = Observable.from(initialCategories);
 
-    final Observable<Filter> filters = primaryCategoryFilters(categories.filter(Category::isRoot))
+    final Observable<DiscoveryFilterViewHolder.Filter> filters = primaryCategoryFilters(categories.filter(Category::isRoot))
       .concatWith(secondaryCategoryFilters(categories))
       .toSortedList((f1, f2) -> f1.params().category().discoveryFilterCompareTo(f2.params().category()))
       .flatMap(Observable::from);
@@ -95,10 +99,10 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
     // RxJava has groupBy. groupBy creates an Observable of GroupedObservables - the Observable doesn't complete
     // until all the GroupedObservables have been subscribed to and completed. It's quite confusing to work with,
     // refactor with caution.
-    TreeMap<String, ArrayList<Filter>> groupedFilters = filters.reduce(new TreeMap<String, ArrayList<Filter>>(), (hash, filter) -> {
+    TreeMap<String, ArrayList<DiscoveryFilterViewHolder.Filter>> groupedFilters = filters.reduce(new TreeMap<String, ArrayList<DiscoveryFilterViewHolder.Filter>>(), (hash, filter) -> {
       final String key = filter.params().category().root().name();
       if (!hash.containsKey(key)) {
-        hash.put(key, new ArrayList<Filter>());
+        hash.put(key, new ArrayList<DiscoveryFilterViewHolder.Filter>());
       }
       hash.get(key).add(filter);
       return hash;
@@ -107,24 +111,32 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
     return Observable.from(new ArrayList(groupedFilters.values()));
   }
 
-  protected Observable<Filter> primaryCategoryFilters(@NonNull final Observable<Category> rootCategories) {
+  protected Observable<DiscoveryFilterViewHolder.Filter> primaryCategoryFilters(@NonNull final Observable<Category> rootCategories) {
     final DiscoveryFilterStyle.Builder styleBuilder = DiscoveryFilterStyle.builder()
       .primary(true)
       .showLiveProjectsCount(true)
       .visible(true);
 
-    return rootCategories.map(c -> Filter.builder()
+    return rootCategories.map(c -> DiscoveryFilterViewHolder.Filter.builder()
       .params(DiscoveryParams.builder().category(c).build())
-      .style(styleBuilder.selected(isRootSelected(c)).build())
+      .style(styleBuilder
+        .light(light())
+        .selected(isRootSelected(c))
+        .build())
       .build());
   }
 
-  protected Observable<Filter> secondaryCategoryFilters(@NonNull final Observable<Category> categories) {
+  protected Observable<DiscoveryFilterViewHolder.Filter> secondaryCategoryFilters(@NonNull final Observable<Category> categories) {
     return categories
       .filter(this::isRootSelected)
-      .map(c -> Filter.builder()
+      .map(c -> DiscoveryFilterViewHolder.Filter.builder()
         .params(DiscoveryParams.builder().category(c).build())
-        .style((DiscoveryFilterStyle.builder().primary(false).selected(isSelected(c)).visible(true)).build())
+        .style((DiscoveryFilterStyle.builder()
+          .light(light())
+          .primary(false)
+          .selected(isSelected(c))
+          .visible(true))
+          .build())
         .build());
   }
 
@@ -144,20 +156,10 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
     return selectedParams.category().rootId() == category.rootId();
   }
 
-  @AutoParcel
-  public abstract static class Filter {
-    public abstract DiscoveryParams params();
-    public abstract DiscoveryFilterStyle style();
-
-    @AutoParcel.Builder
-    public abstract static class Builder {
-      public abstract Builder params(DiscoveryParams __);
-      public abstract Builder style(DiscoveryFilterStyle __);
-      public abstract Filter build();
+  protected boolean light() {
+    if (selectedParams.category() != null) {
+      return KSColorUtils.isDark(selectedParams.category().colorWithAlpha());
     }
-
-    public static Builder builder() {
-      return new AutoParcel_DiscoveryFilterAdapter_Filter.Builder();
-    }
+    return true;
   }
 }

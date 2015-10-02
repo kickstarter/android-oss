@@ -32,6 +32,7 @@
         android:textColor="@color/white" />
 
       <com.kickstarter.ui.views.IconTextView
+        android:id="@+id/filter_expand_more_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/expand_more"
@@ -46,6 +47,16 @@
       android:layout_alignParentRight="true"
       android:layout_alignParentEnd="true"
       android:orientation="horizontal">
+
+      <com.kickstarter.ui.views.IconTextView
+        android:id="@+id/color_button"
+        android:layout_width="@dimen/button_icon_fixed_width"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:background="@drawable/button_selector"
+        android:text="palette"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:textColor="@color/white" />
 
       <com.kickstarter.ui.views.IconTextView
         android:id="@+id/activity_feed_button"

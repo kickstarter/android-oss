@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.KSColorUtils;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
@@ -22,14 +23,19 @@ import com.kickstarter.ui.activities.LoginToutActivity;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import butterknife.BindColor;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 public class DiscoveryToolbar extends Toolbar {
+  @BindColor(R.color.discovery_toolbar) int discoveryToolbarColor;
   @Bind(R.id.activity_feed_button) TextView activityFeedButton;
+  @Bind(R.id.color_button) TextView colorButton;
   @Bind(R.id.current_user_button) TextView currentUserButton;
+  @Bind(R.id.filter_expand_more_button) TextView filterExpandMoreButton;
   @Bind(R.id.filter_text_view) TextView filterTextView;
   @Bind(R.id.login_button) TextView loginButton;
   @Inject CurrentUser currentUser;
@@ -72,8 +78,15 @@ public class DiscoveryToolbar extends Toolbar {
     activity.presenter().filterButtonClick();
   }
 
-  public void loadParams(@NonNull final DiscoveryParams params) {
+  public void style(@NonNull final DiscoveryParams params) {
     filterTextView.setText(params.filterString(getContext()));
+
+    final int backgroundColor = params.category() != null ?
+      params.category().secondaryColor(getContext()) :
+      discoveryToolbarColor;
+    setBackgroundColor(backgroundColor);
+
+    setForegroundColor(KSColorUtils.foregroundColor(backgroundColor, getContext()));
   }
 
   protected void showLoggedInMenu(final User user) {
@@ -137,5 +150,35 @@ public class DiscoveryToolbar extends Toolbar {
     }
 
     loginSubscription.unsubscribe();
+  }
+
+  protected void setForegroundColor(final int color) {
+    final Observable<TextView> views = Observable.just(activityFeedButton,
+      colorButton,
+      currentUserButton,
+      filterExpandMoreButton,
+      filterTextView,
+      loginButton);
+
+    final float alpha = KSColorUtils.isLight(color) ? 1.0f : 0.8f;
+
+    final Subscription subscription = views.subscribe(view -> {
+      view.setAlpha(alpha);
+      view.setTextColor(color);
+    });
+
+  }
+
+  // TODO: Remove
+  public void setColorFromEditor(final int color) {
+    setBackgroundColor(color);
+    setForegroundColor(KSColorUtils.foregroundColor(color, getContext()));
+  }
+
+  // TODO: Remove
+  @OnClick({R.id.color_button})
+  public void onColorButtonClicked() {
+    final DiscoveryActivity activity = (DiscoveryActivity) getContext();
+    activity.showColorDialog();
   }
 }

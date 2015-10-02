@@ -1,0 +1,10 @@
+<resources>
+  <style name="DiscoveryActivity" parent="KsrTheme">
+    <item name="android:statusBarColor">@color/discovery_status_bar</item>
+  </style>
+
+  <style name="DiscoveryFilterActivity" parent="KsrTheme">
+    <item name="android:statusBarColor">@color/discovery_status_bar</item>
+  </style>
+</resources>
+

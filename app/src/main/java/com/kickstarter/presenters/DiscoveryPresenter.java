@@ -57,7 +57,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
 
     addSubscription(viewAndParams
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.discoveryToolbar().loadParams(vp.second)));
+      .subscribe(vp -> vp.first.loadParams(vp.second)));
 
     addSubscription(viewAndProjects
       .observeOn(AndroidSchedulers.mainThread())

@@ -1,12 +1,16 @@
 package com.kickstarter.libs;
 
+import android.content.Context;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.support.v4.graphics.ColorUtils;
+
+import com.kickstarter.R;
 
 public class KSColorUtils {
   private KSColorUtils() {}
 
-  private final static float KICKSTARTER_LIGHTNESS_THRESHOLD = 0.73f;
+  private final static float KICKSTARTER_LIGHTNESS_THRESHOLD = 0.72f;
 
   /**
    * Set the alpha portion of the color.
@@ -62,6 +66,14 @@ public class KSColorUtils {
    */
   public static boolean isDark(final int color) {
     return !isLight(color);
+  }
+
+  public static int foregroundColor(final int backgroundColor, @NonNull final Context context) {
+    final int color = isLight(backgroundColor) ?
+      R.color.text_dark :
+      R.color.text_light;
+
+    return context.getResources().getColor(color);
   }
 
   /*

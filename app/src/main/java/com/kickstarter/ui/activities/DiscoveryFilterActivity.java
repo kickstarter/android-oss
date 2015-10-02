@@ -2,11 +2,16 @@ package com.kickstarter.ui.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.ApiCapabilities;
@@ -22,6 +27,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.BindColor;
+import butterknife.BindDrawable;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -30,8 +36,13 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
   DiscoveryFilterAdapter adapter;
   LinearLayoutManager layoutManager;
 
+  @Bind(R.id.close_button) TextView closeButton;
+  @Bind(R.id.discovery_filter_layout) RelativeLayout layout;
   @Bind(R.id.recycler_view) RecyclerView recyclerView;
   @BindColor(R.color.dark_blue_gradient_start) int darkBlueGradientStartColor;
+  @BindColor(R.color.text_dark) int darkColor;
+  @BindColor(R.color.white) int lightColor;
+  @BindDrawable(R.drawable.dark_blue_gradient) Drawable darkBlueGradientDrawable;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
@@ -46,7 +57,7 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);
 
-    setStatusBarColor();
+    style(discoveryParams);
 
     presenter.initialize(DiscoveryParams.builder().build()); // TODO: Replace with params from discovery intent
   }
@@ -66,11 +77,34 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
     finish();
   }
 
-  private void setStatusBarColor() {
-    if (ApiCapabilities.canSetStatusBarColor()) {
+  private void style(@NonNull final DiscoveryParams params) {
+    if (params.category() != null) {
+      final int color = params.category().colorWithAlpha();
+      layout.setBackgroundColor(color);
+      closeButton.setTextColor(KSColorUtils.isLight(color) ?  darkColor : lightColor);
+    } else {
+      layout.setBackground(darkBlueGradientDrawable);
+    }
+
+    statusBarStyle(params);
+  }
+
+  private void statusBarStyle(@NonNull final DiscoveryParams params) {
+    if (ApiCapabilities.canSetStatusBarColor() && ApiCapabilities.canSetDarkStatusBarIcons()) {
       final Window window = getWindow();
       window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-      window.setStatusBarColor(KSColorUtils.darken(darkBlueGradientStartColor, 0.15f));
+
+      final int color = KSColorUtils.darken((params.category() != null ?
+        params.category().colorWithAlpha() :
+        darkBlueGradientStartColor), 0.05f);
+
+      window.setStatusBarColor(color);
+
+      final int uiFlag = KSColorUtils.isLight(color) ?
+        View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR :
+        View.SYSTEM_UI_FLAG_VISIBLE;
+
+      window.getDecorView().setSystemUiVisibility(uiFlag);
     }
   }
 }

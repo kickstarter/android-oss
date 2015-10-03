@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.DiscoveryUtils;
 import com.kickstarter.libs.Font;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.DiscoveryFilterStyle;
@@ -29,8 +30,6 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
   @Bind(R.id.filter_text_view) TextView filterTextView;
   @Bind(R.id.vertical_line_group) View verticalLineGroup;
   @Bind(R.id.vertical_line_medium_view) View verticalLineView;
-  @BindColor(R.color.text_dark) int darkColor;
-  @BindColor(R.color.white) int lightColor;
 
   public interface Delegate {
     void discoveryFilterClick(final DiscoveryFilterViewHolder viewHolder, final DiscoveryParams discoveryParams);
@@ -119,7 +118,7 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
   }
 
   protected int foregroundColor() {
-    return style.light() ? lightColor : darkColor;
+    return DiscoveryUtils.overlayTextColor(view.getContext(), style.light());
   }
 
   protected boolean isSecondaryCategoryRoot() {

@@ -5,17 +5,15 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.DiscoveryUtils;
 
 import auto.parcel.AutoParcel;
 import butterknife.Bind;
-import butterknife.BindColor;
 import butterknife.ButterKnife;
 
 public class DiscoveryFilterDividerViewHolder extends KsrViewHolder {
   @Bind(R.id.categories_text_view) TextView categoriesTextView;
   @Bind(R.id.horizontal_line_thin_view) View horizontalLineView;
-  @BindColor(R.color.text_dark) int darkColor;
-  @BindColor(R.color.white) int lightColor;
   Divider divider;
 
   public DiscoveryFilterDividerViewHolder(@NonNull final View view) {
@@ -31,7 +29,7 @@ public class DiscoveryFilterDividerViewHolder extends KsrViewHolder {
   }
 
   private int color() {
-    return divider.light() ? lightColor : darkColor;
+   return DiscoveryUtils.overlayTextColor(view.getContext(), divider.light());
   }
 
   @AutoParcel

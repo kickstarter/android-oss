@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.KSColorUtils;
+import com.kickstarter.libs.DiscoveryUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.DiscoveryFilterStyle;
@@ -74,9 +74,18 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
 
     // TODO: Add social filter
     return Observable.just(
-      DiscoveryFilterViewHolder.Filter.builder().params(DiscoveryParams.builder().staffPicks(true).build()).style(style).build(),
-      DiscoveryFilterViewHolder.Filter.builder().params(DiscoveryParams.builder().starred(1).build()).style(style).build(),
-      DiscoveryFilterViewHolder.Filter.builder().params(DiscoveryParams.builder().build()).style(style).build() // Everything filter
+      DiscoveryFilterViewHolder.Filter.builder()
+        .params(DiscoveryParams.builder().staffPicks(true).build())
+        .style(style)
+        .build(),
+      DiscoveryFilterViewHolder.Filter.builder()
+        .params(DiscoveryParams.builder().starred(1).build())
+        .style(style)
+        .build(),
+      DiscoveryFilterViewHolder.Filter.builder()
+        .params(DiscoveryParams.builder().build())
+        .style(style)
+        .build() // Everything filter
     ).toList();
   }
 
@@ -157,9 +166,6 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
   }
 
   protected boolean light() {
-    if (selectedParams.category() != null) {
-      return KSColorUtils.isDark(selectedParams.category().colorWithAlpha());
-    }
-    return true;
+    return DiscoveryUtils.overlayShouldBeLight(selectedParams);
   }
 }

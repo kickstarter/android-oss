@@ -9,8 +9,8 @@
   <color name="accent_alpha_20">@color/blue_alpha_20</color>
   <color name="window_background">@color/white</color>
   <color name="debug_background">#EE222222</color>
-  <color name="discovery_toolbar">#FF083E8F</color>
-  <color name="discovery_status_bar">#FF07357A</color>
+  <color name="discovery_primary">@color/dark_blue</color>
+  <color name="discovery_secondary">#FF083E8F</color>
 
   <!-- Kickstarter colors -->
   <color name="black">#000000</color>
@@ -47,20 +47,20 @@
   <color name="category_theater">#ffff7d5f</color>
 
   <!-- Secondary category colors, e.g. for toolbar -->
-  <color name="category_secondary_art">#ffffe1d9</color>
+  <color name="category_secondary_art">#fff28d72</color>
   <color name="category_secondary_comics">#ffffe54f</color>
-  <color name="category_secondary_crafts">#ffccb0a9</color>
+  <color name="category_secondary_crafts">#ffe35f8c</color>
   <color name="category_secondary_dance">#ff6556ac</color>
-  <color name="category_secondary_design">#ffFF6C40</color>
+  <color name="category_secondary_design">#ff1935a6</color>
   <color name="category_secondary_fashion">#ff171717</color>
-  <color name="category_secondary_film">#ffff7082</color>
-  <color name="category_secondary_food">#ffff545e</color>
-  <color name="category_secondary_games">#ff000807</color>
+  <color name="category_secondary_film">#ffcf3c4e</color>
+  <color name="category_secondary_food">#ffd12c36</color>
+  <color name="category_secondary_games">#ff00a68d</color>
   <color name="category_secondary_journalism">#ff10a8d0</color>
-  <color name="category_secondary_music">#fff0fff8</color>
-  <color name="category_secondary_photography">#ff00cfd1</color>
-  <color name="category_secondary_publishing">#ffede7db</color>
-  <color name="category_secondary_technology">#ff76a3fc</color>
+  <color name="category_secondary_music">#ff5ee5a3</color>
+  <color name="category_secondary_photography">#ff00d4d6</color>
+  <color name="category_secondary_publishing">#ffd1ccc0</color>
+  <color name="category_secondary_technology">#ff326bdb</color>
   <color name="category_secondary_theater">#ffe8514b</color>
 
   <!-- Kickstarter colors with hex opacity:

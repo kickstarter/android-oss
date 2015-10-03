@@ -9,6 +9,7 @@ import com.kickstarter.R;
 import com.kickstarter.models.Category;
 
 import butterknife.Bind;
+import butterknife.BindColor;
 import butterknife.ButterKnife;
 
 public class CategoryPromoViewHolder extends KsrViewHolder {
@@ -17,6 +18,8 @@ public class CategoryPromoViewHolder extends KsrViewHolder {
   @Bind(R.id.card_view) CardView cardView;
   @Bind(R.id.explore_text_view) TextView exploreTextView;
   @Bind(R.id.live_projects_text_view) TextView liveProjectsTextView;
+  @BindColor(R.color.text_dark) int darkColor;
+  @BindColor(R.color.white) int lightColor;
 
   public interface Delegate {
     void categoryPromoClick(final CategoryPromoViewHolder viewHolder, final Category category);
@@ -35,7 +38,7 @@ public class CategoryPromoViewHolder extends KsrViewHolder {
     final Context context = view.getContext();
 
     cardView.setCardBackgroundColor(category.colorWithAlpha());
-    final int categoryTextColor = category.overlayTextColor(context);
+    final int categoryTextColor = category.overlayShouldBeLight() ? lightColor : darkColor;
     exploreTextView.setTextColor(categoryTextColor);
     exploreTextView.setText(context.getString(R.string.Explore_Category, category.name()));
     liveProjectsTextView.setText(context.getString(R.string.Number_live_projects, category.projectsCount()));

@@ -16,8 +16,10 @@ import android.widget.TextView;
 import com.kickstarter.R;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.DiscoveryUtils;
 import com.kickstarter.libs.KSColorUtils;
 import com.kickstarter.libs.RequiresPresenter;
+import com.kickstarter.libs.StatusBarUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.presenters.DiscoveryFilterPresenter;
 import com.kickstarter.services.DiscoveryParams;
@@ -57,7 +59,7 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);
 
-    style(discoveryParams);
+    loadParams(discoveryParams);
 
     presenter.initialize(DiscoveryParams.builder().build()); // TODO: Replace with params from discovery intent
   }
@@ -77,34 +79,22 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
     finish();
   }
 
-  private void style(@NonNull final DiscoveryParams params) {
-    if (params.category() != null) {
-      final int color = params.category().colorWithAlpha();
-      layout.setBackgroundColor(color);
-      closeButton.setTextColor(KSColorUtils.isLight(color) ?  darkColor : lightColor);
-    } else {
-      layout.setBackground(darkBlueGradientDrawable);
-    }
-
-    statusBarStyle(params);
-  }
-
-  private void statusBarStyle(@NonNull final DiscoveryParams params) {
+  private void loadParams(@NonNull final DiscoveryParams params) {
     if (ApiCapabilities.canSetStatusBarColor() && ApiCapabilities.canSetDarkStatusBarIcons()) {
-      final Window window = getWindow();
-      window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-
-      final int color = KSColorUtils.darken((params.category() != null ?
-        params.category().colorWithAlpha() :
-        darkBlueGradientStartColor), 0.05f);
-
-      window.setStatusBarColor(color);
-
-      final int uiFlag = KSColorUtils.isLight(color) ?
-        View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR :
-        View.SYSTEM_UI_FLAG_VISIBLE;
-
-      window.getDecorView().setSystemUiVisibility(uiFlag);
+      if (params.isCategorySet()) {
+        final Category category = params.category();
+        StatusBarUtils.apply(this, category.secondaryColor(this), category.overlayShouldBeLight());
+      } else {
+        StatusBarUtils.apply(this, KSColorUtils.darken(darkBlueGradientStartColor, 0.1f), true);
+      }
     }
+
+    if (params.isCategorySet()) {
+      recyclerView.setBackgroundColor(params.category().colorWithAlpha());
+    } else {
+      recyclerView.setBackground(darkBlueGradientDrawable);
+    }
+
+    closeButton.setTextColor(DiscoveryUtils.overlayTextColor(this, params));
   }
 }

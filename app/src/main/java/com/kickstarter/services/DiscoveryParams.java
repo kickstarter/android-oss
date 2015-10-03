@@ -128,4 +128,8 @@ public abstract class DiscoveryParams implements Parcelable {
       return context.getString(R.string.Everything);
     }
   }
+
+  public boolean isCategorySet() {
+    return category() != null;
+  }
 }

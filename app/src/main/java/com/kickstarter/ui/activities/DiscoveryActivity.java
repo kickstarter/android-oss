@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -11,8 +12,6 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
@@ -21,9 +20,10 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.KSColorUtils;
+import com.kickstarter.libs.DiscoveryUtils;
 import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.libs.RxUtils;
+import com.kickstarter.libs.StatusBarUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.DiscoveryPresenter;
 import com.kickstarter.services.DiscoveryParams;
@@ -38,7 +38,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.Bind;
-import butterknife.BindColor;
 import butterknife.BindDrawable;
 import butterknife.ButterKnife;
 import rx.Subscription;
@@ -55,8 +54,6 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
 
   @Inject ApplicationContainer applicationContainer;
 
-  @BindColor(R.color.discovery_status_bar) int discoveryStatusBarColor;
-  @BindColor(R.color.discovery_toolbar) int discoveryToolbarColor;
   @BindDrawable(R.drawable.dark_blue_gradient) Drawable darkBlueGradientDrawable;
   @Bind(R.id.discovery_layout) LinearLayout discoveryLayout;
   @Bind(R.id.discovery_toolbar) DiscoveryToolbar discoveryToolbar;
@@ -104,26 +101,24 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
   }
 
   public void loadProjects(@NonNull final List<Project> newProjects) {
-    final int oldProjectsSize = projects.size();
     projects.clear();
     projects.addAll(newProjects);
     adapter.notifyDataSetChanged();
   }
 
-  public void clearItems() {
-    loadProjects(new ArrayList<>());
-  }
-
   public void loadParams(@NonNull final DiscoveryParams params) {
-    discoveryToolbar.style(params);
+    discoveryToolbar.loadParams(params);
 
+    if (ApiCapabilities.canSetStatusBarColor() && ApiCapabilities.canSetDarkStatusBarIcons()) {
+      StatusBarUtils.apply(this, DiscoveryUtils.secondaryColor(this, params), DiscoveryUtils.overlayShouldBeLight(params));
+    }
+
+    // Set background
     if (params.category() != null) {
       recyclerView.setBackgroundColor(params.category().colorWithAlpha());
     } else {
       recyclerView.setBackground(darkBlueGradientDrawable);
     }
-
-    statusBarStyle(params);
   }
 
   public void startDiscoveryFilterActivity(@NonNull final DiscoveryParams params) {
@@ -173,53 +168,22 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
     return itemAndCount.first == itemAndCount.second - 2;
   }
 
-  private void statusBarStyle(@NonNull final DiscoveryParams params) {
-    if (ApiCapabilities.canSetStatusBarColor() && ApiCapabilities.canSetDarkStatusBarIcons()) {
-      final Window window = getWindow();
-      window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-
-      final int color = KSColorUtils.darken((params.category() != null ?
-        params.category().secondaryColor(this) :
-        discoveryToolbarColor), 0.15f);
-
-      window.setStatusBarColor(color);
-
-      final int uiFlag = KSColorUtils.isLight(color) ?
-        View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR :
-        View.SYSTEM_UI_FLAG_VISIBLE;
-
-      window.getDecorView().setSystemUiVisibility(uiFlag);
-    }
-  }
-
-  // TODO: Remove
-  public void setColorFromEditor(final int color) {
-    discoveryToolbar.setColorFromEditor(color);
-
-    final Window window = getWindow();
-    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-
-    final int statusBarColor = KSColorUtils.darken(color, 0.15f);
-    window.setStatusBarColor(statusBarColor);
-
-    final int uiFlag = KSColorUtils.isLight(statusBarColor) ?
-      View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR :
-      View.SYSTEM_UI_FLAG_VISIBLE;
-
-    window.getDecorView().setSystemUiVisibility(uiFlag);
-  }
-
   // TODO: Remove
   public void showColorDialog() {
     final View view = View.inflate(this, R.layout.color_input_view, null);
 
     new AlertDialog.Builder(this)
       .setView(view)
-      .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-        final EditText editText = (EditText) view.findViewById(R.id.color_edit);
-        final String string = editText.getText().toString().toLowerCase();
-        final int number = Integer.parseInt(string, 16);
-        setColorFromEditor(KSColorUtils.setAlpha(number, 255));
+      .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+        public void onClick(DialogInterface dialog, int whichButton) {
+          final EditText editText = (EditText) view.findViewById(R.id.color_edit);
+          final String string = editText.getText().toString().toLowerCase();
+          try {
+            final int number = Integer.parseInt(string, 16);
+            // StatusBarUtils.apply(this, KSColorUtils.setAlpha(number, 255));
+          } catch (NumberFormatException e) {
+          }
+        }
       })
       .show();
   }

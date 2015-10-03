@@ -47,7 +47,7 @@
   <color name="category_theater">#ffff7d5f</color>
 
   <!-- Secondary category colors, e.g. for toolbar -->
-  <color name="category_secondary_art">#fff28d72</color>
+  <color name="category_secondary_art">#fff7aa94</color>
   <color name="category_secondary_comics">#ffffe54f</color>
   <color name="category_secondary_crafts">#ffe35f8c</color>
   <color name="category_secondary_dance">#ff6556ac</color>

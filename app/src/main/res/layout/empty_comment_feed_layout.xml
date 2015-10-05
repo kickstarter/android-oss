@@ -8,7 +8,7 @@
   android:gravity="center">
 
   <com.kickstarter.ui.views.IconTextView
-    android:id="@+id/icon"
+    android:id="@+id/comment_icon"
     android:textColor="@color/text_secondary"
     android:gravity="center_horizontal"
     android:layout_width="match_parent"

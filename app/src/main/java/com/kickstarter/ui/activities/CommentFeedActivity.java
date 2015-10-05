@@ -75,17 +75,19 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
   }
 
   @Nullable
-  @OnClick(R.id.comment_button_backing)
+  @OnClick(R.id.comment_button)
   public void publicCommentClick() {
     // coming soon in the next PR
   }
 
   @Override
   protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
-    if (resultCode != RESULT_OK) {
-      finish();
-    } else {
-      presenter.takeLoginSuccess();
+    if (requestCode != ActivityRequestCodes.COMMENT_FEED_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED) {
+      return;
     }
+    if (resultCode != RESULT_OK) {
+      return;
+    }
+    presenter.takeLoginSuccess();
   }
 }

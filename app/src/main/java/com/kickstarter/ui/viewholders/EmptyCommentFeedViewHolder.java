@@ -31,7 +31,7 @@ public class EmptyCommentFeedViewHolder extends KsrViewHolder {
     ButterKnife.bind(this, view);
   }
 
-  public void onBind(@Nullable final Object datum) {
+  public void onBind(@NonNull final Object datum) {
     final Pair<Project, User> projectAndUser = (Pair<Project, User>) datum;
     final Project project = projectAndUser.first;
     final User user = projectAndUser.second;

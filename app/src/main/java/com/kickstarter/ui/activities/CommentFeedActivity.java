@@ -82,7 +82,6 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
 
   @OnClick(R.id.comment_button)
   public void showCommentDialog() {
-    // todo: grab project from presenter rather than activity to have latest project
     final AlertDialog.Builder builder = new AlertDialog.Builder(this);
     builder.setView(getLayoutInflater().inflate(R.layout.comment_dialog, null));
 

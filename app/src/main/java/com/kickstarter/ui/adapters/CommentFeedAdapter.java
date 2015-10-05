@@ -1,5 +1,7 @@
 package com.kickstarter.ui.adapters;
 
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.util.Pair;
 import android.view.View;
 
@@ -18,14 +20,14 @@ public class CommentFeedAdapter extends KsrAdapter {
 
   public interface Delegate extends ProjectContextViewHolder.Delegate {}
 
-  public CommentFeedAdapter(final Project project, final List<Pair<Project, Comment>> projectAndComments,
-    final Delegate delegate) {
+  public CommentFeedAdapter(@NonNull final Project project, @NonNull final List<Pair<Project, Comment>> projectAndComments,
+    @NonNull final Delegate delegate) {
     data().add(Collections.singletonList(project));
     data().add(projectAndComments);
     this.delegate = delegate;
   }
 
-  protected int layout(final SectionRow sectionRow) {
+  protected @LayoutRes int layout(@NonNull final SectionRow sectionRow) {
     if (sectionRow.section() == 0) {
       return R.layout.project_context_view;
     } else {
@@ -33,7 +35,7 @@ public class CommentFeedAdapter extends KsrAdapter {
     }
   }
 
-  protected KsrViewHolder viewHolder(final int layout, final View view) {
+  protected KsrViewHolder viewHolder(final @LayoutRes int layout, @NonNull final View view) {
     if (layout == R.layout.project_context_view) {
       return new ProjectContextViewHolder(view, delegate);
     }

@@ -1,6 +1,7 @@
 package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,17 +23,17 @@ public class ProjectCardMiniViewHolder extends KsrViewHolder {
   @Bind(R.id.photo) ImageView photoImageView;
 
   public interface Delegate {
-    void projectCardMiniClick(final ProjectCardMiniViewHolder viewHolder, final Project project);
+    void projectCardMiniClick(@NonNull final ProjectCardMiniViewHolder viewHolder, @NonNull final Project project);
   }
 
-  public ProjectCardMiniViewHolder(final View view, final Delegate delegate) {
+  public ProjectCardMiniViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
     super(view);
     this.delegate = delegate;
 
     ButterKnife.bind(this, view);
   }
 
-  public void onBind(final Object datum) {
+  public void onBind(@NonNull final Object datum) {
     project = (Project) datum;
 
     final Context context = view.getContext();
@@ -50,7 +51,7 @@ public class ProjectCardMiniViewHolder extends KsrViewHolder {
   }
 
   @Override
-  public void onClick(final View view) {
+  public void onClick(@NonNull final View view) {
     delegate.projectCardMiniClick(this, project);
   }
 }

@@ -2,6 +2,8 @@ package com.kickstarter.libs;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -20,9 +22,9 @@ public class Presenters {
   }
 
   @SuppressWarnings("unchecked")
-  public <T extends Presenter> T fetch(final Context context,
-    final Class<T> presenterClass,
-    final Bundle savedInstanceState) {
+  public <T extends Presenter> T fetch(@NonNull final Context context,
+    @NonNull final Class<T> presenterClass,
+    @Nullable final Bundle savedInstanceState) {
     final String id = fetchId(savedInstanceState);
     Presenter presenter = presenters.get(id);
 
@@ -40,12 +42,12 @@ public class Presenters {
     return (T) presenter;
   }
 
-  public void destroy(final Presenter presenter) {
+  public void destroy(@NonNull final Presenter presenter) {
     presenter.onDestroy();
     presenters.inverse().remove(presenter);
   }
 
-  public void save(final Presenter presenter, final Bundle envelope) {
+  public void save(@NonNull final Presenter presenter, @NonNull final Bundle envelope) {
     envelope.putString(PRESENTER_ID_KEY, presenters.inverse().get(presenter));
 
     final Bundle state = new Bundle();
@@ -53,7 +55,7 @@ public class Presenters {
     envelope.putBundle(PRESENTER_STATE_KEY, state);
   }
 
-  protected String fetchId(final Bundle savedInstanceState) {
+  protected String fetchId(@Nullable final Bundle savedInstanceState) {
     return savedInstanceState != null ?
       savedInstanceState.getString(PRESENTER_ID_KEY) :
       UUID.randomUUID().toString();

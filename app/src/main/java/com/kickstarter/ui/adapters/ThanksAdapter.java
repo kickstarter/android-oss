@@ -1,5 +1,7 @@
 package com.kickstarter.ui.adapters;
 
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.kickstarter.R;
@@ -17,13 +19,14 @@ public class ThanksAdapter extends KsrAdapter {
 
   public interface Delegate extends CategoryPromoViewHolder.Delegate, ProjectCardMiniViewHolder.Delegate {}
 
-  public ThanksAdapter(final List<Project> projects, final Category category, final Delegate delegate) {
+  public ThanksAdapter(@NonNull final List<Project> projects, @NonNull final Category category,
+    @NonNull final Delegate delegate) {
     this.delegate = delegate;
     data().add(projects);
     data().add(Collections.singletonList(category));
   }
 
-  protected int layout(final SectionRow sectionRow) {
+  protected @LayoutRes int layout(@NonNull final SectionRow sectionRow) {
     if (sectionRow.section() == 0) {
       return R.layout.project_card_mini_view;
     } else {
@@ -31,7 +34,7 @@ public class ThanksAdapter extends KsrAdapter {
     }
   }
 
-  protected KsrViewHolder viewHolder(final int layout, final View view) {
+  protected KsrViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
     if (layout == R.layout.project_card_mini_view) {
       return new ProjectCardMiniViewHolder(view, delegate);
     }

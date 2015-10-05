@@ -1,6 +1,8 @@
 package com.kickstarter.libs;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.widget.Toast;
 
 import com.kickstarter.R;
@@ -12,7 +14,7 @@ public abstract class ApiErrorHandler {
   final Throwable e;
   final Context context;
 
-  public ApiErrorHandler(final Throwable e, final Context context) {
+  public ApiErrorHandler(@NonNull final Throwable e, @NonNull final Context context) {
     this.e = e;
     this.context = context;
   }
@@ -21,7 +23,7 @@ public abstract class ApiErrorHandler {
     if (e instanceof ApiError) {
       handleApiError((ApiError) e);
     } else if (e instanceof RetrofitError) {
-      RetrofitError retrofitError = (RetrofitError) e;
+      final RetrofitError retrofitError = (RetrofitError) e;
       if (retrofitError.getKind() == RetrofitError.Kind.NETWORK) {
         displayError(R.string.Unable_to_connect);
       } else {
@@ -34,7 +36,7 @@ public abstract class ApiErrorHandler {
 
   public abstract void handleApiError(final ApiError apiError);
 
-  public void displayError(final int id) {
+  public void displayError(@StringRes final int id) {
     // Toast by default, but this could be overridden
     final Toast toast = Toast.makeText(context, context.getString(id), Toast.LENGTH_LONG);
     toast.show();

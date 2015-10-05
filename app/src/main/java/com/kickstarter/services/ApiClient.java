@@ -34,11 +34,8 @@ public class ApiClient {
   private final Gson gson;
   private final ApiService service;
 
-  public ApiClient(final ApiEndpoint apiEndpoint,
-    final Build build,
-    final String clientId,
-    final CurrentUser currentUser,
-    final Gson gson) {
+  public ApiClient(@NonNull final ApiEndpoint apiEndpoint, @NonNull final Build build, @NonNull final String clientId,
+    @NonNull final CurrentUser currentUser, @NonNull final Gson gson) {
     this.apiEndpoint = apiEndpoint;
     this.build = build;
     this.clientId = clientId;
@@ -48,7 +45,7 @@ public class ApiClient {
     service = apiService();
   }
 
-  public Observable<ActivityEnvelope> fetchActivities(final ActivityFeedParams params) {
+  public Observable<ActivityEnvelope> fetchActivities(@NonNull final ActivityFeedParams params) {
     return service.fetchActivities(params.queryParams())
       .retry(3);
   }
@@ -57,11 +54,11 @@ public class ApiClient {
     return service.fetchCategories().map(CategoriesEnvelope::categories);
   }
 
-  public Observable<CommentsEnvelope> fetchProjectComments(final Project project) {
+  public Observable<CommentsEnvelope> fetchProjectComments(@NonNull final Project project) {
     return service.fetchProjectComments(project.param());
   }
 
-  public Observable<DiscoverEnvelope> fetchProjects(final DiscoveryParams params) {
+  public Observable<DiscoverEnvelope> fetchProjects(@NonNull final DiscoveryParams params) {
     return service.fetchProjects(params.queryParams())
       .retry(3);
   }
@@ -82,20 +79,21 @@ public class ApiClient {
     return fetchCategory(category.id());
   }
 
-  public Observable<AccessTokenEnvelope> login(final String email, final String password) {
+  public Observable<AccessTokenEnvelope> login(@NonNull final String email, @NonNull final String password) {
     return service.login(email, password);
   }
 
-  public Observable<AccessTokenEnvelope> login(final String email, final String password, final String code) {
+  public Observable<AccessTokenEnvelope> login(@NonNull final String email, @NonNull final String password,
+    @NonNull final String code) {
     return service.login(email, password, code);
   }
 
-  public Observable<Project> starProject(final Project project) {
+  public Observable<Project> starProject(@NonNull final Project project) {
     return service.starProject(project.param())
       .map(StarEnvelope::project);
   }
 
-  public Observable<Project> toggleProjectStar(final Project project) {
+  public Observable<Project> toggleProjectStar(@NonNull final Project project) {
     return service.toggleProjectStar(project.param())
       .map(StarEnvelope::project);
   }

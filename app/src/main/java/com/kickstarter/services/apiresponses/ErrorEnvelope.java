@@ -1,5 +1,7 @@
 package com.kickstarter.services.apiresponses;
 
+import android.support.annotation.NonNull;
+
 import com.google.common.base.Enums;
 
 import java.util.List;
@@ -16,7 +18,7 @@ public class ErrorEnvelope {
     UNKNOWN
   }
 
-  private ErrorEnvelope(final List<String> errorMessages, final Integer httpCode, final String ksrCode) {
+  private ErrorEnvelope(@NonNull final List<String> errorMessages, final Integer httpCode, @NonNull final String ksrCode) {
     this.errorMessages = errorMessages;
     this.httpCode = httpCode;
     this.ksrCode = ksrCode;

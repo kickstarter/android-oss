@@ -1,6 +1,7 @@
 package com.kickstarter.libs;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Patterns;
 
 import com.kickstarter.R;
@@ -8,12 +9,12 @@ import com.kickstarter.R;
 public class StringUtils {
   private StringUtils() {}
 
-  public static boolean isEmail(final CharSequence str) {
+  public static boolean isEmail(@NonNull final CharSequence str) {
     return Patterns.EMAIL_ADDRESS.matcher(str).matches();
   }
 
-  // TODO: Take category instead of id
-  public static String friendBackingActivityTitle(final Context context, final String friendName, final long categoryId) {
+  public static String friendBackingActivityTitle(@NonNull final Context context, @NonNull final String friendName,
+    final long categoryId) {
     final String str;
 
     switch ((int) categoryId) {

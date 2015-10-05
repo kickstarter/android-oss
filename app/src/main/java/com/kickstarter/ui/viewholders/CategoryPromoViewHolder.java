@@ -1,6 +1,7 @@
 package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.TextView;
@@ -19,17 +20,17 @@ public class CategoryPromoViewHolder extends KsrViewHolder {
   @Bind(R.id.live_projects_text_view) TextView liveProjectsTextView;
 
   public interface Delegate {
-    void categoryPromoClick(final CategoryPromoViewHolder viewHolder, final Category category);
+    void categoryPromoClick(@NonNull final CategoryPromoViewHolder viewHolder, @NonNull final Category category);
   }
 
-  public CategoryPromoViewHolder(final View view, final CategoryPromoViewHolder.Delegate delegate) {
+  public CategoryPromoViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
     super(view);
     this.delegate = delegate;
 
     ButterKnife.bind(this, view);
   }
 
-  public void onBind(final Object datum) {
+  public void onBind(@NonNull final Object datum) {
     category = (Category) datum;
 
     final Context context = view.getContext();
@@ -43,7 +44,7 @@ public class CategoryPromoViewHolder extends KsrViewHolder {
   }
 
   @Override
-  public void onClick(final View view) {
+  public void onClick(@NonNull final View view) {
     delegate.categoryPromoClick(this, category);
   }
 }

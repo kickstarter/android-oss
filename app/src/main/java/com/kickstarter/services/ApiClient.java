@@ -94,8 +94,8 @@ public class ApiClient {
     return service.login(email, password, code);
   }
 
-  public Observable<Comment> postProjectComment(@NonNull final Project project, @NonNull final Comment comment) {
-    return service.postProjectComment(project.param(), comment.body());
+  public Observable<Comment> postProjectComment(@NonNull final Project project, @NonNull final String body) {
+    return service.postProjectComment(project.param(), body);
   }
 
   public Observable<Project> starProject(@NonNull final Project project) {

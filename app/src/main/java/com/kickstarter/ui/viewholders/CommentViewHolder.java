@@ -67,10 +67,4 @@ public class CommentViewHolder extends KsrViewHolder {
     postDateTextView.setText(DateTimeUtils.relativeDateInWords(comment.createdAt(), false, true));
     commentBodyTextView.setText(comment.body());
   }
-
-  @Nullable
-  @OnClick(R.id.comment_button_backing)
-  public void postComment() {
-
-  }
 }

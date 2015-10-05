@@ -36,8 +36,8 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
   private CommentFeedAdapter adapter;
   private Project project;
 
-  @Bind(R.id.comment_button_backing) TextView commentButtonTextView;
-  @Bind(R.id.comment_feed_recycler_view) RecyclerView recyclerView; // rename
+  @Bind(R.id.comment_button) TextView commentButtonTextView;
+  @Bind(R.id.comment_feed_recycler_view) RecyclerView recyclerView;
   @Nullable @Bind(R.id.context_photo) ImageView projectPhotoImageView;
   @Nullable @Bind(R.id.project_name) TextView projectNameTextView;
   @Nullable @Bind(R.id.creator_name) TextView creatorNameTextView;
@@ -80,7 +80,7 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     startActivityForResult(intent, ActivityRequestCodes.COMMENT_FEED_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
   }
 
-  @OnClick(R.id.comment_button_backing)
+  @OnClick(R.id.comment_button)
   public void showCommentDialog() {
     // todo: grab project from presenter rather than activity to have latest project
     final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -132,10 +132,12 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
 
   @Override
   protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
-    if (resultCode != RESULT_OK) {
-      finish();
-    } else {
-      presenter.takeLoginSuccess();
+    if (requestCode != ActivityRequestCodes.COMMENT_FEED_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED) {
+      return;
     }
+    if (resultCode != RESULT_OK) {
+      return;
+    }
+    presenter.takeLoginSuccess();
   }
 }

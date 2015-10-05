@@ -77,7 +77,7 @@ public class ApiClient {
     return fetchProject(project.param()).startWith(project);
   }
 
-  public Observable<Category> fetchCategory(@NonNull final long id) {
+  public Observable<Category> fetchCategory(final long id) {
     return service.fetchCategory(id);
   }
 
@@ -93,9 +93,9 @@ public class ApiClient {
     @NonNull final String code) {
     return service.login(email, password, code);
   }
-
-  public Observable<Comment> postProjectComment(@NonNull final String body) {
-    return service.postProjectComment(body);
+  
+  public Observable<Comment> postProjectComment(@NonNull final Project project, @NonNull final String body) {
+    return service.postProjectComment(project.param(), body);
   }
 
   public Observable<Project> starProject(@NonNull final Project project) {

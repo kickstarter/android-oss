@@ -79,7 +79,7 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
   @OnClick(R.id.comment_button)
   public void showCommentDialog() {
     final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    builder.setView(getLayoutInflater().inflate(R.layout.comment_dialog, null));
+    builder.setView(R.layout.comment_dialog);
 
     final AlertDialog dialog = builder.create();
     dialog.show();

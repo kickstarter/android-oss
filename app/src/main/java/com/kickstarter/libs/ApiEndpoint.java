@@ -1,5 +1,8 @@
 package com.kickstarter.libs;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 public enum ApiEndpoint {
   PRODUCTION("Production", "https://***REMOVED***"),
   STAGING("Staging", "https://***REMOVED***"),
@@ -9,7 +12,7 @@ public enum ApiEndpoint {
   public String name;
   public String url;
 
-  ApiEndpoint(final String name, final String url) {
+  ApiEndpoint(@NonNull final String name, @Nullable final String url) {
     this.name = name;
     this.url = url;
   }
@@ -18,8 +21,8 @@ public enum ApiEndpoint {
     return name;
   }
 
-  public static ApiEndpoint from(final String url) {
-    for (ApiEndpoint value : values()) {
+  public static ApiEndpoint from(@NonNull final String url) {
+    for (final ApiEndpoint value : values()) {
       if (value.url != null && value.url.equals(url)) {
         return value;
       }

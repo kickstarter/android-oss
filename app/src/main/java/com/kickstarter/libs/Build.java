@@ -1,6 +1,7 @@
 package com.kickstarter.libs;
 
 import android.content.pm.PackageInfo;
+import android.support.annotation.NonNull;
 
 import com.kickstarter.BuildConfig;
 
@@ -10,7 +11,7 @@ import org.joda.time.DateTimeZone;
 public class Build {
   final PackageInfo packageInfo;
 
-  public Build(final PackageInfo packageInfo) {
+  public Build(@NonNull final PackageInfo packageInfo) {
     this.packageInfo = packageInfo;
   }
 

@@ -1,6 +1,7 @@
 package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,13 +21,13 @@ public class FriendBackingViewHolder extends ActivityListViewHolder {
   @Bind(R.id.project_photo) ImageView projectPhotoImageView;
   @Bind(R.id.title) TextView titleTextView;
 
-  public FriendBackingViewHolder(final View view) {
+  public FriendBackingViewHolder(@NonNull final View view) {
     super(view);
     ButterKnife.bind(this, view);
   }
 
   @Override
-  public void onBind(final Object datum) {
+  public void onBind(@NonNull final Object datum) {
     super.onBind(datum);
 
     final Context context = view.getContext();

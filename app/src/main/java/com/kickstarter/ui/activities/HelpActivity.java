@@ -3,11 +3,12 @@ package com.kickstarter.ui.activities;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
+import android.support.annotation.Nullable;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.RequiresPresenter;
+import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.libs.qualifiers.WebEndpoint;
 import com.kickstarter.presenters.HelpPresenter;
 import com.kickstarter.ui.views.KickstarterWebView;
@@ -37,7 +38,7 @@ public class HelpActivity extends BaseActivity<HelpPresenter> {
   @Inject @WebEndpoint String webEndpoint;
 
   @Override
-  protected void onCreate(final Bundle savedInstanceState) {
+  protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     ((KSApplication) getApplicationContext()).component().inject(this);
@@ -49,7 +50,7 @@ public class HelpActivity extends BaseActivity<HelpPresenter> {
     kickstarterWebView.loadUrl(url);
   }
 
-  protected String getUrlForHelpType(final @HelpType int helpType) {
+  protected String getUrlForHelpType(@HelpType final int helpType) {
     final Uri.Builder builder = Uri.parse(webEndpoint).buildUpon();
     switch (helpType) {
       case HELP_TYPE_TERMS:

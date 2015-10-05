@@ -4,6 +4,8 @@ import android.app.DownloadManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
@@ -21,7 +23,7 @@ public class DownloadBetaActivity extends AppCompatActivity {
   InternalBuildEnvelope internalBuildEnvelope;
 
   @Override
-  public void onCreate(final Bundle savedInstanceState) {
+  public void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.download_beta_layout);
@@ -37,7 +39,7 @@ public class DownloadBetaActivity extends AppCompatActivity {
   }
 
   @OnClick(R.id.open_downloads_button)
-  public void openDownloadsOnClick(final View v) {
+  public void openDownloadsOnClick(@NonNull final View v) {
     final Intent intent = new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS);
     startActivity(intent);
   }

@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.AutoGson;
+import com.kickstarter.libs.qualifiers.AutoGson;
 import com.kickstarter.libs.CurrencyOptions;
 import com.kickstarter.libs.NumberUtils;
 

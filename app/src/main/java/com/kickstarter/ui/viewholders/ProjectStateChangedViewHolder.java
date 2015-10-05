@@ -1,6 +1,7 @@
 package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,13 +17,13 @@ public class ProjectStateChangedViewHolder extends ActivityListViewHolder {
   @Bind(R.id.title) TextView titleTextView;
   @Bind(R.id.project_photo) ImageView projectPhotoImageView;
 
-  public ProjectStateChangedViewHolder(final View view) {
+  public ProjectStateChangedViewHolder(@NonNull final View view) {
     super(view);
     ButterKnife.bind(this, view);
   }
 
   @Override
-  public void onBind(final Object datum) {
+  public void onBind(@NonNull final Object datum) {
     super.onBind(datum);
 
     final Context context = view.getContext();
@@ -34,7 +35,7 @@ public class ProjectStateChangedViewHolder extends ActivityListViewHolder {
     titleTextView.setText(titleText(context, activity));
   }
 
-  public String titleText(final Context context, final Activity activity) {
+  public String titleText(@NonNull final Context context, @NonNull final Activity activity) {
     switch (activity.category()) {
       case Activity.CATEGORY_FAILURE:
         return context.getString(R.string.project_was_not_successfully_funded, activity.project().name());

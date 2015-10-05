@@ -1,5 +1,7 @@
 package com.kickstarter.ui.adapters;
 
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.kickstarter.R;
@@ -16,12 +18,12 @@ import java.util.List;
 
 public class ActivityFeedAdapter extends KsrAdapter {
 
-  public ActivityFeedAdapter(final List<Activity> activities) {
+  public ActivityFeedAdapter(@NonNull final List<Activity> activities) {
     data().add(activities);
   }
 
   @Override
-  protected int layout(final SectionRow sectionRow) {
+  protected @LayoutRes int layout(@NonNull final SectionRow sectionRow) {
     final Activity activity = (Activity) objectFromSectionRow(sectionRow);
 
     switch (activity.category()) {
@@ -45,7 +47,7 @@ public class ActivityFeedAdapter extends KsrAdapter {
   }
 
   @Override
-  protected KsrViewHolder viewHolder(final int layout, final View view) {
+  protected KsrViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
     switch (layout) {
       case R.layout.activity_friend_backing_view:
         return new FriendBackingViewHolder(view);

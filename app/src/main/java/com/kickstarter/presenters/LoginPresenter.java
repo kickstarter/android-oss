@@ -3,6 +3,7 @@ package com.kickstarter.presenters;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
@@ -31,7 +32,7 @@ public class LoginPresenter extends Presenter<LoginActivity> {
   private boolean forward = false;
 
   @Override
-  protected void onCreate(final Context context, Bundle savedInstanceState) {
+  protected void onCreate(@NonNull final Context context, @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
@@ -63,7 +64,7 @@ public class LoginPresenter extends Presenter<LoginActivity> {
     this.forward = forward;
   }
 
-  private static boolean isValid(final String email, final String password) {
+  private static boolean isValid(@NonNull final String email, @NonNull final String password) {
     return StringUtils.isEmail(email) && password.length() > 0;
   }
 
@@ -71,7 +72,7 @@ public class LoginPresenter extends Presenter<LoginActivity> {
     loginClick.onNext(null);
   }
 
-  private void submit(final String email, final String password) {
+  private void submit(@NonNull final String email, @NonNull final String password) {
     client.login(email, password)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::success, this::error);
@@ -85,14 +86,14 @@ public class LoginPresenter extends Presenter<LoginActivity> {
     }
   }
 
-  private void error(final Throwable e) {
+  private void error(@NonNull final Throwable e) {
     if (!hasView()) {
       return;
     }
 
     new ApiErrorHandler(e, view()) {
       @Override
-      public void handleApiError(final ApiError apiError) {
+      public void handleApiError(@NonNull final ApiError apiError) {
         switch (apiError.errorEnvelope().ksrCode()) {
           case TFA_REQUIRED:
           case TFA_FAILED:

@@ -14,7 +14,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.Money;
-import com.kickstarter.libs.RequiresPresenter;
+import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 import com.kickstarter.presenters.ProjectPresenter;
@@ -142,7 +142,7 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
   }
 
   @Override
-  protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
+  protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
     if (resultCode != RESULT_OK) {
       finish();
     } else {

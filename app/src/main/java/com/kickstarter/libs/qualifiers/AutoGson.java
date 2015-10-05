@@ -1,4 +1,4 @@
-package com.kickstarter.libs;
+package com.kickstarter.libs.qualifiers;
 
 import auto.parcel.AutoParcel;
 import java.lang.annotation.Retention;

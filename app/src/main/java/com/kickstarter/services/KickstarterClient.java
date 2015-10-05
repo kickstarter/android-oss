@@ -1,5 +1,7 @@
 package com.kickstarter.services;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -21,7 +23,7 @@ public class KickstarterClient {
   private final Gson gson;
   private final KickstarterService service;
 
-  public KickstarterClient(final Build build, final Gson gson, final String endpoint) {
+  public KickstarterClient(@NonNull final Build build, @NonNull final Gson gson, @NonNull final String endpoint) {
     this.build = build;
     this.gson = gson;
     this.endpoint = endpoint;

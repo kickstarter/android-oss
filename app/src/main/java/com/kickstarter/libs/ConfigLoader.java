@@ -1,6 +1,7 @@
 package com.kickstarter.libs;
 
 import android.content.res.AssetManager;
+import android.support.annotation.NonNull;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -19,7 +20,7 @@ public class ConfigLoader {
 
   private final static String ASSET_PATH = "json/server-config.json";
 
-  public ConfigLoader(final AssetManager assetManager) {
+  public ConfigLoader(@NonNull final AssetManager assetManager) {
     this.assetManager = assetManager;
 
     final String json = loadJsonFromAssets();
@@ -30,7 +31,7 @@ public class ConfigLoader {
     return this.config;
   }
 
-  private Config deserializeJson(final String json) {
+  private Config deserializeJson(@NonNull final String json) {
     return gson.fromJson(json, Config.class);
   }
 

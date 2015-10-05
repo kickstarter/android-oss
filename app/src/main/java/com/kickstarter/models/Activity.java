@@ -4,7 +4,7 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 
-import com.kickstarter.libs.AutoGson;
+import com.kickstarter.libs.qualifiers.AutoGson;
 
 import org.joda.time.DateTime;
 

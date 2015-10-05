@@ -3,6 +3,7 @@ package com.kickstarter.ui.views;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
@@ -37,15 +38,15 @@ public class DiscoveryToolbar extends Toolbar {
 
   Subscription loginSubscription;
 
-  public DiscoveryToolbar(final Context context) {
+  public DiscoveryToolbar(@NonNull final Context context) {
     super(context);
   }
 
-  public DiscoveryToolbar(final Context context, final AttributeSet attrs) {
+  public DiscoveryToolbar(@NonNull final Context context, @Nullable final AttributeSet attrs) {
     super(context, attrs);
   }
 
-  public DiscoveryToolbar(final Context context, final AttributeSet attrs, final int defStyleAttr) {
+  public DiscoveryToolbar(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
     super(context, attrs, defStyleAttr);
   }
 
@@ -76,7 +77,7 @@ public class DiscoveryToolbar extends Toolbar {
     filterTextView.setText(params.filterString(getContext()));
   }
 
-  protected void showLoggedInMenu(final User user) {
+  protected void showLoggedInMenu(@NonNull final User user) {
     loginButton.setVisibility(GONE);
     currentUserButton.setVisibility(VISIBLE);
     currentUserButton.setOnClickListener(v -> {

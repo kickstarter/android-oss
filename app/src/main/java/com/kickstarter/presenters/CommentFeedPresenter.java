@@ -56,6 +56,15 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
       Arrays.asList(viewSubject, comments, project),
       Arrays::asList);
 
+    final Observable<Pair<CommentFeedActivity, Project>> viewAndProject =
+      RxUtils.combineLatestPair(viewSubject, Observable.just(initialProject));
+
+    // logged in user == backer --> post comment
+    addSubscription(RxUtils.takeWhen(viewSubject, loginSuccess)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(CommentFeedActivity::showCommentDialog)
+    );
+
     addSubscription(RxUtils.takePairWhen(currentUser.observable(), viewCommentsProject)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(uvcp -> {

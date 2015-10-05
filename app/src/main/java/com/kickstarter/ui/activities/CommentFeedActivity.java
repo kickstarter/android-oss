@@ -117,7 +117,7 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     );
 
     postCommentTextView.setOnClickListener((final View v) -> {
-      presenter.postCommentOnClick(commentBodyEditText.getText().toString());
+      presenter.postCommentOnClick(project, commentBodyEditText.getText().toString());
       dialog.dismiss();
     });
   }

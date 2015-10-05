@@ -88,8 +88,8 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
     loginClick.onNext(null);
   }
 
-  public void postCommentOnClick(@NonNull final String body) {
-    client.postProjectComment(body)
+  public void postCommentOnClick(@NonNull final Project project, @NonNull final String body) {
+    client.postProjectComment(project, body)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::showToastOnSuccess);
   }

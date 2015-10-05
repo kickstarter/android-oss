@@ -49,7 +49,7 @@ public class CommentFeedAdapter extends KsrAdapter {
       .toList().toBlocking().single());
 
     if (comments.size() == 0) {
-      data().add(Collections.singletonList(user));
+      data().add(Collections.singletonList(new Pair<>(project, user)));
     } else {
       data().add(Collections.emptyList());
     }

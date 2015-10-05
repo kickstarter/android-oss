@@ -27,14 +27,13 @@
     android:padding="@dimen/grid_2"/>
 
   <TextView
-    android:id="@+id/message"
+    android:id="@+id/no_comments_message"
     android:textColor="@color/text_secondary"
     android:gravity="center_horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingLeft="@dimen/grid_2"
-    android:paddingRight="@dimen/grid_2"
-    android:text="@string/Aw_how_sad"/>
+    android:paddingRight="@dimen/grid_2"/>
 
   <Button
     android:id="@+id/comment_feed_login_button"

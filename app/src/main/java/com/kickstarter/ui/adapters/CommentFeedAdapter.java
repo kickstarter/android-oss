@@ -24,11 +24,11 @@ public class CommentFeedAdapter extends KsrAdapter {
 
   public interface Delegate extends ProjectContextViewHolder.Delegate, EmptyCommentFeedViewHolder.Delegate {}
 
-  public CommentFeedAdapter(final Delegate delegate) {
+  public CommentFeedAdapter(@NonNull final Delegate delegate) {
     this.delegate = delegate;
   }
 
-  protected int layout(final SectionRow sectionRow) {
+  protected int layout(@NonNull final SectionRow sectionRow) {
     if (sectionRow.section() == 0) {
       return R.layout.project_context_view;
     } else if (sectionRow.section() == 1){

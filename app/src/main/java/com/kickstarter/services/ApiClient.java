@@ -77,7 +77,7 @@ public class ApiClient {
     return fetchProject(project.param()).startWith(project);
   }
 
-  public Observable<Category> fetchCategory(@NonNull final long id) {
+  public Observable<Category> fetchCategory(final long id) {
     return service.fetchCategory(id);
   }
 

@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kickstarter.R;
@@ -30,11 +29,8 @@ import butterknife.OnClick;
 public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
   private CommentFeedAdapter adapter;
 
-  @Bind(R.id.comment_button) TextView commentButtonTextView;
-  @Bind(R.id.comment_feed_recycler_view) RecyclerView recyclerView;
-  @Nullable @Bind(R.id.context_photo) ImageView projectPhotoImageView;
-  @Nullable @Bind(R.id.project_name) TextView projectNameTextView;
-  @Nullable @Bind(R.id.creator_name) TextView creatorNameTextView;
+  public @Bind(R.id.comment_button) TextView commentButtonTextView;
+  public @Bind(R.id.comment_feed_recycler_view) RecyclerView recyclerView;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {

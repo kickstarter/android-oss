@@ -5,11 +5,13 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.google.common.collect.ImmutableMap;
 import com.kickstarter.R;
 import com.kickstarter.libs.qualifiers.AutoGson;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Location;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import auto.parcel.AutoParcel;
 
@@ -80,29 +82,29 @@ public abstract class DiscoveryParams implements Parcelable {
     return toBuilder().page(page() + 1).build();
   }
 
-  public ImmutableMap<String, String> queryParams() {
-    final ImmutableMap.Builder<String, String> builder = new ImmutableMap.Builder<String, String>()
-      .put("staff_picks", String.valueOf(staffPicks()))
-      .put("starred", String.valueOf(starred()))
-      .put("backed", String.valueOf(backed()))
-      .put("social", String.valueOf(social()))
-      .put("sort", sort().toString())
-      .put("page", String.valueOf(page()))
-      .put("per_page", String.valueOf(perPage()));
+  public Map<String, String> queryParams() {
+    return new HashMap<String, String>()
+    {{
+      put("staff_picks", String.valueOf(staffPicks()));
+      put("starred", String.valueOf(starred()));
+      put("backed", String.valueOf(backed()));
+      put("social", String.valueOf(social()));
+      put("sort", sort().toString());
+      put("page", String.valueOf(page()));
+      put("per_page", String.valueOf(perPage()));
 
-    if (category() != null) {
-      builder.put("category_id", String.valueOf(category().id()));
-    }
+      if (category() != null) {
+        put("category_id", String.valueOf(category().id()));
+      }
 
-    if (location() != null) {
-      builder.put("woe_id", String.valueOf(location().id()));
-    }
+      if (location() != null) {
+        put("woe_id", String.valueOf(location().id()));
+      }
 
-    if (staffPicks() && page() == 1) {
-      builder.put("include_potd", "true");
-    }
-
-    return builder.build();
+      if (staffPicks() && page() == 1) {
+        put("include_potd", "true");
+      }
+    }};
   }
 
   @Override

@@ -5,9 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.UUID;
 
 public class Presenters {
@@ -15,15 +15,14 @@ public class Presenters {
   private static final String PRESENTER_STATE_KEY = "presenter_state";
 
   private static final Presenters instance = new Presenters();
-  private final BiMap<String, Presenter> presenters = HashBiMap.create();
+  private HashMap<String, Presenter> presenters = new HashMap<>();
 
   public static Presenters getInstance() {
     return instance;
   }
 
   @SuppressWarnings("unchecked")
-  public <T extends Presenter> T fetch(@NonNull final Context context,
-    @NonNull final Class<T> presenterClass,
+  public <T extends Presenter> T fetch(@NonNull final Context context, @NonNull final Class<T> presenterClass,
     @Nullable final Bundle savedInstanceState) {
     final String id = fetchId(savedInstanceState);
     Presenter presenter = presenters.get(id);
@@ -44,20 +43,37 @@ public class Presenters {
 
   public void destroy(@NonNull final Presenter presenter) {
     presenter.onDestroy();
-    presenters.inverse().remove(presenter);
+
+    Iterator<Map.Entry<String, Presenter>> iterator = presenters.entrySet().iterator();
+    while (iterator.hasNext()) {
+      final Map.Entry<String, Presenter> entry = iterator.next();
+      if (presenter.equals(entry.getValue())) {
+        iterator.remove();
+      }
+    }
   }
 
   public void save(@NonNull final Presenter presenter, @NonNull final Bundle envelope) {
-    envelope.putString(PRESENTER_ID_KEY, presenters.inverse().get(presenter));
+    envelope.putString(PRESENTER_ID_KEY, findIdForPresenter(presenter));
 
     final Bundle state = new Bundle();
     presenter.save(state);
     envelope.putBundle(PRESENTER_STATE_KEY, state);
   }
 
-  protected String fetchId(@Nullable final Bundle savedInstanceState) {
+  private String fetchId(@Nullable final Bundle savedInstanceState) {
     return savedInstanceState != null ?
       savedInstanceState.getString(PRESENTER_ID_KEY) :
       UUID.randomUUID().toString();
+  }
+
+  private String findIdForPresenter(@NonNull final Presenter presenter) {
+    for (final Map.Entry<String, Presenter> entry : presenters.entrySet()) {
+      if (presenter.equals(entry.getValue())) {
+        return entry.getKey();
+      }
+    }
+
+    throw new RuntimeException("Cannot find presenter in map!");
   }
 }

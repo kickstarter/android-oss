@@ -7,6 +7,7 @@ import com.kickstarter.services.KickstarterClient;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import timber.log.Timber;
 
 public interface BuildCheck {
   void bind(@NonNull final DiscoveryPresenter presenter, @NonNull final KickstarterClient client);
@@ -15,7 +16,7 @@ public interface BuildCheck {
     final Subscription subscription = RxUtils.combineLatestPair(client.pingBeta(), presenter.viewSubject())
       .filter(v -> v.first.newerBuildAvailable())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(v -> v.second.showBuildAlert(v.first));
+      .subscribe(v -> v.second.showBuildAlert(v.first), e -> Timber.e(e.toString()));
 
     presenter.addSubscription(subscription);
   };

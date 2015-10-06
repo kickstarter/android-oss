@@ -102,37 +102,24 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
 
   public void postCommentOnClick(@NonNull final Project project, @NonNull final String body) {
     Timber.d(body);
-    postSuccess.onNext(null);
+//    postSuccess.onNext(null);
 
-    client.postProjectComment(project, body)
+    addSubscription(client.postProjectComment(project, body)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::showToastOnSuccess);
+      .subscribe(this::success, this::error)
+    );
   }
 
-  private void showToastOnSuccess(@Nullable final Comment comment) {
+  private void success(@Nullable final Comment comment) {
     final String message = (comment == null) ? "Comment could not be posted" : "Comment posted!";
     final Toast toast = Toast.makeText(view().getApplicationContext(), message, Toast.LENGTH_LONG);
     toast.show();
     postSuccess.onNext(null);
   }
 
-//  private void error(final Throwable e) {
-//    if (!hasView()) {
-//      return;
-//    }
-//
-//    // check: network error
-//    new ApiErrorHandler(e, view()) {
-//      @Override
-//      public void handleApiError(final ApiError apiError) {
-//        switch (apiError.errorEnvelope().ksrCode()) {
-//          default:
-//            displayError(-1);
-//            break;
-//        }
-//      }
-//    }.handleError();
-//  }
+  private void error(@NonNull final Throwable e) {
+    // todo: handle 422s and network errors
+  }
 
   public void projectContextClicked() {
     contextClick.onNext(null);

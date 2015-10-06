@@ -51,13 +51,18 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
     final Observable<Project> project = loginSuccess.flatMap(__ -> client.fetchProject(initialProject))
       .startWith(initialProject);
 
-    // todo: merge with post success
-    // hit show on postSuccess
     final Observable<List<Comment>> comments = client.fetchProjectComments(initialProject)
       .map(CommentsEnvelope::comments);
 
+    // todo: merge on post success. test this.------>
+    final Observable<List<Comment>> commentsOnPostSuccess = postSuccess
+      .take(1)
+      .flatMap(__ -> client.fetchProjectComments(initialProject))
+      .map(CommentsEnvelope::comments)
+      .mergeWith(comments);
+
     final Observable<List<?>> viewCommentsProject = Observable.combineLatest(
-      Arrays.asList(viewSubject, comments, project),
+      Arrays.asList(viewSubject, commentsOnPostSuccess, project),
       Arrays::asList);
 
     final Observable<Pair<CommentFeedActivity, Project>> viewAndProject =
@@ -98,7 +103,6 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
   public void postCommentOnClick(@NonNull final Project project, @NonNull final String body) {
     Timber.d(body);
     postSuccess.onNext(null);
-    // todo: hit show() again on post success
 
 //    client.postProjectComment(project, body)
 //      .observeOn(AndroidSchedulers.mainThread())

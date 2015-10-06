@@ -1,5 +1,7 @@
 package com.kickstarter.libs;
 
+import android.support.annotation.NonNull;
+
 import java.util.List;
 
 public class Config {
@@ -10,7 +12,7 @@ public class Config {
     private final String countryCode;
     private final List<LaunchedCountry> launchedCountries;
 
-    public Builder(final String countryCode, final List<LaunchedCountry> launchedCountries) {
+    public Builder(@NonNull final String countryCode, @NonNull final List<LaunchedCountry> launchedCountries) {
       this.countryCode = countryCode;
       this.launchedCountries = launchedCountries;
     }
@@ -20,7 +22,7 @@ public class Config {
     }
   }
 
-  private Config(final Builder builder) {
+  private Config(@NonNull final Builder builder) {
     this.countryCode = builder.countryCode;
     this.launchedCountries = builder.launchedCountries;
 
@@ -34,10 +36,10 @@ public class Config {
     return launchedCountries;
   }
 
-  public boolean currencyIsDuplicatedWithSymbol(final String symbol, final String code) {
+  public boolean currencyIsDuplicatedWithSymbol(@NonNull final String symbol, @NonNull final String code) {
     // TODO: Cache the results
     int count = 0;
-    for (LaunchedCountry country : launchedCountries()) {
+    for (final LaunchedCountry country : launchedCountries()) {
       if (country.currencySymbol().equals(symbol) && !country.currencyCode().equals(code)) {
         ++count;
       }
@@ -52,10 +54,8 @@ public class Config {
     String currencySymbol;
     Boolean trailingCode;
 
-    public LaunchedCountry(final String name,
-      final String currencyCode,
-      final String currencySymbol,
-      final boolean trailingCode) {
+    public LaunchedCountry(@NonNull final String name, @NonNull final String currencyCode,
+      @NonNull final String currencySymbol, final boolean trailingCode) {
       this.name = name;
       this.currencyCode = currencyCode;
       this.currencySymbol = currencySymbol;

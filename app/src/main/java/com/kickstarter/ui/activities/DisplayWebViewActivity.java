@@ -3,6 +3,7 @@ package com.kickstarter.ui.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
 
@@ -28,7 +29,7 @@ public class DisplayWebViewActivity extends BaseActivity {
   @Retention(RetentionPolicy.SOURCE)
   public @interface RightBarButton {}
 
-  public void onCreate(final Bundle savedInstanceState) {
+  public void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.web_view_layout);
     ButterKnife.bind(this);

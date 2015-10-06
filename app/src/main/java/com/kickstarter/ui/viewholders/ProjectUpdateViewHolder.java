@@ -1,6 +1,7 @@
 package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,13 +21,13 @@ public class ProjectUpdateViewHolder extends ActivityListViewHolder {
   @Bind(R.id.update_sequence) TextView updateSequenceTextView;
   @Bind(R.id.update_title) TextView updateTitleTextView;
 
-  public ProjectUpdateViewHolder(final View view) {
+  public ProjectUpdateViewHolder(@NonNull final View view) {
     super(view);
     ButterKnife.bind(this, view);
   }
 
   @Override
-  public void onBind(final Object datum) {
+  public void onBind(@NonNull final Object datum) {
     super.onBind(datum);
 
     final Context context = view.getContext();

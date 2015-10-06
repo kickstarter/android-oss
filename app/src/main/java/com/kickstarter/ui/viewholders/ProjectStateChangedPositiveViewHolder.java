@@ -1,6 +1,7 @@
 package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.ImageView;
@@ -31,14 +32,14 @@ public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolde
   @BindColor(R.color.green_darken_10) int greenDarken10Color;
   @Inject Money money;
 
-  public ProjectStateChangedPositiveViewHolder(final View view) {
+  public ProjectStateChangedPositiveViewHolder(@NonNull final View view) {
     super(view);
     ButterKnife.bind(this, view);
     ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
   }
 
   @Override
-  public void onBind(final Object datum) {
+  public void onBind(@NonNull final Object datum) {
     super.onBind(datum);
 
     final Context context = view.getContext();

@@ -2,6 +2,7 @@ package com.kickstarter;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.facebook.FacebookSdk;
 import com.squareup.leakcanary.LeakCanary;
@@ -58,7 +59,7 @@ public class KSApplication extends Application {
     return component;
   }
 
-  public static RefWatcher getRefWatcher(final Context context) {
+  public static RefWatcher getRefWatcher(@NonNull final Context context) {
     final KSApplication application = (KSApplication) context.getApplicationContext();
     return application.refWatcher;
   }

@@ -2,6 +2,7 @@ package com.kickstarter.libs;
 
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 
 public class Font {
   private Typeface ionIconsTypeface;
@@ -11,7 +12,7 @@ public class Font {
   private Typeface ssKickstarterTypeface;
   private Typeface tiemposTypeface;
 
-  public Font(final AssetManager assetManager) {
+  public Font(@NonNull final AssetManager assetManager) {
     this.ionIconsTypeface = Typeface.createFromAsset(assetManager, "fonts/ionicons.ttf");
     this.materialIconsTypeface = Typeface.createFromAsset(assetManager, "fonts/MaterialIcons-Regular.ttf");
     this.sansSerifLightTypeface = Typeface.create("sans-serif-light", Typeface.NORMAL);

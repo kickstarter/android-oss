@@ -2,7 +2,7 @@ package com.kickstarter.services.apiresponses;
 
 import android.os.Parcelable;
 
-import com.kickstarter.libs.AutoGson;
+import com.kickstarter.libs.qualifiers.AutoGson;
 import com.kickstarter.models.Activity;
 
 import java.util.List;

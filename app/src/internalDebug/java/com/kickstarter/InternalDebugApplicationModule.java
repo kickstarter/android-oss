@@ -1,6 +1,7 @@
 package com.kickstarter;
 
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.BuildCheck;
@@ -24,14 +25,14 @@ public class InternalDebugApplicationModule {
 
   @Provides
   @Singleton
-  ApiEndpoint provideApiEndpoint(@ApiEndpointPreference final StringPreference apiEndpointPreference) {
+  ApiEndpoint provideApiEndpoint(@ApiEndpointPreference @NonNull final StringPreference apiEndpointPreference) {
     return ApiEndpoint.from(apiEndpointPreference.get());
   }
 
   @Provides
   @Singleton
   @ApiEndpointPreference
-  StringPreference provideApiEndpointPreference(final SharedPreferences sharedPreferences) {
+  StringPreference provideApiEndpointPreference(@NonNull final SharedPreferences sharedPreferences) {
     return new StringPreference(sharedPreferences, "debug_api_endpoint", ApiEndpoint.PRODUCTION.url);
   }
 

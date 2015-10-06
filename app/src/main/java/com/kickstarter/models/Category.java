@@ -3,11 +3,12 @@ package com.kickstarter.models;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Parcelable;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.AutoGson;
+import com.kickstarter.libs.qualifiers.AutoGson;
 import com.kickstarter.libs.KSColorUtils;
 
 import auto.parcel.AutoParcel;
@@ -43,7 +44,7 @@ abstract public class Category implements Parcelable {
 
   public abstract Builder toBuilder();
 
-  public int colorWithAlpha() {
+  public @ColorInt int colorWithAlpha() {
     return KSColorUtils.setAlpha(color(), 255);
   }
 
@@ -65,7 +66,7 @@ abstract public class Category implements Parcelable {
     return parentId() == null || parentId() == 0;
   }
 
-  public int overlayTextColor(final Context context) {
+  public int overlayTextColor(@NonNull final Context context) {
     final Resources resources = context.getResources();
     return KSColorUtils.isLight(colorWithAlpha()) ?
       resources.getColor(R.color.text_dark) :

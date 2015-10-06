@@ -3,7 +3,7 @@ package com.kickstarter.services.apiresponses;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
-import com.kickstarter.libs.AutoGson;
+import com.kickstarter.libs.qualifiers.AutoGson;
 
 import auto.parcel.AutoParcel;
 

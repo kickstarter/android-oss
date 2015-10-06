@@ -1,6 +1,8 @@
 package com.kickstarter.ui.views;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
@@ -12,28 +14,31 @@ import javax.inject.Inject;
 public class TiemposTextView extends TextView {
   @Inject Font font;
 
-  public TiemposTextView(final Context context) {
+  public TiemposTextView(@NonNull final Context context) {
     super(context);
     initialize(context, null, 0, 0);
   }
 
-  public TiemposTextView(final Context context, final AttributeSet attrs) {
+  public TiemposTextView(@NonNull final Context context, @Nullable final AttributeSet attrs) {
     super(context, attrs);
     initialize(context, attrs, 0, 0);
   }
 
-  public TiemposTextView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
+  public TiemposTextView(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
     super(context, attrs, defStyleAttr);
     initialize(context, attrs, defStyleAttr, 0);
   }
 
   @SuppressWarnings("deprecation")
-  public TiemposTextView(final Context context, final AttributeSet attrs, final int defStyleAttr, final int defStyleRes) {
+  public TiemposTextView(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr,
+    final int defStyleRes) {
     super(context, attrs, defStyleAttr, defStyleRes);
     initialize(context, attrs, defStyleAttr, defStyleRes);
   }
 
-  void initialize(final Context context, final AttributeSet attrs, final int defStyleAttr, final int defStyleRes) {}
+  void initialize(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr,
+    final int defStyleRes) {
+  }
 
   @Override
   protected void onFinishInflate() {

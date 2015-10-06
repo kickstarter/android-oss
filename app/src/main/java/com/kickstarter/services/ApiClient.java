@@ -35,11 +35,8 @@ public class ApiClient {
   private final Gson gson;
   private final ApiService service;
 
-  public ApiClient(final ApiEndpoint apiEndpoint,
-    final Build build,
-    final String clientId,
-    final CurrentUser currentUser,
-    final Gson gson) {
+  public ApiClient(@NonNull final ApiEndpoint apiEndpoint, @NonNull final Build build, @NonNull final String clientId,
+    @NonNull final CurrentUser currentUser, @NonNull final Gson gson) {
     this.apiEndpoint = apiEndpoint;
     this.build = build;
     this.clientId = clientId;

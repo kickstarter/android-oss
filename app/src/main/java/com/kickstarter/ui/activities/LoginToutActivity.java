@@ -2,15 +2,15 @@ package com.kickstarter.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.widget.Button;
 
-import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.RequiresPresenter;
+import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.presenters.LoginToutPresenter;
 
 import butterknife.Bind;
@@ -23,7 +23,7 @@ public class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
   @Bind(R.id.sign_up_button) Button signupButton;
 
   @Override
-  protected void onCreate(final Bundle savedInstanceState) {
+  protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.login_tout_layout);
@@ -72,7 +72,7 @@ public class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
   }
 
   @Override
-  protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
+  protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
     if (requestCode != ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_LOGIN_ACTIVITY_FORWARD) {
       return;
     }

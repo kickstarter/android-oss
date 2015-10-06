@@ -1,4 +1,6 @@
-package com.kickstarter.libs;
+package com.kickstarter.libs.qualifiers;
+
+import com.kickstarter.libs.Presenter;
 
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;

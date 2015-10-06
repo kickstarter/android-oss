@@ -2,6 +2,9 @@ package com.kickstarter.libs;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.annotation.ColorInt;
+import android.support.annotation.FloatRange;
+import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.v4.graphics.ColorUtils;
 
@@ -18,7 +21,7 @@ public class KSColorUtils {
    * @param color   the (a)rgb color to set an alpha for.
    * @param alpha   the new alpha value, between 0 and 255.
    */
-  public static int setAlpha(final int color, final int alpha) {
+  public static int setAlpha(final int color, @IntRange(from=0, to=255) final int alpha) {
     return color | (alpha << 24);
   }
 
@@ -28,7 +31,7 @@ public class KSColorUtils {
    * @param color   the argb color to lighten.
    * @param percent percentage to darken by, between 0.0 and 1.0.
    */
-  public static int darken(final int color, final float percent) {
+  public static int darken(@ColorInt final int color, @FloatRange(from=0.0, to=1.0) final float percent) {
     final float[] hsl = new float[3];
     ColorUtils.colorToHSL(color, hsl);
     hsl[2] -= (hsl[2] * percent);
@@ -42,7 +45,7 @@ public class KSColorUtils {
    * @param color   the argb color to lighten.
    * @param percent percentage to lighten by, between 0.0 and 1.0.
    */
-  public static int lighten(final int color, final float percent) {
+  public static int lighten(@ColorInt final int color, @FloatRange(from=0.0, to=1.0) final float percent) {
     final float[] hsl = new float[3];
     ColorUtils.colorToHSL(color, hsl);
     hsl[2] += (1.0f - hsl[2]) * percent;
@@ -55,7 +58,7 @@ public class KSColorUtils {
    *
    * @param color   the argb color to check.
    */
-  public static boolean isLight(final int color) {
+  public static boolean isLight(@ColorInt final int color) {
     return weightedLightness(color) >= KICKSTARTER_LIGHTNESS_THRESHOLD;
   }
 
@@ -64,7 +67,7 @@ public class KSColorUtils {
    *
    * @param color   the argb color to check.
    */
-  public static boolean isDark(final int color) {
+  public static boolean isDark(@ColorInt final int color) {
     return !isLight(color);
   }
 
@@ -80,7 +83,7 @@ public class KSColorUtils {
    * Return a value between 0.0 and 1.0 representing the perceived lightness of the color.
    * More info here: https://robots.thoughtbot.com/closer-look-color-lightness
    */
-  private static double weightedLightness(final int color) {
+  private static double weightedLightness(@ColorInt final int color) {
     return ((Color.red(color) * 212.6 + Color.green(color) * 715.2 + Color.blue(color) * 72.2) / 1000) / 255;
   }
 }

@@ -3,13 +3,13 @@ package com.kickstarter.ui.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.support.annotation.Nullable;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.RequiresPresenter;
+import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.presenters.TwoFactorPresenter;
 
 import butterknife.Bind;
@@ -23,7 +23,7 @@ public class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
   public @Bind(R.id.login_button) Button loginButton;
 
   @Override
-  protected void onCreate(final Bundle savedInstanceState) {
+  protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.two_factor_layout);

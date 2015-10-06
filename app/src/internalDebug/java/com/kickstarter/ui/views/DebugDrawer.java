@@ -2,6 +2,8 @@ package com.kickstarter.ui.views;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -12,7 +14,6 @@ import android.widget.FrameLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.google.common.base.Strings;
 import com.jakewharton.processphoenix.ProcessPhoenix;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
@@ -44,15 +45,15 @@ public class DebugDrawer extends FrameLayout {
   @Bind(R.id.version_name) TextView versionName;
   @BindDrawable(android.R.drawable.ic_dialog_alert) Drawable icDialogAlertDrawable;
 
-  public DebugDrawer(final Context context) {
+  public DebugDrawer(@NonNull final Context context) {
     this(context, null);
   }
 
-  public DebugDrawer(final Context context, final AttributeSet attrs) {
+  public DebugDrawer(@NonNull final Context context, @Nullable final AttributeSet attrs) {
     this(context, attrs, 0);
   }
 
-  public DebugDrawer(final Context context, final AttributeSet attrs, final int defStyleAttr) {
+  public DebugDrawer(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
     super(context, attrs, defStyleAttr);
 
     ((KSApplication) getContext().getApplicationContext()).component().inject(this);
@@ -72,7 +73,8 @@ public class DebugDrawer extends FrameLayout {
     endpointSpinner.setSelection(currentApiEndpoint.ordinal());
     endpointSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
       @Override
-      public void onItemSelected(final AdapterView<?> adapterView, final View view, final int position, final long id) {
+      public void onItemSelected(@NonNull final AdapterView<?> adapterView, @NonNull final View view,
+        final int position, final long id) {
         final ApiEndpoint selected = endpointAdapter.getItem(position);
         if (selected != currentApiEndpoint) {
           if (selected == ApiEndpoint.CUSTOM) {
@@ -84,7 +86,7 @@ public class DebugDrawer extends FrameLayout {
       }
 
       @Override
-      public void onNothingSelected(final AdapterView<?> adapterView) {}
+      public void onNothingSelected(@NonNull final AdapterView<?> adapterView) {}
     });
   }
 
@@ -96,7 +98,7 @@ public class DebugDrawer extends FrameLayout {
     versionName.setText(build.versionName());
   }
 
-  private void showCustomEndpointDialog(final int originalSelection, final String defaultUrl) {
+  private void showCustomEndpointDialog(final int originalSelection, @NonNull final String defaultUrl) {
     final View view = LayoutInflater.from(getContext().getApplicationContext()).inflate(R.layout.api_endpoint_layout, null);
     final EditText url = ButterKnife.findById(view, R.id.url);
     url.setText(defaultUrl);
@@ -107,7 +109,7 @@ public class DebugDrawer extends FrameLayout {
       .setView(view)
       .setPositiveButton(android.R.string.yes, (dialog, which) -> {
         String inputUrl = url.getText().toString();
-        if (!Strings.isNullOrEmpty(inputUrl)) {
+        if (inputUrl.length() > 0) {
           // Remove trailing '/'
           if (inputUrl.charAt(inputUrl.length() - 1) == '/') {
             inputUrl = inputUrl.substring(0, inputUrl.length() - 1);
@@ -129,7 +131,7 @@ public class DebugDrawer extends FrameLayout {
       .show();
   }
 
-  private void setEndpointAndRelaunch(final String endpoint) {
+  private void setEndpointAndRelaunch(@NonNull final String endpoint) {
     apiEndpointPreference.set(endpoint);
     logout.execute();
     ProcessPhoenix.triggerRebirth(getContext());

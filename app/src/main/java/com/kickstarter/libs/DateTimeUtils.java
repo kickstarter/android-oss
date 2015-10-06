@@ -1,5 +1,7 @@
 package com.kickstarter.libs;
 
+import android.support.annotation.NonNull;
+
 import org.joda.time.DateTime;
 import org.joda.time.Seconds;
 import org.joda.time.format.DateTimeFormat;
@@ -22,22 +24,20 @@ public class DateTimeUtils {
     return DateTimeFormat.forPattern("MMMM yyyy");
   }
 
-  public static String relativeDateInWords(final DateTime dateTime) {
+  public static String relativeDateInWords(@NonNull final DateTime dateTime) {
     return relativeDateInWords(dateTime, true, true, THIRTY_DAYS_IN_SECONDS);
   }
 
-  public static String relativeDateInWords(final DateTime dateTime, final boolean shortText) {
+  public static String relativeDateInWords(@NonNull final DateTime dateTime, final boolean shortText) {
     return relativeDateInWords(dateTime, shortText, true, THIRTY_DAYS_IN_SECONDS);
   }
 
-  public static String relativeDateInWords(final DateTime dateTime, final boolean shortText, final boolean explain) {
+  public static String relativeDateInWords(@NonNull final DateTime dateTime, final boolean shortText, final boolean explain) {
     return relativeDateInWords(dateTime, shortText, explain, THIRTY_DAYS_IN_SECONDS);
   }
 
-  public static String relativeDateInWords(final DateTime dateTime,
-    final boolean shortText,
-    final boolean explain,
-    final int threshold) {
+  public static String relativeDateInWords(@NonNull final DateTime dateTime, final boolean shortText,
+    final boolean explain, final int threshold) {
     // TODO: This method is a quick translation from our iOS code, but it needs another pass, e.g.: we should
     // extract these strings, look into JodaTime to see if we can clean anything up..
     final DateTime now = new DateTime();

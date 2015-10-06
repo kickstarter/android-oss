@@ -32,7 +32,7 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
   @Bind(R.id.vertical_line_medium_view) View verticalLineView;
 
   public interface Delegate {
-    void discoveryFilterClick(final DiscoveryFilterViewHolder viewHolder, final DiscoveryParams discoveryParams);
+    void discoveryFilterClick(@NonNull final DiscoveryFilterViewHolder viewHolder, @NonNull final DiscoveryParams discoveryParams);
   }
 
   public DiscoveryFilterViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {

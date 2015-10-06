@@ -2,6 +2,8 @@ package com.kickstarter.presenters;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.webkit.WebView;
 
 import com.kickstarter.libs.ApiCapabilities;
@@ -25,7 +27,7 @@ public class CheckoutPresenter extends Presenter<CheckoutActivity> {
   private final PublishSubject<String> url = PublishSubject.create();
 
   @Override
-  protected void onCreate(final Context context, final Bundle savedInstanceState) {
+  protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
 
     addSubscription(RxUtils.combineLatestPair(viewSubject, url)
@@ -41,7 +43,7 @@ public class CheckoutPresenter extends Presenter<CheckoutActivity> {
       .subscribe(this::checkoutNext));
   }
 
-  public void initialize(final Project project, final String url) {
+  public void initialize(@NonNull final Project project, @NonNull final String url) {
     this.project = project;
     this.url.onNext(url);
   }
@@ -50,7 +52,7 @@ public class CheckoutPresenter extends Presenter<CheckoutActivity> {
     loginSuccess.onNext(null);
   }
 
-  private void startWebView(final CheckoutActivity activity, final String url) {
+  private void startWebView(@NonNull final CheckoutActivity activity, @NonNull final String url) {
     final KickstarterWebView webView = activity.webView;
 
     webView.client().registerRequestHandlers(Arrays.asList(
@@ -61,17 +63,17 @@ public class CheckoutPresenter extends Presenter<CheckoutActivity> {
     webView.loadUrl(url);
   }
 
-  private boolean handleSignupUriRequest(final Request request, final WebView webView) {
+  private boolean handleSignupUriRequest(@NonNull final Request request, @NonNull final WebView webView) {
     ((CheckoutActivity) webView.getContext()).startLoginToutActivity();
     return true;
   }
 
-  private boolean handleCheckoutThanksUriRequest(final Request request, final WebView webView) {
+  private boolean handleCheckoutThanksUriRequest(@NonNull final Request request, @NonNull final WebView webView) {
     ((CheckoutActivity) webView.getContext()).startThanksActivity(project);
     return true;
   }
 
-  private void checkoutNext(final CheckoutActivity activity) {
+  private void checkoutNext(@NonNull final CheckoutActivity activity) {
     final String javascript = "root.checkout_next();";
     if (ApiCapabilities.canEvaluateJavascript()) {
       activity.webView.evaluateJavascript(javascript, null);

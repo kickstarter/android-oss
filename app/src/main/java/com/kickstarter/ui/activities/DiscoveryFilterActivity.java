@@ -5,11 +5,9 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -18,8 +16,8 @@ import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.DiscoveryUtils;
 import com.kickstarter.libs.KSColorUtils;
-import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.libs.StatusBarUtils;
+import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.models.Category;
 import com.kickstarter.presenters.DiscoveryFilterPresenter;
 import com.kickstarter.services.DiscoveryParams;
@@ -47,7 +45,7 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
   @BindDrawable(R.drawable.dark_blue_gradient) Drawable darkBlueGradientDrawable;
 
   @Override
-  protected void onCreate(final Bundle savedInstanceState) {
+  protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.discovery_filter_layout);
@@ -69,11 +67,11 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
     onBackPressed();
   }
 
-  public void loadCategories(final List<Category> categories) {
+  public void loadCategories(@NonNull final List<Category> categories) {
     adapter.takeCategories(categories);
   }
 
-  public void startDiscoveryActivity(final DiscoveryParams newDiscoveryParams) {
+  public void startDiscoveryActivity(@NonNull final DiscoveryParams newDiscoveryParams) {
     final Intent intent = new Intent().putExtra(getString(R.string.intent_discovery_params), newDiscoveryParams);
     setResult(Activity.RESULT_OK, intent);
     finish();

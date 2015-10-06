@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,9 +22,9 @@ import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.DiscoveryUtils;
-import com.kickstarter.libs.RequiresPresenter;
 import com.kickstarter.libs.RxUtils;
 import com.kickstarter.libs.StatusBarUtils;
+import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.DiscoveryPresenter;
 import com.kickstarter.services.DiscoveryParams;
@@ -60,7 +61,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
   @Bind(R.id.recycler_view) RecyclerView recyclerView;
 
   @Override
-  protected void onCreate(final Bundle savedInstanceState) {
+  protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     ((KSApplication) getApplication()).component().inject(this);
@@ -82,7 +83,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
 
     recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
       @Override
-      public void onScrolled(final RecyclerView recyclerView, final int dx, final int dy) {
+      public void onScrolled(@NonNull final RecyclerView recyclerView, final int dx, final int dy) {
         final int visibleItemCount = layoutManager.getChildCount();
         final int totalItemCount = layoutManager.getItemCount();
         final int pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
@@ -128,7 +129,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
     startActivityForResult(intent, ActivityRequestCodes.DISCOVERY_ACTIVITY_DISCOVERY_FILTER_ACTIVITY_SELECT_FILTER);
   }
 
-  public void startProjectActivity(final Project project) {
+  public void startProjectActivity(@NonNull final Project project) {
     final Intent intent = new Intent(this, ProjectActivity.class)
       .putExtra(getString(R.string.intent_project), project);
     startActivity(intent);
@@ -136,7 +137,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
   }
 
   @Override
-  protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
+  protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
     if (requestCode != ActivityRequestCodes.DISCOVERY_ACTIVITY_DISCOVERY_FILTER_ACTIVITY_SELECT_FILTER) {
       return;
     }
@@ -164,7 +165,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
       .show();
   }
 
-  private boolean closeToBottom(final Pair<Integer, Integer> itemAndCount) {
+  private boolean closeToBottom(@NonNull final Pair<Integer, Integer> itemAndCount) {
     return itemAndCount.first == itemAndCount.second - 2;
   }
 

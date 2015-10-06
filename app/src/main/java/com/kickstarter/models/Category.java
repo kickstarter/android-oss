@@ -2,11 +2,12 @@ package com.kickstarter.models;
 
 import android.content.Context;
 import android.os.Parcelable;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.AutoGson;
+import com.kickstarter.libs.qualifiers.AutoGson;
 import com.kickstarter.libs.KSColorUtils;
 
 import auto.parcel.AutoParcel;
@@ -42,7 +43,7 @@ abstract public class Category implements Parcelable {
 
   public abstract Builder toBuilder();
 
-  public int colorWithAlpha() {
+  public @ColorInt int colorWithAlpha() {
     return KSColorUtils.setAlpha(color(), 255);
   }
 

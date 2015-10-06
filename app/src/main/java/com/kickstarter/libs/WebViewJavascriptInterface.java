@@ -1,5 +1,6 @@
 package com.kickstarter.libs;
 
+import android.support.annotation.NonNull;
 import android.webkit.JavascriptInterface;
 
 import com.kickstarter.services.KickstarterWebViewClient;
@@ -7,12 +8,13 @@ import com.kickstarter.services.KickstarterWebViewClient;
 public class WebViewJavascriptInterface {
   private final KickstarterWebViewClient kickstarterWebViewClient;
 
-  public WebViewJavascriptInterface(final KickstarterWebViewClient kickstarterWebViewClient) {
+  public WebViewJavascriptInterface(@NonNull final KickstarterWebViewClient kickstarterWebViewClient) {
     this.kickstarterWebViewClient = kickstarterWebViewClient;
   }
 
   @JavascriptInterface
-  public void setFormContents(final String serialized, final String method, final String encodingType) {
+  public void setFormContents(@NonNull final String serialized, @NonNull final String method,
+    @NonNull final String encodingType) {
     /*
      *  WebViewJavascript.html is inserted into Kickstarter web view pages - it intercepts form submits,
      *  captures form info (serialized fields, method, encoding type) and sends it to this method, before continuing

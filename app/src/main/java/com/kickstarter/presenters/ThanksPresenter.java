@@ -2,6 +2,8 @@ package com.kickstarter.presenters;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.KSApplication;
@@ -11,6 +13,7 @@ import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.DiscoveryParams;
+import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.ThanksActivity;
 import com.kickstarter.ui.adapters.ThanksAdapter;
 import com.kickstarter.ui.viewholders.CategoryPromoViewHolder;
@@ -35,12 +38,12 @@ public class ThanksPresenter extends Presenter<ThanksActivity> implements Thanks
   @Inject ApiClient apiClient;
 
   @Override
-  protected void onCreate(final Context context, final Bundle savedInstanceState) {
+  protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
   }
 
-  public void takeProject(final Project project) {
+  public void takeProject(@NonNull final Project project) {
     final Observable<Pair<ThanksActivity, Project>> viewAndProject = RxUtils.combineLatestPair(viewSubject, Observable.just(project))
       .filter(vp -> vp.first != null);
 
@@ -80,7 +83,7 @@ public class ThanksPresenter extends Presenter<ThanksActivity> implements Thanks
       .build();
 
     final Observable<List<Project>> recommendedProjects = apiClient.fetchProjects(params)
-      .map(envelope -> envelope.projects);
+      .map(DiscoverEnvelope::projects);
     final Observable<Category> rootCategory = apiClient.fetchCategory(project.category().rootId());
     final Observable<Pair<List<Project>, Category>> projectsAndRootCategory =
       RxUtils.zipPair(recommendedProjects, rootCategory);
@@ -114,12 +117,12 @@ public class ThanksPresenter extends Presenter<ThanksActivity> implements Thanks
   }
 
   @Override
-  public void categoryPromoClick(final CategoryPromoViewHolder viewHolder, final Category category) {
+  public void categoryPromoClick(@NonNull final CategoryPromoViewHolder viewHolder, @NonNull final Category category) {
     categoryPromoClick.onNext(category);
   }
 
   @Override
-  public void projectCardMiniClick(final ProjectCardMiniViewHolder viewHolder, final Project project) {
+  public void projectCardMiniClick(@NonNull final ProjectCardMiniViewHolder viewHolder, @NonNull final Project project) {
     projectCardMiniClick.onNext(project);
   }
 }

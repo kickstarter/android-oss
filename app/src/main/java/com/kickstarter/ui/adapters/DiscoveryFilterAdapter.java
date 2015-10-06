@@ -1,5 +1,6 @@
 package com.kickstarter.ui.adapters;
 
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.View;
 
@@ -31,14 +32,14 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
     this.selectedParams = selectedParams;
   }
 
-  protected int layout(@NonNull final SectionRow sectionRow) {
+  protected @LayoutRes int layout(@NonNull final SectionRow sectionRow) {
     if (sectionRow.section() == 1) {
       return R.layout.discovery_filter_divider_view;
     }
     return R.layout.discovery_filter_view;
   }
 
-  protected KsrViewHolder viewHolder(final int layout, @NonNull final View view) {
+  protected KsrViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
     if (layout == R.layout.discovery_filter_divider_view) {
       return new DiscoveryFilterDividerViewHolder(view);
     }

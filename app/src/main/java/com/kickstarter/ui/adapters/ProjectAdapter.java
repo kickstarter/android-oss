@@ -1,5 +1,6 @@
 package com.kickstarter.ui.adapters;
 
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 import android.view.View;
@@ -24,7 +25,7 @@ public class ProjectAdapter extends KsrAdapter {
     this.delegate = delegate;
   }
 
-  protected int layout(@NonNull final SectionRow sectionRow) {
+  protected @LayoutRes int layout(@NonNull final SectionRow sectionRow) {
     if (sectionRow.section() == 0) {
       return R.layout.project_main_layout;
     } else {
@@ -50,7 +51,7 @@ public class ProjectAdapter extends KsrAdapter {
     notifyDataSetChanged();
   }
 
-  protected KsrViewHolder viewHolder(final int layout, @NonNull final View view) {
+  protected KsrViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
     if (layout == R.layout.project_main_layout) {
       return new ProjectViewHolder(view, delegate);
     }

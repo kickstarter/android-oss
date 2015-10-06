@@ -2,11 +2,12 @@ package com.kickstarter.services;
 
 import android.content.Context;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 import com.kickstarter.R;
-import com.kickstarter.libs.AutoGson;
+import com.kickstarter.libs.qualifiers.AutoGson;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Location;
 
@@ -109,7 +110,7 @@ public abstract class DiscoveryParams implements Parcelable {
     return queryParams().toString();
   }
 
-  public String filterString(final Context context) {
+  public String filterString(@NonNull final Context context) {
     if (staffPicks()) {
       return context.getString(R.string.Staff_Picks);
     } else if (nearby()) {

@@ -1,6 +1,7 @@
 package com.kickstarter.ui.containers;
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
 import android.view.ViewGroup;
 
 import static butterknife.ButterKnife.findById;
@@ -11,11 +12,11 @@ import static butterknife.ButterKnife.findById;
  */
 public interface ApplicationContainer {
   // The root ViewGroup into which the activity should place its contents.
-  ViewGroup bind(final Activity activity);
+  ViewGroup bind(@NonNull final Activity activity);
 
   // An ApplicationContainer that returns the normal activity content view.
   ApplicationContainer DEFAULT = new ApplicationContainer() {
-    @Override public ViewGroup bind(final Activity activity) {
+    @Override public ViewGroup bind(@NonNull final Activity activity) {
       return findById(activity, android.R.id.content);
     }
   };

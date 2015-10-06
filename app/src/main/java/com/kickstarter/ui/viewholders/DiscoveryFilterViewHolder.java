@@ -31,7 +31,7 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
   @BindColor(R.color.white) int whiteColor;
 
   public interface Delegate {
-    void discoveryFilterClick(final DiscoveryFilterViewHolder viewHolder, final DiscoveryParams discoveryParams);
+    void discoveryFilterClick(@NonNull final DiscoveryFilterViewHolder viewHolder, @NonNull final DiscoveryParams discoveryParams);
   }
 
   public DiscoveryFilterViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {

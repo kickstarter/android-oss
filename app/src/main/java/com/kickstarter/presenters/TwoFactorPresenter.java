@@ -3,6 +3,7 @@ package com.kickstarter.presenters;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
@@ -30,7 +31,7 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
   private final PublishSubject<Void> resendClick = PublishSubject.create();
 
   @Override
-  protected void onCreate(final Context context, final Bundle savedInstanceState) {
+  protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
@@ -87,14 +88,14 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
     view.onSuccess();
   }
 
-  private void error(final Throwable e) {
+  private void error(@NonNull final Throwable e) {
     if (!hasView()) {
       return;
     }
 
     new ApiErrorHandler(e, view()) {
       @Override
-      public void handleApiError(final ApiError apiError) {
+      public void handleApiError(@NonNull final ApiError apiError) {
         switch (apiError.errorEnvelope().ksrCode()) {
           case TFA_FAILED:
             displayError(R.string.The_code_provided_does_not_match);
@@ -107,11 +108,12 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
     }.handleError();
   }
 
-  private Observable<AccessTokenEnvelope> submit(final String email, final String password, final String code) {
+  private Observable<AccessTokenEnvelope> submit(@NonNull final String email, @NonNull final String password,
+    @NonNull final String code) {
     return client.login(email, password, code);
   }
 
-  private Observable<AccessTokenEnvelope> resendCode(final String email, final String password) {
+  private Observable<AccessTokenEnvelope> resendCode(@NonNull final String email, @NonNull final String password) {
     return client.login(email, password);
   }
 }

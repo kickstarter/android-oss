@@ -1,5 +1,6 @@
 package com.kickstarter.ui.viewholders;
 
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -37,10 +38,10 @@ public class ProjectCardViewHolder extends KsrViewHolder {
   @Inject Money money;
 
   public interface Delegate {
-    void projectCardClick(final ProjectCardViewHolder viewHolder, final Project project);
+    void projectCardClick(@NonNull final ProjectCardViewHolder viewHolder, @NonNull final Project project);
   }
 
-  public ProjectCardViewHolder(final View view, final Delegate delegate) {
+  public ProjectCardViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
     super(view);
     this.delegate = delegate;
 
@@ -48,7 +49,7 @@ public class ProjectCardViewHolder extends KsrViewHolder {
     ButterKnife.bind(this, view);
   }
 
-  public void onBind(final Object datum) {
+  public void onBind(@NonNull final Object datum) {
     this.project = (Project) datum;
 
     backersCountTextView.setText(project.formattedBackersCount());
@@ -70,7 +71,7 @@ public class ProjectCardViewHolder extends KsrViewHolder {
   }
 
   @Override
-  public void onClick(final View view) {
+  public void onClick(@NonNull final View view) {
     delegate.projectCardClick(this, project);
   }
 }

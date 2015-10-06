@@ -1,6 +1,8 @@
 package com.kickstarter.ui.views;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -15,15 +17,15 @@ import javax.inject.Inject;
 public class KickstarterWebView extends WebView {
   @Inject KickstarterWebViewClient client;
 
-  public KickstarterWebView(final Context context) {
+  public KickstarterWebView(@NonNull final Context context) {
     this(context, null);
   }
 
-  public KickstarterWebView(final Context context, final AttributeSet attrs) {
+  public KickstarterWebView(@NonNull final Context context, @Nullable final AttributeSet attrs) {
     this(context, attrs, android.R.attr.webViewStyle);
   }
 
-  public KickstarterWebView(final Context context, final AttributeSet attrs, final int defStyle) {
+  public KickstarterWebView(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyle) {
     super(context, attrs, defStyle);
 
     if (isInEditMode()) {

@@ -106,12 +106,12 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
           togglePostTextView(postCommentTextView, charSequence);
         }
         @Override
-        public void afterTextChanged(final Editable editable) {
+        public void afterTextChanged(@NonNull final Editable editable) {
         }
       }
     );
 
-    postCommentTextView.setOnClickListener((final View v) -> {
+    postCommentTextView.setOnClickListener((@NonNull final View v) -> {
       presenter.postCommentOnClick(project, commentBodyEditText.getText().toString());
       dialog.dismiss();
     });

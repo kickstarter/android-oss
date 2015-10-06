@@ -16,6 +16,7 @@ import com.kickstarter.libs.RxUtils;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.ApiError;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
+import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.activities.TwoFactorActivity;
 
 import javax.inject.Inject;
@@ -97,7 +98,7 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
       @Override
       public void handleApiError(@NonNull final ApiError apiError) {
         switch (apiError.errorEnvelope().ksrCode()) {
-          case TFA_FAILED:
+          case ErrorEnvelope.TFA_FAILED:
             displayError(R.string.The_code_provided_does_not_match);
             break;
           default:

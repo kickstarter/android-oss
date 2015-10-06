@@ -17,6 +17,7 @@ import com.kickstarter.libs.StringUtils;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.ApiError;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
+import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.activities.LoginActivity;
 
 import javax.inject.Inject;
@@ -95,11 +96,11 @@ public class LoginPresenter extends Presenter<LoginActivity> {
       @Override
       public void handleApiError(@NonNull final ApiError apiError) {
         switch (apiError.errorEnvelope().ksrCode()) {
-          case TFA_REQUIRED:
-          case TFA_FAILED:
+          case ErrorEnvelope.TFA_REQUIRED:
+          case ErrorEnvelope.TFA_FAILED:
             view().startTwoFactorActivity(forward);
             break;
-          case INVALID_XAUTH_LOGIN:
+          case ErrorEnvelope.INVALID_XAUTH_LOGIN:
             displayError(R.string.Login_does_not_match_any_of_our_records);
             break;
           default:

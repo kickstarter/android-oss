@@ -36,19 +36,16 @@ public class EmptyCommentFeedViewHolder extends KsrViewHolder {
     final Project project = projectAndUser.first;
     final User user = projectAndUser.second;
 
-    int loginButtonVisibility = View.GONE;
-    @StringRes int messageStringId;
-
     if (user == null) {
-      loginButtonVisibility = View.VISIBLE;
-      messageStringId = R.string.Aw_how_sad_Log_in;
+      commentFeedLoginButton.setVisibility(View.VISIBLE);
+      noCommentsMessageTextView.setText(R.string.Aw_how_sad_Log_in);
     } else if (project.isBacking()) {
-      messageStringId = R.string.Aw_how_sad_Be_the_first;
+      commentFeedLoginButton.setVisibility(View.GONE);
+      noCommentsMessageTextView.setText(R.string.Aw_how_sad_Be_the_first);
     } else {
-      messageStringId = R.string.Aw_how_sad_Become_a_backer;
+      commentFeedLoginButton.setVisibility(View.GONE);
+      noCommentsMessageTextView.setText(R.string.Aw_how_sad_Become_a_backer);
     }
-    commentFeedLoginButton.setVisibility(loginButtonVisibility);
-    noCommentsMessageTextView.setText(messageStringId);
   }
 
   @Nullable

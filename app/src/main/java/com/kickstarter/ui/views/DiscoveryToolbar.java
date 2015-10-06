@@ -33,7 +33,6 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public class DiscoveryToolbar extends Toolbar {
   @Bind(R.id.activity_feed_button) TextView activityFeedButton;
-  @Bind(R.id.color_button) TextView colorButton;
   @Bind(R.id.current_user_button) TextView currentUserButton;
   @Bind(R.id.filter_expand_more_button) TextView filterExpandMoreButton;
   @Bind(R.id.filter_text_view) TextView filterTextView;
@@ -163,12 +162,5 @@ public class DiscoveryToolbar extends Toolbar {
     }
 
     loginSubscription.unsubscribe();
-  }
-
-  // TODO: Remove
-  @OnClick({R.id.color_button})
-  public void onColorButtonClicked() {
-    final DiscoveryActivity activity = (DiscoveryActivity) getContext();
-    activity.showColorDialog();
   }
 }

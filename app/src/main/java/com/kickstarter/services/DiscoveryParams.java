@@ -10,6 +10,7 @@ import com.kickstarter.libs.qualifiers.AutoGson;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Location;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -83,8 +84,7 @@ public abstract class DiscoveryParams implements Parcelable {
   }
 
   public Map<String, String> queryParams() {
-    return new HashMap<String, String>()
-    {{
+    return Collections.unmodifiableMap(new HashMap<String, String>() {{
       put("staff_picks", String.valueOf(staffPicks()));
       put("starred", String.valueOf(starred()));
       put("backed", String.valueOf(backed()));
@@ -104,7 +104,7 @@ public abstract class DiscoveryParams implements Parcelable {
       if (staffPicks() && page() == 1) {
         put("include_potd", "true");
       }
-    }};
+    }});
   }
 
   @Override

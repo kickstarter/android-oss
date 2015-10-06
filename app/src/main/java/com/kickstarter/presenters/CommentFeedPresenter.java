@@ -28,11 +28,13 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
+import timber.log.Timber;
 
 public class CommentFeedPresenter extends Presenter<CommentFeedActivity> implements CommentFeedAdapter.Delegate {
   private final PublishSubject<Void> contextClick = PublishSubject.create();
   private final PublishSubject<Void> loginClick = PublishSubject.create();
   private final PublishSubject<Void> loginSuccess = PublishSubject.create();
+  private final PublishSubject<Void> postSuccess = PublishSubject.create();
 
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
@@ -49,6 +51,8 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
     final Observable<Project> project = loginSuccess.flatMap(__ -> client.fetchProject(initialProject))
       .startWith(initialProject);
 
+    // todo: merge with post success
+    // hit show on postSuccess
     final Observable<List<Comment>> comments = client.fetchProjectComments(initialProject)
       .map(CommentsEnvelope::comments);
 
@@ -92,16 +96,39 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
   }
 
   public void postCommentOnClick(@NonNull final Project project, @NonNull final String body) {
-    client.postProjectComment(project, body)
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::showToastOnSuccess);
+    Timber.d(body);
+    postSuccess.onNext(null);
+    // todo: hit show() again on post success
+
+//    client.postProjectComment(project, body)
+//      .observeOn(AndroidSchedulers.mainThread())
+//      .subscribe(this::showToastOnSuccess);
   }
 
   private void showToastOnSuccess(@Nullable final Comment comment) {
     final String message = (comment == null) ? "Comment could not be posted" : "Comment posted!";
     final Toast toast = Toast.makeText(view().getApplicationContext(), message, Toast.LENGTH_LONG);
     toast.show();
+    postSuccess.onNext(null);
   }
+
+//  private void error(final Throwable e) {
+//    if (!hasView()) {
+//      return;
+//    }
+//
+//    // check: network error
+//    new ApiErrorHandler(e, view()) {
+//      @Override
+//      public void handleApiError(final ApiError apiError) {
+//        switch (apiError.errorEnvelope().ksrCode()) {
+//          default:
+//            displayError(-1);
+//            break;
+//        }
+//      }
+//    }.handleError();
+//  }
 
   public void projectContextClicked() {
     contextClick.onNext(null);

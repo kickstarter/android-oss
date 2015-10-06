@@ -28,7 +28,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
-import timber.log.Timber;
 
 public class CommentFeedPresenter extends Presenter<CommentFeedActivity> implements CommentFeedAdapter.Delegate {
   private final PublishSubject<Void> contextClick = PublishSubject.create();
@@ -54,7 +53,6 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
     final Observable<List<Comment>> comments = client.fetchProjectComments(initialProject)
       .map(CommentsEnvelope::comments);
 
-    // todo: merge on post success. test this.------>
     final Observable<List<Comment>> commentsOnPostSuccess = postSuccess
       .take(1)
       .flatMap(__ -> client.fetchProjectComments(initialProject))
@@ -68,7 +66,6 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
     final Observable<Pair<CommentFeedActivity, Project>> viewAndProject =
       RxUtils.combineLatestPair(viewSubject, project);
 
-    // logged in user == backer --> post comment
     addSubscription(RxUtils.combineLatestPair(viewAndProject, loginSuccess)
       .filter(vpl -> vpl.first.second.isBacking())
       .take(1)
@@ -101,9 +98,6 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
   }
 
   public void postCommentOnClick(@NonNull final Project project, @NonNull final String body) {
-    Timber.d(body);
-//    postSuccess.onNext(null);
-
     addSubscription(client.postProjectComment(project, body)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::success, this::error)
@@ -111,10 +105,10 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
   }
 
   private void success(@Nullable final Comment comment) {
+    postSuccess.onNext(null);
     final String message = (comment == null) ? "Comment could not be posted" : "Comment posted!";
     final Toast toast = Toast.makeText(view().getApplicationContext(), message, Toast.LENGTH_LONG);
     toast.show();
-    postSuccess.onNext(null);
   }
 
   private void error(@NonNull final Throwable e) {

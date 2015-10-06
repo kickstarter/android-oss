@@ -14,7 +14,6 @@ import android.widget.FrameLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.google.common.base.Strings;
 import com.jakewharton.processphoenix.ProcessPhoenix;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
@@ -110,7 +109,7 @@ public class DebugDrawer extends FrameLayout {
       .setView(view)
       .setPositiveButton(android.R.string.yes, (dialog, which) -> {
         String inputUrl = url.getText().toString();
-        if (!Strings.isNullOrEmpty(inputUrl)) {
+        if (inputUrl.length() > 0) {
           // Remove trailing '/'
           if (inputUrl.charAt(inputUrl.length() - 1) == '/') {
             inputUrl = inputUrl.substring(0, inputUrl.length() - 1);

@@ -85,7 +85,6 @@ public class DiscoveryToolbar extends Toolbar {
     filterTextView.setText(params.filterString(context));
 
     final Observable<TextView> views = Observable.just(activityFeedButton,
-      colorButton,
       currentUserButton,
       filterExpandMoreButton,
       filterTextView,

@@ -104,9 +104,9 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
     Timber.d(body);
     postSuccess.onNext(null);
 
-//    client.postProjectComment(project, body)
-//      .observeOn(AndroidSchedulers.mainThread())
-//      .subscribe(this::showToastOnSuccess);
+    client.postProjectComment(project, body)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::showToastOnSuccess);
   }
 
   private void showToastOnSuccess(@Nullable final Comment comment) {

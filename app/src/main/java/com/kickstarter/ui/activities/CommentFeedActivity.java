@@ -92,7 +92,7 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     final TextView postCommentTextView = ButterKnife.findById(dialog, R.id.post_button);
 
     projectNameTextView.setText(project.name());
-    cancelButtonTextView.setOnClickListener((final View v) -> dialog.dismiss());
+    cancelButtonTextView.setOnClickListener((@NonNull final View v) -> dialog.dismiss());
     postCommentTextView.setEnabled(false);
 
     commentBodyEditText.addTextChangedListener(
@@ -126,7 +126,7 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
   }
 
   @Override
-  protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
+  protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
     if (requestCode != ActivityRequestCodes.COMMENT_FEED_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED) {
       return;
     }

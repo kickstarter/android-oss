@@ -45,10 +45,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="@dimen/progress_bar_min_height"
-        android:paddingTop="@dimen/grid_1"
         android:progress="50" />
 
-      <include layout="@layout/project_stats_view" />
+      <include layout="@layout/project_stats_view"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="@dimen/grid_2"
+        android:layout_marginBottom="@dimen/grid_3"/>
 
     </LinearLayout>
 

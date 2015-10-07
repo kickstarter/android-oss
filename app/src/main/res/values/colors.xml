@@ -10,7 +10,8 @@
   <color name="window_background">@color/white</color>
   <color name="debug_background">#EE222222</color>
   <color name="discovery_primary">@color/dark_blue</color>
-  <color name="discovery_secondary">#FF083E8F</color>
+  <color name="discovery_secondary">#ff083e8f</color>
+  <color name="discovery_background">#fff8f8f8</color>
 
   <!-- Kickstarter colors -->
   <color name="black">#000000</color>

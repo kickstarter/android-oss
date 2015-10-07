@@ -5,7 +5,7 @@
   android:id="@+id/discovery_toolbar"
   android:layout_width="match_parent"
   android:layout_height="?attr/actionBarSize"
-  android:background="@color/discovery_secondary"
+  android:background="@color/dark_blue"
   android:elevation="3dp">
 
   <RelativeLayout

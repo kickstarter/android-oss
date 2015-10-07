@@ -80,7 +80,7 @@ public class DiscoveryToolbar extends Toolbar {
   public void loadParams(@NonNull final DiscoveryParams params) {
     final Context context = getContext();
 
-    this.setBackgroundColor(DiscoveryUtils.secondaryColor(context, params));
+    this.setBackgroundColor(DiscoveryUtils.primaryColor(context, params));
 
     filterTextView.setText(params.filterString(context));
 
@@ -90,14 +90,9 @@ public class DiscoveryToolbar extends Toolbar {
       filterTextView,
       loginButton);
 
-    final boolean overlayShouldBeLight = DiscoveryUtils.overlayShouldBeLight(params);
-    final float alpha = overlayShouldBeLight ? 1.0f : 0.8f;
     final int overlayTextColor = DiscoveryUtils.overlayTextColor(context, params);
 
-    final Subscription subscription = views.subscribe(view -> {
-      view.setAlpha(alpha);
-      view.setTextColor(overlayTextColor);
-    });
+    views.subscribe(view -> view.setTextColor(overlayTextColor));
   }
 
   protected void showLoggedInMenu(@NonNull final User user) {

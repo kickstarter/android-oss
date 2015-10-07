@@ -111,14 +111,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
     discoveryToolbar.loadParams(params);
 
     if (ApiCapabilities.canSetStatusBarColor() && ApiCapabilities.canSetDarkStatusBarIcons()) {
-      StatusBarUtils.apply(this, DiscoveryUtils.secondaryColor(this, params), DiscoveryUtils.overlayShouldBeLight(params));
-    }
-
-    // Set background
-    if (params.category() != null) {
-      recyclerView.setBackgroundColor(params.category().colorWithAlpha());
-    } else {
-      recyclerView.setBackground(darkBlueGradientDrawable);
+      StatusBarUtils.apply(this, DiscoveryUtils.primaryColor(this, params), DiscoveryUtils.overlayShouldBeLight(params));
     }
   }
 

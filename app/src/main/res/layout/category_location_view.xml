@@ -2,14 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="horizontal"
   android:layout_width="wrap_content"
-  android:layout_height="wrap_content"
+  android:layout_height="match_parent"
+  android:layout_centerVertical="true"
   android:paddingBottom="@dimen/grid_2">
 
   <com.kickstarter.ui.views.IconTextView
     android:id="@+id/category_icon"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="center_vertical"
     android:paddingRight="@dimen/grid_1_half"
     android:paddingEnd="@dimen/grid_1_half"
     android:text="@string/local_offer_icon"
@@ -17,7 +17,6 @@
 
   <TextView
     android:id="@+id/category"
-    android:layout_gravity="center_vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:paddingLeft="@dimen/grid_1_half"
@@ -26,7 +25,6 @@
 
   <com.kickstarter.ui.views.IconTextView
     android:id="@+id/location_icon"
-    android:layout_gravity="center_vertical"
     android:layout_toRightOf="@id/category"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -39,7 +37,6 @@
     android:id="@+id/location"
     android:ellipsize="end"
     android:singleLine="true"
-    android:layout_gravity="center_vertical"
     android:layout_toRightOf="@id/location_icon"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"

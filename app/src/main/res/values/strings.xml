@@ -27,7 +27,7 @@
   <string name="Build_date">Build Date</string>
   <string name="Build_information">Build Information</string>
   <string name="Blurb_read_more">%1$s &lt;u>Read\u00A0more&lt;/u></string>
-  <string name="by_">by\u0020</string>
+  <string name="by_">by\u0020 %1$s</string>
   <string name="by_creator">by &lt;u>%1$s&lt;/u></string>
   <string name="By_signing_up_you_agree_to_our">
     By signing up you agree to our terms of use, privacy policy, and cookie policy. We’ll never post

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  tools:showIn="@layout/project_card_view"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:layout_marginBottom="@dimen/grid_2"
+  android:orientation="horizontal">
+
+  <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingRight="@dimen/grid_2">
+
+    <TextView
+      android:id="@+id/backers_count"
+      android:textSize="@dimen/ksr_mini_stats"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textColor="@color/text_dark" />
+
+    <TextView
+      android:textSize="@dimen/caption"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/backers"
+      android:textColor="@color/dark_gray" />
+  </LinearLayout>
+
+  <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingRight="@dimen/grid_2">
+
+    <TextView
+      android:id="@+id/pledged"
+      android:textSize="@dimen/ksr_mini_stats"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textColor="@color/text_dark" />
+
+    <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal">
+
+      <TextView
+        android:textSize="@dimen/caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pledged_of_"
+        android:textColor="@color/dark_gray" />
+
+      <TextView
+        android:textSize="@dimen/caption"
+        android:id="@+id/goal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/dark_gray" />
+    </LinearLayout>
+  </LinearLayout>
+
+  <LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingRight="@dimen/grid_1">
+
+    <TextView
+      android:id="@+id/deadline_countdown"
+      android:singleLine="true"
+      android:textSize="@dimen/ksr_mini_stats"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textColor="@color/text_dark" />
+
+    <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal">
+
+      <TextView
+        android:id="@+id/deadline_countdown_unit"
+        android:textSize="@dimen/caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/dark_gray" />
+
+      <TextView
+        android:textSize="@dimen/caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/_to_go"
+        android:textColor="@color/dark_gray" />
+    </LinearLayout>
+  </LinearLayout>
+
+</LinearLayout>

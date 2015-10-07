@@ -11,7 +11,6 @@
   <LinearLayout
     android:id="@+id/background_gradient"
     android:orientation="horizontal"
-    android:background="@color/blue"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
   </LinearLayout>

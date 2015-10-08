@@ -5,4 +5,3 @@
   <item android:drawable="@color/light_gray_click" android:state_selected="true" />
   <item android:drawable="@color/transparent" />
 </selector>
-

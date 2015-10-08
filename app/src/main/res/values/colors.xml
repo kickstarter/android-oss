@@ -55,6 +55,10 @@
   <color name="black_alpha_30">#4D000000</color>
   <color name="blue_alpha_20">#3300a0ff</color>
 
+  <!-- Click indicator colors-->
+  <color name="dark_gray_click">#1f000000</color>
+  <color name="light_gray_click">#42ffffff</color>
+
   <!-- Colors lightened/darkened
     TODO: Write helper to do this at runtime, until then you can punch the base color into http://www.hexcolortool.com/
     and click darken/lighten X% -->

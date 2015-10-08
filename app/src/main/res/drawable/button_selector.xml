@@ -7,5 +7,5 @@ in favor of a ripple effect (see drawable-v21/button_selector.xml).
   <item android:drawable="@color/accent_alpha_20" android:state_focused="true" />
   <item android:drawable="@color/accent_alpha_20" android:state_pressed="true" />
   <item android:drawable="@color/accent_alpha_20" android:state_selected="true" />
-  <item android:drawable="@color/primary" />
+  <item android:drawable="@color/transparent" />
 </selector>

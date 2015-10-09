@@ -161,24 +161,4 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
   private boolean closeToBottom(@NonNull final Pair<Integer, Integer> itemAndCount) {
     return itemAndCount.first == itemAndCount.second - 2;
   }
-
-  // TODO: Remove
-  public void showColorDialog() {
-    final View view = View.inflate(this, R.layout.color_input_view, null);
-
-    new AlertDialog.Builder(this)
-      .setView(view)
-      .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-        public void onClick(DialogInterface dialog, int whichButton) {
-          final EditText editText = (EditText) view.findViewById(R.id.color_edit);
-          final String string = editText.getText().toString().toLowerCase();
-          try {
-            final int number = Integer.parseInt(string, 16);
-            // StatusBarUtils.apply(this, KSColorUtils.setAlpha(number, 255));
-          } catch (NumberFormatException e) {
-          }
-        }
-      })
-      .show();
-  }
 }

@@ -1,6 +1,7 @@
 package com.kickstarter.libs;
 
 import android.content.Context;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.Window;
@@ -9,7 +10,7 @@ import android.view.WindowManager;
 public class StatusBarUtils {
   private StatusBarUtils() {}
 
-  public static void apply(@NonNull final BaseActivity activity, final int color) {
+  public static void apply(@NonNull final BaseActivity activity, final @ColorInt int color) {
     if (!ApiCapabilities.canSetStatusBarColor()) {
       return;
     }
@@ -19,7 +20,8 @@ public class StatusBarUtils {
     window.setStatusBarColor(color);
   }
 
-  public static void apply(@NonNull final BaseActivity activity, final int color, final boolean overlayShouldBeLight) {
+  public static void apply(@NonNull final BaseActivity activity, final @ColorInt int color,
+    final boolean overlayShouldBeLight) {
     apply(activity, color);
 
     if (!ApiCapabilities.canSetDarkStatusBarIcons()) {

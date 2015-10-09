@@ -49,8 +49,6 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
   @Bind(R.id.background_image_view) ImageView backgroundImageView;
   @Bind(R.id.recycler_view) RecyclerView recyclerView;
   @BindColor(R.color.dark_blue_gradient_start) int darkBlueGradientStartColor;
-  @BindColor(R.color.text_dark) int darkColor;
-  @BindColor(R.color.white) int lightColor;
   @BindDrawable(R.drawable.dark_blue_gradient) Drawable darkBlueGradientDrawable;
 
   @Override

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  android:background="?attr/selectableItemBackground"
   android:id="@+id/discovery_filter_view"
   android:layout_marginRight="@dimen/grid_2"
   android:layout_width="fill_parent"
@@ -21,7 +22,6 @@
   <RelativeLayout
     android:layout_height="wrap_content"
     android:layout_width="fill_parent"
-    android:background="@drawable/click_indicator_dark_masked"
     android:paddingTop="@dimen/grid_1_half"
     android:paddingBottom="@dimen/grid_1_half">
 

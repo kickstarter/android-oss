@@ -2,6 +2,7 @@ package com.kickstarter.ui.views;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.PopupMenu;
@@ -90,7 +91,7 @@ public class DiscoveryToolbar extends Toolbar {
       filterTextView,
       loginButton);
 
-    final int overlayTextColor = DiscoveryUtils.overlayTextColor(context, params);
+    final @ColorInt int overlayTextColor = DiscoveryUtils.overlayTextColor(context, params);
 
     views.subscribe(view -> view.setTextColor(overlayTextColor));
   }

@@ -111,14 +111,15 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
   }
 
   private @Nullable GradientDrawable backgroundGradientDrawable(@NonNull final DiscoveryParams params) {
-    if (params.isCategorySet() && backgroundDrawable(params) != null) {
-      final int color = params.category().color();
-      final int[] gradientColors = new int[] {KSColorUtils.setAlpha(color, 242),
-        KSColorUtils.setAlpha(color, 215),
-        KSColorUtils.setAlpha(color, 0)};
-      return new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, gradientColors);
+    if (!params.isCategorySet() || backgroundDrawable(params) == null) {
+      return null;
     }
-    return null;
+
+    final int color = params.category().color();
+    final int[] gradientColors = new int[] {KSColorUtils.setAlpha(color, 242),
+      KSColorUtils.setAlpha(color, 215),
+      KSColorUtils.setAlpha(color, 0)};
+    return new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, gradientColors);
   }
 
   private void resizeGradientView() {

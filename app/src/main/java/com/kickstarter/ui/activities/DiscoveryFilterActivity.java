@@ -2,15 +2,17 @@ package com.kickstarter.ui.activities;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Configuration;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Display;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -44,6 +46,7 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
   @Bind(R.id.close_button) TextView closeButton;
   @Bind(R.id.discovery_filter_layout) RelativeLayout layout;
   @Bind(R.id.background_gradient) LinearLayout backgroundGradientLayout;
+  @Bind(R.id.background_image_view) ImageView backgroundImageView;
   @Bind(R.id.recycler_view) RecyclerView recyclerView;
   @BindColor(R.color.dark_blue_gradient_start) int darkBlueGradientStartColor;
   @BindColor(R.color.text_dark) int darkColor;
@@ -65,12 +68,11 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
 
     loadParams(discoveryParams);
 
-    final RelativeLayout.LayoutParams layoutParams;
-    if (ViewUtils.isPortrait(this)) {
-      layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-    } else {
-      layoutParams = new RelativeLayout.LayoutParams(900, RelativeLayout.LayoutParams.MATCH_PARENT);
-    }
+    final Display display = getWindowManager().getDefaultDisplay();
+    final Point size = new Point();
+    display.getSize(size);
+    final RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(Math.round(size.x * 0.65f),
+      RelativeLayout.LayoutParams.MATCH_PARENT);
     backgroundGradientLayout.setLayoutParams(layoutParams);
 
     presenter.initialize(discoveryParams);
@@ -101,21 +103,28 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
       }
     }
 
-    if (params.isCategorySet()) {
-      layout.setBackgroundColor(params.category().colorWithAlpha());
-      final Drawable backgroundDrawable = params.category().imageWithOrientation(this, getResources().getConfiguration().orientation);
-      if (backgroundDrawable != null) {
-        layout.setBackground(backgroundDrawable);
-      }
-
-      final int color = params.category().color();
-      final int[] gradientColors = new int[] {KSColorUtils.setAlpha(color, 242), KSColorUtils.setAlpha(color, 0)};
-      GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, gradientColors);
-      backgroundGradientLayout.setBackground(gradientDrawable);
-    } else {
-      layout.setBackground(darkBlueGradientDrawable);
-    }
-
+    layout.setBackgroundColor(DiscoveryUtils.primaryColor(this, params));
+    backgroundImageView.setImageDrawable(backgroundDrawable(params));
+    backgroundGradientLayout.setBackground(backgroundGradientDrawable(params));
     closeButton.setTextColor(DiscoveryUtils.overlayTextColor(this, params));
+  }
+
+  private @Nullable Drawable backgroundDrawable(final DiscoveryParams params) {
+    if (params.isCategorySet()) {
+      return params.category().imageWithOrientation(this, getResources().getConfiguration().orientation);
+    } else {
+      return darkBlueGradientDrawable;
+    }
+  }
+
+  private @Nullable GradientDrawable backgroundGradientDrawable(final DiscoveryParams params) {
+    if (params.isCategorySet() && backgroundDrawable(params) != null) {
+      final int color = params.category().color();
+      final int[] gradientColors = new int[] {KSColorUtils.setAlpha(color, 242),
+        KSColorUtils.setAlpha(color, 215),
+        KSColorUtils.setAlpha(color, 0)};
+      return new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, gradientColors);
+    }
+    return null;
   }
 }

@@ -5,8 +5,16 @@
   android:id="@+id/discovery_filter_layout"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@drawable/dark_blue_gradient"
   tools:context=".DiscoveryFilterActivity">
+
+  <ImageView
+    android:id="@+id/background_image_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scaleType="centerCrop"
+    android:adjustViewBounds="false"
+    android:cropToPadding="false"
+    android:src="@drawable/dark_blue_gradient" />
 
   <LinearLayout
     android:id="@+id/background_gradient"

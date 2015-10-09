@@ -47,7 +47,6 @@
   <color name="category_technology">#ff6396fc</color>
   <color name="category_theater">#ffff7d5f</color>
 
-  <!-- Secondary category colors -->
   <color name="category_secondary_art">#fff7aa94</color>
   <color name="category_secondary_comics">#ffffe54f</color>
   <color name="category_secondary_crafts">#ffe35f8c</color>

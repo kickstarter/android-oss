@@ -55,7 +55,7 @@ public class ProjectViewHolder extends KsrViewHolder {
     void projectUpdatesClicked(@NonNull final ProjectViewHolder viewHolder);
   }
 
-  public ProjectViewHolder(@NonNull final View view, @NonNull final ProjectViewHolder.Delegate delegate) {
+  public ProjectViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
     super(view);
     this.delegate = delegate;
     ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);

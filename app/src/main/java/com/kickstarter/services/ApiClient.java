@@ -8,6 +8,7 @@ import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.models.Category;
+import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
@@ -44,6 +45,8 @@ public class ApiClient {
 
     service = apiService();
   }
+
+  // TODO: map null values back to an empty array so app doesn't crash on API responses
 
   public Observable<ActivityEnvelope> fetchActivities(@NonNull final ActivityFeedParams params) {
     return service.fetchActivities(params.queryParams())
@@ -86,6 +89,10 @@ public class ApiClient {
   public Observable<AccessTokenEnvelope> login(@NonNull final String email, @NonNull final String password,
     @NonNull final String code) {
     return service.login(email, password, code);
+  }
+
+  public Observable<Comment> postProjectComment(@NonNull final Project project, @NonNull final String body) {
+    return service.postProjectComment(project.param(), body);
   }
 
   public Observable<Project> starProject(@NonNull final Project project) {

@@ -40,7 +40,7 @@
       android:id="@+id/close_button"
       android:layout_alignParentTop="true"
       android:layout_alignParentRight="true"
-      android:background="@drawable/click_indicator_dark"
+      android:background="?attr/selectableItemBackgroundBorderless"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:padding="@dimen/grid_1"

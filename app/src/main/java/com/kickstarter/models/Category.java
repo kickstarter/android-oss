@@ -141,6 +141,10 @@ abstract public class Category implements Parcelable {
     return context.getResources().getColor(identifier);
   }
 
+  public @ColorInt int overlayColor(final Context context) {
+    return overlayShouldBeLight() ? KSColorUtils.lightColor(context) : KSColorUtils.darkColor(context);
+  }
+
   public boolean overlayShouldBeDark() {
     switch ((int) rootId()) {
       case 1:

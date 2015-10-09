@@ -1,12 +1,14 @@
 package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.TextView;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.KSColorUtils;
 import com.kickstarter.models.Category;
 
 import butterknife.Bind;
@@ -19,8 +21,6 @@ public class CategoryPromoViewHolder extends KsrViewHolder {
   @Bind(R.id.card_view) CardView cardView;
   @Bind(R.id.explore_text_view) TextView exploreTextView;
   @Bind(R.id.live_projects_text_view) TextView liveProjectsTextView;
-  @BindColor(R.color.text_dark) int darkColor;
-  @BindColor(R.color.white) int lightColor;
 
   public interface Delegate {
     void categoryPromoClick(@NonNull final CategoryPromoViewHolder viewHolder, @NonNull final Category category);
@@ -39,7 +39,7 @@ public class CategoryPromoViewHolder extends KsrViewHolder {
     final Context context = view.getContext();
 
     cardView.setCardBackgroundColor(category.colorWithAlpha());
-    final int categoryTextColor = category.overlayShouldBeLight() ? lightColor : darkColor;
+    final @ColorInt int categoryTextColor = category.overlayColor(context);
     exploreTextView.setTextColor(categoryTextColor);
     exploreTextView.setText(context.getString(R.string.Explore_Category, category.name()));
     liveProjectsTextView.setText(context.getString(R.string.Number_live_projects, category.projectsCount()));

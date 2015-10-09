@@ -26,6 +26,10 @@ public class KSColorUtils {
     return color | (alpha << 24);
   }
 
+  public static @ColorInt int darkColor(final Context context) {
+    return context.getResources().getColor(darkColorId());
+  }
+
   public static @ColorRes int darkColorId() {
     return R.color.text_dark;
   }
@@ -42,6 +46,10 @@ public class KSColorUtils {
     hsl[2] -= (hsl[2] * percent);
     // HSLToColor sets alpha to fully opaque, so pluck the alpha from the original color.
     return (color & 0xFF000000) | (ColorUtils.HSLToColor(hsl) & 0x00FFFFFF);
+  }
+
+  public static @ColorInt int lightColor(final Context context) {
+    return context.getResources().getColor(lightColorId());
   }
 
   public static @ColorRes int lightColorId() {

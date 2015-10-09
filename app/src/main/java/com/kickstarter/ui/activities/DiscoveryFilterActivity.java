@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Display;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -23,7 +22,6 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.DiscoveryUtils;
 import com.kickstarter.libs.KSColorUtils;
 import com.kickstarter.libs.StatusBarUtils;
-import com.kickstarter.libs.ViewUtils;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.models.Category;
 import com.kickstarter.presenters.DiscoveryFilterPresenter;
@@ -59,21 +57,16 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
     ButterKnife.bind(this);
 
     layoutManager = new LinearLayoutManager(this);
-    final DiscoveryParams discoveryParams = getIntent().getParcelableExtra(getString(R.string.intent_discovery_params));
-    adapter = new DiscoveryFilterAdapter(presenter, discoveryParams);
+    final DiscoveryParams params = getIntent().getParcelableExtra(getString(R.string.intent_discovery_params));
+    adapter = new DiscoveryFilterAdapter(presenter, params);
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);
 
-    loadParams(discoveryParams);
+    setBackground(params);
+    setStatusBarColor(params);
+    closeButton.setTextColor(DiscoveryUtils.overlayTextColor(this, params));
 
-    final Display display = getWindowManager().getDefaultDisplay();
-    final Point size = new Point();
-    display.getSize(size);
-    final RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(Math.round(size.x * 0.65f),
-      RelativeLayout.LayoutParams.MATCH_PARENT);
-    backgroundGradientLayout.setLayoutParams(layoutParams);
-
-    presenter.initialize(discoveryParams);
+    presenter.initialize();
   }
 
   @OnClick(R.id.close_button)
@@ -91,7 +84,14 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
     finish();
   }
 
-  private void loadParams(@NonNull final DiscoveryParams params) {
+  private void setBackground(@NonNull final DiscoveryParams params) {
+    resizeGradientView();
+    layout.setBackgroundColor(DiscoveryUtils.primaryColor(this, params));
+    backgroundImageView.setImageDrawable(backgroundDrawable(params));
+    backgroundGradientLayout.setBackground(backgroundGradientDrawable(params));
+  }
+
+  private void setStatusBarColor(@NonNull final DiscoveryParams params) {
     if (ApiCapabilities.canSetStatusBarColor() && ApiCapabilities.canSetDarkStatusBarIcons()) {
       if (params.isCategorySet()) {
         final Category category = params.category();
@@ -100,11 +100,6 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
         StatusBarUtils.apply(this, KSColorUtils.darken(darkBlueGradientStartColor, 0.1f), true);
       }
     }
-
-    layout.setBackgroundColor(DiscoveryUtils.primaryColor(this, params));
-    backgroundImageView.setImageDrawable(backgroundDrawable(params));
-    backgroundGradientLayout.setBackground(backgroundGradientDrawable(params));
-    closeButton.setTextColor(DiscoveryUtils.overlayTextColor(this, params));
   }
 
   private @Nullable Drawable backgroundDrawable(final DiscoveryParams params) {
@@ -124,5 +119,14 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
       return new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, gradientColors);
     }
     return null;
+  }
+
+  private void resizeGradientView() {
+    final Display display = getWindowManager().getDefaultDisplay();
+    final Point size = new Point();
+    display.getSize(size);
+    final RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(Math.round(size.x * 0.65f),
+      RelativeLayout.LayoutParams.MATCH_PARENT);
+    backgroundGradientLayout.setLayoutParams(layoutParams);
   }
 }

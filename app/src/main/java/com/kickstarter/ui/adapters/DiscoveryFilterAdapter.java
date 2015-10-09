@@ -74,20 +74,11 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
       .build();
 
     // TODO: Add social filter
-    return Observable.just(
-      DiscoveryFilterViewHolder.Filter.builder()
-        .params(DiscoveryParams.builder().staffPicks(true).build())
-        .style(style)
-        .build(),
-      DiscoveryFilterViewHolder.Filter.builder()
-        .params(DiscoveryParams.builder().starred(1).build())
-        .style(style)
-        .build(),
-      DiscoveryFilterViewHolder.Filter.builder()
-        .params(DiscoveryParams.builder().build())
-        .style(style)
-        .build() // Everything filter
-    ).toList();
+    return Observable.just(DiscoveryParams.builder().staffPicks(true).build(),
+      DiscoveryParams.builder().starred(1).build(),
+      DiscoveryParams.builder().build())
+    .map(p -> DiscoveryFilterViewHolder.Filter.builder().params(p).style(style).build())
+    .toList();
   }
 
   /**

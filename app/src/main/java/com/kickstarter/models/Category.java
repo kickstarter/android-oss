@@ -97,7 +97,7 @@ abstract public class Category implements Parcelable {
       + "_"
       + (ViewUtils.isPortrait(context) ? "portrait" : "landscape");
 
-    @DrawableRes final int identifier = context.getResources().getIdentifier(name, "drawable", context.getPackageName());
+    final @DrawableRes int identifier = context.getResources().getIdentifier(name, "drawable", context.getPackageName());
     if (identifier == 0) {
       return null;
     }

@@ -2,6 +2,7 @@ package com.kickstarter.ui.adapters;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.util.Pair;
 import android.view.View;
 
 import com.kickstarter.R;
@@ -16,6 +17,7 @@ import com.kickstarter.ui.viewholders.EmptyViewHolder;
 import com.kickstarter.ui.viewholders.KsrViewHolder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.TreeMap;
@@ -31,6 +33,32 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
   public DiscoveryFilterAdapter(@NonNull final Delegate delegate, @NonNull final DiscoveryParams selectedParams) {
     this.delegate = delegate;
     this.selectedParams = selectedParams;
+  }
+
+  public int scrollPositionForSelectedParams() {
+    if (!selectedParams.isCategorySet()) {
+      // Don't scroll for top filters
+      return 0;
+    }
+
+    final Pair<Boolean, Integer> foundAndPosition = Observable.from(data())
+      .scan(new Pair<>(false, 0), (accum, list) -> {
+        // For each list, check if there are filters where the category root matches the category
+        // root for the selected params.
+        final boolean found = !Observable.from(list)
+          .filter(i -> i instanceof DiscoveryFilterViewHolder.Filter)
+          .map(i -> (DiscoveryFilterViewHolder.Filter) i)
+          .filter(f -> f.params().isCategorySet())
+          .takeFirst(f -> selectedParams.category().rootId() == f.params().category().rootId())
+          .isEmpty().toBlocking().single();
+
+        // If found, just return the top position for the section, otherwise add to our running total.
+        final int position = found ? accum.second : accum.second + list.size();
+        return new Pair<>(found, position);
+      })
+      .takeUntil(pair -> pair.first).last().toBlocking().single();
+
+    return foundAndPosition.first ? foundAndPosition.second : 0;
   }
 
   protected @LayoutRes int layout(@NonNull final SectionRow sectionRow) {

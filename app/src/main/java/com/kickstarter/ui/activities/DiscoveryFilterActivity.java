@@ -76,6 +76,7 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
 
   public void loadCategories(@NonNull final List<Category> categories) {
     adapter.takeCategories(categories);
+    recyclerView.scrollToPosition(adapter.scrollPositionForSelectedParams());
   }
 
   public void startDiscoveryActivity(@NonNull final DiscoveryParams newDiscoveryParams) {

@@ -2,6 +2,8 @@ package com.kickstarter.ui.viewholders;
 
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
@@ -28,6 +30,7 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
   @Bind(R.id.discovery_filter_view) View discoveryFilterView;
   @Bind(R.id.category_live_project_count_view) TextView categoryLiveProjectCountTextView;
   @Bind(R.id.filter_text_view) TextView filterTextView;
+  @Bind(R.id.text_group) RelativeLayout textGroupLayout;
   @Bind(R.id.vertical_line_group) View verticalLineGroup;
   @Bind(R.id.vertical_line_medium_view) View verticalLineView;
 
@@ -49,7 +52,8 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
 
     setCategoryLiveProjectCountTextView();
     setFilterTextView();
-    setPadding();
+    setViewSpacing();
+    setTextGroupLayoutSpacing();
     setVerticalLineStyle();
   }
 
@@ -73,7 +77,7 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
   protected void setFilterTextView() {
     filterTextView.setTextColor(foregroundColor());
 
-    if (style.selected()) {
+    if (style.selected() && !style.primary()) {
       filterTextView.setTypeface(font.sansSerifTypeface());
     } else {
       filterTextView.setTypeface(font.sansSerifLightTypeface());
@@ -99,12 +103,28 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
     filterTextView.setText(text);
   }
 
-  protected void setPadding() {
-    if (style.primary() && !style.selected()) {
-      discoveryFilterView.setPadding(0, 5, 0, 10);
+  protected void setViewSpacing() {
+    final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+      LinearLayout.LayoutParams.WRAP_CONTENT);
+    if (style.primary() && style.selected()) {
+      params.setMargins(0, 36, 0, 0);
     } else {
-      discoveryFilterView.setPadding(0, 0, 0, 0);
+      params.setMargins(0, 0, 0, 0);
     }
+    discoveryFilterView.setLayoutParams(params);
+  }
+
+  protected void setTextGroupLayoutSpacing() {
+    final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+      LinearLayout.LayoutParams.WRAP_CONTENT);
+    if (style.primary() && style.selected()) {
+      params.setMargins(0, 8, 0, 8);
+    } else if (style.primary() && !style.selected()) {
+      params.setMargins(0, 16, 0, 16);
+    } else {
+      params.setMargins(0, 8, 0, 8);
+    }
+    textGroupLayout.setLayoutParams(params);
   }
 
   protected void setVerticalLineStyle() {

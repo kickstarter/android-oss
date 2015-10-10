@@ -7,10 +7,12 @@ import android.view.View;
 import com.kickstarter.R;
 import com.kickstarter.libs.DiscoveryUtils;
 import com.kickstarter.models.Category;
+import com.kickstarter.models.Empty;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.DiscoveryFilterStyle;
 import com.kickstarter.ui.viewholders.DiscoveryFilterDividerViewHolder;
 import com.kickstarter.ui.viewholders.DiscoveryFilterViewHolder;
+import com.kickstarter.ui.viewholders.EmptyViewHolder;
 import com.kickstarter.ui.viewholders.KsrViewHolder;
 
 import java.util.ArrayList;
@@ -32,8 +34,16 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
   }
 
   protected @LayoutRes int layout(@NonNull final SectionRow sectionRow) {
+    /*
+     * Section 0:         Top filters
+     * Section 1:         Category divider
+     * Section 2..n - 1:  Category filters
+     * Section n:         Padding view
+     */
     if (sectionRow.section() == 1) {
       return R.layout.discovery_filter_divider_view;
+    } else if (sectionRow.section() == data().size() - 1) {
+      return R.layout.grid_2_height_view;
     }
     return R.layout.discovery_filter_view;
   }
@@ -41,6 +51,8 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
   protected KsrViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
     if (layout == R.layout.discovery_filter_divider_view) {
       return new DiscoveryFilterDividerViewHolder(view);
+    } else if (layout == R.layout.grid_2_height_view) {
+      return new EmptyViewHolder(view);
     }
     return new DiscoveryFilterViewHolder(view, delegate);
   }
@@ -50,6 +62,7 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
 
     data().addAll(paramsSections(initialCategories).toList().toBlocking().single());
     data().add(1, Collections.singletonList(DiscoveryFilterDividerViewHolder.Divider.builder().light(light()).build()));
+    data().add(Collections.singletonList(Empty.create()));
 
     notifyDataSetChanged();
   }

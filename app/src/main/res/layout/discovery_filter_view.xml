@@ -3,33 +3,30 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:background="?attr/selectableItemBackground"
   android:id="@+id/discovery_filter_view"
-  android:layout_marginRight="@dimen/grid_2"
-  android:layout_width="fill_parent"
+  android:layout_width="match_parent"
   android:layout_height="wrap_content">
 
  <LinearLayout
     android:id="@+id/vertical_line_group"
     android:layout_width="wrap_content"
     android:layout_height="fill_parent"
-    android:layout_marginEnd="@dimen/grid_1"
-    android:layout_marginRight="@dimen/grid_1"
-    android:layout_marginStart="@dimen/grid_1_half"
-    android:layout_marginLeft="@dimen/grid_1_half">
+    android:layout_marginEnd="@dimen/grid_3_half"
+    android:layout_marginRight="@dimen/grid_3_half">
 
     <include layout="@layout/vertical_line_medium_view" />
   </LinearLayout>
 
   <RelativeLayout
+    android:id="@+id/text_group"
     android:layout_height="wrap_content"
-    android:layout_width="fill_parent"
-    android:paddingTop="@dimen/grid_1_half"
-    android:paddingBottom="@dimen/grid_1_half">
+    android:layout_width="match_parent">
 
     <TextView
       android:id="@+id/filter_text_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_alignParentLeft="true"
+      android:layout_alignParentStart="true"
       android:textSize="18sp"
       android:textColor="@color/white" />
 

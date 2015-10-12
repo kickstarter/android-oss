@@ -59,7 +59,7 @@
     <TextView
       android:id="@+id/post_button"
       android:clickable="true"
-      android:textColor="@drawable/enabled_disabled_text_view"
+      android:textColor="@color/green_enabled_gray_disabled_color"
       android:textStyle="bold"
       android:paddingRight="@dimen/grid_3"
       android:paddingLeft="@dimen/grid_3"

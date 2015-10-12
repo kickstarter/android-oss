@@ -7,7 +7,9 @@ import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.widget.Toast;
 
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.kickstarter.KSApplication;
+import com.kickstarter.R;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.RxUtils;

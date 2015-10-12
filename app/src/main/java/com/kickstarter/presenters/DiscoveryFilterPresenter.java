@@ -22,7 +22,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.observables.GroupedObservable;
 import rx.subjects.PublishSubject;
 
 public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity> implements DiscoveryFilterAdapter.Delegate {
@@ -35,7 +34,7 @@ public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity>
     ((KSApplication) context.getApplicationContext()).component().inject(this);
   }
 
-  public void initialize(@NonNull final DiscoveryParams initialDiscoveryParams) {
+  public void initialize() {
     final Observable<List<Category>> categories = apiClient.fetchCategories();
 
     final Observable<Pair<DiscoveryFilterActivity, List<Category>>> viewAndCategories =

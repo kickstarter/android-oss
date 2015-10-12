@@ -66,10 +66,10 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
     final Observable<Pair<CommentFeedActivity, Project>> viewAndProject =
       RxUtils.combineLatestPair(viewSubject, project);
 
-    addSubscription(RxUtils.combineLatestPair(viewAndProject, loginSuccess)
-      .filter(vpl -> vpl.first.second.isBacking())
+    addSubscription(RxUtils.takeWhen(viewAndProject, loginSuccess)
+      .filter(vp -> vp.second.isBacking())
       .take(1)
-      .map(vpl -> vpl.first.first)
+      .map(vp -> vp.first)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(CommentFeedActivity::showCommentDialog)
     );

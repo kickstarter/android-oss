@@ -7,8 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -34,9 +32,12 @@ import butterknife.OnClick;
 public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
   private CommentFeedAdapter adapter;
   private Project project;
+  @Nullable private AlertDialog commentDialog;
 
   public @Bind(R.id.comment_button) TextView commentButtonTextView;
   public @Bind(R.id.comment_feed_recycler_view) RecyclerView recyclerView;
+  public @Nullable @Bind(R.id.comment_body) EditText commentBodyEditText;
+  public @Nullable @Bind(R.id.post_button) TextView postCommentButton;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -81,48 +82,40 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     final AlertDialog.Builder builder = new AlertDialog.Builder(this);
     builder.setView(R.layout.comment_dialog);
 
-    final AlertDialog dialog = builder.create();
-    dialog.show();
-    dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+    commentDialog = builder.create();
+    commentDialog.show();
+    commentDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
     /* Toolbar actions */
-    final TextView projectNameTextView = ButterKnife.findById(dialog, R.id.comment_project_name);
-    final TextView cancelButtonTextView = ButterKnife.findById(dialog, R.id.cancel_button);
-    final EditText commentBodyEditText = ButterKnife.findById(dialog, R.id.comment_body);
-    final TextView postCommentTextView = ButterKnife.findById(dialog, R.id.post_button);
+    final TextView projectNameTextView = ButterKnife.findById(commentDialog, R.id.comment_project_name);
+    final TextView cancelButtonTextView = ButterKnife.findById(commentDialog, R.id.cancel_button);
+    commentBodyEditText = ButterKnife.findById(commentDialog, R.id.comment_body);
+    postCommentButton = ButterKnife.findById(commentDialog, R.id.post_button);
 
     projectNameTextView.setText(project.name());
-    cancelButtonTextView.setOnClickListener((@NonNull final View v) -> dialog.dismiss());
-    postCommentTextView.setEnabled(false);
+    cancelButtonTextView.setOnClickListener((@NonNull final View v) -> dismissCommentDialog());
 
-    commentBodyEditText.addTextChangedListener(
-      // Set a text watcher to check for null comment body
-      new TextWatcher() {
-        @Override
-        public void beforeTextChanged(@NonNull final CharSequence charSequence, int start, int count, int after) {
-        }
-        @Override
-        public void onTextChanged(@NonNull final CharSequence charSequence, int start, int before, int count) {
-          togglePostTextView(postCommentTextView, charSequence);
-        }
-        @Override
-        public void afterTextChanged(@NonNull final Editable editable) {
-        }
-      }
-    );
+    if (postCommentButton != null && commentBodyEditText != null) {
+      postCommentButton.setOnClickListener((@NonNull final View v) -> {
+        presenter.postClick(commentBodyEditText.getText().toString());
+      });
+    }
 
-    postCommentTextView.setOnClickListener((@NonNull final View v) -> {
-      presenter.postCommentOnClick(project, commentBodyEditText.getText().toString());
-      dialog.dismiss();
-    });
+    presenter.takeCommentDialogShown();
   }
 
-  public void togglePostTextView(@NonNull final TextView textView, @NonNull final CharSequence charSequence) {
-    if (charSequence.length() > 0) {
-      textView.setEnabled(true);
-    } else {
-      textView.setEnabled(false);
+  public void dismissCommentDialog() {
+    if (commentDialog != null) {
+      commentDialog.dismiss();
     }
+  }
+
+  public void enablePostButton(final boolean enabled) {
+    postCommentButton.setEnabled(enabled);
+  }
+
+  public void disablePostButton(final boolean disabled) {
+    postCommentButton.setEnabled(! disabled);
   }
 
   @Override

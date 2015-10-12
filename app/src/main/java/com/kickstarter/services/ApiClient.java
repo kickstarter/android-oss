@@ -72,7 +72,7 @@ public class ApiClient {
   }
 
   public Observable<Project> fetchProject(@NonNull final Project project) {
-    return fetchProject(project.param()).startWith(project);
+    return fetchProject(project.param());
   }
 
   public Observable<Category> fetchCategory(final long id) {

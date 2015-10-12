@@ -63,10 +63,6 @@
   <color name="category_secondary_technology">#ff326bdb</color>
   <color name="category_secondary_theater">#ffe8514b</color>
 
-  <!-- Click indicator colors-->
-  <color name="dark_gray_click">#1f000000</color>
-  <color name="light_gray_click">#42ffffff</color>
-
   <!-- Kickstarter colors with hex opacity:
     http://stackoverflow.com/questions/5445085/understanding-colors-in-android-6-characters/11019879#11019879 -->
   <color name="black_alpha_30">#4D000000</color>

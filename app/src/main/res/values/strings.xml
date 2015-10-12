@@ -39,6 +39,7 @@
   <string name="Changelog">Changelog</string>
   <string name="Comment">Comment</string>
   <string name="Close">Close</string>
+  <string name="Comment_posted">Comment posted!</string>
   <string name="Comments">Comments</string>
   <string name="creator_launched_a_project">%1$s launched a project: %2$s</string>
   <string name="Created_by">Created by</string>

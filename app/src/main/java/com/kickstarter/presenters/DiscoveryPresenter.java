@@ -69,8 +69,8 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
       .subscribe(vp -> vp.first.startDiscoveryFilterActivity(vp.second)));
 
     addSubscription(RxUtils.takePairWhen(viewSubject, projectClick)
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(vp -> vp.first.startProjectActivity(vp.second))
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(vp -> vp.first.startProjectActivity(vp.second))
     );
 
     // TODO: We shouldn't have to do this, but BehaviorSubject and scan

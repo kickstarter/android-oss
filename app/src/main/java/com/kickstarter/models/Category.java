@@ -1,17 +1,13 @@
 package com.kickstarter.models;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
 import android.support.annotation.ColorInt;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.KSColorUtils;
-import com.kickstarter.libs.ViewUtils;
 import com.kickstarter.libs.qualifiers.AutoGson;
 
 import auto.parcel.AutoParcel;
@@ -84,25 +80,6 @@ abstract public class Category implements Parcelable {
     }
 
     return root().name().compareTo(other.root().name());
-  }
-
-  public @Nullable Drawable imageWithOrientation(final Context context, final int orientation) {
-    final String baseImageName = baseImageName();
-    if (baseImageName == null) {
-      return null;
-    }
-
-    final String name = "category_"
-      + baseImageName
-      + "_"
-      + (ViewUtils.isPortrait(context) ? "portrait" : "landscape");
-
-    final @DrawableRes int identifier = context.getResources().getIdentifier(name, "drawable", context.getPackageName());
-    if (identifier == 0) {
-      return null;
-    }
-
-    return ContextCompat.getDrawable(context, identifier);
   }
 
   public boolean isRoot() {

@@ -105,7 +105,7 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
 
   private @Nullable Drawable backgroundDrawable(@NonNull final DiscoveryParams params) {
     if (params.isCategorySet()) {
-      return params.category().imageWithOrientation(this, getResources().getConfiguration().orientation);
+      return DiscoveryUtils.imageWithOrientation(params.category(), this);
     } else {
       return darkBlueGradientDrawable;
     }

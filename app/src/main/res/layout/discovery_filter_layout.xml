@@ -2,28 +2,51 @@
 <RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/discovery_filter_layout"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@drawable/dark_blue_gradient"
   tools:context=".DiscoveryFilterActivity">
+
+  <ImageView
+    android:id="@+id/background_image_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scaleType="centerCrop"
+    android:adjustViewBounds="false"
+    android:cropToPadding="false"
+    android:src="@drawable/dark_blue_gradient" />
+
+  <LinearLayout
+    android:id="@+id/background_gradient"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+  </LinearLayout>
 
   <android.support.v7.widget.RecyclerView
     android:id="@+id/recycler_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="@dimen/grid_2"
-    android:layout_marginStart="@dimen/grid_2"
+    android:paddingLeft="@dimen/grid_2"
+    android:paddingStart="@dimen/grid_2"
     android:scrollbars="vertical" />
 
-  <com.kickstarter.ui.views.IconTextView
-    android:id="@+id/close_button"
-    android:background="@drawable/click_indicator_dark"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignParentTop="true"
-    android:layout_alignParentRight="true"
-    android:padding="@dimen/grid_1"
-    android:text="@string/close"
-    android:textColor="@color/white"
-    android:textSize="28sp" />
+  <RelativeLayout
+    android:background="@color/transparent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.kickstarter.ui.views.IconTextView
+      android:id="@+id/close_button"
+      android:layout_alignParentTop="true"
+      android:layout_alignParentRight="true"
+      android:background="?attr/selectableItemBackgroundBorderless"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:padding="@dimen/grid_1"
+      android:text="@string/close"
+      android:textColor="@color/white"
+      android:textSize="28sp" />
+
+  </RelativeLayout>
 </RelativeLayout>

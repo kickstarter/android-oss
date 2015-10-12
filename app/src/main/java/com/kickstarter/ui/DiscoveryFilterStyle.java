@@ -6,6 +6,7 @@ import auto.parcel.AutoParcel;
 
 @AutoParcel
 public abstract class DiscoveryFilterStyle implements Parcelable {
+  public abstract boolean light();
   public abstract boolean primary();
   public abstract boolean selected();
   public abstract boolean showLiveProjectsCount();
@@ -13,6 +14,7 @@ public abstract class DiscoveryFilterStyle implements Parcelable {
 
   @AutoParcel.Builder
   public abstract static class Builder {
+    public abstract Builder light(boolean __);
     public abstract Builder primary(boolean __);
     public abstract Builder showLiveProjectsCount(boolean __);
     public abstract Builder selected(boolean __);

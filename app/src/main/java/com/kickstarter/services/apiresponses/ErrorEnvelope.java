@@ -1,36 +1,28 @@
 package com.kickstarter.services.apiresponses;
 
-import com.google.common.base.Enums;
+import android.os.Parcelable;
+import android.support.annotation.StringDef;
 
+import com.kickstarter.libs.qualifiers.AutoGson;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 
-public class ErrorEnvelope {
-  private final List<String> errorMessages;
-  private final Integer httpCode;
-  private final String ksrCode;
+import auto.parcel.AutoParcel;
 
-  public enum ErrorCode {
-    INVALID_XAUTH_LOGIN,
-    TFA_FAILED,
-    TFA_REQUIRED,
-    UNKNOWN
-  }
+@AutoGson
+@AutoParcel
+public abstract class ErrorEnvelope implements Parcelable {
+  public abstract List<String> errorMessages();
+  public abstract int httpCode();
+  public abstract String ksrCode();
 
-  private ErrorEnvelope(final List<String> errorMessages, final Integer httpCode, final String ksrCode) {
-    this.errorMessages = errorMessages;
-    this.httpCode = httpCode;
-    this.ksrCode = ksrCode;
-  }
+  public static final String INVALID_XAUTH_LOGIN = "invalid_xauth_login";
+  public static final String TFA_FAILED = "tfa_failed";
+  public static final String TFA_REQUIRED = "tfa_required";
 
-  public List<String> errorMessages() {
-    return errorMessages;
-  }
-
-  public Integer httpCode() {
-    return httpCode;
-  }
-
-  public ErrorCode ksrCode() {
-    return Enums.getIfPresent(ErrorCode.class, ksrCode.toUpperCase()).or(ErrorCode.UNKNOWN);
-  }
+  @StringDef({INVALID_XAUTH_LOGIN, TFA_FAILED, TFA_REQUIRED})
+  @Retention(RetentionPolicy.SOURCE)
+  public @interface ErrorCode {}
 }

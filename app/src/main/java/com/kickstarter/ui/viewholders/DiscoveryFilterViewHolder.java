@@ -2,10 +2,13 @@ package com.kickstarter.ui.viewholders;
 
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.DiscoveryUtils;
 import com.kickstarter.libs.Font;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.DiscoveryFilterStyle;
@@ -13,6 +16,7 @@ import com.kickstarter.ui.adapters.DiscoveryFilterAdapter;
 
 import javax.inject.Inject;
 
+import auto.parcel.AutoParcel;
 import butterknife.Bind;
 import butterknife.BindColor;
 import butterknife.ButterKnife;
@@ -26,12 +30,12 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
   @Bind(R.id.discovery_filter_view) View discoveryFilterView;
   @Bind(R.id.category_live_project_count_view) TextView categoryLiveProjectCountTextView;
   @Bind(R.id.filter_text_view) TextView filterTextView;
+  @Bind(R.id.text_group) RelativeLayout textGroupLayout;
   @Bind(R.id.vertical_line_group) View verticalLineGroup;
   @Bind(R.id.vertical_line_medium_view) View verticalLineView;
-  @BindColor(R.color.white) int whiteColor;
 
   public interface Delegate {
-    void discoveryFilterClick(final DiscoveryFilterViewHolder viewHolder, final DiscoveryParams discoveryParams);
+    void discoveryFilterClick(@NonNull final DiscoveryFilterViewHolder viewHolder, @NonNull final DiscoveryParams discoveryParams);
   }
 
   public DiscoveryFilterViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
@@ -42,13 +46,14 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
   }
 
   public void onBind(@NonNull final Object datum) {
-    final DiscoveryFilterAdapter.Filter filter = (DiscoveryFilterAdapter.Filter) datum;
+    final Filter filter = (Filter) datum;
     params = filter.params();
     style = filter.style();
 
     setCategoryLiveProjectCountTextView();
     setFilterTextView();
-    setPadding();
+    setViewSpacing();
+    setTextGroupLayoutSpacing();
     setVerticalLineStyle();
   }
 
@@ -58,6 +63,8 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
   }
 
   protected void setCategoryLiveProjectCountTextView() {
+    categoryLiveProjectCountTextView.setTextColor(foregroundColor());
+
     if (style.showLiveProjectsCount()) {
       categoryLiveProjectCountTextView.setVisibility(View.VISIBLE);
       categoryLiveProjectCountTextView.setText(params.category().projectsCount().toString());
@@ -68,7 +75,9 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
   }
 
   protected void setFilterTextView() {
-    if (style.selected()) {
+    filterTextView.setTextColor(foregroundColor());
+
+    if (style.selected() && !style.primary()) {
       filterTextView.setTypeface(font.sansSerifTypeface());
     } else {
       filterTextView.setTypeface(font.sansSerifLightTypeface());
@@ -94,12 +103,28 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
     filterTextView.setText(text);
   }
 
-  protected void setPadding() {
-    if (style.primary() && !style.selected()) {
-      discoveryFilterView.setPadding(0, 5, 0, 10);
+  protected void setViewSpacing() {
+    final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+      LinearLayout.LayoutParams.WRAP_CONTENT);
+    if (style.primary() && style.selected()) {
+      params.setMargins(0, 36, 0, 0);
     } else {
-      discoveryFilterView.setPadding(0, 0, 0, 0);
+      params.setMargins(0, 0, 0, 0);
     }
+    discoveryFilterView.setLayoutParams(params);
+  }
+
+  protected void setTextGroupLayoutSpacing() {
+    final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+      LinearLayout.LayoutParams.WRAP_CONTENT);
+    if (style.primary() && style.selected()) {
+      params.setMargins(0, 8, 0, 8);
+    } else if (style.primary() && !style.selected()) {
+      params.setMargins(0, 16, 0, 16);
+    } else {
+      params.setMargins(0, 8, 0, 8);
+    }
+    textGroupLayout.setLayoutParams(params);
   }
 
   protected void setVerticalLineStyle() {
@@ -109,10 +134,31 @@ public class DiscoveryFilterViewHolder extends KsrViewHolder {
       verticalLineGroup.setVisibility(View.VISIBLE);
     }
 
-    verticalLineView.setBackgroundColor(whiteColor);
+    verticalLineView.setBackgroundColor(foregroundColor());
+  }
+
+  protected int foregroundColor() {
+    return DiscoveryUtils.overlayTextColor(view.getContext(), style.light());
   }
 
   protected boolean isSecondaryCategoryRoot() {
     return !style.primary() && params.category() != null && params.category().isRoot();
+  }
+
+  @AutoParcel
+  public abstract static class Filter {
+    public abstract DiscoveryParams params();
+    public abstract DiscoveryFilterStyle style();
+
+    @AutoParcel.Builder
+    public abstract static class Builder {
+      public abstract Builder params(DiscoveryParams __);
+      public abstract Builder style(DiscoveryFilterStyle __);
+      public abstract Filter build();
+    }
+
+    public static Builder builder() {
+      return new AutoParcel_DiscoveryFilterViewHolder_Filter.Builder();
+    }
   }
 }

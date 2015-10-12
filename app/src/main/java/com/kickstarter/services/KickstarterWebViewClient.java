@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -46,10 +47,8 @@ public class KickstarterWebViewClient extends WebViewClient {
   private final List<RequestHandler> requestHandlers = new ArrayList<>();
   private FormContents formContents = null;
 
-  public KickstarterWebViewClient(final Build build,
-    final CookieManager cookieManager,
-    final CurrentUser currentUser,
-    final String webEndpoint) {
+  public KickstarterWebViewClient(@NonNull final Build build, @NonNull final CookieManager cookieManager,
+    @NonNull final CurrentUser currentUser, @NonNull final String webEndpoint) {
     this.build = build;
     this.cookieManager = cookieManager;
     this.currentUser = currentUser;
@@ -59,12 +58,12 @@ public class KickstarterWebViewClient extends WebViewClient {
   }
 
   @Override
-  public void onPageFinished(final WebView view, final String url) {
+  public void onPageFinished(@NonNull final WebView view, @NonNull final String url) {
     initialPageLoad = false;
   }
 
   @Override
-  public WebResourceResponse shouldInterceptRequest(final WebView view, final String url) {
+  public WebResourceResponse shouldInterceptRequest(@NonNull final WebView view, @NonNull final String url) {
     if (!isInterceptable(Uri.parse(url))) {
       return null;
     }
@@ -101,15 +100,16 @@ public class KickstarterWebViewClient extends WebViewClient {
 
   // The order of request handlers is important - we iterate through the request handlers
   // sequentially until a match is found.
-  public void registerRequestHandlers(final List<RequestHandler> requestHandlers) {
+  public void registerRequestHandlers(@NonNull final List<RequestHandler> requestHandlers) {
     this.requestHandlers.addAll(0, requestHandlers);
   }
 
-  public void setFormContents(final FormContents formContents) {
+  public void setFormContents(@NonNull final FormContents formContents) {
     this.formContents = formContents;
   }
 
-  protected InputStream constructBody(final Context context, final Response response, final MimeHeaders mimeHeaders) throws IOException {
+  protected InputStream constructBody(@NonNull final Context context, @NonNull final Response response,
+    @NonNull final MimeHeaders mimeHeaders) throws IOException {
     InputStream body = response.body().byteStream();
 
     if (mimeHeaders.type != null && mimeHeaders.type.equals("text/html")) {
@@ -119,8 +119,8 @@ public class KickstarterWebViewClient extends WebViewClient {
     return body;
   }
 
-  protected Request buildRequest(final String url) {
-    Request.Builder requestBuilder = new Request.Builder().url(url);
+  protected Request buildRequest(@NonNull final String url) {
+    final Request.Builder requestBuilder = new Request.Builder().url(url);
 
     RequestBody requestBody = null;
     if (httpMethod().equals("POST")) {
@@ -156,7 +156,8 @@ public class KickstarterWebViewClient extends WebViewClient {
     return requestBuilder.build();
   }
 
-  protected InputStream insertWebViewJavascript(final Context context, final InputStream originalBody) throws IOException {
+  protected InputStream insertWebViewJavascript(@NonNull final Context context, @NonNull final InputStream originalBody)
+    throws IOException {
     final Document document = Jsoup.parse(new String(IOUtils.readFully(originalBody)));
     document.outputSettings().prettyPrint(true);
 
@@ -180,7 +181,7 @@ public class KickstarterWebViewClient extends WebViewClient {
     return httpMethod;
   }
 
-  protected boolean isInterceptable(final Uri uri) {
+  protected boolean isInterceptable(@NonNull final Uri uri) {
     return KickstarterUri.isKickstarterUri(uri, webEndpoint);
   }
 
@@ -195,7 +196,7 @@ public class KickstarterWebViewClient extends WebViewClient {
     );
   }
 
-  private boolean startModalWebViewActivity(final Request request, final WebView webView) {
+  private boolean startModalWebViewActivity(@NonNull final Request request, @NonNull final WebView webView) {
     final Activity context = (Activity) webView.getContext();
     final Intent intent = new Intent(context, DisplayWebViewActivity.class)
       .putExtra(context.getString(R.string.intent_url), request.urlString())
@@ -206,7 +207,7 @@ public class KickstarterWebViewClient extends WebViewClient {
     return true;
   }
 
-  private boolean startProjectActivity(final Request request, final WebView webView) {
+  private boolean startProjectActivity(@NonNull final Request request, @NonNull final WebView webView) {
     final Matcher matcher = Pattern.compile("[a-zA-Z0-9_-]+\\z").matcher(Uri.parse(request.urlString()).getPath());
     if (!matcher.find()) {
       return false;
@@ -220,7 +221,7 @@ public class KickstarterWebViewClient extends WebViewClient {
     return true;
   }
 
-  private boolean handleRequest(final Request request, final WebView webView) {
+  private boolean handleRequest(@NonNull final Request request, @NonNull final WebView webView) {
     if (initialPageLoad) {
       // Avoid infinite loop where webView.loadUrl is intercepted, invoking a new activity, which is the same URL
       // and therefore also intercepted.
@@ -241,7 +242,7 @@ public class KickstarterWebViewClient extends WebViewClient {
     public String type = null;
     public String encoding = null;
 
-    public MimeHeaders(final String contentType) {
+    public MimeHeaders(@NonNull final String contentType) {
       // Extract mime and encoding from string, e.g. "text/html; charset=utf-8"
       final Matcher matcher = Pattern.compile("(\\A[\\w\\/]+); charset=([\\w/-]+)\\z")
         .matcher(contentType);

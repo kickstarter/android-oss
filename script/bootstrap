@@ -9,7 +9,7 @@ announce "Starting bootstrap\n"
 
 git submodule update --init --recursive
 
-ANDROID_STUDIO_PREFERENCES_PATH="${HOME}/Library/Preferences/AndroidStudio1.2"
+ANDROID_STUDIO_PREFERENCES_PATH="${HOME}/Library/Preferences/AndroidStudio1.4"
 
 if [ ! -d $ANDROID_STUDIO_PREFERENCES_PATH ]; then
   announce "Android Studio expected in ${ANDROID_STUDIO_PREFERENCES_PATH}"

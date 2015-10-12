@@ -1,25 +1,30 @@
 package com.kickstarter.ui.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.KSColorUtils;
-import com.kickstarter.libs.RequiresPresenter;
+import com.kickstarter.libs.DiscoveryUtils;
 import com.kickstarter.libs.RxUtils;
+import com.kickstarter.libs.StatusBarUtils;
+import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.DiscoveryPresenter;
 import com.kickstarter.services.DiscoveryParams;
@@ -34,7 +39,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.Bind;
-import butterknife.BindColor;
+import butterknife.BindDrawable;
 import butterknife.ButterKnife;
 import rx.Subscription;
 import rx.subjects.PublishSubject;
@@ -50,12 +55,13 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
 
   @Inject ApplicationContainer applicationContainer;
 
-  @BindColor(R.color.discovery_toolbar) int discoveryToolbarColor;
+  @BindDrawable(R.drawable.dark_blue_gradient) Drawable darkBlueGradientDrawable;
+  @Bind(R.id.discovery_layout) LinearLayout discoveryLayout;
   @Bind(R.id.discovery_toolbar) DiscoveryToolbar discoveryToolbar;
   @Bind(R.id.recycler_view) RecyclerView recyclerView;
 
   @Override
-  protected void onCreate(final Bundle savedInstanceState) {
+  protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     ((KSApplication) getApplication()).component().inject(this);
@@ -64,8 +70,6 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
 
     layoutInflater.inflate(R.layout.discovery_layout, container);
     ButterKnife.bind(this, container);
-
-    setStatusBarColor();
 
     layoutManager = new LinearLayoutManager(this);
     adapter = new DiscoveryAdapter(projects, presenter);
@@ -79,7 +83,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
 
     recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
       @Override
-      public void onScrolled(final RecyclerView recyclerView, final int dx, final int dy) {
+      public void onScrolled(@NonNull final RecyclerView recyclerView, final int dx, final int dy) {
         final int visibleItemCount = layoutManager.getChildCount();
         final int totalItemCount = layoutManager.getItemCount();
         final int pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
@@ -97,19 +101,18 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
     pageSubscription.unsubscribe();
   }
 
-  public DiscoveryToolbar discoveryToolbar() {
-    return discoveryToolbar;
-  }
-
   public void loadProjects(@NonNull final List<Project> newProjects) {
-    final int oldProjectsSize = projects.size();
     projects.clear();
     projects.addAll(newProjects);
     adapter.notifyDataSetChanged();
   }
 
-  public void clearItems() {
-    loadProjects(new ArrayList<>());
+  public void loadParams(@NonNull final DiscoveryParams params) {
+    discoveryToolbar.loadParams(params);
+
+    if (ApiCapabilities.canSetStatusBarColor() && ApiCapabilities.canSetDarkStatusBarIcons()) {
+      StatusBarUtils.apply(this, DiscoveryUtils.primaryColor(this, params), DiscoveryUtils.overlayShouldBeLight(params));
+    }
   }
 
   public void startDiscoveryFilterActivity(@NonNull final DiscoveryParams params) {
@@ -119,7 +122,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
     startActivityForResult(intent, ActivityRequestCodes.DISCOVERY_ACTIVITY_DISCOVERY_FILTER_ACTIVITY_SELECT_FILTER);
   }
 
-  public void startProjectActivity(final Project project) {
+  public void startProjectActivity(@NonNull final Project project) {
     final Intent intent = new Intent(this, ProjectActivity.class)
       .putExtra(getString(R.string.intent_project), project);
     startActivity(intent);
@@ -127,7 +130,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
   }
 
   @Override
-  protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
+  protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
     if (requestCode != ActivityRequestCodes.DISCOVERY_ACTIVITY_DISCOVERY_FILTER_ACTIVITY_SELECT_FILTER) {
       return;
     }
@@ -139,7 +142,6 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
     final DiscoveryParams params = intent.getExtras().getParcelable(getString(R.string.intent_discovery_params));
     presenter.takeParams(params);
   }
-
 
   public void showBuildAlert(@NonNull final InternalBuildEnvelope envelope) {
     new AlertDialog.Builder(this)
@@ -156,15 +158,7 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
       .show();
   }
 
-  private boolean closeToBottom(final Pair<Integer, Integer> itemAndCount) {
+  private boolean closeToBottom(@NonNull final Pair<Integer, Integer> itemAndCount) {
     return itemAndCount.first == itemAndCount.second - 2;
-  }
-
-  private void setStatusBarColor() {
-    if (ApiCapabilities.canSetStatusBarColor()) {
-      final Window window = getWindow();
-      window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-      window.setStatusBarColor(KSColorUtils.darken(discoveryToolbarColor, 0.15f));
-    }
   }
 }

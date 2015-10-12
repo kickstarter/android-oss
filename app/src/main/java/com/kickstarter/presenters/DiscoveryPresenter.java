@@ -16,6 +16,7 @@ import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.KickstarterClient;
+import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.adapters.DiscoveryAdapter;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
@@ -57,7 +58,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
 
     addSubscription(viewAndParams
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.discoveryToolbar().loadParams(vp.second)));
+      .subscribe(vp -> vp.first.loadParams(vp.second)));
 
     addSubscription(viewAndProjects
       .observeOn(AndroidSchedulers.mainThread())
@@ -85,7 +86,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
    * observable of pages of projects. A new page of projects is emitted
    * whenever `nextPage` emits.
    */
-  private Observable<List<Project>> projectsWithPagination(final DiscoveryParams firstPageParams) {
+  private Observable<List<Project>> projectsWithPagination(@NonNull final DiscoveryParams firstPageParams) {
     return paramsWithPagination(firstPageParams)
       .concatMap(this::projectsFromParams)
       .takeUntil(List::isEmpty)
@@ -99,7 +100,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
    * an observable of params for each pagination. A new param is emitted
    * whenever `nextPage` emits.
    */
-  private Observable<DiscoveryParams> paramsWithPagination(final DiscoveryParams firstPageParams) {
+  private Observable<DiscoveryParams> paramsWithPagination(@NonNull final DiscoveryParams firstPageParams) {
     return nextPage
       .startWith(Empty.create())
       .scan(firstPageParams, (currentPage, __) -> currentPage.nextPage())
@@ -112,11 +113,11 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
    *
    * Note: This ignores any api errors.
    */
-  private Observable<List<Project>> projectsFromParams(final DiscoveryParams params) {
+  private Observable<List<Project>> projectsFromParams(@NonNull final DiscoveryParams params) {
     return apiClient.fetchProjects(params)
       .retry(2)
       .onErrorResumeNext(e -> Observable.empty())
-      .map(envelope -> envelope.projects)
+      .map(DiscoverEnvelope::projects)
       .map(this::bumpPOTDToFront)
       ;
   }
@@ -125,7 +126,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
    * Give a list of projects, finds if it contains the POTD and if so
    * bumps it to the front of the list.
    */
-  private List<Project> bumpPOTDToFront(final List<Project> projects) {
+  private List<Project> bumpPOTDToFront(@NonNull final List<Project> projects) {
 
     return Observable.from(projects)
       .reduce(new ArrayList<>(), (final List<Project> accum, final Project p) -> {
@@ -138,11 +139,11 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
     filterButtonClick.onNext(null);
   }
 
-  public void projectCardClick(final ProjectCardViewHolder viewHolder, final Project project) {
+  public void projectCardClick(@NonNull final ProjectCardViewHolder viewHolder, @NonNull final Project project) {
     projectClick.onNext(project);
   }
 
-  public void takeParams(final DiscoveryParams firstPageParams) {
+  public void takeParams(@NonNull final DiscoveryParams firstPageParams) {
     params.onNext(firstPageParams);
   }
 

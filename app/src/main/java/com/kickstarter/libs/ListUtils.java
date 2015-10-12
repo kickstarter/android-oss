@@ -1,5 +1,7 @@
 package com.kickstarter.libs;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +14,7 @@ public class ListUtils {
    * Concats the second argument onto the end of the first, but also mutates the
    * first argument.
    */
-  public static <T> List<T> mutatingConcat(final List<T> xs, final List<T> ys) {
+  public static <T> List<T> mutatingConcat(@NonNull final List<T> xs, @NonNull final List<T> ys) {
     xs.addAll(ys);
     return xs;
   }
@@ -21,7 +23,7 @@ public class ListUtils {
    * Concats the second argument onto the end of the first without mutating
    * either list.
    */
-  public static <T> List<T> concat(final List<T> xs, final List<T> ys) {
+  public static <T> List<T> concat(@NonNull final List<T> xs, @NonNull final List<T> ys) {
     final List<T> zs = new ArrayList<>(xs);
     ListUtils.mutatingConcat(zs, ys);
     return zs;
@@ -31,7 +33,7 @@ public class ListUtils {
    * Concats the distinct elements of the second argument onto the end of the
    * first, but also mutates the first.
    */
-  public static <T> List<T> mutatingConcatDistinct(final List<T> xs, final List<T> ys) {
+  public static <T> List<T> mutatingConcatDistinct(@NonNull final List<T> xs, @NonNull final List<T> ys) {
     for (final T y : ys) {
       if (! xs.contains(y)) {
         xs.add(y);
@@ -44,7 +46,7 @@ public class ListUtils {
    * Concats the distinct elements of the second argument onto the end of the
    * first without mutating either list.
    */
-  public static <T> List<T> concatDistinct(final List<T> xs, final List<T> ys) {
+  public static <T> List<T> concatDistinct(@NonNull final List<T> xs, @NonNull final List<T> ys) {
     final List<T> zs = new ArrayList<>(xs);
     ListUtils.mutatingConcatDistinct(zs, ys);
     return zs;
@@ -53,7 +55,7 @@ public class ListUtils {
   /**
    * Prepends `x` to the beginning of the list `xs`.
    */
-  public static <T> List<T> prepend(final List<T> xs, final T x) {
+  public static <T> List<T> prepend(@NonNull final List<T> xs, @NonNull final T x) {
     final List<T> ys = new ArrayList<>(xs);
     ys.add(0, x);
     return ys;
@@ -62,7 +64,7 @@ public class ListUtils {
   /**
    * Appends `x` to the end of the list `xs`.
    */
-  public static <T> List<T> append(final List<T> xs, final T x) {
+  public static <T> List<T> append(@NonNull final List<T> xs, @NonNull final T x) {
     final List<T> ys = new ArrayList<>(xs);
     ys.add(x);
     return ys;

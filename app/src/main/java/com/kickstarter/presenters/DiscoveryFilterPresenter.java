@@ -2,6 +2,8 @@ package com.kickstarter.presenters;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.KSApplication;
@@ -20,7 +22,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.observables.GroupedObservable;
 import rx.subjects.PublishSubject;
 
 public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity> implements DiscoveryFilterAdapter.Delegate {
@@ -28,12 +29,12 @@ public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity>
   private final PublishSubject<DiscoveryParams> discoveryFilterClick = PublishSubject.create();
 
   @Override
-  protected void onCreate(final Context context, final Bundle savedInstanceState) {
+  protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
   }
 
-  public void initialize(final DiscoveryParams initialDiscoveryParams) {
+  public void initialize() {
     final Observable<List<Category>> categories = apiClient.fetchCategories();
 
     final Observable<Pair<DiscoveryFilterActivity, List<Category>>> viewAndCategories =
@@ -49,7 +50,7 @@ public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity>
     );
   }
 
-  public void discoveryFilterClick(final DiscoveryFilterViewHolder viewHolder, final DiscoveryParams discoveryParams) {
+  public void discoveryFilterClick(@NonNull final DiscoveryFilterViewHolder viewHolder, @NonNull final DiscoveryParams discoveryParams) {
     discoveryFilterClick.onNext(discoveryParams);
   }
 }

@@ -9,7 +9,9 @@
   <color name="accent_alpha_20">@color/blue_alpha_20</color>
   <color name="window_background">@color/white</color>
   <color name="debug_background">#EE222222</color>
-  <color name="discovery_toolbar">#FF083E8F</color>
+  <color name="discovery_primary">@color/dark_blue</color>
+  <color name="discovery_secondary">#ff083e8f</color>
+  <color name="discovery_background">#fff8f8f8</color>
 
   <!-- Kickstarter colors -->
   <color name="black">#000000</color>
@@ -22,34 +24,53 @@
   <color name="light_green">#def7e0</color>
   <color name="gray">#d9d9de</color>
   <color name="pink">#ffecf0</color>
-  <color name="text_dark">#0f2105</color>
+  <color name="text_dark">#ff0f2105</color>
+  <color name="text_light">#ffffffff</color>
   <color name="transparent">@android:color/transparent</color>
   <color name="white">@android:color/white</color>
   <color name="yellow">#ffffc9</color>
 
   <!-- Category colors -->
-  <color name="art">#ffbdab</color>
-  <color name="civic">#ffb36a</color>
-  <color name="comedy">#5ef3db</color>
-  <color name="comics">#fffb78</color>
-  <color name="crafts">#ff81ac</color>
-  <color name="dance">#a695f9</color>
-  <color name="design">#2752ff</color>
-  <color name="fashion">#ff9fd6</color>
-  <color name="film">#ff596e</color>
-  <color name="food">#ff3642</color>
-  <color name="games">#00c9ab</color>
-  <color name="journalism">#12bcea</color>
-  <color name="music">#a5ffd3</color>
-  <color name="photography">#00e3e5</color>
-  <color name="publishing">#e2dcd0</color>
-  <color name="technology">#6396fc</color>
-  <color name="theater">#ff7d5f</color>
+  <color name="category_art">#ffffbdab</color>
+  <color name="category_comics">#fffffb78</color>
+  <color name="category_crafts">#ffff81ac</color>
+  <color name="category_dance">#ffa695f9</color>
+  <color name="category_design">#ff2752ff</color>
+  <color name="category_fashion">#ffff9fd6</color>
+  <color name="category_film">#ffff596e</color>
+  <color name="category_food">#ffff3642</color>
+  <color name="category_games">#ff00c9ab</color>
+  <color name="category_journalism">#ff12bcea</color>
+  <color name="category_music">#ffa5ffd3</color>
+  <color name="category_photography">#ff00e3e5</color>
+  <color name="category_publishing">#ffe2dcd0</color>
+  <color name="category_technology">#ff6396fc</color>
+  <color name="category_theater">#ffff7d5f</color>
+
+  <color name="category_secondary_art">#fff7aa94</color>
+  <color name="category_secondary_comics">#ffffe54f</color>
+  <color name="category_secondary_crafts">#ffe35f8c</color>
+  <color name="category_secondary_dance">#ff6556ac</color>
+  <color name="category_secondary_design">#ff1935a6</color>
+  <color name="category_secondary_fashion">#ff171717</color>
+  <color name="category_secondary_film">#ffcf3c4e</color>
+  <color name="category_secondary_food">#ffd12c36</color>
+  <color name="category_secondary_games">#ff00a68d</color>
+  <color name="category_secondary_journalism">#ff10a8d0</color>
+  <color name="category_secondary_music">#ff5ee5a3</color>
+  <color name="category_secondary_photography">#ff00d4d6</color>
+  <color name="category_secondary_publishing">#ffd1ccc0</color>
+  <color name="category_secondary_technology">#ff326bdb</color>
+  <color name="category_secondary_theater">#ffe8514b</color>
 
   <!-- Kickstarter colors with hex opacity:
     http://stackoverflow.com/questions/5445085/understanding-colors-in-android-6-characters/11019879#11019879 -->
   <color name="black_alpha_30">#4D000000</color>
   <color name="blue_alpha_20">#3300a0ff</color>
+
+  <!-- Click indicator colors-->
+  <color name="dark_gray_click">#1f000000</color>
+  <color name="light_gray_click">#42ffffff</color>
 
   <!-- Colors lightened/darkened
     TODO: Write helper to do this at runtime, until then you can punch the base color into http://www.hexcolortool.com/

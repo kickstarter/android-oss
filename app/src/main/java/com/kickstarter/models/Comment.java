@@ -2,7 +2,7 @@ package com.kickstarter.models;
 
 import android.os.Parcelable;
 
-import com.kickstarter.libs.AutoGson;
+import com.kickstarter.libs.qualifiers.AutoGson;
 
 import org.joda.time.DateTime;
 

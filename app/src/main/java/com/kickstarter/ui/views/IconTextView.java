@@ -2,6 +2,8 @@ package com.kickstarter.ui.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
@@ -22,28 +24,30 @@ public class IconTextView extends TextView {
 
   private int iconType;
 
-  public IconTextView(final Context context) {
+  public IconTextView(@NonNull final Context context) {
     super(context);
     initialize(context, null, 0, 0);
   }
 
-  public IconTextView(final Context context, final AttributeSet attrs) {
+  public IconTextView(@NonNull final Context context, @Nullable final AttributeSet attrs) {
     super(context, attrs);
     initialize(context, attrs, 0, 0);
   }
 
-  public IconTextView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
+  public IconTextView(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
     super(context, attrs, defStyleAttr);
     initialize(context, attrs, defStyleAttr, 0);
   }
 
   @SuppressWarnings("deprecation")
-  public IconTextView(final Context context, final AttributeSet attrs, final int defStyleAttr, final int defStyleRes) {
+  public IconTextView(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr,
+    final int defStyleRes) {
     super(context, attrs, defStyleAttr, defStyleRes);
     initialize(context, attrs, defStyleAttr, defStyleRes);
   }
 
-  protected void initialize(final Context context, final AttributeSet attrs, final int defStyleAttr, final int defStyleRes) {
+  protected void initialize(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr,
+    final int defStyleRes) {
     final TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.IconTextView, defStyleAttr, defStyleRes);
     iconType = attributes.getInt(R.styleable.IconTextView_iconType, DEFAULT_ICON_TYPE);
   }

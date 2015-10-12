@@ -2,6 +2,7 @@ package com.kickstarter.ui.adapters;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.LayoutRes;
 import android.util.Pair;
 import android.view.View;
 
@@ -28,7 +29,7 @@ public class CommentFeedAdapter extends KsrAdapter {
     this.delegate = delegate;
   }
 
-  protected int layout(@NonNull final SectionRow sectionRow) {
+  protected @LayoutRes int layout(@NonNull final SectionRow sectionRow) {
     if (sectionRow.section() == 0) {
       return R.layout.project_context_view;
     } else if (sectionRow.section() == 1){
@@ -57,7 +58,7 @@ public class CommentFeedAdapter extends KsrAdapter {
     notifyDataSetChanged();
   }
 
-  protected KsrViewHolder viewHolder(final int layout, @NonNull final View view) {
+  protected KsrViewHolder viewHolder(final @LayoutRes int layout, @NonNull final View view) {
     if (layout == R.layout.project_context_view) {
       return new ProjectContextViewHolder(view, delegate);
     } else if (layout == R.layout.empty_comment_feed_layout) {

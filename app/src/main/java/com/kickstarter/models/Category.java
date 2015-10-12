@@ -1,14 +1,14 @@
 package com.kickstarter.models;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.Parcelable;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.AutoGson;
 import com.kickstarter.libs.KSColorUtils;
+import com.kickstarter.libs.qualifiers.AutoGson;
 
 import auto.parcel.AutoParcel;
 
@@ -43,7 +43,28 @@ abstract public class Category implements Parcelable {
 
   public abstract Builder toBuilder();
 
-  public int colorWithAlpha() {
+  public String baseImageName() {
+    switch ((int) rootId()) {
+      case 1:   return "art";
+      case 3:   return "comics";
+      case 26:  return "crafts";
+      case 6:   return "dance";
+      case 7:   return "design";
+      case 9:   return "fashion";
+      case 11:  return "film";
+      case 10:  return "food";
+      case 12:  return "games";
+      case 13:  return "journalism";
+      case 14:  return "music";
+      case 15:  return "photography";
+      case 18:  return "publishing";
+      case 16:  return "technology";
+      case 17:  return "theater";
+      default:  return null;
+    }
+  }
+
+  public @ColorInt int colorWithAlpha() {
     return KSColorUtils.setAlpha(color(), 255);
   }
 
@@ -65,18 +86,54 @@ abstract public class Category implements Parcelable {
     return parentId() == null || parentId() == 0;
   }
 
-  public int overlayTextColor(final Context context) {
-    final Resources resources = context.getResources();
-    return KSColorUtils.isLight(colorWithAlpha()) ?
-      resources.getColor(R.color.text_dark) :
-      resources.getColor(R.color.white);
-  }
-
   public Category root() {
     return isRoot() ? this : parent();
   }
 
   public long rootId() {
     return isRoot() ? id() : parentId();
+  }
+
+  public int secondaryColor(@NonNull final Context context) {
+    final int identifier;
+    switch ((int) rootId()) {
+      case 1:   identifier = R.color.category_secondary_art; break;
+      case 3:   identifier = R.color.category_secondary_comics; break;
+      case 26:  identifier = R.color.category_secondary_crafts; break;
+      case 6:   identifier = R.color.category_secondary_dance; break;
+      case 7:   identifier = R.color.category_secondary_design; break;
+      case 9:   identifier = R.color.category_secondary_fashion; break;
+      case 11:  identifier = R.color.category_secondary_film; break;
+      case 10:  identifier = R.color.category_secondary_food; break;
+      case 12:  identifier = R.color.category_secondary_games; break;
+      case 13:  identifier = R.color.category_secondary_journalism; break;
+      case 14:  identifier = R.color.category_secondary_music; break;
+      case 15:  identifier = R.color.category_secondary_photography; break;
+      case 18:  identifier = R.color.category_secondary_publishing; break;
+      case 16:  identifier = R.color.category_secondary_technology; break;
+      case 17:  identifier = R.color.category_secondary_theater; break;
+      default:  identifier = R.color.white; break;
+    }
+
+    return context.getResources().getColor(identifier);
+  }
+
+  public @ColorInt int overlayTextColor(final Context context) {
+    return overlayShouldBeLight() ? KSColorUtils.lightColor(context) : KSColorUtils.darkColor(context);
+  }
+
+  public boolean overlayShouldBeDark() {
+    switch ((int) rootId()) {
+      case 1:
+      case 3:
+      case 14:
+      case 15:
+      case 18:  return true;
+      default:  return false;
+    }
+  }
+
+  public boolean overlayShouldBeLight() {
+    return !overlayShouldBeDark();
   }
 }

@@ -5,6 +5,8 @@ import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -20,7 +22,7 @@ import com.facebook.share.model.ShareOpenGraphObject;
 import com.facebook.share.widget.ShareDialog;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.RequiresPresenter;
+import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.libs.vendor.TweetComposer;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
@@ -45,7 +47,7 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
   ShareDialog shareDialog;
 
   @Override
-  protected void onCreate(final Bundle savedInstanceState) {
+  protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.thanks_layout);
@@ -63,11 +65,11 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
     presenter.takeProject(getIntent().getExtras().getParcelable(getString(R.string.intent_project)));
   }
 
-  public void show(final Project project) {
+  public void show(@NonNull final Project project) {
     backedProjectTextView.setText(Html.fromHtml(getString(R.string.You_just_backed, project.name())));
   }
 
-  public void showRecommended(final List<Project> projects, final Category category) {
+  public void showRecommended(@NonNull final List<Project> projects, @NonNull final Category category) {
     adapter = new ThanksAdapter(projects, category, presenter);
     recommendedProjectsRecyclerView.setAdapter(adapter);
   }
@@ -83,16 +85,16 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
   }
 
   @OnClick(R.id.facebook_button)
-  public void onFacebookButtonClick(final View view) {
+  public void onFacebookButtonClick(@NonNull final View view) {
     presenter.takeFacebookClick();
   }
 
   @OnClick(R.id.twitter_button)
-  public void onTwitterButtonClick(final View view) {
+  public void onTwitterButtonClick(@NonNull final View view) {
     presenter.takeTwitterClick();
   }
 
-  public void startFacebookShareIntent(final Project project) {
+  public void startFacebookShareIntent(@NonNull final Project project) {
     if (!ShareDialog.canShow(ShareLinkContent.class)) {
       return;
     }
@@ -118,7 +120,7 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
     shareDialog.show(content);
   }
 
-  public void startShareIntent(final Project project) {
+  public void startShareIntent(@NonNull final Project project) {
     final Intent intent = new Intent(android.content.Intent.ACTION_SEND)
       .setType("text/plain")
       .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
@@ -127,11 +129,11 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
     startActivity(Intent.createChooser(intent, getString(R.string.Share_this_project)));
   }
 
-  public void startTwitterShareIntent(final Project project) {
+  public void startTwitterShareIntent(@NonNull final Project project) {
     new TweetComposer.Builder(this).text(shareString(project)).show();
   }
 
-  public void startDiscoveryCategoryIntent(final Category category) {
+  public void startDiscoveryCategoryIntent(@NonNull final Category category) {
     Timber.d("Category name: " + category.name()); // TODO
   }
 
@@ -141,14 +143,14 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
     startActivity(intent);
   }
 
-  public void startProjectIntent(final Project project) {
+  public void startProjectIntent(@NonNull final Project project) {
     final Intent intent = new Intent(this, ProjectActivity.class)
       .putExtra(getString(R.string.intent_project), project);
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
-  private String shareString(final Project project) {
+  private String shareString(@NonNull final Project project) {
     return getString(R.string.I_just_backed_project_on_Kickstarter, project.name(), project.secureWebProjectUrl());
   }
 

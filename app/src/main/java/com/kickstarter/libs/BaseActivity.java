@@ -1,8 +1,12 @@
 package com.kickstarter.libs;
 
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+
+import com.kickstarter.libs.qualifiers.RequiresPresenter;
 
 import timber.log.Timber;
 
@@ -20,20 +24,23 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
     return presenter;
   }
 
+  @CallSuper
   @Override
-  protected void onCreate(final Bundle savedInstanceState) {
+  protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Timber.d("onCreate %s", this.toString());
 
     fetchPresenter(savedInstanceState);
   }
 
+  @CallSuper
   @Override
   protected void onStart() {
     super.onStart();
     Timber.d("onStart %s", this.toString());
   }
 
+  @CallSuper
   @Override
   protected void onResume() {
     super.onResume();
@@ -45,6 +52,7 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
     }
   }
 
+  @CallSuper
   @Override
   protected void onPause() {
     super.onPause();
@@ -55,12 +63,14 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
     }
   }
 
+  @CallSuper
   @Override
   protected void onStop() {
     super.onStop();
     Timber.d("onStop %s", this.toString());
   }
 
+  @CallSuper
   @Override
   protected void onDestroy() {
     super.onDestroy();
@@ -74,6 +84,7 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
     }
   }
 
+  @CallSuper
   @Override
   protected void onSaveInstanceState(@NonNull final Bundle outState) {
     super.onSaveInstanceState(outState);
@@ -87,7 +98,7 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
     outState.putBundle(PRESENTER_KEY, presenterEnvelope);
   }
 
-  private final void fetchPresenter(final Bundle presenterEnvelope) {
+  private void fetchPresenter(@Nullable final Bundle presenterEnvelope) {
     if (presenter == null) {
       final RequiresPresenter annotation = getClass().getAnnotation(RequiresPresenter.class);
       final Class<PresenterType> presenterClass = annotation == null ? null : (Class<PresenterType>) annotation.value();

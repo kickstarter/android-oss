@@ -1,5 +1,7 @@
 package com.kickstarter.libs;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.Gson;
 import com.kickstarter.libs.preferences.StringPreference;
 import com.kickstarter.models.User;
@@ -16,9 +18,9 @@ public class CurrentUser {
   private final PublishSubject<User> userSubject = PublishSubject.create();
   private User currentUser;
 
-  public CurrentUser(final StringPreference accessTokenPreference,
-    final Gson gson,
-    final StringPreference userPreference) {
+  public CurrentUser(@NonNull final StringPreference accessTokenPreference,
+    @NonNull final Gson gson,
+    @NonNull final StringPreference userPreference) {
     this.accessTokenPreference = accessTokenPreference;
     this.gson = gson;
     this.userPreference = userPreference;
@@ -46,7 +48,7 @@ public class CurrentUser {
     return accessTokenPreference.get();
   }
 
-  public void login(final User newUser, final String accessToken) {
+  public void login(@NonNull final User newUser, @NonNull final String accessToken) {
     Timber.d("Login user %s", newUser.name());
 
     accessTokenPreference.set(accessToken);

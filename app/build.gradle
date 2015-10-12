@@ -116,7 +116,6 @@ dependencies {
     apt 'com.github.frankiesardo:auto-parcel-processor:0.3.1'
     compile 'com.google.dagger:dagger:2.0'
     apt 'com.google.dagger:dagger-compiler:2.0'
-    compile 'com.google.guava:guava:18.0'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.jakewharton:process-phoenix:1.0.0'
     compile 'com.jakewharton.timber:timber:3.0.1'
@@ -133,6 +132,7 @@ dependencies {
     compile 'net.hockeyapp.android:HockeySDK:3.5.0-b.4'
     ***REMOVED***
     compile 'org.jsoup:jsoup:1.8.2'
+
     // Testing
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:1.10.19'
@@ -154,5 +154,5 @@ buildscript {
     }
 }
 
-apply plugin: 'com.android.application' //or apply plugin: 'java'
+apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'

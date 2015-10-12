@@ -1,12 +1,14 @@
 package com.kickstarter.libs;
 
+import android.support.annotation.NonNull;
+
 import java.text.NumberFormat;
 import java.util.Locale;
 
 public class Money {
   final ConfigLoader configLoader;
 
-  public Money(final ConfigLoader configLoader) {
+  public Money(@NonNull final ConfigLoader configLoader) {
     this.configLoader = configLoader;
   }
 
@@ -17,11 +19,12 @@ public class Money {
       .format(Math.floor(number));
   }
 
-  public String formattedCurrency(final float amount, final CurrencyOptions currencyOptions) {
+  public String formattedCurrency(final float amount, @NonNull final CurrencyOptions currencyOptions) {
     return formattedCurrency(amount, currencyOptions, false);
   }
 
-  public String formattedCurrency(final float amount, final CurrencyOptions currencyOptions, final boolean excludeCurrencyCode) {
+  public String formattedCurrency(final float amount, @NonNull final CurrencyOptions currencyOptions,
+    final boolean excludeCurrencyCode) {
     return formattedCurrency(amount,
       currencyOptions.country(),
       currencyOptions.currencySymbol(),
@@ -30,9 +33,9 @@ public class Money {
   }
 
   private String formattedCurrency(final float amount,
-    final String country,
-    final String currencySymbol,
-    final String currencyCode,
+    @NonNull final String country,
+    @NonNull final String currencySymbol,
+    @NonNull final String currencyCode,
     final boolean excludeCurrencyCode) {
 
     boolean useCurrencyCode = false;

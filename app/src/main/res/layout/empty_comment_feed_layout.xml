@@ -37,7 +37,6 @@
 
   <Button
     android:id="@+id/comment_feed_login_button"
-    android:visibility="visible"
     style="@style/KsrButton"
     android:text="@string/Log_in"/>
 

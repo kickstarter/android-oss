@@ -2,6 +2,7 @@ package com.kickstarter.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,7 +11,7 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.CurrentUser;
-import com.kickstarter.libs.RequiresPresenter;
+import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.models.Activity;
 import com.kickstarter.presenters.ActivityFeedPresenter;
 import com.kickstarter.ui.adapters.ActivityFeedAdapter;
@@ -30,7 +31,7 @@ public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
   @Inject CurrentUser currentUser;
 
   @Override
-  protected void onCreate(final Bundle savedInstanceState) {
+  protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     ((KSApplication) getApplication()).component().inject(this);
@@ -47,7 +48,7 @@ public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
     startActivity(intent);
   }
 
-  public void onItemsNext(final List<Activity> activities) {
+  public void onItemsNext(@NonNull final List<Activity> activities) {
     adapter = new ActivityFeedAdapter(activities);
     recyclerView.setAdapter(adapter);
   }

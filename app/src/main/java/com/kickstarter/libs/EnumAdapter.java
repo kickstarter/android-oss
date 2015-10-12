@@ -1,6 +1,8 @@
 package com.kickstarter.libs;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +18,11 @@ public class EnumAdapter<T extends Enum<T>> extends BindableAdapter<T> {
   private final boolean showNull;
   private final int nullOffset;
 
-  public EnumAdapter(final Context context, final Class<T> enumType) {
+  public EnumAdapter(@NonNull final Context context, @NonNull final Class<T> enumType) {
     this(context, enumType, false);
   }
 
-  public EnumAdapter(final Context context, final Class<T> enumType, final boolean showNull) {
+  public EnumAdapter(@NonNull final Context context, @NonNull final Class<T> enumType, final boolean showNull) {
     super(context);
     this.enumConstants = enumType.getEnumConstants();
     this.showNull = showNull;
@@ -47,22 +49,22 @@ public class EnumAdapter<T extends Enum<T>> extends BindableAdapter<T> {
   }
 
   @Override
-  public View newView(final LayoutInflater inflater, final int position, final ViewGroup container) {
+  public View newView(@NonNull final LayoutInflater inflater, final int position, @Nullable final ViewGroup container) {
     return inflater.inflate(android.R.layout.simple_spinner_item, container, false);
   }
 
   @Override
-  public final void bindView(final T item, final int position, final View view) {
-    TextView tv = ButterKnife.findById(view, android.R.id.text1);
+  public final void bindView(@NonNull final T item, final int position, @NonNull final View view) {
+    final TextView tv = ButterKnife.findById(view, android.R.id.text1);
     tv.setText(getName(item));
   }
 
   @Override
-  public final View newDropDownView(final LayoutInflater inflater, final int position, final ViewGroup container) {
+  public final View newDropDownView(@NonNull final LayoutInflater inflater, final int position, @Nullable final ViewGroup container) {
     return inflater.inflate(android.R.layout.simple_spinner_dropdown_item, container, false);
   }
 
-  protected String getName(final T item) {
+  protected String getName(@NonNull final T item) {
     return String.valueOf(item);
   }
 }

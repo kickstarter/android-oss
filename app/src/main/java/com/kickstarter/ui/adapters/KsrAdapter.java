@@ -1,5 +1,7 @@
 package com.kickstarter.ui.adapters;
 
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,21 +22,21 @@ public abstract class KsrAdapter extends RecyclerView.Adapter<KsrViewHolder> {
   /**
    * Fetch the layout id associated with a sectionRow.
    */
-  protected abstract int layout(final SectionRow sectionRow);
+  protected abstract int layout(@NonNull final SectionRow sectionRow);
 
   /**
    * Returns a new KsrViewHolder given a layout and view.
    */
-  protected abstract KsrViewHolder viewHolder(final int layout, final View view);
+  protected abstract KsrViewHolder viewHolder(final int layout, @NonNull final View view);
 
   @Override
-  public final KsrViewHolder onCreateViewHolder(final ViewGroup viewGroup, final int layout) {
+  public final KsrViewHolder onCreateViewHolder(@NonNull final ViewGroup viewGroup, @LayoutRes final int layout) {
     final View view = inflateView(viewGroup, layout);
     return viewHolder(layout, view);
   }
 
   @Override
-  public final void onBindViewHolder(final KsrViewHolder viewHolder, final int position) {
+  public final void onBindViewHolder(@NonNull final KsrViewHolder viewHolder, final int position) {
     viewHolder.onBind(objectFromPosition(position));
   }
 
@@ -56,7 +58,7 @@ public abstract class KsrAdapter extends RecyclerView.Adapter<KsrViewHolder> {
   /**
    * Gets the data object associated with a sectionRow.
    */
-  protected Object objectFromSectionRow(final SectionRow sectionRow) {
+  protected Object objectFromSectionRow(@NonNull final SectionRow sectionRow) {
     return data.get(sectionRow.section()).get(sectionRow.row());
   }
 
@@ -84,7 +86,7 @@ public abstract class KsrAdapter extends RecyclerView.Adapter<KsrViewHolder> {
     throw new RuntimeException("Position " + position + " not found in data");
   }
 
-  private View inflateView(final ViewGroup viewGroup, final int viewType) {
+  private View inflateView(@NonNull final ViewGroup viewGroup, @LayoutRes final int viewType) {
     final LayoutInflater layoutInflater = LayoutInflater.from(viewGroup.getContext());
     return layoutInflater.inflate(viewType, viewGroup, false);
   }

@@ -58,7 +58,8 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
       })
       .takeUntil(pair -> pair.first).last().toBlocking().single();
 
-    return foundAndPosition.first ? foundAndPosition.second : 0;
+    // Return one less than the position - lets the user see the preceding filter
+    return foundAndPosition.first ? Math.max(0, foundAndPosition.second - 1) : 0;
   }
 
   protected @LayoutRes int layout(@NonNull final SectionRow sectionRow) {

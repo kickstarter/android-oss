@@ -115,7 +115,7 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
   }
 
   public void disablePostButton(final boolean disabled) {
-    postCommentButton.setEnabled(! disabled);
+    postCommentButton.setEnabled(!disabled);
   }
 
   @Override

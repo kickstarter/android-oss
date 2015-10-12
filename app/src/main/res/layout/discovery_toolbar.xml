@@ -5,7 +5,7 @@
   android:id="@+id/discovery_toolbar"
   android:layout_width="match_parent"
   android:layout_height="?attr/actionBarSize"
-  android:background="@color/discovery_toolbar"
+  android:background="@color/dark_blue"
   android:elevation="3dp">
 
   <RelativeLayout
@@ -32,6 +32,7 @@
         android:textColor="@color/white" />
 
       <com.kickstarter.ui.views.IconTextView
+        android:id="@+id/filter_expand_more_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/expand_more"

@@ -20,7 +20,7 @@
     android:pivotX="53"
     android:pivotY="150">
     <path
-      android:fillColor="@color/technology"
+      android:fillColor="@color/category_technology"
       android:pathData="M 38 135 h 30 v 30 h -30 v 0 Z" />
   </group>
   <group
@@ -36,7 +36,7 @@
     android:pivotX="122"
     android:pivotY="0">
     <path
-      android:fillColor="@color/film"
+      android:fillColor="@color/category_film"
       android:pathData="M 107 -15 h 30 v 30 h -30 v 0 Z" />
   </group>
   <group
@@ -44,7 +44,7 @@
     android:pivotX="245"
     android:pivotY="139">
     <path
-      android:fillColor="@color/art"
+      android:fillColor="@color/category_art"
       android:pathData="M 230 124 h 30 v 30 h -30 v 0 Z" />
   </group>
   <group
@@ -52,7 +52,7 @@
     android:pivotX="298"
     android:pivotY="14">
     <path
-      android:fillColor="@color/comics"
+      android:fillColor="@color/category_comics"
       android:pathData="M 283 -1 h 30 v 30 h -30 v 0 Z" />
   </group>
   <group

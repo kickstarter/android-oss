@@ -2,6 +2,7 @@ package com.kickstarter.ui.views;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.PopupMenu;
@@ -13,6 +14,8 @@ import android.widget.TextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.DiscoveryUtils;
+import com.kickstarter.libs.KSColorUtils;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
@@ -25,12 +28,14 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
 public class DiscoveryToolbar extends Toolbar {
   @Bind(R.id.activity_feed_button) TextView activityFeedButton;
   @Bind(R.id.current_user_button) TextView currentUserButton;
+  @Bind(R.id.filter_expand_more_button) TextView filterExpandMoreButton;
   @Bind(R.id.filter_text_view) TextView filterTextView;
   @Bind(R.id.login_button) TextView loginButton;
   @Inject CurrentUser currentUser;
@@ -74,7 +79,21 @@ public class DiscoveryToolbar extends Toolbar {
   }
 
   public void loadParams(@NonNull final DiscoveryParams params) {
-    filterTextView.setText(params.filterString(getContext()));
+    final Context context = getContext();
+
+    this.setBackgroundColor(DiscoveryUtils.primaryColor(context, params));
+
+    filterTextView.setText(params.filterString(context));
+
+    final Observable<TextView> views = Observable.just(activityFeedButton,
+      currentUserButton,
+      filterExpandMoreButton,
+      filterTextView,
+      loginButton);
+
+    final @ColorInt int overlayTextColor = DiscoveryUtils.overlayTextColor(context, params);
+
+    views.subscribe(view -> view.setTextColor(overlayTextColor));
   }
 
   protected void showLoggedInMenu(@NonNull final User user) {

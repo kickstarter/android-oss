@@ -48,6 +48,7 @@ public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
     startActivity(intent);
   }
 
+  // todo: keep activity list position
   public void onItemsNext(@NonNull final List<Activity> activities) {
     adapter = new ActivityFeedAdapter(activities);
     recyclerView.setAdapter(adapter);

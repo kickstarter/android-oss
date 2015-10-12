@@ -47,7 +47,7 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
         // root for the selected params.
         final boolean found = !Observable.from(list)
           .filter(i -> i instanceof DiscoveryFilterViewHolder.Filter)
-          .map(i -> (DiscoveryFilterViewHolder.Filter) i)
+          .cast(DiscoveryFilterViewHolder.Filter.class)
           .filter(f -> f.params().isCategorySet())
           .takeFirst(f -> selectedParams.category().rootId() == f.params().category().rootId())
           .isEmpty().toBlocking().single();

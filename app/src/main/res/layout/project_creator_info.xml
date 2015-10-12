@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools"
-  tools:showIn="@layout/project_layout"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:orientation="vertical">
@@ -36,10 +34,13 @@
 
     <TextView
       android:id="@+id/avatar_name"
+      android:maxLines="2"
       android:layout_alignParentStart="true"
       android:layout_alignParentLeft="true"
       android:layout_toLeftOf="@id/avatar"
       android:layout_toStartOf="@id/avatar"
+      android:layout_marginRight="@dimen/grid_3"
+      android:layout_marginEnd="@dimen/grid_3"
       android:ellipsize="marquee"
       android:textSize="@dimen/ksr_name"
       android:textStyle="bold"

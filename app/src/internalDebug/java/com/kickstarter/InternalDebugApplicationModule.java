@@ -8,7 +8,7 @@ import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.preferences.StringPreference;
 import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
 import com.kickstarter.ui.containers.ApplicationContainer;
-import com.kickstarter.ui.containers.InternalDebugApplicationContainer;
+import com.kickstarter.ui.containers.InternalApplicationContainer;
 
 import javax.inject.Singleton;
 
@@ -20,7 +20,7 @@ public class InternalDebugApplicationModule {
   @Provides
   @Singleton
   ApplicationContainer provideApplicationContainer() {
-    return new InternalDebugApplicationContainer();
+    return new InternalApplicationContainer();
   }
 
   @Provides

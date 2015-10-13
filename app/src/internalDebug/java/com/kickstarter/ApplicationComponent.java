@@ -9,5 +9,5 @@ import dagger.Component;
 @Singleton
 @Component(modules = {InternalDebugApplicationModule.class})
 public interface ApplicationComponent extends ApplicationGraph {
-  void inject(DebugDrawer view);
+  void inject(DebugDrawer __);
 }

@@ -55,7 +55,7 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
     final Observable<Project> project = loginSuccess
       .flatMap(__ -> client.fetchProject(initialProject))
       .startWith(initialProject);
-      // TODO: .share()?
+      // TODO: currently we are loading projects twice after login, need to figure out .share()
 
     final Observable<List<Comment>> comments = refreshFeed
       .switchMap(__ -> client.fetchProjectComments(initialProject))

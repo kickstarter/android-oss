@@ -129,7 +129,7 @@ dependencies {
     compile 'io.reactivex:rxjava:1.0.14'
     compile 'com.jakewharton.rxbinding:rxbinding:0.2.0'
     compile 'net.danlew:android.joda:2.7.2'
-    compile 'net.hockeyapp.android:HockeySDK:3.5.0-b.4'
+    compile 'net.hockeyapp.android:HockeySDK:3.6.1'
     ***REMOVED***
     compile 'org.jsoup:jsoup:1.8.2'
 

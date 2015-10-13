@@ -101,7 +101,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
    * Returns a (visibleItem, totalItemCount) pair given a linear layout manager.
    * TODO: This would need to be improved to handle grid layouts if we use those in the future.
    */
-  private Pair<Integer, Integer> displayedItemFromLayout(final LinearLayoutManager manager) {
+  private Pair<Integer, Integer> displayedItemFromLayout(@NonNull final LinearLayoutManager manager) {
     final int visibleItemCount = manager.getChildCount();
     final int totalItemCount = manager.getItemCount();
     final int pastVisibleItems = manager.findFirstVisibleItemPosition();

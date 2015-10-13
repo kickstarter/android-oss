@@ -128,6 +128,7 @@ dependencies {
     compile 'io.reactivex:rxandroid:1.0.1'
     compile 'io.reactivex:rxjava:1.0.14'
     compile 'com.jakewharton.rxbinding:rxbinding:0.2.0'
+    compile 'com.jakewharton.rxbinding:rxbinding-recyclerview-v7:0.2.0'
     compile 'net.danlew:android.joda:2.7.2'
     compile 'net.hockeyapp.android:HockeySDK:3.5.0-b.4'
     ***REMOVED***

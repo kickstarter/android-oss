@@ -44,8 +44,7 @@ module Milkrun
     @log
   end
 
-  # Logs a message, then prompts the user to enter a value for a label. If label is nil,
-  # the user is asked to confirm.
+  # Prompts a user for a value.
   #
   # Returns the input String.
   def self.prompt(message, label: nil)

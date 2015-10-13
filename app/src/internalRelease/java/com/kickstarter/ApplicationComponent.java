@@ -6,5 +6,5 @@ import dagger.Component;
 
 @Singleton
 @Component(modules = {InternalReleaseApplicationModule.class})
-public interface ApplicationComponent extends ApplicationGraph {
+public interface ApplicationComponent extends InternalApplicationComponent {
 }

@@ -52,7 +52,7 @@ app/kickstarter.keystore
 app/signing.gradle
 
 # Credentials for uploading builds to S3
-config/s3.yml
+config/*.yml
 
 # Temp file for writing changelogs
 .CHANGELOG.tmp

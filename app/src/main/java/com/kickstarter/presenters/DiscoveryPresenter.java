@@ -4,8 +4,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 
+import com.jakewharton.rxbinding.support.v7.widget.RxRecyclerView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.ListUtils;
@@ -56,6 +59,13 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
     final Observable<Pair<DiscoveryActivity, DiscoveryParams>> viewAndParams =
       RxUtils.combineLatestPair(viewSubject, params);
 
+    final Observable<Pair<Integer, Integer>> visibleItemOfTotal = viewSubject
+      .switchMap(v -> RxRecyclerView.scrollEvents(v.recyclerView).map(__ -> v.recyclerView))
+      .map(RecyclerView::getLayoutManager)
+      .cast(LinearLayoutManager.class)
+      .map(this::displayedItemFromLayout)
+      ;
+
     addSubscription(viewAndParams
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.loadParams(vp.second)));
@@ -73,12 +83,36 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
       .subscribe(vp -> vp.first.startProjectActivity(vp.second))
     );
 
+    addSubscription(visibleItemOfTotal
+      .distinctUntilChanged()
+      .filter(this::closeToBottom)
+      .subscribe(__ -> nextPage.onNext(null))
+    );
+
     // TODO: We shouldn't have to do this, but BehaviorSubject and scan
     // don't seem to play well together:
     // https://github.com/ReactiveX/RxJava/issues/3168
     // This apparently fixes it:
     // https://github.com/ReactiveX/RxJava/pull/3171
     params.onNext(DiscoveryParams.builder().staffPicks(true).build());
+  }
+
+  /**
+   * Returns a (visibleItem, totalItemCount) pair given a linear layout manager.
+   * TODO: This would need to be improved to handle grid layouts if we use those in the future.
+   */
+  private Pair<Integer, Integer> displayedItemFromLayout(@NonNull final LinearLayoutManager manager) {
+    final int visibleItemCount = manager.getChildCount();
+    final int totalItemCount = manager.getItemCount();
+    final int pastVisibleItems = manager.findFirstVisibleItemPosition();
+    return new Pair<>(visibleItemCount + pastVisibleItems, totalItemCount);
+  }
+
+  /**
+   * Returns `true` when the visible item gets "close" to the bottom.
+   */
+  private boolean closeToBottom(@NonNull final Pair<Integer, Integer> visibleItemOfTotal) {
+    return visibleItemOfTotal.first == visibleItemOfTotal.second - 2;
   }
 
   /**

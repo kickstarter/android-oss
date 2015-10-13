@@ -4,12 +4,12 @@ module Milkrun
     #
     # Returns the new version code String.
     def bump
-      version = Time.now.strftime("%y%m%d%H%M").to_i
-      Milkrun.say "Bumping version to #{version} ✊"
+      version_code = Time.now.strftime("%y%m%d%H%M").to_i
+      Milkrun.say "Bumping version code to #{version_code} ✊"
       File.open(path, "w") do |f|
-        f.puts(version)
+        f.puts(version_code)
       end
-      version
+      version_code
     end
 
     # Returns the current version code String.

@@ -59,10 +59,22 @@ public class Presenter<ViewType> {
     viewChange.onNext(null);
   }
 
-  protected final ViewType view() {
+  /**
+   * Get view object attached to presenter. View can be null.
+   *
+   * @deprecated Not Reactive, use observables instead.
+   */
+  @Deprecated
+  protected final @Nullable ViewType view() {
     return this.view;
   }
 
+  /**
+   * Returns whether there is a view attached to the presenter.
+   *
+   * @deprecated Not Reactive, use observables instead.
+   */
+  @Deprecated
   protected final boolean hasView() {
     return this.view != null;
   }
@@ -75,7 +87,7 @@ public class Presenter<ViewType> {
     return viewChange;
   }
 
-  public final void addSubscription (@NonNull final Subscription subscription) {
+  public final void addSubscription(@NonNull final Subscription subscription) {
     subscriptions.add(subscription);
   }
 

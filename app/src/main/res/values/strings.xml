@@ -5,7 +5,7 @@
 
   <!-- Facebook production app id -->
   <string name="facebook_app_id">69103156693</string>
-  <string name="hockey_app_id">ecdab725861a76c38d60b5ae44dbe9f2</string>
+  <string name="hockey_app_id">***REMOVED***</string>
 
   <!-- User-facing strings -->
   <string name="Activity_empty">Activity empty</string>

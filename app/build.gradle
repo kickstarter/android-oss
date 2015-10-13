@@ -2,14 +2,11 @@ apply plugin: 'com.android.application'
 
 apply plugin: 'com.neenbedankt.android-apt'
 
-def versionMajor = 0
-def versionMinor = 1
-def versionPatch = 0
-
 def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
 def date = new Date();
 def buildDate = date.format("yyyy-MM-dd'T'HH:mm:ss'Z'", TimeZone.getTimeZone("UTC"))
-def privateVersion = new File("app/version_code.txt").text.toInteger()
+def privateVersion = new File("app/version_code.txt").text.trim().toInteger()
+def publicVersion = new File("app/version_name.txt").text.trim()
 def isCircle = "true".equals(System.getenv("CIRCLECI"))
 
 ext.signing = [
@@ -39,7 +36,7 @@ android {
         // Version code is an internal/private version number
         versionCode privateVersion
         // Version name is shown to users
-        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+        versionName publicVersion
     }
 
     signingConfigs {
@@ -128,8 +125,9 @@ dependencies {
     compile 'io.reactivex:rxandroid:1.0.1'
     compile 'io.reactivex:rxjava:1.0.14'
     compile 'com.jakewharton.rxbinding:rxbinding:0.2.0'
+    compile 'com.jakewharton.rxbinding:rxbinding-recyclerview-v7:0.2.0'
     compile 'net.danlew:android.joda:2.7.2'
-    compile 'net.hockeyapp.android:HockeySDK:3.5.0-b.4'
+    compile 'net.hockeyapp.android:HockeySDK:3.6.1'
     ***REMOVED***
     compile 'org.jsoup:jsoup:1.8.2'
 

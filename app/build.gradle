@@ -2,14 +2,11 @@ apply plugin: 'com.android.application'
 
 apply plugin: 'com.neenbedankt.android-apt'
 
-def versionMajor = 0
-def versionMinor = 1
-def versionPatch = 0
-
 def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
 def date = new Date();
 def buildDate = date.format("yyyy-MM-dd'T'HH:mm:ss'Z'", TimeZone.getTimeZone("UTC"))
-def privateVersion = new File("app/version_code.txt").text.toInteger()
+def privateVersion = new File("app/version_code.txt").text.trim().toInteger()
+def publicVersion = new File("app/version_name.txt").text.trim()
 def isCircle = "true".equals(System.getenv("CIRCLECI"))
 
 ext.signing = [
@@ -39,7 +36,7 @@ android {
         // Version code is an internal/private version number
         versionCode privateVersion
         // Version name is shown to users
-        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+        versionName publicVersion
     }
 
     signingConfigs {

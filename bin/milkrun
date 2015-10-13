@@ -13,23 +13,24 @@ class MilkrunApplication
     program :version, '0.0.1'
     program :description, 'Command-line tool for deploying the Kickstarter Android app'
 
-    %w(internalDebug externalDebug internalRelease).each do |variant|
-      command variant do |c|
-        c.syntax = "milkrun #{variant}"
-        c.description = "Submit a new #{variant} build to S3"
-        c.action do |args, options|
-          version = Milkrun::VersionCode.new.bump
-          file_path = Milkrun::Build.new(variant).compile
-          Milkrun::S3Package.new(variant: variant, version: version, file_path: file_path).upload
-          Milkrun::Changelog.new(variant: variant, version: version).publish
-          Milkrun.say "All done! 👌"
-        end
+    command :internal do |c|
+      c.syntax = 'milkrun internal'
+      c.description = "Submit a new internal build to S3"
+      c.action do |args, options|
+        variant = 'internal'
+        version_code = Milkrun::VersionCode.new.bump
+        version_name = Milkrun::VersionName.new.prompt
+        file_path = Milkrun::Build.new(variant).compile
+        Milkrun::HockeyApp.new(variant: variant, version_code: version_code, version_name: version_name).create_version
+        Milkrun::S3Package.new(variant: variant, version_code: version_code, file_path: file_path).upload
+        Milkrun::Changelog.new(variant: variant, version_code: version_code).publish
+        Milkrun.say "All done! 👌"
       end
     end
 
-    command :externalRelease do |c|
-      c.syntax = 'milkrun externalRelease'
-      c.description = 'Submit a new externalRelease build to the Play Store'
+    command :external do |c|
+      c.syntax = 'milkrun external'
+      c.description = 'TODO: Submit a new external build to the Play Store'
       c.action do |args, options|
       end
     end

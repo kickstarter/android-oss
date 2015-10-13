@@ -1,21 +1,21 @@
 module Milkrun
   class Changelog
-    attr_reader :variant, :version
+    attr_reader :variant, :version_code
 
-    def initialize(variant:, version:)
-      @variant, @version = variant, version
+    def initialize(variant:, version_code:)
+      @variant, @version_code = variant, version_code
     end
 
     # Capture and publish the changelog for a package to a list in S3.
     def publish
-      Milkrun.say "Publishing changelog for #{variant} package with version #{version}"
+      Milkrun.say "Publishing changelog for #{variant} package with version_code #{version_code}"
 
       build = {
-        'build' => version,
+        'build' => version_code,
         'changelog' => changelog,
         'variant' => variant
       }
-      body = (current_builds.select{|b| b[:build] != version} + [build]).to_yaml
+      body = (current_builds.select{|b| b[:build] != version_code} + [build]).to_yaml
 
       object = Milkrun.s3_client.put_object(body: body, bucket: Milkrun.bucket, key: 'builds.yaml')
 

@@ -5,11 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
-import android.widget.Toast;
 
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.kickstarter.KSApplication;
-import com.kickstarter.R;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.RxUtils;
@@ -38,7 +36,9 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
   private final PublishSubject<String> bodyOnPostClick = PublishSubject.create();
   private final PublishSubject<Void> commentDialogShown = PublishSubject.create();
   private final PublishSubject<Boolean> commentIsPosting = PublishSubject.create();
+  private final PublishSubject<Project> initialProject = PublishSubject.create();
   private final PublishSubject<Void> refreshFeed = PublishSubject.create();
+  private final PublishSubject<Void> showToast = PublishSubject.create();
 
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
@@ -47,18 +47,14 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
   protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
-  }
 
-  // todo: add pagination to comments
-  public void initialize(@NonNull final Project initialProject) {
+    final Observable<Project> project = RxUtils.takeWhen(initialProject, loginSuccess)
+      .mergeWith(initialProject)
+      .flatMap(client::fetchProject)
+      .share();
 
-    final Observable<Project> project = loginSuccess
-      .flatMap(__ -> client.fetchProject(initialProject))
-      .startWith(initialProject);
-      // TODO: currently we are loading projects twice after login, need to figure out .share()
-
-    final Observable<List<Comment>> comments = refreshFeed
-      .switchMap(__ -> client.fetchProjectComments(initialProject))
+    final Observable<List<Comment>> comments = RxUtils.takeWhen(project, refreshFeed)
+      .switchMap(client::fetchProjectComments)
       .map(CommentsEnvelope::comments)
       .share();
 
@@ -69,27 +65,28 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
     final Observable<Pair<CommentFeedActivity, Project>> viewAndProject =
       RxUtils.combineLatestPair(viewSubject, project);
 
-    final Observable<CharSequence> commentBody =  RxUtils.takeWhen(viewSubject, commentDialogShown)
+    final Observable<CharSequence> commentBody = RxUtils.takeWhen(viewSubject, commentDialogShown)
       .flatMap(v -> RxTextView.textChanges(v.commentBodyEditText));
 
     final Observable<Boolean> commentHasBody = commentBody
       .map(body -> body.length() > 0);
 
-    final Observable<Comment> postedComment = bodyOnPostClick
-      .flatMap(body -> client.postProjectComment(initialProject, body))
-      .share();
+    final Observable<Comment> postedComment = RxUtils.takePairWhen(project, bodyOnPostClick)
+      .flatMap(pb -> client.postProjectComment(pb.first, pb.second));
 
     addSubscription(postedComment
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::postCommentSuccess, this::postCommentError)
     );
 
-    addSubscription(RxUtils.takeWhen(viewAndProject, loginSuccess)
-      .filter(vp -> vp.second.isBacking())
-      .take(1)
-      .map(vp -> vp.first)
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(CommentFeedActivity::showCommentDialog)
+    addSubscription(
+      RxUtils.combineLatestPair(viewAndProject, loginSuccess)
+        .map(vpl -> vpl.first)
+        .filter(vp -> vp.second.isBacking())
+        .take(1)
+        .map(vp -> vp.first)
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(CommentFeedActivity::showCommentDialog)
     );
 
     addSubscription(RxUtils.combineLatestPair(currentUser.observable(), viewCommentsProject)
@@ -105,30 +102,38 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
 
     addSubscription(RxUtils.takeWhen(viewSubject, contextClick)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(CommentFeedActivity::onBackPressed));
+      .subscribe(CommentFeedActivity::onBackPressed)
+    );
 
     addSubscription(RxUtils.takeWhen(viewSubject, loginClick)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(CommentFeedActivity::commentFeedLogin));
-
-    addSubscription(
-      RxUtils.combineLatestPair(viewSubject, commentHasBody)
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(ve -> ve.first.enablePostButton(ve.second))
+      .subscribe(CommentFeedActivity::commentFeedLogin)
     );
 
-    addSubscription(
-      RxUtils.takeWhen(viewSubject, refreshFeed)
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(CommentFeedActivity::dismissCommentDialog)
+    addSubscription(RxUtils.combineLatestPair(viewSubject, commentHasBody)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(ve -> ve.first.enablePostButton(ve.second))
     );
 
-    addSubscription(
-      RxUtils.takePairWhen(viewSubject, commentIsPosting)
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(vp -> vp.first.disablePostButton(vp.second))
+    addSubscription(RxUtils.takeWhen(viewSubject, refreshFeed)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(CommentFeedActivity::dismissCommentDialog)
     );
 
+    addSubscription(RxUtils.takePairWhen(viewSubject, commentIsPosting)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(vp -> vp.first.disablePostButton(vp.second))
+    );
+
+    addSubscription(RxUtils.takeWhen(viewSubject, showToast)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(CommentFeedActivity::showToastOnPostSuccess)
+    );
+  }
+
+  // todo: add pagination to comments
+  public void initialize(@NonNull final Project initialProject) {
+    this.initialProject.onNext(initialProject);
     refreshFeed.onNext(null);
   }
 
@@ -148,9 +153,7 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
   private void postCommentSuccess(@Nullable final Comment comment) {
     commentIsPosting.onNext(false);
     refreshFeed.onNext(null);
-    final Context context = view().getApplicationContext();
-    final Toast toast = Toast.makeText(context, context.getString(R.string.Comment_posted), Toast.LENGTH_LONG);
-    toast.show();
+    showToast.onNext(null);
   }
 
   private void postCommentError(@NonNull final Throwable e) {
@@ -164,5 +167,6 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
 
   public void takeLoginSuccess() {
     loginSuccess.onNext(null);
+    refreshFeed.onNext(null);
   }
 }

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
@@ -99,7 +100,6 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
         presenter.postClick(commentBodyEditText.getText().toString());
       });
     }
-
     presenter.takeCommentDialogShown();
   }
 
@@ -110,11 +110,20 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
   }
 
   public void enablePostButton(final boolean enabled) {
-    postCommentButton.setEnabled(enabled);
+    if (postCommentButton != null) {
+      postCommentButton.setEnabled(enabled);
+    }
   }
 
   public void disablePostButton(final boolean disabled) {
-    postCommentButton.setEnabled(!disabled);
+    if (postCommentButton != null) {
+      postCommentButton.setEnabled(!disabled);
+    }
+  }
+
+  public void showToastOnPostSuccess() {
+    final Toast toast = Toast.makeText(this, getString(R.string.Comment_posted), Toast.LENGTH_SHORT);
+    toast.show();
   }
 
   @Override

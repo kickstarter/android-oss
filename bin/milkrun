@@ -18,6 +18,7 @@ class MilkrunApplication
       c.description = "Submit a new internal build to S3"
       c.action do |args, options|
         variant = 'internal'
+        version_code = Milkrun::VersionCode.new.bump
         version_name = Milkrun::VersionName.new.prompt
         file_path = Milkrun::Build.new(variant).compile
         Milkrun::S3Package.new(variant: variant, version_code: version_code, file_path: file_path).upload

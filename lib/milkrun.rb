@@ -13,6 +13,7 @@ require 'milkrun/build_list'
 require 'milkrun/changelog'
 require 'milkrun/s3_package'
 require 'milkrun/version_code'
+require 'milkrun/version_name'
 
 module Milkrun
   def self.app_dir
@@ -36,6 +37,17 @@ module Milkrun
       "[#{time} Milkrun]: #{msg}\n"
     end
     @log
+  end
+
+  # Logs a message, then prompts the user to enter a value for a label. If label is nil,
+  # the user is asked to confirm.
+  #
+  # Returns the input String.
+  def self.prompt(message, label: nil)
+    say message
+    input_text = label ? "#{label}: " :  "Press enter to confirm"
+    print input_text.color(:yellow)
+    STDIN.gets.chomp
   end
 
   def self.say(message)

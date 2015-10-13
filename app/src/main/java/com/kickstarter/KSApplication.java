@@ -63,6 +63,9 @@ public class KSApplication extends Application {
     return application.refWatcher;
   }
 
+  /**
+   * Tests subclass KSApplication and override this method.
+   */
   protected boolean isInUnitTests() {
     return false;
   }

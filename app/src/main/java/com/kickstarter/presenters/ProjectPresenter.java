@@ -37,30 +37,32 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
   private final PublishSubject<Void> loginSuccess = PublishSubject.create();
   private final PublishSubject<Reward> rewardClick = PublishSubject.create();
   private final PublishSubject<Void> starClick = PublishSubject.create();
+  private final PublishSubject<Project> initialProject = PublishSubject.create();
+  private final PublishSubject<String> initialProjectParam = PublishSubject.create();
 
   @Override
   protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
-  }
 
-  public void initialize(@Nullable final Project initialProject, @Nullable final String param) {
     final Observable<User> loggedInUserOnStarClick = RxUtils.takeWhen(currentUser.observable(), starClick)
       .filter(u -> u != null);
 
     final Observable<User> loggedOutUserOnStarClick = RxUtils.takeWhen(currentUser.observable(), starClick)
       .filter(u -> u == null);
 
-    final Observable<Project> projectOnUserChangeStar = loggedInUserOnStarClick
-      .switchMap(__ -> toggleProjectStar(initialProject))
+    final Observable<Project> projectOnUserChangeStar = RxUtils.takeWhen(initialProject, loggedInUserOnStarClick)
+      .switchMap(this::toggleProjectStar)
       .share();
 
-    final Observable<Project> starredProjectOnLoginSuccess = loginSuccess
+    final Observable<Project> starredProjectOnLoginSuccess = RxUtils.takeWhen(initialProject, loginSuccess)
       .take(1)
-      .switchMap(__ -> starProject(initialProject))
+      .switchMap(this::starProject)
       .share();
 
-    final Observable<Project> project = (initialProject != null ? client.fetchProject(initialProject) : client.fetchProject(param))
+    final Observable<Project> project = initialProject.map(Project::param).mergeWith(initialProjectParam)
+      .filter(param -> param != null)
+      .switchMap(client::fetchProject)
       .mergeWith(projectOnUserChangeStar)
       .mergeWith(starredProjectOnLoginSuccess)
       .share();
@@ -124,6 +126,11 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
     addSubscription(RxUtils.takeWhen(viewAndProject, updatesClick)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showUpdates(vp.second)));
+  }
+
+  public void initialize(@Nullable final Project initialProject, @Nullable final String param) {
+    this.initialProject.onNext(initialProject);
+    this.initialProjectParam.onNext(param);
   }
 
   public void takeBackProjectClick() {

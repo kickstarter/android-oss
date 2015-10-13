@@ -21,6 +21,7 @@ class MilkrunApplication
         version_code = Milkrun::VersionCode.new.bump
         version_name = Milkrun::VersionName.new.prompt
         file_path = Milkrun::Build.new(variant).compile
+        Milkrun::HockeyApp.new(variant: variant, version_code: version_code, version_name: version_name).create_version
         Milkrun::S3Package.new(variant: variant, version_code: version_code, file_path: file_path).upload
         Milkrun::Changelog.new(variant: variant, version_code: version_code).publish
         Milkrun.say "All done! 👌"

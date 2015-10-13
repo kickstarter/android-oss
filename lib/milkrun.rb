@@ -11,6 +11,7 @@ require 'rainbow/ext/string'
 require 'milkrun/build'
 require 'milkrun/build_list'
 require 'milkrun/changelog'
+require 'milkrun/hockey_app'
 require 'milkrun/s3_package'
 require 'milkrun/version_code'
 require 'milkrun/version_name'
@@ -22,6 +23,10 @@ module Milkrun
 
   def self.bucket
     'android-ksr-builds'
+  end
+
+  def self.error(message)
+    log.error message.color(:red)
   end
 
   def self.project_dir

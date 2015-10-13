@@ -74,6 +74,7 @@ public class Presenter<ViewType> {
    *
    * @deprecated Not Reactive, use observables instead.
    */
+  @Deprecated
   protected final boolean hasView() {
     return this.view != null;
   }

@@ -79,10 +79,9 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
 
   @OnClick(R.id.comment_button)
   public void showCommentDialog() {
-    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-    builder.setView(R.layout.comment_dialog);
-
-    commentDialog = builder.create();
+    commentDialog = new AlertDialog.Builder(this)
+      .setView(R.layout.comment_dialog)
+      .create();
     commentDialog.show();
     commentDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 

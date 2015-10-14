@@ -1,6 +1,5 @@
 package com.kickstarter.ui.activities;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -9,11 +8,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Pair;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.kickstarter.KSApplication;
@@ -22,7 +18,6 @@ import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.DiscoveryUtils;
-import com.kickstarter.libs.RxUtils;
 import com.kickstarter.libs.StatusBarUtils;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.models.Project;
@@ -41,24 +36,19 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.BindDrawable;
 import butterknife.ButterKnife;
-import rx.Subscription;
-import rx.subjects.PublishSubject;
 
 @RequiresPresenter(DiscoveryPresenter.class)
 public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
   DiscoveryAdapter adapter;
   LinearLayoutManager layoutManager;
   final List<Project> projects = new ArrayList<>();
-  final PublishSubject<Integer> visibleItem = PublishSubject.create();
-  final PublishSubject<Integer> itemCount = PublishSubject.create();
-  Subscription pageSubscription;
 
   @Inject ApplicationContainer applicationContainer;
 
   @BindDrawable(R.drawable.dark_blue_gradient) Drawable darkBlueGradientDrawable;
   @Bind(R.id.discovery_layout) LinearLayout discoveryLayout;
   @Bind(R.id.discovery_toolbar) DiscoveryToolbar discoveryToolbar;
-  @Bind(R.id.recycler_view) RecyclerView recyclerView;
+  public @Bind(R.id.recycler_view) RecyclerView recyclerView;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -75,30 +65,6 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
     adapter = new DiscoveryAdapter(projects, presenter);
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);
-
-    pageSubscription = RxUtils.combineLatestPair(visibleItem, itemCount)
-      .distinctUntilChanged()
-      .filter(this::closeToBottom)
-      .subscribe(__ -> presenter.takeNextPage());
-
-    recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-      @Override
-      public void onScrolled(@NonNull final RecyclerView recyclerView, final int dx, final int dy) {
-        final int visibleItemCount = layoutManager.getChildCount();
-        final int totalItemCount = layoutManager.getItemCount();
-        final int pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
-
-        visibleItem.onNext(visibleItemCount + pastVisibleItems);
-        itemCount.onNext(totalItemCount);
-      }
-    });
-  }
-
-  @Override
-  protected void onDestroy() {
-    super.onDestroy();
-    recyclerView.clearOnScrollListeners();
-    pageSubscription.unsubscribe();
   }
 
   public void loadProjects(@NonNull final List<Project> newProjects) {
@@ -156,9 +122,5 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> {
       })
       .setIcon(android.R.drawable.ic_dialog_alert)
       .show();
-  }
-
-  private boolean closeToBottom(@NonNull final Pair<Integer, Integer> itemAndCount) {
-    return itemAndCount.first == itemAndCount.second - 2;
   }
 }

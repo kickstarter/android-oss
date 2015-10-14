@@ -74,7 +74,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:gravity="center_vertical"
-        android:textColor="@drawable/text_selector"
+        android:textColor="@color/green_state_pressed_color"
         android:textSize="@dimen/body"
         android:text="@string/Campaign" />
 
@@ -102,7 +102,7 @@
         android:gravity="center_vertical"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        android:textColor="@drawable/text_selector"
+        android:textColor="@color/green_state_pressed_color"
         android:textSize="@dimen/body"
         android:text="@string/Updates" />
 
@@ -132,7 +132,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:gravity="center_vertical"
-        android:textColor="@drawable/text_selector"
+        android:textColor="@color/green_state_pressed_color"
         android:textSize="@dimen/body"
         android:text="@string/Comments" />
 

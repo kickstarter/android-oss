@@ -11,8 +11,10 @@ require 'rainbow/ext/string'
 require 'milkrun/build'
 require 'milkrun/build_list'
 require 'milkrun/changelog'
+require 'milkrun/hockey_app'
 require 'milkrun/s3_package'
 require 'milkrun/version_code'
+require 'milkrun/version_name'
 
 module Milkrun
   def self.app_dir
@@ -21,6 +23,10 @@ module Milkrun
 
   def self.bucket
     'android-ksr-builds'
+  end
+
+  def self.error(message)
+    log.error message.color(:red)
   end
 
   def self.project_dir
@@ -36,6 +42,16 @@ module Milkrun
       "[#{time} Milkrun]: #{msg}\n"
     end
     @log
+  end
+
+  # Prompts a user for a value.
+  #
+  # Returns the input String.
+  def self.prompt(message, label: nil)
+    say message
+    input_text = label ? "#{label}: " :  "Press enter to confirm"
+    print input_text.color(:yellow)
+    STDIN.gets.chomp
   end
 
   def self.say(message)

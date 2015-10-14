@@ -143,7 +143,7 @@
   <string name="Updates">Updates</string>
   <string name="Upgrade_app">Upgrade app</string>
   <string name="Use_your_email_address">Use your email address:</string>
-  <string name="username_is_following_you">%1$s is following you!</string>
+  <string name="username_is_following_you">&lt;b>%1$s&lt;/b> is following you!</string>
   <string name="Variant">Variant</string>
   <string name="View_pledge">View pledge</string>
   <string name="Verify">Verify</string>

@@ -1,7 +1,6 @@
 package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
@@ -9,7 +8,7 @@ import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.models.Activity;
-import com.kickstarter.ui.activities.ProjectActivity;
+import com.kickstarter.models.Project;
 import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
@@ -20,10 +19,15 @@ public class ProjectStateChangedViewHolder extends ActivityListViewHolder {
   @Bind(R.id.title) TextView titleTextView;
   @Bind(R.id.project_photo) ImageView projectPhotoImageView;
 
-  private Context context;
+  private final Delegate delegate;
 
-  public ProjectStateChangedViewHolder(@NonNull final View view) {
+  public interface Delegate {
+    void projectStateChangedClicked(@NonNull final ProjectStateChangedViewHolder viewHolder, @NonNull final Project project);
+  }
+
+  public ProjectStateChangedViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
     super(view);
+    this.delegate = delegate;
     ButterKnife.bind(this, view);
   }
 
@@ -31,7 +35,7 @@ public class ProjectStateChangedViewHolder extends ActivityListViewHolder {
   public void onBind(@NonNull final Object datum) {
     super.onBind(datum);
 
-    context = view.getContext();
+    final Context context = view.getContext();
 
     Picasso.with(context)
       .load(activity.project().photo().little())
@@ -57,8 +61,6 @@ public class ProjectStateChangedViewHolder extends ActivityListViewHolder {
 
   @OnClick(R.id.card_view)
   public void stateChangeCardClick() {
-    final Intent intent = new Intent(context, ProjectActivity.class)
-      .putExtra(context.getString(R.string.intent_project), activity.project());
-    context.startActivity(intent);
+    delegate.projectStateChangedClicked(this, activity.project());
   }
 }

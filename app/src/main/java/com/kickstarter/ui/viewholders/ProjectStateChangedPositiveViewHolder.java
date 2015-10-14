@@ -1,7 +1,6 @@
 package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.view.View;
@@ -10,10 +9,10 @@ import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
-import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.Money;
+import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.models.Activity;
-import com.kickstarter.ui.activities.ProjectActivity;
+import com.kickstarter.models.Project;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
@@ -35,10 +34,16 @@ public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolde
   @BindColor(R.color.green_darken_10) int greenDarken10Color;
   @Inject Money money;
 
-  private Context context;
+  private final Delegate delegate;
 
-  public ProjectStateChangedPositiveViewHolder(@NonNull final View view) {
+  public interface Delegate {
+    void projectStateChangedPositiveClicked(@NonNull final ProjectStateChangedPositiveViewHolder viewHolder,
+      @NonNull final Project project);
+  }
+
+  public ProjectStateChangedPositiveViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
     super(view);
+    this.delegate = delegate;
     ButterKnife.bind(this, view);
     ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
   }
@@ -47,7 +52,7 @@ public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolde
   public void onBind(@NonNull final Object datum) {
     super.onBind(datum);
 
-    context = view.getContext();
+    final Context context = view.getContext();
 
     switch (activity.category()) {
       case Activity.CATEGORY_LAUNCH:
@@ -89,9 +94,7 @@ public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolde
   }
 
   @OnClick(R.id.card_view)
-  public void positiveStateChangeCardClick() {
-    final Intent intent = new Intent(context, ProjectActivity.class)
-      .putExtra(context.getString(R.string.intent_project), activity.project());
-    context.startActivity(intent);
+  public void onClick() {
+    delegate.projectStateChangedPositiveClicked(this, activity.project());
   }
 }

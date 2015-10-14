@@ -1,7 +1,6 @@
 package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
@@ -9,8 +8,8 @@ import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.utils.DateTimeUtils;
-import com.kickstarter.ui.activities.DisplayWebViewActivity;
-import com.kickstarter.ui.activities.ProjectActivity;
+import com.kickstarter.models.Activity;
+import com.kickstarter.models.Project;
 import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
@@ -25,17 +24,24 @@ public class ProjectUpdateViewHolder extends ActivityListViewHolder {
   @Bind(R.id.update_sequence) TextView updateSequenceTextView;
   @Bind(R.id.update_title) TextView updateTitleTextView;
 
-  private Context context;
+  private final Delegate delegate;
 
-  public ProjectUpdateViewHolder(@NonNull final View view) {
+  public interface Delegate {
+    void projectUpdateProjectClicked(@NonNull final ProjectUpdateViewHolder viewHolder, @NonNull final Project project);
+    void projectUpdateUpdateClicked(@NonNull final ProjectUpdateViewHolder viewHolder, @NonNull final Activity activity);
+  }
+
+
+  public ProjectUpdateViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
     super(view);
+    this.delegate = delegate;
     ButterKnife.bind(this, view);
   }
 
   @Override
   public void onBind(@NonNull final Object datum) {
     super.onBind(datum);
-    context = view.getContext();
+    final Context context = view.getContext();
 
     projectNameTextView.setText(activity.project().name());
     Picasso.with(view.getContext())
@@ -48,16 +54,12 @@ public class ProjectUpdateViewHolder extends ActivityListViewHolder {
   }
 
   @OnClick(R.id.project_info)
-  public void startProjectActivity() {
-    final Intent intent = new Intent(context, ProjectActivity.class)
-      .putExtra(context.getString(R.string.intent_project), activity.project());
-    context.startActivity(intent);
+  public void projectOnClick() {
+    delegate.projectUpdateProjectClicked(this, activity.project());
   }
 
   @OnClick(R.id.update_info)
-  public void showProjectUpdate() {
-    final Intent intent = new Intent(context, DisplayWebViewActivity.class)
-      .putExtra(context.getString(R.string.intent_url), activity.projectUpdateUrl());
-    context.startActivity(intent);
+  public void updateOnClick() {
+    delegate.projectUpdateUpdateClicked(this, activity);
   }
 }

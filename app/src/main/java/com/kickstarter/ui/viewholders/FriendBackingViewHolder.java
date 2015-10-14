@@ -1,7 +1,6 @@
 package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
@@ -10,7 +9,7 @@ import android.widget.TextView;
 import com.kickstarter.R;
 import com.kickstarter.libs.CircleTransform;
 import com.kickstarter.libs.utils.StringUtils;
-import com.kickstarter.ui.activities.ProjectActivity;
+import com.kickstarter.models.Project;
 import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
@@ -24,10 +23,15 @@ public class FriendBackingViewHolder extends ActivityListViewHolder {
   @Bind(R.id.project_photo) ImageView projectPhotoImageView;
   @Bind(R.id.title) TextView titleTextView;
 
-  private Context context;
+  private final Delegate delegate;
 
-  public FriendBackingViewHolder(@NonNull final View view) {
+  public interface Delegate {
+    void friendBackingClicked(@NonNull final FriendBackingViewHolder viewHolder, @NonNull final Project project);
+  }
+
+  public FriendBackingViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
     super(view);
+    this.delegate = delegate;
     ButterKnife.bind(this, view);
   }
 
@@ -35,7 +39,7 @@ public class FriendBackingViewHolder extends ActivityListViewHolder {
   public void onBind(@NonNull final Object datum) {
     super.onBind(datum);
 
-    context = view.getContext();
+    final Context context = view.getContext();
 
     Picasso.with(context)
       .load(activity.user().avatar().small())
@@ -52,10 +56,8 @@ public class FriendBackingViewHolder extends ActivityListViewHolder {
   }
 
   @OnClick(R.id.friend_backing_card_view)
-  public void startProjectActivity() {
-    final Intent intent = new Intent(context, ProjectActivity.class)
-      .putExtra(context.getString(R.string.intent_project), activity.project());
-    context.startActivity(intent);
+  public void onClick() {
+    delegate.friendBackingClicked(this, activity.project());
   }
 }
 

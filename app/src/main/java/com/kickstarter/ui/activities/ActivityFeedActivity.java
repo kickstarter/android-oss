@@ -13,6 +13,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.models.Activity;
+import com.kickstarter.models.Project;
 import com.kickstarter.presenters.ActivityFeedPresenter;
 import com.kickstarter.ui.adapters.ActivityFeedAdapter;
 
@@ -50,7 +51,19 @@ public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
 
   // todo: keep activity list position
   public void onItemsNext(@NonNull final List<Activity> activities) {
-    adapter = new ActivityFeedAdapter(activities);
+    adapter = new ActivityFeedAdapter(activities, presenter);
     recyclerView.setAdapter(adapter);
+  }
+
+  public void showProjectUpdate(@NonNull final Activity activity) {
+    final Intent intent = new Intent(this, DisplayWebViewActivity.class)
+      .putExtra(getString(R.string.intent_url), activity.projectUpdateUrl());
+    startActivity(intent);
+  }
+
+  public void startProjectActivity(@NonNull final Project project) {
+    final Intent intent = new Intent(this, ProjectActivity.class)
+      .putExtra(getString(R.string.intent_project), project);
+    startActivity(intent);
   }
 }

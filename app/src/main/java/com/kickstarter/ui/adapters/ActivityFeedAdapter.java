@@ -17,9 +17,14 @@ import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder;
 import java.util.List;
 
 public class ActivityFeedAdapter extends KsrAdapter {
+  private final Delegate delegate;
 
-  public ActivityFeedAdapter(@NonNull final List<Activity> activities) {
+  public interface Delegate extends FriendBackingViewHolder.Delegate, ProjectStateChangedPositiveViewHolder.Delegate,
+    ProjectStateChangedViewHolder.Delegate, ProjectUpdateViewHolder.Delegate {}
+
+  public ActivityFeedAdapter(@NonNull final List<Activity> activities, @NonNull final Delegate delegate) {
     data().add(activities);
+    this.delegate = delegate;
   }
 
   @Override
@@ -50,15 +55,15 @@ public class ActivityFeedAdapter extends KsrAdapter {
   protected KsrViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
     switch (layout) {
       case R.layout.activity_friend_backing_view:
-        return new FriendBackingViewHolder(view);
+        return new FriendBackingViewHolder(view, delegate);
       case R.layout.activity_friend_follow_view:
         return new FriendFollowViewHolder(view);
       case R.layout.activity_project_state_changed_view:
-        return new ProjectStateChangedViewHolder(view);
+        return new ProjectStateChangedViewHolder(view, delegate);
       case R.layout.activity_project_state_changed_positive_view:
-        return new ProjectStateChangedPositiveViewHolder(view);
+        return new ProjectStateChangedPositiveViewHolder(view, delegate);
       case R.layout.activity_project_update_view:
-        return new ProjectUpdateViewHolder(view);
+        return new ProjectUpdateViewHolder(view, delegate);
       default:
         return new EmptyViewHolder(view);
     }

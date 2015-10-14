@@ -13,7 +13,7 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.Presenter;
-import com.kickstarter.libs.RxUtils;
+import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClient;

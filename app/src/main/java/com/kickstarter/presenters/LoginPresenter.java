@@ -12,7 +12,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ApiErrorHandler;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
-import com.kickstarter.libs.RxUtils;
+import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.ApiError;

@@ -10,7 +10,7 @@ import com.jakewharton.rxbinding.widget.RxTextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
-import com.kickstarter.libs.RxUtils;
+import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;

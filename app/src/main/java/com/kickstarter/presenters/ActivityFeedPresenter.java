@@ -9,7 +9,7 @@ import android.util.Pair;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
-import com.kickstarter.libs.RxUtils;
+import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.services.ActivityFeedParams;
 import com.kickstarter.services.ApiClient;

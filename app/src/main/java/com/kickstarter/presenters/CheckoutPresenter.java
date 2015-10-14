@@ -8,7 +8,7 @@ import android.webkit.WebView;
 
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.Presenter;
-import com.kickstarter.libs.RxUtils;
+import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.KickstarterUri;
 import com.kickstarter.services.RequestHandler;

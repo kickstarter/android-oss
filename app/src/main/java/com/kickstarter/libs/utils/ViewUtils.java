@@ -1,4 +1,4 @@
-package com.kickstarter.libs;
+package com.kickstarter.libs.utils;
 
 import android.content.Context;
 import android.content.res.Configuration;

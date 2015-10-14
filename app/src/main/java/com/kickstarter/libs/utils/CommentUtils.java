@@ -1,4 +1,4 @@
-package com.kickstarter.libs;
+package com.kickstarter.libs.utils;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

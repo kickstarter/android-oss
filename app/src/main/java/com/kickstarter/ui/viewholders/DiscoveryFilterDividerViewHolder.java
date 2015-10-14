@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.DiscoveryUtils;
+import com.kickstarter.libs.utils.DiscoveryUtils;
 
 import auto.parcel.AutoParcel;
 import butterknife.Bind;

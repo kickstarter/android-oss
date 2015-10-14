@@ -9,7 +9,7 @@ import android.support.annotation.StringDef;
 import com.kickstarter.R;
 import com.kickstarter.libs.qualifiers.AutoGson;
 import com.kickstarter.libs.CurrencyOptions;
-import com.kickstarter.libs.NumberUtils;
+import com.kickstarter.libs.utils.NumberUtils;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;

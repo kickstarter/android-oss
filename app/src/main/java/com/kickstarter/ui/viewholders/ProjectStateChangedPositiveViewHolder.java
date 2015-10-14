@@ -1,6 +1,7 @@
 package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.view.View;
@@ -12,6 +13,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.DateTimeUtils;
 import com.kickstarter.libs.Money;
 import com.kickstarter.models.Activity;
+import com.kickstarter.ui.activities.ProjectActivity;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
@@ -19,6 +21,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.BindColor;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolder {
   @Bind(R.id.card_view) CardView cardView;
@@ -32,6 +35,8 @@ public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolde
   @BindColor(R.color.green_darken_10) int greenDarken10Color;
   @Inject Money money;
 
+  private Context context;
+
   public ProjectStateChangedPositiveViewHolder(@NonNull final View view) {
     super(view);
     ButterKnife.bind(this, view);
@@ -42,7 +47,7 @@ public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolde
   public void onBind(@NonNull final Object datum) {
     super.onBind(datum);
 
-    final Context context = view.getContext();
+    context = view.getContext();
 
     switch (activity.category()) {
       case Activity.CATEGORY_LAUNCH:
@@ -81,5 +86,12 @@ public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolde
     Picasso.with(context)
       .load(activity.project().photo().full())
       .into(projectPhotoImageView);
+  }
+
+  @OnClick(R.id.card_view)
+  public void positiveStateChangeCardClick() {
+    final Intent intent = new Intent(context, ProjectActivity.class)
+      .putExtra(context.getString(R.string.intent_project), activity.project());
+    context.startActivity(intent);
   }
 }

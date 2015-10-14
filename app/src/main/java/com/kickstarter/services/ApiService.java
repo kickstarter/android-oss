@@ -3,6 +3,7 @@ package com.kickstarter.services;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
+import com.kickstarter.services.apirequests.CommentBody;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.CategoriesEnvelope;
@@ -13,6 +14,7 @@ import com.kickstarter.services.apiresponses.StarEnvelope;
 import java.util.List;
 import java.util.Map;
 
+import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.PUT;
@@ -50,11 +52,7 @@ import rx.Observable;
     @Query("code") String code);
 
   @POST("/v1/projects/{param}/comments/")
-  Observable<Comment> postProjectComment(@Path("param") String param, @Query("body") String body);
-
-  @POST("/v1/projects/{project_param}/updates/{update_id}/comments")
-  Observable<Comment> postUpdateComment(@Path("project_param") String param,
-    @Path("update_id") String update_id, @Query("body") String body);
+  Observable<Comment> postProjectComment(@Path("param") String param, @Body CommentBody body);
 
   @PUT("/v1/projects/{param}/star")
   Observable<StarEnvelope> starProject(@Path("param") String param);

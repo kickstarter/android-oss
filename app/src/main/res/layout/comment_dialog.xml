@@ -4,12 +4,17 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
+  <include layout="@layout/post_comment_toolbar"/>
+
   <EditText
-    android:padding="@dimen/grid_3"
-    android:id="@+id/comment"
-    android:background="@color/white"
+    android:id="@+id/comment_body"
+    android:padding="@dimen/grid_1"
+    android:gravity="top"
     android:inputType="textAutoCorrect"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/grid_11" />
+    android:background="@color/white"
+    android:layout_height="@dimen/grid_20">
+    <requestFocus/>
+  </EditText>
 
 </LinearLayout>

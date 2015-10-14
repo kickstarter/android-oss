@@ -61,6 +61,10 @@
     </activity>
 
     <activity
+      android:name=".ui.activities.SearchActivity"
+      android:theme="@style/SearchActivity" />
+
+    <activity
       android:name=".ui.activities.LoginToutActivity"
       android:theme="@style/Login" />
 

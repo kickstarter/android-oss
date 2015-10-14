@@ -15,13 +15,13 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.DiscoveryUtils;
-import com.kickstarter.libs.KSColorUtils;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.LoginToutActivity;
+import com.kickstarter.ui.activities.SearchActivity;
 
 import javax.inject.Inject;
 
@@ -38,6 +38,7 @@ public class DiscoveryToolbar extends Toolbar {
   @Bind(R.id.filter_expand_more_button) TextView filterExpandMoreButton;
   @Bind(R.id.filter_text_view) TextView filterTextView;
   @Bind(R.id.login_button) TextView loginButton;
+  @Bind(R.id.search_button) TextView searchButton;
   @Inject CurrentUser currentUser;
   @Inject Logout logout;
 
@@ -94,6 +95,13 @@ public class DiscoveryToolbar extends Toolbar {
     final @ColorInt int overlayTextColor = DiscoveryUtils.overlayTextColor(context, params);
 
     views.subscribe(view -> view.setTextColor(overlayTextColor));
+  }
+
+  @OnClick(R.id.search_button)
+  public void searchButtonClick(@NonNull final View view) {
+    final Context context = getContext();
+    final Intent intent = new Intent(context, SearchActivity.class);
+    context.startActivity(intent);
   }
 
   protected void showLoggedInMenu(@NonNull final User user) {

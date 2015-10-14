@@ -27,7 +27,7 @@ public abstract class KsrAdapter extends RecyclerView.Adapter<KsrViewHolder> {
   /**
    * Returns a new KsrViewHolder given a layout and view.
    */
-  protected abstract KsrViewHolder viewHolder(final int layout, @NonNull final View view);
+  protected abstract KsrViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view);
 
   @Override
   public final KsrViewHolder onCreateViewHolder(@NonNull final ViewGroup viewGroup, @LayoutRes final int layout) {

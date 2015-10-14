@@ -65,8 +65,11 @@ public class ProjectCardViewHolder extends KsrViewHolder {
     nameTextView.setText(project.name());
 
     // Handle landscape
-    if (createdByTextView != null && blurbTextView != null) {
+    if (createdByTextView != null) {
       createdByTextView.setText(String.format(view.getContext().getString(R.string.by_), project.creator().name()));
+    }
+
+    if (blurbTextView != null) {
       blurbTextView.setText(project.blurb());
     }
 

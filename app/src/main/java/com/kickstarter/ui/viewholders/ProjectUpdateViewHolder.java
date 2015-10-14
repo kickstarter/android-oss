@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.DateTimeUtils;
+import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.ui.activities.DisplayWebViewActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.squareup.picasso.Picasso;

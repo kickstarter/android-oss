@@ -1,6 +1,6 @@
 package com.kickstarter;
 
-import com.kickstarter.libs.KSColorUtils;
+import com.kickstarter.libs.utils.KSColorUtils;
 
 import junit.framework.TestCase;
 

@@ -13,7 +13,7 @@ import com.kickstarter.libs.ApiErrorHandler;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.RxUtils;
-import com.kickstarter.libs.StringUtils;
+import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.ApiError;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;

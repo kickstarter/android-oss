@@ -11,7 +11,7 @@ import android.util.Pair;
 import com.jakewharton.rxbinding.support.v7.widget.RxRecyclerView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.BuildCheck;
-import com.kickstarter.libs.ListUtils;
+import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.RxUtils;
 import com.kickstarter.models.Empty;

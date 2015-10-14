@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.CircleTransform;
-import com.kickstarter.libs.StringUtils;
+import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.squareup.picasso.Picasso;
 

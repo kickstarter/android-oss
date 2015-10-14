@@ -5,7 +5,7 @@
 
   <!-- Facebook production app id -->
   <string name="facebook_app_id">69103156693</string>
-  <string name="hockey_app_id">ecdab725861a76c38d60b5ae44dbe9f2</string>
+  <string name="hockey_app_id">***REMOVED***</string>
 
   <!-- User-facing strings -->
   <string name="Activity_empty">Activity empty</string>
@@ -39,6 +39,7 @@
   <string name="Changelog">Changelog</string>
   <string name="Comment">Comment</string>
   <string name="Close">Close</string>
+  <string name="Comment_posted">Comment posted!</string>
   <string name="Comments">Comments</string>
   <string name="creator_launched_a_project">%1$s launched a project: %2$s</string>
   <string name="Created_by">Created by</string>

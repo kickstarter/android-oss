@@ -28,15 +28,14 @@ public class KSApplication extends Application {
   public void onCreate() {
     super.onCreate();
 
-    // Log in debug mode, send to Hockey in production
-    if (BuildConfig.DEBUG || isInUnitTests()) {
+    // Only log for internal builds
+    if (BuildConfig.FLAVOR.equals("internal")) {
       Timber.plant(new Timber.DebugTree());
-    } else {
-      CrashManager.register(this, getString(R.string.hockey_app_id), new CrashManagerListener() {
-        public boolean shouldAutoUploadCrashes() {
-          return true;
-        }
-      });
+    }
+
+    // Send crash reports in release builds
+    if (!BuildConfig.DEBUG && !isInUnitTests()) {
+      checkForCrashes();
     }
 
     if (!isInUnitTests()) {
@@ -64,7 +63,18 @@ public class KSApplication extends Application {
     return application.refWatcher;
   }
 
+  /**
+   * Tests subclass KSApplication and override this method.
+   */
   protected boolean isInUnitTests() {
     return false;
+  }
+
+  private void checkForCrashes() {
+    CrashManager.register(this, getString(R.string.hockey_app_id), new CrashManagerListener() {
+      public boolean shouldAutoUploadCrashes() {
+        return true;
+      }
+    });
   }
 }

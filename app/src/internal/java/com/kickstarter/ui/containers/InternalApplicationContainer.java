@@ -9,7 +9,7 @@ import com.kickstarter.ui.views.DebugDrawer;
 
 import static butterknife.ButterKnife.findById;
 
-public class InternalDebugApplicationContainer implements ApplicationContainer {
+public class InternalApplicationContainer implements ApplicationContainer {
 
   @Override
   public ViewGroup bind(@NonNull final Activity activity) {

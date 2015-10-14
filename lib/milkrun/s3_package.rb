@@ -1,9 +1,9 @@
 module Milkrun
   class S3Package
-    attr_reader :variant, :version, :file_path
+    attr_reader :variant, :version_code, :file_path
 
-    def initialize(variant:, version:, file_path:)
-      @variant, @version, @file_path = variant, version, file_path
+    def initialize(variant:, version_code:, file_path:)
+      @variant, @version_code, @file_path = variant, version_code, file_path
     end
 
     # Uploads a build to S3.
@@ -25,7 +25,7 @@ module Milkrun
     protected
 
     def package_key
-      "#{version}/Kickstarter-#{version}.apk"
+      "#{version_code}/Kickstarter-#{version_code}.apk"
     end
   end
 end

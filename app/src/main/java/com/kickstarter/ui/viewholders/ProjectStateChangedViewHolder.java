@@ -1,6 +1,7 @@
 package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
@@ -8,14 +9,18 @@ import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.models.Activity;
+import com.kickstarter.ui.activities.ProjectActivity;
 import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class ProjectStateChangedViewHolder extends ActivityListViewHolder {
   @Bind(R.id.title) TextView titleTextView;
   @Bind(R.id.project_photo) ImageView projectPhotoImageView;
+
+  private Context context;
 
   public ProjectStateChangedViewHolder(@NonNull final View view) {
     super(view);
@@ -26,7 +31,7 @@ public class ProjectStateChangedViewHolder extends ActivityListViewHolder {
   public void onBind(@NonNull final Object datum) {
     super.onBind(datum);
 
-    final Context context = view.getContext();
+    context = view.getContext();
 
     Picasso.with(context)
       .load(activity.project().photo().little())
@@ -48,5 +53,12 @@ public class ProjectStateChangedViewHolder extends ActivityListViewHolder {
       default:
         return "";
     }
+  }
+
+  @OnClick(R.id.card_view)
+  public void stateChangeCardClick() {
+    final Intent intent = new Intent(context, ProjectActivity.class)
+      .putExtra(context.getString(R.string.intent_project), activity.project());
+    context.startActivity(intent);
   }
 }

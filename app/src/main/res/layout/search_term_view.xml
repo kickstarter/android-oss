@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:background="@color/light_blue"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:paddingTop="@dimen/grid_2">
+
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.kickstarter.ui.views.IconTextView
+      android:id="@+id/search_icon_text_view"
+      android:layout_width="@dimen/button_icon_fixed_width"
+      android:layout_height="wrap_content"
+      android:gravity="center"
+      android:text="@string/whatshot_icon"
+      android:textAppearance="@style/TextAppearance.AppCompat.Title"
+      android:textColor="@color/text_dark" />
+
+    <TextView
+      android:id="@+id/search_term_text_view"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:layout_centerVertical="true"
+      android:layout_toEndOf="@+id/search_icon_text_view"
+      android:layout_toRightOf="@+id/search_icon_text_view"
+      android:textColor="@color/text_dark"
+      android:textSize="14sp" />
+
+  </RelativeLayout>
+
+  <View
+    android:layout_width="fill_parent"
+    android:layout_height="1dp"
+    android:layout_marginTop="@dimen/grid_2"
+    android:background="@color/black_alpha_5" />
+
+</LinearLayout>

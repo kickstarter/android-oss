@@ -12,6 +12,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.SearchPresenter;
+import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.adapters.SearchAdapter;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ import butterknife.ButterKnife;
 
 @RequiresPresenter(SearchPresenter.class)
 public class SearchActivity extends BaseActivity<SearchPresenter> {
-  SearchAdapter adapter;
+  private SearchAdapter adapter;
   LinearLayoutManager layoutManager;
   final List<Project> projects = new ArrayList<>();
   public @Bind(R.id.search_recycler_view) RecyclerView recyclerView;
@@ -34,12 +35,12 @@ public class SearchActivity extends BaseActivity<SearchPresenter> {
     ButterKnife.bind(this);
 
     layoutManager = new LinearLayoutManager(this);
-    adapter = new SearchAdapter(projects, presenter);
+    adapter = new SearchAdapter(presenter);
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);
   }
 
-  public void loadProjects(final List<Project> newProjects) {
+  public void loadParamsAndProjects(@NonNull final DiscoveryParams params, @NonNull final List<Project> newProjects) {
     projects.clear();
     projects.addAll(newProjects);
     adapter.notifyDataSetChanged();
@@ -50,5 +51,9 @@ public class SearchActivity extends BaseActivity<SearchPresenter> {
       .putExtra(getString(R.string.intent_project), project);
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  public SearchAdapter adapter() {
+    return adapter;
   }
 }

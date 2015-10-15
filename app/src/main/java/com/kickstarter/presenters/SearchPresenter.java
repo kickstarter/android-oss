@@ -39,16 +39,12 @@ public class SearchPresenter extends Presenter<SearchActivity> implements Search
     final Observable<List<Project>> projects = params
       .switchMap(this::projects);
 
-    final Observable<Pair<SearchActivity, List<Project>>> viewAndProjects =
-      RxUtils.combineLatestPair(viewSubject, projects);
+    final Observable<Pair<List<Project>, DiscoveryParams>> projectsAndParams = RxUtils.combineLatestPair(projects, params);
 
-    final Observable<Pair<SearchActivity, DiscoveryParams>> viewAndParams =
-      RxUtils.combineLatestPair(viewSubject, params);
-
-    addSubscription(viewAndProjects
-      .filter(v -> v != null)
+    addSubscription(RxUtils.combineLatestPair(viewChange, projectsAndParams)
+      .filter(vpp -> vpp.first != null)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.loadProjects(vp.second)));
+      .subscribe(vpp -> vpp.first.adapter().loadProjectsAndParams(vpp.second.first, vpp.second.second)));
 
     addSubscription(RxUtils.takePairWhen(viewSubject, projectSearchResultClick)
       .observeOn(AndroidSchedulers.mainThread())

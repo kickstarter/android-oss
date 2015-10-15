@@ -23,7 +23,6 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 @RequiresPresenter(ActivityFeedPresenter.class)
 public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
@@ -36,8 +35,7 @@ public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
     super.onCreate(savedInstanceState);
 
     ((KSApplication) getApplication()).component().inject(this);
-    final int layout = currentUser.exists() ? R.layout.activity_feed_layout : R.layout.empty_activity_feed_layout;
-    setContentView(layout);
+    setContentView(R.layout.activity_feed_layout);
     ButterKnife.bind(this);
 
     adapter = new ActivityFeedAdapter(presenter);
@@ -45,14 +43,13 @@ public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
   }
 
-  @Nullable @OnClick(R.id.discover_projects_button)
+  public void show(@Nullable final List<Activity> activities) {
+    adapter.takeActivities(activities);
+  }
+
   public void discoverProjectsButtonOnClick() {
     final Intent intent = new Intent(this, DiscoveryActivity.class);
     startActivity(intent);
-  }
-
-  public void onItemsNext(@NonNull final List<Activity> activities) {
-    adapter.takeActivities(activities);
   }
 
   public void showProjectUpdate(@NonNull final Activity activity) {

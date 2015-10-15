@@ -14,6 +14,7 @@ import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.CommentFeedActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.viewholders.DiscoveryFilterViewHolder;
+import com.kickstarter.ui.viewholders.EmptyActivityFeedViewHolder;
 import com.kickstarter.ui.viewholders.EmptyCommentFeedViewHolder;
 import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
 import com.kickstarter.ui.viewholders.CommentViewHolder;
@@ -43,6 +44,7 @@ public interface ApplicationGraph {
   void inject(DiscoveryFilterViewHolder __);
   void inject(DiscoveryPresenter __);
   void inject(DiscoveryToolbar __);
+  void inject(EmptyActivityFeedViewHolder __);
   void inject(EmptyCommentFeedViewHolder __);
   void inject(HelpActivity __);
   void inject(IconTextView __);

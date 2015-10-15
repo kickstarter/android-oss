@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
@@ -17,11 +16,13 @@ import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.adapters.ActivityFeedAdapter;
+import com.kickstarter.ui.viewholders.EmptyActivityFeedViewHolder;
 import com.kickstarter.ui.viewholders.FriendBackingViewHolder;
 import com.kickstarter.ui.viewholders.ProjectStateChangedPositiveViewHolder;
 import com.kickstarter.ui.viewholders.ProjectStateChangedViewHolder;
 import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -34,6 +35,7 @@ public class ActivityFeedPresenter extends Presenter<ActivityFeedActivity> imple
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
 
+  private final PublishSubject<Project> discoverProjectsClick = PublishSubject.create();
   private final PublishSubject<Project> friendBackingClick = PublishSubject.create();
   private final PublishSubject<Project> projectStateChangedPositiveClick = PublishSubject.create();
   private final PublishSubject<Project> projectStateChangedClick = PublishSubject.create();
@@ -45,17 +47,24 @@ public class ActivityFeedPresenter extends Presenter<ActivityFeedActivity> imple
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    final Observable<List<Activity>> activities = currentUser.loggedInUser()
+    final Observable<List<Activity>> loggedInUserActivities = currentUser.observable()
+      .filter(u -> u != null)
       .take(1)
       .flatMap(user -> client.fetchActivities(new ActivityFeedParams()))
       .map(ActivityEnvelope::activities);
 
-    final Observable<Pair<ActivityFeedActivity, List<Activity>>> viewAndActivities =
-      RxUtils.combineLatestPair(viewSubject, activities);
-
-    addSubscription(viewAndActivities
+    addSubscription(RxUtils.combineLatestPair(viewSubject, loggedInUserActivities)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.onItemsNext(vp.second)));
+      .subscribe(va -> va.first.show(va.second)));
+
+    addSubscription(RxUtils.combineLatestPair(viewSubject, currentUser.observable())
+      .filter(vu -> vu.second == null)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(vu -> vu.first.show(Collections.emptyList())));
+
+    addSubscription(RxUtils.takeWhen(viewSubject, discoverProjectsClick)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(ActivityFeedActivity::discoverProjectsButtonOnClick));
 
     addSubscription(RxUtils.takePairWhen(viewSubject, friendBackingClick)
       .observeOn(AndroidSchedulers.mainThread())
@@ -76,6 +85,10 @@ public class ActivityFeedPresenter extends Presenter<ActivityFeedActivity> imple
     addSubscription(RxUtils.takePairWhen(viewSubject, projectUpdateUpdateClick)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showProjectUpdate(vp.second)));
+  }
+
+  public void emptyActivityFeedDiscoverProjectsClicked(@NonNull final EmptyActivityFeedViewHolder viewHolder) {
+    discoverProjectsClick.onNext(null);
   }
 
   public void friendBackingClicked(@NonNull final FriendBackingViewHolder viewHolder, @NonNull final Project project) {

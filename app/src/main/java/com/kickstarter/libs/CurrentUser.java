@@ -75,10 +75,12 @@ public class CurrentUser {
       });
   }
 
+  @Deprecated
   public Observable<User> loggedInUser() {
     return observable().filter(user -> user != null);
   }
 
+  @Deprecated
   public Observable<User> loggedOutUser() {
     return observable().filter(user -> user == null);
   }

@@ -22,9 +22,14 @@ public class ActivityFeedAdapter extends KsrAdapter {
   public interface Delegate extends FriendBackingViewHolder.Delegate, ProjectStateChangedPositiveViewHolder.Delegate,
     ProjectStateChangedViewHolder.Delegate, ProjectUpdateViewHolder.Delegate {}
 
-  public ActivityFeedAdapter(@NonNull final List<Activity> activities, @NonNull final Delegate delegate) {
-    data().add(activities);
+  public ActivityFeedAdapter(@NonNull final Delegate delegate) {
     this.delegate = delegate;
+  }
+
+  public void takeActivities(@NonNull final List<Activity> activities) {
+    data().clear();
+    data().add(activities);
+    notifyDataSetChanged();
   }
 
   @Override

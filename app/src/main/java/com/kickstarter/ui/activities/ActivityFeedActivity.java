@@ -40,6 +40,8 @@ public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
     setContentView(layout);
     ButterKnife.bind(this);
 
+    adapter = new ActivityFeedAdapter(presenter);
+    recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
   }
 
@@ -49,10 +51,8 @@ public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
     startActivity(intent);
   }
 
-  // todo: keep activity list position
   public void onItemsNext(@NonNull final List<Activity> activities) {
-    adapter = new ActivityFeedAdapter(activities, presenter);
-    recyclerView.setAdapter(adapter);
+    adapter.takeActivities(activities);
   }
 
   public void showProjectUpdate(@NonNull final Activity activity) {

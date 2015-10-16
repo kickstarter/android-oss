@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.KSColorUtils;
+import com.kickstarter.libs.utils.KSColorUtils;
 import com.kickstarter.libs.qualifiers.AutoGson;
 
 import auto.parcel.AutoParcel;

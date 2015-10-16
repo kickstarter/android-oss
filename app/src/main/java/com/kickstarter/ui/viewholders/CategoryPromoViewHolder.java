@@ -8,11 +8,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.KSColorUtils;
 import com.kickstarter.models.Category;
 
 import butterknife.Bind;
-import butterknife.BindColor;
 import butterknife.ButterKnife;
 
 public class CategoryPromoViewHolder extends KsrViewHolder {

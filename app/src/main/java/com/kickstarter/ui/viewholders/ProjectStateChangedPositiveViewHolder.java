@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
-import com.kickstarter.libs.DateTimeUtils;
+import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.Money;
 import com.kickstarter.models.Activity;
 import com.squareup.picasso.Picasso;

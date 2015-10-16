@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.kickstarter.libs.utils.BundleUtils;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;

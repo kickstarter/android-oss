@@ -6,7 +6,7 @@ import android.util.Pair;
 import android.view.View;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.DiscoveryUtils;
+import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Empty;
 import com.kickstarter.services.DiscoveryParams;
@@ -17,7 +17,6 @@ import com.kickstarter.ui.viewholders.EmptyViewHolder;
 import com.kickstarter.ui.viewholders.KsrViewHolder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.TreeMap;

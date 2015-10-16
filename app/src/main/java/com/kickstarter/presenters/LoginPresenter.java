@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
+import android.view.View;
 
-import com.jakewharton.rxbinding.widget.RxTextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ApiErrorHandler;
@@ -14,6 +14,7 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.libs.utils.StringUtils;
+import com.kickstarter.presenters.inputs.LoginPresenterInputs;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.ApiError;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
@@ -26,25 +27,38 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public class LoginPresenter extends Presenter<LoginActivity> {
+public class LoginPresenter extends Presenter<LoginActivity> implements LoginPresenterInputs {
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
-  private final PublishSubject<Void> loginClick = PublishSubject.create();
+
+  private final PublishSubject<CharSequence> emailTextChanges = PublishSubject.create();
+  private final PublishSubject<View> loginClick = PublishSubject.create();
+  private final PublishSubject<CharSequence> passwordTextChanges = PublishSubject.create();
   private boolean forward = false;
+
+  public LoginPresenterInputs inputs() {
+    return this;
+  }
+
+  public void emailTextChanges(@Nullable final CharSequence cs) {
+    emailTextChanges.onNext(cs);
+  }
+
+  public void loginClick(@NonNull final View view) {
+    loginClick.onNext(view);
+  }
+
+  public void passwordTextChanges(@Nullable final CharSequence cs) {
+    passwordTextChanges.onNext(cs);
+  }
 
   @Override
   protected void onCreate(@NonNull final Context context, @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    final Observable<CharSequence> email = viewSubject
-      .flatMap(v -> RxTextView.textChanges(v.emailEditText));
-
-    final Observable<CharSequence> password = viewSubject
-      .flatMap(v -> RxTextView.textChanges(v.passwordEditText));
-
     final Observable<Pair<String, String>> emailAndPassword =
-      RxUtils.combineLatestPair(email, password)
+      RxUtils.combineLatestPair(emailTextChanges, passwordTextChanges)
       .map(ep -> Pair.create(ep.first.toString(), ep.second.toString()));
 
     final Observable<Boolean> isValid = emailAndPassword
@@ -67,10 +81,6 @@ public class LoginPresenter extends Presenter<LoginActivity> {
 
   private static boolean isValid(@NonNull final String email, @NonNull final String password) {
     return StringUtils.isEmail(email) && password.length() > 0;
-  }
-
-  public void takeLoginClick() {
-    loginClick.onNext(null);
   }
 
   private void submit(@NonNull final String email, @NonNull final String password) {

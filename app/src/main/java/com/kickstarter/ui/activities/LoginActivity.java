@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
@@ -17,12 +19,13 @@ import com.kickstarter.presenters.LoginPresenter;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresPresenter(LoginPresenter.class)
 public class LoginActivity extends BaseActivity<LoginPresenter> {
-  public @Bind(R.id.email) EditText emailEditText;
-  public @Bind(R.id.password) EditText passwordEditText;
-  public @Bind(R.id.login_button) Button loginButton;
+  @Bind(R.id.email) EditText emailEditText;
+  @Bind(R.id.login_button) Button loginButton;
+  @Bind(R.id.password) EditText passwordEditText;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -32,6 +35,14 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
     ButterKnife.bind(this);
 
     presenter.takeForward(getIntent().getBooleanExtra(getString(R.string.intent_forward), false));
+
+    addSubscription(RxTextView.textChanges(emailEditText)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(c -> presenter.inputs().emailTextChanges(c)));
+
+    addSubscription(RxTextView.textChanges(passwordEditText)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(c -> presenter.inputs().passwordTextChanges(c)));
   }
 
   @Override
@@ -53,8 +64,8 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
   }
 
   @OnClick(R.id.login_button)
-  public void loginButtonOnClick() {
-    presenter.takeLoginClick();
+  public void loginButtonOnClick(@NonNull final View view) {
+    presenter.inputs().loginClick(view);
   }
 
   public void setFormEnabled(final boolean enabled) {

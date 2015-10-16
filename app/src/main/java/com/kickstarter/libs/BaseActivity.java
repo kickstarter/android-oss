@@ -9,11 +9,16 @@ import android.support.v7.app.AppCompatActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.libs.utils.BundleUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import rx.Subscription;
 import timber.log.Timber;
 
 public class BaseActivity<PresenterType extends Presenter> extends AppCompatActivity {
   protected PresenterType presenter;
   private static final String PRESENTER_KEY = "presenter";
+  private final List<Subscription> subscriptions = new ArrayList<>();
 
   /**
    * Get presenter.
@@ -77,6 +82,10 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
     super.onDestroy();
     Timber.d("onDestroy %s", this.toString());
 
+    for (final Subscription subscription : subscriptions) {
+      subscription.unsubscribe();
+    }
+
     if (isFinishing()) {
       if (presenter != null) {
         Presenters.getInstance().destroy(presenter);
@@ -97,6 +106,10 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
     }
 
     outState.putBundle(PRESENTER_KEY, presenterEnvelope);
+  }
+
+  protected final void addSubscription(@NonNull final Subscription subscription) {
+    subscriptions.add(subscription);
   }
 
   private void fetchPresenter(@Nullable final Bundle presenterEnvelope) {

@@ -24,8 +24,8 @@ import butterknife.ButterKnife;
 
 @RequiresPresenter(ActivityFeedPresenter.class)
 public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
-  ActivityFeedAdapter adapter;
-  @Nullable @Bind(R.id.recycler_view) RecyclerView recyclerView;
+  private ActivityFeedAdapter adapter;
+  public @Bind(R.id.recycler_view) RecyclerView recyclerView;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {

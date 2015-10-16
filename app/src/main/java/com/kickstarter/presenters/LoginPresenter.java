@@ -28,28 +28,33 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
 public class LoginPresenter extends Presenter<LoginActivity> implements LoginPresenterInputs {
+  // INPUTS
+  private final PublishSubject<String> email = PublishSubject.create();
+  private final PublishSubject<View> loginClick = PublishSubject.create();
+  private final PublishSubject<String> password = PublishSubject.create();
+
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
 
-  private final PublishSubject<CharSequence> emailTextChanges = PublishSubject.create();
-  private final PublishSubject<View> loginClick = PublishSubject.create();
-  private final PublishSubject<CharSequence> passwordTextChanges = PublishSubject.create();
   private boolean forward = false;
 
   public LoginPresenterInputs inputs() {
     return this;
   }
 
-  public void emailTextChanges(@Nullable final CharSequence cs) {
-    emailTextChanges.onNext(cs);
+  @Override
+  public void email(@NonNull final String s) {
+    email.onNext(s);
   }
 
+  @Override
   public void loginClick(@NonNull final View view) {
     loginClick.onNext(view);
   }
 
-  public void passwordTextChanges(@Nullable final CharSequence cs) {
-    passwordTextChanges.onNext(cs);
+  @Override
+  public void password(@NonNull final String s) {
+    password.onNext(s);
   }
 
   @Override
@@ -58,8 +63,7 @@ public class LoginPresenter extends Presenter<LoginActivity> implements LoginPre
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     final Observable<Pair<String, String>> emailAndPassword =
-      RxUtils.combineLatestPair(emailTextChanges, passwordTextChanges)
-      .map(ep -> Pair.create(ep.first.toString(), ep.second.toString()));
+      RxUtils.combineLatestPair(email, password);
 
     final Observable<Boolean> isValid = emailAndPassword
       .map(ep -> LoginPresenter.isValid(ep.first, ep.second));

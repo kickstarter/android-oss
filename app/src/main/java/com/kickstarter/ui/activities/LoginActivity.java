@@ -37,12 +37,10 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
     presenter.takeForward(getIntent().getBooleanExtra(getString(R.string.intent_forward), false));
 
     addSubscription(RxTextView.textChanges(emailEditText)
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(c -> presenter.inputs().emailTextChanges(c)));
+      .subscribe(cs -> presenter.inputs().email(cs.toString())));
 
     addSubscription(RxTextView.textChanges(passwordEditText)
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(c -> presenter.inputs().passwordTextChanges(c)));
+      .subscribe(cs -> presenter.inputs().password(cs.toString())));
   }
 
   @Override

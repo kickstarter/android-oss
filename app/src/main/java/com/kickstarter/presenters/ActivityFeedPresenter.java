@@ -22,7 +22,6 @@ import com.kickstarter.ui.viewholders.ProjectStateChangedPositiveViewHolder;
 import com.kickstarter.ui.viewholders.ProjectStateChangedViewHolder;
 import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder;
 
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -37,6 +36,8 @@ public class ActivityFeedPresenter extends Presenter<ActivityFeedActivity> imple
 
   private final PublishSubject<Project> discoverProjectsClick = PublishSubject.create();
   private final PublishSubject<Project> friendBackingClick = PublishSubject.create();
+  private final PublishSubject<Void> loginClick = PublishSubject.create();
+  private final PublishSubject<Void> loginSuccess = PublishSubject.create();
   private final PublishSubject<Project> projectStateChangedPositiveClick = PublishSubject.create();
   private final PublishSubject<Project> projectStateChangedClick = PublishSubject.create();
   private final PublishSubject<Project> projectUpdateProjectClick = PublishSubject.create();
@@ -47,7 +48,8 @@ public class ActivityFeedPresenter extends Presenter<ActivityFeedActivity> imple
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    final Observable<List<Activity>> loggedInUserActivities = currentUser.observable()
+    final Observable<List<Activity>> loggedInUserActivities = RxUtils.takeWhen(currentUser.observable(), loginSuccess)
+      .mergeWith(currentUser.observable())
       .filter(u -> u != null)
       .take(1)
       .flatMap(user -> client.fetchActivities(new ActivityFeedParams()))
@@ -55,12 +57,12 @@ public class ActivityFeedPresenter extends Presenter<ActivityFeedActivity> imple
 
     addSubscription(RxUtils.combineLatestPair(viewSubject, loggedInUserActivities)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(va -> va.first.show(va.second)));
+      .subscribe(uva -> uva.first.showActivities(uva.second)));
 
     addSubscription(RxUtils.combineLatestPair(viewSubject, currentUser.observable())
       .filter(vu -> vu.second == null)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vu -> vu.first.show(Collections.emptyList())));
+      .subscribe(vu -> vu.first.showLoggedOutEmptyFeed(vu.second)));
 
     addSubscription(RxUtils.takeWhen(viewSubject, discoverProjectsClick)
       .observeOn(AndroidSchedulers.mainThread())
@@ -69,6 +71,10 @@ public class ActivityFeedPresenter extends Presenter<ActivityFeedActivity> imple
     addSubscription(RxUtils.takePairWhen(viewSubject, friendBackingClick)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startProjectActivity(vp.second)));
+
+    addSubscription(RxUtils.takeWhen(viewSubject, loginClick)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(ActivityFeedActivity::activityFeedLogin));
 
     addSubscription(RxUtils.takePairWhen(viewSubject, projectStateChangedClick)
       .observeOn(AndroidSchedulers.mainThread())
@@ -89,6 +95,10 @@ public class ActivityFeedPresenter extends Presenter<ActivityFeedActivity> imple
 
   public void emptyActivityFeedDiscoverProjectsClicked(@NonNull final EmptyActivityFeedViewHolder viewHolder) {
     discoverProjectsClick.onNext(null);
+  }
+
+  public void emptyActivityFeedLoginClicked(@NonNull final EmptyActivityFeedViewHolder viewHolder) {
+    loginClick.onNext(null);
   }
 
   public void friendBackingClicked(@NonNull final FriendBackingViewHolder viewHolder, @NonNull final Project project) {
@@ -113,5 +123,9 @@ public class ActivityFeedPresenter extends Presenter<ActivityFeedActivity> imple
   public void projectUpdateUpdateClicked(@NonNull final ProjectUpdateViewHolder viewHolder,
     @NonNull final Activity activity) {
     projectUpdateUpdateClick.onNext(activity);
+  }
+
+  public void takeLoginSuccess() {
+    loginSuccess.onNext(null);
   }
 }

@@ -2,11 +2,13 @@ package com.kickstarter.ui.adapters;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.kickstarter.R;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Empty;
+import com.kickstarter.models.User;
 import com.kickstarter.ui.viewholders.EmptyActivityFeedViewHolder;
 import com.kickstarter.ui.viewholders.EmptyViewHolder;
 import com.kickstarter.ui.viewholders.FriendBackingViewHolder;
@@ -31,21 +33,22 @@ public class ActivityFeedAdapter extends KsrAdapter {
 
   public void takeActivities(@NonNull final List<Activity> activities) {
     data().clear();
-
     if (activities.size() == 0) {
       data().add(Collections.singletonList(Empty.create()));
     } else {
       data().add(activities);
     }
-
     notifyDataSetChanged();
+  }
+
+  public void takeLoggedOutUser(@Nullable final User user) {
+    data().add(Collections.singletonList(user));
   }
 
   @Override
   protected @LayoutRes int layout(@NonNull final SectionRow sectionRow) {
-    if (objectFromSectionRow(sectionRow) == Activity.class) {
+    if (objectFromSectionRow(sectionRow) instanceof Activity) {
       final Activity activity = (Activity) objectFromSectionRow(sectionRow);
-
       switch (activity.category()) {
         case Activity.CATEGORY_BACKING:
           return R.layout.activity_friend_backing_view;

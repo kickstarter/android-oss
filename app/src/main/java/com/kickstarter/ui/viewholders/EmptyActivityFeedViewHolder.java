@@ -1,40 +1,51 @@
 package com.kickstarter.ui.viewholders;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
+import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.Button;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
-import com.kickstarter.libs.CurrentUser;
 
-import javax.inject.Inject;
-
+import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class EmptyActivityFeedViewHolder extends KsrViewHolder {
+  protected @Bind(R.id.discover_projects_button) Button discoverProjectsButton;
+  protected @Bind(R.id.login_button) Button loginButton;
+
   private final Delegate delegate;
-  @Inject CurrentUser currentUser;
 
   public interface Delegate {
     void emptyActivityFeedDiscoverProjectsClicked(@NonNull EmptyActivityFeedViewHolder viewHolder);
+    void emptyActivityFeedLoginClicked(@NonNull EmptyActivityFeedViewHolder viewHolder);
   }
 
   public EmptyActivityFeedViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
     super(view);
     this.delegate = delegate;
     ButterKnife.bind(this, view);
-    ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
   }
 
   @Override
-  public void onBind(@NonNull Object datum) {
-    Log.d("TEST", "binding emptyActivityFeed...");
+  public void onBind(@Nullable Object user) {
+    if (user == null) {
+      discoverProjectsButton.setVisibility(View.GONE);
+      loginButton.setVisibility(View.VISIBLE);
+    } else  {
+      discoverProjectsButton.setVisibility(View.VISIBLE);
+      loginButton.setVisibility(View.GONE);
+    }
   }
 
   @OnClick(R.id.discover_projects_button)
   public void discoverProjectsOnClick() {
     delegate.emptyActivityFeedDiscoverProjectsClicked(this);
+  }
+
+  @OnClick(R.id.login_button)
+  public void loginOnClick() {
+    delegate.emptyActivityFeedLoginClicked(this);
   }
 }

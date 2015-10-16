@@ -7,19 +7,17 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.User;
 import com.kickstarter.presenters.ActivityFeedPresenter;
 import com.kickstarter.ui.adapters.ActivityFeedAdapter;
 
 import java.util.List;
-
-import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -28,13 +26,10 @@ import butterknife.ButterKnife;
 public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
   ActivityFeedAdapter adapter;
   @Nullable @Bind(R.id.recycler_view) RecyclerView recyclerView;
-  @Inject CurrentUser currentUser;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
-    ((KSApplication) getApplication()).component().inject(this);
     setContentView(R.layout.activity_feed_layout);
     ButterKnife.bind(this);
 
@@ -43,8 +38,18 @@ public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
   }
 
-  public void show(@Nullable final List<Activity> activities) {
+  public void showActivities(@NonNull final List<Activity> activities) {
     adapter.takeActivities(activities);
+  }
+
+  public void showLoggedOutEmptyFeed(@Nullable final User user) {
+    adapter.takeLoggedOutUser(user);
+  }
+
+  public void activityFeedLogin() {
+    final Intent intent = new Intent(this, LoginToutActivity.class)
+      .putExtra(getString(R.string.intent_forward), true);
+    startActivityForResult(intent, ActivityRequestCodes.ACTIVITY_FEED_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
   }
 
   public void discoverProjectsButtonOnClick() {
@@ -62,5 +67,16 @@ public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
     final Intent intent = new Intent(this, ProjectActivity.class)
       .putExtra(getString(R.string.intent_project), project);
     startActivity(intent);
+  }
+
+  @Override
+  protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
+    if (requestCode != ActivityRequestCodes.ACTIVITY_FEED_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED) {
+      return;
+    }
+    if (resultCode != RESULT_OK) {
+      return;
+    }
+    presenter.takeLoginSuccess();
   }
 }

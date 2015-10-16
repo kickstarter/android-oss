@@ -1,97 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
-  <include layout="@layout/login_tout_toolbar" />
-
   <LinearLayout
-    android:id="@+id/facebook_group"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/grid_3"
-    android:paddingRight="@dimen/grid_3"
-    android:paddingTop="@dimen/grid_9_half"
-    android:paddingBottom="@dimen/grid_7"
-    android:background="@color/window_background"
-    android:elevation="1dp"
-    android:orientation="vertical">
-
-    <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:paddingBottom="@dimen/grid_3"
-      android:gravity="center_horizontal"
-      android:textColor="@color/text_dark"
-      android:textAppearance="@style/TextAppearance.AppCompat.Title"
-      android:text="@string/Sign_up_or_log_in_with_your_Facebook_account" />
-
-    <com.facebook.login.widget.LoginButton
-      android:id="@+id/facebook_login_button"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_gravity="center_horizontal"
-      android:paddingTop="12dp"
-      android:paddingBottom="12dp"
-      android:layout_marginLeft="@dimen/grid_3"
-      android:layout_marginRight="@dimen/grid_3" />
-
-    <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:paddingTop="@dimen/grid_3"
-      android:gravity="center_horizontal"
-      android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-      android:textColor="@color/dark_gray"
-      android:text="@string/By_signing_up_you_agree_to_our" />
-
-  </LinearLayout>
-
-  <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="fill_parent"
-    android:background="@color/light_gray"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/grid_3"
-    android:paddingRight="@dimen/grid_3"
-    android:paddingTop="@dimen/grid_9_half"
-    android:paddingBottom="@dimen/grid_3">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-    <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:textColor="@color/dark_gray"
-      android:text="@string/Use_your_email_address"
-      android:textAppearance="@style/TextAppearance.AppCompat.Title"
-      android:layout_gravity="center_horizontal" />
+    <include layout="@layout/login_tout_toolbar" />
 
     <LinearLayout
-      android:layout_width="wrap_content"
+      android:id="@+id/facebook_group"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:paddingTop="@dimen/grid_3"
-      android:orientation="horizontal"
-      android:layout_gravity="center_horizontal">
+      android:paddingLeft="@dimen/grid_3"
+      android:paddingRight="@dimen/grid_3"
+      android:paddingTop="@dimen/grid_9_half"
+      android:paddingBottom="@dimen/grid_7"
+      android:background="@color/window_background"
+      android:elevation="1dp"
+      android:orientation="vertical">
 
-      <Button
-        android:id="@+id/login_button"
+      <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/grid_1"
-        style="?android:attr/borderlessButtonStyle"
-        android:text="@string/Log_in" />
+        android:paddingBottom="@dimen/grid_3"
+        android:gravity="center_horizontal"
+        android:textColor="@color/text_dark"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:text="@string/Sign_up_or_log_in_with_your_Facebook_account" />
 
-      <Button
-        android:id="@+id/sign_up_button"
+      <com.facebook.login.widget.LoginButton
+        android:id="@+id/facebook_login_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:layout_marginLeft="@dimen/grid_3"
+        android:layout_marginRight="@dimen/grid_3" />
+
+      <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/grid_1"
-        style="?android:attr/borderlessButtonStyle"
-        android:text="@string/Sign_up" />
+        android:paddingTop="@dimen/grid_3"
+        android:gravity="center_horizontal"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+        android:textColor="@color/dark_gray"
+        android:text="@string/By_signing_up_you_agree_to_our" />
 
     </LinearLayout>
 
-  </LinearLayout>
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="fill_parent"
+      android:background="@color/light_gray"
+      android:orientation="vertical"
+      android:paddingLeft="@dimen/grid_3"
+      android:paddingRight="@dimen/grid_3"
+      android:paddingTop="@dimen/grid_9_half"
+      android:paddingBottom="@dimen/grid_3">
 
-</LinearLayout>
+      <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/dark_gray"
+        android:text="@string/Use_your_email_address"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:layout_gravity="center_horizontal" />
+
+      <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/grid_3"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal">
+
+        <Button
+          android:id="@+id/login_button"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginRight="@dimen/grid_1"
+          style="?android:attr/borderlessButtonStyle"
+          android:text="@string/Log_in" />
+
+        <Button
+          android:id="@+id/sign_up_button"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="@dimen/grid_1"
+          style="?android:attr/borderlessButtonStyle"
+          android:text="@string/Sign_up" />
+
+      </LinearLayout>
+    </LinearLayout>
+  </LinearLayout>
+</ScrollView>

@@ -18,8 +18,8 @@ public class EmptyActivityFeedViewHolder extends KsrViewHolder {
   private final Delegate delegate;
 
   public interface Delegate {
-    void emptyActivityFeedDiscoverProjectsClicked(@NonNull EmptyActivityFeedViewHolder viewHolder);
-    void emptyActivityFeedLoginClicked(@NonNull EmptyActivityFeedViewHolder viewHolder);
+    void emptyActivityFeedDiscoverProjectsClicked(@NonNull final EmptyActivityFeedViewHolder viewHolder);
+    void emptyActivityFeedLoginClicked(@NonNull final EmptyActivityFeedViewHolder viewHolder);
   }
 
   public EmptyActivityFeedViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {

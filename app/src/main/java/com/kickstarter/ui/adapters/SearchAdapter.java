@@ -27,13 +27,20 @@ public class SearchAdapter extends KsrAdapter {
 
   public void loadProjectsAndParams(@NonNull final List<Project> newProjects, @NonNull final DiscoveryParams params) {
     clear();
-    data().add(Collections.singletonList(params));
+
+    if (params.sort() == DiscoveryParams.Sort.POPULAR) {
+      data().add(Collections.singletonList(params));
+    } else {
+      data().add(Collections.emptyList());
+    }
+
     data().add(newProjects);
     notifyDataSetChanged();
   }
 
   public void clear() {
     data().clear();
+    notifyDataSetChanged();
   }
 
   protected @LayoutRes int layout(@NonNull final SectionRow sectionRow) {

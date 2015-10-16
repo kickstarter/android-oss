@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.jakewharton.rxbinding.support.v7.widget.RxRecyclerView;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
@@ -14,12 +15,14 @@ import com.kickstarter.models.Project;
 import com.kickstarter.presenters.SearchPresenter;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.adapters.SearchAdapter;
+import com.kickstarter.ui.views.SearchToolbar;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.subscriptions.CompositeSubscription;
 
 @RequiresPresenter(SearchPresenter.class)
 public class SearchActivity extends BaseActivity<SearchPresenter> {
@@ -27,6 +30,7 @@ public class SearchActivity extends BaseActivity<SearchPresenter> {
   LinearLayoutManager layoutManager;
   final List<Project> projects = new ArrayList<>();
   public @Bind(R.id.search_recycler_view) RecyclerView recyclerView;
+  public @Bind(R.id.search_toolbar) SearchToolbar toolbar;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {

@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.RxUtils;
@@ -15,16 +16,18 @@ import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.SearchActivity;
 import com.kickstarter.ui.adapters.SearchAdapter;
-import com.kickstarter.ui.viewholders.ProjectCardMiniViewHolder;
 import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
+import timber.log.Timber;
 
 public class SearchPresenter extends Presenter<SearchActivity> implements SearchAdapter.Delegate {
   @Inject ApiClient apiClient;
@@ -36,17 +39,46 @@ public class SearchPresenter extends Presenter<SearchActivity> implements Search
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
+    final Observable<CharSequence> searchText = viewChange
+      .filter(v -> v != null)
+      .flatMap(v -> RxTextView.textChanges(v.toolbar.searchEditText));
+
     final Observable<List<Project>> projects = params
       .switchMap(this::projects);
 
-    final Observable<Pair<List<Project>, DiscoveryParams>> projectsAndParams = RxUtils.combineLatestPair(projects, params);
+    final Observable<Pair<DiscoveryParams, List<Project>>> paramsAndProjects = RxUtils.takePairWhen(params, projects);
 
-    addSubscription(RxUtils.combineLatestPair(viewChange, projectsAndParams)
-      .filter(vpp -> vpp.first != null)
+    final Observable<Boolean> isSearchEmpty = searchText.map(t -> t.length() == 0).share();
+
+    final Observable<List<?>> viewParamsProjects = RxUtils.takePairWhen(viewChange, paramsAndProjects)
+      .filter(vp -> vp.first != null)
+      .map(vp -> Arrays.asList(vp.first, vp.second.first, vp.second.second));
+
+    addSubscription(RxUtils.takeWhen(viewChange, searchText)
+      .filter(v -> v != null)
+      .skip(1)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vpp -> vpp.first.adapter().loadProjectsAndParams(vpp.second.first, vpp.second.second)));
+      .subscribe(v -> v.adapter().clear()));
 
-    addSubscription(RxUtils.takePairWhen(viewSubject, projectSearchResultClick)
+    addSubscription(RxUtils.takeWhen(searchText, isSearchEmpty.filter(b -> !b))
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(text -> params.onNext(DiscoveryParams.builder().term(text.toString()).build())));
+
+    addSubscription(viewParamsProjects
+      .take(1)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::loadData));
+
+    addSubscription(RxUtils.takePairWhen(isSearchEmpty, viewParamsProjects)
+      .filter(evpp -> !evpp.first)
+      .map(evpp -> evpp.second)
+      .debounce(500, TimeUnit.MILLISECONDS)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::loadData)
+    );
+
+    addSubscription(RxUtils.takePairWhen(viewChange, projectSearchResultClick)
+      .filter(vp -> vp.first != null)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startProjectIntent(vp.second)));
 
@@ -58,8 +90,15 @@ public class SearchPresenter extends Presenter<SearchActivity> implements Search
     projectSearchResultClick.onNext(project);
   }
 
-  private Observable<List<Project>> projects(@NonNull final DiscoveryParams initialParams) {
-    return apiClient.fetchProjects(initialParams)
+  private Observable<List<Project>> projects(@NonNull final DiscoveryParams newParams) {
+    return apiClient.fetchProjects(newParams)
       .map(DiscoverEnvelope::projects);
+  }
+
+  private void loadData(final List<?> viewProjectsParams) {
+    final SearchActivity view = (SearchActivity) viewProjectsParams.get(0);
+    final DiscoveryParams params = (DiscoveryParams) viewProjectsParams.get(1);
+    final List<Project> ps = (List<Project>) viewProjectsParams.get(2);
+    view.adapter().loadProjectsAndParams(ps, params);
   }
 }

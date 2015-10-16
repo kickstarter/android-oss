@@ -7,10 +7,6 @@
   card_view:cardElevation="0dp"
   card_view:cardCornerRadius="@dimen/card_corner_radius"
   card_view:cardBackgroundColor="@color/white"
-  card_view:contentPaddingTop="@dimen/grid_3"
-  card_view:contentPaddingBottom="@dimen/grid_3"
-  card_view:contentPaddingLeft="@dimen/grid_3"
-  card_view:contentPaddingRight="@dimen/grid_3"
   android:layout_marginTop="@dimen/card_margin_y"
   android:layout_marginBottom="@dimen/card_margin_y">
 
@@ -23,9 +19,11 @@
       android:id="@+id/project_info"
       android:clickable="true"
       android:background="@drawable/click_indicator_light_masked"
+      android:paddingTop="@dimen/grid_3"
+      android:paddingLeft="@dimen/grid_3"
+      android:paddingRight="@dimen/grid_3"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="@dimen/grid_3"
       android:gravity="center_vertical">
 
       <ImageView
@@ -64,12 +62,12 @@
       android:id="@+id/update_info"
       android:clickable="true"
       android:background="@drawable/click_indicator_light_masked"
+      android:padding="@dimen/grid_3"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical">
 
       <RelativeLayout
-        android:layout_marginTop="@dimen/grid_3"
         android:layout_marginBottom="@dimen/grid_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

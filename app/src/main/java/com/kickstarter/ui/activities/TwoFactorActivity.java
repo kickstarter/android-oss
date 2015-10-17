@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.jakewharton.rxbinding.widget.RxTextView;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
@@ -34,10 +33,6 @@ public class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
     ButterKnife.bind(this);
   }
 
-  public void setLoginEnabled(final boolean enabled) {
-    loginButton.setEnabled(enabled);
-  }
-
   @OnTextChanged(R.id.code)
   public void codeEditTextOnTextChanged(@NonNull final CharSequence code) {
     presenter.inputs().code(code.toString());
@@ -51,6 +46,10 @@ public class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
   @OnClick(R.id.login_button)
   public void loginButtonOnClick(@NonNull final View view) {
     presenter.inputs().loginClick(view);
+  }
+
+  public void setLoginEnabled(final boolean enabled) {
+    loginButton.setEnabled(enabled);
   }
 
   public void onSuccess() {

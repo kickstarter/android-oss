@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.jakewharton.rxbinding.widget.RxTextView;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
@@ -20,7 +19,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
-import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresPresenter(LoginPresenter.class)
 public class LoginActivity extends BaseActivity<LoginPresenter> {
@@ -38,6 +36,23 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
     presenter.takeForward(getIntent().getBooleanExtra(getString(R.string.intent_forward), false));
   }
 
+  @Override
+  protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
+    if (requestCode != ActivityRequestCodes.LOGIN_ACTIVITY_TWO_FACTOR_ACTIVITY_FORWARD) {
+      return;
+    }
+
+    setResult(resultCode, intent);
+    finish();
+  }
+
+  @Override
+  public void onBackPressed() {
+    super.onBackPressed();
+
+    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
+  }
+
   @OnTextChanged(R.id.email)
   void onEmailTextChanged(@NonNull final CharSequence email) {
     presenter.inputs().email(email.toString());
@@ -51,13 +66,6 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
   @OnClick(R.id.login_button)
   public void loginButtonOnClick(@NonNull final View view) {
     presenter.inputs().loginClick(view);
-  }
-
-  @Override
-  public void onBackPressed() {
-    super.onBackPressed();
-
-    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
   public void onSuccess(final boolean forward) {
@@ -85,15 +93,5 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
     } else {
       startActivity(intent);
     }
-  }
-
-  @Override
-  protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
-    if (requestCode != ActivityRequestCodes.LOGIN_ACTIVITY_TWO_FACTOR_ACTIVITY_FORWARD) {
-      return;
-    }
-
-    setResult(resultCode, intent);
-    finish();
   }
 }

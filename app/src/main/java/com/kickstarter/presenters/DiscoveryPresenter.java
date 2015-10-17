@@ -8,7 +8,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 
-import com.jakewharton.rxbinding.support.v7.widget.RxRecyclerView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.Presenter;
@@ -35,6 +34,7 @@ import rx.subjects.PublishSubject;
 public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements DiscoveryPresenterInputs {
   // INPUTS
   private final PublishSubject<Project> projectClick = PublishSubject.create();
+  private final PublishSubject<Void> scrollEvent = PublishSubject.create();
 
   @Inject ApiClient apiClient;
   @Inject KickstarterClient kickstarterClient;
@@ -54,6 +54,11 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
   }
 
   @Override
+  public void scrollEvent() {
+    scrollEvent.onNext(null);
+  }
+
+  @Override
   protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
@@ -69,8 +74,9 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
     final Observable<Pair<DiscoveryActivity, DiscoveryParams>> viewAndParams =
       RxUtils.combineLatestPair(viewSubject, params);
 
-    final Observable<Pair<Integer, Integer>> visibleItemOfTotal = viewSubject
-      .switchMap(v -> RxRecyclerView.scrollEvents(v.recyclerView).map(__ -> v.recyclerView))
+    final Observable<Pair<Integer, Integer>> visibleItemOfTotal = RxUtils.takeWhen(viewChange, scrollEvent)
+      .filter(v -> v != null)
+      .map(v -> v.recyclerView)
       .map(RecyclerView::getLayoutManager)
       .cast(LinearLayoutManager.class)
       .map(this::displayedItemFromLayout)

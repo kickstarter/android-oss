@@ -19,6 +19,7 @@ import com.kickstarter.presenters.LoginPresenter;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresPresenter(LoginPresenter.class)
@@ -35,12 +36,21 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
     ButterKnife.bind(this);
 
     presenter.takeForward(getIntent().getBooleanExtra(getString(R.string.intent_forward), false));
+  }
 
-    addSubscription(RxTextView.textChanges(emailEditText)
-      .subscribe(cs -> presenter.inputs().email(cs.toString())));
+  @OnTextChanged(R.id.email)
+  void onEmailTextChanged(@NonNull final CharSequence email) {
+    presenter.inputs().email(email.toString());
+  }
 
-    addSubscription(RxTextView.textChanges(passwordEditText)
-      .subscribe(cs -> presenter.inputs().password(cs.toString())));
+  @OnTextChanged(R.id.password)
+  void onPasswordTextChanged(@NonNull final CharSequence password) {
+    presenter.inputs().password(password.toString());
+  }
+
+  @OnClick(R.id.login_button)
+  public void loginButtonOnClick(@NonNull final View view) {
+    presenter.inputs().loginClick(view);
   }
 
   @Override
@@ -59,11 +69,6 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
         .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
       startActivity(intent);
     }
-  }
-
-  @OnClick(R.id.login_button)
-  public void loginButtonOnClick(@NonNull final View view) {
-    presenter.inputs().loginClick(view);
   }
 
   public void setFormEnabled(final boolean enabled) {

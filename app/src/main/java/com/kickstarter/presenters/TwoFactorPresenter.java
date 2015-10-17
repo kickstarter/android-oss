@@ -40,17 +40,17 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> implements 
   }
 
   @Override
-  public void code(final String s) {
+  public void code(@NonNull final String s) {
     code.onNext(s);
   }
 
   @Override
-  public void loginClick(final View view) {
+  public void loginClick(@NonNull final View view) {
     loginClick.onNext(view);
   }
 
   @Override
-  public void resendClick(final View view) {
+  public void resendClick(@NonNull final View view) {
     resendClick.onNext(view);
   }
 

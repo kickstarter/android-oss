@@ -9,7 +9,7 @@ import android.util.Pair;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.Presenter;
-import com.kickstarter.libs.RxUtils;
+import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.DiscoveryParams;
@@ -27,7 +27,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
-import timber.log.Timber;
 
 public class SearchPresenter extends Presenter<SearchActivity> implements SearchAdapter.Delegate {
   @Inject ApiClient apiClient;

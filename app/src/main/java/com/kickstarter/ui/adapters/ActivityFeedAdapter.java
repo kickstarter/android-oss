@@ -42,7 +42,9 @@ public class ActivityFeedAdapter extends KsrAdapter {
   }
 
   public void takeLoggedOutUser(@Nullable final User user) {
+    data().clear();
     data().add(Collections.singletonList(user));
+    notifyDataSetChanged();
   }
 
   @Override

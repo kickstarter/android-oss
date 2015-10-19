@@ -22,22 +22,25 @@ import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.presenters.CommentFeedPresenter;
 import com.kickstarter.ui.adapters.CommentFeedAdapter;
+import com.kickstarter.ui.viewholders.EmptyCommentFeedViewHolder;
+import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
 
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 
 @RequiresPresenter(CommentFeedPresenter.class)
-public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
+public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> implements CommentFeedAdapter.Delegate {
   private CommentFeedAdapter adapter;
   private Project project;
   @Nullable private AlertDialog commentDialog;
 
   public @Bind(R.id.comment_button) TextView commentButtonTextView;
   public @Bind(R.id.comment_feed_recycler_view) RecyclerView recyclerView;
-  public @Nullable @Bind(R.id.comment_body) EditText commentBodyEditText;
+  @Nullable @Bind(R.id.comment_body) EditText commentBodyEditText;
   public @Nullable @Bind(R.id.post_button) TextView postCommentButton;
 
   @Override
@@ -50,7 +53,7 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     project = intent.getParcelableExtra(getString(R.string.intent_project));
     presenter.initialize(project);
 
-    adapter = new CommentFeedAdapter(presenter);
+    adapter = new CommentFeedAdapter(this);
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
   }
@@ -103,6 +106,11 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     presenter.takeCommentDialogShown();
   }
 
+  @Nullable
+  @OnTextChanged(R.id.comment_body) void onCommentBodyTextChanged(@NonNull final CharSequence commentBody) {
+    presenter.inputs().commentBody(commentBody.toString());
+  }
+
   public void dismissCommentDialog() {
     if (commentDialog != null) {
       commentDialog.dismiss();
@@ -119,6 +127,14 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> {
     if (postCommentButton != null) {
       postCommentButton.setEnabled(!disabled);
     }
+  }
+
+  public void projectContextClicked() {
+    presenter.inputs().projectContextClicked();
+  }
+
+  public void emptyCommentFeedLoginClicked(@NonNull final EmptyCommentFeedViewHolder viewHolder) {
+    presenter.inputs().emptyCommentFeedLoginClicked();
   }
 
   public void showToastOnPostSuccess() {

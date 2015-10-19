@@ -1,4 +1,4 @@
-package com.kickstarter.libs;
+package com.kickstarter.libs.utils;
 
 import android.content.Context;
 import android.support.annotation.ColorInt;
@@ -6,6 +6,9 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+
+import com.kickstarter.libs.ApiCapabilities;
+import com.kickstarter.libs.BaseActivity;
 
 public class StatusBarUtils {
   private StatusBarUtils() {}

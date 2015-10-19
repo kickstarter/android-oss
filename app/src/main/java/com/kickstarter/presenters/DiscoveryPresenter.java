@@ -8,21 +8,19 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 
-import com.jakewharton.rxbinding.support.v7.widget.RxRecyclerView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.BuildCheck;
-import com.kickstarter.libs.ListUtils;
 import com.kickstarter.libs.Presenter;
-import com.kickstarter.libs.RxUtils;
+import com.kickstarter.libs.utils.ListUtils;
+import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.Project;
+import com.kickstarter.presenters.inputs.DiscoveryPresenterInputs;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.KickstarterClient;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.DiscoveryActivity;
-import com.kickstarter.ui.adapters.DiscoveryAdapter;
-import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,15 +31,32 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements DiscoveryAdapter.Delegate {
+public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements DiscoveryPresenterInputs {
+  // INPUTS
+  private final PublishSubject<Project> projectClick = PublishSubject.create();
+  private final PublishSubject<Void> scrollEvent = PublishSubject.create();
+
   @Inject ApiClient apiClient;
   @Inject KickstarterClient kickstarterClient;
   @Inject BuildCheck buildCheck;
 
   private final PublishSubject<Void> filterButtonClick = PublishSubject.create();
-  private final PublishSubject<Project> projectClick = PublishSubject.create();
   private final PublishSubject<Empty> nextPage = PublishSubject.create();
   private final PublishSubject<DiscoveryParams> params = PublishSubject.create();
+
+  public DiscoveryPresenterInputs inputs() {
+    return this;
+  }
+
+  @Override
+  public void projectClick(@NonNull final Project project) {
+    projectClick.onNext(project);
+  }
+
+  @Override
+  public void scrollEvent() {
+    scrollEvent.onNext(null);
+  }
 
   @Override
   protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
@@ -59,8 +74,9 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
     final Observable<Pair<DiscoveryActivity, DiscoveryParams>> viewAndParams =
       RxUtils.combineLatestPair(viewSubject, params);
 
-    final Observable<Pair<Integer, Integer>> visibleItemOfTotal = viewSubject
-      .switchMap(v -> RxRecyclerView.scrollEvents(v.recyclerView).map(__ -> v.recyclerView))
+    final Observable<Pair<Integer, Integer>> visibleItemOfTotal = RxUtils.takeWhen(viewChange, scrollEvent)
+      .filter(v -> v != null)
+      .map(v -> v.recyclerView)
       .map(RecyclerView::getLayoutManager)
       .cast(LinearLayoutManager.class)
       .map(this::displayedItemFromLayout)
@@ -171,10 +187,6 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
 
   public void filterButtonClick() {
     filterButtonClick.onNext(null);
-  }
-
-  public void projectCardClick(@NonNull final ProjectCardViewHolder viewHolder, @NonNull final Project project) {
-    projectClick.onNext(project);
   }
 
   public void takeParams(@NonNull final DiscoveryParams firstPageParams) {

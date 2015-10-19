@@ -2,7 +2,6 @@ package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
@@ -11,9 +10,9 @@ import android.widget.TextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.CircleTransform;
-import com.kickstarter.libs.CommentUtils;
+import com.kickstarter.libs.utils.CommentUtils;
 import com.kickstarter.libs.CurrentUser;
-import com.kickstarter.libs.DateTimeUtils;
+import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.squareup.picasso.Picasso;
@@ -22,7 +21,6 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class CommentViewHolder extends KsrViewHolder {
   private Project project;

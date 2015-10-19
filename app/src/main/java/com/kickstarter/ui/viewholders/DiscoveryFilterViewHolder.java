@@ -8,17 +8,15 @@ import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
-import com.kickstarter.libs.DiscoveryUtils;
+import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.Font;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.DiscoveryFilterStyle;
-import com.kickstarter.ui.adapters.DiscoveryFilterAdapter;
 
 import javax.inject.Inject;
 
 import auto.parcel.AutoParcel;
 import butterknife.Bind;
-import butterknife.BindColor;
 import butterknife.ButterKnife;
 
 public class DiscoveryFilterViewHolder extends KsrViewHolder {

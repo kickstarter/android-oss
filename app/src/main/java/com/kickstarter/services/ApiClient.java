@@ -10,6 +10,7 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
+import com.kickstarter.services.apirequests.CommentBody;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.CategoriesEnvelope;
@@ -92,7 +93,7 @@ public class ApiClient {
   }
 
   public Observable<Comment> postProjectComment(@NonNull final Project project, @NonNull final String body) {
-    return service.postProjectComment(project.param(), body);
+    return service.postProjectComment(project.param(), CommentBody.builder().body(body).build());
   }
 
   public Observable<Project> starProject(@NonNull final Project project) {

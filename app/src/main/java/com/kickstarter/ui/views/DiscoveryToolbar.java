@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.CurrentUser;
-import com.kickstarter.libs.DiscoveryUtils;
+import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;

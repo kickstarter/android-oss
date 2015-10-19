@@ -24,7 +24,6 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
 public class SearchPresenter extends Presenter<SearchActivity> implements SearchPresenterInputs, SearchPresenterOutputs {
@@ -72,7 +71,6 @@ public class SearchPresenter extends Presenter<SearchActivity> implements Search
       .subscribe(pp -> newData.onNext(pp)));
 
     addSubscription(projectClick
-      .observeOn(AndroidSchedulers.mainThread())
       .subscribe(startProjectActivity));
 
     params.onNext(DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build());

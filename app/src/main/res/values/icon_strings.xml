@@ -14,8 +14,11 @@
   <string name="mode_comment_icon">mode_comment</string>
   <string name="more_vert_icon">more_vert</string>
   <string name="play_circle_outline_icon">play_circle_outline</string>
+  <string name="search_icon">search</string>
   <string name="share_icon">share</string>
   <string name="star_icon">star</string>
+  <string name="trending_up_icon">trending_up</string>
+  <string name="whatshot_icon">whatshot</string>
 
   <!-- ss-kickstarter icon names from https://www.kickstarter.com/admin/style_guide -->
   <string name="backer_icon">backer</string>

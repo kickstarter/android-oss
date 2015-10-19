@@ -66,7 +66,9 @@
   <!-- Kickstarter colors with hex opacity:
     http://stackoverflow.com/questions/5445085/understanding-colors-in-android-6-characters/11019879#11019879 -->
   <color name="black_alpha_30">#4D000000</color>
+  <color name="black_alpha_5">#0d000000</color>
   <color name="blue_alpha_20">#3300a0ff</color>
+  <color name="white_alpha_60">#99ffffff</color>
 
   <!-- Click indicator colors-->
   <color name="dark_gray_click">#1f000000</color>

@@ -77,6 +77,11 @@
     <item name="android:statusBarColor">@color/black</item>
   </style>
 
+  <style name="SearchActivity" parent="KsrTheme">
+    <item name="android:statusBarColor">@color/dark_blue</item>
+    <item name="android:windowBackground">@color/light_gray</item>
+  </style>
+
   <style name="ThanksActivity" parent="KsrTheme">
     <item name="android:statusBarColor">@color/gray</item>
     <item name="android:windowBackground">@color/white</item>

@@ -8,9 +8,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 
+import com.jakewharton.rxbinding.support.v7.widget.RxRecyclerView;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
+import com.kickstarter.libs.utils.InputUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.SearchPresenter;
 import com.kickstarter.services.DiscoveryParams;
@@ -41,6 +43,11 @@ public class SearchActivity extends BaseActivity<SearchPresenter> implements Sea
     adapter = new SearchAdapter(this);
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);
+
+    addSubscription(RxRecyclerView.scrollEvents(recyclerView)
+      .filter(scrollEvent -> scrollEvent.dy() != 0) // Skip scroll events when y is 0, usually indicates new data
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> InputUtils.hideKeyboard(this, getCurrentFocus())));
 
     addSubscription(presenter.outputs().clear()
       .observeOn(AndroidSchedulers.mainThread())

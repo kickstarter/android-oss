@@ -77,6 +77,5 @@ public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
     if (resultCode != RESULT_OK) {
       return;
     }
-    presenter.takeLoginSuccess();
   }
 }

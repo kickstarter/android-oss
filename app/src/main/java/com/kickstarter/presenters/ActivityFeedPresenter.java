@@ -38,7 +38,6 @@ public class ActivityFeedPresenter extends Presenter<ActivityFeedActivity> imple
   private final PublishSubject<Project> discoverProjectsClick = PublishSubject.create();
   private final PublishSubject<Project> friendBackingClick = PublishSubject.create();
   private final PublishSubject<Void> loginClick = PublishSubject.create();
-  private final PublishSubject<Void> loginSuccess = PublishSubject.create();
   private final PublishSubject<Project> projectStateChangedPositiveClick = PublishSubject.create();
   private final PublishSubject<Project> projectStateChangedClick = PublishSubject.create();
   private final PublishSubject<Project> projectUpdateProjectClick = PublishSubject.create();
@@ -123,9 +122,5 @@ public class ActivityFeedPresenter extends Presenter<ActivityFeedActivity> imple
   public void projectUpdateClicked(@NonNull final ProjectUpdateViewHolder viewHolder,
     @NonNull final Activity activity) {
     projectUpdateUpdateClick.onNext(activity);
-  }
-
-  public void takeLoginSuccess() {
-    loginSuccess.onNext(null);
   }
 }

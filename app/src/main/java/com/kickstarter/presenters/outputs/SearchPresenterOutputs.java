@@ -12,6 +12,5 @@ import rx.Observable;
 
 public interface SearchPresenterOutputs {
   Observable<Empty> clear();
-  Observable<Project> startProjectActivity();
   Observable<Pair<DiscoveryParams, List<Project>>> newData();
 }

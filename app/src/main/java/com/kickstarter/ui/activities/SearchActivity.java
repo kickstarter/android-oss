@@ -56,24 +56,16 @@ public class SearchActivity extends BaseActivity<SearchPresenter> implements Sea
     addSubscription(presenter.outputs().newData()
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::loadParamsAndProjects));
-
-    addSubscription(presenter.outputs().startProjectActivity()
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::startProjectIntent));
   }
 
   public void projectSearchResultClick(@NonNull final ProjectSearchResultViewHolder viewHolder, @NonNull final Project project) {
-    presenter.projectClick(project);
-  }
-
-  public void loadParamsAndProjects(@NonNull final Pair<DiscoveryParams, List<Project>> paramsAndProjects) {
-    adapter.loadProjectsAndParams(paramsAndProjects.first, paramsAndProjects.second);
-  }
-
-  public void startProjectIntent(@NonNull final Project project) {
     final Intent intent = new Intent(this, ProjectActivity.class)
       .putExtra(getString(R.string.intent_project), project);
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  public void loadParamsAndProjects(@NonNull final Pair<DiscoveryParams, List<Project>> paramsAndProjects) {
+    adapter.loadProjectsAndParams(paramsAndProjects.first, paramsAndProjects.second);
   }
 }

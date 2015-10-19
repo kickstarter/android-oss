@@ -28,15 +28,18 @@ import rx.subjects.PublishSubject;
 
 public class SearchPresenter extends Presenter<SearchActivity> implements SearchPresenterInputs, SearchPresenterOutputs {
   // INPUTS
-  private final PublishSubject<Project> projectClick = PublishSubject.create();
-  private final PublishSubject<String> search = PublishSubject.create();
+  private final PublishSubject<String> searchSubject = PublishSubject.create();
+  public SearchPresenterInputs inputs() { return this; }
+  @Override public void search(@NonNull final String s) { searchSubject.onNext(s); }
 
   // OUTPUTS
-  private final PublishSubject<Empty> clear = PublishSubject.create();
-  private final PublishSubject<Project> startProjectActivity = PublishSubject.create();
-  private final PublishSubject<Pair<DiscoveryParams, List<Project>>> newData = PublishSubject.create();
+  private final PublishSubject<Empty> clearSubject = PublishSubject.create();
+  private final PublishSubject<Pair<DiscoveryParams, List<Project>>> newDataSubject = PublishSubject.create();
+  public SearchPresenterOutputs outputs() { return this; }
+  @Override public Observable<Empty> clear() { return clearSubject.asObservable(); }
+  @Override public Observable<Pair<DiscoveryParams, List<Project>>> newData() { return newDataSubject.asObservable(); }
 
-  private final PublishSubject<DiscoveryParams> params = PublishSubject.create();
+  private final PublishSubject<DiscoveryParams> paramsSubject = PublishSubject.create();
 
   @Inject ApiClient apiClient;
 
@@ -45,68 +48,37 @@ public class SearchPresenter extends Presenter<SearchActivity> implements Search
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    final Observable<List<Project>> projects = params
+    final Observable<List<Project>> projects = paramsSubject
       .switchMap(this::projects)
       .share();
 
-    final Observable<Pair<DiscoveryParams, List<Project>>> paramsAndProjects = RxUtils.takePairWhen(params, projects);
+    final Observable<Pair<DiscoveryParams, List<Project>>> paramsAndProjects = RxUtils.takePairWhen(paramsSubject, projects);
 
-    final Observable<Boolean> isSearchEmpty = search.map(t -> t.length() == 0).share();
+    final Observable<Boolean> isSearchEmpty = searchSubject.map(t -> t.length() == 0).share();
 
-    addSubscription(search
-      .skip(1) // Don't send clear signal for text change on load
-      .subscribe(__ -> clear.onNext(Empty.create())));
+   // Search subject pings on load - we want to skip this to show initial results.
+    addSubscription(searchSubject
+      .skip(1)
+      .subscribe(__ -> clearSubject.onNext(Empty.create())));
 
-    addSubscription(RxUtils.takeWhen(search, isSearchEmpty.filter(b -> !b))
-      .subscribe(text -> params.onNext(DiscoveryParams.builder().term(text).build())));
+    addSubscription(RxUtils.takeWhen(searchSubject, isSearchEmpty.filter(b -> !b))
+      .subscribe(text -> paramsSubject.onNext(DiscoveryParams.builder().term(text).build())));
 
+    // Just show the first ping with no filtering
     addSubscription(paramsAndProjects
       .take(1)
-      .subscribe(pp -> newData.onNext(pp)));
+      .subscribe(pp -> newDataSubject.onNext(pp)));
 
+    // For subsequent pings, only want to show results if search is not empty. Search could have been cleared in
+    // the time between when the API request was triggered and when it returned.
     addSubscription(RxUtils.takePairWhen(isSearchEmpty, paramsAndProjects)
       .filter(epp -> !epp.first)
       .map(evpp -> evpp.second)
       .debounce(500, TimeUnit.MILLISECONDS)
-      .subscribe(pp -> newData.onNext(pp)));
+      .subscribe(pp -> newDataSubject.onNext(pp)));
 
-    addSubscription(projectClick
-      .subscribe(startProjectActivity));
-
-    params.onNext(DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build());
-  }
-
-  public SearchPresenterInputs inputs() {
-    return this;
-  }
-
-  @Override
-  public void projectClick(@NonNull final Project project) {
-    projectClick.onNext(project);
-  }
-
-  @Override
-  public void search(@NonNull final String s) {
-    search.onNext(s);
-  }
-
-  public SearchPresenterOutputs outputs() {
-    return this;
-  }
-
-  @Override
-  public Observable<Empty> clear() {
-    return clear;
-  }
-
-  @Override
-  public Observable<Project> startProjectActivity() {
-    return startProjectActivity;
-  }
-
-  @Override
-  public Observable<Pair<DiscoveryParams, List<Project>>> newData() {
-    return newData;
+    // Start with popular projects.
+    paramsSubject.onNext(DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build());
   }
 
   private Observable<List<Project>> projects(@NonNull final DiscoveryParams newParams) {

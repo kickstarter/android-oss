@@ -5,14 +5,15 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
+import android.view.View;
 
-import com.jakewharton.rxbinding.widget.RxTextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ApiErrorHandler;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.utils.RxUtils;
+import com.kickstarter.presenters.inputs.TwoFactorPresenterInputs;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.ApiError;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
@@ -25,20 +26,38 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public class TwoFactorPresenter extends Presenter<TwoFactorActivity> {
+public class TwoFactorPresenter extends Presenter<TwoFactorActivity> implements TwoFactorPresenterInputs {
+  // INPUTS
+  private final PublishSubject<String> code = PublishSubject.create();
+  private final PublishSubject<View> loginClick = PublishSubject.create();
+  private final PublishSubject<View> resendClick = PublishSubject.create();
+
   @Inject CurrentUser currentUser;
   @Inject ApiClient client;
-  private final PublishSubject<Void> loginClick = PublishSubject.create();
-  private final PublishSubject<Void> resendClick = PublishSubject.create();
+
+  public TwoFactorPresenterInputs inputs() {
+    return this;
+  }
+
+  @Override
+  public void code(@NonNull final String s) {
+    code.onNext(s);
+  }
+
+  @Override
+  public void loginClick(@NonNull final View view) {
+    loginClick.onNext(view);
+  }
+
+  @Override
+  public void resendClick(@NonNull final View view) {
+    resendClick.onNext(view);
+  }
 
   @Override
   protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
-
-    final Observable<String> code = viewSubject
-      .flatMap(v -> RxTextView.textChanges(v.codeEditText))
-      .map(CharSequence::toString);
 
     final Observable<Boolean> isValid = code
       .map(TwoFactorPresenter::isValid);

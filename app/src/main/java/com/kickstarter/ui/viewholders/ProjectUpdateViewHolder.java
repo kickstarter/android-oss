@@ -27,8 +27,8 @@ public class ProjectUpdateViewHolder extends ActivityListViewHolder {
   private final Delegate delegate;
 
   public interface Delegate {
-    void projectUpdateProjectClicked(@NonNull final ProjectUpdateViewHolder viewHolder, @NonNull final Project project);
-    void projectUpdateUpdateClicked(@NonNull final ProjectUpdateViewHolder viewHolder, @NonNull final Activity activity);
+    void projectUpdateProjectClicked(ProjectUpdateViewHolder viewHolder, Project project);
+    void projectUpdateClicked(ProjectUpdateViewHolder viewHolder, Activity activity);
   }
 
 

@@ -60,6 +60,6 @@ public class ProjectUpdateViewHolder extends ActivityListViewHolder {
 
   @OnClick(R.id.update_info)
   public void updateOnClick() {
-    delegate.projectUpdateUpdateClicked(this, activity);
+    delegate.projectUpdateClicked(this, activity);
   }
 }

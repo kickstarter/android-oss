@@ -120,7 +120,7 @@ public class ActivityFeedPresenter extends Presenter<ActivityFeedActivity> imple
     projectUpdateProjectClick.onNext(project);
   }
 
-  public void projectUpdateUpdateClicked(@NonNull final ProjectUpdateViewHolder viewHolder,
+  public void projectUpdateClicked(@NonNull final ProjectUpdateViewHolder viewHolder,
     @NonNull final Activity activity) {
     projectUpdateUpdateClick.onNext(activity);
   }

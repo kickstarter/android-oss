@@ -23,7 +23,7 @@ public class SearchToolbar extends Toolbar {
   public @Bind(R.id.clear_button) IconTextView clearButton;
   public @Bind(R.id.search_edit_text) EditText searchEditText;
 
-  private CompositeSubscription compositeSubscription = new CompositeSubscription();
+  private CompositeSubscription compositeSubscription;
 
   public SearchToolbar(@NonNull final Context context) {
     super(context);
@@ -51,6 +51,8 @@ public class SearchToolbar extends Toolbar {
   @Override
   protected void onAttachedToWindow() {
     super.onAttachedToWindow();
+
+    compositeSubscription = new CompositeSubscription();
 
     final Observable<CharSequence> text = RxTextView.textChanges(searchEditText);
     final Observable<Boolean> clearable = text.map(t -> t.length() > 0);

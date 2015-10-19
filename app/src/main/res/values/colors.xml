@@ -68,7 +68,6 @@
   <color name="black_alpha_30">#4D000000</color>
   <color name="black_alpha_5">#0d000000</color>
   <color name="blue_alpha_20">#3300a0ff</color>
-  <color name="white_alpha_80">#ccffffff</color>
   <color name="white_alpha_60">#99ffffff</color>
 
   <!-- Click indicator colors-->

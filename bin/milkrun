@@ -18,6 +18,13 @@ class MilkrunApplication
       c.description = "Submit a new internal build to S3"
       c.action do |args, options|
         variant = 'internal'
+        Milkrun.prompt <<-CHECKLIST
+Release checklist!
+
+1) Make sure the build passes in CircleCI.
+2) Run view tests: ./gradlew connectedAndroidTest
+3) Build and run locally in internalRelease mode, test core features on a real device.
+CHECKLIST
         version_code = Milkrun::VersionCode.new.bump
         version_name = Milkrun::VersionName.new.prompt
         file_path = Milkrun::Build.new(variant).compile

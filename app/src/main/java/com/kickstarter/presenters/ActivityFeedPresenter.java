@@ -106,12 +106,12 @@ public class ActivityFeedPresenter extends Presenter<ActivityFeedActivity> imple
   }
 
   public void projectStateChangedClicked(@NonNull final ProjectStateChangedViewHolder viewHolder,
-    final @NonNull Project project) {
+    @NonNull final Project project) {
     projectStateChangedClick.onNext(project);
   }
 
   public void projectStateChangedPositiveClicked(@NonNull final ProjectStateChangedPositiveViewHolder viewHolder,
-    final @NonNull Project project) {
+    @NonNull final Project project) {
     projectStateChangedPositiveClick.onNext(project);
   }
 

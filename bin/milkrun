@@ -32,7 +32,7 @@ CHECKLIST
         Milkrun::HockeyApp.new(variant: variant, version_code: version_code, version_name: version_name).create_version
         Milkrun::S3Package.new(variant: variant, version_code: version_code, file_path: file_path).upload
         Milkrun::Changelog.new(variant: variant, version_code: version_code).publish
-        Milkrun.say "All done! 👌"
+        Milkrun.say "All done, now commit your local version changes! 👌"
       end
     end
 

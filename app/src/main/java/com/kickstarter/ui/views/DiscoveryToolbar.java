@@ -90,7 +90,8 @@ public class DiscoveryToolbar extends Toolbar {
       currentUserButton,
       filterExpandMoreButton,
       filterTextView,
-      loginButton);
+      loginButton,
+      searchButton);
 
     final @ColorInt int overlayTextColor = DiscoveryUtils.overlayTextColor(context, params);
 

@@ -27,7 +27,7 @@ module Milkrun
     def path
       raise 'Build has not been compiled yet!' unless assembled?
 
-      Milkrun.app_dir + "build/outputs/apk/app-#{variant.underscore.dasherize}-release.apk"
+      Milkrun.app_dir + "build/outputs/apk/app-#{variant.underscore.dasherize}.apk"
     end
   end
 end

@@ -1,9 +1,9 @@
 module Milkrun
   class S3Package
-    attr_reader :variant, :version_code, :file_path
+    attr_reader :version_code, :file_path
 
-    def initialize(variant:, version_code:, file_path:)
-      @variant, @version_code, @file_path = variant, version_code, file_path
+    def initialize(version_code:, file_path:)
+      @version_code, @file_path = version_code, file_path
     end
 
     # Uploads a build to S3.

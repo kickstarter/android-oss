@@ -4,12 +4,12 @@ require 'excon'
 
 module Milkrun
   class HockeyApp
-    attr_reader :variant, :version_code, :version_name
+    attr_reader :flavor, :version_code, :version_name
 
-    def initialize(variant:, version_code:, version_name:)
-      @variant, @version_code, @version_name = variant, version_code, version_name
+    def initialize(flavor:, version_code:, version_name:)
+      @flavor, @version_code, @version_name = flavor, version_code, version_name
       raise "Missing HockeyApp token!" if token.empty?
-      raise "Missing HockeyApp app_id for variant #{variant}!" if app_id.empty?
+      raise "Missing HockeyApp app_id for flavor #{flavor}!" if app_id.empty?
     end
 
     # Creates a new version of the app in HockeyApp.
@@ -41,7 +41,7 @@ module Milkrun
     protected
 
     def app_id
-      Configs[:hockey_app][variant][:app_id]
+      Configs[:hockey_app][flavor][:app_id]
     end
 
     def base_url

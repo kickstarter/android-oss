@@ -1,6 +1,7 @@
 package com.kickstarter.ui.viewholders;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -27,6 +28,8 @@ public class ProjectCardViewHolder extends KsrViewHolder {
   protected @Bind(R.id.goal) TextView goalTextView;
   protected @Bind(R.id.location) TextView locationTextView;
   protected @Bind(R.id.name) TextView nameTextView;
+  protected @Nullable @Bind(R.id.created_by) TextView createdByTextView;
+  protected @Nullable @Bind(R.id.blurb) TextView blurbTextView;
   protected @Bind(R.id.pledged) TextView pledgedTextView;
   protected @Bind(R.id.percentage_funded) ProgressBar percentageFundedProgressBar;
   protected @Bind(R.id.photo) ImageView photoImageView;
@@ -60,6 +63,16 @@ public class ProjectCardViewHolder extends KsrViewHolder {
     locationTextView.setText(project.location().displayableName());
     pledgedTextView.setText(money.formattedCurrency(project.pledged(), project.currencyOptions()));
     nameTextView.setText(project.name());
+
+    // Handle landscape
+    if (createdByTextView != null) {
+      createdByTextView.setText(String.format(view.getContext().getString(R.string.by_), project.creator().name()));
+    }
+
+    if (blurbTextView != null) {
+      blurbTextView.setText(project.blurb());
+    }
+
     percentageFundedProgressBar.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
     Picasso.with(view.getContext()).
       load(project.photo().full()).

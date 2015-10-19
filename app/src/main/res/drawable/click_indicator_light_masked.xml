@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--todo: figure out how to mask this?-->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
   <item android:drawable="@color/dark_gray_click" android:state_focused="true" />
   <item android:drawable="@color/dark_gray_click" android:state_pressed="true" />

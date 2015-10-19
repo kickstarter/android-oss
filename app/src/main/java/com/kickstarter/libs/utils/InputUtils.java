@@ -12,7 +12,7 @@ public class InputUtils {
 
   public static void hideKeyboard(@NonNull final Context context, @Nullable final View view) {
     final InputMethodManager inputManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-    final IBinder windowToken = view == null ? null : view.getWindowToken();
+    final IBinder windowToken = view != null ? view.getWindowToken() : null;
     inputManager.hideSoftInputFromWindow(windowToken, InputMethodManager.HIDE_NOT_ALWAYS);
   }
 }

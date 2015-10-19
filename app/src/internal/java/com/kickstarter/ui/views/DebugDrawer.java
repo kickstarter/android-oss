@@ -1,10 +1,13 @@
 package com.kickstarter.ui.views;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,23 +21,31 @@ import com.jakewharton.processphoenix.ProcessPhoenix;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ApiEndpoint;
-import com.kickstarter.libs.Build;
+import com.kickstarter.libs.Release;
+import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.EnumAdapter;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.preferences.StringPreference;
 import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
+import com.kickstarter.models.User;
 
 import org.joda.time.format.DateTimeFormat;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.BindDrawable;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class DebugDrawer extends FrameLayout {
   @Inject @ApiEndpointPreference StringPreference apiEndpointPreference;
-  @Inject Build build;
+  @Inject Release release;
+  @Inject CurrentUser currentUser;
   @Inject Logout logout;
 
   @Bind(R.id.build_date) TextView buildDate;
@@ -65,6 +76,41 @@ public class DebugDrawer extends FrameLayout {
     setupBuildInformationSection();
   }
 
+  @OnClick(R.id.submit_bug_report_button)
+  public void submitBugReportButtonClick() {
+    final Context context = getContext();
+
+    final String email = "chrstphrwrght+21qbymyz894ttajaomwh@***REMOVED***";
+
+    final Intent intent = new Intent(android.content.Intent.ACTION_SEND)
+      .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
+      .setType("message/rfc822")
+      .putExtra(Intent.EXTRA_TEXT, bugReportBody())
+      .putExtra(Intent.EXTRA_EMAIL, new String[]{email});
+
+    context.startActivity(Intent.createChooser(intent, context.getString(R.string.Select_email_application)));
+  }
+
+  private String bugReportBody() {
+    final User user = currentUser.observable().toBlocking().mostRecent(null).iterator().next();
+
+    final List<String> header = Arrays.asList(
+      (user != null ? user.name() : "Logged Out"),
+      release.variant(),
+      release.versionName(),
+      release.versionCode().toString(),
+      release.sha(),
+      Build.MANUFACTURER + " " + Build.MODEL,
+      Locale.getDefault().getLanguage()
+    );
+
+    return new StringBuilder()
+      .append(TextUtils.join(" | ", header))
+      .append("\r\n\r\nDescribe the bug and add a subject. Attach images if it helps!\r\n")
+      .append("—————————————\r\n")
+      .toString();
+  }
+
   private void setupNetworkSection() {
     final ApiEndpoint currentApiEndpoint = ApiEndpoint.from(apiEndpointPreference.get());
     final EnumAdapter<ApiEndpoint> endpointAdapter =
@@ -91,11 +137,11 @@ public class DebugDrawer extends FrameLayout {
   }
 
   private void setupBuildInformationSection() {
-    buildDate.setText(build.dateTime().toString(DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss aa zzz")));
-    sha.setText(build.sha());
-    variant.setText(build.variant());
-    versionCode.setText(build.versionCode().toString());
-    versionName.setText(build.versionName());
+    buildDate.setText(release.dateTime().toString(DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss aa zzz")));
+    sha.setText(release.sha());
+    variant.setText(release.variant());
+    versionCode.setText(release.versionCode().toString());
+    versionName.setText(release.versionName());
   }
 
   private void showCustomEndpointDialog(final int originalSelection, @NonNull final String defaultUrl) {

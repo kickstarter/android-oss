@@ -123,6 +123,7 @@
   <string name="secs">secs</string>
   <string name="Search">Search</string>
   <string name="Search_projects">Search projects</string>
+  <string name="Select_email_application">Select email application:</string>
   <string name="Sha">SHA</string>
   <string name="Share">Share</string>
   <string name="share_message">"%1$s, via %2$s"</string>
@@ -134,6 +135,7 @@
   <string name="Staff_Picks">Staff Picks</string>
   <string name="Starred">Starred</string>
   <string name="Submit">Submit</string>
+  <string name="Submit_bug_report">Submit bug report</string>
   <string name="The_code_provided_does_not_match">The code provided does not match.</string>
   <string name="This_project_will_only_be_funded_if">
     This project will only be funded if at least %1$s is pledged by %2$s</string>

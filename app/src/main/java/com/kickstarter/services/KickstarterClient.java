@@ -2,11 +2,9 @@ package com.kickstarter.services;
 
 import android.support.annotation.NonNull;
 
-import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.kickstarter.BuildConfig;
-import com.kickstarter.libs.Build;
+import com.kickstarter.libs.Release;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 
 import java.util.regex.Matcher;
@@ -18,12 +16,12 @@ import retrofit.converter.GsonConverter;
 import rx.Observable;
 
 public class KickstarterClient {
-  private final Build build;
+  private final Release build;
   private final String endpoint;
   private final Gson gson;
   private final KickstarterService service;
 
-  public KickstarterClient(@NonNull final Build build, @NonNull final Gson gson, @NonNull final String endpoint) {
+  public KickstarterClient(@NonNull final Release build, @NonNull final Gson gson, @NonNull final String endpoint) {
     this.build = build;
     this.gson = gson;
     this.endpoint = endpoint;

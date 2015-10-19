@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 import com.kickstarter.BuildConfig;
 import com.kickstarter.libs.ApiEndpoint;
-import com.kickstarter.libs.Build;
+import com.kickstarter.libs.Release;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
@@ -30,16 +30,16 @@ import rx.Observable;
 
 public class ApiClient {
   private final ApiEndpoint apiEndpoint;
-  private final Build build;
+  private final Release release;
   private final String clientId;
   private final CurrentUser currentUser;
   private final Gson gson;
   private final ApiService service;
 
-  public ApiClient(@NonNull final ApiEndpoint apiEndpoint, @NonNull final Build build, @NonNull final String clientId,
+  public ApiClient(@NonNull final ApiEndpoint apiEndpoint, @NonNull final Release release, @NonNull final String clientId,
     @NonNull final CurrentUser currentUser, @NonNull final Gson gson) {
     this.apiEndpoint = apiEndpoint;
-    this.build = build;
+    this.release = release;
     this.clientId = clientId;
     this.currentUser = currentUser;
     this.gson = gson;
@@ -139,7 +139,7 @@ public class ApiClient {
   private RequestInterceptor requestInterceptor() {
     return request -> {
       request.addHeader("Accept", "application/json");
-      request.addHeader("Kickstarter-Android-App", build.versionCode().toString());
+      request.addHeader("Kickstarter-Android-App", release.versionCode().toString());
       request.addQueryParam("client_id", clientId());
       if (currentUser.exists()) {
         request.addQueryParam("oauth_token", currentUser.getAccessToken());

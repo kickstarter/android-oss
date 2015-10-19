@@ -8,17 +8,26 @@ import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.models.Activity;
+import com.kickstarter.models.Project;
 import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class ProjectStateChangedViewHolder extends ActivityListViewHolder {
   @Bind(R.id.title) TextView titleTextView;
   @Bind(R.id.project_photo) ImageView projectPhotoImageView;
 
-  public ProjectStateChangedViewHolder(@NonNull final View view) {
+  private final Delegate delegate;
+
+  public interface Delegate {
+    void projectStateChangedClicked(@NonNull final ProjectStateChangedViewHolder viewHolder, @NonNull final Project project);
+  }
+
+  public ProjectStateChangedViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
     super(view);
+    this.delegate = delegate;
     ButterKnife.bind(this, view);
   }
 
@@ -48,5 +57,10 @@ public class ProjectStateChangedViewHolder extends ActivityListViewHolder {
       default:
         return "";
     }
+  }
+
+  @OnClick(R.id.card_view)
+  public void stateChangeCardClick() {
+    delegate.projectStateChangedClicked(this, activity.project());
   }
 }

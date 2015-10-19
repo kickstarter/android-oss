@@ -9,10 +9,12 @@ import android.widget.TextView;
 import com.kickstarter.R;
 import com.kickstarter.libs.CircleTransform;
 import com.kickstarter.libs.utils.StringUtils;
+import com.kickstarter.models.Project;
 import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class FriendBackingViewHolder extends ActivityListViewHolder {
   @Bind(R.id.avatar) ImageView avatarImageView;
@@ -21,8 +23,15 @@ public class FriendBackingViewHolder extends ActivityListViewHolder {
   @Bind(R.id.project_photo) ImageView projectPhotoImageView;
   @Bind(R.id.title) TextView titleTextView;
 
-  public FriendBackingViewHolder(@NonNull final View view) {
+  private final Delegate delegate;
+
+  public interface Delegate {
+    void friendBackingClicked(@NonNull final FriendBackingViewHolder viewHolder, @NonNull final Project project);
+  }
+
+  public FriendBackingViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
     super(view);
+    this.delegate = delegate;
     ButterKnife.bind(this, view);
   }
 
@@ -44,6 +53,11 @@ public class FriendBackingViewHolder extends ActivityListViewHolder {
     titleTextView.setText(StringUtils.friendBackingActivityTitle(context,
       activity.user().name(),
       activity.project().category().rootId()));
+  }
+
+  @OnClick(R.id.friend_backing_card_view)
+  public void onClick() {
+    delegate.friendBackingClicked(this, activity.project());
   }
 }
 

@@ -23,9 +23,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class CommentViewHolder extends KsrViewHolder {
-  private Project project;
-  private Comment comment;
-
   public @Bind(R.id.avatar) ImageView avatarImageView;
   public @Bind(R.id.creator_label) TextView creatorLabelTextView;
   public @Bind(R.id.user_label) TextView userLabelTextView;
@@ -42,9 +39,8 @@ public class CommentViewHolder extends KsrViewHolder {
 
   public void onBind(@NonNull final Object datum) {
     final Pair<Project, Comment> projectAndComment = (Pair<Project, Comment>) datum;
-    project = projectAndComment.first;
-    comment = projectAndComment.second;
-
+    final Project project = projectAndComment.first;
+    final Comment comment = projectAndComment.second;
     final Context context = view.getContext();
 
     creatorLabelTextView.setVisibility(View.GONE);

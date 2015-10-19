@@ -1,5 +1,6 @@
 package com.kickstarter.models;
 
+import android.net.Uri;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
@@ -67,4 +68,11 @@ public abstract class Activity implements Parcelable {
     CATEGORY_FAILURE, CATEGORY_FUNDING, CATEGORY_BACKING_CANCELED, CATEGORY_BACKING_DROPPED, CATEGORY_BACKING_REWARD,
     CATEGORY_BACKING_AMOUNT, CATEGORY_COMMENT_PROPOSAL, CATEGORY_FOLLOW})
   public @interface Category {}
+
+  public String projectUpdateUrl() {
+    return Uri.parse(project().webProjectUrl()).buildUpon()
+      .appendEncodedPath("posts")
+      .appendPath(Long.toString(update().id()))
+      .toString();
+  }
 }

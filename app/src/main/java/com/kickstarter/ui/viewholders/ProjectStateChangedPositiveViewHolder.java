@@ -9,9 +9,10 @@ import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
-import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.Money;
+import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.models.Activity;
+import com.kickstarter.models.Project;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
@@ -19,6 +20,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.BindColor;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolder {
   @Bind(R.id.card_view) CardView cardView;
@@ -32,8 +34,16 @@ public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolde
   @BindColor(R.color.green_darken_10) int greenDarken10Color;
   @Inject Money money;
 
-  public ProjectStateChangedPositiveViewHolder(@NonNull final View view) {
+  private final Delegate delegate;
+
+  public interface Delegate {
+    void projectStateChangedPositiveClicked(@NonNull final ProjectStateChangedPositiveViewHolder viewHolder,
+      @NonNull final Project project);
+  }
+
+  public ProjectStateChangedPositiveViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
     super(view);
+    this.delegate = delegate;
     ButterKnife.bind(this, view);
     ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
   }
@@ -81,5 +91,10 @@ public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolde
     Picasso.with(context)
       .load(activity.project().photo().full())
       .into(projectPhotoImageView);
+  }
+
+  @OnClick(R.id.card_view)
+  public void onClick() {
+    delegate.projectStateChangedPositiveClicked(this, activity.project());
   }
 }

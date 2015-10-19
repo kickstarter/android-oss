@@ -4,13 +4,13 @@
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:gravity="center_horizontal"
-  android:background="@drawable/gray_gradient">
+  android:gravity="center_horizontal">
 
   <com.kickstarter.ui.views.IconTextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:text="@string/flash_on_icon"
+    android:textColor="@color/text_secondary"
     android:textSize="@dimen/display_4"
     android:paddingTop="@dimen/grid_5"
     android:paddingBottom="@dimen/grid_1" />
@@ -21,7 +21,8 @@
     android:paddingTop="@dimen/grid_1"
     android:paddingBottom="@dimen/grid_1"
     android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-    android:text="@string/Activity_empty" />
+    android:text="@string/Activity_empty"
+    android:textColor="@color/text_secondary" />
 
   <TextView
     android:layout_width="wrap_content"
@@ -30,23 +31,31 @@
     android:paddingTop="@dimen/grid_1"
     android:paddingBottom="@dimen/grid_3"
     android:text="@string/When_you_back_a_project_or_follow_a_friend"
+    android:textColor="@color/text_secondary"
     android:gravity="center_horizontal"
     android:paddingLeft="@dimen/grid_5"
     android:paddingRight="@dimen/grid_5" />
   
   <Button
     android:id="@+id/discover_projects_button"
+    style="@style/KsrButton"
+    android:visibility="gone"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:text="@string/Discover_projects"
+    android:textColor="@color/text_secondary"
     android:padding="@dimen/grid_3"
     android:layout_marginTop="@dimen/grid_1" />
 
-  <android.support.v7.widget.RecyclerView
-    android:id="@+id/recycler_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:scrollbars="vertical"
-    android:visibility="invisible" />
+  <Button
+    android:id="@+id/login_button"
+    style="@style/KsrButton"
+    android:visibility="gone"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/Log_in"
+    android:textColor="@color/text_secondary"
+    android:padding="@dimen/grid_3"
+    android:layout_marginTop="@dimen/grid_1" />
 
 </LinearLayout>

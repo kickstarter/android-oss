@@ -7,10 +7,6 @@
   card_view:cardElevation="0dp"
   card_view:cardCornerRadius="@dimen/card_corner_radius"
   card_view:cardBackgroundColor="@color/white"
-  card_view:contentPaddingTop="@dimen/grid_3"
-  card_view:contentPaddingBottom="@dimen/grid_3"
-  card_view:contentPaddingLeft="@dimen/grid_3"
-  card_view:contentPaddingRight="@dimen/grid_3"
   android:layout_marginTop="@dimen/card_margin_y"
   android:layout_marginBottom="@dimen/card_margin_y">
 
@@ -19,37 +15,59 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
+      android:id="@+id/project_info"
+      android:clickable="true"
+      android:background="@drawable/click_indicator_light_masked"
+      android:paddingTop="@dimen/grid_3"
+      android:paddingLeft="@dimen/grid_3"
+      android:paddingRight="@dimen/grid_3"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="@dimen/grid_3"
-      android:gravity="center_vertical"
-      android:orientation="horizontal">
+      android:gravity="center_vertical">
 
       <ImageView
         android:id="@+id/project_photo"
+        android:background="@color/black"
         android:adjustViewBounds="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_marginRight="@dimen/grid_1"
+        android:layout_marginEnd="@dimen/grid_2"
         android:layout_width="@dimen/activity_feed_small_photo_width"
         android:layout_height="@dimen/activity_feed_small_photo_height" />
 
       <TextView
+        android:id="@+id/project_name"
+        android:layout_toRightOf="@id/project_photo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/grid_1"
+        android:layout_marginStart="@dimen/grid_2"
         android:text="Project Name"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:id="@+id/project_name" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
 
-    </LinearLayout>
+      <include layout="@layout/horizontal_line_thin_view"
+        android:layout_toRightOf="@id/project_photo"
+        android:layout_toEndOf="@id/project_photo"
+        android:layout_alignStart="@id/project_name"
+        android:layout_alignLeft="@id/project_name"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_alignBottom="@id/project_photo" />
+
+    </RelativeLayout>
 
     <LinearLayout
+      android:id="@+id/update_info"
+      android:clickable="true"
+      android:background="@drawable/click_indicator_light_masked"
+      android:padding="@dimen/grid_3"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical">
 
       <RelativeLayout
-        android:layout_marginTop="@dimen/grid_3"
         android:layout_marginBottom="@dimen/grid_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -66,6 +84,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_alignParentRight="true"
+          android:layout_alignParentEnd="true"
           android:text="Timestamp"
           android:textColor="@color/dark_gray"
           android:textAppearance="@style/TextAppearance.AppCompat.Subhead"

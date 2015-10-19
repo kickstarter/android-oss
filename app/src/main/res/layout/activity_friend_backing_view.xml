@@ -2,6 +2,8 @@
 <android.support.v7.widget.CardView
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:card_view="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/friend_backing_card_view"
+  android:foreground="@drawable/click_indicator_light"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   card_view:cardElevation="0dp"
@@ -30,6 +32,7 @@
         android:id="@+id/avatar"
         android:adjustViewBounds="true"
         android:layout_marginRight="@dimen/grid_1"
+        android:layout_marginEnd="@dimen/grid_2"
         android:layout_width="@dimen/activity_feed_avatar_width"
         android:layout_height="@dimen/activity_feed_avatar_height" />
 
@@ -38,6 +41,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/grid_1"
+        android:layout_marginStart="@dimen/grid_2"
         android:text="Friend Name backed a Category project"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textColor="@color/text_dark"
@@ -56,6 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/grid_1"
+        android:layout_marginEnd="@dimen/grid_2"
         android:layout_weight="1"
         android:orientation="vertical">
 
@@ -81,6 +86,7 @@
       <ImageView
         android:id="@+id/project_photo"
         android:layout_marginLeft="@dimen/grid_1"
+        android:layout_marginStart="@dimen/grid_2"
         android:layout_width="@dimen/activity_feed_small_photo_width"
         android:layout_height="@dimen/activity_feed_small_photo_height" />
 

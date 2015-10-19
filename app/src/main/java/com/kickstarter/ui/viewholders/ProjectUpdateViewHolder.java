@@ -8,10 +8,13 @@ import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.utils.DateTimeUtils;
+import com.kickstarter.models.Activity;
+import com.kickstarter.models.Project;
 import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class ProjectUpdateViewHolder extends ActivityListViewHolder {
   @Bind(R.id.project_name) TextView projectNameTextView;
@@ -21,15 +24,23 @@ public class ProjectUpdateViewHolder extends ActivityListViewHolder {
   @Bind(R.id.update_sequence) TextView updateSequenceTextView;
   @Bind(R.id.update_title) TextView updateTitleTextView;
 
-  public ProjectUpdateViewHolder(@NonNull final View view) {
+  private final Delegate delegate;
+
+  public interface Delegate {
+    void projectUpdateProjectClicked(ProjectUpdateViewHolder viewHolder, Project project);
+    void projectUpdateClicked(ProjectUpdateViewHolder viewHolder, Activity activity);
+  }
+
+
+  public ProjectUpdateViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
     super(view);
+    this.delegate = delegate;
     ButterKnife.bind(this, view);
   }
 
   @Override
   public void onBind(@NonNull final Object datum) {
     super.onBind(datum);
-
     final Context context = view.getContext();
 
     projectNameTextView.setText(activity.project().name());
@@ -40,5 +51,15 @@ public class ProjectUpdateViewHolder extends ActivityListViewHolder {
     updateBodyTextView.setText(activity.update().truncatedBody());
     updateSequenceTextView.setText(context.getString(R.string.Update_sequence, activity.update().sequence()));
     updateTitleTextView.setText(activity.update().title());
+  }
+
+  @OnClick(R.id.project_info)
+  public void projectOnClick() {
+    delegate.projectUpdateProjectClicked(this, activity.project());
+  }
+
+  @OnClick(R.id.update_info)
+  public void updateOnClick() {
+    delegate.projectUpdateClicked(this, activity);
   }
 }

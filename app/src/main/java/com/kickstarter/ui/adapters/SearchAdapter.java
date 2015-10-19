@@ -25,7 +25,7 @@ public class SearchAdapter extends KsrAdapter {
     this.delegate = delegate;
   }
 
-  public void loadProjectsAndParams(@NonNull final List<Project> newProjects, @NonNull final DiscoveryParams params) {
+  public void loadProjectsAndParams(@NonNull final DiscoveryParams params, @NonNull final List<Project> newProjects) {
     clear();
 
     if (params.sort() == DiscoveryParams.Sort.POPULAR) {

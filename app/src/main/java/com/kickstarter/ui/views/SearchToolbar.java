@@ -59,6 +59,10 @@ public class SearchToolbar extends Toolbar {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(c -> clearButton.setVisibility(c ? View.VISIBLE : View.INVISIBLE))
     );
+
+    compositeSubscription.add(text
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(t -> ((SearchActivity) getContext()).presenter().inputs().search(t.toString())));
   }
 
   @Override

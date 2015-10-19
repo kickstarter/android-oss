@@ -71,7 +71,7 @@ public abstract class Activity implements Parcelable {
 
   public String projectUpdateUrl() {
     return Uri.parse(project().webProjectUrl()).buildUpon()
-      .appendEncodedPath("posts/")
+      .appendEncodedPath("posts")
       .appendPath(Long.toString(update().id()))
       .toString();
   }

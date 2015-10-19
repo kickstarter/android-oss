@@ -29,6 +29,7 @@ public abstract class DiscoveryParams implements Parcelable {
   public abstract int starred();
   public abstract int social();
   public abstract Sort sort();
+  @Nullable public abstract String term();
 
   public enum Sort {
     MAGIC, POPULAR, ENDING_SOON, NEWEST, MOST_FUNDED;
@@ -62,6 +63,7 @@ public abstract class DiscoveryParams implements Parcelable {
     public abstract Builder starred(int __);
     public abstract Builder social(int __);
     public abstract Builder sort(Sort __);
+    public abstract Builder term(String __);
     public abstract DiscoveryParams build();
   }
 
@@ -99,6 +101,10 @@ public abstract class DiscoveryParams implements Parcelable {
 
       if (location() != null) {
         put("woe_id", String.valueOf(location().id()));
+      }
+
+      if (term() != null) {
+        put("q", term());
       }
 
       if (staffPicks() && page() == 1) {

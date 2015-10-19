@@ -92,6 +92,7 @@
   <string name="Manage_pledge">Manage pledge</string>
   <string name="mins">mins</string>
   <string name="More">More</string>
+  <string name="Most_Popular">Most Popular</string>
   <string name="Nearby">Nearby</string>
   <string name="Network">Network</string>
   <string name="No_comments">No comments</string>
@@ -120,6 +121,8 @@
   <string name="Public_comment">Public comment</string>
   <string name="Resend">Resend</string>
   <string name="secs">secs</string>
+  <string name="Search">Search</string>
+  <string name="Search_projects">Search projects</string>
   <string name="Sha">SHA</string>
   <string name="Share">Share</string>
   <string name="share_message">"%1$s, via %2$s"</string>

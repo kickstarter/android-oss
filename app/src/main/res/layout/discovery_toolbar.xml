@@ -49,6 +49,16 @@
       android:orientation="horizontal">
 
       <com.kickstarter.ui.views.IconTextView
+        android:id="@+id/search_button"
+        android:layout_width="@dimen/button_icon_fixed_width"
+        android:layout_height="match_parent"
+        android:background="@drawable/button_selector"
+        android:gravity="center"
+        android:text="@string/search_icon"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:textColor="@color/white" />
+
+      <com.kickstarter.ui.views.IconTextView
         android:id="@+id/activity_feed_button"
         android:layout_width="@dimen/button_icon_fixed_width"
         android:layout_height="match_parent"

@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
-import com.jakewharton.rxbinding.widget.RxTextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
@@ -14,11 +13,10 @@ import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
+import com.kickstarter.presenters.inputs.CommentFeedPresenterInputs;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.ui.activities.CommentFeedActivity;
-import com.kickstarter.ui.adapters.CommentFeedAdapter;
-import com.kickstarter.ui.viewholders.EmptyCommentFeedViewHolder;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,9 +27,12 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public class CommentFeedPresenter extends Presenter<CommentFeedActivity> implements CommentFeedAdapter.Delegate {
+public class CommentFeedPresenter extends Presenter<CommentFeedActivity> implements CommentFeedPresenterInputs {
+  // INPUTS
+  private final PublishSubject<String> commentBody = PublishSubject.create();
   private final PublishSubject<Void> contextClick = PublishSubject.create();
   private final PublishSubject<Void> loginClick = PublishSubject.create();
+
   private final PublishSubject<Void> loginSuccess = PublishSubject.create();
   private final PublishSubject<String> bodyOnPostClick = PublishSubject.create();
   private final PublishSubject<Void> commentDialogShown = PublishSubject.create();
@@ -42,6 +43,25 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
 
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
+
+  public CommentFeedPresenterInputs inputs() {
+    return this;
+  }
+
+  @Override
+  public void commentBody(@NonNull final String string) {
+    commentBody.onNext(string);
+  }
+
+  @Override
+  public void emptyCommentFeedLoginClicked() {
+    loginClick.onNext(null);
+  }
+
+  @Override
+  public void projectContextClicked() {
+    contextClick.onNext(null);
+  }
 
   @Override
   protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
@@ -64,9 +84,6 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
 
     final Observable<Pair<CommentFeedActivity, Project>> viewAndProject =
       RxUtils.combineLatestPair(viewSubject, project);
-
-    final Observable<CharSequence> commentBody = RxUtils.takeWhen(viewSubject, commentDialogShown)
-      .flatMap(v -> RxTextView.textChanges(v.commentBodyEditText));
 
     final Observable<Boolean> commentHasBody = commentBody
       .map(body -> body.length() > 0);
@@ -137,10 +154,6 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
     refreshFeed.onNext(null);
   }
 
-  public void emptyCommentFeedLoginClicked(@NonNull final EmptyCommentFeedViewHolder viewHolder) {
-    loginClick.onNext(null);
-  }
-
   public void postClick(@NonNull final String body) {
     commentIsPosting.onNext(true);
     bodyOnPostClick.onNext(body);
@@ -159,10 +172,6 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
   private void postCommentError(@NonNull final Throwable e) {
     commentIsPosting.onNext(false);
     // todo: handle 422s and network errors
-  }
-
-  public void projectContextClicked() {
-    contextClick.onNext(null);
   }
 
   public void takeLoginSuccess() {

@@ -1,0 +1,18 @@
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/search_layout"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical"
+  tools:context=".SearchActivity">
+
+  <include layout="@layout/search_toolbar" />
+
+  <android.support.v7.widget.RecyclerView
+    android:id="@+id/search_recycler_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="vertical" />
+</LinearLayout>
+

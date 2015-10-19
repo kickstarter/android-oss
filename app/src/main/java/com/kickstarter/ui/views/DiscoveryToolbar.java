@@ -101,8 +101,7 @@ public class DiscoveryToolbar extends Toolbar {
   @OnClick(R.id.search_button)
   public void searchButtonClick(@NonNull final View view) {
     final Context context = getContext();
-    final Intent intent = new Intent(context, SearchActivity.class);
-    context.startActivity(intent);
+    context.startActivity(new Intent(context, SearchActivity.class));
   }
 
   protected void showLoggedInMenu(@NonNull final User user) {

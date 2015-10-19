@@ -25,6 +25,7 @@ Release checklist!
 2) Run view tests: ./gradlew connectedAndroidTest
 3) Build and run locally in internalRelease mode, test core features on a real device.
 CHECKLIST
+        Milkrun::Git.new.check
         version_code = Milkrun::VersionCode.new.bump
         version_name = Milkrun::VersionName.new.prompt
         file_path = Milkrun::Build.new(variant).compile

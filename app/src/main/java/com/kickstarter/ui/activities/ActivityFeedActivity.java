@@ -42,8 +42,8 @@ public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
     adapter.takeActivities(activities);
   }
 
-  public void showLoggedOutEmptyFeed(@Nullable final User user) {
-    adapter.takeLoggedOutUser(user);
+  public void showEmptyFeed(@Nullable final User user) {
+    adapter.takeEmptyFeed(user);
   }
 
   public void activityFeedLogin() {

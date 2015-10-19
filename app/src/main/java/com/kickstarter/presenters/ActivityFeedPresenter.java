@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
@@ -48,21 +49,20 @@ public class ActivityFeedPresenter extends Presenter<ActivityFeedActivity> imple
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    final Observable<List<Activity>> loggedInUserActivities = RxUtils.takeWhen(currentUser.observable(), loginSuccess)
-      .mergeWith(currentUser.observable())
+    final Observable<List<Activity>> activities = currentUser.observable()
       .filter(u -> u != null)
       .take(1)
       .flatMap(user -> client.fetchActivities(new ActivityFeedParams()))
       .map(ActivityEnvelope::activities);
 
-    addSubscription(RxUtils.combineLatestPair(viewSubject, loggedInUserActivities)
+    addSubscription(RxUtils.combineLatestPair(viewSubject, activities)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(uva -> uva.first.showActivities(uva.second)));
+      .subscribe(va -> va.first.showActivities(va.second)));
 
     addSubscription(RxUtils.combineLatestPair(viewSubject, currentUser.observable())
       .filter(vu -> vu.second == null)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vu -> vu.first.showLoggedOutEmptyFeed(vu.second)));
+      .subscribe(vu -> vu.first.showEmptyFeed(vu.second)));
 
     addSubscription(RxUtils.takeWhen(viewSubject, discoverProjectsClick)
       .observeOn(AndroidSchedulers.mainThread())

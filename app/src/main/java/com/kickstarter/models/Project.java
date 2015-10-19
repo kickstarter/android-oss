@@ -383,4 +383,12 @@ public abstract class Project implements Parcelable {
       .build()
       .toString();
   }
+
+  @Override
+  public String toString() {
+    return "Project{"
+      + "id=" + id() + ", "
+      + "name=" + name() + ", "
+      + "}";
+  }
 }

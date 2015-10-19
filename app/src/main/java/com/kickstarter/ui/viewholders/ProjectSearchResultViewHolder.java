@@ -22,7 +22,7 @@ public class ProjectSearchResultViewHolder extends KsrViewHolder {
   @Bind(R.id.project_image_view) ImageView projectImageView;
 
   public interface Delegate {
-    void projectSearchResultClick(@NonNull final ProjectSearchResultViewHolder viewHolder, @NonNull final Project project);
+    void projectSearchResultClick(ProjectSearchResultViewHolder viewHolder, Project project);
   }
 
   public ProjectSearchResultViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {

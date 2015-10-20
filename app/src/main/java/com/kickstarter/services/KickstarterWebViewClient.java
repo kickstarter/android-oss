@@ -43,6 +43,7 @@ public class KickstarterWebViewClient extends WebViewClient {
   private final CookieManager cookieManager;
   private final CurrentUser currentUser;
   private boolean initialPageLoad = true;
+  private String lastUrl;
   private final String webEndpoint;
   private final List<RequestHandler> requestHandlers = new ArrayList<>();
   private FormContents formContents = null;
@@ -55,6 +56,14 @@ public class KickstarterWebViewClient extends WebViewClient {
     this.webEndpoint = webEndpoint;
 
     initializeRequestHandlers();
+  }
+
+  /**
+   * Returns the last Kickstarter Url String handled by the client. If a request is redirected, this would return the
+   * redirect Url.
+   */
+  public String lastKickstarterUrl() {
+    return lastUrl;
   }
 
   @Override
@@ -89,6 +98,10 @@ public class KickstarterWebViewClient extends WebViewClient {
 
       final MimeHeaders mimeHeaders = new MimeHeaders(response.body().contentType().toString());
       final InputStream body = constructBody(view.getContext(), response, mimeHeaders);
+
+      if (mimeHeaders.type != null && mimeHeaders.type.equals("text/html")) {
+        lastUrl = response.request().urlString();
+      }
 
       return new WebResourceResponse(mimeHeaders.type, mimeHeaders.encoding, body);
     } catch (IOException e) {

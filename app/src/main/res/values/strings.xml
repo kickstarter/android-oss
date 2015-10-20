@@ -200,6 +200,9 @@
   <string name="intent_share_type">"text/plain"</string>
   <string name="intent_url">com.kickstarter.kickstarter.intent_url</string>
 
+  <!-- Save strings -->
+  <string name="save_url">save_url</string>
+
   <!-- Animation strings -->
   <string name="woohoo_duration">2000</string>
 </resources>

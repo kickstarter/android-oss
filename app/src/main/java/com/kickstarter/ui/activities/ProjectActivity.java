@@ -77,7 +77,7 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
   }
 
   public void show(@NonNull final Project project) {
-    int starColor = (project.isStarred()) ? R.color.green : R.color.dark_gray;
+    final int starColor = (project.isStarred()) ? R.color.green : R.color.dark_gray;
     starIconTextView.setTextColor(ContextCompat.getColor(this, starColor));
     adapter.takeProject(project);
   }
@@ -179,7 +179,7 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
   }
 
   public void startLoginToutActivity() {
-    Intent intent = new Intent(this, LoginToutActivity.class)
+    final Intent intent = new Intent(this, LoginToutActivity.class)
       .putExtra(getString(R.string.intent_forward), true);
     startActivityForResult(intent, ActivityRequestCodes.PROJECT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
   }

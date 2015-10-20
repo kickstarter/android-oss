@@ -46,7 +46,7 @@ if [ -f "$FILE_HEADER_PATH" ]; then
 fi
 
 # Install/update pidcat. Can also install pidcat via brew, but it's way out of date
-curl -s "https://raw.githubusercontent.com/JakeWharton/pidcat/660a8197f55cd7bc53f53a2b34014ac6df1c0ceb/pidcat.py" > /tmp/pidcat
+curl -s "https://raw.githubusercontent.com/JakeWharton/pidcat/a6815e906a066b7b6e3ef93b989da52790174640/pidcat.py" > /tmp/pidcat
 chmod +x /tmp/pidcat
 cmp -s /tmp/pidcat /usr/local/bin/pidcat
 if [ $? -ne 0 ]; then

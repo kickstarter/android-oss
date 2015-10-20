@@ -21,10 +21,10 @@ import com.jakewharton.processphoenix.ProcessPhoenix;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ApiEndpoint;
-import com.kickstarter.libs.Release;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.EnumAdapter;
 import com.kickstarter.libs.Logout;
+import com.kickstarter.libs.Release;
 import com.kickstarter.libs.preferences.StringPreference;
 import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
 import com.kickstarter.models.User;
@@ -78,23 +78,15 @@ public class DebugDrawer extends FrameLayout {
 
   @OnClick(R.id.submit_bug_report_button)
   public void submitBugReportButtonClick() {
+    currentUser.observable().take(1).subscribe(this::submitBugReport);
+  }
+
+  private void submitBugReport(@Nullable final User user) {
     final Context context = getContext();
 
     final String email = "chrstphrwrght+21qbymyz894ttajaomwh@***REMOVED***";
 
-    final Intent intent = new Intent(android.content.Intent.ACTION_SEND)
-      .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
-      .setType("message/rfc822")
-      .putExtra(Intent.EXTRA_TEXT, bugReportBody())
-      .putExtra(Intent.EXTRA_EMAIL, new String[]{email});
-
-    context.startActivity(Intent.createChooser(intent, context.getString(R.string.Select_email_application)));
-  }
-
-  private String bugReportBody() {
-    final User user = currentUser.observable().toBlocking().mostRecent(null).iterator().next();
-
-    final List<String> header = Arrays.asList(
+    final List<String> debugInfo = Arrays.asList(
       (user != null ? user.name() : "Logged Out"),
       release.variant(),
       release.versionName(),
@@ -104,11 +96,19 @@ public class DebugDrawer extends FrameLayout {
       Locale.getDefault().getLanguage()
     );
 
-    return new StringBuilder()
-      .append(TextUtils.join(" | ", header))
+    final String body = new StringBuilder()
+      .append(TextUtils.join(" | ", debugInfo))
       .append("\r\n\r\nDescribe the bug and add a subject. Attach images if it helps!\r\n")
       .append("—————————————\r\n")
       .toString();
+
+    final Intent intent = new Intent(android.content.Intent.ACTION_SEND)
+      .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
+      .setType("message/rfc822")
+      .putExtra(Intent.EXTRA_TEXT, body)
+      .putExtra(Intent.EXTRA_EMAIL, new String[]{email});
+
+    context.startActivity(Intent.createChooser(intent, context.getString(R.string.Select_email_application)));
   }
 
   private void setupNetworkSection() {

@@ -11,9 +11,11 @@ import com.kickstarter.presenters.ProjectPresenter;
 import com.kickstarter.presenters.SearchPresenter;
 import com.kickstarter.presenters.ThanksPresenter;
 import com.kickstarter.presenters.TwoFactorPresenter;
+import com.kickstarter.presenters.ViewPledgePresenter;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.CommentFeedActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
+import com.kickstarter.ui.activities.ViewPledgeActivity;
 import com.kickstarter.ui.viewholders.DiscoveryFilterViewHolder;
 import com.kickstarter.ui.viewholders.EmptyActivityFeedViewHolder;
 import com.kickstarter.ui.viewholders.EmptyCommentFeedViewHolder;
@@ -65,4 +67,6 @@ public interface ApplicationGraph {
   void inject(ThanksPresenter __);
   void inject(TiemposTextView __);
   void inject(TwoFactorPresenter __);
+  void inject(ViewPledgeActivity __);
+  void inject(ViewPledgePresenter __);
 }

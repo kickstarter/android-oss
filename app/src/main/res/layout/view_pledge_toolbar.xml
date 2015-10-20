@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/toolbar"
+  android:layout_width="match_parent"
+  android:layout_height="?attr/actionBarSize"
+  android:background="@color/light_gray"
+  app:contentInsetLeft="0dp"
+  app:contentInsetStart="0dp"
+  android:elevation="@dimen/ksr_toolbar_elevation">
+
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center">
+
+    <com.kickstarter.ui.views.IconTextView
+      android:id="@+id/nav_back_button"
+      android:paddingLeft="@dimen/grid_2"
+      android:paddingRight="@dimen/grid_2"
+      android:background="@drawable/button_selector"
+      android:gravity="center_vertical"
+      android:textAppearance="@style/TextAppearance.AppCompat.Title"
+      android:layout_alignParentStart="true"
+      android:layout_alignParentLeft="true"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:textColor="@color/green"
+      android:text="@string/arrow_back_icon"/>
+
+    <ImageView
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="130dp"
+      android:layout_height="15.34dp"
+      android:layout_centerInParent="true"
+      android:layout_centerVertical="true"
+      android:src="@drawable/logo" />
+
+  </RelativeLayout>
+
+</android.support.v7.widget.Toolbar>

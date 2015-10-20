@@ -81,6 +81,10 @@
       android:theme="@style/Login" />
 
     <activity
+      android:name=".ui.activities.ViewPledgeActivity"
+      android:theme="@style/ViewPledgeActivity"/>
+
+    <activity
       android:name="com.facebook.FacebookActivity"
       android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
       android:theme="@android:style/Theme.Translucent.NoTitleBar"

@@ -37,6 +37,7 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
   @Bind(R.id.star_icon) IconTextView starIconTextView;
   @Bind(R.id.back_project_button) Button backProjectButton;
   @Bind(R.id.manage_pledge_button) Button managePledgeButton;
+  @Bind(R.id.view_pledge_button) Button viewPledgeButton;
 
   @Inject Money money;
 
@@ -63,10 +64,15 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
       backProjectButton.setVisibility(View.GONE);
       if (project.isLive()) {
         managePledgeButton.setVisibility(View.VISIBLE);
+        viewPledgeButton.setVisibility(View.GONE);
       } else {
+        viewPledgeButton.setVisibility(View.VISIBLE);
         managePledgeButton.setVisibility(View.GONE);
-        backProjectButton.setVisibility(View.GONE);
       }
+    } else {
+      backProjectButton.setVisibility(View.VISIBLE);
+      managePledgeButton.setVisibility(View.GONE);
+      viewPledgeButton.setVisibility(View.GONE);
     }
   }
 

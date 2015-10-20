@@ -70,6 +70,20 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
     presenter.takeBackProjectClick();
   }
 
+  @OnClick(R.id.manage_pledge_button)
+  public void managePledgeOnClick() {
+    presenter.takeManagePledgeClick();
+  }
+
+  public void managePledge(@NonNull final Project project) {
+    final Intent intent = new Intent(this, CheckoutActivity.class)
+      .putExtra(getString(R.string.intent_project), project)
+      .putExtra(getString(R.string.intent_url), project.editPledgeUrl())
+      .putExtra(getString(R.string.intent_toolbar_title), getString(R.string.Manage_pledge));
+    startActivity(intent);
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
   @OnClick(R.id.star_icon)
   public void starProjectClick() {
     presenter.takeStarClick();

@@ -35,6 +35,7 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
   private final PublishSubject<Void> shareClick = PublishSubject.create();
   private final PublishSubject<Void> updatesClick = PublishSubject.create();
   private final PublishSubject<Void> loginSuccess = PublishSubject.create();
+  private final PublishSubject<Void> managePledgeClick = PublishSubject.create();
   private final PublishSubject<Reward> rewardClick = PublishSubject.create();
   private final PublishSubject<Void> starClick = PublishSubject.create();
   private final PublishSubject<Project> initialProject = PublishSubject.create();
@@ -123,6 +124,10 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showCreatorBio(vp.second)));
 
+    addSubscription(RxUtils.takeWhen(viewAndProject, managePledgeClick)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(vp -> vp.first.managePledge(vp.second)));
+
     addSubscription(RxUtils.takeWhen(viewAndProject, updatesClick)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showUpdates(vp.second)));
@@ -171,6 +176,10 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
 
   public void takeLoginSuccess() {
     loginSuccess.onNext(null);
+  }
+
+  public void takeManagePledgeClick() {
+    managePledgeClick.onNext(null);
   }
 
   public Observable<Project> starProject(@NonNull final Project project) {

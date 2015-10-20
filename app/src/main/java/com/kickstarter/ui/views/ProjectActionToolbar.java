@@ -21,8 +21,6 @@ public class ProjectActionToolbar extends Toolbar {
   @Bind(R.id.manage_pledge_button) Button managePledgeButton;
   @Inject CurrentUser currentUser;
 
-  // pass in an observable Project
-
   public ProjectActionToolbar(@NonNull final Context context) {
     super(context);
   }

@@ -63,6 +63,9 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
       backProjectButton.setVisibility(View.GONE);
       if (project.isLive()) {
         managePledgeButton.setVisibility(View.VISIBLE);
+      } else {
+        managePledgeButton.setVisibility(View.GONE);
+        backProjectButton.setVisibility(View.GONE);
       }
     }
   }

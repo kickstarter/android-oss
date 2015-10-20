@@ -8,8 +8,8 @@ import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
-import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.Money;
+import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 
@@ -19,13 +19,14 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class RewardViewHolder extends KsrViewHolder {
-  protected @Bind(R.id.pledge_minimum) TextView minimumTextView;
-  protected @Bind(R.id.reward_backers_count) TextView backersCountTextView;
-  protected @Bind(R.id.reward_description) TextView descriptionTextView;
-  protected @Bind(R.id.estimated_delivery_date) TextView estimatedDeliveryTextView;
-  protected @Bind(R.id.selected) TextView selectedTextView;
-  protected @Bind(R.id.limited) TextView limitedTextView;
-  protected @Bind(R.id.all_gone) TextView allGoneTextView;
+  public @Bind(R.id.pledge_minimum) TextView minimumTextView;
+  public @Bind(R.id.reward_backers_count) TextView backersCountTextView;
+  public @Bind(R.id.reward_description) TextView descriptionTextView;
+  public @Bind(R.id.estimated_delivery_date) TextView estimatedDeliveryTextView;
+  public @Bind(R.id.selected) TextView selectedTextView;
+  public @Bind(R.id.limited) TextView limitedTextView;
+  public @Bind(R.id.all_gone) TextView allGoneTextView;
+  public @Bind(R.id.white_overlay) View whiteOverlayView;
 
   @Inject Money money;
 
@@ -71,7 +72,7 @@ public class RewardViewHolder extends KsrViewHolder {
   public void invalidateCardView() {
     limitedTextView.setVisibility(View.GONE);
     allGoneTextView.setVisibility(View.GONE);
-    view.setAlpha(1);
+    whiteOverlayView.setVisibility(View.INVISIBLE);
     view.setClickable(true);
   }
 
@@ -79,9 +80,13 @@ public class RewardViewHolder extends KsrViewHolder {
   public void toggleTextViews() {
     invalidateCardView();
 
+    if (project.isBacking()) {
+      view.setClickable(false);
+    }
+
     if (reward.isAllGone()) {
       allGoneTextView.setVisibility(View.VISIBLE);
-      view.setAlpha(0.3f);
+      whiteOverlayView.setVisibility(View.VISIBLE);
       view.setClickable(false);
     }
     else if (reward.isLimited()) {

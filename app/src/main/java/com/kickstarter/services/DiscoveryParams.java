@@ -31,7 +31,7 @@ public abstract class DiscoveryParams implements Parcelable {
   public abstract int social();
   public abstract Sort sort();
   public abstract boolean recommended();
-  public abstract Project similarTo();
+  @Nullable public abstract Project similarTo();
   @Nullable public abstract String term();
 
   public enum Sort {
@@ -81,7 +81,8 @@ public abstract class DiscoveryParams implements Parcelable {
       .social(0)
       .sort(Sort.MAGIC)
       .staffPicks(false)
-      .starred(0);
+      .starred(0)
+      .recommended(false);
   }
 
   public abstract Builder toBuilder();

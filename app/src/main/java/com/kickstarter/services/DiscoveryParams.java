@@ -9,6 +9,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.qualifiers.AutoGson;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Location;
+import com.kickstarter.models.Project;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -29,6 +30,8 @@ public abstract class DiscoveryParams implements Parcelable {
   public abstract int starred();
   public abstract int social();
   public abstract Sort sort();
+  public abstract boolean recommended();
+  public abstract Project similarTo();
   @Nullable public abstract String term();
 
   public enum Sort {
@@ -63,6 +66,8 @@ public abstract class DiscoveryParams implements Parcelable {
     public abstract Builder starred(int __);
     public abstract Builder social(int __);
     public abstract Builder sort(Sort __);
+    public abstract Builder recommended(boolean __);
+    public abstract Builder similarTo(Project __);
     public abstract Builder term(String __);
     public abstract DiscoveryParams build();
   }
@@ -91,6 +96,7 @@ public abstract class DiscoveryParams implements Parcelable {
       put("starred", String.valueOf(starred()));
       put("backed", String.valueOf(backed()));
       put("social", String.valueOf(social()));
+      put("recommended", String.valueOf(recommended()));
       put("sort", sort().toString());
       put("page", String.valueOf(page()));
       put("per_page", String.valueOf(perPage()));
@@ -105,6 +111,10 @@ public abstract class DiscoveryParams implements Parcelable {
 
       if (term() != null) {
         put("q", term());
+      }
+
+      if (similarTo() != null) {
+        put("similar_to", String.valueOf(similarTo().id()));
       }
 
       if (staffPicks() && page() == 1) {

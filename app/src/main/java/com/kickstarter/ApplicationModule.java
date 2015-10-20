@@ -14,7 +14,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.AutoParcelAdapterFactory;
-import com.kickstarter.libs.Build;
+import com.kickstarter.libs.Release;
 import com.kickstarter.libs.ConfigLoader;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.DateTimeTypeConverter;
@@ -62,9 +62,9 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  ApiClient provideApiClient(@NonNull final ApiEndpoint apiEndpoint, @NonNull final Build build,
+  ApiClient provideApiClient(@NonNull final ApiEndpoint apiEndpoint, @NonNull final Release release,
     @NonNull final String clientId, @NonNull final CurrentUser currentUser, @NonNull final Gson gson) {
-    return new ApiClient(apiEndpoint, build, clientId, currentUser, gson);
+    return new ApiClient(apiEndpoint, release, clientId, currentUser, gson);
   }
 
   @Provides
@@ -82,8 +82,8 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  Build provideBuild(@NonNull final PackageInfo packageInfo) {
-    return new Build(packageInfo);
+  Release provideRelease(@NonNull final PackageInfo packageInfo) {
+    return new Release(packageInfo);
   }
 
   @Provides
@@ -143,17 +143,17 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  KickstarterClient provideKickstarterClient(@NonNull final Build build, @NonNull final Gson gson,
+  KickstarterClient provideKickstarterClient(@NonNull final Release release, @NonNull final Gson gson,
     @NonNull @WebEndpoint final String webEndpoint) {
-    return new KickstarterClient(build, gson, webEndpoint);
+    return new KickstarterClient(release, gson, webEndpoint);
   }
 
   @Provides
-  KickstarterWebViewClient provideKickstarterWebViewClient(@NonNull final Build build,
+  KickstarterWebViewClient provideKickstarterWebViewClient(@NonNull final Release release,
     @NonNull final CookieManager cookieManager,
     @NonNull final CurrentUser currentUser,
     @WebEndpoint final String webEndpoint) {
-    return new KickstarterWebViewClient(build, cookieManager, currentUser, webEndpoint);
+    return new KickstarterWebViewClient(release, cookieManager, currentUser, webEndpoint);
   }
 
   @Provides

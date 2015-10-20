@@ -10,7 +10,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.Build;
+import com.kickstarter.libs.Release;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.FormContents;
 import com.kickstarter.libs.utils.IOUtils;
@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
 import timber.log.Timber;
 
 public class KickstarterWebViewClient extends WebViewClient {
-  private final Build build;
+  private final Release release;
   private final CookieManager cookieManager;
   private final CurrentUser currentUser;
   private boolean initialPageLoad = true;
@@ -47,9 +47,9 @@ public class KickstarterWebViewClient extends WebViewClient {
   private final List<RequestHandler> requestHandlers = new ArrayList<>();
   private FormContents formContents = null;
 
-  public KickstarterWebViewClient(@NonNull final Build build, @NonNull final CookieManager cookieManager,
+  public KickstarterWebViewClient(@NonNull final Release release, @NonNull final CookieManager cookieManager,
     @NonNull final CurrentUser currentUser, @NonNull final String webEndpoint) {
-    this.build = build;
+    this.release = release;
     this.cookieManager = cookieManager;
     this.currentUser = currentUser;
     this.webEndpoint = webEndpoint;
@@ -129,7 +129,7 @@ public class KickstarterWebViewClient extends WebViewClient {
     }
 
     // TODO: All this header code is duplicated, refactor
-    requestBuilder.addHeader("Kickstarter-Android-App", build.versionCode().toString());
+    requestBuilder.addHeader("Kickstarter-Android-App", release.versionCode().toString());
 
     final Matcher matcher = Pattern.compile("\\Ahttps:\\/\\/([a-z]+)\\.***REMOVED***\\z")
       .matcher(webEndpoint);
@@ -140,11 +140,11 @@ public class KickstarterWebViewClient extends WebViewClient {
 
     final StringBuilder userAgent = new StringBuilder()
       .append("Kickstarter Android Mobile Variant/")
-      .append(build.variant())
+      .append(release.variant())
       .append(" Code/")
-      .append(build.versionCode())
+      .append(release.versionCode())
       .append(" Version/")
-      .append(build.versionName());
+      .append(release.versionName());
     requestBuilder.addHeader("User-Agent", userAgent.toString());
 
     if (currentUser.exists()) {

@@ -16,7 +16,7 @@
 
   <TableLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_centerInParent="true"
     android:stretchColumns="*">
 
@@ -205,4 +205,12 @@
     </TableRow>
 
   </TableLayout>
+
+  <Button
+    android:id="@+id/submit_bug_report_button"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/button_green"
+    android:text="@string/Submit_bug_report"
+    style="@style/KsrButton" />
 </LinearLayout>

@@ -114,7 +114,8 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
   public void startCheckoutActivity(@NonNull final Project project) {
     final Intent intent = new Intent(this, CheckoutActivity.class)
       .putExtra(getString(R.string.intent_project), project)
-      .putExtra(getString(R.string.intent_url), project.newPledgeUrl());
+      .putExtra(getString(R.string.intent_url), project.newPledgeUrl())
+      .putExtra(getString(R.string.intent_toolbar_title), getString(R.string.Back_this_project));
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }

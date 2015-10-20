@@ -198,6 +198,7 @@
   <string name="intent_project_param">com.kickstarter.kickstarter.intent_project_param</string>
   <string name="intent_right_bar_button">com.kickstarter.kickstarter.intent_right_bar_button</string>
   <string name="intent_share_type">"text/plain"</string>
+  <string name="intent_toolbar_title">com.kickstarter.kickstarter.intent_toolbar_title</string>
   <string name="intent_url">com.kickstarter.kickstarter.intent_url</string>
 
   <!-- Animation strings -->

@@ -25,11 +25,11 @@
       android:gravity="center">
 
       <TextView
+        android:id="@+id/toolbar_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
-        android:textColor="@color/dark_gray"
-        android:text="@string/Back_this_project" />
+        android:textColor="@color/dark_gray" />
 
     </RelativeLayout>
 

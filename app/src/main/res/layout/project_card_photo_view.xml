@@ -3,7 +3,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
   tools:showIn="@layout/project_card_view"
-  android:background="@color/white"
+  android:background="@drawable/gray_gradient"
   android:id="@+id/project_card_photo"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
@@ -13,7 +13,7 @@
     android:scaleType="centerCrop"
     android:adjustViewBounds="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="220dp" />
 
   <RelativeLayout
     android:id="@+id/photo_gradient"

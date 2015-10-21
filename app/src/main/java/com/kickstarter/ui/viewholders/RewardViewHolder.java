@@ -72,7 +72,7 @@ public class RewardViewHolder extends KsrViewHolder {
     if (project.isBacking()) {
       view.setClickable(false);
 
-      if (project.backingRewardId() != null && project.backingRewardId() == reward.id()) {
+      if (project.isBackingRewardId(reward.id())) {
         selectedTextView.setVisibility(View.VISIBLE);
         greenOverlayView.setVisibility(View.VISIBLE);
       } else {

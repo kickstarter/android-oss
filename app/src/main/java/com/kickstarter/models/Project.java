@@ -115,8 +115,8 @@ public abstract class Project implements Parcelable {
     return urls().web().creatorBio();
   }
 
-  public Long backingRewardId() {
-    return (this.backing() != null && this.backing().rewardId() != null) ? this.backing().rewardId() : null;
+  public boolean isBackingRewardId(final long rewardId) {
+    return this.backing() != null && this.backing().rewardId() != null && this.backing().rewardId() == rewardId;
   }
 
   public String descriptionUrl() {

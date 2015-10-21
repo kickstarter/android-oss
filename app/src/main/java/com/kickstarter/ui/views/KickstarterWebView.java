@@ -48,4 +48,11 @@ public class KickstarterWebView extends WebView {
   public KickstarterWebViewClient client() {
     return client;
   }
+
+  /**
+   * Returns last Url String handled by the web view client.
+   */
+  public String lastClientUrl() {
+    return client.lastKickstarterUrl();
+  }
 }

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
@@ -20,6 +21,7 @@ import timber.log.Timber;
 @RequiresPresenter(CheckoutPresenter.class)
 public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
   public @Bind(R.id.web_view) KickstarterWebView webView;
+  public @Bind(R.id.toolbar_title) TextView toolbarTitleTextView;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -31,6 +33,9 @@ public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
     final Intent intent = getIntent();
     final String url = intent.getExtras().getString(getString(R.string.intent_url));
     final Project project = intent.getExtras().getParcelable(getString(R.string.intent_project));
+    final String toolbarTitle = intent.getExtras().getString(getString(R.string.intent_toolbar_title));
+
+    toolbarTitleTextView.setText(toolbarTitle);
     presenter.initialize(project, url);
   }
 

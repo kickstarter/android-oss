@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.kickstarter.KSApplication;
@@ -33,6 +35,8 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
 
   @Bind(R.id.rewards_recycler_view) RecyclerView rewardsRecyclerView;
   @Bind(R.id.star_icon) IconTextView starIconTextView;
+  @Bind(R.id.back_project_button) Button backProjectButton;
+  @Bind(R.id.manage_pledge_button) Button managePledgeButton;
 
   @Inject Money money;
 
@@ -48,9 +52,24 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
     final String param = intent.getStringExtra(getString(R.string.intent_project_param));
     presenter.initialize(project, param);
 
+    setProjectActionButton(project);
     adapter = new ProjectAdapter(presenter);
     rewardsRecyclerView.setAdapter(adapter);
     rewardsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+  }
+
+  public void setProjectActionButton(@NonNull final Project project) {
+    if (project.isBacking()) {
+      backProjectButton.setVisibility(View.GONE);
+    } else {
+      backProjectButton.setVisibility(View.VISIBLE);
+    }
+
+    if (project.isBacking() && project.isLive()) {
+      managePledgeButton.setVisibility(View.VISIBLE);
+    } else {
+      managePledgeButton.setVisibility(View.GONE);
+    }
   }
 
   public void show(@NonNull final Project project) {
@@ -68,6 +87,20 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
   @OnClick(R.id.back_project_button)
   public void backProjectButtonOnClick() {
     presenter.takeBackProjectClick();
+  }
+
+  @OnClick(R.id.manage_pledge_button)
+  public void managePledgeOnClick() {
+    presenter.takeManagePledgeClick();
+  }
+
+  public void managePledge(@NonNull final Project project) {
+    final Intent intent = new Intent(this, CheckoutActivity.class)
+      .putExtra(getString(R.string.intent_project), project)
+      .putExtra(getString(R.string.intent_url), project.editPledgeUrl())
+      .putExtra(getString(R.string.intent_toolbar_title), getString(R.string.Manage_pledge));
+    startActivity(intent);
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   @OnClick(R.id.star_icon)
@@ -100,7 +133,8 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
   public void startCheckoutActivity(@NonNull final Project project) {
     final Intent intent = new Intent(this, CheckoutActivity.class)
       .putExtra(getString(R.string.intent_project), project)
-      .putExtra(getString(R.string.intent_url), project.newPledgeUrl());
+      .putExtra(getString(R.string.intent_url), project.newPledgeUrl())
+      .putExtra(getString(R.string.intent_toolbar_title), getString(R.string.Back_this_project));
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }

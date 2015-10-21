@@ -20,6 +20,11 @@ public class DateTimeUtils {
     return DateTimeFormat.forPattern("MMMM dd, yyyy 'at' h:mm a.");
   }
 
+  // i.e. Wednesday, September 23, 2015
+  public static DateTimeFormatter pledgedAt() {
+    return DateTimeFormat.forPattern("EEEE, MMMM dd, yyyy");
+  }
+
   public static DateTimeFormatter estimatedDeliveryOn() {
     return DateTimeFormat.forPattern("MMMM yyyy");
   }

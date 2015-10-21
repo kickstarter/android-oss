@@ -64,38 +64,54 @@ public class RewardViewHolder extends KsrViewHolder {
     estimatedDeliveryTextView.setText(
       reward.estimatedDeliveryOn().toString(DateTimeUtils.estimatedDeliveryOn()));
 
-    setRewardCardState();
+    toggleAllGoneRewardView();
+    toggleLimitedRewardView();
+    toggleSelectedRewardView();
+    toggleClickableReward();
   }
 
-  public void setRewardCardState() {
-
-    if (project.isBacking()) {
-      view.setClickable(false);
-
-      if (project.isBackingRewardId(reward.id())) {
-        selectedTextView.setVisibility(View.VISIBLE);
-        greenOverlayView.setVisibility(View.VISIBLE);
-      } else {
-        selectedTextView.setVisibility(View.GONE);
-        greenOverlayView.setVisibility(View.INVISIBLE);
-      }
-
-    } else {
-      view.setClickable(true);
-    }
-
+  public void toggleAllGoneRewardView() {
     if (reward.isAllGone()) {
       allGoneTextView.setVisibility(View.VISIBLE);
-      limitedTextView.setVisibility(View.GONE);
       whiteOverlayView.setVisibility(View.VISIBLE);
-      view.setClickable(false);
-    } else if (reward.isLimited()) {
+    } else {
       allGoneTextView.setVisibility(View.GONE);
+      whiteOverlayView.setVisibility(View.INVISIBLE);
+    }
+  }
+
+  public void toggleLimitedRewardView() {
+    if (reward.isLimited()) {
       limitedTextView.setVisibility(View.VISIBLE);
       limitedTextView.setText(String.format(context.getString(R.string.Limited_left_of),
         reward.remaining(),
         reward.limit()));
-      whiteOverlayView.setVisibility(View.INVISIBLE);
+    } else {
+      limitedTextView.setVisibility(View.GONE);
+    }
+  }
+
+  public void toggleSelectedRewardView() {
+    if (project.isBackingRewardId(reward.id())) {
+      greenOverlayView.setVisibility(View.VISIBLE);
+      selectedTextView.setVisibility(View.VISIBLE);
+    } else {
+      greenOverlayView.setVisibility(View.INVISIBLE);
+      selectedTextView.setVisibility(View.GONE);
+    }
+  }
+
+  public void toggleClickableReward() {
+    if (project.isBacking()) {
+      view.setClickable(false);
+    }
+    else if (!project.isLive()) {
+      view.setClickable(false);
+    }
+    else if (reward.isAllGone()) {
+      view.setClickable(false);
+    }
+    else {
       view.setClickable(true);
     }
   }

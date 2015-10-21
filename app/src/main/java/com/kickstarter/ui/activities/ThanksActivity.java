@@ -27,6 +27,7 @@ import com.kickstarter.libs.vendor.TweetComposer;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.ThanksPresenter;
+import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.adapters.ThanksAdapter;
 
 import java.util.List;
@@ -134,7 +135,11 @@ public class ThanksActivity extends BaseActivity<ThanksPresenter> {
   }
 
   public void startDiscoveryCategoryIntent(@NonNull final Category category) {
-    Timber.d("Category name: " + category.name()); // TODO
+    final DiscoveryParams params = DiscoveryParams.builder().category(category).build();
+    final Intent intent = new Intent(this, DiscoveryActivity.class)
+      .putExtra(getString(R.string.intent_discovery_params), params)
+      .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+    startActivity(intent);
   }
 
   public void startDiscoveryActivity() {

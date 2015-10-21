@@ -1,6 +1,7 @@
 package com.kickstarter.models;
 
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
 import com.kickstarter.libs.qualifiers.AutoGson;
 
@@ -12,7 +13,7 @@ public abstract class Video implements Parcelable {
   public abstract String base();
   public abstract String frame();
   public abstract String high();
-  public abstract String webm();
+  @Nullable public abstract String webm();
 
   @AutoParcel.Builder
   public abstract static class Builder {

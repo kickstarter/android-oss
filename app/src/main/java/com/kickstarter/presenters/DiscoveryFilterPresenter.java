@@ -32,9 +32,7 @@ public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity>
   protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
-  }
 
-  public void initialize() {
     final Observable<List<Category>> categories = apiClient.fetchCategories();
 
     final Observable<Pair<DiscoveryFilterActivity, List<Category>>> viewAndCategories =

@@ -2,6 +2,7 @@
 <LinearLayout
   android:orientation="vertical"
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   android:id="@+id/project_scroll_view"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
@@ -27,13 +28,48 @@
       android:textColor="@color/text_dark"
       android:paddingBottom="@dimen/grid_1_half" />
 
-    <TextView
-      android:id="@+id/creator_name"
+    <LinearLayout
+      android:weightSum="3"
+      android:orientation="horizontal"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:textSize="@dimen/ksr_caption"
-      android:textColor="@color/text_dark"
-      android:clickable="true" />
+      android:layout_height="wrap_content">
+
+      <TextView
+        android:layout_weight="3"
+        android:id="@+id/creator_name"
+        android:singleLine="true"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/ksr_caption"
+        android:textColor="@color/text_dark"
+        android:clickable="true" />
+
+      <LinearLayout
+        android:id="@+id/backer_label"
+        android:visibility="gone"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+          android:text="@string/Youre_a_backer"
+          android:singleLine="true"
+          android:textSize="@dimen/ksr_caption"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
+
+        <com.kickstarter.ui.views.IconTextView
+          app:iconType="ss_kickstarter"
+          android:id="@+id/backer_badge"
+          android:layout_gravity="center_vertical"
+          android:textSize="@dimen/ksr_mini_stats"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/backer_icon"
+          android:textColor="@color/green"/>
+      </LinearLayout>
+
+    </LinearLayout>
 
     <com.kickstarter.ui.views.TiemposTextView
       android:id="@+id/blurb"
@@ -77,6 +113,7 @@
         android:id="@+id/location_icon"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@id/category"
+        android:layout_toEndOf="@id/category"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/grid_1"
@@ -84,26 +121,34 @@
         android:text="@string/location_on_icon"
         android:textColor="@color/text_dark" />
 
-      <TextView
-        android:id="@+id/location"
-        android:layout_centerVertical="true"
-        android:ellipsize="end"
-        android:singleLine="true"
-        android:layout_toRightOf="@id/location_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/grid_1_half"
-        android:textColor="@color/text_dark" />
-
       <Button
         android:id="@+id/share_button"
         android:background="@drawable/button_share"
+        android:textColor="@color/dark_gray"
         android:textSize="@dimen/ksr_caption"
         android:layout_width="@dimen/grid_10"
         android:layout_height="@dimen/grid_4"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:text="@string/Share" />
+
+      <TextView
+        android:id="@+id/location"
+        android:layout_centerVertical="true"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:layout_toRightOf="@id/location_icon"
+        android:layout_toEndOf="@id/location_icon"
+        android:layout_toLeftOf="@id/share_button"
+        android:layout_toStartOf="@id/share_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/grid_1_half"
+        android:paddingRight="@dimen/grid_1_half"
+        android:paddingStart="@dimen/grid_1_half"
+        android:paddingEnd="@dimen/grid_1_half"
+        android:textColor="@color/text_dark" />
+
     </RelativeLayout>
 
     <ProgressBar

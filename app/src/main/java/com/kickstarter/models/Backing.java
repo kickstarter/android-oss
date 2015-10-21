@@ -14,6 +14,7 @@ import auto.parcel.AutoParcel;
 @AutoGson
 @AutoParcel
 public abstract class Backing implements Parcelable {
+  @Nullable public abstract DateTime completedAt();
   public abstract String projectCountry();
   @Nullable public abstract Reward reward();
   public abstract String status();
@@ -31,6 +32,7 @@ public abstract class Backing implements Parcelable {
 
   @AutoParcel.Builder
   public abstract static class Builder {
+    public abstract Builder completedAt(DateTime __);
     public abstract Builder projectCountry(String __);
     public abstract Builder reward(Reward __);
     public abstract Builder status(String __);

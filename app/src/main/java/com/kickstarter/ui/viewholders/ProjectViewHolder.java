@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -31,6 +32,7 @@ public class ProjectViewHolder extends KsrViewHolder {
   protected @Bind(R.id.project_detail_photo) ImageView photoImageView;
   protected @Bind(R.id.project_name) TextView projectNameTextView;
   protected @Bind(R.id.creator_name) TextView creatorNameTextView;
+  protected @Bind(R.id.backer_label) LinearLayout backerLabelLinearLayout;
   protected @Bind(R.id.blurb) TextView blurbTextView;
   protected @Bind(R.id.category) TextView categoryTextView;
   protected @Bind(R.id.location) TextView locationTextView;
@@ -72,6 +74,11 @@ public class ProjectViewHolder extends KsrViewHolder {
     /* Project */
     blurbTextView.setText(Html.fromHtml(context.getString(R.string.Blurb_read_more, project.blurb())));
     creatorNameTextView.setText(Html.fromHtml(context.getString(R.string.by_creator, project.creator().name())));
+    if (project.isBacking()) {
+      backerLabelLinearLayout.setVisibility(View.VISIBLE);
+    } else {
+      backerLabelLinearLayout.setVisibility(View.GONE);
+    }
     projectNameTextView.setText(project.name());
     categoryTextView.setText(project.category().name());
     locationTextView.setText(project.location().displayableName());

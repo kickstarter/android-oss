@@ -4,6 +4,9 @@
   xmlns:android="http://schemas.android.com/apk/res/android">
 
   <uses-permission android:name="android.permission.INTERNET" />
+  <!-- We need coarse location to find projects near a user. Could also see people being uncomfortable with providing
+    this permission though, since location is not core to the app. -->
+  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
   <application
     android:name=".KSApplication"
@@ -79,6 +82,10 @@
     <activity
       android:name=".ui.activities.TwoFactorActivity"
       android:theme="@style/Login" />
+
+    <activity
+      android:name=".ui.activities.ViewPledgeActivity"
+      android:theme="@style/ViewPledgeActivity"/>
 
     <activity
       android:name="com.facebook.FacebookActivity"

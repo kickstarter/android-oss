@@ -8,8 +8,8 @@ import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
-import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.Money;
+import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 
@@ -19,13 +19,15 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class RewardViewHolder extends KsrViewHolder {
-  protected @Bind(R.id.pledge_minimum) TextView minimumTextView;
-  protected @Bind(R.id.reward_backers_count) TextView backersCountTextView;
-  protected @Bind(R.id.reward_description) TextView descriptionTextView;
-  protected @Bind(R.id.estimated_delivery_date) TextView estimatedDeliveryTextView;
-  protected @Bind(R.id.selected) TextView selectedTextView;
-  protected @Bind(R.id.limited) TextView limitedTextView;
-  protected @Bind(R.id.all_gone) TextView allGoneTextView;
+  public @Bind(R.id.pledge_minimum) TextView minimumTextView;
+  public @Bind(R.id.reward_backers_count) TextView backersCountTextView;
+  public @Bind(R.id.reward_description) TextView descriptionTextView;
+  public @Bind(R.id.estimated_delivery_date) TextView estimatedDeliveryTextView;
+  public @Bind(R.id.green_overlay) View greenOverlayView;
+  public @Bind(R.id.selected) TextView selectedTextView;
+  public @Bind(R.id.limited) TextView limitedTextView;
+  public @Bind(R.id.all_gone) TextView allGoneTextView;
+  public @Bind(R.id.white_overlay) View whiteOverlayView;
 
   @Inject Money money;
 
@@ -62,42 +64,56 @@ public class RewardViewHolder extends KsrViewHolder {
     estimatedDeliveryTextView.setText(
       reward.estimatedDeliveryOn().toString(DateTimeUtils.estimatedDeliveryOn()));
 
-    toggleTextViews();
+    toggleAllGoneRewardView();
+    toggleLimitedRewardView();
+    toggleSelectedRewardView();
+    toggleClickableReward();
   }
 
-  /**
-   * Refreshes toggle-able views of each reward card so that it draws correctly each onBind.
-   */
-  public void invalidateCardView() {
-    limitedTextView.setVisibility(View.GONE);
-    allGoneTextView.setVisibility(View.GONE);
-    view.setAlpha(1);
-    view.setClickable(true);
-  }
-
-  // Move this if- logic to ProjectPresenter
-  public void toggleTextViews() {
-    invalidateCardView();
-
+  public void toggleAllGoneRewardView() {
     if (reward.isAllGone()) {
       allGoneTextView.setVisibility(View.VISIBLE);
-      view.setAlpha(0.3f);
-      view.setClickable(false);
+      whiteOverlayView.setVisibility(View.VISIBLE);
+    } else {
+      allGoneTextView.setVisibility(View.GONE);
+      whiteOverlayView.setVisibility(View.INVISIBLE);
     }
-    else if (reward.isLimited()) {
+  }
+
+  public void toggleLimitedRewardView() {
+    if (reward.isLimited()) {
       limitedTextView.setVisibility(View.VISIBLE);
       limitedTextView.setText(String.format(context.getString(R.string.Limited_left_of),
         reward.remaining(),
-        reward.limit()
-      ));
+        reward.limit()));
+    } else {
+      limitedTextView.setVisibility(View.GONE);
     }
+  }
 
-    // todo: implement project.backing().rewardId()
-    //    if (project.backingRewardId() == reward.id()) {
-    //      selectedLabelTextView.setVisibility(View.VISIBLE);
-    //      greenOverlayView.setVisibility(View.VISIBLE);
-    //      view.setAlpha(0.4f);
-    //    }
+  public void toggleSelectedRewardView() {
+    if (project.isBackingRewardId(reward.id())) {
+      greenOverlayView.setVisibility(View.VISIBLE);
+      selectedTextView.setVisibility(View.VISIBLE);
+    } else {
+      greenOverlayView.setVisibility(View.INVISIBLE);
+      selectedTextView.setVisibility(View.GONE);
+    }
+  }
+
+  public void toggleClickableReward() {
+    if (project.isBacking()) {
+      view.setClickable(false);
+    }
+    else if (!project.isLive()) {
+      view.setClickable(false);
+    }
+    else if (reward.isAllGone()) {
+      view.setClickable(false);
+    }
+    else {
+      view.setClickable(true);
+    }
   }
 
   @Override

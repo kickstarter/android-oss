@@ -35,8 +35,10 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
   private final PublishSubject<Void> shareClick = PublishSubject.create();
   private final PublishSubject<Void> updatesClick = PublishSubject.create();
   private final PublishSubject<Void> loginSuccess = PublishSubject.create();
+  private final PublishSubject<Void> managePledgeClick = PublishSubject.create();
   private final PublishSubject<Reward> rewardClick = PublishSubject.create();
   private final PublishSubject<Void> starClick = PublishSubject.create();
+  private final PublishSubject<Void> viewPledgeClick = PublishSubject.create();
   private final PublishSubject<Project> initialProject = PublishSubject.create();
   private final PublishSubject<String> initialProjectParam = PublishSubject.create();
 
@@ -123,9 +125,17 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showCreatorBio(vp.second)));
 
+    addSubscription(RxUtils.takeWhen(viewAndProject, managePledgeClick)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(vp -> vp.first.managePledge(vp.second)));
+
     addSubscription(RxUtils.takeWhen(viewAndProject, updatesClick)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showUpdates(vp.second)));
+
+    addSubscription(RxUtils.takeWhen(viewAndProject, viewPledgeClick)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(vp -> vp.first.startViewPledgeActivity(vp.second)));
   }
 
   public void initialize(@Nullable final Project initialProject, @Nullable final String param) {
@@ -171,6 +181,14 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
 
   public void takeLoginSuccess() {
     loginSuccess.onNext(null);
+  }
+
+  public void takeManagePledgeClick() {
+    managePledgeClick.onNext(null);
+  }
+
+  public void takeViewPledgeClick() {
+    viewPledgeClick.onNext(null);
   }
 
   public Observable<Project> starProject(@NonNull final Project project) {

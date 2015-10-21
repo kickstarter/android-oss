@@ -5,10 +5,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.webkit.WebView;
+import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
-import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.models.Project;
@@ -22,13 +22,13 @@ import java.util.Arrays;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 @RequiresPresenter(CheckoutPresenter.class)
 public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
   private Project project;
   private String urlToReload;
   @Bind(R.id.web_view) KickstarterWebView webView;
+  public @Bind(R.id.toolbar_title) TextView toolbarTitleTextView;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -41,12 +41,13 @@ public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
     if (savedInstanceState == null) {
       urlToReload = intent.getExtras().getString(getString(R.string.intent_url));
     }
+    project = intent.getExtras().getParcelable(getString(R.string.intent_project));
+    toolbarTitleTextView.setText(intent.getStringExtra(getString(R.string.intent_toolbar_title)));
 
     webView.client().registerRequestHandlers(Arrays.asList(
       new RequestHandler(KickstarterUri::isCheckoutThanksUri, this::handleCheckoutThanksUriRequest),
       new RequestHandler(KickstarterUri::isSignupUri, this::handleSignupUriRequest)
     ));
-    project = intent.getExtras().getParcelable(getString(R.string.intent_project));
   }
 
   @Override

@@ -65,8 +65,6 @@ public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresent
     setBackground(params);
     setStatusBarColor(params);
     closeButton.setTextColor(DiscoveryUtils.overlayTextColor(this, params));
-
-    presenter.initialize();
   }
 
   @OnClick(R.id.close_button)

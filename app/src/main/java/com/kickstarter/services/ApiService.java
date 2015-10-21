@@ -1,5 +1,6 @@
 package com.kickstarter.services;
 
+import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
@@ -29,6 +30,12 @@ import rx.Observable;
 
   @GET("/v1/categories")
   Observable<CategoriesEnvelope> fetchCategories();
+
+  @GET("/v1/projects/{project_param}/backers/{user_param}")
+  Observable<Backing> fetchProjectBacking(
+    @Path("project_param") String projectParam,
+    @Path("user_param") String userParam
+  );
 
   @GET("/v1/projects/{param}/comments")
   Observable<CommentsEnvelope> fetchProjectComments(@Path("param") String param);

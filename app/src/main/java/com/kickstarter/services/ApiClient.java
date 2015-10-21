@@ -7,9 +7,11 @@ import com.kickstarter.BuildConfig;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.Release;
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.User;
 import com.kickstarter.services.apirequests.CommentBody;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
@@ -73,6 +75,10 @@ public class ApiClient {
 
   public Observable<Project> fetchProject(@NonNull final Project project) {
     return fetchProject(project.param()).startWith(project);
+  }
+
+  public Observable<Backing> fetchProjectBacking(@NonNull final Project project, @NonNull final User user) {
+    return service.fetchProjectBacking(project.param(), user.param());
   }
 
   public Observable<Category> fetchCategory(final long id) {

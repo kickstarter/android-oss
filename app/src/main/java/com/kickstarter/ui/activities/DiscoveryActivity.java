@@ -68,6 +68,11 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> implemen
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);
 
+    final DiscoveryParams params = getIntent().getParcelableExtra(getString(R.string.intent_discovery_params));
+    if (params != null) {
+      presenter.takeParams(params);
+    }
+
     addSubscription(RxRecyclerView.scrollEvents(recyclerView)
       .subscribe(__ -> presenter.inputs().scrollEvent()));
   }

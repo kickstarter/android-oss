@@ -37,6 +37,7 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
   @Bind(R.id.star_icon) IconTextView starIconTextView;
   @Bind(R.id.back_project_button) Button backProjectButton;
   @Bind(R.id.manage_pledge_button) Button managePledgeButton;
+  @Bind(R.id.view_pledge_button) Button viewPledgeButton;
 
   @Inject Money money;
 
@@ -70,6 +71,12 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
     } else {
       managePledgeButton.setVisibility(View.GONE);
     }
+
+    if (project.isBacking() && !project.isLive()) {
+      viewPledgeButton.setVisibility(View.VISIBLE);
+    } else {
+      viewPledgeButton.setVisibility(View.GONE);
+    }
   }
 
   public void show(@NonNull final Project project) {
@@ -92,6 +99,11 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
   @OnClick(R.id.manage_pledge_button)
   public void managePledgeOnClick() {
     presenter.takeManagePledgeClick();
+  }
+
+  @OnClick(R.id.view_pledge_button)
+  public void viewPledgeOnClick() {
+    presenter.takeViewPledgeClick();
   }
 
   public void managePledge(@NonNull final Project project) {
@@ -173,6 +185,12 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
     final Intent intent = new Intent(this, LoginToutActivity.class)
       .putExtra(getString(R.string.intent_forward), true);
     startActivityForResult(intent, ActivityRequestCodes.PROJECT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
+  }
+
+  public void startViewPledgeActivity(@NonNull final Project project) {
+    final Intent intent = new Intent(this, ViewPledgeActivity.class)
+      .putExtra(getString(R.string.intent_project), project);
+    startActivity(intent);
   }
 
   @Override

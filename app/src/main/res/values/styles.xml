@@ -87,6 +87,11 @@
     <item name="android:windowBackground">@color/white</item>
   </style>
 
+  <style name="ViewPledgeActivity" parent="KsrTheme">
+    <item name="android:statusBarColor">@color/gray</item>
+    <item name="android:windowBackground">@color/white</item>
+  </style>
+
   <!-- Style advice: http://blog.danlew.net/2014/11/19/styles-on-android/ -->
   <style name="KsrSpinner" parent="android:Widget">
     <item name="android:background">@drawable/ksr_spinner</item>

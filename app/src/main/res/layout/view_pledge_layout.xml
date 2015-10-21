@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <include layout="@layout/view_pledge_toolbar"/>
+
+  <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+      android:padding="@dimen/grid_2"
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <RelativeLayout
+        android:id="@+id/backer_info"
+        android:layout_marginBottom="@dimen/grid_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+          android:id="@+id/avatar"
+          android:layout_width="@dimen/grid_8"
+          android:layout_height="@dimen/grid_8"/>
+
+        <RelativeLayout
+          android:layout_toRightOf="@id/avatar"
+          android:layout_toEndOf="@id/avatar"
+          android:paddingLeft="@dimen/grid_2"
+          android:paddingStart="@dimen/grid_2"
+          android:paddingRight="@dimen/grid_2"
+          android:paddingEnd="@dimen/grid_2"
+          android:layout_centerInParent="true"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content">
+
+          <TextView
+            android:id="@+id/name"
+            android:textSize="@dimen/ksr_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+          <TextView
+            android:id="@+id/sequence"
+            android:textSize="@dimen/ksr_subhead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/name"/>
+        </RelativeLayout>
+
+      </RelativeLayout>
+
+      <TextView
+        android:text="@string/Pledged"
+        android:paddingBottom="@dimen/grid_1"
+        android:textAppearance="@style/subheadBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+      <TextView
+        android:id="@+id/pledge_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+      <TextView
+        android:id="@+id/pledge_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/grid_3"/>
+
+      <include layout="@layout/horizontal_line_thin_view"/>
+
+      <TextView
+        android:text="@string/Reward"
+        android:paddingTop="@dimen/grid_3"
+        android:paddingBottom="@dimen/grid_1"
+        android:textAppearance="@style/subheadBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+      <TextView
+        android:id="@+id/reward_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/grid_3"/>
+
+      <include layout="@layout/horizontal_line_thin_view"/>
+
+      <TextView
+        android:text="@string/Shipping"
+        android:paddingTop="@dimen/grid_3"
+        android:paddingBottom="@dimen/grid_1"
+        android:textAppearance="@style/subheadBold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+      <TextView
+        android:id="@+id/shipping_info"
+        android:text="@string/NA"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+      <TextView
+        android:id="@+id/shipping_amount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/grid_3"/>
+
+    </LinearLayout>
+  </ScrollView>
+</LinearLayout>

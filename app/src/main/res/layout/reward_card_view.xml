@@ -9,6 +9,14 @@
   android:foreground="@drawable/click_indicator_light"
   android:layout_margin="@dimen/grid_2">
 
+  <View
+    android:id="@+id/green_overlay"
+    android:visibility="invisible"
+    android:alpha="0.2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/green"/>
+
   <RelativeLayout
     android:id="@+id/reward_card_info"
     android:paddingBottom="@dimen/grid_2"

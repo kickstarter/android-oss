@@ -23,6 +23,7 @@ public class RewardViewHolder extends KsrViewHolder {
   public @Bind(R.id.reward_backers_count) TextView backersCountTextView;
   public @Bind(R.id.reward_description) TextView descriptionTextView;
   public @Bind(R.id.estimated_delivery_date) TextView estimatedDeliveryTextView;
+  public @Bind(R.id.green_overlay) View greenOverlayView;
   public @Bind(R.id.selected) TextView selectedTextView;
   public @Bind(R.id.limited) TextView limitedTextView;
   public @Bind(R.id.all_gone) TextView allGoneTextView;
@@ -72,6 +73,8 @@ public class RewardViewHolder extends KsrViewHolder {
   public void invalidateCardView() {
     limitedTextView.setVisibility(View.GONE);
     allGoneTextView.setVisibility(View.GONE);
+    selectedTextView.setVisibility(View.GONE);
+    greenOverlayView.setVisibility(View.INVISIBLE);
     whiteOverlayView.setVisibility(View.INVISIBLE);
     view.setClickable(true);
   }
@@ -88,8 +91,7 @@ public class RewardViewHolder extends KsrViewHolder {
       allGoneTextView.setVisibility(View.VISIBLE);
       whiteOverlayView.setVisibility(View.VISIBLE);
       view.setClickable(false);
-    }
-    else if (reward.isLimited()) {
+    } else if (reward.isLimited()) {
       limitedTextView.setVisibility(View.VISIBLE);
       limitedTextView.setText(String.format(context.getString(R.string.Limited_left_of),
         reward.remaining(),
@@ -97,12 +99,13 @@ public class RewardViewHolder extends KsrViewHolder {
       ));
     }
 
-    // todo: implement project.backing().rewardId()
-    //    if (project.backingRewardId() == reward.id()) {
-    //      selectedLabelTextView.setVisibility(View.VISIBLE);
-    //      greenOverlayView.setVisibility(View.VISIBLE);
-    //      view.setAlpha(0.4f);
-    //    }
+    if (project.backingRewardId() == reward.id()) {
+      selectedTextView.setVisibility(View.VISIBLE);
+      greenOverlayView.setVisibility(View.VISIBLE);
+    } else {
+      selectedTextView.setVisibility(View.INVISIBLE);
+      greenOverlayView.setVisibility(View.INVISIBLE);
+    }
   }
 
   @Override

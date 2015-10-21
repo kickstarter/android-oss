@@ -8,8 +8,6 @@
   android:layout_width="match_parent"
   android:layout_height="?attr/actionBarSize"
   android:background="@color/light_gray"
-  android:paddingLeft="@dimen/grid_3"
-  android:paddingRight="@dimen/grid_3"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
   android:elevation="2dp">
@@ -28,10 +26,15 @@
 
     <TextView
       android:id="@+id/done_button"
+      android:paddingLeft="@dimen/grid_3"
+      android:paddingStart="@dimen/grid_3"
+      android:paddingRight="@dimen/grid_3"
+      android:paddingEnd="@dimen/grid_3"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_centerVertical="true"
+      android:layout_height="match_parent"
+      android:gravity="center_vertical"
       android:layout_alignParentRight="true"
+      android:layout_alignParentEnd="true"
       android:clickable="true"
       android:textAppearance="@style/TextAppearance.AppCompat.Menu"
       android:textColor="@color/green"

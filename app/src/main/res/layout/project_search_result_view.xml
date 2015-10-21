@@ -18,13 +18,15 @@
       android:id="@+id/project_image_view"
       android:adjustViewBounds="true"
       android:layout_marginRight="@dimen/grid_2"
+      android:layout_marginEnd="@dimen/grid_2"
       android:layout_width="80dp"
       android:layout_height="60dp" />
 
     <LinearLayout
       android:orientation="vertical"
       android:layout_centerVertical="true"
-      android:layout_toRightOf="@+id/project_image_view"
+      android:layout_toRightOf="@id/project_image_view"
+      android:layout_toEndOf="@id/project_image_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 

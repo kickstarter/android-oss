@@ -1,71 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="vertical"
   android:layout_width="match_parent"
-  android:layout_height="match_parent"
+  android:layout_height="wrap_content"
   android:layout_margin="@dimen/grid_3">
 
-  <TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/grid_1"
-    android:layout_marginBottom="@dimen/grid_1"
-    android:text="@string/Build"
-    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-    android:textStyle="bold"
-    android:textColor="@color/text_dark" />
-
-  <TextView
-    android:id="@+id/build"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="201506261815"
-    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-    android:textColor="@color/text_dark" />
-
-  <TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/grid_3"
-    android:layout_marginBottom="@dimen/grid_1"
-    android:text="@string/Changelog"
-    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-    android:textStyle="bold"
-    android:textColor="@color/text_dark" />
-
-  <TextView
-    android:id="@+id/changelog"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Changelog"
-    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-    android:textColor="@color/text_dark" />
-
-  <TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/grid_3"
-    android:layout_marginBottom="@dimen/grid_1"
-    android:text="@string/Instructions"
-    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-    android:textStyle="bold"
-    android:textColor="@color/text_dark" />
-
-  <TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="@string/A_request_has_been_made_to_download_the_latest_build"
-    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-    android:textColor="@color/text_dark" />
-
-  <Button
-    android:id="@+id/open_downloads_button"
+  <LinearLayout
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/grid_3"
-    android:layout_gravity="center_horizontal"
-    android:paddingTop="12dp"
-    android:paddingBottom="12dp"
-    android:text="@string/Open_downloads_folder" />
+    android:layout_height="wrap_content">
 
-</LinearLayout>
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/grid_1"
+      android:layout_marginBottom="@dimen/grid_1"
+      android:text="@string/Build"
+      android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+      android:textStyle="bold"
+      android:textColor="@color/text_dark" />
+
+    <TextView
+      android:id="@+id/build"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="201506261815"
+      android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+      android:textColor="@color/text_dark" />
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/grid_3"
+      android:layout_marginBottom="@dimen/grid_1"
+      android:text="@string/Changelog"
+      android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+      android:textStyle="bold"
+      android:textColor="@color/text_dark" />
+
+    <TextView
+      android:id="@+id/changelog"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Changelog"
+      android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+      android:textColor="@color/text_dark" />
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/grid_3"
+      android:layout_marginBottom="@dimen/grid_1"
+      android:text="@string/Instructions"
+      android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+      android:textStyle="bold"
+      android:textColor="@color/text_dark" />
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/A_request_has_been_made_to_download_the_latest_build"
+      android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+      android:textColor="@color/text_dark" />
+
+    <Button
+      android:id="@+id/open_downloads_button"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/grid_3"
+      android:layout_gravity="center_horizontal"
+      android:paddingTop="12dp"
+      android:paddingBottom="12dp"
+      android:text="@string/Open_downloads_folder" />
+
+  </LinearLayout>
+
+</ScrollView>

@@ -64,47 +64,39 @@ public class RewardViewHolder extends KsrViewHolder {
     estimatedDeliveryTextView.setText(
       reward.estimatedDeliveryOn().toString(DateTimeUtils.estimatedDeliveryOn()));
 
-    toggleTextViews();
+    setRewardCardState();
   }
 
-  /**
-   * Refreshes toggle-able views of each reward card so that it draws correctly each onBind.
-   */
-  public void invalidateCardView() {
-    limitedTextView.setVisibility(View.GONE);
-    allGoneTextView.setVisibility(View.GONE);
-    selectedTextView.setVisibility(View.GONE);
-    greenOverlayView.setVisibility(View.INVISIBLE);
-    whiteOverlayView.setVisibility(View.INVISIBLE);
-    view.setClickable(true);
-  }
-
-  // Move this if- logic to ProjectPresenter
-  public void toggleTextViews() {
-    invalidateCardView();
+  public void setRewardCardState() {
 
     if (project.isBacking()) {
       view.setClickable(false);
+
+      if (project.backingRewardId() == reward.id()) {
+        selectedTextView.setVisibility(View.VISIBLE);
+        greenOverlayView.setVisibility(View.VISIBLE);
+      } else {
+        selectedTextView.setVisibility(View.GONE);
+        greenOverlayView.setVisibility(View.INVISIBLE);
+      }
+
+    } else {
+      view.setClickable(true);
     }
 
     if (reward.isAllGone()) {
       allGoneTextView.setVisibility(View.VISIBLE);
+      limitedTextView.setVisibility(View.GONE);
       whiteOverlayView.setVisibility(View.VISIBLE);
       view.setClickable(false);
     } else if (reward.isLimited()) {
+      allGoneTextView.setVisibility(View.GONE);
       limitedTextView.setVisibility(View.VISIBLE);
       limitedTextView.setText(String.format(context.getString(R.string.Limited_left_of),
         reward.remaining(),
-        reward.limit()
-      ));
-    }
-
-    if (project.backingRewardId() == reward.id()) {
-      selectedTextView.setVisibility(View.VISIBLE);
-      greenOverlayView.setVisibility(View.VISIBLE);
-    } else {
-      selectedTextView.setVisibility(View.INVISIBLE);
-      greenOverlayView.setVisibility(View.INVISIBLE);
+        reward.limit()));
+      whiteOverlayView.setVisibility(View.INVISIBLE);
+      view.setClickable(true);
     }
   }
 

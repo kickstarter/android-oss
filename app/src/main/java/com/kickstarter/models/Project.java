@@ -27,6 +27,7 @@ import auto.parcel.AutoParcel;
 public abstract class Project implements Parcelable {
   public abstract int backersCount();
   public abstract String blurb();
+  @Nullable public abstract Backing backing();
   @Nullable public abstract Category category();
   @Nullable public abstract Integer commentsCount();
   public abstract String country(); // e.g.: US
@@ -58,6 +59,7 @@ public abstract class Project implements Parcelable {
   public abstract static class Builder {
     public abstract Builder backersCount(int __);
     public abstract Builder blurb(String __);
+    public abstract Builder backing(Backing __);
     public abstract Builder category(Category __);
     public abstract Builder commentsCount(Integer __);
     public abstract Builder country(String __);
@@ -111,6 +113,10 @@ public abstract class Project implements Parcelable {
 
   public String creatorBioUrl() {
     return urls().web().creatorBio();
+  }
+
+  public long backingRewardId() {
+    return this.backing() != null ? this.backing().rewardId() : -1;
   }
 
   public String descriptionUrl() {

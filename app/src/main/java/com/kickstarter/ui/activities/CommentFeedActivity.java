@@ -129,12 +129,14 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> impl
     }
   }
 
-  public void projectContextClicked() {
-    presenter.inputs().projectContextClicked();
+  @Override
+  public void projectContextClicked(@NonNull final ProjectContextViewHolder viewHolder) {
+    presenter.inputs().projectContextClicked(viewHolder);
   }
 
+  @Override
   public void emptyCommentFeedLoginClicked(@NonNull final EmptyCommentFeedViewHolder viewHolder) {
-    presenter.inputs().emptyCommentFeedLoginClicked();
+    presenter.inputs().emptyCommentFeedLoginClicked(viewHolder);
   }
 
   public void showToastOnPostSuccess() {

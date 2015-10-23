@@ -37,7 +37,7 @@ public class RewardViewHolder extends KsrViewHolder {
   private Reward reward;
 
   public interface Delegate {
-    void rewardClicked(@NonNull final RewardViewHolder viewHolder, @NonNull final Reward reward);
+    void rewardClicked(RewardViewHolder viewHolder, Reward reward);
   }
 
   public RewardViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {

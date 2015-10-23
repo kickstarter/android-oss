@@ -37,8 +37,10 @@
       android:layout_marginTop="2dp"
       android:alpha="0.8"
       android:fontFamily="sans-serif-light"
-      android:layout_toRightOf="@+id/filter_text_view"
+      android:layout_toRightOf="@id/filter_text_view"
+      android:layout_toEndOf="@id/filter_text_view"
       android:layout_marginLeft="@dimen/grid_1_half"
+      android:layout_marginStart="@dimen/grid_1_half"
       android:textSize="11sp"
       android:textColor="@color/white" />
 

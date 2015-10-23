@@ -44,7 +44,6 @@
     android:layout_height="wrap_content"
     android:text="@string/Discover_projects"
     android:textColor="@color/text_secondary"
-    android:padding="@dimen/grid_3"
     android:layout_marginTop="@dimen/grid_1" />
 
   <Button
@@ -55,7 +54,6 @@
     android:layout_height="wrap_content"
     android:text="@string/Log_in"
     android:textColor="@color/text_secondary"
-    android:padding="@dimen/grid_3"
     android:layout_marginTop="@dimen/grid_1" />
 
 </LinearLayout>

@@ -28,7 +28,6 @@
 
       <ImageView
         android:id="@+id/project_photo"
-        android:background="@color/black"
         android:adjustViewBounds="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
@@ -40,6 +39,7 @@
       <TextView
         android:id="@+id/project_name"
         android:layout_toRightOf="@id/project_photo"
+        android:layout_toEndOf="@id/project_photo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/grid_1"

@@ -17,6 +17,8 @@ import com.kickstarter.presenters.inputs.CommentFeedPresenterInputs;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.ui.activities.CommentFeedActivity;
+import com.kickstarter.ui.viewholders.EmptyCommentFeedViewHolder;
+import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
 
 import java.util.Arrays;
 import java.util.List;
@@ -54,12 +56,12 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
   }
 
   @Override
-  public void emptyCommentFeedLoginClicked() {
+  public void emptyCommentFeedLoginClicked(@NonNull final EmptyCommentFeedViewHolder viewHolder) {
     loginClick.onNext(null);
   }
 
   @Override
-  public void projectContextClicked() {
+  public void projectContextClicked(@NonNull final ProjectContextViewHolder viewHolder) {
     contextClick.onNext(null);
   }
 

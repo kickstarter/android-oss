@@ -23,7 +23,7 @@ public class ProjectCardMiniViewHolder extends KsrViewHolder {
   @Bind(R.id.photo) ImageView photoImageView;
 
   public interface Delegate {
-    void projectCardMiniClick(@NonNull final ProjectCardMiniViewHolder viewHolder, @NonNull final Project project);
+    void projectCardMiniClick(ProjectCardMiniViewHolder viewHolder, Project project);
   }
 
   public ProjectCardMiniViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {

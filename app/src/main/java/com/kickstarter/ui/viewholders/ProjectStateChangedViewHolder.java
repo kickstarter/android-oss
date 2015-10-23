@@ -22,7 +22,7 @@ public class ProjectStateChangedViewHolder extends ActivityListViewHolder {
   private final Delegate delegate;
 
   public interface Delegate {
-    void projectStateChangedClicked(@NonNull final ProjectStateChangedViewHolder viewHolder, @NonNull final Project project);
+    void projectStateChangedClicked(ProjectStateChangedViewHolder viewHolder, Project project);
   }
 
   public ProjectStateChangedViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {

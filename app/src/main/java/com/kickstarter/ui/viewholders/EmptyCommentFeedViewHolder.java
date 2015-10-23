@@ -22,7 +22,7 @@ public class EmptyCommentFeedViewHolder extends KsrViewHolder {
   protected @Bind(R.id.no_comments_message) TextView noCommentsMessageTextView;
 
   public interface Delegate {
-    void emptyCommentFeedLoginClicked(@NonNull final EmptyCommentFeedViewHolder viewHolder);
+    void emptyCommentFeedLoginClicked(EmptyCommentFeedViewHolder viewHolder);
   }
 
   public EmptyCommentFeedViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {

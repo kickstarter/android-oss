@@ -19,13 +19,13 @@
 
     <ImageView
       android:id="@+id/project_photo"
-      android:background="@android:color/transparent"
+      android:background="@drawable/gray_gradient"
       android:adjustViewBounds="true"
       android:layout_width="@dimen/activity_feed_medium_photo_width"
       android:layout_height="@dimen/activity_feed_medium_photo_height" />
 
     <LinearLayout
-      android:layout_width="wrap_content"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:minHeight="@dimen/activity_feed_medium_photo_height"
       android:layout_weight="1"

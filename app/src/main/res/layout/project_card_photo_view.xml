@@ -20,6 +20,7 @@
     android:layout_width="match_parent"
     android:layout_height="180dp"
     android:layout_alignLeft="@+id/photo"
+    android:layout_alignStart="@+id/photo"
     android:layout_alignBottom="@+id/photo"
     android:background="@drawable/photo_gradient"
     android:visibility="invisible">
@@ -30,6 +31,7 @@
       android:layout_height="wrap_content"
       android:layout_alignParentBottom="true"
       android:layout_alignParentLeft="true"
+      android:layout_alignParentStart="true"
       android:orientation="horizontal"
       android:padding="@dimen/grid_2"
       android:visibility="invisible">

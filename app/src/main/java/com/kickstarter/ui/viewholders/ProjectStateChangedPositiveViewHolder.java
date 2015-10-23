@@ -37,8 +37,7 @@ public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolde
   private final Delegate delegate;
 
   public interface Delegate {
-    void projectStateChangedPositiveClicked(@NonNull final ProjectStateChangedPositiveViewHolder viewHolder,
-      @NonNull final Project project);
+    void projectStateChangedPositiveClicked(ProjectStateChangedPositiveViewHolder viewHolder, Project project);
   }
 
   public ProjectStateChangedPositiveViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {

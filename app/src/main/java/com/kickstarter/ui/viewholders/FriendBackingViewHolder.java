@@ -26,7 +26,7 @@ public class FriendBackingViewHolder extends ActivityListViewHolder {
   private final Delegate delegate;
 
   public interface Delegate {
-    void friendBackingClicked(@NonNull final FriendBackingViewHolder viewHolder, @NonNull final Project project);
+    void friendBackingClicked(FriendBackingViewHolder viewHolder, Project project);
   }
 
   public FriendBackingViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {

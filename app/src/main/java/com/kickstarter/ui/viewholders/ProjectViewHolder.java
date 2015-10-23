@@ -50,11 +50,11 @@ public class ProjectViewHolder extends KsrViewHolder {
   @Inject Money money;
 
   public interface Delegate {
-    void projectBlurbClicked(@NonNull final ProjectViewHolder viewHolder);
-    void projectCommentsClicked(@NonNull final ProjectViewHolder viewHolder);
-    void projectCreatorNameClicked(@NonNull final ProjectViewHolder viewHolder);
-    void projectShareClicked(@NonNull final ProjectViewHolder viewHolder);
-    void projectUpdatesClicked(@NonNull final ProjectViewHolder viewHolder);
+    void projectBlurbClicked(ProjectViewHolder viewHolder);
+    void projectCommentsClicked(ProjectViewHolder viewHolder);
+    void projectCreatorNameClicked(ProjectViewHolder viewHolder);
+    void projectShareClicked(ProjectViewHolder viewHolder);
+    void projectUpdatesClicked(ProjectViewHolder viewHolder);
   }
 
   public ProjectViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {

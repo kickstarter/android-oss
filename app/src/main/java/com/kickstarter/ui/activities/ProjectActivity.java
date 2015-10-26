@@ -60,10 +60,10 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
   }
 
   public void setProjectActionButton(@NonNull final Project project) {
-    if (project.isBacking()) {
-      backProjectButton.setVisibility(View.GONE);
-    } else {
+    if (!project.isBacking() && project.isLive()) {
       backProjectButton.setVisibility(View.VISIBLE);
+    } else {
+      backProjectButton.setVisibility(View.GONE);
     }
 
     if (project.isBacking() && project.isLive()) {

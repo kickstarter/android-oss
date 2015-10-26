@@ -90,8 +90,8 @@ public class LoginPresenter extends Presenter<LoginActivity> implements LoginPre
     );
 
     addSubscription(RxUtils.takeWhen(emailAndPassword, loginClick)
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(ep -> submit(ep.first, ep.second))
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(ep -> submit(ep.first, ep.second))
     );
   }
 

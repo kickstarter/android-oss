@@ -8,13 +8,13 @@ import android.util.Pair;
 import android.view.View;
 
 import com.kickstarter.KSApplication;
-import com.kickstarter.R;
-import com.kickstarter.libs.ApiErrorHandler;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.libs.utils.StringUtils;
+import com.kickstarter.presenters.errors.LoginPresenterErrors;
 import com.kickstarter.presenters.inputs.LoginPresenterInputs;
+import com.kickstarter.presenters.outputs.LoginPresenterOutputs;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.ApiError;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
@@ -27,18 +27,42 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public class LoginPresenter extends Presenter<LoginActivity> implements LoginPresenterInputs {
+public class LoginPresenter extends Presenter<LoginActivity> implements LoginPresenterInputs, LoginPresenterOutputs , LoginPresenterErrors {
   // INPUTS
   private final PublishSubject<String> email = PublishSubject.create();
   private final PublishSubject<View> loginClick = PublishSubject.create();
   private final PublishSubject<String> password = PublishSubject.create();
 
+  // OUTPUTS
+  private final PublishSubject<Void> loginSuccessSubject = PublishSubject.create();
+  public final Observable<Void> loginSuccess() {
+    return loginSuccessSubject.asObservable();
+  }
+
+  // ERRORS
+  private final PublishSubject<Void> invalidLoginErrorSubject = PublishSubject.create();
+  public final Observable<Void> invalidLoginError() {
+    return invalidLoginErrorSubject.asObservable();
+  }
+  private final PublishSubject<Void> genericLoginErrorSubject = PublishSubject.create();
+  public final Observable<Void> genericLoginError() {
+    return genericLoginErrorSubject.asObservable();
+  }
+  private final PublishSubject<Void> tfaChallengeSubject = PublishSubject.create();
+  public final Observable<Void> tfaChallenge() {
+    return tfaChallengeSubject.asObservable();
+  }
+
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
 
-  private boolean forward = false;
-
   public LoginPresenterInputs inputs() {
+    return this;
+  }
+  public LoginPresenterOutputs outputs() {
+    return this;
+  }
+  public LoginPresenterErrors errors() {
     return this;
   }
 
@@ -79,10 +103,6 @@ public class LoginPresenter extends Presenter<LoginActivity> implements LoginPre
     );
   }
 
-  public void takeForward(final boolean forward) {
-    this.forward = forward;
-  }
-
   private static boolean isValid(@NonNull final String email, @NonNull final String password) {
     return StringUtils.isEmail(email) && password.length() > 0;
   }
@@ -95,34 +115,26 @@ public class LoginPresenter extends Presenter<LoginActivity> implements LoginPre
 
   private void success(@NonNull final AccessTokenEnvelope envelope) {
     currentUser.login(envelope.user(), envelope.accessToken());
-
-    if (hasView()) {
-      view().onSuccess(forward);
-    }
+    loginSuccessSubject.onNext(null);
   }
 
   private void error(@NonNull final Throwable e) {
-    if (!hasView()) {
-      return;
-    }
+    if (e instanceof ApiError) {
+      final ApiError error = (ApiError) e;
+      final ErrorEnvelope envelope = error.errorEnvelope();
 
-    new ApiErrorHandler(e, view()) {
-      @Override
-      public void handleApiError(@NonNull final ApiError apiError) {
-        switch (apiError.errorEnvelope().ksrCode()) {
-          case ErrorEnvelope.TFA_REQUIRED:
-          case ErrorEnvelope.TFA_FAILED:
-            view().startTwoFactorActivity(forward);
-            break;
-          case ErrorEnvelope.INVALID_XAUTH_LOGIN:
-            displayError(R.string.Login_does_not_match_any_of_our_records);
-            break;
-          default:
-            displayError(R.string.Unable_to_login);
-            break;
-        }
-
+      switch (envelope.ksrCode()) {
+        case ErrorEnvelope.TFA_REQUIRED:
+        case ErrorEnvelope.TFA_FAILED:
+          tfaChallengeSubject.onNext(null);
+          break;
+        case ErrorEnvelope.INVALID_XAUTH_LOGIN:
+          invalidLoginErrorSubject.onNext(null);
+          break;
+        default:
+          genericLoginErrorSubject.onNext(null);
+          break;
       }
-    }.handleError();
+    }
   }
 }

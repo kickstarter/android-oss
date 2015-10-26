@@ -35,15 +35,23 @@ public class LoginPresenter extends Presenter<LoginActivity> implements LoginPre
 
   // OUTPUTS
   private final PublishSubject<Void> loginSuccessSubject = PublishSubject.create();
-  public final Observable<Void> loginSuccess() { return loginSuccessSubject.asObservable(); };
+  public final Observable<Void> loginSuccess() {
+    return loginSuccessSubject.asObservable();
+  }
 
   // ERRORS
   private final PublishSubject<Void> invalidLoginErrorSubject = PublishSubject.create();
-  public final Observable<Void> invalidLoginError() { return invalidLoginErrorSubject.asObservable(); }
+  public final Observable<Void> invalidLoginError() {
+    return invalidLoginErrorSubject.asObservable();
+  }
   private final PublishSubject<Void> genericLoginErrorSubject = PublishSubject.create();
-  public final Observable<Void> genericLoginError() { return genericLoginErrorSubject.asObservable(); }
+  public final Observable<Void> genericLoginError() {
+    return genericLoginErrorSubject.asObservable();
+  }
   private final PublishSubject<Void> tfaChallengeSubject = PublishSubject.create();
-  public final Observable<Void> tfaChallenge() { return tfaChallengeSubject.asObservable(); }
+  public final Observable<Void> tfaChallenge() {
+    return tfaChallengeSubject.asObservable();
+  }
 
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;

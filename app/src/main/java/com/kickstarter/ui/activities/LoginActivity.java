@@ -48,6 +48,12 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
     );
 
     addSubscription(
+      presenter.errors().tfaChallenge().subscribe(__ -> {
+        startTwoFactorActivity(forward);
+      })
+    );
+
+    addSubscription(
       presenter.outputs().loginSuccess().subscribe(__ -> {
         onSuccess(forward);
       })

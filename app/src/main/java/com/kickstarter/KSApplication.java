@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.facebook.FacebookSdk;
+import com.kickstarter.libs.ApiCapabilities;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
@@ -38,7 +39,7 @@ public class KSApplication extends Application {
       checkForCrashes();
     }
 
-    if (!isInUnitTests()) {
+    if (!isInUnitTests() && ApiCapabilities.canDetectMemoryLeaks()) {
       refWatcher = LeakCanary.install(this);
     }
 

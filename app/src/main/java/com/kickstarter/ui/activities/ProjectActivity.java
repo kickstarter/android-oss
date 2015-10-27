@@ -49,11 +49,10 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
     ((KSApplication) getApplication()).component().inject(this);
 
     final Intent intent = getIntent();
-    final Project project = intent.getParcelableExtra(getString(R.string.intent_project));
+    final Project project = intent.getParcelableExtra(getString(R.string.intent_project)); // Project can be null!
     final String param = intent.getStringExtra(getString(R.string.intent_project_param));
     presenter.initialize(project, param);
 
-    setProjectActionButton(project);
     adapter = new ProjectAdapter(presenter);
     rewardsRecyclerView.setAdapter(adapter);
     rewardsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -83,6 +82,7 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
     final int starColor = (project.isStarred()) ? R.color.green : R.color.dark_gray;
     starIconTextView.setTextColor(ContextCompat.getColor(this, starColor));
     adapter.takeProject(project);
+    setProjectActionButton(project);
   }
 
   @Override

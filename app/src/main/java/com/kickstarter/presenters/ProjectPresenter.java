@@ -139,8 +139,12 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
   }
 
   public void initialize(@Nullable final Project initialProject, @Nullable final String param) {
-    this.initialProject.onNext(initialProject);
-    this.initialProjectParam.onNext(param);
+    if (initialProject != null) {
+      this.initialProject.onNext(initialProject);
+    }
+    if (initialProjectParam != null) {
+      initialProjectParam.onNext(param);
+    }
   }
 
   public void takeBackProjectClick() {

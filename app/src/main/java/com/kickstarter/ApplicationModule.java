@@ -109,9 +109,10 @@ public class ApplicationModule {
   @Provides
   @Singleton
   CurrentUser provideCurrentUser(@AccessTokenPreference @NonNull final StringPreference accessTokenPreference,
+    @ForApplication @NonNull final Context context,
     @NonNull final Gson gson,
     @NonNull @UserPreference final StringPreference userPreference) {
-    return new CurrentUser(accessTokenPreference, gson, userPreference);
+    return new CurrentUser(accessTokenPreference, context, gson, userPreference);
   }
 
   @Provides

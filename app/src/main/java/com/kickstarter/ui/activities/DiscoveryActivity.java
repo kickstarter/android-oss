@@ -20,6 +20,7 @@ import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.libs.utils.DiscoveryUtils;
+import com.kickstarter.libs.utils.NotificationUtils;
 import com.kickstarter.libs.utils.StatusBarUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.DiscoveryPresenter;
@@ -67,6 +68,9 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> implemen
     adapter = new DiscoveryAdapter(projects, this);
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);
+
+    // TODO: Register on startup
+    // NotificationUtils.registerDevice(this);
 
     final DiscoveryParams params = getIntent().getParcelableExtra(getString(R.string.intent_discovery_params));
     if (params != null) {

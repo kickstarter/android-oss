@@ -7,6 +7,13 @@
   <!-- We need coarse location to find projects near a user. Could also see people being uncomfortable with providing
     this permission though, since location is not core to the app. -->
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+  <!-- WAKE_LOCK keeps the processor from sleeping when a GCM message is received -->
+  <uses-permission android:name="android.permission.WAKE_LOCK" />
+  <!-- RECEIVE allows the app to register to receive GCM messages -->
+  <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+  <!-- Prevent other apps from registering and receiving our app's messages -->
+  <permission android:name="${applicationId}.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+  <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
 
   <application
     android:name=".KSApplication"
@@ -14,6 +21,40 @@
     android:icon="@mipmap/ic_launcher"
     android:label="@string/app_name"
     android:theme="@style/KsrTheme">
+
+    <!-- Handle messages sent from GCM to app -->
+    <receiver
+      android:name="com.google.android.gms.gcm.GcmReceiver"
+      android:exported="true"
+      android:permission="com.google.android.c2dm.permission.SEND" >
+      <intent-filter>
+        <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+        <!-- The registration action is only needed for pre-4.4 KitKat devices -->
+        <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+        <category android:name="${applicationId}" />
+      </intent-filter>
+    </receiver>
+
+    <service
+      android:name="com.kickstarter.libs.gcm.MessageService"
+      android:exported="false" >
+      <intent-filter>
+        <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+      </intent-filter>
+    </service>
+
+    <service
+      android:name="com.kickstarter.libs.gcm.TokenListenerService"
+      android:exported="false">
+      <intent-filter>
+        <action android:name="com.google.android.gms.iid.InstanceID"/>
+      </intent-filter>
+    </service>
+
+    <service
+      android:name=".libs.gcm.RegistrationService"
+      android:exported="false">
+    </service>
 
     <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
 
@@ -32,8 +73,8 @@
     <activity
       android:name=".ui.activities.DiscoveryActivity"
       android:label="@string/app_name"
-      android:launchMode="singleTop"
-      android:theme="@style/DiscoveryActivity">
+      android:theme="@style/DiscoveryActivity"
+      android:launchMode="singleTop">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />

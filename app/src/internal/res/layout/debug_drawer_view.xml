@@ -2,14 +2,16 @@
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:padding="@dimen/grid_3"
+  android:layout_height="wrap_content"
+  android:paddingLeft="@dimen/grid_3"
+  android:paddingRight="@dimen/grid_3"
   android:orientation="vertical">
 
   <TextView
     android:layout_marginBottom="@dimen/grid_3"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/grid_1"
     android:textAppearance="@style/TextAppearance.AppCompat.Title"
     android:textColor="@color/light_gray"
     android:text="@string/Development_settings" />
@@ -17,6 +19,7 @@
   <TableLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/grid_1"
     android:layout_centerInParent="true"
     android:stretchColumns="*">
 
@@ -56,7 +59,6 @@
         android:id="@+id/endpoint_spinner"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="@color/white"
         android:layout_column="1" />
 
@@ -213,4 +215,13 @@
     android:background="@drawable/button_green"
     android:text="@string/Submit_bug_report"
     style="@style/KsrButton" />
+
+  <Button
+    android:id="@+id/simulate_notification_button"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/button_green"
+    android:text="@string/Simulate_notification"
+    style="@style/KsrButton" />
+
 </LinearLayout>

@@ -1,8 +1,6 @@
 <resources>
   <string name="app_name">Kickstarter</string>
 
-  <!-- Settings -->
-
   <!-- Facebook production app id -->
   <string name="facebook_app_id">69103156693</string>
   <string name="hockey_app_id">***REMOVED***</string>
@@ -116,6 +114,8 @@
   <string name="pledged_of_goal">pledged of %1$s</string>
   <string name="pledged_amount_on_date">%1$s on %2$s</string>
   <string name="Post">Post</string>
+  <string name="Project_launch">Project launch</string>
+  <string name="Project_success">Project success</string>
   <string name="project_of_the_day">Project of the day!</string>
   <string name="project_was_cancelled_by_its_creator">%1$s was cancelled by its creator.</string>
   <string name="project_was_not_successfully_funded">%1$s was not successfully funded.</string>
@@ -130,6 +130,7 @@
   <string name="Search">Search</string>
   <string name="Search_projects">Search projects</string>
   <string name="Select_email_application">Select email application:</string>
+  <string name="Simulate_notification">Simulate notification</string>
   <string name="Sha">SHA</string>
   <string name="Share">Share</string>
   <string name="share_message">"%1$s, via %2$s"</string>
@@ -139,7 +140,7 @@
   <string name="Sign_up_or_log_in_with_your_Facebook_account">
     Sign up or log in with your Facebook account or email address below:
   </string>
-  <string name="Status:">Status: %1$s</string>
+  <string name="Status_">Status: %1$s</string>
   <string name="Staff_Picks">Staff Picks</string>
   <string name="Starred">Starred</string>
   <string name="Submit">Submit</string>
@@ -172,27 +173,6 @@
   <string name="You_launched_a_project">You launched a project: %1$s</string>
   <string name="You_selected">You selected</string>
   <string name="Youre_a_backer">\u0020• You\'re a backer\u0020</string>
-
-  <string-array name="spinner_categories_array">
-    <item>Staff Picks</item>
-    <item>Starred</item>
-    <item>Everything</item>
-    <item>Art</item>
-    <item>Comics</item>
-    <item>Crafts</item>
-    <item>Dance</item>
-    <item>Design</item>
-    <item>Fashion</item>
-    <item>Film &amp; Video</item>
-    <item>Food</item>
-    <item>Games</item>
-    <item>Journalism</item>
-    <item>Music</item>
-    <item>Photography</item>
-    <item>Publishing</item>
-    <item>Technology</item>
-    <item>Theater</item>
-  </string-array>
 
   <!-- Intent strings. Requires package prefix:
     http://developer.android.com/reference/android/content/Intent.html#putExtra%28java.lang.String,%20boolean%29 -->

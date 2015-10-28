@@ -1,9 +1,11 @@
 package com.kickstarter.libs;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.kickstarter.libs.preferences.StringPreference;
+import com.kickstarter.libs.utils.NotificationUtils;
 import com.kickstarter.models.User;
 
 import rx.Observable;
@@ -12,6 +14,7 @@ import timber.log.Timber;
 
 public class CurrentUser {
   private final StringPreference accessTokenPreference;
+  @ForApplication private final Context context;
   private final Gson gson;
   private final StringPreference userPreference;
 
@@ -19,9 +22,11 @@ public class CurrentUser {
   private User currentUser;
 
   public CurrentUser(@NonNull final StringPreference accessTokenPreference,
+    @ForApplication @NonNull final Context context,
     @NonNull final Gson gson,
     @NonNull final StringPreference userPreference) {
     this.accessTokenPreference = accessTokenPreference;
+    this.context = context;
     this.gson = gson;
     this.userPreference = userPreference;
 
@@ -53,6 +58,7 @@ public class CurrentUser {
 
     accessTokenPreference.set(accessToken);
     userSubject.onNext(newUser);
+    NotificationUtils.registerDevice(context);
   }
 
   public void logout() {
@@ -61,6 +67,7 @@ public class CurrentUser {
     userPreference.delete();
     accessTokenPreference.delete();
     userSubject.onNext(null);
+    NotificationUtils.unregisterDevice(context);
   }
 
   public Observable<User> observable() {

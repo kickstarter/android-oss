@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.kickstarter.ui.views.SimulateNotificationsView
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:paddingTop="@dimen/grid_1"
+  android:paddingBottom="@dimen/grid_3"
+  android:paddingLeft="@dimen/grid_3"
+  android:paddingRight="@dimen/grid_3">
+
+  <Button
+    android:id="@+id/register_with_google_cloud_messaging_button"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/button_green"
+    android:textAllCaps="false"
+    android:text="TODO"
+    style="@style/KsrButton" />
+
+  <Button
+    android:id="@+id/simulate_project_launch_button"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/button_green"
+    android:textAllCaps="false"
+    android:text="@string/Project_launch"
+    style="@style/KsrButton" />
+
+  <Button
+    android:id="@+id/simulate_project_success_button"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/button_green"
+    android:textAllCaps="false"
+    android:text="@string/Project_success"
+    style="@style/KsrButton" />
+</com.kickstarter.ui.views.SimulateNotificationsView>

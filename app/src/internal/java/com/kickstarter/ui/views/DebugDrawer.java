@@ -12,6 +12,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Spinner;
@@ -41,6 +42,7 @@ import butterknife.Bind;
 import butterknife.BindDrawable;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 public class DebugDrawer extends FrameLayout {
   @Inject @ApiEndpointPreference StringPreference apiEndpointPreference;
@@ -74,6 +76,16 @@ public class DebugDrawer extends FrameLayout {
 
     setupNetworkSection();
     setupBuildInformationSection();
+  }
+
+  @OnClick(R.id.simulate_notification_button)
+  public void simulateNotificationButtonClick() {
+    final View view = LayoutInflater.from(getContext().getApplicationContext()).inflate(R.layout.simulate_notification_layout, null);
+
+    new AlertDialog.Builder(getContext())
+      .setTitle("Simulate Notification")
+      .setView(view)
+      .show();
   }
 
   @OnClick(R.id.submit_bug_report_button)

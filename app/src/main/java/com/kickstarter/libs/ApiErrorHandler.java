@@ -8,6 +8,8 @@ import android.widget.Toast;
 import com.kickstarter.R;
 import com.kickstarter.services.ApiError;
 
+import net.hockeyapp.android.ExceptionHandler;
+
 import retrofit.RetrofitError;
 
 public abstract class ApiErrorHandler {
@@ -27,10 +29,10 @@ public abstract class ApiErrorHandler {
       if (retrofitError.getKind() == RetrofitError.Kind.NETWORK) {
         displayError(R.string.Unable_to_connect);
       } else {
-        throw new RuntimeException(e);
+        ExceptionHandler.saveException(e, null);
       }
     } else {
-      throw new RuntimeException(e);
+      ExceptionHandler.saveException(e, null);
     }
   }
 

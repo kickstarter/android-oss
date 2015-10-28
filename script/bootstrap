@@ -1,25 +1,30 @@
 #!/usr/bin/env sh
 
-function announce {
+function say {
   str=$1
   ruby -e "print \"\033[0;32m$1\033[0m\n\""
 }
 
-announce "Starting bootstrap\n"
+function loudspeaker {
+  str=$1
+  ruby -e "print \"\n\033[0;31m📢  📢  📢  $1\033[0m\n\n\""
+}
+
+say "Starting bootstrap\n"
 
 git submodule update --init --recursive
 
 ANDROID_STUDIO_PREFERENCES_PATH="${HOME}/Library/Preferences/AndroidStudio1.4"
 
 if [ ! -d $ANDROID_STUDIO_PREFERENCES_PATH ]; then
-  announce "Android Studio expected in ${ANDROID_STUDIO_PREFERENCES_PATH}"
+  say "Android Studio expected in ${ANDROID_STUDIO_PREFERENCES_PATH}"
   exit 1
 fi
 
 # Signing config
 test -e app/signing.gradle || cp app/signing.gradle.example app/signing.gradle
 
-announce "Running bundle install\n"
+say "Running bundle install\n"
 bundle install
 
 script/bootstrap_configs
@@ -32,9 +37,9 @@ REPOSITORY_STYLE_PATH="script/style/Kickstarter.xml"
 cmp -s "${ANDROID_STYLE_PATH}" "${REPOSITORY_STYLE_PATH}"
 if [ $? -ne 0 ]; then
   if [ ! -f $ANDROID_STYLE_PATH ]; then
-    announce "Created Android Studio code style, change to the Kickstarter scheme in Preferences > Code Style\n"
+    loudspeaker "You need to switch to the Kickstarter code style in Android Studio. Update this setting in Preferences > Code Style."
   else
-    announce "Updated Kickstarter style, restart Android Studio to apply changes\n"
+    say "Updated Kickstarter code style, restart Android Studio to apply changes\n"
   fi
   cp $REPOSITORY_STYLE_PATH $ANDROID_STYLE_PATH
 fi
@@ -50,18 +55,18 @@ curl -s "https://raw.githubusercontent.com/JakeWharton/pidcat/a6815e906a066b7b6e
 chmod +x /tmp/pidcat
 cmp -s /tmp/pidcat /usr/local/bin/pidcat
 if [ $? -ne 0 ]; then
-  announce "Updating pidcat\n"
+  say "Updating pidcat\n"
   mv /tmp/pidcat /usr/local/bin/pidcat
 fi
 
 if [ ! -e "app/kickstarter.keystore" ]; then
-  announce "File \`app/kickstarter.keystore\` does not exist, this will prevent you from creating release builds."
-  announce "To fix this, download the keystore from \`s3://android-ksr-keystores/kickstarter.keystore\` to \`app/kickstarter.keystore\`.\n"
+  say "File \`app/kickstarter.keystore\` does not exist, this will prevent you from creating release builds."
+  say "To fix this, download the keystore from \`s3://android-ksr-keystores/kickstarter.keystore\` to \`app/kickstarter.keystore\`.\n"
 fi
 
 if [ ! -e "app/signing.gradle" ]; then
-  announce "File \`app/signing.gradle\` does not exist, this will prevent you from creating release builds."
-  announce "To fix this, copy the example keystore from \`app/signing.gradle.example\` to \`app/signing.gradle\` then fill out the file with the correct credentials. These can be found in passpack under the entry Android - Keystore.\n"
+  say "File \`app/signing.gradle\` does not exist, this will prevent you from creating release builds."
+  say "To fix this, copy the example keystore from \`app/signing.gradle.example\` to \`app/signing.gradle\` then fill out the file with the correct credentials. These can be found in passpack under the entry Android - Keystore.\n"
 fi
 
-announce "Bootstrap complete!"
+say "Bootstrap complete!"

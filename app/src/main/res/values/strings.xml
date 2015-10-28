@@ -34,6 +34,8 @@
     By signing up you agree to our terms of use, privacy policy, and cookie policy. We’ll never post
     anything without your permission.
   </string>
+  <string name="By_signing_up_you_agree_to_our_sign_up">
+    By signing up you agree to our terms of use, privacy policy, and cookie policy.</string>
   <string name="Campaign">Campaign</string>
   <string name="Cancel">Cancel</string>
   <string name="Categories">Categories</string>
@@ -48,6 +50,7 @@
   <string name="Creator">Creator</string>
   <string name="days">days</string>
   <string name="Development_settings">Development Settings</string>
+  <string name="Discover_new_projects_with_our_weekly_newsletter">Discovery new projects with our weekly newsletter.</string>
   <string name="Discover_projects">Discover projects</string>
   <string name="Done">Done</string>
   <string name="Download_build">Download Build</string>
@@ -77,6 +80,7 @@
   <string name="friend_name_backed_technology_project">%1$s backed a Technology project</string>
   <string name="friend_name_backed_theater_project">%1$s backed a Theater project</string>
   <string name="Friends_Backed">Friends Backed</string>
+  <string name="Full_name">Full name</string>
   <string name="funded">funded</string>
   <string name="goal">goal</string>
   <string name="Help">Help</string>

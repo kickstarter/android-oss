@@ -59,6 +59,13 @@ public class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
     presenter.takeLoginButtonClick();
   }
 
+  @OnClick(R.id.sign_up_button)
+  public void signupButtonOnClick() {
+    final Intent intent = new Intent(this, SignupActivity.class);
+    startActivity(intent);
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
   public void startLoginActivity(final boolean forward) {
     final Intent intent = new Intent(this, LoginActivity.class);
     if (forward) {

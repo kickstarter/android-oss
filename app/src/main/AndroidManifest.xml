@@ -76,6 +76,10 @@
       android:theme="@style/Login" />
 
     <activity
+      android:name=".ui.activities.SignupActivity"
+      android:theme="@style/Login" />
+
+    <activity
       android:name=".ui.activities.ThanksActivity"
       android:theme="@style/ThanksActivity" />
 

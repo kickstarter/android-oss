@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@color/light_gray"
+  android:gravity="center_horizontal">
+
+  <LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <include layout="@layout/signup_toolbar" />
+
+  <LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:paddingLeft="@dimen/grid_3"
+    android:paddingRight="@dimen/grid_3"
+    android:layout_marginTop="36dp"
+    android:gravity="center_horizontal">
+
+    <android.support.design.widget.TextInputLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <EditText
+        android:id="@+id/full_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:singleLine="true"
+        android:hint="@string/Full_name" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <EditText
+        android:id="@+id/email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:singleLine="true"
+        android:hint="Email address" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <EditText
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="26dp"
+        android:inputType="textPassword"
+        android:singleLine="true"
+        android:fontFamily="sans-serif"
+        android:hint="Password" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <Switch
+      android:id="@+id/newsletter_switch"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/Discover_new_projects_with_our_weekly_newsletter"/>
+
+    <Button
+      android:id="@+id/signup_button"
+      android:enabled="false"
+      android:layout_marginTop="26dp"
+      android:layout_marginBottom="8dp"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/Sign_up" />
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:gravity="center_horizontal"
+      android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+      android:textColor="@color/dark_gray"
+      android:text="@string/By_signing_up_you_agree_to_our_sign_up" />
+
+  </LinearLayout>
+  </LinearLayout>
+</ScrollView>

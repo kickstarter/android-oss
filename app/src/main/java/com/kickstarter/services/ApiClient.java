@@ -102,6 +102,12 @@ public class ApiClient {
     return service.postProjectComment(project.param(), CommentBody.builder().body(body).build());
   }
 
+  public Observable<AccessTokenEnvelope> signup(@NonNull final String name, @NonNull final String email,
+    @NonNull final String password, @NonNull final String passwordConfirmation,
+    @NonNull final Number sendNewsletters) {
+    return service.signup(name, email, password, passwordConfirmation, sendNewsletters);
+  }
+
   public Observable<Project> starProject(@NonNull final Project project) {
     return service.starProject(project.param())
       .map(StarEnvelope::project);

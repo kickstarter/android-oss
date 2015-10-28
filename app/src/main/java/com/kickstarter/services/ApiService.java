@@ -61,6 +61,13 @@ import rx.Observable;
   @POST("/v1/projects/{param}/comments/")
   Observable<Comment> postProjectComment(@Path("param") String param, @Body CommentBody body);
 
+  @POST("/v1/users")
+  Observable<AccessTokenEnvelope> signup(@Query("name") String name,
+    @Query("email") String email,
+    @Query("password") String password,
+    @Query("password_confirmation") String passwordConfirmation,
+    @Query("send_newsletters") Number sendNewsletters);
+
   @PUT("/v1/projects/{param}/star")
   Observable<StarEnvelope> starProject(@Path("param") String param);
 

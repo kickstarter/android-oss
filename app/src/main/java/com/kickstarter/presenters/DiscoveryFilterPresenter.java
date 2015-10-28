@@ -33,7 +33,9 @@ public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity>
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    final Observable<List<Category>> categories = apiClient.fetchCategories();
+    final Observable<List<Category>> categories = apiClient.fetchCategories()
+      .retry(3)
+      .onErrorResumeNext(Observable.empty());
 
     final Observable<Pair<DiscoveryFilterActivity, List<Category>>> viewAndCategories =
       RxUtils.combineLatestPair(viewSubject, categories);

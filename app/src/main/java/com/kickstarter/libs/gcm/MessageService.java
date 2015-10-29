@@ -38,7 +38,11 @@ public class MessageService extends GcmListenerService {
     }
 
     final String message = data.getString("message");
-    Timber.d("From: " + from);
+    if (message == null) {
+      Timber.e("Received empty message");
+      return;
+    }
+
     Timber.d("Message: " + message);
 
     if (from.startsWith("/topics/")) {
@@ -47,21 +51,7 @@ public class MessageService extends GcmListenerService {
       // normal downstream message.
     }
 
-    /**
-     * Production applications would usually process the message here.
-     * Eg: - Syncing with server.
-     *     - Store message in local database.
-     *     - Update UI.
-     */
-
-    /**
-     * In some cases it may be useful to show a notification indicating to the user
-     * that a message was received.
-     */
-    if (message != null) {
-      showNotification(message);
-
-    }
+    showNotification(message);
   }
 
   /**

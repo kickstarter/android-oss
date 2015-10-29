@@ -2,6 +2,7 @@ package com.kickstarter;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 
 import com.facebook.FacebookSdk;
@@ -28,6 +29,7 @@ public class KSApplication extends Application {
   @Inject Notifications notifications;
 
   @Override
+  @CallSuper
   public void onCreate() {
     super.onCreate();
 

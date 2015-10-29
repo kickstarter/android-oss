@@ -5,8 +5,8 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 import com.kickstarter.BuildConfig;
 import com.kickstarter.libs.ApiEndpoint;
-import com.kickstarter.libs.Release;
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.Release;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
@@ -100,6 +100,10 @@ public class ApiClient {
 
   public Observable<Comment> postProjectComment(@NonNull final Project project, @NonNull final String body) {
     return service.postProjectComment(project.param(), CommentBody.builder().body(body).build());
+  }
+
+  public Observable<Void> registerPushToken(@NonNull final String token) {
+    return service.registerPushToken(token, release.variant());
   }
 
   public Observable<Project> starProject(@NonNull final Project project) {

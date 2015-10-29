@@ -2,6 +2,7 @@ package com.kickstarter;
 
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Money;
+import com.kickstarter.libs.gcm.RegistrationService;
 import com.kickstarter.presenters.ActivityFeedPresenter;
 import com.kickstarter.presenters.CommentFeedPresenter;
 import com.kickstarter.presenters.DiscoveryFilterPresenter;
@@ -62,6 +63,7 @@ public interface ApplicationGraph {
   void inject(ProjectCardViewHolder __);
   void inject(ProjectStateChangedPositiveViewHolder __);
   void inject(ProjectViewHolder __);
+  void inject(RegistrationService __);
   void inject(RewardViewHolder __);
   void inject(SearchPresenter __);
   void inject(ThanksPresenter __);

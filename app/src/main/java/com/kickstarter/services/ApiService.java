@@ -61,6 +61,9 @@ import rx.Observable;
   @POST("/v1/projects/{param}/comments/")
   Observable<Comment> postProjectComment(@Path("param") String param, @Body CommentBody body);
 
+  @POST("/v1/users/self/push_tokens")
+  Observable<Void> registerPushToken(@Query("token") String token, @Query("push_server") String pushServer);
+
   @PUT("/v1/projects/{param}/star")
   Observable<StarEnvelope> starProject(@Path("param") String param);
 

@@ -3,28 +3,39 @@ package com.kickstarter.libs.gcm;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
+import com.kickstarter.KSApplication;
 import com.kickstarter.R;
+import com.kickstarter.services.ApiClient;
 
 import java.io.IOException;
+
+import javax.inject.Inject;
 
 import timber.log.Timber;
 
 public class RegistrationService extends IntentService {
-  public static final String SENT_TOKEN_TO_SERVER = "sentTokenToServer";
-  public static final String REGISTRATION_COMPLETE = "registrationComplete";
-
   private static final String WORKER_THREAD_NAME = "RegistrationService";
   private static final String[] TOPICS = {"global"};
 
+  @Inject protected ApiClient apiClient;
+
   public RegistrationService() {
     super(WORKER_THREAD_NAME);
+  }
+
+  @Override
+  public void onCreate() {
+    super.onCreate();
+    ((KSApplication) getApplicationContext()).component().inject(this);
   }
 
   @Override
@@ -53,7 +64,7 @@ public class RegistrationService extends IntentService {
    * @param token The new token.
    */
   private void sendTokenToAppServers(@NonNull final String token) {
-    // TODO: Hit API
+    //apiClient.registerPushToken(token);
   }
 
   /**

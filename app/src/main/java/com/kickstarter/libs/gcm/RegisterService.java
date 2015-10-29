@@ -49,7 +49,7 @@ public class RegisterService extends IntentService {
       sendTokenToAppServers(token);
       subscribeTopics(token);
     } catch (final Exception e) {
-      Timber.e("Failed to complete token refresh", e);
+      Timber.e("Failed to complete token refresh: " +  e.toString());
     }
   }
 

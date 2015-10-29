@@ -26,7 +26,7 @@ public class UnregisterService extends IntentService {
       instanceID.deleteToken(getString(R.string.gcm_defaultSenderId), GoogleCloudMessaging.INSTANCE_ID_SCOPE);
       Timber.d("Deleted token");
     } catch (final Exception e) {
-      Timber.e("Failed to delete token", e);
+      Timber.e("Failed to delete token: " + e.toString());
     }
   }
 }

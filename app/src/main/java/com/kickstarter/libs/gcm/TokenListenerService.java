@@ -18,8 +18,8 @@ public class TokenListenerService extends InstanceIDListenerService {
   @Override
   public void onTokenRefresh() {
     // Fetch updated Instance ID token and notify our app's server of any changes (if applicable).
-    Timber.d("Token refreshed, creating new RegistrationService intent");
-    final Intent intent = new Intent(this, RegistrationService.class);
+    Timber.d("Token refreshed, creating new RegisterService intent");
+    final Intent intent = new Intent(this, RegisterService.class);
     startService(intent);
   }
 }

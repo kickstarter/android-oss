@@ -17,13 +17,13 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-public class RegistrationService extends IntentService {
-  private static final String WORKER_THREAD_NAME = "RegistrationService";
+public class RegisterService extends IntentService {
+  private static final String WORKER_THREAD_NAME = "RegisterService";
   private static final String[] TOPICS = {"global"};
 
   @Inject protected ApiClient apiClient;
 
-  public RegistrationService() {
+  public RegisterService() {
     super(WORKER_THREAD_NAME);
   }
 

@@ -52,7 +52,12 @@
     </service>
 
     <service
-      android:name=".libs.gcm.RegistrationService"
+      android:name=".libs.gcm.RegisterService"
+      android:exported="false">
+    </service>
+
+    <service
+      android:name=".libs.gcm.UnregisterService"
       android:exported="false">
     </service>
 

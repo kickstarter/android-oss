@@ -3,7 +3,8 @@ package com.kickstarter.libs;
 import android.content.Context;
 import android.content.Intent;
 
-import com.kickstarter.libs.gcm.RegistrationService;
+import com.kickstarter.libs.gcm.RegisterService;
+import com.kickstarter.libs.gcm.UnregisterService;
 import com.kickstarter.libs.utils.PlayServicesUtils;
 
 public class Notifications {
@@ -22,7 +23,7 @@ public class Notifications {
       return;
     }
 
-    final Intent intent = new Intent(context, RegistrationService.class);
+    final Intent intent = new Intent(context, RegisterService.class);
     context.startService(intent);
   }
 
@@ -31,6 +32,7 @@ public class Notifications {
       return;
     }
 
-    // TODO
+    final Intent intent = new Intent(context, UnregisterService.class);
+    context.startService(intent);
   }
 }

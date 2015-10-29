@@ -1,25 +1,32 @@
-package com.kickstarter.libs.utils;
+package com.kickstarter.libs;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
 
 import com.kickstarter.libs.gcm.RegistrationService;
+import com.kickstarter.libs.utils.PlayServicesUtils;
 
-public class NotificationUtils {
-  public NotificationUtils() {}
+public class Notifications {
+  @ForApplication final Context context;
 
-  public static void registerDevice(@NonNull final Context context) {
+  public Notifications(@ForApplication final Context context) {
+    this.context = context;
+  }
+
+  public void initialize() {
+    registerDevice();
+  }
+
+  public void registerDevice() {
     if (!PlayServicesUtils.isAvailable(context)) {
       return;
     }
 
-    // Start IntentService to register this application with GCM.
     final Intent intent = new Intent(context, RegistrationService.class);
     context.startService(intent);
   }
 
-  public static void unregisterDevice(@NonNull final Context context) {
+  public void unregisterDevice() {
     if (!PlayServicesUtils.isAvailable(context)) {
       return;
     }

@@ -96,6 +96,7 @@
   <string name="Nearby">Nearby</string>
   <string name="Network">Network</string>
   <string name="No_comments">No comments</string>
+  <string name="Notifications">Notifications</string>
   <string name="Nice_to_see_you_again">Nice to see you again.</string>
   <string name="Number_live_projects">%1$s live projects</string>
   <string name="Open_downloads_folder">Open Downloads folder</string>
@@ -130,7 +131,6 @@
   <string name="Search">Search</string>
   <string name="Search_projects">Search projects</string>
   <string name="Select_email_application">Select email application:</string>
-  <string name="Simulate_notification">Simulate notification</string>
   <string name="Sha">SHA</string>
   <string name="Share">Share</string>
   <string name="share_message">"%1$s, via %2$s"</string>

@@ -1,32 +1,32 @@
 package com.kickstarter.ui.views;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
+import com.kickstarter.KSApplication;
 import com.kickstarter.R;
-import com.kickstarter.ui.activities.ProjectActivity;
+import com.kickstarter.libs.Notifications;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SimulateNotificationsView extends LinearLayout {
-  public SimulateNotificationsView(@NonNull final Context context) {
+public class DebugNotificationsView extends LinearLayout {
+  @Inject Notifications notifications;
+
+  public DebugNotificationsView(@NonNull final Context context) {
     this(context, null);
   }
 
-  public SimulateNotificationsView(@NonNull final Context context, @Nullable final AttributeSet attrs) {
+  public DebugNotificationsView(@NonNull final Context context, @Nullable final AttributeSet attrs) {
     this(context, attrs, 0);
   }
 
-  public SimulateNotificationsView(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
+  public DebugNotificationsView(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
     super(context, attrs, defStyleAttr);
   }
 
@@ -34,8 +34,20 @@ public class SimulateNotificationsView extends LinearLayout {
   protected void onFinishInflate() {
     super.onFinishInflate();
     ButterKnife.bind(this);
+    ((KSApplication) getContext().getApplicationContext()).component().inject(this);
   }
 
+  @OnClick(R.id.register_device_button)
+  public void registerDeviceButtonClick() {
+    notifications.registerDevice();
+  }
+
+  @OnClick(R.id.unregister_device_button)
+  public void unregisterDeviceButtonClick() {
+    notifications.unregisterDevice();
+  }
+
+  /*
   @OnClick(R.id.simulate_project_launch_button)
   public void simulateProjectLaunchButtonClick() {
     final Context context = getContext();
@@ -64,12 +76,11 @@ public class SimulateNotificationsView extends LinearLayout {
     int id = 10009; // TODO: Extract, this is just a garbage id
     notificationManager.notify(id, builder.build());
 
-    /*
     NotificationManager mNotificationManager =
       (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
     // mId allows you to update the notification later on.
     mNotificationManager.notify(mId, mBuilder.build());
     Timber.d("launch");
-    */
   }
+  */
 }

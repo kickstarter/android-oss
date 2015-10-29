@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.kickstarter.ui.views.SimulateNotificationsView
+<com.kickstarter.ui.views.DebugNotificationsView
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="vertical"
   android:layout_width="match_parent"
@@ -10,29 +10,20 @@
   android:paddingRight="@dimen/grid_3">
 
   <Button
-    android:id="@+id/register_with_google_cloud_messaging_button"
+    android:id="@+id/register_device_button"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/button_green"
     android:textAllCaps="false"
-    android:text="TODO"
+    android:text="Register Device"
     style="@style/KsrButton" />
 
   <Button
-    android:id="@+id/simulate_project_launch_button"
+    android:id="@+id/unregister_device_button"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/button_green"
     android:textAllCaps="false"
-    android:text="@string/Project_launch"
+    android:text="Unregister Device"
     style="@style/KsrButton" />
-
-  <Button
-    android:id="@+id/simulate_project_success_button"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/button_green"
-    android:textAllCaps="false"
-    android:text="@string/Project_success"
-    style="@style/KsrButton" />
-</com.kickstarter.ui.views.SimulateNotificationsView>
+</com.kickstarter.ui.views.DebugNotificationsView>

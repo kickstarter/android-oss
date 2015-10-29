@@ -150,6 +150,7 @@ public class ApiClient {
     return request -> {
       request.addHeader("Accept", "application/json");
       request.addHeader("Kickstarter-Android-App", release.versionCode().toString());
+      request.addHeader("Kickstarter-App-Id", release.applicationId());
       request.addQueryParam("client_id", clientId());
       if (currentUser.exists()) {
         request.addQueryParam("oauth_token", currentUser.getAccessToken());

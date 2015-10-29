@@ -16,13 +16,13 @@ import retrofit.converter.GsonConverter;
 import rx.Observable;
 
 public class KickstarterClient {
-  private final Release build;
+  private final Release release;
   private final String endpoint;
   private final Gson gson;
   private final KickstarterService service;
 
-  public KickstarterClient(@NonNull final Release build, @NonNull final Gson gson, @NonNull final String endpoint) {
-    this.build = build;
+  public KickstarterClient(@NonNull final Release release, @NonNull final Gson gson, @NonNull final String endpoint) {
+    this.release = release;
     this.gson = gson;
     this.endpoint = endpoint;
     service = kickstarterService();
@@ -52,7 +52,8 @@ public class KickstarterClient {
   private RequestInterceptor requestInterceptor() {
     return request -> {
       request.addHeader("Accept", "application/json");
-      request.addHeader("Kickstarter-Android-App", build.versionCode().toString());
+      request.addHeader("Kickstarter-App-Id", release.applicationId());
+      request.addHeader("Kickstarter-Android-App", release.versionCode().toString());
 
       // Add authorization if it's a Hivequeen environment.
       final Matcher matcher = Pattern.compile("\\Ahttps:\\/\\/([a-z]+)\\.***REMOVED***\\z")
@@ -64,11 +65,11 @@ public class KickstarterClient {
       // TODO: Check whether device is mobile or tablet, append to user agent
       final StringBuilder userAgent = new StringBuilder()
         .append("Kickstarter Android Mobile Variant/")
-        .append(build.variant())
+        .append(release.variant())
         .append(" Code/")
-        .append(build.versionCode())
+        .append(release.versionCode())
         .append(" Version/")
-        .append(build.versionName());
+        .append(release.versionName());
       request.addHeader("User-Agent", userAgent.toString());
     };
   }

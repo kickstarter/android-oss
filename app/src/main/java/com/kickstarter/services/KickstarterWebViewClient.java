@@ -143,6 +143,7 @@ public class KickstarterWebViewClient extends WebViewClient {
 
     // TODO: All this header code is duplicated, refactor
     requestBuilder.addHeader("Kickstarter-Android-App", release.versionCode().toString());
+    requestBuilder.addHeader("Kickstarter-App-Id", release.applicationId());
 
     final Matcher matcher = Pattern.compile("\\Ahttps:\\/\\/([a-z]+)\\.***REMOVED***\\z")
       .matcher(webEndpoint);

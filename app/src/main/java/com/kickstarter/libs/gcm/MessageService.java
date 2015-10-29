@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 
 import com.google.android.gms.gcm.GcmListenerService;
+import com.kickstarter.R;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 
 import timber.log.Timber;
@@ -30,7 +31,11 @@ public class MessageService extends GcmListenerService {
    */
   @Override
   public void onMessageReceived(@NonNull final String from, @NonNull final Bundle data) {
-    // TODO: Do we need to check from for a matching senderID?
+    final String senderId = getString(R.string.gcm_defaultSenderId);
+    if (!from.equals(senderId)) {
+      Timber.e("Received a message from " + from + ", expecting " + senderId);
+      return;
+    }
 
     final String message = data.getString("message");
     Timber.d("From: " + from);

@@ -51,7 +51,7 @@ public class MessageService extends GcmListenerService {
     }
 
     final Activity activity = gson.fromJson(data.getString("activity"), Activity.class);
-    final GCM gcm = gson.fromJson(data.getString("gcmPushData"), GCM.class);
+    final GCM gcm = gson.fromJson(data.getString("gcm"), GCM.class);
 
     if (gcm == null) {
       Timber.e("Cannot parse GCM push data, malformed or unexpected data: " + data.toString());

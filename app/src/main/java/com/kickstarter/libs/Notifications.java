@@ -15,6 +15,7 @@ import com.kickstarter.libs.utils.PlayServicesUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.pushdata.ActivityPushData;
 import com.kickstarter.models.pushdata.GCMPushData;
+import com.kickstarter.services.apiresponses.NotificationEnvelope;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 
 import timber.log.Timber;
@@ -48,9 +49,13 @@ public class Notifications {
     context.startService(intent);
   }
 
-  public void show(@NonNull final GCMPushData gcm, @NonNull final ActivityPushData activity) {
-    if (activity.category().equals(Activity.CATEGORY_SUCCESS)) {
-      notify(gcm.alert());
+  public void show(@NonNull final NotificationEnvelope envelope) {
+    if (envelope.activity() == null) {
+      return;
+    }
+
+    if (envelope.activity().category().equals(Activity.CATEGORY_SUCCESS)) {
+      notify(envelope.gcm().alert());
     }
   }
 

@@ -10,6 +10,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.Notifications;
 import com.kickstarter.models.pushdata.ActivityPushData;
 import com.kickstarter.models.pushdata.GCMPushData;
+import com.kickstarter.services.apiresponses.NotificationEnvelope;
 
 import javax.inject.Inject;
 
@@ -44,14 +45,16 @@ public class MessageService extends GcmListenerService {
       return;
     }
 
-    final GCMPushData gcm = gson.fromJson(data.getString("gcm"), GCMPushData.class);
-    final ActivityPushData activity = gson.fromJson(data.getString("activity"), ActivityPushData.class);
+    final NotificationEnvelope envelope = NotificationEnvelope.builder()
+      .activity(gson.fromJson(data.getString("activity"), ActivityPushData.class))
+      .gcm(gson.fromJson(data.getString("gcm"), GCMPushData.class))
+      .build();
 
-    if (gcm == null) {
-      Timber.e("Cannot parse GCM push data, malformed or unexpected data: " + data.toString());
+    if (envelope == null) {
+      Timber.e("Cannot parse message, malformed or unexpected data: " + data.toString());
       return;
     }
 
-    notifications.show(gcm, activity);
+    notifications.show(envelope);
   }
 }

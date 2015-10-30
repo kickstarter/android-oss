@@ -11,8 +11,14 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 
 import com.google.android.gms.gcm.GcmListenerService;
+import com.google.gson.Gson;
+import com.kickstarter.KSApplication;
 import com.kickstarter.R;
+import com.kickstarter.models.pushdata.Activity;
+import com.kickstarter.models.pushdata.GCM;
 import com.kickstarter.ui.activities.DiscoveryActivity;
+
+import javax.inject.Inject;
 
 import timber.log.Timber;
 
@@ -21,6 +27,13 @@ import timber.log.Timber;
  * determining upstream send status, and automatically displaying simple notifications on the app’s behalf.
  */
 public class MessageService extends GcmListenerService {
+  @Inject Gson gson;
+
+  @Override
+  public void onCreate() {
+    super.onCreate();
+    ((KSApplication) getApplicationContext()).component().inject(this);
+  }
 
   /**
    * Called when message is received.
@@ -37,21 +50,18 @@ public class MessageService extends GcmListenerService {
       return;
     }
 
-    final String message = data.getString("message");
-    if (message == null) {
-      Timber.e("Received empty message");
+    final Activity activity = gson.fromJson(data.getString("activity"), Activity.class);
+    final GCM gcm = gson.fromJson(data.getString("gcmPushData"), GCM.class);
+
+    if (gcm == null) {
+      Timber.e("Cannot parse GCM push data, malformed or unexpected data: " + data.toString());
       return;
     }
 
-    Timber.d("Message: " + message);
+    if (activity != null) {
 
-    if (from.startsWith("/topics/")) {
-      // message received from some topic.
-    } else {
-      // normal downstream message.
     }
-
-    showNotification(message);
+    //showNotification(message);
   }
 
   /**

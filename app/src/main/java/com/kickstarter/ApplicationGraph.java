@@ -2,6 +2,7 @@ package com.kickstarter;
 
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Money;
+import com.kickstarter.libs.gcm.MessageService;
 import com.kickstarter.libs.gcm.RegisterService;
 import com.kickstarter.presenters.ActivityFeedPresenter;
 import com.kickstarter.presenters.CommentFeedPresenter;
@@ -55,6 +56,7 @@ public interface ApplicationGraph {
   void inject(KickstarterWebView __);
   void inject(KSApplication __);
   void inject(LoginPresenter __);
+  void inject(MessageService __);
   void inject(Money __);
   void inject(ProjectActionToolbar __);
   void inject(ProjectContextViewHolder __);

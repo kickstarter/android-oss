@@ -14,7 +14,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.AutoParcelAdapterFactory;
-import com.kickstarter.libs.Notifications;
+import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.Release;
 import com.kickstarter.libs.ConfigLoader;
 import com.kickstarter.libs.CurrentUser;
@@ -111,9 +111,9 @@ public class ApplicationModule {
   @Singleton
   CurrentUser provideCurrentUser(@AccessTokenPreference @NonNull final StringPreference accessTokenPreference,
     @NonNull final Gson gson,
-    @NonNull final Notifications notifications,
+    @NonNull final PushNotifications pushNotifications,
     @NonNull @UserPreference final StringPreference userPreference) {
-    return new CurrentUser(accessTokenPreference, gson, notifications, userPreference);
+    return new CurrentUser(accessTokenPreference, gson, pushNotifications, userPreference);
   }
 
   @Provides
@@ -172,8 +172,8 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  Notifications provideNotifications(@ForApplication @NonNull final Context context) {
-    return new Notifications(context);
+  PushNotifications providePushNotifications(@ForApplication @NonNull final Context context) {
+    return new PushNotifications(context);
   }
 
   @Provides

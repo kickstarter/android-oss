@@ -8,17 +8,17 @@ import auto.parcel.AutoParcel;
 
 @AutoGson
 @AutoParcel
-public abstract class GCMPushData implements Parcelable {
+public abstract class GCM implements Parcelable {
   public abstract String alert();
 
   @AutoParcel.Builder
   public abstract static class Builder {
     public abstract Builder alert(String __);
-    public abstract GCMPushData build();
+    public abstract GCM build();
   }
 
   public static Builder builder() {
-    return new AutoParcel_GCMPushData.Builder();
+    return new AutoParcel_GCM.Builder();
   }
 
   public abstract Builder toBuilder();

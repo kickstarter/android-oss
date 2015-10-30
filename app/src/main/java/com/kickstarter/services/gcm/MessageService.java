@@ -1,4 +1,4 @@
-package com.kickstarter.libs.gcm;
+package com.kickstarter.services.gcm;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -7,10 +7,10 @@ import com.google.android.gms.gcm.GcmListenerService;
 import com.google.gson.Gson;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
-import com.kickstarter.libs.Notifications;
-import com.kickstarter.models.pushdata.ActivityPushData;
-import com.kickstarter.models.pushdata.GCMPushData;
-import com.kickstarter.services.apiresponses.NotificationEnvelope;
+import com.kickstarter.libs.PushNotifications;
+import com.kickstarter.models.pushdata.Activity;
+import com.kickstarter.models.pushdata.GCM;
+import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 
 import javax.inject.Inject;
 
@@ -22,7 +22,7 @@ import timber.log.Timber;
  */
 public class MessageService extends GcmListenerService {
   @Inject Gson gson;
-  @Inject Notifications notifications;
+  @Inject PushNotifications pushNotifications;
 
   @Override
   public void onCreate() {
@@ -45,9 +45,9 @@ public class MessageService extends GcmListenerService {
       return;
     }
 
-    final NotificationEnvelope envelope = NotificationEnvelope.builder()
-      .activity(gson.fromJson(data.getString("activity"), ActivityPushData.class))
-      .gcm(gson.fromJson(data.getString("gcm"), GCMPushData.class))
+    final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder()
+      .activity(gson.fromJson(data.getString("activity"), Activity.class))
+      .gcm(gson.fromJson(data.getString("gcm"), GCM.class))
       .build();
 
     if (envelope == null) {
@@ -55,6 +55,6 @@ public class MessageService extends GcmListenerService {
       return;
     }
 
-    notifications.show(envelope);
+    pushNotifications.show(envelope);
   }
 }

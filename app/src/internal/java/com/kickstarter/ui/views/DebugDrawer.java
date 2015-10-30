@@ -76,12 +76,12 @@ public class DebugDrawer extends FrameLayout {
     setupBuildInformationSection();
   }
 
-  @OnClick(R.id.notifications_button)
-  public void notificationsButtonClick() {
-    final View view = LayoutInflater.from(getContext().getApplicationContext()).inflate(R.layout.debug_notifications_layout, null);
+  @OnClick(R.id.push_notifications_button)
+  public void pushNotificationsButtonClick() {
+    final View view = LayoutInflater.from(getContext().getApplicationContext()).inflate(R.layout.debug_push_notifications_layout, null);
 
     new AlertDialog.Builder(getContext())
-      .setTitle("Notifications")
+      .setTitle("Push notifications")
       .setView(view)
       .show();
   }

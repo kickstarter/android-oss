@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 
 import com.facebook.FacebookSdk;
 import com.kickstarter.libs.ApiCapabilities;
-import com.kickstarter.libs.Notifications;
+import com.kickstarter.libs.PushNotifications;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
@@ -26,7 +26,7 @@ public class KSApplication extends Application {
   private ApplicationComponent component;
   private RefWatcher refWatcher;
   @Inject CookieManager cookieManager;
-  @Inject Notifications notifications;
+  @Inject PushNotifications pushNotifications;
 
   @Override
   @CallSuper
@@ -58,7 +58,7 @@ public class KSApplication extends Application {
 
     FacebookSdk.sdkInitialize(this);
 
-    notifications.initialize();
+    pushNotifications.initialize();
   }
 
   public ApplicationComponent component() {

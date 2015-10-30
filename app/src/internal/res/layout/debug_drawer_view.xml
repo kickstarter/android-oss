@@ -217,11 +217,11 @@
     style="@style/KsrButton" />
 
   <Button
-    android:id="@+id/notifications_button"
+    android:id="@+id/push_notifications_button"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/button_green"
-    android:text="@string/Notifications"
+    android:text="Push notifications"
     style="@style/KsrButton" />
 
 </LinearLayout>

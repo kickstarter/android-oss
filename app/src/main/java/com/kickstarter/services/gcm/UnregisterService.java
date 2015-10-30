@@ -1,4 +1,4 @@
-package com.kickstarter.libs.gcm;
+package com.kickstarter.services.gcm;
 
 import android.app.IntentService;
 import android.content.Intent;

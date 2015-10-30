@@ -1,4 +1,4 @@
-package com.kickstarter.libs.gcm;
+package com.kickstarter.services.gcm;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -10,9 +10,7 @@ import com.google.android.gms.iid.InstanceID;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.CurrentUser;
-import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClient;
-import com.kickstarter.services.apiresponses.RegisterPushTokenEnvelope;
 
 import java.io.IOException;
 

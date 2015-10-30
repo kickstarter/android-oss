@@ -3,6 +3,7 @@ package com.kickstarter.services;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
+import com.kickstarter.models.Empty;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apirequests.CommentBody;
 import com.kickstarter.services.apirequests.PushTokenBody;
@@ -11,7 +12,6 @@ import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.CategoriesEnvelope;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
-import com.kickstarter.services.apiresponses.RegisterPushTokenEnvelope;
 import com.kickstarter.services.apiresponses.StarEnvelope;
 
 import java.util.List;
@@ -64,7 +64,7 @@ import rx.Observable;
   Observable<Comment> postProjectComment(@Path("param") String param, @Body CommentBody body);
 
   @POST("/v1/users/self/push_tokens")
-  Observable<RegisterPushTokenEnvelope> registerPushToken(@Body PushTokenBody body);
+  Observable<Empty> registerPushToken(@Body PushTokenBody body);
 
   @PUT("/v1/projects/{param}/star")
   Observable<StarEnvelope> starProject(@Path("param") String param);

@@ -10,21 +10,19 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.gcm.RegisterService;
-import com.kickstarter.libs.gcm.UnregisterService;
+import com.kickstarter.services.gcm.RegisterService;
+import com.kickstarter.services.gcm.UnregisterService;
 import com.kickstarter.libs.utils.PlayServicesUtils;
 import com.kickstarter.models.Activity;
-import com.kickstarter.models.pushdata.ActivityPushData;
-import com.kickstarter.models.pushdata.GCMPushData;
-import com.kickstarter.services.apiresponses.NotificationEnvelope;
+import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 
 import timber.log.Timber;
 
-public class Notifications {
+public class PushNotifications {
   @ForApplication final Context context;
 
-  public Notifications(@ForApplication final Context context) {
+  public PushNotifications(@ForApplication final Context context) {
     this.context = context;
   }
 
@@ -50,7 +48,7 @@ public class Notifications {
     context.startService(intent);
   }
 
-  public void show(@NonNull final NotificationEnvelope envelope) {
+  public void show(@NonNull final PushNotificationEnvelope envelope) {
     if (envelope.activity() == null) {
       return;
     }

@@ -13,7 +13,7 @@ import timber.log.Timber;
 public class CurrentUser {
   private final StringPreference accessTokenPreference;
   private final Gson gson;
-  private final Notifications notifications;
+  private final PushNotifications pushNotifications;
   private final StringPreference userPreference;
 
   private final PublishSubject<User> userSubject = PublishSubject.create();
@@ -21,10 +21,10 @@ public class CurrentUser {
 
   public CurrentUser(@NonNull final StringPreference accessTokenPreference,
     @NonNull final Gson gson,
-    @NonNull final Notifications notifications,
+    @NonNull final PushNotifications pushNotifications,
     @NonNull final StringPreference userPreference) {
     this.accessTokenPreference = accessTokenPreference;
-    this.notifications = notifications;
+    this.pushNotifications = pushNotifications;
     this.gson = gson;
     this.userPreference = userPreference;
 
@@ -56,7 +56,7 @@ public class CurrentUser {
 
     accessTokenPreference.set(accessToken);
     userSubject.onNext(newUser);
-    notifications.registerDevice();
+    pushNotifications.registerDevice();
   }
 
   public void logout() {
@@ -65,7 +65,7 @@ public class CurrentUser {
     userPreference.delete();
     accessTokenPreference.delete();
     userSubject.onNext(null);
-    notifications.unregisterDevice();
+    pushNotifications.unregisterDevice();
   }
 
   public Observable<User> observable() {

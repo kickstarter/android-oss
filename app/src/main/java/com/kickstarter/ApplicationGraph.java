@@ -2,8 +2,8 @@ package com.kickstarter;
 
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Money;
-import com.kickstarter.libs.gcm.MessageService;
-import com.kickstarter.libs.gcm.RegisterService;
+import com.kickstarter.services.gcm.MessageService;
+import com.kickstarter.services.gcm.RegisterService;
 import com.kickstarter.presenters.ActivityFeedPresenter;
 import com.kickstarter.presenters.CommentFeedPresenter;
 import com.kickstarter.presenters.DiscoveryFilterPresenter;

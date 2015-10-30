@@ -36,7 +36,7 @@
     </receiver>
 
     <service
-      android:name="com.kickstarter.libs.gcm.MessageService"
+      android:name=".services.gcm.MessageService"
       android:exported="false" >
       <intent-filter>
         <action android:name="com.google.android.c2dm.intent.RECEIVE" />
@@ -44,7 +44,7 @@
     </service>
 
     <service
-      android:name="com.kickstarter.libs.gcm.TokenListenerService"
+      android:name=".services.gcm.TokenListenerService"
       android:exported="false">
       <intent-filter>
         <action android:name="com.google.android.gms.iid.InstanceID"/>
@@ -52,12 +52,12 @@
     </service>
 
     <service
-      android:name=".libs.gcm.RegisterService"
+      android:name=".services.gcm.RegisterService"
       android:exported="false">
     </service>
 
     <service
-      android:name=".libs.gcm.UnregisterService"
+      android:name=".services.gcm.UnregisterService"
       android:exported="false">
     </service>
 

@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 
+import com.kickstarter.R;
 import com.kickstarter.libs.gcm.RegisterService;
 import com.kickstarter.libs.gcm.UnregisterService;
 import com.kickstarter.libs.utils.PlayServicesUtils;
@@ -74,7 +75,7 @@ public class Notifications {
 
     final Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
     final NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
-      .setSmallIcon(android.R.drawable.btn_star)
+      .setSmallIcon(R.drawable.ic_kickstarter_k)
       .setContentTitle("Notification")
       .setContentText(message)
       .setAutoCancel(true)

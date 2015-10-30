@@ -5,17 +5,21 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.Notifications;
+import com.kickstarter.models.Activity;
+import com.kickstarter.models.pushdata.ActivityPushData;
+import com.kickstarter.models.pushdata.GCMPushData;
 
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class DebugNotificationsView extends LinearLayout {
+public class DebugNotificationsView extends ScrollView {
   @Inject Notifications notifications;
 
   public DebugNotificationsView(@NonNull final Context context) {
@@ -34,6 +38,11 @@ public class DebugNotificationsView extends LinearLayout {
   protected void onFinishInflate() {
     super.onFinishInflate();
     ButterKnife.bind(this);
+
+    if (isInEditMode()) {
+      return;
+    }
+
     ((KSApplication) getContext().getApplicationContext()).component().inject(this);
   }
 
@@ -47,9 +56,17 @@ public class DebugNotificationsView extends LinearLayout {
     notifications.unregisterDevice();
   }
 
-  /*
-  @OnClick(R.id.simulate_project_launch_button)
+  @OnClick(R.id.simulate_project_success_button)
   public void simulateProjectLaunchButtonClick() {
+    final GCMPushData gcm = GCMPushData.builder().alert("Double Fine Adventure has been successfully funded!").build();
+    final ActivityPushData activity = ActivityPushData.builder()
+      .category(Activity.CATEGORY_SUCCESS)
+      .id(1)
+      .projectId(Long.valueOf(1929840910))
+      .build();
+
+    notifications.show(gcm, activity);
+    /*
     final Context context = getContext();
 
     final NotificationCompat.Builder builder =
@@ -81,6 +98,6 @@ public class DebugNotificationsView extends LinearLayout {
     // mId allows you to update the notification later on.
     mNotificationManager.notify(mId, mBuilder.build());
     Timber.d("launch");
+    */
   }
-  */
 }

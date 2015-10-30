@@ -4,13 +4,14 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
 import com.kickstarter.libs.qualifiers.AutoGson;
+import com.kickstarter.models.Activity;
 
 import auto.parcel.AutoParcel;
 
 @AutoGson
 @AutoParcel
-public abstract class Activity implements Parcelable {
-  public abstract String category();
+public abstract class ActivityPushData implements Parcelable {
+  @Activity.Category public abstract String category();
   @Nullable public abstract Long commentId();
   public abstract long id();
   @Nullable public abstract Long projectId();
@@ -19,16 +20,17 @@ public abstract class Activity implements Parcelable {
   @AutoParcel.Builder
   public abstract static class Builder {
     public abstract Builder commentId(Long __);
-    public abstract Builder category(String __);
+    public abstract Builder category(@Activity.Category String __);
     public abstract Builder id(long __);
     public abstract Builder projectId(Long __);
     public abstract Builder updateId(Long __);
-    public abstract Activity build();
+    public abstract ActivityPushData build();
   }
 
   public static Builder builder() {
-    return new AutoParcel_Activity.Builder();
+    return new AutoParcel_ActivityPushData.Builder();
   }
 
   public abstract Builder toBuilder();
+
 }

@@ -18,6 +18,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresPresenter(TwoFactorPresenter.class)
 public class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
@@ -31,6 +33,17 @@ public class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
 
     setContentView(R.layout.two_factor_layout);
     ButterKnife.bind(this);
+
+    addSubscription(
+      errorMessages()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(this::displayToast)
+    );
+  }
+
+  private Observable<String> errorMessages() {
+    return presenter.errors().tfaCodeMismatchError().map(s -> s != null ? s : this.getString(R.string.The_code_provided_does_not_match))
+      .mergeWith(presenter.errors().genericTfaError().map(__ -> this.getString(R.string.Unable_to_login)));
   }
 
   @OnTextChanged(R.id.code)

@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
@@ -21,6 +20,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresPresenter(LoginPresenter.class)
 public class LoginActivity extends BaseActivity<LoginPresenter> {
@@ -37,32 +37,32 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
 
     final boolean forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
 
-    final Observable<String> errorMessage = presenter.errors().invalidLoginError().map(__ -> R.string.Login_does_not_match_any_of_our_records)
-      .mergeWith(presenter.errors().genericLoginError().map(__ -> R.string.Unable_to_login))
-      .map(this::getString);
-
     addSubscription(
-      errorMessage.subscribe(message -> {
-        this.displayError(message, forward);
-      })
+      errorMessages()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(this::displayToast)
     );
 
     addSubscription(
-      presenter.errors().tfaChallenge().subscribe(__ -> {
-        startTwoFactorActivity(forward);
-      })
+      presenter.errors().tfaChallenge()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(__ -> {
+          startTwoFactorActivity(forward);
+        })
     );
 
     addSubscription(
-      presenter.outputs().loginSuccess().subscribe(__ -> {
-        onSuccess(forward);
-      })
+      presenter.outputs().loginSuccess()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(__ -> {
+          onSuccess(forward);
+        })
     );
   }
 
-  private void displayError(String message, boolean forward) {
-    final Toast toast = Toast.makeText(this, message, Toast.LENGTH_LONG);
-    toast.show();
+  private Observable<String> errorMessages() {
+    return presenter.errors().invalidLoginError().map(s -> s != null ? s : getString(R.string.Login_does_not_match_any_of_our_records))
+      .mergeWith(presenter.errors().genericLoginError().map(s -> s != null ? s : getString(R.string.Unable_to_login)));
   }
 
   @Override

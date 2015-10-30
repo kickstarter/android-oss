@@ -8,6 +8,7 @@ import android.util.Pair;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.Presenter;
+import com.kickstarter.libs.rx.transformers.NeverErrorTransformer;
 import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
@@ -83,8 +84,10 @@ public class ThanksPresenter extends Presenter<ThanksActivity> implements Thanks
       .build();
 
     final Observable<List<Project>> recommendedProjects = apiClient.fetchProjects(params)
+      .compose(new NeverErrorTransformer<>())
       .map(DiscoverEnvelope::projects);
-    final Observable<Category> rootCategory = apiClient.fetchCategory(project.category().rootId());
+    final Observable<Category> rootCategory = apiClient.fetchCategory(project.category().rootId())
+      .compose(new NeverErrorTransformer<>());
     final Observable<Pair<List<Project>, Category>> projectsAndRootCategory =
       RxUtils.zipPair(recommendedProjects, rootCategory);
 

@@ -10,13 +10,14 @@ import android.view.View;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
+import com.kickstarter.libs.rx.transformers.ApiErrorTransformer;
+import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.presenters.errors.LoginPresenterErrors;
 import com.kickstarter.presenters.inputs.LoginPresenterInputs;
 import com.kickstarter.presenters.outputs.LoginPresenterOutputs;
 import com.kickstarter.services.ApiClient;
-import com.kickstarter.services.ApiError;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.activities.LoginActivity;
@@ -40,17 +41,24 @@ public class LoginPresenter extends Presenter<LoginActivity> implements LoginPre
   }
 
   // ERRORS
-  private final PublishSubject<Void> invalidLoginErrorSubject = PublishSubject.create();
-  public final Observable<Void> invalidLoginError() {
-    return invalidLoginErrorSubject.asObservable();
+  private final PublishSubject<ErrorEnvelope> loginError = PublishSubject.create();
+  public final Observable<String> invalidLoginError() {
+    return loginError
+      .filter(ErrorEnvelope::isInvalidLogin)
+      .map(ErrorEnvelope::errorMessages)
+      .map(ListUtils::first);
   }
-  private final PublishSubject<Void> genericLoginErrorSubject = PublishSubject.create();
-  public final Observable<Void> genericLoginError() {
-    return genericLoginErrorSubject.asObservable();
-  }
-  private final PublishSubject<Void> tfaChallengeSubject = PublishSubject.create();
   public final Observable<Void> tfaChallenge() {
-    return tfaChallengeSubject.asObservable();
+    return loginError
+      .filter(ErrorEnvelope::isTfaRequiredError)
+      .map(__ -> null);
+  }
+
+  public final Observable<String> genericLoginError() {
+    return loginError
+      .filter(ErrorEnvelope::isGenericLoginError)
+      .map(ErrorEnvelope::errorMessages)
+      .map(ListUtils::first);
   }
 
   @Inject ApiClient client;
@@ -97,9 +105,11 @@ public class LoginPresenter extends Presenter<LoginActivity> implements LoginPre
       .subscribe(viewAndValid -> viewAndValid.first.setFormEnabled(viewAndValid.second))
     );
 
-    addSubscription(RxUtils.takeWhen(emailAndPassword, loginClick)
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(ep -> submit(ep.first, ep.second))
+    addSubscription(
+      RxUtils.takeWhen(emailAndPassword, loginClick)
+        .switchMap(ep -> submit(ep.first, ep.second))
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(this::success)
     );
   }
 
@@ -107,34 +117,13 @@ public class LoginPresenter extends Presenter<LoginActivity> implements LoginPre
     return StringUtils.isEmail(email) && password.length() > 0;
   }
 
-  private void submit(@NonNull final String email, @NonNull final String password) {
-    client.login(email, password)
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::success, this::error);
+  private Observable<AccessTokenEnvelope> submit(@NonNull final String email, @NonNull final String password) {
+    return client.login(email, password)
+      .compose(new ApiErrorTransformer<>(loginError));
   }
 
   private void success(@NonNull final AccessTokenEnvelope envelope) {
     currentUser.login(envelope.user(), envelope.accessToken());
     loginSuccessSubject.onNext(null);
-  }
-
-  private void error(@NonNull final Throwable e) {
-    if (e instanceof ApiError) {
-      final ApiError error = (ApiError) e;
-      final ErrorEnvelope envelope = error.errorEnvelope();
-
-      switch (envelope.ksrCode()) {
-        case ErrorEnvelope.TFA_REQUIRED:
-        case ErrorEnvelope.TFA_FAILED:
-          tfaChallengeSubject.onNext(null);
-          break;
-        case ErrorEnvelope.INVALID_XAUTH_LOGIN:
-          invalidLoginErrorSubject.onNext(null);
-          break;
-        default:
-          genericLoginErrorSubject.onNext(null);
-          break;
-      }
-    }
   }
 }

@@ -9,6 +9,7 @@ import android.util.Pair;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
+import com.kickstarter.libs.rx.transformers.NeverErrorTransformer;
 import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
@@ -64,7 +65,7 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
 
     final Observable<Project> project = initialProject.map(Project::param).mergeWith(initialProjectParam)
       .filter(param -> param != null)
-      .switchMap(client::fetchProject)
+      .switchMap(param -> client.fetchProject(param).compose(new NeverErrorTransformer<>()))
       .mergeWith(projectOnUserChangeStar)
       .mergeWith(starredProjectOnLoginSuccess)
       .share();

@@ -4,11 +4,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
+import com.kickstarter.libs.rx.transformers.NeverErrorTransformer;
 import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
@@ -51,7 +51,7 @@ public class ActivityFeedPresenter extends Presenter<ActivityFeedActivity> imple
     final Observable<List<Activity>> activities = currentUser.observable()
       .filter(u -> u != null)
       .take(1)
-      .flatMap(user -> client.fetchActivities(new ActivityFeedParams()))
+      .flatMap(__ -> activities())
       .map(ActivityEnvelope::activities);
 
     addSubscription(RxUtils.combineLatestPair(viewSubject, activities)
@@ -90,6 +90,11 @@ public class ActivityFeedPresenter extends Presenter<ActivityFeedActivity> imple
     addSubscription(RxUtils.takePairWhen(viewSubject, projectUpdateUpdateClick)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showProjectUpdate(vp.second)));
+  }
+
+  private Observable<ActivityEnvelope> activities() {
+    return client.fetchActivities(new ActivityFeedParams())
+      .compose(new NeverErrorTransformer<>());
   }
 
   public void emptyActivityFeedDiscoverProjectsClicked(@NonNull final EmptyActivityFeedViewHolder viewHolder) {

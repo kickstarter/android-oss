@@ -8,14 +8,14 @@ import android.util.Pair;
 import android.view.View;
 
 import com.kickstarter.KSApplication;
-import com.kickstarter.R;
-import com.kickstarter.libs.ApiErrorHandler;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
+import com.kickstarter.libs.rx.transformers.ApiErrorTransformer;
+import com.kickstarter.libs.rx.transformers.NeverErrorTransformer;
 import com.kickstarter.libs.utils.RxUtils;
+import com.kickstarter.presenters.errors.TwoFactorPresenterErrors;
 import com.kickstarter.presenters.inputs.TwoFactorPresenterInputs;
 import com.kickstarter.services.ApiClient;
-import com.kickstarter.services.ApiError;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.activities.TwoFactorActivity;
@@ -26,11 +26,24 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public class TwoFactorPresenter extends Presenter<TwoFactorActivity> implements TwoFactorPresenterInputs {
+public class TwoFactorPresenter extends Presenter<TwoFactorActivity> implements TwoFactorPresenterInputs, TwoFactorPresenterErrors {
   // INPUTS
   private final PublishSubject<String> code = PublishSubject.create();
   private final PublishSubject<View> loginClick = PublishSubject.create();
   private final PublishSubject<View> resendClick = PublishSubject.create();
+
+  // ERRORS
+  private final PublishSubject<ErrorEnvelope> tfaError = PublishSubject.create();
+  public Observable<String> tfaCodeMismatchError() {
+    return tfaError
+      .filter(env -> env.ksrCode().equals(ErrorEnvelope.TFA_FAILED))
+      .map(env -> env.errorMessages().get(0));
+  }
+  public Observable<Void> genericTfaError() {
+    return tfaError
+      .filter(env -> !env.ksrCode().equals(ErrorEnvelope.TFA_FAILED))
+      .map(__ -> null);
+  }
 
   @Inject CurrentUser currentUser;
   @Inject ApiClient client;
@@ -38,6 +51,7 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> implements 
   public TwoFactorPresenterInputs inputs() {
     return this;
   }
+  public TwoFactorPresenterErrors errors() { return this; }
 
   @Override
   public void code(@NonNull final String s) {
@@ -78,8 +92,7 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> implements 
       RxUtils.combineLatestPair(viewSubject, tokenEnvelope)
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(
-          viewAndEnvelope -> success(viewAndEnvelope.second, viewAndEnvelope.first),
-          this::error
+          viewAndEnvelope -> success(viewAndEnvelope.second, viewAndEnvelope.first)
         )
     );
 
@@ -87,6 +100,8 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> implements 
       RxUtils.takeWhen(viewSubject, resendClick)
         .switchMap(view -> resendCode(view.email(), view.password()))
         .observeOn(AndroidSchedulers.mainThread())
+          // TODO: It might be a gotcha to have an empty subscription block, but I don't remember
+          // why. We should investigate.
         .subscribe()
     );
   }
@@ -108,32 +123,14 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> implements 
     view.onSuccess();
   }
 
-  private void error(@NonNull final Throwable e) {
-    if (!hasView()) {
-      return;
-    }
-
-    new ApiErrorHandler(e, view()) {
-      @Override
-      public void handleApiError(@NonNull final ApiError apiError) {
-        switch (apiError.errorEnvelope().ksrCode()) {
-          case ErrorEnvelope.TFA_FAILED:
-            displayError(R.string.The_code_provided_does_not_match);
-            break;
-          default:
-            displayError(R.string.Unable_to_login);
-            break;
-        }
-      }
-    }.handleError();
-  }
-
   private Observable<AccessTokenEnvelope> submit(@NonNull final String email, @NonNull final String password,
     @NonNull final String code) {
-    return client.login(email, password, code);
+    return client.login(email, password, code)
+      .compose(new ApiErrorTransformer<>(tfaError));
   }
 
   private Observable<AccessTokenEnvelope> resendCode(@NonNull final String email, @NonNull final String password) {
-    return client.login(email, password);
+    return client.login(email, password)
+      .compose(new NeverErrorTransformer<>());
   }
 }

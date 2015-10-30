@@ -31,6 +31,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresPresenter(CommentFeedPresenter.class)
 public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> implements CommentFeedAdapter.Delegate {
@@ -56,6 +58,12 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> impl
     adapter = new CommentFeedAdapter(this);
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+    addSubscription(
+      toastMessages()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(this::displayToast)
+    );
   }
 
   public void show(@NonNull final Project project, @NonNull final List<Comment> comments,
@@ -139,11 +147,6 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> impl
     presenter.inputs().emptyCommentFeedLoginClicked(viewHolder);
   }
 
-  public void showToastOnPostSuccess() {
-    final Toast toast = Toast.makeText(this, getString(R.string.Comment_posted), Toast.LENGTH_SHORT);
-    toast.show();
-  }
-
   @Override
   protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
     if (requestCode != ActivityRequestCodes.COMMENT_FEED_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED) {
@@ -153,5 +156,11 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> impl
       return;
     }
     presenter.takeLoginSuccess();
+  }
+
+  private Observable<String> toastMessages() {
+    return presenter.errors().postCommentError()
+      .map(s -> s != null ? s : getString(R.string.Post_comment_error))
+      .mergeWith(presenter.outputs().commentPosted().map(__ -> getString(R.string.Comment_posted)));
   }
 }

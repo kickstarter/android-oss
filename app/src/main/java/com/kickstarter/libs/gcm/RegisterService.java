@@ -9,7 +9,10 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.apiresponses.RegisterPushTokenEnvelope;
 
 import java.io.IOException;
 
@@ -22,6 +25,7 @@ public class RegisterService extends IntentService {
   private static final String[] TOPICS = {"global"};
 
   @Inject protected ApiClient apiClient;
+  @Inject protected CurrentUser currentUser;
 
   public RegisterService() {
     super(WORKER_THREAD_NAME);
@@ -59,7 +63,9 @@ public class RegisterService extends IntentService {
    * @param token The new token.
    */
   private void sendTokenToAppServers(@NonNull final String token) {
-    //apiClient.registerPushToken(token);
+    if (currentUser.observable().take(1).toBlocking().single() != null) {
+      apiClient.registerPushToken(token).first().toBlocking().single();
+    }
   }
 
   /**

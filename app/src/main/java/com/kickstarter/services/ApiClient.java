@@ -13,12 +13,14 @@ import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apirequests.CommentBody;
+import com.kickstarter.services.apirequests.PushTokenBody;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.CategoriesEnvelope;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
+import com.kickstarter.services.apiresponses.RegisterPushTokenEnvelope;
 import com.kickstarter.services.apiresponses.StarEnvelope;
 
 import java.util.List;
@@ -102,8 +104,8 @@ public class ApiClient {
     return service.postProjectComment(project.param(), CommentBody.builder().body(body).build());
   }
 
-  public Observable<Void> registerPushToken(@NonNull final String token) {
-    return service.registerPushToken(token, release.variant());
+  public Observable<RegisterPushTokenEnvelope> registerPushToken(@NonNull final String token) {
+    return service.registerPushToken(PushTokenBody.builder().token(token).pushServer("development").build());
   }
 
   public Observable<Project> starProject(@NonNull final Project project) {

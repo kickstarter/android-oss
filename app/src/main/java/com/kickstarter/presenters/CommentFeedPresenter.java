@@ -42,8 +42,8 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
   private final PublishSubject<Void> loginClick = PublishSubject.create();
 
   // OUTPUTS
-  private final PublishSubject<Void> commentPostedSubject = PublishSubject.create();
-  public Observable<Void> commentPosted() { return commentPostedSubject.asObservable(); }
+  private final PublishSubject<Void> commentPosted = PublishSubject.create();
+  public Observable<Void> commentPosted() { return commentPosted.asObservable(); }
 
   // ERRORS
   private final PublishSubject<ErrorEnvelope> postCommentErrorSubject = PublishSubject.create();
@@ -166,10 +166,10 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
 
   private Observable<Comment> postComment(final Project project, final String body) {
     return client.postProjectComment(project, body)
+      .compose(new ApiErrorTransformer<>(postCommentErrorSubject))
       .doOnSubscribe(() -> commentIsPosting.onNext(true))
-      .doOnCompleted(() -> commentPostedSubject.onNext(null))
-      .finallyDo(() -> commentIsPosting.onNext(false))
-      .compose(new ApiErrorTransformer<>(postCommentErrorSubject));
+      .doOnCompleted(() -> commentPosted.onNext(null))
+      .finallyDo(() -> commentIsPosting.onNext(false));
   }
 
   private Observable<CommentsEnvelope> comments(final Project project) {

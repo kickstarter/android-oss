@@ -51,6 +51,10 @@ public abstract class ErrorEnvelope implements Parcelable {
     return ksrCode().equals(TFA_REQUIRED);
   }
 
+  public boolean isTfaFailedError() {
+    return ksrCode().equals(TFA_FAILED);
+  }
+
   /*
     When logging in the only two possible errors are INVALID_XAUTH_LOGIN
     and TFA_REQUIRED, so we consider anything else an unknown error.

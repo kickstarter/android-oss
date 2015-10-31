@@ -36,12 +36,12 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> implements 
   private final PublishSubject<ErrorEnvelope> tfaError = PublishSubject.create();
   public Observable<String> tfaCodeMismatchError() {
     return tfaError
-      .filter(env -> env.ksrCode().equals(ErrorEnvelope.TFA_FAILED))
+      .filter(ErrorEnvelope::isTfaFailedError)
       .map(env -> env.errorMessages().get(0));
   }
   public Observable<Void> genericTfaError() {
     return tfaError
-      .filter(env -> !env.ksrCode().equals(ErrorEnvelope.TFA_FAILED))
+      .filter(env -> !env.isTfaFailedError())
       .map(__ -> null);
   }
 

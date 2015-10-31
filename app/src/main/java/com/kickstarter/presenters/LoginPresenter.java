@@ -44,7 +44,7 @@ public class LoginPresenter extends Presenter<LoginActivity> implements LoginPre
   private final PublishSubject<ErrorEnvelope> loginError = PublishSubject.create();
   public final Observable<String> invalidLoginError() {
     return loginError
-      .filter(ErrorEnvelope::isInvalidLogin)
+      .filter(ErrorEnvelope::isInvalidLoginError)
       .map(ErrorEnvelope::errorMessages)
       .map(ListUtils::first);
   }

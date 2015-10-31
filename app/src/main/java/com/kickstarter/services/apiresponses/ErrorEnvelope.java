@@ -43,7 +43,7 @@ public abstract class ErrorEnvelope implements Parcelable {
     return null;
   }
 
-  public boolean isInvalidLogin() {
+  public boolean isInvalidLoginError() {
     return ksrCode().equals(INVALID_XAUTH_LOGIN);
   }
 

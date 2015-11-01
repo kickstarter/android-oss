@@ -10,8 +10,7 @@ import android.view.View;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
-import com.kickstarter.libs.rx.transformers.ApiErrorTransformer;
-import com.kickstarter.libs.rx.transformers.NeverErrorTransformer;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.presenters.errors.TwoFactorPresenterErrors;
 import com.kickstarter.presenters.inputs.TwoFactorPresenterInputs;
@@ -126,11 +125,11 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> implements 
   private Observable<AccessTokenEnvelope> submit(@NonNull final String email, @NonNull final String password,
     @NonNull final String code) {
     return client.login(email, password, code)
-      .compose(new ApiErrorTransformer<>(tfaError));
+      .compose(Transformers.pipeErrorsTo(tfaError));
   }
 
   private Observable<AccessTokenEnvelope> resendCode(@NonNull final String email, @NonNull final String password) {
     return client.login(email, password)
-      .compose(new NeverErrorTransformer<>());
+      .compose(Transformers.neverError());
   }
 }

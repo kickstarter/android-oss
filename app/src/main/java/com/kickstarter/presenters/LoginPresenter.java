@@ -10,7 +10,7 @@ import android.view.View;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
-import com.kickstarter.libs.rx.transformers.ApiErrorTransformer;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.presenters.errors.LoginPresenterErrors;
@@ -116,7 +116,7 @@ public class LoginPresenter extends Presenter<LoginActivity> implements LoginPre
 
   private Observable<AccessTokenEnvelope> submit(@NonNull final String email, @NonNull final String password) {
     return client.login(email, password)
-      .compose(new ApiErrorTransformer<>(loginError));
+      .compose(Transformers.pipeErrorsTo(loginError));
   }
 
   private void success(@NonNull final AccessTokenEnvelope envelope) {

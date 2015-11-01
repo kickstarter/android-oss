@@ -9,7 +9,7 @@ import android.util.Pair;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
-import com.kickstarter.libs.rx.transformers.ApiErrorTransformer;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Project;
@@ -63,6 +63,6 @@ public class ViewPledgePresenter extends Presenter<ViewPledgeActivity> implement
 
   public Observable<Backing> fetchProjectBacking(@NonNull final Project project, @NonNull final User user) {
     return client.fetchProjectBacking(project, user)
-      .compose(new ApiErrorTransformer<>(backingLoadFailed));
+      .compose(Transformers.pipeErrorsTo(backingLoadFailed));
   }
 }

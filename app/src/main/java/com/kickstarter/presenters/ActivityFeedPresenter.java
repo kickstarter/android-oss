@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
-import com.kickstarter.libs.rx.transformers.NeverErrorTransformer;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
@@ -94,7 +94,7 @@ public class ActivityFeedPresenter extends Presenter<ActivityFeedActivity> imple
 
   private Observable<ActivityEnvelope> activities() {
     return client.fetchActivities(new ActivityFeedParams())
-      .compose(new NeverErrorTransformer<>());
+      .compose(Transformers.neverError());
   }
 
   public void emptyActivityFeedDiscoverProjectsClicked(@NonNull final EmptyActivityFeedViewHolder viewHolder) {

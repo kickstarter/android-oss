@@ -8,7 +8,7 @@ import android.util.Pair;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.Presenter;
-import com.kickstarter.libs.rx.transformers.NeverErrorTransformer;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.services.ApiClient;
@@ -36,7 +36,7 @@ public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity>
 
     final Observable<List<Category>> categories = apiClient.fetchCategories()
       .retry(3)
-      .compose(new NeverErrorTransformer<>());
+      .compose(Transformers.neverError());
 
     final Observable<Pair<DiscoveryFilterActivity, List<Category>>> viewAndCategories =
       RxUtils.combineLatestPair(viewSubject, categories);

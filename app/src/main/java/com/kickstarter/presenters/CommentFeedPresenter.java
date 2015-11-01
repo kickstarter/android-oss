@@ -9,8 +9,7 @@ import android.util.Pair;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
-import com.kickstarter.libs.rx.transformers.ApiErrorTransformer;
-import com.kickstarter.libs.rx.transformers.NeverErrorTransformer;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
@@ -164,7 +163,7 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
 
   private Observable<Comment> postComment(@NonNull final Project project, @NonNull final String body) {
     return client.postProjectComment(project, body)
-      .compose(new ApiErrorTransformer<>(postCommentError))
+      .compose(Transformers.pipeErrorsTo(postCommentError))
       .doOnSubscribe(() -> commentIsPosting.onNext(true))
       .doOnCompleted(() -> commentPosted.onNext(null))
       .finallyDo(() -> commentIsPosting.onNext(false));
@@ -172,7 +171,7 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
 
   private Observable<CommentsEnvelope> comments(@NonNull final Project project) {
     return client.fetchProjectComments(project)
-      .compose(new NeverErrorTransformer<>());
+      .compose(Transformers.neverError());
   }
 
   // todo: add pagination to comments

@@ -36,7 +36,7 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> implements 
   public Observable<String> tfaCodeMismatchError() {
     return tfaError
       .filter(ErrorEnvelope::isTfaFailedError)
-      .map(env -> env.errorMessages().get(0));
+      .map(ErrorEnvelope::errorMessage);
   }
   public Observable<Void> genericTfaError() {
     return tfaError

@@ -39,8 +39,7 @@
         android:text="Name"
         android:singleLine="true"
         android:ellipsize="end"
-        android:textStyle="bold"
-        android:textSize="@dimen/ksr_subhead"
+        android:textAppearance="@style/body2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -56,7 +55,7 @@
         android:id="@+id/blurb"
         android:lines="2"
         android:ellipsize="end"
-        android:textSize="@dimen/ksr_mini_stats"
+        android:textSize="@dimen/caption"
         android:paddingTop="@dimen/grid_2"
         android:paddingBottom="@dimen/grid_2"
         android:text="blurb"

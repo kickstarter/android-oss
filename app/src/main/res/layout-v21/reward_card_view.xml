@@ -41,7 +41,7 @@
     <TextView
       android:id="@+id/pledge_minimum"
       android:layout_below="@id/selected"
-      android:textAppearance="@style/subheadBold"
+      android:textAppearance="@style/subhead"
       android:paddingTop="@dimen/grid_2"
       android:paddingBottom="@dimen/grid_2"
       android:layout_width="match_parent"
@@ -56,7 +56,7 @@
       <com.kickstarter.ui.views.IconTextView
         app:iconType="ss_kickstarter"
         android:id="@+id/backer_badge"
-        android:textSize="@dimen/title"
+        android:textAppearance="@style/headline"
         android:paddingRight="@dimen/grid_1"
         android:paddingEnd="@dimen/grid_1"
         android:layout_width="wrap_content"
@@ -103,7 +103,7 @@
     <TextView
       android:id="@+id/reward_description"
       android:layout_below="@id/limited_reward_labels"
-      android:textSize="@dimen/body"
+      android:textSize="@dimen/subhead"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:paddingTop="@dimen/grid_2"
@@ -115,14 +115,13 @@
       android:layout_below="@id/reward_description"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:textSize="@dimen/ksr_subhead"
-      android:paddingBottom="@dimen/grid_1_half"
-      android:textColor="@color/text_secondary"/>
+      android:textAppearance="@style/body1Secondary"
+      android:paddingBottom="@dimen/grid_1_half"/>
 
     <TextView
       android:id="@+id/estimated_delivery_date"
       android:layout_below="@id/estimated_delivery"
-      android:textSize="@dimen/ksr_subhead"
+      android:textAppearance="@style/body1Primary"
       android:layout_width="match_parent"
       android:layout_height="wrap_content" />
 

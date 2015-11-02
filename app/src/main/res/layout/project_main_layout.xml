@@ -24,8 +24,7 @@
       android:id="@+id/project_name"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:textSize="@dimen/title"
-      android:textColor="@color/text_dark"
+      android:textAppearance="@style/headline"
       android:paddingBottom="@dimen/grid_1_half" />
 
     <LinearLayout
@@ -40,8 +39,7 @@
         android:singleLine="true"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/ksr_caption"
-        android:textColor="@color/text_dark"
+        android:textAppearance="@style/body1Primary"
         android:clickable="true" />
 
       <LinearLayout
@@ -54,7 +52,7 @@
         <TextView
           android:text="@string/Youre_a_backer"
           android:singleLine="true"
-          android:textSize="@dimen/ksr_caption"
+          android:textAppearance="@style/body1Primary"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 
@@ -62,7 +60,7 @@
           app:iconType="ss_kickstarter"
           android:id="@+id/backer_badge"
           android:layout_gravity="center_vertical"
-          android:textSize="@dimen/ksr_mini_stats"
+          android:textSize="@dimen/caption"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="@string/backer_icon"
@@ -77,7 +75,7 @@
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_3"
       android:layout_marginBottom="@dimen/grid_3"
-      android:textSize="@dimen/body"
+      android:textSize="@dimen/subhead"
       android:textColor="@color/text_dark"
       android:clickable="true"
       android:paddingBottom="@dimen/grid_1" />
@@ -125,7 +123,7 @@
         android:id="@+id/share_button"
         android:background="@drawable/button_share"
         android:textColor="@color/dark_gray"
-        android:textSize="@dimen/ksr_caption"
+        android:textSize="@dimen/body"
         android:layout_width="@dimen/grid_10"
         android:layout_height="@dimen/grid_4"
         android:layout_alignParentRight="true"

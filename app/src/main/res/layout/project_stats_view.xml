@@ -15,13 +15,12 @@
 
     <TextView
       android:id="@+id/backers_count"
-      android:textSize="@dimen/ksr_stats"
+      android:textAppearance="@style/subhead"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:textColor="@color/text_dark" />
+      android:layout_height="wrap_content" />
 
     <TextView
-      android:textSize="@dimen/ksr_mini_stats"
+      android:textSize="@dimen/caption"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/backers"
@@ -36,10 +35,9 @@
 
     <TextView
       android:id="@+id/pledged"
-      android:textSize="@dimen/ksr_stats"
+      android:textAppearance="@style/subhead"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:textColor="@color/text_dark" />
+      android:layout_height="wrap_content" />
 
     <LinearLayout
       android:layout_width="wrap_content"
@@ -47,14 +45,14 @@
       android:orientation="horizontal">
 
       <TextView
-        android:textSize="@dimen/ksr_mini_stats"
+        android:textSize="@dimen/caption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/pledged_of_"
         android:textColor="@color/dark_gray" />
 
       <TextView
-        android:textSize="@dimen/ksr_mini_stats"
+        android:textSize="@dimen/caption"
         android:id="@+id/goal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -71,10 +69,9 @@
     <TextView
       android:id="@+id/deadline_countdown"
       android:singleLine="true"
-      android:textSize="@dimen/ksr_stats"
+      android:textAppearance="@style/subhead"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:textColor="@color/text_dark" />
+      android:layout_height="wrap_content" />
 
     <LinearLayout
       android:layout_width="wrap_content"
@@ -83,13 +80,13 @@
 
       <TextView
         android:id="@+id/deadline_countdown_unit"
-        android:textSize="@dimen/ksr_mini_stats"
+        android:textSize="@dimen/caption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/dark_gray" />
 
       <TextView
-        android:textSize="@dimen/ksr_mini_stats"
+        android:textSize="@dimen/caption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/_to_go"

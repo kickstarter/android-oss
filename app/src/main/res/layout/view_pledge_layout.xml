@@ -40,13 +40,13 @@
 
           <TextView
             android:id="@+id/name"
-            android:textSize="@dimen/ksr_name"
+            android:textSize="@dimen/subhead"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
           <TextView
             android:id="@+id/sequence"
-            android:textSize="@dimen/ksr_subhead"
+            android:textAppearance="@style/body1Primary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/name"/>
@@ -57,7 +57,7 @@
       <TextView
         android:text="@string/Pledged"
         android:paddingBottom="@dimen/grid_1"
-        android:textAppearance="@style/subheadBold"
+        android:textAppearance="@style/subhead"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
@@ -78,7 +78,7 @@
         android:text="@string/Reward"
         android:paddingTop="@dimen/grid_3"
         android:paddingBottom="@dimen/grid_1"
-        android:textAppearance="@style/subheadBold"
+        android:textAppearance="@style/subhead"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
@@ -94,7 +94,7 @@
         android:text="@string/Shipping"
         android:paddingTop="@dimen/grid_3"
         android:paddingBottom="@dimen/grid_1"
-        android:textAppearance="@style/subheadBold"
+        android:textAppearance="@style/subhead"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

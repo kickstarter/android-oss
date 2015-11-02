@@ -17,6 +17,7 @@ import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.presenters.LoginPresenter;
 
 import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
@@ -28,6 +29,9 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
   @Bind(R.id.email) EditText emailEditText;
   @Bind(R.id.login_button) Button loginButton;
   @Bind(R.id.password) EditText passwordEditText;
+
+  private @BindString(R.string.Login_does_not_match_any_of_our_records) String loginDoesNotMatchString;
+  private @BindString(R.string.Unable_to_login) String unableToLoginString;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -62,8 +66,8 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
   }
 
   private Observable<String> errorMessages() {
-    return presenter.errors().invalidLoginError().map(ObjectUtils.coalesceWith(getString(R.string.Login_does_not_match_any_of_our_records)))
-      .mergeWith(presenter.errors().genericLoginError().map(ObjectUtils.coalesceWith(getString(R.string.Unable_to_login))));
+    return presenter.errors().invalidLoginError().map(ObjectUtils.coalesceWith(loginDoesNotMatchString))
+      .mergeWith(presenter.errors().genericLoginError().map(ObjectUtils.coalesceWith(unableToLoginString)));
   }
 
   @Override

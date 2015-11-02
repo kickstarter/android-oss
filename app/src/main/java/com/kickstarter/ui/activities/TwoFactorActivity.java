@@ -16,6 +16,7 @@ import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.presenters.TwoFactorPresenter;
 
 import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
@@ -27,6 +28,9 @@ public class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
   public @Bind(R.id.code) EditText codeEditText;
   public @Bind(R.id.resend_button) Button resendButton;
   public @Bind(R.id.login_button) Button loginButton;
+
+  private @BindString(R.string.The_code_provided_does_not_match) String codeMismatchString;
+  private @BindString(R.string.Unable_to_login) String unableToLoginString;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -43,8 +47,8 @@ public class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
   }
 
   private Observable<String> errorMessages() {
-    return presenter.errors().tfaCodeMismatchError().map(ObjectUtils.coalesceWith(getString(R.string.The_code_provided_does_not_match)))
-      .mergeWith(presenter.errors().genericTfaError().map(__ -> this.getString(R.string.Unable_to_login)));
+    return presenter.errors().tfaCodeMismatchError().map(ObjectUtils.coalesceWith(codeMismatchString))
+      .mergeWith(presenter.errors().genericTfaError().map(__ -> unableToLoginString));
   }
 
   @OnTextChanged(R.id.code)

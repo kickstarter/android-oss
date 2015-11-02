@@ -28,6 +28,7 @@ import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
@@ -44,6 +45,9 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> impl
   public @Bind(R.id.comment_feed_recycler_view) RecyclerView recyclerView;
   @Nullable @Bind(R.id.comment_body) EditText commentBodyEditText;
   public @Nullable @Bind(R.id.post_button) TextView postCommentButton;
+
+  private @BindString(R.string.Post_comment_error) String postCommentErrorString;
+  private @BindString(R.string.Comment_posted) String commentPostedString;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -160,7 +164,7 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> impl
 
   private Observable<String> toastMessages() {
     return presenter.errors().postCommentError()
-      .map(ObjectUtils.coalesceWith(getString(R.string.Post_comment_error)))
-      .mergeWith(presenter.outputs().commentPosted().map(__ -> getString(R.string.Comment_posted)));
+      .map(ObjectUtils.coalesceWith(postCommentErrorString))
+      .mergeWith(presenter.outputs().commentPosted().map(__ -> commentPostedString));
   }
 }

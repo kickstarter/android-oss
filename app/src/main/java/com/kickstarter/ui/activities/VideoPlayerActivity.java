@@ -74,7 +74,7 @@ public class VideoPlayerActivity extends BaseActivity implements ExoPlayer.Liste
 
   private void preparePlayer(final boolean playWhenReady) {
     if (player == null) {
-      player = ExoPlayer.Factory.newInstance(TRACK_RENDERER_COUNT, 1000, 5000);
+      player = ExoPlayer.Factory.newInstance(TRACK_RENDERER_COUNT);
       player.addListener(this);
       player.seekTo(playerPosition);
       playerNeedsPrepare = true;

@@ -18,15 +18,23 @@
   <dimen name="grid_12">96dp</dimen>
   <dimen name="grid_20">160dp</dimen>
 
-  <!-- Kickstarter typography-->
-  <!-- todo: naming conventions: temp names are prefixed with ksr_-->
-  <dimen name="ksr_mini_stats">13sp</dimen>
-  <dimen name="ksr_caption">14sp</dimen>
-  <dimen name="ksr_subhead">15sp</dimen>
-  <dimen name="ksr_name">16sp</dimen>
-  <dimen name="body">17sp</dimen>
+  <!-- Typography-->
+  <dimen name="caption">12sp</dimen>
+  <dimen name="body">14sp</dimen>
+  <dimen name="subhead">16sp</dimen>
+  <dimen name="headline">20sp</dimen>
+  <dimen name="editorial_headline">26sp</dimen>
+
+  <dimen name="caption_line_height">18sp</dimen>
+  <dimen name="body_line_height">20sp</dimen>
+  <dimen name="subhead_line_height">22sp</dimen>
+  <dimen name="headline_line_height">26sp</dimen>
+  <dimen name="editorial_headline_line_height">32sp</dimen>
+
+  <!-- temp typography -->
   <dimen name="ksr_stats">18sp</dimen>
-  <dimen name="title">20sp</dimen>
+  <dimen name="headline_24">24sp</dimen>
+  <dimen name="display_4">112sp</dimen>
 
   <!-- Kickstarter & Material values-->
   <dimen name="ksr_card_elevation">1dp</dimen>
@@ -47,20 +55,6 @@
   <dimen name="button_icon_fixed_width">54dp</dimen>
   <dimen name="button_corner_radius">4dp</dimen>
   <dimen name="button_stroke_width">1dp</dimen>
-
-  <!-- Material typography
-    http://www.google.com/design/spec/style/typography.html#typography-styles -->
-  <dimen name="body_1">14sp</dimen>
-  <dimen name="body_2">13sp</dimen>
-  <dimen name="button">14sp</dimen>
-  <dimen name="caption">12sp</dimen>
-  <dimen name="display_1">34sp</dimen>
-  <dimen name="display_2">45sp</dimen>
-  <dimen name="display_3">56sp</dimen>
-  <dimen name="display_4">112sp</dimen>
-  <dimen name="headline">24sp</dimen>
-  <dimen name="menu">14sp</dimen>
-  <dimen name="subhead">16sp</dimen>
 
   <dimen name="progress_bar_min_height">6dp</dimen>
 

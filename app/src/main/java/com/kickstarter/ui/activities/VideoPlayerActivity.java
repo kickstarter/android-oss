@@ -11,6 +11,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.MediaController;
+import android.widget.ProgressBar;
 
 import com.google.android.exoplayer.AspectRatioFrameLayout;
 import com.google.android.exoplayer.ExoPlaybackException;
@@ -45,14 +46,16 @@ public class VideoPlayerActivity extends BaseActivity implements ExoPlayer.Liste
   private Video video;
 
   public @Bind(R.id.root) View root;
-  public @Bind(R.id.video_frame) AspectRatioFrameLayout videoFrame;
   public @Bind(R.id.surface_view) SurfaceView surfaceView;
+  public @Bind(R.id.loading_indicator) ProgressBar loadingIndicatorProgressBar;
+  public @Bind(R.id.video_frame) AspectRatioFrameLayout videoFrame;
 
   @Override
   public void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.video_player_layout);
     ButterKnife.bind(this);
+    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
 
     final Intent intent = getIntent();
     final Project project = intent.getParcelableExtra(getString(R.string.intent_project));
@@ -84,7 +87,6 @@ public class VideoPlayerActivity extends BaseActivity implements ExoPlayer.Liste
     if (playerNeedsPrepare) {
       buildRenderers(player, video);
       playerNeedsPrepare = false;
-      // update control visibilities
     }
 
     player.sendMessage(videoRenderer, MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, surfaceView.getHolder().getSurface());
@@ -104,8 +106,22 @@ public class VideoPlayerActivity extends BaseActivity implements ExoPlayer.Liste
   }
 
   @Override
-  public void onPlayerStateChanged(final boolean playWhenReady, final int playbackState) {
+  public void onDestroy() {
+    super.onDestroy();
+    releasePlayer();
+  }
 
+  @Override
+  public void onPlayerStateChanged(final boolean playWhenReady, final int playbackState) {
+    if (playbackState == ExoPlayer.STATE_ENDED) {
+      mediaController.show();
+    }
+
+    if (playbackState == ExoPlayer.STATE_BUFFERING) {
+      loadingIndicatorProgressBar.setVisibility(View.VISIBLE);
+    } else {
+      loadingIndicatorProgressBar.setVisibility(View.GONE);
+    }
   }
 
   @Override
@@ -126,19 +142,31 @@ public class VideoPlayerActivity extends BaseActivity implements ExoPlayer.Liste
     }
   }
 
-  @Override
-  public void surfaceCreated(SurfaceHolder surfaceHolder) {
-
+  private void releasePlayer() {
+    if (player != null) {
+      playerPosition = player.getCurrentPosition();
+      player.release();
+      player = null;
+    }
   }
 
   @Override
-  public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-
+  public void surfaceCreated(@NonNull final SurfaceHolder surfaceHolder) {
+    if (player != null) {
+      player.sendMessage(videoRenderer, MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, surfaceHolder.getSurface());
+    }
   }
 
   @Override
-  public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+  public void surfaceChanged(@NonNull final SurfaceHolder surfaceHolder, final int format, final int width,
+    final int height) {}
 
+  @Override
+  public void surfaceDestroyed(@NonNull final SurfaceHolder surfaceHolder) {
+    if (player != null) {
+      surfaceHolder.getSurface().release();
+      player.blockingSendMessage(videoRenderer, MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, surfaceHolder.getSurface());
+    }
   }
 
   public void toggleControlsVisibility() {

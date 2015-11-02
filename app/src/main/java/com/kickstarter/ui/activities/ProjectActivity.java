@@ -194,6 +194,12 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
     startActivity(intent);
   }
 
+  public void startVideoPlayerActivity(@NonNull final Project project) {
+    final Intent intent = new Intent(this, VideoPlayerActivity.class)
+      .putExtra(getString(R.string.intent_project), project);
+    startActivity(intent);
+  }
+
   @Override
   protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
     if (requestCode != ActivityRequestCodes.PROJECT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED) {

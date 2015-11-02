@@ -55,6 +55,7 @@ public class ProjectViewHolder extends KsrViewHolder {
     void projectCreatorNameClicked(ProjectViewHolder viewHolder);
     void projectShareClicked(ProjectViewHolder viewHolder);
     void projectUpdatesClicked(ProjectViewHolder viewHolder);
+    void projectVideoStarted(ProjectViewHolder viewHolder);
   }
 
   public ProjectViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
@@ -120,6 +121,11 @@ public class ProjectViewHolder extends KsrViewHolder {
   @OnClick({R.id.creator_name, R.id.creator_info})
   public void creatorNameClick() {
     delegate.projectCreatorNameClicked(this);
+  }
+
+  @OnClick(R.id.play_button_overlay)
+  public void playButtonClick() {
+    delegate.projectVideoStarted(this);
   }
 
   @OnClick(R.id.updates)

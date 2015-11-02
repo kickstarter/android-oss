@@ -55,7 +55,6 @@ public class VideoPlayerActivity extends BaseActivity implements ExoPlayer.Liste
     super.onCreate(savedInstanceState);
     setContentView(R.layout.video_player_layout);
     ButterKnife.bind(this);
-    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
 
     final Intent intent = getIntent();
     final Project project = intent.getParcelableExtra(getString(R.string.intent_project));
@@ -64,8 +63,6 @@ public class VideoPlayerActivity extends BaseActivity implements ExoPlayer.Liste
     root.setOnTouchListener(((view, motionEvent) -> {
       if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
         toggleControlsVisibility();
-      } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-        view.performClick();
       }
       return true;
     }));
@@ -82,6 +79,7 @@ public class VideoPlayerActivity extends BaseActivity implements ExoPlayer.Liste
       player.seekTo(playerPosition);
       playerNeedsPrepare = true;
       mediaController.setMediaPlayer(new PlayerControl(player));
+      mediaController.setEnabled(true);
     }
 
     if (playerNeedsPrepare) {
@@ -159,7 +157,9 @@ public class VideoPlayerActivity extends BaseActivity implements ExoPlayer.Liste
 
   @Override
   public void surfaceChanged(@NonNull final SurfaceHolder surfaceHolder, final int format, final int width,
-    final int height) {}
+    final int height) {
+
+  }
 
   @Override
   public void surfaceDestroyed(@NonNull final SurfaceHolder surfaceHolder) {

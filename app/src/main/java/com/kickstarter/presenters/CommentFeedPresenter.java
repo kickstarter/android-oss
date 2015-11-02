@@ -46,9 +46,9 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
   public Observable<Void> commentPosted() { return commentPosted.asObservable(); }
 
   // ERRORS
-  private final PublishSubject<ErrorEnvelope> postCommentErrorSubject = PublishSubject.create();
+  private final PublishSubject<ErrorEnvelope> postCommentError = PublishSubject.create();
   public Observable<String> postCommentError() {
-    return postCommentErrorSubject
+    return postCommentError
       .map(ErrorEnvelope::errorMessages)
       .map(ListUtils::first);
   }
@@ -166,7 +166,7 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
 
   private Observable<Comment> postComment(final Project project, final String body) {
     return client.postProjectComment(project, body)
-      .compose(new ApiErrorTransformer<>(postCommentErrorSubject))
+      .compose(new ApiErrorTransformer<>(postCommentError))
       .doOnSubscribe(() -> commentIsPosting.onNext(true))
       .doOnCompleted(() -> commentPosted.onNext(null))
       .finallyDo(() -> commentIsPosting.onNext(false));

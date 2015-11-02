@@ -32,9 +32,9 @@ public class ViewPledgePresenter extends Presenter<ViewPledgeActivity> implement
   @Inject CurrentUser currentUser;
 
   // Errors
-  private PublishSubject<ErrorEnvelope> backingLoadFailedSubject = PublishSubject.create();
+  private PublishSubject<ErrorEnvelope> backingLoadFailed = PublishSubject.create();
   public Observable<Void> backingLoadFailed() {
-    return backingLoadFailedSubject.map(__ -> null);
+    return backingLoadFailed.map(__ -> null);
   }
 
   @Override
@@ -63,6 +63,6 @@ public class ViewPledgePresenter extends Presenter<ViewPledgeActivity> implement
 
   public Observable<Backing> fetchProjectBacking(@NonNull final Project project, @NonNull final User user) {
     return client.fetchProjectBacking(project, user)
-      .compose(new ApiErrorTransformer<>(backingLoadFailedSubject));
+      .compose(new ApiErrorTransformer<>(backingLoadFailed));
   }
 }

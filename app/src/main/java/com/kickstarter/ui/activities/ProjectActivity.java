@@ -105,18 +105,13 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
       .putExtra(getString(R.string.intent_project), project)
       .putExtra(getString(R.string.intent_url), project.editPledgeUrl())
       .putExtra(getString(R.string.intent_toolbar_title), getString(R.string.Manage_pledge));
-    startActivity(intent);
-    overrideEnterTransition();
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   @Override
   public void onBackPressed() {
     super.onBackPressed();
     overrideExitTransition();
-  }
-
-  public void overrideEnterTransition() {
-    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   public void overrideExitTransition() {
@@ -155,15 +150,13 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
       .putExtra(getString(R.string.intent_project), project)
       .putExtra(getString(R.string.intent_url), project.newPledgeUrl())
       .putExtra(getString(R.string.intent_toolbar_title), getString(R.string.Back_this_project));
-    startActivity(intent);
-    overrideEnterTransition();
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   public void startCommentsActivity(@NonNull final Project project) {
     final Intent intent = new Intent(this, CommentFeedActivity.class)
       .putExtra(getString(R.string.intent_project), project);
-    startActivity(intent);
-    overrideEnterTransition();
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   public void startRewardSelectedCheckout(@NonNull final Project project, @NonNull final Reward reward) {
@@ -171,8 +164,7 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
       .putExtra(getString(R.string.intent_project), project)
       .putExtra(getString(R.string.intent_toolbar_title), getString(R.string.Back_this_project))
       .putExtra(getString(R.string.intent_url), project.rewardSelectedUrl(reward));
-    startActivity(intent);
-    overrideEnterTransition();
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   // todo: limit the apps you can share to
@@ -186,8 +178,7 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
   private void startWebViewActivity(@NonNull final String url) {
     final Intent intent = new Intent(this, DisplayWebViewActivity.class)
       .putExtra(getString(R.string.intent_url), url);
-    startActivity(intent);
-    overrideEnterTransition();
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   public void startLoginToutActivity() {
@@ -199,8 +190,7 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
   public void startViewPledgeActivity(@NonNull final Project project) {
     final Intent intent = new Intent(this, ViewPledgeActivity.class)
       .putExtra(getString(R.string.intent_project), project);
-    startActivity(intent);
-    overrideEnterTransition();
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   @Override

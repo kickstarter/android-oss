@@ -1,6 +1,8 @@
 package com.kickstarter.libs;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.AnimRes;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -107,6 +109,12 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
     }
 
     outState.putBundle(PRESENTER_KEY, presenterEnvelope);
+  }
+
+  protected final void startActivityWithTransition(@NonNull final Intent intent, @AnimRes final int enterAnim,
+    @AnimRes final int exitAnim) {
+    startActivity(intent);
+    overridePendingTransition(enterAnim, exitAnim);
   }
 
   protected final void addSubscription(@NonNull final Subscription subscription) {

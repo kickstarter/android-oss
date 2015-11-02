@@ -31,10 +31,9 @@
   <dimen name="headline_line_height">26sp</dimen>
   <dimen name="editorial_headline_line_height">32sp</dimen>
 
-  <!-- temp typography -->
-  <dimen name="ksr_stats">18sp</dimen>
-  <dimen name="headline_24">24sp</dimen>
-  <dimen name="display_4">112sp</dimen>
+  <!-- Icon sizes -->
+  <dimen name="chevron_right_icon">24sp</dimen>
+  <dimen name="empty_feed_icon">112sp</dimen>
 
   <!-- Kickstarter & Material values-->
   <dimen name="ksr_card_elevation">1dp</dimen>
@@ -45,7 +44,6 @@
   <dimen name="card_corner_radius">0dp</dimen>
   <dimen name="card_margin_x">@dimen/grid_2</dimen>
   <dimen name="card_margin_y">@dimen/grid_1</dimen>
-  <dimen name="card_padding_action">@dimen/grid_1</dimen>
   <dimen name="card_padding_action_half">@dimen/grid_1_half</dimen>
 
   <!-- Buttons -->

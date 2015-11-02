@@ -164,7 +164,7 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
     );
   }
 
-  private Observable<Comment> postComment(final Project project, final String body) {
+  private Observable<Comment> postComment(@NonNull final Project project, @NonNull final String body) {
     return client.postProjectComment(project, body)
       .compose(new ApiErrorTransformer<>(postCommentError))
       .doOnSubscribe(() -> commentIsPosting.onNext(true))
@@ -172,7 +172,7 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
       .finallyDo(() -> commentIsPosting.onNext(false));
   }
 
-  private Observable<CommentsEnvelope> comments(final Project project) {
+  private Observable<CommentsEnvelope> comments(@NonNull final Project project) {
     return client.fetchProjectComments(project)
       .compose(new NeverErrorTransformer<>());
   }

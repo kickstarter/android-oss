@@ -88,6 +88,7 @@
   </style>
 
   <style name="VideoPlayerActivity" parent="KsrTheme">
+    <item name="android:statusBarColor">@color/transparent</item>
     <item name="android:windowNoTitle">true</item>
     <item name="android:windowBackground">@color/black</item>
   </style>

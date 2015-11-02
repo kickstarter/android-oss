@@ -12,9 +12,10 @@ import android.widget.TextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.CircleTransform;
-import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.Money;
+import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.models.Project;
+import com.kickstarter.ui.views.IconTextView;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
@@ -27,9 +28,8 @@ public class ProjectViewHolder extends KsrViewHolder {
   private Project project;
   private final Delegate delegate;
 
-//  protected @Nullable @Bind(R.id.play_button_overlay) IconTextView playButtonIconTextView;
-//  protected @Nullable @Bind(R.id.project_detail_video) VideoView videoView;
-  protected @Bind(R.id.project_detail_photo) ImageView photoImageView;
+  protected @Bind(R.id.play_button_overlay) IconTextView playButtonIconTextView;
+  protected @Bind(R.id.project_photo) ImageView photoImageView;
   protected @Bind(R.id.project_name) TextView projectNameTextView;
   protected @Bind(R.id.creator_name) TextView creatorNameTextView;
   protected @Bind(R.id.backer_label) LinearLayout backerLabelLinearLayout;
@@ -70,6 +70,11 @@ public class ProjectViewHolder extends KsrViewHolder {
 
     /* Video */
     Picasso.with(context).load(project.photo().full()).into(photoImageView);
+    if (project.hasVideo()) {
+      playButtonIconTextView.setVisibility(View.VISIBLE);
+    } else {
+      playButtonIconTextView.setVisibility(View.GONE);
+    }
 
     /* Project */
     blurbTextView.setText(Html.fromHtml(context.getString(R.string.Blurb_read_more, project.blurb())));

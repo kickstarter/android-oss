@@ -146,8 +146,7 @@
 
   <style name="body2" parent="TextAppearance.AppCompat">
     <item name="android:textSize">@dimen/body</item>
-    <item name="android:textStyle">bold</item>
-    <item name="android:textColor">@color/text_secondary</item>
+    <item name="android:textColor">@color/text_primary</item>
     <item name="android:height">@dimen/body_line_height</item>
     <item name="android:fontFamily">@string/font_family_medium</item>
   </style>

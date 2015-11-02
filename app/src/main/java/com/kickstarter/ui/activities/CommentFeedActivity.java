@@ -11,12 +11,12 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
@@ -160,7 +160,7 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> impl
 
   private Observable<String> toastMessages() {
     return presenter.errors().postCommentError()
-      .map(s -> s != null ? s : getString(R.string.Post_comment_error))
+      .map(ObjectUtils.coalesceWith(getString(R.string.Post_comment_error)))
       .mergeWith(presenter.outputs().commentPosted().map(__ -> getString(R.string.Comment_posted)));
   }
 }

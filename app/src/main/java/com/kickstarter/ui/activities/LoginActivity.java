@@ -13,6 +13,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.presenters.LoginPresenter;
 
 import butterknife.Bind;
@@ -61,8 +62,8 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
   }
 
   private Observable<String> errorMessages() {
-    return presenter.errors().invalidLoginError().map(s -> s != null ? s : getString(R.string.Login_does_not_match_any_of_our_records))
-      .mergeWith(presenter.errors().genericLoginError().map(s -> s != null ? s : getString(R.string.Unable_to_login)));
+    return presenter.errors().invalidLoginError().map(ObjectUtils.coalesceWith(getString(R.string.Login_does_not_match_any_of_our_records)))
+      .mergeWith(presenter.errors().genericLoginError().map(ObjectUtils.coalesceWith(getString(R.string.Unable_to_login))));
   }
 
   @Override

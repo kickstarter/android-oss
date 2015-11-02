@@ -12,6 +12,7 @@ import android.widget.EditText;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.presenters.TwoFactorPresenter;
 
 import butterknife.Bind;
@@ -42,7 +43,7 @@ public class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
   }
 
   private Observable<String> errorMessages() {
-    return presenter.errors().tfaCodeMismatchError().map(s -> s != null ? s : this.getString(R.string.The_code_provided_does_not_match))
+    return presenter.errors().tfaCodeMismatchError().map(ObjectUtils.coalesceWith(getString(R.string.The_code_provided_does_not_match)))
       .mergeWith(presenter.errors().genericTfaError().map(__ -> this.getString(R.string.Unable_to_login)));
   }
 

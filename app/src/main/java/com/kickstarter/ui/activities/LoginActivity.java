@@ -30,8 +30,8 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
   @Bind(R.id.login_button) Button loginButton;
   @Bind(R.id.password) EditText passwordEditText;
 
-  private @BindString(R.string.Login_does_not_match_any_of_our_records) String loginDoesNotMatchString;
-  private @BindString(R.string.Unable_to_login) String unableToLoginString;
+  @BindString(R.string.Login_does_not_match_any_of_our_records) String loginDoesNotMatchString;
+  @BindString(R.string.Unable_to_login) String unableToLoginString;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {

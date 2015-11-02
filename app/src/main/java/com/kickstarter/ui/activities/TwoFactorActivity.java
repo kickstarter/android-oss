@@ -29,8 +29,8 @@ public class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
   public @Bind(R.id.resend_button) Button resendButton;
   public @Bind(R.id.login_button) Button loginButton;
 
-  private @BindString(R.string.The_code_provided_does_not_match) String codeMismatchString;
-  private @BindString(R.string.Unable_to_login) String unableToLoginString;
+  @BindString(R.string.The_code_provided_does_not_match) String codeMismatchString;
+  @BindString(R.string.Unable_to_login) String unableToLoginString;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {

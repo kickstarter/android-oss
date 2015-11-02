@@ -1,7 +1,6 @@
 package com.kickstarter.libs.rx.transformers;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 
@@ -15,9 +14,9 @@ import rx.subjects.PublishSubject;
   sent to the publish subject.
  */
 public class ApiErrorTransformer<T> implements Observable.Transformer<T, T> {
-  @Nullable final private PublishSubject<ErrorEnvelope> errors;
+  @NonNull final private PublishSubject<ErrorEnvelope> errors;
 
-  public ApiErrorTransformer(@Nullable final PublishSubject<ErrorEnvelope> errors) {
+  public ApiErrorTransformer(@NonNull final PublishSubject<ErrorEnvelope> errors) {
     this.errors = errors;
   }
 
@@ -26,7 +25,7 @@ public class ApiErrorTransformer<T> implements Observable.Transformer<T, T> {
     return source
       .doOnError(e -> {
         final ErrorEnvelope env = ErrorEnvelope.fromThrowable(e);
-        if (env != null && errors != null) {
+        if (env != null) {
           errors.onNext(env);
         }
       })

@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 
 import com.kickstarter.libs.qualifiers.AutoGson;
+import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.services.ApiError;
 
 import java.lang.annotation.Retention;
@@ -63,5 +64,12 @@ public abstract class ErrorEnvelope implements Parcelable {
     return
       !ksrCode().equals(INVALID_XAUTH_LOGIN) &&
         !ksrCode().equals(TFA_REQUIRED);
+  }
+
+  /**
+   * Returns the first error message available, or `null` if there are none.
+   */
+  public @Nullable String errorMessage() {
+    return ListUtils.first(errorMessages());
   }
 }

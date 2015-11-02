@@ -11,7 +11,6 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.rx.transformers.ApiErrorTransformer;
-import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.presenters.errors.LoginPresenterErrors;
@@ -45,8 +44,7 @@ public class LoginPresenter extends Presenter<LoginActivity> implements LoginPre
   public final Observable<String> invalidLoginError() {
     return loginError
       .filter(ErrorEnvelope::isInvalidLoginError)
-      .map(ErrorEnvelope::errorMessages)
-      .map(ListUtils::first);
+      .map(ErrorEnvelope::errorMessage);
   }
   public final Observable<Void> tfaChallenge() {
     return loginError
@@ -57,8 +55,7 @@ public class LoginPresenter extends Presenter<LoginActivity> implements LoginPre
   public final Observable<String> genericLoginError() {
     return loginError
       .filter(ErrorEnvelope::isGenericLoginError)
-      .map(ErrorEnvelope::errorMessages)
-      .map(ListUtils::first);
+      .map(ErrorEnvelope::errorMessage);
   }
 
   @Inject ApiClient client;

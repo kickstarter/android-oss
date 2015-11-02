@@ -11,7 +11,6 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.rx.transformers.ApiErrorTransformer;
 import com.kickstarter.libs.rx.transformers.NeverErrorTransformer;
-import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
@@ -49,8 +48,7 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
   private final PublishSubject<ErrorEnvelope> postCommentError = PublishSubject.create();
   public Observable<String> postCommentError() {
     return postCommentError
-      .map(ErrorEnvelope::errorMessages)
-      .map(ListUtils::first);
+      .map(ErrorEnvelope::errorMessage);
   }
 
   private final PublishSubject<Void> loginSuccess = PublishSubject.create();

@@ -63,6 +63,6 @@ public class DisplayWebViewActivity extends BaseActivity {
   }
 
   private void overrideExitTransition() {
-    overridePendingTransition(R.anim.fade_in, R.anim.slide_out_bottom);
+    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 }

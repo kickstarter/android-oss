@@ -61,12 +61,14 @@ public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
     final Intent intent = new Intent(this, DisplayWebViewActivity.class)
       .putExtra(getString(R.string.intent_url), activity.projectUpdateUrl());
     startActivity(intent);
+    overrideEnterTransition();
   }
 
   public void startProjectActivity(@NonNull final Project project) {
     final Intent intent = new Intent(this, ProjectActivity.class)
       .putExtra(getString(R.string.intent_project), project);
     startActivity(intent);
+    overrideEnterTransition();
   }
 
   @Override
@@ -77,5 +79,9 @@ public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
     if (resultCode != RESULT_OK) {
       return;
     }
+  }
+
+  public void overrideEnterTransition() {
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 }

@@ -68,8 +68,7 @@ public class PushNotifications {
       return;
     }
 
-    final Intent intent = new Intent(context, RegisterService.class);
-    context.startService(intent);
+    context.startService(new Intent(context, RegisterService.class));
   }
 
   public void unregisterDevice() {
@@ -77,8 +76,7 @@ public class PushNotifications {
       return;
     }
 
-    final Intent intent = new Intent(context, UnregisterService.class);
-    context.startService(intent);
+    context.startService(new Intent(context, UnregisterService.class));
   }
 
   public void add(@NonNull final PushNotificationEnvelope envelope) {

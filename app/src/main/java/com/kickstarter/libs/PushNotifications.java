@@ -83,7 +83,7 @@ public class PushNotifications {
     notifications.onNext(envelope);
   }
 
-  private NotificationCompat.Builder builder() {
+  private NotificationCompat.Builder notificationBuilder() {
     return new NotificationCompat.Builder(context)
       .setSmallIcon(R.drawable.ic_kickstarter_k)
       .setColor(context.getResources().getColor(R.color.green))
@@ -94,7 +94,7 @@ public class PushNotifications {
     final GCM gcm = envelope.gcm();
 
     // TODO: Friend icon, intent to load friends
-    final Notification notification = builder()
+    final Notification notification = notificationBuilder()
       .setContentText(gcm.alert())
       .setContentTitle(gcm.title())
       .setStyle(new NotificationCompat.BigTextStyle().bigText(gcm.alert()))
@@ -107,7 +107,7 @@ public class PushNotifications {
     final Activity activity = envelope.activity();
     final GCM gcm = envelope.gcm();
 
-    final Notification notification = builder()
+    final Notification notification = notificationBuilder()
       .setLargeIcon(fetchBitmap(activity.projectPhoto(), false))
       .setContentIntent(projectContentIntent(activity.projectId()))
       .setContentText(gcm.alert())
@@ -124,7 +124,7 @@ public class PushNotifications {
 
     // TODO: Content intent
 
-    final Notification notification = builder()
+    final Notification notification = notificationBuilder()
       .setLargeIcon(fetchBitmap(activity.projectPhoto(), false))
       .setContentText(gcm.alert())
       .setContentTitle(gcm.title())
@@ -146,7 +146,7 @@ public class PushNotifications {
   private void showProjectReminder(@NonNull final PushNotificationEnvelope envelope) {
     final GCM gcm = envelope.gcm();
 
-    final Notification notification = builder()
+    final Notification notification = notificationBuilder()
       .setLargeIcon(fetchBitmap(envelope.project().photoUrl(), false))
       .setContentIntent(projectContentIntent(envelope.project().id()))
       .setContentText(gcm.alert())

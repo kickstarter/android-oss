@@ -45,7 +45,7 @@ public class VideoPlayerActivity extends BaseActivity implements ExoPlayer.Liste
   private long playerPosition;
   private Video video;
 
-  public @Bind(R.id.root) View root;
+  public @Bind(R.id.video_player_layout) View rootView;
   public @Bind(R.id.surface_view) SurfaceView surfaceView;
   public @Bind(R.id.loading_indicator) ProgressBar loadingIndicatorProgressBar;
   public @Bind(R.id.video_frame) AspectRatioFrameLayout videoFrame;
@@ -60,7 +60,7 @@ public class VideoPlayerActivity extends BaseActivity implements ExoPlayer.Liste
     final Project project = intent.getParcelableExtra(getString(R.string.intent_project));
     video = project.video();
 
-    root.setOnTouchListener(((view, motionEvent) -> {
+    rootView.setOnTouchListener(((view, motionEvent) -> {
       if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
         toggleControlsVisibility();
       }
@@ -69,7 +69,7 @@ public class VideoPlayerActivity extends BaseActivity implements ExoPlayer.Liste
 
     surfaceView.getHolder().addCallback(this);
     mediaController = new MediaController(this);
-    mediaController.setAnchorView(root);
+    mediaController.setAnchorView(rootView);
   }
 
   private void preparePlayer(final boolean playWhenReady) {

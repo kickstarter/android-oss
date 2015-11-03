@@ -2,10 +2,23 @@
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
   android:color="@color/green_darken_10">
   <item>
-    <shape>
-      <corners android:radius="@dimen/button_corner_radius"/>
-      <solid android:color="@color/green" />
-    </shape>
+    <selector>
+
+      <item android:state_enabled="true">
+        <shape>
+          <corners android:radius="@dimen/button_corner_radius"/>
+          <solid android:color="@color/green" />
+        </shape>
+      </item>
+
+      <item android:state_enabled="false">
+        <shape>
+          <corners android:radius="@dimen/button_corner_radius"/>
+          <solid android:color="@color/green_alpha_50" />
+        </shape>
+      </item>
+
+    </selector>
   </item>
 </ripple>
 

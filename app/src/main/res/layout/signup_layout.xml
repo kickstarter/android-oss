@@ -4,7 +4,7 @@
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@color/light_gray"
+  android:background="@color/white"
   android:gravity="center_horizontal">
 
   <LinearLayout
@@ -20,7 +20,6 @@
     android:layout_height="fill_parent"
     android:paddingLeft="@dimen/grid_3"
     android:paddingRight="@dimen/grid_3"
-    android:layout_marginTop="36dp"
     android:gravity="center_horizontal">
 
     <android.support.design.widget.TextInputLayout
@@ -59,7 +58,7 @@
         android:id="@+id/password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="26dp"
+        android:layout_marginBottom="16dp"
         android:inputType="textPassword"
         android:singleLine="true"
         android:fontFamily="sans-serif"
@@ -71,21 +70,26 @@
       android:id="@+id/newsletter_switch"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:textColor="@color/dark_gray"
+      android:textAppearance="@style/TextAppearance.AppCompat.Caption"
       android:text="@string/Discover_new_projects_with_our_weekly_newsletter"/>
 
     <Button
       android:id="@+id/signup_button"
+      style="@style/KsrButton"
       android:enabled="false"
-      android:layout_marginTop="26dp"
-      android:layout_marginBottom="8dp"
+      android:layout_marginTop="@dimen/grid_2"
+      android:layout_marginBottom="@dimen/grid_2"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
+      android:background="@drawable/button_green"
       android:text="@string/Sign_up" />
 
     <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:gravity="center_horizontal"
+      android:layout_marginLeft="10dp"
+      android:layout_marginRight="10dp"
       android:textAppearance="@style/TextAppearance.AppCompat.Caption"
       android:textColor="@color/dark_gray"
       android:text="@string/By_signing_up_you_agree_to_our_sign_up" />

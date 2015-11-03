@@ -120,51 +120,53 @@
   </style>
 
   <!-- Typography -->
-  <style name="captionPrimary" parent="TextAppearance.AppCompat">
-    <item name="android:textSize">@dimen/caption</item>
-    <item name="android:textColor">@color/text_primary</item>
-  </style>
-
-  <style name="captionSecondary" parent="TextAppearance.AppCompat">
-    <item name="android:textSize">@dimen/caption</item>
-    <item name="android:textColor">@color/text_secondary</item>
-  </style>
-
-  <style name="body1Primary" parent="TextAppearance.AppCompat">
-    <item name="android:textSize">@dimen/body</item>
+  <style name="TextPrimary">
     <item name="android:textColor">@color/text_primary</item>
   </style>
   
-  <style name="body1Secondary" parent="TextAppearance.AppCompat">
-    <item name="android:textSize">@dimen/body</item>
+  <style name="TextSecondary">
     <item name="android:textColor">@color/text_secondary</item>
   </style>
 
-  <style name="body2" parent="TextAppearance.AppCompat">
+  <style name="TextPrimary.Caption">
+    <item name="android:textSize">@dimen/caption</item>
+    <item name="android:lineSpacingExtra">@dimen/caption_line_spacing_extra</item>
+  </style>
+
+  <style name="TextSecondary.Caption">
+    <item name="android:textSize">@dimen/caption</item>
+    <item name="android:lineSpacingExtra">@dimen/caption_line_spacing_extra</item>
+  </style>
+
+  <style name="TextPrimary.Body">
     <item name="android:textSize">@dimen/body</item>
-    <item name="android:textColor">@color/text_primary</item>
+    <item name="android:lineSpacingExtra">@dimen/body_line_spacing_extra</item>
+  </style>
+  
+  <style name="TextSecondary.Body">
+    <item name="android:textSize">@dimen/body</item>
+    <item name="android:lineSpacingExtra">@dimen/body_line_spacing_extra</item>
+  </style>
+
+  <style name="TextPrimary.Body.Medium">
     <item name="android:fontFamily">@string/font_family_medium</item>
   </style>
 
-  <style name="subheadRegular" parent="TextAppearance.AppCompat">
-    <item name="android:textColor">@color/text_primary</item>
+  <style name="TextPrimary.Subhead">
     <item name="android:textSize">@dimen/subhead</item>
+    <item name="android:lineSpacingExtra">@dimen/subhead_line_spacing_extra</item>
   </style>
 
-  <style name="subheadMedium" parent="TextAppearance.AppCompat">
-    <item name="android:textColor">@color/text_primary</item>
-    <item name="android:textSize">@dimen/subhead</item>
+  <style name="TextPrimary.Subhead.Medium">
     <item name="android:fontFamily">@string/font_family_medium</item>
   </style>
 
-  <style name="headline" parent="TextAppearance.AppCompat">
-    <item name="android:textColor">@color/text_primary</item>
+  <style name="TextPrimary.Headline">
     <item name="android:textSize">@dimen/headline</item>
     <item name="android:fontFamily">@string/font_family_medium</item>
   </style>
 
-  <style name="editorialHeadline" parent="TextAppearance.AppCompat">
-    <item name="android:textColor">@color/text_primary</item>
+  <style name="TextPrimary.EditorialHeadline">
     <item name="android:textSize">@dimen/editorial_headline</item>
     <item name="android:fontFamily">@string/font_family_medium</item>
   </style>

@@ -65,9 +65,11 @@ public abstract class PushNotificationEnvelope implements Parcelable {
   }
 
   public int signature() {
-    // Used to uniquely identify notifications in case we ever want to update them. Just using the hash code as a substitute
-    // for a unique server-side id.
-    return hashCode();
+    // When we display an Android notification, we can give it a id. If the server sends a notification with the same
+    // id, Android updates the existing notification with new information rather than creating a new notification.
+    //
+    // We don't have unique server ids (yet?), so I'm just using the alert text as a weak substitute.
+    return gcm().alert().hashCode();
   }
 
   @AutoGson

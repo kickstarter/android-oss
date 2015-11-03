@@ -70,8 +70,8 @@ public abstract class PushNotificationEnvelope implements Parcelable {
     return hashCode();
   }
 
-  @AutoParcel
   @AutoGson
+  @AutoParcel
   public abstract static class Project implements Parcelable {
     @Nullable public abstract Long id();
     @Nullable public abstract String photoUrl();

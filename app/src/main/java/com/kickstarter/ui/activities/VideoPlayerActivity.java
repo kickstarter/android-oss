@@ -1,8 +1,6 @@
 package com.kickstarter.ui.activities;
 
 import android.content.Intent;
-import android.media.MediaCodec;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,34 +12,20 @@ import android.widget.MediaController;
 import android.widget.ProgressBar;
 
 import com.google.android.exoplayer.AspectRatioFrameLayout;
-import com.google.android.exoplayer.ExoPlaybackException;
 import com.google.android.exoplayer.ExoPlayer;
-import com.google.android.exoplayer.MediaCodecAudioTrackRenderer;
-import com.google.android.exoplayer.MediaCodecVideoTrackRenderer;
-import com.google.android.exoplayer.extractor.ExtractorSampleSource;
-import com.google.android.exoplayer.upstream.Allocator;
-import com.google.android.exoplayer.upstream.DataSource;
-import com.google.android.exoplayer.upstream.DefaultAllocator;
-import com.google.android.exoplayer.upstream.DefaultUriDataSource;
-import com.google.android.exoplayer.util.PlayerControl;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.ExtractorRendererBuilder;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Video;
+import com.kickstarter.ui.views.KsrVideoPlayer;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class VideoPlayerActivity extends BaseActivity implements ExoPlayer.Listener, SurfaceHolder.Callback {
-  private final int TRACK_RENDERER_COUNT = 3; // audio, video, text
-  private final int BUFFER_SEGMENT_SIZE = 64 * 1024;
-  private final int BUFFER_SEGMENT_COUNT = 256;
-
+public class VideoPlayerActivity extends BaseActivity implements SurfaceHolder.Callback, KsrVideoPlayer.Listener {
   private MediaController mediaController;
-  private MediaCodecVideoTrackRenderer videoRenderer;
-  private MediaCodecAudioTrackRenderer audioRenderer;
-  private ExoPlayer player;
-  private boolean playerNeedsPrepare;
+  private KsrVideoPlayer player;
   private long playerPosition;
   private Video video;
 
@@ -73,34 +57,15 @@ public class VideoPlayerActivity extends BaseActivity implements ExoPlayer.Liste
   }
 
   private void preparePlayer(final boolean playWhenReady) {
-    if (player == null) {
-      player = ExoPlayer.Factory.newInstance(TRACK_RENDERER_COUNT);
-      player.addListener(this);
-      player.seekTo(playerPosition);
-      playerNeedsPrepare = true;
-      mediaController.setMediaPlayer(new PlayerControl(player));
-      mediaController.setEnabled(true);
-    }
+    player = new KsrVideoPlayer(new ExtractorRendererBuilder(this, video.high()));
+    player.setListener(this);
+    player.seekTo(playerPosition);
+    mediaController.setMediaPlayer(player.getPlayerControl());
+    mediaController.setEnabled(true);
 
-    if (playerNeedsPrepare) {
-      buildRenderers(player, video);
-      playerNeedsPrepare = false;
-    }
-
-    player.sendMessage(videoRenderer, MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, surfaceView.getHolder().getSurface());
+    player.prepare();
+    player.setSurface(surfaceView.getHolder().getSurface());
     player.setPlayWhenReady(playWhenReady);
-  }
-
-  public void buildRenderers(@NonNull final ExoPlayer player, @NonNull final Video video) {
-    final Allocator allocator = new DefaultAllocator(BUFFER_SEGMENT_SIZE);
-    final DataSource dataSource = new DefaultUriDataSource(this, video.high());
-    final ExtractorSampleSource sampleSource = new ExtractorSampleSource(Uri.parse(video.high()), dataSource,
-      allocator, BUFFER_SEGMENT_COUNT * BUFFER_SEGMENT_SIZE);
-
-    videoRenderer = new MediaCodecVideoTrackRenderer(this, sampleSource, MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT);
-    audioRenderer = new MediaCodecAudioTrackRenderer(sampleSource);
-
-    player.prepare(videoRenderer, audioRenderer);
   }
 
   @Override
@@ -110,7 +75,15 @@ public class VideoPlayerActivity extends BaseActivity implements ExoPlayer.Liste
   }
 
   @Override
-  public void onPlayerStateChanged(final boolean playWhenReady, final int playbackState) {
+  public void onResume() {
+    super.onResume();
+    if (player == null) {
+      preparePlayer(true);
+    }
+  }
+
+  @Override
+  public void onStateChanged(final boolean plaWhenReady, final int playbackState) {
     if (playbackState == ExoPlayer.STATE_ENDED) {
       mediaController.show();
     }
@@ -119,24 +92,6 @@ public class VideoPlayerActivity extends BaseActivity implements ExoPlayer.Liste
       loadingIndicatorProgressBar.setVisibility(View.VISIBLE);
     } else {
       loadingIndicatorProgressBar.setVisibility(View.GONE);
-    }
-  }
-
-  @Override
-  public void onPlayWhenReadyCommitted() {
-
-  }
-
-  @Override
-  public void onPlayerError(@Nullable final ExoPlaybackException error) {
-
-  }
-
-  @Override
-  public void onResume() {
-    super.onResume();
-    if (player == null) {
-      preparePlayer(true);
     }
   }
 
@@ -151,21 +106,21 @@ public class VideoPlayerActivity extends BaseActivity implements ExoPlayer.Liste
   @Override
   public void surfaceCreated(@NonNull final SurfaceHolder surfaceHolder) {
     if (player != null) {
-      player.sendMessage(videoRenderer, MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, surfaceHolder.getSurface());
+      player.setSurface(surfaceView.getHolder().getSurface());
     }
   }
 
   @Override
   public void surfaceChanged(@NonNull final SurfaceHolder surfaceHolder, final int format, final int width,
     final int height) {
-
+    // Do nothing for now.
   }
 
   @Override
   public void surfaceDestroyed(@NonNull final SurfaceHolder surfaceHolder) {
     if (player != null) {
       surfaceHolder.getSurface().release();
-      player.blockingSendMessage(videoRenderer, MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, surfaceHolder.getSurface());
+      player.pushSurface(true);
     }
   }
 

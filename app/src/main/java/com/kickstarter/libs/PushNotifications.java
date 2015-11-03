@@ -157,7 +157,7 @@ public class PushNotifications {
     }
   }
 
-  private NotificationManager notificationManager() {
+  private @NonNull NotificationManager notificationManager() {
     return (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
   }
 }

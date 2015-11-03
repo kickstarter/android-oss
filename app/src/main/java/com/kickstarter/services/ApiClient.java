@@ -104,7 +104,7 @@ public class ApiClient {
     return service.postProjectComment(project.param(), CommentBody.builder().body(body).build());
   }
 
-  public Observable<Empty> registerPushToken(@NonNull final String token) {
+  public @NonNull Observable<Empty> registerPushToken(@NonNull final String token) {
     return service.registerPushToken(PushTokenBody.builder().token(token).pushServer("development").build());
   }
 

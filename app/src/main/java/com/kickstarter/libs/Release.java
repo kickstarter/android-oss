@@ -15,7 +15,7 @@ public class Release {
     this.packageInfo = packageInfo;
   }
 
-  public String applicationId() {
+  public @NonNull String applicationId() {
     return packageInfo.packageName;
   }
 

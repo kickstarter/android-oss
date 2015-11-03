@@ -57,7 +57,7 @@ public abstract class PushNotificationEnvelope implements Parcelable {
   }
 
   public boolean isProjectReminder() {
-    return !isProjectActivity() && project() != null; // TODO: The first check might be redundant
+    return project() != null;
   }
 
   public boolean isProjectUpdateActivity() {

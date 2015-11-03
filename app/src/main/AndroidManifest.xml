@@ -22,45 +22,6 @@
     android:label="@string/app_name"
     android:theme="@style/KsrTheme">
 
-    <!-- Handle messages sent from GCM to app -->
-    <receiver
-      android:name="com.google.android.gms.gcm.GcmReceiver"
-      android:exported="true"
-      android:permission="com.google.android.c2dm.permission.SEND" >
-      <intent-filter>
-        <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-        <!-- The registration action is only needed for pre-4.4 KitKat devices -->
-        <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-        <category android:name="${applicationId}" />
-      </intent-filter>
-    </receiver>
-
-    <service
-      android:name=".services.gcm.MessageService"
-      android:exported="false" >
-      <intent-filter>
-        <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-      </intent-filter>
-    </service>
-
-    <service
-      android:name=".services.gcm.TokenListenerService"
-      android:exported="false">
-      <intent-filter>
-        <action android:name="com.google.android.gms.iid.InstanceID"/>
-      </intent-filter>
-    </service>
-
-    <service
-      android:name=".services.gcm.RegisterService"
-      android:exported="false">
-    </service>
-
-    <service
-      android:name=".services.gcm.UnregisterService"
-      android:exported="false">
-    </service>
-
     <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
 
     <activity
@@ -138,6 +99,49 @@
       android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
       android:theme="@android:style/Theme.Translucent.NoTitleBar"
       android:label="@string/app_name" />
+
+    <!-- Sets up the app to send, receive, register with GCM. -->
+    <receiver
+      android:name="com.google.android.gms.gcm.GcmReceiver"
+      android:exported="true"
+      android:permission="com.google.android.c2dm.permission.SEND" >
+      <intent-filter>
+        <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+        <!-- The registration action is only needed for pre-4.4 KitKat devices -->
+        <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+        <category android:name="${applicationId}" />
+      </intent-filter>
+    </receiver>
+
+    <!-- Receives new message events from GCM. -->
+    <service
+      android:name=".services.gcm.MessageService"
+      android:exported="false" >
+      <intent-filter>
+        <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+      </intent-filter>
+    </service>
+
+    <!-- Processes token refresh events from GCM (e.g. token expired). Registers a new token. -->
+    <service
+      android:name=".services.gcm.TokenListenerService"
+      android:exported="false">
+      <intent-filter>
+        <action android:name="com.google.android.gms.iid.InstanceID"/>
+      </intent-filter>
+    </service>
+
+    <!-- Registers new tokens with the app, sets up device subscription with GCM. -->
+    <service
+      android:name=".services.gcm.RegisterService"
+      android:exported="false">
+    </service>
+
+    <!-- Unsubscribes the device from GCM. -->
+    <service
+      android:name=".services.gcm.UnregisterService"
+      android:exported="false">
+    </service>
 
     <provider
       android:authorities="com.facebook.app.FacebookContentProvider${applicationId}"

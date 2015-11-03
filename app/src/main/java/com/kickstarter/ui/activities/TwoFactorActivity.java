@@ -12,12 +12,16 @@ import android.widget.EditText;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.presenters.TwoFactorPresenter;
 
 import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresPresenter(TwoFactorPresenter.class)
 public class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
@@ -25,12 +29,26 @@ public class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
   public @Bind(R.id.resend_button) Button resendButton;
   public @Bind(R.id.login_button) Button loginButton;
 
+  @BindString(R.string.The_code_provided_does_not_match) String codeMismatchString;
+  @BindString(R.string.Unable_to_login) String unableToLoginString;
+
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.two_factor_layout);
     ButterKnife.bind(this);
+
+    addSubscription(
+      errorMessages()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(this::displayToast)
+    );
+  }
+
+  private Observable<String> errorMessages() {
+    return presenter.errors().tfaCodeMismatchError().map(ObjectUtils.coalesceWith(codeMismatchString))
+      .mergeWith(presenter.errors().genericTfaError().map(__ -> unableToLoginString));
   }
 
   @OnTextChanged(R.id.code)

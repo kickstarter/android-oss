@@ -45,8 +45,7 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
         // For each list, check if there are filters where the category root matches the category
         // root for the selected params.
         final boolean found = !Observable.from(list)
-          .filter(i -> i instanceof DiscoveryFilterViewHolder.Filter)
-          .cast(DiscoveryFilterViewHolder.Filter.class)
+          .ofType(DiscoveryFilterViewHolder.Filter.class)
           .filter(f -> f.params().isCategorySet())
           .takeFirst(f -> selectedParams.category().rootId() == f.params().category().rootId())
           .isEmpty().toBlocking().single();

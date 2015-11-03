@@ -159,10 +159,10 @@ public class PushNotifications {
     notificationManager().notify(envelope.signature(), notification);
   }
 
-  private @Nullable Bitmap fetchBitmap(@NonNull final String url, final boolean isCircle) {
+  private @Nullable Bitmap fetchBitmap(@NonNull final String url, final boolean transformIntoCircle) {
     try {
       RequestCreator requestCreator = Picasso.with(context).load(url).transform(new CropSquareTransformation());
-      if (isCircle) {
+      if (transformIntoCircle) {
         requestCreator = requestCreator.transform(new CircleTransformation());
       }
       return requestCreator.get();

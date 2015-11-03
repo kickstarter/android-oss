@@ -65,7 +65,6 @@
 
       <TextView
         android:id="@+id/reward_backers_count"
-        android:text="# backers"
         android:layout_toEndOf="@id/backer_badge"
         android:layout_toRightOf="@id/backer_badge"
         android:textAppearance="@style/body2"
@@ -102,7 +101,6 @@
 
     <TextView
       android:id="@+id/reward_description"
-      android:text="this is the reward "
       android:layout_below="@id/limited_reward_labels"
       android:textAppearance="@style/subheadRegular"
       android:layout_width="match_parent"

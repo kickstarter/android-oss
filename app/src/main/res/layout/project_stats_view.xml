@@ -15,16 +15,15 @@
 
     <TextView
       android:id="@+id/backers_count"
-      android:textAppearance="@style/subhead"
+      android:textAppearance="@style/subheadMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
     <TextView
-      android:textSize="@dimen/caption"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/backers"
-      android:textColor="@color/dark_gray" />
+      android:textAppearance="@style/body1Secondary" />
   </LinearLayout>
 
   <LinearLayout
@@ -35,7 +34,7 @@
 
     <TextView
       android:id="@+id/pledged"
-      android:textAppearance="@style/subhead"
+      android:textAppearance="@style/subheadMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
@@ -45,18 +44,16 @@
       android:orientation="horizontal">
 
       <TextView
-        android:textSize="@dimen/caption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/pledged_of_"
-        android:textColor="@color/dark_gray" />
+        android:textAppearance="@style/body1Secondary" />
 
       <TextView
-        android:textSize="@dimen/caption"
         android:id="@+id/goal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/dark_gray" />
+        android:textAppearance="@style/body1Secondary" />
     </LinearLayout>
   </LinearLayout>
 
@@ -69,7 +66,7 @@
     <TextView
       android:id="@+id/deadline_countdown"
       android:singleLine="true"
-      android:textAppearance="@style/subhead"
+      android:textAppearance="@style/subheadMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
@@ -80,17 +77,15 @@
 
       <TextView
         android:id="@+id/deadline_countdown_unit"
-        android:textSize="@dimen/caption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/dark_gray" />
+        android:textAppearance="@style/body1Secondary" />
 
       <TextView
-        android:textSize="@dimen/caption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/_to_go"
-        android:textColor="@color/dark_gray" />
+        android:textAppearance="@style/body1Secondary" />
     </LinearLayout>
   </LinearLayout>
 

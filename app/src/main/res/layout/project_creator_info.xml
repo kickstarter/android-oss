@@ -19,7 +19,7 @@
       android:id="@+id/created_by"
       android:text="@string/Created_by"
       android:paddingTop="@dimen/grid_1"
-      android:textAppearance="@style/body1Primary"
+      android:textAppearance="@style/captionSecondary"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
@@ -41,8 +41,7 @@
       android:layout_marginRight="@dimen/grid_3"
       android:layout_marginEnd="@dimen/grid_3"
       android:ellipsize="marquee"
-      android:textSize="@dimen/subhead"
-      android:textStyle="bold"
+      android:textAppearance="@style/subheadMedium"
       android:layout_below="@id/created_by"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
@@ -81,10 +80,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/chevron_right_icon"
+        android:textColor="@color/text_primary"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:textColor="@color/dark_gray" />
+        android:layout_centerVertical="true" />
     </RelativeLayout>
 
     <include layout="@layout/horizontal_line_thin_view" />
@@ -150,7 +149,7 @@
 
   <TextView
     android:id="@+id/fund_message"
-    android:textColor="@color/text_secondary"
+    android:textAppearance="@style/captionSecondary"
     android:paddingRight="@dimen/grid_3"
     android:paddingLeft="@dimen/grid_3"
     android:layout_width="match_parent"

@@ -30,7 +30,7 @@
     <item name="android:colorControlHighlight">@color/accent_alpha_20</item>
     <item name="android:textColorLink">@color/accent</item>
     <item name="android:textColorPrimary">@color/text_primary</item>
-    <item name="android:textColor">@color/text_primary</item>
+    <item name="android:textColorSecondary">@color/text_secondary</item>
     <item name="android:windowBackground">@color/window_background</item>
     <item name="android:textAllCaps">false</item>
   </style>
@@ -151,7 +151,13 @@
     <item name="android:fontFamily">@string/font_family_medium</item>
   </style>
 
-  <style name="subhead" parent="TextAppearance.AppCompat">
+  <style name="subheadRegular" parent="TextAppearance.AppCompat">
+    <item name="android:textColor">@color/text_primary</item>
+    <item name="android:height">@dimen/subhead_line_height</item>
+    <item name="android:textSize">@dimen/subhead</item>
+  </style>
+
+  <style name="subheadMedium" parent="TextAppearance.AppCompat">
     <item name="android:textColor">@color/text_primary</item>
     <item name="android:height">@dimen/subhead_line_height</item>
     <item name="android:textSize">@dimen/subhead</item>

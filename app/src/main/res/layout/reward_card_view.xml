@@ -39,7 +39,7 @@
     <TextView
       android:id="@+id/pledge_minimum"
       android:layout_below="@id/selected"
-      android:textAppearance="@style/subhead"
+      android:textAppearance="@style/headline"
       android:paddingTop="@dimen/grid_2"
       android:paddingBottom="@dimen/grid_2"
       android:layout_width="match_parent"
@@ -65,9 +65,10 @@
 
       <TextView
         android:id="@+id/reward_backers_count"
+        android:text="# backers"
         android:layout_toEndOf="@id/backer_badge"
         android:layout_toRightOf="@id/backer_badge"
-        android:textStyle="bold"
+        android:textAppearance="@style/body2"
         android:layout_centerVertical="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -84,6 +85,7 @@
         android:id="@+id/limited"
         android:background="@color/yellow"
         android:visibility="gone"
+        android:textAppearance="@style/body1Secondary"
         android:text="@string/Limited_left_of"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -100,8 +102,9 @@
 
     <TextView
       android:id="@+id/reward_description"
+      android:text="this is the reward "
       android:layout_below="@id/limited_reward_labels"
-      android:textSize="@dimen/subhead"
+      android:textAppearance="@style/subheadRegular"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:paddingTop="@dimen/grid_2"

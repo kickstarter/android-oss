@@ -83,23 +83,11 @@ public class PushNotifications {
     notifications.onNext(envelope);
   }
 
-  private NotificationCompat.Builder notificationBuilder() {
-    return new NotificationCompat.Builder(context)
-      .setSmallIcon(R.drawable.ic_kickstarter_k)
-      .setColor(context.getResources().getColor(R.color.green))
-      .setAutoCancel(true);
-  }
-
   private void showFriendFollow(@NonNull final PushNotificationEnvelope envelope) {
     final GCM gcm = envelope.gcm();
 
-    // TODO: Friend icon, intent to load friends
-    final Notification notification = notificationBuilder()
-      .setContentText(gcm.alert())
-      .setContentTitle(gcm.title())
-      .setStyle(new NotificationCompat.BigTextStyle().bigText(gcm.alert()))
-      .build();
-
+    // TODO: Friend icon, intent
+    final Notification notification = notificationBuilder(gcm.title(), gcm.alert()).build();
     notificationManager().notify(envelope.signature(), notification);
   }
 
@@ -107,12 +95,19 @@ public class PushNotifications {
     final Activity activity = envelope.activity();
     final GCM gcm = envelope.gcm();
 
-    final Notification notification = notificationBuilder()
+    final Notification notification = notificationBuilder(gcm.title(), gcm.alert())
       .setLargeIcon(fetchBitmap(activity.projectPhoto(), false))
       .setContentIntent(projectContentIntent(activity.projectId()))
-      .setContentText(gcm.alert())
-      .setContentTitle(gcm.title())
-      .setStyle(new NotificationCompat.BigTextStyle().bigText(gcm.alert()))
+      .build();
+    notificationManager().notify(envelope.signature(), notification);
+  }
+
+  private void showProjectReminder(@NonNull final PushNotificationEnvelope envelope) {
+    final GCM gcm = envelope.gcm();
+
+    final Notification notification = notificationBuilder(gcm.title(), gcm.alert())
+      .setLargeIcon(fetchBitmap(envelope.project().photoUrl(), false))
+      .setContentIntent(projectContentIntent(envelope.project().id()))
       .build();
 
     notificationManager().notify(envelope.signature(), notification);
@@ -122,39 +117,31 @@ public class PushNotifications {
     final Activity activity = envelope.activity();
     final GCM gcm = envelope.gcm();
 
-    // TODO: Content intent
-
-    final Notification notification = notificationBuilder()
+    // TODO: Intent
+    final Notification notification = notificationBuilder(gcm.title(), gcm.alert())
       .setLargeIcon(fetchBitmap(activity.projectPhoto(), false))
-      .setContentText(gcm.alert())
-      .setContentTitle(gcm.title())
-      .setStyle(new NotificationCompat.BigTextStyle().bigText(gcm.alert()))
       .build();
-
     notificationManager().notify(envelope.signature(), notification);
   }
 
+  private @NonNull NotificationCompat.Builder notificationBuilder(@NonNull final String title, @NonNull final String text) {
+    return new NotificationCompat.Builder(context)
+      .setSmallIcon(R.drawable.ic_kickstarter_k)
+      .setColor(context.getResources().getColor(R.color.green))
+      .setContentText(text)
+      .setContentTitle(title)
+      .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
+      .setAutoCancel(true);
+  }
+
   private @NonNull PendingIntent projectContentIntent(@NonNull final Long id) {
+    // TODO: This is still WIP
     final Intent intent = new Intent(context, ProjectActivity.class)
       .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
       .putExtra(context.getString(R.string.intent_project_param), id.toString());
 
     // TODO: Check the flags!
     return PendingIntent.getActivity(context, 0 /* Request code */, intent, PendingIntent.FLAG_ONE_SHOT);
-  }
-
-  private void showProjectReminder(@NonNull final PushNotificationEnvelope envelope) {
-    final GCM gcm = envelope.gcm();
-
-    final Notification notification = notificationBuilder()
-      .setLargeIcon(fetchBitmap(envelope.project().photoUrl(), false))
-      .setContentIntent(projectContentIntent(envelope.project().id()))
-      .setContentText(gcm.alert())
-      .setContentTitle(gcm.title())
-      .setStyle(new NotificationCompat.BigTextStyle().bigText(gcm.alert()))
-      .build();
-
-    notificationManager().notify(envelope.signature(), notification);
   }
 
   private @Nullable Bitmap fetchBitmap(@NonNull final String url, final boolean transformIntoCircle) {

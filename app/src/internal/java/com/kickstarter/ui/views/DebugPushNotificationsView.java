@@ -55,6 +55,26 @@ public class DebugPushNotificationsView extends ScrollView {
     pushNotifications.unregisterDevice();
   }
 
+  @OnClick(R.id.simulate_friend_follow_button)
+  public void simulateFriendFollowButtonClick() {
+    final GCM gcm = GCM.builder()
+      .alert("Christopher Wright is following you on Kickstarter!")
+      .title("Kickstarter")
+      .build();
+
+    final Activity activity = Activity.builder()
+      .category(com.kickstarter.models.Activity.CATEGORY_FOLLOW)
+      .id(1)
+      .build();
+
+    final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder()
+      .activity(activity)
+      .gcm(gcm)
+      .build();
+
+    pushNotifications.add(envelope);
+  }
+
   @OnClick(R.id.simulate_project_success_button)
   public void simulateProjectLaunchButtonClick() {
     final GCM gcm = GCM.builder()
@@ -74,6 +94,6 @@ public class DebugPushNotificationsView extends ScrollView {
       .gcm(gcm)
       .build();
 
-    pushNotifications.show(envelope);
+    pushNotifications.add(envelope);
   }
 }

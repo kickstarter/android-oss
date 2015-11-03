@@ -7,9 +7,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.transformations.CropSquareTransformation;
 import com.kickstarter.libs.utils.PlayServicesUtils;
 import com.kickstarter.models.pushdata.Activity;
@@ -19,29 +21,35 @@ import com.kickstarter.services.gcm.RegisterService;
 import com.kickstarter.services.gcm.UnregisterService;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 
 import java.io.IOException;
 
-import rx.Subscription;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 public class PushNotifications {
-  private static final int NOTIFICATION_ID = 10000; // TODO: This is temporary
-
   @ForApplication final Context context;
-  PublishSubject<PushNotificationEnvelope> envelopeSubject = PublishSubject.create();
-  Subscription envelopeSubscription;
+  PublishSubject<PushNotificationEnvelope> notifications = PublishSubject.create();
+  CompositeSubscription subscriptions = new CompositeSubscription();
 
   public PushNotifications(@ForApplication final Context context) {
     this.context = context;
   }
 
   public void initialize() {
-    envelopeSubscription = envelopeSubject
+    subscriptions.add(notifications
+      .filter(PushNotificationEnvelope::isFriendFollow)
       .observeOn(Schedulers.newThread())
-      .subscribe(this::showProjectNotification);
+      .subscribe(this::showFriendFollow));
+
+    subscriptions.add(notifications
+      .filter(PushNotificationEnvelope::isProjectActivity)
+      .observeOn(Schedulers.newThread())
+      .subscribe(this::showProjectActivity));
+
     registerDevice();
   }
 
@@ -63,47 +71,66 @@ public class PushNotifications {
     context.startService(intent);
   }
 
-  public void show(@NonNull final PushNotificationEnvelope envelope) {
-    envelopeSubject.onNext(envelope);
+  public void add(@NonNull final PushNotificationEnvelope envelope) {
+    notifications.onNext(envelope);
   }
 
-  private void showProjectNotification(@NonNull final PushNotificationEnvelope envelope) {
+  private NotificationCompat.Builder builder() {
+    return new NotificationCompat.Builder(context)
+      .setSmallIcon(R.drawable.ic_kickstarter_k)
+      .setColor(context.getResources().getColor(R.color.green))
+      .setAutoCancel(true);
+  }
+
+  private void showFriendFollow(@NonNull final PushNotificationEnvelope envelope) {
+    final GCM gcm = envelope.gcm();
+
+    // TODO: Friend icon, intent to load friends
+    final Notification notification = builder()
+      .setContentText(gcm.alert())
+      .setContentTitle(gcm.title())
+      .setStyle(new NotificationCompat.BigTextStyle().bigText(gcm.alert()))
+      .build();
+
+    notificationManager().notify(envelope.signature(), notification);
+  }
+
+  private void showProjectActivity(@NonNull final PushNotificationEnvelope envelope) {
     final Activity activity = envelope.activity();
     final GCM gcm = envelope.gcm();
 
     final Intent intent = new Intent(context, ProjectActivity.class)
       .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-      .putExtra(context.getString(R.string.intent_project_param), activity.projectId());
+      .putExtra(context.getString(R.string.intent_project_param), activity.projectId().toString());
 
+    // TODO: Check the flags!
     final PendingIntent pendingIntent = PendingIntent.getActivity(context, 0 /* Request code */, intent, PendingIntent.FLAG_ONE_SHOT);
 
-    Bitmap largeIcon;
-    try {
-      largeIcon = Picasso.with(context)
-        .load(activity.projectPhoto())
-        .transform(new CropSquareTransformation())
-        .get();
-    } catch (IOException e) {
-      largeIcon = null;
-      Timber.e("Failed to load activity photo: " + e);
-    }
-
-    NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-      .setSmallIcon(R.drawable.ic_kickstarter_k)
-      .setContentTitle(gcm.title())
+    final Notification notification = builder()
+      .setLargeIcon(fetchBitmap(activity.projectPhoto(), false))
+      .setContentIntent(pendingIntent)
       .setContentText(gcm.alert())
-      .setColor(context.getResources().getColor(R.color.green))
-      .setStyle(new NotificationCompat.BigTextStyle()
-        .bigText(gcm.alert()))
-      .setAutoCancel(true)
-      .setLargeIcon(largeIcon)
-      .setContentIntent(pendingIntent);
+      .setContentTitle(gcm.title())
+      .setStyle(new NotificationCompat.BigTextStyle().bigText(gcm.alert()))
+      .build();
 
-    final Notification notification = builder.build();
+    notificationManager().notify(envelope.signature(), notification);
+  }
 
-    final NotificationManager notificationManager =
-      (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+  private @Nullable Bitmap fetchBitmap(@NonNull final String url, final boolean isCircle) {
+    try {
+      RequestCreator requestCreator = Picasso.with(context).load(url).transform(new CropSquareTransformation());
+      if (isCircle) {
+        requestCreator = requestCreator.transform(new CircleTransformation());
+      }
+      return requestCreator.get();
+    } catch (IOException e) {
+      Timber.e("Failed to load large icon: " + e);
+      return null;
+    }
+  }
 
-    notificationManager.notify(NOTIFICATION_ID, notification);
+  private NotificationManager notificationManager() {
+    return (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
   }
 }

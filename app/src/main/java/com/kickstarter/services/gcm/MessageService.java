@@ -55,6 +55,6 @@ public class MessageService extends GcmListenerService {
       return;
     }
 
-    pushNotifications.show(envelope);
+    pushNotifications.add(envelope);
   }
 }

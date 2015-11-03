@@ -15,6 +15,7 @@ public abstract class Activity implements Parcelable {
   public abstract long id();
   @Nullable public abstract Long projectId();
   @Nullable public abstract String projectPhoto();
+  @Nullable public abstract String userPhoto();
   @Nullable public abstract Long updateId();
 
   @AutoParcel.Builder
@@ -24,6 +25,7 @@ public abstract class Activity implements Parcelable {
     public abstract Builder id(long __);
     public abstract Builder projectId(Long __);
     public abstract Builder projectPhoto(String __);
+    public abstract Builder userPhoto(String __);
     public abstract Builder updateId(Long __);
     public abstract Activity build();
   }

@@ -55,6 +55,15 @@
       android:text="Simulate notifications" />
 
     <Button
+      android:id="@+id/simulate_friend_follow_button"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@drawable/button_green"
+      android:textAllCaps="false"
+      android:text="Friend follow"
+      style="@style/KsrButton" />
+
+    <Button
       android:id="@+id/simulate_project_success_button"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

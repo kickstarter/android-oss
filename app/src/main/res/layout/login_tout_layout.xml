@@ -49,8 +49,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/grid_3"
         android:gravity="center_horizontal"
-        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-        android:textColor="@color/dark_gray"
+        android:textAppearance="@style/captionSecondary"
         android:text="@string/By_signing_up_you_agree_to_our" />
 
     </LinearLayout>

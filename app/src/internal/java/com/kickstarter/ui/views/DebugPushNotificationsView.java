@@ -59,12 +59,14 @@ public class DebugPushNotificationsView extends ScrollView {
   public void simulateProjectLaunchButtonClick() {
     final GCM gcm = GCM.builder()
       .alert("Double Fine Adventure has been successfully funded!")
+      .title("Kickstarter")
       .build();
 
     final Activity activity = Activity.builder()
       .category(com.kickstarter.models.Activity.CATEGORY_SUCCESS)
       .id(1)
       .projectId(1929840910L)
+      .projectPhoto("https://ksr-ugc.imgix.net/projects/73409/photo-original.jpg?v=1397770628&w=160&h=120&fit=crop&auto=format&q=92&s=da84cc0a09478bebca4d8d35f98f77b4")
       .build();
 
     final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder()

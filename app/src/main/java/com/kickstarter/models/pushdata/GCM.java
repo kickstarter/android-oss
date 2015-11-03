@@ -10,10 +10,12 @@ import auto.parcel.AutoParcel;
 @AutoParcel
 public abstract class GCM implements Parcelable {
   public abstract String alert();
+  public abstract String title();
 
   @AutoParcel.Builder
   public abstract static class Builder {
     public abstract Builder alert(String __);
+    public abstract Builder title(String __);
     public abstract GCM build();
   }
 

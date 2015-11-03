@@ -14,6 +14,7 @@ public abstract class Activity implements Parcelable {
   @Nullable public abstract Long commentId();
   public abstract long id();
   @Nullable public abstract Long projectId();
+  @Nullable public abstract String projectPhoto();
   @Nullable public abstract Long updateId();
 
   @AutoParcel.Builder
@@ -22,6 +23,7 @@ public abstract class Activity implements Parcelable {
     public abstract Builder category(@com.kickstarter.models.Activity.Category String __);
     public abstract Builder id(long __);
     public abstract Builder projectId(Long __);
+    public abstract Builder projectPhoto(String __);
     public abstract Builder updateId(Long __);
     public abstract Activity build();
   }

@@ -188,7 +188,6 @@ public class DebugPushNotificationsView extends ScrollView {
       .title("Kickstarter")
       .build();
 
-
     final Activity activity = Activity.builder()
       .category(com.kickstarter.models.Activity.CATEGORY_UPDATE)
       .id(1)

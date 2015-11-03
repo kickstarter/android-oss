@@ -19,14 +19,11 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 public class RegisterService extends IntentService {
-  private static final String WORKER_THREAD_NAME = "RegisterService";
-  private static final String[] TOPICS = {"global"};
-
   @Inject protected ApiClient apiClient;
   @Inject protected CurrentUser currentUser;
 
   public RegisterService() {
-    super(WORKER_THREAD_NAME);
+    super("RegisterService");
   }
 
   @Override
@@ -49,7 +46,7 @@ public class RegisterService extends IntentService {
       Timber.d("Token: " + token);
 
       sendTokenToAppServers(token);
-      subscribeTopics(token);
+      subscribeToTopics(token);
     } catch (final Exception e) {
       Timber.e("Failed to complete token refresh: " +  e.toString());
     }
@@ -61,21 +58,19 @@ public class RegisterService extends IntentService {
    * @param token The new token.
    */
   private void sendTokenToAppServers(@NonNull final String token) {
-    if (currentUser.observable().take(1).toBlocking().single() != null) {
+    if (currentUser.observable().first().toBlocking().single() != null) {
       apiClient.registerPushToken(token).first().toBlocking().single();
     }
   }
 
   /**
-   * Subscribe to any topics of interest, as defined by the TOPICS constant.
+   * Subscribe to topics of interest.
    *
    * @throws IOException if unable to reach the GCM PubSub service
    */
-  private void subscribeTopics(@NonNull final String token) throws IOException {
+  private void subscribeToTopics(@NonNull final String token) throws IOException {
     final GcmPubSub pubSub = GcmPubSub.getInstance(this);
-    for (final String topic : TOPICS) {
-      pubSub.subscribe(token, "/topics/" + topic, null);
-    }
+    pubSub.subscribe(token, "/topics/global", null);
   }
 }
 

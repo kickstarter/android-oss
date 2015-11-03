@@ -37,7 +37,7 @@
         android:layout_marginBottom="@dimen/grid_1_half"
         android:singleLine="true"
         android:text="Name"
-        android:textAppearance="@style/subheadMedium" />
+        style="@style/TextPrimary.Subhead.Medium" />
 
       <TextView
         android:id="@+id/creator_name_text_view"
@@ -46,7 +46,7 @@
         android:layout_marginBottom="@dimen/grid_1_half"
         android:singleLine="true"
         android:text="by Creator"
-        android:textAppearance="@style/captionSecondary" />
+        style="@style/TextSecondary.Caption" />
     </LinearLayout>
 
  </RelativeLayout>

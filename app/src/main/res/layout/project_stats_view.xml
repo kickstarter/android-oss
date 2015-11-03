@@ -15,7 +15,7 @@
 
     <TextView
       android:id="@+id/backers_count"
-      android:textAppearance="@style/subheadMedium"
+      style="@style/TextPrimary.Subhead.Medium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
@@ -23,7 +23,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/backers"
-      android:textAppearance="@style/body1Secondary" />
+      style="@style/TextSecondary.Body" />
   </LinearLayout>
 
   <LinearLayout
@@ -34,7 +34,7 @@
 
     <TextView
       android:id="@+id/pledged"
-      android:textAppearance="@style/subheadMedium"
+      style="@style/TextPrimary.Subhead.Medium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
@@ -47,13 +47,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/pledged_of_"
-        android:textAppearance="@style/body1Secondary" />
+        style="@style/TextSecondary.Body" />
 
       <TextView
         android:id="@+id/goal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/body1Secondary" />
+        style="@style/TextSecondary.Body" />
     </LinearLayout>
   </LinearLayout>
 
@@ -66,7 +66,7 @@
     <TextView
       android:id="@+id/deadline_countdown"
       android:singleLine="true"
-      android:textAppearance="@style/subheadMedium"
+      style="@style/TextPrimary.Subhead.Medium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
@@ -79,13 +79,13 @@
         android:id="@+id/deadline_countdown_unit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/body1Secondary" />
+        style="@style/TextSecondary.Body" />
 
       <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/_to_go"
-        android:textAppearance="@style/body1Secondary" />
+        style="@style/TextSecondary.Body" />
     </LinearLayout>
   </LinearLayout>
 

@@ -46,7 +46,7 @@
 
           <TextView
             android:id="@+id/sequence"
-            android:textAppearance="@style/body1Primary"
+            style="@style/TextPrimary.Body"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/name"/>
@@ -57,7 +57,7 @@
       <TextView
         android:text="@string/Pledged"
         android:paddingBottom="@dimen/grid_1"
-        android:textAppearance="@style/subheadMedium"
+        style="@style/TextPrimary.Subhead.Medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
@@ -78,7 +78,7 @@
         android:text="@string/Reward"
         android:paddingTop="@dimen/grid_3"
         android:paddingBottom="@dimen/grid_1"
-        android:textAppearance="@style/subheadMedium"
+        style="@style/TextPrimary.Subhead.Medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
@@ -94,7 +94,7 @@
         android:text="@string/Shipping"
         android:paddingTop="@dimen/grid_3"
         android:paddingBottom="@dimen/grid_1"
-        android:textAppearance="@style/subheadMedium"
+        style="@style/TextPrimary.Subhead.Medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

@@ -7,8 +7,7 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
-  <include
-    layout="@layout/project_media_header"/>
+  <include layout="@layout/project_media_header"/>
 
   <LinearLayout
     android:id="@+id/project_info"
@@ -24,7 +23,7 @@
       android:id="@+id/project_name"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:textAppearance="@style/editorialHeadline"
+      style="@style/TextPrimary.EditorialHeadline"
       android:paddingBottom="@dimen/grid_1_half" />
 
     <LinearLayout
@@ -39,7 +38,7 @@
         android:singleLine="true"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/body1Secondary"
+        style="@style/TextSecondary.Body"
         android:clickable="true" />
 
       <LinearLayout
@@ -52,7 +51,7 @@
         <TextView
           android:text="@string/Youre_a_backer"
           android:singleLine="true"
-          android:textAppearance="@style/body1Primary"
+          style="@style/TextPrimary.Body"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 
@@ -71,11 +70,11 @@
 
     <TextView
       android:id="@+id/blurb"
+      style="@style/TextPrimary.Subhead"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_3"
       android:layout_marginBottom="@dimen/grid_3"
-      android:textAppearance="@style/subheadRegular"
       android:clickable="true"
       android:paddingBottom="@dimen/grid_1" />
 
@@ -94,7 +93,7 @@
         android:paddingRight="@dimen/grid_1_half"
         android:paddingEnd="@dimen/grid_1_half"
         android:text="@string/local_offer_icon"
-        android:textAppearance="@style/body1Primary"/>
+        style="@style/TextPrimary.Body"/>
 
       <TextView
         android:id="@+id/category"
@@ -104,7 +103,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/grid_1_half"
         android:paddingRight="@dimen/grid_1"
-        android:textAppearance="@style/body1Primary" />
+        style="@style/TextPrimary.Body" />
 
       <com.kickstarter.ui.views.IconTextView
         android:id="@+id/location_icon"
@@ -116,7 +115,7 @@
         android:paddingLeft="@dimen/grid_1"
         android:paddingRight="@dimen/grid_1_half"
         android:text="@string/location_on_icon"
-        android:textAppearance="@style/body1Primary" />
+        style="@style/TextPrimary.Body" />
 
       <Button
         android:id="@+id/share_button"
@@ -144,7 +143,7 @@
         android:paddingRight="@dimen/grid_1_half"
         android:paddingStart="@dimen/grid_1_half"
         android:paddingEnd="@dimen/grid_1_half"
-        android:textAppearance="@style/body1Primary" />
+        style="@style/TextPrimary.Body" />
 
     </RelativeLayout>
 

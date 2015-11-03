@@ -64,12 +64,57 @@
       style="@style/KsrButton" />
 
     <Button
+      android:id="@+id/simulate_project_cancellation_button"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@drawable/button_green"
+      android:textAllCaps="false"
+      android:text="Project cancellation"
+      style="@style/KsrButton" />
+
+    <Button
+      android:id="@+id/simulate_project_failure_button"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@drawable/button_green"
+      android:textAllCaps="false"
+      android:text="Project failure"
+      style="@style/KsrButton" />
+
+    <Button
+      android:id="@+id/simulate_project_launch_button"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@drawable/button_green"
+      android:textAllCaps="false"
+      android:text="Project launch"
+      style="@style/KsrButton" />
+
+    <Button
+      android:id="@+id/simulate_project_reminder_button"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@drawable/button_green"
+      android:textAllCaps="false"
+      android:text="Project reminder"
+      style="@style/KsrButton" />
+
+    <Button
       android:id="@+id/simulate_project_success_button"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:background="@drawable/button_green"
       android:textAllCaps="false"
       android:text="Project success"
+      style="@style/KsrButton" />
+
+    <Button
+      android:id="@+id/simulate_project_update_button"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@drawable/button_green"
+      android:textAllCaps="false"
+      android:text="Project update"
       style="@style/KsrButton" />
 
   </LinearLayout>

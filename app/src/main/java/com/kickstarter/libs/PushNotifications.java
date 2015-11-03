@@ -50,6 +50,16 @@ public class PushNotifications {
       .observeOn(Schedulers.newThread())
       .subscribe(this::showProjectActivity));
 
+    subscriptions.add(notifications
+      .filter(PushNotificationEnvelope::isProjectReminder)
+      .observeOn(Schedulers.newThread())
+      .subscribe(this::showProjectReminder));
+
+    subscriptions.add(notifications
+      .filter(PushNotificationEnvelope::isProjectUpdateActivity)
+      .observeOn(Schedulers.newThread())
+      .subscribe(this::showProjectUpdateActivity));
+
     registerDevice();
   }
 
@@ -99,16 +109,48 @@ public class PushNotifications {
     final Activity activity = envelope.activity();
     final GCM gcm = envelope.gcm();
 
-    final Intent intent = new Intent(context, ProjectActivity.class)
-      .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-      .putExtra(context.getString(R.string.intent_project_param), activity.projectId().toString());
+    final Notification notification = builder()
+      .setLargeIcon(fetchBitmap(activity.projectPhoto(), false))
+      .setContentIntent(projectContentIntent(activity.projectId()))
+      .setContentText(gcm.alert())
+      .setContentTitle(gcm.title())
+      .setStyle(new NotificationCompat.BigTextStyle().bigText(gcm.alert()))
+      .build();
 
-    // TODO: Check the flags!
-    final PendingIntent pendingIntent = PendingIntent.getActivity(context, 0 /* Request code */, intent, PendingIntent.FLAG_ONE_SHOT);
+    notificationManager().notify(envelope.signature(), notification);
+  }
+
+  private void showProjectUpdateActivity(@NonNull final PushNotificationEnvelope envelope) {
+    final Activity activity = envelope.activity();
+    final GCM gcm = envelope.gcm();
+
+    // TODO: Content intent
 
     final Notification notification = builder()
       .setLargeIcon(fetchBitmap(activity.projectPhoto(), false))
-      .setContentIntent(pendingIntent)
+      .setContentText(gcm.alert())
+      .setContentTitle(gcm.title())
+      .setStyle(new NotificationCompat.BigTextStyle().bigText(gcm.alert()))
+      .build();
+
+    notificationManager().notify(envelope.signature(), notification);
+  }
+
+  private @NonNull PendingIntent projectContentIntent(@NonNull final Long id) {
+    final Intent intent = new Intent(context, ProjectActivity.class)
+      .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+      .putExtra(context.getString(R.string.intent_project_param), id.toString());
+
+    // TODO: Check the flags!
+    return PendingIntent.getActivity(context, 0 /* Request code */, intent, PendingIntent.FLAG_ONE_SHOT);
+  }
+
+  private void showProjectReminder(@NonNull final PushNotificationEnvelope envelope) {
+    final GCM gcm = envelope.gcm();
+
+    final Notification notification = builder()
+      .setLargeIcon(fetchBitmap(envelope.project().photoUrl(), false))
+      .setContentIntent(projectContentIntent(envelope.project().id()))
       .setContentText(gcm.alert())
       .setContentTitle(gcm.title())
       .setStyle(new NotificationCompat.BigTextStyle().bigText(gcm.alert()))

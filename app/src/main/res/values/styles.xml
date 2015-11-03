@@ -122,44 +122,37 @@
   <!-- Typography -->
   <style name="captionPrimary" parent="TextAppearance.AppCompat">
     <item name="android:textSize">@dimen/caption</item>
-    <item name="android:height">@dimen/caption_line_height</item>
     <item name="android:textColor">@color/text_primary</item>
   </style>
 
   <style name="captionSecondary" parent="TextAppearance.AppCompat">
     <item name="android:textSize">@dimen/caption</item>
-    <item name="android:height">@dimen/caption_line_height</item>
     <item name="android:textColor">@color/text_secondary</item>
   </style>
 
   <style name="body1Primary" parent="TextAppearance.AppCompat">
     <item name="android:textSize">@dimen/body</item>
     <item name="android:textColor">@color/text_primary</item>
-    <item name="android:height">@dimen/body_line_height</item>
   </style>
   
   <style name="body1Secondary" parent="TextAppearance.AppCompat">
     <item name="android:textSize">@dimen/body</item>
     <item name="android:textColor">@color/text_secondary</item>
-    <item name="android:height">@dimen/body_line_height</item>
   </style>
 
   <style name="body2" parent="TextAppearance.AppCompat">
     <item name="android:textSize">@dimen/body</item>
     <item name="android:textColor">@color/text_primary</item>
-    <item name="android:height">@dimen/body_line_height</item>
     <item name="android:fontFamily">@string/font_family_medium</item>
   </style>
 
   <style name="subheadRegular" parent="TextAppearance.AppCompat">
     <item name="android:textColor">@color/text_primary</item>
-    <item name="android:height">@dimen/subhead_line_height</item>
     <item name="android:textSize">@dimen/subhead</item>
   </style>
 
   <style name="subheadMedium" parent="TextAppearance.AppCompat">
     <item name="android:textColor">@color/text_primary</item>
-    <item name="android:height">@dimen/subhead_line_height</item>
     <item name="android:textSize">@dimen/subhead</item>
     <item name="android:fontFamily">@string/font_family_medium</item>
   </style>
@@ -167,14 +160,12 @@
   <style name="headline" parent="TextAppearance.AppCompat">
     <item name="android:textColor">@color/text_primary</item>
     <item name="android:textSize">@dimen/headline</item>
-    <item name="android:height">@dimen/headline_line_height</item>
     <item name="android:fontFamily">@string/font_family_medium</item>
   </style>
 
   <style name="editorialHeadline" parent="TextAppearance.AppCompat">
     <item name="android:textColor">@color/text_primary</item>
     <item name="android:textSize">@dimen/editorial_headline</item>
-    <item name="android:height">@dimen/editorial_headline_line_height</item>
     <item name="android:fontFamily">@string/font_family_medium</item>
   </style>
 

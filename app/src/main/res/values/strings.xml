@@ -41,6 +41,7 @@
   <string name="Comment">Comment</string>
   <string name="Close">Close</string>
   <string name="Comment_posted">Comment posted!</string>
+  <string name="Post_comment_error">Couldn’t post comment.</string>
   <string name="Comments">Comments</string>
   <string name="creator_launched_a_project">%1$s launched a project: %2$s</string>
   <string name="Created_by">Created by</string>
@@ -145,6 +146,7 @@
   <string name="Submit">Submit</string>
   <string name="Submit_bug_report">Submit bug report</string>
   <string name="The_code_provided_does_not_match">The code provided does not match.</string>
+  <string name="Resend_code_failed">Unable to resend your code.</string>
   <string name="This_project_will_only_be_funded_if">
     This project will only be funded if at least %1$s is pledged by %2$s</string>
   <string name="title_activity_project">View Project</string>

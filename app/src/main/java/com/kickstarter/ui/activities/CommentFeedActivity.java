@@ -11,12 +11,12 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
@@ -28,9 +28,12 @@ import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresPresenter(CommentFeedPresenter.class)
 public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> implements CommentFeedAdapter.Delegate {
@@ -42,6 +45,9 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> impl
   public @Bind(R.id.comment_feed_recycler_view) RecyclerView recyclerView;
   @Nullable @Bind(R.id.comment_body) EditText commentBodyEditText;
   public @Nullable @Bind(R.id.post_button) TextView postCommentButton;
+
+  @BindString(R.string.Post_comment_error) String postCommentErrorString;
+  @BindString(R.string.Comment_posted) String commentPostedString;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -56,6 +62,12 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> impl
     adapter = new CommentFeedAdapter(this);
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+    addSubscription(
+      toastMessages()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(this::displayToast)
+    );
   }
 
   public void show(@NonNull final Project project, @NonNull final List<Comment> comments,
@@ -139,11 +151,6 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> impl
     presenter.inputs().emptyCommentFeedLoginClicked(viewHolder);
   }
 
-  public void showToastOnPostSuccess() {
-    final Toast toast = Toast.makeText(this, getString(R.string.Comment_posted), Toast.LENGTH_SHORT);
-    toast.show();
-  }
-
   @Override
   protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
     if (requestCode != ActivityRequestCodes.COMMENT_FEED_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED) {
@@ -153,5 +160,11 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> impl
       return;
     }
     presenter.takeLoginSuccess();
+  }
+
+  private Observable<String> toastMessages() {
+    return presenter.errors().postCommentError()
+      .map(ObjectUtils.coalesceWith(postCommentErrorString))
+      .mergeWith(presenter.outputs().commentPosted().map(__ -> commentPostedString));
   }
 }

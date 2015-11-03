@@ -9,13 +9,17 @@ import android.util.Pair;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
+import com.kickstarter.presenters.errors.CommentFeedPresenterErrors;
 import com.kickstarter.presenters.inputs.CommentFeedPresenterInputs;
+import com.kickstarter.presenters.outputs.CommentFeedPresenterOutputs;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
+import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.activities.CommentFeedActivity;
 import com.kickstarter.ui.viewholders.EmptyCommentFeedViewHolder;
 import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
@@ -29,11 +33,22 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public class CommentFeedPresenter extends Presenter<CommentFeedActivity> implements CommentFeedPresenterInputs {
+public class CommentFeedPresenter extends Presenter<CommentFeedActivity> implements CommentFeedPresenterInputs, CommentFeedPresenterOutputs, CommentFeedPresenterErrors {
   // INPUTS
   private final PublishSubject<String> commentBody = PublishSubject.create();
   private final PublishSubject<Void> contextClick = PublishSubject.create();
   private final PublishSubject<Void> loginClick = PublishSubject.create();
+
+  // OUTPUTS
+  private final PublishSubject<Void> commentPosted = PublishSubject.create();
+  public Observable<Void> commentPosted() { return commentPosted.asObservable(); }
+
+  // ERRORS
+  private final PublishSubject<ErrorEnvelope> postCommentError = PublishSubject.create();
+  public Observable<String> postCommentError() {
+    return postCommentError
+      .map(ErrorEnvelope::errorMessage);
+  }
 
   private final PublishSubject<Void> loginSuccess = PublishSubject.create();
   private final PublishSubject<String> bodyOnPostClick = PublishSubject.create();
@@ -41,7 +56,6 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
   private final PublishSubject<Boolean> commentIsPosting = PublishSubject.create();
   private final PublishSubject<Project> initialProject = PublishSubject.create();
   private final PublishSubject<Void> refreshFeed = PublishSubject.create();
-  private final PublishSubject<Void> showToast = PublishSubject.create();
 
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
@@ -49,6 +63,8 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
   public CommentFeedPresenterInputs inputs() {
     return this;
   }
+  public CommentFeedPresenterOutputs outputs() { return this; }
+  public CommentFeedPresenterErrors errors() { return this; }
 
   @Override
   public void commentBody(@NonNull final String string) {
@@ -76,7 +92,7 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
       .share();
 
     final Observable<List<Comment>> comments = RxUtils.takeWhen(project, refreshFeed)
-      .switchMap(client::fetchProjectComments)
+      .switchMap(this::comments)
       .map(CommentsEnvelope::comments)
       .share();
 
@@ -91,11 +107,11 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
       .map(body -> body.length() > 0);
 
     final Observable<Comment> postedComment = RxUtils.takePairWhen(project, bodyOnPostClick)
-      .flatMap(pb -> client.postProjectComment(pb.first, pb.second));
+      .switchMap(pb -> postComment(pb.first, pb.second));
 
     addSubscription(postedComment
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::postCommentSuccess, this::postCommentError)
+      .subscribe(this::postCommentSuccess)
     );
 
     addSubscription(
@@ -143,11 +159,19 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.disablePostButton(vp.second))
     );
+  }
 
-    addSubscription(RxUtils.takeWhen(viewSubject, showToast)
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(CommentFeedActivity::showToastOnPostSuccess)
-    );
+  private Observable<Comment> postComment(@NonNull final Project project, @NonNull final String body) {
+    return client.postProjectComment(project, body)
+      .compose(Transformers.pipeErrorsTo(postCommentError))
+      .doOnSubscribe(() -> commentIsPosting.onNext(true))
+      .doOnCompleted(() -> commentPosted.onNext(null))
+      .finallyDo(() -> commentIsPosting.onNext(false));
+  }
+
+  private Observable<CommentsEnvelope> comments(@NonNull final Project project) {
+    return client.fetchProjectComments(project)
+      .compose(Transformers.neverError());
   }
 
   // todo: add pagination to comments
@@ -157,7 +181,6 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
   }
 
   public void postClick(@NonNull final String body) {
-    commentIsPosting.onNext(true);
     bodyOnPostClick.onNext(body);
   }
 
@@ -166,14 +189,7 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
   }
 
   private void postCommentSuccess(@Nullable final Comment comment) {
-    commentIsPosting.onNext(false);
     refreshFeed.onNext(null);
-    showToast.onNext(null);
-  }
-
-  private void postCommentError(@NonNull final Throwable e) {
-    commentIsPosting.onNext(false);
-    // todo: handle 422s and network errors
   }
 
   public void takeLoginSuccess() {

@@ -1,10 +1,13 @@
 package com.kickstarter.libs;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.AnimRes;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.libs.utils.BundleUtils;
@@ -108,6 +111,12 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
     outState.putBundle(PRESENTER_KEY, presenterEnvelope);
   }
 
+  protected final void startActivityWithTransition(@NonNull final Intent intent, @AnimRes final int enterAnim,
+    @AnimRes final int exitAnim) {
+    startActivity(intent);
+    overridePendingTransition(enterAnim, exitAnim);
+  }
+
   protected final void addSubscription(@NonNull final Subscription subscription) {
     subscriptions.add(subscription);
   }
@@ -122,5 +131,13 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
           BundleUtils.maybeGetBundle(presenterEnvelope, PRESENTER_KEY));
       }
     }
+  }
+
+  /*
+  The simplest way to show an alert to the user.
+   */
+  final public void displayToast(@NonNull final String message) {
+    final Toast toast = Toast.makeText(this, message, Toast.LENGTH_LONG);
+    toast.show();
   }
 }

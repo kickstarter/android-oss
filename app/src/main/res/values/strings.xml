@@ -115,8 +115,6 @@
   <string name="pledged_of_goal">pledged of %1$s</string>
   <string name="pledged_amount_on_date">%1$s on %2$s</string>
   <string name="Post">Post</string>
-  <string name="Project_launch">Project launch</string>
-  <string name="Project_success">Project success</string>
   <string name="project_of_the_day">Project of the day!</string>
   <string name="project_was_cancelled_by_its_creator">%1$s was cancelled by its creator.</string>
   <string name="project_was_not_successfully_funded">%1$s was not successfully funded.</string>

@@ -11,10 +11,8 @@ import com.kickstarter.R;
 import timber.log.Timber;
 
 public class UnregisterService extends IntentService {
-  private static final String WORKER_THREAD_NAME = "UnregisterService";
-
   public UnregisterService() {
-    super(WORKER_THREAD_NAME);
+    super("UnregisterService");
   }
 
   @Override

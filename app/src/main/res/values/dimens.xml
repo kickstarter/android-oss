@@ -25,11 +25,9 @@
   <dimen name="headline">20sp</dimen>
   <dimen name="editorial_headline">26sp</dimen>
 
-  <dimen name="caption_line_height">18sp</dimen>
-  <dimen name="body_line_height">20sp</dimen>
-  <dimen name="subhead_line_height">22sp</dimen>
-  <dimen name="headline_line_height">26sp</dimen>
-  <dimen name="editorial_headline_line_height">32sp</dimen>
+  <dimen name="caption_line_spacing_extra">2dp</dimen>
+  <dimen name="body_line_spacing_extra">2dp</dimen>
+  <dimen name="subhead_line_spacing_extra">4dp</dimen>
 
   <!-- Icon sizes -->
   <dimen name="chevron_right_icon">24sp</dimen>

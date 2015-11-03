@@ -70,11 +70,7 @@ public class DebugPushNotificationsView extends ScrollView {
       .id(1)
       .build();
 
-    final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder()
-      .activity(activity)
-      .gcm(gcm)
-      .build();
-
+    final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder().activity(activity).gcm(gcm).build();
     pushNotifications.add(envelope);
   }
 
@@ -92,11 +88,7 @@ public class DebugPushNotificationsView extends ScrollView {
       .projectPhoto(PROJECT_PHOTO_URL)
       .build();
 
-    final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder()
-      .activity(activity)
-      .gcm(gcm)
-      .build();
-
+    final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder().activity(activity).gcm(gcm).build();
     pushNotifications.add(envelope);
   }
 
@@ -114,11 +106,7 @@ public class DebugPushNotificationsView extends ScrollView {
       .projectPhoto(PROJECT_PHOTO_URL)
       .build();
 
-    final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder()
-      .activity(activity)
-      .gcm(gcm)
-      .build();
-
+    final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder().activity(activity).gcm(gcm).build();
     pushNotifications.add(envelope);
   }
 
@@ -136,11 +124,7 @@ public class DebugPushNotificationsView extends ScrollView {
       .projectPhoto(PROJECT_PHOTO_URL)
       .build();
 
-    final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder()
-      .activity(activity)
-      .gcm(gcm)
-      .build();
-
+    final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder().activity(activity).gcm(gcm).build();
     pushNotifications.add(envelope);
   }
 
@@ -155,7 +139,6 @@ public class DebugPushNotificationsView extends ScrollView {
       .gcm(gcm)
       .project(PushNotificationEnvelope.Project.builder().id(PROJECT_ID).photoUrl(PROJECT_PHOTO_URL).build())
       .build();
-
     pushNotifications.add(envelope);
   }
 
@@ -173,11 +156,7 @@ public class DebugPushNotificationsView extends ScrollView {
       .projectPhoto(PROJECT_PHOTO_URL)
       .build();
 
-    final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder()
-      .activity(activity)
-      .gcm(gcm)
-      .build();
-
+    final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder().activity(activity).gcm(gcm).build();
     pushNotifications.add(envelope);
   }
 
@@ -196,11 +175,7 @@ public class DebugPushNotificationsView extends ScrollView {
       .updateId(175622L)
       .build();
 
-    final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder()
-      .activity(activity)
-      .gcm(gcm)
-      .build();
-
+    final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder().activity(activity).gcm(gcm).build();
     pushNotifications.add(envelope);
   }
 }

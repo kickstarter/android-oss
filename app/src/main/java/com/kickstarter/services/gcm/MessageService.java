@@ -16,10 +16,6 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-/**
- * Enables various aspects of handling messages such as detecting different downstream message types,
- * determining upstream send status, and automatically displaying simple notifications on the app’s behalf.
- */
 public class MessageService extends GcmListenerService {
   @Inject Gson gson;
   @Inject PushNotifications pushNotifications;
@@ -31,11 +27,10 @@ public class MessageService extends GcmListenerService {
   }
 
   /**
-   * Called when message is received.
+   * Called when a message is received from GCM.
    *
    * @param from SenderID of the sender.
    * @param data Data bundle containing message data as key/value pairs.
-   *             For Set of keys use data.keySet().
    */
   @Override
   public void onMessageReceived(@NonNull final String from, @NonNull final Bundle data) {

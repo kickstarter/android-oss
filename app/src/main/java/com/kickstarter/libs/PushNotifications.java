@@ -6,20 +6,17 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.transformations.CropSquareTransformation;
+import com.kickstarter.libs.utils.PlayServicesUtils;
 import com.kickstarter.models.pushdata.Activity;
 import com.kickstarter.models.pushdata.GCM;
+import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 import com.kickstarter.services.gcm.RegisterService;
 import com.kickstarter.services.gcm.UnregisterService;
-import com.kickstarter.libs.utils.PlayServicesUtils;
-import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
-import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.squareup.picasso.Picasso;
 

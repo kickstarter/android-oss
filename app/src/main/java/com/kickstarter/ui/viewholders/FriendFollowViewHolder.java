@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.CircleTransform;
+import com.kickstarter.libs.transformations.CircleTransformation;
 import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
@@ -31,7 +31,7 @@ public class FriendFollowViewHolder extends ActivityListViewHolder {
 
     Picasso.with(context)
       .load(activity.user().avatar().small())
-      .transform(new CircleTransform())
+      .transform(new CircleTransformation())
       .into(avatarImageView);
 
     titleTextView.setText(Html.fromHtml(context.getString(R.string.username_is_following_you, activity.user().name())));

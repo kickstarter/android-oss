@@ -68,7 +68,8 @@ public abstract class PushNotificationEnvelope implements Parcelable {
     // When we display an Android notification, we can give it a id. If the server sends a notification with the same
     // id, Android updates the existing notification with new information rather than creating a new notification.
     //
-    // We don't have unique server ids (yet?), so I'm just using the alert text as a weak substitute.
+    // The server doesn't send unique notification ids, so hashing the alert text is a weak substitute. Probably won't
+    // make use of this feature anyhow.
     return gcm().alert().hashCode();
   }
 

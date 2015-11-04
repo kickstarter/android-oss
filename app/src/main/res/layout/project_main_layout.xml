@@ -170,4 +170,6 @@
 
   <include layout="@layout/project_creator_info" />
 
+  <include layout="@layout/horizontal_line_thin_view" />
+
 </LinearLayout>

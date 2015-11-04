@@ -11,33 +11,49 @@
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp">
 
-  <LinearLayout
+  <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
     android:gravity="center_vertical">
 
+    <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:orientation="horizontal">
+
+      <com.kickstarter.ui.views.IconTextView
+        android:id="@+id/nav_back_button"
+        android:paddingLeft="@dimen/grid_3"
+        android:paddingRight="@dimen/grid_3"
+        android:background="@drawable/click_indicator_light"
+        android:gravity="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textColor="@color/black"
+        android:text="@string/arrow_back_icon"/>
+
+      <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:textColor="@color/black"
+        android:text="@string/Sign_Up_with_Email" />
+
+    </LinearLayout>
+
     <com.kickstarter.ui.views.IconTextView
-      android:id="@+id/nav_back_button"
-      android:paddingLeft="@dimen/grid_3"
-      android:paddingRight="@dimen/grid_3"
-      android:background="@drawable/click_indicator_light"
-      android:gravity="center_vertical"
-      android:textAppearance="@style/TextAppearance.AppCompat.Title"
-      android:layout_alignParentStart="true"
-      android:layout_alignParentLeft="true"
-      android:layout_width="wrap_content"
+      android:id="@+id/more_button"
+      android:layout_width="@dimen/button_icon_fixed_width"
       android:layout_height="match_parent"
-      android:textColor="@color/black"
-      android:text="@string/arrow_back_icon"/>
-
-    <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="match_parent"
-      android:gravity="center_vertical"
+      android:background="@drawable/button_selector"
+      android:text="@string/more_vert_icon"
+      android:gravity="center"
+      android:layout_alignParentRight="true"
+      android:layout_alignParentEnd="true"
       android:textAppearance="@style/TextAppearance.AppCompat.Title"
-      android:textColor="@color/black"
-      android:text="@string/Sign_Up_with_Email" />
+      android:textColor="@color/dark_gray" />
 
-  </LinearLayout>
+  </RelativeLayout>
 </android.support.v7.widget.Toolbar>

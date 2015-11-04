@@ -70,7 +70,7 @@
   </style>
 
   <style name="Login" parent="KsrTheme">
-    <item name="android:statusBarColor">@color/gray</item>
+    <item name="android:statusBarColor">@color/black</item>
   </style>
 
   <style name="ProjectActivity" parent="KsrTheme">

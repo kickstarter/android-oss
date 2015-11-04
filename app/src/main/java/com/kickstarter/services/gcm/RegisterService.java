@@ -45,8 +45,8 @@ public class RegisterService extends IntentService {
         GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
       Timber.d("Token: " + token);
 
-      sendTokenToAppServers(token);
-      subscribeToTopics(token);
+      sendTokenToApi(token);
+      subscribeToGlobalTopic(token);
     } catch (final Exception e) {
       Timber.e("Failed to complete token refresh: " +  e.toString());
     }
@@ -57,20 +57,19 @@ public class RegisterService extends IntentService {
    *
    * @param token The new token.
    */
-  private void sendTokenToAppServers(@NonNull final String token) {
+  private void sendTokenToApi(@NonNull final String token) {
     if (currentUser.observable().first().toBlocking().single() != null) {
       apiClient.registerPushToken(token).first().toBlocking().single();
     }
   }
 
   /**
-   * Subscribe to topics of interest.
+   * Subscribe to generic global topic - not using more specific topics.
    *
    * @throws IOException if unable to reach the GCM PubSub service
    */
-  private void subscribeToTopics(@NonNull final String token) throws IOException {
-    final GcmPubSub pubSub = GcmPubSub.getInstance(this);
-    pubSub.subscribe(token, "/topics/global", null);
+  private void subscribeToGlobalTopic(@NonNull final String token) throws IOException {
+    GcmPubSub.getInstance(this).subscribe(token, "/topics/global", null);
   }
 }
 

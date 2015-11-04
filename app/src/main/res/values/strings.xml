@@ -217,4 +217,7 @@
 
   <!-- Animation strings -->
   <string name="woohoo_duration">2000</string>
+
+  <!-- Font strings -->
+  <string name="font_family_medium">sans-serif-medium</string>
 </resources>

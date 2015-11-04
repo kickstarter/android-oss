@@ -5,6 +5,7 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   android:id="@+id/project_scroll_view"
   android:layout_width="match_parent"
+  android:background="@color/white"
   android:layout_height="match_parent">
 
   <include layout="@layout/project_media_header"/>

@@ -7,7 +7,7 @@
   android:layout_height="wrap_content"
   app:cardElevation="@dimen/ksr_card_elevation"
   app:cardCornerRadius="4dp"
-  app:cardBackgroundColor="@android:color/transparent"
+  app:cardBackgroundColor="@color/white"
   android:foreground="@drawable/click_indicator_light"
   android:layout_margin="@dimen/grid_2">
 

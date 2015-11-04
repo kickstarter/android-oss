@@ -1,4 +1,4 @@
-package com.kickstarter.ui.views;
+package com.kickstarter.libs;
 
 import android.support.annotation.NonNull;
 import android.view.Surface;

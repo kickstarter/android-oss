@@ -12,15 +12,15 @@ import com.google.android.exoplayer.upstream.Allocator;
 import com.google.android.exoplayer.upstream.DataSource;
 import com.google.android.exoplayer.upstream.DefaultAllocator;
 import com.google.android.exoplayer.upstream.DefaultUriDataSource;
-import com.kickstarter.ui.views.KsrVideoPlayer;
+import com.kickstarter.libs.KsrVideoPlayer.RendererBuilder;
 
-public class ExtractorRendererBuilder implements KsrVideoPlayer.RendererBuilder {
+public class KsrRendererBuilder implements RendererBuilder {
   public static final int BUFFER_SEGMENT_COUNT = 256;
   public static final int BUFFER_SEGMENT_SIZE = 64 * 1024;
   private Context context;
   private String videoLink;
 
-  public ExtractorRendererBuilder(@NonNull final Context context, @NonNull final String videoLink) {
+  public KsrRendererBuilder(@NonNull final Context context, @NonNull final String videoLink) {
     this.context = context;
     this.videoLink = videoLink;
   }

@@ -15,10 +15,10 @@ import com.google.android.exoplayer.AspectRatioFrameLayout;
 import com.google.android.exoplayer.ExoPlayer;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.ExtractorRendererBuilder;
+import com.kickstarter.libs.KsrRendererBuilder;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Video;
-import com.kickstarter.ui.views.KsrVideoPlayer;
+import com.kickstarter.libs.KsrVideoPlayer;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -57,7 +57,7 @@ public class VideoPlayerActivity extends BaseActivity implements SurfaceHolder.C
   }
 
   private void preparePlayer(final boolean playWhenReady) {
-    player = new KsrVideoPlayer(new ExtractorRendererBuilder(this, video.high()));
+    player = new KsrVideoPlayer(new KsrRendererBuilder(this, video.high()));
     player.setListener(this);
     player.seekTo(playerPosition);
     mediaController.setMediaPlayer(player.getPlayerControl());

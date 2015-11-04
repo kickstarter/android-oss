@@ -17,8 +17,8 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 public class MessageService extends GcmListenerService {
-  @Inject Gson gson;
-  @Inject PushNotifications pushNotifications;
+  @Inject protected Gson gson;
+  @Inject protected PushNotifications pushNotifications;
 
   @Override
   public void onCreate() {

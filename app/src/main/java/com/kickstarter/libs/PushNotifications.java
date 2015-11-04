@@ -31,9 +31,9 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 public class PushNotifications {
-  @ForApplication final Context context;
-  PublishSubject<PushNotificationEnvelope> notifications = PublishSubject.create();
-  CompositeSubscription subscriptions = new CompositeSubscription();
+  @ForApplication protected final Context context;
+  protected PublishSubject<PushNotificationEnvelope> notifications = PublishSubject.create();
+  protected CompositeSubscription subscriptions = new CompositeSubscription();
 
   public PushNotifications(@ForApplication final Context context) {
     this.context = context;

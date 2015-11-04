@@ -19,7 +19,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class DebugPushNotificationsView extends ScrollView {
-  @Inject PushNotifications pushNotifications;
+  @Inject protected PushNotifications pushNotifications;
 
   private static final String PROJECT_PHOTO_URL = "https://ksr-ugc.imgix.net/projects/73409/photo-original.jpg?v=1397770628&w=160&h=120&fit=crop&auto=format&q=92&s=da84cc0a09478bebca4d8d35f98f77b4";
   private static final Long PROJECT_ID = 1929840910L;

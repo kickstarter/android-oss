@@ -25,8 +25,8 @@ import timber.log.Timber;
 public class KSApplication extends Application {
   private ApplicationComponent component;
   private RefWatcher refWatcher;
-  @Inject CookieManager cookieManager;
-  @Inject PushNotifications pushNotifications;
+  @Inject protected CookieManager cookieManager;
+  @Inject protected PushNotifications pushNotifications;
 
   @Override
   @CallSuper

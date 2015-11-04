@@ -92,6 +92,7 @@ public class DebugDrawer extends FrameLayout {
       release.versionName(),
       release.versionCode().toString(),
       release.sha(),
+      Integer.toString(Build.VERSION.SDK_INT),
       Build.MANUFACTURER + " " + Build.MODEL,
       Locale.getDefault().getLanguage()
     );

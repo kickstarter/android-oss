@@ -10,9 +10,12 @@ import com.google.android.gms.iid.InstanceID;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClient;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -58,9 +61,13 @@ public class RegisterService extends IntentService {
    * @param token The new token.
    */
   private void sendTokenToApi(@NonNull final String token) {
-    if (currentUser.observable().take(1).toBlocking().single() != null) {
-      apiClient.registerPushToken(token).first().toBlocking().single();
-    }
+    currentUser.observable()
+      .take(1)
+      .filter(ObjectUtils::isNotNull)
+      .toBlocking()
+      .subscribe(__ ->
+        apiClient.registerPushToken(token).first().toBlocking().single()
+      );
   }
 
   /**

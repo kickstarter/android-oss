@@ -24,6 +24,7 @@
     <!-- More on Color Palette:
       http://www.google.com/design/spec/style/color.html#color-color-palette
       http://developer.android.com/training/material/theme.html#ColorPalette -->
+
     <!-- colorPrimary is used for the default action bar background -->
     <item name="colorPrimary">@color/primary</item>
     <!-- colorPrimaryDark is used for the status bar -->
@@ -55,12 +56,10 @@
   </style>
 
   <style name="DiscoveryActivity" parent="KsrTheme">
-    <item name="android:statusBarColor">@color/black</item>
     <item name="android:windowBackground">@color/discovery_background</item>
   </style>
 
   <style name="DiscoveryFilterActivity" parent="KsrTheme">
-    <item name="android:statusBarColor">@color/black</item>
   </style>
 
   <style name="DisplayWebViewActivity" parent="KsrTheme">
@@ -78,11 +77,9 @@
   </style>
 
   <style name="ProjectActivity" parent="KsrTheme">
-    <item name="android:statusBarColor">@color/black</item>
   </style>
 
   <style name="SearchActivity" parent="KsrTheme">
-    <item name="android:statusBarColor">@color/dark_blue</item>
     <item name="android:windowBackground">@color/light_gray</item>
   </style>
 

@@ -118,6 +118,10 @@
     <item name="android:paddingRight">@dimen/grid_3</item>
   </style>
 
+  <style name="KsrPopupMenu" parent="Base.Widget.AppCompat.Light.PopupMenu">
+    <item name="android:popupBackground">@color/white</item>
+  </style>
+
   <style name="subheadBold" parent="TextAppearance.AppCompat">
     <item name="android:textStyle">bold</item>
     <item name="android:textSize">@dimen/subhead</item>

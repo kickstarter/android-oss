@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <item
+    android:id="@+id/terms"
+    android:title="@string/Terms_of_Use" />
+  <item
+    android:id="@+id/privacy_policy"
+    android:title="@string/Privacy_Policy" />
+  <item
+    android:id="@+id/cookie_policy"
+    android:title="@string/Cookie_Policy" />
+  <item
+    android:id="@+id/help"
+    android:title="@string/Help" />
+</menu>

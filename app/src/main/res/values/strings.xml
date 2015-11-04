@@ -44,6 +44,7 @@
   <string name="Close">Close</string>
   <string name="Comment_posted">Comment posted!</string>
   <string name="Comments">Comments</string>
+  <string name="Cookie_Policy">Cookie Policy</string>
   <string name="creator_launched_a_project">%1$s launched a project: %2$s</string>
   <string name="Created_by">Created by</string>
   <string name="Created_by_">Created by&lt;br>&lt;b>%1$s&lt;/b></string>
@@ -120,6 +121,7 @@
   <string name="pledged_of_goal">pledged of %1$s</string>
   <string name="pledged_amount_on_date">%1$s on %2$s</string>
   <string name="Post">Post</string>
+  <string name="Privacy_Policy">Privacy Policy</string>
   <string name="project_of_the_day">Project of the day!</string>
   <string name="project_was_cancelled_by_its_creator">%1$s was cancelled by its creator.</string>
   <string name="project_was_not_successfully_funded">%1$s was not successfully funded.</string>
@@ -149,6 +151,7 @@
   <string name="Starred">Starred</string>
   <string name="Submit">Submit</string>
   <string name="Submit_bug_report">Submit bug report</string>
+  <string name="Terms_of_Use">Terms of Use</string>
   <string name="The_code_provided_does_not_match">The code provided does not match.</string>
   <string name="This_project_will_only_be_funded_if">
     This project will only be funded if at least %1$s is pledged by %2$s</string>

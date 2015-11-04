@@ -46,12 +46,12 @@ public class RegisterService extends IntentService {
       // R.string.gcm_defaultSenderId is derived from google-services.json
       final String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
         GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
-      Timber.d("Token: " + token);
+      Timber.d("Token: %s", token);
 
       sendTokenToApi(token);
       subscribeToGlobalTopic(token);
     } catch (final Exception e) {
-      Timber.e("Failed to complete token refresh: " +  e.toString());
+      Timber.e("Failed to complete token refresh: %s", e);
     }
   }
 

@@ -38,6 +38,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.BindDrawable;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 @RequiresPresenter(DiscoveryPresenter.class)
 public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> implements DiscoveryAdapter.Delegate {

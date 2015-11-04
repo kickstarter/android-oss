@@ -152,7 +152,7 @@ public class PushNotifications {
       }
       return requestCreator.get();
     } catch (IOException e) {
-      Timber.e("Failed to load large icon: " + e);
+      Timber.e("Failed to load large icon: %s",  e);
       return null;
     }
   }

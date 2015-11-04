@@ -36,7 +36,7 @@ public class MessageService extends GcmListenerService {
   public void onMessageReceived(@NonNull final String from, @NonNull final Bundle data) {
     final String senderId = getString(R.string.gcm_defaultSenderId);
     if (!from.equals(senderId)) {
-      Timber.e("Received a message from " + from + ", expecting " + senderId);
+      Timber.e("Received a message from %s, expecting %s", from, senderId);
       return;
     }
 
@@ -46,7 +46,7 @@ public class MessageService extends GcmListenerService {
       .build();
 
     if (envelope == null) {
-      Timber.e("Cannot parse message, malformed or unexpected data: " + data.toString());
+      Timber.e("Cannot parse message, malformed or unexpected data: %s", data.toString());
       return;
     }
 

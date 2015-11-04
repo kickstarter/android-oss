@@ -1,3 +1,7 @@
+<!--
+  Naming guidelines: https://github.com/kickstarter/styleguide/tree/master/android#style-inheritance
+  Other resources: https://kickstarter.wiki/pages/android-links.html#styles
+-->
 <resources>
   <style name="None">
   </style>
@@ -92,7 +96,6 @@
     <item name="android:windowBackground">@color/white</item>
   </style>
 
-  <!-- Style advice: http://blog.danlew.net/2014/11/19/styles-on-android/ -->
   <style name="KsrSpinner" parent="android:Widget">
     <item name="android:background">@drawable/ksr_spinner</item>
     <item name="android:clickable">true</item>

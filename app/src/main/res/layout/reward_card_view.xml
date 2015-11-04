@@ -7,6 +7,7 @@
   android:layout_height="wrap_content"
   app:cardCornerRadius="4dp"
   app:cardBackgroundColor="@color/white"
+  app:cardPreventCornerOverlap="false"
   android:foreground="@drawable/click_indicator_light"
   android:layout_margin="@dimen/grid_2">
 
@@ -75,9 +76,9 @@
           android:paddingRight="@dimen/grid_1"
           android:layout_toEndOf="@id/reward_backers_count"
           android:layout_toRightOf="@id/reward_backers_count"
-          android:background="@color/yellow"
-          android:visibility="gone"
-          style="@style/TextSecondary.Body"
+          android:background="@color/gray"
+          android:visibility="visible"
+          style="@style/BodyPrimary"
           android:text="@string/Limited_left_of"
           android:layout_marginLeft="@dimen/grid_1"
           android:layout_marginStart="@dimen/grid_1"

@@ -58,7 +58,7 @@ public class RegisterService extends IntentService {
    * @param token The new token.
    */
   private void sendTokenToApi(@NonNull final String token) {
-    if (currentUser.observable().first().toBlocking().single() != null) {
+    if (currentUser.observable().take(1).toBlocking().single() != null) {
       apiClient.registerPushToken(token).first().toBlocking().single();
     }
   }

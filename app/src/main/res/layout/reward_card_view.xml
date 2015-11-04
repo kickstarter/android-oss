@@ -26,8 +26,8 @@
 
     <TextView
       android:id="@+id/selected"
-      android:layout_alignParentRight="true"
       android:layout_alignParentEnd="true"
+      android:layout_alignParentRight="true"
       android:visibility="gone"
       android:paddingTop="@dimen/grid_1"
       android:paddingBottom="@dimen/grid_1"
@@ -39,15 +39,16 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
-  <RelativeLayout
-    android:layout_below="@id/selected"
-    android:paddingRight="@dimen/grid_2"
-    android:paddingLeft="@dimen/grid_2"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    <RelativeLayout
+      android:layout_below="@id/selected"
+      android:paddingRight="@dimen/grid_2"
+      android:paddingLeft="@dimen/grid_2"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
 
       <TextView
         android:id="@+id/pledge_minimum"
+        android:text="Pledge $15000 or more"
         style="@style/TextPrimary.Headline"
         android:paddingTop="@dimen/grid_2"
         android:paddingBottom="@dimen/grid_2"
@@ -55,7 +56,7 @@
         android:layout_height="wrap_content"/>
 
       <RelativeLayout
-        android:id="@+id/backer_info"
+        android:id="@+id/backer_reward_info"
         android:layout_below="@id/pledge_minimum"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -65,30 +66,34 @@
           android:text="# backers"
           style="@style/TextPrimary.Body.Medium"
           android:layout_centerVertical="true"
-          android:layout_width="match_parent"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"/>
-
-      </RelativeLayout>
-
-      <RelativeLayout
-        android:id="@+id/limited_reward_labels"
-        android:layout_below="@id/backer_info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
 
         <TextView
           android:id="@+id/limited"
+          android:paddingLeft="@dimen/grid_1"
+          android:paddingRight="@dimen/grid_1"
+          android:layout_toEndOf="@id/reward_backers_count"
+          android:layout_toRightOf="@id/reward_backers_count"
           android:background="@color/yellow"
           android:visibility="gone"
           style="@style/TextSecondary.Body"
           android:text="@string/Limited_left_of"
+          android:layout_marginLeft="@dimen/grid_1"
+          android:layout_marginStart="@dimen/grid_1"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 
         <TextView
           android:id="@+id/all_gone"
+          android:paddingLeft="@dimen/grid_1"
+          android:paddingRight="@dimen/grid_1"
+          android:layout_toEndOf="@id/reward_backers_count"
+          android:layout_toRightOf="@id/reward_backers_count"
           android:background="@color/gray"
-          android:visibility="gone"
+          android:visibility="visible"
+          android:layout_marginStart="@dimen/grid_1"
+          android:layout_marginEnd="@dimen/grid_1"
           android:text="@string/All_gone"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
@@ -97,7 +102,7 @@
 
       <TextView
         android:id="@+id/reward_description"
-        android:layout_below="@id/limited_reward_labels"
+        android:layout_below="@id/backer_reward_info"
         style="@style/TextPrimary.Subhead"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -111,7 +116,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/TextSecondary.Body"
-        android:paddingBottom="@dimen/grid_1_half" />
+        android:paddingBottom="@dimen/grid_1_half"/>
 
       <TextView
         android:id="@+id/estimated_delivery_date"
@@ -119,6 +124,7 @@
         style="@style/TextPrimary.Body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
     </RelativeLayout>
   </RelativeLayout>
 

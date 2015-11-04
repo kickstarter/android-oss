@@ -8,6 +8,7 @@
     android:id="@+id/rewards_recycler_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/light_gray"
     android:paddingBottom="?attr/actionBarSize"/>
 
   <include layout="@layout/project_action_toolbar"/>

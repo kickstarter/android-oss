@@ -3,6 +3,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
+  android:background="@color/light_gray"
   android:orientation="vertical">
 
   <RelativeLayout
@@ -15,31 +16,35 @@
     android:paddingBottom="@dimen/grid_3"
     android:paddingTop="@dimen/grid_3">
 
+    <ImageView
+      android:id="@+id/avatar"
+      android:layout_width="@dimen/project_avatar_width"
+      android:layout_height="@dimen/project_avatar_height"
+      android:layout_alignParentStart="true"
+      android:layout_alignParentLeft="true"
+      android:scaleType="centerCrop" />
+
     <TextView
       android:id="@+id/created_by"
       android:text="@string/Created_by"
+      android:paddingLeft="@dimen/grid_2"
+      android:paddingStart="@dimen/grid_2"
+      android:layout_toRightOf="@id/avatar"
+      android:layout_toEndOf="@id/avatar"
       android:paddingTop="@dimen/grid_1"
       style="@style/CaptionSecondary"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
-    <ImageView
-      android:id="@+id/avatar"
-      android:layout_width="@dimen/project_avatar_width"
-      android:layout_height="@dimen/project_avatar_height"
-      android:layout_alignParentEnd="true"
-      android:layout_alignParentRight="true"
-      android:scaleType="centerCrop" />
-
     <TextView
       android:id="@+id/avatar_name"
       android:maxLines="2"
-      android:layout_alignParentStart="true"
-      android:layout_alignParentLeft="true"
-      android:layout_toLeftOf="@id/avatar"
-      android:layout_toStartOf="@id/avatar"
-      android:layout_marginRight="@dimen/grid_3"
-      android:layout_marginEnd="@dimen/grid_3"
+      android:paddingLeft="@dimen/grid_2"
+      android:paddingStart="@dimen/grid_2"
+      android:paddingRight="@dimen/grid_3"
+      android:paddingEnd="@dimen/grid_3"
+      android:layout_toRightOf="@id/avatar"
+      android:layout_toEndOf="@id/avatar"
       android:ellipsize="marquee"
       style="@style/SubheadMedium"
       android:layout_below="@id/created_by"
@@ -80,13 +85,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/chevron_right_icon"
-        android:textColor="@color/text_primary"
+        android:textColor="@color/green_state_pressed_color"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true" />
     </RelativeLayout>
 
-    <include layout="@layout/horizontal_line_thin_view" />
+    <include layout="@layout/horizontal_line_thin_view"
+      android:layout_height="wrap_content"
+      android:layout_width="wrap_content"
+      android:layout_marginTop="@dimen/grid_1_half"
+      android:layout_marginBottom="@dimen/grid_1_half"/>
 
     <RelativeLayout
       android:id="@+id/updates"
@@ -116,8 +125,12 @@
         android:layout_height="wrap_content" />
     </RelativeLayout>
 
-    <include layout="@layout/horizontal_line_thin_view" />
 
+    <include layout="@layout/horizontal_line_thin_view"
+      android:layout_height="wrap_content"
+      android:layout_width="wrap_content"
+      android:layout_marginTop="@dimen/grid_1_half"
+      android:layout_marginBottom="@dimen/grid_1_half"/>
     <RelativeLayout
       android:id="@+id/comments"
       android:layout_width="match_parent"

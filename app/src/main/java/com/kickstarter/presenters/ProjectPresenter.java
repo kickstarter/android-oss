@@ -168,10 +168,6 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
     rewardClick.onNext(reward);
   }
 
-  public void projectShareClicked(@NonNull final ProjectViewHolder viewHolder) {
-    shareClick.onNext(null);
-  }
-
   public void takeShareClick() {
     shareClick.onNext(null);
   }

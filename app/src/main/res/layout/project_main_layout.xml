@@ -5,6 +5,7 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   android:id="@+id/project_scroll_view"
   android:layout_width="match_parent"
+  android:background="@color/white"
   android:layout_height="match_parent">
 
   <include layout="@layout/project_media_header"/>
@@ -117,17 +118,6 @@
         android:text="@string/location_on_icon"
         style="@style/BodyPrimary" />
 
-      <Button
-        android:id="@+id/share_button"
-        android:background="@drawable/button_share"
-        android:textColor="@color/dark_gray"
-        android:textSize="@dimen/body"
-        android:layout_width="@dimen/grid_10"
-        android:layout_height="@dimen/grid_4"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:text="@string/Share" />
-
       <TextView
         android:id="@+id/location"
         android:layout_centerVertical="true"
@@ -135,8 +125,6 @@
         android:singleLine="true"
         android:layout_toRightOf="@id/location_icon"
         android:layout_toEndOf="@id/location_icon"
-        android:layout_toLeftOf="@id/share_button"
-        android:layout_toStartOf="@id/share_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/grid_1_half"
@@ -181,5 +169,7 @@
   </LinearLayout>
 
   <include layout="@layout/project_creator_info" />
+
+  <include layout="@layout/horizontal_line_thin_view" />
 
 </LinearLayout>

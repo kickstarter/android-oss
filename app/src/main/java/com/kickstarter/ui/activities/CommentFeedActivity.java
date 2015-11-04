@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -31,7 +33,6 @@ import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnTextChanged;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -109,6 +110,15 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> impl
 
     projectNameTextView.setText(project.name());
     cancelButtonTextView.setOnClickListener((@NonNull final View v) -> dismissCommentDialog());
+    if (commentBodyEditText != null) {
+      commentBodyEditText.addTextChangedListener(new TextWatcher() {
+        public void beforeTextChanged(@NonNull final CharSequence s, final int start, final int count, final int after) {}
+        public void onTextChanged(@NonNull final CharSequence s, final int start, final int before, final int count) {}
+        public void afterTextChanged(@NonNull final Editable s) {
+          presenter.inputs().commentBody(s.toString());
+        }
+      });
+    }
 
     if (postCommentButton != null && commentBodyEditText != null) {
       postCommentButton.setOnClickListener((@NonNull final View v) -> {
@@ -116,11 +126,6 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> impl
       });
     }
     presenter.takeCommentDialogShown();
-  }
-
-  @Nullable
-  @OnTextChanged(R.id.comment_body) void onCommentBodyTextChanged(@NonNull final CharSequence commentBody) {
-    presenter.inputs().commentBody(commentBody.toString());
   }
 
   public void dismissCommentDialog() {

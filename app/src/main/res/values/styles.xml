@@ -128,45 +128,45 @@
     <item name="android:textColor">@color/text_secondary</item>
   </style>
 
-  <style name="TextPrimary.Caption">
+  <style name="CaptionPrimary" parent="TextPrimary">
     <item name="android:textSize">@dimen/caption</item>
     <item name="android:lineSpacingExtra">@dimen/caption_line_spacing_extra</item>
   </style>
 
-  <style name="TextSecondary.Caption">
+  <style name="CaptionSecondary" parent="TextSecondary">
     <item name="android:textSize">@dimen/caption</item>
     <item name="android:lineSpacingExtra">@dimen/caption_line_spacing_extra</item>
   </style>
 
-  <style name="TextPrimary.Body">
-    <item name="android:textSize">@dimen/body</item>
-    <item name="android:lineSpacingExtra">@dimen/body_line_spacing_extra</item>
-  </style>
-  
-  <style name="TextSecondary.Body">
+  <style name="BodyPrimary" parent="TextPrimary">
     <item name="android:textSize">@dimen/body</item>
     <item name="android:lineSpacingExtra">@dimen/body_line_spacing_extra</item>
   </style>
 
-  <style name="TextPrimary.Body.Medium">
+  <style name="BodyPrimaryMedium" parent="BodyPrimary">
     <item name="android:fontFamily">@string/font_family_medium</item>
   </style>
+  
+  <style name="BodySecondary" parent="TextSecondary">
+    <item name="android:textSize">@dimen/body</item>
+    <item name="android:lineSpacingExtra">@dimen/body_line_spacing_extra</item>
+  </style>
 
-  <style name="TextPrimary.Subhead">
+  <style name="Subhead" parent="TextPrimary">
     <item name="android:textSize">@dimen/subhead</item>
     <item name="android:lineSpacingExtra">@dimen/subhead_line_spacing_extra</item>
   </style>
 
-  <style name="TextPrimary.Subhead.Medium">
+  <style name="SubheadMedium" parent="Subhead">
     <item name="android:fontFamily">@string/font_family_medium</item>
   </style>
 
-  <style name="TextPrimary.Headline">
+  <style name="Headline" parent="TextPrimary">
     <item name="android:textSize">@dimen/headline</item>
     <item name="android:fontFamily">@string/font_family_medium</item>
   </style>
 
-  <style name="TextPrimary.EditorialHeadline">
+  <style name="EditorialHeadline" parent="TextPrimary">
     <item name="android:textSize">@dimen/editorial_headline</item>
     <item name="android:fontFamily">@string/font_family_medium</item>
   </style>

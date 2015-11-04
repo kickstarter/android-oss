@@ -39,7 +39,7 @@
     <TextView
       android:id="@+id/pledge_minimum"
       android:layout_below="@id/selected"
-      style="@style/TextPrimary.Headline"
+      style="@style/Headline"
       android:paddingTop="@dimen/grid_2"
       android:paddingBottom="@dimen/grid_2"
       android:layout_width="match_parent"
@@ -54,7 +54,7 @@
       <com.kickstarter.ui.views.IconTextView
         app:iconType="ss_kickstarter"
         android:id="@+id/backer_badge"
-        style="@style/TextPrimary.Headline"
+        style="@style/Headline"
         android:paddingRight="@dimen/grid_1"
         android:paddingEnd="@dimen/grid_1"
         android:layout_width="wrap_content"
@@ -67,7 +67,7 @@
         android:id="@+id/reward_backers_count"
         android:layout_toEndOf="@id/backer_badge"
         android:layout_toRightOf="@id/backer_badge"
-        style="@style/TextPrimary.Body.Medium"
+        style="@style/BodyPrimaryMedium"
         android:layout_centerVertical="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -84,7 +84,7 @@
         android:id="@+id/limited"
         android:background="@color/yellow"
         android:visibility="gone"
-        style="@style/TextSecondary.Body"
+        style="@style/BodySecondary"
         android:text="@string/Limited_left_of"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -102,7 +102,7 @@
     <TextView
       android:id="@+id/reward_description"
       android:layout_below="@id/limited_reward_labels"
-      style="@style/TextPrimary.Subhead"
+      style="@style/Subhead"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:paddingTop="@dimen/grid_2"
@@ -114,13 +114,13 @@
       android:layout_below="@id/reward_description"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      style="@style/TextSecondary.Body"
+      style="@style/BodySecondary"
       android:paddingBottom="@dimen/grid_1_half" />
 
     <TextView
       android:id="@+id/estimated_delivery_date"
       android:layout_below="@id/estimated_delivery"
-      style="@style/TextPrimary.Body"
+      style="@style/BodyPrimary"
       android:layout_width="match_parent"
       android:layout_height="wrap_content" />
 

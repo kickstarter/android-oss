@@ -19,7 +19,7 @@
       android:id="@+id/created_by"
       android:text="@string/Created_by"
       android:paddingTop="@dimen/grid_1"
-      style="@style/TextSecondary.Caption"
+      style="@style/CaptionSecondary"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
@@ -41,7 +41,7 @@
       android:layout_marginRight="@dimen/grid_3"
       android:layout_marginEnd="@dimen/grid_3"
       android:ellipsize="marquee"
-      style="@style/TextPrimary.Subhead.Medium"
+      style="@style/SubheadMedium"
       android:layout_below="@id/created_by"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
@@ -149,7 +149,7 @@
 
   <TextView
     android:id="@+id/fund_message"
-    style="@style/TextSecondary.Caption"
+    style="@style/CaptionSecondary"
     android:paddingRight="@dimen/grid_3"
     android:paddingLeft="@dimen/grid_3"
     android:layout_width="match_parent"

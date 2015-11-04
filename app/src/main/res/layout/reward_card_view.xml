@@ -109,17 +109,11 @@
         android:paddingTop="@dimen/grid_2"
         android:paddingBottom="@dimen/grid_2"/>
 
-      <RelativeLayout
+      <LinearLayout
+        android:orientation="vertical"
         android:layout_below="@id/reward_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-
-        <RelativeLayout
-          android:id="@+id/delivery_info"
-          android:layout_marginRight="@dimen/grid_3"
-          android:layout_marginEnd="@dimen/grid_3"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content">
 
           <TextView
             android:id="@+id/estimated_delivery"
@@ -132,34 +126,27 @@
           <TextView
             android:id="@+id/estimated_delivery_date"
             android:text="September 2016"
-            android:layout_below="@id/estimated_delivery"
+            style="@style/TextPrimary.Body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/grid_1"/>
+
+          <TextView
+            android:id="@+id/shipping_destination"
+            style="@style/TextSecondary.Body"
+            android:text="@string/Shipping_destinations"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/grid_1_half"/>
+
+          <TextView
+            android:id="@+id/shipping_summary"
             style="@style/TextPrimary.Body"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        </RelativeLayout>
-
-        <TextView
-          android:id="@+id/shipping_destination"
-          style="@style/TextSecondary.Body"
-          android:layout_toEndOf="@id/delivery_info"
-          android:layout_toRightOf="@id/delivery_info"
-          android:text="@string/Shipping_destinations"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:paddingBottom="@dimen/grid_1_half"/>
-
-        <TextView
-          android:id="@+id/shipping_summary"
-          style="@style/TextPrimary.Body"
-          android:layout_below="@id/shipping_destination"
-          android:layout_alignLeft="@id/shipping_destination"
-          android:layout_alignStart="@id/shipping_destination"
-          android:text="N/A"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content" />
-
-      </RelativeLayout>
+      </LinearLayout>
     </RelativeLayout>
   </RelativeLayout>
 

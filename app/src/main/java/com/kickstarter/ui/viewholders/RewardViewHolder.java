@@ -28,6 +28,7 @@ public class RewardViewHolder extends KsrViewHolder {
   public @Bind(R.id.limited) TextView limitedTextView;
   public @Bind(R.id.all_gone) TextView allGoneTextView;
   public @Bind(R.id.white_overlay) View whiteOverlayView;
+  public @Bind(R.id.shipping_summary) TextView shippingSummaryTextView;
 
   @Inject Money money;
 
@@ -63,6 +64,7 @@ public class RewardViewHolder extends KsrViewHolder {
     descriptionTextView.setText(reward.description());
     estimatedDeliveryTextView.setText(
       reward.estimatedDeliveryOn().toString(DateTimeUtils.estimatedDeliveryOn()));
+    shippingSummaryTextView.setText(reward.shippingSummary());
 
     toggleAllGoneRewardView();
     toggleLimitedRewardView();

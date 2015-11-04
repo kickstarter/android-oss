@@ -15,7 +15,7 @@
 
     <TextView
       android:id="@+id/backers_count"
-      style="@style/TextPrimary.Subhead.Medium"
+      style="@style/SubheadMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
@@ -23,7 +23,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/backers"
-      style="@style/TextSecondary.Body" />
+      style="@style/BodySecondary" />
   </LinearLayout>
 
   <LinearLayout
@@ -34,7 +34,7 @@
 
     <TextView
       android:id="@+id/pledged"
-      style="@style/TextPrimary.Subhead.Medium"
+      style="@style/SubheadMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
@@ -47,13 +47,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/pledged_of_"
-        style="@style/TextSecondary.Body" />
+        style="@style/BodySecondary" />
 
       <TextView
         android:id="@+id/goal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/TextSecondary.Body" />
+        style="@style/BodySecondary" />
     </LinearLayout>
   </LinearLayout>
 
@@ -66,7 +66,7 @@
     <TextView
       android:id="@+id/deadline_countdown"
       android:singleLine="true"
-      style="@style/TextPrimary.Subhead.Medium"
+      style="@style/SubheadMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
@@ -79,13 +79,13 @@
         android:id="@+id/deadline_countdown_unit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/TextSecondary.Body" />
+        style="@style/BodySecondary" />
 
       <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/_to_go"
-        style="@style/TextSecondary.Body" />
+        style="@style/BodySecondary" />
     </LinearLayout>
   </LinearLayout>
 

@@ -39,7 +39,7 @@
         android:text="Name"
         android:singleLine="true"
         android:ellipsize="end"
-        style="@style/TextPrimary.Body.Medium"
+        style="@style/BodyPrimaryMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

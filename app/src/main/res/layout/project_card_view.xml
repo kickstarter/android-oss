@@ -33,7 +33,7 @@
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/TextPrimary.Headline"
+        style="@style/Headline"
         android:paddingBottom="@dimen/grid_2" />
 
       <include layout="@layout/category_location_view"/>

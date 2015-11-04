@@ -24,7 +24,7 @@
       android:id="@+id/project_name"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      style="@style/TextPrimary.EditorialHeadline"
+      style="@style/EditorialHeadline"
       android:paddingBottom="@dimen/grid_1_half" />
 
     <LinearLayout
@@ -39,7 +39,7 @@
         android:singleLine="true"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        style="@style/TextSecondary.Body"
+        style="@style/BodySecondary"
         android:clickable="true" />
 
       <LinearLayout
@@ -52,7 +52,7 @@
         <TextView
           android:text="@string/Youre_a_backer"
           android:singleLine="true"
-          style="@style/TextPrimary.Body"
+          style="@style/BodyPrimary"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 
@@ -71,7 +71,7 @@
 
     <TextView
       android:id="@+id/blurb"
-      style="@style/TextPrimary.Subhead"
+      style="@style/Subhead"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_3"
@@ -94,7 +94,7 @@
         android:paddingRight="@dimen/grid_1_half"
         android:paddingEnd="@dimen/grid_1_half"
         android:text="@string/local_offer_icon"
-        style="@style/TextPrimary.Body"/>
+        style="@style/BodyPrimary"/>
 
       <TextView
         android:id="@+id/category"
@@ -104,7 +104,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/grid_1_half"
         android:paddingRight="@dimen/grid_1"
-        style="@style/TextPrimary.Body" />
+        style="@style/BodyPrimary" />
 
       <com.kickstarter.ui.views.IconTextView
         android:id="@+id/location_icon"
@@ -116,7 +116,7 @@
         android:paddingLeft="@dimen/grid_1"
         android:paddingRight="@dimen/grid_1_half"
         android:text="@string/location_on_icon"
-        style="@style/TextPrimary.Body" />
+        style="@style/BodyPrimary" />
 
       <TextView
         android:id="@+id/location"
@@ -131,7 +131,7 @@
         android:paddingRight="@dimen/grid_1_half"
         android:paddingStart="@dimen/grid_1_half"
         android:paddingEnd="@dimen/grid_1_half"
-        style="@style/TextPrimary.Body" />
+        style="@style/BodyPrimary" />
 
     </RelativeLayout>
 

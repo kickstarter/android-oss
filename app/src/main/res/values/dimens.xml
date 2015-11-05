@@ -7,6 +7,7 @@
   <dimen name="grid_3_half">12dp</dimen>
   <dimen name="grid_4">32dp</dimen>
   <dimen name="grid_5">40dp</dimen>
+  <dimen name="grid_5_half">20dp</dimen>
   <dimen name="grid_6">48dp</dimen>
   <dimen name="grid_7">56dp</dimen>
   <dimen name="grid_8">64dp</dimen>

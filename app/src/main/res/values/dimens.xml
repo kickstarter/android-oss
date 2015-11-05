@@ -41,6 +41,10 @@
   <dimen name="card_margin_y">@dimen/grid_1</dimen>
   <dimen name="card_padding_action_half">@dimen/grid_1_half</dimen>
 
+  <!-- Layout padding -->
+  <dimen name="feed_padding_y">@dimen/grid_5_half</dimen>
+  <dimen name="feed_padding_x">@dimen/grid_3</dimen>
+
   <!-- Buttons -->
   <!-- button_icon_fixed_width is useful when we want to place several icons next to each
   other where they all take up the same width. This helps with UI effects like ripples that

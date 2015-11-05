@@ -6,9 +6,9 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:orientation="vertical"
-  android:paddingStart="@dimen/grid_3"
-  android:paddingEnd="@dimen/grid_3"
-  android:paddingTop="@dimen/grid_5_half">
+  android:paddingStart="@dimen/feed_padding_x"
+  android:paddingEnd="@dimen/feed_padding_x"
+  android:paddingTop="@dimen/feed_padding_y">
 
   <RelativeLayout
     android:orientation="horizontal"
@@ -59,7 +59,7 @@
   <View
     android:layout_width="fill_parent"
     android:layout_height="1dp"
-    android:layout_marginTop="@dimen/grid_5_half"
+    android:layout_marginTop="@dimen/feed_padding_y"
     android:background="@color/black_alpha_10" />
 
 </LinearLayout>

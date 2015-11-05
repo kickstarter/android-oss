@@ -43,7 +43,7 @@
 
     <TextView
       android:id="@+id/post_date"
-      android:textColor="@color/text_secondary"
+      style="@style/CaptionSecondary"
       android:layout_alignParentEnd="true"
       android:layout_alignParentRight="true"
       android:layout_alignParentTop="true"
@@ -60,13 +60,14 @@
       android:layout_toStartOf="@id/post_date"
       android:ellipsize="end"
       android:layout_alignParentTop="true"
-      android:textStyle="bold"
+      style="@style/SubheadMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
     <TextView
       android:id="@+id/comment_body"
       android:padding="@dimen/grid_2"
+      style="@style/BodyPrimary"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_below="@id/name"

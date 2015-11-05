@@ -28,6 +28,8 @@ public class RewardViewHolder extends KsrViewHolder {
   public @Bind(R.id.limited) TextView limitedTextView;
   public @Bind(R.id.all_gone) TextView allGoneTextView;
   public @Bind(R.id.white_overlay) View whiteOverlayView;
+  public @Bind(R.id.shipping_destination) TextView shippingDestinationTextView;
+  public @Bind(R.id.shipping_summary) TextView shippingSummaryTextView;
 
   @Inject Money money;
 
@@ -65,9 +67,10 @@ public class RewardViewHolder extends KsrViewHolder {
       reward.estimatedDeliveryOn().toString(DateTimeUtils.estimatedDeliveryOn()));
 
     toggleAllGoneRewardView();
+    toggleClickableReward();
     toggleLimitedRewardView();
     toggleSelectedRewardView();
-    toggleClickableReward();
+    toggleShippingDestinationView();
   }
 
   public void toggleAllGoneRewardView() {
@@ -98,6 +101,17 @@ public class RewardViewHolder extends KsrViewHolder {
     } else {
       greenOverlayView.setVisibility(View.INVISIBLE);
       selectedTextView.setVisibility(View.GONE);
+    }
+  }
+
+  public void toggleShippingDestinationView() {
+    if (reward.shippingSummary() != null) {
+      shippingDestinationTextView.setVisibility(View.VISIBLE);
+      shippingSummaryTextView.setVisibility(View.VISIBLE);
+      shippingSummaryTextView.setText(reward.shippingSummary());
+    } else {
+      shippingDestinationTextView.setVisibility(View.GONE);
+      shippingSummaryTextView.setVisibility(View.GONE);
     }
   }
 

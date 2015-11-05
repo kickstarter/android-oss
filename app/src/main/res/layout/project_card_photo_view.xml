@@ -43,7 +43,7 @@
         android:layout_gravity="center_vertical"
         android:paddingRight="@dimen/card_padding_action_half"
         android:text="@string/favorite_icon"
-        android:textSize="@dimen/body"
+        android:textSize="@dimen/subhead"
         android:textColor="@color/green" />
 
       <TextView
@@ -53,7 +53,7 @@
         android:layout_gravity="center_vertical"
         android:paddingLeft="@dimen/card_padding_action_half"
         android:text="@string/project_of_the_day"
-        android:textSize="@dimen/body"
+        android:textSize="@dimen/subhead"
         android:textColor="@color/white" />
 
     </LinearLayout>

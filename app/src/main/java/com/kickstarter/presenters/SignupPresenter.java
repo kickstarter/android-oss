@@ -9,6 +9,7 @@ import android.view.View;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
+import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.presenters.inputs.SignupPresenterInputs;
 import com.kickstarter.presenters.outputs.SignupPresenterOutputs;
@@ -23,6 +24,22 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
 public class SignupPresenter extends Presenter<SignupActivity> implements SignupPresenterInputs, SignupPresenterOutputs {
+
+  final private class SignupData {
+    @NonNull final String fullName;
+    @NonNull final String email;
+    @NonNull final String password;
+
+    public SignupData(@NonNull final String fullName, @NonNull final String email, @NonNull final String password) {
+      this.fullName = fullName;
+      this.email = email;
+      this.password = password;
+    }
+
+    public boolean isValid() {
+      return fullName.length() > 0 && StringUtils.isEmail(email) && password.length() > 0;
+    }
+  }
 
   // INPUTS
   private final PublishSubject<String> fullName = PublishSubject.create();
@@ -42,7 +59,10 @@ public class SignupPresenter extends Presenter<SignupActivity> implements Signup
   public SignupPresenterOutputs outputs() { return this; }
 
   @Override
-  public void fullName(@NonNull final String s) { fullName.onNext(s); }
+  public void fullName(@NonNull final String s) {
+    fullName.onNext(s);
+  }
+
   @Override
   public void email(@NonNull final String s) { email.onNext(s); }
   @Override
@@ -57,10 +77,15 @@ public class SignupPresenter extends Presenter<SignupActivity> implements Signup
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-  }
+    final Observable<SignupData> signupData = Observable.combineLatest(fullName, email, password, SignupData::new);
 
-  private static boolean isValid(@NonNull final String fullName, @NonNull final String email, @NonNull final String password) {
-    return fullName.length() > 0 && StringUtils.isEmail(email) && password.length() > 0;
+    addSubscription(
+      RxUtils.takePairWhen(viewSubject, signupData)
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(vd -> {
+          vd.first.setFormEnabled(vd.second.isValid());
+        })
+    );
   }
 
   private void submit(@NonNull final String fullName, @NonNull final String email, @NonNull final String password) {

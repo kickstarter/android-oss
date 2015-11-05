@@ -61,7 +61,7 @@ public class SignupActivity extends BaseActivity<SignupPresenter> {
         )
     );
 
-    //newsletterSwitch.setChecked(true); // TODO: get initial state from presenter
+    newsletterSwitch.setChecked(presenter.outputs().sendNewslettersDefault);
   }
 
   @Override

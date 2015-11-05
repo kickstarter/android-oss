@@ -35,15 +35,18 @@ SignupPresenterErrors {
     @NonNull final String fullName;
     @NonNull final String email;
     @NonNull final String password;
+    @NonNull final Boolean sendNewsletter;
 
-    public SignupData(@NonNull final String fullName, @NonNull final String email, @NonNull final String password) {
+    public SignupData(@NonNull final String fullName, @NonNull final String email, @NonNull final String password,
+      @NonNull final Boolean sendNewsletter) {
       this.fullName = fullName;
       this.email = email;
       this.password = password;
+      this.sendNewsletter = sendNewsletter;
     }
 
     public boolean isValid() {
-      return fullName.length() > 0 && StringUtils.isEmail(email) && password.length() > 0;
+      return fullName.length() > 0 && StringUtils.isEmail(email) && password.length() >= 6;
     }
   }
 
@@ -84,18 +87,24 @@ SignupPresenterErrors {
   }
 
   @Override
-  public void password(@NonNull final String s) { password.onNext(s); }
+  public void password(@NonNull final String s) {
+    password.onNext(s);
+  }
   @Override
-  public void sendNewsletter(@NonNull final Boolean b) { sendNewsletter.onNext(b); }
+  public void sendNewsletter(@NonNull final Boolean b) {
+    sendNewsletter.onNext(b);
+  }
   @Override
-  public void signupClick(@NonNull final View v) { signupClick.onNext(v); }
+  public void signupClick(@NonNull final View v) {
+    signupClick.onNext(v);
+  }
 
   @Override
   protected void onCreate(@NonNull final Context context, @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    final Observable<SignupData> signupData = Observable.combineLatest(fullName, email, password, SignupData::new);
+    final Observable<SignupData> signupData = Observable.combineLatest(fullName, email, password, sendNewsletter, SignupData::new);
 
     addSubscription(
       RxUtils.takePairWhen(viewSubject, signupData)
@@ -109,14 +118,15 @@ SignupPresenterErrors {
       RxUtils.takeWhen(signupData, signupClick)
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(d -> {
-            submit(d.fullName, d.email, d.password);
+            submit(d.fullName, d.email, d.password, d.sendNewsletter);
           }
         )
     );
   }
 
-  private void submit(@NonNull final String fullName, @NonNull final String email, @NonNull final String password) {
-    client.signup(fullName, email, password, password, 1) // TODO: get newsletter value
+  private void submit(@NonNull final String fullName, @NonNull final String email, @NonNull final String password,
+    @NonNull final Boolean sendNewsletters) {
+    client.signup(fullName, email, password, password, sendNewsletters ? 1 : 0)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::success, this::error);
   }

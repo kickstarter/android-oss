@@ -3,13 +3,12 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
+  style="@style/Toolbar"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
   android:id="@+id/search_toolbar"
   android:layout_width="match_parent"
   android:layout_height="?attr/actionBarSize"
-  android:background="@color/dark_blue"
-  android:elevation="3dp"
   tools:showIn="@layout/search_layout"
   android:foregroundGravity="center_vertical">
 
@@ -20,21 +19,17 @@
     android:orientation="horizontal">
 
     <com.kickstarter.ui.views.IconTextView
+      style="@style/ToolbarIcon"
       android:id="@+id/back_button"
-      android:layout_width="@dimen/button_icon_fixed_width"
-      android:layout_height="match_parent"
       android:layout_weight="0"
-      android:background="@drawable/button_selector"
-      android:gravity="center"
-      android:text="@string/arrow_back_icon"
-      android:textAppearance="@style/TextAppearance.AppCompat.Title"
-      android:textColor="@color/white" />
+      android:text="@string/arrow_back_icon" />
 
     <RelativeLayout
       android:layout_width="fill_parent"
       android:layout_height="match_parent">
 
       <EditText
+        style="@style/ToolbarTitle"
         android:id="@+id/search_edit_text"
         android:layout_marginStart="@dimen/grid_1_half"
         android:layout_marginLeft="@dimen/grid_1_half"
@@ -46,23 +41,16 @@
         android:layout_height="match_parent"
         android:inputType="text"
         android:singleLine="true"
-        android:textColor="@color/white"
-        android:textColorHint="@color/white_alpha_60"
         android:hint="@string/Search_projects"
         android:textCursorDrawable="@null" />
 
       <com.kickstarter.ui.views.IconTextView
+        style="@style/ToolbarIcon"
         android:id="@+id/clear_button"
         android:clickable="true"
-        android:layout_width="@dimen/button_icon_fixed_width"
-        android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:background="@drawable/button_selector"
-        android:gravity="center"
-        android:text="@string/close"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title"
-        android:textColor="@color/white" />
+        android:text="@string/close" />
 
     </RelativeLayout>
 

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
+  android:gravity="center_horizontal"
+  android:background="@color/white"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@color/white"
-  android:gravity="center_horizontal">
+  android:orientation="vertical">
 
   <LinearLayout
     android:orientation="vertical"
@@ -33,7 +33,7 @@
           android:layout_height="wrap_content"
           android:inputType="text"
           android:singleLine="true"
-          android:textSize="14dp"
+          android:textAppearance="@style/BodyPrimary"
           android:hint="@string/Full_name" />
 
       </android.support.design.widget.TextInputLayout>
@@ -49,7 +49,7 @@
           android:layout_height="wrap_content"
           android:inputType="textEmailAddress"
           android:singleLine="true"
-          android:textSize="14dp"
+          android:textAppearance="@style/BodyPrimary"
           android:hint="@string/Email_address" />
 
       </android.support.design.widget.TextInputLayout>
@@ -67,7 +67,7 @@
           android:inputType="textPassword"
           android:singleLine="true"
           android:fontFamily="sans-serif"
-          android:textSize="14dp"
+          android:textAppearance="@style/BodyPrimary"
           android:hint="@string/Password_minimum_6_characters" />
 
       </android.support.design.widget.TextInputLayout>
@@ -77,8 +77,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/dark_gray"
-        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-        android:layout_marginBottom="10dp"
+        android:textAppearance="@style/CaptionPrimary"
+        android:layout_marginBottom="8dp"
         android:text="@string/Discover_new_projects_with_our_weekly_newsletter"/>
 
       <Button
@@ -98,7 +98,7 @@
         android:gravity="center_horizontal"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+        android:textAppearance="@style/CaptionPrimary"
         android:textColor="@color/dark_gray"
         android:text="@string/By_signing_up_you_agree_to_our_sign_up" />
 

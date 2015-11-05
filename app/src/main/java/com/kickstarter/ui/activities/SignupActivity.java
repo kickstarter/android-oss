@@ -31,6 +31,7 @@ public class SignupActivity extends BaseActivity<SignupPresenter> {
   @Bind(R.id.password) EditText passwordEditText;
   @Bind(R.id.signup_button) Button signupButton;
   @Bind(R.id.newsletter_switch) Switch newsletterSwitch;
+  @Bind(R.id.disclaimer) TextView disclaimerTextView;
   @Bind(R.id.more_button) TextView moreButton; // TODO: move this to a login toolbar
 
   @Override
@@ -50,32 +51,29 @@ public class SignupActivity extends BaseActivity<SignupPresenter> {
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
-  @OnClick(R.id.more_button)
+  @OnClick({R.id.more_button, R.id.disclaimer})
   public void moreButtonOnClick() {
    final PopupMenu popup = new PopupMenu(this, moreButton); // TODO: this should be white background and above moreButton
     popup.getMenuInflater().inflate(R.menu.login_help_menu, popup.getMenu());
     popup.setOnMenuItemClickListener(item -> {
+      final Intent intent = new Intent(this, HelpActivity.class);
       switch (item.getItemId()) {
         case R.id.terms:
-          final Intent intent = new Intent(this, HelpActivity.class);
           intent.putExtra(getString(R.string.intent_help_type), HelpActivity.HELP_TYPE_TERMS);
           startActivity(intent);
           overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
           break;
         case R.id.privacy_policy:
-          final Intent intent = new Intent(this, HelpActivity.class);
           intent.putExtra(getString(R.string.intent_help_type), HelpActivity.HELP_TYPE_PRIVACY);
           startActivity(intent);
           overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
           break;
         case R.id.cookie_policy:
-          final Intent intent = new Intent(this, HelpActivity.class);
           intent.putExtra(getString(R.string.intent_help_type), HelpActivity.HELP_TYPE_COOKIE_POLICY);
           startActivity(intent);
           overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
           break;
         case R.id.help:
-          final Intent intent = new Intent(this, HelpActivity.class);
           intent.putExtra(getString(R.string.intent_help_type), HelpActivity.HELP_TYPE_HOW_IT_WORKS);
           startActivity(intent);
           overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);

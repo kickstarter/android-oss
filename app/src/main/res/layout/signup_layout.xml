@@ -85,6 +85,7 @@
       android:text="@string/Sign_up" />
 
     <TextView
+      android:id="@+id/disclaimer"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:gravity="center_horizontal"

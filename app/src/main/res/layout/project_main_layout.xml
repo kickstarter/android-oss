@@ -136,7 +136,7 @@
     </RelativeLayout>
 
     <ProgressBar
-      style="@style/KsrProgressBar"
+      style="@style/ProgressBar"
       android:id="@+id/percentage_funded"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

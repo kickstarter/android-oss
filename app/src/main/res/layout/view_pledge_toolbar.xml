@@ -7,7 +7,7 @@
   android:background="@color/light_gray"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
-  android:elevation="@dimen/ksr_toolbar_elevation">
+  android:elevation="@dimen/toolbar_elevation">
 
   <RelativeLayout
     android:layout_width="match_parent"

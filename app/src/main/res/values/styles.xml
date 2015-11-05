@@ -6,7 +6,7 @@
   <style name="None">
   </style>
 
-  <style name="KsrTheme" parent="Theme.AppCompat.Light.NoActionBar">
+  <style name="KSTheme" parent="Theme.AppCompat.Light.NoActionBar">
     <!-- Shared view activity animations -->
     <item name="android:windowContentTransitions">true</item>
     <item name="android:windowAllowEnterTransitionOverlap">true</item>
@@ -18,8 +18,8 @@
     <item name="android:windowActionBar">false</item>
 
     <!-- Spinner -->
-    <item name="android:spinnerItemStyle">@style/KsrSpinnerItem</item>
-    <item name="android:spinnerStyle">@style/KsrSpinner</item>
+    <item name="android:spinnerItemStyle">@style/SpinnerItem</item>
+    <item name="android:spinnerStyle">@style/Spinner</item>
 
     <!-- More on Color Palette:
       http://www.google.com/design/spec/style/color.html#color-color-palette
@@ -41,74 +41,74 @@
   </style>
 
   <!-- todo: customize these themes, or delete if unused -->
-  <style name="ActivityFeedActivity" parent="KsrTheme">
+  <style name="ActivityFeedActivity" parent="KSTheme">
     <item name="android:statusBarColor">@color/gray</item>
     <item name="android:windowBackground">@drawable/gray_gradient</item>
   </style>
 
-  <style name="CheckoutActivity" parent="KsrTheme">
+  <style name="CheckoutActivity" parent="KSTheme">
     <item name="android:statusBarColor">@color/gray</item>
     <item name="android:windowBackground">@color/white</item>
   </style>
 
-  <style name="CommentFeedActivity" parent="KsrTheme">
+  <style name="CommentFeedActivity" parent="KSTheme">
     <item name="android:windowBackground">@color/white</item>
   </style>
 
-  <style name="DiscoveryActivity" parent="KsrTheme">
+  <style name="DiscoveryActivity" parent="KSTheme">
     <item name="android:windowBackground">@color/discovery_background</item>
   </style>
 
-  <style name="DiscoveryFilterActivity" parent="KsrTheme">
+  <style name="DiscoveryFilterActivity" parent="KSTheme">
   </style>
 
-  <style name="DisplayWebViewActivity" parent="KsrTheme">
+  <style name="DisplayWebViewActivity" parent="KSTheme">
     <item name="android:statusBarColor">@color/gray</item>
     <item name="android:windowBackground">@color/white</item>
   </style>
 
-  <style name="HelpActivity" parent="KsrTheme">
+  <style name="HelpActivity" parent="KSTheme">
     <item name="android:statusBarColor">@color/gray</item>
     <item name="android:windowBackground">@color/white</item>
   </style>
 
-  <style name="Login" parent="KsrTheme">
+  <style name="Login" parent="KSTheme">
     <item name="android:statusBarColor">@color/gray</item>
   </style>
 
-  <style name="ProjectActivity" parent="KsrTheme">
+  <style name="ProjectActivity" parent="KSTheme">
   </style>
 
-  <style name="SearchActivity" parent="KsrTheme">
+  <style name="SearchActivity" parent="KSTheme">
     <item name="android:windowBackground">@color/white</item>
   </style>
 
-  <style name="ThanksActivity" parent="KsrTheme">
-    <item name="android:statusBarColor">@color/gray</item>
-    <item name="android:windowBackground">@color/white</item>
-  </style>
-
-  <style name="ViewPledgeActivity" parent="KsrTheme">
+  <style name="ThanksActivity" parent="KSTheme">
     <item name="android:statusBarColor">@color/gray</item>
     <item name="android:windowBackground">@color/white</item>
   </style>
 
-  <style name="KsrSpinner" parent="android:Widget">
-    <item name="android:background">@drawable/ksr_spinner</item>
+  <style name="ViewPledgeActivity" parent="KSTheme">
+    <item name="android:statusBarColor">@color/gray</item>
+    <item name="android:windowBackground">@color/white</item>
+  </style>
+
+  <style name="Spinner" parent="android:Widget">
+    <item name="android:background">@drawable/spinner_9</item>
     <item name="android:clickable">true</item>
   </style>
 
-  <style name="KsrSpinnerItem" parent="@android:style/Widget.TextView.SpinnerItem">
+  <style name="SpinnerItem" parent="@android:style/Widget.TextView.SpinnerItem">
     <item name="android:textSize">18sp</item>
     <item name="android:textColor">@color/white</item>
   </style>
 
-  <style name="KsrProgressBar" parent="Base.Widget.AppCompat.ProgressBar">
+  <style name="ProgressBar" parent="Base.Widget.AppCompat.ProgressBar">
     <item name="android:indeterminateOnly">false</item>
-    <item name="android:progressDrawable">@drawable/ksr_progress_bar_horizontal</item>
+    <item name="android:progressDrawable">@drawable/progress_bar_horizontal</item>
   </style>
 
-  <style name="KsrButton" parent="Base.Widget.AppCompat.Button">
+  <style name="Button" parent="Base.Widget.AppCompat.Button">
     <item name="android:textColor">@color/white</item>
     <item name="android:layout_centerInParent">true</item>
     <item name="android:singleLine">true</item>

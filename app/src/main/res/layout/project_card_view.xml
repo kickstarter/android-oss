@@ -7,7 +7,7 @@
   card_view:cardCornerRadius="@dimen/card_corner_radius"
   card_view:cardBackgroundColor="@color/transparent"
   android:foreground="@drawable/click_indicator_light"
-  android:elevation="@dimen/ksr_card_elevation"
+  android:elevation="@dimen/card_elevation"
   android:layout_marginLeft="@dimen/grid_3"
   android:layout_marginRight="@dimen/grid_3"
   android:layout_marginBottom="@dimen/grid_1"
@@ -39,7 +39,7 @@
       <include layout="@layout/category_location_view"/>
 
       <ProgressBar
-        style="@style/KsrProgressBar"
+        style="@style/ProgressBar"
         android:id="@+id/percentage_funded"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

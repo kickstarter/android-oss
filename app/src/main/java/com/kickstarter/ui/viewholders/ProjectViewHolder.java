@@ -23,7 +23,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ProjectViewHolder extends KsrViewHolder {
+public class ProjectViewHolder extends KSViewHolder {
   private Project project;
   private final Delegate delegate;
 

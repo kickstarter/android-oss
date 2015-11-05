@@ -8,12 +8,11 @@ import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.services.DiscoveryParams;
-import com.kickstarter.ui.views.IconTextView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class SearchTermViewHolder extends KsrViewHolder {
+public class SearchTermViewHolder extends KSViewHolder {
   private DiscoveryParams params;
 
   @Bind(R.id.search_term_text_view) TextView termTextView;

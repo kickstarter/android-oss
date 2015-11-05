@@ -37,7 +37,7 @@
 
   <Button
     android:id="@+id/comment_feed_login_button"
-    style="@style/KsrButton"
+    style="@style/Button"
     android:text="@string/Log_in"/>
 
 </LinearLayout>

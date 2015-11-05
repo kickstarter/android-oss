@@ -1,9 +1,9 @@
 <resources>
-  <style name="DiscoveryActivity" parent="KsrTheme">
+  <style name="DiscoveryActivity" parent="KSTheme">
     <item name="android:statusBarColor">@color/discovery_secondary</item>
   </style>
 
-  <style name="DiscoveryFilterActivity" parent="KsrTheme">
+  <style name="DiscoveryFilterActivity" parent="KSTheme">
     <item name="android:statusBarColor">@color/discovery_secondary</item>
   </style>
 </resources>

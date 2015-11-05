@@ -19,7 +19,7 @@ import auto.parcel.AutoParcel;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class DiscoveryFilterViewHolder extends KsrViewHolder {
+public class DiscoveryFilterViewHolder extends KSViewHolder {
   private final Delegate delegate;
   @Inject Font font;
   private DiscoveryParams params;

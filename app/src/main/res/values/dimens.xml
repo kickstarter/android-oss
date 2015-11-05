@@ -34,13 +34,9 @@
   <dimen name="chevron_right_icon">24sp</dimen>
   <dimen name="empty_feed_icon">112sp</dimen>
 
-  <!-- Kickstarter & Material values-->
-  <dimen name="ksr_card_elevation">1dp</dimen>
-  <dimen name="ksr_text_view_corner_radius">@dimen/grid_1_half</dimen>
-  <dimen name="ksr_toolbar_elevation">@dimen/grid_1_half</dimen>
-
   <!-- Cards -->
   <dimen name="card_corner_radius">0dp</dimen>
+  <dimen name="card_elevation">1dp</dimen>
   <dimen name="card_margin_x">@dimen/grid_2</dimen>
   <dimen name="card_margin_y">@dimen/grid_1</dimen>
   <dimen name="card_padding_action_half">@dimen/grid_1_half</dimen>
@@ -66,4 +62,10 @@
   <dimen name="comments_feed_avatar_height">@dimen/grid_7</dimen>
   <dimen name="project_avatar_width">@dimen/grid_8</dimen>
   <dimen name="project_avatar_height">@dimen/grid_8</dimen>
+
+  <!-- TextViews -->
+  <dimen name="text_view_corner_radius">@dimen/grid_1_half</dimen>
+
+  <!-- Toolbars -->
+  <dimen name="toolbar_elevation">@dimen/grid_1_half</dimen>
 </resources>

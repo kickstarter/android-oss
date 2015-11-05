@@ -18,7 +18,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class RewardViewHolder extends KsrViewHolder {
+public class RewardViewHolder extends KSViewHolder {
   public @Bind(R.id.pledge_minimum) TextView minimumTextView;
   public @Bind(R.id.reward_backers_count) TextView backersCountTextView;
   public @Bind(R.id.reward_description) TextView descriptionTextView;

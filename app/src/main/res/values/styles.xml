@@ -122,6 +122,9 @@
   <style name="Toolbar" parent="Base.Widget.AppCompat.Toolbar">
     <item name="android:background">@color/primary</item>
     <item name="android:elevation">1dp</item>
+    <item name="android:foregroundGravity">center_vertical</item>
+    <item name="android:layout_height">?attr/actionBarSize</item>
+    <item name="android:layout_width">match_parent</item>
   </style>
 
   <style name="ToolbarIcon">

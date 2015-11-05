@@ -18,7 +18,7 @@ import com.kickstarter.models.Project;
 import com.kickstarter.presenters.inputs.DiscoveryPresenterInputs;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.DiscoveryParams;
-import com.kickstarter.services.KickstarterClient;
+import com.kickstarter.services.WebClient;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 
@@ -37,7 +37,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
   private final PublishSubject<Void> scrollEvent = PublishSubject.create();
 
   @Inject ApiClient apiClient;
-  @Inject KickstarterClient kickstarterClient;
+  @Inject WebClient webClient;
   @Inject BuildCheck buildCheck;
 
   private final PublishSubject<Void> filterButtonClick = PublishSubject.create();
@@ -63,7 +63,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    buildCheck.bind(this, kickstarterClient);
+    buildCheck.bind(this, webClient);
 
     final Observable<List<Project>> projects = params
       .switchMap(this::projectsWithPagination);

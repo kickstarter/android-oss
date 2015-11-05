@@ -3,13 +3,13 @@ package com.kickstarter.libs;
 import android.support.annotation.NonNull;
 import android.webkit.JavascriptInterface;
 
-import com.kickstarter.services.KickstarterWebViewClient;
+import com.kickstarter.services.KSWebViewClient;
 
 public class WebViewJavascriptInterface {
-  private final KickstarterWebViewClient kickstarterWebViewClient;
+  private final KSWebViewClient webViewClient;
 
-  public WebViewJavascriptInterface(@NonNull final KickstarterWebViewClient kickstarterWebViewClient) {
-    this.kickstarterWebViewClient = kickstarterWebViewClient;
+  public WebViewJavascriptInterface(@NonNull final KSWebViewClient webViewClient) {
+    this.webViewClient = webViewClient;
   }
 
   @JavascriptInterface
@@ -23,7 +23,7 @@ public class WebViewJavascriptInterface {
      *  When the web view client intercepts the outgoing request, it uses the form contents passed to it here to
      *  construct a new request with the correct form body, method and encoding type.
      */
-    kickstarterWebViewClient.setFormContents(new FormContents(serialized, method, encodingType));
+    webViewClient.setFormContents(new FormContents(serialized, method, encodingType));
   }
 }
 

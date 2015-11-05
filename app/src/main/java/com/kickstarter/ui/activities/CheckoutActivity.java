@@ -13,7 +13,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.CheckoutPresenter;
-import com.kickstarter.services.KickstarterUri;
+import com.kickstarter.services.KSUri;
 import com.kickstarter.services.RequestHandler;
 import com.kickstarter.ui.views.KSWebView;
 import com.squareup.okhttp.Request;
@@ -45,8 +45,8 @@ public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
     toolbarTitleTextView.setText(intent.getStringExtra(getString(R.string.intent_toolbar_title)));
 
     webView.client().registerRequestHandlers(Arrays.asList(
-      new RequestHandler(KickstarterUri::isCheckoutThanksUri, this::handleCheckoutThanksUriRequest),
-      new RequestHandler(KickstarterUri::isSignupUri, this::handleSignupUriRequest)
+      new RequestHandler(KSUri::isCheckoutThanksUri, this::handleCheckoutThanksUriRequest),
+      new RequestHandler(KSUri::isSignupUri, this::handleSignupUriRequest)
     ));
   }
 

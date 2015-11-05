@@ -10,12 +10,12 @@ import android.webkit.WebView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.WebViewJavascriptInterface;
-import com.kickstarter.services.KickstarterWebViewClient;
+import com.kickstarter.services.KSWebViewClient;
 
 import javax.inject.Inject;
 
 public class KSWebView extends WebView {
-  @Inject KickstarterWebViewClient client;
+  @Inject KSWebViewClient client;
 
   public KSWebView(@NonNull final Context context) {
     this(context, null);
@@ -45,7 +45,7 @@ public class KSWebView extends WebView {
     addJavascriptInterface(new WebViewJavascriptInterface(this.client), "WebViewJavascriptInterface");
   }
 
-  public KickstarterWebViewClient client() {
+  public KSWebViewClient client() {
     return client;
   }
 

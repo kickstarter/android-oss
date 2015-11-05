@@ -56,8 +56,8 @@
   <dimen name="progress_bar_min_height">6dp</dimen>
 
   <!-- Photos -->
-  <dimen name="activity_feed_avatar_width">54dp</dimen>
-  <dimen name="activity_feed_avatar_height">54dp</dimen>
+  <dimen name="activity_feed_avatar_width">60dp</dimen>
+  <dimen name="activity_feed_avatar_height">60dp</dimen>
   <dimen name="activity_feed_small_photo_width">96dp</dimen>
   <dimen name="activity_feed_small_photo_height">72dp</dimen>
   <dimen name="activity_feed_medium_photo_width">120dp</dimen>
@@ -72,4 +72,8 @@
 
   <!-- Toolbars -->
   <dimen name="toolbar_elevation">@dimen/grid_1_half</dimen>
+
+  <!-- Activity feed view -->
+  <dimen name="activity_feed_view_margin_top">0dp</dimen>
+  <dimen name="activity_feed_view_margin_bottom">@dimen/grid_3_half</dimen>
 </resources>

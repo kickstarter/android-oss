@@ -8,6 +8,7 @@
   <string name="hockey_app_id">***REMOVED***</string>
 
   <!-- User-facing strings -->
+  <string name="Activity">Activity</string>
   <string name="Activity_empty">Activity empty</string>
   <string name="action_settings">Settings</string>
   <string name="All_gone">All gone</string>

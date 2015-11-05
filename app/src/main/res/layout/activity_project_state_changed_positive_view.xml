@@ -9,8 +9,8 @@
   card_view:cardBackgroundColor="@color/green_darken_10"
   card_view:cardElevation="0dp"
   card_view:cardCornerRadius="@dimen/card_corner_radius"
-  android:layout_marginTop="@dimen/card_margin_y"
-  android:layout_marginBottom="@dimen/card_margin_y">
+  android:layout_marginTop="@dimen/activity_feed_view_margin_top"
+  android:layout_marginBottom="@dimen/activity_feed_view_margin_bottom">
 
   <ImageView
     android:id="@+id/project_photo"

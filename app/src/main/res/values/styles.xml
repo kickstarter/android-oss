@@ -42,7 +42,7 @@
 
   <!-- Activities -->
   <style name="ActivityFeedActivity" parent="KSTheme">
-    <item name="android:windowBackground">@color/light_gray</item>
+    <item name="android:windowBackground">@color/gray</item>
   </style>
 
   <style name="CheckoutActivity" parent="KSTheme">

@@ -13,8 +13,8 @@
   card_view:contentPaddingBottom="@dimen/grid_3"
   card_view:contentPaddingLeft="@dimen/grid_3"
   card_view:contentPaddingRight="@dimen/grid_3"
-  android:layout_marginTop="@dimen/card_margin_y"
-  android:layout_marginBottom="@dimen/card_margin_y">
+  android:layout_marginTop="@dimen/activity_feed_view_margin_top"
+  android:layout_marginBottom="@dimen/activity_feed_view_margin_bottom">
 
   <LinearLayout
     android:layout_width="match_parent"

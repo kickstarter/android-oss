@@ -111,7 +111,7 @@ public class ApiClient {
       .email(email)
       .password(password)
       .passwordConfirmation(passwordConfirmation)
-      .sendNewsletter(sendNewsletters)
+      .sendNewsletters(sendNewsletters)
       .build());
   }
 

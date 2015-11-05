@@ -6,6 +6,6 @@ public interface SignupPresenterInputs {
   void fullName(String __);
   void email(String __);
   void password(String __);
-  void sendNewsletter(Boolean __);
+  void sendNewsletters(Boolean __);
   void signupClick(View __);
 }

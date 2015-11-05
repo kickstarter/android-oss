@@ -95,7 +95,7 @@ public class SignupActivity extends BaseActivity<SignupPresenter> {
 
   @OnCheckedChanged(R.id.newsletter_switch)
   void onNewsletterCheckedChange(@NonNull final CompoundButton newsletterSwitch) {
-    presenter.inputs().sendNewsletter(newsletterSwitch.isChecked());
+    presenter.inputs().sendNewsletters(newsletterSwitch.isChecked());
   }
 
   @OnClick(R.id.signup_button)

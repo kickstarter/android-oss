@@ -35,14 +35,14 @@ SignupPresenterErrors {
     @NonNull final String fullName;
     @NonNull final String email;
     @NonNull final String password;
-    @NonNull final Boolean sendNewsletter;
+    @NonNull final Boolean sendNewsletters;
 
     public SignupData(@NonNull final String fullName, @NonNull final String email, @NonNull final String password,
-      @NonNull final Boolean sendNewsletter) {
+      @NonNull final Boolean sendNewsletters) {
       this.fullName = fullName;
       this.email = email;
       this.password = password;
-      this.sendNewsletter = sendNewsletter;
+      this.sendNewsletters = sendNewsletters;
     }
 
     public boolean isValid() {
@@ -54,7 +54,7 @@ SignupPresenterErrors {
   private final PublishSubject<String> fullName = PublishSubject.create();
   private final PublishSubject<String> email = PublishSubject.create();
   private final PublishSubject<String> password = PublishSubject.create();
-  private final PublishSubject<Boolean> sendNewsletter = PublishSubject.create();
+  private final PublishSubject<Boolean> sendNewsletters = PublishSubject.create();
   private final PublishSubject<View> signupClick = PublishSubject.create();
 
   // OUTPUTS
@@ -72,9 +72,15 @@ SignupPresenterErrors {
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
 
-  public SignupPresenterInputs inputs() { return this; }
-  public SignupPresenterOutputs outputs() { return this; }
-  public SignupPresenterErrors errors() { return this; }
+  public SignupPresenterInputs inputs() {
+    return this;
+  }
+  public SignupPresenterOutputs outputs() {
+    return this;
+  }
+  public SignupPresenterErrors errors() {
+    return this;
+  }
 
   @Override
   public void fullName(@NonNull final String s) {
@@ -91,8 +97,8 @@ SignupPresenterErrors {
     password.onNext(s);
   }
   @Override
-  public void sendNewsletter(@NonNull final Boolean b) {
-    sendNewsletter.onNext(b);
+  public void sendNewsletters(@NonNull final Boolean b) {
+    sendNewsletters.onNext(b);
   }
   @Override
   public void signupClick(@NonNull final View v) {
@@ -104,7 +110,7 @@ SignupPresenterErrors {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    final Observable<SignupData> signupData = Observable.combineLatest(fullName, email, password, sendNewsletter, SignupData::new);
+    final Observable<SignupData> signupData = Observable.combineLatest(fullName, email, password, sendNewsletters, SignupData::new);
 
     addSubscription(
       RxUtils.takePairWhen(viewSubject, signupData)
@@ -118,7 +124,7 @@ SignupPresenterErrors {
       RxUtils.takeWhen(signupData, signupClick)
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(d -> {
-            submit(d.fullName, d.email, d.password, d.sendNewsletter);
+            submit(d.fullName, d.email, d.password, d.sendNewsletters);
           }
         )
     );

@@ -112,6 +112,7 @@
     unknown sources in the security settings of your device.
   </string>
   <string name="Password">Password</string>
+  <string name="Password_minimum_6_characters">Password (minimum 6 characters)</string>
   <string name="Please_enter_your_verification_code_to_continue">
     Please enter your verification code to continue.
   </string>

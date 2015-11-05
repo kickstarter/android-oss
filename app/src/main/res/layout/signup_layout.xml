@@ -50,7 +50,7 @@
           android:inputType="textEmailAddress"
           android:singleLine="true"
           android:textSize="14dp"
-          android:hint="Email address" />
+          android:hint="@string/Email_address" />
 
       </android.support.design.widget.TextInputLayout>
 
@@ -68,7 +68,7 @@
           android:singleLine="true"
           android:fontFamily="sans-serif"
           android:textSize="14dp"
-          android:hint="Password" />
+          android:hint="@string/Password_minimum_6_characters" />
 
       </android.support.design.widget.TextInputLayout>
 

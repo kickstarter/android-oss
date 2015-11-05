@@ -15,7 +15,7 @@ import com.kickstarter.models.Project;
 import com.kickstarter.presenters.CheckoutPresenter;
 import com.kickstarter.services.KickstarterUri;
 import com.kickstarter.services.RequestHandler;
-import com.kickstarter.ui.views.KickstarterWebView;
+import com.kickstarter.ui.views.KSWebView;
 import com.squareup.okhttp.Request;
 
 import java.util.Arrays;
@@ -27,7 +27,7 @@ import butterknife.ButterKnife;
 public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
   private Project project;
   private String urlToReload;
-  @Bind(R.id.web_view) KickstarterWebView webView;
+  @Bind(R.id.web_view) KSWebView webView;
   public @Bind(R.id.toolbar_title) TextView toolbarTitleTextView;
 
   @Override

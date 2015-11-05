@@ -21,7 +21,7 @@
     <include layout="@layout/toolbar_kickstarter_logo" />
   </android.support.v7.widget.Toolbar>
 
-  <com.kickstarter.ui.views.KickstarterWebView
+  <com.kickstarter.ui.views.KSWebView
     android:id="@+id/kickstarter_web_view"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" />

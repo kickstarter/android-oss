@@ -30,7 +30,7 @@ import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 import com.kickstarter.ui.viewholders.ProjectStateChangedPositiveViewHolder;
 import com.kickstarter.ui.views.DiscoveryToolbar;
 import com.kickstarter.ui.views.IconTextView;
-import com.kickstarter.ui.views.KickstarterWebView;
+import com.kickstarter.ui.views.KSWebView;
 import com.kickstarter.ui.views.ProjectActionToolbar;
 import com.kickstarter.ui.views.TiemposTextView;
 
@@ -51,7 +51,7 @@ public interface ApplicationGraph {
   void inject(EmptyCommentFeedViewHolder __);
   void inject(HelpActivity __);
   void inject(IconTextView __);
-  void inject(KickstarterWebView __);
+  void inject(KSWebView __);
   void inject(KSApplication __);
   void inject(LoginPresenter __);
   void inject(Money __);

@@ -14,18 +14,18 @@ import com.kickstarter.services.KickstarterWebViewClient;
 
 import javax.inject.Inject;
 
-public class KickstarterWebView extends WebView {
+public class KSWebView extends WebView {
   @Inject KickstarterWebViewClient client;
 
-  public KickstarterWebView(@NonNull final Context context) {
+  public KSWebView(@NonNull final Context context) {
     this(context, null);
   }
 
-  public KickstarterWebView(@NonNull final Context context, @Nullable final AttributeSet attrs) {
+  public KSWebView(@NonNull final Context context, @Nullable final AttributeSet attrs) {
     this(context, attrs, android.R.attr.webViewStyle);
   }
 
-  public KickstarterWebView(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyle) {
+  public KSWebView(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyle) {
     super(context, attrs, defStyle);
 
     if (isInEditMode()) {

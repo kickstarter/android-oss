@@ -24,20 +24,21 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
 public class SearchPresenter extends Presenter<SearchActivity> implements SearchPresenterInputs, SearchPresenterOutputs {
   // INPUTS
-  private final PublishSubject<String> searchSubject = PublishSubject.create();
+  private final PublishSubject<String> search = PublishSubject.create();
   public SearchPresenterInputs inputs() { return this; }
-  @Override public void search(@NonNull final String s) { searchSubject.onNext(s); }
+  @Override public void search(@NonNull final String s) { search.onNext(s); }
 
   // OUTPUTS
-  private final PublishSubject<Empty> clearSubject = PublishSubject.create();
-  private final PublishSubject<Pair<DiscoveryParams, List<Project>>> newDataSubject = PublishSubject.create();
+  private final PublishSubject<Empty> clear = PublishSubject.create();
+  private final PublishSubject<Pair<DiscoveryParams, List<Project>>> newData = PublishSubject.create();
   public SearchPresenterOutputs outputs() { return this; }
-  @Override public Observable<Empty> clear() { return clearSubject.asObservable(); }
-  @Override public Observable<Pair<DiscoveryParams, List<Project>>> newData() { return newDataSubject.asObservable(); }
+  @Override public Observable<Empty> clear() { return clear.asObservable(); }
+  @Override public Observable<Pair<DiscoveryParams, List<Project>>> newData() { return newData.asObservable(); }
 
   private final PublishSubject<DiscoveryParams> paramsSubject = PublishSubject.create();
 
@@ -54,30 +55,37 @@ public class SearchPresenter extends Presenter<SearchActivity> implements Search
 
     final Observable<Pair<DiscoveryParams, List<Project>>> paramsAndProjects = RxUtils.takePairWhen(paramsSubject, projects);
 
-    final Observable<Boolean> isSearchEmpty = searchSubject.map(t -> t.length() == 0).share();
+    final Observable<Boolean> isSearchEmpty = search.map(t -> t.length() == 0).share();
 
-   // Search subject pings on load - we want to skip this to show initial results.
-    addSubscription(searchSubject
-      .skip(1)
-      .subscribe(__ -> clearSubject.onNext(Empty.create())));
+    final Observable<Pair<DiscoveryParams, List<Project>>> popularParamsAndProjects = paramsAndProjects.first();
+    final Observable<Pair<DiscoveryParams, List<Project>>> searchParamsAndProjects = paramsAndProjects.skip(1);
 
-    addSubscription(RxUtils.takeWhen(searchSubject, isSearchEmpty.filter(b -> !b))
-      .subscribe(text -> paramsSubject.onNext(DiscoveryParams.builder().term(text).build())));
+    // When the search field is empty (i.e. on load or when the search field is cleared), ping with the
+    // popular projects.
+    addSubscription(RxUtils.combineLatestPair(popularParamsAndProjects, isSearchEmpty)
+      .filter(pe -> pe.second)
+      .map(pe -> pe.first)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(pp -> newData.onNext(pp))
+    );
 
-    // Just show the first ping with no filtering
-    addSubscription(paramsAndProjects
-      .take(1)
-      .subscribe(pp -> newDataSubject.onNext(pp)));
+    // When the search field changes, clear results and start a new search
+    addSubscription(RxUtils.takeWhen(search, isSearchEmpty.filter(v -> !v))
+      .subscribe(text -> {
+        clear.onNext(Empty.create());
+        paramsSubject.onNext(DiscoveryParams.builder().term(text).build());
+      }));
 
-    // For subsequent pings, only want to show results if search is not empty. Search could have been cleared in
-    // the time between when the API request was triggered and when it returned.
-    addSubscription(RxUtils.takePairWhen(isSearchEmpty, paramsAndProjects)
-      .filter(epp -> !epp.first)
-      .map(evpp -> evpp.second)
+    // When we receive new search results and the search field is still not empty, ping with the search results
+    addSubscription(RxUtils.takePairWhen(isSearchEmpty, searchParamsAndProjects)
+      .filter(pe -> !pe.first)
+      .map(pe -> pe.second)
       .debounce(500, TimeUnit.MILLISECONDS)
-      .subscribe(pp -> newDataSubject.onNext(pp)));
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(pp -> newData.onNext(pp))
+    );
 
-    // Start with popular projects.
+    // Start with popular projects
     paramsSubject.onNext(DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build());
   }
 

@@ -47,8 +47,6 @@
       android:background="@drawable/ic_follow"
       android:layout_width="40dp"
       android:layout_height="40dp"
-      android:layout_alignParentEnd="true"
-      android:layout_alignParentRight="true"
       android:layout_marginLeft="@dimen/grid_1"
       android:layout_marginStart="@dimen/grid_2" />
 

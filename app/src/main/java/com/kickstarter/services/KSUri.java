@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 
 import java.util.regex.Pattern;
 
-public class KickstarterUri {
+public class KSUri {
   public static boolean isCookiesUri(@NonNull final Uri uri, @NonNull final String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && uri.getPath().equals("/cookies");
   }

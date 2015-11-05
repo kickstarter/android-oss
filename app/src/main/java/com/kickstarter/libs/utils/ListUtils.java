@@ -1,6 +1,7 @@
 package com.kickstarter.libs.utils;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,5 +69,12 @@ public class ListUtils {
     final List<T> ys = new ArrayList<>(xs);
     ys.add(x);
     return ys;
+  }
+
+  /**
+   * Returns the first object or `null` if empty.
+   */
+  @Nullable public static <T> T first(@NonNull final List<T> xs) {
+    return xs.size() > 0 ? xs.get(0) : null;
   }
 }

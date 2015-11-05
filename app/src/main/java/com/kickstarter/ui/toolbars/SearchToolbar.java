@@ -1,4 +1,4 @@
-package com.kickstarter.ui.views;
+package com.kickstarter.ui.toolbars;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -11,6 +11,7 @@ import android.widget.EditText;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.kickstarter.R;
 import com.kickstarter.ui.activities.SearchActivity;
+import com.kickstarter.ui.views.IconTextView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -19,11 +20,9 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.CompositeSubscription;
 
-public class SearchToolbar extends Toolbar {
+public class SearchToolbar extends KSToolbar {
   public @Bind(R.id.clear_button) IconTextView clearButton;
   public @Bind(R.id.search_edit_text) EditText searchEditText;
-
-  private CompositeSubscription compositeSubscription;
 
   public SearchToolbar(@NonNull final Context context) {
     super(context);
@@ -52,25 +51,16 @@ public class SearchToolbar extends Toolbar {
   protected void onAttachedToWindow() {
     super.onAttachedToWindow();
 
-    compositeSubscription = new CompositeSubscription();
-
     final Observable<CharSequence> text = RxTextView.textChanges(searchEditText);
     final Observable<Boolean> clearable = text.map(t -> t.length() > 0);
 
-    compositeSubscription.add(clearable
+    addSubscription(clearable
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(c -> clearButton.setVisibility(c ? View.VISIBLE : View.INVISIBLE))
-    );
+      .subscribe(c -> clearButton.setVisibility(c ? View.VISIBLE : View.INVISIBLE)));
 
-    compositeSubscription.add(text
+    addSubscription(text
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(t -> ((SearchActivity) getContext()).presenter().inputs().search(t.toString())));
-  }
-
-  @Override
-  protected void onDetachedFromWindow() {
-    super.onDetachedFromWindow();
-    compositeSubscription.unsubscribe();
   }
 
   @OnClick(R.id.clear_button)

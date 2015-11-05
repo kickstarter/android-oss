@@ -8,7 +8,7 @@ import android.view.View;
 import com.kickstarter.R;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
-import com.kickstarter.ui.viewholders.KsrViewHolder;
+import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.ProjectViewHolder;
 import com.kickstarter.ui.viewholders.RewardViewHolder;
 
@@ -16,7 +16,7 @@ import java.util.Collections;
 
 import rx.Observable;
 
-public class ProjectAdapter extends KsrAdapter {
+public class ProjectAdapter extends KSAdapter {
   private final Delegate delegate;
 
   public interface Delegate extends ProjectViewHolder.Delegate, RewardViewHolder.Delegate {}
@@ -51,7 +51,7 @@ public class ProjectAdapter extends KsrAdapter {
     notifyDataSetChanged();
   }
 
-  protected KsrViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
+  protected KSViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
     if (layout == R.layout.project_main_layout) {
       return new ProjectViewHolder(view, delegate);
     }

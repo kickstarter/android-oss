@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.ui.views.KickstarterWebView;
+import com.kickstarter.ui.views.KSWebView;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -20,7 +20,7 @@ import butterknife.OnClick;
 
 public class DisplayWebViewActivity extends BaseActivity {
   @Bind(R.id.close_text_view) TextView closeTextView;
-  @Bind(R.id.generic_webview) KickstarterWebView webView;
+  @Bind(R.id.generic_webview) KSWebView webView;
 
   public static final int RIGHT_BAR_BUTTON_NONE = 0;
   public static final int RIGHT_BAR_BUTTON_CLOSE = 1;
@@ -63,6 +63,6 @@ public class DisplayWebViewActivity extends BaseActivity {
   }
 
   private void overrideExitTransition() {
-    overridePendingTransition(R.anim.fade_in, R.anim.slide_out_bottom);
+    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 }

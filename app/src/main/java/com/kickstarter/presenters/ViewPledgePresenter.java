@@ -9,11 +9,14 @@ import android.util.Pair;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
+import com.kickstarter.presenters.errors.ViewPledgePresenterErrors;
 import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.activities.ViewPledgeActivity;
 
 import javax.inject.Inject;
@@ -22,11 +25,17 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public class ViewPledgePresenter extends Presenter<ViewPledgeActivity> {
+public class ViewPledgePresenter extends Presenter<ViewPledgeActivity> implements ViewPledgePresenterErrors {
   private final PublishSubject<Project> project = PublishSubject.create();
 
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
+
+  // Errors
+  private PublishSubject<ErrorEnvelope> backingLoadFailed = PublishSubject.create();
+  public Observable<Void> backingLoadFailed() {
+    return backingLoadFailed.map(__ -> null);
+  }
 
   @Override
   protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
@@ -53,6 +62,7 @@ public class ViewPledgePresenter extends Presenter<ViewPledgeActivity> {
   }
 
   public Observable<Backing> fetchProjectBacking(@NonNull final Project project, @NonNull final User user) {
-    return client.fetchProjectBacking(project, user);
+    return client.fetchProjectBacking(project, user)
+      .compose(Transformers.pipeErrorsTo(backingLoadFailed));
   }
 }

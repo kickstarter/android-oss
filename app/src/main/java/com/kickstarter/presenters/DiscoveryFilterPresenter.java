@@ -8,6 +8,7 @@ import android.util.Pair;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.Presenter;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.services.ApiClient;
@@ -33,7 +34,9 @@ public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity>
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    final Observable<List<Category>> categories = apiClient.fetchCategories();
+    final Observable<List<Category>> categories = apiClient.fetchCategories()
+      .retry(3)
+      .compose(Transformers.neverError());
 
     final Observable<Pair<DiscoveryFilterActivity, List<Category>>> viewAndCategories =
       RxUtils.combineLatestPair(viewSubject, categories);

@@ -2,7 +2,6 @@ package com.kickstarter.ui.viewholders;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
@@ -16,7 +15,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class EmptyCommentFeedViewHolder extends KsrViewHolder {
+public class EmptyCommentFeedViewHolder extends KSViewHolder {
   private final Delegate delegate;
   protected @Bind(R.id.comment_feed_login_button) Button commentFeedLoginButton;
   protected @Bind(R.id.no_comments_message) TextView noCommentsMessageTextView;

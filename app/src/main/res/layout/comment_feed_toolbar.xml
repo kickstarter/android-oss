@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.kickstarter.ui.views.CommentFeedToolbar
+<com.kickstarter.ui.toolbars.CommentFeedToolbar
   android:id="@+id/toolbar"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -10,7 +10,7 @@
   android:background="@color/light_gray"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
-  android:elevation="@dimen/ksr_toolbar_elevation">
+  android:elevation="@dimen/toolbar_elevation">
 
   <RelativeLayout
     android:layout_width="match_parent"
@@ -45,4 +45,4 @@
       android:textColor="@color/green"
       android:text="@string/Comment" />
   </RelativeLayout>
-</com.kickstarter.ui.views.CommentFeedToolbar>
+</com.kickstarter.ui.toolbars.CommentFeedToolbar>

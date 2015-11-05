@@ -18,7 +18,7 @@ import com.kickstarter.models.Project;
 import com.kickstarter.presenters.inputs.DiscoveryPresenterInputs;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.DiscoveryParams;
-import com.kickstarter.services.KickstarterClient;
+import com.kickstarter.services.WebClient;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 
@@ -37,7 +37,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
   private final PublishSubject<Void> scrollEvent = PublishSubject.create();
 
   @Inject ApiClient apiClient;
-  @Inject KickstarterClient kickstarterClient;
+  @Inject WebClient webClient;
   @Inject BuildCheck buildCheck;
 
   private final PublishSubject<Void> filterButtonClick = PublishSubject.create();
@@ -63,7 +63,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    buildCheck.bind(this, kickstarterClient);
+    buildCheck.bind(this, webClient);
 
     final Observable<List<Project>> projects = params
       .switchMap(this::projectsWithPagination);
@@ -78,7 +78,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
       .filter(v -> v != null)
       .map(v -> v.recyclerView)
       .map(RecyclerView::getLayoutManager)
-      .cast(LinearLayoutManager.class)
+      .ofType(LinearLayoutManager.class)
       .map(this::displayedItemFromLayout)
       ;
 
@@ -101,15 +101,10 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
 
     addSubscription(visibleItemOfTotal
       .distinctUntilChanged()
-      .filter(this::closeToBottom)
+      .filter(this::isCloseToBottom)
       .subscribe(__ -> nextPage.onNext(null))
     );
 
-    // TODO: We shouldn't have to do this, but BehaviorSubject and scan
-    // don't seem to play well together:
-    // https://github.com/ReactiveX/RxJava/issues/3168
-    // This apparently fixes it:
-    // https://github.com/ReactiveX/RxJava/pull/3171
     params.onNext(DiscoveryParams.builder().staffPicks(true).build());
   }
 
@@ -127,7 +122,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
   /**
    * Returns `true` when the visible item gets "close" to the bottom.
    */
-  private boolean closeToBottom(@NonNull final Pair<Integer, Integer> visibleItemOfTotal) {
+  private boolean isCloseToBottom(@NonNull final Pair<Integer, Integer> visibleItemOfTotal) {
     return visibleItemOfTotal.first == visibleItemOfTotal.second - 2;
   }
 
@@ -140,7 +135,6 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
     return paramsWithPagination(firstPageParams)
       .concatMap(this::projectsFromParams)
       .takeUntil(List::isEmpty)
-      .startWith(new ArrayList<Project>())
       .scan(ListUtils::concatDistinct)
       ;
   }
@@ -152,7 +146,6 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
    */
   private Observable<DiscoveryParams> paramsWithPagination(@NonNull final DiscoveryParams firstPageParams) {
     return nextPage
-      .startWith(Empty.create())
       .scan(firstPageParams, (currentPage, __) -> currentPage.nextPage())
       ;
   }
@@ -191,9 +184,5 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
 
   public void takeParams(@NonNull final DiscoveryParams firstPageParams) {
     params.onNext(firstPageParams);
-  }
-
-  public void takeNextPage() {
-    nextPage.onNext(Empty.create());
   }
 }

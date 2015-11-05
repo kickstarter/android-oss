@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:id="@+id/project_search_result_view"
-  android:orientation="vertical"
-  android:background="@drawable/click_indicator_light_masked"
+  android:background="@color/transparent"
+  android:foreground="@drawable/click_indicator_light"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:paddingLeft="@dimen/grid_2"
-  android:paddingRight="@dimen/grid_2"
-  android:paddingTop="@dimen/grid_2">
+  android:orientation="vertical"
+  android:paddingStart="@dimen/feed_padding_x"
+  android:paddingEnd="@dimen/feed_padding_x"
+  android:paddingTop="@dimen/feed_padding_y">
 
   <RelativeLayout
     android:orientation="horizontal"
@@ -16,39 +17,41 @@
 
     <ImageView
       android:id="@+id/project_image_view"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentRight="true"
       android:adjustViewBounds="true"
-      android:layout_marginRight="@dimen/grid_2"
-      android:layout_marginEnd="@dimen/grid_2"
       android:layout_width="80dp"
       android:layout_height="60dp" />
 
     <LinearLayout
       android:orientation="vertical"
+      android:layout_marginEnd="@dimen/grid_2"
+      android:layout_marginRight="@dimen/grid_2"
       android:layout_centerVertical="true"
-      android:layout_toRightOf="@id/project_image_view"
-      android:layout_toEndOf="@id/project_image_view"
+      android:layout_toLeftOf="@id/project_image_view"
+      android:layout_toStartOf="@id/project_image_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 
       <TextView
+        style="@style/Headline"
         android:id="@+id/project_name_text_view"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/grid_1_half"
-        android:singleLine="true"
-        android:text="Name"
-        android:textColor="@color/text_dark"
-        android:textSize="16sp" />
+        android:maxLines="3"
+        android:textColor="@color/black"
+        android:text="Name" />
 
       <TextView
+        style="@style/CaptionSecondary"
         android:id="@+id/creator_name_text_view"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/grid_1_half"
-        android:singleLine="true"
+        android:maxLines="2"
         android:text="by Creator"
-        android:textColor="@color/dark_gray"
-        android:textSize="13sp" />
+        android:textColor="@color/dark_gray" />
     </LinearLayout>
 
  </RelativeLayout>
@@ -56,7 +59,7 @@
   <View
     android:layout_width="fill_parent"
     android:layout_height="1dp"
-    android:layout_marginTop="@dimen/grid_2"
-    android:background="@color/black_alpha_5" />
+    android:layout_marginTop="@dimen/feed_padding_y"
+    android:background="@color/black_alpha_10" />
 
 </LinearLayout>

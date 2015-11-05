@@ -16,7 +16,7 @@
 
     <TextView
       android:id="@+id/backers_count"
-      android:textSize="@dimen/ksr_mini_stats"
+      android:textSize="@dimen/caption"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:textColor="@color/text_dark" />
@@ -37,7 +37,7 @@
 
     <TextView
       android:id="@+id/pledged"
-      android:textSize="@dimen/ksr_mini_stats"
+      android:textSize="@dimen/caption"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:textColor="@color/text_dark" />
@@ -72,7 +72,7 @@
     <TextView
       android:id="@+id/deadline_countdown"
       android:singleLine="true"
-      android:textSize="@dimen/ksr_mini_stats"
+      android:textSize="@dimen/caption"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:textColor="@color/text_dark" />

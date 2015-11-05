@@ -14,7 +14,7 @@ import com.kickstarter.ui.DiscoveryFilterStyle;
 import com.kickstarter.ui.viewholders.DiscoveryFilterDividerViewHolder;
 import com.kickstarter.ui.viewholders.DiscoveryFilterViewHolder;
 import com.kickstarter.ui.viewholders.EmptyViewHolder;
-import com.kickstarter.ui.viewholders.KsrViewHolder;
+import com.kickstarter.ui.viewholders.KSViewHolder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +23,7 @@ import java.util.TreeMap;
 
 import rx.Observable;
 
-public class DiscoveryFilterAdapter extends KsrAdapter {
+public class DiscoveryFilterAdapter extends KSAdapter {
   private final Delegate delegate;
   private DiscoveryParams selectedParams;
 
@@ -45,8 +45,7 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
         // For each list, check if there are filters where the category root matches the category
         // root for the selected params.
         final boolean found = !Observable.from(list)
-          .filter(i -> i instanceof DiscoveryFilterViewHolder.Filter)
-          .cast(DiscoveryFilterViewHolder.Filter.class)
+          .ofType(DiscoveryFilterViewHolder.Filter.class)
           .filter(f -> f.params().isCategorySet())
           .takeFirst(f -> selectedParams.category().rootId() == f.params().category().rootId())
           .isEmpty().toBlocking().single();
@@ -76,7 +75,7 @@ public class DiscoveryFilterAdapter extends KsrAdapter {
     return R.layout.discovery_filter_view;
   }
 
-  protected KsrViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
+  protected KSViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
     if (layout == R.layout.discovery_filter_divider_view) {
       return new DiscoveryFilterDividerViewHolder(view);
     } else if (layout == R.layout.grid_2_height_view) {

@@ -7,7 +7,7 @@
   card_view:cardCornerRadius="@dimen/card_corner_radius"
   card_view:cardBackgroundColor="@color/transparent"
   android:foreground="@drawable/click_indicator_light"
-  android:elevation="@dimen/ksr_card_elevation"
+  android:elevation="@dimen/card_elevation"
   android:layout_marginLeft="@dimen/grid_3"
   android:layout_marginRight="@dimen/grid_3"
   android:layout_marginTop="@dimen/grid_3" >
@@ -39,8 +39,7 @@
         android:text="Name"
         android:singleLine="true"
         android:ellipsize="end"
-        android:textStyle="bold"
-        android:textSize="@dimen/ksr_subhead"
+        style="@style/BodyPrimaryMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -56,7 +55,7 @@
         android:id="@+id/blurb"
         android:lines="2"
         android:ellipsize="end"
-        android:textSize="@dimen/ksr_mini_stats"
+        android:textSize="@dimen/caption"
         android:paddingTop="@dimen/grid_2"
         android:paddingBottom="@dimen/grid_2"
         android:text="blurb"
@@ -120,7 +119,7 @@
       </LinearLayout>
 
       <ProgressBar
-        style="@style/KsrProgressBar"
+        style="@style/ProgressBar"
         android:id="@+id/percentage_funded"
         android:layout_below="@id/category_location_view"
         android:layout_width="match_parent"

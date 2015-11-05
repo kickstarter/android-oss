@@ -69,16 +69,6 @@ public class Presenter<ViewType> {
     return this.view;
   }
 
-  /**
-   * Returns whether there is a view attached to the presenter.
-   *
-   * @deprecated Not Reactive, use observables instead.
-   */
-  @Deprecated
-  protected final boolean hasView() {
-    return this.view != null;
-  }
-
   public final Observable<ViewType> viewSubject() {
     return viewSubject;
   }

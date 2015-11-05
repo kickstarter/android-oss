@@ -43,6 +43,7 @@
   <string name="Comment">Comment</string>
   <string name="Close">Close</string>
   <string name="Comment_posted">Comment posted!</string>
+  <string name="Post_comment_error">Couldn’t post comment.</string>
   <string name="Comments">Comments</string>
   <string name="Cookie_Policy">Cookie Policy</string>
   <string name="creator_launched_a_project">%1$s launched a project: %2$s</string>
@@ -142,6 +143,7 @@
   <string name="share_message">"%1$s, via %2$s"</string>
   <string name="Share_this_project">Share this project</string>
   <string name="Shipping">Shipping</string>
+  <string name="Shipping_destinations">Shipping destinations</string>
   <string name="Sign_up">Sign up</string>
   <string name="Sign_Up_with_Email">Sign Up with Email</string>
   <string name="Sign_up_or_log_in_with_your_Facebook_account">
@@ -154,6 +156,7 @@
   <string name="Submit_bug_report">Submit bug report</string>
   <string name="Terms_of_Use">Terms of Use</string>
   <string name="The_code_provided_does_not_match">The code provided does not match.</string>
+  <string name="Resend_code_failed">Unable to resend your code.</string>
   <string name="This_project_will_only_be_funded_if">
     This project will only be funded if at least %1$s is pledged by %2$s</string>
   <string name="title_activity_project">View Project</string>
@@ -224,4 +227,7 @@
 
   <!-- Animation strings -->
   <string name="woohoo_duration">2000</string>
+
+  <!-- Font strings -->
+  <string name="font_family_medium">sans-serif-medium</string>
 </resources>

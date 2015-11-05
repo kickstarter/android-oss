@@ -23,7 +23,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ProjectViewHolder extends KsrViewHolder {
+public class ProjectViewHolder extends KSViewHolder {
   private Project project;
   private final Delegate delegate;
 
@@ -53,7 +53,6 @@ public class ProjectViewHolder extends KsrViewHolder {
     void projectBlurbClicked(ProjectViewHolder viewHolder);
     void projectCommentsClicked(ProjectViewHolder viewHolder);
     void projectCreatorNameClicked(ProjectViewHolder viewHolder);
-    void projectShareClicked(ProjectViewHolder viewHolder);
     void projectUpdatesClicked(ProjectViewHolder viewHolder);
   }
 
@@ -120,10 +119,5 @@ public class ProjectViewHolder extends KsrViewHolder {
   @OnClick(R.id.updates)
   public void updatesClick() {
     delegate.projectUpdatesClicked(this);
-  }
-
-  @OnClick(R.id.share_button)
-  public void shareProjectClick() {
-    delegate.projectShareClicked(this);
   }
 }

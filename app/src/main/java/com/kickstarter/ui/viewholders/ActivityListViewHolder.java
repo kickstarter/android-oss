@@ -6,7 +6,7 @@ import android.view.View;
 
 import com.kickstarter.models.Activity;
 
-public abstract class ActivityListViewHolder extends KsrViewHolder {
+public abstract class ActivityListViewHolder extends KSViewHolder {
   protected Activity activity;
 
   public ActivityListViewHolder(@NonNull final View view) {

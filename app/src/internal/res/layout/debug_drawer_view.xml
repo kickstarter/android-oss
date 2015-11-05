@@ -212,5 +212,5 @@
     android:layout_height="wrap_content"
     android:background="@drawable/button_green"
     android:text="@string/Submit_bug_report"
-    style="@style/KsrButton" />
+    style="@style/Button" />
 </LinearLayout>

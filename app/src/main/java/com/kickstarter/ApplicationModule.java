@@ -27,8 +27,8 @@ import com.kickstarter.libs.qualifiers.AccessTokenPreference;
 import com.kickstarter.libs.qualifiers.UserPreference;
 import com.kickstarter.libs.qualifiers.WebEndpoint;
 import com.kickstarter.services.ApiClient;
-import com.kickstarter.services.KickstarterClient;
-import com.kickstarter.services.KickstarterWebViewClient;
+import com.kickstarter.services.KSWebViewClient;
+import com.kickstarter.services.WebClient;
 
 import org.joda.time.DateTime;
 
@@ -143,17 +143,17 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  KickstarterClient provideKickstarterClient(@NonNull final Release release, @NonNull final Gson gson,
+  WebClient provideWebClient(@NonNull final Release release, @NonNull final Gson gson,
     @NonNull @WebEndpoint final String webEndpoint) {
-    return new KickstarterClient(release, gson, webEndpoint);
+    return new WebClient(release, gson, webEndpoint);
   }
 
   @Provides
-  KickstarterWebViewClient provideKickstarterWebViewClient(@NonNull final Release release,
+  KSWebViewClient provideKSWebViewClient(@NonNull final Release release,
     @NonNull final CookieManager cookieManager,
     @NonNull final CurrentUser currentUser,
     @WebEndpoint final String webEndpoint) {
-    return new KickstarterWebViewClient(release, cookieManager, currentUser, webEndpoint);
+    return new KSWebViewClient(release, cookieManager, currentUser, webEndpoint);
   }
 
   @Provides

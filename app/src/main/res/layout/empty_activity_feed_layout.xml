@@ -11,7 +11,7 @@
     android:layout_height="wrap_content"
     android:text="@string/flash_on_icon"
     android:textColor="@color/text_secondary"
-    android:textSize="@dimen/display_4"
+    android:textSize="@dimen/empty_feed_icon"
     android:paddingTop="@dimen/grid_5"
     android:paddingBottom="@dimen/grid_1" />
 
@@ -38,7 +38,7 @@
   
   <Button
     android:id="@+id/discover_projects_button"
-    style="@style/KsrButton"
+    style="@style/Button"
     android:visibility="gone"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
 
   <Button
     android:id="@+id/login_button"
-    style="@style/KsrButton"
+    style="@style/Button"
     android:visibility="gone"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"

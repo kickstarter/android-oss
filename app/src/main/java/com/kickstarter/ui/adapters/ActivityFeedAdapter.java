@@ -70,7 +70,7 @@ public class ActivityFeedAdapter extends KSAdapter {
           return R.layout.empty_view;
       }
     } else {
-      return R.layout.empty_activity_feed_layout;
+      return R.layout.empty_activity_feed_view;
     }
   }
 
@@ -87,7 +87,7 @@ public class ActivityFeedAdapter extends KSAdapter {
         return new ProjectStateChangedPositiveViewHolder(view, delegate);
       case R.layout.activity_project_update_view:
         return new ProjectUpdateViewHolder(view, delegate);
-      case R.layout.empty_activity_feed_layout:
+      case R.layout.empty_activity_feed_view:
         return new EmptyActivityFeedViewHolder(view, delegate);
       default:
         return new EmptyViewHolder(view);

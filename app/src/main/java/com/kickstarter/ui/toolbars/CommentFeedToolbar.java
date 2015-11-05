@@ -1,4 +1,4 @@
-package com.kickstarter.ui.views;
+package com.kickstarter.ui.toolbars;
 
 import android.content.Context;
 

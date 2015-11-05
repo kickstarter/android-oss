@@ -1,4 +1,4 @@
-package com.kickstarter.ui.views;
+package com.kickstarter.ui.toolbars;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -11,6 +11,7 @@ import android.widget.EditText;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.kickstarter.R;
 import com.kickstarter.ui.activities.SearchActivity;
+import com.kickstarter.ui.views.IconTextView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

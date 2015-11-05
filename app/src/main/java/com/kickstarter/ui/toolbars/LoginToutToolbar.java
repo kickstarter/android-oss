@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 
-public class LoginToutToolbar extends Toolbar {
+public class LoginToutToolbar extends KSToolbar {
   public LoginToutToolbar(@NonNull final Context context) {
     super(context);
   }

@@ -16,11 +16,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class ProjectActionToolbar extends Toolbar {
-  @Bind(R.id.back_project_button) Button backProjectButton;
-  @Bind(R.id.manage_pledge_button) Button managePledgeButton;
-  @Inject CurrentUser currentUser;
-
+public class ProjectActionToolbar extends KSToolbar {
   public ProjectActionToolbar(@NonNull final Context context) {
     super(context);
   }
@@ -31,11 +27,5 @@ public class ProjectActionToolbar extends Toolbar {
 
   public ProjectActionToolbar(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
     super(context, attrs, defStyleAttr);
-  }
-
-  @Override
-  protected void onFinishInflate() {
-    super.onFinishInflate();
-    ButterKnife.bind(this);
   }
 }

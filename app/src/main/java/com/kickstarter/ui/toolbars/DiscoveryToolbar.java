@@ -32,7 +32,7 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
-public class DiscoveryToolbar extends Toolbar {
+public class DiscoveryToolbar extends KSToolbar {
   @Bind(R.id.activity_feed_button) TextView activityFeedButton;
   @Bind(R.id.current_user_button) TextView currentUserButton;
   @Bind(R.id.filter_expand_more_button) TextView filterExpandMoreButton;
@@ -41,8 +41,6 @@ public class DiscoveryToolbar extends Toolbar {
   @Bind(R.id.search_button) TextView searchButton;
   @Inject CurrentUser currentUser;
   @Inject Logout logout;
-
-  Subscription loginSubscription;
 
   public DiscoveryToolbar(@NonNull final Context context) {
     super(context);
@@ -151,19 +149,13 @@ public class DiscoveryToolbar extends Toolbar {
       showLoggedOutMenu();
     }
 
-    loginSubscription = currentUser.loggedInUser()
+    addSubscription(currentUser.loggedInUser()
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::showLoggedInMenu);
+      .subscribe(this::showLoggedInMenu));
   }
 
   @Override
   protected void onDetachedFromWindow() {
     super.onDetachedFromWindow();
-
-    if (isInEditMode()) {
-      return;
-    }
-
-    loginSubscription.unsubscribe();
   }
 }

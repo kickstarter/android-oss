@@ -40,10 +40,9 @@
     <item name="android:textAllCaps">false</item>
   </style>
 
-  <!-- todo: customize these themes, or delete if unused -->
+  <!-- Activities -->
   <style name="ActivityFeedActivity" parent="KSTheme">
-    <item name="android:statusBarColor">@color/gray</item>
-    <item name="android:windowBackground">@drawable/gray_gradient</item>
+    <item name="android:windowBackground">@color/light_gray</item>
   </style>
 
   <style name="CheckoutActivity" parent="KSTheme">

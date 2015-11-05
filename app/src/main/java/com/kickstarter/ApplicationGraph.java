@@ -25,13 +25,13 @@ import com.kickstarter.ui.activities.HelpActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.kickstarter.ui.viewholders.ProjectViewHolder;
 import com.kickstarter.ui.viewholders.RewardViewHolder;
-import com.kickstarter.ui.views.CommentFeedToolbar;
+import com.kickstarter.ui.toolbars.CommentFeedToolbar;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 import com.kickstarter.ui.viewholders.ProjectStateChangedPositiveViewHolder;
-import com.kickstarter.ui.views.DiscoveryToolbar;
+import com.kickstarter.ui.toolbars.DiscoveryToolbar;
 import com.kickstarter.ui.views.IconTextView;
 import com.kickstarter.ui.views.KSWebView;
-import com.kickstarter.ui.views.ProjectActionToolbar;
+import com.kickstarter.ui.toolbars.ProjectActionToolbar;
 import com.kickstarter.ui.views.TiemposTextView;
 
 public interface ApplicationGraph {

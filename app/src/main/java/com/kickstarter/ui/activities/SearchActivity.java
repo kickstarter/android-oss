@@ -18,7 +18,7 @@ import com.kickstarter.presenters.SearchPresenter;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.adapters.SearchAdapter;
 import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder;
-import com.kickstarter.ui.views.SearchToolbar;
+import com.kickstarter.ui.toolbars.SearchToolbar;
 
 import java.util.List;
 

@@ -2,6 +2,7 @@
 <android.support.v7.widget.CardView
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:card_view="http://schemas.android.com/apk/res-auto"
+  android:foreground="@drawable/click_indicator_light"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   card_view:cardElevation="0dp"
@@ -43,9 +44,7 @@
 
     <View
       android:id="@+id/follow_button"
-      android:background="@drawable/click_indicator_light"
-      android:clickable="true"
-      android:foreground="@drawable/ic_follow"
+      android:background="@drawable/ic_follow"
       android:layout_width="40dp"
       android:layout_height="40dp"
       android:layout_alignParentEnd="true"

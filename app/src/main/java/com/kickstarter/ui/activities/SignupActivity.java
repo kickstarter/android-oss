@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.PopupMenu;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +17,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.presenters.SignupPresenter;
+import com.kickstarter.ui.views.LoginPopupMenu;
 
 import java.util.List;
 
@@ -73,35 +73,8 @@ public class SignupActivity extends BaseActivity<SignupPresenter> {
 
   @OnClick({R.id.more_button, R.id.disclaimer})
   public void moreButtonOnClick() {
-   final PopupMenu popup = new PopupMenu(this, moreButton); // TODO: this should be white background and above moreButton
-    popup.getMenuInflater().inflate(R.menu.login_help_menu, popup.getMenu());
-    popup.setOnMenuItemClickListener(item -> {
-      final Intent intent = new Intent(this, HelpActivity.class);
-      switch (item.getItemId()) {
-        case R.id.terms:
-          intent.putExtra(getString(R.string.intent_help_type), HelpActivity.HELP_TYPE_TERMS);
-          startActivity(intent);
-          overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
-          break;
-        case R.id.privacy_policy:
-          intent.putExtra(getString(R.string.intent_help_type), HelpActivity.HELP_TYPE_PRIVACY);
-          startActivity(intent);
-          overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
-          break;
-        case R.id.cookie_policy:
-          intent.putExtra(getString(R.string.intent_help_type), HelpActivity.HELP_TYPE_COOKIE_POLICY);
-          startActivity(intent);
-          overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
-          break;
-        case R.id.help:
-          intent.putExtra(getString(R.string.intent_help_type), HelpActivity.HELP_TYPE_HOW_IT_WORKS);
-          startActivity(intent);
-          overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
-          break;
-      }
-      return true;
-    });
-    popup.show();
+   final LoginPopupMenu popup = new LoginPopupMenu(this, moreButton); // TODO: this should be white background and above moreButton
+   popup.show();
   }
 
   @OnTextChanged(R.id.full_name)
@@ -145,7 +118,7 @@ public class SignupActivity extends BaseActivity<SignupPresenter> {
   }
 
   private void displayError(@NonNull final List<String> message, final boolean forward) {
-    final Toast toast = Toast.makeText(this, "error", Toast.LENGTH_LONG);
+    final Toast toast = Toast.makeText(this, "error\nanother error\nyet another", Toast.LENGTH_LONG);
     toast.show();
   }
 }

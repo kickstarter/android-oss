@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -41,7 +42,17 @@ public class SignupActivity extends BaseActivity<SignupPresenter> {
     setContentView(R.layout.signup_layout);
     ButterKnife.bind(this);
 
-    newsletterSwitch.setChecked(true); // TODO: get initial state from presenter
+    final boolean forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
+
+    // TODO: error handling
+
+    addSubscription(
+      presenter.outputs().signupSuccess().subscribe(__ -> {
+        onSuccess(forward);
+      })
+    );
+
+    //newsletterSwitch.setChecked(true); // TODO: get initial state from presenter
   }
 
   @Override
@@ -85,24 +96,39 @@ public class SignupActivity extends BaseActivity<SignupPresenter> {
   }
 
   @OnTextChanged(R.id.full_name)
-  void onNameTextChanged(@NonNull final CharSequence fullName) { }
+  void onNameTextChanged(@NonNull final CharSequence fullName) {
+    presenter.inputs().fullName(fullName.toString());
+  }
 
   @OnTextChanged(R.id.email)
-  void onEmailTextChanged(@NonNull final CharSequence email) { }
+  void onEmailTextChanged(@NonNull final CharSequence email) {
+    presenter.inputs().email(email.toString());
+  }
 
   @OnTextChanged(R.id.password)
-  void onPasswordTextChange(@NonNull final CharSequence password) { }
+  void onPasswordTextChange(@NonNull final CharSequence password) {
+    presenter.inputs().password(password.toString());
+  }
 
   @OnCheckedChanged(R.id.newsletter_switch)
   void onNewsletterCheckedChange(@NonNull final CompoundButton newsletterSwitch) {
-    //Log.d("gina", "is checked = " + newsletterSwitch.isChecked());
+    presenter.inputs().sendNewsletter(newsletterSwitch.isChecked());
   }
 
   @OnClick(R.id.signup_button)
-  public void signupButtonOnClick(@NonNull final View view) { }
+  public void signupButtonOnClick(@NonNull final View view) {
+    presenter.inputs().signupClick(view);
+  }
 
   public void onSuccess(final boolean forward) {
-
+    if (forward) {
+      setResult(Activity.RESULT_OK);
+      finish();
+    } else {
+      final Intent intent = new Intent(this, DiscoveryActivity.class)
+        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+      startActivity(intent);
+    }
   }
 
   public void setFormEnabled(final boolean enabled) { signupButton.setEnabled(enabled); }

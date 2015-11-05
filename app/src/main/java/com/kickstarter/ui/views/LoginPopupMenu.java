@@ -28,17 +28,17 @@ public class LoginPopupMenu extends PopupMenu {
         case R.id.privacy_policy:
           intent.putExtra(context.getString(R.string.intent_help_type), HelpActivity.HELP_TYPE_PRIVACY);
           activity.startActivity(intent);
-//          overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+          activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
           break;
         case R.id.cookie_policy:
           intent.putExtra(context.getString(R.string.intent_help_type), HelpActivity.HELP_TYPE_COOKIE_POLICY);
-          context.startActivity(intent);
-//          overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+          activity.startActivity(intent);
+          activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
           break;
         case R.id.help:
           intent.putExtra(context.getString(R.string.intent_help_type), HelpActivity.HELP_TYPE_HOW_IT_WORKS);
-          context.startActivity(intent);
-//          overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+          activity.startActivity(intent);
+          activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
           break;
       }
       return true;

@@ -19,6 +19,8 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.presenters.SignupPresenter;
 
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
@@ -44,12 +46,19 @@ public class SignupActivity extends BaseActivity<SignupPresenter> {
 
     final boolean forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
 
-    // TODO: error handling
-
     addSubscription(
       presenter.outputs().signupSuccess().subscribe(__ -> {
         onSuccess(forward);
       })
+    );
+
+    addSubscription(
+      presenter.errors().signupError()
+        .map(e -> e)
+        .subscribe(e -> {
+            displayError(e, forward);
+          }
+        )
     );
 
     //newsletterSwitch.setChecked(true); // TODO: get initial state from presenter
@@ -131,10 +140,12 @@ public class SignupActivity extends BaseActivity<SignupPresenter> {
     }
   }
 
-  public void setFormEnabled(final boolean enabled) { signupButton.setEnabled(enabled); }
+  public void setFormEnabled(final boolean enabled) {
+    signupButton.setEnabled(enabled);
+  }
 
-  private void displayError(String message, boolean forward) {
-    final Toast toast = Toast.makeText(this, message, Toast.LENGTH_LONG);
+  private void displayError(@NonNull final List<String> message, final boolean forward) {
+    final Toast toast = Toast.makeText(this, "error", Toast.LENGTH_LONG);
     toast.show();
   }
 }

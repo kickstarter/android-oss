@@ -11,11 +11,16 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.libs.utils.StringUtils;
+import com.kickstarter.presenters.errors.SignupPresenterErrors;
 import com.kickstarter.presenters.inputs.SignupPresenterInputs;
 import com.kickstarter.presenters.outputs.SignupPresenterOutputs;
 import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.ApiError;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
+import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.activities.SignupActivity;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -23,7 +28,8 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public class SignupPresenter extends Presenter<SignupActivity> implements SignupPresenterInputs, SignupPresenterOutputs {
+public class SignupPresenter extends Presenter<SignupActivity> implements SignupPresenterInputs, SignupPresenterOutputs,
+SignupPresenterErrors {
 
   final private class SignupData {
     @NonNull final String fullName;
@@ -50,13 +56,22 @@ public class SignupPresenter extends Presenter<SignupActivity> implements Signup
 
   // OUTPUTS
   private final PublishSubject<Void> signupSuccessSubject = PublishSubject.create();
-  public final Observable<Void> signupSuccess() { return signupSuccessSubject.asObservable(); }
+  public final Observable<Void> signupSuccess() {
+    return signupSuccessSubject.asObservable();
+  }
+
+  //ERRRORS
+  private final PublishSubject<List<String>> signupErrorSubject = PublishSubject.create();
+  public final Observable<List<String>> signupError() {
+    return signupErrorSubject.asObservable();
+  }
 
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
 
   public SignupPresenterInputs inputs() { return this; }
   public SignupPresenterOutputs outputs() { return this; }
+  public SignupPresenterErrors errors() { return this; }
 
   @Override
   public void fullName(@NonNull final String s) {
@@ -64,7 +79,10 @@ public class SignupPresenter extends Presenter<SignupActivity> implements Signup
   }
 
   @Override
-  public void email(@NonNull final String s) { email.onNext(s); }
+  public void email(@NonNull final String s) {
+    email.onNext(s);
+  }
+
   @Override
   public void password(@NonNull final String s) { password.onNext(s); }
   @Override
@@ -86,16 +104,34 @@ public class SignupPresenter extends Presenter<SignupActivity> implements Signup
           vd.first.setFormEnabled(vd.second.isValid());
         })
     );
+
+    addSubscription(
+      RxUtils.takeWhen(signupData, signupClick)
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(d -> {
+            submit(d.fullName, d.email, d.password);
+          }
+        )
+    );
   }
 
   private void submit(@NonNull final String fullName, @NonNull final String email, @NonNull final String password) {
     client.signup(fullName, email, password, password, 1) // TODO: get newsletter value
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::success); // TODO: errors
+      .subscribe(this::success, this::error);
   }
 
   private void success(@NonNull final AccessTokenEnvelope envelope) {
     currentUser.login(envelope.user(), envelope.accessToken());
     signupSuccessSubject.onNext(null);
+  }
+
+  private void error(@NonNull final Throwable e) {
+    if (e instanceof ApiError) {
+      final ApiError error = (ApiError) e;
+      final ErrorEnvelope envelope = error.errorEnvelope();
+      final List<String> errorMessages = envelope.errorMessages();
+      signupErrorSubject.onNext(errorMessages);
+    }
   }
 }

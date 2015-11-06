@@ -49,11 +49,11 @@ public class SearchActivity extends BaseActivity<SearchPresenter> implements Sea
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> InputUtils.hideKeyboard(this, getCurrentFocus())));
 
-    addSubscription(presenter.outputs().clear()
+    addSubscription(presenter.outputs.clear()
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> adapter.clear()));
 
-    addSubscription(presenter.outputs().newData()
+    addSubscription(presenter.outputs.newData()
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::loadParamsAndProjects));
   }

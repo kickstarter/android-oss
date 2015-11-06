@@ -60,7 +60,7 @@ public class SearchToolbar extends KSToolbar {
 
     addSubscription(text
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(t -> ((SearchActivity) getContext()).presenter().inputs().search(t.toString())));
+      .subscribe(t -> ((SearchActivity) getContext()).presenter().inputs.search(t.toString())));
   }
 
   @OnClick(R.id.clear_button)

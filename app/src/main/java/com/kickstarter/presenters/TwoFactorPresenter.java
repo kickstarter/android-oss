@@ -47,10 +47,8 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> implements 
   @Inject CurrentUser currentUser;
   @Inject ApiClient client;
 
-  public TwoFactorPresenterInputs inputs() {
-    return this;
-  }
-  public TwoFactorPresenterErrors errors() { return this; }
+  public final TwoFactorPresenterInputs inputs = this;
+  public final TwoFactorPresenterErrors errors = this;
 
   @Override
   public void code(@NonNull final String s) {

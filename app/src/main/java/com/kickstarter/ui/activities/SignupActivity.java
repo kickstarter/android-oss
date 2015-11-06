@@ -69,10 +69,7 @@ public class SignupActivity extends BaseActivity<SignupPresenter> {
         )
     );
 
-    newsletterSwitch.setChecked(presenter.outputs().SEND_NEWSLETTERS_DEFAULT);
-
     addSubscription(RxCompoundButton.checkedChanges(newsletterSwitch)
-      .observeOn((AndroidSchedulers.mainThread()))
       .subscribe(b -> {
           presenter.inputs().sendNewsletters(b);
         }
@@ -88,7 +85,7 @@ public class SignupActivity extends BaseActivity<SignupPresenter> {
 
   @OnClick({R.id.more_button, R.id.disclaimer})
   public void moreButtonOnClick() {
-   final LoginPopupMenu popup = new LoginPopupMenu(this, moreButton); // TODO: this should be white background and above moreButton
+   final LoginPopupMenu popup = new LoginPopupMenu(this, moreButton); // TODO: anchor top right
    popup.show();
   }
 

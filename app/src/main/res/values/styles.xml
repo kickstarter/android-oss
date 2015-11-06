@@ -143,10 +143,12 @@
   <!-- Typography -->
   <style name="TextPrimary">
     <item name="android:textColor">@color/text_primary</item>
+    <item name="android:textStyle">normal</item>
   </style>
   
   <style name="TextSecondary">
     <item name="android:textColor">@color/text_secondary</item>
+    <item name="android:textStyle">normal</item>
   </style>
 
   <style name="CaptionPrimary" parent="TextPrimary">

@@ -74,6 +74,7 @@
 
       <Switch
         android:id="@+id/newsletter_switch"
+        android:checked="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/dark_gray"
@@ -95,6 +96,7 @@
         android:id="@+id/disclaimer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/grid_2"
         android:gravity="center_horizontal"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"

@@ -68,6 +68,7 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
       .switchMap(param -> client.fetchProject(param).compose(Transformers.neverError()))
       .mergeWith(projectOnUserChangeStar)
       .mergeWith(starredProjectOnLoginSuccess)
+      .mergeWith(initialProject)
       .share();
 
     final Observable<Pair<ProjectActivity, Project>> viewAndProject =

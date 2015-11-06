@@ -1,9 +1,12 @@
 package com.kickstarter.ui.activities;
 
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,7 +24,6 @@ import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 import com.kickstarter.presenters.ProjectPresenter;
 import com.kickstarter.ui.adapters.ProjectAdapter;
-import com.kickstarter.ui.views.IconTextView;
 
 import javax.inject.Inject;
 
@@ -34,7 +36,7 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
   private ProjectAdapter adapter;
 
   @Bind(R.id.rewards_recycler_view) RecyclerView rewardsRecyclerView;
-  @Bind(R.id.star_icon) IconTextView starIconTextView;
+  @Bind(R.id.star_fab) FloatingActionButton starFab;
   @Bind(R.id.back_project_button) Button backProjectButton;
   @Bind(R.id.manage_pledge_button) Button managePledgeButton;
   @Bind(R.id.view_pledge_button) Button viewPledgeButton;
@@ -58,7 +60,22 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
     rewardsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
   }
 
-  public void setProjectActionButton(@NonNull final Project project) {
+  public void show(@NonNull final Project project) {
+    adapter.takeProject(project);
+
+    final Drawable starDrawable = ContextCompat.getDrawable(this, R.drawable.ic_star_black_24dp);
+    setProjectActionButton(project, starDrawable);
+    toggleStarColor(project, starDrawable);
+  }
+
+  public void setProjectActionButton(@NonNull final Project project, @NonNull final Drawable starDrawable) {
+    if (project.isLive()) {
+      starFab.setImageDrawable(starDrawable);
+      starFab.setVisibility(View.VISIBLE);
+    } else {
+      starFab.setVisibility(View.GONE);
+    }
+
     if (!project.isBacking() && project.isLive()) {
       backProjectButton.setVisibility(View.VISIBLE);
     } else {
@@ -78,11 +95,9 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
     }
   }
 
-  public void show(@NonNull final Project project) {
-    final int starColor = (project.isStarred()) ? R.color.green : R.color.dark_gray;
-    starIconTextView.setTextColor(ContextCompat.getColor(this, starColor));
-    adapter.takeProject(project);
-    setProjectActionButton(project);
+  public void toggleStarColor(@NonNull final Project project, @NonNull final Drawable starDrawable) {
+    final int starColor = (project.isStarred()) ? R.color.green : R.color.text_primary;
+    starDrawable.setColorFilter(ContextCompat.getColor(this, starColor), PorterDuff.Mode.SRC_ATOP);
   }
 
   @OnClick(R.id.back_project_button)
@@ -118,15 +133,15 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
-  @OnClick(R.id.star_icon)
+  @OnClick(R.id.star_fab)
   public void starProjectClick() {
     presenter.takeStarClick();
   }
 
-  @OnClick(R.id.share_icon)
-  public void shareProject() {
-    presenter.takeShareClick();
-  }
+//  @OnClick(R.id.share_icon)
+//  public void shareProject() {
+//    presenter.takeShareClick();
+//  }
 
   public void showProjectDescription(@NonNull final Project project) {
     startWebViewActivity(project.descriptionUrl());

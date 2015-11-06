@@ -6,6 +6,7 @@
   android:foreground="@drawable/click_indicator_light"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
+  card_view:cardBackgroundColor="@color/white"
   card_view:cardElevation="0dp"
   card_view:cardCornerRadius="@dimen/card_corner_radius"
   card_view:contentPaddingTop="@dimen/grid_3"

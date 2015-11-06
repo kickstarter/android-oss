@@ -65,7 +65,6 @@ public class SearchPresenter extends Presenter<SearchActivity> implements Search
     addSubscription(RxUtils.combineLatestPair(popularParamsAndProjects, isSearchEmpty)
       .filter(pe -> pe.second)
       .map(pe -> pe.first)
-      .observeOn(AndroidSchedulers.mainThread())
       .subscribe(pp -> newData.onNext(pp))
     );
 
@@ -81,7 +80,6 @@ public class SearchPresenter extends Presenter<SearchActivity> implements Search
       .filter(pe -> !pe.first)
       .map(pe -> pe.second)
       .debounce(500, TimeUnit.MILLISECONDS)
-      .observeOn(AndroidSchedulers.mainThread())
       .subscribe(pp -> newData.onNext(pp))
     );
 

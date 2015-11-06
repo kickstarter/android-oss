@@ -28,7 +28,7 @@ import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.adapters.DiscoveryAdapter;
 import com.kickstarter.ui.containers.ApplicationContainer;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
-import com.kickstarter.ui.views.DiscoveryToolbar;
+import com.kickstarter.ui.toolbars.DiscoveryToolbar;
 
 import java.util.ArrayList;
 import java.util.List;

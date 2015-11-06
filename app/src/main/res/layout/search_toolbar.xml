@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.kickstarter.ui.views.SearchToolbar
-  xmlns:app="http://schemas.android.com/apk/res-auto"
+<com.kickstarter.ui.toolbars.SearchToolbar
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   style="@style/Toolbar"
+  android:id="@+id/search_toolbar"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
-  android:id="@+id/search_toolbar"
-  android:layout_width="match_parent"
-  android:layout_height="?attr/actionBarSize"
-  tools:showIn="@layout/search_layout"
-  android:foregroundGravity="center_vertical">
+  tools:showIn="@layout/search_layout">
 
   <LinearLayout
     android:layout_width="match_parent"
@@ -56,4 +53,4 @@
 
   </LinearLayout>
 
-</com.kickstarter.ui.views.SearchToolbar>
+</com.kickstarter.ui.toolbars.SearchToolbar>

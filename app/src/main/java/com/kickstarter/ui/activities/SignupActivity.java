@@ -69,14 +69,14 @@ public class SignupActivity extends BaseActivity<SignupPresenter> {
         )
     );
 
+    newsletterSwitch.setChecked(presenter.outputs().SEND_NEWSLETTERS_DEFAULT);
+
     addSubscription(RxCompoundButton.checkedChanges(newsletterSwitch)
       .observeOn((AndroidSchedulers.mainThread()))
       .subscribe(b -> {
           presenter.inputs().sendNewsletters(b);
         }
       ));
-
-    newsletterSwitch.setChecked(presenter.outputs().SEND_NEWSLETTERS_DEFAULT);
   }
 
   @Override

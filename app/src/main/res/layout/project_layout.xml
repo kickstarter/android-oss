@@ -14,7 +14,6 @@
   <Button
     style="@style/ProjectActionButton"
     android:id="@+id/back_project_button"
-    android:layout_alignParentBottom="true"
     android:visibility="visible"
     android:background="@drawable/button_green"
     android:text="@string/Back_this_project" />
@@ -22,7 +21,6 @@
   <Button
     style="@style/ProjectActionButton"
     android:id="@+id/manage_pledge_button"
-    android:layout_alignParentBottom="true"
     android:visibility="gone"
     android:background="@drawable/button_blue"
     android:text="@string/Manage_pledge" />
@@ -30,7 +28,6 @@
   <Button
     style="@style/ProjectActionButton"
     android:id="@+id/view_pledge_button"
-    android:layout_alignParentBottom="true"
     android:visibility="gone"
     android:background="@drawable/button_blue"
     android:text="@string/View_pledge" />

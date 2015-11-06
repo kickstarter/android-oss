@@ -53,7 +53,7 @@
           android:layout_marginBottom="@dimen/grid_1_half"
           android:maxLines="3"
           android:textColor="@color/black"
-          android:text="Around the World in" />
+          android:text="Project name" />
 
         <TextView
           style="@style/CaptionSecondary"

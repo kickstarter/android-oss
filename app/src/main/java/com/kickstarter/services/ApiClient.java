@@ -105,7 +105,7 @@ public class ApiClient {
 
   public Observable<AccessTokenEnvelope> signup(@NonNull final String name, @NonNull final String email,
     @NonNull final String password, @NonNull final String passwordConfirmation,
-    final int sendNewsletters) {
+    final boolean sendNewsletters) {
     return service.signup(SignupBody.builder()
       .name(name)
       .email(email)

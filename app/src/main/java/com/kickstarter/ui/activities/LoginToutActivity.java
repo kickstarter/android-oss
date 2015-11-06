@@ -32,7 +32,6 @@ public class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
     ButterKnife.bind(this);
 
     forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
-    presenter.takeForward(forward);
   }
 
   @Override
@@ -59,12 +58,7 @@ public class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
 
   @OnClick(R.id.login_button)
   public void loginButtonOnClick() {
-    presenter.takeLoginButtonClick();
-  }
-
-  @OnClick(R.id.sign_up_button)
-  public void signupButtonOnClick() {
-    final Intent intent = new Intent(this, SignupActivity.class);
+    final Intent intent = new Intent(this, LoginActivity.class);
     if (forward) {
       intent.putExtra(getString(R.string.intent_forward), true);
       startActivityForResult(intent,
@@ -75,8 +69,9 @@ public class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
-  public void startLoginActivity(final boolean forward) {
-    final Intent intent = new Intent(this, LoginActivity.class);
+  @OnClick(R.id.sign_up_button)
+  public void signupButtonOnClick() {
+    final Intent intent = new Intent(this, SignupActivity.class);
     if (forward) {
       intent.putExtra(getString(R.string.intent_forward), true);
       startActivityForResult(intent,

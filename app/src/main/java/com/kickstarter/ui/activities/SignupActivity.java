@@ -5,28 +5,24 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
-import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.presenters.SignupPresenter;
 import com.kickstarter.ui.views.LoginPopupMenu;
 
-import java.util.List;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresPresenter(SignupPresenter.class)
 public class SignupActivity extends BaseActivity<SignupPresenter> {
@@ -48,21 +44,39 @@ public class SignupActivity extends BaseActivity<SignupPresenter> {
     final boolean forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
 
     addSubscription(
-      presenter.outputs().signupSuccess().subscribe(__ -> {
-        onSuccess(forward);
-      })
+      presenter.outputs().signupSuccess()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(__ -> {
+          onSuccess(forward);
+        })
+    );
+
+    addSubscription(
+      presenter.outputs().formSubmitting()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(b -> {
+            setFormEnabled(b);
+          }
+        )
     );
 
     addSubscription(
       presenter.errors().signupError()
-        .map(e -> e)
+        .observeOn(AndroidSchedulers.mainThread())
         .subscribe(e -> {
             displayError(e, forward);
           }
         )
     );
 
-    newsletterSwitch.setChecked(presenter.outputs().sendNewslettersDefault);
+    addSubscription(RxCompoundButton.checkedChanges(newsletterSwitch)
+      .observeOn((AndroidSchedulers.mainThread()))
+      .subscribe(b -> {
+          presenter.inputs().sendNewsletters(b);
+        }
+      ));
+
+    newsletterSwitch.setChecked(presenter.outputs().SEND_NEWSLETTERS_DEFAULT);
   }
 
   @Override
@@ -93,14 +107,9 @@ public class SignupActivity extends BaseActivity<SignupPresenter> {
     presenter.inputs().password(password.toString());
   }
 
-  @OnCheckedChanged(R.id.newsletter_switch)
-  void onNewsletterCheckedChange(@NonNull final CompoundButton newsletterSwitch) {
-    presenter.inputs().sendNewsletters(newsletterSwitch.isChecked());
-  }
-
   @OnClick(R.id.signup_button)
-  public void signupButtonOnClick(@NonNull final View view) {
-    presenter.inputs().signupClick(view);
+  public void signupButtonOnClick() {
+    presenter.inputs().signupClick();
   }
 
   public void onSuccess(final boolean forward) {
@@ -118,12 +127,8 @@ public class SignupActivity extends BaseActivity<SignupPresenter> {
     signupButton.setEnabled(enabled);
   }
 
-  private void displayError(@NonNull final List<String> message, final boolean forward) {
-    final String errors = new StringBuilder()
-      .append(TextUtils.join("\n", message))
-      .toString();
-
-    final Toast toast = Toast.makeText(this, errors, Toast.LENGTH_LONG);
+  private void displayError(@NonNull final String message, final boolean forward) {
+    final Toast toast = Toast.makeText(this, message, Toast.LENGTH_LONG);
     toast.show();
   }
 }

@@ -4,23 +4,20 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.view.View;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.presenters.errors.SignupPresenterErrors;
 import com.kickstarter.presenters.inputs.SignupPresenterInputs;
 import com.kickstarter.presenters.outputs.SignupPresenterOutputs;
 import com.kickstarter.services.ApiClient;
-import com.kickstarter.services.ApiError;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.activities.SignupActivity;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -28,7 +25,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public class SignupPresenter extends Presenter<SignupActivity> implements SignupPresenterInputs, SignupPresenterOutputs,
+final public class SignupPresenter extends Presenter<SignupActivity> implements SignupPresenterInputs, SignupPresenterOutputs,
 SignupPresenterErrors {
 
   final private class SignupData {
@@ -55,18 +52,24 @@ SignupPresenterErrors {
   private final PublishSubject<String> email = PublishSubject.create();
   private final PublishSubject<String> password = PublishSubject.create();
   private final PublishSubject<Boolean> sendNewsletters = PublishSubject.create();
-  private final PublishSubject<View> signupClick = PublishSubject.create();
+  private final PublishSubject<Void> signupClick = PublishSubject.create();
 
   // OUTPUTS
-  private final PublishSubject<Void> signupSuccessSubject = PublishSubject.create();
+  private final PublishSubject<Void> signupSuccess = PublishSubject.create();
   public final Observable<Void> signupSuccess() {
-    return signupSuccessSubject.asObservable();
+    return signupSuccess.asObservable();
+  }
+  private final PublishSubject<Boolean> formSubmitting = PublishSubject.create();
+  public final Observable<Boolean> formSubmitting() {
+    return formSubmitting.asObservable();
   }
 
-  //ERRRORS
-  private final PublishSubject<List<String>> signupErrorSubject = PublishSubject.create();
-  public final Observable<List<String>> signupError() {
-    return signupErrorSubject.asObservable();
+  // ERRORS
+  private final PublishSubject<ErrorEnvelope> signupError = PublishSubject.create();
+  public final Observable<String> signupError() {
+    return signupError
+      .takeUntil(signupSuccess)
+      .map(ErrorEnvelope::errorMessage);
   }
 
   @Inject ApiClient client;
@@ -103,8 +106,8 @@ SignupPresenterErrors {
   }
 
   @Override
-  public void signupClick(@NonNull final View v) {
-    signupClick.onNext(v);
+  public void signupClick() {
+    signupClick.onNext(null);
   }
 
   @Override
@@ -124,32 +127,20 @@ SignupPresenterErrors {
 
     addSubscription(
       RxUtils.takeWhen(signupData, signupClick)
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(d -> {
-            submit(d.fullName, d.email, d.password, d.sendNewsletters);
-          }
-        )
+        .flatMap(this::submit)
+        .subscribe(this::success)
     );
   }
 
-  private void submit(@NonNull final String fullName, @NonNull final String email, @NonNull final String password,
-    final boolean sendNewsletters) {
-    client.signup(fullName, email, password, password, sendNewsletters ? 1 : 0)
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::success, this::error);
+  private Observable<AccessTokenEnvelope> submit(@NonNull final SignupData data) {
+    return client.signup(data.fullName, data.email, data.password, data.password, data.sendNewsletters)
+      .compose(Transformers.pipeErrorsTo(signupError))
+      .doOnSubscribe(() -> formSubmitting.onNext(true))
+      .finallyDo(() -> formSubmitting.onNext(false));
   }
 
   private void success(@NonNull final AccessTokenEnvelope envelope) {
     currentUser.login(envelope.user(), envelope.accessToken());
-    signupSuccessSubject.onNext(null);
-  }
-
-  private void error(@NonNull final Throwable e) {
-    if (e instanceof ApiError) {
-      final ApiError error = (ApiError) e;
-      final ErrorEnvelope envelope = error.errorEnvelope();
-      final List<String> errorMessages = envelope.errorMessages();
-      signupErrorSubject.onNext(errorMessages);
-    }
+    signupSuccess.onNext(null);
   }
 }

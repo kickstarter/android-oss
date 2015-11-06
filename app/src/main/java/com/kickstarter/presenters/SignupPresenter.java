@@ -25,10 +25,10 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-final public class SignupPresenter extends Presenter<SignupActivity> implements SignupPresenterInputs, SignupPresenterOutputs,
+public final class SignupPresenter extends Presenter<SignupActivity> implements SignupPresenterInputs, SignupPresenterOutputs,
 SignupPresenterErrors {
 
-  final private class SignupData {
+  private final class SignupData {
     @NonNull final String fullName;
     @NonNull final String email;
     @NonNull final String password;

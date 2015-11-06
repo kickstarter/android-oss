@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.kickstarter.R;
@@ -54,19 +53,13 @@ public class SignupActivity extends BaseActivity<SignupPresenter> {
     addSubscription(
       presenter.outputs().formSubmitting()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(b -> {
-            setFormEnabled(b);
-          }
-        )
+        .subscribe(this::setFormEnabled)
     );
 
     addSubscription(
       presenter.errors().signupError()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(e -> {
-            displayError(e, forward);
-          }
-        )
+        .subscribe(this::displayToast)
     );
 
     addSubscription(RxCompoundButton.checkedChanges(newsletterSwitch)
@@ -122,10 +115,5 @@ public class SignupActivity extends BaseActivity<SignupPresenter> {
 
   public void setFormEnabled(final boolean enabled) {
     signupButton.setEnabled(enabled);
-  }
-
-  private void displayError(@NonNull final String message, final boolean forward) {
-    final Toast toast = Toast.makeText(this, message, Toast.LENGTH_LONG);
-    toast.show();
   }
 }

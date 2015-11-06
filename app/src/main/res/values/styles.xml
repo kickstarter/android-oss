@@ -144,6 +144,11 @@
     <item name="android:color">@color/black</item>
     <item name="android:textColorHint">@color/dark_gray</item>
   </style>
+  
+  <style name="StarFab">
+    <item name="android:layout_marginRight">@dimen/grid_1</item>
+    <item name="android:layout_marginBottom">@dimen/grid_1</item>
+  </style>
 
   <!-- Typography -->
   <style name="TextPrimary">

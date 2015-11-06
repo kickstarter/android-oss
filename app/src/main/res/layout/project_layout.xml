@@ -11,20 +11,6 @@
     android:layout_height="wrap_content"
     android:background="@color/light_gray"/>
 
-  <android.support.design.widget.FloatingActionButton
-    android:id="@+id/star_fab"
-    fab:backgroundTint="@color/white"
-    fab:rippleColor="@color/dark_gray_click"
-    fab:fabSize="normal"
-    android:layout_alignParentBottom="true"
-    android:layout_alignParentRight="true"
-    android:layout_alignParentEnd="true"
-    android:layout_marginRight="@dimen/grid_3"
-    android:layout_marginEnd="@dimen/grid_3"
-    android:layout_marginBottom="@dimen/grid_3"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"/>
-
   <Button
     style="@style/ProjectActionButton"
     android:id="@+id/back_project_button"
@@ -48,5 +34,17 @@
     android:visibility="gone"
     android:background="@drawable/button_blue"
     android:text="@string/View_pledge" />
+
+  <android.support.design.widget.FloatingActionButton
+    android:id="@+id/star_fab"
+    style="@style/StarFab"
+    fab:backgroundTint="@color/white"
+    fab:rippleColor="@color/dark_gray_click"
+    fab:fabSize="normal"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentRight="true"
+    android:layout_alignParentEnd="true"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"/>
 
 </RelativeLayout>

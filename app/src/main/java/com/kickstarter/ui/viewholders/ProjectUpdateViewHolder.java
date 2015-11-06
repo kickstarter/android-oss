@@ -31,7 +31,6 @@ public class ProjectUpdateViewHolder extends ActivityListViewHolder {
     void projectUpdateClicked(ProjectUpdateViewHolder viewHolder, Activity activity);
   }
 
-
   public ProjectUpdateViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
     super(view);
     this.delegate = delegate;

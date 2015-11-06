@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -28,6 +27,8 @@ import com.kickstarter.ui.adapters.ProjectAdapter;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import butterknife.BindColor;
+import butterknife.BindDrawable;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -40,6 +41,10 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
   @Bind(R.id.back_project_button) Button backProjectButton;
   @Bind(R.id.manage_pledge_button) Button managePledgeButton;
   @Bind(R.id.view_pledge_button) Button viewPledgeButton;
+
+  @BindDrawable(R.drawable.ic_star_black_24dp) Drawable starDrawable;
+  @BindColor(R.color.green) int green;
+  @BindColor(R.color.text_primary) int textPrimary;
 
   @Inject Money money;
 
@@ -62,13 +67,11 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
 
   public void show(@NonNull final Project project) {
     adapter.takeProject(project);
-
-    final Drawable starDrawable = ContextCompat.getDrawable(this, R.drawable.ic_star_black_24dp);
-    setProjectActionButton(project, starDrawable);
-    toggleStarColor(project, starDrawable);
+    setProjectActionButton(project);
+    toggleStarColor(project);
   }
 
-  public void setProjectActionButton(@NonNull final Project project, @NonNull final Drawable starDrawable) {
+  public void setProjectActionButton(@NonNull final Project project) {
     if (project.isLive()) {
       starFab.setImageDrawable(starDrawable);
       starFab.setVisibility(View.VISIBLE);
@@ -95,9 +98,9 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
     }
   }
 
-  public void toggleStarColor(@NonNull final Project project, @NonNull final Drawable starDrawable) {
-    final int starColor = (project.isStarred()) ? R.color.green : R.color.text_primary;
-    starDrawable.setColorFilter(ContextCompat.getColor(this, starColor), PorterDuff.Mode.SRC_ATOP);
+  public void toggleStarColor(@NonNull final Project project) {
+    final int starColor = (project.isStarred()) ? green : textPrimary;
+    starDrawable.setColorFilter(starColor, PorterDuff.Mode.SRC_ATOP);
   }
 
   @OnClick(R.id.back_project_button)

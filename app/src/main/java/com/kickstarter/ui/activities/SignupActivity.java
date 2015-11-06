@@ -36,7 +36,7 @@ public class SignupActivity extends BaseActivity<SignupPresenter> {
   @Bind(R.id.signup_button) Button signupButton;
   @Bind(R.id.newsletter_switch) Switch newsletterSwitch;
   @Bind(R.id.disclaimer) TextView disclaimerTextView;
-  @Bind(R.id.more_button) TextView moreButton; // TODO: move this to a login toolbar
+  @Bind(R.id.more_button) TextView moreButton;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {

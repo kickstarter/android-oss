@@ -35,10 +35,10 @@ SignupPresenterErrors {
     @NonNull final String fullName;
     @NonNull final String email;
     @NonNull final String password;
-    @NonNull final Boolean sendNewsletters;
+    final boolean sendNewsletters;
 
     public SignupData(@NonNull final String fullName, @NonNull final String email, @NonNull final String password,
-      @NonNull final Boolean sendNewsletters) {
+      final boolean sendNewsletters) {
       this.fullName = fullName;
       this.email = email;
       this.password = password;
@@ -96,10 +96,12 @@ SignupPresenterErrors {
   public void password(@NonNull final String s) {
     password.onNext(s);
   }
+
   @Override
-  public void sendNewsletters(@NonNull final Boolean b) {
+  public void sendNewsletters(final boolean b) {
     sendNewsletters.onNext(b);
   }
+
   @Override
   public void signupClick(@NonNull final View v) {
     signupClick.onNext(v);
@@ -131,7 +133,7 @@ SignupPresenterErrors {
   }
 
   private void submit(@NonNull final String fullName, @NonNull final String email, @NonNull final String password,
-    @NonNull final Boolean sendNewsletters) {
+    final boolean sendNewsletters) {
     client.signup(fullName, email, password, password, sendNewsletters ? 1 : 0)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::success, this::error);

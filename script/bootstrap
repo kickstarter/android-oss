@@ -37,7 +37,7 @@ REPOSITORY_STYLE_PATH="script/style/Kickstarter.xml"
 cmp -s "${ANDROID_STYLE_PATH}" "${REPOSITORY_STYLE_PATH}"
 if [ $? -ne 0 ]; then
   if [ ! -f $ANDROID_STYLE_PATH ]; then
-    loudspeaker "You need to switch to the Kickstarter code style in Android Studio. Update this setting in Preferences > Code Style."
+    loudspeaker "You need to switch to the Kickstarter code style in Android Studio. Update this setting in Preferences > Code Style. If Android Studio is currently open you may need to restart first to see the code style."
   else
     say "Updated Kickstarter code style, restart Android Studio to apply changes\n"
   fi

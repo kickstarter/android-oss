@@ -3,16 +3,19 @@
   <item android:state_selected="true">
     <shape>
       <solid android:color="@color/blue_darken_10"/>
+      <corners android:radius="@dimen/button_corner_radius"/>
     </shape>
   </item>
   <item android:state_pressed="true">
     <shape>
       <solid android:color="@color/blue_darken_10"/>
+      <corners android:radius="@dimen/button_corner_radius"/>
     </shape>
   </item>
   <item>
     <shape>
       <solid android:color="@color/blue"/>
+      <corners android:radius="@dimen/button_corner_radius"/>
     </shape>
   </item>
 </selector>

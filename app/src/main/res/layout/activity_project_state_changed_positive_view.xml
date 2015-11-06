@@ -16,9 +16,8 @@
     android:id="@+id/project_photo"
     android:alpha="0.2"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="246dp"
     android:layout_margin="0dp"
-    android:layout_gravity="center_vertical"
     android:cropToPadding="false"
     android:scaleType="centerCrop"
     android:adjustViewBounds="true" />
@@ -27,18 +26,18 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/grid_3"
-    android:layout_gravity="center"
+    android:layout_gravity="bottom"
     android:orientation="vertical">
 
     <TextView
+      style="@style/Headline"
       android:id="@+id/title"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="center"
-      android:layout_marginBottom="@dimen/grid_3"
+      android:layout_marginBottom="@dimen/grid_4"
       android:gravity="center"
       android:text="Title"
-      android:textAppearance="@style/TextAppearance.AppCompat.Title"
       android:textColor="@color/white" />
 
     <LinearLayout
@@ -55,20 +54,20 @@
         android:orientation="vertical">
 
         <TextView
+          style="@style/SubheadMedium"
           android:id="@+id/left_stat_first"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="Left Stat First"
-          android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
           android:textColor="@color/white"
           android:textStyle="bold" />
 
         <TextView
+          style="@style/SubheadMedium"
           android:id="@+id/left_stat_second"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="Left Stat Second"
-          android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
           android:textColor="@color/white" />
 
       </LinearLayout>
@@ -81,20 +80,20 @@
         android:orientation="vertical">
 
         <TextView
+          style="@style/SubheadMedium"
           android:id="@+id/right_stat_first"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="Right Stat First"
-          android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
           android:textColor="@color/white"
           android:textStyle="bold" />
 
         <TextView
+          style="@style/SubheadMedium"
           android:id="@+id/right_stat_second"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="Right Stat Second"
-          android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
           android:textColor="@color/white" />
       </LinearLayout>
 

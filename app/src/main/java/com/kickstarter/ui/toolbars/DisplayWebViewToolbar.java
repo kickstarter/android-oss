@@ -11,7 +11,7 @@ import com.kickstarter.ui.activities.DisplayWebViewActivity;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class DisplayWebViewToolbar extends KSToolbar {
+public final class DisplayWebViewToolbar extends KSToolbar {
   public DisplayWebViewToolbar(@NonNull final Context context) {
     super(context);
   }

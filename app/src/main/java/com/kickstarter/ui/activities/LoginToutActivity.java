@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 @RequiresPresenter(LoginToutPresenter.class)
-public class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
+public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
   @Bind(R.id.login_button) Button loginButton;
   @Bind(R.id.sign_up_button) Button signupButton;
 

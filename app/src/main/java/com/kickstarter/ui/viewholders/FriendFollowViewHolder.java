@@ -15,9 +15,8 @@ import com.squareup.picasso.Picasso;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
-public class FriendFollowViewHolder extends ActivityListViewHolder {
+public final class FriendFollowViewHolder extends ActivityListViewHolder {
   @Bind(R.id.avatar) ImageView avatarImageView;
   @Bind(R.id.follow_button) View followButton;
   @Bind(R.id.title) TextView titleTextView;

@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class CommentViewHolder extends KSViewHolder {
+public final class CommentViewHolder extends KSViewHolder {
   public @Bind(R.id.avatar) ImageView avatarImageView;
   public @Bind(R.id.creator_label) TextView creatorLabelTextView;
   public @Bind(R.id.user_label) TextView userLabelTextView;

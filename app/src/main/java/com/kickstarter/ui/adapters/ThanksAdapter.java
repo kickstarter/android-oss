@@ -14,7 +14,7 @@ import com.kickstarter.ui.viewholders.ProjectCardMiniViewHolder;
 import java.util.Collections;
 import java.util.List;
 
-public class ThanksAdapter extends KSAdapter {
+public final class ThanksAdapter extends KSAdapter {
   private final Delegate delegate;
 
   public interface Delegate extends CategoryPromoViewHolder.Delegate, ProjectCardMiniViewHolder.Delegate {}

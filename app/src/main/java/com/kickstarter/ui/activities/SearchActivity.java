@@ -27,7 +27,7 @@ import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresPresenter(SearchPresenter.class)
-public class SearchActivity extends BaseActivity<SearchPresenter> implements SearchAdapter.Delegate {
+public final class SearchActivity extends BaseActivity<SearchPresenter> implements SearchAdapter.Delegate {
   private SearchAdapter adapter;
   LinearLayoutManager layoutManager;
   @Bind(R.id.search_recycler_view) RecyclerView recyclerView;

@@ -37,7 +37,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresPresenter(CommentFeedPresenter.class)
-public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> implements CommentFeedAdapter.Delegate {
+public final class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> implements CommentFeedAdapter.Delegate {
   private CommentFeedAdapter adapter;
   private Project project;
   @Nullable private AlertDialog commentDialog;

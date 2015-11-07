@@ -3,10 +3,9 @@ package com.kickstarter.ui.toolbars;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 
-public class LoginToutToolbar extends KSToolbar {
+public final class LoginToutToolbar extends KSToolbar {
   public LoginToutToolbar(@NonNull final Context context) {
     super(context);
   }

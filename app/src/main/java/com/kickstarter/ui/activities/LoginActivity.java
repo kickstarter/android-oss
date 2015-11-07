@@ -24,7 +24,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresPresenter(LoginPresenter.class)
-public class LoginActivity extends BaseActivity<LoginPresenter> {
+public final class LoginActivity extends BaseActivity<LoginPresenter> {
   @Bind(R.id.email) EditText emailEditText;
   @Bind(R.id.login_button) Button loginButton;
   @Bind(R.id.password) EditText passwordEditText;

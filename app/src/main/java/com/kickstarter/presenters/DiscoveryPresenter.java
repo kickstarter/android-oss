@@ -31,7 +31,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements DiscoveryPresenterInputs {
+public final class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements DiscoveryPresenterInputs {
   // INPUTS
   private final PublishSubject<Project> projectClick = PublishSubject.create();
   private final PublishSubject<Void> scrollEvent = PublishSubject.create();

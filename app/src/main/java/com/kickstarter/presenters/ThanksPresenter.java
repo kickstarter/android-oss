@@ -27,7 +27,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public class ThanksPresenter extends Presenter<ThanksActivity> implements ThanksAdapter.Delegate {
+public final class ThanksPresenter extends Presenter<ThanksActivity> implements ThanksAdapter.Delegate {
   private final PublishSubject<Void> doneClick = PublishSubject.create();
   private final PublishSubject<Void> facebookClick = PublishSubject.create();
   private final PublishSubject<Void> shareClick = PublishSubject.create();

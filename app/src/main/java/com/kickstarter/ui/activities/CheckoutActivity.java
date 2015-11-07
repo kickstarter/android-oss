@@ -24,7 +24,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 @RequiresPresenter(CheckoutPresenter.class)
-public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
+public final class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
   private Project project;
   private String urlToReload;
   @Bind(R.id.web_view) KSWebView webView;

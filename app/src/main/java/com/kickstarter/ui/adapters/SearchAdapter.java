@@ -14,7 +14,7 @@ import com.kickstarter.ui.viewholders.SearchTermViewHolder;
 import java.util.Collections;
 import java.util.List;
 
-public class SearchAdapter extends KSAdapter {
+public final class SearchAdapter extends KSAdapter {
   private final Delegate delegate;
 
   public interface Delegate extends ProjectSearchResultViewHolder.Delegate {}

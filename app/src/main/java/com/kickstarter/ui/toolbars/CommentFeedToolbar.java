@@ -11,7 +11,7 @@ import com.kickstarter.ui.activities.CommentFeedActivity;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class CommentFeedToolbar extends KSToolbar {
+public final class CommentFeedToolbar extends KSToolbar {
   public CommentFeedToolbar(@NonNull final Context context) {
     super(context);
   }

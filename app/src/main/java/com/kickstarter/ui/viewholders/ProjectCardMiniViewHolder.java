@@ -13,7 +13,7 @@ import com.squareup.picasso.Picasso;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class ProjectCardMiniViewHolder extends KSViewHolder {
+public final class ProjectCardMiniViewHolder extends KSViewHolder {
   private Project project;
   final Delegate delegate;
 

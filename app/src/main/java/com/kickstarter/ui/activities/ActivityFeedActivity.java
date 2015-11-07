@@ -23,7 +23,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 @RequiresPresenter(ActivityFeedPresenter.class)
-public class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
+public final class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
   private ActivityFeedAdapter adapter;
   public @Bind(R.id.recycler_view) RecyclerView recyclerView;
 

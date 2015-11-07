@@ -40,7 +40,7 @@ import butterknife.BindDrawable;
 import butterknife.ButterKnife;
 
 @RequiresPresenter(DiscoveryPresenter.class)
-public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> implements DiscoveryAdapter.Delegate {
+public final class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> implements DiscoveryAdapter.Delegate {
   DiscoveryAdapter adapter;
   LinearLayoutManager layoutManager;
   final List<Project> projects = new ArrayList<>();

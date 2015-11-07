@@ -15,7 +15,7 @@ import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
 import rx.Observable;
 
-public class WebClient {
+public final class WebClient {
   private final Release build;
   private final String endpoint;
   private final Gson gson;

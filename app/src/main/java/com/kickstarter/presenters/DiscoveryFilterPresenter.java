@@ -24,7 +24,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity> implements DiscoveryFilterAdapter.Delegate {
+public final class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity> implements DiscoveryFilterAdapter.Delegate {
   @Inject ApiClient apiClient;
   private final PublishSubject<DiscoveryParams> discoveryFilterClick = PublishSubject.create();
 

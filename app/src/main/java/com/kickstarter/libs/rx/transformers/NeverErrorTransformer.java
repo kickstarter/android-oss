@@ -9,7 +9,7 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 
 final class NeverErrorTransformer<T> implements Observable.Transformer<T, T> {
-  @Nullable final private PublishSubject<ErrorEnvelope> errors;
+  @Nullable private final PublishSubject<ErrorEnvelope> errors;
 
   protected NeverErrorTransformer() {
     this.errors = null;

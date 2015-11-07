@@ -8,6 +8,7 @@ import android.util.Pair;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.Presenter;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.Project;
@@ -24,7 +25,6 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
 public class SearchPresenter extends Presenter<SearchActivity> implements SearchPresenterInputs, SearchPresenterOutputs {
@@ -34,10 +34,10 @@ public class SearchPresenter extends Presenter<SearchActivity> implements Search
   @Override public void search(@NonNull final String s) { search.onNext(s); }
 
   // OUTPUTS
-  private final PublishSubject<Empty> clear = PublishSubject.create();
+  private final PublishSubject<Empty> clearData = PublishSubject.create();
   private final PublishSubject<Pair<DiscoveryParams, List<Project>>> newData = PublishSubject.create();
   public final SearchPresenterOutputs outputs = this;
-  @Override public Observable<Empty> clear() { return clear.asObservable(); }
+  @Override public Observable<Empty> clearData() { return clearData.asObservable(); }
   @Override public Observable<Pair<DiscoveryParams, List<Project>>> newData() { return newData.asObservable(); }
 
   private final PublishSubject<DiscoveryParams> paramsSubject = PublishSubject.create();
@@ -60,27 +60,34 @@ public class SearchPresenter extends Presenter<SearchActivity> implements Search
     final Observable<Pair<DiscoveryParams, List<Project>>> popularParamsAndProjects = paramsAndProjects.first();
     final Observable<Pair<DiscoveryParams, List<Project>>> searchParamsAndProjects = paramsAndProjects.skip(1);
 
-    // When the search field is empty (i.e. on load or when the search field is cleared), ping with the
-    // popular projects.
-    addSubscription(RxUtils.combineLatestPair(popularParamsAndProjects, isSearchEmpty)
-      .filter(pe -> pe.second)
-        .map(pe -> pe.first)
-      .subscribe(pp -> newData.onNext(pp))
+    // When the search field changes, start a new search and clear results
+    addSubscription(
+      search
+        .compose(Transformers.takeWhen(isSearchEmpty.filter(v -> !v)))
+        .subscribe(text -> {
+          paramsSubject.onNext(DiscoveryParams.builder().term(text).build());
+          clearData.onNext(Empty.create());
+        })
     );
 
-    // When the search field changes, clear results and start a new search
-    addSubscription(RxUtils.takeWhen(search, isSearchEmpty.filter(v -> !v))
-      .subscribe(text -> {
-        clear.onNext(Empty.create());
-        paramsSubject.onNext(DiscoveryParams.builder().term(text).build());
-      }));
+    // When the search field is empty (i.e. on load or when the search field is cleared), ping with the
+    // popular projects.
+    addSubscription(
+      popularParamsAndProjects
+        .compose(Transformers.combineLatestPair(isSearchEmpty))
+        .filter(pe -> pe.second)
+        .map(pe -> pe.first)
+        .subscribe(pp -> newData.onNext(pp))
+    );
 
     // When we receive new search results and the search field is still not empty, ping with the search results
-    addSubscription(RxUtils.takePairWhen(isSearchEmpty, searchParamsAndProjects)
-      .filter(pe -> !pe.first)
-      .map(pe -> pe.second)
-      .debounce(500, TimeUnit.MILLISECONDS)
-      .subscribe(pp -> newData.onNext(pp))
+    addSubscription(
+      isSearchEmpty
+        .compose(Transformers.takePairWhen(searchParamsAndProjects))
+        .filter(pe -> !pe.first)
+        .map(pe -> pe.second)
+        .debounce(500, TimeUnit.MILLISECONDS)
+        .subscribe(pp -> newData.onNext(pp))
     );
 
     // Start with popular projects

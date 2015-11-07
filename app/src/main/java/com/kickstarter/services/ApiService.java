@@ -5,6 +5,7 @@ import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apirequests.CommentBody;
+import com.kickstarter.services.apirequests.SignupBody;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.CategoriesEnvelope;
@@ -60,6 +61,9 @@ import rx.Observable;
 
   @POST("/v1/projects/{param}/comments/")
   Observable<Comment> postProjectComment(@Path("param") String param, @Body CommentBody body);
+
+  @POST("/v1/users")
+  Observable<AccessTokenEnvelope> signup(@Body SignupBody body);
 
   @PUT("/v1/projects/{param}/star")
   Observable<StarEnvelope> starProject(@Path("param") String param);

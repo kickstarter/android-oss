@@ -34,6 +34,8 @@
     By signing up you agree to our terms of use, privacy policy, and cookie policy. We’ll never post
     anything without your permission.
   </string>
+  <string name="By_signing_up_you_agree_to_our_sign_up">
+    By signing up you agree to our <u>terms of use</u>, <u>privacy policy</u>, and <u>cookie policy</u>.</string>
   <string name="Campaign">Campaign</string>
   <string name="Cancel">Cancel</string>
   <string name="Categories">Categories</string>
@@ -43,12 +45,14 @@
   <string name="Comment_posted">Comment posted!</string>
   <string name="Post_comment_error">Couldn’t post comment.</string>
   <string name="Comments">Comments</string>
+  <string name="Cookie_Policy">Cookie Policy</string>
   <string name="creator_launched_a_project">%1$s launched a project: %2$s</string>
   <string name="Created_by">Created by</string>
   <string name="Created_by_">Created by&lt;br>&lt;b>%1$s&lt;/b></string>
   <string name="Creator">Creator</string>
   <string name="days">days</string>
   <string name="Development_settings">Development Settings</string>
+  <string name="Discover_new_projects_with_our_weekly_newsletter">Discover new projects with our weekly newsletter.</string>
   <string name="Discover_projects">Discover projects</string>
   <string name="Done">Done</string>
   <string name="Download_build">Download Build</string>
@@ -78,6 +82,7 @@
   <string name="friend_name_backed_technology_project">%1$s backed a Technology project</string>
   <string name="friend_name_backed_theater_project">%1$s backed a Theater project</string>
   <string name="Friends_Backed">Friends Backed</string>
+  <string name="Full_name">Full name</string>
   <string name="funded">funded</string>
   <string name="goal">goal</string>
   <string name="Help">Help</string>
@@ -108,6 +113,7 @@
     unknown sources in the security settings of your device.
   </string>
   <string name="Password">Password</string>
+  <string name="Password_minimum_6_characters">Password (minimum 6 characters)</string>
   <string name="Please_enter_your_verification_code_to_continue">
     Please enter your verification code to continue.
   </string>
@@ -117,6 +123,7 @@
   <string name="pledged_of_goal">pledged of %1$s</string>
   <string name="pledged_amount_on_date">%1$s on %2$s</string>
   <string name="Post">Post</string>
+  <string name="Privacy_Policy">Privacy Policy</string>
   <string name="project_of_the_day">Project of the day!</string>
   <string name="project_was_cancelled_by_its_creator">%1$s was cancelled by its creator.</string>
   <string name="project_was_not_successfully_funded">%1$s was not successfully funded.</string>
@@ -138,6 +145,7 @@
   <string name="Shipping">Shipping</string>
   <string name="Shipping_destinations">Shipping destinations</string>
   <string name="Sign_up">Sign up</string>
+  <string name="Sign_Up_with_Email">Sign Up with Email</string>
   <string name="Sign_up_or_log_in_with_your_Facebook_account">
     Sign up or log in with your Facebook account or email address below:
   </string>
@@ -146,6 +154,7 @@
   <string name="Starred">Starred</string>
   <string name="Submit">Submit</string>
   <string name="Submit_bug_report">Submit bug report</string>
+  <string name="Terms_of_Use">Terms of Use</string>
   <string name="The_code_provided_does_not_match">The code provided does not match.</string>
   <string name="Resend_code_failed">Unable to resend your code.</string>
   <string name="This_project_will_only_be_funded_if">

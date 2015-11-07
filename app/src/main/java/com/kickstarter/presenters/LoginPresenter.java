@@ -110,7 +110,7 @@ public class LoginPresenter extends Presenter<LoginActivity> implements LoginPre
 
   private Observable<AccessTokenEnvelope> submit(@NonNull final String email, @NonNull final String password) {
     return client.login(email, password)
-      .compose(Transformers.pipeErrorsTo(loginError));
+      .compose(Transformers.pipeApiErrorsTo(loginError));
   }
 
   private void success(@NonNull final AccessTokenEnvelope envelope) {

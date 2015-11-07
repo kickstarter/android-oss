@@ -27,13 +27,13 @@ import rx.subjects.PublishSubject;
 public final class SignupPresenter extends Presenter<SignupActivity> implements SignupPresenterInputs, SignupPresenterOutputs,
 SignupPresenterErrors {
 
-  private final class SignupData {
+  protected final static class SignupData {
     @NonNull final String fullName;
     @NonNull final String email;
     @NonNull final String password;
     final boolean sendNewsletters;
 
-    public SignupData(@NonNull final String fullName, @NonNull final String email, @NonNull final String password,
+    protected SignupData(@NonNull final String fullName, @NonNull final String email, @NonNull final String password,
       final boolean sendNewsletters) {
       this.fullName = fullName;
       this.email = email;
@@ -41,7 +41,7 @@ SignupPresenterErrors {
       this.sendNewsletters = sendNewsletters;
     }
 
-    public boolean isValid() {
+    protected boolean isValid() {
       return fullName.length() > 0 && StringUtils.isEmail(email) && password.length() >= 6;
     }
   }
@@ -107,18 +107,12 @@ SignupPresenterErrors {
     signupClick.onNext(null);
   }
 
-  @Override
-  protected void onCreate(@NonNull final Context context, @Nullable Bundle savedInstanceState) {
-    super.onCreate(context, savedInstanceState);
-    ((KSApplication) context.getApplicationContext()).component().inject(this);
-
+  public SignupPresenter() {
     final Observable<SignupData> signupData = Observable.combineLatest(fullName, email, password, sendNewsletters, SignupData::new);
 
     addSubscription(signupData
         .map(SignupData::isValid)
-        .subscribe(b -> {
-          formIsValid.onNext(b);
-        })
+        .subscribe(this.formIsValid::onNext)
     );
 
     addSubscription(
@@ -128,9 +122,15 @@ SignupPresenterErrors {
     );
   }
 
+  @Override
+  public void onCreate(@NonNull final Context context, @Nullable Bundle savedInstanceState) {
+    super.onCreate(context, savedInstanceState);
+    ((KSApplication) context.getApplicationContext()).component().inject(this);
+  }
+
   private Observable<AccessTokenEnvelope> submit(@NonNull final SignupData data) {
     return client.signup(data.fullName, data.email, data.password, data.password, data.sendNewsletters)
-      .compose(Transformers.pipeErrorsTo(signupError))
+      .compose(Transformers.pipeApiErrorsTo(signupError))
       .doOnSubscribe(() -> formSubmitting.onNext(true))
       .finallyDo(() -> formSubmitting.onNext(false));
   }

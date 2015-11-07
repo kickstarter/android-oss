@@ -123,7 +123,7 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> implements 
   private Observable<AccessTokenEnvelope> submit(@NonNull final String email, @NonNull final String password,
     @NonNull final String code) {
     return client.login(email, password, code)
-      .compose(Transformers.pipeErrorsTo(tfaError));
+      .compose(Transformers.pipeApiErrorsTo(tfaError));
   }
 
   private Observable<AccessTokenEnvelope> resendCode(@NonNull final String email, @NonNull final String password) {

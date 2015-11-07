@@ -11,7 +11,6 @@ import android.util.Pair;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.Presenter;
-import com.kickstarter.libs.rx.transformers.TakeWhenTransformer;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.RxUtils;

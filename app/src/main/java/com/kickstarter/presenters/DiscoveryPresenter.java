@@ -135,10 +135,11 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
    * whenever `nextPage` emits.
    */
   private Observable<List<Project>> projectsWithPagination(@NonNull final DiscoveryParams firstPageParams) {
+
     return paramsWithPagination(firstPageParams)
       .concatMap(this::projectsFromParams)
       .takeUntil(List::isEmpty)
-      .scan(ListUtils::concatDistinct)
+      .scan(new ArrayList<>(), ListUtils::concatDistinct)
       ;
   }
 

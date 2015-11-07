@@ -42,7 +42,6 @@
     style="@style/BorderButton"
     android:id="@+id/discover_projects_button"
     android:text="@string/Explore_new_projects"
-    android:textColor="@color/black"
     android:layout_marginTop="@dimen/grid_1" />
 
   <Button
@@ -52,7 +51,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:text="@string/Log_in"
-    android:textColor="@color/black"
     android:layout_marginTop="@dimen/grid_1" />
 
 </LinearLayout>

@@ -53,7 +53,7 @@ public class SignupActivity extends BaseActivity<SignupPresenter> {
     addSubscription(
       presenter.outputs().formSubmitting()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this::setFormEnabled)
+        .subscribe(this::setFormDisabled)
     );
 
     addSubscription(
@@ -121,5 +121,9 @@ public class SignupActivity extends BaseActivity<SignupPresenter> {
 
   public void setFormEnabled(final boolean enabled) {
     signupButton.setEnabled(enabled);
+  }
+
+  public void setFormDisabled(final boolean disabled) {
+    setFormEnabled(!disabled);
   }
 }

@@ -62,9 +62,9 @@ SignupPresenterErrors {
   public final Observable<Boolean> formSubmitting() {
     return formSubmitting.asObservable();
   }
-  private final PublishSubject<Boolean> formValid = PublishSubject.create();
-  public final Observable<Boolean> formValid() {
-    return formValid.asObservable();
+  private final PublishSubject<Boolean> formIsValid = PublishSubject.create();
+  public final Observable<Boolean> formIsValid() {
+    return formIsValid.asObservable();
   }
 
   // ERRORS
@@ -121,8 +121,9 @@ SignupPresenterErrors {
     final Observable<SignupData> signupData = Observable.combineLatest(fullName, email, password, sendNewsletters, SignupData::new);
 
     addSubscription(signupData
-        .subscribe(d -> {
-          formValid.onNext(d.isValid());
+        .map(SignupData::isValid)
+        .subscribe(b -> {
+          formIsValid.onNext(b);
         })
     );
 

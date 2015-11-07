@@ -57,9 +57,9 @@ public class SignupActivity extends BaseActivity<SignupPresenter> {
     );
 
     addSubscription(
-      presenter.outputs().formValid()
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::setFormEnabled)
+      presenter.outputs().formIsValid()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(this::setFormEnabled)
     );
 
     addSubscription(

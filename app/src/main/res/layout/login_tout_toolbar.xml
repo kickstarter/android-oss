@@ -7,6 +7,7 @@
   style="@style/Toolbar"
   android:id="@+id/toolbar"
   android:background="@color/light_gray"
+  android:elevation="0dp"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp">
 
@@ -19,8 +20,6 @@
     <com.kickstarter.ui.views.IconTextView
       style="@style/ToolbarIcon"
       android:id="@+id/back_button"
-      android:layout_marginEnd="@dimen/grid_2"
-      android:layout_marginRight="@dimen/grid_2"
       android:text="@string/arrow_back_icon" />
 
     <TextView

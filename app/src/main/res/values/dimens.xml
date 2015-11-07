@@ -17,6 +17,10 @@
   <dimen name="grid_11_half">44dp</dimen>
   <dimen name="grid_11">88dp</dimen>
   <dimen name="grid_12">96dp</dimen>
+  <dimen name="grid_13">104dp</dimen>
+  <dimen name="grid_14">112dp</dimen>
+  <dimen name="grid_15">120dp</dimen>
+  <dimen name="grid_16">128dp</dimen>
   <dimen name="grid_20">160dp</dimen>
 
   <!-- Typography-->

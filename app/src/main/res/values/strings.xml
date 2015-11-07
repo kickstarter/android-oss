@@ -93,6 +93,7 @@
   <string name="Launched">Launched</string>
   <string name="Limited_left_of">Limited (%1$s left of %2$s)</string>
   <string name="Log_in">Log in</string>
+  <string name="Log_in_or_sign_up">Log in or sign up</string>
   <string name="Log_out">Log out</string>
   <string name="Logged_out">Logged out</string>
   <string name="Login_does_not_match_any_of_our_records">Login does not match any of our records.</string>

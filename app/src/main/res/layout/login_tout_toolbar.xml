@@ -4,39 +4,43 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   tools:showIn="@layout/login_tout_layout"
+  style="@style/Toolbar"
   android:id="@+id/toolbar"
-  android:layout_width="match_parent"
-  android:layout_height="?attr/actionBarSize"
   android:background="@color/light_gray"
   app:contentInsetLeft="0dp"
-  app:contentInsetStart="0dp"
-  android:elevation="2dp">
+  app:contentInsetStart="0dp">
 
   <RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
 
-    <!-- TODO: Investigate replacing with VectorDrawable once vectors make
-    it into a compat library (currently v21). -->
-    <ImageView
-      android:layout_width="130dp"
-      android:layout_height="15.34dp"
-      android:layout_centerInParent="true"
-      android:src="@drawable/logo" />
+    <com.kickstarter.ui.views.IconTextView
+      style="@style/ToolbarIcon"
+      android:id="@+id/back_button"
+      android:layout_marginEnd="@dimen/grid_2"
+      android:layout_marginRight="@dimen/grid_2"
+      android:text="@string/arrow_back_icon" />
 
     <TextView
-      android:id="@+id/help_button"
-      android:background="@drawable/button_selector"
-      android:paddingLeft="@dimen/grid_3"
-      android:paddingRight="@dimen/grid_3"
+      style="@style/Headline"
       android:layout_width="wrap_content"
       android:layout_height="match_parent"
+      android:layout_toEndOf="@id/back_button"
+      android:layout_toRightOf="@id/back_button"
+      android:layout_marginLeft="@dimen/grid_3_half"
+      android:layout_marginStart="@dimen/grid_3_half"
       android:gravity="center_vertical"
-      android:layout_alignParentRight="true"
+      android:textColor="@color/black"
+      android:text="@string/Log_in_or_sign_up" />
+
+    <com.kickstarter.ui.views.IconTextView
+      style="@style/ToolbarIcon"
+      android:id="@+id/help_button"
       android:layout_alignParentEnd="true"
-      android:textAppearance="@style/TextAppearance.AppCompat.Menu"
-      android:textColor="@color/green"
-      android:text="@string/Help" />
+      android:layout_alignParentRight="true"
+      android:text="@string/more_vert_icon" />
 
   </RelativeLayout>
 </com.kickstarter.ui.toolbars.LoginToutToolbar>

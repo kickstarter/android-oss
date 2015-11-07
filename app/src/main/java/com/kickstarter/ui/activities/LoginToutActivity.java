@@ -82,11 +82,6 @@ public class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
-  @OnClick(R.id.help_button)
-  public void startHelpActivity() {
-    // todo: hook this up to a dialog or spinner
-  }
-
   @Override
   protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
     if (requestCode != ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_LOGIN_ACTIVITY_FORWARD) {

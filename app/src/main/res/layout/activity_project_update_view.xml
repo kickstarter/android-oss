@@ -7,10 +7,6 @@
   card_view:cardBackgroundColor="@color/white"
   card_view:cardElevation="0dp"
   card_view:cardCornerRadius="@dimen/card_corner_radius"
-  card_view:contentPaddingTop="@dimen/grid_3"
-  card_view:contentPaddingBottom="@dimen/grid_3"
-  card_view:contentPaddingLeft="@dimen/grid_3"
-  card_view:contentPaddingRight="@dimen/grid_3"
   android:layout_marginTop="@dimen/activity_feed_view_margin_top"
   android:layout_marginBottom="@dimen/activity_feed_view_margin_bottom">
 
@@ -25,6 +21,10 @@
       android:background="@color/transparent"
       android:foreground="@drawable/click_indicator_light"
       android:orientation="horizontal"
+      android:paddingTop="@dimen/grid_3"
+      android:paddingLeft="@dimen/grid_3"
+      android:paddingRight="@dimen/grid_3"
+      android:paddingBottom="@dimen/grid_2"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 
@@ -57,8 +57,8 @@
     <View
       android:layout_width="fill_parent"
       android:layout_height="1dp"
-      android:layout_marginTop="@dimen/grid_2"
-      android:layout_marginBottom="@dimen/grid_2"
+      android:layout_marginLeft="@dimen/grid_3"
+      android:layout_marginRight="@dimen/grid_3"
       android:background="@color/black_alpha_10" />
 
     <LinearLayout
@@ -66,6 +66,10 @@
       android:background="@color/transparent"
       android:foreground="@drawable/click_indicator_light"
       android:clickable="true"
+      android:paddingTop="@dimen/grid_2"
+      android:paddingBottom="@dimen/grid_3"
+      android:paddingLeft="@dimen/grid_3"
+      android:paddingRight="@dimen/grid_3"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical">

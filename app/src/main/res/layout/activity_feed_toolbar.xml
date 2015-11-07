@@ -28,6 +28,8 @@
       android:layout_height="match_parent"
       android:layout_toEndOf="@id/back_button"
       android:layout_toRightOf="@id/back_button"
+      android:layout_marginLeft="@dimen/grid_3_half"
+      android:layout_marginStart="@dimen/grid_3_half"
       android:gravity="center_vertical"
       android:textColor="@color/black"
       android:text="@string/Activity" />

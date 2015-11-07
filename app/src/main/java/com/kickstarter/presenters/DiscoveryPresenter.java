@@ -13,7 +13,6 @@ import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
-import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.inputs.DiscoveryPresenterInputs;
@@ -67,11 +66,11 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
     final Observable<List<Project>> projects = params
       .switchMap(this::projectsWithPagination);
 
-    final Observable<Pair<DiscoveryActivity, List<Project>>> viewAndProjects =
-      RxUtils.combineLatestPair(viewSubject, projects);
+    final Observable<Pair<DiscoveryActivity, List<Project>>> viewAndProjects = viewSubject
+      .compose(Transformers.combineLatestPair(projects));
 
-    final Observable<Pair<DiscoveryActivity, DiscoveryParams>> viewAndParams =
-      RxUtils.combineLatestPair(viewSubject, params);
+    final Observable<Pair<DiscoveryActivity, DiscoveryParams>> viewAndParams = viewSubject
+      .compose(Transformers.combineLatestPair(params));
 
     final Observable<Pair<Integer, Integer>> visibleItemOfTotal = viewChange
       .compose(Transformers.takeWhen(scrollEvent))

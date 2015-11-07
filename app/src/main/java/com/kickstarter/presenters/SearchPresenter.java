@@ -9,7 +9,6 @@ import android.util.Pair;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.inputs.SearchPresenterInputs;
@@ -53,7 +52,8 @@ public class SearchPresenter extends Presenter<SearchActivity> implements Search
       .switchMap(this::projects)
       .share();
 
-    final Observable<Pair<DiscoveryParams, List<Project>>> paramsAndProjects = RxUtils.takePairWhen(paramsSubject, projects);
+    final Observable<Pair<DiscoveryParams, List<Project>>> paramsAndProjects = paramsSubject
+      .compose(Transformers.takePairWhen(projects));
 
     final Observable<Boolean> isSearchEmpty = search.map(t -> t.length() == 0).share();
 
@@ -77,7 +77,7 @@ public class SearchPresenter extends Presenter<SearchActivity> implements Search
         .compose(Transformers.combineLatestPair(isSearchEmpty))
         .filter(pe -> pe.second)
         .map(pe -> pe.first)
-        .subscribe(pp -> newData.onNext(pp))
+        .subscribe(newData::onNext)
     );
 
     // When we receive new search results and the search field is still not empty, ping with the search results
@@ -87,7 +87,7 @@ public class SearchPresenter extends Presenter<SearchActivity> implements Search
         .filter(pe -> !pe.first)
         .map(pe -> pe.second)
         .debounce(500, TimeUnit.MILLISECONDS)
-        .subscribe(pp -> newData.onNext(pp))
+        .subscribe(newData::onNext)
     );
 
     // Start with popular projects

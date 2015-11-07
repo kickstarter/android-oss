@@ -9,7 +9,6 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.presenters.errors.SignupPresenterErrors;
 import com.kickstarter.presenters.inputs.SignupPresenterInputs;
@@ -116,7 +115,8 @@ SignupPresenterErrors {
     );
 
     addSubscription(
-      RxUtils.takeWhen(signupData, signupClick)
+      signupData
+        .compose(Transformers.takeWhen(signupClick))
         .flatMap(this::submit)
         .subscribe(this::success)
     );

@@ -9,7 +9,6 @@ import android.util.Pair;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.DiscoveryParams;
@@ -38,14 +37,15 @@ public class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity>
       .retry(3)
       .compose(Transformers.neverError());
 
-    final Observable<Pair<DiscoveryFilterActivity, List<Category>>> viewAndCategories =
-      RxUtils.combineLatestPair(viewSubject, categories);
+    final Observable<Pair<DiscoveryFilterActivity, List<Category>>> viewAndCategories = viewSubject
+      .compose(Transformers.combineLatestPair(categories));
 
     addSubscription(viewAndCategories
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vc -> vc.first.loadCategories(vc.second)));
 
-    addSubscription(RxUtils.takePairWhen(viewSubject, discoveryFilterClick)
+    addSubscription(viewSubject
+        .compose(Transformers.takePairWhen(discoveryFilterClick))
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(vp -> vp.first.startDiscoveryActivity(vp.second))
     );

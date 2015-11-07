@@ -210,7 +210,7 @@
     android:id="@+id/submit_bug_report_button"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/button_green"
+    android:background="@drawable/button_green_rounded"
     android:text="@string/Submit_bug_report"
     style="@style/Button" />
 </LinearLayout>

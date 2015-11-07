@@ -13,6 +13,7 @@ import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apirequests.CommentBody;
+import com.kickstarter.services.apirequests.SignupBody;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.CategoriesEnvelope;
@@ -100,6 +101,18 @@ public class ApiClient {
 
   public Observable<Comment> postProjectComment(@NonNull final Project project, @NonNull final String body) {
     return service.postProjectComment(project.param(), CommentBody.builder().body(body).build());
+  }
+
+  public Observable<AccessTokenEnvelope> signup(@NonNull final String name, @NonNull final String email,
+    @NonNull final String password, @NonNull final String passwordConfirmation,
+    final boolean sendNewsletters) {
+    return service.signup(SignupBody.builder()
+      .name(name)
+      .email(email)
+      .password(password)
+      .passwordConfirmation(passwordConfirmation)
+      .sendNewsletters(sendNewsletters)
+      .build());
   }
 
   public Observable<Project> starProject(@NonNull final Project project) {

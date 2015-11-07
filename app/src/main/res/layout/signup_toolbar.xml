@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  style="@style/Toolbar"
+  tools:showIn="@layout/signup_layout"
+  android:id="@+id/toolbar"
+  android:background="@color/white"
+  android:elevation="0dp"
+  app:contentInsetLeft="0dp"
+  app:contentInsetStart="0dp">
+
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical">
+
+    <LinearLayout
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:orientation="horizontal">
+
+      <com.kickstarter.ui.views.IconTextView
+        style="@style/ToolbarIcon"
+        android:id="@+id/nav_back_button"
+        android:text="@string/arrow_back_icon"/>
+
+      <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textAppearance="@style/Headline"
+        android:textColor="@color/black"
+        android:text="@string/Sign_Up_with_Email" />
+
+    </LinearLayout>
+
+    <com.kickstarter.ui.views.IconTextView
+      style="@style/ToolbarIcon"
+      android:id="@+id/more_button"
+      android:text="@string/more_vert_icon"
+      android:layout_alignParentRight="true"
+      android:layout_alignParentEnd="true" />
+
+  </RelativeLayout>
+</android.support.v7.widget.Toolbar>

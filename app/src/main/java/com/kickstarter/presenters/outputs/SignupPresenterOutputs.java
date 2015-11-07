@@ -5,4 +5,5 @@ import rx.Observable;
 public interface SignupPresenterOutputs {
   Observable<Void> signupSuccess();
   Observable<Boolean> formSubmitting();
+  Observable<Boolean> formValid();
 }

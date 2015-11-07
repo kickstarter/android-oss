@@ -22,7 +22,6 @@ import com.kickstarter.ui.activities.SignupActivity;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
 public final class SignupPresenter extends Presenter<SignupActivity> implements SignupPresenterInputs, SignupPresenterOutputs,
@@ -62,6 +61,10 @@ SignupPresenterErrors {
   private final PublishSubject<Boolean> formSubmitting = PublishSubject.create();
   public final Observable<Boolean> formSubmitting() {
     return formSubmitting.asObservable();
+  }
+  private final PublishSubject<Boolean> formValid = PublishSubject.create();
+  public final Observable<Boolean> formValid() {
+    return formValid.asObservable();
   }
 
   // ERRORS
@@ -119,9 +122,8 @@ SignupPresenterErrors {
 
     addSubscription(
       RxUtils.takePairWhen(viewSubject, signupData)
-        .observeOn(AndroidSchedulers.mainThread())
         .subscribe(vd -> {
-          vd.first.setFormEnabled(vd.second.isValid());
+          formValid.onNext(vd.second.isValid());
         })
     );
 

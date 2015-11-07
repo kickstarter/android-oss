@@ -6,7 +6,6 @@
   style="@style/Toolbar"
   tools:showIn="@layout/signup_layout"
   android:id="@+id/toolbar"
-  android:background="@color/white"
   android:elevation="0dp"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp">

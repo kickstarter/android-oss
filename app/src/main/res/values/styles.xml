@@ -75,6 +75,7 @@
 
   <style name="Login" parent="KSTheme">
     <item name="android:statusBarColor">@color/black</item>
+    <item name="android:windowBackground">@color/light_gray</item>
   </style>
 
   <style name="ProjectActivity" parent="KSTheme">

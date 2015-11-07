@@ -11,7 +11,6 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.presenters.errors.TwoFactorPresenterErrors;
 import com.kickstarter.presenters.inputs.TwoFactorPresenterInputs;
 import com.kickstarter.services.ApiClient;
@@ -73,28 +72,29 @@ public class TwoFactorPresenter extends Presenter<TwoFactorActivity> implements 
     final Observable<Boolean> isValid = code
       .map(TwoFactorPresenter::isValid);
 
-    final Observable<Pair<TwoFactorActivity, String>> viewAndCode =
-      RxUtils.combineLatestPair(viewSubject, code);
+    final Observable<Pair<TwoFactorActivity, String>> viewAndCode = viewSubject
+      .compose(Transformers.combineLatestPair(code));
 
-    final Observable<AccessTokenEnvelope> tokenEnvelope = RxUtils.takeWhen(viewAndCode, loginClick)
+    final Observable<AccessTokenEnvelope> tokenEnvelope = viewAndCode
+      .compose(Transformers.takeWhen(loginClick))
       .switchMap(vc -> submit(vc.first.email(), vc.first.password(), vc.second));
 
-    addSubscription(
-      RxUtils.combineLatestPair(viewSubject, isValid)
+    addSubscription(viewSubject
+        .compose(Transformers.combineLatestPair(isValid))
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(viewAndValid -> viewAndValid.first.setLoginEnabled(viewAndValid.second))
     );
 
-    addSubscription(
-      RxUtils.combineLatestPair(viewSubject, tokenEnvelope)
+    addSubscription(viewSubject
+        .compose(Transformers.combineLatestPair(tokenEnvelope))
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(
           viewAndEnvelope -> success(viewAndEnvelope.second, viewAndEnvelope.first)
         )
     );
 
-    addSubscription(
-      RxUtils.takeWhen(viewSubject, resendClick)
+    addSubscription(viewSubject
+        .compose(Transformers.takeWhen(resendClick))
         .switchMap(view -> resendCode(view.email(), view.password()))
         .observeOn(AndroidSchedulers.mainThread())
           // TODO: It might be a gotcha to have an empty subscription block, but I don't remember

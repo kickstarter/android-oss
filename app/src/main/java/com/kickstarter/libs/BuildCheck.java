@@ -3,7 +3,6 @@ package com.kickstarter.libs;
 import android.support.annotation.NonNull;
 
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.presenters.DiscoveryPresenter;
 import com.kickstarter.services.WebClient;
 

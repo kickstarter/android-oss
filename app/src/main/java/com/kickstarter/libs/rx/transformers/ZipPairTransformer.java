@@ -6,7 +6,7 @@ import android.util.Pair;
 import rx.Observable;
 
 public class ZipPairTransformer<T, R> implements Observable.Transformer<T, Pair<T, R>> {
-  @NonNull final private Observable<R> second;
+  @NonNull private final Observable<R> second;
 
   public ZipPairTransformer(@NonNull final Observable<R> second) {
     this.second = second;

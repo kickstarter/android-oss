@@ -6,7 +6,7 @@ import android.util.Pair;
 import rx.Observable;
 
 public class TakePairWhenTransformer <S, T> implements Observable.Transformer <S, Pair<S, T>> {
-  @NonNull final Observable<T> when;
+  @NonNull private final Observable<T> when;
 
   public TakePairWhenTransformer(@NonNull final Observable<T> when) {
     this.when = when;

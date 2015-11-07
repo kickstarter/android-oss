@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.kickstarter.ui.toolbars.ActivityFeedToolbar
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  style="@style/Toolbar"
+  android:id="@+id/activity_feed_toolbar"
+  app:contentInsetLeft="0dp"
+  app:contentInsetStart="0dp"
+  tools:showIn="@layout/activity_feed_layout">
+
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <com.kickstarter.ui.views.IconTextView
+      style="@style/ToolbarIcon"
+      android:id="@+id/back_button"
+      android:layout_marginEnd="@dimen/grid_2"
+      android:layout_marginRight="@dimen/grid_2"
+      android:text="@string/arrow_back_icon" />
+    
+    <TextView
+      style="@style/Headline"
+      android:layout_width="wrap_content"
+      android:layout_height="match_parent"
+      android:layout_toEndOf="@id/back_button"
+      android:layout_toRightOf="@id/back_button"
+      android:layout_marginLeft="@dimen/grid_3_half"
+      android:layout_marginStart="@dimen/grid_3_half"
+      android:gravity="center_vertical"
+      android:textColor="@color/black"
+      android:text="@string/Activity" />
+
+    <com.kickstarter.ui.views.IconTextView
+      style="@style/ToolbarIcon"
+      android:id="@+id/more_button"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentRight="true"
+      android:text="@string/more_vert_icon" />
+
+  </RelativeLayout>
+
+</com.kickstarter.ui.toolbars.ActivityFeedToolbar>

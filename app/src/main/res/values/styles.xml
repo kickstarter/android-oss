@@ -40,10 +40,9 @@
     <item name="android:textAllCaps">false</item>
   </style>
 
-  <!-- todo: customize these themes, or delete if unused -->
+  <!-- Activities -->
   <style name="ActivityFeedActivity" parent="KSTheme">
-    <item name="android:statusBarColor">@color/gray</item>
-    <item name="android:windowBackground">@drawable/gray_gradient</item>
+    <item name="android:windowBackground">@color/gray</item>
   </style>
 
   <style name="CheckoutActivity" parent="KSTheme">
@@ -112,6 +111,17 @@
     <item name="android:layout_centerInParent">true</item>
     <item name="android:singleLine">true</item>
     <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:paddingLeft">@dimen/grid_3</item>
+    <item name="android:paddingRight">@dimen/grid_3</item>
+  </style>
+
+  <style name="BorderButton" parent="Base.Widget.AppCompat.Button.Borderless">
+    <item name="android:background">@drawable/button_white_border_dark_gray</item>
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:textColor">@color/black</item>
+    <item name="android:layout_centerInParent">true</item>
+    <item name="android:singleLine">true</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:paddingLeft">@dimen/grid_3</item>
     <item name="android:paddingRight">@dimen/grid_3</item>

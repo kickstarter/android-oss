@@ -74,11 +74,11 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> implemen
     }
 
     addSubscription(RxRecyclerView.scrollEvents(recyclerView)
-      .subscribe(__ -> presenter.inputs().scrollEvent()));
+      .subscribe(__ -> presenter.inputs.scrollEvent()));
   }
 
   public void projectCardClick(@NonNull final ProjectCardViewHolder viewHolder, @NonNull final Project project) {
-    presenter.inputs().projectClick(project);
+    presenter.inputs.projectClick(project);
   }
 
   public void loadProjects(@NonNull final List<Project> newProjects) {

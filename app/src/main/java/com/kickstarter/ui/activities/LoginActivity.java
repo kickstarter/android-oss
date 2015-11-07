@@ -48,7 +48,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
     );
 
     addSubscription(
-      presenter.errors().tfaChallenge()
+      presenter.errors.tfaChallenge()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(__ -> {
           startTwoFactorActivity(forward);
@@ -56,7 +56,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
     );
 
     addSubscription(
-      presenter.outputs().loginSuccess()
+      presenter.outputs.loginSuccess()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(__ -> {
           onSuccess(forward);
@@ -65,8 +65,8 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
   }
 
   private Observable<String> errorMessages() {
-    return presenter.errors().invalidLoginError().map(ObjectUtils.coalesceWith(loginDoesNotMatchString))
-      .mergeWith(presenter.errors().genericLoginError().map(ObjectUtils.coalesceWith(unableToLoginString)));
+    return presenter.errors.invalidLoginError().map(ObjectUtils.coalesceWith(loginDoesNotMatchString))
+      .mergeWith(presenter.errors.genericLoginError().map(ObjectUtils.coalesceWith(unableToLoginString)));
   }
 
   @Override
@@ -88,17 +88,17 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
 
   @OnTextChanged(R.id.email)
   void onEmailTextChanged(@NonNull final CharSequence email) {
-    presenter.inputs().email(email.toString());
+    presenter.inputs.email(email.toString());
   }
 
   @OnTextChanged(R.id.password)
   void onPasswordTextChanged(@NonNull final CharSequence password) {
-    presenter.inputs().password(password.toString());
+    presenter.inputs.password(password.toString());
   }
 
   @OnClick(R.id.login_button)
   public void loginButtonOnClick() {
-    presenter.inputs().loginClick();
+    presenter.inputs.loginClick();
   }
 
   public void onSuccess(final boolean forward) {

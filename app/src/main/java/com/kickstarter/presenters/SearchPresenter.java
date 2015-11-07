@@ -30,13 +30,13 @@ import rx.subjects.PublishSubject;
 public class SearchPresenter extends Presenter<SearchActivity> implements SearchPresenterInputs, SearchPresenterOutputs {
   // INPUTS
   private final PublishSubject<String> search = PublishSubject.create();
-  public SearchPresenterInputs inputs() { return this; }
+  public SearchPresenterInputs inputs = this;
   @Override public void search(@NonNull final String s) { search.onNext(s); }
 
   // OUTPUTS
   private final PublishSubject<Empty> clear = PublishSubject.create();
   private final PublishSubject<Pair<DiscoveryParams, List<Project>>> newData = PublishSubject.create();
-  public SearchPresenterOutputs outputs() { return this; }
+  public final SearchPresenterOutputs outputs = this;
   @Override public Observable<Empty> clear() { return clear.asObservable(); }
   @Override public Observable<Pair<DiscoveryParams, List<Project>>> newData() { return newData.asObservable(); }
 
@@ -64,7 +64,7 @@ public class SearchPresenter extends Presenter<SearchActivity> implements Search
     // popular projects.
     addSubscription(RxUtils.combineLatestPair(popularParamsAndProjects, isSearchEmpty)
       .filter(pe -> pe.second)
-      .map(pe -> pe.first)
+        .map(pe -> pe.first)
       .subscribe(pp -> newData.onNext(pp))
     );
 

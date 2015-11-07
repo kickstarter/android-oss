@@ -44,9 +44,7 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
   private final PublishSubject<Empty> nextPage = PublishSubject.create();
   private final PublishSubject<DiscoveryParams> params = PublishSubject.create();
 
-  public DiscoveryPresenterInputs inputs() {
-    return this;
-  }
+  public final DiscoveryPresenterInputs inputs = this;
 
   @Override
   public void projectClick(@NonNull final Project project) {

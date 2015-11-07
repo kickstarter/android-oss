@@ -61,15 +61,9 @@ public class LoginPresenter extends Presenter<LoginActivity> implements LoginPre
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
 
-  public LoginPresenterInputs inputs() {
-    return this;
-  }
-  public LoginPresenterOutputs outputs() {
-    return this;
-  }
-  public LoginPresenterErrors errors() {
-    return this;
-  }
+  public final LoginPresenterInputs inputs = this;
+  public final LoginPresenterOutputs outputs = this;
+  public final LoginPresenterErrors errors = this;
 
   @Override
   public void email(@NonNull final String s) {

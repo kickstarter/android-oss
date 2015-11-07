@@ -82,7 +82,7 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> impl
   }
 
   @Nullable
-  @OnClick({R.id.nav_back_button, R.id.project_context_view})
+  @OnClick({R.id.project_context_view})
   public void onBackPressed() {
     super.onBackPressed();
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);

@@ -120,10 +120,9 @@ SignupPresenterErrors {
 
     final Observable<SignupData> signupData = Observable.combineLatest(fullName, email, password, sendNewsletters, SignupData::new);
 
-    addSubscription(
-      RxUtils.takePairWhen(viewSubject, signupData)
-        .subscribe(vd -> {
-          formValid.onNext(vd.second.isValid());
+    addSubscription(signupData
+        .subscribe(d -> {
+          formValid.onNext(d.isValid());
         })
     );
 

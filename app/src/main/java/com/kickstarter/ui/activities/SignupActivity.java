@@ -43,36 +43,32 @@ public class SignupActivity extends BaseActivity<SignupPresenter> {
     final boolean forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
 
     addSubscription(
-      presenter.outputs().signupSuccess()
+      presenter.outputs.signupSuccess()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(__ -> {
-          onSuccess(forward);
-        })
+        .subscribe(__ -> onSuccess(forward))
     );
 
     addSubscription(
-      presenter.outputs().formSubmitting()
+      presenter.outputs.formSubmitting()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(this::setFormDisabled)
     );
 
     addSubscription(
-      presenter.outputs().formIsValid()
+      presenter.outputs.formIsValid()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(this::setFormEnabled)
     );
 
     addSubscription(
-      presenter.errors().signupError()
+      presenter.errors.signupError()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(this::displayToast)
     );
 
     addSubscription(RxCompoundButton.checkedChanges(newsletterSwitch)
-      .subscribe(b -> {
-          presenter.inputs().sendNewsletters(b);
-        }
-      ));
+      .subscribe(presenter.inputs::sendNewsletters)
+    );
   }
 
   @Override
@@ -90,22 +86,22 @@ public class SignupActivity extends BaseActivity<SignupPresenter> {
 
   @OnTextChanged(R.id.full_name)
   void onNameTextChanged(@NonNull final CharSequence fullName) {
-    presenter.inputs().fullName(fullName.toString());
+    presenter.inputs.fullName(fullName.toString());
   }
 
   @OnTextChanged(R.id.email)
   void onEmailTextChanged(@NonNull final CharSequence email) {
-    presenter.inputs().email(email.toString());
+    presenter.inputs.email(email.toString());
   }
 
   @OnTextChanged(R.id.password)
   void onPasswordTextChange(@NonNull final CharSequence password) {
-    presenter.inputs().password(password.toString());
+    presenter.inputs.password(password.toString());
   }
 
   @OnClick(R.id.signup_button)
   public void signupButtonOnClick() {
-    presenter.inputs().signupClick();
+    presenter.inputs.signupClick();
   }
 
   public void onSuccess(final boolean forward) {

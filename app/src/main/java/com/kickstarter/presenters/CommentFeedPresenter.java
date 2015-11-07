@@ -60,11 +60,9 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
 
-  public CommentFeedPresenterInputs inputs() {
-    return this;
-  }
-  public CommentFeedPresenterOutputs outputs() { return this; }
-  public CommentFeedPresenterErrors errors() { return this; }
+  public final CommentFeedPresenterInputs inputs = this;
+  public final CommentFeedPresenterOutputs outputs = this;
+  public final CommentFeedPresenterErrors errors = this;
 
   @Override
   public void commentBody(@NonNull final String string) {

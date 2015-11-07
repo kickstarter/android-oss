@@ -62,7 +62,6 @@
   </style>
 
   <style name="DisplayWebViewActivity" parent="KSTheme">
-    <item name="android:statusBarColor">@color/gray</item>
     <item name="android:windowBackground">@color/white</item>
   </style>
 

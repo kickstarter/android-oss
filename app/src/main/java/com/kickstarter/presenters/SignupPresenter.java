@@ -78,15 +78,9 @@ SignupPresenterErrors {
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
 
-  public SignupPresenterInputs inputs() {
-    return this;
-  }
-  public SignupPresenterOutputs outputs() {
-    return this;
-  }
-  public SignupPresenterErrors errors() {
-    return this;
-  }
+  public final SignupPresenterInputs inputs = this;
+  public final SignupPresenterOutputs outputs = this;
+  public final SignupPresenterErrors errors = this;
 
   @Override
   public void fullName(@NonNull final String s) {

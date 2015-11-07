@@ -1,48 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.kickstarter.ui.toolbars.CommentFeedToolbar
-  android:id="@+id/toolbar"
+  android:id="@+id/comment_feed_toolbar"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
+  style="@style/Toolbar"
   tools:showIn="@layout/comment_feed_layout"
-  android:layout_width="match_parent"
-  android:layout_height="?attr/actionBarSize"
-  android:background="@color/light_gray"
   app:contentInsetLeft="0dp"
-  app:contentInsetStart="0dp"
-  android:elevation="@dimen/toolbar_elevation">
+  app:contentInsetStart="0dp">
 
   <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_vertical">
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
 
     <com.kickstarter.ui.views.IconTextView
-      android:id="@+id/nav_back_button"
-      android:paddingLeft="@dimen/grid_3"
-      android:paddingRight="@dimen/grid_3"
-      android:background="@drawable/click_indicator_light"
-      android:gravity="center_vertical"
-      android:textAppearance="@style/TextAppearance.AppCompat.Title"
+      style="@style/ToolbarIcon"
+      android:id="@+id/back_button"
       android:layout_alignParentStart="true"
       android:layout_alignParentLeft="true"
-      android:layout_width="wrap_content"
-      android:layout_height="match_parent"
-      android:textColor="@color/dark_gray"
       android:text="@string/arrow_back_icon"/>
 
     <TextView
-      android:id="@+id/comment_button"
-      android:visibility="gone"
-      android:background="@drawable/click_indicator_light"
-      android:paddingRight="@dimen/grid_3"
-      android:paddingLeft="@dimen/grid_3"
-      android:gravity="center_vertical"
-      android:layout_alignParentEnd="true"
-      android:layout_alignParentRight="true"
+      style="@style/Headline"
       android:layout_width="wrap_content"
       android:layout_height="match_parent"
-      android:textColor="@color/green"
-      android:text="@string/Comment" />
+      android:layout_toEndOf="@id/back_button"
+      android:layout_toRightOf="@id/back_button"
+      android:layout_marginLeft="@dimen/grid_3_half"
+      android:layout_marginStart="@dimen/grid_3_half"
+      android:gravity="center_vertical"
+      android:textColor="@color/black"
+      android:text="@string/Comments" />
+
+    <com.kickstarter.ui.views.IconTextView
+      style="@style/ToolbarIcon"
+      android:id="@+id/comment_button"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentRight="true"
+      android:text="@string/forum_icon" />
   </RelativeLayout>
 </com.kickstarter.ui.toolbars.CommentFeedToolbar>

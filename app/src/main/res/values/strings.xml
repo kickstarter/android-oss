@@ -40,7 +40,6 @@
   <string name="Cancel">Cancel</string>
   <string name="Categories">Categories</string>
   <string name="Changelog">Changelog</string>
-  <string name="Comment">Comment</string>
   <string name="Close">Close</string>
   <string name="Comment_posted">Comment posted!</string>
   <string name="Post_comment_error">Couldn’t post comment.</string>
@@ -221,7 +220,6 @@
   <string name="intent_password">com.kickstarter.kickstarter.intent_password</string>
   <string name="intent_project">com.kickstarter.kickstarter.intent_project</string>
   <string name="intent_project_param">com.kickstarter.kickstarter.intent_project_param</string>
-  <string name="intent_right_bar_button">com.kickstarter.kickstarter.intent_right_bar_button</string>
   <string name="intent_share_type">"text/plain"</string>
   <string name="intent_toolbar_title">com.kickstarter.kickstarter.intent_toolbar_title</string>
   <string name="intent_url">com.kickstarter.kickstarter.intent_url</string>

@@ -212,8 +212,7 @@ public class KSWebViewClient extends WebViewClient {
   private boolean startModalWebViewActivity(@NonNull final Request request, @NonNull final WebView webView) {
     final Activity context = (Activity) webView.getContext();
     final Intent intent = new Intent(context, DisplayWebViewActivity.class)
-      .putExtra(context.getString(R.string.intent_url), request.urlString())
-      .putExtra(context.getString(R.string.intent_right_bar_button), DisplayWebViewActivity.RIGHT_BAR_BUTTON_CLOSE);
+      .putExtra(context.getString(R.string.intent_url), request.urlString());
     context.startActivity(intent);
     context.overridePendingTransition(R.anim.slide_in_bottom, R.anim.fade_out);
 

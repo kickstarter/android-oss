@@ -40,7 +40,6 @@ public class ProjectAdapter extends KSAdapter {
     data().clear();
     data().add(Collections.singletonList(project));
 
-    // todo: customize RxUtils from() to handle null values
     if (project.hasRewards()) {
       data().add(Observable.from(project.rewards())
         .filter(Reward::isReward)

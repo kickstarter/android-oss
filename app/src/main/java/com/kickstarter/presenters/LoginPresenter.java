@@ -11,7 +11,6 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.presenters.errors.LoginPresenterErrors;
 import com.kickstarter.presenters.inputs.LoginPresenterInputs;
@@ -85,19 +84,20 @@ public class LoginPresenter extends Presenter<LoginActivity> implements LoginPre
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    final Observable<Pair<String, String>> emailAndPassword =
-      RxUtils.combineLatestPair(email, password);
+    final Observable<Pair<String, String>> emailAndPassword = email
+      .compose(Transformers.combineLatestPair(password));
 
     final Observable<Boolean> isValid = emailAndPassword
       .map(ep -> LoginPresenter.isValid(ep.first, ep.second));
 
-    addSubscription(RxUtils.combineLatestPair(viewSubject, isValid)
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(viewAndValid -> viewAndValid.first.setFormEnabled(viewAndValid.second))
+    addSubscription(viewSubject
+        .compose(Transformers.combineLatestPair(isValid))
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(viewAndValid -> viewAndValid.first.setFormEnabled(viewAndValid.second))
     );
 
-    addSubscription(
-      RxUtils.takeWhen(emailAndPassword, loginClick)
+    addSubscription(emailAndPassword
+        .compose(Transformers.takeWhen(loginClick))
         .switchMap(ep -> submit(ep.first, ep.second))
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(this::success)

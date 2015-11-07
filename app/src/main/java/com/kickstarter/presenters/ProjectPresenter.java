@@ -10,7 +10,6 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 import com.kickstarter.models.User;
@@ -48,17 +47,21 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    final Observable<User> loggedInUserOnStarClick = RxUtils.takeWhen(currentUser.observable(), starClick)
+    final Observable<User> loggedInUserOnStarClick = currentUser.observable()
+      .compose(Transformers.takeWhen(starClick))
       .filter(u -> u != null);
 
-    final Observable<User> loggedOutUserOnStarClick = RxUtils.takeWhen(currentUser.observable(), starClick)
+    final Observable<User> loggedOutUserOnStarClick = currentUser.observable()
+      .compose(Transformers.takeWhen(starClick))
       .filter(u -> u == null);
 
-    final Observable<Project> projectOnUserChangeStar = RxUtils.takeWhen(initialProject, loggedInUserOnStarClick)
+    final Observable<Project> projectOnUserChangeStar = initialProject
+      .compose(Transformers.takeWhen(loggedInUserOnStarClick))
       .switchMap(this::toggleProjectStar)
       .share();
 
-    final Observable<Project> starredProjectOnLoginSuccess = RxUtils.takeWhen(initialProject, loginSuccess)
+    final Observable<Project> starredProjectOnLoginSuccess = initialProject
+      .compose(Transformers.takeWhen(loginSuccess))
       .take(1)
       .switchMap(this::starProject)
       .share();
@@ -71,8 +74,8 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
       .mergeWith(initialProject)
       .share();
 
-    final Observable<Pair<ProjectActivity, Project>> viewAndProject =
-      RxUtils.combineLatestPair(viewSubject, project);
+    final Observable<Pair<ProjectActivity, Project>> viewAndProject = viewSubject
+      .compose(Transformers.combineLatestPair(project));
 
     addSubscription(
       viewAndProject
@@ -81,23 +84,23 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
     );
 
     addSubscription(
-      RxUtils.takePairWhen(
-        viewSubject,
-        projectOnUserChangeStar.mergeWith(starredProjectOnLoginSuccess)
-      )
+      viewSubject
+        .compose(Transformers.takePairWhen(projectOnUserChangeStar.mergeWith(starredProjectOnLoginSuccess)))
         .filter(vp -> vp.second.isStarred())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(vp -> vp.first.showStarPrompt())
     );
 
     addSubscription(
-      RxUtils.takeWhen(viewSubject, loggedOutUserOnStarClick)
+      viewSubject
+        .compose(Transformers.takeWhen(loggedOutUserOnStarClick))
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(ProjectActivity::startLoginToutActivity)
     );
 
     addSubscription(
-      RxUtils.takePairWhen(viewAndProject, rewardClick)
+      viewAndProject
+        .compose(Transformers.takePairWhen(rewardClick))
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(vpr -> {
           final ProjectActivity view = vpr.first.first;
@@ -107,35 +110,43 @@ public class ProjectPresenter extends Presenter<ProjectActivity> implements Proj
         })
     );
 
-    addSubscription(RxUtils.takeWhen(viewAndProject, backProjectClick)
+    addSubscription(viewAndProject
+      .compose(Transformers.takeWhen(backProjectClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startCheckoutActivity(vp.second)));
 
-    addSubscription(RxUtils.takeWhen(viewAndProject, shareClick)
+    addSubscription(viewAndProject
+      .compose(Transformers.takeWhen(shareClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startShareIntent(vp.second)));
 
-    addSubscription(RxUtils.takeWhen(viewAndProject, blurbClick)
+    addSubscription(viewAndProject
+      .compose(Transformers.takeWhen(blurbClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showProjectDescription(vp.second)));
 
-    addSubscription(RxUtils.takeWhen(viewAndProject, commentsClick)
+    addSubscription(viewAndProject
+      .compose(Transformers.takeWhen(commentsClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startCommentsActivity(vp.second)));
 
-    addSubscription(RxUtils.takeWhen(viewAndProject, creatorNameClick)
+    addSubscription(viewAndProject
+      .compose(Transformers.takeWhen(creatorNameClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showCreatorBio(vp.second)));
 
-    addSubscription(RxUtils.takeWhen(viewAndProject, managePledgeClick)
+    addSubscription(viewAndProject
+      .compose(Transformers.takeWhen(managePledgeClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.managePledge(vp.second)));
 
-    addSubscription(RxUtils.takeWhen(viewAndProject, updatesClick)
+    addSubscription(viewAndProject
+      .compose(Transformers.takeWhen(updatesClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showUpdates(vp.second)));
 
-    addSubscription(RxUtils.takeWhen(viewAndProject, viewPledgeClick)
+    addSubscription(viewAndProject
+      .compose(Transformers.takeWhen(viewPledgeClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startViewPledgeActivity(vp.second)));
   }

@@ -9,7 +9,6 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ActivityFeedParams;
@@ -54,40 +53,49 @@ public class ActivityFeedPresenter extends Presenter<ActivityFeedActivity> imple
       .flatMap(__ -> activities())
       .map(ActivityEnvelope::activities);
 
-    addSubscription(RxUtils.combineLatestPair(viewSubject, activities)
+    addSubscription(viewSubject
+      .compose(Transformers.combineLatestPair(activities))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(va -> va.first.showActivities(va.second)));
 
-    addSubscription(RxUtils.combineLatestPair(viewSubject, currentUser.observable())
+    addSubscription(viewSubject
+      .compose(Transformers.combineLatestPair(currentUser.observable()))
       .filter(vu -> vu.second == null)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vu -> vu.first.showEmptyFeed(vu.second)));
 
-    addSubscription(RxUtils.takeWhen(viewSubject, discoverProjectsClick)
+    addSubscription(viewSubject
+      .compose(Transformers.takeWhen(discoverProjectsClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(ActivityFeedActivity::discoverProjectsButtonOnClick));
 
-    addSubscription(RxUtils.takePairWhen(viewSubject, friendBackingClick)
+    addSubscription(viewSubject
+      .compose(Transformers.takePairWhen(friendBackingClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startProjectActivity(vp.second)));
 
-    addSubscription(RxUtils.takeWhen(viewSubject, loginClick)
+    addSubscription(viewSubject
+      .compose(Transformers.takeWhen(loginClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(ActivityFeedActivity::activityFeedLogin));
 
-    addSubscription(RxUtils.takePairWhen(viewSubject, projectStateChangedClick)
+    addSubscription(viewSubject
+      .compose(Transformers.takePairWhen(projectStateChangedClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startProjectActivity(vp.second)));
 
-    addSubscription(RxUtils.takePairWhen(viewSubject, projectStateChangedPositiveClick)
+    addSubscription(viewSubject
+      .compose(Transformers.takePairWhen(projectStateChangedPositiveClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startProjectActivity(vp.second)));
 
-    addSubscription(RxUtils.takePairWhen(viewSubject, projectUpdateProjectClick)
+    addSubscription(viewSubject
+      .compose(Transformers.takePairWhen(projectUpdateProjectClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startProjectActivity(vp.second)));
 
-    addSubscription(RxUtils.takePairWhen(viewSubject, projectUpdateUpdateClick)
+    addSubscription(viewSubject
+      .compose(Transformers.takePairWhen(projectUpdateUpdateClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showProjectUpdate(vp.second)));
   }

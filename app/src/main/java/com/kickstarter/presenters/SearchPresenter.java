@@ -77,7 +77,7 @@ public class SearchPresenter extends Presenter<SearchActivity> implements Search
         .compose(Transformers.combineLatestPair(isSearchEmpty))
         .filter(pe -> pe.second)
         .map(pe -> pe.first)
-      .subscribe(newData::onNext)
+        .subscribe(newData::onNext)
     );
 
     // When we receive new search results and the search field is still not empty, ping with the search results

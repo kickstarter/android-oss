@@ -32,7 +32,7 @@
 
   <!-- Icon sizes -->
   <dimen name="chevron_right_icon">24sp</dimen>
-  <dimen name="empty_feed_icon">112sp</dimen>
+  <dimen name="empty_feed_icon">80sp</dimen>
 
   <!-- Cards -->
   <dimen name="card_corner_radius">0dp</dimen>
@@ -76,4 +76,7 @@
   <!-- Activity feed view -->
   <dimen name="activity_feed_view_margin_top">0dp</dimen>
   <dimen name="activity_feed_view_margin_bottom">@dimen/grid_3_half</dimen>
+  <!-- HACK: Need this view to take up the full screen height because the background is different to the RecyclerView
+    background, but match_parent doesn't match the height to the RecyclerView. So, just give it a big height. Sorry. -->
+  <dimen name="activity_feed_full_screen_height_hack">2000dp</dimen>
 </resources>

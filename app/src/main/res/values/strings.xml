@@ -9,7 +9,6 @@
 
   <!-- User-facing strings -->
   <string name="Activity">Activity</string>
-  <string name="Activity_empty">Activity empty</string>
   <string name="action_settings">Settings</string>
   <string name="All_gone">All gone</string>
   <string name="All_of_Category">All of %1$s</string>
@@ -61,6 +60,7 @@
   <string name="Estimated_delivery">Estimated Delivery</string>
   <string name="Everything">Everything</string>
   <string name="Explore_Category">Explore %1$s</string>
+  <string name="Explore_new_projects">Explore new projects</string>
   <string name="Find_friends">Find friends</string>
   <string name="Follow">Follow</string>
   <string name="Forgot_your_password">Forgot your password?</string>
@@ -100,6 +100,7 @@
   <string name="NA">N/A</string>
   <string name="Nearby">Nearby</string>
   <string name="Network">Network</string>
+  <string name="No_activity_yet">No activity yet</string>
   <string name="No_comments">No comments</string>
   <string name="Not_implemented_yet">Not implemented yet, coming soon!</string>
   <string name="Nice_to_see_you_again">Nice to see you again.</string>
@@ -170,7 +171,7 @@
   <string name="Version_name">Version Name</string>
   <string name="Well_remind_you_48_hours">We\'ll remind you 48 hours before this project ends!</string>
   <string name="When_you_back_a_project_or_follow_a_friend">
-    When you back a project or follow a friend, their activity will show up here.
+    When you back a project or follow a friend, their activity will appear here.
   </string>
   <string name="Woo_hoo">Woo-hoo!</string>
   <string name="You">You</string>

@@ -71,8 +71,8 @@ public class LoginPresenter extends Presenter<LoginActivity> implements LoginPre
   }
 
   @Override
-  public void loginClick(@NonNull final View view) {
-    loginClick.onNext(view);
+  public void loginClick() {
+    loginClick.onNext(null);
   }
 
   @Override

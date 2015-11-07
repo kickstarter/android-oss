@@ -141,10 +141,10 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> {
     presenter.takeStarClick();
   }
 
-//  @OnClick(R.id.share_icon)
-//  public void shareProject() {
-//    presenter.takeShareClick();
-//  }
+  @OnClick(R.id.share_icon)
+  public void shareProject() {
+    presenter.takeShareClick();
+  }
 
   public void showProjectDescription(@NonNull final Project project) {
     startWebViewActivity(project.descriptionUrl());

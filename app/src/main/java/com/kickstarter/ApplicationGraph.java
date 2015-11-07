@@ -9,6 +9,7 @@ import com.kickstarter.presenters.DiscoveryPresenter;
 import com.kickstarter.presenters.LoginPresenter;
 import com.kickstarter.presenters.ProjectPresenter;
 import com.kickstarter.presenters.SearchPresenter;
+import com.kickstarter.presenters.SignupPresenter;
 import com.kickstarter.presenters.ThanksPresenter;
 import com.kickstarter.presenters.TwoFactorPresenter;
 import com.kickstarter.presenters.ViewPledgePresenter;
@@ -62,6 +63,7 @@ public interface ApplicationGraph {
   void inject(ProjectViewHolder __);
   void inject(RewardViewHolder __);
   void inject(SearchPresenter __);
+  void inject(SignupPresenter __);
   void inject(ThanksPresenter __);
   void inject(TiemposTextView __);
   void inject(TwoFactorPresenter __);

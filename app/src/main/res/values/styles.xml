@@ -12,6 +12,9 @@
     <item name="android:windowAllowEnterTransitionOverlap">true</item>
     <item name="android:windowAllowReturnTransitionOverlap">true</item>
 
+    <!-- Pop-up menu -->
+    <item name="android:popupMenuStyle">@style/PopupMenu</item>
+
     <!-- Toolbar -->
     <!-- Using toolbar, so disable the action bar -->
     <item name="android:windowNoTitle">true</item>
@@ -99,6 +102,10 @@
   <style name="SpinnerItem" parent="@android:style/Widget.TextView.SpinnerItem">
     <item name="android:textSize">18sp</item>
     <item name="android:textColor">@color/white</item>
+  </style>
+
+  <style name="PopupMenu" parent="Base.Widget.AppCompat.PopupMenu">
+    <item name="android:popupBackground">#FFFAFAFA</item>
   </style>
 
   <style name="ProgressBar" parent="Base.Widget.AppCompat.ProgressBar">

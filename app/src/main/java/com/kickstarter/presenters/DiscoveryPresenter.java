@@ -11,6 +11,8 @@ import android.util.Pair;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.Presenter;
+import com.kickstarter.libs.rx.transformers.TakeWhenTransformer;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.models.Empty;
@@ -74,13 +76,13 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
     final Observable<Pair<DiscoveryActivity, DiscoveryParams>> viewAndParams =
       RxUtils.combineLatestPair(viewSubject, params);
 
-    final Observable<Pair<Integer, Integer>> visibleItemOfTotal = RxUtils.takeWhen(viewChange, scrollEvent)
+    final Observable<Pair<Integer, Integer>> visibleItemOfTotal = viewChange
+      .compose(Transformers.takeWhen(scrollEvent))
       .filter(v -> v != null)
       .map(v -> v.recyclerView)
       .map(RecyclerView::getLayoutManager)
       .ofType(LinearLayoutManager.class)
-      .map(this::displayedItemFromLayout)
-      ;
+      .map(this::displayedItemFromLayout);
 
     addSubscription(viewAndParams
       .observeOn(AndroidSchedulers.mainThread())
@@ -90,13 +92,18 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.loadProjects(vp.second)));
 
-    addSubscription(RxUtils.takeWhen(viewAndParams, filterButtonClick)
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.startDiscoveryFilterActivity(vp.second)));
+    addSubscription(
+      viewAndParams
+        .compose(Transformers.takeWhen(filterButtonClick))
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(vp -> vp.first.startDiscoveryFilterActivity(vp.second))
+    );
 
-    addSubscription(RxUtils.takePairWhen(viewSubject, projectClick)
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.startProjectActivity(vp.second))
+    addSubscription(
+      viewSubject
+        .compose(Transformers.takePairWhen(projectClick))
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(vp -> vp.first.startProjectActivity(vp.second))
     );
 
     addSubscription(visibleItemOfTotal

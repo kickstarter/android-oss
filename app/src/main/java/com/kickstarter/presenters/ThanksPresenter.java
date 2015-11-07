@@ -88,8 +88,8 @@ public class ThanksPresenter extends Presenter<ThanksActivity> implements Thanks
       .map(DiscoverEnvelope::projects);
     final Observable<Category> rootCategory = apiClient.fetchCategory(project.category().rootId())
       .compose(Transformers.neverError());
-    final Observable<Pair<List<Project>, Category>> projectsAndRootCategory =
-      RxUtils.zipPair(recommendedProjects, rootCategory);
+    final Observable<Pair<List<Project>, Category>> projectsAndRootCategory = recommendedProjects
+      .compose(Transformers.zipPair(rootCategory));
 
     addSubscription(
       RxUtils.combineLatestPair(viewSubject, projectsAndRootCategory)

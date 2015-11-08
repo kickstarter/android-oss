@@ -11,14 +11,14 @@ import android.util.Pair;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.Presenter;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
-import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.inputs.DiscoveryPresenterInputs;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.DiscoveryParams;
-import com.kickstarter.services.KickstarterClient;
+import com.kickstarter.services.WebClient;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 
@@ -31,22 +31,20 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements DiscoveryPresenterInputs {
+public final class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements DiscoveryPresenterInputs {
   // INPUTS
   private final PublishSubject<Project> projectClick = PublishSubject.create();
   private final PublishSubject<Void> scrollEvent = PublishSubject.create();
 
   @Inject ApiClient apiClient;
-  @Inject KickstarterClient kickstarterClient;
+  @Inject WebClient webClient;
   @Inject BuildCheck buildCheck;
 
   private final PublishSubject<Void> filterButtonClick = PublishSubject.create();
   private final PublishSubject<Empty> nextPage = PublishSubject.create();
   private final PublishSubject<DiscoveryParams> params = PublishSubject.create();
 
-  public DiscoveryPresenterInputs inputs() {
-    return this;
-  }
+  public final DiscoveryPresenterInputs inputs = this;
 
   @Override
   public void projectClick(@NonNull final Project project) {
@@ -63,24 +61,24 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    buildCheck.bind(this, kickstarterClient);
+    buildCheck.bind(this, webClient);
 
     final Observable<List<Project>> projects = params
       .switchMap(this::projectsWithPagination);
 
-    final Observable<Pair<DiscoveryActivity, List<Project>>> viewAndProjects =
-      RxUtils.combineLatestPair(viewSubject, projects);
+    final Observable<Pair<DiscoveryActivity, List<Project>>> viewAndProjects = viewSubject
+      .compose(Transformers.combineLatestPair(projects));
 
-    final Observable<Pair<DiscoveryActivity, DiscoveryParams>> viewAndParams =
-      RxUtils.combineLatestPair(viewSubject, params);
+    final Observable<Pair<DiscoveryActivity, DiscoveryParams>> viewAndParams = viewSubject
+      .compose(Transformers.combineLatestPair(params));
 
-    final Observable<Pair<Integer, Integer>> visibleItemOfTotal = RxUtils.takeWhen(viewChange, scrollEvent)
+    final Observable<Pair<Integer, Integer>> visibleItemOfTotal = viewChange
+      .compose(Transformers.takeWhen(scrollEvent))
       .filter(v -> v != null)
       .map(v -> v.recyclerView)
       .map(RecyclerView::getLayoutManager)
       .ofType(LinearLayoutManager.class)
-      .map(this::displayedItemFromLayout)
-      ;
+      .map(this::displayedItemFromLayout);
 
     addSubscription(viewAndParams
       .observeOn(AndroidSchedulers.mainThread())
@@ -90,13 +88,18 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.loadProjects(vp.second)));
 
-    addSubscription(RxUtils.takeWhen(viewAndParams, filterButtonClick)
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.startDiscoveryFilterActivity(vp.second)));
+    addSubscription(
+      viewAndParams
+        .compose(Transformers.takeWhen(filterButtonClick))
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(vp -> vp.first.startDiscoveryFilterActivity(vp.second))
+    );
 
-    addSubscription(RxUtils.takePairWhen(viewSubject, projectClick)
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.startProjectActivity(vp.second))
+    addSubscription(
+      viewSubject
+        .compose(Transformers.takePairWhen(projectClick))
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(vp -> vp.first.startProjectActivity(vp.second))
     );
 
     addSubscription(visibleItemOfTotal
@@ -132,10 +135,11 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
    * whenever `nextPage` emits.
    */
   private Observable<List<Project>> projectsWithPagination(@NonNull final DiscoveryParams firstPageParams) {
+
     return paramsWithPagination(firstPageParams)
       .concatMap(this::projectsFromParams)
       .takeUntil(List::isEmpty)
-      .scan(ListUtils::concatDistinct)
+      .scan(new ArrayList<>(), ListUtils::concatDistinct)
       ;
   }
 
@@ -161,21 +165,27 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
       .retry(2)
       .onErrorResumeNext(e -> Observable.empty())
       .map(DiscoverEnvelope::projects)
-      .map(this::bumpPOTDToFront)
+      .map(this::bringPotdToFront)
       ;
   }
 
   /**
-   * Give a list of projects, finds if it contains the POTD and if so
+   * Given a list of projects, finds if it contains the POTD and if so
    * bumps it to the front of the list.
    */
-  private List<Project> bumpPOTDToFront(@NonNull final List<Project> projects) {
+  private List<Project> bringPotdToFront(@NonNull final List<Project> projects) {
 
     return Observable.from(projects)
-      .reduce(new ArrayList<>(), (final List<Project> accum, final Project p) -> {
-        return p.isPotdToday() ? ListUtils.prepend(accum, p) : ListUtils.append(accum, p);
-      })
+      .reduce(new ArrayList<>(), this::prependPotdElseAppend)
       .toBlocking().single();
+  }
+
+  /**
+   * Given a list of projects and a particular project, returns the list
+   * when the project prepended if it's POTD and appends otherwise.
+   */
+  @NonNull private List<Project> prependPotdElseAppend(@NonNull final List<Project> projects, @NonNull final Project project) {
+    return project.isPotdToday() ? ListUtils.prepend(projects, project) : ListUtils.append(projects, project);
   }
 
   public void filterButtonClick() {

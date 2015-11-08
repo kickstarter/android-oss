@@ -2,6 +2,7 @@
 <android.support.v7.widget.CardView
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:card_view="http://schemas.android.com/apk/res-auto"
+  android:foreground="@drawable/click_indicator_light"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   card_view:cardElevation="0dp"
@@ -11,8 +12,8 @@
   card_view:contentPaddingBottom="@dimen/grid_3"
   card_view:contentPaddingLeft="@dimen/grid_3"
   card_view:contentPaddingRight="@dimen/grid_3"
-  android:layout_marginTop="@dimen/card_margin_y"
-  android:layout_marginBottom="@dimen/card_margin_y">
+  android:layout_marginTop="@dimen/activity_feed_view_margin_top"
+  android:layout_marginBottom="@dimen/activity_feed_view_margin_bottom">
 
   <LinearLayout
     android:weightSum="1"
@@ -30,6 +31,7 @@
       android:layout_height="@dimen/activity_feed_avatar_height" />
 
     <TextView
+      style="@style/Subhead"
       android:id="@+id/title"
       android:bufferType="spannable"
       android:layout_width="wrap_content"
@@ -37,17 +39,15 @@
       android:layout_marginLeft="@dimen/grid_1"
       android:layout_marginRight="@dimen/grid_1"
       android:text="Username is following you!"
-      android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-      android:textColor="@color/text_dark"
-      android:layout_weight="1"/>
+      android:layout_weight="1" />
 
-    <Button
+    <View
       android:id="@+id/follow_button"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="@string/Follow"
+      android:background="@drawable/ic_follow"
+      android:layout_width="40dp"
+      android:layout_height="40dp"
       android:layout_marginLeft="@dimen/grid_1"
-      android:layout_marginStart="@dimen/grid_2"/>
+      android:layout_marginStart="@dimen/grid_2" />
 
   </LinearLayout>
 

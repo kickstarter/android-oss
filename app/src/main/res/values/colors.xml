@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <!-- App colors -->
-  <color name="primary">#081B5C</color>
-  <color name="primary_dark">@color/dark_blue</color>
+  <color name="primary">@color/light_gray</color>
+  <color name="primary_dark">@color/black</color>
   <color name="accent">@color/green</color>
-  <color name="text_primary">@color/text_dark</color>
+  <color name="text_primary">@color/black</color>
   <color name="text_secondary">@color/dark_gray</color>
   <color name="accent_alpha_20">@color/blue_alpha_20</color>
   <color name="window_background">@color/white</color>
@@ -23,6 +23,7 @@
   <color name="light_gray">#f7fafa</color>
   <color name="light_green">#def7e0</color>
   <color name="gray">#d9d9de</color>
+  <color name="gray_black">#ff464646</color>
   <color name="pink">#ffecf0</color>
   <color name="text_dark">#ff0f2105</color>
   <color name="text_light">#ffffffff</color>
@@ -67,7 +68,9 @@
     http://stackoverflow.com/questions/5445085/understanding-colors-in-android-6-characters/11019879#11019879 -->
   <color name="black_alpha_30">#4D000000</color>
   <color name="black_alpha_5">#0d000000</color>
+  <color name="black_alpha_10">#1a000000</color>
   <color name="blue_alpha_20">#3300a0ff</color>
+  <color name="green_alpha_50">#802bde73</color>
   <color name="white_alpha_60">#99ffffff</color>
 
   <!-- Click indicator colors-->

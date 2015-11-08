@@ -20,7 +20,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class ProjectCardViewHolder extends KsrViewHolder {
+public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.backers_count) TextView backersCountTextView;
   protected @Bind(R.id.category) TextView categoryTextView;
   protected @Bind(R.id.deadline_countdown) TextView deadlineCountdownTextView;

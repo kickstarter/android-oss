@@ -7,6 +7,7 @@ import com.kickstarter.models.Empty;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apirequests.CommentBody;
 import com.kickstarter.services.apirequests.PushTokenBody;
+import com.kickstarter.services.apirequests.SignupBody;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.CategoriesEnvelope;
@@ -65,6 +66,9 @@ import rx.Observable;
 
   @POST("/v1/users/self/push_tokens")
   Observable<Empty> registerPushToken(@Body PushTokenBody body);
+
+  @POST("/v1/users")
+  Observable<AccessTokenEnvelope> signup(@Body SignupBody body);
 
   @PUT("/v1/projects/{param}/star")
   Observable<StarEnvelope> starProject(@Path("param") String param);

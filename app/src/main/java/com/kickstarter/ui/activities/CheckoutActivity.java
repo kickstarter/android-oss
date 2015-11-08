@@ -13,9 +13,9 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.CheckoutPresenter;
-import com.kickstarter.services.KickstarterUri;
+import com.kickstarter.services.KSUri;
 import com.kickstarter.services.RequestHandler;
-import com.kickstarter.ui.views.KickstarterWebView;
+import com.kickstarter.ui.views.KSWebView;
 import com.squareup.okhttp.Request;
 
 import java.util.Arrays;
@@ -24,10 +24,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 @RequiresPresenter(CheckoutPresenter.class)
-public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
+public final class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
   private Project project;
   private String urlToReload;
-  @Bind(R.id.web_view) KickstarterWebView webView;
+  @Bind(R.id.web_view) KSWebView webView;
   public @Bind(R.id.toolbar_title) TextView toolbarTitleTextView;
 
   @Override
@@ -45,8 +45,8 @@ public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
     toolbarTitleTextView.setText(intent.getStringExtra(getString(R.string.intent_toolbar_title)));
 
     webView.client().registerRequestHandlers(Arrays.asList(
-      new RequestHandler(KickstarterUri::isCheckoutThanksUri, this::handleCheckoutThanksUriRequest),
-      new RequestHandler(KickstarterUri::isSignupUri, this::handleSignupUriRequest)
+      new RequestHandler(KSUri::isCheckoutThanksUri, this::handleCheckoutThanksUriRequest),
+      new RequestHandler(KSUri::isSignupUri, this::handleSignupUriRequest)
     ));
   }
 

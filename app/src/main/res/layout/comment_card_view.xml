@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
+<LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  android:background="@color/white"
   android:orientation="vertical"
   android:layout_width="match_parent"
-  android:layout_height="wrap_content">
+  android:layout_height="wrap_content"
+  android:paddingTop="@dimen/feed_padding_y"
+  android:paddingLeft="@dimen/feed_padding_x"
+  android:paddingRight="@dimen/feed_padding_x">
 
   <RelativeLayout
-    android:padding="@dimen/grid_3"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
@@ -23,7 +26,7 @@
       android:layout_marginTop="@dimen/grid_2"
       android:gravity="center"
       android:textColor="@color/white"
-      android:layout_below="@id/avatar"
+      android:layout_below="@+id/avatar"
       android:background="@drawable/text_view_green_background"
       android:text="@string/Creator"
       android:layout_width="@dimen/grid_7"
@@ -35,43 +38,46 @@
       android:layout_marginTop="@dimen/grid_2"
       android:gravity="center"
       android:textColor="@color/white"
-      android:layout_below="@id/avatar"
+      android:layout_below="@+id/avatar"
       android:background="@drawable/text_view_blue_background"
       android:text="@string/You"
       android:layout_width="@dimen/grid_7"
       android:layout_height="wrap_content" />
 
-    <TextView
-      android:id="@+id/post_date"
-      android:textColor="@color/text_secondary"
-      android:layout_alignParentEnd="true"
-      android:layout_alignParentRight="true"
+    <LinearLayout
+      android:id="@+id/comment"
+      android:orientation="vertical"
       android:layout_alignParentTop="true"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content" />
-
-    <TextView
-      android:id="@+id/name"
+      android:layout_toRightOf="@+id/avatar"
+      android:layout_toEndOf="@+id/avatar"
       android:paddingLeft="@dimen/grid_2"
       android:paddingStart="@dimen/grid_2"
-      android:layout_toRightOf="@id/avatar"
-      android:layout_toEndOf="@id/avatar"
-      android:layout_toLeftOf="@id/post_date"
-      android:layout_toStartOf="@id/post_date"
-      android:ellipsize="end"
-      android:layout_alignParentTop="true"
-      android:textStyle="bold"
+      android:paddingBottom="@dimen/grid_3"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content" />
+      android:layout_height="wrap_content">
 
-    <TextView
-      android:id="@+id/comment_body"
-      android:padding="@dimen/grid_2"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_below="@id/name"
-      android:layout_toRightOf="@id/avatar"
-      android:layout_toEndOf="@id/avatar"/>
+      <TextView
+        android:id="@+id/name"
+        android:ellipsize="end"
+        style="@style/SubheadMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
+      <TextView
+        android:id="@+id/post_date"
+        style="@style/CaptionSecondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+      <TextView
+        android:id="@+id/comment_body"
+        android:paddingTop="@dimen/grid_2"
+        style="@style/BodyPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    </LinearLayout>
   </RelativeLayout>
-</android.support.v7.widget.CardView>
+
+  <include layout="@layout/horizontal_line_thin_view" />
+
+</LinearLayout>

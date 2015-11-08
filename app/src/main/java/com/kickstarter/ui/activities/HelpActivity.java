@@ -11,7 +11,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.libs.qualifiers.WebEndpoint;
 import com.kickstarter.presenters.HelpPresenter;
-import com.kickstarter.ui.views.KickstarterWebView;
+import com.kickstarter.ui.views.KSWebView;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -22,7 +22,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 @RequiresPresenter(HelpPresenter.class)
-public class HelpActivity extends BaseActivity<HelpPresenter> {
+public final class HelpActivity extends BaseActivity<HelpPresenter> {
   public static final int HELP_TYPE_TERMS = 0;
   public static final int HELP_TYPE_PRIVACY = 1;
   public static final int HELP_TYPE_HOW_IT_WORKS = 2;
@@ -33,7 +33,7 @@ public class HelpActivity extends BaseActivity<HelpPresenter> {
   @Retention(RetentionPolicy.SOURCE)
   public @interface HelpType {}
 
-  @Bind(R.id.kickstarter_web_view) KickstarterWebView kickstarterWebView;
+  @Bind(R.id.kickstarter_web_view) KSWebView kickstarterWebView;
 
   @Inject @WebEndpoint String webEndpoint;
 

@@ -6,12 +6,12 @@ import android.view.View;
 
 import com.kickstarter.R;
 import com.kickstarter.models.Project;
-import com.kickstarter.ui.viewholders.KsrViewHolder;
+import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 
 import java.util.List;
 
-public class DiscoveryAdapter extends KsrAdapter {
+public final class DiscoveryAdapter extends KSAdapter {
   private final Delegate delegate;
 
   public interface Delegate extends ProjectCardViewHolder.Delegate {}
@@ -25,7 +25,7 @@ public class DiscoveryAdapter extends KsrAdapter {
     return R.layout.project_card_view;
   }
 
-  protected KsrViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
+  protected KSViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
     return new ProjectCardViewHolder(view, delegate);
   }
 }

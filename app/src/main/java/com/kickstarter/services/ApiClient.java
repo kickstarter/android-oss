@@ -15,6 +15,7 @@ import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apirequests.CommentBody;
 import com.kickstarter.services.apirequests.PushTokenBody;
+import com.kickstarter.services.apirequests.SignupBody;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.CategoriesEnvelope;
@@ -32,7 +33,7 @@ import retrofit.RetrofitError;
 import retrofit.converter.GsonConverter;
 import rx.Observable;
 
-public class ApiClient {
+public final class ApiClient {
   private final ApiEndpoint apiEndpoint;
   private final Release release;
   private final String clientId;
@@ -106,6 +107,18 @@ public class ApiClient {
 
   public @NonNull Observable<Empty> registerPushToken(@NonNull final String token) {
     return service.registerPushToken(PushTokenBody.builder().token(token).pushServer("development").build());
+  }
+
+  public Observable<AccessTokenEnvelope> signup(@NonNull final String name, @NonNull final String email,
+    @NonNull final String password, @NonNull final String passwordConfirmation,
+    final boolean sendNewsletters) {
+    return service.signup(SignupBody.builder()
+      .name(name)
+      .email(email)
+      .password(password)
+      .passwordConfirmation(passwordConfirmation)
+      .sendNewsletters(sendNewsletters)
+      .build());
   }
 
   public Observable<Project> starProject(@NonNull final Project project) {

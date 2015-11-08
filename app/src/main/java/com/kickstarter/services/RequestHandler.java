@@ -6,7 +6,7 @@ import android.webkit.WebView;
 
 import com.squareup.okhttp.Request;
 
-public class RequestHandler {
+public final class RequestHandler {
   private final RequestHandler.Matcher matcher;
   private final RequestHandler.Action action;
 

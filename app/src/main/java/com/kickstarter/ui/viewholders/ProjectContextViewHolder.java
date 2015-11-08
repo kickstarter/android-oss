@@ -12,7 +12,7 @@ import com.squareup.picasso.Picasso;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class ProjectContextViewHolder extends KsrViewHolder {
+public final class ProjectContextViewHolder extends KSViewHolder {
   private Project project;
   private final Delegate delegate;
 

@@ -7,10 +7,10 @@ import android.view.View;
 
 import timber.log.Timber;
 
-public abstract class KsrViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public abstract class KSViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
   protected final View view;
 
-  public KsrViewHolder(@NonNull final View view) {
+  public KSViewHolder(@NonNull final View view) {
     super(view);
     this.view = view;
 
@@ -22,7 +22,7 @@ public abstract class KsrViewHolder extends RecyclerView.ViewHolder implements V
    */
   @Override
   public void onClick(@NonNull final View view) {
-    Timber.d("Default KsrViewHolder onClick event");
+    Timber.d("Default KSViewHolder onClick event");
   }
 
   /**

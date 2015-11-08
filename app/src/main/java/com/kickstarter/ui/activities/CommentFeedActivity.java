@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -31,12 +33,11 @@ import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnTextChanged;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresPresenter(CommentFeedPresenter.class)
-public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> implements CommentFeedAdapter.Delegate {
+public final class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> implements CommentFeedAdapter.Delegate {
   private CommentFeedAdapter adapter;
   private Project project;
   @Nullable private AlertDialog commentDialog;
@@ -81,7 +82,7 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> impl
   }
 
   @Nullable
-  @OnClick({R.id.nav_back_button, R.id.project_context_view})
+  @OnClick({R.id.project_context_view})
   public void onBackPressed() {
     super.onBackPressed();
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
@@ -109,6 +110,15 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> impl
 
     projectNameTextView.setText(project.name());
     cancelButtonTextView.setOnClickListener((@NonNull final View v) -> dismissCommentDialog());
+    if (commentBodyEditText != null) {
+      commentBodyEditText.addTextChangedListener(new TextWatcher() {
+        public void beforeTextChanged(@NonNull final CharSequence s, final int start, final int count, final int after) {}
+        public void onTextChanged(@NonNull final CharSequence s, final int start, final int before, final int count) {}
+        public void afterTextChanged(@NonNull final Editable s) {
+          presenter.inputs.commentBody(s.toString());
+        }
+      });
+    }
 
     if (postCommentButton != null && commentBodyEditText != null) {
       postCommentButton.setOnClickListener((@NonNull final View v) -> {
@@ -116,11 +126,6 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> impl
       });
     }
     presenter.takeCommentDialogShown();
-  }
-
-  @Nullable
-  @OnTextChanged(R.id.comment_body) void onCommentBodyTextChanged(@NonNull final CharSequence commentBody) {
-    presenter.inputs().commentBody(commentBody.toString());
   }
 
   public void dismissCommentDialog() {
@@ -143,12 +148,12 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> impl
 
   @Override
   public void projectContextClicked(@NonNull final ProjectContextViewHolder viewHolder) {
-    presenter.inputs().projectContextClicked(viewHolder);
+    presenter.inputs.projectContextClicked(viewHolder);
   }
 
   @Override
   public void emptyCommentFeedLoginClicked(@NonNull final EmptyCommentFeedViewHolder viewHolder) {
-    presenter.inputs().emptyCommentFeedLoginClicked(viewHolder);
+    presenter.inputs.emptyCommentFeedLoginClicked(viewHolder);
   }
 
   @Override
@@ -163,8 +168,8 @@ public class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> impl
   }
 
   private Observable<String> toastMessages() {
-    return presenter.errors().postCommentError()
+    return presenter.errors.postCommentError()
       .map(ObjectUtils.coalesceWith(postCommentErrorString))
-      .mergeWith(presenter.outputs().commentPosted().map(__ -> commentPostedString));
+      .mergeWith(presenter.outputs.commentPosted().map(__ -> commentPostedString));
   }
 }

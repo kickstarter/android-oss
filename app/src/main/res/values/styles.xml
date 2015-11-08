@@ -1,8 +1,12 @@
+<!--
+  Naming guidelines: https://github.com/kickstarter/styleguide/tree/master/android#style-inheritance
+  Other resources: https://kickstarter.wiki/pages/android-links.html#styles
+-->
 <resources>
   <style name="None">
   </style>
 
-  <style name="KsrTheme" parent="Theme.AppCompat.Light.NoActionBar">
+  <style name="KSTheme" parent="Theme.AppCompat.Light.NoActionBar">
     <!-- Shared view activity animations -->
     <item name="android:windowContentTransitions">true</item>
     <item name="android:windowAllowEnterTransitionOverlap">true</item>
@@ -14,12 +18,13 @@
     <item name="android:windowActionBar">false</item>
 
     <!-- Spinner -->
-    <item name="android:spinnerItemStyle">@style/KsrSpinnerItem</item>
-    <item name="android:spinnerStyle">@style/KsrSpinner</item>
+    <item name="android:spinnerItemStyle">@style/SpinnerItem</item>
+    <item name="android:spinnerStyle">@style/Spinner</item>
 
     <!-- More on Color Palette:
       http://www.google.com/design/spec/style/color.html#color-color-palette
       http://developer.android.com/training/material/theme.html#ColorPalette -->
+
     <!-- colorPrimary is used for the default action bar background -->
     <item name="colorPrimary">@color/primary</item>
     <!-- colorPrimaryDark is used for the status bar -->
@@ -30,98 +35,186 @@
     <item name="android:colorControlHighlight">@color/accent_alpha_20</item>
     <item name="android:textColorLink">@color/accent</item>
     <item name="android:textColorPrimary">@color/text_primary</item>
-    <item name="android:textColor">@color/text_primary</item>
+    <item name="android:textColorSecondary">@color/text_secondary</item>
     <item name="android:windowBackground">@color/window_background</item>
     <item name="android:textAllCaps">false</item>
   </style>
 
-  <!-- todo: customize these themes, or delete if unused -->
-  <style name="ActivityFeedActivity" parent="KsrTheme">
-    <item name="android:statusBarColor">@color/gray</item>
-    <item name="android:windowBackground">@drawable/gray_gradient</item>
+  <!-- Activities -->
+  <style name="ActivityFeedActivity" parent="KSTheme">
+    <item name="android:windowBackground">@color/gray</item>
   </style>
 
-  <style name="CheckoutActivity" parent="KsrTheme">
+  <style name="CheckoutActivity" parent="KSTheme">
     <item name="android:statusBarColor">@color/gray</item>
     <item name="android:windowBackground">@color/white</item>
   </style>
 
-  <style name="CommentFeedActivity" parent="KsrTheme">
+  <style name="CommentFeedActivity" parent="KSTheme">
     <item name="android:windowBackground">@color/white</item>
   </style>
 
-  <style name="DiscoveryActivity" parent="KsrTheme">
-    <item name="android:statusBarColor">@color/black</item>
+  <style name="DiscoveryActivity" parent="KSTheme">
     <item name="android:windowBackground">@color/discovery_background</item>
   </style>
 
-  <style name="DiscoveryFilterActivity" parent="KsrTheme">
+  <style name="DiscoveryFilterActivity" parent="KSTheme">
+  </style>
+
+  <style name="DisplayWebViewActivity" parent="KSTheme">
+    <item name="android:windowBackground">@color/white</item>
+  </style>
+
+  <style name="HelpActivity" parent="KSTheme">
+    <item name="android:statusBarColor">@color/gray</item>
+    <item name="android:windowBackground">@color/white</item>
+  </style>
+
+  <style name="Login" parent="KSTheme">
     <item name="android:statusBarColor">@color/black</item>
   </style>
 
-  <style name="DisplayWebViewActivity" parent="KsrTheme">
+  <style name="ProjectActivity" parent="KSTheme">
+  </style>
+
+  <style name="SearchActivity" parent="KSTheme">
+    <item name="android:windowBackground">@color/white</item>
+  </style>
+
+  <style name="ThanksActivity" parent="KSTheme">
     <item name="android:statusBarColor">@color/gray</item>
     <item name="android:windowBackground">@color/white</item>
   </style>
 
-  <style name="HelpActivity" parent="KsrTheme">
+  <style name="ViewPledgeActivity" parent="KSTheme">
     <item name="android:statusBarColor">@color/gray</item>
     <item name="android:windowBackground">@color/white</item>
   </style>
 
-  <style name="Login" parent="KsrTheme">
-    <item name="android:statusBarColor">@color/gray</item>
-  </style>
-
-  <style name="ProjectActivity" parent="KsrTheme">
-    <item name="android:statusBarColor">@color/black</item>
-  </style>
-
-  <style name="SearchActivity" parent="KsrTheme">
-    <item name="android:statusBarColor">@color/dark_blue</item>
-    <item name="android:windowBackground">@color/light_gray</item>
-  </style>
-
-  <style name="ThanksActivity" parent="KsrTheme">
-    <item name="android:statusBarColor">@color/gray</item>
-    <item name="android:windowBackground">@color/white</item>
-  </style>
-
-  <style name="ViewPledgeActivity" parent="KsrTheme">
-    <item name="android:statusBarColor">@color/gray</item>
-    <item name="android:windowBackground">@color/white</item>
-  </style>
-
-  <!-- Style advice: http://blog.danlew.net/2014/11/19/styles-on-android/ -->
-  <style name="KsrSpinner" parent="android:Widget">
-    <item name="android:background">@drawable/ksr_spinner</item>
+  <style name="Spinner" parent="android:Widget">
+    <item name="android:background">@drawable/spinner_9</item>
     <item name="android:clickable">true</item>
   </style>
 
-  <style name="KsrSpinnerItem" parent="@android:style/Widget.TextView.SpinnerItem">
+  <style name="SpinnerItem" parent="@android:style/Widget.TextView.SpinnerItem">
     <item name="android:textSize">18sp</item>
     <item name="android:textColor">@color/white</item>
   </style>
 
-  <style name="KsrProgressBar" parent="Base.Widget.AppCompat.ProgressBar">
+  <style name="ProgressBar" parent="Base.Widget.AppCompat.ProgressBar">
     <item name="android:indeterminateOnly">false</item>
-    <item name="android:progressDrawable">@drawable/ksr_progress_bar_horizontal</item>
+    <item name="android:progressDrawable">@drawable/progress_bar_horizontal</item>
   </style>
 
-  <style name="KsrButton" parent="Base.Widget.AppCompat.Button">
-    <item name="android:textColor">@color/white</item>
+  <style name="Button" parent="Base.Widget.AppCompat.Button">
+    <item name="android:textColor">@drawable/button_text_white</item>
     <item name="android:layout_centerInParent">true</item>
     <item name="android:singleLine">true</item>
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="android:layout_marginTop">@dimen/grid_3</item>
     <item name="android:paddingLeft">@dimen/grid_3</item>
     <item name="android:paddingRight">@dimen/grid_3</item>
   </style>
 
-  <style name="subheadBold" parent="TextAppearance.AppCompat">
-    <item name="android:textStyle">bold</item>
+  <style name="BorderButton" parent="Base.Widget.AppCompat.Button.Borderless">
+    <item name="android:background">@drawable/button_white_border_dark_gray</item>
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:textColor">@color/black</item>
+    <item name="android:layout_centerInParent">true</item>
+    <item name="android:singleLine">true</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:paddingLeft">@dimen/grid_3</item>
+    <item name="android:paddingRight">@dimen/grid_3</item>
+  </style>
+
+  <style name="ProjectActionButton" parent="Button">
+    <item name="android:layout_width">fill_parent</item>
+    <item name="android:layout_height">60dp</item>
     <item name="android:textSize">@dimen/subhead</item>
+    <item name="android:fontFamily">@string/font_family_medium</item>
+    <item name="android:layout_alignParentBottom">true</item>
+  </style>
+
+  <style name="Toolbar" parent="Base.Widget.AppCompat.Toolbar">
+    <item name="android:background">@color/primary</item>
+    <item name="android:elevation">1dp</item>
+    <item name="android:foregroundGravity">center_vertical</item>
+    <item name="android:layout_height">?attr/actionBarSize</item>
+    <item name="android:layout_width">match_parent</item>
+  </style>
+
+  <style name="ToolbarIcon">
+    <item name="android:background">@drawable/click_indicator_light</item>
+    <item name="android:color">@color/gray_black</item>
+    <item name="android:layout_height">match_parent</item>
+    <item name="android:layout_width">@dimen/button_icon_fixed_width</item>
+    <item name="android:gravity">center</item>
+    <item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
+  </style>
+
+  <style name="ToolbarTitle" parent="Subhead">
+    <item name="android:color">@color/black</item>
+    <item name="android:textColorHint">@color/dark_gray</item>
+  </style>
+
+  <!-- Reduce margin size for < v21 devices, due to different FAB shadow rendering -->
+  <style name="StarFab">
+    <item name="android:layout_marginRight">@dimen/grid_1</item>
+    <item name="android:layout_marginBottom">@dimen/grid_1</item>
+  </style>
+
+  <!-- Typography -->
+  <style name="TextPrimary">
+    <item name="android:textColor">@color/text_primary</item>
+    <item name="android:textStyle">normal</item>
+  </style>
+  
+  <style name="TextSecondary">
+    <item name="android:textColor">@color/text_secondary</item>
+    <item name="android:textStyle">normal</item>
+  </style>
+
+  <style name="CaptionPrimary" parent="TextPrimary">
+    <item name="android:textSize">@dimen/caption</item>
+    <item name="android:lineSpacingExtra">@dimen/caption_line_spacing_extra</item>
+  </style>
+
+  <style name="CaptionSecondary" parent="TextSecondary">
+    <item name="android:textSize">@dimen/caption</item>
+    <item name="android:lineSpacingExtra">@dimen/caption_line_spacing_extra</item>
+  </style>
+
+  <style name="BodyPrimary" parent="TextPrimary">
+    <item name="android:textSize">@dimen/body</item>
+    <item name="android:lineSpacingExtra">@dimen/body_line_spacing_extra</item>
+  </style>
+
+  <style name="BodyPrimaryMedium" parent="BodyPrimary">
+    <item name="android:fontFamily">@string/font_family_medium</item>
+  </style>
+  
+  <style name="BodySecondary" parent="TextSecondary">
+    <item name="android:textSize">@dimen/body</item>
+    <item name="android:lineSpacingExtra">@dimen/body_line_spacing_extra</item>
+  </style>
+
+  <style name="Subhead" parent="TextPrimary">
+    <item name="android:textSize">@dimen/subhead</item>
+    <item name="android:lineSpacingExtra">@dimen/subhead_line_spacing_extra</item>
+  </style>
+
+  <style name="SubheadMedium" parent="Subhead">
+    <item name="android:fontFamily">@string/font_family_medium</item>
+  </style>
+
+  <style name="Headline" parent="TextPrimary">
+    <item name="android:textSize">@dimen/headline</item>
+    <item name="android:fontFamily">@string/font_family_medium</item>
+  </style>
+
+  <style name="EditorialHeadline" parent="TextPrimary">
+    <item name="android:textSize">@dimen/editorial_headline</item>
+    <item name="android:fontFamily">@string/font_family_medium</item>
   </style>
 
 </resources>

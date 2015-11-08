@@ -35,10 +35,9 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import timber.log.Timber;
 
 @RequiresPresenter(ThanksPresenter.class)
-public class ThanksActivity extends BaseActivity<ThanksPresenter> {
+public final class ThanksActivity extends BaseActivity<ThanksPresenter> {
   @Bind(R.id.backed_project) TextView backedProjectTextView;
   @Bind(R.id.recommended_projects_recycler_view) RecyclerView recommendedProjectsRecyclerView;
   @Bind(R.id.woohoo_background) ImageView woohooBackgroundImageView;

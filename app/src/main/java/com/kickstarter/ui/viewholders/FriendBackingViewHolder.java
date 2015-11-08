@@ -16,7 +16,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class FriendBackingViewHolder extends ActivityListViewHolder {
+public final class FriendBackingViewHolder extends ActivityListViewHolder {
   @Bind(R.id.avatar) ImageView avatarImageView;
   @Bind(R.id.creator_name) TextView creatorNameTextView;
   @Bind(R.id.project_name) TextView projectNameTextView;

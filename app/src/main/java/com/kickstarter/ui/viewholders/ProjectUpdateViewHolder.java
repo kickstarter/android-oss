@@ -16,7 +16,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ProjectUpdateViewHolder extends ActivityListViewHolder {
+public final class ProjectUpdateViewHolder extends ActivityListViewHolder {
   @Bind(R.id.project_name) TextView projectNameTextView;
   @Bind(R.id.project_photo) ImageView projectPhotoImageView;
   @Bind(R.id.timestamp) TextView timestampTextView;
@@ -30,7 +30,6 @@ public class ProjectUpdateViewHolder extends ActivityListViewHolder {
     void projectUpdateProjectClicked(ProjectUpdateViewHolder viewHolder, Project project);
     void projectUpdateClicked(ProjectUpdateViewHolder viewHolder, Activity activity);
   }
-
 
   public ProjectUpdateViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
     super(view);

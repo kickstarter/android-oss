@@ -1,4 +1,4 @@
-package com.kickstarter.ui.views;
+package com.kickstarter.ui.toolbars;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,7 +6,6 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.PopupMenu;
-import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
@@ -14,8 +13,8 @@ import android.widget.TextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.CurrentUser;
-import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.Logout;
+import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
@@ -29,10 +28,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
-public class DiscoveryToolbar extends Toolbar {
+public final class DiscoveryToolbar extends KSToolbar {
   @Bind(R.id.activity_feed_button) TextView activityFeedButton;
   @Bind(R.id.current_user_button) TextView currentUserButton;
   @Bind(R.id.filter_expand_more_button) TextView filterExpandMoreButton;
@@ -41,8 +39,6 @@ public class DiscoveryToolbar extends Toolbar {
   @Bind(R.id.search_button) TextView searchButton;
   @Inject CurrentUser currentUser;
   @Inject Logout logout;
-
-  Subscription loginSubscription;
 
   public DiscoveryToolbar(@NonNull final Context context) {
     super(context);
@@ -151,19 +147,13 @@ public class DiscoveryToolbar extends Toolbar {
       showLoggedOutMenu();
     }
 
-    loginSubscription = currentUser.loggedInUser()
+    addSubscription(currentUser.loggedInUser()
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::showLoggedInMenu);
+      .subscribe(this::showLoggedInMenu));
   }
 
   @Override
   protected void onDetachedFromWindow() {
     super.onDetachedFromWindow();
-
-    if (isInEditMode()) {
-      return;
-    }
-
-    loginSubscription.unsubscribe();
   }
 }

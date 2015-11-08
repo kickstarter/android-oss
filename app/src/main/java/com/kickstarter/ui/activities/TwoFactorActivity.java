@@ -24,7 +24,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresPresenter(TwoFactorPresenter.class)
-public class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
+public final class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
   public @Bind(R.id.code) EditText codeEditText;
   public @Bind(R.id.resend_button) Button resendButton;
   public @Bind(R.id.login_button) Button loginButton;
@@ -47,23 +47,23 @@ public class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
   }
 
   private Observable<String> errorMessages() {
-    return presenter.errors().tfaCodeMismatchError().map(ObjectUtils.coalesceWith(codeMismatchString))
-      .mergeWith(presenter.errors().genericTfaError().map(__ -> unableToLoginString));
+    return presenter.errors.tfaCodeMismatchError().map(ObjectUtils.coalesceWith(codeMismatchString))
+      .mergeWith(presenter.errors.genericTfaError().map(__ -> unableToLoginString));
   }
 
   @OnTextChanged(R.id.code)
   public void codeEditTextOnTextChanged(@NonNull final CharSequence code) {
-    presenter.inputs().code(code.toString());
+    presenter.inputs.code(code.toString());
   }
 
   @OnClick(R.id.resend_button)
   public void resendButtonOnClick(@NonNull final View view) {
-    presenter.inputs().resendClick(view);
+    presenter.inputs.resendClick(view);
   }
 
   @OnClick(R.id.login_button)
   public void loginButtonOnClick(@NonNull final View view) {
-    presenter.inputs().loginClick(view);
+    presenter.inputs.loginClick(view);
   }
 
   public void setLoginEnabled(final boolean enabled) {

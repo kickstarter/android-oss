@@ -8,13 +8,13 @@ import com.kickstarter.R;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.viewholders.CategoryPromoViewHolder;
-import com.kickstarter.ui.viewholders.KsrViewHolder;
+import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.ProjectCardMiniViewHolder;
 
 import java.util.Collections;
 import java.util.List;
 
-public class ThanksAdapter extends KsrAdapter {
+public final class ThanksAdapter extends KSAdapter {
   private final Delegate delegate;
 
   public interface Delegate extends CategoryPromoViewHolder.Delegate, ProjectCardMiniViewHolder.Delegate {}
@@ -34,7 +34,7 @@ public class ThanksAdapter extends KsrAdapter {
     }
   }
 
-  protected KsrViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
+  protected KSViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
     if (layout == R.layout.project_card_mini_view) {
       return new ProjectCardMiniViewHolder(view, delegate);
     }

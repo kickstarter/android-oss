@@ -4,11 +4,11 @@
   xmlns:card_view="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
+  card_view:cardBackgroundColor="@color/white"
   card_view:cardElevation="0dp"
   card_view:cardCornerRadius="@dimen/card_corner_radius"
-  card_view:cardBackgroundColor="@color/white"
-  android:layout_marginTop="@dimen/card_margin_y"
-  android:layout_marginBottom="@dimen/card_margin_y">
+  android:layout_marginTop="@dimen/activity_feed_view_margin_top"
+  android:layout_marginBottom="@dimen/activity_feed_view_margin_bottom">
 
   <LinearLayout
     android:layout_width="match_parent"
@@ -18,96 +18,102 @@
     <RelativeLayout
       android:id="@+id/project_info"
       android:clickable="true"
-      android:background="@drawable/click_indicator_light_masked"
+      android:background="@color/transparent"
+      android:foreground="@drawable/click_indicator_light"
+      android:orientation="horizontal"
       android:paddingTop="@dimen/grid_3"
+      android:paddingLeft="@dimen/grid_3"
+      android:paddingRight="@dimen/grid_3"
+      android:paddingBottom="@dimen/grid_2"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <ImageView
+        android:id="@+id/project_photo"
+        android:background="@drawable/gray_gradient"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:adjustViewBounds="true"
+        android:layout_width="138dp"
+        android:layout_height="104dp" />
+
+      <TextView
+        style="@style/BodyPrimary"
+        android:id="@+id/project_name"
+        android:layout_marginLeft="@dimen/grid_2"
+        android:layout_marginEnd="@dimen/grid_2"
+        android:layout_marginRight="@dimen/grid_2"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/project_photo"
+        android:layout_toEndOf="@id/project_photo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="3"
+        android:text="Project name" />
+
+    </RelativeLayout>
+
+    <View
+      android:layout_width="fill_parent"
+      android:layout_height="1dp"
+      android:layout_marginLeft="@dimen/grid_3"
+      android:layout_marginRight="@dimen/grid_3"
+      android:background="@color/black_alpha_10" />
+
+    <LinearLayout
+      android:id="@+id/update_info"
+      android:background="@color/transparent"
+      android:foreground="@drawable/click_indicator_light"
+      android:clickable="true"
+      android:paddingTop="@dimen/grid_2"
+      android:paddingBottom="@dimen/grid_3"
       android:paddingLeft="@dimen/grid_3"
       android:paddingRight="@dimen/grid_3"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:gravity="center_vertical">
-
-      <ImageView
-        android:id="@+id/project_photo"
-        android:adjustViewBounds="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginRight="@dimen/grid_1"
-        android:layout_marginEnd="@dimen/grid_2"
-        android:layout_width="@dimen/activity_feed_small_photo_width"
-        android:layout_height="@dimen/activity_feed_small_photo_height" />
-
-      <TextView
-        android:id="@+id/project_name"
-        android:layout_toRightOf="@id/project_photo"
-        android:layout_toEndOf="@id/project_photo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/grid_1"
-        android:layout_marginStart="@dimen/grid_2"
-        android:text="Project Name"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
-
-      <include layout="@layout/horizontal_line_thin_view"
-        android:layout_toRightOf="@id/project_photo"
-        android:layout_toEndOf="@id/project_photo"
-        android:layout_alignStart="@id/project_name"
-        android:layout_alignLeft="@id/project_name"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:layout_alignBottom="@id/project_photo" />
-
-    </RelativeLayout>
-
-    <LinearLayout
-      android:id="@+id/update_info"
-      android:clickable="true"
-      android:background="@drawable/click_indicator_light_masked"
-      android:padding="@dimen/grid_3"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
       android:orientation="vertical">
 
-      <RelativeLayout
+      <LinearLayout
         android:layout_marginBottom="@dimen/grid_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <TextView
+          style="@style/CaptionPrimary"
           android:id="@+id/update_sequence"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_marginEnd="@dimen/grid_2"
+          android:layout_marginRight="@dimen/grid_2"
           android:text="Update #"
-          android:textColor="@color/green"
-          android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
+          android:textColor="@color/green" />
 
         <TextView
+          style="@style/CaptionSecondary"
+          android:id="@+id/timestamp"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_alignParentRight="true"
-          android:layout_alignParentEnd="true"
-          android:text="Timestamp"
-          android:textColor="@color/dark_gray"
-          android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-          android:id="@+id/timestamp" />
-      </RelativeLayout>
+          android:text="Timestamp" />
+      </LinearLayout>
 
       <TextView
+        style="@style/Headline"
         android:id="@+id/update_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/grid_1"
-        android:text="Update Title"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title"
-        android:textColor="@color/text_dark" />
+        android:text="Update Title" />
 
-        <TextView
-          android:id="@+id/update_body"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/grid_1"
-          android:text="Update Body"/>
+      <TextView
+        style="@style/Subhead"
+        android:id="@+id/update_body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_1"
+        android:text="Update Body"/>
 
     </LinearLayout>
+
 
   </LinearLayout>
 </android.support.v7.widget.CardView>

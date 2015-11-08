@@ -7,6 +7,7 @@
   <dimen name="grid_3_half">12dp</dimen>
   <dimen name="grid_4">32dp</dimen>
   <dimen name="grid_5">40dp</dimen>
+  <dimen name="grid_5_half">20dp</dimen>
   <dimen name="grid_6">48dp</dimen>
   <dimen name="grid_7">56dp</dimen>
   <dimen name="grid_8">64dp</dimen>
@@ -18,27 +19,31 @@
   <dimen name="grid_12">96dp</dimen>
   <dimen name="grid_20">160dp</dimen>
 
-  <!-- Kickstarter typography-->
-  <!-- todo: naming conventions: temp names are prefixed with ksr_-->
-  <dimen name="ksr_mini_stats">13sp</dimen>
-  <dimen name="ksr_caption">14sp</dimen>
-  <dimen name="ksr_subhead">15sp</dimen>
-  <dimen name="ksr_name">16sp</dimen>
-  <dimen name="body">17sp</dimen>
-  <dimen name="ksr_stats">18sp</dimen>
-  <dimen name="title">20sp</dimen>
+  <!-- Typography-->
+  <dimen name="caption">12sp</dimen>
+  <dimen name="body">14sp</dimen>
+  <dimen name="subhead">16sp</dimen>
+  <dimen name="headline">20sp</dimen>
+  <dimen name="editorial_headline">26sp</dimen>
 
-  <!-- Kickstarter & Material values-->
-  <dimen name="ksr_card_elevation">1dp</dimen>
-  <dimen name="ksr_text_view_corner_radius">@dimen/grid_1_half</dimen>
-  <dimen name="ksr_toolbar_elevation">@dimen/grid_1_half</dimen>
+  <dimen name="caption_line_spacing_extra">2dp</dimen>
+  <dimen name="body_line_spacing_extra">2dp</dimen>
+  <dimen name="subhead_line_spacing_extra">4dp</dimen>
+
+  <!-- Icon sizes -->
+  <dimen name="chevron_right_icon">24sp</dimen>
+  <dimen name="empty_feed_icon">80sp</dimen>
 
   <!-- Cards -->
   <dimen name="card_corner_radius">0dp</dimen>
+  <dimen name="card_elevation">1dp</dimen>
   <dimen name="card_margin_x">@dimen/grid_2</dimen>
   <dimen name="card_margin_y">@dimen/grid_1</dimen>
-  <dimen name="card_padding_action">@dimen/grid_1</dimen>
   <dimen name="card_padding_action_half">@dimen/grid_1_half</dimen>
+
+  <!-- Layout padding -->
+  <dimen name="feed_padding_y">@dimen/grid_5_half</dimen>
+  <dimen name="feed_padding_x">@dimen/grid_3</dimen>
 
   <!-- Buttons -->
   <!-- button_icon_fixed_width is useful when we want to place several icons next to each
@@ -48,25 +53,11 @@
   <dimen name="button_corner_radius">4dp</dimen>
   <dimen name="button_stroke_width">1dp</dimen>
 
-  <!-- Material typography
-    http://www.google.com/design/spec/style/typography.html#typography-styles -->
-  <dimen name="body_1">14sp</dimen>
-  <dimen name="body_2">13sp</dimen>
-  <dimen name="button">14sp</dimen>
-  <dimen name="caption">12sp</dimen>
-  <dimen name="display_1">34sp</dimen>
-  <dimen name="display_2">45sp</dimen>
-  <dimen name="display_3">56sp</dimen>
-  <dimen name="display_4">112sp</dimen>
-  <dimen name="headline">24sp</dimen>
-  <dimen name="menu">14sp</dimen>
-  <dimen name="subhead">16sp</dimen>
-
   <dimen name="progress_bar_min_height">6dp</dimen>
 
   <!-- Photos -->
-  <dimen name="activity_feed_avatar_width">54dp</dimen>
-  <dimen name="activity_feed_avatar_height">54dp</dimen>
+  <dimen name="activity_feed_avatar_width">60dp</dimen>
+  <dimen name="activity_feed_avatar_height">60dp</dimen>
   <dimen name="activity_feed_small_photo_width">96dp</dimen>
   <dimen name="activity_feed_small_photo_height">72dp</dimen>
   <dimen name="activity_feed_medium_photo_width">120dp</dimen>
@@ -75,4 +66,17 @@
   <dimen name="comments_feed_avatar_height">@dimen/grid_7</dimen>
   <dimen name="project_avatar_width">@dimen/grid_8</dimen>
   <dimen name="project_avatar_height">@dimen/grid_8</dimen>
+
+  <!-- TextViews -->
+  <dimen name="text_view_corner_radius">@dimen/grid_1_half</dimen>
+
+  <!-- Toolbars -->
+  <dimen name="toolbar_elevation">@dimen/grid_1_half</dimen>
+
+  <!-- Activity feed view -->
+  <dimen name="activity_feed_view_margin_top">0dp</dimen>
+  <dimen name="activity_feed_view_margin_bottom">@dimen/grid_3_half</dimen>
+  <!-- HACK: Need this view to take up the full screen height because the background is different to the RecyclerView
+    background, but match_parent doesn't match the height to the RecyclerView. So, just give it a big height. Sorry. -->
+  <dimen name="activity_feed_full_screen_height_hack">2000dp</dimen>
 </resources>

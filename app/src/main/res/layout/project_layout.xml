@@ -1,15 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:fab="http://schemas.android.com/apk/res-auto"
   android:layout_height="fill_parent"
   android:layout_width="match_parent" >
 
+  <include layout="@layout/project_toolbar"
+    android:id="@+id/project_toolbar"/>
+
   <android.support.v7.widget.RecyclerView
     android:id="@+id/rewards_recycler_view"
+    android:layout_below="@id/project_toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="?attr/actionBarSize"/>
+    android:background="@color/light_gray"/>
 
-  <include layout="@layout/project_action_toolbar"/>
+  <Button
+    style="@style/ProjectActionButton"
+    android:id="@+id/back_project_button"
+    android:visibility="visible"
+    android:background="@drawable/button_green"
+    android:text="@string/Back_this_project" />
+
+  <Button
+    style="@style/ProjectActionButton"
+    android:id="@+id/manage_pledge_button"
+    android:visibility="gone"
+    android:background="@drawable/button_blue"
+    android:text="@string/Manage_pledge" />
+
+  <Button
+    style="@style/ProjectActionButton"
+    android:id="@+id/view_pledge_button"
+    android:visibility="gone"
+    android:background="@drawable/button_blue"
+    android:text="@string/View_pledge" />
+
+  <android.support.design.widget.FloatingActionButton
+    android:id="@+id/star_fab"
+    style="@style/StarFab"
+    fab:backgroundTint="@color/white"
+    fab:rippleColor="@color/dark_gray_click"
+    fab:fabSize="normal"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentRight="true"
+    android:layout_alignParentEnd="true"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"/>
 
 </RelativeLayout>

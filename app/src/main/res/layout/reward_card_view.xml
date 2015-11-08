@@ -6,6 +6,8 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   app:cardCornerRadius="4dp"
+  app:cardBackgroundColor="@color/white"
+  app:cardPreventCornerOverlap="false"
   android:foreground="@drawable/click_indicator_light"
   android:layout_margin="@dimen/grid_2">
 
@@ -20,110 +22,146 @@
   <RelativeLayout
     android:id="@+id/reward_card_info"
     android:paddingBottom="@dimen/grid_2"
-    android:paddingLeft="@dimen/grid_2"
-    android:paddingRight="@dimen/grid_2"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
 
     <TextView
       android:id="@+id/selected"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentRight="true"
       android:visibility="gone"
-      android:paddingLeft="@dimen/grid_1"
-      android:paddingRight="@dimen/grid_1"
+      android:paddingTop="@dimen/grid_1"
+      android:paddingBottom="@dimen/grid_1"
+      android:paddingLeft="@dimen/grid_2"
+      android:paddingRight="@dimen/grid_2"
       android:textColor="@color/white"
       android:background="@color/green"
       android:text="@string/You_selected"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
-    <TextView
-      android:id="@+id/pledge_minimum"
-      android:layout_below="@id/selected"
-      android:textAppearance="@style/subheadBold"
-      android:paddingTop="@dimen/grid_2"
-      android:paddingBottom="@dimen/grid_2"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"/>
-
     <RelativeLayout
-      android:id="@+id/backer_info"
-      android:layout_below="@id/pledge_minimum"
+      android:layout_below="@id/selected"
+      android:paddingRight="@dimen/grid_2"
+      android:paddingLeft="@dimen/grid_2"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 
-      <com.kickstarter.ui.views.IconTextView
-        app:iconType="ss_kickstarter"
-        android:id="@+id/backer_badge"
-        android:textSize="@dimen/title"
-        android:paddingRight="@dimen/grid_1"
-        android:paddingEnd="@dimen/grid_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:text="@string/backer_icon"
-        android:textColor="@color/green"/>
-
       <TextView
-        android:id="@+id/reward_backers_count"
-        android:layout_toEndOf="@id/backer_badge"
-        android:layout_toRightOf="@id/backer_badge"
-        android:textStyle="bold"
-        android:layout_centerVertical="true"
+        android:id="@+id/pledge_minimum"
+        android:text="Pledge $15000 or more"
+        style="@style/Headline"
+        android:paddingTop="@dimen/grid_2"
+        android:paddingBottom="@dimen/grid_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    </RelativeLayout>
+      <RelativeLayout
+        android:id="@+id/backer_reward_info"
+        android:layout_below="@id/pledge_minimum"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <RelativeLayout
-      android:id="@+id/limited_reward_labels"
-      android:layout_below="@id/backer_info"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content">
+        <TextView
+          android:id="@+id/reward_backers_count"
+          android:text="# backers"
+          style="@style/BodyPrimaryMedium"
+          android:layout_centerVertical="true"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"/>
+
+        <TextView
+          android:id="@+id/limited"
+          android:paddingLeft="@dimen/grid_1"
+          android:paddingRight="@dimen/grid_1"
+          android:layout_toEndOf="@id/reward_backers_count"
+          android:layout_toRightOf="@id/reward_backers_count"
+          android:background="@color/gray"
+          android:visibility="visible"
+          style="@style/BodyPrimary"
+          android:text="@string/Limited_left_of"
+          android:layout_marginLeft="@dimen/grid_1"
+          android:layout_marginStart="@dimen/grid_1"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
+
+        <TextView
+          android:id="@+id/all_gone"
+          android:paddingLeft="@dimen/grid_1"
+          android:paddingRight="@dimen/grid_1"
+          android:layout_toEndOf="@id/reward_backers_count"
+          android:layout_toRightOf="@id/reward_backers_count"
+          android:background="@color/gray"
+          android:visibility="visible"
+          android:layout_marginStart="@dimen/grid_1"
+          android:layout_marginEnd="@dimen/grid_1"
+          android:text="@string/All_gone"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
+
+      </RelativeLayout>
 
       <TextView
-        android:id="@+id/limited"
-        android:background="@color/yellow"
-        android:visibility="gone"
-        android:text="@string/Limited_left_of"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:id="@+id/reward_description"
+        android:layout_below="@id/backer_reward_info"
+        style="@style/Subhead"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/grid_2"
+        android:paddingBottom="@dimen/grid_2"/>
 
-      <TextView
-        android:id="@+id/all_gone"
-        android:background="@color/gray"
-        android:visibility="gone"
-        android:text="@string/All_gone"
+      <LinearLayout
+        android:id="@+id/estimate"
+        android:layout_marginRight="@dimen/grid_2"
+        android:orientation="vertical"
+        android:layout_below="@id/reward_description"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+
+          <TextView
+            android:id="@+id/estimated_delivery"
+            android:text="@string/Estimated_delivery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/CaptionSecondary"
+            android:paddingBottom="@dimen/grid_1_half"/>
+
+          <TextView
+            android:id="@+id/estimated_delivery_date"
+            android:text="September 2016"
+            style="@style/CaptionPrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/grid_1"/>
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:orientation="vertical"
+        android:layout_below="@id/reward_description"
+        android:layout_toRightOf="@id/estimate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+          android:id="@+id/shipping_destination"
+          style="@style/CaptionSecondary"
+          android:text="@string/Shipping_destinations"
+          android:visibility="visible"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:paddingBottom="@dimen/grid_1_half"/>
+
+        <TextView
+          android:id="@+id/shipping_summary"
+          style="@style/CaptionPrimary"
+          android:text="Ships to anywhere in the world"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
+
+      </LinearLayout>
 
     </RelativeLayout>
-
-    <TextView
-      android:id="@+id/reward_description"
-      android:layout_below="@id/limited_reward_labels"
-      android:textSize="@dimen/body"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:paddingTop="@dimen/grid_2"
-      android:paddingBottom="@dimen/grid_2"/>
-
-    <TextView
-      android:id="@+id/estimated_delivery"
-      android:text="@string/Estimated_delivery"
-      android:layout_below="@id/reward_description"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:textSize="@dimen/ksr_subhead"
-      android:paddingBottom="@dimen/grid_1_half"
-      android:textColor="@color/text_secondary"/>
-
-    <TextView
-      android:id="@+id/estimated_delivery_date"
-      android:layout_below="@id/estimated_delivery"
-      android:textSize="@dimen/ksr_subhead"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content" />
-
   </RelativeLayout>
 
   <View

@@ -5,7 +5,7 @@ import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import retrofit.RetrofitError;
 
 
-public class ApiError extends RuntimeException {
+public final class ApiError extends RuntimeException {
   private final RetrofitError retrofitError;
   private final ErrorEnvelope errorEnvelope;
 

@@ -13,6 +13,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/grid_1"
+    android:textColor="@color/light_gray"
     android:text="@string/Development_settings" />
 
   <TableLayout

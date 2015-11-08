@@ -106,7 +106,7 @@ public class PushNotifications {
     final GCM gcm = envelope.gcm();
 
     final Notification notification = notificationBuilder(gcm.title(), gcm.alert())
-      .setLargeIcon(fetchBitmap(envelope.project().photoUrl(), false))
+      .setLargeIcon(fetchBitmap(envelope.project().photo(), false))
       .setContentIntent(projectContentIntent(envelope.project().id()))
       .build();
 

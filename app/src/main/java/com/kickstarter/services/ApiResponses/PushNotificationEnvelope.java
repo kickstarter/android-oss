@@ -76,13 +76,13 @@ public abstract class PushNotificationEnvelope implements Parcelable {
   @AutoGson
   @AutoParcel
   public abstract static class Project implements Parcelable {
-    @Nullable public abstract Long id();
-    @Nullable public abstract String photoUrl();
+    public abstract Long id();
+    public abstract String photo();
 
     @AutoParcel.Builder
     public abstract static class Builder {
       public abstract Builder id(Long __);
-      public abstract Builder photoUrl(String __);
+      public abstract Builder photo(String __);
       public abstract Project build();
     }
 

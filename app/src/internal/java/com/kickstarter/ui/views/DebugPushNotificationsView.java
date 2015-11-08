@@ -21,7 +21,7 @@ import butterknife.OnClick;
 public class DebugPushNotificationsView extends ScrollView {
   @Inject protected PushNotifications pushNotifications;
 
-  private static final String PROJECT_PHOTO_URL = "https://ksr-ugc.imgix.net/projects/73409/photo-original.jpg?v=1397770628&w=160&h=120&fit=crop&auto=format&q=92&s=da84cc0a09478bebca4d8d35f98f77b4";
+  private static final String PROJECT_PHOTO = "https://ksr-ugc.imgix.net/projects/73409/photo-original.jpg?v=1397770628&w=160&h=120&fit=crop&auto=format&q=92&s=da84cc0a09478bebca4d8d35f98f77b4";
   private static final Long PROJECT_ID = 1929840910L;
 
   public DebugPushNotificationsView(@NonNull final Context context) {
@@ -85,7 +85,7 @@ public class DebugPushNotificationsView extends ScrollView {
       .category(com.kickstarter.models.Activity.CATEGORY_CANCELLATION)
       .id(1)
       .projectId(PROJECT_ID)
-      .projectPhoto(PROJECT_PHOTO_URL)
+      .projectPhoto(PROJECT_PHOTO)
       .build();
 
     final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder().activity(activity).gcm(gcm).build();
@@ -103,7 +103,7 @@ public class DebugPushNotificationsView extends ScrollView {
       .category(com.kickstarter.models.Activity.CATEGORY_FAILURE)
       .id(1)
       .projectId(PROJECT_ID)
-      .projectPhoto(PROJECT_PHOTO_URL)
+      .projectPhoto(PROJECT_PHOTO)
       .build();
 
     final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder().activity(activity).gcm(gcm).build();
@@ -121,7 +121,7 @@ public class DebugPushNotificationsView extends ScrollView {
       .category(com.kickstarter.models.Activity.CATEGORY_LAUNCH)
       .id(1)
       .projectId(PROJECT_ID)
-      .projectPhoto(PROJECT_PHOTO_URL)
+      .projectPhoto(PROJECT_PHOTO)
       .build();
 
     final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder().activity(activity).gcm(gcm).build();
@@ -137,7 +137,7 @@ public class DebugPushNotificationsView extends ScrollView {
 
     final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder()
       .gcm(gcm)
-      .project(PushNotificationEnvelope.Project.builder().id(PROJECT_ID).photoUrl(PROJECT_PHOTO_URL).build())
+      .project(PushNotificationEnvelope.Project.builder().id(PROJECT_ID).photo(PROJECT_PHOTO).build())
       .build();
     pushNotifications.add(envelope);
   }
@@ -153,7 +153,7 @@ public class DebugPushNotificationsView extends ScrollView {
       .category(com.kickstarter.models.Activity.CATEGORY_SUCCESS)
       .id(1)
       .projectId(PROJECT_ID)
-      .projectPhoto(PROJECT_PHOTO_URL)
+      .projectPhoto(PROJECT_PHOTO)
       .build();
 
     final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder().activity(activity).gcm(gcm).build();
@@ -171,7 +171,7 @@ public class DebugPushNotificationsView extends ScrollView {
       .category(com.kickstarter.models.Activity.CATEGORY_UPDATE)
       .id(1)
       .projectId(PROJECT_ID)
-      .projectPhoto(PROJECT_PHOTO_URL)
+      .projectPhoto(PROJECT_PHOTO)
       .updateId(175622L)
       .build();
 

@@ -49,7 +49,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxLines="3"
-        android:textColor="@color/black"
         android:text="Project name" />
 
     </RelativeLayout>
@@ -87,16 +86,14 @@
           android:layout_marginEnd="@dimen/grid_2"
           android:layout_marginRight="@dimen/grid_2"
           android:text="Update #"
-          android:textColor="@color/green"
-          android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
+          android:textColor="@color/green" />
 
         <TextView
           style="@style/CaptionSecondary"
           android:id="@+id/timestamp"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="Timestamp"
-          android:textColor="@color/dark_gray" />
+          android:text="Timestamp" />
       </LinearLayout>
 
       <TextView
@@ -105,8 +102,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/grid_1"
-        android:text="Update Title"
-        android:textColor="@color/black" />
+        android:text="Update Title" />
 
       <TextView
         style="@style/Subhead"
@@ -114,7 +110,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/grid_1"
-        android:textColor="@color/black"
         android:text="Update Body"/>
 
     </LinearLayout>

@@ -40,7 +40,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/grid_1_half"
         android:maxLines="3"
-        android:textColor="@color/black"
         android:text="Name" />
 
       <TextView
@@ -50,8 +49,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/grid_1_half"
         android:maxLines="2"
-        android:text="by Creator"
-        android:textColor="@color/dark_gray" />
+        android:text="by Creator" />
     </LinearLayout>
 
  </RelativeLayout>

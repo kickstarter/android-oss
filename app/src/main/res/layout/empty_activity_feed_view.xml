@@ -12,7 +12,6 @@
     android:layout_height="wrap_content"
     android:alpha="0.5"
     android:text="@string/speaker_notes_icon"
-    android:textColor="@color/dark_gray"
     android:textSize="@dimen/empty_feed_icon"
     android:paddingTop="@dimen/grid_5"
     android:paddingBottom="@dimen/grid_1" />
@@ -23,8 +22,7 @@
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/grid_1"
     android:paddingBottom="@dimen/grid_1"
-    android:text="@string/No_activity_yet"
-    android:textColor="@color/black" />
+    android:text="@string/No_activity_yet" />
 
   <TextView
     style="@style/BodySecondary"
@@ -33,7 +31,6 @@
     android:paddingTop="@dimen/grid_1"
     android:paddingBottom="@dimen/grid_2"
     android:text="@string/When_you_back_a_project_or_follow_a_friend"
-    android:textColor="@color/dark_gray"
     android:gravity="center_horizontal"
     android:paddingLeft="@dimen/grid_6"
     android:paddingRight="@dimen/grid_6" />

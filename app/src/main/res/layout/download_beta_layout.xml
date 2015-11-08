@@ -11,60 +11,53 @@
     android:layout_height="wrap_content">
 
     <TextView
+      style="@style/SubheadMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_1"
       android:layout_marginBottom="@dimen/grid_1"
-      android:text="@string/Build"
-      android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-      android:textStyle="bold"
-      android:textColor="@color/text_dark" />
+      android:text="@string/Build" />
 
     <TextView
+      style="@style/BodyPrimary"
       android:id="@+id/build"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="201506261815"
-      android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-      android:textColor="@color/text_dark" />
+      android:text="201506261815" />
 
     <TextView
+      style="@style/SubheadMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_3"
       android:layout_marginBottom="@dimen/grid_1"
-      android:text="@string/Changelog"
-      android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-      android:textStyle="bold"
-      android:textColor="@color/text_dark" />
+      android:text="@string/Changelog" />
 
     <TextView
+      style="@style/BodyPrimary"
       android:id="@+id/changelog"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="Changelog"
-      android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-      android:textColor="@color/text_dark" />
+      android:text="Changelog" />
 
     <TextView
+      style="@style/SubheadMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_3"
       android:layout_marginBottom="@dimen/grid_1"
-      android:text="@string/Instructions"
-      android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-      android:textStyle="bold"
-      android:textColor="@color/text_dark" />
+      android:text="@string/Instructions" />
 
     <TextView
+      style="@style/BodyPrimary"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="@string/A_request_has_been_made_to_download_the_latest_build"
-      android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-      android:textColor="@color/text_dark" />
+      android:text="@string/A_request_has_been_made_to_download_the_latest_build" />
 
     <Button
+      style="@style/Button"
       android:id="@+id/open_downloads_button"
+      android:background="@drawable/button_green"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_3"

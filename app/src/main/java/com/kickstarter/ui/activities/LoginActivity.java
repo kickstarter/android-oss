@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
@@ -30,6 +31,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
   @Bind(R.id.password) EditText passwordEditText;
 
   @BindString(R.string.Login_does_not_match_any_of_our_records) String loginDoesNotMatchString;
+  @BindString(R.string.Not_implemented_yet) String notImplementedYetString;
   @BindString(R.string.Unable_to_login) String unableToLoginString;
 
   @Override
@@ -94,6 +96,11 @@ public class LoginActivity extends BaseActivity<LoginPresenter> {
   @OnTextChanged(R.id.password)
   void onPasswordTextChanged(@NonNull final CharSequence password) {
     presenter.inputs.password(password.toString());
+  }
+
+  @OnClick(R.id.forgot_your_password_text_view)
+  public void forgotYourPasswordTextViewClick() {
+    Toast.makeText(this, notImplementedYetString, Toast.LENGTH_LONG).show();
   }
 
   @OnClick(R.id.login_button)

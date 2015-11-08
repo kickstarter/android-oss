@@ -35,7 +35,8 @@
     anything without your permission.
   </string>
   <string name="By_signing_up_you_agree_to_our_sign_up">
-    By signing up you agree to our <u>terms of use</u>, <u>privacy policy</u>, and <u>cookie policy</u>.</string>
+    By signing up you agree to our <u>terms of use</u>, <u>privacy policy</u>, and <u>cookie policy</u>.
+  </string>
   <string name="Campaign">Campaign</string>
   <string name="Cancel">Cancel</string>
   <string name="Categories">Categories</string>
@@ -66,7 +67,7 @@
   <string name="Explore_new_projects">Explore new projects</string>
   <string name="Find_friends">Find friends</string>
   <string name="Follow">Follow</string>
-  <string name="Forgot_your_password">Forgot your password?</string>
+  <string name="Forgot_your_password"><u>Forgot your password?</u></string>
   <string name="friend_name_backed_art_project">%1$s backed an Art project</string>
   <string name="friend_name_backed_comics_project">%1$s backed a Comics project</string>
   <string name="friend_name_backed_crafts_project">%1$s backed a Crafts project</string>

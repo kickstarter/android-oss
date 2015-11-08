@@ -31,7 +31,6 @@
       android:layout_marginLeft="@dimen/grid_3_half"
       android:layout_marginStart="@dimen/grid_3_half"
       android:gravity="center_vertical"
-      android:textColor="@color/black"
       android:text="@string/Log_in_or_sign_up" />
 
     <com.kickstarter.ui.views.IconTextView

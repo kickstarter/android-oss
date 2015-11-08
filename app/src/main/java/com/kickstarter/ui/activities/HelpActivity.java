@@ -22,7 +22,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 @RequiresPresenter(HelpPresenter.class)
-public class HelpActivity extends BaseActivity<HelpPresenter> {
+public final class HelpActivity extends BaseActivity<HelpPresenter> {
   public static final int HELP_TYPE_TERMS = 0;
   public static final int HELP_TYPE_PRIVACY = 1;
   public static final int HELP_TYPE_HOW_IT_WORKS = 2;

@@ -24,7 +24,7 @@ import butterknife.OnTextChanged;
 import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresPresenter(SignupPresenter.class)
-public class SignupActivity extends BaseActivity<SignupPresenter> {
+public final class SignupActivity extends BaseActivity<SignupPresenter> {
   @Bind(R.id.full_name) EditText nameEditText;
   @Bind(R.id.email) EditText emailEditText;
   @Bind(R.id.password) EditText passwordEditText;

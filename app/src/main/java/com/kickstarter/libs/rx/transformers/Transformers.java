@@ -1,14 +1,13 @@
 package com.kickstarter.libs.rx.transformers;
 
 import android.support.annotation.NonNull;
-import android.util.Pair;
 
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-final public class Transformers {
+public final class Transformers {
 
   /**
    * Prevents an observable from erroring by chaining `onErrorResumeNext`.

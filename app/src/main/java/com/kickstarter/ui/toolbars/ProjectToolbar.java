@@ -11,7 +11,7 @@ import com.kickstarter.ui.activities.ProjectActivity;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ProjectToolbar extends KSToolbar {
+public final class ProjectToolbar extends KSToolbar {
   public ProjectToolbar(@NonNull final Context context) {
     super(context);
   }

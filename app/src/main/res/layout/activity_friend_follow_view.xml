@@ -39,7 +39,6 @@
       android:layout_marginLeft="@dimen/grid_1"
       android:layout_marginRight="@dimen/grid_1"
       android:text="Username is following you!"
-      android:textColor="@color/black"
       android:layout_weight="1" />
 
     <View

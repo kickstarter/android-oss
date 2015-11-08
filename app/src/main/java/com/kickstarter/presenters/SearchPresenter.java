@@ -26,7 +26,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-public class SearchPresenter extends Presenter<SearchActivity> implements SearchPresenterInputs, SearchPresenterOutputs {
+public final class SearchPresenter extends Presenter<SearchActivity> implements SearchPresenterInputs, SearchPresenterOutputs {
   // INPUTS
   private final PublishSubject<String> search = PublishSubject.create();
   public SearchPresenterInputs inputs = this;

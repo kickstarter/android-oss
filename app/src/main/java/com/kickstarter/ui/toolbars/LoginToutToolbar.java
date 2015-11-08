@@ -16,7 +16,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class LoginToutToolbar extends KSToolbar {
+public final class LoginToutToolbar extends KSToolbar {
   @Bind(R.id.help_button) TextView helpButton;
 
   public LoginToutToolbar(@NonNull final Context context) {

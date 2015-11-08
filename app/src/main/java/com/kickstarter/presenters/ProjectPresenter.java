@@ -25,7 +25,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public class ProjectPresenter extends Presenter<ProjectActivity> implements ProjectAdapter.Delegate {
+public final class ProjectPresenter extends Presenter<ProjectActivity> implements ProjectAdapter.Delegate {
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
   private final PublishSubject<Void> backProjectClick = PublishSubject.create();

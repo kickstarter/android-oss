@@ -32,7 +32,6 @@
         android:gravity="center"
         android:layout_marginLeft="@dimen/grid_3_half"
         android:layout_marginStart="@dimen/grid_3_half"
-        android:textColor="@color/black"
         android:text="@string/Sign_up" />
 
     </LinearLayout>

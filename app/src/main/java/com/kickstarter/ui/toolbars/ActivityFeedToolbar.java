@@ -16,7 +16,7 @@ import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ActivityFeedToolbar extends KSToolbar {
+public final class ActivityFeedToolbar extends KSToolbar {
   @Bind(R.id.more_button) IconTextView moreButton;
   @BindString(R.string.Not_implemented_yet) String notImplementedYetString;
 

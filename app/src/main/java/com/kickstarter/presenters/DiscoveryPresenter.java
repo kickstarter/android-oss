@@ -31,7 +31,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements DiscoveryPresenterInputs {
+public final class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements DiscoveryPresenterInputs {
   // INPUTS
   private final PublishSubject<Project> projectClick = PublishSubject.create();
   private final PublishSubject<Void> scrollEvent = PublishSubject.create();
@@ -135,10 +135,11 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
    * whenever `nextPage` emits.
    */
   private Observable<List<Project>> projectsWithPagination(@NonNull final DiscoveryParams firstPageParams) {
+
     return paramsWithPagination(firstPageParams)
       .concatMap(this::projectsFromParams)
       .takeUntil(List::isEmpty)
-      .scan(ListUtils::concatDistinct)
+      .scan(new ArrayList<>(), ListUtils::concatDistinct)
       ;
   }
 
@@ -164,21 +165,27 @@ public class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements 
       .retry(2)
       .onErrorResumeNext(e -> Observable.empty())
       .map(DiscoverEnvelope::projects)
-      .map(this::bumpPOTDToFront)
+      .map(this::bringPotdToFront)
       ;
   }
 
   /**
-   * Give a list of projects, finds if it contains the POTD and if so
+   * Given a list of projects, finds if it contains the POTD and if so
    * bumps it to the front of the list.
    */
-  private List<Project> bumpPOTDToFront(@NonNull final List<Project> projects) {
+  private List<Project> bringPotdToFront(@NonNull final List<Project> projects) {
 
     return Observable.from(projects)
-      .reduce(new ArrayList<>(), (final List<Project> accum, final Project p) -> {
-        return p.isPotdToday() ? ListUtils.prepend(accum, p) : ListUtils.append(accum, p);
-      })
+      .reduce(new ArrayList<>(), this::prependPotdElseAppend)
       .toBlocking().single();
+  }
+
+  /**
+   * Given a list of projects and a particular project, returns the list
+   * when the project prepended if it's POTD and appends otherwise.
+   */
+  @NonNull private List<Project> prependPotdElseAppend(@NonNull final List<Project> projects, @NonNull final Project project) {
+    return project.isPotdToday() ? ListUtils.prepend(projects, project) : ListUtils.append(projects, project);
   }
 
   public void filterButtonClick() {

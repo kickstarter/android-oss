@@ -23,7 +23,7 @@ import java.util.TreeMap;
 
 import rx.Observable;
 
-public class DiscoveryFilterAdapter extends KSAdapter {
+public final class DiscoveryFilterAdapter extends KSAdapter {
   private final Delegate delegate;
   private DiscoveryParams selectedParams;
 

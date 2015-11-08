@@ -16,7 +16,7 @@ import java.util.Collections;
 
 import rx.Observable;
 
-public class ProjectAdapter extends KSAdapter {
+public final class ProjectAdapter extends KSAdapter {
   private final Delegate delegate;
 
   public interface Delegate extends ProjectViewHolder.Delegate, RewardViewHolder.Delegate {}

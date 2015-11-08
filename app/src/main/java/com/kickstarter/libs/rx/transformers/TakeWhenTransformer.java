@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import rx.Observable;
 
-public class TakeWhenTransformer <S, T> implements Observable.Transformer <S, S> {
+final class TakeWhenTransformer <S, T> implements Observable.Transformer <S, S> {
   @NonNull private final Observable<T> when;
 
   public TakeWhenTransformer(@NonNull final Observable<T> when) {

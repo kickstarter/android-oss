@@ -15,7 +15,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ProjectStateChangedViewHolder extends ActivityListViewHolder {
+public final class ProjectStateChangedViewHolder extends ActivityListViewHolder {
   @Bind(R.id.title) TextView titleTextView;
   @Bind(R.id.project_photo) ImageView projectPhotoImageView;
 

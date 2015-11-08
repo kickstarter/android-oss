@@ -49,9 +49,6 @@ public final class Paginator {
     return new Pair<>(visibleItemCount + pastVisibleItems, totalItemCount);
   }
 
-  /**
-   * Returns `true` when the visible item gets "close" to the bottom.
-   */
   private boolean visibleItemIsCloseToBottom(@NonNull final Pair<Integer, Integer> visibleItemOfTotal) {
     return visibleItemOfTotal.first == visibleItemOfTotal.second - 2;
   }

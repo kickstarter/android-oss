@@ -67,6 +67,7 @@
         android:text="@string/Sign_up_with_email" />
 
       <TextView
+        style="@style/CaptionSecondary"
         android:id="@+id/disclaimer_text_view"
         android:background="@drawable/click_indicator_light_masked"
         android:layout_width="wrap_content"
@@ -82,8 +83,6 @@
         android:paddingRight="@dimen/grid_1"
         android:paddingTop="@dimen/grid_1"
         android:paddingBottom="@dimen/grid_1"
-        android:textAppearance="@style/CaptionPrimary"
-        android:textColor="@color/dark_gray"
         android:text="@string/By_signing_up_you_agree_to_our_sign_up" />
 
     </LinearLayout>

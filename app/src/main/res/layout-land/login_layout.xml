@@ -17,8 +17,9 @@
       layout="@layout/login_form_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginLeft="@dimen/grid_3"
-      android:layout_marginRight="@dimen/grid_3" />
+      android:layout_marginLeft="@dimen/form_landscape_margin_x"
+      android:layout_marginRight="@dimen/form_landscape_margin_x" />
 
   </LinearLayout>
 </ScrollView>
+

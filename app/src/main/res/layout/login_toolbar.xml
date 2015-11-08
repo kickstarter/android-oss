@@ -6,7 +6,6 @@
   tools:showIn="@layout/login_layout"
   style="@style/Toolbar"
   android:id="@+id/toolbar"
-  android:background="@color/light_gray"
   android:elevation="0dp"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp">
@@ -31,7 +30,6 @@
       android:layout_marginLeft="@dimen/grid_3_half"
       android:layout_marginStart="@dimen/grid_3_half"
       android:gravity="center_vertical"
-      android:textColor="@color/black"
       android:text="@string/Log_in" />
 
     <com.kickstarter.ui.views.IconTextView

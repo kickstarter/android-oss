@@ -36,6 +36,7 @@ public final class Paginator {
   public void stop() {
     if (subscription != null) {
       subscription.unsubscribe();
+      subscription = null;
     }
   }
 

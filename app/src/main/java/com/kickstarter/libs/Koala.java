@@ -45,6 +45,11 @@ public final class Koala {
     }
   }
 
+   /* LOG OUT */
+  public void trackLogout() {
+    client.track("Logout");
+  }
+
   @NonNull private static Map<String, Object> discoveryParamsProperties(@NonNull final DiscoveryParams params) {
 
     final Map<String, Object> properties = Collections.unmodifiableMap(new HashMap<String, Object>(){{

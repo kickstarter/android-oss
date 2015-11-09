@@ -152,7 +152,7 @@ public final class ProjectPresenter extends Presenter<ProjectActivity> implement
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startViewPledgeActivity(vp.second)));
 
-    addSubscription(projectOnUserChangeStar
+    addSubscription(projectOnUserChangeStar.mergeWith(starredProjectOnLoginSuccess)
       .subscribe(koala::trackProjectStar));
   }
 

@@ -8,6 +8,7 @@ import android.util.Pair;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Project;
@@ -28,6 +29,7 @@ import rx.subjects.PublishSubject;
 public final class ProjectPresenter extends Presenter<ProjectActivity> implements ProjectAdapter.Delegate {
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
+  @Inject Koala koala;
   private final PublishSubject<Void> backProjectClick = PublishSubject.create();
   private final PublishSubject<Void> blurbClick = PublishSubject.create();
   private final PublishSubject<Void> commentsClick = PublishSubject.create();
@@ -149,6 +151,9 @@ public final class ProjectPresenter extends Presenter<ProjectActivity> implement
       .compose(Transformers.takeWhen(viewPledgeClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startViewPledgeActivity(vp.second)));
+
+    addSubscription(projectOnUserChangeStar
+      .subscribe(koala::trackProjectStar));
   }
 
   public void initialize(@Nullable final Project initialProject, @Nullable final String param) {

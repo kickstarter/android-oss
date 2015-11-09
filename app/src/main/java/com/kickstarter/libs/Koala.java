@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.kickstarter.libs.utils.MapUtils;
 import com.kickstarter.models.Category;
+import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
@@ -33,6 +34,15 @@ public final class Koala {
 
   public void trackDiscoveryFilterSelected(@NonNull final DiscoveryParams params) {
     client.trackMap("Discover Modal Selected Filter", discoveryParamsProperties(params));
+  }
+
+  /* PROJECT STAR */
+  public void trackProjectStar(@NonNull final Project project) {
+    if (project.isStarred()) {
+      client.track("Project Star");
+    } else {
+      client.track("Project Unstar");
+    }
   }
 
   @NonNull private static Map<String, Object> discoveryParamsProperties(@NonNull final DiscoveryParams params) {

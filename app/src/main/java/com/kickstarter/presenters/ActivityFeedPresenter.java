@@ -51,7 +51,7 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
   public void nextPage() {
     nextPage.onNext(null);
   }
-  public ActivityFeedPresenterInputs inputs() { return this; }
+  public final ActivityFeedPresenterInputs inputs = this;
 
   @Override
   protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {

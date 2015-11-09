@@ -39,7 +39,7 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedPresent
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    paginator = new Paginator(recyclerView, presenter.inputs()::nextPage);
+    paginator = new Paginator(recyclerView, presenter.inputs::nextPage);
   }
 
   @Override

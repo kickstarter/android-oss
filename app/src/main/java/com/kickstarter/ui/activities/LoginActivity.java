@@ -100,7 +100,7 @@ public final class LoginActivity extends BaseActivity<LoginPresenter> {
 
   @OnClick(R.id.forgot_your_password_text_view)
   public void forgotYourPasswordTextViewClick() {
-    Toast.makeText(this, notImplementedYetString, Toast.LENGTH_LONG).show();
+    displayToast(notImplementedYetString);
   }
 
   @OnClick(R.id.login_button)

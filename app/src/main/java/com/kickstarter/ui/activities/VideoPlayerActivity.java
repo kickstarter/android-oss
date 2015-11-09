@@ -41,7 +41,6 @@ public final class VideoPlayerActivity extends BaseActivity implements KSVideoPl
     final Project project = intent.getParcelableExtra(getString(R.string.intent_project));
     final Video video = project.video();
 
-    rootView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     rootView.setOnTouchListener(((view, motionEvent) -> {
       if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
         toggleControlsVisibility();
@@ -81,6 +80,22 @@ public final class VideoPlayerActivity extends BaseActivity implements KSVideoPl
       loadingIndicatorProgressBar.setVisibility(View.VISIBLE);
     } else {
       loadingIndicatorProgressBar.setVisibility(View.GONE);
+    }
+  }
+
+  @Override
+  public void onWindowFocusChanged(final boolean hasFocus) {
+    super.onWindowFocusChanged(hasFocus);
+
+    if (hasFocus) {
+      rootView.setSystemUiVisibility(
+        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+          | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+          | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+          | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+          | View.SYSTEM_UI_FLAG_FULLSCREEN
+          | View.SYSTEM_UI_FLAG_IMMERSIVE
+      );
     }
   }
 

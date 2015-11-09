@@ -16,7 +16,7 @@ public final class Koala {
   @NonNull private final Context context;
   @NonNull private final MixpanelAPI client;
 
-  public Koala(@NonNull final Context context) {
+  public Koala(@ForApplication @NonNull final Context context) {
     this.context = context;
     client = MixpanelAPI.getInstance(context, "koala");
   }

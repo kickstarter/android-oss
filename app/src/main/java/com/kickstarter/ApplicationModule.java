@@ -70,7 +70,7 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  Koala provideKoala(@NonNull final Application application) {
+  Koala provideKoala(@ForApplication @NonNull final Context context) {
     return new Koala(application);
   }
 

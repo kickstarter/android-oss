@@ -89,7 +89,7 @@ public class PushNotifications {
 
     // TODO: intent
     final Notification notification = notificationBuilder(gcm.title(), gcm.alert())
-      .setLargeIcon(fetchBitmap(activity.userPhoto(), false))
+      .setLargeIcon(fetchBitmap(activity.userPhoto(), true))
       .build();
     notificationManager().notify(envelope.signature(), notification);
   }

@@ -84,10 +84,13 @@ public class PushNotifications {
   }
 
   private void showFriendFollow(@NonNull final PushNotificationEnvelope envelope) {
+    final Activity activity = envelope.activity();
     final GCM gcm = envelope.gcm();
 
-    // TODO: Friend icon, intent
-    final Notification notification = notificationBuilder(gcm.title(), gcm.alert()).build();
+    // TODO: intent
+    final Notification notification = notificationBuilder(gcm.title(), gcm.alert())
+      .setLargeIcon(fetchBitmap(activity.userPhoto(), false))
+      .build();
     notificationManager().notify(envelope.signature(), notification);
   }
 

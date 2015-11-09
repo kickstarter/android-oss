@@ -11,8 +11,8 @@ import rx.Subscription;
 import rx.functions.Action0;
 
 public final class Paginator {
-  @NonNull private final RecyclerView recyclerView;
-  @NonNull private final Action0 nextPage;
+  private @NonNull final RecyclerView recyclerView;
+  private @NonNull final Action0 nextPage;
   private Subscription subscription = null;
 
   public Paginator(@NonNull final RecyclerView recyclerView, @NonNull final Action0 nextPage) {
@@ -43,7 +43,7 @@ public final class Paginator {
   /**
    * Returns a (visibleItem, totalItemCount) pair given a linear layout manager.
    */
-  @NonNull private Pair<Integer, Integer> displayedItemFromLinearLayout(@NonNull final LinearLayoutManager manager) {
+  private @NonNull Pair<Integer, Integer> displayedItemFromLinearLayout(@NonNull final LinearLayoutManager manager) {
     final int visibleItemCount = manager.getChildCount();
     final int totalItemCount = manager.getItemCount();
     final int pastVisibleItems = manager.findFirstVisibleItemPosition();

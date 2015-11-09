@@ -2,6 +2,7 @@ package com.kickstarter.libs;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.kickstarter.libs.utils.MapUtils;
 import com.kickstarter.models.Category;
@@ -22,6 +23,7 @@ public final class Koala {
     client = MixpanelAPI.getInstance(context, "koala");
   }
 
+  // DISCOVERY
   public void trackDiscovery(@NonNull final DiscoveryParams params) {
     client.trackMap("Discover List View", discoveryParamsProperties(params));
   }
@@ -36,7 +38,7 @@ public final class Koala {
     client.trackMap("Discover Modal Selected Filter", discoveryParamsProperties(params));
   }
 
-  /* PROJECT STAR */
+  // PROJECT STAR
   public void trackProjectStar(@NonNull final Project project) {
     if (project.isStarred()) {
       client.track("Project Star");
@@ -45,11 +47,80 @@ public final class Koala {
     }
   }
 
-   /* LOG OUT */
+  // SESSION EVENTS
+  public void trackLoginRegisterTout(@Nullable final String intent) {
+    if (intent == null) {
+      client.track("Application Login or Signup");
+    } else {
+      client.trackMap("Application Login or Signup", new HashMap<String, Object>() {{
+        put("intent", intent); // do we have a "compact" equiv to get rid of nulls?
+      }});
+    }
+  }
+
+  public void trackLoginSuccess() {
+    client.track("Login");
+  }
+
+  public void trackLoginError() {
+    client.track("Errored User Login");
+  }
+
+  public void trackTwoFactorAuthView() {
+    client.track("Two-factor Authentication Confirm View");
+  }
+
+  public void trackTwoFactorResendCode() {
+    client.track("Two-factor Authentication Resend Code");
+  }
+
+  public void trackRegisterFormView() {
+    client.track("User Signup");
+  }
+
+  public void trackRegisterError() {
+    client.track("Errored User Signup");
+  }
+
+  public void trackRegisterSuccess() {
+    client.track("New User");
+  }
+
+  public void trackForgotPasswordFormView() {
+    client.track("Forgot Password View");
+  }
+
+  public void trackForgotPasswordRequestSuccess() {
+    client.track("Forgot Password Requested");
+  }
+
+  public void trackForgotPasswordRequestFailed() {
+    client.track("Forgot Password Errored");
+  }
+
+  public void trackFacebookConfirmation() {
+    client.track("Facebook Confirm");
+  }
+
+  public void trackFacebookLoginSuccess() {
+    client.track("Facebook Login");
+  }
+
+  public void trackFacebookLoginError() {
+    client.track("Errored Facebook Login");
+  }
+
   public void trackLogout() {
     client.track("Logout");
   }
 
+  public void trackSignupNewsletterToggle(final boolean sendNewsletters) {
+    client.trackMap("Signup Newsletter Toggle", new HashMap<String, Object>() {{
+      put("send_newsletters", sendNewsletters);
+    }});
+  }
+
+  // HELPERS
   @NonNull private static Map<String, Object> discoveryParamsProperties(@NonNull final DiscoveryParams params) {
 
     final Map<String, Object> properties = Collections.unmodifiableMap(new HashMap<String, Object>(){{

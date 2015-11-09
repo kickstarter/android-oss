@@ -19,6 +19,12 @@ import butterknife.OnClick;
 
 @RequiresPresenter(LoginToutPresenter.class)
 public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
+  public static final String LOGIN_INTENT_BACK_PROJECT = "pledge";
+  public static final String LOGIN_INTENT_GENERIC = "generic";
+  public static final String LOGIN_INTENT_LOGIN_TAB = "login_tab";
+  public static final String LOGIN_INTENT_MESSAGE_CREATOR = "new_message";
+  public static final String LOGIN_INTENT_STAR_PROJECT = "star";
+
   @Bind(R.id.login_button) Button loginButton;
   @Bind(R.id.sign_up_button) Button signupButton;
 
@@ -32,6 +38,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
     ButterKnife.bind(this);
 
     forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
+    //presenter.showLoginWithIntent(getIntent().getExtras().getString(getString(R.string.intent_login_type)));
   }
 
   @Override

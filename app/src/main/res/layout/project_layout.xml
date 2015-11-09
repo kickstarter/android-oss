@@ -9,7 +9,7 @@
     android:id="@+id/project_toolbar"/>
 
   <android.support.v7.widget.RecyclerView
-    android:id="@+id/rewards_recycler_view"
+    android:id="@+id/project_recycler_view"
     android:layout_below="@id/project_toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

@@ -1,6 +1,7 @@
 package com.kickstarter.services;
 
 import android.net.Uri;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -12,29 +13,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class ActivityFeedParams {
-  @Nullable final Integer cursor;
-  @Nullable final Integer since;
+import auto.parcel.AutoParcel;
 
-  public ActivityFeedParams() {
-    cursor = null;
-    since = null;
+@AutoParcel
+public abstract class ActivityFeedParams implements Parcelable {
+  abstract @Nullable Integer cursor();
+  abstract @Nullable Integer since();
+
+  @AutoParcel.Builder
+  public abstract static class Builder {
+    public abstract Builder cursor(Integer __);
+    public abstract Builder since(Integer __);
+    public abstract ActivityFeedParams build();
   }
 
-  public ActivityFeedParams(@Nullable final Integer cursor, @Nullable final Integer since) {
-    this.cursor = null;
-    this.since = null;
+  public static Builder builder() {
+    return new AutoParcel_ActivityFeedParams.Builder()
+      .cursor(null)
+      .since(null);
   }
 
-  @NonNull public static ActivityFeedParams cursor(@NonNull final Integer cursor) {
-    return new ActivityFeedParams(cursor, null);
-  }
+  public abstract Builder toBuilder();
 
-  @NonNull public static ActivityFeedParams since(@NonNull final Integer since) {
-    return new ActivityFeedParams(null, since);
-  }
-
-  @NonNull public static ActivityFeedParams fromUrl(@NonNull final String url) {
+  public static @NonNull ActivityFeedParams fromUrl(final @NonNull String url) {
 
     Uri uri = Uri.parse(url);
     final String cursorString = uri.getQueryParameter("cursor");
@@ -48,7 +49,10 @@ public final class ActivityFeedParams {
       since = Integer.valueOf(sinceString);
     }
 
-    return new ActivityFeedParams(cursor, since);
+    return ActivityFeedParams.builder()
+      .cursor(cursor)
+      .since(since)
+      .build();
   }
 
   @NonNull public List<String> categoryParams() {
@@ -66,11 +70,11 @@ public final class ActivityFeedParams {
   @NonNull public Map<String, String> paginationParams() {
     return Collections.unmodifiableMap(new HashMap<String, String>() {{
 
-      if (cursor != null) {
-        put("cursor", String.valueOf(cursor));
+      if (cursor() != null) {
+        put("cursor", String.valueOf(cursor()));
       }
-      if (since != null) {
-        put("since", String.valueOf(since));
+      if (since() != null) {
+        put("since", String.valueOf(since()));
       }
 
     }});

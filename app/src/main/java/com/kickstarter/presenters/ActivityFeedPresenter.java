@@ -108,7 +108,7 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
       .subscribe(vp -> vp.first.showProjectUpdate(vp.second)));
 
     // kick off the first page of activities
-    params.onNext(new ActivityFeedParams());
+    params.onNext(ActivityFeedParams.builder().build());
     nextPage.onNext(null);
   }
 

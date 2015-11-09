@@ -12,7 +12,7 @@ import com.google.android.exoplayer.upstream.Allocator;
 import com.google.android.exoplayer.upstream.DataSource;
 import com.google.android.exoplayer.upstream.DefaultAllocator;
 import com.google.android.exoplayer.upstream.DefaultUriDataSource;
-import com.kickstarter.libs.KsrVideoPlayer.RendererBuilder;
+import com.kickstarter.libs.KSVideoPlayer.RendererBuilder;
 
 public class KsrRendererBuilder implements RendererBuilder {
   public static final int BUFFER_SEGMENT_COUNT = 256;
@@ -26,7 +26,7 @@ public class KsrRendererBuilder implements RendererBuilder {
   }
 
   @Override
-  public void buildRenderers(@NonNull final KsrVideoPlayer player) {
+  public void buildRenderers(@NonNull final KSVideoPlayer player) {
     final Allocator allocator = new DefaultAllocator(BUFFER_SEGMENT_SIZE);
     final DataSource dataSource = new DefaultUriDataSource(context, videoLink);
     final ExtractorSampleSource sampleSource = new ExtractorSampleSource(Uri.parse(videoLink), dataSource,

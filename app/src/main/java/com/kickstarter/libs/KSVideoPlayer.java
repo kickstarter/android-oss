@@ -12,7 +12,7 @@ import com.google.android.exoplayer.util.PlayerControl;
 /**
  * ExoPlayer wrapper that provides higher level interface.
  */
-public class KsrVideoPlayer implements ExoPlayer.Listener {
+public final class KSVideoPlayer implements ExoPlayer.Listener {
   private final int TRACK_RENDERER_COUNT = 3; // audio, video, text
   private boolean lastReportedPlayWhenReady;
   private int lastReportedPlaybackState;
@@ -24,14 +24,14 @@ public class KsrVideoPlayer implements ExoPlayer.Listener {
   private Listener listener;
 
   public interface Listener {
-    void onStateChanged(boolean plaWhenReady, int playbackState);
+    void onStateChanged(boolean playWhenReady, int playbackState);
   }
 
   public interface RendererBuilder {
-    void buildRenderers(KsrVideoPlayer player);
+    void buildRenderers(KSVideoPlayer player);
   }
 
-  public KsrVideoPlayer(@NonNull final RendererBuilder rendererBuilder) {
+  public KSVideoPlayer(@NonNull final RendererBuilder rendererBuilder) {
     this.player = ExoPlayer.Factory.newInstance(TRACK_RENDERER_COUNT);
     this.rendererBuilder = rendererBuilder;
     playerControl = new PlayerControl(player);
@@ -60,6 +60,10 @@ public class KsrVideoPlayer implements ExoPlayer.Listener {
 
   public long getDuration() {
     return player.getDuration();
+  }
+
+  public int getPlaybackState() {
+    return player.getPlaybackState();
   }
 
   public PlayerControl getPlayerControl() {
@@ -102,8 +106,9 @@ public class KsrVideoPlayer implements ExoPlayer.Listener {
     if (lastReportedPlayWhenReady != playWhenReady || lastReportedPlaybackState != playbackState) {
       listener.onStateChanged(playWhenReady, playbackState);
     }
-    lastReportedPlayWhenReady = playWhenReady;
+
     lastReportedPlaybackState = playbackState;
+    lastReportedPlayWhenReady = playWhenReady;
   }
 
   public void seekTo(final long position) {

@@ -2,10 +2,8 @@ package com.kickstarter.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.MotionEvent;
-import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.MediaController;
@@ -15,19 +13,18 @@ import com.google.android.exoplayer.AspectRatioFrameLayout;
 import com.google.android.exoplayer.ExoPlayer;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.KSVideoPlayer;
 import com.kickstarter.libs.KsrRendererBuilder;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Video;
-import com.kickstarter.libs.KsrVideoPlayer;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class VideoPlayerActivity extends BaseActivity implements SurfaceHolder.Callback, KsrVideoPlayer.Listener {
+public final class VideoPlayerActivity extends BaseActivity implements KSVideoPlayer.Listener {
   private MediaController mediaController;
-  private KsrVideoPlayer player;
+  private KSVideoPlayer player;
   private long playerPosition;
-  private Video video;
 
   public @Bind(R.id.video_player_layout) View rootView;
   public @Bind(R.id.surface_view) SurfaceView surfaceView;
@@ -42,8 +39,9 @@ public class VideoPlayerActivity extends BaseActivity implements SurfaceHolder.C
 
     final Intent intent = getIntent();
     final Project project = intent.getParcelableExtra(getString(R.string.intent_project));
-    video = project.video();
+    final Video video = project.video();
 
+    rootView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     rootView.setOnTouchListener(((view, motionEvent) -> {
       if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
         toggleControlsVisibility();
@@ -51,21 +49,20 @@ public class VideoPlayerActivity extends BaseActivity implements SurfaceHolder.C
       return true;
     }));
 
-    surfaceView.getHolder().addCallback(this);
-    mediaController = new MediaController(this);
-    mediaController.setAnchorView(rootView);
-  }
-
-  private void preparePlayer(final boolean playWhenReady) {
-    player = new KsrVideoPlayer(new KsrRendererBuilder(this, video.high()));
+    // Create player
+    player = new KSVideoPlayer(new KsrRendererBuilder(this, video.high()));
     player.setListener(this);
-    player.seekTo(playerPosition);
+    player.seekTo(playerPosition);  // todo: will be used for inline video playing
+
+    // Set media controller
+    mediaController = new MediaController(this);
     mediaController.setMediaPlayer(player.getPlayerControl());
+    mediaController.setAnchorView(rootView);
     mediaController.setEnabled(true);
 
     player.prepare();
     player.setSurface(surfaceView.getHolder().getSurface());
-    player.setPlayWhenReady(playWhenReady);
+    player.setPlayWhenReady(true);
   }
 
   @Override
@@ -75,15 +72,7 @@ public class VideoPlayerActivity extends BaseActivity implements SurfaceHolder.C
   }
 
   @Override
-  public void onResume() {
-    super.onResume();
-    if (player == null) {
-      preparePlayer(true);
-    }
-  }
-
-  @Override
-  public void onStateChanged(final boolean plaWhenReady, final int playbackState) {
+  public void onStateChanged(final boolean playWhenReady, final int playbackState) {
     if (playbackState == ExoPlayer.STATE_ENDED) {
       mediaController.show();
     }
@@ -96,32 +85,9 @@ public class VideoPlayerActivity extends BaseActivity implements SurfaceHolder.C
   }
 
   private void releasePlayer() {
-    if (player != null) {
-      playerPosition = player.getCurrentPosition();
-      player.release();
-      player = null;
-    }
-  }
-
-  @Override
-  public void surfaceCreated(@NonNull final SurfaceHolder surfaceHolder) {
-    if (player != null) {
-      player.setSurface(surfaceView.getHolder().getSurface());
-    }
-  }
-
-  @Override
-  public void surfaceChanged(@NonNull final SurfaceHolder surfaceHolder, final int format, final int width,
-    final int height) {
-    // Do nothing for now.
-  }
-
-  @Override
-  public void surfaceDestroyed(@NonNull final SurfaceHolder surfaceHolder) {
-    if (player != null) {
-      surfaceHolder.getSurface().release();
-      player.pushSurface(true);
-    }
+    playerPosition = player.getCurrentPosition();
+    player.release();
+    player = null;
   }
 
   public void toggleControlsVisibility() {

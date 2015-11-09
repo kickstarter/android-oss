@@ -50,6 +50,7 @@ public class MessageService extends GcmListenerService {
       return;
     }
 
+    Timber.d("Received message: %s", envelope.toString());
     pushNotifications.add(envelope);
   }
 }

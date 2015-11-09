@@ -24,7 +24,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 @RequiresPresenter(CheckoutPresenter.class)
-public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
+public final class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
   private Project project;
   private String urlToReload;
   @Bind(R.id.web_view) KSWebView webView;
@@ -86,7 +86,7 @@ public class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
   private boolean handleCheckoutThanksUriRequest(@NonNull final Request request, @NonNull final WebView webView) {
     final Intent intent = new Intent(this, ThanksActivity.class)
       .putExtra(getString(R.string.intent_project), project);
-    startActivity(intent);
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
     return true;
   }
 

@@ -24,7 +24,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public class ViewPledgePresenter extends Presenter<ViewPledgeActivity> implements ViewPledgePresenterErrors {
+public final class ViewPledgePresenter extends Presenter<ViewPledgeActivity> implements ViewPledgePresenterErrors {
   private final PublishSubject<Project> project = PublishSubject.create();
 
   @Inject ApiClient client;

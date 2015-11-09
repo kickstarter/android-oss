@@ -21,7 +21,7 @@ import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder;
 import java.util.Collections;
 import java.util.List;
 
-public class ActivityFeedAdapter extends KSAdapter {
+public final class ActivityFeedAdapter extends KSAdapter {
   private final Delegate delegate;
 
   public interface Delegate extends FriendBackingViewHolder.Delegate, ProjectStateChangedPositiveViewHolder.Delegate,

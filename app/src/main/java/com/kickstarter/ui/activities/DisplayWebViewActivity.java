@@ -2,23 +2,16 @@ package com.kickstarter.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
-import android.view.View;
-import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.ui.views.KSWebView;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
-public class DisplayWebViewActivity extends BaseActivity {
+public final class DisplayWebViewActivity extends BaseActivity {
   @Bind(R.id.generic_webview) KSWebView webView;
 
   public void onCreate(@Nullable final Bundle savedInstanceState) {

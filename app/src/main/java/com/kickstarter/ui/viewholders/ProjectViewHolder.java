@@ -23,13 +23,13 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ProjectViewHolder extends KSViewHolder {
+public final class ProjectViewHolder extends KSViewHolder {
   private Project project;
   private final Delegate delegate;
 
 //  protected @Nullable @Bind(R.id.play_button_overlay) IconTextView playButtonIconTextView;
 //  protected @Nullable @Bind(R.id.project_detail_video) VideoView videoView;
-  protected @Bind(R.id.project_detail_photo) ImageView photoImageView;
+  protected @Bind(R.id.project_photo) ImageView photoImageView;
   protected @Bind(R.id.project_name) TextView projectNameTextView;
   protected @Bind(R.id.creator_name) TextView creatorNameTextView;
   protected @Bind(R.id.backer_label) LinearLayout backerLabelLinearLayout;

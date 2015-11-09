@@ -25,7 +25,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 @RequiresPresenter(ViewPledgePresenter.class)
-public class ViewPledgeActivity extends BaseActivity<ViewPledgePresenter> {
+public final class ViewPledgeActivity extends BaseActivity<ViewPledgePresenter> {
   public @Bind(R.id.avatar) ImageView avatarImageView;
   public @Bind(R.id.name) TextView nameTextView;
   public @Bind(R.id.sequence) TextView sequenceTextView;

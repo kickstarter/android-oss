@@ -32,7 +32,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public class CommentFeedPresenter extends Presenter<CommentFeedActivity> implements CommentFeedPresenterInputs, CommentFeedPresenterOutputs, CommentFeedPresenterErrors {
+public final class CommentFeedPresenter extends Presenter<CommentFeedActivity> implements CommentFeedPresenterInputs, CommentFeedPresenterOutputs, CommentFeedPresenterErrors {
   // INPUTS
   private final PublishSubject<String> commentBody = PublishSubject.create();
   private final PublishSubject<Void> contextClick = PublishSubject.create();

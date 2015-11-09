@@ -12,7 +12,7 @@ import com.kickstarter.services.DiscoveryParams;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class SearchTermViewHolder extends KSViewHolder {
+public final class SearchTermViewHolder extends KSViewHolder {
   private DiscoveryParams params;
 
   @Bind(R.id.search_term_text_view) TextView termTextView;

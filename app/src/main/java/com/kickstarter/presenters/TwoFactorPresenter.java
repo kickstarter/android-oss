@@ -24,7 +24,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public class TwoFactorPresenter extends Presenter<TwoFactorActivity> implements TwoFactorPresenterInputs, TwoFactorPresenterErrors {
+public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> implements TwoFactorPresenterInputs, TwoFactorPresenterErrors {
   // INPUTS
   private final PublishSubject<String> code = PublishSubject.create();
   private final PublishSubject<View> loginClick = PublishSubject.create();

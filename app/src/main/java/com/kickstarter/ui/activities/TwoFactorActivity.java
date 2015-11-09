@@ -24,7 +24,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresPresenter(TwoFactorPresenter.class)
-public class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
+public final class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
   public @Bind(R.id.code) EditText codeEditText;
   public @Bind(R.id.resend_button) Button resendButton;
   public @Bind(R.id.login_button) Button loginButton;

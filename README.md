@@ -4,7 +4,7 @@
 2. Download the [JDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html). Currently using 8.
 3. [Install Android Studio](https://developer.android.com/sdk/index.html)
 4. Add the Android tools to your `PATH` for convenience when working in the
-   shell, e.g. in your `.bashrc`:
+   shell, e.g. in your `.bash_profile`:
 
    ```bash
    export PATH=${HOME}/Library/Android/sdk/platform-tools:${HOME}/Library/Android/sdk/tools:$PATH

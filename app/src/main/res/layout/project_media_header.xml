@@ -14,9 +14,10 @@
     android:layout_gravity="center"/>
 
   <ImageView
-    android:id="@+id/project_detail_photo"
+    android:id="@+id/project_photo"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/gray_gradient"
     android:adjustViewBounds="true"/>
 
   <com.kickstarter.ui.views.IconTextView

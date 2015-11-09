@@ -26,7 +26,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public class LoginPresenter extends Presenter<LoginActivity> implements LoginPresenterInputs, LoginPresenterOutputs , LoginPresenterErrors {
+public final class LoginPresenter extends Presenter<LoginActivity> implements LoginPresenterInputs, LoginPresenterOutputs , LoginPresenterErrors {
   // INPUTS
   private final PublishSubject<String> email = PublishSubject.create();
   private final PublishSubject<View> loginClick = PublishSubject.create();

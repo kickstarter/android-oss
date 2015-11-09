@@ -20,7 +20,7 @@ import java.util.List;
 
 import rx.Observable;
 
-public class CommentFeedAdapter extends KSAdapter {
+public final class CommentFeedAdapter extends KSAdapter {
   private final Delegate delegate;
 
   public interface Delegate extends ProjectContextViewHolder.Delegate, EmptyCommentFeedViewHolder.Delegate {}

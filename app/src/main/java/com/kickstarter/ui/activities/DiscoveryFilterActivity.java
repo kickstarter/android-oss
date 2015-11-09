@@ -37,7 +37,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 @RequiresPresenter(DiscoveryFilterPresenter.class)
-public class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresenter> {
+public final class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresenter> {
   DiscoveryFilterAdapter adapter;
   LinearLayoutManager layoutManager;
 

@@ -3,7 +3,6 @@ package com.kickstarter.ui.toolbars;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
@@ -18,9 +17,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.subscriptions.CompositeSubscription;
 
-public class SearchToolbar extends KSToolbar {
+public final class SearchToolbar extends KSToolbar {
   public @Bind(R.id.clear_button) IconTextView clearButton;
   public @Bind(R.id.search_edit_text) EditText searchEditText;
 

@@ -33,7 +33,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 @RequiresPresenter(ProjectPresenter.class)
-public class ProjectActivity extends BaseActivity<ProjectPresenter> {
+public final class ProjectActivity extends BaseActivity<ProjectPresenter> {
   private ProjectAdapter adapter;
 
   @Bind(R.id.rewards_recycler_view) RecyclerView rewardsRecyclerView;

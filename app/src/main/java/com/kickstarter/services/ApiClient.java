@@ -31,7 +31,7 @@ import retrofit.RetrofitError;
 import retrofit.converter.GsonConverter;
 import rx.Observable;
 
-public class ApiClient {
+public final class ApiClient {
   private final ApiEndpoint apiEndpoint;
   private final Release release;
   private final String clientId;

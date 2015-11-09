@@ -22,7 +22,7 @@ import butterknife.BindColor;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolder {
+public final class ProjectStateChangedPositiveViewHolder extends ActivityListViewHolder {
   @Bind(R.id.card_view) CardView cardView;
   @Bind(R.id.left_stat_first) TextView leftStatFirstTextView;
   @Bind(R.id.left_stat_second) TextView leftStatSecondTextView;

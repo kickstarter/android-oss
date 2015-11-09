@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.AutoParcelAdapterFactory;
+import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.Release;
 import com.kickstarter.libs.ConfigLoader;
 import com.kickstarter.libs.CurrentUser;
@@ -65,6 +66,12 @@ public class ApplicationModule {
   ApiClient provideApiClient(@NonNull final ApiEndpoint apiEndpoint, @NonNull final Release release,
     @NonNull final String clientId, @NonNull final CurrentUser currentUser, @NonNull final Gson gson) {
     return new ApiClient(apiEndpoint, release, clientId, currentUser, gson);
+  }
+
+  @Provides
+  @Singleton
+  Koala provideKoala(@NonNull final Application application) {
+    return new Koala(application);
   }
 
   @Provides

@@ -13,11 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class Koala {
-  @NonNull private final Context context;
   @NonNull private final MixpanelAPI client;
 
   public Koala(@ForApplication @NonNull final Context context) {
-    this.context = context;
     client = MixpanelAPI.getInstance(context, "koala");
   }
 

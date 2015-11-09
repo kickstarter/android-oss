@@ -13,7 +13,7 @@ import com.kickstarter.models.Category;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class CategoryPromoViewHolder extends KsrViewHolder {
+public final class CategoryPromoViewHolder extends KSViewHolder {
   private Category category;
   private final Delegate delegate;
   @Bind(R.id.card_view) CardView cardView;

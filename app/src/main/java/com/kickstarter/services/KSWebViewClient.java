@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
 
 import timber.log.Timber;
 
-public class KickstarterWebViewClient extends WebViewClient {
+public class KSWebViewClient extends WebViewClient {
   private final Release release;
   private final CookieManager cookieManager;
   private final CurrentUser currentUser;
@@ -48,7 +48,7 @@ public class KickstarterWebViewClient extends WebViewClient {
   private final List<RequestHandler> requestHandlers = new ArrayList<>();
   private FormContents formContents = null;
 
-  public KickstarterWebViewClient(@NonNull final Release release, @NonNull final CookieManager cookieManager,
+  public KSWebViewClient(@NonNull final Release release, @NonNull final CookieManager cookieManager,
     @NonNull final CurrentUser currentUser, @NonNull final String webEndpoint) {
     this.release = release;
     this.cookieManager = cookieManager;
@@ -195,7 +195,7 @@ public class KickstarterWebViewClient extends WebViewClient {
   }
 
   protected boolean isInterceptable(@NonNull final Uri uri) {
-    return KickstarterUri.isKickstarterUri(uri, webEndpoint);
+    return KSUri.isKickstarterUri(uri, webEndpoint);
   }
 
   protected WebResourceResponse noopWebResourceResponse() throws IOException {
@@ -204,16 +204,15 @@ public class KickstarterWebViewClient extends WebViewClient {
 
   private void initializeRequestHandlers() {
     Collections.addAll(requestHandlers,
-      new RequestHandler(KickstarterUri::isModalUri, this::startModalWebViewActivity),
-      new RequestHandler(KickstarterUri::isProjectUri, this::startProjectActivity)
+      new RequestHandler(KSUri::isModalUri, this::startModalWebViewActivity),
+      new RequestHandler(KSUri::isProjectUri, this::startProjectActivity)
     );
   }
 
   private boolean startModalWebViewActivity(@NonNull final Request request, @NonNull final WebView webView) {
     final Activity context = (Activity) webView.getContext();
     final Intent intent = new Intent(context, DisplayWebViewActivity.class)
-      .putExtra(context.getString(R.string.intent_url), request.urlString())
-      .putExtra(context.getString(R.string.intent_right_bar_button), DisplayWebViewActivity.RIGHT_BAR_BUTTON_CLOSE);
+      .putExtra(context.getString(R.string.intent_url), request.urlString());
     context.startActivity(intent);
     context.overridePendingTransition(R.anim.slide_in_bottom, R.anim.fade_out);
 

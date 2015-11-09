@@ -45,10 +45,10 @@
       android:layout_marginTop="@dimen/grid_2">
 
       <TextView
+        style="@style/Subhead"
         android:id="@+id/backed_project"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
         android:text="You_just_backed" />
 
       <LinearLayout
@@ -106,12 +106,11 @@
         android:textAllCaps="false" />
 
       <TextView
+        style="@style/BodyPrimary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/grid_3"
         android:text="@string/Looking_for_more_projects"
-        android:textColor="@color/text_dark"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"
         />
 
     </LinearLayout>

@@ -12,7 +12,7 @@ import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.ui.viewholders.CommentViewHolder;
 import com.kickstarter.ui.viewholders.EmptyCommentFeedViewHolder;
-import com.kickstarter.ui.viewholders.KsrViewHolder;
+import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
 
 import java.util.Collections;
@@ -20,7 +20,7 @@ import java.util.List;
 
 import rx.Observable;
 
-public class CommentFeedAdapter extends KsrAdapter {
+public final class CommentFeedAdapter extends KSAdapter {
   private final Delegate delegate;
 
   public interface Delegate extends ProjectContextViewHolder.Delegate, EmptyCommentFeedViewHolder.Delegate {}
@@ -58,7 +58,7 @@ public class CommentFeedAdapter extends KsrAdapter {
     notifyDataSetChanged();
   }
 
-  protected KsrViewHolder viewHolder(final @LayoutRes int layout, @NonNull final View view) {
+  protected KSViewHolder viewHolder(final @LayoutRes int layout, @NonNull final View view) {
     if (layout == R.layout.project_context_view) {
       return new ProjectContextViewHolder(view, delegate);
     } else if (layout == R.layout.empty_comment_feed_layout) {

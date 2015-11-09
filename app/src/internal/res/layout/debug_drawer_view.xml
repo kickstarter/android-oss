@@ -7,10 +7,10 @@
   android:orientation="vertical">
 
   <TextView
+    style="@style/Headline"
     android:layout_marginBottom="@dimen/grid_3"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:textAppearance="@style/TextAppearance.AppCompat.Title"
     android:textColor="@color/light_gray"
     android:text="@string/Development_settings" />
 
@@ -28,10 +28,10 @@
       android:weightSum="1" >
 
       <TextView
+        style="@style/SubheadMedium"
         android:layout_span="2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textColor="@color/light_gray"
         android:text="@string/Network" />
 
@@ -45,18 +45,17 @@
       android:weightSum="1" >
 
       <TextView
+        style="@style/BodySecondary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/Endpoint"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textColor="@color/dark_gray"
         android:layout_column="0" />
 
       <Spinner
+        style="@style/BodyPrimary"
         android:id="@+id/endpoint_spinner"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="@color/white"
         android:layout_column="1" />
 
@@ -70,10 +69,10 @@
       android:weightSum="1" >
 
       <TextView
+        style="@style/SubheadMedium"
         android:layout_span="2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textColor="@color/light_gray"
         android:text="@string/Build_information" />
 
@@ -87,18 +86,17 @@
       android:weightSum="1" >
 
       <TextView
+        style="@style/BodySecondary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/Variant"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textColor="@color/dark_gray"
         android:layout_column="0" />
 
       <TextView
+        style="@style/BodyPrimary"
         android:id="@+id/variant"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="@color/white"
         android:layout_column="1" />
 
@@ -112,18 +110,18 @@
       android:weightSum="1" >
 
       <TextView
+        style="@style/BodySecondary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/Version_code"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="@color/dark_gray"
         android:layout_column="0" />
 
       <TextView
+        style="@style/BodyPrimary"
         android:id="@+id/version_code"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="@color/white"
         android:layout_column="1" />
 
@@ -137,18 +135,18 @@
       android:weightSum="1" >
 
       <TextView
+        style="@style/BodySecondary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/Version_name"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="@color/dark_gray"
         android:layout_column="0" />
 
       <TextView
+        style="@style/BodyPrimary"
         android:id="@+id/version_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="@color/white"
         android:layout_column="1" />
 
@@ -162,18 +160,17 @@
       android:weightSum="1" >
 
       <TextView
+        style="@style/BodySecondary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/Build_date"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textColor="@color/dark_gray"
         android:layout_column="0" />
 
       <TextView
+        style="@style/BodyPrimary"
         android:id="@+id/build_date"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="@color/white"
         android:layout_column="1" />
 
@@ -187,18 +184,17 @@
       android:weightSum="1" >
 
       <TextView
+        style="@style/BodySecondary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/Sha"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textColor="@color/dark_gray"
         android:layout_column="0" />
 
       <TextView
+        style="@style/BodyPrimary"
         android:id="@+id/sha"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="@color/white"
         android:layout_column="1" />
 
@@ -212,5 +208,5 @@
     android:layout_height="wrap_content"
     android:background="@drawable/button_green"
     android:text="@string/Submit_bug_report"
-    style="@style/KsrButton" />
+    style="@style/Button" />
 </LinearLayout>

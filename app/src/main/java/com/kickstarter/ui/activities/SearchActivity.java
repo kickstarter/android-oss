@@ -18,7 +18,7 @@ import com.kickstarter.presenters.SearchPresenter;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.adapters.SearchAdapter;
 import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder;
-import com.kickstarter.ui.views.SearchToolbar;
+import com.kickstarter.ui.toolbars.SearchToolbar;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresPresenter(SearchPresenter.class)
-public class SearchActivity extends BaseActivity<SearchPresenter> implements SearchAdapter.Delegate {
+public final class SearchActivity extends BaseActivity<SearchPresenter> implements SearchAdapter.Delegate {
   private SearchAdapter adapter;
   LinearLayoutManager layoutManager;
   @Bind(R.id.search_recycler_view) RecyclerView recyclerView;
@@ -49,11 +49,11 @@ public class SearchActivity extends BaseActivity<SearchPresenter> implements Sea
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> InputUtils.hideKeyboard(this, getCurrentFocus())));
 
-    addSubscription(presenter.outputs().clear()
+    addSubscription(presenter.outputs.clearData()
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> adapter.clear()));
 
-    addSubscription(presenter.outputs().newData()
+    addSubscription(presenter.outputs.newData()
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::loadParamsAndProjects));
   }

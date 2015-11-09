@@ -13,7 +13,7 @@ import com.kickstarter.ui.viewholders.EmptyActivityFeedViewHolder;
 import com.kickstarter.ui.viewholders.EmptyViewHolder;
 import com.kickstarter.ui.viewholders.FriendBackingViewHolder;
 import com.kickstarter.ui.viewholders.FriendFollowViewHolder;
-import com.kickstarter.ui.viewholders.KsrViewHolder;
+import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.ProjectStateChangedPositiveViewHolder;
 import com.kickstarter.ui.viewholders.ProjectStateChangedViewHolder;
 import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder;
@@ -21,7 +21,7 @@ import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder;
 import java.util.Collections;
 import java.util.List;
 
-public class ActivityFeedAdapter extends KsrAdapter {
+public final class ActivityFeedAdapter extends KSAdapter {
   private final Delegate delegate;
 
   public interface Delegate extends FriendBackingViewHolder.Delegate, ProjectStateChangedPositiveViewHolder.Delegate,
@@ -70,12 +70,12 @@ public class ActivityFeedAdapter extends KsrAdapter {
           return R.layout.empty_view;
       }
     } else {
-      return R.layout.empty_activity_feed_layout;
+      return R.layout.empty_activity_feed_view;
     }
   }
 
   @Override
-  protected KsrViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
+  protected KSViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
     switch (layout) {
       case R.layout.activity_friend_backing_view:
         return new FriendBackingViewHolder(view, delegate);
@@ -87,7 +87,7 @@ public class ActivityFeedAdapter extends KsrAdapter {
         return new ProjectStateChangedPositiveViewHolder(view, delegate);
       case R.layout.activity_project_update_view:
         return new ProjectUpdateViewHolder(view, delegate);
-      case R.layout.empty_activity_feed_layout:
+      case R.layout.empty_activity_feed_view:
         return new EmptyActivityFeedViewHolder(view, delegate);
       default:
         return new EmptyViewHolder(view);

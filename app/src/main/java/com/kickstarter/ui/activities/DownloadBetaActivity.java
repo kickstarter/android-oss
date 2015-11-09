@@ -17,7 +17,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class DownloadBetaActivity extends AppCompatActivity {
+public final class DownloadBetaActivity extends AppCompatActivity {
   @Bind(R.id.build) TextView buildTextView;
   @Bind(R.id.changelog) TextView changelogTextView;
   InternalBuildEnvelope internalBuildEnvelope;

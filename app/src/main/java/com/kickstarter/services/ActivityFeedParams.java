@@ -2,12 +2,10 @@ package com.kickstarter.services;
 
 import com.kickstarter.models.Activity;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.List;
 
-public class ActivityFeedParams {
+public final class ActivityFeedParams {
   public ActivityFeedParams() {}
 
   public List<String> queryParams() {

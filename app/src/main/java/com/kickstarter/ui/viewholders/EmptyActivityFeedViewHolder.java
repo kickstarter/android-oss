@@ -11,7 +11,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class EmptyActivityFeedViewHolder extends KsrViewHolder {
+public final class EmptyActivityFeedViewHolder extends KSViewHolder {
   protected @Bind(R.id.discover_projects_button) Button discoverProjectsButton;
   protected @Bind(R.id.login_button) Button loginButton;
 

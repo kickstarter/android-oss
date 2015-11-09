@@ -11,7 +11,7 @@ import auto.parcel.AutoParcel;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class DiscoveryFilterDividerViewHolder extends KsrViewHolder {
+public final class DiscoveryFilterDividerViewHolder extends KSViewHolder {
   @Bind(R.id.categories_text_view) TextView categoriesTextView;
   @Bind(R.id.horizontal_line_thin_view) View horizontalLineView;
   Divider divider;

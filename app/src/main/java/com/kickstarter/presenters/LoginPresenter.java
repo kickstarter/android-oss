@@ -11,7 +11,6 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.presenters.errors.LoginPresenterErrors;
 import com.kickstarter.presenters.inputs.LoginPresenterInputs;
@@ -27,7 +26,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public class LoginPresenter extends Presenter<LoginActivity> implements LoginPresenterInputs, LoginPresenterOutputs , LoginPresenterErrors {
+public final class LoginPresenter extends Presenter<LoginActivity> implements LoginPresenterInputs, LoginPresenterOutputs , LoginPresenterErrors {
   // INPUTS
   private final PublishSubject<String> email = PublishSubject.create();
   private final PublishSubject<View> loginClick = PublishSubject.create();
@@ -61,15 +60,9 @@ public class LoginPresenter extends Presenter<LoginActivity> implements LoginPre
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
 
-  public LoginPresenterInputs inputs() {
-    return this;
-  }
-  public LoginPresenterOutputs outputs() {
-    return this;
-  }
-  public LoginPresenterErrors errors() {
-    return this;
-  }
+  public final LoginPresenterInputs inputs = this;
+  public final LoginPresenterOutputs outputs = this;
+  public final LoginPresenterErrors errors = this;
 
   @Override
   public void email(@NonNull final String s) {
@@ -77,8 +70,8 @@ public class LoginPresenter extends Presenter<LoginActivity> implements LoginPre
   }
 
   @Override
-  public void loginClick(@NonNull final View view) {
-    loginClick.onNext(view);
+  public void loginClick() {
+    loginClick.onNext(null);
   }
 
   @Override
@@ -91,19 +84,20 @@ public class LoginPresenter extends Presenter<LoginActivity> implements LoginPre
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    final Observable<Pair<String, String>> emailAndPassword =
-      RxUtils.combineLatestPair(email, password);
+    final Observable<Pair<String, String>> emailAndPassword = email
+      .compose(Transformers.combineLatestPair(password));
 
     final Observable<Boolean> isValid = emailAndPassword
       .map(ep -> LoginPresenter.isValid(ep.first, ep.second));
 
-    addSubscription(RxUtils.combineLatestPair(viewSubject, isValid)
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(viewAndValid -> viewAndValid.first.setFormEnabled(viewAndValid.second))
+    addSubscription(viewSubject
+        .compose(Transformers.combineLatestPair(isValid))
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(viewAndValid -> viewAndValid.first.setFormEnabled(viewAndValid.second))
     );
 
-    addSubscription(
-      RxUtils.takeWhen(emailAndPassword, loginClick)
+    addSubscription(emailAndPassword
+        .compose(Transformers.takeWhen(loginClick))
         .switchMap(ep -> submit(ep.first, ep.second))
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(this::success)

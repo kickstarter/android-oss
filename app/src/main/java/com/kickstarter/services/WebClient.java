@@ -15,21 +15,21 @@ import retrofit.RestAdapter;
 import retrofit.converter.GsonConverter;
 import rx.Observable;
 
-public class KickstarterClient {
+public final class WebClient {
   private final Release build;
   private final String endpoint;
   private final Gson gson;
-  private final KickstarterService service;
+  private final WebService service;
 
-  public KickstarterClient(@NonNull final Release build, @NonNull final Gson gson, @NonNull final String endpoint) {
+  public WebClient(@NonNull final Release build, @NonNull final Gson gson, @NonNull final String endpoint) {
     this.build = build;
     this.gson = gson;
     this.endpoint = endpoint;
-    service = kickstarterService();
+    service = webService();
   }
 
-  private KickstarterService kickstarterService() {
-    return restAdapter().create(KickstarterService.class);
+  private WebService webService() {
+    return restAdapter().create(WebService.class);
   }
 
   public Observable<InternalBuildEnvelope> pingBeta() {

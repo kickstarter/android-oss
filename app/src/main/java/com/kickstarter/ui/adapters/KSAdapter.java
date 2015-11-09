@@ -7,12 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.kickstarter.ui.viewholders.KsrViewHolder;
+import com.kickstarter.ui.viewholders.KSViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class KsrAdapter extends RecyclerView.Adapter<KsrViewHolder> {
+public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
   private List<List<?>> data = new ArrayList<>();
 
   public List<List<?>> data() {
@@ -25,18 +25,18 @@ public abstract class KsrAdapter extends RecyclerView.Adapter<KsrViewHolder> {
   protected abstract int layout(@NonNull final SectionRow sectionRow);
 
   /**
-   * Returns a new KsrViewHolder given a layout and view.
+   * Returns a new KSViewHolder given a layout and view.
    */
-  protected abstract KsrViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view);
+  protected abstract KSViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view);
 
   @Override
-  public final KsrViewHolder onCreateViewHolder(@NonNull final ViewGroup viewGroup, @LayoutRes final int layout) {
+  public final KSViewHolder onCreateViewHolder(@NonNull final ViewGroup viewGroup, @LayoutRes final int layout) {
     final View view = inflateView(viewGroup, layout);
     return viewHolder(layout, view);
   }
 
   @Override
-  public final void onBindViewHolder(@NonNull final KsrViewHolder viewHolder, final int position) {
+  public final void onBindViewHolder(@NonNull final KSViewHolder viewHolder, final int position) {
     viewHolder.onBind(objectFromPosition(position));
   }
 

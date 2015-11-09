@@ -28,7 +28,7 @@ import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.adapters.DiscoveryAdapter;
 import com.kickstarter.ui.containers.ApplicationContainer;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
-import com.kickstarter.ui.views.DiscoveryToolbar;
+import com.kickstarter.ui.toolbars.DiscoveryToolbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,7 @@ import butterknife.BindDrawable;
 import butterknife.ButterKnife;
 
 @RequiresPresenter(DiscoveryPresenter.class)
-public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> implements DiscoveryAdapter.Delegate {
+public final class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> implements DiscoveryAdapter.Delegate {
   DiscoveryAdapter adapter;
   LinearLayoutManager layoutManager;
   final List<Project> projects = new ArrayList<>();
@@ -74,11 +74,11 @@ public class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> implemen
     }
 
     addSubscription(RxRecyclerView.scrollEvents(recyclerView)
-      .subscribe(__ -> presenter.inputs().scrollEvent()));
+      .subscribe(__ -> presenter.inputs.scrollEvent()));
   }
 
   public void projectCardClick(@NonNull final ProjectCardViewHolder viewHolder, @NonNull final Project project) {
-    presenter.inputs().projectClick(project);
+    presenter.inputs.projectClick(project);
   }
 
   public void loadProjects(@NonNull final List<Project> newProjects) {

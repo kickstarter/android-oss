@@ -9,7 +9,6 @@ import android.util.Pair;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClient;
@@ -28,7 +27,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public class ThanksPresenter extends Presenter<ThanksActivity> implements ThanksAdapter.Delegate {
+public final class ThanksPresenter extends Presenter<ThanksActivity> implements ThanksAdapter.Delegate {
   private final PublishSubject<Void> doneClick = PublishSubject.create();
   private final PublishSubject<Void> facebookClick = PublishSubject.create();
   private final PublishSubject<Void> shareClick = PublishSubject.create();
@@ -45,34 +44,41 @@ public class ThanksPresenter extends Presenter<ThanksActivity> implements Thanks
   }
 
   public void takeProject(@NonNull final Project project) {
-    final Observable<Pair<ThanksActivity, Project>> viewAndProject = RxUtils.combineLatestPair(viewSubject, Observable.just(project))
+    final Observable<Pair<ThanksActivity, Project>> viewAndProject = viewSubject
+      .compose(Transformers.combineLatestPair(Observable.just(project)))
       .filter(vp -> vp.first != null);
 
     addSubscription(viewAndProject
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.show(vp.second)));
 
-    addSubscription(RxUtils.takeWhen(viewAndProject, facebookClick)
+    addSubscription(viewAndProject
+      .compose(Transformers.takeWhen(facebookClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startFacebookShareIntent(vp.second)));
 
-    addSubscription(RxUtils.takeWhen(viewAndProject, shareClick)
+    addSubscription(viewAndProject
+      .compose(Transformers.takeWhen(shareClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startShareIntent(vp.second)));
 
-    addSubscription(RxUtils.takeWhen(viewAndProject, twitterClick)
+    addSubscription(viewAndProject
+      .compose(Transformers.takeWhen(twitterClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startTwitterShareIntent(vp.second)));
 
-    addSubscription(RxUtils.takePairWhen(viewChange, projectCardMiniClick)
+    addSubscription(viewChange
+      .compose(Transformers.takePairWhen(projectCardMiniClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startProjectIntent(vp.second)));
 
-    addSubscription(RxUtils.takePairWhen(viewChange, categoryPromoClick)
+    addSubscription(viewChange
+      .compose(Transformers.takePairWhen(categoryPromoClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startDiscoveryCategoryIntent(vp.second)));
 
-    addSubscription(RxUtils.combineLatestPair(viewSubject.filter(v -> v != null), doneClick)
+    addSubscription(viewSubject.filter(v -> v != null)
+      .compose(Transformers.combineLatestPair(doneClick))
       .map(vp -> vp.first)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(ThanksActivity::startDiscoveryActivity));
@@ -88,18 +94,18 @@ public class ThanksPresenter extends Presenter<ThanksActivity> implements Thanks
       .map(DiscoverEnvelope::projects);
     final Observable<Category> rootCategory = apiClient.fetchCategory(project.category().rootId())
       .compose(Transformers.neverError());
-    final Observable<Pair<List<Project>, Category>> projectsAndRootCategory =
-      RxUtils.zipPair(recommendedProjects, rootCategory);
+    final Observable<Pair<List<Project>, Category>> projectsAndRootCategory = recommendedProjects
+      .compose(Transformers.zipPair(rootCategory));
 
-    addSubscription(
-      RxUtils.combineLatestPair(viewSubject, projectsAndRootCategory)
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vpc -> {
-        final ThanksActivity view = vpc.first;
-        final List<Project> projects = vpc.second.first;
-        final Category category = vpc.second.second;
-        view.showRecommended(projects, category);
-      })
+    addSubscription(viewSubject
+        .compose(Transformers.combineLatestPair(projectsAndRootCategory))
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(vpc -> {
+          final ThanksActivity view = vpc.first;
+          final List<Project> projects = vpc.second.first;
+          final Category category = vpc.second.second;
+          view.showRecommended(projects, category);
+        })
     );
   }
 

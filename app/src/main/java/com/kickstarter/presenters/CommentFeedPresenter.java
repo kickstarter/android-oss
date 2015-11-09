@@ -10,7 +10,6 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.RxUtils;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
@@ -33,7 +32,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public class CommentFeedPresenter extends Presenter<CommentFeedActivity> implements CommentFeedPresenterInputs, CommentFeedPresenterOutputs, CommentFeedPresenterErrors {
+public final class CommentFeedPresenter extends Presenter<CommentFeedActivity> implements CommentFeedPresenterInputs, CommentFeedPresenterOutputs, CommentFeedPresenterErrors {
   // INPUTS
   private final PublishSubject<String> commentBody = PublishSubject.create();
   private final PublishSubject<Void> contextClick = PublishSubject.create();
@@ -60,11 +59,9 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
 
-  public CommentFeedPresenterInputs inputs() {
-    return this;
-  }
-  public CommentFeedPresenterOutputs outputs() { return this; }
-  public CommentFeedPresenterErrors errors() { return this; }
+  public final CommentFeedPresenterInputs inputs = this;
+  public final CommentFeedPresenterOutputs outputs = this;
+  public final CommentFeedPresenterErrors errors = this;
 
   @Override
   public void commentBody(@NonNull final String string) {
@@ -86,12 +83,14 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    final Observable<Project> project = RxUtils.takeWhen(initialProject, loginSuccess)
+    final Observable<Project> project = initialProject
+      .compose(Transformers.takeWhen(loginSuccess))
       .mergeWith(initialProject)
       .flatMap(client::fetchProject)
       .share();
 
-    final Observable<List<Comment>> comments = RxUtils.takeWhen(project, refreshFeed)
+    final Observable<List<Comment>> comments = project
+      .compose(Transformers.takeWhen(refreshFeed))
       .switchMap(this::comments)
       .map(CommentsEnvelope::comments)
       .share();
@@ -100,23 +99,25 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
       Arrays.asList(viewSubject, comments, project),
       Arrays::asList);
 
-    final Observable<Pair<CommentFeedActivity, Project>> viewAndProject =
-      RxUtils.combineLatestPair(viewSubject, project);
+    final Observable<Pair<CommentFeedActivity, Project>> viewAndProject = viewSubject
+      .compose(Transformers.combineLatestPair(project))
+      .share();
 
     final Observable<Boolean> commentHasBody = commentBody
       .map(body -> body.length() > 0);
 
-    final Observable<Comment> postedComment = RxUtils.takePairWhen(project, bodyOnPostClick)
-      .switchMap(pb -> postComment(pb.first, pb.second));
+    final Observable<Comment> postedComment = project
+      .compose(Transformers.takePairWhen(bodyOnPostClick))
+      .switchMap(pb -> postComment(pb.first, pb.second))
+      .share();
 
     addSubscription(postedComment
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::postCommentSuccess)
     );
 
-    addSubscription(
-      RxUtils.combineLatestPair(viewAndProject, loginSuccess)
-        .map(vpl -> vpl.first)
+    addSubscription(viewAndProject
+        .compose(Transformers.takeWhen(loginSuccess))
         .filter(vp -> vp.second.isBacking())
         .take(1)
         .map(vp -> vp.first)
@@ -124,38 +125,44 @@ public class CommentFeedPresenter extends Presenter<CommentFeedActivity> impleme
         .subscribe(CommentFeedActivity::showCommentDialog)
     );
 
-    addSubscription(RxUtils.combineLatestPair(currentUser.observable(), viewCommentsProject)
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(uvcp -> {
-        final User u = uvcp.first;
-        final CommentFeedActivity view = (CommentFeedActivity) uvcp.second.get(0);
-        final List<Comment> cs = (List<Comment>) uvcp.second.get(1);
-        final Project p = (Project) uvcp.second.get(2);
-        view.show(p, cs, u);
-      })
+    addSubscription(currentUser.observable()
+        .compose(Transformers.combineLatestPair(viewCommentsProject))
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(uvcp -> {
+          final User u = uvcp.first;
+          final CommentFeedActivity view = (CommentFeedActivity) uvcp.second.get(0);
+          final List<Comment> cs = (List<Comment>) uvcp.second.get(1);
+          final Project p = (Project) uvcp.second.get(2);
+          view.show(p, cs, u);
+        })
     );
 
-    addSubscription(RxUtils.takeWhen(viewSubject, contextClick)
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(CommentFeedActivity::onBackPressed)
+    addSubscription(viewSubject
+        .compose(Transformers.takeWhen(contextClick))
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(CommentFeedActivity::onBackPressed)
     );
 
-    addSubscription(RxUtils.takeWhen(viewSubject, loginClick)
+    addSubscription(viewSubject
+      .compose(Transformers.takeWhen(loginClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(CommentFeedActivity::commentFeedLogin)
     );
 
-    addSubscription(RxUtils.combineLatestPair(viewSubject, commentHasBody)
+    addSubscription(viewSubject
+      .compose(Transformers.combineLatestPair(commentHasBody))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(ve -> ve.first.enablePostButton(ve.second))
     );
 
-    addSubscription(RxUtils.takeWhen(viewSubject, refreshFeed)
+    addSubscription(viewSubject
+      .compose(Transformers.takeWhen(refreshFeed))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(CommentFeedActivity::dismissCommentDialog)
     );
 
-    addSubscription(RxUtils.takePairWhen(viewSubject, commentIsPosting)
+    addSubscription(viewSubject
+      .compose(Transformers.takePairWhen(commentIsPosting))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.disablePostButton(vp.second))
     );

@@ -6,26 +6,78 @@
   android:foreground="@drawable/click_indicator_light"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
+  card_view:cardBackgroundColor="@color/white"
   card_view:cardElevation="0dp"
   card_view:cardCornerRadius="@dimen/card_corner_radius"
-  card_view:cardBackgroundColor="@color/white"
   card_view:contentPaddingTop="@dimen/grid_3"
   card_view:contentPaddingBottom="@dimen/grid_3"
   card_view:contentPaddingLeft="@dimen/grid_3"
   card_view:contentPaddingRight="@dimen/grid_3"
-  android:layout_marginTop="@dimen/card_margin_y"
-  android:layout_marginBottom="@dimen/card_margin_y">
+  android:layout_marginTop="@dimen/activity_feed_view_margin_top"
+  android:layout_marginBottom="@dimen/activity_feed_view_margin_bottom">
 
   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <RelativeLayout
+      android:orientation="horizontal"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <ImageView
+        android:id="@+id/project_photo"
+        android:background="@drawable/gray_gradient"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:adjustViewBounds="true"
+        android:layout_width="85dp"
+        android:layout_height="64dp" />
+
+      <LinearLayout
+        android:orientation="vertical"
+        android:layout_marginLeft="@dimen/grid_2"
+        android:layout_marginEnd="@dimen/grid_2"
+        android:layout_marginRight="@dimen/grid_2"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/project_photo"
+        android:layout_toEndOf="@id/project_photo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+          style="@style/Headline"
+          android:id="@+id/project_name"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/grid_1_half"
+          android:maxLines="3"
+          android:text="Project name" />
+
+        <TextView
+          style="@style/CaptionSecondary"
+          android:id="@+id/creator_name"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/grid_1_half"
+          android:maxLines="2"
+          android:text="by Creator" />
+      </LinearLayout>
+
+    </RelativeLayout>
+
+    <View
+      android:layout_width="fill_parent"
+      android:layout_height="1dp"
+      android:layout_marginTop="@dimen/grid_5_half"
+      android:layout_marginBottom="@dimen/grid_5_half"
+      android:background="@color/black_alpha_10" />
+
     <LinearLayout
       android:orientation="horizontal"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="@dimen/grid_1"
       android:gravity="center_vertical">
 
       <ImageView
@@ -33,62 +85,20 @@
         android:adjustViewBounds="true"
         android:layout_marginRight="@dimen/grid_1"
         android:layout_marginEnd="@dimen/grid_2"
-        android:layout_width="@dimen/activity_feed_avatar_width"
-        android:layout_height="@dimen/activity_feed_avatar_height" />
+        android:layout_width="30dp"
+        android:layout_height="30dp" />
 
       <TextView
+        style="@style/BodyPrimary"
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/grid_1"
         android:layout_marginStart="@dimen/grid_2"
-        android:text="Friend Name backed a Category project"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:textColor="@color/text_dark" />
+        android:text="Friend Name backed a Category project" />
 
     </LinearLayout>
 
-    <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:gravity="center_vertical"
-      android:orientation="horizontal"
-      android:layout_marginTop="@dimen/grid_1">
-
-      <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/grid_1"
-        android:layout_marginEnd="@dimen/grid_2"
-        android:orientation="vertical">
-
-        <TextView
-          android:id="@+id/project_name"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/grid_1"
-          android:text="Project Name"
-          android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-          android:textColor="@color/text_dark" />
-
-        <TextView
-          android:id="@+id/creator_name"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="Creator Name"
-          android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-          android:textColor="@color/dark_gray" />
-
-      </LinearLayout>
-
-      <ImageView
-        android:id="@+id/project_photo"
-        android:layout_marginLeft="@dimen/grid_1"
-        android:layout_marginStart="@dimen/grid_2"
-        android:layout_width="@dimen/activity_feed_small_photo_width"
-        android:layout_height="@dimen/activity_feed_small_photo_height" />
-
-    </LinearLayout>
 
   </LinearLayout>
 </android.support.v7.widget.CardView>

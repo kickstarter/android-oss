@@ -11,6 +11,6 @@ import java.util.List;
 import rx.Observable;
 
 public interface SearchPresenterOutputs {
-  Observable<Empty> clear();
+  Observable<Empty> clearData();
   Observable<Pair<DiscoveryParams, List<Project>>> newData();
 }

@@ -13,7 +13,7 @@ import com.squareup.picasso.Picasso;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class ProjectSearchResultViewHolder extends KsrViewHolder {
+public final class ProjectSearchResultViewHolder extends KSViewHolder {
   private Project project;
   final Delegate delegate;
 

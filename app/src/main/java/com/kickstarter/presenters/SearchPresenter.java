@@ -8,7 +8,7 @@ import android.util.Pair;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.Presenter;
-import com.kickstarter.libs.utils.RxUtils;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.inputs.SearchPresenterInputs;
@@ -26,18 +26,18 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-public class SearchPresenter extends Presenter<SearchActivity> implements SearchPresenterInputs, SearchPresenterOutputs {
+public final class SearchPresenter extends Presenter<SearchActivity> implements SearchPresenterInputs, SearchPresenterOutputs {
   // INPUTS
-  private final PublishSubject<String> searchSubject = PublishSubject.create();
-  public SearchPresenterInputs inputs() { return this; }
-  @Override public void search(@NonNull final String s) { searchSubject.onNext(s); }
+  private final PublishSubject<String> search = PublishSubject.create();
+  public SearchPresenterInputs inputs = this;
+  @Override public void search(@NonNull final String s) { search.onNext(s); }
 
   // OUTPUTS
-  private final PublishSubject<Empty> clearSubject = PublishSubject.create();
-  private final PublishSubject<Pair<DiscoveryParams, List<Project>>> newDataSubject = PublishSubject.create();
-  public SearchPresenterOutputs outputs() { return this; }
-  @Override public Observable<Empty> clear() { return clearSubject.asObservable(); }
-  @Override public Observable<Pair<DiscoveryParams, List<Project>>> newData() { return newDataSubject.asObservable(); }
+  private final PublishSubject<Empty> clearData = PublishSubject.create();
+  private final PublishSubject<Pair<DiscoveryParams, List<Project>>> newData = PublishSubject.create();
+  public final SearchPresenterOutputs outputs = this;
+  @Override public Observable<Empty> clearData() { return clearData.asObservable(); }
+  @Override public Observable<Pair<DiscoveryParams, List<Project>>> newData() { return newData.asObservable(); }
 
   private final PublishSubject<DiscoveryParams> paramsSubject = PublishSubject.create();
 
@@ -52,32 +52,45 @@ public class SearchPresenter extends Presenter<SearchActivity> implements Search
       .switchMap(this::projects)
       .share();
 
-    final Observable<Pair<DiscoveryParams, List<Project>>> paramsAndProjects = RxUtils.takePairWhen(paramsSubject, projects);
+    final Observable<Pair<DiscoveryParams, List<Project>>> paramsAndProjects = paramsSubject
+      .compose(Transformers.takePairWhen(projects));
 
-    final Observable<Boolean> isSearchEmpty = searchSubject.map(t -> t.length() == 0).share();
+    final Observable<Boolean> isSearchEmpty = search.map(t -> t.length() == 0).share();
 
-   // Search subject pings on load - we want to skip this to show initial results.
-    addSubscription(searchSubject
-      .skip(1)
-      .subscribe(__ -> clearSubject.onNext(Empty.create())));
+    final Observable<Pair<DiscoveryParams, List<Project>>> popularParamsAndProjects = paramsAndProjects.first();
+    final Observable<Pair<DiscoveryParams, List<Project>>> searchParamsAndProjects = paramsAndProjects.skip(1);
 
-    addSubscription(RxUtils.takeWhen(searchSubject, isSearchEmpty.filter(b -> !b))
-      .subscribe(text -> paramsSubject.onNext(DiscoveryParams.builder().term(text).build())));
+    // When the search field changes, start a new search and clear results
+    addSubscription(
+      search
+        .compose(Transformers.takeWhen(isSearchEmpty.filter(v -> !v)))
+        .subscribe(text -> {
+          paramsSubject.onNext(DiscoveryParams.builder().term(text).build());
+          clearData.onNext(Empty.create());
+        })
+    );
 
-    // Just show the first ping with no filtering
-    addSubscription(paramsAndProjects
-      .take(1)
-      .subscribe(pp -> newDataSubject.onNext(pp)));
+    // When the search field is empty (i.e. on load or when the search field is cleared), ping with the
+    // popular projects.
+    addSubscription(
+      popularParamsAndProjects
+        .compose(Transformers.combineLatestPair(isSearchEmpty))
+        .filter(pe -> pe.second)
+        .map(pe -> pe.first)
+        .subscribe(newData::onNext)
+    );
 
-    // For subsequent pings, only want to show results if search is not empty. Search could have been cleared in
-    // the time between when the API request was triggered and when it returned.
-    addSubscription(RxUtils.takePairWhen(isSearchEmpty, paramsAndProjects)
-      .filter(epp -> !epp.first)
-      .map(evpp -> evpp.second)
-      .debounce(500, TimeUnit.MILLISECONDS)
-      .subscribe(pp -> newDataSubject.onNext(pp)));
+    // When we receive new search results and the search field is still not empty, ping with the search results
+    addSubscription(
+      isSearchEmpty
+        .compose(Transformers.takePairWhen(searchParamsAndProjects))
+        .filter(pe -> !pe.first)
+        .map(pe -> pe.second)
+        .debounce(500, TimeUnit.MILLISECONDS)
+        .subscribe(newData::onNext)
+    );
 
-    // Start with popular projects.
+    // Start with popular projects
     paramsSubject.onNext(DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build());
   }
 

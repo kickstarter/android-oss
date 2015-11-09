@@ -138,7 +138,6 @@
     <item name="android:layout_height">60dp</item>
     <item name="android:textSize">@dimen/subhead</item>
     <item name="android:fontFamily">@string/font_family_medium</item>
-    <item name="android:layout_alignParentBottom">true</item>
   </style>
 
   <style name="Toolbar" parent="Base.Widget.AppCompat.Toolbar">

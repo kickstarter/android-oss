@@ -21,6 +21,10 @@ public final class Paginator {
     start();
   }
 
+  /**
+   * Begin listening to the recycler view scroll events to determine
+   * when pagination should happen.
+   */
   public void start() {
     stop();
 
@@ -33,6 +37,11 @@ public final class Paginator {
       .subscribe(__ -> nextPage.call());
   }
 
+  /**
+   * Stop listening to recycler view scroll events and discard the
+   * associated resources. This should be done when the object that
+   * created `this` is released.
+   */
   public void stop() {
     if (subscription != null) {
       subscription.unsubscribe();

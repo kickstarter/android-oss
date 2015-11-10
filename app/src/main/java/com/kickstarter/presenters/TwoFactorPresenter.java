@@ -13,6 +13,7 @@ import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.presenters.errors.TwoFactorPresenterErrors;
 import com.kickstarter.presenters.inputs.TwoFactorPresenterInputs;
+import com.kickstarter.presenters.outputs.TwoFactorPresenterOutputs;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
@@ -24,11 +25,17 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> implements TwoFactorPresenterInputs, TwoFactorPresenterErrors {
+public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> implements TwoFactorPresenterInputs, TwoFactorPresenterOutputs, TwoFactorPresenterErrors {
   // INPUTS
   private final PublishSubject<String> code = PublishSubject.create();
   private final PublishSubject<View> loginClick = PublishSubject.create();
   private final PublishSubject<View> resendClick = PublishSubject.create();
+
+  // OUTPUTS
+  private final PublishSubject<Void> loginSuccess = PublishSubject.create();
+  public Observable<Void> loginSuccess() {
+    return loginSuccess.asObservable();
+  }
 
   // ERRORS
   private final PublishSubject<ErrorEnvelope> tfaError = PublishSubject.create();
@@ -47,6 +54,7 @@ public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> imple
   @Inject ApiClient client;
 
   public final TwoFactorPresenterInputs inputs = this;
+  public final TwoFactorPresenterOutputs outputs = this;
   public final TwoFactorPresenterErrors errors = this;
 
   @Override
@@ -85,12 +93,9 @@ public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> imple
         .subscribe(viewAndValid -> viewAndValid.first.setLoginEnabled(viewAndValid.second))
     );
 
-    addSubscription(viewSubject
-        .compose(Transformers.combineLatestPair(tokenEnvelope))
+    addSubscription(tokenEnvelope
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(
-          viewAndEnvelope -> success(viewAndEnvelope.second, viewAndEnvelope.first)
-        )
+        .subscribe(this::success)
     );
 
     addSubscription(viewSubject
@@ -101,6 +106,20 @@ public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> imple
           // why. We should investigate.
         .subscribe()
     );
+
+    addSubscription(loginSuccess
+        .subscribe(__ -> koala.trackLoginSuccess())
+    );
+
+    addSubscription(resendClick
+      .subscribe(__ -> koala.trackTwoFactorResendCode())
+    );
+
+    addSubscription(tfaError
+        .subscribe(__ -> koala.trackLoginError())
+    );
+
+    koala.trackTwoFactorAuthView();
   }
 
   private static boolean isValid(@NonNull final String code) {
@@ -115,9 +134,9 @@ public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> imple
     resendClick.onNext(null);
   }
 
-  private void success(@NonNull final AccessTokenEnvelope envelope, @NonNull final TwoFactorActivity view) {
+  private void success(@NonNull final AccessTokenEnvelope envelope) {
     currentUser.login(envelope.user(), envelope.accessToken());
-    view.onSuccess();
+    loginSuccess.onNext(null);
   }
 
   private Observable<AccessTokenEnvelope> submit(@NonNull final String email, @NonNull final String password,

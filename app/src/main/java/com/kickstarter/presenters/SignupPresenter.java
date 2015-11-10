@@ -120,6 +120,23 @@ SignupPresenterErrors {
         .flatMap(this::submit)
         .subscribe(this::success)
     );
+
+    addSubscription(signupSuccess
+        .subscribe(__ -> {
+          koala.trackLoginSuccess();
+          koala.trackRegisterSuccess();
+        })
+    );
+
+    addSubscription(signupError
+        .subscribe(__ -> koala.trackRegisterError())
+    );
+
+    addSubscription(sendNewsletters
+      .subscribe(koala::trackSignupNewsletterToggle)
+    );
+
+    koala.trackRegisterFormView();
   }
 
   @Override

@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.kickstarter.R;
-import com.kickstarter.ui.activities.LoginActivity;
+import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.ui.views.LoginPopupMenu;
 
 import butterknife.Bind;
@@ -37,7 +37,7 @@ public class LoginToolbar extends KSToolbar {
 
   @OnClick(R.id.back_button)
   protected void backButtonClick() {
-    ((LoginActivity) getContext()).onBackPressed();
+    ((BaseActivity) getContext()).onBackPressed();
   }
 
   @OnClick(R.id.help_button)

@@ -54,13 +54,9 @@ public final class Koala {
 
   // SESSION EVENTS
   public void trackLoginRegisterTout(@Nullable final String intent) {
-    if (intent == null) {
-      client.track("Application Login or Signup");
-    } else {
-      client.track("Application Login or Signup", new HashMap<String, Object>() {{
-        put("intent", intent); // do we have a "compact" equiv to get rid of nulls?
-      }});
-    }
+    client.track("Application Login or Signup", new HashMap<String, Object>() {{
+      put("intent", intent);
+    }});
   }
 
   public void trackLoginSuccess() {

@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.CurrentUser;
-import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.models.User;
@@ -40,7 +39,6 @@ public final class DiscoveryToolbar extends KSToolbar {
   @Bind(R.id.search_button) TextView searchButton;
   @Inject CurrentUser currentUser;
   @Inject Logout logout;
-  @Inject Koala koala;
 
   public DiscoveryToolbar(@NonNull final Context context) {
     super(context);
@@ -114,7 +112,6 @@ public final class DiscoveryToolbar extends KSToolbar {
           case R.id.logout:
             final Context context = v.getContext();
             logout.execute();
-            koala.trackLogout();
             final Intent intent = new Intent(context, DiscoveryActivity.class)
               .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             context.startActivity(intent);

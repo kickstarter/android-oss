@@ -37,11 +37,11 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
   @Inject CurrentUser currentUser;
 
   private final PublishSubject<Project> discoverProjectsClick = PublishSubject.create();
-  private final PublishSubject<Project> friendBackingClick = PublishSubject.create();
+  private final PublishSubject<Activity> friendBackingClick = PublishSubject.create();
   private final PublishSubject<Void> loginClick = PublishSubject.create();
-  private final PublishSubject<Project> projectStateChangedPositiveClick = PublishSubject.create();
-  private final PublishSubject<Project> projectStateChangedClick = PublishSubject.create();
-  private final PublishSubject<Project> projectUpdateProjectClick = PublishSubject.create();
+  private final PublishSubject<Activity> projectStateChangedPositiveClick = PublishSubject.create();
+  private final PublishSubject<Activity> projectStateChangedClick = PublishSubject.create();
+  private final PublishSubject<Activity> projectUpdateProjectClick = PublishSubject.create();
   private final PublishSubject<Activity> projectUpdateUpdateClick = PublishSubject.create();
 
   private final PublishSubject<ActivityFeedParams> params = PublishSubject.create();
@@ -59,7 +59,8 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     final Observable<List<Activity>> activities = activitiesWithPagination()
-      .compose(Transformers.waitUntil(currentUser.loggedInUser()));
+      .compose(Transformers.waitUntil(currentUser.loggedInUser()))
+      .share();
 
     addSubscription(viewSubject
       .compose(Transformers.combineLatestPair(activities))
@@ -80,7 +81,7 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
     addSubscription(viewSubject
       .compose(Transformers.takePairWhen(friendBackingClick))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.startProjectActivity(vp.second)));
+      .subscribe(vp -> vp.first.startProjectActivity(vp.second.project())));
 
     addSubscription(viewSubject
       .compose(Transformers.takeWhen(loginClick))
@@ -90,24 +91,39 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
     addSubscription(viewSubject
       .compose(Transformers.takePairWhen(projectStateChangedClick))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.startProjectActivity(vp.second)));
+      .subscribe(vp -> vp.first.startProjectActivity(vp.second.project())));
 
     addSubscription(viewSubject
       .compose(Transformers.takePairWhen(projectStateChangedPositiveClick))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.startProjectActivity(vp.second)));
+      .subscribe(vp -> vp.first.startProjectActivity(vp.second.project())));
 
     addSubscription(viewSubject
       .compose(Transformers.takePairWhen(projectUpdateProjectClick))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.startProjectActivity(vp.second)));
+      .subscribe(vp -> vp.first.startProjectActivity(vp.second.project())));
 
     addSubscription(viewSubject
       .compose(Transformers.takePairWhen(projectUpdateUpdateClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showProjectUpdate(vp.second)));
 
-    // kick off the first page of activities
+    // Track viewing and paginating activity.
+    addSubscription(nextPage
+      .compose(Transformers.incrementalCount())
+      .subscribe(koala::trackActivityView)
+    );
+
+    // Track tapping on any of the activity items.
+    addSubscription(friendBackingClick
+      .mergeWith(projectStateChangedPositiveClick)
+      .mergeWith(projectStateChangedClick)
+      .mergeWith(projectUpdateProjectClick)
+      .mergeWith(projectUpdateUpdateClick)
+      .subscribe(koala::trackActivityTapped)
+    );
+
+    // kick off the first page of activities. should be last.
     params.onNext(ActivityFeedParams.builder().build());
     nextPage.onNext(null);
   }
@@ -135,23 +151,23 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
     loginClick.onNext(null);
   }
 
-  public void friendBackingClicked(@NonNull final FriendBackingViewHolder viewHolder, @NonNull final Project project) {
-    friendBackingClick.onNext(project);
+  public void friendBackingClicked(@NonNull final FriendBackingViewHolder viewHolder, @NonNull final Activity activity) {
+    friendBackingClick.onNext(activity);
   }
 
   public void projectStateChangedClicked(@NonNull final ProjectStateChangedViewHolder viewHolder,
-    @NonNull final Project project) {
-    projectStateChangedClick.onNext(project);
+    @NonNull final Activity activity) {
+    projectStateChangedClick.onNext(activity);
   }
 
   public void projectStateChangedPositiveClicked(@NonNull final ProjectStateChangedPositiveViewHolder viewHolder,
-    @NonNull final Project project) {
-    projectStateChangedPositiveClick.onNext(project);
+    @NonNull final Activity activity) {
+    projectStateChangedPositiveClick.onNext(activity);
   }
 
   public void projectUpdateProjectClicked(@NonNull final ProjectUpdateViewHolder viewHolder,
-    @NonNull final Project project) {
-    projectUpdateProjectClick.onNext(project);
+    @NonNull final Activity activity) {
+    projectUpdateProjectClick.onNext(activity);
   }
 
   public void projectUpdateClicked(@NonNull final ProjectUpdateViewHolder viewHolder,

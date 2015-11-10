@@ -4,12 +4,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.kickstarter.libs.utils.KoalaUtils;
+import com.kickstarter.models.Activity;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
 
 import java.util.HashMap;
 
+import static com.kickstarter.libs.utils.KoalaUtils.activityProperties;
 import static com.kickstarter.libs.utils.KoalaUtils.discoveryParamsProperties;
 
 public final class Koala {
@@ -57,6 +59,21 @@ public final class Koala {
     client.track("Application Login or Signup", new HashMap<String, Object>() {{
       put("intent", intent);
     }});
+  }
+
+  // ACTIVITY
+  public void trackActivityView(final int pageCount) {
+    if (pageCount == 0) {
+      client.track("Activity View");
+    } else {
+      client.track("Activity Load More", new HashMap<String, Object>() {{
+        put("page_count", pageCount);
+      }});
+    }
+  }
+
+  public void trackActivityTapped(@NonNull final Activity activity) {
+    client.track("Activity View Item", activityProperties(activity));
   }
 
   public void trackLoginSuccess() {

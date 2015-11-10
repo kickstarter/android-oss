@@ -1,6 +1,7 @@
 package com.kickstarter.services.apiresponses;
 
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
 import com.kickstarter.libs.qualifiers.AutoGson;
 import com.kickstarter.models.Activity;
@@ -23,8 +24,8 @@ public abstract class ActivityEnvelope implements Parcelable {
     @AutoGson
     @AutoParcel
     public abstract static class ApiEnvelope implements Parcelable {
-      public abstract String moreActivities();
-      public abstract String newerActivities();
+      @Nullable public abstract String moreActivities();
+      @Nullable public abstract String newerActivities();
     }
   }
 }

@@ -1,7 +1,7 @@
 general:
     artifacts:
-        - /home/ubuntu/android/app/build/outputs/
-        - /home/ubuntu/android/app/build/reports/
+        - app/build/outputs
+        - app/build/reports
 
 machine:
   java:

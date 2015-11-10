@@ -36,7 +36,7 @@ import butterknife.OnClick;
 public final class ProjectActivity extends BaseActivity<ProjectPresenter> {
   private ProjectAdapter adapter;
 
-  @Bind(R.id.rewards_recycler_view) RecyclerView rewardsRecyclerView;
+  @Bind(R.id.project_recycler_view) RecyclerView projectRecyclerView;
   @Bind(R.id.star_fab) FloatingActionButton starFab;
   @Bind(R.id.back_project_button) Button backProjectButton;
   @Bind(R.id.manage_pledge_button) Button managePledgeButton;
@@ -61,8 +61,8 @@ public final class ProjectActivity extends BaseActivity<ProjectPresenter> {
     presenter.initialize(project, param);
 
     adapter = new ProjectAdapter(presenter);
-    rewardsRecyclerView.setAdapter(adapter);
-    rewardsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+    projectRecyclerView.setAdapter(adapter);
+    projectRecyclerView.setLayoutManager(new LinearLayoutManager(this));
   }
 
   public void show(@NonNull final Project project) {
@@ -209,6 +209,12 @@ public final class ProjectActivity extends BaseActivity<ProjectPresenter> {
     final Intent intent = new Intent(this, ViewPledgeActivity.class)
       .putExtra(getString(R.string.intent_project), project);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  public void startVideoPlayerActivity(@NonNull final Project project) {
+    final Intent intent = new Intent(this, VideoPlayerActivity.class)
+      .putExtra(getString(R.string.intent_project), project);
+    startActivity(intent);
   }
 
   @Override

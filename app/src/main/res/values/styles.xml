@@ -86,6 +86,12 @@
     <item name="android:windowBackground">@color/white</item>
   </style>
 
+  <style name="VideoPlayerActivity" parent="KSTheme">
+    <item name="android:statusBarColor">@color/transparent</item>
+    <item name="android:windowNoTitle">true</item>
+    <item name="android:windowBackground">@color/black</item>
+  </style>
+
   <style name="ViewPledgeActivity" parent="KSTheme">
     <item name="android:statusBarColor">@color/gray</item>
     <item name="android:windowBackground">@color/white</item>
@@ -132,7 +138,6 @@
     <item name="android:layout_height">60dp</item>
     <item name="android:textSize">@dimen/subhead</item>
     <item name="android:fontFamily">@string/font_family_medium</item>
-    <item name="android:layout_alignParentBottom">true</item>
   </style>
 
   <style name="Toolbar" parent="Base.Widget.AppCompat.Toolbar">

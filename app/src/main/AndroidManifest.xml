@@ -88,6 +88,11 @@
       android:theme="@style/Login" />
 
     <activity
+      android:name=".ui.activities.VideoPlayerActivity"
+      android:theme="@style/VideoPlayerActivity"
+      android:screenOrientation="landscape" />
+
+    <activity
       android:name=".ui.activities.ViewPledgeActivity"
       android:theme="@style/ViewPledgeActivity"/>
 

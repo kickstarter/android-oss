@@ -16,8 +16,8 @@ dependencies:
 
 test:
   override:
-    - ./gradlew clean assembleInternalDebug -PdisablePreDex
-    - ./gradlew clean assembleInternalRelease -PdisablePreDex
-    - ./gradlew clean assembleExternalDebug -PdisablePreDex
-    - ./gradlew clean assembleExternalRelease -PdisablePreDex
-    - ./gradlew test
+    - ./gradlew clean assembleInternalPre21Debug -PdisablePreDex
+    - ./gradlew testInternalPre21Debug
+    - ./gradlew clean assembleInternalPre21Release -PdisablePreDex
+    - ./gradlew clean assembleExternalPre21Debug -PdisablePreDex
+    - ./gradlew clean assembleExternalPre21Release -PdisablePreDex

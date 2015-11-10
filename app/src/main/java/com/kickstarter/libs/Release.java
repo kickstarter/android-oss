@@ -33,7 +33,7 @@ public class Release {
 
   public String variant() {
     // e.g. internalDebug, externalRelease
-    return new StringBuilder().append(BuildConfig.FLAVOR)
+    return new StringBuilder().append(BuildConfig.FLAVOR_AUDIENCE)
       .append(BuildConfig.BUILD_TYPE.substring(0, 1).toUpperCase())
       .append(BuildConfig.BUILD_TYPE.substring(1))
       .toString();

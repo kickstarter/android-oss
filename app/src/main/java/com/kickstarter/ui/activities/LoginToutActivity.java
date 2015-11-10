@@ -23,11 +23,11 @@ import butterknife.OnClick;
 
 @RequiresPresenter(LoginToutPresenter.class)
 public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
-  public static final String LOGIN_INTENT_BACK_PROJECT = "pledge";
-  public static final String LOGIN_INTENT_GENERIC = "generic";
-  public static final String LOGIN_INTENT_LOGIN_TAB = "login_tab";
-  public static final String LOGIN_INTENT_MESSAGE_CREATOR = "new_message";
-  public static final String LOGIN_INTENT_STAR_PROJECT = "star";
+  public static final String REASON_BACK_PROJECT = "pledge";
+  public static final String REASON_GENERIC = "generic";
+  public static final String REASON_LOGIN_TAB = "login_tab";
+  public static final String REASON_MESSAGE_CREATOR = "new_message";
+  public static final String REASON_STAR_PROJECT = "star";
 
   @Bind(R.id.disclaimer_text_view) TextView disclaimerTextView;
   @Bind(R.id.login_button) Button loginButton;

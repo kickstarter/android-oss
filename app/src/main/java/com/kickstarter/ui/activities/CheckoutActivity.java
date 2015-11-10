@@ -92,7 +92,8 @@ public final class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
 
   private boolean handleSignupUriRequest(@NonNull final Request request, @NonNull final WebView webView) {
     final Intent intent = new Intent(this, LoginToutActivity.class)
-      .putExtra(getString(R.string.intent_forward), true);
+      .putExtra(getString(R.string.intent_forward), true)
+      .putExtra(getString(R.string.intent_login_type), LoginToutActivity.REASON_BACK_PROJECT);
     startActivityForResult(intent,
       ActivityRequestCodes.CHECKOUT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
     return true;

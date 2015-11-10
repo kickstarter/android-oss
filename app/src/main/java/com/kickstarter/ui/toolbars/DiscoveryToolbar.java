@@ -129,10 +129,10 @@ public final class DiscoveryToolbar extends KSToolbar {
     currentUserButton.setVisibility(GONE);
     loginButton.setVisibility(VISIBLE);
     loginButton.setOnClickListener(v -> {
-      Intent intent = new Intent(getContext(), LoginToutActivity.class);
+      Intent intent = new Intent(getContext(), LoginToutActivity.class)
+        .putExtra(getContext().getResources().getString(R.string.intent_login_type), LoginToutActivity.REASON_LOGIN_TAB);
       getContext().startActivity(intent);
     });
-
   }
 
   @Override

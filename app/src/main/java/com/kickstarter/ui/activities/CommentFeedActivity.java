@@ -90,7 +90,8 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedPresenter
 
   public void commentFeedLogin() {
     final Intent intent = new Intent(this, LoginToutActivity.class)
-      .putExtra(getString(R.string.intent_forward), true);
+      .putExtra(getString(R.string.intent_forward), true)
+      .putExtra(getString(R.string.intent_login_type), LoginToutActivity.REASON_MESSAGE_CREATOR);
     startActivityForResult(intent, ActivityRequestCodes.COMMENT_FEED_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
   }
 

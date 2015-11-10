@@ -10,7 +10,6 @@ import android.util.Pair;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.BuildCheck;
-import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
@@ -40,7 +39,6 @@ public final class DiscoveryPresenter extends Presenter<DiscoveryActivity> imple
   @Inject ApiClient apiClient;
   @Inject WebClient webClient;
   @Inject BuildCheck buildCheck;
-  @Inject Koala koala;
 
   private final PublishSubject<Void> filterButtonClick = PublishSubject.create();
   private final PublishSubject<Empty> nextPage = PublishSubject.create();

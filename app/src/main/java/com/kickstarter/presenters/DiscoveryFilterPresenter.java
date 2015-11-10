@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.KSApplication;
-import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Category;
@@ -27,7 +26,6 @@ import rx.subjects.PublishSubject;
 
 public final class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity> implements DiscoveryFilterAdapter.Delegate {
   @Inject ApiClient apiClient;
-  @Inject Koala koala;
 
   private final PublishSubject<DiscoveryParams> discoveryFilterClick = PublishSubject.create();
 

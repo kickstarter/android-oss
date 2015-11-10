@@ -8,6 +8,7 @@ import com.kickstarter.presenters.CommentFeedPresenter;
 import com.kickstarter.presenters.DiscoveryFilterPresenter;
 import com.kickstarter.presenters.DiscoveryPresenter;
 import com.kickstarter.presenters.LoginPresenter;
+import com.kickstarter.presenters.LoginToutPresenter;
 import com.kickstarter.presenters.ProjectPresenter;
 import com.kickstarter.presenters.SearchPresenter;
 import com.kickstarter.presenters.SignupPresenter;
@@ -56,6 +57,7 @@ public interface ApplicationGraph {
   void inject(KSWebView __);
   void inject(KSApplication __);
   void inject(LoginPresenter __);
+  void inject(LoginToutPresenter __);
   void inject(Money __);
   void inject(ProjectContextViewHolder __);
   void inject(ProjectActivity __);

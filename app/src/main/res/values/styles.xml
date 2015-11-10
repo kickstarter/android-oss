@@ -150,6 +150,7 @@
     <item name="android:singleLine">true</item>
     <item name="android:paddingLeft">@dimen/grid_3</item>
     <item name="android:paddingRight">@dimen/grid_3</item>
+    <item name="android:text">@string/Log_in_with_Facebook</item>
   </style>
 
   <style name="ProjectActionButton" parent="Button">

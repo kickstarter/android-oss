@@ -4,11 +4,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
 import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
@@ -26,12 +31,14 @@ import butterknife.OnClick;
 public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
   @Bind(R.id.disclaimer_text_view) TextView disclaimerTextView;
   @Bind(R.id.login_button) Button loginButton;
+  @Bind(R.id.facebook_login_button) LoginButton facebookButton;
   @Bind(R.id.sign_up_button) Button signupButton;
   @Bind(R.id.help_button) TextView helpButton;
   @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
   @BindString(R.string.Not_implemented_yet) String notImplementedYetString;
   @BindString(R.string.Log_in_or_sign_up) String loginOrSignUpString;
 
+  private CallbackManager callbackManager;
   private boolean forward;
 
   @Override
@@ -43,6 +50,27 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
     loginToolbar.setTitle(loginOrSignUpString);
 
     forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
+
+    // Stubbing out Facebook login
+    callbackManager = CallbackManager.Factory.create();
+    facebookButton.setReadPermissions("user_friends");
+    facebookButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+
+      @Override
+      public void onSuccess(LoginResult result) {
+        Log.d("TEST", "onSuccess");
+      }
+
+      @Override
+      public void onCancel() {
+        Log.d("TEST", "onCancel");
+      }
+
+      @Override
+      public void onError(FacebookException error) {
+        Log.d("TEST", "onError");
+      }
+    });
   }
 
   @Override
@@ -74,7 +102,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
 
   @OnClick(R.id.facebook_login_button)
   public void facebookLoginButtonClick() {
-    displayToast(notImplementedYetString);
+
   }
 
   @OnClick(R.id.login_button)
@@ -105,10 +133,12 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
 
   @Override
   protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
+    super.onActivityResult(requestCode, resultCode, intent);
     if (requestCode != ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_LOGIN_ACTIVITY_FORWARD) {
       return;
     }
 
+    callbackManager.onActivityResult(requestCode, resultCode, intent);
     setResult(resultCode, intent);
     finish();
   }

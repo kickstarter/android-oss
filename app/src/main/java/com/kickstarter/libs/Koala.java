@@ -34,6 +34,11 @@ public final class Koala {
     client.track("Discover Modal Selected Filter", discoveryParamsProperties(params));
   }
 
+  // PROJECT
+  public void trackProjectShow() {
+    client.track("Project Page");
+  }
+
   // PROJECT STAR
   public void trackProjectStar(@NonNull final Project project) {
     if (project.isStarred()) {

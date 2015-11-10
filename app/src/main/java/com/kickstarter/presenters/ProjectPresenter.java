@@ -160,6 +160,8 @@ public final class ProjectPresenter extends Presenter<ProjectActivity> implement
 
     addSubscription(projectOnUserChangeStar.mergeWith(starredProjectOnLoginSuccess)
       .subscribe(koala::trackProjectStar));
+
+    koala.trackProjectShow();
   }
 
   public void initialize(@Nullable final Project initialProject, @Nullable final String param) {

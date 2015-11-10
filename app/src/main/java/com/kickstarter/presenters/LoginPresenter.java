@@ -102,6 +102,17 @@ public final class LoginPresenter extends Presenter<LoginActivity> implements Lo
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(this::success)
     );
+
+    addSubscription(loginSuccessSubject
+        .subscribe(__ -> koala.trackLoginSuccess())
+    );
+
+    addSubscription(loginError
+        .filter(e -> e.isGenericLoginError() || e.isInvalidLoginError())
+        .subscribe(__ -> {
+          koala.trackLoginError();
+        })
+    );
   }
 
   private static boolean isValid(@NonNull final String email, @NonNull final String password) {

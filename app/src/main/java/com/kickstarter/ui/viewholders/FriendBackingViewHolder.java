@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.CircleTransform;
+import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.models.Activity;
 import com.squareup.picasso.Picasso;
@@ -43,7 +43,7 @@ public final class FriendBackingViewHolder extends ActivityListViewHolder {
 
     Picasso.with(context)
       .load(activity.user().avatar().small())
-      .transform(new CircleTransform())
+      .transform(new CircleTransformation())
       .into(avatarImageView);
     creatorNameTextView.setText(context.getString(R.string.by_, activity.project().creator().name()));
     projectNameTextView.setText(activity.project().name());

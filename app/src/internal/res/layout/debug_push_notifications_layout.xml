@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.kickstarter.ui.views.DebugPushNotificationsView
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:paddingTop="@dimen/grid_2"
+  android:paddingBottom="@dimen/grid_3"
+  android:paddingLeft="@dimen/grid_3"
+  android:paddingRight="@dimen/grid_3">
+
+  <LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+      style="@style/SubheadMedium"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Device registration" />
+
+    <Button
+      android:id="@+id/register_device_button"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/grid_1_half"
+      android:layout_marginBottom="@dimen/grid_1_half"
+      android:background="@drawable/button_green"
+      android:textAllCaps="false"
+      android:text="Register device"
+      style="@style/Button" />
+
+    <Button
+      android:id="@+id/unregister_device_button"
+      android:layout_marginTop="@dimen/grid_1_half"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@drawable/button_green"
+      android:layout_marginBottom="@dimen/grid_2"
+      android:textAllCaps="false"
+      android:text="Unregister device"
+      style="@style/Button" />
+
+    <include
+      android:layout_marginTop="@dimen/grid_1"
+      android:layout_marginBottom="@dimen/grid_1"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      layout="@layout/horizontal_line_thin_view" />
+
+    <TextView
+      style="@style/SubheadMedium"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/grid_2"
+      android:text="Simulate notifications" />
+
+    <Button
+      android:id="@+id/simulate_friend_follow_button"
+      android:layout_marginTop="@dimen/grid_1_half"
+      android:layout_marginBottom="@dimen/grid_1_half"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@drawable/button_green"
+      android:textAllCaps="false"
+      android:text="Friend follow"
+      style="@style/Button" />
+
+    <Button
+      android:id="@+id/simulate_project_cancellation_button"
+      android:layout_marginTop="@dimen/grid_1_half"
+      android:layout_marginBottom="@dimen/grid_1_half"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@drawable/button_green"
+      android:textAllCaps="false"
+      android:text="Project cancellation"
+      style="@style/Button" />
+
+    <Button
+      android:id="@+id/simulate_project_failure_button"
+      android:layout_marginTop="@dimen/grid_1_half"
+      android:layout_marginBottom="@dimen/grid_1_half"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@drawable/button_green"
+      android:textAllCaps="false"
+      android:text="Project failure"
+      style="@style/Button" />
+
+    <Button
+      android:id="@+id/simulate_project_launch_button"
+      android:layout_marginTop="@dimen/grid_1_half"
+      android:layout_marginBottom="@dimen/grid_1_half"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@drawable/button_green"
+      android:textAllCaps="false"
+      android:text="Project launch"
+      style="@style/Button" />
+
+    <Button
+      android:id="@+id/simulate_project_reminder_button"
+      android:layout_marginTop="@dimen/grid_1_half"
+      android:layout_marginBottom="@dimen/grid_1_half"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@drawable/button_green"
+      android:textAllCaps="false"
+      android:text="Project reminder"
+      style="@style/Button" />
+
+    <Button
+      android:id="@+id/simulate_project_success_button"
+      android:layout_marginTop="@dimen/grid_1_half"
+      android:layout_marginBottom="@dimen/grid_1_half"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@drawable/button_green"
+      android:textAllCaps="false"
+      android:text="Project success"
+      style="@style/Button" />
+
+    <Button
+      android:id="@+id/simulate_project_update_button"
+      android:layout_marginTop="@dimen/grid_1_half"
+      android:layout_marginBottom="@dimen/grid_1_half"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@drawable/button_green"
+      android:textAllCaps="false"
+      android:text="Project update"
+      style="@style/Button" />
+
+  </LinearLayout>
+
+</com.kickstarter.ui.views.DebugPushNotificationsView>

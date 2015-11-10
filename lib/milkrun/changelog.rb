@@ -1,9 +1,9 @@
 module Milkrun
   class Changelog
-    attr_reader :variant, :version_code
+    attr_reader :audience, :build_type, :version_code
 
-    def initialize(variant:, version_code:)
-      @variant, @version_code = variant, version_code
+    def initialize(audience:, build_type:, version_code:)
+      @audience, @build_type, @version_code = audience, build_type, version_code
     end
 
     # Capture and publish the changelog for a package to a list in S3.
@@ -52,6 +52,10 @@ module Milkrun
 
     def strip_commented_lines(str)
       str.split("\n").select {|line| line.strip[0] != '#'}.join("\n")
+    end
+
+    def variant
+      audience + build_type.capitalize
     end
   end
 end

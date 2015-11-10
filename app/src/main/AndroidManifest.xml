@@ -89,7 +89,6 @@
 
     <activity
       android:name=".ui.activities.VideoPlayerActivity"
-      android:launchMode="singleInstance"
       android:theme="@style/VideoPlayerActivity"
       android:screenOrientation="landscape" />
 

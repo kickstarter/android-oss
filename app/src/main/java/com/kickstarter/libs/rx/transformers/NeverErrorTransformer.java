@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-final class NeverErrorTransformer<T> implements Observable.Transformer<T, T> {
+public final class NeverErrorTransformer<T> implements Observable.Transformer<T, T> {
   @Nullable private final PublishSubject<Throwable> errors;
 
   protected NeverErrorTransformer() {

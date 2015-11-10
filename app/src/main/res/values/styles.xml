@@ -20,10 +20,6 @@
     <item name="android:windowNoTitle">true</item>
     <item name="android:windowActionBar">false</item>
 
-    <!-- Spinner -->
-    <item name="android:spinnerItemStyle">@style/SpinnerItem</item>
-    <item name="android:spinnerStyle">@style/Spinner</item>
-
     <!-- More on Color Palette:
       http://www.google.com/design/spec/style/color.html#color-color-palette
       http://developer.android.com/training/material/theme.html#ColorPalette -->
@@ -101,16 +97,7 @@
     <item name="android:windowBackground">@color/white</item>
   </style>
 
-  <style name="Spinner" parent="android:Widget">
-    <item name="android:background">@drawable/spinner_9</item>
-    <item name="android:clickable">true</item>
-  </style>
-
-  <style name="SpinnerItem" parent="@android:style/Widget.TextView.SpinnerItem">
-    <item name="android:textSize">18sp</item>
-    <item name="android:textColor">@color/white</item>
-  </style>
-
+  <!-- Widgets -->
   <style name="PopupMenu" parent="Base.Widget.AppCompat.PopupMenu">
     <item name="android:popupBackground">#FFFAFAFA</item>
   </style>

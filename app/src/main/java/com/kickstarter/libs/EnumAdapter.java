@@ -1,6 +1,7 @@
 package com.kickstarter.libs;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -16,16 +17,14 @@ import butterknife.ButterKnife;
 public class EnumAdapter<T extends Enum<T>> extends BindableAdapter<T> {
   private final T[] enumConstants;
   private final boolean showNull;
+  @LayoutRes private final int spinnerItemResource;
   private final int nullOffset;
 
-  public EnumAdapter(@NonNull final Context context, @NonNull final Class<T> enumType) {
-    this(context, enumType, false);
-  }
-
-  public EnumAdapter(@NonNull final Context context, @NonNull final Class<T> enumType, final boolean showNull) {
+  public EnumAdapter(@NonNull final Context context, @NonNull final Class<T> enumType, final boolean showNull, @LayoutRes final int spinnerItemResource) {
     super(context);
     this.enumConstants = enumType.getEnumConstants();
     this.showNull = showNull;
+    this.spinnerItemResource = spinnerItemResource;
     this.nullOffset = showNull ? 1 : 0;
   }
 
@@ -50,7 +49,7 @@ public class EnumAdapter<T extends Enum<T>> extends BindableAdapter<T> {
 
   @Override
   public View newView(@NonNull final LayoutInflater inflater, final int position, @Nullable final ViewGroup container) {
-    return inflater.inflate(android.R.layout.simple_spinner_item, container, false);
+    return inflater.inflate(spinnerItemResource, container, false);
   }
 
   @Override

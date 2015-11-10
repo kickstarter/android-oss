@@ -55,11 +55,9 @@
         android:layout_column="0" />
 
       <Spinner
-        style="@style/BodyPrimary"
         android:id="@+id/endpoint_spinner"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
         android:layout_column="1" />
 
     </TableRow>

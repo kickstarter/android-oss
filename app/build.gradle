@@ -79,7 +79,7 @@ android {
     productFlavors {
         pre21 {
             dimension "API"
-            // Don't override the minSdkVersion - this should inherit from defaultConfig
+            // Don't override the minSdkVersion, just inherit from defaultConfig
         }
         min21 {
             // minSdkVersion 21 speeds up local development by generating multidex output much faster.

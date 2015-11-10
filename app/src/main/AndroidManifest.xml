@@ -119,7 +119,7 @@
     <!-- Mixpanel configuration, see https://github.com/mixpanel/mixpanel-android/blob/87b85d4b5917cdf94118f72b1538b489546a53ec/src/main/java/com/mixpanel/android/mpmetrics/MPConfig.java -->
     <meta-data
       android:name="com.mixpanel.android.MPConfig.EventsEndpoint"
-      android:value="https://***REMOVED***/native/track" />
+      android:value="@string/koala_endpoint" />
     <meta-data
       android:name="com.mixpanel.android.MPConfig.DebugFlushInterval"
       android:value="1000" />

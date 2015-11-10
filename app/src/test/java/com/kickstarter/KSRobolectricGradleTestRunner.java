@@ -80,10 +80,7 @@ public class KSRobolectricGradleTestRunner extends RobolectricTestRunner {
 
   private static String getFlavor(Config config) {
     try {
-      // HACK: Lowercase name due to issues with Roboletric and multidimensional flavors, see:
-      // https://github.com/robolectric/robolectric/issues/1936
-      final String ret = ReflectionHelpers.getStaticField(config.constants(), "FLAVOR");
-      return ret.toLowerCase();
+      return ReflectionHelpers.getStaticField(config.constants(), "FLAVOR");
     } catch (Throwable e) {
       return null;
     }

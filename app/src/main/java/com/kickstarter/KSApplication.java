@@ -2,12 +2,14 @@ package com.kickstarter;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
 import com.facebook.FacebookSdk;
 import com.kickstarter.libs.ApiCapabilities;
+import com.kickstarter.libs.PushNotifications;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
@@ -25,9 +27,11 @@ import timber.log.Timber;
 public class KSApplication extends MultiDexApplication {
   private ApplicationComponent component;
   private RefWatcher refWatcher;
-  @Inject CookieManager cookieManager;
+  @Inject protected CookieManager cookieManager;
+  @Inject protected PushNotifications pushNotifications;
 
   @Override
+  @CallSuper
   public void onCreate() {
     super.onCreate();
 
@@ -57,6 +61,8 @@ public class KSApplication extends MultiDexApplication {
     CookieHandler.setDefault(cookieManager);
 
     FacebookSdk.sdkInitialize(this);
+
+    pushNotifications.initialize();
   }
 
   public ApplicationComponent component() {

@@ -50,6 +50,8 @@ app/fabric.properties
 app/kickstarter.keystore
 # Credentials for accessing kickstarter.keystore
 app/signing.gradle
+# Google API key for GCM, overwritten during builds depending on the variant
+app/google-services.json
 
 # Credentials for uploading builds to S3
 config/*.yml

@@ -1,4 +1,4 @@
-package com.kickstarter.libs;
+package com.kickstarter.libs.transformations;
 
 /*
  * https://gist.github.com/julianshen/5829333
@@ -26,7 +26,7 @@ import android.support.annotation.NonNull;
 
 import com.squareup.picasso.Transformation;
 
-public class CircleTransform implements Transformation {
+public class CircleTransformation implements Transformation {
   private int x;
   private int y;
 

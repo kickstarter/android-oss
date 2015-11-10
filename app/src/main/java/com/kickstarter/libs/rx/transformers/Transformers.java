@@ -18,12 +18,28 @@ public final class Transformers {
 
   /**
    * Prevents an observable from erroring by chaining `onErrorResumeNext`,
-   * and any errors that occur of type ApiError will be piped into the
-   * supplied errors publish subject. `null` values will never be
-   * sent to the publish subject.
+   * and any errors that occur will be piped into the supplied errors publish
+   * subject. `null` values will never be sent to the publish subject.
  */
-  public static <T> NeverErrorTransformer<T> pipeErrorsTo(@NonNull final PublishSubject<ErrorEnvelope> errors) {
+  public static <T> NeverErrorTransformer<T> pipeErrorsTo(@NonNull final PublishSubject<Throwable> errors) {
     return new NeverErrorTransformer<>(errors);
+  }
+
+  /**
+   * Prevents an observable from erroring on any `ApiError` exceptions.
+   */
+  public static <T> NeverApiErrorTransformer<T> neverApiError() {
+    return new NeverApiErrorTransformer<>();
+  }
+
+  /**
+   * Prevents an observable from erroring on any `ApiError` exceptions,
+   * and any errors that do occur will be piped into the supplied
+   * errors publish subject. `null` values will never be sent to
+   * the publish subject.
+   */
+  public static <T> NeverApiErrorTransformer<T> pipeApiErrorsTo(@NonNull final PublishSubject<ErrorEnvelope> errors) {
+    return new NeverApiErrorTransformer<>(errors);
   }
 
   /**

@@ -9,8 +9,10 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
+import com.kickstarter.presenters.inputs.ActivityFeedPresenterInputs;
 import com.kickstarter.services.ActivityFeedParams;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
@@ -30,7 +32,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity> implements ActivityFeedAdapter.Delegate {
+public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity> implements ActivityFeedAdapter.Delegate, ActivityFeedPresenterInputs {
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
 
@@ -42,16 +44,22 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
   private final PublishSubject<Project> projectUpdateProjectClick = PublishSubject.create();
   private final PublishSubject<Activity> projectUpdateUpdateClick = PublishSubject.create();
 
+  private final PublishSubject<ActivityFeedParams> params = PublishSubject.create();
+
+  // Inputs
+  private final PublishSubject<Void> nextPage = PublishSubject.create();
+  public void nextPage() {
+    nextPage.onNext(null);
+  }
+  public final ActivityFeedPresenterInputs inputs = this;
+
   @Override
   protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    final Observable<List<Activity>> activities = currentUser.observable()
-      .filter(u -> u != null)
-      .take(1)
-      .flatMap(__ -> activities())
-      .map(ActivityEnvelope::activities);
+    final Observable<List<Activity>> activities = activitiesWithPagination()
+      .compose(Transformers.waitUntil(currentUser.loggedInUser()));
 
     addSubscription(viewSubject
       .compose(Transformers.combineLatestPair(activities))
@@ -98,11 +106,25 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
       .compose(Transformers.takePairWhen(projectUpdateUpdateClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showProjectUpdate(vp.second)));
+
+    // kick off the first page of activities
+    params.onNext(ActivityFeedParams.builder().build());
+    nextPage.onNext(null);
   }
 
-  private Observable<ActivityEnvelope> activities() {
-    return client.fetchActivities(new ActivityFeedParams())
-      .compose(Transformers.neverError());
+  private Observable<List<Activity>> activitiesWithPagination() {
+    return params
+      .compose(Transformers.takeWhen(nextPage))
+      .concatMap(this::activitiesFromParams)
+      .takeUntil(List::isEmpty)
+      .scan(ListUtils::concat);
+  }
+
+  @NonNull private Observable<List<Activity>> activitiesFromParams(@NonNull final ActivityFeedParams params) {
+    return client.fetchActivities(params)
+      .compose(Transformers.neverError())
+      .doOnNext(env -> this.params.onNext(ActivityFeedParams.fromUrl(env.urls().api().moreActivities())))
+      .map(ActivityEnvelope::activities);
   }
 
   public void emptyActivityFeedDiscoverProjectsClicked(@NonNull final EmptyActivityFeedViewHolder viewHolder) {

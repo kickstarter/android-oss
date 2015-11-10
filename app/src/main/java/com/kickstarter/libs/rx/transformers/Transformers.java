@@ -55,4 +55,11 @@ public final class Transformers {
   public static <S, T> CombineLatestPairTransformer<S, T> combineLatestPair(@NonNull final Observable<T> second) {
     return new CombineLatestPairTransformer<>(second);
   }
+
+  /**
+   * Waits until `until` emits one single item and then switches context to the source.
+   */
+  @NonNull public static <T, R> WaitUntilTransformer<T, R> waitUntil(@NonNull final Observable<R> until) {
+    return new WaitUntilTransformer<>(until);
+  }
 }

@@ -71,6 +71,7 @@
   <dimen name="comments_feed_avatar_height">@dimen/grid_7</dimen>
   <dimen name="project_avatar_width">@dimen/grid_8</dimen>
   <dimen name="project_avatar_height">@dimen/grid_8</dimen>
+  <dimen name="project_photo_height">220dp</dimen>
 
   <!-- TextViews -->
   <dimen name="text_view_corner_radius">@dimen/grid_1_half</dimen>

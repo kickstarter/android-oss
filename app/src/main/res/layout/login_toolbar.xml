@@ -5,7 +5,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   tools:showIn="@layout/login_layout"
   style="@style/Toolbar"
-  android:id="@+id/toolbar"
+  android:id="@+id/login_toolbar"
   android:elevation="0dp"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp">
@@ -23,14 +23,14 @@
 
     <TextView
       style="@style/Headline"
+      android:id="@+id/title_text_view"
       android:layout_width="wrap_content"
       android:layout_height="match_parent"
       android:layout_toEndOf="@id/back_button"
       android:layout_toRightOf="@id/back_button"
       android:layout_marginLeft="@dimen/grid_3_half"
       android:layout_marginStart="@dimen/grid_3_half"
-      android:gravity="center_vertical"
-      android:text="@string/Log_in" />
+      android:gravity="center_vertical" />
 
     <com.kickstarter.ui.views.IconTextView
       style="@style/ToolbarIcon"

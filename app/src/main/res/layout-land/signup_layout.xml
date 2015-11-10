@@ -11,7 +11,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <include layout="@layout/signup_toolbar" />
+    <include layout="@layout/login_toolbar" />
 
     <include
       layout="@layout/signup_form_view"

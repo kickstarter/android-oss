@@ -14,6 +14,7 @@ import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.presenters.LoginToutPresenter;
+import com.kickstarter.ui.toolbars.LoginToolbar;
 import com.kickstarter.ui.views.LoginPopupMenu;
 
 import butterknife.Bind;
@@ -27,7 +28,9 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
   @Bind(R.id.login_button) Button loginButton;
   @Bind(R.id.sign_up_button) Button signupButton;
   @Bind(R.id.help_button) TextView helpButton;
+  @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
   @BindString(R.string.Not_implemented_yet) String notImplementedYetString;
+  @BindString(R.string.Log_in_or_sign_up) String loginOrSignUpString;
 
   private boolean forward;
 
@@ -37,6 +40,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
 
     setContentView(R.layout.login_tout_layout);
     ButterKnife.bind(this);
+    loginToolbar.setTitle(loginOrSignUpString);
 
     forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
   }

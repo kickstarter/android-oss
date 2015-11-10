@@ -37,6 +37,9 @@ android {
         versionCode privateVersion
         // Version name is shown to users
         versionName publicVersion
+
+        // Enable Multidex to support over 65K methods
+        multiDexEnabled true
     }
 
     signingConfigs {
@@ -71,11 +74,26 @@ android {
         }
     }
 
+    flavorDimensions "AUDIENCE", "API"
+
     productFlavors {
+        pre21 {
+            dimension "API"
+            // Don't override the minSdkVersion, just inherit from defaultConfig
+        }
+        min21 {
+            // minSdkVersion 21 speeds up local development by generating multidex output much faster.
+            // It should not be used for release builds. See:
+            // https://developer.android.com/tools/building/multidex.html#dev-build
+            dimension "API"
+            minSdkVersion 21
+        }
         internal {
+            dimension "AUDIENCE"
             applicationId "com.kickstarter.kickstarter.internal"
         }
         external {
+            dimension "AUDIENCE"
             applicationId "com.kickstarter.kickstarter"
         }
     }
@@ -110,6 +128,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.android.support:cardview-v7:23.0.1'
     compile 'com.android.support:design:23.0.1'
+    compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:recyclerview-v7:23.0.1'
     compile 'com.android.support:support-annotations:23.0.1'
     compile 'com.facebook.android:facebook-android-sdk:4.0.1'
@@ -142,6 +161,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:1.10.19'
     testCompile 'org.robolectric:robolectric:3.0'
+    testCompile 'org.robolectric:shadows-multidex:3.0'
     testCompile "org.robolectric:shadows-play-services:3.0"
     testCompile "org.robolectric:shadows-support-v4:3.0"
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2'

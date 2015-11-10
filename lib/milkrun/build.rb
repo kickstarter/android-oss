@@ -1,18 +1,18 @@
 module Milkrun
   class Build
-    attr_reader :variant
+    attr_reader :audience, :build_type
 
-    def initialize(variant)
-      @variant = variant
+    def initialize(audience:, build_type:)
+      @audience, @build_type = audience, build_type
       @assembled = false
     end
 
-    # Cleans and assembles a build for the variant.
+    # Cleans and assembles a build.
     #
     # Returns the file path String to the build package.
     def compile
-      Milkrun.say "Cleaning and assembling a new #{@variant} build"
-      `./gradlew clean assemble#{@variant}`
+      Milkrun.say "Cleaning and assembling a new #{task} build"
+      `./gradlew clean assemble#{task}`
       @assembled = true
       Milkrun.say "Package built to #{path}"
       path
@@ -24,10 +24,18 @@ module Milkrun
       @assembled
     end
 
+    def components
+      [build_type, 'pre21', audience]
+    end
+
     def path
       raise 'Build has not been compiled yet!' unless assembled?
 
-      Milkrun.app_dir + "build/outputs/apk/app-#{variant.underscore.dasherize}.apk"
+      Milkrun.app_dir + "build/outputs/apk/app-#{components.join('-')}.apk"
+    end
+
+    def task
+      components.join
     end
   end
 end

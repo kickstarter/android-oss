@@ -1,6 +1,7 @@
 package com.kickstarter;
 
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.Money;
 import com.kickstarter.presenters.ActivityFeedPresenter;
 import com.kickstarter.presenters.CommentFeedPresenter;
@@ -42,6 +43,7 @@ public interface ApplicationGraph {
   void inject(CommentFeedToolbar __);
   void inject(CommentViewHolder __);
   void inject(CurrentUser __);
+  void inject(Koala __);
   void inject(DiscoveryActivity __);
   void inject(DiscoveryFilterPresenter __);
   void inject(DiscoveryFilterViewHolder __);

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="koala_endpoint">https://***REMOVED***/native/track</string>
+</resources>

@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.AutoParcelAdapterFactory;
+import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.Release;
 import com.kickstarter.libs.ConfigLoader;
 import com.kickstarter.libs.CurrentUser;
@@ -22,6 +23,7 @@ import com.kickstarter.libs.Font;
 import com.kickstarter.libs.ForApplication;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.Money;
+import com.kickstarter.libs.TrackingType;
 import com.kickstarter.libs.preferences.StringPreference;
 import com.kickstarter.libs.qualifiers.AccessTokenPreference;
 import com.kickstarter.libs.qualifiers.UserPreference;
@@ -65,6 +67,12 @@ public class ApplicationModule {
   ApiClient provideApiClient(@NonNull final ApiEndpoint apiEndpoint, @NonNull final Release release,
     @NonNull final String clientId, @NonNull final CurrentUser currentUser, @NonNull final Gson gson) {
     return new ApiClient(apiEndpoint, release, clientId, currentUser, gson);
+  }
+
+  @Provides
+  @Singleton
+  Koala provideKoala(@ForApplication @NonNull final Context context, @NonNull final ApiEndpoint endpoint) {
+    return new Koala(new TrackingType.Api(context));
   }
 
   @Provides

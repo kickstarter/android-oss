@@ -135,6 +135,7 @@ dependencies {
     compile 'net.hockeyapp.android:HockeySDK:3.6.1'
     ***REMOVED***
     compile 'org.jsoup:jsoup:1.8.2'
+    compile "com.mixpanel.android:mixpanel-android:4.6.4"
 
     // Testing
     testCompile 'junit:junit:4.12'

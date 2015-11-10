@@ -232,4 +232,7 @@
 
   <!-- Font strings -->
   <string name="font_family_medium">sans-serif-medium</string>
+
+  <!-- Koala strings -->
+  <string name="koala_endpoint">https://***REMOVED***/native/track</string>
 </resources>

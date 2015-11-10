@@ -100,6 +100,7 @@ public final class DiscoveryPresenter extends Presenter<DiscoveryActivity> imple
   private Observable<List<Project>> projectsWithPagination(@NonNull final DiscoveryParams firstPageParams) {
 
     return paramsWithPagination(firstPageParams)
+      .doOnNext(koala::trackDiscovery)
       .concatMap(this::projectsFromParams)
       .takeUntil(List::isEmpty)
       .scan(new ArrayList<>(), ListUtils::concatDistinct)

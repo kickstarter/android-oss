@@ -5,8 +5,10 @@ import android.support.annotation.NonNull;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
+import com.kickstarter.models.Empty;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apirequests.CommentBody;
+import com.kickstarter.services.apirequests.PushTokenBody;
 import com.kickstarter.services.apirequests.SignupBody;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
@@ -64,6 +66,9 @@ import rx.Observable;
 
   @POST("/v1/projects/{param}/comments/")
   Observable<Comment> postProjectComment(@Path("param") String param, @Body CommentBody body);
+
+  @POST("/v1/users/self/push_tokens")
+  Observable<Empty> registerPushToken(@Body PushTokenBody body);
 
   @POST("/v1/users")
   Observable<AccessTokenEnvelope> signup(@Body SignupBody body);

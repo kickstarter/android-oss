@@ -3,14 +3,15 @@ package com.kickstarter.libs;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.kickstarter.libs.utils.MapUtils;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public interface TrackingType {
-  void track(String eventName);
-  void track(String eventName, Map<String, Object> properties);
+  void track(final String eventName);
+  void track(final String eventName, final Map<String, Object> properties);
   @NonNull Map<String, Object> defaultProperties();
 
   final class Api implements TrackingType {
@@ -20,13 +21,16 @@ public interface TrackingType {
     }
 
     @Override
-    public void track(String eventName) {
+    public void track(@NonNull final String eventName) {
       track(eventName, new HashMap<>());
     }
 
     @Override
-    public void track(String eventName, Map<String, Object> properties) {
-      mixpanel.trackMap(eventName, properties);
+    public void track(@NonNull final String eventName, @NonNull final Map<String, Object> properties) {
+      final Map<String, Object> newProperties = MapUtils.compact(properties);
+      newProperties.putAll(defaultProperties());
+
+      mixpanel.trackMap(eventName, newProperties);
     }
 
     @NonNull

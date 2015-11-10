@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
-import com.kickstarter.libs.CircleTransform;
+import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.CommentUtils;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.utils.DateTimeUtils;
@@ -55,7 +55,7 @@ public final class CommentViewHolder extends KSViewHolder {
     Picasso.with(context).load(comment.author()
       .avatar()
       .small())
-      .transform(new CircleTransform())
+      .transform(new CircleTransformation())
       .into(avatarImageView);
     nameTextView.setText(comment.author().name());
     postDateTextView.setText(DateTimeUtils.relativeDateInWords(comment.createdAt(), false, true));

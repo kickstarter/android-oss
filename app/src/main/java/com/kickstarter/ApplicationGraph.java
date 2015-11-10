@@ -3,6 +3,8 @@ package com.kickstarter;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.Money;
+import com.kickstarter.services.gcm.MessageService;
+import com.kickstarter.services.gcm.RegisterService;
 import com.kickstarter.presenters.ActivityFeedPresenter;
 import com.kickstarter.presenters.CommentFeedPresenter;
 import com.kickstarter.presenters.DiscoveryFilterPresenter;
@@ -58,6 +60,7 @@ public interface ApplicationGraph {
   void inject(KSApplication __);
   void inject(LoginPresenter __);
   void inject(LoginToutPresenter __);
+  void inject(MessageService __);
   void inject(Money __);
   void inject(ProjectContextViewHolder __);
   void inject(ProjectActivity __);
@@ -65,6 +68,7 @@ public interface ApplicationGraph {
   void inject(ProjectCardViewHolder __);
   void inject(ProjectStateChangedPositiveViewHolder __);
   void inject(ProjectViewHolder __);
+  void inject(RegisterService __);
   void inject(RewardViewHolder __);
   void inject(SearchPresenter __);
   void inject(SignupPresenter __);

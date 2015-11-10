@@ -2,9 +2,11 @@ package com.kickstarter.libs.utils;
 
 import android.support.annotation.NonNull;
 
+import com.kickstarter.models.Activity;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
 
@@ -115,5 +117,53 @@ public final class KoalaUtils {
     }};
 
     return MapUtils.prefixKeys(properties, prefix);
+  }
+
+  @NonNull public static Map<String, Object> activityProperties(@NonNull final Activity activity) {
+    return activityProperties(activity, "activity_");
+  }
+
+  @NonNull public static Map<String, Object> activityProperties(@NonNull final Activity activity, @NonNull final String prefix) {
+    Map<String, Object> properties = new HashMap<String, Object>() {{
+      put("category", activity.category());
+    }};
+
+    properties = MapUtils.prefixKeys(properties, prefix);
+
+    final Project project = activity.project();
+    if (project != null) {
+      properties.putAll(projectProperties(project));
+
+      final Update update = activity.update();
+      if (update != null) {
+        properties.putAll(updateProperties(project, update));
+      }
+    }
+
+    return properties;
+  }
+
+  @NonNull public static Map<String, Object> updateProperties(@NonNull final Project project, @NonNull final Update update) {
+    return updateProperties(project, update, "update_");
+  }
+
+  @NonNull public static Map<String, Object> updateProperties(@NonNull final Project project, @NonNull final Update update, @NonNull final String prefix) {
+    Map<String, Object> properties = new HashMap<String, Object>() {{
+      put("id", update.id());
+      put("title", update.title());
+      put("visible", update.visible());
+      put("comments_count", update.commentsCount());
+
+      // TODO: add `public` to `Update` model
+      // put("public")
+      // TODO: how to convert update.publishedAt() to seconds since 1970
+      // put("published_at", update.publishedAt())
+    }};
+
+    properties = MapUtils.prefixKeys(properties, prefix);
+
+    properties.putAll(projectProperties(project));
+
+    return properties;
   }
 }

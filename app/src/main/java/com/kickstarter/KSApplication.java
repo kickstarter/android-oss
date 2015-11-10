@@ -2,10 +2,14 @@ package com.kickstarter;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
+import android.support.multidex.MultiDex;
+import android.support.multidex.MultiDexApplication;
 
 import com.facebook.FacebookSdk;
 import com.kickstarter.libs.ApiCapabilities;
+import com.kickstarter.libs.PushNotifications;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
@@ -20,23 +24,27 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-public class KSApplication extends Application {
+public class KSApplication extends MultiDexApplication {
   private ApplicationComponent component;
   private RefWatcher refWatcher;
-  @Inject CookieManager cookieManager;
+  @Inject protected CookieManager cookieManager;
+  @Inject protected PushNotifications pushNotifications;
 
   @Override
+  @CallSuper
   public void onCreate() {
     super.onCreate();
-
-    // Only log for internal builds
-    if (BuildConfig.FLAVOR.equals("internal")) {
-      Timber.plant(new Timber.DebugTree());
-    }
 
     // Send crash reports in release builds
     if (!BuildConfig.DEBUG && !isInUnitTests()) {
       checkForCrashes();
+    }
+
+    MultiDex.install(this);
+
+    // Only log for internal builds
+    if (BuildConfig.FLAVOR.equals("internal")) {
+      Timber.plant(new Timber.DebugTree());
     }
 
     if (!isInUnitTests() && ApiCapabilities.canDetectMemoryLeaks()) {
@@ -53,6 +61,8 @@ public class KSApplication extends Application {
     CookieHandler.setDefault(cookieManager);
 
     FacebookSdk.sdkInitialize(this);
+
+    pushNotifications.initialize();
   }
 
   public ApplicationComponent component() {

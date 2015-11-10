@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
@@ -15,9 +16,11 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.presenters.SignupPresenter;
+import com.kickstarter.ui.toolbars.LoginToolbar;
 import com.kickstarter.ui.views.LoginPopupMenu;
 
 import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
@@ -27,11 +30,14 @@ import rx.android.schedulers.AndroidSchedulers;
 public final class SignupActivity extends BaseActivity<SignupPresenter> {
   @Bind(R.id.full_name) EditText nameEditText;
   @Bind(R.id.email) EditText emailEditText;
+  @Bind(R.id.help_button) TextView helpButton;
+  @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
   @Bind(R.id.password) EditText passwordEditText;
   @Bind(R.id.signup_button) Button signupButton;
   @Bind(R.id.newsletter_switch) Switch newsletterSwitch;
   @Bind(R.id.disclaimer) TextView disclaimerTextView;
-  @Bind(R.id.more_button) TextView moreButton;
+
+  @BindString(R.string.Sign_up) String signUpString;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -39,6 +45,7 @@ public final class SignupActivity extends BaseActivity<SignupPresenter> {
 
     setContentView(R.layout.signup_layout);
     ButterKnife.bind(this);
+    loginToolbar.setTitle(signUpString);
 
     final boolean forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
 
@@ -71,17 +78,9 @@ public final class SignupActivity extends BaseActivity<SignupPresenter> {
     );
   }
 
-  @Override
-  @OnClick(R.id.nav_back_button)
-  public void onBackPressed() {
-    super.onBackPressed();
-    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
-  }
-
-  @OnClick({R.id.more_button, R.id.disclaimer})
-  public void moreButtonOnClick() {
-   final LoginPopupMenu popup = new LoginPopupMenu(this, moreButton); // TODO: anchor top right
-   popup.show();
+  @OnClick({R.id.disclaimer})
+  public void disclaimerClick() {
+   new LoginPopupMenu(this, helpButton).show();
   }
 
   @OnTextChanged(R.id.full_name)

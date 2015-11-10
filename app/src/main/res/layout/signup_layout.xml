@@ -2,7 +2,6 @@
 <ScrollView
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:gravity="center_horizontal"
-  android:background="@color/white"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:orientation="vertical">
@@ -12,98 +11,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <include layout="@layout/signup_toolbar" />
+    <include layout="@layout/login_toolbar" />
 
-    <LinearLayout
-      android:orientation="vertical"
+    <include
+      layout="@layout/signup_form_view"
       android:layout_width="match_parent"
-      android:layout_height="fill_parent"
-      android:paddingLeft="@dimen/grid_3"
-      android:paddingRight="@dimen/grid_3"
-      android:gravity="center_horizontal">
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="@dimen/grid_3"
+      android:layout_marginRight="@dimen/grid_3" />
 
-      <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/grid_2">
-
-        <EditText
-          android:id="@+id/full_name"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:inputType="text"
-          android:singleLine="true"
-          android:textAppearance="@style/BodyPrimary"
-          android:hint="@string/Full_name" />
-
-      </android.support.design.widget.TextInputLayout>
-
-      <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
-
-        <EditText
-          android:id="@+id/email"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:inputType="textEmailAddress"
-          android:singleLine="true"
-          android:textAppearance="@style/BodyPrimary"
-          android:hint="@string/Email_address" />
-
-      </android.support.design.widget.TextInputLayout>
-
-      <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
-
-        <EditText
-          android:id="@+id/password"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/grid_2"
-          android:inputType="textPassword"
-          android:singleLine="true"
-          android:fontFamily="sans-serif"
-          android:textAppearance="@style/BodyPrimary"
-          android:hint="@string/Password_minimum_6_characters" />
-
-      </android.support.design.widget.TextInputLayout>
-
-      <Switch
-        android:id="@+id/newsletter_switch"
-        android:checked="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/dark_gray"
-        android:textAppearance="@style/CaptionPrimary"
-        android:layout_marginBottom="@dimen/grid_1"
-        android:text="@string/Discover_new_projects_with_our_weekly_newsletter"/>
-
-      <Button
-        android:id="@+id/signup_button"
-        style="@style/Button"
-        android:enabled="false"
-        android:layout_marginTop="@dimen/grid_2"
-        android:layout_marginBottom="@dimen/grid_2"
-        android:layout_width="match_parent"
-        android:background="@drawable/button_green"
-        android:text="@string/Sign_up" />
-
-      <TextView
-        android:id="@+id/disclaimer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/grid_2"
-        android:gravity="center_horizontal"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:textAppearance="@style/CaptionPrimary"
-        android:textColor="@color/dark_gray"
-        android:text="@string/By_signing_up_you_agree_to_our_sign_up" />
-
-    </LinearLayout>
   </LinearLayout>
 </ScrollView>

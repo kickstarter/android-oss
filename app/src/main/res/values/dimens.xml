@@ -17,6 +17,10 @@
   <dimen name="grid_11_half">44dp</dimen>
   <dimen name="grid_11">88dp</dimen>
   <dimen name="grid_12">96dp</dimen>
+  <dimen name="grid_13">104dp</dimen>
+  <dimen name="grid_14">112dp</dimen>
+  <dimen name="grid_15">120dp</dimen>
+  <dimen name="grid_16">128dp</dimen>
   <dimen name="grid_20">160dp</dimen>
 
   <!-- Typography-->
@@ -44,6 +48,7 @@
   <!-- Layout padding -->
   <dimen name="feed_padding_y">@dimen/grid_5_half</dimen>
   <dimen name="feed_padding_x">@dimen/grid_3</dimen>
+  <dimen name="form_landscape_margin_x">@dimen/grid_16</dimen>
 
   <!-- Buttons -->
   <!-- button_icon_fixed_width is useful when we want to place several icons next to each

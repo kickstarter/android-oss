@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools"
   android:orientation="vertical"
   android:background="@color/light_gray"
   android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  tools:context=".LoginToutActivity">
+  android:layout_height="match_parent">
 
   <LinearLayout
     android:orientation="vertical"
+    android:gravity="center_horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -18,25 +17,16 @@
     <LinearLayout
       android:orientation="vertical"
       android:gravity="center_horizontal"
-      android:paddingLeft="@dimen/grid_3"
-      android:paddingStart="@dimen/grid_3"
-      android:paddingRight="@dimen/grid_3"
-      android:paddingEnd="@dimen/grid_3"
+      android:paddingLeft="@dimen/grid_16"
+      android:paddingRight="@dimen/grid_16"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
-
-      <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/logo"
-        android:layout_marginTop="@dimen/grid_8"
-        android:layout_marginBottom="@dimen/grid_6"
-        android:layout_width="170dp"
-        android:layout_height="20.06dp"
-        android:src="@drawable/logo" />
 
       <Button
         style="@style/FacebookButton"
         android:id="@+id/facebook_login_button"
         android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/grid_3"
         android:text="@string/Log_in_with_Facebook" />
 
       <TextView
@@ -45,10 +35,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/grid_1"
-        android:layout_marginLeft="@dimen/grid_2"
-        android:layout_marginStart="@dimen/grid_2"
-        android:layout_marginEnd="@dimen/grid_2"
-        android:layout_marginRight="@dimen/grid_2"
         android:text="@string/Well_never_post_anything" />
 
       <Button
@@ -67,25 +53,21 @@
         android:text="@string/Sign_up_with_email" />
 
       <TextView
-        style="@style/CaptionSecondary"
         android:id="@+id/disclaimer_text_view"
-        android:background="@drawable/click_indicator_light_masked"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/grid_1"
         android:layout_marginBottom="@dimen/grid_2"
         android:gravity="center_horizontal"
-        android:layout_marginLeft="@dimen/grid_1"
-        android:layout_marginStart="@dimen/grid_1"
-        android:layout_marginEnd="@dimen/grid_1"
-        android:layout_marginRight="@dimen/grid_1"
-        android:paddingLeft="@dimen/grid_1"
-        android:paddingRight="@dimen/grid_1"
-        android:paddingTop="@dimen/grid_1"
-        android:paddingBottom="@dimen/grid_1"
+        android:layout_marginLeft="@dimen/grid_2"
+        android:layout_marginStart="@dimen/grid_2"
+        android:layout_marginEnd="@dimen/grid_2"
+        android:layout_marginRight="@dimen/grid_2"
+        android:textAppearance="@style/CaptionPrimary"
+        android:textColor="@color/dark_gray"
         android:text="@string/By_signing_up_you_agree_to_our_sign_up" />
 
     </LinearLayout>
-
   </LinearLayout>
 </ScrollView>
+

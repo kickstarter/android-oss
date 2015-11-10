@@ -6,13 +6,19 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.widget.TextView;
+
+import com.kickstarter.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import rx.Subscription;
 
 public abstract class KSToolbar extends Toolbar {
+  @Nullable @Bind(R.id.title_text_view) TextView titleTextView;
   private final List<Subscription> subscriptions = new ArrayList<>();
 
   public KSToolbar(@NonNull final Context context) {
@@ -25,6 +31,22 @@ public abstract class KSToolbar extends Toolbar {
 
   public KSToolbar(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
     super(context, attrs, defStyleAttr);
+  }
+
+  /**
+   * If the toolbar has a textview with id title_text_view, set its title.
+   */
+  public void setTitle(@NonNull final String title) {
+    if (titleTextView != null) {
+      titleTextView.setText(title);
+    }
+  }
+
+  @CallSuper
+  @Override
+  protected void onFinishInflate() {
+    super.onFinishInflate();
+    ButterKnife.bind(this);
   }
 
   @CallSuper

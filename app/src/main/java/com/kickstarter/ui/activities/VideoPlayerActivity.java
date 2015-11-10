@@ -25,6 +25,7 @@ public final class VideoPlayerActivity extends BaseActivity implements KSVideoPl
   private MediaController mediaController;
   private KSVideoPlayer player;
   private long playerPosition;
+  private Video video;
 
   public @Bind(R.id.video_player_layout) View rootView;
   public @Bind(R.id.surface_view) SurfaceView surfaceView;
@@ -39,7 +40,7 @@ public final class VideoPlayerActivity extends BaseActivity implements KSVideoPl
 
     final Intent intent = getIntent();
     final Project project = intent.getParcelableExtra(getString(R.string.intent_project));
-    final Video video = project.video();
+    video = project.video();
 
     rootView.setOnTouchListener(((view, motionEvent) -> {
       if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
@@ -47,26 +48,23 @@ public final class VideoPlayerActivity extends BaseActivity implements KSVideoPl
       }
       return true;
     }));
-
-    // Create player
-    player = new KSVideoPlayer(new KsrRendererBuilder(this, video.high()));
-    player.setListener(this);
-    player.seekTo(playerPosition);  // todo: will be used for inline video playing
-
-    // Set media controller
-    mediaController = new MediaController(this);
-    mediaController.setMediaPlayer(player.getPlayerControl());
-    mediaController.setAnchorView(rootView);
-    mediaController.setEnabled(true);
-
-    player.prepare();
-    player.setSurface(surfaceView.getHolder().getSurface());
-    player.setPlayWhenReady(true);
   }
 
   @Override
   public void onDestroy() {
     super.onDestroy();
+    releasePlayer();
+  }
+
+  @Override
+  public void onResume() {
+    super.onResume();
+    preparePlayer();
+  }
+
+  @Override
+  public void onPause() {
+    super.onPause();
     releasePlayer();
   }
 
@@ -100,9 +98,28 @@ public final class VideoPlayerActivity extends BaseActivity implements KSVideoPl
   }
 
   private void releasePlayer() {
-    playerPosition = player.getCurrentPosition();
-    player.release();
-    player = null;
+    if (player != null) {
+      playerPosition = player.getCurrentPosition();
+      player.release();
+      player = null;
+    }
+  }
+
+  public void preparePlayer() {
+    // Create player
+    player = new KSVideoPlayer(new KsrRendererBuilder(this, video.high()));
+    player.setListener(this);
+    player.seekTo(playerPosition);  // todo: will be used for inline video playing
+
+    // Set media controller
+    mediaController = new MediaController(this);
+    mediaController.setMediaPlayer(player.getPlayerControl());
+    mediaController.setAnchorView(rootView);
+    mediaController.setEnabled(true);
+
+    player.prepare();
+    player.setSurface(surfaceView.getHolder().getSurface());
+    player.setPlayWhenReady(true);
   }
 
   public void toggleControlsVisibility() {

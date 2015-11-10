@@ -33,6 +33,9 @@ public abstract class KSToolbar extends Toolbar {
     super(context, attrs, defStyleAttr);
   }
 
+  /**
+   * If the toolbar has a textview with id title_text_view, set its title.
+   */
   public void setTitle(@NonNull final String title) {
     if (titleTextView != null) {
       titleTextView.setText(title);

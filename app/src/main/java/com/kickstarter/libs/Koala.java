@@ -125,4 +125,48 @@ public final class Koala {
       put("send_newsletters", sendNewsletters);
     }});
   }
+
+  // CHECKOUT
+  public void trackCheckoutNext() { // rewards webview and top nav
+    client.track("Checkout Next");
+  }
+  public void trackCheckoutCancel() {
+    client.track("Checkout Cancel");
+  }
+
+  public void trackCheckoutLoadFailed() {
+    // TODO: set up error props
+  }
+
+  public void trackCheckoutShowShareSheet() {
+    client.track("Checkout Show Share Sheet");
+  }
+
+  public void trackCheckoutCancelShareSheet() {
+    client.track("Checkout Cancel Share Sheet");
+  }
+
+  public void trackCheckoutShowShareView(@Nullable final String type) {
+    client.track("Checkout Show Share", new HashMap<String, Object>() {{
+      put("share_type", type);
+    }});
+  }
+
+  public void trackCheckoutCanceledShareView(@Nullable final String type) {
+    client.track("Checkout Cancel Share", new HashMap<String, Object>() {{
+      put("share_type", type);
+    }});
+  }
+
+  public void trackCheckoutShareFinishedWithShareTypes() {
+    client.track("Checkout Share Finished"); // 99% sure we aren't actually ever sending "shareTypes", are we?
+  }
+
+  public void trackCheckoutFinishJumpToDiscovery() {
+    client.track("Checkout Finished Discover More");
+  }
+
+  public void trackCheckoutFinishJumpToProject() {
+    client.track("Checkout Finished Discover Open Project");
+  }
 }

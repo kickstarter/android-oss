@@ -107,6 +107,32 @@ public final class ThanksPresenter extends Presenter<ThanksActivity> implements 
           view.showRecommended(projects, category);
         })
     );
+
+    addSubscription(shareClick
+        .subscribe(__ -> koala.trackCheckoutShowShareSheet())
+    );
+
+    addSubscription(twitterClick
+        .subscribe(__ -> koala.trackCheckoutShowShareView("twitter"))
+    );
+
+    addSubscription(facebookClick
+        .subscribe(__ -> koala.trackCheckoutShowShareView("facebook"))
+    );
+
+    addSubscription(projectCardMiniClick
+      .subscribe(__ -> {
+        koala.trackCheckoutFinishJumpToProject();
+        koala.trackCheckoutShareFinishedWithShareTypes();
+      })
+    );
+
+    addSubscription(doneClick
+        .subscribe(__ -> {
+          koala.trackCheckoutFinishJumpToDiscovery();
+          koala.trackCheckoutShareFinishedWithShareTypes();
+        })
+    );
   }
 
   public void takeDoneClick() {

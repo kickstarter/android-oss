@@ -64,6 +64,6 @@ public final class ViewPledgePresenter extends Presenter<ViewPledgeActivity> imp
 
   public Observable<Backing> fetchProjectBacking(@NonNull final Project project, @NonNull final User user) {
     return client.fetchProjectBacking(project, user)
-      .compose(Transformers.pipeErrorsTo(backingLoadFailed));
+      .compose(Transformers.pipeApiErrorsTo(backingLoadFailed));
   }
 }

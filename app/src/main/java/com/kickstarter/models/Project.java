@@ -229,6 +229,10 @@ public abstract class Project implements Parcelable {
     return rewards() != null;
   }
 
+  public boolean hasVideo() {
+    return video() != null;
+  }
+
   /** Returns whether the project is in a canceled state. */
   public boolean isCanceled() {
     return STATE_CANCELED.equals(state());

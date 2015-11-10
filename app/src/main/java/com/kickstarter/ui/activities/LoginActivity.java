@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
@@ -14,6 +15,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.presenters.LoginPresenter;
+import com.kickstarter.ui.toolbars.LoginToolbar;
 
 import butterknife.Bind;
 import butterknife.BindString;
@@ -27,10 +29,13 @@ import rx.android.schedulers.AndroidSchedulers;
 public final class LoginActivity extends BaseActivity<LoginPresenter> {
   @Bind(R.id.email) EditText emailEditText;
   @Bind(R.id.login_button) Button loginButton;
+  @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
   @Bind(R.id.password) EditText passwordEditText;
 
   @BindString(R.string.Login_does_not_match_any_of_our_records) String loginDoesNotMatchString;
+  @BindString(R.string.Not_implemented_yet) String notImplementedYetString;
   @BindString(R.string.Unable_to_login) String unableToLoginString;
+  @BindString(R.string.Log_in) String loginString;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -38,6 +43,7 @@ public final class LoginActivity extends BaseActivity<LoginPresenter> {
 
     setContentView(R.layout.login_layout);
     ButterKnife.bind(this);
+    loginToolbar.setTitle(loginString);
 
     final boolean forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
 
@@ -94,6 +100,11 @@ public final class LoginActivity extends BaseActivity<LoginPresenter> {
   @OnTextChanged(R.id.password)
   void onPasswordTextChanged(@NonNull final CharSequence password) {
     presenter.inputs.password(password.toString());
+  }
+
+  @OnClick(R.id.forgot_your_password_text_view)
+  public void forgotYourPasswordTextViewClick() {
+    displayToast(notImplementedYetString);
   }
 
   @OnClick(R.id.login_button)

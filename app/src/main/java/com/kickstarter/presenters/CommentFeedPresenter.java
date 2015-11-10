@@ -170,7 +170,7 @@ public final class CommentFeedPresenter extends Presenter<CommentFeedActivity> i
 
   private Observable<Comment> postComment(@NonNull final Project project, @NonNull final String body) {
     return client.postProjectComment(project, body)
-      .compose(Transformers.pipeErrorsTo(postCommentError))
+      .compose(Transformers.pipeApiErrorsTo(postCommentError))
       .doOnSubscribe(() -> commentIsPosting.onNext(true))
       .doOnCompleted(() -> commentPosted.onNext(null))
       .finallyDo(() -> commentIsPosting.onNext(false));

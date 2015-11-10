@@ -12,6 +12,13 @@ public class ListUtils {
   }
 
   /**
+   * Returns an empty list.
+   */
+  @NonNull public static <T> List<T> empty() {
+    return new ArrayList<>();
+  }
+
+  /**
    * Concats the second argument onto the end of the first, but also mutates the
    * first argument.
    */

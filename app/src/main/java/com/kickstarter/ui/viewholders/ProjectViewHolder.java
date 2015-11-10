@@ -12,9 +12,10 @@ import android.widget.TextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.CircleTransform;
-import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.Money;
+import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.models.Project;
+import com.kickstarter.ui.views.IconTextView;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
@@ -27,9 +28,8 @@ public final class ProjectViewHolder extends KSViewHolder {
   private Project project;
   private final Delegate delegate;
 
-//  protected @Nullable @Bind(R.id.play_button_overlay) IconTextView playButtonIconTextView;
-//  protected @Nullable @Bind(R.id.project_detail_video) VideoView videoView;
-  protected @Bind(R.id.project_detail_photo) ImageView photoImageView;
+  protected @Bind(R.id.play_button_overlay) IconTextView playButtonIconTextView;
+  protected @Bind(R.id.project_photo) ImageView photoImageView;
   protected @Bind(R.id.project_name) TextView projectNameTextView;
   protected @Bind(R.id.creator_name) TextView creatorNameTextView;
   protected @Bind(R.id.backer_label) LinearLayout backerLabelLinearLayout;
@@ -54,6 +54,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     void projectCommentsClicked(ProjectViewHolder viewHolder);
     void projectCreatorNameClicked(ProjectViewHolder viewHolder);
     void projectUpdatesClicked(ProjectViewHolder viewHolder);
+    void projectVideoStarted(ProjectViewHolder viewHolder);
   }
 
   public ProjectViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
@@ -69,6 +70,11 @@ public final class ProjectViewHolder extends KSViewHolder {
 
     /* Video */
     Picasso.with(context).load(project.photo().full()).into(photoImageView);
+    if (project.hasVideo()) {
+      playButtonIconTextView.setVisibility(View.VISIBLE);
+    } else {
+      playButtonIconTextView.setVisibility(View.GONE);
+    }
 
     /* Project */
     blurbTextView.setText(Html.fromHtml(context.getString(R.string.Blurb_read_more, project.blurb())));
@@ -114,6 +120,11 @@ public final class ProjectViewHolder extends KSViewHolder {
   @OnClick({R.id.creator_name, R.id.creator_info})
   public void creatorNameClick() {
     delegate.projectCreatorNameClicked(this);
+  }
+
+  @OnClick(R.id.play_button_overlay)
+  public void playButtonClick() {
+    delegate.projectVideoStarted(this);
   }
 
   @OnClick(R.id.updates)

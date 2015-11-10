@@ -1,6 +1,5 @@
 package com.kickstarter.libs;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -8,19 +7,16 @@ import com.kickstarter.libs.utils.MapUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
-import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 public final class Koala {
-  @NonNull private final Context context;
-  @NonNull private final MixpanelAPI client;
+  private @NonNull final TrackingType client;
 
-  public Koala(@NonNull final Context context) {
-    this.context = context;
-    client = MixpanelAPI.getInstance(context, "koala");
+  public Koala(@NonNull final TrackingType client) {
+    this.client = client;
   }
 
   // DISCOVERY

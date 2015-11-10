@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.Paginator;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
@@ -26,6 +27,7 @@ import butterknife.ButterKnife;
 public final class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
   private ActivityFeedAdapter adapter;
   public @Bind(R.id.recycler_view) RecyclerView recyclerView;
+  private Paginator paginator;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -36,6 +38,14 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedPresent
     adapter = new ActivityFeedAdapter(presenter);
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+    paginator = new Paginator(recyclerView, presenter.inputs::nextPage);
+  }
+
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    paginator.stop();
   }
 
   public void showActivities(@NonNull final List<Activity> activities) {

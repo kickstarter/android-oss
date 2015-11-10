@@ -23,7 +23,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/backers"
-      style="@style/BodySecondary" />
+      style="@style/CaptionSecondary" />
   </LinearLayout>
 
   <LinearLayout
@@ -47,13 +47,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/pledged_of_"
-        style="@style/BodySecondary" />
+        style="@style/CaptionSecondary" />
 
       <TextView
         android:id="@+id/goal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/BodySecondary" />
+        style="@style/CaptionSecondary" />
     </LinearLayout>
   </LinearLayout>
 
@@ -79,13 +79,13 @@
         android:id="@+id/deadline_countdown_unit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/BodySecondary" />
+        style="@style/CaptionSecondary" />
 
       <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/_to_go"
-        style="@style/BodySecondary" />
+        style="@style/CaptionSecondary" />
     </LinearLayout>
   </LinearLayout>
 

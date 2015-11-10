@@ -5,8 +5,8 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 import com.kickstarter.BuildConfig;
 import com.kickstarter.libs.ApiEndpoint;
-import com.kickstarter.libs.Release;
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.Release;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
@@ -53,8 +53,7 @@ public final class ApiClient {
   // TODO: map null values back to an empty array so app doesn't crash on API responses
 
   public Observable<ActivityEnvelope> fetchActivities(@NonNull final ActivityFeedParams params) {
-    return service.fetchActivities(params.queryParams())
-      .retry(3);
+    return service.fetchActivities(params.categoryParams(), params.paginationParams());
   }
 
   public Observable<List<Category>> fetchCategories() {

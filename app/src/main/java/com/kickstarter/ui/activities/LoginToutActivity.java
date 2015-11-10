@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.appevents.AppEventsLogger;
 import com.kickstarter.R;
@@ -12,8 +14,11 @@ import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.presenters.LoginToutPresenter;
+import com.kickstarter.ui.toolbars.LoginToolbar;
+import com.kickstarter.ui.views.LoginPopupMenu;
 
 import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -25,8 +30,13 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
   public static final String LOGIN_INTENT_MESSAGE_CREATOR = "new_message";
   public static final String LOGIN_INTENT_STAR_PROJECT = "star";
 
+  @Bind(R.id.disclaimer_text_view) TextView disclaimerTextView;
   @Bind(R.id.login_button) Button loginButton;
   @Bind(R.id.sign_up_button) Button signupButton;
+  @Bind(R.id.help_button) TextView helpButton;
+  @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
+  @BindString(R.string.Not_implemented_yet) String notImplementedYetString;
+  @BindString(R.string.Log_in_or_sign_up) String loginOrSignUpString;
 
   private boolean forward;
 
@@ -36,6 +46,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
 
     setContentView(R.layout.login_tout_layout);
     ButterKnife.bind(this);
+    loginToolbar.setTitle(loginOrSignUpString);
 
     forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
     //presenter.showLoginWithIntent(getIntent().getExtras().getString(getString(R.string.intent_login_type)));
@@ -63,8 +74,18 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
     AppEventsLogger.deactivateApp(this);
   }
 
+  @OnClick({R.id.disclaimer_text_view})
+  public void disclaimerTextViewClick() {
+    new LoginPopupMenu(this, helpButton).show();
+  }
+
+  @OnClick(R.id.facebook_login_button)
+  public void facebookLoginButtonClick() {
+    displayToast(notImplementedYetString);
+  }
+
   @OnClick(R.id.login_button)
-  public void loginButtonOnClick() {
+  public void loginButtonClick() {
     final Intent intent = new Intent(this, LoginActivity.class);
     if (forward) {
       intent.putExtra(getString(R.string.intent_forward), true);
@@ -77,7 +98,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
   }
 
   @OnClick(R.id.sign_up_button)
-  public void signupButtonOnClick() {
+  public void signupButtonClick() {
     final Intent intent = new Intent(this, SignupActivity.class);
     if (forward) {
       intent.putExtra(getString(R.string.intent_forward), true);
@@ -87,11 +108,6 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
       startActivity(intent);
     }
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
-  }
-
-  @OnClick(R.id.help_button)
-  public void startHelpActivity() {
-    // todo: hook this up to a dialog or spinner
   }
 
   @Override

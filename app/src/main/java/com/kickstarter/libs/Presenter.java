@@ -9,12 +9,16 @@ import android.support.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscription;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 public class Presenter<ViewType> {
+  @Inject protected Koala koala;
+
   private ViewType view;
   protected final PublishSubject<ViewType> viewChange = PublishSubject.create();
   protected final Observable<ViewType> viewSubject = viewChange.filter(v -> v != null);

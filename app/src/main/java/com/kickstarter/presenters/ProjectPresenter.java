@@ -38,6 +38,7 @@ public final class ProjectPresenter extends Presenter<ProjectActivity> implement
   private final PublishSubject<Void> updatesClick = PublishSubject.create();
   private final PublishSubject<Void> loginSuccess = PublishSubject.create();
   private final PublishSubject<Void> managePledgeClick = PublishSubject.create();
+  private final PublishSubject<Void> playVideoClick = PublishSubject.create();
   private final PublishSubject<Reward> rewardClick = PublishSubject.create();
   private final PublishSubject<Void> starClick = PublishSubject.create();
   private final PublishSubject<Void> viewPledgeClick = PublishSubject.create();
@@ -148,6 +149,11 @@ public final class ProjectPresenter extends Presenter<ProjectActivity> implement
       .subscribe(vp -> vp.first.showUpdates(vp.second)));
 
     addSubscription(viewAndProject
+      .compose(Transformers.takeWhen(playVideoClick))
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(vp -> vp.first.startVideoPlayerActivity(vp.second)));
+
+    addSubscription(viewAndProject
       .compose(Transformers.takeWhen(viewPledgeClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startViewPledgeActivity(vp.second)));
@@ -183,6 +189,10 @@ public final class ProjectPresenter extends Presenter<ProjectActivity> implement
 
   public void rewardClicked(@NonNull final RewardViewHolder viewHolder, @NonNull final Reward reward) {
     rewardClick.onNext(reward);
+  }
+
+  public void projectVideoStarted(@NonNull final ProjectViewHolder viewHolder) {
+    playVideoClick.onNext(null);
   }
 
   public void takeShareClick() {

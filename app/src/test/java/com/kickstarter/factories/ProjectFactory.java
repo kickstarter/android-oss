@@ -35,4 +35,28 @@ public class ProjectFactory {
       .urls(Project.Urls.builder().web(web).build())
       .build();
   }
+
+  public static Project halfWayProject() {
+    return project()
+      .toBuilder()
+      .goal(100.0f)
+      .pledged(50.0f)
+      .build();
+  }
+
+  public static Project allTheWayProject() {
+    return project()
+      .toBuilder()
+      .goal(100.0f)
+      .pledged(100.0f)
+      .build();
+  }
+
+  public static Project doubledGoalProject() {
+    return project()
+      .toBuilder()
+      .goal(100.0f)
+      .pledged(200.0f)
+      .build();
+  }
 }

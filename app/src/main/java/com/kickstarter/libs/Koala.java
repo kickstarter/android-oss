@@ -3,14 +3,14 @@ package com.kickstarter.libs;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.kickstarter.libs.utils.MapUtils;
-import com.kickstarter.models.Category;
+import com.kickstarter.libs.utils.KoalaUtils;
+import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
+
+import static com.kickstarter.libs.utils.KoalaUtils.discoveryParamsProperties;
 
 public final class Koala {
   private @NonNull final TrackingType client;
@@ -21,17 +21,17 @@ public final class Koala {
 
   // DISCOVERY
   public void trackDiscovery(@NonNull final DiscoveryParams params) {
-    client.trackMap("Discover List View", discoveryParamsProperties(params));
+    client.track("Discover List View", discoveryParamsProperties(params));
   }
 
   public void trackDiscoveryFilters() {
-    client.trackMap("Discover Switch Modal", new HashMap<String, Object>(){{
+    client.track("Discover Switch Modal", new HashMap<String, Object>() {{
       put("modal_type", "filters");
     }});
   }
 
   public void trackDiscoveryFilterSelected(@NonNull final DiscoveryParams params) {
-    client.trackMap("Discover Modal Selected Filter", discoveryParamsProperties(params));
+    client.track("Discover Modal Selected Filter", discoveryParamsProperties(params));
   }
 
   // PROJECT STAR
@@ -43,12 +43,21 @@ public final class Koala {
     }
   }
 
+  // COMMENTING
+  public void trackProjectCommentCreate(@NonNull final Project project, @NonNull final Comment comment) {
+    client.track("Project Comment Create", KoalaUtils.projectProperties(project));
+  }
+
+  public void trackProjectCommentsView(@NonNull final Project project) {
+    client.track("Project Comment View");
+  }
+
   // SESSION EVENTS
   public void trackLoginRegisterTout(@Nullable final String intent) {
     if (intent == null) {
       client.track("Application Login or Signup");
     } else {
-      client.trackMap("Application Login or Signup", new HashMap<String, Object>() {{
+      client.track("Application Login or Signup", new HashMap<String, Object>() {{
         put("intent", intent); // do we have a "compact" equiv to get rid of nulls?
       }});
     }
@@ -111,35 +120,8 @@ public final class Koala {
   }
 
   public void trackSignupNewsletterToggle(final boolean sendNewsletters) {
-    client.trackMap("Signup Newsletter Toggle", new HashMap<String, Object>() {{
+    client.track("Signup Newsletter Toggle", new HashMap<String, Object>() {{
       put("send_newsletters", sendNewsletters);
-    }});
-  }
-
-  // HELPERS
-  @NonNull private static Map<String, Object> discoveryParamsProperties(@NonNull final DiscoveryParams params) {
-
-    final Map<String, Object> properties = Collections.unmodifiableMap(new HashMap<String, Object>(){{
-
-      put("staff_picks", String.valueOf(params.staffPicks()));
-      put("sort", params.sort().toString());
-      put("page", String.valueOf(params.page()));
-      put("per_page", String.valueOf(params.perPage()));
-
-      Category category = params.category();
-      if (category != null) {
-        putAll(categoryProperties(category));
-      }
-
-    }});
-
-    return MapUtils.prefixKeys(properties, "discover_");
-  }
-
-  @NonNull private static Map<String, Object> categoryProperties(@NonNull final Category category) {
-    return Collections.unmodifiableMap(new HashMap<String, Object>() {{
-      put("category_id", String.valueOf(category.id()));
-      put("category_name", String.valueOf(category.name()));
     }});
   }
 }

@@ -5,8 +5,8 @@ apply plugin: 'com.google.gms.google-services'
 def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
 def date = new Date();
 def buildDate = date.format("yyyy-MM-dd'T'HH:mm:ss'Z'", TimeZone.getTimeZone("UTC"))
-def privateVersion = new File("app/version_code.txt").text.trim().toInteger()
-def publicVersion = new File("app/version_name.txt").text.trim()
+def privateVersion = new File(project.rootDir.path + "/app/version_code.txt").text.trim().toInteger()
+def publicVersion = new File(project.rootDir.path + "/app/version_name.txt").text.trim()
 def isCircle = "true".equals(System.getenv("CIRCLECI"))
 
 ext.signing = [
@@ -101,6 +101,10 @@ android {
     }
 }
 
+repositories {
+    jcenter()
+}
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:23.0.1'
@@ -112,6 +116,7 @@ dependencies {
     compile 'com.github.frankiesardo:auto-parcel:0.3.1'
     apt 'com.github.frankiesardo:auto-parcel-processor:0.3.1'
     compile 'com.google.android.gms:play-services-gcm:8.1.0'
+    compile 'com.google.android.exoplayer:exoplayer:r1.5.1'
     compile 'com.google.dagger:dagger:2.0'
     apt 'com.google.dagger:dagger-compiler:2.0'
     compile 'com.jakewharton:butterknife:7.0.1'
@@ -131,6 +136,7 @@ dependencies {
     compile 'net.hockeyapp.android:HockeySDK:3.6.1'
     ***REMOVED***
     compile 'org.jsoup:jsoup:1.8.2'
+    compile "com.mixpanel.android:mixpanel-android:4.6.4"
 
     // Testing
     testCompile 'junit:junit:4.12'

@@ -33,7 +33,8 @@
     anything without your permission.
   </string>
   <string name="By_signing_up_you_agree_to_our_sign_up">
-    By signing up you agree to our <u>terms of use</u>, <u>privacy policy</u>, and <u>cookie policy</u>.</string>
+    By signing up you agree to our <u>terms of use</u>, <u>privacy policy</u>, and <u>cookie policy</u>.
+  </string>
   <string name="Campaign">Campaign</string>
   <string name="Cancel">Cancel</string>
   <string name="Categories">Categories</string>
@@ -64,7 +65,7 @@
   <string name="Explore_new_projects">Explore new projects</string>
   <string name="Find_friends">Find friends</string>
   <string name="Follow">Follow</string>
-  <string name="Forgot_your_password">Forgot your password?</string>
+  <string name="Forgot_your_password"><u>Forgot your password?</u></string>
   <string name="friend_name_backed_art_project">%1$s backed an Art project</string>
   <string name="friend_name_backed_comics_project">%1$s backed a Comics project</string>
   <string name="friend_name_backed_crafts_project">%1$s backed a Crafts project</string>
@@ -91,6 +92,9 @@
   <string name="Launched">Launched</string>
   <string name="Limited_left_of">Limited (%1$s left of %2$s)</string>
   <string name="Log_in">Log in</string>
+  <string name="Log_in_with_email">Log in with email</string>
+  <string name="Log_in_with_Facebook">Log in with Facebook</string>
+  <string name="Log_in_or_sign_up">Log in or sign up</string>
   <string name="Log_out">Log out</string>
   <string name="Logged_out">Logged out</string>
   <string name="Login_does_not_match_any_of_our_records">Login does not match any of our records.</string>
@@ -146,7 +150,7 @@
   <string name="Shipping">Shipping</string>
   <string name="Shipping_destinations">Shipping destinations</string>
   <string name="Sign_up">Sign up</string>
-  <string name="Sign_Up_with_Email">Sign Up with Email</string>
+  <string name="Sign_up_with_email">Sign up with email</string>
   <string name="Sign_up_or_log_in_with_your_Facebook_account">
     Sign up or log in with your Facebook account or email address below:
   </string>
@@ -175,6 +179,7 @@
   <string name="Verify">Verify</string>
   <string name="Version_code">Version Code</string>
   <string name="Version_name">Version Name</string>
+  <string name="Well_never_post_anything">We\'ll never post anything without your permission.</string>
   <string name="Well_remind_you_48_hours">We\'ll remind you 48 hours before this project ends!</string>
   <string name="When_you_back_a_project_or_follow_a_friend">
     When you back a project or follow a friend, their activity will appear here.
@@ -209,4 +214,7 @@
 
   <!-- Font strings -->
   <string name="font_family_medium">sans-serif-medium</string>
+
+  <!-- Koala strings -->
+  <string name="koala_endpoint">***REMOVED***</string>
 </resources>

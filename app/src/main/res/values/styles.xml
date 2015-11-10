@@ -12,6 +12,9 @@
     <item name="android:windowAllowEnterTransitionOverlap">true</item>
     <item name="android:windowAllowReturnTransitionOverlap">true</item>
 
+    <!-- Pop-up menu -->
+    <item name="android:popupMenuStyle">@style/PopupMenu</item>
+
     <!-- Toolbar -->
     <!-- Using toolbar, so disable the action bar -->
     <item name="android:windowNoTitle">true</item>
@@ -72,6 +75,7 @@
 
   <style name="Login" parent="KSTheme">
     <item name="android:statusBarColor">@color/black</item>
+    <item name="android:windowBackground">@color/light_gray</item>
   </style>
 
   <style name="ProjectActivity" parent="KSTheme">
@@ -84,6 +88,12 @@
   <style name="ThanksActivity" parent="KSTheme">
     <item name="android:statusBarColor">@color/gray</item>
     <item name="android:windowBackground">@color/white</item>
+  </style>
+
+  <style name="VideoPlayerActivity" parent="KSTheme">
+    <item name="android:statusBarColor">@color/transparent</item>
+    <item name="android:windowNoTitle">true</item>
+    <item name="android:windowBackground">@color/black</item>
   </style>
 
   <style name="ViewPledgeActivity" parent="KSTheme">
@@ -99,6 +109,10 @@
   <style name="SpinnerItem" parent="@android:style/Widget.TextView.SpinnerItem">
     <item name="android:textSize">18sp</item>
     <item name="android:textColor">@color/white</item>
+  </style>
+
+  <style name="PopupMenu" parent="Base.Widget.AppCompat.PopupMenu">
+    <item name="android:popupBackground">#FFFAFAFA</item>
   </style>
 
   <style name="ProgressBar" parent="Base.Widget.AppCompat.ProgressBar">
@@ -127,12 +141,22 @@
     <item name="android:paddingRight">@dimen/grid_3</item>
   </style>
 
+  <style name="FacebookButton" parent="Base.Widget.AppCompat.Button.Borderless">
+    <item name="android:background">@drawable/button_facebook</item>
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:textColor">@color/white</item>
+    <item name="android:layout_centerInParent">true</item>
+    <item name="android:singleLine">true</item>
+    <item name="android:paddingLeft">@dimen/grid_3</item>
+    <item name="android:paddingRight">@dimen/grid_3</item>
+  </style>
+
   <style name="ProjectActionButton" parent="Button">
     <item name="android:layout_width">fill_parent</item>
     <item name="android:layout_height">60dp</item>
     <item name="android:textSize">@dimen/subhead</item>
     <item name="android:fontFamily">@string/font_family_medium</item>
-    <item name="android:layout_alignParentBottom">true</item>
   </style>
 
   <style name="Toolbar" parent="Base.Widget.AppCompat.Toolbar">
@@ -143,13 +167,12 @@
     <item name="android:layout_width">match_parent</item>
   </style>
 
-  <style name="ToolbarIcon">
+  <style name="ToolbarIcon" parent="Headline">
     <item name="android:background">@drawable/click_indicator_light</item>
-    <item name="android:color">@color/gray_black</item>
+    <item name="android:textColor">@color/gray_black</item>
     <item name="android:layout_height">match_parent</item>
     <item name="android:layout_width">@dimen/button_icon_fixed_width</item>
     <item name="android:gravity">center</item>
-    <item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
   </style>
 
   <style name="ToolbarTitle" parent="Subhead">

@@ -1,5 +1,7 @@
 package com.kickstarter.services;
 
+import android.support.annotation.NonNull;
+
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
@@ -29,7 +31,8 @@ import rx.Observable;
 
 /*package*/ interface ApiService {
   @GET("/v1/activities")
-  Observable<ActivityEnvelope> fetchActivities(@Query("categories[]") List<String> categories);
+  Observable<ActivityEnvelope> fetchActivities(@NonNull @Query("categories[]") List<String> categories,
+    @NonNull @QueryMap Map<String, String> pagination);
 
   @GET("/v1/categories")
   Observable<CategoriesEnvelope> fetchCategories();

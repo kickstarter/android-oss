@@ -26,6 +26,7 @@ import rx.subjects.PublishSubject;
 
 public final class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterActivity> implements DiscoveryFilterAdapter.Delegate {
   @Inject ApiClient apiClient;
+
   private final PublishSubject<DiscoveryParams> discoveryFilterClick = PublishSubject.create();
 
   @Override
@@ -49,6 +50,9 @@ public final class DiscoveryFilterPresenter extends Presenter<DiscoveryFilterAct
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(vp -> vp.first.startDiscoveryActivity(vp.second))
     );
+
+    addSubscription(discoveryFilterClick.subscribe(koala::trackDiscoveryFilterSelected));
+    koala.trackDiscoveryFilters();
   }
 
   public void discoveryFilterClick(@NonNull final DiscoveryFilterViewHolder viewHolder, @NonNull final DiscoveryParams discoveryParams) {

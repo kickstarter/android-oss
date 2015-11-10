@@ -55,8 +55,7 @@ public final class ApiClient {
   // TODO: map null values back to an empty array so app doesn't crash on API responses
 
   public Observable<ActivityEnvelope> fetchActivities(@NonNull final ActivityFeedParams params) {
-    return service.fetchActivities(params.queryParams())
-      .retry(3);
+    return service.fetchActivities(params.categoryParams(), params.paginationParams());
   }
 
   public Observable<List<Category>> fetchCategories() {

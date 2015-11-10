@@ -12,12 +12,12 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.jakewharton.rxbinding.support.v7.widget.RxRecyclerView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.Paginator;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.StatusBarUtils;
@@ -27,8 +27,8 @@ import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.adapters.DiscoveryAdapter;
 import com.kickstarter.ui.containers.ApplicationContainer;
-import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
+import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +45,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> im
   DiscoveryAdapter adapter;
   LinearLayoutManager layoutManager;
   final List<Project> projects = new ArrayList<>();
+  private Paginator paginator;
 
   @Inject ApplicationContainer applicationContainer;
 
@@ -74,8 +75,13 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> im
       presenter.takeParams(params);
     }
 
-    addSubscription(RxRecyclerView.scrollEvents(recyclerView)
-      .subscribe(__ -> presenter.inputs.scrollEvent()));
+    paginator = new Paginator(recyclerView, presenter.inputs::nextPage);
+  }
+
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    paginator.stop();
   }
 
   public void projectCardClick(@NonNull final ProjectCardViewHolder viewHolder, @NonNull final Project project) {

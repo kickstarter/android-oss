@@ -4,8 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 
 import com.kickstarter.KSApplication;
@@ -34,14 +32,16 @@ import rx.subjects.PublishSubject;
 public final class DiscoveryPresenter extends Presenter<DiscoveryActivity> implements DiscoveryPresenterInputs {
   // INPUTS
   private final PublishSubject<Project> projectClick = PublishSubject.create();
-  private final PublishSubject<Void> scrollEvent = PublishSubject.create();
+  private final PublishSubject<Empty> nextPage = PublishSubject.create();
+  public void nextPage() {
+    nextPage.onNext(null);
+  }
 
   @Inject ApiClient apiClient;
   @Inject WebClient webClient;
   @Inject BuildCheck buildCheck;
 
   private final PublishSubject<Void> filterButtonClick = PublishSubject.create();
-  private final PublishSubject<Empty> nextPage = PublishSubject.create();
   private final PublishSubject<DiscoveryParams> params = PublishSubject.create();
 
   public final DiscoveryPresenterInputs inputs = this;
@@ -49,11 +49,6 @@ public final class DiscoveryPresenter extends Presenter<DiscoveryActivity> imple
   @Override
   public void projectClick(@NonNull final Project project) {
     projectClick.onNext(project);
-  }
-
-  @Override
-  public void scrollEvent() {
-    scrollEvent.onNext(null);
   }
 
   @Override
@@ -71,14 +66,6 @@ public final class DiscoveryPresenter extends Presenter<DiscoveryActivity> imple
 
     final Observable<Pair<DiscoveryActivity, DiscoveryParams>> viewAndParams = viewSubject
       .compose(Transformers.combineLatestPair(params));
-
-    final Observable<Pair<Integer, Integer>> visibleItemOfTotal = viewChange
-      .compose(Transformers.takeWhen(scrollEvent))
-      .filter(v -> v != null)
-      .map(v -> v.recyclerView)
-      .map(RecyclerView::getLayoutManager)
-      .ofType(LinearLayoutManager.class)
-      .map(this::displayedItemFromLayout);
 
     addSubscription(viewAndParams
       .observeOn(AndroidSchedulers.mainThread())
@@ -102,31 +89,7 @@ public final class DiscoveryPresenter extends Presenter<DiscoveryActivity> imple
         .subscribe(vp -> vp.first.startProjectActivity(vp.second))
     );
 
-    addSubscription(visibleItemOfTotal
-      .distinctUntilChanged()
-      .filter(this::isCloseToBottom)
-      .subscribe(__ -> nextPage.onNext(null))
-    );
-
     params.onNext(DiscoveryParams.builder().staffPicks(true).build());
-  }
-
-  /**
-   * Returns a (visibleItem, totalItemCount) pair given a linear layout manager.
-   * TODO: This would need to be improved to handle grid layouts if we use those in the future.
-   */
-  private Pair<Integer, Integer> displayedItemFromLayout(@NonNull final LinearLayoutManager manager) {
-    final int visibleItemCount = manager.getChildCount();
-    final int totalItemCount = manager.getItemCount();
-    final int pastVisibleItems = manager.findFirstVisibleItemPosition();
-    return new Pair<>(visibleItemCount + pastVisibleItems, totalItemCount);
-  }
-
-  /**
-   * Returns `true` when the visible item gets "close" to the bottom.
-   */
-  private boolean isCloseToBottom(@NonNull final Pair<Integer, Integer> visibleItemOfTotal) {
-    return visibleItemOfTotal.first == visibleItemOfTotal.second - 2;
   }
 
   /**
@@ -137,6 +100,7 @@ public final class DiscoveryPresenter extends Presenter<DiscoveryActivity> imple
   private Observable<List<Project>> projectsWithPagination(@NonNull final DiscoveryParams firstPageParams) {
 
     return paramsWithPagination(firstPageParams)
+      .doOnNext(koala::trackDiscovery)
       .concatMap(this::projectsFromParams)
       .takeUntil(List::isEmpty)
       .scan(new ArrayList<>(), ListUtils::concatDistinct)

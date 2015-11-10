@@ -5,6 +5,6 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 @Singleton
-@Component(modules = {ExternalReleaseApplicationModule.class})
+@Component(modules = {ExternalApplicationModule.class})
 public interface ApplicationComponent extends ApplicationGraph {
 }

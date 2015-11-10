@@ -2,6 +2,7 @@ package com.kickstarter;
 
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.BuildCheck;
+import com.kickstarter.libs.NoopBuildCheck;
 import com.kickstarter.ui.containers.ApplicationContainer;
 
 import javax.inject.Singleton;
@@ -10,7 +11,7 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(includes = ApplicationModule.class)
-public class ExternalDebugApplicationModule {
+public class ExternalApplicationModule {
   @Singleton
   @Provides
   ApplicationContainer provideApplicationContainer() {
@@ -25,6 +26,6 @@ public class ExternalDebugApplicationModule {
 
   @Provides
   BuildCheck provideBuildCheck() {
-    return BuildCheck.DEFAULT;
+    return new NoopBuildCheck();
   }
 }

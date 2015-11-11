@@ -70,7 +70,7 @@ public final class ProjectStateChangedPositiveViewHolder extends ActivityListVie
         leftStatSecondTextView.setText(context.getString(
           R.string.pledged_of_goal,
           money.formattedCurrency(activity.project().goal(), activity.project().currencyOptions(), true)));
-        rightStatFirstTextView.setText(context.getString(R.string.funded));
+        rightStatFirstTextView.setText(context.getString(R.string.Funded));
         rightStatSecondTextView.setText(activity.createdAt().toString(DateTimeUtils.defaultFormatter()));
         titleTextView.setText(context
           .getString(R.string.project_was_successfully_funded, activity.project().name()));

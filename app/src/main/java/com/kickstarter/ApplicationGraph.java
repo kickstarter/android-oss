@@ -44,7 +44,6 @@ public interface ApplicationGraph {
   void inject(ActivityFeedPresenter __);
   void inject(CommentFeedActivity __);
   void inject(CommentFeedPresenter __);
-  void inject(CommentFeedToolbar __);
   void inject(CommentViewHolder __);
   void inject(CurrentUser __);
   void inject(Koala __);

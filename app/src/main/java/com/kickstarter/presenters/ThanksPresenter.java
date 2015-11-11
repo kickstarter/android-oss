@@ -28,7 +28,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
 public final class ThanksPresenter extends Presenter<ThanksActivity> implements ThanksAdapter.Delegate {
-  private final PublishSubject<Void> doneClick = PublishSubject.create();
   private final PublishSubject<Void> facebookClick = PublishSubject.create();
   private final PublishSubject<Void> shareClick = PublishSubject.create();
   private final PublishSubject<Void> twitterClick = PublishSubject.create();
@@ -76,12 +75,6 @@ public final class ThanksPresenter extends Presenter<ThanksActivity> implements 
       .compose(Transformers.takePairWhen(categoryPromoClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startDiscoveryCategoryIntent(vp.second)));
-
-    addSubscription(viewSubject.filter(v -> v != null)
-      .compose(Transformers.combineLatestPair(doneClick))
-      .map(vp -> vp.first)
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(ThanksActivity::startDiscoveryActivity));
 
     final DiscoveryParams params = DiscoveryParams.builder()
       .category(project.category().root())
@@ -133,10 +126,6 @@ public final class ThanksPresenter extends Presenter<ThanksActivity> implements 
           koala.trackCheckoutShareFinishedWithShareTypes();
         })
     );
-  }
-
-  public void takeDoneClick() {
-    doneClick.onNext(null);
   }
 
   public void takeFacebookClick() {

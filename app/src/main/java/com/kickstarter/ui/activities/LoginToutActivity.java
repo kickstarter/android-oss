@@ -59,7 +59,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
       @Override
       public void onSuccess(@NonNull final LoginResult result) {
         Log.d("TEST", "onSuccess");
-        // pass result.accessToken to facbeookLogin
+        presenter.facebookLogin(result);
       }
 
       @Override

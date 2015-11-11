@@ -15,9 +15,9 @@ import static com.kickstarter.libs.utils.KoalaUtils.activityProperties;
 import static com.kickstarter.libs.utils.KoalaUtils.discoveryParamsProperties;
 
 public final class Koala {
-  private @NonNull final TrackingType client;
+  private @NonNull final TrackingClientType client;
 
-  public Koala(@NonNull final TrackingType client) {
+  public Koala(@NonNull final TrackingClientType client) {
     this.client = client;
   }
 

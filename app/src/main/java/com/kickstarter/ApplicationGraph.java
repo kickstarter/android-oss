@@ -2,9 +2,8 @@ package com.kickstarter;
 
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Koala;
+import com.kickstarter.libs.KoalaTrackingClient;
 import com.kickstarter.libs.Money;
-import com.kickstarter.services.gcm.MessageService;
-import com.kickstarter.services.gcm.RegisterService;
 import com.kickstarter.presenters.ActivityFeedPresenter;
 import com.kickstarter.presenters.CommentFeedPresenter;
 import com.kickstarter.presenters.DiscoveryFilterPresenter;
@@ -17,6 +16,8 @@ import com.kickstarter.presenters.SignupPresenter;
 import com.kickstarter.presenters.ThanksPresenter;
 import com.kickstarter.presenters.TwoFactorPresenter;
 import com.kickstarter.presenters.ViewPledgePresenter;
+import com.kickstarter.services.gcm.MessageService;
+import com.kickstarter.services.gcm.RegisterService;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.CommentFeedActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
@@ -74,6 +75,7 @@ public interface ApplicationGraph {
   void inject(SignupPresenter __);
   void inject(ThanksPresenter __);
   void inject(TiemposTextView __);
+  void inject(KoalaTrackingClient __);
   void inject(TwoFactorPresenter __);
   void inject(ViewPledgeActivity __);
   void inject(ViewPledgePresenter __);

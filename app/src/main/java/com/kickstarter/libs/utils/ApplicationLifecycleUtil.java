@@ -5,57 +5,66 @@ import android.app.Application;
 import android.content.ComponentCallbacks2;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.annotation.NonNull;
 
-public class ApplicationLifecycleUtil implements  Application.ActivityLifecycleCallbacks, ComponentCallbacks2 {
-  private static final String TAG = ApplicationLifecycleUtil.class.getSimpleName();
+import com.kickstarter.libs.Koala;
+
+import javax.inject.Inject;
+
+import timber.log.Timber;
+
+public final class ApplicationLifecycleUtil implements Application.ActivityLifecycleCallbacks, ComponentCallbacks2 {
+  @Inject Koala koala;
+
   private static boolean isInBackground = false;
 
   @Override
-  public void onActivityCreated(Activity activity, Bundle bundle) {
+  public void onActivityCreated(@NonNull final Activity activity, @NonNull final Bundle bundle) {
   }
 
   @Override
-  public void onActivityStarted(Activity activity) {
+  public void onActivityStarted(@NonNull final Activity activity) {
   }
 
   @Override
-  public void onActivityResumed(Activity activity) {
+  public void onActivityResumed(@NonNull final Activity activity) {
     if(isInBackground){
-      Log.d(TAG, "app went to foreground");
+      Timber.d("App went to foreground");
       isInBackground = false;
+      koala.trackAppOpen();
     }
   }
 
   @Override
-  public void onActivityPaused(Activity activity) {
+  public void onActivityPaused(@NonNull final Activity activity) {
   }
 
   @Override
-  public void onActivityStopped(Activity activity) {
+  public void onActivityStopped(@NonNull final Activity activity) {
   }
 
   @Override
-  public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
+  public void onActivitySaveInstanceState(@NonNull final Activity activity, Bundle bundle) {
   }
 
   @Override
-  public void onActivityDestroyed(Activity activity) {
+  public void onActivityDestroyed(@NonNull final Activity activity) {
   }
 
   @Override
-  public void onConfigurationChanged(Configuration configuration) {
+  public void onConfigurationChanged(@NonNull final Configuration configuration) {
   }
 
   @Override
   public void onLowMemory() {
+    koala.trackMemoryWarning();
   }
 
   @Override
-  public void onTrimMemory(int i) {
-    if(i == ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN){
-      Log.d(TAG, "app went to background");
-      isInBackground = true;
+  public void onTrimMemory(final int i) {
+    if(i == ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN) {
+      Timber.d("App went to background");
+      koala.trackAppClose();
     }
   }
 }

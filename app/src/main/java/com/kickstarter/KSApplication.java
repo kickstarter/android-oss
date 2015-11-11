@@ -35,10 +35,6 @@ public class KSApplication extends MultiDexApplication {
   public void onCreate() {
     super.onCreate();
 
-    ApplicationLifecycleUtil appUtil = new ApplicationLifecycleUtil();
-    registerActivityLifecycleCallbacks(appUtil);
-    registerComponentCallbacks(appUtil);
-
     // Send crash reports in release builds
     if (!BuildConfig.DEBUG && !isInUnitTests()) {
       checkForCrashes();
@@ -54,6 +50,10 @@ public class KSApplication extends MultiDexApplication {
     if (!isInUnitTests() && ApiCapabilities.canDetectMemoryLeaks()) {
       refWatcher = LeakCanary.install(this);
     }
+
+    final ApplicationLifecycleUtil appUtil = new ApplicationLifecycleUtil();
+    registerActivityLifecycleCallbacks(appUtil);
+    registerComponentCallbacks(appUtil);
 
     JodaTimeAndroid.init(this);
 

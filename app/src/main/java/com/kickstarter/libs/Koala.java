@@ -22,7 +22,7 @@ public final class Koala {
   }
 
   // APPLICATION LIFECYCLE
-  public void trackAppOpn() {
+  public void trackAppOpen() {
     client.track("App Open");
   }
 

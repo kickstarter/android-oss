@@ -43,6 +43,28 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
     ButterKnife.bind(this);
     loginToolbar.setTitle(verifyString);
 
+    presenter.inputs.email(getIntent().getExtras().getString(getString(R.string.intent_email)));
+    presenter.inputs.password(getIntent().getExtras().getString(getString(R.string.intent_password)));
+    final boolean forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
+
+    addSubscription(
+      presenter.outputs.tfaSuccess()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(__ -> onSuccess(forward))
+    );
+
+    addSubscription(
+      presenter.outputs.formSubmitting()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(this::setFormDisabled)
+    );
+
+    addSubscription(
+      presenter.outputs.formIsValid()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(this::setFormEnabled)
+    );
+
     addSubscription(
       errorMessages()
         .observeOn(AndroidSchedulers.mainThread())
@@ -70,12 +92,8 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
     presenter.inputs.loginClick(view);
   }
 
-  public void setLoginEnabled(final boolean enabled) {
-    loginButton.setEnabled(enabled);
-  }
-
-  public void onSuccess() {
-    if (forward()) {
+  public void onSuccess(final boolean forward) {
+    if (forward) {
       setResult(Activity.RESULT_OK);
       finish();
     } else {
@@ -85,21 +103,15 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
     }
   }
 
-  // todo: convert to inputs
-  public String email () {
-    return getIntent().getExtras().getString(getString(R.string.intent_email));
-  }
-
-  public String password () {
-    return getIntent().getExtras().getString(getString(R.string.intent_password));
-  }
-
-  public boolean forward () {
-    return getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
-  }
-
-  // todo: finish up
   public boolean isFacebookLogin () {
     return getIntent().getBooleanExtra(getString(R.string.intent_facebook_login), true);
+  }
+
+  public void setFormEnabled(final boolean enabled) {
+    loginButton.setEnabled(enabled);
+  }
+
+  public void setFormDisabled(final boolean disabled) {
+    setFormEnabled(!disabled);
   }
 }

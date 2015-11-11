@@ -1,6 +1,5 @@
 package com.kickstarter;
 
-import android.app.Application;
 import android.content.Context;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
@@ -10,6 +9,7 @@ import android.support.multidex.MultiDexApplication;
 import com.facebook.FacebookSdk;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.PushNotifications;
+import com.kickstarter.libs.utils.ApplicationLifecycleUtil;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
@@ -34,6 +34,10 @@ public class KSApplication extends MultiDexApplication {
   @CallSuper
   public void onCreate() {
     super.onCreate();
+
+    ApplicationLifecycleUtil appUtil = new ApplicationLifecycleUtil();
+    registerActivityLifecycleCallbacks(appUtil);
+    registerComponentCallbacks(appUtil);
 
     // Send crash reports in release builds
     if (!BuildConfig.DEBUG && !isInUnitTests()) {

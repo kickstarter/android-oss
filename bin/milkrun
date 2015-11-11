@@ -30,7 +30,7 @@ CHECKLIST
         version_code = Milkrun::VersionCode.new.bump
         version_name = Milkrun::VersionName.new.prompt
         file_path = Milkrun::Build.new(audience: audience, build_type: build_type).compile
-        Milkrun::HockeyApp.new(flavor: flavor, version_code: version_code, version_name: version_name).create_version
+        Milkrun::HockeyApp.new(audience: audience, version_code: version_code, version_name: version_name).create_version
         Milkrun::S3Package.new(version_code: version_code, file_path: file_path).upload
         Milkrun::Changelog.new(audience: audience, build_type: build_type, version_code: version_code).publish
         Milkrun.say "All done, now commit your local version changes! 👌"

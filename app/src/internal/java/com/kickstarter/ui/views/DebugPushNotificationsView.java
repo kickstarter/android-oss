@@ -62,7 +62,7 @@ public class DebugPushNotificationsView extends ScrollView {
   @OnClick(R.id.simulate_friend_backing_button)
   public void simulateFriendBackingButtonClick() {
     final GCM gcm = GCM.builder()
-      .title("News from your friends")
+      .title("Check it out")
       .alert("Christopher Wright backed Double Fine Adventure.")
       .build();
 
@@ -80,7 +80,7 @@ public class DebugPushNotificationsView extends ScrollView {
   @OnClick(R.id.simulate_friend_follow_button)
   public void simulateFriendFollowButtonClick() {
     final GCM gcm = GCM.builder()
-      .title("News from your friends")
+      .title("You're in good company")
       .alert("Christopher Wright is following you on Kickstarter!")
       .build();
 

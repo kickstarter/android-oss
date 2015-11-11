@@ -1,44 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.Toolbar
+<com.kickstarter.ui.toolbars.ThanksToolbar
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   tools:showIn="@layout/thanks_layout"
-  android:id="@+id/toolbar"
   android:layout_width="match_parent"
   android:layout_height="?attr/actionBarSize"
   android:background="@color/light_gray"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
-  android:elevation="2dp">
+  android:elevation="@dimen/toolbar_elevation">
 
   <RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:gravity="center_vertical">
 
-    <!-- TODO: Investigate replacing with VectorDrawable once vectors make
-    it into a compat library (currently v21). -->
-    <ImageView
-      android:layout_width="130dp"
-      android:layout_height="15.34dp"
-      android:layout_centerInParent="true"
-      android:src="@drawable/logo" />
-
-    <TextView
-      android:id="@+id/done_button"
-      android:paddingLeft="@dimen/grid_3"
-      android:paddingStart="@dimen/grid_3"
-      android:paddingRight="@dimen/grid_3"
-      android:paddingEnd="@dimen/grid_3"
-      android:layout_width="wrap_content"
-      android:layout_height="match_parent"
-      android:gravity="center_vertical"
-      android:layout_alignParentRight="true"
+    <com.kickstarter.ui.views.IconTextView
+      style="@style/ToolbarIcon"
+      android:id="@+id/close_button"
       android:layout_alignParentEnd="true"
-      android:clickable="true"
-      android:textAppearance="@style/TextAppearance.AppCompat.Menu"
-      android:textColor="@color/green"
-      android:text="@string/Done" />
+      android:layout_alignParentRight="true"
+      android:text="@string/close_icon"/>
 
   </RelativeLayout>
-</android.support.v7.widget.Toolbar>
+</com.kickstarter.ui.toolbars.ThanksToolbar>

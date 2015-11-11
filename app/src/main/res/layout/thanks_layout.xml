@@ -4,124 +4,135 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
-  <LinearLayout
-    android:orientation="vertical"
+  <RelativeLayout
+    android:background="@color/transparent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <include layout="@layout/thanks_toolbar" />
-
-    <RelativeLayout
-      xmlns:android="http://schemas.android.com/apk/res/android"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:background="@color/dark_blue">
-
-      <include layout="@layout/woohoo_background_view" />
-
-      <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/transparent"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:paddingTop="46dp"
-        android:paddingBottom="46dp"
-        android:textColor="@color/white"
-        android:textSize="30sp"
-        android:text="@string/Woo_hoo"
-        android:layout_gravity="center"
-        android:gravity="center_vertical|center_horizontal" />
-
-    </RelativeLayout>
-
     <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
       android:orientation="vertical"
-      android:layout_marginBottom="@dimen/grid_1"
-      android:layout_marginLeft="@dimen/grid_2"
-      android:layout_marginRight="@dimen/grid_2"
-      android:layout_marginTop="@dimen/grid_2">
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
 
-      <TextView
-        style="@style/Subhead"
-        android:id="@+id/backed_project"
+      <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="You_just_backed" />
+        android:background="@color/dark_blue">
+
+        <include layout="@layout/woohoo_background_view" />
+
+        <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="@color/transparent"
+          android:layout_centerVertical="true"
+          android:layout_centerHorizontal="true"
+          android:paddingTop="46dp"
+          android:paddingBottom="46dp"
+          android:textColor="@color/white"
+          android:textSize="30sp"
+          android:text="@string/Woo_hoo"
+          android:layout_gravity="center"
+          android:gravity="center_vertical|center_horizontal" />
+
+      </RelativeLayout>
 
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/grid_3"
-        android:orientation="horizontal"
-        android:layout_gravity="center_horizontal">
+        android:orientation="vertical"
+        android:layout_marginBottom="@dimen/grid_1"
+        android:layout_marginLeft="@dimen/grid_2"
+        android:layout_marginRight="@dimen/grid_2"
+        android:layout_marginTop="@dimen/grid_2">
+
+        <TextView
+          style="@style/Subhead"
+          android:id="@+id/backed_project"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="You_just_backed" />
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:paddingTop="@dimen/grid_3"
+          android:orientation="horizontal"
+          android:layout_gravity="center_horizontal">
+
+          <Button
+            style="@style/FacebookButton"
+            android:id="@+id/facebook_button"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="@dimen/grid_1_half"
+            android:layout_weight="1"
+            android:text="@string/Share"
+            android:textAllCaps="false" />
+
+          <Button
+            style="@style/TwitterButton"
+            android:id="@+id/twitter_button"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="@dimen/grid_1_half"
+            android:layout_weight="1"
+            android:text="@string/Tweet"
+            android:textAllCaps="false" />
+
+        </LinearLayout>
 
         <Button
-          android:id="@+id/facebook_button"
+          style="@style/BorderButton"
+          android:id="@+id/share_button"
+          android:layout_marginTop="@dimen/grid_1"
+          android:layout_marginLeft="@dimen/grid_1_half"
+          android:layout_marginStart="@dimen/grid_1_half"
+          android:layout_marginRight="@dimen/grid_1_half"
+          android:layout_marginEnd="@dimen/grid_1_half"
           android:layout_width="match_parent"
-          android:layout_height="@dimen/grid_5"
-          android:layout_marginLeft="@dimen/grid_1"
-          android:layout_weight="1"
-          android:paddingRight="@dimen/grid_3"
-          android:background="@drawable/button_facebook"
-          android:drawableLeft="@drawable/ic_social_facebook"
-          android:drawableStart="@drawable/ic_social_facebook"
-          android:text="@string/Share"
-          android:textAllCaps="false"
-          android:textAppearance="@style/TextAppearance.AppCompat.Button"
-          android:textColor="@color/white" />
+          android:layout_height="wrap_content"
+          android:text="@string/More"
+          android:textAllCaps="false" />
 
-        <Button
-          android:id="@+id/twitter_button"
+        <TextView
+          style="@style/BodyPrimary"
           android:layout_width="match_parent"
-          android:layout_marginLeft="@dimen/grid_1"
-          android:layout_marginStart="@dimen/grid_1"
-          android:layout_height="@dimen/grid_5"
-          android:layout_marginRight="3dp"
-          android:layout_marginEnd="3dp"
-          android:layout_weight="1"
-          android:paddingLeft="@dimen/grid_1"
-          android:paddingStart="@dimen/grid_1"
-          android:paddingRight="@dimen/grid_2"
-          android:paddingEnd="@dimen/grid_2"
-          android:background="@drawable/button_twitter"
-          android:drawableLeft="@drawable/ic_social_twitter"
-          android:drawableStart="@drawable/ic_social_twitter"
-          android:text="@string/Tweet"
-          android:textAllCaps="false"
-          android:textAppearance="@style/TextAppearance.AppCompat.Button"
-          android:textColor="@color/white" />
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/grid_3"
+          android:text="@string/Looking_for_more_projects"
+          />
 
       </LinearLayout>
 
-      <Button
-        android:id="@+id/share_button"
-        android:layout_marginLeft="@dimen/grid_1_half"
-        android:layout_marginStart="@dimen/grid_1_half"
+      <android.support.v7.widget.RecyclerView
+        android:id="@+id/recommended_projects_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/More"
-        android:textAllCaps="false" />
-
-      <TextView
-        style="@style/BodyPrimary"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/grid_3"
-        android:text="@string/Looking_for_more_projects"
-        />
+        android:layout_height="150dp"
+        android:layout_marginBottom="@dimen/grid_2"
+        android:scrollbars="horizontal" />
 
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
-      android:id="@+id/recommended_projects_recycler_view"
+    <RelativeLayout
+      android:background="@color/transparent"
       android:layout_width="match_parent"
-      android:layout_height="150dp"
-      android:layout_marginBottom="@dimen/grid_2"
-      android:scrollbars="horizontal" />
+      android:layout_height="@dimen/grid_8">
 
-  </LinearLayout>
+      <com.kickstarter.ui.views.IconTextView
+        android:id="@+id/close_button"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/grid_1"
+        android:text="@string/close_icon"
+        android:textColor="@color/white"
+        android:textSize="28sp" />
+
+    </RelativeLayout>
+
+  </RelativeLayout>
 
 </ScrollView>

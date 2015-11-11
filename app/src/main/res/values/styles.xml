@@ -45,7 +45,6 @@
   </style>
 
   <style name="CheckoutActivity" parent="KSTheme">
-    <item name="android:statusBarColor">@color/gray</item>
     <item name="android:windowBackground">@color/white</item>
   </style>
 
@@ -65,12 +64,10 @@
   </style>
 
   <style name="HelpActivity" parent="KSTheme">
-    <item name="android:statusBarColor">@color/gray</item>
     <item name="android:windowBackground">@color/white</item>
   </style>
 
   <style name="Login" parent="KSTheme">
-    <item name="android:statusBarColor">@color/black</item>
     <item name="android:windowBackground">@color/light_gray</item>
   </style>
 
@@ -82,7 +79,6 @@
   </style>
 
   <style name="ThanksActivity" parent="KSTheme">
-    <item name="android:statusBarColor">@color/gray</item>
     <item name="android:windowBackground">@color/white</item>
   </style>
 
@@ -93,7 +89,6 @@
   </style>
 
   <style name="ViewPledgeActivity" parent="KSTheme">
-    <item name="android:statusBarColor">@color/gray</item>
     <item name="android:windowBackground">@color/white</item>
   </style>
 

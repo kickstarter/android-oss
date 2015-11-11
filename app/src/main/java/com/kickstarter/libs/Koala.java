@@ -77,6 +77,24 @@ public final class Koala {
     }
   }
 
+  // SEARCH
+  public void trackSearchView() {
+    client.track("Discover Search");
+  }
+
+  public void trackSearchResults(@NonNull final String query, final int pageCount) {
+    if (pageCount == 1) {
+      client.track("Discover Search Results", new HashMap<String, Object>() {{
+        put("search_term", query);
+      }});
+    } else {
+      client.track("Discover Search Results Load More", new HashMap<String, Object>() {{
+        put("search_term", query);
+        put("page_count", pageCount);
+      }});
+    }
+  }
+
   public void trackActivityTapped(@NonNull final Activity activity) {
     client.track("Activity View Item", activityProperties(activity));
   }

@@ -161,6 +161,9 @@ public final class ProjectPresenter extends Presenter<ProjectActivity> implement
     addSubscription(projectOnUserChangeStar.mergeWith(starredProjectOnLoginSuccess)
       .subscribe(koala::trackProjectStar));
 
+    addSubscription(shareClick
+      .subscribe(__ -> koala.trackShowProjectShareSheet()));
+
     koala.trackProjectShow();
   }
 

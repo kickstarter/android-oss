@@ -186,4 +186,31 @@ public final class Koala {
   public void trackCheckoutFinishJumpToProject() {
     client.track("Checkout Finished Discover Open Project");
   }
+
+  // SHARE
+  public void trackShowProjectShareSheet() {
+    client.track("Project Show Share Sheet");
+  }
+
+  public void trackCancelProjectShareSheet() {
+    client.track("Project Cancel Share Sheet");
+  }
+
+  public void trackShowProjectShareView(@Nullable final String type) {
+    client.track("Project Show Share", new HashMap<String, Object>() {{
+      put("share_type", type);
+    }});
+  }
+
+  public void trackCancelProjectShareView(@Nullable final String type) {
+    client.track("Project Cancel Share", new HashMap<String, Object>() {{
+      put("share_type", type);
+    }});
+  }
+
+  public void trackProjectShare(@Nullable final String type) {
+    client.track("Project Share", new HashMap<String, Object>() {{
+      put("share_type", type);
+    }});
+  }
 }

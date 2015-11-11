@@ -136,6 +136,19 @@
     <item name="android:drawableStart">@drawable/ic_social_facebook</item>
   </style>
 
+  <style name="TwitterButton" parent="Base.Widget.AppCompat.Button.Borderless">
+    <item name="android:background">@drawable/button_twitter</item>
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:textColor">@color/white</item>
+    <item name="android:layout_centerInParent">true</item>
+    <item name="android:singleLine">true</item>
+    <item name="android:paddingLeft">@dimen/grid_1</item>
+    <item name="android:paddingRight">@dimen/grid_3</item>
+    <item name="android:drawableLeft">@drawable/ic_social_twitter</item>
+    <item name="android:drawableStart">@drawable/ic_social_twitter</item>
+  </style>
+
   <style name="ProjectActionButton" parent="Button">
     <item name="android:layout_width">fill_parent</item>
     <item name="android:layout_height">60dp</item>

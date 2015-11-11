@@ -21,6 +21,19 @@ public final class Koala {
     this.client = client;
   }
 
+  // APPLICATION LIFECYCLE
+  public void trackAppOpn() {
+    client.track("App Open");
+  }
+
+  public void trackAppClose() {
+    client.track("App Close");
+  }
+
+  public void trackMemoryWarning() {
+    client.track("App Memory Warning");
+  }
+
   // DISCOVERY
   public void trackDiscovery(@NonNull final DiscoveryParams params) {
     client.track("Discover List View", discoveryParamsProperties(params));

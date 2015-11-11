@@ -21,7 +21,8 @@ import butterknife.OnClick;
 public class DebugPushNotificationsView extends ScrollView {
   @Inject protected PushNotifications pushNotifications;
 
-  private static final String PROJECT_PHOTO = "https://ksr-ugc.imgix.net/projects/73409/photo-original.jpg?v=1397770628&w=160&h=120&fit=crop&auto=format&q=92&s=da84cc0a09478bebca4d8d35f98f77b4";
+  private static final String PROJECT_PHOTO = "https://ksr-ugc.imgix.net/projects/73409/photo-original.jpg?v=1397770628&w=120&h=120&fit=crop&auto=format&q=92&s=5adcd60781d0a7644975f845f03a4cf6";
+  private static final String USER_PHOTO = "https://ksr-ugc.imgix.net/avatars/1583412/portrait.original.png?v=1330782076&w=120&h=120&fit=crop&auto=format&q=92&s=a9029da56a3deab8c4b87818433e3430";
   private static final Long PROJECT_ID = 1929840910L;
 
   public DebugPushNotificationsView(@NonNull final Context context) {
@@ -58,16 +59,35 @@ public class DebugPushNotificationsView extends ScrollView {
     pushNotifications.unregisterDevice();
   }
 
+  @OnClick(R.id.simulate_friend_backing_button)
+  public void simulateFriendBackingButtonClick() {
+    final GCM gcm = GCM.builder()
+      .title("News from your friends")
+      .alert("Christopher Wright backed Double Fine Adventure.")
+      .build();
+
+    final Activity activity = Activity.builder()
+      .category(com.kickstarter.models.Activity.CATEGORY_BACKING)
+      .id(1)
+      .projectId(PROJECT_ID)
+      .projectPhoto(PROJECT_PHOTO)
+      .build();
+
+    final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder().activity(activity).gcm(gcm).build();
+    pushNotifications.add(envelope);
+  }
+
   @OnClick(R.id.simulate_friend_follow_button)
   public void simulateFriendFollowButtonClick() {
     final GCM gcm = GCM.builder()
+      .title("News from your friends")
       .alert("Christopher Wright is following you on Kickstarter!")
-      .title("Kickstarter")
       .build();
 
     final Activity activity = Activity.builder()
       .category(com.kickstarter.models.Activity.CATEGORY_FOLLOW)
       .id(1)
+      .userPhoto(USER_PHOTO)
       .build();
 
     final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder().activity(activity).gcm(gcm).build();
@@ -77,8 +97,8 @@ public class DebugPushNotificationsView extends ScrollView {
   @OnClick(R.id.simulate_project_cancellation_button)
   public void simulateProjectCancellationButtonClick() {
     final GCM gcm = GCM.builder()
-      .alert("Double Fine Adventure has been canceled.")
       .title("Kickstarter")
+      .alert("Double Fine Adventure has been canceled.")
       .build();
 
     final Activity activity = Activity.builder()
@@ -95,8 +115,8 @@ public class DebugPushNotificationsView extends ScrollView {
   @OnClick(R.id.simulate_project_failure_button)
   public void simulateProjectFailureButtonClick() {
     final GCM gcm = GCM.builder()
-      .alert("Double Fine Adventure was not successfully funded.")
       .title("Kickstarter")
+      .alert("Double Fine Adventure was not successfully funded.")
       .build();
 
     final Activity activity = Activity.builder()
@@ -113,8 +133,8 @@ public class DebugPushNotificationsView extends ScrollView {
   @OnClick(R.id.simulate_project_launch_button)
   public void simulateProjectLaunchButtonClick() {
     final GCM gcm = GCM.builder()
-      .alert("Double Fine launched a project!")
-      .title("Kickstarter")
+      .title("Want to be the first backer?")
+      .alert("Double Fine just launched a project!")
       .build();
 
     final Activity activity = Activity.builder()
@@ -131,8 +151,8 @@ public class DebugPushNotificationsView extends ScrollView {
   @OnClick(R.id.simulate_project_reminder_button)
   public void simulateProjectReminderButtonClick() {
     final GCM gcm = GCM.builder()
+      .title("Last call")
       .alert("Reminder! Double Fine Adventure is ending soon.")
-      .title("Kickstarter")
       .build();
 
     final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder()
@@ -145,8 +165,8 @@ public class DebugPushNotificationsView extends ScrollView {
   @OnClick(R.id.simulate_project_success_button)
   public void simulateProjectSuccessButtonClick() {
     final GCM gcm = GCM.builder()
-      .alert("Double Fine Adventure has been successfully funded!")
-      .title("Kickstarter")
+      .title("Time to celebrate!")
+      .alert("Double Fine Adventure has been successfully funded.")
       .build();
 
     final Activity activity = Activity.builder()
@@ -163,8 +183,8 @@ public class DebugPushNotificationsView extends ScrollView {
   @OnClick(R.id.simulate_project_update_button)
   public void simulateProjectUpdateButtonClick() {
     final GCM gcm = GCM.builder()
+      .title("News from Double Fine")
       .alert("Update #1 posted by Double Fine Adventure.")
-      .title("Kickstarter")
       .build();
 
     final Activity activity = Activity.builder()

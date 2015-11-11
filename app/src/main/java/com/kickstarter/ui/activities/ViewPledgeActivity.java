@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.CircleTransform;
+import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.Money;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.models.Backing;
@@ -50,7 +50,7 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgePresenter> 
 
   public void show(@NonNull final Backing backing) {
     Picasso.with(this).load(backing.backer().avatar().medium())
-      .transform(new CircleTransform())
+      .transform(new CircleTransformation())
       .into(avatarImageView);
     nameTextView.setText(backing.backer().name());
     sequenceTextView.setText(getString(R.string.Backer_number, backing.formattedSequence()));

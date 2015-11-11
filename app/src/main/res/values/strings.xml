@@ -3,8 +3,9 @@
 
   <!-- Settings -->
 
-  <!-- Facebook test app id -->
+  <!-- Facebook test app id. Production will be 69103156693 -->
   <string name="facebook_app_id">10153811628756694</string>
+
   <string name="hockey_app_id">***REMOVED***</string>
 
   <!-- User-facing strings -->
@@ -85,7 +86,7 @@
   <string name="friend_name_backed_theater_project">%1$s backed a Theater project</string>
   <string name="Friends_Backed">Friends Backed</string>
   <string name="Full_name">Full name</string>
-  <string name="funded">funded</string>
+  <string name="Funded">Funded</string>
   <string name="goal">goal</string>
   <string name="Help">Help</string>
   <string name="hours">hours</string>
@@ -156,7 +157,7 @@
   <string name="Sign_up_or_log_in_with_your_Facebook_account">
     Sign up or log in with your Facebook account or email address below:
   </string>
-  <string name="Status:">Status: %1$s</string>
+  <string name="Status_">Status: %1$s</string>
   <string name="Staff_Picks">Staff Picks</string>
   <string name="Starred">Starred</string>
   <string name="Submit">Submit</string>
@@ -193,27 +194,6 @@
   <string name="You_selected">You selected</string>
   <string name="Youre_a_backer">\u0020• You\'re a backer\u0020</string>
 
-  <string-array name="spinner_categories_array">
-    <item>Staff Picks</item>
-    <item>Starred</item>
-    <item>Everything</item>
-    <item>Art</item>
-    <item>Comics</item>
-    <item>Crafts</item>
-    <item>Dance</item>
-    <item>Design</item>
-    <item>Fashion</item>
-    <item>Film &amp; Video</item>
-    <item>Food</item>
-    <item>Games</item>
-    <item>Journalism</item>
-    <item>Music</item>
-    <item>Photography</item>
-    <item>Publishing</item>
-    <item>Technology</item>
-    <item>Theater</item>
-  </string-array>
-
   <!-- Intent strings. Requires package prefix:
     http://developer.android.com/reference/android/content/Intent.html#putExtra%28java.lang.String,%20boolean%29 -->
   <string name="intent_comment">com.kickstarter.kickstarter.intent_comment</string>
@@ -239,5 +219,5 @@
   <string name="font_family_medium">sans-serif-medium</string>
 
   <!-- Koala strings -->
-  <string name="koala_endpoint">***REMOVED***</string>
+  <string name="koala_endpoint">https://***REMOVED***/native/track</string>
 </resources>

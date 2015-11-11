@@ -10,9 +10,11 @@ import com.kickstarter.libs.Release;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
+import com.kickstarter.models.Empty;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apirequests.CommentBody;
+import com.kickstarter.services.apirequests.PushTokenBody;
 import com.kickstarter.services.apirequests.SignupBody;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
@@ -102,6 +104,10 @@ public final class ApiClient {
     return service.postProjectComment(project.param(), CommentBody.builder().body(body).build());
   }
 
+  public @NonNull Observable<Empty> registerPushToken(@NonNull final String token) {
+    return service.registerPushToken(PushTokenBody.builder().token(token).pushServer("development").build());
+  }
+
   public Observable<AccessTokenEnvelope> signup(@NonNull final String name, @NonNull final String email,
     @NonNull final String password, @NonNull final String passwordConfirmation,
     final boolean sendNewsletters) {
@@ -158,6 +164,7 @@ public final class ApiClient {
     return request -> {
       request.addHeader("Accept", "application/json");
       request.addHeader("Kickstarter-Android-App", release.versionCode().toString());
+      request.addHeader("Kickstarter-App-Id", release.applicationId());
       request.addQueryParam("client_id", clientId());
       if (currentUser.exists()) {
         request.addQueryParam("oauth_token", currentUser.getAccessToken());

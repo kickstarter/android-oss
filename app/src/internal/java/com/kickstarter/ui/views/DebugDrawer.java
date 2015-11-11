@@ -76,6 +76,16 @@ public class DebugDrawer extends FrameLayout {
     setupBuildInformationSection();
   }
 
+  @OnClick(R.id.push_notifications_button)
+  public void pushNotificationsButtonClick() {
+    final View view = LayoutInflater.from(getContext().getApplicationContext()).inflate(R.layout.debug_push_notifications_layout, null);
+
+    new AlertDialog.Builder(getContext())
+      .setTitle("Push notifications")
+      .setView(view)
+      .show();
+  }
+
   @OnClick(R.id.submit_bug_report_button)
   public void submitBugReportButtonClick() {
     currentUser.observable().take(1).subscribe(this::submitBugReport);
@@ -115,7 +125,7 @@ public class DebugDrawer extends FrameLayout {
   private void setupNetworkSection() {
     final ApiEndpoint currentApiEndpoint = ApiEndpoint.from(apiEndpointPreference.get());
     final EnumAdapter<ApiEndpoint> endpointAdapter =
-      new EnumAdapter<>(getContext(), ApiEndpoint.class);
+      new EnumAdapter<>(getContext(), ApiEndpoint.class, false, R.layout.white_spinner_item);
     endpointSpinner.setAdapter(endpointAdapter);
     endpointSpinner.setSelection(currentApiEndpoint.ordinal());
     endpointSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

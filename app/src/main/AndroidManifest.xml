@@ -7,6 +7,13 @@
   <!-- We need coarse location to find projects near a user. Could also see people being uncomfortable with providing
     this permission though, since location is not core to the app. -->
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+  <!-- WAKE_LOCK keeps the processor from sleeping when a GCM message is received -->
+  <uses-permission android:name="android.permission.WAKE_LOCK" />
+  <!-- RECEIVE allows the app to register to receive GCM messages -->
+  <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+  <!-- Prevent other apps from registering and receiving our app's messages -->
+  <permission android:name="${applicationId}.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+  <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
 
   <!-- Mixpanel library requires this permission -->
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -104,6 +111,49 @@
       android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
       android:theme="@android:style/Theme.Translucent.NoTitleBar"
       android:label="@string/app_name" />
+
+    <!-- Sets up the app to send, receive, register with GCM. -->
+    <receiver
+      android:name="com.google.android.gms.gcm.GcmReceiver"
+      android:exported="true"
+      android:permission="com.google.android.c2dm.permission.SEND" >
+      <intent-filter>
+        <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+        <!-- The registration action is only needed for pre-4.4 KitKat devices -->
+        <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+        <category android:name="${applicationId}" />
+      </intent-filter>
+    </receiver>
+
+    <!-- Receives new message events from GCM. -->
+    <service
+      android:name=".services.gcm.MessageService"
+      android:exported="false" >
+      <intent-filter>
+        <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+      </intent-filter>
+    </service>
+
+    <!-- Processes token refresh events from GCM (e.g. token expired). Registers a new token. -->
+    <service
+      android:name=".services.gcm.TokenListenerService"
+      android:exported="false">
+      <intent-filter>
+        <action android:name="com.google.android.gms.iid.InstanceID"/>
+      </intent-filter>
+    </service>
+
+    <!-- Registers new tokens with the app, sets up device subscription with GCM. -->
+    <service
+      android:name=".services.gcm.RegisterService"
+      android:exported="false">
+    </service>
+
+    <!-- Unsubscribes the device from GCM. -->
+    <service
+      android:name=".services.gcm.UnregisterService"
+      android:exported="false">
+    </service>
 
     <provider
       android:authorities="com.facebook.app.FacebookContentProvider${applicationId}"

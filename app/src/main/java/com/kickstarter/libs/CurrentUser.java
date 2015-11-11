@@ -13,6 +13,7 @@ import timber.log.Timber;
 public class CurrentUser {
   private final StringPreference accessTokenPreference;
   private final Gson gson;
+  private final PushNotifications pushNotifications;
   private final StringPreference userPreference;
 
   private final PublishSubject<User> userSubject = PublishSubject.create();
@@ -20,8 +21,10 @@ public class CurrentUser {
 
   public CurrentUser(@NonNull final StringPreference accessTokenPreference,
     @NonNull final Gson gson,
+    @NonNull final PushNotifications pushNotifications,
     @NonNull final StringPreference userPreference) {
     this.accessTokenPreference = accessTokenPreference;
+    this.pushNotifications = pushNotifications;
     this.gson = gson;
     this.userPreference = userPreference;
 
@@ -53,6 +56,7 @@ public class CurrentUser {
 
     accessTokenPreference.set(accessToken);
     userSubject.onNext(newUser);
+    pushNotifications.registerDevice();
   }
 
   /* Facebook login
@@ -67,6 +71,7 @@ public class CurrentUser {
     userPreference.delete();
     accessTokenPreference.delete();
     userSubject.onNext(null);
+    pushNotifications.unregisterDevice();
   }
 
   public Observable<User> observable() {

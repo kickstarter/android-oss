@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
-import com.kickstarter.libs.CircleTransform;
+import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.Money;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.models.Project;
@@ -97,7 +97,7 @@ public final class ProjectViewHolder extends KSViewHolder {
      /* Creator */
     Picasso.with(context).load(project.creator().avatar()
       .medium())
-      .transform(new CircleTransform())
+      .transform(new CircleTransformation())
       .into(avatarImageView);
     avatarNameTextView.setText(project.creator().name());
     fundMessageTextView.setText(String.format(context.getString(R.string.This_project_will_only_be_funded_if),

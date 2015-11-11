@@ -116,7 +116,6 @@ public final class ThanksPresenter extends Presenter<ThanksActivity> implements 
     addSubscription(projectCardMiniClick
       .subscribe(__ -> {
         koala.trackCheckoutFinishJumpToProject();
-        koala.trackCheckoutShareFinishedWithShareTypes();
       })
     );
   }

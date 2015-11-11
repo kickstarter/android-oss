@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.kickstarter.ui.toolbars.DisplayWebViewToolbar
+<com.kickstarter.ui.toolbars.KSToolbar
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
@@ -15,4 +15,4 @@
     android:layout_weight="0"
     android:text="@string/arrow_back_icon" />
 
-</com.kickstarter.ui.toolbars.DisplayWebViewToolbar>
+</com.kickstarter.ui.toolbars.KSToolbar>

@@ -56,6 +56,17 @@
       android:text="Simulate notifications" />
 
     <Button
+      android:id="@+id/simulate_friend_backing_button"
+      android:layout_marginTop="@dimen/grid_1_half"
+      android:layout_marginBottom="@dimen/grid_1_half"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@drawable/button_green"
+      android:textAllCaps="false"
+      android:text="Friend backing"
+      style="@style/Button" />
+
+    <Button
       android:id="@+id/simulate_friend_follow_button"
       android:layout_marginTop="@dimen/grid_1_half"
       android:layout_marginBottom="@dimen/grid_1_half"

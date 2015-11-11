@@ -15,7 +15,7 @@
       android:id="@+id/full_name"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:inputType="text"
+      android:inputType="textPersonName|textCapWords"
       android:singleLine="true"
       android:textAppearance="@style/BodyPrimary"
       android:hint="@string/Full_name" />

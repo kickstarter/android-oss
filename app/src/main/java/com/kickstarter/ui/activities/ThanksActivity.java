@@ -74,9 +74,11 @@ public final class ThanksActivity extends BaseActivity<ThanksPresenter> {
     recommendedProjectsRecyclerView.setAdapter(adapter);
   }
 
-  @OnClick(R.id.done_button)
-  public void onDoneClick() {
-    presenter.takeDoneClick();
+  @OnClick(R.id.close_button)
+  protected void closeButtonClick() {
+    final Intent intent = new Intent(this, DiscoveryActivity.class)
+      .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+    startActivity(intent);
   }
 
   @OnClick(R.id.share_button)
@@ -137,12 +139,6 @@ public final class ThanksActivity extends BaseActivity<ThanksPresenter> {
     final DiscoveryParams params = DiscoveryParams.builder().category(category).build();
     final Intent intent = new Intent(this, DiscoveryActivity.class)
       .putExtra(getString(R.string.intent_discovery_params), params)
-      .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-    startActivity(intent);
-  }
-
-  public void startDiscoveryActivity() {
-    final Intent intent = new Intent(this, DiscoveryActivity.class)
       .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
     startActivity(intent);
   }

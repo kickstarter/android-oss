@@ -62,12 +62,7 @@ public final class SearchToolbar extends KSToolbar {
   }
 
   @OnClick(R.id.clear_button)
-  public void clearButtonClick(@NonNull final View view) {
+  public void clearButtonClick() {
     searchEditText.setText(null);
-  }
-
-  @OnClick(R.id.back_button)
-  public void backButtonClick() {
-    ((SearchActivity) getContext()).onBackPressed();
   }
 }

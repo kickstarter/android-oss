@@ -119,13 +119,6 @@ public final class ThanksPresenter extends Presenter<ThanksActivity> implements 
         koala.trackCheckoutShareFinishedWithShareTypes();
       })
     );
-
-    addSubscription(doneClick
-        .subscribe(__ -> {
-          koala.trackCheckoutFinishJumpToDiscovery();
-          koala.trackCheckoutShareFinishedWithShareTypes();
-        })
-    );
   }
 
   public void takeFacebookClick() {

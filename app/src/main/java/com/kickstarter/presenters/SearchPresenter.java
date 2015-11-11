@@ -95,7 +95,8 @@ public final class SearchPresenter extends Presenter<SearchActivity> implements 
     koala.trackSearchView();
 
     // Track search results and pagination
-    final Observable<Integer> pageCount = params.switchMap(__ -> projects.compose(Transformers.incrementalCount()));
+    final Observable<Integer> pageCount = params
+      .switchMap(__ -> projects.debounce(2, TimeUnit.SECONDS).compose(Transformers.incrementalCount()));
     final Observable<String> query = searchParamsAndProjects.map(sp -> sp.first.term());
     addSubscription(query
       .compose(Transformers.takePairWhen(pageCount))

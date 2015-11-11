@@ -51,10 +51,6 @@ public class KSApplication extends MultiDexApplication {
       refWatcher = LeakCanary.install(this);
     }
 
-    final ApplicationLifecycleUtil appUtil = new ApplicationLifecycleUtil();
-    registerActivityLifecycleCallbacks(appUtil);
-    registerComponentCallbacks(appUtil);
-
     JodaTimeAndroid.init(this);
 
     component = DaggerApplicationComponent.builder()
@@ -67,6 +63,10 @@ public class KSApplication extends MultiDexApplication {
     FacebookSdk.sdkInitialize(this);
 
     pushNotifications.initialize();
+
+    final ApplicationLifecycleUtil appUtil = new ApplicationLifecycleUtil(this);
+    registerActivityLifecycleCallbacks(appUtil);
+    registerComponentCallbacks(appUtil);
   }
 
   public ApplicationComponent component() {

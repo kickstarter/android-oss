@@ -6,20 +6,24 @@ import android.content.ComponentCallbacks2;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
+import com.kickstarter.KSApplication;
 import com.kickstarter.libs.Koala;
 
 import javax.inject.Inject;
 
-import timber.log.Timber;
-
 public final class ApplicationLifecycleUtil implements Application.ActivityLifecycleCallbacks, ComponentCallbacks2 {
   @Inject Koala koala;
 
-  private static boolean isInBackground = false;
+  private boolean isInBackground = true;
+
+  public ApplicationLifecycleUtil(@NonNull final KSApplication application) {
+    application.component().inject(this);
+  }
 
   @Override
-  public void onActivityCreated(@NonNull final Activity activity, @NonNull final Bundle bundle) {
+  public void onActivityCreated(@NonNull final Activity activity, @Nullable final Bundle bundle) {
   }
 
   @Override
@@ -29,9 +33,8 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
   @Override
   public void onActivityResumed(@NonNull final Activity activity) {
     if(isInBackground){
-      Timber.d("App went to foreground");
-      isInBackground = false;
       koala.trackAppOpen();
+      isInBackground = false;
     }
   }
 
@@ -44,7 +47,7 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
   }
 
   @Override
-  public void onActivitySaveInstanceState(@NonNull final Activity activity, Bundle bundle) {
+  public void onActivitySaveInstanceState(@NonNull final Activity activity, @Nullable final Bundle bundle) {
   }
 
   @Override
@@ -60,11 +63,16 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
     koala.trackMemoryWarning();
   }
 
+  /**
+   * Memory availability callback. TRIM_MEMORY_UI_HIDDEN means the app's UI is no longer visible.
+   * This is triggered when the user navigates out of the app and primarily used to free resources used by the UI.
+   * http://developer.android.com/training/articles/memory.html
+   */
   @Override
   public void onTrimMemory(final int i) {
     if(i == ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN) {
-      Timber.d("App went to background");
       koala.trackAppClose();
+      isInBackground = true;
     }
   }
 }

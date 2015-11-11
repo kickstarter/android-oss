@@ -3,6 +3,7 @@ package com.kickstarter;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.Money;
+import com.kickstarter.libs.utils.ApplicationLifecycleUtil;
 import com.kickstarter.services.gcm.MessageService;
 import com.kickstarter.services.gcm.RegisterService;
 import com.kickstarter.presenters.ActivityFeedPresenter;
@@ -41,6 +42,7 @@ import com.kickstarter.ui.views.TiemposTextView;
 public interface ApplicationGraph {
   void inject(ActivityFeedActivity __);
   void inject(ActivityFeedPresenter __);
+  void inject(ApplicationLifecycleUtil __);
   void inject(CommentFeedActivity __);
   void inject(CommentFeedPresenter __);
   void inject(CommentFeedToolbar __);

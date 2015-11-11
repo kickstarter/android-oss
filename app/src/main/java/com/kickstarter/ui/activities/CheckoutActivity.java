@@ -15,20 +15,24 @@ import com.kickstarter.models.Project;
 import com.kickstarter.presenters.CheckoutPresenter;
 import com.kickstarter.services.KSUri;
 import com.kickstarter.services.RequestHandler;
+import com.kickstarter.ui.toolbars.KSToolbar;
 import com.kickstarter.ui.views.KSWebView;
 import com.squareup.okhttp.Request;
 
 import java.util.Arrays;
 
 import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 
 @RequiresPresenter(CheckoutPresenter.class)
 public final class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
   private Project project;
   private String urlToReload;
+  @Bind(R.id.checkout_toolbar) KSToolbar checkoutToolbar;
   @Bind(R.id.web_view) KSWebView webView;
-  public @Bind(R.id.toolbar_title) TextView toolbarTitleTextView;
+  @BindString(R.string.Back_this_project) String backThisProjectString;
+  @BindString(R.string.intent_toolbar_title) String intentToolbarTitleString;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -42,7 +46,9 @@ public final class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
       urlToReload = intent.getExtras().getString(getString(R.string.intent_url));
     }
     project = intent.getExtras().getParcelable(getString(R.string.intent_project));
-    toolbarTitleTextView.setText(intent.getStringExtra(getString(R.string.intent_toolbar_title)));
+
+    final String title = intent.getExtras().getString(intentToolbarTitleString, backThisProjectString);
+    checkoutToolbar.setTitle(title);
 
     webView.client().registerRequestHandlers(Arrays.asList(
       new RequestHandler(KSUri::isCheckoutThanksUri, this::handleCheckoutThanksUriRequest),

@@ -8,7 +8,7 @@ public class UserFactory {
       .avatar(AvatarFactory.avatar())
       .id(1)
       .name("Sammy Sosa")
-      .uid("1234567890")
+      .id(1234567890)
       .build();
   }
 

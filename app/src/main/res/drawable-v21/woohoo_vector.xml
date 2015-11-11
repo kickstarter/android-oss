@@ -9,11 +9,11 @@
     android:pathData="M 0 0 h 350 v 150 h -350 v -150 Z" />
   <group
     android:name="square_1"
-    android:pivotX="0"
-    android:pivotY="45">
+    android:pivotX="35"
+    android:pivotY="10">
     <path
       android:fillColor="@color/light_gray"
-      android:pathData="M -15 30 h 30 v 30 h -30 v 0 Z" />
+      android:pathData="M 20 -5 h 30 v 30 h -30 v 0 Z" />
   </group>
   <group
     android:name="square_2"

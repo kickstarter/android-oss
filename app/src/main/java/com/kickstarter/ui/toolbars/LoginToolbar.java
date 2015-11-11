@@ -35,11 +35,6 @@ public class LoginToolbar extends KSToolbar {
     ButterKnife.bind(this);
   }
 
-  @OnClick(R.id.back_button)
-  protected void backButtonClick() {
-    ((BaseActivity) getContext()).onBackPressed();
-  }
-
   @OnClick(R.id.help_button)
   protected void helpButtonClick() {
     new LoginPopupMenu(getContext(), helpButton).show();

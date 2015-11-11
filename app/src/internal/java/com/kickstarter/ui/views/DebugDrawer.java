@@ -125,7 +125,7 @@ public class DebugDrawer extends FrameLayout {
   private void setupNetworkSection() {
     final ApiEndpoint currentApiEndpoint = ApiEndpoint.from(apiEndpointPreference.get());
     final EnumAdapter<ApiEndpoint> endpointAdapter =
-      new EnumAdapter<>(getContext(), ApiEndpoint.class);
+      new EnumAdapter<>(getContext(), ApiEndpoint.class, false, R.layout.white_spinner_item);
     endpointSpinner.setAdapter(endpointAdapter);
     endpointSpinner.setSelection(currentApiEndpoint.ordinal());
     endpointSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

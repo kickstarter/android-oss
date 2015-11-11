@@ -1,6 +1,7 @@
 package com.kickstarter.libs.utils;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Category;
@@ -60,7 +61,9 @@ public final class KoalaUtils {
   @NonNull public static Map<String, Object> userProperties(@NonNull final User user, @NonNull final String prefix) {
     final Map<String, Object> properties = new HashMap<String, Object>() {{
       put("uid", user.id());
-      put("name", user.name());
+      put("user_backed_projects_count", user.backedProjectsCount());
+      put("user_launched_projects_count", user.launchedProjectsCount());
+      put("user_starred_projects_count", user.starredProjectsCount());
     }};
 
     return MapUtils.prefixKeys(properties, prefix);
@@ -70,7 +73,11 @@ public final class KoalaUtils {
     return projectProperties(project, "project_");
   }
 
-  @NonNull public static Map<String, Object> projectProperties(final Project project, @NonNull final String prefix) {
+  @NonNull public static Map<String, Object> projectProperties(@NonNull final Project project, @NonNull final String prefix) {
+    return projectProperties(project, null, prefix);
+  }
+
+  @NonNull public static Map<String, Object> projectProperties(@NonNull final Project project, @Nullable final User loggedInUser, @NonNull final String prefix) {
     final Map<String, Object> properties = new HashMap<String, Object>() {{
 
       put("backers_count", project.backersCount());
@@ -106,14 +113,11 @@ public final class KoalaUtils {
 
       putAll(userProperties(project.creator(), "creator_"));
 
-
-
-      // TODO:
-      //       @"user_is_project_creator": self.creator.idValue == KSUser.current.idValue ? @(YES) : @(NO),
-      //       @"user_is_backer": KSUser.current ? (self.isBackingValue?@(YES):@(NO)) : NSNull.null,
-      //       @"user_has_starred": KSUser.current ? (self.isStarredValue?@(YES):@(NO)) : NSNull.null,
-
-      //     } compact];
+      if (loggedInUser != null) {
+        put("user_is_project_creator", ProjectUtils.userIsCreator(project, loggedInUser));
+        put("user_is_backer", project.isBacking());
+        put("user_has_starred", project.isStarred());
+      }
     }};
 
     return MapUtils.prefixKeys(properties, prefix);

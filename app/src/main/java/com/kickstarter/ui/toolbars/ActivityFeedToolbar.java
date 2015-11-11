@@ -38,11 +38,6 @@ public final class ActivityFeedToolbar extends KSToolbar {
     ButterKnife.bind(this);
   }
 
-  @OnClick(R.id.back_button)
-  protected void backButtonClick() {
-    ((ActivityFeedActivity) getContext()).onBackPressed();
-  }
-
   @OnClick(R.id.more_button)
   protected void moreButtonClick() {
     final Context context = getContext();

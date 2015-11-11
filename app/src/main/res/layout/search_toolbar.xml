@@ -47,7 +47,7 @@
         android:clickable="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:text="@string/close" />
+        android:text="@string/close_icon" />
 
     </RelativeLayout>
 

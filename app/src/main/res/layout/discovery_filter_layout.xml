@@ -45,7 +45,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:padding="@dimen/grid_1"
-      android:text="@string/close"
+      android:text="@string/close_icon"
       android:textColor="@color/white"
       android:textSize="28sp" />
 

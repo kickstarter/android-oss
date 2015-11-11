@@ -9,15 +9,17 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.BaseActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import rx.Subscription;
 
-public abstract class KSToolbar extends Toolbar {
+public class KSToolbar extends Toolbar {
   @Nullable @Bind(R.id.title_text_view) TextView titleTextView;
   private final List<Subscription> subscriptions = new ArrayList<>();
 
@@ -31,6 +33,14 @@ public abstract class KSToolbar extends Toolbar {
 
   public KSToolbar(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
     super(context, attrs, defStyleAttr);
+  }
+
+  /**
+   * Default back button behavior, override for custom transitions.
+   */
+  @Nullable @OnClick(R.id.back_button)
+  protected void backButtonClick() {
+    ((BaseActivity) getContext()).onBackPressed();
   }
 
   /**

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.kickstarter.ui.toolbars.CommentFeedToolbar
+<com.kickstarter.ui.toolbars.KSToolbar
   android:id="@+id/comment_feed_toolbar"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -41,4 +41,4 @@
       android:layout_alignParentRight="true"
       android:text="@string/forum_icon" />
   </RelativeLayout>
-</com.kickstarter.ui.toolbars.CommentFeedToolbar>
+</com.kickstarter.ui.toolbars.KSToolbar>

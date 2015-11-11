@@ -29,7 +29,6 @@ import com.kickstarter.ui.activities.HelpActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.kickstarter.ui.viewholders.ProjectViewHolder;
 import com.kickstarter.ui.viewholders.RewardViewHolder;
-import com.kickstarter.ui.toolbars.CommentFeedToolbar;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 import com.kickstarter.ui.viewholders.ProjectStateChangedPositiveViewHolder;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
@@ -42,7 +41,6 @@ public interface ApplicationGraph {
   void inject(ActivityFeedPresenter __);
   void inject(CommentFeedActivity __);
   void inject(CommentFeedPresenter __);
-  void inject(CommentFeedToolbar __);
   void inject(CommentViewHolder __);
   void inject(CurrentUser __);
   void inject(Koala __);

@@ -48,7 +48,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
     loginToolbar.setTitle(loginOrSignUpString);
 
     forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
-    presenter.inputs.reason(getIntent().getExtras().getString(getString(R.string.intent_login_type)));
+    presenter.reason = getIntent().getExtras().getString(getString(R.string.intent_login_type));
   }
 
   @Override

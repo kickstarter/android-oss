@@ -55,6 +55,18 @@ import rx.Observable;
   @GET("/v1/categories/{id}")
   Observable<Category> fetchCategory(@Path("id") long id);
 
+  // intent=login
+  @PUT("/v1/facebook/access_token")
+  Observable<AccessTokenEnvelope> facebookLogin(@Query("access_token") String accessToken);
+
+  @PUT("/v1/facebook/access_token")
+  Observable<AccessTokenEnvelope> facebookLogin(@Query("access_token") String accessToken, @Query("code") String code);
+
+  // intent=register&send_newsletters=true/false
+  @PUT("/v1/facebook/access_token")
+  Observable<AccessTokenEnvelope> facebookRegister(@Query("access_token") String accessToken,
+    @Query("send_newsletters") boolean sendNewsletters);
+
   @POST("/xauth/access_token")
   Observable<AccessTokenEnvelope> login(@Query("email") String email,
     @Query("password") String password);

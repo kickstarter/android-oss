@@ -85,6 +85,7 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
     }
   }
 
+  // todo: convert to inputs
   public String email () {
     return getIntent().getExtras().getString(getString(R.string.intent_email));
   }
@@ -95,5 +96,10 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
 
   public boolean forward () {
     return getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
+  }
+
+  // todo: finish up
+  public boolean isFacebookLogin () {
+    return getIntent().getBooleanExtra(getString(R.string.intent_facebook_login), true);
   }
 }

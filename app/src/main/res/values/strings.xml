@@ -198,6 +198,7 @@
   <string name="intent_comment">com.kickstarter.kickstarter.intent_comment</string>
   <string name="intent_discovery_params">com.kickstarter.kickstarter.intent_discovery_params</string>
   <string name="intent_email">com.kickstarter.kickstarter.intent_email</string>
+  <string name="intent_facebook_login">com.kickstarter.kickstarter.intent_facebook_login</string>
   <string name="intent_forward">com.kickstarter.kickstarter.intent_forward</string>
   <string name="intent_internal_build_envelope">com.kickstarter.kickstarter.intent_build_envelope</string>
   <string name="intent_help_type">com.kickstarter.kickstarter.intent_help_type</string>
@@ -206,6 +207,7 @@
   <string name="intent_project_param">com.kickstarter.kickstarter.intent_project_param</string>
   <string name="intent_share_type">"text/plain"</string>
   <string name="intent_toolbar_title">com.kickstarter.kickstarter.intent_toolbar_title</string>
+  <string name="intent_token">com.kickstarter.kickstarter.intent_token</string>
   <string name="intent_url">com.kickstarter.kickstarter.intent_url</string>
 
   <!-- Save strings -->

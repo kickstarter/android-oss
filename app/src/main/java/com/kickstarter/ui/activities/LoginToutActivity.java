@@ -57,8 +57,9 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
     facebookButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
 
       @Override
-      public void onSuccess(LoginResult result) {
+      public void onSuccess(@NonNull final LoginResult result) {
         Log.d("TEST", "onSuccess");
+        // pass result.accessToken to facbeookLogin
       }
 
       @Override
@@ -67,7 +68,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
       }
 
       @Override
-      public void onError(FacebookException error) {
+      public void onError(@NonNull final FacebookException error) {
         Log.d("TEST", "onError");
       }
     });
@@ -134,12 +135,27 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
   @Override
   protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
     super.onActivityResult(requestCode, resultCode, intent);
+    // this needs to be called. probably not always tho
+    callbackManager.onActivityResult(requestCode, resultCode, intent);
+
     if (requestCode != ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_LOGIN_ACTIVITY_FORWARD) {
+      Log.d("TEST", "nope");
       return;
     }
 
-    callbackManager.onActivityResult(requestCode, resultCode, intent);
     setResult(resultCode, intent);
     finish();
+  }
+
+  // todo: startTwoFactorActivity with Facebook access token
+  public void startTwoFactorActivity(final boolean forward, final boolean isFacebookLogin, final String token) {
+    final Intent intent = new Intent(this, TwoFactorActivity.class)
+      .putExtra(getString(R.string.intent_facebook_login), isFacebookLogin)
+      .putExtra(getString(R.string.intent_token), token);
+    if (forward) {
+      startActivityForResult(intent, ActivityRequestCodes.LOGIN_ACTIVITY_TWO_FACTOR_ACTIVITY_FORWARD);
+    } else {
+      startActivity(intent);
+    }
   }
 }

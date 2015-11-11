@@ -35,6 +35,6 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> {
   }
 
   public void login(@NonNull final LoginResult result) {
-    currentUser.login(result.getAccessToken().toString());
+
   }
 }

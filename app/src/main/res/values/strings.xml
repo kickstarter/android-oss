@@ -5,7 +5,6 @@
 
   <!-- Facebook test app id. Production will be 69103156693 -->
   <string name="facebook_app_id">10153811628756694</string>
-
   <string name="hockey_app_id">***REMOVED***</string>
 
   <!-- User-facing strings -->
@@ -219,5 +218,5 @@
   <string name="font_family_medium">sans-serif-medium</string>
 
   <!-- Koala strings -->
-  <string name="koala_endpoint">https://***REMOVED***/native/track</string>
+  <string name="koala_endpoint">***REMOVED***</string>
 </resources>

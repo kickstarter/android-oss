@@ -59,12 +59,6 @@ public class CurrentUser {
     pushNotifications.registerDevice();
   }
 
-  /* Facebook login
-   * todo: user param ProfileTracker info */
-  public void login(@NonNull final String accessToken) {
-    accessTokenPreference.set(accessToken);
-  }
-
   public void logout() {
     Timber.d("Logout current user");
 

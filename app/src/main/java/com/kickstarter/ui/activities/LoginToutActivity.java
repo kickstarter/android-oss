@@ -102,7 +102,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
 
   @OnClick(R.id.facebook_login_button)
   public void facebookLoginButtonClick() {
-
+    
   }
 
   @OnClick(R.id.login_button)

@@ -57,6 +57,7 @@ public interface ApplicationGraph {
   void inject(EmptyCommentFeedViewHolder __);
   void inject(HelpActivity __);
   void inject(IconTextView __);
+  void inject(KoalaTrackingClient __);
   void inject(KSWebView __);
   void inject(KSApplication __);
   void inject(LoginPresenter __);
@@ -75,7 +76,6 @@ public interface ApplicationGraph {
   void inject(SignupPresenter __);
   void inject(ThanksPresenter __);
   void inject(TiemposTextView __);
-  void inject(KoalaTrackingClient __);
   void inject(TwoFactorPresenter __);
   void inject(ViewPledgeActivity __);
   void inject(ViewPledgePresenter __);

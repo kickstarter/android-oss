@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.facebook.login.LoginResult;
 import com.kickstarter.KSApplication;
@@ -22,7 +21,6 @@ import com.kickstarter.ui.activities.LoginToutActivity;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
 public final class LoginToutPresenter extends Presenter<LoginToutActivity> implements LoginToutPresenterInputs,
@@ -72,12 +70,7 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
   public LoginToutPresenter() {
     addSubscription(facebookLoginResult
       .switchMap(this::submit)
-      .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::success));
-
-    addSubscription(loginError.subscribe(errorEnvelope -> {
-      Log.d("TEST", errorEnvelope.ksrCode());
-    }));
   }
 
   @Override

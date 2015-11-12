@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -181,7 +180,6 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
     }
   }
 
-  // todo: startTwoFactorActivity with Facebook access token
   public void startTwoFactorActivity(final boolean forward, final boolean isFacebookLogin) {
     final Intent intent = new Intent(this, TwoFactorActivity.class)
       .putExtra(getString(R.string.intent_facebook_login), isFacebookLogin);

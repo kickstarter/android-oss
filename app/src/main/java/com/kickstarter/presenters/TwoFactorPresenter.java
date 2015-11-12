@@ -50,7 +50,6 @@ public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> imple
   private final PublishSubject<Boolean> loginClick = PublishSubject.create();
   private final PublishSubject<String> password = PublishSubject.create();
   private final PublishSubject<View> resendClick = PublishSubject.create();
-  private final PublishSubject<String> fbAccessToken = PublishSubject.create();
 
   // OUTPUTS
   private final PublishSubject<Boolean> formSubmitting = PublishSubject.create();
@@ -130,7 +129,7 @@ public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> imple
 
     addSubscription(tfaData
       .compose(Transformers.takePairWhen(loginClick))
-      .filter(dc -> dc.second)  // todo: filter out expired access tokens
+      .filter(dc -> dc.second)
       .flatMap(dc -> loginWithFacebook(AccessToken.getCurrentAccessToken().getToken(), dc.first.code))
       .subscribe(this::success));
 

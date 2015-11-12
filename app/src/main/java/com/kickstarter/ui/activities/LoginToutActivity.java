@@ -12,8 +12,8 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
@@ -22,6 +22,8 @@ import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.presenters.LoginToutPresenter;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 import com.kickstarter.ui.views.LoginPopupMenu;
+
+import java.util.Arrays;
 
 import butterknife.Bind;
 import butterknife.BindString;
@@ -34,7 +36,7 @@ import rx.android.schedulers.AndroidSchedulers;
 public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
   @Bind(R.id.disclaimer_text_view) TextView disclaimerTextView;
   @Bind(R.id.login_button) Button loginButton;
-  @Bind(R.id.facebook_login_button) LoginButton facebookButton;
+  @Bind(R.id.facebook_login_button) Button facebookButton;
   @Bind(R.id.sign_up_button) Button signupButton;
   @Bind(R.id.help_button) TextView helpButton;
   @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
@@ -55,6 +57,24 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
     loginToolbar.setTitle(loginOrSignUpString);
 
     forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
+
+    callbackManager = CallbackManager.Factory.create();
+    LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+      @Override
+      public void onSuccess(@NonNull final LoginResult result) {
+        presenter.inputs.facebookLoginResult(result);
+      }
+
+      @Override
+      public void onCancel() {
+
+      }
+
+      @Override
+      public void onError(@NonNull final FacebookException error) {
+
+      }
+    });
 
     addSubscription(
       presenter.errors.tfaChallenge()
@@ -111,23 +131,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
 
   @OnClick(R.id.facebook_login_button)
   public void facebookLoginClick() {
-    callbackManager = CallbackManager.Factory.create();
-    facebookButton.setReadPermissions("user_friends", "public_profile", "email");
-    facebookButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-
-      @Override
-      public void onSuccess(@NonNull final LoginResult result) {
-        presenter.inputs.facebookLoginResult(result);
-      }
-
-      @Override
-      public void onCancel() {
-      }
-
-      @Override
-      public void onError(@NonNull final FacebookException error) {
-      }
-    });
+    LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "email"));
   }
 
   @OnClick(R.id.login_button)

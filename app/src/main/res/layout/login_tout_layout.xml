@@ -33,8 +33,9 @@
         android:layout_height="20.06dp"
         android:src="@drawable/logo" />
 
-      <com.facebook.login.widget.LoginButton
+      <Button
         android:id="@+id/facebook_login_button"
+        style="@style/FacebookButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

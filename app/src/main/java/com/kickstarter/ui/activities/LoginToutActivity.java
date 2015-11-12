@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -56,16 +57,24 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
 
     forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
 
-    addSubscription(
-      presenter.errors.tfaChallenge()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(__ -> startTwoFactorActivity(true, forward))
-    );
+//    addSubscription(
+//      presenter.errors.tfaChallenge()
+//        .observeOn(AndroidSchedulers.mainThread())
+//        .subscribe(__ -> startTwoFactorActivity(true, forward))
+//    );
+
+//    addSubscription(
+//      errorMessages()
+//        .observeOn(AndroidSchedulers.mainThread())
+//        .subscribe(this::displayToast)
+//    );
 
     addSubscription(
-      errorMessages()
+      presenter.outputs.facebookLoginSuccess()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this::displayToast)
+        .subscribe(__ -> {
+          onSuccess(forward);
+        })
     );
   }
 
@@ -104,23 +113,20 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
   @OnClick(R.id.facebook_login_button)
   public void facebookLoginClick() {
     callbackManager = CallbackManager.Factory.create();
-    facebookButton.setReadPermissions("user_friends");
+    facebookButton.setReadPermissions("user_friends", "public_profile", "email");
     facebookButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
 
       @Override
       public void onSuccess(@NonNull final LoginResult result) {
-        Log.d("TEST", "onSuccess");
-        presenter.facebookLoginResult(result);
+        presenter.inputs.facebookLoginResult(result);
       }
 
       @Override
       public void onCancel() {
-
       }
 
       @Override
       public void onError(@NonNull final FacebookException error) {
-        Log.d("TEST", "onError");
       }
     });
   }
@@ -164,6 +170,17 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
 
     setResult(resultCode, intent);
     finish();
+  }
+
+  public void onSuccess(final boolean forward) {
+    if (forward) {
+      setResult(Activity.RESULT_OK);
+      finish();
+    } else {
+      final Intent intent = new Intent(this, DiscoveryActivity.class)
+        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+      startActivity(intent);
+    }
   }
 
   // todo: startTwoFactorActivity with Facebook access token

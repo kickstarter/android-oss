@@ -3,8 +3,8 @@
 
   <!-- Settings -->
 
-  <!-- Facebook test app id. Production will be 69103156693 -->
-  <string name="facebook_app_id">10153811628756694</string>
+  <!-- Facebook app id -->
+  <string name="facebook_app_id">69103156693</string>
   <string name="hockey_app_id">***REMOVED***</string>
 
   <!-- User-facing strings -->

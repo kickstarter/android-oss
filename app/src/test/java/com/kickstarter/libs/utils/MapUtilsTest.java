@@ -35,14 +35,14 @@ public class MapUtilsTest extends TestCase {
   public void testPrefixKeys() {
     final Map<String, Object> map = new HashMap<String, Object>() {{
       put("a", 1);
-      put("b", null);
+      put("b", 2);
       put("c", 3);
     }};
 
     final Map<String, Object> mapWithPrefix = new HashMap<String, Object>() {{
       put("test_a", 1);
-      put("b", 2);
-      put("c", 3);
+      put("test_b", 2);
+      put("test_c", 3);
     }};
 
     assertEquals(MapUtils.prefixKeys(map, "test_"), mapWithPrefix);

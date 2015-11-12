@@ -101,17 +101,11 @@ public final class ThanksPresenter extends Presenter<ThanksActivity> implements 
         })
     );
 
-    addSubscription(shareClick
-        .subscribe(__ -> koala.trackCheckoutShowShareSheet())
-    );
+    addSubscription(shareClick.subscribe(__ -> koala.trackCheckoutShowShareSheet()));
 
-    addSubscription(twitterClick
-        .subscribe(__ -> koala.trackCheckoutShowShareView("twitter"))
-    );
+    addSubscription(twitterClick.subscribe(__ -> koala.trackCheckoutShowTwitterShareView()));
 
-    addSubscription(facebookClick
-        .subscribe(__ -> koala.trackCheckoutShowShareView("facebook"))
-    );
+    addSubscription(facebookClick.subscribe(__ -> koala.trackCheckoutShowFacebookShareView()));
 
     addSubscription(projectCardMiniClick
       .subscribe(__ -> {

@@ -194,9 +194,15 @@ public final class Koala {
     client.track("Checkout Cancel Share Sheet");
   }
 
-  public void trackCheckoutShowShareView(@Nullable final String type) {
+  public void trackCheckoutShowTwitterShareView() {
     client.track("Checkout Show Share", new HashMap<String, Object>() {{
-      put("share_type", type);
+      put("share_type", "twitter");
+    }});
+  }
+
+  public void trackCheckoutShowFacebookShareView() {
+    client.track("Checkout Show Share", new HashMap<String, Object>() {{
+      put("share_type", "facebook");
     }});
   }
 

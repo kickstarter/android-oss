@@ -74,11 +74,4 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgePresenter> 
       );
     }
   }
-
-  @OnClick(R.id.nav_back_button)
-  @Override
-  public void onBackPressed() {
-    super.onBackPressed();
-    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
-  }
 }

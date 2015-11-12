@@ -57,17 +57,17 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
 
     forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
 
-//    addSubscription(
-//      presenter.errors.tfaChallenge()
-//        .observeOn(AndroidSchedulers.mainThread())
-//        .subscribe(__ -> startTwoFactorActivity(true, forward))
-//    );
+    addSubscription(
+      presenter.errors.tfaChallenge()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(__ -> startTwoFactorActivity(forward, true))
+    );
 
-//    addSubscription(
-//      errorMessages()
-//        .observeOn(AndroidSchedulers.mainThread())
-//        .subscribe(this::displayToast)
-//    );
+    addSubscription(
+      errorMessages()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(this::displayToast)
+    );
 
     addSubscription(
       presenter.outputs.facebookLoginSuccess()
@@ -160,11 +160,9 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
   @Override
   protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
     super.onActivityResult(requestCode, resultCode, intent);
-    // this needs to be called. probably not always tho
     callbackManager.onActivityResult(requestCode, resultCode, intent);
 
     if (requestCode != ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_LOGIN_ACTIVITY_FORWARD) {
-      Log.d("TEST", "nope");
       return;
     }
 

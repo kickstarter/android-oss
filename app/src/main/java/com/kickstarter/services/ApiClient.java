@@ -53,18 +53,18 @@ public final class ApiClient {
     service = apiService();
   }
 
-  public Observable<AccessTokenEnvelope> facebookLogin(@NonNull final String fbAccessToken) {
+  public Observable<AccessTokenEnvelope> loginWithFacebook(@NonNull final String fbAccessToken) {
     return service.loginWithFacebook(LoginWithFacebookBody.builder().accessToken(fbAccessToken).build());
   }
 
-  public Observable<AccessTokenEnvelope> facebookLogin(@NonNull final String fbAccessToken, @NonNull final String code) {
+  public Observable<AccessTokenEnvelope> loginWithFacebook(@NonNull final String fbAccessToken, @NonNull final String code) {
     return service.loginWithFacebook(LoginWithFacebookBody.builder()
       .accessToken(fbAccessToken)
       .code(code)
       .build());
   }
 
-  public Observable<AccessTokenEnvelope> facebookRegister(@NonNull final String fbAccessToken, final boolean sendNewsletters) {
+  public Observable<AccessTokenEnvelope> registerWithFacebook(@NonNull final String fbAccessToken, final boolean sendNewsletters) {
     return service.registerWithFacebook(fbAccessToken, sendNewsletters);
   }
 

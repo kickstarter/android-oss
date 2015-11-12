@@ -38,7 +38,6 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
 
   // ERRORS
   private final PublishSubject<ErrorEnvelope> loginError = PublishSubject.create();
-  // todo: customize errorMessage, as it will be null
   public final Observable<String> missingFacebookEmailError() {
     return loginError
       .filter(ErrorEnvelope::isMissingFacebookEmailError)
@@ -53,7 +52,7 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
 
   public final Observable<Void> tfaChallenge() {
     return loginError
-      .filter(ErrorEnvelope::isTfaFailedError)
+      .filter(ErrorEnvelope::isTfaRequiredError)
       .map(__ -> null);
   }
 
@@ -86,15 +85,9 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
     facebookLoginResult.onNext(result);
   }
 
-  // 1. Success
   private Observable<AccessTokenEnvelope> submit(@NonNull final LoginResult result) {
-    return client.facebookLogin(result.getAccessToken().getToken())
+    return client.loginWithFacebook(result.getAccessToken().getToken())
       .compose(Transformers.pipeApiErrorsTo(loginError));
-  }
-
-  // 2. TFA
-  public Observable<AccessTokenEnvelope> tfaSubmit(@NonNull final String fbAccessToken, @NonNull final String code) {
-    return client.facebookLogin(fbAccessToken, code);
   }
 
   public void success(@NonNull final AccessTokenEnvelope envelope) {

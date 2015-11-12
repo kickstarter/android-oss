@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 
+import com.facebook.AccessToken;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
@@ -46,9 +47,10 @@ public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> imple
   // INPUTS
   private final PublishSubject<String> code = PublishSubject.create();
   private final PublishSubject<String> email = PublishSubject.create();
-  private final PublishSubject<View> loginClick = PublishSubject.create();
+  private final PublishSubject<Boolean> loginClick = PublishSubject.create();
   private final PublishSubject<String> password = PublishSubject.create();
   private final PublishSubject<View> resendClick = PublishSubject.create();
+  private final PublishSubject<String> fbAccessToken = PublishSubject.create();
 
   // OUTPUTS
   private final PublishSubject<Boolean> formSubmitting = PublishSubject.create();
@@ -100,8 +102,8 @@ public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> imple
   }
 
   @Override
-  public void loginClick(@NonNull final View view) {
-    loginClick.onNext(view);
+  public void loginClick(final boolean isFacebookLogin) {
+    loginClick.onNext(isFacebookLogin);
   }
 
   @Override
@@ -121,18 +123,30 @@ public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> imple
       .subscribe(this.formIsValid::onNext));
 
     addSubscription(tfaData
-      .compose(Transformers.takeWhen(loginClick))
-      .flatMap(this::submit)
+      .compose(Transformers.takePairWhen(loginClick))
+      .filter(dc -> !dc.second)
+      .flatMap(dc -> submit(dc.first))
       .subscribe(this::success));
 
     addSubscription(tfaData
-        .compose(Transformers.takeWhen(resendClick))
-        .switchMap(data -> resendCode(data.email, data.password))
-        .observeOn(AndroidSchedulers.mainThread())
-          // TODO: It might be a gotcha to have an empty subscription block, but I don't remember
-          // why. We should investigate.
-        .subscribe()
+      .compose(Transformers.takePairWhen(loginClick))
+      .filter(dc -> dc.second)  // todo: filter out expired access tokens
+      .flatMap(dc -> loginWithFacebook(AccessToken.getCurrentAccessToken().getToken(), dc.first.code))
+      .subscribe(this::success));
+
+    addSubscription(tfaData
+      .compose(Transformers.takeWhen(resendClick))
+      .switchMap(data -> resendCode(data.email, data.password))
+      .observeOn(AndroidSchedulers.mainThread())
+        // TODO: It might be a gotcha to have an empty subscription block, but I don't remember
+        // why. We should investigate.
+      .subscribe()
     );
+  }
+
+  public Observable<AccessTokenEnvelope> loginWithFacebook(@NonNull final String fbAccessToken, @NonNull final String code) {
+    return client.loginWithFacebook(fbAccessToken, code)
+      .compose(Transformers.pipeApiErrorsTo(tfaError));
   }
 
   private void success(@NonNull final AccessTokenEnvelope envelope) {

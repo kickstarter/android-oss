@@ -25,7 +25,11 @@ public final class MapUtils {
 
   @NonNull public static <S, T> Map<S, T> compact(@NonNull final Map<S, T> source) {
     final Map<S, T> output = new HashMap<>(source);
-    output.values().remove(null);
+    for (final S key : source.keySet()) {
+      if (source.get(key) == null) {
+        output.remove(key);
+      }
+    }
     return output;
   }
 

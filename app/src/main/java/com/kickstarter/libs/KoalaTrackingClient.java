@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.libs.utils.KoalaUtils;
 import com.kickstarter.libs.utils.MapUtils;
 import com.kickstarter.models.User;
@@ -21,11 +20,11 @@ public final class KoalaTrackingClient implements TrackingClientType {
 
   @NonNull private final MixpanelAPI mixpanel;
 
-  public KoalaTrackingClient(@ForApplication @NonNull final Context context) {
-    ((KSApplication) context.getApplicationContext()).component().inject(this);
+  public KoalaTrackingClient(@ForApplication @NonNull final Context context, @NonNull final CurrentUser currentUser) {
+    this.currentUser = currentUser;
 
     // Cache the most recent logged in user for default Koala properties.
-    currentUser.observable().subscribe(u -> loggedInUser = u);
+    this.currentUser.observable().subscribe(u -> loggedInUser = u);
 
     mixpanel = MixpanelAPI.getInstance(context, "koala");
   }

@@ -72,8 +72,8 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  Koala provideKoala(@ForApplication @NonNull final Context context) {
-    return new Koala(new KoalaTrackingClient(context));
+  Koala provideKoala(@ForApplication @NonNull final Context context, @NonNull final CurrentUser currentUser) {
+    return new Koala(new KoalaTrackingClient(context, currentUser));
   }
 
   @Provides

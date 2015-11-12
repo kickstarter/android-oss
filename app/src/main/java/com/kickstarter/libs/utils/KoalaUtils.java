@@ -88,9 +88,9 @@ public final class KoalaUtils {
   @NonNull public static Map<String, Object> userProperties(@NonNull final User user, @NonNull final String prefix) {
     final Map<String, Object> properties = new HashMap<String, Object>() {{
       put("uid", user.id());
-      put("user_backed_projects_count", user.backedProjectsCount());
-      put("user_launched_projects_count", user.launchedProjectsCount());
-      put("user_starred_projects_count", user.starredProjectsCount());
+      put("backed_projects_count", user.backedProjectsCount());
+      put("launched_projects_count", user.launchedProjectsCount());
+      put("starred_projects_count", user.starredProjectsCount());
     }};
 
     return MapUtils.prefixKeys(properties, prefix);

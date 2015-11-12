@@ -74,11 +74,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
 
       @Override
       public void onError(@NonNull final FacebookException error) {
-        if (error instanceof FacebookAuthorizationException) {
-          if (AccessToken.getCurrentAccessToken() != null) {
-            LoginManager.getInstance().logOut();
-          }
-        }
+        // continue, for now
       }
     });
 
@@ -137,6 +133,9 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
 
   @OnClick(R.id.facebook_login_button)
   public void facebookLoginClick() {
+    if (AccessToken.getCurrentAccessToken() != null) {
+      LoginManager.getInstance().logOut();
+    }
     LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "email"));
   }
 

@@ -123,6 +123,16 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
       .subscribe(koala::trackActivityTapped)
     );
 
+    addSubscription(
+      Observable.merge(
+        friendBackingClick,
+        projectStateChangedPositiveClick,
+        projectStateChangedClick,
+        projectUpdateProjectClick,
+        projectUpdateUpdateClick
+      ).subscribe(koala::trackActivityTapped)
+    );
+
     // kick off the first page of activities. should be last.
     params.onNext(ActivityFeedParams.builder().build());
     nextPage.onNext(null);

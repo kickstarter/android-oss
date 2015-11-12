@@ -72,13 +72,6 @@ public final class Koala {
     client.track("Project Comment View");
   }
 
-  // SESSION EVENTS
-  public void trackLoginRegisterTout(@Nullable final String intent) {
-    client.track("Application Login or Signup", new HashMap<String, Object>() {{
-      put("intent", intent);
-    }});
-  }
-
   // ACTIVITY
   public void trackActivityView(final int pageCount) {
     if (pageCount == 0) {
@@ -110,6 +103,13 @@ public final class Koala {
 
   public void trackActivityTapped(@NonNull final Activity activity) {
     client.track("Activity View Item", activityProperties(activity));
+  }
+
+  // SESSION EVENTS
+  public void trackLoginRegisterTout(@Nullable final String intent) {
+    client.track("Application Login or Signup", new HashMap<String, Object>() {{
+      put("intent", intent);
+    }});
   }
 
   public void trackLoginSuccess() {
@@ -194,26 +194,20 @@ public final class Koala {
     client.track("Checkout Cancel Share Sheet");
   }
 
-  public void trackCheckoutShowTwitterShareView() {
-    client.track("Checkout Show Share", new HashMap<String, Object>() {{
-      put("share_type", "twitter");
-    }});
-  }
-
   public void trackCheckoutShowFacebookShareView() {
     client.track("Checkout Show Share", new HashMap<String, Object>() {{
       put("share_type", "facebook");
     }});
   }
 
-  public void trackCheckoutCanceledShareView(@Nullable final String type) {
-    client.track("Checkout Cancel Share", new HashMap<String, Object>() {{
-      put("share_type", type);
+  public void trackCheckoutShowTwitterShareView() {
+    client.track("Checkout Show Share", new HashMap<String, Object>() {{
+      put("share_type", "twitter");
     }});
   }
 
-  public void trackCheckoutShareFinishedWithShareTypes() {
-    client.track("Checkout Share Finished"); // 99% sure we aren't actually ever sending "shareTypes", are we?
+  public void trackCheckoutShareFinished() {
+    client.track("Checkout Share Finished");
   }
 
   public void trackCheckoutFinishJumpToDiscovery() {
@@ -233,21 +227,27 @@ public final class Koala {
     client.track("Project Cancel Share Sheet");
   }
 
-  public void trackShowProjectShareView(@Nullable final String type) {
+  public void trackShowProjectFacebookShareView() {
     client.track("Project Show Share", new HashMap<String, Object>() {{
-      put("share_type", type);
+      put("share_type", "facebook");
     }});
   }
 
-  public void trackCancelProjectShareView(@Nullable final String type) {
-    client.track("Project Cancel Share", new HashMap<String, Object>() {{
-      put("share_type", type);
+  public void trackShowProjectTwitterShareView() {
+    client.track("Project Show Share", new HashMap<String, Object>() {{
+      put("share_type", "twitter");
     }});
   }
 
-  public void trackProjectShare(@Nullable final String type) {
+  public void trackProjectFacebookShare() {
     client.track("Project Share", new HashMap<String, Object>() {{
-      put("share_type", type);
+      put("share_type", "facebook");
+    }});
+  }
+
+  public void trackProjectTwitterShare() {
+    client.track("Project Share", new HashMap<String, Object>() {{
+      put("share_type", "twitter");
     }});
   }
 }

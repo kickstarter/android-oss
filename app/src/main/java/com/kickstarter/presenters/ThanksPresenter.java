@@ -40,6 +40,14 @@ public final class ThanksPresenter extends Presenter<ThanksActivity> implements 
   protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
+
+    addSubscription(shareClick.subscribe(__ -> koala.trackCheckoutShowShareSheet()));
+
+    addSubscription(twitterClick.subscribe(__ -> koala.trackCheckoutShowTwitterShareView()));
+
+    addSubscription(facebookClick.subscribe(__ -> koala.trackCheckoutShowFacebookShareView()));
+
+    addSubscription(projectCardMiniClick.subscribe(__ -> koala.trackCheckoutFinishJumpToProject()));
   }
 
   public void takeProject(@NonNull final Project project) {
@@ -99,18 +107,6 @@ public final class ThanksPresenter extends Presenter<ThanksActivity> implements 
           final Category category = vpc.second.second;
           view.showRecommended(projects, category);
         })
-    );
-
-    addSubscription(shareClick.subscribe(__ -> koala.trackCheckoutShowShareSheet()));
-
-    addSubscription(twitterClick.subscribe(__ -> koala.trackCheckoutShowTwitterShareView()));
-
-    addSubscription(facebookClick.subscribe(__ -> koala.trackCheckoutShowFacebookShareView()));
-
-    addSubscription(projectCardMiniClick
-      .subscribe(__ -> {
-        koala.trackCheckoutFinishJumpToProject();
-      })
     );
   }
 

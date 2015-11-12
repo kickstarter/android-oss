@@ -128,13 +128,16 @@ SignupPresenterErrors {
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     addSubscription(signupError.subscribe(__ -> koala.trackRegisterError()));
+
     addSubscription(sendNewsletters.subscribe(koala::trackSignupNewsletterToggle));
+
     addSubscription(signupSuccess
         .subscribe(__ -> {
           koala.trackLoginSuccess();
           koala.trackRegisterSuccess();
         })
     );
+
     koala.trackRegisterFormView();
   }
 

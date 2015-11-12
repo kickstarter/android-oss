@@ -103,9 +103,7 @@ public final class LoginPresenter extends Presenter<LoginActivity> implements Lo
         .subscribe(this::success)
     );
 
-    addSubscription(loginSuccessSubject
-        .subscribe(__ -> koala.trackLoginSuccess())
-    );
+    addSubscription(loginSuccessSubject.subscribe(__ -> koala.trackLoginSuccess()));
 
     addSubscription(invalidLoginError().mergeWith(genericLoginError())
         .subscribe(__ -> {

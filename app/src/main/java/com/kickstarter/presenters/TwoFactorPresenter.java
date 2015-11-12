@@ -107,17 +107,11 @@ public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> imple
         .subscribe()
     );
 
-    addSubscription(loginSuccess
-        .subscribe(__ -> koala.trackLoginSuccess())
-    );
+    addSubscription(loginSuccess.subscribe(__ -> koala.trackLoginSuccess()));
 
-    addSubscription(resendClick
-      .subscribe(__ -> koala.trackTwoFactorResendCode())
-    );
+    addSubscription(resendClick.subscribe(__ -> koala.trackTwoFactorResendCode()));
 
-    addSubscription(tfaError
-        .subscribe(__ -> koala.trackLoginError())
-    );
+    addSubscription(tfaError.subscribe(__ -> koala.trackLoginError()));
 
     koala.trackTwoFactorAuthView();
   }

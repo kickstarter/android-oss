@@ -27,6 +27,10 @@ public final class KoalaUtils {
     final Map<String, Object> properties = Collections.unmodifiableMap(new HashMap<String, Object>() {{
 
       put("staff_picks", params.staffPicks());
+      put("starred", params.starred());
+      put("nearby", params.nearby());
+      put("social", params.social());
+      put("term", params.term());
       put("sort", params.sort().toString());
       put("page", params.page());
       put("per_page", params.perPage());
@@ -36,6 +40,10 @@ public final class KoalaUtils {
         putAll(categoryProperties(category));
       }
 
+      Location location = params.location();
+      if (location != null) {
+        putAll(locationProperties(location));
+      }
     }});
 
     return MapUtils.prefixKeys(properties, prefix);
@@ -49,6 +57,25 @@ public final class KoalaUtils {
     final Map<String, Object> properties = new HashMap<String, Object>() {{
       put("id", String.valueOf(category.id()));
       put("name", String.valueOf(category.name()));
+    }};
+
+    return MapUtils.prefixKeys(properties, prefix);
+  }
+
+  @NonNull public static Map<String, Object> locationProperties(@NonNull final Location location) {
+    return locationProperties(location, "location_");
+  }
+
+  @NonNull public static Map<String, Object> locationProperties(@NonNull final Location location, @NonNull final String prefix) {
+    final Map<String, Object> properties = new HashMap<String, Object>() {{
+
+      put("id", location.id());
+      put("name", location.name());
+      put("displayable_name", location.displayableName());
+      put("city", location.city());
+      put("state", location.state());
+      put("country", location.country());
+      put("projects_count", location.projectsCount());
     }};
 
     return MapUtils.prefixKeys(properties, prefix);

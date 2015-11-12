@@ -36,6 +36,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
   @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
   @BindString(R.string.Not_implemented_yet) String notImplementedYetString;
   @BindString(R.string.Log_in_or_sign_up) String loginOrSignUpString;
+  @BindString(R.string.intent_login_type) String intentLoginTypeString;
 
   private boolean forward;
 
@@ -49,7 +50,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
 
     forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
 
-    presenter.inputs.reason(getIntent().getExtras().getString(getString(R.string.intent_login_type)));
+    presenter.inputs.reason(getIntent().getStringExtra(intentLoginTypeString));
   }
 
   @Override

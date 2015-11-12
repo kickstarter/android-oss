@@ -15,7 +15,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-final public class KoalaTrackingClient implements TrackingClientType {
+public final class KoalaTrackingClient implements TrackingClientType {
   @Inject CurrentUser currentUser;
   @Nullable private User loggedInUser;
 

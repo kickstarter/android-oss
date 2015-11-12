@@ -58,8 +58,8 @@ public final class SearchPresenter extends Presenter<SearchActivity> implements 
 
     final Observable<Boolean> isSearchEmpty = search.map(t -> t.length() == 0).share();
 
-    final Observable<Pair<DiscoveryParams, List<Project>>> popularParamsAndProjects = paramsAndProjects.first().share();
-    final Observable<Pair<DiscoveryParams, List<Project>>> searchParamsAndProjects = paramsAndProjects.skip(1).share();
+    final Observable<Pair<DiscoveryParams, List<Project>>> popularParamsAndProjects = paramsAndProjects.first();
+    final Observable<Pair<DiscoveryParams, List<Project>>> searchParamsAndProjects = paramsAndProjects.skip(1);
 
     // When the search field changes, start a new search and clear results
     addSubscription(

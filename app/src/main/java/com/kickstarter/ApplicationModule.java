@@ -72,7 +72,7 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  Koala provideKoala(@ForApplication @NonNull final Context context, @NonNull final ApiEndpoint endpoint) {
+  Koala provideKoala(@ForApplication @NonNull final Context context) {
     return new Koala(new KoalaTrackingClient(context));
   }
 

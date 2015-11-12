@@ -6,7 +6,6 @@
   tools:showIn="@layout/checkout_layout"
   style="@style/Toolbar"
   android:id="@+id/checkout_toolbar"
-  android:elevation="0dp"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp">
 

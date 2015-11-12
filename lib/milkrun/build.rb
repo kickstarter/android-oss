@@ -25,7 +25,7 @@ module Milkrun
     end
 
     def components
-      [build_type, 'pre21', audience]
+      [audience, 'pre21', build_type]
     end
 
     def path

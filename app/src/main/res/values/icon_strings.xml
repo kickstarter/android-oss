@@ -1,28 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <!-- Icon naming convention from https://www.google.com/design/icons/ -->
-  <string name="arrow_back_icon">arrow_back</string>
-  <string name="chevron_right_icon">chevron_right</string>
-  <string name="close_icon">close</string>
-  <string name="comment_icon">comment</string>
-  <string name="create_icon">create</string>
-  <string name="expand_more">expand_more</string>
-  <string name="favorite_icon">favorite</string>
-  <string name="flash_on_icon">flash_on</string>
-  <string name="forum_icon">forum</string>
-  <string name="local_offer_icon">local_offer</string>
-  <string name="location_on_icon">location_on</string>
-  <string name="lock_icon">lock</string>
-  <string name="mode_comment_icon">mode_comment</string>
-  <string name="more_vert_icon">more_vert</string>
-  <string name="person_add_icon">person_add</string>
-  <string name="play_circle_outline_icon">play_circle_outline</string>
-  <string name="search_icon">search</string>
-  <string name="share_icon">share</string>
-  <string name="speaker_notes_icon">speaker_notes</string>
-  <string name="star_icon">star</string>
-  <string name="trending_up_icon">trending_up</string>
-  <string name="whatshot_icon">whatshot</string>
+  <!--
+    Icons from: https://www.google.com/design/icons/
+    Unicode for an icon can be looked up at: https://github.com/google/material-design-icons/blob/03e5ebc7f534d034494c7abd5a80e97fad1e32b5/iconfont/codepoints
+  -->
+  <string name="arrow_back_icon">\ue5c4</string>
+  <string name="chevron_right_icon">\ue5cc</string>
+  <string name="close_icon">\ue5cd</string>
+  <string name="comment_icon">\ue0b9</string>
+  <string name="create_icon">\ue150</string>
+  <string name="expand_more">\ue5cf</string>
+  <string name="favorite_icon">\ue87d</string>
+  <string name="flash_on_icon">\ue3e7</string>
+  <string name="forum_icon">\ue0bf</string>
+  <string name="local_offer_icon">\ue54e</string>
+  <string name="location_on_icon">\ue0c8</string>
+  <string name="lock_icon">\ue897</string>
+  <string name="mode_comment_icon">\ue253</string>
+  <string name="more_vert_icon">\ue5d4</string>
+  <string name="person_add_icon">\ue7fe</string>
+  <string name="play_circle_outline_icon">\ue039</string>
+  <string name="search_icon">\ue8b6</string>
+  <string name="share_icon">\ue80d</string>
+  <string name="speaker_notes_icon">\ue8cd</string>
+  <string name="star_icon">\ue838</string>
+  <string name="trending_up_icon">\ue8e5</string>
+  <string name="whatshot_icon">\ue80e</string>
 
   <!-- ss-kickstarter icon names from https://www.kickstarter.com/admin/style_guide -->
   <string name="backer_icon">backer</string>

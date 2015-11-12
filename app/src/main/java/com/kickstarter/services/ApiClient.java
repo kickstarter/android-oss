@@ -14,6 +14,7 @@ import com.kickstarter.models.Empty;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apirequests.CommentBody;
+import com.kickstarter.services.apirequests.LoginWithFacebookBody;
 import com.kickstarter.services.apirequests.PushTokenBody;
 import com.kickstarter.services.apirequests.SignupBody;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
@@ -52,17 +53,19 @@ public final class ApiClient {
     service = apiService();
   }
 
-  // todo: bake in facebook intent=
   public Observable<AccessTokenEnvelope> facebookLogin(@NonNull final String fbAccessToken) {
-    return service.facebookLogin(fbAccessToken, "login");
+    return service.loginWithFacebook(LoginWithFacebookBody.builder().accessToken(fbAccessToken).build());
   }
 
   public Observable<AccessTokenEnvelope> facebookLogin(@NonNull final String fbAccessToken, @NonNull final String code) {
-    return service.facebookLogin(fbAccessToken, "login", code);
+    return service.loginWithFacebook(LoginWithFacebookBody.builder()
+      .accessToken(fbAccessToken)
+      .code(code)
+      .build());
   }
 
   public Observable<AccessTokenEnvelope> facebookRegister(@NonNull final String fbAccessToken, final boolean sendNewsletters) {
-    return service.facebookRegister(fbAccessToken, "register", sendNewsletters);
+    return service.registerWithFacebook(fbAccessToken, sendNewsletters);
   }
 
   public Observable<ActivityEnvelope> fetchActivities(@NonNull final ActivityFeedParams params) {

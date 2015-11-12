@@ -8,6 +8,7 @@ import com.kickstarter.models.Comment;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.apirequests.CommentBody;
+import com.kickstarter.services.apirequests.LoginWithFacebookBody;
 import com.kickstarter.services.apirequests.PushTokenBody;
 import com.kickstarter.services.apirequests.SignupBody;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
@@ -55,19 +56,6 @@ import rx.Observable;
   @GET("/v1/categories/{id}")
   Observable<Category> fetchCategory(@Path("id") long id);
 
-  // intent=login
-  @PUT("/v1/facebook/access_token")
-  Observable<AccessTokenEnvelope> facebookLogin(@Query("access_token") String fbAccessToken, @Query("intent") String intent);
-
-  @PUT("/v1/facebook/access_token")
-  Observable<AccessTokenEnvelope> facebookLogin(@Query("access_token") String fbAccessToken, @Query("intent") String intent,
-    @Query("code") String code);
-
-  // intent=register&send_newsletters=true/false
-  @PUT("/v1/facebook/access_token")
-  Observable<AccessTokenEnvelope> facebookRegister(@Query("access_token") String accessToken, @Query("intent") String intent,
-    @Query("send_newsletters") boolean sendNewsletters);
-
   @POST("/xauth/access_token")
   Observable<AccessTokenEnvelope> login(@Query("email") String email,
     @Query("password") String password);
@@ -76,6 +64,14 @@ import rx.Observable;
   Observable<AccessTokenEnvelope> login(@Query("email") String email,
     @Query("password") String password,
     @Query("code") String code);
+
+  @PUT("/v1/facebook/access_token?intent=login")
+  Observable<AccessTokenEnvelope> loginWithFacebook(@Body LoginWithFacebookBody body);
+
+  // send_newsletters=true/false
+  @PUT("/v1/facebook/access_token?intent=register")
+  Observable<AccessTokenEnvelope> registerWithFacebook(@Query("access_token") String accessToken,
+    @Query("send_newsletters") boolean sendNewsletters);
 
   @POST("/v1/projects/{param}/comments/")
   Observable<Comment> postProjectComment(@Path("param") String param, @Body CommentBody body);

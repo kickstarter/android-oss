@@ -35,12 +35,12 @@ public final class KoalaUtils {
       put("page", params.page());
       put("per_page", params.perPage());
 
-      Category category = params.category();
+      final Category category = params.category();
       if (category != null) {
         putAll(categoryProperties(category));
       }
 
-      Location location = params.location();
+      final Location location = params.location();
       if (location != null) {
         putAll(locationProperties(location));
       }

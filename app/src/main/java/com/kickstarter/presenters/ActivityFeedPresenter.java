@@ -139,8 +139,21 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
   @NonNull private Observable<List<Activity>> activitiesFromParams(@NonNull final ActivityFeedParams params) {
     return client.fetchActivities(params)
       .compose(Transformers.neverError())
-      .doOnNext(env -> this.params.onNext(ActivityFeedParams.fromUrl(env.urls().api().moreActivities())))
+      .doOnNext(this::keepMoreActivitiesUrl)
       .map(ActivityEnvelope::activities);
+  }
+
+  private void keepMoreActivitiesUrl(@NonNull final ActivityEnvelope envelope) {
+    final ActivityEnvelope.UrlsEnvelope urls = envelope.urls();
+    if (urls != null) {
+      final ActivityEnvelope.UrlsEnvelope.ApiEnvelope api = urls.api();
+      if (api != null) {
+        final String moreUrl = api.moreActivities();
+        if (moreUrl != null) {
+          this.params.onNext(ActivityFeedParams.fromUrl(moreUrl));
+        }
+      }
+    }
   }
 
   public void emptyActivityFeedDiscoverProjectsClicked(@NonNull final EmptyActivityFeedViewHolder viewHolder) {

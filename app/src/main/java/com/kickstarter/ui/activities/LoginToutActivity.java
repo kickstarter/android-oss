@@ -8,7 +8,9 @@ import android.support.annotation.Nullable;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
+import com.facebook.FacebookAuthorizationException;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.appevents.AppEventsLogger;
@@ -67,12 +69,16 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
 
       @Override
       public void onCancel() {
-
+        // continue
       }
 
       @Override
       public void onError(@NonNull final FacebookException error) {
-
+        if (error instanceof FacebookAuthorizationException) {
+          if (AccessToken.getCurrentAccessToken() != null) {
+            LoginManager.getInstance().logOut();
+          }
+        }
       }
     });
 

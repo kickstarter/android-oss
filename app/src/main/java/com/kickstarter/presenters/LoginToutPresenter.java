@@ -9,7 +9,13 @@ import com.facebook.login.LoginResult;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
+import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.presenters.errors.LoginToutPresenterErrors;
+import com.kickstarter.presenters.inputs.LoginToutPresenterInputs;
+import com.kickstarter.presenters.outputs.LoginToutPresenterOutputs;
+import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
+import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.activities.LoginToutActivity;
 
 import javax.inject.Inject;
@@ -17,11 +23,10 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-public final class LoginToutPresenter extends Presenter<LoginToutActivity> {
-  @Inject CurrentUser currentUser;
-
+public final class LoginToutPresenter extends Presenter<LoginToutActivity> implements LoginToutPresenterInputs,
+  LoginToutPresenterOutputs, LoginToutPresenterErrors {
   // INPUTS
-  private final PublishSubject<LoginResult> facebookLogin = PublishSubject.create();
+  private final PublishSubject<LoginResult> facebookLoginResult = PublishSubject.create();
 
   // OUTPUTS
   private final PublishSubject<Void> facebookLoginSuccess = PublishSubject.create();
@@ -29,14 +34,59 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> {
     return facebookLoginSuccess.asObservable();
   }
 
+  // ERRORS
+  private final PublishSubject<ErrorEnvelope> loginError = PublishSubject.create();
+  // todo: customize errorMessage, as it will be null
+  public final Observable<String> missingFacebookEmailError() {
+    return loginError
+      .filter(ErrorEnvelope::isMissingFacebookEmailError)
+      .map(ErrorEnvelope::errorMessage);
+  }
+
+  public final Observable<String> facebookInvalidAccessTokenError() {
+    return loginError
+      .filter(ErrorEnvelope::isFacebookInvalidAccessTokenError)
+      .map(ErrorEnvelope::errorMessage);
+  }
+
+  public final Observable<Void> tfaChallenge() {
+    return loginError
+      .filter(ErrorEnvelope::isTfaFailedError)
+      .map(__ -> null);
+  }
+
+  @Inject CurrentUser currentUser;
+  @Inject ApiClient client;
+
+  public final LoginToutPresenterInputs inputs = this;
+  public final LoginToutPresenterOutputs outputs = this;
+  public final LoginToutPresenterErrors errors = this;
+
   @Override
   protected void onCreate(@NonNull final Context context, @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
+
+    addSubscription(facebookLoginResult
+      .flatMap(this::submit)
+      .subscribe(this::success));
   }
 
-  public void facebookLogin(@NonNull final LoginResult result) {
-    facebookLogin.onNext(result);
+  @Override
+  public void facebookLoginResult(@NonNull final LoginResult result) {
+    // take facebook access token and hit /facebook endpoint
+    facebookLoginResult.onNext(result);
+  }
+
+  // 1. Success
+  private Observable<AccessTokenEnvelope> submit(@NonNull final LoginResult result) {
+    return client.facebookLogin(result.getAccessToken().getToken())
+      .compose(Transformers.pipeApiErrorsTo(loginError));
+  }
+
+  // 2. TFA
+  public Observable<AccessTokenEnvelope> tfaSubmit(@NonNull final String fbAccessToken, @NonNull final String code) {
+    return client.facebookLogin(fbAccessToken, code);
   }
 
   public void success(@NonNull final AccessTokenEnvelope envelope) {

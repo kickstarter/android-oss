@@ -57,14 +57,15 @@ import rx.Observable;
 
   // intent=login
   @PUT("/v1/facebook/access_token")
-  Observable<AccessTokenEnvelope> facebookLogin(@Query("access_token") String accessToken);
+  Observable<AccessTokenEnvelope> facebookLogin(@Query("access_token") String fbAccessToken, @Query("intent") String intent);
 
   @PUT("/v1/facebook/access_token")
-  Observable<AccessTokenEnvelope> facebookLogin(@Query("access_token") String accessToken, @Query("code") String code);
+  Observable<AccessTokenEnvelope> facebookLogin(@Query("access_token") String fbAccessToken, @Query("intent") String intent,
+    @Query("code") String code);
 
   // intent=register&send_newsletters=true/false
   @PUT("/v1/facebook/access_token")
-  Observable<AccessTokenEnvelope> facebookRegister(@Query("access_token") String accessToken,
+  Observable<AccessTokenEnvelope> facebookRegister(@Query("access_token") String accessToken, @Query("intent") String intent,
     @Query("send_newsletters") boolean sendNewsletters);
 
   @POST("/xauth/access_token")

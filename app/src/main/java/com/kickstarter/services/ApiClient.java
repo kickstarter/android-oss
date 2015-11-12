@@ -52,7 +52,18 @@ public final class ApiClient {
     service = apiService();
   }
 
-  // TODO: map null values back to an empty array so app doesn't crash on API responses
+  // todo: bake in facebook intent=
+  public Observable<AccessTokenEnvelope> facebookLogin(@NonNull final String fbAccessToken) {
+    return service.facebookLogin(fbAccessToken, "login");
+  }
+
+  public Observable<AccessTokenEnvelope> facebookLogin(@NonNull final String fbAccessToken, @NonNull final String code) {
+    return service.facebookLogin(fbAccessToken, "login", code);
+  }
+
+  public Observable<AccessTokenEnvelope> facebookRegister(@NonNull final String fbAccessToken, final boolean sendNewsletters) {
+    return service.facebookRegister(fbAccessToken, "register", sendNewsletters);
+  }
 
   public Observable<ActivityEnvelope> fetchActivities(@NonNull final ActivityFeedParams params) {
     return service.fetchActivities(params.categoryParams(), params.paginationParams());

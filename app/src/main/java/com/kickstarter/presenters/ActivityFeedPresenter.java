@@ -115,14 +115,6 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
     );
 
     // Track tapping on any of the activity items.
-    addSubscription(friendBackingClick
-      .mergeWith(projectStateChangedPositiveClick)
-      .mergeWith(projectStateChangedClick)
-      .mergeWith(projectUpdateProjectClick)
-      .mergeWith(projectUpdateUpdateClick)
-      .subscribe(koala::trackActivityTapped)
-    );
-
     addSubscription(
       Observable.merge(
         friendBackingClick,

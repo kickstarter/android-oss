@@ -73,9 +73,34 @@ public final class Transformers {
   }
 
   /**
-   * Waits until `until` emits one single item and then switches context to the source.
+   * Waits until `until` emits one single item and then switches context to the source. This
+   * can be useful to delay work until a user logs in:
+   *
+   * ```
+   * somethingThatRequiresAuth
+   *   .compose(waitUntil(currentUser.loggedInUser()))
+   *   .subscribe(show)
+   * ```
    */
   @NonNull public static <T, R> WaitUntilTransformer<T, R> waitUntil(@NonNull final Observable<R> until) {
     return new WaitUntilTransformer<>(until);
+  }
+
+  /**
+   * Converts an observable of any type into an observable of `null`s. This is useful for forcing
+   * Java's type system into knowing we have a stream of `Void`. Simply doing `.map(__ -> null)`
+   * is not enough since Java doesn't know if that is a `null` String, Integer, Void, etc.
+   *
+   * This transformer allows the following pattern:
+   *
+   * ```
+   * myObservable
+   *   .compose(takeWhen(click))
+   *   .compose(ignoreValues())
+   *   .subscribe(subject::onNext)
+   * ```
+   */
+  @NonNull public static <S> IgnoreValuesTransformer<S> ignoreValues() {
+    return new IgnoreValuesTransformer<>();
   }
 }

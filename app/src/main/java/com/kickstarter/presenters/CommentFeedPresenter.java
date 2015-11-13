@@ -4,12 +4,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
@@ -17,11 +17,10 @@ import com.kickstarter.presenters.errors.CommentFeedPresenterErrors;
 import com.kickstarter.presenters.inputs.CommentFeedPresenterInputs;
 import com.kickstarter.presenters.outputs.CommentFeedPresenterOutputs;
 import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.CommentFeedParams;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.activities.CommentFeedActivity;
-import com.kickstarter.ui.viewholders.EmptyCommentFeedViewHolder;
-import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,17 +29,25 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
+import rx.subjects.ReplaySubject;
 
 public final class CommentFeedPresenter extends Presenter<CommentFeedActivity> implements CommentFeedPresenterInputs, CommentFeedPresenterOutputs, CommentFeedPresenterErrors {
   // INPUTS
+  private final ReplaySubject<Project> initialProject = ReplaySubject.createWithSize(1);
+  public void initialProject(@NonNull final Project project) { initialProject.onNext(project); }
   private final PublishSubject<String> commentBody = PublishSubject.create();
-  private final PublishSubject<Void> contextClick = PublishSubject.create();
-  private final PublishSubject<Void> loginClick = PublishSubject.create();
+  private final PublishSubject<Void> nextPage = PublishSubject.create();
+  public void nextPage() { nextPage.onNext(null); }
 
   // OUTPUTS
   private final PublishSubject<Void> commentPosted = PublishSubject.create();
   public Observable<Void> commentPosted() { return commentPosted.asObservable(); }
+  private final PublishSubject<Void> showCommentDialog = PublishSubject.create();
+  public Observable<Void> showCommentDialog() { return showCommentDialog; }
+  private final BehaviorSubject<Boolean> showCommentButton = BehaviorSubject.create();
+  public Observable<Boolean> showCommentButton() { return showCommentButton; }
 
   // ERRORS
   private final PublishSubject<ErrorEnvelope> postCommentError = PublishSubject.create();
@@ -51,10 +58,9 @@ public final class CommentFeedPresenter extends Presenter<CommentFeedActivity> i
 
   private final PublishSubject<Void> loginSuccess = PublishSubject.create();
   private final PublishSubject<String> bodyOnPostClick = PublishSubject.create();
-  private final PublishSubject<Void> commentDialogShown = PublishSubject.create();
   private final PublishSubject<Boolean> commentIsPosting = PublishSubject.create();
-  private final PublishSubject<Project> initialProject = PublishSubject.create();
   private final PublishSubject<Void> refreshFeed = PublishSubject.create();
+  private final PublishSubject<CommentFeedParams> params = PublishSubject.create();
 
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
@@ -69,38 +75,18 @@ public final class CommentFeedPresenter extends Presenter<CommentFeedActivity> i
   }
 
   @Override
-  public void emptyCommentFeedLoginClicked(@NonNull final EmptyCommentFeedViewHolder viewHolder) {
-    loginClick.onNext(null);
-  }
-
-  @Override
-  public void projectContextClicked(@NonNull final ProjectContextViewHolder viewHolder) {
-    contextClick.onNext(null);
-  }
-
-  @Override
   protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     final Observable<Project> project = initialProject
       .compose(Transformers.takeWhen(loginSuccess))
-      .mergeWith(initialProject)
       .flatMap(client::fetchProject)
+      .mergeWith(initialProject)
       .share();
 
-    final Observable<List<Comment>> comments = project
-      .compose(Transformers.takeWhen(refreshFeed))
-      .switchMap(this::comments)
-      .map(CommentsEnvelope::comments)
-      .share();
-
-    final Observable<List<?>> viewCommentsProject = Observable.combineLatest(
-      Arrays.asList(viewSubject, comments, project),
-      Arrays::asList);
-
-    final Observable<Pair<CommentFeedActivity, Project>> viewAndProject = viewSubject
-      .compose(Transformers.combineLatestPair(project))
+    final Observable<List<Comment>> comments = refreshFeed
+      .switchMap(__ -> commentsWithPagination())
       .share();
 
     final Observable<Boolean> commentHasBody = commentBody
@@ -111,96 +97,106 @@ public final class CommentFeedPresenter extends Presenter<CommentFeedActivity> i
       .switchMap(pb -> postComment(pb.first, pb.second))
       .share();
 
-    addSubscription(postedComment
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::postCommentSuccess)
-    );
-
-    addSubscription(viewAndProject
+    addSubscription(project
         .compose(Transformers.takeWhen(loginSuccess))
-        .filter(vp -> vp.second.isBacking())
+        .filter(Project::isBacking)
         .take(1)
-        .map(vp -> vp.first)
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(CommentFeedActivity::showCommentDialog)
-    );
+        .compose(Transformers.ignoreValues())
+        .subscribe(showCommentDialog::onNext)
+      );
 
-    addSubscription(currentUser.observable()
-        .compose(Transformers.combineLatestPair(viewCommentsProject))
+    addSubscription(Observable.combineLatest(
+        currentUser.observable(),
+        viewSubject,
+        comments,
+        project,
+        Arrays::asList)
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(uvcp -> {
-          final User u = uvcp.first;
-          final CommentFeedActivity view = (CommentFeedActivity) uvcp.second.get(0);
-          final List<Comment> cs = (List<Comment>) uvcp.second.get(1);
-          final Project p = (Project) uvcp.second.get(2);
+          final User u = (User) uvcp.get(0);
+          final CommentFeedActivity view = (CommentFeedActivity) uvcp.get(1);
+          final List<Comment> cs = (List<Comment>) uvcp.get(2);
+          final Project p = (Project) uvcp.get(3);
           view.show(p, cs, u);
         })
     );
 
+    addSubscription(project
+        .map(Project::isBacking)
+        .distinctUntilChanged()
+        .subscribe(showCommentButton::onNext)
+    );
+
+    addSubscription(postedComment
+        .compose(Transformers.ignoreValues())
+        .subscribe(refreshFeed::onNext)
+    );
+
     addSubscription(viewSubject
-        .compose(Transformers.takeWhen(contextClick))
+        .compose(Transformers.combineLatestPair(commentHasBody))
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(CommentFeedActivity::onBackPressed)
+        .subscribe(ve -> ve.first.enablePostButton(ve.second))
     );
 
     addSubscription(viewSubject
-      .compose(Transformers.takeWhen(loginClick))
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(CommentFeedActivity::commentFeedLogin)
+        .compose(Transformers.takePairWhen(commentIsPosting))
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(vp -> vp.first.disablePostButton(vp.second))
     );
 
-    addSubscription(viewSubject
-      .compose(Transformers.combineLatestPair(commentHasBody))
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(ve -> ve.first.enablePostButton(ve.second))
+    addSubscription(project
+        .compose(Transformers.takeWhen(refreshFeed))
+        .map(p -> CommentFeedParams.builder().project(p).build())
+        .subscribe(p -> {
+          params.onNext(p);
+          nextPage();
+        })
     );
 
-    addSubscription(viewSubject
-      .compose(Transformers.takeWhen(refreshFeed))
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(CommentFeedActivity::dismissCommentDialog)
-    );
+    // Load the initial feed once we get a project.
+    addSubscription(project.take(1).subscribe(__ -> refreshFeed.onNext(null)));
+  }
 
-    addSubscription(viewSubject
-      .compose(Transformers.takePairWhen(commentIsPosting))
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.disablePostButton(vp.second))
-    );
+  private Observable<List<Comment>> commentsWithPagination() {
+    return params
+      .compose(Transformers.takeWhen(nextPage))
+      .concatMap(this::commentsFromParams)
+      .takeUntil(List::isEmpty)
+      .scan(ListUtils::concat);
+  }
+
+  private Observable<List<Comment>> commentsFromParams(@NonNull final CommentFeedParams params) {
+    return client.fetchProjectComments(params)
+      .compose(Transformers.neverError())
+      .doOnNext(env -> keepPaginationParams(params, env))
+      .map(CommentsEnvelope::comments);
+  }
+
+  private void keepPaginationParams(@NonNull final CommentFeedParams currentParams, @NonNull final CommentsEnvelope envelope) {
+    final CommentsEnvelope.UrlsEnvelope urls = envelope.urls();
+    if (urls != null) {
+      final CommentsEnvelope.UrlsEnvelope.ApiEnvelope api = urls.api();
+      if (api != null) {
+        final String moreUrl = api.moreComments();
+        if (moreUrl != null) {
+          this.params.onNext(currentParams.nextPageFromUrl(moreUrl));
+        }
+      }
+    }
   }
 
   private Observable<Comment> postComment(@NonNull final Project project, @NonNull final String body) {
     return client.postProjectComment(project, body)
       .compose(Transformers.pipeApiErrorsTo(postCommentError))
       .doOnSubscribe(() -> commentIsPosting.onNext(true))
-      .doOnCompleted(() -> commentPosted.onNext(null))
       .finallyDo(() -> commentIsPosting.onNext(false));
-  }
-
-  private Observable<CommentsEnvelope> comments(@NonNull final Project project) {
-    return client.fetchProjectComments(project)
-      .compose(Transformers.neverError());
-  }
-
-  // todo: add pagination to comments
-  public void initialize(@NonNull final Project initialProject) {
-    this.initialProject.onNext(initialProject);
-    refreshFeed.onNext(null);
   }
 
   public void postClick(@NonNull final String body) {
     bodyOnPostClick.onNext(body);
   }
 
-  public void takeCommentDialogShown() {
-    commentDialogShown.onNext(null);
-  }
-
-  private void postCommentSuccess(@Nullable final Comment comment) {
-    refreshFeed.onNext(null);
-  }
-
   public void takeLoginSuccess() {
     loginSuccess.onNext(null);
-    refreshFeed.onNext(null);
   }
 }

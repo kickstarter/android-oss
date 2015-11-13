@@ -8,7 +8,14 @@ import java.util.Map;
 public final class MapUtils {
   private MapUtils() {}
 
+  /**
+   * Returns a new map with all keys prefixed with another string.
+   */
   @NonNull public static <T> Map<String, T> prefixKeys(@NonNull final Map<String, T> source, @NonNull final String prefix) {
+    // Early out on a case that can come up often.
+    if (prefix.equals("")) {
+      return source;
+    }
 
     final Map<String, T> result = new HashMap<>();
 
@@ -17,5 +24,25 @@ public final class MapUtils {
     }
 
     return result;
+  }
+
+  /**
+   * Returns a new map with all `null` values removed.
+   */
+  @NonNull public static <S, T> Map<S, T> compact(@NonNull final Map<S, T> source) {
+    final Map<S, T> output = new HashMap<>(source);
+    for (final S key : source.keySet()) {
+      if (source.get(key) == null) {
+        output.remove(key);
+      }
+    }
+    return output;
+  }
+
+  /**
+   * Returns an empty map.
+   */
+  @NonNull public static <S, T> Map<S, T> empty() {
+    return new HashMap<>();
   }
 }

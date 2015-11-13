@@ -61,16 +61,16 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
   public final LoginToutPresenterOutputs outputs = this;
   public final LoginToutPresenterErrors errors = this;
 
+  public LoginToutPresenter() {
+    addSubscription(facebookLoginResult
+      .switchMap(this::loginWithFacebook)
+      .subscribe(this::loginWithFacebookSuccess));
+  }
+
   @Override
   protected void onCreate(@NonNull final Context context, @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
-  }
-
-  public LoginToutPresenter() {
-    addSubscription(facebookLoginResult
-      .switchMap(this::submit)
-      .subscribe(this::success));
   }
 
   @Override
@@ -78,12 +78,12 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
     facebookLoginResult.onNext(result);
   }
 
-  private Observable<AccessTokenEnvelope> submit(@NonNull final LoginResult result) {
+  private Observable<AccessTokenEnvelope> loginWithFacebook(@NonNull final LoginResult result) {
     return client.loginWithFacebook(result.getAccessToken().getToken())
       .compose(Transformers.pipeApiErrorsTo(loginError));
   }
 
-  public void success(@NonNull final AccessTokenEnvelope envelope) {
+  public void loginWithFacebookSuccess(@NonNull final AccessTokenEnvelope envelope) {
     currentUser.login(envelope.user(), envelope.accessToken());
     facebookLoginSuccess.onNext(null);
   }

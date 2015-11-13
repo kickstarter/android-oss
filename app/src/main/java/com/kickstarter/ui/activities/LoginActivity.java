@@ -70,8 +70,11 @@ public final class LoginActivity extends BaseActivity<LoginPresenter> {
   }
 
   private Observable<String> errorMessages() {
-    return presenter.errors.invalidLoginError().map(ObjectUtils.coalesceWith(loginDoesNotMatchString))
-      .mergeWith(presenter.errors.genericLoginError().map(ObjectUtils.coalesceWith(unableToLoginString)));
+    return presenter.errors.invalidLoginError()
+      .map(ObjectUtils.coalesceWith(loginDoesNotMatchString))
+      .mergeWith(presenter.errors.genericLoginError()
+        .map(ObjectUtils.coalesceWith(unableToLoginString))
+      );
   }
 
   @Override

@@ -20,7 +20,7 @@ import auto.parcel.AutoParcel;
 public abstract class ErrorEnvelope implements Parcelable {
   @Nullable public abstract List<String> errorMessages();
   @Nullable public abstract int httpCode();
-  public abstract String ksrCode();
+  @Nullable public abstract String ksrCode();
   @Nullable public abstract FacebookUser facebookUser();
 
   @AutoGson

@@ -194,7 +194,8 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
 
   public void startTwoFactorActivity(final boolean forward, final boolean isFacebookLogin) {
     final Intent intent = new Intent(this, TwoFactorActivity.class)
-      .putExtra(getString(R.string.intent_facebook_login), isFacebookLogin);
+      .putExtra(getString(R.string.intent_facebook_login), isFacebookLogin)
+      .putExtra(getString(R.string.intent_facebook_token), AccessToken.getCurrentAccessToken().getToken());
     if (forward) {
       startActivityForResult(intent, ActivityRequestCodes.LOGIN_ACTIVITY_TWO_FACTOR_ACTIVITY_FORWARD);
     } else {

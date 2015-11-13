@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
-import com.facebook.AccessToken;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
@@ -28,12 +27,17 @@ public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> imple
   TwoFactorPresenterOutputs, TwoFactorPresenterErrors {
 
   protected final static class TfaData {
-    @NonNull final String email;
-    @NonNull final String password;
+    @Nullable final String email;
+    @Nullable final String fbAccessToken;
+    final boolean isFacebookLogin;
+    @Nullable final String password;
     @NonNull final String code;
 
-    protected TfaData(@NonNull final String email, @NonNull final String password, @NonNull final String code) {
+    protected TfaData(@Nullable final String email, @Nullable final String fbAccessToken, final boolean isFacebookLogin,
+      @Nullable final String password, @NonNull final String code) {
       this.email = email;
+      this.fbAccessToken = fbAccessToken;
+      this.isFacebookLogin = isFacebookLogin;
       this.password = password;
       this.code = code;
     }
@@ -46,6 +50,7 @@ public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> imple
   // INPUTS
   private final PublishSubject<String> code = PublishSubject.create();
   private final PublishSubject<String> email = PublishSubject.create();
+  private final PublishSubject<String> fbAccessToken = PublishSubject.create();
   private final PublishSubject<Boolean> isFacebookLogin = PublishSubject.create();
   private final PublishSubject<Void> loginClick = PublishSubject.create();
   private final PublishSubject<String> password = PublishSubject.create();
@@ -91,6 +96,11 @@ public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> imple
   }
 
   @Override
+  public void fbAccessToken(@NonNull final String s) {
+    fbAccessToken.onNext(s);
+  }
+
+  @Override
   public void isFacebookLogin(final boolean b) {
     isFacebookLogin.onNext(b);
   }
@@ -120,33 +130,31 @@ public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> imple
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    final Observable<TfaData> tfaData = Observable.combineLatest(email, password, code, TfaData::new);
+    final Observable<TfaData> tfaData = Observable.combineLatest(email, fbAccessToken, isFacebookLogin, password, code,
+      TfaData::new);
     final Observable<Pair<String, String>> emailAndPassword = email
       .compose(Transformers.combineLatestPair(password));
-
-    final Observable<Pair<Void, Boolean>> clickAndSource = loginClick
-      .compose(Transformers.combineLatestPair(isFacebookLogin));
 
     addSubscription(tfaData
       .map(TfaData::isValid)
       .subscribe(this.formIsValid::onNext));
 
     addSubscription(tfaData
-      .compose(Transformers.takePairWhen(clickAndSource))
-      .filter(dataClickSource -> !dataClickSource.second.second)
-      .flatMap(dataClickSource -> submit(dataClickSource.first))
+      .compose(Transformers.takePairWhen(loginClick))
+      .filter(dc -> !dc.first.isFacebookLogin)
+      .flatMap(dc -> submit(dc.first))
       .subscribe(this::success));
 
     addSubscription(tfaData
-      .compose(Transformers.takePairWhen(clickAndSource))
-      .filter(dataClickSource -> dataClickSource.second.second)
-      .flatMap(dataClickSource -> loginWithFacebook(AccessToken.getCurrentAccessToken().getToken(), dataClickSource.first.code))
+      .compose(Transformers.takePairWhen(loginClick))
+      .filter(dc -> dc.first.isFacebookLogin)
+      .flatMap(dc -> loginWithFacebook(dc.first.fbAccessToken, dc.first.code))
       .subscribe(this::success));
 
     addSubscription(emailAndPassword
-        .compose(Transformers.takeWhen(resendClick))
-        .switchMap(ep -> resendCode(ep.first, ep.second))
-        .subscribe()
+      .compose(Transformers.takeWhen(resendClick))
+      .switchMap(ep -> resendCode(ep.first, ep.second))
+      .subscribe()
     );
   }
 

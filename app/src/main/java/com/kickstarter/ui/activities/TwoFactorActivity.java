@@ -44,6 +44,8 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
     loginToolbar.setTitle(verifyString);
 
     presenter.inputs.email(getIntent().getExtras().getString(getString(R.string.intent_email)));
+    presenter.inputs.isFacebookLogin(getIntent().getBooleanExtra(getString(R.string.intent_facebook_login), false));
+    presenter.inputs.fbAccessToken(getIntent().getExtras().getString(getString(R.string.intent_facebook_token)));
     presenter.inputs.password(getIntent().getExtras().getString(getString(R.string.intent_password)));
     final boolean forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
 
@@ -89,8 +91,6 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
 
   @OnClick(R.id.login_button)
   public void loginButtonOnClick() {
-    final boolean isFacebookLogin = isFacebookLogin();
-    presenter.inputs.isFacebookLogin(isFacebookLogin);
     presenter.inputs.loginClick();
   }
 
@@ -103,10 +103,6 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
         .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
       startActivity(intent);
     }
-  }
-
-  public boolean isFacebookLogin () {
-    return getIntent().getBooleanExtra(getString(R.string.intent_facebook_login), true);
   }
 
   public void setFormEnabled(final boolean enabled) {

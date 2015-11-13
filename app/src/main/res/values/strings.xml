@@ -207,7 +207,7 @@
   <string name="intent_project_param">com.kickstarter.kickstarter.intent_project_param</string>
   <string name="intent_share_type">"text/plain"</string>
   <string name="intent_toolbar_title">com.kickstarter.kickstarter.intent_toolbar_title</string>
-  <string name="intent_token">com.kickstarter.kickstarter.intent_token</string>
+  <string name="intent_facebook_token">com.kickstarter.kickstarter.intent_token</string>
   <string name="intent_url">com.kickstarter.kickstarter.intent_url</string>
 
   <!-- Save strings -->
@@ -220,5 +220,5 @@
   <string name="font_family_medium">sans-serif-medium</string>
 
   <!-- Koala strings -->
-  <string name="koala_endpoint">https://***REMOVED***/native/track</string>
+  <string name="koala_endpoint">***REMOVED***</string>
 </resources>

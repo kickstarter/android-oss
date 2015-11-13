@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
@@ -104,7 +103,8 @@ public final class LoginActivity extends BaseActivity<LoginPresenter> {
 
   @OnClick(R.id.forgot_your_password_text_view)
   public void forgotYourPasswordTextViewClick() {
-    displayToast(notImplementedYetString);
+    final Intent intent = new Intent(this, ForgotPasswordActivity.class);
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   @OnClick(R.id.login_button)

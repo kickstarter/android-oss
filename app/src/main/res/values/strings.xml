@@ -137,6 +137,7 @@
   <string name="project_was_suspended">%1$s was suspended.</string>
   <string name="Public_comment">Public comment</string>
   <string name="Resend">Resend</string>
+  <string name="Reset_my_password">Reset my password</string>
   <string name="Reward">Reward</string>
   <string name="reward_amount_description">%1$s - %2$s</string>
   <string name="secs">secs</string>
@@ -216,5 +217,5 @@
   <string name="font_family_medium">sans-serif-medium</string>
 
   <!-- Koala strings -->
-  <string name="koala_endpoint">https://***REMOVED***/native/track</string>
+  <string name="koala_endpoint">***REMOVED***</string>
 </resources>

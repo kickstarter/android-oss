@@ -13,6 +13,7 @@ import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.inputs.ActivityFeedPresenterInputs;
+import com.kickstarter.presenters.outputs.ActivityFeedPresenterOutputs;
 import com.kickstarter.services.ActivityFeedParams;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
@@ -32,7 +33,8 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity> implements ActivityFeedAdapter.Delegate, ActivityFeedPresenterInputs {
+public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity> implements ActivityFeedAdapter.Delegate,
+  ActivityFeedPresenterInputs, ActivityFeedPresenterOutputs {
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
 
@@ -46,25 +48,44 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
 
   private final PublishSubject<ActivityFeedParams> params = PublishSubject.create();
 
-  // Inputs
+  // INPUTS
   private final PublishSubject<Void> nextPage = PublishSubject.create();
   public void nextPage() {
     nextPage.onNext(null);
   }
+  private final PublishSubject<Void> refresh = PublishSubject.create();
+  public void refresh() {
+    refresh.onNext(null);
+  }
   public final ActivityFeedPresenterInputs inputs = this;
+
+  // OUTPUTS
+  private final PublishSubject<Boolean> isFetchingActivities = PublishSubject.create();
+  public final Observable<Boolean> isFetchingActivities() {
+    return isFetchingActivities.asObservable();
+  }
+  private final PublishSubject<List<Activity>> activities = PublishSubject.create();
+  public final Observable<List<Activity>> activities() {
+    return activities.asObservable();
+  }
+  public final ActivityFeedPresenterOutputs outputs = this;
 
   @Override
   protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    final Observable<List<Activity>> activities = activitiesWithPagination()
-      .compose(Transformers.waitUntil(currentUser.loggedInUser()));
+    final Observable<List<Activity>> _activities = activitiesWithPagination()
+      .compose(Transformers.waitUntil(currentUser.loggedInUser()))
+      .share();
 
-    addSubscription(viewSubject
-      .compose(Transformers.combineLatestPair(activities))
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(va -> va.first.showActivities(va.second)));
+    addSubscription(refresh
+      .subscribe(__ -> loadFirstPage())
+    );
+
+    addSubscription(_activities
+      .subscribe(a -> activities.onNext(a))
+    );
 
     addSubscription(viewSubject
       .compose(Transformers.combineLatestPair(currentUser.observable()))
@@ -107,7 +128,10 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showProjectUpdate(vp.second)));
 
-    // kick off the first page of activities
+    loadFirstPage();
+  }
+
+  private void loadFirstPage() {
     params.onNext(ActivityFeedParams.builder().build());
     nextPage.onNext(null);
   }
@@ -124,7 +148,9 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
     return client.fetchActivities(params)
       .compose(Transformers.neverError())
       .doOnNext(this::keepMoreActivitiesUrl)
-      .map(ActivityEnvelope::activities);
+      .map(ActivityEnvelope::activities)
+      .doOnSubscribe(() -> isFetchingActivities.onNext(true))
+      .finallyDo(() -> isFetchingActivities.onNext(false));
   }
 
   private void keepMoreActivitiesUrl(@NonNull final ActivityEnvelope envelope) {

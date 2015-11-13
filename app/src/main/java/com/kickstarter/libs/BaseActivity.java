@@ -11,14 +11,20 @@ import android.widget.Toast;
 
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.libs.utils.BundleUtils;
+import com.trello.rxlifecycle.ActivityEvent;
+import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.components.ActivityLifecycleProvider;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
 import rx.Subscription;
+import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
-public class BaseActivity<PresenterType extends Presenter> extends AppCompatActivity {
+public class BaseActivity<PresenterType extends Presenter> extends AppCompatActivity implements ActivityLifecycleProvider {
+  private final BehaviorSubject<ActivityEvent> lifecycle = BehaviorSubject.create();
   protected PresenterType presenter;
   private static final String PRESENTER_KEY = "presenter";
   private final List<Subscription> subscriptions = new ArrayList<>();
@@ -33,12 +39,28 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
     return presenter;
   }
 
+  @Override
+  public final Observable<ActivityEvent> lifecycle() {
+    return lifecycle.asObservable();
+  }
+
+  @Override
+  public final <T> Observable.Transformer<T, T> bindUntilEvent(final ActivityEvent event) {
+    return RxLifecycle.bindUntilActivityEvent(lifecycle, event);
+  }
+
+  @Override
+  public final <T> Observable.Transformer<T, T> bindToLifecycle() {
+    return RxLifecycle.bindActivity(lifecycle);
+  }
+
   @CallSuper
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Timber.d("onCreate %s", this.toString());
 
+    lifecycle.onNext(ActivityEvent.CREATE);
     fetchPresenter(savedInstanceState);
   }
 
@@ -47,6 +69,7 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
   protected void onStart() {
     super.onStart();
     Timber.d("onStart %s", this.toString());
+    lifecycle.onNext(ActivityEvent.START);
   }
 
   @CallSuper
@@ -54,6 +77,7 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
   protected void onResume() {
     super.onResume();
     Timber.d("onResume %s", this.toString());
+    lifecycle.onNext(ActivityEvent.RESUME);
 
     fetchPresenter(null);
     if (presenter != null) {
@@ -64,6 +88,7 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
   @CallSuper
   @Override
   protected void onPause() {
+    lifecycle.onNext(ActivityEvent.PAUSE);
     super.onPause();
     Timber.d("onPause %s", this.toString());
 
@@ -75,6 +100,7 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
   @CallSuper
   @Override
   protected void onStop() {
+    lifecycle.onNext(ActivityEvent.STOP);
     super.onStop();
     Timber.d("onStop %s", this.toString());
   }
@@ -82,6 +108,7 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
   @CallSuper
   @Override
   protected void onDestroy() {
+    lifecycle.onNext(ActivityEvent.DESTROY);
     super.onDestroy();
     Timber.d("onDestroy %s", this.toString());
 

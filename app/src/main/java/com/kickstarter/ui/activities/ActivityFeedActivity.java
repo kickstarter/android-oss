@@ -4,14 +4,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.jakewharton.rxbinding.support.v4.widget.RxSwipeRefreshLayout;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.Paginator;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
@@ -22,11 +25,13 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresPresenter(ActivityFeedPresenter.class)
 public final class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
   private ActivityFeedAdapter adapter;
   public @Bind(R.id.recycler_view) RecyclerView recyclerView;
+  protected @Bind(R.id.activity_feed_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
   private Paginator paginator;
 
   @Override
@@ -39,7 +44,26 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedPresent
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+    swipeRefreshLayout.setColorSchemeResources(R.color.green,
+      R.color.green_darken_10,
+      R.color.green_darken_20,
+      R.color.green_darken_10);
+
     paginator = new Paginator(recyclerView, presenter.inputs::nextPage);
+
+    RxSwipeRefreshLayout.refreshes(swipeRefreshLayout)
+      .compose(this.<Void>bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> presenter.inputs.refresh());
+
+    presenter.outputs.activities()
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::showActivities);
+
+    presenter.outputs.isFetchingActivities()
+      .filter(fetching -> !fetching)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> swipeRefreshLayout.setRefreshing(false));
   }
 
   @Override

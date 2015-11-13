@@ -77,10 +77,9 @@
   <color name="dark_gray_click">#1f000000</color>
   <color name="light_gray_click">#42ffffff</color>
 
-  <!-- Colors lightened/darkened
-    TODO: Write helper to do this at runtime, until then you can punch the base color into http://www.hexcolortool.com/
-    and click darken/lighten X% -->
-  <color name="green_darken_10">#12C55A</color>
+  <color name="green_darken_10">#FF12C55A</color>
+  <color name="green_darken_20">#FF00AB40</color>
+  <color name="green_lighten_10">#FF45F88D</color>
   <color name="blue_darken_10">#0087E6</color>
 
   <color name="dark_blue_gradient_start">#081245</color>

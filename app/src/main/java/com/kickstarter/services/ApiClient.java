@@ -58,10 +58,12 @@ public final class ApiClient {
   }
 
   public Observable<AccessTokenEnvelope> loginWithFacebook(@NonNull final String fbAccessToken, @NonNull final String code) {
-    return service.loginWithFacebook(LoginWithFacebookBody.builder()
-      .accessToken(fbAccessToken)
-      .code(code)
-      .build());
+    return service.loginWithFacebook(
+      LoginWithFacebookBody.builder()
+        .accessToken(fbAccessToken)
+        .code(code)
+        .build()
+    );
   }
 
   public Observable<AccessTokenEnvelope> registerWithFacebook(@NonNull final String fbAccessToken, final boolean sendNewsletters) {

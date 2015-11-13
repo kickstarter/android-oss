@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.view.View;
+import android.util.Pair;
 
 import com.facebook.AccessToken;
 import com.kickstarter.KSApplication;
@@ -22,7 +22,6 @@ import com.kickstarter.ui.activities.TwoFactorActivity;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
 public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> implements TwoFactorPresenterInputs,
@@ -116,6 +115,8 @@ public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> imple
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     final Observable<TfaData> tfaData = Observable.combineLatest(email, password, code, TfaData::new);
+    final Observable<Pair<String, String>> emailAndPassword = email
+      .compose(Transformers.combineLatestPair(password));
 
     addSubscription(tfaData
       .map(TfaData::isValid)
@@ -133,13 +134,10 @@ public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> imple
       .flatMap(dc -> loginWithFacebook(AccessToken.getCurrentAccessToken().getToken(), dc.first.code))
       .subscribe(this::success));
 
-    addSubscription(tfaData
-      .compose(Transformers.takeWhen(resendClick))
-      .switchMap(data -> resendCode(data.email, data.password))
-      .observeOn(AndroidSchedulers.mainThread())
-        // TODO: It might be a gotcha to have an empty subscription block, but I don't remember
-        // why. We should investigate.
-      .subscribe()
+    addSubscription(emailAndPassword
+        .compose(Transformers.takeWhen(resendClick))
+        .switchMap(ep -> resendCode(ep.first, ep.second))
+        .subscribe()
     );
   }
 

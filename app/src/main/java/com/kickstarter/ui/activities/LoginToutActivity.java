@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
-import com.facebook.FacebookAuthorizationException;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.appevents.AppEventsLogger;
@@ -64,7 +63,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
     LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
       @Override
       public void onSuccess(@NonNull final LoginResult result) {
-        presenter.inputs.facebookLoginResult(result);
+        presenter.inputs.facebookAccessToken(result.getAccessToken().getToken());
       }
 
       @Override

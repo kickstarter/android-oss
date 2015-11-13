@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.facebook.login.LoginResult;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
@@ -26,7 +25,7 @@ import rx.subjects.PublishSubject;
 public final class LoginToutPresenter extends Presenter<LoginToutActivity> implements LoginToutPresenterInputs,
   LoginToutPresenterOutputs, LoginToutPresenterErrors {
   // INPUTS
-  private final PublishSubject<LoginResult> facebookLoginResult = PublishSubject.create();
+  private final PublishSubject<String> facebookAccessToken = PublishSubject.create();
 
   // OUTPUTS
   private final PublishSubject<Void> facebookLoginSuccess = PublishSubject.create();
@@ -62,7 +61,7 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
   public final LoginToutPresenterErrors errors = this;
 
   public LoginToutPresenter() {
-    addSubscription(facebookLoginResult
+    addSubscription(facebookAccessToken
       .switchMap(this::loginWithFacebook)
       .subscribe(this::loginWithFacebookSuccess));
   }
@@ -74,12 +73,12 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
   }
 
   @Override
-  public void facebookLoginResult(@NonNull final LoginResult result) {
-    facebookLoginResult.onNext(result);
+  public void facebookAccessToken(@NonNull final String fbAccessToken) {
+    facebookAccessToken.onNext(fbAccessToken);
   }
 
-  private Observable<AccessTokenEnvelope> loginWithFacebook(@NonNull final LoginResult result) {
-    return client.loginWithFacebook(result.getAccessToken().getToken())
+  private Observable<AccessTokenEnvelope> loginWithFacebook(@NonNull final String fbAccessToken) {
+    return client.loginWithFacebook(fbAccessToken)
       .compose(Transformers.pipeApiErrorsTo(loginError));
   }
 

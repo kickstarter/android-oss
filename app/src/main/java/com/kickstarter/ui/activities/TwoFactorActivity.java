@@ -90,7 +90,8 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
   @OnClick(R.id.login_button)
   public void loginButtonOnClick() {
     final boolean isFacebookLogin = isFacebookLogin();
-    presenter.inputs.loginClick(isFacebookLogin);
+    presenter.inputs.isFacebookLogin(isFacebookLogin);
+    presenter.inputs.loginClick();
   }
 
   public void onSuccess(final boolean forward) {

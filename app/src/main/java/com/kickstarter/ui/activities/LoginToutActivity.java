@@ -101,8 +101,9 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
   private Observable<String> errorMessages() {
     return presenter.errors.missingFacebookEmailError()
       .map(ObjectUtils.coalesceWith(unableToLoginString))
-      .mergeWith(presenter.errors.facebookInvalidAccessTokenError()
-        .map(ObjectUtils.coalesceWith(unableToLoginString))
+      .mergeWith(
+        presenter.errors.facebookInvalidAccessTokenError()
+          .map(ObjectUtils.coalesceWith(unableToLoginString))
       );
   }
 

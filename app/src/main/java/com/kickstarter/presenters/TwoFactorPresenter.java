@@ -46,7 +46,8 @@ public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> imple
   // INPUTS
   private final PublishSubject<String> code = PublishSubject.create();
   private final PublishSubject<String> email = PublishSubject.create();
-  private final PublishSubject<Boolean> loginClick = PublishSubject.create();
+  private final PublishSubject<Boolean> isFacebookLogin = PublishSubject.create();
+  private final PublishSubject<Void> loginClick = PublishSubject.create();
   private final PublishSubject<String> password = PublishSubject.create();
   private final PublishSubject<Void> resendClick = PublishSubject.create();
 
@@ -90,6 +91,11 @@ public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> imple
   }
 
   @Override
+  public void isFacebookLogin(final boolean b) {
+    isFacebookLogin.onNext(b);
+  }
+
+  @Override
   public void code(@NonNull final String s) {
     code.onNext(s);
   }
@@ -100,8 +106,8 @@ public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> imple
   }
 
   @Override
-  public void loginClick(final boolean isFacebookLogin) {
-    loginClick.onNext(isFacebookLogin);
+  public void loginClick() {
+    loginClick.onNext(null);
   }
 
   @Override
@@ -118,20 +124,23 @@ public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> imple
     final Observable<Pair<String, String>> emailAndPassword = email
       .compose(Transformers.combineLatestPair(password));
 
+    final Observable<Pair<Void, Boolean>> clickAndSource = loginClick
+      .compose(Transformers.combineLatestPair(isFacebookLogin));
+
     addSubscription(tfaData
       .map(TfaData::isValid)
       .subscribe(this.formIsValid::onNext));
 
     addSubscription(tfaData
-      .compose(Transformers.takePairWhen(loginClick))
-      .filter(dc -> !dc.second)
-      .flatMap(dc -> submit(dc.first))
+      .compose(Transformers.takePairWhen(clickAndSource))
+      .filter(dataClickSource -> !dataClickSource.second.second)
+      .flatMap(dataClickSource -> submit(dataClickSource.first))
       .subscribe(this::success));
 
     addSubscription(tfaData
-      .compose(Transformers.takePairWhen(loginClick))
-      .filter(dc -> dc.second)
-      .flatMap(dc -> loginWithFacebook(AccessToken.getCurrentAccessToken().getToken(), dc.first.code))
+      .compose(Transformers.takePairWhen(clickAndSource))
+      .filter(dataClickSource -> dataClickSource.second.second)
+      .flatMap(dataClickSource -> loginWithFacebook(AccessToken.getCurrentAccessToken().getToken(), dataClickSource.first.code))
       .subscribe(this::success));
 
     addSubscription(emailAndPassword

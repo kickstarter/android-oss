@@ -83,12 +83,12 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
   }
 
   @OnClick(R.id.resend_button)
-  public void resendButtonOnClick(@NonNull final View view) {
-    presenter.inputs.resendClick(view);
+  public void resendButtonOnClick() {
+    presenter.inputs.resendClick();
   }
 
   @OnClick(R.id.login_button)
-  public void loginButtonOnClick(@NonNull final View view) {
+  public void loginButtonOnClick() {
     final boolean isFacebookLogin = isFacebookLogin();
     presenter.inputs.loginClick(isFacebookLogin);
   }

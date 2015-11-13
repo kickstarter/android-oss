@@ -49,7 +49,7 @@ public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> imple
   private final PublishSubject<String> email = PublishSubject.create();
   private final PublishSubject<Boolean> loginClick = PublishSubject.create();
   private final PublishSubject<String> password = PublishSubject.create();
-  private final PublishSubject<View> resendClick = PublishSubject.create();
+  private final PublishSubject<Void> resendClick = PublishSubject.create();
 
   // OUTPUTS
   private final PublishSubject<Boolean> formSubmitting = PublishSubject.create();
@@ -106,8 +106,8 @@ public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> imple
   }
 
   @Override
-  public void resendClick(@NonNull final View view) {
-    resendClick.onNext(view);
+  public void resendClick() {
+    resendClick.onNext(null);
   }
 
   @Override

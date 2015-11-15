@@ -15,6 +15,7 @@ import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.presenters.LoginPresenter;
 import com.kickstarter.ui.toolbars.LoginToolbar;
+import com.kickstarter.ui.views.GenericDialogAlert;
 
 import butterknife.Bind;
 import butterknife.BindString;
@@ -67,6 +68,11 @@ public final class LoginActivity extends BaseActivity<LoginPresenter> {
           onSuccess(forward);
         })
     );
+
+    final boolean confirmResetPassword = getIntent().getBooleanExtra(getString(R.string.intent_confirm_reset_password), false);
+    if (confirmResetPassword) {
+      showResetPasswordConfirmation(getIntent().getExtras().getString(getString(R.string.intent_email)));
+    }
   }
 
   private Observable<String> errorMessages() {
@@ -137,5 +143,12 @@ public final class LoginActivity extends BaseActivity<LoginPresenter> {
     } else {
       startActivity(intent);
     }
+  }
+
+  private void showResetPasswordConfirmation(@NonNull final String email) {
+    final String message = getResources().getString(R.string.We_sent_an_email_to_email_with_instructions_to_reset_your_password, email);
+    final GenericDialogAlert alert = new GenericDialogAlert(this);
+    alert.show();
+    alert.setMessage(message);
   }
 }

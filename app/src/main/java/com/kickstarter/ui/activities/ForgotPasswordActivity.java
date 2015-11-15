@@ -82,7 +82,9 @@ public final class ForgotPasswordActivity extends BaseActivity<ForgotPasswordPre
   }
 
   public void onResetSuccess() {
-    final Intent intent = new Intent(this, LoginActivity.class);
+    final Intent intent = new Intent(this, LoginActivity.class)
+      .putExtra(getString(R.string.intent_confirm_reset_password), true)
+      .putExtra(getString(R.string.intent_email), email.getText().toString());
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 

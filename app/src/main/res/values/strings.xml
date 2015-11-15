@@ -186,8 +186,7 @@
   <string name="Version_name">Version Name</string>
   <string name="Well_never_post_anything">We\'ll never post anything without your permission.</string>
   <string name="Well_remind_you_48_hours">We\'ll remind you 48 hours before this project ends!</string>
-  <string name="We_sent_an_email_to_email_with_instructions_to_reset_your_password."> 
-    We\'ve sent an email to %1$s with instructions to reset your password.</string>
+  <string name="We_sent_an_email_to_email_with_instructions_to_reset_your_password"> We\'ve sent an email to %1$s with instructions to reset your password.</string>
   <string name="When_you_back_a_project_or_follow_a_friend">
     When you back a project or follow a friend, their activity will appear here.
   </string>
@@ -201,6 +200,7 @@
   <!-- Intent strings. Requires package prefix:
     http://developer.android.com/reference/android/content/Intent.html#putExtra%28java.lang.String,%20boolean%29 -->
   <string name="intent_comment">com.kickstarter.kickstarter.intent_comment</string>
+  <string name="intent_confirm_reset_password">com.kickstarter.kickstarter.intent_confirm_reset_password</string>
   <string name="intent_discovery_params">com.kickstarter.kickstarter.intent_discovery_params</string>
   <string name="intent_email">com.kickstarter.kickstarter.intent_email</string>
   <string name="intent_forward">com.kickstarter.kickstarter.intent_forward</string>

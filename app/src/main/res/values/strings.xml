@@ -155,6 +155,8 @@
   <string name="Sign_up_or_log_in_with_your_Facebook_account">
     Sign up or log in with your Facebook account or email address below:
   </string>
+  <string name="Sorry_we_do_not_know_that_email_address_try_again">
+    Sorry, we don\'t know that email address. Try again?</string>
   <string name="Status_">Status: %1$s</string>
   <string name="Staff_Picks">Staff Picks</string>
   <string name="Starred">Starred</string>

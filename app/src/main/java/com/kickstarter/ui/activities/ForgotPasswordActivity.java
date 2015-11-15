@@ -43,9 +43,21 @@ public final class ForgotPasswordActivity extends BaseActivity<ForgotPasswordPre
     );
 
     addSubscription(
+      presenter.outputs.formSubmitting()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(this::setFormDisabled)
+    );
+
+    addSubscription(
       presenter.outputs.formIsValid()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(this::setFormEnabled)
+    );
+
+    addSubscription(
+      presenter.errors.resetError()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(this::displayToast)
     );
   }
 
@@ -67,7 +79,6 @@ public final class ForgotPasswordActivity extends BaseActivity<ForgotPasswordPre
   }
 
   public void onResetSuccess() {
-    //bump back to login and show popup on login activity //add extra?
     final Intent intent = new Intent(this, LoginActivity.class);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }

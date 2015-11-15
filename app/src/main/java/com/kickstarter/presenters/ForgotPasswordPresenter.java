@@ -11,9 +11,11 @@ import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.models.User;
+import com.kickstarter.presenters.errors.ForgotPasswordPresenterErrors;
 import com.kickstarter.presenters.inputs.ForgotPasswordPresenterInputs;
 import com.kickstarter.presenters.outputs.ForgotPasswordPresenterOutputs;
 import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.activities.ForgotPasswordActivity;
 
 import javax.inject.Inject;
@@ -22,7 +24,7 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 
 public final class ForgotPasswordPresenter extends Presenter<ForgotPasswordActivity> implements ForgotPasswordPresenterInputs,
-  ForgotPasswordPresenterOutputs {
+  ForgotPasswordPresenterOutputs, ForgotPasswordPresenterErrors {
 
   // INPUTS
   private final PublishSubject<String> email = PublishSubject.create();
@@ -42,11 +44,20 @@ public final class ForgotPasswordPresenter extends Presenter<ForgotPasswordActiv
     return formIsValid.asObservable();
   }
 
+  // ERRORS
+  private final PublishSubject<ErrorEnvelope> resetError = PublishSubject.create();
+  public final Observable<String> resetError() {
+    return resetError
+      .takeUntil(resetSuccess)
+      .map(ErrorEnvelope::errorMessage);
+  }
+
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
 
   public final ForgotPasswordPresenterInputs inputs = this;
   public final ForgotPasswordPresenterOutputs outputs = this;
+  public final ForgotPasswordPresenterErrors errors = this;
 
   @Override
   public void email(@NonNull final String s) {
@@ -83,10 +94,10 @@ public final class ForgotPasswordPresenter extends Presenter<ForgotPasswordActiv
   }
 
   private Observable<User> submitEmail(@NonNull final String email) {
-    return client.resetPassword(email);
-//      .compose(Transformers.pipeApiErrorsTo(resetError))
-//      .doOnSubscribe(() -> formSubmitting.onNext(true))
-//      .finallyDo(() -> formSubmitting.onNext(false));
+    return client.resetPassword(email)
+      .compose(Transformers.pipeApiErrorsTo(resetError))
+      .doOnSubscribe(() -> formSubmitting.onNext(true))
+      .finallyDo(() -> formSubmitting.onNext(false));
   }
 
   private void success(@NonNull User user) {

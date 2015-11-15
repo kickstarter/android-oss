@@ -12,6 +12,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.presenters.ForgotPasswordPresenter;
 import com.kickstarter.ui.toolbars.LoginToolbar;
+import com.kickstarter.ui.views.GenericDialogAlert;
 
 import butterknife.Bind;
 import butterknife.BindString;
@@ -27,6 +28,8 @@ public final class ForgotPasswordActivity extends BaseActivity<ForgotPasswordPre
   @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
 
   @BindString(R.string.Forgot_your_password) String forgotPasswordString;
+  @BindString(R.string.Sorry_we_do_not_know_that_email_address_try_again) String errorMessageString;
+  @BindString(R.string.Oops) String errorTitleString;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -57,7 +60,7 @@ public final class ForgotPasswordActivity extends BaseActivity<ForgotPasswordPre
     addSubscription(
       presenter.errors.resetError()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this::displayToast)
+        .subscribe(__ -> displayError())
     );
   }
 
@@ -89,5 +92,12 @@ public final class ForgotPasswordActivity extends BaseActivity<ForgotPasswordPre
 
   public void setFormDisabled(final boolean disabled) {
     setFormEnabled(!disabled);
+  }
+
+  private void displayError() {
+    final GenericDialogAlert alert = new GenericDialogAlert(this);
+    alert.show();
+    alert.setTitleText(errorTitleString);
+    alert.setMessage(errorMessageString);
   }
 }

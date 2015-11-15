@@ -111,6 +111,8 @@
   <string name="Not_implemented_yet">Not implemented yet, coming soon!</string>
   <string name="Nice_to_see_you_again">Nice to see you again.</string>
   <string name="Number_live_projects">%1$s live projects</string>
+  <string name="Okay">Okay</string>
+  <string name="Oops">Oops!</string>
   <string name="Open_downloads_folder">Open Downloads folder</string>
   <string name="A_request_has_been_made_to_download_the_latest_build">
     A request has been made to download the latest build. When the request has completed, open your downloads
@@ -184,6 +186,8 @@
   <string name="Version_name">Version Name</string>
   <string name="Well_never_post_anything">We\'ll never post anything without your permission.</string>
   <string name="Well_remind_you_48_hours">We\'ll remind you 48 hours before this project ends!</string>
+  <string name="We_sent_an_email_to_email_with_instructions_to_reset_your_password."> 
+    We\'ve sent an email to %1$s with instructions to reset your password.</string>
   <string name="When_you_back_a_project_or_follow_a_friend">
     When you back a project or follow a friend, their activity will appear here.
   </string>
@@ -219,5 +223,5 @@
   <string name="font_family_medium">sans-serif-medium</string>
 
   <!-- Koala strings -->
-  <string name="koala_endpoint">https://***REMOVED***/native/track</string>
+  <string name="koala_endpoint">***REMOVED***</string>
 </resources>

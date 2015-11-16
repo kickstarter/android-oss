@@ -140,15 +140,15 @@ public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> imple
       .subscribe(this.formIsValid::onNext));
 
     addSubscription(tfaData
-      .compose(Transformers.takePairWhen(loginClick))
-      .filter(dc -> !dc.first.isFacebookLogin)
-      .flatMap(dc -> submit(dc.first))
+      .compose(Transformers.takeWhen(loginClick))
+      .filter(data -> !data.isFacebookLogin)
+      .flatMap(this::submit)
       .subscribe(this::success));
 
     addSubscription(tfaData
-      .compose(Transformers.takePairWhen(loginClick))
-      .filter(dc -> dc.first.isFacebookLogin)
-      .flatMap(dc -> loginWithFacebook(dc.first.fbAccessToken, dc.first.code))
+      .compose(Transformers.takeWhen(loginClick))
+      .filter(data -> data.isFacebookLogin)
+      .flatMap(data -> loginWithFacebook(data.fbAccessToken, data.code))
       .subscribe(this::success));
 
     addSubscription(emailAndPassword

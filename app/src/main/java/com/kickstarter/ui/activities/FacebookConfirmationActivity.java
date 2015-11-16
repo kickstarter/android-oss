@@ -1,10 +1,12 @@
 package com.kickstarter.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.TextView;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.presenters.FacebookConfirmationPresenter;
@@ -23,6 +25,8 @@ public class FacebookConfirmationActivity extends BaseActivity<FacebookConfirmat
 
   protected @BindString(R.string.Sign_up_with_Facebook) String signUpWithFacebookString;
 
+  private boolean forward;
+
   @Override
   public void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -31,8 +35,12 @@ public class FacebookConfirmationActivity extends BaseActivity<FacebookConfirmat
     ButterKnife.bind(this);
     signUpWithFacebookToolbar.setTitle(signUpWithFacebookString);
 
+    forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
     final ErrorEnvelope.FacebookUser fbUser = getIntent().getParcelableExtra(getString(R.string.intent_facebook_user));
     emailTextView.setText(fbUser.email());
+
+    // todo: errors and outputs
+
   }
 
   @OnClick(R.id.create_new_account_button)
@@ -42,7 +50,15 @@ public class FacebookConfirmationActivity extends BaseActivity<FacebookConfirmat
 
   @OnClick(R.id.login_button)
   public void loginWithEmailClick() {
-    presenter.inputs.loginClick();
+    final Intent intent = new Intent(this, LoginActivity.class);
+    if (forward) {
+      intent.putExtra(getString(R.string.intent_forward), true);
+      startActivityForResult(intent,
+        ActivityRequestCodes.FACEBOOK_CONFIRMATION_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
+    } else {
+      startActivity(intent);
+    }
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   @Override

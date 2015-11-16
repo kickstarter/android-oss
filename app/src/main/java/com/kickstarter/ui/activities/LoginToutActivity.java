@@ -96,7 +96,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
     addSubscription(
       presenter.errors.tfaChallenge()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(__ -> startTwoFactorActivity(forward, true))
+        .subscribe(__ -> startTwoFactorActivity(true))
     );
 
     addSubscription(
@@ -207,21 +207,25 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
     }
   }
 
-  // call this if user does not exist
   public void startFacebookConfirmationActivity(@NonNull final ErrorEnvelope.FacebookUser facebookUser) {
     final Intent intent = new Intent(this, FacebookConfirmationActivity.class)
+      .putExtra(getString(R.string.intent_forward), forward)
       .putExtra(getString(R.string.intent_facebook_user), facebookUser);
-
-    // todo: forward()
+    if (forward) {
+      startActivityForResult(intent, ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_FACEBOOK_CONFIRMATION_ACTIVITY_FORWARD);
+    } else {
+      startActivity(intent);
+    }
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
-  public void startTwoFactorActivity(final boolean forward, final boolean isFacebookLogin) {
+  public void startTwoFactorActivity(final boolean isFacebookLogin) {
     final Intent intent = new Intent(this, TwoFactorActivity.class)
       .putExtra(getString(R.string.intent_facebook_login), isFacebookLogin)
+      .putExtra(getString(R.string.intent_forward), forward)
       .putExtra(getString(R.string.intent_facebook_token), AccessToken.getCurrentAccessToken().getToken());
     if (forward) {
-      startActivityForResult(intent, ActivityRequestCodes.LOGIN_ACTIVITY_TWO_FACTOR_ACTIVITY_FORWARD);
+      startActivityForResult(intent, ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_TWO_FACTOR_ACTIVITY_FORWARD);
     } else {
       startActivity(intent);
     }

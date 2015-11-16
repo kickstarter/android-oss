@@ -4,12 +4,18 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 
 import com.kickstarter.KSApplication;
+import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
+import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.presenters.errors.FacebookConfirmationPresenterErrors;
 import com.kickstarter.presenters.inputs.FacebookConfirmationPresenterInputs;
+import com.kickstarter.presenters.outputs.FacebookConfirmationPresenterOutputs;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
+import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.activities.FacebookConfirmationActivity;
 
 import javax.inject.Inject;
@@ -18,7 +24,7 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 
 public class FacebookConfirmationPresenter extends Presenter<FacebookConfirmationActivity> implements
-  FacebookConfirmationPresenterInputs {
+  FacebookConfirmationPresenterInputs, FacebookConfirmationPresenterOutputs, FacebookConfirmationPresenterErrors {
 
   // INPUTS
   private final PublishSubject<Void> createNewAccountClick = PublishSubject.create();
@@ -27,27 +33,33 @@ public class FacebookConfirmationPresenter extends Presenter<FacebookConfirmatio
   private final PublishSubject<Boolean> sendNewsletters = PublishSubject.create();
 
   // OUTPUTS
-  // registerSuccess
-  // isFormSubmitting
-  // isFormValid
+  private final PublishSubject<Void> signupSuccess = PublishSubject.create();
+  public Observable<Void> signupSuccess() {
+    return signupSuccess.asObservable();
+  }
+  private final PublishSubject<Boolean> isFormSubmitting = PublishSubject.create();
+  public Observable<Boolean> isFormSubmitting() {
+    return isFormSubmitting.asObservable();
+  }
+  private final PublishSubject<Boolean> isFormValid = PublishSubject.create();
+  public Observable<Boolean> isFormValid() {
+    return isFormValid.asObservable();
+  }
 
   // ERRORS
-  // registerError
+  private final PublishSubject<ErrorEnvelope> signupError = PublishSubject.create();
+  public Observable<String> signupError() {
+    return signupError
+      .takeUntil(signupSuccess)
+      .map(ErrorEnvelope::errorMessage);
+  }
 
   @Inject ApiClient client;
+  @Inject CurrentUser currentUser;
 
   public final FacebookConfirmationPresenterInputs inputs = this;
-
-  @Override
-  protected void onCreate(@NonNull final Context context, @Nullable Bundle savedInstanceState) {
-    super.onCreate(context, savedInstanceState);
-    ((KSApplication) context.getApplicationContext()).component().inject(this);
-  }
-
-  public Observable<AccessTokenEnvelope> createNewAccount(@NonNull final String fbAccessToken, final boolean sendNewsletters) {
-    return client.registerWithFacebook(fbAccessToken, sendNewsletters);
-    // add errors
-  }
+  public final FacebookConfirmationPresenterOutputs outputs = this;
+  public final FacebookConfirmationPresenterErrors errors = this;
 
   @Override
   public void createNewAccountClick() {
@@ -67,5 +79,35 @@ public class FacebookConfirmationPresenter extends Presenter<FacebookConfirmatio
   @Override
   public void sendNewsletters(final boolean b) {
     sendNewsletters.onNext(b);
+  }
+
+  public FacebookConfirmationPresenter() {
+    final Observable<Pair<String, Boolean>> tokenAndNewsletter = fbAccessToken
+      .compose(Transformers.combineLatestPair(sendNewsletters));
+
+    addSubscription(
+      tokenAndNewsletter
+        .compose(Transformers.takeWhen(createNewAccountClick))
+        .flatMap(tn -> createNewAccount(tn.first, tn.second))
+        .subscribe(this::success)
+    );
+  }
+
+  @Override
+  protected void onCreate(@NonNull final Context context, @Nullable Bundle savedInstanceState) {
+    super.onCreate(context, savedInstanceState);
+    ((KSApplication) context.getApplicationContext()).component().inject(this);
+  }
+
+  public Observable<AccessTokenEnvelope> createNewAccount(@NonNull final String fbAccessToken, final boolean sendNewsletters) {
+    return client.registerWithFacebook(fbAccessToken, sendNewsletters)
+      .compose(Transformers.pipeApiErrorsTo(signupError))
+      .doOnSubscribe(() -> isFormSubmitting.onNext(true))
+      .finallyDo(() -> isFormSubmitting.onNext(false));
+  }
+
+  private void success(@NonNull final AccessTokenEnvelope envelope) {
+    currentUser.login(envelope.user(), envelope.accessToken());
+    signupSuccess.onNext(null);
   }
 }

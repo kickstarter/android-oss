@@ -58,23 +58,6 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedPresent
       .subscribe(this::showActivities);
   }
 
-  protected void setupSwipeRefresh(@NonNull final SwipeRefreshLayout layout, @NonNull final Action0 refreshAction, @NonNull final Func0<Observable<Boolean>> isRefreshing) {
-    layout.setColorSchemeResources(R.color.green,
-      R.color.green_darken_10,
-      R.color.green_darken_20,
-      R.color.green_darken_10);
-
-    RxSwipeRefreshLayout.refreshes(layout)
-      .compose(this.<Void>bindToLifecycle())
-      .subscribe(__ -> refreshAction.call());
-
-    isRefreshing.call()
-      .filter(fetching -> !fetching)
-      .compose(this.bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(layout::setRefreshing);
-  }
-
   @Override
   protected void onDestroy() {
     super.onDestroy();

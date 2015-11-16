@@ -45,13 +45,13 @@ public final class ResetPasswordActivity extends BaseActivity<ResetPasswordPrese
     );
 
     addSubscription(
-      presenter.outputs.formSubmitting()
+      presenter.outputs.isFormSubmitting()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(this::setFormDisabled)
     );
 
     addSubscription(
-      presenter.outputs.formIsValid()
+      presenter.outputs.isFormValid()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(this::setFormEnabled)
     );
@@ -88,12 +88,12 @@ public final class ResetPasswordActivity extends BaseActivity<ResetPasswordPrese
     startActivityWithTransition(intent, R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
-  private void setFormEnabled(final boolean enabled) {
-    resetPasswordButton.setEnabled(enabled);
+  private void setFormEnabled(final boolean isEnabled) {
+    resetPasswordButton.setEnabled(isEnabled);
   }
 
-  private void setFormDisabled(final boolean disabled) {
-    setFormEnabled(!disabled);
+  private void setFormDisabled(final boolean isDisabled) {
+    setFormEnabled(!isDisabled);
   }
 
   private void displayError() {

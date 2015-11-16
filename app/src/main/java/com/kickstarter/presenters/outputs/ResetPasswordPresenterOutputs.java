@@ -4,6 +4,6 @@ import rx.Observable;
 
 public interface ResetPasswordPresenterOutputs {
   Observable<Void> resetSuccess();
-  Observable<Boolean> formSubmitting();
-  Observable<Boolean> formIsValid();
+  Observable<Boolean> isFormSubmitting();
+  Observable<Boolean> isFormValid();
 }

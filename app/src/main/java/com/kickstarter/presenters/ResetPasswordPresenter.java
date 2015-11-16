@@ -35,13 +35,13 @@ public final class ResetPasswordPresenter extends Presenter<ResetPasswordActivit
   public final Observable<Void> resetSuccess() {
     return resetSuccess.asObservable();
   }
-  private final PublishSubject<Boolean> formSubmitting = PublishSubject.create();
-  public final Observable<Boolean> formSubmitting() {
-    return formSubmitting.asObservable();
+  private final PublishSubject<Boolean> isFormSubmitting = PublishSubject.create();
+  public final Observable<Boolean> isFormSubmitting() {
+    return isFormSubmitting.asObservable();
   }
-  private final PublishSubject<Boolean> formIsValid = PublishSubject.create();
-  public final Observable<Boolean> formIsValid() {
-    return formIsValid.asObservable();
+  private final PublishSubject<Boolean> isFormValid = PublishSubject.create();
+  public final Observable<Boolean> isFormValid() {
+    return isFormValid.asObservable();
   }
 
   // ERRORS
@@ -73,7 +73,7 @@ public final class ResetPasswordPresenter extends Presenter<ResetPasswordActivit
 
     addSubscription(email
         .map(StringUtils::isEmail)
-        .subscribe(this.formIsValid::onNext)
+        .subscribe(this.isFormValid::onNext)
     );
 
     addSubscription(email
@@ -91,8 +91,8 @@ public final class ResetPasswordPresenter extends Presenter<ResetPasswordActivit
   private Observable<User> submitEmail(@NonNull final String email) {
     return client.resetPassword(email)
       .compose(Transformers.pipeApiErrorsTo(resetError))
-      .doOnSubscribe(() -> formSubmitting.onNext(true))
-      .finallyDo(() -> formSubmitting.onNext(false));
+      .doOnSubscribe(() -> isFormSubmitting.onNext(true))
+      .finallyDo(() -> isFormSubmitting.onNext(false));
   }
 
   private void success() {

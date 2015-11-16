@@ -166,6 +166,12 @@ public final class CommentFeedPresenter extends Presenter<CommentFeedActivity> i
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.disablePostButton(vp.second))
     );
+
+    addSubscription(initialProject
+      .compose(Transformers.takePairWhen(postedComment))
+      .subscribe(cp -> koala.trackProjectCommentCreate(cp.first, cp.second))
+    );
+    addSubscription(initialProject.take(1).subscribe(koala::trackProjectCommentsView));
   }
 
   private Observable<Comment> postComment(@NonNull final Project project, @NonNull final String body) {

@@ -73,7 +73,7 @@ public final class ForgotPasswordPresenter extends Presenter<ForgotPasswordActiv
   public ForgotPasswordPresenter() {
 
     addSubscription(email
-        .map(ForgotPasswordPresenter::isValid)
+        .map(StringUtils::isEmail)
         .subscribe(this.formIsValid::onNext)
     );
 
@@ -88,10 +88,6 @@ public final class ForgotPasswordPresenter extends Presenter<ForgotPasswordActiv
   public void onCreate(@NonNull final Context context, @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
-  }
-
-  private static boolean isValid(@NonNull final String email) {
-    return StringUtils.isEmail(email);
   }
 
   private Observable<User> submitEmail(@NonNull final String email) {

@@ -69,9 +69,11 @@ public final class LoginActivity extends BaseActivity<LoginPresenter> {
 
     final boolean confirmResetPassword = getIntent().getBooleanExtra(getString(R.string.intent_confirm_reset_password), false);
     if (confirmResetPassword) {
+      final String email = getIntent().getExtras().getString(getString(R.string.intent_email));
       final String message = getResources().getString(R.string.We_sent_an_email_to_email_with_instructions_to_reset_your_password,
-        getIntent().getExtras().getString(getString(R.string.intent_email)));
+        email);
       displayDialog(null, message);
+      emailEditText.setText(email);
     }
   }
 

@@ -37,6 +37,12 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
 
   // ERRORS
   private final PublishSubject<ErrorEnvelope> loginError = PublishSubject.create();
+  public final Observable<ErrorEnvelope.FacebookUser> confirmFacebookSignupError() {
+   return loginError
+     .filter(ErrorEnvelope::isConfirmFacebookSignupError)
+     .map(__ -> null);
+  }
+
   public final Observable<String> missingFacebookEmailError() {
     return loginError
       .filter(ErrorEnvelope::isMissingFacebookEmailError)

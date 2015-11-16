@@ -19,7 +19,7 @@ import auto.parcel.AutoParcel;
 @AutoParcel
 public abstract class ErrorEnvelope implements Parcelable {
   @Nullable public abstract List<String> errorMessages();
-  @Nullable public abstract int httpCode();
+  public abstract int httpCode();
   @Nullable public abstract String ksrCode();
   @Nullable public abstract FacebookUser facebookUser();
 
@@ -45,6 +45,7 @@ public abstract class ErrorEnvelope implements Parcelable {
     public abstract Builder toBuilder();
   }
 
+  public static final String CONFIRM_FACEBOOK_SIGNUP = "confirm_facebook_signup";
   public static final String INVALID_XAUTH_LOGIN = "invalid_xauth_login";
   public static final String TFA_FAILED = "tfa_failed";
   public static final String TFA_REQUIRED = "tfa_required";
@@ -67,6 +68,10 @@ public abstract class ErrorEnvelope implements Parcelable {
     }
 
     return null;
+  }
+
+  public boolean isConfirmFacebookSignupError() {
+    return ksrCode().equals(CONFIRM_FACEBOOK_SIGNUP);
   }
 
   public boolean isInvalidLoginError() {

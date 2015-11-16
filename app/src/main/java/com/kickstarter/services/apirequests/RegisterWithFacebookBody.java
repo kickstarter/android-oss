@@ -24,5 +24,4 @@ public abstract class RegisterWithFacebookBody implements Parcelable {
   }
 
   public abstract Builder toBuilder();
-
 }

@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.presenters.errors.LoginToutPresenterErrors;
@@ -55,6 +56,7 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
 
   @Inject CurrentUser currentUser;
   @Inject ApiClient client;
+  @Inject Logout logout;
 
   public final LoginToutPresenterInputs inputs = this;
   public final LoginToutPresenterOutputs outputs = this;
@@ -70,6 +72,9 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
   protected void onCreate(@NonNull final Context context, @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
+
+    // Clear any instance of a logged in user.
+    logout.execute();
   }
 
   @Override

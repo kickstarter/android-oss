@@ -97,10 +97,8 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
   @Override
   public void onBackPressed() {
     super.onBackPressed();
-    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
 
-    // Clear the Facebook user session since TFA was not completed.
-    LoginManager.getInstance().logOut();
+    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
   public void onSuccess(final boolean forward) {

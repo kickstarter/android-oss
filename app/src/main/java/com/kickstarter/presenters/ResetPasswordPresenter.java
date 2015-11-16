@@ -11,20 +11,20 @@ import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.models.User;
-import com.kickstarter.presenters.errors.ForgotPasswordPresenterErrors;
-import com.kickstarter.presenters.inputs.ForgotPasswordPresenterInputs;
-import com.kickstarter.presenters.outputs.ForgotPasswordPresenterOutputs;
+import com.kickstarter.presenters.errors.ResetPasswordPresenterErrors;
+import com.kickstarter.presenters.inputs.ResetPasswordPresenterInputs;
+import com.kickstarter.presenters.outputs.ResetPasswordPresenterOutputs;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
-import com.kickstarter.ui.activities.ForgotPasswordActivity;
+import com.kickstarter.ui.activities.ResetPasswordActivity;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-public final class ForgotPasswordPresenter extends Presenter<ForgotPasswordActivity> implements ForgotPasswordPresenterInputs,
-  ForgotPasswordPresenterOutputs, ForgotPasswordPresenterErrors {
+public final class ResetPasswordPresenter extends Presenter<ResetPasswordActivity> implements ResetPasswordPresenterInputs,
+  ResetPasswordPresenterOutputs, ResetPasswordPresenterErrors {
 
   // INPUTS
   private final PublishSubject<String> email = PublishSubject.create();
@@ -55,9 +55,9 @@ public final class ForgotPasswordPresenter extends Presenter<ForgotPasswordActiv
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
 
-  public final ForgotPasswordPresenterInputs inputs = this;
-  public final ForgotPasswordPresenterOutputs outputs = this;
-  public final ForgotPasswordPresenterErrors errors = this;
+  public final ResetPasswordPresenterInputs inputs = this;
+  public final ResetPasswordPresenterOutputs outputs = this;
+  public final ResetPasswordPresenterErrors errors = this;
 
   @Override
   public void email(@NonNull final String s) {
@@ -69,7 +69,7 @@ public final class ForgotPasswordPresenter extends Presenter<ForgotPasswordActiv
     resetPasswordClick.onNext(null);
   }
 
-  public ForgotPasswordPresenter() {
+  public ResetPasswordPresenter() {
 
     addSubscription(email
         .map(StringUtils::isEmail)

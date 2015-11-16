@@ -10,7 +10,7 @@ import android.widget.EditText;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
-import com.kickstarter.presenters.ForgotPasswordPresenter;
+import com.kickstarter.presenters.ResetPasswordPresenter;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 
 import butterknife.Bind;
@@ -20,8 +20,8 @@ import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import rx.android.schedulers.AndroidSchedulers;
 
-@RequiresPresenter(ForgotPasswordPresenter.class)
-public final class ForgotPasswordActivity extends BaseActivity<ForgotPasswordPresenter> {
+@RequiresPresenter(ResetPasswordPresenter.class)
+public final class ResetPasswordActivity extends BaseActivity<ResetPasswordPresenter> {
   @Bind (R.id.email) EditText email;
   @Bind (R.id.reset_password_button) Button resetPasswordButton;
   @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
@@ -34,7 +34,7 @@ public final class ForgotPasswordActivity extends BaseActivity<ForgotPasswordPre
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    setContentView(R.layout.forgot_password_layout);
+    setContentView(R.layout.reset_password_layout);
     ButterKnife.bind(this);
     loginToolbar.setTitle(forgotPasswordString);
 

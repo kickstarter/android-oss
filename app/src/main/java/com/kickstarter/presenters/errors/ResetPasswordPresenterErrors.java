@@ -2,6 +2,6 @@ package com.kickstarter.presenters.errors;
 
 import rx.Observable;
 
-public interface ForgotPasswordPresenterErrors {
+public interface ResetPasswordPresenterErrors {
   Observable<String> resetError();
 }

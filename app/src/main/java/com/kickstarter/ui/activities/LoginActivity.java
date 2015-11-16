@@ -109,7 +109,7 @@ public final class LoginActivity extends BaseActivity<LoginPresenter> {
 
   @OnClick(R.id.forgot_your_password_text_view)
   public void forgotYourPasswordTextViewClick() {
-    final Intent intent = new Intent(this, ForgotPasswordActivity.class);
+    final Intent intent = new Intent(this, ResetPasswordActivity.class);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 

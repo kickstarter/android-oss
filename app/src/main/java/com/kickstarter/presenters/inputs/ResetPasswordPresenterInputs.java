@@ -1,6 +1,6 @@
 package com.kickstarter.presenters.inputs;
 
-public interface ForgotPasswordPresenterInputs {
+public interface ResetPasswordPresenterInputs {
   void email(String __);
   void resetPasswordClick();
 }

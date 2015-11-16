@@ -30,10 +30,6 @@ public class KSDialog extends Dialog {
     this.message = message;
   }
 
-  /**
-   * Note, the "show" method triggers "onCreate".
-   * Title and message text should therefore be set AFTER calling show().
-   */
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);

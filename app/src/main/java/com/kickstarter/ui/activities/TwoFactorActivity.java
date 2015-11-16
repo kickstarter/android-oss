@@ -45,6 +45,12 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
     loginToolbar.setTitle(verifyString);
 
     addSubscription(
+      presenter.outputs.loginSuccess()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(__ -> onSuccess())
+    );
+
+    addSubscription(
       errorMessages()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(e -> displayDialog(errorTitleString, e))

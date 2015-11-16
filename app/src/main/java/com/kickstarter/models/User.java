@@ -13,14 +13,18 @@ public abstract class User implements Parcelable {
   public abstract Avatar avatar();
   public abstract long id();
   public abstract String name();
-  @Nullable public abstract String uid();
+  @Nullable public abstract Integer backedProjectsCount();
+  @Nullable public abstract Integer launchedProjectsCount();
+  @Nullable public abstract Integer starredProjectsCount();
 
   @AutoParcel.Builder
   public abstract static class Builder {
     public abstract Builder avatar(Avatar __);
     public abstract Builder id(long __);
     public abstract Builder name(String __);
-    public abstract Builder uid(String __);
+    public abstract Builder backedProjectsCount(Integer __);
+    public abstract Builder launchedProjectsCount(Integer __);
+    public abstract Builder starredProjectsCount(Integer __);
     public abstract User build();
   }
 

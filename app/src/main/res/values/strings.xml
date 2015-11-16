@@ -209,6 +209,7 @@
   <string name="intent_forward">com.kickstarter.kickstarter.intent_forward</string>
   <string name="intent_internal_build_envelope">com.kickstarter.kickstarter.intent_build_envelope</string>
   <string name="intent_help_type">com.kickstarter.kickstarter.intent_help_type</string>
+  <string name="intent_login_type">com.kickstarter.kickstarter.intent_login_type</string>
   <string name="intent_password">com.kickstarter.kickstarter.intent_password</string>
   <string name="intent_project">com.kickstarter.kickstarter.intent_project</string>
   <string name="intent_project_param">com.kickstarter.kickstarter.intent_project_param</string>

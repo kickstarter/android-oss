@@ -201,7 +201,8 @@ public final class ProjectActivity extends BaseActivity<ProjectPresenter> {
 
   public void startLoginToutActivity() {
     final Intent intent = new Intent(this, LoginToutActivity.class)
-      .putExtra(getString(R.string.intent_forward), true);
+      .putExtra(getString(R.string.intent_forward), true)
+      .putExtra(getString(R.string.intent_login_type), LoginToutActivity.REASON_STAR_PROJECT);
     startActivityForResult(intent, ActivityRequestCodes.PROJECT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
   }
 

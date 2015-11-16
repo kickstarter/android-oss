@@ -34,7 +34,7 @@ public final class LoginActivity extends BaseActivity<LoginPresenter> {
   @BindString(R.string.Login_does_not_match_any_of_our_records) String loginDoesNotMatchString;
   @BindString(R.string.Unable_to_login) String unableToLoginString;
   @BindString(R.string.Log_in) String loginString;
-  @BindString(R.string.Log_In_Error) String errorTitleString;
+  @BindString(R.string.Log_in_error) String errorTitleString;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {

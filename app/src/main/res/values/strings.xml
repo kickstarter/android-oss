@@ -12,6 +12,7 @@
   <string name="action_settings">Settings</string>
   <string name="All_gone">All gone</string>
   <string name="All_of_Category">All of %1$s</string>
+  <string name="Already_have_a_Kickstarter_account">Already have a Kickstarter account?</string>
   <string name="A_newer_build_is_available">A newer build is available. Download upgrade?</string>
   <string name="Are_those_new_shoes">
     Are those new shoes? If they’re not new, they look really shiny and beautiful.
@@ -24,6 +25,9 @@
   <string name="Backing">Backing</string>
   <string name="_backers">%1$s backers</string>
   <string name="backers">backers</string>
+  <string name="Before_we_make_your_new_account">
+    Before we make your new account, please double check that we got the right email address from your Facebook profile:
+  </string>
   <string name="Build">Build</string>
   <string name="Build_date">Build Date</string>
   <string name="Build_information">Build Information</string>
@@ -46,6 +50,7 @@
   <string name="Post_comment_error">Couldn’t post comment.</string>
   <string name="Comments">Comments</string>
   <string name="Cookie_Policy">Cookie Policy</string>
+  <string name="Create_new_account">Create new account</string>
   <string name="creator_launched_a_project">%1$s launched a project: %2$s</string>
   <string name="Created_by">Created by</string>
   <string name="Created_by_">Created by&lt;br>&lt;b>%1$s&lt;/b></string>
@@ -158,6 +163,7 @@
   <string name="Shipping_destinations">Shipping destinations</string>
   <string name="Sign_up">Sign up</string>
   <string name="Sign_up_with_email">Sign up with email</string>
+  <string name="Sign_up_with_Facebook">Sign up with Facebook</string>
   <string name="Sign_up_or_log_in_with_your_Facebook_account">
     Sign up or log in with your Facebook account or email address below:
   </string>
@@ -204,6 +210,7 @@
   <string name="intent_discovery_params">com.kickstarter.kickstarter.intent_discovery_params</string>
   <string name="intent_email">com.kickstarter.kickstarter.intent_email</string>
   <string name="intent_facebook_login">com.kickstarter.kickstarter.intent_facebook_login</string>
+  <string name="intent_facebook_user">com.kickstarter.kickstarter.intent_facebook_user</string>
   <string name="intent_forward">com.kickstarter.kickstarter.intent_forward</string>
   <string name="intent_internal_build_envelope">com.kickstarter.kickstarter.intent_build_envelope</string>
   <string name="intent_help_type">com.kickstarter.kickstarter.intent_help_type</string>
@@ -226,5 +233,5 @@
   <string name="font_family_medium">sans-serif-medium</string>
 
   <!-- Koala strings -->
-  <string name="koala_endpoint">https://***REMOVED***/native/track</string>
+  <string name="koala_endpoint">***REMOVED***</string>
 </resources>

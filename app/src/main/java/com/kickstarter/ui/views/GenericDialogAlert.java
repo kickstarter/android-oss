@@ -44,7 +44,7 @@ public class GenericDialogAlert extends Dialog {
     titleTextView.setText(title);
     titleTextView.setVisibility(TextView.VISIBLE);
 
-    LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)messageTextView.getLayoutParams();
+    final LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)messageTextView.getLayoutParams();
     params.topMargin = (int) getContext().getResources().getDimension(R.dimen.grid_1);
     messageTextView.setLayoutParams(params);
   }

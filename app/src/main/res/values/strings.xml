@@ -157,6 +157,7 @@
   <string name="Sign_up_or_log_in_with_your_Facebook_account">
     Sign up or log in with your Facebook account or email address below:
   </string>
+  <string name="Something_went_wrong_try_again_later">Something went wrong, please try again later.</string>
   <string name="Sorry_we_do_not_know_that_email_address_try_again">
     Sorry, we don\'t know that email address. Try again?</string>
   <string name="Status_">Status: %1$s</string>
@@ -223,5 +224,5 @@
   <string name="font_family_medium">sans-serif-medium</string>
 
   <!-- Koala strings -->
-  <string name="koala_endpoint">https://***REMOVED***/native/track</string>
+  <string name="koala_endpoint">***REMOVED***</string>
 </resources>

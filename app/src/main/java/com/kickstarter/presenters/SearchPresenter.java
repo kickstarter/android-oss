@@ -39,7 +39,7 @@ public final class SearchPresenter extends Presenter<SearchActivity> implements 
   @Override public Observable<Empty> clearData() { return clearData.asObservable(); }
   @Override public Observable<Pair<DiscoveryParams, List<Project>>> newData() { return newData.asObservable(); }
 
-  private final PublishSubject<DiscoveryParams> paramsSubject = PublishSubject.create();
+  private final PublishSubject<DiscoveryParams> params = PublishSubject.create();
 
   @Inject ApiClient apiClient;
 
@@ -48,12 +48,13 @@ public final class SearchPresenter extends Presenter<SearchActivity> implements 
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    final Observable<List<Project>> projects = paramsSubject
+    final Observable<List<Project>> projects = params
       .switchMap(this::projects)
       .share();
 
-    final Observable<Pair<DiscoveryParams, List<Project>>> paramsAndProjects = paramsSubject
-      .compose(Transformers.takePairWhen(projects));
+    final Observable<Pair<DiscoveryParams, List<Project>>> paramsAndProjects = params
+      .compose(Transformers.takePairWhen(projects))
+      .share();
 
     final Observable<Boolean> isSearchEmpty = search.map(t -> t.length() == 0).share();
 
@@ -65,7 +66,7 @@ public final class SearchPresenter extends Presenter<SearchActivity> implements 
       search
         .compose(Transformers.takeWhen(isSearchEmpty.filter(v -> !v)))
         .subscribe(text -> {
-          paramsSubject.onNext(DiscoveryParams.builder().term(text).build());
+          params.onNext(DiscoveryParams.builder().term(text).build());
           clearData.onNext(Empty.create());
         })
     );
@@ -90,8 +91,20 @@ public final class SearchPresenter extends Presenter<SearchActivity> implements 
         .subscribe(newData::onNext)
     );
 
+    // Track us viewing this page
+    koala.trackSearchView();
+
+    // Track search results and pagination
+    final Observable<Integer> pageCount = params
+      .switchMap(__ -> projects.debounce(2, TimeUnit.SECONDS).compose(Transformers.incrementalCount()));
+    final Observable<String> query = searchParamsAndProjects.map(sp -> sp.first.term());
+    addSubscription(query
+      .compose(Transformers.takePairWhen(pageCount))
+      .subscribe(qp -> koala.trackSearchResults(qp.first, qp.second))
+    );
+
     // Start with popular projects
-    paramsSubject.onNext(DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build());
+    params.onNext(DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build());
   }
 
   private Observable<List<Project>> projects(@NonNull final DiscoveryParams newParams) {

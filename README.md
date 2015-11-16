@@ -20,5 +20,5 @@
 
 # Next Steps
 
-Check the [wiki](http://kickstarter.wiki/pages/native.html#android-guides) for further
+Check the [wiki](https://kickstarter.wiki/pages/native.html#android) for further
 reading.

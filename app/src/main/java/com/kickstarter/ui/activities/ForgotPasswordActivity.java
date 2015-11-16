@@ -12,7 +12,6 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.presenters.ForgotPasswordPresenter;
 import com.kickstarter.ui.toolbars.LoginToolbar;
-import com.kickstarter.ui.views.GenericDialogAlert;
 
 import butterknife.Bind;
 import butterknife.BindString;
@@ -98,9 +97,6 @@ public final class ForgotPasswordActivity extends BaseActivity<ForgotPasswordPre
   }
 
   private void displayError() {
-    final GenericDialogAlert alert = new GenericDialogAlert(this);
-    alert.show();
-    alert.setTitleText(errorTitleString);
-    alert.setMessage(errorMessageString);
+    displayDialog(errorTitleString, errorMessageString);
   }
 }

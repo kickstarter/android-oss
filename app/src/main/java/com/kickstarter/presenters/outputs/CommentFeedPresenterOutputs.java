@@ -4,7 +4,7 @@ import rx.Observable;
 
 public interface CommentFeedPresenterOutputs {
   /**
-   * Emits a boolean that determines if the comment button shuld be visible.
+   * Emits a boolean that determines if the comment button should be visible.
    */
   Observable<Boolean> showCommentButton();
 

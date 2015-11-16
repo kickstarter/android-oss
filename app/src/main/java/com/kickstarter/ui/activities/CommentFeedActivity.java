@@ -19,7 +19,6 @@ import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.Paginator;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
-import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
@@ -77,6 +76,7 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedPresenter
 
     addSubscription(presenter.outputs.showCommentButton()
         .map(show -> show ? View.VISIBLE : View.GONE)
+        .observeOn(AndroidSchedulers.mainThread())
         .subscribe(commentButtonTextView::setVisibility)
     );
 
@@ -86,7 +86,7 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedPresenter
     );
 
     addSubscription(presenter.outputs.commentPosted()
-        .compose(Transformers.ignoreValues())
+        .observeOn(AndroidSchedulers.mainThread())
         .subscribe(__ -> dismissCommentDialog())
     );
   }

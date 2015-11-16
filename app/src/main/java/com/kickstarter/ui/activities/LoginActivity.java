@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
@@ -33,9 +32,9 @@ public final class LoginActivity extends BaseActivity<LoginPresenter> {
   @Bind(R.id.password) EditText passwordEditText;
 
   @BindString(R.string.Login_does_not_match_any_of_our_records) String loginDoesNotMatchString;
-  @BindString(R.string.Not_implemented_yet) String notImplementedYetString;
   @BindString(R.string.Unable_to_login) String unableToLoginString;
   @BindString(R.string.Log_in) String loginString;
+  @BindString(R.string.Log_in_error) String errorTitleString;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -50,7 +49,7 @@ public final class LoginActivity extends BaseActivity<LoginPresenter> {
     addSubscription(
       errorMessages()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this::displayToast)
+        .subscribe(e -> displayDialog(errorTitleString, e))
     );
 
     addSubscription(
@@ -68,6 +67,15 @@ public final class LoginActivity extends BaseActivity<LoginPresenter> {
           onSuccess(forward);
         })
     );
+
+    final boolean confirmResetPassword = getIntent().getBooleanExtra(getString(R.string.intent_confirm_reset_password), false);
+    if (confirmResetPassword) {
+      final String email = getIntent().getExtras().getString(getString(R.string.intent_email));
+      final String message = getResources().getString(R.string.We_sent_an_email_to_email_with_instructions_to_reset_your_password,
+        email);
+      displayDialog(null, message);
+      emailEditText.setText(email);
+    }
   }
 
   private Observable<String> errorMessages() {
@@ -104,7 +112,8 @@ public final class LoginActivity extends BaseActivity<LoginPresenter> {
 
   @OnClick(R.id.forgot_your_password_text_view)
   public void forgotYourPasswordTextViewClick() {
-    displayToast(notImplementedYetString);
+    final Intent intent = new Intent(this, ResetPasswordActivity.class);
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   @OnClick(R.id.login_button)

@@ -15,6 +15,7 @@ import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apirequests.CommentBody;
 import com.kickstarter.services.apirequests.PushTokenBody;
+import com.kickstarter.services.apirequests.ResetPasswordBody;
 import com.kickstarter.services.apirequests.SignupBody;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
@@ -103,6 +104,10 @@ public final class ApiClient {
 
   public @NonNull Observable<Empty> registerPushToken(@NonNull final String token) {
     return service.registerPushToken(PushTokenBody.builder().token(token).pushServer("development").build());
+  }
+
+  public @NonNull Observable<User> resetPassword(@NonNull final String email) {
+    return service.resetPassword(ResetPasswordBody.builder().email(email).build());
   }
 
   public Observable<AccessTokenEnvelope> signup(@NonNull final String name, @NonNull final String email,

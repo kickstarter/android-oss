@@ -21,6 +21,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.presenters.LoginToutPresenter;
+import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 import com.kickstarter.ui.views.LoginPopupMenu;
 
@@ -85,6 +86,12 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
         // continue, for now
       }
     });
+
+    addSubscription(
+      presenter.errors.confirmFacebookSignupError()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(this::startFacebookConfirmationActivity)
+    );
 
     addSubscription(
       presenter.errors.tfaChallenge()
@@ -198,6 +205,15 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
         .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
       startActivity(intent);
     }
+  }
+
+  // call this if user does not exist
+  public void startFacebookConfirmationActivity(@NonNull final ErrorEnvelope.FacebookUser facebookUser) {
+    final Intent intent = new Intent(this, FacebookConfirmationActivity.class)
+      .putExtra(getString(R.string.intent_facebook_user), facebookUser);
+
+    // todo: forward()
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   public void startTwoFactorActivity(final boolean forward, final boolean isFacebookLogin) {

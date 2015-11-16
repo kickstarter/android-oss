@@ -33,7 +33,6 @@ public final class LoginActivity extends BaseActivity<LoginPresenter> {
   @Bind(R.id.password) EditText passwordEditText;
 
   @BindString(R.string.Login_does_not_match_any_of_our_records) String loginDoesNotMatchString;
-  @BindString(R.string.Not_implemented_yet) String notImplementedYetString;
   @BindString(R.string.Unable_to_login) String unableToLoginString;
   @BindString(R.string.Log_in) String loginString;
 

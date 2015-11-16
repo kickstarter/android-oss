@@ -64,6 +64,13 @@ public final class ForgotPasswordActivity extends BaseActivity<ForgotPasswordPre
     );
   }
 
+  @Override
+  public void onBackPressed() {
+    super.onBackPressed();
+
+    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
+  }
+
   @OnTextChanged(R.id.email)
   void onEmailTextChanged(@NonNull final CharSequence email) {
     presenter.inputs.email(email.toString());
@@ -74,14 +81,7 @@ public final class ForgotPasswordActivity extends BaseActivity<ForgotPasswordPre
     presenter.inputs.resetPasswordClick();
   }
 
-  @Override
-  public void onBackPressed() {
-    super.onBackPressed();
-
-    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
-  }
-
-  public void onResetSuccess() {
+  private void onResetSuccess() {
     setFormEnabled(false);
     final Intent intent = new Intent(this, LoginActivity.class)
       .putExtra(getString(R.string.intent_confirm_reset_password), true)
@@ -89,11 +89,11 @@ public final class ForgotPasswordActivity extends BaseActivity<ForgotPasswordPre
     startActivityWithTransition(intent, R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
-  public void setFormEnabled(final boolean enabled) {
+  private void setFormEnabled(final boolean enabled) {
     resetPasswordButton.setEnabled(enabled);
   }
 
-  public void setFormDisabled(final boolean disabled) {
+  private void setFormDisabled(final boolean disabled) {
     setFormEnabled(!disabled);
   }
 

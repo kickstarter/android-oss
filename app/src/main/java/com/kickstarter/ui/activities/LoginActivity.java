@@ -139,5 +139,6 @@ public final class LoginActivity extends BaseActivity<LoginPresenter> {
     } else {
       startActivity(intent);
     }
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 }

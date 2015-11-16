@@ -35,6 +35,12 @@ import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresPresenter(LoginToutPresenter.class)
 public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
+  public static final String REASON_BACK_PROJECT = "pledge";
+  public static final String REASON_GENERIC = "generic";
+  public static final String REASON_LOGIN_TAB = "login_tab";
+  public static final String REASON_MESSAGE_CREATOR = "new_message";
+  public static final String REASON_STAR_PROJECT = "star";
+
   @Bind(R.id.disclaimer_text_view) TextView disclaimerTextView;
   @Bind(R.id.login_button) Button loginButton;
   @Bind(R.id.facebook_login_button) Button facebookButton;
@@ -45,6 +51,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
   @BindString(R.string.Not_implemented_yet) String notImplementedYetString;
   @BindString(R.string.Log_in_or_sign_up) String loginOrSignUpString;
   @BindString(R.string.Unable_to_login) String unableToLoginString;
+  @BindString(R.string.intent_login_type) String intentLoginTypeString;
 
   private CallbackManager callbackManager;
   private boolean forward;
@@ -58,6 +65,8 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
     loginToolbar.setTitle(loginOrSignUpString);
 
     forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
+
+    presenter.inputs.reason(getIntent().getStringExtra(intentLoginTypeString));
 
     callbackManager = CallbackManager.Factory.create();
     LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {

@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.kickstarter.R;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.models.Activity;
-import com.kickstarter.models.Project;
 import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
@@ -27,7 +26,7 @@ public final class ProjectUpdateViewHolder extends ActivityListViewHolder {
   private final Delegate delegate;
 
   public interface Delegate {
-    void projectUpdateProjectClicked(ProjectUpdateViewHolder viewHolder, Project project);
+    void projectUpdateProjectClicked(ProjectUpdateViewHolder viewHolder, Activity activity);
     void projectUpdateClicked(ProjectUpdateViewHolder viewHolder, Activity activity);
   }
 
@@ -54,7 +53,7 @@ public final class ProjectUpdateViewHolder extends ActivityListViewHolder {
 
   @OnClick(R.id.project_info)
   public void projectOnClick() {
-    delegate.projectUpdateProjectClicked(this, activity.project());
+    delegate.projectUpdateProjectClicked(this, activity);
   }
 
   @OnClick(R.id.update_info)

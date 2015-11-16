@@ -27,6 +27,7 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
   LoginToutPresenterOutputs, LoginToutPresenterErrors {
   // INPUTS
   private final PublishSubject<String> facebookAccessToken = PublishSubject.create();
+  private final PublishSubject<String> reason = PublishSubject.create();
 
   // OUTPUTS
   private final PublishSubject<Void> facebookLoginSuccess = PublishSubject.create();
@@ -72,6 +73,7 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
   protected void onCreate(@NonNull final Context context, @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
+    addSubscription(reason.take(1).subscribe(koala::trackLoginRegisterTout));
 
     // Clear any instance of a logged in user.
     logout.execute();
@@ -90,5 +92,10 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
   public void loginWithFacebookSuccess(@NonNull final AccessTokenEnvelope envelope) {
     currentUser.login(envelope.user(), envelope.accessToken());
     facebookLoginSuccess.onNext(null);
+  }
+
+  @Override
+  public void reason(@Nullable final String r) {
+    reason.onNext(r);
   }
 }

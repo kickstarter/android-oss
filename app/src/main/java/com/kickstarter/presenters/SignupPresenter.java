@@ -126,6 +126,19 @@ SignupPresenterErrors {
   public void onCreate(@NonNull final Context context, @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
+
+    addSubscription(signupError.subscribe(__ -> koala.trackRegisterError()));
+
+    addSubscription(sendNewsletters.subscribe(koala::trackSignupNewsletterToggle));
+
+    addSubscription(signupSuccess
+        .subscribe(__ -> {
+          koala.trackLoginSuccess();
+          koala.trackRegisterSuccess();
+        })
+    );
+
+    koala.trackRegisterFormView();
   }
 
   private Observable<AccessTokenEnvelope> submit(@NonNull final SignupData data) {

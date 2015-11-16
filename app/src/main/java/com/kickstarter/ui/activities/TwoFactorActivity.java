@@ -47,12 +47,11 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
     presenter.inputs.isFacebookLogin(getIntent().getBooleanExtra(getString(R.string.intent_facebook_login), false));
     presenter.inputs.fbAccessToken(getIntent().getExtras().getString(getString(R.string.intent_facebook_token)));
     presenter.inputs.password(getIntent().getExtras().getString(getString(R.string.intent_password)));
-    final boolean forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
 
     addSubscription(
       presenter.outputs.tfaSuccess()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(__ -> onSuccess(forward))
+        .subscribe(__ -> onSuccess())
     );
 
     addSubscription(
@@ -84,6 +83,10 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
     presenter.inputs.code(code.toString());
   }
 
+  public boolean forward() {
+    return getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
+  }
+
   @OnClick(R.id.resend_button)
   public void resendButtonOnClick() {
     presenter.inputs.resendClick();
@@ -101,8 +104,8 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
-  public void onSuccess(final boolean forward) {
-    if (forward) {
+  public void onSuccess() {
+    if (forward()) {
       setResult(Activity.RESULT_OK);
       finish();
     } else {

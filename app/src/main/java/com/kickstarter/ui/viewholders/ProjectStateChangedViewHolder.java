@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.models.Activity;
-import com.kickstarter.models.Project;
 import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
@@ -22,7 +21,7 @@ public final class ProjectStateChangedViewHolder extends ActivityListViewHolder 
   private final Delegate delegate;
 
   public interface Delegate {
-    void projectStateChangedClicked(ProjectStateChangedViewHolder viewHolder, Project project);
+    void projectStateChangedClicked(ProjectStateChangedViewHolder viewHolder, Activity activity);
   }
 
   public ProjectStateChangedViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
@@ -61,6 +60,6 @@ public final class ProjectStateChangedViewHolder extends ActivityListViewHolder 
 
   @OnClick(R.id.card_view)
   public void stateChangeCardClick() {
-    delegate.projectStateChangedClicked(this, activity.project());
+    delegate.projectStateChangedClicked(this, activity);
   }
 }

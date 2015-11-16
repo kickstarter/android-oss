@@ -156,6 +156,14 @@ public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> imple
       .switchMap(ep -> resendCode(ep.first, ep.second))
       .subscribe()
     );
+
+    addSubscription(tfaSuccess.subscribe(__ -> koala.trackLoginSuccess()));
+
+    addSubscription(resendClick.subscribe(__ -> koala.trackTwoFactorResendCode()));
+
+    addSubscription(tfaError.subscribe(__ -> koala.trackLoginError()));
+
+    koala.trackTwoFactorAuthView();
   }
 
   public Observable<AccessTokenEnvelope> loginWithFacebook(@NonNull final String fbAccessToken, @NonNull final String code) {

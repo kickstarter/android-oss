@@ -1,6 +1,7 @@
 package com.kickstarter.models;
 
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
 import com.kickstarter.libs.qualifiers.AutoGson;
 
@@ -9,13 +10,13 @@ import auto.parcel.AutoParcel;
 @AutoGson
 @AutoParcel
 public abstract class Location implements Parcelable {
-  public abstract String displayableName();
   public abstract long id();
+  public abstract String displayableName();
   public abstract String name();
-  public abstract String city();
+  @Nullable public abstract String city();
   public abstract String state();
   public abstract String country();
-  public abstract int projectsCount();
+  @Nullable public abstract int projectsCount();
 
   @AutoParcel.Builder
   public abstract static class Builder {

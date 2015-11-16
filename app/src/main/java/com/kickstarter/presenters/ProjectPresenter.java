@@ -28,6 +28,7 @@ import rx.subjects.PublishSubject;
 public final class ProjectPresenter extends Presenter<ProjectActivity> implements ProjectAdapter.Delegate {
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
+
   private final PublishSubject<Void> backProjectClick = PublishSubject.create();
   private final PublishSubject<Void> blurbClick = PublishSubject.create();
   private final PublishSubject<Void> commentsClick = PublishSubject.create();
@@ -155,6 +156,13 @@ public final class ProjectPresenter extends Presenter<ProjectActivity> implement
       .compose(Transformers.takeWhen(viewPledgeClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startViewPledgeActivity(vp.second)));
+
+    addSubscription(projectOnUserChangeStar.mergeWith(starredProjectOnLoginSuccess)
+      .subscribe(koala::trackProjectStar));
+
+    addSubscription(shareClick.subscribe(__ -> koala.trackShowProjectShareSheet()));
+
+    koala.trackProjectShow();
   }
 
   public void initialize(@Nullable final Project initialProject, @Nullable final String param) {

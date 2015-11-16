@@ -58,7 +58,8 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedPresent
 
   public void activityFeedLogin() {
     final Intent intent = new Intent(this, LoginToutActivity.class)
-      .putExtra(getString(R.string.intent_forward), true);
+      .putExtra(getString(R.string.intent_forward), true)
+      .putExtra(getString(R.string.intent_login_type), LoginToutActivity.REASON_GENERIC);
     startActivityForResult(intent, ActivityRequestCodes.ACTIVITY_FEED_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
   }
 

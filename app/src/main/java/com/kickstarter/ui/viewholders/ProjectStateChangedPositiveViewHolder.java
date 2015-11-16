@@ -12,7 +12,6 @@ import com.kickstarter.R;
 import com.kickstarter.libs.Money;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.models.Activity;
-import com.kickstarter.models.Project;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
@@ -37,7 +36,7 @@ public final class ProjectStateChangedPositiveViewHolder extends ActivityListVie
   private final Delegate delegate;
 
   public interface Delegate {
-    void projectStateChangedPositiveClicked(ProjectStateChangedPositiveViewHolder viewHolder, Project project);
+    void projectStateChangedPositiveClicked(ProjectStateChangedPositiveViewHolder viewHolder, Activity activity);
   }
 
   public ProjectStateChangedPositiveViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
@@ -94,6 +93,6 @@ public final class ProjectStateChangedPositiveViewHolder extends ActivityListVie
 
   @OnClick(R.id.card_view)
   public void onClick() {
-    delegate.projectStateChangedPositiveClicked(this, activity.project());
+    delegate.projectStateChangedPositiveClicked(this, activity);
   }
 }

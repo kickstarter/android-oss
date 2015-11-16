@@ -103,4 +103,12 @@ public final class Transformers {
   @NonNull public static <S> IgnoreValuesTransformer<S> ignoreValues() {
     return new IgnoreValuesTransformer<>();
   }
+
+  /**
+   * Emits the number of times the source has emitted for every emission of the source. The
+   * first emitted value will be `1`.
+   */
+  @NonNull public static <T> IncrementalCountTransformer<T> incrementalCount() {
+    return new IncrementalCountTransformer<>();
+  }
 }

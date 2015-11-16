@@ -86,6 +86,12 @@ public final class ResetPasswordPresenter extends Presenter<ResetPasswordActivit
   public void onCreate(@NonNull final Context context, @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
+
+    addSubscription(resetError.subscribe(__ -> koala.trackResetPasswordError()));
+
+    addSubscription(resetSuccess.subscribe(__ -> koala.trackResetPasswordSuccess()));
+
+    koala.trackResetPasswordFormView();
   }
 
   private Observable<User> submitEmail(@NonNull final String email) {

@@ -140,15 +140,15 @@ public final class Koala {
     client.track("New User");
   }
 
-  public void trackForgotPasswordFormView() {
+  public void trackResetPasswordFormView() {
     client.track("Forgot Password View");
   }
 
-  public void trackForgotPasswordRequestSuccess() {
+  public void trackResetPasswordSuccess() {
     client.track("Forgot Password Requested");
   }
 
-  public void trackForgotPasswordRequestFailed() {
+  public void trackResetPasswordError() {
     client.track("Forgot Password Errored");
   }
 

@@ -6,14 +6,12 @@
 
       <item android:state_enabled="true">
         <shape>
-          <corners android:radius="@dimen/button_corner_radius"/>
           <solid android:color="@color/green" />
         </shape>
       </item>
 
       <item android:state_enabled="false">
         <shape>
-          <corners android:radius="@dimen/button_corner_radius"/>
           <solid android:color="@color/green_alpha_50" />
         </shape>
       </item>

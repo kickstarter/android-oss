@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
@@ -38,6 +37,7 @@ public final class SignupActivity extends BaseActivity<SignupPresenter> {
   @Bind(R.id.disclaimer) TextView disclaimerTextView;
 
   @BindString(R.string.Sign_up) String signUpString;
+  @BindString(R.string.Sign_up_error) String errorTitleString;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -70,7 +70,7 @@ public final class SignupActivity extends BaseActivity<SignupPresenter> {
     addSubscription(
       presenter.errors.signupError()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this::displayToast)
+        .subscribe(e -> displayDialog(errorTitleString, e))
     );
 
     addSubscription(RxCompoundButton.checkedChanges(newsletterSwitch)
@@ -112,6 +112,13 @@ public final class SignupActivity extends BaseActivity<SignupPresenter> {
         .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
       startActivity(intent);
     }
+  }
+
+  @Override
+  public void onBackPressed() {
+    super.onBackPressed();
+
+    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
   public void setFormEnabled(final boolean enabled) {

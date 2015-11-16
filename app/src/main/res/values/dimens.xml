@@ -48,7 +48,7 @@
   <!-- Layout padding -->
   <dimen name="feed_padding_y">@dimen/grid_5_half</dimen>
   <dimen name="feed_padding_x">@dimen/grid_3</dimen>
-  <dimen name="form_landscape_margin_x">@dimen/grid_16</dimen>
+  <dimen name="form_margin_x">@dimen/grid_3</dimen>
 
   <!-- Buttons -->
   <!-- button_icon_fixed_width is useful when we want to place several icons next to each

@@ -25,7 +25,7 @@
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_1_half"
       android:layout_marginBottom="@dimen/grid_1_half"
-      android:background="@drawable/button_green"
+      android:background="@drawable/button_green_rounded"
       android:textAllCaps="false"
       android:text="Register device"
       style="@style/Button" />
@@ -35,7 +35,7 @@
       android:layout_marginTop="@dimen/grid_1_half"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@drawable/button_green"
+      android:background="@drawable/button_green_rounded"
       android:layout_marginBottom="@dimen/grid_2"
       android:textAllCaps="false"
       android:text="Unregister device"
@@ -61,7 +61,7 @@
       android:layout_marginBottom="@dimen/grid_1_half"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@drawable/button_green"
+      android:background="@drawable/button_green_rounded"
       android:textAllCaps="false"
       android:text="Friend backing"
       style="@style/Button" />
@@ -72,7 +72,7 @@
       android:layout_marginBottom="@dimen/grid_1_half"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@drawable/button_green"
+      android:background="@drawable/button_green_rounded"
       android:textAllCaps="false"
       android:text="Friend follow"
       style="@style/Button" />
@@ -83,7 +83,7 @@
       android:layout_marginBottom="@dimen/grid_1_half"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@drawable/button_green"
+      android:background="@drawable/button_green_rounded"
       android:textAllCaps="false"
       android:text="Project cancellation"
       style="@style/Button" />
@@ -94,7 +94,7 @@
       android:layout_marginBottom="@dimen/grid_1_half"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@drawable/button_green"
+      android:background="@drawable/button_green_rounded"
       android:textAllCaps="false"
       android:text="Project failure"
       style="@style/Button" />
@@ -105,7 +105,7 @@
       android:layout_marginBottom="@dimen/grid_1_half"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@drawable/button_green"
+      android:background="@drawable/button_green_rounded"
       android:textAllCaps="false"
       android:text="Project launch"
       style="@style/Button" />
@@ -116,7 +116,7 @@
       android:layout_marginBottom="@dimen/grid_1_half"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@drawable/button_green"
+      android:background="@drawable/button_green_rounded"
       android:textAllCaps="false"
       android:text="Project reminder"
       style="@style/Button" />
@@ -127,7 +127,7 @@
       android:layout_marginBottom="@dimen/grid_1_half"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@drawable/button_green"
+      android:background="@drawable/button_green_rounded"
       android:textAllCaps="false"
       android:text="Project success"
       style="@style/Button" />
@@ -138,7 +138,7 @@
       android:layout_marginBottom="@dimen/grid_1_half"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:background="@drawable/button_green"
+      android:background="@drawable/button_green_rounded"
       android:textAllCaps="false"
       android:text="Project update"
       style="@style/Button" />

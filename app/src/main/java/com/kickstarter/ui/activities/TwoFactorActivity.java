@@ -34,6 +34,7 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
   @BindString(R.string.The_code_provided_does_not_match) String codeMismatchString;
   @BindString(R.string.Unable_to_login) String unableToLoginString;
   @BindString(R.string.Verify) String verifyString;
+  @BindString(R.string.Log_in_error) String errorTitleString;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -69,7 +70,7 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
     addSubscription(
       errorMessages()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this::displayToast)
+        .subscribe(e -> displayDialog(errorTitleString, e))
     );
   }
 

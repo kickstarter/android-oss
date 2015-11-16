@@ -12,6 +12,7 @@ import com.kickstarter.presenters.DiscoveryPresenter;
 import com.kickstarter.presenters.LoginPresenter;
 import com.kickstarter.presenters.LoginToutPresenter;
 import com.kickstarter.presenters.ProjectPresenter;
+import com.kickstarter.presenters.ResetPasswordPresenter;
 import com.kickstarter.presenters.SearchPresenter;
 import com.kickstarter.presenters.SignupPresenter;
 import com.kickstarter.presenters.ThanksPresenter;
@@ -55,6 +56,7 @@ public interface ApplicationGraph {
   void inject(DiscoveryToolbar __);
   void inject(EmptyActivityFeedViewHolder __);
   void inject(EmptyCommentFeedViewHolder __);
+  void inject(ResetPasswordPresenter __);
   void inject(HelpActivity __);
   void inject(IconTextView __);
   void inject(KoalaTrackingClient __);

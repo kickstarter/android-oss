@@ -69,7 +69,11 @@ public final class Koala {
   }
 
   public void trackProjectCommentsView(@NonNull final Project project) {
-    client.track("Project Comment View");
+    client.track("Project Comment View", KoalaUtils.projectProperties(project));
+  }
+
+  public void trackProjectCommentLoadMore(@NonNull final Project project) {
+    client.track("Project Comment Load Older", KoalaUtils.projectProperties(project));
   }
 
   // ACTIVITY
@@ -140,15 +144,15 @@ public final class Koala {
     client.track("New User");
   }
 
-  public void trackForgotPasswordFormView() {
+  public void trackResetPasswordFormView() {
     client.track("Forgot Password View");
   }
 
-  public void trackForgotPasswordRequestSuccess() {
+  public void trackResetPasswordSuccess() {
     client.track("Forgot Password Requested");
   }
 
-  public void trackForgotPasswordRequestFailed() {
+  public void trackResetPasswordError() {
     client.track("Forgot Password Errored");
   }
 

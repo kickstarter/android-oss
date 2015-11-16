@@ -16,6 +16,7 @@ import com.kickstarter.models.User;
 import com.kickstarter.services.apirequests.CommentBody;
 import com.kickstarter.services.apirequests.LoginWithFacebookBody;
 import com.kickstarter.services.apirequests.PushTokenBody;
+import com.kickstarter.services.apirequests.ResetPasswordBody;
 import com.kickstarter.services.apirequests.SignupBody;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
@@ -78,8 +79,8 @@ public final class ApiClient {
     return service.fetchCategories().map(CategoriesEnvelope::categories);
   }
 
-  public Observable<CommentsEnvelope> fetchProjectComments(@NonNull final Project project) {
-    return service.fetchProjectComments(project.param());
+  public Observable<CommentsEnvelope> fetchProjectComments(@NonNull final CommentFeedParams params) {
+    return service.fetchProjectComments(params.project().param(), params.paginationParams());
   }
 
   public Observable<DiscoverEnvelope> fetchProjects(@NonNull final DiscoveryParams params) {
@@ -121,6 +122,10 @@ public final class ApiClient {
 
   public @NonNull Observable<Empty> registerPushToken(@NonNull final String token) {
     return service.registerPushToken(PushTokenBody.builder().token(token).pushServer("development").build());
+  }
+
+  public @NonNull Observable<User> resetPassword(@NonNull final String email) {
+    return service.resetPassword(ResetPasswordBody.builder().email(email).build());
   }
 
   public Observable<AccessTokenEnvelope> signup(@NonNull final String name, @NonNull final String email,

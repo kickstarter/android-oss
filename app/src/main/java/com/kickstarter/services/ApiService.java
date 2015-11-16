@@ -7,9 +7,11 @@ import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.User;
 import com.kickstarter.services.apirequests.CommentBody;
 import com.kickstarter.services.apirequests.LoginWithFacebookBody;
 import com.kickstarter.services.apirequests.PushTokenBody;
+import com.kickstarter.services.apirequests.ResetPasswordBody;
 import com.kickstarter.services.apirequests.SignupBody;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
@@ -44,8 +46,11 @@ import rx.Observable;
     @Path("user_param") String userParam
   );
 
-  @GET("/v1/projects/{param}/comments")
-  Observable<CommentsEnvelope> fetchProjectComments(@Path("param") String param);
+  @GET("/v1/projects/{project_param}/comments")
+  Observable<CommentsEnvelope> fetchProjectComments(
+    @Path("project_param") String projectParam,
+    @QueryMap Map<String, String> pagination
+  );
 
   @GET("/v1/discover")
   Observable<DiscoverEnvelope> fetchProjects(@QueryMap Map<String, String> params);
@@ -78,6 +83,9 @@ import rx.Observable;
 
   @POST("/v1/users/self/push_tokens")
   Observable<Empty> registerPushToken(@Body PushTokenBody body);
+
+  @POST("/v1/users/reset")
+  Observable<User> resetPassword(@Body ResetPasswordBody body);
 
   @POST("/v1/users")
   Observable<AccessTokenEnvelope> signup(@Body SignupBody body);

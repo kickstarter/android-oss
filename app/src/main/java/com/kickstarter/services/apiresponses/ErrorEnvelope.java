@@ -19,7 +19,7 @@ import auto.parcel.AutoParcel;
 @AutoParcel
 public abstract class ErrorEnvelope implements Parcelable {
   @Nullable public abstract List<String> errorMessages();
-  @Nullable public abstract int httpCode();
+  public abstract int httpCode();
   @Nullable public abstract String ksrCode();
   @Nullable public abstract FacebookUser facebookUser();
 
@@ -103,6 +103,10 @@ public abstract class ErrorEnvelope implements Parcelable {
    * Returns the first error message available, or `null` if there are none.
    */
   public @Nullable String errorMessage() {
-    return ListUtils.first(errorMessages());
+    if (errorMessages() == null) {
+      return null;
+    } else {
+      return ListUtils.first(errorMessages());
+    }
   }
 }

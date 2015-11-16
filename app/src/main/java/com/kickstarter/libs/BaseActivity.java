@@ -39,17 +39,14 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
     return presenter;
   }
 
-  @Override
   public final Observable<ActivityEvent> lifecycle() {
     return lifecycle.asObservable();
   }
 
-  @Override
   public final <T> Observable.Transformer<T, T> bindUntilEvent(final ActivityEvent event) {
     return RxLifecycle.bindUntilActivityEvent(lifecycle, event);
   }
 
-  @Override
   public final <T> Observable.Transformer<T, T> bindToLifecycle() {
     return RxLifecycle.bindActivity(lifecycle);
   }

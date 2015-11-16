@@ -11,6 +11,7 @@ import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Activity;
+import com.kickstarter.models.Empty;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.inputs.ActivityFeedPresenterInputs;
 import com.kickstarter.presenters.outputs.ActivityFeedPresenterOutputs;
@@ -31,6 +32,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity> implements ActivityFeedAdapter.Delegate,
@@ -53,20 +55,20 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
   public void nextPage() {
     nextPage.onNext(null);
   }
-  private final PublishSubject<Void> refresh = PublishSubject.create();
+  private final BehaviorSubject<Empty> refresh = BehaviorSubject.create(Empty.create());
   public void refresh() {
-    refresh.onNext(null);
+    refresh.onNext(Empty.create());
   }
   public final ActivityFeedPresenterInputs inputs = this;
 
   // OUTPUTS
   private final PublishSubject<Boolean> isFetchingActivities = PublishSubject.create();
   public final Observable<Boolean> isFetchingActivities() {
-    return isFetchingActivities.asObservable();
+    return isFetchingActivities;
   }
-  private final PublishSubject<List<Activity>> activities = PublishSubject.create();
+  private final BehaviorSubject<List<Activity>> activities = BehaviorSubject.create();
   public final Observable<List<Activity>> activities() {
-    return activities.asObservable();
+    return activities;
   }
   public final ActivityFeedPresenterOutputs outputs = this;
 
@@ -75,17 +77,22 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    final Observable<List<Activity>> _activities = activitiesWithPagination()
+    addSubscription(refresh
+      .switchMap(__ -> activitiesWithPagination())
       .compose(Transformers.waitUntil(currentUser.loggedInUser()))
-      .share();
+      .subscribe(activities::onNext));
 
     addSubscription(refresh
-      .subscribe(__ -> loadFirstPage())
-    );
+      .subscribe(__ -> {
+        params.onNext(ActivityFeedParams.builder().build());
+        nextPage.onNext(null);
+      }));
 
-    addSubscription(_activities
-      .subscribe(a -> activities.onNext(a))
-    );
+    addSubscription(viewSubject
+      .compose(Transformers.combineLatestPair(currentUser.observable()))
+      .filter(vu -> vu.second == null)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(vu -> vu.first.showEmptyFeed(vu.second)));
 
     addSubscription(viewSubject
       .compose(Transformers.combineLatestPair(currentUser.observable()))
@@ -128,10 +135,6 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showProjectUpdate(vp.second)));
 
-    loadFirstPage();
-  }
-
-  private void loadFirstPage() {
     params.onNext(ActivityFeedParams.builder().build());
     nextPage.onNext(null);
   }

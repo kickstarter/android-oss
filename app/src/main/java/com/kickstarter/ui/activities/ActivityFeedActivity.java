@@ -13,6 +13,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.Paginator;
+import com.kickstarter.libs.SwipeRefresher;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Activity;
@@ -25,7 +26,10 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.functions.Func0;
 
 @RequiresPresenter(ActivityFeedPresenter.class)
 public final class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
@@ -33,6 +37,7 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedPresent
   public @Bind(R.id.recycler_view) RecyclerView recyclerView;
   protected @Bind(R.id.activity_feed_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
   private Paginator paginator;
+  private SwipeRefresher swipeRefresher;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -44,26 +49,30 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedPresent
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    swipeRefreshLayout.setColorSchemeResources(R.color.green,
+    paginator = new Paginator(recyclerView, presenter.inputs::nextPage);
+    swipeRefresher = new SwipeRefresher(this, swipeRefreshLayout, presenter.inputs::refresh, presenter.outputs::isFetchingActivities);
+
+    presenter.outputs.activities()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::showActivities);
+  }
+
+  protected void setupSwipeRefresh(@NonNull final SwipeRefreshLayout layout, @NonNull final Action0 refreshAction, @NonNull final Func0<Observable<Boolean>> isRefreshing) {
+    layout.setColorSchemeResources(R.color.green,
       R.color.green_darken_10,
       R.color.green_darken_20,
       R.color.green_darken_10);
 
-    paginator = new Paginator(recyclerView, presenter.inputs::nextPage);
-
-    RxSwipeRefreshLayout.refreshes(swipeRefreshLayout)
+    RxSwipeRefreshLayout.refreshes(layout)
       .compose(this.<Void>bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> presenter.inputs.refresh());
+      .subscribe(__ -> refreshAction.call());
 
-    presenter.outputs.activities()
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::showActivities);
-
-    presenter.outputs.isFetchingActivities()
+    isRefreshing.call()
       .filter(fetching -> !fetching)
+      .compose(this.bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> swipeRefreshLayout.setRefreshing(false));
+      .subscribe(layout::setRefreshing);
   }
 
   @Override

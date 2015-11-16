@@ -9,6 +9,5 @@ import rx.Observable;
 public interface ActivityFeedPresenterOutputs {
   // Fetching from the API?
   Observable<Boolean> isFetchingActivities();
-  // New page of activities
   Observable<List<Activity>> activities();
 }

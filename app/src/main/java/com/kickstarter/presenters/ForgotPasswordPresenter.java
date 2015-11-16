@@ -21,7 +21,6 @@ import com.kickstarter.ui.activities.ForgotPasswordActivity;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
 public final class ForgotPasswordPresenter extends Presenter<ForgotPasswordActivity> implements ForgotPasswordPresenterInputs,
@@ -80,8 +79,7 @@ public final class ForgotPasswordPresenter extends Presenter<ForgotPasswordActiv
     addSubscription(email
       .compose(Transformers.takeWhen(resetPasswordClick))
       .switchMap(this::submitEmail)
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::success));
+      .subscribe(__ -> success()));
   }
 
   @Override
@@ -97,7 +95,7 @@ public final class ForgotPasswordPresenter extends Presenter<ForgotPasswordActiv
       .finallyDo(() -> formSubmitting.onNext(false));
   }
 
-  private void success(@NonNull User user) {
+  private void success() {
     resetSuccess.onNext(null);
   }
 }

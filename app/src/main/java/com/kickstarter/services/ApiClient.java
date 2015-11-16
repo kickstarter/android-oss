@@ -52,8 +52,6 @@ public final class ApiClient {
     service = apiService();
   }
 
-  // TODO: map null values back to an empty array so app doesn't crash on API responses
-
   public Observable<ActivityEnvelope> fetchActivities(@NonNull final ActivityFeedParams params) {
     return service.fetchActivities(params.categoryParams(), params.paginationParams());
   }
@@ -62,8 +60,8 @@ public final class ApiClient {
     return service.fetchCategories().map(CategoriesEnvelope::categories);
   }
 
-  public Observable<CommentsEnvelope> fetchProjectComments(@NonNull final Project project) {
-    return service.fetchProjectComments(project.param());
+  public Observable<CommentsEnvelope> fetchProjectComments(@NonNull final CommentFeedParams params) {
+    return service.fetchProjectComments(params.project().param(), params.paginationParams());
   }
 
   public Observable<DiscoverEnvelope> fetchProjects(@NonNull final DiscoveryParams params) {

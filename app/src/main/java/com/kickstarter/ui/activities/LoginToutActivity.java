@@ -136,10 +136,9 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
 
   @OnClick(R.id.facebook_login_button)
   public void facebookLoginClick() {
-    if (AccessToken.getCurrentAccessToken() != null) {
-      LoginManager.getInstance().logOut();
-    }
-    LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "email"));
+    LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList(getResources()
+      .getStringArray(R.array.facebook_permissions_array))
+    );
   }
 
   @OnClick(R.id.login_button)

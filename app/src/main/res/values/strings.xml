@@ -65,6 +65,11 @@
   <string name="Everything">Everything</string>
   <string name="Explore_Category">Explore %1$s</string>
   <string name="Explore_new_projects">Explore new projects</string>
+  <string-array name="facebook_permissions_array">
+    <item>public_profile</item>
+    <item>user_friends</item>
+    <item>email</item>
+  </string-array>
   <string name="Find_friends">Find friends</string>
   <string name="Follow">Follow</string>
   <string name="Forgot_your_password"><u>Forgot your password?</u></string>
@@ -220,5 +225,5 @@
   <string name="font_family_medium">sans-serif-medium</string>
 
   <!-- Koala strings -->
-  <string name="koala_endpoint">https://***REMOVED***/native/track</string>
+  <string name="koala_endpoint">***REMOVED***</string>
 </resources>

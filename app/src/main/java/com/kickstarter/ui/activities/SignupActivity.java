@@ -37,6 +37,7 @@ public final class SignupActivity extends BaseActivity<SignupPresenter> {
   @Bind(R.id.disclaimer) TextView disclaimerTextView;
 
   @BindString(R.string.Sign_up) String signUpString;
+  @BindString(R.string.Sign_Up_Error) String errorTitleString;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -69,7 +70,7 @@ public final class SignupActivity extends BaseActivity<SignupPresenter> {
     addSubscription(
       presenter.errors.signupError()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this::displayToast)
+        .subscribe(e -> displayDialog(errorTitleString, e))
     );
 
     addSubscription(RxCompoundButton.checkedChanges(newsletterSwitch)

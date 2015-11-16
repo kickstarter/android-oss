@@ -59,7 +59,7 @@ public final class ResetPasswordActivity extends BaseActivity<ResetPasswordPrese
     addSubscription(
       presenter.errors.resetError()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(__ -> displayError())
+        .subscribe(__ -> displayDialog(errorTitleString, errorMessageString))
     );
   }
 
@@ -94,9 +94,5 @@ public final class ResetPasswordActivity extends BaseActivity<ResetPasswordPrese
 
   private void setFormDisabled(final boolean isDisabled) {
     setFormEnabled(!isDisabled);
-  }
-
-  private void displayError() {
-    displayDialog(errorTitleString, errorMessageString);
   }
 }

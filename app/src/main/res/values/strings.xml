@@ -92,6 +92,7 @@
   <string name="Launched">Launched</string>
   <string name="Limited_left_of">Limited (%1$s left of %2$s)</string>
   <string name="Log_in">Log in</string>
+  <string name="Log_In_Error">Log In Error</string>
   <string name="Log_in_with_email">Log in with email</string>
   <string name="Log_in_with_Facebook">Log in with Facebook</string>
   <string name="Log_in_or_sign_up">Log in or sign up</string>
@@ -153,6 +154,7 @@
   <string name="Shipping">Shipping</string>
   <string name="Shipping_destinations">Shipping destinations</string>
   <string name="Sign_up">Sign up</string>
+  <string name="Sign_Up_Error">Sign Up Error</string>
   <string name="Sign_up_with_email">Sign up with email</string>
   <string name="Sign_up_or_log_in_with_your_Facebook_account">
     Sign up or log in with your Facebook account or email address below:

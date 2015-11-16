@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.Paginator;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Comment;
@@ -40,6 +41,7 @@ import rx.android.schedulers.AndroidSchedulers;
 public final class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> implements CommentFeedAdapter.Delegate {
   private CommentFeedAdapter adapter;
   private Project project;
+  private Paginator paginator;
   @Nullable private AlertDialog commentDialog;
 
   public @Bind(R.id.comment_button) TextView commentButtonTextView;
@@ -58,26 +60,39 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedPresenter
 
     final Intent intent = getIntent();
     project = intent.getParcelableExtra(getString(R.string.intent_project));
-    presenter.initialize(project);
 
     adapter = new CommentFeedAdapter(this);
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    addSubscription(
-      toastMessages()
+    presenter.inputs.initialProject(project);
+
+    paginator = new Paginator(recyclerView, presenter.inputs::nextPage);
+
+    addSubscription(toastMessages()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(this::displayToast)
+    );
+
+    addSubscription(presenter.outputs.showCommentButton()
+        .map(show -> show ? View.VISIBLE : View.GONE)
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(commentButtonTextView::setVisibility)
+    );
+
+    addSubscription(presenter.outputs.showCommentDialog()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(__ -> showCommentDialog())
+    );
+
+    addSubscription(presenter.outputs.commentPosted()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(__ -> dismissCommentDialog())
     );
   }
 
   public void show(@NonNull final Project project, @NonNull final List<Comment> comments,
     @Nullable final User user) {
-    if (project.isBacking()) {
-      commentButtonTextView.setVisibility(View.VISIBLE);
-    } else {
-      commentButtonTextView.setVisibility(View.GONE);
-    }
     adapter.takeProjectComments(project, comments, user);
   }
 
@@ -126,12 +141,12 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedPresenter
         presenter.postClick(commentBodyEditText.getText().toString());
       });
     }
-    presenter.takeCommentDialogShown();
   }
 
   public void dismissCommentDialog() {
     if (commentDialog != null) {
       commentDialog.dismiss();
+      commentDialog = null;
     }
   }
 
@@ -149,12 +164,12 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedPresenter
 
   @Override
   public void projectContextClicked(@NonNull final ProjectContextViewHolder viewHolder) {
-    presenter.inputs.projectContextClicked(viewHolder);
+    onBackPressed();
   }
 
   @Override
   public void emptyCommentFeedLoginClicked(@NonNull final EmptyCommentFeedViewHolder viewHolder) {
-    presenter.inputs.emptyCommentFeedLoginClicked(viewHolder);
+    commentFeedLogin();
   }
 
   @Override

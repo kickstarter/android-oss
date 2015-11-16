@@ -43,8 +43,11 @@ import rx.Observable;
     @Path("user_param") String userParam
   );
 
-  @GET("/v1/projects/{param}/comments")
-  Observable<CommentsEnvelope> fetchProjectComments(@Path("param") String param);
+  @GET("/v1/projects/{project_param}/comments")
+  Observable<CommentsEnvelope> fetchProjectComments(
+    @Path("project_param") String projectParam,
+    @QueryMap Map<String, String> pagination
+  );
 
   @GET("/v1/discover")
   Observable<DiscoverEnvelope> fetchProjects(@QueryMap Map<String, String> params);

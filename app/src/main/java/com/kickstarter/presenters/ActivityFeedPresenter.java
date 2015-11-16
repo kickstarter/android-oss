@@ -168,13 +168,13 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
   @NonNull private Observable<List<Activity>> activitiesFromParams(@NonNull final ActivityFeedParams params) {
     return client.fetchActivities(params)
       .compose(Transformers.neverError())
-      .doOnNext(this::keepMoreActivitiesUrl)
+      .doOnNext(this::keepPaginationParams)
       .map(ActivityEnvelope::activities)
       .doOnSubscribe(() -> isFetchingActivities.onNext(true))
       .finallyDo(() -> isFetchingActivities.onNext(false));
   }
 
-  private void keepMoreActivitiesUrl(@NonNull final ActivityEnvelope envelope) {
+  private void keepPaginationParams(@NonNull final ActivityEnvelope envelope) {
     final ActivityEnvelope.UrlsEnvelope urls = envelope.urls();
     if (urls != null) {
       final ActivityEnvelope.UrlsEnvelope.ApiEnvelope api = urls.api();

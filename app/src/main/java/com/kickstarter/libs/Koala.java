@@ -69,7 +69,11 @@ public final class Koala {
   }
 
   public void trackProjectCommentsView(@NonNull final Project project) {
-    client.track("Project Comment View");
+    client.track("Project Comment View", KoalaUtils.projectProperties(project));
+  }
+
+  public void trackProjectCommentLoadMore(@NonNull final Project project) {
+    client.track("Project Comment Load Older", KoalaUtils.projectProperties(project));
   }
 
   // ACTIVITY

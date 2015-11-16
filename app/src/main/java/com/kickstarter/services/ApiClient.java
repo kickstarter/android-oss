@@ -83,8 +83,7 @@ public final class ApiClient {
   }
 
   public Observable<DiscoverEnvelope> fetchProjects(@NonNull final DiscoveryParams params) {
-    return service.fetchProjects(params.queryParams())
-      .retry(3);
+    return service.fetchProjects(params.queryParams());
   }
 
   public Observable<Project> fetchProject(@NonNull final String param) {

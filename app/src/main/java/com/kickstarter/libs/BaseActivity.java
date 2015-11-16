@@ -39,14 +39,25 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
     return presenter;
   }
 
+  /**
+   * Returns an observable of the activity's lifecycle events.
+   */
   public final Observable<ActivityEvent> lifecycle() {
     return lifecycle.asObservable();
   }
 
+  /**
+   * Completes an observable when an {@link ActivityEvent} occurs in the activity's lifecycle.
+   */
   public final <T> Observable.Transformer<T, T> bindUntilEvent(final ActivityEvent event) {
     return RxLifecycle.bindUntilActivityEvent(lifecycle, event);
   }
 
+  /**
+   * Completes an observable when the lifecycle event opposing the current lifecyle event is emitted.
+   * For example, if a subscription is made during {@link ActivityEvent#CREATE}, the observable will be completed
+   * in {@link ActivityEvent#DESTROY}.
+   */
   public final <T> Observable.Transformer<T, T> bindToLifecycle() {
     return RxLifecycle.bindActivity(lifecycle);
   }

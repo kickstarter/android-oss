@@ -153,13 +153,18 @@ public final class CommentFeedPresenter extends Presenter<CommentFeedActivity> i
         })
     );
 
-    // Load the initial feed once we get a project.
+    // Koala tracking
     addSubscription(initialProject
       .compose(Transformers.takePairWhen(postedComment))
       .subscribe(cp -> koala.trackProjectCommentCreate(cp.first, cp.second))
     );
-    addSubscription(project.take(1).subscribe(__ -> refreshFeed.onNext(null)));
     addSubscription(initialProject.take(1).subscribe(koala::trackProjectCommentsView));
+    addSubscription(initialProject
+      .compose(Transformers.takeWhen(nextPage))
+      .subscribe(koala::trackProjectCommentLoadMore)
+    );
+
+    addSubscription(project.take(1).subscribe(__ -> refreshFeed.onNext(null)));
   }
 
   private Observable<List<Comment>> commentsWithPagination() {

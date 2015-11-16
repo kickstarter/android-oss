@@ -7,7 +7,13 @@ import java.util.List;
 import rx.Observable;
 
 public interface ActivityFeedPresenterOutputs {
-  // Fetching from the API?
+  /**
+   * Emits a boolean indicating whether APIs are being fetched from the API.
+   */
   Observable<Boolean> isFetchingActivities();
+
+  /**
+   * Emits a list of activities representing the user's activity feed.
+   */
   Observable<List<Activity>> activities();
 }

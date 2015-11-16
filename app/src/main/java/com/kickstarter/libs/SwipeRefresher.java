@@ -16,12 +16,16 @@ public final class SwipeRefresher {
     @NonNull final SwipeRefreshLayout layout,
     @NonNull final Action0 refreshAction,
     @NonNull final Func0<Observable<Boolean>> isRefreshing) {
+
+    // Iterate through colors in loading spinner while waiting for refresh
     layout.setColorSchemeResources(R.color.green, R.color.green_darken_10, R.color.green_darken_20, R.color.green_darken_10);
 
+    // Emits when user has signaled to refresh layout
     RxSwipeRefreshLayout.refreshes(layout)
       .compose(activity.bindToLifecycle())
       .subscribe(__ -> refreshAction.call());
 
+    // Emits when the refreshing status changes. Hides loading spinner when feed is no longer refreshing.
     isRefreshing.call()
       .filter(fetching -> !fetching)
       .compose(activity.bindToLifecycle())

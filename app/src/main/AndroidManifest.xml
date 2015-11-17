@@ -59,6 +59,10 @@
 
     <activity android:name=".ui.activities.DownloadBetaActivity" />
 
+    <activity
+      android:name=".ui.activities.ResetPasswordActivity"
+      android:theme="@style/Login" />
+
     <activity android:name=".ui.activities.HelpActivity"
       android:theme="@style/HelpActivity" />
 

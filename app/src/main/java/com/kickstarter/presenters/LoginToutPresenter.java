@@ -5,9 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.facebook.FacebookException;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
-import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.presenters.errors.LoginToutPresenterErrors;
@@ -21,6 +21,7 @@ import com.kickstarter.ui.activities.LoginToutActivity;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
 public final class LoginToutPresenter extends Presenter<LoginToutActivity> implements LoginToutPresenterInputs,
@@ -36,6 +37,11 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
   }
 
   // ERRORS
+  private final PublishSubject<FacebookException> facebookAuthorizationException = PublishSubject.create();
+  public void facebookAuthorizationException(@NonNull final FacebookException e) {
+    facebookAuthorizationException.onNext(e);
+  }
+
   private final PublishSubject<ErrorEnvelope> loginError = PublishSubject.create();
   public final Observable<ErrorEnvelope.FacebookUser> confirmFacebookSignupError() {
    return loginError
@@ -63,7 +69,6 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
 
   @Inject CurrentUser currentUser;
   @Inject ApiClient client;
-  @Inject Logout logout;
 
   public final LoginToutPresenterInputs inputs = this;
   public final LoginToutPresenterOutputs outputs = this;
@@ -73,6 +78,13 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
     addSubscription(facebookAccessToken
       .switchMap(this::loginWithFacebook)
       .subscribe(this::loginWithFacebookSuccess));
+
+    addSubscription(viewSubject
+      .compose(Transformers.takePairWhen(facebookAuthorizationException))
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(ve -> {
+        ve.first.handleFacebookAuthorizationError(ve.second);
+      }));
   }
 
   @Override
@@ -80,9 +92,6 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
     addSubscription(reason.take(1).subscribe(koala::trackLoginRegisterTout));
-
-    // Clear any instance of a logged in user.
-    logout.execute();
   }
 
   @Override

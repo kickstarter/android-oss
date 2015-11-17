@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
+import com.facebook.FacebookAuthorizationException;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.appevents.AppEventsLogger;
@@ -53,6 +54,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
   @BindString(R.string.Log_in_or_sign_up) String loginOrSignUpString;
   @BindString(R.string.Unable_to_login) String unableToLoginString;
   @BindString(R.string.intent_login_type) String intentLoginTypeString;
+  @BindString(R.string.Oops) String errorTitleString;
 
   private CallbackManager callbackManager;
   private boolean forward;
@@ -83,7 +85,9 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
 
       @Override
       public void onError(@NonNull final FacebookException error) {
-        // continue, for now
+        if (error instanceof FacebookAuthorizationException) {
+          presenter.errors.facebookAuthorizationException(error);
+        }
       }
     });
 
@@ -143,6 +147,11 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
      * This hits the Facebook API, we can remove it once login is working.
     */
     AppEventsLogger.deactivateApp(this);
+  }
+
+  public void handleFacebookAuthorizationError(@NonNull final FacebookException e) {
+    displayDialog(errorTitleString, e.getLocalizedMessage());
+    LoginManager.getInstance().logOut();
   }
 
   @OnClick({R.id.disclaimer_text_view})

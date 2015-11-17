@@ -103,8 +103,7 @@ public final class DiscoveryPresenter extends Presenter<DiscoveryActivity> imple
       .doOnNext(koala::trackDiscovery)
       .concatMap(this::projectsFromParams)
       .takeUntil(List::isEmpty)
-      .scan(new ArrayList<>(), ListUtils::concatDistinct)
-      ;
+      .scan(new ArrayList<>(), ListUtils::concatDistinct);
   }
 
   /**

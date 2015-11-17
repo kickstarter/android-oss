@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import com.kickstarter.models.Activity;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,13 +16,13 @@ import auto.parcel.AutoParcel;
 
 @AutoParcel
 public abstract class ActivityFeedParams implements Parcelable {
-  abstract @Nullable Integer cursor();
-  abstract @Nullable Integer since();
+  abstract @Nullable String cursor();
+  abstract @Nullable String since();
 
   @AutoParcel.Builder
   public abstract static class Builder {
-    public abstract Builder cursor(Integer __);
-    public abstract Builder since(Integer __);
+    public abstract Builder cursor(@Nullable String __);
+    public abstract Builder since(@Nullable String __);
     public abstract ActivityFeedParams build();
   }
 
@@ -36,18 +35,9 @@ public abstract class ActivityFeedParams implements Parcelable {
   public abstract Builder toBuilder();
 
   public static @NonNull ActivityFeedParams fromUrl(final @NonNull String url) {
-
     Uri uri = Uri.parse(url);
-    final String cursorString = uri.getQueryParameter("cursor");
-    final String sinceString = uri.getQueryParameter("since");
-    Integer cursor = null;
-    Integer since = null;
-    if (cursorString != null) {
-      cursor = Integer.valueOf(cursorString);
-    }
-    if (sinceString != null) {
-      since = Integer.valueOf(sinceString);
-    }
+    final String cursor= uri.getQueryParameter("cursor");
+    final String since= uri.getQueryParameter("since");
 
     return ActivityFeedParams.builder()
       .cursor(cursor)
@@ -68,15 +58,9 @@ public abstract class ActivityFeedParams implements Parcelable {
   }
 
   @NonNull public Map<String, String> paginationParams() {
-    return Collections.unmodifiableMap(new HashMap<String, String>() {{
-
-      if (cursor() != null) {
-        put("cursor", String.valueOf(cursor()));
-      }
-      if (since() != null) {
-        put("since", String.valueOf(since()));
-      }
-
-    }});
+    return new HashMap<String, String>() {{
+      put("cursor", cursor());
+      put("since", since());
+    }};
   }
 }

@@ -98,16 +98,15 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
 
     addSubscription(facebookCallbackManager
       .compose(Transformers.combineLatestPair(activityResult))
-      .subscribe(cr -> {
-        cr.first.onActivityResult(cr.second.requestCode, cr.second.resultCode, cr.second.intent);
-      }));
+      .subscribe(cr -> cr.first.onActivityResult(cr.second.requestCode, cr.second.resultCode, cr.second.intent)
+    ));
 
     addSubscription(facebookAccessToken
-      .switchMap(this::loginWithFacebook)
-      .subscribe(this::loginWithFacebookSuccess));
+      .switchMap(this::loginWithFacebookAccessToken)
+      .subscribe(this::facebookLoginSuccess));
 
     addSubscription(facebookAuthorizationException
-      .subscribe(this::logoutFacebookSession));
+      .subscribe(this::clearFacebookSession));
   }
 
   @Override
@@ -117,9 +116,14 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
     addSubscription(reason.take(1).subscribe(koala::trackLoginRegisterTout));
   }
 
-  private Observable<AccessTokenEnvelope> loginWithFacebook(@NonNull final String fbAccessToken) {
-    return client.loginWithFacebook(fbAccessToken)
-      .compose(Transformers.pipeApiErrorsTo(loginError));
+  @Override
+  public void activityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
+    final ActivityResultData activityResultData = new ActivityResultData(requestCode, resultCode, intent);
+    activityResult.onNext(activityResultData);
+  }
+
+  public void clearFacebookSession(@NonNull final FacebookException e) {
+    LoginManager.getInstance().logOut();
   }
 
   @Override
@@ -130,6 +134,16 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
   @Override
   public void facebookCallbackManager(@NonNull final CallbackManager callbackManager) {
     facebookCallbackManager.onNext(callbackManager);
+  }
+
+  public void facebookLoginSuccess(@NonNull final AccessTokenEnvelope envelope) {
+    currentUser.login(envelope.user(), envelope.accessToken());
+    facebookLoginSuccess.onNext(null);
+  }
+
+  private Observable<AccessTokenEnvelope> loginWithFacebookAccessToken(@NonNull final String fbAccessToken) {
+    return client.loginWithFacebook(fbAccessToken)
+      .compose(Transformers.pipeApiErrorsTo(loginError));
   }
 
   public void registerFacebookCallback(@NonNull final CallbackManager callbackManager) {
@@ -151,21 +165,6 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
         }
       }
     });
-  }
-
-  public void loginWithFacebookSuccess(@NonNull final AccessTokenEnvelope envelope) {
-    currentUser.login(envelope.user(), envelope.accessToken());
-    facebookLoginSuccess.onNext(null);
-  }
-
-  public void logoutFacebookSession(@NonNull final FacebookException e) {
-    LoginManager.getInstance().logOut();
-  }
-
-  @Override
-  public void activityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
-    final ActivityResultData activityResultData = new ActivityResultData(requestCode, resultCode, intent);
-    activityResult.onNext(activityResultData);
   }
 
   @Override

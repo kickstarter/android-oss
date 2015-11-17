@@ -24,6 +24,7 @@
         android:text="@string/Before_we_make_your_new_account"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_3"
         android:layout_marginBottom="@dimen/grid_3"/>
 
       <TextView
@@ -39,14 +40,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/BodySecondary"
-        android:layout_marginTop="@dimen/grid_2"
+        android:layout_marginTop="@dimen/grid_3"
         android:layout_marginBottom="@dimen/grid_2"
         android:text="@string/Discover_new_projects_with_our_weekly_newsletter"/>
 
       <Button
         android:id="@+id/create_new_account_button"
         style="@style/Button"
-        android:enabled="false"
         android:layout_marginTop="@dimen/grid_1"
         android:layout_marginBottom="@dimen/grid_3"
         android:layout_width="match_parent"

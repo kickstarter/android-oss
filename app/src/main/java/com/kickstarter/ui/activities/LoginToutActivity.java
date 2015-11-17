@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.facebook.AccessToken;
-import com.facebook.CallbackManager;
 import com.facebook.appevents.AppEventsLogger;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
@@ -50,7 +49,6 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
   @BindString(R.string.intent_login_type) String intentLoginTypeString;
   @BindString(R.string.Oops) String errorTitleString;
 
-  private CallbackManager callbackManager;
   private boolean forward;
 
   @Override

@@ -65,11 +65,8 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
 
     presenter.inputs.reason(getIntent().getStringExtra(intentLoginTypeString));
 
-    callbackManager = CallbackManager.Factory.create();
-    presenter.inputs.facebookCallbackManager(callbackManager);
-
     addSubscription(
-      presenter.errors.facebookAuthorizationException()
+      presenter.errors.facebookAuthorizationError()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(e -> displayDialog(errorTitleString, e))
     );

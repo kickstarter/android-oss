@@ -49,7 +49,6 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
   // INPUTS
   private final PublishSubject<ActivityResultData> activityResult = PublishSubject.create();
   private final PublishSubject<String> facebookAccessToken = PublishSubject.create();
-  private final PublishSubject<CallbackManager> facebookCallbackManager = PublishSubject.create();
   private final PublishSubject<String> reason = PublishSubject.create();
 
   // OUTPUTS
@@ -59,9 +58,9 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
   }
 
   // ERRORS
-  private final PublishSubject<FacebookException> facebookAuthorizationException = PublishSubject.create();
-  public final Observable<String> facebookAuthorizationException() {
-    return facebookAuthorizationException
+  private final PublishSubject<FacebookException> facebookAuthorizationError = PublishSubject.create();
+  public final Observable<String> facebookAuthorizationError() {
+    return facebookAuthorizationError
       .map(FacebookException::getLocalizedMessage);
   }
 
@@ -92,21 +91,38 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
   public final LoginToutPresenterErrors errors = this;
 
   public LoginToutPresenter() {
+    final CallbackManager callbackManager = CallbackManager.Factory.create();
+    LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+      @Override
+      public void onSuccess(@NonNull final LoginResult result) {
+        facebookAccessToken.onNext(result.getAccessToken().getToken());
+      }
 
-    addSubscription(facebookCallbackManager
-      .subscribe(this::registerFacebookCallback));
+      @Override
+      public void onCancel() {
+        // continue
+      }
 
-    addSubscription(facebookCallbackManager
-      .compose(Transformers.combineLatestPair(activityResult))
-      .subscribe(cr -> cr.first.onActivityResult(cr.second.requestCode, cr.second.resultCode, cr.second.intent)
-    ));
+      @Override
+      public void onError(@NonNull final FacebookException error) {
+        if (error instanceof FacebookAuthorizationException) {
+          facebookAuthorizationError.onNext(error);
+        }
+      }
+    });
+
+    addSubscription(activityResult
+      .subscribe(r -> callbackManager.onActivityResult(r.requestCode, r.resultCode, r.intent))
+    );
 
     addSubscription(facebookAccessToken
       .switchMap(this::loginWithFacebookAccessToken)
-      .subscribe(this::facebookLoginSuccess));
+      .subscribe(this::facebookLoginSuccess)
+    );
 
-    addSubscription(facebookAuthorizationException
-      .subscribe(this::clearFacebookSession));
+    addSubscription(facebookAuthorizationError
+        .subscribe(this::clearFacebookSession)
+    );
   }
 
   @Override
@@ -131,11 +147,6 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
     LoginManager.getInstance().logInWithReadPermissions(activity, facebookPermissions);
   }
 
-  @Override
-  public void facebookCallbackManager(@NonNull final CallbackManager callbackManager) {
-    facebookCallbackManager.onNext(callbackManager);
-  }
-
   public void facebookLoginSuccess(@NonNull final AccessTokenEnvelope envelope) {
     currentUser.login(envelope.user(), envelope.accessToken());
     facebookLoginSuccess.onNext(null);
@@ -144,27 +155,6 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
   private Observable<AccessTokenEnvelope> loginWithFacebookAccessToken(@NonNull final String fbAccessToken) {
     return client.loginWithFacebook(fbAccessToken)
       .compose(Transformers.pipeApiErrorsTo(loginError));
-  }
-
-  public void registerFacebookCallback(@NonNull final CallbackManager callbackManager) {
-    LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-      @Override
-      public void onSuccess(@NonNull final LoginResult result) {
-        facebookAccessToken.onNext(result.getAccessToken().getToken());
-      }
-
-      @Override
-      public void onCancel() {
-        // continue
-      }
-
-      @Override
-      public void onError(@NonNull final FacebookException error) {
-        if (error instanceof FacebookAuthorizationException) {
-          facebookAuthorizationException.onNext(error);
-        }
-      }
-    });
   }
 
   @Override

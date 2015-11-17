@@ -136,6 +136,17 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
     addSubscription(reason.take(1).subscribe(koala::trackLoginRegisterTout));
+
+    addSubscription(loginError.subscribe(__ -> koala.trackLoginError()));
+
+    addSubscription(facebookLoginSuccess.subscribe(__ -> koala.trackFacebookLoginSuccess()));
+
+    addSubscription(missingFacebookEmailError()
+      .mergeWith(facebookInvalidAccessTokenError())
+      .mergeWith(facebookAuthorizationError())
+      .subscribe(__ -> koala.trackFacebookLoginError()));
+
+    addSubscription(confirmFacebookSignupError().subscribe(__ -> koala.trackFacebookConfirmation()));
   }
 
   @Override
@@ -146,6 +157,8 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
 
   public void clearFacebookSession(@NonNull final FacebookException e) {
     LoginManager.getInstance().logOut();
+
+    koala.trackFacebookLogout();
   }
 
   @Override

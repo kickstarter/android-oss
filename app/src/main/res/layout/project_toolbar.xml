@@ -24,11 +24,13 @@
       android:layout_alignParentLeft="true"
       android:text="@string/arrow_back_icon" />
 
+    <!-- Override the text size because this looks enormous compared to the back icon -->
     <com.kickstarter.ui.views.IconTextView
       style="@style/ToolbarIcon"
       android:id="@+id/share_icon"
       android:layout_alignParentEnd="true"
       android:layout_alignParentRight="true"
+      android:textSize="20sp"
       android:text="@string/share_icon"/>
 
   </RelativeLayout>

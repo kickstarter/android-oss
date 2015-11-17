@@ -1,6 +1,3 @@
-[submodule "vendor/ionicons"]
-	path = vendor/ionicons
-	url = https://github.com/kickstarter/ionicons
 [submodule "vendor/material-design-icons"]
 	path = vendor/material-design-icons
 	url = https://github.com/google/material-design-icons

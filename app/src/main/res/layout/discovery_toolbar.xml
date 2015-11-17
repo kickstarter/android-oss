@@ -50,44 +50,44 @@
       android:orientation="horizontal">
 
       <com.kickstarter.ui.views.IconTextView
+        style="@style/ToolbarIcon"
         android:id="@+id/search_button"
         android:layout_width="@dimen/button_icon_fixed_width"
         android:layout_height="match_parent"
         android:background="@drawable/button_selector"
         android:gravity="center"
         android:text="@string/search_icon"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title"
         android:textColor="@color/white" />
 
       <com.kickstarter.ui.views.IconTextView
+        style="@style/ToolbarIcon"
         android:id="@+id/activity_feed_button"
         android:layout_width="@dimen/button_icon_fixed_width"
         android:layout_height="match_parent"
         android:gravity="center"
         android:background="@drawable/button_selector"
         android:text="@string/flash_on_icon"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title"
         android:textColor="@color/white" />
 
       <com.kickstarter.ui.views.IconTextView
+        style="@style/ToolbarIcon"
         android:id="@+id/login_button"
         android:background="@drawable/button_selector"
         android:layout_width="@dimen/button_icon_fixed_width"
         android:layout_height="match_parent"
         android:gravity="center"
         android:text="@string/lock_icon"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title"
         android:textColor="@color/white" />
 
 
       <com.kickstarter.ui.views.IconTextView
+        style="@style/ToolbarIcon"
         android:id="@+id/current_user_button"
         android:layout_width="@dimen/button_icon_fixed_width"
         android:layout_height="match_parent"
         android:gravity="center"
         android:background="@drawable/button_selector"
         android:text="@string/more_vert_icon"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title"
         android:textColor="@color/white"
         android:visibility="gone" />
 

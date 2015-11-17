@@ -75,7 +75,7 @@ public class FacebookConfirmationPresenter extends Presenter<FacebookConfirmatio
       tokenAndNewsletter
         .compose(Transformers.takeWhen(createNewAccountClick))
         .flatMap(tn -> createNewAccount(tn.first, tn.second))
-        .subscribe(this::success)
+        .subscribe(this::registerWithFacebookSuccess)
     );
   }
 
@@ -103,7 +103,7 @@ public class FacebookConfirmationPresenter extends Presenter<FacebookConfirmatio
       .compose(Transformers.pipeApiErrorsTo(signupError));
   }
 
-  private void success(@NonNull final AccessTokenEnvelope envelope) {
+  private void registerWithFacebookSuccess(@NonNull final AccessTokenEnvelope envelope) {
     currentUser.login(envelope.user(), envelope.accessToken());
     signupSuccess.onNext(null);
   }

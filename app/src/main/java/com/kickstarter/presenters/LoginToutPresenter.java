@@ -127,7 +127,7 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
     );
 
     addSubscription(facebookAuthorizationError
-        .subscribe(this::clearFacebookSession)
+      .subscribe(this::clearFacebookSession)
     );
   }
 

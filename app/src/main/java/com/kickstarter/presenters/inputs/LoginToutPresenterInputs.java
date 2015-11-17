@@ -10,6 +10,6 @@ import java.util.List;
 public interface LoginToutPresenterInputs {
   void facebookLoginClick(LoginToutActivity activity, List<String> facebookPermissions);
   void facebookCallbackManager(CallbackManager callbackManager);
-  void onActivityResult(int requestCode, int resultCode, Intent intent);
+  void activityResult(int requestCode, int resultCode, Intent intent);
   void reason(String __);
 }

@@ -29,7 +29,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
 public final class LoginToutPresenter extends Presenter<LoginToutActivity> implements LoginToutPresenterInputs,
@@ -48,9 +47,9 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
   }
 
   // INPUTS
+  private final PublishSubject<ActivityResultData> activityResult = PublishSubject.create();
   private final PublishSubject<String> facebookAccessToken = PublishSubject.create();
   private final PublishSubject<CallbackManager> facebookCallbackManager = PublishSubject.create();
-  private final PublishSubject<ActivityResultData> onActivityResult = PublishSubject.create();
   private final PublishSubject<String> reason = PublishSubject.create();
 
   // OUTPUTS
@@ -61,8 +60,9 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
 
   // ERRORS
   private final PublishSubject<FacebookException> facebookAuthorizationException = PublishSubject.create();
-  public void facebookAuthorizationException(@NonNull final FacebookException e) {
-    facebookAuthorizationException.onNext(e);
+  public final Observable<String> facebookAuthorizationException() {
+    return facebookAuthorizationException
+      .map(FacebookException::getLocalizedMessage);
   }
 
   private final PublishSubject<ErrorEnvelope> loginError = PublishSubject.create();
@@ -97,7 +97,7 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
       .subscribe(this::registerFacebookCallback));
 
     addSubscription(facebookCallbackManager
-      .compose(Transformers.combineLatestPair(onActivityResult))
+      .compose(Transformers.combineLatestPair(activityResult))
       .subscribe(cr -> {
         cr.first.onActivityResult(cr.second.requestCode, cr.second.resultCode, cr.second.intent);
       }));
@@ -106,12 +106,8 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
       .switchMap(this::loginWithFacebook)
       .subscribe(this::loginWithFacebookSuccess));
 
-    addSubscription(viewSubject
-      .compose(Transformers.takePairWhen(facebookAuthorizationException))
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(ve -> {
-        ve.first.showFacebookExceptionDialog(ve.second);
-      }));
+    addSubscription(facebookAuthorizationException
+      .subscribe(this::logoutFacebookSession));
   }
 
   @Override
@@ -167,9 +163,9 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
   }
 
   @Override
-  public void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
+  public void activityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
     final ActivityResultData activityResultData = new ActivityResultData(requestCode, resultCode, intent);
-    onActivityResult.onNext(activityResultData);
+    activityResult.onNext(activityResultData);
   }
 
   @Override

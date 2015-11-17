@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
-import com.facebook.FacebookException;
 import com.facebook.appevents.AppEventsLogger;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
@@ -70,6 +69,12 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
     presenter.inputs.facebookCallbackManager(callbackManager);
 
     addSubscription(
+      presenter.errors.facebookAuthorizationException()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(e -> displayDialog(errorTitleString, e))
+    );
+
+    addSubscription(
       presenter.errors.tfaChallenge()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(__ -> startTwoFactorActivity(forward, true))
@@ -121,10 +126,6 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
     AppEventsLogger.deactivateApp(this);
   }
 
-  public void showFacebookExceptionDialog(@NonNull final FacebookException e) {
-    displayDialog(errorTitleString, e.getLocalizedMessage());
-  }
-
   @OnClick({R.id.disclaimer_text_view})
   public void disclaimerTextViewClick() {
     new LoginPopupMenu(this, helpButton).show();
@@ -166,7 +167,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
   @Override
   protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
     super.onActivityResult(requestCode, resultCode, intent);
-    presenter.inputs.onActivityResult(requestCode, resultCode, intent);
+    presenter.inputs.activityResult(requestCode, resultCode, intent);
 
     if (requestCode != ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_LOGIN_ACTIVITY_FORWARD) {
       return;

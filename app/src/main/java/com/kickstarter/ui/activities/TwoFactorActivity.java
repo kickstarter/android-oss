@@ -13,6 +13,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.presenters.TwoFactorPresenter;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 
@@ -70,7 +71,7 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
     addSubscription(
       errorMessages()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(e -> displayDialog(errorTitleString, e))
+        .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e))
     );
   }
 

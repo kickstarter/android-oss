@@ -7,11 +7,9 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
 
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.libs.utils.BundleUtils;
-import com.kickstarter.ui.views.KSDialog;
 import com.trello.rxlifecycle.ActivityEvent;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.trello.rxlifecycle.components.ActivityLifecycleProvider;
@@ -167,20 +165,5 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
           BundleUtils.maybeGetBundle(presenterEnvelope, PRESENTER_KEY));
       }
     }
-  }
-
-  /*
-  The simplest way to show an alert to the user.
-   */
-  final public void displayToast(@NonNull final String message) {
-    final Toast toast = Toast.makeText(this, message, Toast.LENGTH_LONG);
-    toast.show();
-  }
-
-  /*
-  The simplest way to show a Dialog to the user.
-   */
-  final public void displayDialog(@Nullable final String title, @NonNull final String message) {
-    new KSDialog(this, title, message).show();
   }
 }

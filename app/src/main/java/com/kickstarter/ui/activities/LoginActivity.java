@@ -13,6 +13,7 @@ import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.presenters.LoginPresenter;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 
@@ -49,7 +50,7 @@ public final class LoginActivity extends BaseActivity<LoginPresenter> {
     addSubscription(
       errorMessages()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(e -> displayDialog(errorTitleString, e))
+        .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e))
     );
 
     addSubscription(
@@ -73,7 +74,7 @@ public final class LoginActivity extends BaseActivity<LoginPresenter> {
       final String email = getIntent().getExtras().getString(getString(R.string.intent_email));
       final String message = getResources().getString(R.string.We_sent_an_email_to_email_with_instructions_to_reset_your_password,
         email);
-      displayDialog(null, message);
+      ViewUtils.showDialog(this, null, message);
       emailEditText.setText(email);
     }
   }

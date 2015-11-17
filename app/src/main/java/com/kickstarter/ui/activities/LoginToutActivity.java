@@ -105,28 +105,6 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
       );
   }
 
-  @Override
-  protected void onResume() {
-    super.onResume();
-
-    /*
-     * Temporary Facebook testing - logs 'install' and 'app activate' App Events.
-     * This hits the Facebook API, we can remove it once login is working.
-    */
-    AppEventsLogger.activateApp(this);
-  }
-
-  @Override
-  protected void onPause() {
-    super.onPause();
-
-    /*
-     * Temporary Facebook testing - logs 'app deactivate' App Events.
-     * This hits the Facebook API, we can remove it once login is working.
-    */
-    AppEventsLogger.deactivateApp(this);
-  }
-
   @OnClick({R.id.disclaimer_text_view})
   public void disclaimerTextViewClick() {
     new LoginPopupMenu(this, helpButton).show();

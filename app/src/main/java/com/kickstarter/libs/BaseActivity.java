@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.facebook.appevents.AppEventsLogger;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.libs.utils.BundleUtils;
 import com.kickstarter.ui.views.KSDialog;
@@ -88,6 +89,9 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
     Timber.d("onResume %s", this.toString());
     lifecycle.onNext(ActivityEvent.RESUME);
 
+    // Facebook: logs 'install' and 'app activate' App Events.
+    AppEventsLogger.activateApp(this);
+
     fetchPresenter(null);
     if (presenter != null) {
       presenter.onResume(this);
@@ -100,6 +104,9 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
     lifecycle.onNext(ActivityEvent.PAUSE);
     super.onPause();
     Timber.d("onPause %s", this.toString());
+
+    // Facebook: logs 'app deactivate' App Event.
+    AppEventsLogger.deactivateApp(this);
 
     if (presenter != null) {
       presenter.onPause();

@@ -4,6 +4,4 @@ import rx.Observable;
 
 public interface FacebookConfirmationPresenterOutputs {
   Observable<Void> signupSuccess();
-  Observable<Boolean> isFormSubmitting();
-  Observable<Boolean> isFormValid();
 }

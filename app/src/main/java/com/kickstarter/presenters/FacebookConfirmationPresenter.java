@@ -29,21 +29,12 @@ public class FacebookConfirmationPresenter extends Presenter<FacebookConfirmatio
   // INPUTS
   private final PublishSubject<Void> createNewAccountClick = PublishSubject.create();
   private final PublishSubject<String> fbAccessToken = PublishSubject.create();
-  private final PublishSubject<Void> loginClick = PublishSubject.create();
   private final PublishSubject<Boolean> sendNewsletters = PublishSubject.create();
 
   // OUTPUTS
   private final PublishSubject<Void> signupSuccess = PublishSubject.create();
   public Observable<Void> signupSuccess() {
     return signupSuccess.asObservable();
-  }
-  private final PublishSubject<Boolean> isFormSubmitting = PublishSubject.create();
-  public Observable<Boolean> isFormSubmitting() {
-    return isFormSubmitting.asObservable();
-  }
-  private final PublishSubject<Boolean> isFormValid = PublishSubject.create();
-  public Observable<Boolean> isFormValid() {
-    return isFormValid.asObservable();
   }
 
   // ERRORS
@@ -72,11 +63,6 @@ public class FacebookConfirmationPresenter extends Presenter<FacebookConfirmatio
   }
 
   @Override
-  public void loginClick() {
-    loginClick.onNext(null);
-  }
-
-  @Override
   public void sendNewsletters(final boolean b) {
     sendNewsletters.onNext(b);
   }
@@ -97,13 +83,24 @@ public class FacebookConfirmationPresenter extends Presenter<FacebookConfirmatio
   protected void onCreate(@NonNull final Context context, @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
+
+    addSubscription(signupError.subscribe(__ -> koala.trackRegisterError()));
+
+    addSubscription(sendNewsletters.subscribe(koala::trackSignupNewsletterToggle));
+
+    addSubscription(signupSuccess
+        .subscribe(__ -> {
+          koala.trackLoginSuccess();
+          koala.trackRegisterSuccess();
+        })
+    );
+
+    koala.trackRegisterFormView();
   }
 
   public Observable<AccessTokenEnvelope> createNewAccount(@NonNull final String fbAccessToken, final boolean sendNewsletters) {
     return client.registerWithFacebook(fbAccessToken, sendNewsletters)
-      .compose(Transformers.pipeApiErrorsTo(signupError))
-      .doOnSubscribe(() -> isFormSubmitting.onNext(true))
-      .finallyDo(() -> isFormSubmitting.onNext(false));
+      .compose(Transformers.pipeApiErrorsTo(signupError));
   }
 
   private void success(@NonNull final AccessTokenEnvelope envelope) {

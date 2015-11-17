@@ -18,8 +18,7 @@ public class IconTextView extends TextView {
 
   // Enum for the iconType XML parameter
   private static final int MATERIAL = 0;
-  private static final int ION = 1;
-  private static final int SS_KICKSTARTER = 2;
+  private static final int SS_KICKSTARTER = 1;
   private static final int DEFAULT_ICON_TYPE = MATERIAL;
 
   private int iconType;
@@ -65,9 +64,6 @@ public class IconTextView extends TextView {
     switch (iconType) {
       case MATERIAL:
         setTypeface(font.materialIconsTypeface());
-        break;
-      case ION:
-        setTypeface(font.ionIconsTypeface());
         break;
       case SS_KICKSTARTER:
         setTypeface(font.ssKickstarterTypeface());

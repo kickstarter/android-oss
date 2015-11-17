@@ -38,7 +38,6 @@ import com.kickstarter.ui.viewholders.ProjectViewHolder;
 import com.kickstarter.ui.viewholders.RewardViewHolder;
 import com.kickstarter.ui.views.IconTextView;
 import com.kickstarter.ui.views.KSWebView;
-import com.kickstarter.ui.views.TiemposTextView;
 
 public interface ApplicationGraph {
   void inject(ActivityFeedActivity __);
@@ -77,7 +76,6 @@ public interface ApplicationGraph {
   void inject(SearchPresenter __);
   void inject(SignupPresenter __);
   void inject(ThanksPresenter __);
-  void inject(TiemposTextView __);
   void inject(TwoFactorPresenter __);
   void inject(ViewPledgeActivity __);
   void inject(ViewPledgePresenter __);

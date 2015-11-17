@@ -10,12 +10,8 @@ import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
-import com.facebook.FacebookAuthorizationException;
-import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.appevents.AppEventsLogger;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
@@ -71,24 +67,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
     presenter.inputs.reason(getIntent().getStringExtra(intentLoginTypeString));
 
     callbackManager = CallbackManager.Factory.create();
-    LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-      @Override
-      public void onSuccess(@NonNull final LoginResult result) {
-        presenter.inputs.facebookAccessToken(result.getAccessToken().getToken());
-      }
-
-      @Override
-      public void onCancel() {
-        // continue
-      }
-
-      @Override
-      public void onError(@NonNull final FacebookException error) {
-        if (error instanceof FacebookAuthorizationException) {
-          presenter.errors.facebookAuthorizationException(error);
-        }
-      }
-    });
+    presenter.inputs.facebookCallbackManager(callbackManager);
 
     addSubscription(
       presenter.errors.tfaChallenge()
@@ -142,9 +121,8 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
     AppEventsLogger.deactivateApp(this);
   }
 
-  public void handleFacebookAuthorizationError(@NonNull final FacebookException e) {
+  public void showFacebookExceptionDialog(@NonNull final FacebookException e) {
     displayDialog(errorTitleString, e.getLocalizedMessage());
-    LoginManager.getInstance().logOut();
   }
 
   @OnClick({R.id.disclaimer_text_view})
@@ -154,8 +132,8 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
 
   @OnClick(R.id.facebook_login_button)
   public void facebookLoginClick() {
-    LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList(getResources()
-      .getStringArray(R.array.facebook_permissions_array))
+    presenter.inputs.facebookLoginClick(this,
+      Arrays.asList(getResources().getStringArray(R.array.facebook_permissions_array))
     );
   }
 
@@ -188,7 +166,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
   @Override
   protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
     super.onActivityResult(requestCode, resultCode, intent);
-    callbackManager.onActivityResult(requestCode, resultCode, intent);
+    presenter.inputs.onActivityResult(requestCode, resultCode, intent);
 
     if (requestCode != ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_LOGIN_ACTIVITY_FORWARD) {
       return;

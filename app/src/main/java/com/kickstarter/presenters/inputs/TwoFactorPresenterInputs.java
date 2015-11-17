@@ -1,9 +1,11 @@
 package com.kickstarter.presenters.inputs;
 
-import android.view.View;
-
 public interface TwoFactorPresenterInputs {
   void code(String __);
-  void loginClick(View __);
-  void resendClick(View __);
+  void email(String __);
+  void fbAccessToken(String __);
+  void isFacebookLogin(boolean __);
+  void loginClick();
+  void password(String __);
+  void resendClick();
 }

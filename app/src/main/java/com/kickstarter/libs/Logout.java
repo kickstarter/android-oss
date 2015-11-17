@@ -2,6 +2,8 @@ package com.kickstarter.libs;
 
 import android.support.annotation.NonNull;
 
+import com.facebook.login.LoginManager;
+
 import java.net.CookieManager;
 
 public class Logout {
@@ -16,5 +18,6 @@ public class Logout {
   public void execute() {
     currentUser.logout();
     cookieManager.getCookieStore().removeAll();
+    LoginManager.getInstance().logOut();
   }
 }

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
-import android.view.View;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
@@ -22,19 +21,53 @@ import com.kickstarter.ui.activities.TwoFactorActivity;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> implements TwoFactorPresenterInputs, TwoFactorPresenterOutputs, TwoFactorPresenterErrors {
+public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> implements TwoFactorPresenterInputs,
+  TwoFactorPresenterOutputs, TwoFactorPresenterErrors {
+
+  protected final static class TfaData {
+    @Nullable final String email;
+    @Nullable final String fbAccessToken;
+    final boolean isFacebookLogin;
+    @Nullable final String password;
+    @NonNull final String code;
+
+    protected TfaData(@Nullable final String email, @Nullable final String fbAccessToken, final boolean isFacebookLogin,
+      @Nullable final String password, @NonNull final String code) {
+      this.email = email;
+      this.fbAccessToken = fbAccessToken;
+      this.isFacebookLogin = isFacebookLogin;
+      this.password = password;
+      this.code = code;
+    }
+
+    protected boolean isValid() {
+      return code.length() > 0;
+    }
+  }
+
   // INPUTS
   private final PublishSubject<String> code = PublishSubject.create();
-  private final PublishSubject<View> loginClick = PublishSubject.create();
-  private final PublishSubject<View> resendClick = PublishSubject.create();
+  private final PublishSubject<String> email = PublishSubject.create();
+  private final PublishSubject<String> fbAccessToken = PublishSubject.create();
+  private final PublishSubject<Boolean> isFacebookLogin = PublishSubject.create();
+  private final PublishSubject<Void> loginClick = PublishSubject.create();
+  private final PublishSubject<String> password = PublishSubject.create();
+  private final PublishSubject<Void> resendClick = PublishSubject.create();
 
   // OUTPUTS
-  private final PublishSubject<Void> loginSuccess = PublishSubject.create();
-  public Observable<Void> loginSuccess() {
-    return loginSuccess.asObservable();
+  private final PublishSubject<Boolean> formSubmitting = PublishSubject.create();
+  public final Observable<Boolean> formSubmitting() {
+    return formSubmitting.asObservable();
+  }
+  private final PublishSubject<Boolean> formIsValid = PublishSubject.create();
+  public final Observable<Boolean> formIsValid() {
+    return formIsValid.asObservable();
+  }
+  private final PublishSubject<Void> tfaSuccess = PublishSubject.create();
+  public final Observable<Void> tfaSuccess() {
+    return tfaSuccess.asObservable();
   }
 
   // ERRORS
@@ -58,18 +91,38 @@ public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> imple
   public final TwoFactorPresenterErrors errors = this;
 
   @Override
+  public void email(@NonNull final String s) {
+    email.onNext(s);
+  }
+
+  @Override
+  public void fbAccessToken(@NonNull final String s) {
+    fbAccessToken.onNext(s);
+  }
+
+  @Override
+  public void isFacebookLogin(final boolean b) {
+    isFacebookLogin.onNext(b);
+  }
+
+  @Override
   public void code(@NonNull final String s) {
     code.onNext(s);
   }
 
   @Override
-  public void loginClick(@NonNull final View view) {
-    loginClick.onNext(view);
+  public void password(@NonNull final String s) {
+    password.onNext(s);
   }
 
   @Override
-  public void resendClick(@NonNull final View view) {
-    resendClick.onNext(view);
+  public void loginClick() {
+    loginClick.onNext(null);
+  }
+
+  @Override
+  public void resendClick() {
+    resendClick.onNext(null);
   }
 
   @Override
@@ -77,37 +130,34 @@ public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> imple
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    final Observable<Boolean> isValid = code
-      .map(TwoFactorPresenter::isValid);
+    final Observable<TfaData> tfaData = Observable.combineLatest(email, fbAccessToken, isFacebookLogin, password, code,
+      TfaData::new);
+    final Observable<Pair<String, String>> emailAndPassword = email
+      .compose(Transformers.combineLatestPair(password));
 
-    final Observable<Pair<TwoFactorActivity, String>> viewAndCode = viewSubject
-      .compose(Transformers.combineLatestPair(code));
+    addSubscription(tfaData
+      .map(TfaData::isValid)
+      .subscribe(this.formIsValid::onNext));
 
-    final Observable<AccessTokenEnvelope> tokenEnvelope = viewAndCode
+    addSubscription(tfaData
       .compose(Transformers.takeWhen(loginClick))
-      .switchMap(vc -> submit(vc.first.email(), vc.first.password(), vc.second));
+      .filter(data -> !data.isFacebookLogin)
+      .flatMap(this::submit)
+      .subscribe(this::success));
 
-    addSubscription(viewSubject
-        .compose(Transformers.combineLatestPair(isValid))
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(viewAndValid -> viewAndValid.first.setLoginEnabled(viewAndValid.second))
+    addSubscription(tfaData
+      .compose(Transformers.takeWhen(loginClick))
+      .filter(data -> data.isFacebookLogin)
+      .flatMap(data -> loginWithFacebook(data.fbAccessToken, data.code))
+      .subscribe(this::success));
+
+    addSubscription(emailAndPassword
+      .compose(Transformers.takeWhen(resendClick))
+      .switchMap(ep -> resendCode(ep.first, ep.second))
+      .subscribe()
     );
 
-    addSubscription(tokenEnvelope
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this::success)
-    );
-
-    addSubscription(viewSubject
-        .compose(Transformers.takeWhen(resendClick))
-        .switchMap(view -> resendCode(view.email(), view.password()))
-        .observeOn(AndroidSchedulers.mainThread())
-          // TODO: It might be a gotcha to have an empty subscription block, but I don't remember
-          // why. We should investigate.
-        .subscribe()
-    );
-
-    addSubscription(loginSuccess.subscribe(__ -> koala.trackLoginSuccess()));
+    addSubscription(tfaSuccess.subscribe(__ -> koala.trackLoginSuccess()));
 
     addSubscription(resendClick.subscribe(__ -> koala.trackTwoFactorResendCode()));
 
@@ -116,27 +166,21 @@ public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> imple
     koala.trackTwoFactorAuthView();
   }
 
-  private static boolean isValid(@NonNull final String code) {
-    return code.length() > 0;
-  }
-
-  public void takeLoginClick() {
-    loginClick.onNext(null);
-  }
-
-  public void takeResendClick() {
-    resendClick.onNext(null);
+  public Observable<AccessTokenEnvelope> loginWithFacebook(@NonNull final String fbAccessToken, @NonNull final String code) {
+    return client.loginWithFacebook(fbAccessToken, code)
+      .compose(Transformers.pipeApiErrorsTo(tfaError));
   }
 
   private void success(@NonNull final AccessTokenEnvelope envelope) {
     currentUser.login(envelope.user(), envelope.accessToken());
-    loginSuccess.onNext(null);
+    tfaSuccess.onNext(null);
   }
 
-  private Observable<AccessTokenEnvelope> submit(@NonNull final String email, @NonNull final String password,
-    @NonNull final String code) {
-    return client.login(email, password, code)
-      .compose(Transformers.pipeApiErrorsTo(tfaError));
+  private Observable<AccessTokenEnvelope> submit(@NonNull final TfaData data) {
+    return client.login(data.email, data.password, data.code)
+      .compose(Transformers.pipeApiErrorsTo(tfaError))
+      .doOnSubscribe(() -> formSubmitting.onNext(true))
+      .finallyDo(() -> formSubmitting.onNext(false));
   }
 
   private Observable<AccessTokenEnvelope> resendCode(@NonNull final String email, @NonNull final String password) {

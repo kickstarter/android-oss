@@ -130,6 +130,7 @@
     <item name="android:textColor">@color/white</item>
     <item name="android:layout_centerInParent">true</item>
     <item name="android:singleLine">true</item>
+    <item name="android:text">@string/Log_in_with_Facebook</item>
     <item name="android:paddingLeft">@dimen/grid_1</item>
     <item name="android:paddingRight">@dimen/grid_3</item>
     <item name="android:drawableLeft">@drawable/ic_social_facebook</item>

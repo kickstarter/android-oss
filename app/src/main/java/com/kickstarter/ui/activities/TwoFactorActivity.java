@@ -5,10 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.facebook.login.LoginManager;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
@@ -44,10 +44,27 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
     ButterKnife.bind(this);
     loginToolbar.setTitle(verifyString);
 
+    presenter.inputs.email(getIntent().getExtras().getString(getString(R.string.intent_email)));
+    presenter.inputs.isFacebookLogin(getIntent().getBooleanExtra(getString(R.string.intent_facebook_login), false));
+    presenter.inputs.fbAccessToken(getIntent().getExtras().getString(getString(R.string.intent_facebook_token)));
+    presenter.inputs.password(getIntent().getExtras().getString(getString(R.string.intent_password)));
+
     addSubscription(
-      presenter.outputs.loginSuccess()
+      presenter.outputs.tfaSuccess()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(__ -> onSuccess())
+    );
+
+    addSubscription(
+      presenter.outputs.formSubmitting()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(this::setFormDisabled)
+    );
+
+    addSubscription(
+      presenter.outputs.formIsValid()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(this::setFormEnabled)
     );
 
     addSubscription(
@@ -67,18 +84,25 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
     presenter.inputs.code(code.toString());
   }
 
+  public boolean forward() {
+    return getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
+  }
+
   @OnClick(R.id.resend_button)
-  public void resendButtonOnClick(@NonNull final View view) {
-    presenter.inputs.resendClick(view);
+  public void resendButtonOnClick() {
+    presenter.inputs.resendClick();
   }
 
   @OnClick(R.id.login_button)
-  public void loginButtonOnClick(@NonNull final View view) {
-    presenter.inputs.loginClick(view);
+  public void loginButtonOnClick() {
+    presenter.inputs.loginClick();
   }
 
-  public void setLoginEnabled(final boolean enabled) {
-    loginButton.setEnabled(enabled);
+  @Override
+  public void onBackPressed() {
+    super.onBackPressed();
+
+    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
   public void onSuccess() {
@@ -92,15 +116,11 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
     }
   }
 
-  public String email () {
-    return getIntent().getExtras().getString(getString(R.string.intent_email));
+  public void setFormEnabled(final boolean enabled) {
+    loginButton.setEnabled(enabled);
   }
 
-  public String password () {
-    return getIntent().getExtras().getString(getString(R.string.intent_password));
-  }
-
-  public boolean forward () {
-    return getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
+  public void setFormDisabled(final boolean disabled) {
+    setFormEnabled(!disabled);
   }
 }

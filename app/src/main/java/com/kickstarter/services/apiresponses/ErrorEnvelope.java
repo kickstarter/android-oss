@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 
-import com.kickstarter.R;
 import com.kickstarter.libs.qualifiers.AutoGson;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.services.ApiError;
@@ -15,18 +14,42 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 
 import auto.parcel.AutoParcel;
-import butterknife.BindString;
 
 @AutoGson
 @AutoParcel
 public abstract class ErrorEnvelope implements Parcelable {
   @Nullable public abstract List<String> errorMessages();
   public abstract int httpCode();
-  public abstract String ksrCode();
+  @Nullable public abstract String ksrCode();
+  @Nullable public abstract FacebookUser facebookUser();
+
+  @AutoGson
+  @AutoParcel
+  public static abstract class FacebookUser implements Parcelable {
+    public abstract long id();
+    public abstract String name();
+    public abstract String email();
+
+    @AutoParcel.Builder
+    public static abstract class Builder {
+      public abstract Builder id(long __);
+      public abstract Builder name(String __);
+      public abstract Builder email(String __);
+      public abstract FacebookUser build();
+    }
+
+    public static Builder builder() {
+      return new AutoParcel_ErrorEnvelope_FacebookUser.Builder();
+    }
+
+    public abstract Builder toBuilder();
+  }
 
   public static final String INVALID_XAUTH_LOGIN = "invalid_xauth_login";
   public static final String TFA_FAILED = "tfa_failed";
   public static final String TFA_REQUIRED = "tfa_required";
+  public static final String MISSING_FACEBOOK_EMAIL = "missing_facebook_email";
+  public static final String FACEBOOK_INVALID_ACCESS_TOKEN = "facebook_invalid_access_token";
 
   @StringDef({INVALID_XAUTH_LOGIN, TFA_FAILED, TFA_REQUIRED})
   @Retention(RetentionPolicy.SOURCE)
@@ -56,6 +79,14 @@ public abstract class ErrorEnvelope implements Parcelable {
 
   public boolean isTfaFailedError() {
     return ksrCode().equals(TFA_FAILED);
+  }
+
+  public boolean isMissingFacebookEmailError() {
+    return ksrCode().equals(MISSING_FACEBOOK_EMAIL);
+  }
+
+  public boolean isFacebookInvalidAccessTokenError() {
+    return ksrCode().equals(FACEBOOK_INVALID_ACCESS_TOKEN);
   }
 
   /*

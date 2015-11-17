@@ -34,10 +34,10 @@
         android:src="@drawable/logo" />
 
       <Button
-        style="@style/FacebookButton"
         android:id="@+id/facebook_login_button"
+        style="@style/FacebookButton"
         android:layout_width="match_parent"
-        android:text="@string/Log_in_with_Facebook" />
+        android:layout_height="wrap_content" />
 
       <TextView
         style="@style/CaptionSecondary"

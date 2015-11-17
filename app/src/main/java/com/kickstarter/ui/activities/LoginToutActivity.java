@@ -195,13 +195,14 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
   public void startFacebookConfirmationActivity(@NonNull final ErrorEnvelope.FacebookUser facebookUser) {
     final Intent intent = new Intent(this, FacebookConfirmationActivity.class)
       .putExtra(getString(R.string.intent_forward), forward)
-      .putExtra(getString(R.string.intent_facebook_user), facebookUser);
+      .putExtra(getString(R.string.intent_facebook_user), facebookUser)
+      .putExtra(getString(R.string.intent_facebook_token), AccessToken.getCurrentAccessToken().getToken());
     if (forward) {
       startActivityForResult(intent, ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_FACEBOOK_CONFIRMATION_ACTIVITY_FORWARD);
     } else {
       startActivity(intent);
     }
-    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   public void startTwoFactorActivity(final boolean isFacebookLogin) {

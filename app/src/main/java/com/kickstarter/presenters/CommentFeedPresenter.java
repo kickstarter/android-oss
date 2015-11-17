@@ -11,6 +11,7 @@ import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Comment;
+import com.kickstarter.models.Empty;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.presenters.errors.CommentFeedPresenterErrors;
@@ -40,10 +41,16 @@ public final class CommentFeedPresenter extends Presenter<CommentFeedActivity> i
   private final PublishSubject<String> commentBody = PublishSubject.create();
   private final PublishSubject<Void> nextPage = PublishSubject.create();
   public void nextPage() { nextPage.onNext(null); }
+  private final BehaviorSubject<Empty> refresh = BehaviorSubject.create(Empty.create());
+  public void refresh() {
+    refresh.onNext(Empty.create());
+  }
 
   // OUTPUTS
   private final PublishSubject<Void> commentPosted = PublishSubject.create();
   public Observable<Void> commentPosted() { return commentPosted.asObservable(); }
+  private final PublishSubject<Boolean> isFetchingComments = PublishSubject.create();
+  public final Observable<Boolean> isFetchingComments() { return isFetchingComments; }
   private final PublishSubject<Void> showCommentDialog = PublishSubject.create();
   public Observable<Void> showCommentDialog() { return showCommentDialog; }
   private final BehaviorSubject<Boolean> showCommentButton = BehaviorSubject.create();
@@ -59,7 +66,6 @@ public final class CommentFeedPresenter extends Presenter<CommentFeedActivity> i
   private final PublishSubject<Void> loginSuccess = PublishSubject.create();
   private final PublishSubject<String> bodyOnPostClick = PublishSubject.create();
   private final PublishSubject<Boolean> commentIsPosting = PublishSubject.create();
-  private final PublishSubject<Void> refreshFeed = PublishSubject.create();
   private final PublishSubject<CommentFeedParams> params = PublishSubject.create();
 
   @Inject ApiClient client;
@@ -85,7 +91,7 @@ public final class CommentFeedPresenter extends Presenter<CommentFeedActivity> i
       .mergeWith(initialProject)
       .share();
 
-    final Observable<List<Comment>> comments = refreshFeed
+    final Observable<List<Comment>> comments = refresh
       .switchMap(__ -> commentsWithPagination())
       .share();
 
@@ -129,7 +135,7 @@ public final class CommentFeedPresenter extends Presenter<CommentFeedActivity> i
 
     addSubscription(postedComment
         .compose(Transformers.ignoreValues())
-        .subscribe(refreshFeed::onNext)
+        .subscribe(__ -> refresh.onNext(Empty.create()))
     );
 
     addSubscription(viewSubject
@@ -145,7 +151,7 @@ public final class CommentFeedPresenter extends Presenter<CommentFeedActivity> i
     );
 
     addSubscription(project
-        .compose(Transformers.takeWhen(refreshFeed))
+        .compose(Transformers.takeWhen(refresh))
         .map(p -> CommentFeedParams.builder().project(p).build())
         .subscribe(p -> {
           params.onNext(p);
@@ -164,7 +170,7 @@ public final class CommentFeedPresenter extends Presenter<CommentFeedActivity> i
       .subscribe(koala::trackProjectCommentLoadMore)
     );
 
-    addSubscription(project.take(1).subscribe(__ -> refreshFeed.onNext(null)));
+    addSubscription(project.take(1).subscribe(__ -> refresh.onNext(Empty.create())));
   }
 
   private Observable<List<Comment>> commentsWithPagination() {
@@ -179,7 +185,9 @@ public final class CommentFeedPresenter extends Presenter<CommentFeedActivity> i
     return client.fetchProjectComments(params)
       .compose(Transformers.neverError())
       .doOnNext(env -> keepPaginationParams(params, env))
-      .map(CommentsEnvelope::comments);
+      .map(CommentsEnvelope::comments)
+      .doOnSubscribe(() -> isFetchingComments.onNext(true))
+      .finallyDo(() -> isFetchingComments.onNext(false));
   }
 
   private void keepPaginationParams(@NonNull final CommentFeedParams currentParams, @NonNull final CommentsEnvelope envelope) {

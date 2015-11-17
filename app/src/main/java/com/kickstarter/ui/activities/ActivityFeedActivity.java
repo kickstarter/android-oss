@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -11,6 +12,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.Paginator;
+import com.kickstarter.libs.SwipeRefresher;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
@@ -22,12 +24,15 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresPresenter(ActivityFeedPresenter.class)
 public final class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
   private ActivityFeedAdapter adapter;
   public @Bind(R.id.recycler_view) RecyclerView recyclerView;
+  protected @Bind(R.id.activity_feed_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
   private Paginator paginator;
+  private SwipeRefresher swipeRefresher;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -40,6 +45,12 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedPresent
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
     paginator = new Paginator(recyclerView, presenter.inputs::nextPage);
+    swipeRefresher = new SwipeRefresher(this, swipeRefreshLayout, presenter.inputs::refresh, presenter.outputs::isFetchingActivities);
+
+    presenter.outputs.activities()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::showActivities);
   }
 
   @Override

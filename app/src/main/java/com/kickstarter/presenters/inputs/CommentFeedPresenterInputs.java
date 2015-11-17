@@ -17,4 +17,9 @@ public interface CommentFeedPresenterInputs {
    * Invoke when pagination should happen.
    */
   void nextPage();
+
+  /**
+   * Invoke when the feed should be refreshed.
+   */
+  void refresh();
 }

@@ -22,6 +22,7 @@ import com.kickstarter.libs.Paginator;
 import com.kickstarter.libs.SwipeRefresher;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
@@ -76,7 +77,7 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedPresenter
 
     addSubscription(toastMessages()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this::displayToast)
+        .subscribe(message -> ViewUtils.showToast(this, message))
     );
 
     addSubscription(presenter.outputs.showCommentButton()

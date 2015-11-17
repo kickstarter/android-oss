@@ -5,10 +5,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.PopupMenu;
 import android.util.AttributeSet;
-import android.widget.Toast;
 
 import com.kickstarter.R;
-import com.kickstarter.ui.activities.ActivityFeedActivity;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.ui.views.IconTextView;
 
 import butterknife.Bind;
@@ -52,7 +51,7 @@ public final class ActivityFeedToolbar extends KSToolbar {
           // TODO
           break;
       }
-      Toast.makeText(context, notImplementedYetString, Toast.LENGTH_LONG).show();
+      ViewUtils.showToast(context, notImplementedYetString);
 
       return true;
     });

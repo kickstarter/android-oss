@@ -10,6 +10,7 @@ import android.widget.EditText;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.presenters.ResetPasswordPresenter;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 
@@ -59,7 +60,7 @@ public final class ResetPasswordActivity extends BaseActivity<ResetPasswordPrese
     addSubscription(
       presenter.errors.resetError()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(__ -> displayDialog(errorTitleString, errorMessageString))
+        .subscribe(__ -> ViewUtils.showDialog(this, errorTitleString, errorMessageString))
     );
   }
 

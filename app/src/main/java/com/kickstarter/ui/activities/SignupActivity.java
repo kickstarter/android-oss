@@ -14,6 +14,7 @@ import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.presenters.SignupPresenter;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 import com.kickstarter.ui.views.LoginPopupMenu;
@@ -70,7 +71,7 @@ public final class SignupActivity extends BaseActivity<SignupPresenter> {
     addSubscription(
       presenter.errors.signupError()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(e -> displayDialog(errorTitleString, e))
+        .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e))
     );
 
     addSubscription(RxCompoundButton.checkedChanges(newsletterSwitch)

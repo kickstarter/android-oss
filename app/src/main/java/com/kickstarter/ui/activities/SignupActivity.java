@@ -78,7 +78,7 @@ public final class SignupActivity extends BaseActivity<SignupPresenter> {
     );
   }
 
-  @OnClick({R.id.disclaimer})
+  @OnClick(R.id.disclaimer)
   public void disclaimerClick() {
    new LoginPopupMenu(this, helpButton).show();
   }

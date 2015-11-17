@@ -39,6 +39,7 @@
         android:checked="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:switchPadding="@dimen/grid_1"
         style="@style/BodySecondary"
         android:layout_marginTop="@dimen/grid_3"
         android:layout_marginBottom="@dimen/grid_2"
@@ -48,16 +49,17 @@
         android:id="@+id/create_new_account_button"
         style="@style/Button"
         android:layout_marginTop="@dimen/grid_1"
-        android:layout_marginBottom="@dimen/grid_3"
+        android:layout_marginBottom="@dimen/grid_2"
         android:layout_width="match_parent"
         android:background="@drawable/button_green_rounded"
         android:text="@string/Create_new_account" />
 
       <TextView
         android:id="@+id/disclaimer"
+        style="@style/CaptionSecondary"
         android:text="@string/By_signing_up_you_agree_to_our_sign_up"
         android:gravity="center"
-        style="@style/CaptionSecondary"
+        android:background="@drawable/click_indicator_light_masked"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/grid_6"/>

@@ -8,7 +8,7 @@ import rx.Observable;
 
 public interface ActivityFeedPresenterOutputs {
   /**
-   * Emits a boolean indicating whether APIs are being fetched from the API.
+   * Emits a boolean indicating whether activities are being fetched from the API.
    */
   Observable<Boolean> isFetchingActivities();
 

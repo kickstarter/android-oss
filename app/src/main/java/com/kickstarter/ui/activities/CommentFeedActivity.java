@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +19,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.Paginator;
+import com.kickstarter.libs.SwipeRefresher;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Comment;
@@ -42,9 +44,11 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedPresenter
   private CommentFeedAdapter adapter;
   private Project project;
   private Paginator paginator;
+  private SwipeRefresher swipeRefresher;
   @Nullable private AlertDialog commentDialog;
 
   public @Bind(R.id.comment_button) TextView commentButtonTextView;
+  protected @Bind(R.id.comment_feed_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
   public @Bind(R.id.comment_feed_recycler_view) RecyclerView recyclerView;
   @Nullable @Bind(R.id.comment_body) EditText commentBodyEditText;
   public @Nullable @Bind(R.id.post_button) TextView postCommentButton;
@@ -68,6 +72,7 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedPresenter
     presenter.inputs.initialProject(project);
 
     paginator = new Paginator(recyclerView, presenter.inputs::nextPage);
+    swipeRefresher = new SwipeRefresher(this, swipeRefreshLayout, presenter.inputs::refresh, presenter.outputs::isFetchingComments);
 
     addSubscription(toastMessages()
         .observeOn(AndroidSchedulers.mainThread())

@@ -165,12 +165,13 @@
     <item name="android:layout_width">match_parent</item>
   </style>
 
-  <style name="ToolbarIcon" parent="Headline">
+  <style name="ToolbarIcon">
     <item name="android:background">@drawable/click_indicator_light</item>
-    <item name="android:textColor">@color/primary_dark</item>
     <item name="android:layout_height">match_parent</item>
     <item name="android:layout_width">@dimen/button_icon_fixed_width</item>
     <item name="android:gravity">center</item>
+    <item name="android:textColor">@color/primary_dark</item>
+    <item name="android:textSize">22sp</item>
   </style>
 
   <style name="ToolbarTitle" parent="Subhead">

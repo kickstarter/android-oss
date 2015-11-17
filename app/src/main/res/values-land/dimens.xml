@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <dimen name="form_margin_x">@dimen/grid_16</dimen>
+</resources>

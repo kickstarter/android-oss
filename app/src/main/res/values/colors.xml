@@ -24,6 +24,7 @@
   <color name="light_green">#def7e0</color>
   <color name="gray">#d9d9de</color>
   <color name="gray_black">#ff464646</color>
+  <color name="off_white">#fafafa</color>
   <color name="pink">#ffecf0</color>
   <color name="text_dark">#ff0f2105</color>
   <color name="text_light">#ffffffff</color>

@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 
+import com.kickstarter.R;
 import com.kickstarter.libs.qualifiers.AutoGson;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.services.ApiError;
@@ -14,11 +15,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 
 import auto.parcel.AutoParcel;
+import butterknife.BindString;
 
 @AutoGson
 @AutoParcel
 public abstract class ErrorEnvelope implements Parcelable {
-  public abstract List<String> errorMessages();
+  @Nullable public abstract List<String> errorMessages();
   public abstract int httpCode();
   public abstract String ksrCode();
 
@@ -70,6 +72,10 @@ public abstract class ErrorEnvelope implements Parcelable {
    * Returns the first error message available, or `null` if there are none.
    */
   public @Nullable String errorMessage() {
-    return ListUtils.first(errorMessages());
+    if (errorMessages() == null) {
+      return null;
+    } else {
+      return ListUtils.first(errorMessages());
+    }
   }
 }

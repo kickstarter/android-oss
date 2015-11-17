@@ -14,6 +14,11 @@ public interface CommentFeedPresenterOutputs {
   Observable<Void> commentPosted();
 
   /**
+   * Emits a boolean indicating whether comments are being fetched from the API.
+   */
+  Observable<Boolean> isFetchingComments();
+
+  /**
    * Emits when the comment dialog should be displayed.
    */
   Observable<Void> showCommentDialog();

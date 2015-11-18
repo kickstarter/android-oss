@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.facebook.appevents.AppEventsLogger;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.Koala;
 
@@ -34,12 +35,18 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
   public void onActivityResumed(@NonNull final Activity activity) {
     if(isInBackground){
       koala.trackAppOpen();
+
+      // Facebook: logs 'install' and 'app activate' App Events.
+      AppEventsLogger.activateApp(activity);
+
       isInBackground = false;
     }
   }
 
   @Override
   public void onActivityPaused(@NonNull final Activity activity) {
+    // Facebook: logs 'app deactivate' App Event.
+    AppEventsLogger.deactivateApp(activity);
   }
 
   @Override

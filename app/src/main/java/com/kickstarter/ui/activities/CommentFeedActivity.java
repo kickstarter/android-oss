@@ -77,7 +77,7 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedPresenter
 
     addSubscription(toastMessages()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(message -> ViewUtils.showToast(this, message))
+        .subscribe(ViewUtils.showToast(this))
     );
 
     addSubscription(presenter.outputs.showCommentButton()

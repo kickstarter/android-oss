@@ -78,7 +78,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
     addSubscription(
       errorMessages()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(message -> ViewUtils.showToast(this, message))
+        .subscribe(ViewUtils.showToast(this))
     );
 
     addSubscription(

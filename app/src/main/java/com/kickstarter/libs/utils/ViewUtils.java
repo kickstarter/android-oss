@@ -10,8 +10,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.ForApplication;
 import com.kickstarter.ui.views.KSDialog;
+
+import rx.functions.Action1;
 
 public class ViewUtils {
   public ViewUtils() {}
@@ -43,5 +44,12 @@ public class ViewUtils {
     final Toast toast = new Toast(context);
     toast.setView(view);
     toast.show();
+  }
+
+  /**
+   * Curried form of showToast.
+   */
+  public static Action1<String> showToast(@NonNull final Context context) {
+    return (message) -> showToast(context, message);
   }
 }

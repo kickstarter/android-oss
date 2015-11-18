@@ -65,6 +65,12 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
   }
 
   private final PublishSubject<ErrorEnvelope> loginError = PublishSubject.create();
+  public final Observable<ErrorEnvelope.FacebookUser> confirmFacebookSignupError() {
+   return loginError
+     .filter(ErrorEnvelope::isConfirmFacebookSignupError)
+     .map(ErrorEnvelope::facebookUser);
+  }
+
   public final Observable<String> missingFacebookEmailError() {
     return loginError
       .filter(ErrorEnvelope::isMissingFacebookEmailError)
@@ -121,7 +127,7 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
     );
 
     addSubscription(facebookAuthorizationError
-        .subscribe(this::clearFacebookSession)
+      .subscribe(this::clearFacebookSession)
     );
   }
 
@@ -130,6 +136,15 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
     addSubscription(reason.take(1).subscribe(koala::trackLoginRegisterTout));
+
+    addSubscription(loginError.subscribe(__ -> koala.trackLoginError()));
+
+    addSubscription(facebookLoginSuccess.subscribe(__ -> koala.trackFacebookLoginSuccess()));
+
+    addSubscription(missingFacebookEmailError()
+      .mergeWith(facebookInvalidAccessTokenError())
+      .mergeWith(facebookAuthorizationError())
+      .subscribe(__ -> koala.trackFacebookLoginError()));
   }
 
   @Override

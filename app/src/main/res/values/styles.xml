@@ -137,6 +137,10 @@
     <item name="android:drawableStart">@drawable/ic_social_facebook</item>
   </style>
 
+  <style name="GreenRoundedButton" parent="Button">
+    <item name="android:background">@drawable/button_green_rounded</item>
+  </style>
+
   <style name="TwitterButton" parent="Base.Widget.AppCompat.Button.Borderless">
     <item name="android:background">@drawable/button_twitter</item>
     <item name="android:layout_width">wrap_content</item>

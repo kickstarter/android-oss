@@ -9,6 +9,7 @@ import com.kickstarter.presenters.ActivityFeedPresenter;
 import com.kickstarter.presenters.CommentFeedPresenter;
 import com.kickstarter.presenters.DiscoveryFilterPresenter;
 import com.kickstarter.presenters.DiscoveryPresenter;
+import com.kickstarter.presenters.FacebookConfirmationPresenter;
 import com.kickstarter.presenters.LoginPresenter;
 import com.kickstarter.presenters.LoginToutPresenter;
 import com.kickstarter.presenters.ProjectPresenter;
@@ -55,6 +56,7 @@ public interface ApplicationGraph {
   void inject(DiscoveryToolbar __);
   void inject(EmptyActivityFeedViewHolder __);
   void inject(EmptyCommentFeedViewHolder __);
+  void inject(FacebookConfirmationPresenter __);
   void inject(ResetPasswordPresenter __);
   void inject(HelpActivity __);
   void inject(IconTextView __);

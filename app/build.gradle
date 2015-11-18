@@ -103,6 +103,11 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    // Fixes build error hitting GC overhead limit
+    dexOptions {
+        javaMaxHeapSize "2048M"
+    }
+
     lintOptions {
         disable 'InvalidPackage'
     }

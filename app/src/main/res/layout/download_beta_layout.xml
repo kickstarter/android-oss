@@ -55,9 +55,8 @@
       android:text="@string/A_request_has_been_made_to_download_the_latest_build" />
 
     <Button
-      style="@style/Button"
+      style="@style/GreenRoundedButton"
       android:id="@+id/open_downloads_button"
-      android:background="@drawable/button_green_rounded"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_3"

@@ -56,7 +56,7 @@
 
   </android.support.design.widget.TextInputLayout>
 
-  <Switch
+  <android.support.v7.widget.SwitchCompat
     android:id="@+id/newsletter_switch"
     android:checked="true"
     android:layout_width="wrap_content"
@@ -68,12 +68,11 @@
 
   <Button
     android:id="@+id/signup_button"
-    style="@style/Button"
+    style="@style/GreenRoundedButton"
     android:enabled="false"
     android:layout_marginTop="@dimen/grid_2"
     android:layout_marginBottom="@dimen/grid_2"
     android:layout_width="match_parent"
-    android:background="@drawable/button_green_rounded"
     android:text="@string/Sign_up" />
 
   <TextView

@@ -11,6 +11,7 @@ import com.kickstarter.models.User;
 import com.kickstarter.services.apirequests.CommentBody;
 import com.kickstarter.services.apirequests.LoginWithFacebookBody;
 import com.kickstarter.services.apirequests.PushTokenBody;
+import com.kickstarter.services.apirequests.RegisterWithFacebookBody;
 import com.kickstarter.services.apirequests.ResetPasswordBody;
 import com.kickstarter.services.apirequests.SignupBody;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
@@ -73,10 +74,8 @@ import rx.Observable;
   @PUT("/v1/facebook/access_token?intent=login")
   Observable<AccessTokenEnvelope> loginWithFacebook(@Body LoginWithFacebookBody body);
 
-  // send_newsletters=true/false
   @PUT("/v1/facebook/access_token?intent=register")
-  Observable<AccessTokenEnvelope> registerWithFacebook(@Query("access_token") String accessToken,
-    @Query("send_newsletters") boolean sendNewsletters);
+  Observable<AccessTokenEnvelope> registerWithFacebook(@Body RegisterWithFacebookBody body);
 
   @POST("/v1/projects/{param}/comments/")
   Observable<Comment> postProjectComment(@Path("param") String param, @Body CommentBody body);

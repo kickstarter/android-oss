@@ -16,6 +16,7 @@ import com.kickstarter.models.User;
 import com.kickstarter.services.apirequests.CommentBody;
 import com.kickstarter.services.apirequests.LoginWithFacebookBody;
 import com.kickstarter.services.apirequests.PushTokenBody;
+import com.kickstarter.services.apirequests.RegisterWithFacebookBody;
 import com.kickstarter.services.apirequests.ResetPasswordBody;
 import com.kickstarter.services.apirequests.SignupBody;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
@@ -68,7 +69,12 @@ public final class ApiClient {
   }
 
   public Observable<AccessTokenEnvelope> registerWithFacebook(@NonNull final String fbAccessToken, final boolean sendNewsletters) {
-    return service.registerWithFacebook(fbAccessToken, sendNewsletters);
+    return service.registerWithFacebook(
+      RegisterWithFacebookBody.builder()
+        .accessToken(fbAccessToken)
+        .sendNewsletters(sendNewsletters)
+        .build()
+    );
   }
 
   public Observable<ActivityEnvelope> fetchActivities(@NonNull final ActivityFeedParams params) {

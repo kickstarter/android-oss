@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <include layout="@layout/login_toolbar"
+      android:id="@+id/sign_up_with_facebook_toolbar"/>
+
+    <LinearLayout
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingLeft="@dimen/grid_3"
+      android:paddingRight="@dimen/grid_3" >
+
+      <TextView
+        style="@style/BodySecondary"
+        android:text="@string/Before_we_make_your_new_account"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_3"
+        android:layout_marginBottom="@dimen/grid_3"/>
+
+      <TextView
+        android:id="@+id/email"
+        style="@style/SubheadMedium"
+        android:text="Email address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+      <android.support.v7.widget.SwitchCompat
+        android:id="@+id/newsletter_switch"
+        android:checked="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:switchPadding="@dimen/grid_1"
+        style="@style/BodySecondary"
+        android:layout_marginTop="@dimen/grid_3"
+        android:layout_marginBottom="@dimen/grid_2"
+        android:text="@string/Discover_new_projects_with_our_weekly_newsletter"/>
+
+      <Button
+        android:id="@+id/create_new_account_button"
+        style="@style/GreenRoundedButton"
+        android:layout_marginTop="@dimen/grid_1"
+        android:layout_marginBottom="@dimen/grid_2"
+        android:layout_width="match_parent"
+        android:text="@string/Create_new_account" />
+
+      <TextView
+        android:id="@+id/disclaimer"
+        style="@style/CaptionSecondary"
+        android:text="@string/By_signing_up_you_agree_to_our_sign_up"
+        android:gravity="center"
+        android:background="@drawable/click_indicator_light_masked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/grid_6"/>
+
+      <TextView
+        android:text="@string/Already_have_a_Kickstarter_account"
+        style="@style/BodySecondary"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+      <Button
+        android:id="@+id/login_button"
+        style="@style/BorderButton"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/grid_2"
+        android:layout_marginBottom="@dimen/grid_1"
+        android:text="@string/Log_in_with_email" />
+
+    </LinearLayout>
+
+  </LinearLayout>
+
+</ScrollView>

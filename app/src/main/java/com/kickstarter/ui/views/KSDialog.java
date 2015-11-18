@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import com.kickstarter.R;
 
 import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -23,11 +25,23 @@ public class KSDialog extends Dialog {
 
   @Nullable protected final String title;
   @NonNull protected final String message;
+  @Nullable protected final String buttonText;
+
+  @BindString(R.string.Okay) String okayString;
 
   public KSDialog(@NonNull final Context context, @Nullable final String title, @NonNull final String message) {
     super(context);
     this.title = title;
     this.message = message;
+    this.buttonText = null;
+  }
+
+  public KSDialog(@NonNull final Context context, @Nullable final String title, @NonNull final String message,
+    @NonNull final String buttonText) {
+    super(context);
+    this.title = title;
+    this.message = message;
+    this.buttonText = buttonText;
   }
 
   @Override
@@ -39,9 +53,21 @@ public class KSDialog extends Dialog {
 
     if (title != null) {
       setTitleText(title);
+    } else {
+      titleTextView.setVisibility(View.GONE);
+    }
+
+    if (buttonText != null) {
+      setButtonText(buttonText);
+    } else {
+      setButtonText(okayString);
     }
 
     setMessage(message);
+  }
+
+  public void setButtonText(@NonNull final String buttonText) {
+    okButton.setText(buttonText);
   }
 
   /**

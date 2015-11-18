@@ -45,8 +45,7 @@
       android:text="@string/Resend" />
 
     <Button
-      style="@style/Button"
-      android:background="@drawable/button_green_rounded"
+      style="@style/GreenRoundedButton"
       android:id="@+id/login_button"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"

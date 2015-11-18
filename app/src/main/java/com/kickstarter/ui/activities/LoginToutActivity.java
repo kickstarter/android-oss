@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.facebook.AccessToken;
-import com.facebook.appevents.AppEventsLogger;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
@@ -17,6 +16,7 @@ import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.presenters.LoginToutPresenter;
+import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 import com.kickstarter.ui.views.LoginPopupMenu;
 
@@ -48,6 +48,8 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
   @BindString(R.string.Unable_to_login) String unableToLoginString;
   @BindString(R.string.intent_login_type) String intentLoginTypeString;
   @BindString(R.string.Oops) String errorTitleString;
+  @BindString(R.string.Were_having_some_trouble_getting_you_logged_in) String troubleLoggingInString;
+  @BindString(R.string.Lets_try_that_again) String tryAgainString;
 
   private boolean forward;
 
@@ -63,31 +65,30 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
 
     presenter.inputs.reason(getIntent().getStringExtra(intentLoginTypeString));
 
-    addSubscription(
-      presenter.errors.facebookAuthorizationError()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e))
-    );
+    presenter.errors.facebookAuthorizationError()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> ViewUtils.showDialog(this, errorTitleString, troubleLoggingInString, tryAgainString));
 
-    addSubscription(
-      presenter.errors.tfaChallenge()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(__ -> startTwoFactorActivity(forward, true))
-    );
+    presenter.errors.confirmFacebookSignupError()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::startFacebookConfirmationActivity);
 
-    addSubscription(
-      errorMessages()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(ViewUtils.showToast(this))
-    );
+    presenter.errors.tfaChallenge()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> startTwoFactorActivity(true));
 
-    addSubscription(
-      presenter.outputs.facebookLoginSuccess()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(__ -> {
-          onSuccess(forward);
-        })
-    );
+    errorMessages()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(ViewUtils.showToast(this));
+
+    presenter.outputs.facebookLoginSuccess()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> onSuccess(forward));
   }
 
   private Observable<String> errorMessages() {
@@ -97,28 +98,6 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
         presenter.errors.facebookInvalidAccessTokenError()
           .map(ObjectUtils.coalesceWith(unableToLoginString))
       );
-  }
-
-  @Override
-  protected void onResume() {
-    super.onResume();
-
-    /*
-     * Temporary Facebook testing - logs 'install' and 'app activate' App Events.
-     * This hits the Facebook API, we can remove it once login is working.
-    */
-    AppEventsLogger.activateApp(this);
-  }
-
-  @Override
-  protected void onPause() {
-    super.onPause();
-
-    /*
-     * Temporary Facebook testing - logs 'app deactivate' App Events.
-     * This hits the Facebook API, we can remove it once login is working.
-    */
-    AppEventsLogger.deactivateApp(this);
   }
 
   @OnClick({R.id.disclaimer_text_view})
@@ -183,12 +162,26 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
     }
   }
 
-  public void startTwoFactorActivity(final boolean forward, final boolean isFacebookLogin) {
-    final Intent intent = new Intent(this, TwoFactorActivity.class)
-      .putExtra(getString(R.string.intent_facebook_login), isFacebookLogin)
+  public void startFacebookConfirmationActivity(@NonNull final ErrorEnvelope.FacebookUser facebookUser) {
+    final Intent intent = new Intent(this, FacebookConfirmationActivity.class)
+      .putExtra(getString(R.string.intent_forward), forward)
+      .putExtra(getString(R.string.intent_facebook_user), facebookUser)
       .putExtra(getString(R.string.intent_facebook_token), AccessToken.getCurrentAccessToken().getToken());
     if (forward) {
-      startActivityForResult(intent, ActivityRequestCodes.LOGIN_ACTIVITY_TWO_FACTOR_ACTIVITY_FORWARD);
+      startActivityForResult(intent, ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_FACEBOOK_CONFIRMATION_ACTIVITY_FORWARD);
+    } else {
+      startActivity(intent);
+    }
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  public void startTwoFactorActivity(final boolean isFacebookLogin) {
+    final Intent intent = new Intent(this, TwoFactorActivity.class)
+      .putExtra(getString(R.string.intent_facebook_login), isFacebookLogin)
+      .putExtra(getString(R.string.intent_forward), forward)
+      .putExtra(getString(R.string.intent_facebook_token), AccessToken.getCurrentAccessToken().getToken());
+    if (forward) {
+      startActivityForResult(intent, ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_TWO_FACTOR_ACTIVITY_FORWARD);
     } else {
       startActivity(intent);
     }

@@ -66,6 +66,9 @@
     <activity android:name=".ui.activities.HelpActivity"
       android:theme="@style/HelpActivity" />
 
+    <activity android:name=".ui.activities.FacebookConfirmationActivity"
+      android:theme="@style/Login" />
+
     <activity
       android:name=".ui.activities.ProjectActivity"
       android:label="@string/title_activity_project"

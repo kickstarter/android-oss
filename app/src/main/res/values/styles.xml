@@ -243,4 +243,16 @@
     <item name="android:fontFamily">@string/font_family_medium</item>
   </style>
 
+  <!-- Cards -->
+  <style name="ActivityFeedCard">
+    <item name="android:foreground">@drawable/click_indicator_light</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_marginTop">@dimen/activity_feed_view_margin_top</item>
+    <item name="android:layout_marginBottom">@dimen/activity_feed_view_margin_bottom</item>
+    <item name="android:layout_width">match_parent</item>
+    <item name="cardBackgroundColor">@color/white</item>
+    <item name="cardCornerRadius">0dp</item>
+    <item name="cardElevation">0dp</item>
+  </style>
+
 </resources>

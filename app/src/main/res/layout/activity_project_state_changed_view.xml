@@ -3,18 +3,8 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:card_view="http://schemas.android.com/apk/res-auto"
   android:id="@+id/card_view"
-  android:foreground="@drawable/click_indicator_light"
-  android:layout_width="match_parent"
-  android:layout_height="wrap_content"
-  card_view:cardBackgroundColor="@color/white"
-  card_view:cardElevation="0dp"
-  card_view:cardCornerRadius="@dimen/card_corner_radius"
   card_view:contentPaddingTop="@dimen/grid_3"
-  card_view:contentPaddingBottom="@dimen/grid_3"
-  card_view:contentPaddingLeft="@dimen/grid_3"
-  card_view:contentPaddingRight="@dimen/grid_3"
-  android:layout_marginTop="@dimen/activity_feed_view_margin_top"
-  android:layout_marginBottom="@dimen/activity_feed_view_margin_bottom">
+  style="@style/ActivityFeedCard">
 
   <LinearLayout
     android:layout_width="match_parent"

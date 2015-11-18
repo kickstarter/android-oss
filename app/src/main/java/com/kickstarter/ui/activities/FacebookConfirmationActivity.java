@@ -12,6 +12,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.presenters.FacebookConfirmationPresenter;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.toolbars.LoginToolbar;
@@ -60,7 +61,7 @@ public class FacebookConfirmationActivity extends BaseActivity<FacebookConfirmat
     addSubscription(
       presenter.errors.signupError()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(e -> displayDialog(errorTitleString, e))
+        .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e))
     );
 
     addSubscription(

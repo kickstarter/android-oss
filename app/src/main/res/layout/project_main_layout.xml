@@ -39,8 +39,8 @@
         android:singleLine="true"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        style="@style/BodySecondary"
-        android:clickable="true" />
+        android:background="@drawable/click_indicator_light_masked"
+        style="@style/BodySecondary" />
 
       <LinearLayout
         android:id="@+id/backer_label"
@@ -52,7 +52,7 @@
         <TextView
           android:text="@string/Youre_a_backer"
           android:singleLine="true"
-          style="@style/BodyPrimary"
+          style="@style/BodySecondary"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 
@@ -72,59 +72,47 @@
     <TextView
       android:id="@+id/blurb"
       style="@style/Subhead"
+      android:background="@drawable/click_indicator_light_masked"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/grid_3"
-      android:layout_marginBottom="@dimen/grid_3"
-      android:clickable="true"
+      android:layout_marginTop="@dimen/grid_2"
+      android:layout_marginBottom="@dimen/grid_2"
       android:paddingBottom="@dimen/grid_1" />
 
-    <RelativeLayout
-      android:id="@+id/category_share_bar"
-      android:layout_gravity="center_vertical"
+    <LinearLayout
+      android:orientation="horizontal"
       android:gravity="center_vertical"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 
       <com.kickstarter.ui.views.IconTextView
         android:id="@+id/category_icon"
-        android:layout_centerVertical="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingRight="@dimen/grid_1_half"
-        android:paddingEnd="@dimen/grid_1_half"
         android:text="@string/local_offer_icon"
         style="@style/BodyPrimary"/>
 
       <TextView
         android:id="@+id/category"
-        android:layout_toRightOf="@id/category_icon"
-        android:layout_centerVertical="true"
+        android:text="Category name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/grid_1_half"
-        android:paddingRight="@dimen/grid_1"
+        android:paddingRight="@dimen/grid_2"
         style="@style/BodyPrimary" />
 
       <com.kickstarter.ui.views.IconTextView
         android:id="@+id/location_icon"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/category"
-        android:layout_toEndOf="@id/category"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/grid_1"
-        android:paddingRight="@dimen/grid_1_half"
         android:text="@string/location_on_icon"
         style="@style/BodyPrimary" />
 
       <TextView
         android:id="@+id/location"
-        android:layout_centerVertical="true"
+        android:text="Location"
         android:ellipsize="end"
         android:singleLine="true"
-        android:layout_toRightOf="@id/location_icon"
-        android:layout_toEndOf="@id/location_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/grid_1_half"
@@ -133,7 +121,7 @@
         android:paddingEnd="@dimen/grid_1_half"
         style="@style/BodyPrimary" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <ProgressBar
       style="@style/ProgressBar"
@@ -148,7 +136,7 @@
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
       android:layout_marginTop="@dimen/grid_3"
-      android:layout_marginBottom="@dimen/grid_3"/>
+      android:layout_marginBottom="@dimen/grid_4"/>
 
   </LinearLayout>
 
@@ -169,7 +157,5 @@
   </LinearLayout>
 
   <include layout="@layout/project_creator_info" />
-
-  <include layout="@layout/horizontal_line_thin_view" />
 
 </LinearLayout>

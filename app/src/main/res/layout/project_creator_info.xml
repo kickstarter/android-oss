@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
@@ -14,7 +14,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/grid_3"
-    android:paddingTop="@dimen/grid_3">
+    android:paddingTop="@dimen/grid_4">
 
     <ImageView
       android:id="@+id/avatar"
@@ -38,6 +38,7 @@
 
     <TextView
       android:id="@+id/avatar_name"
+      android:text="Creator Name"
       android:maxLines="2"
       android:paddingLeft="@dimen/grid_2"
       android:paddingStart="@dimen/grid_2"
@@ -60,7 +61,6 @@
     android:id="@+id/creator_links"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_below="@id/creator_info"
     android:divider="@color/gray"
     android:dividerHeight="1dp" >
 
@@ -168,7 +168,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_below="@id/creator_links"
-    android:paddingTop="@dimen/grid_3"
-    android:paddingBottom="@dimen/grid_3"/>
+    android:paddingTop="@dimen/grid_3" />
 
-</RelativeLayout>
+  <include layout="@layout/horizontal_line_thin_view"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_marginTop="@dimen/grid_4"
+    android:layout_marginBottom="@dimen/grid_3"/>
+
+</LinearLayout>

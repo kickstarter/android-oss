@@ -36,7 +36,50 @@
         style="@style/Headline"
         android:paddingBottom="@dimen/grid_2" />
 
-      <include layout="@layout/category_location_view"/>
+      <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="@dimen/grid_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.kickstarter.ui.views.IconTextView
+          android:id="@+id/category_icon"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/local_offer_icon"
+          style="@style/BodyPrimary"/>
+
+        <TextView
+          android:id="@+id/category"
+          android:text="Category name"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:paddingLeft="@dimen/grid_1_half"
+          android:paddingRight="@dimen/grid_2"
+          style="@style/BodyPrimary" />
+
+        <com.kickstarter.ui.views.IconTextView
+          android:id="@+id/location_icon"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/location_on_icon"
+          style="@style/BodyPrimary" />
+
+        <TextView
+          android:id="@+id/location"
+          android:text="Location"
+          android:ellipsize="end"
+          android:singleLine="true"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:paddingLeft="@dimen/grid_1_half"
+          android:paddingRight="@dimen/grid_1_half"
+          android:paddingStart="@dimen/grid_1_half"
+          android:paddingEnd="@dimen/grid_1_half"
+          style="@style/BodyPrimary" />
+
+      </LinearLayout>
 
       <ProgressBar
         style="@style/ProgressBar"

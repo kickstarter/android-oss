@@ -95,6 +95,8 @@ public class FacebookConfirmationPresenter extends Presenter<FacebookConfirmatio
         })
     );
 
+    koala.trackFacebookConfirmation();
+
     koala.trackRegisterFormView();
   }
 

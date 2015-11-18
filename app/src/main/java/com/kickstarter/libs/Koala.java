@@ -168,10 +168,6 @@ public final class Koala {
     client.track("Errored Facebook Login");
   }
 
-  public void trackFacebookLogout() {
-    client.track("Logout of Facebook");
-  }
-
   public void trackLogout() {
     client.track("Logout");
   }

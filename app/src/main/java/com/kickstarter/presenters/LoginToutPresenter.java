@@ -145,8 +145,6 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
       .mergeWith(facebookInvalidAccessTokenError())
       .mergeWith(facebookAuthorizationError())
       .subscribe(__ -> koala.trackFacebookLoginError()));
-
-    addSubscription(confirmFacebookSignupError().subscribe(__ -> koala.trackFacebookConfirmation()));
   }
 
   @Override
@@ -157,8 +155,6 @@ public final class LoginToutPresenter extends Presenter<LoginToutActivity> imple
 
   public void clearFacebookSession(@NonNull final FacebookException e) {
     LoginManager.getInstance().logOut();
-
-    koala.trackFacebookLogout();
   }
 
   @Override

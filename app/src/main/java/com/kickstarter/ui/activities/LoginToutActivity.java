@@ -15,6 +15,7 @@ import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.presenters.LoginToutPresenter;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.toolbars.LoginToolbar;
@@ -66,7 +67,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
     addSubscription(
       presenter.errors.facebookAuthorizationError()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(e -> displayDialog(errorTitleString, e))
+        .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e))
     );
 
     addSubscription(
@@ -84,7 +85,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
     addSubscription(
       errorMessages()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this::displayToast)
+        .subscribe(ViewUtils.showToast(this))
     );
 
     addSubscription(

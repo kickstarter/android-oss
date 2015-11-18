@@ -151,6 +151,10 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
     overridePendingTransition(enterAnim, exitAnim);
   }
 
+  /**
+   * @deprecated Use {@link #bindToLifecycle()} or {@link #bindUntilEvent(ActivityEvent)} instead.
+   */
+  @Deprecated
   protected final void addSubscription(@NonNull final Subscription subscription) {
     subscriptions.add(subscription);
   }

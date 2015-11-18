@@ -64,37 +64,30 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
 
     presenter.inputs.reason(getIntent().getStringExtra(intentLoginTypeString));
 
-    addSubscription(
-      presenter.errors.facebookAuthorizationError()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e))
-    );
+    presenter.errors.facebookAuthorizationError()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e));
 
-    addSubscription(
-      presenter.errors.confirmFacebookSignupError()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this::startFacebookConfirmationActivity)
-    );
+    presenter.errors.confirmFacebookSignupError()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::startFacebookConfirmationActivity);
 
-    addSubscription(
-      presenter.errors.tfaChallenge()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(__ -> startTwoFactorActivity(true))
-    );
+    presenter.errors.tfaChallenge()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> startTwoFactorActivity(true));
 
-    addSubscription(
-      errorMessages()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(ViewUtils.showToast(this))
-    );
+    errorMessages()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(ViewUtils.showToast(this));
 
-    addSubscription(
-      presenter.outputs.facebookLoginSuccess()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(__ -> {
-          onSuccess(forward);
-        })
-    );
+    presenter.outputs.facebookLoginSuccess()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> onSuccess(forward));
   }
 
   private Observable<String> errorMessages() {

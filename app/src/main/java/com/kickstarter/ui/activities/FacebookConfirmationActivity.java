@@ -52,22 +52,19 @@ public class FacebookConfirmationActivity extends BaseActivity<FacebookConfirmat
     final String fbAccessToken = getIntent().getStringExtra(getString(R.string.intent_facebook_token));
     presenter.inputs.fbAccessToken(fbAccessToken);
 
-    addSubscription(
-      presenter.outputs.signupSuccess()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(__ -> onSuccess(forward))
-    );
+    presenter.outputs.signupSuccess()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> onSuccess(forward));
 
-    addSubscription(
-      presenter.errors.signupError()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e))
-    );
+    presenter.errors.signupError()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e));
 
-    addSubscription(
-      RxCompoundButton.checkedChanges(newsletterSwitch)
-        .subscribe(presenter.inputs::sendNewsletters)
-    );
+    RxCompoundButton.checkedChanges(newsletterSwitch)
+      .compose(bindToLifecycle())
+      .subscribe(presenter.inputs::sendNewsletters);
   }
 
   @OnClick(R.id.create_new_account_button)

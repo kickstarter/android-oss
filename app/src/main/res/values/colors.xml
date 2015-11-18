@@ -31,6 +31,7 @@
   <color name="transparent">@android:color/transparent</color>
   <color name="white">@android:color/white</color>
   <color name="yellow">#ffffc9</color>
+  <color name="medium_gray">#ebebee</color>
 
   <!-- Category colors -->
   <color name="category_art">#ffffbdab</color>

@@ -9,7 +9,10 @@
   app:cardBackgroundColor="@color/white"
   app:cardPreventCornerOverlap="false"
   android:foreground="@drawable/click_indicator_light"
-  android:layout_margin="@dimen/grid_2">
+  android:layout_marginTop="@dimen/grid_1"
+  android:layout_marginLeft="@dimen/grid_2"
+  android:layout_marginRight="@dimen/grid_2"
+  android:layout_marginBottom="@dimen/grid_2">
 
   <View
     android:id="@+id/green_overlay"
@@ -21,7 +24,6 @@
 
   <RelativeLayout
     android:id="@+id/reward_card_info"
-    android:paddingBottom="@dimen/grid_2"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
 
@@ -42,8 +44,7 @@
 
     <RelativeLayout
       android:layout_below="@id/selected"
-      android:paddingRight="@dimen/grid_2"
-      android:paddingLeft="@dimen/grid_2"
+      android:padding="@dimen/grid_3"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 
@@ -51,7 +52,6 @@
         android:id="@+id/pledge_minimum"
         android:text="Pledge $15000 or more"
         style="@style/Headline"
-        android:paddingTop="@dimen/grid_2"
         android:paddingBottom="@dimen/grid_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -76,7 +76,7 @@
           android:paddingRight="@dimen/grid_1"
           android:layout_toEndOf="@id/reward_backers_count"
           android:layout_toRightOf="@id/reward_backers_count"
-          android:background="@color/gray"
+          android:background="@color/medium_gray"
           android:visibility="visible"
           style="@style/BodyPrimary"
           android:text="@string/Limited_left_of"
@@ -91,7 +91,7 @@
           android:paddingRight="@dimen/grid_1"
           android:layout_toEndOf="@id/reward_backers_count"
           android:layout_toRightOf="@id/reward_backers_count"
-          android:background="@color/gray"
+          android:background="@color/medium_gray"
           android:visibility="visible"
           android:layout_marginStart="@dimen/grid_1"
           android:layout_marginEnd="@dimen/grid_1"
@@ -123,8 +123,7 @@
             android:text="@string/Estimated_delivery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/CaptionSecondary"
-            android:paddingBottom="@dimen/grid_1_half"/>
+            style="@style/CaptionSecondary"/>
 
           <TextView
             android:id="@+id/estimated_delivery_date"
@@ -149,8 +148,7 @@
           android:text="@string/Shipping_destinations"
           android:visibility="visible"
           android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:paddingBottom="@dimen/grid_1_half"/>
+          android:layout_height="wrap_content"/>
 
         <TextView
           android:id="@+id/shipping_summary"

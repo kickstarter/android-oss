@@ -39,7 +39,7 @@
   <dimen name="empty_feed_icon">80sp</dimen>
 
   <!-- Cards -->
-  <dimen name="card_corner_radius">0dp</dimen>
+  <dimen name="card_corner_radius">4dp</dimen>
   <dimen name="card_elevation">1dp</dimen>
   <dimen name="card_margin_x">@dimen/grid_2</dimen>
   <dimen name="card_margin_y">@dimen/grid_1</dimen>

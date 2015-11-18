@@ -102,6 +102,7 @@
   <string name="I_just_backed_project_on_Kickstarter">I just backed %1$s on Kickstarter: %2$s</string>
   <string name="Instructions">Instructions</string>
   <string name="Launched">Launched</string>
+  <string name="Lets_try_that_again">Let\'s try that again</string>
   <string name="Limited_left_of">Limited (%1$s left of %2$s)</string>
   <string name="Log_in">Log in</string>
   <string name="Log_in_error">Log in error</string>
@@ -202,6 +203,7 @@
   <string name="Version_name">Version Name</string>
   <string name="Well_never_post_anything">We\'ll never post anything without your permission.</string>
   <string name="Well_remind_you_48_hours">We\'ll remind you 48 hours before this project ends!</string>
+  <string name="Were_having_some_trouble_getting_you_logged_in">We\'re having some trouble getting you logged in.</string>
   <string name="We_sent_an_email_to_email_with_instructions_to_reset_your_password">We\'ve sent an email to %1$s with instructions to reset your password.</string>
   <string name="When_you_back_a_project_or_follow_a_friend">
     When you back a project or follow a friend, their activity will appear here.

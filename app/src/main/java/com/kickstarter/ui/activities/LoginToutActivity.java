@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.facebook.AccessToken;
-import com.facebook.appevents.AppEventsLogger;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
@@ -49,6 +48,8 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
   @BindString(R.string.Unable_to_login) String unableToLoginString;
   @BindString(R.string.intent_login_type) String intentLoginTypeString;
   @BindString(R.string.Oops) String errorTitleString;
+  @BindString(R.string.Were_having_some_trouble_getting_you_logged_in) String troubleLoggingInString;
+  @BindString(R.string.Lets_try_that_again) String tryAgainString;
 
   private boolean forward;
 
@@ -67,7 +68,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
     presenter.errors.facebookAuthorizationError()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e));
+      .subscribe(__ -> ViewUtils.showDialog(this, errorTitleString, troubleLoggingInString, tryAgainString));
 
     presenter.errors.confirmFacebookSignupError()
       .compose(bindToLifecycle())

@@ -32,6 +32,11 @@ public class ViewUtils {
     new KSDialog(context, title, message).show();
   }
 
+  public static void showDialog(@NonNull final Context context, @Nullable final String title,
+    @NonNull final String message, @NonNull final String buttonMessage) {
+    new KSDialog(context, title, message, buttonMessage).show();
+  }
+
   /**
    * Show a toast to the user.
    */

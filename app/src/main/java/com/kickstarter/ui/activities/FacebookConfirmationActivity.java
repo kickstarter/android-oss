@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.widget.Switch;
+import android.support.v7.widget.SwitchCompat;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
@@ -29,7 +29,7 @@ public class FacebookConfirmationActivity extends BaseActivity<FacebookConfirmat
   protected @Bind(R.id.email) TextView emailTextView;
   protected @Bind(R.id.help_button) TextView helpButton;
   protected @Bind(R.id.sign_up_with_facebook_toolbar) LoginToolbar signUpWithFacebookToolbar;
-  protected @Bind(R.id.newsletter_switch) Switch newsletterSwitch;
+  protected @Bind(R.id.newsletter_switch) SwitchCompat newsletterSwitch;
 
   protected @BindString(R.string.Sign_up_with_Facebook) String signUpWithFacebookString;
   protected @BindString(R.string.Sign_up_error) String errorTitleString;

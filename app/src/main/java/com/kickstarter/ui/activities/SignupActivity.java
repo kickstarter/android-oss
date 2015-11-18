@@ -5,9 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.SwitchCompat;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
@@ -34,7 +34,7 @@ public final class SignupActivity extends BaseActivity<SignupPresenter> {
   @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
   @Bind(R.id.password) EditText passwordEditText;
   @Bind(R.id.signup_button) Button signupButton;
-  @Bind(R.id.newsletter_switch) Switch newsletterSwitch;
+  @Bind(R.id.newsletter_switch) SwitchCompat newsletterSwitch;
   @Bind(R.id.disclaimer) TextView disclaimerTextView;
 
   @BindString(R.string.Sign_up) String signUpString;

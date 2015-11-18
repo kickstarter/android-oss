@@ -34,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-      <Switch
+      <android.support.v7.widget.SwitchCompat
         android:id="@+id/newsletter_switch"
         android:checked="true"
         android:layout_width="wrap_content"

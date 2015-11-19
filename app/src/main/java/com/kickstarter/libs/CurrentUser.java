@@ -97,7 +97,7 @@ public class CurrentUser {
     return observable().filter(ObjectUtils::isNotNull);
   }
 
-  /// Emits only balues of a logged out user. The returned observable may never emit.
+  /// Emits only values of a logged out user. The returned observable may never emit.
   public Observable<User> loggedOutUser() {
     return observable().filter(ObjectUtils::isNull);
   }

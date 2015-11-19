@@ -8,12 +8,15 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Paginator;
 import com.kickstarter.libs.SwipeRefresher;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
@@ -21,6 +24,8 @@ import com.kickstarter.presenters.ActivityFeedPresenter;
 import com.kickstarter.ui.adapters.ActivityFeedAdapter;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -31,12 +36,16 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedPresent
   private ActivityFeedAdapter adapter;
   public @Bind(R.id.recycler_view) RecyclerView recyclerView;
   protected @Bind(R.id.activity_feed_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
+
+  @Inject CurrentUser currentUser;
+
   private Paginator paginator;
   private SwipeRefresher swipeRefresher;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    ((KSApplication) getApplication()).component().inject(this);
     setContentView(R.layout.activity_feed_layout);
     ButterKnife.bind(this);
 
@@ -46,6 +55,13 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedPresent
 
     paginator = new Paginator(recyclerView, presenter.inputs::nextPage);
     swipeRefresher = new SwipeRefresher(this, swipeRefreshLayout, presenter.inputs::refresh, presenter.outputs::isFetchingActivities);
+
+    // Only allow refreshing if there's a current user
+    currentUser.observable()
+      .map(ObjectUtils::isNotNull)
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(swipeRefreshLayout::setEnabled);
 
     presenter.outputs.activities()
       .compose(bindToLifecycle())

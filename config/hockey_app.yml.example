@@ -1,5 +1,5 @@
 default:
-  token: '' # Fetch from https://rink.hockeyapp.net/manage/auth_tokens
+  token: '' # Create an API token with full access at https://rink.hockeyapp.net/manage/auth_tokens
   internal:
     app_id: '***REMOVED***'
   external:

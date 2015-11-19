@@ -82,9 +82,9 @@ public final class DiscoveryFilterViewHolder extends KSViewHolder {
     }
 
     if (style.primary()) {
-      filterTextView.setTextSize(18.0f);
+      filterTextView.setTextSize(20.0f);
     } else {
-      filterTextView.setTextSize(16.0f);
+      filterTextView.setTextSize(18.0f);
     }
 
     if (!style.selected() && !style.primary()) {

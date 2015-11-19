@@ -193,11 +193,13 @@
   <style name="TextPrimary">
     <item name="android:textColor">@color/text_primary</item>
     <item name="android:textStyle">normal</item>
+    <item name="android:fontFamily">sans-serif</item>
   </style>
   
   <style name="TextSecondary">
     <item name="android:textColor">@color/text_secondary</item>
     <item name="android:textStyle">normal</item>
+    <item name="android:fontFamily">sans-serif</item>
   </style>
 
   <style name="CaptionPrimary" parent="TextPrimary">

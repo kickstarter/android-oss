@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:background="@color/white"
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
@@ -11,6 +10,7 @@
 
   <RelativeLayout
     android:layout_width="wrap_content"
+    android:layout_marginBottom="@dimen/feed_padding_y"
     android:layout_height="wrap_content">
 
     <ImageView
@@ -45,14 +45,14 @@
       android:layout_height="wrap_content" />
 
     <LinearLayout
-      android:id="@+id/comment"
+      android:id="@+id/author"
       android:orientation="vertical"
-      android:layout_alignParentTop="true"
       android:layout_toRightOf="@+id/avatar"
       android:layout_toEndOf="@+id/avatar"
       android:paddingLeft="@dimen/grid_2"
       android:paddingStart="@dimen/grid_2"
-      android:paddingBottom="@dimen/grid_3"
+      android:layout_marginTop="@dimen/grid_1"
+      android:layout_marginBottom="@dimen/grid_1"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content">
 
@@ -69,13 +69,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+
       <TextView
         android:id="@+id/comment_body"
-        android:paddingTop="@dimen/grid_2"
+        android:layout_below="@id/author"
+        android:layout_toRightOf="@id/avatar"
+        android:layout_marginTop="@dimen/grid_2"
         style="@style/BodyPrimary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
+
     </LinearLayout>
+
   </RelativeLayout>
 
   <include layout="@layout/horizontal_line_thin_view" />

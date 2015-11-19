@@ -9,35 +9,39 @@
 
   <com.kickstarter.ui.views.IconTextView
     android:id="@+id/comment_icon"
-    android:textColor="@color/text_secondary"
+    android:alpha="0.3"
     android:gravity="center_horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:textSize="@dimen/empty_feed_icon"
-    android:text="@string/mode_comment_icon" />
+    android:text="@string/forum_icon" />
 
   <TextView
     android:id="@+id/no_comments"
-    android:textColor="@color/text_secondary"
+    style="@style/Headline"
     android:gravity="center_horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:textStyle="bold"
     android:text="@string/No_comments"
     android:padding="@dimen/grid_2"/>
 
   <TextView
     android:id="@+id/no_comments_message"
-    android:textColor="@color/text_secondary"
+    style="@style/BodySecondary"
     android:gravity="center_horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingLeft="@dimen/grid_2"
-    android:paddingRight="@dimen/grid_2"/>
+    android:paddingRight="@dimen/grid_2"
+    android:paddingBottom="@dimen/grid_2"/>
 
   <Button
+    style="@style/BorderButton"
     android:id="@+id/comment_feed_login_button"
-    style="@style/Button"
-    android:text="@string/Log_in"/>
+    android:background="@drawable/button_white_border_dark_gray"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/Log_in"
+    android:layout_marginTop="@dimen/grid_1" />
 
 </LinearLayout>

@@ -10,7 +10,7 @@
   <com.kickstarter.ui.views.IconTextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:alpha="0.5"
+    android:alpha="0.3"
     android:text="@string/speaker_notes_icon"
     android:textSize="@dimen/empty_feed_icon"
     android:paddingTop="@dimen/grid_5"

@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:card_view="http://schemas.android.com/apk/res-auto"
+  style="@style/ActivityFeedCard"
+  card_view:cardBackgroundColor="@color/white"
+  android:background="@color/white"
   android:orientation="vertical"
-  android:background="@color/light_gray"
   android:layout_width="match_parent"
-  android:layout_height="@dimen/activity_feed_full_screen_height_hack"
+  android:layout_height="wrap_content"
+  android:paddingTop="@dimen/grid_5"
+  android:paddingBottom="@dimen/grid_6"
+  android:elevation="2dp"
   android:gravity="center_horizontal">
 
   <com.kickstarter.ui.views.IconTextView
@@ -13,7 +19,6 @@
     android:alpha="0.3"
     android:text="@string/speaker_notes_icon"
     android:textSize="@dimen/empty_feed_icon"
-    android:paddingTop="@dimen/grid_5"
     android:paddingBottom="@dimen/grid_1" />
 
   <TextView

@@ -8,6 +8,7 @@
   <color name="text_secondary">@color/dark_gray</color>
   <color name="accent_alpha_20">@color/blue_alpha_20</color>
   <color name="window_background">@color/white</color>
+  <color name="activity_feed_background">#EAEAF0</color>
   <color name="debug_background">#EE222222</color>
   <color name="discovery_primary">@color/dark_blue</color>
   <color name="discovery_secondary">#ff083e8f</color>

@@ -11,8 +11,8 @@ import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Activity;
-import com.kickstarter.models.Empty;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.User;
 import com.kickstarter.presenters.inputs.ActivityFeedPresenterInputs;
 import com.kickstarter.presenters.outputs.ActivityFeedPresenterOutputs;
 import com.kickstarter.services.ActivityFeedParams;
@@ -48,20 +48,24 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
   private final PublishSubject<Activity> projectUpdateProjectClick = PublishSubject.create();
   private final PublishSubject<Activity> projectUpdateUpdateClick = PublishSubject.create();
 
-  private final PublishSubject<ActivityFeedParams> params = PublishSubject.create();
+  private final PublishSubject<String> moreActivitiesUrl = PublishSubject.create();
 
   // INPUTS
   private final PublishSubject<Void> nextPage = PublishSubject.create();
   public void nextPage() {
     nextPage.onNext(null);
   }
-  private final BehaviorSubject<Empty> refresh = BehaviorSubject.create(Empty.create());
+  private final PublishSubject<Void> refresh = PublishSubject.create();
   public void refresh() {
-    refresh.onNext(Empty.create());
+    refresh.onNext(null);
   }
   public final ActivityFeedPresenterInputs inputs = this;
 
   // OUTPUTS
+  private final BehaviorSubject<User> emptyFeed = BehaviorSubject.create();
+  public final Observable<User> emptyFeed() {
+    return emptyFeed;
+  }
   private final PublishSubject<Boolean> isFetchingActivities = PublishSubject.create();
   public final Observable<Boolean> isFetchingActivities() {
     return isFetchingActivities;
@@ -77,28 +81,9 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    addSubscription(refresh
-      .switchMap(__ -> activitiesWithPagination())
-      .compose(Transformers.waitUntil(currentUser.loggedInUser()))
-      .subscribe(activities::onNext));
-
-    addSubscription(refresh
-      .subscribe(__ -> {
-        params.onNext(ActivityFeedParams.builder().build());
-        nextPage.onNext(null);
-      }));
-
-    addSubscription(viewSubject
-      .compose(Transformers.combineLatestPair(currentUser.observable()))
-      .filter(vu -> vu.second == null)
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vu -> vu.first.showEmptyFeed(vu.second)));
-
-    addSubscription(viewSubject
-      .compose(Transformers.combineLatestPair(currentUser.observable()))
-      .filter(vu -> vu.second == null)
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vu -> vu.first.showEmptyFeed(vu.second)));
+    addSubscription(currentUser.loggedOutUser()
+        .subscribe(__ -> emptyFeed.onNext(null))
+    );
 
     addSubscription(viewSubject
       .compose(Transformers.takeWhen(discoverProjectsClick))
@@ -152,20 +137,35 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
       ).subscribe(koala::trackActivityTapped)
     );
 
-    // kick off the first page of activities. should be last.
-    params.onNext(ActivityFeedParams.builder().build());
-    nextPage.onNext(null);
+    addSubscription(refresh
+        .switchMap(__ -> activitiesWithPagination())
+        .subscribe(activities::onNext)
+    );
+
+    addSubscription(currentUser.loggedInUser()
+        .take(1)
+        .subscribe(__ -> refresh())
+    );
   }
 
-  private Observable<List<Activity>> activitiesWithPagination() {
-    return params
-      .compose(Transformers.takeWhen(nextPage))
+  private @NonNull Observable<List<Activity>> activitiesWithPagination() {
+
+    return paramsWithPagination(ActivityFeedParams.builder().build())
       .concatMap(this::activitiesFromParams)
       .takeUntil(List::isEmpty)
       .scan(ListUtils::concat);
   }
 
-  @NonNull private Observable<List<Activity>> activitiesFromParams(@NonNull final ActivityFeedParams params) {
+  private @NonNull Observable<ActivityFeedParams> paramsWithPagination(final @NonNull ActivityFeedParams firstParams) {
+
+    return moreActivitiesUrl
+      .map(ActivityFeedParams::fromUrl)
+      .compose(Transformers.takeWhen(nextPage))
+      .startWith(firstParams);
+  }
+
+  private @NonNull Observable<List<Activity>> activitiesFromParams(@NonNull final ActivityFeedParams params) {
+
     return client.fetchActivities(params)
       .compose(Transformers.neverError())
       .doOnNext(this::keepPaginationParams)
@@ -181,7 +181,7 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
       if (api != null) {
         final String moreUrl = api.moreActivities();
         if (moreUrl != null) {
-          this.params.onNext(ActivityFeedParams.fromUrl(moreUrl));
+          moreActivitiesUrl.onNext(moreUrl);
         }
       }
     }

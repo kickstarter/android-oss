@@ -30,6 +30,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
+import timber.log.Timber;
 
 @RequiresPresenter(ActivityFeedPresenter.class)
 public final class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
@@ -67,6 +68,11 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedPresent
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::showActivities);
+
+    presenter.outputs.emptyFeed()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::showEmptyFeed);
   }
 
   @Override

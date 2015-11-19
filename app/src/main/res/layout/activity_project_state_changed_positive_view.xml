@@ -18,77 +18,89 @@
 
   <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_margin="@dimen/grid_3"
-    android:layout_gravity="bottom"
     android:orientation="vertical">
 
-    <TextView
-      style="@style/Headline"
-      android:id="@+id/title"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_gravity="center"
-      android:layout_marginBottom="@dimen/grid_4"
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
       android:gravity="center"
-      android:text="Title"
-      android:textColor="@color/white" />
+      android:layout_weight="1">
+
+      <TextView
+        style="@style/EditorialHeadline"
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Project name was successfully funded!"
+        android:textColor="@color/white"
+        android:gravity="center" />
+
+    </LinearLayout>
 
     <LinearLayout
-      android:baselineAligned="false"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/grid_3"
-      android:orientation="horizontal">
+      android:layout_marginTop="@dimen/grid_1"
+      android:layout_weight="0">
 
       <LinearLayout
-        android:layout_width="0dp"
+        android:baselineAligned="false"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
-        <TextView
-          style="@style/SubheadMedium"
-          android:id="@+id/left_stat_first"
-          android:layout_width="wrap_content"
+        <LinearLayout
+          android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:text="Left Stat First"
-          android:textColor="@color/white"
-          android:textStyle="bold" />
+          android:layout_weight="1"
+          android:orientation="vertical">
 
-        <TextView
-          style="@style/SubheadMedium"
-          android:id="@+id/left_stat_second"
-          android:layout_width="wrap_content"
+          <TextView
+            style="@style/SubheadMedium"
+            android:id="@+id/left_stat_first"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Left Stat First"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+          <TextView
+            style="@style/SubheadMedium"
+            android:id="@+id/left_stat_second"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Left Stat Second"
+            android:textColor="@color/white" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:text="Left Stat Second"
-          android:textColor="@color/white" />
+          android:layout_weight="1"
+          android:gravity="end"
+          android:orientation="vertical">
 
-      </LinearLayout>
+          <TextView
+            style="@style/SubheadMedium"
+            android:id="@+id/right_stat_first"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Right Stat First"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
 
-      <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="end"
-        android:orientation="vertical">
+          <TextView
+            style="@style/SubheadMedium"
+            android:id="@+id/right_stat_second"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Right Stat Second"
+            android:textColor="@color/white" />
+        </LinearLayout>
 
-        <TextView
-          style="@style/SubheadMedium"
-          android:id="@+id/right_stat_first"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="Right Stat First"
-          android:textColor="@color/white"
-          android:textStyle="bold" />
-
-        <TextView
-          style="@style/SubheadMedium"
-          android:id="@+id/right_stat_second"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="Right Stat Second"
-          android:textColor="@color/white" />
       </LinearLayout>
 
     </LinearLayout>

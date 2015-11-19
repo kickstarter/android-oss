@@ -116,11 +116,11 @@ public final class DiscoveryFilterViewHolder extends KSViewHolder {
     final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
       LinearLayout.LayoutParams.WRAP_CONTENT);
     if (style.primary() && style.selected()) {
-      params.setMargins(0, 8, 0, 8);
+      params.setMargins(0, 0, 0, 12);
     } else if (style.primary() && !style.selected()) {
-      params.setMargins(0, 16, 0, 16);
+      params.setMargins(0, 20, 0, 20);
     } else {
-      params.setMargins(0, 8, 0, 8);
+      params.setMargins(0, 12, 0, 12);
     }
     textGroupLayout.setLayoutParams(params);
   }

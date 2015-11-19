@@ -48,7 +48,7 @@
     android:text="@string/Log_in" />
 
   <TextView
-    style="@style/BodyPrimary"
+    style="@style/CaptionPrimary"
     android:id="@+id/forgot_your_password_text_view"
     android:background="@drawable/click_indicator_light_masked"
     android:layout_width="wrap_content"

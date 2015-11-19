@@ -5,6 +5,7 @@
   style="@style/ActivityFeedCard"
   card_view:cardBackgroundColor="@color/white"
   android:background="@color/white"
+  android:foreground="@color/transparent"
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"

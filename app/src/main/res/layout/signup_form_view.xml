@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="fill_parent"
   android:gravity="center_horizontal">
 
   <android.support.design.widget.TextInputLayout
+    app:hintTextAppearance="@style/BodySecondary"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/grid_2">
@@ -17,15 +19,16 @@
       android:layout_height="wrap_content"
       android:inputType="textPersonName|textCapWords"
       android:singleLine="true"
-      android:textAppearance="@style/BodyPrimary"
+      style="@style/Subhead"
       android:hint="@string/Full_name" />
 
   </android.support.design.widget.TextInputLayout>
 
   <android.support.design.widget.TextInputLayout
+    app:hintTextAppearance="@style/BodySecondary"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="10dp">
+    android:layout_marginTop="@dimen/grid_1">
 
     <EditText
       android:id="@+id/email"
@@ -33,15 +36,16 @@
       android:layout_height="wrap_content"
       android:inputType="textEmailAddress"
       android:singleLine="true"
-      android:textAppearance="@style/BodyPrimary"
+      style="@style/Subhead"
       android:hint="@string/Email_address" />
 
   </android.support.design.widget.TextInputLayout>
 
   <android.support.design.widget.TextInputLayout
+    app:hintTextAppearance="@style/BodySecondary"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="10dp">
+    android:layout_marginTop="@dimen/grid_1">
 
     <EditText
       android:id="@+id/password"
@@ -50,8 +54,7 @@
       android:layout_marginBottom="@dimen/grid_2"
       android:inputType="textPassword"
       android:singleLine="true"
-      android:fontFamily="sans-serif"
-      android:textAppearance="@style/BodyPrimary"
+      style="@style/Subhead"
       android:hint="@string/Password_minimum_6_characters" />
 
   </android.support.design.widget.TextInputLayout>
@@ -61,8 +64,7 @@
     android:checked="true"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:textColor="@color/dark_gray"
-    android:textAppearance="@style/CaptionPrimary"
+    style="@style/CaptionSecondary"
     android:layout_marginBottom="@dimen/grid_1"
     android:text="@string/Discover_new_projects_with_our_weekly_newsletter"/>
 

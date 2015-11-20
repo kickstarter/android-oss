@@ -81,6 +81,16 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
+    addSubscription(refresh
+        .switchMap(__ -> activitiesWithPagination())
+        .subscribe(activities::onNext)
+    );
+
+    addSubscription(currentUser.loggedInUser()
+        .take(1)
+        .subscribe(__ -> refresh())
+    );
+
     addSubscription(currentUser.loggedOutUser()
         .subscribe(__ -> emptyFeed.onNext(null))
     );
@@ -122,8 +132,8 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
 
     // Track viewing and paginating activity.
     addSubscription(nextPage
-      .compose(Transformers.incrementalCount())
-      .subscribe(koala::trackActivityView)
+        .compose(Transformers.incrementalCount())
+        .subscribe(koala::trackActivityView)
     );
 
     // Track tapping on any of the activity items.
@@ -136,16 +146,6 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
         projectUpdateUpdateClick
       ).subscribe(koala::trackActivityTapped)
     );
-
-    addSubscription(refresh
-        .switchMap(__ -> activitiesWithPagination())
-        .subscribe(activities::onNext)
-    );
-
-    addSubscription(currentUser.loggedInUser()
-        .take(1)
-        .subscribe(__ -> refresh())
-    );
   }
 
   private @NonNull Observable<List<Activity>> activitiesWithPagination() {
@@ -156,7 +156,8 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
       .scan(ListUtils::concat);
   }
 
-  private @NonNull Observable<ActivityFeedParams> paramsWithPagination(final @NonNull ActivityFeedParams firstParams) {
+  private @NonNull
+  Observable<ActivityFeedParams> paramsWithPagination(final @NonNull ActivityFeedParams firstParams) {
 
     return moreActivitiesUrl
       .map(ActivityFeedParams::fromUrl)

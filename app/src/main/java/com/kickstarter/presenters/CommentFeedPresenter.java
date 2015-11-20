@@ -207,7 +207,7 @@ public final class CommentFeedPresenter extends Presenter<CommentFeedActivity> i
     return client.postProjectComment(project, body)
       .compose(Transformers.pipeApiErrorsTo(postCommentError))
       .doOnSubscribe(() -> commentIsPosting.onNext(true))
-      .finallyDo(() -> commentIsPosting.onNext(false));
+      .finallyDo(() -> commentPosted.onNext(null));
   }
 
   public void postClick(@NonNull final String body) {

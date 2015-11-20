@@ -75,26 +75,26 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedPresenter
     paginator = new Paginator(recyclerView, presenter.inputs::nextPage);
     swipeRefresher = new SwipeRefresher(this, swipeRefreshLayout, presenter.inputs::refresh, presenter.outputs::isFetchingComments);
 
-    addSubscription(toastMessages()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(ViewUtils.showToast(this))
-    );
+    toastMessages()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(ViewUtils.showToast(this));
 
-    addSubscription(presenter.outputs.showCommentButton()
-        .map(show -> show ? View.VISIBLE : View.GONE)
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(commentButtonTextView::setVisibility)
-    );
+    presenter.outputs.showCommentButton()
+      .map(show -> show ? View.VISIBLE : View.GONE)
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(commentButtonTextView::setVisibility);
 
-    addSubscription(presenter.outputs.showCommentDialog()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(__ -> showCommentDialog())
-    );
+    presenter.outputs.showCommentDialog()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> showCommentDialog());
 
-    addSubscription(presenter.outputs.commentPosted()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(__ -> dismissCommentDialog())
-    );
+    presenter.outputs.commentPosted()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> dismissCommentDialog());
   }
 
   public void show(@NonNull final Project project, @NonNull final List<Comment> comments,

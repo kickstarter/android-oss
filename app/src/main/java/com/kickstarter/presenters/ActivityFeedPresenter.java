@@ -156,8 +156,7 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
       .scan(ListUtils::concat);
   }
 
-  private @NonNull
-  Observable<ActivityFeedParams> paramsWithPagination(final @NonNull ActivityFeedParams firstParams) {
+  private @NonNull Observable<ActivityFeedParams> paramsWithPagination(final @NonNull ActivityFeedParams firstParams) {
 
     return moreActivitiesUrl
       .map(ActivityFeedParams::fromUrl)

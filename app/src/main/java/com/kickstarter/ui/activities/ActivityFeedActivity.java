@@ -67,6 +67,11 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedPresent
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::showActivities);
+
+    presenter.outputs.loggedOutEmptyState()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::showLoggedOutEmptyState);
   }
 
   @Override
@@ -79,8 +84,8 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedPresent
     adapter.takeActivities(activities);
   }
 
-  public void showEmptyFeed(@Nullable final User user) {
-    adapter.takeEmptyFeed(user);
+  public void showLoggedOutEmptyState(@Nullable final User user) {
+    adapter.takeLoggedOutEmptyState(user);
   }
 
   public void activityFeedLogin() {

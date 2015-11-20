@@ -68,7 +68,7 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedPresent
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::showActivities);
 
-    presenter.outputs.emptyFeed()
+    presenter.outputs.loggedOutEmptyState()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::showEmptyFeed);

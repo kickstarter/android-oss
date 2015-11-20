@@ -14,9 +14,9 @@ public interface ActivityFeedPresenterOutputs {
   Observable<List<Activity>> activities();
 
   /**
-   * Emits when there are no activities to display.
+   * Emits when there is no logged-in user, and so an empty state should be shown.
    */
-  Observable<User> emptyFeed();
+  Observable<User> loggedOutEmptyState();
 
   /**
    * Emits a boolean indicating whether activities are being fetched from the API.

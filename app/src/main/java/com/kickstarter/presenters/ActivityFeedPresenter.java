@@ -62,9 +62,9 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
   public final ActivityFeedPresenterInputs inputs = this;
 
   // OUTPUTS
-  private final BehaviorSubject<User> emptyFeed = BehaviorSubject.create();
-  public final Observable<User> emptyFeed() {
-    return emptyFeed;
+  private final BehaviorSubject<User> loggedOutEmptyState = BehaviorSubject.create();
+  public final Observable<User> loggedOutEmptyState() {
+    return loggedOutEmptyState;
   }
   private final PublishSubject<Boolean> isFetchingActivities = PublishSubject.create();
   public final Observable<Boolean> isFetchingActivities() {
@@ -92,7 +92,7 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
     );
 
     addSubscription(currentUser.loggedOutUser()
-        .subscribe(__ -> emptyFeed.onNext(null))
+        .subscribe(__ -> loggedOutEmptyState.onNext(null))
     );
 
     addSubscription(viewSubject

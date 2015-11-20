@@ -14,7 +14,7 @@ import com.google.android.exoplayer.ExoPlayer;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSVideoPlayer;
-import com.kickstarter.libs.KsrRendererBuilder;
+import com.kickstarter.libs.KSRendererBuilder;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Video;
 
@@ -105,7 +105,7 @@ public final class VideoPlayerActivity extends BaseActivity implements KSVideoPl
 
   public void preparePlayer() {
     // Create player
-    player = new KSVideoPlayer(new KsrRendererBuilder(this, video.high()));
+    player = new KSVideoPlayer(new KSRendererBuilder(this, video.high()));
     player.setListener(this);
     player.seekTo(playerPosition);  // todo: will be used for inline video playing
 

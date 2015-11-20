@@ -69,14 +69,18 @@ public class CurrentUser {
     pushNotifications.unregisterDevice();
   }
 
-  /// Returns an observable representing the current user. It emits immediately
-  /// with the current user, and then again each time the user is updated.
+  /**
+   * Returns an observable representing the current user. It emits immediately
+   * with the current user, and then again each time the user is updated.
+   */
   public Observable<User> observable() {
     return userSubject;
   }
 
-  /// Emits every time the user's logged in state changes. It will emit `true`
-  /// if the user went from logged out to logged in, and `false` otherwise.
+  /**
+   * Emits every time the user's logged in state changes. It will emit `true`
+   * if the user went from logged out to logged in, and `false` otherwise.
+   */
   public Observable<Boolean> loginChange() {
     return userSubject.buffer(2, 1)
       .map(prevAndNewUser -> {
@@ -85,19 +89,25 @@ public class CurrentUser {
       });
   }
 
-  /// Emits a boolean that determines if the user is logged in or not. The returned
-  /// observable will emit immediately with the logged in state, and then again
-  /// each time the current user is updated.
+  /**
+   * Emits a boolean that determines if the user is logged in or not. The returned
+   * observable will emit immediately with the logged in state, and then again
+   * each time the current user is updated.
+   */
   public @NonNull Observable<Boolean> isLoggedIn() {
     return userSubject.map(ObjectUtils::isNotNull);
   }
 
-  /// Emits only values of a logged in user. The returned observable may never emit.
+  /**
+   * Emits only values of a logged in user. The returned observable may never emit.
+   */
   public Observable<User> loggedInUser() {
     return observable().filter(ObjectUtils::isNotNull);
   }
 
-  /// Emits only values of a logged out user. The returned observable may never emit.
+  /**
+   * Emits only values of a logged out user. The returned observable may never emit.
+   */
   public Observable<User> loggedOutUser() {
     return observable().filter(ObjectUtils::isNull);
   }

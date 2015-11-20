@@ -181,7 +181,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
       .putExtra(getString(R.string.intent_forward), forward)
       .putExtra(getString(R.string.intent_facebook_token), AccessToken.getCurrentAccessToken().getToken());
     if (forward) {
-      startActivityForResult(intent, ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_TWO_FACTOR_ACTIVITY_FORWARD);
+      startActivityForResult(intent, ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_LOGIN_ACTIVITY_FORWARD);
     } else {
       startActivity(intent);
     }

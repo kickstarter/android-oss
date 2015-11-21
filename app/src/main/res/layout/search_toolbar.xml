@@ -18,6 +18,7 @@
     <com.kickstarter.ui.views.IconTextView
       style="@style/ToolbarIcon"
       android:id="@+id/back_button"
+      android:focusable="true"
       android:layout_weight="0"
       android:text="@string/arrow_back_icon" />
 
@@ -44,6 +45,7 @@
       <com.kickstarter.ui.views.IconTextView
         style="@style/ToolbarIcon"
         android:id="@+id/clear_button"
+        android:focusable="true"
         android:clickable="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"

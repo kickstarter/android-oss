@@ -3,6 +3,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:card_view="http://schemas.android.com/apk/res-auto"
   style="@style/ActivityFeedCard"
+  android:focusable="true"
   card_view:contentPadding="@dimen/grid_3">
 
   <LinearLayout

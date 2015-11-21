@@ -19,6 +19,7 @@
 
   <RelativeLayout
     android:id="@+id/text_group"
+    android:focusable="true"
     android:layout_height="wrap_content"
     android:layout_width="match_parent">
 

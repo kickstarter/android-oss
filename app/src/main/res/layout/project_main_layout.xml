@@ -34,8 +34,9 @@
       android:layout_height="wrap_content">
 
       <TextView
-        android:layout_weight="3"
         android:id="@+id/creator_name"
+        android:focusable="true"
+        android:layout_weight="3"
         android:singleLine="true"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -72,6 +73,7 @@
     <TextView
       android:id="@+id/blurb"
       style="@style/Subhead"
+      android:focusable="true"
       android:background="@drawable/click_indicator_light_masked"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

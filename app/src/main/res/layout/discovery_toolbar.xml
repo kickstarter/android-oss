@@ -14,6 +14,7 @@
 
     <LinearLayout
       android:id="@+id/filter_button"
+      android:focusable="true"
       android:layout_width="wrap_content"
       android:layout_height="match_parent"
       android:background="?attr/selectableItemBackgroundBorderless"
@@ -52,6 +53,7 @@
       <com.kickstarter.ui.views.IconTextView
         style="@style/ToolbarIcon"
         android:id="@+id/search_button"
+        android:focusable="true"
         android:layout_width="@dimen/button_icon_fixed_width"
         android:layout_height="match_parent"
         android:background="@drawable/button_selector"
@@ -62,6 +64,7 @@
       <com.kickstarter.ui.views.IconTextView
         style="@style/ToolbarIcon"
         android:id="@+id/activity_feed_button"
+        android:focusable="true"
         android:layout_width="@dimen/button_icon_fixed_width"
         android:layout_height="match_parent"
         android:gravity="center"
@@ -72,6 +75,7 @@
       <com.kickstarter.ui.views.IconTextView
         style="@style/ToolbarIcon"
         android:id="@+id/login_button"
+        android:focusable="true"
         android:background="@drawable/button_selector"
         android:layout_width="@dimen/button_icon_fixed_width"
         android:layout_height="match_parent"
@@ -83,6 +87,7 @@
       <com.kickstarter.ui.views.IconTextView
         style="@style/ToolbarIcon"
         android:id="@+id/current_user_button"
+        android:focusable="true"
         android:layout_width="@dimen/button_icon_fixed_width"
         android:layout_height="match_parent"
         android:gravity="center"

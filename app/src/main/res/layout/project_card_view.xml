@@ -8,6 +8,7 @@
   card_view:cardBackgroundColor="@color/transparent"
   android:foreground="@drawable/click_indicator_light"
   android:elevation="@dimen/card_elevation"
+  android:focusable="true"
   android:layout_marginLeft="@dimen/grid_3"
   android:layout_marginRight="@dimen/grid_3"
   android:layout_marginBottom="@dimen/grid_1"
@@ -98,4 +99,5 @@
     </LinearLayout>
 
   </RelativeLayout>
+
 </android.support.v7.widget.CardView>

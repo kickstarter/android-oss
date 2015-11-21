@@ -16,6 +16,7 @@
 
     <TextView
       android:id="@+id/cancel_button"
+      android:focusable="true"
       android:clickable="true"
       android:background="@drawable/button_selector"
       android:paddingLeft="@dimen/grid_3"
@@ -58,6 +59,7 @@
 
     <TextView
       android:id="@+id/post_button"
+      android:focusable="true"
       android:clickable="true"
       android:textColor="@color/green_enabled_gray_disabled_color"
       android:textStyle="bold"

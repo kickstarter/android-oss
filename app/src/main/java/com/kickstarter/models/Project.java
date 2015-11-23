@@ -395,7 +395,7 @@ public abstract class Project implements Parcelable {
   }
 
   @Override
-  public String toString() {
+  public final String toString() {
     return "Project{"
       + "id=" + id() + ", "
       + "name=" + name() + ", "
@@ -403,7 +403,7 @@ public abstract class Project implements Parcelable {
   }
 
   @Override
-  public boolean equals(final Object o) {
+  public final boolean equals(@Nullable final Object o) {
     if (o != null && o instanceof Project) {
       final Project p = (Project)o;
       return id() == p.id();
@@ -412,7 +412,7 @@ public abstract class Project implements Parcelable {
   }
 
   @Override
-  public int hashCode() {
+  public final int hashCode() {
     return (int)id();
   }
 }

@@ -19,13 +19,18 @@
       android:layout_height="match_parent"
       android:background="?attr/selectableItemBackgroundBorderless"
       android:orientation="horizontal"
-      android:gravity="center"
+      android:gravity="center_vertical"
+      android:clipChildren="false"
+      android:clipToPadding="false"
+      android:layout_toLeftOf="@+id/toolbar_icons"
+      android:layout_toStartOf="@+id/toolbar_icons"
       android:layout_alignParentLeft="true"
-      android:layout_alignParentStart="true"
-      android:layout_centerVertical="true">
+      android:layout_alignParentStart="true">
 
       <TextView
         android:id="@+id/filter_text_view"
+        android:ellipsize="end"
+        android:singleLine="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/grid_1_half"
@@ -40,11 +45,12 @@
         android:layout_height="wrap_content"
         android:text="@string/expand_more"
         android:textColor="@color/white"
-        android:textSize="28sp" />
+        android:textSize="28sp"/>
 
     </LinearLayout>
 
     <LinearLayout
+      android:id="@+id/toolbar_icons"
       android:layout_width="wrap_content"
       android:layout_height="match_parent"
       android:layout_alignParentRight="true"

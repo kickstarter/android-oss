@@ -395,10 +395,24 @@ public abstract class Project implements Parcelable {
   }
 
   @Override
-  public String toString() {
+  public final String toString() {
     return "Project{"
       + "id=" + id() + ", "
       + "name=" + name() + ", "
       + "}";
+  }
+
+  @Override
+  public final boolean equals(@Nullable final Object o) {
+    if (o != null && o instanceof Project) {
+      final Project p = (Project)o;
+      return id() == p.id();
+    }
+    return false;
+  }
+
+  @Override
+  public final int hashCode() {
+    return (int)id();
   }
 }

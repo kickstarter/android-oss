@@ -38,8 +38,7 @@ public class ListUtils {
   }
 
   /**
-   * Concats the distinct elements of the second argument onto the end of the
-   * first, but also mutates the first.
+   * Concats the distinct elements of `ys` onto the end of the `xs`, but also mutates the first.
    */
   public static <T> List<T> mutatingConcatDistinct(@NonNull final List<T> xs, @NonNull final List<T> ys) {
     for (final T y : ys) {
@@ -51,8 +50,7 @@ public class ListUtils {
   }
 
   /**
-   * Concats the distinct elements of the second argument onto the end of the
-   * first without mutating either list.
+   * Concats the distinct elements of `ys` onto the end of the `xs` without mutating either list.
    */
   public static <T> List<T> concatDistinct(@NonNull final List<T> xs, @NonNull final List<T> ys) {
     final List<T> zs = new ArrayList<>(xs);

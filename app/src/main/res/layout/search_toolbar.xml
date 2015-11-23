@@ -19,6 +19,7 @@
       style="@style/ToolbarIcon"
       android:id="@+id/back_button"
       android:focusable="true"
+      android:contentDescription="@string/nav_back_icon_description"
       android:layout_weight="0"
       android:text="@string/arrow_back_icon" />
 
@@ -49,7 +50,8 @@
         android:clickable="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:text="@string/close_icon" />
+        android:text="@string/close_icon"
+        android:contentDescription="@string/close_icon_description"/>
 
     </RelativeLayout>
 

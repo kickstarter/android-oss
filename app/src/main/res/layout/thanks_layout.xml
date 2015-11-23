@@ -128,6 +128,7 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/grid_1"
         android:text="@string/close_icon"
+        android:contentDescription="@string/close_icon_description"
         android:textColor="@color/white"
         android:textSize="28sp" />
 

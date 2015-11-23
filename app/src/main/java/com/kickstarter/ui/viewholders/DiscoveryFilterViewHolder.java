@@ -17,6 +17,7 @@ import javax.inject.Inject;
 
 import auto.parcel.AutoParcel;
 import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 
 public final class DiscoveryFilterViewHolder extends KSViewHolder {
@@ -31,6 +32,8 @@ public final class DiscoveryFilterViewHolder extends KSViewHolder {
   @Bind(R.id.text_group) RelativeLayout textGroupLayout;
   @Bind(R.id.vertical_line_group) View verticalLineGroup;
   @Bind(R.id.vertical_line_medium_view) View verticalLineView;
+
+  @BindString(R.string.live_project_count_description) String liveProjectCountDescription;
 
   public interface Delegate {
     void discoveryFilterClick(DiscoveryFilterViewHolder viewHolder, DiscoveryParams discoveryParams);
@@ -66,6 +69,7 @@ public final class DiscoveryFilterViewHolder extends KSViewHolder {
     if (style.showLiveProjectsCount()) {
       categoryLiveProjectCountTextView.setVisibility(View.VISIBLE);
       categoryLiveProjectCountTextView.setText(params.category().projectsCount().toString());
+      categoryLiveProjectCountTextView.setContentDescription(params.category().projectsCount() + liveProjectCountDescription);
     } else {
       categoryLiveProjectCountTextView.setVisibility(View.GONE);
       categoryLiveProjectCountTextView.setText("");

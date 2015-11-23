@@ -81,6 +81,7 @@
           android:paddingRight="@dimen/grid_1_half"
           android:paddingEnd="@dimen/grid_1_half"
           android:text="@string/local_offer_icon"
+          android:contentDescription="@string/category_icon_description"
           android:textColor="@color/primary_dark" />
 
         <TextView
@@ -103,6 +104,7 @@
           android:paddingLeft="@dimen/grid_1"
           android:paddingRight="@dimen/grid_1_half"
           android:text="@string/location_on_icon"
+          android:contentDescription="@string/location_icon_description"
           android:textColor="@color/text_dark" />
 
         <TextView

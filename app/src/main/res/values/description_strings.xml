@@ -3,6 +3,7 @@
   <string name="activity_icon_description">Activity feed button</string>
   <string name="category_icon_description">Category</string>
   <string name="close_icon_description">Close button</string>
+  <string name="comment_icon_description">Write a comment</string>
   <string name="current_user_icon_description">Current user menu button</string>
   <string name="filter_button_description">Filter by categories button</string>
   <string name="help_menu_icon_description">Help menu button</string>
@@ -10,6 +11,7 @@
   <string name="location_icon_description">Location</string>
   <string name="login_icon_description">Log in button</string>
   <string name="nav_back_icon_description">Navigate back button</string>
+  <string name="overflow_icon_description">Overflow menu button</string>
   <string name="play_video_icon_description">Play video button</string>
   <string name="search_icon_description">Search projects button</string>
   <string name="share_icon_description">Share this project button</string>

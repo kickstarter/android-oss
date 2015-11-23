@@ -38,6 +38,7 @@
     <com.kickstarter.ui.views.IconTextView
       style="@style/ToolbarIcon"
       android:id="@+id/more_button"
+      android:contentDescription="@string/overflow_icon_description"
       android:focusable="true"
       android:layout_alignParentEnd="true"
       android:layout_alignParentRight="true"

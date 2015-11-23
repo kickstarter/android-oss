@@ -14,13 +14,13 @@ import com.google.android.exoplayer.upstream.DefaultAllocator;
 import com.google.android.exoplayer.upstream.DefaultUriDataSource;
 import com.kickstarter.libs.KSVideoPlayer.RendererBuilder;
 
-public class KsrRendererBuilder implements RendererBuilder {
+public class KSRendererBuilder implements RendererBuilder {
   public static final int BUFFER_SEGMENT_COUNT = 256;
   public static final int BUFFER_SEGMENT_SIZE = 64 * 1024;
   private Context context;
   private String videoLink;
 
-  public KsrRendererBuilder(@NonNull final Context context, @NonNull final String videoLink) {
+  public KSRendererBuilder(@NonNull final Context context, @NonNull final String videoLink) {
     this.context = context;
     this.videoLink = videoLink;
   }

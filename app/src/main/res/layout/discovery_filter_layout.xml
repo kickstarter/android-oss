@@ -39,6 +39,7 @@
     <com.kickstarter.ui.views.IconTextView
       android:id="@+id/close_button"
       android:focusable="true"
+      android:nextFocusLeft="@id/recycler_view"
       android:layout_alignParentTop="true"
       android:layout_alignParentRight="true"
       android:layout_alignParentEnd="true"

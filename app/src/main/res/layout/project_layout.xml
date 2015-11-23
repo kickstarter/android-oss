@@ -21,7 +21,6 @@
     android:id="@+id/project_action_buttons"
     android:focusable="true"
     android:nextFocusRight="@+id/star_fab"
-    android:nextFocusDown="@+id/star_fab"
     android:layout_alignParentBottom="true"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -55,6 +54,7 @@
     fab:rippleColor="@color/dark_gray_click"
     fab:fabSize="normal"
     android:focusable="true"
+    android:nextFocusLeft="@id/project_action_buttons"
     android:layout_alignParentBottom="true"
     android:layout_alignParentRight="true"
     android:layout_alignParentEnd="true"

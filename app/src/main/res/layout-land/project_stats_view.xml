@@ -16,17 +16,16 @@
 
     <TextView
       android:id="@+id/backers_count"
-      android:textSize="@dimen/caption"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:textColor="@color/text_dark" />
+      style="@style/CaptionPrimary" />
 
     <TextView
-      android:textSize="@dimen/caption"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/backers"
-      android:textColor="@color/dark_gray" />
+      style="@style/CaptionSecondary" />
+
   </LinearLayout>
 
   <LinearLayout
@@ -37,10 +36,9 @@
 
     <TextView
       android:id="@+id/pledged"
-      android:textSize="@dimen/caption"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:textColor="@color/text_dark" />
+      style="@style/CaptionPrimary" />
 
     <LinearLayout
       android:layout_width="wrap_content"
@@ -48,18 +46,16 @@
       android:orientation="horizontal">
 
       <TextView
-        android:textSize="@dimen/caption"
+        android:id="@+id/pledged_of_"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/pledged_of_"
-        android:textColor="@color/dark_gray" />
+        style="@style/CaptionSecondary" />
 
       <TextView
-        android:textSize="@dimen/caption"
         android:id="@+id/goal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/dark_gray" />
+        style="@style/CaptionSecondary" />
     </LinearLayout>
   </LinearLayout>
 
@@ -72,10 +68,9 @@
     <TextView
       android:id="@+id/deadline_countdown"
       android:singleLine="true"
-      android:textSize="@dimen/caption"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:textColor="@color/text_dark" />
+      style="@style/CaptionPrimary" />
 
     <LinearLayout
       android:layout_width="wrap_content"
@@ -84,18 +79,18 @@
 
       <TextView
         android:id="@+id/deadline_countdown_unit"
-        android:textSize="@dimen/caption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/dark_gray" />
+        style="@style/CaptionSecondary" />
 
       <TextView
-        android:textSize="@dimen/caption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/_to_go"
-        android:textColor="@color/dark_gray" />
+        style="@style/CaptionSecondary" />
+
     </LinearLayout>
+
   </LinearLayout>
 
 </LinearLayout>

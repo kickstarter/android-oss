@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.Money;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.DiscoveryPresenter;
 import com.squareup.picasso.Picasso;
@@ -18,6 +19,7 @@ import com.squareup.picasso.Picasso;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 
 public final class ProjectCardViewHolder extends KSViewHolder {
@@ -25,6 +27,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.category) TextView categoryTextView;
   protected @Bind(R.id.deadline_countdown) TextView deadlineCountdownTextView;
   protected @Bind(R.id.deadline_countdown_unit) TextView deadlineCountdownUnitTextView;
+  protected @Nullable @Bind(R.id.pledged_of_) TextView pledgedOfTextView;
   protected @Bind(R.id.goal) TextView goalTextView;
   protected @Bind(R.id.location) TextView locationTextView;
   protected @Bind(R.id.name) TextView nameTextView;
@@ -35,9 +38,14 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.photo) ImageView photoImageView;
   protected @Bind(R.id.photo_gradient) ViewGroup photoGradientViewGroup;
   protected @Bind(R.id.potd_group) ViewGroup potdViewGroup;
+
+  protected @BindString(R.string.pledged_of_) String pledgedOfString;
+  protected @BindString(R.string.of_) String ofString;
+
   protected Project project;
   private final Delegate delegate;
   protected DiscoveryPresenter presenter;
+
   @Inject Money money;
 
   public interface Delegate {
@@ -71,6 +79,16 @@ public final class ProjectCardViewHolder extends KSViewHolder {
 
     if (blurbTextView != null) {
       blurbTextView.setText(project.blurb());
+    }
+
+    if (pledgedOfTextView != null) {
+
+      // a11y: large font
+      if (ViewUtils.isFontScaleLarge(view.getContext())) {
+        pledgedOfTextView.setText(ofString);
+      } else {
+        pledgedOfTextView.setText(pledgedOfString);
+      }
     }
 
     percentageFundedProgressBar.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));

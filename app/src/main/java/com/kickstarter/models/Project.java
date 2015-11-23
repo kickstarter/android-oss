@@ -401,4 +401,18 @@ public abstract class Project implements Parcelable {
       + "name=" + name() + ", "
       + "}";
   }
+
+  @Override
+  public boolean equals(final Object o) {
+    if (o != null && o instanceof Project) {
+      final Project p = (Project)o;
+      return id() == p.id();
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return (int)id();
+  }
 }

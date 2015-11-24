@@ -6,8 +6,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.kickstarter.KSApplication;
+import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.User;
 import com.kickstarter.presenters.inputs.ProfilePresenterInputs;
 import com.kickstarter.presenters.outputs.ProfilePresenterOutputs;
 import com.kickstarter.services.ApiClient;
@@ -22,6 +24,9 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 
 public final class ProfilePresenter extends Presenter<ProfileActivity> implements ProfilePresenterInputs, ProfilePresenterOutputs {
+  @Inject ApiClient apiClient;
+  @Inject CurrentUser currentUser;
+
   // INPUTS
   // next page
 
@@ -31,9 +36,11 @@ public final class ProfilePresenter extends Presenter<ProfileActivity> implement
     return projects.asObservable();
   }
 
-  // ERRORS?
+  @Override public Observable<User> user() {
+    return currentUser.observable();
+  }
 
-  @Inject ApiClient apiClient;
+  // ERRORS?
 
   public final ProfilePresenterInputs inputs = this;
   public final ProfilePresenterOutputs outputs = this;

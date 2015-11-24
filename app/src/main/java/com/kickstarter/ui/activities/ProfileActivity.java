@@ -13,6 +13,7 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.User;
 import com.kickstarter.presenters.ProfilePresenter;
 import com.squareup.picasso.Picasso;
 
@@ -41,23 +42,10 @@ public final class ProfileActivity extends BaseActivity<ProfilePresenter> {
     ButterKnife.bind(this);
     ((KSApplication) getApplication()).component().inject(this);
 
-    Picasso.with(this).load(currentUser.getUser().avatar()
-      .medium())
-      .transform(new CircleTransformation())
-      .into(avatarImageView);
-
-    // TODO: put in presenter as outputs and remove injection
-    userNameTextView.setText(currentUser.getUser().name());
-
-    final Integer createdNum = currentUser.getUser().launchedProjectsCount();
-    if (createdNum != null) {
-      createdNumTextView.setText(createdNum.toString());
-    }
-
-    final Integer backedNum = currentUser.getUser().backedProjectsCount();
-    if (backedNum != null) {
-      backedNumTextView.setText(backedNum.toString());
-    }
+    presenter.outputs.user()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::setViews);
 
     presenter.outputs.projects()
       .compose(bindToLifecycle())
@@ -73,6 +61,25 @@ public final class ProfileActivity extends BaseActivity<ProfilePresenter> {
   }
 
   private void loadProjects(@NonNull final List<Project> projects) {
-    
+
+  }
+
+  private void setViews(@NonNull final User user) {
+    Picasso.with(this).load(user.avatar()
+      .medium())
+      .transform(new CircleTransformation())
+      .into(avatarImageView);
+
+    userNameTextView.setText(user.name());
+
+    final Integer createdNum = user.launchedProjectsCount();
+    if (createdNum != null) {
+      createdNumTextView.setText(createdNum.toString());
+    }
+
+    final Integer backedNum = user.backedProjectsCount();
+    if (backedNum != null) {
+      backedNumTextView.setText(backedNum.toString());
+    }
   }
 }

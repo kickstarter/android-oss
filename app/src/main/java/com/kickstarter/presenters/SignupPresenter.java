@@ -111,7 +111,7 @@ SignupPresenterErrors {
 
     addSubscription(signupData
         .map(SignupData::isValid)
-        .subscribe(this.formIsValid::onNext)
+        .subscribe(formIsValid)
     );
 
     addSubscription(

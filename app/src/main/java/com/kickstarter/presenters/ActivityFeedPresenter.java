@@ -80,7 +80,7 @@ public final class ActivityFeedPresenter extends Presenter<ActivityFeedActivity>
 
     addSubscription(refresh
         .switchMap(__ -> activitiesWithPagination())
-        .subscribe(activities::onNext)
+        .subscribe(activities)
     );
 
     addSubscription(currentUser.loggedInUser()

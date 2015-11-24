@@ -73,7 +73,7 @@ public final class ResetPasswordPresenter extends Presenter<ResetPasswordActivit
 
     addSubscription(email
         .map(StringUtils::isEmail)
-        .subscribe(this.isFormValid::onNext)
+        .subscribe(isFormValid)
     );
 
     addSubscription(email

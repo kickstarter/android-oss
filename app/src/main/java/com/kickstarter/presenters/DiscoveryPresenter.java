@@ -112,6 +112,7 @@ public final class DiscoveryPresenter extends Presenter<DiscoveryActivity> imple
    * whenever `nextPage` emits.
    */
   private Observable<DiscoveryParams> paramsWithPagination(@NonNull final DiscoveryParams firstPageParams) {
+
     return nextPage
       .scan(firstPageParams, (currentPage, __) -> currentPage.nextPage())
       ;

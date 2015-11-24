@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -105,6 +106,9 @@ public final class ProfileActivity extends BaseActivity<ProfilePresenter> implem
    * @param project
    */
   public void projectCardClick(@NonNull final ProjectCardViewHolder viewHolder, @NonNull final Project project) {
-    //presenter.inputs.projectClick(project);
+    final Intent intent = new Intent(this, ProjectActivity.class)
+      .putExtra(getString(R.string.intent_project), project);
+    startActivity(intent);
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 }

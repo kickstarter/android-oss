@@ -28,7 +28,6 @@ public final class ProfilePresenter extends Presenter<ProfileActivity> implement
   @Inject CurrentUser currentUser;
 
   // INPUTS
-  // next page
 
   // OUTPUTS
   private final PublishSubject<List<Project>> projects = PublishSubject.create();
@@ -39,8 +38,6 @@ public final class ProfilePresenter extends Presenter<ProfileActivity> implement
   @Override public Observable<User> user() {
     return currentUser.observable();
   }
-
-  // ERRORS?
 
   public final ProfilePresenterInputs inputs = this;
   public final ProfilePresenterOutputs outputs = this;

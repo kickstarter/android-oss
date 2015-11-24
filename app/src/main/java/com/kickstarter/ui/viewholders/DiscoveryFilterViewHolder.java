@@ -33,7 +33,7 @@ public final class DiscoveryFilterViewHolder extends KSViewHolder {
   @Bind(R.id.vertical_line_group) View verticalLineGroup;
   @Bind(R.id.vertical_line_medium_view) View verticalLineView;
 
-  @BindString(R.string.live_project_count_description) String liveProjectCountDescription;
+  @BindString(R.string.live_project_count_content_description) String liveProjectCountDescriptionString;
 
   public interface Delegate {
     void discoveryFilterClick(DiscoveryFilterViewHolder viewHolder, DiscoveryParams discoveryParams);
@@ -69,7 +69,7 @@ public final class DiscoveryFilterViewHolder extends KSViewHolder {
     if (style.showLiveProjectsCount()) {
       categoryLiveProjectCountTextView.setVisibility(View.VISIBLE);
       categoryLiveProjectCountTextView.setText(params.category().projectsCount().toString());
-      categoryLiveProjectCountTextView.setContentDescription(params.category().projectsCount() + liveProjectCountDescription);
+      categoryLiveProjectCountTextView.setContentDescription(params.category().projectsCount() + liveProjectCountDescriptionString);
     } else {
       categoryLiveProjectCountTextView.setVisibility(View.GONE);
       categoryLiveProjectCountTextView.setText("");

@@ -89,12 +89,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       pledgedOfTextView.setText(pledgedOfString);
     }
 
-    backersCountTextView.setContentDescription(project.formattedBackersCount() + backersString);
-    pledgedTextView.setContentDescription(String.valueOf(project.pledged()) + pledgedOfTextView.getText() +
-      money.formattedCurrency(project.goal(), project.currencyOptions()));
-    deadlineCountdownTextView.setContentDescription(project.deadlineCountdownValue() +
-      project.deadlineCountdownUnit(view.getContext()) + toGoString
-    );
+    setStatsContentDescription();
 
     /* landscape-specific */
     if (createdByTextView != null) {
@@ -109,5 +104,17 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   @Override
   public void onClick(@NonNull final View view) {
     delegate.projectCardClick(this, project);
+  }
+
+  public void setStatsContentDescription() {
+    final String backersCountContentDescription = project.formattedBackersCount() + backersString;
+    final String pledgedContentDescription = String.valueOf(project.pledged()) + pledgedOfTextView.getText() +
+      money.formattedCurrency(project.goal(), project.currencyOptions());
+    final String deadlineCountdownContentDescription = project.deadlineCountdownValue() +
+      project.deadlineCountdownUnit(view.getContext()) + toGoString;
+
+    backersCountTextView.setContentDescription(backersCountContentDescription);
+    pledgedTextView.setContentDescription(pledgedContentDescription);
+    deadlineCountdownTextView.setContentDescription(deadlineCountdownContentDescription);
   }
 }

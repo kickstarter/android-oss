@@ -121,12 +121,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     commentsCountTextView.setText(project.formattedCommentsCount());
 
     /* a11y */
-    backersCountTextView.setContentDescription(project.formattedBackersCount() + backersString);
-    pledgedTextView.setContentDescription(String.valueOf(project.pledged()) + pledgedOfTextView.getText() +
-      money.formattedCurrency(project.goal(), project.currencyOptions()));
-    deadlineCountdownTextView.setContentDescription(project.deadlineCountdownValue() +
-        project.deadlineCountdownUnit(view.getContext()) + toGoString
-    );
+    setStatsContentDescription();
   }
 
   @OnClick({R.id.blurb, R.id.campaign})
@@ -147,6 +142,18 @@ public final class ProjectViewHolder extends KSViewHolder {
   @OnClick(R.id.play_button_overlay)
   public void playButtonClick() {
     delegate.projectVideoStarted(this);
+  }
+
+  public void setStatsContentDescription() {
+    final String backersCountContentDescription = project.formattedBackersCount() + backersString;
+    final String pledgedContentDescription = String.valueOf(project.pledged()) + pledgedOfTextView.getText() +
+      money.formattedCurrency(project.goal(), project.currencyOptions());
+    final String deadlineCountdownContentDescription = project.deadlineCountdownValue() +
+      project.deadlineCountdownUnit(view.getContext()) + toGoString;
+
+    backersCountTextView.setContentDescription(backersCountContentDescription);
+    pledgedTextView.setContentDescription(pledgedContentDescription);
+    deadlineCountdownTextView.setContentDescription(deadlineCountdownContentDescription);
   }
 
   @OnClick(R.id.updates)

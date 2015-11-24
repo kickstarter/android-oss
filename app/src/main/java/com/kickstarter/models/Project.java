@@ -9,6 +9,7 @@ import android.support.annotation.StringDef;
 import com.kickstarter.R;
 import com.kickstarter.libs.qualifiers.AutoGson;
 import com.kickstarter.libs.CurrencyOptions;
+import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 
 import org.joda.time.DateTime;
@@ -49,6 +50,7 @@ public abstract class Project implements Parcelable {
   @Nullable public abstract DateTime potdAt();
   @Nullable public abstract String slug();
   @State public abstract String state();
+  public abstract @Nullable DateTime stateChangedAt();
   @Nullable public abstract Integer updatesCount();
   @Nullable public abstract List<Reward> rewards();
   public abstract DateTime updatedAt();
@@ -82,6 +84,7 @@ public abstract class Project implements Parcelable {
     public abstract Builder rewards(List<Reward> __);
     public abstract Builder slug(String __);
     public abstract Builder state(@State String __);
+    public abstract Builder stateChangedAt(DateTime __);
     public abstract Builder updatedAt(DateTime __);
     public abstract Builder updatesCount(Integer __);
     public abstract Builder urls(Urls __);
@@ -129,6 +132,10 @@ public abstract class Project implements Parcelable {
 
   public String formattedCommentsCount() {
     return NumberUtils.numberWithDelimiter(commentsCount());
+  }
+
+  public String formattedStateChangedAt() {
+    return DateTimeUtils.relativeDateInWords(stateChangedAt(), false, true);
   }
 
   public String formattedUpdatesCount() {

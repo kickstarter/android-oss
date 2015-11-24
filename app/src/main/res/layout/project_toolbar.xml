@@ -20,6 +20,9 @@
     <com.kickstarter.ui.views.IconTextView
       style="@style/ToolbarIcon"
       android:id="@+id/back_icon"
+      android:focusable="true"
+      android:nextFocusRight="@+id/share_icon"
+      android:contentDescription="@string/nav_back_button_content_description"
       android:layout_alignParentStart="true"
       android:layout_alignParentLeft="true"
       android:text="@string/arrow_back_icon" />
@@ -28,6 +31,10 @@
     <com.kickstarter.ui.views.IconTextView
       style="@style/ToolbarIcon"
       android:id="@+id/share_icon"
+      android:focusable="true"
+      android:nextFocusLeft="@id/back_icon"
+      android:nextFocusRight="@+id/star_fab"
+      android:contentDescription="@string/share_button_content_description"
       android:layout_alignParentEnd="true"
       android:layout_alignParentRight="true"
       android:textSize="20sp"

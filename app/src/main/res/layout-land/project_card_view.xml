@@ -7,6 +7,7 @@
   card_view:cardCornerRadius="@dimen/card_corner_radius"
   card_view:cardBackgroundColor="@color/transparent"
   android:foreground="@drawable/click_indicator_light"
+  android:focusable="true"
   android:elevation="@dimen/card_elevation"
   android:layout_marginLeft="@dimen/grid_3"
   android:layout_marginRight="@dimen/grid_3"
@@ -80,6 +81,7 @@
           android:paddingRight="@dimen/grid_1_half"
           android:paddingEnd="@dimen/grid_1_half"
           android:text="@string/local_offer_icon"
+          android:contentDescription="@string/category_icon_content_description"
           android:textColor="@color/primary_dark" />
 
         <TextView
@@ -102,6 +104,7 @@
           android:paddingLeft="@dimen/grid_1"
           android:paddingRight="@dimen/grid_1_half"
           android:text="@string/location_on_icon"
+          android:contentDescription="@string/location_icon_content_description"
           android:textColor="@color/text_dark" />
 
         <TextView

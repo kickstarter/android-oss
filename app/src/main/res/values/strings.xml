@@ -125,6 +125,7 @@
   <string name="Not_implemented_yet">Not implemented yet, coming soon!</string>
   <string name="Nice_to_see_you_again">Nice to see you again.</string>
   <string name="Number_live_projects">%1$s live projects</string>
+  <string name="of_">of\u0020</string>
   <string name="Okay">Okay</string>
   <string name="Oops">Oops!</string>
   <string name="Open_downloads_folder">Open Downloads folder</string>

@@ -3,6 +3,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:card_view="http://schemas.android.com/apk/res-auto"
   android:id="@+id/card_view"
+  android:focusable="true"
   android:layout_width="200dp"
   android:layout_height="150dp"
   card_view:cardElevation="0dp"

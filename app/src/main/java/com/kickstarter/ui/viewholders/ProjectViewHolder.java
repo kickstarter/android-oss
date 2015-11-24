@@ -11,9 +11,10 @@ import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
-import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.Money;
+import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.DateTimeUtils;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.views.IconTextView;
 import com.squareup.picasso.Picasso;
@@ -21,6 +22,7 @@ import com.squareup.picasso.Picasso;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -43,10 +45,17 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.deadline_countdown_unit) TextView deadlineCountdownUnitTextView;
   protected @Bind(R.id.goal) TextView goalTextView;
   protected @Bind(R.id.pledged) TextView pledgedTextView;
+  protected @Bind(R.id.pledged_of_) TextView pledgedOfTextView;
   protected @Bind(R.id.avatar) ImageView avatarImageView;
   protected @Bind(R.id.avatar_name) TextView avatarNameTextView;
   protected @Bind(R.id.fund_message) TextView fundMessageTextView;
   protected @Bind(R.id.updates_count) TextView updatesCountTextView;
+
+  protected @BindString(R.string.backers) String backersString;
+  protected @BindString(R.string.of_) String ofString;
+  protected @BindString(R.string.pledged_of_) String pledgedOfString;
+  protected @BindString(R.string._to_go) String toGoString;
+
   @Inject Money money;
 
   public interface Delegate {
@@ -92,6 +101,11 @@ public final class ProjectViewHolder extends KSViewHolder {
     deadlineCountdownUnitTextView.setText(project.deadlineCountdownUnit(context));
     goalTextView.setText(money.formattedCurrency(project.goal(), project.currencyOptions(), true));
     pledgedTextView.setText(money.formattedCurrency(project.pledged(), project.currencyOptions()));
+    if (ViewUtils.isFontScaleLarge(view.getContext())) {
+      pledgedOfTextView.setText(ofString);
+    } else {
+      pledgedOfTextView.setText(pledgedOfString);
+    }
     backersCountTextView.setText(project.formattedBackersCount());
 
      /* Creator */
@@ -105,6 +119,9 @@ public final class ProjectViewHolder extends KSViewHolder {
       project.deadline().toString(DateTimeUtils.writtenDeadline())));
     updatesCountTextView.setText(project.formattedUpdatesCount());
     commentsCountTextView.setText(project.formattedCommentsCount());
+
+    /* a11y */
+    setStatsContentDescription();
   }
 
   @OnClick({R.id.blurb, R.id.campaign})
@@ -125,6 +142,18 @@ public final class ProjectViewHolder extends KSViewHolder {
   @OnClick(R.id.play_button_overlay)
   public void playButtonClick() {
     delegate.projectVideoStarted(this);
+  }
+
+  public void setStatsContentDescription() {
+    final String backersCountContentDescription = project.formattedBackersCount() + backersString;
+    final String pledgedContentDescription = String.valueOf(project.pledged()) + pledgedOfTextView.getText() +
+      money.formattedCurrency(project.goal(), project.currencyOptions());
+    final String deadlineCountdownContentDescription = project.deadlineCountdownValue() +
+      project.deadlineCountdownUnit(view.getContext()) + toGoString;
+
+    backersCountTextView.setContentDescription(backersCountContentDescription);
+    pledgedTextView.setContentDescription(pledgedContentDescription);
+    deadlineCountdownTextView.setContentDescription(deadlineCountdownContentDescription);
   }
 
   @OnClick(R.id.updates)

@@ -18,6 +18,8 @@
     <com.kickstarter.ui.views.IconTextView
       style="@style/ToolbarIcon"
       android:id="@+id/back_button"
+      android:focusable="true"
+      android:contentDescription="@string/nav_back_button_content_description"
       android:text="@string/arrow_back_icon" />
 
     <TextView

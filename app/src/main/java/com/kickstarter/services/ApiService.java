@@ -38,6 +38,9 @@ import rx.Observable;
   Observable<ActivityEnvelope> fetchActivities(@NonNull @Query("categories[]") List<String> categories,
     @NonNull @QueryMap Map<String, String> pagination);
 
+  @GET("/v1/users/self/projects/backed")
+  Observable<DiscoverEnvelope> fetchBackedProjects(@Query("count") int count);
+
   @GET("/v1/categories")
   Observable<CategoriesEnvelope> fetchCategories();
 

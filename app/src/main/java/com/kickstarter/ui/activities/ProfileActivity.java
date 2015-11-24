@@ -1,6 +1,7 @@
 package com.kickstarter.ui.activities;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -11,13 +12,17 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.libs.transformations.CircleTransformation;
+import com.kickstarter.models.Project;
 import com.kickstarter.presenters.ProfilePresenter;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresPresenter(ProfilePresenter.class)
 public final class ProfileActivity extends BaseActivity<ProfilePresenter> {
@@ -41,9 +46,23 @@ public final class ProfileActivity extends BaseActivity<ProfilePresenter> {
       .transform(new CircleTransformation())
       .into(avatarImageView);
 
+    // TODO: put in presenter as outputs and remove injection
     userNameTextView.setText(currentUser.getUser().name());
-    //createdNumTextView.setText(currentUser.getUser().launchedProjectsCount().toString());
-    //backedNumTextView.setText(currentUser.getUser().backedProjectsCount().toString());
+
+    final Integer createdNum = currentUser.getUser().launchedProjectsCount();
+    if (createdNum != null) {
+      createdNumTextView.setText(createdNum.toString());
+    }
+
+    final Integer backedNum = currentUser.getUser().backedProjectsCount();
+    if (backedNum != null) {
+      backedNumTextView.setText(backedNum.toString());
+    }
+
+    presenter.outputs.projects()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::loadProjects);
   }
 
   @Override
@@ -51,5 +70,9 @@ public final class ProfileActivity extends BaseActivity<ProfilePresenter> {
     super.onBackPressed();
 
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
+  }
+
+  private void loadProjects(@NonNull final List<Project> projects) {
+    
   }
 }

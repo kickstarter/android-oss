@@ -12,7 +12,6 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.Money;
 import com.kickstarter.models.Project;
-import com.kickstarter.presenters.DiscoveryPresenter;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
@@ -37,7 +36,6 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.potd_group) ViewGroup potdViewGroup;
   protected Project project;
   private final Delegate delegate;
-  protected DiscoveryPresenter presenter;
   @Inject Money money;
 
   public interface Delegate {

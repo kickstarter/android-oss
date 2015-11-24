@@ -12,6 +12,7 @@ import com.kickstarter.presenters.DiscoveryPresenter;
 import com.kickstarter.presenters.FacebookConfirmationPresenter;
 import com.kickstarter.presenters.LoginPresenter;
 import com.kickstarter.presenters.LoginToutPresenter;
+import com.kickstarter.presenters.ProfilePresenter;
 import com.kickstarter.presenters.ProjectPresenter;
 import com.kickstarter.presenters.ResetPasswordPresenter;
 import com.kickstarter.presenters.SearchPresenter;
@@ -69,6 +70,7 @@ public interface ApplicationGraph {
   void inject(MessageService __);
   void inject(Money __);
   void inject(ProfileActivity __);
+  void inject(ProfilePresenter __);
   void inject(ProjectContextViewHolder __);
   void inject(ProjectActivity __);
   void inject(ProjectPresenter __);

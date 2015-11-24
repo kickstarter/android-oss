@@ -21,6 +21,7 @@
       style="@style/CaptionPrimary" />
 
     <TextView
+      android:importantForAccessibility="no"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="@string/backers"
@@ -47,12 +48,14 @@
 
       <TextView
         android:id="@+id/pledged_of_"
+        android:importantForAccessibility="no"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/CaptionSecondary" />
 
       <TextView
         android:id="@+id/goal"
+        android:importantForAccessibility="no"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/CaptionSecondary" />
@@ -79,11 +82,13 @@
 
       <TextView
         android:id="@+id/deadline_countdown_unit"
+        android:importantForAccessibility="no"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/CaptionSecondary" />
 
       <TextView
+        android:importantForAccessibility="no"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/_to_go"

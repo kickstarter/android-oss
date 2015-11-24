@@ -51,8 +51,10 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.fund_message) TextView fundMessageTextView;
   protected @Bind(R.id.updates_count) TextView updatesCountTextView;
 
-  protected @BindString(R.string.pledged_of_) String pledgedOfString;
+  protected @BindString(R.string.backers) String backersString;
   protected @BindString(R.string.of_) String ofString;
+  protected @BindString(R.string.pledged_of_) String pledgedOfString;
+  protected @BindString(R.string._to_go) String toGoString;
 
   @Inject Money money;
 
@@ -117,6 +119,14 @@ public final class ProjectViewHolder extends KSViewHolder {
       project.deadline().toString(DateTimeUtils.writtenDeadline())));
     updatesCountTextView.setText(project.formattedUpdatesCount());
     commentsCountTextView.setText(project.formattedCommentsCount());
+
+    /* a11y */
+    backersCountTextView.setContentDescription(project.formattedBackersCount() + backersString);
+    pledgedTextView.setContentDescription(String.valueOf(project.pledged()) + pledgedOfTextView.getText() +
+      money.formattedCurrency(project.goal(), project.currencyOptions()));
+    deadlineCountdownTextView.setContentDescription(project.deadlineCountdownValue() +
+        project.deadlineCountdownUnit(view.getContext()) + toGoString
+    );
   }
 
   @OnClick({R.id.blurb, R.id.campaign})

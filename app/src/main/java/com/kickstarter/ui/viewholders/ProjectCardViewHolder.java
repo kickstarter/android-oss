@@ -27,7 +27,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.category) TextView categoryTextView;
   protected @Bind(R.id.deadline_countdown) TextView deadlineCountdownTextView;
   protected @Bind(R.id.deadline_countdown_unit) TextView deadlineCountdownUnitTextView;
-  protected @Nullable @Bind(R.id.pledged_of_) TextView pledgedOfTextView;
+  protected @Bind(R.id.pledged_of_) TextView pledgedOfTextView;
   protected @Bind(R.id.goal) TextView goalTextView;
   protected @Bind(R.id.location) TextView locationTextView;
   protected @Bind(R.id.name) TextView nameTextView;
@@ -39,8 +39,10 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.photo_gradient) ViewGroup photoGradientViewGroup;
   protected @Bind(R.id.potd_group) ViewGroup potdViewGroup;
 
-  protected @BindString(R.string.pledged_of_) String pledgedOfString;
+  protected @BindString(R.string.backers) String backersString;
   protected @BindString(R.string.of_) String ofString;
+  protected @BindString(R.string.pledged_of_) String pledgedOfString;
+  protected @BindString(R.string._to_go) String toGoString;
 
   protected Project project;
   private final Delegate delegate;
@@ -71,26 +73,6 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     locationTextView.setText(project.location().displayableName());
     pledgedTextView.setText(money.formattedCurrency(project.pledged(), project.currencyOptions()));
     nameTextView.setText(project.name());
-
-    // Handle landscape
-    if (createdByTextView != null) {
-      createdByTextView.setText(String.format(view.getContext().getString(R.string.by_), project.creator().name()));
-    }
-
-    if (blurbTextView != null) {
-      blurbTextView.setText(project.blurb());
-    }
-
-    if (pledgedOfTextView != null) {
-
-      // a11y: large font
-      if (ViewUtils.isFontScaleLarge(view.getContext())) {
-        pledgedOfTextView.setText(ofString);
-      } else {
-        pledgedOfTextView.setText(pledgedOfString);
-      }
-    }
-
     percentageFundedProgressBar.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
     Picasso.with(view.getContext()).
       load(project.photo().full()).
@@ -99,6 +81,29 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     final int potdVisible = project.isPotdToday() ? View.VISIBLE : View.INVISIBLE;
     photoGradientViewGroup.setVisibility(potdVisible);
     potdViewGroup.setVisibility(potdVisible);
+
+    /* a11y */
+    if (ViewUtils.isFontScaleLarge(view.getContext())) {
+      pledgedOfTextView.setText(ofString);
+    } else {
+      pledgedOfTextView.setText(pledgedOfString);
+    }
+
+    backersCountTextView.setContentDescription(project.formattedBackersCount() + backersString);
+    pledgedTextView.setContentDescription(String.valueOf(project.pledged()) + pledgedOfTextView.getText() +
+      money.formattedCurrency(project.goal(), project.currencyOptions()));
+    deadlineCountdownTextView.setContentDescription(project.deadlineCountdownValue() +
+      project.deadlineCountdownUnit(view.getContext()) + toGoString
+    );
+
+    /* landscape-specific */
+    if (createdByTextView != null) {
+      createdByTextView.setText(String.format(view.getContext().getString(R.string.by_), project.creator().name()));
+    }
+
+    if (blurbTextView != null) {
+      blurbTextView.setText(project.blurb());
+    }
   }
 
   @Override

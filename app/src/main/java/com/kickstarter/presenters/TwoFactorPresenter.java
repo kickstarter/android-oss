@@ -137,7 +137,7 @@ public final class TwoFactorPresenter extends Presenter<TwoFactorActivity> imple
 
     addSubscription(tfaData
       .map(TfaData::isValid)
-      .subscribe(this.formIsValid::onNext));
+      .subscribe(formIsValid));
 
     addSubscription(tfaData
       .compose(Transformers.takeWhen(loginClick))

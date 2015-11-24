@@ -30,17 +30,28 @@ import com.kickstarter.libs.qualifiers.AccessTokenPreference;
 import com.kickstarter.libs.qualifiers.UserPreference;
 import com.kickstarter.libs.qualifiers.WebEndpoint;
 import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.ApiService;
 import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.services.WebClient;
+import com.kickstarter.services.WebService;
+import com.kickstarter.services.interceptors.ApiRequestInterceptor;
+import com.kickstarter.services.interceptors.KSRequestInterceptor;
+import com.kickstarter.services.interceptors.WebRequestInterceptor;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 
 import org.joda.time.DateTime;
 
 import java.net.CookieManager;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import retrofit.GsonConverterFactory;
+import retrofit.Retrofit;
+import retrofit.RxJavaCallAdapterFactory;
 
 @Module
 public class ApplicationModule {
@@ -50,24 +61,146 @@ public class ApplicationModule {
     this.application = application;
   }
 
+  // BEGIN: EXTRACT INTO SERVICES MODULE
+  @Provides
+  @Singleton
+  @NonNull
+  ApiClient provideApiClient(@NonNull final ApiService apiService) {
+    return new ApiClient(apiService);
+  }
+
+  @Provides
+  @Singleton
+  @Named("ApiOkHttpClient")
+  @NonNull
+  OkHttpClient provideApiOkHttpClient(@NonNull final ApiEndpoint apiEndpoint,
+    @NonNull final ApiRequestInterceptor apiRequestInterceptor,
+    @NonNull final CookieManager cookieManager,
+    @NonNull final HttpLoggingInterceptor httpLoggingInterceptor,
+    @NonNull final KSRequestInterceptor ksRequestInterceptor) {
+    final OkHttpClient okHttpClient = new OkHttpClient();
+    okHttpClient.interceptors().add(apiRequestInterceptor);
+    okHttpClient.interceptors().add(httpLoggingInterceptor);
+    okHttpClient.interceptors().add(ksRequestInterceptor);
+    okHttpClient.setCookieHandler(cookieManager);
+    return okHttpClient;
+  }
+
+  @Provides
+  @Singleton
+  @Named("ApiRetrofit")
+  @NonNull Retrofit provideApiRetrofit(@NonNull final ApiEndpoint apiEndpoint,
+    @NonNull final Gson gson,
+    @Named("ApiOkHttpClient") @NonNull final OkHttpClient okHttpClient) {
+    return createRetrofit(apiEndpoint.url, gson, okHttpClient);
+  }
+
+  @Provides
+  @Singleton
+  @NonNull ApiRequestInterceptor provideApiRequestInterceptor(@NonNull final String clientId,
+    @NonNull final String endpoint) {
+    return new ApiRequestInterceptor(clientId, endpoint);
+  }
+
+  @Provides
+  @Singleton
+  @NonNull
+  ApiService provideApiService(@Named("ApiRetrofit") @NonNull final Retrofit retrofit) {
+    return retrofit.create(ApiService.class);
+  }
+
+  @Provides
+  @Singleton
+  String provideClientId(@NonNull final ApiEndpoint apiEndpoint) {
+    return apiEndpoint == ApiEndpoint.PRODUCTION ?
+      "***REMOVED***" :
+      "***REMOVED***";
+  }
+
+  @Provides
+  @Singleton
+  @NonNull KSRequestInterceptor provideKSRequestInterceptor(@NonNull final CurrentUser currentUser,
+    @NonNull final ApiEndpoint apiEndpoint, @NonNull final Release release) {
+    return new KSRequestInterceptor(currentUser, release);
+  }
+
+  @Provides
+  @Singleton
+  @NonNull HttpLoggingInterceptor provideHttpLoggingInterceptor() {
+    final HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+    interceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
+    return interceptor;
+  }
+
+  @Provides
+  @Singleton
+  @NonNull WebClient provideWebClient(@NonNull final WebService webService) {
+    return new WebClient(webService);
+  }
+
+  @Provides
+  @Singleton
+  @Named("WebOkHttpClient")
+  @NonNull OkHttpClient provideWebOkHttpClient(@NonNull final ApiEndpoint apiEndpoint,
+    @NonNull final CookieManager cookieManager,
+    @NonNull final HttpLoggingInterceptor httpLoggingInterceptor,
+    @NonNull final KSRequestInterceptor ksRequestInterceptor,
+    @NonNull final WebRequestInterceptor webRequestInterceptor) {
+
+    final OkHttpClient okHttpClient = new OkHttpClient();
+    okHttpClient.interceptors().add(httpLoggingInterceptor);
+    okHttpClient.interceptors().add(ksRequestInterceptor);
+    okHttpClient.interceptors().add(webRequestInterceptor);
+    okHttpClient.setCookieHandler(cookieManager);
+    return okHttpClient;
+  }
+
+  @Provides
+  @Singleton
+  @Named("WebRetrofit")
+  @NonNull Retrofit provideWebRetrofit(@NonNull @WebEndpoint final String webEndpoint,
+    @NonNull final Gson gson,
+    @Named("WebOkHttpClient") @NonNull final OkHttpClient okHttpClient) {
+    return createRetrofit(webEndpoint, gson, okHttpClient);
+  }
+
+  @Provides
+  @Singleton
+  @NonNull WebRequestInterceptor provideWebRequestInterceptor(@NonNull @WebEndpoint final String endpoint,
+    @NonNull final Release release) {
+    return new WebRequestInterceptor(endpoint, release);
+  }
+
+  @Provides
+  @Singleton
+  @NonNull
+  WebService provideWebService(@Named("WebRetrofit") @NonNull final Retrofit retrofit) {
+    return retrofit.create(WebService.class);
+  }
+
+  private @NonNull Retrofit createRetrofit(@NonNull String baseUrl, @NonNull final Gson gson, @NonNull final OkHttpClient okHttpClient) {
+    return new Retrofit.Builder()
+      .client(okHttpClient)
+      .baseUrl(baseUrl)
+      .addConverterFactory(GsonConverterFactory.create(gson))
+      .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+      .build();
+  }
+
   @Provides
   @Singleton
   @AccessTokenPreference
-  StringPreference provideAccessTokenPreference(@NonNull final SharedPreferences sharedPreferences) {
+  @NonNull StringPreference provideAccessTokenPreference(@NonNull final SharedPreferences sharedPreferences) {
     return new StringPreference(sharedPreferences, "access_token");
   }
+  // END: EXTRACT INTO SERVICES MODULE
+
+
 
   @Provides
   @Singleton
   Application provideApplication() {
     return application;
-  }
-
-  @Provides
-  @Singleton
-  ApiClient provideApiClient(@NonNull final ApiEndpoint apiEndpoint, @NonNull final Release release,
-    @NonNull final String clientId, @NonNull final CurrentUser currentUser, @NonNull final Gson gson) {
-    return new ApiClient(apiEndpoint, release, clientId, currentUser, gson);
   }
 
   @Provides
@@ -97,14 +230,6 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  String provideClientId(@NonNull final ApiEndpoint apiEndpoint) {
-    return apiEndpoint == ApiEndpoint.PRODUCTION ?
-      "***REMOVED***" :
-      "***REMOVED***";
-  }
-
-  @Provides
-  @Singleton
   ConfigLoader provideConfigLoader(@NonNull final AssetManager assetManager) {
     return new ConfigLoader(assetManager);
   }
@@ -127,7 +252,7 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @WebEndpoint
-  String provideWebEndpoint(@NonNull final ApiEndpoint apiEndpoint) {
+  @NonNull String provideWebEndpoint(@NonNull final ApiEndpoint apiEndpoint) {
     final String url = (apiEndpoint == ApiEndpoint.PRODUCTION) ?
       "https://www.kickstarter.com" :
       apiEndpoint.url.replaceAll("(?<=\\Ahttps?:\\/\\/)api.", "");
@@ -143,7 +268,7 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  Gson provideGson(@NonNull final AssetManager assetManager) {
+  Gson provideGson() {
     return new GsonBuilder()
       .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
       .registerTypeAdapter(DateTime.class, new DateTimeTypeConverter())
@@ -152,18 +277,9 @@ public class ApplicationModule {
   }
 
   @Provides
-  @Singleton
-  WebClient provideWebClient(@NonNull final Release release, @NonNull final Gson gson,
-    @NonNull @WebEndpoint final String webEndpoint) {
-    return new WebClient(release, gson, webEndpoint);
-  }
-
-  @Provides
-  KSWebViewClient provideKSWebViewClient(@NonNull final Release release,
-    @NonNull final CookieManager cookieManager,
-    @NonNull final CurrentUser currentUser,
+  KSWebViewClient provideKSWebViewClient(@Named("WebOkHttpClient") @NonNull final OkHttpClient okHttpClient,
     @WebEndpoint final String webEndpoint) {
-    return new KSWebViewClient(release, cookieManager, currentUser, webEndpoint);
+    return new KSWebViewClient(okHttpClient, webEndpoint);
   }
 
   @Provides

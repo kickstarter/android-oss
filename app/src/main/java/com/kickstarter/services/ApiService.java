@@ -24,6 +24,7 @@ import com.kickstarter.services.apiresponses.StarEnvelope;
 import java.util.List;
 import java.util.Map;
 
+import retrofit.Result;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
@@ -33,7 +34,7 @@ import retrofit.http.Query;
 import retrofit.http.QueryMap;
 import rx.Observable;
 
-/*package*/ interface ApiService {
+public interface ApiService {
   @GET("/v1/activities")
   Observable<ActivityEnvelope> fetchActivities(@NonNull @Query("categories[]") List<String> categories,
     @NonNull @QueryMap Map<String, String> pagination);

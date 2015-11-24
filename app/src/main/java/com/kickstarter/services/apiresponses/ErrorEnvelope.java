@@ -7,7 +7,6 @@ import android.support.annotation.StringDef;
 
 import com.kickstarter.libs.qualifiers.AutoGson;
 import com.kickstarter.libs.utils.ListUtils;
-import com.kickstarter.services.ApiError;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -61,11 +60,13 @@ public abstract class ErrorEnvelope implements Parcelable {
      can't returns `null`.
    */
   @Nullable public static ErrorEnvelope fromThrowable(@NonNull final Throwable e) {
+    /*
     if (e instanceof ApiError) {
       final ApiError error = (ApiError) e;
       final ErrorEnvelope envelope = error.errorEnvelope();
       return envelope;
     }
+    */
 
     return null;
   }

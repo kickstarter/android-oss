@@ -9,6 +9,7 @@
 
   <ImageView
     android:id="@+id/avatar"
+    android:background="@drawable/avatar_stroke"
     android:layout_gravity="center_horizontal"
     android:layout_width="@dimen/profile_avatar_width"
     android:layout_height="@dimen/profile_avatar_height"

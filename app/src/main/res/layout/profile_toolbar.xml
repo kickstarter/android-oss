@@ -9,7 +9,8 @@
   android:background="@color/light_gray"
   android:elevation="0dp"
   app:contentInsetLeft="0dp"
-  app:contentInsetStart="0dp">
+  app:contentInsetStart="0dp"
+  app:layout_collapseMode="pin">
 
   <RelativeLayout
     android:layout_width="match_parent"

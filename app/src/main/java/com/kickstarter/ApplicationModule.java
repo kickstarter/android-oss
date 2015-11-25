@@ -65,8 +65,8 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  ApiClient provideApiClient(@NonNull final ApiService apiService) {
-    return new ApiClient(apiService);
+  ApiClient provideApiClient(@NonNull final ApiService apiService, @NonNull final Gson gson) {
+    return new ApiClient(apiService, gson);
   }
 
   @Provides
@@ -98,8 +98,8 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @NonNull ApiRequestInterceptor provideApiRequestInterceptor(@NonNull final String clientId,
-    @NonNull final String endpoint) {
-    return new ApiRequestInterceptor(clientId, endpoint);
+    @NonNull final ApiEndpoint endpoint) {
+    return new ApiRequestInterceptor(clientId, endpoint.url);
   }
 
   @Provides

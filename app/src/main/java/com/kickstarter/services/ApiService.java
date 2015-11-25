@@ -24,6 +24,7 @@ import com.kickstarter.services.apiresponses.StarEnvelope;
 import java.util.List;
 import java.util.Map;
 
+import retrofit.Response;
 import retrofit.Result;
 import retrofit.http.Body;
 import retrofit.http.GET;
@@ -55,7 +56,7 @@ public interface ApiService {
   );
 
   @GET("/v1/discover")
-  Observable<DiscoverEnvelope> fetchProjects(@QueryMap Map<String, String> params);
+  Observable<Response<DiscoverEnvelope>> fetchProjects(@QueryMap Map<String, String> params);
 
   @GET("/v1/projects/{param}")
   Observable<Project> fetchProject(@Path("param") String param);

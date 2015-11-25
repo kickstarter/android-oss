@@ -2,6 +2,8 @@ package com.kickstarter.services;
 
 import android.support.annotation.NonNull;
 
+import com.google.gson.Gson;
+import com.kickstarter.libs.rx.operators.ApiErrorEnvelopeOperator;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
@@ -28,8 +30,10 @@ import rx.schedulers.Schedulers;
 
 public final class ApiClient {
   private final ApiService service;
+  private final Gson gson;
 
-  public ApiClient(@NonNull final ApiService service) {
+  public ApiClient(@NonNull final ApiService service, @NonNull final Gson gson) {
+    this.gson = gson;
     this.service = service;
   }
 
@@ -60,7 +64,9 @@ public final class ApiClient {
   }
 
   public Observable<List<Category>> fetchCategories() {
-    return service.fetchCategories().map(CategoriesEnvelope::categories);
+    return service.fetchCategories()
+      .map(CategoriesEnvelope::categories)
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<CommentsEnvelope> fetchProjectComments(@NonNull final CommentFeedParams params) {
@@ -68,7 +74,9 @@ public final class ApiClient {
   }
 
   public Observable<DiscoverEnvelope> fetchProjects(@NonNull final DiscoveryParams params) {
-    return service.fetchProjects(params.queryParams()).subscribeOn(Schedulers.io());
+    return service.fetchProjects(params.queryParams())
+      .lift(apiErrorEnvelopeOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<Project> fetchProject(@NonNull final String param) {
@@ -132,5 +140,12 @@ public final class ApiClient {
   public Observable<Project> toggleProjectStar(@NonNull final Project project) {
     return service.toggleProjectStar(project.param())
       .map(StarEnvelope::project);
+  }
+
+  /**
+   * Utility to create a new operator, saves us from littering references to gson throughout the client.
+   */
+  private @NonNull <T> ApiErrorEnvelopeOperator<T> apiErrorEnvelopeOperator() {
+    return new ApiErrorEnvelopeOperator<>(gson);
   }
 }

@@ -29,22 +29,22 @@ public final class ApiRequestInterceptor implements Interceptor {
     return chain.proceed(request(chain.request()));
   }
 
-  private Request request(@NonNull final Request request) {
-    if (!shouldIntercept(request)) {
-      return request;
+  private Request request(@NonNull final Request initialRequest) {
+    if (!shouldIntercept(initialRequest)) {
+      return initialRequest;
     }
 
-    return request.newBuilder()
+    return initialRequest.newBuilder()
       .header("Accept", "application/json")
-      .url(httpUrl(request.httpUrl()))
+      .url(url(initialRequest.httpUrl()))
       .build();
   }
 
-  private HttpUrl httpUrl(@NonNull final HttpUrl httpUrl) {
-    HttpUrl.Builder builder = httpUrl.newBuilder()
+  private HttpUrl url(@NonNull final HttpUrl initialHttpUrl) {
+    final HttpUrl.Builder builder = initialHttpUrl.newBuilder()
       .setQueryParameter("client_id", clientId);
     if (currentUser.exists()) {
-      builder = builder.setQueryParameter("oauth_token", currentUser.getAccessToken());
+      builder.setQueryParameter("oauth_token", currentUser.getAccessToken());
     }
 
     return builder.build();

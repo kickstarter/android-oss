@@ -28,9 +28,8 @@ public final class KSRequestInterceptor implements Interceptor {
     return chain.proceed(request(chain.request()));
   }
 
-  private Request request(@NonNull final Request request) {
-    // TODO: Should only intercept for Kickstarter urls
-    return request.newBuilder()
+  private Request request(@NonNull final Request initialRequest) {
+    return initialRequest.newBuilder()
       .header("Kickstarter-Android-App", release.versionCode().toString())
       .header("Kickstarter-App-Id", release.applicationId())
       .build();

@@ -12,6 +12,9 @@ import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 
+/**
+ * Interceptor for web requests to Kickstarter, not API requests. Used by web views and the web client.
+ */
 public final class WebRequestInterceptor implements Interceptor {
   final CurrentUser currentUser;
   final String endpoint;
@@ -29,19 +32,21 @@ public final class WebRequestInterceptor implements Interceptor {
     return chain.proceed(request(chain.request()));
   }
 
-  private Request request(@NonNull final Request request) {
-    if (!shouldIntercept(request)) {
-      return request;
+  private Request request(@NonNull final Request initialRequest) {
+    if (!shouldIntercept(initialRequest)) {
+      return initialRequest;
     }
 
-    Request.Builder requestBuilder = request.newBuilder()
+    final Request.Builder requestBuilder = initialRequest.newBuilder()
       .header("User-Agent", userAgent());
-    if (KSUri.isHivequeenUri(Uri.parse(request.urlString()), endpoint)) {
-      requestBuilder = requestBuilder.header("Authorization", "Basic ZnV6enk6d3V6enk=");
+
+    if (KSUri.isHivequeenUri(Uri.parse(initialRequest.urlString()), endpoint)) {
+      requestBuilder.addHeader("Authorization", "Basic ZnV6enk6d3V6enk=");
     }
     if (currentUser.exists()) {
-      requestBuilder =requestBuilder.addHeader("Authorization", "token " + currentUser.getAccessToken());
+      requestBuilder.addHeader("Authorization", "token " + currentUser.getAccessToken());
     }
+
     return requestBuilder.build();
   }
 

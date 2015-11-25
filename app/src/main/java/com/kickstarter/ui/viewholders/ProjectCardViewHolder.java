@@ -27,6 +27,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.category) TextView categoryTextView;
   protected @Bind(R.id.deadline_countdown) TextView deadlineCountdownTextView;
   protected @Bind(R.id.deadline_countdown_unit) TextView deadlineCountdownUnitTextView;
+  protected @Bind(R.id.funding_unsuccessful_view) TextView fundingUnsuccessfulTextView;
   protected @Bind(R.id.pledged_of_) TextView pledgedOfTextView;
   protected @Bind(R.id.goal) TextView goalTextView;
   protected @Bind(R.id.location) TextView locationTextView;
@@ -38,8 +39,12 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.photo) ImageView photoImageView;
   protected @Bind(R.id.photo_gradient) ViewGroup photoGradientViewGroup;
   protected @Bind(R.id.potd_group) ViewGroup potdViewGroup;
+  protected @Bind(R.id.successfully_funded_view) TextView successfullyFundedTextView;
 
   protected @BindString(R.string.backers) String backersString;
+  protected @BindString(R.string.Funding_canceled) String fundingCanceledString;
+  protected @BindString(R.string.Funding_suspended_) String fundingSuspendedString;
+  protected @BindString(R.string.Funding_unsuccessful_) String fundingUnsuccessfulString;
   protected @BindString(R.string.of_) String ofString;
   protected @BindString(R.string.pledged_of_) String pledgedOfString;
   protected @BindString(R.string._to_go) String toGoString;
@@ -82,6 +87,8 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     photoGradientViewGroup.setVisibility(potdVisible);
     potdViewGroup.setVisibility(potdVisible);
 
+    setProjectStateView();
+
     /* a11y */
     if (ViewUtils.isFontScaleLarge(view.getContext())) {
       pledgedOfTextView.setText(ofString);
@@ -104,6 +111,34 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   @Override
   public void onClick(@NonNull final View view) {
     delegate.projectCardClick(this, project);
+  }
+
+  public void setProjectStateView() {
+    switch(project.state()) {
+      case Project.STATE_SUCCESSFUL:
+        percentageFundedProgressBar.setVisibility(View.GONE);
+        fundingUnsuccessfulTextView.setVisibility(View.GONE);
+        successfullyFundedTextView.setVisibility(View.VISIBLE);
+        break;
+      case Project.STATE_CANCELED:
+        percentageFundedProgressBar.setVisibility(View.GONE);
+        successfullyFundedTextView.setVisibility(View.GONE);
+        fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
+        fundingUnsuccessfulTextView.setText(fundingCanceledString);
+        break;
+      case Project.STATE_FAILED:
+        percentageFundedProgressBar.setVisibility(View.GONE);
+        successfullyFundedTextView.setVisibility(View.GONE);
+        fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
+        fundingUnsuccessfulTextView.setText(String.format(fundingUnsuccessfulString, project.formattedStateChangedAt()));
+        break;
+      case Project.STATE_SUSPENDED:
+        percentageFundedProgressBar.setVisibility(View.GONE);
+        successfullyFundedTextView.setVisibility(View.GONE);
+        fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
+        fundingUnsuccessfulTextView.setText(String.format(fundingSuspendedString, project.formattedStateChangedAt()));
+        break;
+    }
   }
 
   public void setStatsContentDescription() {

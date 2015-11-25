@@ -219,7 +219,8 @@
   <string name="You_launched_a_project">You launched a project: %1$s</string>
   <string name="You_selected">You selected</string>
   <string name="You_starred_this_project">You starred this project</string>
-  <string name="Youre_a_backer">\u0020• You\'re a backer\u0020</string>
+  <string name="Youre_a_backer">You\'re a backer!</string>
+  <string name="_Youre_a_backer">\u0020• You\'re a backer\u0020</string>
 
   <!-- Intent strings. Requires package prefix:
     http://developer.android.com/reference/android/content/Intent.html#putExtra%28java.lang.String,%20boolean%29 -->
@@ -251,5 +252,5 @@
   <string name="font_family_medium">sans-serif-medium</string>
 
   <!-- Koala strings -->
-  <string name="koala_endpoint">***REMOVED***</string>
+  <string name="koala_endpoint">https://***REMOVED***/native/track</string>
 </resources>

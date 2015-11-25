@@ -43,6 +43,7 @@ import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 import org.joda.time.DateTime;
 
 import java.net.CookieManager;
+import java.util.Arrays;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -74,14 +75,10 @@ public class ApplicationModule {
   @Named("ApiOkHttpClient")
   @NonNull
   OkHttpClient provideApiOkHttpClient(@NonNull final ApiEndpoint apiEndpoint,
-    @NonNull final ApiRequestInterceptor apiRequestInterceptor,
-    @NonNull final CookieManager cookieManager,
-    @NonNull final HttpLoggingInterceptor httpLoggingInterceptor,
-    @NonNull final KSRequestInterceptor ksRequestInterceptor) {
+    @NonNull final ApiRequestInterceptor apiRequestInterceptor, @NonNull final CookieManager cookieManager,
+    @NonNull final HttpLoggingInterceptor httpLoggingInterceptor, @NonNull final KSRequestInterceptor ksRequestInterceptor) {
     final OkHttpClient okHttpClient = new OkHttpClient();
-    okHttpClient.interceptors().add(apiRequestInterceptor);
-    okHttpClient.interceptors().add(httpLoggingInterceptor);
-    okHttpClient.interceptors().add(ksRequestInterceptor);
+    okHttpClient.interceptors().addAll(Arrays.asList(httpLoggingInterceptor, apiRequestInterceptor, ksRequestInterceptor));
     okHttpClient.setCookieHandler(cookieManager);
     return okHttpClient;
   }
@@ -148,9 +145,7 @@ public class ApplicationModule {
     @NonNull final WebRequestInterceptor webRequestInterceptor) {
 
     final OkHttpClient okHttpClient = new OkHttpClient();
-    okHttpClient.interceptors().add(httpLoggingInterceptor);
-    okHttpClient.interceptors().add(ksRequestInterceptor);
-    okHttpClient.interceptors().add(webRequestInterceptor);
+    okHttpClient.interceptors().addAll(Arrays.asList(httpLoggingInterceptor, webRequestInterceptor, ksRequestInterceptor));
     okHttpClient.setCookieHandler(cookieManager);
     return okHttpClient;
   }

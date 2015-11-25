@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class KSWebViewClient extends WebViewClient {
+public final class KSWebViewClient extends WebViewClient {
   private boolean initialPageLoad = true;
   private String lastUrl;
   private final OkHttpClient client;

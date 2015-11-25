@@ -131,15 +131,15 @@ public abstract class Project implements Parcelable {
     return NumberUtils.numberWithDelimiter(backersCount());
   }
 
-  public @NonNull String formattedCommentsCount() {
+  public @Nullable String formattedCommentsCount() {
     return NumberUtils.numberWithDelimiter(commentsCount());
   }
 
-  public @NonNull String formattedStateChangedAt() {
+  public @Nullable String formattedStateChangedAt() {
     return DateTimeUtils.relativeDateInWords(stateChangedAt(), false, true);
   }
 
-  public @NonNull String formattedUpdatesCount() {
+  public @Nullable String formattedUpdatesCount() {
     return NumberUtils.numberWithDelimiter(updatesCount());
   }
 

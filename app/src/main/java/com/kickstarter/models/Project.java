@@ -7,8 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.qualifiers.AutoGson;
 import com.kickstarter.libs.CurrencyOptions;
+import com.kickstarter.libs.qualifiers.AutoGson;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 
@@ -38,6 +38,7 @@ public abstract class Project implements Parcelable {
   public abstract String currencySymbol(); // e.g.: $
   public abstract boolean currencyTrailingCode();
   @Nullable public abstract DateTime deadline();
+  public abstract @Nullable List<User> friends();
   public abstract float goal();
   public abstract long id(); // in the Kickstarter app, this is project.pid not project.id
   public abstract boolean isBacking();
@@ -71,6 +72,7 @@ public abstract class Project implements Parcelable {
     public abstract Builder currencySymbol(String __);
     public abstract Builder currencyTrailingCode(boolean __);
     public abstract Builder deadline(DateTime __);
+    public abstract Builder friends(List<User> __);
     public abstract Builder goal(float __);
     public abstract Builder id(long __);
     public abstract Builder isBacking(boolean __);

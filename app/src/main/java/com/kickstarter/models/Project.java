@@ -3,6 +3,7 @@ package com.kickstarter.models;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 
@@ -114,7 +115,7 @@ public abstract class Project implements Parcelable {
   @StringDef({STATE_STARTED, STATE_SUBMITTED, STATE_LIVE, STATE_SUCCESSFUL, STATE_FAILED, STATE_CANCELED, STATE_SUSPENDED, STATE_PURGED})
   public @interface State {}
 
-  public String creatorBioUrl() {
+  public @NonNull String creatorBioUrl() {
     return urls().web().creatorBio();
   }
 
@@ -122,31 +123,31 @@ public abstract class Project implements Parcelable {
     return this.backing() != null && this.backing().rewardId() != null && this.backing().rewardId() == rewardId;
   }
 
-  public String descriptionUrl() {
+  public @NonNull String descriptionUrl() {
     return urls().web().description();
   }
 
-  public String formattedBackersCount() {
+  public @NonNull String formattedBackersCount() {
     return NumberUtils.numberWithDelimiter(backersCount());
   }
 
-  public String formattedCommentsCount() {
+  public @NonNull String formattedCommentsCount() {
     return NumberUtils.numberWithDelimiter(commentsCount());
   }
 
-  public String formattedStateChangedAt() {
+  public @NonNull String formattedStateChangedAt() {
     return DateTimeUtils.relativeDateInWords(stateChangedAt(), false, true);
   }
 
-  public String formattedUpdatesCount() {
+  public @NonNull String formattedUpdatesCount() {
     return NumberUtils.numberWithDelimiter(updatesCount());
   }
 
-  public String updatesUrl() {
+  public @NonNull String updatesUrl() {
     return urls().web().updates();
   }
 
-  public String webProjectUrl() {
+  public @NonNull String webProjectUrl() {
     return urls().web().project();
   }
 
@@ -224,7 +225,7 @@ public abstract class Project implements Parcelable {
     }
   }
 
-  public CurrencyOptions currencyOptions() {
+  public @NonNull CurrencyOptions currencyOptions() {
     return new CurrencyOptions(country(), currencySymbol(), currency());
   }
 
@@ -289,7 +290,7 @@ public abstract class Project implements Parcelable {
     return STATE_SUCCESSFUL.equals(state());
   }
 
-  public Float percentageFunded() {
+  public @NonNull Float percentageFunded() {
     if (goal() > 0.0f) {
       return (pledged() / goal()) * 100.0f;
     }
@@ -304,7 +305,7 @@ public abstract class Project implements Parcelable {
    * @param  context an Android context.
    * @return         the String time remaining.
    */
-  public String timeToGo(final Context context) {
+  public @NonNull String timeToGo(final Context context) {
     return new StringBuilder(deadlineCountdown(context))
       .append(context.getString(R.string._to_go))
       .toString();
@@ -317,7 +318,7 @@ public abstract class Project implements Parcelable {
    * @param  context an Android context.
    * @return         the String time remaining.
    */
-  public String deadlineCountdown(final Context context) {
+  public @NonNull String deadlineCountdown(final Context context) {
     return new StringBuilder().append(deadlineCountdownValue())
       .append(" ")
       .append(deadlineCountdownUnit(context))
@@ -330,7 +331,7 @@ public abstract class Project implements Parcelable {
    *
    * @return the Long number of seconds remaining.
    */
-  public Long timeInSecondsUntilDeadline() {
+  public @NonNull Long timeInSecondsUntilDeadline() {
     return Math.max(0L,
       new Duration(new DateTime(), deadline()).getStandardSeconds());
   }
@@ -342,7 +343,7 @@ public abstract class Project implements Parcelable {
    *
    * @return the Integer time remaining.
    */
-  public Integer deadlineCountdownValue() {
+  public @NonNull Integer deadlineCountdownValue() {
     final Long seconds = timeInSecondsUntilDeadline();
     if (seconds <= 120.0) {
       return seconds.intValue(); // seconds
@@ -361,7 +362,7 @@ public abstract class Project implements Parcelable {
    * @param  context an Android context.
    * @return         the String unit.
    */
-  public String deadlineCountdownUnit(final Context context) {
+  public @NonNull String deadlineCountdownUnit(final Context context) {
     final Long seconds = timeInSecondsUntilDeadline();
     if (seconds <= 1.0 && seconds > 0.0) {
       return context.getString(R.string.secs);
@@ -375,24 +376,24 @@ public abstract class Project implements Parcelable {
     return context.getString(R.string.days);
   }
 
-  public String param() {
+  public @NonNull String param() {
     return slug() != null ? slug() : String.valueOf(id());
   }
 
-  public String secureWebProjectUrl() {
+  public @NonNull String secureWebProjectUrl() {
     // TODO: Just use http with local env
     return Uri.parse(webProjectUrl()).buildUpon().scheme("https").build().toString();
   }
 
-  public String newPledgeUrl() {
+  public @NonNull String newPledgeUrl() {
     return Uri.parse(secureWebProjectUrl()).buildUpon().appendEncodedPath("pledge/new").toString();
   }
 
-  public String editPledgeUrl() {
+  public @NonNull String editPledgeUrl() {
     return Uri.parse(secureWebProjectUrl()).buildUpon().appendEncodedPath("pledge/edit").toString();
   }
 
-  public String rewardSelectedUrl(final Reward reward) {
+  public @NonNull String rewardSelectedUrl(final Reward reward) {
     return Uri.parse(newPledgeUrl())
       .buildUpon().scheme("https")
       .appendQueryParameter("backing[backer_reward_id]", String.valueOf(reward.id()))
@@ -402,7 +403,7 @@ public abstract class Project implements Parcelable {
   }
 
   @Override
-  public final String toString() {
+  public final @NonNull String toString() {
     return "Project{"
       + "id=" + id() + ", "
       + "name=" + name() + ", "

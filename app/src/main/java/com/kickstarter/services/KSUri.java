@@ -55,9 +55,7 @@ public final class KSUri {
   }
 
   public static boolean isWebUri(@NonNull final Uri uri, @NonNull final String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) &&
-      WEB_PATTERN.matcher(uri.getHost()).matches() &&
-      !isApiUri(uri, webEndpoint);
+    return isKickstarterUri(uri, webEndpoint) && !isApiUri(uri, webEndpoint);
   }
 
   // ***REMOVED***
@@ -75,8 +73,4 @@ public final class KSUri {
 
   // /projects/slug-1/slug-2/pledge/new
   private static final Pattern NEW_PLEDGE_PATTERN = Pattern.compile("\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/pledge\\/new\\z");
-
-  // www.kickstarter.com
-  // environment.kickstarter.com
-  private static final Pattern WEB_PATTERN = Pattern.compile("\\A[a-zA-Z0-9_-]+.kickstarter.com\\z");
 }

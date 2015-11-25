@@ -5,14 +5,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.webkit.WebView;
-import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.qualifiers.RequiresPresenter;
+import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.models.Project;
-import com.kickstarter.presenters.CheckoutPresenter;
+import com.kickstarter.viewmodels.CheckoutViewModel;
 import com.kickstarter.services.KSUri;
 import com.kickstarter.services.RequestHandler;
 import com.kickstarter.ui.toolbars.KSToolbar;
@@ -25,8 +24,8 @@ import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 
-@RequiresPresenter(CheckoutPresenter.class)
-public final class CheckoutActivity extends BaseActivity<CheckoutPresenter> {
+@RequiresViewModel(CheckoutViewModel.class)
+public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> {
   private Project project;
   private String urlToReload;
   @Bind(R.id.checkout_toolbar) KSToolbar checkoutToolbar;

@@ -9,9 +9,9 @@ import android.widget.EditText;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.qualifiers.RequiresPresenter;
+import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.presenters.ResetPasswordPresenter;
+import com.kickstarter.viewmodels.ResetPasswordViewModel;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 
 import butterknife.Bind;
@@ -21,8 +21,8 @@ import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import rx.android.schedulers.AndroidSchedulers;
 
-@RequiresPresenter(ResetPasswordPresenter.class)
-public final class ResetPasswordActivity extends BaseActivity<ResetPasswordPresenter> {
+@RequiresViewModel(ResetPasswordViewModel.class)
+public final class ResetPasswordActivity extends BaseActivity<ResetPasswordViewModel> {
   @Bind (R.id.email) EditText email;
   @Bind (R.id.reset_password_button) Button resetPasswordButton;
   @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
@@ -40,25 +40,25 @@ public final class ResetPasswordActivity extends BaseActivity<ResetPasswordPrese
     loginToolbar.setTitle(forgotPasswordString);
 
     addSubscription(
-      presenter.outputs.resetSuccess()
+      viewModel.outputs.resetSuccess()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(__ -> onResetSuccess())
     );
 
     addSubscription(
-      presenter.outputs.isFormSubmitting()
+      viewModel.outputs.isFormSubmitting()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(this::setFormDisabled)
     );
 
     addSubscription(
-      presenter.outputs.isFormValid()
+      viewModel.outputs.isFormValid()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(this::setFormEnabled)
     );
 
     addSubscription(
-      presenter.errors.resetError()
+      viewModel.errors.resetError()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(__ -> ViewUtils.showDialog(this, errorTitleString, errorMessageString))
     );
@@ -73,12 +73,12 @@ public final class ResetPasswordActivity extends BaseActivity<ResetPasswordPrese
 
   @OnTextChanged(R.id.email)
   void onEmailTextChanged(@NonNull final CharSequence email) {
-    presenter.inputs.email(email.toString());
+    viewModel.inputs.email(email.toString());
   }
 
   @OnClick(R.id.reset_password_button)
   public void resetButtonOnClick() {
-    presenter.inputs.resetPasswordClick();
+    viewModel.inputs.resetPasswordClick();
   }
 
   private void onResetSuccess() {

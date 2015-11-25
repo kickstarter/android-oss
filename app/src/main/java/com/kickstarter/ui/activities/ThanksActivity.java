@@ -22,11 +22,11 @@ import com.facebook.share.model.ShareOpenGraphObject;
 import com.facebook.share.widget.ShareDialog;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.qualifiers.RequiresPresenter;
+import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.vendor.TweetComposer;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
-import com.kickstarter.presenters.ThanksPresenter;
+import com.kickstarter.viewmodels.ThanksViewModel;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.adapters.ThanksAdapter;
 
@@ -36,8 +36,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-@RequiresPresenter(ThanksPresenter.class)
-public final class ThanksActivity extends BaseActivity<ThanksPresenter> {
+@RequiresViewModel(ThanksViewModel.class)
+public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   @Bind(R.id.backed_project) TextView backedProjectTextView;
   @Bind(R.id.recommended_projects_recycler_view) RecyclerView recommendedProjectsRecyclerView;
   @Bind(R.id.woohoo_background) ImageView woohooBackgroundImageView;
@@ -62,7 +62,7 @@ public final class ThanksActivity extends BaseActivity<ThanksPresenter> {
 
     displayWoohooBackground();
 
-    presenter.takeProject(getIntent().getExtras().getParcelable(getString(R.string.intent_project)));
+    viewModel.takeProject(getIntent().getExtras().getParcelable(getString(R.string.intent_project)));
   }
 
   public void show(@NonNull final Project project) {
@@ -70,7 +70,7 @@ public final class ThanksActivity extends BaseActivity<ThanksPresenter> {
   }
 
   public void showRecommended(@NonNull final List<Project> projects, @NonNull final Category category) {
-    adapter = new ThanksAdapter(projects, category, presenter);
+    adapter = new ThanksAdapter(projects, category, viewModel);
     recommendedProjectsRecyclerView.setAdapter(adapter);
   }
 
@@ -83,17 +83,17 @@ public final class ThanksActivity extends BaseActivity<ThanksPresenter> {
 
   @OnClick(R.id.share_button)
   public void onShareClick() {
-    presenter.takeShareClick();
+    viewModel.takeShareClick();
   }
 
   @OnClick(R.id.facebook_button)
   public void onFacebookButtonClick(@NonNull final View view) {
-    presenter.takeFacebookClick();
+    viewModel.takeFacebookClick();
   }
 
   @OnClick(R.id.twitter_button)
   public void onTwitterButtonClick(@NonNull final View view) {
-    presenter.takeTwitterClick();
+    viewModel.takeTwitterClick();
   }
 
   public void startFacebookShareIntent(@NonNull final Project project) {

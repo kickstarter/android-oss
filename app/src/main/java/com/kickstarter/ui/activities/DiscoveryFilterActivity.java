@@ -22,9 +22,9 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.KSColorUtils;
 import com.kickstarter.libs.utils.StatusBarUtils;
-import com.kickstarter.libs.qualifiers.RequiresPresenter;
+import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.models.Category;
-import com.kickstarter.presenters.DiscoveryFilterPresenter;
+import com.kickstarter.viewmodels.DiscoveryFilterViewModel;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.adapters.DiscoveryFilterAdapter;
 
@@ -36,8 +36,8 @@ import butterknife.BindDrawable;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-@RequiresPresenter(DiscoveryFilterPresenter.class)
-public final class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterPresenter> {
+@RequiresViewModel(DiscoveryFilterViewModel.class)
+public final class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterViewModel> {
   DiscoveryFilterAdapter adapter;
   LinearLayoutManager layoutManager;
 
@@ -58,7 +58,7 @@ public final class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterP
 
     layoutManager = new LinearLayoutManager(this);
     final DiscoveryParams params = getIntent().getParcelableExtra(getString(R.string.intent_discovery_params));
-    adapter = new DiscoveryFilterAdapter(presenter, params);
+    adapter = new DiscoveryFilterAdapter(viewModel, params);
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);
 

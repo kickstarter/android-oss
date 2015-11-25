@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="activity_button_content_description">Activity feed button</string>
+  <string name="category_icon_content_description">Category</string>
+  <string name="close_button_content_description">Close button</string>
+  <string name="comment_button_content_description">Write a comment</string>
+  <string name="current_user_button_content_description">Current user menu button</string>
+  <string name="filter_button_content_description">Filter by categories button</string>
+  <string name="help_menu_button_content_description">Help menu button</string>
+  <string name="live_project_count_content_description">Live projects</string>
+  <string name="location_icon_content_description">Location</string>
+  <string name="login_button_content_description">Log in button</string>
+  <string name="nav_back_button_content_description">Navigate back button</string>
+  <string name="overflow_button_content_description">Overflow menu button</string>
+  <string name="play_video_button_content_description">Play video button</string>
+  <string name="search_button_content_description">Search projects button</string>
+  <string name="share_button_content_description">Share this project button</string>
+  <string name="star_fab_content_description">Star this project</string>
+</resources>

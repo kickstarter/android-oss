@@ -108,7 +108,7 @@ public final class CommentFeedPresenter extends Presenter<CommentFeedActivity> i
         .filter(Project::isBacking)
         .take(1)
         .compose(Transformers.ignoreValues())
-        .subscribe(showCommentDialog::onNext)
+        .subscribe(showCommentDialog)
       );
 
     addSubscription(Observable.combineLatest(
@@ -130,7 +130,7 @@ public final class CommentFeedPresenter extends Presenter<CommentFeedActivity> i
     addSubscription(project
         .map(Project::isBacking)
         .distinctUntilChanged()
-        .subscribe(showCommentButton::onNext)
+        .subscribe(showCommentButton)
     );
 
     addSubscription(postedComment

@@ -5,7 +5,8 @@
   android:layout_height="fill_parent"
   android:layout_width="match_parent" >
 
-  <include layout="@layout/project_toolbar"
+  <include
+    layout="@layout/project_toolbar"
     android:id="@+id/project_toolbar"/>
 
   <android.support.v7.widget.RecyclerView
@@ -18,6 +19,8 @@
 
   <RelativeLayout
     android:id="@+id/project_action_buttons"
+    android:focusable="true"
+    android:nextFocusRight="@+id/star_fab"
     android:layout_alignParentBottom="true"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -42,7 +45,6 @@
       android:visibility="gone"
       android:background="@drawable/button_blue"
       android:text="@string/View_pledge" />
-
   </RelativeLayout>
 
   <android.support.design.widget.FloatingActionButton
@@ -51,6 +53,9 @@
     fab:backgroundTint="@color/white"
     fab:rippleColor="@color/dark_gray_click"
     fab:fabSize="normal"
+    android:focusable="true"
+    android:nextFocusLeft="@id/project_action_buttons"
+    android:contentDescription="@string/star_fab_content_description"
     android:layout_alignParentBottom="true"
     android:layout_alignParentRight="true"
     android:layout_alignParentEnd="true"

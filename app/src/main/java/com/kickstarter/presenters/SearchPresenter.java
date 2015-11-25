@@ -78,7 +78,7 @@ public final class SearchPresenter extends Presenter<SearchActivity> implements 
         .compose(Transformers.combineLatestPair(isSearchEmpty))
         .filter(pe -> pe.second)
         .map(pe -> pe.first)
-        .subscribe(newData::onNext)
+        .subscribe(newData)
     );
 
     // When we receive new search results and the search field is still not empty, ping with the search results
@@ -88,7 +88,7 @@ public final class SearchPresenter extends Presenter<SearchActivity> implements 
         .filter(pe -> !pe.first)
         .map(pe -> pe.second)
         .debounce(500, TimeUnit.MILLISECONDS)
-        .subscribe(newData::onNext)
+        .subscribe(newData)
     );
 
     // Track us viewing this page

@@ -96,6 +96,9 @@
   <string name="Friends_Backed">Friends Backed</string>
   <string name="Full_name">Full name</string>
   <string name="Funded">Funded</string>
+  <string name="Funding_canceled">Funding canceled</string>
+  <string name="Funding_suspended_">Funding suspended %1$s</string>
+  <string name="Funding_unsuccessful_">Funding unsuccessful %1$s</string>
   <string name="goal">goal</string>
   <string name="Help">Help</string>
   <string name="hours">hours</string>
@@ -125,6 +128,7 @@
   <string name="Not_implemented_yet">Not implemented yet, coming soon!</string>
   <string name="Nice_to_see_you_again">Nice to see you again.</string>
   <string name="Number_live_projects">%1$s live projects</string>
+  <string name="of_">of\u0020</string>
   <string name="Okay">Okay</string>
   <string name="Oops">Oops!</string>
   <string name="Open_downloads_folder">Open Downloads folder</string>
@@ -179,6 +183,7 @@
   <string name="Status_">Status: %1$s</string>
   <string name="Staff_Picks">Staff Picks</string>
   <string name="Starred">Starred</string>
+  <string name="Successfully_funded">Successfully funded!</string>
   <string name="Submit">Submit</string>
   <string name="Submit_bug_report">Submit bug report</string>
   <string name="Terms_of_Use">Terms of Use</string>

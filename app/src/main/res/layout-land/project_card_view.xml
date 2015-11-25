@@ -7,6 +7,7 @@
   card_view:cardCornerRadius="@dimen/card_corner_radius"
   card_view:cardBackgroundColor="@color/transparent"
   android:foreground="@drawable/click_indicator_light"
+  android:focusable="true"
   android:elevation="@dimen/card_elevation"
   android:layout_marginLeft="@dimen/grid_3"
   android:layout_marginRight="@dimen/grid_3"
@@ -80,6 +81,7 @@
           android:paddingRight="@dimen/grid_1_half"
           android:paddingEnd="@dimen/grid_1_half"
           android:text="@string/local_offer_icon"
+          android:contentDescription="@string/category_icon_content_description"
           android:textColor="@color/primary_dark" />
 
         <TextView
@@ -102,6 +104,7 @@
           android:paddingLeft="@dimen/grid_1"
           android:paddingRight="@dimen/grid_1_half"
           android:text="@string/location_on_icon"
+          android:contentDescription="@string/location_icon_content_description"
           android:textColor="@color/text_dark" />
 
         <TextView
@@ -127,10 +130,40 @@
         android:minHeight="@dimen/progress_bar_min_height"
         android:progress="50" />
 
+      <LinearLayout
+        android:id="@+id/project_state_views"
+        android:layout_below="@id/category_location_view"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+          android:id="@+id/successfully_funded_view"
+          android:text="@string/Successfully_funded"
+          android:visibility="gone"
+          style="@style/BodyPrimaryMedium"
+          android:textColor="@color/white"
+          android:background="@color/green"
+          android:gravity="center"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_3"/>
+
+        <TextView
+          android:id="@+id/funding_unsuccessful_view"
+          android:visibility="gone"
+          style="@style/BodyPrimaryMedium"
+          android:textColor="@color/white"
+          android:background="@color/dark_gray"
+          android:gravity="center"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_3"/>
+
+      </LinearLayout>
+
       <include layout="@layout/project_stats_view"
         android:id="@+id/project_stats_view"
         android:layout_marginTop="@dimen/grid_2"
-        android:layout_below="@id/percentage_funded"
+        android:layout_below="@id/project_state_views"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 

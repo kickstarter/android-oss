@@ -7,11 +7,13 @@
   android:id="@+id/toolbar"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
-  tools:showIn="@layout/display_web_view_activity">
+  tools:showIn="@layout/web_view_layout">
 
   <com.kickstarter.ui.views.IconTextView
     style="@style/ToolbarIcon"
     android:id="@+id/back_button"
+    android:contentDescription="@string/nav_back_button_content_description"
+    android:focusable="true"
     android:layout_weight="0"
     android:text="@string/arrow_back_icon" />
 

@@ -78,9 +78,11 @@ public class ApplicationModule {
     @NonNull final HttpLoggingInterceptor httpLoggingInterceptor, @NonNull final KSRequestInterceptor ksRequestInterceptor,
     @NonNull final WebRequestInterceptor webRequestInterceptor) {
     final OkHttpClient okHttpClient = new OkHttpClient();
+
     okHttpClient.interceptors().addAll(
       Arrays.asList(httpLoggingInterceptor, apiRequestInterceptor, webRequestInterceptor, ksRequestInterceptor));
     okHttpClient.setCookieHandler(cookieManager);
+
     return okHttpClient;
   }
 

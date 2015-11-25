@@ -168,6 +168,8 @@ public class ApplicationModule {
       .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
       .build();
   }
+  // END: EXTRACT INTO SERVICES MODULE
+
 
   @Provides
   @Singleton
@@ -175,9 +177,6 @@ public class ApplicationModule {
   @NonNull StringPreference provideAccessTokenPreference(@NonNull final SharedPreferences sharedPreferences) {
     return new StringPreference(sharedPreferences, "access_token");
   }
-  // END: EXTRACT INTO SERVICES MODULE
-
-
 
   @Provides
   @Singleton

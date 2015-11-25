@@ -15,6 +15,7 @@
   android:layout_marginTop="@dimen/grid_3" >
 
   <RelativeLayout
+    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -22,7 +23,6 @@
 
     <LinearLayout
       android:id="@+id/project_card_info"
-      android:background="@color/white"
       android:layout_below="@id/project_card_photo"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -87,7 +87,6 @@
 
       <ProgressBar
         style="@style/ProgressBar"
-        android:visibility="visible"
         android:id="@+id/percentage_funded"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

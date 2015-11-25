@@ -10,9 +10,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.FormContents;
-import com.kickstarter.libs.Release;
 import com.kickstarter.libs.utils.IOUtils;
 import com.kickstarter.ui.activities.DisplayWebViewActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
@@ -29,14 +27,11 @@ import org.jsoup.select.Elements;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.CookieManager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.inject.Named;
 
 public class KSWebViewClient extends WebViewClient {
   private boolean initialPageLoad = true;
@@ -46,7 +41,7 @@ public class KSWebViewClient extends WebViewClient {
   private final List<RequestHandler> requestHandlers = new ArrayList<>();
   private FormContents formContents = null;
 
-  public KSWebViewClient(@Named("WebOkHttpClient") @NonNull final OkHttpClient client,
+  public KSWebViewClient(@NonNull final OkHttpClient client,
     @NonNull final String webEndpoint) {
     this.client = client;
     this.webEndpoint = webEndpoint;

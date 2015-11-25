@@ -72,13 +72,14 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  @Named("ApiOkHttpClient")
   @NonNull
-  OkHttpClient provideApiOkHttpClient(@NonNull final ApiEndpoint apiEndpoint,
+  OkHttpClient provideOkHttpClient(@NonNull final ApiEndpoint apiEndpoint,
     @NonNull final ApiRequestInterceptor apiRequestInterceptor, @NonNull final CookieManager cookieManager,
-    @NonNull final HttpLoggingInterceptor httpLoggingInterceptor, @NonNull final KSRequestInterceptor ksRequestInterceptor) {
+    @NonNull final HttpLoggingInterceptor httpLoggingInterceptor, @NonNull final KSRequestInterceptor ksRequestInterceptor,
+    @NonNull final WebRequestInterceptor webRequestInterceptor) {
     final OkHttpClient okHttpClient = new OkHttpClient();
-    okHttpClient.interceptors().addAll(Arrays.asList(httpLoggingInterceptor, apiRequestInterceptor, ksRequestInterceptor));
+    okHttpClient.interceptors().addAll(
+      Arrays.asList(httpLoggingInterceptor, apiRequestInterceptor, webRequestInterceptor, ksRequestInterceptor));
     okHttpClient.setCookieHandler(cookieManager);
     return okHttpClient;
   }
@@ -88,15 +89,15 @@ public class ApplicationModule {
   @Named("ApiRetrofit")
   @NonNull Retrofit provideApiRetrofit(@NonNull final ApiEndpoint apiEndpoint,
     @NonNull final Gson gson,
-    @Named("ApiOkHttpClient") @NonNull final OkHttpClient okHttpClient) {
+    @NonNull final OkHttpClient okHttpClient) {
     return createRetrofit(apiEndpoint.url, gson, okHttpClient);
   }
 
   @Provides
   @Singleton
   @NonNull ApiRequestInterceptor provideApiRequestInterceptor(@NonNull final String clientId,
-    @NonNull final ApiEndpoint endpoint) {
-    return new ApiRequestInterceptor(clientId, endpoint.url);
+    @NonNull final CurrentUser currentUser, @NonNull final ApiEndpoint endpoint) {
+    return new ApiRequestInterceptor(clientId, currentUser, endpoint.url);
   }
 
   @Provides
@@ -116,9 +117,8 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  @NonNull KSRequestInterceptor provideKSRequestInterceptor(@NonNull final CurrentUser currentUser,
-    @NonNull final ApiEndpoint apiEndpoint, @NonNull final Release release) {
-    return new KSRequestInterceptor(currentUser, release);
+  @NonNull KSRequestInterceptor provideKSRequestInterceptor(@NonNull final Release release) {
+    return new KSRequestInterceptor(release);
   }
 
   @Provides
@@ -137,33 +137,18 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  @Named("WebOkHttpClient")
-  @NonNull OkHttpClient provideWebOkHttpClient(@NonNull final ApiEndpoint apiEndpoint,
-    @NonNull final CookieManager cookieManager,
-    @NonNull final HttpLoggingInterceptor httpLoggingInterceptor,
-    @NonNull final KSRequestInterceptor ksRequestInterceptor,
-    @NonNull final WebRequestInterceptor webRequestInterceptor) {
-
-    final OkHttpClient okHttpClient = new OkHttpClient();
-    okHttpClient.interceptors().addAll(Arrays.asList(httpLoggingInterceptor, webRequestInterceptor, ksRequestInterceptor));
-    okHttpClient.setCookieHandler(cookieManager);
-    return okHttpClient;
-  }
-
-  @Provides
-  @Singleton
   @Named("WebRetrofit")
   @NonNull Retrofit provideWebRetrofit(@NonNull @WebEndpoint final String webEndpoint,
     @NonNull final Gson gson,
-    @Named("WebOkHttpClient") @NonNull final OkHttpClient okHttpClient) {
+    @NonNull final OkHttpClient okHttpClient) {
     return createRetrofit(webEndpoint, gson, okHttpClient);
   }
 
   @Provides
   @Singleton
-  @NonNull WebRequestInterceptor provideWebRequestInterceptor(@NonNull @WebEndpoint final String endpoint,
-    @NonNull final Release release) {
-    return new WebRequestInterceptor(endpoint, release);
+  @NonNull WebRequestInterceptor provideWebRequestInterceptor(@NonNull final CurrentUser currentUser,
+    @NonNull @WebEndpoint final String endpoint, @NonNull final Release release) {
+    return new WebRequestInterceptor(currentUser, endpoint, release);
   }
 
   @Provides
@@ -272,7 +257,7 @@ public class ApplicationModule {
   }
 
   @Provides
-  KSWebViewClient provideKSWebViewClient(@Named("WebOkHttpClient") @NonNull final OkHttpClient okHttpClient,
+  KSWebViewClient provideKSWebViewClient(@NonNull final OkHttpClient okHttpClient,
     @WebEndpoint final String webEndpoint) {
     return new KSWebViewClient(okHttpClient, webEndpoint);
   }

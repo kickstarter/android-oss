@@ -38,40 +38,45 @@ public final class ApiClient {
     this.service = service;
   }
 
-  public Observable<AccessTokenEnvelope> loginWithFacebook(@NonNull final String fbAccessToken) {
-    return service.loginWithFacebook(LoginWithFacebookBody.builder().accessToken(fbAccessToken).build());
+  public Observable<AccessTokenEnvelope> loginWithFacebook(@NonNull final String accessToken) {
+    return service
+      .loginWithFacebook(LoginWithFacebookBody.builder().accessToken(accessToken).build())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<AccessTokenEnvelope> loginWithFacebook(@NonNull final String fbAccessToken, @NonNull final String code) {
-    return service.loginWithFacebook(
-      LoginWithFacebookBody.builder()
-        .accessToken(fbAccessToken)
-        .code(code)
-        .build()
-    );
+    return service
+      .loginWithFacebook(LoginWithFacebookBody.builder().accessToken(fbAccessToken).code(code).build())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<AccessTokenEnvelope> registerWithFacebook(@NonNull final String fbAccessToken, final boolean sendNewsletters) {
-    return service.registerWithFacebook(
-      RegisterWithFacebookBody.builder()
-        .accessToken(fbAccessToken)
-        .sendNewsletters(sendNewsletters)
-        .build()
-    );
+    return service
+      .registerWithFacebook(RegisterWithFacebookBody.builder().accessToken(fbAccessToken).sendNewsletters(sendNewsletters).build())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<ActivityEnvelope> fetchActivities(@NonNull final ActivityFeedParams params) {
-    return service.fetchActivities(params.categoryParams(), params.paginationParams());
+    return service
+      .fetchActivities(params.categoryParams(), params.paginationParams())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<List<Category>> fetchCategories() {
     return service.fetchCategories()
+      .lift(apiErrorOperator())
       .map(CategoriesEnvelope::categories)
       .subscribeOn(Schedulers.io());
   }
 
   public Observable<CommentsEnvelope> fetchProjectComments(@NonNull final CommentFeedParams params) {
-    return service.fetchProjectComments(params.project().param(), params.paginationParams());
+    return service.fetchProjectComments(params.project().param(), params.paginationParams())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<DiscoverEnvelope> fetchProjects(@NonNull final DiscoveryParams params) {
@@ -81,7 +86,9 @@ public final class ApiClient {
   }
 
   public Observable<Project> fetchProject(@NonNull final String param) {
-    return service.fetchProject(param);
+    return service.fetchProject(param)
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<Project> fetchProject(@NonNull final Project project) {
@@ -89,11 +96,15 @@ public final class ApiClient {
   }
 
   public Observable<Backing> fetchProjectBacking(@NonNull final Project project, @NonNull final User user) {
-    return service.fetchProjectBacking(project.param(), user.param());
+    return service.fetchProjectBacking(project.param(), user.param())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<Category> fetchCategory(final long id) {
-    return service.fetchCategory(id);
+    return service.fetchCategory(id)
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<Category> fetchCategory(@NonNull final Category category) {
@@ -101,46 +112,64 @@ public final class ApiClient {
   }
 
   public Observable<AccessTokenEnvelope> login(@NonNull final String email, @NonNull final String password) {
-    return service.login(email, password);
+    return service.login(email, password)
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<AccessTokenEnvelope> login(@NonNull final String email, @NonNull final String password,
     @NonNull final String code) {
-    return service.login(email, password, code);
+    return service.login(email, password, code)
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<Comment> postProjectComment(@NonNull final Project project, @NonNull final String body) {
-    return service.postProjectComment(project.param(), CommentBody.builder().body(body).build());
+    return service.postProjectComment(project.param(), CommentBody.builder().body(body).build())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public @NonNull Observable<Empty> registerPushToken(@NonNull final String token) {
-    return service.registerPushToken(PushTokenBody.builder().token(token).pushServer("development").build());
+    return service.registerPushToken(PushTokenBody.builder().token(token).pushServer("development").build())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public @NonNull Observable<User> resetPassword(@NonNull final String email) {
-    return service.resetPassword(ResetPasswordBody.builder().email(email).build());
+    return service.resetPassword(ResetPasswordBody.builder().email(email).build())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<AccessTokenEnvelope> signup(@NonNull final String name, @NonNull final String email,
     @NonNull final String password, @NonNull final String passwordConfirmation,
     final boolean sendNewsletters) {
-    return service.signup(SignupBody.builder()
-      .name(name)
-      .email(email)
-      .password(password)
-      .passwordConfirmation(passwordConfirmation)
-      .sendNewsletters(sendNewsletters)
-      .build());
+    return service
+      .signup(
+        SignupBody.builder()
+          .name(name)
+          .email(email)
+          .password(password)
+          .passwordConfirmation(passwordConfirmation)
+          .sendNewsletters(sendNewsletters)
+          .build())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<Project> starProject(@NonNull final Project project) {
     return service.starProject(project.param())
-      .map(StarEnvelope::project);
+      .lift(apiErrorOperator())
+      .map(StarEnvelope::project)
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<Project> toggleProjectStar(@NonNull final Project project) {
     return service.toggleProjectStar(project.param())
-      .map(StarEnvelope::project);
+      .lift(apiErrorOperator())
+      .map(StarEnvelope::project)
+      .subscribeOn(Schedulers.io());
   }
 
   /**

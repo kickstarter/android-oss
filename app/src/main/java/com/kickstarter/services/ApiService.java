@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 import retrofit.Response;
-import retrofit.Result;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
@@ -37,20 +36,20 @@ import rx.Observable;
 
 public interface ApiService {
   @GET("/v1/activities")
-  Observable<ActivityEnvelope> fetchActivities(@NonNull @Query("categories[]") List<String> categories,
+  Observable<Response<ActivityEnvelope>> fetchActivities(@NonNull @Query("categories[]") List<String> categories,
     @NonNull @QueryMap Map<String, String> pagination);
 
   @GET("/v1/categories")
-  Observable<CategoriesEnvelope> fetchCategories();
+  Observable<Response<CategoriesEnvelope>> fetchCategories();
 
   @GET("/v1/projects/{project_param}/backers/{user_param}")
-  Observable<Backing> fetchProjectBacking(
+  Observable<Response<Backing>> fetchProjectBacking(
     @Path("project_param") String projectParam,
     @Path("user_param") String userParam
   );
 
   @GET("/v1/projects/{project_param}/comments")
-  Observable<CommentsEnvelope> fetchProjectComments(
+  Observable<Response<CommentsEnvelope>> fetchProjectComments(
     @Path("project_param") String projectParam,
     @QueryMap Map<String, String> pagination
   );
@@ -59,41 +58,41 @@ public interface ApiService {
   Observable<Response<DiscoverEnvelope>> fetchProjects(@QueryMap Map<String, String> params);
 
   @GET("/v1/projects/{param}")
-  Observable<Project> fetchProject(@Path("param") String param);
+  Observable<Response<Project>> fetchProject(@Path("param") String param);
 
   @GET("/v1/categories/{id}")
-  Observable<Category> fetchCategory(@Path("id") long id);
+  Observable<Response<Category>> fetchCategory(@Path("id") long id);
 
   @POST("/xauth/access_token")
-  Observable<AccessTokenEnvelope> login(@Query("email") String email,
+  Observable<Response<AccessTokenEnvelope>> login(@Query("email") String email,
     @Query("password") String password);
 
   @POST("/xauth/access_token")
-  Observable<AccessTokenEnvelope> login(@Query("email") String email,
+  Observable<Response<AccessTokenEnvelope>> login(@Query("email") String email,
     @Query("password") String password,
     @Query("code") String code);
 
   @PUT("/v1/facebook/access_token?intent=login")
-  Observable<AccessTokenEnvelope> loginWithFacebook(@Body LoginWithFacebookBody body);
+  Observable<Response<AccessTokenEnvelope>> loginWithFacebook(@Body LoginWithFacebookBody body);
 
   @PUT("/v1/facebook/access_token?intent=register")
-  Observable<AccessTokenEnvelope> registerWithFacebook(@Body RegisterWithFacebookBody body);
+  Observable<Response<AccessTokenEnvelope>> registerWithFacebook(@Body RegisterWithFacebookBody body);
 
   @POST("/v1/projects/{param}/comments/")
-  Observable<Comment> postProjectComment(@Path("param") String param, @Body CommentBody body);
+  Observable<Response<Comment>> postProjectComment(@Path("param") String param, @Body CommentBody body);
 
   @POST("/v1/users/self/push_tokens")
-  Observable<Empty> registerPushToken(@Body PushTokenBody body);
+  Observable<Response<Empty>> registerPushToken(@Body PushTokenBody body);
 
   @POST("/v1/users/reset")
-  Observable<User> resetPassword(@Body ResetPasswordBody body);
+  Observable<Response<User>> resetPassword(@Body ResetPasswordBody body);
 
   @POST("/v1/users")
-  Observable<AccessTokenEnvelope> signup(@Body SignupBody body);
+  Observable<Response<AccessTokenEnvelope>> signup(@Body SignupBody body);
 
   @PUT("/v1/projects/{param}/star")
-  Observable<StarEnvelope> starProject(@Path("param") String param);
+  Observable<Response<StarEnvelope>> starProject(@Path("param") String param);
 
   @POST("/v1/projects/{param}/star/toggle")
-  Observable<StarEnvelope> toggleProjectStar(@Path("param") String param);
+  Observable<Response<StarEnvelope>> toggleProjectStar(@Path("param") String param);
 }

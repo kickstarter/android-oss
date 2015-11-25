@@ -3,6 +3,7 @@ package com.kickstarter.services.interceptors;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
+import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Release;
 import com.kickstarter.services.KSUri;
 import com.squareup.okhttp.Interceptor;
@@ -12,10 +13,13 @@ import com.squareup.okhttp.Response;
 import java.io.IOException;
 
 public final class WebRequestInterceptor implements Interceptor {
+  final CurrentUser currentUser;
   final String endpoint;
   final Release release;
 
-  public WebRequestInterceptor(@NonNull final String endpoint, @NonNull final Release release) {
+  public WebRequestInterceptor(@NonNull final CurrentUser currentUser, @NonNull final String endpoint,
+    @NonNull final Release release) {
+    this.currentUser = currentUser;
     this.endpoint = endpoint;
     this.release = release;
   }
@@ -31,9 +35,12 @@ public final class WebRequestInterceptor implements Interceptor {
     }
 
     Request.Builder requestBuilder = request.newBuilder()
-      .addHeader("User-Agent", userAgent());
+      .header("User-Agent", userAgent());
     if (KSUri.isHivequeenUri(Uri.parse(request.urlString()), endpoint)) {
       requestBuilder = requestBuilder.header("Authorization", "Basic ZnV6enk6d3V6enk=");
+    }
+    if (currentUser.exists()) {
+      requestBuilder =requestBuilder.addHeader("Authorization", "token " + currentUser.getAccessToken());
     }
     return requestBuilder.build();
   }

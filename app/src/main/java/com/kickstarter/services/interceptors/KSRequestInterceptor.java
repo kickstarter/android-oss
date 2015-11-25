@@ -17,11 +17,9 @@ import java.io.IOException;
  * Interceptor to apply to all outgoing requests.
  */
 public final class KSRequestInterceptor implements Interceptor {
-  final CurrentUser currentUser;
   final Release release;
 
-  public KSRequestInterceptor(@NonNull final CurrentUser currentUser, @NonNull final Release release) {
-    this.currentUser = currentUser;
+  public KSRequestInterceptor(@NonNull final Release release) {
     this.release = release;
   }
 
@@ -31,16 +29,10 @@ public final class KSRequestInterceptor implements Interceptor {
   }
 
   private Request request(@NonNull final Request request) {
+    // TODO: Should only intercept for Kickstarter urls
     return request.newBuilder()
       .header("Kickstarter-Android-App", release.versionCode().toString())
       .header("Kickstarter-App-Id", release.applicationId())
-      .url(httpUrl(request.httpUrl()))
-      .build();
-  }
-
-  private HttpUrl httpUrl(@NonNull final HttpUrl httpUrl) {
-    return httpUrl.newBuilder()
-      .addQueryParameter("oauth_token", currentUser.getAccessToken())
       .build();
   }
 }

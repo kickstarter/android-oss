@@ -189,14 +189,14 @@ public abstract class Project implements Parcelable {
         return new AutoParcel_Project_Urls_Web.Builder();
       }
 
-      public String creatorBio() {
+      public @NonNull String creatorBio() {
         return Uri.parse(project())
           .buildUpon()
           .appendEncodedPath("/creator_bio")
           .toString();
       }
 
-      public String description() {
+      public @NonNull String description() {
         return Uri.parse(project())
           .buildUpon()
           .appendEncodedPath("/description")
@@ -305,7 +305,7 @@ public abstract class Project implements Parcelable {
    * @param  context an Android context.
    * @return         the String time remaining.
    */
-  public @NonNull String timeToGo(final Context context) {
+  public @NonNull String timeToGo(final @NonNull Context context) {
     return new StringBuilder(deadlineCountdown(context))
       .append(context.getString(R.string._to_go))
       .toString();
@@ -318,7 +318,7 @@ public abstract class Project implements Parcelable {
    * @param  context an Android context.
    * @return         the String time remaining.
    */
-  public @NonNull String deadlineCountdown(final Context context) {
+  public @NonNull String deadlineCountdown(final @NonNull Context context) {
     return new StringBuilder().append(deadlineCountdownValue())
       .append(" ")
       .append(deadlineCountdownUnit(context))
@@ -362,7 +362,7 @@ public abstract class Project implements Parcelable {
    * @param  context an Android context.
    * @return         the String unit.
    */
-  public @NonNull String deadlineCountdownUnit(final Context context) {
+  public @NonNull String deadlineCountdownUnit(final @NonNull Context context) {
     final Long seconds = timeInSecondsUntilDeadline();
     if (seconds <= 1.0 && seconds > 0.0) {
       return context.getString(R.string.secs);
@@ -393,7 +393,7 @@ public abstract class Project implements Parcelable {
     return Uri.parse(secureWebProjectUrl()).buildUpon().appendEncodedPath("pledge/edit").toString();
   }
 
-  public @NonNull String rewardSelectedUrl(final Reward reward) {
+  public @NonNull String rewardSelectedUrl(final @NonNull Reward reward) {
     return Uri.parse(newPledgeUrl())
       .buildUpon().scheme("https")
       .appendQueryParameter("backing[backer_reward_id]", String.valueOf(reward.id()))
@@ -411,7 +411,7 @@ public abstract class Project implements Parcelable {
   }
 
   @Override
-  public final boolean equals(@Nullable final Object o) {
+  public final boolean equals(final @Nullable Object o) {
     if (o != null && o instanceof Project) {
       final Project p = (Project)o;
       return id() == p.id();

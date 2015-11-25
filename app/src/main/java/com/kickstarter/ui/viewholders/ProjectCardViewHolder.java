@@ -24,9 +24,13 @@ import butterknife.ButterKnife;
 
 public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.backers_count) TextView backersCountTextView;
+  protected @Bind(R.id.backing_group) ViewGroup backingViewGroup;
   protected @Bind(R.id.category) TextView categoryTextView;
   protected @Bind(R.id.deadline_countdown) TextView deadlineCountdownTextView;
   protected @Bind(R.id.deadline_countdown_unit) TextView deadlineCountdownUnitTextView;
+  protected @Bind(R.id.friend_backing_avatar) ImageView friendBackingAvatarImageView;
+  protected @Bind(R.id.friend_backing_message) TextView friendBackingMessageTextView;
+  protected @Bind(R.id.friend_backing_group) ViewGroup friendBackingViewGroup;
   protected @Bind(R.id.funding_unsuccessful_view) TextView fundingUnsuccessfulTextView;
   protected @Bind(R.id.pledged_of_) TextView pledgedOfTextView;
   protected @Bind(R.id.goal) TextView goalTextView;
@@ -37,8 +41,9 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.pledged) TextView pledgedTextView;
   protected @Bind(R.id.percentage_funded) ProgressBar percentageFundedProgressBar;
   protected @Bind(R.id.photo) ImageView photoImageView;
-  protected @Bind(R.id.photo_gradient) ViewGroup photoGradientViewGroup;
   protected @Bind(R.id.potd_group) ViewGroup potdViewGroup;
+  protected @Bind(R.id.project_metadata_view) ViewGroup projectMetadataViewGroup;
+  protected @Bind(R.id.starred_group) ViewGroup starredViewGroup;
   protected @Bind(R.id.successfully_funded_view) TextView successfullyFundedTextView;
 
   protected @BindString(R.string.backers) String backersString;
@@ -83,10 +88,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       load(project.photo().full()).
       into(photoImageView);
 
-    final int potdVisible = project.isPotdToday() ? View.VISIBLE : View.INVISIBLE;
-    photoGradientViewGroup.setVisibility(potdVisible);
-    potdViewGroup.setVisibility(potdVisible);
-
+    setProjectMetadataView();
     setProjectStateView();
 
     /* a11y */
@@ -138,6 +140,38 @@ public final class ProjectCardViewHolder extends KSViewHolder {
         fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
         fundingUnsuccessfulTextView.setText(String.format(fundingSuspendedString, project.formattedStateChangedAt()));
         break;
+    }
+  }
+
+  public void setProjectMetadataView() {
+    if (project.isBacking()) {
+      projectMetadataViewGroup.setVisibility(View.VISIBLE);
+      backingViewGroup.setVisibility(View.VISIBLE);
+    }
+
+    else if (project.friends() != null) {
+      projectMetadataViewGroup.setVisibility(View.VISIBLE);
+      friendBackingViewGroup.setVisibility(View.VISIBLE);
+
+      // set avatar and message
+    }
+
+    else if (project.isStarred()) {
+      projectMetadataViewGroup.setVisibility(View.VISIBLE);
+      starredViewGroup.setVisibility(View.VISIBLE);
+    }
+
+    else if (project.isPotdToday()) {
+      projectMetadataViewGroup.setVisibility(View.VISIBLE);
+      potdViewGroup.setVisibility(View.VISIBLE);
+    }
+
+    else {
+      projectMetadataViewGroup.setVisibility(View.GONE);
+      backingViewGroup.setVisibility(View.GONE);
+      friendBackingViewGroup.setVisibility(View.GONE);
+      starredViewGroup.setVisibility(View.GONE);
+      potdViewGroup.setVisibility(View.GONE);
     }
   }
 

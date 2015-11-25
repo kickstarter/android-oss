@@ -29,34 +29,34 @@ import auto.parcel.AutoParcel;
 public abstract class Project implements Parcelable {
   public abstract int backersCount();
   public abstract String blurb();
-  @Nullable public abstract Backing backing();
-  @Nullable public abstract Category category();
-  @Nullable public abstract Integer commentsCount();
+  public abstract @Nullable Backing backing();
+  public abstract @Nullable Category category();
+  public abstract @Nullable Integer commentsCount();
   public abstract String country(); // e.g.: US
   public abstract DateTime createdAt();
   public abstract User creator();
   public abstract String currency(); // e.g.: USD
   public abstract String currencySymbol(); // e.g.: $
   public abstract boolean currencyTrailingCode();
-  @Nullable public abstract DateTime deadline();
+  public abstract @Nullable DateTime deadline();
   public abstract float goal();
   public abstract long id(); // in the Kickstarter app, this is project.pid not project.id
   public abstract boolean isBacking();
   public abstract boolean isStarred();
-  @Nullable public abstract DateTime launchedAt();
-  @Nullable public abstract Location location();
+  public abstract @Nullable DateTime launchedAt();
+  public abstract @Nullable Location location();
   public abstract String name();
   public abstract float pledged();
-  @Nullable public abstract Photo photo();
-  @Nullable public abstract DateTime potdAt();
-  @Nullable public abstract String slug();
-  @State public abstract String state();
+  public abstract @Nullable Photo photo();
+  public abstract @Nullable DateTime potdAt();
+  public abstract @Nullable String slug();
+  public abstract @State String state();
   public abstract @Nullable DateTime stateChangedAt();
-  @Nullable public abstract Integer updatesCount();
-  @Nullable public abstract List<Reward> rewards();
+  public abstract @Nullable Integer updatesCount();
+  public abstract @Nullable List<Reward> rewards();
   public abstract DateTime updatedAt();
   public abstract Urls urls();
-  @Nullable public abstract Video video();
+  public abstract @Nullable Video video();
 
   @AutoParcel.Builder
   public abstract static class Builder {

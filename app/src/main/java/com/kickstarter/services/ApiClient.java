@@ -3,7 +3,8 @@ package com.kickstarter.services;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
-import com.kickstarter.libs.rx.operators.ApiErrorEnvelopeOperator;
+import com.kickstarter.libs.rx.operators.ApiErrorOperator;
+import com.kickstarter.libs.rx.operators.Operators;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
@@ -75,7 +76,7 @@ public final class ApiClient {
 
   public Observable<DiscoverEnvelope> fetchProjects(@NonNull final DiscoveryParams params) {
     return service.fetchProjects(params.queryParams())
-      .lift(apiErrorEnvelopeOperator())
+      .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 
@@ -143,9 +144,9 @@ public final class ApiClient {
   }
 
   /**
-   * Utility to create a new operator, saves us from littering references to gson throughout the client.
+   * Utility to create a new {@link ApiErrorOperator}, saves us from littering references to gson throughout the client.
    */
-  private @NonNull <T> ApiErrorEnvelopeOperator<T> apiErrorEnvelopeOperator() {
-    return new ApiErrorEnvelopeOperator<>(gson);
+  private @NonNull <T> ApiErrorOperator<T> apiErrorOperator() {
+    return Operators.apiError(gson);
   }
 }

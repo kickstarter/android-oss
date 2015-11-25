@@ -2,12 +2,14 @@ package com.kickstarter.libs.rx.transformers;
 
 import android.support.annotation.NonNull;
 
+import com.kickstarter.services.ApiException;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
 public final class Transformers {
+  private Transformers() {}
 
   /**
    * Prevents an observable from erroring by chaining `onErrorResumeNext`.
@@ -26,14 +28,14 @@ public final class Transformers {
   }
 
   /**
-   * Prevents an observable from erroring on any `ApiError` exceptions.
+   * Prevents an observable from erroring on any {@link ApiException} exceptions.
    */
   public static <T> NeverApiErrorTransformer<T> neverApiError() {
     return new NeverApiErrorTransformer<>();
   }
 
   /**
-   * Prevents an observable from erroring on any `ApiError` exceptions,
+   * Prevents an observable from erroring on any {@link ApiException} exceptions,
    * and any errors that do occur will be piped into the supplied
    * errors publish subject. `null` values will never be sent to
    * the publish subject.

@@ -3,7 +3,8 @@ package com.kickstarter.libs.rx.operators;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
-import com.kickstarter.services.ApiError;
+import com.kickstarter.services.ApiException;
+import com.kickstarter.services.ResponseException;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 
 import java.io.IOException;
@@ -16,15 +17,15 @@ import rx.Subscriber;
  * Takes a {@link retrofit.Response}, if it's successful send it to {@link Subscriber#onNext}, otherwise
  * attempt to parse the error.
  *
- * Errors that conform to the API's error format are converted into an {@link ApiError} exception and sent to
- * {@link Subscriber#onError}, otherwise the parsing exception is sent to {@link Subscriber#onError}.
+ * Errors that conform to the API's error format are converted into an {@link ApiException} exception and sent to
+ * {@link Subscriber#onError}, otherwise a more generic {@link ResponseException} is sent to {@link Subscriber#onError}.
  *
  * @param <T> The response type.
  */
-public final class ApiErrorEnvelopeOperator <T> implements Observable.Operator<T, retrofit.Response<T>> {
+public final class ApiErrorOperator<T> implements Observable.Operator<T, retrofit.Response<T>> {
   private final Gson gson;
 
-  public ApiErrorEnvelopeOperator(@NonNull final Gson gson) {
+  public ApiErrorOperator(@NonNull final Gson gson) {
     this.gson = gson;
   }
 
@@ -54,9 +55,9 @@ public final class ApiErrorEnvelopeOperator <T> implements Observable.Operator<T
         if (!response.isSuccess()) {
           try {
             final ErrorEnvelope envelope = gson.fromJson(response.errorBody().string(), ErrorEnvelope.class);
-            subscriber.onError(new ApiError(envelope));
+            subscriber.onError(new ApiException(envelope, response));
           } catch (@NonNull final IOException e) {
-            subscriber.onError(e);
+            subscriber.onError(new ResponseException(response));
           }
         }
 

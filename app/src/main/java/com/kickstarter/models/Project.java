@@ -3,6 +3,7 @@ package com.kickstarter.models;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 
@@ -28,35 +29,35 @@ import auto.parcel.AutoParcel;
 public abstract class Project implements Parcelable {
   public abstract int backersCount();
   public abstract String blurb();
-  @Nullable public abstract Backing backing();
-  @Nullable public abstract Category category();
-  @Nullable public abstract Integer commentsCount();
+  public abstract @Nullable Backing backing();
+  public abstract @Nullable Category category();
+  public abstract @Nullable Integer commentsCount();
   public abstract String country(); // e.g.: US
   public abstract DateTime createdAt();
   public abstract User creator();
   public abstract String currency(); // e.g.: USD
   public abstract String currencySymbol(); // e.g.: $
   public abstract boolean currencyTrailingCode();
-  @Nullable public abstract DateTime deadline();
   public abstract @Nullable List<User> friends();
+  public abstract @Nullable DateTime deadline();
   public abstract float goal();
   public abstract long id(); // in the Kickstarter app, this is project.pid not project.id
   public abstract boolean isBacking();
   public abstract boolean isStarred();
-  @Nullable public abstract DateTime launchedAt();
-  @Nullable public abstract Location location();
+  public abstract @Nullable DateTime launchedAt();
+  public abstract @Nullable Location location();
   public abstract String name();
   public abstract float pledged();
-  @Nullable public abstract Photo photo();
-  @Nullable public abstract DateTime potdAt();
-  @Nullable public abstract String slug();
-  @State public abstract String state();
+  public abstract @Nullable Photo photo();
+  public abstract @Nullable DateTime potdAt();
+  public abstract @Nullable String slug();
+  public abstract @State String state();
   public abstract @Nullable DateTime stateChangedAt();
-  @Nullable public abstract Integer updatesCount();
-  @Nullable public abstract List<Reward> rewards();
+  public abstract @Nullable Integer updatesCount();
+  public abstract @Nullable List<Reward> rewards();
   public abstract DateTime updatedAt();
   public abstract Urls urls();
-  @Nullable public abstract Video video();
+  public abstract @Nullable Video video();
 
   @AutoParcel.Builder
   public abstract static class Builder {
@@ -116,7 +117,7 @@ public abstract class Project implements Parcelable {
   @StringDef({STATE_STARTED, STATE_SUBMITTED, STATE_LIVE, STATE_SUCCESSFUL, STATE_FAILED, STATE_CANCELED, STATE_SUSPENDED, STATE_PURGED})
   public @interface State {}
 
-  public String creatorBioUrl() {
+  public @NonNull String creatorBioUrl() {
     return urls().web().creatorBio();
   }
 
@@ -124,31 +125,31 @@ public abstract class Project implements Parcelable {
     return this.backing() != null && this.backing().rewardId() != null && this.backing().rewardId() == rewardId;
   }
 
-  public String descriptionUrl() {
+  public @NonNull String descriptionUrl() {
     return urls().web().description();
   }
 
-  public String formattedBackersCount() {
+  public @NonNull String formattedBackersCount() {
     return NumberUtils.numberWithDelimiter(backersCount());
   }
 
-  public String formattedCommentsCount() {
+  public @Nullable String formattedCommentsCount() {
     return NumberUtils.numberWithDelimiter(commentsCount());
   }
 
-  public String formattedStateChangedAt() {
+  public @Nullable String formattedStateChangedAt() {
     return DateTimeUtils.relativeDateInWords(stateChangedAt(), false, true);
   }
 
-  public String formattedUpdatesCount() {
+  public @Nullable String formattedUpdatesCount() {
     return NumberUtils.numberWithDelimiter(updatesCount());
   }
 
-  public String updatesUrl() {
+  public @NonNull String updatesUrl() {
     return urls().web().updates();
   }
 
-  public String webProjectUrl() {
+  public @NonNull String webProjectUrl() {
     return urls().web().project();
   }
 
@@ -190,14 +191,14 @@ public abstract class Project implements Parcelable {
         return new AutoParcel_Project_Urls_Web.Builder();
       }
 
-      public String creatorBio() {
+      public @NonNull String creatorBio() {
         return Uri.parse(project())
           .buildUpon()
           .appendEncodedPath("/creator_bio")
           .toString();
       }
 
-      public String description() {
+      public @NonNull String description() {
         return Uri.parse(project())
           .buildUpon()
           .appendEncodedPath("/description")
@@ -226,7 +227,7 @@ public abstract class Project implements Parcelable {
     }
   }
 
-  public CurrencyOptions currencyOptions() {
+  public @NonNull CurrencyOptions currencyOptions() {
     return new CurrencyOptions(country(), currencySymbol(), currency());
   }
 
@@ -291,7 +292,7 @@ public abstract class Project implements Parcelable {
     return STATE_SUCCESSFUL.equals(state());
   }
 
-  public Float percentageFunded() {
+  public @NonNull Float percentageFunded() {
     if (goal() > 0.0f) {
       return (pledged() / goal()) * 100.0f;
     }
@@ -306,7 +307,7 @@ public abstract class Project implements Parcelable {
    * @param  context an Android context.
    * @return         the String time remaining.
    */
-  public String timeToGo(final Context context) {
+  public @NonNull String timeToGo(final @NonNull Context context) {
     return new StringBuilder(deadlineCountdown(context))
       .append(context.getString(R.string._to_go))
       .toString();
@@ -319,7 +320,7 @@ public abstract class Project implements Parcelable {
    * @param  context an Android context.
    * @return         the String time remaining.
    */
-  public String deadlineCountdown(final Context context) {
+  public @NonNull String deadlineCountdown(final @NonNull Context context) {
     return new StringBuilder().append(deadlineCountdownValue())
       .append(" ")
       .append(deadlineCountdownUnit(context))
@@ -332,7 +333,7 @@ public abstract class Project implements Parcelable {
    *
    * @return the Long number of seconds remaining.
    */
-  public Long timeInSecondsUntilDeadline() {
+  public @NonNull Long timeInSecondsUntilDeadline() {
     return Math.max(0L,
       new Duration(new DateTime(), deadline()).getStandardSeconds());
   }
@@ -344,7 +345,7 @@ public abstract class Project implements Parcelable {
    *
    * @return the Integer time remaining.
    */
-  public Integer deadlineCountdownValue() {
+  public @NonNull Integer deadlineCountdownValue() {
     final Long seconds = timeInSecondsUntilDeadline();
     if (seconds <= 120.0) {
       return seconds.intValue(); // seconds
@@ -363,7 +364,7 @@ public abstract class Project implements Parcelable {
    * @param  context an Android context.
    * @return         the String unit.
    */
-  public String deadlineCountdownUnit(final Context context) {
+  public @NonNull String deadlineCountdownUnit(final @NonNull Context context) {
     final Long seconds = timeInSecondsUntilDeadline();
     if (seconds <= 1.0 && seconds > 0.0) {
       return context.getString(R.string.secs);
@@ -377,24 +378,24 @@ public abstract class Project implements Parcelable {
     return context.getString(R.string.days);
   }
 
-  public String param() {
+  public @NonNull String param() {
     return slug() != null ? slug() : String.valueOf(id());
   }
 
-  public String secureWebProjectUrl() {
+  public @NonNull String secureWebProjectUrl() {
     // TODO: Just use http with local env
     return Uri.parse(webProjectUrl()).buildUpon().scheme("https").build().toString();
   }
 
-  public String newPledgeUrl() {
+  public @NonNull String newPledgeUrl() {
     return Uri.parse(secureWebProjectUrl()).buildUpon().appendEncodedPath("pledge/new").toString();
   }
 
-  public String editPledgeUrl() {
+  public @NonNull String editPledgeUrl() {
     return Uri.parse(secureWebProjectUrl()).buildUpon().appendEncodedPath("pledge/edit").toString();
   }
 
-  public String rewardSelectedUrl(final Reward reward) {
+  public @NonNull String rewardSelectedUrl(final @NonNull Reward reward) {
     return Uri.parse(newPledgeUrl())
       .buildUpon().scheme("https")
       .appendQueryParameter("backing[backer_reward_id]", String.valueOf(reward.id()))
@@ -404,7 +405,7 @@ public abstract class Project implements Parcelable {
   }
 
   @Override
-  public final String toString() {
+  public final @NonNull String toString() {
     return "Project{"
       + "id=" + id() + ", "
       + "name=" + name() + ", "
@@ -412,7 +413,7 @@ public abstract class Project implements Parcelable {
   }
 
   @Override
-  public final boolean equals(@Nullable final Object o) {
+  public final boolean equals(final @Nullable Object o) {
     if (o != null && o instanceof Project) {
       final Project p = (Project)o;
       return id() == p.id();

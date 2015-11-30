@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.presenters.inputs.ProfilePresenterInputs;
@@ -52,6 +53,9 @@ public final class ProfilePresenter extends Presenter<ProfileActivity> implement
       .onErrorResumeNext(e -> Observable.empty())
       .map(DiscoverEnvelope::projects);
 
-    backedProjects.subscribe(projects);
+    addSubscription(viewSubject
+        .compose(Transformers.combineLatestPair(backedProjects))
+        .subscribe(vp -> projects.onNext(vp.second))
+    );
   }
 }

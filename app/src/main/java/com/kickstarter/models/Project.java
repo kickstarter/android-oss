@@ -258,6 +258,10 @@ public abstract class Project implements Parcelable {
     return STATE_LIVE.equals(state());
   }
 
+  public boolean isFriendBacking() {
+    return friends() != null && friends().size() > 0;
+  }
+
   public boolean isPotdToday() {
     if (potdAt() == null) {
       return false;

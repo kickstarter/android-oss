@@ -147,30 +147,34 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     if (project.isBacking()) {
       projectMetadataViewGroup.setVisibility(View.VISIBLE);
       backingViewGroup.setVisibility(View.VISIBLE);
+    } else {
+      projectMetadataViewGroup.setVisibility(View.GONE);
+      backingViewGroup.setVisibility(View.GONE);
     }
 
-    else if (project.friends() != null) {
+    if (project.isFriendBacking()) {
       projectMetadataViewGroup.setVisibility(View.VISIBLE);
       friendBackingViewGroup.setVisibility(View.VISIBLE);
 
-      // set avatar and message
+      // todo: set avatar and message
+    } else {
+      projectMetadataViewGroup.setVisibility(View.GONE);
+      friendBackingViewGroup.setVisibility(View.GONE);
     }
 
-    else if (project.isStarred()) {
+    if (project.isStarred()) {
       projectMetadataViewGroup.setVisibility(View.VISIBLE);
       starredViewGroup.setVisibility(View.VISIBLE);
+    } else {
+      projectMetadataViewGroup.setVisibility(View.GONE);
+      starredViewGroup.setVisibility(View.GONE);
     }
 
-    else if (project.isPotdToday()) {
+    if (project.isPotdToday()) {
       projectMetadataViewGroup.setVisibility(View.VISIBLE);
       potdViewGroup.setVisibility(View.VISIBLE);
-    }
-
-    else {
+    } else {
       projectMetadataViewGroup.setVisibility(View.GONE);
-      backingViewGroup.setVisibility(View.GONE);
-      friendBackingViewGroup.setVisibility(View.GONE);
-      starredViewGroup.setVisibility(View.GONE);
       potdViewGroup.setVisibility(View.GONE);
     }
   }

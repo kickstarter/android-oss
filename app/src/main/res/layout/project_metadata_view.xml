@@ -2,6 +2,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   android:id="@+id/project_metadata_view"
+  android:visibility="gone"
   android:clipToPadding="false"
   android:clipChildren="false"
   android:elevation="3dp"

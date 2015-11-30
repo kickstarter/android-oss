@@ -41,9 +41,9 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   private final PublishSubject<String> commentBody = PublishSubject.create();
   private final PublishSubject<Void> nextPage = PublishSubject.create();
   public void nextPage() { nextPage.onNext(null); }
-  private final BehaviorSubject<Empty> refresh = BehaviorSubject.create(Empty.create());
+  private final BehaviorSubject<Empty> refresh = BehaviorSubject.create(Empty.get());
   public void refresh() {
-    refresh.onNext(Empty.create());
+    refresh.onNext(Empty.get());
   }
 
   // OUTPUTS
@@ -135,7 +135,7 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
 
     addSubscription(postedComment
         .compose(Transformers.ignoreValues())
-        .subscribe(__ -> refresh.onNext(Empty.create()))
+        .subscribe(__ -> refresh.onNext(Empty.get()))
     );
 
     addSubscription(viewSubject
@@ -170,7 +170,7 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .subscribe(koala::trackProjectCommentLoadMore)
     );
 
-    addSubscription(project.take(1).subscribe(__ -> refresh.onNext(Empty.create())));
+    addSubscription(project.take(1).subscribe(__ -> refresh.onNext(Empty.get())));
   }
 
   private Observable<List<Comment>> commentsWithPagination() {

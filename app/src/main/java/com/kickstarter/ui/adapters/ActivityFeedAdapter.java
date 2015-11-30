@@ -34,7 +34,7 @@ public final class ActivityFeedAdapter extends KSAdapter {
   public void takeActivities(@NonNull final List<Activity> activities) {
     data().clear();
     if (activities.size() == 0) {
-      data().add(Collections.singletonList(Empty.create()));
+      data().add(Collections.singletonList(Empty.get()));
     } else {
       data().add(activities);
     }

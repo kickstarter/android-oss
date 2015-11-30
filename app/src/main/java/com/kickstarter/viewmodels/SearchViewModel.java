@@ -67,7 +67,7 @@ public final class SearchViewModel extends ViewModel<SearchActivity> implements 
         .compose(Transformers.takeWhen(isSearchEmpty.filter(v -> !v)))
         .subscribe(text -> {
           params.onNext(DiscoveryParams.builder().term(text).build());
-          clearData.onNext(Empty.create());
+          clearData.onNext(Empty.get());
         })
     );
 

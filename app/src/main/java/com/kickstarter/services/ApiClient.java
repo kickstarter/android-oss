@@ -3,10 +3,8 @@ package com.kickstarter.services;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
-import com.kickstarter.BuildConfig;
-import com.kickstarter.libs.ApiEndpoint;
-import com.kickstarter.libs.CurrentUser;
-import com.kickstarter.libs.Release;
+import com.kickstarter.libs.rx.operators.ApiErrorOperator;
+import com.kickstarter.libs.rx.operators.Operators;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
@@ -24,77 +22,73 @@ import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.CategoriesEnvelope;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
-import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.services.apiresponses.StarEnvelope;
 
 import java.util.List;
 
-import retrofit.ErrorHandler;
-import retrofit.RequestInterceptor;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.converter.GsonConverter;
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 public final class ApiClient {
-  private final ApiEndpoint apiEndpoint;
-  private final Release release;
-  private final String clientId;
-  private final CurrentUser currentUser;
-  private final Gson gson;
   private final ApiService service;
+  private final Gson gson;
 
-  public ApiClient(@NonNull final ApiEndpoint apiEndpoint, @NonNull final Release release, @NonNull final String clientId,
-    @NonNull final CurrentUser currentUser, @NonNull final Gson gson) {
-    this.apiEndpoint = apiEndpoint;
-    this.release = release;
-    this.clientId = clientId;
-    this.currentUser = currentUser;
+  public ApiClient(@NonNull final ApiService service, @NonNull final Gson gson) {
     this.gson = gson;
-
-    service = apiService();
+    this.service = service;
   }
 
-  public Observable<AccessTokenEnvelope> loginWithFacebook(@NonNull final String fbAccessToken) {
-    return service.loginWithFacebook(LoginWithFacebookBody.builder().accessToken(fbAccessToken).build());
+  public Observable<AccessTokenEnvelope> loginWithFacebook(@NonNull final String accessToken) {
+    return service
+      .loginWithFacebook(LoginWithFacebookBody.builder().accessToken(accessToken).build())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<AccessTokenEnvelope> loginWithFacebook(@NonNull final String fbAccessToken, @NonNull final String code) {
-    return service.loginWithFacebook(
-      LoginWithFacebookBody.builder()
-        .accessToken(fbAccessToken)
-        .code(code)
-        .build()
-    );
+    return service
+      .loginWithFacebook(LoginWithFacebookBody.builder().accessToken(fbAccessToken).code(code).build())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<AccessTokenEnvelope> registerWithFacebook(@NonNull final String fbAccessToken, final boolean sendNewsletters) {
-    return service.registerWithFacebook(
-      RegisterWithFacebookBody.builder()
-        .accessToken(fbAccessToken)
-        .sendNewsletters(sendNewsletters)
-        .build()
-    );
+    return service
+      .registerWithFacebook(RegisterWithFacebookBody.builder().accessToken(fbAccessToken).sendNewsletters(sendNewsletters).build())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<ActivityEnvelope> fetchActivities(@NonNull final ActivityFeedParams params) {
-    return service.fetchActivities(params.categoryParams(), params.paginationParams());
+    return service
+      .fetchActivities(params.categoryParams(), params.paginationParams())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<List<Category>> fetchCategories() {
-    return service.fetchCategories().map(CategoriesEnvelope::categories);
+    return service.fetchCategories()
+      .lift(apiErrorOperator())
+      .map(CategoriesEnvelope::categories)
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<CommentsEnvelope> fetchProjectComments(@NonNull final CommentFeedParams params) {
-    return service.fetchProjectComments(params.project().param(), params.paginationParams());
+    return service.fetchProjectComments(params.project().param(), params.paginationParams())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<DiscoverEnvelope> fetchProjects(@NonNull final DiscoveryParams params) {
-    return service.fetchProjects(params.queryParams());
+    return service.fetchProjects(params.queryParams())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<Project> fetchProject(@NonNull final String param) {
-    return service.fetchProject(param);
+    return service.fetchProject(param)
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<Project> fetchProject(@NonNull final Project project) {
@@ -102,11 +96,15 @@ public final class ApiClient {
   }
 
   public Observable<Backing> fetchProjectBacking(@NonNull final Project project, @NonNull final User user) {
-    return service.fetchProjectBacking(project.param(), user.param());
+    return service.fetchProjectBacking(project.param(), user.param())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<Category> fetchCategory(final long id) {
-    return service.fetchCategory(id);
+    return service.fetchCategory(id)
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<Category> fetchCategory(@NonNull final Category category) {
@@ -114,91 +112,70 @@ public final class ApiClient {
   }
 
   public Observable<AccessTokenEnvelope> login(@NonNull final String email, @NonNull final String password) {
-    return service.login(email, password);
+    return service.login(email, password)
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<AccessTokenEnvelope> login(@NonNull final String email, @NonNull final String password,
     @NonNull final String code) {
-    return service.login(email, password, code);
+    return service.login(email, password, code)
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<Comment> postProjectComment(@NonNull final Project project, @NonNull final String body) {
-    return service.postProjectComment(project.param(), CommentBody.builder().body(body).build());
+    return service.postProjectComment(project.param(), CommentBody.builder().body(body).build())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public @NonNull Observable<Empty> registerPushToken(@NonNull final String token) {
-    return service.registerPushToken(PushTokenBody.builder().token(token).pushServer("development").build());
+    return service.registerPushToken(PushTokenBody.builder().token(token).pushServer("development").build())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public @NonNull Observable<User> resetPassword(@NonNull final String email) {
-    return service.resetPassword(ResetPasswordBody.builder().email(email).build());
+    return service.resetPassword(ResetPasswordBody.builder().email(email).build())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<AccessTokenEnvelope> signup(@NonNull final String name, @NonNull final String email,
     @NonNull final String password, @NonNull final String passwordConfirmation,
     final boolean sendNewsletters) {
-    return service.signup(SignupBody.builder()
-      .name(name)
-      .email(email)
-      .password(password)
-      .passwordConfirmation(passwordConfirmation)
-      .sendNewsletters(sendNewsletters)
-      .build());
+    return service
+      .signup(
+        SignupBody.builder()
+          .name(name)
+          .email(email)
+          .password(password)
+          .passwordConfirmation(passwordConfirmation)
+          .sendNewsletters(sendNewsletters)
+          .build())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<Project> starProject(@NonNull final Project project) {
     return service.starProject(project.param())
-      .map(StarEnvelope::project);
+      .lift(apiErrorOperator())
+      .map(StarEnvelope::project)
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<Project> toggleProjectStar(@NonNull final Project project) {
     return service.toggleProjectStar(project.param())
-      .map(StarEnvelope::project);
+      .lift(apiErrorOperator())
+      .map(StarEnvelope::project)
+      .subscribeOn(Schedulers.io());
   }
 
-  private ApiService apiService() {
-    return restAdapter().create(ApiService.class);
-  }
-
-  private RestAdapter restAdapter() {
-    return new RestAdapter.Builder()
-      .setConverter(gsonConverter())
-      .setEndpoint(apiEndpoint.url)
-      .setErrorHandler(errorHandler())
-      .setRequestInterceptor(requestInterceptor())
-      .setLogLevel(BuildConfig.DEBUG ? RestAdapter.LogLevel.HEADERS_AND_ARGS : RestAdapter.LogLevel.NONE)
-      .build();
-  }
-
-  private ErrorHandler errorHandler() {
-    return cause -> {
-      if (cause.getKind() == RetrofitError.Kind.HTTP) {
-        final ErrorEnvelope envelope = (ErrorEnvelope) cause.getBodyAs(ErrorEnvelope.class);
-        return new ApiError(cause, envelope);
-      } else {
-        // NETWORK or UNEXPECTED error.
-        return cause;
-      }
-    };
-  }
-
-  private GsonConverter gsonConverter() {
-    return new GsonConverter(gson);
-  }
-
-  private RequestInterceptor requestInterceptor() {
-    return request -> {
-      request.addHeader("Accept", "application/json");
-      request.addHeader("Kickstarter-Android-App", release.versionCode().toString());
-      request.addHeader("Kickstarter-App-Id", release.applicationId());
-      request.addQueryParam("client_id", clientId());
-      if (currentUser.exists()) {
-        request.addQueryParam("oauth_token", currentUser.getAccessToken());
-      }
-    };
-  }
-
-  private String clientId() {
-    return clientId;
+  /**
+   * Utility to create a new {@link ApiErrorOperator}, saves us from littering references to gson throughout the client.
+   */
+  private @NonNull <T> ApiErrorOperator<T> apiErrorOperator() {
+    return Operators.apiError(gson);
   }
 }

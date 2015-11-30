@@ -129,8 +129,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
       .retry(2)
       .onErrorResumeNext(e -> Observable.empty())
       .map(DiscoverEnvelope::projects)
-      .map(this::bringPotdToFront)
-      ;
+      .map(this::bringPotdToFront);
   }
 
   /**

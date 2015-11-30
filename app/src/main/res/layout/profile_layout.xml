@@ -8,17 +8,18 @@
 
   <android.support.design.widget.AppBarLayout
     android:id="@+id/appbar"
+    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:fitsSystemWindows="true"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.CollapsingToolbarLayout
       android:id="@+id/collapsing_toolbar"
+      android:elevation="@dimen/toolbar_elevation"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
+      android:layout_height="wrap_content"
       android:fitsSystemWindows="true"
-      app:contentScrim="?attr/colorPrimary"
+      app:contentScrim="@color/transparent"
       app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
       <include layout="@layout/profile_toolbar" />
@@ -27,8 +28,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/grid_2"
-        android:layout_marginBottom="@dimen/grid_2">
+        android:layout_marginBottom="@dimen/grid_4">
 
         <ImageView
           android:id="@+id/avatar"
@@ -36,9 +36,9 @@
           android:layout_gravity="center_horizontal"
           android:layout_width="@dimen/profile_avatar_width"
           android:layout_height="@dimen/profile_avatar_height"
-          android:layout_marginBottom="@dimen/grid_2"
-          android:scaleType="centerCrop"
-          app:layout_collapseMode="parallax" />
+          android:layout_marginTop="@dimen/grid_2"
+          android:layout_marginBottom="@dimen/grid_1"
+          android:scaleType="centerCrop" />
 
         <TextView
           style="@style/EditorialHeadline"
@@ -55,7 +55,7 @@
           android:gravity="center_horizontal"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/grid_2"
+          android:layout_marginTop="@dimen/grid_1"
           android:layout_marginBottom="@dimen/grid_2"
           android:paddingLeft="@dimen/grid_1"
           android:paddingRight="@dimen/grid_1">

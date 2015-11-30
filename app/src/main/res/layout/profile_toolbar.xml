@@ -6,8 +6,10 @@
   tools:showIn="@layout/profile_layout"
   style="@style/Toolbar"
   android:id="@+id/profile_toolbar"
-  android:background="@color/light_gray"
+  android:background="@color/white"
   android:elevation="0dp"
+  android:gravity="top"
+  android:layout_height="100dp"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
   app:layout_collapseMode="pin">
@@ -15,7 +17,6 @@
   <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_vertical"
     android:orientation="horizontal">
 
     <com.kickstarter.ui.views.IconTextView

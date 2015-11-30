@@ -92,37 +92,37 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
         .subscribe(__ -> loggedOutEmptyState.onNext(null))
     );
 
-    addSubscription(viewSubject
+    addSubscription(view
       .compose(Transformers.takeWhen(discoverProjectsClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(ActivityFeedActivity::discoverProjectsButtonOnClick));
 
-    addSubscription(viewSubject
+    addSubscription(view
       .compose(Transformers.takePairWhen(projectClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startProjectActivity(vp.second.project())));
 
-    addSubscription(viewSubject
+    addSubscription(view
       .compose(Transformers.takeWhen(loginClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(ActivityFeedActivity::activityFeedLogin));
 
-    addSubscription(viewSubject
+    addSubscription(view
       .compose(Transformers.takePairWhen(projectClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startProjectActivity(vp.second.project())));
 
-    addSubscription(viewSubject
+    addSubscription(view
       .compose(Transformers.takePairWhen(projectClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startProjectActivity(vp.second.project())));
 
-    addSubscription(viewSubject
+    addSubscription(view
       .compose(Transformers.takePairWhen(projectClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startProjectActivity(vp.second.project())));
 
-    addSubscription(viewSubject
+    addSubscription(view
       .compose(Transformers.takePairWhen(updateClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showProjectUpdate(vp.second)));

@@ -47,7 +47,7 @@ public final class ViewPledgeViewModel extends ViewModel<ViewPledgeActivity> imp
       .switchMap(pu -> fetchProjectBacking(pu.first, pu.second))
       .share();
 
-    final Observable<Pair<ViewPledgeActivity, Backing>> viewAndBacking = viewSubject
+    final Observable<Pair<ViewPledgeActivity, Backing>> viewAndBacking = view
       .compose(Transformers.takePairWhen(backing))
       .share();
 

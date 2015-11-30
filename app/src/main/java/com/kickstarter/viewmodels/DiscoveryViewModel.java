@@ -61,10 +61,10 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     final Observable<List<Project>> projects = params
       .switchMap(this::projectsWithPagination);
 
-    final Observable<Pair<DiscoveryActivity, List<Project>>> viewAndProjects = viewSubject
+    final Observable<Pair<DiscoveryActivity, List<Project>>> viewAndProjects = view
       .compose(Transformers.combineLatestPair(projects));
 
-    final Observable<Pair<DiscoveryActivity, DiscoveryParams>> viewAndParams = viewSubject
+    final Observable<Pair<DiscoveryActivity, DiscoveryParams>> viewAndParams = view
       .compose(Transformers.combineLatestPair(params));
 
     addSubscription(viewAndParams
@@ -83,7 +83,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     );
 
     addSubscription(
-      viewSubject
+      view
         .compose(Transformers.takePairWhen(projectClick))
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(vp -> vp.first.startProjectActivity(vp.second))

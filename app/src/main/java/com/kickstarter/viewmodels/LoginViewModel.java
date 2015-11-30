@@ -90,7 +90,7 @@ public final class LoginViewModel extends ViewModel<LoginActivity> implements Lo
     final Observable<Boolean> isValid = emailAndPassword
       .map(ep -> LoginViewModel.isValid(ep.first, ep.second));
 
-    addSubscription(viewSubject
+    addSubscription(view
         .compose(Transformers.combineLatestPair(isValid))
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(viewAndValid -> viewAndValid.first.setFormEnabled(viewAndValid.second))

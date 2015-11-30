@@ -19,9 +19,8 @@ import timber.log.Timber;
 public class ViewModel<ViewType> {
   @Inject protected Koala koala;
 
-  private ViewType view;
   protected final PublishSubject<ViewType> viewChange = PublishSubject.create();
-  protected final Observable<ViewType> viewSubject = viewChange.filter(v -> v != null);
+  protected final Observable<ViewType> view = viewChange.filter(v -> v != null);
   private final List<Subscription> subscriptions = new ArrayList<>();
 
   @CallSuper
@@ -53,18 +52,16 @@ public class ViewModel<ViewType> {
 
   private void onTakeView(@NonNull final ViewType view) {
     Timber.d("onTakeView %s %s", this.toString(), view.toString());
-    this.view = view;
     viewChange.onNext(view);
   }
 
   private void dropView() {
     Timber.d("dropView %s", this.toString());
-    this.view = null;
     viewChange.onNext(null);
   }
 
-  public final Observable<ViewType> viewSubject() {
-    return viewSubject;
+  public final Observable<ViewType> view() {
+    return view;
   }
 
   public final PublishSubject<ViewType> viewChange() {

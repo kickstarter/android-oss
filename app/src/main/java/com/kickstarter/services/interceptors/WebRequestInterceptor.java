@@ -40,7 +40,7 @@ public final class WebRequestInterceptor implements Interceptor {
     final Request.Builder requestBuilder = initialRequest.newBuilder()
       .header("User-Agent", userAgent());
 
-    if (KSUri.isHivequeenUri(Uri.parse(initialRequest.urlString()), endpoint)) {
+    if (shouldAddBasicAuthorizationHeader(initialRequest)) {
       requestBuilder.addHeader("Authorization", "Basic ZnV6enk6d3V6enk=");
     }
     if (currentUser.exists()) {
@@ -52,6 +52,11 @@ public final class WebRequestInterceptor implements Interceptor {
 
   private boolean shouldIntercept(@NonNull final Request request) {
     return KSUri.isWebUri(Uri.parse(request.urlString()), endpoint);
+  }
+
+  private boolean shouldAddBasicAuthorizationHeader(@NonNull final Request request) {
+    final Uri initialRequestUri = Uri.parse(request.urlString());
+    return KSUri.isHivequeenUri(initialRequestUri, endpoint) || KSUri.isStagingUri(initialRequestUri, endpoint);
   }
 
   private @NonNull String userAgent() {

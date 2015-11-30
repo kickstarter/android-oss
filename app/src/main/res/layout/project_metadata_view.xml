@@ -1,4 +1,4 @@
-<LinearLayout
+<RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   android:id="@+id/project_metadata_view"
@@ -8,6 +8,8 @@
   android:elevation="3dp"
   android:layout_marginStart="@dimen/grid_2"
   android:layout_marginLeft="@dimen/grid_2"
+  android:layout_marginRight="@dimen/grid_3"
+  android:layout_marginEnd="@dimen/grid_3"
   android:layout_alignStart="@+id/project_card_view"
   android:layout_alignLeft="@+id/project_card_view"
   android:layout_marginTop="@dimen/grid_1"
@@ -16,7 +18,6 @@
   android:paddingTop="@dimen/grid_1"
   android:paddingBottom="@dimen/grid_1"
   android:background="@color/white"
-  android:orientation="horizontal"
   android:layout_width="wrap_content"
   android:layout_height="@dimen/grid_4">
 
@@ -38,6 +39,7 @@
 
     <TextView
       style="@style/BodyPrimaryMedium"
+      android:includeFontPadding="false"
       android:layout_gravity="center_vertical"
       android:text="@string/Youre_a_backer"
       android:layout_width="wrap_content"
@@ -48,7 +50,6 @@
   <LinearLayout
     android:id="@+id/friend_backing_group"
     android:visibility="gone"
-    android:layout_gravity="center_vertical"
     android:orientation="horizontal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
@@ -63,6 +64,8 @@
 
     <TextView
       android:id="@+id/friend_backing_message"
+      android:includeFontPadding="false"
+      android:ellipsize="end"
       style="@style/BodyPrimaryMedium"
       android:layout_gravity="center_vertical"
       android:layout_width="wrap_content"
@@ -89,6 +92,7 @@
 
     <TextView
       android:text="@string/You_starred_this_project"
+      android:includeFontPadding="false"
       style="@style/BodyPrimaryMedium"
       android:layout_gravity="center_vertical"
       android:layout_width="wrap_content"
@@ -98,8 +102,9 @@
 
   <LinearLayout
     android:id="@+id/potd_group"
-    android:visibility="gone"
     android:orientation="horizontal"
+    android:visibility="visible"
+    android:layout_marginRight="@dimen/grid_2"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
@@ -115,6 +120,7 @@
 
     <TextView
       android:id="@+id/potd"
+      android:includeFontPadding="false"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="center_vertical"
@@ -124,4 +130,4 @@
 
   </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

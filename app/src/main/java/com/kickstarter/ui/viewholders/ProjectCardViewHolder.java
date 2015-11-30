@@ -170,19 +170,21 @@ public final class ProjectCardViewHolder extends KSViewHolder {
         .small())
         .transform(new CircleTransformation())
         .into(friendBackingAvatarImageView);
+
+      // set correct friend backing strings
       if (project.friends().size() == 1) {
         friendBackingMessageTextView.setText(String.format(oneFriendBackerString,
-          project.friends().get(0).name()));
+          project.friends().get(0).firstName())
+        );
       } else if (project.friends().size() == 2) {
         friendBackingMessageTextView.setText(String.format(twoFriendBackersString,
-            project.friends().get(0).name(),
-            project.friends().get(1).name())
+            project.friends().get(0).firstName(),
+            project.friends().get(1).firstName())
         );
       } else {
         friendBackingMessageTextView.setText(String.format(manyFriendBackersString,
-            project.friends().get(0).name(),
-            project.friends().get(1).name(),
-            project.friends().get(2).name(),
+            project.friends().get(0).firstName(),
+            project.friends().get(1).firstName(),
             project.friends().size())
         );
       }

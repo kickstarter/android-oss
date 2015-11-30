@@ -14,7 +14,7 @@
   <string name="All_of_Category">All of %1$s</string>
   <string name="Already_have_a_Kickstarter_account">Already have a Kickstarter account?</string>
   <string name="_and_are_backers">%1$s and %2$s are backers.</string>
-  <string name="_and_more_are_backers">%1$s, %2$s, %3$s, and %4$s are backers.</string>
+  <string name="_and_more_are_backers">%1$s, %2$s, and %3$s more are backers.</string>
   <string name="A_newer_build_is_available">A newer build is available. Download upgrade?</string>
   <string name="Are_those_new_shoes">
     Are those new shoes? If they’re not new, they look really shiny and beautiful.
@@ -106,7 +106,7 @@
   <string name="hours">hours</string>
   <string name="I_just_backed_project_on_Kickstarter">I just backed %1$s on Kickstarter: %2$s</string>
   <string name="Instructions">Instructions</string>
-  <string name="_is_a_backer">%1$s is a backer</string>
+  <string name="_is_a_backer">%1$s is a backer.</string>
   <string name="Launched">Launched</string>
   <string name="Lets_try_that_again">Let\'s try that again</string>
   <string name="Limited_left_of">Limited (%1$s left of %2$s)</string>
@@ -255,5 +255,5 @@
   <string name="font_family_medium">sans-serif-medium</string>
 
   <!-- Koala strings -->
-  <string name="koala_endpoint">https://***REMOVED***/native/track</string>
+  <string name="koala_endpoint">***REMOVED***</string>
 </resources>

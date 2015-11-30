@@ -13,11 +13,10 @@ import timber.log.Timber;
 
 public class CurrentUser {
   private final StringPreference accessTokenPreference;
-  private final Gson gson;
   private final PushNotifications pushNotifications;
   private final StringPreference userPreference;
 
-  private final BehaviorSubject<User> userSubject = BehaviorSubject.create();
+  private final BehaviorSubject<User> user = BehaviorSubject.create();
   private User currentUser;
 
   public CurrentUser(@NonNull final StringPreference accessTokenPreference,
@@ -26,16 +25,15 @@ public class CurrentUser {
     @NonNull final StringPreference userPreference) {
     this.accessTokenPreference = accessTokenPreference;
     this.pushNotifications = pushNotifications;
-    this.gson = gson;
     this.userPreference = userPreference;
 
-    userSubject.subscribe(user -> currentUser = user);
-    userSubject
+    user.subscribe(user -> currentUser = user);
+    user
       .skip(1)
       .filter(user -> user != null)
       .subscribe(user -> userPreference.set(gson.toJson(user, User.class)));
 
-    userSubject.onNext(gson.fromJson(userPreference.get(), User.class));
+    user.onNext(gson.fromJson(userPreference.get(), User.class));
   }
 
   @Deprecated
@@ -56,7 +54,7 @@ public class CurrentUser {
     Timber.d("Login user %s", newUser.name());
 
     accessTokenPreference.set(accessToken);
-    userSubject.onNext(newUser);
+    user.onNext(newUser);
     pushNotifications.registerDevice();
   }
 
@@ -65,7 +63,7 @@ public class CurrentUser {
 
     userPreference.delete();
     accessTokenPreference.delete();
-    userSubject.onNext(null);
+    user.onNext(null);
     pushNotifications.unregisterDevice();
   }
 
@@ -74,7 +72,7 @@ public class CurrentUser {
    * with the current user, and then again each time the user is updated.
    */
   public Observable<User> observable() {
-    return userSubject;
+    return user;
   }
 
   /**
@@ -82,7 +80,7 @@ public class CurrentUser {
    * if the user went from logged out to logged in, and `false` otherwise.
    */
   public Observable<Boolean> loginChange() {
-    return userSubject.buffer(2, 1)
+    return user.buffer(2, 1)
       .map(prevAndNewUser -> {
         final User[] users = prevAndNewUser.toArray(new User[prevAndNewUser.size()]);
         return users[0] == null && users[1] != null;
@@ -95,7 +93,7 @@ public class CurrentUser {
    * each time the current user is updated.
    */
   public @NonNull Observable<Boolean> isLoggedIn() {
-    return userSubject.map(ObjectUtils::isNotNull);
+    return user.map(ObjectUtils::isNotNull);
   }
 
   /**

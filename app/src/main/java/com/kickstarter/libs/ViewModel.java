@@ -63,16 +63,6 @@ public class ViewModel<ViewType> {
     viewChange.onNext(null);
   }
 
-  /**
-   * Get view object attached to view model. View can be null.
-   *
-   * @deprecated Not Reactive, use observables instead.
-   */
-  @Deprecated
-  protected final @Nullable ViewType view() {
-    return this.view;
-  }
-
   public final Observable<ViewType> viewSubject() {
     return viewSubject;
   }

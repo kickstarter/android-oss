@@ -32,6 +32,10 @@ public abstract class User implements Parcelable {
     return new AutoParcel_User.Builder();
   }
 
+  public String firstName() {
+    return name().split(" ")[0];
+  }
+
   public String param() {
     return String.valueOf(this.id());
   }

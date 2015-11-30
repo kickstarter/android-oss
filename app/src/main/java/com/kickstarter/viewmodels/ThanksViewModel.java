@@ -51,7 +51,7 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
   }
 
   public void takeProject(@NonNull final Project project) {
-    final Observable<Pair<ThanksActivity, Project>> viewAndProject = viewSubject
+    final Observable<Pair<ThanksActivity, Project>> viewAndProject = view
       .compose(Transformers.combineLatestPair(Observable.just(project)))
       .filter(vp -> vp.first != null);
 
@@ -98,7 +98,7 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
     final Observable<Pair<List<Project>, Category>> projectsAndRootCategory = recommendedProjects
       .compose(Transformers.zipPair(rootCategory));
 
-    addSubscription(viewSubject
+    addSubscription(view
         .compose(Transformers.combineLatestPair(projectsAndRootCategory))
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(vpc -> {

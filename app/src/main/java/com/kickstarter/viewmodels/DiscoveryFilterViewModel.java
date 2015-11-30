@@ -38,14 +38,14 @@ public final class DiscoveryFilterViewModel extends ViewModel<DiscoveryFilterAct
       .retry(3)
       .compose(Transformers.neverError());
 
-    final Observable<Pair<DiscoveryFilterActivity, List<Category>>> viewAndCategories = viewSubject
+    final Observable<Pair<DiscoveryFilterActivity, List<Category>>> viewAndCategories = view
       .compose(Transformers.combineLatestPair(categories));
 
     addSubscription(viewAndCategories
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vc -> vc.first.loadCategories(vc.second)));
 
-    addSubscription(viewSubject
+    addSubscription(view
         .compose(Transformers.takePairWhen(discoveryFilterClick))
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(vp -> vp.first.startDiscoveryActivity(vp.second))

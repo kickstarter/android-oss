@@ -76,7 +76,7 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
       .mergeWith(initialProject)
       .share();
 
-    final Observable<Pair<ProjectActivity, Project>> viewAndProject = viewSubject
+    final Observable<Pair<ProjectActivity, Project>> viewAndProject = view
       .compose(Transformers.combineLatestPair(project));
 
     addSubscription(
@@ -86,7 +86,7 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
     );
 
     addSubscription(
-      viewSubject
+      view
         .compose(Transformers.takePairWhen(projectOnUserChangeStar.mergeWith(starredProjectOnLoginSuccess)))
         .filter(vp -> vp.second.isStarred())
         .observeOn(AndroidSchedulers.mainThread())
@@ -94,7 +94,7 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
     );
 
     addSubscription(
-      viewSubject
+      view
         .compose(Transformers.takeWhen(loggedOutUserOnStarClick))
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(ProjectActivity::startLoginToutActivity)

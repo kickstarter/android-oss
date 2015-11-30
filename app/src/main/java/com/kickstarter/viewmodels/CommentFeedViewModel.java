@@ -113,7 +113,7 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
 
     addSubscription(Observable.combineLatest(
         currentUser.observable(),
-        viewSubject,
+        view,
         comments,
         project,
         Arrays::asList)
@@ -138,13 +138,13 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
         .subscribe(__ -> refresh.onNext(Empty.create()))
     );
 
-    addSubscription(viewSubject
+    addSubscription(view
         .compose(Transformers.combineLatestPair(commentHasBody))
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(ve -> ve.first.enablePostButton(ve.second))
     );
 
-    addSubscription(viewSubject
+    addSubscription(view
         .compose(Transformers.takePairWhen(commentIsPosting))
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(vp -> vp.first.disablePostButton(vp.second))

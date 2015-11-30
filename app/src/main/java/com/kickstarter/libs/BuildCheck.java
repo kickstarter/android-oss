@@ -15,7 +15,7 @@ public interface BuildCheck {
 
   BuildCheck DEFAULT = (viewModel, client) -> {
     final Subscription subscription = client.pingBeta()
-      .compose(Transformers.combineLatestPair(viewModel.viewSubject()))
+      .compose(Transformers.combineLatestPair(viewModel.view()))
       .filter(v -> v.first.newerBuildAvailable())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(v -> v.second.showBuildAlert(v.first), e -> Timber.e(e.toString()));

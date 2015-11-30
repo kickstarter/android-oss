@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.Money;
+import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.presenters.DiscoveryPresenter;
@@ -46,6 +47,9 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.starred_group) ViewGroup starredViewGroup;
   protected @Bind(R.id.successfully_funded_view) TextView successfullyFundedTextView;
 
+  protected @BindString(R.string._is_a_backer) String oneFriendBackerString;
+  protected @BindString(R.string._and_are_backers) String twoFriendBackersString;
+  protected @BindString(R.string._and_more_are_backers) String manyFriendBackersString;
   protected @BindString(R.string.backers) String backersString;
   protected @BindString(R.string.Funding_canceled) String fundingCanceledString;
   protected @BindString(R.string.Funding_suspended_) String fundingSuspendedString;
@@ -143,39 +147,67 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     }
   }
 
+  // only show one of either backer, social, starred, potd
   public void setProjectMetadataView() {
     if (project.isBacking()) {
       projectMetadataViewGroup.setVisibility(View.VISIBLE);
       backingViewGroup.setVisibility(View.VISIBLE);
-    } else {
-      projectMetadataViewGroup.setVisibility(View.GONE);
-      backingViewGroup.setVisibility(View.GONE);
+
+      friendBackingViewGroup.setVisibility(View.GONE);
+      starredViewGroup.setVisibility(View.GONE);
+      potdViewGroup.setVisibility(View.GONE);
     }
 
-    if (project.isFriendBacking()) {
+    else if (project.isFriendBacking()) {
       projectMetadataViewGroup.setVisibility(View.VISIBLE);
       friendBackingViewGroup.setVisibility(View.VISIBLE);
 
-      // todo: set avatar and message
-    } else {
-      projectMetadataViewGroup.setVisibility(View.GONE);
-      friendBackingViewGroup.setVisibility(View.GONE);
+      backingViewGroup.setVisibility(View.GONE);
+      starredViewGroup.setVisibility(View.GONE);
+      potdViewGroup.setVisibility(View.GONE);
+
+      Picasso.with(view.getContext()).load(project.friends().get(0).avatar()
+        .small())
+        .transform(new CircleTransformation())
+        .into(friendBackingAvatarImageView);
+      if (project.friends().size() == 1) {
+        friendBackingMessageTextView.setText(String.format(oneFriendBackerString,
+          project.friends().get(0).name()));
+      } else if (project.friends().size() == 2) {
+        friendBackingMessageTextView.setText(String.format(twoFriendBackersString,
+            project.friends().get(0).name(),
+            project.friends().get(1).name())
+        );
+      } else {
+        friendBackingMessageTextView.setText(String.format(manyFriendBackersString,
+            project.friends().get(0).name(),
+            project.friends().get(1).name(),
+            project.friends().get(2).name(),
+            project.friends().size())
+        );
+      }
     }
 
-    if (project.isStarred()) {
+    else if (project.isStarred()) {
       projectMetadataViewGroup.setVisibility(View.VISIBLE);
       starredViewGroup.setVisibility(View.VISIBLE);
-    } else {
-      projectMetadataViewGroup.setVisibility(View.GONE);
+
+      backingViewGroup.setVisibility(View.GONE);
+      friendBackingViewGroup.setVisibility(View.GONE);
+      potdViewGroup.setVisibility(View.GONE);
+    }
+
+    else if (project.isPotdToday()) {
+      projectMetadataViewGroup.setVisibility(View.VISIBLE);
+      potdViewGroup.setVisibility(View.VISIBLE);
+
+      backingViewGroup.setVisibility(View.GONE);
+      friendBackingViewGroup.setVisibility(View.GONE);
       starredViewGroup.setVisibility(View.GONE);
     }
 
-    if (project.isPotdToday()) {
-      projectMetadataViewGroup.setVisibility(View.VISIBLE);
-      potdViewGroup.setVisibility(View.VISIBLE);
-    } else {
+    else {
       projectMetadataViewGroup.setVisibility(View.GONE);
-      potdViewGroup.setVisibility(View.GONE);
     }
   }
 

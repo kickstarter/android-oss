@@ -56,7 +56,6 @@
     <ImageView
       android:id="@+id/friend_backing_avatar"
       android:layout_gravity="center_vertical"
-      android:background="@color/blue"
       android:layout_marginRight="@dimen/grid_1"
       android:layout_marginEnd="@dimen/grid_1"
       android:layout_width="@dimen/grid_3"
@@ -66,7 +65,6 @@
       android:id="@+id/friend_backing_message"
       style="@style/BodyPrimaryMedium"
       android:layout_gravity="center_vertical"
-      android:text="Lisa, Chris, and 11 more are backers"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 

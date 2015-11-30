@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
-import com.kickstarter.libs.qualifiers.RequiresPresenter;
+import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.BundleUtils;
 import com.trello.rxlifecycle.ActivityEvent;
 import com.trello.rxlifecycle.RxLifecycle;
@@ -22,20 +22,20 @@ import rx.Subscription;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
-public class BaseActivity<PresenterType extends Presenter> extends AppCompatActivity implements ActivityLifecycleProvider {
+public class BaseActivity<ViewModelType extends ViewModel> extends AppCompatActivity implements ActivityLifecycleProvider {
   private final BehaviorSubject<ActivityEvent> lifecycle = BehaviorSubject.create();
-  protected PresenterType presenter;
-  private static final String PRESENTER_KEY = "presenter";
+  protected ViewModelType viewModel;
+  private static final String VIEW_MODEL_KEY = "viewModel";
   private final List<Subscription> subscriptions = new ArrayList<>();
 
   /**
-   * Get presenter.
+   * Get viewModel.
    *
-   * @deprecated TODO: Refactor parent/child presenters for activities and their views.
+   * @deprecated TODO: Refactor parent/child view models for activities and their views.
    */
   @Deprecated
-  public PresenterType presenter() {
-    return presenter;
+  public ViewModelType viewModel() {
+    return viewModel;
   }
 
   /**
@@ -68,7 +68,7 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
     Timber.d("onCreate %s", this.toString());
 
     lifecycle.onNext(ActivityEvent.CREATE);
-    fetchPresenter(savedInstanceState);
+    fetchViewModel(savedInstanceState);
   }
 
   @CallSuper
@@ -86,9 +86,9 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
     Timber.d("onResume %s", this.toString());
     lifecycle.onNext(ActivityEvent.RESUME);
 
-    fetchPresenter(null);
-    if (presenter != null) {
-      presenter.onResume(this);
+    fetchViewModel(null);
+    if (viewModel != null) {
+      viewModel.onResume(this);
     }
   }
 
@@ -99,8 +99,8 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
     super.onPause();
     Timber.d("onPause %s", this.toString());
 
-    if (presenter != null) {
-      presenter.onPause();
+    if (viewModel != null) {
+      viewModel.onPause();
     }
   }
 
@@ -124,9 +124,9 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
     }
 
     if (isFinishing()) {
-      if (presenter != null) {
-        Presenters.getInstance().destroy(presenter);
-        presenter = null;
+      if (viewModel != null) {
+        ViewModels.getInstance().destroy(viewModel);
+        viewModel = null;
       }
     }
   }
@@ -137,12 +137,12 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
     super.onSaveInstanceState(outState);
     Timber.d("onSaveInstanceState %s", this.toString());
 
-    final Bundle presenterEnvelope = new Bundle();
-    if (presenter != null) {
-      Presenters.getInstance().save(presenter, presenterEnvelope);
+    final Bundle viewModelEnvelope = new Bundle();
+    if (viewModel != null) {
+      ViewModels.getInstance().save(viewModel, viewModelEnvelope);
     }
 
-    outState.putBundle(PRESENTER_KEY, presenterEnvelope);
+    outState.putBundle(VIEW_MODEL_KEY, viewModelEnvelope);
   }
 
   protected final void startActivityWithTransition(@NonNull final Intent intent, @AnimRes final int enterAnim,
@@ -159,14 +159,14 @@ public class BaseActivity<PresenterType extends Presenter> extends AppCompatActi
     subscriptions.add(subscription);
   }
 
-  private void fetchPresenter(@Nullable final Bundle presenterEnvelope) {
-    if (presenter == null) {
-      final RequiresPresenter annotation = getClass().getAnnotation(RequiresPresenter.class);
-      final Class<PresenterType> presenterClass = annotation == null ? null : (Class<PresenterType>) annotation.value();
-      if (presenterClass != null) {
-        presenter = Presenters.getInstance().fetch(this,
-          presenterClass,
-          BundleUtils.maybeGetBundle(presenterEnvelope, PRESENTER_KEY));
+  private void fetchViewModel(@Nullable final Bundle viewModelEnvelope) {
+    if (viewModel == null) {
+      final RequiresViewModel annotation = getClass().getAnnotation(RequiresViewModel.class);
+      final Class<ViewModelType> viewModelClass = annotation == null ? null : (Class<ViewModelType>) annotation.value();
+      if (viewModelClass != null) {
+        viewModel = ViewModels.getInstance().fetch(this,
+          viewModelClass,
+          BundleUtils.maybeGetBundle(viewModelEnvelope, VIEW_MODEL_KEY));
       }
     }
   }

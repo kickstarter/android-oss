@@ -13,9 +13,9 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.qualifiers.RequiresPresenter;
+import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.presenters.SignupPresenter;
+import com.kickstarter.viewmodels.SignupViewModel;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 import com.kickstarter.ui.views.LoginPopupMenu;
 
@@ -26,8 +26,8 @@ import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import rx.android.schedulers.AndroidSchedulers;
 
-@RequiresPresenter(SignupPresenter.class)
-public final class SignupActivity extends BaseActivity<SignupPresenter> {
+@RequiresViewModel(SignupViewModel.class)
+public final class SignupActivity extends BaseActivity<SignupViewModel> {
   @Bind(R.id.full_name) EditText nameEditText;
   @Bind(R.id.email) EditText emailEditText;
   @Bind(R.id.help_button) TextView helpButton;
@@ -51,31 +51,31 @@ public final class SignupActivity extends BaseActivity<SignupPresenter> {
     final boolean forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
 
     addSubscription(
-      presenter.outputs.signupSuccess()
+      viewModel.outputs.signupSuccess()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(__ -> onSuccess(forward))
     );
 
     addSubscription(
-      presenter.outputs.formSubmitting()
+      viewModel.outputs.formSubmitting()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(this::setFormDisabled)
     );
 
     addSubscription(
-      presenter.outputs.formIsValid()
+      viewModel.outputs.formIsValid()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(this::setFormEnabled)
     );
 
     addSubscription(
-      presenter.errors.signupError()
+      viewModel.errors.signupError()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e))
     );
 
     addSubscription(RxCompoundButton.checkedChanges(newsletterSwitch)
-      .subscribe(presenter.inputs::sendNewsletters)
+      .subscribe(viewModel.inputs::sendNewsletters)
     );
   }
 
@@ -86,22 +86,22 @@ public final class SignupActivity extends BaseActivity<SignupPresenter> {
 
   @OnTextChanged(R.id.full_name)
   void onNameTextChanged(@NonNull final CharSequence fullName) {
-    presenter.inputs.fullName(fullName.toString());
+    viewModel.inputs.fullName(fullName.toString());
   }
 
   @OnTextChanged(R.id.email)
   void onEmailTextChanged(@NonNull final CharSequence email) {
-    presenter.inputs.email(email.toString());
+    viewModel.inputs.email(email.toString());
   }
 
   @OnTextChanged(R.id.password)
   void onPasswordTextChange(@NonNull final CharSequence password) {
-    presenter.inputs.password(password.toString());
+    viewModel.inputs.password(password.toString());
   }
 
   @OnClick(R.id.signup_button)
   public void signupButtonOnClick() {
-    presenter.inputs.signupClick();
+    viewModel.inputs.signupClick();
   }
 
   public void onSuccess(final boolean forward) {

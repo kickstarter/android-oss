@@ -7,7 +7,7 @@ import android.support.annotation.StringDef;
 
 import com.kickstarter.libs.qualifiers.AutoGson;
 import com.kickstarter.libs.utils.ListUtils;
-import com.kickstarter.services.ApiError;
+import com.kickstarter.services.ApiException;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -56,14 +56,14 @@ public abstract class ErrorEnvelope implements Parcelable {
   @Retention(RetentionPolicy.SOURCE)
   public @interface ErrorCode {}
 
-  /*
-    Tries to extract an api error envelope from an exception, and if it
-     can't returns `null`.
+  /**
+   * Tries to extract an {@link ErrorEnvelope} from an exception, and if it
+   * can't returns null.
    */
-  @Nullable public static ErrorEnvelope fromThrowable(@NonNull final Throwable e) {
-    if (e instanceof ApiError) {
-      final ApiError error = (ApiError) e;
-      final ErrorEnvelope envelope = error.errorEnvelope();
+  public static @Nullable ErrorEnvelope fromThrowable(@NonNull final Throwable t) {
+    if (t instanceof ApiException) {
+      final ApiException exception = (ApiException) t;
+      final ErrorEnvelope envelope = exception.errorEnvelope();
       return envelope;
     }
 

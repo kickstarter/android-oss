@@ -14,7 +14,7 @@ import com.kickstarter.libs.Money;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.presenters.DiscoveryPresenter;
+import com.kickstarter.viewmodels.DiscoveryViewModel;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
@@ -60,7 +60,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
 
   protected Project project;
   private final Delegate delegate;
-  protected DiscoveryPresenter presenter;
+  protected DiscoveryViewModel viewModel;
 
   @Inject Money money;
 

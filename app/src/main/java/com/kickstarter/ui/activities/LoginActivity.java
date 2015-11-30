@@ -11,10 +11,10 @@ import android.widget.EditText;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.qualifiers.RequiresPresenter;
+import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.presenters.LoginPresenter;
+import com.kickstarter.viewmodels.LoginViewModel;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 
 import butterknife.Bind;
@@ -25,8 +25,8 @@ import butterknife.OnTextChanged;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
-@RequiresPresenter(LoginPresenter.class)
-public final class LoginActivity extends BaseActivity<LoginPresenter> {
+@RequiresViewModel(LoginViewModel.class)
+public final class LoginActivity extends BaseActivity<LoginViewModel> {
   @Bind(R.id.email) EditText emailEditText;
   @Bind(R.id.login_button) Button loginButton;
   @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
@@ -54,7 +54,7 @@ public final class LoginActivity extends BaseActivity<LoginPresenter> {
     );
 
     addSubscription(
-      presenter.errors.tfaChallenge()
+      viewModel.errors.tfaChallenge()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(__ -> {
           startTwoFactorActivity(forward);
@@ -62,7 +62,7 @@ public final class LoginActivity extends BaseActivity<LoginPresenter> {
     );
 
     addSubscription(
-      presenter.outputs.loginSuccess()
+      viewModel.outputs.loginSuccess()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(__ -> {
           onSuccess(forward);
@@ -80,9 +80,9 @@ public final class LoginActivity extends BaseActivity<LoginPresenter> {
   }
 
   private Observable<String> errorMessages() {
-    return presenter.errors.invalidLoginError()
+    return viewModel.errors.invalidLoginError()
       .map(ObjectUtils.coalesceWith(loginDoesNotMatchString))
-      .mergeWith(presenter.errors.genericLoginError()
+      .mergeWith(viewModel.errors.genericLoginError()
         .map(ObjectUtils.coalesceWith(unableToLoginString))
       );
   }
@@ -106,12 +106,12 @@ public final class LoginActivity extends BaseActivity<LoginPresenter> {
 
   @OnTextChanged(R.id.email)
   void onEmailTextChanged(@NonNull final CharSequence email) {
-    presenter.inputs.email(email.toString());
+    viewModel.inputs.email(email.toString());
   }
 
   @OnTextChanged(R.id.password)
   void onPasswordTextChanged(@NonNull final CharSequence password) {
-    presenter.inputs.password(password.toString());
+    viewModel.inputs.password(password.toString());
   }
 
   @OnClick(R.id.forgot_your_password_text_view)
@@ -122,7 +122,7 @@ public final class LoginActivity extends BaseActivity<LoginPresenter> {
 
   @OnClick(R.id.login_button)
   public void loginButtonOnClick() {
-    presenter.inputs.loginClick();
+    viewModel.inputs.loginClick();
   }
 
   public void onSuccess(final boolean forward) {

@@ -89,7 +89,7 @@ public final class DiscoveryFilterAdapter extends KSAdapter {
 
     data().addAll(paramsSections(initialCategories).toList().toBlocking().single());
     data().add(1, Collections.singletonList(DiscoveryFilterDividerViewHolder.Divider.builder().light(light()).build()));
-    data().add(Collections.singletonList(Empty.create()));
+    data().add(Collections.singletonList(Empty.get()));
 
     notifyDataSetChanged();
   }

@@ -11,9 +11,9 @@ import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.qualifiers.RequiresPresenter;
+import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.presenters.FacebookConfirmationPresenter;
+import com.kickstarter.viewmodels.FacebookConfirmationViewModel;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 import com.kickstarter.ui.views.LoginPopupMenu;
@@ -24,8 +24,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
 
-@RequiresPresenter(FacebookConfirmationPresenter.class)
-public class FacebookConfirmationActivity extends BaseActivity<FacebookConfirmationPresenter> {
+@RequiresViewModel(FacebookConfirmationViewModel.class)
+public class FacebookConfirmationActivity extends BaseActivity<FacebookConfirmationViewModel> {
   protected @Bind(R.id.email) TextView emailTextView;
   protected @Bind(R.id.help_button) TextView helpButton;
   protected @Bind(R.id.sign_up_with_facebook_toolbar) LoginToolbar signUpWithFacebookToolbar;
@@ -50,26 +50,26 @@ public class FacebookConfirmationActivity extends BaseActivity<FacebookConfirmat
     emailTextView.setText(fbUser.email());
 
     final String fbAccessToken = getIntent().getStringExtra(getString(R.string.intent_facebook_token));
-    presenter.inputs.fbAccessToken(fbAccessToken);
+    viewModel.inputs.fbAccessToken(fbAccessToken);
 
-    presenter.outputs.signupSuccess()
+    viewModel.outputs.signupSuccess()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> onSuccess(forward));
 
-    presenter.errors.signupError()
+    viewModel.errors.signupError()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e));
 
     RxCompoundButton.checkedChanges(newsletterSwitch)
       .compose(bindToLifecycle())
-      .subscribe(presenter.inputs::sendNewsletters);
+      .subscribe(viewModel.inputs::sendNewsletters);
   }
 
   @OnClick(R.id.create_new_account_button)
   public void createNewAccountClick() {
-    presenter.inputs.createNewAccountClick();
+    viewModel.inputs.createNewAccountClick();
   }
 
   @OnClick(R.id.disclaimer)

@@ -33,9 +33,9 @@ public final class LoginViewModel extends ViewModel<LoginActivity> implements Lo
   private final PublishSubject<String> password = PublishSubject.create();
 
   // OUTPUTS
-  private final PublishSubject<Void> loginSuccessSubject = PublishSubject.create();
+  private final PublishSubject<Void> loginSuccess = PublishSubject.create();
   public final Observable<Void> loginSuccess() {
-    return loginSuccessSubject.asObservable();
+    return loginSuccess.asObservable();
   }
 
   // ERRORS
@@ -103,7 +103,7 @@ public final class LoginViewModel extends ViewModel<LoginActivity> implements Lo
         .subscribe(this::success)
     );
 
-    addSubscription(loginSuccessSubject.subscribe(__ -> koala.trackLoginSuccess()));
+    addSubscription(loginSuccess.subscribe(__ -> koala.trackLoginSuccess()));
 
     addSubscription(invalidLoginError().mergeWith(genericLoginError())
         .subscribe(__ -> {
@@ -123,6 +123,6 @@ public final class LoginViewModel extends ViewModel<LoginActivity> implements Lo
 
   private void success(@NonNull final AccessTokenEnvelope envelope) {
     currentUser.login(envelope.user(), envelope.accessToken());
-    loginSuccessSubject.onNext(null);
+    loginSuccess.onNext(null);
   }
 }

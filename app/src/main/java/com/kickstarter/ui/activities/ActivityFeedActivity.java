@@ -15,12 +15,12 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Paginator;
 import com.kickstarter.libs.SwipeRefresher;
-import com.kickstarter.libs.qualifiers.RequiresPresenter;
+import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
-import com.kickstarter.presenters.ActivityFeedPresenter;
+import com.kickstarter.viewmodels.ActivityFeedViewModel;
 import com.kickstarter.ui.adapters.ActivityFeedAdapter;
 
 import java.util.List;
@@ -31,8 +31,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 
-@RequiresPresenter(ActivityFeedPresenter.class)
-public final class ActivityFeedActivity extends BaseActivity<ActivityFeedPresenter> {
+@RequiresViewModel(ActivityFeedViewModel.class)
+public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewModel> {
   private ActivityFeedAdapter adapter;
   public @Bind(R.id.recycler_view) RecyclerView recyclerView;
   protected @Bind(R.id.activity_feed_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
@@ -49,12 +49,12 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedPresent
     setContentView(R.layout.activity_feed_layout);
     ButterKnife.bind(this);
 
-    adapter = new ActivityFeedAdapter(presenter);
+    adapter = new ActivityFeedAdapter(viewModel);
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    paginator = new Paginator(recyclerView, presenter.inputs::nextPage);
-    swipeRefresher = new SwipeRefresher(this, swipeRefreshLayout, presenter.inputs::refresh, presenter.outputs::isFetchingActivities);
+    paginator = new Paginator(recyclerView, viewModel.inputs::nextPage);
+    swipeRefresher = new SwipeRefresher(this, swipeRefreshLayout, viewModel.inputs::refresh, viewModel.outputs::isFetchingActivities);
 
     // Only allow refreshing if there's a current user
     currentUser.observable()
@@ -63,12 +63,12 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedPresent
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(swipeRefreshLayout::setEnabled);
 
-    presenter.outputs.activities()
+    viewModel.outputs.activities()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::showActivities);
 
-    presenter.outputs.loggedOutEmptyState()
+    viewModel.outputs.loggedOutEmptyState()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::showLoggedOutEmptyState);

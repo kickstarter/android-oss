@@ -8,13 +8,12 @@ import android.support.annotation.Nullable;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.facebook.login.LoginManager;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.qualifiers.RequiresPresenter;
+import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.presenters.TwoFactorPresenter;
+import com.kickstarter.viewmodels.TwoFactorViewModel;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 
 import butterknife.Bind;
@@ -25,8 +24,8 @@ import butterknife.OnTextChanged;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
-@RequiresPresenter(TwoFactorPresenter.class)
-public final class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
+@RequiresViewModel(TwoFactorViewModel.class)
+public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel> {
   public @Bind(R.id.code) EditText codeEditText;
   public @Bind(R.id.resend_button) Button resendButton;
   public @Bind(R.id.login_button) Button loginButton;
@@ -45,25 +44,25 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
     ButterKnife.bind(this);
     loginToolbar.setTitle(verifyString);
 
-    presenter.inputs.email(getIntent().getExtras().getString(getString(R.string.intent_email)));
-    presenter.inputs.isFacebookLogin(getIntent().getBooleanExtra(getString(R.string.intent_facebook_login), false));
-    presenter.inputs.fbAccessToken(getIntent().getExtras().getString(getString(R.string.intent_facebook_token)));
-    presenter.inputs.password(getIntent().getExtras().getString(getString(R.string.intent_password)));
+    viewModel.inputs.email(getIntent().getExtras().getString(getString(R.string.intent_email)));
+    viewModel.inputs.isFacebookLogin(getIntent().getBooleanExtra(getString(R.string.intent_facebook_login), false));
+    viewModel.inputs.fbAccessToken(getIntent().getExtras().getString(getString(R.string.intent_facebook_token)));
+    viewModel.inputs.password(getIntent().getExtras().getString(getString(R.string.intent_password)));
 
     addSubscription(
-      presenter.outputs.tfaSuccess()
+      viewModel.outputs.tfaSuccess()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(__ -> onSuccess())
     );
 
     addSubscription(
-      presenter.outputs.formSubmitting()
+      viewModel.outputs.formSubmitting()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(this::setFormDisabled)
     );
 
     addSubscription(
-      presenter.outputs.formIsValid()
+      viewModel.outputs.formIsValid()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(this::setFormEnabled)
     );
@@ -76,13 +75,13 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
   }
 
   private Observable<String> errorMessages() {
-    return presenter.errors.tfaCodeMismatchError().map(ObjectUtils.coalesceWith(codeMismatchString))
-      .mergeWith(presenter.errors.genericTfaError().map(__ -> unableToLoginString));
+    return viewModel.errors.tfaCodeMismatchError().map(ObjectUtils.coalesceWith(codeMismatchString))
+      .mergeWith(viewModel.errors.genericTfaError().map(__ -> unableToLoginString));
   }
 
   @OnTextChanged(R.id.code)
   public void codeEditTextOnTextChanged(@NonNull final CharSequence code) {
-    presenter.inputs.code(code.toString());
+    viewModel.inputs.code(code.toString());
   }
 
   public boolean forward() {
@@ -91,12 +90,12 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorPresenter> {
 
   @OnClick(R.id.resend_button)
   public void resendButtonOnClick() {
-    presenter.inputs.resendClick();
+    viewModel.inputs.resendClick();
   }
 
   @OnClick(R.id.login_button)
   public void loginButtonOnClick() {
-    presenter.inputs.loginClick();
+    viewModel.inputs.loginClick();
   }
 
   @Override

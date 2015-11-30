@@ -11,10 +11,10 @@ import android.util.Pair;
 import com.jakewharton.rxbinding.support.v7.widget.RxRecyclerView;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.qualifiers.RequiresPresenter;
+import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.InputUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.presenters.SearchPresenter;
+import com.kickstarter.viewmodels.SearchViewModel;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.adapters.SearchAdapter;
 import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder;
@@ -26,8 +26,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 
-@RequiresPresenter(SearchPresenter.class)
-public final class SearchActivity extends BaseActivity<SearchPresenter> implements SearchAdapter.Delegate {
+@RequiresViewModel(SearchViewModel.class)
+public final class SearchActivity extends BaseActivity<SearchViewModel> implements SearchAdapter.Delegate {
   private SearchAdapter adapter;
   LinearLayoutManager layoutManager;
   @Bind(R.id.search_recycler_view) RecyclerView recyclerView;
@@ -49,11 +49,11 @@ public final class SearchActivity extends BaseActivity<SearchPresenter> implemen
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> InputUtils.hideKeyboard(this, getCurrentFocus())));
 
-    addSubscription(presenter.outputs.clearData()
+    addSubscription(viewModel.outputs.clearData()
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> adapter.clear()));
 
-    addSubscription(presenter.outputs.newData()
+    addSubscription(viewModel.outputs.newData()
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::loadParamsAndProjects));
   }

@@ -29,34 +29,34 @@ import auto.parcel.AutoParcel;
 public abstract class Project implements Parcelable {
   public abstract int backersCount();
   public abstract String blurb();
-  @Nullable public abstract Backing backing();
-  @Nullable public abstract Category category();
-  @Nullable public abstract Integer commentsCount();
+  public abstract @Nullable Backing backing();
+  public abstract @Nullable Category category();
+  public abstract @Nullable Integer commentsCount();
   public abstract String country(); // e.g.: US
   public abstract DateTime createdAt();
   public abstract User creator();
   public abstract String currency(); // e.g.: USD
   public abstract String currencySymbol(); // e.g.: $
   public abstract boolean currencyTrailingCode();
-  @Nullable public abstract DateTime deadline();
+  public abstract @Nullable DateTime deadline();
   public abstract float goal();
   public abstract long id(); // in the Kickstarter app, this is project.pid not project.id
   public abstract boolean isBacking();
   public abstract boolean isStarred();
-  @Nullable public abstract DateTime launchedAt();
-  @Nullable public abstract Location location();
+  public abstract @Nullable DateTime launchedAt();
+  public abstract @Nullable Location location();
   public abstract String name();
   public abstract float pledged();
-  @Nullable public abstract Photo photo();
-  @Nullable public abstract DateTime potdAt();
-  @Nullable public abstract String slug();
-  @State public abstract String state();
+  public abstract @Nullable Photo photo();
+  public abstract @Nullable DateTime potdAt();
+  public abstract @Nullable String slug();
+  public abstract @State String state();
   public abstract @Nullable DateTime stateChangedAt();
-  @Nullable public abstract Integer updatesCount();
-  @Nullable public abstract List<Reward> rewards();
+  public abstract @Nullable Integer updatesCount();
+  public abstract @Nullable List<Reward> rewards();
   public abstract DateTime updatedAt();
   public abstract Urls urls();
-  @Nullable public abstract Video video();
+  public abstract @Nullable Video video();
 
   @AutoParcel.Builder
   public abstract static class Builder {
@@ -131,15 +131,15 @@ public abstract class Project implements Parcelable {
     return NumberUtils.numberWithDelimiter(backersCount());
   }
 
-  public @NonNull String formattedCommentsCount() {
+  public @Nullable String formattedCommentsCount() {
     return NumberUtils.numberWithDelimiter(commentsCount());
   }
 
-  public @NonNull String formattedStateChangedAt() {
+  public @Nullable String formattedStateChangedAt() {
     return DateTimeUtils.relativeDateInWords(stateChangedAt(), false, true);
   }
 
-  public @NonNull String formattedUpdatesCount() {
+  public @Nullable String formattedUpdatesCount() {
     return NumberUtils.numberWithDelimiter(updatesCount());
   }
 
@@ -189,14 +189,14 @@ public abstract class Project implements Parcelable {
         return new AutoParcel_Project_Urls_Web.Builder();
       }
 
-      public String creatorBio() {
+      public @NonNull String creatorBio() {
         return Uri.parse(project())
           .buildUpon()
           .appendEncodedPath("/creator_bio")
           .toString();
       }
 
-      public String description() {
+      public @NonNull String description() {
         return Uri.parse(project())
           .buildUpon()
           .appendEncodedPath("/description")
@@ -305,7 +305,7 @@ public abstract class Project implements Parcelable {
    * @param  context an Android context.
    * @return         the String time remaining.
    */
-  public @NonNull String timeToGo(final Context context) {
+  public @NonNull String timeToGo(final @NonNull Context context) {
     return new StringBuilder(deadlineCountdown(context))
       .append(context.getString(R.string._to_go))
       .toString();
@@ -318,7 +318,7 @@ public abstract class Project implements Parcelable {
    * @param  context an Android context.
    * @return         the String time remaining.
    */
-  public @NonNull String deadlineCountdown(final Context context) {
+  public @NonNull String deadlineCountdown(final @NonNull Context context) {
     return new StringBuilder().append(deadlineCountdownValue())
       .append(" ")
       .append(deadlineCountdownUnit(context))
@@ -362,7 +362,7 @@ public abstract class Project implements Parcelable {
    * @param  context an Android context.
    * @return         the String unit.
    */
-  public @NonNull String deadlineCountdownUnit(final Context context) {
+  public @NonNull String deadlineCountdownUnit(final @NonNull Context context) {
     final Long seconds = timeInSecondsUntilDeadline();
     if (seconds <= 1.0 && seconds > 0.0) {
       return context.getString(R.string.secs);
@@ -393,7 +393,7 @@ public abstract class Project implements Parcelable {
     return Uri.parse(secureWebProjectUrl()).buildUpon().appendEncodedPath("pledge/edit").toString();
   }
 
-  public @NonNull String rewardSelectedUrl(final Reward reward) {
+  public @NonNull String rewardSelectedUrl(final @NonNull Reward reward) {
     return Uri.parse(newPledgeUrl())
       .buildUpon().scheme("https")
       .appendQueryParameter("backing[backer_reward_id]", String.valueOf(reward.id()))
@@ -411,7 +411,7 @@ public abstract class Project implements Parcelable {
   }
 
   @Override
-  public final boolean equals(@Nullable final Object o) {
+  public final boolean equals(final @Nullable Object o) {
     if (o != null && o instanceof Project) {
       final Project p = (Project)o;
       return id() == p.id();

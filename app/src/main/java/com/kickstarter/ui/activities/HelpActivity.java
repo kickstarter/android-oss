@@ -8,9 +8,9 @@ import android.support.annotation.Nullable;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.qualifiers.RequiresPresenter;
+import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.qualifiers.WebEndpoint;
-import com.kickstarter.presenters.HelpPresenter;
+import com.kickstarter.viewmodels.HelpViewModel;
 import com.kickstarter.ui.views.KSWebView;
 
 import java.lang.annotation.Retention;
@@ -21,8 +21,8 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-@RequiresPresenter(HelpPresenter.class)
-public final class HelpActivity extends BaseActivity<HelpPresenter> {
+@RequiresViewModel(HelpViewModel.class)
+public final class HelpActivity extends BaseActivity<HelpViewModel> {
   public static final int HELP_TYPE_TERMS = 0;
   public static final int HELP_TYPE_PRIVACY = 1;
   public static final int HELP_TYPE_HOW_IT_WORKS = 2;

@@ -18,11 +18,11 @@ import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.Paginator;
-import com.kickstarter.libs.qualifiers.RequiresPresenter;
+import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.StatusBarUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.presenters.DiscoveryPresenter;
+import com.kickstarter.viewmodels.DiscoveryViewModel;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.adapters.DiscoveryAdapter;
@@ -38,10 +38,9 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.BindDrawable;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
-@RequiresPresenter(DiscoveryPresenter.class)
-public final class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> implements DiscoveryAdapter.Delegate {
+@RequiresViewModel(DiscoveryViewModel.class)
+public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> implements DiscoveryAdapter.Delegate {
   DiscoveryAdapter adapter;
   LinearLayoutManager layoutManager;
   final List<Project> projects = new ArrayList<>();
@@ -72,10 +71,10 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> im
 
     final DiscoveryParams params = getIntent().getParcelableExtra(getString(R.string.intent_discovery_params));
     if (params != null) {
-      presenter.takeParams(params);
+      viewModel.takeParams(params);
     }
 
-    paginator = new Paginator(recyclerView, presenter.inputs::nextPage);
+    paginator = new Paginator(recyclerView, viewModel.inputs::nextPage);
   }
 
   @Override
@@ -85,7 +84,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> im
   }
 
   public void projectCardClick(@NonNull final ProjectCardViewHolder viewHolder, @NonNull final Project project) {
-    presenter.inputs.projectClick(project);
+    viewModel.inputs.projectClick(project);
   }
 
   public void loadProjects(@NonNull final List<Project> newProjects) {
@@ -127,7 +126,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryPresenter> im
     }
 
     final DiscoveryParams params = intent.getExtras().getParcelable(getString(R.string.intent_discovery_params));
-    presenter.takeParams(params);
+    viewModel.takeParams(params);
   }
 
   public void showBuildAlert(@NonNull final InternalBuildEnvelope envelope) {

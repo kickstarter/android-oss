@@ -20,13 +20,13 @@ import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.Paginator;
 import com.kickstarter.libs.SwipeRefresher;
-import com.kickstarter.libs.qualifiers.RequiresPresenter;
+import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
-import com.kickstarter.presenters.CommentFeedPresenter;
+import com.kickstarter.viewmodels.CommentFeedViewModel;
 import com.kickstarter.ui.adapters.CommentFeedAdapter;
 import com.kickstarter.ui.viewholders.EmptyCommentFeedViewHolder;
 import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
@@ -40,8 +40,8 @@ import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
-@RequiresPresenter(CommentFeedPresenter.class)
-public final class CommentFeedActivity extends BaseActivity<CommentFeedPresenter> implements CommentFeedAdapter.Delegate {
+@RequiresViewModel(CommentFeedViewModel.class)
+public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel> implements CommentFeedAdapter.Delegate {
   private CommentFeedAdapter adapter;
   private Project project;
   private Paginator paginator;
@@ -70,28 +70,28 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedPresenter
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    presenter.inputs.initialProject(project);
+    viewModel.inputs.initialProject(project);
 
-    paginator = new Paginator(recyclerView, presenter.inputs::nextPage);
-    swipeRefresher = new SwipeRefresher(this, swipeRefreshLayout, presenter.inputs::refresh, presenter.outputs::isFetchingComments);
+    paginator = new Paginator(recyclerView, viewModel.inputs::nextPage);
+    swipeRefresher = new SwipeRefresher(this, swipeRefreshLayout, viewModel.inputs::refresh, viewModel.outputs::isFetchingComments);
 
     toastMessages()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(ViewUtils.showToast(this));
 
-    presenter.outputs.showCommentButton()
+    viewModel.outputs.showCommentButton()
       .map(show -> show ? View.VISIBLE : View.GONE)
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(commentButtonTextView::setVisibility);
 
-    presenter.outputs.showCommentDialog()
+    viewModel.outputs.showCommentDialog()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> showCommentDialog());
 
-    presenter.outputs.commentPosted()
+    viewModel.outputs.commentPosted()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> dismissCommentDialog());
@@ -137,14 +137,14 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedPresenter
         public void beforeTextChanged(@NonNull final CharSequence s, final int start, final int count, final int after) {}
         public void onTextChanged(@NonNull final CharSequence s, final int start, final int before, final int count) {}
         public void afterTextChanged(@NonNull final Editable s) {
-          presenter.inputs.commentBody(s.toString());
+          viewModel.inputs.commentBody(s.toString());
         }
       });
     }
 
     if (postCommentButton != null && commentBodyEditText != null) {
       postCommentButton.setOnClickListener((@NonNull final View v) -> {
-        presenter.postClick(commentBodyEditText.getText().toString());
+        viewModel.postClick(commentBodyEditText.getText().toString());
       });
     }
   }
@@ -186,12 +186,12 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedPresenter
     if (resultCode != RESULT_OK) {
       return;
     }
-    presenter.takeLoginSuccess();
+    viewModel.takeLoginSuccess();
   }
 
   private Observable<String> toastMessages() {
-    return presenter.errors.postCommentError()
+    return viewModel.errors.postCommentError()
       .map(ObjectUtils.coalesceWith(postCommentErrorString))
-      .mergeWith(presenter.outputs.commentPosted().map(__ -> commentPostedString));
+      .mergeWith(viewModel.outputs.commentPosted().map(__ -> commentPostedString));
   }
 }

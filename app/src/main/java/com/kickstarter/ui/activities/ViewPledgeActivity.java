@@ -12,20 +12,19 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.Money;
-import com.kickstarter.libs.qualifiers.RequiresPresenter;
+import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Project;
-import com.kickstarter.presenters.ViewPledgePresenter;
+import com.kickstarter.viewmodels.ViewPledgeViewModel;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
-@RequiresPresenter(ViewPledgePresenter.class)
-public final class ViewPledgeActivity extends BaseActivity<ViewPledgePresenter> {
+@RequiresViewModel(ViewPledgeViewModel.class)
+public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel> {
   public @Bind(R.id.avatar) ImageView avatarImageView;
   public @Bind(R.id.name) TextView nameTextView;
   public @Bind(R.id.sequence) TextView sequenceTextView;
@@ -45,7 +44,7 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgePresenter> 
 
     final Intent intent = getIntent();
     final Project project = intent.getParcelableExtra(getString(R.string.intent_project));
-    presenter.initialize(project);
+    viewModel.initialize(project);
   }
 
   public void show(@NonNull final Backing backing) {

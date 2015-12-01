@@ -17,7 +17,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.Paginator;
+import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.StatusBarUtils;
@@ -44,7 +44,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
   DiscoveryAdapter adapter;
   LinearLayoutManager layoutManager;
   final List<Project> projects = new ArrayList<>();
-  private Paginator paginator;
+  private RecyclerViewPaginator recyclerViewPaginator;
 
   @Inject ApplicationContainer applicationContainer;
 
@@ -74,13 +74,13 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
       viewModel.takeParams(params);
     }
 
-    paginator = new Paginator(recyclerView, viewModel.inputs::nextPage);
+    recyclerViewPaginator = new RecyclerViewPaginator(recyclerView, viewModel.inputs::nextPage);
   }
 
   @Override
   protected void onDestroy() {
     super.onDestroy();
-    paginator.stop();
+    recyclerViewPaginator.stop();
   }
 
   public void projectCardClick(@NonNull final ProjectCardViewHolder viewHolder, @NonNull final Project project) {

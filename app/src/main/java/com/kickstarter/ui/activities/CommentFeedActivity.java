@@ -18,7 +18,7 @@ import android.widget.TextView;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.Paginator;
+import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.SwipeRefresher;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ObjectUtils;
@@ -44,7 +44,7 @@ import rx.android.schedulers.AndroidSchedulers;
 public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel> implements CommentFeedAdapter.Delegate {
   private CommentFeedAdapter adapter;
   private Project project;
-  private Paginator paginator;
+  private RecyclerViewPaginator recyclerViewPaginator;
   private SwipeRefresher swipeRefresher;
   @Nullable private AlertDialog commentDialog;
 
@@ -72,7 +72,7 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
 
     viewModel.inputs.initialProject(project);
 
-    paginator = new Paginator(recyclerView, viewModel.inputs::nextPage);
+    recyclerViewPaginator = new RecyclerViewPaginator(recyclerView, viewModel.inputs::nextPage);
     swipeRefresher = new SwipeRefresher(this, swipeRefreshLayout, viewModel.inputs::refresh, viewModel.outputs::isFetchingComments);
 
     toastMessages()

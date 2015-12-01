@@ -13,6 +13,7 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.Money;
 import com.kickstarter.libs.transformations.CircleTransformation;
+import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
@@ -194,23 +195,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
         .transform(new CircleTransformation())
         .into(friendBackingAvatarImageView);
 
-      // set correct friend backing strings
-      if (project.friends().size() == 1) {
-        friendBackingMessageTextView.setText(String.format(oneFriendBackerString,
-          project.friends().get(0).firstName())
-        );
-      } else if (project.friends().size() == 2) {
-        friendBackingMessageTextView.setText(String.format(twoFriendBackersString,
-            project.friends().get(0).firstName(),
-            project.friends().get(1).firstName())
-        );
-      } else {
-        friendBackingMessageTextView.setText(String.format(manyFriendBackersString,
-            project.friends().get(0).firstName(),
-            project.friends().get(1).firstName(),
-            project.friends().size())
-        );
-      }
+      friendBackingMessageTextView.setText(StringUtils.friendBackingMetadataText(view.getContext(), project.friends()));
     }
 
     else if (project.isStarred()) {

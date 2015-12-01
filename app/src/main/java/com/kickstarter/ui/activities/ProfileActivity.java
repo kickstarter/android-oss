@@ -14,6 +14,7 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.Paginator;
 import com.kickstarter.libs.qualifiers.RequiresPresenter;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.models.Project;
@@ -36,18 +37,15 @@ import rx.android.schedulers.AndroidSchedulers;
 public final class ProfileActivity extends BaseActivity<ProfilePresenter> implements ProfileAdapter.Delegate {
   private ProfileAdapter adapter;
   private final List<Project> projects = new ArrayList<>();
-  //private Paginator paginator; // TODO pagination
+  private Paginator paginator;
 
   protected @Bind(R.id.avatar) ImageView avatarImageView;
   protected @Bind(R.id.user_name) TextView userNameTextView;
   protected @Bind(R.id.created_num) TextView createdNumTextView;
   protected @Bind(R.id.backed_num) TextView backedNumTextView;
-  protected @Bind(R.id.followers_num) TextView followersNumTextView;
   protected @Bind(R.id.created) TextView createdTextView;
   protected @Bind(R.id.backed) TextView backedTextView;
-  protected @Bind(R.id.followers) TextView followersTextView;
   protected @Bind(R.id.divider_left) View dividerLeftView;
-  protected @Bind(R.id.divider_right) View dividerRightView;
   public @Bind(R.id.recycler_view) RecyclerView recyclerView;
 
   @Inject CurrentUser currentUser;
@@ -62,6 +60,8 @@ public final class ProfileActivity extends BaseActivity<ProfilePresenter> implem
     adapter = new ProfileAdapter(projects, this);
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+    //paginator = new Paginator(recyclerView, presenter.inputs::nextPage);
 
     presenter.outputs.user()
       .compose(bindToLifecycle())
@@ -108,18 +108,8 @@ public final class ProfileActivity extends BaseActivity<ProfilePresenter> implem
     if (backedNum == null || backedNum == 0) {
       backedTextView.setVisibility(View.GONE);
       backedNumTextView.setVisibility(View.GONE);
-      dividerRightView.setVisibility(View.GONE);
     } else {
       backedNumTextView.setText(backedNum.toString());
-    }
-
-    final Integer followersNum = 0;
-    if (followersNum == null || followersNum == 0) {
-      followersTextView.setVisibility(View.GONE);
-      followersNumTextView.setVisibility(View.GONE);
-      dividerRightView.setVisibility(View.GONE);
-    } else {
-      followersNumTextView.setText(followersNum.toString());
     }
   }
 

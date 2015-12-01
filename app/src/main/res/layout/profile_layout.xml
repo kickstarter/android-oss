@@ -62,7 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingRight="@dimen/grid_1_half"
-            android:text="@string/Created"
+            android:text="@string/Created_projects"
             android:textColor="@color/text_secondary" />
 
           <TextView
@@ -76,7 +76,7 @@
             android:id="@+id/divider_left"
             android:background="@color/black_alpha_10"
             android:layout_width="1dp"
-            android:layout_height="15dp"
+            android:layout_height="16dp"
             android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
             android:layout_marginTop="3dp"/>
@@ -87,37 +87,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingRight="@dimen/grid_1_half"
-            android:text="@string/Backed"
+            android:text="@string/Backed_projects"
             android:textColor="@color/text_secondary" />
 
           <TextView
             style="@style/Subhead"
             android:id="@+id/backed_num"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0" />
-
-          <View
-            android:id="@+id/divider_right"
-            android:background="@color/black_alpha_10"
-            android:layout_width="1dp"
-            android:layout_height="15dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginTop="3dp" />
-
-          <TextView
-            style="@style/Subhead"
-            android:id="@+id/followers"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingRight="@dimen/grid_1_half"
-            android:text="@string/Followers"
-            android:textColor="@color/text_secondary" />
-
-          <TextView
-            style="@style/Subhead"
-            android:id="@+id/followers_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0" />

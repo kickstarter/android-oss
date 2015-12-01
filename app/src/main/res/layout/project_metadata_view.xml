@@ -8,8 +8,8 @@
   android:elevation="3dp"
   android:layout_marginStart="@dimen/grid_2"
   android:layout_marginLeft="@dimen/grid_2"
-  android:layout_marginRight="@dimen/grid_3"
-  android:layout_marginEnd="@dimen/grid_3"
+  android:layout_marginRight="@dimen/grid_5"
+  android:layout_marginEnd="@dimen/grid_5"
   android:layout_alignStart="@+id/project_card_view"
   android:layout_alignLeft="@+id/project_card_view"
   android:layout_marginTop="@dimen/grid_1"
@@ -65,6 +65,7 @@
     <TextView
       android:id="@+id/friend_backing_message"
       android:includeFontPadding="false"
+      android:singleLine="true"
       android:ellipsize="end"
       style="@style/BodyPrimaryMedium"
       android:layout_gravity="center_vertical"

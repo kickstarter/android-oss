@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -42,6 +43,11 @@ public final class ProfileActivity extends BaseActivity<ProfilePresenter> implem
   protected @Bind(R.id.created_num) TextView createdNumTextView;
   protected @Bind(R.id.backed_num) TextView backedNumTextView;
   protected @Bind(R.id.followers_num) TextView followersNumTextView;
+  protected @Bind(R.id.created) TextView createdTextView;
+  protected @Bind(R.id.backed) TextView backedTextView;
+  protected @Bind(R.id.followers) TextView followersTextView;
+  protected @Bind(R.id.divider_left) View dividerLeftView;
+  protected @Bind(R.id.divider_right) View dividerRightView;
   public @Bind(R.id.recycler_view) RecyclerView recyclerView;
 
   @Inject CurrentUser currentUser;
@@ -90,13 +96,30 @@ public final class ProfileActivity extends BaseActivity<ProfilePresenter> implem
     userNameTextView.setText(user.name());
 
     final Integer createdNum = user.launchedProjectsCount();
-    if (createdNum != null) {
+    if (createdNum == null || createdNum == 0) {
+      createdTextView.setVisibility(View.GONE);
+      createdNumTextView.setVisibility(View.GONE);
+      dividerLeftView.setVisibility(View.GONE);
+    } else {
       createdNumTextView.setText(createdNum.toString());
     }
 
     final Integer backedNum = user.backedProjectsCount();
-    if (backedNum != null) {
+    if (backedNum == null || backedNum == 0) {
+      backedTextView.setVisibility(View.GONE);
+      backedNumTextView.setVisibility(View.GONE);
+      dividerRightView.setVisibility(View.GONE);
+    } else {
       backedNumTextView.setText(backedNum.toString());
+    }
+
+    final Integer followersNum = 0;
+    if (followersNum == null || followersNum == 0) {
+      followersTextView.setVisibility(View.GONE);
+      followersNumTextView.setVisibility(View.GONE);
+      dividerRightView.setVisibility(View.GONE);
+    } else {
+      followersNumTextView.setText(followersNum.toString());
     }
   }
 

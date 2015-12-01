@@ -58,7 +58,7 @@
 
           <TextView
             style="@style/Subhead"
-            android:gravity="center_horizontal"
+            android:id="@+id/created"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingRight="@dimen/grid_1_half"
@@ -68,22 +68,22 @@
           <TextView
             style="@style/Subhead"
             android:id="@+id/created_num"
-            android:gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingRight="12dp"
             android:text="0" />
 
           <View
+            android:id="@+id/divider_left"
             android:background="@color/black_alpha_10"
             android:layout_width="1dp"
             android:layout_height="15dp"
+            android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
             android:layout_marginTop="3dp"/>
 
           <TextView
             style="@style/Subhead"
-            android:gravity="center_horizontal"
+            android:id="@+id/backed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingRight="@dimen/grid_1_half"
@@ -93,22 +93,22 @@
           <TextView
             style="@style/Subhead"
             android:id="@+id/backed_num"
-            android:gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingRight="12dp"
             android:text="0" />
 
           <View
+            android:id="@+id/divider_right"
             android:background="@color/black_alpha_10"
             android:layout_width="1dp"
             android:layout_height="15dp"
+            android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
-            android:layout_marginTop="3dp"/>
+            android:layout_marginTop="3dp" />
 
           <TextView
             style="@style/Subhead"
-            android:gravity="center_horizontal"
+            android:id="@+id/followers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingRight="@dimen/grid_1_half"
@@ -118,7 +118,6 @@
           <TextView
             style="@style/Subhead"
             android:id="@+id/followers_num"
-            android:gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0" />

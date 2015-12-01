@@ -81,10 +81,6 @@ public final class ApiClient {
     return service.fetchActivities(params.categoryParams(), params.paginationParams());
   }
 
-  public Observable<DiscoverEnvelope> fetchBackedProjects(final int count) {
-    return service.fetchBackedProjects(count);
-  }
-
   public Observable<List<Category>> fetchCategories() {
     return service.fetchCategories().map(CategoriesEnvelope::categories);
   }

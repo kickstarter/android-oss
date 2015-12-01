@@ -6,18 +6,17 @@
   android:clipToPadding="false"
   android:clipChildren="false"
   android:elevation="3dp"
-  android:layout_marginStart="@dimen/grid_2"
-  android:layout_marginLeft="@dimen/grid_2"
+  android:layout_marginTop="@dimen/grid_1"
+  android:layout_marginStart="@dimen/grid_1"
+  android:layout_marginLeft="@dimen/grid_1"
   android:layout_marginRight="@dimen/grid_5"
   android:layout_marginEnd="@dimen/grid_5"
   android:layout_alignStart="@+id/project_card_view"
   android:layout_alignLeft="@+id/project_card_view"
-  android:layout_marginTop="@dimen/grid_1"
   android:paddingLeft="@dimen/grid_1"
   android:paddingRight="@dimen/grid_1"
-  android:paddingTop="@dimen/grid_1"
-  android:paddingBottom="@dimen/grid_1"
   android:background="@color/white"
+  android:gravity="center_vertical"
   android:layout_width="wrap_content"
   android:layout_height="@dimen/grid_4">
 
@@ -30,9 +29,12 @@
 
     <com.kickstarter.ui.views.IconTextView
       app:iconType="ss_kickstarter"
+      android:paddingTop="@dimen/grid_1_half"
       android:text="@string/backer_icon"
       android:textColor="@color/green"
-      android:layout_marginRight="@dimen/grid_1"
+      android:gravity="center_vertical"
+      android:layout_marginRight="@dimen/grid_1_half"
+      android:layout_marginEnd="@dimen/grid_1_half"
       android:textSize="@dimen/subhead"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
@@ -40,7 +42,7 @@
     <TextView
       style="@style/BodyPrimaryMedium"
       android:includeFontPadding="false"
-      android:layout_gravity="center_vertical"
+      android:gravity="center_vertical"
       android:text="@string/Youre_a_backer"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
@@ -57,8 +59,8 @@
     <ImageView
       android:id="@+id/friend_backing_avatar"
       android:layout_gravity="center_vertical"
-      android:layout_marginRight="@dimen/grid_1"
-      android:layout_marginEnd="@dimen/grid_1"
+      android:layout_marginRight="@dimen/grid_1_half"
+      android:layout_marginEnd="@dimen/grid_1_half"
       android:layout_width="@dimen/grid_3"
       android:layout_height="@dimen/grid_3" />
 
@@ -86,8 +88,8 @@
       android:layout_gravity="center_vertical"
       android:textSize="@dimen/subhead"
       android:textColor="@color/green"
-      android:layout_marginRight="@dimen/grid_1"
-      android:layout_marginEnd="@dimen/grid_1"
+      android:layout_marginRight="@dimen/grid_1_half"
+      android:layout_marginEnd="@dimen/grid_1_half"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
@@ -105,18 +107,16 @@
     android:id="@+id/potd_group"
     android:orientation="horizontal"
     android:visibility="gone"
-    android:layout_marginRight="@dimen/grid_2"
-    android:layout_marginEnd="@dimen/grid_2"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
     <com.kickstarter.ui.views.IconTextView
       android:id="@+id/potd_icon"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_gravity="center_vertical"
-      android:layout_marginRight="@dimen/grid_1"
-      android:layout_marginEnd="@dimen/grid_1"
+      android:layout_height="match_parent"
+      android:gravity="center_vertical"
+      android:layout_marginRight="@dimen/grid_1_half"
+      android:layout_marginEnd="@dimen/grid_1_half"
       android:text="@string/favorite_icon"
       android:textSize="@dimen/subhead"
       android:textColor="@color/green" />
@@ -125,9 +125,8 @@
       android:id="@+id/potd"
       android:includeFontPadding="false"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_gravity="center_vertical"
-      android:paddingLeft="@dimen/card_padding_action_half"
+      android:layout_height="match_parent"
+      android:gravity="center_vertical"
       android:text="@string/project_of_the_day"
       style="@style/BodyPrimaryMedium" />
 
@@ -137,29 +136,27 @@
     android:id="@+id/featured_group"
     android:orientation="horizontal"
     android:visibility="gone"
-    android:clipChildren="false"
-    android:clipToPadding="false"
-    android:layout_marginRight="@dimen/grid_2"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
     <com.kickstarter.ui.views.IconTextView
       app:iconType="ss_kickstarter"
       style="@style/Subhead"
-      android:layout_gravity="center"
+      android:textColor="@color/green"
+      android:gravity="center_vertical"
       android:text="@string/kickstarter_icon"
+      android:paddingTop="@dimen/grid_1_half"
       android:layout_marginRight="@dimen/grid_1_half"
+      android:layout_marginEnd="@dimen/grid_1_half"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content" />
+      android:layout_height="match_parent" />
 
     <TextView
       android:id="@+id/featured"
-      android:text="Featured in Technology"
       android:includeFontPadding="false"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_gravity="center_vertical"
-      android:paddingLeft="@dimen/card_padding_action_half"
+      android:layout_height="match_parent"
+      android:gravity="center_vertical"
       style="@style/BodyPrimaryMedium" />
 
   </LinearLayout>

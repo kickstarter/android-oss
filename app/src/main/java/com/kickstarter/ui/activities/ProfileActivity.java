@@ -95,7 +95,7 @@ public final class ProfileActivity extends BaseActivity<ProfilePresenter> implem
 
     userNameTextView.setText(user.name());
 
-    final Integer createdNum = user.launchedProjectsCount();
+    final Integer createdNum = user.createdProjectsCount();
     if (createdNum == null || createdNum == 0) {
       createdTextView.setVisibility(View.GONE);
       createdNumTextView.setVisibility(View.GONE);

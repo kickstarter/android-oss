@@ -25,7 +25,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/grid_2">
+        android:paddingBottom="@dimen/grid_3">
 
         <ImageView
           android:id="@+id/avatar"

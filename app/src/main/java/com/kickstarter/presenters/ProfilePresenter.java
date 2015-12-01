@@ -29,6 +29,10 @@ public final class ProfilePresenter extends Presenter<ProfileActivity> implement
   @Inject CurrentUser currentUser;
 
   // INPUTS
+  private final PublishSubject<Void> nextPage = PublishSubject.create();
+  public void nextPage() {
+    nextPage.onNext(null);
+  }
 
   // OUTPUTS
   private final PublishSubject<List<Project>> projects = PublishSubject.create();
@@ -57,5 +61,7 @@ public final class ProfilePresenter extends Presenter<ProfileActivity> implement
         .compose(Transformers.combineLatestPair(backedProjects))
         .subscribe(vp -> projects.onNext(vp.second))
     );
+
+    // TODO: PAGINATION
   }
 }

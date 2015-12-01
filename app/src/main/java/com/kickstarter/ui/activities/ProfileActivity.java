@@ -61,7 +61,7 @@ public final class ProfileActivity extends BaseActivity<ProfilePresenter> implem
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    //paginator = new Paginator(recyclerView, presenter.inputs::nextPage);
+    paginator = new Paginator(recyclerView, presenter.inputs::nextPage);
 
     presenter.outputs.user()
       .compose(bindToLifecycle())

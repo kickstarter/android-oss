@@ -9,7 +9,7 @@
   android:background="@color/white"
   android:elevation="0dp"
   android:gravity="top"
-  android:layout_height="100dp"
+  android:layout_height="80dp"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
   app:layout_collapseMode="pin">

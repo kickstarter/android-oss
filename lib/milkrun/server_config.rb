@@ -31,6 +31,10 @@ module Milkrun
       URI.parse("https://***REMOVED***/v1/app/android/config?client_id=***REMOVED***&all_locales=true")
     end
 
+    def local_url
+      URI.parse("http://api.ksr.dev/v1/app/android/config?client_id=***REMOVED***&all_locales=true")
+    end
+
     def config_path
       File.expand_path(File.join(File.dirname(__FILE__), "../../app/src/main/assets/json/server-config.json"))
     end

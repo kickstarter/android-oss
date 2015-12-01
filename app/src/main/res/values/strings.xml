@@ -77,6 +77,7 @@
     <item>user_friends</item>
     <item>email</item>
   </string-array>
+  <string name="Featured_in_">Featured in %1$s</string>
   <string name="Find_friends">Find friends</string>
   <string name="Follow">Follow</string>
   <string name="Forgot_your_password"><u>Forgot your password?</u></string>
@@ -255,5 +256,5 @@
   <string name="font_family_medium">sans-serif-medium</string>
 
   <!-- Koala strings -->
-  <string name="koala_endpoint">https://***REMOVED***/native/track</string>
+  <string name="koala_endpoint">***REMOVED***</string>
 </resources>

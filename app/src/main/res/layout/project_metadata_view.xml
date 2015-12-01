@@ -103,7 +103,7 @@
   <LinearLayout
     android:id="@+id/potd_group"
     android:orientation="horizontal"
-    android:visibility="visible"
+    android:visibility="gone"
     android:layout_marginRight="@dimen/grid_2"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
@@ -126,6 +126,35 @@
       android:layout_gravity="center_vertical"
       android:paddingLeft="@dimen/card_padding_action_half"
       android:text="@string/project_of_the_day"
+      style="@style/BodyPrimaryMedium" />
+
+  </LinearLayout>
+
+  <LinearLayout
+    android:id="@+id/featured_group"
+    android:orientation="horizontal"
+    android:visibility="gone"
+    android:layout_marginRight="@dimen/grid_2"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <com.kickstarter.ui.views.IconTextView
+      app:iconType="ss_kickstarter"
+      android:id="@+id/featured_icon"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:paddingRight="@dimen/card_padding_action_half"
+      android:text="K"
+      style="@style/Subhead"/>
+
+    <TextView
+      android:id="@+id/featured"
+      android:text="Featured in Technology"
+      android:includeFontPadding="false"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_vertical"
+      android:paddingLeft="@dimen/card_padding_action_half"
       style="@style/BodyPrimaryMedium" />
 
   </LinearLayout>

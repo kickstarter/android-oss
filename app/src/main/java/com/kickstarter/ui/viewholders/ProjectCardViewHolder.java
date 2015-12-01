@@ -29,6 +29,8 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.category) TextView categoryTextView;
   protected @Bind(R.id.deadline_countdown) TextView deadlineCountdownTextView;
   protected @Bind(R.id.deadline_countdown_unit) TextView deadlineCountdownUnitTextView;
+  protected @Bind(R.id.featured) TextView featuredTextView;
+  protected @Bind(R.id.featured_group) ViewGroup featuredViewGroup;
   protected @Bind(R.id.friend_backing_avatar) ImageView friendBackingAvatarImageView;
   protected @Bind(R.id.friend_backing_message) TextView friendBackingMessageTextView;
   protected @Bind(R.id.friend_backing_group) ViewGroup friendBackingViewGroup;
@@ -51,6 +53,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @BindString(R.string._and_are_backers) String twoFriendBackersString;
   protected @BindString(R.string._and_more_are_backers) String manyFriendBackersString;
   protected @BindString(R.string.backers) String backersString;
+  protected @BindString(R.string.Featured_in_) String featuredInString;
   protected @BindString(R.string.Funding_canceled) String fundingCanceledString;
   protected @BindString(R.string.Funding_suspended_) String fundingSuspendedString;
   protected @BindString(R.string.Funding_unsuccessful_) String fundingUnsuccessfulString;
@@ -147,7 +150,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     }
   }
 
-  // only show one of either backer, social, starred, potd
+  // only show one of either backer, social, starred, potd, or featured
   public void setProjectMetadataView() {
     if (project.isBacking()) {
       projectMetadataViewGroup.setVisibility(View.VISIBLE);
@@ -156,6 +159,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       friendBackingViewGroup.setVisibility(View.GONE);
       starredViewGroup.setVisibility(View.GONE);
       potdViewGroup.setVisibility(View.GONE);
+      featuredViewGroup.setVisibility(View.GONE);
     }
 
     else if (project.isFriendBacking()) {
@@ -165,6 +169,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       backingViewGroup.setVisibility(View.GONE);
       starredViewGroup.setVisibility(View.GONE);
       potdViewGroup.setVisibility(View.GONE);
+      featuredViewGroup.setVisibility(View.GONE);
 
       Picasso.with(view.getContext()).load(project.friends().get(0).avatar()
         .small())
@@ -197,6 +202,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       backingViewGroup.setVisibility(View.GONE);
       friendBackingViewGroup.setVisibility(View.GONE);
       potdViewGroup.setVisibility(View.GONE);
+      featuredViewGroup.setVisibility(View.GONE);
     }
 
     else if (project.isPotdToday()) {
@@ -206,6 +212,18 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       backingViewGroup.setVisibility(View.GONE);
       friendBackingViewGroup.setVisibility(View.GONE);
       starredViewGroup.setVisibility(View.GONE);
+      featuredViewGroup.setVisibility(View.GONE);
+    }
+
+    else if (project.isFeaturedToday()) {
+      projectMetadataViewGroup.setVisibility(View.VISIBLE);
+      featuredViewGroup.setVisibility(View.VISIBLE);
+      featuredTextView.setText(String.format(featuredInString, project.category().baseImageName()));
+
+      backingViewGroup.setVisibility(View.GONE);
+      friendBackingViewGroup.setVisibility(View.GONE);
+      starredViewGroup.setVisibility(View.GONE);
+      potdViewGroup.setVisibility(View.GONE);
     }
 
     else {

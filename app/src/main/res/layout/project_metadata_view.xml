@@ -32,7 +32,7 @@
       android:paddingTop="@dimen/grid_1_half"
       android:text="@string/backer_icon"
       android:textColor="@color/green"
-      android:gravity="center_vertical"
+      android:layout_gravity="center_vertical"
       android:layout_marginRight="@dimen/grid_1_half"
       android:layout_marginEnd="@dimen/grid_1_half"
       android:textSize="@dimen/subhead"
@@ -42,7 +42,7 @@
     <TextView
       style="@style/BodyPrimaryMedium"
       android:includeFontPadding="false"
-      android:gravity="center_vertical"
+      android:layout_gravity="center_vertical"
       android:text="@string/Youre_a_backer"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />

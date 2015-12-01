@@ -1,6 +1,7 @@
 package com.kickstarter.models;
 
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.kickstarter.libs.qualifiers.AutoGson;
@@ -32,11 +33,11 @@ public abstract class User implements Parcelable {
     return new AutoParcel_User.Builder();
   }
 
-  public String firstName() {
+  public @NonNull String firstName() {
     return name().split(" ")[0];
   }
 
-  public String param() {
+  public @NonNull String param() {
     return String.valueOf(this.id());
   }
 

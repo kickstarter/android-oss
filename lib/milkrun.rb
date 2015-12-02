@@ -14,7 +14,6 @@ require 'milkrun/changelog'
 require 'milkrun/git'
 require 'milkrun/hockey_app'
 require 'milkrun/s3_package'
-require 'milkrun/server_config'
 require 'milkrun/version_code'
 require 'milkrun/version_name'
 

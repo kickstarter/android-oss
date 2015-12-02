@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+#
+require 'net/http'
+require 'uri'
+require 'json'
+
+def config_path
+  File.expand_path(File.join(File.dirname(__FILE__), "../app/src/main/assets/json/server-config.json"))
+end
+
+def url
+  URI.parse("https://***REMOVED***/v1/app/android/config?client_id=***REMOVED***&all_locales=true")
+end
+
+def local_url
+  URI.parse("http://api.ksr.dev/v1/app/android/config?client_id=***REMOVED***&all_locales=true")
+end
+
+if __FILE__ == $0
+  response = Net::HTTP.get_response(url)
+
+  if !response.is_a?(Net::HTTPSuccess)
+    puts "Response from API: #{response.body}"
+    raise "Couldn't download config from server!"
+  end
+
+  json = JSON.parse(response.body)
+  config = JSON.pretty_generate(json)
+
+  File.open(config_path, "w") do |file|
+    file.write(config)
+  end
+
+  puts "Updated config from server"
+end

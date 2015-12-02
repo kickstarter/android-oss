@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.utils.DiscoveryUtils;
@@ -21,6 +22,7 @@ import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.LoginToutActivity;
 import com.kickstarter.ui.activities.SearchActivity;
+import com.kickstarter.ui.activities.SettingsActivity;
 
 import javax.inject.Inject;
 
@@ -108,9 +110,15 @@ public final class DiscoveryToolbar extends KSToolbar {
       popup.getMenuInflater().inflate(R.menu.current_user_menu, popup.getMenu());
 
       popup.setOnMenuItemClickListener(item -> {
+        final Context context = v.getContext();
+        final BaseActivity baseActivity = (BaseActivity) context;
+
         switch (item.getItemId()) {
+          case R.id.settings:
+            final Intent settingsIntent = new Intent(context, SettingsActivity.class);
+            context.startActivity(settingsIntent);
+            break;
           case R.id.logout:
-            final Context context = v.getContext();
             logout.execute();
             final Intent intent = new Intent(context, DiscoveryActivity.class)
               .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

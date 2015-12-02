@@ -80,9 +80,10 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
     final ApiPaginator<Activity, ActivityEnvelope, Void> paginator = ApiPaginator.<Activity, ActivityEnvelope, Void>builder()
       .nextPage(nextPage)
       .startOverWith(refresh)
-      .loadWithNextUrl(env -> env.urls().api().moreActivities(), client::fetchActivities)
       .envelopeToListOfData(ActivityEnvelope::activities)
+      .envelopeToMoreUrl(env -> env.urls().api().moreActivities())
       .loadWithParams(__ -> client.fetchActivities())
+      .loadWithPaginationPath(client::fetchActivities)
       .build();
 
     paginator.paginatedData.subscribe(activities);

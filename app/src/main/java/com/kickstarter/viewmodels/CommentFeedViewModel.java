@@ -94,8 +94,9 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
         .nextPage(nextPage)
         .startOverWith(refresh.compose(Transformers.ignoreValues()))
         .envelopeToListOfData(CommentsEnvelope::comments)
-        .loadWithNextUrl(env -> env.urls().api().moreComments(), client::fetchProjectComments)
+        .envelopeToMoreUrl(env -> env.urls().api().moreComments())
         .loadWithParams(__ -> initialProject.take(1).flatMap(client::fetchProjectComments))
+        .loadWithPaginationPath(client::fetchProjectComments)
         .build();
 
     final Observable<List<Comment>> comments = paginator.paginatedData.share();

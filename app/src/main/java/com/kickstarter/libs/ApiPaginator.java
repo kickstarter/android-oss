@@ -1,7 +1,6 @@
 package com.kickstarter.libs;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.libs.rx.transformers.Transformers;
@@ -29,9 +28,8 @@ public final class ApiPaginator<Data, Envelope, Params> {
   private final @NonNull Observable<Params> startOverWith;
   private final @NonNull Func1<Envelope, List<Data>> envelopeToListOfData;
   private final @NonNull Func1<Params, Observable<Envelope>> loadWithParams;
-  private final @Nullable Func1<Params, Params> nextPageParams;
-  private final @Nullable Func1<String, Observable<Envelope>> loadWithPaginationPath;
-  private final @Nullable Func1<Envelope, String> envelopeToMoreUrl;
+  private final @NonNull Func1<String, Observable<Envelope>> loadWithPaginationPath;
+  private final @NonNull Func1<Envelope, String> envelopeToMoreUrl;
   private final @NonNull Func1<List<Data>, List<Data>> pageTransformation;
   private final boolean clearWhenStartingOver;
   private final @NonNull Func2<List<Data>, List<Data>, List<Data>> concater;
@@ -46,31 +44,21 @@ public final class ApiPaginator<Data, Envelope, Params> {
 
   private ApiPaginator(
     final @NonNull Observable<Void> nextPage,
-    final @Nullable Observable<Params> startOverWith,
+    final @NonNull Observable<Params> startOverWith,
     final @NonNull Func1<Envelope, List<Data>> envelopeToListOfData,
     final @NonNull Func1<Params, Observable<Envelope>> loadWithParams,
-    final @Nullable Func1<Params, Params> nextPageParams,
-    final @Nullable Func1<String, Observable<Envelope>> loadWithPaginationPath,
-    final @Nullable Func1<Envelope, String> envelopeToMoreUrl,
-    final @Nullable Func1<List<Data>, List<Data>> pageTransformation,
+    final @NonNull Func1<String, Observable<Envelope>> loadWithPaginationPath,
+    final @NonNull Func1<Envelope, String> envelopeToMoreUrl,
+    final @NonNull Func1<List<Data>, List<Data>> pageTransformation,
     final boolean clearWhenStartingOver,
     final @NonNull Func2<List<Data>, List<Data>, List<Data>> concater
   ) {
     this.nextPage = nextPage;
-    if (startOverWith != null) {
-      this.startOverWith = startOverWith;
-    } else {
-      this.startOverWith = Observable.just(null);
-    }
+    this.startOverWith = startOverWith;
     this.envelopeToListOfData = envelopeToListOfData;
     this.loadWithParams = loadWithParams;
-    this.nextPageParams = nextPageParams;
     this.envelopeToMoreUrl = envelopeToMoreUrl;
-    if (pageTransformation != null) {
-      this.pageTransformation = pageTransformation;
-    } else {
-      this.pageTransformation = x -> x;
-    }
+    this.pageTransformation = pageTransformation;
     this.loadWithPaginationPath = loadWithPaginationPath;
     this.clearWhenStartingOver = clearWhenStartingOver;
     this.concater = concater;
@@ -92,7 +80,7 @@ public final class ApiPaginator<Data, Envelope, Params> {
     private Func2<List<Data>, List<Data>, List<Data>> concater = ListUtils::concat;
 
     /**
-     * An observable that emits whenever a new page of data should be loaded.
+     * [Required] An observable that emits whenever a new page of data should be loaded.
      */
     public @NonNull Builder<Data, Envelope, Params> nextPage(final @NonNull Observable<Void> nextPage) {
       this.nextPage = nextPage;
@@ -100,7 +88,7 @@ public final class ApiPaginator<Data, Envelope, Params> {
     }
 
     /**
-     * An observable that emits when a fresh first page should be loaded.
+     * [Optional] An observable that emits when a fresh first page should be loaded.
      */
     public @NonNull Builder<Data, Envelope, Params> startOverWith(final @NonNull Observable<Params> startOverWith) {
       this.startOverWith = startOverWith;
@@ -108,7 +96,7 @@ public final class ApiPaginator<Data, Envelope, Params> {
     }
 
     /**
-     * A function that takes an `Envelope` instance and returns the list of data embedded in it.
+     * [Required] A function that takes an `Envelope` instance and returns the list of data embedded in it.
      */
     public @NonNull Builder<Data, Envelope, Params> envelopeToListOfData(final @NonNull Func1<Envelope, List<Data>> envelopeToListOfData) {
       this.envelopeToListOfData = envelopeToListOfData;
@@ -116,21 +104,18 @@ public final class ApiPaginator<Data, Envelope, Params> {
     }
 
     /**
-     * Specifies a function that convert a current `Params` object into the next page of `Params`.
+     * [Required] A function to extract the more URL from an API response envelope.
      */
-    public @NonNull Builder<Data, Envelope, Params> nextPageParams(final @NonNull Func1<Params, Params> nextPageParams) {
-      this.nextPageParams = nextPageParams;
+    public @NonNull Builder<Data, Envelope, Params> envelopeToMoreUrl(final @NonNull Func1<Envelope, String> envelopeToMoreUrl) {
+      this.envelopeToMoreUrl = envelopeToMoreUrl;
       return this;
     }
 
     /**
-     * Specifies a function that extracts the more results URL from the API envelope, and a function that makes
-     * an API request with a pagination URL.
+     * [Required] A function that makes an API request with a pagination URL.
      */
-    public @NonNull Builder<Data, Envelope, Params> loadWithNextUrl(final @NonNull Func1<Envelope, String> envelopeToMoreUrl,
-      final @NonNull Func1<String, Observable<Envelope>> loadWithPaginationPath) {
-      this.envelopeToMoreUrl = envelopeToMoreUrl;
-      this.loadWithPaginationPath = loadWithPaginationPath;
+    public @NonNull Builder<Data, Envelope, Params> loadWithPaginationPath(final @NonNull Func1<String, Observable<Envelope>> loadWithPaginationPath) {
+      this.loadWithPaginationPath= loadWithPaginationPath;
       return this;
     }
 
@@ -144,7 +129,7 @@ public final class ApiPaginator<Data, Envelope, Params> {
     }
 
     /**
-     * Optional function to transform every page of data that is loaded.
+     * [Optional] Function to transform every page of data that is loaded.
      */
     public @NonNull Builder<Data, Envelope, Params> pageTransformation(final @NonNull Func1<List<Data>, List<Data>> pageTransformation) {
       this.pageTransformation = pageTransformation;
@@ -152,7 +137,7 @@ public final class ApiPaginator<Data, Envelope, Params> {
     }
 
     /**
-     * Determines if the list of loaded data is cleared when starting over from the first page.
+     * [Optional] Determines if the list of loaded data is cleared when starting over from the first page.
      */
     public @NonNull Builder<Data, Envelope, Params> clearWhenStartingOver(final boolean clearWhenStartingOver) {
       this.clearWhenStartingOver = clearWhenStartingOver;
@@ -160,7 +145,7 @@ public final class ApiPaginator<Data, Envelope, Params> {
     }
 
     /**
-     * Determines how two lists are concatenated together while paginating. A regular `ListUtils::concat` is probably
+     * [Optional] Determines how two lists are concatenated together while paginating. A regular `ListUtils::concat` is probably
      * sufficient, but sometimes you may want `ListUtils::concatDistinct`
      */
     public @NonNull Builder<Data, Envelope, Params> concater(final @NonNull Func2<List<Data>, List<Data>, List<Data>> concater) {
@@ -168,8 +153,25 @@ public final class ApiPaginator<Data, Envelope, Params> {
       return this;
     }
 
-    public @NonNull ApiPaginator<Data, Envelope, Params> build() {
-      return new ApiPaginator<>(nextPage, startOverWith, envelopeToListOfData, loadWithParams, nextPageParams,
+    public @NonNull ApiPaginator<Data, Envelope, Params> build() throws RuntimeException {
+      // Early error when all required fields are not set.
+      if (nextPage == null || envelopeToListOfData == null || loadWithParams == null || loadWithPaginationPath == null ||
+        envelopeToMoreUrl == null) {
+        throw new RuntimeException();
+      }
+
+      // Default params for optional fields
+      if (startOverWith == null) {
+        startOverWith = Observable.just(null);
+      }
+      if (pageTransformation == null) {
+        pageTransformation = x -> x;
+      }
+      if (concater == null) {
+        concater = ListUtils::concat;
+      }
+
+      return new ApiPaginator<>(nextPage, startOverWith, envelopeToListOfData, loadWithParams,
         loadWithPaginationPath, envelopeToMoreUrl, pageTransformation, clearWhenStartingOver, concater);
     }
   }
@@ -196,12 +198,6 @@ public final class ApiPaginator<Data, Envelope, Params> {
    * Returns an observable that emits the params for the next page of data *or* the more URL for the next page.
    */
   private @NonNull Observable<Pair<Params, String>> paramsAndMoreUrlWithPagination(final @NonNull Params firstPageParams) {
-
-    if (nextPageParams != null) {
-      return nextPage
-        .scan(firstPageParams, (params, __) -> nextPageParams.call(params))
-        .map(params -> new Pair<>(params, null));
-    }
 
     return _morePath
       .map(path -> new Pair<Params, String>(null, path))

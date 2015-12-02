@@ -7,7 +7,7 @@ module Milkrun
     def initialize
     end
 
-    def update
+    def refresh
       response = Net::HTTP.get_response(url)
 
       if !response.is_a?(Net::HTTPSuccess)

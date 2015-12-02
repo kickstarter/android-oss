@@ -101,8 +101,6 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
 
     final Observable<List<Comment>> comments = paginator.paginatedData.share();
 
-    paginator.isFetching.subscribe(isFetchingComments);
-
     final Observable<Boolean> commentHasBody = commentBody
       .map(body -> body.length() > 0);
 
@@ -168,6 +166,8 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .compose(Transformers.takeWhen(nextPage))
       .subscribe(koala::trackProjectCommentLoadMore)
     );
+
+    addSubscription(paginator.isFetching.subscribe(isFetchingComments));
 
     addSubscription(project.take(1).subscribe(__ -> refresh.onNext(Empty.get())));
   }

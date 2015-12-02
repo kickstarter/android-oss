@@ -71,9 +71,11 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .concater(ListUtils::concatDistinct)
         .build();
 
-    params.compose(Transformers.takePairWhen(paginator.loadingPage))
-      .map(paramsAndPage -> paramsAndPage.first.toBuilder().page(paramsAndPage.second).build())
-      .subscribe(koala::trackDiscovery);
+    addSubscription(
+      params.compose(Transformers.takePairWhen(paginator.loadingPage))
+        .map(paramsAndPage -> paramsAndPage.first.toBuilder().page(paramsAndPage.second).build())
+        .subscribe(koala::trackDiscovery)
+    );
 
     final Observable<List<Project>> projects = paginator.paginatedData;
 

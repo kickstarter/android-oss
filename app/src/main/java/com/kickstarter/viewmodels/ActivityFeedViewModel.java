@@ -89,8 +89,8 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
       .loadWithPaginationPath(client::fetchActivities)
       .build();
 
-    paginator.paginatedData.subscribe(activities);
-    paginator.isFetching.subscribe(isFetchingActivities);
+    addSubscription(paginator.paginatedData.subscribe(activities));
+    addSubscription(paginator.isFetching.subscribe(isFetchingActivities));
 
     addSubscription(currentUser.loggedInUser()
         .take(1)

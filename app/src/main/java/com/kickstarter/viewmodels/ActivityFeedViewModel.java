@@ -41,9 +41,12 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
   @Inject CurrentUser currentUser;
 
   private final PublishSubject<Project> discoverProjectsClick = PublishSubject.create();
+  private final PublishSubject<Activity> friendBackingClick = PublishSubject.create();
   private final PublishSubject<Void> loginClick = PublishSubject.create();
-  private final PublishSubject<Activity> projectClick = PublishSubject.create();
-  private final PublishSubject<Activity> updateClick = PublishSubject.create();
+  private final PublishSubject<Activity> projectStateChangedPositiveClick = PublishSubject.create();
+  private final PublishSubject<Activity> projectStateChangedClick = PublishSubject.create();
+  private final PublishSubject<Activity> projectUpdateProjectClick = PublishSubject.create();
+  private final PublishSubject<Activity> projectUpdateUpdateClick = PublishSubject.create();
 
   private final PublishSubject<String> moreActivitiesUrl = PublishSubject.create();
 
@@ -98,7 +101,7 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
       .subscribe(ActivityFeedActivity::discoverProjectsButtonOnClick));
 
     addSubscription(view
-      .compose(Transformers.takePairWhen(projectClick))
+      .compose(Transformers.takePairWhen(friendBackingClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startProjectActivity(vp.second.project())));
 
@@ -108,22 +111,22 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
       .subscribe(ActivityFeedActivity::activityFeedLogin));
 
     addSubscription(view
-      .compose(Transformers.takePairWhen(projectClick))
+      .compose(Transformers.takePairWhen(projectStateChangedClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startProjectActivity(vp.second.project())));
 
     addSubscription(view
-      .compose(Transformers.takePairWhen(projectClick))
+      .compose(Transformers.takePairWhen(projectStateChangedPositiveClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startProjectActivity(vp.second.project())));
 
     addSubscription(view
-      .compose(Transformers.takePairWhen(projectClick))
+      .compose(Transformers.takePairWhen(projectUpdateProjectClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startProjectActivity(vp.second.project())));
 
     addSubscription(view
-      .compose(Transformers.takePairWhen(updateClick))
+      .compose(Transformers.takePairWhen(projectUpdateUpdateClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showProjectUpdate(vp.second)));
 
@@ -134,8 +137,14 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
     );
 
     // Track tapping on any of the activity items.
-    addSubscription(projectClick.mergeWith(updateClick)
-        .subscribe(koala::trackActivityTapped)
+    addSubscription(
+      Observable.merge(
+        friendBackingClick,
+        projectStateChangedPositiveClick,
+        projectStateChangedClick,
+        projectUpdateProjectClick,
+        projectUpdateUpdateClick
+      ).subscribe(koala::trackActivityTapped)
     );
   }
 
@@ -156,7 +165,6 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
   }
 
   private @NonNull Observable<List<Activity>> activitiesFromParams(@NonNull final ActivityFeedParams params) {
-
     return client.fetchActivities(params)
       .compose(Transformers.neverError())
       .doOnNext(this::keepPaginationParams)
@@ -187,26 +195,26 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
   }
 
   public void friendBackingClicked(@NonNull final FriendBackingViewHolder viewHolder, @NonNull final Activity activity) {
-    projectClick.onNext(activity);
+    friendBackingClick.onNext(activity);
   }
 
   public void projectStateChangedClicked(@NonNull final ProjectStateChangedViewHolder viewHolder,
     @NonNull final Activity activity) {
-    projectClick.onNext(activity);
+    projectStateChangedClick.onNext(activity);
   }
 
   public void projectStateChangedPositiveClicked(@NonNull final ProjectStateChangedPositiveViewHolder viewHolder,
     @NonNull final Activity activity) {
-    projectClick.onNext(activity);
+    projectStateChangedPositiveClick.onNext(activity);
   }
 
   public void projectUpdateProjectClicked(@NonNull final ProjectUpdateViewHolder viewHolder,
     @NonNull final Activity activity) {
-    projectClick.onNext(activity);
+    projectUpdateProjectClick.onNext(activity);
   }
 
   public void projectUpdateClicked(@NonNull final ProjectUpdateViewHolder viewHolder,
     @NonNull final Activity activity) {
-    updateClick.onNext(activity);
+    projectUpdateUpdateClick.onNext(activity);
   }
 }

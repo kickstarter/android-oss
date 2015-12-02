@@ -52,6 +52,14 @@ CHECKLIST
       end
     end
 
+    command :"update-server-config" do |c|
+      c.syntax = "milkrun update-server-config"
+      c.description = "generate new config from kickstarter api"
+      c.action do |args, options|
+        Milkrun::ServerConfig.new.update
+      end
+    end
+
     run!
   end
 end

@@ -8,6 +8,7 @@
 
   <RelativeLayout
     android:id="@+id/creator_info"
+    android:focusable="true"
     android:paddingLeft="@dimen/grid_3"
     android:paddingRight="@dimen/grid_3"
     android:background="@drawable/click_indicator_light_masked"
@@ -66,6 +67,7 @@
 
     <RelativeLayout
       android:id="@+id/campaign"
+      android:focusable="true"
       android:layout_width="match_parent"
       android:layout_height="@dimen/grid_11_half" >
 
@@ -91,7 +93,8 @@
         android:layout_centerVertical="true" />
     </RelativeLayout>
 
-    <include layout="@layout/horizontal_line_thin_view"
+    <include
+      layout="@layout/horizontal_line_thin_view"
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
       android:layout_marginTop="@dimen/grid_1_half"
@@ -99,6 +102,7 @@
 
     <RelativeLayout
       android:id="@+id/updates"
+      android:focusable="true"
       android:layout_width="match_parent"
       android:layout_height="@dimen/grid_11_half" >
 
@@ -125,14 +129,16 @@
         android:layout_height="wrap_content" />
     </RelativeLayout>
 
-
-    <include layout="@layout/horizontal_line_thin_view"
+    <include
+      layout="@layout/horizontal_line_thin_view"
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
       android:layout_marginTop="@dimen/grid_1_half"
       android:layout_marginBottom="@dimen/grid_1_half"/>
+
     <RelativeLayout
       android:id="@+id/comments"
+      android:focusable="true"
       android:layout_width="match_parent"
       android:layout_height="@dimen/grid_11_half" >
 

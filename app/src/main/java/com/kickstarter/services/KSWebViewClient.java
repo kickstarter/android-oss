@@ -10,8 +10,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.Release;
-import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.FormContents;
 import com.kickstarter.libs.utils.IOUtils;
 import com.kickstarter.ui.activities.DisplayWebViewActivity;
@@ -29,30 +27,23 @@ import org.jsoup.select.Elements;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.CookieManager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import timber.log.Timber;
-
-public class KSWebViewClient extends WebViewClient {
-  private final Release release;
-  private final CookieManager cookieManager;
-  private final CurrentUser currentUser;
+public final class KSWebViewClient extends WebViewClient {
   private boolean initialPageLoad = true;
   private String lastUrl;
+  private final OkHttpClient client;
   private final String webEndpoint;
   private final List<RequestHandler> requestHandlers = new ArrayList<>();
   private FormContents formContents = null;
 
-  public KSWebViewClient(@NonNull final Release release, @NonNull final CookieManager cookieManager,
-    @NonNull final CurrentUser currentUser, @NonNull final String webEndpoint) {
-    this.release = release;
-    this.cookieManager = cookieManager;
-    this.currentUser = currentUser;
+  public KSWebViewClient(@NonNull final OkHttpClient client,
+    @NonNull final String webEndpoint) {
+    this.client = client;
     this.webEndpoint = webEndpoint;
 
     initializeRequestHandlers();
@@ -76,9 +67,6 @@ public class KSWebViewClient extends WebViewClient {
     if (!isInterceptable(Uri.parse(url))) {
       return null;
     }
-
-    final OkHttpClient client = new OkHttpClient();
-    client.setCookieHandler(cookieManager);
 
     try {
       final Request request = buildRequest(url);
@@ -139,30 +127,6 @@ public class KSWebViewClient extends WebViewClient {
     if (httpMethod().equals("POST")) {
       requestBody = RequestBody.create(MediaType.parse("application/x-www-form-urlencoded; charset=utf-8"),
         formContents.serialized);
-    }
-
-    // TODO: All this header code is duplicated, refactor
-    requestBuilder.addHeader("Kickstarter-Android-App", release.versionCode().toString());
-    requestBuilder.addHeader("Kickstarter-App-Id", release.applicationId());
-
-    final Matcher matcher = Pattern.compile("\\Ahttps:\\/\\/([a-z]+)\\.***REMOVED***\\z")
-      .matcher(webEndpoint);
-    if (matcher.matches() && !matcher.group(1).equals("www")) {
-      Timber.d("Hivequeen environment, adding authorization header");
-      requestBuilder.addHeader("Authorization", "Basic ZnV6enk6d3V6enk=");
-    }
-
-    final StringBuilder userAgent = new StringBuilder()
-      .append("Kickstarter Android Mobile Variant/")
-      .append(release.variant())
-      .append(" Code/")
-      .append(release.versionCode())
-      .append(" Version/")
-      .append(release.versionName());
-    requestBuilder.addHeader("User-Agent", userAgent.toString());
-
-    if (currentUser.exists()) {
-      requestBuilder.addHeader("Authorization", "token " + currentUser.getAccessToken());
     }
 
     requestBuilder.method(httpMethod(), requestBody);

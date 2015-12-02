@@ -14,17 +14,23 @@
 
     <LinearLayout
       android:id="@+id/filter_button"
+      android:focusable="true"
       android:layout_width="wrap_content"
       android:layout_height="match_parent"
       android:background="?attr/selectableItemBackgroundBorderless"
       android:orientation="horizontal"
-      android:gravity="center"
+      android:gravity="center_vertical"
+      android:clipChildren="false"
+      android:clipToPadding="false"
+      android:layout_toLeftOf="@+id/toolbar_icons"
+      android:layout_toStartOf="@+id/toolbar_icons"
       android:layout_alignParentLeft="true"
-      android:layout_alignParentStart="true"
-      android:layout_centerVertical="true">
+      android:layout_alignParentStart="true">
 
       <TextView
         android:id="@+id/filter_text_view"
+        android:ellipsize="end"
+        android:singleLine="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/grid_1_half"
@@ -34,15 +40,17 @@
 
       <com.kickstarter.ui.views.IconTextView
         android:id="@+id/filter_expand_more_button"
+        android:contentDescription="@string/filter_button_content_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/expand_more"
         android:textColor="@color/white"
-        android:textSize="28sp" />
+        android:textSize="28sp"/>
 
     </LinearLayout>
 
     <LinearLayout
+      android:id="@+id/toolbar_icons"
       android:layout_width="wrap_content"
       android:layout_height="match_parent"
       android:layout_alignParentRight="true"
@@ -52,6 +60,8 @@
       <com.kickstarter.ui.views.IconTextView
         style="@style/ToolbarIcon"
         android:id="@+id/search_button"
+        android:focusable="true"
+        android:contentDescription="@string/search_button_content_description"
         android:layout_width="@dimen/button_icon_fixed_width"
         android:layout_height="match_parent"
         android:background="@drawable/button_selector"
@@ -62,6 +72,8 @@
       <com.kickstarter.ui.views.IconTextView
         style="@style/ToolbarIcon"
         android:id="@+id/activity_feed_button"
+        android:focusable="true"
+        android:contentDescription="@string/activity_button_content_description"
         android:layout_width="@dimen/button_icon_fixed_width"
         android:layout_height="match_parent"
         android:gravity="center"
@@ -72,6 +84,8 @@
       <com.kickstarter.ui.views.IconTextView
         style="@style/ToolbarIcon"
         android:id="@+id/login_button"
+        android:focusable="true"
+        android:contentDescription="@string/login_button_content_description"
         android:background="@drawable/button_selector"
         android:layout_width="@dimen/button_icon_fixed_width"
         android:layout_height="match_parent"
@@ -79,10 +93,11 @@
         android:text="@string/lock_icon"
         android:textColor="@color/white" />
 
-
       <com.kickstarter.ui.views.IconTextView
         style="@style/ToolbarIcon"
         android:id="@+id/current_user_button"
+        android:focusable="true"
+        android:contentDescription="@string/current_user_button_content_description"
         android:layout_width="@dimen/button_icon_fixed_width"
         android:layout_height="match_parent"
         android:gravity="center"

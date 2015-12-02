@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:id="@+id/project_search_result_view"
+  android:focusable="true"
   android:background="@color/transparent"
   android:foreground="@drawable/click_indicator_light"
   android:layout_width="match_parent"

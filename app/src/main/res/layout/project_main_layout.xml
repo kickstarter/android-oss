@@ -34,8 +34,9 @@
       android:layout_height="wrap_content">
 
       <TextView
-        android:layout_weight="3"
         android:id="@+id/creator_name"
+        android:focusable="true"
+        android:layout_weight="3"
         android:singleLine="true"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -72,6 +73,7 @@
     <TextView
       android:id="@+id/blurb"
       style="@style/Subhead"
+      android:focusable="true"
       android:background="@drawable/click_indicator_light_masked"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -87,6 +89,7 @@
 
       <com.kickstarter.ui.views.IconTextView
         android:id="@+id/category_icon"
+        android:contentDescription="@string/category_icon_content_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/local_offer_icon"
@@ -106,6 +109,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/location_on_icon"
+        android:contentDescription="@string/location_icon_content_description"
         style="@style/BodyPrimary" />
 
       <TextView

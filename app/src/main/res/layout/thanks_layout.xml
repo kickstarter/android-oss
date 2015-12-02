@@ -120,6 +120,7 @@
 
       <com.kickstarter.ui.views.IconTextView
         android:id="@+id/close_button"
+        android:focusable="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
@@ -128,6 +129,7 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/grid_1"
         android:text="@string/close_icon"
+        android:contentDescription="@string/close_button_content_description"
         android:textColor="@color/white"
         android:textSize="28sp" />
 

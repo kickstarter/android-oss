@@ -20,7 +20,7 @@ final class NeverApiErrorTransformer<T> implements Observable.Transformer<T, T> 
   }
 
   @Override
-  @NonNull public Observable<T> call(@NonNull final Observable<T> source) {
+  public @NonNull Observable<T> call(@NonNull final Observable<T> source) {
     return source
       .doOnError(e -> {
         final ErrorEnvelope env = ErrorEnvelope.fromThrowable(e);

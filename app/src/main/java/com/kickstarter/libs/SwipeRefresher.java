@@ -16,10 +16,10 @@ public final class SwipeRefresher {
    *
    * @param activity Activity to bind lifecycle events for.
    * @param layout Layout to subscribe to for refresh events, send signals when no longer refreshing.
-   * @param refreshAction Action to call when a refresh event is emitted, likely a presenter input.
+   * @param refreshAction Action to call when a refresh event is emitted, likely a viewModel input.
    * @param isRefreshing Observable that emits events when the refreshing status changes.
    */
-  public SwipeRefresher(@NonNull final BaseActivity<? extends Presenter> activity,
+  public SwipeRefresher(@NonNull final BaseActivity<? extends ViewModel> activity,
     @NonNull final SwipeRefreshLayout layout,
     @NonNull final Action0 refreshAction,
     @NonNull final Func0<Observable<Boolean>> isRefreshing) {

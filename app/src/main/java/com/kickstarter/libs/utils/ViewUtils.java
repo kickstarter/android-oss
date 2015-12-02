@@ -17,6 +17,10 @@ import rx.functions.Action1;
 public class ViewUtils {
   public ViewUtils() {}
 
+  public static boolean isFontScaleLarge(final @NonNull Context context) {
+    return context.getResources().getConfiguration().fontScale > 1.5f;
+  }
+
   public static boolean isLandscape(@NonNull final Context context) {
     return context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
   }

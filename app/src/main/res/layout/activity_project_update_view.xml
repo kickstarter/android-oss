@@ -13,6 +13,7 @@
       android:clickable="true"
       android:background="@color/transparent"
       android:foreground="@drawable/click_indicator_light"
+      android:focusable="true"
       android:orientation="horizontal"
       android:padding="@dimen/grid_3"
       android:layout_width="match_parent"
@@ -52,6 +53,7 @@
 
     <LinearLayout
       android:id="@+id/update_info"
+      android:focusable="true"
       android:background="@color/transparent"
       android:foreground="@drawable/click_indicator_light"
       android:clickable="true"

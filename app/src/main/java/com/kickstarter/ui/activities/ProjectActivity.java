@@ -18,10 +18,10 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.Money;
-import com.kickstarter.libs.qualifiers.RequiresPresenter;
+import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
-import com.kickstarter.presenters.ProjectPresenter;
+import com.kickstarter.viewmodels.ProjectViewModel;
 import com.kickstarter.ui.adapters.ProjectAdapter;
 
 import javax.inject.Inject;
@@ -32,8 +32,8 @@ import butterknife.BindDrawable;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-@RequiresPresenter(ProjectPresenter.class)
-public final class ProjectActivity extends BaseActivity<ProjectPresenter> {
+@RequiresViewModel(ProjectViewModel.class)
+public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   private ProjectAdapter adapter;
 
   @Bind(R.id.project_recycler_view) RecyclerView projectRecyclerView;
@@ -58,9 +58,9 @@ public final class ProjectActivity extends BaseActivity<ProjectPresenter> {
     final Intent intent = getIntent();
     final Project project = intent.getParcelableExtra(getString(R.string.intent_project)); // Project can be null!
     final String param = intent.getStringExtra(getString(R.string.intent_project_param));
-    presenter.initialize(project, param);
+    viewModel.initialize(project, param);
 
-    adapter = new ProjectAdapter(presenter);
+    adapter = new ProjectAdapter(viewModel);
     projectRecyclerView.setAdapter(adapter);
     projectRecyclerView.setLayoutManager(new LinearLayoutManager(this));
   }
@@ -105,17 +105,17 @@ public final class ProjectActivity extends BaseActivity<ProjectPresenter> {
 
   @OnClick(R.id.back_project_button)
   public void backProjectButtonOnClick() {
-    presenter.takeBackProjectClick();
+    viewModel.takeBackProjectClick();
   }
 
   @OnClick(R.id.manage_pledge_button)
   public void managePledgeOnClick() {
-    presenter.takeManagePledgeClick();
+    viewModel.takeManagePledgeClick();
   }
 
   @OnClick(R.id.view_pledge_button)
   public void viewPledgeOnClick() {
-    presenter.takeViewPledgeClick();
+    viewModel.takeViewPledgeClick();
   }
 
   public void managePledge(@NonNull final Project project) {
@@ -138,12 +138,12 @@ public final class ProjectActivity extends BaseActivity<ProjectPresenter> {
 
   @OnClick(R.id.star_fab)
   public void starProjectClick() {
-    presenter.takeStarClick();
+    viewModel.takeStarClick();
   }
 
   @OnClick(R.id.share_icon)
   public void shareProject() {
-    presenter.takeShareClick();
+    viewModel.takeShareClick();
   }
 
   public void showProjectDescription(@NonNull final Project project) {
@@ -226,6 +226,6 @@ public final class ProjectActivity extends BaseActivity<ProjectPresenter> {
     if (resultCode != RESULT_OK) {
       return;
     }
-    presenter.takeLoginSuccess();
+    viewModel.takeLoginSuccess();
   }
 }

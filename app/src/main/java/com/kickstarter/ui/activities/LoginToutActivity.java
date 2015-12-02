@@ -12,10 +12,10 @@ import com.facebook.AccessToken;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.qualifiers.RequiresPresenter;
+import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.presenters.LoginToutPresenter;
+import com.kickstarter.viewmodels.LoginToutViewModel;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 import com.kickstarter.ui.views.LoginPopupMenu;
@@ -29,8 +29,8 @@ import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
-@RequiresPresenter(LoginToutPresenter.class)
-public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
+@RequiresViewModel(LoginToutViewModel.class)
+public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
   public static final String REASON_BACK_PROJECT = "pledge";
   public static final String REASON_GENERIC = "generic";
   public static final String REASON_LOGIN_TAB = "login_tab";
@@ -63,19 +63,19 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
 
     forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
 
-    presenter.inputs.reason(getIntent().getStringExtra(intentLoginTypeString));
+    viewModel.inputs.reason(getIntent().getStringExtra(intentLoginTypeString));
 
-    presenter.errors.facebookAuthorizationError()
+    viewModel.errors.facebookAuthorizationError()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> ViewUtils.showDialog(this, errorTitleString, troubleLoggingInString, tryAgainString));
 
-    presenter.errors.confirmFacebookSignupError()
+    viewModel.errors.confirmFacebookSignupError()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::startFacebookConfirmationActivity);
 
-    presenter.errors.tfaChallenge()
+    viewModel.errors.tfaChallenge()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> startTwoFactorActivity(true));
@@ -85,17 +85,17 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(ViewUtils.showToast(this));
 
-    presenter.outputs.facebookLoginSuccess()
+    viewModel.outputs.facebookLoginSuccess()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> onSuccess(forward));
   }
 
   private Observable<String> errorMessages() {
-    return presenter.errors.missingFacebookEmailError()
+    return viewModel.errors.missingFacebookEmailError()
       .map(ObjectUtils.coalesceWith(unableToLoginString))
       .mergeWith(
-        presenter.errors.facebookInvalidAccessTokenError()
+        viewModel.errors.facebookInvalidAccessTokenError()
           .map(ObjectUtils.coalesceWith(unableToLoginString))
       );
   }
@@ -107,7 +107,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
 
   @OnClick(R.id.facebook_login_button)
   public void facebookLoginClick() {
-    presenter.inputs.facebookLoginClick(this,
+    viewModel.inputs.facebookLoginClick(this,
       Arrays.asList(getResources().getStringArray(R.array.facebook_permissions_array))
     );
   }
@@ -141,7 +141,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutPresenter> {
   @Override
   protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
     super.onActivityResult(requestCode, resultCode, intent);
-    presenter.inputs.activityResult(requestCode, resultCode, intent);
+    viewModel.inputs.activityResult(requestCode, resultCode, intent);
 
     if (requestCode != ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_LOGIN_ACTIVITY_FORWARD) {
       return;

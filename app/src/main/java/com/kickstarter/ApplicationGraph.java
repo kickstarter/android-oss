@@ -5,7 +5,7 @@ import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.KoalaTrackingClient;
 import com.kickstarter.libs.Money;
 import com.kickstarter.libs.utils.ApplicationLifecycleUtil;
-import com.kickstarter.presenters.ProfilePresenter;
+import com.kickstarter.viewmodels.ProfileViewModel;
 import com.kickstarter.viewmodels.ActivityFeedViewModel;
 import com.kickstarter.viewmodels.CommentFeedViewModel;
 import com.kickstarter.viewmodels.DiscoveryFilterViewModel;
@@ -70,7 +70,7 @@ public interface ApplicationGraph {
   void inject(MessageService __);
   void inject(Money __);
   void inject(ProfileActivity __);
-  void inject(ProfilePresenter __);
+  void inject(ProfileViewModel __);
   void inject(ProjectContextViewHolder __);
   void inject(ProjectActivity __);
   void inject(ProjectViewModel __);

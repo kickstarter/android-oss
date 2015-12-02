@@ -1,4 +1,4 @@
-package com.kickstarter.presenters;
+package com.kickstarter.viewmodels;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -7,13 +7,13 @@ import android.support.annotation.Nullable;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
-import com.kickstarter.libs.Presenter;
+import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
-import com.kickstarter.presenters.inputs.ProfilePresenterInputs;
-import com.kickstarter.presenters.outputs.ProfilePresenterOutputs;
+import com.kickstarter.viewmodels.inputs.ProfileViewModelInputs;
+import com.kickstarter.viewmodels.outputs.ProfileViewModelOutputs;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
@@ -27,7 +27,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-public final class ProfilePresenter extends Presenter<ProfileActivity> implements ProfilePresenterInputs, ProfilePresenterOutputs {
+public final class ProfileViewModel extends ViewModel<ProfileActivity> implements ProfileViewModelInputs, ProfileViewModelOutputs {
   @Inject ApiClient apiClient;
   @Inject CurrentUser currentUser;
 
@@ -47,8 +47,8 @@ public final class ProfilePresenter extends Presenter<ProfileActivity> implement
     return currentUser.observable();
   }
 
-  public final ProfilePresenterInputs inputs = this;
-  public final ProfilePresenterOutputs outputs = this;
+  public final ProfileViewModelInputs inputs = this;
+  public final ProfileViewModelOutputs outputs = this;
 
   private final PublishSubject<DiscoveryParams> params = PublishSubject.create();
 
@@ -59,12 +59,16 @@ public final class ProfilePresenter extends Presenter<ProfileActivity> implement
 
     final Observable<List<Project>> backedProjects = params.switchMap(this::projectsWithPagination);
 
-    addSubscription(viewSubject
+    addSubscription(view
         .compose(Transformers.combineLatestPair(backedProjects))
         .subscribe(vp -> projects.onNext(vp.second))
     );
 
-    final DiscoveryParams firstPageParams = DiscoveryParams.builder().backed(1).sort(DiscoveryParams.Sort.ENDING_SOON).build();
+    final DiscoveryParams firstPageParams = DiscoveryParams.builder()
+      .backed(1)
+      .sort(DiscoveryParams.Sort.ENDING_SOON)
+      .build();
+
     params.onNext(firstPageParams);
 
     koala.trackProfileView();

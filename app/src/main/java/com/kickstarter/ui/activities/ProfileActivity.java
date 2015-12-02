@@ -15,13 +15,13 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Paginator;
-import com.kickstarter.libs.qualifiers.RequiresPresenter;
+import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
-import com.kickstarter.presenters.ProfilePresenter;
 import com.kickstarter.ui.adapters.ProfileAdapter;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
+import com.kickstarter.viewmodels.ProfileViewModel;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -33,8 +33,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 
-@RequiresPresenter(ProfilePresenter.class)
-public final class ProfileActivity extends BaseActivity<ProfilePresenter> implements ProfileAdapter.Delegate {
+@RequiresViewModel(ProfileViewModel.class)
+public final class ProfileActivity extends BaseActivity<ProfileViewModel> implements ProfileAdapter.Delegate {
   private ProfileAdapter adapter;
   private final List<Project> projects = new ArrayList<>();
   private Paginator paginator;
@@ -61,14 +61,14 @@ public final class ProfileActivity extends BaseActivity<ProfilePresenter> implem
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    paginator = new Paginator(recyclerView, presenter.inputs::nextPage);
+    paginator = new Paginator(recyclerView, viewModel.inputs::nextPage);
 
-    presenter.outputs.user()
+    viewModel.outputs.user()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::setViews);
 
-    presenter.outputs.projects()
+    viewModel.outputs.projects()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::loadProjects);

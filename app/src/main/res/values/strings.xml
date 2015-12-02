@@ -8,6 +8,7 @@
   <string name="hockey_app_id">***REMOVED***</string>
 
   <!-- User-facing strings -->
+  <string name="About">About</string>
   <string name="Activity">Activity</string>
   <string name="action_settings">Settings</string>
   <string name="All_gone">All gone</string>
@@ -47,6 +48,7 @@
   <string name="Changelog">Changelog</string>
   <string name="Close">Close</string>
   <string name="Comment_posted">Comment posted!</string>
+  <string name="Contact">Contact</string>
   <string name="Post_comment_error">Couldn’t post comment.</string>
   <string name="Comments">Comments</string>
   <string name="Cookie_Policy">Cookie Policy</string>
@@ -78,6 +80,8 @@
   <string name="Find_friends">Find friends</string>
   <string name="Follow">Follow</string>
   <string name="Forgot_your_password"><u>Forgot your password?</u></string>
+  <string name="Frequently_Asked_Questions">Frequently Asked Questions</string>
+  <string name="Friend_backs_a_project">Friend backs a project</string>
   <string name="friend_name_backed_art_project">%1$s backed an Art project</string>
   <string name="friend_name_backed_comics_project">%1$s backed a Comics project</string>
   <string name="friend_name_backed_crafts_project">%1$s backed a Crafts project</string>
@@ -100,10 +104,13 @@
   <string name="Funding_suspended_">Funding suspended %1$s</string>
   <string name="Funding_unsuccessful_">Funding unsuccessful %1$s</string>
   <string name="goal">goal</string>
+  <string name="Happening_Now">Happening Now</string>
   <string name="Help">Help</string>
   <string name="hours">hours</string>
+  <string name="How_Kickstarter_works">How Kickstarter works</string>
   <string name="I_just_backed_project_on_Kickstarter">I just backed %1$s on Kickstarter: %2$s</string>
   <string name="Instructions">Instructions</string>
+  <string name="Kickstarter_news_and_events">Kickstarter news and events</string>
   <string name="Launched">Launched</string>
   <string name="Lets_try_that_again">Let\'s try that again</string>
   <string name="Limited_left_of">Limited (%1$s left of %2$s)</string>
@@ -117,12 +124,15 @@
   <string name="Login_does_not_match_any_of_our_records">Login does not match any of our records.</string>
   <string name="Looking_for_more_projects">Looking for more projects? Check these out.</string>
   <string name="Manage_pledge">Manage pledge</string>
+  <string name="Manage_project_notifications">Manage project notifications</string>
   <string name="mins">mins</string>
   <string name="More">More</string>
   <string name="Most_Popular">Most Popular</string>
   <string name="NA">N/A</string>
   <string name="Nearby">Nearby</string>
   <string name="Network">Network</string>
+  <string name="New_followers">New followers</string>
+  <string name="Newsletters">Newsletters</string>
   <string name="No_activity_yet">No activity yet</string>
   <string name="No_comments">No comments</string>
   <string name="Not_implemented_yet">Not implemented yet, coming soon!</string>
@@ -154,7 +164,10 @@
   <string name="project_was_not_successfully_funded">%1$s was not successfully funded.</string>
   <string name="project_was_successfully_funded">%1$s was successfully funded!</string>
   <string name="project_resumed">%1$s resumed.</string>
+  <string name="Project_updates">Project updates</string>
   <string name="project_was_suspended">%1$s was suspended.</string>
+  <string name="Projects_We_Love">Projects We Love</string>
+  <string name="Projects_you_back">Projects you back</string>
   <string name="Public_comment">Public comment</string>
   <string name="Resend">Resend</string>
   <string name="Reset_my_password">Reset my password</string>
@@ -164,6 +177,8 @@
   <string name="Search">Search</string>
   <string name="Search_projects">Search projects</string>
   <string name="Select_email_application">Select email application:</string>
+  <string name="Send_feedback">Send feedback</string>
+  <string name="Settings">Settings</string>
   <string name="Sha">SHA</string>
   <string name="Share">Share</string>
   <string name="share_message">"%1$s, via %2$s"</string>
@@ -177,6 +192,7 @@
   <string name="Sign_up_or_log_in_with_your_Facebook_account">
     Sign up or log in with your Facebook account or email address below:
   </string>
+  <string name="Social_notifications">Social notifications</string>
   <string name="Something_went_wrong_try_again_later">Something went wrong, please try again later.</string>
   <string name="Sorry_we_do_not_know_that_email_address_try_again">
     Sorry, we don\'t know that email address. Try again?</string>

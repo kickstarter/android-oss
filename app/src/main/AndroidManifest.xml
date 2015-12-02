@@ -92,6 +92,8 @@
       android:name=".ui.activities.LoginActivity"
       android:theme="@style/Login" />
 
+    <activity android:name=".ui.activities.SettingsActivity"/>
+
     <activity
       android:name=".ui.activities.SignupActivity"
       android:theme="@style/Login" />

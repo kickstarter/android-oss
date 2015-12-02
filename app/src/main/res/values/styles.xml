@@ -161,6 +161,25 @@
     <item name="android:fontFamily">@string/font_family_medium</item>
   </style>
 
+  <style name="KSSettingsIcon">
+    <item name="android:layout_centerVertical">true</item>
+    <item name="android:textSize">@dimen/subhead</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:paddingTop">2dp</item>
+    <item name="android:layout_marginRight">@dimen/grid_3</item>
+    <item name="android:layout_marginEnd">@dimen/grid_3</item>
+  </style>
+
+  <style name="EndSettingsWidget">
+    <item name="android:layout_centerVertical">true</item>
+    <item name="android:textSize">@dimen/headline</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_alignParentRight">true</item>
+    <item name="android:layout_alignParentEnd">true</item>
+  </style>
+
   <style name="Toolbar" parent="Base.Widget.AppCompat.Toolbar">
     <item name="android:background">@color/primary</item>
     <item name="android:elevation">1dp</item>

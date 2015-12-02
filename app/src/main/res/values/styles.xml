@@ -179,7 +179,7 @@
     <item name="android:textSize">22sp</item>
   </style>
 
-  <style name="ToolbarTitle" parent="Subhead">
+  <style name="ToolbarTitle" parent="SubheadPrimary">
     <item name="android:color">@color/black</item>
     <item name="android:textColorHint">@color/dark_gray</item>
   </style>
@@ -227,12 +227,18 @@
     <item name="android:lineSpacingExtra">@dimen/body_line_spacing_extra</item>
   </style>
 
-  <style name="Subhead" parent="TextPrimary">
+  <style name="SubheadPrimary" parent="TextPrimary">
     <item name="android:textSize">@dimen/subhead</item>
     <item name="android:lineSpacingExtra">@dimen/subhead_line_spacing_extra</item>
   </style>
 
-  <style name="SubheadMedium" parent="Subhead">
+  <style name="SubheadPrimaryMedium" parent="SubheadPrimary">
+    <item name="android:fontFamily">@string/font_family_medium</item>
+  </style>
+
+  <style name="SubheadSecondaryMedium" parent="TextSecondary">
+    <item name="android:textSize">@dimen/subhead</item>
+    <item name="android:lineSpacingExtra">@dimen/subhead_line_spacing_extra</item>
     <item name="android:fontFamily">@string/font_family_medium</item>
   </style>
 

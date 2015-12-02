@@ -60,7 +60,7 @@
       <TextView
         android:id="@+id/name"
         android:ellipsize="end"
-        style="@style/SubheadMedium"
+        style="@style/SubheadPrimaryMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

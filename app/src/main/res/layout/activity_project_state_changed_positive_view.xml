@@ -59,7 +59,7 @@
           android:orientation="vertical">
 
           <TextView
-            style="@style/SubheadMedium"
+            style="@style/SubheadPrimaryMedium"
             android:id="@+id/left_stat_first"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -68,7 +68,7 @@
             android:textStyle="bold" />
 
           <TextView
-            style="@style/SubheadMedium"
+            style="@style/SubheadPrimaryMedium"
             android:id="@+id/left_stat_second"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
           android:orientation="vertical">
 
           <TextView
-            style="@style/SubheadMedium"
+            style="@style/SubheadPrimaryMedium"
             android:id="@+id/right_stat_first"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -94,7 +94,7 @@
             android:textStyle="bold" />
 
           <TextView
-            style="@style/SubheadMedium"
+            style="@style/SubheadPrimaryMedium"
             android:id="@+id/right_stat_second"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

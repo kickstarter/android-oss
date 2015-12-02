@@ -31,7 +31,7 @@
       android:weightSum="1" >
 
       <TextView
-        style="@style/SubheadMedium"
+        style="@style/SubheadPrimaryMedium"
         android:layout_span="2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -70,7 +70,7 @@
       android:weightSum="1" >
 
       <TextView
-        style="@style/SubheadMedium"
+        style="@style/SubheadPrimaryMedium"
         android:layout_span="2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

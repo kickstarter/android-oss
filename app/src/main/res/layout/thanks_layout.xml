@@ -48,7 +48,7 @@
         android:layout_marginTop="@dimen/grid_2">
 
         <TextView
-          style="@style/Subhead"
+          style="@style/SubheadPrimary"
           android:id="@+id/backed_project"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"

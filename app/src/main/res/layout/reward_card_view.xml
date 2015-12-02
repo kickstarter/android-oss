@@ -105,7 +105,7 @@
       <TextView
         android:id="@+id/reward_description"
         android:layout_below="@id/backer_reward_info"
-        style="@style/Subhead"
+        style="@style/SubheadPrimary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/grid_2"

@@ -67,12 +67,11 @@ public final class ApiPaginator<Data, Envelope, Params> {
     this.loadingPage = this.startOverWith.switchMap(__ -> nextPage.scan(1, (accum, ___) -> accum + 1));
   }
 
-  public final static class Builder <Data, Envelope, Params> {
+  public final static class Builder<Data, Envelope, Params> {
     private Observable<Void> nextPage;
     private Observable<Params> startOverWith;
     private Func1<Envelope, List<Data>> envelopeToListOfData;
     private Func1<Params, Observable<Envelope>> loadWithParams;
-    private Func1<Params, Params> nextPageParams;
     private Func1<String, Observable<Envelope>> loadWithPaginationPath;
     private Func1<Envelope, String> envelopeToMoreUrl;
     private Func1<List<Data>, List<Data>> pageTransformation;
@@ -120,7 +119,7 @@ public final class ApiPaginator<Data, Envelope, Params> {
     }
 
     /**
-     * A function that takes a `Params` and performs the associated network request
+     * [Required] A function that takes a `Params` and performs the associated network request
      * and returns an `Observable<Envelope>`
      */
     public @NonNull Builder<Data, Envelope, Params> loadWithParams(final @NonNull Func1<Params, Observable<Envelope>> loadWithParams) {
@@ -154,10 +153,21 @@ public final class ApiPaginator<Data, Envelope, Params> {
     }
 
     public @NonNull ApiPaginator<Data, Envelope, Params> build() throws RuntimeException {
-      // Early error when all required fields are not set.
-      if (nextPage == null || envelopeToListOfData == null || loadWithParams == null || loadWithPaginationPath == null ||
-        envelopeToMoreUrl == null) {
-        throw new RuntimeException();
+      // Early error when arequired field is not set
+      if (nextPage == null) {
+        throw new RuntimeException("`nextPage` is required");
+      }
+      if (envelopeToListOfData == null) {
+        throw new RuntimeException("`envelopeToListOfData` is required");
+      }
+      if (loadWithParams == null) {
+        throw new RuntimeException("`loadWithParams` is required");
+      }
+      if (loadWithPaginationPath == null) {
+        throw new RuntimeException("`loadWithPaginationPath` is required");
+      }
+      if (envelopeToMoreUrl == null) {
+        throw new RuntimeException("`envelopeToMoreUrl` is required");
       }
 
       // Default params for optional fields

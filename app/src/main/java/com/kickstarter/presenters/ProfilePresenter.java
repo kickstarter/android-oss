@@ -66,6 +66,8 @@ public final class ProfilePresenter extends Presenter<ProfileActivity> implement
 
     final DiscoveryParams firstPageParams = DiscoveryParams.builder().backed(1).sort(DiscoveryParams.Sort.ENDING_SOON).build();
     params.onNext(firstPageParams);
+
+    koala.trackProfileView();
   }
 
   private Observable<List<Project>> projectsWithPagination(@NonNull final DiscoveryParams firstPageParams) {

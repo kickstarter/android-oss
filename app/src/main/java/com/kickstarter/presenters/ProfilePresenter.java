@@ -10,7 +10,6 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Presenter;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
-import com.kickstarter.models.Empty;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.presenters.inputs.ProfilePresenterInputs;
@@ -33,7 +32,7 @@ public final class ProfilePresenter extends Presenter<ProfileActivity> implement
   @Inject CurrentUser currentUser;
 
   // INPUTS
-  private final PublishSubject<Empty> nextPage = PublishSubject.create();
+  private final PublishSubject<Void> nextPage = PublishSubject.create();
   public void nextPage() {
     nextPage.onNext(null);
   }

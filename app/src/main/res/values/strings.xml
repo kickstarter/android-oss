@@ -1,13 +1,5 @@
 <resources>
-  <string name="app_name">Kickstarter</string>
-
-  <!-- Settings -->
-
-  <!-- Facebook app id -->
-  <string name="facebook_app_id">69103156693</string>
-  <string name="hockey_app_id">***REMOVED***</string>
-
-  <!-- User-facing strings -->
+  <!-- Strings here need to be extracted for i18n. -->
   <string name="Activity">Activity</string>
   <string name="action_settings">Settings</string>
   <string name="All_gone">All gone</string>
@@ -219,36 +211,4 @@
   <string name="You_launched_a_project">You launched a project: %1$s</string>
   <string name="You_selected">You selected</string>
   <string name="Youre_a_backer">\u0020• You\'re a backer\u0020</string>
-
-  <!-- Intent strings. Requires package prefix:
-    http://developer.android.com/reference/android/content/Intent.html#putExtra%28java.lang.String,%20boolean%29 -->
-  <string name="intent_comment">com.kickstarter.kickstarter.intent_comment</string>
-  <string name="intent_confirm_reset_password">com.kickstarter.kickstarter.intent_confirm_reset_password</string>
-  <string name="intent_discovery_params">com.kickstarter.kickstarter.intent_discovery_params</string>
-  <string name="intent_email">com.kickstarter.kickstarter.intent_email</string>
-  <string name="intent_facebook_login">com.kickstarter.kickstarter.intent_facebook_login</string>
-  <string name="intent_facebook_user">com.kickstarter.kickstarter.intent_facebook_user</string>
-  <string name="intent_forward">com.kickstarter.kickstarter.intent_forward</string>
-  <string name="intent_internal_build_envelope">com.kickstarter.kickstarter.intent_build_envelope</string>
-  <string name="intent_help_type">com.kickstarter.kickstarter.intent_help_type</string>
-  <string name="intent_login_type">com.kickstarter.kickstarter.intent_login_type</string>
-  <string name="intent_password">com.kickstarter.kickstarter.intent_password</string>
-  <string name="intent_project">com.kickstarter.kickstarter.intent_project</string>
-  <string name="intent_project_param">com.kickstarter.kickstarter.intent_project_param</string>
-  <string name="intent_share_type">"text/plain"</string>
-  <string name="intent_toolbar_title">com.kickstarter.kickstarter.intent_toolbar_title</string>
-  <string name="intent_facebook_token">com.kickstarter.kickstarter.intent_token</string>
-  <string name="intent_url">com.kickstarter.kickstarter.intent_url</string>
-
-  <!-- Save strings -->
-  <string name="save_url">save_url</string>
-
-  <!-- Animation strings -->
-  <string name="woohoo_duration">2000</string>
-
-  <!-- Font strings -->
-  <string name="font_family_medium">sans-serif-medium</string>
-
-  <!-- Koala strings -->
-  <string name="koala_endpoint">https://***REMOVED***/native/track</string>
 </resources>

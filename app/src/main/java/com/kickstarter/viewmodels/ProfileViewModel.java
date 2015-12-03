@@ -8,16 +8,15 @@ import android.support.annotation.Nullable;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.ViewModel;
-import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
-import com.kickstarter.viewmodels.inputs.ProfileViewModelInputs;
-import com.kickstarter.viewmodels.outputs.ProfileViewModelOutputs;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.ProfileActivity;
+import com.kickstarter.viewmodels.inputs.ProfileViewModelInputs;
+import com.kickstarter.viewmodels.outputs.ProfileViewModelOutputs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +24,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public final class ProfileViewModel extends ViewModel<ProfileActivity> implements ProfileViewModelInputs, ProfileViewModelOutputs {
@@ -38,9 +38,9 @@ public final class ProfileViewModel extends ViewModel<ProfileActivity> implement
   }
 
   // OUTPUTS
-  private final PublishSubject<List<Project>> projects = PublishSubject.create();
+  private final BehaviorSubject<List<Project>> projects = BehaviorSubject.create();
   @Override public Observable<List<Project>> projects() {
-    return projects.asObservable();
+    return projects;
   }
 
   @Override public Observable<User> user() {
@@ -59,10 +59,7 @@ public final class ProfileViewModel extends ViewModel<ProfileActivity> implement
 
     final Observable<List<Project>> backedProjects = params.switchMap(this::projectsWithPagination);
 
-    addSubscription(view
-        .compose(Transformers.combineLatestPair(backedProjects))
-        .subscribe(vp -> projects.onNext(vp.second))
-    );
+    backedProjects.subscribe(projects);
 
     final DiscoveryParams firstPageParams = DiscoveryParams.builder()
       .backed(1)

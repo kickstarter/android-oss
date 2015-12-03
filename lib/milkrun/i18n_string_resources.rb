@@ -12,7 +12,8 @@ module Milkrun
             .sort
             .map { |k, v| [k, v.gsub(/'/) { "\\'" } ] }
             .map { |k, v| [k, v.gsub(/&/) { "&amp;" } ] }
-            .each { |k, v| f.puts "  <string name=\"#{k}\" formatted=\"false\">#{v}</string>" }
+            .map { |k, v| "  <string name=\"#{k}\" formatted=\"false\">#{v}</string>" }
+            .each { |str| f.puts(str) }
           f.puts '</resources>'
         end
       end

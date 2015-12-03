@@ -24,9 +24,9 @@ import butterknife.OnClick;
 
 @RequiresViewModel(SettingsViewModel.class)
 public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
-  protected @Bind(R.id.kickstarter_news_and_events_switch) SwitchCompat weeklyNewsletterSwitch;
   protected @Bind(R.id.happening_now_switch) SwitchCompat happeningNewsletterSwitch;
-  protected @Bind(R.id.projects_we_love_switch) SwitchCompat promoNewsletterSwitch;
+  protected @Bind(R.id.kickstarter_news_and_events_switch) SwitchCompat promoNewsletterSwitch;
+  protected @Bind(R.id.projects_we_love_switch) SwitchCompat weeklyNewsletterSwitch;
 
   protected @BindColor(R.color.green) int green;
   protected @BindColor(R.color.gray) int gray;

@@ -29,6 +29,56 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
   @Inject CurrentUser currentUser;
 
   @Override
+  public void notifyMobileOfBackings(boolean b) {
+
+  }
+
+  @Override
+  public void notifyMobileOfComments(boolean b) {
+
+  }
+
+  @Override
+  public void notifyMobileOfFollower(boolean b) {
+
+  }
+
+  @Override
+  public void notifyMobileOfFriendActivity(boolean b) {
+
+  }
+
+  @Override
+  public void notifyMobileOfUpdates(boolean b) {
+
+  }
+
+  @Override
+  public void notifyOfBackings(boolean b) {
+
+  }
+
+  @Override
+  public void notifyOfComments(boolean b) {
+
+  }
+
+  @Override
+  public void notifyOfFollower(boolean b) {
+
+  }
+
+  @Override
+  public void notifyOfFriendActivity(boolean b) {
+
+  }
+
+  @Override
+  public void notifyOfUpdates(boolean b) {
+
+  }
+  
+  @Override
   public void sendHappeningNewsletter(final boolean b) {
     sendHappeningNewsletter.onNext(b);
   }

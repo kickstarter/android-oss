@@ -16,9 +16,14 @@ public final class ProfileAdapter extends KSAdapter {
 
   public interface Delegate extends ProjectCardViewHolder.Delegate {}
 
-  public ProfileAdapter(@NonNull final List<Project> projects, @NonNull final Delegate delegate) {
-    data().add(projects);
+  public ProfileAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;
+  }
+
+  public void takeProjects(final @NonNull List<Project> projects) {
+    data().clear();
+    data().add(projects);
+    notifyDataSetChanged();
   }
 
   protected @LayoutRes
@@ -26,7 +31,7 @@ public final class ProfileAdapter extends KSAdapter {
     return R.layout.project_card_view;
   }
 
-  protected KSViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
+  protected KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     return new ProjectCardViewHolder(view, delegate);
   }
 }

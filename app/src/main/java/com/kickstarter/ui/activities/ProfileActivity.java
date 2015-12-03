@@ -24,7 +24,6 @@ import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 import com.kickstarter.viewmodels.ProfileViewModel;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -36,7 +35,6 @@ import rx.android.schedulers.AndroidSchedulers;
 @RequiresViewModel(ProfileViewModel.class)
 public final class ProfileActivity extends BaseActivity<ProfileViewModel> implements ProfileAdapter.Delegate {
   private ProfileAdapter adapter;
-  private final List<Project> projects = new ArrayList<>();
   private Paginator paginator;
 
   protected @Bind(R.id.avatar) ImageView avatarImageView;
@@ -57,7 +55,7 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> implem
     ButterKnife.bind(this);
     ((KSApplication) getApplication()).component().inject(this);
 
-    adapter = new ProfileAdapter(projects, this);
+    adapter = new ProfileAdapter(this);
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -81,10 +79,8 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> implem
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
-  private void loadProjects(final @NonNull List<Project> newProjects) {
-    projects.clear();
-    projects.addAll(newProjects);
-    adapter.notifyDataSetChanged();
+  private void loadProjects(final @NonNull List<Project> projects) {
+    adapter.takeProjects(projects);
   }
 
   private void setViews(final @NonNull User user) {

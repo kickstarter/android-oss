@@ -54,7 +54,10 @@ public final class ApiClient {
 
   public Observable<AccessTokenEnvelope> registerWithFacebook(@NonNull final String fbAccessToken, final boolean sendNewsletters) {
     return service
-      .registerWithFacebook(RegisterWithFacebookBody.builder().accessToken(fbAccessToken).sendNewsletters(sendNewsletters).build())
+      .registerWithFacebook(RegisterWithFacebookBody.builder()
+        .accessToken(fbAccessToken)
+        .sendNewsletters(sendNewsletters)
+        .build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
@@ -109,6 +112,12 @@ public final class ApiClient {
 
   public Observable<Category> fetchCategory(@NonNull final Category category) {
     return fetchCategory(category.id());
+  }
+
+  public Observable<User> fetchCurrentUser() {
+    return service.fetchCurrentUser()
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
   }
 
   public Observable<AccessTokenEnvelope> login(@NonNull final String email, @NonNull final String password) {

@@ -67,6 +67,10 @@ public class CurrentUser {
     pushNotifications.unregisterDevice();
   }
 
+  public void refresh(final @NonNull User freshUser) {
+    user.onNext(freshUser);
+  }
+
   /**
    * Returns an observable representing the current user. It emits immediately
    * with the current user, and then again each time the user is updated.

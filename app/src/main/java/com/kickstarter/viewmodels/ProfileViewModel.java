@@ -28,7 +28,7 @@ import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public final class ProfileViewModel extends ViewModel<ProfileActivity> implements ProfileViewModelInputs, ProfileViewModelOutputs {
-  @Inject ApiClient apiClient;
+  @Inject ApiClient client;
   @Inject CurrentUser currentUser;
 
   // INPUTS
@@ -57,6 +57,12 @@ public final class ProfileViewModel extends ViewModel<ProfileActivity> implement
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
+    final Observable<User> freshUser = client.fetchCurrentUser()
+      .retry(2)
+      .onErrorResumeNext(e -> Observable.empty());
+
+    freshUser.subscribe(currentUser::refresh);
+
     final Observable<List<Project>> backedProjects = params.switchMap(this::projectsWithPagination);
 
     backedProjects.subscribe(projects);
@@ -84,7 +90,7 @@ public final class ProfileViewModel extends ViewModel<ProfileActivity> implement
   }
 
   private Observable<List<Project>> projectsFromParams(final @NonNull  DiscoveryParams params) {
-    return apiClient.fetchProjects(params)
+    return client.fetchProjects(params)
       .retry(2)
       .onErrorResumeNext(e -> Observable.empty())
       .map(DiscoverEnvelope::projects);

@@ -83,8 +83,7 @@ public final class ProfileViewModel extends ViewModel<ProfileActivity> implement
 
   private Observable<DiscoveryParams> paramsWithPagination(@NonNull final DiscoveryParams firstPageParams) {
     return nextPage
-      .scan(firstPageParams, (currentPage, __) -> currentPage.nextPage())
-      ;
+      .scan(firstPageParams, (currentPage, __) -> currentPage.nextPage());
   }
 
   private Observable<List<Project>> projectsFromParams(@NonNull final DiscoveryParams params) {

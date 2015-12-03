@@ -4,5 +4,5 @@
   <stroke android:width="5dp" android:color="@color/white" />
   <padding android:left="5dp" android:top="5dp" android:right="5dp"
     android:bottom="5dp" />
-  <corners android:radius="100dp" />
+  <corners android:radius="@dimen/profile_avatar_width" />
 </shape>

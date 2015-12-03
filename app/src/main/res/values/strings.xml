@@ -79,7 +79,6 @@
   </string-array>
   <string name="Find_friends">Find friends</string>
   <string name="Follow">Follow</string>
-  <string name="Followers">Followers</string>
   <string name="Forgot_your_password"><u>Forgot your password?</u></string>
   <string name="friend_name_backed_art_project">%1$s backed an Art project</string>
   <string name="friend_name_backed_comics_project">%1$s backed a Comics project</string>
@@ -254,5 +253,5 @@
   <string name="font_family_medium">sans-serif-medium</string>
 
   <!-- Koala strings -->
-  <string name="koala_endpoint">https://***REMOVED***/native/track</string>
+  <string name="koala_endpoint">***REMOVED***</string>
 </resources>

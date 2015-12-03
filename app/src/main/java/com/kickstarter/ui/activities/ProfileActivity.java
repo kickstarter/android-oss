@@ -45,8 +45,8 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> implem
   protected @Bind(R.id.backed_num) TextView backedNumTextView;
   protected @Bind(R.id.created) TextView createdTextView;
   protected @Bind(R.id.backed) TextView backedTextView;
-  protected @Bind(R.id.divider_left) View dividerLeftView;
-  public @Bind(R.id.recycler_view) RecyclerView recyclerView;
+  protected @Bind(R.id.divider) View dividerView;
+  protected @Bind(R.id.recycler_view) RecyclerView recyclerView;
 
   @Inject CurrentUser currentUser;
 
@@ -99,7 +99,7 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> implem
     if (createdNum == null || createdNum == 0) {
       createdTextView.setVisibility(View.GONE);
       createdNumTextView.setVisibility(View.GONE);
-      dividerLeftView.setVisibility(View.GONE);
+      dividerView.setVisibility(View.GONE);
     } else {
       createdNumTextView.setText(createdNum.toString());
     }
@@ -108,6 +108,7 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> implem
     if (backedNum == null || backedNum == 0) {
       backedTextView.setVisibility(View.GONE);
       backedNumTextView.setVisibility(View.GONE);
+      dividerView.setVisibility(View.GONE);
     } else {
       backedNumTextView.setText(backedNum.toString());
     }

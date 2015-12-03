@@ -3,10 +3,7 @@ require 'uri'
 require 'json'
 
 module Milkrun
-  class ServerConfig
-    def initialize
-    end
-
+  class ServerConfigRefresher
     def refresh
       response = Net::HTTP.get_response(url)
 
@@ -17,16 +14,13 @@ module Milkrun
 
       json = JSON.parse(response.body)
       config = JSON.pretty_generate(json)
-
-      File.open(self.class.config_path, "w") do |file|
-        file.write(config)
-      end
+      File.write(path, config)
 
       Milkrun.say "Updated config from server"
     end
 
-    def self.config_path
-      File.expand_path(File.join(File.dirname(__FILE__), "../../app/src/main/assets/json/server-config.json"))
+    def path
+      File.expand_path(File.join(Milkrun.assets_dir, "json/server-config.json"))
     end
 
     private
@@ -35,7 +29,7 @@ module Milkrun
       URI.parse("https://***REMOVED***/v1/app/android/config?client_id=***REMOVED***&all_locales=true")
     end
     
-    # For testing
+    # For local testing
     def local_url
       URI.parse("http://api.ksr.dev/v1/app/android/config?client_id=***REMOVED***&all_locales=true")
     end

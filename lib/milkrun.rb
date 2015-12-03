@@ -13,14 +13,19 @@ require 'milkrun/build_list'
 require 'milkrun/changelog'
 require 'milkrun/git'
 require 'milkrun/hockey_app'
+require 'milkrun/i18n_string_resources'
 require 'milkrun/s3_package'
-require 'milkrun/server_config'
+require 'milkrun/server_config_refresher'
 require 'milkrun/version_code'
 require 'milkrun/version_name'
 
 module Milkrun
+  def self.assets_dir
+    File.join(app_dir, "src/main/assets")
+  end
+
   def self.app_dir
-    project_dir + 'app'
+    File.join(project_dir, 'app')
   end
 
   def self.bucket

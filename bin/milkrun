@@ -21,6 +21,14 @@ class MilkrunApplication
       end
     end
 
+    command :"create-i18n-string-resources" do |c|
+      c.syntax = "milkrun create-i18n-string-resources"
+      c.description = "create i18n string resources for each locale from config"
+      c.action do |args, options|
+        Milkrun::I18nStringResources.new.create
+      end
+    end
+
     command :external do |c|
       c.syntax = 'milkrun external'
       c.description = 'TODO: Submit a new external build to the Play Store'
@@ -56,14 +64,7 @@ CHECKLIST
       c.syntax = "milkrun refresh-server-config"
       c.description = "refresh config from kickstarter api"
       c.action do |args, options|
-        Milkrun::ServerConfig.new.refresh
-      end
-    end
-
-    command :"create-translation-string-resources" do |c|
-      c.syntax = "milkrun create-translation-string-resources"
-      c.description = "create translation string resources for each locale from config"
-      c.action do |args, options|
+        Milkrun::ServerConfigRefresher.new.refresh
       end
     end
 

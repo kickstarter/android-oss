@@ -51,7 +51,7 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> implem
   @Inject CurrentUser currentUser;
 
   @Override
-  protected void onCreate(@Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.profile_layout);
     ButterKnife.bind(this);
@@ -81,13 +81,13 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> implem
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
-  private void loadProjects(@NonNull final List<Project> newProjects) {
+  private void loadProjects(final @NonNull List<Project> newProjects) {
     projects.clear();
     projects.addAll(newProjects);
     adapter.notifyDataSetChanged();
   }
 
-  private void setViews(@NonNull final User user) {
+  private void setViews(final @NonNull User user) {
     Picasso.with(this).load(user.avatar()
       .medium())
       .transform(new CircleTransformation())
@@ -119,10 +119,9 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> implem
    * @param viewHolder
    * @param project
    */
-  public void projectCardClick(@NonNull final ProjectCardViewHolder viewHolder, @NonNull final Project project) {
+  public void projectCardClick(final @NonNull ProjectCardViewHolder viewHolder, final @NonNull Project project) {
     final Intent intent = new Intent(this, ProjectActivity.class)
       .putExtra(getString(R.string.intent_project), project);
-    startActivity(intent);
-    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 }

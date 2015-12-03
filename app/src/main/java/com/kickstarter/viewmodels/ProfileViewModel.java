@@ -53,7 +53,7 @@ public final class ProfileViewModel extends ViewModel<ProfileActivity> implement
   private final PublishSubject<DiscoveryParams> params = PublishSubject.create();
 
   @Override
-  protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
@@ -71,19 +71,19 @@ public final class ProfileViewModel extends ViewModel<ProfileActivity> implement
     koala.trackProfileView();
   }
 
-  private Observable<List<Project>> projectsWithPagination(@NonNull final DiscoveryParams firstPageParams) {
+  private Observable<List<Project>> projectsWithPagination(final @NonNull DiscoveryParams firstPageParams) {
     return paramsWithPagination(firstPageParams)
       .concatMap(this::projectsFromParams)
       .takeUntil(List::isEmpty)
       .scan(new ArrayList<>(), ListUtils::concatDistinct);
   }
 
-  private Observable<DiscoveryParams> paramsWithPagination(@NonNull final DiscoveryParams firstPageParams) {
+  private Observable<DiscoveryParams> paramsWithPagination(final @NonNull DiscoveryParams firstPageParams) {
     return nextPage
       .scan(firstPageParams, (currentPage, __) -> currentPage.nextPage());
   }
 
-  private Observable<List<Project>> projectsFromParams(@NonNull final DiscoveryParams params) {
+  private Observable<List<Project>> projectsFromParams(final @NonNull  DiscoveryParams params) {
     return apiClient.fetchProjects(params)
       .retry(2)
       .onErrorResumeNext(e -> Observable.empty())

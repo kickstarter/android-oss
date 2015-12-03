@@ -45,7 +45,7 @@ public final class FriendBackingViewHolder extends ActivityListViewHolder {
       .load(activity.user().avatar().small())
       .transform(new CircleTransformation())
       .into(avatarImageView);
-    creatorNameTextView.setText(context.getString(R.string.by_, activity.project().creator().name()));
+    creatorNameTextView.setText(context.getString(R.string.___by_, activity.project().creator().name()));
     projectNameTextView.setText(activity.project().name());
     Picasso.with(context)
       .load(activity.project().photo().little())

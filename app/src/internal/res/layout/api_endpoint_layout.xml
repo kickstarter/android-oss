@@ -9,7 +9,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/grid_3"
-    android:text="@string/Enter_the_base_url_of_the_api"
+    android:text="@string/___Enter_the_base_url_of_the_api"
     android:textColor="@color/dark_gray" />
 
   <EditText

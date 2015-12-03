@@ -66,7 +66,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   }
 
   public void show(@NonNull final Project project) {
-    backedProjectTextView.setText(Html.fromHtml(getString(R.string.You_just_backed, project.name())));
+    backedProjectTextView.setText(Html.fromHtml(getString(R.string.___You_just_backed, project.name())));
   }
 
   public void showRecommended(@NonNull final List<Project> projects, @NonNull final Category category) {
@@ -128,7 +128,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
       .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
       .putExtra(Intent.EXTRA_TEXT, shareString(project));
 
-    startActivity(Intent.createChooser(intent, getString(R.string.Share_this_project)));
+    startActivity(Intent.createChooser(intent, getString(R.string.___Share_this_project)));
   }
 
   public void startTwitterShareIntent(@NonNull final Project project) {
@@ -151,7 +151,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   }
 
   private String shareString(@NonNull final Project project) {
-    return getString(R.string.I_just_backed_project_on_Kickstarter, project.name(), project.secureWebProjectUrl());
+    return getString(R.string.___I_just_backed_project_on_Kickstarter, project.name(), project.secureWebProjectUrl());
   }
 
   private void displayWoohooBackground() {

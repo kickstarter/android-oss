@@ -54,8 +54,8 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
   @Nullable @Bind(R.id.comment_body) EditText commentBodyEditText;
   public @Nullable @Bind(R.id.post_button) TextView postCommentButton;
 
-  @BindString(R.string.Post_comment_error) String postCommentErrorString;
-  @BindString(R.string.Comment_posted) String commentPostedString;
+  @BindString(R.string.___Post_comment_error) String postCommentErrorString;
+  @BindString(R.string.___Comment_posted) String commentPostedString;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {

@@ -47,7 +47,7 @@ public final class ProjectUpdateViewHolder extends ActivityListViewHolder {
       .into(projectPhotoImageView);
     timestampTextView.setText(DateTimeUtils.relativeDateInWords(activity.update().publishedAt(), false, true));
     updateBodyTextView.setText(activity.update().truncatedBody());
-    updateSequenceTextView.setText(context.getString(R.string.Update_sequence, activity.update().sequence()));
+    updateSequenceTextView.setText(context.getString(R.string.___Update_sequence, activity.update().sequence()));
     updateTitleTextView.setText(activity.update().title());
   }
 

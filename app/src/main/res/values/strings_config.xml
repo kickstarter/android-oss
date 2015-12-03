@@ -6,4 +6,10 @@
   <string name="hockey_app_id">***REMOVED***</string>
   <string name="koala_endpoint">https://***REMOVED***/native/track</string>
   <string name="woohoo_duration">2000</string>
+
+  <string-array name="facebook_permissions_array">
+    <item>public_profile</item>
+    <item>user_friends</item>
+    <item>email</item>
+  </string-array>
 </resources>

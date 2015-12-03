@@ -29,7 +29,7 @@ public final class SearchTermViewHolder extends KSViewHolder {
     final Context context = view.getContext();
 
     if (params.sort() == DiscoveryParams.Sort.POPULAR) {
-      termTextView.setText(context.getString(R.string.Most_Popular));
+      termTextView.setText(context.getString(R.string.___Most_Popular));
     } else {
       // NOTE: This path isn't currently executed, keeping it in case we modify the design to show this view
       // in more situations

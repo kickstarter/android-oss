@@ -2,14 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
   <item
     android:id="@+id/terms"
-    android:title="@string/Terms_of_Use" />
+    android:title="@string/___Terms_of_Use" />
   <item
     android:id="@+id/privacy_policy"
-    android:title="@string/Privacy_Policy" />
+    android:title="@string/___Privacy_Policy" />
   <item
     android:id="@+id/cookie_policy"
-    android:title="@string/Cookie_Policy" />
+    android:title="@string/___Cookie_Policy" />
   <item
     android:id="@+id/help"
-    android:title="@string/Help" />
+    android:title="@string/___Help" />
 </menu>

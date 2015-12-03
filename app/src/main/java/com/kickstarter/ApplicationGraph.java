@@ -16,6 +16,7 @@ import com.kickstarter.viewmodels.LoginViewModel;
 import com.kickstarter.viewmodels.ProjectViewModel;
 import com.kickstarter.viewmodels.ResetPasswordViewModel;
 import com.kickstarter.viewmodels.SearchViewModel;
+import com.kickstarter.viewmodels.SettingsViewModel;
 import com.kickstarter.viewmodels.SignupViewModel;
 import com.kickstarter.viewmodels.ThanksViewModel;
 import com.kickstarter.viewmodels.TwoFactorViewModel;
@@ -78,6 +79,7 @@ public interface ApplicationGraph {
   void inject(RewardViewHolder __);
   void inject(SearchViewModel __);
   void inject(SettingsActivity __);
+  void inject(SettingsViewModel __);
   void inject(SignupViewModel __);
   void inject(ThanksViewModel __);
   void inject(TwoFactorViewModel __);

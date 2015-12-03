@@ -59,6 +59,7 @@
       <include layout="@layout/horizontal_line_thin_view"/>
 
       <RelativeLayout
+        android:id="@+id/manage_project_notifications"
         android:background="@drawable/click_indicator_light_masked"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

@@ -49,7 +49,7 @@
         android:layout_marginStart="@dimen/grid_2"
         android:layout_marginEnd="@dimen/grid_2"
         android:layout_marginRight="@dimen/grid_2"
-        android:text="@string/Well_never_post_anything" />
+        android:text="@string/___Well_never_post_anything" />
 
       <Button
         style="@style/BorderButton"
@@ -57,14 +57,14 @@
         android:layout_width="match_parent"
         android:layout_marginTop="@dimen/grid_3"
         android:layout_marginBottom="@dimen/grid_1"
-        android:text="@string/Log_in_with_email" />
+        android:text="@string/___Log_in_with_email" />
 
       <Button
         style="@style/BorderButton"
         android:id="@+id/sign_up_button"
         android:layout_width="match_parent"
         android:layout_marginTop="@dimen/grid_1"
-        android:text="@string/Sign_up_with_email" />
+        android:text="@string/___Sign_up_with_email" />
 
       <TextView
         style="@style/CaptionSecondary"
@@ -83,7 +83,7 @@
         android:paddingRight="@dimen/grid_1"
         android:paddingTop="@dimen/grid_1"
         android:paddingBottom="@dimen/grid_1"
-        android:text="@string/By_signing_up_you_agree_to_our_sign_up" />
+        android:text="@string/___By_signing_up_you_agree_to_our_sign_up" />
 
     </LinearLayout>
 

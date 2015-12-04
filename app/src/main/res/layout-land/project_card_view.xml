@@ -139,7 +139,7 @@
 
         <TextView
           android:id="@+id/successfully_funded_view"
-          android:text="@string/Successfully_funded"
+          android:text="@string/___Successfully_funded"
           android:visibility="gone"
           style="@style/BodyPrimaryMedium"
           android:textColor="@color/white"

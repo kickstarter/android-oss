@@ -16,7 +16,7 @@
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_1"
       android:layout_marginBottom="@dimen/grid_1"
-      android:text="@string/Build" />
+      android:text="@string/___Build" />
 
     <TextView
       style="@style/BodyPrimary"
@@ -31,7 +31,7 @@
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_3"
       android:layout_marginBottom="@dimen/grid_1"
-      android:text="@string/Changelog" />
+      android:text="@string/___Changelog" />
 
     <TextView
       style="@style/BodyPrimary"
@@ -46,13 +46,13 @@
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_3"
       android:layout_marginBottom="@dimen/grid_1"
-      android:text="@string/Instructions" />
+      android:text="@string/___Instructions" />
 
     <TextView
       style="@style/BodyPrimary"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="@string/A_request_has_been_made_to_download_the_latest_build" />
+      android:text="@string/___A_request_has_been_made_to_download_the_latest_build" />
 
     <Button
       style="@style/GreenRoundedButton"
@@ -63,7 +63,7 @@
       android:layout_gravity="center_horizontal"
       android:paddingTop="12dp"
       android:paddingBottom="12dp"
-      android:text="@string/Open_downloads_folder" />
+      android:text="@string/___Open_downloads_folder" />
 
   </LinearLayout>
 

@@ -1,254 +1,213 @@
 <resources>
-  <string name="app_name">Kickstarter</string>
+  <!-- Deprecated strings, these should to be replaced in favor of strings that have been translated.
+    Prefix keys name with ___, that way when working with strings elsewhere it is immediately obvious when a string
+    is deprecated based on its name.
 
-  <!-- Settings -->
-
-  <!-- Facebook app id -->
-  <string name="facebook_app_id">69103156693</string>
-  <string name="hockey_app_id">***REMOVED***</string>
-
-  <!-- User-facing strings -->
-  <string name="Activity">Activity</string>
-  <string name="action_settings">Settings</string>
-  <string name="All_gone">All gone</string>
-  <string name="All_of_Category">All of %1$s</string>
-  <string name="Already_have_a_Kickstarter_account">Already have a Kickstarter account?</string>
-  <string name="A_newer_build_is_available">A newer build is available. Download upgrade?</string>
-  <string name="Are_those_new_shoes">
+    There may be a few strings here that we *don't* want to translate, we'll figure out a nice space for them later. -->
+  <string name="___Activity">Activity</string>
+  <string name="___action_settings">Settings</string>
+  <string name="___All_gone">All gone</string>
+  <string name="___All_of_Category">All of %1$s</string>
+  <string name="___Already_have_a_Kickstarter_account">Already have a Kickstarter account?</string>
+  <string name="___A_newer_build_is_available">A newer build is available. Download upgrade?</string>
+  <string name="___Are_those_new_shoes">
     Are those new shoes? If they’re not new, they look really shiny and beautiful.
   </string>
-  <string name="Aw_how_sad_Be_the_first">Aw, how sad. Be the first backer to leave a comment on this project.</string>
-  <string name="Aw_how_sad_Become_a_backer">Aw, how sad. Become a backer to leave a comment.</string>
-  <string name="Aw_how_sad_Log_in">Aw, how sad. Log in to become a backer or leave a comment.</string>
-  <string name="Back_this_project">Back this project</string>
-  <string name="Backer_number">Backer #%1$s</string>
-  <string name="Backing">Backing</string>
-  <string name="_backers">%1$s backers</string>
-  <string name="backers">backers</string>
-  <string name="Before_we_make_your_new_account">
+  <string name="___Aw_how_sad_Be_the_first">Aw, how sad. Be the first backer to leave a comment on this project.</string>
+  <string name="___Aw_how_sad_Become_a_backer">Aw, how sad. Become a backer to leave a comment.</string>
+  <string name="___Aw_how_sad_Log_in">Aw, how sad. Log in to become a backer or leave a comment.</string>
+  <string name="___Back_this_project">Back this project</string>
+  <string name="___Backer_number">Backer #%1$s</string>
+  <string name="___Backing">Backing</string>
+  <string name="____backers">%1$s backers</string>
+  <string name="___backers">backers</string>
+  <string name="___Before_we_make_your_new_account">
     Before we make your new account, please double check that we got the right email address from your Facebook profile:
   </string>
-  <string name="Build">Build</string>
-  <string name="Build_date">Build Date</string>
-  <string name="Build_information">Build Information</string>
-  <string name="Blurb_read_more">%1$s &lt;u>Read\u00A0more&lt;/u></string>
-  <string name="by_">by\u0020%1$s</string>
-  <string name="by_creator">by &lt;u>%1$s&lt;/u></string>
-  <string name="By_signing_up_you_agree_to_our">
+  <string name="___Build">Build</string>
+  <string name="___Build_date">Build Date</string>
+  <string name="___Build_information">Build Information</string>
+  <string name="___Blurb_read_more">%1$s &lt;u>Read\u00A0more&lt;/u></string>
+  <string name="___by_">by\u0020%1$s</string>
+  <string name="___by_creator">by &lt;u>%1$s&lt;/u></string>
+  <string name="___By_signing_up_you_agree_to_our">
     By signing up you agree to our terms of use, privacy policy, and cookie policy. We’ll never post
     anything without your permission.
   </string>
-  <string name="By_signing_up_you_agree_to_our_sign_up">
+  <string name="___By_signing_up_you_agree_to_our_sign_up">
     By signing up you agree to our <u>terms of use</u>, <u>privacy policy</u>, and <u>cookie policy</u>.
   </string>
-  <string name="Campaign">Campaign</string>
-  <string name="Cancel">Cancel</string>
-  <string name="Categories">Categories</string>
-  <string name="Changelog">Changelog</string>
-  <string name="Close">Close</string>
-  <string name="Comment_posted">Comment posted!</string>
-  <string name="Post_comment_error">Couldn’t post comment.</string>
-  <string name="Comments">Comments</string>
-  <string name="Cookie_Policy">Cookie Policy</string>
-  <string name="Create_new_account">Create new account</string>
-  <string name="creator_launched_a_project">%1$s launched a project: %2$s</string>
-  <string name="Created_by">Created by</string>
-  <string name="Created_by_">Created by&lt;br>&lt;b>%1$s&lt;/b></string>
-  <string name="Creator">Creator</string>
-  <string name="days">days</string>
-  <string name="Development_settings">Development Settings</string>
-  <string name="Discover_new_projects_with_our_weekly_newsletter">Discover new projects with our weekly newsletter.</string>
-  <string name="Discover_projects">Discover projects</string>
-  <string name="Done">Done</string>
-  <string name="Download_build">Download Build</string>
-  <string name="Email_address">Email address</string>
-  <string name="Endpoint">Endpoint</string>
-  <string name="Enter_code">Enter code</string>
-  <string name="Enter_the_base_url_of_the_api">Enter the base URL of the API you’d like to use.\n\n
+  <string name="___Campaign">Campaign</string>
+  <string name="___Cancel">Cancel</string>
+  <string name="___Categories">Categories</string>
+  <string name="___Changelog">Changelog</string>
+  <string name="___Close">Close</string>
+  <string name="___Comment_posted">Comment posted!</string>
+  <string name="___Post_comment_error">Couldn’t post comment.</string>
+  <string name="___Comments">Comments</string>
+  <string name="___Cookie_Policy">Cookie Policy</string>
+  <string name="___Create_new_account">Create new account</string>
+  <string name="___creator_launched_a_project">%1$s launched a project: %2$s</string>
+  <string name="___Created_by">Created by</string>
+  <string name="___Created_by_">Created by&lt;br>&lt;b>%1$s&lt;/b></string>
+  <string name="___Creator">Creator</string>
+  <string name="___days">days</string>
+  <string name="___Development_settings">Development Settings</string>
+  <string name="___Discover_new_projects_with_our_weekly_newsletter">Discover new projects with our weekly newsletter.</string>
+  <string name="___Discover_projects">Discover projects</string>
+  <string name="___Done">Done</string>
+  <string name="___Download_build">Download Build</string>
+  <string name="___Email_address">Email address</string>
+  <string name="___Endpoint">Endpoint</string>
+  <string name="___Enter_code">Enter code</string>
+  <string name="___Enter_the_base_url_of_the_api">Enter the base URL of the API you’d like to use.\n\n
     e.g.: https://api-christopher.***REMOVED***</string>
-  <string name="Estimated_delivery">Estimated Delivery</string>
-  <string name="Everything">Everything</string>
-  <string name="Explore_Category">Explore %1$s</string>
-  <string name="Explore_new_projects">Explore new projects</string>
-  <string-array name="facebook_permissions_array">
-    <item>public_profile</item>
-    <item>user_friends</item>
-    <item>email</item>
-  </string-array>
-  <string name="Find_friends">Find friends</string>
-  <string name="Follow">Follow</string>
-  <string name="Forgot_your_password"><u>Forgot your password?</u></string>
-  <string name="friend_name_backed_art_project">%1$s backed an Art project</string>
-  <string name="friend_name_backed_comics_project">%1$s backed a Comics project</string>
-  <string name="friend_name_backed_crafts_project">%1$s backed a Crafts project</string>
-  <string name="friend_name_backed_dance_project">%1$s backed a Dance project</string>
-  <string name="friend_name_backed_design_project">%1$s backed a Design project</string>
-  <string name="friend_name_backed_fashion_project">%1$s backed a Fashion project</string>
-  <string name="friend_name_backed_film_project">%1$s backed a Film \u0026 Video project</string>
-  <string name="friend_name_backed_food_project">%1$s backed a Food project</string>
-  <string name="friend_name_backed_games_project">%1$s backed a Games project</string>
-  <string name="friend_name_backed_journalism_project">%1$s backed a Journalism project</string>
-  <string name="friend_name_backed_music_project">%1$s backed a Music project</string>
-  <string name="friend_name_backed_photography_project">%1$s backed a Photography project</string>
-  <string name="friend_name_backed_publishing_project">%1$s backed a Publishing project</string>
-  <string name="friend_name_backed_technology_project">%1$s backed a Technology project</string>
-  <string name="friend_name_backed_theater_project">%1$s backed a Theater project</string>
-  <string name="Friends_Backed">Friends Backed</string>
-  <string name="Full_name">Full name</string>
-  <string name="Funded">Funded</string>
-  <string name="Funding_canceled">Funding canceled</string>
-  <string name="Funding_suspended_">Funding suspended %1$s</string>
-  <string name="Funding_unsuccessful_">Funding unsuccessful %1$s</string>
-  <string name="goal">goal</string>
-  <string name="Help">Help</string>
-  <string name="hours">hours</string>
-  <string name="I_just_backed_project_on_Kickstarter">I just backed %1$s on Kickstarter: %2$s</string>
-  <string name="Instructions">Instructions</string>
-  <string name="Launched">Launched</string>
-  <string name="Lets_try_that_again">Let\'s try that again</string>
-  <string name="Limited_left_of">Limited (%1$s left of %2$s)</string>
-  <string name="Log_in">Log in</string>
-  <string name="Log_in_error">Log in error</string>
-  <string name="Log_in_with_email">Log in with email</string>
-  <string name="Log_in_with_Facebook">Log in with Facebook</string>
-  <string name="Log_in_or_sign_up">Log in or sign up</string>
-  <string name="Log_out">Log out</string>
-  <string name="Logged_out">Logged out</string>
-  <string name="Login_does_not_match_any_of_our_records">Login does not match any of our records.</string>
-  <string name="Looking_for_more_projects">Looking for more projects? Check these out.</string>
-  <string name="Manage_pledge">Manage pledge</string>
-  <string name="mins">mins</string>
-  <string name="More">More</string>
-  <string name="Most_Popular">Most Popular</string>
-  <string name="NA">N/A</string>
-  <string name="Nearby">Nearby</string>
-  <string name="Network">Network</string>
-  <string name="No_activity_yet">No activity yet</string>
-  <string name="No_comments">No comments</string>
-  <string name="Not_implemented_yet">Not implemented yet, coming soon!</string>
-  <string name="Nice_to_see_you_again">Nice to see you again.</string>
-  <string name="Number_live_projects">%1$s live projects</string>
-  <string name="of_">of\u0020</string>
-  <string name="Okay">Okay</string>
-  <string name="Oops">Oops!</string>
-  <string name="Open_downloads_folder">Open Downloads folder</string>
-  <string name="A_request_has_been_made_to_download_the_latest_build">
+  <string name="___Estimated_delivery">Estimated Delivery</string>
+  <string name="___Everything">Everything</string>
+  <string name="___Explore_Category">Explore %1$s</string>
+  <string name="___Explore_new_projects">Explore new projects</string>
+  <string name="___Find_friends">Find friends</string>
+  <string name="___Follow">Follow</string>
+  <string name="___Forgot_your_password"><u>Forgot your password?</u></string>
+  <string name="___friend_name_backed_art_project">%1$s backed an Art project</string>
+  <string name="___friend_name_backed_comics_project">%1$s backed a Comics project</string>
+  <string name="___friend_name_backed_crafts_project">%1$s backed a Crafts project</string>
+  <string name="___friend_name_backed_dance_project">%1$s backed a Dance project</string>
+  <string name="___friend_name_backed_design_project">%1$s backed a Design project</string>
+  <string name="___friend_name_backed_fashion_project">%1$s backed a Fashion project</string>
+  <string name="___friend_name_backed_film_project">%1$s backed a Film \u0026 Video project</string>
+  <string name="___friend_name_backed_food_project">%1$s backed a Food project</string>
+  <string name="___friend_name_backed_games_project">%1$s backed a Games project</string>
+  <string name="___friend_name_backed_journalism_project">%1$s backed a Journalism project</string>
+  <string name="___friend_name_backed_music_project">%1$s backed a Music project</string>
+  <string name="___friend_name_backed_photography_project">%1$s backed a Photography project</string>
+  <string name="___friend_name_backed_publishing_project">%1$s backed a Publishing project</string>
+  <string name="___friend_name_backed_technology_project">%1$s backed a Technology project</string>
+  <string name="___friend_name_backed_theater_project">%1$s backed a Theater project</string>
+  <string name="___Friends_Backed">Friends Backed</string>
+  <string name="___Full_name">Full name</string>
+  <string name="___Funded">Funded</string>
+  <string name="___Funding_canceled">Funding canceled</string>
+  <string name="___Funding_suspended_">Funding suspended %1$s</string>
+  <string name="___Funding_unsuccessful_">Funding unsuccessful %1$s</string>
+  <string name="___goal">goal</string>
+  <string name="___Help">Help</string>
+  <string name="___hours">hours</string>
+  <string name="___I_just_backed_project_on_Kickstarter">I just backed %1$s on Kickstarter: %2$s</string>
+  <string name="___Instructions">Instructions</string>
+  <string name="___Launched">Launched</string>
+  <string name="___Lets_try_that_again">Let\'s try that again</string>
+  <string name="___Limited_left_of">Limited (%1$s left of %2$s)</string>
+  <string name="___Log_in">Log in</string>
+  <string name="___Log_in_error">Log in error</string>
+  <string name="___Log_in_with_email">Log in with email</string>
+  <string name="___Log_in_with_Facebook">Log in with Facebook</string>
+  <string name="___Log_in_or_sign_up">Log in or sign up</string>
+  <string name="___Log_out">Log out</string>
+  <string name="___Logged_out">Logged out</string>
+  <string name="___Login_does_not_match_any_of_our_records">Login does not match any of our records.</string>
+  <string name="___Looking_for_more_projects">Looking for more projects? Check these out.</string>
+  <string name="___Manage_pledge">Manage pledge</string>
+  <string name="___mins">mins</string>
+  <string name="___More">More</string>
+  <string name="___Most_Popular">Most Popular</string>
+  <string name="___NA">N/A</string>
+  <string name="___Nearby">Nearby</string>
+  <string name="___Network">Network</string>
+  <string name="___No_activity_yet">No activity yet</string>
+  <string name="___No_comments">No comments</string>
+  <string name="___Not_implemented_yet">Not implemented yet, coming soon!</string>
+  <string name="___Nice_to_see_you_again">Nice to see you again.</string>
+  <string name="___Number_live_projects">%1$s live projects</string>
+  <string name="___of_">of\u0020</string>
+  <string name="___Okay">Okay</string>
+  <string name="___Oops">Oops!</string>
+  <string name="___Open_downloads_folder">Open Downloads folder</string>
+  <string name="___A_request_has_been_made_to_download_the_latest_build">
     A request has been made to download the latest build. When the request has completed, open your downloads
     folder and tap the .apk file to install.\n\nYou must enable the option to allow installation of apps from
     unknown sources in the security settings of your device.
   </string>
-  <string name="Password">Password</string>
-  <string name="Password_minimum_6_characters">Password (minimum 6 characters)</string>
-  <string name="Please_enter_your_verification_code_to_continue">
+  <string name="___Password">Password</string>
+  <string name="___Password_minimum_6_characters">Password (minimum 6 characters)</string>
+  <string name="___Please_enter_your_verification_code_to_continue">
     Please enter your verification code to continue.
   </string>
-  <string name="Pledge_or_more">Pledge %1$s or more</string>
-  <string name="Pledged">Pledged</string>
-  <string name="pledged_of_">pledged of\u0020</string>
-  <string name="pledged_of_goal">pledged of %1$s</string>
-  <string name="pledged_amount_on_date">%1$s on %2$s</string>
-  <string name="Post">Post</string>
-  <string name="Privacy_Policy">Privacy Policy</string>
-  <string name="project_of_the_day">Project of the day!</string>
-  <string name="project_was_cancelled_by_its_creator">%1$s was cancelled by its creator.</string>
-  <string name="project_was_not_successfully_funded">%1$s was not successfully funded.</string>
-  <string name="project_was_successfully_funded">%1$s was successfully funded!</string>
-  <string name="project_resumed">%1$s resumed.</string>
-  <string name="project_was_suspended">%1$s was suspended.</string>
-  <string name="Public_comment">Public comment</string>
-  <string name="Resend">Resend</string>
-  <string name="Reset_my_password">Reset my password</string>
-  <string name="Reward">Reward</string>
-  <string name="reward_amount_description">%1$s - %2$s</string>
-  <string name="secs">secs</string>
-  <string name="Search">Search</string>
-  <string name="Search_projects">Search projects</string>
-  <string name="Select_email_application">Select email application:</string>
-  <string name="Sha">SHA</string>
-  <string name="Share">Share</string>
-  <string name="share_message">"%1$s, via %2$s"</string>
-  <string name="Share_this_project">Share this project</string>
-  <string name="Shipping">Shipping</string>
-  <string name="Shipping_destinations">Shipping destinations</string>
-  <string name="Sign_up">Sign up</string>
-  <string name="Sign_up_error">Sign up error</string>
-  <string name="Sign_up_with_email">Sign up with email</string>
-  <string name="Sign_up_with_Facebook">Sign up with Facebook</string>
-  <string name="Sign_up_or_log_in_with_your_Facebook_account">
+  <string name="___Pledge_or_more">Pledge %1$s or more</string>
+  <string name="___Pledged">Pledged</string>
+  <string name="___pledged_of_">pledged of\u0020</string>
+  <string name="___pledged_of_goal">pledged of %1$s</string>
+  <string name="___pledged_amount_on_date">%1$s on %2$s</string>
+  <string name="___Post">Post</string>
+  <string name="___Privacy_Policy">Privacy Policy</string>
+  <string name="___project_of_the_day">Project of the day!</string>
+  <string name="___project_was_cancelled_by_its_creator">%1$s was cancelled by its creator.</string>
+  <string name="___project_was_not_successfully_funded">%1$s was not successfully funded.</string>
+  <string name="___project_was_successfully_funded">%1$s was successfully funded!</string>
+  <string name="___project_resumed">%1$s resumed.</string>
+  <string name="___project_was_suspended">%1$s was suspended.</string>
+  <string name="___Public_comment">Public comment</string>
+  <string name="___Resend">Resend</string>
+  <string name="___Reset_my_password">Reset my password</string>
+  <string name="___Reward">Reward</string>
+  <string name="___reward_amount_description">%1$s - %2$s</string>
+  <string name="___secs">secs</string>
+  <string name="___Search">Search</string>
+  <string name="___Search_projects">Search projects</string>
+  <string name="___Select_email_application">Select email application:</string>
+  <string name="___Sha">SHA</string>
+  <string name="___Share">Share</string>
+  <string name="___share_message">"%1$s, via %2$s"</string>
+  <string name="___Share_this_project">Share this project</string>
+  <string name="___Shipping">Shipping</string>
+  <string name="___Shipping_destinations">Shipping destinations</string>
+  <string name="___Sign_up">Sign up</string>
+  <string name="___Sign_up_error">Sign up error</string>
+  <string name="___Sign_up_with_email">Sign up with email</string>
+  <string name="___Sign_up_with_Facebook">Sign up with Facebook</string>
+  <string name="___Sign_up_or_log_in_with_your_Facebook_account">
     Sign up or log in with your Facebook account or email address below:
   </string>
-  <string name="Something_went_wrong_try_again_later">Something went wrong, please try again later.</string>
-  <string name="Sorry_we_do_not_know_that_email_address_try_again">
+  <string name="___Something_went_wrong_try_again_later">Something went wrong, please try again later.</string>
+  <string name="___Sorry_we_do_not_know_that_email_address_try_again">
     Sorry, we don\'t know that email address. Try again?</string>
-  <string name="Status_">Status: %1$s</string>
-  <string name="Staff_Picks">Staff Picks</string>
-  <string name="Starred">Starred</string>
-  <string name="Successfully_funded">Successfully funded!</string>
-  <string name="Submit">Submit</string>
-  <string name="Submit_bug_report">Submit bug report</string>
-  <string name="Terms_of_Use">Terms of Use</string>
-  <string name="The_code_provided_does_not_match">The code provided does not match.</string>
-  <string name="Resend_code_failed">Unable to resend your code.</string>
-  <string name="This_project_will_only_be_funded_if">
+  <string name="___Status_">Status: %1$s</string>
+  <string name="___Staff_Picks">Staff Picks</string>
+  <string name="___Starred">Starred</string>
+  <string name="___Successfully_funded">Successfully funded!</string>
+  <string name="___Submit">Submit</string>
+  <string name="___Submit_bug_report">Submit bug report</string>
+  <string name="___Terms_of_Use">Terms of Use</string>
+  <string name="___The_code_provided_does_not_match">The code provided does not match.</string>
+  <string name="___Resend_code_failed">Unable to resend your code.</string>
+  <string name="___This_project_will_only_be_funded_if">
     This project will only be funded if at least %1$s is pledged by %2$s</string>
-  <string name="title_activity_project">View Project</string>
-  <string name="Tweet">Tweet</string>
-  <string name="_to_go">\u0020to go</string>
-  <string name="Unable_to_connect">Unable to connect</string>
-  <string name="Unable_to_login">Unable to login</string>
-  <string name="Update_sequence">Update #%1$d</string>
-  <string name="Updates">Updates</string>
-  <string name="Upgrade_app">Upgrade app</string>
-  <string name="Use_your_email_address">Use your email address:</string>
-  <string name="username_is_following_you">&lt;b>%1$s&lt;/b> is following you!</string>
-  <string name="Variant">Variant</string>
-  <string name="View_pledge">View pledge</string>
-  <string name="Verify">Verify</string>
-  <string name="Version_code">Version Code</string>
-  <string name="Version_name">Version Name</string>
-  <string name="Well_never_post_anything">We\'ll never post anything without your permission.</string>
-  <string name="Well_remind_you_48_hours">We\'ll remind you 48 hours before this project ends!</string>
-  <string name="Were_having_some_trouble_getting_you_logged_in">We\'re having some trouble getting you logged in.</string>
-  <string name="We_sent_an_email_to_email_with_instructions_to_reset_your_password">We\'ve sent an email to %1$s with instructions to reset your password.</string>
-  <string name="When_you_back_a_project_or_follow_a_friend">
+  <string name="___title_activity_project">View Project</string>
+  <string name="___Tweet">Tweet</string>
+  <string name="____to_go">\u0020to go</string>
+  <string name="___Unable_to_connect">Unable to connect</string>
+  <string name="___Unable_to_login">Unable to login</string>
+  <string name="___Update_sequence">Update #%1$d</string>
+  <string name="___Updates">Updates</string>
+  <string name="___Upgrade_app">Upgrade app</string>
+  <string name="___Use_your_email_address">Use your email address:</string>
+  <string name="___username_is_following_you">&lt;b>%1$s&lt;/b> is following you!</string>
+  <string name="___Variant">Variant</string>
+  <string name="___View_pledge">View pledge</string>
+  <string name="___Verify">Verify</string>
+  <string name="___Version_code">Version Code</string>
+  <string name="___Version_name">Version Name</string>
+  <string name="___Well_never_post_anything">We\'ll never post anything without your permission.</string>
+  <string name="___Well_remind_you_48_hours">We\'ll remind you 48 hours before this project ends!</string>
+  <string name="___Were_having_some_trouble_getting_you_logged_in">We\'re having some trouble getting you logged in.</string>
+  <string name="___We_sent_an_email_to_email_with_instructions_to_reset_your_password">We\'ve sent an email to %1$s with instructions to reset your password.</string>
+  <string name="___When_you_back_a_project_or_follow_a_friend">
     When you back a project or follow a friend, their activity will appear here.
   </string>
-  <string name="Woo_hoo">Woo-hoo!</string>
-  <string name="You">You</string>
-  <string name="You_just_backed">You just backed &lt;b>%1$s&lt;/b>. Share this project with friends to help it along!</string>
-  <string name="You_launched_a_project">You launched a project: %1$s</string>
-  <string name="You_selected">You selected</string>
-  <string name="Youre_a_backer">\u0020• You\'re a backer\u0020</string>
-
-  <!-- Intent strings. Requires package prefix:
-    http://developer.android.com/reference/android/content/Intent.html#putExtra%28java.lang.String,%20boolean%29 -->
-  <string name="intent_comment">com.kickstarter.kickstarter.intent_comment</string>
-  <string name="intent_confirm_reset_password">com.kickstarter.kickstarter.intent_confirm_reset_password</string>
-  <string name="intent_discovery_params">com.kickstarter.kickstarter.intent_discovery_params</string>
-  <string name="intent_email">com.kickstarter.kickstarter.intent_email</string>
-  <string name="intent_facebook_login">com.kickstarter.kickstarter.intent_facebook_login</string>
-  <string name="intent_facebook_user">com.kickstarter.kickstarter.intent_facebook_user</string>
-  <string name="intent_forward">com.kickstarter.kickstarter.intent_forward</string>
-  <string name="intent_internal_build_envelope">com.kickstarter.kickstarter.intent_build_envelope</string>
-  <string name="intent_help_type">com.kickstarter.kickstarter.intent_help_type</string>
-  <string name="intent_login_type">com.kickstarter.kickstarter.intent_login_type</string>
-  <string name="intent_password">com.kickstarter.kickstarter.intent_password</string>
-  <string name="intent_project">com.kickstarter.kickstarter.intent_project</string>
-  <string name="intent_project_param">com.kickstarter.kickstarter.intent_project_param</string>
-  <string name="intent_share_type">"text/plain"</string>
-  <string name="intent_toolbar_title">com.kickstarter.kickstarter.intent_toolbar_title</string>
-  <string name="intent_facebook_token">com.kickstarter.kickstarter.intent_token</string>
-  <string name="intent_url">com.kickstarter.kickstarter.intent_url</string>
-
-  <!-- Save strings -->
-  <string name="save_url">save_url</string>
-
-  <!-- Animation strings -->
-  <string name="woohoo_duration">2000</string>
-
-  <!-- Font strings -->
-  <string name="font_family_medium">sans-serif-medium</string>
-
-  <!-- Koala strings -->
-  <string name="koala_endpoint">https://***REMOVED***/native/track</string>
+  <string name="___Woo_hoo">Woo-hoo!</string>
+  <string name="___You">You</string>
+  <string name="___You_just_backed">You just backed &lt;b>%1$s&lt;/b>. Share this project with friends to help it along!</string>
+  <string name="___You_launched_a_project">You launched a project: %1$s</string>
+  <string name="___You_selected">You selected</string>
+  <string name="___Youre_a_backer">\u0020• You\'re a backer\u0020</string>
 </resources>

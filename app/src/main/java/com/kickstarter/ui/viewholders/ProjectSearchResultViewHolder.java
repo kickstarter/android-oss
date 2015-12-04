@@ -36,7 +36,7 @@ public final class ProjectSearchResultViewHolder extends KSViewHolder {
     project = (Project) datum;
     final Context context = view.getContext();
 
-    creatorNameTextView.setText(context.getString(R.string.by_, project.creator().name()));
+    creatorNameTextView.setText(context.getString(R.string.___by_, project.creator().name()));
     projectNameTextView.setText(project.name());
     Picasso.with(context).load(project.photo().small()).into(projectImageView);
   }

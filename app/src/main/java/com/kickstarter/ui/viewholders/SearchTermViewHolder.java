@@ -25,6 +25,6 @@ public final class SearchTermViewHolder extends KSViewHolder {
 
   public void onBind(@NonNull final Object datum) {
     final Context context = view.getContext();
-    termTextView.setText(context.getString(R.string.Most_Popular));
+    termTextView.setText(context.getString(R.string.___Most_Popular));
   }
 }

@@ -27,7 +27,7 @@ public class KSDialog extends Dialog {
   @NonNull protected final String message;
   @Nullable protected final String buttonText;
 
-  @BindString(R.string.Okay) String okayString;
+  @BindString(R.string.___Okay) String okayString;
 
   public KSDialog(@NonNull final Context context, @Nullable final String title, @NonNull final String message) {
     super(context);

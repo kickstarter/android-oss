@@ -55,7 +55,7 @@
     fab:fabSize="normal"
     android:focusable="true"
     android:nextFocusLeft="@id/project_action_buttons"
-    android:contentDescription="@string/star_fab_content_description"
+    android:contentDescription="@string/___star_fab_content_description"
     android:layout_alignParentBottom="true"
     android:layout_alignParentRight="true"
     android:layout_alignParentEnd="true"

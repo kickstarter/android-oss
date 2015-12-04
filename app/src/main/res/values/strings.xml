@@ -210,4 +210,22 @@
   <string name="___You_launched_a_project">You launched a project: %1$s</string>
   <string name="___You_selected">You selected</string>
   <string name="___Youre_a_backer">\u0020• You\'re a backer\u0020</string>
+
+  <!-- Content descriptions -->
+  <string name="___activity_button_content_description">Activity feed button</string>
+  <string name="___category_icon_content_description">Category</string>
+  <string name="___close_button_content_description">Close button</string>
+  <string name="___comment_button_content_description">Write a comment</string>
+  <string name="___current_user_button_content_description">Current user menu button</string>
+  <string name="___filter_button_content_description">Filter by categories button</string>
+  <string name="___help_menu_button_content_description">Help menu button</string>
+  <string name="___live_proect_count_content_description">Live projects</string>
+  <string name="___location_icon_content_description">Location</string>
+  <string name="___login_button_content_description">Log in button</string>
+  <string name="___nav_back_button_content_description">Navigate back button</string>
+  <string name="___overflow_button_content_description">Overflow menu button</string>
+  <string name="___play_video_button_content_description">Play video button</string>
+  <string name="___search_button_content_description">Search projects button</string>
+  <string name="___share_button_content_description">Share this project button</string>
+  <string name="___star_fab_content_description">Star this project</string>
 </resources>

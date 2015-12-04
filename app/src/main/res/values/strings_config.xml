@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">Kickstarter</string>
+  <string name="facebook_app_id">69103156693</string>
+  <string name="font_family_medium">sans-serif-medium</string>
+  <string name="hockey_app_id">***REMOVED***</string>
+  <string name="koala_endpoint">https://***REMOVED***/native/track</string>
+  <string name="woohoo_duration">2000</string>
+
+  <string-array name="facebook_permissions_array">
+    <item>public_profile</item>
+    <item>user_friends</item>
+    <item>email</item>
+  </string-array>
+</resources>

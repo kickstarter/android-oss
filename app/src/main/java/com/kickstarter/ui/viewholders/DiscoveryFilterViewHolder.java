@@ -99,7 +99,7 @@ public final class DiscoveryFilterViewHolder extends KSViewHolder {
 
     String text = params.filterString(view.getContext());
     if (isSecondaryCategoryRoot()) {
-      text = view.getContext().getString(R.string.All_of_Category, text);
+      text = view.getContext().getString(R.string.___All_of_Category, text);
     }
 
     filterTextView.setText(text);

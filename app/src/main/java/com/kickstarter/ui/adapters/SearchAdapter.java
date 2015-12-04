@@ -6,7 +6,6 @@ import android.view.View;
 
 import com.kickstarter.R;
 import com.kickstarter.models.Project;
-import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder;
 import com.kickstarter.ui.viewholders.SearchTermViewHolder;
@@ -23,21 +22,21 @@ public final class SearchAdapter extends KSAdapter {
     this.delegate = delegate;
   }
 
-  public void loadProjectsAndParams(@NonNull final DiscoveryParams params, @NonNull final List<Project> newProjects) {
-    clear();
-
-    if (params.sort() == DiscoveryParams.Sort.POPULAR) {
-      data().add(Collections.singletonList(params));
-    } else {
+  public void loadPopularProjects(final @NonNull List<Project> newProjects) {
+    data().clear();
+    if (newProjects.size() == 0) {
       data().add(Collections.emptyList());
+    } else {
+      data().add(Collections.singletonList(null));
     }
-
     data().add(newProjects);
     notifyDataSetChanged();
   }
 
-  public void clear() {
+  public void loadSearchProjects(final @NonNull List<Project> newProjects) {
     data().clear();
+    data().add(Collections.emptyList());
+    data().add(newProjects);
     notifyDataSetChanged();
   }
 

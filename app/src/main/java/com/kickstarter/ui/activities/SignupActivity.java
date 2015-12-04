@@ -37,8 +37,8 @@ public final class SignupActivity extends BaseActivity<SignupViewModel> {
   @Bind(R.id.newsletter_switch) SwitchCompat newsletterSwitch;
   @Bind(R.id.disclaimer) TextView disclaimerTextView;
 
-  @BindString(R.string.Sign_up) String signUpString;
-  @BindString(R.string.Sign_up_error) String errorTitleString;
+  @BindString(R.string.___Sign_up) String signUpString;
+  @BindString(R.string.___Sign_up_error) String errorTitleString;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {

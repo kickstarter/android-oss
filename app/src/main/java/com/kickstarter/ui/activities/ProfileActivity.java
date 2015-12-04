@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.Paginator;
+import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.models.Project;
@@ -31,7 +31,7 @@ import rx.android.schedulers.AndroidSchedulers;
 @RequiresViewModel(ProfileViewModel.class)
 public final class ProfileActivity extends BaseActivity<ProfileViewModel> implements ProfileAdapter.Delegate {
   private ProfileAdapter adapter;
-  private Paginator paginator;
+  private RecyclerViewPaginator paginator;
 
   protected @Bind(R.id.avatar) ImageView avatarImageView;
   protected @Bind(R.id.user_name) TextView userNameTextView;
@@ -52,7 +52,7 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> implem
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    paginator = new Paginator(recyclerView, viewModel.inputs::nextPage);
+    paginator = new RecyclerViewPaginator(recyclerView, viewModel.inputs::nextPage);
 
     viewModel.outputs.user()
       .compose(bindToLifecycle())

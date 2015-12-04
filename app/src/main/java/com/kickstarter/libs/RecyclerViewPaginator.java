@@ -10,12 +10,12 @@ import com.jakewharton.rxbinding.support.v7.widget.RxRecyclerView;
 import rx.Subscription;
 import rx.functions.Action0;
 
-public final class Paginator {
+public final class RecyclerViewPaginator {
   private @NonNull final RecyclerView recyclerView;
   private @NonNull final Action0 nextPage;
   private Subscription subscription = null;
 
-  public Paginator(@NonNull final RecyclerView recyclerView, @NonNull final Action0 nextPage) {
+  public RecyclerViewPaginator(@NonNull final RecyclerView recyclerView, @NonNull final Action0 nextPage) {
     this.recyclerView = recyclerView;
     this.nextPage = nextPage;
     start();

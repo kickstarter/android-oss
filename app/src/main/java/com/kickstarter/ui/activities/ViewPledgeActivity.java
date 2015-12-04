@@ -52,18 +52,18 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel> 
       .transform(new CircleTransformation())
       .into(avatarImageView);
     nameTextView.setText(backing.backer().name());
-    sequenceTextView.setText(getString(R.string.Backer_number, backing.formattedSequence()));
+    sequenceTextView.setText(getString(R.string.___Backer_number, backing.formattedSequence()));
     pledgeInfoTextView.setText(String.format(
-      getString(R.string.pledged_amount_on_date),
+      getString(R.string.___pledged_amount_on_date),
       money.formattedCurrency(backing.amount(), backing.project().currencyOptions()),
       backing.formattedPledgedAt()
     ));
     pledgeStatusTextView.setText(String.format(
-      getString(R.string.Status_),
+      getString(R.string.___Status_),
       backing.status()
     ));
     rewardInfoTextView.setText(String.format(
-      getString(R.string.reward_amount_description),
+      getString(R.string.___reward_amount_description),
       money.formattedCurrency(backing.reward().minimum(), backing.project().currencyOptions()),
       backing.reward().reward()));
     if (backing.reward().shippingEnabled() != null && backing.reward().shippingEnabled()) {

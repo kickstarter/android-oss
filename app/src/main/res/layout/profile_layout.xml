@@ -41,7 +41,7 @@
           android:layout_height="wrap_content"
           android:paddingLeft="@dimen/feed_padding_x"
           android:paddingRight="@dimen/feed_padding_x"
-          android:text="@string/You" />
+          android:text="@string/___You" />
 
         <LinearLayout
           android:gravity="center_horizontal"
@@ -57,7 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingRight="@dimen/grid_1_half"
-            android:text="@string/Created_projects"
+            android:text="@string/___Created_projects"
             android:textColor="@color/text_secondary" />
 
           <TextView
@@ -82,7 +82,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingRight="@dimen/grid_1_half"
-            android:text="@string/Backed_projects"
+            android:text="@string/___Backed_projects"
             android:textColor="@color/text_secondary" />
 
           <TextView

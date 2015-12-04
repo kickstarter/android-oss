@@ -20,7 +20,7 @@ public final class FriendFollowViewHolder extends ActivityListViewHolder {
   @Bind(R.id.avatar) ImageView avatarImageView;
   @Bind(R.id.follow_button) View followButton;
   @Bind(R.id.title) TextView titleTextView;
-  @BindString(R.string.Not_implemented_yet) String notImplementedYetString;
+  @BindString(R.string.___Not_implemented_yet) String notImplementedYetString;
 
   public FriendFollowViewHolder(@NonNull final View view) {
     super(view);
@@ -38,7 +38,7 @@ public final class FriendFollowViewHolder extends ActivityListViewHolder {
       .transform(new CircleTransformation())
       .into(avatarImageView);
 
-    titleTextView.setText(Html.fromHtml(context.getString(R.string.username_is_following_you, activity.user().name())));
+    titleTextView.setText(Html.fromHtml(context.getString(R.string.___username_is_following_you, activity.user().name())));
   }
 
   @Override

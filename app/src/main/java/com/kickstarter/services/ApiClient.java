@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 import com.kickstarter.libs.rx.operators.ApiErrorOperator;
 import com.kickstarter.libs.rx.operators.Operators;
+import com.kickstarter.models.Activity;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
@@ -24,6 +25,7 @@ import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.StarEnvelope;
 
+import java.util.Arrays;
 import java.util.List;
 
 import rx.Observable;
@@ -62,9 +64,26 @@ public final class ApiClient {
       .subscribeOn(Schedulers.io());
   }
 
-  public Observable<ActivityEnvelope> fetchActivities(@NonNull final ActivityFeedParams params) {
+  public Observable<ActivityEnvelope> fetchActivities() {
+    final List<String> categories = Arrays.asList(
+      Activity.CATEGORY_BACKING,
+      Activity.CATEGORY_CANCELLATION,
+      Activity.CATEGORY_FAILURE,
+      Activity.CATEGORY_LAUNCH,
+      Activity.CATEGORY_SUCCESS,
+      Activity.CATEGORY_UPDATE,
+      Activity.CATEGORY_FOLLOW
+    );
+
     return service
-      .fetchActivities(params.categoryParams(), params.paginationParams())
+      .fetchActivities(categories)
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
+  public Observable<ActivityEnvelope> fetchActivities(String paginationPath) {
+    return service
+      .fetchActivities(paginationPath)
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
@@ -76,14 +95,26 @@ public final class ApiClient {
       .subscribeOn(Schedulers.io());
   }
 
-  public Observable<CommentsEnvelope> fetchProjectComments(@NonNull final CommentFeedParams params) {
-    return service.fetchProjectComments(params.project().param(), params.paginationParams())
+  public Observable<CommentsEnvelope> fetchProjectComments(final @NonNull Project project) {
+    return service.fetchProjectComments(project.param())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
+  public Observable<CommentsEnvelope> fetchProjectComments(final @NonNull String paginationPath) {
+    return service.fetchPaginatedProjectComments(paginationPath)
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 
   public Observable<DiscoverEnvelope> fetchProjects(@NonNull final DiscoveryParams params) {
     return service.fetchProjects(params.queryParams())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
+  public Observable<DiscoverEnvelope> fetchProjects(@NonNull final String paginationUrl) {
+    return service.fetchProjects(paginationUrl)
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }

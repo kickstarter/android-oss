@@ -6,9 +6,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.kickstarter.KSApplication;
+import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.ViewModel;
-import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClient;
@@ -18,7 +18,6 @@ import com.kickstarter.ui.activities.ProfileActivity;
 import com.kickstarter.viewmodels.inputs.ProfileViewModelInputs;
 import com.kickstarter.viewmodels.outputs.ProfileViewModelOutputs;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -50,8 +49,6 @@ public final class ProfileViewModel extends ViewModel<ProfileActivity> implement
   public final ProfileViewModelInputs inputs = this;
   public final ProfileViewModelOutputs outputs = this;
 
-  private final PublishSubject<DiscoveryParams> params = PublishSubject.create();
-
   @Override
   protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
@@ -62,35 +59,21 @@ public final class ProfileViewModel extends ViewModel<ProfileActivity> implement
       .onErrorResumeNext(e -> Observable.empty());
     freshUser.subscribe(currentUser::refresh);
 
-    final Observable<List<Project>> backedProjects = params.switchMap(this::projectsWithPagination);
-    backedProjects.subscribe(projects);
-
-    final DiscoveryParams firstPageParams = DiscoveryParams.builder()
+    final DiscoveryParams params = DiscoveryParams.builder()
       .backed(1)
       .sort(DiscoveryParams.Sort.ENDING_SOON)
       .build();
 
-    params.onNext(firstPageParams);
+    final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator = ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
+      .nextPage(nextPage)
+      .envelopeToListOfData(DiscoverEnvelope::projects)
+      .envelopeToMoreUrl(env -> env.urls().api().moreProjects())
+      .loadWithParams(__ -> client.fetchProjects(params))
+      .loadWithPaginationPath(client::fetchProjects)
+      .build();
+
+    addSubscription(paginator.paginatedData.subscribe(projects));
 
     koala.trackProfileView();
-  }
-
-  private Observable<List<Project>> projectsWithPagination(final @NonNull DiscoveryParams firstPageParams) {
-    return paramsWithPagination(firstPageParams)
-      .concatMap(this::projectsFromParams)
-      .takeUntil(List::isEmpty)
-      .scan(new ArrayList<>(), ListUtils::concatDistinct);
-  }
-
-  private Observable<DiscoveryParams> paramsWithPagination(final @NonNull DiscoveryParams firstPageParams) {
-    return nextPage
-      .scan(firstPageParams, (currentPage, __) -> currentPage.nextPage());
-  }
-
-  private Observable<List<Project>> projectsFromParams(final @NonNull  DiscoveryParams params) {
-    return client.fetchProjects(params)
-      .retry(2)
-      .onErrorResumeNext(e -> Observable.empty())
-      .map(DiscoverEnvelope::projects);
   }
 }

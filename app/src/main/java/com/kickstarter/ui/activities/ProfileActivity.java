@@ -66,6 +66,12 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> implem
   }
 
   @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    paginator.stop();
+  }
+
+  @Override
   public void onBackPressed() {
     super.onBackPressed();
 
@@ -103,11 +109,6 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> implem
     }
   }
 
-  /** ProjectCardViewHolder Delegate
-   * *
-   * @param viewHolder
-   * @param project
-   */
   public void projectCardClick(final @NonNull ProjectCardViewHolder viewHolder, final @NonNull Project project) {
     final Intent intent = new Intent(this, ProjectActivity.class)
       .putExtra(getString(R.string.intent_project), project);

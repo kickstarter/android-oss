@@ -8,14 +8,11 @@ import android.support.annotation.Nullable;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.ViewModel;
+import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
-import com.kickstarter.viewmodels.inputs.ActivityFeedViewModelInputs;
-import com.kickstarter.viewmodels.outputs.ActivityFeedViewModelOutputs;
-import com.kickstarter.services.ActivityFeedParams;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
@@ -25,6 +22,8 @@ import com.kickstarter.ui.viewholders.FriendBackingViewHolder;
 import com.kickstarter.ui.viewholders.ProjectStateChangedPositiveViewHolder;
 import com.kickstarter.ui.viewholders.ProjectStateChangedViewHolder;
 import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder;
+import com.kickstarter.viewmodels.inputs.ActivityFeedViewModelInputs;
+import com.kickstarter.viewmodels.outputs.ActivityFeedViewModelOutputs;
 
 import java.util.List;
 
@@ -81,10 +80,17 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    addSubscription(refresh
-        .switchMap(__ -> activitiesWithPagination())
-        .subscribe(activities)
-    );
+    final ApiPaginator<Activity, ActivityEnvelope, Void> paginator = ApiPaginator.<Activity, ActivityEnvelope, Void>builder()
+      .nextPage(nextPage)
+      .startOverWith(refresh)
+      .envelopeToListOfData(ActivityEnvelope::activities)
+      .envelopeToMoreUrl(env -> env.urls().api().moreActivities())
+      .loadWithParams(__ -> client.fetchActivities())
+      .loadWithPaginationPath(client::fetchActivities)
+      .build();
+
+    addSubscription(paginator.paginatedData.subscribe(activities));
+    addSubscription(paginator.isFetching.subscribe(isFetchingActivities));
 
     addSubscription(currentUser.loggedInUser()
         .take(1)
@@ -146,44 +152,6 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
         projectUpdateUpdateClick
       ).subscribe(koala::trackActivityTapped)
     );
-  }
-
-  private @NonNull Observable<List<Activity>> activitiesWithPagination() {
-
-    return paramsWithPagination(ActivityFeedParams.builder().build())
-      .concatMap(this::activitiesFromParams)
-      .takeUntil(List::isEmpty)
-      .scan(ListUtils::concat);
-  }
-
-  private @NonNull Observable<ActivityFeedParams> paramsWithPagination(final @NonNull ActivityFeedParams firstParams) {
-
-    return moreActivitiesUrl
-      .map(ActivityFeedParams::fromUrl)
-      .compose(Transformers.takeWhen(nextPage))
-      .startWith(firstParams);
-  }
-
-  private @NonNull Observable<List<Activity>> activitiesFromParams(@NonNull final ActivityFeedParams params) {
-    return client.fetchActivities(params)
-      .compose(Transformers.neverError())
-      .doOnNext(this::keepPaginationParams)
-      .map(ActivityEnvelope::activities)
-      .doOnSubscribe(() -> isFetchingActivities.onNext(true))
-      .finallyDo(() -> isFetchingActivities.onNext(false));
-  }
-
-  private void keepPaginationParams(@NonNull final ActivityEnvelope envelope) {
-    final ActivityEnvelope.UrlsEnvelope urls = envelope.urls();
-    if (urls != null) {
-      final ActivityEnvelope.UrlsEnvelope.ApiEnvelope api = urls.api();
-      if (api != null) {
-        final String moreUrl = api.moreActivities();
-        if (moreUrl != null) {
-          moreActivitiesUrl.onNext(moreUrl);
-        }
-      }
-    }
   }
 
   public void emptyActivityFeedDiscoverProjectsClicked(@NonNull final EmptyActivityFeedViewHolder viewHolder) {

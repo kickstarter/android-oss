@@ -13,7 +13,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.CurrentUser;
-import com.kickstarter.libs.Paginator;
+import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.SwipeRefresher;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ObjectUtils;
@@ -39,7 +39,7 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
 
   @Inject CurrentUser currentUser;
 
-  private Paginator paginator;
+  private RecyclerViewPaginator recyclerViewPaginator;
   private SwipeRefresher swipeRefresher;
 
   @Override
@@ -53,7 +53,7 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    paginator = new Paginator(recyclerView, viewModel.inputs::nextPage);
+    recyclerViewPaginator = new RecyclerViewPaginator(recyclerView, viewModel.inputs::nextPage);
     swipeRefresher = new SwipeRefresher(this, swipeRefreshLayout, viewModel.inputs::refresh, viewModel.outputs::isFetchingActivities);
 
     // Only allow refreshing if there's a current user
@@ -77,7 +77,7 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
   @Override
   protected void onDestroy() {
     super.onDestroy();
-    paginator.stop();
+    recyclerViewPaginator.stop();
   }
 
   public void showActivities(@NonNull final List<Activity> activities) {

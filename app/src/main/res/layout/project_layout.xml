@@ -30,21 +30,21 @@
       android:id="@+id/back_project_button"
       android:visibility="visible"
       android:background="@drawable/button_green"
-      android:text="@string/___Back_this_project" />
+      android:text="@string/project_back_button" />
 
     <Button
       style="@style/ProjectActionButton"
       android:id="@+id/manage_pledge_button"
       android:visibility="gone"
       android:background="@drawable/button_blue"
-      android:text="@string/___Manage_pledge" />
+      android:text="@string/project_manage_button" />
 
     <Button
       style="@style/ProjectActionButton"
       android:id="@+id/view_pledge_button"
       android:visibility="gone"
       android:background="@drawable/button_blue"
-      android:text="@string/___View_pledge" />
+      android:text="@string/project_view_button" />
   </RelativeLayout>
 
   <android.support.design.widget.FloatingActionButton

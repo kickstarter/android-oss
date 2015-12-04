@@ -4,19 +4,19 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 
 import com.kickstarter.KSApplication;
+import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.models.Empty;
+import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.viewmodels.inputs.SearchViewModelInputs;
-import com.kickstarter.viewmodels.outputs.SearchViewModelOutputs;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.SearchActivity;
+import com.kickstarter.viewmodels.inputs.SearchViewModelInputs;
+import com.kickstarter.viewmodels.outputs.SearchViewModelOutputs;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -24,22 +24,25 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public final class SearchViewModel extends ViewModel<SearchActivity> implements SearchViewModelInputs, SearchViewModelOutputs {
   // INPUTS
-  private final PublishSubject<String> search = PublishSubject.create();
+  private final BehaviorSubject<String> search = BehaviorSubject.create("");
+  private final PublishSubject<Void> nextPage = PublishSubject.create();
+  public void nextPage() { nextPage.onNext(null); }
   public SearchViewModelInputs inputs = this;
   @Override public void search(@NonNull final String s) { search.onNext(s); }
 
   // OUTPUTS
-  private final PublishSubject<Empty> clearData = PublishSubject.create();
-  private final PublishSubject<Pair<DiscoveryParams, List<Project>>> newData = PublishSubject.create();
+  private final BehaviorSubject<List<Project>> popularProjects = BehaviorSubject.create();
+  private final BehaviorSubject<List<Project>> searchProjects = BehaviorSubject.create();
   public final SearchViewModelOutputs outputs = this;
-  @Override public Observable<Empty> clearData() { return clearData.asObservable(); }
-  @Override public Observable<Pair<DiscoveryParams, List<Project>>> newData() { return newData.asObservable(); }
+  @Override public Observable<List<Project>> popularProjects() { return popularProjects; }
+  @Override public Observable<List<Project>> searchProjects() { return searchProjects; }
 
-  private final PublishSubject<DiscoveryParams> params = PublishSubject.create();
+  private final DiscoveryParams defaultParams = DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build();
 
   @Inject ApiClient apiClient;
 
@@ -48,68 +51,55 @@ public final class SearchViewModel extends ViewModel<SearchActivity> implements 
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    final Observable<List<Project>> projects = params
-      .switchMap(this::projects)
-      .share();
+    final Observable<DiscoveryParams> params = search
+      .map(this::paramsFromSearch)
+      .debounce(300, TimeUnit.MILLISECONDS);
 
-    final Observable<Pair<DiscoveryParams, List<Project>>> paramsAndProjects = params
-      .compose(Transformers.takePairWhen(projects))
-      .share();
+    final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
+      ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
+        .nextPage(nextPage)
+        .startOverWith(params)
+        .envelopeToListOfData(DiscoverEnvelope::projects)
+        .envelopeToMoreUrl(env -> env.urls().api().moreProjects())
+        .clearWhenStartingOver(true)
+        .concater(ListUtils::concatDistinct)
+        .loadWithParams(apiClient::fetchProjects)
+        .loadWithPaginationPath(apiClient::fetchProjects)
+        .build();
 
-    final Observable<Boolean> isSearchEmpty = search.map(t -> t.length() == 0).share();
+    search.subscribe(__ -> searchProjects.onNext(ListUtils.empty()));
 
-    final Observable<Pair<DiscoveryParams, List<Project>>> popularParamsAndProjects = paramsAndProjects.first();
-    final Observable<Pair<DiscoveryParams, List<Project>>> searchParamsAndProjects = paramsAndProjects.skip(1);
-
-    // When the search field changes, start a new search and clear results
     addSubscription(
-      search
-        .compose(Transformers.takeWhen(isSearchEmpty.filter(v -> !v)))
-        .subscribe(text -> {
-          params.onNext(DiscoveryParams.builder().term(text).build());
-          clearData.onNext(Empty.get());
+      params
+        .compose(Transformers.takePairWhen(paginator.paginatedData))
+        .subscribe(paramsAndProjects -> {
+          if (paramsAndProjects.first.sort() == DiscoveryParams.Sort.POPULAR) {
+            popularProjects.onNext(paramsAndProjects.second);
+          } else {
+            searchProjects.onNext(paramsAndProjects.second);
+          }
         })
-    );
-
-    // When the search field is empty (i.e. on load or when the search field is cleared), ping with the
-    // popular projects.
-    addSubscription(
-      popularParamsAndProjects
-        .compose(Transformers.combineLatestPair(isSearchEmpty))
-        .filter(pe -> pe.second)
-        .map(pe -> pe.first)
-        .subscribe(newData)
-    );
-
-    // When we receive new search results and the search field is still not empty, ping with the search results
-    addSubscription(
-      isSearchEmpty
-        .compose(Transformers.takePairWhen(searchParamsAndProjects))
-        .filter(pe -> !pe.first)
-        .map(pe -> pe.second)
-        .debounce(500, TimeUnit.MILLISECONDS)
-        .subscribe(newData)
     );
 
     // Track us viewing this page
     koala.trackSearchView();
 
     // Track search results and pagination
-    final Observable<Integer> pageCount = params
-      .switchMap(__ -> projects.debounce(2, TimeUnit.SECONDS).compose(Transformers.incrementalCount()));
-    final Observable<String> query = searchParamsAndProjects.map(sp -> sp.first.term());
+    final Observable<Integer> pageCount = paginator.loadingPage;
+    final Observable<String> query = params
+      .filter(p -> p.sort() == DiscoveryParams.Sort.POPULAR)
+      .map(DiscoveryParams::term);
     addSubscription(query
       .compose(Transformers.takePairWhen(pageCount))
       .subscribe(qp -> koala.trackSearchResults(qp.first, qp.second))
     );
-
-    // Start with popular projects
-    params.onNext(DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build());
   }
 
-  private Observable<List<Project>> projects(@NonNull final DiscoveryParams newParams) {
-    return apiClient.fetchProjects(newParams)
-      .onErrorResumeNext(e -> Observable.empty())
-      .map(DiscoverEnvelope::projects);
+  private @NonNull DiscoveryParams paramsFromSearch(final @NonNull String search) {
+    if (search.trim().length() == 0) {
+      return defaultParams;
+    } else {
+      return DiscoveryParams.builder().term(search).build();
+    }
   }
 }

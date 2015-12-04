@@ -30,7 +30,7 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> {
   private String urlToReload;
   @Bind(R.id.checkout_toolbar) KSToolbar checkoutToolbar;
   @Bind(R.id.web_view) KSWebView webView;
-  @BindString(R.string.Back_this_project) String backThisProjectString;
+  @BindString(R.string.___Back_this_project) String backThisProjectString;
   @BindString(R.string.intent_toolbar_title) String intentToolbarTitleString;
 
   @Override

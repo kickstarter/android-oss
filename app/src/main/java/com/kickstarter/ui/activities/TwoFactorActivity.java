@@ -31,10 +31,10 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel> {
   public @Bind(R.id.login_button) Button loginButton;
   public @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
 
-  @BindString(R.string.The_code_provided_does_not_match) String codeMismatchString;
-  @BindString(R.string.Unable_to_login) String unableToLoginString;
-  @BindString(R.string.Verify) String verifyString;
-  @BindString(R.string.Log_in_error) String errorTitleString;
+  @BindString(R.string.___The_code_provided_does_not_match) String codeMismatchString;
+  @BindString(R.string.___Unable_to_login) String unableToLoginString;
+  @BindString(R.string.___Verify) String verifyString;
+  @BindString(R.string.___Log_in_error) String errorTitleString;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {

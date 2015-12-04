@@ -22,7 +22,7 @@
     android:gravity="center_horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="@string/No_comments"
+    android:text="@string/___No_comments"
     android:padding="@dimen/grid_2"/>
 
   <TextView
@@ -41,7 +41,7 @@
     android:background="@drawable/button_white_border_dark_gray"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="@string/Log_in"
+    android:text="@string/___Log_in"
     android:layout_marginTop="@dimen/grid_1" />
 
 </LinearLayout>

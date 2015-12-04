@@ -55,7 +55,7 @@
       </RelativeLayout>
 
       <TextView
-        android:text="@string/Pledged"
+        android:text="@string/___Pledged"
         android:paddingBottom="@dimen/grid_1"
         style="@style/SubheadMedium"
         android:layout_width="wrap_content"
@@ -75,7 +75,7 @@
       <include layout="@layout/horizontal_line_thin_view"/>
 
       <TextView
-        android:text="@string/Reward"
+        android:text="@string/___Reward"
         android:paddingTop="@dimen/grid_3"
         android:paddingBottom="@dimen/grid_1"
         style="@style/SubheadMedium"
@@ -91,7 +91,7 @@
       <include layout="@layout/horizontal_line_thin_view"/>
 
       <TextView
-        android:text="@string/Shipping"
+        android:text="@string/___Shipping"
         android:paddingTop="@dimen/grid_3"
         android:paddingBottom="@dimen/grid_1"
         style="@style/SubheadMedium"
@@ -100,7 +100,7 @@
 
       <TextView
         android:id="@+id/shipping_info"
-        android:text="@string/NA"
+        android:text="@string/___NA"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

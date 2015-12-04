@@ -51,10 +51,10 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.fund_message) TextView fundMessageTextView;
   protected @Bind(R.id.updates_count) TextView updatesCountTextView;
 
-  protected @BindString(R.string.backers) String backersString;
-  protected @BindString(R.string.of_) String ofString;
-  protected @BindString(R.string.pledged_of_) String pledgedOfString;
-  protected @BindString(R.string._to_go) String toGoString;
+  protected @BindString(R.string.___backers) String backersString;
+  protected @BindString(R.string.___of_) String ofString;
+  protected @BindString(R.string.___pledged_of_) String pledgedOfString;
+  protected @BindString(R.string.____to_go) String toGoString;
 
   @Inject Money money;
 
@@ -86,8 +86,8 @@ public final class ProjectViewHolder extends KSViewHolder {
     }
 
     /* Project */
-    blurbTextView.setText(Html.fromHtml(context.getString(R.string.Blurb_read_more, project.blurb())));
-    creatorNameTextView.setText(Html.fromHtml(context.getString(R.string.by_creator, project.creator().name())));
+    blurbTextView.setText(Html.fromHtml(context.getString(R.string.___Blurb_read_more, project.blurb())));
+    creatorNameTextView.setText(Html.fromHtml(context.getString(R.string.___by_creator, project.creator().name())));
     if (project.isBacking()) {
       backerLabelLinearLayout.setVisibility(View.VISIBLE);
     } else {
@@ -114,7 +114,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       .transform(new CircleTransformation())
       .into(avatarImageView);
     avatarNameTextView.setText(project.creator().name());
-    fundMessageTextView.setText(String.format(context.getString(R.string.This_project_will_only_be_funded_if),
+    fundMessageTextView.setText(String.format(context.getString(R.string.___This_project_will_only_be_funded_if),
       money.formattedCurrency(project.goal(), project.currencyOptions(), true),
       project.deadline().toString(DateTimeUtils.writtenDeadline())));
     updatesCountTextView.setText(project.formattedUpdatesCount());

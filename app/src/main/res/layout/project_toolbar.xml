@@ -17,7 +17,7 @@
     android:layout_height="match_parent"
     android:gravity="center_vertical">
 
-    <com.kickstarter.ui.views.IconTextView
+    <com.kickstarter.ui.views.IconButton
       style="@style/ToolbarIcon"
       android:id="@+id/back_icon"
       android:focusable="true"
@@ -28,7 +28,7 @@
       android:text="@string/arrow_back_icon" />
 
     <!-- Override the text size because this looks enormous compared to the back icon -->
-    <com.kickstarter.ui.views.IconTextView
+    <com.kickstarter.ui.views.IconButton
       style="@style/ToolbarIcon"
       android:id="@+id/share_icon"
       android:focusable="true"

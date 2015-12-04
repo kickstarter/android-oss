@@ -16,7 +16,7 @@
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
-    <com.kickstarter.ui.views.IconTextView
+    <com.kickstarter.ui.views.IconButton
       style="@style/ToolbarIcon"
       android:id="@+id/back_button"
       android:focusable="true"
@@ -34,7 +34,7 @@
       android:layout_marginStart="@dimen/grid_3_half"
       android:gravity="center_vertical" />
 
-    <com.kickstarter.ui.views.IconTextView
+    <com.kickstarter.ui.views.IconButton
       style="@style/ToolbarIcon"
       android:id="@+id/help_button"
       android:focusable="true"

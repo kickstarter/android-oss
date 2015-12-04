@@ -82,7 +82,7 @@
         android:textSize="@dimen/subhead"
         android:text="@string/___Campaign" />
 
-      <com.kickstarter.ui.views.IconTextView
+      <com.kickstarter.ui.views.IconButton
         android:textSize="@dimen/chevron_right_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

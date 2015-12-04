@@ -8,7 +8,7 @@ import android.util.AttributeSet;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.ui.views.IconTextView;
+import com.kickstarter.ui.views.IconButton;
 
 import butterknife.Bind;
 import butterknife.BindString;
@@ -16,7 +16,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public final class ActivityFeedToolbar extends KSToolbar {
-  @Bind(R.id.more_button) IconTextView moreButton;
+  @Bind(R.id.more_button) IconButton moreButton;
   @BindString(R.string.___Not_implemented_yet) String notImplementedYetString;
 
   public ActivityFeedToolbar(@NonNull final Context context) {

@@ -16,7 +16,7 @@ import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.ui.views.IconTextView;
+import com.kickstarter.ui.views.IconButton;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
@@ -30,7 +30,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   private Project project;
   private final Delegate delegate;
 
-  protected @Bind(R.id.play_button_overlay) IconTextView playButtonIconTextView;
+  protected @Bind(R.id.play_button_overlay) IconButton playButton;
   protected @Bind(R.id.project_photo) ImageView photoImageView;
   protected @Bind(R.id.project_name) TextView projectNameTextView;
   protected @Bind(R.id.creator_name) TextView creatorNameTextView;
@@ -80,9 +80,9 @@ public final class ProjectViewHolder extends KSViewHolder {
     /* Video */
     Picasso.with(context).load(project.photo().full()).into(photoImageView);
     if (project.hasVideo()) {
-      playButtonIconTextView.setVisibility(View.VISIBLE);
+      playButton.setVisibility(View.VISIBLE);
     } else {
-      playButtonIconTextView.setVisibility(View.GONE);
+      playButton.setVisibility(View.GONE);
     }
 
     /* Project */

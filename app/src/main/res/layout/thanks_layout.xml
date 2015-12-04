@@ -118,7 +118,7 @@
       android:layout_width="match_parent"
       android:layout_height="@dimen/grid_8">
 
-      <com.kickstarter.ui.views.IconTextView
+      <com.kickstarter.ui.views.IconButton
         android:id="@+id/close_button"
         android:focusable="true"
         android:layout_alignParentTop="true"

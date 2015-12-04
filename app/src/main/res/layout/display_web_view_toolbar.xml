@@ -9,7 +9,7 @@
   app:contentInsetStart="0dp"
   tools:showIn="@layout/web_view_layout">
 
-  <com.kickstarter.ui.views.IconTextView
+  <com.kickstarter.ui.views.IconButton
     style="@style/ToolbarIcon"
     android:id="@+id/back_button"
     android:contentDescription="@string/___nav_back_button_content_description"

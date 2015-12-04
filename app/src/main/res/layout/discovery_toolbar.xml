@@ -38,7 +38,7 @@
         android:textSize="20sp"
         android:textColor="@color/white" />
 
-      <com.kickstarter.ui.views.IconTextView
+      <com.kickstarter.ui.views.IconButton
         android:id="@+id/filter_expand_more_button"
         android:contentDescription="@string/___filter_button_content_description"
         android:layout_width="wrap_content"
@@ -57,7 +57,7 @@
       android:layout_alignParentEnd="true"
       android:orientation="horizontal">
 
-      <com.kickstarter.ui.views.IconTextView
+      <com.kickstarter.ui.views.IconButton
         style="@style/ToolbarIcon"
         android:id="@+id/search_button"
         android:focusable="true"
@@ -69,7 +69,7 @@
         android:text="@string/search_icon"
         android:textColor="@color/white" />
 
-      <com.kickstarter.ui.views.IconTextView
+      <com.kickstarter.ui.views.IconButton
         style="@style/ToolbarIcon"
         android:id="@+id/activity_feed_button"
         android:focusable="true"
@@ -81,7 +81,7 @@
         android:text="@string/flash_on_icon"
         android:textColor="@color/white" />
 
-      <com.kickstarter.ui.views.IconTextView
+      <com.kickstarter.ui.views.IconButton
         style="@style/ToolbarIcon"
         android:id="@+id/login_button"
         android:focusable="true"
@@ -93,7 +93,7 @@
         android:text="@string/lock_icon"
         android:textColor="@color/white" />
 
-      <com.kickstarter.ui.views.IconTextView
+      <com.kickstarter.ui.views.IconButton
         style="@style/ToolbarIcon"
         android:id="@+id/current_user_button"
         android:focusable="true"

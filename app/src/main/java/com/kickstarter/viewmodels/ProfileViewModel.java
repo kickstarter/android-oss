@@ -60,11 +60,9 @@ public final class ProfileViewModel extends ViewModel<ProfileActivity> implement
     final Observable<User> freshUser = client.fetchCurrentUser()
       .retry(2)
       .onErrorResumeNext(e -> Observable.empty());
-
     freshUser.subscribe(currentUser::refresh);
 
     final Observable<List<Project>> backedProjects = params.switchMap(this::projectsWithPagination);
-
     backedProjects.subscribe(projects);
 
     final DiscoveryParams firstPageParams = DiscoveryParams.builder()

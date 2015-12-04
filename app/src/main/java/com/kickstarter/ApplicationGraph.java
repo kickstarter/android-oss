@@ -11,7 +11,6 @@ import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.CommentFeedActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.HelpActivity;
-import com.kickstarter.ui.activities.ProfileActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.kickstarter.ui.activities.ViewPledgeActivity;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
@@ -69,7 +68,6 @@ public interface ApplicationGraph {
   void inject(LoginToutViewModel __);
   void inject(MessageService __);
   void inject(Money __);
-  void inject(ProfileActivity __);
   void inject(ProfileViewModel __);
   void inject(ProjectContextViewHolder __);
   void inject(ProjectActivity __);

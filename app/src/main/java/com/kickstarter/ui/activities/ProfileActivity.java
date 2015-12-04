@@ -10,10 +10,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Paginator;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.transformations.CircleTransformation;
@@ -25,8 +23,6 @@ import com.kickstarter.viewmodels.ProfileViewModel;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
-
-import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -46,14 +42,11 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> implem
   protected @Bind(R.id.divider) View dividerView;
   protected @Bind(R.id.recycler_view) RecyclerView recyclerView;
 
-  @Inject CurrentUser currentUser;
-
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.profile_layout);
     ButterKnife.bind(this);
-    ((KSApplication) getApplication()).component().inject(this);
 
     adapter = new ProfileAdapter(this);
     recyclerView.setAdapter(adapter);

@@ -14,17 +14,17 @@ import auto.parcel.AutoParcel;
 @AutoParcel
 public abstract class ActivityEnvelope implements Parcelable {
   public abstract List<Activity> activities();
-  @Nullable public abstract UrlsEnvelope urls();
+  public abstract UrlsEnvelope urls();
 
   @AutoGson
   @AutoParcel
   public abstract static class UrlsEnvelope implements Parcelable {
-    @Nullable public abstract ApiEnvelope api();
+    public abstract ApiEnvelope api();
 
     @AutoGson
     @AutoParcel
     public abstract static class ApiEnvelope implements Parcelable {
-      @Nullable public abstract String moreActivities();
+      public abstract String moreActivities();
       @Nullable public abstract String newerActivities();
     }
   }

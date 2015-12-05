@@ -5,14 +5,12 @@ import android.content.Intent;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.PopupMenu;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
-import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.utils.DiscoveryUtils;
@@ -21,8 +19,8 @@ import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.LoginToutActivity;
-import com.kickstarter.ui.activities.ProfileActivity;
 import com.kickstarter.ui.activities.SearchActivity;
+import com.kickstarter.ui.views.LoggedInMenu;
 
 import javax.inject.Inject;
 
@@ -106,30 +104,33 @@ public final class DiscoveryToolbar extends KSToolbar {
     loginButton.setVisibility(GONE);
     currentUserButton.setVisibility(VISIBLE);
     currentUserButton.setOnClickListener(v -> {
-      final BaseActivity activity = (BaseActivity) v.getContext();
 
-      final PopupMenu popup = new PopupMenu(activity, currentUserButton);
-      popup.getMenuInflater().inflate(R.menu.current_user_menu, popup.getMenu());
-
-      popup.setOnMenuItemClickListener(item -> {
-        switch (item.getItemId()) {
-          case R.id.profile:
-            final Intent profileIntent = new Intent(activity, ProfileActivity.class);
-            activity.startActivity(profileIntent);
-            activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
-            break;
-          case R.id.logout:
-            logout.execute();
-            final Intent intent = new Intent(activity, DiscoveryActivity.class)
-              .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            activity.startActivity(intent);
-            break;
-        }
-
-        return true;
-      });
-
-      popup.show();
+      final LoggedInMenu menu = new LoggedInMenu(v.getContext(), currentUser.getUser(), currentUserButton);
+      menu.show();
+//      final BaseActivity activity = (BaseActivity) v.getContext();
+//
+//      final PopupMenu popup = new PopupMenu(activity, currentUserButton);
+//      popup.getMenuInflater().inflate(R.menu.current_user_menu, popup.getMenu());
+//
+//      popup.setOnMenuItemClickListener(item -> {
+//        switch (item.getItemId()) {
+//          case R.id.profile:
+//            final Intent profileIntent = new Intent(activity, ProfileActivity.class);
+//            activity.startActivity(profileIntent);
+//            activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+//            break;
+//          case R.id.logout:
+//            logout.execute();
+//            final Intent intent = new Intent(activity, DiscoveryActivity.class)
+//              .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//            activity.startActivity(intent);
+//            break;
+//        }
+//
+//        return true;
+//      });
+//
+//      popup.show();
     });
   }
 

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+  style="@style/BodyPrimary"
+  android:id="@+id/menu_item_title"
+  android:text="Test"
+  android:background="@color/off_white"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:padding="@dimen/grid_2" />

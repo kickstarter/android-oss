@@ -182,40 +182,19 @@ public final class ApiClient {
       .subscribeOn(Schedulers.io());
   }
 
-  // todo: the newsletters update differently? PUT =true on a newsletter doesn't update
-  public Observable<User> updateNewsletterEndpoint(final boolean sendHappeningNewsletter,
-    final boolean sendPromoNewsletter, final boolean sendWeeklyNewsletter) {
-    return service
-      .updateUserSettings(
-        SettingsBody.builder()
-          .sendHappeningNewsletter(sendHappeningNewsletter)
-          .sendPromoNewsletter(sendPromoNewsletter)
-          .sendWeeklyNewsletter(sendWeeklyNewsletter)
-          .build()
-      )
-      .lift(apiErrorOperator())
-      .subscribeOn(Schedulers.io());
-  }
-
-  public Observable<User> updateGlobalNotificationsEndpoint(final boolean notifyMobileOfBackings,
-    final boolean notifyMobileOfComments, final boolean notifyMobileOfFollower, final boolean notifyMobileOfFriendActivity,
-    final boolean notifyMobileOfUpdates, final boolean notifyOfBackings, final boolean notifyOfComments,
-    final boolean notifyOfFollower, final boolean notifyOfFriendActivity, final boolean notifyOfUpdates) {
-    return service
-      .updateUserSettings(
-        SettingsBody.builder()
-          .notifyMobileOfBackings(notifyMobileOfBackings)
-          .notifyMobileOfComments(notifyMobileOfComments)
-          .notifyMobileOfFollower(notifyMobileOfFollower)
-          .notifyMobileOfFriendActivity(notifyMobileOfFriendActivity)
-          .notifyMobileOfUpdates(notifyMobileOfUpdates)
-          .notifyOfBackings(notifyOfBackings)
-          .notifyOfComments(notifyOfComments)
-          .notifyOfFollower(notifyOfFollower)
-          .notifyOfFriendActivity(notifyOfFriendActivity)
-          .notifyOfUpdates(notifyOfUpdates)
-          .build()
-      )
+  public Observable<User> updateUser(final @NonNull User user) {
+    return service.updateUserSettings(
+      SettingsBody.builder()
+        .notifyMobileOfFollower(user.notifyMobileOfFollower())
+        .notifyMobileOfFriendActivity(user.notifyMobileOfFriendActivity())
+        .notifyMobileOfUpdates(user.notifyOfUpdates())
+        .notifyOfFollower(user.notifyOfFollower())
+        .notifyOfFriendActivity(user.notifyOfFriendActivity())
+        .notifyOfUpdates(user.notifyOfUpdates())
+        .sendHappeningNewsletter(user.happeningNewsletter())
+        .sendPromoNewsletter(user.promoNewsletter())
+        .sendWeeklyNewsletter(user.weeklyNewsletter())
+        .build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }

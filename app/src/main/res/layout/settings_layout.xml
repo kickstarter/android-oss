@@ -80,7 +80,6 @@
           android:textColor="@color/white"
           android:textSize="@dimen/caption"
           android:padding="@dimen/grid_1_half"
-          android:text="10"
           android:layout_toLeftOf="@+id/manage_notifications_chevron_icon"
           android:layout_toStartOf="@+id/manage_notifications_chevron_icon"
           android:layout_marginRight="@dimen/grid_1"

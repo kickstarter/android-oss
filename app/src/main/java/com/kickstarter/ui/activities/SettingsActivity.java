@@ -85,44 +85,62 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
 
   @OnClick(R.id.manage_project_notifications)
   public void manageProjectNotifications() {
-    // todo
+    // todo: start ManageProjectNotificationsActivity
   }
 
   @OnClick(R.id.friend_activity_mail_icon)
   public void toggleNotifyOfFriendActivity() {
-
+    viewModel.inputs.notifyOfFriendActivity(!notifyOfFriendActivity);
   }
 
   @OnClick(R.id.friend_activity_phone_icon)
   public void toggleNotifyMobileOfFriendActivity() {
-
+    viewModel.inputs.notifyMobileOfFriendActivity(!notifyMobileOfFriendActivity);
   }
 
   @OnClick(R.id.new_followers_mail_icon)
   public void toggleNotifyOfNewFollowers() {
-
+    viewModel.inputs.notifyOfFollower(!notifyOfFollower);
   }
 
   @OnClick(R.id.new_followers_phone_icon)
   public void toggleNotifyMobileOfNewFollowers() {
-
+    viewModel.inputs.notifyMobileOfFollower(!notifyMobileOfFollower);
   }
 
   @OnClick(R.id.project_updates_mail_icon)
   public void toggleNotifyOfUpdates() {
-
+    viewModel.inputs.notifyOfUpdates(!notifyOfUpdates);
   }
 
   @OnClick(R.id.project_updates_phone_icon)
   public void toggleNotifyMobileOfUpdates() {
-
+    viewModel.inputs.notifyMobileOfUpdates(!notifyMobileOfUpdates);
   }
 
-  public void setHappeningSwitch(final boolean state) {
-    happeningNewsletterSwitch.setEnabled(state);
+  public void displayPreferences(final @NonNull User user) {
+    projectNotificationsCountTextView.setText(user.backedProjectsCount().toString());
+
+    happeningNewsletterSwitch.setChecked(user.happeningNewsletter());
+    promoNewsletterSwitch.setChecked(user.promoNewsletter());
+    weeklyNewsletterSwitch.setChecked(user.weeklyNewsletter());
+
+    notifyMobileOfFriendActivity = user.notifyOfFriendActivity();
+    notifyOfFriendActivity = user.notifyOfFriendActivity();
+    notifyMobileOfFollower = user.notifyMobileOfFollower();
+    notifyOfFollower = user.notifyOfFollower();
+    notifyMobileOfUpdates = user.notifyMobileOfUpdates();
+    notifyOfUpdates = user.notifyOfUpdates();
+
+    toggleIconColor(friendActivityMailIconTextView, notifyOfFriendActivity);
+    toggleIconColor(friendActivityPhoneIconTextView, notifyMobileOfFriendActivity);
+    toggleIconColor(newFollowersMailIconTextView, notifyOfFollower);
+    toggleIconColor(newFollowersPhoneIconTextView, notifyMobileOfFollower);
+    toggleIconColor(projectUpdatesMailIconTextView, notifyOfUpdates);
+    toggleIconColor(projectUpdatesPhoneIconTextView, notifyMobileOfUpdates);
   }
 
-  public void toggleNotificationIconColor(final @NonNull TextView iconTextView, final boolean enabled) {
+  public void toggleIconColor(final @NonNull TextView iconTextView, final boolean enabled) {
     final int color = enabled ? green : gray;
     iconTextView.setTextColor(color);
   }

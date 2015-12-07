@@ -51,7 +51,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:text="@string/close_icon"
-        android:contentDescription="@string/___close_button_content_description"/>
+        android:contentDescription="@string/accessibility_discovery_buttons_close" />
 
     </RelativeLayout>
 

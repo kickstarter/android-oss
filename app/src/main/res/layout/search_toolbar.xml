@@ -40,7 +40,7 @@
         android:layout_height="match_parent"
         android:inputType="text"
         android:singleLine="true"
-        android:hint="@string/___Search_projects"
+        android:hint="@string/tabbar_search_projects"
         android:textCursorDrawable="@null" />
 
       <com.kickstarter.ui.views.IconButton

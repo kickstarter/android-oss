@@ -226,5 +226,4 @@
   <string name="___play_video_button_content_description">Play video</string>
   <string name="___search_button_content_description">Search projects</string>
   <string name="___share_button_content_description">Share this project</string>
-  <string name="___star_fab_content_description">Star this project</string>
 </resources>

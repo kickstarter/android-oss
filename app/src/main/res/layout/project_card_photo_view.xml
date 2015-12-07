@@ -52,7 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:paddingLeft="@dimen/card_padding_action_half"
-        android:text="@string/___project_of_the_day"
+        android:text="@string/discovery_baseball_card_metadata_potd"
         android:textSize="@dimen/subhead"
         android:textColor="@color/white" />
 

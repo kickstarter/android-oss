@@ -287,6 +287,8 @@
   <string name="discovery_activity_sample_title_Since_your_last_visit" formatted="false">Since your last visit</string>
   <string name="discovery_all_of_scope" formatted="false">All of %{scope}</string>
   <string name="discovery_backing" formatted="false">Backing</string>
+  <string name="discovery_baseball_card_accessibility_category_label" formatted="false">Category</string>
+  <string name="discovery_baseball_card_accessibility_location_label" formatted="false">Location</string>
   <string name="discovery_baseball_card_button_share" formatted="false">Share</string>
   <string name="discovery_baseball_card_deadline_units_days" formatted="false">days</string>
   <string name="discovery_baseball_card_deadline_units_hours" formatted="false">hours</string>
@@ -371,6 +373,7 @@
   <string name="general_alert_buttons_ok" formatted="false">OK</string>
   <string name="general_error_something_wrong" formatted="false">Something went wrong.</string>
   <string name="general_loading" formatted="false">Loading...</string>
+  <string name="general_navigation_accessibility_button_navigate_back_label" formatted="false">Navigate back</string>
   <string name="general_navigation_buttons_cancel" formatted="false">Cancel</string>
   <string name="general_navigation_buttons_close" formatted="false">Close</string>
   <string name="general_navigation_buttons_comment" formatted="false">Comment</string>
@@ -512,6 +515,8 @@ We\'d appreciate it!</string>
   <string name="profile_settings_social_friend_backs" formatted="false">Friend backs a project</string>
   <string name="profile_settings_social_title" formatted="false">Social notifications</string>
   <string name="profile_settings_version_number" formatted="false">Version %{version_number}</string>
+  <string name="project_accessibility_button_share_label" formatted="false">Share this project</string>
+  <string name="project_accessibility_button_star_label" formatted="false">Star this project</string>
   <string name="project_back_button" formatted="false">Back this project</string>
   <string name="project_backer_title" formatted="false">You’re a backer!</string>
   <string name="project_checkout_apple_pay_alert_button_ok" formatted="false">OK</string>

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.Money;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
@@ -25,8 +26,8 @@ import butterknife.ButterKnife;
 public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.backers_count) TextView backersCountTextView;
   protected @Bind(R.id.category) TextView categoryTextView;
-  protected @Bind(R.id.deadline_countdown) TextView deadlineCountdownTextView;
-  protected @Bind(R.id.deadline_countdown_unit) TextView deadlineCountdownUnitTextView;
+  protected @Bind(R.id.deadline_countdown_text_view) TextView deadlineCountdownTextView;
+  protected @Bind(R.id.deadline_countdown_unit_text_view) TextView deadlineCountdownUnitTextView;
   protected @Bind(R.id.funding_unsuccessful_view) TextView fundingUnsuccessfulTextView;
   protected @Bind(R.id.pledged_of_) TextView pledgedOfTextView;
   protected @Bind(R.id.goal) TextView goalTextView;
@@ -39,7 +40,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.photo) ImageView photoImageView;
   protected @Bind(R.id.photo_gradient) ViewGroup photoGradientViewGroup;
   protected @Bind(R.id.potd_group) ViewGroup potdViewGroup;
-  protected @Bind(R.id.successfully_funded_view) TextView successfullyFundedTextView;
+  protected @Bind(R.id.successfully_funded_text_view) TextView successfullyFundedTextView;
 
   protected @BindString(R.string.___backers) String backersString;
   protected @BindString(R.string.___Funding_canceled) String fundingCanceledString;
@@ -47,6 +48,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @BindString(R.string.___Funding_unsuccessful_) String fundingUnsuccessfulString;
   protected @BindString(R.string.___of_) String ofString;
   protected @BindString(R.string.___pledged_of_) String pledgedOfString;
+  protected @BindString(R.string.discovery_baseball_card_status_banner_successful) String successfullyFundedString;
   protected @BindString(R.string.____to_go) String toGoString;
 
   protected Project project;
@@ -119,6 +121,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
         percentageFundedProgressBar.setVisibility(View.GONE);
         fundingUnsuccessfulTextView.setVisibility(View.GONE);
         successfullyFundedTextView.setVisibility(View.VISIBLE);
+        successfullyFundedTextView.setText(successfullyFundedString);
         break;
       case Project.STATE_CANCELED:
         percentageFundedProgressBar.setVisibility(View.GONE);

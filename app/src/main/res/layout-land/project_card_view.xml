@@ -138,8 +138,7 @@
         android:layout_height="wrap_content">
 
         <TextView
-          android:id="@+id/successfully_funded_view"
-          android:text="@string/___Successfully_funded"
+          android:id="@+id/successfully_funded_text_view"
           android:visibility="gone"
           style="@style/BodyPrimaryMedium"
           android:textColor="@color/white"

@@ -41,8 +41,8 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.percentage_funded) ProgressBar percentageFundedProgressBar;
   protected @Bind(R.id.backers_count) TextView backersCountTextView;
   protected @Bind(R.id.comments_count) TextView commentsCountTextView;
-  protected @Bind(R.id.deadline_countdown) TextView deadlineCountdownTextView;
-  protected @Bind(R.id.deadline_countdown_unit) TextView deadlineCountdownUnitTextView;
+  protected @Bind(R.id.deadline_countdown_text_view) TextView deadlineCountdownTextView;
+  protected @Bind(R.id.deadline_countdown_unit_text_view) TextView deadlineCountdownUnitTextView;
   protected @Bind(R.id.goal) TextView goalTextView;
   protected @Bind(R.id.pledged) TextView pledgedTextView;
   protected @Bind(R.id.pledged_of_) TextView pledgedOfTextView;

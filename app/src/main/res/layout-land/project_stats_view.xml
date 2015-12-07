@@ -69,7 +69,7 @@
     android:paddingRight="@dimen/grid_1">
 
     <TextView
-      android:id="@+id/deadline_countdown"
+      android:id="@+id/deadline_countdown_text_view"
       android:singleLine="true"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
       android:orientation="horizontal">
 
       <TextView
-        android:id="@+id/deadline_countdown_unit"
+        android:id="@+id/deadline_countdown_unit_text_view"
         android:importantForAccessibility="no"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

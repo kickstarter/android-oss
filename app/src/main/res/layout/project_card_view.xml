@@ -50,7 +50,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="@string/local_offer_icon"
-          android:contentDescription="@string/___category_icon_content_description"
+          android:contentDescription="@string/discovery_baseball_card_accessibility_category_label"
           style="@style/BodyPrimary"/>
 
         <TextView
@@ -67,7 +67,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="@string/location_on_icon"
-          android:contentDescription="@string/___location_icon_content_description"
+          android:contentDescription="@string/discovery_baseball_card_accessibility_location_label"
           style="@style/BodyPrimary" />
 
         <TextView
@@ -103,8 +103,8 @@
       android:layout_height="wrap_content">
 
       <TextView
-        android:id="@+id/successfully_funded_view"
-        android:text="@string/___Successfully_funded"
+        android:id="@+id/successfully_funded_text_view"
+        android:text="@string/discovery_baseball_card_status_banner_successful"
         android:visibility="gone"
         style="@style/BodyPrimaryMedium"
         android:textColor="@color/white"

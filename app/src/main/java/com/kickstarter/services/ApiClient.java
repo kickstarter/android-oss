@@ -16,6 +16,7 @@ import com.kickstarter.services.apirequests.LoginWithFacebookBody;
 import com.kickstarter.services.apirequests.PushTokenBody;
 import com.kickstarter.services.apirequests.RegisterWithFacebookBody;
 import com.kickstarter.services.apirequests.ResetPasswordBody;
+import com.kickstarter.services.apirequests.SettingsBody;
 import com.kickstarter.services.apirequests.SignupBody;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
@@ -54,7 +55,10 @@ public final class ApiClient {
 
   public Observable<AccessTokenEnvelope> registerWithFacebook(@NonNull final String fbAccessToken, final boolean sendNewsletters) {
     return service
-      .registerWithFacebook(RegisterWithFacebookBody.builder().accessToken(fbAccessToken).sendNewsletters(sendNewsletters).build())
+      .registerWithFacebook(RegisterWithFacebookBody.builder()
+        .accessToken(fbAccessToken)
+        .sendNewsletters(sendNewsletters)
+        .build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
@@ -169,6 +173,44 @@ public final class ApiClient {
     return service.toggleProjectStar(project.param())
       .lift(apiErrorOperator())
       .map(StarEnvelope::project)
+      .subscribeOn(Schedulers.io());
+  }
+
+  // todo: the newsletters update differently? PUT =true on a newsletter doesn't update
+  public Observable<User> updateNewsletterEndpoint(final boolean sendHappeningNewsletter,
+    final boolean sendPromoNewsletter, final boolean sendWeeklyNewsletter) {
+    return service
+      .updateUserSettings(
+        SettingsBody.builder()
+          .sendHappeningNewsletter(sendHappeningNewsletter)
+          .sendPromoNewsletter(sendPromoNewsletter)
+          .sendWeeklyNewsletter(sendWeeklyNewsletter)
+          .build()
+      )
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
+  public Observable<User> updateGlobalNotificationsEndpoint(final boolean notifyMobileOfBackings,
+    final boolean notifyMobileOfComments, final boolean notifyMobileOfFollower, final boolean notifyMobileOfFriendActivity,
+    final boolean notifyMobileOfUpdates, final boolean notifyOfBackings, final boolean notifyOfComments,
+    final boolean notifyOfFollower, final boolean notifyOfFriendActivity, final boolean notifyOfUpdates) {
+    return service
+      .updateUserSettings(
+        SettingsBody.builder()
+          .notifyMobileOfBackings(notifyMobileOfBackings)
+          .notifyMobileOfComments(notifyMobileOfComments)
+          .notifyMobileOfFollower(notifyMobileOfFollower)
+          .notifyMobileOfFriendActivity(notifyMobileOfFriendActivity)
+          .notifyMobileOfUpdates(notifyMobileOfUpdates)
+          .notifyOfBackings(notifyOfBackings)
+          .notifyOfComments(notifyOfComments)
+          .notifyOfFollower(notifyOfFollower)
+          .notifyOfFriendActivity(notifyOfFriendActivity)
+          .notifyOfUpdates(notifyOfUpdates)
+          .build()
+      )
+      .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 

@@ -13,6 +13,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.ui.views.IconTextView;
 import com.kickstarter.viewmodels.SettingsViewModel;
 
 import javax.inject.Inject;
@@ -25,6 +26,12 @@ import butterknife.OnClick;
 @RequiresViewModel(SettingsViewModel.class)
 public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   protected @Bind(R.id.happening_now_switch) SwitchCompat happeningNewsletterSwitch;
+  protected @Bind(R.id.friend_activity_mail_icon) IconTextView friendActivityMailIconTextView;
+  protected @Bind(R.id.friend_activity_phone_icon) IconTextView friendActivityPhoneIconTextView;
+  protected @Bind(R.id.new_followers_mail_icon) IconTextView newFollowersMailIconTextView;
+  protected @Bind(R.id.new_followers_phone_icon) IconTextView newFollowersPhoneIconTextView;
+  protected @Bind(R.id.project_updates_mail_icon) IconTextView projectUpdatesMailIconTextView;
+  protected @Bind(R.id.project_updates_phone_icon) IconTextView projectUpdatesPhoneIconTextView;
   protected @Bind(R.id.kickstarter_news_and_events_switch) SwitchCompat promoNewsletterSwitch;
   protected @Bind(R.id.projects_we_love_switch) SwitchCompat weeklyNewsletterSwitch;
 
@@ -62,15 +69,46 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   }
 
   @OnClick(R.id.manage_project_notifications)
-  public void onClick() {
+  public void manageProjectNotifications() {
     // todo
   }
 
-  public void setDisabled(final @NonNull TextView iconTextView) {
-    iconTextView.setTextColor(gray);
+  @OnClick(R.id.friend_activity_mail_icon)
+  public void toggleNotifyOfFriendActivity() {
+
   }
 
-  public void setEnabled(final @NonNull TextView iconTextView) {
-    iconTextView.setTextColor(green);
+  @OnClick(R.id.friend_activity_phone_icon)
+  public void toggleNotifyMobileOfFriendActivity() {
+
+  }
+
+  @OnClick(R.id.new_followers_mail_icon)
+  public void toggleNotifyOfNewFollowers() {
+
+  }
+
+  @OnClick(R.id.new_followers_phone_icon)
+  public void toggleNotifyMobileOfNewFollowers() {
+
+  }
+
+  @OnClick(R.id.project_updates_mail_icon)
+  public void toggleNotifyOfUpdates() {
+
+  }
+
+  @OnClick(R.id.project_updates_phone_icon)
+  public void toggleNotifyMobileOfUpdates() {
+
+  }
+
+  public void setHappeningSwitch(final boolean state) {
+    happeningNewsletterSwitch.setEnabled(state);
+  }
+
+  public void toggleNotificationIconColor(final @NonNull TextView iconTextView, final boolean enabled) {
+    final int color = enabled ? green : gray;
+    iconTextView.setTextColor(color);
   }
 }

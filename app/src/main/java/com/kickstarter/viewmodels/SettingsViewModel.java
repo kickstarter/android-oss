@@ -4,16 +4,20 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.ViewModel;
+import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.ui.activities.SettingsActivity;
 import com.kickstarter.viewmodels.inputs.SettingsViewModelInputs;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.subjects.PublishSubject;
 
 public class SettingsViewModel extends ViewModel<SettingsActivity> implements SettingsViewModelInputs {
@@ -23,7 +27,7 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
   private final PublishSubject<Boolean> sendPromoNewsletter = PublishSubject.create();
   private final PublishSubject<Boolean> sendWeeklyNewsletter = PublishSubject.create();
 
-  final SettingsViewModelInputs inputs = this;
+  public final SettingsViewModelInputs inputs = this;
 
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;

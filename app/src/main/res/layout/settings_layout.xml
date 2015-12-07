@@ -44,7 +44,7 @@
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/project_updates_mail_icon"
           app:iconType="ss_kickstarter"
-          style="@style/KSSettingsIcon"
+          style="@style/KSSettingsMailIcon"
           android:layout_toLeftOf="@+id/project_updates_phone_icon"
           android:layout_toStartOf="@id/project_updates_phone_icon"
           android:text="@string/mail_icon" />
@@ -52,6 +52,7 @@
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/project_updates_phone_icon"
           style="@style/EndSettingsWidget"
+          android:background="@drawable/click_indicator_light"
           android:text="@string/phone_android_icon"/>
 
       </RelativeLayout>
@@ -122,7 +123,7 @@
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/new_followers_mail_icon"
           app:iconType="ss_kickstarter"
-          style="@style/KSSettingsIcon"
+          style="@style/KSSettingsMailIcon"
           android:layout_toLeftOf="@+id/new_followers_phone_icon"
           android:layout_toStartOf="@id/new_followers_phone_icon"
           android:text="@string/mail_icon" />
@@ -130,6 +131,7 @@
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/new_followers_phone_icon"
           style="@style/EndSettingsWidget"
+          android:background="@drawable/click_indicator_light"
           android:text="@string/phone_android_icon" />
 
       </RelativeLayout>
@@ -149,16 +151,17 @@
           android:layout_height="wrap_content" />
 
         <com.kickstarter.ui.views.IconTextView
-          android:id="@+id/friend_backs_mail_icon"
+          android:id="@+id/friend_activity_mail_icon"
           app:iconType="ss_kickstarter"
-          style="@style/KSSettingsIcon"
-          android:layout_toLeftOf="@+id/friend_backs_phone_icon"
-          android:layout_toStartOf="@id/friend_backs_phone_icon"
+          style="@style/KSSettingsMailIcon"
+          android:layout_toLeftOf="@+id/friend_activity_phone_icon"
+          android:layout_toStartOf="@id/friend_activity_phone_icon"
           android:text="@string/mail_icon" />
 
         <com.kickstarter.ui.views.IconTextView
-          android:id="@+id/friend_backs_phone_icon"
+          android:id="@+id/friend_activity_phone_icon"
           style="@style/EndSettingsWidget"
+          android:background="@drawable/click_indicator_light"
           android:text="@string/phone_android_icon" />
 
       </RelativeLayout>

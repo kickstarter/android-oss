@@ -161,12 +161,13 @@
     <item name="android:fontFamily">@string/font_family_medium</item>
   </style>
 
-  <style name="KSSettingsIcon">
+  <style name="KSSettingsMailIcon">
     <item name="android:layout_centerVertical">true</item>
     <item name="android:textSize">@dimen/subhead</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:layout_width">wrap_content</item>
     <item name="android:paddingTop">2dp</item>
+    <item name="android:background">@drawable/click_indicator_light</item>
     <item name="android:layout_marginRight">@dimen/grid_3</item>
     <item name="android:layout_marginEnd">@dimen/grid_3</item>
   </style>

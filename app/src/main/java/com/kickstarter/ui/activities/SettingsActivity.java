@@ -13,6 +13,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.models.User;
 import com.kickstarter.ui.views.IconTextView;
 import com.kickstarter.viewmodels.SettingsViewModel;
 
@@ -22,6 +23,7 @@ import butterknife.Bind;
 import butterknife.BindColor;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresViewModel(SettingsViewModel.class)
 public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
@@ -30,6 +32,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   protected @Bind(R.id.friend_activity_phone_icon) IconTextView friendActivityPhoneIconTextView;
   protected @Bind(R.id.new_followers_mail_icon) IconTextView newFollowersMailIconTextView;
   protected @Bind(R.id.new_followers_phone_icon) IconTextView newFollowersPhoneIconTextView;
+  protected @Bind(R.id.project_notifications_count) TextView projectNotificationsCountTextView;
   protected @Bind(R.id.project_updates_mail_icon) IconTextView projectUpdatesMailIconTextView;
   protected @Bind(R.id.project_updates_phone_icon) IconTextView projectUpdatesPhoneIconTextView;
   protected @Bind(R.id.kickstarter_news_and_events_switch) SwitchCompat promoNewsletterSwitch;
@@ -39,6 +42,13 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   protected @BindColor(R.color.gray) int gray;
 
   @Inject Logout logout;
+
+  private boolean notifyMobileOfFollower;
+  private boolean notifyMobileOfFriendActivity;
+  private boolean notifyMobileOfUpdates;
+  private boolean notifyOfFollower;
+  private boolean notifyOfFriendActivity;
+  private boolean notifyOfUpdates;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -58,6 +68,11 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
     RxCompoundButton.checkedChanges(weeklyNewsletterSwitch)
       .compose(bindToLifecycle())
       .subscribe(viewModel::sendWeeklyNewsletter);
+
+    viewModel.outputs.user()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::displayPreferences);
   }
 
   @OnClick(R.id.log_out_button)

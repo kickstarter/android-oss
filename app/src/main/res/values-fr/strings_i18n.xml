@@ -374,6 +374,7 @@
   <string name="general_alert_buttons_ok" formatted="false">OK</string>
   <string name="general_error_something_wrong" formatted="false">Un erreur s\'est produite.</string>
   <string name="general_loading" formatted="false">Chargement en cours...</string>
+  <string name="general_navigation_accessibility_button_close_label" formatted="false">Close</string>
   <string name="general_navigation_accessibility_button_navigate_back_label" formatted="false">Navigate back</string>
   <string name="general_navigation_buttons_cancel" formatted="false">Annuler</string>
   <string name="general_navigation_buttons_close" formatted="false">Fermer</string>
@@ -521,6 +522,7 @@ Nous vous en serions très reconnaissants !</string>
   <string name="project_accessibility_button_star_label" formatted="false">Star this project</string>
   <string name="project_back_button" formatted="false">Je soutiens ce projet</string>
   <string name="project_backer_title" formatted="false">Vous êtes contributeur !</string>
+  <string name="project_checkout_accessibility_button_close_label" formatted="false">Share this project</string>
   <string name="project_checkout_apple_pay_alert_button_ok" formatted="false">OK</string>
   <string name="project_checkout_apple_pay_alert_error" formatted="false">Erreur</string>
   <string name="project_checkout_backing_navbar_title" formatted="false">Je soutiens ce projet</string>
@@ -617,6 +619,8 @@ Nous vous en serions très reconnaissants !</string>
   <string name="rewards_shipping_preferences_location_unrestricted" formatted="false">Livraison dans le monde entier</string>
   <string name="rewards_title_about_amount_usd" formatted="false">Environ %{reward_amount} USD</string>
   <string name="rewards_title_pledge_reward_currency_or_more" formatted="false">Contribution de %{reward_currency} ou plus</string>
+  <string name="search_by_creator" formatted="false">by %{creator_name}</string>
+  <string name="search_most_popular" formatted="false">Most Popular</string>
   <string name="signup_button" formatted="false">Inscription</string>
   <string name="signup_error_something_wrong" formatted="false">Un erreur s\'est produite.</string>
   <string name="signup_input_fields_email" formatted="false">E-mail</string>
@@ -681,6 +685,7 @@ Nous vous en serions très reconnaissants !</string>
   <string name="tabbar_me" formatted="false">Mon compte</string>
   <string name="tabbar_profile" formatted="false">Profil</string>
   <string name="tabbar_search" formatted="false">Recherche</string>
+  <string name="tabbar_search_projects" formatted="false">Search projects</string>
   <string name="two_factor_buttons_resend" formatted="false">Renvoyer</string>
   <string name="two_factor_buttons_submit" formatted="false">Envoyer</string>
   <string name="two_factor_code_placeholder" formatted="false">Saisir le code</string>

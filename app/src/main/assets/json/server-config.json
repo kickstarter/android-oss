@@ -8,6 +8,7 @@
         "login": "Log in",
         "dashboard": "Dashboard",
         "search": "Search",
+        "search_projects": "Search projects",
         "me": "Me"
       },
       "discovery": {
@@ -594,6 +595,11 @@
                 "ok": "OK"
               }
             }
+          },
+          "accessibility": {
+            "button_close": {
+              "label": "Share this project"
+            }
           }
         },
         "disclaimer": {
@@ -735,6 +741,10 @@
           "shipping_destinations": "Shipping destinations",
           "estimated_delivery": "Estimated Delivery"
         }
+      },
+      "search": {
+        "by_creator": "by %{creator_name}",
+        "most_popular": "Most Popular"
       },
       "messages": {
         "navigation": {
@@ -1014,6 +1024,9 @@
           "accessibility": {
             "button_navigate_back": {
               "label": "Navigate back"
+            },
+            "button_close": {
+              "label": "Close"
             }
           }
         },
@@ -1212,6 +1225,7 @@
         "login": "Anmelden",
         "dashboard": "Dashboard",
         "search": "Suche",
+        "search_projects": "Search projects",
         "me": "Mein Konto"
       },
       "discovery": {
@@ -1799,6 +1813,11 @@
                 "ok": "OK"
               }
             }
+          },
+          "accessibility": {
+            "button_close": {
+              "label": "Share this project"
+            }
           }
         },
         "disclaimer": {
@@ -1940,6 +1959,10 @@
           "shipping_destinations": "Versandziele",
           "estimated_delivery": "Voraussichtliche Lieferung"
         }
+      },
+      "search": {
+        "by_creator": "by %{creator_name}",
+        "most_popular": "Most Popular"
       },
       "messages": {
         "navigation": {
@@ -2219,6 +2242,9 @@
           "accessibility": {
             "button_navigate_back": {
               "label": "Navigate back"
+            },
+            "button_close": {
+              "label": "Close"
             }
           }
         },
@@ -2417,6 +2443,7 @@
         "login": "Iniciar sesión",
         "dashboard": "Panel de control",
         "search": "Búsqueda",
+        "search_projects": "Search projects",
         "me": "Mi cuenta"
       },
       "discovery": {
@@ -3004,6 +3031,11 @@
                 "ok": "Ok"
               }
             }
+          },
+          "accessibility": {
+            "button_close": {
+              "label": "Share this project"
+            }
           }
         },
         "disclaimer": {
@@ -3145,6 +3177,10 @@
           "shipping_destinations": "Destinos de envío",
           "estimated_delivery": "Entrega aproximada"
         }
+      },
+      "search": {
+        "by_creator": "by %{creator_name}",
+        "most_popular": "Most Popular"
       },
       "messages": {
         "navigation": {
@@ -3426,6 +3462,9 @@
           "accessibility": {
             "button_navigate_back": {
               "label": "Navigate back"
+            },
+            "button_close": {
+              "label": "Close"
             }
           }
         },
@@ -3624,6 +3663,7 @@
         "login": "Connexion",
         "dashboard": "Tableau de bord",
         "search": "Recherche",
+        "search_projects": "Search projects",
         "me": "Mon compte"
       },
       "discovery": {
@@ -4211,6 +4251,11 @@
                 "ok": "OK"
               }
             }
+          },
+          "accessibility": {
+            "button_close": {
+              "label": "Share this project"
+            }
           }
         },
         "disclaimer": {
@@ -4352,6 +4397,10 @@
           "shipping_destinations": "Expédition",
           "estimated_delivery": "Livraison prévue"
         }
+      },
+      "search": {
+        "by_creator": "by %{creator_name}",
+        "most_popular": "Most Popular"
       },
       "messages": {
         "navigation": {
@@ -4633,6 +4682,9 @@
           "accessibility": {
             "button_navigate_back": {
               "label": "Navigate back"
+            },
+            "button_close": {
+              "label": "Close"
             }
           }
         },
@@ -4831,6 +4883,7 @@
         "login": "Log in",
         "dashboard": "Dashboard",
         "search": "Search",
+        "search_projects": "Search projects",
         "me": "Me"
       },
       "discovery": {
@@ -5417,6 +5470,11 @@
                 "ok": "OK"
               }
             }
+          },
+          "accessibility": {
+            "button_close": {
+              "label": "Share this project"
+            }
           }
         },
         "disclaimer": {
@@ -5558,6 +5616,10 @@
           "shipping_destinations": "Shipping destinations",
           "estimated_delivery": "Estimated Delivery"
         }
+      },
+      "search": {
+        "by_creator": "by %{creator_name}",
+        "most_popular": "Most Popular"
       },
       "messages": {
         "navigation": {
@@ -5837,6 +5899,9 @@
           "accessibility": {
             "button_navigate_back": {
               "label": "Navigate back"
+            },
+            "button_close": {
+              "label": "Close"
             }
           }
         },
@@ -6060,7 +6125,8 @@
     "recaptcha": true,
     "log_devices": true,
     "backer_report_formats": true,
-    "discover_cards": true
+    "discover_cards": true,
+    "imgix_videos": true
   },
   "launched_countries": [
     {
@@ -6177,9 +6243,9 @@
     "native_ios_aa": "experimental",
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
-    "native_iphone_horiz_vs_vert": "control",
+    "native_iphone_horiz_vs_vert": "experimental",
     "recs_thanks_stars": "collaborative_stars",
-    "recs_hp_video_plays": "collaborative_backings_v2",
+    "recs_hp_video_plays": "collaborative_video_plays",
     "video_autoplay_3": "no_autoplay",
     "project_share_metadata_position": "control"
   },

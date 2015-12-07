@@ -63,8 +63,9 @@ CHECKLIST
     command :"refresh-server-config" do |c|
       c.syntax = "milkrun refresh-server-config"
       c.description = "refresh config from kickstarter api"
+      c.option "--local", "Use local developement server instead of production"
       c.action do |args, options|
-        Milkrun::ServerConfigRefresher.new.refresh
+        Milkrun::ServerConfigRefresher.new(local: (options.local || false)).refresh
       end
     end
 

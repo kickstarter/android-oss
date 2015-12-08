@@ -13,6 +13,7 @@ import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.ui.activities.SettingsActivity;
+import com.kickstarter.viewmodels.errors.SettingsViewModelErrors;
 import com.kickstarter.viewmodels.inputs.SettingsViewModelInputs;
 import com.kickstarter.viewmodels.outputs.SettingsViewModelOutputs;
 
@@ -23,7 +24,7 @@ import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public class SettingsViewModel extends ViewModel<SettingsActivity> implements SettingsViewModelInputs,
-  SettingsViewModelOutputs {
+  SettingsViewModelErrors, SettingsViewModelOutputs {
 
   // INPUTS
   private final PublishSubject<Boolean> sendHappeningNewsletter = PublishSubject.create();
@@ -37,8 +38,9 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
   }
 
   // ERRORS
+
   private final PublishSubject<Throwable> errors = PublishSubject.create();
-  public final Observable<String> errors() {
+  public final Observable<String> unableToSavePreferenceError() {
     return errors
       .map(__ -> null);
   }
@@ -112,7 +114,7 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
     // catch error
     user
       .skip(1)
-      .concatMap(client::updateUser)
+      .concatMap(client::updateUserSettings)
       .compose(Transformers.pipeErrorsTo(errors))
       .subscribe(currentUser::refresh);
 

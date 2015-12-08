@@ -13,6 +13,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.User;
 import com.kickstarter.ui.views.IconTextView;
 import com.kickstarter.viewmodels.SettingsViewModel;
@@ -57,22 +58,16 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
     ButterKnife.bind(this);
     ((KSApplication) getApplication()).component().inject(this);
 
-    RxCompoundButton.checkedChanges(happeningNewsletterSwitch)
-      .compose(bindToLifecycle())
-      .subscribe(viewModel::sendHappeningNewsletter);
-
-    RxCompoundButton.checkedChanges(promoNewsletterSwitch)
-      .compose(bindToLifecycle())
-      .subscribe(viewModel::sendPromoNewsletter);
-
-    RxCompoundButton.checkedChanges(weeklyNewsletterSwitch)
-      .compose(bindToLifecycle())
-      .subscribe(viewModel::sendWeeklyNewsletter);
-
     viewModel.outputs.user()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::displayPreferences);
+
+    viewModel.unableToSavePreferenceError()
+      .compose(bindToLifecycle())
+      .subscribe(__ -> ViewUtils.showToast(this, "Unable to save your preferences."));
+
+
   }
 
   @OnClick(R.id.log_out_button)

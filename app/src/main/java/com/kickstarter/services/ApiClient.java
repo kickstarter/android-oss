@@ -182,7 +182,7 @@ public final class ApiClient {
       .subscribeOn(Schedulers.io());
   }
 
-  public Observable<User> updateUser(final @NonNull User user) {
+  public Observable<User> updateUserSettings(final @NonNull User user) {
     return service.updateUserSettings(
       SettingsBody.builder()
         .notifyMobileOfFollower(user.notifyMobileOfFollower())

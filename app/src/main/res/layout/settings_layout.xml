@@ -35,8 +35,8 @@
 
         <TextView
           style="@style/BodyPrimary"
-          android:paddingTop="@dimen/grid_2"
-          android:paddingBottom="@dimen/grid_2"
+          android:paddingTop="@dimen/feed_padding_y"
+          android:paddingBottom="@dimen/feed_padding_y"
           android:text="@string/Project_updates"
           android:layout_width="match_parent"
           android:layout_height="wrap_content" />
@@ -67,8 +67,8 @@
 
         <TextView
           style="@style/BodyPrimary"
-          android:paddingTop="@dimen/grid_2"
-          android:paddingBottom="@dimen/grid_2"
+          android:paddingTop="@dimen/feed_padding_y"
+          android:paddingBottom="@dimen/feed_padding_y"
           android:text="@string/Manage_project_notifications"
           android:layout_width="match_parent"
           android:layout_height="wrap_content" />
@@ -113,8 +113,8 @@
 
         <TextView
           style="@style/BodyPrimary"
-          android:paddingTop="@dimen/grid_2"
-          android:paddingBottom="@dimen/grid_2"
+          android:paddingTop="@dimen/feed_padding_y"
+          android:paddingBottom="@dimen/feed_padding_y"
           android:text="@string/New_followers"
           android:layout_width="match_parent"
           android:layout_height="wrap_content" />
@@ -143,8 +143,8 @@
 
         <TextView
           style="@style/BodyPrimary"
-          android:paddingTop="@dimen/grid_2"
-          android:paddingBottom="@dimen/grid_2"
+          android:paddingTop="@dimen/feed_padding_y"
+          android:paddingBottom="@dimen/feed_padding_y"
           android:text="@string/Friend_backs_a_project"
           android:layout_width="match_parent"
           android:layout_height="wrap_content" />
@@ -183,8 +183,8 @@
 
         <TextView
           style="@style/BodyPrimary"
-          android:paddingTop="@dimen/grid_2"
-          android:paddingBottom="@dimen/grid_2"
+          android:paddingTop="@dimen/feed_padding_y"
+          android:paddingBottom="@dimen/feed_padding_y"
           android:text="@string/Projects_We_Love"
           android:layout_width="match_parent"
           android:layout_height="wrap_content" />
@@ -203,8 +203,8 @@
 
         <TextView
           style="@style/BodyPrimary"
-          android:paddingTop="@dimen/grid_2"
-          android:paddingBottom="@dimen/grid_2"
+          android:paddingTop="@dimen/feed_padding_y"
+          android:paddingBottom="@dimen/feed_padding_y"
           android:text="@string/Kickstarter_news_and_events"
           android:layout_width="match_parent"
           android:layout_height="wrap_content" />
@@ -223,8 +223,8 @@
 
         <TextView
           style="@style/BodyPrimary"
-          android:paddingTop="@dimen/grid_2"
-          android:paddingBottom="@dimen/grid_2"
+          android:paddingTop="@dimen/feed_padding_y"
+          android:paddingBottom="@dimen/feed_padding_y"
           android:text="@string/Happening_Now"
           android:layout_width="match_parent"
           android:layout_height="wrap_content" />
@@ -255,8 +255,8 @@
 
         <TextView
           style="@style/BodyPrimary"
-          android:paddingTop="@dimen/grid_2"
-          android:paddingBottom="@dimen/grid_2"
+          android:paddingTop="@dimen/feed_padding_y"
+          android:paddingBottom="@dimen/feed_padding_y"
           android:text="@string/Frequently_Asked_Questions"
           android:layout_width="match_parent"
           android:layout_height="wrap_content" />
@@ -278,8 +278,8 @@
 
         <TextView
           style="@style/BodyPrimary"
-          android:paddingTop="@dimen/grid_2"
-          android:paddingBottom="@dimen/grid_2"
+          android:paddingTop="@dimen/feed_padding_y"
+          android:paddingBottom="@dimen/feed_padding_y"
           android:text="@string/Contact"
           android:layout_width="match_parent"
           android:layout_height="wrap_content" />
@@ -301,8 +301,8 @@
 
         <TextView
           style="@style/BodyPrimary"
-          android:paddingTop="@dimen/grid_2"
-          android:paddingBottom="@dimen/grid_2"
+          android:paddingTop="@dimen/feed_padding_y"
+          android:paddingBottom="@dimen/feed_padding_y"
           android:text="@string/How_Kickstarter_works"
           android:layout_width="match_parent"
           android:layout_height="wrap_content" />
@@ -324,8 +324,8 @@
 
         <TextView
           style="@style/BodyPrimary"
-          android:paddingTop="@dimen/grid_2"
-          android:paddingBottom="@dimen/grid_2"
+          android:paddingTop="@dimen/feed_padding_y"
+          android:paddingBottom="@dimen/feed_padding_y"
           android:text="@string/Terms_of_Use"
           android:layout_width="match_parent"
           android:layout_height="wrap_content" />
@@ -347,8 +347,8 @@
 
         <TextView
           style="@style/BodyPrimary"
-          android:paddingTop="@dimen/grid_2"
-          android:paddingBottom="@dimen/grid_2"
+          android:paddingTop="@dimen/feed_padding_y"
+          android:paddingBottom="@dimen/feed_padding_y"
           android:text="@string/Privacy_Policy"
           android:layout_width="match_parent"
           android:layout_height="wrap_content" />
@@ -370,8 +370,8 @@
 
         <TextView
           style="@style/BodyPrimary"
-          android:paddingTop="@dimen/grid_2"
-          android:paddingBottom="@dimen/grid_2"
+          android:paddingTop="@dimen/feed_padding_y"
+          android:paddingBottom="@dimen/feed_padding_y"
           android:text="@string/Cookie_Policy"
           android:layout_width="match_parent"
           android:layout_height="wrap_content" />
@@ -393,8 +393,8 @@
 
         <TextView
           style="@style/BodyPrimary"
-          android:paddingTop="@dimen/grid_2"
-          android:paddingBottom="@dimen/grid_2"
+          android:paddingTop="@dimen/feed_padding_y"
+          android:paddingBottom="@dimen/feed_padding_y"
           android:text="@string/Send_feedback"
           android:layout_width="match_parent"
           android:layout_height="wrap_content" />

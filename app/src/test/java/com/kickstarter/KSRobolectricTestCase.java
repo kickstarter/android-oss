@@ -11,7 +11,7 @@ import org.robolectric.shadows.multidex.ShadowMultiDex;
 
 @RunWith(KSRobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, shadows = ShadowMultiDex.class, sdk = KSRobolectricGradleTestRunner.DEFAULT_SDK)
-public class KSRobolectricTestCase extends TestCase {
+public abstract class KSRobolectricTestCase extends TestCase {
   private TestKSApplication application;
 
   protected @NonNull TestKSApplication application() {

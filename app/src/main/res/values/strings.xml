@@ -212,6 +212,7 @@
   <string name="_to_go">\u0020to go</string>
   <string name="Unable_to_connect">Unable to connect</string>
   <string name="Unable_to_login">Unable to login</string>
+  <string name="Unable_to_save">Unable to save</string>
   <string name="Update_sequence">Update #%1$d</string>
   <string name="Updates">Updates</string>
   <string name="Upgrade_app">Upgrade app</string>
@@ -266,5 +267,5 @@
   <string name="font_family_medium">sans-serif-medium</string>
 
   <!-- Koala strings -->
-  <string name="koala_endpoint">https://***REMOVED***/native/track</string>
+  <string name="koala_endpoint">***REMOVED***</string>
 </resources>

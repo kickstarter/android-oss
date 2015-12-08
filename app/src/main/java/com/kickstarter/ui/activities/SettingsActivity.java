@@ -44,6 +44,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   protected @BindColor(R.color.gray) int gray;
 
   protected @BindString(R.string.Not_implemented_yet) String notImplemetedYetString;
+  protected @BindString(R.string.Unable_to_save) String unableToSaveString;
 
   @Inject Logout logout;
 
@@ -68,7 +69,13 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
 
     viewModel.unableToSavePreferenceError()
       .compose(bindToLifecycle())
-      .subscribe(__ -> ViewUtils.showToast(this, "Unable to save your preferences."));  // todo: string
+      .subscribe(__ -> ViewUtils.showToast(this, unableToSaveString));
+
+    // todo: investigate
+    RxCompoundButton.checkedChanges(happeningNewsletterSwitch)
+      .skip(1)  // skip the first load
+      .compose(bindToLifecycle())
+      .subscribe(viewModel.inputs::sendHappeningNewsletter);
   }
 
   @OnClick(R.id.contact)
@@ -99,20 +106,10 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
     toggleIconColor(projectUpdatesMailIconTextView, notifyOfUpdates);
     toggleIconColor(projectUpdatesPhoneIconTextView, notifyMobileOfUpdates);
 
-    // set these toggles with initial values
-    RxCompoundButton.checked(happeningNewsletterSwitch)
-      .call(user.happeningNewsletter());
-
-    // todo: investigate why this doesn't work
-    RxCompoundButton.checkedChanges(happeningNewsletterSwitch)
-      .last()
-      .subscribe(viewModel.inputs::sendHappeningNewsletter);
-
-    RxCompoundButton.checked(promoNewsletterSwitch)
-      .call(user.promoNewsletter());
-
-    RxCompoundButton.checked(weeklyNewsletterSwitch)
-      .call(user.weeklyNewsletter());
+    // set initial state of switches
+    happeningNewsletterSwitch.setChecked(user.happeningNewsletter());
+    promoNewsletterSwitch.setChecked(user.promoNewsletter());
+    weeklyNewsletterSwitch.setChecked(user.weeklyNewsletter());
   }
 
   @OnClick(R.id.faq)

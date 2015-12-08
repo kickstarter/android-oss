@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.BindColor;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
@@ -41,6 +42,8 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
 
   protected @BindColor(R.color.green) int green;
   protected @BindColor(R.color.gray) int gray;
+
+  protected @BindString(R.string.Not_implemented_yet) String notImplemetedYetString;
 
   @Inject Logout logout;
 
@@ -68,47 +71,15 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
       .subscribe(__ -> ViewUtils.showToast(this, "Unable to save your preferences."));  // todo: string
   }
 
-  @OnClick(R.id.log_out_button)
-  public void logout() {
-    logout.execute();
-    final Intent intent = new Intent(this, DiscoveryActivity.class)
-      .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-    startActivity(intent);
+  @OnClick(R.id.contact)
+  public void contactClick() {
+    // todo: set up contact view
+    ViewUtils.showToast(this, notImplemetedYetString);
   }
 
-  @OnClick(R.id.manage_project_notifications)
-  public void manageProjectNotifications() {
-    // todo: start ManageProjectNotificationsActivity
-  }
-
-  @OnClick(R.id.friend_activity_mail_icon)
-  public void toggleNotifyOfFriendActivity() {
-    viewModel.inputs.notifyOfFriendActivity(!notifyOfFriendActivity);
-  }
-
-  @OnClick(R.id.friend_activity_phone_icon)
-  public void toggleNotifyMobileOfFriendActivity() {
-    viewModel.inputs.notifyMobileOfFriendActivity(!notifyMobileOfFriendActivity);
-  }
-
-  @OnClick(R.id.new_followers_mail_icon)
-  public void toggleNotifyOfNewFollowers() {
-    viewModel.inputs.notifyOfFollower(!notifyOfFollower);
-  }
-
-  @OnClick(R.id.new_followers_phone_icon)
-  public void toggleNotifyMobileOfNewFollowers() {
-    viewModel.inputs.notifyMobileOfFollower(!notifyMobileOfFollower);
-  }
-
-  @OnClick(R.id.project_updates_mail_icon)
-  public void toggleNotifyOfUpdates() {
-    viewModel.inputs.notifyOfUpdates(!notifyOfUpdates);
-  }
-
-  @OnClick(R.id.project_updates_phone_icon)
-  public void toggleNotifyMobileOfUpdates() {
-    viewModel.inputs.notifyMobileOfUpdates(!notifyMobileOfUpdates);
+  @OnClick(R.id.cookie_policy)
+  public void cookiePolicyClick() {
+    startHelpActivity(HelpActivity.HELP_TYPE_COOKIE_POLICY);
   }
 
   public void displayPreferences(final @NonNull User user) {
@@ -142,6 +113,81 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
 
     RxCompoundButton.checked(weeklyNewsletterSwitch)
       .call(user.weeklyNewsletter());
+  }
+
+  @OnClick(R.id.faq)
+  public void faqClick() {
+    startHelpActivity(HelpActivity.HELP_TYPE_FAQ);
+  }
+
+  @OnClick(R.id.how_kickstarter_works)
+  public void howKickstarterWorksClick() {
+    startHelpActivity(HelpActivity.HELP_TYPE_HOW_IT_WORKS);
+  }
+
+  @OnClick(R.id.log_out_button)
+  public void logout() {
+    logout.execute();
+    final Intent intent = new Intent(this, DiscoveryActivity.class)
+      .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+    startActivity(intent);
+  }
+
+  @OnClick(R.id.manage_project_notifications)
+  public void manageProjectNotifications() {
+    // todo: start ManageProjectNotificationsActivity
+  }
+
+  @OnClick(R.id.privacy_policy)
+  public void privacyPolicyClick() {
+    startHelpActivity(HelpActivity.HELP_TYPE_PRIVACY);
+  }
+
+  @OnClick(R.id.send_feedback)
+  public void sendFeedbackClick() {
+    // todo: set up feedback form
+    ViewUtils.showToast(this, notImplemetedYetString);
+  }
+
+  public void startHelpActivity(final int helpType) {
+    final Intent intent = new Intent(this, HelpActivity.class)
+      .putExtra(getString(R.string.intent_help_type), helpType);
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  @OnClick(R.id.friend_activity_mail_icon)
+  public void toggleNotifyOfFriendActivity() {
+    viewModel.inputs.notifyOfFriendActivity(!notifyOfFriendActivity);
+  }
+
+  @OnClick(R.id.friend_activity_phone_icon)
+  public void toggleNotifyMobileOfFriendActivity() {
+    viewModel.inputs.notifyMobileOfFriendActivity(!notifyMobileOfFriendActivity);
+  }
+
+  @OnClick(R.id.new_followers_mail_icon)
+  public void toggleNotifyOfNewFollowers() {
+    viewModel.inputs.notifyOfFollower(!notifyOfFollower);
+  }
+
+  @OnClick(R.id.new_followers_phone_icon)
+  public void toggleNotifyMobileOfNewFollowers() {
+    viewModel.inputs.notifyMobileOfFollower(!notifyMobileOfFollower);
+  }
+
+  @OnClick(R.id.project_updates_mail_icon)
+  public void toggleNotifyOfUpdates() {
+    viewModel.inputs.notifyOfUpdates(!notifyOfUpdates);
+  }
+
+  @OnClick(R.id.project_updates_phone_icon)
+  public void toggleNotifyMobileOfUpdates() {
+    viewModel.inputs.notifyMobileOfUpdates(!notifyMobileOfUpdates);
+  }
+
+  @OnClick(R.id.terms_of_use)
+  public void termsOfUseClick() {
+    startHelpActivity(HelpActivity.HELP_TYPE_TERMS);
   }
 
   public void toggleIconColor(final @NonNull TextView iconTextView, final boolean enabled) {

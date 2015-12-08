@@ -248,6 +248,7 @@
       <include layout="@layout/horizontal_line_thin_view"/>
 
       <RelativeLayout
+        android:id="@+id/faq"
         android:background="@drawable/click_indicator_light_masked"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -270,6 +271,7 @@
       <include layout="@layout/horizontal_line_thin_view"/>
 
       <RelativeLayout
+        android:id="@+id/contact"
         android:background="@drawable/click_indicator_light_masked"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -292,6 +294,7 @@
       <include layout="@layout/horizontal_line_thin_view"/>
 
       <RelativeLayout
+        android:id="@+id/how_kickstarter_works"
         android:background="@drawable/click_indicator_light_masked"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -314,6 +317,7 @@
       <include layout="@layout/horizontal_line_thin_view"/>
 
       <RelativeLayout
+        android:id="@+id/terms_of_use"
         android:background="@drawable/click_indicator_light_masked"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -336,6 +340,7 @@
       <include layout="@layout/horizontal_line_thin_view"/>
 
       <RelativeLayout
+        android:id="@+id/privacy_policy"
         android:background="@drawable/click_indicator_light_masked"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -358,6 +363,7 @@
       <include layout="@layout/horizontal_line_thin_view"/>
 
       <RelativeLayout
+        android:id="@+id/cookie_policy"
         android:background="@drawable/click_indicator_light_masked"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -380,6 +386,7 @@
       <include layout="@layout/horizontal_line_thin_view"/>
 
       <RelativeLayout
+        android:id="@+id/send_feedback"
         android:background="@drawable/click_indicator_light_masked"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

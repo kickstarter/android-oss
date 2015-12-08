@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
-import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.Money;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;

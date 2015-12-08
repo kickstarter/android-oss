@@ -285,7 +285,6 @@
   <string name="discovery_activity_sample_alert_follow_friend_name" formatted="false">Suivre %{friend_name} ?</string>
   <string name="discovery_activity_sample_button_see_all_activity" formatted="false">Toutes les activités</string>
   <string name="discovery_activity_sample_title_Since_your_last_visit" formatted="false">Since your last visit</string>
-  <string name="discovery_activity_sample_title_what_is_new_since_last_visit" formatted="false">Nouveautés depuis votre dernière visite…</string>
   <string name="discovery_all_of_scope" formatted="false">Toute la catégorie %{scope}</string>
   <string name="discovery_backing" formatted="false">Engagements</string>
   <string name="discovery_baseball_card_accessibility_category_label" formatted="false">Category</string>
@@ -379,8 +378,6 @@
   <string name="general_navigation_buttons_cancel" formatted="false">Annuler</string>
   <string name="general_navigation_buttons_close" formatted="false">Fermer</string>
   <string name="general_navigation_buttons_comment" formatted="false">Commenter</string>
-  <string name="general_navigation_buttons_connect_with_facebook" formatted="false">Connexion Facebook</string>
-  <string name="general_navigation_buttons_connect_with_twitter" formatted="false">Connexion Twitter</string>
   <string name="general_navigation_buttons_done" formatted="false">Terminé</string>
   <string name="general_navigation_buttons_help" formatted="false">Aide</string>
   <string name="general_navigation_buttons_ok" formatted="false">OK</string>

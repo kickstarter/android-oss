@@ -69,6 +69,9 @@ public interface ApiService {
   @GET("/v1/categories/{id}")
   Observable<Response<Category>> fetchCategory(@Path("id") long id);
 
+  @GET("/v1/users/self")
+  Observable<Response<User>> fetchCurrentUser();
+
   @POST("/xauth/access_token")
   Observable<Response<AccessTokenEnvelope>> login(@Query("email") String email,
     @Query("password") String password);

@@ -14,7 +14,7 @@ public abstract class User implements Parcelable {
   public abstract long id();
   public abstract String name();
   @Nullable public abstract Integer backedProjectsCount();
-  @Nullable public abstract Integer launchedProjectsCount();
+  @Nullable public abstract Integer createdProjectsCount();
   @Nullable public abstract Integer starredProjectsCount();
 
   @AutoParcel.Builder
@@ -23,7 +23,7 @@ public abstract class User implements Parcelable {
     public abstract Builder id(long __);
     public abstract Builder name(String __);
     public abstract Builder backedProjectsCount(Integer __);
-    public abstract Builder launchedProjectsCount(Integer __);
+    public abstract Builder createdProjectsCount(Integer __);
     public abstract Builder starredProjectsCount(Integer __);
     public abstract User build();
   }

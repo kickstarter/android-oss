@@ -89,7 +89,7 @@ public final class KoalaUtils {
     final Map<String, Object> properties = new HashMap<String, Object>() {{
       put("uid", user.id());
       put("backed_projects_count", user.backedProjectsCount());
-      put("launched_projects_count", user.launchedProjectsCount());
+      put("created_projects_count", user.createdProjectsCount());
       put("starred_projects_count", user.starredProjectsCount());
     }};
 

@@ -96,7 +96,7 @@ public final class SearchViewModel extends ViewModel<SearchActivity> implements 
   }
 
   private @NonNull DiscoveryParams paramsFromSearch(final @NonNull String search) {
-    if (search.trim().length() == 0) {
+    if (search.trim().isEmpty()) {
       return defaultParams;
     } else {
       return DiscoveryParams.builder().term(search).build();

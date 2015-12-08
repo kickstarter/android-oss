@@ -10,6 +10,7 @@ import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Empty;
+import com.kickstarter.models.Notification;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apirequests.CommentBody;
@@ -89,9 +90,9 @@ public final class ApiClient {
       .subscribeOn(Schedulers.io());
   }
 
-  public Observable<DiscoverEnvelope> fetchBackedProjects() {
+  public Observable<List<Notification>> fetchProjectNotifications() {
     return service
-      .fetchBackedProjects()
+      .fetchProjectNotifications()
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }

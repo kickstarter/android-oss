@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.kickstarter.R;
-import com.kickstarter.models.Project;
+import com.kickstarter.models.Notification;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -22,8 +22,8 @@ public final class ManageProjectNotificationsViewHolder extends KSViewHolder {
 
   @Override
   public void onBind(final @NonNull Object datum) {
-    final Project project = (Project) datum;
-    projectNameTextView.setText(project.name());
-    projectNotificationSwitch.setChecked(!project.disableCommunication());
+    final Notification notification = (Notification) datum;
+    projectNameTextView.setText(notification.project().name());
+    projectNotificationSwitch.setChecked(notification.email() && notification.mobile());
   }
 }

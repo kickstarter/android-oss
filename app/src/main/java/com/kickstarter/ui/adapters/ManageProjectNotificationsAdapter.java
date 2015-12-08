@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.kickstarter.R;
-import com.kickstarter.models.Project;
+import com.kickstarter.models.Notification;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.ManageProjectNotificationsViewHolder;
 
@@ -25,9 +25,9 @@ public final class ManageProjectNotificationsAdapter extends KSAdapter {
     return R.layout.manage_project_notification_view;
   }
 
-  public void takeProjects(final @NonNull List<Project> projects) {
+  public void takeProjects(final @NonNull List<Notification> projectNotifications) {
     data().clear();
-    data().add(projects);
+    data().add(projectNotifications);
     notifyDataSetChanged();
   }
 

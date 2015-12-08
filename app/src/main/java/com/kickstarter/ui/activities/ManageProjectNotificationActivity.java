@@ -32,7 +32,7 @@ public final class ManageProjectNotificationActivity extends BaseActivity<Manage
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    viewModel.outputs.projects()
+    viewModel.outputs.projectNotifications()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(adapter::takeProjects);

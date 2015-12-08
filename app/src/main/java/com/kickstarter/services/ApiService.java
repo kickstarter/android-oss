@@ -6,6 +6,7 @@ import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Empty;
+import com.kickstarter.models.Notification;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apirequests.CommentBody;
@@ -43,9 +44,6 @@ public interface ApiService {
   @GET
   Observable<Response<ActivityEnvelope>> fetchActivities(@Url @NonNull String paginationUrl);
 
-  @GET("/v1/users/self/projects/backed")
-  Observable<Response<DiscoverEnvelope>> fetchBackedProjects();
-
   @GET("/v1/categories")
   Observable<Response<CategoriesEnvelope>> fetchCategories();
 
@@ -57,6 +55,9 @@ public interface ApiService {
 
   @GET("/v1/projects/{project_param}/comments")
   Observable<Response<CommentsEnvelope>> fetchProjectComments(@Path("project_param") String projectParam);
+
+  @GET("/v1/users/self/notifications")
+  Observable<Response<List<Notification>>> fetchProjectNotifications();
 
   @GET
   Observable<Response<CommentsEnvelope>> fetchPaginatedProjectComments(@Url String paginationPath);

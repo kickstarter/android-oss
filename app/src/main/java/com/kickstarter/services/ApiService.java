@@ -40,6 +40,9 @@ public interface ApiService {
   Observable<Response<ActivityEnvelope>> fetchActivities(@NonNull @Query("categories[]") List<String> categories,
     @NonNull @QueryMap Map<String, String> pagination);
 
+  @GET("/v1/users/self/projects/backed")
+  Observable<Response<DiscoverEnvelope>> fetchBackedProjects();
+
   @GET("/v1/categories")
   Observable<Response<CategoriesEnvelope>> fetchCategories();
 

@@ -70,6 +70,16 @@
       android:theme="@style/Login" />
 
     <activity
+      android:name=".ui.activities.LoginActivity"
+      android:theme="@style/Login" />
+
+    <activity
+      android:name=".ui.activities.LoginToutActivity"
+      android:theme="@style/Login" />
+
+    <activity android:name=".ui.activities.ManageProjectNotificationActivity" />
+
+    <activity
       android:name=".ui.activities.ProjectActivity"
       android:label="@string/title_activity_project"
       android:parentActivityName=".ui.activities.DiscoveryActivity"
@@ -83,14 +93,6 @@
     <activity
       android:name=".ui.activities.SearchActivity"
       android:theme="@style/SearchActivity" />
-
-    <activity
-      android:name=".ui.activities.LoginToutActivity"
-      android:theme="@style/Login" />
-
-    <activity
-      android:name=".ui.activities.LoginActivity"
-      android:theme="@style/Login" />
 
     <activity android:name=".ui.activities.SettingsActivity"/>
 

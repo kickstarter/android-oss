@@ -70,6 +70,13 @@ public final class ApiClient {
       .subscribeOn(Schedulers.io());
   }
 
+  public Observable<DiscoverEnvelope> fetchBackedProjects() {
+    return service
+      .fetchBackedProjects()
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
   public Observable<List<Category>> fetchCategories() {
     return service.fetchCategories()
       .lift(apiErrorOperator())

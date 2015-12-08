@@ -39,6 +39,7 @@ public abstract class Project implements Parcelable {
   public abstract String currencySymbol(); // e.g.: $
   public abstract boolean currencyTrailingCode();
   public abstract @Nullable DateTime deadline();
+  public abstract boolean disableCommunication();
   public abstract float goal();
   public abstract long id(); // in the Kickstarter app, this is project.pid not project.id
   public abstract boolean isBacking();
@@ -72,6 +73,7 @@ public abstract class Project implements Parcelable {
     public abstract Builder currencySymbol(String __);
     public abstract Builder currencyTrailingCode(boolean __);
     public abstract Builder deadline(DateTime __);
+    public abstract Builder disableCommunication(boolean __);
     public abstract Builder goal(float __);
     public abstract Builder id(long __);
     public abstract Builder isBacking(boolean __);

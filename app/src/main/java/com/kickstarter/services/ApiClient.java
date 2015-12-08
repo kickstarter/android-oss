@@ -225,7 +225,7 @@ public final class ApiClient {
       SettingsBody.builder()
         .notifyMobileOfFollower(user.notifyMobileOfFollower())
         .notifyMobileOfFriendActivity(user.notifyMobileOfFriendActivity())
-        .notifyMobileOfUpdates(user.notifyOfUpdates())
+        .notifyMobileOfUpdates(user.notifyMobileOfUpdates())
         .notifyOfFollower(user.notifyOfFollower())
         .notifyOfFriendActivity(user.notifyOfFriendActivity())
         .notifyOfUpdates(user.notifyOfUpdates())

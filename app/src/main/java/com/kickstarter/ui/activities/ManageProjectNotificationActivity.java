@@ -37,4 +37,10 @@ public final class ManageProjectNotificationActivity extends BaseActivity<Manage
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(adapter::takeProjects);
   }
+
+  @Override
+  public void onBackPressed() {
+    super.onBackPressed();
+    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
+  }
 }

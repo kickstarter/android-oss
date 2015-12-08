@@ -43,7 +43,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   protected @BindColor(R.color.green) int green;
   protected @BindColor(R.color.gray) int gray;
 
-  protected @BindString(R.string.___Not_implemented_yet) String notImplemetedYetString;
+  protected @BindString(R.string.___Not_implemented_yet) String notImplementedYetString;
   protected @BindString(R.string.___Unable_to_save) String unableToSaveString;
 
   @Inject Logout logout;
@@ -71,17 +71,26 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
       .compose(bindToLifecycle())
       .subscribe(__ -> ViewUtils.showToast(this, unableToSaveString));
 
-    // todo: investigate
     RxCompoundButton.checkedChanges(happeningNewsletterSwitch)
-      .skip(1)  // skip the first load
+      .skip(1)
       .compose(bindToLifecycle())
       .subscribe(viewModel.inputs::sendHappeningNewsletter);
+
+    RxCompoundButton.checkedChanges(promoNewsletterSwitch)
+      .skip(1)
+      .compose(bindToLifecycle())
+      .subscribe(viewModel.inputs::sendPromoNewsletter);
+
+    RxCompoundButton.checkedChanges(weeklyNewsletterSwitch)
+      .skip(1)
+      .compose(bindToLifecycle())
+      .subscribe(viewModel.inputs::sendWeeklyNewsletter);
   }
 
   @OnClick(R.id.contact)
   public void contactClick() {
     // todo: set up contact view
-    ViewUtils.showToast(this, notImplemetedYetString);
+    ViewUtils.showToast(this, notImplementedYetString);
   }
 
   @OnClick(R.id.cookie_policy)
@@ -106,7 +115,6 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
     toggleIconColor(projectUpdatesMailIconTextView, notifyOfUpdates);
     toggleIconColor(projectUpdatesPhoneIconTextView, notifyMobileOfUpdates);
 
-    // set initial state of switches
     happeningNewsletterSwitch.setChecked(user.happeningNewsletter());
     promoNewsletterSwitch.setChecked(user.promoNewsletter());
     weeklyNewsletterSwitch.setChecked(user.weeklyNewsletter());
@@ -144,7 +152,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   @OnClick(R.id.send_feedback)
   public void sendFeedbackClick() {
     // todo: set up feedback form
-    ViewUtils.showToast(this, notImplemetedYetString);
+    ViewUtils.showToast(this, notImplementedYetString);
   }
 
   public void startHelpActivity(final int helpType) {

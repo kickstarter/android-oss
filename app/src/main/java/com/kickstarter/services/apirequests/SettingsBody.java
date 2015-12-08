@@ -1,7 +1,5 @@
 package com.kickstarter.services.apirequests;
 
-import android.support.annotation.Nullable;
-
 import com.kickstarter.libs.qualifiers.AutoGson;
 
 import auto.parcel.AutoParcel;
@@ -9,27 +7,27 @@ import auto.parcel.AutoParcel;
 @AutoGson
 @AutoParcel
 public abstract class SettingsBody {
-  public abstract @Nullable Boolean notifyMobileOfFollower();
-  public abstract @Nullable Boolean notifyMobileOfFriendActivity();
-  public abstract @Nullable Boolean notifyMobileOfUpdates();
-  public abstract @Nullable Boolean notifyOfFollower();
-  public abstract @Nullable Boolean notifyOfFriendActivity();
-  public abstract @Nullable Boolean notifyOfUpdates();
-  public abstract @Nullable Boolean sendHappeningNewsletter();
-  public abstract @Nullable Boolean sendPromoNewsletter();
-  public abstract @Nullable Boolean sendWeeklyNewsletter();
+  public abstract boolean notifyMobileOfFollower();
+  public abstract boolean notifyMobileOfFriendActivity();
+  public abstract boolean notifyMobileOfUpdates();
+  public abstract boolean notifyOfFollower();
+  public abstract boolean notifyOfFriendActivity();
+  public abstract boolean notifyOfUpdates();
+  public abstract int sendHappeningNewsletter();
+  public abstract int sendPromoNewsletter();
+  public abstract int sendWeeklyNewsletter();
 
   @AutoParcel.Builder
   public abstract static class Builder {
-    public abstract Builder notifyMobileOfFollower(Boolean __);
-    public abstract Builder notifyMobileOfFriendActivity(Boolean __);
-    public abstract Builder notifyMobileOfUpdates(Boolean __);
-    public abstract Builder notifyOfFollower(Boolean __);
-    public abstract Builder notifyOfFriendActivity(Boolean __);
-    public abstract Builder notifyOfUpdates(Boolean __);
-    public abstract Builder sendHappeningNewsletter(Boolean __);
-    public abstract Builder sendPromoNewsletter(Boolean __);
-    public abstract Builder sendWeeklyNewsletter(Boolean __);
+    public abstract Builder notifyMobileOfFollower(boolean __);
+    public abstract Builder notifyMobileOfFriendActivity(boolean __);
+    public abstract Builder notifyMobileOfUpdates(boolean __);
+    public abstract Builder notifyOfFollower(boolean __);
+    public abstract Builder notifyOfFriendActivity(boolean __);
+    public abstract Builder notifyOfUpdates(boolean __);
+    public abstract Builder sendHappeningNewsletter(int __);
+    public abstract Builder sendPromoNewsletter(int __);
+    public abstract Builder sendWeeklyNewsletter(int __);
     public abstract SettingsBody build();
   }
 

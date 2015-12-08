@@ -65,9 +65,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
 
     viewModel.unableToSavePreferenceError()
       .compose(bindToLifecycle())
-      .subscribe(__ -> ViewUtils.showToast(this, "Unable to save your preferences."));
-
-
+      .subscribe(__ -> ViewUtils.showToast(this, "Unable to save your preferences."));  // todo: string
   }
 
   @OnClick(R.id.log_out_button)
@@ -116,11 +114,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   public void displayPreferences(final @NonNull User user) {
     projectNotificationsCountTextView.setText(user.backedProjectsCount().toString());
 
-    happeningNewsletterSwitch.setChecked(user.happeningNewsletter());
-    promoNewsletterSwitch.setChecked(user.promoNewsletter());
-    weeklyNewsletterSwitch.setChecked(user.weeklyNewsletter());
-
-    notifyMobileOfFriendActivity = user.notifyOfFriendActivity();
+    notifyMobileOfFriendActivity = user.notifyMobileOfFriendActivity();
     notifyOfFriendActivity = user.notifyOfFriendActivity();
     notifyMobileOfFollower = user.notifyMobileOfFollower();
     notifyOfFollower = user.notifyOfFollower();
@@ -133,6 +127,21 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
     toggleIconColor(newFollowersPhoneIconTextView, notifyMobileOfFollower);
     toggleIconColor(projectUpdatesMailIconTextView, notifyOfUpdates);
     toggleIconColor(projectUpdatesPhoneIconTextView, notifyMobileOfUpdates);
+
+    // set these toggles with initial values
+    RxCompoundButton.checked(happeningNewsletterSwitch)
+      .call(user.happeningNewsletter());
+
+    // todo: investigate why this doesn't work
+    RxCompoundButton.checkedChanges(happeningNewsletterSwitch)
+      .last()
+      .subscribe(viewModel.inputs::sendHappeningNewsletter);
+
+    RxCompoundButton.checked(promoNewsletterSwitch)
+      .call(user.promoNewsletter());
+
+    RxCompoundButton.checked(weeklyNewsletterSwitch)
+      .call(user.weeklyNewsletter());
   }
 
   public void toggleIconColor(final @NonNull TextView iconTextView, final boolean enabled) {

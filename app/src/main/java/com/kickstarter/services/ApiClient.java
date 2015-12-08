@@ -229,9 +229,9 @@ public final class ApiClient {
         .notifyOfFollower(user.notifyOfFollower())
         .notifyOfFriendActivity(user.notifyOfFriendActivity())
         .notifyOfUpdates(user.notifyOfUpdates())
-        .sendHappeningNewsletter(user.happeningNewsletter() ? 1 : 0)
-        .sendPromoNewsletter(user.promoNewsletter() ? 1 : 0)
-        .sendWeeklyNewsletter(user.weeklyNewsletter() ? 1 : 0)
+        .happeningNewsletter(user.happeningNewsletter() ? 1 : 0)
+        .promoNewsletter(user.promoNewsletter() ? 1 : 0)
+        .weeklyNewsletter(user.weeklyNewsletter() ? 1 : 0)
         .build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());

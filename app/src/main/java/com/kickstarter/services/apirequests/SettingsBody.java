@@ -13,9 +13,9 @@ public abstract class SettingsBody {
   public abstract boolean notifyOfFollower();
   public abstract boolean notifyOfFriendActivity();
   public abstract boolean notifyOfUpdates();
-  public abstract int sendHappeningNewsletter();
-  public abstract int sendPromoNewsletter();
-  public abstract int sendWeeklyNewsletter();
+  public abstract int happeningNewsletter();
+  public abstract int promoNewsletter();
+  public abstract int weeklyNewsletter();
 
   @AutoParcel.Builder
   public abstract static class Builder {
@@ -25,9 +25,9 @@ public abstract class SettingsBody {
     public abstract Builder notifyOfFollower(boolean __);
     public abstract Builder notifyOfFriendActivity(boolean __);
     public abstract Builder notifyOfUpdates(boolean __);
-    public abstract Builder sendHappeningNewsletter(int __);
-    public abstract Builder sendPromoNewsletter(int __);
-    public abstract Builder sendWeeklyNewsletter(int __);
+    public abstract Builder happeningNewsletter(int __);
+    public abstract Builder promoNewsletter(int __);
+    public abstract Builder weeklyNewsletter(int __);
     public abstract SettingsBody build();
   }
 

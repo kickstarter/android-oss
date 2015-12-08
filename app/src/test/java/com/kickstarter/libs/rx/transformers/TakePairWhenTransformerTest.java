@@ -4,6 +4,7 @@ import android.util.Pair;
 
 import com.kickstarter.BuildConfig;
 import com.kickstarter.KSRobolectricGradleTestRunner;
+import com.kickstarter.KSRobolectricTestCase;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,9 +15,7 @@ import rx.Observable;
 import rx.observers.TestSubscriber;
 import rx.subjects.PublishSubject;
 
-@RunWith(KSRobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, shadows=ShadowMultiDex.class, sdk = KSRobolectricGradleTestRunner.DEFAULT_SDK)
-public class TakePairWhenTransformerTest {
+public class TakePairWhenTransformerTest extends KSRobolectricTestCase {
 
   @Test
   public void testPairTakeWhen_sourceEmitsFirst() {

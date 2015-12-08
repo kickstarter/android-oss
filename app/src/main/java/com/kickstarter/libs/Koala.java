@@ -254,4 +254,9 @@ public final class Koala {
       put("share_type", "twitter");
     }});
   }
+
+  // PROFILE
+  public void trackProfileView() {
+    client.track("Profile View My");
+  }
 }

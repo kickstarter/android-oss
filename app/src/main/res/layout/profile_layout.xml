@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:background="@color/light_gray"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <android.support.design.widget.AppBarLayout
+    android:background="@color/light_gray"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.design.widget.CollapsingToolbarLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+      <include layout="@layout/profile_toolbar" />
+
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/grid_2"
+        android:orientation="vertical">
+
+        <ImageView
+          android:id="@+id/avatar"
+          android:background="@drawable/avatar_stroke"
+          android:layout_gravity="center_horizontal"
+          android:layout_width="@dimen/profile_avatar_width"
+          android:layout_height="@dimen/profile_avatar_height"
+          android:layout_marginTop="@dimen/grid_2"
+          android:layout_marginBottom="@dimen/grid_1_half"
+          android:scaleType="centerCrop" />
+
+        <TextView
+          style="@style/EditorialHeadline"
+          android:id="@+id/user_name"
+          android:gravity="center_horizontal"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:paddingLeft="@dimen/feed_padding_x"
+          android:paddingRight="@dimen/feed_padding_x"
+          android:text="@string/___You" />
+
+        <LinearLayout
+          android:gravity="center_horizontal"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:paddingLeft="@dimen/grid_1"
+          android:paddingRight="@dimen/grid_1"
+          android:orientation="horizontal">
+
+          <TextView
+            style="@style/Subhead"
+            android:id="@+id/created"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="@dimen/grid_1_half"
+            android:text="@string/___Created_projects"
+            android:textColor="@color/text_secondary" />
+
+          <TextView
+            style="@style/Subhead"
+            android:id="@+id/created_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0" />
+
+          <View
+            android:id="@+id/divider"
+            android:background="@color/black_alpha_10"
+            android:layout_width="1dp"
+            android:layout_height="16dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="3dp"/>
+
+          <TextView
+            style="@style/Subhead"
+            android:id="@+id/backed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="@dimen/grid_1_half"
+            android:text="@string/___Backed_projects"
+            android:textColor="@color/text_secondary" />
+
+          <TextView
+            style="@style/Subhead"
+            android:id="@+id/backed_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0" />
+
+        </LinearLayout>
+      </LinearLayout>
+
+    </android.support.design.widget.CollapsingToolbarLayout>
+
+  </android.support.design.widget.AppBarLayout>
+
+  <android.support.v7.widget.RecyclerView
+    android:id="@+id/recycler_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="-16dp"
+    android:scrollbars="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+</android.support.design.widget.CoordinatorLayout>

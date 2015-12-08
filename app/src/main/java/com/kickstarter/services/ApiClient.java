@@ -145,6 +145,12 @@ public final class ApiClient {
     return fetchCategory(category.id());
   }
 
+  public Observable<User> fetchCurrentUser() {
+    return service.fetchCurrentUser()
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
   public Observable<AccessTokenEnvelope> login(@NonNull final String email, @NonNull final String password) {
     return service.login(email, password)
       .lift(apiErrorOperator())

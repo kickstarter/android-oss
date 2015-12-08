@@ -30,7 +30,7 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> {
   private String urlToReload;
   @Bind(R.id.checkout_toolbar) KSToolbar checkoutToolbar;
   @Bind(R.id.web_view) KSWebView webView;
-  @BindString(R.string.Back_this_project) String backThisProjectString;
+  @BindString(R.string.project_back_button) String projectBackButtonString;
   @BindString(R.string.intent_toolbar_title) String intentToolbarTitleString;
 
   @Override
@@ -46,7 +46,7 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> {
     }
     project = intent.getExtras().getParcelable(getString(R.string.intent_project));
 
-    final String title = intent.getExtras().getString(intentToolbarTitleString, backThisProjectString);
+    final String title = intent.getExtras().getString(intentToolbarTitleString, projectBackButtonString);
     checkoutToolbar.setTitle(title);
 
     webView.client().registerRequestHandlers(Arrays.asList(

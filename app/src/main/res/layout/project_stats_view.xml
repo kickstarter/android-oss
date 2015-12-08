@@ -23,7 +23,7 @@
       android:importantForAccessibility="no"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="@string/backers"
+      android:text="@string/___backers"
       style="@style/CaptionSecondary" />
   </LinearLayout>
 
@@ -90,7 +90,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:singleLine="true"
-        android:text="@string/_to_go"
+        android:text="@string/____to_go"
         android:ellipsize="end"
         style="@style/CaptionSecondary" />
 

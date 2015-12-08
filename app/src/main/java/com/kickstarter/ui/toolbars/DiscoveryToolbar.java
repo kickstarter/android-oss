@@ -21,6 +21,7 @@ import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.LoginToutActivity;
+import com.kickstarter.ui.activities.ProfileActivity;
 import com.kickstarter.ui.activities.SearchActivity;
 import com.kickstarter.ui.activities.SettingsActivity;
 
@@ -106,7 +107,9 @@ public final class DiscoveryToolbar extends KSToolbar {
     loginButton.setVisibility(GONE);
     currentUserButton.setVisibility(VISIBLE);
     currentUserButton.setOnClickListener(v -> {
-      final PopupMenu popup = new PopupMenu(v.getContext(), currentUserButton);
+      final BaseActivity activity = (BaseActivity) v.getContext();
+
+      final PopupMenu popup = new PopupMenu(activity, currentUserButton);
       popup.getMenuInflater().inflate(R.menu.current_user_menu, popup.getMenu());
 
       popup.setOnMenuItemClickListener(item -> {
@@ -114,15 +117,20 @@ public final class DiscoveryToolbar extends KSToolbar {
         final BaseActivity baseActivity = (BaseActivity) context;
 
         switch (item.getItemId()) {
+          case R.id.profile:
+            final Intent profileIntent = new Intent(activity, ProfileActivity.class);
+            activity.startActivity(profileIntent);
+            activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+            break;
           case R.id.settings:
             final Intent settingsIntent = new Intent(context, SettingsActivity.class);
             context.startActivity(settingsIntent);
             break;
           case R.id.logout:
             logout.execute();
-            final Intent intent = new Intent(context, DiscoveryActivity.class)
+            final Intent intent = new Intent(activity, DiscoveryActivity.class)
               .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            context.startActivity(intent);
+            activity.startActivity(intent);
             break;
         }
 

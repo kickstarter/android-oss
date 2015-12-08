@@ -39,8 +39,8 @@ public final class CategoryPromoViewHolder extends KSViewHolder {
     cardView.setCardBackgroundColor(category.colorWithAlpha());
     final @ColorInt int categoryTextColor = category.overlayTextColor(context);
     exploreTextView.setTextColor(categoryTextColor);
-    exploreTextView.setText(context.getString(R.string.Explore_Category, category.name()));
-    liveProjectsTextView.setText(context.getString(R.string.Number_live_projects, category.projectsCount()));
+    exploreTextView.setText(context.getString(R.string.___Explore_Category, category.name()));
+    liveProjectsTextView.setText(context.getString(R.string.___Number_live_projects, category.projectsCount()));
     liveProjectsTextView.setTextColor(categoryTextColor);
   }
 

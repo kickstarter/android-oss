@@ -35,6 +35,6 @@
     android:layout_marginBottom="@dimen/grid_3"
     android:layout_marginLeft="@dimen/grid_3"
     android:layout_marginRight="@dimen/grid_3"
-    android:text="@string/Okay" />
+    android:text="@string/___Okay" />
 
 </LinearLayout>

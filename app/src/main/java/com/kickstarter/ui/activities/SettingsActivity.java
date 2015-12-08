@@ -43,8 +43,8 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   protected @BindColor(R.color.green) int green;
   protected @BindColor(R.color.gray) int gray;
 
-  protected @BindString(R.string.Not_implemented_yet) String notImplemetedYetString;
-  protected @BindString(R.string.Unable_to_save) String unableToSaveString;
+  protected @BindString(R.string.___Not_implemented_yet) String notImplemetedYetString;
+  protected @BindString(R.string.___Unable_to_save) String unableToSaveString;
 
   @Inject Logout logout;
 

@@ -12,9 +12,9 @@ import auto.parcel.AutoParcel;
 public abstract class User implements Parcelable {
   public abstract Avatar avatar();
   public abstract @Nullable Integer backedProjectsCount();
+  public abstract @Nullable Integer createdProjectsCount();
   public abstract boolean happeningNewsletter();
   public abstract long id();
-  public abstract @Nullable Integer launchedProjectsCount();
   public abstract String name();
   public abstract boolean notifyMobileOfBackings();
   public abstract boolean notifyMobileOfComments();
@@ -34,9 +34,9 @@ public abstract class User implements Parcelable {
   public abstract static class Builder {
     public abstract Builder avatar(Avatar __);
     public abstract Builder backedProjectsCount(Integer __);
+    public abstract Builder createdProjectsCount(Integer __);
     public abstract Builder happeningNewsletter(boolean __);
     public abstract Builder id(long __);
-    public abstract Builder launchedProjectsCount(Integer __);
     public abstract Builder name(String __);
     public abstract Builder notifyMobileOfBackings(boolean __);
     public abstract Builder notifyMobileOfComments(boolean __);

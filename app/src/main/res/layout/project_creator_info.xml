@@ -27,7 +27,7 @@
 
     <TextView
       android:id="@+id/created_by"
-      android:text="@string/Created_by"
+      android:text="@string/___Created_by"
       android:paddingLeft="@dimen/grid_2"
       android:paddingStart="@dimen/grid_2"
       android:layout_toRightOf="@id/avatar"
@@ -80,9 +80,9 @@
         android:gravity="center_vertical"
         android:textColor="@color/green_state_pressed_color"
         android:textSize="@dimen/subhead"
-        android:text="@string/Campaign" />
+        android:text="@string/___Campaign" />
 
-      <com.kickstarter.ui.views.IconTextView
+      <com.kickstarter.ui.views.IconButton
         android:textSize="@dimen/chevron_right_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -114,7 +114,7 @@
         android:layout_alignParentLeft="true"
         android:textColor="@color/green_state_pressed_color"
         android:textSize="@dimen/subhead"
-        android:text="@string/Updates" />
+        android:text="@string/___Updates" />
 
       <TextView
         android:id="@+id/updates_count"
@@ -150,7 +150,7 @@
         android:gravity="center_vertical"
         android:textColor="@color/green_state_pressed_color"
         android:textSize="@dimen/subhead"
-        android:text="@string/Comments" />
+        android:text="@string/___Comments" />
 
       <TextView
         android:id="@+id/comments_count"

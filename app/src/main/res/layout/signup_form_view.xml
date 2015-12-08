@@ -20,7 +20,7 @@
       android:inputType="textPersonName|textCapWords"
       android:singleLine="true"
       style="@style/SubheadPrimary"
-      android:hint="@string/Full_name" />
+      android:hint="@string/___Full_name" />
 
   </android.support.design.widget.TextInputLayout>
 
@@ -37,7 +37,7 @@
       android:inputType="textEmailAddress"
       android:singleLine="true"
       style="@style/SubheadPrimary"
-      android:hint="@string/Email_address" />
+      android:hint="@string/___Email_address" />
 
   </android.support.design.widget.TextInputLayout>
 
@@ -55,7 +55,7 @@
       android:inputType="textPassword"
       android:singleLine="true"
       style="@style/SubheadPrimary"
-      android:hint="@string/Password_minimum_6_characters" />
+      android:hint="@string/___Password_minimum_6_characters" />
 
   </android.support.design.widget.TextInputLayout>
 
@@ -66,7 +66,7 @@
     android:layout_height="wrap_content"
     style="@style/CaptionSecondary"
     android:layout_marginBottom="@dimen/grid_1"
-    android:text="@string/Discover_new_projects_with_our_weekly_newsletter"/>
+    android:text="@string/___Discover_new_projects_with_our_weekly_newsletter"/>
 
   <Button
     android:id="@+id/signup_button"
@@ -75,7 +75,7 @@
     android:layout_marginTop="@dimen/grid_2"
     android:layout_marginBottom="@dimen/grid_2"
     android:layout_width="match_parent"
-    android:text="@string/Sign_up" />
+    android:text="@string/___Sign_up" />
 
   <TextView
     style="@style/CaptionSecondary"
@@ -89,7 +89,7 @@
     android:paddingRight="@dimen/grid_1"
     android:paddingTop="@dimen/grid_1"
     android:paddingBottom="@dimen/grid_1"
-    android:text="@string/By_signing_up_you_agree_to_our_sign_up" />
+    android:text="@string/___By_signing_up_you_agree_to_our_sign_up" />
 
 </LinearLayout>
 

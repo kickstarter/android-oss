@@ -12,7 +12,7 @@
     android:layout_marginTop="@dimen/grid_1"
     android:layout_marginBottom="@dimen/grid_4"
     android:textColor="@color/dark_gray"
-    android:text="@string/Please_enter_your_verification_code_to_continue" />
+    android:text="@string/___Please_enter_your_verification_code_to_continue" />
 
   <android.support.design.widget.TextInputLayout
     app:hintTextAppearance="@style/BodySecondary"
@@ -26,7 +26,7 @@
       android:inputType="number"
       android:singleLine="true"
       style="@style/SubheadPrimary"
-      android:hint="@string/Enter_code" />
+      android:hint="@string/___Enter_code" />
 
   </android.support.design.widget.TextInputLayout>
 
@@ -44,7 +44,7 @@
       android:layout_weight="1"
       android:layout_marginRight="@dimen/grid_1"
       android:layout_marginEnd="@dimen/grid_1"
-      android:text="@string/Resend" />
+      android:text="@string/___Resend" />
 
     <Button
       style="@style/GreenRoundedButton"
@@ -55,7 +55,7 @@
       android:layout_marginLeft="@dimen/grid_1"
       android:layout_marginStart="@dimen/grid_1"
       android:enabled="false"
-      android:text="@string/Submit" />
+      android:text="@string/___Submit" />
 
   </LinearLayout>
 

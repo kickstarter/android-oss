@@ -31,8 +31,8 @@ public class FacebookConfirmationActivity extends BaseActivity<FacebookConfirmat
   protected @Bind(R.id.sign_up_with_facebook_toolbar) LoginToolbar signUpWithFacebookToolbar;
   protected @Bind(R.id.newsletter_switch) SwitchCompat newsletterSwitch;
 
-  protected @BindString(R.string.Sign_up_with_Facebook) String signUpWithFacebookString;
-  protected @BindString(R.string.Sign_up_error) String errorTitleString;
+  protected @BindString(R.string.___Sign_up_with_Facebook) String signUpWithFacebookString;
+  protected @BindString(R.string.___Sign_up_error) String errorTitleString;
 
   private boolean forward;
 

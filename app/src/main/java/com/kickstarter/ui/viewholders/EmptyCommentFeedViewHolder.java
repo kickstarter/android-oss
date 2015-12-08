@@ -37,13 +37,13 @@ public final class EmptyCommentFeedViewHolder extends KSViewHolder {
 
     if (user == null) {
       commentFeedLoginButton.setVisibility(View.VISIBLE);
-      noCommentsMessageTextView.setText(R.string.Aw_how_sad_Log_in);
+      noCommentsMessageTextView.setText(R.string.___Aw_how_sad_Log_in);
     } else if (project.isBacking()) {
       commentFeedLoginButton.setVisibility(View.GONE);
-      noCommentsMessageTextView.setText(R.string.Aw_how_sad_Be_the_first);
+      noCommentsMessageTextView.setText(R.string.___Aw_how_sad_Be_the_first);
     } else {
       commentFeedLoginButton.setVisibility(View.GONE);
-      noCommentsMessageTextView.setText(R.string.Aw_how_sad_Become_a_backer);
+      noCommentsMessageTextView.setText(R.string.___Aw_how_sad_Become_a_backer);
     }
   }
 

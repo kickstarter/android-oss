@@ -14,7 +14,7 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/grid_1"
     android:textColor="@color/light_gray"
-    android:text="@string/Development_settings" />
+    android:text="@string/___Development_settings" />
 
   <TableLayout
     android:layout_width="match_parent"
@@ -36,7 +36,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/light_gray"
-        android:text="@string/Network" />
+        android:text="@string/___Network" />
 
     </TableRow>
 
@@ -51,7 +51,7 @@
         style="@style/BodySecondary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/Endpoint"
+        android:text="@string/___Endpoint"
         android:layout_column="0" />
 
       <Spinner
@@ -75,7 +75,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/light_gray"
-        android:text="@string/Build_information" />
+        android:text="@string/___Build_information" />
 
     </TableRow>
 
@@ -90,7 +90,7 @@
         style="@style/BodySecondary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/Variant"
+        android:text="@string/___Variant"
         android:layout_column="0" />
 
       <TextView
@@ -114,7 +114,7 @@
         style="@style/BodySecondary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/Version_code"
+        android:text="@string/___Version_code"
         android:textColor="@color/dark_gray"
         android:layout_column="0" />
 
@@ -139,7 +139,7 @@
         style="@style/BodySecondary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/Version_name"
+        android:text="@string/___Version_name"
         android:textColor="@color/dark_gray"
         android:layout_column="0" />
 
@@ -164,7 +164,7 @@
         style="@style/BodySecondary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/Build_date"
+        android:text="@string/___Build_date"
         android:layout_column="0" />
 
       <TextView
@@ -188,7 +188,7 @@
         style="@style/BodySecondary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/Sha"
+        android:text="@string/___Sha"
         android:layout_column="0" />
 
       <TextView
@@ -207,7 +207,7 @@
     android:id="@+id/submit_bug_report_button"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="@string/Submit_bug_report"
+    android:text="@string/___Submit_bug_report"
     style="@style/GreenRoundedButton" />
 
   <Button

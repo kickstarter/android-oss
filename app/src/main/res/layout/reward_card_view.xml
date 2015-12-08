@@ -39,7 +39,7 @@
       android:paddingRight="@dimen/grid_2"
       android:textColor="@color/white"
       android:background="@color/green"
-      android:text="@string/You_selected"
+      android:text="@string/___You_selected"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
@@ -80,7 +80,7 @@
           android:background="@color/medium_gray"
           android:visibility="visible"
           style="@style/BodyPrimary"
-          android:text="@string/Limited_left_of"
+          android:text="@string/___Limited_left_of"
           android:layout_marginLeft="@dimen/grid_1"
           android:layout_marginStart="@dimen/grid_1"
           android:layout_width="wrap_content"
@@ -96,7 +96,7 @@
           android:visibility="visible"
           android:layout_marginStart="@dimen/grid_1"
           android:layout_marginEnd="@dimen/grid_1"
-          android:text="@string/All_gone"
+          android:text="@string/___All_gone"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 
@@ -121,7 +121,7 @@
 
           <TextView
             android:id="@+id/estimated_delivery"
-            android:text="@string/Estimated_delivery"
+            android:text="@string/___Estimated_delivery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/CaptionSecondary"/>
@@ -146,7 +146,7 @@
         <TextView
           android:id="@+id/shipping_destination"
           style="@style/CaptionSecondary"
-          android:text="@string/Shipping_destinations"
+          android:text="@string/___Shipping_destinations"
           android:visibility="visible"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"/>

@@ -15,11 +15,11 @@
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
-    <com.kickstarter.ui.views.IconTextView
+    <com.kickstarter.ui.views.IconButton
       style="@style/ToolbarIcon"
       android:id="@+id/back_button"
       android:focusable="true"
-      android:contentDescription="@string/nav_back_button_content_description"
+      android:contentDescription="@string/___nav_back_button_content_description"
       android:layout_alignParentStart="true"
       android:layout_alignParentLeft="true"
       android:text="@string/arrow_back_icon"/>
@@ -33,12 +33,12 @@
       android:layout_marginLeft="@dimen/grid_3_half"
       android:layout_marginStart="@dimen/grid_3_half"
       android:gravity="center_vertical"
-      android:text="@string/Comments" />
+      android:text="@string/___Comments" />
 
-    <com.kickstarter.ui.views.IconTextView
+    <com.kickstarter.ui.views.IconButton
       style="@style/ToolbarIcon"
       android:id="@+id/comment_button"
-      android:contentDescription="@string/comment_button_content_description"
+      android:contentDescription="@string/___comment_button_content_description"
       android:focusable="true"
       android:visibility="invisible"
       android:layout_alignParentEnd="true"

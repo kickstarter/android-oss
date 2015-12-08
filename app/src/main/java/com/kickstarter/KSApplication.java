@@ -43,7 +43,7 @@ public class KSApplication extends MultiDexApplication {
     MultiDex.install(this);
 
     // Only log for internal builds
-    if (BuildConfig.FLAVOR.equals("internal")) {
+    if (BuildConfig.FLAVOR_AUDIENCE.equals("internal")) {
       Timber.plant(new Timber.DebugTree());
     }
 

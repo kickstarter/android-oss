@@ -57,10 +57,10 @@ public final class RewardViewHolder extends KSViewHolder {
     reward = projectAndReward.second;
 
     minimumTextView.setText(String.format(
-      context.getString(R.string.Pledge_or_more),
+      context.getString(R.string.___Pledge_or_more),
       money.formattedCurrency(reward.minimum(), project.currencyOptions())));
     backersCountTextView.setText(String.format(
-      context.getString(R.string._backers),
+      context.getString(R.string.____backers),
       Integer.toString(reward.backersCount()))); // check Integer formatting
     descriptionTextView.setText(reward.description());
     estimatedDeliveryTextView.setText(
@@ -86,7 +86,7 @@ public final class RewardViewHolder extends KSViewHolder {
   public void toggleLimitedRewardView() {
     if (reward.isLimited()) {
       limitedTextView.setVisibility(View.VISIBLE);
-      limitedTextView.setText(String.format(context.getString(R.string.Limited_left_of),
+      limitedTextView.setText(String.format(context.getString(R.string.___Limited_left_of),
         reward.remaining(),
         reward.limit()));
     } else {

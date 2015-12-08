@@ -46,13 +46,13 @@ public final class ProjectStateChangedViewHolder extends ActivityListViewHolder 
   public String titleText(@NonNull final Context context, @NonNull final Activity activity) {
     switch (activity.category()) {
       case Activity.CATEGORY_FAILURE:
-        return context.getString(R.string.project_was_not_successfully_funded, activity.project().name());
+        return context.getString(R.string.___project_was_not_successfully_funded, activity.project().name());
       case Activity.CATEGORY_CANCELLATION:
-        return context.getString(R.string.project_was_cancelled_by_its_creator, activity.project().name());
+        return context.getString(R.string.___project_was_cancelled_by_its_creator, activity.project().name());
       case Activity.CATEGORY_SUSPENSION:
-        return context.getString(R.string.project_was_suspended, activity.project().name());
+        return context.getString(R.string.___project_was_suspended, activity.project().name());
       case Activity.CATEGORY_RESUME:
-        return context.getString(R.string.project_resumed, activity.project().name());
+        return context.getString(R.string.___project_resumed, activity.project().name());
       default:
         return "";
     }

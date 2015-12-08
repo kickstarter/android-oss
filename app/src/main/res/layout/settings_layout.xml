@@ -23,7 +23,7 @@
         style="@style/SubheadSecondaryMedium"
         android:layout_marginTop="@dimen/grid_3"
         android:layout_marginBottom="@dimen/grid_3"
-        android:text="@string/Projects_you_back"
+        android:text="@string/___Projects_you_back"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
@@ -37,7 +37,7 @@
           style="@style/BodyPrimary"
           android:paddingTop="@dimen/feed_padding_y"
           android:paddingBottom="@dimen/feed_padding_y"
-          android:text="@string/Project_updates"
+          android:text="@string/___Project_updates"
           android:layout_width="match_parent"
           android:layout_height="wrap_content" />
 
@@ -69,7 +69,7 @@
           style="@style/BodyPrimary"
           android:paddingTop="@dimen/feed_padding_y"
           android:paddingBottom="@dimen/feed_padding_y"
-          android:text="@string/Manage_project_notifications"
+          android:text="@string/___Manage_project_notifications"
           android:layout_width="match_parent"
           android:layout_height="wrap_content" />
 
@@ -101,7 +101,7 @@
         style="@style/SubheadSecondaryMedium"
         android:layout_marginTop="@dimen/grid_5"
         android:layout_marginBottom="@dimen/grid_3"
-        android:text="@string/Social_notifications"
+        android:text="@string/___Social_notifications"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
@@ -115,7 +115,7 @@
           style="@style/BodyPrimary"
           android:paddingTop="@dimen/feed_padding_y"
           android:paddingBottom="@dimen/feed_padding_y"
-          android:text="@string/New_followers"
+          android:text="@string/___New_followers"
           android:layout_width="match_parent"
           android:layout_height="wrap_content" />
 
@@ -145,7 +145,7 @@
           style="@style/BodyPrimary"
           android:paddingTop="@dimen/feed_padding_y"
           android:paddingBottom="@dimen/feed_padding_y"
-          android:text="@string/Friend_backs_a_project"
+          android:text="@string/___Friend_backs_a_project"
           android:layout_width="match_parent"
           android:layout_height="wrap_content" />
 
@@ -171,7 +171,7 @@
         style="@style/SubheadSecondaryMedium"
         android:layout_marginTop="@dimen/grid_5"
         android:layout_marginBottom="@dimen/grid_3"
-        android:text="@string/Newsletters"
+        android:text="@string/___Newsletters"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
@@ -185,7 +185,7 @@
           style="@style/BodyPrimary"
           android:paddingTop="@dimen/feed_padding_y"
           android:paddingBottom="@dimen/feed_padding_y"
-          android:text="@string/Projects_We_Love"
+          android:text="@string/___Projects_We_Love"
           android:layout_width="match_parent"
           android:layout_height="wrap_content" />
 
@@ -205,7 +205,7 @@
           style="@style/BodyPrimary"
           android:paddingTop="@dimen/feed_padding_y"
           android:paddingBottom="@dimen/feed_padding_y"
-          android:text="@string/Kickstarter_news_and_events"
+          android:text="@string/___Kickstarter_news_and_events"
           android:layout_width="match_parent"
           android:layout_height="wrap_content" />
 
@@ -225,7 +225,7 @@
           style="@style/BodyPrimary"
           android:paddingTop="@dimen/feed_padding_y"
           android:paddingBottom="@dimen/feed_padding_y"
-          android:text="@string/Happening_Now"
+          android:text="@string/___Happening_Now"
           android:layout_width="match_parent"
           android:layout_height="wrap_content" />
 
@@ -241,7 +241,7 @@
         style="@style/SubheadSecondaryMedium"
         android:layout_marginTop="@dimen/grid_5"
         android:layout_marginBottom="@dimen/grid_3"
-        android:text="@string/About"
+        android:text="@string/___About"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
@@ -257,7 +257,7 @@
           style="@style/BodyPrimary"
           android:paddingTop="@dimen/feed_padding_y"
           android:paddingBottom="@dimen/feed_padding_y"
-          android:text="@string/Frequently_Asked_Questions"
+          android:text="@string/___Frequently_Asked_Questions"
           android:layout_width="match_parent"
           android:layout_height="wrap_content" />
 
@@ -280,7 +280,7 @@
           style="@style/BodyPrimary"
           android:paddingTop="@dimen/feed_padding_y"
           android:paddingBottom="@dimen/feed_padding_y"
-          android:text="@string/Contact"
+          android:text="@string/___Contact"
           android:layout_width="match_parent"
           android:layout_height="wrap_content" />
 
@@ -303,7 +303,7 @@
           style="@style/BodyPrimary"
           android:paddingTop="@dimen/feed_padding_y"
           android:paddingBottom="@dimen/feed_padding_y"
-          android:text="@string/How_Kickstarter_works"
+          android:text="@string/___How_Kickstarter_works"
           android:layout_width="match_parent"
           android:layout_height="wrap_content" />
 
@@ -326,7 +326,7 @@
           style="@style/BodyPrimary"
           android:paddingTop="@dimen/feed_padding_y"
           android:paddingBottom="@dimen/feed_padding_y"
-          android:text="@string/Terms_of_Use"
+          android:text="@string/___Terms_of_Use"
           android:layout_width="match_parent"
           android:layout_height="wrap_content" />
 
@@ -349,7 +349,7 @@
           style="@style/BodyPrimary"
           android:paddingTop="@dimen/feed_padding_y"
           android:paddingBottom="@dimen/feed_padding_y"
-          android:text="@string/Privacy_Policy"
+          android:text="@string/___Privacy_Policy"
           android:layout_width="match_parent"
           android:layout_height="wrap_content" />
 
@@ -372,7 +372,7 @@
           style="@style/BodyPrimary"
           android:paddingTop="@dimen/feed_padding_y"
           android:paddingBottom="@dimen/feed_padding_y"
-          android:text="@string/Cookie_Policy"
+          android:text="@string/___Cookie_Policy"
           android:layout_width="match_parent"
           android:layout_height="wrap_content" />
 
@@ -395,7 +395,7 @@
           style="@style/BodyPrimary"
           android:paddingTop="@dimen/feed_padding_y"
           android:paddingBottom="@dimen/feed_padding_y"
-          android:text="@string/Send_feedback"
+          android:text="@string/___Send_feedback"
           android:layout_width="match_parent"
           android:layout_height="wrap_content" />
 
@@ -411,7 +411,7 @@
       <Button
         style="@style/BorderButton"
         android:id="@+id/log_out_button"
-        android:text="@string/Log_out"
+        android:text="@string/___Log_out"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/grid_3"

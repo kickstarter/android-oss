@@ -307,7 +307,7 @@ public abstract class Project implements Parcelable {
    */
   public @NonNull String timeToGo(final @NonNull Context context) {
     return new StringBuilder(deadlineCountdown(context))
-      .append(context.getString(R.string._to_go))
+      .append(context.getString(R.string.____to_go))
       .toString();
   }
 
@@ -365,15 +365,15 @@ public abstract class Project implements Parcelable {
   public @NonNull String deadlineCountdownUnit(final @NonNull Context context) {
     final Long seconds = timeInSecondsUntilDeadline();
     if (seconds <= 1.0 && seconds > 0.0) {
-      return context.getString(R.string.secs);
+      return context.getString(R.string.___secs);
     } else if (seconds <= 120.0) {
-      return context.getString(R.string.secs);
+      return context.getString(R.string.___secs);
     } else if (seconds <= 120.0 * 60.0) {
-      return context.getString(R.string.mins);
+      return context.getString(R.string.___mins);
     } else if (seconds <= 72.0 * 60.0 * 60.0) {
-      return context.getString(R.string.hours);
+      return context.getString(R.string.___hours);
     }
-    return context.getString(R.string.days);
+    return context.getString(R.string.___days);
   }
 
   public @NonNull String param() {

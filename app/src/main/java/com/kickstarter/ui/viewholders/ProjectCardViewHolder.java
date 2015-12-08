@@ -10,7 +10,9 @@ import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.Money;
+import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
@@ -54,6 +56,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   private final Delegate delegate;
   protected DiscoveryViewModel viewModel;
 
+  @Inject KSString ksString;
   @Inject Money money;
 
   public interface Delegate {
@@ -73,8 +76,8 @@ public final class ProjectCardViewHolder extends KSViewHolder {
 
     backersCountTextView.setText(project.formattedBackersCount());
     categoryTextView.setText(project.category().name());
-    deadlineCountdownTextView.setText(Integer.toString(project.deadlineCountdownValue()));
-    deadlineCountdownUnitTextView.setText(project.deadlineCountdownUnit(view.getContext()));
+    deadlineCountdownTextView.setText(Integer.toString(ProjectUtils.deadlineCountdownValue(project)));
+    deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(project, view.getContext(), ksString));
     goalTextView.setText(money.formattedCurrency(project.goal(), project.currencyOptions(), true));
     locationTextView.setText(project.location().displayableName());
     pledgedTextView.setText(money.formattedCurrency(project.pledged(), project.currencyOptions()));
@@ -147,8 +150,8 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     final String backersCountContentDescription = project.formattedBackersCount() + backersString;
     final String pledgedContentDescription = String.valueOf(project.pledged()) + pledgedOfTextView.getText() +
       money.formattedCurrency(project.goal(), project.currencyOptions());
-    final String deadlineCountdownContentDescription = project.deadlineCountdownValue() +
-      project.deadlineCountdownUnit(view.getContext()) + toGoString;
+    final String deadlineCountdownContentDescription = ProjectUtils.deadlineCountdownValue(project) +
+      ProjectUtils.deadlineCountdownUnit(project, view.getContext()) + toGoString;
 
     backersCountTextView.setContentDescription(backersCountContentDescription);
     pledgedTextView.setContentDescription(pledgedContentDescription);

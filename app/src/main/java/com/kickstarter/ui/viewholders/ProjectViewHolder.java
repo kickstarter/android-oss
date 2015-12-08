@@ -11,9 +11,11 @@ import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.Money;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.DateTimeUtils;
+import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.views.IconButton;
@@ -56,6 +58,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @BindString(R.string.___pledged_of_) String pledgedOfString;
   protected @BindString(R.string.____to_go) String toGoString;
 
+  @Inject KSString ksString;
   @Inject Money money;
 
   public interface Delegate {
@@ -97,8 +100,8 @@ public final class ProjectViewHolder extends KSViewHolder {
     categoryTextView.setText(project.category().name());
     locationTextView.setText(project.location().displayableName());
     percentageFundedProgressBar.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
-    deadlineCountdownTextView.setText(Integer.toString(project.deadlineCountdownValue()));
-    deadlineCountdownUnitTextView.setText(project.deadlineCountdownUnit(context));
+    deadlineCountdownTextView.setText(Integer.toString(ProjectUtils.deadlineCountdownValue(project)));
+    deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(project, context, ksString));
     goalTextView.setText(money.formattedCurrency(project.goal(), project.currencyOptions(), true));
     pledgedTextView.setText(money.formattedCurrency(project.pledged(), project.currencyOptions()));
     if (ViewUtils.isFontScaleLarge(view.getContext())) {
@@ -148,8 +151,8 @@ public final class ProjectViewHolder extends KSViewHolder {
     final String backersCountContentDescription = project.formattedBackersCount() + backersString;
     final String pledgedContentDescription = String.valueOf(project.pledged()) + pledgedOfTextView.getText() +
       money.formattedCurrency(project.goal(), project.currencyOptions());
-    final String deadlineCountdownContentDescription = project.deadlineCountdownValue() +
-      project.deadlineCountdownUnit(view.getContext()) + toGoString;
+    final String deadlineCountdownContentDescription = ProjectUtils.deadlineCountdownValue(project) +
+      ProjectUtils.deadlineCountdownUnit(project, view.getContext()) + toGoString;
 
     backersCountTextView.setContentDescription(backersCountContentDescription);
     pledgedTextView.setContentDescription(pledgedContentDescription);

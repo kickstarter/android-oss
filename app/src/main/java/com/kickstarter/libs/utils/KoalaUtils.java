@@ -119,7 +119,7 @@ public final class KoalaUtils {
       put("pledged", project.pledged());
       put("percent_raised", project.percentageFunded() / 100.0f);
       put("has_video", project.video() != null);
-      put("hours_remaining", project.timeInSecondsUntilDeadline() / 60.0f / 60.0f);
+      put("hours_remaining", ProjectUtils.timeInSecondsUntilDeadline(project) / 60.0f / 60.0f);
 
       // TODO: Implement `duration`
       // put("duration", project.duration());

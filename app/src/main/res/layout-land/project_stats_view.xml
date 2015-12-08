@@ -75,26 +75,12 @@
       android:layout_height="wrap_content"
       style="@style/CaptionPrimary" />
 
-    <LinearLayout
+    <TextView
+      android:id="@+id/deadline_countdown_unit_text_view"
+      android:importantForAccessibility="no"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:orientation="horizontal">
-
-      <TextView
-        android:id="@+id/deadline_countdown_unit_text_view"
-        android:importantForAccessibility="no"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/CaptionSecondary" />
-
-      <TextView
-        android:importantForAccessibility="no"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/____to_go"
-        style="@style/CaptionSecondary" />
-
-    </LinearLayout>
+      style="@style/CaptionSecondary" />
 
   </LinearLayout>
 

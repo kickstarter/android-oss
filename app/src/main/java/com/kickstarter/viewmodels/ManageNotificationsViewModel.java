@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.ViewModel;
@@ -13,58 +14,72 @@ import com.kickstarter.services.ApiClient;
 import com.kickstarter.ui.activities.ManageNotificationActivity;
 import com.kickstarter.ui.adapters.ManageNotificationsAdapter;
 import com.kickstarter.ui.viewholders.ManageNotificationsViewHolder;
-import com.kickstarter.viewmodels.outputs.ManageNotificationsOutputs;
+import com.kickstarter.viewmodels.errors.ManageNotificationsViewModelErrors;
+import com.kickstarter.viewmodels.outputs.ManageNotificationsViewModelOutputs;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public final class ManageNotificationsViewModel extends ViewModel<ManageNotificationActivity> implements
-  ManageNotificationsOutputs, ManageNotificationsAdapter.Delegate {
+  ManageNotificationsViewModelErrors, ManageNotificationsViewModelOutputs, ManageNotificationsAdapter.Delegate {
   @Inject ApiClient client;
 
+  // INPUTS
+  private PublishSubject<Void> switchClick = PublishSubject.create();
+
   // OUTPUTS
-  // todo: we only want to emit the List once!
-  private final BehaviorSubject<List<Notification>> projectNotifications = BehaviorSubject.create();
-  public Observable<List<Notification>> projectNotifications() {
-    return projectNotifications;
+  private final BehaviorSubject<Notification> projectNotification = BehaviorSubject.create();
+  public Observable<Notification> projectNotification() {
+    return projectNotification;
+  }
+
+  private final PublishSubject<Void> toggleSuccess = PublishSubject.create();
+  public Observable<Void> toggleSuccess() {
+    return toggleSuccess;
   }
 
   // ERRORS
-  private final PublishSubject<Throwable> errors = PublishSubject.create();
+  private final PublishSubject<Throwable> savePreferenceErrors = PublishSubject.create();
+  public Observable<String> unableToSavePreferenceError() {
+    return savePreferenceErrors
+      .map(__ -> null); // todo: correct error string
+  }
 
-  public final ManageNotificationsOutputs outputs = this;
+  public final ManageNotificationsViewModelOutputs outputs = this;
+  public final ManageNotificationsViewModelErrors errors = this;
 
   @Override
   protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
+    final Observable<List<Notification>> initialNotifications = refreshNotifications();
+
     view
-      .compose(Transformers.combineLatestPair(initialNotifications()))
-      .flatMap(__ -> initialNotifications())
-      .subscribe(projectNotifications);
+      .compose(Transformers.takePairWhen(initialNotifications)) // grab list of notifications
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(vn -> {
+        vn.first.loadProjects(vn.second); // load in adapter
+      });
   }
 
-  private Observable<List<Notification>> initialNotifications() {
+  public Observable<List<Notification>> refreshNotifications() {
     return client.fetchProjectNotifications()
-      .compose(Transformers.neverError());
+      .compose(Transformers.neverApiError());
   }
 
   @Override
   public void switchClicked(final @NonNull ManageNotificationsViewHolder viewHolder,
     final @NonNull Notification notification, final boolean toggleValue) {
 
-    final Observable<Notification> updatedNotification = client
-      .updateProjectNotifications(notification.id(), toggleValue)
-      .compose(Transformers.pipeErrorsTo(errors));
-
-    projectNotifications
-      .compose(Transformers.takeWhen(updatedNotification))
-      .subscribe();
+    client.updateProjectNotifications(notification.id(), toggleValue)
+      .compose(Transformers.pipeErrorsTo(savePreferenceErrors))
+      .subscribe(projectNotification);  // this needs to update the whole list
   }
 }

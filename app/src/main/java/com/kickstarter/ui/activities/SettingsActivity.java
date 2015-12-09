@@ -67,7 +67,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::displayPreferences);
 
-    viewModel.unableToSavePreferenceError()
+    viewModel.settingsErrors()
       .compose(bindToLifecycle())
       .subscribe(__ -> ViewUtils.showToast(this, unableToSaveString));
 

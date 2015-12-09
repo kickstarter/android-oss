@@ -7,6 +7,7 @@ import java.util.List;
 
 import rx.Observable;
 
-public interface ManageNotificationsOutputs {
-  Observable<List<Notification>> projectNotifications();
+public interface ManageNotificationsViewModelOutputs {
+  Observable<Notification> projectNotification();
+  Observable<Void> toggleSuccess();
 }

@@ -33,14 +33,14 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
   }
 
   // ERRORS
-  private final PublishSubject<Throwable> errors = PublishSubject.create();
-  public final Observable<String> unableToSavePreferenceError() {
-    return errors
-      .map(__ -> null); // todo: get correct error string
+  private final PublishSubject<Throwable> settingsErrors = PublishSubject.create();
+  public final Observable<String> settingsErrors() {
+    return settingsErrors.map(__ -> null); // todo: correct error string
   }
 
   public final SettingsViewModelInputs inputs = this;
   public final SettingsViewModelOutputs outputs = this;
+  public final SettingsViewModelErrors errors = this;
 
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
@@ -109,14 +109,14 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
     user
       .skip(1)
       .concatMap(client::updateUserSettings)
-      .compose(Transformers.pipeErrorsTo(errors))
+      .compose(Transformers.pipeErrorsTo(settingsErrors))
       .subscribe(currentUser::refresh);
 
     // revert view to previous user settings, before error
     user
       .window(2, 1)
       .flatMap(Observable::toList)
-      .compose(Transformers.takeWhen(errors))
+      .compose(Transformers.takeWhen(settingsErrors))
       .map(ListUtils::first)
       .subscribe(user);
   }

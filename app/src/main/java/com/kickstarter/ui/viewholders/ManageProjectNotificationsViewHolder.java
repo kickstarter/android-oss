@@ -26,10 +26,10 @@ public final class ManageProjectNotificationsViewHolder extends KSViewHolder {
   public ManageProjectNotificationsViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
     this.delegate = delegate;
-
     ButterKnife.bind(this, view);
 
     RxCompoundButton.checkedChanges(projectNotificationSwitch)
+      .skip(1)
       .subscribe(toggleValue -> delegate.switchClicked(this, notification, toggleValue));
   }
 

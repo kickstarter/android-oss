@@ -7,6 +7,6 @@ import java.util.List;
 
 import rx.Observable;
 
-public interface ManageProjectNotificationsOutputs {
+public interface ManageNotificationsOutputs {
   Observable<List<Notification>> projectNotifications();
 }

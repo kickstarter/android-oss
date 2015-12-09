@@ -5,7 +5,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   style="@style/Toolbar"
   android:id="@+id/settings_toolbar"
-  tools:showIn="@layout/manage_project_notifications_layout"
+  tools:showIn="@layout/manage_notifications_layout"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp">
 

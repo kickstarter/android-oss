@@ -33,7 +33,7 @@ import com.kickstarter.viewmodels.DiscoveryViewModel;
 import com.kickstarter.viewmodels.FacebookConfirmationViewModel;
 import com.kickstarter.viewmodels.LoginToutViewModel;
 import com.kickstarter.viewmodels.LoginViewModel;
-import com.kickstarter.viewmodels.ManageProjectNotificationsViewModel;
+import com.kickstarter.viewmodels.ManageNotificationsViewModel;
 import com.kickstarter.viewmodels.ProfileViewModel;
 import com.kickstarter.viewmodels.ProjectViewModel;
 import com.kickstarter.viewmodels.ResetPasswordViewModel;
@@ -69,7 +69,7 @@ public interface ApplicationGraph {
   void inject(KSApplication __);
   void inject(LoginViewModel __);
   void inject(LoginToutViewModel __);
-  void inject(ManageProjectNotificationsViewModel __);
+  void inject(ManageNotificationsViewModel __);
   void inject(MessageService __);
   void inject(Money __);
   void inject(ProfileViewModel __);

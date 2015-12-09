@@ -10,10 +10,10 @@ import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Notification;
 import com.kickstarter.services.ApiClient;
-import com.kickstarter.ui.activities.ManageProjectNotificationActivity;
-import com.kickstarter.ui.adapters.ManageProjectNotificationsAdapter;
-import com.kickstarter.ui.viewholders.ManageProjectNotificationsViewHolder;
-import com.kickstarter.viewmodels.outputs.ManageProjectNotificationsOutputs;
+import com.kickstarter.ui.activities.ManageNotificationActivity;
+import com.kickstarter.ui.adapters.ManageNotificationsAdapter;
+import com.kickstarter.ui.viewholders.ManageNotificationsViewHolder;
+import com.kickstarter.viewmodels.outputs.ManageNotificationsOutputs;
 
 import java.util.List;
 
@@ -23,8 +23,8 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public final class ManageProjectNotificationsViewModel extends ViewModel<ManageProjectNotificationActivity> implements
-  ManageProjectNotificationsOutputs, ManageProjectNotificationsAdapter.Delegate {
+public final class ManageNotificationsViewModel extends ViewModel<ManageNotificationActivity> implements
+  ManageNotificationsOutputs, ManageNotificationsAdapter.Delegate {
   @Inject ApiClient client;
 
   // OUTPUTS
@@ -37,7 +37,7 @@ public final class ManageProjectNotificationsViewModel extends ViewModel<ManageP
   // ERRORS
   private final PublishSubject<Throwable> errors = PublishSubject.create();
 
-  public final ManageProjectNotificationsOutputs outputs = this;
+  public final ManageNotificationsOutputs outputs = this;
 
   @Override
   protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
@@ -56,7 +56,7 @@ public final class ManageProjectNotificationsViewModel extends ViewModel<ManageP
   }
 
   @Override
-  public void switchClicked(final @NonNull ManageProjectNotificationsViewHolder viewHolder,
+  public void switchClicked(final @NonNull ManageNotificationsViewHolder viewHolder,
     final @NonNull Notification notification, final boolean toggleValue) {
 
     final Observable<Notification> updatedNotification = client

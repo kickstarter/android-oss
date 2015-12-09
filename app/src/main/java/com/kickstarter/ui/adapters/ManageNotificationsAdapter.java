@@ -7,22 +7,22 @@ import android.view.View;
 import com.kickstarter.R;
 import com.kickstarter.models.Notification;
 import com.kickstarter.ui.viewholders.KSViewHolder;
-import com.kickstarter.ui.viewholders.ManageProjectNotificationsViewHolder;
+import com.kickstarter.ui.viewholders.ManageNotificationsViewHolder;
 
 import java.util.List;
 
-public final class ManageProjectNotificationsAdapter extends KSAdapter {
+public final class ManageNotificationsAdapter extends KSAdapter {
   private final Delegate delegate;
 
-  public interface Delegate extends ManageProjectNotificationsViewHolder.Delegate {}
+  public interface Delegate extends ManageNotificationsViewHolder.Delegate {}
 
-  public ManageProjectNotificationsAdapter(final @NonNull Delegate delegate) {
+  public ManageNotificationsAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;
   }
 
   @Override
   protected int layout(final @NonNull SectionRow sectionRow) {
-    return R.layout.manage_project_notification_view;
+    return R.layout.manage_notification_view;
   }
 
   public void takeProjects(final @NonNull List<Notification> projectNotifications) {
@@ -33,6 +33,6 @@ public final class ManageProjectNotificationsAdapter extends KSAdapter {
 
   @Override
   protected KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
-    return new ManageProjectNotificationsViewHolder(view, delegate);
+    return new ManageNotificationsViewHolder(view, delegate);
   }
 }

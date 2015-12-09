@@ -12,23 +12,23 @@ import com.kickstarter.models.Notification;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public final class ManageProjectNotificationsViewHolder extends KSViewHolder {
+public final class ManageNotificationsViewHolder extends KSViewHolder {
   protected @Bind(R.id.project_name) TextView projectNameTextView;
-  protected @Bind(R.id.project_notification_switch) SwitchCompat projectNotificationSwitch;
+  protected @Bind(R.id.notification_switch) SwitchCompat notificationSwitch;
 
   private final Delegate delegate;
   private Notification notification;
 
   public interface Delegate {
-    void switchClicked(ManageProjectNotificationsViewHolder viewHolder, Notification notification, boolean toggleValue);
+    void switchClicked(ManageNotificationsViewHolder viewHolder, Notification notification, boolean toggleValue);
   }
 
-  public ManageProjectNotificationsViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
+  public ManageNotificationsViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
     this.delegate = delegate;
     ButterKnife.bind(this, view);
 
-    RxCompoundButton.checkedChanges(projectNotificationSwitch)
+    RxCompoundButton.checkedChanges(notificationSwitch)
       .skip(1)
       .subscribe(toggleValue -> delegate.switchClicked(this, notification, toggleValue));
   }
@@ -37,6 +37,6 @@ public final class ManageProjectNotificationsViewHolder extends KSViewHolder {
   public void onBind(final @NonNull Object datum) {
     notification = (Notification) datum;
     projectNameTextView.setText(notification.project().name());
-    projectNotificationSwitch.setChecked(notification.email() && notification.mobile());
+    notificationSwitch.setChecked(notification.email() && notification.mobile());
   }
 }

@@ -79,7 +79,7 @@
       android:name=".ui.activities.LoginToutActivity"
       android:theme="@style/Login" />
 
-    <activity android:name=".ui.activities.ManageProjectNotificationActivity" />
+    <activity android:name=".ui.activities.ManageNotificationActivity" />
 
     <activity
       android:name=".ui.activities.ProjectActivity"

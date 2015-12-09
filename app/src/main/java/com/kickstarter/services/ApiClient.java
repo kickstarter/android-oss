@@ -15,6 +15,7 @@ import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apirequests.CommentBody;
 import com.kickstarter.services.apirequests.LoginWithFacebookBody;
+import com.kickstarter.services.apirequests.NotificationBody;
 import com.kickstarter.services.apirequests.PushTokenBody;
 import com.kickstarter.services.apirequests.RegisterWithFacebookBody;
 import com.kickstarter.services.apirequests.ResetPasswordBody;
@@ -218,6 +219,16 @@ public final class ApiClient {
     return service.toggleProjectStar(project.param())
       .lift(apiErrorOperator())
       .map(StarEnvelope::project)
+      .subscribeOn(Schedulers.io());
+  }
+
+  public Observable<Notification> updateProjectNotifications(final long notificationId, final boolean toggleValue) {
+    return service.updateProjectNotifications(notificationId,
+      NotificationBody.builder()
+        .email(toggleValue)
+        .mobile(toggleValue)
+        .build())
+      .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 

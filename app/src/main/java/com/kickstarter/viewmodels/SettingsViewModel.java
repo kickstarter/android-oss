@@ -26,11 +26,6 @@ import rx.subjects.PublishSubject;
 public class SettingsViewModel extends ViewModel<SettingsActivity> implements SettingsViewModelInputs,
   SettingsViewModelErrors, SettingsViewModelOutputs {
 
-  // INPUTS
-  private final PublishSubject<Boolean> sendHappeningNewsletter = PublishSubject.create();
-  private final PublishSubject<Boolean> sendPromoNewsletter = PublishSubject.create();
-  private final PublishSubject<Boolean> sendWeeklyNewsletter = PublishSubject.create();
-
   // OUTPUTS
   private final BehaviorSubject<User> user = BehaviorSubject.create();
   public Observable<User> user() {
@@ -38,11 +33,10 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
   }
 
   // ERRORS
-
   private final PublishSubject<Throwable> errors = PublishSubject.create();
   public final Observable<String> unableToSavePreferenceError() {
     return errors
-      .map(__ -> null);
+      .map(__ -> null); // todo: get correct error string
   }
 
   public final SettingsViewModelInputs inputs = this;

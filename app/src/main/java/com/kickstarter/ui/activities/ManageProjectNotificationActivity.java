@@ -16,8 +16,7 @@ import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresViewModel(ManageProjectNotificationsViewModel.class)
-public final class ManageProjectNotificationActivity extends BaseActivity<ManageProjectNotificationsViewModel>
-  implements ManageProjectNotificationsAdapter.Delegate {
+public final class ManageProjectNotificationActivity extends BaseActivity<ManageProjectNotificationsViewModel> {
   private ManageProjectNotificationsAdapter adapter;
 
   protected @Bind(R.id.project_notifications_recycler_view) RecyclerView recyclerView;
@@ -28,7 +27,7 @@ public final class ManageProjectNotificationActivity extends BaseActivity<Manage
     setContentView(R.layout.manage_project_notifications_layout);
     ButterKnife.bind(this);
 
-    adapter = new ManageProjectNotificationsAdapter(this);
+    adapter = new ManageProjectNotificationsAdapter(viewModel);
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
 

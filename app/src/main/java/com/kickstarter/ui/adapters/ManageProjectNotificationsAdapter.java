@@ -14,7 +14,7 @@ import java.util.List;
 public final class ManageProjectNotificationsAdapter extends KSAdapter {
   private final Delegate delegate;
 
-  public interface Delegate { }
+  public interface Delegate extends ManageProjectNotificationsViewHolder.Delegate {}
 
   public ManageProjectNotificationsAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;
@@ -33,6 +33,6 @@ public final class ManageProjectNotificationsAdapter extends KSAdapter {
 
   @Override
   protected KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
-    return new ManageProjectNotificationsViewHolder(view);
+    return new ManageProjectNotificationsViewHolder(view, delegate);
   }
 }

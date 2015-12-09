@@ -125,27 +125,27 @@ public abstract class DiscoveryParams implements Parcelable {
   }
 
   @Override
-  public String toString() {
+  public @NonNull String toString() {
     return queryParams().toString();
   }
 
-  public String filterString(@NonNull final Context context) {
+  public @NonNull String filterString(@NonNull final Context context) {
     if (staffPicks()) {
-      return context.getString(R.string.___Staff_Picks);
+      return context.getString(R.string.discovery_recommended);
     } else if (nearby()) {
-      return context.getString(R.string.___Nearby);
+      return context.getString(R.string.discovery_nearby);
     } else if (starred() == 1) {
-      return context.getString(R.string.___Starred);
+      return context.getString(R.string.discovery_saved);
     } else if (backed() == 1) {
-      return context.getString(R.string.___Backing);
+      return context.getString(R.string.discovery_backing);
     } else if (social() == 1) {
-      return context.getString(R.string.___Friends_Backed);
+      return context.getString(R.string.discovery_friends_backed);
     } else if (category() != null) {
       return category().name();
     } else if (location() != null) {
       return location().name();
     } else {
-      return context.getString(R.string.___Everything);
+      return context.getString(R.string.discovery_everything);
     }
   }
 

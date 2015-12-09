@@ -41,25 +41,12 @@
       android:layout_height="wrap_content"
       style="@style/CaptionPrimary" />
 
-    <LinearLayout
+    <TextView
+      android:id="@+id/goal"
+      android:importantForAccessibility="no"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:orientation="horizontal">
-
-      <TextView
-        android:id="@+id/pledged_of_"
-        android:importantForAccessibility="no"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/CaptionSecondary" />
-
-      <TextView
-        android:id="@+id/goal"
-        android:importantForAccessibility="no"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/CaptionSecondary" />
-    </LinearLayout>
+      style="@style/CaptionSecondary" />
   </LinearLayout>
 
   <LinearLayout

@@ -139,7 +139,7 @@ public final class KSString {
     while (matcher.find()) {
       final String key = NON_WORD_REGEXP.matcher(matcher.group()).replaceAll("");
       final String value = substitutions.get(key);
-      final String replacement = value != null ? value : "";
+      final String replacement = Matcher.quoteReplacement(value != null ? value : "");
       matcher.appendReplacement(buffer, replacement);
     }
     matcher.appendTail(buffer);

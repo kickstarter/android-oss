@@ -57,6 +57,15 @@ public class KSStringTest extends KSRobolectricTestCase {
     assertEquals("by %{name}", ksString().format(string, "invalid_key", "foo"));
   }
 
+  /**
+   * Catch issue with regexp substitution where `$` needs to be escaped.
+   */
+  @Test
+  public void testFormat_replaceWithValueContainingDollarSign() {
+    final String string = "pledged of %{goal}";
+    assertEquals("pledged of $100", ksString().format(string, "goal", "$100"));
+  }
+
   @Test
   public void testFormat_count() {
     final String keyPath = "dates_time_days";

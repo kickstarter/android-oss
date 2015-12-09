@@ -58,7 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/local_offer_icon"
-            android:contentDescription="@string/category_icon_content_description"
+            android:contentDescription="@string/___category_icon_content_description"
             style="@style/BodyPrimary"/>
 
           <TextView
@@ -75,7 +75,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/location_on_icon"
-            android:contentDescription="@string/location_icon_content_description"
+            android:contentDescription="@string/___location_icon_content_description"
             style="@style/BodyPrimary" />
 
           <TextView
@@ -113,7 +113,7 @@
 
         <TextView
           android:id="@+id/successfully_funded_view"
-          android:text="@string/Successfully_funded"
+          android:text="@string/___Successfully_funded"
           android:visibility="gone"
           style="@style/BodyPrimaryMedium"
           android:textColor="@color/white"

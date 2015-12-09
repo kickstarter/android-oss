@@ -33,7 +33,7 @@ public final class DiscoveryFilterViewHolder extends KSViewHolder {
   @Bind(R.id.vertical_line_group) View verticalLineGroup;
   @Bind(R.id.vertical_line_medium_view) View verticalLineView;
 
-  @BindString(R.string.live_project_count_content_description) String liveProjectCountDescriptionString;
+  @BindString(R.string.___live_project_count_content_description) String liveProjectCountDescriptionString;
 
   public interface Delegate {
     void discoveryFilterClick(DiscoveryFilterViewHolder viewHolder, DiscoveryParams discoveryParams);
@@ -99,7 +99,7 @@ public final class DiscoveryFilterViewHolder extends KSViewHolder {
 
     String text = params.filterString(view.getContext());
     if (isSecondaryCategoryRoot()) {
-      text = view.getContext().getString(R.string.All_of_Category, text);
+      text = view.getContext().getString(R.string.___All_of_Category, text);
     }
 
     filterTextView.setText(text);

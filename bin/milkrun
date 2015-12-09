@@ -13,6 +13,29 @@ class MilkrunApplication
     program :version, '0.0.1'
     program :description, 'Command-line tool for deploying the Kickstarter Android app'
 
+    command :builds do |c|
+      c.syntax = "milkrun builds"
+      c.description = "Show list of published builds"
+      c.action do |args, options|
+        puts Milkrun::BuildList.new.fetch.to_yaml
+      end
+    end
+
+    command :"create-i18n-string-resources" do |c|
+      c.syntax = "milkrun create-i18n-string-resources"
+      c.description = "create i18n string resources for each locale from config"
+      c.action do |args, options|
+        Milkrun::I18nStringResources.new.create
+      end
+    end
+
+    command :external do |c|
+      c.syntax = 'milkrun external'
+      c.description = 'TODO: Submit a new external build to the Play Store'
+      c.action do |args, options|
+      end
+    end
+
     command :internal do |c|
       c.syntax = 'milkrun internal'
       c.description = "Submit a new internal build to S3"
@@ -37,18 +60,11 @@ CHECKLIST
       end
     end
 
-    command :external do |c|
-      c.syntax = 'milkrun external'
-      c.description = 'TODO: Submit a new external build to the Play Store'
+    command :"refresh-server-config" do |c|
+      c.syntax = "milkrun refresh-server-config"
+      c.description = "refresh config from kickstarter api"
       c.action do |args, options|
-      end
-    end
-
-    command :builds do |c|
-      c.syntax = "milkrun builds"
-      c.description = "Show list of published builds"
-      c.action do |args, options|
-        puts Milkrun::BuildList.new.fetch.to_yaml
+        Milkrun::ServerConfigRefresher.new.refresh
       end
     end
 

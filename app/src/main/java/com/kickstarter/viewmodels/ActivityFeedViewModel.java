@@ -8,14 +8,11 @@ import android.support.annotation.Nullable;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.ViewModel;
+import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
-import com.kickstarter.viewmodels.inputs.ActivityFeedViewModelInputs;
-import com.kickstarter.viewmodels.outputs.ActivityFeedViewModelOutputs;
-import com.kickstarter.services.ActivityFeedParams;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
@@ -25,6 +22,8 @@ import com.kickstarter.ui.viewholders.FriendBackingViewHolder;
 import com.kickstarter.ui.viewholders.ProjectStateChangedPositiveViewHolder;
 import com.kickstarter.ui.viewholders.ProjectStateChangedViewHolder;
 import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder;
+import com.kickstarter.viewmodels.inputs.ActivityFeedViewModelInputs;
+import com.kickstarter.viewmodels.outputs.ActivityFeedViewModelOutputs;
 
 import java.util.List;
 
@@ -41,9 +40,12 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
   @Inject CurrentUser currentUser;
 
   private final PublishSubject<Project> discoverProjectsClick = PublishSubject.create();
+  private final PublishSubject<Activity> friendBackingClick = PublishSubject.create();
   private final PublishSubject<Void> loginClick = PublishSubject.create();
-  private final PublishSubject<Activity> projectClick = PublishSubject.create();
-  private final PublishSubject<Activity> updateClick = PublishSubject.create();
+  private final PublishSubject<Activity> projectStateChangedPositiveClick = PublishSubject.create();
+  private final PublishSubject<Activity> projectStateChangedClick = PublishSubject.create();
+  private final PublishSubject<Activity> projectUpdateProjectClick = PublishSubject.create();
+  private final PublishSubject<Activity> projectUpdateUpdateClick = PublishSubject.create();
 
   private final PublishSubject<String> moreActivitiesUrl = PublishSubject.create();
 
@@ -78,10 +80,17 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    addSubscription(refresh
-        .switchMap(__ -> activitiesWithPagination())
-        .subscribe(activities)
-    );
+    final ApiPaginator<Activity, ActivityEnvelope, Void> paginator = ApiPaginator.<Activity, ActivityEnvelope, Void>builder()
+      .nextPage(nextPage)
+      .startOverWith(refresh)
+      .envelopeToListOfData(ActivityEnvelope::activities)
+      .envelopeToMoreUrl(env -> env.urls().api().moreActivities())
+      .loadWithParams(__ -> client.fetchActivities())
+      .loadWithPaginationPath(client::fetchActivities)
+      .build();
+
+    addSubscription(paginator.paginatedData.subscribe(activities));
+    addSubscription(paginator.isFetching.subscribe(isFetchingActivities));
 
     addSubscription(currentUser.loggedInUser()
         .take(1)
@@ -98,7 +107,7 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
       .subscribe(ActivityFeedActivity::discoverProjectsButtonOnClick));
 
     addSubscription(view
-      .compose(Transformers.takePairWhen(projectClick))
+      .compose(Transformers.takePairWhen(friendBackingClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startProjectActivity(vp.second.project())));
 
@@ -108,22 +117,22 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
       .subscribe(ActivityFeedActivity::activityFeedLogin));
 
     addSubscription(view
-      .compose(Transformers.takePairWhen(projectClick))
+      .compose(Transformers.takePairWhen(projectStateChangedClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startProjectActivity(vp.second.project())));
 
     addSubscription(view
-      .compose(Transformers.takePairWhen(projectClick))
+      .compose(Transformers.takePairWhen(projectStateChangedPositiveClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startProjectActivity(vp.second.project())));
 
     addSubscription(view
-      .compose(Transformers.takePairWhen(projectClick))
+      .compose(Transformers.takePairWhen(projectUpdateProjectClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startProjectActivity(vp.second.project())));
 
     addSubscription(view
-      .compose(Transformers.takePairWhen(updateClick))
+      .compose(Transformers.takePairWhen(projectUpdateUpdateClick))
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.showProjectUpdate(vp.second)));
 
@@ -134,48 +143,15 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
     );
 
     // Track tapping on any of the activity items.
-    addSubscription(projectClick.mergeWith(updateClick)
-        .subscribe(koala::trackActivityTapped)
+    addSubscription(
+      Observable.merge(
+        friendBackingClick,
+        projectStateChangedPositiveClick,
+        projectStateChangedClick,
+        projectUpdateProjectClick,
+        projectUpdateUpdateClick
+      ).subscribe(koala::trackActivityTapped)
     );
-  }
-
-  private @NonNull Observable<List<Activity>> activitiesWithPagination() {
-
-    return paramsWithPagination(ActivityFeedParams.builder().build())
-      .concatMap(this::activitiesFromParams)
-      .takeUntil(List::isEmpty)
-      .scan(ListUtils::concat);
-  }
-
-  private @NonNull Observable<ActivityFeedParams> paramsWithPagination(final @NonNull ActivityFeedParams firstParams) {
-
-    return moreActivitiesUrl
-      .map(ActivityFeedParams::fromUrl)
-      .compose(Transformers.takeWhen(nextPage))
-      .startWith(firstParams);
-  }
-
-  private @NonNull Observable<List<Activity>> activitiesFromParams(@NonNull final ActivityFeedParams params) {
-
-    return client.fetchActivities(params)
-      .compose(Transformers.neverError())
-      .doOnNext(this::keepPaginationParams)
-      .map(ActivityEnvelope::activities)
-      .doOnSubscribe(() -> isFetchingActivities.onNext(true))
-      .finallyDo(() -> isFetchingActivities.onNext(false));
-  }
-
-  private void keepPaginationParams(@NonNull final ActivityEnvelope envelope) {
-    final ActivityEnvelope.UrlsEnvelope urls = envelope.urls();
-    if (urls != null) {
-      final ActivityEnvelope.UrlsEnvelope.ApiEnvelope api = urls.api();
-      if (api != null) {
-        final String moreUrl = api.moreActivities();
-        if (moreUrl != null) {
-          moreActivitiesUrl.onNext(moreUrl);
-        }
-      }
-    }
   }
 
   public void emptyActivityFeedDiscoverProjectsClicked(@NonNull final EmptyActivityFeedViewHolder viewHolder) {
@@ -187,26 +163,26 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
   }
 
   public void friendBackingClicked(@NonNull final FriendBackingViewHolder viewHolder, @NonNull final Activity activity) {
-    projectClick.onNext(activity);
+    friendBackingClick.onNext(activity);
   }
 
   public void projectStateChangedClicked(@NonNull final ProjectStateChangedViewHolder viewHolder,
     @NonNull final Activity activity) {
-    projectClick.onNext(activity);
+    projectStateChangedClick.onNext(activity);
   }
 
   public void projectStateChangedPositiveClicked(@NonNull final ProjectStateChangedPositiveViewHolder viewHolder,
     @NonNull final Activity activity) {
-    projectClick.onNext(activity);
+    projectStateChangedPositiveClick.onNext(activity);
   }
 
   public void projectUpdateProjectClicked(@NonNull final ProjectUpdateViewHolder viewHolder,
     @NonNull final Activity activity) {
-    projectClick.onNext(activity);
+    projectUpdateProjectClick.onNext(activity);
   }
 
   public void projectUpdateClicked(@NonNull final ProjectUpdateViewHolder viewHolder,
     @NonNull final Activity activity) {
-    updateClick.onNext(activity);
+    projectUpdateUpdateClick.onNext(activity);
   }
 }

@@ -10,7 +10,7 @@ import android.widget.EditText;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.kickstarter.R;
 import com.kickstarter.ui.activities.SearchActivity;
-import com.kickstarter.ui.views.IconTextView;
+import com.kickstarter.ui.views.IconButton;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -19,7 +19,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
 public final class SearchToolbar extends KSToolbar {
-  public @Bind(R.id.clear_button) IconTextView clearButton;
+  public @Bind(R.id.clear_button) IconButton clearButton;
   public @Bind(R.id.search_edit_text) EditText searchEditText;
 
   public SearchToolbar(@NonNull final Context context) {

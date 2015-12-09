@@ -6,22 +6,21 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.kickstarter.KSApplication;
-import com.kickstarter.libs.ViewModel;
+import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
-import com.kickstarter.viewmodels.errors.CommentFeedViewModelErrors;
-import com.kickstarter.viewmodels.inputs.CommentFeedViewModelInputs;
-import com.kickstarter.viewmodels.outputs.CommentFeedViewModelOutputs;
 import com.kickstarter.services.ApiClient;
-import com.kickstarter.services.CommentFeedParams;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.activities.CommentFeedActivity;
+import com.kickstarter.viewmodels.errors.CommentFeedViewModelErrors;
+import com.kickstarter.viewmodels.inputs.CommentFeedViewModelInputs;
+import com.kickstarter.viewmodels.outputs.CommentFeedViewModelOutputs;
 
 import java.util.Arrays;
 import java.util.List;
@@ -66,7 +65,6 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   private final PublishSubject<Void> loginSuccess = PublishSubject.create();
   private final PublishSubject<String> bodyOnPostClick = PublishSubject.create();
   private final PublishSubject<Boolean> commentIsPosting = PublishSubject.create();
-  private final PublishSubject<CommentFeedParams> params = PublishSubject.create();
 
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
@@ -91,9 +89,17 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .mergeWith(initialProject)
       .share();
 
-    final Observable<List<Comment>> comments = refresh
-      .switchMap(__ -> commentsWithPagination())
-      .share();
+    final ApiPaginator<Comment, CommentsEnvelope, Void> paginator =
+      ApiPaginator.<Comment, CommentsEnvelope, Void>builder()
+        .nextPage(nextPage)
+        .startOverWith(refresh.compose(Transformers.ignoreValues()))
+        .envelopeToListOfData(CommentsEnvelope::comments)
+        .envelopeToMoreUrl(env -> env.urls().api().moreComments())
+        .loadWithParams(__ -> initialProject.take(1).flatMap(client::fetchProjectComments))
+        .loadWithPaginationPath(client::fetchProjectComments)
+        .build();
+
+    final Observable<List<Comment>> comments = paginator.paginatedData.share();
 
     final Observable<Boolean> commentHasBody = commentBody
       .map(body -> body.length() > 0);
@@ -150,15 +156,6 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
         .subscribe(vp -> vp.first.disablePostButton(vp.second))
     );
 
-    addSubscription(project
-        .compose(Transformers.takeWhen(refresh))
-        .map(p -> CommentFeedParams.builder().project(p).build())
-        .subscribe(p -> {
-          params.onNext(p);
-          nextPage();
-        })
-    );
-
     // Koala tracking
     addSubscription(initialProject
       .compose(Transformers.takePairWhen(postedComment))
@@ -170,37 +167,9 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .subscribe(koala::trackProjectCommentLoadMore)
     );
 
+    addSubscription(paginator.isFetching.subscribe(isFetchingComments));
+
     addSubscription(project.take(1).subscribe(__ -> refresh.onNext(Empty.get())));
-  }
-
-  private Observable<List<Comment>> commentsWithPagination() {
-    return params
-      .compose(Transformers.takeWhen(nextPage))
-      .concatMap(this::commentsFromParams)
-      .takeUntil(List::isEmpty)
-      .scan(ListUtils::concat);
-  }
-
-  private Observable<List<Comment>> commentsFromParams(@NonNull final CommentFeedParams params) {
-    return client.fetchProjectComments(params)
-      .compose(Transformers.neverError())
-      .doOnNext(env -> keepPaginationParams(params, env))
-      .map(CommentsEnvelope::comments)
-      .doOnSubscribe(() -> isFetchingComments.onNext(true))
-      .finallyDo(() -> isFetchingComments.onNext(false));
-  }
-
-  private void keepPaginationParams(@NonNull final CommentFeedParams currentParams, @NonNull final CommentsEnvelope envelope) {
-    final CommentsEnvelope.UrlsEnvelope urls = envelope.urls();
-    if (urls != null) {
-      final CommentsEnvelope.UrlsEnvelope.ApiEnvelope api = urls.api();
-      if (api != null) {
-        final String moreUrl = api.moreComments();
-        if (moreUrl != null) {
-          this.params.onNext(currentParams.nextPageFromUrl(moreUrl));
-        }
-      }
-    }
   }
 
   private Observable<Comment> postComment(@NonNull final Project project, @NonNull final String body) {

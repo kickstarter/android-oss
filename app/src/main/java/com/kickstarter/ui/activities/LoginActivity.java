@@ -32,10 +32,10 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
   @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
   @Bind(R.id.password) EditText passwordEditText;
 
-  @BindString(R.string.Login_does_not_match_any_of_our_records) String loginDoesNotMatchString;
-  @BindString(R.string.Unable_to_login) String unableToLoginString;
-  @BindString(R.string.Log_in) String loginString;
-  @BindString(R.string.Log_in_error) String errorTitleString;
+  @BindString(R.string.___Login_does_not_match_any_of_our_records) String loginDoesNotMatchString;
+  @BindString(R.string.___Unable_to_login) String unableToLoginString;
+  @BindString(R.string.___Log_in) String loginString;
+  @BindString(R.string.___Log_in_error) String errorTitleString;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -72,7 +72,7 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
     final boolean confirmResetPassword = getIntent().getBooleanExtra(getString(R.string.intent_confirm_reset_password), false);
     if (confirmResetPassword) {
       final String email = getIntent().getExtras().getString(getString(R.string.intent_email));
-      final String message = getResources().getString(R.string.We_sent_an_email_to_email_with_instructions_to_reset_your_password,
+      final String message = getResources().getString(R.string.___We_sent_an_email_to_email_with_instructions_to_reset_your_password,
         email);
       ViewUtils.showDialog(this, null, message);
       emailEditText.setText(email);

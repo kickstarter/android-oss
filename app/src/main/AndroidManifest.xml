@@ -69,9 +69,11 @@
     <activity android:name=".ui.activities.FacebookConfirmationActivity"
       android:theme="@style/Login" />
 
+    <activity android:name=".ui.activities.ProfileActivity" />
+
     <activity
       android:name=".ui.activities.ProjectActivity"
-      android:label="@string/title_activity_project"
+      android:label="@string/___title_activity_project"
       android:parentActivityName=".ui.activities.DiscoveryActivity"
       android:theme="@style/ProjectActivity">
       <!-- Parent activity meta-data to support 4.0 and lower -->

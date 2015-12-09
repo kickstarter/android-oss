@@ -9,16 +9,16 @@ import android.util.Pair;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.ViewModel;
+import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
-import com.kickstarter.models.Empty;
 import com.kickstarter.models.Project;
-import com.kickstarter.viewmodels.inputs.DiscoveryViewModelInputs;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.WebClient;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.DiscoveryActivity;
+import com.kickstarter.viewmodels.inputs.DiscoveryViewModelInputs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ import rx.subjects.PublishSubject;
 public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> implements DiscoveryViewModelInputs {
   // INPUTS
   private final PublishSubject<Project> projectClick = PublishSubject.create();
-  private final PublishSubject<Empty> nextPage = PublishSubject.create();
+  private final PublishSubject<Void> nextPage = PublishSubject.create();
   public void nextPage() {
     nextPage.onNext(null);
   }
@@ -58,8 +58,26 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
 
     buildCheck.bind(this, webClient);
 
-    final Observable<List<Project>> projects = params
-      .switchMap(this::projectsWithPagination);
+    final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
+      ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
+        .nextPage(nextPage)
+        .startOverWith(params)
+        .envelopeToListOfData(DiscoverEnvelope::projects)
+        .envelopeToMoreUrl(env -> env.urls().api().moreProjects())
+        .loadWithParams(apiClient::fetchProjects)
+        .loadWithPaginationPath(apiClient::fetchProjects)
+        .pageTransformation(this::bringPotdToFront)
+        .clearWhenStartingOver(true)
+        .concater(ListUtils::concatDistinct)
+        .build();
+
+    addSubscription(
+      params.compose(Transformers.takePairWhen(paginator.loadingPage))
+        .map(paramsAndPage -> paramsAndPage.first.toBuilder().page(paramsAndPage.second).build())
+        .subscribe(koala::trackDiscovery)
+    );
+
+    final Observable<List<Project>> projects = paginator.paginatedData;
 
     final Observable<Pair<DiscoveryActivity, List<Project>>> viewAndProjects = view
       .compose(Transformers.combineLatestPair(projects));
@@ -92,31 +110,6 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     params.onNext(DiscoveryParams.builder().staffPicks(true).build());
   }
 
-  /**
-   * Given the params for the first page of a discovery search, returns an
-   * observable of pages of projects. A new page of projects is emitted
-   * whenever `nextPage` emits.
-   */
-  private Observable<List<Project>> projectsWithPagination(@NonNull final DiscoveryParams firstPageParams) {
-
-    return paramsWithPagination(firstPageParams)
-      .doOnNext(koala::trackDiscovery)
-      .concatMap(this::projectsFromParams)
-      .takeUntil(List::isEmpty)
-      .scan(new ArrayList<>(), ListUtils::concatDistinct);
-  }
-
-  /**
-   * Given the params for the first page of a discovery search, returns
-   * an observable of params for each pagination. A new param is emitted
-   * whenever `nextPage` emits.
-   */
-  private Observable<DiscoveryParams> paramsWithPagination(@NonNull final DiscoveryParams firstPageParams) {
-
-    return nextPage
-      .scan(firstPageParams, (currentPage, __) -> currentPage.nextPage())
-      ;
-  }
 
   /**
    * Given params for a discovery search, returns an observable of the

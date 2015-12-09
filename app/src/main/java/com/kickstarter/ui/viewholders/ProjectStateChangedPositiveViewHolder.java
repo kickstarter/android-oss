@@ -57,23 +57,23 @@ public final class ProjectStateChangedPositiveViewHolder extends ActivityListVie
         cardView.setCardBackgroundColor(blueDarken10Color);
         leftStatFirstTextView.setText(money.formattedCurrency(activity.project().goal(), activity.project()
           .currencyOptions()));
-        leftStatSecondTextView.setText(context.getString(R.string.goal));
-        rightStatFirstTextView.setText(context.getString(R.string.Launched));
+        leftStatSecondTextView.setText(context.getString(R.string.___goal));
+        rightStatFirstTextView.setText(context.getString(R.string.___Launched));
         rightStatSecondTextView.setText(activity.project().launchedAt().toString(DateTimeUtils.defaultFormatter()));
         titleTextView.setText(context.getString(
-          R.string.creator_launched_a_project, activity.user().name(), activity.project().name()));
+          R.string.___creator_launched_a_project, activity.user().name(), activity.project().name()));
         break;
       case Activity.CATEGORY_SUCCESS:
         cardView.setCardBackgroundColor(greenDarken10Color);
         leftStatFirstTextView.setText(money.formattedCurrency(activity.project().pledged(), activity.project()
           .currencyOptions()));
         leftStatSecondTextView.setText(context.getString(
-          R.string.pledged_of_goal,
+          R.string.___pledged_of_goal,
           money.formattedCurrency(activity.project().goal(), activity.project().currencyOptions(), true)));
-        rightStatFirstTextView.setText(context.getString(R.string.Funded));
+        rightStatFirstTextView.setText(context.getString(R.string.___Funded));
         rightStatSecondTextView.setText(activity.createdAt().toString(DateTimeUtils.defaultFormatter()));
         titleTextView.setText(context
-          .getString(R.string.project_was_successfully_funded, activity.project().name()));
+          .getString(R.string.___project_was_successfully_funded, activity.project().name()));
         break;
       default:
         cardView.setCardBackgroundColor(greenDarken10Color);

@@ -24,21 +24,7 @@ public final class SearchTermViewHolder extends KSViewHolder {
   }
 
   public void onBind(@NonNull final Object datum) {
-    params = (DiscoveryParams) datum;
-
     final Context context = view.getContext();
-
-    if (params.sort() == DiscoveryParams.Sort.POPULAR) {
-      termTextView.setText(context.getString(R.string.Most_Popular));
-    } else {
-      // NOTE: This path isn't currently executed, keeping it in case we modify the design to show this view
-      // in more situations
-      if (params.term() != null) {
-        termTextView.setText(params.term());
-      } else {
-        termTextView.setText("");
-      }
-    }
+    termTextView.setText(context.getString(R.string.___Most_Popular));
   }
 }
-

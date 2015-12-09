@@ -32,12 +32,15 @@ import retrofit.http.PUT;
 import retrofit.http.Path;
 import retrofit.http.Query;
 import retrofit.http.QueryMap;
+import retrofit.http.Url;
 import rx.Observable;
 
 public interface ApiService {
   @GET("/v1/activities")
-  Observable<Response<ActivityEnvelope>> fetchActivities(@NonNull @Query("categories[]") List<String> categories,
-    @NonNull @QueryMap Map<String, String> pagination);
+  Observable<Response<ActivityEnvelope>> fetchActivities(@NonNull @Query("categories[]") List<String> categories);
+
+  @GET
+  Observable<Response<ActivityEnvelope>> fetchActivities(@Url @NonNull String paginationUrl);
 
   @GET("/v1/categories")
   Observable<Response<CategoriesEnvelope>> fetchCategories();
@@ -49,19 +52,25 @@ public interface ApiService {
   );
 
   @GET("/v1/projects/{project_param}/comments")
-  Observable<Response<CommentsEnvelope>> fetchProjectComments(
-    @Path("project_param") String projectParam,
-    @QueryMap Map<String, String> pagination
-  );
+  Observable<Response<CommentsEnvelope>> fetchProjectComments(@Path("project_param") String projectParam);
+
+  @GET
+  Observable<Response<CommentsEnvelope>> fetchPaginatedProjectComments(@Url String paginationPath);
 
   @GET("/v1/discover")
   Observable<Response<DiscoverEnvelope>> fetchProjects(@QueryMap Map<String, String> params);
+
+  @GET
+  Observable<Response<DiscoverEnvelope>> fetchProjects(@Url String paginationUrl);
 
   @GET("/v1/projects/{param}")
   Observable<Response<Project>> fetchProject(@Path("param") String param);
 
   @GET("/v1/categories/{id}")
   Observable<Response<Category>> fetchCategory(@Path("id") long id);
+
+  @GET("/v1/users/self")
+  Observable<Response<User>> fetchCurrentUser();
 
   @POST("/xauth/access_token")
   Observable<Response<AccessTokenEnvelope>> login(@Query("email") String email,

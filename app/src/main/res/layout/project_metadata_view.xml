@@ -43,7 +43,7 @@
       style="@style/BodyPrimaryMedium"
       android:includeFontPadding="false"
       android:layout_gravity="center_vertical"
-      android:text="@string/Youre_a_backer"
+      android:text="@string/___Youre_a_backer"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
@@ -94,7 +94,7 @@
       android:layout_height="wrap_content" />
 
     <TextView
-      android:text="@string/You_starred_this_project"
+      android:text="@string/___You_starred_this_project"
       android:includeFontPadding="false"
       style="@style/BodyPrimaryMedium"
       android:layout_gravity="center_vertical"
@@ -127,7 +127,7 @@
       android:layout_width="wrap_content"
       android:layout_height="match_parent"
       android:gravity="center_vertical"
-      android:text="@string/project_of_the_day"
+      android:text="@string/___project_of_the_day"
       style="@style/BodyPrimaryMedium" />
 
   </LinearLayout>

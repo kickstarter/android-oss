@@ -55,17 +55,17 @@ public final class ProjectCardViewHolder extends KSViewHolder {
 
   protected @BindDimen(R.dimen.grid_1) int grid1Dimen;
 
-  protected @BindString(R.string._is_a_backer) String oneFriendBackerString;
-  protected @BindString(R.string._and_are_backers) String twoFriendBackersString;
-  protected @BindString(R.string._and_more_are_backers) String manyFriendBackersString;
-  protected @BindString(R.string.backers) String backersString;
-  protected @BindString(R.string.Featured_in_) String featuredInString;
-  protected @BindString(R.string.Funding_canceled) String fundingCanceledString;
-  protected @BindString(R.string.Funding_suspended_) String fundingSuspendedString;
-  protected @BindString(R.string.Funding_unsuccessful_) String fundingUnsuccessfulString;
-  protected @BindString(R.string.of_) String ofString;
-  protected @BindString(R.string.pledged_of_) String pledgedOfString;
-  protected @BindString(R.string._to_go) String toGoString;
+  protected @BindString(R.string.____is_a_backer) String oneFriendBackerString;
+  protected @BindString(R.string.____and_are_backers) String twoFriendBackersString;
+  protected @BindString(R.string.____and_more_are_backers) String manyFriendBackersString;
+  protected @BindString(R.string.___Featured_in_) String featuredInString;
+  protected @BindString(R.string.___backers) String backersString;
+  protected @BindString(R.string.___Funding_canceled) String fundingCanceledString;
+  protected @BindString(R.string.___Funding_suspended_) String fundingSuspendedString;
+  protected @BindString(R.string.___Funding_unsuccessful_) String fundingUnsuccessfulString;
+  protected @BindString(R.string.___of_) String ofString;
+  protected @BindString(R.string.___pledged_of_) String pledgedOfString;
+  protected @BindString(R.string.____to_go) String toGoString;
 
   protected Project project;
   private final Delegate delegate;
@@ -115,7 +115,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
 
     /* landscape-specific */
     if (createdByTextView != null) {
-      createdByTextView.setText(String.format(view.getContext().getString(R.string.by_), project.creator().name()));
+      createdByTextView.setText(String.format(view.getContext().getString(R.string.___by_), project.creator().name()));
     }
 
     if (blurbTextView != null) {

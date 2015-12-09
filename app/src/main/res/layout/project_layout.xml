@@ -30,21 +30,21 @@
       android:id="@+id/back_project_button"
       android:visibility="visible"
       android:background="@drawable/button_green"
-      android:text="@string/Back_this_project" />
+      android:text="@string/project_back_button" />
 
     <Button
       style="@style/ProjectActionButton"
       android:id="@+id/manage_pledge_button"
       android:visibility="gone"
       android:background="@drawable/button_blue"
-      android:text="@string/Manage_pledge" />
+      android:text="@string/project_manage_button" />
 
     <Button
       style="@style/ProjectActionButton"
       android:id="@+id/view_pledge_button"
       android:visibility="gone"
       android:background="@drawable/button_blue"
-      android:text="@string/View_pledge" />
+      android:text="@string/project_view_button" />
   </RelativeLayout>
 
   <android.support.design.widget.FloatingActionButton
@@ -55,7 +55,7 @@
     fab:fabSize="normal"
     android:focusable="true"
     android:nextFocusLeft="@id/project_action_buttons"
-    android:contentDescription="@string/star_fab_content_description"
+    android:contentDescription="@string/___star_fab_content_description"
     android:layout_alignParentBottom="true"
     android:layout_alignParentRight="true"
     android:layout_alignParentEnd="true"

@@ -43,8 +43,6 @@ public class StringUtils {
   }
 
   public static String friendBackingMetadataText(final @NonNull Context context, final @NonNull List<User> friends) {
-    final int charLimit = 35;
-
     if (friends.size() == 1) {
       return context.getString(R.string.____is_a_backer, friends.get(0).name());
     } else if (friends.size() == 2) {
@@ -55,6 +53,7 @@ public class StringUtils {
     } else {
       return context.getString(R.string.____and_more_are_backers,
         friends.get(0).name(),
+        friends.get(1).name(),
         friends.size()
       );
     }

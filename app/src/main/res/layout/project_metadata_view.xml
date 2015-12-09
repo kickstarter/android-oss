@@ -50,33 +50,6 @@
   </LinearLayout>
 
   <LinearLayout
-    android:id="@+id/friend_backing_group"
-    android:visibility="gone"
-    android:orientation="horizontal"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-
-    <ImageView
-      android:id="@+id/friend_backing_avatar"
-      android:layout_gravity="center_vertical"
-      android:layout_marginRight="@dimen/grid_1_half"
-      android:layout_marginEnd="@dimen/grid_1_half"
-      android:layout_width="@dimen/grid_3"
-      android:layout_height="@dimen/grid_3" />
-
-    <TextView
-      android:id="@+id/friend_backing_message"
-      android:includeFontPadding="false"
-      android:singleLine="true"
-      android:ellipsize="end"
-      style="@style/BodyPrimaryMedium"
-      android:layout_gravity="center_vertical"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content" />
-
-  </LinearLayout>
-
-  <LinearLayout
     android:id="@+id/starred_group"
     android:visibility="gone"
     android:orientation="horizontal"

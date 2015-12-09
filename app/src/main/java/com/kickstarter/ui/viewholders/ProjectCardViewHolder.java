@@ -166,29 +166,11 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     }
   }
 
-  // only show one of either backer, social, starred, potd, or featured
   public void setProjectMetadataView() {
 
-    if (project.isBacking()) {
-      projectMetadataViewGroup.setVisibility(View.VISIBLE);
-      backingViewGroup.setVisibility(View.VISIBLE);
-      adjustCardViewTopMargin(grid1Dimen);
-
-      friendBackingViewGroup.setVisibility(View.GONE);
-      starredViewGroup.setVisibility(View.GONE);
-      potdViewGroup.setVisibility(View.GONE);
-      featuredViewGroup.setVisibility(View.GONE);
-    }
-
-    else if (project.isFriendBacking()) {
-      projectMetadataViewGroup.setVisibility(View.VISIBLE);
+    // always show social
+    if (project.isFriendBacking()) {
       friendBackingViewGroup.setVisibility(View.VISIBLE);
-      adjustCardViewTopMargin(grid1Dimen);
-
-      backingViewGroup.setVisibility(View.GONE);
-      starredViewGroup.setVisibility(View.GONE);
-      potdViewGroup.setVisibility(View.GONE);
-      featuredViewGroup.setVisibility(View.GONE);
 
       Picasso.with(view.getContext()).load(project.friends().get(0).avatar()
         .small())
@@ -196,6 +178,18 @@ public final class ProjectCardViewHolder extends KSViewHolder {
         .into(friendBackingAvatarImageView);
 
       friendBackingMessageTextView.setText(StringUtils.friendBackingMetadataText(view.getContext(), project.friends()));
+    } else {
+      friendBackingViewGroup.setVisibility(View.GONE);
+    }
+
+    if (project.isBacking()) {
+      projectMetadataViewGroup.setVisibility(View.VISIBLE);
+      backingViewGroup.setVisibility(View.VISIBLE);
+      adjustCardViewTopMargin(grid1Dimen);
+
+      starredViewGroup.setVisibility(View.GONE);
+      potdViewGroup.setVisibility(View.GONE);
+      featuredViewGroup.setVisibility(View.GONE);
     }
 
     else if (project.isStarred()) {
@@ -204,7 +198,6 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       adjustCardViewTopMargin(grid1Dimen);
 
       backingViewGroup.setVisibility(View.GONE);
-      friendBackingViewGroup.setVisibility(View.GONE);
       potdViewGroup.setVisibility(View.GONE);
       featuredViewGroup.setVisibility(View.GONE);
     }
@@ -215,7 +208,6 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       adjustCardViewTopMargin(grid1Dimen);
 
       backingViewGroup.setVisibility(View.GONE);
-      friendBackingViewGroup.setVisibility(View.GONE);
       starredViewGroup.setVisibility(View.GONE);
       featuredViewGroup.setVisibility(View.GONE);
     }
@@ -228,7 +220,6 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       adjustCardViewTopMargin(grid1Dimen);
 
       backingViewGroup.setVisibility(View.GONE);
-      friendBackingViewGroup.setVisibility(View.GONE);
       starredViewGroup.setVisibility(View.GONE);
       potdViewGroup.setVisibility(View.GONE);
     }

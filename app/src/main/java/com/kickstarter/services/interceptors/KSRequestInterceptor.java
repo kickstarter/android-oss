@@ -1,12 +1,9 @@
 package com.kickstarter.services.interceptors;
 
-import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Release;
-import com.kickstarter.services.KSUri;
-import com.squareup.okhttp.HttpUrl;
+import com.kickstarter.libs.utils.I18nUtils;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -32,6 +29,7 @@ public final class KSRequestInterceptor implements Interceptor {
     return initialRequest.newBuilder()
       .header("Kickstarter-Android-App", release.versionCode().toString())
       .header("Kickstarter-App-Id", release.applicationId())
+      .header("Accept-Language", I18nUtils.language())
       .build();
   }
 }

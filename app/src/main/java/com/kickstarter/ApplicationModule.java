@@ -75,8 +75,7 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  OkHttpClient provideOkHttpClient(@NonNull final ApiEndpoint apiEndpoint,
-    @NonNull final ApiRequestInterceptor apiRequestInterceptor, @NonNull final CookieManager cookieManager,
+  OkHttpClient provideOkHttpClient(@NonNull final ApiRequestInterceptor apiRequestInterceptor, @NonNull final CookieManager cookieManager,
     @NonNull final HttpLoggingInterceptor httpLoggingInterceptor, @NonNull final KSRequestInterceptor ksRequestInterceptor,
     @NonNull final WebRequestInterceptor webRequestInterceptor) {
     final OkHttpClient okHttpClient = new OkHttpClient();

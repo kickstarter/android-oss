@@ -14,7 +14,6 @@ import com.kickstarter.R;
 import com.kickstarter.libs.Money;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.StringUtils;
-import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
 import com.squareup.picasso.Picasso;
@@ -38,13 +37,10 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.friend_backing_message) TextView friendBackingMessageTextView;
   protected @Bind(R.id.friend_backing_group) ViewGroup friendBackingViewGroup;
   protected @Bind(R.id.funding_unsuccessful_view) TextView fundingUnsuccessfulTextView;
-  protected @Bind(R.id.pledged_of_) TextView pledgedOfTextView;
-  protected @Bind(R.id.goal) TextView goalTextView;
-  protected @Bind(R.id.location) TextView locationTextView;
   protected @Bind(R.id.name) TextView nameTextView;
   protected @Nullable @Bind(R.id.created_by) TextView createdByTextView;
   protected @Nullable @Bind(R.id.blurb) TextView blurbTextView;
-  protected @Bind(R.id.pledged) TextView pledgedTextView;
+  protected @Bind(R.id.percent) TextView percentTextView;
   protected @Bind(R.id.percentage_funded) ProgressBar percentageFundedProgressBar;
   protected @Bind(R.id.photo) ImageView photoImageView;
   protected @Bind(R.id.potd_group) ViewGroup potdViewGroup;
@@ -89,13 +85,12 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     this.project = (Project) datum;
 
     backersCountTextView.setText(project.formattedBackersCount());
+    blurbTextView.setText(project.blurb());
     categoryTextView.setText(project.category().name());
     deadlineCountdownTextView.setText(Integer.toString(project.deadlineCountdownValue()));
     deadlineCountdownUnitTextView.setText(project.deadlineCountdownUnit(view.getContext()));
-    goalTextView.setText(money.formattedCurrency(project.goal(), project.currencyOptions(), true));
-    locationTextView.setText(project.location().displayableName());
-    pledgedTextView.setText(money.formattedCurrency(project.pledged(), project.currencyOptions()));
     nameTextView.setText(project.name());
+    percentTextView.setText(StringUtils.displayFlooredPercent(project.percentageFunded()));
     percentageFundedProgressBar.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
     Picasso.with(view.getContext()).
       load(project.photo().full()).
@@ -104,22 +99,9 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     setProjectMetadataView();
     setProjectStateView();
 
-    /* a11y */
-    if (ViewUtils.isFontScaleLarge(view.getContext())) {
-      pledgedOfTextView.setText(ofString);
-    } else {
-      pledgedOfTextView.setText(pledgedOfString);
-    }
-
-    setStatsContentDescription();
-
     /* landscape-specific */
     if (createdByTextView != null) {
       createdByTextView.setText(String.format(view.getContext().getString(R.string.___by_), project.creator().name()));
-    }
-
-    if (blurbTextView != null) {
-      blurbTextView.setText(project.blurb());
     }
   }
 
@@ -228,17 +210,5 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       projectMetadataViewGroup.setVisibility(View.GONE);
       adjustCardViewTopMargin(0);
     }
-  }
-
-  public void setStatsContentDescription() {
-    final String backersCountContentDescription = project.formattedBackersCount() + backersString;
-    final String pledgedContentDescription = String.valueOf(project.pledged()) + pledgedOfTextView.getText() +
-      money.formattedCurrency(project.goal(), project.currencyOptions());
-    final String deadlineCountdownContentDescription = project.deadlineCountdownValue() +
-      project.deadlineCountdownUnit(view.getContext()) + toGoString;
-
-    backersCountTextView.setContentDescription(backersCountContentDescription);
-    pledgedTextView.setContentDescription(pledgedContentDescription);
-    deadlineCountdownTextView.setContentDescription(deadlineCountdownContentDescription);
   }
 }

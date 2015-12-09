@@ -58,7 +58,8 @@
   <dimen name="button_corner_radius">4dp</dimen>
   <dimen name="button_stroke_width">1dp</dimen>
 
-  <dimen name="progress_bar_min_height">6dp</dimen>
+  <dimen name="progress_bar_min_height">3dp</dimen>
+  <dimen name="progress_bar_height">3dp</dimen>
 
   <!-- Photos -->
   <dimen name="activity_feed_avatar_width">60dp</dimen>

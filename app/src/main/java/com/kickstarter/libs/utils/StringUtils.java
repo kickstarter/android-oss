@@ -12,6 +12,10 @@ import java.util.List;
 public class StringUtils {
   private StringUtils() {}
 
+  public static String displayFlooredPercent(final float percent) {
+    return String.format("%.0f%%", Math.floor(percent));
+  }
+
   public static boolean isEmail(final @NonNull CharSequence str) {
     return Patterns.EMAIL_ADDRESS.matcher(str).matches();
   }

@@ -40,65 +40,36 @@
         android:orientation="vertical">
 
         <TextView
+          android:id="@+id/category"
+          android:text="Installations"
+          android:layout_marginBottom="@dimen/grid_1"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          style="@style/CaptionSecondaryMedium" />
+
+        <TextView
           android:id="@+id/name"
+          android:text="Somewhere In Between - The Work of Ella Sala Myers"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           style="@style/Headline"
-          android:paddingBottom="@dimen/grid_2" />
+          android:paddingBottom="@dimen/grid_1" />
 
-        <LinearLayout
-          android:orientation="horizontal"
-          android:gravity="center_vertical"
-          android:layout_marginBottom="@dimen/grid_2"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content">
-
-          <com.kickstarter.ui.views.IconTextView
-            android:id="@+id/category_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/local_offer_icon"
-            android:contentDescription="@string/___category_icon_content_description"
-            style="@style/BodyPrimary"/>
-
-          <TextView
-            android:id="@+id/category"
-            android:text="Category name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/grid_1_half"
-            android:paddingRight="@dimen/grid_2"
-            style="@style/BodyPrimary" />
-
-          <com.kickstarter.ui.views.IconTextView
-            android:id="@+id/location_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/location_on_icon"
-            android:contentDescription="@string/___location_icon_content_description"
-            style="@style/BodyPrimary" />
-
-          <TextView
-            android:id="@+id/location"
-            android:text="Location"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/grid_1_half"
-            android:paddingRight="@dimen/grid_1_half"
-            android:paddingStart="@dimen/grid_1_half"
-            android:paddingEnd="@dimen/grid_1_half"
-            style="@style/BodyPrimary" />
-
-        </LinearLayout>
+        <TextView
+          android:id="@+id/blurb"
+          style="@style/CaptionPrimary"
+          android:maxLines="2"
+          android:ellipsize="end"
+          android:layout_marginBottom="@dimen/grid_5_half"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
 
         <ProgressBar
           style="@style/ProgressBar"
           android:visibility="visible"
           android:id="@+id/percentage_funded"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"
+          android:layout_height="@dimen/progress_bar_height"
           android:minHeight="@dimen/progress_bar_min_height"
           android:progress="50" />
 
@@ -134,12 +105,12 @@
 
       </LinearLayout>
 
-      <include layout="@layout/project_stats_view"
+      <include layout="@layout/project_card_stats_view"
         android:layout_below="@id/project_state_views"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:layout_marginTop="@dimen/grid_2"
-        android:layout_marginBottom="@dimen/grid_3"
+        android:layout_marginTop="@dimen/grid_3_half"
+        android:layout_marginBottom="@dimen/grid_2"
         android:layout_marginLeft="@dimen/grid_2"
         android:layout_marginRight="@dimen/grid_2"/>
 

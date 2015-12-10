@@ -11,6 +11,8 @@ import com.kickstarter.models.Category;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.Project;
 
+import org.joda.time.DateTime;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +24,7 @@ import auto.parcel.AutoParcel;
 public abstract class DiscoveryParams implements Parcelable {
   public abstract int backed();
   @Nullable public abstract Category category();
+  @Nullable public abstract DateTime featuredAt();
   @Nullable public abstract Location location();
   public abstract boolean nearby();
   public abstract int page();
@@ -58,6 +61,7 @@ public abstract class DiscoveryParams implements Parcelable {
   public abstract static class Builder {
     public abstract Builder backed(int __);
     public abstract Builder category(Category __);
+    public abstract Builder featuredAt(DateTime __);
     public abstract Builder location(Location __);
     public abstract Builder nearby(boolean __);
     public abstract Builder page(int __);
@@ -120,6 +124,10 @@ public abstract class DiscoveryParams implements Parcelable {
 
       if (staffPicks() && page() == 1) {
         put("include_potd", "true");
+      }
+
+      if (category() != null && page() == 1) {
+        put("include_featured", "true");
       }
     }});
   }

@@ -5,15 +5,22 @@ import android.support.annotation.NonNull;
 import android.util.Patterns;
 
 import com.kickstarter.R;
+import com.kickstarter.models.User;
+
+import java.util.List;
 
 public class StringUtils {
   private StringUtils() {}
 
-  public static boolean isEmail(@NonNull final CharSequence str) {
+  public static String displayFlooredPercentage(final float percentage) {
+    return String.format("%.0f%%", Math.floor(percentage));
+  }
+
+  public static boolean isEmail(final @NonNull CharSequence str) {
     return Patterns.EMAIL_ADDRESS.matcher(str).matches();
   }
 
-  public static String friendBackingActivityTitle(@NonNull final Context context, @NonNull final String friendName,
+  public static String friendBackingActivityTitle(final @NonNull Context context, final @NonNull String friendName,
     final long categoryId) {
     final String str;
 
@@ -37,5 +44,22 @@ public class StringUtils {
     }
 
     return str;
+  }
+
+  public static String friendBackingMetadataText(final @NonNull Context context, final @NonNull List<User> friends) {
+    if (friends.size() == 1) {
+      return context.getString(R.string.____is_a_backer, friends.get(0).name());
+    } else if (friends.size() == 2) {
+      return context.getString(R.string.____and_are_backers,
+        friends.get(0).name(),
+        friends.get(1).name()
+      );
+    } else {
+      return context.getString(R.string.____and_more_are_backers,
+        friends.get(0).name(),
+        friends.get(1).name(),
+        friends.size()
+      );
+    }
   }
 }

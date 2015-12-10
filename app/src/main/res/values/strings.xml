@@ -9,6 +9,8 @@
   <string name="___All_gone">All gone</string>
   <string name="___All_of_Category">All of %1$s</string>
   <string name="___Already_have_a_Kickstarter_account">Already have a Kickstarter account?</string>
+  <string name="____and_are_backers">%1$s and %2$s are backers.</string>
+  <string name="____and_more_are_backers">%1$s, %2$s, and %3$s more are backers.</string>
   <string name="___A_newer_build_is_available">A newer build is available. Download upgrade?</string>
   <string name="___Are_those_new_shoes">
     Are those new shoes? If they’re not new, they look really shiny and beautiful.
@@ -68,6 +70,7 @@
   <string name="___Everything">Everything</string>
   <string name="___Explore_Category">Explore %1$s</string>
   <string name="___Explore_new_projects">Explore new projects</string>
+  <string name="___Featured_in_">Featured in %1$s</string>
   <string name="___Find_friends">Find friends</string>
   <string name="___Follow">Follow</string>
   <string name="___Forgot_your_password"><u>Forgot your password?</u></string>
@@ -88,6 +91,7 @@
   <string name="___friend_name_backed_theater_project">%1$s backed a Theater project</string>
   <string name="___Friends_Backed">Friends Backed</string>
   <string name="___Full_name">Full name</string>
+  <string name="___funded">funded</string>
   <string name="___Funded">Funded</string>
   <string name="___Funding_canceled">Funding canceled</string>
   <string name="___Funding_suspended_">Funding suspended %1$s</string>
@@ -97,6 +101,7 @@
   <string name="___hours">hours</string>
   <string name="___I_just_backed_project_on_Kickstarter">I just backed %1$s on Kickstarter: %2$s</string>
   <string name="___Instructions">Instructions</string>
+  <string name="____is_a_backer">%1$s is a backer.</string>
   <string name="___Launched">Launched</string>
   <string name="___Lets_try_that_again">Let\'s try that again</string>
   <string name="___Limited_left_of">Limited (%1$s left of %2$s)</string>
@@ -211,7 +216,9 @@
   <string name="___You_just_backed">You just backed &lt;b>%1$s&lt;/b>. Share this project with friends to help it along!</string>
   <string name="___You_launched_a_project">You launched a project: %1$s</string>
   <string name="___You_selected">You selected</string>
-  <string name="___Youre_a_backer">\u0020• You\'re a backer\u0020</string>
+  <string name="____Youre_a_backer">\u0020• You\'re a backer\u0020</string>
+  <string name="___Youre_a_backer">You\'re a backer!</string>
+  <string name="___You_starred_this_project">You starred this project.</string>
 
   <!-- Content descriptions -->
   <string name="___activity_button_content_description">Activity feed</string>

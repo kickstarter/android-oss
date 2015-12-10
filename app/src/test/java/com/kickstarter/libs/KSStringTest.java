@@ -67,6 +67,12 @@ public class KSStringTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testFormat_replaceStringContainingHtml() {
+    final String string = "by <u>%{creator_name}</u>";
+    assertEquals("by <u>Christopher</u>", ksString().format(string, "creator_name", "Christopher"));
+  }
+
+  @Test
   public void testFormat_count() {
     final String keyPath = "dates_time_days";
     final KSString ksString = ksString();
@@ -88,7 +94,7 @@ public class KSStringTest extends KSRobolectricTestCase {
 
   @Test
   @Config(qualifiers="de")
-  public void testFormat_German() {
+  public void testFormat_german() {
     assertEquals("von Kristof", ksString().format(application().getString(R.string.project_creator_by_creator),
       "creator_name", "Kristof"));
   }

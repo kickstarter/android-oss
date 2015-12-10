@@ -52,8 +52,8 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.fund_message) TextView fundMessageTextView;
   protected @Bind(R.id.updates_count) TextView updatesCountTextView;
 
-  protected @BindString(R.string.project_creator_by_creator_underlined) String byCreatorUnderlinedString;
-  protected @BindString(R.string.discovery_baseball_card_blurb_read_more) String blurbReadMoreUnderlinedString;
+  protected @BindString(R.string.project_creator_by_creator_html) String byCreatorString;
+  protected @BindString(R.string.discovery_baseball_card_blurb_read_more) String blurbReadMoreString;
   protected @BindString(R.string.discovery_baseball_card_status_banner_canceled) String bannerCanceledString;
   protected @BindString(R.string.discovery_baseball_card_status_banner_suspended) String bannerSuspendedString;
   protected @BindString(R.string.discovery_baseball_card_status_banner_funding_unsuccessful_date) String fundingUnsuccessfulString;
@@ -93,11 +93,11 @@ public final class ProjectViewHolder extends KSViewHolder {
 
     /* Project */
     // TODO: non breaking space
-    blurbTextView.setText(Html.fromHtml(ksString.format(blurbReadMoreUnderlinedString,
+    blurbTextView.setText(Html.fromHtml(ksString.format(blurbReadMoreString,
       "blurb", project.blurb(),
       "space", "\u00A0"
     )));
-    creatorNameTextView.setText(Html.fromHtml(ksString.format(byCreatorUnderlinedString,
+    creatorNameTextView.setText(Html.fromHtml(ksString.format(byCreatorString,
       "creator_name", project.creator().name())));
     if (project.isBacking()) {
       backerLabelLinearLayout.setVisibility(View.VISIBLE);

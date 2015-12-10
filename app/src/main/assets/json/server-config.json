@@ -596,11 +596,6 @@
                 "ok": "OK"
               }
             }
-          },
-          "accessibility": {
-            "button_close": {
-              "label": "Share this project"
-            }
           }
         },
         "disclaimer": {
@@ -634,7 +629,7 @@
         },
         "creator": {
           "by_creator": "by %{creator_name}",
-          "by_creator_underlined": "by <u>%{creator_name}</u>",
+          "by_creator_html": "by <u>%{creator_name}</u>",
           "youre_a_backer": " • You're a backer"
         },
         "subpages": {
@@ -686,7 +681,7 @@
         "backer_number": "Backer #%{backer_number}",
         "pledge_amount_on_pledge_date": "%{pledge_amount} on %{pledge_date}",
         "status_backing_status": "Status: %{backing_status}",
-        "reward_amount_reward_description": "%{reward_amount} - %{reward_d2escription}",
+        "reward_amount_reward_description": "%{reward_amount} - %{reward_description}",
         "domestic": "Domestic",
         "international": "International",
         "not_available": "N/A"
@@ -1816,11 +1811,6 @@
                 "ok": "OK"
               }
             }
-          },
-          "accessibility": {
-            "button_close": {
-              "label": "Share this project"
-            }
           }
         },
         "disclaimer": {
@@ -1854,7 +1844,7 @@
         },
         "creator": {
           "by_creator": "von %{creator_name}",
-          "by_creator_underlined": "by <u>%{creator_name}</u>",
+          "by_creator_html": "by <u>%{creator_name}</u>",
           "youre_a_backer": " • Du unterstützt das Projekt"
         },
         "subpages": {
@@ -3036,11 +3026,6 @@
                 "ok": "Ok"
               }
             }
-          },
-          "accessibility": {
-            "button_close": {
-              "label": "Share this project"
-            }
           }
         },
         "disclaimer": {
@@ -3074,7 +3059,7 @@
         },
         "creator": {
           "by_creator": "por %{creator_name}",
-          "by_creator_underlined": "by <u>%{creator_name}</u>",
+          "by_creator_html": "by <u>%{creator_name}</u>",
           "youre_a_backer": " • Tú eres un patrocinador"
         },
         "subpages": {
@@ -4258,11 +4243,6 @@
                 "ok": "OK"
               }
             }
-          },
-          "accessibility": {
-            "button_close": {
-              "label": "Share this project"
-            }
           }
         },
         "disclaimer": {
@@ -4296,7 +4276,7 @@
         },
         "creator": {
           "by_creator": "par %{creator_name}",
-          "by_creator_underlined": "by <u>%{creator_name}</u>",
+          "by_creator_html": "by <u>%{creator_name}</u>",
           "youre_a_backer": " • Vous êtes contributeur"
         },
         "subpages": {
@@ -5479,11 +5459,6 @@
                 "ok": "OK"
               }
             }
-          },
-          "accessibility": {
-            "button_close": {
-              "label": "Share this project"
-            }
           }
         },
         "disclaimer": {
@@ -5517,7 +5492,7 @@
         },
         "creator": {
           "by_creator": "by %{creator_name}",
-          "by_creator_underlined": "by <u>%{creator_name}</u>",
+          "by_creator_html": "by <u>%{creator_name}</u>",
           "youre_a_backer": " • You're a backer"
         },
         "subpages": {
@@ -5569,7 +5544,7 @@
         "backer_number": "Backer #%{backer_number}",
         "pledge_amount_on_pledge_date": "%{pledge_amount} on %{pledge_date}",
         "status_backing_status": "Status: %{backing_status}",
-        "reward_amount_reward_description": "%{reward_amount} - %{reward_d2escription}",
+        "reward_amount_reward_description": "%{reward_amount} - %{reward_description}",
         "domestic": "Domestic",
         "international": "International",
         "not_available": "N/A"

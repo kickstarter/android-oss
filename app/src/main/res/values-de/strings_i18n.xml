@@ -520,7 +520,6 @@ Wir würden uns sehr darüber freuen!</string>
   <string name="project_accessibility_button_star_label" formatted="false">Star this project</string>
   <string name="project_back_button" formatted="false">Dieses Projekt unterstützen</string>
   <string name="project_backer_title" formatted="false">Du gehörst jetzt zu den Unterstützern!</string>
-  <string name="project_checkout_accessibility_button_close_label" formatted="false">Share this project</string>
   <string name="project_checkout_apple_pay_alert_button_ok" formatted="false">OK</string>
   <string name="project_checkout_apple_pay_alert_error" formatted="false">Fehler</string>
   <string name="project_checkout_backing_navbar_title" formatted="false">Dieses Projekt unterstützen</string>
@@ -557,7 +556,7 @@ Wir würden uns sehr darüber freuen!</string>
   <string name="project_comments_empty_state_non_backer_message" formatted="false">Oh wie schade. Werde Unterstützer um einen Kommentar zu verfassen.</string>
   <string name="project_comments_empty_state_non_backer_title" formatted="false">Keine Kommentare</string>
   <string name="project_creator_by_creator" formatted="false">von %{creator_name}</string>
-  <string name="project_creator_by_creator_underlined" formatted="false">by &lt;u>%{creator_name}&lt;/u></string>
+  <string name="project_creator_by_creator_html" formatted="false">by &lt;u>%{creator_name}&lt;/u></string>
   <string name="project_creator_youre_a_backer" formatted="false"> • Du unterstützt das Projekt</string>
   <string name="project_disclaimer_goal_not_reached" formatted="false">Dieses Projekt wird nur finanziert, wenn bis %{deadline} mindestens %{goal_currency} zusammenkommen.</string>
   <string name="project_disclaimer_goal_reached" formatted="false">Dieses Projekt wird am %{deadline} finanziert.</string>

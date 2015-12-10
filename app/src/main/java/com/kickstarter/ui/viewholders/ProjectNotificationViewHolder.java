@@ -9,6 +9,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.kickstarter.R;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.libs.utils.SwitchCompatUtils;
 import com.kickstarter.models.Notification;
 import com.kickstarter.viewmodels.ProjectNotificationViewModel;
 
@@ -30,16 +31,12 @@ public final class ProjectNotificationViewHolder extends KSViewHolder {
 
     viewModel
       .compose(Transformers.takeWhen(RxView.clicks(this.notificationSwitch)))
-      .subscribe(vm -> {
-          vm.inputs.switchClick(this.notificationSwitch.isChecked());
-        });
+      .subscribe(vm -> vm.inputs.switchClick(this.notificationSwitch.isChecked()));
 
     viewModel
       .switchMap(vm -> vm.outputs.notification())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(n -> {
-        renderNotification(n);
-      });
+      .subscribe(this::renderNotification);
   }
 
   @Override
@@ -50,6 +47,6 @@ public final class ProjectNotificationViewHolder extends KSViewHolder {
 
   public void renderNotification(final @NonNull Notification notification) {
     projectNameTextView.setText(notification.project().name());
-    notificationSwitch.setChecked(notification.email() && notification.mobile());
+    SwitchCompatUtils.hackToggleAnimation(notificationSwitch, notification.email() && notification.mobile());
   }
 }

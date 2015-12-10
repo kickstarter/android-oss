@@ -222,8 +222,8 @@ public final class ApiClient {
       .subscribeOn(Schedulers.io());
   }
 
-  public Observable<Notification> updateProjectNotifications(final long notificationId, final boolean toggleValue) {
-    return service.updateProjectNotifications(notificationId,
+  public Observable<Notification> updateProjectNotifications(final @NonNull Notification notification, final boolean toggleValue) {
+    return service.updateProjectNotifications(notification.id(),
       NotificationBody.builder()
         .email(toggleValue)
         .mobile(toggleValue)

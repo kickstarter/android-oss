@@ -1,4 +1,4 @@
-package com.kickstarter.ui.adapters;
+ package com.kickstarter.ui.adapters;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -38,6 +38,20 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
   @Override
   public final void onBindViewHolder(@NonNull final KSViewHolder viewHolder, final int position) {
     viewHolder.onBind(objectFromPosition(position));
+
+
+  }
+
+  void loadData() {
+
+  }
+
+  void loadSection() {
+
+  }
+
+  void loadRow() {
+
   }
 
   @Override

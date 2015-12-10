@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.ViewModel;
@@ -13,7 +12,7 @@ import com.kickstarter.models.Notification;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.ui.activities.ManageNotificationActivity;
 import com.kickstarter.ui.adapters.ManageNotificationsAdapter;
-import com.kickstarter.ui.viewholders.ManageNotificationsViewHolder;
+import com.kickstarter.ui.viewholders.ProjectNotificationViewHolder;
 import com.kickstarter.viewmodels.errors.ManageNotificationsViewModelErrors;
 import com.kickstarter.viewmodels.outputs.ManageNotificationsViewModelOutputs;
 
@@ -27,16 +26,13 @@ import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public final class ManageNotificationsViewModel extends ViewModel<ManageNotificationActivity> implements
-  ManageNotificationsViewModelErrors, ManageNotificationsViewModelOutputs, ManageNotificationsAdapter.Delegate {
+  ManageNotificationsViewModelErrors, ManageNotificationsViewModelOutputs {
   @Inject ApiClient client;
 
-  // INPUTS
-  private PublishSubject<Void> switchClick = PublishSubject.create();
-
   // OUTPUTS
-  private final BehaviorSubject<Notification> projectNotification = BehaviorSubject.create();
-  public Observable<Notification> projectNotification() {
-    return projectNotification;
+  private Observable<List<Notification>> notifications;
+  public final Observable<List<Notification>> notifications() {
+    return notifications;
   }
 
   private final PublishSubject<Void> toggleSuccess = PublishSubject.create();
@@ -55,31 +51,11 @@ public final class ManageNotificationsViewModel extends ViewModel<ManageNotifica
   public final ManageNotificationsViewModelErrors errors = this;
 
   @Override
-  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
+  public void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    final Observable<List<Notification>> initialNotifications = refreshNotifications();
-
-    view
-      .compose(Transformers.takePairWhen(initialNotifications)) // grab list of notifications
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vn -> {
-        vn.first.loadProjects(vn.second); // load in adapter
-      });
-  }
-
-  public Observable<List<Notification>> refreshNotifications() {
-    return client.fetchProjectNotifications()
+    this.notifications = client.fetchProjectNotifications()
       .compose(Transformers.neverApiError());
-  }
-
-  @Override
-  public void switchClicked(final @NonNull ManageNotificationsViewHolder viewHolder,
-    final @NonNull Notification notification, final boolean toggleValue) {
-
-    client.updateProjectNotifications(notification.id(), toggleValue)
-      .compose(Transformers.pipeErrorsTo(savePreferenceErrors))
-      .subscribe(projectNotification);  // this needs to update the whole list
   }
 }

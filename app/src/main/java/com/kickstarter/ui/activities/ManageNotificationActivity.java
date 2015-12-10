@@ -6,15 +6,19 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Notification;
+import com.kickstarter.services.ApiClient;
 import com.kickstarter.ui.adapters.ManageNotificationsAdapter;
 import com.kickstarter.viewmodels.ManageNotificationsViewModel;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.BindString;
@@ -29,32 +33,28 @@ public final class ManageNotificationActivity extends BaseActivity<ManageNotific
 
   protected @BindString(R.string.___Unable_to_save) String unableToSaveString;
 
+  @Inject ApiClient client;
+
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.manage_notifications_layout);
     ButterKnife.bind(this);
+    ((KSApplication) getApplication()).component().inject(this);
 
-    adapter = new ManageNotificationsAdapter(viewModel);
+    adapter = new ManageNotificationsAdapter();
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    // repro this in the VH
-    viewModel.outputs.projectNotification()
+    viewModel.outputs.notifications()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> {
-        ViewUtils.showToast(this, "updated");
-      });
+      .subscribe(n -> adapter.takeNotifications(n, client));
 
     viewModel.errors.unableToSavePreferenceError()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> ViewUtils.showToast(this, unableToSaveString));
-  }
-
-  public void loadProjects(final @NonNull List<Notification> notifications) {
-    adapter.takeProjects(notifications);
   }
 
   @Override

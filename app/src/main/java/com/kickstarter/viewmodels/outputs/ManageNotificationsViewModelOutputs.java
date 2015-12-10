@@ -8,6 +8,5 @@ import java.util.List;
 import rx.Observable;
 
 public interface ManageNotificationsViewModelOutputs {
-  Observable<Notification> projectNotification();
-  Observable<Void> toggleSuccess();
+  Observable<List<Notification>> notifications();
 }

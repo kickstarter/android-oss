@@ -32,33 +32,17 @@ public final class ProjectNotificationViewHolder extends KSViewHolder {
   protected @Bind(R.id.project_name) TextView projectNameTextView;
   protected @Bind(R.id.notification_switch) SwitchCompat notificationSwitch;
 
-  private Notification notification;
-  private Context context;
-
   final PublishSubject<ProjectNotificationViewModel> viewModel = PublishSubject.create();
 
   public ProjectNotificationViewHolder(final @NonNull View view) {
     super(view);
     ButterKnife.bind(this, view);
 
-    this.context = view.getContext();
-
-//    viewModel
-//      .compose(Transformers.takePairWhen(RxCompoundButton.checkedChanges(notificationSwitch).skip(1)))
-//      .subscribe(viewModelAndChecked -> {
-//        viewModelAndChecked.first.inputs.switchClick(viewModelAndChecked.second);
-//      });
-
     viewModel
       .compose(Transformers.takeWhen(RxView.clicks(this.notificationSwitch)))
       .subscribe(vm -> {
           vm.inputs.switchClick(this.notificationSwitch.isChecked());
         });
-
-
-//    this.notificationSwitch.setOnCheckedChangeListener((__, checked) -> {
-//      viewModel.getValue().inputs.switchClick(checked);
-//    });
 
     viewModel
       .switchMap(vm -> vm.outputs.notification())

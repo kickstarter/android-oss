@@ -30,8 +30,6 @@ public class ProjectNotificationViewModel extends ViewModel<ProjectNotificationV
     return notification;
   }
 
-  @Inject ApiClient client;
-
   public final ProjectNotificationViewModelInputs inputs = this;
   public final ProjectNotificationViewModelOutputs outputs = this;
 

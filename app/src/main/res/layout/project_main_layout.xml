@@ -51,7 +51,7 @@
         android:layout_height="wrap_content">
 
         <TextView
-          android:text="@string/___Youre_a_backer"
+          android:text="@string/____Youre_a_backer"
           android:singleLine="true"
           style="@style/BodySecondary"
           android:layout_width="wrap_content"

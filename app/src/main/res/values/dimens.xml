@@ -10,6 +10,7 @@
   <dimen name="grid_5_half">20dp</dimen>
   <dimen name="grid_6">48dp</dimen>
   <dimen name="grid_7">56dp</dimen>
+  <dimen name="grid_7_half">28dp</dimen>
   <dimen name="grid_8">64dp</dimen>
   <dimen name="grid_9">72dp</dimen>
   <dimen name="grid_9_half">36dp</dimen>
@@ -58,7 +59,8 @@
   <dimen name="button_corner_radius">4dp</dimen>
   <dimen name="button_stroke_width">1dp</dimen>
 
-  <dimen name="progress_bar_min_height">6dp</dimen>
+  <dimen name="progress_bar_min_height">3dp</dimen>
+  <dimen name="progress_bar_height">3dp</dimen>
 
   <!-- Photos -->
   <dimen name="activity_feed_avatar_width">60dp</dimen>

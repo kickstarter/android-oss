@@ -228,9 +228,17 @@
     <item name="android:lineSpacingExtra">@dimen/caption_line_spacing_extra</item>
   </style>
 
+  <style name="CaptionPrimaryMedium" parent="CaptionPrimary">
+    <item name="android:fontFamily">@string/font_family_medium</item>
+  </style>
+
   <style name="CaptionSecondary" parent="TextSecondary">
     <item name="android:textSize">@dimen/caption</item>
     <item name="android:lineSpacingExtra">@dimen/caption_line_spacing_extra</item>
+  </style>
+
+  <style name="CaptionSecondaryMedium" parent="CaptionSecondary">
+    <item name="android:fontFamily">@string/font_family_medium</item>
   </style>
 
   <style name="BodyPrimary" parent="TextPrimary">

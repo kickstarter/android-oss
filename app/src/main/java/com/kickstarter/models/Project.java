@@ -8,8 +8,8 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.qualifiers.AutoGson;
 import com.kickstarter.libs.CurrencyOptions;
+import com.kickstarter.libs.qualifiers.AutoGson;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 
@@ -38,8 +38,9 @@ public abstract class Project implements Parcelable {
   public abstract String currency(); // e.g.: USD
   public abstract String currencySymbol(); // e.g.: $
   public abstract boolean currencyTrailingCode();
+  public abstract @Nullable DateTime featuredAt();
+  public abstract @Nullable List<User> friends();
   public abstract @Nullable DateTime deadline();
-  public abstract boolean disableCommunication();
   public abstract float goal();
   public abstract long id(); // in the Kickstarter app, this is project.pid not project.id
   public abstract boolean isBacking();
@@ -73,7 +74,8 @@ public abstract class Project implements Parcelable {
     public abstract Builder currencySymbol(String __);
     public abstract Builder currencyTrailingCode(boolean __);
     public abstract Builder deadline(DateTime __);
-    public abstract Builder disableCommunication(boolean __);
+    public abstract Builder featuredAt(DateTime __);
+    public abstract Builder friends(List<User> __);
     public abstract Builder goal(float __);
     public abstract Builder id(long __);
     public abstract Builder isBacking(boolean __);
@@ -253,9 +255,21 @@ public abstract class Project implements Parcelable {
     return STATE_FAILED.equals(state());
   }
 
+  public boolean isFeaturedToday() {
+    if (featuredAt() == null) {
+      return false;
+    }
+
+    return DateTimeUtils.isDateToday(featuredAt());
+  }
+
   /** Returns whether the project is in a live state. */
   public boolean isLive() {
     return STATE_LIVE.equals(state());
+  }
+
+  public boolean isFriendBacking() {
+    return friends() != null && friends().size() > 0;
   }
 
   public boolean isPotdToday() {
@@ -263,8 +277,7 @@ public abstract class Project implements Parcelable {
       return false;
     }
 
-    final DateTime startOfDayUTC = new DateTime(DateTimeZone.UTC).withTime(0, 0, 0, 0);
-    return startOfDayUTC.isEqual(potdAt().withZone(DateTimeZone.UTC));
+    return DateTimeUtils.isDateToday(potdAt());
   }
 
   /** Returns whether the project is in a purged state. */

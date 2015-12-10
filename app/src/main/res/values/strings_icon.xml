@@ -30,6 +30,7 @@
 
   <!-- ss-kickstarter icon names from https://www.kickstarter.com/admin/style_guide -->
   <string name="backer_icon">backer</string>
+  <string name="kickstarter_icon">kickstarter</string>
   <string name="mail_icon">mail</string>
 
 </resources>

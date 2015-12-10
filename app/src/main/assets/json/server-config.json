@@ -80,6 +80,7 @@
             "share": "Share"
           },
           "read_more": "Read%{space}more%{space}",
+          "blurb_read_more": "%{blurb}%{space}<u>Read%{space}more</u>%{space}",
           "accessibility": {
             "category": {
               "label": "Category"
@@ -633,6 +634,7 @@
         },
         "creator": {
           "by_creator": "by %{creator_name}",
+          "by_creator_underlined": "by <u>%{creator_name}</u>",
           "youre_a_backer": " • You're a backer"
         },
         "subpages": {
@@ -684,7 +686,7 @@
         "backer_number": "Backer #%{backer_number}",
         "pledge_amount_on_pledge_date": "%{pledge_amount} on %{pledge_date}",
         "status_backing_status": "Status: %{backing_status}",
-        "reward_amount_reward_description": "%{reward_amount} - %{reward_description}",
+        "reward_amount_reward_description": "%{reward_amount} - %{reward_d2escription}",
         "domestic": "Domestic",
         "international": "International",
         "not_available": "N/A"
@@ -1297,6 +1299,7 @@
             "share": "Teilen"
           },
           "read_more": "Mehr%{space}Info%{space}",
+          "blurb_read_more": "%{blurb}%{space}<u>Read%{space}more</u>%{space}",
           "accessibility": {
             "category": {
               "label": "Category"
@@ -1851,6 +1854,7 @@
         },
         "creator": {
           "by_creator": "von %{creator_name}",
+          "by_creator_underlined": "by <u>%{creator_name}</u>",
           "youre_a_backer": " • Du unterstützt das Projekt"
         },
         "subpages": {
@@ -2515,6 +2519,7 @@
             "share": "Compartir"
           },
           "read_more": "Leer%{space}más%{space}",
+          "blurb_read_more": "%{blurb}%{space}<u>Read%{space}more</u>%{space}",
           "accessibility": {
             "category": {
               "label": "Category"
@@ -3069,6 +3074,7 @@
         },
         "creator": {
           "by_creator": "por %{creator_name}",
+          "by_creator_underlined": "by <u>%{creator_name}</u>",
           "youre_a_backer": " • Tú eres un patrocinador"
         },
         "subpages": {
@@ -3735,6 +3741,7 @@
             "share": "Partager"
           },
           "read_more": "En savoir%{space}plus%{space}",
+          "blurb_read_more": "%{blurb}%{space}<u>Read%{space}more</u>%{space}",
           "accessibility": {
             "category": {
               "label": "Category"
@@ -4289,6 +4296,7 @@
         },
         "creator": {
           "by_creator": "par %{creator_name}",
+          "by_creator_underlined": "by <u>%{creator_name}</u>",
           "youre_a_backer": " • Vous êtes contributeur"
         },
         "subpages": {
@@ -4955,6 +4963,7 @@
             "share": "Share"
           },
           "read_more": "Read%{space}more%{space}",
+          "blurb_read_more": "%{blurb}%{space}<u>Read%{space}more</u>%{space}",
           "accessibility": {
             "category": {
               "label": "Category"
@@ -5508,6 +5517,7 @@
         },
         "creator": {
           "by_creator": "by %{creator_name}",
+          "by_creator_underlined": "by <u>%{creator_name}</u>",
           "youre_a_backer": " • You're a backer"
         },
         "subpages": {
@@ -5559,7 +5569,7 @@
         "backer_number": "Backer #%{backer_number}",
         "pledge_amount_on_pledge_date": "%{pledge_amount} on %{pledge_date}",
         "status_backing_status": "Status: %{backing_status}",
-        "reward_amount_reward_description": "%{reward_amount} - %{reward_description}",
+        "reward_amount_reward_description": "%{reward_amount} - %{reward_d2escription}",
         "domestic": "Domestic",
         "international": "International",
         "not_available": "N/A"
@@ -6126,7 +6136,8 @@
     "log_devices": true,
     "backer_report_formats": true,
     "discover_cards": true,
-    "imgix_videos": true
+    "imgix_videos": true,
+    "fulfillment_report": true
   },
   "launched_countries": [
     {
@@ -6240,12 +6251,12 @@
   ],
   "ab_experiments": {
     "discover_sorts_vs_subcategories": "experimental",
-    "native_ios_aa": "experimental",
+    "native_ios_aa": "control",
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
-    "native_iphone_horiz_vs_vert": "experimental",
-    "recs_thanks_stars": "collaborative_stars",
-    "recs_hp_video_plays": "collaborative_video_plays",
+    "native_iphone_horiz_vs_vert": "control",
+    "recs_thanks_stars": "collaborative_backings_v2",
+    "recs_hp_video_plays": "collaborative_backings_v2",
     "video_autoplay_3": "no_autoplay",
     "project_share_metadata_position": "control"
   },

@@ -11,8 +11,9 @@ module Milkrun
           flatten(translations)
             .select { |k, _| default_keys.member?(k) } # Filter out strings in other locales but not default
             .sort
-            .map { |k, v| [k, v.gsub(/'/) { "\\'" } ] }
-            .map { |k, v| [k, v.gsub(/&/) { "&amp;" } ] }
+            .map { |k, v| [ k, v.gsub(/'/) { "\\'" } # Escape single quotes
+                                .gsub(/&/) { "&amp;" } # Escape ampersands
+                                .gsub("<") { "&lt;" } ] } # Escape '<' characters
             .map { |k, v| "  <string name=\"#{k}\" formatted=\"false\">#{v}</string>" }
             .each { |str| f.puts(str) }
           f.puts '</resources>'

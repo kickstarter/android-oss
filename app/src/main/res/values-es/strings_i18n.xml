@@ -289,6 +289,7 @@
   <string name="discovery_backing" formatted="false">Proyectos patrocinados</string>
   <string name="discovery_baseball_card_accessibility_category_label" formatted="false">Category</string>
   <string name="discovery_baseball_card_accessibility_location_label" formatted="false">Location</string>
+  <string name="discovery_baseball_card_blurb_read_more" formatted="false">%{blurb}%{space}&lt;u>Read%{space}more&lt;/u>%{space}</string>
   <string name="discovery_baseball_card_button_share" formatted="false">Compartir</string>
   <string name="discovery_baseball_card_deadline_units_days" formatted="false">días</string>
   <string name="discovery_baseball_card_deadline_units_hours" formatted="false">hrs</string>
@@ -557,6 +558,7 @@ Si tienes un momento, ¿te importaría calificar tu experiencia?
   <string name="project_comments_empty_state_non_backer_message" formatted="false">Ay, ¡qué pena! Hazte patrocinador para dejar un comentario.</string>
   <string name="project_comments_empty_state_non_backer_title" formatted="false">No hay comentarios</string>
   <string name="project_creator_by_creator" formatted="false">por %{creator_name}</string>
+  <string name="project_creator_by_creator_underlined" formatted="false">by &lt;u>%{creator_name}&lt;/u></string>
   <string name="project_creator_youre_a_backer" formatted="false"> • Tú eres un patrocinador</string>
   <string name="project_disclaimer_goal_not_reached" formatted="false">Este proyecto será financiado únicamente si se contribuye por lo menos %{goal_currency} hasta %{deadline}.</string>
   <string name="project_disclaimer_goal_reached" formatted="false">Este proyecto será financiado el  %{deadline}.</string>

@@ -90,7 +90,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     deadlineCountdownTextView.setText(Integer.toString(project.deadlineCountdownValue()));
     deadlineCountdownUnitTextView.setText(project.deadlineCountdownUnit(view.getContext()));
     nameTextView.setText(project.name());
-    percentTextView.setText(StringUtils.displayFlooredPercent(project.percentageFunded()));
+    percentTextView.setText(StringUtils.displayFlooredPercentage(project.percentageFunded()));
     percentageFundedProgressBar.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
     Picasso.with(view.getContext()).
       load(project.photo().full()).

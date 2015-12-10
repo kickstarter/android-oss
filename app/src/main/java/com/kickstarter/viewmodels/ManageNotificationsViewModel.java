@@ -11,8 +11,6 @@ import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Notification;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.ui.activities.ManageNotificationActivity;
-import com.kickstarter.ui.adapters.ManageNotificationsAdapter;
-import com.kickstarter.ui.viewholders.ProjectNotificationViewHolder;
 import com.kickstarter.viewmodels.errors.ManageNotificationsViewModelErrors;
 import com.kickstarter.viewmodels.outputs.ManageNotificationsViewModelOutputs;
 
@@ -21,8 +19,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public final class ManageNotificationsViewModel extends ViewModel<ManageNotificationActivity> implements
@@ -33,11 +29,6 @@ public final class ManageNotificationsViewModel extends ViewModel<ManageNotifica
   private Observable<List<Notification>> notifications;
   public final Observable<List<Notification>> notifications() {
     return notifications;
-  }
-
-  private final PublishSubject<Void> toggleSuccess = PublishSubject.create();
-  public Observable<Void> toggleSuccess() {
-    return toggleSuccess;
   }
 
   // ERRORS

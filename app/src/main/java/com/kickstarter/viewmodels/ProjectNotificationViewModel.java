@@ -10,38 +10,34 @@ import com.kickstarter.ui.viewholders.ProjectNotificationViewHolder;
 import com.kickstarter.viewmodels.inputs.ProjectNotificationViewModelInputs;
 import com.kickstarter.viewmodels.outputs.ProjectNotificationViewModelOutputs;
 
-import javax.inject.Inject;
-
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public class ProjectNotificationViewModel extends ViewModel<ProjectNotificationViewHolder> implements ProjectNotificationViewModelInputs, ProjectNotificationViewModelOutputs {
+public class ProjectNotificationViewModel extends ViewModel<ProjectNotificationViewHolder> implements
+  ProjectNotificationViewModelInputs, ProjectNotificationViewModelOutputs {
 
   // INPUTS
-  private PublishSubject<Boolean> checked = PublishSubject.create();
-  public void switchClick(boolean checked) {
+  private final PublishSubject<Boolean> checked = PublishSubject.create();
+  public final void switchClick(boolean checked) {
     this.checked.onNext(checked);
   }
 
   // OUTPUTS
   private final BehaviorSubject<Notification> notification;
-  public Observable<Notification> notification() {
+  public final Observable<Notification> notification() {
     return notification;
   }
 
   public final ProjectNotificationViewModelInputs inputs = this;
   public final ProjectNotificationViewModelOutputs outputs = this;
 
-
   public ProjectNotificationViewModel(final @NonNull Notification notification, final @NonNull ApiClient client) {
     this.notification = BehaviorSubject.create(notification);
 
     this.notification
       .compose(Transformers.takePairWhen(checked))
-      .switchMap(nc -> {
-        return client.updateProjectNotifications(nc.first, nc.second);
-      })
+      .switchMap(nc -> client.updateProjectNotifications(nc.first, nc.second))
       .subscribe(this.notification);
   }
 }

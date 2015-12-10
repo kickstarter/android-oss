@@ -1,31 +1,21 @@
 package com.kickstarter.ui.viewholders;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.SwitchCompat;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
-import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.kickstarter.R;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Notification;
-import com.kickstarter.viewmodels.ManageNotificationsViewModel;
 import com.kickstarter.viewmodels.ProjectNotificationViewModel;
-import com.kickstarter.viewmodels.ProjectViewModel;
-import com.kickstarter.viewmodels.SignupViewModel;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
-import timber.log.Timber;
 
 @RequiresViewModel(ProjectNotificationViewModel.class)
 public final class ProjectNotificationViewHolder extends KSViewHolder {
@@ -47,8 +37,8 @@ public final class ProjectNotificationViewHolder extends KSViewHolder {
     viewModel
       .switchMap(vm -> vm.outputs.notification())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(notification -> {
-        renderNotification(notification);
+      .subscribe(n -> {
+        renderNotification(n);
       });
   }
 

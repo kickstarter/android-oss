@@ -1,7 +1,6 @@
 package com.kickstarter.ui.activities;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,12 +10,9 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.models.Notification;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.ui.adapters.ManageNotificationsAdapter;
 import com.kickstarter.viewmodels.ManageNotificationsViewModel;
-
-import java.util.List;
 
 import javax.inject.Inject;
 

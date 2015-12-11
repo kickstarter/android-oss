@@ -1,139 +1,153 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
+<RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:card_view="http://schemas.android.com/apk/res-auto"
-  android:layout_width="match_parent"
+  android:id="@+id/project_card_view_group"
   android:layout_height="match_parent"
-  card_view:cardCornerRadius="4dp"
-  card_view:cardBackgroundColor="@color/transparent"
-  android:foreground="@drawable/click_indicator_light"
-  android:elevation="@dimen/card_elevation"
-  android:focusable="true"
-  android:layout_marginLeft="@dimen/grid_3"
-  android:layout_marginRight="@dimen/grid_3"
-  android:layout_marginBottom="@dimen/grid_1"
-  android:layout_marginTop="@dimen/grid_3" >
+  android:layout_width="match_parent">
 
-  <RelativeLayout
-    android:background="@color/white"
+  <android.support.v7.widget.CardView
+    android:id="@+id/project_card_view"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    card_view:cardCornerRadius="4dp"
+    card_view:cardBackgroundColor="@color/transparent"
+    android:foreground="@drawable/click_indicator_light"
+    android:elevation="@dimen/card_elevation"
+    android:focusable="true"
+    android:layout_marginBottom="@dimen/grid_1"
+    android:layout_marginTop="@dimen/grid_3"
+    android:layout_marginLeft="@dimen/grid_2"
+    android:layout_marginStart="@dimen/grid_2"
+    android:layout_marginRight="@dimen/grid_2"
+    android:layout_marginEnd="@dimen/grid_2">
 
-    <include layout="@layout/project_card_photo_view"/>
-
-    <LinearLayout
-      android:id="@+id/project_card_info"
-      android:layout_below="@id/project_card_photo"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:paddingTop="@dimen/grid_2"
-      android:paddingLeft="@dimen/grid_2"
-      android:paddingRight="@dimen/grid_2"
-      android:orientation="vertical">
-
-      <TextView
-        android:id="@+id/name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/Headline"
-        android:paddingBottom="@dimen/grid_2" />
-
-      <LinearLayout
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginBottom="@dimen/grid_2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.kickstarter.ui.views.IconTextView
-          android:id="@+id/category_icon"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/local_offer_icon"
-          android:contentDescription="@string/discovery_baseball_card_accessibility_category_label"
-          style="@style/BodyPrimary"/>
-
-        <TextView
-          android:id="@+id/category"
-          android:text="Category name"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:paddingLeft="@dimen/grid_1_half"
-          android:paddingRight="@dimen/grid_2"
-          style="@style/BodyPrimary" />
-
-        <com.kickstarter.ui.views.IconTextView
-          android:id="@+id/location_icon"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/location_on_icon"
-          android:contentDescription="@string/discovery_baseball_card_accessibility_location_label"
-          style="@style/BodyPrimary" />
-
-        <TextView
-          android:id="@+id/location"
-          android:text="Location"
-          android:ellipsize="end"
-          android:singleLine="true"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:paddingLeft="@dimen/grid_1_half"
-          android:paddingRight="@dimen/grid_1_half"
-          android:paddingStart="@dimen/grid_1_half"
-          android:paddingEnd="@dimen/grid_1_half"
-          style="@style/BodyPrimary" />
-
-      </LinearLayout>
-
-      <ProgressBar
-        style="@style/ProgressBar"
-        android:id="@+id/percentage_funded"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="@dimen/progress_bar_min_height"
-        android:progress="50" />
-
-    </LinearLayout>
-
-    <LinearLayout
-      android:id="@+id/project_state_views"
-      android:layout_below="@id/project_card_info"
-      android:orientation="vertical"
+    <RelativeLayout
+      android:background="@color/white"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 
-      <TextView
-        android:id="@+id/successfully_funded_text_view"
-        android:text="@string/discovery_baseball_card_status_banner_successful"
-        android:visibility="gone"
-        style="@style/BodyPrimaryMedium"
-        android:textColor="@color/white"
-        android:background="@color/green"
-        android:gravity="center"
+      <include layout="@layout/project_card_photo_view"/>
+
+      <LinearLayout
+        android:id="@+id/project_card_info"
+        android:layout_below="@id/project_card_photo"
         android:layout_width="match_parent"
-        android:layout_height="30dp"/>
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/grid_2"
+        android:paddingLeft="@dimen/grid_2"
+        android:paddingRight="@dimen/grid_2"
+        android:orientation="vertical">
 
-      <TextView
-        android:id="@+id/funding_unsuccessful_view"
-        android:visibility="gone"
-        style="@style/BodyPrimaryMedium"
-        android:textColor="@color/white"
-        android:background="@color/dark_gray"
-        android:gravity="center"
+        <TextView
+          android:id="@+id/category"
+          android:text="Installations"
+          android:layout_marginBottom="@dimen/grid_1"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          style="@style/CaptionSecondaryMedium" />
+
+        <TextView
+          android:id="@+id/name"
+          android:text="Somewhere In Between - The Work of Ella Sala Myers"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          style="@style/Headline"
+          android:paddingBottom="@dimen/grid_1" />
+
+        <TextView
+          android:id="@+id/blurb"
+          style="@style/CaptionPrimary"
+          android:maxLines="2"
+          android:ellipsize="end"
+          android:layout_marginBottom="@dimen/grid_5_half"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
+
+        <ProgressBar
+          style="@style/ProgressBar"
+          android:visibility="visible"
+          android:id="@+id/percentage_funded"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/progress_bar_height"
+          android:minHeight="@dimen/progress_bar_min_height"
+          android:progress="50" />
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:id="@+id/project_state_views"
+        android:layout_below="@id/project_card_info"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="30dp"/>
+        android:layout_height="wrap_content">
 
-    </LinearLayout>
+        <TextView
+          android:id="@+id/successfully_funded_view"
+          android:visibility="gone"
+          style="@style/BodyPrimaryMedium"
+          android:textColor="@color/white"
+          android:background="@color/green"
+          android:gravity="center"
+          android:layout_width="match_parent"
+          android:layout_height="30dp"/>
 
-    <include layout="@layout/project_stats_view"
-      android:layout_below="@id/project_state_views"
-      android:layout_height="wrap_content"
+        <TextView
+          android:id="@+id/funding_unsuccessful_view"
+          android:visibility="gone"
+          style="@style/BodyPrimaryMedium"
+          android:textColor="@color/white"
+          android:background="@color/dark_gray"
+          android:gravity="center"
+          android:layout_width="match_parent"
+          android:layout_height="30dp"/>
+
+      </LinearLayout>
+
+      <include layout="@layout/project_card_stats_view"
+        android:layout_below="@id/project_state_views"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="@dimen/grid_3_half"
+        android:layout_marginBottom="@dimen/grid_2"
+        android:layout_marginLeft="@dimen/grid_2"
+        android:layout_marginRight="@dimen/grid_2"/>
+
+    </RelativeLayout>
+
+  </android.support.v7.widget.CardView>
+
+  <include layout="@layout/project_metadata_view"/>
+
+  <LinearLayout
+    android:id="@+id/friend_backing_group"
+    android:layout_below="@id/project_card_view"
+    android:visibility="visible"
+    android:layout_marginTop="@dimen/grid_1"
+    android:layout_marginBottom="@dimen/grid_2"
+    android:layout_marginLeft="@dimen/grid_7_half"
+    android:layout_marginStart="@dimen/grid_7_half"
+    android:layout_marginRight="@dimen/grid_7_half"
+    android:layout_marginEnd="@dimen/grid_7_half"
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <ImageView
+      android:id="@+id/friend_backing_avatar"
+      android:layout_gravity="center_vertical"
+      android:layout_marginRight="@dimen/grid_1_half"
+      android:layout_marginEnd="@dimen/grid_1_half"
+      android:layout_width="@dimen/grid_4"
+      android:layout_height="@dimen/grid_4" />
+
+    <TextView
+      android:id="@+id/friend_backing_message"
+      style="@style/CaptionPrimaryMedium"
+      android:layout_gravity="center_vertical"
       android:layout_width="wrap_content"
-      android:layout_marginTop="@dimen/grid_2"
-      android:layout_marginBottom="@dimen/grid_3"
-      android:layout_marginLeft="@dimen/grid_2"
-      android:layout_marginRight="@dimen/grid_2"/>
+      android:layout_height="wrap_content" />
 
-  </RelativeLayout>
+  </LinearLayout>
 
-</android.support.v7.widget.CardView>
+</RelativeLayout>

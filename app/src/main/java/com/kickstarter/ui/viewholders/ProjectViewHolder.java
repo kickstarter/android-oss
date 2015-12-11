@@ -92,7 +92,6 @@ public final class ProjectViewHolder extends KSViewHolder {
     }
 
     /* Project */
-    // TODO: non breaking space
     blurbTextView.setText(Html.fromHtml(ksString.format(blurbReadMoreString,
       "blurb", project.blurb(),
       "space", "\u00A0"

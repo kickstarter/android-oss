@@ -385,29 +385,6 @@
 
       <include layout="@layout/horizontal_line_thin_view"/>
 
-      <RelativeLayout
-        android:id="@+id/send_feedback"
-        android:background="@drawable/click_indicator_light_masked"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-          style="@style/BodyPrimary"
-          android:paddingTop="@dimen/feed_padding_y"
-          android:paddingBottom="@dimen/feed_padding_y"
-          android:text="@string/___Send_feedback"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content" />
-
-        <com.kickstarter.ui.views.IconTextView
-          style="@style/EndSettingsWidget"
-          android:textColor="@color/gray_black"
-          android:text="@string/chevron_right_icon" />
-
-      </RelativeLayout>
-
-      <include layout="@layout/horizontal_line_thin_view"/>
-
       <Button
         style="@style/BorderButton"
         android:id="@+id/log_out_button"

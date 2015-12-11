@@ -10,8 +10,8 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.qualifiers.WebEndpoint;
-import com.kickstarter.viewmodels.HelpViewModel;
 import com.kickstarter.ui.views.KSWebView;
+import com.kickstarter.viewmodels.HelpViewModel;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

@@ -1,22 +1,31 @@
 package com.kickstarter.ui.activities;
 
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.SwitchCompat;
+import android.text.TextUtils;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Logout;
+import com.kickstarter.libs.Release;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.User;
 import com.kickstarter.ui.views.IconTextView;
 import com.kickstarter.viewmodels.SettingsViewModel;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -43,10 +52,13 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   protected @BindColor(R.color.green) int green;
   protected @BindColor(R.color.gray) int gray;
 
-  protected @BindString(R.string.___Not_implemented_yet) String notImplementedYetString;
+  protected @BindString(R.string.___Hello_Kickstarter_App_Support) String helloAppSupportString;
+  protected @BindString(R.string.___How_can_we_help_you) String howCanWeHelpString;
   protected @BindString(R.string.___Unable_to_save) String unableToSaveString;
 
+  @Inject CurrentUser currentUser;
   @Inject Logout logout;
+  @Inject Release release;
 
   private boolean notifyMobileOfFollower;
   private boolean notifyMobileOfFriendActivity;
@@ -87,10 +99,38 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
       .subscribe(viewModel.inputs::sendWeeklyNewsletter);
   }
 
+  protected void composeContactEmail(final @Nullable User user) {
+    final String email = "app@kickstarter.com";
+
+    final List<String> debugInfo = Arrays.asList(
+      (user != null ? user.name() : "Logged Out"),
+      release.variant(),
+      release.versionName(),
+      release.versionCode().toString(),
+      release.sha(),
+      Integer.toString(Build.VERSION.SDK_INT),
+      Build.MANUFACTURER + " " + Build.MODEL,
+      Locale.getDefault().getLanguage()
+    );
+
+    final String body = new StringBuilder()
+      .append(TextUtils.join(" | ", debugInfo))
+      .append(String.format("\r\n\r\n%1$s\r\n", howCanWeHelpString))
+      .append("—————————————\r\n")
+      .toString();
+
+    final Intent intent = new Intent(Intent.ACTION_SENDTO)
+      .setData(Uri.parse("mailto:"))
+      .putExtra(Intent.EXTRA_SUBJECT, helloAppSupportString)
+      .putExtra(Intent.EXTRA_TEXT, body)
+      .putExtra(Intent.EXTRA_EMAIL, new String[]{email});
+
+    startActivity(Intent.createChooser(intent, getString(R.string.___Select_email_application)));
+  }
+
   @OnClick(R.id.contact)
   public void contactClick() {
-    // todo: set up contact view
-    ViewUtils.showToast(this, notImplementedYetString);
+    currentUser.observable().take(1).subscribe(this::composeContactEmail);
   }
 
   @OnClick(R.id.cookie_policy)
@@ -147,12 +187,6 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   @OnClick(R.id.privacy_policy)
   public void privacyPolicyClick() {
     startHelpActivity(HelpActivity.HELP_TYPE_PRIVACY);
-  }
-
-  @OnClick(R.id.send_feedback)
-  public void sendFeedbackClick() {
-    // todo: set up feedback form
-    ViewUtils.showToast(this, notImplementedYetString);
   }
 
   public void startHelpActivity(final int helpType) {

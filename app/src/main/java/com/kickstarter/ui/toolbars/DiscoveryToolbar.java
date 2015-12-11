@@ -113,9 +113,6 @@ public final class DiscoveryToolbar extends KSToolbar {
       popup.getMenuInflater().inflate(R.menu.current_user_menu, popup.getMenu());
 
       popup.setOnMenuItemClickListener(item -> {
-        final Context context = v.getContext();
-        final BaseActivity baseActivity = (BaseActivity) context;
-
         switch (item.getItemId()) {
           case R.id.profile:
             final Intent profileIntent = new Intent(activity, ProfileActivity.class);
@@ -123,8 +120,9 @@ public final class DiscoveryToolbar extends KSToolbar {
             activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
             break;
           case R.id.settings:
-            final Intent settingsIntent = new Intent(context, SettingsActivity.class);
-            context.startActivity(settingsIntent);
+            final Intent settingsIntent = new Intent(activity, SettingsActivity.class);
+            activity.startActivity(settingsIntent);
+            activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
             break;
           case R.id.logout:
             logout.execute();

@@ -79,7 +79,7 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   }
 
   @Override
-  public void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
+  protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 

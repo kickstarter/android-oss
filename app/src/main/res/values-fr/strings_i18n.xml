@@ -300,6 +300,11 @@
   <string name="discovery_baseball_card_metadata_potd" formatted="false">Projet du jour !</string>
   <string name="discovery_baseball_card_metadata_starred" formatted="false">Mes projets préférés !</string>
   <string name="discovery_baseball_card_read_more" formatted="false">En savoir%{space}plus%{space}</string>
+  <string name="discovery_baseball_card_social_friends_are_backers_few" formatted="false">%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.</string>
+  <string name="discovery_baseball_card_social_friends_are_backers_many" formatted="false">%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.</string>
+  <string name="discovery_baseball_card_social_friends_are_backers_one" formatted="false">%{friend_name} is a backer.</string>
+  <string name="discovery_baseball_card_social_friends_are_backers_two" formatted="false">%{friend_name} and %{second_friend_name} are backers.</string>
+  <string name="discovery_baseball_card_social_friends_are_backers_zero" formatted="false">No friends are backers.</string>
   <string name="discovery_baseball_card_stats_backers" formatted="false">contributeurs</string>
   <string name="discovery_baseball_card_stats_convert_from_pledged_of_goal" formatted="false">Conversion de %{pledged} engagés pour un objectif de %{goal}</string>
   <string name="discovery_baseball_card_stats_pledged_of_goal" formatted="false">sur %{goal}</string>

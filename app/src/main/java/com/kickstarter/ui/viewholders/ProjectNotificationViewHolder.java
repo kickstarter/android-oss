@@ -29,6 +29,7 @@ public final class ProjectNotificationViewHolder extends KSViewHolder {
     super(view);
     ButterKnife.bind(this, view);
 
+    // TODO: bind to lifecycle
     viewModel
       .compose(Transformers.takeWhen(RxView.clicks(this.notificationSwitch)))
       .subscribe(vm -> vm.inputs.switchClick(this.notificationSwitch.isChecked()));

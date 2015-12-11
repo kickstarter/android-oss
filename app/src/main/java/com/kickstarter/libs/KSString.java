@@ -122,13 +122,13 @@ public final class KSString {
    */
   private @NonNull String replace(final @NonNull String string, final @NonNull Map<String, String> substitutions) {
     final StringBuilder builder = new StringBuilder();
-    for (final Map.Entry<String, String> entry : substitutions.entrySet()) {
+    for (final String key : substitutions.keySet()) {
       if (builder.length() > 0) {
         builder.append("|");
       }
       builder
         .append("(%\\{")
-        .append(entry.getKey())
+        .append(key)
         .append("\\})");
     }
 

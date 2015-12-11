@@ -222,11 +222,11 @@ public final class ApiClient {
       .subscribeOn(Schedulers.io());
   }
 
-  public Observable<Notification> updateProjectNotifications(final @NonNull Notification notification, final boolean toggleValue) {
+  public Observable<Notification> updateProjectNotifications(final @NonNull Notification notification, final boolean checked) {
     return service.updateProjectNotifications(notification.id(),
       NotificationBody.builder()
-        .email(toggleValue)
-        .mobile(toggleValue)
+        .email(checked)
+        .mobile(checked)
         .build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());

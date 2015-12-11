@@ -89,12 +89,12 @@ public final class KSString {
    * Takes a variable length of {@link String} arguments, joins them together to form a single path, then
    * looks up a string resource given that path. If the resource cannot be found, returns an empty string.
    */
-  private @NonNull String stringFromKeyPath(@NonNull final String... keyPathComponents) {
+  private @NonNull String stringFromKeyPath(final @NonNull String... keyPathComponents) {
     final String keyPath = TextUtils.join("_", keyPathComponents);
     try {
       final int resourceId = resources.getIdentifier(keyPath, "string", packageName);
       return resources.getString(resourceId);
-    } catch (Resources.NotFoundException e) {
+    } catch (final @NonNull Resources.NotFoundException e) {
       return "";
     }
   }
@@ -120,7 +120,7 @@ public final class KSString {
    * with `%{}`, e.g. `%{backers_count} backers`. In this instance, the substitutions hash might contain one entry with the key
    * `backers_count` and value `2`.
    */
-  private @NonNull String replace(final @NonNull String string, final Map<String, String> substitutions) {
+  private @NonNull String replace(final @NonNull String string, final @NonNull Map<String, String> substitutions) {
     final StringBuilder builder = new StringBuilder();
     for (final Map.Entry<String, String> entry : substitutions.entrySet()) {
       if (builder.length() > 0) {

@@ -287,6 +287,9 @@
   <string name="discovery_activity_sample_title_Since_your_last_visit" formatted="false">Depuis votre dernière visite</string>
   <string name="discovery_all_of_scope" formatted="false">Toute la catégorie %{scope}</string>
   <string name="discovery_backing" formatted="false">Engagements</string>
+  <string name="discovery_baseball_card_accessibility_category_label" formatted="false">Category</string>
+  <string name="discovery_baseball_card_accessibility_location_label" formatted="false">Location</string>
+  <string name="discovery_baseball_card_blurb_read_more" formatted="false">%{blurb}%{space}<u>Read%{space}more</u>%{space}</string>
   <string name="discovery_baseball_card_button_share" formatted="false">Partager</string>
   <string name="discovery_baseball_card_deadline_units_days" formatted="false">jours</string>
   <string name="discovery_baseball_card_deadline_units_hours" formatted="false">heures</string>
@@ -371,6 +374,8 @@
   <string name="general_alert_buttons_ok" formatted="false">OK</string>
   <string name="general_error_something_wrong" formatted="false">Un erreur s\'est produite.</string>
   <string name="general_loading" formatted="false">Chargement en cours...</string>
+  <string name="general_navigation_accessibility_button_close_label" formatted="false">Close</string>
+  <string name="general_navigation_accessibility_button_navigate_back_label" formatted="false">Navigate back</string>
   <string name="general_navigation_buttons_cancel" formatted="false">Annuler</string>
   <string name="general_navigation_buttons_close" formatted="false">Fermer</string>
   <string name="general_navigation_buttons_comment" formatted="false">Commenter</string>
@@ -511,6 +516,8 @@ Nous vous en serions très reconnaissants !</string>
   <string name="profile_settings_social_friend_backs" formatted="false">Un ami soutient un projet</string>
   <string name="profile_settings_social_title" formatted="false">Notifications sociales</string>
   <string name="profile_settings_version_number" formatted="false">Version %{version_number}</string>
+  <string name="project_accessibility_button_share_label" formatted="false">Share this project</string>
+  <string name="project_accessibility_button_star_label" formatted="false">Star this project</string>
   <string name="project_back_button" formatted="false">Je soutiens ce projet</string>
   <string name="project_backer_title" formatted="false">Vous êtes contributeur !</string>
   <string name="project_checkout_apple_pay_alert_button_ok" formatted="false">OK</string>
@@ -548,6 +555,7 @@ Nous vous en serions très reconnaissants !</string>
   <string name="project_comments_empty_state_non_backer_message" formatted="false">Oh, quel dommage. Soutenez ce projet afin de pouvoir laisser un commentaire.</string>
   <string name="project_comments_empty_state_non_backer_title" formatted="false">Pas de commentaires</string>
   <string name="project_creator_by_creator" formatted="false">par %{creator_name}</string>
+  <string name="project_creator_by_creator_html" formatted="false">by <u>%{creator_name}</u></string>
   <string name="project_creator_youre_a_backer" formatted="false"> • Vous êtes contributeur</string>
   <string name="project_disclaimer_goal_not_reached" formatted="false">Ce projet ne sera financé que si au moins %{goal_currency} sont engagés avant le %{deadline}.</string>
   <string name="project_disclaimer_goal_reached" formatted="false">Ce projet sera financé le %{deadline}.</string>
@@ -609,6 +617,8 @@ Nous vous en serions très reconnaissants !</string>
   <string name="rewards_shipping_preferences_location_unrestricted" formatted="false">Livraison dans le monde entier</string>
   <string name="rewards_title_about_amount_usd" formatted="false">Environ %{reward_amount} USD</string>
   <string name="rewards_title_pledge_reward_currency_or_more" formatted="false">Contribution de %{reward_currency} ou plus</string>
+  <string name="search_by_creator" formatted="false">by %{creator_name}</string>
+  <string name="search_most_popular" formatted="false">Most Popular</string>
   <string name="signup_button" formatted="false">Inscription</string>
   <string name="signup_error_something_wrong" formatted="false">Un erreur s\'est produite.</string>
   <string name="signup_input_fields_email" formatted="false">E-mail</string>
@@ -673,6 +683,7 @@ Nous vous en serions très reconnaissants !</string>
   <string name="tabbar_me" formatted="false">Mon compte</string>
   <string name="tabbar_profile" formatted="false">Profil</string>
   <string name="tabbar_search" formatted="false">Recherche</string>
+  <string name="tabbar_search_projects" formatted="false">Search projects</string>
   <string name="two_factor_buttons_resend" formatted="false">Renvoyer</string>
   <string name="two_factor_buttons_submit" formatted="false">Envoyer</string>
   <string name="two_factor_code_placeholder" formatted="false">Saisir le code</string>

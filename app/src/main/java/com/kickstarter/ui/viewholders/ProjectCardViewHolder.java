@@ -204,9 +204,10 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     else if (project.isFeaturedToday() && project.category() != null) {
       projectMetadataViewGroup.setVisibility(View.VISIBLE);
       featuredViewGroup.setVisibility(View.VISIBLE);
-      // TODO: mini serialized category does not have access to root category name
+      // TODO: Mini serialized category does not have access to root category name. This is a bug right now,
+      // it's using the subcategory instead of the root category.
       featuredTextView.setText(ksString.format(featuredInString,
-        "category", project.category().name()));
+        "category_name", project.category().name()));
       adjustCardViewTopMargin(grid1Dimen);
 
       backingViewGroup.setVisibility(View.GONE);

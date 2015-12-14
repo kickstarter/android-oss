@@ -2,6 +2,7 @@ package com.kickstarter.ui.viewholders;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -11,8 +12,11 @@ import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.Money;
 import com.kickstarter.libs.transformations.CircleTransformation;
+import com.kickstarter.libs.utils.ProjectUtils;
+import com.kickstarter.libs.utils.SocialUtils;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
@@ -51,22 +55,19 @@ public final class ProjectCardViewHolder extends KSViewHolder {
 
   protected @BindDimen(R.dimen.grid_1) int grid1Dimen;
 
-  protected @BindString(R.string.____is_a_backer) String oneFriendBackerString;
-  protected @BindString(R.string.____and_are_backers) String twoFriendBackersString;
-  protected @BindString(R.string.____and_more_are_backers) String manyFriendBackersString;
-  protected @BindString(R.string.___Featured_in_) String featuredInString;
-  protected @BindString(R.string.___backers) String backersString;
-  protected @BindString(R.string.___Funding_canceled) String fundingCanceledString;
-  protected @BindString(R.string.___Funding_suspended_) String fundingSuspendedString;
-  protected @BindString(R.string.___Funding_unsuccessful_) String fundingUnsuccessfulString;
-  protected @BindString(R.string.___of_) String ofString;
-  protected @BindString(R.string.___pledged_of_) String pledgedOfString;
-  protected @BindString(R.string.____to_go) String toGoString;
+  protected @BindString(R.string.project_creator_by_creator) String byCreatorString;
+  protected @BindString(R.string.discovery_baseball_card_status_banner_canceled) String bannerCanceledString;
+  protected @BindString(R.string.discovery_baseball_card_status_banner_suspended) String bannerSuspendedString;
+  protected @BindString(R.string.discovery_baseball_card_status_banner_funding_unsuccessful_date) String fundingUnsuccessfulString;
+  protected @BindString(R.string.discovery_baseball_card_status_banner_successful) String bannerSuccessfulString;
+  protected @BindString(R.string.discovery_baseball_card_metadata_featured_project) String featuredInString;
+  protected @BindString(R.string.discovery_baseball_card_stats_pledged_of_goal) String pledgedOfGoalString;
 
   protected Project project;
   private final Delegate delegate;
   protected DiscoveryViewModel viewModel;
 
+  @Inject KSString ksString;
   @Inject Money money;
 
   public interface Delegate {
@@ -87,8 +88,8 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     backersCountTextView.setText(project.formattedBackersCount());
     blurbTextView.setText(project.blurb());
     categoryTextView.setText(project.category().name());
-    deadlineCountdownTextView.setText(Integer.toString(project.deadlineCountdownValue()));
-    deadlineCountdownUnitTextView.setText(project.deadlineCountdownUnit(view.getContext()));
+    deadlineCountdownTextView.setText(Integer.toString(ProjectUtils.deadlineCountdownValue(project)));
+    deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(project, view.getContext(), ksString));
     nameTextView.setText(project.name());
     percentTextView.setText(StringUtils.displayFlooredPercentage(project.percentageFunded()));
     percentageFundedProgressBar.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
@@ -101,7 +102,8 @@ public final class ProjectCardViewHolder extends KSViewHolder {
 
     /* landscape-specific */
     if (createdByTextView != null) {
-      createdByTextView.setText(String.format(view.getContext().getString(R.string.___by_), project.creator().name()));
+      createdByTextView.setText(Html.fromHtml(ksString.format(byCreatorString,
+        "creator_name", project.creator().name())));
     }
   }
 
@@ -126,24 +128,29 @@ public final class ProjectCardViewHolder extends KSViewHolder {
         percentageFundedProgressBar.setVisibility(View.GONE);
         fundingUnsuccessfulTextView.setVisibility(View.GONE);
         successfullyFundedTextView.setVisibility(View.VISIBLE);
+        fundingUnsuccessfulTextView.setText(bannerSuccessfulString);
         break;
       case Project.STATE_CANCELED:
         percentageFundedProgressBar.setVisibility(View.GONE);
         successfullyFundedTextView.setVisibility(View.GONE);
         fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
-        fundingUnsuccessfulTextView.setText(fundingCanceledString);
+        fundingUnsuccessfulTextView.setText(bannerCanceledString);
         break;
       case Project.STATE_FAILED:
         percentageFundedProgressBar.setVisibility(View.GONE);
         successfullyFundedTextView.setVisibility(View.GONE);
         fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
-        fundingUnsuccessfulTextView.setText(String.format(fundingUnsuccessfulString, project.formattedStateChangedAt()));
+        fundingUnsuccessfulTextView.setText(ksString.format(fundingUnsuccessfulString,
+          "date", project.formattedStateChangedAt()
+        ));
         break;
       case Project.STATE_SUSPENDED:
         percentageFundedProgressBar.setVisibility(View.GONE);
         successfullyFundedTextView.setVisibility(View.GONE);
         fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
-        fundingUnsuccessfulTextView.setText(String.format(fundingSuspendedString, project.formattedStateChangedAt()));
+        fundingUnsuccessfulTextView.setText(ksString.format(bannerSuspendedString,
+          "date", project.formattedStateChangedAt()
+        ));
         break;
     }
   }
@@ -159,7 +166,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
         .transform(new CircleTransformation())
         .into(friendBackingAvatarImageView);
 
-      friendBackingMessageTextView.setText(StringUtils.friendBackingMetadataText(view.getContext(), project.friends()));
+      friendBackingMessageTextView.setText(SocialUtils.projectCardFriendNamepile(project.friends(), ksString));
     } else {
       friendBackingViewGroup.setVisibility(View.GONE);
     }
@@ -194,11 +201,13 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       featuredViewGroup.setVisibility(View.GONE);
     }
 
-    else if (project.isFeaturedToday()) {
+    else if (project.isFeaturedToday() && project.category() != null) {
       projectMetadataViewGroup.setVisibility(View.VISIBLE);
       featuredViewGroup.setVisibility(View.VISIBLE);
-      // TODO: mini serialized category does not have access to root category name
-      featuredTextView.setText(String.format(featuredInString, project.category().baseImageName()));
+      // TODO: Mini serialized category does not have access to root category name. This is a bug right now,
+      // it's using the subcategory instead of the root category.
+      featuredTextView.setText(ksString.format(featuredInString,
+        "category_name", project.category().name()));
       adjustCardViewTopMargin(grid1Dimen);
 
       backingViewGroup.setVisibility(View.GONE);

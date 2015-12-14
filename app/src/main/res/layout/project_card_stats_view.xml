@@ -21,7 +21,7 @@
     android:layout_height="wrap_content"
     android:layout_marginRight="@dimen/grid_2"
     android:layout_marginEnd="@dimen/grid_2"
-    android:text="@string/___backers"
+    android:text="@string/discovery_baseball_card_stats_backers"
     style="@style/CaptionSecondary" />
 
   <TextView
@@ -53,17 +53,9 @@
 
   <TextView
     android:id="@+id/deadline_countdown_unit"
-    android:text="days"
+    android:text="days to go"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    style="@style/CaptionSecondary" />
-
-  <TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:singleLine="true"
-    android:text="@string/____to_go"
-    android:ellipsize="end"
     style="@style/CaptionSecondary" />
 
 </LinearLayout>

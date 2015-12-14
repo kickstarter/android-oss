@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 
@@ -19,6 +20,7 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.DateTimeTypeConverter;
 import com.kickstarter.libs.Font;
 import com.kickstarter.libs.ForApplication;
+import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.KoalaTrackingClient;
 import com.kickstarter.libs.Logout;
@@ -73,8 +75,7 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  OkHttpClient provideOkHttpClient(@NonNull final ApiEndpoint apiEndpoint,
-    @NonNull final ApiRequestInterceptor apiRequestInterceptor, @NonNull final CookieManager cookieManager,
+  OkHttpClient provideOkHttpClient(@NonNull final ApiRequestInterceptor apiRequestInterceptor, @NonNull final CookieManager cookieManager,
     @NonNull final HttpLoggingInterceptor httpLoggingInterceptor, @NonNull final KSRequestInterceptor ksRequestInterceptor,
     @NonNull final WebRequestInterceptor webRequestInterceptor) {
     final OkHttpClient okHttpClient = new OkHttpClient();
@@ -258,6 +259,12 @@ public class ApplicationModule {
   }
 
   @Provides
+  @Singleton
+  @NonNull KSString provideKSString(final @Named("PackageName") @NonNull String packageName, final @NonNull Resources resources) {
+    return new KSString(packageName, resources);
+  }
+
+  @Provides
   KSWebViewClient provideKSWebViewClient(@NonNull final OkHttpClient okHttpClient,
     @WebEndpoint final String webEndpoint) {
     return new KSWebViewClient(okHttpClient, webEndpoint);
@@ -292,8 +299,17 @@ public class ApplicationModule {
     }
   }
 
+  @Provides
+  @Singleton
+  @Named("PackageName")
   String providePackageName(@NonNull final Application application) {
     return application.getPackageName();
+  }
+
+  @Provides
+  @Singleton
+  Resources provideResources(@ForApplication @NonNull final Context context) {
+    return context.getResources();
   }
 
   @Provides

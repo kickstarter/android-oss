@@ -8,14 +8,17 @@ import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.Money;
 import com.kickstarter.libs.utils.DateTimeUtils;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 
 public final class RewardViewHolder extends KSViewHolder {
@@ -31,7 +34,10 @@ public final class RewardViewHolder extends KSViewHolder {
   public @Bind(R.id.shipping_destination) TextView shippingDestinationTextView;
   public @Bind(R.id.shipping_summary) TextView shippingSummaryTextView;
 
+  protected @BindString(R.string.rewards_info_limited_rewards_remaining_left_of_reward_limit) String limitedRewardsRemainingString;
+
   @Inject Money money;
+  @Inject KSString ksString;
 
   private final Context context;
   private final Delegate delegate;
@@ -59,9 +65,14 @@ public final class RewardViewHolder extends KSViewHolder {
     minimumTextView.setText(String.format(
       context.getString(R.string.___Pledge_or_more),
       money.formattedCurrency(reward.minimum(), project.currencyOptions())));
-    backersCountTextView.setText(String.format(
-      context.getString(R.string.____backers),
-      Integer.toString(reward.backersCount()))); // check Integer formatting
+
+    final Integer backersCount = reward.backersCount();
+    final String backersCountText = (backersCount != null) ?
+      ksString.format("rewards_info_backer_count_backers", backersCount,
+        "backer_count", Integer.toString(backersCount)) :
+      "";
+    backersCountTextView.setText(backersCountText);
+
     descriptionTextView.setText(reward.description());
     estimatedDeliveryTextView.setText(
       reward.estimatedDeliveryOn().toString(DateTimeUtils.estimatedDeliveryOn()));
@@ -86,9 +97,10 @@ public final class RewardViewHolder extends KSViewHolder {
   public void toggleLimitedRewardView() {
     if (reward.isLimited()) {
       limitedTextView.setVisibility(View.VISIBLE);
-      limitedTextView.setText(String.format(context.getString(R.string.___Limited_left_of),
-        reward.remaining(),
-        reward.limit()));
+      limitedTextView.setText(ksString.format(limitedRewardsRemainingString,
+        "rewards_remaining", ObjectUtils.toString(reward.remaining()),
+        "reward_limit", ObjectUtils.toString(reward.limit()))
+      );
     } else {
       limitedTextView.setVisibility(View.GONE);
     }

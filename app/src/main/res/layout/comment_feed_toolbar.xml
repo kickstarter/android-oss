@@ -19,7 +19,7 @@
       style="@style/ToolbarIcon"
       android:id="@+id/back_button"
       android:focusable="true"
-      android:contentDescription="@string/___nav_back_button_content_description"
+      android:contentDescription="@string/project_accessibility_button_share_label"
       android:layout_alignParentStart="true"
       android:layout_alignParentLeft="true"
       android:text="@string/arrow_back_icon"/>

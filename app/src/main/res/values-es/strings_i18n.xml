@@ -61,7 +61,7 @@
   <string name="activity_friend_backed_tech_project" formatted="false">%{friend_name} patrocinó un proyecto de Tecnología.</string>
   <string name="activity_friend_backed_theater_project" formatted="false">%{friend_name} patrocinó un proyecto de Teatro.</string>
   <string name="activity_friend_follow_buttons_follow" formatted="false">Seguir</string>
-  <string name="activity_friend_follow_buttons_following" formatted="false">Following</string>
+  <string name="activity_friend_follow_buttons_following" formatted="false">Siguiendo</string>
   <string name="activity_friend_follow_is_following_you" formatted="false">te sigue</string>
   <string name="activity_funding_canceled" formatted="false">Financiamiento cancelado.</string>
   <string name="activity_navigation_title_activity" formatted="false">Actividad</string>
@@ -284,7 +284,7 @@
   <string name="discovery_activity_sample_alert_buttons_follow" formatted="false">Seguir</string>
   <string name="discovery_activity_sample_alert_follow_friend_name" formatted="false">Seguir a %{friend_name}?</string>
   <string name="discovery_activity_sample_button_see_all_activity" formatted="false">Ver toda la actividad</string>
-  <string name="discovery_activity_sample_title_Since_your_last_visit" formatted="false">Since your last visit</string>
+  <string name="discovery_activity_sample_title_Since_your_last_visit" formatted="false">Desde tu última visita</string>
   <string name="discovery_all_of_scope" formatted="false">Todos en %{scope}</string>
   <string name="discovery_backing" formatted="false">Proyectos patrocinados</string>
   <string name="discovery_baseball_card_accessibility_category_label" formatted="false">Category</string>
@@ -304,7 +304,7 @@
   <string name="discovery_baseball_card_social_friends_are_backers_many" formatted="false">%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.</string>
   <string name="discovery_baseball_card_social_friends_are_backers_one" formatted="false">%{friend_name} is a backer.</string>
   <string name="discovery_baseball_card_social_friends_are_backers_two" formatted="false">%{friend_name} and %{second_friend_name} are backers.</string>
-  <string name="discovery_baseball_card_social_friends_are_backers_zero" formatted="false">No friends are backers.</string>
+  <string name="discovery_baseball_card_social_friends_are_backers_zero" formatted="false">None of your friends are backers.</string>
   <string name="discovery_baseball_card_stats_backers" formatted="false">patrocinadores</string>
   <string name="discovery_baseball_card_stats_convert_from_pledged_of_goal" formatted="false">Conversión: %{pledged} de la meta de %{goal}.</string>
   <string name="discovery_baseball_card_stats_pledged_of_goal" formatted="false">de %{goal}</string>
@@ -325,15 +325,15 @@
   <string name="discovery_facebook_connect_hero_get_social_to_discover_more_projects" formatted="false">¡Descubrir proyectos juntos es más divertido.</string>
   <string name="discovery_facebook_connect_hero_if_you_connect_with_facebook" formatted="false">Si te conectas via Facebook puedes seguir a tus amigos y te avisaremos cada vez que publican o patrocinan un proyecto.</string>
   <string name="discovery_facebook_connect_hero_we_will_never_post_anything_on_facebook" formatted="false">Nunca publicaremos nada en Facebook sin tu permiso</string>
-  <string name="discovery_favorite_categories_alert_buttons_got_it" formatted="false">Got it.</string>
-  <string name="discovery_favorite_categories_alert_message" formatted="false">Yes! You\'ve saved this as one of your favorite categories.</string>
-  <string name="discovery_favorite_categories_buttons_done" formatted="false">Done</string>
-  <string name="discovery_favorite_categories_buttons_edit" formatted="false">Edit</string>
-  <string name="discovery_favorite_categories_buttons_favorite_a11y_label" formatted="false">Add favorite category</string>
-  <string name="discovery_favorite_categories_buttons_unfavorite_a11y_label" formatted="false">Remove favorite category</string>
+  <string name="discovery_favorite_categories_alert_buttons_got_it" formatted="false">¡Listo!</string>
+  <string name="discovery_favorite_categories_alert_message" formatted="false">¡Perfecto - esta categoría se encuentra ahora entre tus favoritas! Muévelas en el órden que más te gusten, así tendrás un acceso más rápido a ellas.</string>
+  <string name="discovery_favorite_categories_buttons_done" formatted="false">Listo</string>
+  <string name="discovery_favorite_categories_buttons_edit" formatted="false">Editar</string>
+  <string name="discovery_favorite_categories_buttons_favorite_a11y_label" formatted="false">Añadir a categorías favoritas</string>
+  <string name="discovery_favorite_categories_buttons_unfavorite_a11y_label" formatted="false">Eliminar de categorías favoritas</string>
   <string name="discovery_filters_all_of_category" formatted="false">Todos en %{category_name}</string>
   <string name="discovery_filters_categories_title" formatted="false">Categorías</string>
-  <string name="discovery_filters_favorites_title" formatted="false">Favorites</string>
+  <string name="discovery_filters_favorites_title" formatted="false">Favoritas</string>
   <string name="discovery_find_friends_hero_accessibility_button_close_find_friends_hero_label" formatted="false">Cerrar banner "Encontrar amigos"</string>
   <string name="discovery_find_friends_hero_button_find_your_friends" formatted="false">Encuentra tus amigos</string>
   <string name="discovery_find_friends_hero_follow_your_friends_and_we_will_notify_you" formatted="false">Sigue a tus amigos y te avisaremos cuando publican o patrocinan un proyecto.</string>
@@ -391,8 +391,8 @@
   <string name="general_navigation_buttons_publish" formatted="false">¡Publicar!</string>
   <string name="general_navigation_buttons_reply" formatted="false">Responder</string>
   <string name="general_navigation_buttons_skip" formatted="false">Saltar</string>
-  <string name="general_social_buttons_connect_with_facebook" formatted="false">Connect with Facebook</string>
-  <string name="general_social_buttons_connect_with_twitter" formatted="false">Connect with Twitter</string>
+  <string name="general_social_buttons_connect_with_facebook" formatted="false">Conectar con Facebook</string>
+  <string name="general_social_buttons_connect_with_twitter" formatted="false">Conectar con Twitter</string>
   <string name="general_switch_toggle_off" formatted="false">NO</string>
   <string name="general_switch_toggle_on" formatted="false">SÍ</string>
   <string name="invalid_api_client_alert_cancel" formatted="false">Cancelar</string>
@@ -428,10 +428,10 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="login_tout_errors_facebook_invalid_token_title" formatted="false">Iniciar sesión con Facebook</string>
   <string name="login_tout_errors_facebook_settings_disabled_message" formatted="false">Parece que le has denegado a Kickstarter acceso a tu cuenta de Facebook. Para cambiarlo, por favor ve a Configuración > Facebook.</string>
   <string name="login_tout_errors_facebook_settings_disabled_title" formatted="false">Permiso denegado</string>
-  <string name="login_tout_favorite_category_intent_title" formatted="false">Please log in to add this category to your list of favorites.</string>
-  <string name="login_tout_favorite_category_intent_traditional_login_button" formatted="false">Log in</string>
-  <string name="login_tout_favorite_category_intent_traditional_signup_button" formatted="false">Sign up</string>
-  <string name="login_tout_favorite_category_intent_traditional_title" formatted="false">Use your email address:</string>
+  <string name="login_tout_favorite_category_intent_title" formatted="false">Por favor, inicia sesión para añadir esta categoría a tus favoritas. Te permitirá fácil acceso a ella a través de la lista de favoritas.</string>
+  <string name="login_tout_favorite_category_intent_traditional_login_button" formatted="false">Iniciar sesión</string>
+  <string name="login_tout_favorite_category_intent_traditional_signup_button" formatted="false">Registración</string>
+  <string name="login_tout_favorite_category_intent_traditional_title" formatted="false">Iniciar sesión con dirección de correo electrónico:</string>
   <string name="login_tout_generic_intent_title" formatted="false">¡Un momentito! Primero tienes que iniciar sesión con tu cuenta de Kickstarter para continuar. Regístrate o inicia sesión con tu dirección de correo electrónico o con tu cuenta de Facebook.</string>
   <string name="login_tout_generic_intent_traditional_login_button" formatted="false">Iniciar sesión</string>
   <string name="login_tout_generic_intent_traditional_signup_button" formatted="false">Registrar</string>
@@ -653,18 +653,18 @@ Si tienes un momento, ¿te importaría calificar tu experiencia?
   <string name="social_following_friend_projects_count_created_one" formatted="false">1 creado</string>
   <string name="social_following_friend_projects_count_created_two" formatted="false">2 creados</string>
   <string name="social_following_friend_projects_count_created_zero" formatted="false">0 creados</string>
-  <string name="social_following_header_accessibility_button_close_facebook_connect_header_label" formatted="false">Close Facebook connect header</string>
-  <string name="social_following_header_accessibility_button_close_find_friends_header_label" formatted="false">Close find friends header</string>
+  <string name="social_following_header_accessibility_button_close_facebook_connect_header_label" formatted="false">Cerrar "Conectar con Facebook"</string>
+  <string name="social_following_header_accessibility_button_close_find_friends_header_label" formatted="false">Cerrar banner "Encontrar amigos"</string>
   <string name="social_following_header_button_find_your_friends" formatted="false">Encuentra tus amigos</string>
   <string name="social_following_header_connect_with_facebook_to_follow" formatted="false">Conéctate via Facebook y sigue a tus amigos - ¡te avisaremos cada vez que publican o patrocinan un proyecto!</string>
   <string name="social_following_header_connect_with_your_friends_to_find_projects" formatted="false">Tú y tus amigos - ¡un equipo invencible para descubrir grandes proyectos!</string>
   <string name="social_following_header_friends_recommend_the_best_projects" formatted="false">Tus amigos siempre tienen el mejor gusto</string>
   <string name="social_following_navigation_title_follow_your_friends" formatted="false">¡Sigue a tus amigos!</string>
-  <string name="social_following_nice_youre_about_to_follow_all_friends" formatted="false">Nice! You\'re about to follow all of your friends.</string>
+  <string name="social_following_nice_youre_about_to_follow_all_friends" formatted="false">¡Estupendo - ahora sigues a todos tus amigos!</string>
   <string name="social_following_stats_backed_projects" formatted="false">Proyectos patrocinados</string>
-  <string name="social_following_stats_button_follow_all_friends_few" formatted="false">Follow all %{remote_friends_count} friends</string>
-  <string name="social_following_stats_button_follow_all_friends_many" formatted="false">Follow all %{remote_friends_count} friends</string>
-  <string name="social_following_stats_button_follow_all_friends_two" formatted="false">Follow all 2 friends</string>
+  <string name="social_following_stats_button_follow_all_friends_few" formatted="false">Seguir a %{remote_friends_count} amigos</string>
+  <string name="social_following_stats_button_follow_all_friends_many" formatted="false">Seguir a %{remote_friends_count} amigos</string>
+  <string name="social_following_stats_button_follow_all_friends_two" formatted="false">Seguir a ambos</string>
   <string name="social_following_stats_friends" formatted="false">Amigos</string>
   <string name="social_message_creator" formatted="false">Enviar mensaje al creador</string>
   <string name="social_private_message" formatted="false">Mensaje privado</string>

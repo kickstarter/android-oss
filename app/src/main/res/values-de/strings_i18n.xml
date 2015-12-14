@@ -61,10 +61,10 @@
   <string name="activity_friend_backed_tech_project" formatted="false">%{friend_name} hat ein Technologie-Projekt unterstützt.</string>
   <string name="activity_friend_backed_theater_project" formatted="false">%{friend_name} hat ein Theater-Projekt unterstützt.</string>
   <string name="activity_friend_follow_buttons_follow" formatted="false">Folgen</string>
-  <string name="activity_friend_follow_buttons_following" formatted="false">Following</string>
+  <string name="activity_friend_follow_buttons_following" formatted="false">Abonniert</string>
   <string name="activity_friend_follow_is_following_you" formatted="false">folgt dir!</string>
   <string name="activity_funding_canceled" formatted="false">Finanzierung abgebrochen.</string>
-  <string name="activity_navigation_title_activity" formatted="false">Activity</string>
+  <string name="activity_navigation_title_activity" formatted="false">Aktivität</string>
   <string name="activity_posted_update_number_title" formatted="false">Update Nr. %{update_number}: %{update_title}</string>
   <string name="activity_project_name_by_creator_name" formatted="false">%{project_name} von %{creator_name}</string>
   <string name="activity_project_state_change_creator_launched_a_project" formatted="false">%{creator_name} hat ein Projekt live gestellt: %{project_name}</string>
@@ -284,7 +284,7 @@
   <string name="discovery_activity_sample_alert_buttons_follow" formatted="false">Folgen</string>
   <string name="discovery_activity_sample_alert_follow_friend_name" formatted="false">%{friend_name} folgen?</string>
   <string name="discovery_activity_sample_button_see_all_activity" formatted="false">Alle Aktivitäten anzeigen</string>
-  <string name="discovery_activity_sample_title_Since_your_last_visit" formatted="false">Since your last visit</string>
+  <string name="discovery_activity_sample_title_Since_your_last_visit" formatted="false">Seit deinem letzten Besuch</string>
   <string name="discovery_all_of_scope" formatted="false">Alle in %{scope}</string>
   <string name="discovery_backing" formatted="false">Unterstützte Projekte</string>
   <string name="discovery_baseball_card_accessibility_category_label" formatted="false">Category</string>
@@ -304,7 +304,7 @@
   <string name="discovery_baseball_card_social_friends_are_backers_many" formatted="false">%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.</string>
   <string name="discovery_baseball_card_social_friends_are_backers_one" formatted="false">%{friend_name} is a backer.</string>
   <string name="discovery_baseball_card_social_friends_are_backers_two" formatted="false">%{friend_name} and %{second_friend_name} are backers.</string>
-  <string name="discovery_baseball_card_social_friends_are_backers_zero" formatted="false">No friends are backers.</string>
+  <string name="discovery_baseball_card_social_friends_are_backers_zero" formatted="false">None of your friends are backers.</string>
   <string name="discovery_baseball_card_stats_backers" formatted="false">Unterstützer</string>
   <string name="discovery_baseball_card_stats_convert_from_pledged_of_goal" formatted="false">Umgerechneter Betrag: %{pledged} von %{goal} (Fianzierungsziel).</string>
   <string name="discovery_baseball_card_stats_pledged_of_goal" formatted="false">von %{goal}</string>
@@ -321,23 +321,23 @@
   <string name="discovery_empty_states_saved_logged_out_message" formatted="false">Wenn du ein Projekt zu deinen Favoriten hinzufügst, senden wir dir 48 Stunden vor Ablauf eine Erinnerungs-E-Mail.</string>
   <string name="discovery_empty_states_saved_logged_out_title" formatted="false">Meine Favoriten</string>
   <string name="discovery_everything" formatted="false">Alle</string>
-  <string name="discovery_facebook_connect_hero_accessibility_button_close_facebook_connect_hero_label" formatted="false">Close Facebook connect hero</string>
-  <string name="discovery_facebook_connect_hero_get_social_to_discover_more_projects" formatted="false">Get social to discover more projects that you\'ll love, together.</string>
-  <string name="discovery_facebook_connect_hero_if_you_connect_with_facebook" formatted="false">If you connect with Facebook, you can follow your friends to get notified as they\'re launching and backing new projects.</string>
-  <string name="discovery_facebook_connect_hero_we_will_never_post_anything_on_facebook" formatted="false">We\'ll never post anything to Facebook without your permission</string>
-  <string name="discovery_favorite_categories_alert_buttons_got_it" formatted="false">Got it.</string>
-  <string name="discovery_favorite_categories_alert_message" formatted="false">Yes! You\'ve saved this as one of your favorite categories.</string>
-  <string name="discovery_favorite_categories_buttons_done" formatted="false">Done</string>
-  <string name="discovery_favorite_categories_buttons_edit" formatted="false">Edit</string>
-  <string name="discovery_favorite_categories_buttons_favorite_a11y_label" formatted="false">Add favorite category</string>
-  <string name="discovery_favorite_categories_buttons_unfavorite_a11y_label" formatted="false">Remove favorite category</string>
+  <string name="discovery_facebook_connect_hero_accessibility_button_close_facebook_connect_hero_label" formatted="false">"Mit Facebook verknüpfen" Banner schließen</string>
+  <string name="discovery_facebook_connect_hero_get_social_to_discover_more_projects" formatted="false">Gemeinsam Projekte entdecken macht mehr Spaß.</string>
+  <string name="discovery_facebook_connect_hero_if_you_connect_with_facebook" formatted="false">Wenn du dein Konto mit Facebook verknüpfst, kannst du deinen Freunden folgen und wirst benachrichtigt, sobald sie ein Projekt veröffentlichen oder unterstützen.</string>
+  <string name="discovery_facebook_connect_hero_we_will_never_post_anything_on_facebook" formatted="false">Wir werden niemals etwas ohne deine Erlaubnis auf Facebook posten</string>
+  <string name="discovery_favorite_categories_alert_buttons_got_it" formatted="false">Alles klar!</string>
+  <string name="discovery_favorite_categories_alert_message" formatted="false">Klasse! Diese Kategorie gehört nun zu deinen Favoriten! Du kannst sie nach oben oder unten ziehen, um die Reihenfolge deiner liebsten Kategorien festzulegen und so schneller auf sie zugreifen zu können.</string>
+  <string name="discovery_favorite_categories_buttons_done" formatted="false">Fertig</string>
+  <string name="discovery_favorite_categories_buttons_edit" formatted="false">Bearbeiten</string>
+  <string name="discovery_favorite_categories_buttons_favorite_a11y_label" formatted="false">Zu Favoriten hinzufügen</string>
+  <string name="discovery_favorite_categories_buttons_unfavorite_a11y_label" formatted="false">Aus Favoriten entfernen</string>
   <string name="discovery_filters_all_of_category" formatted="false">Alle aus %{category_name}</string>
   <string name="discovery_filters_categories_title" formatted="false">Kategorien</string>
-  <string name="discovery_filters_favorites_title" formatted="false">Favorites</string>
-  <string name="discovery_find_friends_hero_accessibility_button_close_find_friends_hero_label" formatted="false">Close find friends hero</string>
-  <string name="discovery_find_friends_hero_button_find_your_friends" formatted="false">Find your friends</string>
-  <string name="discovery_find_friends_hero_follow_your_friends_and_we_will_notify_you" formatted="false">Follow your friends and we\'ll notify you whenever they launch or back a new project.</string>
-  <string name="discovery_find_friends_hero_your_friends_are_here" formatted="false">Your friends are here!</string>
+  <string name="discovery_filters_favorites_title" formatted="false">Favoriten</string>
+  <string name="discovery_find_friends_hero_accessibility_button_close_find_friends_hero_label" formatted="false">"Finde deine Freunde" Banner schließen</string>
+  <string name="discovery_find_friends_hero_button_find_your_friends" formatted="false">Finde deine Freunde</string>
+  <string name="discovery_find_friends_hero_follow_your_friends_and_we_will_notify_you" formatted="false">Folge deinen Freunden und wir werden dich benachrichtigen, sobald sie ein Projekt unterstützen oder veröffentlichen.</string>
+  <string name="discovery_find_friends_hero_your_friends_are_here" formatted="false">Deine Freunde sind hier!</string>
   <string name="discovery_friends" formatted="false">Freunde</string>
   <string name="discovery_friends_backed" formatted="false">Von Freunden unterstützt</string>
   <string name="discovery_location_disabled_state_message" formatted="false">Um diese Funktion zu nutzen, aktiviere Ortungsdienste für Kickstarter in deinen iPhone Einstellungen.</string>
@@ -391,8 +391,8 @@
   <string name="general_navigation_buttons_publish" formatted="false">Jetzt veröffentlichen!</string>
   <string name="general_navigation_buttons_reply" formatted="false">Antworten</string>
   <string name="general_navigation_buttons_skip" formatted="false">Überspringen</string>
-  <string name="general_social_buttons_connect_with_facebook" formatted="false">Connect with Facebook</string>
-  <string name="general_social_buttons_connect_with_twitter" formatted="false">Connect with Twitter</string>
+  <string name="general_social_buttons_connect_with_facebook" formatted="false">Mit Facebook verknüpfen</string>
+  <string name="general_social_buttons_connect_with_twitter" formatted="false">MIt Twitter verknüpfen</string>
   <string name="general_switch_toggle_off" formatted="false">NEIN</string>
   <string name="general_switch_toggle_on" formatted="false">JA</string>
   <string name="invalid_api_client_alert_cancel" formatted="false">Abbrechen</string>
@@ -428,10 +428,10 @@ Für gewöhnlich kann das Problem behoben werden, indem du in den iOS Einstellun
   <string name="login_tout_errors_facebook_invalid_token_title" formatted="false">Facebook-Anmeldung</string>
   <string name="login_tout_errors_facebook_settings_disabled_message" formatted="false">Es scheint, als hättest du Kickstarter den Zugriff auf dein Facebook-Konto verweigert. Bitte gehe zu Einstellungen > Facebook und erlaube den Zugriff.</string>
   <string name="login_tout_errors_facebook_settings_disabled_title" formatted="false">Zugriff verweigert</string>
-  <string name="login_tout_favorite_category_intent_title" formatted="false">Please log in to add this category to your list of favorites.</string>
-  <string name="login_tout_favorite_category_intent_traditional_login_button" formatted="false">Log in</string>
-  <string name="login_tout_favorite_category_intent_traditional_signup_button" formatted="false">Sign up</string>
-  <string name="login_tout_favorite_category_intent_traditional_title" formatted="false">Use your email address:</string>
+  <string name="login_tout_favorite_category_intent_title" formatted="false">Bitte anmelden, um diese Kategorie in deine Favoriten aufzunehmen. Du kannst dann von dort aus jederzeit schnell auf sie zugreifen.</string>
+  <string name="login_tout_favorite_category_intent_traditional_login_button" formatted="false">Anmelden</string>
+  <string name="login_tout_favorite_category_intent_traditional_signup_button" formatted="false">Registrieren</string>
+  <string name="login_tout_favorite_category_intent_traditional_title" formatted="false">Mit E-Mail-Adresse anmelden:</string>
   <string name="login_tout_generic_intent_title" formatted="false">Hoppla! Um fortzufahren, musst du dich auf Kickstarter einloggen. Du kannst dich unten mit deinem Facebook-Konto oder deiner E-Mail-Adresse anmelden oder dich neu registrieren.</string>
   <string name="login_tout_generic_intent_traditional_login_button" formatted="false">Anmelden</string>
   <string name="login_tout_generic_intent_traditional_signup_button" formatted="false">Registrieren</string>
@@ -516,7 +516,7 @@ Wir würden uns sehr darüber freuen!</string>
   <string name="profile_settings_rating_option_remind_later" formatted="false">Später</string>
   <string name="profile_settings_rating_rate_us" formatted="false">Bewerte uns im App Store!</string>
   <string name="profile_settings_rating_title" formatted="false">Wir sind ganz Ohr!</string>
-  <string name="profile_settings_social_find_friends" formatted="false">Find friends</string>
+  <string name="profile_settings_social_find_friends" formatted="false">Freunde finden</string>
   <string name="profile_settings_social_followers" formatted="false">Neue Follower</string>
   <string name="profile_settings_social_friend_backs" formatted="false">Ein Freund unterstützt ein Projekt</string>
   <string name="profile_settings_social_title" formatted="false">Neues aus deinem Netzwerk</string>
@@ -639,32 +639,32 @@ Wir würden uns sehr darüber freuen!</string>
   <string name="social_error_could_not_send_message_backer" formatted="false">Nachricht nicht versandt. Versuche es erneut.</string>
   <string name="social_error_could_not_send_message_creator" formatted="false">Nachricht nicht versandt. Versuche es erneut.</string>
   <string name="social_error_no_internet_connection" formatted="false">Keine Internetverbindung. Versuche es später noch einmal.</string>
-  <string name="social_following_button_check_out_some_projects" formatted="false">Check out some projects!</string>
-  <string name="social_following_friend_buttons_follow" formatted="false">Follow</string>
-  <string name="social_following_friend_buttons_following" formatted="false">Following</string>
-  <string name="social_following_friend_projects_count_backed_few" formatted="false">%{backed_count} backed</string>
-  <string name="social_following_friend_projects_count_backed_many" formatted="false">%{backed_count} backed</string>
-  <string name="social_following_friend_projects_count_backed_one" formatted="false">1 backed</string>
-  <string name="social_following_friend_projects_count_backed_two" formatted="false">2 backed</string>
-  <string name="social_following_friend_projects_count_backed_zero" formatted="false">0 backed</string>
-  <string name="social_following_friend_projects_count_created_few" formatted="false">%{created_count} created</string>
-  <string name="social_following_friend_projects_count_created_many" formatted="false">%{created_count} created</string>
-  <string name="social_following_friend_projects_count_created_one" formatted="false">1 created</string>
-  <string name="social_following_friend_projects_count_created_two" formatted="false">2 created</string>
-  <string name="social_following_friend_projects_count_created_zero" formatted="false">0 created</string>
-  <string name="social_following_header_accessibility_button_close_facebook_connect_header_label" formatted="false">Close Facebook connect header</string>
-  <string name="social_following_header_accessibility_button_close_find_friends_header_label" formatted="false">Close find friends header</string>
-  <string name="social_following_header_button_find_your_friends" formatted="false">Find your friends</string>
-  <string name="social_following_header_connect_with_facebook_to_follow" formatted="false">Connect with Facebook to follow your friends and get notified whenever they launch or back a new project.</string>
-  <string name="social_following_header_connect_with_your_friends_to_find_projects" formatted="false">Connect with your friends to find projects that you\'ll love, together.</string>
-  <string name="social_following_header_friends_recommend_the_best_projects" formatted="false">Friends Recommend the Best Projects</string>
-  <string name="social_following_navigation_title_follow_your_friends" formatted="false">Follow your friends!</string>
-  <string name="social_following_nice_youre_about_to_follow_all_friends" formatted="false">Nice! You\'re about to follow all of your friends.</string>
-  <string name="social_following_stats_backed_projects" formatted="false">Backed projects</string>
-  <string name="social_following_stats_button_follow_all_friends_few" formatted="false">Follow all %{remote_friends_count} friends</string>
-  <string name="social_following_stats_button_follow_all_friends_many" formatted="false">Follow all %{remote_friends_count} friends</string>
-  <string name="social_following_stats_button_follow_all_friends_two" formatted="false">Follow all 2 friends</string>
-  <string name="social_following_stats_friends" formatted="false">Friends</string>
+  <string name="social_following_button_check_out_some_projects" formatted="false">Schau dir diese Projekte an!</string>
+  <string name="social_following_friend_buttons_follow" formatted="false">Folgen</string>
+  <string name="social_following_friend_buttons_following" formatted="false">Abonniert</string>
+  <string name="social_following_friend_projects_count_backed_few" formatted="false">%{backed_count} unterstützt</string>
+  <string name="social_following_friend_projects_count_backed_many" formatted="false">%{backed_count} unterstützt</string>
+  <string name="social_following_friend_projects_count_backed_one" formatted="false">1 unterstützt</string>
+  <string name="social_following_friend_projects_count_backed_two" formatted="false">2 unterstützt</string>
+  <string name="social_following_friend_projects_count_backed_zero" formatted="false">0 unterstützt</string>
+  <string name="social_following_friend_projects_count_created_few" formatted="false">%{created_count} erstellt</string>
+  <string name="social_following_friend_projects_count_created_many" formatted="false">%{created_count} erstellt</string>
+  <string name="social_following_friend_projects_count_created_one" formatted="false">1 erstellt</string>
+  <string name="social_following_friend_projects_count_created_two" formatted="false">2 erstellt</string>
+  <string name="social_following_friend_projects_count_created_zero" formatted="false">0 erstellt</string>
+  <string name="social_following_header_accessibility_button_close_facebook_connect_header_label" formatted="false">Facebook-Verknüpfung schließen</string>
+  <string name="social_following_header_accessibility_button_close_find_friends_header_label" formatted="false">"Finde deine Freunde" Banner schließen</string>
+  <string name="social_following_header_button_find_your_friends" formatted="false">Finde deine Freunde</string>
+  <string name="social_following_header_connect_with_facebook_to_follow" formatted="false">Verknüpfe dein Konto mit Facebook - du kannst deinen Freunden folgen und wirst benachrichtigt, wenn sie ein Projekt veröffentlichen oder unterstützen.</string>
+  <string name="social_following_header_connect_with_your_friends_to_find_projects" formatted="false">Entdecke gemeinsam mit deinen Freunden klasse Projekte!</string>
+  <string name="social_following_header_friends_recommend_the_best_projects" formatted="false">Die besten Projekt-Empfehlungen kommen von Freunden</string>
+  <string name="social_following_navigation_title_follow_your_friends" formatted="false">Folge deinen Freunden!</string>
+  <string name="social_following_nice_youre_about_to_follow_all_friends" formatted="false">Super! Du folgst jetzt allen deinen Freunden!</string>
+  <string name="social_following_stats_backed_projects" formatted="false">Unterstützte Projekte</string>
+  <string name="social_following_stats_button_follow_all_friends_few" formatted="false">Allen %{remote_friends_count} Freunden folgen</string>
+  <string name="social_following_stats_button_follow_all_friends_many" formatted="false">Allen %{remote_friends_count} Freunden folgen</string>
+  <string name="social_following_stats_button_follow_all_friends_two" formatted="false">2 Freunden folgen</string>
+  <string name="social_following_stats_friends" formatted="false">Freunde</string>
   <string name="social_message_creator" formatted="false">Nachricht an Projektgründer senden</string>
   <string name="social_private_message" formatted="false">Private Nachricht</string>
   <string name="social_public_comment" formatted="false">Öffentlicher Kommentar</string>

@@ -54,7 +54,7 @@
         "baseball_card": {
           "social": {
             "friends_are_backers": {
-              "zero": "No friends are backers.",
+              "zero": "None of your friends are backers.",
               "one": "%{friend_name} is a backer.",
               "two": "%{friend_name} and %{second_friend_name} are backers.",
               "few": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.",
@@ -1277,7 +1277,7 @@
         "baseball_card": {
           "social": {
             "friends_are_backers": {
-              "zero": "No friends are backers.",
+              "zero": "None of your friends are backers.",
               "one": "%{friend_name} is a backer.",
               "two": "%{friend_name} and %{second_friend_name} are backers.",
               "few": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.",
@@ -1323,14 +1323,13 @@
           }
         },
         "filters": {
-          "favorites_title": "Favorites",
+          "favorites_title": "Favoriten",
           "categories_title": "Kategorien",
           "all_of_category": "Alle aus %{category_name}"
         },
         "activity_sample": {
           "title": {
-            "Since_your_last_visit": "Since your last visit",
-            "what_is_new_since_last_visit": "Das Neueste seit deinem letzten Besuch:"
+            "Since_your_last_visit": "Seit deinem letzten Besuch"
           },
           "button": {
             "see_all_activity": "Alle Aktivitäten anzeigen"
@@ -1344,24 +1343,24 @@
           }
         },
         "find_friends_hero": {
-          "your_friends_are_here": "Your friends are here!",
-          "follow_your_friends_and_we_will_notify_you": "Follow your friends and we'll notify you whenever they launch or back a new project.",
+          "your_friends_are_here": "Deine Freunde sind hier!",
+          "follow_your_friends_and_we_will_notify_you": "Folge deinen Freunden und wir werden dich benachrichtigen, sobald sie ein Projekt unterstützen oder veröffentlichen.",
           "button": {
-            "find_your_friends": "Find your friends"
+            "find_your_friends": "Finde deine Freunde"
           },
           "accessibility": {
             "button_close_find_friends_hero": {
-              "label": "Close find friends hero"
+              "label": "\"Finde deine Freunde\" Banner schließen"
             }
           }
         },
         "facebook_connect_hero": {
-          "get_social_to_discover_more_projects": "Get social to discover more projects that you'll love, together.",
-          "if_you_connect_with_facebook": "If you connect with Facebook, you can follow your friends to get notified as they're launching and backing new projects.",
-          "we_will_never_post_anything_on_facebook": "We'll never post anything to Facebook without your permission",
+          "get_social_to_discover_more_projects": "Gemeinsam Projekte entdecken macht mehr Spaß.",
+          "if_you_connect_with_facebook": "Wenn du dein Konto mit Facebook verknüpfst, kannst du deinen Freunden folgen und wirst benachrichtigt, sobald sie ein Projekt veröffentlichen oder unterstützen.",
+          "we_will_never_post_anything_on_facebook": "Wir werden niemals etwas ohne deine Erlaubnis auf Facebook posten",
           "accessibility": {
             "button_close_facebook_connect_hero": {
-              "label": "Close Facebook connect hero"
+              "label": "\"Mit Facebook verknüpfen\" Banner schließen"
             }
           }
         },
@@ -1384,27 +1383,27 @@
         },
         "favorite_categories": {
           "alert": {
-            "message": "Yes! You've saved this as one of your favorite categories.",
+            "message": "Klasse! Diese Kategorie gehört nun zu deinen Favoriten! Du kannst sie nach oben oder unten ziehen, um die Reihenfolge deiner liebsten Kategorien festzulegen und so schneller auf sie zugreifen zu können.",
             "buttons": {
-              "got_it": "Got it."
+              "got_it": "Alles klar!"
             }
           },
           "buttons": {
             "favorite": {
-              "a11y_label": "Add favorite category"
+              "a11y_label": "Zu Favoriten hinzufügen"
             },
             "unfavorite": {
-              "a11y_label": "Remove favorite category"
+              "a11y_label": "Aus Favoriten entfernen"
             },
-            "done": "Done",
-            "edit": "Edit"
+            "done": "Fertig",
+            "edit": "Bearbeiten"
           }
         }
       },
       "activity": {
         "navigation": {
           "title": {
-            "activity": "Activity"
+            "activity": "Aktivität"
           }
         },
         "empty_state": {
@@ -1440,7 +1439,7 @@
           "is_following_you": "folgt dir!",
           "buttons": {
             "follow": "Folgen",
-            "following": "Following"
+            "following": "Abonniert"
           }
         },
         "user_name_is_now_following_you": "%{user_name} folgt dir!",
@@ -1542,7 +1541,7 @@
             "title": "Neues aus deinem Netzwerk",
             "followers": "Neue Follower",
             "friend_backs": "Ein Freund unterstützt ein Projekt",
-            "find_friends": "Find friends"
+            "find_friends": "Freunde finden"
           },
           "creator": {
             "title": "Projektgründer-Meldungen",
@@ -1636,10 +1635,10 @@
           "traditional_signup_button": "Registrieren"
         },
         "favorite_category_intent": {
-          "title": "Please log in to add this category to your list of favorites.",
-          "traditional_title": "Use your email address:",
-          "traditional_login_button": "Log in",
-          "traditional_signup_button": "Sign up"
+          "title": "Bitte anmelden, um diese Kategorie in deine Favoriten aufzunehmen. Du kannst dann von dort aus jederzeit schnell auf sie zugreifen.",
+          "traditional_title": "Mit E-Mail-Adresse anmelden:",
+          "traditional_login_button": "Anmelden",
+          "traditional_signup_button": "Registrieren"
         },
         "generic_intent": {
           "title": "Hoppla! Um fortzufahren, musst du dich auf Kickstarter einloggen. Du kannst dich unten mit deinem Facebook-Konto oder deiner E-Mail-Adresse anmelden oder dich neu registrieren.",
@@ -2174,59 +2173,59 @@
       "social_following": {
         "navigation": {
           "title": {
-            "follow_your_friends": "Follow your friends!"
+            "follow_your_friends": "Folge deinen Freunden!"
           }
         },
         "header": {
-          "connect_with_your_friends_to_find_projects": "Connect with your friends to find projects that you'll love, together.",
-          "friends_recommend_the_best_projects": "Friends Recommend the Best Projects",
-          "connect_with_facebook_to_follow": "Connect with Facebook to follow your friends and get notified whenever they launch or back a new project.",
+          "connect_with_your_friends_to_find_projects": "Entdecke gemeinsam mit deinen Freunden klasse Projekte!",
+          "friends_recommend_the_best_projects": "Die besten Projekt-Empfehlungen kommen von Freunden",
+          "connect_with_facebook_to_follow": "Verknüpfe dein Konto mit Facebook - du kannst deinen Freunden folgen und wirst benachrichtigt, wenn sie ein Projekt veröffentlichen oder unterstützen.",
           "button": {
-            "find_your_friends": "Find your friends"
+            "find_your_friends": "Finde deine Freunde"
           },
           "accessibility": {
             "button_close_find_friends_header": {
-              "label": "Close find friends header"
+              "label": "\"Finde deine Freunde\" Banner schließen"
             },
             "button_close_facebook_connect_header": {
-              "label": "Close Facebook connect header"
+              "label": "Facebook-Verknüpfung schließen"
             }
           }
         },
         "friend": {
           "projects_count_backed": {
-            "zero": "0 backed",
-            "one": "1 backed",
-            "two": "2 backed",
-            "few": "%{backed_count} backed",
-            "many": "%{backed_count} backed"
+            "zero": "0 unterstützt",
+            "one": "1 unterstützt",
+            "two": "2 unterstützt",
+            "few": "%{backed_count} unterstützt",
+            "many": "%{backed_count} unterstützt"
           },
           "projects_count_created": {
-            "zero": "0 created",
-            "one": "1 created",
-            "two": "2 created",
-            "few": "%{created_count} created",
-            "many": "%{created_count} created"
+            "zero": "0 erstellt",
+            "one": "1 erstellt",
+            "two": "2 erstellt",
+            "few": "%{created_count} erstellt",
+            "many": "%{created_count} erstellt"
           },
           "buttons": {
-            "following": "Following",
-            "follow": "Follow"
+            "following": "Abonniert",
+            "follow": "Folgen"
           }
         },
         "stats": {
-          "friends": "Friends",
-          "backed_projects": "Backed projects",
+          "friends": "Freunde",
+          "backed_projects": "Unterstützte Projekte",
           "button": {
             "follow_all_friends": {
-              "two": "Follow all 2 friends",
-              "few": "Follow all %{remote_friends_count} friends",
-              "many": "Follow all %{remote_friends_count} friends"
+              "two": "2 Freunden folgen",
+              "few": "Allen %{remote_friends_count} Freunden folgen",
+              "many": "Allen %{remote_friends_count} Freunden folgen"
             }
           }
         },
-        "nice_youre_about_to_follow_all_friends": "Nice! You're about to follow all of your friends.",
+        "nice_youre_about_to_follow_all_friends": "Super! Du folgst jetzt allen deinen Freunden!",
         "button": {
-          "check_out_some_projects": "Check out some projects!"
+          "check_out_some_projects": "Schau dir diese Projekte an!"
         }
       },
       "push_notifications": {
@@ -2262,8 +2261,8 @@
         },
         "social": {
           "buttons": {
-            "connect_with_facebook": "Connect with Facebook",
-            "connect_with_twitter": "Connect with Twitter"
+            "connect_with_facebook": "Mit Facebook verknüpfen",
+            "connect_with_twitter": "MIt Twitter verknüpfen"
           }
         },
         "loading": "Wird geladen ...",
@@ -2501,7 +2500,7 @@
         "baseball_card": {
           "social": {
             "friends_are_backers": {
-              "zero": "No friends are backers.",
+              "zero": "None of your friends are backers.",
               "one": "%{friend_name} is a backer.",
               "two": "%{friend_name} and %{second_friend_name} are backers.",
               "few": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.",
@@ -2547,14 +2546,13 @@
           }
         },
         "filters": {
-          "favorites_title": "Favorites",
+          "favorites_title": "Favoritas",
           "categories_title": "Categorías",
           "all_of_category": "Todos en %{category_name}"
         },
         "activity_sample": {
           "title": {
-            "Since_your_last_visit": "Since your last visit",
-            "what_is_new_since_last_visit": "Novedades desde tu última visita…"
+            "Since_your_last_visit": "Desde tu última visita"
           },
           "button": {
             "see_all_activity": "Ver toda la actividad"
@@ -2608,20 +2606,20 @@
         },
         "favorite_categories": {
           "alert": {
-            "message": "Yes! You've saved this as one of your favorite categories.",
+            "message": "¡Perfecto - esta categoría se encuentra ahora entre tus favoritas! Muévelas en el órden que más te gusten, así tendrás un acceso más rápido a ellas.",
             "buttons": {
-              "got_it": "Got it."
+              "got_it": "¡Listo!"
             }
           },
           "buttons": {
             "favorite": {
-              "a11y_label": "Add favorite category"
+              "a11y_label": "Añadir a categorías favoritas"
             },
             "unfavorite": {
-              "a11y_label": "Remove favorite category"
+              "a11y_label": "Eliminar de categorías favoritas"
             },
-            "done": "Done",
-            "edit": "Edit"
+            "done": "Listo",
+            "edit": "Editar"
           }
         }
       },
@@ -2664,7 +2662,7 @@
           "is_following_you": "te sigue",
           "buttons": {
             "follow": "Seguir",
-            "following": "Following"
+            "following": "Siguiendo"
           }
         },
         "user_name_is_now_following_you": "¡%{user_name} te sigue!",
@@ -2860,10 +2858,10 @@
           "traditional_signup_button": "Registrar"
         },
         "favorite_category_intent": {
-          "title": "Please log in to add this category to your list of favorites.",
-          "traditional_title": "Use your email address:",
-          "traditional_login_button": "Log in",
-          "traditional_signup_button": "Sign up"
+          "title": "Por favor, inicia sesión para añadir esta categoría a tus favoritas. Te permitirá fácil acceso a ella a través de la lista de favoritas.",
+          "traditional_title": "Iniciar sesión con dirección de correo electrónico:",
+          "traditional_login_button": "Iniciar sesión",
+          "traditional_signup_button": "Registración"
         },
         "generic_intent": {
           "title": "¡Un momentito! Primero tienes que iniciar sesión con tu cuenta de Kickstarter para continuar. Regístrate o inicia sesión con tu dirección de correo electrónico o con tu cuenta de Facebook.",
@@ -3410,10 +3408,10 @@
           },
           "accessibility": {
             "button_close_find_friends_header": {
-              "label": "Close find friends header"
+              "label": "Cerrar banner \"Encontrar amigos\""
             },
             "button_close_facebook_connect_header": {
-              "label": "Close Facebook connect header"
+              "label": "Cerrar \"Conectar con Facebook\""
             }
           }
         },
@@ -3442,13 +3440,13 @@
           "backed_projects": "Proyectos patrocinados",
           "button": {
             "follow_all_friends": {
-              "two": "Follow all 2 friends",
-              "few": "Follow all %{remote_friends_count} friends",
-              "many": "Follow all %{remote_friends_count} friends"
+              "two": "Seguir a ambos",
+              "few": "Seguir a %{remote_friends_count} amigos",
+              "many": "Seguir a %{remote_friends_count} amigos"
             }
           }
         },
-        "nice_youre_about_to_follow_all_friends": "Nice! You're about to follow all of your friends.",
+        "nice_youre_about_to_follow_all_friends": "¡Estupendo - ahora sigues a todos tus amigos!",
         "button": {
           "check_out_some_projects": "¡Checa algunos de los proyectos aquÍ!"
         }
@@ -3473,9 +3471,7 @@
             "done": "Listo",
             "preview": "Vista previa",
             "publish": "¡Publicar!",
-            "ok": "OK",
-            "connect_with_facebook": "Conéctate via Facebook",
-            "connect_with_twitter": "Conéctate via Twitter"
+            "ok": "OK"
           },
           "accessibility": {
             "button_navigate_back": {
@@ -3488,8 +3484,8 @@
         },
         "social": {
           "buttons": {
-            "connect_with_facebook": "Connect with Facebook",
-            "connect_with_twitter": "Connect with Twitter"
+            "connect_with_facebook": "Conectar con Facebook",
+            "connect_with_twitter": "Conectar con Twitter"
           }
         },
         "loading": "Cargando...",
@@ -3727,7 +3723,7 @@
         "baseball_card": {
           "social": {
             "friends_are_backers": {
-              "zero": "No friends are backers.",
+              "zero": "None of your friends are backers.",
               "one": "%{friend_name} is a backer.",
               "two": "%{friend_name} and %{second_friend_name} are backers.",
               "few": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.",
@@ -3773,14 +3769,13 @@
           }
         },
         "filters": {
-          "favorites_title": "Favorites",
+          "favorites_title": "Favoris",
           "categories_title": "Catégories",
           "all_of_category": "Toute la catégorie %{category_name}"
         },
         "activity_sample": {
           "title": {
-            "Since_your_last_visit": "Since your last visit",
-            "what_is_new_since_last_visit": "Nouveautés depuis votre dernière visite…"
+            "Since_your_last_visit": "Depuis votre dernière visite"
           },
           "button": {
             "see_all_activity": "Toutes les activités"
@@ -3834,20 +3829,20 @@
         },
         "favorite_categories": {
           "alert": {
-            "message": "Yes! You've saved this as one of your favorite categories.",
+            "message": "Super ! Vous avez ajouté cette catégorie à vos favoris. Faites-les défiler pour accéder plus facilement à celles que vous préférez.",
             "buttons": {
-              "got_it": "Got it."
+              "got_it": "Super."
             }
           },
           "buttons": {
             "favorite": {
-              "a11y_label": "Add favorite category"
+              "a11y_label": "Ajout d'une catégorie aux favoris"
             },
             "unfavorite": {
-              "a11y_label": "Remove favorite category"
+              "a11y_label": "Suppression d'une catégorie des favoris"
             },
-            "done": "Done",
-            "edit": "Edit"
+            "done": "Terminé",
+            "edit": "Modifier"
           }
         }
       },
@@ -3890,7 +3885,7 @@
           "is_following_you": "vous suit !",
           "buttons": {
             "follow": "S'abonner",
-            "following": "Following"
+            "following": "Abonné"
           }
         },
         "user_name_is_now_following_you": "%{user_name} vous suit !",
@@ -3986,7 +3981,7 @@
           "backer": {
             "title": "Les projets que je soutiens",
             "project_updates": "Actus de projet",
-            "notifications": "Gérer les notifications du projet"
+            "notifications": "Gérer les notifications de projet"
           },
           "social": {
             "title": "Notifications sociales",
@@ -4086,10 +4081,10 @@
           "traditional_signup_button": "Inscription"
         },
         "favorite_category_intent": {
-          "title": "Please log in to add this category to your list of favorites.",
-          "traditional_title": "Use your email address:",
-          "traditional_login_button": "Log in",
-          "traditional_signup_button": "Sign up"
+          "title": "Veuillez vous connecter pour ajouter cette catégorie à vos favoris et y accéder à tout moment depuis votre liste.",
+          "traditional_title": "Vous pouvez utiliser votre adresse e-mail :",
+          "traditional_login_button": "Connexion",
+          "traditional_signup_button": "Inscription"
         },
         "generic_intent": {
           "title": "Oh là ! Vous devez vous connecter à votre compte Kickstarter pour continuer. Vous pouvez vous connecter ou vous inscrire ci-dessous avec votre adresse e-mail ou votre compte Facebook.",
@@ -4636,10 +4631,10 @@
           },
           "accessibility": {
             "button_close_find_friends_header": {
-              "label": "Close find friends header"
+              "label": "Fermer l'en-tête « Rechercher mes amis »"
             },
             "button_close_facebook_connect_header": {
-              "label": "Close Facebook connect header"
+              "label": "Fermer l'en-tête « Connexion Facebook »"
             }
           }
         },
@@ -4668,13 +4663,13 @@
           "backed_projects": "projets soutenus",
           "button": {
             "follow_all_friends": {
-              "two": "Follow all 2 friends",
-              "few": "Follow all %{remote_friends_count} friends",
-              "many": "Follow all %{remote_friends_count} friends"
+              "two": "Suivre ces 2 amis",
+              "few": "Suivre ces %{remote_friends_count} amis",
+              "many": "Suivre ces %{remote_friends_count} amis"
             }
           }
         },
-        "nice_youre_about_to_follow_all_friends": "Nice! You're about to follow all of your friends.",
+        "nice_youre_about_to_follow_all_friends": "Super ! Vous êtes sur le point de suivre tous vos amis.",
         "button": {
           "check_out_some_projects": "Découvrez des projets !"
         }
@@ -4699,9 +4694,7 @@
             "done": "Terminé",
             "preview": "Aperçu",
             "publish": "Publier !",
-            "ok": "OK",
-            "connect_with_facebook": "Connexion Facebook",
-            "connect_with_twitter": "Connexion Twitter"
+            "ok": "OK"
           },
           "accessibility": {
             "button_navigate_back": {
@@ -4714,13 +4707,13 @@
         },
         "social": {
           "buttons": {
-            "connect_with_facebook": "Connect with Facebook",
-            "connect_with_twitter": "Connect with Twitter"
+            "connect_with_facebook": "Connexion Facebook",
+            "connect_with_twitter": "Connexion Twitter"
           }
         },
         "loading": "Chargement en cours...",
-        "switch_toggle_on": "Activé",
-        "switch_toggle_off": "Désactivé",
+        "switch_toggle_on": "ON",
+        "switch_toggle_off": "OFF",
         "error": {
           "something_wrong": "Un erreur s'est produite."
         },
@@ -4953,7 +4946,7 @@
         "baseball_card": {
           "social": {
             "friends_are_backers": {
-              "zero": "No friends are backers.",
+              "zero": "None of your friends are backers.",
               "one": "%{friend_name} is a backer.",
               "two": "%{friend_name} and %{second_friend_name} are backers.",
               "few": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.",
@@ -6129,6 +6122,7 @@
     "koala_devices": true,
     "security_history_read": true,
     "security_history_write": true,
+    "redshift": true,
     "advanced_discovery_es": true,
     "ios_crashlytics": true,
     "ios_koala": true,
@@ -6274,14 +6268,14 @@
     "native_ios_aa": "control",
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
-    "native_iphone_horiz_vs_vert": "experimental",
-    "recs_thanks_stars": "collaborative_stars",
-    "recs_hp_video_plays": "collaborative_video_plays",
+    "native_iphone_horiz_vs_vert": "control",
+    "recs_thanks_stars": "collaborative_backings_v2",
+    "recs_hp_video_plays": "collaborative_backings_v2",
     "video_autoplay_3": "no_autoplay",
     "project_share_metadata_position": "control"
   },
   "stripe": {
-    "publishable_key": "pk_test_L0x4mLeycKEvj9YuNSkHM35T"
+    "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"
   },
   "colors": {
     "green-light": {

@@ -26,6 +26,9 @@ import rx.subjects.PublishSubject;
 public class SettingsViewModel extends ViewModel<SettingsActivity> implements SettingsViewModelInputs,
   SettingsViewModelErrors, SettingsViewModelOutputs {
 
+  // INPUTS
+  private final PublishSubject<Void> contactEmailOpen = PublishSubject.create();
+
   // OUTPUTS
   private final BehaviorSubject<User> user = BehaviorSubject.create();
   public Observable<User> user() {
@@ -44,6 +47,11 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
 
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
+
+  @Override
+  public void contactEmailOpen() {
+    this.contactEmailOpen.onNext(null);
+  }
 
   @Override
   public void notifyMobileOfFollower(final boolean b) {
@@ -78,16 +86,19 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
   @Override
   public void sendHappeningNewsletter(final boolean b) {
     user.onNext(user.getValue().toBuilder().happeningNewsletter(b).build());
+    koala.trackNewsletterToggle(b);
   }
 
   @Override
   public void sendPromoNewsletter(final boolean b) {
     user.onNext(user.getValue().toBuilder().promoNewsletter(b).build());
+    koala.trackNewsletterToggle(b);
   }
 
   @Override
   public void sendWeeklyNewsletter(final boolean b) {
     user.onNext(user.getValue().toBuilder().weeklyNewsletter(b).build());
+    koala.trackNewsletterToggle(b);
   }
 
   @Override
@@ -100,6 +111,8 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
       .onErrorResumeNext(e -> Observable.empty());
 
     freshUser.subscribe(currentUser::refresh);
+
+    contactEmailOpen.subscribe(__ -> koala.trackContactEmailOpen());
 
     currentUser.observable()
       .take(1)

@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels.inputs;
 
 public interface SettingsViewModelInputs {
+  void contactEmailOpen();
   void notifyMobileOfFollower(boolean __);
   void notifyMobileOfFriendActivity(boolean __);
   void notifyMobileOfUpdates(boolean __);

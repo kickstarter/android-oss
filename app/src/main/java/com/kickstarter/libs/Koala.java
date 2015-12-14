@@ -178,6 +178,23 @@ public final class Koala {
     }});
   }
 
+  // SETTINGS
+  public void trackContactEmailOpen() {
+    client.track("Contact Email Open");
+  }
+
+  public void trackContactEmailSent() {
+    client.track("Contact Email Sent");
+  }
+
+  public void trackNewsletterToggle(final boolean sendNewsletter) {
+    if (sendNewsletter) {
+      client.track("Newsletter Subscribe");
+    } else {
+     client.track("Newsletter Unsubscribe");
+    }
+  }
+
   // CHECKOUT
   public void trackCheckoutNext() { // rewards webview and top nav
     client.track("Checkout Next");

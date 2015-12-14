@@ -10,7 +10,7 @@ import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding.widget.RxCompoundButton;
+import com.jakewharton.rxbinding.view.RxView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
@@ -84,20 +84,17 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> ViewUtils.showToast(this, unableToSaveString));
 
-    RxCompoundButton.checkedChanges(happeningNewsletterSwitch)
-      .skip(1)
+    RxView.clicks(happeningNewsletterSwitch)
       .compose(bindToLifecycle())
-      .subscribe(viewModel.inputs::sendHappeningNewsletter);
+      .subscribe(__ -> viewModel.inputs.sendHappeningNewsletter(this.happeningNewsletterSwitch.isChecked()));
 
-    RxCompoundButton.checkedChanges(promoNewsletterSwitch)
-      .skip(1)
+    RxView.clicks(promoNewsletterSwitch)
       .compose(bindToLifecycle())
-      .subscribe(viewModel.inputs::sendPromoNewsletter);
+      .subscribe(__ -> viewModel.inputs.sendPromoNewsletter(this.promoNewsletterSwitch.isChecked()));
 
-    RxCompoundButton.checkedChanges(weeklyNewsletterSwitch)
-      .skip(1)
+    RxView.clicks(weeklyNewsletterSwitch)
       .compose(bindToLifecycle())
-      .subscribe(viewModel.inputs::sendWeeklyNewsletter);
+      .subscribe(__ -> viewModel.inputs.sendWeeklyNewsletter(this.weeklyNewsletterSwitch.isChecked()));
   }
 
   protected void composeContactEmail(final @Nullable User user) {
@@ -127,6 +124,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
       .putExtra(Intent.EXTRA_EMAIL, new String[]{email});
     if (intent.resolveActivity(getPackageManager()) != null) {
       startActivity(Intent.createChooser(intent, getString(R.string.___Select_email_application)));
+      viewModel.inputs.contactEmailOpen();
     }
   }
 

@@ -56,5 +56,7 @@ public class ProjectNotificationViewModel extends ViewModel<ProjectNotificationV
       .compose(Transformers.takeWhen(unableToSavePreferenceError))
       .map(ListUtils::first)
       .subscribe(this.notification);
+
+    addSubscription(checked.subscribe(koala::trackNewsletterToggle));
   }
 }

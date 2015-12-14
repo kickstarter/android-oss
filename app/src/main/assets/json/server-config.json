@@ -8,6 +8,7 @@
         "login": "Log in",
         "dashboard": "Dashboard",
         "search": "Search",
+        "search_projects": "Search projects",
         "me": "Me"
       },
       "discovery": {
@@ -78,7 +79,16 @@
           "button": {
             "share": "Share"
           },
-          "read_more": "Read%{space}more%{space}"
+          "read_more": "Read%{space}more%{space}",
+          "blurb_read_more": "%{blurb}%{space}<u>Read%{space}more</u>%{space}",
+          "accessibility": {
+            "category": {
+              "label": "Category"
+            },
+            "location": {
+              "label": "Location"
+            }
+          }
         },
         "filters": {
           "favorites_title": "Favorites",
@@ -619,6 +629,7 @@
         },
         "creator": {
           "by_creator": "by %{creator_name}",
+          "by_creator_html": "by <u>%{creator_name}</u>",
           "youre_a_backer": " • You're a backer"
         },
         "subpages": {
@@ -648,6 +659,14 @@
             "two": "2 more",
             "few": "%{backer_count} more",
             "many": "%{backer_count} more"
+          }
+        },
+        "accessibility": {
+          "button_share": {
+            "label": "Share this project"
+          },
+          "button_star": {
+            "label": "Star this project"
           }
         }
       },
@@ -719,6 +738,10 @@
           "shipping_destinations": "Shipping destinations",
           "estimated_delivery": "Estimated Delivery"
         }
+      },
+      "search": {
+        "by_creator": "by %{creator_name}",
+        "most_popular": "Most Popular"
       },
       "messages": {
         "navigation": {
@@ -994,6 +1017,14 @@
             "preview": "Preview",
             "publish": "Publish!",
             "ok": "OK"
+          },
+          "accessibility": {
+            "button_navigate_back": {
+              "label": "Navigate back"
+            },
+            "button_close": {
+              "label": "Close"
+            }
           }
         },
         "social": {
@@ -1191,6 +1222,7 @@
         "login": "Anmelden",
         "dashboard": "Dashboard",
         "search": "Suche",
+        "search_projects": "Search projects",
         "me": "Mein Konto"
       },
       "discovery": {
@@ -1261,7 +1293,16 @@
           "button": {
             "share": "Teilen"
           },
-          "read_more": "Mehr%{space}Info%{space}"
+          "read_more": "Mehr%{space}Info%{space}",
+          "blurb_read_more": "%{blurb}%{space}<u>Read%{space}more</u>%{space}",
+          "accessibility": {
+            "category": {
+              "label": "Category"
+            },
+            "location": {
+              "label": "Location"
+            }
+          }
         },
         "filters": {
           "favorites_title": "Favoriten",
@@ -1802,6 +1843,7 @@
         },
         "creator": {
           "by_creator": "von %{creator_name}",
+          "by_creator_html": "by <u>%{creator_name}</u>",
           "youre_a_backer": " • Du unterstützt das Projekt"
         },
         "subpages": {
@@ -1831,6 +1873,14 @@
             "two": "2 weitere",
             "few": "%{backer_count} weitere",
             "many": "%{backer_count} weitere"
+          }
+        },
+        "accessibility": {
+          "button_share": {
+            "label": "Share this project"
+          },
+          "button_star": {
+            "label": "Star this project"
           }
         }
       },
@@ -1902,6 +1952,10 @@
           "shipping_destinations": "Versandziele",
           "estimated_delivery": "Voraussichtliche Lieferung"
         }
+      },
+      "search": {
+        "by_creator": "by %{creator_name}",
+        "most_popular": "Most Popular"
       },
       "messages": {
         "navigation": {
@@ -2177,6 +2231,14 @@
             "preview": "Vorschau",
             "publish": "Jetzt veröffentlichen!",
             "ok": "OK"
+          },
+          "accessibility": {
+            "button_navigate_back": {
+              "label": "Navigate back"
+            },
+            "button_close": {
+              "label": "Close"
+            }
           }
         },
         "social": {
@@ -2374,6 +2436,7 @@
         "login": "Iniciar sesión",
         "dashboard": "Panel de control",
         "search": "Búsqueda",
+        "search_projects": "Search projects",
         "me": "Mi cuenta"
       },
       "discovery": {
@@ -2444,7 +2507,16 @@
           "button": {
             "share": "Compartir"
           },
-          "read_more": "Leer%{space}más%{space}"
+          "read_more": "Leer%{space}más%{space}",
+          "blurb_read_more": "%{blurb}%{space}<u>Read%{space}more</u>%{space}",
+          "accessibility": {
+            "category": {
+              "label": "Category"
+            },
+            "location": {
+              "label": "Location"
+            }
+          }
         },
         "filters": {
           "favorites_title": "Favoritas",
@@ -2985,6 +3057,7 @@
         },
         "creator": {
           "by_creator": "por %{creator_name}",
+          "by_creator_html": "by <u>%{creator_name}</u>",
           "youre_a_backer": " • Tú eres un patrocinador"
         },
         "subpages": {
@@ -3014,6 +3087,14 @@
             "two": "2 más",
             "few": "%{backer_count} más",
             "many": "%{backer_count} más"
+          }
+        },
+        "accessibility": {
+          "button_share": {
+            "label": "Share this project"
+          },
+          "button_star": {
+            "label": "Star this project"
           }
         }
       },
@@ -3085,6 +3166,10 @@
           "shipping_destinations": "Destinos de envío",
           "estimated_delivery": "Entrega aproximada"
         }
+      },
+      "search": {
+        "by_creator": "by %{creator_name}",
+        "most_popular": "Most Popular"
       },
       "messages": {
         "navigation": {
@@ -3360,6 +3445,14 @@
             "preview": "Vista previa",
             "publish": "¡Publicar!",
             "ok": "OK"
+          },
+          "accessibility": {
+            "button_navigate_back": {
+              "label": "Navigate back"
+            },
+            "button_close": {
+              "label": "Close"
+            }
           }
         },
         "social": {
@@ -3557,6 +3650,7 @@
         "login": "Connexion",
         "dashboard": "Tableau de bord",
         "search": "Recherche",
+        "search_projects": "Search projects",
         "me": "Mon compte"
       },
       "discovery": {
@@ -3627,7 +3721,16 @@
           "button": {
             "share": "Partager"
           },
-          "read_more": "En savoir%{space}plus%{space}"
+          "read_more": "En savoir%{space}plus%{space}",
+          "blurb_read_more": "%{blurb}%{space}<u>Read%{space}more</u>%{space}",
+          "accessibility": {
+            "category": {
+              "label": "Category"
+            },
+            "location": {
+              "label": "Location"
+            }
+          }
         },
         "filters": {
           "favorites_title": "Favoris",
@@ -4168,6 +4271,7 @@
         },
         "creator": {
           "by_creator": "par %{creator_name}",
+          "by_creator_html": "by <u>%{creator_name}</u>",
           "youre_a_backer": " • Vous êtes contributeur"
         },
         "subpages": {
@@ -4197,6 +4301,14 @@
             "two": "2 autres personnes",
             "few": "%{backer_count} autres personnes",
             "many": "%{backer_count} autres personnes"
+          }
+        },
+        "accessibility": {
+          "button_share": {
+            "label": "Share this project"
+          },
+          "button_star": {
+            "label": "Star this project"
           }
         }
       },
@@ -4268,6 +4380,10 @@
           "shipping_destinations": "Expédition",
           "estimated_delivery": "Livraison prévue"
         }
+      },
+      "search": {
+        "by_creator": "by %{creator_name}",
+        "most_popular": "Most Popular"
       },
       "messages": {
         "navigation": {
@@ -4543,6 +4659,14 @@
             "preview": "Aperçu",
             "publish": "Publier !",
             "ok": "OK"
+          },
+          "accessibility": {
+            "button_navigate_back": {
+              "label": "Navigate back"
+            },
+            "button_close": {
+              "label": "Close"
+            }
           }
         },
         "social": {
@@ -4740,6 +4864,7 @@
         "login": "Log in",
         "dashboard": "Dashboard",
         "search": "Search",
+        "search_projects": "Search projects",
         "me": "Me"
       },
       "discovery": {
@@ -4810,7 +4935,16 @@
           "button": {
             "share": "Share"
           },
-          "read_more": "Read%{space}more%{space}"
+          "read_more": "Read%{space}more%{space}",
+          "blurb_read_more": "%{blurb}%{space}<u>Read%{space}more</u>%{space}",
+          "accessibility": {
+            "category": {
+              "label": "Category"
+            },
+            "location": {
+              "label": "Location"
+            }
+          }
         },
         "filters": {
           "favorites_title": "Favorites",
@@ -5351,6 +5485,7 @@
         },
         "creator": {
           "by_creator": "by %{creator_name}",
+          "by_creator_html": "by <u>%{creator_name}</u>",
           "youre_a_backer": " • You're a backer"
         },
         "subpages": {
@@ -5380,6 +5515,14 @@
             "two": "2 more",
             "few": "%{backer_count} more",
             "many": "%{backer_count} more"
+          }
+        },
+        "accessibility": {
+          "button_share": {
+            "label": "Share this project"
+          },
+          "button_star": {
+            "label": "Star this project"
           }
         }
       },
@@ -5451,6 +5594,10 @@
           "shipping_destinations": "Shipping destinations",
           "estimated_delivery": "Estimated Delivery"
         }
+      },
+      "search": {
+        "by_creator": "by %{creator_name}",
+        "most_popular": "Most Popular"
       },
       "messages": {
         "navigation": {
@@ -5726,6 +5873,14 @@
             "preview": "Preview",
             "publish": "Publish!",
             "ok": "OK"
+          },
+          "accessibility": {
+            "button_navigate_back": {
+              "label": "Navigate back"
+            },
+            "button_close": {
+              "label": "Close"
+            }
           }
         },
         "social": {
@@ -5949,7 +6104,9 @@
     "recaptcha": true,
     "log_devices": true,
     "backer_report_formats": true,
-    "discover_cards": true
+    "discover_cards": true,
+    "imgix_videos": true,
+    "fulfillment_report": true
   },
   "launched_countries": [
     {
@@ -6063,12 +6220,12 @@
   ],
   "ab_experiments": {
     "discover_sorts_vs_subcategories": "experimental",
-    "native_ios_aa": "experimental",
+    "native_ios_aa": "control",
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
     "native_iphone_horiz_vs_vert": "experimental",
-    "recs_thanks_stars": "collaborative_stars",
-    "recs_hp_video_plays": "collaborative_video_plays",
+    "recs_thanks_stars": "collaborative_backings_v2",
+    "recs_hp_video_plays": "collaborative_backings_v2",
     "video_autoplay_3": "no_autoplay",
     "project_share_metadata_position": "control"
   },

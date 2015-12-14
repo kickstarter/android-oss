@@ -58,7 +58,7 @@ public class StringUtils {
       return context.getString(R.string.____and_more_are_backers,
         friends.get(0).name(),
         friends.get(1).name(),
-        friends.size()
+        Integer.toString(Math.max(0, friends.size() - 2))
       );
     }
   }

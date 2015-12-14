@@ -34,6 +34,14 @@ class MilkrunApplication
       c.action do |args, options|
         audience = 'internal'
         build_type = 'release'
+
+        Milkrun::Git.new.check
+
+        Milkrun::ServerConfigRefresher.new.refresh
+        Milkrun::I18nStringResources.new.create
+
+        version_code = Milkrun::VersionCode.new.bump
+        version_name = Milkrun::VersionName.new.prompt
         Milkrun.prompt <<-CHECKLIST
 Release checklist!
 
@@ -41,9 +49,6 @@ Release checklist!
 2) Run view tests: ./gradlew connectedInternalMin21DebugAndroidTest
 3) Build and run locally in internalPre21Release mode, test core features on a real device.
 CHECKLIST
-        Milkrun::Git.new.check
-        version_code = Milkrun::VersionCode.new.bump
-        version_name = Milkrun::VersionName.new.prompt
         file_path = Milkrun::Build.new(audience: audience, build_type: build_type).compile
         Milkrun::HockeyApp.new(audience: audience, version_code: version_code, version_name: version_name).create_version
         Milkrun::S3Package.new(version_code: version_code, file_path: file_path).upload

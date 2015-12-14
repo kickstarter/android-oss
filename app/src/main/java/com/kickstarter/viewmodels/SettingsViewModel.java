@@ -33,9 +33,9 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
   }
 
   // ERRORS
-  private final PublishSubject<Throwable> settingsErrors = PublishSubject.create();
-  public final Observable<String> settingsErrors() {
-    return settingsErrors.map(__ -> null); // todo: correct error string
+  private final PublishSubject<Throwable> unableToSavePreferenceError = PublishSubject.create();
+  public final Observable<String> unableToSavePreferenceError() {
+    return unableToSavePreferenceError.map(__ -> null);
   }
 
   public final SettingsViewModelInputs inputs = this;
@@ -105,18 +105,16 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
       .take(1)
       .subscribe(user::onNext);
 
-    // catch error
     user
       .skip(1)
       .concatMap(client::updateUserSettings)
-      .compose(Transformers.pipeErrorsTo(settingsErrors))
+      .compose(Transformers.pipeErrorsTo(unableToSavePreferenceError))
       .subscribe(currentUser::refresh);
 
-    // revert view to previous user settings, before error
     user
       .window(2, 1)
       .flatMap(Observable::toList)
-      .compose(Transformers.takeWhen(settingsErrors))
+      .compose(Transformers.takeWhen(unableToSavePreferenceError))
       .map(ListUtils::first)
       .subscribe(user);
   }

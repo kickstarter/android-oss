@@ -10,10 +10,12 @@ import com.kickstarter.R;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.SwitchCompatUtils;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Notification;
 import com.kickstarter.viewmodels.ProjectNotificationViewModel;
 
 import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
@@ -22,6 +24,8 @@ import rx.subjects.PublishSubject;
 public final class ProjectNotificationViewHolder extends KSViewHolder {
   protected @Bind(R.id.project_name) TextView projectNameTextView;
   protected @Bind(R.id.notification_switch) SwitchCompat notificationSwitch;
+
+  protected @BindString(R.string.___Unable_to_save) String unableToSaveString;
 
   final PublishSubject<ProjectNotificationViewModel> viewModel = PublishSubject.create();
 
@@ -38,6 +42,11 @@ public final class ProjectNotificationViewHolder extends KSViewHolder {
       .switchMap(vm -> vm.outputs.notification())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::renderNotification);
+
+    viewModel
+      .switchMap(vm -> vm.errors.unableToSavePreferenceError())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> ViewUtils.showToast(view.getContext(), unableToSaveString));
   }
 
   @Override

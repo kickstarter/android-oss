@@ -2,6 +2,6 @@ package com.kickstarter.viewmodels.errors;
 
 import rx.Observable;
 
-public interface SettingsViewModelErrors {
+public interface ProjectNotificationViewModelErrors {
   Observable<String> unableToSavePreferenceError();
 }

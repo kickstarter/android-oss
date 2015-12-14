@@ -94,7 +94,7 @@
         android:text="Update Title" />
 
       <TextView
-        style="@style/SubheadPrimary"
+        style="@style/BodyPrimary"
         android:id="@+id/update_body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

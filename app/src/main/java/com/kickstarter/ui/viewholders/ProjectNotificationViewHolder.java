@@ -57,6 +57,6 @@ public final class ProjectNotificationViewHolder extends KSViewHolder {
 
   public void renderNotification(final @NonNull Notification notification) {
     projectNameTextView.setText(notification.project().name());
-    SwitchCompatUtils.disableToggleAnimation(notificationSwitch, notification.email() && notification.mobile());
+    SwitchCompatUtils.setCheckedWithoutAnimation(notificationSwitch, notification.email() && notification.mobile());
   }
 }

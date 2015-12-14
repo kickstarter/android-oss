@@ -33,9 +33,9 @@ public final class ManageNotificationsViewModel extends ViewModel<ManageNotifica
   }
 
   // ERRORS
-  private final PublishSubject<Throwable> unableToSavePreferenceError = PublishSubject.create();
-  public Observable<String> unableToSavePreferenceError() {
-    return unableToSavePreferenceError
+  private final PublishSubject<Throwable> unableToFetchNotificationsError = PublishSubject.create();
+  public Observable<String> unableToFetchNotificationsError() {
+    return unableToFetchNotificationsError
       .map(__ -> null); // todo: correct error string
   }
 

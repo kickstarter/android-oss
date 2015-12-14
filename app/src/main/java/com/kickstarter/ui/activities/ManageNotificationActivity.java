@@ -27,7 +27,7 @@ public final class ManageNotificationActivity extends BaseActivity<ManageNotific
 
   protected @Bind(R.id.project_notifications_recycler_view) RecyclerView recyclerView;
 
-  protected @BindString(R.string.___Unable_to_save) String unableToSaveString;
+  protected @BindString(R.string.___Unable_to_connect) String unableToConnectString;
 
   @Inject ApiClient client;
 
@@ -47,10 +47,10 @@ public final class ManageNotificationActivity extends BaseActivity<ManageNotific
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(n -> adapter.takeNotifications(n, client));
 
-    viewModel.errors.unableToSavePreferenceError()
+    viewModel.errors.unableToFetchNotificationsError()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> ViewUtils.showToast(this, unableToSaveString));
+      .subscribe(__ -> ViewUtils.showToast(this, unableToConnectString));
   }
 
   @Override

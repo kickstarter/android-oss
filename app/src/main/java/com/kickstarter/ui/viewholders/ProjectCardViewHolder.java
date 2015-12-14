@@ -3,6 +3,7 @@ package com.kickstarter.ui.viewholders;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -103,7 +104,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     /* landscape-specific */
     if (createdByTextView != null) {
       createdByTextView.setText(Html.fromHtml(ksString.format(byCreatorString,
-        "creator_name", project.creator().name())));
+        "creator_name", TextUtils.htmlEncode(project.creator().name()))));
     }
   }
 

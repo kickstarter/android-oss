@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -66,7 +67,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   }
 
   public void show(@NonNull final Project project) {
-    backedProjectTextView.setText(Html.fromHtml(getString(R.string.___You_just_backed, project.name())));
+    backedProjectTextView.setText(Html.fromHtml(getString(R.string.___You_just_backed, TextUtils.htmlEncode(project.name()))));
   }
 
   public void showRecommended(@NonNull final List<Project> projects, @NonNull final Category category) {

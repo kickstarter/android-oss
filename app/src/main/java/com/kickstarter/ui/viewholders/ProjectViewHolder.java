@@ -3,6 +3,7 @@ package com.kickstarter.ui.viewholders;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -93,11 +94,11 @@ public final class ProjectViewHolder extends KSViewHolder {
 
     /* Project */
     blurbTextView.setText(Html.fromHtml(ksString.format(blurbReadMoreString,
-      "blurb", project.blurb(),
+      "blurb", TextUtils.htmlEncode(project.blurb()),
       "space", "\u00A0"
     )));
     creatorNameTextView.setText(Html.fromHtml(ksString.format(byCreatorString,
-      "creator_name", project.creator().name())));
+      "creator_name", TextUtils.htmlEncode(project.creator().name()))));
     if (project.isBacking()) {
       backerLabelLinearLayout.setVisibility(View.VISIBLE);
     } else {

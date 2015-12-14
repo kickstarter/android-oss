@@ -27,12 +27,13 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
   SettingsViewModelErrors, SettingsViewModelOutputs {
 
   // INPUTS
-  private final PublishSubject<Void> contactEmailOpen = PublishSubject.create();
+  private final PublishSubject<Void> contactEmailClicked = PublishSubject.create();
+  private final BehaviorSubject<User> userInput = BehaviorSubject.create();
 
   // OUTPUTS
-  private final BehaviorSubject<User> user = BehaviorSubject.create();
+  private final BehaviorSubject<User> userOutput = BehaviorSubject.create();
   public Observable<User> user() {
-    return user;
+    return userOutput;
   }
 
   // ERRORS
@@ -49,55 +50,55 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
   @Inject CurrentUser currentUser;
 
   @Override
-  public void contactEmailOpen() {
-    this.contactEmailOpen.onNext(null);
+  public void contactEmailClicked() {
+    this.contactEmailClicked.onNext(null);
   }
 
   @Override
   public void notifyMobileOfFollower(final boolean b) {
-    user.onNext(user.getValue().toBuilder().notifyMobileOfFollower(b).build());
+    userInput.onNext(userOutput.getValue().toBuilder().notifyMobileOfFollower(b).build());
   }
 
   @Override
   public void notifyMobileOfFriendActivity(final boolean b) {
-    user.onNext(user.getValue().toBuilder().notifyMobileOfFriendActivity(b).build());
+    userInput.onNext(userOutput.getValue().toBuilder().notifyMobileOfFriendActivity(b).build());
   }
 
   @Override
   public void notifyMobileOfUpdates(final boolean b) {
-    user.onNext(user.getValue().toBuilder().notifyMobileOfUpdates(b).build());
+    userInput.onNext(userOutput.getValue().toBuilder().notifyMobileOfUpdates(b).build());
   }
 
   @Override
   public void notifyOfFollower(final boolean b) {
-    user.onNext(user.getValue().toBuilder().notifyOfFollower(b).build());
+    userInput.onNext(userOutput.getValue().toBuilder().notifyOfFollower(b).build());
   }
 
   @Override
   public void notifyOfFriendActivity(final boolean b) {
-    user.onNext(user.getValue().toBuilder().notifyOfFriendActivity(b).build());
+    userInput.onNext(userOutput.getValue().toBuilder().notifyOfFriendActivity(b).build());
   }
 
   @Override
   public void notifyOfUpdates(final boolean b) {
-    user.onNext(user.getValue().toBuilder().notifyOfUpdates(b).build());
+    userInput.onNext(userOutput.getValue().toBuilder().notifyOfUpdates(b).build());
   }
 
   @Override
   public void sendHappeningNewsletter(final boolean b) {
-    user.onNext(user.getValue().toBuilder().happeningNewsletter(b).build());
+    userInput.onNext(userOutput.getValue().toBuilder().happeningNewsletter(b).build());
     koala.trackNewsletterToggle(b);
   }
 
   @Override
   public void sendPromoNewsletter(final boolean b) {
-    user.onNext(user.getValue().toBuilder().promoNewsletter(b).build());
+    userInput.onNext(userOutput.getValue().toBuilder().promoNewsletter(b).build());
     koala.trackNewsletterToggle(b);
   }
 
   @Override
   public void sendWeeklyNewsletter(final boolean b) {
-    user.onNext(user.getValue().toBuilder().weeklyNewsletter(b).build());
+    userInput.onNext(userOutput.getValue().toBuilder().weeklyNewsletter(b).build());
     koala.trackNewsletterToggle(b);
   }
 
@@ -106,29 +107,37 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    final Observable<User> freshUser = client.fetchCurrentUser()
+    client.fetchCurrentUser()
       .retry(2)
-      .onErrorResumeNext(e -> Observable.empty());
-
-    freshUser.subscribe(currentUser::refresh);
-
-    contactEmailOpen.subscribe(__ -> koala.trackContactEmailOpen());
+      .onErrorResumeNext(e -> Observable.empty())
+      .subscribe(currentUser::refresh);
 
     currentUser.observable()
       .take(1)
-      .subscribe(user::onNext);
+      .subscribe(userInput::onNext);
 
-    user
+    userInput
       .skip(1)
-      .concatMap(client::updateUserSettings)
-      .compose(Transformers.pipeErrorsTo(unableToSavePreferenceError))
+      .concatMap(this::updateSettings)
       .subscribe(currentUser::refresh);
 
-    user
+    userInput
+      .subscribe(userOutput);
+
+    userOutput
       .window(2, 1)
       .flatMap(Observable::toList)
-      .compose(Transformers.takeWhen(unableToSavePreferenceError))
       .map(ListUtils::first)
-      .subscribe(user);
+      .compose(Transformers.takeWhen(unableToSavePreferenceError))
+      .subscribe(userOutput);
+
+    contactEmailClicked.subscribe(__ -> koala.trackContactEmailClicked());
+
+    koala.trackSettingsView();
+  }
+
+  private Observable<User> updateSettings(final @NonNull User user) {
+    return client.updateUserSettings(user)
+      .compose(Transformers.pipeErrorsTo(unableToSavePreferenceError));
   }
 }

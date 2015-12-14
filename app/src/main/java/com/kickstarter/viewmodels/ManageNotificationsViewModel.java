@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Notification;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.ui.activities.ManageNotificationActivity;
@@ -23,7 +22,7 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 
 public final class ManageNotificationsViewModel extends ViewModel<ManageNotificationActivity> implements
-  ManageNotificationsViewModelErrors, ManageNotificationsViewModelOutputs {
+  ManageNotificationsViewModelOutputs, ManageNotificationsViewModelErrors {
   @Inject ApiClient client;
 
   // OUTPUTS
@@ -48,13 +47,6 @@ public final class ManageNotificationsViewModel extends ViewModel<ManageNotifica
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     this.notifications = client.fetchProjectNotifications()
-      .compose(Transformers.pipeErrorsTo(unableToSavePreferenceError));
-
-    notifications
-      .window(2, 1)
-      .flatMap(Observable::toList)
-      .compose(Transformers.takeWhen(unableToSavePreferenceError))
-      .map(ListUtils::first)
-      .subscribe(__ -> notifications());
+      .compose(Transformers.pipeErrorsTo(unableToFetchNotificationsError));
   }
 }

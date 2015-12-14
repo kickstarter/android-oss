@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Notification;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.ui.viewholders.ProjectNotificationViewHolder;
@@ -26,10 +25,11 @@ public class ProjectNotificationViewModel extends ViewModel<ProjectNotificationV
   }
 
   // OUTPUTS
-  private final BehaviorSubject<Notification> notification;
+  private final BehaviorSubject<Notification> notificationOutput = BehaviorSubject.create();
   public final Observable<Notification> notification() {
-    return notification;
+    return notificationOutput;
   }
+
   // ERRORS
   private final PublishSubject<Throwable> unableToSavePreferenceError = PublishSubject.create();
   public Observable<String> unableToSavePreferenceError() {
@@ -42,21 +42,24 @@ public class ProjectNotificationViewModel extends ViewModel<ProjectNotificationV
   public final ProjectNotificationViewModelErrors errors = this;
 
   public ProjectNotificationViewModel(final @NonNull Notification notification, final @NonNull ApiClient client) {
-    this.notification = BehaviorSubject.create(notification);
+    final BehaviorSubject<Notification> notificationInput = BehaviorSubject.create(notification);
 
-    this.notification
+    notificationInput
       .compose(Transformers.takePairWhen(checked))
-      .switchMap(nc -> client.updateProjectNotifications(nc.first, nc.second))
-      .compose(Transformers.pipeErrorsTo(unableToSavePreferenceError))
-      .subscribe(this.notification);
+      .switchMap(nc -> this.updateNotification(client, nc.first, nc.second))
+      .subscribe(notificationInput);
 
-    this.notification
-      .window(2, 1)
-      .flatMap(Observable::toList)
+    notificationInput
+      .subscribe(this.notificationOutput);
+
+    this.notificationOutput
       .compose(Transformers.takeWhen(unableToSavePreferenceError))
-      .map(ListUtils::first)
-      .subscribe(this.notification);
+      .subscribe(this.notificationOutput::onNext);
+  }
 
-    addSubscription(checked.subscribe(koala::trackNewsletterToggle));
+  private Observable<Notification> updateNotification(final @NonNull ApiClient client,
+    final @NonNull Notification notification, final boolean checked) {
+    return client.updateProjectNotifications(notification, checked)
+      .compose(Transformers.pipeErrorsTo(unableToSavePreferenceError));
   }
 }

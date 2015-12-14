@@ -124,12 +124,13 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
       .putExtra(Intent.EXTRA_EMAIL, new String[]{email});
     if (intent.resolveActivity(getPackageManager()) != null) {
       startActivity(Intent.createChooser(intent, getString(R.string.___Select_email_application)));
-      viewModel.inputs.contactEmailOpen();
     }
   }
 
   @OnClick(R.id.contact)
   public void contactClick() {
+    viewModel.inputs.contactEmailClicked();
+
     currentUser.observable()
       .take(1)
       .observeOn(AndroidSchedulers.mainThread())

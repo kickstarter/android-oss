@@ -81,6 +81,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
 
     viewModel.errors.settingsErrors()
       .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> ViewUtils.showToast(this, unableToSaveString));
 
     RxCompoundButton.checkedChanges(happeningNewsletterSwitch)
@@ -130,7 +131,10 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
 
   @OnClick(R.id.contact)
   public void contactClick() {
-    currentUser.observable().take(1).subscribe(this::composeContactEmail);
+    currentUser.observable()
+      .take(1)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::composeContactEmail);
   }
 
   @OnClick(R.id.cookie_policy)

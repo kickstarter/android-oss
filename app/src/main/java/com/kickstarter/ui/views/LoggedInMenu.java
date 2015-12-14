@@ -20,15 +20,13 @@ public class LoggedInMenu extends ListPopupWindow {
     setAnchorView(anchorView);
     setModal(true);
 
-    setWidth(400);
-    setHeight(500);
+    setWidth(context.getResources().getDimensionPixelSize(R.dimen.logged_in_menu_width));
+    setHorizontalOffset(context.getResources().getDimensionPixelSize(R.dimen.logged_in_menu_horizontal_offset));
+    setVerticalOffset(context.getResources().getDimensionPixelSize(R.dimen.logged_in_menu_vertical_offset));
+    //the height of the toolbar in landscape mode is different so this will have to grab from a landscape dimens file
+    setBackgroundDrawable(context.getResources().getDrawable(R.drawable.dialog_alert_rounded, null));
 
-    final LoggedInMenuAdapter adapter = new LoggedInMenuAdapter(context);
-    adapter.takeTitle(currentUser.name());
-    adapter.takeTitle(context.getResources().getString(R.string.___Find_friends));
-    adapter.takeTitle(context.getResources().getString(R.string.___Settings));
-    adapter.takeTitle(context.getResources().getString(R.string.___Help));
-    adapter.takeTitle(context.getResources().getString(R.string.___Log_out));
+    final LoggedInMenuAdapter adapter = new LoggedInMenuAdapter(context, currentUser);
     setAdapter(adapter);
 
     setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) -> {
@@ -39,14 +37,7 @@ public class LoggedInMenu extends ListPopupWindow {
           final Intent profileIntent = new Intent(activity, ProfileActivity.class);
           activity.startActivity(profileIntent);
           activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
-          //          dismiss();
           break;
-        //        case LoggedInMenuAdapter.TYPE_LOGOUT:
-        //          logout.execute();
-        //          final Intent intent = new Intent(activity, DiscoveryActivity.class)
-        //            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        //          activity.startActivity(intent);
-        //          break;
       }
     });
   }

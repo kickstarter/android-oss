@@ -9,17 +9,18 @@
     android:id="@+id/avatar"
     android:layout_width="@dimen/grid_3"
     android:layout_height="@dimen/grid_3"
+    android:layout_marginBottom="@dimen/grid_2"
     android:layout_marginLeft="@dimen/grid_2"
     android:layout_marginTop="@dimen/grid_2"
+    android:layout_marginRight="@dimen/grid_1"
     android:scaleType="centerCrop"/>
 
   <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/BodyPrimaryMedium"
+    style="@style/SubheadMedium"
+    android:layout_gravity="center_vertical"
     android:id="@+id/menu_item_title"
-    android:text="Test"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/grid_1"
-    android:layout_marginTop="@dimen/grid_2" />
+    android:paddingRight="@dimen/grid_2"/>
 
 </LinearLayout>

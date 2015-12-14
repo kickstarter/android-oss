@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.kickstarter.R;
+import com.kickstarter.models.User;
 import com.kickstarter.ui.viewholders.LoggedInMenuProfileViewHolder;
 import com.kickstarter.ui.viewholders.LoggedInMenuViewHolder;
 
@@ -17,17 +18,21 @@ import java.util.List;
 
 public final class LoggedInMenuAdapter extends BaseAdapter {
   public static final int TYPE_PROFILE = 0;
-  public static final int TYPE_FIND_FRIENDS = 1;
-  public static final int TYPE_SETTINGS = 2;
-  public static final int TYPE_HELP = 3;
-  public static final int TYPE_LOGOUT = 4; // TODO: remove after merge Settings
+  public static final int TYPE_SETTINGS = 1;
+  public static final int TYPE_HELP = 2;
 
   private final Context context;
+  private final User user;
 
   private List<String> titles = new ArrayList<>();
 
-  public LoggedInMenuAdapter(final @NonNull Context context) {
+  public LoggedInMenuAdapter(final @NonNull Context context, final @NonNull User user) {
     this.context = context;
+    this.user = user;
+
+    takeTitle(user.name());
+    takeTitle(context.getResources().getString(R.string.___Settings));
+    takeTitle(context.getResources().getString(R.string.___Help));
   }
 
   public void takeTitle(final @NonNull String title) {
@@ -67,18 +72,12 @@ public final class LoggedInMenuAdapter extends BaseAdapter {
       switch (type) {
         case TYPE_PROFILE:
           convertView = LayoutInflater.from(context).inflate(R.layout.logged_in_menu_avatar_item, null);
-          final LoggedInMenuProfileViewHolder profileViewHolder = new LoggedInMenuProfileViewHolder(convertView);
-          profileViewHolder.setTitle(getItem(position));
-          convertView.setTag(profileViewHolder);
+          convertView.setTag(new LoggedInMenuProfileViewHolder(convertView, getItem(position), user.avatar()));
           break;
-        case TYPE_FIND_FRIENDS:
         case TYPE_SETTINGS:
         case TYPE_HELP:
-        case TYPE_LOGOUT:
           convertView = LayoutInflater.from(context).inflate(R.layout.logged_in_menu_item, null);
-          final LoggedInMenuViewHolder defaultViewHolder = new LoggedInMenuViewHolder(convertView);
-          defaultViewHolder.setTitle(getItem(position));
-          convertView.setTag(defaultViewHolder);
+          convertView.setTag(new LoggedInMenuViewHolder(convertView, getItem(position)));
           break;
       }
     }

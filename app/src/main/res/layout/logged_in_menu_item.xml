@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="horizontal"
   android:background="@color/off_white"
+  android:orientation="horizontal"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
   <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/BodyPrimary"
+    style="@style/Subhead"
+    android:text="hello"
     android:id="@+id/menu_item_title"
-    android:text="Test"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="@dimen/grid_2" />
+    android:layout_marginLeft="@dimen/grid_2"
+    android:layout_marginTop="@dimen/grid_2"
+    android:layout_marginBottom="@dimen/grid_2"
+    android:paddingRight="@dimen/grid_2" />
 
 </LinearLayout>

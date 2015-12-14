@@ -96,13 +96,7 @@
       android:name=".ui.activities.SearchActivity"
       android:theme="@style/SearchActivity" />
 
-    <activity android:name=".ui.activities.SettingsActivity">
-      <intent-filter>
-        <action android:name="android.intent.action.SENDTO" />
-        <data android:scheme="mailto" />
-        <category android:name="android.intent.category.DEFAULT" />
-      </intent-filter>
-    </activity>
+    <activity android:name=".ui.activities.SettingsActivity" />
 
     <activity
       android:name=".ui.activities.SignupActivity"

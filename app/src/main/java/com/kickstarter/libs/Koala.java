@@ -179,12 +179,8 @@ public final class Koala {
   }
 
   // SETTINGS
-  public void trackContactEmailOpen() {
-    client.track("Contact Email Open");
-  }
-
-  public void trackContactEmailSent() {
-    client.track("Contact Email Sent");
+   public void trackContactEmailClicked() {
+    client.track("Contact Email Clicked");
   }
 
   public void trackNewsletterToggle(final boolean sendNewsletter) {
@@ -193,6 +189,10 @@ public final class Koala {
     } else {
      client.track("Newsletter Unsubscribe");
     }
+  }
+
+  public void trackSettingsView() {
+    client.track("Settings View");
   }
 
   // CHECKOUT

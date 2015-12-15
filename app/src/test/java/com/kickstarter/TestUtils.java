@@ -1,7 +1,7 @@
 package com.kickstarter;
 
 import com.kickstarter.libs.Config;
-import com.kickstarter.libs.ConfigLoader;
+import com.kickstarter.libs.CurrentConfig;
 import com.kickstarter.libs.Money;
 
 import java.util.ArrayList;
@@ -11,22 +11,46 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class TestUtils {
-  static ConfigLoader mockConfigLoader(final Config config) {
-    ConfigLoader configLoader = mock(ConfigLoader.class);
-    when(configLoader.current()).thenReturn(config);
-    return configLoader;
+  static CurrentConfig mockCurrentConfig(final Config config) {
+    CurrentConfig currentConfig = mock(CurrentConfig.class);
+    when(currentConfig.getConfig()).thenReturn(config);
+    return currentConfig;
   }
 
   static Config createConfig(final String countryCode) {
-    final List<Config.LaunchedCountry> launchedCountries = new ArrayList<Config.LaunchedCountry>();
-    launchedCountries.add(new Config.LaunchedCountry("US", "USD", "$", true));
-    launchedCountries.add(new Config.LaunchedCountry("GB", "GBP", "£", false));
-    launchedCountries.add(new Config.LaunchedCountry("CA", "CAD", "$", true));
-    return new Config.Builder(countryCode, launchedCountries).build();
+
+    final Config.LaunchedCountry US = Config.LaunchedCountry.builder()
+      .name("US")
+      .currencyCode("USD")
+      .currencySymbol("$")
+      .trailingCode(true)
+      .build();
+    final Config.LaunchedCountry GB = Config.LaunchedCountry.builder()
+      .name("GB")
+      .currencyCode("GBP")
+      .currencySymbol("£")
+      .trailingCode(false)
+      .build();
+    final Config.LaunchedCountry CA = Config.LaunchedCountry.builder()
+      .name("CA")
+      .currencyCode("CAD")
+      .currencySymbol("$")
+      .trailingCode(true)
+      .build();
+
+    final List<Config.LaunchedCountry> launchedCountries = new ArrayList<>();
+    launchedCountries.add(US);
+    launchedCountries.add(GB);
+    launchedCountries.add(CA);
+
+    return Config.builder()
+      .countryCode(countryCode)
+      .launchedCountries(launchedCountries)
+      .build();
 
   }
 
   static Money createMoney(final String countryCode) {
-    return new Money(mockConfigLoader(createConfig(countryCode)));
+    return new Money(mockCurrentConfig(createConfig(countryCode)));
   }
 }

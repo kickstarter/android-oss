@@ -2,6 +2,7 @@ package com.kickstarter.services;
 
 import android.support.annotation.NonNull;
 
+import com.kickstarter.libs.Config;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
@@ -104,4 +105,7 @@ public interface ApiService {
 
   @POST("/v1/projects/{param}/star/toggle")
   Observable<Response<StarEnvelope>> toggleProjectStar(@Path("param") String param);
+
+  @GET("/v1/app/android/config")
+  Observable<Response<Config>> config();
 }

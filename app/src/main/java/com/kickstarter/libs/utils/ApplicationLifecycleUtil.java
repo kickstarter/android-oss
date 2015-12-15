@@ -10,12 +10,17 @@ import android.support.annotation.Nullable;
 
 import com.facebook.appevents.AppEventsLogger;
 import com.kickstarter.KSApplication;
+import com.kickstarter.libs.CurrentConfig;
 import com.kickstarter.libs.Koala;
+import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.services.ApiClient;
 
 import javax.inject.Inject;
 
 public final class ApplicationLifecycleUtil implements Application.ActivityLifecycleCallbacks, ComponentCallbacks2 {
   @Inject Koala koala;
+  @Inject ApiClient client;
+  @Inject CurrentConfig config;
 
   private boolean isInBackground = true;
 
@@ -38,6 +43,11 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
 
       // Facebook: logs 'install' and 'app activate' App Events.
       AppEventsLogger.activateApp(activity);
+
+      // Refresh the config file
+      this.client.config()
+        .compose(Transformers.neverError())
+        .subscribe(this.config::refresh);
 
       isInBackground = false;
     }

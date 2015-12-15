@@ -25,7 +25,7 @@
       android:layout_height="wrap_content"
       android:inputType="number"
       android:singleLine="true"
-      style="@style/Subhead"
+      style="@style/SubheadPrimary"
       android:hint="@string/___Enter_code" />
 
   </android.support.design.widget.TextInputLayout>

@@ -72,7 +72,7 @@
 
     <TextView
       android:id="@+id/blurb"
-      style="@style/Subhead"
+      style="@style/SubheadPrimary"
       android:focusable="true"
       android:background="@drawable/click_indicator_light_masked"
       android:layout_width="match_parent"

@@ -57,7 +57,7 @@
       <TextView
         android:text="@string/___Pledged"
         android:paddingBottom="@dimen/grid_1"
-        style="@style/SubheadMedium"
+        style="@style/SubheadPrimaryMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
@@ -78,7 +78,7 @@
         android:text="@string/___Reward"
         android:paddingTop="@dimen/grid_3"
         android:paddingBottom="@dimen/grid_1"
-        style="@style/SubheadMedium"
+        style="@style/SubheadPrimaryMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
@@ -94,7 +94,7 @@
         android:text="@string/___Shipping"
         android:paddingTop="@dimen/grid_3"
         android:paddingBottom="@dimen/grid_1"
-        style="@style/SubheadMedium"
+        style="@style/SubheadPrimaryMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

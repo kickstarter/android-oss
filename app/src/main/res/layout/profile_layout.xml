@@ -52,7 +52,7 @@
           android:orientation="horizontal">
 
           <TextView
-            style="@style/Subhead"
+            style="@style/SubheadPrimary"
             android:id="@+id/created"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
             android:textColor="@color/text_secondary" />
 
           <TextView
-            style="@style/Subhead"
+            style="@style/SubheadPrimary"
             android:id="@+id/created_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -77,7 +77,7 @@
             android:layout_marginTop="3dp"/>
 
           <TextView
-            style="@style/Subhead"
+            style="@style/SubheadPrimary"
             android:id="@+id/backed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -86,7 +86,7 @@
             android:textColor="@color/text_secondary" />
 
           <TextView
-            style="@style/Subhead"
+            style="@style/SubheadPrimary"
             android:id="@+id/backed_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

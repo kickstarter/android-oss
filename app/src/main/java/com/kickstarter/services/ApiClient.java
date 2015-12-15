@@ -10,13 +10,16 @@ import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Empty;
+import com.kickstarter.models.Notification;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apirequests.CommentBody;
 import com.kickstarter.services.apirequests.LoginWithFacebookBody;
+import com.kickstarter.services.apirequests.NotificationBody;
 import com.kickstarter.services.apirequests.PushTokenBody;
 import com.kickstarter.services.apirequests.RegisterWithFacebookBody;
 import com.kickstarter.services.apirequests.ResetPasswordBody;
+import com.kickstarter.services.apirequests.SettingsBody;
 import com.kickstarter.services.apirequests.SignupBody;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
@@ -84,6 +87,13 @@ public final class ApiClient {
   public Observable<ActivityEnvelope> fetchActivities(String paginationPath) {
     return service
       .fetchActivities(paginationPath)
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
+  public Observable<List<Notification>> fetchProjectNotifications() {
+    return service
+      .fetchProjectNotifications()
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
@@ -209,6 +219,33 @@ public final class ApiClient {
     return service.toggleProjectStar(project.param())
       .lift(apiErrorOperator())
       .map(StarEnvelope::project)
+      .subscribeOn(Schedulers.io());
+  }
+
+  public Observable<Notification> updateProjectNotifications(final @NonNull Notification notification, final boolean checked) {
+    return service.updateProjectNotifications(notification.id(),
+      NotificationBody.builder()
+        .email(checked)
+        .mobile(checked)
+        .build())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
+  public Observable<User> updateUserSettings(final @NonNull User user) {
+    return service.updateUserSettings(
+      SettingsBody.builder()
+        .notifyMobileOfFollower(user.notifyMobileOfFollower())
+        .notifyMobileOfFriendActivity(user.notifyMobileOfFriendActivity())
+        .notifyMobileOfUpdates(user.notifyMobileOfUpdates())
+        .notifyOfFollower(user.notifyOfFollower())
+        .notifyOfFriendActivity(user.notifyOfFriendActivity())
+        .notifyOfUpdates(user.notifyOfUpdates())
+        .happeningNewsletter(user.happeningNewsletter() ? 1 : 0)
+        .promoNewsletter(user.promoNewsletter() ? 1 : 0)
+        .weeklyNewsletter(user.weeklyNewsletter() ? 1 : 0)
+        .build())
+      .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 

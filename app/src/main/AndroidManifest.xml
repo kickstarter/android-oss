@@ -72,6 +72,16 @@
     <activity android:name=".ui.activities.ProfileActivity" />
 
     <activity
+      android:name=".ui.activities.LoginActivity"
+      android:theme="@style/Login" />
+
+    <activity
+      android:name=".ui.activities.LoginToutActivity"
+      android:theme="@style/Login" />
+
+    <activity android:name=".ui.activities.ManageNotificationActivity" />
+
+    <activity
       android:name=".ui.activities.ProjectActivity"
       android:label="@string/___title_activity_project"
       android:parentActivityName=".ui.activities.DiscoveryActivity"
@@ -86,13 +96,7 @@
       android:name=".ui.activities.SearchActivity"
       android:theme="@style/SearchActivity" />
 
-    <activity
-      android:name=".ui.activities.LoginToutActivity"
-      android:theme="@style/Login" />
-
-    <activity
-      android:name=".ui.activities.LoginActivity"
-      android:theme="@style/Login" />
+    <activity android:name=".ui.activities.SettingsActivity" />
 
     <activity
       android:name=".ui.activities.SignupActivity"

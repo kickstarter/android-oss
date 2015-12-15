@@ -2,16 +2,9 @@ package com.kickstarter;
 
 import com.kickstarter.libs.utils.KSColorUtils;
 
-import junit.framework.TestCase;
-
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.annotation.Config;
-import org.robolectric.shadows.multidex.ShadowMultiDex;
 
-@RunWith(KSRobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, shadows=ShadowMultiDex.class, sdk = KSRobolectricGradleTestRunner.DEFAULT_SDK)
-public class KSColorUtilsTest extends TestCase {
+public class KSColorUtilsTest extends KSRobolectricTestCase {
   @Test
   public void testDarken() {
     assertEquals(0xFF1DB75B, KSColorUtils.darken(0xFF2BDE73, 0.2f));

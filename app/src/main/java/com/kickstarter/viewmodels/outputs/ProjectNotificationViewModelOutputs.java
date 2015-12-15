@@ -6,4 +6,5 @@ import rx.Observable;
 
 public interface ProjectNotificationViewModelOutputs {
   Observable<Notification> notification();
+  Observable<Void> updateSuccess();
 }

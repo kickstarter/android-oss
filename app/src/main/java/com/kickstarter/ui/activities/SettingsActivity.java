@@ -54,7 +54,11 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
 
   protected @BindString(R.string.___Hello_Kickstarter_App_Support) String helloAppSupportString;
   protected @BindString(R.string.___How_can_we_help_you) String howCanWeHelpString;
+  protected @BindString(R.string.___subscribe_mobile_notification_button_content_description) String subscribeMobileString;
+  protected @BindString(R.string.___subscribe_notification_button_content_description) String subscribeString;
   protected @BindString(R.string.___Unable_to_save) String unableToSaveString;
+  protected @BindString(R.string.___unsubscribe_mobile_notification_button_content_description) String unsubscribeMobileString;
+  protected @BindString(R.string.___unsubscribe_notification_button_content_description) String unsubscribeString;
 
   @Inject CurrentUser currentUser;
   @Inject Logout logout;
@@ -124,12 +128,13 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
       .putExtra(Intent.EXTRA_EMAIL, new String[]{email});
     if (intent.resolveActivity(getPackageManager()) != null) {
       startActivity(Intent.createChooser(intent, getString(R.string.___Select_email_application)));
-      viewModel.inputs.contactEmailOpen();
     }
   }
 
   @OnClick(R.id.contact)
   public void contactClick() {
+    viewModel.inputs.contactEmailClicked();
+
     currentUser.observable()
       .take(1)
       .observeOn(AndroidSchedulers.mainThread())
@@ -151,12 +156,12 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
     notifyMobileOfUpdates = user.notifyMobileOfUpdates();
     notifyOfUpdates = user.notifyOfUpdates();
 
-    toggleIconColor(friendActivityMailIconTextView, notifyOfFriendActivity);
-    toggleIconColor(friendActivityPhoneIconTextView, notifyMobileOfFriendActivity);
-    toggleIconColor(newFollowersMailIconTextView, notifyOfFollower);
-    toggleIconColor(newFollowersPhoneIconTextView, notifyMobileOfFollower);
-    toggleIconColor(projectUpdatesMailIconTextView, notifyOfUpdates);
-    toggleIconColor(projectUpdatesPhoneIconTextView, notifyMobileOfUpdates);
+    toggleIconColor(friendActivityMailIconTextView, false, notifyOfFriendActivity);
+    toggleIconColor(friendActivityPhoneIconTextView, true, notifyMobileOfFriendActivity);
+    toggleIconColor(newFollowersMailIconTextView, false, notifyOfFollower);
+    toggleIconColor(newFollowersPhoneIconTextView, true, notifyMobileOfFollower);
+    toggleIconColor(projectUpdatesMailIconTextView, false, notifyOfUpdates);
+    toggleIconColor(projectUpdatesPhoneIconTextView, true, notifyMobileOfUpdates);
 
     happeningNewsletterSwitch.setChecked(user.happeningNewsletter());
     promoNewsletterSwitch.setChecked(user.promoNewsletter());
@@ -233,8 +238,23 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
     startHelpActivity(HelpActivity.HELP_TYPE_TERMS);
   }
 
-  public void toggleIconColor(final @NonNull TextView iconTextView, final boolean enabled) {
+  public void toggleIconColor(final @NonNull TextView iconTextView, final boolean typeMobile, final boolean enabled) {
     final int color = enabled ? green : gray;
     iconTextView.setTextColor(color);
+
+    String contentDescription = "";
+    if (typeMobile && enabled) {
+      contentDescription = unsubscribeMobileString;
+    }
+    if (typeMobile && !enabled) {
+      contentDescription = subscribeMobileString;
+    }
+    if (!typeMobile && enabled) {
+      contentDescription = unsubscribeString;
+    }
+    if (!typeMobile && !enabled) {
+      contentDescription = subscribeString;
+    }
+    iconTextView.setContentDescription(contentDescription);
   }
 }

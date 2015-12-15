@@ -38,6 +38,7 @@
   <!-- Icon sizes -->
   <dimen name="chevron_right_icon">24sp</dimen>
   <dimen name="empty_feed_icon">50sp</dimen>
+  <dimen name="settings_icon">20sp</dimen>
 
   <!-- Cards -->
   <dimen name="card_corner_radius">4dp</dimen>
@@ -56,6 +57,7 @@
   other where they all take up the same width. This helps with UI effects like ripples that
   use the button size to calculate the ripple radius. -->
   <dimen name="button_icon_fixed_width">54dp</dimen>
+  <dimen name="settings_icon_fixed_width">48dp</dimen>
   <dimen name="button_corner_radius">4dp</dimen>
   <dimen name="button_stroke_width">1dp</dimen>
 

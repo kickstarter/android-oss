@@ -89,7 +89,7 @@
             android:paddingRight="@dimen/grid_1_half"
             android:paddingEnd="@dimen/grid_1_half"
             android:text="@string/local_offer_icon"
-            android:contentDescription="@string/___category_icon_content_description"
+            android:contentDescription="@string/discovery_baseball_card_accessibility_category_label"
             android:textColor="@color/primary_dark" />
 
           <TextView
@@ -122,7 +122,6 @@
 
           <TextView
             android:id="@+id/successfully_funded_view"
-            android:text="@string/___Successfully_funded"
             android:visibility="gone"
             style="@style/BodyPrimaryMedium"
             android:textColor="@color/white"

@@ -39,7 +39,7 @@
       android:paddingRight="@dimen/grid_2"
       android:textColor="@color/white"
       android:background="@color/green"
-      android:text="@string/___You_selected"
+      android:text="@string/rewards_selected_label_you_selected"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
@@ -80,7 +80,7 @@
           android:background="@color/medium_gray"
           android:visibility="visible"
           style="@style/BodyPrimary"
-          android:text="@string/___Limited_left_of"
+          android:text="@string/rewards_info_limited_rewards_remaining_left_of_reward_limit"
           android:layout_marginLeft="@dimen/grid_1"
           android:layout_marginStart="@dimen/grid_1"
           android:layout_width="wrap_content"
@@ -96,7 +96,7 @@
           android:visibility="visible"
           android:layout_marginStart="@dimen/grid_1"
           android:layout_marginEnd="@dimen/grid_1"
-          android:text="@string/___All_gone"
+          android:text="@string/rewards_info_all_gone"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 
@@ -122,14 +122,13 @@
 
           <TextView
             android:id="@+id/estimated_delivery"
-            android:text="@string/___Estimated_delivery"
+            android:text="@string/rewards_info_estimated_delivery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/CaptionSecondary"/>
 
           <TextView
             android:id="@+id/estimated_delivery_date"
-            android:text="September 2016"
             style="@style/CaptionPrimary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -147,7 +146,7 @@
         <TextView
           android:id="@+id/shipping_destination"
           style="@style/CaptionSecondary"
-          android:text="@string/___Shipping_destinations"
+          android:text="@string/rewards_info_shipping_destinations"
           android:visibility="visible"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"/>
@@ -155,7 +154,7 @@
         <TextView
           android:id="@+id/shipping_summary"
           style="@style/CaptionPrimary"
-          android:text="Ships to anywhere in the world"
+          android:text="@string/rewards_shipping_preferences_location_unrestricted"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 

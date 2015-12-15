@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Project;
 import com.squareup.picasso.Picasso;
 
@@ -40,7 +41,7 @@ public final class ProjectCardMiniViewHolder extends KSViewHolder {
     nameTextView.setText(project.name());
 
     if (project.isLive()) {
-      timeToGoTextView.setText(project.timeToGo(context));
+      timeToGoTextView.setText(ProjectUtils.timeToGo(project, context));
       timeToGoTextView.setVisibility(View.VISIBLE);
     } else {
       timeToGoTextView.setVisibility(View.GONE);

@@ -10,6 +10,7 @@ import android.widget.ListPopupWindow;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.models.User;
+import com.kickstarter.ui.activities.HelpActivity;
 import com.kickstarter.ui.activities.ProfileActivity;
 import com.kickstarter.ui.adapters.LoggedInMenuAdapter;
 
@@ -36,7 +37,11 @@ public class LoggedInMenu extends ListPopupWindow {
         case LoggedInMenuAdapter.TYPE_PROFILE:
           final Intent profileIntent = new Intent(activity, ProfileActivity.class);
           activity.startActivity(profileIntent);
-          activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+          break;
+        case LoggedInMenuAdapter.TYPE_HELP:
+          final Intent helpIntent = new Intent(activity, HelpActivity.class);
+          helpIntent.putExtra(context.getString(R.string.intent_help_type), HelpActivity.HELP_TYPE_GENERAL);
+          activity.startActivity(helpIntent);
           break;
       }
     });

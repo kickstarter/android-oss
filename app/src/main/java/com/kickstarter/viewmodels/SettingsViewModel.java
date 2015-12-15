@@ -113,31 +113,43 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    client.fetchCurrentUser()
-      .retry(2)
-      .onErrorResumeNext(e -> Observable.empty())
-      .subscribe(currentUser::refresh);
+    addSubscription(
+      client.fetchCurrentUser()
+        .retry(2)
+        .onErrorResumeNext(e -> Observable.empty())
+        .subscribe(currentUser::refresh)
+    );
 
-    currentUser.observable()
-      .take(1)
-      .subscribe(userInput::onNext);
+    addSubscription(
+      currentUser.observable()
+        .take(1)
+        .subscribe(userInput::onNext)
+    );
 
-    userInput
-      .skip(1)
-      .concatMap(this::updateSettings)
-      .subscribe(this::success);
+    addSubscription(
+      userInput
+        .skip(1)
+        .concatMap(this::updateSettings)
+        .subscribe(this::success)
+    );
 
-    userInput
-      .subscribe(userOutput);
+    addSubscription(
+      userInput
+        .subscribe(userOutput)
+    );
 
-    userOutput
-      .window(2, 1)
-      .flatMap(Observable::toList)
-      .map(ListUtils::first)
-      .compose(Transformers.takeWhen(unableToSavePreferenceError))
-      .subscribe(userOutput);
+    addSubscription(
+      userOutput
+        .window(2, 1)
+        .flatMap(Observable::toList)
+        .map(ListUtils::first)
+        .compose(Transformers.takeWhen(unableToSavePreferenceError))
+        .subscribe(userOutput)
+    );
 
-    contactEmailClicked.subscribe(__ -> koala.trackContactEmailClicked());
+    addSubscription(
+      contactEmailClicked.subscribe(__ -> koala.trackContactEmailClicked())
+    );
 
     koala.trackSettingsView();
   }

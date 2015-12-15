@@ -22,8 +22,8 @@
 
       <TextView
         style="@style/SubheadSecondaryMedium"
-        android:layout_marginTop="@dimen/grid_3"
-        android:layout_marginBottom="@dimen/grid_3"
+        android:layout_marginTop="@dimen/grid_4"
+        android:layout_marginBottom="@dimen/grid_7_half"
         android:text="@string/___Projects_you_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -37,7 +37,7 @@
 
       <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/grid_7">
+        android:layout_height="@dimen/grid_8">
 
         <TextView
           style="@style/BodyPrimary"
@@ -48,20 +48,14 @@
 
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/project_updates_mail_icon"
-          android:focusable="true"
           app:iconType="ss_kickstarter"
           style="@style/KSSettingsMailIcon"
           android:layout_toLeftOf="@+id/project_updates_phone_icon"
-          android:layout_toStartOf="@id/project_updates_phone_icon"
-          android:text="@string/mail_icon" />
+          android:layout_toStartOf="@id/project_updates_phone_icon" />
 
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/project_updates_phone_icon"
-          android:focusable="true"
-          style="@style/EndSettingsWidget"
-          android:background="@drawable/click_indicator_light"
-          android:layout_width="@dimen/settings_icon_fixed_width"
-          android:text="@string/phone_android_icon"/>
+          style="@style/KSSettingsPhoneIcon"/>
 
       </RelativeLayout>
 
@@ -77,7 +71,7 @@
         android:focusable="true"
         android:background="@drawable/click_indicator_light_masked"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/grid_7">
+        android:layout_height="@dimen/grid_8">
 
         <TextView
           style="@style/BodyPrimary"
@@ -116,8 +110,8 @@
 
       <TextView
         style="@style/SubheadSecondaryMedium"
-        android:layout_marginTop="@dimen/grid_5"
-        android:layout_marginBottom="@dimen/grid_3"
+        android:layout_marginTop="@dimen/grid_11_half"
+        android:layout_marginBottom="@dimen/grid_7_half"
         android:text="@string/___Social_notifications"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -131,7 +125,7 @@
 
       <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/grid_7">
+        android:layout_height="@dimen/grid_8">
 
         <TextView
           style="@style/BodyPrimary"
@@ -142,20 +136,14 @@
 
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/new_followers_mail_icon"
-          android:focusable="true"
           app:iconType="ss_kickstarter"
           style="@style/KSSettingsMailIcon"
           android:layout_toLeftOf="@+id/new_followers_phone_icon"
-          android:layout_toStartOf="@id/new_followers_phone_icon"
-          android:text="@string/mail_icon" />
+          android:layout_toStartOf="@id/new_followers_phone_icon" />
 
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/new_followers_phone_icon"
-          android:focusable="true"
-          style="@style/EndSettingsWidget"
-          android:layout_width="@dimen/settings_icon_fixed_width"
-          android:background="@drawable/click_indicator_light"
-          android:text="@string/phone_android_icon" />
+          style="@style/KSSettingsPhoneIcon" />
 
       </RelativeLayout>
 
@@ -168,7 +156,7 @@
 
       <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/grid_7">
+        android:layout_height="@dimen/grid_8">
 
         <TextView
           style="@style/BodyPrimary"
@@ -179,20 +167,14 @@
 
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/friend_activity_mail_icon"
-          android:focusable="true"
           app:iconType="ss_kickstarter"
           style="@style/KSSettingsMailIcon"
           android:layout_toLeftOf="@+id/friend_activity_phone_icon"
-          android:layout_toStartOf="@id/friend_activity_phone_icon"
-          android:text="@string/mail_icon" />
+          android:layout_toStartOf="@+id/friend_activity_phone_icon" />
 
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/friend_activity_phone_icon"
-          android:focusable="true"
-          style="@style/EndSettingsWidget"
-          android:layout_width="@dimen/settings_icon_fixed_width"
-          android:background="@drawable/click_indicator_light"
-          android:text="@string/phone_android_icon" />
+          style="@style/KSSettingsPhoneIcon" />
 
       </RelativeLayout>
 
@@ -212,8 +194,8 @@
 
         <TextView
           style="@style/SubheadSecondaryMedium"
-          android:layout_marginTop="@dimen/grid_5"
-          android:layout_marginBottom="@dimen/grid_3"
+          android:layout_marginTop="@dimen/grid_11_half"
+          android:layout_marginBottom="@dimen/grid_7_half"
           android:text="@string/___Newsletters"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
@@ -222,7 +204,7 @@
 
         <RelativeLayout
           android:layout_width="match_parent"
-          android:layout_height="@dimen/grid_7">
+          android:layout_height="@dimen/grid_8">
 
           <TextView
             style="@style/BodyPrimary"
@@ -241,7 +223,7 @@
 
         <RelativeLayout
           android:layout_width="match_parent"
-          android:layout_height="@dimen/grid_7">
+          android:layout_height="@dimen/grid_8">
 
           <TextView
             style="@style/BodyPrimary"
@@ -260,7 +242,7 @@
 
         <RelativeLayout
           android:layout_width="match_parent"
-          android:layout_height="@dimen/grid_7">
+          android:layout_height="@dimen/grid_8">
 
           <TextView
             style="@style/BodyPrimary"
@@ -279,8 +261,8 @@
 
         <TextView
           style="@style/SubheadSecondaryMedium"
-          android:layout_marginTop="@dimen/grid_5"
-          android:layout_marginBottom="@dimen/grid_3"
+          android:layout_marginTop="@dimen/grid_11_half"
+          android:layout_marginBottom="@dimen/grid_7_half"
           android:text="@string/___About"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
@@ -292,7 +274,7 @@
           android:focusable="true"
           android:background="@drawable/click_indicator_light_masked"
           android:layout_width="match_parent"
-          android:layout_height="@dimen/grid_7">
+          android:layout_height="@dimen/grid_8">
 
           <TextView
             style="@style/BodyPrimary"
@@ -315,7 +297,7 @@
           android:focusable="true"
           android:background="@drawable/click_indicator_light_masked"
           android:layout_width="match_parent"
-          android:layout_height="@dimen/grid_7">
+          android:layout_height="@dimen/grid_8">
 
           <TextView
             style="@style/BodyPrimary"
@@ -338,7 +320,7 @@
           android:focusable="true"
           android:background="@drawable/click_indicator_light_masked"
           android:layout_width="match_parent"
-          android:layout_height="@dimen/grid_7">
+          android:layout_height="@dimen/grid_8">
 
           <TextView
             style="@style/BodyPrimary"
@@ -361,7 +343,7 @@
           android:focusable="true"
           android:background="@drawable/click_indicator_light_masked"
           android:layout_width="match_parent"
-          android:layout_height="@dimen/grid_7">
+          android:layout_height="@dimen/grid_8">
 
           <TextView
             style="@style/BodyPrimary"
@@ -384,7 +366,7 @@
           android:focusable="true"
           android:background="@drawable/click_indicator_light_masked"
           android:layout_width="match_parent"
-          android:layout_height="@dimen/grid_7">
+          android:layout_height="@dimen/grid_8">
 
           <TextView
             style="@style/BodyPrimary"
@@ -407,7 +389,7 @@
           android:focusable="true"
           android:background="@drawable/click_indicator_light_masked"
           android:layout_width="match_parent"
-          android:layout_height="@dimen/grid_7">
+          android:layout_height="@dimen/grid_8">
 
           <TextView
             style="@style/BodyPrimary"

@@ -38,6 +38,7 @@
   <!-- Icon sizes -->
   <dimen name="chevron_right_icon">24sp</dimen>
   <dimen name="empty_feed_icon">50sp</dimen>
+  <dimen name="settings_icon">20sp</dimen>
 
   <!-- Cards -->
   <dimen name="card_corner_radius">4dp</dimen>

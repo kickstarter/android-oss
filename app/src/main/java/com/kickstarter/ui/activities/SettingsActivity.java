@@ -55,6 +55,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   protected @BindString(R.string.___Hello_Kickstarter_App_Support) String helloAppSupportString;
   protected @BindString(R.string.___How_can_we_help_you) String howCanWeHelpString;
   protected @BindString(R.string.___Unable_to_save) String unableToSaveString;
+  protected @BindString(R.string.___Updated) String updatedString;
 
   @Inject CurrentUser currentUser;
   @Inject Logout logout;
@@ -73,6 +74,11 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
     setContentView(R.layout.settings_layout);
     ButterKnife.bind(this);
     ((KSApplication) getApplication()).component().inject(this);
+
+    viewModel.outputs.updateSuccess()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> ViewUtils.showToast(this, updatedString));
 
     viewModel.outputs.user()
       .compose(bindToLifecycle())

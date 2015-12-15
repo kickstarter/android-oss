@@ -26,6 +26,7 @@ public final class ProjectNotificationViewHolder extends KSViewHolder {
   protected @Bind(R.id.notification_switch) SwitchCompat notificationSwitch;
 
   protected @BindString(R.string.___Unable_to_save) String unableToSaveString;
+  protected @BindString(R.string.___Updated) String updatedString;
 
   final PublishSubject<ProjectNotificationViewModel> viewModel = PublishSubject.create();
 
@@ -42,6 +43,11 @@ public final class ProjectNotificationViewHolder extends KSViewHolder {
       .switchMap(vm -> vm.outputs.notification())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::renderNotification);
+
+    viewModel
+      .switchMap(vm -> vm.outputs.updateSuccess())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> ViewUtils.showToast(view.getContext(), updatedString));
 
     viewModel
       .switchMap(vm -> vm.errors.unableToSavePreferenceError())

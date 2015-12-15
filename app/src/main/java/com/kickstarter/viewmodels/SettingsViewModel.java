@@ -31,6 +31,10 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
   private final BehaviorSubject<User> userInput = BehaviorSubject.create();
 
   // OUTPUTS
+  private final PublishSubject<Void> updateSuccess = PublishSubject.create();
+  public final Observable<Void> updateSuccess() {
+    return updateSuccess;
+  }
   private final BehaviorSubject<User> userOutput = BehaviorSubject.create();
   public Observable<User> user() {
     return userOutput;
@@ -39,7 +43,9 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
   // ERRORS
   private final PublishSubject<Throwable> unableToSavePreferenceError = PublishSubject.create();
   public final Observable<String> unableToSavePreferenceError() {
-    return unableToSavePreferenceError.map(__ -> null);
+    return unableToSavePreferenceError
+      .takeUntil(updateSuccess)
+      .map(__ -> null);
   }
 
   public final SettingsViewModelInputs inputs = this;
@@ -119,7 +125,7 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
     userInput
       .skip(1)
       .concatMap(this::updateSettings)
-      .subscribe(currentUser::refresh);
+      .subscribe(this::success);
 
     userInput
       .subscribe(userOutput);
@@ -134,6 +140,11 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
     contactEmailClicked.subscribe(__ -> koala.trackContactEmailClicked());
 
     koala.trackSettingsView();
+  }
+
+  private void success(final @NonNull User user) {
+    currentUser.refresh(user);
+    this.updateSuccess.onNext(null);
   }
 
   private Observable<User> updateSettings(final @NonNull User user) {

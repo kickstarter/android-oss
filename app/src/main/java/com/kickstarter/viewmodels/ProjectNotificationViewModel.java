@@ -23,17 +23,23 @@ public class ProjectNotificationViewModel extends ViewModel<ProjectNotificationV
   public final void switchClick(boolean checked) {
     this.checked.onNext(checked);
   }
+  final BehaviorSubject<Notification> notificationInput;
 
   // OUTPUTS
   private final BehaviorSubject<Notification> notificationOutput = BehaviorSubject.create();
   public final Observable<Notification> notification() {
     return notificationOutput;
   }
+  private final PublishSubject<Void> updateSuccess = PublishSubject.create();
+  public Observable<Void> updateSuccess() {
+    return updateSuccess;
+  }
 
   // ERRORS
   private final PublishSubject<Throwable> unableToSavePreferenceError = PublishSubject.create();
   public Observable<String> unableToSavePreferenceError() {
     return unableToSavePreferenceError
+      .takeUntil(updateSuccess)
       .map(__ -> null);
   }
 
@@ -42,12 +48,12 @@ public class ProjectNotificationViewModel extends ViewModel<ProjectNotificationV
   public final ProjectNotificationViewModelErrors errors = this;
 
   public ProjectNotificationViewModel(final @NonNull Notification notification, final @NonNull ApiClient client) {
-    final BehaviorSubject<Notification> notificationInput = BehaviorSubject.create(notification);
+    notificationInput = BehaviorSubject.create(notification);
 
     notificationInput
       .compose(Transformers.takePairWhen(checked))
       .switchMap(nc -> this.updateNotification(client, nc.first, nc.second))
-      .subscribe(notificationInput);
+      .subscribe(this::success);
 
     notificationInput
       .subscribe(this.notificationOutput);
@@ -55,6 +61,11 @@ public class ProjectNotificationViewModel extends ViewModel<ProjectNotificationV
     this.notificationOutput
       .compose(Transformers.takeWhen(unableToSavePreferenceError))
       .subscribe(this.notificationOutput::onNext);
+  }
+
+  private void success(final @NonNull Notification notification) {
+    notificationInput.onNext(notification);
+    this.updateSuccess.onNext(null);
   }
 
   private Observable<Notification> updateNotification(final @NonNull ApiClient client,

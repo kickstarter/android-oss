@@ -25,7 +25,7 @@
         android:layout_marginTop="@dimen/grid_3"
         android:layout_marginBottom="@dimen/grid_3"
         android:text="@string/___Projects_you_back"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
       <View
@@ -37,18 +37,18 @@
 
       <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="@dimen/grid_7">
 
         <TextView
           style="@style/BodyPrimary"
-          android:paddingTop="@dimen/feed_padding_y"
-          android:paddingBottom="@dimen/feed_padding_y"
+          android:layout_centerVertical="true"
           android:text="@string/___Project_updates"
-          android:layout_width="match_parent"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/project_updates_mail_icon"
+          android:focusable="true"
           app:iconType="ss_kickstarter"
           style="@style/KSSettingsMailIcon"
           android:layout_toLeftOf="@+id/project_updates_phone_icon"
@@ -57,6 +57,7 @@
 
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/project_updates_phone_icon"
+          android:focusable="true"
           style="@style/EndSettingsWidget"
           android:background="@drawable/click_indicator_light"
           android:layout_width="@dimen/settings_icon_fixed_width"
@@ -73,16 +74,16 @@
 
       <RelativeLayout
         android:id="@+id/manage_project_notifications"
+        android:focusable="true"
         android:background="@drawable/click_indicator_light_masked"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="@dimen/grid_7">
 
         <TextView
           style="@style/BodyPrimary"
-          android:paddingTop="@dimen/feed_padding_y"
-          android:paddingBottom="@dimen/feed_padding_y"
+          android:layout_centerVertical="true"
           android:text="@string/___Manage_project_notifications"
-          android:layout_width="match_parent"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 
         <TextView
@@ -100,7 +101,6 @@
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/manage_notifications_chevron_icon"
           style="@style/EndSettingsWidget"
-
           android:layout_width="@dimen/settings_icon_fixed_width"
           android:textColor="@color/gray_black"
           android:text="@string/chevron_right_icon"/>
@@ -119,7 +119,7 @@
         android:layout_marginTop="@dimen/grid_5"
         android:layout_marginBottom="@dimen/grid_3"
         android:text="@string/___Social_notifications"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
       <View
@@ -131,18 +131,18 @@
 
       <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="@dimen/grid_7">
 
         <TextView
           style="@style/BodyPrimary"
-          android:paddingTop="@dimen/feed_padding_y"
-          android:paddingBottom="@dimen/feed_padding_y"
+          android:layout_centerVertical="true"
           android:text="@string/___New_followers"
-          android:layout_width="match_parent"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/new_followers_mail_icon"
+          android:focusable="true"
           app:iconType="ss_kickstarter"
           style="@style/KSSettingsMailIcon"
           android:layout_toLeftOf="@+id/new_followers_phone_icon"
@@ -151,6 +151,7 @@
 
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/new_followers_phone_icon"
+          android:focusable="true"
           style="@style/EndSettingsWidget"
           android:layout_width="@dimen/settings_icon_fixed_width"
           android:background="@drawable/click_indicator_light"
@@ -167,18 +168,18 @@
 
       <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="@dimen/grid_7">
 
         <TextView
           style="@style/BodyPrimary"
-          android:paddingTop="@dimen/feed_padding_y"
-          android:paddingBottom="@dimen/feed_padding_y"
+          android:layout_centerVertical="true"
           android:text="@string/___Friend_backs_a_project"
-          android:layout_width="match_parent"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/friend_activity_mail_icon"
+          android:focusable="true"
           app:iconType="ss_kickstarter"
           style="@style/KSSettingsMailIcon"
           android:layout_toLeftOf="@+id/friend_activity_phone_icon"
@@ -187,6 +188,7 @@
 
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/friend_activity_phone_icon"
+          android:focusable="true"
           style="@style/EndSettingsWidget"
           android:layout_width="@dimen/settings_icon_fixed_width"
           android:background="@drawable/click_indicator_light"
@@ -213,21 +215,20 @@
           android:layout_marginTop="@dimen/grid_5"
           android:layout_marginBottom="@dimen/grid_3"
           android:text="@string/___Newsletters"
-          android:layout_width="match_parent"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 
         <include layout="@layout/horizontal_line_thin_view"/>
 
         <RelativeLayout
           android:layout_width="match_parent"
-          android:layout_height="wrap_content">
+          android:layout_height="@dimen/grid_7">
 
           <TextView
             style="@style/BodyPrimary"
-            android:paddingTop="@dimen/feed_padding_y"
-            android:paddingBottom="@dimen/feed_padding_y"
+            android:layout_centerVertical="true"
             android:text="@string/___Projects_We_Love"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
           <android.support.v7.widget.SwitchCompat
@@ -240,14 +241,13 @@
 
         <RelativeLayout
           android:layout_width="match_parent"
-          android:layout_height="wrap_content">
+          android:layout_height="@dimen/grid_7">
 
           <TextView
             style="@style/BodyPrimary"
-            android:paddingTop="@dimen/feed_padding_y"
-            android:paddingBottom="@dimen/feed_padding_y"
+            android:layout_centerVertical="true"
             android:text="@string/___Kickstarter_news_and_events"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
           <android.support.v7.widget.SwitchCompat
@@ -260,14 +260,13 @@
 
         <RelativeLayout
           android:layout_width="match_parent"
-          android:layout_height="wrap_content">
+          android:layout_height="@dimen/grid_7">
 
           <TextView
             style="@style/BodyPrimary"
-            android:paddingTop="@dimen/feed_padding_y"
-            android:paddingBottom="@dimen/feed_padding_y"
+            android:layout_centerVertical="true"
             android:text="@string/___Happening_Now"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
           <android.support.v7.widget.SwitchCompat
@@ -283,23 +282,23 @@
           android:layout_marginTop="@dimen/grid_5"
           android:layout_marginBottom="@dimen/grid_3"
           android:text="@string/___About"
-          android:layout_width="match_parent"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 
         <include layout="@layout/horizontal_line_thin_view"/>
 
         <RelativeLayout
           android:id="@+id/faq"
+          android:focusable="true"
           android:background="@drawable/click_indicator_light_masked"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content">
+          android:layout_height="@dimen/grid_7">
 
           <TextView
             style="@style/BodyPrimary"
-            android:paddingTop="@dimen/feed_padding_y"
-            android:paddingBottom="@dimen/feed_padding_y"
+            android:layout_centerVertical="true"
             android:text="@string/___Frequently_Asked_Questions"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
           <com.kickstarter.ui.views.IconTextView
@@ -313,16 +312,16 @@
 
         <RelativeLayout
           android:id="@+id/contact"
+          android:focusable="true"
           android:background="@drawable/click_indicator_light_masked"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content">
+          android:layout_height="@dimen/grid_7">
 
           <TextView
             style="@style/BodyPrimary"
-            android:paddingTop="@dimen/feed_padding_y"
-            android:paddingBottom="@dimen/feed_padding_y"
+            android:layout_centerVertical="true"
             android:text="@string/___Contact"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
           <com.kickstarter.ui.views.IconTextView
@@ -336,16 +335,16 @@
 
         <RelativeLayout
           android:id="@+id/how_kickstarter_works"
+          android:focusable="true"
           android:background="@drawable/click_indicator_light_masked"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content">
+          android:layout_height="@dimen/grid_7">
 
           <TextView
             style="@style/BodyPrimary"
-            android:paddingTop="@dimen/feed_padding_y"
-            android:paddingBottom="@dimen/feed_padding_y"
+            android:layout_centerVertical="true"
             android:text="@string/___How_Kickstarter_works"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
           <com.kickstarter.ui.views.IconTextView
@@ -359,16 +358,16 @@
 
         <RelativeLayout
           android:id="@+id/terms_of_use"
+          android:focusable="true"
           android:background="@drawable/click_indicator_light_masked"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content">
+          android:layout_height="@dimen/grid_7">
 
           <TextView
             style="@style/BodyPrimary"
-            android:paddingTop="@dimen/feed_padding_y"
-            android:paddingBottom="@dimen/feed_padding_y"
+            android:layout_centerVertical="true"
             android:text="@string/___Terms_of_Use"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
           <com.kickstarter.ui.views.IconTextView
@@ -382,16 +381,16 @@
 
         <RelativeLayout
           android:id="@+id/privacy_policy"
+          android:focusable="true"
           android:background="@drawable/click_indicator_light_masked"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content">
+          android:layout_height="@dimen/grid_7">
 
           <TextView
             style="@style/BodyPrimary"
-            android:paddingTop="@dimen/feed_padding_y"
-            android:paddingBottom="@dimen/feed_padding_y"
+            android:layout_centerVertical="true"
             android:text="@string/___Privacy_Policy"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
           <com.kickstarter.ui.views.IconTextView
@@ -405,16 +404,16 @@
 
         <RelativeLayout
           android:id="@+id/cookie_policy"
+          android:focusable="true"
           android:background="@drawable/click_indicator_light_masked"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content">
+          android:layout_height="@dimen/grid_7">
 
           <TextView
             style="@style/BodyPrimary"
-            android:paddingTop="@dimen/feed_padding_y"
-            android:paddingBottom="@dimen/feed_padding_y"
+            android:layout_centerVertical="true"
             android:text="@string/___Cookie_Policy"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
           <com.kickstarter.ui.views.IconTextView

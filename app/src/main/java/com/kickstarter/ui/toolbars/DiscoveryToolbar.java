@@ -117,12 +117,10 @@ public final class DiscoveryToolbar extends KSToolbar {
           case R.id.profile:
             final Intent profileIntent = new Intent(activity, ProfileActivity.class);
             activity.startActivity(profileIntent);
-            activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
             break;
           case R.id.settings:
             final Intent settingsIntent = new Intent(activity, SettingsActivity.class);
             activity.startActivity(settingsIntent);
-            activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
             break;
           case R.id.logout:
             logout.execute();

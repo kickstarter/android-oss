@@ -28,7 +28,7 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
 
   // INPUTS
   private final PublishSubject<Void> contactEmailClicked = PublishSubject.create();
-  private final BehaviorSubject<User> userInput = BehaviorSubject.create();
+  private final PublishSubject<User> userInput = PublishSubject.create();
 
   // OUTPUTS
   private final PublishSubject<Void> updateSuccess = PublishSubject.create();
@@ -123,12 +123,11 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
     addSubscription(
       currentUser.observable()
         .take(1)
-        .subscribe(userInput::onNext)
+        .subscribe(userOutput::onNext)
     );
 
     addSubscription(
       userInput
-        .skip(1)
         .concatMap(this::updateSettings)
         .subscribe(this::success)
     );

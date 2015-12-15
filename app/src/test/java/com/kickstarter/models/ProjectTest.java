@@ -1,19 +1,11 @@
 package com.kickstarter.models;
 
-import com.kickstarter.BuildConfig;
-import com.kickstarter.KSRobolectricGradleTestRunner;
+import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.ProjectFactory;
 
-import junit.framework.TestCase;
-
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.annotation.Config;
-import org.robolectric.shadows.multidex.ShadowMultiDex;
 
-@RunWith(KSRobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, shadows=ShadowMultiDex.class, sdk = KSRobolectricGradleTestRunner.DEFAULT_SDK)
-public class ProjectTest extends TestCase {
+public class ProjectTest extends KSRobolectricTestCase {
   Project projectWithSecureUrl() {
     final String projectUrl = "https://www.kickstarter.com/projects/foo/bar";
     final Project.Urls urls = Project.Urls.builder()

@@ -1,20 +1,12 @@
 package com.kickstarter.viewmodels;
 
-import com.kickstarter.BuildConfig;
-import com.kickstarter.KSRobolectricGradleTestRunner;
-
-import junit.framework.TestCase;
+import com.kickstarter.KSRobolectricTestCase;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.annotation.Config;
-import org.robolectric.shadows.multidex.ShadowMultiDex;
 
 import rx.observers.TestSubscriber;
 
-@RunWith(KSRobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, shadows=ShadowMultiDex.class, sdk = KSRobolectricGradleTestRunner.DEFAULT_SDK)
-public class SignupViewModelTest extends TestCase {
+public class SignupViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testSignupViewModel_formValidation() {

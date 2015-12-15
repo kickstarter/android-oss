@@ -52,6 +52,15 @@
           }
         },
         "baseball_card": {
+          "social": {
+            "friends_are_backers": {
+              "zero": "None of your friends are backers.",
+              "one": "%{friend_name} is a backer.",
+              "two": "%{friend_name} and %{second_friend_name} are backers.",
+              "few": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.",
+              "many": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers."
+            }
+          },
           "metadata": {
             "potd": "Project of the day!",
             "starred": "You starred this project.",
@@ -1266,6 +1275,15 @@
           }
         },
         "baseball_card": {
+          "social": {
+            "friends_are_backers": {
+              "zero": "None of your friends are backers.",
+              "one": "%{friend_name} is a backer.",
+              "two": "%{friend_name} and %{second_friend_name} are backers.",
+              "few": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.",
+              "many": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers."
+            }
+          },
           "metadata": {
             "potd": "Projekt des Tages!",
             "starred": "Gehört zu deinen Favoriten.",
@@ -2480,6 +2498,15 @@
           }
         },
         "baseball_card": {
+          "social": {
+            "friends_are_backers": {
+              "zero": "None of your friends are backers.",
+              "one": "%{friend_name} is a backer.",
+              "two": "%{friend_name} and %{second_friend_name} are backers.",
+              "few": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.",
+              "many": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers."
+            }
+          },
           "metadata": {
             "potd": "¡Proyecto del día!",
             "starred": "Entre tus proyectos destacados.",
@@ -3694,6 +3721,15 @@
           }
         },
         "baseball_card": {
+          "social": {
+            "friends_are_backers": {
+              "zero": "None of your friends are backers.",
+              "one": "%{friend_name} is a backer.",
+              "two": "%{friend_name} and %{second_friend_name} are backers.",
+              "few": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.",
+              "many": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers."
+            }
+          },
           "metadata": {
             "potd": "Projet du jour !",
             "starred": "Mes projets préférés !",
@@ -4908,6 +4944,15 @@
           }
         },
         "baseball_card": {
+          "social": {
+            "friends_are_backers": {
+              "zero": "None of your friends are backers.",
+              "one": "%{friend_name} is a backer.",
+              "two": "%{friend_name} and %{second_friend_name} are backers.",
+              "few": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.",
+              "many": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers."
+            }
+          },
           "metadata": {
             "potd": "Project of the day!",
             "starred": "You starred this project.",
@@ -6223,7 +6268,7 @@
     "native_ios_aa": "control",
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
-    "native_iphone_horiz_vs_vert": "experimental",
+    "native_iphone_horiz_vs_vert": "control",
     "recs_thanks_stars": "collaborative_backings_v2",
     "recs_hp_video_plays": "collaborative_backings_v2",
     "video_autoplay_3": "no_autoplay",

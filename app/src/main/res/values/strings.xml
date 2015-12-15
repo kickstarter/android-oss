@@ -243,7 +243,6 @@
   <!-- Content descriptions -->
   <string name="___activity_button_content_description">Activity feed</string>
   <string name="___category_icon_content_description">Category</string>
-  <string name="___close_button_content_description">Close button</string>
   <string name="___comment_button_content_description">Write a comment</string>
   <string name="___current_user_button_content_description">Current user menu</string>
   <string name="___filter_button_content_description">Filter by categories</string>
@@ -251,7 +250,6 @@
   <string name="___live_project_count_content_description">Live projects</string>
   <string name="___location_icon_content_description">Location</string>
   <string name="___login_button_content_description">Log in</string>
-  <string name="___nav_back_button_content_description">Navigate back</string>
   <string name="___overflow_button_content_description">Overflow menu</string>
   <string name="___play_video_button_content_description">Play video</string>
   <string name="___search_button_content_description">Search projects</string>

@@ -21,14 +21,6 @@ class MilkrunApplication
       end
     end
 
-    command :"create-i18n-string-resources" do |c|
-      c.syntax = "milkrun create-i18n-string-resources"
-      c.description = "create i18n string resources for each locale from config"
-      c.action do |args, options|
-        Milkrun::I18nStringResources.new.create
-      end
-    end
-
     command :external do |c|
       c.syntax = 'milkrun external'
       c.description = 'TODO: Submit a new external build to the Play Store'
@@ -42,6 +34,14 @@ class MilkrunApplication
       c.action do |args, options|
         audience = 'internal'
         build_type = 'release'
+
+        Milkrun::Git.new.check
+
+        Milkrun::ServerConfigRefresher.new.refresh
+        Milkrun::I18nStringResources.new.create
+
+        version_code = Milkrun::VersionCode.new.bump
+        version_name = Milkrun::VersionName.new.prompt
         Milkrun.prompt <<-CHECKLIST
 Release checklist!
 
@@ -49,9 +49,6 @@ Release checklist!
 2) Run view tests: ./gradlew connectedInternalMin21DebugAndroidTest
 3) Build and run locally in internalPre21Release mode, test core features on a real device.
 CHECKLIST
-        Milkrun::Git.new.check
-        version_code = Milkrun::VersionCode.new.bump
-        version_name = Milkrun::VersionName.new.prompt
         file_path = Milkrun::Build.new(audience: audience, build_type: build_type).compile
         Milkrun::HockeyApp.new(audience: audience, version_code: version_code, version_name: version_name).create_version
         Milkrun::S3Package.new(version_code: version_code, file_path: file_path).upload
@@ -60,11 +57,13 @@ CHECKLIST
       end
     end
 
-    command :"refresh-server-config" do |c|
-      c.syntax = "milkrun refresh-server-config"
-      c.description = "refresh config from kickstarter api"
+    command :"update-strings" do |c|
+      c.syntax = "milkrun update-strings"
+      c.description = "refresh config and create string resources"
+      c.option "--local", "Use local development server instead of production"
       c.action do |args, options|
-        Milkrun::ServerConfigRefresher.new.refresh
+        Milkrun::ServerConfigRefresher.new(local: (options.local || false)).refresh
+        Milkrun::I18nStringResources.new.create
       end
     end
 

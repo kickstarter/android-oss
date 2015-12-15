@@ -4,6 +4,12 @@ require 'json'
 
 module Milkrun
   class ServerConfigRefresher
+    attr_reader :local
+
+    def initialize(local: false)
+      @local = local
+    end
+
     def refresh
       response = Net::HTTP.get_response(url)
 
@@ -26,12 +32,9 @@ module Milkrun
     private
 
     def url
-      URI.parse("https://***REMOVED***/v1/app/android/config?client_id=***REMOVED***&all_locales=true")
-    end
-    
-    # For local testing
-    def local_url
-      URI.parse("http://api.ksr.dev/v1/app/android/config?client_id=***REMOVED***&all_locales=true")
+      local ?
+        URI.parse("http://api.ksr.dev/v1/app/android/config?client_id=***REMOVED***&all_locales=true") :
+        URI.parse("https://***REMOVED***/v1/app/android/config?client_id=***REMOVED***&all_locales=true")
     end
   end
 end

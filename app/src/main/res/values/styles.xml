@@ -161,6 +161,37 @@
     <item name="android:fontFamily">@string/font_family_medium</item>
   </style>
 
+  <style name="KSSettingsMailIcon">
+    <item name="android:text">@string/mail_icon</item>
+    <item name="android:focusable">true</item>
+    <item name="android:layout_centerVertical">true</item>
+    <item name="android:textSize">@dimen/subhead</item>
+    <item name="android:layout_height">match_parent</item>
+    <item name="android:layout_width">@dimen/settings_icon_fixed_width</item>
+    <item name="android:gravity">center</item>
+    <item name="android:paddingTop">3dp</item>
+    <item name="android:background">@drawable/click_indicator_light</item>
+  </style>
+
+  <style name="EndSettingsWidget">
+    <item name="android:layout_centerVertical">true</item>
+    <item name="android:textSize">@dimen/settings_icon</item>
+    <item name="android:layout_height">match_parent</item>
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:gravity">center</item>
+    <item name="android:layout_alignParentRight">true</item>
+    <item name="android:layout_alignParentEnd">true</item>
+  </style>
+
+  <style name="KSSettingsPhoneIcon" parent="EndSettingsWidget">
+    <item name="android:focusable">true</item>
+    <item name="android:layout_marginRight">@dimen/grid_1</item>
+    <item name="android:layout_height">match_parent</item>
+    <item name="android:layout_width">@dimen/settings_icon_fixed_width</item>
+    <item name="android:background">@drawable/click_indicator_light</item>
+    <item name="android:text">@string/phone_android_icon</item>
+  </style>
+
   <style name="Toolbar" parent="Base.Widget.AppCompat.Toolbar">
     <item name="android:background">@color/primary</item>
     <item name="android:elevation">1dp</item>
@@ -179,7 +210,7 @@
     <item name="android:textSize">22sp</item>
   </style>
 
-  <style name="ToolbarTitle" parent="Subhead">
+  <style name="ToolbarTitle" parent="SubheadPrimary">
     <item name="android:color">@color/black</item>
     <item name="android:textColorHint">@color/dark_gray</item>
   </style>
@@ -235,12 +266,18 @@
     <item name="android:lineSpacingExtra">@dimen/body_line_spacing_extra</item>
   </style>
 
-  <style name="Subhead" parent="TextPrimary">
+  <style name="SubheadPrimary" parent="TextPrimary">
     <item name="android:textSize">@dimen/subhead</item>
     <item name="android:lineSpacingExtra">@dimen/subhead_line_spacing_extra</item>
   </style>
 
-  <style name="SubheadMedium" parent="Subhead">
+  <style name="SubheadPrimaryMedium" parent="SubheadPrimary">
+    <item name="android:fontFamily">@string/font_family_medium</item>
+  </style>
+
+  <style name="SubheadSecondaryMedium" parent="TextSecondary">
+    <item name="android:textSize">@dimen/subhead</item>
+    <item name="android:lineSpacingExtra">@dimen/subhead_line_spacing_extra</item>
     <item name="android:fontFamily">@string/font_family_medium</item>
   </style>
 

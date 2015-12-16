@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/settings_layout"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <include layout="@layout/settings_toolbar"/>
+
+  <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+      android:orientation="vertical"
+      android:layout_marginStart="@dimen/grid_2"
+      android:layout_marginLeft="@dimen/grid_2"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <TextView
+        style="@style/SubheadSecondaryMedium"
+        android:layout_marginTop="@dimen/grid_4"
+        android:layout_marginBottom="@dimen/grid_7_half"
+        android:text="@string/___Projects_you_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+      <View
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@color/gray"
+        android:layout_marginEnd="@dimen/grid_2"
+        android:layout_marginRight="@dimen/grid_2"/>
+
+      <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/grid_8">
+
+        <TextView
+          style="@style/BodyPrimary"
+          android:layout_centerVertical="true"
+          android:text="@string/___Project_updates"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
+
+        <com.kickstarter.ui.views.IconTextView
+          android:id="@+id/project_updates_mail_icon"
+          app:iconType="ss_kickstarter"
+          style="@style/KSSettingsMailIcon"
+          android:layout_toLeftOf="@+id/project_updates_phone_icon"
+          android:layout_toStartOf="@id/project_updates_phone_icon" />
+
+        <com.kickstarter.ui.views.IconTextView
+          android:id="@+id/project_updates_phone_icon"
+          style="@style/KSSettingsPhoneIcon"/>
+
+      </RelativeLayout>
+
+      <View
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@color/gray"
+        android:layout_marginEnd="@dimen/grid_2"
+        android:layout_marginRight="@dimen/grid_2"/>
+
+      <RelativeLayout
+        android:id="@+id/manage_project_notifications"
+        android:focusable="true"
+        android:background="@drawable/click_indicator_light_masked"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/grid_8">
+
+        <TextView
+          style="@style/BodyPrimary"
+          android:layout_centerVertical="true"
+          android:text="@string/___Manage_project_notifications"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
+
+        <TextView
+          android:id="@+id/project_notifications_count"
+          android:layout_centerVertical="true"
+          android:background="@drawable/text_view_rounded_background"
+          android:textColor="@color/white"
+          android:textSize="@dimen/caption"
+          android:padding="@dimen/grid_1_half"
+          android:layout_toLeftOf="@+id/manage_notifications_chevron_icon"
+          android:layout_toStartOf="@+id/manage_notifications_chevron_icon"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
+
+        <com.kickstarter.ui.views.IconTextView
+          android:id="@+id/manage_notifications_chevron_icon"
+          style="@style/EndSettingsWidget"
+          android:layout_width="@dimen/settings_icon_fixed_width"
+          android:textColor="@color/gray_black"
+          android:text="@string/chevron_right_icon"/>
+
+      </RelativeLayout>
+
+      <View
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@color/gray"
+        android:layout_marginEnd="@dimen/grid_2"
+        android:layout_marginRight="@dimen/grid_2"/>
+
+      <TextView
+        style="@style/SubheadSecondaryMedium"
+        android:layout_marginTop="@dimen/grid_11_half"
+        android:layout_marginBottom="@dimen/grid_7_half"
+        android:text="@string/___Social_notifications"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+      <View
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@color/gray"
+        android:layout_marginEnd="@dimen/grid_2"
+        android:layout_marginRight="@dimen/grid_2"/>
+
+      <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/grid_8">
+
+        <TextView
+          style="@style/BodyPrimary"
+          android:layout_centerVertical="true"
+          android:text="@string/___New_followers"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
+
+        <com.kickstarter.ui.views.IconTextView
+          android:id="@+id/new_followers_mail_icon"
+          app:iconType="ss_kickstarter"
+          style="@style/KSSettingsMailIcon"
+          android:layout_toLeftOf="@+id/new_followers_phone_icon"
+          android:layout_toStartOf="@id/new_followers_phone_icon" />
+
+        <com.kickstarter.ui.views.IconTextView
+          android:id="@+id/new_followers_phone_icon"
+          style="@style/KSSettingsPhoneIcon" />
+
+      </RelativeLayout>
+
+      <View
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@color/gray"
+        android:layout_marginEnd="@dimen/grid_2"
+        android:layout_marginRight="@dimen/grid_2"/>
+
+      <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/grid_8">
+
+        <TextView
+          style="@style/BodyPrimary"
+          android:layout_centerVertical="true"
+          android:text="@string/___Friend_backs_a_project"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
+
+        <com.kickstarter.ui.views.IconTextView
+          android:id="@+id/friend_activity_mail_icon"
+          app:iconType="ss_kickstarter"
+          style="@style/KSSettingsMailIcon"
+          android:layout_toLeftOf="@+id/friend_activity_phone_icon"
+          android:layout_toStartOf="@+id/friend_activity_phone_icon" />
+
+        <com.kickstarter.ui.views.IconTextView
+          android:id="@+id/friend_activity_phone_icon"
+          style="@style/KSSettingsPhoneIcon" />
+
+      </RelativeLayout>
+
+      <View
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@color/gray"
+        android:layout_marginEnd="@dimen/grid_2"
+        android:layout_marginRight="@dimen/grid_2"/>
+
+      <LinearLayout
+        android:orientation="vertical"
+        android:layout_marginRight="@dimen/grid_2"
+        android:layout_marginEnd="@dimen/grid_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+          style="@style/SubheadSecondaryMedium"
+          android:layout_marginTop="@dimen/grid_11_half"
+          android:layout_marginBottom="@dimen/grid_7_half"
+          android:text="@string/___Newsletters"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
+
+        <include layout="@layout/horizontal_line_thin_view"/>
+
+        <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_8">
+
+          <TextView
+            style="@style/BodyPrimary"
+            android:layout_centerVertical="true"
+            android:text="@string/___Projects_We_Love"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+          <android.support.v7.widget.SwitchCompat
+            android:id="@+id/projects_we_love_switch"
+            style="@style/EndSettingsWidget"/>
+
+        </RelativeLayout>
+
+        <include layout="@layout/horizontal_line_thin_view"/>
+
+        <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_8">
+
+          <TextView
+            style="@style/BodyPrimary"
+            android:layout_centerVertical="true"
+            android:text="@string/___Kickstarter_news_and_events"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+          <android.support.v7.widget.SwitchCompat
+            android:id="@+id/kickstarter_news_and_events_switch"
+            style="@style/EndSettingsWidget"/>
+
+        </RelativeLayout>
+
+        <include layout="@layout/horizontal_line_thin_view"/>
+
+        <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_8">
+
+          <TextView
+            style="@style/BodyPrimary"
+            android:layout_centerVertical="true"
+            android:text="@string/___Happening_Now"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+          <android.support.v7.widget.SwitchCompat
+            android:id="@+id/happening_now_switch"
+            style="@style/EndSettingsWidget"/>
+
+        </RelativeLayout>
+
+        <include layout="@layout/horizontal_line_thin_view"/>
+
+        <TextView
+          style="@style/SubheadSecondaryMedium"
+          android:layout_marginTop="@dimen/grid_11_half"
+          android:layout_marginBottom="@dimen/grid_7_half"
+          android:text="@string/___About"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
+
+        <include layout="@layout/horizontal_line_thin_view"/>
+
+        <RelativeLayout
+          android:id="@+id/faq"
+          android:focusable="true"
+          android:background="@drawable/click_indicator_light_masked"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_8">
+
+          <TextView
+            style="@style/BodyPrimary"
+            android:layout_centerVertical="true"
+            android:text="@string/___Frequently_Asked_Questions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+          <com.kickstarter.ui.views.IconTextView
+            style="@style/EndSettingsWidget"
+            android:textColor="@color/gray_black"
+            android:text="@string/chevron_right_icon" />
+
+        </RelativeLayout>
+
+        <include layout="@layout/horizontal_line_thin_view"/>
+
+        <RelativeLayout
+          android:id="@+id/contact"
+          android:focusable="true"
+          android:background="@drawable/click_indicator_light_masked"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_8">
+
+          <TextView
+            style="@style/BodyPrimary"
+            android:layout_centerVertical="true"
+            android:text="@string/___Contact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+          <com.kickstarter.ui.views.IconTextView
+            style="@style/EndSettingsWidget"
+            android:textColor="@color/gray_black"
+            android:text="@string/chevron_right_icon" />
+
+        </RelativeLayout>
+
+        <include layout="@layout/horizontal_line_thin_view"/>
+
+        <RelativeLayout
+          android:id="@+id/how_kickstarter_works"
+          android:focusable="true"
+          android:background="@drawable/click_indicator_light_masked"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_8">
+
+          <TextView
+            style="@style/BodyPrimary"
+            android:layout_centerVertical="true"
+            android:text="@string/___How_Kickstarter_works"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+          <com.kickstarter.ui.views.IconTextView
+            style="@style/EndSettingsWidget"
+            android:textColor="@color/gray_black"
+            android:text="@string/chevron_right_icon" />
+
+        </RelativeLayout>
+
+        <include layout="@layout/horizontal_line_thin_view"/>
+
+        <RelativeLayout
+          android:id="@+id/terms_of_use"
+          android:focusable="true"
+          android:background="@drawable/click_indicator_light_masked"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_8">
+
+          <TextView
+            style="@style/BodyPrimary"
+            android:layout_centerVertical="true"
+            android:text="@string/___Terms_of_Use"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+          <com.kickstarter.ui.views.IconTextView
+            style="@style/EndSettingsWidget"
+            android:textColor="@color/gray_black"
+            android:text="@string/chevron_right_icon" />
+
+        </RelativeLayout>
+
+        <include layout="@layout/horizontal_line_thin_view"/>
+
+        <RelativeLayout
+          android:id="@+id/privacy_policy"
+          android:focusable="true"
+          android:background="@drawable/click_indicator_light_masked"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_8">
+
+          <TextView
+            style="@style/BodyPrimary"
+            android:layout_centerVertical="true"
+            android:text="@string/___Privacy_Policy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+          <com.kickstarter.ui.views.IconTextView
+            style="@style/EndSettingsWidget"
+            android:textColor="@color/gray_black"
+            android:text="@string/chevron_right_icon" />
+
+        </RelativeLayout>
+
+        <include layout="@layout/horizontal_line_thin_view"/>
+
+        <RelativeLayout
+          android:id="@+id/cookie_policy"
+          android:focusable="true"
+          android:background="@drawable/click_indicator_light_masked"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_8">
+
+          <TextView
+            style="@style/BodyPrimary"
+            android:layout_centerVertical="true"
+            android:text="@string/___Cookie_Policy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+          <com.kickstarter.ui.views.IconTextView
+            style="@style/EndSettingsWidget"
+            android:textColor="@color/gray_black"
+            android:text="@string/chevron_right_icon" />
+
+        </RelativeLayout>
+
+        <include layout="@layout/horizontal_line_thin_view"/>
+
+        <Button
+          style="@style/BorderButton"
+          android:id="@+id/log_out_button"
+          android:text="@string/___Log_out"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/grid_3"
+          android:layout_marginBottom="@dimen/grid_3"/>
+
+      </LinearLayout>
+
+    </LinearLayout>
+
+  </ScrollView>
+
+</LinearLayout>

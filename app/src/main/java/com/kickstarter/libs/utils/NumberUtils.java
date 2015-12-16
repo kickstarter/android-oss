@@ -65,8 +65,4 @@ public final class NumberUtils {
 
     return String.format("%s%s%s", prefix, numberFormat.format(bucketedValue), suffix);
   }
-
-  public static @NonNull String formatCurrency(final float value) {
-    return formatNumber(value);
-  }
 }

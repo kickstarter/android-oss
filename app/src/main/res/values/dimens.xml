@@ -86,8 +86,8 @@
   <dimen name="activity_feed_view_margin_bottom">@dimen/grid_3_half</dimen>
 
   <!-- Logged in menu -->
-  <dimen name="logged_in_menu_width">180dp</dimen>
-  <dimen name="logged_in_menu_horizontal_offset">-135dp</dimen>
-  <dimen name="logged_in_menu_vertical_offset">-45dp</dimen>
+  <dimen name="logged_in_menu_width">190dp</dimen>
+  <dimen name="logged_in_menu_horizontal_offset">-145dp</dimen>
+  <dimen name="logged_in_menu_vertical_offset">-46dp</dimen>
 
 </resources>

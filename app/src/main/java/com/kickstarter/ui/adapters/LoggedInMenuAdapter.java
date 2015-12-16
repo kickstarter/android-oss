@@ -29,10 +29,6 @@ public final class LoggedInMenuAdapter extends BaseAdapter {
   public LoggedInMenuAdapter(final @NonNull Context context, final @NonNull User user) {
     this.context = context;
     this.user = user;
-
-    takeTitle(user.name());
-    takeTitle(context.getResources().getString(R.string.___Settings));
-    takeTitle(context.getResources().getString(R.string.___Help));
   }
 
   public void takeTitle(final @NonNull String title) {

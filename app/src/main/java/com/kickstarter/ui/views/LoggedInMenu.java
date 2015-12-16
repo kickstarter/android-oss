@@ -24,11 +24,13 @@ public class LoggedInMenu extends ListPopupWindow {
     setWidth(context.getResources().getDimensionPixelSize(R.dimen.logged_in_menu_width));
     setHorizontalOffset(context.getResources().getDimensionPixelSize(R.dimen.logged_in_menu_horizontal_offset));
     setVerticalOffset(context.getResources().getDimensionPixelSize(R.dimen.logged_in_menu_vertical_offset));
-    //the height of the toolbar in landscape mode is different so this will have to grab from a landscape dimens file
     setBackgroundDrawable(context.getResources().getDrawable(R.drawable.dialog_alert_rounded, null));
 
     final LoggedInMenuAdapter adapter = new LoggedInMenuAdapter(context, currentUser);
     setAdapter(adapter);
+    adapter.takeTitle(currentUser.name());
+    adapter.takeTitle(context.getResources().getString(R.string.___Settings));
+    adapter.takeTitle(context.getResources().getString(R.string.___Help));
 
     setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) -> {
       dismiss();

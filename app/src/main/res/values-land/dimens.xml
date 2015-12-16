@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <dimen name="form_margin_x">@dimen/grid_16</dimen>
+  <dimen name="logged_in_menu_vertical_offset">-38dp</dimen>
 </resources>

@@ -7,13 +7,10 @@
 
   <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/Subhead"
-    android:text="hello"
+    android:focusable="true"
     android:id="@+id/menu_item_title"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/grid_2"
-    android:layout_marginTop="@dimen/grid_2"
-    android:layout_marginBottom="@dimen/grid_2"
-    android:paddingRight="@dimen/grid_2" />
+    android:layout_margin="@dimen/grid_2" />
 
 </LinearLayout>

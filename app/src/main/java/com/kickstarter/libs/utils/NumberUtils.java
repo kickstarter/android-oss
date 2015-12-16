@@ -50,8 +50,6 @@ public final class NumberUtils {
     int precision = ObjectUtils.coalesce(options.precision(), 0);
     float divisor = 1.0f;
 
-    final String prefix = options.currencySymbol() != null ? options.currencySymbol() : "";
-
     String suffix = "";
     final float bucketAbove = ObjectUtils.coalesce(options.bucketAbove(), 0.0f);
     if (bucketAbove >= 1000.0f && value >= bucketAbove) {

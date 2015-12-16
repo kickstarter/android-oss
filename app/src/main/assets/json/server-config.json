@@ -483,7 +483,7 @@
           "password": "Password"
         },
         "navbar_title": "Sign up",
-        "newsletter_full": "Discover new projects with our weekly newsletter.",
+        "newsletter_full": "Receive our weekly newsletter and other occasional updates.",
         "button": "Sign up",
         "error": {
           "something_wrong": "Something went wrong."
@@ -1312,7 +1312,7 @@
             "share": "Teilen"
           },
           "read_more": "Mehr%{space}Info%{space}",
-          "blurb_read_more": "%{blurb}%{space}<u>Read%{space}more</u>%{space}",
+          "blurb_read_more": "%{blurb}%{space}Mehr%{space}lesen%{space}",
           "accessibility": {
             "category": {
               "label": "Category"
@@ -1861,7 +1861,7 @@
         },
         "creator": {
           "by_creator": "von %{creator_name}",
-          "by_creator_html": "by <u>%{creator_name}</u>",
+          "by_creator_html": "von %{creator_name}",
           "youre_a_backer": " • Du unterstützt das Projekt"
         },
         "subpages": {
@@ -2454,7 +2454,7 @@
         "login": "Iniciar sesión",
         "dashboard": "Panel de control",
         "search": "Búsqueda",
-        "search_projects": "Search projects",
+        "search_projects": "Buscar proyectos",
         "me": "Mi cuenta"
       },
       "discovery": {
@@ -2500,11 +2500,11 @@
         "baseball_card": {
           "social": {
             "friends_are_backers": {
-              "zero": "None of your friends are backers.",
-              "one": "%{friend_name} is a backer.",
-              "two": "%{friend_name} and %{second_friend_name} are backers.",
-              "few": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.",
-              "many": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers."
+              "zero": "Ninguno de tus amigos patrocina este proyecto.",
+              "one": "%{friend_name} patrocina este proyecto.",
+              "two": "%{friend_name} y %{second_friend_name} patrocinan este proyecto.",
+              "few": "%{friend_name}, %{second_friend_name}, y %{remaining_count} más patrocinan este proyecto.",
+              "many": "%{friend_name}, %{second_friend_name}, y %{remaining_count} más patrocinan este proyecto."
             }
           },
           "metadata": {
@@ -2535,13 +2535,13 @@
             "share": "Compartir"
           },
           "read_more": "Leer%{space}más%{space}",
-          "blurb_read_more": "%{blurb}%{space}<u>Read%{space}more</u>%{space}",
+          "blurb_read_more": "%{blurb}%{space}Leer%{space}más%{space}",
           "accessibility": {
             "category": {
-              "label": "Category"
+              "label": "Categoría"
             },
             "location": {
-              "label": "Location"
+              "label": "Ubicación"
             }
           }
         },
@@ -3084,7 +3084,7 @@
         },
         "creator": {
           "by_creator": "por %{creator_name}",
-          "by_creator_html": "by <u>%{creator_name}</u>",
+          "by_creator_html": "de %{creator_name}",
           "youre_a_backer": " • Tú eres un patrocinador"
         },
         "subpages": {
@@ -3118,10 +3118,10 @@
         },
         "accessibility": {
           "button_share": {
-            "label": "Share this project"
+            "label": "Compartir este proyecto"
           },
           "button_star": {
-            "label": "Star this project"
+            "label": "Añadir este proyecto a favoritos"
           }
         }
       },
@@ -3195,8 +3195,8 @@
         }
       },
       "search": {
-        "by_creator": "by %{creator_name}",
-        "most_popular": "Most Popular"
+        "by_creator": "de %{creator_name}",
+        "most_popular": "Los más populares"
       },
       "messages": {
         "navigation": {
@@ -3475,10 +3475,10 @@
           },
           "accessibility": {
             "button_navigate_back": {
-              "label": "Navigate back"
+              "label": "Atrás"
             },
             "button_close": {
-              "label": "Close"
+              "label": "Cerrar"
             }
           }
         },
@@ -3677,7 +3677,7 @@
         "login": "Connexion",
         "dashboard": "Tableau de bord",
         "search": "Recherche",
-        "search_projects": "Search projects",
+        "search_projects": "Rechercher des projets",
         "me": "Mon compte"
       },
       "discovery": {
@@ -3723,11 +3723,11 @@
         "baseball_card": {
           "social": {
             "friends_are_backers": {
-              "zero": "None of your friends are backers.",
-              "one": "%{friend_name} is a backer.",
-              "two": "%{friend_name} and %{second_friend_name} are backers.",
-              "few": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.",
-              "many": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers."
+              "zero": "Vos amis n'ont pas soutenu ce projet.",
+              "one": "%{friend_name} est contributeur.",
+              "two": "%{friend_name} et %{second_friend_name} sont contributeurs.",
+              "few": "%{friend_name}, %{second_friend_name} et %{remaining_count} autres personnes sont contributeurs.",
+              "many": "%{friend_name}, %{second_friend_name} et %{remaining_count} autres personnes sont contributeurs."
             }
           },
           "metadata": {
@@ -3758,13 +3758,13 @@
             "share": "Partager"
           },
           "read_more": "En savoir%{space}plus%{space}",
-          "blurb_read_more": "%{blurb}%{space}<u>Read%{space}more</u>%{space}",
+          "blurb_read_more": "%{blurb}%{space}Plus%{space}%{space}",
           "accessibility": {
             "category": {
-              "label": "Category"
+              "label": "Catégorie"
             },
             "location": {
-              "label": "Location"
+              "label": "Lieu"
             }
           }
         },
@@ -4307,7 +4307,7 @@
         },
         "creator": {
           "by_creator": "par %{creator_name}",
-          "by_creator_html": "by <u>%{creator_name}</u>",
+          "by_creator_html": "par %{creator_name}",
           "youre_a_backer": " • Vous êtes contributeur"
         },
         "subpages": {
@@ -4341,10 +4341,10 @@
         },
         "accessibility": {
           "button_share": {
-            "label": "Share this project"
+            "label": "Partager ce projet"
           },
           "button_star": {
-            "label": "Star this project"
+            "label": "Ajouter à mes projets préférés"
           }
         }
       },
@@ -4418,8 +4418,8 @@
         }
       },
       "search": {
-        "by_creator": "by %{creator_name}",
-        "most_popular": "Most Popular"
+        "by_creator": "par %{creator_name}",
+        "most_popular": "Les tendances"
       },
       "messages": {
         "navigation": {
@@ -4698,10 +4698,10 @@
           },
           "accessibility": {
             "button_navigate_back": {
-              "label": "Navigate back"
+              "label": "Retour"
             },
             "button_close": {
-              "label": "Close"
+              "label": "Fermer"
             }
           }
         },
@@ -5375,7 +5375,7 @@
           "password": "Password"
         },
         "navbar_title": "Sign up",
-        "newsletter_full": "Discover new projects with our weekly newsletter.",
+        "newsletter_full": "Receive our weekly newsletter and other occasional updates.",
         "button": "Sign up",
         "error": {
           "something_wrong": "Something went wrong."
@@ -6265,10 +6265,10 @@
   ],
   "ab_experiments": {
     "discover_sorts_vs_subcategories": "experimental",
-    "native_ios_aa": "control",
+    "native_ios_aa": "experimental",
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
-    "native_iphone_horiz_vs_vert": "control",
+    "native_iphone_horiz_vs_vert": "experimental",
     "recs_thanks_stars": "collaborative_backings_v2",
     "recs_hp_video_plays": "collaborative_backings_v2",
     "video_autoplay_3": "no_autoplay",

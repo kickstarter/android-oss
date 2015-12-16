@@ -632,7 +632,7 @@ We\'d appreciate it!</string>
   <string name="signup_input_fields_full_name" formatted="false">Full name</string>
   <string name="signup_input_fields_password" formatted="false">Password</string>
   <string name="signup_navbar_title" formatted="false">Sign up</string>
-  <string name="signup_newsletter_full" formatted="false">Discover new projects with our weekly newsletter.</string>
+  <string name="signup_newsletter_full" formatted="false">Receive our weekly newsletter and other occasional updates.</string>
   <string name="social_buttons_cancel" formatted="false">Cancel</string>
   <string name="social_buttons_post" formatted="false">Post</string>
   <string name="social_buttons_send" formatted="false">Send</string>

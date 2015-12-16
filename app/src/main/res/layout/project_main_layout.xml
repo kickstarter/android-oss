@@ -128,22 +128,35 @@
 
     </LinearLayout>
 
-    <ProgressBar
-      style="@style/ProgressBar"
-      android:id="@+id/percentage_funded"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:minHeight="@dimen/progress_bar_min_height"
-      android:layout_marginTop="@dimen/grid_3"
-      android:progress="50" />
-
-    <include layout="@layout/project_stats_view"
-      android:layout_height="wrap_content"
-      android:layout_width="wrap_content"
-      android:layout_marginTop="@dimen/grid_3"
-      android:layout_marginBottom="@dimen/grid_4"/>
-
   </LinearLayout>
+
+  <ProgressBar
+    style="@style/ProgressBar"
+    android:id="@+id/percentage_funded"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="@dimen/grid_3"
+    android:layout_marginLeft="@dimen/grid_3"
+    android:layout_marginStart="@dimen/grid_3"
+    android:layout_marginEnd="@dimen/grid_3"
+    android:minHeight="@dimen/progress_bar_min_height"
+    android:layout_marginTop="@dimen/grid_3"
+    android:progress="50" />
+
+  <include layout="@layout/project_state_view"
+    android:layout_marginTop="@dimen/grid_3"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"/>
+
+  <include layout="@layout/project_stats_view"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:layout_marginRight="@dimen/grid_3"
+    android:layout_marginLeft="@dimen/grid_3"
+    android:layout_marginStart="@dimen/grid_3"
+    android:layout_marginEnd="@dimen/grid_3"
+    android:layout_marginTop="@dimen/grid_3"
+    android:layout_marginBottom="@dimen/grid_4"/>
 
   <include layout="@layout/horizontal_line_thin_view" />
 

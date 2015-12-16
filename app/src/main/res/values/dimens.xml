@@ -2,20 +2,20 @@
   <!-- Kickstarter eight-point grid keylines-->
   <dimen name="grid_1_half">4dp</dimen>
   <dimen name="grid_1">8dp</dimen>
-  <dimen name="grid_2">16dp</dimen>
-  <dimen name="grid_3">24dp</dimen>
   <dimen name="grid_3_half">12dp</dimen>
-  <dimen name="grid_4">32dp</dimen>
-  <dimen name="grid_5">40dp</dimen>
+  <dimen name="grid_2">16dp</dimen>
   <dimen name="grid_5_half">20dp</dimen>
+  <dimen name="grid_3">24dp</dimen>
+  <dimen name="grid_7_half">28dp</dimen>
+  <dimen name="grid_4">32dp</dimen>
+  <dimen name="grid_9_half">36dp</dimen>
+  <dimen name="grid_5">40dp</dimen>
+  <dimen name="grid_11_half">44dp</dimen>
   <dimen name="grid_6">48dp</dimen>
   <dimen name="grid_7">56dp</dimen>
-  <dimen name="grid_7_half">28dp</dimen>
   <dimen name="grid_8">64dp</dimen>
   <dimen name="grid_9">72dp</dimen>
-  <dimen name="grid_9_half">36dp</dimen>
   <dimen name="grid_10">80dp</dimen>
-  <dimen name="grid_11_half">44dp</dimen>
   <dimen name="grid_11">88dp</dimen>
   <dimen name="grid_12">96dp</dimen>
   <dimen name="grid_13">104dp</dimen>

@@ -82,7 +82,7 @@
         android:layout_height="30dp" />
 
       <TextView
-        style="@style/BodyPrimary"
+        style="@style/CaptionPrimary"
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

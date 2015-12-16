@@ -97,8 +97,8 @@
       layout="@layout/horizontal_line_thin_view"
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
-      android:layout_marginTop="@dimen/grid_1_half"
-      android:layout_marginBottom="@dimen/grid_1_half"/>
+      android:layout_marginTop="@dimen/grid_1"
+      android:layout_marginBottom="@dimen/grid_1"/>
 
     <RelativeLayout
       android:id="@+id/updates"

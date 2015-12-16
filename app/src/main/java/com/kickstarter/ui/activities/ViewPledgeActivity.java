@@ -10,11 +10,9 @@ import android.widget.TextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.CurrencyOptions;
+import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.transformations.CircleTransformation;
-import com.kickstarter.libs.Money;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
-import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Project;
 import com.kickstarter.viewmodels.ViewPledgeViewModel;
@@ -36,7 +34,7 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel> 
   public @Bind(R.id.shipping_info) TextView shippingInfoTextView;
   public @Bind(R.id.shipping_amount) TextView shippingAmountTextView;
 
-  @Inject Money money;
+  @Inject KSCurrency ksCurrency;
 
   public void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -63,17 +61,17 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel> 
     if (backing.project() != null && backing.reward() != null) {
       pledgeInfoTextView.setText(String.format(
         getString(R.string.___pledged_amount_on_date),
-        money.formatCurrency(backing.amount(), backing.project()),
+        ksCurrency.formatCurrency(backing.amount(), backing.project()),
         backing.formattedPledgedAt()
       ));
       rewardInfoTextView.setText(String.format(
         getString(R.string.___reward_amount_description),
-        money.formatCurrency(backing.reward().minimum(), backing.project()),
+        ksCurrency.formatCurrency(backing.reward().minimum(), backing.project()),
         backing.reward().reward()));
       if (backing.reward().shippingEnabled() != null && backing.reward().shippingEnabled()) {
         shippingInfoTextView.setText(backing.location().displayableName());
         shippingAmountTextView.setText(
-          money.formatCurrency(backing.shippingAmount(), backing.project())
+          ksCurrency.formatCurrency(backing.shippingAmount(), backing.project())
         );
       }
 

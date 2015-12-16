@@ -24,7 +24,7 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.KoalaTrackingClient;
 import com.kickstarter.libs.Logout;
-import com.kickstarter.libs.Money;
+import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.Release;
 import com.kickstarter.libs.preferences.StringPreference;
@@ -288,8 +288,8 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  Money provideMoney(@NonNull final CurrentConfig currentConfig) {
-    return new Money(currentConfig);
+  KSCurrency provideKSCurrency(@NonNull final CurrentConfig currentConfig) {
+    return new KSCurrency(currentConfig);
   }
 
   @Provides

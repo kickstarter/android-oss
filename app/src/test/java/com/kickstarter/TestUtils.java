@@ -2,7 +2,7 @@ package com.kickstarter;
 
 import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfig;
-import com.kickstarter.libs.Money;
+import com.kickstarter.libs.KSCurrency;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +50,7 @@ public class TestUtils {
 
   }
 
-  static Money createMoney(final String countryCode) {
-    return new Money(mockCurrentConfig(createConfig(countryCode)));
+  static KSCurrency createKSCurrency(final String countryCode) {
+    return new KSCurrency(mockCurrentConfig(createConfig(countryCode)));
   }
 }

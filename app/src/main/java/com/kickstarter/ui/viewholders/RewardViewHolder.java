@@ -9,10 +9,9 @@ import android.widget.TextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
-import com.kickstarter.libs.Money;
+import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 
@@ -37,7 +36,7 @@ public final class RewardViewHolder extends KSViewHolder {
 
   protected @BindString(R.string.rewards_info_limited_rewards_remaining_left_of_reward_limit) String limitedRewardsRemainingString;
 
-  @Inject Money money;
+  @Inject KSCurrency ksCurrency;
   @Inject KSString ksString;
 
   private final Context context;
@@ -65,7 +64,7 @@ public final class RewardViewHolder extends KSViewHolder {
 
     minimumTextView.setText(String.format(
       context.getString(R.string.___Pledge_or_more),
-      money.formatCurrency(reward.minimum(), project)));
+      ksCurrency.formatCurrency(reward.minimum(), project)));
 
     final Integer backersCount = reward.backersCount();
     final String backersCountText = (backersCount != null) ?

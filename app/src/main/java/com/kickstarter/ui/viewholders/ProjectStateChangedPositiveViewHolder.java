@@ -9,9 +9,8 @@ import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
-import com.kickstarter.libs.Money;
+import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.utils.DateTimeUtils;
-import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Activity;
 import com.squareup.picasso.Picasso;
 
@@ -32,7 +31,8 @@ public final class ProjectStateChangedPositiveViewHolder extends ActivityListVie
   @Bind(R.id.title) TextView titleTextView;
   @BindColor(R.color.blue_darken_10) int blueDarken10Color;
   @BindColor(R.color.green_darken_10) int greenDarken10Color;
-  @Inject Money money;
+
+  @Inject KSCurrency ksCurrency;
 
   private final Delegate delegate;
 
@@ -56,7 +56,7 @@ public final class ProjectStateChangedPositiveViewHolder extends ActivityListVie
     switch (activity.category()) {
       case Activity.CATEGORY_LAUNCH:
         cardView.setCardBackgroundColor(blueDarken10Color);
-        leftStatFirstTextView.setText(money.formatCurrency(activity.project().goal(), activity.project()));
+        leftStatFirstTextView.setText(ksCurrency.formatCurrency(activity.project().goal(), activity.project()));
         leftStatSecondTextView.setText(context.getString(R.string.___goal));
         rightStatFirstTextView.setText(context.getString(R.string.___Launched));
         rightStatSecondTextView.setText(activity.project().launchedAt().toString(DateTimeUtils.defaultFormatter()));
@@ -65,10 +65,10 @@ public final class ProjectStateChangedPositiveViewHolder extends ActivityListVie
         break;
       case Activity.CATEGORY_SUCCESS:
         cardView.setCardBackgroundColor(greenDarken10Color);
-        leftStatFirstTextView.setText(money.formatCurrency(activity.project().pledged(), activity.project()));
+        leftStatFirstTextView.setText(ksCurrency.formatCurrency(activity.project().pledged(), activity.project()));
         leftStatSecondTextView.setText(context.getString(
           R.string.___pledged_of_goal,
-          money.formatCurrency(activity.project().goal(), activity.project(), true)));
+          ksCurrency.formatCurrency(activity.project().goal(), activity.project(), true)));
         rightStatFirstTextView.setText(context.getString(R.string.___Funded));
         rightStatSecondTextView.setText(activity.createdAt().toString(DateTimeUtils.defaultFormatter()));
         titleTextView.setText(context

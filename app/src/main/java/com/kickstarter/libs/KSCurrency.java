@@ -5,10 +5,10 @@ import android.support.annotation.NonNull;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Project;
 
-public final class Money {
+public final class KSCurrency {
   final CurrentConfig currentConfig;
 
-  public Money(@NonNull final CurrentConfig currentConfig) {
+  public KSCurrency(@NonNull final CurrentConfig currentConfig) {
     this.currentConfig = currentConfig;
   }
 

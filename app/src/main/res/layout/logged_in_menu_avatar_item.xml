@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:background="@color/off_white"
+  android:background="@drawable/click_indicator_light_masked"
   android:orientation="horizontal"
   android:layout_width="match_parent"
   android:layout_height="match_parent">

@@ -3,6 +3,7 @@ package com.kickstarter.services;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
+import com.kickstarter.libs.Config;
 import com.kickstarter.libs.rx.operators.ApiErrorOperator;
 import com.kickstarter.libs.rx.operators.Operators;
 import com.kickstarter.models.Activity;
@@ -245,6 +246,12 @@ public final class ApiClient {
         .promoNewsletter(user.promoNewsletter() ? 1 : 0)
         .weeklyNewsletter(user.weeklyNewsletter() ? 1 : 0)
         .build())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
+  public Observable<Config> config() {
+    return service.config()
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }

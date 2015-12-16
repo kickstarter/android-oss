@@ -2,6 +2,7 @@ package com.kickstarter.services;
 
 import android.support.annotation.NonNull;
 
+import com.kickstarter.libs.Config;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
@@ -117,4 +118,7 @@ public interface ApiService {
 
   @PUT("/v1/users/self")
   Observable<Response<User>> updateUserSettings(@Body SettingsBody body);
+
+  @GET("/v1/app/android/config")
+  Observable<Response<Config>> config();
 }

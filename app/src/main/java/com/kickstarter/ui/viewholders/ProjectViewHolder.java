@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -51,6 +52,9 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.avatar) ImageView avatarImageView;
   protected @Bind(R.id.avatar_name) TextView avatarNameTextView;
   protected @Bind(R.id.fund_message) TextView fundMessageTextView;
+  protected @Bind(R.id.funding_unsuccessful_view) TextView fundingUnsuccessfulTextView;
+  protected @Bind(R.id.project_state_view) ViewGroup projectStateViewGroup;
+  protected @Bind(R.id.successfully_funded_view) TextView successfullyFundedTextView;
   protected @Bind(R.id.updates_count) TextView updatesCountTextView;
 
   protected @BindString(R.string.project_creator_by_creator_html) String byCreatorString;
@@ -135,6 +139,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       ));
     }
 
+    setProjectStateView();
     setStatsContentDescription();
   }
 
@@ -156,6 +161,43 @@ public final class ProjectViewHolder extends KSViewHolder {
   @OnClick(R.id.play_button_overlay)
   public void playButtonClick() {
     delegate.projectVideoStarted(this);
+  }
+
+  public void setProjectStateView() {
+    switch(project.state()) {
+      case Project.STATE_SUCCESSFUL:
+        percentageFundedProgressBar.setVisibility(View.GONE);
+        projectStateViewGroup.setVisibility(View.VISIBLE);
+        fundingUnsuccessfulTextView.setVisibility(View.GONE);
+        successfullyFundedTextView.setVisibility(View.VISIBLE);
+        successfullyFundedTextView.setText(bannerSuccessfulString);
+        break;
+      case Project.STATE_CANCELED:
+        percentageFundedProgressBar.setVisibility(View.GONE);
+        projectStateViewGroup.setVisibility(View.VISIBLE);
+        successfullyFundedTextView.setVisibility(View.GONE);
+        fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
+        fundingUnsuccessfulTextView.setText(bannerCanceledString);
+        break;
+      case Project.STATE_FAILED:
+        percentageFundedProgressBar.setVisibility(View.GONE);
+        projectStateViewGroup.setVisibility(View.VISIBLE);
+        successfullyFundedTextView.setVisibility(View.GONE);
+        fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
+        fundingUnsuccessfulTextView.setText(ksString.format(fundingUnsuccessfulString,
+          "date", project.formattedStateChangedAt()
+        ));
+        break;
+      case Project.STATE_SUSPENDED:
+        percentageFundedProgressBar.setVisibility(View.GONE);
+        projectStateViewGroup.setVisibility(View.VISIBLE);
+        successfullyFundedTextView.setVisibility(View.GONE);
+        fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
+        fundingUnsuccessfulTextView.setText(ksString.format(bannerSuspendedString,
+          "date", project.formattedStateChangedAt()
+        ));
+        break;
+    }
   }
 
   public void setStatsContentDescription() {

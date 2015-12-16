@@ -51,6 +51,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.potd_group) ViewGroup potdViewGroup;
   protected @Bind(R.id.project_card_view_group) ViewGroup projectCardViewGroup;
   protected @Bind(R.id.project_metadata_view) ViewGroup projectMetadataViewGroup;
+  protected @Bind(R.id.project_state_view) ViewGroup projectStateViewGroup;
   protected @Bind(R.id.starred_group) ViewGroup starredViewGroup;
   protected @Bind(R.id.successfully_funded_view) TextView successfullyFundedTextView;
 
@@ -127,18 +128,21 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     switch(project.state()) {
       case Project.STATE_SUCCESSFUL:
         percentageFundedProgressBar.setVisibility(View.GONE);
+        projectStateViewGroup.setVisibility(View.VISIBLE);
         fundingUnsuccessfulTextView.setVisibility(View.GONE);
         successfullyFundedTextView.setVisibility(View.VISIBLE);
         successfullyFundedTextView.setText(bannerSuccessfulString);
         break;
       case Project.STATE_CANCELED:
         percentageFundedProgressBar.setVisibility(View.GONE);
+        projectStateViewGroup.setVisibility(View.VISIBLE);
         successfullyFundedTextView.setVisibility(View.GONE);
         fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
         fundingUnsuccessfulTextView.setText(bannerCanceledString);
         break;
       case Project.STATE_FAILED:
         percentageFundedProgressBar.setVisibility(View.GONE);
+        projectStateViewGroup.setVisibility(View.VISIBLE);
         successfullyFundedTextView.setVisibility(View.GONE);
         fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
         fundingUnsuccessfulTextView.setText(ksString.format(fundingUnsuccessfulString,
@@ -147,6 +151,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
         break;
       case Project.STATE_SUSPENDED:
         percentageFundedProgressBar.setVisibility(View.GONE);
+        projectStateViewGroup.setVisibility(View.VISIBLE);
         successfullyFundedTextView.setVisibility(View.GONE);
         fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
         fundingUnsuccessfulTextView.setText(ksString.format(bannerSuspendedString,

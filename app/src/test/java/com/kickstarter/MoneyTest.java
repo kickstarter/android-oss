@@ -1,55 +1,53 @@
 package com.kickstarter;
 
-import com.kickstarter.libs.CurrencyOptions;
+import com.kickstarter.factories.ProjectFactory;
+import com.kickstarter.libs.Money;
 
 import junit.framework.TestCase;
 
 import static com.kickstarter.TestUtils.createMoney;
 
 public class MoneyTest extends TestCase {
-  public void testFormattedCurrencyForFlooredValue() {
-    assertEquals("120", createMoney("US").formattedNumber(120.01f));
-    assertEquals("120", createMoney("US").formattedNumber(120.50f));
-    assertEquals("120", createMoney("US").formattedNumber(120.99f));
+  public void testFormatCurrency_withUserInUS() {
+    final Money money = createMoney("US");
+    assertEquals("$100", money.formatCurrency(100.0f, ProjectFactory.project()));
+    assertEquals("$100 CAD", money.formatCurrency(100.0f, ProjectFactory.caProject()));
+    assertEquals("£100", money.formatCurrency(100.0f, ProjectFactory.ukProject()));
   }
 
-  public void testFormattedCurrencyForUSCurrencyAndUSUser() {
-    assertEquals("$120", createMoney("US").formattedCurrency(120.0f, USCurrencyOptions()));
+  public void testFormatCurrency_withUserInCA() {
+    final Money money = createMoney("CA");
+    assertEquals("$100 USD", money.formatCurrency(100.0f, ProjectFactory.project()));
+    assertEquals("$100 CAD", money.formatCurrency(100.0f, ProjectFactory.caProject()));
+    assertEquals("£100", money.formatCurrency(100.0f, ProjectFactory.ukProject()));
   }
 
-  public void testFormattedCurrencyForUKCurrencyAndUSUser() {
-    assertEquals("£120", createMoney("US").formattedCurrency(120.0f, UKCurrencyOptions()));
+  public void testFormatCurrency_withUserInUK() {
+    final Money money = createMoney("UK");
+    assertEquals("$100 USD", money.formatCurrency(100.0f, ProjectFactory.project()));
+    assertEquals("$100 CAD", money.formatCurrency(100.0f, ProjectFactory.caProject()));
+    assertEquals("£100", money.formatCurrency(100.0f, ProjectFactory.ukProject()));
   }
 
-  public void testFormattedCurrencyForUKCurrencyAndUKUser() {
-    assertEquals("£120", createMoney("UK").formattedCurrency(120.0f, UKCurrencyOptions()));
+  public void testFormatCurrency_withUserInUnlaunchedCountry() {
+    final Money money = createMoney("XX");
+    assertEquals("$100 USD", money.formatCurrency(100.0f, ProjectFactory.project()));
+    assertEquals("$100 CAD", money.formatCurrency(100.0f, ProjectFactory.caProject()));
+    assertEquals("£100", money.formatCurrency(100.0f, ProjectFactory.ukProject()));
   }
 
-  public void testFormattedCurrencyForUSCurrencyAndUKUser() {
-    assertEquals("$120 USD", createMoney("UK").formattedCurrency(120.0f, USCurrencyOptions()));
+  public void testFormatCurrency_withCurrencyCodeExcluded() {
+    final Money money = createMoney("CA");
+    assertEquals("$100", money.formatCurrency(100.0f, ProjectFactory.project(), true));
   }
 
-  public void testFormattedCurrencyForCADCurrencyAndUSUser() {
-    assertEquals("$120 CAD", createMoney("US").formattedCurrency(120.0f, CACurrencyOptions()));
+  public void testFormatCurrency_withUserInUSAndUSDPreferred() {
+    final Money money = createMoney("US");
+    assertEquals("$150", money.formatCurrency(100.0f, ProjectFactory.ukProject(), false, true));
   }
 
-  public void testFormattedCurrencyForUSCurrencyAndCAUser() {
-    assertEquals("$120 USD", createMoney("UK").formattedCurrency(120.0f, USCurrencyOptions()));
-  }
-
-  public void testFormattedCurrencyForCADCurrencyAndUSUserWithExcludedCurrencyCode() {
-    assertEquals("$120", createMoney("US").formattedCurrency(120.0f, CACurrencyOptions(), true));
-  }
-
-  private CurrencyOptions CACurrencyOptions() {
-    return new CurrencyOptions("CA", "$", "CAD");
-  }
-
-  private CurrencyOptions UKCurrencyOptions() {
-    return new CurrencyOptions("UK", "£", "GBP");
-  }
-
-  private CurrencyOptions USCurrencyOptions() {
-    return new CurrencyOptions("US", "$", "USD");
+  public void testFormatCurrency_withUserInUKAndUSDPreferred() {
+    final Money money = createMoney("UK");
+    assertEquals("£100", money.formatCurrency(100.0f, ProjectFactory.ukProject(), false, true));
   }
 }

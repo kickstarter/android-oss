@@ -1,28 +1,28 @@
 package com.kickstarter.libs;
 
-import android.support.annotation.NonNull;
+import android.os.Parcelable;
 
-public class CurrencyOptions {
-  final String country;
-  final String currencySymbol;
-  final String currencyCode;
+import auto.parcel.AutoParcel;
 
-  public CurrencyOptions(@NonNull final String country, @NonNull final String currencySymbol,
-    @NonNull final String currencyCode) {
-    this.country = country;
-    this.currencySymbol = currencySymbol;
-    this.currencyCode = currencyCode;
+@AutoParcel
+public abstract class CurrencyOptions implements Parcelable {
+  public abstract String country();
+  public abstract String currencyCode();
+  public abstract String currencySymbol();
+  public abstract float value();
+
+  @AutoParcel.Builder
+  public abstract static class Builder {
+    public abstract Builder country(String __);
+    public abstract Builder currencyCode(String __);
+    public abstract Builder currencySymbol(String __);
+    public abstract Builder value(float __);
+    public abstract CurrencyOptions build();
   }
 
-  public String country() {
-    return country;
+  public static Builder builder() {
+    return new AutoParcel_CurrencyOptions.Builder();
   }
 
-  public String currencySymbol() {
-    return currencySymbol;
-  }
-
-  public String currencyCode() {
-    return currencyCode;
-  }
+  public abstract Builder toBuilder();
 }

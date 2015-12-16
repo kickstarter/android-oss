@@ -12,6 +12,7 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.Money;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 
@@ -64,7 +65,7 @@ public final class RewardViewHolder extends KSViewHolder {
 
     minimumTextView.setText(String.format(
       context.getString(R.string.___Pledge_or_more),
-      money.formattedCurrency(reward.minimum(), project.currencyOptions())));
+      money.formatCurrency(reward.minimum(), project)));
 
     final Integer backersCount = reward.backersCount();
     final String backersCountText = (backersCount != null) ?

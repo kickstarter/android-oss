@@ -63,6 +63,6 @@ public final class NumberUtils {
       bucketedValue = value / divisor;
     }
 
-    return String.format("%s%s%s", prefix, numberFormat.format(bucketedValue), suffix);
+    return String.format("%s%s%s", prefix, numberFormat.format(bucketedValue), suffix).trim();
   }
 }

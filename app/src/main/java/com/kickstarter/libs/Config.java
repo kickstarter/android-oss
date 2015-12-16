@@ -36,16 +36,16 @@ public class Config {
     return launchedCountries;
   }
 
-  public boolean currencyIsDuplicatedWithSymbol(@NonNull final String symbol, @NonNull final String code) {
-    // TODO: Cache the results
-    int count = 0;
+  /**
+   * A currency needs a code if its symbol is ambiguous, e.g. `$` is used for currencies such as USD, CAD, AUD.
+   */
+  public boolean currencyNeedsCode(final @NonNull String currencySymbol) {
     for (final LaunchedCountry country : launchedCountries()) {
-      if (country.currencySymbol().equals(symbol) && !country.currencyCode().equals(code)) {
-        ++count;
+      if (country.currencySymbol().equals(currencySymbol)) {
+        return country.trailingCode();
       }
     }
-
-    return count >= 1;
+    return true;
   }
 
   public static class LaunchedCountry {

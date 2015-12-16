@@ -6,10 +6,10 @@ import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Project;
 
 public final class Money {
-  final ConfigLoader configLoader;
+  final CurrentConfig currentConfig;
 
-  public Money(@NonNull final ConfigLoader configLoader) {
-    this.configLoader = configLoader;
+  public Money(@NonNull final CurrentConfig currentConfig) {
+    this.currentConfig = currentConfig;
   }
 
   /**
@@ -61,7 +61,7 @@ public final class Money {
    * we only show USD if the user is in the US.
    */
   private @NonNull CurrencyOptions currencyOptions(final float value, final @NonNull Project project, final boolean preferUSD) {
-    final Config config = configLoader.current();
+    final Config config = currentConfig.getConfig();
     final Float staticUsdRate = project.staticUsdRate();
     return ((preferUSD && config.countryCode().equals("US") && staticUsdRate != null) ?
       CurrencyOptions.builder()
@@ -87,7 +87,7 @@ public final class Money {
       return false;
     }
 
-    final Config config = configLoader.current();
+    final Config config = currentConfig.getConfig();
     final boolean currencyIsDupe = config.currencyNeedsCode(currencyOptions.currencySymbol());
     final boolean userIsUS = config.countryCode().equals("US");
     final boolean projectIsUS = currencyOptions.country().equals("US");

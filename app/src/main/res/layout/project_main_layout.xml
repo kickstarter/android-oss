@@ -72,7 +72,8 @@
 
     <TextView
       android:id="@+id/blurb"
-      style="@style/Subhead"
+      style="@style/BodyPrimary"
+      android:text="Description about this project."
       android:focusable="true"
       android:background="@drawable/click_indicator_light_masked"
       android:layout_width="match_parent"

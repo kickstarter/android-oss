@@ -289,7 +289,7 @@
   <string name="discovery_backing" formatted="false">Unterstützte Projekte</string>
   <string name="discovery_baseball_card_accessibility_category_label" formatted="false">Category</string>
   <string name="discovery_baseball_card_accessibility_location_label" formatted="false">Location</string>
-  <string name="discovery_baseball_card_blurb_read_more" formatted="false">%{blurb}%{space}&lt;u>Read%{space}more&lt;/u>%{space}</string>
+  <string name="discovery_baseball_card_blurb_read_more" formatted="false">%{blurb}%{space}Mehr%{space}lesen%{space}</string>
   <string name="discovery_baseball_card_button_share" formatted="false">Teilen</string>
   <string name="discovery_baseball_card_deadline_units_days" formatted="false">Tage</string>
   <string name="discovery_baseball_card_deadline_units_hours" formatted="false">Std</string>
@@ -561,7 +561,7 @@ Wir würden uns sehr darüber freuen!</string>
   <string name="project_comments_empty_state_non_backer_message" formatted="false">Oh wie schade. Werde Unterstützer um einen Kommentar zu verfassen.</string>
   <string name="project_comments_empty_state_non_backer_title" formatted="false">Keine Kommentare</string>
   <string name="project_creator_by_creator" formatted="false">von %{creator_name}</string>
-  <string name="project_creator_by_creator_html" formatted="false">by &lt;u>%{creator_name}&lt;/u></string>
+  <string name="project_creator_by_creator_html" formatted="false">von %{creator_name}</string>
   <string name="project_creator_youre_a_backer" formatted="false"> • Du unterstützt das Projekt</string>
   <string name="project_disclaimer_goal_not_reached" formatted="false">Dieses Projekt wird nur finanziert, wenn bis %{deadline} mindestens %{goal_currency} zusammenkommen.</string>
   <string name="project_disclaimer_goal_reached" formatted="false">Dieses Projekt wird am %{deadline} finanziert.</string>

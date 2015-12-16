@@ -28,8 +28,8 @@
   <dimen name="caption">12sp</dimen>
   <dimen name="body">14sp</dimen>
   <dimen name="subhead">16sp</dimen>
-  <dimen name="headline">20sp</dimen>
-  <dimen name="editorial_headline">26sp</dimen>
+  <dimen name="headline">18sp</dimen>
+  <dimen name="editorial_headline">22sp</dimen>
 
   <dimen name="caption_line_spacing_extra">2dp</dimen>
   <dimen name="body_line_spacing_extra">2dp</dimen>
@@ -38,6 +38,7 @@
   <!-- Icon sizes -->
   <dimen name="chevron_right_icon">24sp</dimen>
   <dimen name="empty_feed_icon">50sp</dimen>
+  <dimen name="settings_icon">20sp</dimen>
 
   <!-- Cards -->
   <dimen name="card_corner_radius">4dp</dimen>
@@ -56,6 +57,7 @@
   other where they all take up the same width. This helps with UI effects like ripples that
   use the button size to calculate the ripple radius. -->
   <dimen name="button_icon_fixed_width">54dp</dimen>
+  <dimen name="settings_icon_fixed_width">48dp</dimen>
   <dimen name="button_corner_radius">4dp</dimen>
   <dimen name="button_stroke_width">1dp</dimen>
 

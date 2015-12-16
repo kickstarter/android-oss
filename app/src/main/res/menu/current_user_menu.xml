@@ -3,6 +3,11 @@
   <item
     android:id="@+id/profile"
     android:title="@string/___Profile" />
+
+  <item
+    android:id="@+id/settings"
+    android:title="@string/___Settings"/>
+
   <item
     android:id="@+id/logout"
     android:title="@string/___Log_out" />

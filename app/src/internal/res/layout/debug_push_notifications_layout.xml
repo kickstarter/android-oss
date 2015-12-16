@@ -14,7 +14,7 @@
     android:layout_height="wrap_content">
 
     <TextView
-      style="@style/SubheadMedium"
+      style="@style/SubheadPrimaryMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:text="Device registration" />
@@ -45,7 +45,7 @@
       layout="@layout/horizontal_line_thin_view" />
 
     <TextView
-      style="@style/SubheadMedium"
+      style="@style/SubheadPrimaryMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_2"

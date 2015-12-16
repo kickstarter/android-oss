@@ -129,7 +129,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
         percentageFundedProgressBar.setVisibility(View.GONE);
         fundingUnsuccessfulTextView.setVisibility(View.GONE);
         successfullyFundedTextView.setVisibility(View.VISIBLE);
-        fundingUnsuccessfulTextView.setText(bannerSuccessfulString);
+        successfullyFundedTextView.setText(bannerSuccessfulString);
         break;
       case Project.STATE_CANCELED:
         percentageFundedProgressBar.setVisibility(View.GONE);

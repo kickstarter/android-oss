@@ -1,40 +1,56 @@
 package com.kickstarter.libs;
 
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
+
+import com.kickstarter.libs.qualifiers.AutoGson;
 
 import java.util.List;
 
-public class Config {
-  String countryCode;
-  List<LaunchedCountry> launchedCountries;
+import auto.parcel.AutoParcel;
 
-  public static class Builder {
-    private final String countryCode;
-    private final List<LaunchedCountry> launchedCountries;
+@AutoGson
+@AutoParcel
+public abstract class Config implements Parcelable {
+  public abstract String countryCode();
+  public abstract List<LaunchedCountry> launchedCountries();
 
-    public Builder(@NonNull final String countryCode, @NonNull final List<LaunchedCountry> launchedCountries) {
-      this.countryCode = countryCode;
-      this.launchedCountries = launchedCountries;
+  @AutoParcel.Builder
+  public abstract static class Builder {
+    public abstract Builder countryCode(String __);
+    public abstract Builder launchedCountries(List<LaunchedCountry> __);
+    public abstract Config build();
+  }
+
+  @AutoGson
+  @AutoParcel
+  public abstract static class LaunchedCountry implements Parcelable {
+    public abstract String name();
+    public abstract String currencyCode();
+    public abstract String currencySymbol();
+    public abstract Boolean trailingCode();
+
+    @AutoParcel.Builder
+    public abstract static class Builder {
+      public abstract Builder name(String __);
+      public abstract Builder currencyCode(String __);
+      public abstract Builder currencySymbol(String __);
+      public abstract Builder trailingCode(Boolean __);
+      public abstract LaunchedCountry build();
     }
 
-    public Config build() {
-      return new Config(this);
+    public static Builder builder() {
+      return new AutoParcel_Config_LaunchedCountry.Builder();
     }
+
+    public abstract Builder toBuilder();
   }
 
-  private Config(@NonNull final Builder builder) {
-    this.countryCode = builder.countryCode;
-    this.launchedCountries = builder.launchedCountries;
-
+  public static Builder builder() {
+    return new AutoParcel_Config.Builder();
   }
 
-  public String countryCode() {
-    return countryCode;
-  }
-
-  List<LaunchedCountry> launchedCountries() {
-    return launchedCountries;
-  }
+  public abstract Builder toBuilder();
 
   /**
    * A currency needs a code if its symbol is ambiguous, e.g. `$` is used for currencies such as USD, CAD, AUD.
@@ -46,36 +62,5 @@ public class Config {
       }
     }
     return true;
-  }
-
-  public static class LaunchedCountry {
-    String name;
-    String currencyCode;
-    String currencySymbol;
-    Boolean trailingCode;
-
-    public LaunchedCountry(@NonNull final String name, @NonNull final String currencyCode,
-      @NonNull final String currencySymbol, final boolean trailingCode) {
-      this.name = name;
-      this.currencyCode = currencyCode;
-      this.currencySymbol = currencySymbol;
-      this.trailingCode = trailingCode;
-    }
-
-    public String name() {
-      return name;
-    }
-
-    public String currencyCode() {
-      return currencyCode;
-    }
-
-    public String currencySymbol() {
-      return currencySymbol;
-    }
-
-    public Boolean trailingCode() {
-      return trailingCode;
-    }
   }
 }

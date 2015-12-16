@@ -4,6 +4,8 @@ import com.kickstarter.libs.NumberOptions;
 
 import junit.framework.TestCase;
 
+import java.util.Locale;
+
 public class NumberUtilsTest extends TestCase {
   public void testFormatNumber() {
     assertEquals("100", NumberUtils.formatNumber(100.0f));
@@ -57,6 +59,10 @@ public class NumberUtilsTest extends TestCase {
     assertEquals("$100", NumberUtils.formatNumber(100.0f, NumberOptions.builder().currencySymbol("$").build()));
     assertEquals("€100", NumberUtils.formatNumber(100.0f, NumberOptions.builder().currencySymbol("€").build()));
     assertEquals("$100 CAD", NumberUtils.formatNumber(100.0f, NumberOptions.builder().currencySymbol("$").currencyCode("CAD").build()));
+  }
+
+  public void testFormatNumber_withTrailingCurrencySymbol() {
+    assertEquals("100 $", NumberUtils.formatNumber(100.0f, NumberOptions.builder().currencySymbol("$").build(), Locale.GERMANY));
   }
 }
 

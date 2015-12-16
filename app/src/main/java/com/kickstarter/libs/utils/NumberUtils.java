@@ -7,6 +7,7 @@ import com.kickstarter.libs.NumberOptions;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -15,17 +16,32 @@ public final class NumberUtils {
 
   public static @Nullable String numberWithDelimiter(final @Nullable Integer integer) {
     if (integer != null) {
-      return NumberFormat.getNumberInstance(Locale.getDefault()).format(integer);
+      return NumberFormat.getNumberInstance().format(integer);
     }
     return null;
   }
 
+  /**
+   * Returns a formatted number for the user's locale. Defaults to 0 precision with no bucketing.
+   */
   public static @NonNull String formatNumber(final float value) {
-    return formatNumber(value, NumberOptions.builder().build());
+    return formatNumber(value, NumberOptions.builder().build(), Locale.getDefault());
   }
 
+  /**
+   * Returns a formatted number for the user's locale. {@link NumberOptions} can control whether the number is
+   * used as a currency, if it is bucketed, and the precision.
+   */
   public static @NonNull String formatNumber(final float value, final @NonNull NumberOptions options) {
-    NumberFormat numberFormat = NumberFormat.getInstance();
+    return formatNumber(value, options, Locale.getDefault());
+  }
+
+  /**
+   * Returns a formatted number for a given locale. {@link NumberOptions} can control whether the number is
+   * used as a currency, if it is bucketed, and the precision.
+   */
+  public static @NonNull String formatNumber(final float value, final @NonNull NumberOptions options, final @NonNull Locale locale) {
+    final NumberFormat numberFormat = numberFormat(options, locale);
 
     if (numberFormat instanceof DecimalFormat) {
       numberFormat.setRoundingMode(RoundingMode.HALF_DOWN);
@@ -63,6 +79,23 @@ public final class NumberUtils {
       bucketedValue = value / divisor;
     }
 
-    return String.format("%s%s%s", prefix, numberFormat.format(bucketedValue), suffix).trim();
+    return String.format("%s%s", numberFormat.format(bucketedValue), suffix).trim();
+  }
+
+  /**
+   * Return a formatter that can output an appropriate number based on the input currency and locale.
+   */
+  private static @NonNull NumberFormat numberFormat(final @NonNull NumberOptions options, final @NonNull Locale locale) {
+    NumberFormat numberFormat;
+    if (options.isCurrency()) {
+      DecimalFormat decimalFormat = (DecimalFormat) NumberFormat.getCurrencyInstance(locale);
+      final DecimalFormatSymbols symbols = decimalFormat.getDecimalFormatSymbols();
+      symbols.setCurrencySymbol(options.currencySymbol());
+      decimalFormat.setDecimalFormatSymbols(symbols);
+      numberFormat = decimalFormat;
+    } else {
+      numberFormat = NumberFormat.getInstance(locale);
+    }
+    return numberFormat;
   }
 }

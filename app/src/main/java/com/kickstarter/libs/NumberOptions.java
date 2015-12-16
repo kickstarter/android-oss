@@ -30,6 +30,6 @@ public abstract class NumberOptions implements Parcelable {
   public abstract Builder toBuilder();
 
   public boolean isCurrency() {
-    return currencyCode() != null || currencySymbol() != null;
+    return currencySymbol() != null;
   }
 }

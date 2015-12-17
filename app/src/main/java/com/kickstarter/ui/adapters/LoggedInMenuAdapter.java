@@ -18,8 +18,7 @@ import java.util.List;
 
 public final class LoggedInMenuAdapter extends BaseAdapter {
   public static final int TYPE_PROFILE = 0;
-  public static final int TYPE_SETTINGS = 1;
-  public static final int TYPE_HELP = 2;
+  public static final int TYPE_TEXT = 1;
 
   private final Context context;
   private final User user;
@@ -34,16 +33,6 @@ public final class LoggedInMenuAdapter extends BaseAdapter {
   public void takeTitle(final @NonNull String title) {
     titles.add(title);
     notifyDataSetChanged();
-  }
-
-  @Override
-  public boolean areAllItemsEnabled() {
-    return true;
-  }
-
-  @Override
-  public boolean isEnabled(final int position) {
-    return true;
   }
 
   @Override
@@ -70,8 +59,7 @@ public final class LoggedInMenuAdapter extends BaseAdapter {
           convertView = LayoutInflater.from(context).inflate(R.layout.logged_in_menu_avatar_item, null);
           convertView.setTag(new LoggedInMenuProfileViewHolder(convertView, getItem(position), user.avatar()));
           break;
-        case TYPE_SETTINGS:
-        case TYPE_HELP:
+        case TYPE_TEXT:
           convertView = LayoutInflater.from(context).inflate(R.layout.logged_in_menu_item, null);
           convertView.setTag(new LoggedInMenuViewHolder(convertView, getItem(position)));
           break;
@@ -82,11 +70,11 @@ public final class LoggedInMenuAdapter extends BaseAdapter {
 
   @Override
   public int getItemViewType(final int position) {
-    return position;
+    return position == 0 ? TYPE_PROFILE : TYPE_TEXT;
   }
 
   @Override
-  public boolean isEmpty() {
-    return false;
+  public int getViewTypeCount() {
+    return 2;
   }
 }

@@ -270,6 +270,12 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
+  KSCurrency provideKSCurrency(final @NonNull CurrentConfig currentConfig) {
+    return new KSCurrency(currentConfig);
+  }
+
+  @Provides
+  @Singleton
   @NonNull KSString provideKSString(final @Named("PackageName") @NonNull String packageName, final @NonNull Resources resources) {
     return new KSString(packageName, resources);
   }
@@ -284,12 +290,6 @@ public class ApplicationModule {
   @Singleton
   Logout provideLogout(@NonNull final CookieManager cookieManager, @NonNull final CurrentUser currentUser) {
     return new Logout(cookieManager, currentUser);
-  }
-
-  @Provides
-  @Singleton
-  KSCurrency provideKSCurrency(@NonNull final CurrentConfig currentConfig) {
-    return new KSCurrency(currentConfig);
   }
 
   @Provides

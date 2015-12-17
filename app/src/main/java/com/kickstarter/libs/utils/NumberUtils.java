@@ -45,10 +45,7 @@ public final class NumberUtils {
 
     final NumberFormat numberFormat = numberFormat(options, locale);
     if (numberFormat instanceof DecimalFormat) {
-      final RoundingMode roundingMode = options.roundingMode() != null ?
-        options.roundingMode() :
-        RoundingMode.HALF_DOWN;
-      numberFormat.setRoundingMode(roundingMode);
+      numberFormat.setRoundingMode(ObjectUtils.coalesce(options.roundingMode(), RoundingMode.HALF_DOWN));
     }
 
     int precision = ObjectUtils.coalesce(options.precision(), 0);

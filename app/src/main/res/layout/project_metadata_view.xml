@@ -1,7 +1,7 @@
 <RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
-  android:id="@+id/project_metadata_view"
+  android:id="@+id/project_metadata_view_group"
   android:visibility="gone"
   android:clipToPadding="false"
   android:clipChildren="false"
@@ -50,7 +50,7 @@
   </LinearLayout>
 
   <LinearLayout
-    android:id="@+id/starred_group"
+    android:id="@+id/starred_view_group"
     android:visibility="gone"
     android:orientation="horizontal"
     android:layout_width="wrap_content"
@@ -77,7 +77,7 @@
   </LinearLayout>
 
   <LinearLayout
-    android:id="@+id/potd_group"
+    android:id="@+id/potd_view_group"
     android:orientation="horizontal"
     android:visibility="gone"
     android:layout_width="wrap_content"

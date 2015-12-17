@@ -119,14 +119,14 @@
           android:progress="50" />
 
         <include layout="@layout/project_state_view"
-          android:id="@+id/project_state_view"
+          android:id="@+id/project_state_view_group"
           android:layout_below="@id/category_location_view"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"/>
 
         <include layout="@layout/project_card_stats_view"
           android:layout_marginTop="@dimen/grid_2"
-          android:layout_below="@id/project_state_view"
+          android:layout_below="@id/project_state_view_group"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"/>
 

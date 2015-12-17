@@ -11,7 +11,7 @@ import auto.parcel.AutoParcel;
 public final class KSCurrency {
   final CurrentConfig currentConfig;
 
-  public KSCurrency(@NonNull final CurrentConfig currentConfig) {
+  public KSCurrency(final @NonNull CurrentConfig currentConfig) {
     this.currentConfig = currentConfig;
   }
 

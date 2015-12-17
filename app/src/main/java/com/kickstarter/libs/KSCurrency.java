@@ -33,7 +33,9 @@ public final class KSCurrency {
    * @param excludeCurrencyCode If true, hide the currency code, even if that makes the returned value ambiguous.
    *                            This is used when space is constrained and the currency code can be determined elsewhere.
    */
-  public @NonNull String formatCurrency(final float initialValue, final @NonNull Project project, final boolean excludeCurrencyCode) {
+  public @NonNull String formatCurrency(final float initialValue, final @NonNull Project project,
+    final boolean excludeCurrencyCode) {
+
     return formatCurrency(initialValue, project, excludeCurrencyCode, false);
   }
 
@@ -44,9 +46,12 @@ public final class KSCurrency {
    * @param project             The project to use to look up currency information.
    * @param excludeCurrencyCode If true, hide the currency code, even if that makes the returned value ambiguous.
    *                            This is used when space is constrained and the currency code can be determined elsewhere.
-   * @param preferUSD           Attempt to convert a project from it's local currency to USD, if the user is located in the US.
+   * @param preferUSD           Attempt to convert a project from it's local currency to USD, if the user is located in
+   *                            the US.
    */
-  public @NonNull String formatCurrency(final float initialValue, final @NonNull Project project, final boolean excludeCurrencyCode, final boolean preferUSD) {
+  public @NonNull String formatCurrency(final float initialValue, final @NonNull Project project,
+    final boolean excludeCurrencyCode, final boolean preferUSD) {
+
     final CurrencyOptions currencyOptions = currencyOptions(initialValue, project, preferUSD);
 
     final boolean showCurrencyCode = showCurrencyCode(currencyOptions, excludeCurrencyCode);
@@ -63,7 +68,9 @@ public final class KSCurrency {
    * Build {@link CurrencyOptions} based on the project and whether we would prefer to show USD. Even if USD is preferred,
    * we only show USD if the user is in the US.
    */
-  private @NonNull CurrencyOptions currencyOptions(final float value, final @NonNull Project project, final boolean preferUSD) {
+  private @NonNull CurrencyOptions currencyOptions(final float value, final @NonNull Project project,
+    final boolean preferUSD) {
+
     final Config config = currentConfig.getConfig();
     final Float staticUsdRate = project.staticUsdRate();
     return ((preferUSD && config.countryCode().equals("US") && staticUsdRate != null) ?

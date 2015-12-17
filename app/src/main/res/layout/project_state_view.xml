@@ -6,7 +6,7 @@
   android:visibility="gone"
   android:orientation="vertical"
   android:layout_width="match_parent"
-  android:layout_height="wrap_content">
+  android:layout_height="@dimen/grid_7_half">
 
   <TextView
     android:id="@+id/successfully_funded_view"
@@ -16,7 +16,7 @@
     android:background="@color/green"
     android:gravity="center"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/grid_7_half"/>
+    android:layout_height="match_parent"/>
 
   <TextView
     android:id="@+id/funding_unsuccessful_view"
@@ -26,6 +26,6 @@
     android:background="@color/dark_gray"
     android:gravity="center"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/grid_7_half"/>
+    android:layout_height="match_parent"/>
 
 </LinearLayout>

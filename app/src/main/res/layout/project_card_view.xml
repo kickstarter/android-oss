@@ -79,7 +79,7 @@
 
       <include layout="@layout/project_state_view"
         android:layout_marginTop="@dimen/grid_2"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/grid_9_half"
         android:layout_width="match_parent"
         android:id="@+id/project_state_view"/>
 

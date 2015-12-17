@@ -18,6 +18,7 @@ import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
+import com.kickstarter.libs.utils.SocialUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.views.IconButton;
@@ -26,6 +27,7 @@ import com.squareup.picasso.Picasso;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import butterknife.BindDimen;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -34,28 +36,37 @@ public final class ProjectViewHolder extends KSViewHolder {
   private Project project;
   private final Delegate delegate;
 
-  protected @Bind(R.id.play_button_overlay) IconButton playButton;
-  protected @Bind(R.id.project_photo) ImageView photoImageView;
-  protected @Bind(R.id.project_name) TextView projectNameTextView;
-  protected @Bind(R.id.creator_name) TextView creatorNameTextView;
+  protected @Bind(R.id.avatar) ImageView avatarImageView;
+  protected @Bind(R.id.avatar_name) TextView avatarNameTextView;
+  protected @Bind(R.id.backers_count) TextView backersCountTextView;
   protected @Bind(R.id.backer_label) LinearLayout backerLabelLinearLayout;
   protected @Bind(R.id.blurb) TextView blurbTextView;
   protected @Bind(R.id.category) TextView categoryTextView;
-  protected @Bind(R.id.location) TextView locationTextView;
-  protected @Bind(R.id.percentage_funded) ProgressBar percentageFundedProgressBar;
-  protected @Bind(R.id.backers_count) TextView backersCountTextView;
   protected @Bind(R.id.comments_count) TextView commentsCountTextView;
+  protected @Bind(R.id.creator_name) TextView creatorNameTextView;
   protected @Bind(R.id.deadline_countdown_text_view) TextView deadlineCountdownTextView;
   protected @Bind(R.id.deadline_countdown_unit_text_view) TextView deadlineCountdownUnitTextView;
-  protected @Bind(R.id.goal) TextView goalTextView;
-  protected @Bind(R.id.pledged) TextView pledgedTextView;
-  protected @Bind(R.id.avatar) ImageView avatarImageView;
-  protected @Bind(R.id.avatar_name) TextView avatarNameTextView;
-  protected @Bind(R.id.fund_message) TextView fundMessageTextView;
   protected @Bind(R.id.funding_unsuccessful_view) TextView fundingUnsuccessfulTextView;
+  protected @Bind(R.id.fund_message) TextView fundMessageTextView;
+  protected @Bind(R.id.goal) TextView goalTextView;
+  protected @Bind(R.id.location) TextView locationTextView;
+  protected @Bind(R.id.percentage_funded) ProgressBar percentageFundedProgressBar;
+  protected @Bind(R.id.project_photo) ImageView photoImageView;
+  protected @Bind(R.id.play_button_overlay) IconButton playButton;
+  protected @Bind(R.id.pledged) TextView pledgedTextView;
+  protected @Bind(R.id.project_social_avatar_1) ImageView projectSocialAvatar1ImageView;
+  protected @Bind(R.id.project_social_avatar_2) ImageView projectSocialAvatar2ImageView;
+  protected @Bind(R.id.project_social_avatar_3) ImageView projectSocialAvatar3ImageView;
+  protected @Bind(R.id.project_stats_view) ViewGroup projectStatsViewGroup;
+  protected @Bind(R.id.project_social_text) TextView projectSocialTextView;
+  protected @Bind(R.id.project_social_view) ViewGroup projectSocialViewGoup;
+  protected @Bind(R.id.project_name) TextView projectNameTextView;
   protected @Bind(R.id.project_state_view) ViewGroup projectStateViewGroup;
   protected @Bind(R.id.successfully_funded_view) TextView successfullyFundedTextView;
   protected @Bind(R.id.updates_count) TextView updatesCountTextView;
+
+  protected @BindDimen(R.dimen.grid_3) int grid3Dimen;
+  protected @BindDimen(R.dimen.grid_4) int grid4Dimen;
 
   protected @BindString(R.string.project_creator_by_creator_html) String byCreatorString;
   protected @BindString(R.string.discovery_baseball_card_blurb_read_more) String blurbReadMoreString;
@@ -140,7 +151,18 @@ public final class ProjectViewHolder extends KSViewHolder {
     }
 
     setProjectStateView();
+    setSocialView();
     setStatsContentDescription();
+  }
+
+  // adjust spacing between stats and divider when social is present
+  public void adjustStatsViewBottomMargin(final int bottomMargin) {
+    final LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+      projectStatsViewGroup.getLayoutParams()
+    );
+
+    layoutParams.setMargins(grid3Dimen, grid3Dimen, grid3Dimen, bottomMargin);
+    projectStatsViewGroup.setLayoutParams(layoutParams);
   }
 
   @OnClick({R.id.blurb, R.id.campaign})
@@ -197,6 +219,64 @@ public final class ProjectViewHolder extends KSViewHolder {
           "date", project.formattedStateChangedAt()
         ));
         break;
+    }
+  }
+
+  public void setSocialView() {
+    if (project.isFriendBacking()) {
+      projectSocialViewGoup.setVisibility(View.VISIBLE);
+      adjustStatsViewBottomMargin(grid3Dimen);
+
+      if (project.friends().size() == 1) {
+        projectSocialAvatar1ImageView.setVisibility(View.VISIBLE);
+        Picasso.with(view.getContext()).load(project.friends().get(0).avatar()
+          .small())
+          .transform(new CircleTransformation())
+          .into(projectSocialAvatar1ImageView);
+
+        projectSocialTextView.setText(SocialUtils.projectCardFriendNamepile(project.friends(), ksString));
+
+        projectSocialAvatar2ImageView.setVisibility(View.GONE);
+        projectSocialAvatar3ImageView.setVisibility(View.GONE);
+
+      } else if (project.friends().size() == 2) {
+        projectSocialAvatar1ImageView.setVisibility(View.VISIBLE);
+        Picasso.with(view.getContext()).load(project.friends().get(0).avatar()
+          .small())
+          .transform(new CircleTransformation())
+          .into(projectSocialAvatar1ImageView);
+        projectSocialAvatar2ImageView.setVisibility(View.VISIBLE);
+        Picasso.with(view.getContext()).load(project.friends().get(1).avatar()
+          .small())
+          .transform(new CircleTransformation())
+          .into(projectSocialAvatar2ImageView);
+
+        projectSocialTextView.setText(SocialUtils.projectCardFriendNamepile(project.friends(), ksString));
+
+        projectSocialAvatar3ImageView.setVisibility(View.GONE);
+
+      } else {
+        projectSocialAvatar1ImageView.setVisibility(View.VISIBLE);
+        Picasso.with(view.getContext()).load(project.friends().get(0).avatar()
+          .small())
+          .transform(new CircleTransformation())
+          .into(projectSocialAvatar1ImageView);
+        projectSocialAvatar2ImageView.setVisibility(View.VISIBLE);
+        Picasso.with(view.getContext()).load(project.friends().get(1).avatar()
+          .small())
+          .transform(new CircleTransformation())
+          .into(projectSocialAvatar2ImageView);
+        projectSocialAvatar3ImageView.setVisibility(View.VISIBLE);
+        Picasso.with(view.getContext()).load(project.friends().get(2).avatar()
+          .small())
+          .transform(new CircleTransformation())
+          .into(projectSocialAvatar3ImageView);
+
+        projectSocialTextView.setText(SocialUtils.projectCardFriendNamepile(project.friends(), ksString));
+      }
+    } else {
+      projectSocialViewGoup.setVisibility(View.GONE);
+      adjustStatsViewBottomMargin(grid4Dimen);
     }
   }
 

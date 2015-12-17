@@ -77,7 +77,7 @@
   <dimen name="profile_avatar_height">@dimen/profile_avatar_width</dimen>
   <dimen name="project_avatar_width">@dimen/grid_8</dimen>
   <dimen name="project_avatar_height">@dimen/grid_8</dimen>
-  <dimen name="project_social_photo_height">@dimen/grid_5</dimen>
+  <dimen name="project_social_photo_height">@dimen/grid_4</dimen>
   <dimen name="project_photo_height">220dp</dimen>
 
   <!-- TextViews -->

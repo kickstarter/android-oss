@@ -2,6 +2,7 @@ package com.kickstarter;
 
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.libs.KSCurrency;
+import com.kickstarter.models.Project;
 
 import junit.framework.TestCase;
 
@@ -49,5 +50,14 @@ public class KSCurrencyTest extends TestCase {
   public void testFormatCurrency_withUserInUKAndUSDPreferred() {
     final KSCurrency currency = createKSCurrency("UK");
     assertEquals("£100", currency.format(100.0f, ProjectFactory.ukProject(), false, true));
+  }
+
+  public void testFormatCurrency_roundsDown() {
+    final KSCurrency currency = createKSCurrency("US");
+    final Project project = ProjectFactory.project();
+    assertEquals("$100", currency.format(100.4f, project));
+    assertEquals("$100", currency.format(100.5f, project));
+    assertEquals("$101", currency.format(101.5f, project));
+    assertEquals("$100", currency.format(100.9f, project));
   }
 }

@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Project;
 
+import java.math.RoundingMode;
+
 import auto.parcel.AutoParcel;
 
 public final class KSCurrency {
@@ -59,6 +61,7 @@ public final class KSCurrency {
     final NumberOptions numberOptions = NumberOptions.builder()
       .currencyCode((showCurrencyCode ? currencyOptions.currencyCode() : ""))
       .currencySymbol(currencyOptions.currencySymbol())
+      .roundingMode(RoundingMode.DOWN)
       .build();
 
     return NumberUtils.format(currencyOptions.value(), numberOptions);

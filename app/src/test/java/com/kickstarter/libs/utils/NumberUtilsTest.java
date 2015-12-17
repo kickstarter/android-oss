@@ -4,6 +4,7 @@ import com.kickstarter.libs.NumberOptions;
 
 import junit.framework.TestCase;
 
+import java.math.RoundingMode;
 import java.util.Locale;
 
 public class NumberUtilsTest extends TestCase {
@@ -11,6 +12,15 @@ public class NumberUtilsTest extends TestCase {
     assertEquals("100", NumberUtils.format(100.0f));
     assertEquals("1,000", NumberUtils.format(1000.0f));
     assertEquals("1,001", NumberUtils.format(1000.6f));
+  }
+
+  public void testFormatNumber_rounding() {
+    assertEquals("1", NumberUtils.format(1.1f));
+    assertEquals("1", NumberUtils.format(1.5f));
+    assertEquals("2", NumberUtils.format(2.5f));
+    assertEquals("2", NumberUtils.format(1.51f));
+    assertEquals("1", NumberUtils.format(1.9f, NumberOptions.builder().roundingMode(RoundingMode.DOWN).build()));
+    assertEquals("2", NumberUtils.format(1.1f, NumberOptions.builder().roundingMode(RoundingMode.UP).build()));
   }
 
   public void testFormatNumber_withPrecision() {

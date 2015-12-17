@@ -40,7 +40,9 @@ public final class NumberUtils {
    * Returns a formatted number for a given locale. {@link NumberOptions} can control whether the number is
    * used as a currency, if it is bucketed, and the precision.
    */
-  public static @NonNull String formatNumber(final float value, final @NonNull NumberOptions options, final @NonNull Locale locale) {
+  public static @NonNull String formatNumber(final float value, final @NonNull NumberOptions options,
+    final @NonNull Locale locale) {
+
     final NumberFormat numberFormat = numberFormat(options, locale);
 
     if (numberFormat instanceof DecimalFormat) {
@@ -85,6 +87,7 @@ public final class NumberUtils {
    */
   private static @NonNull NumberFormat numberFormat(final @NonNull NumberOptions options, final @NonNull Locale locale) {
     NumberFormat numberFormat;
+
     if (options.isCurrency()) {
       DecimalFormat decimalFormat = (DecimalFormat) NumberFormat.getCurrencyInstance(locale);
       final DecimalFormatSymbols symbols = decimalFormat.getDecimalFormatSymbols();
@@ -94,6 +97,7 @@ public final class NumberUtils {
     } else {
       numberFormat = NumberFormat.getInstance(locale);
     }
+
     return numberFormat;
   }
 }

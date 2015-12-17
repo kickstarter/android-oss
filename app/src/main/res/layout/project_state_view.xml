@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/project_state_view"
+  android:id="@+id/project_state_view_group"
   android:layout_below="@id/project_card_info"
   android:visibility="gone"
   android:orientation="vertical"

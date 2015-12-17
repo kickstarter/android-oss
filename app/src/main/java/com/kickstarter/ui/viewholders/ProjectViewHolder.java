@@ -61,7 +61,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.project_social_text) TextView projectSocialTextView;
   protected @Bind(R.id.project_social_view) ViewGroup projectSocialViewGoup;
   protected @Bind(R.id.project_name) TextView projectNameTextView;
-  protected @Bind(R.id.project_state_view) ViewGroup projectStateViewGroup;
+  protected @Bind(R.id.project_state_view_group) ViewGroup projectStateViewGroup;
   protected @Bind(R.id.successfully_funded_view) TextView successfullyFundedTextView;
   protected @Bind(R.id.updates_count) TextView updatesCountTextView;
 

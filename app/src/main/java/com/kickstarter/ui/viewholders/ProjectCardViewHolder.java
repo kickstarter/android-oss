@@ -51,11 +51,11 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.percent) TextView percentTextView;
   protected @Bind(R.id.percentage_funded) ProgressBar percentageFundedProgressBar;
   protected @Bind(R.id.photo) ImageView photoImageView;
-  protected @Bind(R.id.potd_group) ViewGroup potdViewGroup;
+  protected @Bind(R.id.potd_view_group) ViewGroup potdViewGroup;
   protected @Bind(R.id.project_card_view_group) ViewGroup projectCardViewGroup;
-  protected @Bind(R.id.project_metadata_view) ViewGroup projectMetadataViewGroup;
-  protected @Bind(R.id.project_state_view) ViewGroup projectStateViewGroup;
-  protected @Bind(R.id.starred_group) ViewGroup starredViewGroup;
+  protected @Bind(R.id.project_metadata_view_group) ViewGroup projectMetadataViewGroup;
+  protected @Bind(R.id.project_state_view_group) ViewGroup projectStateViewGroup;
+  protected @Bind(R.id.starred_view_group) ViewGroup starredViewGroup;
   protected @Bind(R.id.successfully_funded_view) TextView successfullyFundedTextView;
 
   protected @BindDimen(R.dimen.grid_1) int grid1Dimen;

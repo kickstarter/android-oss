@@ -25,7 +25,7 @@ public final class NumberUtils {
    * Returns a formatted number for the user's locale. Defaults to 0 precision with no bucketing.
    */
   public static @NonNull String formatNumber(final float value) {
-    return formatNumber(value, NumberOptions.builder().build(), Locale.getDefault());
+    return formatNumber(value, NumberOptions.builder().build());
   }
 
   /**

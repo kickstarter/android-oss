@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
-import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.ProjectUtils;

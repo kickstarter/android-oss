@@ -1,9 +1,12 @@
 package com.kickstarter.libs;
 
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Project;
+
+import auto.parcel.AutoParcel;
 
 public final class KSCurrency {
   final CurrentConfig currentConfig;
@@ -93,5 +96,28 @@ public final class KSCurrency {
     final boolean projectIsUS = currencyOptions.country().equals("US");
 
     return (currencyIsDupe && !userIsUS) || (currencyIsDupe && !projectIsUS);
+  }
+
+  @AutoParcel
+  public abstract static class CurrencyOptions implements Parcelable {
+    public abstract String country();
+    public abstract String currencyCode();
+    public abstract String currencySymbol();
+    public abstract float value();
+
+    @AutoParcel.Builder
+    public abstract static class Builder {
+      public abstract Builder country(String __);
+      public abstract Builder currencyCode(String __);
+      public abstract Builder currencySymbol(String __);
+      public abstract Builder value(float __);
+      public abstract CurrencyOptions build();
+    }
+
+    public static Builder builder() {
+      return new AutoParcel_KSCurrency_CurrencyOptions.Builder();
+    }
+
+    public abstract Builder toBuilder();
   }
 }

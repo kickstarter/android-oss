@@ -64,7 +64,7 @@ public final class RewardViewHolder extends KSViewHolder {
 
     minimumTextView.setText(String.format(
       context.getString(R.string.___Pledge_or_more),
-      ksCurrency.formatCurrency(reward.minimum(), project)));
+      ksCurrency.format(reward.minimum(), project)));
 
     final Integer backersCount = reward.backersCount();
     final String backersCountText = (backersCount != null) ?

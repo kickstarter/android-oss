@@ -61,17 +61,17 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel> 
     if (backing.project() != null && backing.reward() != null) {
       pledgeInfoTextView.setText(String.format(
         getString(R.string.___pledged_amount_on_date),
-        ksCurrency.formatCurrency(backing.amount(), backing.project()),
+        ksCurrency.format(backing.amount(), backing.project()),
         backing.formattedPledgedAt()
       ));
       rewardInfoTextView.setText(String.format(
         getString(R.string.___reward_amount_description),
-        ksCurrency.formatCurrency(backing.reward().minimum(), backing.project()),
+        ksCurrency.format(backing.reward().minimum(), backing.project()),
         backing.reward().reward()));
       if (backing.reward().shippingEnabled() != null && backing.reward().shippingEnabled()) {
         shippingInfoTextView.setText(backing.location().displayableName());
         shippingAmountTextView.setText(
-          ksCurrency.formatCurrency(backing.shippingAmount(), backing.project())
+          ksCurrency.format(backing.shippingAmount(), backing.project())
         );
       }
 

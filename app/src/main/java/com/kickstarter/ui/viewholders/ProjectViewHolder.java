@@ -110,7 +110,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     percentageFundedProgressBar.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
     deadlineCountdownTextView.setText(Integer.toString(ProjectUtils.deadlineCountdownValue(project)));
     deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(project, view.getContext(), ksString));
-    pledgedTextView.setText(ksCurrency.formatCurrency(project.pledged(), project));
+    pledgedTextView.setText(ksCurrency.format(project.pledged(), project));
     backersCountTextView.setText(project.formattedBackersCount());
 
      /* Creator */
@@ -120,13 +120,13 @@ public final class ProjectViewHolder extends KSViewHolder {
       .into(avatarImageView);
     avatarNameTextView.setText(project.creator().name());
     fundMessageTextView.setText(String.format(context.getString(R.string.___This_project_will_only_be_funded_if),
-      ksCurrency.formatCurrency(project.goal(), project, true),
+      ksCurrency.format(project.goal(), project, true),
       project.deadline().toString(DateTimeUtils.writtenDeadline())));
     updatesCountTextView.setText(project.formattedUpdatesCount());
     commentsCountTextView.setText(project.formattedCommentsCount());
 
     /* a11y */
-    final String goalText = ksCurrency.formatCurrency(project.goal(), project, true);
+    final String goalText = ksCurrency.format(project.goal(), project, true);
     if (ViewUtils.isFontScaleLarge(view.getContext())) {
       goalTextView.setText(goalText);
     } else {

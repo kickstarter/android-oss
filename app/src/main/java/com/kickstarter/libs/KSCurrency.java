@@ -21,8 +21,8 @@ public final class KSCurrency {
    * @param initialValue Value to display, local to the project's currency.
    * @param project      The project to use to look up currency information.
    */
-  public @NonNull String formatCurrency(final float initialValue, final @NonNull Project project) {
-    return formatCurrency(initialValue, project, false, false);
+  public @NonNull String format(final float initialValue, final @NonNull Project project) {
+    return format(initialValue, project, false, false);
   }
 
   /**
@@ -33,10 +33,10 @@ public final class KSCurrency {
    * @param excludeCurrencyCode If true, hide the currency code, even if that makes the returned value ambiguous.
    *                            This is used when space is constrained and the currency code can be determined elsewhere.
    */
-  public @NonNull String formatCurrency(final float initialValue, final @NonNull Project project,
+  public @NonNull String format(final float initialValue, final @NonNull Project project,
     final boolean excludeCurrencyCode) {
 
-    return formatCurrency(initialValue, project, excludeCurrencyCode, false);
+    return format(initialValue, project, excludeCurrencyCode, false);
   }
 
   /**
@@ -49,7 +49,7 @@ public final class KSCurrency {
    * @param preferUSD           Attempt to convert a project from it's local currency to USD, if the user is located in
    *                            the US.
    */
-  public @NonNull String formatCurrency(final float initialValue, final @NonNull Project project,
+  public @NonNull String format(final float initialValue, final @NonNull Project project,
     final boolean excludeCurrencyCode, final boolean preferUSD) {
 
     final CurrencyOptions currencyOptions = currencyOptions(initialValue, project, preferUSD);
@@ -61,7 +61,7 @@ public final class KSCurrency {
       .currencySymbol(currencyOptions.currencySymbol())
       .build();
 
-    return NumberUtils.formatNumber(currencyOptions.value(), numberOptions);
+    return NumberUtils.format(currencyOptions.value(), numberOptions);
   }
 
   /**

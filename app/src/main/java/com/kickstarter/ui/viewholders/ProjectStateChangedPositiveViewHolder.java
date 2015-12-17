@@ -56,7 +56,7 @@ public final class ProjectStateChangedPositiveViewHolder extends ActivityListVie
     switch (activity.category()) {
       case Activity.CATEGORY_LAUNCH:
         cardView.setCardBackgroundColor(blueDarken10Color);
-        leftStatFirstTextView.setText(ksCurrency.formatCurrency(activity.project().goal(), activity.project()));
+        leftStatFirstTextView.setText(ksCurrency.format(activity.project().goal(), activity.project()));
         leftStatSecondTextView.setText(context.getString(R.string.___goal));
         rightStatFirstTextView.setText(context.getString(R.string.___Launched));
         rightStatSecondTextView.setText(activity.project().launchedAt().toString(DateTimeUtils.defaultFormatter()));
@@ -65,10 +65,10 @@ public final class ProjectStateChangedPositiveViewHolder extends ActivityListVie
         break;
       case Activity.CATEGORY_SUCCESS:
         cardView.setCardBackgroundColor(greenDarken10Color);
-        leftStatFirstTextView.setText(ksCurrency.formatCurrency(activity.project().pledged(), activity.project()));
+        leftStatFirstTextView.setText(ksCurrency.format(activity.project().pledged(), activity.project()));
         leftStatSecondTextView.setText(context.getString(
           R.string.___pledged_of_goal,
-          ksCurrency.formatCurrency(activity.project().goal(), activity.project(), true)));
+          ksCurrency.format(activity.project().goal(), activity.project(), true)));
         rightStatFirstTextView.setText(context.getString(R.string.___Funded));
         rightStatSecondTextView.setText(activity.createdAt().toString(DateTimeUtils.defaultFormatter()));
         titleTextView.setText(context

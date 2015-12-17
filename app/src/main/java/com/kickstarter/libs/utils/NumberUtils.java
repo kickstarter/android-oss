@@ -24,23 +24,23 @@ public final class NumberUtils {
   /**
    * Returns a formatted number for the user's locale. Defaults to 0 precision with no bucketing.
    */
-  public static @NonNull String formatNumber(final float value) {
-    return formatNumber(value, NumberOptions.builder().build());
+  public static @NonNull String format(final float value) {
+    return format(value, NumberOptions.builder().build());
   }
 
   /**
    * Returns a formatted number for the user's locale. {@link NumberOptions} can control whether the number is
    * used as a currency, if it is bucketed, and the precision.
    */
-  public static @NonNull String formatNumber(final float value, final @NonNull NumberOptions options) {
-    return formatNumber(value, options, Locale.getDefault());
+  public static @NonNull String format(final float value, final @NonNull NumberOptions options) {
+    return format(value, options, Locale.getDefault());
   }
 
   /**
    * Returns a formatted number for a given locale. {@link NumberOptions} can control whether the number is
    * used as a currency, if it is bucketed, and the precision.
    */
-  public static @NonNull String formatNumber(final float value, final @NonNull NumberOptions options,
+  public static @NonNull String format(final float value, final @NonNull NumberOptions options,
     final @NonNull Locale locale) {
 
     final NumberFormat numberFormat = numberFormat(options, locale);

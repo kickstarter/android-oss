@@ -61,6 +61,8 @@ public abstract class Config implements Parcelable {
         return country.trailingCode();
       }
     }
+
+    // Unlaunched country, default to showing the code.
     return true;
   }
 }

@@ -61,7 +61,7 @@ public class NumberUtilsTest extends TestCase {
     assertEquals("$100 CAD", NumberUtils.formatNumber(100.0f, NumberOptions.builder().currencySymbol("$").currencyCode("CAD").build()));
   }
 
-  public void testFormatNumber_withTrailingCurrencySymbol() {
+  public void testFormatNumber_withTrailingCurrencySymbolLocale() {
     assertEquals("100 $", NumberUtils.formatNumber(100.0f, NumberOptions.builder().currencySymbol("$").build(), Locale.GERMANY));
   }
 }

@@ -1,5 +1,7 @@
 package com.kickstarter.factories;
 
+import android.support.annotation.NonNull;
+
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 
@@ -30,6 +32,7 @@ public class ProjectFactory {
       .pledged(50.0f)
       .name("Some Name")
       .state(Project.STATE_LIVE)
+      .staticUsdRate(1.0f)
       .slug(slug)
       .updatedAt(DateTime.now())
       .urls(Project.Urls.builder().web(web).build())
@@ -57,6 +60,26 @@ public class ProjectFactory {
       .toBuilder()
       .goal(100.0f)
       .pledged(200.0f)
+      .build();
+  }
+
+  public static @NonNull Project caProject() {
+    return project()
+      .toBuilder()
+      .country("CA")
+      .currencySymbol("$")
+      .currency("CAD")
+      .staticUsdRate(0.75f)
+      .build();
+  }
+
+  public static @NonNull Project ukProject() {
+    return project()
+      .toBuilder()
+      .country("UK")
+      .currencySymbol("£")
+      .currency("GBP")
+      .staticUsdRate(1.5f)
       .build();
   }
 }

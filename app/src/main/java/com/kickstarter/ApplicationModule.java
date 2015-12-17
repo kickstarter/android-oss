@@ -24,7 +24,7 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.KoalaTrackingClient;
 import com.kickstarter.libs.Logout;
-import com.kickstarter.libs.Money;
+import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.Release;
 import com.kickstarter.libs.preferences.StringPreference;
@@ -270,6 +270,12 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
+  KSCurrency provideKSCurrency(final @NonNull CurrentConfig currentConfig) {
+    return new KSCurrency(currentConfig);
+  }
+
+  @Provides
+  @Singleton
   @NonNull KSString provideKSString(final @Named("PackageName") @NonNull String packageName, final @NonNull Resources resources) {
     return new KSString(packageName, resources);
   }
@@ -284,12 +290,6 @@ public class ApplicationModule {
   @Singleton
   Logout provideLogout(@NonNull final CookieManager cookieManager, @NonNull final CurrentUser currentUser) {
     return new Logout(cookieManager, currentUser);
-  }
-
-  @Provides
-  @Singleton
-  Money provideMoney(@NonNull final CurrentConfig currentConfig) {
-    return new Money(currentConfig);
   }
 
   @Provides

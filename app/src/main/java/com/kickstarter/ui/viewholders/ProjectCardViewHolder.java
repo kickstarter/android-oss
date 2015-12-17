@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
-import com.kickstarter.libs.Money;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.SocialUtils;
@@ -73,7 +72,6 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected DiscoveryViewModel viewModel;
 
   @Inject KSString ksString;
-  @Inject Money money;
 
   public interface Delegate {
     void projectCardClick(ProjectCardViewHolder viewHolder, Project project);

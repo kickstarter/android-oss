@@ -17,7 +17,7 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.Money;
+import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
@@ -48,7 +48,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   @BindColor(R.color.text_primary) int textPrimary;
   @BindString(R.string.project_back_button) String projectBackButtonString;
 
-  @Inject Money money;
+  @Inject KSCurrency ksCurrency;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {

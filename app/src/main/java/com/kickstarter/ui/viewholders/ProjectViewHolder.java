@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
-import com.kickstarter.libs.Money;
+import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
@@ -62,8 +62,8 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @BindString(R.string.discovery_baseball_card_stats_pledged_of_goal) String pledgedOfGoalString;
   protected @BindString(R.string.discovery_baseball_card_stats_backers) String backersString;
 
+  @Inject KSCurrency ksCurrency;
   @Inject KSString ksString;
-  @Inject Money money;
 
   public interface Delegate {
     void projectBlurbClicked(ProjectViewHolder viewHolder);
@@ -110,7 +110,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     percentageFundedProgressBar.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
     deadlineCountdownTextView.setText(Integer.toString(ProjectUtils.deadlineCountdownValue(project)));
     deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(project, view.getContext(), ksString));
-    pledgedTextView.setText(money.formattedCurrency(project.pledged(), project.currencyOptions()));
+    pledgedTextView.setText(ksCurrency.format(project.pledged(), project));
     backersCountTextView.setText(project.formattedBackersCount());
 
      /* Creator */
@@ -120,13 +120,13 @@ public final class ProjectViewHolder extends KSViewHolder {
       .into(avatarImageView);
     avatarNameTextView.setText(project.creator().name());
     fundMessageTextView.setText(String.format(context.getString(R.string.___This_project_will_only_be_funded_if),
-      money.formattedCurrency(project.goal(), project.currencyOptions(), true),
+      ksCurrency.format(project.goal(), project, true),
       project.deadline().toString(DateTimeUtils.writtenDeadline())));
     updatesCountTextView.setText(project.formattedUpdatesCount());
     commentsCountTextView.setText(project.formattedCommentsCount());
 
     /* a11y */
-    final String goalText = money.formattedCurrency(project.goal(), project.currencyOptions(), true);
+    final String goalText = ksCurrency.format(project.goal(), project, true);
     if (ViewUtils.isFontScaleLarge(view.getContext())) {
       goalTextView.setText(goalText);
     } else {

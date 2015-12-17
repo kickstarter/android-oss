@@ -1,21 +1,16 @@
 package com.kickstarter.models;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 
-import com.kickstarter.R;
-import com.kickstarter.libs.CurrencyOptions;
 import com.kickstarter.libs.qualifiers.AutoGson;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Duration;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -54,6 +49,7 @@ public abstract class Project implements Parcelable {
   public abstract @Nullable String slug();
   public abstract @State String state();
   public abstract @Nullable DateTime stateChangedAt();
+  public abstract @Nullable Float staticUsdRate();
   public abstract @Nullable Integer updatesCount();
   public abstract @Nullable List<Reward> rewards();
   public abstract DateTime updatedAt();
@@ -88,6 +84,7 @@ public abstract class Project implements Parcelable {
     public abstract Builder potdAt(DateTime __);
     public abstract Builder rewards(List<Reward> __);
     public abstract Builder slug(String __);
+    public abstract Builder staticUsdRate(Float __);
     public abstract Builder state(@State String __);
     public abstract Builder stateChangedAt(DateTime __);
     public abstract Builder updatedAt(DateTime __);
@@ -227,10 +224,6 @@ public abstract class Project implements Parcelable {
         return new AutoParcel_Project_Urls_Api.Builder();
       }
     }
-  }
-
-  public @NonNull CurrencyOptions currencyOptions() {
-    return new CurrencyOptions(country(), currencySymbol(), currency());
   }
 
   public boolean hasComments() {

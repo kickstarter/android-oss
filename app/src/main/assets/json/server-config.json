@@ -6265,12 +6265,12 @@
   ],
   "ab_experiments": {
     "discover_sorts_vs_subcategories": "experimental",
-    "native_ios_aa": "experimental",
+    "native_ios_aa": "control",
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
     "native_iphone_horiz_vs_vert": "experimental",
-    "recs_thanks_stars": "collaborative_backings_v2",
-    "recs_hp_video_plays": "collaborative_backings_v2",
+    "recs_thanks_stars": "collaborative_stars",
+    "recs_hp_video_plays": "collaborative_video_plays",
     "video_autoplay_3": "no_autoplay",
     "project_share_metadata_position": "control"
   },

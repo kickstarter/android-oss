@@ -44,22 +44,21 @@ public final class NumberUtils {
     final @NonNull Locale locale) {
 
     final NumberFormat numberFormat = numberFormat(options, locale);
-
     if (numberFormat instanceof DecimalFormat) {
       numberFormat.setRoundingMode(RoundingMode.HALF_DOWN);
     }
 
     int precision = ObjectUtils.coalesce(options.precision(), 0);
     float divisor = 1.0f;
-
     String suffix = "";
     final float bucketAbove = ObjectUtils.coalesce(options.bucketAbove(), 0.0f);
+
     if (bucketAbove >= 1000.0f && value >= bucketAbove) {
-      if (bucketAbove > 0.0f && bucketAbove < 1000000.0f) {
+      if (bucketAbove > 0.0f && bucketAbove < 1_000_000.0f) {
         divisor = 1000.0f;
         suffix = "K";
-      } else if (bucketAbove >= 1000000.0f) {
-        divisor = 1000000.0f;
+      } else if (bucketAbove >= 1_000_000.0f) {
+        divisor = 1_000_000.0f;
         suffix = "M";
       }
       if (options.bucketAbove() != null) {

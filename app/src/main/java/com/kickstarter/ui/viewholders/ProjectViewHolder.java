@@ -54,9 +54,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.project_photo) ImageView photoImageView;
   protected @Bind(R.id.play_button_overlay) IconButton playButton;
   protected @Bind(R.id.pledged) TextView pledgedTextView;
-  protected @Bind(R.id.project_social_avatar_1) ImageView projectSocialAvatar1ImageView;
-  protected @Bind(R.id.project_social_avatar_2) ImageView projectSocialAvatar2ImageView;
-  protected @Bind(R.id.project_social_avatar_3) ImageView projectSocialAvatar3ImageView;
+  protected @Bind(R.id.project_social_image) ImageView projectSocialImageView;
   protected @Bind(R.id.project_stats_view) ViewGroup projectStatsViewGroup;
   protected @Bind(R.id.project_social_text) TextView projectSocialTextView;
   protected @Bind(R.id.project_social_view) ViewGroup projectSocialViewGoup;
@@ -224,56 +222,18 @@ public final class ProjectViewHolder extends KSViewHolder {
 
   public void setSocialView() {
     if (project.isFriendBacking()) {
+
       projectSocialViewGoup.setVisibility(View.VISIBLE);
       adjustStatsViewBottomMargin(grid3Dimen);
 
-      if (project.friends().size() == 1) {
-        projectSocialAvatar1ImageView.setVisibility(View.VISIBLE);
-        Picasso.with(view.getContext()).load(project.friends().get(0).avatar()
-          .small())
-          .transform(new CircleTransformation())
-          .into(projectSocialAvatar1ImageView);
+      projectSocialImageView.setVisibility(View.VISIBLE);
+      Picasso.with(view.getContext()).load(project.friends().get(0).avatar()
+        .small())
+        .transform(new CircleTransformation())
+        .into(projectSocialImageView);
 
-        projectSocialTextView.setText(SocialUtils.projectCardFriendNamepile(project.friends(), ksString));
+      projectSocialTextView.setText(SocialUtils.projectCardFriendNamepile(project.friends(), ksString));
 
-        projectSocialAvatar2ImageView.setVisibility(View.GONE);
-        projectSocialAvatar3ImageView.setVisibility(View.GONE);
-
-      } else if (project.friends().size() == 2) {
-        projectSocialAvatar1ImageView.setVisibility(View.VISIBLE);
-        Picasso.with(view.getContext()).load(project.friends().get(0).avatar()
-          .small())
-          .transform(new CircleTransformation())
-          .into(projectSocialAvatar1ImageView);
-        projectSocialAvatar2ImageView.setVisibility(View.VISIBLE);
-        Picasso.with(view.getContext()).load(project.friends().get(1).avatar()
-          .small())
-          .transform(new CircleTransformation())
-          .into(projectSocialAvatar2ImageView);
-
-        projectSocialTextView.setText(SocialUtils.projectCardFriendNamepile(project.friends(), ksString));
-
-        projectSocialAvatar3ImageView.setVisibility(View.GONE);
-
-      } else {
-        projectSocialAvatar1ImageView.setVisibility(View.VISIBLE);
-        Picasso.with(view.getContext()).load(project.friends().get(0).avatar()
-          .small())
-          .transform(new CircleTransformation())
-          .into(projectSocialAvatar1ImageView);
-        projectSocialAvatar2ImageView.setVisibility(View.VISIBLE);
-        Picasso.with(view.getContext()).load(project.friends().get(1).avatar()
-          .small())
-          .transform(new CircleTransformation())
-          .into(projectSocialAvatar2ImageView);
-        projectSocialAvatar3ImageView.setVisibility(View.VISIBLE);
-        Picasso.with(view.getContext()).load(project.friends().get(2).avatar()
-          .small())
-          .transform(new CircleTransformation())
-          .into(projectSocialAvatar3ImageView);
-
-        projectSocialTextView.setText(SocialUtils.projectCardFriendNamepile(project.friends(), ksString));
-      }
     } else {
       projectSocialViewGoup.setVisibility(View.GONE);
       adjustStatsViewBottomMargin(grid4Dimen);

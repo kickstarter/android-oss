@@ -173,30 +173,14 @@
     android:layout_height="wrap_content">
     
     <ImageView
-      android:id="@+id/project_social_avatar_1"
+      android:id="@+id/project_social_image"
       android:visibility="gone"
-      android:layout_width="@dimen/project_social_photo_height"
-      android:layout_height="@dimen/project_social_photo_height" />
-
-    <ImageView
-      android:id="@+id/project_social_avatar_2"
-      android:visibility="gone"
-      android:layout_marginLeft="@dimen/grid_1"
-      android:layout_marginStart="@dimen/grid_1"
-      android:layout_width="@dimen/project_social_photo_height"
-      android:layout_height="@dimen/project_social_photo_height" />
-
-    <ImageView
-      android:id="@+id/project_social_avatar_3"
-      android:visibility="gone"
-      android:layout_marginLeft="@dimen/grid_1"
-      android:layout_marginStart="@dimen/grid_1"
       android:layout_width="@dimen/project_social_photo_height"
       android:layout_height="@dimen/project_social_photo_height" />
 
     <TextView
       android:id="@+id/project_social_text"
-      style="@style/BodyPrimaryMedium"
+      style="@style/CaptionPrimaryMedium"
       android:layout_marginStart="@dimen/grid_2"
       android:layout_marginLeft="@dimen/grid_2"
       android:text="Gina Binetti, Christopher Wright, and 5 more are backers"

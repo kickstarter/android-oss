@@ -62,7 +62,7 @@ public class NumberUtilsTest extends TestCase {
   }
 
   public void testFormatNumber_withGermanLocale() {
-    assertEquals("100 $", NumberUtils.format(100.0f, NumberOptions.builder().currencySymbol("$").build(), Locale.US));
+    assertEquals("100 $", NumberUtils.format(100.0f, NumberOptions.builder().currencySymbol("$").build(), Locale.GERMANY));
     assertEquals("1.000", NumberUtils.format(1000.0f, NumberOptions.builder().build(), Locale.GERMANY));
     assertEquals("100,12", NumberUtils.format(100.12f, NumberOptions.builder().precision(2).build(), Locale.GERMANY));
   }

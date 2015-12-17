@@ -92,6 +92,8 @@
         android:value=".ui.activities.DiscoveryActivity" />
     </activity>
 
+    <activity android:name=".ui.activities.ProjectSocialActivity" />
+
     <activity
       android:name=".ui.activities.SearchActivity"
       android:theme="@style/SearchActivity" />

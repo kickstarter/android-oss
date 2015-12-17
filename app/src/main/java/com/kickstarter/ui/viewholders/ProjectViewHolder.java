@@ -1,6 +1,7 @@
 package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.text.Html;
 import android.text.TextUtils;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.transformations.CircleTransformation;
@@ -21,6 +23,7 @@ import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.SocialUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
+import com.kickstarter.ui.activities.ProjectSocialActivity;
 import com.kickstarter.ui.views.IconButton;
 import com.squareup.picasso.Picasso;
 
@@ -181,6 +184,19 @@ public final class ProjectViewHolder extends KSViewHolder {
   @OnClick(R.id.play_button_overlay)
   public void playButtonClick() {
     delegate.projectVideoStarted(this);
+  }
+
+  @OnClick(R.id.project_social_view)
+  public void projectSocialClick() {
+    if (project.isFriendBacking()) {
+      if (project.friends().size() > 2) {
+        final BaseActivity activity = (BaseActivity) view.getContext();
+        final Intent intent = new Intent(activity, ProjectSocialActivity.class)
+          .putExtra(activity.getString(R.string.intent_project), project);
+        activity.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+      }
+    }
   }
 
   public void setProjectStateView() {

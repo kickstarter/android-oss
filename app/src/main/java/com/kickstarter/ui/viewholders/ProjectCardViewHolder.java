@@ -1,5 +1,6 @@
 package com.kickstarter.ui.viewholders;
 
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Html;
@@ -27,6 +28,7 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.BindDimen;
+import butterknife.BindDrawable;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 
@@ -55,6 +57,8 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.successfully_funded_view) TextView successfullyFundedTextView;
 
   protected @BindDimen(R.dimen.grid_1) int grid1Dimen;
+
+  protected @BindDrawable(R.drawable.gray_gradient) Drawable grayGradientDrawable;
 
   protected @BindString(R.string.project_creator_by_creator) String byCreatorString;
   protected @BindString(R.string.discovery_baseball_card_status_banner_canceled) String bannerCanceledString;
@@ -94,9 +98,10 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     nameTextView.setText(project.name());
     percentTextView.setText(StringUtils.displayFlooredPercentage(project.percentageFunded()));
     percentageFundedProgressBar.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
-    Picasso.with(view.getContext()).
-      load(project.photo().full()).
-      into(photoImageView);
+    Picasso.with(view.getContext())
+      .load(project.photo().full())
+      .placeholder(grayGradientDrawable)
+      .into(photoImageView);
 
     setProjectMetadataView();
     setProjectStateView();

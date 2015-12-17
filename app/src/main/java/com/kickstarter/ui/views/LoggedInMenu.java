@@ -21,16 +21,18 @@ public class LoggedInMenu extends ListPopupWindow {
     setAnchorView(anchorView);
     setModal(true);
 
-    setWidth(context.getResources().getDimensionPixelSize(R.dimen.logged_in_menu_width));
-    setHorizontalOffset(context.getResources().getDimensionPixelSize(R.dimen.logged_in_menu_horizontal_offset));
-    setVerticalOffset(context.getResources().getDimensionPixelSize(R.dimen.logged_in_menu_vertical_offset));
-    setBackgroundDrawable(context.getResources().getDrawable(R.drawable.dialog_alert_rounded, null));
-
     final LoggedInMenuAdapter adapter = new LoggedInMenuAdapter(context, currentUser);
     setAdapter(adapter);
     adapter.takeTitle(currentUser.name());
     adapter.takeTitle(context.getResources().getString(R.string.___Settings));
     adapter.takeTitle(context.getResources().getString(R.string.___Help));
+
+    setWidth(context.getResources().getDimensionPixelSize(R.dimen.logged_in_menu_width));
+    //setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+
+    setHorizontalOffset(context.getResources().getDimensionPixelSize(R.dimen.logged_in_menu_horizontal_offset));
+    setVerticalOffset(context.getResources().getDimensionPixelSize(R.dimen.logged_in_menu_vertical_offset));
+    setBackgroundDrawable(context.getResources().getDrawable(R.drawable.dialog_alert_rounded, null));
 
     setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) -> {
       dismiss();
@@ -39,6 +41,8 @@ public class LoggedInMenu extends ListPopupWindow {
         case LoggedInMenuAdapter.TYPE_PROFILE:
           final Intent profileIntent = new Intent(activity, ProfileActivity.class);
           activity.startActivity(profileIntent);
+          break;
+        case LoggedInMenuAdapter.TYPE_SETTINGS:
           break;
         case LoggedInMenuAdapter.TYPE_HELP:
           final Intent helpIntent = new Intent(activity, HelpActivity.class);

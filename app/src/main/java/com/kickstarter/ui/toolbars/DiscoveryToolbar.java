@@ -104,7 +104,6 @@ public final class DiscoveryToolbar extends KSToolbar {
     loginButton.setVisibility(GONE);
     currentUserButton.setVisibility(VISIBLE);
     currentUserButton.setOnClickListener(v -> {
-      // need to access user with .observable() instead
       final LoggedInMenu menu = new LoggedInMenu(v.getContext(), currentUser.getUser(), currentUserButton);
       menu.show();
     });

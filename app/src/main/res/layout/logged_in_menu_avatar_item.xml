@@ -3,7 +3,7 @@
   android:background="@drawable/click_indicator_light_masked"
   android:orientation="horizontal"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
+  android:layout_height="wrap_content">
 
   <ImageView
     android:id="@+id/avatar"
@@ -17,7 +17,6 @@
   <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/SubheadMedium"
     android:id="@+id/menu_item_title"
-    android:focusable="true"
     android:layout_marginBottom="@dimen/grid_2"
     android:layout_marginTop="@dimen/grid_2"
     android:layout_marginRight="@dimen/grid_2"

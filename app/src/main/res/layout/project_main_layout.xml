@@ -146,9 +146,10 @@
   <include layout="@layout/project_state_view"
     android:layout_marginTop="@dimen/grid_3"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"/>
+    android:layout_height="@dimen/grid_9_half"/>
 
   <include layout="@layout/project_stats_view"
+    android:id="@+id/project_stats_view"
     android:layout_height="wrap_content"
     android:layout_width="wrap_content"
     android:layout_marginRight="@dimen/grid_3"
@@ -157,22 +158,54 @@
     android:layout_marginEnd="@dimen/grid_3"
     android:layout_marginTop="@dimen/grid_3"
     android:layout_marginBottom="@dimen/grid_4"/>
-
-  <include layout="@layout/horizontal_line_thin_view" />
-
-  <!-- todo: populate this list with friend backers-->
+  
   <LinearLayout
+    android:id="@+id/project_social_view"
     android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:visibility="gone"
+    android:layout_marginRight="@dimen/grid_3"
+    android:layout_marginLeft="@dimen/grid_3"
+    android:layout_marginStart="@dimen/grid_3"
+    android:layout_marginEnd="@dimen/grid_3"
+    android:layout_marginBottom="@dimen/grid_3"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-
-    <ListView
+    
+    <ImageView
+      android:id="@+id/project_social_avatar_1"
       android:visibility="gone"
-      android:id="@+id/friend_backing_list"
-      android:layout_width="match_parent"
+      android:layout_width="@dimen/project_social_photo_height"
+      android:layout_height="@dimen/project_social_photo_height" />
+
+    <ImageView
+      android:id="@+id/project_social_avatar_2"
+      android:visibility="gone"
+      android:layout_marginLeft="@dimen/grid_1_half"
+      android:layout_marginStart="@dimen/grid_1_half"
+      android:layout_width="@dimen/project_social_photo_height"
+      android:layout_height="@dimen/project_social_photo_height" />
+
+    <ImageView
+      android:id="@+id/project_social_avatar_3"
+      android:visibility="gone"
+      android:layout_marginLeft="@dimen/grid_1_half"
+      android:layout_marginStart="@dimen/grid_1_half"
+      android:layout_width="@dimen/project_social_photo_height"
+      android:layout_height="@dimen/project_social_photo_height" />
+
+    <TextView
+      android:id="@+id/project_social_text"
+      style="@style/BodyPrimaryMedium"
+      android:layout_marginStart="@dimen/grid_2"
+      android:layout_marginLeft="@dimen/grid_2"
+      android:text="Gina Binetti, Christopher Wright, and 5 more are backers"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
   </LinearLayout>
+
+  <include layout="@layout/horizontal_line_thin_view" />
 
   <include layout="@layout/project_creator_info" />
 

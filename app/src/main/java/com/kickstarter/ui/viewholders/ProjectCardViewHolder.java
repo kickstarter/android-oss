@@ -42,7 +42,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.friend_backing_avatar) ImageView friendBackingAvatarImageView;
   protected @Bind(R.id.friend_backing_message) TextView friendBackingMessageTextView;
   protected @Bind(R.id.friend_backing_group) ViewGroup friendBackingViewGroup;
-  protected @Bind(R.id.funding_unsuccessful_view) TextView fundingUnsuccessfulTextView;
+  protected @Bind(R.id.funding_unsuccessful_text_view) TextView fundingUnsuccessfulTextView;
   protected @Bind(R.id.name) TextView nameTextView;
   protected @Nullable @Bind(R.id.created_by) TextView createdByTextView;
   protected @Nullable @Bind(R.id.blurb) TextView blurbTextView;
@@ -53,7 +53,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.project_card_view_group) ViewGroup projectCardViewGroup;
   protected @Bind(R.id.project_metadata_view) ViewGroup projectMetadataViewGroup;
   protected @Bind(R.id.starred_group) ViewGroup starredViewGroup;
-  protected @Bind(R.id.successfully_funded_view) TextView successfullyFundedTextView;
+  protected @Bind(R.id.successfully_funded_text_view) TextView successfullyFundedTextView;
 
   protected @BindDimen(R.dimen.grid_1) int grid1Dimen;
 

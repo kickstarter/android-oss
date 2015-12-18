@@ -43,6 +43,7 @@
   </string>
   <string name="___Campaign">Campaign</string>
   <string name="___Cancel">Cancel</string>
+  <string name="___Cancelled">Cancelled</string>
   <string name="___Categories">Categories</string>
   <string name="___Changelog">Changelog</string>
   <string name="___Close">Close</string>
@@ -200,9 +201,11 @@
   <string name="___Status_">Status: %1$s</string>
   <string name="___Staff_Picks">Staff Picks</string>
   <string name="___Starred">Starred</string>
+  <string name="___Successful">Successful</string>
   <string name="___Successfully_funded">Successfully funded!</string>
   <string name="___Submit">Submit</string>
   <string name="___Submit_bug_report">Submit bug report</string>
+  <string name="___Suspended">Suspended</string>
   <string name="___Terms_of_Use">Terms of Use</string>
   <string name="___The_code_provided_does_not_match">The code provided does not match.</string>
   <string name="___Resend_code_failed">Unable to resend your code.</string>
@@ -214,6 +217,7 @@
   <string name="___Unable_to_connect">Unable to connect</string>
   <string name="___Unable_to_login">Unable to login</string>
   <string name="___Unable_to_save">Unable to save</string>
+  <string name="___Unsuccessful">Unsuccessful</string>
   <string name="___Update_sequence">Update #%1$d</string>
   <string name="___Updates">Updates</string>
   <string name="___Upgrade_app">Upgrade app</string>

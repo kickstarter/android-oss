@@ -63,4 +63,17 @@ public final class DateTimeUtilsTest extends KSRobolectricTestCase {
     assertEquals("Dec 17, 2015", DateTimeUtils.relativeDate(context, ksString, dateTime,
       builder.relativeToDateTime(DateTime.parse("2015-10-17T18:35:05Z")).build()));
   }
+
+  @Test
+  public void testRelativeDate_withExplainFalse() {
+    final Context context = context();
+    final KSString ksString = ksString();
+    final DateTime dateTime = DateTime.parse("2015-12-17T18:35:05Z");
+    final DateTimeUtils.RelativeDateOptions.Builder builder = DateTimeUtils.RelativeDateOptions.builder().explain(false);
+
+    assertEquals("4 hrs", DateTimeUtils.relativeDate(context, ksString, dateTime,
+      builder.relativeToDateTime(DateTime.parse("2015-12-17T22:35:05Z")).build()));
+    assertEquals("4 hrs", DateTimeUtils.relativeDate(context, ksString, dateTime,
+      builder.relativeToDateTime(DateTime.parse("2015-12-17T14:35:05Z")).build()));
+  }
 }

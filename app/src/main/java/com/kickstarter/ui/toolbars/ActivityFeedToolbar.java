@@ -1,13 +1,16 @@
 package com.kickstarter.ui.toolbars;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.PopupMenu;
 import android.util.AttributeSet;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.utils.ViewUtils;
+import com.kickstarter.ui.activities.HelpActivity;
 import com.kickstarter.ui.views.IconTextView;
 
 import butterknife.Bind;
@@ -39,19 +42,21 @@ public final class ActivityFeedToolbar extends KSToolbar {
 
   @OnClick(R.id.more_button)
   protected void moreButtonClick() {
-    final Context context = getContext();
-    final PopupMenu popup = new PopupMenu(getContext(), moreButton);
+    final BaseActivity activity = (BaseActivity) getContext();
+    final PopupMenu popup = new PopupMenu(activity, moreButton);
     popup.getMenuInflater().inflate(R.menu.activity_feed_menu, popup.getMenu());
     popup.setOnMenuItemClickListener(item -> {
       switch (item.getItemId()) {
         case R.id.find_friends:
           // TODO
+          ViewUtils.showToast(activity, notImplementedYetString);
           break;
         case R.id.help:
-          // TODO
+          final Intent helpIntent = new Intent(activity, HelpActivity.class);
+          helpIntent.putExtra(activity.getString(R.string.intent_help_type), HelpActivity.HELP_TYPE_GENERAL);
+          activity.startActivity(helpIntent);
           break;
       }
-      ViewUtils.showToast(context, notImplementedYetString);
 
       return true;
     });

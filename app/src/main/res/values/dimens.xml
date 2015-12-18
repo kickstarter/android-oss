@@ -90,4 +90,8 @@
   <dimen name="logged_in_menu_horizontal_offset">-145dp</dimen>
   <dimen name="logged_in_menu_vertical_offset">-46dp</dimen>
 
+  <!-- Popup menus -->
+  <dimen name="popup_menu_horizontal_offset">-151dp</dimen>
+  <dimen name="popup_menu_vertical_offset">-46dp</dimen>
+
 </resources>

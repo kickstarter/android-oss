@@ -8,6 +8,7 @@ import android.util.Pair;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
+import com.kickstarter.libs.NumberOptions;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -110,7 +111,7 @@ public final class DateTimeUtils {
     }
 
     return ksString.format(baseKeyPath.toString(), difference,
-      "time_count", String.valueOf(difference));
+      "time_count", NumberUtils.format(difference, NumberOptions.builder().build(), locale));
   }
 
   private static @Nullable Pair<String, Integer> unitAndDifference(final int initialSecondsDifference, final int threshold) {

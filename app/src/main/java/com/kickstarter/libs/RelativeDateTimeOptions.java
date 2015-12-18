@@ -32,7 +32,7 @@ public abstract class RelativeDateTimeOptions implements Parcelable {
   }
 
   public static Builder builder() {
-    return new AutoParcel_RelativeDateOptions.Builder()
+    return new AutoParcel_RelativeDateTimeOptions.Builder()
       .abbreviated(false)
       .absolute(false)
       .threshold(THIRTY_DAYS_IN_SECONDS);

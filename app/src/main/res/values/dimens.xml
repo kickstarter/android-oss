@@ -46,6 +46,7 @@
   <dimen name="card_margin_x">@dimen/grid_2</dimen>
   <dimen name="card_margin_y">@dimen/grid_1</dimen>
   <dimen name="card_padding_action_half">@dimen/grid_1_half</dimen>
+  <dimen name="profile_card_height">208dp</dimen>
 
   <!-- Layout padding -->
   <dimen name="feed_padding_y">@dimen/grid_5_half</dimen>
@@ -77,6 +78,8 @@
   <dimen name="profile_avatar_height">@dimen/profile_avatar_width</dimen>
   <dimen name="project_avatar_width">@dimen/grid_8</dimen>
   <dimen name="project_avatar_height">@dimen/grid_8</dimen>
+  <dimen name="profile_card_photo_height">@dimen/grid_15</dimen>
+  <dimen name="profile_card_photo_width">@dimen/grid_20</dimen>
   <dimen name="project_photo_height">220dp</dimen>
 
   <!-- TextViews -->

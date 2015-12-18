@@ -20,6 +20,7 @@ import com.kickstarter.ui.viewholders.CommentViewHolder;
 import com.kickstarter.ui.viewholders.DiscoveryFilterViewHolder;
 import com.kickstarter.ui.viewholders.EmptyActivityFeedViewHolder;
 import com.kickstarter.ui.viewholders.EmptyCommentFeedViewHolder;
+import com.kickstarter.ui.viewholders.ProfileCardViewHolder;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
 import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder;
@@ -75,6 +76,7 @@ public interface ApplicationGraph {
   void inject(ManageNotificationsViewModel __);
   void inject(MessageService __);
   void inject(KSCurrency __);
+  void inject(ProfileCardViewHolder __);
   void inject(ProfileViewModel __);
   void inject(ProjectContextViewHolder __);
   void inject(ProjectActivity __);

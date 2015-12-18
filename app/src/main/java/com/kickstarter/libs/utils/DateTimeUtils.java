@@ -31,8 +31,8 @@ public class DateTimeUtils {
   }
 
   public static boolean isDateToday(final @NonNull DateTime dateTime) {
-    final DateTime startOfDayUTC = new DateTime(DateTimeZone.UTC).withTime(0, 0, 0, 0);
-    return startOfDayUTC.isEqual(dateTime.withZone(DateTimeZone.UTC).withTime(0, 0, 0, 0));
+    return dateTime.withZone(DateTimeZone.UTC).withTimeAtStartOfDay()
+      .equals(DateTime.now().withTimeAtStartOfDay().withZoneRetainFields(DateTimeZone.UTC));
   }
 
   public static String relativeDateInWords(@NonNull final DateTime dateTime) {

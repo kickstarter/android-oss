@@ -16,7 +16,7 @@ public abstract class Location implements Parcelable {
   @Nullable public abstract String city();
   public abstract String state();
   public abstract String country();
-  @Nullable public abstract int projectsCount();
+  @Nullable public abstract Integer projectsCount();
 
   @AutoParcel.Builder
   public abstract static class Builder {

@@ -31,17 +31,17 @@
       android:gravity="center_horizontal"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_marginStart="@dimen/grid_2"
-      android:layout_marginLeft="@dimen/grid_2"
-      android:layout_marginEnd="@dimen/grid_2"
-      android:layout_marginRight="@dimen/grid_2" >
+      android:layout_marginStart="@dimen/grid_1"
+      android:layout_marginLeft="@dimen/grid_1"
+      android:layout_marginEnd="@dimen/grid_1"
+      android:layout_marginRight="@dimen/grid_1" >
 
       <TextView
         android:id="@+id/profile_card_name"
         style="@style/CaptionPrimaryMedium"
         android:gravity="center"
         android:layout_marginTop="@dimen/grid_1"
-        android:layout_marginBottom="@dimen/grid_2"
+        android:layout_marginBottom="@dimen/grid_3_half"
         android:maxLines="3"
         android:lines="3"
         android:text="Secret Hitler"
@@ -56,7 +56,7 @@
         android:layout_height="@dimen/progress_bar_height"
         android:minHeight="@dimen/progress_bar_min_height"
         android:progress="50"
-        android:layout_marginBottom="@dimen/grid_3"/>
+        android:layout_marginBottom="@dimen/grid_1"/>
 
     </LinearLayout>
 

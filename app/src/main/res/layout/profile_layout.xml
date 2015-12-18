@@ -103,7 +103,7 @@
     android:id="@+id/recycler_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="-8dp"
+    android:layout_marginTop="-12dp"
     android:layout_marginStart="@dimen/grid_2"
     android:layout_marginLeft="@dimen/grid_2"
     android:paddingBottom="@dimen/grid_3"

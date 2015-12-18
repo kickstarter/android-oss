@@ -76,7 +76,7 @@ public final class DateTimeUtils {
     final Pair<String, Integer> unitAndDifference = unitAndDifference(secondsDifference, options.threshold());
     if (unitAndDifference == null) {
       // Couldn't find a good match, just render the date.
-      return mediumDate(dateTime);
+      return mediumDate(dateTime, locale);
     }
 
     final String unit = unitAndDifference.first;

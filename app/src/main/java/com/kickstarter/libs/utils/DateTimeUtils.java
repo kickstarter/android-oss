@@ -93,16 +93,16 @@ public final class DateTimeUtils {
    * Returns a string indicating the distance between {@link DateTime}s. Defaults to comparing the input {@link DateTime} to
    * the current time.
    */
-  public static @NonNull String relativeDateTime(final @NonNull Context context, final @NonNull KSString ksString,
+  public static @NonNull String relative(final @NonNull Context context, final @NonNull KSString ksString,
     final @NonNull DateTime dateTime) {
-    return relativeDateTime(context, ksString, dateTime, RelativeDateTimeOptions.builder().build());
+    return relative(context, ksString, dateTime, RelativeDateTimeOptions.builder().build());
   }
 
   /**
    * Returns a string indicating the distance between {@link DateTime}s. Defaults to comparing the input {@link DateTime} to
    * the current time.
    */
-  public static @NonNull String relativeDateTime(final @NonNull Context context, final @NonNull KSString ksString,
+  public static @NonNull String relative(final @NonNull Context context, final @NonNull KSString ksString,
     final @NonNull DateTime dateTime, final @NonNull RelativeDateTimeOptions options) {
 
     final DateTime relativeToDateTime = ObjectUtils.coalesce(options.relativeToDateTime(), DateTime.now());

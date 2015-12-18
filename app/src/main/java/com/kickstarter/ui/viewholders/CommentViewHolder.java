@@ -61,7 +61,7 @@ public final class CommentViewHolder extends KSViewHolder {
       .transform(new CircleTransformation())
       .into(avatarImageView);
     nameTextView.setText(comment.author().name());
-    postDateTextView.setText(DateTimeUtils.relativeDateTime(context, ksString, comment.createdAt()));
+    postDateTextView.setText(DateTimeUtils.relative(context, ksString, comment.createdAt()));
     commentBodyTextView.setText(comment.body());
   }
 }

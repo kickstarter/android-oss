@@ -147,7 +147,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
         successfullyFundedTextView.setVisibility(View.GONE);
         fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
         fundingUnsuccessfulTextView.setText(ksString.format(fundingUnsuccessfulString,
-          "date", DateTimeUtils.relativeDateTime(context, ksString, project.stateChangedAt())
+          "date", DateTimeUtils.relative(context, ksString, project.stateChangedAt())
         ));
         break;
       case Project.STATE_SUSPENDED:
@@ -155,7 +155,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
         successfullyFundedTextView.setVisibility(View.GONE);
         fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
         fundingUnsuccessfulTextView.setText(ksString.format(bannerSuspendedString,
-          "date", DateTimeUtils.relativeDateTime(context, ksString, project.stateChangedAt())
+          "date", DateTimeUtils.relative(context, ksString, project.stateChangedAt())
         ));
         break;
     }

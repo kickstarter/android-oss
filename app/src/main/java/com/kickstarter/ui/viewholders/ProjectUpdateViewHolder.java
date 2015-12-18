@@ -52,7 +52,7 @@ public final class ProjectUpdateViewHolder extends ActivityListViewHolder {
     Picasso.with(context)
       .load(activity.project().photo().little())
       .into(projectPhotoImageView);
-    timestampTextView.setText(DateTimeUtils.relativeDateTime(context, ksString, activity.update().publishedAt()));
+    timestampTextView.setText(DateTimeUtils.relative(context, ksString, activity.update().publishedAt()));
     updateBodyTextView.setText(activity.update().truncatedBody());
     updateSequenceTextView.setText(context.getString(R.string.___Update_sequence, activity.update().sequence()));
     updateTitleTextView.setText(activity.update().title());

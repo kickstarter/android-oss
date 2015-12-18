@@ -74,8 +74,7 @@ public final class RewardViewHolder extends KSViewHolder {
     backersCountTextView.setText(backersCountText);
 
     descriptionTextView.setText(reward.description());
-    estimatedDeliveryTextView.setText(
-      reward.estimatedDeliveryOn().toString(DateTimeUtils.estimatedDeliveryOn()));
+    estimatedDeliveryTextView.setText(DateTimeUtils.estimatedDeliveryOn(reward.estimatedDeliveryOn()));
 
     toggleAllGoneRewardView();
     toggleClickableReward();

@@ -17,13 +17,13 @@ import butterknife.ButterKnife;
 public class LoggedInMenuProfileViewHolder {
   @Bind(R.id.menu_item_title) TextView menuItemTitleTextView;
   @Bind(R.id.avatar) ImageView avatarImageView;
-  @BindString(R.string.profile_button) String profileButtonString;
+  @BindString(R.string.___profile_button) String profileButtonString;
 
   public LoggedInMenuProfileViewHolder(@NonNull final View view, final @NonNull String title, final @NonNull Avatar avatar) {
     ButterKnife.bind(this, view);
 
     menuItemTitleTextView.setText(title);
-    menuItemTitleTextView.setContentDescription(title + profileButtonString);
+    menuItemTitleTextView.setContentDescription(profileButtonString);
 
     Picasso.with(view.getContext()).load(avatar
       .small())

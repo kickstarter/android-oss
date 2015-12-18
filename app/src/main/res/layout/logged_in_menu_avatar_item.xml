@@ -15,7 +15,7 @@
     android:scaleType="centerCrop"/>
 
   <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/SubheadMedium"
+    style="@style/SubheadPrimaryMedium"
     android:id="@+id/menu_item_title"
     android:ellipsize="end"
     android:layout_marginBottom="@dimen/grid_2"

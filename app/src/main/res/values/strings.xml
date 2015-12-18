@@ -160,7 +160,6 @@
   <string name="___pledged_amount_on_date">%1$s on %2$s</string>
   <string name="___Post">Post</string>
   <string name="___Privacy_Policy">Privacy Policy</string>
-  <string name="___Profile">Profile</string>
   <string name="___project_of_the_day">Project of the day!</string>
   <string name="___project_was_cancelled_by_its_creator">%1$s was cancelled by its creator.</string>
   <string name="___project_was_not_successfully_funded">%1$s was not successfully funded.</string>
@@ -251,6 +250,7 @@
   <string name="___login_button_content_description">Log in</string>
   <string name="___overflow_button_content_description">Overflow menu</string>
   <string name="___play_video_button_content_description">Play video</string>
+  <string name="___profile_button">Profile</string>
   <string name="___search_button_content_description">Search projects</string>
   <string name="___share_button_content_description">Share this project</string>
   <string name="___star_fab_content_description">Star this project</string>

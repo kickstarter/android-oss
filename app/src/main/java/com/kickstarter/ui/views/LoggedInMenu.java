@@ -12,6 +12,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.models.User;
 import com.kickstarter.ui.activities.HelpActivity;
 import com.kickstarter.ui.activities.ProfileActivity;
+import com.kickstarter.ui.activities.SettingsActivity;
 import com.kickstarter.ui.adapters.LoggedInMenuAdapter;
 
 public class LoggedInMenu extends ListPopupWindow {
@@ -25,7 +26,6 @@ public class LoggedInMenu extends ListPopupWindow {
     setAdapter(adapter);
 
     setWidth(context.getResources().getDimensionPixelSize(R.dimen.logged_in_menu_width));
-
     setHorizontalOffset(context.getResources().getDimensionPixelSize(R.dimen.logged_in_menu_horizontal_offset));
     setVerticalOffset(context.getResources().getDimensionPixelSize(R.dimen.logged_in_menu_vertical_offset));
     setBackgroundDrawable(context.getResources().getDrawable(R.drawable.dialog_alert_rounded, null));
@@ -39,6 +39,8 @@ public class LoggedInMenu extends ListPopupWindow {
           activity.startActivity(profileIntent);
           break;
         case LoggedInMenuAdapter.TYPE_SETTINGS:
+          final Intent settingsIntent = new Intent(activity, SettingsActivity.class);
+          activity.startActivity(settingsIntent);
           break;
         case LoggedInMenuAdapter.TYPE_HELP:
           final Intent helpIntent = new Intent(activity, HelpActivity.class);

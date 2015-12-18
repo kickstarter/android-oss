@@ -10,8 +10,8 @@ import android.widget.TextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.transformations.CircleTransformation;
-import com.kickstarter.libs.Money;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Project;
@@ -34,7 +34,7 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel> 
   public @Bind(R.id.shipping_info) TextView shippingInfoTextView;
   public @Bind(R.id.shipping_amount) TextView shippingAmountTextView;
 
-  @Inject Money money;
+  @Inject KSCurrency ksCurrency;
 
   public void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -53,24 +53,28 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel> 
       .into(avatarImageView);
     nameTextView.setText(backing.backer().name());
     sequenceTextView.setText(getString(R.string.___Backer_number, backing.formattedSequence()));
-    pledgeInfoTextView.setText(String.format(
-      getString(R.string.___pledged_amount_on_date),
-      money.formattedCurrency(backing.amount(), backing.project().currencyOptions()),
-      backing.formattedPledgedAt()
-    ));
     pledgeStatusTextView.setText(String.format(
       getString(R.string.___Status_),
       backing.status()
     ));
-    rewardInfoTextView.setText(String.format(
-      getString(R.string.___reward_amount_description),
-      money.formattedCurrency(backing.reward().minimum(), backing.project().currencyOptions()),
-      backing.reward().reward()));
-    if (backing.reward().shippingEnabled() != null && backing.reward().shippingEnabled()) {
-      shippingInfoTextView.setText(backing.location().displayableName());
-      shippingAmountTextView.setText(
-        money.formattedCurrency(backing.shippingAmount(), backing.project().currencyOptions())
-      );
+
+    if (backing.project() != null && backing.reward() != null) {
+      pledgeInfoTextView.setText(String.format(
+        getString(R.string.___pledged_amount_on_date),
+        ksCurrency.format(backing.amount(), backing.project()),
+        backing.formattedPledgedAt()
+      ));
+      rewardInfoTextView.setText(String.format(
+        getString(R.string.___reward_amount_description),
+        ksCurrency.format(backing.reward().minimum(), backing.project()),
+        backing.reward().reward()));
+      if (backing.reward().shippingEnabled() != null && backing.reward().shippingEnabled()) {
+        shippingInfoTextView.setText(backing.location().displayableName());
+        shippingAmountTextView.setText(
+          ksCurrency.format(backing.shippingAmount(), backing.project())
+        );
+      }
+
     }
   }
 }

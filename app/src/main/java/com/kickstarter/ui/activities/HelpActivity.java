@@ -10,8 +10,8 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.qualifiers.WebEndpoint;
-import com.kickstarter.viewmodels.HelpViewModel;
 import com.kickstarter.ui.views.KSWebView;
+import com.kickstarter.viewmodels.HelpViewModel;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -49,6 +49,13 @@ public final class HelpActivity extends BaseActivity<HelpViewModel> {
     @HelpType int helpType = getIntent().getExtras().getInt(getString(R.string.intent_help_type));
     final String url = getUrlForHelpType(helpType);
     kickstarterWebView.loadUrl(url);
+  }
+
+  @Override
+  public void onBackPressed() {
+    super.onBackPressed();
+
+    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
   protected String getUrlForHelpType(@HelpType final int helpType) {

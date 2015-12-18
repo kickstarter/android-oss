@@ -33,7 +33,7 @@ public final class DiscoveryFilterViewHolder extends KSViewHolder {
   @Bind(R.id.vertical_line_group) View verticalLineGroup;
   @Bind(R.id.vertical_line_medium_view) View verticalLineView;
 
-  @BindString(R.string.live_project_count_content_description) String liveProjectCountDescriptionString;
+  @BindString(R.string.___live_project_count_content_description) String liveProjectCountDescriptionString;
 
   public interface Delegate {
     void discoveryFilterClick(DiscoveryFilterViewHolder viewHolder, DiscoveryParams discoveryParams);

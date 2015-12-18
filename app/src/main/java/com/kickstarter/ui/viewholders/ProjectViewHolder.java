@@ -3,6 +3,7 @@ package com.kickstarter.ui.viewholders;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -11,12 +12,14 @@ import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
-import com.kickstarter.libs.Money;
+import com.kickstarter.libs.KSString;
+import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.DateTimeUtils;
+import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.ui.views.IconTextView;
+import com.kickstarter.ui.views.IconButton;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
@@ -30,7 +33,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   private Project project;
   private final Delegate delegate;
 
-  protected @Bind(R.id.play_button_overlay) IconTextView playButtonIconTextView;
+  protected @Bind(R.id.play_button_overlay) IconButton playButton;
   protected @Bind(R.id.project_photo) ImageView photoImageView;
   protected @Bind(R.id.project_name) TextView projectNameTextView;
   protected @Bind(R.id.creator_name) TextView creatorNameTextView;
@@ -41,22 +44,26 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.percentage_funded) ProgressBar percentageFundedProgressBar;
   protected @Bind(R.id.backers_count) TextView backersCountTextView;
   protected @Bind(R.id.comments_count) TextView commentsCountTextView;
-  protected @Bind(R.id.deadline_countdown) TextView deadlineCountdownTextView;
-  protected @Bind(R.id.deadline_countdown_unit) TextView deadlineCountdownUnitTextView;
+  protected @Bind(R.id.deadline_countdown_text_view) TextView deadlineCountdownTextView;
+  protected @Bind(R.id.deadline_countdown_unit_text_view) TextView deadlineCountdownUnitTextView;
   protected @Bind(R.id.goal) TextView goalTextView;
   protected @Bind(R.id.pledged) TextView pledgedTextView;
-  protected @Bind(R.id.pledged_of_) TextView pledgedOfTextView;
   protected @Bind(R.id.avatar) ImageView avatarImageView;
   protected @Bind(R.id.avatar_name) TextView avatarNameTextView;
   protected @Bind(R.id.fund_message) TextView fundMessageTextView;
   protected @Bind(R.id.updates_count) TextView updatesCountTextView;
 
-  protected @BindString(R.string.___backers) String backersString;
-  protected @BindString(R.string.___of_) String ofString;
-  protected @BindString(R.string.___pledged_of_) String pledgedOfString;
-  protected @BindString(R.string.____to_go) String toGoString;
+  protected @BindString(R.string.project_creator_by_creator_html) String byCreatorString;
+  protected @BindString(R.string.discovery_baseball_card_blurb_read_more) String blurbReadMoreString;
+  protected @BindString(R.string.discovery_baseball_card_status_banner_canceled) String bannerCanceledString;
+  protected @BindString(R.string.discovery_baseball_card_status_banner_suspended) String bannerSuspendedString;
+  protected @BindString(R.string.discovery_baseball_card_status_banner_funding_unsuccessful_date) String fundingUnsuccessfulString;
+  protected @BindString(R.string.discovery_baseball_card_status_banner_successful) String bannerSuccessfulString;
+  protected @BindString(R.string.discovery_baseball_card_stats_pledged_of_goal) String pledgedOfGoalString;
+  protected @BindString(R.string.discovery_baseball_card_stats_backers) String backersString;
 
-  @Inject Money money;
+  @Inject KSCurrency ksCurrency;
+  @Inject KSString ksString;
 
   public interface Delegate {
     void projectBlurbClicked(ProjectViewHolder viewHolder);
@@ -80,14 +87,18 @@ public final class ProjectViewHolder extends KSViewHolder {
     /* Video */
     Picasso.with(context).load(project.photo().full()).into(photoImageView);
     if (project.hasVideo()) {
-      playButtonIconTextView.setVisibility(View.VISIBLE);
+      playButton.setVisibility(View.VISIBLE);
     } else {
-      playButtonIconTextView.setVisibility(View.GONE);
+      playButton.setVisibility(View.GONE);
     }
 
     /* Project */
-    blurbTextView.setText(Html.fromHtml(context.getString(R.string.___Blurb_read_more, project.blurb())));
-    creatorNameTextView.setText(Html.fromHtml(context.getString(R.string.___by_creator, project.creator().name())));
+    blurbTextView.setText(Html.fromHtml(ksString.format(blurbReadMoreString,
+      "blurb", TextUtils.htmlEncode(project.blurb()),
+      "space", "\u00A0"
+    )));
+    creatorNameTextView.setText(Html.fromHtml(ksString.format(byCreatorString,
+      "creator_name", TextUtils.htmlEncode(project.creator().name()))));
     if (project.isBacking()) {
       backerLabelLinearLayout.setVisibility(View.VISIBLE);
     } else {
@@ -97,15 +108,9 @@ public final class ProjectViewHolder extends KSViewHolder {
     categoryTextView.setText(project.category().name());
     locationTextView.setText(project.location().displayableName());
     percentageFundedProgressBar.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
-    deadlineCountdownTextView.setText(Integer.toString(project.deadlineCountdownValue()));
-    deadlineCountdownUnitTextView.setText(project.deadlineCountdownUnit(context));
-    goalTextView.setText(money.formattedCurrency(project.goal(), project.currencyOptions(), true));
-    pledgedTextView.setText(money.formattedCurrency(project.pledged(), project.currencyOptions()));
-    if (ViewUtils.isFontScaleLarge(view.getContext())) {
-      pledgedOfTextView.setText(ofString);
-    } else {
-      pledgedOfTextView.setText(pledgedOfString);
-    }
+    deadlineCountdownTextView.setText(Integer.toString(ProjectUtils.deadlineCountdownValue(project)));
+    deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(project, view.getContext(), ksString));
+    pledgedTextView.setText(ksCurrency.format(project.pledged(), project));
     backersCountTextView.setText(project.formattedBackersCount());
 
      /* Creator */
@@ -115,12 +120,21 @@ public final class ProjectViewHolder extends KSViewHolder {
       .into(avatarImageView);
     avatarNameTextView.setText(project.creator().name());
     fundMessageTextView.setText(String.format(context.getString(R.string.___This_project_will_only_be_funded_if),
-      money.formattedCurrency(project.goal(), project.currencyOptions(), true),
+      ksCurrency.format(project.goal(), project, true),
       project.deadline().toString(DateTimeUtils.writtenDeadline())));
     updatesCountTextView.setText(project.formattedUpdatesCount());
     commentsCountTextView.setText(project.formattedCommentsCount());
 
     /* a11y */
+    final String goalText = ksCurrency.format(project.goal(), project, true);
+    if (ViewUtils.isFontScaleLarge(view.getContext())) {
+      goalTextView.setText(goalText);
+    } else {
+      goalTextView.setText(ksString.format(pledgedOfGoalString,
+        "goal", goalText
+      ));
+    }
+
     setStatsContentDescription();
   }
 
@@ -145,11 +159,9 @@ public final class ProjectViewHolder extends KSViewHolder {
   }
 
   public void setStatsContentDescription() {
-    final String backersCountContentDescription = project.formattedBackersCount() + backersString;
-    final String pledgedContentDescription = String.valueOf(project.pledged()) + pledgedOfTextView.getText() +
-      money.formattedCurrency(project.goal(), project.currencyOptions());
-    final String deadlineCountdownContentDescription = project.deadlineCountdownValue() +
-      project.deadlineCountdownUnit(view.getContext()) + toGoString;
+    final String backersCountContentDescription = project.formattedBackersCount() + " " +  backersString;
+    final String pledgedContentDescription = pledgedTextView.getText() + " " + goalTextView.getText();
+    final String deadlineCountdownContentDescription = deadlineCountdownTextView.getText() + " " + deadlineCountdownUnitTextView.getText();
 
     backersCountTextView.setContentDescription(backersCountContentDescription);
     pledgedTextView.setContentDescription(pledgedContentDescription);

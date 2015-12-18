@@ -8,6 +8,7 @@
         "login": "Log in",
         "dashboard": "Dashboard",
         "search": "Search",
+        "search_projects": "Search projects",
         "me": "Me"
       },
       "discovery": {
@@ -51,6 +52,15 @@
           }
         },
         "baseball_card": {
+          "social": {
+            "friends_are_backers": {
+              "zero": "None of your friends are backers.",
+              "one": "%{friend_name} is a backer.",
+              "two": "%{friend_name} and %{second_friend_name} are backers.",
+              "few": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.",
+              "many": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers."
+            }
+          },
           "metadata": {
             "potd": "Project of the day!",
             "starred": "You starred this project.",
@@ -78,7 +88,16 @@
           "button": {
             "share": "Share"
           },
-          "read_more": "Read%{space}more%{space}"
+          "read_more": "Read%{space}more%{space}",
+          "blurb_read_more": "%{blurb}%{space}<u>Read%{space}more</u>%{space}",
+          "accessibility": {
+            "category": {
+              "label": "Category"
+            },
+            "location": {
+              "label": "Location"
+            }
+          }
         },
         "filters": {
           "favorites_title": "Favorites",
@@ -464,7 +483,7 @@
           "password": "Password"
         },
         "navbar_title": "Sign up",
-        "newsletter_full": "Discover new projects with our weekly newsletter.",
+        "newsletter_full": "Receive our weekly newsletter and other occasional updates.",
         "button": "Sign up",
         "error": {
           "something_wrong": "Something went wrong."
@@ -619,6 +638,7 @@
         },
         "creator": {
           "by_creator": "by %{creator_name}",
+          "by_creator_html": "by <u>%{creator_name}</u>",
           "youre_a_backer": " • You're a backer"
         },
         "subpages": {
@@ -648,6 +668,14 @@
             "two": "2 more",
             "few": "%{backer_count} more",
             "many": "%{backer_count} more"
+          }
+        },
+        "accessibility": {
+          "button_share": {
+            "label": "Share this project"
+          },
+          "button_star": {
+            "label": "Star this project"
           }
         }
       },
@@ -719,6 +747,10 @@
           "shipping_destinations": "Shipping destinations",
           "estimated_delivery": "Estimated Delivery"
         }
+      },
+      "search": {
+        "by_creator": "by %{creator_name}",
+        "most_popular": "Most Popular"
       },
       "messages": {
         "navigation": {
@@ -994,6 +1026,14 @@
             "preview": "Preview",
             "publish": "Publish!",
             "ok": "OK"
+          },
+          "accessibility": {
+            "button_navigate_back": {
+              "label": "Navigate back"
+            },
+            "button_close": {
+              "label": "Close"
+            }
           }
         },
         "social": {
@@ -1191,6 +1231,7 @@
         "login": "Anmelden",
         "dashboard": "Dashboard",
         "search": "Suche",
+        "search_projects": "Search projects",
         "me": "Mein Konto"
       },
       "discovery": {
@@ -1234,6 +1275,15 @@
           }
         },
         "baseball_card": {
+          "social": {
+            "friends_are_backers": {
+              "zero": "None of your friends are backers.",
+              "one": "%{friend_name} is a backer.",
+              "two": "%{friend_name} and %{second_friend_name} are backers.",
+              "few": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.",
+              "many": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers."
+            }
+          },
           "metadata": {
             "potd": "Projekt des Tages!",
             "starred": "Gehört zu deinen Favoriten.",
@@ -1261,7 +1311,16 @@
           "button": {
             "share": "Teilen"
           },
-          "read_more": "Mehr%{space}Info%{space}"
+          "read_more": "Mehr%{space}Info%{space}",
+          "blurb_read_more": "%{blurb}%{space}Mehr%{space}lesen%{space}",
+          "accessibility": {
+            "category": {
+              "label": "Category"
+            },
+            "location": {
+              "label": "Location"
+            }
+          }
         },
         "filters": {
           "favorites_title": "Favoriten",
@@ -1802,6 +1861,7 @@
         },
         "creator": {
           "by_creator": "von %{creator_name}",
+          "by_creator_html": "von %{creator_name}",
           "youre_a_backer": " • Du unterstützt das Projekt"
         },
         "subpages": {
@@ -1831,6 +1891,14 @@
             "two": "2 weitere",
             "few": "%{backer_count} weitere",
             "many": "%{backer_count} weitere"
+          }
+        },
+        "accessibility": {
+          "button_share": {
+            "label": "Share this project"
+          },
+          "button_star": {
+            "label": "Star this project"
           }
         }
       },
@@ -1902,6 +1970,10 @@
           "shipping_destinations": "Versandziele",
           "estimated_delivery": "Voraussichtliche Lieferung"
         }
+      },
+      "search": {
+        "by_creator": "by %{creator_name}",
+        "most_popular": "Most Popular"
       },
       "messages": {
         "navigation": {
@@ -2177,6 +2249,14 @@
             "preview": "Vorschau",
             "publish": "Jetzt veröffentlichen!",
             "ok": "OK"
+          },
+          "accessibility": {
+            "button_navigate_back": {
+              "label": "Navigate back"
+            },
+            "button_close": {
+              "label": "Close"
+            }
           }
         },
         "social": {
@@ -2374,6 +2454,7 @@
         "login": "Iniciar sesión",
         "dashboard": "Panel de control",
         "search": "Búsqueda",
+        "search_projects": "Buscar proyectos",
         "me": "Mi cuenta"
       },
       "discovery": {
@@ -2417,6 +2498,15 @@
           }
         },
         "baseball_card": {
+          "social": {
+            "friends_are_backers": {
+              "zero": "Ninguno de tus amigos patrocina este proyecto.",
+              "one": "%{friend_name} patrocina este proyecto.",
+              "two": "%{friend_name} y %{second_friend_name} patrocinan este proyecto.",
+              "few": "%{friend_name}, %{second_friend_name}, y %{remaining_count} más patrocinan este proyecto.",
+              "many": "%{friend_name}, %{second_friend_name}, y %{remaining_count} más patrocinan este proyecto."
+            }
+          },
           "metadata": {
             "potd": "¡Proyecto del día!",
             "starred": "Entre tus proyectos destacados.",
@@ -2444,7 +2534,16 @@
           "button": {
             "share": "Compartir"
           },
-          "read_more": "Leer%{space}más%{space}"
+          "read_more": "Leer%{space}más%{space}",
+          "blurb_read_more": "%{blurb}%{space}Leer%{space}más%{space}",
+          "accessibility": {
+            "category": {
+              "label": "Categoría"
+            },
+            "location": {
+              "label": "Ubicación"
+            }
+          }
         },
         "filters": {
           "favorites_title": "Favoritas",
@@ -2985,6 +3084,7 @@
         },
         "creator": {
           "by_creator": "por %{creator_name}",
+          "by_creator_html": "de %{creator_name}",
           "youre_a_backer": " • Tú eres un patrocinador"
         },
         "subpages": {
@@ -3014,6 +3114,14 @@
             "two": "2 más",
             "few": "%{backer_count} más",
             "many": "%{backer_count} más"
+          }
+        },
+        "accessibility": {
+          "button_share": {
+            "label": "Compartir este proyecto"
+          },
+          "button_star": {
+            "label": "Añadir este proyecto a favoritos"
           }
         }
       },
@@ -3085,6 +3193,10 @@
           "shipping_destinations": "Destinos de envío",
           "estimated_delivery": "Entrega aproximada"
         }
+      },
+      "search": {
+        "by_creator": "de %{creator_name}",
+        "most_popular": "Los más populares"
       },
       "messages": {
         "navigation": {
@@ -3360,6 +3472,14 @@
             "preview": "Vista previa",
             "publish": "¡Publicar!",
             "ok": "OK"
+          },
+          "accessibility": {
+            "button_navigate_back": {
+              "label": "Atrás"
+            },
+            "button_close": {
+              "label": "Cerrar"
+            }
           }
         },
         "social": {
@@ -3557,6 +3677,7 @@
         "login": "Connexion",
         "dashboard": "Tableau de bord",
         "search": "Recherche",
+        "search_projects": "Rechercher des projets",
         "me": "Mon compte"
       },
       "discovery": {
@@ -3600,6 +3721,15 @@
           }
         },
         "baseball_card": {
+          "social": {
+            "friends_are_backers": {
+              "zero": "Vos amis n'ont pas soutenu ce projet.",
+              "one": "%{friend_name} est contributeur.",
+              "two": "%{friend_name} et %{second_friend_name} sont contributeurs.",
+              "few": "%{friend_name}, %{second_friend_name} et %{remaining_count} autres personnes sont contributeurs.",
+              "many": "%{friend_name}, %{second_friend_name} et %{remaining_count} autres personnes sont contributeurs."
+            }
+          },
           "metadata": {
             "potd": "Projet du jour !",
             "starred": "Mes projets préférés !",
@@ -3627,7 +3757,16 @@
           "button": {
             "share": "Partager"
           },
-          "read_more": "En savoir%{space}plus%{space}"
+          "read_more": "En savoir%{space}plus%{space}",
+          "blurb_read_more": "%{blurb}%{space}Plus%{space}%{space}",
+          "accessibility": {
+            "category": {
+              "label": "Catégorie"
+            },
+            "location": {
+              "label": "Lieu"
+            }
+          }
         },
         "filters": {
           "favorites_title": "Favoris",
@@ -4168,6 +4307,7 @@
         },
         "creator": {
           "by_creator": "par %{creator_name}",
+          "by_creator_html": "par %{creator_name}",
           "youre_a_backer": " • Vous êtes contributeur"
         },
         "subpages": {
@@ -4197,6 +4337,14 @@
             "two": "2 autres personnes",
             "few": "%{backer_count} autres personnes",
             "many": "%{backer_count} autres personnes"
+          }
+        },
+        "accessibility": {
+          "button_share": {
+            "label": "Partager ce projet"
+          },
+          "button_star": {
+            "label": "Ajouter à mes projets préférés"
           }
         }
       },
@@ -4268,6 +4416,10 @@
           "shipping_destinations": "Expédition",
           "estimated_delivery": "Livraison prévue"
         }
+      },
+      "search": {
+        "by_creator": "par %{creator_name}",
+        "most_popular": "Les tendances"
       },
       "messages": {
         "navigation": {
@@ -4543,6 +4695,14 @@
             "preview": "Aperçu",
             "publish": "Publier !",
             "ok": "OK"
+          },
+          "accessibility": {
+            "button_navigate_back": {
+              "label": "Retour"
+            },
+            "button_close": {
+              "label": "Fermer"
+            }
           }
         },
         "social": {
@@ -4740,6 +4900,7 @@
         "login": "Log in",
         "dashboard": "Dashboard",
         "search": "Search",
+        "search_projects": "Search projects",
         "me": "Me"
       },
       "discovery": {
@@ -4783,6 +4944,15 @@
           }
         },
         "baseball_card": {
+          "social": {
+            "friends_are_backers": {
+              "zero": "None of your friends are backers.",
+              "one": "%{friend_name} is a backer.",
+              "two": "%{friend_name} and %{second_friend_name} are backers.",
+              "few": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.",
+              "many": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers."
+            }
+          },
           "metadata": {
             "potd": "Project of the day!",
             "starred": "You starred this project.",
@@ -4810,7 +4980,16 @@
           "button": {
             "share": "Share"
           },
-          "read_more": "Read%{space}more%{space}"
+          "read_more": "Read%{space}more%{space}",
+          "blurb_read_more": "%{blurb}%{space}<u>Read%{space}more</u>%{space}",
+          "accessibility": {
+            "category": {
+              "label": "Category"
+            },
+            "location": {
+              "label": "Location"
+            }
+          }
         },
         "filters": {
           "favorites_title": "Favorites",
@@ -5196,7 +5375,7 @@
           "password": "Password"
         },
         "navbar_title": "Sign up",
-        "newsletter_full": "Discover new projects with our weekly newsletter.",
+        "newsletter_full": "Receive our weekly newsletter and other occasional updates.",
         "button": "Sign up",
         "error": {
           "something_wrong": "Something went wrong."
@@ -5351,6 +5530,7 @@
         },
         "creator": {
           "by_creator": "by %{creator_name}",
+          "by_creator_html": "by <u>%{creator_name}</u>",
           "youre_a_backer": " • You're a backer"
         },
         "subpages": {
@@ -5380,6 +5560,14 @@
             "two": "2 more",
             "few": "%{backer_count} more",
             "many": "%{backer_count} more"
+          }
+        },
+        "accessibility": {
+          "button_share": {
+            "label": "Share this project"
+          },
+          "button_star": {
+            "label": "Star this project"
           }
         }
       },
@@ -5451,6 +5639,10 @@
           "shipping_destinations": "Shipping destinations",
           "estimated_delivery": "Estimated Delivery"
         }
+      },
+      "search": {
+        "by_creator": "by %{creator_name}",
+        "most_popular": "Most Popular"
       },
       "messages": {
         "navigation": {
@@ -5726,6 +5918,14 @@
             "preview": "Preview",
             "publish": "Publish!",
             "ok": "OK"
+          },
+          "accessibility": {
+            "button_navigate_back": {
+              "label": "Navigate back"
+            },
+            "button_close": {
+              "label": "Close"
+            }
           }
         },
         "social": {
@@ -5949,7 +6149,9 @@
     "recaptcha": true,
     "log_devices": true,
     "backer_report_formats": true,
-    "discover_cards": true
+    "discover_cards": true,
+    "imgix_videos": true,
+    "fulfillment_report": true
   },
   "launched_countries": [
     {
@@ -6063,7 +6265,7 @@
   ],
   "ab_experiments": {
     "discover_sorts_vs_subcategories": "experimental",
-    "native_ios_aa": "experimental",
+    "native_ios_aa": "control",
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
     "native_iphone_horiz_vs_vert": "experimental",

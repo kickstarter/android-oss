@@ -22,7 +22,7 @@
       android:layout_height="@dimen/activity_feed_avatar_height" />
 
     <TextView
-      style="@style/Subhead"
+      style="@style/SubheadPrimary"
       android:id="@+id/title"
       android:bufferType="spannable"
       android:layout_width="wrap_content"

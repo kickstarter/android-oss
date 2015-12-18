@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 
@@ -14,19 +15,21 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.AutoParcelAdapterFactory;
-import com.kickstarter.libs.ConfigLoader;
+import com.kickstarter.libs.CurrentConfig;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.DateTimeTypeConverter;
 import com.kickstarter.libs.Font;
 import com.kickstarter.libs.ForApplication;
+import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.KoalaTrackingClient;
 import com.kickstarter.libs.Logout;
-import com.kickstarter.libs.Money;
+import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.Release;
 import com.kickstarter.libs.preferences.StringPreference;
 import com.kickstarter.libs.qualifiers.AccessTokenPreference;
+import com.kickstarter.libs.qualifiers.ConfigPreference;
 import com.kickstarter.libs.qualifiers.UserPreference;
 import com.kickstarter.libs.qualifiers.WebEndpoint;
 import com.kickstarter.services.ApiClient;
@@ -73,8 +76,7 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  OkHttpClient provideOkHttpClient(@NonNull final ApiEndpoint apiEndpoint,
-    @NonNull final ApiRequestInterceptor apiRequestInterceptor, @NonNull final CookieManager cookieManager,
+  OkHttpClient provideOkHttpClient(@NonNull final ApiRequestInterceptor apiRequestInterceptor, @NonNull final CookieManager cookieManager,
     @NonNull final HttpLoggingInterceptor httpLoggingInterceptor, @NonNull final KSRequestInterceptor ksRequestInterceptor,
     @NonNull final WebRequestInterceptor webRequestInterceptor) {
     final OkHttpClient okHttpClient = new OkHttpClient();
@@ -180,6 +182,13 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
+  @ConfigPreference
+  @NonNull StringPreference providesConfigPreference(final @NonNull SharedPreferences sharedPreferences) {
+    return new StringPreference(sharedPreferences, "config");
+  }
+
+  @Provides
+  @Singleton
   Application provideApplication() {
     return application;
   }
@@ -211,8 +220,10 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  ConfigLoader provideConfigLoader(@NonNull final AssetManager assetManager) {
-    return new ConfigLoader(assetManager);
+  CurrentConfig provideCurrentConfig(final @NonNull AssetManager assetManager,
+    final @NonNull Gson gson,
+    final @ConfigPreference @NonNull StringPreference configPreference) {
+    return new CurrentConfig(assetManager, gson, configPreference);
   }
 
   @Provides
@@ -258,6 +269,18 @@ public class ApplicationModule {
   }
 
   @Provides
+  @Singleton
+  KSCurrency provideKSCurrency(final @NonNull CurrentConfig currentConfig) {
+    return new KSCurrency(currentConfig);
+  }
+
+  @Provides
+  @Singleton
+  @NonNull KSString provideKSString(final @Named("PackageName") @NonNull String packageName, final @NonNull Resources resources) {
+    return new KSString(packageName, resources);
+  }
+
+  @Provides
   KSWebViewClient provideKSWebViewClient(@NonNull final OkHttpClient okHttpClient,
     @WebEndpoint final String webEndpoint) {
     return new KSWebViewClient(okHttpClient, webEndpoint);
@@ -267,12 +290,6 @@ public class ApplicationModule {
   @Singleton
   Logout provideLogout(@NonNull final CookieManager cookieManager, @NonNull final CurrentUser currentUser) {
     return new Logout(cookieManager, currentUser);
-  }
-
-  @Provides
-  @Singleton
-  Money provideMoney(@NonNull final ConfigLoader configLoader) {
-    return new Money(configLoader);
   }
 
   @Provides
@@ -292,8 +309,17 @@ public class ApplicationModule {
     }
   }
 
+  @Provides
+  @Singleton
+  @Named("PackageName")
   String providePackageName(@NonNull final Application application) {
     return application.getPackageName();
+  }
+
+  @Provides
+  @Singleton
+  Resources provideResources(@ForApplication @NonNull final Context context) {
+    return context.getResources();
   }
 
   @Provides

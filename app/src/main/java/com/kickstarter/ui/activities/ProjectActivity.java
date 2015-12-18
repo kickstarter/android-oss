@@ -17,7 +17,7 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.Money;
+import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
@@ -29,6 +29,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.BindColor;
 import butterknife.BindDrawable;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -45,8 +46,9 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   @BindDrawable(R.drawable.ic_star_black_24dp) Drawable starDrawable;
   @BindColor(R.color.green) int green;
   @BindColor(R.color.text_primary) int textPrimary;
+  @BindString(R.string.project_back_button) String projectBackButtonString;
 
-  @Inject Money money;
+  @Inject KSCurrency ksCurrency;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -167,7 +169,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     final Intent intent = new Intent(this, CheckoutActivity.class)
       .putExtra(getString(R.string.intent_project), project)
       .putExtra(getString(R.string.intent_url), project.newPledgeUrl())
-      .putExtra(getString(R.string.intent_toolbar_title), getString(R.string.___Back_this_project));
+      .putExtra(getString(R.string.intent_toolbar_title), projectBackButtonString);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
@@ -180,7 +182,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   public void startRewardSelectedCheckout(@NonNull final Project project, @NonNull final Reward reward) {
     final Intent intent = new Intent(this, CheckoutActivity.class)
       .putExtra(getString(R.string.intent_project), project)
-      .putExtra(getString(R.string.intent_toolbar_title), getString(R.string.___Back_this_project))
+      .putExtra(getString(R.string.intent_toolbar_title), projectBackButtonString)
       .putExtra(getString(R.string.intent_url), project.rewardSelectedUrl(reward));
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }

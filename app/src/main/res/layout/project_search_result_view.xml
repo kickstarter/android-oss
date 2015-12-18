@@ -52,7 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/grid_1_half"
         android:maxLines="2"
-        android:text="by Creator" />
+        android:text="@string/search_by_creator" />
     </LinearLayout>
 
  </RelativeLayout>

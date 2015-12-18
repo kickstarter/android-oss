@@ -22,7 +22,7 @@ module Milkrun
     protected
 
     def path
-      Milkrun.app_dir + 'version_name.txt'
+      File.join(Milkrun.app_dir, 'version_name.txt')
     end
   end
 end

@@ -4,11 +4,14 @@
     is deprecated based on its name.
 
     There may be a few strings here that we *don't* want to translate, we'll figure out a nice space for them later. -->
+  <string name="___About">About</string>
   <string name="___Activity">Activity</string>
   <string name="___action_settings">Settings</string>
   <string name="___All_gone">All gone</string>
   <string name="___All_of_Category">All of %1$s</string>
   <string name="___Already_have_a_Kickstarter_account">Already have a Kickstarter account?</string>
+  <string name="____and_are_backers">%1$s and %2$s are backers.</string>
+  <string name="____and_more_are_backers">%1$s, %2$s, and %3$s more are backers.</string>
   <string name="___A_newer_build_is_available">A newer build is available. Download upgrade?</string>
   <string name="___Are_those_new_shoes">
     Are those new shoes? If they’re not new, they look really shiny and beautiful.
@@ -46,6 +49,7 @@
   <string name="___Comment_posted">Comment posted!</string>
   <string name="___Post_comment_error">Couldn’t post comment.</string>
   <string name="___Comments">Comments</string>
+  <string name="___Contact">Contact</string>
   <string name="___Cookie_Policy">Cookie Policy</string>
   <string name="___Create_new_account">Create new account</string>
   <string name="___creator_launched_a_project">%1$s launched a project: %2$s</string>
@@ -68,9 +72,12 @@
   <string name="___Everything">Everything</string>
   <string name="___Explore_Category">Explore %1$s</string>
   <string name="___Explore_new_projects">Explore new projects</string>
+  <string name="___Featured_in_">Featured in %1$s</string>
   <string name="___Find_friends">Find friends</string>
   <string name="___Follow">Follow</string>
   <string name="___Forgot_your_password"><u>Forgot your password?</u></string>
+  <string name="___Frequently_Asked_Questions">Frequently Asked Questions</string>
+  <string name="___Friend_backs_a_project">Friend backs a project</string>
   <string name="___friend_name_backed_art_project">%1$s backed an Art project</string>
   <string name="___friend_name_backed_comics_project">%1$s backed a Comics project</string>
   <string name="___friend_name_backed_crafts_project">%1$s backed a Crafts project</string>
@@ -88,15 +95,22 @@
   <string name="___friend_name_backed_theater_project">%1$s backed a Theater project</string>
   <string name="___Friends_Backed">Friends Backed</string>
   <string name="___Full_name">Full name</string>
+  <string name="___funded">funded</string>
   <string name="___Funded">Funded</string>
   <string name="___Funding_canceled">Funding canceled</string>
   <string name="___Funding_suspended_">Funding suspended %1$s</string>
   <string name="___Funding_unsuccessful_">Funding unsuccessful %1$s</string>
   <string name="___goal">goal</string>
+  <string name="___Happening_Now">Happening Now</string>
+  <string name="___Hello_Kickstarter_App_Support">Hello Kickstarter App Support</string>
   <string name="___Help">Help</string>
   <string name="___hours">hours</string>
+  <string name="___How_can_we_help_you">How can we help you? Please try to be as specific as possible.</string>
+  <string name="___How_Kickstarter_works">How Kickstarter works</string>
   <string name="___I_just_backed_project_on_Kickstarter">I just backed %1$s on Kickstarter: %2$s</string>
   <string name="___Instructions">Instructions</string>
+  <string name="____is_a_backer">%1$s is a backer.</string>
+  <string name="___Kickstarter_news_and_events">Kickstarter news and events</string>
   <string name="___Launched">Launched</string>
   <string name="___Lets_try_that_again">Let\'s try that again</string>
   <string name="___Limited_left_of">Limited (%1$s left of %2$s)</string>
@@ -110,12 +124,15 @@
   <string name="___Login_does_not_match_any_of_our_records">Login does not match any of our records.</string>
   <string name="___Looking_for_more_projects">Looking for more projects? Check these out.</string>
   <string name="___Manage_pledge">Manage pledge</string>
+  <string name="___Manage_project_notifications">Manage project notifications</string>
   <string name="___mins">mins</string>
   <string name="___More">More</string>
   <string name="___Most_Popular">Most Popular</string>
   <string name="___NA">N/A</string>
   <string name="___Nearby">Nearby</string>
   <string name="___Network">Network</string>
+  <string name="___New_followers">New followers</string>
+  <string name="___Newsletters">Newsletters</string>
   <string name="___No_activity_yet">No activity yet</string>
   <string name="___No_comments">No comments</string>
   <string name="___Not_implemented_yet">Not implemented yet, coming soon!</string>
@@ -135,6 +152,7 @@
   <string name="___Please_enter_your_verification_code_to_continue">
     Please enter your verification code to continue.
   </string>
+  <string name="___Send_feedback">Send feedback</string>
   <string name="___Pledge_or_more">Pledge %1$s or more</string>
   <string name="___Pledged">Pledged</string>
   <string name="___pledged_of_">pledged of\u0020</string>
@@ -149,6 +167,9 @@
   <string name="___project_was_successfully_funded">%1$s was successfully funded!</string>
   <string name="___project_resumed">%1$s resumed.</string>
   <string name="___project_was_suspended">%1$s was suspended.</string>
+  <string name="___Project_updates">Project updates</string>
+  <string name="___Projects_We_Love">Projects We Love</string>
+  <string name="___Projects_you_back">Projects you back</string>
   <string name="___Public_comment">Public comment</string>
   <string name="___Resend">Resend</string>
   <string name="___Reset_my_password">Reset my password</string>
@@ -172,6 +193,7 @@
   <string name="___Sign_up_or_log_in_with_your_Facebook_account">
     Sign up or log in with your Facebook account or email address below:
   </string>
+  <string name="___Social_notifications">Social notifications</string>
   <string name="___Something_went_wrong_try_again_later">Something went wrong, please try again later.</string>
   <string name="___Sorry_we_do_not_know_that_email_address_try_again">
     Sorry, we don\'t know that email address. Try again?</string>
@@ -191,13 +213,13 @@
   <string name="____to_go">\u0020to go</string>
   <string name="___Unable_to_connect">Unable to connect</string>
   <string name="___Unable_to_login">Unable to login</string>
+  <string name="___Unable_to_save">Unable to save</string>
   <string name="___Update_sequence">Update #%1$d</string>
   <string name="___Updates">Updates</string>
   <string name="___Upgrade_app">Upgrade app</string>
   <string name="___Use_your_email_address">Use your email address:</string>
   <string name="___username_is_following_you">&lt;b>%1$s&lt;/b> is following you!</string>
   <string name="___Variant">Variant</string>
-  <string name="___View_pledge">View pledge</string>
   <string name="___Verify">Verify</string>
   <string name="___Version_code">Version Code</string>
   <string name="___Version_name">Version Name</string>
@@ -213,5 +235,27 @@
   <string name="___You_just_backed">You just backed &lt;b>%1$s&lt;/b>. Share this project with friends to help it along!</string>
   <string name="___You_launched_a_project">You launched a project: %1$s</string>
   <string name="___You_selected">You selected</string>
-  <string name="___Youre_a_backer">\u0020• You\'re a backer\u0020</string>
+  <string name="____Youre_a_backer">\u0020• You\'re a backer\u0020</string>
+  <string name="___Youre_a_backer">You\'re a backer!</string>
+  <string name="___You_starred_this_project">You starred this project.</string>
+
+  <!-- Content descriptions -->
+  <string name="___activity_button_content_description">Activity feed</string>
+  <string name="___category_icon_content_description">Category</string>
+  <string name="___comment_button_content_description">Write a comment</string>
+  <string name="___current_user_button_content_description">Current user menu</string>
+  <string name="___filter_button_content_description">Filter by categories</string>
+  <string name="___help_menu_button_content_description">Help menu</string>
+  <string name="___live_project_count_content_description">Live projects</string>
+  <string name="___location_icon_content_description">Location</string>
+  <string name="___login_button_content_description">Log in</string>
+  <string name="___overflow_button_content_description">Overflow menu</string>
+  <string name="___play_video_button_content_description">Play video</string>
+  <string name="___search_button_content_description">Search projects</string>
+  <string name="___share_button_content_description">Share this project</string>
+  <string name="___star_fab_content_description">Star this project</string>
+  <string name="___subscribe_mobile_notification_button_content_description">Subscribe to mobile notifications</string>
+  <string name="___subscribe_notification_button_content_description">Subscribe to notifications</string>
+  <string name="___unsubscribe_mobile_notification_button_content_description">Unsubscribe from mobile notifications</string>
+  <string name="___unsubscribe_notification_button_content_description">Unsubscribe from notifications</string>
 </resources>

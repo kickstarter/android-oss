@@ -3,6 +3,7 @@ package com.kickstarter.ui.viewholders;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -38,7 +39,8 @@ public final class FriendFollowViewHolder extends ActivityListViewHolder {
       .transform(new CircleTransformation())
       .into(avatarImageView);
 
-    titleTextView.setText(Html.fromHtml(context.getString(R.string.___username_is_following_you, activity.user().name())));
+    titleTextView.setText(Html.fromHtml(context.getString(R.string.___username_is_following_you,
+      TextUtils.htmlEncode(activity.user().name()))));
   }
 
   @Override

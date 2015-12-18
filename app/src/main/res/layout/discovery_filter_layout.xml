@@ -36,7 +36,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.kickstarter.ui.views.IconTextView
+    <com.kickstarter.ui.views.IconButton
       android:id="@+id/close_button"
       android:focusable="true"
       android:nextFocusLeft="@id/recycler_view"
@@ -48,7 +48,7 @@
       android:layout_height="wrap_content"
       android:padding="@dimen/grid_1"
       android:text="@string/close_icon"
-      android:contentDescription="@string/close_button_content_description"
+      android:contentDescription="@string/general_navigation_accessibility_button_close_label"
       android:textColor="@color/white"
       android:textSize="28sp" />
 

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  tools:showIn="@layout/project_card_view"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:orientation="horizontal">
+
+  <TextView
+    android:id="@+id/backers_count"
+    android:text="12,000"
+    style="@style/CaptionPrimaryMedium"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="@dimen/grid_1_half"
+    android:layout_marginEnd="@dimen/grid_1_half"/>
+
+  <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="@dimen/grid_2"
+    android:layout_marginEnd="@dimen/grid_2"
+    android:text="@string/discovery_baseball_card_stats_backers"
+    style="@style/CaptionSecondary" />
+
+  <TextView
+    android:id="@+id/percent"
+    android:text="85%"
+    style="@style/CaptionPrimaryMedium"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="@dimen/grid_1_half"
+    android:layout_marginEnd="@dimen/grid_1_half"/>
+
+  <TextView
+    android:text="@string/___funded"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="@dimen/grid_2"
+    android:layout_marginEnd="@dimen/grid_2"
+    style="@style/CaptionSecondary" />
+
+  <TextView
+    android:id="@+id/deadline_countdown"
+    android:singleLine="true"
+    android:text="5"
+    style="@style/CaptionPrimaryMedium"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="@dimen/grid_1_half"
+    android:layout_marginEnd="@dimen/grid_1_half" />
+
+  <TextView
+    android:id="@+id/deadline_countdown_unit"
+    android:text="days to go"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    style="@style/CaptionSecondary" />
+
+</LinearLayout>

@@ -1,21 +1,16 @@
 package com.kickstarter.models;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 
-import com.kickstarter.R;
 import com.kickstarter.libs.qualifiers.AutoGson;
-import com.kickstarter.libs.CurrencyOptions;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Duration;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -38,6 +33,8 @@ public abstract class Project implements Parcelable {
   public abstract String currency(); // e.g.: USD
   public abstract String currencySymbol(); // e.g.: $
   public abstract boolean currencyTrailingCode();
+  public abstract @Nullable DateTime featuredAt();
+  public abstract @Nullable List<User> friends();
   public abstract @Nullable DateTime deadline();
   public abstract float goal();
   public abstract long id(); // in the Kickstarter app, this is project.pid not project.id
@@ -52,6 +49,7 @@ public abstract class Project implements Parcelable {
   public abstract @Nullable String slug();
   public abstract @State String state();
   public abstract @Nullable DateTime stateChangedAt();
+  public abstract @Nullable Float staticUsdRate();
   public abstract @Nullable Integer updatesCount();
   public abstract @Nullable List<Reward> rewards();
   public abstract DateTime updatedAt();
@@ -72,6 +70,8 @@ public abstract class Project implements Parcelable {
     public abstract Builder currencySymbol(String __);
     public abstract Builder currencyTrailingCode(boolean __);
     public abstract Builder deadline(DateTime __);
+    public abstract Builder featuredAt(DateTime __);
+    public abstract Builder friends(List<User> __);
     public abstract Builder goal(float __);
     public abstract Builder id(long __);
     public abstract Builder isBacking(boolean __);
@@ -84,6 +84,7 @@ public abstract class Project implements Parcelable {
     public abstract Builder potdAt(DateTime __);
     public abstract Builder rewards(List<Reward> __);
     public abstract Builder slug(String __);
+    public abstract Builder staticUsdRate(Float __);
     public abstract Builder state(@State String __);
     public abstract Builder stateChangedAt(DateTime __);
     public abstract Builder updatedAt(DateTime __);
@@ -225,10 +226,6 @@ public abstract class Project implements Parcelable {
     }
   }
 
-  public @NonNull CurrencyOptions currencyOptions() {
-    return new CurrencyOptions(country(), currencySymbol(), currency());
-  }
-
   public boolean hasComments() {
     return this.commentsCount() != null && Integer.valueOf(this.commentsCount()) != 0;
   }
@@ -251,9 +248,21 @@ public abstract class Project implements Parcelable {
     return STATE_FAILED.equals(state());
   }
 
+  public boolean isFeaturedToday() {
+    if (featuredAt() == null) {
+      return false;
+    }
+
+    return DateTimeUtils.isDateToday(featuredAt());
+  }
+
   /** Returns whether the project is in a live state. */
   public boolean isLive() {
     return STATE_LIVE.equals(state());
+  }
+
+  public boolean isFriendBacking() {
+    return friends() != null && friends().size() > 0;
   }
 
   public boolean isPotdToday() {
@@ -261,8 +270,7 @@ public abstract class Project implements Parcelable {
       return false;
     }
 
-    final DateTime startOfDayUTC = new DateTime(DateTimeZone.UTC).withTime(0, 0, 0, 0);
-    return startOfDayUTC.isEqual(potdAt().withZone(DateTimeZone.UTC));
+    return DateTimeUtils.isDateToday(potdAt());
   }
 
   /** Returns whether the project is in a purged state. */
@@ -296,84 +304,6 @@ public abstract class Project implements Parcelable {
     }
 
     return 0.0f;
-  }
-
-  /**
-   * Returns a String describing the time remaining for a project, e.g.
-   * 25 minutes to go, 8 days to go.
-   *
-   * @param  context an Android context.
-   * @return         the String time remaining.
-   */
-  public @NonNull String timeToGo(final @NonNull Context context) {
-    return new StringBuilder(deadlineCountdown(context))
-      .append(context.getString(R.string.____to_go))
-      .toString();
-  }
-
-  /**
-   * Returns time until project reaches deadline along with the unit,
-   * e.g. 25 minutes, 8 days.
-   *
-   * @param  context an Android context.
-   * @return         the String time remaining.
-   */
-  public @NonNull String deadlineCountdown(final @NonNull Context context) {
-    return new StringBuilder().append(deadlineCountdownValue())
-      .append(" ")
-      .append(deadlineCountdownUnit(context))
-      .toString();
-  }
-
-  /**
-   * Returns time until project reaches deadline in seconds, or 0 if the
-   * project has already finished.
-   *
-   * @return the Long number of seconds remaining.
-   */
-  public @NonNull Long timeInSecondsUntilDeadline() {
-    return Math.max(0L,
-      new Duration(new DateTime(), deadline()).getStandardSeconds());
-  }
-
-  /**
-   * Returns time remaining until project reaches deadline in either seconds,
-   * minutes, hours or days. A time unit is chosen such that the number is
-   * readable, e.g. 5 minutes would be preferred to 300 seconds.
-   *
-   * @return the Integer time remaining.
-   */
-  public @NonNull Integer deadlineCountdownValue() {
-    final Long seconds = timeInSecondsUntilDeadline();
-    if (seconds <= 120.0) {
-      return seconds.intValue(); // seconds
-    } else if (seconds <= 120.0 * 60.0) {
-      return (int) Math.floor(seconds / 60.0); // minutes
-    } else if (seconds < 72.0 * 60.0 * 60.0) {
-      return (int) Math.floor(seconds / 60.0 / 60.0); // hours
-    }
-    return (int) Math.floor(seconds / 60.0 / 60.0 / 24.0); // days
-  }
-
-  /**
-   * Returns the most appropriate unit for the time remaining until the project
-   * reaches its deadline.
-   *
-   * @param  context an Android context.
-   * @return         the String unit.
-   */
-  public @NonNull String deadlineCountdownUnit(final @NonNull Context context) {
-    final Long seconds = timeInSecondsUntilDeadline();
-    if (seconds <= 1.0 && seconds > 0.0) {
-      return context.getString(R.string.___secs);
-    } else if (seconds <= 120.0) {
-      return context.getString(R.string.___secs);
-    } else if (seconds <= 120.0 * 60.0) {
-      return context.getString(R.string.___mins);
-    } else if (seconds <= 72.0 * 60.0 * 60.0) {
-      return context.getString(R.string.___hours);
-    }
-    return context.getString(R.string.___days);
   }
 
   public @NonNull String param() {

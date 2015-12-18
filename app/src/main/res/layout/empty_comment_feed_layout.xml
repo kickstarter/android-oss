@@ -7,7 +7,7 @@
   android:paddingTop="@dimen/grid_8"
   android:gravity="center">
 
-  <com.kickstarter.ui.views.IconTextView
+  <com.kickstarter.ui.views.IconButton
     android:id="@+id/comment_icon"
     android:alpha="0.3"
     android:gravity="center_horizontal"

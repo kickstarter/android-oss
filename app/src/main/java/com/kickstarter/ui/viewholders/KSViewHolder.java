@@ -1,6 +1,5 @@
 package com.kickstarter.ui.viewholders;
 
-import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

@@ -3,6 +3,7 @@ package com.kickstarter.libs.utils;
 import android.support.annotation.NonNull;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Seconds;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -27,6 +28,11 @@ public class DateTimeUtils {
 
   public static DateTimeFormatter estimatedDeliveryOn() {
     return DateTimeFormat.forPattern("MMMM yyyy");
+  }
+
+  public static boolean isDateToday(final @NonNull DateTime dateTime) {
+    return dateTime.withZone(DateTimeZone.UTC).withTimeAtStartOfDay()
+      .equals(DateTime.now().withTimeAtStartOfDay().withZoneRetainFields(DateTimeZone.UTC));
   }
 
   public static String relativeDateInWords(@NonNull final DateTime dateTime) {

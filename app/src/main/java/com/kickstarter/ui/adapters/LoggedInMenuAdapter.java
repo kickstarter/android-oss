@@ -18,7 +18,8 @@ import java.util.List;
 
 public final class LoggedInMenuAdapter extends BaseAdapter {
   public static final int TYPE_PROFILE = 0;
-  public static final int TYPE_TEXT = 1;
+  public static final int TYPE_SETTINGS = 1;
+  public static final int TYPE_HELP = 2;
 
   private final Context context;
   private final User user;
@@ -28,10 +29,10 @@ public final class LoggedInMenuAdapter extends BaseAdapter {
   public LoggedInMenuAdapter(final @NonNull Context context, final @NonNull User user) {
     this.context = context;
     this.user = user;
-  }
 
-  public void takeTitle(final @NonNull String title) {
-    titles.add(title);
+    titles.add(TYPE_PROFILE, user.name());
+    titles.add(TYPE_SETTINGS, context.getResources().getString(R.string.___Settings));
+    titles.add(TYPE_HELP, context.getResources().getString(R.string.___Help));
     notifyDataSetChanged();
   }
 
@@ -59,7 +60,8 @@ public final class LoggedInMenuAdapter extends BaseAdapter {
           convertView = LayoutInflater.from(context).inflate(R.layout.logged_in_menu_avatar_item, null);
           convertView.setTag(new LoggedInMenuProfileViewHolder(convertView, getItem(position), user.avatar()));
           break;
-        case TYPE_TEXT:
+        case TYPE_SETTINGS:
+        case TYPE_HELP:
           convertView = LayoutInflater.from(context).inflate(R.layout.logged_in_menu_item, null);
           convertView.setTag(new LoggedInMenuViewHolder(convertView, getItem(position)));
           break;
@@ -70,11 +72,11 @@ public final class LoggedInMenuAdapter extends BaseAdapter {
 
   @Override
   public int getItemViewType(final int position) {
-    return position == 0 ? TYPE_PROFILE : TYPE_TEXT;
+    return position;
   }
 
   @Override
   public int getViewTypeCount() {
-    return 2;
+    return titles.size();
   }
 }

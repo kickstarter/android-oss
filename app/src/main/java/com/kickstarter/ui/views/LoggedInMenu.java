@@ -23,12 +23,8 @@ public class LoggedInMenu extends ListPopupWindow {
 
     final LoggedInMenuAdapter adapter = new LoggedInMenuAdapter(context, currentUser);
     setAdapter(adapter);
-    adapter.takeTitle(currentUser.name());
-    adapter.takeTitle(context.getResources().getString(R.string.___Settings));
-    adapter.takeTitle(context.getResources().getString(R.string.___Help));
 
     setWidth(context.getResources().getDimensionPixelSize(R.dimen.logged_in_menu_width));
-    //setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
 
     setHorizontalOffset(context.getResources().getDimensionPixelSize(R.dimen.logged_in_menu_horizontal_offset));
     setVerticalOffset(context.getResources().getDimensionPixelSize(R.dimen.logged_in_menu_vertical_offset));
@@ -38,13 +34,13 @@ public class LoggedInMenu extends ListPopupWindow {
       dismiss();
       final BaseActivity activity = (BaseActivity) context;
       switch (position) {
-        case 0:
+        case LoggedInMenuAdapter.TYPE_PROFILE:
           final Intent profileIntent = new Intent(activity, ProfileActivity.class);
           activity.startActivity(profileIntent);
           break;
-        case 1:
+        case LoggedInMenuAdapter.TYPE_SETTINGS:
           break;
-        case 2:
+        case LoggedInMenuAdapter.TYPE_HELP:
           final Intent helpIntent = new Intent(activity, HelpActivity.class);
           helpIntent.putExtra(context.getString(R.string.intent_help_type), HelpActivity.HELP_TYPE_GENERAL);
           activity.startActivity(helpIntent);

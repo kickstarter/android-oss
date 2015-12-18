@@ -26,7 +26,7 @@ public abstract class Location implements Parcelable {
     public abstract Builder city(String __);
     public abstract Builder state(String __);
     public abstract Builder country(String __);
-    public abstract Builder projectsCount(int __);
+    public abstract Builder projectsCount(Integer __);
     public abstract Location build();
   }
 

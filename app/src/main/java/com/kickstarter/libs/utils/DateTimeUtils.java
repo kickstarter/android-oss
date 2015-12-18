@@ -1,7 +1,6 @@
 package com.kickstarter.libs.utils;
 
 import android.content.Context;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
@@ -9,6 +8,7 @@ import android.util.Pair;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.NumberOptions;
+import com.kickstarter.libs.RelativeDateOptions;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -17,8 +17,6 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.Locale;
-
-import auto.parcel.AutoParcel;
 
 public final class DateTimeUtils {
   private DateTimeUtils() {}
@@ -80,7 +78,7 @@ public final class DateTimeUtils {
     boolean willHappenIn = false;
     boolean happenedAgo = false;
 
-    if (options.explain()) {
+    if (!options.absolute()) {
       if (secondsDifference < 0) {
         willHappenIn = true;
       } else if (secondsDifference > 0) {
@@ -109,23 +107,6 @@ public final class DateTimeUtils {
       "time_count", NumberUtils.format(difference, NumberOptions.builder().build()));
   }
 
-  private static @Nullable Pair<String, Integer> unitAndDifference(final int initialSecondsDifference, final int threshold) {
-    final int secondsDifference = Math.abs(initialSecondsDifference);
-    final int daysDifference = (int) Math.floor(secondsDifference / 86400);
-
-    if (secondsDifference < 3600) { // 1 hour
-      final int minutesDifference = (int) Math.floor(secondsDifference / 60.0);
-      return new Pair<>("minutes", minutesDifference);
-    } else if (secondsDifference < 86400) { // 24 hours
-      final int hoursDifference = (int) Math.floor(secondsDifference / 60.0 / 60.0);
-      return new Pair<>("hours", hoursDifference);
-    } else if (secondsDifference < threshold) {
-      return new Pair<>("days", daysDifference);
-    }
-
-    return null;
-  }
-
   public static DateTimeFormatter defaultFormatter() {
     // Wrapper to make this easier to refactor later.
     return DateTimeFormat.forPattern("yyyy/MM/dd");
@@ -150,101 +131,20 @@ public final class DateTimeUtils {
       .equals(DateTime.now().withTimeAtStartOfDay().withZoneRetainFields(DateTimeZone.UTC));
   }
 
-  public static String relativeDateInWords(@NonNull final DateTime dateTime) {
-    return relativeDateInWords(dateTime, true, true, THIRTY_DAYS_IN_SECONDS);
-  }
+  private static @Nullable Pair<String, Integer> unitAndDifference(final int initialSecondsDifference, final int threshold) {
+    final int secondsDifference = Math.abs(initialSecondsDifference);
+    final int daysDifference = (int) Math.floor(secondsDifference / 86400);
 
-  public static String relativeDateInWords(@NonNull final DateTime dateTime, final boolean shortText) {
-    return relativeDateInWords(dateTime, shortText, true, THIRTY_DAYS_IN_SECONDS);
-  }
-
-  public static String relativeDateInWords(@NonNull final DateTime dateTime, final boolean shortText, final boolean explain) {
-    return relativeDateInWords(dateTime, shortText, explain, THIRTY_DAYS_IN_SECONDS);
-  }
-
-  public static String relativeDateInWords(@NonNull final DateTime dateTime, final boolean shortText,
-    final boolean explain, final int threshold) {
-    // TODO: This method is a quick translation from our iOS code, but it needs another pass, e.g.: we should
-    // extract these strings, look into JodaTime to see if we can clean anything up..
-    final DateTime now = new DateTime();
-    final Seconds seconds = Seconds.secondsBetween(dateTime, now);
-    Integer secondsDifference = seconds.getSeconds();
-    Integer daysDifference = seconds.toStandardDays().getDays();
-
-    String agoString = "";
-    String inString = "";
-    if (secondsDifference < 0 && explain) {
-      inString += "in ";
-    }
-    if (secondsDifference > 0 && explain) {
-      agoString += " ago";
-    }
-
-    if (secondsDifference >= 0 && secondsDifference <= 60) {
-      return "just now";
-    } else if (secondsDifference >= -60 && secondsDifference <= 0) {
-      return "right now";
-    }
-
-    secondsDifference = Math.abs(secondsDifference);
-    daysDifference = Math.abs(daysDifference);
-
-    if (secondsDifference < 3600) {
-      int minutesDifference = (int) Math.floor(secondsDifference / 60.0);
-      if (minutesDifference == 1) {
-        return shortText ?
-          inString + "1 min" + agoString :
-          inString + "1 minute" + agoString;
-      } else {
-        return shortText ?
-          minutesDifference + " mins" + agoString :
-          minutesDifference + " minutes" + agoString;
-      }
-    } else if (secondsDifference < 86400) {
-      int hoursDifference = (int) Math.floor(secondsDifference / 60.0 / 60.0);
-      if (hoursDifference == 1) {
-        return shortText ?
-          inString + "1 hr" + agoString :
-          inString + "1 hour" + agoString;
-      } else {
-        return shortText ?
-          inString + hoursDifference + " hrs" + agoString :
-          inString + hoursDifference + " hours" + agoString;
-      }
-    } else if (daysDifference == 1) {
-      return "yesterday";
+    if (secondsDifference < 3600) { // 1 hour
+      final int minutesDifference = (int) Math.floor(secondsDifference / 60.0);
+      return new Pair<>("minutes", minutesDifference);
+    } else if (secondsDifference < 86400) { // 24 hours
+      final int hoursDifference = (int) Math.floor(secondsDifference / 60.0 / 60.0);
+      return new Pair<>("hours", hoursDifference);
     } else if (secondsDifference < threshold) {
-      return inString + daysDifference + " days" + agoString;
-    } else {
-      return dateTime.toString(defaultFormatter());
+      return new Pair<>("days", daysDifference);
     }
+
+    return null;
   }
-
-  @AutoParcel
-  public abstract static class RelativeDateOptions implements Parcelable {
-    public abstract boolean abbreviated();
-    public abstract boolean explain();
-    public abstract @Nullable DateTime relativeToDateTime();
-    public abstract int threshold();
-
-    @AutoParcel.Builder
-    public abstract static class Builder {
-      public abstract Builder abbreviated(boolean __);
-      public abstract Builder explain(boolean __);
-      public abstract Builder relativeToDateTime(DateTime __);
-      public abstract Builder threshold(int __);
-      public abstract RelativeDateOptions build();
-    }
-
-    public static Builder builder() {
-      return new AutoParcel_DateTimeUtils_RelativeDateOptions.Builder()
-        .abbreviated(true)
-        .explain(true)
-        .threshold(THIRTY_DAYS_IN_SECONDS);
-    }
-
-    public abstract Builder toBuilder();
-  }
-
-  private final static int THIRTY_DAYS_IN_SECONDS = 60 * 60 * 24 * 30;
 }

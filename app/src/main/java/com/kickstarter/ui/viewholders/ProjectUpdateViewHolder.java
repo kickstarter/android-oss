@@ -6,10 +6,15 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.kickstarter.KSApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.KSString;
+import com.kickstarter.libs.RelativeDateOptions;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.models.Activity;
 import com.squareup.picasso.Picasso;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -25,6 +30,8 @@ public final class ProjectUpdateViewHolder extends ActivityListViewHolder {
 
   private final Delegate delegate;
 
+  protected @Inject KSString ksString;
+
   public interface Delegate {
     void projectUpdateProjectClicked(ProjectUpdateViewHolder viewHolder, Activity activity);
     void projectUpdateClicked(ProjectUpdateViewHolder viewHolder, Activity activity);
@@ -33,6 +40,7 @@ public final class ProjectUpdateViewHolder extends ActivityListViewHolder {
   public ProjectUpdateViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
     super(view);
     this.delegate = delegate;
+    ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
     ButterKnife.bind(this, view);
   }
 
@@ -42,10 +50,10 @@ public final class ProjectUpdateViewHolder extends ActivityListViewHolder {
     final Context context = view.getContext();
 
     projectNameTextView.setText(activity.project().name());
-    Picasso.with(view.getContext())
+    Picasso.with(context)
       .load(activity.project().photo().little())
       .into(projectPhotoImageView);
-    timestampTextView.setText(DateTimeUtils.relativeDateInWords(activity.update().publishedAt(), false, true));
+    timestampTextView.setText(DateTimeUtils.relativeDate(context, ksString, activity.update().publishedAt()));
     updateBodyTextView.setText(activity.update().truncatedBody());
     updateSequenceTextView.setText(context.getString(R.string.___Update_sequence, activity.update().sequence()));
     updateTitleTextView.setText(activity.update().title());

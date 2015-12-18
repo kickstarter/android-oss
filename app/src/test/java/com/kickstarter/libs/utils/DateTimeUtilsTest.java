@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.libs.KSString;
+import com.kickstarter.libs.RelativeDateOptions;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
@@ -29,27 +30,27 @@ public final class DateTimeUtilsTest extends KSRobolectricTestCase {
     final Context context = context();
     final KSString ksString = ksString();
     final DateTime dateTime = DateTime.parse("2015-12-17T18:35:05Z");
-    final DateTimeUtils.RelativeDateOptions.Builder builder = DateTimeUtils.RelativeDateOptions.builder();
+    final RelativeDateOptions.Builder builder = RelativeDateOptions.builder();
 
     assertEquals("just now", DateTimeUtils.relativeDate(context, ksString, dateTime,
       builder.relativeToDateTime(DateTime.parse("2015-12-17T18:35:10Z")).build()));
     assertEquals("right now", DateTimeUtils.relativeDate(context, ksString, dateTime,
       builder.relativeToDateTime(DateTime.parse("2015-12-17T18:35:00Z")).build()));
-    assertEquals("2 mins ago", DateTimeUtils.relativeDate(context, ksString, dateTime,
+    assertEquals("2 minutes ago", DateTimeUtils.relativeDate(context, ksString, dateTime,
       builder.relativeToDateTime(DateTime.parse("2015-12-17T18:37:05Z")).build()));
-    assertEquals("in 2 mins", DateTimeUtils.relativeDate(context, ksString, dateTime,
+    assertEquals("in 2 minutes", DateTimeUtils.relativeDate(context, ksString, dateTime,
       builder.relativeToDateTime(DateTime.parse("2015-12-17T18:33:05Z")).build()));
-    assertEquals("1 hr ago", DateTimeUtils.relativeDate(context, ksString, dateTime,
+    assertEquals("1 hour ago", DateTimeUtils.relativeDate(context, ksString, dateTime,
       builder.relativeToDateTime(DateTime.parse("2015-12-17T19:35:05Z")).build()));
-    assertEquals("in 1 hr", DateTimeUtils.relativeDate(context, ksString, dateTime,
+    assertEquals("in 1 hour", DateTimeUtils.relativeDate(context, ksString, dateTime,
       builder.relativeToDateTime(DateTime.parse("2015-12-17T17:35:05Z")).build()));
-    assertEquals("4 hrs ago", DateTimeUtils.relativeDate(context, ksString, dateTime,
+    assertEquals("4 hours ago", DateTimeUtils.relativeDate(context, ksString, dateTime,
       builder.relativeToDateTime(DateTime.parse("2015-12-17T22:35:05Z")).build()));
-    assertEquals("in 4 hrs", DateTimeUtils.relativeDate(context, ksString, dateTime,
+    assertEquals("in 4 hours", DateTimeUtils.relativeDate(context, ksString, dateTime,
       builder.relativeToDateTime(DateTime.parse("2015-12-17T14:35:05Z")).build()));
-    assertEquals("23 hrs ago", DateTimeUtils.relativeDate(context, ksString, dateTime,
+    assertEquals("23 hours ago", DateTimeUtils.relativeDate(context, ksString, dateTime,
       builder.relativeToDateTime(DateTime.parse("2015-12-18T17:35:05Z")).build()));
-    assertEquals("in 23 hrs", DateTimeUtils.relativeDate(context, ksString, dateTime,
+    assertEquals("in 23 hours", DateTimeUtils.relativeDate(context, ksString, dateTime,
       builder.relativeToDateTime(DateTime.parse("2015-12-16T19:35:05Z")).build()));
     assertEquals("yesterday", DateTimeUtils.relativeDate(context, ksString, dateTime,
       builder.relativeToDateTime(DateTime.parse("2015-12-18T18:35:05Z")).build()));
@@ -66,28 +67,28 @@ public final class DateTimeUtilsTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testRelativeDate_withAbbreviatedFalse() {
+  public void testRelativeDate_withAbbreviated() {
     final Context context = context();
     final KSString ksString = ksString();
     final DateTime dateTime = DateTime.parse("2015-12-17T18:35:05Z");
-    final DateTimeUtils.RelativeDateOptions.Builder builder = DateTimeUtils.RelativeDateOptions.builder().abbreviated(false);
+    final RelativeDateOptions.Builder builder = RelativeDateOptions.builder().abbreviated(true);
 
-    assertEquals("4 hours ago", DateTimeUtils.relativeDate(context, ksString, dateTime,
+    assertEquals("4 hrs ago", DateTimeUtils.relativeDate(context, ksString, dateTime,
       builder.relativeToDateTime(DateTime.parse("2015-12-17T22:35:05Z")).build()));
-    assertEquals("in 4 hours", DateTimeUtils.relativeDate(context, ksString, dateTime,
+    assertEquals("in 4 hrs", DateTimeUtils.relativeDate(context, ksString, dateTime,
       builder.relativeToDateTime(DateTime.parse("2015-12-17T14:35:05Z")).build()));
   }
 
   @Test
-  public void testRelativeDate_withExplainFalse() {
+  public void testRelativeDate_withAbsolute() {
     final Context context = context();
     final KSString ksString = ksString();
     final DateTime dateTime = DateTime.parse("2015-12-17T18:35:05Z");
-    final DateTimeUtils.RelativeDateOptions.Builder builder = DateTimeUtils.RelativeDateOptions.builder().explain(false);
+    final RelativeDateOptions.Builder builder = RelativeDateOptions.builder().absolute(true);
 
-    assertEquals("4 hrs", DateTimeUtils.relativeDate(context, ksString, dateTime,
+    assertEquals("4 hours", DateTimeUtils.relativeDate(context, ksString, dateTime,
       builder.relativeToDateTime(DateTime.parse("2015-12-17T22:35:05Z")).build()));
-    assertEquals("4 hrs", DateTimeUtils.relativeDate(context, ksString, dateTime,
+    assertEquals("4 hours", DateTimeUtils.relativeDate(context, ksString, dateTime,
       builder.relativeToDateTime(DateTime.parse("2015-12-17T14:35:05Z")).build()));
   }
 
@@ -97,7 +98,7 @@ public final class DateTimeUtilsTest extends KSRobolectricTestCase {
     final KSString ksString = ksString();
     final DateTime dateTime = DateTime.parse("2015-12-17T18:35:05Z");
     final int threshold = 864_000; // Ten days
-    final DateTimeUtils.RelativeDateOptions.Builder builder = DateTimeUtils.RelativeDateOptions.builder().threshold(threshold);
+    final RelativeDateOptions.Builder builder = RelativeDateOptions.builder().threshold(threshold);
 
     assertEquals("9 days ago", DateTimeUtils.relativeDate(context, ksString, dateTime,
       builder.relativeToDateTime(DateTime.parse("2015-12-26T18:35:05Z")).build()));
@@ -115,11 +116,11 @@ public final class DateTimeUtilsTest extends KSRobolectricTestCase {
     final Context context = context();
     final KSString ksString = ksString();
     final DateTime dateTime = DateTime.parse("2015-12-17T18:35:05Z");
-    final DateTimeUtils.RelativeDateOptions.Builder builder = DateTimeUtils.RelativeDateOptions.builder();
+    final RelativeDateOptions.Builder builder = RelativeDateOptions.builder();
 
-    assertEquals("vor 2 Min", DateTimeUtils.relativeDate(context, ksString, dateTime,
+    assertEquals("vor 2 Minuten", DateTimeUtils.relativeDate(context, ksString, dateTime,
       builder.relativeToDateTime(DateTime.parse("2015-12-17T18:37:05Z")).build()));
-    assertEquals("in 2 Min", DateTimeUtils.relativeDate(context, ksString, dateTime,
+    assertEquals("in 2 Minuten", DateTimeUtils.relativeDate(context, ksString, dateTime,
       builder.relativeToDateTime(DateTime.parse("2015-12-17T18:33:05Z")).build()));
   }
 }

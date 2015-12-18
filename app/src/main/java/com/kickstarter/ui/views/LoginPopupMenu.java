@@ -36,7 +36,7 @@ public class LoginPopupMenu extends PopupMenu {
           activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
           break;
         case R.id.help:
-          intent.putExtra(context.getString(R.string.intent_help_type), HelpActivity.HELP_TYPE_HOW_IT_WORKS);
+          intent.putExtra(context.getString(R.string.intent_help_type), HelpActivity.HELP_TYPE_FAQ);
           activity.startActivity(intent);
           activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
           break;

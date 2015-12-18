@@ -44,7 +44,7 @@ public class LoggedInMenu extends ListPopupWindow {
           break;
         case LoggedInMenuAdapter.TYPE_HELP:
           final Intent helpIntent = new Intent(activity, HelpActivity.class);
-          helpIntent.putExtra(context.getString(R.string.intent_help_type), HelpActivity.HELP_TYPE_GENERAL);
+          helpIntent.putExtra(context.getString(R.string.intent_help_type), HelpActivity.HELP_TYPE_FAQ);
           activity.startActivity(helpIntent);
           break;
       }

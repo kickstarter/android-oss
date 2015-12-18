@@ -89,11 +89,19 @@ public final class DateTimeUtils {
     return dateTime.toString(DateTimeFormat.mediumDateTime().withLocale(locale).withZone(dateTimeZone));
   }
 
+  /**
+   * Returns a string indicating the distance between {@link DateTime}s. Defaults to comparing the input {@link DateTime} to
+   * the current time.
+   */
   public static @NonNull String relativeDate(final @NonNull Context context, final @NonNull KSString ksString,
     final @NonNull DateTime dateTime) {
     return relativeDate(context, ksString, dateTime, RelativeDateOptions.builder().build());
   }
 
+  /**
+   * Returns a string indicating the distance between {@link DateTime}s. Defaults to comparing the input {@link DateTime} to
+   * the current time.
+   */
   public static @NonNull String relativeDate(final @NonNull Context context, final @NonNull KSString ksString,
     final @NonNull DateTime dateTime, final @NonNull RelativeDateOptions options) {
 
@@ -147,6 +155,10 @@ public final class DateTimeUtils {
       "time_count", NumberUtils.format(difference, NumberOptions.builder().build()));
   }
 
+  /**
+   * Utility to pair a unit (e.g. "minutes", "hours", "days") with a measurement. Returns `null` if the difference
+   * exceeds the threshold.
+   */
   private static @Nullable Pair<String, Integer> unitAndDifference(final int initialSecondsDifference, final int threshold) {
     final int secondsDifference = Math.abs(initialSecondsDifference);
     final int daysDifference = (int) Math.floor(secondsDifference / 86400);

@@ -8,7 +8,7 @@ import org.joda.time.DateTime;
 import auto.parcel.AutoParcel;
 
 @AutoParcel
-public abstract class RelativeDateOptions implements Parcelable {
+public abstract class RelativeDateTimeOptions implements Parcelable {
   // Abbreviates string, e.g.: "in 1 hr"
   public abstract boolean abbreviated();
 
@@ -28,7 +28,7 @@ public abstract class RelativeDateOptions implements Parcelable {
     public abstract Builder absolute(boolean __);
     public abstract Builder relativeToDateTime(DateTime __);
     public abstract Builder threshold(int __);
-    public abstract RelativeDateOptions build();
+    public abstract RelativeDateTimeOptions build();
   }
 
   public static Builder builder() {

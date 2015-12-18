@@ -8,7 +8,7 @@ import android.util.Pair;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.NumberOptions;
-import com.kickstarter.libs.RelativeDateOptions;
+import com.kickstarter.libs.RelativeDateTimeOptions;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -93,17 +93,17 @@ public final class DateTimeUtils {
    * Returns a string indicating the distance between {@link DateTime}s. Defaults to comparing the input {@link DateTime} to
    * the current time.
    */
-  public static @NonNull String relativeDate(final @NonNull Context context, final @NonNull KSString ksString,
+  public static @NonNull String relativeDateTime(final @NonNull Context context, final @NonNull KSString ksString,
     final @NonNull DateTime dateTime) {
-    return relativeDate(context, ksString, dateTime, RelativeDateOptions.builder().build());
+    return relativeDateTime(context, ksString, dateTime, RelativeDateTimeOptions.builder().build());
   }
 
   /**
    * Returns a string indicating the distance between {@link DateTime}s. Defaults to comparing the input {@link DateTime} to
    * the current time.
    */
-  public static @NonNull String relativeDate(final @NonNull Context context, final @NonNull KSString ksString,
-    final @NonNull DateTime dateTime, final @NonNull RelativeDateOptions options) {
+  public static @NonNull String relativeDateTime(final @NonNull Context context, final @NonNull KSString ksString,
+    final @NonNull DateTime dateTime, final @NonNull RelativeDateTimeOptions options) {
 
     final DateTime relativeToDateTime = ObjectUtils.coalesce(options.relativeToDateTime(), DateTime.now());
     final Seconds seconds = Seconds.secondsBetween(dateTime, relativeToDateTime);

@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
-import com.kickstarter.libs.RelativeDateOptions;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.CommentUtils;
 import com.kickstarter.libs.CurrentUser;
@@ -62,7 +61,7 @@ public final class CommentViewHolder extends KSViewHolder {
       .transform(new CircleTransformation())
       .into(avatarImageView);
     nameTextView.setText(comment.author().name());
-    postDateTextView.setText(DateTimeUtils.relativeDate(context, ksString, comment.createdAt()));
+    postDateTextView.setText(DateTimeUtils.relativeDateTime(context, ksString, comment.createdAt()));
     commentBodyTextView.setText(comment.body());
   }
 }

@@ -69,6 +69,7 @@
 
   <style name="Login" parent="KSTheme">
     <item name="android:windowBackground">@color/light_gray</item>
+    <item name="android:popupMenuStyle">@style/PopupMenu</item>
   </style>
 
   <style name="ProjectActivity" parent="KSTheme">
@@ -94,6 +95,7 @@
 
   <!-- Widgets -->
   <style name="PopupMenu" parent="Base.Widget.AppCompat.PopupMenu">
+    <item name="android:popupBackground">@drawable/dialog_alert_rounded</item>
     <item name="android:dropDownVerticalOffset">@dimen/popup_menu_vertical_offset</item>
     <item name="android:dropDownHorizontalOffset">@dimen/popup_menu_horizontal_offset</item>
   </style>

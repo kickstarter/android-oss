@@ -5,7 +5,6 @@
   xmlns:tools="http://schemas.android.com/tools"
   style="@style/Toolbar"
   android:id="@+id/activity_feed_toolbar"
-  android:background="@drawable/dialog_alert_rounded"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
   tools:showIn="@layout/activity_feed_layout">

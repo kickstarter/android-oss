@@ -14,7 +14,6 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Seconds;
 import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import java.util.Locale;
 
@@ -33,6 +32,25 @@ public final class DateTimeUtils {
    */
   public static @NonNull String estimatedDeliveryOn(final @NonNull DateTime dateTime, final @NonNull Locale locale) {
     return dateTime.toString(DateTimeFormat.forPattern("MMMM yyyy").withLocale(locale).withZoneUTC());
+  }
+
+  public static boolean isDateToday(final @NonNull DateTime dateTime) {
+    return dateTime.withZone(DateTimeZone.UTC).withTimeAtStartOfDay()
+      .equals(DateTime.now().withTimeAtStartOfDay().withZoneRetainFields(DateTimeZone.UTC));
+  }
+
+  /**
+   * e.g.: Dec 17, 2015.
+   */
+  public static @NonNull String fullDate(final @NonNull DateTime dateTime) {
+    return fullDate(dateTime, Locale.getDefault());
+  }
+
+  /**
+   * e.g.: Dec 17, 2015.
+   */
+  public static @NonNull String fullDate(final @NonNull DateTime dateTime, final @NonNull Locale locale) {
+    return dateTime.toString(DateTimeFormat.fullDate().withLocale(locale).withZoneUTC());
   }
 
   /**
@@ -127,20 +145,6 @@ public final class DateTimeUtils {
 
     return ksString.format(baseKeyPath.toString(), difference,
       "time_count", NumberUtils.format(difference, NumberOptions.builder().build()));
-  }
-
-  // e.g. Wednesday, September 23, 2015
-  public static DateTimeFormatter pledgedAt() {
-    return DateTimeFormat.forPattern("EEEE, MMMM dd, yyyy");
-  }
-
-  public static DateTimeFormatter estimatedDeliveryOn() {
-    return DateTimeFormat.forPattern("MMMM yyyy");
-  }
-
-  public static boolean isDateToday(final @NonNull DateTime dateTime) {
-    return dateTime.withZone(DateTimeZone.UTC).withTimeAtStartOfDay()
-      .equals(DateTime.now().withTimeAtStartOfDay().withZoneRetainFields(DateTimeZone.UTC));
   }
 
   private static @Nullable Pair<String, Integer> unitAndDifference(final int initialSecondsDifference, final int threshold) {

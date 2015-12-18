@@ -21,6 +21,12 @@ public final class DateTimeUtilsTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testFullDate() {
+    assertEquals("Thursday, December 17, 2015", DateTimeUtils.fullDate(DateTime.parse("2015-12-17T18:35:05Z")));
+    assertEquals("jeudi 17 décembre 2015", DateTimeUtils.fullDate(DateTime.parse("2015-12-17T18:35:05Z"), Locale.FRENCH));
+  }
+
+  @Test
   public void testMediumDate() {
     assertEquals("Dec 17, 2015", DateTimeUtils.mediumDate(DateTime.parse("2015-12-17T18:35:05Z")));
     assertEquals("17 déc. 2015", DateTimeUtils.mediumDate(DateTime.parse("2015-12-17T18:35:05Z"), Locale.FRENCH));

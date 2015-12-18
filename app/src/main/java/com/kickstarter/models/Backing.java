@@ -60,10 +60,6 @@ public abstract class Backing implements Parcelable {
     return String.valueOf(this.sequence());
   }
 
-  public String formattedPledgedAt() {
-    return this.pledgedAt().toString(DateTimeUtils.pledgedAt());
-  }
-
   public String formattedSequence() {
     return NumberUtils.numberWithDelimiter((int) this.sequence());
   }

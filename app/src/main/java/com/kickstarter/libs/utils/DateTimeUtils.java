@@ -58,11 +58,6 @@ public final class DateTimeUtils {
 
   public static @NonNull String relativeDate(final @NonNull Context context, final @NonNull KSString ksString,
     final @NonNull DateTime dateTime, final @NonNull RelativeDateOptions options) {
-    return relativeDate(context, ksString, dateTime, options, Locale.getDefault());
-  }
-
-  public static @NonNull String relativeDate(final @NonNull Context context, final @NonNull KSString ksString,
-    final @NonNull DateTime dateTime, final @NonNull RelativeDateOptions options, final @NonNull Locale locale) {
 
     final DateTime relativeToDateTime = ObjectUtils.coalesce(options.relativeToDateTime(), DateTime.now());
     final Seconds seconds = Seconds.secondsBetween(dateTime, relativeToDateTime);
@@ -77,7 +72,7 @@ public final class DateTimeUtils {
     final Pair<String, Integer> unitAndDifference = unitAndDifference(secondsDifference, options.threshold());
     if (unitAndDifference == null) {
       // Couldn't find a good match, just render the date.
-      return mediumDate(dateTime, locale);
+      return mediumDate(dateTime);
     }
 
     final String unit = unitAndDifference.first;
@@ -111,7 +106,7 @@ public final class DateTimeUtils {
     }
 
     return ksString.format(baseKeyPath.toString(), difference,
-      "time_count", NumberUtils.format(difference, NumberOptions.builder().build(), locale));
+      "time_count", NumberUtils.format(difference, NumberOptions.builder().build()));
   }
 
   private static @Nullable Pair<String, Integer> unitAndDifference(final int initialSecondsDifference, final int threshold) {

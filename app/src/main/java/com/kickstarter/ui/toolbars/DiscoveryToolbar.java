@@ -100,11 +100,11 @@ public final class DiscoveryToolbar extends KSToolbar {
     context.startActivity(new Intent(context, SearchActivity.class));
   }
 
-  protected void showLoggedInMenu(@NonNull final User user) {
+  protected void showLoggedInMenu(final @NonNull User user) {
     loginButton.setVisibility(GONE);
     currentUserButton.setVisibility(VISIBLE);
     currentUserButton.setOnClickListener(v -> {
-      final LoggedInMenu menu = new LoggedInMenu(v.getContext(), currentUser.getUser(), currentUserButton);
+      final LoggedInMenu menu = new LoggedInMenu(v.getContext(), user, currentUserButton);
       menu.show();
     });
   }
@@ -127,9 +127,10 @@ public final class DiscoveryToolbar extends KSToolbar {
       return;
     }
 
-    if (currentUser.getUser() == null) {
-      showLoggedOutMenu();
-    }
+    addSubscription(currentUser.loggedOutUser()
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> this.showLoggedOutMenu())
+    );
 
     addSubscription(currentUser.loggedInUser()
       .observeOn(AndroidSchedulers.mainThread())

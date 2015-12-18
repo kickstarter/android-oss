@@ -66,7 +66,7 @@
     android:layout_height="wrap_content"
     style="@style/CaptionSecondary"
     android:layout_marginBottom="@dimen/grid_1"
-    android:text="@string/___Discover_new_projects_with_our_weekly_newsletter"/>
+    android:text="@string/signup_newsletter_full"/>
 
   <Button
     android:id="@+id/signup_button"

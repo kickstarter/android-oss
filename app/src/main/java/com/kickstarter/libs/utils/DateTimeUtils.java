@@ -106,7 +106,7 @@ public final class DateTimeUtils {
       baseKeyPath.append(String.format("dates_time_%s", unit));
     }
 
-    if (options.shorten()) {
+    if (options.abbreviated()) {
       baseKeyPath.append("_abbreviated");
     }
 
@@ -227,15 +227,15 @@ public final class DateTimeUtils {
 
   @AutoParcel
   public abstract static class RelativeDateOptions implements Parcelable {
+    public abstract boolean abbreviated();
     public abstract boolean explain();
-    public abstract boolean shorten();
     public abstract @Nullable DateTime relativeToDateTime();
     public abstract int threshold();
 
     @AutoParcel.Builder
     public abstract static class Builder {
+      public abstract Builder abbreviated(boolean __);
       public abstract Builder explain(boolean __);
-      public abstract Builder shorten(boolean __);
       public abstract Builder relativeToDateTime(DateTime __);
       public abstract Builder threshold(int __);
       public abstract RelativeDateOptions build();
@@ -243,8 +243,8 @@ public final class DateTimeUtils {
 
     public static Builder builder() {
       return new AutoParcel_DateTimeUtils_RelativeDateOptions.Builder()
+        .abbreviated(true)
         .explain(true)
-        .shorten(true)
         .threshold(THIRTY_DAYS_IN_SECONDS);
     }
 

@@ -49,6 +49,28 @@ public final class DateTimeUtils {
     return dateTime.toString(DateTimeFormat.mediumDate().withLocale(locale).withZoneUTC());
   }
 
+  /**
+   * e.g.: Dec 17, 2015 6:35:05 PM.
+   */
+  public static @NonNull String mediumDateTime(final @NonNull DateTime dateTime) {
+    return mediumDateTime(dateTime, DateTimeZone.getDefault());
+  }
+
+  /**
+   * e.g.: Dec 17, 2015 6:35:05 PM.
+   */
+  public static @NonNull String mediumDateTime(final @NonNull DateTime dateTime, final @NonNull DateTimeZone dateTimeZone) {
+    return mediumDateTime(dateTime, dateTimeZone, Locale.getDefault());
+  }
+
+  /**
+   * e.g.: Dec 17, 2015 6:35:05 PM.
+   */
+  public static @NonNull String mediumDateTime(final @NonNull DateTime dateTime, final @NonNull DateTimeZone dateTimeZone,
+    final @NonNull Locale locale) {
+    return dateTime.toString(DateTimeFormat.mediumDateTime().withLocale(locale).withZone(dateTimeZone));
+  }
+
   public static @NonNull String relativeDate(final @NonNull Context context, final @NonNull KSString ksString,
     final @NonNull DateTime dateTime) {
     return relativeDate(context, ksString, dateTime, RelativeDateOptions.builder().build());
@@ -105,16 +127,6 @@ public final class DateTimeUtils {
 
     return ksString.format(baseKeyPath.toString(), difference,
       "time_count", NumberUtils.format(difference, NumberOptions.builder().build()));
-  }
-
-  public static DateTimeFormatter defaultFormatter() {
-    // Wrapper to make this easier to refactor later.
-    return DateTimeFormat.forPattern("yyyy/MM/dd");
-  }
-
-  // e.g. August 20, 2015 at 7:45 PM.
-  public static DateTimeFormatter writtenDeadline() {
-    return DateTimeFormat.forPattern("MMMM dd, yyyy 'at' h:mm a.");
   }
 
   // e.g. Wednesday, September 23, 2015

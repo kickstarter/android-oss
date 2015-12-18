@@ -7,6 +7,7 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.RelativeDateOptions;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.Test;
 import org.robolectric.annotation.Config;
 
@@ -23,6 +24,13 @@ public final class DateTimeUtilsTest extends KSRobolectricTestCase {
   public void testMediumDate() {
     assertEquals("Dec 17, 2015", DateTimeUtils.mediumDate(DateTime.parse("2015-12-17T18:35:05Z")));
     assertEquals("17 déc. 2015", DateTimeUtils.mediumDate(DateTime.parse("2015-12-17T18:35:05Z"), Locale.FRENCH));
+  }
+
+  @Test
+  public void testMediumDateTime() {
+    assertEquals("Dec 17, 2015 6:35:05 PM", DateTimeUtils.mediumDateTime(DateTime.parse("2015-12-17T18:35:05Z"), DateTimeZone.UTC));
+    assertEquals("Dec 17, 2015 1:35:05 PM", DateTimeUtils.mediumDateTime(DateTime.parse("2015-12-17T18:35:05Z"), DateTimeZone.forID("EST")));
+    assertEquals("17 déc. 2015 18:35:05", DateTimeUtils.mediumDateTime(DateTime.parse("2015-12-17T18:35:05Z"), DateTimeZone.UTC, Locale.FRENCH));
   }
 
   @Test

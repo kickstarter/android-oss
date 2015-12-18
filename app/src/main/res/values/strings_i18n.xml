@@ -345,6 +345,7 @@
   <string name="discovery_nearby" formatted="false">Nearby</string>
   <string name="discovery_onboarding_buttons_learn_more" formatted="false">Learn more</string>
   <string name="discovery_onboarding_buttons_login" formatted="false">Login</string>
+  <string name="discovery_onboarding_buttons_signup_or_login" formatted="false">Sign up or Log in</string>
   <string name="discovery_onboarding_learn_login_conjunction_or" formatted="false">or</string>
   <string name="discovery_onboarding_title_bring_creative_projects_to_life" formatted="false">Bring creative projects to life</string>
   <string name="discovery_popular" formatted="false">Popular</string>

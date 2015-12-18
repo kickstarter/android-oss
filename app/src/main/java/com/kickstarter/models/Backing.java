@@ -56,10 +56,6 @@ public abstract class Backing implements Parcelable {
 
   public abstract Builder toBuilder();
 
-  public String backerNumber() {
-    return String.valueOf(this.sequence());
-  }
-
   public String formattedPledgedAt() {
     return this.pledgedAt().toString(DateTimeUtils.pledgedAt());
   }

@@ -93,6 +93,10 @@ public class ProfileCardViewHolder extends KSViewHolder {
         fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
         fundingUnsuccessfulTextView.setText(suspendedString);
         break;
+      default:
+        percentageFundedProgressBar.setVisibility(View.VISIBLE);
+        projectStateViewGroup.setVisibility(View.GONE);
+        break;
     }
   }
 }

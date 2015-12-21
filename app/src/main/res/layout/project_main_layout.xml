@@ -186,7 +186,7 @@
       android:id="@+id/project_stats_view"
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
-      android:layout_marginTop="@dimen/grid_3"
+      android:layout_marginTop="@dimen/grid_2"
       android:layout_marginBottom="@dimen/grid_4"/>
 
     <LinearLayout

@@ -71,7 +71,6 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @BindColor(R.color.green) int greenColor;
   protected @BindColor(R.color.dark_gray) int darkGrayColor;
 
-  protected @BindDimen(R.dimen.grid_2) int grid2Dimen;
   protected @BindDimen(R.dimen.grid_3) int grid3Dimen;
   protected @BindDimen(R.dimen.grid_4) int grid4Dimen;
 
@@ -172,7 +171,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       projectStatsViewGroup.getLayoutParams()
     );
 
-    layoutParams.setMargins(0, grid2Dimen, 0, bottomMargin);
+    layoutParams.setMargins(0, grid3Dimen, 0, bottomMargin);
     projectStatsViewGroup.setLayoutParams(layoutParams);
   }
 
@@ -218,7 +217,7 @@ public final class ProjectViewHolder extends KSViewHolder {
 
         projectStateHeaderTextView.setText(fundedString);
         projectStateSubheadTextView.setText(ksString.format(successfullyFundedOnDeadlineString,
-          "deadline", DateTimeUtils.relative(context, ksString, project.stateChangedAt())
+          "deadline", DateTimeUtils.mediumDate(project.stateChangedAt())
         ));
         break;
       case Project.STATE_CANCELED:
@@ -236,7 +235,7 @@ public final class ProjectViewHolder extends KSViewHolder {
 
         projectStateHeaderTextView.setText(fundingUnsuccessfulString);
         projectStateSubheadTextView.setText(ksString.format(fundingGoalNotReachedString,
-          "deadline", DateTimeUtils.relative(context, ksString, project.stateChangedAt())
+          "deadline", DateTimeUtils.mediumDate(project.stateChangedAt())
         ));
         break;
       case Project.STATE_SUSPENDED:

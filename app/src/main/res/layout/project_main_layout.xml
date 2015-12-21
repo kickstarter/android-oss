@@ -191,7 +191,6 @@
 
     <LinearLayout
       android:id="@+id/project_social_view"
-      android:background="@drawable/click_indicator_light_masked"
       android:orientation="horizontal"
       android:gravity="center_vertical"
       android:visibility="gone"

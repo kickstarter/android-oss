@@ -2,6 +2,7 @@ package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.text.Html;
 import android.text.TextUtils;
@@ -15,8 +16,8 @@ import android.widget.TextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.KSCurrency;
+import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
@@ -32,6 +33,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.BindColor;
 import butterknife.BindDimen;
+import butterknife.BindDrawable;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -73,6 +75,8 @@ public final class ProjectViewHolder extends KSViewHolder {
 
   protected @BindDimen(R.dimen.grid_3) int grid3Dimen;
   protected @BindDimen(R.dimen.grid_4) int grid4Dimen;
+
+  protected @BindDrawable(R.drawable.click_indicator_light_masked) Drawable clickIndicatorLightMaskedDrawable;
 
   protected @BindString(R.string.project_creator_by_creator_html) String byCreatorString;
   protected @BindString(R.string.discovery_baseball_card_blurb_read_more) String blurbReadMoreString;
@@ -160,7 +164,8 @@ public final class ProjectViewHolder extends KSViewHolder {
       ));
     }
 
-    setProjectStateView(view.getContext());
+    setProjectSocialClick();
+    setProjectStateView();
     setSocialView();
     setStatsContentDescription();
   }
@@ -195,20 +200,22 @@ public final class ProjectViewHolder extends KSViewHolder {
     delegate.projectVideoStarted(this);
   }
 
-  @OnClick(R.id.project_social_view)
-  public void projectSocialClick() {
+  public void setProjectSocialClick() {
     if (project.isFriendBacking()) {
       if (project.friends().size() > 2) {
-        final BaseActivity activity = (BaseActivity) view.getContext();
-        final Intent intent = new Intent(activity, ProjectSocialActivity.class)
-          .putExtra(activity.getString(R.string.intent_project), project);
-        activity.startActivity(intent);
-        activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+        projectSocialViewGoup.setBackground(clickIndicatorLightMaskedDrawable);
+        projectSocialViewGoup.setOnClickListener(view -> {
+          final BaseActivity activity = (BaseActivity) view.getContext();
+          final Intent intent = new Intent(activity, ProjectSocialActivity.class)
+            .putExtra(activity.getString(R.string.intent_project), project);
+          activity.startActivity(intent);
+          activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+        });
       }
     }
   }
 
-  public void setProjectStateView(final @NonNull Context context) {
+  public void setProjectStateView() {
     switch(project.state()) {
       case Project.STATE_SUCCESSFUL:
         percentageFundedProgressBar.setVisibility(View.GONE);

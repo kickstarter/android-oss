@@ -309,9 +309,12 @@
   <string name="discovery_baseball_card_stats_convert_from_pledged_of_goal" formatted="false">Converted from %{pledged} pledged of %{goal} goal.</string>
   <string name="discovery_baseball_card_stats_pledged_of_goal" formatted="false">pledged of %{goal}</string>
   <string name="discovery_baseball_card_status_banner_canceled" formatted="false">Funding canceled</string>
+  <string name="discovery_baseball_card_status_banner_canceled_date" formatted="false">Funding canceled %{date}</string>
   <string name="discovery_baseball_card_status_banner_funding_unsuccessful_date" formatted="false">Funding unsuccessful %{date}</string>
   <string name="discovery_baseball_card_status_banner_successful" formatted="false">Successfully funded!</string>
+  <string name="discovery_baseball_card_status_banner_successful_date" formatted="false">Successfully funded %{date}</string>
   <string name="discovery_baseball_card_status_banner_suspended" formatted="false">Funding suspended %{date}</string>
+  <string name="discovery_baseball_card_status_banner_suspended_date" formatted="false">Funding suspended %{date}</string>
   <string name="discovery_baseball_card_time_left_to_go" formatted="false">%{time_left} to go</string>
   <string name="discovery_category" formatted="false">Category</string>
   <string name="discovery_empty_states_saved_logged_in_button" formatted="false">Discover projects</string>

@@ -69,9 +69,12 @@
           },
           "status_banner": {
             "successful": "Successfully funded!",
+            "successful_date": "Successfully funded %{date}",
             "funding_unsuccessful_date": "Funding unsuccessful %{date}",
             "canceled": "Funding canceled",
-            "suspended": "Funding suspended %{date}"
+            "canceled_date": "Funding canceled %{date}",
+            "suspended": "Funding suspended %{date}",
+            "suspended_date": "Funding suspended %{date}"
           },
           "stats": {
             "backers": "backers",
@@ -1231,7 +1234,7 @@
         "login": "Anmelden",
         "dashboard": "Dashboard",
         "search": "Suche",
-        "search_projects": "Search projects",
+        "search_projects": "Projekte suchen",
         "me": "Mein Konto"
       },
       "discovery": {
@@ -1277,11 +1280,11 @@
         "baseball_card": {
           "social": {
             "friends_are_backers": {
-              "zero": "None of your friends are backers.",
-              "one": "%{friend_name} is a backer.",
-              "two": "%{friend_name} and %{second_friend_name} are backers.",
-              "few": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.",
-              "many": "%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers."
+              "zero": "Keiner deiner Freunde unterstützt dieses Projekt.",
+              "one": "%{friend_name} unterstützt dieses Projekt.",
+              "two": "%{friend_name} und %{second_friend_name} unterstützen dieses Projekt.",
+              "few": "%{friend_name}, %{second_friend_name}, und %{remaining_count} weitere unterstützen dieses Projekt.",
+              "many": "%{friend_name}, %{second_friend_name}, und %{remaining_count} weitere unterstützen dieses Projekt."
             }
           },
           "metadata": {
@@ -1292,9 +1295,12 @@
           },
           "status_banner": {
             "successful": "Erfolgreich finanziert!",
+            "successful_date": "Successfully funded %{date}",
             "funding_unsuccessful_date": "Finanzierung fehlgeschlagen %{date}",
             "canceled": "Finanzierung abgebrochen",
-            "suspended": "Finanzierung ausgesetzt %{date}"
+            "canceled_date": "Funding canceled %{date}",
+            "suspended": "Finanzierung ausgesetzt %{date}",
+            "suspended_date": "Funding suspended %{date}"
           },
           "stats": {
             "backers": "Unterstützer",
@@ -1315,10 +1321,10 @@
           "blurb_read_more": "%{blurb}%{space}Mehr%{space}lesen%{space}",
           "accessibility": {
             "category": {
-              "label": "Category"
+              "label": "Kategorie"
             },
             "location": {
-              "label": "Location"
+              "label": "Ort"
             }
           }
         },
@@ -1895,10 +1901,10 @@
         },
         "accessibility": {
           "button_share": {
-            "label": "Share this project"
+            "label": "Andere über dieses Projekt informieren"
           },
           "button_star": {
-            "label": "Star this project"
+            "label": "Dieses Projekt zu Favoriten hinzufügen"
           }
         }
       },
@@ -1972,8 +1978,8 @@
         }
       },
       "search": {
-        "by_creator": "by %{creator_name}",
-        "most_popular": "Most Popular"
+        "by_creator": "von %{creator_name}",
+        "most_popular": "Publikumslieblinge"
       },
       "messages": {
         "navigation": {
@@ -2252,10 +2258,10 @@
           },
           "accessibility": {
             "button_navigate_back": {
-              "label": "Navigate back"
+              "label": "Zurück"
             },
             "button_close": {
-              "label": "Close"
+              "label": "Schließen"
             }
           }
         },
@@ -2515,9 +2521,12 @@
           },
           "status_banner": {
             "successful": "¡Financiado con éxito!",
+            "successful_date": "Successfully funded %{date}",
             "funding_unsuccessful_date": "Financiamiento fallido %{date}",
             "canceled": "Financiamiento cancelado",
-            "suspended": "Financiamiento suspendido %{date}"
+            "canceled_date": "Funding canceled %{date}",
+            "suspended": "Financiamiento suspendido %{date}",
+            "suspended_date": "Funding suspended %{date}"
           },
           "stats": {
             "backers": "patrocinadores",
@@ -3738,9 +3747,12 @@
           },
           "status_banner": {
             "successful": "Intégralement financé !",
+            "successful_date": "Successfully funded %{date}",
             "funding_unsuccessful_date": "Non financé %{date}",
             "canceled": "Financement annulé",
-            "suspended": "Financement suspendu %{date}"
+            "canceled_date": "Funding canceled %{date}",
+            "suspended": "Financement suspendu %{date}",
+            "suspended_date": "Funding suspended %{date}"
           },
           "stats": {
             "backers": "contributeurs",
@@ -4961,9 +4973,12 @@
           },
           "status_banner": {
             "successful": "Successfully funded!",
+            "successful_date": "Successfully funded %{date}",
             "funding_unsuccessful_date": "Funding unsuccessful %{date}",
             "canceled": "Funding canceled",
-            "suspended": "Funding suspended %{date}"
+            "canceled_date": "Funding canceled %{date}",
+            "suspended": "Funding suspended %{date}",
+            "suspended_date": "Funding suspended %{date}"
           },
           "stats": {
             "backers": "backers",
@@ -6141,6 +6156,7 @@
     "handbook_hero": true,
     "i18n_discovery_touts": true,
     "i18n_start_tout": true,
+    "responsive_manage": true,
     "password_reset_banner": true,
     "play_page": true,
     "watch_page": true,
@@ -6269,10 +6285,9 @@
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
     "native_iphone_horiz_vs_vert": "experimental",
-    "recs_thanks_stars": "collaborative_backings_v2",
-    "recs_hp_video_plays": "collaborative_backings_v2",
-    "video_autoplay_3": "no_autoplay",
-    "project_share_metadata_position": "control"
+    "recs_thanks_combo_inputs": "collaborative_backings_v2",
+    "recs_hp_combo_v1": "combo_v1",
+    "video_autoplay_3": "no_autoplay"
   },
   "stripe": {
     "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"

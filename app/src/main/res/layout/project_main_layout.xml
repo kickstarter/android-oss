@@ -12,16 +12,19 @@
 
   <LinearLayout
     android:id="@+id/project_info"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:background="@color/white"
-    android:paddingTop="@dimen/grid_3"
-    android:paddingLeft="@dimen/grid_3"
-    android:paddingRight="@dimen/grid_3"
-    android:orientation="vertical" >
+    android:layout_marginTop="@dimen/grid_3"
+    android:layout_marginRight="@dimen/grid_3"
+    android:layout_marginLeft="@dimen/grid_3"
+    android:layout_marginStart="@dimen/grid_3"
+    android:layout_marginEnd="@dimen/grid_3"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <TextView
       android:id="@+id/project_name"
+      android:text="Secret Hitler"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       style="@style/EditorialHeadline"
@@ -35,6 +38,7 @@
 
       <TextView
         android:id="@+id/creator_name"
+        android:text="by Max Temkin"
         android:focusable="true"
         android:layout_weight="3"
         android:singleLine="true"
@@ -128,65 +132,89 @@
 
     </LinearLayout>
 
-  </LinearLayout>
+    <ProgressBar
+      style="@style/ProgressBar"
+      android:visibility="visible"
+      android:id="@+id/percentage_funded"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:minHeight="@dimen/progress_bar_min_height"
+      android:layout_marginTop="@dimen/grid_3"
+      android:progress="50" />
 
-  <ProgressBar
-    style="@style/ProgressBar"
-    android:id="@+id/percentage_funded"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginRight="@dimen/grid_3"
-    android:layout_marginLeft="@dimen/grid_3"
-    android:layout_marginStart="@dimen/grid_3"
-    android:layout_marginEnd="@dimen/grid_3"
-    android:minHeight="@dimen/progress_bar_min_height"
-    android:layout_marginTop="@dimen/grid_3"
-    android:progress="50" />
+    <LinearLayout
+      android:id="@+id/project_state_view_group"
+      android:visibility="visible"
+      android:gravity="center_vertical"
+      android:layout_marginTop="@dimen/grid_2"
+      android:orientation="horizontal"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/grid_8">
 
-  <include layout="@layout/project_state_view"
-    android:layout_marginTop="@dimen/grid_3"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/grid_9_half"/>
+      <View
+        android:id="@+id/project_state_vertical_line_view"
+        android:layout_marginRight="@dimen/grid_2"
+        android:layout_marginEnd="@dimen/grid_2"
+        android:background="@color/dark_gray"
+        android:layout_width="3dp"
+        android:layout_height="match_parent"/>
 
-  <include layout="@layout/project_stats_view"
-    android:id="@+id/project_stats_view"
-    android:layout_height="wrap_content"
-    android:layout_width="wrap_content"
-    android:layout_marginRight="@dimen/grid_3"
-    android:layout_marginLeft="@dimen/grid_3"
-    android:layout_marginStart="@dimen/grid_3"
-    android:layout_marginEnd="@dimen/grid_3"
-    android:layout_marginTop="@dimen/grid_3"
-    android:layout_marginBottom="@dimen/grid_4"/>
-  
-  <LinearLayout
-    android:id="@+id/project_social_view"
-    android:background="@drawable/click_indicator_light_masked"
-    android:orientation="horizontal"
-    android:gravity="center_vertical"
-    android:visibility="gone"
-    android:layout_marginRight="@dimen/grid_3"
-    android:layout_marginLeft="@dimen/grid_3"
-    android:layout_marginStart="@dimen/grid_3"
-    android:layout_marginEnd="@dimen/grid_3"
-    android:layout_marginBottom="@dimen/grid_4"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    
-    <ImageView
-      android:id="@+id/project_social_image"
-      android:visibility="gone"
-      android:layout_width="@dimen/project_social_photo_height"
-      android:layout_height="@dimen/project_social_photo_height" />
+      <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-    <TextView
-      android:id="@+id/project_social_text"
-      style="@style/CaptionPrimaryMedium"
-      android:layout_marginStart="@dimen/grid_2"
-      android:layout_marginLeft="@dimen/grid_2"
-      android:text="Gina Binetti, Christopher Wright, and 5 more are backers"
+        <TextView
+          android:id="@+id/project_state_header_text_view"
+          android:text="Funded!"
+          style="@style/BodyPrimaryMedium"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
+
+        <TextView
+          android:id="@+id/project_state_subhead_text_view"
+          android:text="This project was funded on"
+          style="@style/CaptionPrimary"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
+
+      </LinearLayout>
+
+    </LinearLayout>
+
+    <include layout="@layout/project_stats_view"
+      android:id="@+id/project_stats_view"
+      android:layout_height="wrap_content"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content" />
+      android:layout_marginTop="@dimen/grid_2"
+      android:layout_marginBottom="@dimen/grid_4"/>
+
+    <LinearLayout
+      android:id="@+id/project_social_view"
+      android:background="@drawable/click_indicator_light_masked"
+      android:orientation="horizontal"
+      android:gravity="center_vertical"
+      android:visibility="gone"
+      android:layout_marginBottom="@dimen/grid_4"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <ImageView
+        android:id="@+id/project_social_image"
+        android:visibility="gone"
+        android:layout_width="@dimen/project_social_photo_height"
+        android:layout_height="@dimen/project_social_photo_height" />
+
+      <TextView
+        android:id="@+id/project_social_text"
+        style="@style/CaptionPrimaryMedium"
+        android:layout_marginStart="@dimen/grid_2"
+        android:layout_marginLeft="@dimen/grid_2"
+        android:text="Gina Binetti, Christopher Wright, and 5 more are backers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    </LinearLayout>
 
   </LinearLayout>
 

@@ -17,7 +17,7 @@
     style="@style/EditorialSubHead"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/grid_4"
+    android:layout_marginTop="@dimen/grid_3"
     android:text="@string/discovery_onboarding_title_bring_creative_projects_to_life" />
 
   <Button

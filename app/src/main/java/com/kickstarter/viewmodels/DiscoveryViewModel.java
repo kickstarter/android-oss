@@ -8,17 +8,20 @@ import android.util.Pair;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.BuildCheck;
+import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.WebClient;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.viewmodels.inputs.DiscoveryViewModelInputs;
+import com.kickstarter.viewmodels.outputs.DiscoveryViewModelOutputs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +30,15 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> implements DiscoveryViewModelInputs {
+public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> implements DiscoveryViewModelInputs, DiscoveryViewModelOutputs {
+  @Inject ApiClient apiClient;
+  @Inject WebClient webClient;
+  @Inject BuildCheck buildCheck;
+  @Inject CurrentUser currentUser;
+
   // INPUTS
   private final PublishSubject<Project> projectClick = PublishSubject.create();
   private final PublishSubject<Void> nextPage = PublishSubject.create();
@@ -37,14 +46,22 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     nextPage.onNext(null);
   }
 
-  @Inject ApiClient apiClient;
-  @Inject WebClient webClient;
-  @Inject BuildCheck buildCheck;
+  // OUTPUTS
+  @Override
+  private final BehaviorSubject<List<Project>> projects = BehaviorSubject.create();
+  @Override
+  public Observable<List<Project>> projects() {
+    return projects;
+  }
+  public Observable<User> user() {
+    return currentUser.observable();
+  }
 
   private final PublishSubject<Void> filterButtonClick = PublishSubject.create();
   private final PublishSubject<DiscoveryParams> params = PublishSubject.create();
 
   public final DiscoveryViewModelInputs inputs = this;
+  public final DiscoveryViewModelOutputs outputs = this;
 
   @Override
   public void projectClick(@NonNull final Project project) {
@@ -57,6 +74,11 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     buildCheck.bind(this, webClient);
+
+    final Observable<User> freshUser = apiClient.fetchCurrentUser()
+      .retry(2)
+      .onErrorResumeNext(e -> Observable.empty());
+    freshUser.subscribe(currentUser::refresh);
 
     final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
       ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()

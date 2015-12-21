@@ -24,6 +24,5 @@ public final class DiscoveryOnboardingViewHolder extends KSViewHolder{
     ButterKnife.bind(this, view);
   }
 
-  public void onBind(@NonNull final Object datum) {
-  }
+  public void onBind(@NonNull final Object datum) {}
 }

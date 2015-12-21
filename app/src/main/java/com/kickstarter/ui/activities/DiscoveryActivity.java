@@ -17,20 +17,21 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.StatusBarUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.viewmodels.DiscoveryViewModel;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.adapters.DiscoveryAdapter;
 import com.kickstarter.ui.containers.ApplicationContainer;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
+import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
+import com.kickstarter.viewmodels.DiscoveryViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -43,10 +44,10 @@ import butterknife.ButterKnife;
 public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> implements DiscoveryAdapter.Delegate {
   DiscoveryAdapter adapter;
   LinearLayoutManager layoutManager;
-  final List<Project> projects = new ArrayList<>();
   private RecyclerViewPaginator recyclerViewPaginator;
 
   @Inject ApplicationContainer applicationContainer;
+  @Inject CurrentUser currentUser;
 
   @BindDrawable(R.drawable.dark_blue_gradient) Drawable darkBlueGradientDrawable;
   @Bind(R.id.discovery_layout) LinearLayout discoveryLayout;
@@ -65,7 +66,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
     ButterKnife.bind(this, container);
 
     layoutManager = new LinearLayoutManager(this);
-    adapter = new DiscoveryAdapter(projects, this);
+    adapter = new DiscoveryAdapter(this);
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);
 
@@ -87,10 +88,12 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
     viewModel.inputs.projectClick(project);
   }
 
-  public void loadProjects(@NonNull final List<Project> newProjects) {
-    projects.clear();
-    projects.addAll(newProjects);
-    adapter.notifyDataSetChanged();
+  public void signupLoginClick(final @NonNull DiscoveryOnboardingViewHolder viewHolder) {
+    //signup flow
+  }
+
+  public void loadProjects(final @NonNull List<Project> projects, final Nullable User user) {
+    adapter.takeProjects(projects, user);
   }
 
   public void loadParams(@NonNull final DiscoveryParams params) {

@@ -50,7 +50,6 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> implem
 
     adapter = new ProfileAdapter(this);
     recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-    recyclerView.setHasFixedSize(true);
     recyclerView.setAdapter(adapter);
 
     paginator = new RecyclerViewPaginator(recyclerView, viewModel.inputs::nextPage);

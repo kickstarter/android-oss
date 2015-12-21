@@ -76,7 +76,6 @@ public class ProfileCardViewHolder extends KSViewHolder {
         percentageFundedProgressBar.setVisibility(View.GONE);
         projectStateViewGroup.setVisibility(View.VISIBLE);
         successfullyFundedTextView.setVisibility(View.GONE);
-
         fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
         fundingUnsuccessfulTextView.setText(cancelledString);
         break;

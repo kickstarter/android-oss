@@ -9,17 +9,25 @@ import auto.parcel.AutoParcel;
 
 @AutoParcel
 public abstract class RelativeDateTimeOptions implements Parcelable {
-  // Abbreviates string, e.g.: "in 1 hr"
+  /**
+   * Abbreviates string, e.g.: "in 1 hr"
+   */
   public abstract boolean abbreviated();
 
-  // Don't output tense, e.g.: "1 hour" instead of "in 1 hour"
+  /**
+   * Don't output tense, e.g.: "1 hour" instead of "in 1 hour"
+   */
   public abstract boolean absolute();
 
-  // Compare against this date instead of the current time
+  /**
+   * Compare against this date instead of the current time
+   */
   public abstract @Nullable DateTime relativeToDateTime();
 
-  // Number of seconds difference permitted before an attempt to describe the relative date is abandoned.
-  // For example, "738 days ago" is not helpful to users. The threshold defaults to 30 days.
+  /**
+   * Number of seconds difference permitted before an attempt to describe the relative date is abandoned.
+   * For example, "738 days ago" is not helpful to users. The threshold defaults to 30 days.
+   */
   public abstract int threshold();
 
   @AutoParcel.Builder

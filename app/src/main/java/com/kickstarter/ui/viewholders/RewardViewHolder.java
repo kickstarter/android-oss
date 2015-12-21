@@ -25,7 +25,8 @@ public final class RewardViewHolder extends KSViewHolder {
   public @Bind(R.id.pledge_minimum) TextView minimumTextView;
   public @Bind(R.id.reward_backers_count) TextView backersCountTextView;
   public @Bind(R.id.reward_description) TextView descriptionTextView;
-  public @Bind(R.id.estimated_delivery_date) TextView estimatedDeliveryTextView;
+  public @Bind(R.id.estimated_delivery) TextView estimatedDeliveryTextView;
+  public @Bind(R.id.estimated_delivery_date) TextView estimatedDeliveryDateTextView;
   public @Bind(R.id.green_overlay) View greenOverlayView;
   public @Bind(R.id.selected) TextView selectedTextView;
   public @Bind(R.id.limited) TextView limitedTextView;
@@ -80,6 +81,7 @@ public final class RewardViewHolder extends KSViewHolder {
 
     toggleAllGoneRewardView();
     toggleClickableReward();
+    toggleEstimatedDeliveryView();
     toggleLimitedRewardView();
     toggleSelectedRewardView();
     toggleShippingDestinationView();
@@ -92,6 +94,19 @@ public final class RewardViewHolder extends KSViewHolder {
     } else {
       allGoneTextView.setVisibility(View.GONE);
       whiteOverlayView.setVisibility(View.INVISIBLE);
+    }
+  }
+
+  public void toggleEstimatedDeliveryView() {
+    if (reward.hasEstimatedDelivery()) {
+      estimatedDeliveryTextView.setVisibility(View.VISIBLE);
+      estimatedDeliveryDateTextView.setVisibility(View.VISIBLE);
+      estimatedDeliveryDateTextView.setText(
+        DateTimeUtils.estimatedDeliveryOn(reward.estimatedDeliveryOn())
+      );
+    } else {
+      estimatedDeliveryTextView.setVisibility(View.GONE);
+      estimatedDeliveryDateTextView.setVisibility(View.GONE);
     }
   }
 

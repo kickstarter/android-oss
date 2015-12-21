@@ -98,8 +98,4 @@ public class KSStringTest extends KSRobolectricTestCase {
     assertEquals("von Kristof", ksString().format(application().getString(R.string.project_creator_by_creator),
       "creator_name", "Kristof"));
   }
-
-  private @NonNull KSString ksString() {
-    return new KSString(application().getPackageName(), application().getResources());
-  }
 }

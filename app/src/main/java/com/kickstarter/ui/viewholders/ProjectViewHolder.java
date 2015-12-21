@@ -121,7 +121,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     avatarNameTextView.setText(project.creator().name());
     fundMessageTextView.setText(String.format(context.getString(R.string.___This_project_will_only_be_funded_if),
       ksCurrency.format(project.goal(), project, true),
-      project.deadline().toString(DateTimeUtils.writtenDeadline())));
+      DateTimeUtils.mediumDateTime(project.deadline())));
     updatesCountTextView.setText(project.formattedUpdatesCount());
     commentsCountTextView.setText(project.formattedCommentsCount());
 

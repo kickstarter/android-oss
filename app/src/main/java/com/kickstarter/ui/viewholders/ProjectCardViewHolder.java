@@ -1,5 +1,6 @@
 package com.kickstarter.ui.viewholders;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,6 +17,7 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
+import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.SocialUtils;
 import com.kickstarter.libs.utils.StringUtils;
@@ -102,7 +104,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       .into(photoImageView);
 
     setProjectMetadataView();
-    setProjectStateView();
+    setProjectStateView(view.getContext());
 
     /* landscape-specific */
     if (createdByTextView != null) {
@@ -126,7 +128,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     projectCardViewGroup.setLayoutParams(marginParams);
   }
 
-  public void setProjectStateView() {
+  public void setProjectStateView(final @NonNull Context context) {
     switch(project.state()) {
       case Project.STATE_SUCCESSFUL:
         percentageFundedProgressBar.setVisibility(View.GONE);
@@ -145,7 +147,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
         successfullyFundedTextView.setVisibility(View.GONE);
         fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
         fundingUnsuccessfulTextView.setText(ksString.format(fundingUnsuccessfulString,
-          "date", project.formattedStateChangedAt()
+          "date", DateTimeUtils.relative(context, ksString, project.stateChangedAt())
         ));
         break;
       case Project.STATE_SUSPENDED:
@@ -153,7 +155,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
         successfullyFundedTextView.setVisibility(View.GONE);
         fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
         fundingUnsuccessfulTextView.setText(ksString.format(bannerSuspendedString,
-          "date", project.formattedStateChangedAt()
+          "date", DateTimeUtils.relative(context, ksString, project.stateChangedAt())
         ));
         break;
     }

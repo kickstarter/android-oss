@@ -63,10 +63,10 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @BindDrawable(R.drawable.gray_gradient) Drawable grayGradientDrawable;
 
   protected @BindString(R.string.project_creator_by_creator) String byCreatorString;
-  protected @BindString(R.string.discovery_baseball_card_status_banner_canceled) String bannerCanceledString;
-  protected @BindString(R.string.discovery_baseball_card_status_banner_suspended) String bannerSuspendedString;
-  protected @BindString(R.string.discovery_baseball_card_status_banner_funding_unsuccessful_date) String fundingUnsuccessfulString;
-  protected @BindString(R.string.discovery_baseball_card_status_banner_successful) String bannerSuccessfulString;
+  protected @BindString(R.string.discovery_baseball_card_status_banner_canceled_date) String bannerCanceledDateString;
+  protected @BindString(R.string.discovery_baseball_card_status_banner_suspended_date) String bannerSuspendedDateString;
+  protected @BindString(R.string.discovery_baseball_card_status_banner_funding_unsuccessful_date) String fundingUnsuccessfulDateString;
+  protected @BindString(R.string.discovery_baseball_card_status_banner_successful_date) String bannerSuccessfulDateString;
   protected @BindString(R.string.discovery_baseball_card_metadata_featured_project) String featuredInString;
   protected @BindString(R.string.discovery_baseball_card_stats_pledged_of_goal) String pledgedOfGoalString;
 
@@ -136,21 +136,25 @@ public final class ProjectCardViewHolder extends KSViewHolder {
         projectStateViewGroup.setVisibility(View.VISIBLE);
         fundingUnsuccessfulTextView.setVisibility(View.GONE);
         successfullyFundedTextView.setVisibility(View.VISIBLE);
-        successfullyFundedTextView.setText(bannerSuccessfulString);
+        successfullyFundedTextView.setText(ksString.format(bannerSuccessfulDateString,
+          "date", DateTimeUtils.relative(context, ksString, project.stateChangedAt())
+        ));
         break;
       case Project.STATE_CANCELED:
         percentageFundedProgressBar.setVisibility(View.GONE);
         projectStateViewGroup.setVisibility(View.VISIBLE);
         successfullyFundedTextView.setVisibility(View.GONE);
         fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
-        fundingUnsuccessfulTextView.setText(bannerCanceledString);
+        fundingUnsuccessfulTextView.setText(ksString.format(bannerCanceledDateString,
+          "date", DateTimeUtils.relative(context, ksString, project.stateChangedAt())
+        ));
         break;
       case Project.STATE_FAILED:
         percentageFundedProgressBar.setVisibility(View.GONE);
         projectStateViewGroup.setVisibility(View.VISIBLE);
         successfullyFundedTextView.setVisibility(View.GONE);
         fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
-        fundingUnsuccessfulTextView.setText(ksString.format(fundingUnsuccessfulString,
+        fundingUnsuccessfulTextView.setText(ksString.format(fundingUnsuccessfulDateString,
           "date", DateTimeUtils.relative(context, ksString, project.stateChangedAt())
         ));
         break;
@@ -159,7 +163,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
         projectStateViewGroup.setVisibility(View.VISIBLE);
         successfullyFundedTextView.setVisibility(View.GONE);
         fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
-        fundingUnsuccessfulTextView.setText(ksString.format(bannerSuspendedString,
+        fundingUnsuccessfulTextView.setText(ksString.format(bannerSuspendedDateString,
           "date", DateTimeUtils.relative(context, ksString, project.stateChangedAt())
         ));
         break;

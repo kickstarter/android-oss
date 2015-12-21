@@ -151,7 +151,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       ));
     }
 
-    setProjectStateView();
+    setProjectStateView(view.getContext());
     setSocialView();
     setStatsContentDescription();
   }
@@ -199,7 +199,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     }
   }
 
-  public void setProjectStateView() {
+  public void setProjectStateView(final @NonNull Context context) {
     switch(project.state()) {
       case Project.STATE_SUCCESSFUL:
         percentageFundedProgressBar.setVisibility(View.GONE);
@@ -221,7 +221,7 @@ public final class ProjectViewHolder extends KSViewHolder {
         successfullyFundedTextView.setVisibility(View.GONE);
         fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
         fundingUnsuccessfulTextView.setText(ksString.format(fundingUnsuccessfulString,
-          "date", project.formattedStateChangedAt()
+          "date", DateTimeUtils.relative(context, ksString, project.stateChangedAt())
         ));
         break;
       case Project.STATE_SUSPENDED:
@@ -230,7 +230,7 @@ public final class ProjectViewHolder extends KSViewHolder {
         successfullyFundedTextView.setVisibility(View.GONE);
         fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
         fundingUnsuccessfulTextView.setText(ksString.format(bannerSuspendedString,
-          "date", project.formattedStateChangedAt()
+          "date", DateTimeUtils.relative(context, ksString, project.stateChangedAt())
         ));
         break;
     }

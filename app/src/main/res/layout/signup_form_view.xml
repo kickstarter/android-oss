@@ -37,7 +37,7 @@
       android:inputType="textEmailAddress"
       android:singleLine="true"
       style="@style/SubheadPrimary"
-      android:hint="@string/___Email_address" />
+      android:hint="@string/login_placeholder_email" />
 
   </android.support.design.widget.TextInputLayout>
 

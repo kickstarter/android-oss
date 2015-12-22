@@ -87,6 +87,7 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
     final DiscoveryParams params = DiscoveryParams.builder()
       .category(project.category().root())
       .backed(-1)
+      .recommended(true)
       .perPage(3)
       .build();
 

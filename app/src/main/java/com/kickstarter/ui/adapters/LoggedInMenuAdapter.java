@@ -57,12 +57,12 @@ public final class LoggedInMenuAdapter extends BaseAdapter {
     if (convertView == null) {
       switch (type) {
         case ROW_PROFILE:
-          convertView = LayoutInflater.from(context).inflate(R.layout.logged_in_menu_avatar_item, null);
+          convertView = LayoutInflater.from(context).inflate(R.layout.logged_in_menu_avatar_item, parent, false);
           convertView.setTag(new LoggedInMenuProfileViewHolder(convertView, getItem(position), user.avatar()));
           break;
         case ROW_SETTINGS:
         case ROW_HELP:
-          convertView = LayoutInflater.from(context).inflate(R.layout.logged_in_menu_item, null);
+          convertView = LayoutInflater.from(context).inflate(R.layout.logged_in_menu_item, parent, false);
           convertView.setTag(new LoggedInMenuViewHolder(convertView, getItem(position)));
           break;
       }

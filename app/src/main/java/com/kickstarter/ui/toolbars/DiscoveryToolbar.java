@@ -100,7 +100,7 @@ public final class DiscoveryToolbar extends KSToolbar {
     context.startActivity(new Intent(context, SearchActivity.class));
   }
 
-  protected void showLoggedInMenu(final @NonNull User user) {
+  protected void configureForLoggedIn(final @NonNull User user) {
     loginButton.setVisibility(GONE);
     currentUserButton.setVisibility(VISIBLE);
     currentUserButton.setOnClickListener(v -> {
@@ -109,12 +109,13 @@ public final class DiscoveryToolbar extends KSToolbar {
     });
   }
 
-  protected void showLoggedOutMenu() {
+  protected void configureForLoggedOut() {
     currentUserButton.setVisibility(GONE);
     loginButton.setVisibility(VISIBLE);
     loginButton.setOnClickListener(v -> {
       final Intent intent = new Intent(getContext(), LoginToutActivity.class)
-        .putExtra(getContext().getResources().getString(R.string.intent_login_type), LoginToutActivity.REASON_LOGIN_TAB);
+        .putExtra(getContext().getResources()
+          .getString(R.string.intent_login_type), LoginToutActivity.REASON_LOGIN_TAB);
       getContext().startActivity(intent);
     });
   }
@@ -128,17 +129,12 @@ public final class DiscoveryToolbar extends KSToolbar {
     }
 
     addSubscription(currentUser.loggedOutUser()
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> this.showLoggedOutMenu())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(__ -> this.configureForLoggedOut())
     );
 
     addSubscription(currentUser.loggedInUser()
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::showLoggedInMenu));
-  }
-
-  @Override
-  protected void onDetachedFromWindow() {
-    super.onDetachedFromWindow();
+      .subscribe(this::configureForLoggedIn));
   }
 }

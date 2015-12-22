@@ -28,9 +28,8 @@ public final class HelpActivity extends BaseActivity<HelpViewModel> {
   public static final int HELP_TYPE_HOW_IT_WORKS = 2;
   public static final int HELP_TYPE_COOKIE_POLICY = 3;
   public static final int HELP_TYPE_FAQ = 4;
-  public static final int HELP_TYPE_GENERAL = 5;
 
-  @IntDef({HELP_TYPE_TERMS, HELP_TYPE_PRIVACY, HELP_TYPE_HOW_IT_WORKS, HELP_TYPE_COOKIE_POLICY, HELP_TYPE_FAQ, HELP_TYPE_GENERAL})
+  @IntDef({HELP_TYPE_TERMS, HELP_TYPE_PRIVACY, HELP_TYPE_HOW_IT_WORKS, HELP_TYPE_COOKIE_POLICY, HELP_TYPE_FAQ})
   @Retention(RetentionPolicy.SOURCE)
   public @interface HelpType {}
 
@@ -74,10 +73,8 @@ public final class HelpActivity extends BaseActivity<HelpViewModel> {
         builder.appendEncodedPath("cookies");
         break;
       case HELP_TYPE_FAQ:
-        builder.appendEncodedPath("help/faq/kickstarter+basics?ref=faq_nav#TheKickApp");
+        builder.appendEncodedPath("help/faq/kickstarter+basics");
         break;
-      case HELP_TYPE_GENERAL:
-        builder.appendEncodedPath("help");
     }
     return builder.toString();
   }

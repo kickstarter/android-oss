@@ -12,7 +12,7 @@ import butterknife.ButterKnife;
 public class LoggedInMenuViewHolder {
   @Bind(R.id.menu_item_title) TextView menuItemTitleTextView;
 
-  public LoggedInMenuViewHolder(@NonNull final View view, final @NonNull String title) {
+  public LoggedInMenuViewHolder(final @NonNull View view, final @NonNull String title) {
     ButterKnife.bind(this, view);
 
     menuItemTitleTextView.setText(title);

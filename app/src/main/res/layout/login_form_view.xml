@@ -47,7 +47,7 @@
     android:enabled="false"
     android:layout_marginTop="@dimen/grid_2"
     android:layout_width="match_parent"
-    android:text="@string/___Log_in" />
+    android:text="@string/login_buttons_log_in" />
 
   <TextView
     style="@style/CaptionPrimary"

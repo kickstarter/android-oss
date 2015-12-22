@@ -34,7 +34,7 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
 
   @BindString(R.string.___Login_does_not_match_any_of_our_records) String loginDoesNotMatchString;
   @BindString(R.string.___Unable_to_login) String unableToLoginString;
-  @BindString(R.string.___Log_in) String loginString;
+  @BindString(R.string.login_buttons_log_in) String loginString;
   @BindString(R.string.___Log_in_error) String errorTitleString;
 
   @Override

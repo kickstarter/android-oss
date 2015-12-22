@@ -113,9 +113,7 @@
   <string name="___Launched">Launched</string>
   <string name="___Lets_try_that_again">Let\'s try that again</string>
   <string name="___Limited_left_of">Limited (%1$s left of %2$s)</string>
-  <string name="___Log_in">Log in</string>
   <string name="___Log_in_error">Log in error</string>
-  <string name="___Log_in_with_email">Log in with email</string>
   <string name="___Log_in_with_Facebook">Log in with Facebook</string>
   <string name="___Log_in_or_sign_up">Log in or sign up</string>
   <string name="___Log_out">Log out</string>
@@ -185,10 +183,7 @@
   <string name="___Share_this_project">Share this project</string>
   <string name="___Shipping">Shipping</string>
   <string name="___Shipping_destinations">Shipping destinations</string>
-  <string name="___Sign_up">Sign up</string>
   <string name="___Sign_up_error">Sign up error</string>
-  <string name="___Sign_up_with_email">Sign up with email</string>
-  <string name="___Sign_up_with_Facebook">Sign up with Facebook</string>
   <string name="___Sign_up_or_log_in_with_your_Facebook_account">
     Sign up or log in with your Facebook account or email address below:
   </string>

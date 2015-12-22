@@ -53,7 +53,7 @@
     android:background="@drawable/button_white_border_dark_gray"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="@string/___Log_in"
+    android:text="@string/login_buttons_log_in"
     android:layout_marginTop="@dimen/grid_1" />
 
 </LinearLayout>

@@ -62,9 +62,7 @@
   <string name="___Discover_projects">Discover projects</string>
   <string name="___Done">Done</string>
   <string name="___Download_build">Download Build</string>
-  <string name="___Email_address">Email address</string>
   <string name="___Endpoint">Endpoint</string>
-  <string name="___Enter_code">Enter code</string>
   <string name="___Enter_the_base_url_of_the_api">Enter the base URL of the API you’d like to use.\n\n
     e.g.: https://api-christopher.***REMOVED***</string>
   <string name="___Estimated_delivery">Estimated Delivery</string>
@@ -144,11 +142,7 @@
     folder and tap the .apk file to install.\n\nYou must enable the option to allow installation of apps from
     unknown sources in the security settings of your device.
   </string>
-  <string name="___Password">Password</string>
   <string name="___Password_minimum_6_characters">Password (minimum 6 characters)</string>
-  <string name="___Please_enter_your_verification_code_to_continue">
-    Please enter your verification code to continue.
-  </string>
   <string name="___Send_feedback">Send feedback</string>
   <string name="___Pledge_or_more">Pledge %1$s or more</string>
   <string name="___Pledged">Pledged</string>
@@ -168,7 +162,6 @@
   <string name="___Projects_We_Love">Projects We Love</string>
   <string name="___Projects_you_back">Projects you back</string>
   <string name="___Public_comment">Public comment</string>
-  <string name="___Resend">Resend</string>
   <string name="___Reset_my_password">Reset my password</string>
   <string name="___Reward">Reward</string>
   <string name="___reward_amount_description">%1$s - %2$s</string>
@@ -189,13 +182,10 @@
   </string>
   <string name="___Social_notifications">Social notifications</string>
   <string name="___Something_went_wrong_try_again_later">Something went wrong, please try again later.</string>
-  <string name="___Sorry_we_do_not_know_that_email_address_try_again">
-    Sorry, we don\'t know that email address. Try again?</string>
   <string name="___Status_">Status: %1$s</string>
   <string name="___Staff_Picks">Staff Picks</string>
   <string name="___Starred">Starred</string>
   <string name="___Successfully_funded">Successfully funded!</string>
-  <string name="___Submit">Submit</string>
   <string name="___Submit_bug_report">Submit bug report</string>
   <string name="___Terms_of_Use">Terms of Use</string>
   <string name="___The_code_provided_does_not_match">The code provided does not match.</string>
@@ -214,7 +204,6 @@
   <string name="___Use_your_email_address">Use your email address:</string>
   <string name="___username_is_following_you">&lt;b>%1$s&lt;/b> is following you!</string>
   <string name="___Variant">Variant</string>
-  <string name="___Verify">Verify</string>
   <string name="___Version_code">Version Code</string>
   <string name="___Version_name">Version Name</string>
   <string name="___Well_never_post_anything">We\'ll never post anything without your permission.</string>

@@ -47,27 +47,20 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
 
     final boolean forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
 
-    addSubscription(
-      errorMessages()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e))
-    );
+    errorMessages()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e));
 
-    addSubscription(
-      viewModel.errors.tfaChallenge()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(__ -> {
-          startTwoFactorActivity(forward);
-        })
-    );
+    viewModel.errors.tfaChallenge()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> startTwoFactorActivity(forward));
 
-    addSubscription(
-      viewModel.outputs.loginSuccess()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(__ -> {
-          onSuccess(forward);
-        })
-    );
+    viewModel.outputs.loginSuccess()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> onSuccess(forward));
 
     final boolean confirmResetPassword = getIntent().getBooleanExtra(getString(R.string.intent_confirm_reset_password), false);
     if (confirmResetPassword) {

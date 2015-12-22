@@ -50,33 +50,29 @@ public final class SignupActivity extends BaseActivity<SignupViewModel> {
 
     final boolean forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
 
-    addSubscription(
-      viewModel.outputs.signupSuccess()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(__ -> onSuccess(forward))
-    );
+    viewModel.outputs.signupSuccess()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> onSuccess(forward));
 
-    addSubscription(
-      viewModel.outputs.formSubmitting()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this::setFormDisabled)
-    );
+    viewModel.outputs.formSubmitting()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::setFormDisabled);
 
-    addSubscription(
-      viewModel.outputs.formIsValid()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this::setFormEnabled)
-    );
+    viewModel.outputs.formIsValid()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::setFormEnabled);
 
-    addSubscription(
-      viewModel.errors.signupError()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e))
-    );
+    viewModel.errors.signupError()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e));
 
-    addSubscription(RxCompoundButton.checkedChanges(newsletterSwitch)
-      .subscribe(viewModel.inputs::sendNewsletters)
-    );
+    RxCompoundButton.checkedChanges(newsletterSwitch)
+      .compose(bindToLifecycle())
+      .subscribe(viewModel.inputs::sendNewsletters);
   }
 
   @OnClick(R.id.disclaimer)

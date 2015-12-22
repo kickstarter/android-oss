@@ -39,29 +39,25 @@ public final class ResetPasswordActivity extends BaseActivity<ResetPasswordViewM
     ButterKnife.bind(this);
     loginToolbar.setTitle(forgotPasswordString);
 
-    addSubscription(
-      viewModel.outputs.resetSuccess()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(__ -> onResetSuccess())
-    );
+    viewModel.outputs.resetSuccess()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> onResetSuccess());
 
-    addSubscription(
-      viewModel.outputs.isFormSubmitting()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this::setFormDisabled)
-    );
+    viewModel.outputs.isFormSubmitting()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::setFormDisabled);
 
-    addSubscription(
-      viewModel.outputs.isFormValid()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this::setFormEnabled)
-    );
+    viewModel.outputs.isFormValid()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::setFormEnabled);
 
-    addSubscription(
-      viewModel.errors.resetError()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(__ -> ViewUtils.showDialog(this, errorTitleString, errorMessageString))
-    );
+    viewModel.errors.resetError()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> ViewUtils.showDialog(this, errorTitleString, errorMessageString));
   }
 
   @Override

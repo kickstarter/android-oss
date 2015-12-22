@@ -49,29 +49,25 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel> {
     viewModel.inputs.fbAccessToken(getIntent().getExtras().getString(getString(R.string.intent_facebook_token)));
     viewModel.inputs.password(getIntent().getExtras().getString(getString(R.string.intent_password)));
 
-    addSubscription(
-      viewModel.outputs.tfaSuccess()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(__ -> onSuccess())
-    );
+    viewModel.outputs.tfaSuccess()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> onSuccess());
 
-    addSubscription(
-      viewModel.outputs.formSubmitting()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this::setFormDisabled)
-    );
+    viewModel.outputs.formSubmitting()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::setFormDisabled);
 
-    addSubscription(
-      viewModel.outputs.formIsValid()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this::setFormEnabled)
-    );
+    viewModel.outputs.formIsValid()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::setFormEnabled);
 
-    addSubscription(
-      errorMessages()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e))
-    );
+    errorMessages()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e));
   }
 
   private Observable<String> errorMessages() {

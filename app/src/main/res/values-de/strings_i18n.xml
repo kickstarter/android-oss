@@ -483,8 +483,13 @@ Für gewöhnlich kann das Problem behoben werden, indem du in den iOS Einstellun
   <string name="profile_projects_backed_project_count_projects_two" formatted="false">HAT 2 PROJEKTE UNTERSTÜTZT</string>
   <string name="profile_projects_backed_project_count_projects_zero" formatted="false">HAT 0 PROJEKTE UNTERSTÜTZT</string>
   <string name="profile_projects_backed_projects" formatted="false">Unterstützte Projekte</string>
+  <string name="profile_projects_created_projects" formatted="false">Created projects</string>
   <string name="profile_projects_empty_state_button" formatted="false">Projekte entdecken</string>
   <string name="profile_projects_empty_state_message" formatted="false">Du hast noch keine Projekte unterstützt. Das sollten wir ändern!</string>
+  <string name="profile_projects_status_canceled" formatted="false">Canceled</string>
+  <string name="profile_projects_status_successful" formatted="false">Successful</string>
+  <string name="profile_projects_status_suspended" formatted="false">Suspended</string>
+  <string name="profile_projects_status_unsuccessful" formatted="false">Unsuccessful</string>
   <string name="profile_projects_time_left_to_go" formatted="false">%{time_left} verbleibend</string>
   <string name="profile_settings_about_contact" formatted="false">Kontakt</string>
   <string name="profile_settings_about_cookie" formatted="false">Cookie-Richtlinien</string>

@@ -483,9 +483,14 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="profile_projects_backed_project_count_projects_two" formatted="false">2 PROYECTOS PATROCINADOS</string>
   <string name="profile_projects_backed_project_count_projects_zero" formatted="false">0 PROYECTOS PATROCINADOS</string>
   <string name="profile_projects_backed_projects" formatted="false">Proyectos patrocinados</string>
+  <string name="profile_projects_created_projects" formatted="false">Created projects</string>
   <string name="profile_projects_empty_state_button" formatted="false">Descubre proyectos</string>
   <string name="profile_projects_empty_state_message" formatted="false">Aún no has patrocinado ningún proyecto.
 ¡Es hora de cambiar esto!</string>
+  <string name="profile_projects_status_canceled" formatted="false">Canceled</string>
+  <string name="profile_projects_status_successful" formatted="false">Successful</string>
+  <string name="profile_projects_status_suspended" formatted="false">Suspended</string>
+  <string name="profile_projects_status_unsuccessful" formatted="false">Unsuccessful</string>
   <string name="profile_projects_time_left_to_go" formatted="false">%{time_left} restante(s)</string>
   <string name="profile_settings_about_contact" formatted="false">Contacto</string>
   <string name="profile_settings_about_cookie" formatted="false">Política de cookies</string>

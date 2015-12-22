@@ -296,6 +296,7 @@
         },
         "projects": {
           "time_left_to_go": "%{time_left} to go",
+          "created_projects": "Created projects",
           "backed_projects": "Backed projects",
           "backed_project_count_projects": {
             "zero": "BACKED 0 PROJECTS",
@@ -307,6 +308,12 @@
           "empty_state": {
             "message": "You haven’t backed any projects yet.\nLet’s change that!",
             "button": "Discover projects"
+          },
+          "status": {
+            "canceled": "Canceled",
+            "successful": "Successful",
+            "suspended": "Suspended",
+            "unsuccessful": "Unsuccessful"
           }
         },
         "settings": {
@@ -1522,6 +1529,7 @@
         },
         "projects": {
           "time_left_to_go": "%{time_left} verbleibend",
+          "created_projects": "Created projects",
           "backed_projects": "Unterstützte Projekte",
           "backed_project_count_projects": {
             "zero": "HAT 0 PROJEKTE UNTERSTÜTZT",
@@ -1533,6 +1541,12 @@
           "empty_state": {
             "message": "Du hast noch keine Projekte unterstützt. Das sollten wir ändern!",
             "button": "Projekte entdecken"
+          },
+          "status": {
+            "canceled": "Canceled",
+            "successful": "Successful",
+            "suspended": "Suspended",
+            "unsuccessful": "Unsuccessful"
           }
         },
         "settings": {
@@ -2748,6 +2762,7 @@
         },
         "projects": {
           "time_left_to_go": "%{time_left} restante(s)",
+          "created_projects": "Created projects",
           "backed_projects": "Proyectos patrocinados",
           "backed_project_count_projects": {
             "zero": "0 PROYECTOS PATROCINADOS",
@@ -2759,6 +2774,12 @@
           "empty_state": {
             "message": "Aún no has patrocinado ningún proyecto.\n¡Es hora de cambiar esto!",
             "button": "Descubre proyectos"
+          },
+          "status": {
+            "canceled": "Canceled",
+            "successful": "Successful",
+            "suspended": "Suspended",
+            "unsuccessful": "Unsuccessful"
           }
         },
         "settings": {
@@ -3974,6 +3995,7 @@
         },
         "projects": {
           "time_left_to_go": "Plus que %{time_left}",
+          "created_projects": "Created projects",
           "backed_projects": "Projets soutenus",
           "backed_project_count_projects": {
             "zero": "0 PROJETS SOUTENUS",
@@ -3985,6 +4007,12 @@
           "empty_state": {
             "message": "Vous n'avez pas encore soutenu de projets. On change ça ?",
             "button": "Découvrez des projets"
+          },
+          "status": {
+            "canceled": "Canceled",
+            "successful": "Successful",
+            "suspended": "Suspended",
+            "unsuccessful": "Unsuccessful"
           }
         },
         "settings": {
@@ -5200,6 +5228,7 @@
         },
         "projects": {
           "time_left_to_go": "%{time_left} to go",
+          "created_projects": "Created projects",
           "backed_projects": "Backed projects",
           "backed_project_count_projects": {
             "zero": "BACKED 0 PROJECTS",
@@ -5211,6 +5240,12 @@
           "empty_state": {
             "message": "You haven’t backed any projects yet.\nLet’s change that!",
             "button": "Discover projects"
+          },
+          "status": {
+            "canceled": "Canceled",
+            "successful": "Successful",
+            "suspended": "Suspended",
+            "unsuccessful": "Unsuccessful"
           }
         },
         "settings": {
@@ -6157,6 +6192,7 @@
     "i18n_discovery_touts": true,
     "i18n_start_tout": true,
     "responsive_manage": true,
+    "manage_pledge_ccs": true,
     "password_reset_banner": true,
     "play_page": true,
     "watch_page": true,
@@ -6166,7 +6202,6 @@
     "log_devices": true,
     "backer_report_formats": true,
     "discover_cards": true,
-    "imgix_videos": true,
     "fulfillment_report": true
   },
   "launched_countries": [
@@ -6281,15 +6316,12 @@
   ],
   "ab_experiments": {
     "discover_sorts_vs_subcategories": "experimental",
-    "native_ios_aa": "control",
+    "native_ios_aa": "experimental",
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
     "native_iphone_horiz_vs_vert": "experimental",
-    "project_share_metadata_position": "control",
-    "recs_hp_combo_v1": "combo_v1",
-    "recs_hp_video_plays": "collaborative_video_plays",
     "recs_thanks_combo_inputs": "collaborative_backings_v2",
-    "recs_thanks_stars": "collaborative_stars",
+    "recs_hp_combo_v1": "combo_v1",
     "video_autoplay_3": "no_autoplay"
   },
   "stripe": {

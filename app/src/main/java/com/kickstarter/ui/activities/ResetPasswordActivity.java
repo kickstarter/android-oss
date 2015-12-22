@@ -27,8 +27,8 @@ public final class ResetPasswordActivity extends BaseActivity<ResetPasswordViewM
   @Bind (R.id.reset_password_button) Button resetPasswordButton;
   @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
 
-  @BindString(R.string.___Forgot_your_password) String forgotPasswordString;
-  @BindString(R.string.___Sorry_we_do_not_know_that_email_address_try_again) String errorMessageString;
+  @BindString(R.string.forgot_password_title) String forgotPasswordString;
+  @BindString(R.string.forgot_password_error) String errorMessageString;
   @BindString(R.string.___Oops) String errorTitleString;
 
   @Override

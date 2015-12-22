@@ -57,7 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingRight="@dimen/grid_1_half"
-            android:text="@string/___Created_projects"
+            android:text="@string/profile_projects_created_projects"
             android:textColor="@color/text_secondary" />
 
           <TextView
@@ -82,7 +82,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingRight="@dimen/grid_1_half"
-            android:text="@string/___Backed_projects"
+            android:text="@string/profile_projects_backed_projects"
             android:textColor="@color/text_secondary" />
 
           <TextView

@@ -30,10 +30,10 @@ public class ProfileCardViewHolder extends KSViewHolder {
 
   protected @BindDrawable(R.drawable.gray_gradient) Drawable grayGradientDrawable;
 
-  protected @BindString(R.string.___Successful) String successfulString;
-  protected @BindString(R.string.___Unsuccessful) String unsuccessfulString;
-  protected @BindString(R.string.___Cancelled) String cancelledString;
-  protected @BindString(R.string.___Suspended) String suspendedString;
+  protected @BindString(R.string.profile_projects_status_successful) String successfulString;
+  protected @BindString(R.string.profile_projects_status_unsuccessful) String unsuccessfulString;
+  protected @BindString(R.string.profile_projects_status_canceled) String cancelledString;
+  protected @BindString(R.string.profile_projects_status_suspended) String suspendedString;
 
   public interface Delegate {
     void projectCardClick(ProfileCardViewHolder viewHolder, Project project);

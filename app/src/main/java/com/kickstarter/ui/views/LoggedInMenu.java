@@ -34,15 +34,15 @@ public class LoggedInMenu extends ListPopupWindow {
       dismiss();
       final BaseActivity activity = (BaseActivity) context;
       switch (position) {
-        case LoggedInMenuAdapter.TYPE_PROFILE:
+        case LoggedInMenuAdapter.ROW_PROFILE:
           final Intent profileIntent = new Intent(activity, ProfileActivity.class);
           activity.startActivity(profileIntent);
           break;
-        case LoggedInMenuAdapter.TYPE_SETTINGS:
+        case LoggedInMenuAdapter.ROW_SETTINGS:
           final Intent settingsIntent = new Intent(activity, SettingsActivity.class);
           activity.startActivity(settingsIntent);
           break;
-        case LoggedInMenuAdapter.TYPE_HELP:
+        case LoggedInMenuAdapter.ROW_HELP:
           final Intent helpIntent = new Intent(activity, HelpActivity.class);
           helpIntent.putExtra(context.getString(R.string.intent_help_type), HelpActivity.HELP_TYPE_FAQ);
           activity.startActivity(helpIntent);

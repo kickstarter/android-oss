@@ -9,6 +9,7 @@ import android.util.Pair;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClient;
@@ -84,19 +85,9 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startDiscoveryCategoryIntent(vp.second)));
 
-    final DiscoveryParams params = DiscoveryParams.builder()
-      .category(project.category().root())
-      .backed(-1)
-      .recommended(true)
-      .perPage(3)
-      .build();
-
-    final Observable<List<Project>> recommendedProjects = apiClient.fetchProjects(params)
-      .compose(Transformers.neverError())
-      .map(DiscoverEnvelope::projects);
     final Observable<Category> rootCategory = apiClient.fetchCategory(project.category().rootId())
       .compose(Transformers.neverError());
-    final Observable<Pair<List<Project>, Category>> projectsAndRootCategory = recommendedProjects
+    final Observable<Pair<List<Project>, Category>> projectsAndRootCategory = projects(project)
       .compose(Transformers.zipPair(rootCategory));
 
     addSubscription(view
@@ -104,11 +95,57 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(vpc -> {
           final ThanksActivity view = vpc.first;
-          final List<Project> projects = vpc.second.first;
+          final List<Project> ps = vpc.second.first;
           final Category category = vpc.second.second;
-          view.showRecommended(projects, category);
+          view.showRecommended(ps, category);
         })
     );
+  }
+
+  /**
+   * Returns a shuffled list of 3 recommended projects, with fallbacks to similar and staff picked projects
+   * for users with fewer than 3 recommendations.
+   */
+  public Observable<List<Project>> projects(final @NonNull Project project) {
+    final DiscoveryParams recommendedParams = DiscoveryParams.builder()
+      .backed(-1)
+      .recommended(true)
+      .perPage(6)
+      .build();
+
+    final DiscoveryParams similarToParams = DiscoveryParams.builder()
+      .backed(-1)
+      .similarTo(project)
+      .perPage(3)
+      .build();
+
+    final DiscoveryParams staffPickParams = DiscoveryParams.builder()
+      .category(project.category().root())
+      .backed(-1)
+      .staffPicks(true)
+      .perPage(3)
+      .build();
+
+    // shuffle projects to show fresh recommendations
+    final Observable<Project> recommendedProjects = apiClient.fetchProjects(recommendedParams)
+      .map(DiscoverEnvelope::projects)
+      .map(ListUtils::shuffle)
+      .flatMap(Observable::from)
+      .take(3);
+
+    final Observable<Project> similarToProjects = apiClient.fetchProjects(similarToParams)
+      .map(DiscoverEnvelope::projects)
+      .flatMap(Observable::from);
+
+    final Observable<Project> staffPickProjects = apiClient.fetchProjects(staffPickParams)
+      .map(DiscoverEnvelope::projects)
+      .flatMap(Observable::from);
+
+    return Observable.concat(recommendedProjects, similarToProjects, staffPickProjects)
+      .compose(Transformers.neverError())
+      .distinct()
+      .take(3)
+      .toList();
   }
 
   public void takeFacebookClick() {

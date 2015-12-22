@@ -1,5 +1,6 @@
 package com.kickstarter.ui.views;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -8,11 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ListPopupWindow;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.models.User;
-import com.kickstarter.ui.activities.HelpActivity;
-import com.kickstarter.ui.activities.ProfileActivity;
-import com.kickstarter.ui.activities.SettingsActivity;
 import com.kickstarter.ui.adapters.LoggedInMenuAdapter;
 
 public class LoggedInMenu extends ListPopupWindow {
@@ -32,22 +29,24 @@ public class LoggedInMenu extends ListPopupWindow {
 
     setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) -> {
       dismiss();
-      final BaseActivity activity = (BaseActivity) context;
-      switch (position) {
-        case LoggedInMenuAdapter.ROW_PROFILE:
-          final Intent profileIntent = new Intent(activity, ProfileActivity.class);
-          activity.startActivity(profileIntent);
-          break;
-        case LoggedInMenuAdapter.ROW_SETTINGS:
-          final Intent settingsIntent = new Intent(activity, SettingsActivity.class);
-          activity.startActivity(settingsIntent);
-          break;
-        case LoggedInMenuAdapter.ROW_HELP:
-          final Intent helpIntent = new Intent(activity, HelpActivity.class);
-          helpIntent.putExtra(context.getString(R.string.intent_help_type), HelpActivity.HELP_TYPE_FAQ);
-          activity.startActivity(helpIntent);
-          break;
-      }
+      final Activity activity = (Activity) context;
+
+      final Intent profileIntent = new Intent(activity, adapter.getActivityClassForRow(position));
+      activity.startActivity(profileIntent);
+
+//      switch (position) {
+//        case LoggedInMenuAdapter.ROW_PROFILE:/**/
+//          break;
+//        case LoggedInMenuAdapter.ROW_SETTINGS:
+//          final Intent settingsIntent = new Intent(activity, SettingsActivity.class);
+//          activity.startActivity(settingsIntent);
+//          break;
+//        case LoggedInMenuAdapter.ROW_HELP:
+//          final Intent helpIntent = new Intent(activity, HelpActivity.class);
+//          helpIntent.putExtra(context.getString(R.string.intent_help_type), HelpActivity.HELP_TYPE_FAQ);
+//          activity.startActivity(helpIntent);
+//          break;
+//      }
     });
   }
 }

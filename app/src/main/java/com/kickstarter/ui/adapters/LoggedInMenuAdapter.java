@@ -10,6 +10,9 @@ import android.widget.BaseAdapter;
 
 import com.kickstarter.R;
 import com.kickstarter.models.User;
+import com.kickstarter.ui.activities.HelpActivity;
+import com.kickstarter.ui.activities.ProfileActivity;
+import com.kickstarter.ui.activities.SettingsActivity;
 import com.kickstarter.ui.viewholders.LoggedInMenuProfileViewHolder;
 import com.kickstarter.ui.viewholders.LoggedInMenuViewHolder;
 
@@ -17,9 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class LoggedInMenuAdapter extends BaseAdapter {
-  public static final int ROW_PROFILE = 0;
-  public static final int ROW_SETTINGS = 1;
-  public static final int ROW_HELP = 2;
+  private static final int ROW_PROFILE = 0;
+  private static final int ROW_SETTINGS = 1;
+  private static final int ROW_HELP = 2;
 
   private final Context context;
   private final User user;
@@ -78,5 +81,18 @@ public final class LoggedInMenuAdapter extends BaseAdapter {
   @Override
   public int getViewTypeCount() {
     return rows.size();
+  }
+
+  public Class<?> getActivityClassForRow(final int row) {
+    switch (row) {
+      case ROW_PROFILE:
+        return  ProfileActivity.class;
+      case ROW_SETTINGS:
+        return SettingsActivity.class;
+      case ROW_HELP:
+       return HelpActivity.class;
+      default:
+        return Class.class;
+    }
   }
 }

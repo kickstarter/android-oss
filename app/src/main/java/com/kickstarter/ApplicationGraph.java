@@ -25,6 +25,7 @@ import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
 import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder;
 import com.kickstarter.ui.viewholders.ProjectStateChangedPositiveViewHolder;
+import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder;
 import com.kickstarter.ui.viewholders.ProjectViewHolder;
 import com.kickstarter.ui.viewholders.RewardViewHolder;
 import com.kickstarter.ui.views.IconTextView;
@@ -84,6 +85,7 @@ public interface ApplicationGraph {
   void inject(ProjectCardViewHolder __);
   void inject(ProjectSearchResultViewHolder __);
   void inject(ProjectStateChangedPositiveViewHolder __);
+  void inject(ProjectUpdateViewHolder __);
   void inject(ProjectViewHolder __);
   void inject(RegisterService __);
   void inject(RewardViewHolder __);

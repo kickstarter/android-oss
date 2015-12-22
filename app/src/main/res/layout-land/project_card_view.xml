@@ -39,7 +39,12 @@
         android:layout_alignBottom="@id/project_card_photo"
         android:layout_toEndOf="@id/project_card_photo"
         android:layout_toRightOf="@id/project_card_photo"
-        android:layout_margin="@dimen/grid_2"
+        android:layout_marginTop="@dimen/grid_2"
+        android:layout_marginStart="@dimen/grid_2"
+        android:layout_marginLeft="@dimen/grid_2"
+        android:layout_marginEnd="@dimen/grid_2"
+        android:layout_marginRight="@dimen/grid_2"
+        android:paddingBottom="@dimen/grid_1_half"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -113,38 +118,15 @@
           android:minHeight="@dimen/progress_bar_min_height"
           android:progress="50" />
 
-        <LinearLayout
-          android:id="@+id/project_state_views"
+        <include layout="@layout/project_state_view"
+          android:id="@+id/project_state_view_group"
           android:layout_below="@id/category_location_view"
-          android:orientation="vertical"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content">
-
-          <TextView
-            android:id="@+id/successfully_funded_text_view"
-            android:visibility="gone"
-            style="@style/BodyPrimaryMedium"
-            android:textColor="@color/white"
-            android:background="@color/green"
-            android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/grid_3"/>
-
-          <TextView
-            android:id="@+id/funding_unsuccessful_text_view"
-            android:visibility="gone"
-            style="@style/BodyPrimaryMedium"
-            android:textColor="@color/white"
-            android:background="@color/dark_gray"
-            android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/grid_3"/>
-
-        </LinearLayout>
+          android:layout_height="wrap_content"/>
 
         <include layout="@layout/project_card_stats_view"
           android:layout_marginTop="@dimen/grid_2"
-          android:layout_below="@id/project_state_views"
+          android:layout_below="@id/project_state_view_group"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"/>
 

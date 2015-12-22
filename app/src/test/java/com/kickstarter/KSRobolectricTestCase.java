@@ -1,6 +1,9 @@
 package com.kickstarter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
+
+import com.kickstarter.libs.KSString;
 
 import junit.framework.TestCase;
 
@@ -21,5 +24,13 @@ public abstract class KSRobolectricTestCase extends TestCase {
 
     application = (TestKSApplication) RuntimeEnvironment.application;
     return application;
+  }
+
+  protected @NonNull Context context() {
+    return application().getApplicationContext();
+  }
+
+  protected @NonNull KSString ksString() {
+    return new KSString(application().getPackageName(), application().getResources());
   }
 }

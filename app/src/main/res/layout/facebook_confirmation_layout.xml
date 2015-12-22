@@ -21,7 +21,7 @@
 
       <TextView
         style="@style/BodySecondary"
-        android:text="@string/___Before_we_make_your_new_account"
+        android:text="@string/facebook_confirmation_detail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/grid_3"
@@ -30,7 +30,6 @@
       <TextView
         android:id="@+id/email"
         style="@style/SubheadPrimaryMedium"
-        android:text="Email address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -51,7 +50,7 @@
         android:layout_marginTop="@dimen/grid_1"
         android:layout_marginBottom="@dimen/grid_2"
         android:layout_width="match_parent"
-        android:text="@string/___Create_new_account" />
+        android:text="@string/facebook_confirmation_button" />
 
       <TextView
         android:id="@+id/disclaimer"
@@ -64,7 +63,7 @@
         android:layout_marginBottom="@dimen/grid_6"/>
 
       <TextView
-        android:text="@string/___Already_have_a_Kickstarter_account"
+        android:text="@string/facebook_confirmation_wrong_account_title"
         style="@style/BodySecondary"
         android:gravity="center"
         android:layout_width="match_parent"

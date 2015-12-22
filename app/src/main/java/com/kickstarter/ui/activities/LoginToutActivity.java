@@ -44,12 +44,12 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
   @Bind(R.id.help_button) TextView helpButton;
   @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
 
-  @BindString(R.string.___Log_in_or_sign_up) String loginOrSignUpString;
-  @BindString(R.string.___Unable_to_login) String unableToLoginString;
+  @BindString(R.string.login_tout_navbar_title) String loginOrSignUpString;
+  @BindString(R.string.login_errors_unable_to_log_in) String unableToLoginString;
   @BindString(R.string.intent_login_type) String intentLoginTypeString;
-  @BindString(R.string.___Oops) String errorTitleString;
-  @BindString(R.string.___Were_having_some_trouble_getting_you_logged_in) String troubleLoggingInString;
-  @BindString(R.string.___Lets_try_that_again) String tryAgainString;
+  @BindString(R.string.general_error_oops) String errorTitleString;
+  @BindString(R.string.login_tout_errors_facebook_authorization_exception_message) String troubleLoggingInString;
+  @BindString(R.string.login_tout_errors_facebook_authorization_exception_button) String tryAgainString;
 
   private boolean forward;
 

@@ -29,7 +29,7 @@ public final class ResetPasswordActivity extends BaseActivity<ResetPasswordViewM
 
   @BindString(R.string.forgot_password_title) String forgotPasswordString;
   @BindString(R.string.forgot_password_error) String errorMessageString;
-  @BindString(R.string.___Oops) String errorTitleString;
+  @BindString(R.string.general_error_oops) String errorTitleString;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {

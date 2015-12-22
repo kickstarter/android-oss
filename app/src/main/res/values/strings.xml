@@ -109,14 +109,10 @@
   <string name="____is_a_backer">%1$s is a backer.</string>
   <string name="___Kickstarter_news_and_events">Kickstarter news and events</string>
   <string name="___Launched">Launched</string>
-  <string name="___Lets_try_that_again">Let\'s try that again</string>
   <string name="___Limited_left_of">Limited (%1$s left of %2$s)</string>
-  <string name="___Log_in_error">Log in error</string>
   <string name="___Log_in_with_Facebook">Log in with Facebook</string>
-  <string name="___Log_in_or_sign_up">Log in or sign up</string>
   <string name="___Log_out">Log out</string>
   <string name="___Logged_out">Logged out</string>
-  <string name="___Login_does_not_match_any_of_our_records">Login does not match any of our records.</string>
   <string name="___Looking_for_more_projects">Looking for more projects? Check these out.</string>
   <string name="___Manage_pledge">Manage pledge</string>
   <string name="___Manage_project_notifications">Manage project notifications</string>
@@ -135,7 +131,6 @@
   <string name="___Number_live_projects">%1$s live projects</string>
   <string name="___of_">of\u0020</string>
   <string name="___Okay">Okay</string>
-  <string name="___Oops">Oops!</string>
   <string name="___Open_downloads_folder">Open Downloads folder</string>
   <string name="___A_request_has_been_made_to_download_the_latest_build">
     A request has been made to download the latest build. When the request has completed, open your downloads
@@ -196,7 +191,6 @@
   <string name="___Tweet">Tweet</string>
   <string name="____to_go">\u0020to go</string>
   <string name="___Unable_to_connect">Unable to connect</string>
-  <string name="___Unable_to_login">Unable to login</string>
   <string name="___Unable_to_save">Unable to save</string>
   <string name="___Update_sequence">Update #%1$d</string>
   <string name="___Updates">Updates</string>
@@ -208,8 +202,6 @@
   <string name="___Version_name">Version Name</string>
   <string name="___Well_never_post_anything">We\'ll never post anything without your permission.</string>
   <string name="___Well_remind_you_48_hours">We\'ll remind you 48 hours before this project ends!</string>
-  <string name="___Were_having_some_trouble_getting_you_logged_in">We\'re having some trouble getting you logged in.</string>
-  <string name="___We_sent_an_email_to_email_with_instructions_to_reset_your_password">We\'ve sent an email to %1$s with instructions to reset your password.</string>
   <string name="___When_you_back_a_project_or_follow_a_friend">
     When you back a project or follow a friend, their activity will appear here.
   </string>

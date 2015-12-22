@@ -82,4 +82,22 @@ public class ListUtils {
   @Nullable public static <T> T first(@NonNull final List<T> xs) {
     return xs.size() > 0 ? xs.get(0) : null;
   }
+
+  /**
+   * Uses Fisher-Yates algorithm to shuffle an array.
+   * http://www.dotnetperls.com/shuffle-java
+   */
+  public static <T> List<T> shuffle(final @NonNull List<T> xs) {
+    final List<T> ys = new ArrayList<>(xs);
+    final int length = ys.size();
+
+    for (int i = 0; i < length; i++) {
+      final int j = i + (int) (Math.random() * (length - i));
+      final T temp = ys.get(i);
+      ys.set(i, ys.get(j));
+      ys.set(j, temp);
+    }
+
+    return ys;
+  }
 }

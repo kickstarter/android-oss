@@ -9,7 +9,7 @@
   android:layout_height="@dimen/grid_7_half">
 
   <TextView
-    android:id="@+id/successfully_funded_view"
+    android:id="@+id/successfully_funded_text_view"
     android:visibility="gone"
     style="@style/BodyPrimaryMedium"
     android:textColor="@color/white"
@@ -19,7 +19,7 @@
     android:layout_height="match_parent"/>
 
   <TextView
-    android:id="@+id/funding_unsuccessful_view"
+    android:id="@+id/funding_unsuccessful_text_view"
     android:visibility="gone"
     style="@style/BodyPrimaryMedium"
     android:textColor="@color/white"

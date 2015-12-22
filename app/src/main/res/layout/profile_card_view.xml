@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:gravity="center"
+  android:layout_height="wrap_content"
+  android:layout_width="wrap_content"
+  android:layout_marginTop="@dimen/grid_3"
+  android:layout_marginRight="@dimen/grid_2"
+  android:layout_marginEnd="@dimen/grid_2">
+
+  <android.support.v7.widget.CardView
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    card_view:cardCornerRadius="4dp"
+    card_view:cardBackgroundColor="@color/transparent"
+    android:foreground="@drawable/click_indicator_light"
+    android:elevation="@dimen/card_elevation"
+    android:focusable="true"
+    android:layout_width="@dimen/profile_card_photo_width"
+    android:layout_height="@dimen/profile_card_height" >
+
+    <RelativeLayout
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <ImageView
+        android:id="@+id/profile_card_image"
+        android:scaleType="fitXY"
+        android:background="@drawable/gray_gradient"
+        android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/profile_card_photo_height"/>
+
+      <LinearLayout
+        android:layout_below="@id/profile_card_image"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/grid_1"
+        android:layout_marginLeft="@dimen/grid_1"
+        android:layout_marginEnd="@dimen/grid_1"
+        android:layout_marginRight="@dimen/grid_1" >
+
+        <TextView
+          android:id="@+id/profile_card_name"
+          style="@style/CaptionPrimaryMedium"
+          android:gravity="center"
+          android:layout_marginTop="@dimen/grid_1"
+          android:maxLines="3"
+          android:lines="3"
+          android:text="Secret Hitler or a three lined long project yay here it is"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
+
+        <ProgressBar
+          style="@style/ProgressBar"
+          android:visibility="visible"
+          android:layout_marginTop="@dimen/grid_3_half"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/progress_bar_height"
+          android:minHeight="@dimen/progress_bar_min_height"
+          android:progress="50"
+          android:id="@+id/percentage_funded"
+          android:layout_marginBottom="@dimen/grid_1"/>
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:id="@+id/project_state_view_group"
+        android:visibility="gone"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/grid_1"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/grid_3">
+
+        <TextView
+          android:id="@+id/successfully_funded_text_view"
+          android:visibility="gone"
+          style="@style/CaptionPrimaryMedium"
+          android:singleLine="true"
+          android:textColor="@color/white"
+          android:background="@color/green"
+          android:gravity="center"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"/>
+
+        <TextView
+          android:id="@+id/funding_unsuccessful_text_view"
+          android:visibility="gone"
+          style="@style/CaptionPrimaryMedium"
+          android:singleLine="true"
+          android:textColor="@color/white"
+          android:background="@color/dark_gray"
+          android:gravity="center"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"/>
+
+      </LinearLayout>
+
+    </RelativeLayout>
+
+  </android.support.v7.widget.CardView>
+</LinearLayout>

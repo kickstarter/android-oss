@@ -380,6 +380,7 @@
   <string name="forgot_password_title" formatted="false">Forgot your password?</string>
   <string name="forgot_password_we_sent_an_email_to_email_address_with_instructions_to_reset_your_password" formatted="false">We’ve sent an email to %{email} with instructions to reset your password.</string>
   <string name="general_alert_buttons_ok" formatted="false">OK</string>
+  <string name="general_error_oops" formatted="false">Oops!</string>
   <string name="general_error_something_wrong" formatted="false">Something went wrong.</string>
   <string name="general_loading" formatted="false">Loading...</string>
   <string name="general_navigation_accessibility_button_close_label" formatted="false">Close</string>
@@ -404,9 +405,13 @@
   <string name="invalid_api_client_alert_upgrade" formatted="false">Upgrade</string>
   <string name="login_buttons_forgot_password" formatted="false">Forgot your password?</string>
   <string name="login_buttons_log_in" formatted="false">Log in</string>
+  <string name="login_buttons_log_in_email" formatted="false">Log in with email</string>
   <string name="login_buttons_one_password" formatted="false">1Password</string>
   <string name="login_detail" formatted="false">Are those new shoes? If they’re not new, they look really shiny and beautiful.</string>
   <string name="login_errors_button_ok" formatted="false">OK</string>
+  <string name="login_errors_does_not_match" formatted="false">Login does not match any of our records.</string>
+  <string name="login_errors_title" formatted="false">Login error</string>
+  <string name="login_errors_unable_to_log_in" formatted="false">Unable to log in.</string>
   <string name="login_navbar_title" formatted="false">Log in</string>
   <string name="login_placeholder_email" formatted="false">Email address</string>
   <string name="login_placeholder_password" formatted="false">Password</string>
@@ -423,6 +428,8 @@
   <string name="login_tout_disclaimer_read_more" formatted="false">Read more</string>
   <string name="login_tout_disclaimer_we_never_post_anything_without_permission" formatted="false">We\'ll never post anything without your permission.</string>
   <string name="login_tout_errors_button_ok" formatted="false">OK</string>
+  <string name="login_tout_errors_facebook_authorization_exception_button" formatted="false">Let\'s try that again</string>
+  <string name="login_tout_errors_facebook_authorization_exception_message" formatted="false">We\'re having some trouble getting you logged in.</string>
   <string name="login_tout_errors_facebook_generic_error_message" formatted="false">Couldn’t log into Facebook.</string>
   <string name="login_tout_errors_facebook_generic_error_title" formatted="false">Facebook login</string>
   <string name="login_tout_errors_facebook_invalid_token_message" formatted="false">There was a problem logging you in with Facebook.
@@ -449,6 +456,7 @@ This is commonly fixed by going to iOS Settings > Facebook and toggling access f
   <string name="login_tout_message_creator_intent_traditional_login_button" formatted="false">Log in</string>
   <string name="login_tout_message_creator_intent_traditional_signup_button" formatted="false">Sign up</string>
   <string name="login_tout_message_creator_intent_traditional_title" formatted="false">Use your email address:</string>
+  <string name="login_tout_navbar_title" formatted="false">Log in or sign up</string>
   <string name="login_tout_save_intent_title" formatted="false">Log in to star this project and we’ll remind you about it before it ends.</string>
   <string name="login_tout_save_intent_traditional_login_button" formatted="false">Log in</string>
   <string name="login_tout_save_intent_traditional_signup_button" formatted="false">Sign up</string>
@@ -635,10 +643,13 @@ We\'d appreciate it!</string>
   <string name="search_by_creator" formatted="false">by %{creator_name}</string>
   <string name="search_most_popular" formatted="false">Most Popular</string>
   <string name="signup_button" formatted="false">Sign up</string>
+  <string name="signup_button_email" formatted="false">Sign up with email</string>
   <string name="signup_error_something_wrong" formatted="false">Something went wrong.</string>
+  <string name="signup_error_title" formatted="false">Sign up error</string>
   <string name="signup_input_fields_email" formatted="false">Email</string>
   <string name="signup_input_fields_full_name" formatted="false">Full name</string>
   <string name="signup_input_fields_password" formatted="false">Password</string>
+  <string name="signup_input_fields_password_min_characters" formatted="false">Password (minimum 6 characters)</string>
   <string name="signup_navbar_title" formatted="false">Sign up</string>
   <string name="signup_newsletter_full" formatted="false">Receive our weekly newsletter and other occasional updates.</string>
   <string name="social_buttons_cancel" formatted="false">Cancel</string>
@@ -702,6 +713,7 @@ We\'d appreciate it!</string>
   <string name="two_factor_buttons_resend" formatted="false">Resend</string>
   <string name="two_factor_buttons_submit" formatted="false">Submit</string>
   <string name="two_factor_code_placeholder" formatted="false">Enter code</string>
+  <string name="two_factor_error_message" formatted="false">The code provided does not match.</string>
   <string name="two_factor_message" formatted="false">Please enter your verification code to continue.</string>
   <string name="two_factor_title" formatted="false">Verify</string>
   <string name="update_comments_creator" formatted="false">Creator</string>

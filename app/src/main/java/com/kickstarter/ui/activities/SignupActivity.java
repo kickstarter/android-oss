@@ -38,7 +38,7 @@ public final class SignupActivity extends BaseActivity<SignupViewModel> {
   @Bind(R.id.disclaimer) TextView disclaimerTextView;
 
   @BindString(R.string.signup_button) String signUpString;
-  @BindString(R.string.___Sign_up_error) String errorTitleString;
+  @BindString(R.string.signup_error_title) String errorTitleString;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {

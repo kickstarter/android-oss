@@ -31,7 +31,7 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel> {
   public @Bind(R.id.login_button) Button loginButton;
   public @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
 
-  @BindString(R.string.___The_code_provided_does_not_match) String codeMismatchString;
+  @BindString(R.string.two_factor_error_message) String codeMismatchString;
   @BindString(R.string.login_errors_unable_to_log_in) String unableToLoginString;
   @BindString(R.string.two_factor_title) String verifyString;
   @BindString(R.string.login_errors_title) String errorTitleString;

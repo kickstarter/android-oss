@@ -32,7 +32,7 @@ public class FacebookConfirmationActivity extends BaseActivity<FacebookConfirmat
   protected @Bind(R.id.newsletter_switch) SwitchCompat newsletterSwitch;
 
   protected @BindString(R.string.facebook_confirmation_navbar_title) String signUpWithFacebookString;
-  protected @BindString(R.string.signup_error_something_wrong) String errorTitleString;
+  protected @BindString(R.string.signup_error_title) String errorTitleString;
 
   private boolean forward;
 

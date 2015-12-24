@@ -1,5 +1,6 @@
 package com.kickstarter.ui.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -83,7 +84,7 @@ public final class LoggedInMenuAdapter extends BaseAdapter {
     return rows.size();
   }
 
-  public Class<?> getActivityClassForRow(final int row) {
+  public Class<? extends Activity> getActivityClassForRow(final int row) {
     switch (row) {
       case ROW_PROFILE:
         return  ProfileActivity.class;
@@ -92,7 +93,7 @@ public final class LoggedInMenuAdapter extends BaseAdapter {
       case ROW_HELP:
        return HelpActivity.class;
       default:
-        return Class.class;
+        return Activity.class;
     }
   }
 }

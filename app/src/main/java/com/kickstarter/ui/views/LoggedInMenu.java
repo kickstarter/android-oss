@@ -1,6 +1,5 @@
 package com.kickstarter.ui.views;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -10,6 +9,7 @@ import android.widget.ListPopupWindow;
 
 import com.kickstarter.R;
 import com.kickstarter.models.User;
+import com.kickstarter.ui.activities.HelpActivity;
 import com.kickstarter.ui.adapters.LoggedInMenuAdapter;
 
 public class LoggedInMenu extends ListPopupWindow {
@@ -29,10 +29,12 @@ public class LoggedInMenu extends ListPopupWindow {
 
     setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) -> {
       dismiss();
-      final Activity activity = (Activity) context;
 
-      final Intent profileIntent = new Intent(activity, adapter.getActivityClassForRow(position));
-      activity.startActivity(profileIntent);
+      final Intent intent = new Intent(context, adapter.getActivityClassForRow(position));
+      if (position == 1) {
+        intent.putExtra(context.getString(R.string.intent_help_type), HelpActivity.HELP_TYPE_FAQ);
+      }
+      context.startActivity(intent);
 
 //      switch (position) {
 //        case LoggedInMenuAdapter.ROW_PROFILE:/**/

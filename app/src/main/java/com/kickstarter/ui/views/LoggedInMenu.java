@@ -31,7 +31,7 @@ public class LoggedInMenu extends ListPopupWindow {
       dismiss();
 
       final Intent intent = new Intent(context, adapter.getActivityClassForRow(position));
-      if (position == 1) {
+      if (position == 2) {
         intent.putExtra(context.getString(R.string.intent_help_type), HelpActivity.HELP_TYPE_FAQ);
       }
       context.startActivity(intent);

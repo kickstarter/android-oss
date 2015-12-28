@@ -27,9 +27,9 @@ public final class ResetPasswordActivity extends BaseActivity<ResetPasswordViewM
   @Bind (R.id.reset_password_button) Button resetPasswordButton;
   @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
 
-  @BindString(R.string.___Forgot_your_password) String forgotPasswordString;
-  @BindString(R.string.___Sorry_we_do_not_know_that_email_address_try_again) String errorMessageString;
-  @BindString(R.string.___Oops) String errorTitleString;
+  @BindString(R.string.forgot_password_title) String forgotPasswordString;
+  @BindString(R.string.forgot_password_error) String errorMessageString;
+  @BindString(R.string.general_error_oops) String errorTitleString;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -39,29 +39,25 @@ public final class ResetPasswordActivity extends BaseActivity<ResetPasswordViewM
     ButterKnife.bind(this);
     loginToolbar.setTitle(forgotPasswordString);
 
-    addSubscription(
-      viewModel.outputs.resetSuccess()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(__ -> onResetSuccess())
-    );
+    viewModel.outputs.resetSuccess()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> onResetSuccess());
 
-    addSubscription(
-      viewModel.outputs.isFormSubmitting()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this::setFormDisabled)
-    );
+    viewModel.outputs.isFormSubmitting()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::setFormDisabled);
 
-    addSubscription(
-      viewModel.outputs.isFormValid()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this::setFormEnabled)
-    );
+    viewModel.outputs.isFormValid()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::setFormEnabled);
 
-    addSubscription(
-      viewModel.errors.resetError()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(__ -> ViewUtils.showDialog(this, errorTitleString, errorMessageString))
-    );
+    viewModel.errors.resetError()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> ViewUtils.showDialog(this, errorTitleString, errorMessageString));
   }
 
   @Override

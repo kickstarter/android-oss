@@ -11,6 +11,7 @@ import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.CommentFeedActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.HelpActivity;
+import com.kickstarter.ui.activities.LoginActivity;
 import com.kickstarter.ui.activities.ManageNotificationActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.kickstarter.ui.activities.SettingsActivity;
@@ -71,6 +72,7 @@ public interface ApplicationGraph {
   void inject(KoalaTrackingClient __);
   void inject(KSWebView __);
   void inject(KSApplication __);
+  void inject(LoginActivity __);
   void inject(LoginViewModel __);
   void inject(LoginToutViewModel __);
   void inject(ManageNotificationActivity __);

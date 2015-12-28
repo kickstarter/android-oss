@@ -404,6 +404,7 @@
   <string name="invalid_api_client_alert_title" formatted="false">Please Upgrade</string>
   <string name="invalid_api_client_alert_upgrade" formatted="false">Upgrade</string>
   <string name="login_buttons_forgot_password" formatted="false">Forgot your password?</string>
+  <string name="login_buttons_forgot_password_html" formatted="false">&lt;u>Forgot your password?&lt;/u></string>
   <string name="login_buttons_log_in" formatted="false">Log in</string>
   <string name="login_buttons_log_in_email" formatted="false">Log in with email</string>
   <string name="login_buttons_one_password" formatted="false">1Password</string>
@@ -420,6 +421,7 @@
   <string name="login_tout_back_intent_traditional_login_button" formatted="false">Log in</string>
   <string name="login_tout_back_intent_traditional_signup_button" formatted="false">Sign up</string>
   <string name="login_tout_back_intent_traditional_title" formatted="false">Use your email address:</string>
+  <string name="login_tout_buttons_log_in_with_facebook" formatted="false">Log in with Facebook</string>
   <string name="login_tout_default_intent_title" formatted="false">Sign up or log in with your Facebook account or email address below:</string>
   <string name="login_tout_default_intent_traditional_login_button" formatted="false">Log in</string>
   <string name="login_tout_default_intent_traditional_signup_button" formatted="false">Sign up</string>

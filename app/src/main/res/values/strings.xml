@@ -60,7 +60,6 @@
   <string name="___Featured_in_">Featured in %1$s</string>
   <string name="___Find_friends">Find friends</string>
   <string name="___Follow">Follow</string>
-  <string name="___Forgot_your_password"><u>Forgot your password?</u></string>
   <string name="___Frequently_Asked_Questions">Frequently Asked Questions</string>
   <string name="___Friend_backs_a_project">Friend backs a project</string>
   <string name="___friend_name_backed_art_project">%1$s backed an Art project</string>
@@ -97,7 +96,6 @@
   <string name="___Kickstarter_news_and_events">Kickstarter news and events</string>
   <string name="___Launched">Launched</string>
   <string name="___Limited_left_of">Limited (%1$s left of %2$s)</string>
-  <string name="___Log_in_with_Facebook">Log in with Facebook</string>
   <string name="___Log_out">Log out</string>
   <string name="___Logged_out">Logged out</string>
   <string name="___Looking_for_more_projects">Looking for more projects? Check these out.</string>

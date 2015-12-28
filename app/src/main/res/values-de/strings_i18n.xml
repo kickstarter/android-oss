@@ -404,6 +404,7 @@
   <string name="invalid_api_client_alert_title" formatted="false">Bitte aktualisieren</string>
   <string name="invalid_api_client_alert_upgrade" formatted="false">Aktualisierung</string>
   <string name="login_buttons_forgot_password" formatted="false">Passwort vergessen?</string>
+  <string name="login_buttons_forgot_password_html" formatted="false">&lt;u>Forgot your password?&lt;/u></string>
   <string name="login_buttons_log_in" formatted="false">Anmelden</string>
   <string name="login_buttons_log_in_email" formatted="false">Log in with email</string>
   <string name="login_buttons_one_password" formatted="false">1Password</string>
@@ -420,6 +421,7 @@
   <string name="login_tout_back_intent_traditional_login_button" formatted="false">Anmelden</string>
   <string name="login_tout_back_intent_traditional_signup_button" formatted="false">Registrieren</string>
   <string name="login_tout_back_intent_traditional_title" formatted="false">Benutze deine E-Mail-Adresse:</string>
+  <string name="login_tout_buttons_log_in_with_facebook" formatted="false">Log in with Facebook</string>
   <string name="login_tout_default_intent_title" formatted="false">Registriere dich oder melde dich mit deinem Facebook-Konto oder deiner E-Mail-Adresse hier an:</string>
   <string name="login_tout_default_intent_traditional_login_button" formatted="false">Anmelden</string>
   <string name="login_tout_default_intent_traditional_signup_button" formatted="false">Registrieren</string>

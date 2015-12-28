@@ -389,6 +389,9 @@
         }
       },
       "login_tout": {
+        "buttons": {
+          "log_in_with_facebook": "Log in with Facebook"
+        },
         "help_sheet": {
           "how_it_works": "How Kickstarter works",
           "contact": "Contact",
@@ -471,6 +474,7 @@
           "log_in": "Log in",
           "log_in_email": "Log in with email",
           "forgot_password": "Forgot your password?",
+          "forgot_password_html": "<u>Forgot your password?</u>",
           "one_password": "1Password"
         },
         "placeholder_email": "Email address",
@@ -1638,6 +1642,9 @@
         }
       },
       "login_tout": {
+        "buttons": {
+          "log_in_with_facebook": "Log in with Facebook"
+        },
         "help_sheet": {
           "how_it_works": "Wie Kickstarter funktioniert",
           "contact": "Kontakt",
@@ -1720,6 +1727,7 @@
           "log_in": "Anmelden",
           "log_in_email": "Log in with email",
           "forgot_password": "Passwort vergessen?",
+          "forgot_password_html": "<u>Forgot your password?</u>",
           "one_password": "1Password"
         },
         "placeholder_email": "E-Mail-Adresse",
@@ -2887,6 +2895,9 @@
         }
       },
       "login_tout": {
+        "buttons": {
+          "log_in_with_facebook": "Log in with Facebook"
+        },
         "help_sheet": {
           "how_it_works": "Cómo funciona Kickstarter",
           "contact": "Contacto",
@@ -2969,6 +2980,7 @@
           "log_in": "Iniciar sesión",
           "log_in_email": "Log in with email",
           "forgot_password": "¿Olvidaste tu contraseña?",
+          "forgot_password_html": "<u>Forgot your password?</u>",
           "one_password": "1Password"
         },
         "placeholder_email": "Dirección de correo electrónico",
@@ -3816,12 +3828,12 @@
           },
           "status_banner": {
             "successful": "Intégralement financé !",
-            "successful_date": "Successfully funded %{date}",
+            "successful_date": "Intégralement financé le %{date}",
             "funding_unsuccessful_date": "Non financé %{date}",
             "canceled": "Financement annulé",
-            "canceled_date": "Funding canceled %{date}",
+            "canceled_date": "Campagne annulée le %{date}",
             "suspended": "Financement suspendu %{date}",
-            "suspended_date": "Funding suspended %{date}"
+            "suspended_date": "Campagne suspendue le %{date}"
           },
           "stats": {
             "backers": "contributeurs",
@@ -4043,7 +4055,7 @@
         },
         "projects": {
           "time_left_to_go": "Plus que %{time_left}",
-          "created_projects": "Created projects",
+          "created_projects": "Mes projets",
           "backed_projects": "Projets soutenus",
           "backed_project_count_projects": {
             "zero": "0 PROJETS SOUTENUS",
@@ -4057,10 +4069,10 @@
             "button": "Découvrez des projets"
           },
           "status": {
-            "canceled": "Canceled",
-            "successful": "Successful",
-            "suspended": "Suspended",
-            "unsuccessful": "Unsuccessful"
+            "canceled": "Annulé",
+            "successful": "Intégralement financé",
+            "suspended": "Suspendu",
+            "unsuccessful": "Objectif de financement non atteint"
           }
         },
         "settings": {
@@ -4136,6 +4148,9 @@
         }
       },
       "login_tout": {
+        "buttons": {
+          "log_in_with_facebook": "Connexion Facebook"
+        },
         "help_sheet": {
           "how_it_works": "Comment fonctionne Kickstarter",
           "contact": "Contact",
@@ -4183,8 +4198,8 @@
         "errors": {
           "facebook": {
             "authorization_exception": {
-              "message": "We're having some trouble getting you logged in.",
-              "button": "Let's try that again"
+              "message": "Nous avons du mal à ouvrir votre compte.",
+              "button": "Réessayons"
             },
             "settings_disabled": {
               "title": "Autorisation refusée",
@@ -4208,7 +4223,7 @@
           "we_never_post_anything_without_permission": "Rien ne sera publié sans votre permission.",
           "read_more": "En savoir plus"
         },
-        "navbar_title": "Log in or sign up"
+        "navbar_title": "Connexion ou inscription"
       },
       "login": {
         "navbar_title": "Connexion",
@@ -4216,8 +4231,9 @@
         "detail": "Est-ce une nouvelle paire de chaussures ? Ah non ? Pourtant, elles sont jolies.",
         "buttons": {
           "log_in": "Connexion",
-          "log_in_email": "Log in with email",
+          "log_in_email": "Connexion avec votre adresse e-mail",
           "forgot_password": "Mot de passe oublié ?",
+          "forgot_password_html": "<u>Forgot your password?</u>",
           "one_password": "1Password"
         },
         "placeholder_email": "Adresse e-mail",
@@ -4226,9 +4242,9 @@
           "button": {
             "ok": "OK"
           },
-          "does_not_match": "Login does not match any of our records.",
-          "title": "Login error",
-          "unable_to_log_in": "Unable to log in."
+          "does_not_match": "Vos informations de connexion ne correspondent pas à nos enregistrements.",
+          "title": "Erreur de connexion",
+          "unable_to_log_in": "Connexion impossible."
         }
       },
       "forgot_password": {
@@ -4247,15 +4263,15 @@
           "full_name": "Nom complet",
           "email": "E-mail",
           "password": "Mot de passe",
-          "password_min_characters": "Password (minimum 6 characters)"
+          "password_min_characters": "Mot de passe (6 caractères minimum)"
         },
         "navbar_title": "Inscription",
         "newsletter_full": "Découvrez de nouveaux projets grâce à notre lettre d'informations hebdomadaire.",
         "button": "Inscription",
-        "button_email": "Sign up with email",
+        "button_email": "Inscription avec votre adresse e-mail",
         "error": {
           "something_wrong": "Un erreur s'est produite.",
-          "title": "Sign up error"
+          "title": "Erreur d'inscription"
         }
       },
       "facebook_confirmation": {
@@ -4278,7 +4294,7 @@
           "resend": "Renvoyer"
         },
         "error": {
-          "message": "The code provided does not match."
+          "message": "Le code fourni ne correspond pas."
         }
       },
       "project": {
@@ -4818,7 +4834,7 @@
         "switch_toggle_on": "ON",
         "switch_toggle_off": "OFF",
         "error": {
-          "oops": "Oops!",
+          "oops": "Oups !",
           "something_wrong": "Un erreur s'est produite."
         },
         "alert": {
@@ -5385,6 +5401,9 @@
         }
       },
       "login_tout": {
+        "buttons": {
+          "log_in_with_facebook": "Log in with Facebook"
+        },
         "help_sheet": {
           "how_it_works": "How Kickstarter works",
           "contact": "Contact",
@@ -5467,6 +5486,7 @@
           "log_in": "Log in",
           "log_in_email": "Log in with email",
           "forgot_password": "Forgot your password?",
+          "forgot_password_html": "<u>Forgot your password?</u>",
           "one_password": "1Password"
         },
         "placeholder_email": "Email address",
@@ -6272,7 +6292,6 @@
     "i18n_discovery_touts": true,
     "i18n_start_tout": true,
     "responsive_manage": true,
-    "manage_pledge_ccs": true,
     "password_reset_banner": true,
     "play_page": true,
     "watch_page": true,
@@ -6400,8 +6419,8 @@
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
     "native_iphone_horiz_vs_vert": "control",
-    "recs_thanks_combo_inputs": "collaborative_backings_v2",
-    "recs_hp_combo_v1": "combo_v1",
+    "recs_thanks_combo_inputs": "combo_inputs",
+    "recs_hp_combo_v1": "collaborative_backings_v2",
     "video_autoplay_3": "no_autoplay"
   },
   "stripe": {

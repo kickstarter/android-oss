@@ -309,12 +309,12 @@
   <string name="discovery_baseball_card_stats_convert_from_pledged_of_goal" formatted="false">Conversion de %{pledged} engagés pour un objectif de %{goal}</string>
   <string name="discovery_baseball_card_stats_pledged_of_goal" formatted="false">sur %{goal}</string>
   <string name="discovery_baseball_card_status_banner_canceled" formatted="false">Financement annulé</string>
-  <string name="discovery_baseball_card_status_banner_canceled_date" formatted="false">Funding canceled %{date}</string>
+  <string name="discovery_baseball_card_status_banner_canceled_date" formatted="false">Campagne annulée le %{date}</string>
   <string name="discovery_baseball_card_status_banner_funding_unsuccessful_date" formatted="false">Non financé %{date}</string>
   <string name="discovery_baseball_card_status_banner_successful" formatted="false">Intégralement financé !</string>
-  <string name="discovery_baseball_card_status_banner_successful_date" formatted="false">Successfully funded %{date}</string>
+  <string name="discovery_baseball_card_status_banner_successful_date" formatted="false">Intégralement financé le %{date}</string>
   <string name="discovery_baseball_card_status_banner_suspended" formatted="false">Financement suspendu %{date}</string>
-  <string name="discovery_baseball_card_status_banner_suspended_date" formatted="false">Funding suspended %{date}</string>
+  <string name="discovery_baseball_card_status_banner_suspended_date" formatted="false">Campagne suspendue le %{date}</string>
   <string name="discovery_baseball_card_time_left_to_go" formatted="false">%{time_left} restant(e)s</string>
   <string name="discovery_category" formatted="false">Catégorie</string>
   <string name="discovery_empty_states_saved_logged_in_button" formatted="false">Découvrez des projets</string>
@@ -380,7 +380,7 @@
   <string name="forgot_password_title" formatted="false">Mot de passe oublié ?</string>
   <string name="forgot_password_we_sent_an_email_to_email_address_with_instructions_to_reset_your_password" formatted="false">Nous avons envoyé un e-mail à %{email} contenant les instructions nécessaires pour réinitialiser votre mot de passe.</string>
   <string name="general_alert_buttons_ok" formatted="false">OK</string>
-  <string name="general_error_oops" formatted="false">Oops!</string>
+  <string name="general_error_oops" formatted="false">Oups !</string>
   <string name="general_error_something_wrong" formatted="false">Un erreur s\'est produite.</string>
   <string name="general_loading" formatted="false">Chargement en cours...</string>
   <string name="general_navigation_accessibility_button_close_label" formatted="false">Fermer</string>
@@ -404,14 +404,15 @@
   <string name="invalid_api_client_alert_title" formatted="false">Veuillez mettre à jour</string>
   <string name="invalid_api_client_alert_upgrade" formatted="false">Mise à jour</string>
   <string name="login_buttons_forgot_password" formatted="false">Mot de passe oublié ?</string>
+  <string name="login_buttons_forgot_password_html" formatted="false">&lt;u>Forgot your password?&lt;/u></string>
   <string name="login_buttons_log_in" formatted="false">Connexion</string>
-  <string name="login_buttons_log_in_email" formatted="false">Log in with email</string>
+  <string name="login_buttons_log_in_email" formatted="false">Connexion avec votre adresse e-mail</string>
   <string name="login_buttons_one_password" formatted="false">1Password</string>
   <string name="login_detail" formatted="false">Est-ce une nouvelle paire de chaussures ? Ah non ? Pourtant, elles sont jolies.</string>
   <string name="login_errors_button_ok" formatted="false">OK</string>
-  <string name="login_errors_does_not_match" formatted="false">Login does not match any of our records.</string>
-  <string name="login_errors_title" formatted="false">Login error</string>
-  <string name="login_errors_unable_to_log_in" formatted="false">Unable to log in.</string>
+  <string name="login_errors_does_not_match" formatted="false">Vos informations de connexion ne correspondent pas à nos enregistrements.</string>
+  <string name="login_errors_title" formatted="false">Erreur de connexion</string>
+  <string name="login_errors_unable_to_log_in" formatted="false">Connexion impossible.</string>
   <string name="login_navbar_title" formatted="false">Connexion</string>
   <string name="login_placeholder_email" formatted="false">Adresse e-mail</string>
   <string name="login_placeholder_password" formatted="false">Mot de passe</string>
@@ -420,6 +421,7 @@
   <string name="login_tout_back_intent_traditional_login_button" formatted="false">Connexion</string>
   <string name="login_tout_back_intent_traditional_signup_button" formatted="false">Inscription</string>
   <string name="login_tout_back_intent_traditional_title" formatted="false">Utilisez votre adresse e-mail :</string>
+  <string name="login_tout_buttons_log_in_with_facebook" formatted="false">Connexion Facebook</string>
   <string name="login_tout_default_intent_title" formatted="false">Inscrivez-vous ou connectez-vous ci-dessous avec votre compte Facebook ou votre adresse e-mail  :</string>
   <string name="login_tout_default_intent_traditional_login_button" formatted="false">Connexion</string>
   <string name="login_tout_default_intent_traditional_signup_button" formatted="false">Inscription</string>
@@ -428,12 +430,12 @@
   <string name="login_tout_disclaimer_read_more" formatted="false">En savoir plus</string>
   <string name="login_tout_disclaimer_we_never_post_anything_without_permission" formatted="false">Rien ne sera publié sans votre permission.</string>
   <string name="login_tout_errors_button_ok" formatted="false">OK</string>
-  <string name="login_tout_errors_facebook_authorization_exception_button" formatted="false">Let\'s try that again</string>
-  <string name="login_tout_errors_facebook_authorization_exception_message" formatted="false">We\'re having some trouble getting you logged in.</string>
+  <string name="login_tout_errors_facebook_authorization_exception_button" formatted="false">Réessayons</string>
+  <string name="login_tout_errors_facebook_authorization_exception_message" formatted="false">Nous avons du mal à ouvrir votre compte.</string>
   <string name="login_tout_errors_facebook_generic_error_message" formatted="false">La connexion Facebook a échoué.</string>
   <string name="login_tout_errors_facebook_generic_error_title" formatted="false">Connexion Facebook</string>
-  <string name="login_tout_errors_facebook_invalid_token_message" formatted="false">Un problème est survenu pendant la connexion Facebook.
-
+  <string name="login_tout_errors_facebook_invalid_token_message" formatted="false">Un problème est survenu pendant la connexion Facebook.\n
+\n
 Ce problème peut généralement être résolu en accédant à Réglages iOS > Facebook et en autorisant l\'accès pour Kickstarter.</string>
   <string name="login_tout_errors_facebook_invalid_token_title" formatted="false">Connexion Facebook</string>
   <string name="login_tout_errors_facebook_settings_disabled_message" formatted="false">On dirait que vous avez refusé à Kickstarter l\'accès à votre compte Facebook. Veuillez accéder à Paramètres > Facebook pour autoriser l\'accès.</string>
@@ -456,7 +458,7 @@ Ce problème peut généralement être résolu en accédant à Réglages iOS > F
   <string name="login_tout_message_creator_intent_traditional_login_button" formatted="false">Connexion</string>
   <string name="login_tout_message_creator_intent_traditional_signup_button" formatted="false">Inscription</string>
   <string name="login_tout_message_creator_intent_traditional_title" formatted="false">Utilisez votre adresse e-mail :</string>
-  <string name="login_tout_navbar_title" formatted="false">Log in or sign up</string>
+  <string name="login_tout_navbar_title" formatted="false">Connexion ou inscription</string>
   <string name="login_tout_save_intent_title" formatted="false">Connectez-vous pour ajouter ce projet à votre liste de projets préférés et nous vous enverrons un rappel avant la fin de sa campagne.</string>
   <string name="login_tout_save_intent_traditional_login_button" formatted="false">Connexion</string>
   <string name="login_tout_save_intent_traditional_signup_button" formatted="false">Inscription</string>
@@ -491,13 +493,13 @@ Ce problème peut généralement être résolu en accédant à Réglages iOS > F
   <string name="profile_projects_backed_project_count_projects_two" formatted="false">2 PROJETS SOUTENUS</string>
   <string name="profile_projects_backed_project_count_projects_zero" formatted="false">0 PROJETS SOUTENUS</string>
   <string name="profile_projects_backed_projects" formatted="false">Projets soutenus</string>
-  <string name="profile_projects_created_projects" formatted="false">Created projects</string>
+  <string name="profile_projects_created_projects" formatted="false">Mes projets</string>
   <string name="profile_projects_empty_state_button" formatted="false">Découvrez des projets</string>
   <string name="profile_projects_empty_state_message" formatted="false">Vous n\'avez pas encore soutenu de projets. On change ça ?</string>
-  <string name="profile_projects_status_canceled" formatted="false">Canceled</string>
-  <string name="profile_projects_status_successful" formatted="false">Successful</string>
-  <string name="profile_projects_status_suspended" formatted="false">Suspended</string>
-  <string name="profile_projects_status_unsuccessful" formatted="false">Unsuccessful</string>
+  <string name="profile_projects_status_canceled" formatted="false">Annulé</string>
+  <string name="profile_projects_status_successful" formatted="false">Intégralement financé</string>
+  <string name="profile_projects_status_suspended" formatted="false">Suspendu</string>
+  <string name="profile_projects_status_unsuccessful" formatted="false">Objectif de financement non atteint</string>
   <string name="profile_projects_time_left_to_go" formatted="false">Plus que %{time_left}</string>
   <string name="profile_settings_about_contact" formatted="false">Contact</string>
   <string name="profile_settings_about_cookie" formatted="false">Politique en matière de cookies</string>
@@ -524,8 +526,8 @@ Ce problème peut généralement être résolu en accédant à Réglages iOS > F
   <string name="profile_settings_newsletter_promo" formatted="false">Nouvelles et évènements Kickstarter</string>
   <string name="profile_settings_newsletter_title" formatted="false">Lettres d\'information</string>
   <string name="profile_settings_newsletter_weekly" formatted="false">Nos coups de cœur</string>
-  <string name="profile_settings_rating_message" formatted="false">Merci d\'utiliser l\'application Kickstarter.
-Auriez-vous une minute pour évaluer votre expérience ?
+  <string name="profile_settings_rating_message" formatted="false">Merci d\'utiliser l\'application Kickstarter.\n
+Auriez-vous une minute pour évaluer votre expérience ?\n
 Nous vous en serions très reconnaissants !</string>
   <string name="profile_settings_rating_option_no_thanks" formatted="false">Non, merci</string>
   <string name="profile_settings_rating_option_rate_now" formatted="false">Évaluez l\'application</string>
@@ -559,10 +561,10 @@ Nous vous en serions très reconnaissants !</string>
   <string name="project_checkout_share_buttons_tweet" formatted="false">Twitter</string>
   <string name="project_checkout_share_exclamation" formatted="false">Félicitations !</string>
   <string name="project_checkout_share_link_OK" formatted="false">OK</string>
-  <string name="project_checkout_share_link_the_project_url_has_been_copied_to_your_clipboard" formatted="false">L\'URL du projet a été copiée dans votre presse-papier :
-
+  <string name="project_checkout_share_link_the_project_url_has_been_copied_to_your_clipboard" formatted="false">L\'URL du projet a été copiée dans votre presse-papier :\n
+\n
 %{project_url}</string>
-  <string name="project_checkout_share_link_the_update_url_has_been_copied_to_your_clipboard" formatted="false">L\'URL de l\'actu a été copiée dans votre presse-papier :
+  <string name="project_checkout_share_link_the_update_url_has_been_copied_to_your_clipboard" formatted="false">L\'URL de l\'actu a été copiée dans votre presse-papier :\n
 %{update_url}</string>
   <string name="project_checkout_share_title_via_kickstarter" formatted="false">%{project_or_update_title}, via Kickstarter</string>
   <string name="project_checkout_share_twitter_I_just_backed_project_on_kickstarter" formatted="false">Je viens de soutenir le projet %{project_name} sur @Kickstarter</string>
@@ -641,13 +643,13 @@ Nous vous en serions très reconnaissants !</string>
   <string name="search_by_creator" formatted="false">par %{creator_name}</string>
   <string name="search_most_popular" formatted="false">Les tendances</string>
   <string name="signup_button" formatted="false">Inscription</string>
-  <string name="signup_button_email" formatted="false">Sign up with email</string>
+  <string name="signup_button_email" formatted="false">Inscription avec votre adresse e-mail</string>
   <string name="signup_error_something_wrong" formatted="false">Un erreur s\'est produite.</string>
-  <string name="signup_error_title" formatted="false">Sign up error</string>
+  <string name="signup_error_title" formatted="false">Erreur d\'inscription</string>
   <string name="signup_input_fields_email" formatted="false">E-mail</string>
   <string name="signup_input_fields_full_name" formatted="false">Nom complet</string>
   <string name="signup_input_fields_password" formatted="false">Mot de passe</string>
-  <string name="signup_input_fields_password_min_characters" formatted="false">Password (minimum 6 characters)</string>
+  <string name="signup_input_fields_password_min_characters" formatted="false">Mot de passe (6 caractères minimum)</string>
   <string name="signup_navbar_title" formatted="false">Inscription</string>
   <string name="signup_newsletter_full" formatted="false">Découvrez de nouveaux projets grâce à notre lettre d\'informations hebdomadaire.</string>
   <string name="social_buttons_cancel" formatted="false">Annuler</string>
@@ -688,12 +690,12 @@ Nous vous en serions très reconnaissants !</string>
   <string name="social_public_comment" formatted="false">Commentaire public</string>
   <string name="social_update" formatted="false">Actu</string>
   <string name="social_update_number" formatted="false">Actu no. %{update_number}</string>
-  <string name="support_email_body" formatted="false">Comment pouvons-nous vous aider ? Merci d\'être aussi précis que possible.
-
-
-
-
---------
+  <string name="support_email_body" formatted="false">Comment pouvons-nous vous aider ? Merci d\'être aussi précis que possible.\n
+\n
+\n
+\n
+\n
+--------\n
 </string>
   <string name="support_email_button_ok" formatted="false">OK</string>
   <string name="support_email_noemail_message" formatted="false">On dirait que vous n\'avez pas de compte e-mail sur votre appareil. Veuillez nous contacter à l\'adresse app@kickstarter.com.</string>
@@ -711,7 +713,7 @@ Nous vous en serions très reconnaissants !</string>
   <string name="two_factor_buttons_resend" formatted="false">Renvoyer</string>
   <string name="two_factor_buttons_submit" formatted="false">Envoyer</string>
   <string name="two_factor_code_placeholder" formatted="false">Saisir le code</string>
-  <string name="two_factor_error_message" formatted="false">The code provided does not match.</string>
+  <string name="two_factor_error_message" formatted="false">Le code fourni ne correspond pas.</string>
   <string name="two_factor_message" formatted="false">Veuillez saisir votre code de vérification.</string>
   <string name="two_factor_title" formatted="false">Vérifier</string>
   <string name="update_comments_creator" formatted="false">Créateur</string>

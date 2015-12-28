@@ -404,6 +404,7 @@
   <string name="invalid_api_client_alert_title" formatted="false">Please Upgrade</string>
   <string name="invalid_api_client_alert_upgrade" formatted="false">Upgrade</string>
   <string name="login_buttons_forgot_password" formatted="false">Forgot your password?</string>
+  <string name="login_buttons_forgot_password_html" formatted="false">&lt;u>Forgot your password?&lt;/u></string>
   <string name="login_buttons_log_in" formatted="false">Log in</string>
   <string name="login_buttons_log_in_email" formatted="false">Log in with email</string>
   <string name="login_buttons_one_password" formatted="false">1Password</string>
@@ -420,6 +421,7 @@
   <string name="login_tout_back_intent_traditional_login_button" formatted="false">Log in</string>
   <string name="login_tout_back_intent_traditional_signup_button" formatted="false">Sign up</string>
   <string name="login_tout_back_intent_traditional_title" formatted="false">Use your email address:</string>
+  <string name="login_tout_buttons_log_in_with_facebook" formatted="false">Log in with Facebook</string>
   <string name="login_tout_default_intent_title" formatted="false">Sign up or log in with your Facebook account or email address below:</string>
   <string name="login_tout_default_intent_traditional_login_button" formatted="false">Log in</string>
   <string name="login_tout_default_intent_traditional_signup_button" formatted="false">Sign up</string>
@@ -432,8 +434,8 @@
   <string name="login_tout_errors_facebook_authorization_exception_message" formatted="false">We\'re having some trouble getting you logged in.</string>
   <string name="login_tout_errors_facebook_generic_error_message" formatted="false">Couldn’t log into Facebook.</string>
   <string name="login_tout_errors_facebook_generic_error_title" formatted="false">Facebook login</string>
-  <string name="login_tout_errors_facebook_invalid_token_message" formatted="false">There was a problem logging you in with Facebook.
-
+  <string name="login_tout_errors_facebook_invalid_token_message" formatted="false">There was a problem logging you in with Facebook.\n
+\n
 This is commonly fixed by going to iOS Settings > Facebook and toggling access for Kickstarter.</string>
   <string name="login_tout_errors_facebook_invalid_token_title" formatted="false">Facebook login</string>
   <string name="login_tout_errors_facebook_settings_disabled_message" formatted="false">It seems that you have denied Kickstarter access to your Facebook account. Please go to Settings > Facebook and toggle access.</string>
@@ -493,7 +495,7 @@ This is commonly fixed by going to iOS Settings > Facebook and toggling access f
   <string name="profile_projects_backed_projects" formatted="false">Backed projects</string>
   <string name="profile_projects_created_projects" formatted="false">Created projects</string>
   <string name="profile_projects_empty_state_button" formatted="false">Discover projects</string>
-  <string name="profile_projects_empty_state_message" formatted="false">You haven’t backed any projects yet.
+  <string name="profile_projects_empty_state_message" formatted="false">You haven’t backed any projects yet.\n
 Let’s change that!</string>
   <string name="profile_projects_status_canceled" formatted="false">Canceled</string>
   <string name="profile_projects_status_successful" formatted="false">Successful</string>
@@ -525,8 +527,8 @@ Let’s change that!</string>
   <string name="profile_settings_newsletter_promo" formatted="false">Kickstarter news and events</string>
   <string name="profile_settings_newsletter_title" formatted="false">Newsletters</string>
   <string name="profile_settings_newsletter_weekly" formatted="false">Projects We Love</string>
-  <string name="profile_settings_rating_message" formatted="false">Thanks for using the Kickstarter app.
-If you have a moment, would you mind rating your experience?
+  <string name="profile_settings_rating_message" formatted="false">Thanks for using the Kickstarter app.\n
+If you have a moment, would you mind rating your experience?\n
 We\'d appreciate it!</string>
   <string name="profile_settings_rating_option_no_thanks" formatted="false">No, Thanks</string>
   <string name="profile_settings_rating_option_rate_now" formatted="false">Rate It Now</string>
@@ -560,11 +562,11 @@ We\'d appreciate it!</string>
   <string name="project_checkout_share_buttons_tweet" formatted="false">Tweet</string>
   <string name="project_checkout_share_exclamation" formatted="false">Woo-hoo!</string>
   <string name="project_checkout_share_link_OK" formatted="false">OK</string>
-  <string name="project_checkout_share_link_the_project_url_has_been_copied_to_your_clipboard" formatted="false">The project’s URL has been copied to your clipboard:
-
+  <string name="project_checkout_share_link_the_project_url_has_been_copied_to_your_clipboard" formatted="false">The project’s URL has been copied to your clipboard:\n
+\n
 %{project_url}</string>
-  <string name="project_checkout_share_link_the_update_url_has_been_copied_to_your_clipboard" formatted="false">The update’s URL has been copied to your clipboard:
-
+  <string name="project_checkout_share_link_the_update_url_has_been_copied_to_your_clipboard" formatted="false">The update’s URL has been copied to your clipboard:\n
+\n
 %{update_url}</string>
   <string name="project_checkout_share_title_via_kickstarter" formatted="false">%{project_or_update_title}, via Kickstarter</string>
   <string name="project_checkout_share_twitter_I_just_backed_project_on_kickstarter" formatted="false">I just backed %{project_name} on @Kickstarter</string>
@@ -690,12 +692,12 @@ We\'d appreciate it!</string>
   <string name="social_public_comment" formatted="false">Public comment</string>
   <string name="social_update" formatted="false">Update</string>
   <string name="social_update_number" formatted="false">Update #%{update_number}</string>
-  <string name="support_email_body" formatted="false">How can we help you? Please try to be as specific as possible.
-
-
-
-
---------
+  <string name="support_email_body" formatted="false">How can we help you? Please try to be as specific as possible.\n
+\n
+\n
+\n
+\n
+--------\n
 </string>
   <string name="support_email_button_ok" formatted="false">OK</string>
   <string name="support_email_noemail_message" formatted="false">Looks like you don’t have an e-mail account on your device. Please contact us at app@kickstarter.com.</string>

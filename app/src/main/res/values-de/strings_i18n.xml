@@ -404,6 +404,7 @@
   <string name="invalid_api_client_alert_title" formatted="false">Bitte aktualisieren</string>
   <string name="invalid_api_client_alert_upgrade" formatted="false">Aktualisierung</string>
   <string name="login_buttons_forgot_password" formatted="false">Passwort vergessen?</string>
+  <string name="login_buttons_forgot_password_html" formatted="false">&lt;u>Forgot your password?&lt;/u></string>
   <string name="login_buttons_log_in" formatted="false">Anmelden</string>
   <string name="login_buttons_log_in_email" formatted="false">Log in with email</string>
   <string name="login_buttons_one_password" formatted="false">1Password</string>
@@ -420,6 +421,7 @@
   <string name="login_tout_back_intent_traditional_login_button" formatted="false">Anmelden</string>
   <string name="login_tout_back_intent_traditional_signup_button" formatted="false">Registrieren</string>
   <string name="login_tout_back_intent_traditional_title" formatted="false">Benutze deine E-Mail-Adresse:</string>
+  <string name="login_tout_buttons_log_in_with_facebook" formatted="false">Log in with Facebook</string>
   <string name="login_tout_default_intent_title" formatted="false">Registriere dich oder melde dich mit deinem Facebook-Konto oder deiner E-Mail-Adresse hier an:</string>
   <string name="login_tout_default_intent_traditional_login_button" formatted="false">Anmelden</string>
   <string name="login_tout_default_intent_traditional_signup_button" formatted="false">Registrieren</string>
@@ -432,8 +434,8 @@
   <string name="login_tout_errors_facebook_authorization_exception_message" formatted="false">We\'re having some trouble getting you logged in.</string>
   <string name="login_tout_errors_facebook_generic_error_message" formatted="false">Anmeldung bei Facebook fehlgeschlagen.</string>
   <string name="login_tout_errors_facebook_generic_error_title" formatted="false">Facebook-Anmeldung</string>
-  <string name="login_tout_errors_facebook_invalid_token_message" formatted="false">Bei der Anmeldung mit Facebook gab es ein Problem.
-
+  <string name="login_tout_errors_facebook_invalid_token_message" formatted="false">Bei der Anmeldung mit Facebook gab es ein Problem.\n
+\n
 Für gewöhnlich kann das Problem behoben werden, indem du in den iOS Einstellungen > Facebook den Zugriff für Kickstarter erlaubst.</string>
   <string name="login_tout_errors_facebook_invalid_token_title" formatted="false">Facebook-Anmeldung</string>
   <string name="login_tout_errors_facebook_settings_disabled_message" formatted="false">Es scheint, als hättest du Kickstarter den Zugriff auf dein Facebook-Konto verweigert. Bitte gehe zu Einstellungen > Facebook und erlaube den Zugriff.</string>
@@ -524,8 +526,8 @@ Für gewöhnlich kann das Problem behoben werden, indem du in den iOS Einstellun
   <string name="profile_settings_newsletter_promo" formatted="false">Kickstarter Neuigkeiten und Events</string>
   <string name="profile_settings_newsletter_title" formatted="false">Newsletter</string>
   <string name="profile_settings_newsletter_weekly" formatted="false">Unsere Lieblingsprojekte</string>
-  <string name="profile_settings_rating_message" formatted="false">Danke für die Nutzung der Kickstarter App.
-Falls du einen Moment Zeit hast, könntest du deine Erfahrung bewerten?
+  <string name="profile_settings_rating_message" formatted="false">Danke für die Nutzung der Kickstarter App.\n
+Falls du einen Moment Zeit hast, könntest du deine Erfahrung bewerten?\n
 Wir würden uns sehr darüber freuen!</string>
   <string name="profile_settings_rating_option_no_thanks" formatted="false">Nein, Danke</string>
   <string name="profile_settings_rating_option_rate_now" formatted="false">Jetzt bewerten</string>
@@ -559,11 +561,11 @@ Wir würden uns sehr darüber freuen!</string>
   <string name="project_checkout_share_buttons_tweet" formatted="false">Twittern</string>
   <string name="project_checkout_share_exclamation" formatted="false">Super!</string>
   <string name="project_checkout_share_link_OK" formatted="false">OK</string>
-  <string name="project_checkout_share_link_the_project_url_has_been_copied_to_your_clipboard" formatted="false">Die URL des Projekts wure in die Zwischenablage kopiert:
-
+  <string name="project_checkout_share_link_the_project_url_has_been_copied_to_your_clipboard" formatted="false">Die URL des Projekts wure in die Zwischenablage kopiert:\n
+\n
 %{project_url}</string>
-  <string name="project_checkout_share_link_the_update_url_has_been_copied_to_your_clipboard" formatted="false">Die URL des Updates wurde in die Zwischenablage kopiert:
-
+  <string name="project_checkout_share_link_the_update_url_has_been_copied_to_your_clipboard" formatted="false">Die URL des Updates wurde in die Zwischenablage kopiert:\n
+\n
 %{update_url}</string>
   <string name="project_checkout_share_title_via_kickstarter" formatted="false">%{project_or_update_title}, über Kickstarter</string>
   <string name="project_checkout_share_twitter_I_just_backed_project_on_kickstarter" formatted="false">Ich unterstütze jetzt %{project_name} auf @Kickstarter</string>
@@ -689,7 +691,7 @@ Wir würden uns sehr darüber freuen!</string>
   <string name="social_public_comment" formatted="false">Öffentlicher Kommentar</string>
   <string name="social_update" formatted="false">Update</string>
   <string name="social_update_number" formatted="false">Update Nr. %{update_number}</string>
-  <string name="support_email_body" formatted="false">Wie können wir dir helfen? Mache deine Angaben bitte so genau wie möglich.
+  <string name="support_email_body" formatted="false">Wie können wir dir helfen? Mache deine Angaben bitte so genau wie möglich.\n
 </string>
   <string name="support_email_button_ok" formatted="false">OK</string>
   <string name="support_email_noemail_message" formatted="false">Es sieht so aus, als hättest du keinen E-Mail-Account auf deinem Gerät. Bitte kontaktiere uns unter app@kickstarter.com.</string>

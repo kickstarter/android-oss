@@ -296,6 +296,7 @@
         },
         "projects": {
           "time_left_to_go": "%{time_left} to go",
+          "created_projects": "Created projects",
           "backed_projects": "Backed projects",
           "backed_project_count_projects": {
             "zero": "BACKED 0 PROJECTS",
@@ -307,6 +308,12 @@
           "empty_state": {
             "message": "You haven’t backed any projects yet.\nLet’s change that!",
             "button": "Discover projects"
+          },
+          "status": {
+            "canceled": "Canceled",
+            "successful": "Successful",
+            "suspended": "Suspended",
+            "unsuccessful": "Unsuccessful"
           }
         },
         "settings": {
@@ -428,6 +435,10 @@
         },
         "errors": {
           "facebook": {
+            "authorization_exception": {
+              "message": "We're having some trouble getting you logged in.",
+              "button": "Let's try that again"
+            },
             "settings_disabled": {
               "title": "Permission denied",
               "message": "It seems that you have denied Kickstarter access to your Facebook account. Please go to Settings > Facebook and toggle access."
@@ -449,7 +460,8 @@
           "by_signing_up_you_agree_to_terms": "By signing up, you agree to our terms of use, privacy policy, and cookie policy.",
           "we_never_post_anything_without_permission": "We'll never post anything without your permission.",
           "read_more": "Read more"
-        }
+        },
+        "navbar_title": "Log in or sign up"
       },
       "login": {
         "navbar_title": "Log in",
@@ -457,6 +469,7 @@
         "detail": "Are those new shoes? If they’re not new, they look really shiny and beautiful.",
         "buttons": {
           "log_in": "Log in",
+          "log_in_email": "Log in with email",
           "forgot_password": "Forgot your password?",
           "one_password": "1Password"
         },
@@ -465,7 +478,10 @@
         "errors": {
           "button": {
             "ok": "OK"
-          }
+          },
+          "does_not_match": "Login does not match any of our records.",
+          "title": "Login error",
+          "unable_to_log_in": "Unable to log in."
         }
       },
       "forgot_password": {
@@ -483,13 +499,16 @@
         "input_fields": {
           "full_name": "Full name",
           "email": "Email",
-          "password": "Password"
+          "password": "Password",
+          "password_min_characters": "Password (minimum 6 characters)"
         },
         "navbar_title": "Sign up",
         "newsletter_full": "Receive our weekly newsletter and other occasional updates.",
         "button": "Sign up",
+        "button_email": "Sign up with email",
         "error": {
-          "something_wrong": "Something went wrong."
+          "something_wrong": "Something went wrong.",
+          "title": "Sign up error"
         }
       },
       "facebook_confirmation": {
@@ -510,6 +529,9 @@
         "buttons": {
           "submit": "Submit",
           "resend": "Resend"
+        },
+        "error": {
+          "message": "The code provided does not match."
         }
       },
       "project": {
@@ -1049,6 +1071,7 @@
         "switch_toggle_on": "ON",
         "switch_toggle_off": "OFF",
         "error": {
+          "oops": "Oops!",
           "something_wrong": "Something went wrong."
         },
         "alert": {
@@ -1522,6 +1545,7 @@
         },
         "projects": {
           "time_left_to_go": "%{time_left} verbleibend",
+          "created_projects": "Created projects",
           "backed_projects": "Unterstützte Projekte",
           "backed_project_count_projects": {
             "zero": "HAT 0 PROJEKTE UNTERSTÜTZT",
@@ -1533,6 +1557,12 @@
           "empty_state": {
             "message": "Du hast noch keine Projekte unterstützt. Das sollten wir ändern!",
             "button": "Projekte entdecken"
+          },
+          "status": {
+            "canceled": "Canceled",
+            "successful": "Successful",
+            "suspended": "Suspended",
+            "unsuccessful": "Unsuccessful"
           }
         },
         "settings": {
@@ -1654,6 +1684,10 @@
         },
         "errors": {
           "facebook": {
+            "authorization_exception": {
+              "message": "We're having some trouble getting you logged in.",
+              "button": "Let's try that again"
+            },
             "settings_disabled": {
               "title": "Zugriff verweigert",
               "message": "Es scheint, als hättest du Kickstarter den Zugriff auf dein Facebook-Konto verweigert. Bitte gehe zu Einstellungen > Facebook und erlaube den Zugriff."
@@ -1675,7 +1709,8 @@
           "by_signing_up_you_agree_to_terms": "Mit der Registrierung stimmst du unseren Nutzungsbedingungen, Datenschutzrichtlinien und Cookie-Richtlinien zu.",
           "we_never_post_anything_without_permission": "Wir veröffentlichen niemals etwas ohne deine Zustimmung.",
           "read_more": "Weiterlesen"
-        }
+        },
+        "navbar_title": "Log in or sign up"
       },
       "login": {
         "navbar_title": "Anmelden",
@@ -1683,6 +1718,7 @@
         "detail": "Neue Schuhe? Nein? Dabei sehen sie nigelnagelneu aus!",
         "buttons": {
           "log_in": "Anmelden",
+          "log_in_email": "Log in with email",
           "forgot_password": "Passwort vergessen?",
           "one_password": "1Password"
         },
@@ -1691,7 +1727,10 @@
         "errors": {
           "button": {
             "ok": "OK"
-          }
+          },
+          "does_not_match": "Login does not match any of our records.",
+          "title": "Login error",
+          "unable_to_log_in": "Unable to log in."
         }
       },
       "forgot_password": {
@@ -1709,13 +1748,16 @@
         "input_fields": {
           "full_name": "Vollständiger Name",
           "email": "E-Mail",
-          "password": "Passwort"
+          "password": "Passwort",
+          "password_min_characters": "Password (minimum 6 characters)"
         },
         "navbar_title": "Registrieren",
         "newsletter_full": "Endecke neue Projekte in unserem wöchentlichen Newsletter.",
         "button": "Registrieren",
+        "button_email": "Sign up with email",
         "error": {
-          "something_wrong": "Da hat etwas nicht geklappt."
+          "something_wrong": "Da hat etwas nicht geklappt.",
+          "title": "Sign up error"
         }
       },
       "facebook_confirmation": {
@@ -1736,6 +1778,9 @@
         "buttons": {
           "submit": "Absenden",
           "resend": "Erneut senden"
+        },
+        "error": {
+          "message": "The code provided does not match."
         }
       },
       "project": {
@@ -2275,6 +2320,7 @@
         "switch_toggle_on": "JA",
         "switch_toggle_off": "NEIN",
         "error": {
+          "oops": "Oops!",
           "something_wrong": "Da hat etwas nicht geklappt."
         },
         "alert": {
@@ -2748,6 +2794,7 @@
         },
         "projects": {
           "time_left_to_go": "%{time_left} restante(s)",
+          "created_projects": "Created projects",
           "backed_projects": "Proyectos patrocinados",
           "backed_project_count_projects": {
             "zero": "0 PROYECTOS PATROCINADOS",
@@ -2759,6 +2806,12 @@
           "empty_state": {
             "message": "Aún no has patrocinado ningún proyecto.\n¡Es hora de cambiar esto!",
             "button": "Descubre proyectos"
+          },
+          "status": {
+            "canceled": "Canceled",
+            "successful": "Successful",
+            "suspended": "Suspended",
+            "unsuccessful": "Unsuccessful"
           }
         },
         "settings": {
@@ -2880,6 +2933,10 @@
         },
         "errors": {
           "facebook": {
+            "authorization_exception": {
+              "message": "We're having some trouble getting you logged in.",
+              "button": "Let's try that again"
+            },
             "settings_disabled": {
               "title": "Permiso denegado",
               "message": "Parece que le has denegado a Kickstarter acceso a tu cuenta de Facebook. Para cambiarlo, por favor ve a Configuración > Facebook."
@@ -2901,7 +2958,8 @@
           "by_signing_up_you_agree_to_terms": "Al registrarte, estás aceptando nuestros términos de uso, nuestra política de privacidad y de cookies.",
           "we_never_post_anything_without_permission": "Nunca publicaremos nada sin tu consentimiento.",
           "read_more": "Leer más"
-        }
+        },
+        "navbar_title": "Log in or sign up"
       },
       "login": {
         "navbar_title": "Iniciar sesión",
@@ -2909,6 +2967,7 @@
         "detail": "¿Estos zapatos son nuevos? Si no lo son, ¡lo parecen!",
         "buttons": {
           "log_in": "Iniciar sesión",
+          "log_in_email": "Log in with email",
           "forgot_password": "¿Olvidaste tu contraseña?",
           "one_password": "1Password"
         },
@@ -2917,7 +2976,10 @@
         "errors": {
           "button": {
             "ok": "Ok"
-          }
+          },
+          "does_not_match": "Login does not match any of our records.",
+          "title": "Login error",
+          "unable_to_log_in": "Unable to log in."
         }
       },
       "forgot_password": {
@@ -2935,13 +2997,16 @@
         "input_fields": {
           "full_name": "Nombre completo",
           "email": "Correo electrónico",
-          "password": "Contraseña"
+          "password": "Contraseña",
+          "password_min_characters": "Password (minimum 6 characters)"
         },
         "navbar_title": "Registrar",
         "newsletter_full": "Descubre nuevos proyectos con nuestro beletín semanal.",
         "button": "Regístrar",
+        "button_email": "Sign up with email",
         "error": {
-          "something_wrong": "Algo pasó aquí."
+          "something_wrong": "Algo pasó aquí.",
+          "title": "Sign up error"
         }
       },
       "facebook_confirmation": {
@@ -2962,6 +3027,9 @@
         "buttons": {
           "submit": "Enviar",
           "resend": "Volver a enviar"
+        },
+        "error": {
+          "message": "The code provided does not match."
         }
       },
       "project": {
@@ -3501,6 +3569,7 @@
         "switch_toggle_on": "SÍ",
         "switch_toggle_off": "NO",
         "error": {
+          "oops": "Oops!",
           "something_wrong": "Algo pasó aquí."
         },
         "alert": {
@@ -3974,6 +4043,7 @@
         },
         "projects": {
           "time_left_to_go": "Plus que %{time_left}",
+          "created_projects": "Created projects",
           "backed_projects": "Projets soutenus",
           "backed_project_count_projects": {
             "zero": "0 PROJETS SOUTENUS",
@@ -3985,6 +4055,12 @@
           "empty_state": {
             "message": "Vous n'avez pas encore soutenu de projets. On change ça ?",
             "button": "Découvrez des projets"
+          },
+          "status": {
+            "canceled": "Canceled",
+            "successful": "Successful",
+            "suspended": "Suspended",
+            "unsuccessful": "Unsuccessful"
           }
         },
         "settings": {
@@ -4106,6 +4182,10 @@
         },
         "errors": {
           "facebook": {
+            "authorization_exception": {
+              "message": "We're having some trouble getting you logged in.",
+              "button": "Let's try that again"
+            },
             "settings_disabled": {
               "title": "Autorisation refusée",
               "message": "On dirait que vous avez refusé à Kickstarter l'accès à votre compte Facebook. Veuillez accéder à Paramètres > Facebook pour autoriser l'accès."
@@ -4127,7 +4207,8 @@
           "by_signing_up_you_agree_to_terms": "En vous inscrivant, vous acceptez les Conditions d'utilisation, notre Politique de confidentialité et notre Politique en matière de cookies.",
           "we_never_post_anything_without_permission": "Rien ne sera publié sans votre permission.",
           "read_more": "En savoir plus"
-        }
+        },
+        "navbar_title": "Log in or sign up"
       },
       "login": {
         "navbar_title": "Connexion",
@@ -4135,6 +4216,7 @@
         "detail": "Est-ce une nouvelle paire de chaussures ? Ah non ? Pourtant, elles sont jolies.",
         "buttons": {
           "log_in": "Connexion",
+          "log_in_email": "Log in with email",
           "forgot_password": "Mot de passe oublié ?",
           "one_password": "1Password"
         },
@@ -4143,7 +4225,10 @@
         "errors": {
           "button": {
             "ok": "OK"
-          }
+          },
+          "does_not_match": "Login does not match any of our records.",
+          "title": "Login error",
+          "unable_to_log_in": "Unable to log in."
         }
       },
       "forgot_password": {
@@ -4161,13 +4246,16 @@
         "input_fields": {
           "full_name": "Nom complet",
           "email": "E-mail",
-          "password": "Mot de passe"
+          "password": "Mot de passe",
+          "password_min_characters": "Password (minimum 6 characters)"
         },
         "navbar_title": "Inscription",
         "newsletter_full": "Découvrez de nouveaux projets grâce à notre lettre d'informations hebdomadaire.",
         "button": "Inscription",
+        "button_email": "Sign up with email",
         "error": {
-          "something_wrong": "Un erreur s'est produite."
+          "something_wrong": "Un erreur s'est produite.",
+          "title": "Sign up error"
         }
       },
       "facebook_confirmation": {
@@ -4188,6 +4276,9 @@
         "buttons": {
           "submit": "Envoyer",
           "resend": "Renvoyer"
+        },
+        "error": {
+          "message": "The code provided does not match."
         }
       },
       "project": {
@@ -4727,6 +4818,7 @@
         "switch_toggle_on": "ON",
         "switch_toggle_off": "OFF",
         "error": {
+          "oops": "Oops!",
           "something_wrong": "Un erreur s'est produite."
         },
         "alert": {
@@ -5200,6 +5292,7 @@
         },
         "projects": {
           "time_left_to_go": "%{time_left} to go",
+          "created_projects": "Created projects",
           "backed_projects": "Backed projects",
           "backed_project_count_projects": {
             "zero": "BACKED 0 PROJECTS",
@@ -5211,6 +5304,12 @@
           "empty_state": {
             "message": "You haven’t backed any projects yet.\nLet’s change that!",
             "button": "Discover projects"
+          },
+          "status": {
+            "canceled": "Canceled",
+            "successful": "Successful",
+            "suspended": "Suspended",
+            "unsuccessful": "Unsuccessful"
           }
         },
         "settings": {
@@ -5332,6 +5431,10 @@
         },
         "errors": {
           "facebook": {
+            "authorization_exception": {
+              "message": "We're having some trouble getting you logged in.",
+              "button": "Let's try that again"
+            },
             "settings_disabled": {
               "title": "Permission denied",
               "message": "It seems that you have denied Kickstarter access to your Facebook account. Please go to Settings > Facebook and toggle access."
@@ -5353,7 +5456,8 @@
           "by_signing_up_you_agree_to_terms": "By signing up, you agree to our terms of use, privacy policy, and cookie policy.",
           "we_never_post_anything_without_permission": "We'll never post anything without your permission.",
           "read_more": "Read more"
-        }
+        },
+        "navbar_title": "Log in or sign up"
       },
       "login": {
         "navbar_title": "Log in",
@@ -5361,6 +5465,7 @@
         "detail": "Are those new shoes? If they’re not new, they look really shiny and beautiful.",
         "buttons": {
           "log_in": "Log in",
+          "log_in_email": "Log in with email",
           "forgot_password": "Forgot your password?",
           "one_password": "1Password"
         },
@@ -5369,7 +5474,10 @@
         "errors": {
           "button": {
             "ok": "OK"
-          }
+          },
+          "does_not_match": "Login does not match any of our records.",
+          "title": "Login error",
+          "unable_to_log_in": "Unable to log in."
         }
       },
       "forgot_password": {
@@ -5387,13 +5495,16 @@
         "input_fields": {
           "full_name": "Full name",
           "email": "Email",
-          "password": "Password"
+          "password": "Password",
+          "password_min_characters": "Password (minimum 6 characters)"
         },
         "navbar_title": "Sign up",
         "newsletter_full": "Receive our weekly newsletter and other occasional updates.",
         "button": "Sign up",
+        "button_email": "Sign up with email",
         "error": {
-          "something_wrong": "Something went wrong."
+          "something_wrong": "Something went wrong.",
+          "title": "Sign up error"
         }
       },
       "facebook_confirmation": {
@@ -5414,6 +5525,9 @@
         "buttons": {
           "submit": "Submit",
           "resend": "Resend"
+        },
+        "error": {
+          "message": "The code provided does not match."
         }
       },
       "project": {
@@ -5953,6 +6067,7 @@
         "switch_toggle_on": "ON",
         "switch_toggle_off": "OFF",
         "error": {
+          "oops": "Oops!",
           "something_wrong": "Something went wrong."
         },
         "alert": {
@@ -6166,7 +6281,6 @@
     "log_devices": true,
     "backer_report_formats": true,
     "discover_cards": true,
-    "imgix_videos": true,
     "fulfillment_report": true
   },
   "launched_countries": [
@@ -6284,12 +6398,9 @@
     "native_ios_aa": "control",
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
-    "native_iphone_horiz_vs_vert": "experimental",
-    "project_share_metadata_position": "control",
+    "native_iphone_horiz_vs_vert": "control",
+    "recs_thanks_combo_inputs": "combo_inputs",
     "recs_hp_combo_v1": "combo_v1",
-    "recs_hp_video_plays": "collaborative_video_plays",
-    "recs_thanks_combo_inputs": "collaborative_backings_v2",
-    "recs_thanks_stars": "collaborative_stars",
     "video_autoplay_3": "no_autoplay"
   },
   "stripe": {

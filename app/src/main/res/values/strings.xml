@@ -163,7 +163,8 @@
   <string name="___Staff_Picks">Staff Picks</string>
   <string name="___Starred">Starred</string>
   <string name="___Successfully_funded">Successfully funded!</string>
-  <string name="___Submit_bug_report">Submit bug report</string>
+  <string name="___Submit">Submit</string>
+  <string name="___Submit_feedback">Submit feedback</string>
   <string name="___Terms_of_Use">Terms of Use</string>
   <string name="___Resend_code_failed">Unable to resend your code.</string>
   <string name="___This_project_will_only_be_funded_if">

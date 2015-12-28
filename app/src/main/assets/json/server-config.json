@@ -4834,7 +4834,7 @@
         "switch_toggle_on": "ON",
         "switch_toggle_off": "OFF",
         "error": {
-          "oops": "Oups !",
+          "oops": "Oops!",
           "something_wrong": "Un erreur s'est produite."
         },
         "alert": {
@@ -6292,6 +6292,7 @@
     "i18n_discovery_touts": true,
     "i18n_start_tout": true,
     "responsive_manage": true,
+    "manage_pledge_ccs": true,
     "password_reset_banner": true,
     "play_page": true,
     "watch_page": true,
@@ -6418,7 +6419,7 @@
     "native_ios_aa": "control",
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
-    "native_iphone_horiz_vs_vert": "experimental",
+    "native_iphone_horiz_vs_vert": "control",
     "recs_thanks_combo_inputs": "collaborative_backings_v2",
     "recs_hp_combo_v1": "combo_v1",
     "video_autoplay_3": "no_autoplay"

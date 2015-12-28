@@ -11,11 +11,11 @@ import rx.Subscription;
 import rx.functions.Action0;
 
 public final class RecyclerViewPaginator {
-  private @NonNull final RecyclerView recyclerView;
-  private @NonNull final Action0 nextPage;
+  private final @NonNull RecyclerView recyclerView;
+  private final @NonNull Action0 nextPage;
   private Subscription subscription = null;
 
-  public RecyclerViewPaginator(@NonNull final RecyclerView recyclerView, @NonNull final Action0 nextPage) {
+  public RecyclerViewPaginator(final @NonNull RecyclerView recyclerView, final @NonNull Action0 nextPage) {
     this.recyclerView = recyclerView;
     this.nextPage = nextPage;
     start();
@@ -52,14 +52,14 @@ public final class RecyclerViewPaginator {
   /**
    * Returns a (visibleItem, totalItemCount) pair given a linear layout manager.
    */
-  private @NonNull Pair<Integer, Integer> displayedItemFromLinearLayout(@NonNull final LinearLayoutManager manager) {
+  private @NonNull Pair<Integer, Integer> displayedItemFromLinearLayout(final @NonNull LinearLayoutManager manager) {
     final int visibleItemCount = manager.getChildCount();
     final int totalItemCount = manager.getItemCount();
     final int pastVisibleItems = manager.findFirstVisibleItemPosition();
     return new Pair<>(visibleItemCount + pastVisibleItems, totalItemCount);
   }
 
-  private boolean visibleItemIsCloseToBottom(@NonNull final Pair<Integer, Integer> visibleItemOfTotal) {
-    return visibleItemOfTotal.first == visibleItemOfTotal.second - 2;
+  private boolean visibleItemIsCloseToBottom(final @NonNull Pair<Integer, Integer> visibleItemOfTotal) {
+    return visibleItemOfTotal.first == visibleItemOfTotal.second - 1;
   }
 }

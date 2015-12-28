@@ -21,6 +21,14 @@ class MilkrunApplication
       end
     end
 
+    command :"create-string-resources" do |c|
+      c.syntax = "milkrun create-string-resources"
+      c.description = "create string resources from local config file"
+      c.action do |args, options|
+        Milkrun::I18nStringResources.new.create
+      end
+    end
+
     command :external do |c|
       c.syntax = 'milkrun external'
       c.description = 'TODO: Submit a new external build to the Play Store'

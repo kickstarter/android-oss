@@ -64,13 +64,14 @@ public final class ProfileViewModel extends ViewModel<ProfileActivity> implement
       .sort(DiscoveryParams.Sort.ENDING_SOON)
       .build();
 
-    final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator = ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
-      .nextPage(nextPage)
-      .envelopeToListOfData(DiscoverEnvelope::projects)
-      .envelopeToMoreUrl(env -> env.urls().api().moreProjects())
-      .loadWithParams(__ -> client.fetchProjects(params))
-      .loadWithPaginationPath(client::fetchProjects)
-      .build();
+    final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
+      ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
+        .nextPage(nextPage)
+        .envelopeToListOfData(DiscoverEnvelope::projects)
+        .envelopeToMoreUrl(env -> env.urls().api().moreProjects())
+        .loadWithParams(__ -> client.fetchProjects(params))
+        .loadWithPaginationPath(client::fetchProjects)
+        .build();
 
     addSubscription(paginator.paginatedData.subscribe(projects));
 

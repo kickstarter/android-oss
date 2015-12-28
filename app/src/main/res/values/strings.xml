@@ -9,7 +9,6 @@
   <string name="___action_settings">Settings</string>
   <string name="___All_gone">All gone</string>
   <string name="___All_of_Category">All of %1$s</string>
-  <string name="___Already_have_a_Kickstarter_account">Already have a Kickstarter account?</string>
   <string name="____and_are_backers">%1$s and %2$s are backers.</string>
   <string name="____and_more_are_backers">%1$s, %2$s, and %3$s more are backers.</string>
   <string name="___A_newer_build_is_available">A newer build is available. Download upgrade?</string>
@@ -25,22 +24,12 @@
   <string name="___Backing">Backing</string>
   <string name="____backers">%1$s backers</string>
   <string name="___backers">backers</string>
-  <string name="___Before_we_make_your_new_account">
-    Before we make your new account, please double check that we got the right email address from your Facebook profile:
-  </string>
   <string name="___Build">Build</string>
   <string name="___Build_date">Build Date</string>
   <string name="___Build_information">Build Information</string>
   <string name="___Blurb_read_more">%1$s &lt;u>Read\u00A0more&lt;/u></string>
   <string name="___by_">by\u0020%1$s</string>
   <string name="___by_creator">by &lt;u>%1$s&lt;/u></string>
-  <string name="___By_signing_up_you_agree_to_our">
-    By signing up you agree to our terms of use, privacy policy, and cookie policy. We’ll never post
-    anything without your permission.
-  </string>
-  <string name="___By_signing_up_you_agree_to_our_sign_up">
-    By signing up you agree to our <u>terms of use</u>, <u>privacy policy</u>, and <u>cookie policy</u>.
-  </string>
   <string name="___Campaign">Campaign</string>
   <string name="___Cancel">Cancel</string>
   <string name="___Categories">Categories</string>
@@ -51,7 +40,6 @@
   <string name="___Comments">Comments</string>
   <string name="___Contact">Contact</string>
   <string name="___Cookie_Policy">Cookie Policy</string>
-  <string name="___Create_new_account">Create new account</string>
   <string name="___creator_launched_a_project">%1$s launched a project: %2$s</string>
   <string name="___Created_by">Created by</string>
   <string name="___Created_by_">Created by&lt;br>&lt;b>%1$s&lt;/b></string>
@@ -91,7 +79,6 @@
   <string name="___friend_name_backed_technology_project">%1$s backed a Technology project</string>
   <string name="___friend_name_backed_theater_project">%1$s backed a Theater project</string>
   <string name="___Friends_Backed">Friends Backed</string>
-  <string name="___Full_name">Full name</string>
   <string name="___funded">funded</string>
   <string name="___Funded">Funded</string>
   <string name="___Funding_canceled">Funding canceled</string>
@@ -137,7 +124,6 @@
     folder and tap the .apk file to install.\n\nYou must enable the option to allow installation of apps from
     unknown sources in the security settings of your device.
   </string>
-  <string name="___Password_minimum_6_characters">Password (minimum 6 characters)</string>
   <string name="___Send_feedback">Send feedback</string>
   <string name="___Pledge_or_more">Pledge %1$s or more</string>
   <string name="___Pledged">Pledged</string>
@@ -157,7 +143,6 @@
   <string name="___Projects_We_Love">Projects We Love</string>
   <string name="___Projects_you_back">Projects you back</string>
   <string name="___Public_comment">Public comment</string>
-  <string name="___Reset_my_password">Reset my password</string>
   <string name="___Reward">Reward</string>
   <string name="___reward_amount_description">%1$s - %2$s</string>
   <string name="___secs">secs</string>
@@ -171,7 +156,6 @@
   <string name="___Share_this_project">Share this project</string>
   <string name="___Shipping">Shipping</string>
   <string name="___Shipping_destinations">Shipping destinations</string>
-  <string name="___Sign_up_error">Sign up error</string>
   <string name="___Sign_up_or_log_in_with_your_Facebook_account">
     Sign up or log in with your Facebook account or email address below:
   </string>
@@ -183,7 +167,6 @@
   <string name="___Successfully_funded">Successfully funded!</string>
   <string name="___Submit_bug_report">Submit bug report</string>
   <string name="___Terms_of_Use">Terms of Use</string>
-  <string name="___The_code_provided_does_not_match">The code provided does not match.</string>
   <string name="___Resend_code_failed">Unable to resend your code.</string>
   <string name="___This_project_will_only_be_funded_if">
     This project will only be funded if at least %1$s is pledged by %2$s</string>
@@ -200,7 +183,6 @@
   <string name="___Variant">Variant</string>
   <string name="___Version_code">Version Code</string>
   <string name="___Version_name">Version Name</string>
-  <string name="___Well_never_post_anything">We\'ll never post anything without your permission.</string>
   <string name="___Well_remind_you_48_hours">We\'ll remind you 48 hours before this project ends!</string>
   <string name="___When_you_back_a_project_or_follow_a_friend">
     When you back a project or follow a friend, their activity will appear here.

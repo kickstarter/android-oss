@@ -4,7 +4,6 @@
     is deprecated based on its name.
 
     There may be a few strings here that we *don't* want to translate, we'll figure out a nice space for them later. -->
-  <string name="___About">About</string>
   <string name="___Activity">Activity</string>
   <string name="___action_settings">Settings</string>
   <string name="___All_gone">All gone</string>
@@ -49,8 +48,6 @@
   <string name="___Comment_posted">Comment posted!</string>
   <string name="___Post_comment_error">Couldn’t post comment.</string>
   <string name="___Comments">Comments</string>
-  <string name="___Contact">Contact</string>
-  <string name="___Cookie_Policy">Cookie Policy</string>
   <string name="___Create_new_account">Create new account</string>
   <string name="___creator_launched_a_project">%1$s launched a project: %2$s</string>
   <string name="___Created_by">Created by</string>
@@ -75,8 +72,6 @@
   <string name="___Find_friends">Find friends</string>
   <string name="___Follow">Follow</string>
   <string name="___Forgot_your_password"><u>Forgot your password?</u></string>
-  <string name="___Frequently_Asked_Questions">Frequently Asked Questions</string>
-  <string name="___Friend_backs_a_project">Friend backs a project</string>
   <string name="___friend_name_backed_art_project">%1$s backed an Art project</string>
   <string name="___friend_name_backed_comics_project">%1$s backed a Comics project</string>
   <string name="___friend_name_backed_crafts_project">%1$s backed a Crafts project</string>
@@ -100,14 +95,11 @@
   <string name="___Funding_suspended_">Funding suspended %1$s</string>
   <string name="___Funding_unsuccessful_">Funding unsuccessful %1$s</string>
   <string name="___goal">goal</string>
-  <string name="___Happening_Now">Happening Now</string>
   <string name="___Help">Help</string>
   <string name="___hours">hours</string>
-  <string name="___How_Kickstarter_works">How Kickstarter works</string>
   <string name="___I_just_backed_project_on_Kickstarter">I just backed %1$s on Kickstarter: %2$s</string>
   <string name="___Instructions">Instructions</string>
   <string name="____is_a_backer">%1$s is a backer.</string>
-  <string name="___Kickstarter_news_and_events">Kickstarter news and events</string>
   <string name="___Launched">Launched</string>
   <string name="___Lets_try_that_again">Let\'s try that again</string>
   <string name="___Limited_left_of">Limited (%1$s left of %2$s)</string>
@@ -116,20 +108,16 @@
   <string name="___Log_in_with_email">Log in with email</string>
   <string name="___Log_in_with_Facebook">Log in with Facebook</string>
   <string name="___Log_in_or_sign_up">Log in or sign up</string>
-  <string name="___Log_out">Log out</string>
   <string name="___Logged_out">Logged out</string>
   <string name="___Login_does_not_match_any_of_our_records">Login does not match any of our records.</string>
   <string name="___Looking_for_more_projects">Looking for more projects? Check these out.</string>
   <string name="___Manage_pledge">Manage pledge</string>
-  <string name="___Manage_project_notifications">Manage project notifications</string>
   <string name="___mins">mins</string>
   <string name="___More">More</string>
   <string name="___Most_Popular">Most Popular</string>
   <string name="___NA">N/A</string>
   <string name="___Nearby">Nearby</string>
   <string name="___Network">Network</string>
-  <string name="___New_followers">New followers</string>
-  <string name="___Newsletters">Newsletters</string>
   <string name="___No_activity_yet">No activity yet</string>
   <string name="___No_comments">No comments</string>
   <string name="___Not_implemented_yet">Not implemented yet, coming soon!</string>
@@ -156,7 +144,6 @@
   <string name="___pledged_of_goal">pledged of %1$s</string>
   <string name="___pledged_amount_on_date">%1$s on %2$s</string>
   <string name="___Post">Post</string>
-  <string name="___Privacy_Policy">Privacy Policy</string>
   <string name="___Profile">Profile</string>
   <string name="___project_of_the_day">Project of the day!</string>
   <string name="___project_was_cancelled_by_its_creator">%1$s was cancelled by its creator.</string>
@@ -164,9 +151,6 @@
   <string name="___project_was_successfully_funded">%1$s was successfully funded!</string>
   <string name="___project_resumed">%1$s resumed.</string>
   <string name="___project_was_suspended">%1$s was suspended.</string>
-  <string name="___Project_updates">Project updates</string>
-  <string name="___Projects_We_Love">Projects We Love</string>
-  <string name="___Projects_you_back">Projects you back</string>
   <string name="___Public_comment">Public comment</string>
   <string name="___Resend">Resend</string>
   <string name="___Reset_my_password">Reset my password</string>
@@ -176,7 +160,6 @@
   <string name="___Search">Search</string>
   <string name="___Search_projects">Search projects</string>
   <string name="___Select_email_application">Select email application:</string>
-  <string name="___Settings">Settings</string>
   <string name="___Sha">SHA</string>
   <string name="___Share">Share</string>
   <string name="___share_message">"%1$s, via %2$s"</string>
@@ -190,7 +173,6 @@
   <string name="___Sign_up_or_log_in_with_your_Facebook_account">
     Sign up or log in with your Facebook account or email address below:
   </string>
-  <string name="___Social_notifications">Social notifications</string>
   <string name="___Something_went_wrong_try_again_later">Something went wrong, please try again later.</string>
   <string name="___Sorry_we_do_not_know_that_email_address_try_again">
     Sorry, we don\'t know that email address. Try again?</string>
@@ -200,7 +182,6 @@
   <string name="___Successfully_funded">Successfully funded!</string>
   <string name="___Submit">Submit</string>
   <string name="___Submit_feedback">Submit feedback</string>
-  <string name="___Terms_of_Use">Terms of Use</string>
   <string name="___The_code_provided_does_not_match">The code provided does not match.</string>
   <string name="___Resend_code_failed">Unable to resend your code.</string>
   <string name="___This_project_will_only_be_funded_if">
@@ -251,8 +232,4 @@
   <string name="___search_button_content_description">Search projects</string>
   <string name="___share_button_content_description">Share this project</string>
   <string name="___star_fab_content_description">Star this project</string>
-  <string name="___subscribe_mobile_notification_button_content_description">Subscribe to mobile notifications</string>
-  <string name="___subscribe_notification_button_content_description">Subscribe to notifications</string>
-  <string name="___unsubscribe_mobile_notification_button_content_description">Unsubscribe from mobile notifications</string>
-  <string name="___unsubscribe_notification_button_content_description">Unsubscribe from notifications</string>
 </resources>

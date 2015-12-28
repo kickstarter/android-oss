@@ -52,14 +52,14 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   protected @BindColor(R.color.green) int green;
   protected @BindColor(R.color.gray) int gray;
 
-  protected @BindString(R.string.___subscribe_mobile_notification_button_content_description) String subscribeMobileString;
-  protected @BindString(R.string.___subscribe_notification_button_content_description) String subscribeString;
+  protected @BindString(R.string.profile_settings_accessibility_subscribe_mobile_notifications) String subscribeMobileString;
+  protected @BindString(R.string.profile_settings_accessibility_subscribe_notifications) String subscribeString;
   protected @BindString(R.string.support_email_body) String supportEmailBodyString;
   protected @BindString(R.string.support_email_subject) String supportEmailSubjectString;
   protected @BindString(R.string.support_email_to) String supportEmailString;
-  protected @BindString(R.string.___Unable_to_save) String unableToSaveString;
-  protected @BindString(R.string.___unsubscribe_mobile_notification_button_content_description) String unsubscribeMobileString;
-  protected @BindString(R.string.___unsubscribe_notification_button_content_description) String unsubscribeString;
+  protected @BindString(R.string.profile_settings_error) String unableToSaveString;
+  protected @BindString(R.string.profile_settings_accessibility_unsubscribe_mobile_notifications) String unsubscribeMobileString;
+  protected @BindString(R.string.profile_settings_accessibility_unsubscribe_notifications) String unsubscribeString;
 
   @Inject CurrentUser currentUser;
   @Inject Logout logout;

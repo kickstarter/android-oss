@@ -24,7 +24,7 @@
         style="@style/SubheadSecondaryMedium"
         android:layout_marginTop="@dimen/grid_4"
         android:layout_marginBottom="@dimen/grid_7_half"
-        android:text="@string/___Projects_you_back"
+        android:text="@string/profile_settings_backer_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -42,7 +42,7 @@
         <TextView
           style="@style/BodyPrimary"
           android:layout_centerVertical="true"
-          android:text="@string/___Project_updates"
+          android:text="@string/profile_settings_backer_project_updates"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 
@@ -76,7 +76,7 @@
         <TextView
           style="@style/BodyPrimary"
           android:layout_centerVertical="true"
-          android:text="@string/___Manage_project_notifications"
+          android:text="@string/profile_settings_backer_notifications"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 
@@ -112,7 +112,7 @@
         style="@style/SubheadSecondaryMedium"
         android:layout_marginTop="@dimen/grid_11_half"
         android:layout_marginBottom="@dimen/grid_7_half"
-        android:text="@string/___Social_notifications"
+        android:text="@string/profile_settings_social_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -130,7 +130,7 @@
         <TextView
           style="@style/BodyPrimary"
           android:layout_centerVertical="true"
-          android:text="@string/___New_followers"
+          android:text="@string/profile_settings_social_followers"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 
@@ -161,7 +161,7 @@
         <TextView
           style="@style/BodyPrimary"
           android:layout_centerVertical="true"
-          android:text="@string/___Friend_backs_a_project"
+          android:text="@string/profile_settings_social_friend_backs"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 
@@ -196,7 +196,7 @@
           style="@style/SubheadSecondaryMedium"
           android:layout_marginTop="@dimen/grid_11_half"
           android:layout_marginBottom="@dimen/grid_7_half"
-          android:text="@string/___Newsletters"
+          android:text="@string/profile_settings_newsletter_title"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 
@@ -209,7 +209,7 @@
           <TextView
             style="@style/BodyPrimary"
             android:layout_centerVertical="true"
-            android:text="@string/___Projects_We_Love"
+            android:text="@string/profile_settings_newsletter_weekly"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -228,7 +228,7 @@
           <TextView
             style="@style/BodyPrimary"
             android:layout_centerVertical="true"
-            android:text="@string/___Kickstarter_news_and_events"
+            android:text="@string/profile_settings_newsletter_promo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -247,7 +247,7 @@
           <TextView
             style="@style/BodyPrimary"
             android:layout_centerVertical="true"
-            android:text="@string/___Happening_Now"
+            android:text="@string/profile_settings_newsletter_happening"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -263,7 +263,7 @@
           style="@style/SubheadSecondaryMedium"
           android:layout_marginTop="@dimen/grid_11_half"
           android:layout_marginBottom="@dimen/grid_7_half"
-          android:text="@string/___About"
+          android:text="@string/profile_settings_about_title"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 
@@ -279,7 +279,7 @@
           <TextView
             style="@style/BodyPrimary"
             android:layout_centerVertical="true"
-            android:text="@string/___Frequently_Asked_Questions"
+            android:text="@string/profile_settings_about_faq"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -302,7 +302,7 @@
           <TextView
             style="@style/BodyPrimary"
             android:layout_centerVertical="true"
-            android:text="@string/___Contact"
+            android:text="@string/profile_settings_about_contact"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -325,7 +325,7 @@
           <TextView
             style="@style/BodyPrimary"
             android:layout_centerVertical="true"
-            android:text="@string/___How_Kickstarter_works"
+            android:text="@string/profile_settings_about_how_it_works"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -348,7 +348,7 @@
           <TextView
             style="@style/BodyPrimary"
             android:layout_centerVertical="true"
-            android:text="@string/___Terms_of_Use"
+            android:text="@string/profile_settings_about_terms"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -371,7 +371,7 @@
           <TextView
             style="@style/BodyPrimary"
             android:layout_centerVertical="true"
-            android:text="@string/___Privacy_Policy"
+            android:text="@string/profile_settings_about_privacy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -394,7 +394,7 @@
           <TextView
             style="@style/BodyPrimary"
             android:layout_centerVertical="true"
-            android:text="@string/___Cookie_Policy"
+            android:text="@string/profile_settings_about_cookie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -410,7 +410,7 @@
         <Button
           style="@style/BorderButton"
           android:id="@+id/log_out_button"
-          android:text="@string/___Log_out"
+          android:text="@string/profile_settings_log_out_button"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/grid_3"

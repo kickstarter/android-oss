@@ -84,7 +84,7 @@ public class ListUtils {
   }
 
   /**
-   * Uses Fisher-Yates algorithm to shuffle an array.
+   * Uses Fisher-Yates algorithm to shuffle an array without mutating input arg.
    * http://www.dotnetperls.com/shuffle-java
    */
   public static <T> List<T> shuffle(final @NonNull List<T> xs) {

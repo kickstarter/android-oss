@@ -126,7 +126,7 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .perPage(3)
       .build();
 
-    // shuffle projects to show fresh recommendations
+    // shuffle projects since recommendations are updated only once a day
     final Observable<Project> recommendedProjects = apiClient.fetchProjects(recommendedParams)
       .map(DiscoverEnvelope::projects)
       .map(ListUtils::shuffle)

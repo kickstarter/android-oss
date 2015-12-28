@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Html;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
@@ -31,16 +33,18 @@ import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresViewModel(LoginViewModel.class)
 public final class LoginActivity extends BaseActivity<LoginViewModel> {
-  @Bind(R.id.email) EditText emailEditText;
-  @Bind(R.id.login_button) Button loginButton;
-  @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
-  @Bind(R.id.password) EditText passwordEditText;
+  protected @Bind(R.id.email) EditText emailEditText;
+  protected @Bind(R.id.forgot_your_password_text_view) TextView forgotPasswordTextView;
+  protected @Bind(R.id.login_button) Button loginButton;
+  protected @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
+  protected @Bind(R.id.password) EditText passwordEditText;
 
-  @BindString(R.string.forgot_password_we_sent_an_email_to_email_address_with_instructions_to_reset_your_password) String forgotPasswordSentEmailString;
-  @BindString(R.string.login_errors_does_not_match) String loginDoesNotMatchString;
-  @BindString(R.string.login_errors_unable_to_log_in) String unableToLoginString;
-  @BindString(R.string.login_buttons_log_in) String loginString;
-  @BindString(R.string.login_errors_title) String errorTitleString;
+  protected @BindString(R.string.login_buttons_forgot_password_html) String forgotPasswordString;
+  protected @BindString(R.string.forgot_password_we_sent_an_email_to_email_address_with_instructions_to_reset_your_password) String forgotPasswordSentEmailString;
+  protected @BindString(R.string.login_errors_does_not_match) String loginDoesNotMatchString;
+  protected @BindString(R.string.login_errors_unable_to_log_in) String unableToLoginString;
+  protected @BindString(R.string.login_buttons_log_in) String loginString;
+  protected @BindString(R.string.login_errors_title) String errorTitleString;
 
   @Inject KSString ksString;
 
@@ -52,6 +56,7 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
     ((KSApplication) getApplication()).component().inject(this);
     ButterKnife.bind(this);
     loginToolbar.setTitle(loginString);
+    forgotPasswordTextView.setText(Html.fromHtml(forgotPasswordString));
 
     final boolean forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
 

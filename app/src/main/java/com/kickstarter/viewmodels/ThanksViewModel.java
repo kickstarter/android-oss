@@ -87,7 +87,7 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
 
     final Observable<Category> rootCategory = apiClient.fetchCategory(project.category().rootId())
       .compose(Transformers.neverError());
-    final Observable<Pair<List<Project>, Category>> projectsAndRootCategory = projects(project)
+    final Observable<Pair<List<Project>, Category>> projectsAndRootCategory = moreProjects(project)
       .compose(Transformers.zipPair(rootCategory));
 
     addSubscription(view
@@ -106,7 +106,7 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
    * Returns a shuffled list of 3 recommended projects, with fallbacks to similar and staff picked projects
    * for users with fewer than 3 recommendations.
    */
-  public Observable<List<Project>> projects(final @NonNull Project project) {
+  public Observable<List<Project>> moreProjects(final @NonNull Project project) {
     final DiscoveryParams recommendedParams = DiscoveryParams.builder()
       .backed(-1)
       .recommended(true)

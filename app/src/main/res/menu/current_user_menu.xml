@@ -6,9 +6,9 @@
 
   <item
     android:id="@+id/settings"
-    android:title="@string/___Settings"/>
+    android:title="@string/profile_settings_navbar_title"/>
 
   <item
     android:id="@+id/logout"
-    android:title="@string/___Log_out" />
+    android:title="@string/profile_settings_log_out_button" />
 </menu>

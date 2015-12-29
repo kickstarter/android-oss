@@ -317,6 +317,12 @@
           }
         },
         "settings": {
+          "accessibility": {
+            "subscribe_mobile_notifications": "Subscribe to mobile notifications",
+            "subscribe_notifications": "Subscribe to notifications",
+            "unsubscribe_mobile_notifications": "Unsubscribe from mobile notifications",
+            "unsubscribe_notifications": "Unsubscribe from notifications"
+          },
           "navbar_title": "Settings",
           "navbar_title_notifications": "Notifications",
           "backer": {
@@ -324,6 +330,7 @@
             "project_updates": "Project updates",
             "notifications": "Manage project notifications"
           },
+          "error": "Unable to save",
           "social": {
             "title": "Social notifications",
             "followers": "New followers",
@@ -1322,12 +1329,12 @@
           },
           "status_banner": {
             "successful": "Erfolgreich finanziert!",
-            "successful_date": "Successfully funded %{date}",
+            "successful_date": "Erfolgreich finanziert am %{date}",
             "funding_unsuccessful_date": "Finanzierung fehlgeschlagen %{date}",
             "canceled": "Finanzierung abgebrochen",
-            "canceled_date": "Funding canceled %{date}",
+            "canceled_date": "Finanzierung abgebrochen am %{date}",
             "suspended": "Finanzierung ausgesetzt %{date}",
-            "suspended_date": "Funding suspended %{date}"
+            "suspended_date": "Finanzierung ausgesetzt am %{date}"
           },
           "stats": {
             "backers": "Unterstützer",
@@ -1549,7 +1556,7 @@
         },
         "projects": {
           "time_left_to_go": "%{time_left} verbleibend",
-          "created_projects": "Created projects",
+          "created_projects": "Erstellte Projekte",
           "backed_projects": "Unterstützte Projekte",
           "backed_project_count_projects": {
             "zero": "HAT 0 PROJEKTE UNTERSTÜTZT",
@@ -1563,13 +1570,19 @@
             "button": "Projekte entdecken"
           },
           "status": {
-            "canceled": "Canceled",
-            "successful": "Successful",
-            "suspended": "Suspended",
-            "unsuccessful": "Unsuccessful"
+            "canceled": "Zurückgezogen",
+            "successful": "Erfolgreich",
+            "suspended": "Ausgesetzt",
+            "unsuccessful": "Fehlgeschlagen"
           }
         },
         "settings": {
+          "accessibility": {
+            "subscribe_mobile_notifications": "Subscribe to mobile notifications",
+            "subscribe_notifications": "Subscribe to notifications",
+            "unsubscribe_mobile_notifications": "Unsubscribe from mobile notifications",
+            "unsubscribe_notifications": "Unsubscribe from notifications"
+          },
           "navbar_title": "Einstellungen",
           "navbar_title_notifications": "Benachrichtigungen",
           "backer": {
@@ -1577,6 +1590,7 @@
             "project_updates": "Projekt-Updates",
             "notifications": "Projektbenachrichtigungen verwalten"
           },
+          "error": "Unable to save",
           "social": {
             "title": "Neues aus deinem Netzwerk",
             "followers": "Neue Follower",
@@ -1692,8 +1706,8 @@
         "errors": {
           "facebook": {
             "authorization_exception": {
-              "message": "We're having some trouble getting you logged in.",
-              "button": "Let's try that again"
+              "message": "Fehler beim Einloggen aufgetreten.",
+              "button": "Versuche es noch einmal!"
             },
             "settings_disabled": {
               "title": "Zugriff verweigert",
@@ -1717,7 +1731,7 @@
           "we_never_post_anything_without_permission": "Wir veröffentlichen niemals etwas ohne deine Zustimmung.",
           "read_more": "Weiterlesen"
         },
-        "navbar_title": "Log in or sign up"
+        "navbar_title": "Einloggen oder anmelden"
       },
       "login": {
         "navbar_title": "Anmelden",
@@ -1725,7 +1739,7 @@
         "detail": "Neue Schuhe? Nein? Dabei sehen sie nigelnagelneu aus!",
         "buttons": {
           "log_in": "Anmelden",
-          "log_in_email": "Log in with email",
+          "log_in_email": "Mit E-Mail-Adresse anmelden",
           "forgot_password": "Passwort vergessen?",
           "forgot_password_html": "<u>Forgot your password?</u>",
           "one_password": "1Password"
@@ -1736,9 +1750,9 @@
           "button": {
             "ok": "OK"
           },
-          "does_not_match": "Login does not match any of our records.",
-          "title": "Login error",
-          "unable_to_log_in": "Unable to log in."
+          "does_not_match": "Anmeldedaten nicht erkannt.",
+          "title": "Fehler beim Einloggen",
+          "unable_to_log_in": "Anmeldung fehlgeschlagen."
         }
       },
       "forgot_password": {
@@ -1757,15 +1771,15 @@
           "full_name": "Vollständiger Name",
           "email": "E-Mail",
           "password": "Passwort",
-          "password_min_characters": "Password (minimum 6 characters)"
+          "password_min_characters": "Passwort (mindestens 6 Zeichen)"
         },
         "navbar_title": "Registrieren",
         "newsletter_full": "Endecke neue Projekte in unserem wöchentlichen Newsletter.",
         "button": "Registrieren",
-        "button_email": "Sign up with email",
+        "button_email": "Mit E-Mail-Adresse registrieren",
         "error": {
           "something_wrong": "Da hat etwas nicht geklappt.",
-          "title": "Sign up error"
+          "title": "Fehler bei Registrierung"
         }
       },
       "facebook_confirmation": {
@@ -1788,7 +1802,7 @@
           "resend": "Erneut senden"
         },
         "error": {
-          "message": "The code provided does not match."
+          "message": "Dieser Code ist ungültig."
         }
       },
       "project": {
@@ -2328,7 +2342,7 @@
         "switch_toggle_on": "JA",
         "switch_toggle_off": "NEIN",
         "error": {
-          "oops": "Oops!",
+          "oops": "Huch!",
           "something_wrong": "Da hat etwas nicht geklappt."
         },
         "alert": {
@@ -2575,12 +2589,12 @@
           },
           "status_banner": {
             "successful": "¡Financiado con éxito!",
-            "successful_date": "Successfully funded %{date}",
+            "successful_date": "Financiado con éxito el %{date}",
             "funding_unsuccessful_date": "Financiamiento fallido %{date}",
             "canceled": "Financiamiento cancelado",
-            "canceled_date": "Funding canceled %{date}",
+            "canceled_date": "Financiamiento cancelado el %{date}",
             "suspended": "Financiamiento suspendido %{date}",
-            "suspended_date": "Funding suspended %{date}"
+            "suspended_date": "Financiamiento suspendido el %{date}"
           },
           "stats": {
             "backers": "patrocinadores",
@@ -2802,7 +2816,7 @@
         },
         "projects": {
           "time_left_to_go": "%{time_left} restante(s)",
-          "created_projects": "Created projects",
+          "created_projects": "Proyectos creados",
           "backed_projects": "Proyectos patrocinados",
           "backed_project_count_projects": {
             "zero": "0 PROYECTOS PATROCINADOS",
@@ -2816,13 +2830,19 @@
             "button": "Descubre proyectos"
           },
           "status": {
-            "canceled": "Canceled",
-            "successful": "Successful",
-            "suspended": "Suspended",
-            "unsuccessful": "Unsuccessful"
+            "canceled": "Cancelado",
+            "successful": "Exitoso",
+            "suspended": "Suspendido",
+            "unsuccessful": "Sin éxito"
           }
         },
         "settings": {
+          "accessibility": {
+            "subscribe_mobile_notifications": "Subscribe to mobile notifications",
+            "subscribe_notifications": "Subscribe to notifications",
+            "unsubscribe_mobile_notifications": "Unsubscribe from mobile notifications",
+            "unsubscribe_notifications": "Unsubscribe from notifications"
+          },
           "navbar_title": "Configuración",
           "navbar_title_notifications": "Notificaciones",
           "backer": {
@@ -2830,6 +2850,7 @@
             "project_updates": "Actualizaciones del proyecto",
             "notifications": "Administrar notificaciones del proyecto"
           },
+          "error": "Unable to save",
           "social": {
             "title": "Notificaciones de redes sociales",
             "followers": "Nuevos seguidores",
@@ -2945,8 +2966,8 @@
         "errors": {
           "facebook": {
             "authorization_exception": {
-              "message": "We're having some trouble getting you logged in.",
-              "button": "Let's try that again"
+              "message": "Surgió un problema iniciando sesión.",
+              "button": "¡Inténtalo de nuevo!"
             },
             "settings_disabled": {
               "title": "Permiso denegado",
@@ -2970,7 +2991,7 @@
           "we_never_post_anything_without_permission": "Nunca publicaremos nada sin tu consentimiento.",
           "read_more": "Leer más"
         },
-        "navbar_title": "Log in or sign up"
+        "navbar_title": "Inicia sesión o regístrate"
       },
       "login": {
         "navbar_title": "Iniciar sesión",
@@ -2978,7 +2999,7 @@
         "detail": "¿Estos zapatos son nuevos? Si no lo son, ¡lo parecen!",
         "buttons": {
           "log_in": "Iniciar sesión",
-          "log_in_email": "Log in with email",
+          "log_in_email": "Iniciar con dirección de correo electrónico",
           "forgot_password": "¿Olvidaste tu contraseña?",
           "forgot_password_html": "<u>Forgot your password?</u>",
           "one_password": "1Password"
@@ -2989,9 +3010,9 @@
           "button": {
             "ok": "Ok"
           },
-          "does_not_match": "Login does not match any of our records.",
-          "title": "Login error",
-          "unable_to_log_in": "Unable to log in."
+          "does_not_match": "Credenciales no reconocidas.",
+          "title": "Error al iniciar sesión",
+          "unable_to_log_in": "No se pudo iniciar sesión."
         }
       },
       "forgot_password": {
@@ -3010,15 +3031,15 @@
           "full_name": "Nombre completo",
           "email": "Correo electrónico",
           "password": "Contraseña",
-          "password_min_characters": "Password (minimum 6 characters)"
+          "password_min_characters": "Clave (mínimo 6 caracteres)"
         },
         "navbar_title": "Registrar",
         "newsletter_full": "Descubre nuevos proyectos con nuestro beletín semanal.",
         "button": "Regístrar",
-        "button_email": "Sign up with email",
+        "button_email": "Registro con correo electrónico",
         "error": {
           "something_wrong": "Algo pasó aquí.",
-          "title": "Sign up error"
+          "title": "Error de registración"
         }
       },
       "facebook_confirmation": {
@@ -3041,7 +3062,7 @@
           "resend": "Volver a enviar"
         },
         "error": {
-          "message": "The code provided does not match."
+          "message": "Este código no existe."
         }
       },
       "project": {
@@ -3581,7 +3602,7 @@
         "switch_toggle_on": "SÍ",
         "switch_toggle_off": "NO",
         "error": {
-          "oops": "Oops!",
+          "oops": "¡Vaya!",
           "something_wrong": "Algo pasó aquí."
         },
         "alert": {
@@ -4076,6 +4097,12 @@
           }
         },
         "settings": {
+          "accessibility": {
+            "subscribe_mobile_notifications": "Subscribe to mobile notifications",
+            "subscribe_notifications": "Subscribe to notifications",
+            "unsubscribe_mobile_notifications": "Unsubscribe from mobile notifications",
+            "unsubscribe_notifications": "Unsubscribe from notifications"
+          },
           "navbar_title": "Paramètres",
           "navbar_title_notifications": "Notifications",
           "backer": {
@@ -4083,6 +4110,7 @@
             "project_updates": "Actus de projet",
             "notifications": "Gérer les notifications de projet"
           },
+          "error": "Unable to save",
           "social": {
             "title": "Notifications sociales",
             "followers": "Nouveaux abonnés",
@@ -4233,7 +4261,7 @@
           "log_in": "Connexion",
           "log_in_email": "Connexion avec votre adresse e-mail",
           "forgot_password": "Mot de passe oublié ?",
-          "forgot_password_html": "<u>Forgot your password?</u>",
+          "forgot_password_html": "<u>Mot de passe oublié ?</u>",
           "one_password": "1Password"
         },
         "placeholder_email": "Adresse e-mail",
@@ -4834,7 +4862,7 @@
         "switch_toggle_on": "ON",
         "switch_toggle_off": "OFF",
         "error": {
-          "oops": "Oops!",
+          "oops": "Oups !",
           "something_wrong": "Un erreur s'est produite."
         },
         "alert": {
@@ -5329,6 +5357,12 @@
           }
         },
         "settings": {
+          "accessibility": {
+            "subscribe_mobile_notifications": "Subscribe to mobile notifications",
+            "subscribe_notifications": "Subscribe to notifications",
+            "unsubscribe_mobile_notifications": "Unsubscribe from mobile notifications",
+            "unsubscribe_notifications": "Unsubscribe from notifications"
+          },
           "navbar_title": "Settings",
           "navbar_title_notifications": "Notifications",
           "backer": {
@@ -5336,6 +5370,7 @@
             "project_updates": "Project updates",
             "notifications": "Manage project notifications"
           },
+          "error": "Unable to save",
           "social": {
             "title": "Social notifications",
             "followers": "New followers",
@@ -6292,7 +6327,6 @@
     "i18n_discovery_touts": true,
     "i18n_start_tout": true,
     "responsive_manage": true,
-    "manage_pledge_ccs": true,
     "password_reset_banner": true,
     "play_page": true,
     "watch_page": true,
@@ -6419,8 +6453,8 @@
     "native_ios_aa": "control",
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
-    "native_iphone_horiz_vs_vert": "control",
-    "recs_thanks_combo_inputs": "collaborative_backings_v2",
+    "native_iphone_horiz_vs_vert": "experimental",
+    "recs_thanks_combo_inputs": "combo_inputs",
     "recs_hp_combo_v1": "combo_v1",
     "video_autoplay_3": "no_autoplay"
   },

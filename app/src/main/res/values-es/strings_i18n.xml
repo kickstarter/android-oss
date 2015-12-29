@@ -309,12 +309,12 @@
   <string name="discovery_baseball_card_stats_convert_from_pledged_of_goal" formatted="false">Conversión: %{pledged} de la meta de %{goal}.</string>
   <string name="discovery_baseball_card_stats_pledged_of_goal" formatted="false">de %{goal}</string>
   <string name="discovery_baseball_card_status_banner_canceled" formatted="false">Financiamiento cancelado</string>
-  <string name="discovery_baseball_card_status_banner_canceled_date" formatted="false">Funding canceled %{date}</string>
+  <string name="discovery_baseball_card_status_banner_canceled_date" formatted="false">Financiamiento cancelado el %{date}</string>
   <string name="discovery_baseball_card_status_banner_funding_unsuccessful_date" formatted="false">Financiamiento fallido %{date}</string>
   <string name="discovery_baseball_card_status_banner_successful" formatted="false">¡Financiado con éxito!</string>
-  <string name="discovery_baseball_card_status_banner_successful_date" formatted="false">Successfully funded %{date}</string>
+  <string name="discovery_baseball_card_status_banner_successful_date" formatted="false">Financiado con éxito el %{date}</string>
   <string name="discovery_baseball_card_status_banner_suspended" formatted="false">Financiamiento suspendido %{date}</string>
-  <string name="discovery_baseball_card_status_banner_suspended_date" formatted="false">Funding suspended %{date}</string>
+  <string name="discovery_baseball_card_status_banner_suspended_date" formatted="false">Financiamiento suspendido el %{date}</string>
   <string name="discovery_baseball_card_time_left_to_go" formatted="false">%{time_left} más</string>
   <string name="discovery_category" formatted="false">Categoría</string>
   <string name="discovery_empty_states_saved_logged_in_button" formatted="false">Descubre proyectos</string>
@@ -380,7 +380,7 @@
   <string name="forgot_password_title" formatted="false">¿Olvidaste tu contraseña?</string>
   <string name="forgot_password_we_sent_an_email_to_email_address_with_instructions_to_reset_your_password" formatted="false">Hemos enviado un correo electrónico a %{email} con las instrucciones para restablecer tu contraseña.</string>
   <string name="general_alert_buttons_ok" formatted="false">OK</string>
-  <string name="general_error_oops" formatted="false">Oops!</string>
+  <string name="general_error_oops" formatted="false">¡Vaya!</string>
   <string name="general_error_something_wrong" formatted="false">Algo pasó aquí.</string>
   <string name="general_loading" formatted="false">Cargando...</string>
   <string name="general_navigation_accessibility_button_close_label" formatted="false">Cerrar</string>
@@ -406,13 +406,13 @@
   <string name="login_buttons_forgot_password" formatted="false">¿Olvidaste tu contraseña?</string>
   <string name="login_buttons_forgot_password_html" formatted="false">&lt;u>Forgot your password?&lt;/u></string>
   <string name="login_buttons_log_in" formatted="false">Iniciar sesión</string>
-  <string name="login_buttons_log_in_email" formatted="false">Log in with email</string>
+  <string name="login_buttons_log_in_email" formatted="false">Iniciar con dirección de correo electrónico</string>
   <string name="login_buttons_one_password" formatted="false">1Password</string>
   <string name="login_detail" formatted="false">¿Estos zapatos son nuevos? Si no lo son, ¡lo parecen!</string>
   <string name="login_errors_button_ok" formatted="false">Ok</string>
-  <string name="login_errors_does_not_match" formatted="false">Login does not match any of our records.</string>
-  <string name="login_errors_title" formatted="false">Login error</string>
-  <string name="login_errors_unable_to_log_in" formatted="false">Unable to log in.</string>
+  <string name="login_errors_does_not_match" formatted="false">Credenciales no reconocidas.</string>
+  <string name="login_errors_title" formatted="false">Error al iniciar sesión</string>
+  <string name="login_errors_unable_to_log_in" formatted="false">No se pudo iniciar sesión.</string>
   <string name="login_navbar_title" formatted="false">Iniciar sesión</string>
   <string name="login_placeholder_email" formatted="false">Dirección de correo electrónico</string>
   <string name="login_placeholder_password" formatted="false">Contraseña</string>
@@ -430,12 +430,12 @@
   <string name="login_tout_disclaimer_read_more" formatted="false">Leer más</string>
   <string name="login_tout_disclaimer_we_never_post_anything_without_permission" formatted="false">Nunca publicaremos nada sin tu consentimiento.</string>
   <string name="login_tout_errors_button_ok" formatted="false">Ok</string>
-  <string name="login_tout_errors_facebook_authorization_exception_button" formatted="false">Let\'s try that again</string>
-  <string name="login_tout_errors_facebook_authorization_exception_message" formatted="false">We\'re having some trouble getting you logged in.</string>
+  <string name="login_tout_errors_facebook_authorization_exception_button" formatted="false">¡Inténtalo de nuevo!</string>
+  <string name="login_tout_errors_facebook_authorization_exception_message" formatted="false">Surgió un problema iniciando sesión.</string>
   <string name="login_tout_errors_facebook_generic_error_message" formatted="false">No se ha podido iniciar sesión con Facebook.</string>
   <string name="login_tout_errors_facebook_generic_error_title" formatted="false">Iniciar sesión con Facebook</string>
-  <string name="login_tout_errors_facebook_invalid_token_message" formatted="false">Ha ocurrido un error al iniciar sesión con Facebook.
-
+  <string name="login_tout_errors_facebook_invalid_token_message" formatted="false">Ha ocurrido un error al iniciar sesión con Facebook.\n
+\n
 Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y activar el permiso de acceso para Kickstarter.</string>
   <string name="login_tout_errors_facebook_invalid_token_title" formatted="false">Iniciar sesión con Facebook</string>
   <string name="login_tout_errors_facebook_settings_disabled_message" formatted="false">Parece que le has denegado a Kickstarter acceso a tu cuenta de Facebook. Para cambiarlo, por favor ve a Configuración > Facebook.</string>
@@ -458,7 +458,7 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="login_tout_message_creator_intent_traditional_login_button" formatted="false">Iniciar sesión</string>
   <string name="login_tout_message_creator_intent_traditional_signup_button" formatted="false">Registrar</string>
   <string name="login_tout_message_creator_intent_traditional_title" formatted="false">Utiliza tu dirección de correo electrónico:</string>
-  <string name="login_tout_navbar_title" formatted="false">Log in or sign up</string>
+  <string name="login_tout_navbar_title" formatted="false">Inicia sesión o regístrate</string>
   <string name="login_tout_save_intent_title" formatted="false">Inicia sesión para agregar este proyecto a tus favoritos y te mandaremos un recordatorio antes de que finalice.</string>
   <string name="login_tout_save_intent_traditional_login_button" formatted="false">Iniciar sesión</string>
   <string name="login_tout_save_intent_traditional_signup_button" formatted="false">Registrar</string>
@@ -493,14 +493,14 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="profile_projects_backed_project_count_projects_two" formatted="false">2 PROYECTOS PATROCINADOS</string>
   <string name="profile_projects_backed_project_count_projects_zero" formatted="false">0 PROYECTOS PATROCINADOS</string>
   <string name="profile_projects_backed_projects" formatted="false">Proyectos patrocinados</string>
-  <string name="profile_projects_created_projects" formatted="false">Created projects</string>
+  <string name="profile_projects_created_projects" formatted="false">Proyectos creados</string>
   <string name="profile_projects_empty_state_button" formatted="false">Descubre proyectos</string>
-  <string name="profile_projects_empty_state_message" formatted="false">Aún no has patrocinado ningún proyecto.
+  <string name="profile_projects_empty_state_message" formatted="false">Aún no has patrocinado ningún proyecto.\n
 ¡Es hora de cambiar esto!</string>
-  <string name="profile_projects_status_canceled" formatted="false">Canceled</string>
-  <string name="profile_projects_status_successful" formatted="false">Successful</string>
-  <string name="profile_projects_status_suspended" formatted="false">Suspended</string>
-  <string name="profile_projects_status_unsuccessful" formatted="false">Unsuccessful</string>
+  <string name="profile_projects_status_canceled" formatted="false">Cancelado</string>
+  <string name="profile_projects_status_successful" formatted="false">Exitoso</string>
+  <string name="profile_projects_status_suspended" formatted="false">Suspendido</string>
+  <string name="profile_projects_status_unsuccessful" formatted="false">Sin éxito</string>
   <string name="profile_projects_time_left_to_go" formatted="false">%{time_left} restante(s)</string>
   <string name="profile_settings_about_contact" formatted="false">Contacto</string>
   <string name="profile_settings_about_cookie" formatted="false">Política de cookies</string>
@@ -509,6 +509,10 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="profile_settings_about_privacy" formatted="false">Política de privacidad</string>
   <string name="profile_settings_about_terms" formatted="false">Condiciones de uso</string>
   <string name="profile_settings_about_title" formatted="false">Acerca de</string>
+  <string name="profile_settings_accessibility_subscribe_mobile_notifications" formatted="false">Subscribe to mobile notifications</string>
+  <string name="profile_settings_accessibility_subscribe_notifications" formatted="false">Subscribe to notifications</string>
+  <string name="profile_settings_accessibility_unsubscribe_mobile_notifications" formatted="false">Unsubscribe from mobile notifications</string>
+  <string name="profile_settings_accessibility_unsubscribe_notifications" formatted="false">Unsubscribe from notifications</string>
   <string name="profile_settings_backer_notifications" formatted="false">Administrar notificaciones del proyecto</string>
   <string name="profile_settings_backer_project_updates" formatted="false">Actualizaciones del proyecto</string>
   <string name="profile_settings_backer_title" formatted="false">Proyectos que patrocinas</string>
@@ -516,6 +520,7 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="profile_settings_creator_likes" formatted="false">"Me gusta" nuevos</string>
   <string name="profile_settings_creator_pledges" formatted="false">Nuevas contribuciones</string>
   <string name="profile_settings_creator_title" formatted="false">Notificaciones del creador</string>
+  <string name="profile_settings_error" formatted="false">Unable to save</string>
   <string name="profile_settings_log_out_button" formatted="false">Cerrar sesión</string>
   <string name="profile_settings_logout_alert_cancel_button" formatted="false">Cancelar</string>
   <string name="profile_settings_logout_alert_confirm_button" formatted="false">Cerrar sesión</string>
@@ -527,8 +532,8 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="profile_settings_newsletter_promo" formatted="false">Novedades y eventos de Kickstarter</string>
   <string name="profile_settings_newsletter_title" formatted="false">Boletines informativos</string>
   <string name="profile_settings_newsletter_weekly" formatted="false">Nuestros Favoritos</string>
-  <string name="profile_settings_rating_message" formatted="false">Gracias por usar la aplicación de Kickstarter.
-Si tienes un momento, ¿te importaría calificar tu experiencia?
+  <string name="profile_settings_rating_message" formatted="false">Gracias por usar la aplicación de Kickstarter.\n
+Si tienes un momento, ¿te importaría calificar tu experiencia?\n
 ¡Te lo agradeceríamos!</string>
   <string name="profile_settings_rating_option_no_thanks" formatted="false">No, gracias</string>
   <string name="profile_settings_rating_option_rate_now" formatted="false">Califícala ahora</string>
@@ -562,11 +567,11 @@ Si tienes un momento, ¿te importaría calificar tu experiencia?
   <string name="project_checkout_share_buttons_tweet" formatted="false">Tweet</string>
   <string name="project_checkout_share_exclamation" formatted="false">Yu-Juu!</string>
   <string name="project_checkout_share_link_OK" formatted="false">Ok</string>
-  <string name="project_checkout_share_link_the_project_url_has_been_copied_to_your_clipboard" formatted="false">El URL del proyecto ha sido copiado en tu portapapeles:
-
+  <string name="project_checkout_share_link_the_project_url_has_been_copied_to_your_clipboard" formatted="false">El URL del proyecto ha sido copiado en tu portapapeles:\n
+\n
 %{project_url}</string>
-  <string name="project_checkout_share_link_the_update_url_has_been_copied_to_your_clipboard" formatted="false">El URL de la actualización ha sido copiado en tu portapapeles:
-
+  <string name="project_checkout_share_link_the_update_url_has_been_copied_to_your_clipboard" formatted="false">El URL de la actualización ha sido copiado en tu portapapeles:\n
+\n
 %{update_url}</string>
   <string name="project_checkout_share_title_via_kickstarter" formatted="false">%{project_or_update_title}, vía Kickstarter</string>
   <string name="project_checkout_share_twitter_I_just_backed_project_on_kickstarter" formatted="false">Acabo de patrocinar %{project_name} en @Kickstarter</string>
@@ -645,13 +650,13 @@ Si tienes un momento, ¿te importaría calificar tu experiencia?
   <string name="search_by_creator" formatted="false">de %{creator_name}</string>
   <string name="search_most_popular" formatted="false">Los más populares</string>
   <string name="signup_button" formatted="false">Regístrar</string>
-  <string name="signup_button_email" formatted="false">Sign up with email</string>
+  <string name="signup_button_email" formatted="false">Registro con correo electrónico</string>
   <string name="signup_error_something_wrong" formatted="false">Algo pasó aquí.</string>
-  <string name="signup_error_title" formatted="false">Sign up error</string>
+  <string name="signup_error_title" formatted="false">Error de registración</string>
   <string name="signup_input_fields_email" formatted="false">Correo electrónico</string>
   <string name="signup_input_fields_full_name" formatted="false">Nombre completo</string>
   <string name="signup_input_fields_password" formatted="false">Contraseña</string>
-  <string name="signup_input_fields_password_min_characters" formatted="false">Password (minimum 6 characters)</string>
+  <string name="signup_input_fields_password_min_characters" formatted="false">Clave (mínimo 6 caracteres)</string>
   <string name="signup_navbar_title" formatted="false">Registrar</string>
   <string name="signup_newsletter_full" formatted="false">Descubre nuevos proyectos con nuestro beletín semanal.</string>
   <string name="social_buttons_cancel" formatted="false">Cancelar</string>
@@ -692,12 +697,12 @@ Si tienes un momento, ¿te importaría calificar tu experiencia?
   <string name="social_public_comment" formatted="false">Comentario público</string>
   <string name="social_update" formatted="false">Actualización</string>
   <string name="social_update_number" formatted="false">Actualización %{update_number}</string>
-  <string name="support_email_body" formatted="false">¿Cómo podemos ayudarte? Por favor, trata de ser lo más específico posible.
-
-
-
-
---------
+  <string name="support_email_body" formatted="false">¿Cómo podemos ayudarte? Por favor, trata de ser lo más específico posible.\n
+\n
+\n
+\n
+\n
+--------\n
 </string>
   <string name="support_email_button_ok" formatted="false">Ok</string>
   <string name="support_email_noemail_message" formatted="false">Parece que no tienes una cuenta de correo electrónico en tu dispositivo. Por favor ponte en contacto con nosotros a través de app@kickstarter.com.</string>
@@ -715,7 +720,7 @@ Si tienes un momento, ¿te importaría calificar tu experiencia?
   <string name="two_factor_buttons_resend" formatted="false">Volver a enviar</string>
   <string name="two_factor_buttons_submit" formatted="false">Enviar</string>
   <string name="two_factor_code_placeholder" formatted="false">Ingresar código</string>
-  <string name="two_factor_error_message" formatted="false">The code provided does not match.</string>
+  <string name="two_factor_error_message" formatted="false">Este código no existe.</string>
   <string name="two_factor_message" formatted="false">Por favor ingresa tu código de verificación para poder continuar.</string>
   <string name="two_factor_title" formatted="false">Verificar</string>
   <string name="update_comments_creator" formatted="false">Creador</string>

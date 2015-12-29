@@ -52,13 +52,14 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   protected @BindColor(R.color.green) int green;
   protected @BindColor(R.color.gray) int gray;
 
-  protected @BindString(R.string.___Hello_Kickstarter_App_Support) String helloAppSupportString;
-  protected @BindString(R.string.___How_can_we_help_you) String howCanWeHelpString;
-  protected @BindString(R.string.___subscribe_mobile_notification_button_content_description) String subscribeMobileString;
-  protected @BindString(R.string.___subscribe_notification_button_content_description) String subscribeString;
-  protected @BindString(R.string.___Unable_to_save) String unableToSaveString;
-  protected @BindString(R.string.___unsubscribe_mobile_notification_button_content_description) String unsubscribeMobileString;
-  protected @BindString(R.string.___unsubscribe_notification_button_content_description) String unsubscribeString;
+  protected @BindString(R.string.profile_settings_accessibility_subscribe_mobile_notifications) String subscribeMobileString;
+  protected @BindString(R.string.profile_settings_accessibility_subscribe_notifications) String subscribeString;
+  protected @BindString(R.string.support_email_body) String supportEmailBodyString;
+  protected @BindString(R.string.support_email_subject) String supportEmailSubjectString;
+  protected @BindString(R.string.support_email_to) String supportEmailString;
+  protected @BindString(R.string.profile_settings_error) String unableToSaveString;
+  protected @BindString(R.string.profile_settings_accessibility_unsubscribe_mobile_notifications) String unsubscribeMobileString;
+  protected @BindString(R.string.profile_settings_accessibility_unsubscribe_notifications) String unsubscribeString;
 
   @Inject CurrentUser currentUser;
   @Inject Logout logout;
@@ -102,8 +103,6 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   }
 
   protected void composeContactEmail(final @Nullable User user) {
-    final String email = "app@kickstarter.com";
-
     final List<String> debugInfo = Arrays.asList(
       (user != null ? user.name() : "Logged Out"),
       release.variant(),
@@ -116,16 +115,15 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
     );
 
     final String body = new StringBuilder()
+      .append(supportEmailBodyString)
       .append(TextUtils.join(" | ", debugInfo))
-      .append(String.format("\r\n\r\n%1$s\r\n", howCanWeHelpString))
-      .append("—————————————\r\n")
       .toString();
 
     final Intent intent = new Intent(Intent.ACTION_SENDTO)
       .setData(Uri.parse("mailto:"))
-      .putExtra(Intent.EXTRA_SUBJECT, helloAppSupportString)
+      .putExtra(Intent.EXTRA_SUBJECT, supportEmailSubjectString)
       .putExtra(Intent.EXTRA_TEXT, body)
-      .putExtra(Intent.EXTRA_EMAIL, new String[]{email});
+      .putExtra(Intent.EXTRA_EMAIL, new String[]{supportEmailString});
     if (intent.resolveActivity(getPackageManager()) != null) {
       startActivity(Intent.createChooser(intent, getString(R.string.___Select_email_application)));
     }

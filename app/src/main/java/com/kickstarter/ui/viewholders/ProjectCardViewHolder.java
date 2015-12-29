@@ -46,8 +46,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.friend_backing_group) ViewGroup friendBackingViewGroup;
   protected @Bind(R.id.funding_unsuccessful_text_view) TextView fundingUnsuccessfulTextView;
   protected @Bind(R.id.name) TextView nameTextView;
-  protected @Nullable @Bind(R.id.created_by) TextView createdByTextView;
-  protected @Nullable @Bind(R.id.blurb) TextView blurbTextView;
+  protected @Bind(R.id.blurb) TextView blurbTextView;
   protected @Bind(R.id.percent) TextView percentTextView;
   protected @Bind(R.id.percentage_funded) ProgressBar percentageFundedProgressBar;
   protected @Bind(R.id.photo) ImageView photoImageView;
@@ -106,12 +105,6 @@ public final class ProjectCardViewHolder extends KSViewHolder {
 
     setProjectMetadataView();
     setProjectStateView(view.getContext());
-
-    /* landscape-specific */
-    if (createdByTextView != null) {
-      createdByTextView.setText(Html.fromHtml(ksString.format(byCreatorString,
-        "creator_name", TextUtils.htmlEncode(project.creator().name()))));
-    }
   }
 
   @Override

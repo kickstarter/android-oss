@@ -16,8 +16,8 @@
       android:orientation="vertical"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:paddingLeft="@dimen/grid_3"
-      android:paddingRight="@dimen/grid_3" >
+      android:paddingLeft="@dimen/form_margin_x"
+      android:paddingRight="@dimen/form_margin_x" >
 
       <TextView
         style="@style/BodySecondary"

@@ -309,12 +309,12 @@
   <string name="discovery_baseball_card_stats_convert_from_pledged_of_goal" formatted="false">Umgerechneter Betrag: %{pledged} von %{goal} (Fianzierungsziel).</string>
   <string name="discovery_baseball_card_stats_pledged_of_goal" formatted="false">von %{goal}</string>
   <string name="discovery_baseball_card_status_banner_canceled" formatted="false">Finanzierung abgebrochen</string>
-  <string name="discovery_baseball_card_status_banner_canceled_date" formatted="false">Funding canceled %{date}</string>
+  <string name="discovery_baseball_card_status_banner_canceled_date" formatted="false">Finanzierung abgebrochen am %{date}</string>
   <string name="discovery_baseball_card_status_banner_funding_unsuccessful_date" formatted="false">Finanzierung fehlgeschlagen %{date}</string>
   <string name="discovery_baseball_card_status_banner_successful" formatted="false">Erfolgreich finanziert!</string>
-  <string name="discovery_baseball_card_status_banner_successful_date" formatted="false">Successfully funded %{date}</string>
+  <string name="discovery_baseball_card_status_banner_successful_date" formatted="false">Erfolgreich finanziert am %{date}</string>
   <string name="discovery_baseball_card_status_banner_suspended" formatted="false">Finanzierung ausgesetzt %{date}</string>
-  <string name="discovery_baseball_card_status_banner_suspended_date" formatted="false">Funding suspended %{date}</string>
+  <string name="discovery_baseball_card_status_banner_suspended_date" formatted="false">Finanzierung ausgesetzt am %{date}</string>
   <string name="discovery_baseball_card_time_left_to_go" formatted="false">%{time_left} zum Ziel</string>
   <string name="discovery_category" formatted="false">Kategorie</string>
   <string name="discovery_empty_states_saved_logged_in_button" formatted="false">Projekte entdecken</string>
@@ -380,7 +380,7 @@
   <string name="forgot_password_title" formatted="false">Passwort vergessen?</string>
   <string name="forgot_password_we_sent_an_email_to_email_address_with_instructions_to_reset_your_password" formatted="false">Wir haben eine E-Mail mit einer Anleitung zum Zurücksetzen deines Passworts an %{email} geschickt.</string>
   <string name="general_alert_buttons_ok" formatted="false">OK</string>
-  <string name="general_error_oops" formatted="false">Oops!</string>
+  <string name="general_error_oops" formatted="false">Huch!</string>
   <string name="general_error_something_wrong" formatted="false">Da hat etwas nicht geklappt.</string>
   <string name="general_loading" formatted="false">Wird geladen ...</string>
   <string name="general_navigation_accessibility_button_close_label" formatted="false">Schließen</string>
@@ -406,13 +406,13 @@
   <string name="login_buttons_forgot_password" formatted="false">Passwort vergessen?</string>
   <string name="login_buttons_forgot_password_html" formatted="false">&lt;u>Forgot your password?&lt;/u></string>
   <string name="login_buttons_log_in" formatted="false">Anmelden</string>
-  <string name="login_buttons_log_in_email" formatted="false">Log in with email</string>
+  <string name="login_buttons_log_in_email" formatted="false">Mit E-Mail-Adresse anmelden</string>
   <string name="login_buttons_one_password" formatted="false">1Password</string>
   <string name="login_detail" formatted="false">Neue Schuhe? Nein? Dabei sehen sie nigelnagelneu aus!</string>
   <string name="login_errors_button_ok" formatted="false">OK</string>
-  <string name="login_errors_does_not_match" formatted="false">Login does not match any of our records.</string>
-  <string name="login_errors_title" formatted="false">Login error</string>
-  <string name="login_errors_unable_to_log_in" formatted="false">Unable to log in.</string>
+  <string name="login_errors_does_not_match" formatted="false">Anmeldedaten nicht erkannt.</string>
+  <string name="login_errors_title" formatted="false">Fehler beim Einloggen</string>
+  <string name="login_errors_unable_to_log_in" formatted="false">Anmeldung fehlgeschlagen.</string>
   <string name="login_navbar_title" formatted="false">Anmelden</string>
   <string name="login_placeholder_email" formatted="false">E-Mail-Adresse</string>
   <string name="login_placeholder_password" formatted="false">Passwort</string>
@@ -430,8 +430,8 @@
   <string name="login_tout_disclaimer_read_more" formatted="false">Weiterlesen</string>
   <string name="login_tout_disclaimer_we_never_post_anything_without_permission" formatted="false">Wir veröffentlichen niemals etwas ohne deine Zustimmung.</string>
   <string name="login_tout_errors_button_ok" formatted="false">OK</string>
-  <string name="login_tout_errors_facebook_authorization_exception_button" formatted="false">Let\'s try that again</string>
-  <string name="login_tout_errors_facebook_authorization_exception_message" formatted="false">We\'re having some trouble getting you logged in.</string>
+  <string name="login_tout_errors_facebook_authorization_exception_button" formatted="false">Versuche es noch einmal!</string>
+  <string name="login_tout_errors_facebook_authorization_exception_message" formatted="false">Fehler beim Einloggen aufgetreten.</string>
   <string name="login_tout_errors_facebook_generic_error_message" formatted="false">Anmeldung bei Facebook fehlgeschlagen.</string>
   <string name="login_tout_errors_facebook_generic_error_title" formatted="false">Facebook-Anmeldung</string>
   <string name="login_tout_errors_facebook_invalid_token_message" formatted="false">Bei der Anmeldung mit Facebook gab es ein Problem.\n
@@ -458,7 +458,7 @@ Für gewöhnlich kann das Problem behoben werden, indem du in den iOS Einstellun
   <string name="login_tout_message_creator_intent_traditional_login_button" formatted="false">Anmelden</string>
   <string name="login_tout_message_creator_intent_traditional_signup_button" formatted="false">Registrieren</string>
   <string name="login_tout_message_creator_intent_traditional_title" formatted="false">Benutze deine E-Mail-Adresse:</string>
-  <string name="login_tout_navbar_title" formatted="false">Log in or sign up</string>
+  <string name="login_tout_navbar_title" formatted="false">Einloggen oder anmelden</string>
   <string name="login_tout_save_intent_title" formatted="false">Melde dich an, um dieses Projekt zu deinen Favoriten hinzuzufügen. Wir senden dir eine Benachrichtigung vor Ablauf des Projekts.</string>
   <string name="login_tout_save_intent_traditional_login_button" formatted="false">Anmelden</string>
   <string name="login_tout_save_intent_traditional_signup_button" formatted="false">Registrieren</string>
@@ -493,13 +493,13 @@ Für gewöhnlich kann das Problem behoben werden, indem du in den iOS Einstellun
   <string name="profile_projects_backed_project_count_projects_two" formatted="false">HAT 2 PROJEKTE UNTERSTÜTZT</string>
   <string name="profile_projects_backed_project_count_projects_zero" formatted="false">HAT 0 PROJEKTE UNTERSTÜTZT</string>
   <string name="profile_projects_backed_projects" formatted="false">Unterstützte Projekte</string>
-  <string name="profile_projects_created_projects" formatted="false">Created projects</string>
+  <string name="profile_projects_created_projects" formatted="false">Erstellte Projekte</string>
   <string name="profile_projects_empty_state_button" formatted="false">Projekte entdecken</string>
   <string name="profile_projects_empty_state_message" formatted="false">Du hast noch keine Projekte unterstützt. Das sollten wir ändern!</string>
-  <string name="profile_projects_status_canceled" formatted="false">Canceled</string>
-  <string name="profile_projects_status_successful" formatted="false">Successful</string>
-  <string name="profile_projects_status_suspended" formatted="false">Suspended</string>
-  <string name="profile_projects_status_unsuccessful" formatted="false">Unsuccessful</string>
+  <string name="profile_projects_status_canceled" formatted="false">Zurückgezogen</string>
+  <string name="profile_projects_status_successful" formatted="false">Erfolgreich</string>
+  <string name="profile_projects_status_suspended" formatted="false">Ausgesetzt</string>
+  <string name="profile_projects_status_unsuccessful" formatted="false">Fehlgeschlagen</string>
   <string name="profile_projects_time_left_to_go" formatted="false">%{time_left} verbleibend</string>
   <string name="profile_settings_about_contact" formatted="false">Kontakt</string>
   <string name="profile_settings_about_cookie" formatted="false">Cookie-Richtlinien</string>
@@ -508,6 +508,10 @@ Für gewöhnlich kann das Problem behoben werden, indem du in den iOS Einstellun
   <string name="profile_settings_about_privacy" formatted="false">Datenschutzrichtlinien</string>
   <string name="profile_settings_about_terms" formatted="false">Nutzungsbedingungen</string>
   <string name="profile_settings_about_title" formatted="false">Über uns</string>
+  <string name="profile_settings_accessibility_subscribe_mobile_notifications" formatted="false">Subscribe to mobile notifications</string>
+  <string name="profile_settings_accessibility_subscribe_notifications" formatted="false">Subscribe to notifications</string>
+  <string name="profile_settings_accessibility_unsubscribe_mobile_notifications" formatted="false">Unsubscribe from mobile notifications</string>
+  <string name="profile_settings_accessibility_unsubscribe_notifications" formatted="false">Unsubscribe from notifications</string>
   <string name="profile_settings_backer_notifications" formatted="false">Projektbenachrichtigungen verwalten</string>
   <string name="profile_settings_backer_project_updates" formatted="false">Projekt-Updates</string>
   <string name="profile_settings_backer_title" formatted="false">Deine unterstützten Projekte</string>
@@ -515,6 +519,7 @@ Für gewöhnlich kann das Problem behoben werden, indem du in den iOS Einstellun
   <string name="profile_settings_creator_likes" formatted="false">Neue Likes</string>
   <string name="profile_settings_creator_pledges" formatted="false">Neue Beiträge</string>
   <string name="profile_settings_creator_title" formatted="false">Projektgründer-Meldungen</string>
+  <string name="profile_settings_error" formatted="false">Unable to save</string>
   <string name="profile_settings_log_out_button" formatted="false">Abmelden</string>
   <string name="profile_settings_logout_alert_cancel_button" formatted="false">Abbrechen</string>
   <string name="profile_settings_logout_alert_confirm_button" formatted="false">Abmelden</string>
@@ -644,13 +649,13 @@ Wir würden uns sehr darüber freuen!</string>
   <string name="search_by_creator" formatted="false">von %{creator_name}</string>
   <string name="search_most_popular" formatted="false">Publikumslieblinge</string>
   <string name="signup_button" formatted="false">Registrieren</string>
-  <string name="signup_button_email" formatted="false">Sign up with email</string>
+  <string name="signup_button_email" formatted="false">Mit E-Mail-Adresse registrieren</string>
   <string name="signup_error_something_wrong" formatted="false">Da hat etwas nicht geklappt.</string>
-  <string name="signup_error_title" formatted="false">Sign up error</string>
+  <string name="signup_error_title" formatted="false">Fehler bei Registrierung</string>
   <string name="signup_input_fields_email" formatted="false">E-Mail</string>
   <string name="signup_input_fields_full_name" formatted="false">Vollständiger Name</string>
   <string name="signup_input_fields_password" formatted="false">Passwort</string>
-  <string name="signup_input_fields_password_min_characters" formatted="false">Password (minimum 6 characters)</string>
+  <string name="signup_input_fields_password_min_characters" formatted="false">Passwort (mindestens 6 Zeichen)</string>
   <string name="signup_navbar_title" formatted="false">Registrieren</string>
   <string name="signup_newsletter_full" formatted="false">Endecke neue Projekte in unserem wöchentlichen Newsletter.</string>
   <string name="social_buttons_cancel" formatted="false">Abbrechen</string>
@@ -709,7 +714,7 @@ Wir würden uns sehr darüber freuen!</string>
   <string name="two_factor_buttons_resend" formatted="false">Erneut senden</string>
   <string name="two_factor_buttons_submit" formatted="false">Absenden</string>
   <string name="two_factor_code_placeholder" formatted="false">Code eingeben</string>
-  <string name="two_factor_error_message" formatted="false">The code provided does not match.</string>
+  <string name="two_factor_error_message" formatted="false">Dieser Code ist ungültig.</string>
   <string name="two_factor_message" formatted="false">Bitte gebe deinen Verifizierungscode ein, um fortzufahren.</string>
   <string name="two_factor_title" formatted="false">Bestätigen</string>
   <string name="update_comments_creator" formatted="false">Projektgründer</string>

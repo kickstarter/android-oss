@@ -404,7 +404,7 @@
   <string name="invalid_api_client_alert_title" formatted="false">Veuillez mettre à jour</string>
   <string name="invalid_api_client_alert_upgrade" formatted="false">Mise à jour</string>
   <string name="login_buttons_forgot_password" formatted="false">Mot de passe oublié ?</string>
-  <string name="login_buttons_forgot_password_html" formatted="false">&lt;u>Forgot your password?&lt;/u></string>
+  <string name="login_buttons_forgot_password_html" formatted="false">&lt;u>Mot de passe oublié ?&lt;/u></string>
   <string name="login_buttons_log_in" formatted="false">Connexion</string>
   <string name="login_buttons_log_in_email" formatted="false">Connexion avec votre adresse e-mail</string>
   <string name="login_buttons_one_password" formatted="false">1Password</string>
@@ -508,6 +508,10 @@ Ce problème peut généralement être résolu en accédant à Réglages iOS > F
   <string name="profile_settings_about_privacy" formatted="false">Politique de confidentialité</string>
   <string name="profile_settings_about_terms" formatted="false">Conditions d\'utilisation</string>
   <string name="profile_settings_about_title" formatted="false">À propos de Kickstarter</string>
+  <string name="profile_settings_accessibility_subscribe_mobile_notifications" formatted="false">Subscribe to mobile notifications</string>
+  <string name="profile_settings_accessibility_subscribe_notifications" formatted="false">Subscribe to notifications</string>
+  <string name="profile_settings_accessibility_unsubscribe_mobile_notifications" formatted="false">Unsubscribe from mobile notifications</string>
+  <string name="profile_settings_accessibility_unsubscribe_notifications" formatted="false">Unsubscribe from notifications</string>
   <string name="profile_settings_backer_notifications" formatted="false">Gérer les notifications de projet</string>
   <string name="profile_settings_backer_project_updates" formatted="false">Actus de projet</string>
   <string name="profile_settings_backer_title" formatted="false">Les projets que je soutiens</string>
@@ -515,6 +519,7 @@ Ce problème peut généralement être résolu en accédant à Réglages iOS > F
   <string name="profile_settings_creator_likes" formatted="false">Nouvelles mentions J\'aime</string>
   <string name="profile_settings_creator_pledges" formatted="false">Nouveaux engagements</string>
   <string name="profile_settings_creator_title" formatted="false">Notifications du créateur</string>
+  <string name="profile_settings_error" formatted="false">Unable to save</string>
   <string name="profile_settings_log_out_button" formatted="false">Déconnexion</string>
   <string name="profile_settings_logout_alert_cancel_button" formatted="false">Annuler</string>
   <string name="profile_settings_logout_alert_confirm_button" formatted="false">Déconnexion</string>

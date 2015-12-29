@@ -509,6 +509,10 @@ Let’s change that!</string>
   <string name="profile_settings_about_privacy" formatted="false">Privacy Policy</string>
   <string name="profile_settings_about_terms" formatted="false">Terms of Use</string>
   <string name="profile_settings_about_title" formatted="false">About</string>
+  <string name="profile_settings_accessibility_subscribe_mobile_notifications" formatted="false">Subscribe to mobile notifications</string>
+  <string name="profile_settings_accessibility_subscribe_notifications" formatted="false">Subscribe to notifications</string>
+  <string name="profile_settings_accessibility_unsubscribe_mobile_notifications" formatted="false">Unsubscribe from mobile notifications</string>
+  <string name="profile_settings_accessibility_unsubscribe_notifications" formatted="false">Unsubscribe from notifications</string>
   <string name="profile_settings_backer_notifications" formatted="false">Manage project notifications</string>
   <string name="profile_settings_backer_project_updates" formatted="false">Project updates</string>
   <string name="profile_settings_backer_title" formatted="false">Projects you back</string>
@@ -516,6 +520,7 @@ Let’s change that!</string>
   <string name="profile_settings_creator_likes" formatted="false">New likes</string>
   <string name="profile_settings_creator_pledges" formatted="false">New pledges</string>
   <string name="profile_settings_creator_title" formatted="false">Creator notifications</string>
+  <string name="profile_settings_error" formatted="false">Unable to save</string>
   <string name="profile_settings_log_out_button" formatted="false">Log out</string>
   <string name="profile_settings_logout_alert_cancel_button" formatted="false">Cancel</string>
   <string name="profile_settings_logout_alert_confirm_button" formatted="false">Log out</string>

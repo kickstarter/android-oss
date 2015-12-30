@@ -80,6 +80,7 @@ public final class ProjectViewHolder extends KSViewHolder {
 
   protected @BindString(R.string.project_creator_by_creator_html) String byCreatorString;
   protected @BindString(R.string.discovery_baseball_card_blurb_read_more) String blurbReadMoreString;
+  protected @BindString(R.string.project_disclaimer_goal_not_reached) String projectDisclaimerGoalNotReachedString;
   protected @BindString(R.string.project_status_funding_canceled) String fundingCanceledString;
   protected @BindString(R.string.project_status_funding_project_canceled_by_creator) String fundingCanceledByCreatorString;
   protected @BindString(R.string.project_status_project_was_successfully_funded_on_deadline) String successfullyFundedOnDeadlineString;
@@ -148,9 +149,13 @@ public final class ProjectViewHolder extends KSViewHolder {
       .transform(new CircleTransformation())
       .into(avatarImageView);
     avatarNameTextView.setText(project.creator().name());
-    fundMessageTextView.setText(String.format(context.getString(R.string.___This_project_will_only_be_funded_if),
+    fundMessageTextView.setText(ksString.format(
+      projectDisclaimerGoalNotReachedString,
+      "goal_currency",
       ksCurrency.format(project.goal(), project, true),
-      DateTimeUtils.mediumDateTime(project.deadline())));
+      "deadline",
+      DateTimeUtils.mediumDateTime(project.deadline())
+    ));
     updatesCountTextView.setText(project.formattedUpdatesCount());
     commentsCountTextView.setText(project.formattedCommentsCount());
 

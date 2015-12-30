@@ -101,7 +101,6 @@
     unknown sources in the security settings of your device.
   </string>
   <string name="___Send_feedback">Send feedback</string>
-  <string name="___Pledge_or_more">Pledge %1$s or more</string>
   <string name="___pledged_of_">pledged of\u0020</string>
   <string name="___pledged_of_goal">pledged of %1$s</string>
   <string name="___Post">Post</string>
@@ -118,7 +117,6 @@
   <string name="___Select_email_application">Select email application:</string>
   <string name="___Sha">SHA</string>
   <string name="___Share">Share</string>
-  <string name="___share_message">"%1$s, via %2$s"</string>
   <string name="___Share_this_project">Share this project</string>
   <string name="___Shipping_destinations">Shipping destinations</string>
   <string name="___Sign_up_or_log_in_with_your_Facebook_account">
@@ -155,23 +153,18 @@
   <string name="___You_just_backed">You just backed &lt;b>%1$s&lt;/b>. Share this project with friends to help it along!</string>
   <string name="___You_launched_a_project">You launched a project: %1$s</string>
   <string name="___You_selected">You selected</string>
-  <string name="____Youre_a_backer">\u0020• You\'re a backer\u0020</string>
   <string name="___Youre_a_backer">You\'re a backer!</string>
   <string name="___You_starred_this_project">You starred this project.</string>
 
   <!-- Content descriptions -->
   <string name="___activity_button_content_description">Activity feed</string>
-  <string name="___category_icon_content_description">Category</string>
   <string name="___comment_button_content_description">Write a comment</string>
   <string name="___current_user_button_content_description">Current user menu</string>
   <string name="___filter_button_content_description">Filter by categories</string>
   <string name="___help_menu_button_content_description">Help menu</string>
   <string name="___live_project_count_content_description">Live projects</string>
-  <string name="___location_icon_content_description">Location</string>
   <string name="___login_button_content_description">Log in</string>
   <string name="___overflow_button_content_description">Overflow menu</string>
   <string name="___play_video_button_content_description">Play video</string>
   <string name="___search_button_content_description">Search projects</string>
-  <string name="___share_button_content_description">Share this project</string>
-  <string name="___star_fab_content_description">Star this project</string>
 </resources>

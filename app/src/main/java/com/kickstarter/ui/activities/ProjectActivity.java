@@ -19,6 +19,7 @@ import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 import com.kickstarter.viewmodels.ProjectViewModel;
@@ -37,16 +38,20 @@ import butterknife.OnClick;
 public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   private ProjectAdapter adapter;
 
-  @Bind(R.id.project_recycler_view) RecyclerView projectRecyclerView;
-  @Bind(R.id.star_fab) FloatingActionButton starFab;
-  @Bind(R.id.back_project_button) Button backProjectButton;
-  @Bind(R.id.manage_pledge_button) Button managePledgeButton;
-  @Bind(R.id.view_pledge_button) Button viewPledgeButton;
+  protected @Bind(R.id.project_recycler_view) RecyclerView projectRecyclerView;
+  protected @Bind(R.id.star_fab) FloatingActionButton starFab;
+  protected @Bind(R.id.back_project_button) Button backProjectButton;
+  protected @Bind(R.id.manage_pledge_button) Button managePledgeButton;
+  protected @Bind(R.id.view_pledge_button) Button viewPledgeButton;
 
-  @BindDrawable(R.drawable.ic_star_black_24dp) Drawable starDrawable;
-  @BindColor(R.color.green) int green;
-  @BindColor(R.color.text_primary) int textPrimary;
-  @BindString(R.string.project_back_button) String projectBackButtonString;
+  protected @BindColor(R.color.green) int green;
+  protected @BindColor(R.color.text_primary) int textPrimary;
+
+  protected @BindDrawable(R.drawable.ic_star_black_24dp) Drawable starDrawable;
+
+  protected @BindString(R.string.project_back_button) String projectBackButtonString;
+  protected @BindString(R.string.project_checkout_manage_navbar_title) String managePledgeString;
+  protected @BindString(R.string.project_star_confirmation) String projectStarConfirmationString;
 
   @Inject KSCurrency ksCurrency;
 
@@ -124,7 +129,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     final Intent intent = new Intent(this, CheckoutActivity.class)
       .putExtra(getString(R.string.intent_project), project)
       .putExtra(getString(R.string.intent_url), project.editPledgeUrl())
-      .putExtra(getString(R.string.intent_toolbar_title), getString(R.string.___Manage_pledge));
+      .putExtra(getString(R.string.intent_toolbar_title), managePledgeString);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
@@ -161,8 +166,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   }
 
   public void showStarPrompt() {
-    final Toast toast = Toast.makeText(this, R.string.___Well_remind_you_48_hours, Toast.LENGTH_LONG);
-    toast.show();
+    ViewUtils.showToast(this, projectStarConfirmationString);
   }
 
   public void startCheckoutActivity(@NonNull final Project project) {
@@ -191,7 +195,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   public void startShareIntent(@NonNull final Project project) {
     final Intent intent = new Intent(Intent.ACTION_SEND)
       .setType(getString(R.string.intent_share_type))
-      .putExtra(Intent.EXTRA_TEXT, String.format(getString(R.string.___share_message), project.name(), project.webProjectUrl()));
+      .putExtra(Intent.EXTRA_TEXT, String.format("%1$s\r\n\r\n%2$s", project.name(), project.webProjectUrl()));
     startActivity(intent);
   }
 

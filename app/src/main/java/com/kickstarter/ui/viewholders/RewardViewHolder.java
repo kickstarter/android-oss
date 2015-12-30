@@ -22,20 +22,21 @@ import butterknife.BindString;
 import butterknife.ButterKnife;
 
 public final class RewardViewHolder extends KSViewHolder {
-  public @Bind(R.id.pledge_minimum) TextView minimumTextView;
-  public @Bind(R.id.reward_backers_count) TextView backersCountTextView;
-  public @Bind(R.id.reward_description) TextView descriptionTextView;
-  public @Bind(R.id.estimated_delivery) TextView estimatedDeliveryTextView;
-  public @Bind(R.id.estimated_delivery_date) TextView estimatedDeliveryDateTextView;
-  public @Bind(R.id.green_overlay) View greenOverlayView;
-  public @Bind(R.id.selected) TextView selectedTextView;
-  public @Bind(R.id.limited) TextView limitedTextView;
-  public @Bind(R.id.all_gone) TextView allGoneTextView;
-  public @Bind(R.id.white_overlay) View whiteOverlayView;
-  public @Bind(R.id.shipping_destination) TextView shippingDestinationTextView;
-  public @Bind(R.id.shipping_summary) TextView shippingSummaryTextView;
+  protected @Bind(R.id.pledge_minimum) TextView minimumTextView;
+  protected @Bind(R.id.reward_backers_count) TextView backersCountTextView;
+  protected @Bind(R.id.reward_description) TextView descriptionTextView;
+  protected @Bind(R.id.estimated_delivery) TextView estimatedDeliveryTextView;
+  protected @Bind(R.id.estimated_delivery_date) TextView estimatedDeliveryDateTextView;
+  protected @Bind(R.id.green_overlay) View greenOverlayView;
+  protected @Bind(R.id.selected) TextView selectedTextView;
+  protected @Bind(R.id.limited) TextView limitedTextView;
+  protected @Bind(R.id.all_gone) TextView allGoneTextView;
+  protected @Bind(R.id.white_overlay) View whiteOverlayView;
+  protected @Bind(R.id.shipping_destination) TextView shippingDestinationTextView;
+  protected @Bind(R.id.shipping_summary) TextView shippingSummaryTextView;
 
   protected @BindString(R.string.rewards_info_limited_rewards_remaining_left_of_reward_limit) String limitedRewardsRemainingString;
+  protected @BindString(R.string.rewards_title_pledge_reward_currency_or_more) String pledgeRewardCurrencyOrMoreString;
 
   @Inject KSCurrency ksCurrency;
   @Inject KSString ksString;
@@ -63,9 +64,11 @@ public final class RewardViewHolder extends KSViewHolder {
     project = projectAndReward.first;
     reward = projectAndReward.second;
 
-    minimumTextView.setText(String.format(
-      context.getString(R.string.___Pledge_or_more),
-      ksCurrency.format(reward.minimum(), project)));
+    minimumTextView.setText(ksString.format(
+      pledgeRewardCurrencyOrMoreString,
+      "reward_currency",
+      ksCurrency.format(reward.minimum(), project)
+    ));
 
     final Integer backersCount = reward.backersCount();
     final String backersCountText = (backersCount != null) ?

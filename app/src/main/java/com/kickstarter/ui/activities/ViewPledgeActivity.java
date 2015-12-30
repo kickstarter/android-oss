@@ -45,6 +45,7 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel> 
   @Inject KSCurrency ksCurrency;
   @Inject KSString ksString;
 
+  @Override
   public void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.view_pledge_layout);
@@ -94,7 +95,12 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel> 
           ksCurrency.format(backing.shippingAmount(), backing.project())
         );
       }
-
     }
+  }
+
+  @Override
+  public void onBackPressed() {
+    super.onBackPressed();
+    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 }

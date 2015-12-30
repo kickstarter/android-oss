@@ -17,7 +17,6 @@
   <string name="___Aw_how_sad_Log_in">Aw, how sad. Log in to become a backer or leave a comment.</string>
   <string name="___Backed_projects">Backed projects</string>
   <string name="___Back_this_project">Back this project</string>
-  <string name="___Backer_number">Backer #%1$s</string>
   <string name="___Backing">Backing</string>
   <string name="____backers">%1$s backers</string>
   <string name="___backers">backers</string>
@@ -89,7 +88,6 @@
   <string name="___mins">mins</string>
   <string name="___More">More</string>
   <string name="___Most_Popular">Most Popular</string>
-  <string name="___NA">N/A</string>
   <string name="___Nearby">Nearby</string>
   <string name="___Network">Network</string>
   <string name="___No_activity_yet">No activity yet</string>
@@ -106,10 +104,8 @@
   </string>
   <string name="___Send_feedback">Send feedback</string>
   <string name="___Pledge_or_more">Pledge %1$s or more</string>
-  <string name="___Pledged">Pledged</string>
   <string name="___pledged_of_">pledged of\u0020</string>
   <string name="___pledged_of_goal">pledged of %1$s</string>
-  <string name="___pledged_amount_on_date">%1$s on %2$s</string>
   <string name="___Post">Post</string>
   <string name="___Profile">Profile</string>
   <string name="___project_of_the_day">Project of the day!</string>
@@ -118,9 +114,6 @@
   <string name="___project_was_successfully_funded">%1$s was successfully funded!</string>
   <string name="___project_resumed">%1$s resumed.</string>
   <string name="___project_was_suspended">%1$s was suspended.</string>
-  <string name="___Public_comment">Public comment</string>
-  <string name="___Reward">Reward</string>
-  <string name="___reward_amount_description">%1$s - %2$s</string>
   <string name="___secs">secs</string>
   <string name="___Search">Search</string>
   <string name="___Search_projects">Search projects</string>
@@ -129,13 +122,11 @@
   <string name="___Share">Share</string>
   <string name="___share_message">"%1$s, via %2$s"</string>
   <string name="___Share_this_project">Share this project</string>
-  <string name="___Shipping">Shipping</string>
   <string name="___Shipping_destinations">Shipping destinations</string>
   <string name="___Sign_up_or_log_in_with_your_Facebook_account">
     Sign up or log in with your Facebook account or email address below:
   </string>
   <string name="___Something_went_wrong_try_again_later">Something went wrong, please try again later.</string>
-  <string name="___Status_">Status: %1$s</string>
   <string name="___Staff_Picks">Staff Picks</string>
   <string name="___Starred">Starred</string>
   <string name="___Successfully_funded">Successfully funded!</string>

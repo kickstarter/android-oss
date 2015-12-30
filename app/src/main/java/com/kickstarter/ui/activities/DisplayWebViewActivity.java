@@ -12,9 +12,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public final class DisplayWebViewActivity extends BaseActivity {
-  @Bind(R.id.generic_webview) KSWebView webView;
+  protected @Bind(R.id.generic_webview) KSWebView webView;
 
-  public void onCreate(@Nullable final Bundle savedInstanceState) {
+  @Override
+  public void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.web_view_layout);
     ButterKnife.bind(this);

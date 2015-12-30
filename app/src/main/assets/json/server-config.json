@@ -555,6 +555,7 @@
           "ok": "OK"
         },
         "comments": {
+          "posted": "Comment posted!",
           "empty_state": {
             "backer": {
               "title": "No comments",
@@ -567,7 +568,8 @@
             },
             "logged_out": {
               "title": "No comments",
-              "message": "Aw, how sad. Become a backer to leave a comment."
+              "message": "Aw, how sad. Become a backer to leave a comment.",
+              "message_log_in": "Aw, how sad. Log in to become a backer or leave a comment."
             }
           }
         },
@@ -1815,6 +1817,7 @@
           "ok": "OK"
         },
         "comments": {
+          "posted": "Comment posted!",
           "empty_state": {
             "backer": {
               "title": "Keine Kommentare",
@@ -1827,7 +1830,8 @@
             },
             "logged_out": {
               "title": "Keine Kommentare",
-              "message": "Oh wie schade. Werde Unterstützer um einen Kommentar zu hinterlassen."
+              "message": "Oh wie schade. Werde Unterstützer um einen Kommentar zu hinterlassen.",
+              "message_log_in": "Aw, how sad. Log in to become a backer or leave a comment."
             }
           }
         },
@@ -2838,10 +2842,10 @@
         },
         "settings": {
           "accessibility": {
-            "subscribe_mobile_notifications": "Subscribe to mobile notifications",
-            "subscribe_notifications": "Subscribe to notifications",
-            "unsubscribe_mobile_notifications": "Unsubscribe from mobile notifications",
-            "unsubscribe_notifications": "Unsubscribe from notifications"
+            "subscribe_mobile_notifications": "Subscribir a notificaciones para móvil",
+            "subscribe_notifications": "Subscribir a notificaciones",
+            "unsubscribe_mobile_notifications": "Cancelar subscripción a notificaciones para móvil",
+            "unsubscribe_notifications": "Cancelar subscripción a notificaciones"
           },
           "navbar_title": "Configuración",
           "navbar_title_notifications": "Notificaciones",
@@ -2850,7 +2854,7 @@
             "project_updates": "Actualizaciones del proyecto",
             "notifications": "Administrar notificaciones del proyecto"
           },
-          "error": "Unable to save",
+          "error": "No se pudo guardar",
           "social": {
             "title": "Notificaciones de redes sociales",
             "followers": "Nuevos seguidores",
@@ -2917,7 +2921,7 @@
       },
       "login_tout": {
         "buttons": {
-          "log_in_with_facebook": "Log in with Facebook"
+          "log_in_with_facebook": "Inicia sesión con Facebook"
         },
         "help_sheet": {
           "how_it_works": "Cómo funciona Kickstarter",
@@ -3001,7 +3005,7 @@
           "log_in": "Iniciar sesión",
           "log_in_email": "Iniciar con dirección de correo electrónico",
           "forgot_password": "¿Olvidaste tu contraseña?",
-          "forgot_password_html": "<u>Forgot your password?</u>",
+          "forgot_password_html": "<u>¿Olvidaste la contraseña?</u>",
           "one_password": "1Password"
         },
         "placeholder_email": "Dirección de correo electrónico",
@@ -3075,6 +3079,7 @@
           "ok": "Ok"
         },
         "comments": {
+          "posted": "Comment posted!",
           "empty_state": {
             "backer": {
               "title": "No hay comentarios",
@@ -3087,7 +3092,8 @@
             },
             "logged_out": {
               "title": "No hay comentarios",
-              "message": "Ay, ¡qué pena! Hazte patrocinador para dejar un comentario."
+              "message": "Ay, ¡qué pena! Hazte patrocinador para dejar un comentario.",
+              "message_log_in": "Aw, how sad. Log in to become a backer or leave a comment."
             }
           }
         },
@@ -4335,6 +4341,7 @@
           "ok": "OK"
         },
         "comments": {
+          "posted": "Comment posted!",
           "empty_state": {
             "backer": {
               "title": "Pas de commentaires",
@@ -4347,7 +4354,8 @@
             },
             "logged_out": {
               "title": "Pas de commentaires",
-              "message": "Oh, quel dommage. Soutenez ce projet afin de pouvoir laisser un commentaire."
+              "message": "Oh, quel dommage. Soutenez ce projet afin de pouvoir laisser un commentaire.",
+              "message_log_in": "Aw, how sad. Log in to become a backer or leave a comment."
             }
           }
         },
@@ -5595,6 +5603,7 @@
           "ok": "OK"
         },
         "comments": {
+          "posted": "Comment posted!",
           "empty_state": {
             "backer": {
               "title": "No comments",
@@ -5607,7 +5616,8 @@
             },
             "logged_out": {
               "title": "No comments",
-              "message": "Aw, how sad. Become a backer to leave a comment."
+              "message": "Aw, how sad. Become a backer to leave a comment.",
+              "message_log_in": "Aw, how sad. Log in to become a backer or leave a comment."
             }
           }
         },
@@ -6326,7 +6336,6 @@
     "handbook_hero": true,
     "i18n_discovery_touts": true,
     "i18n_start_tout": true,
-    "responsive_manage": true,
     "password_reset_banner": true,
     "play_page": true,
     "watch_page": true,
@@ -6450,12 +6459,12 @@
   ],
   "ab_experiments": {
     "discover_sorts_vs_subcategories": "experimental",
-    "native_ios_aa": "control",
+    "native_ios_aa": "experimental",
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
-    "native_iphone_horiz_vs_vert": "experimental",
+    "native_iphone_horiz_vs_vert": "control",
     "recs_thanks_combo_inputs": "combo_inputs",
-    "recs_hp_combo_v1": "combo_v1",
+    "recs_hp_combo_v1": "collaborative_backings_v2",
     "video_autoplay_3": "no_autoplay"
   },
   "stripe": {

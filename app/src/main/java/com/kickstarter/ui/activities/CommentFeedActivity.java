@@ -55,7 +55,7 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
   public @Nullable @Bind(R.id.post_button) TextView postCommentButton;
 
   @BindString(R.string.social_error_could_not_post_try_again) String postCommentErrorString;
-  @BindString(R.string.___Comment_posted) String commentPostedString;
+  @BindString(R.string.project_comments_posted) String commentPostedString;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {

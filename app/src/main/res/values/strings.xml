@@ -14,7 +14,6 @@
   <string name="___Are_those_new_shoes">
     Are those new shoes? If they’re not new, they look really shiny and beautiful.
   </string>
-  <string name="___Aw_how_sad_Log_in">Aw, how sad. Log in to become a backer or leave a comment.</string>
   <string name="___Backed_projects">Backed projects</string>
   <string name="___Back_this_project">Back this project</string>
   <string name="___Backing">Backing</string>
@@ -31,7 +30,6 @@
   <string name="___Categories">Categories</string>
   <string name="___Changelog">Changelog</string>
   <string name="___Close">Close</string>
-  <string name="___Comment_posted">Comment posted!</string>
   <string name="___Comments">Comments</string>
   <string name="___creator_launched_a_project">%1$s launched a project: %2$s</string>
   <string name="___Created_by">Created by</string>

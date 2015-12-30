@@ -579,9 +579,11 @@ Nous vous en serions très reconnaissants !</string>
   <string name="project_comments_empty_state_backer_message" formatted="false">Oh, quel dommage. Soyez le premier contributeur à laisser un commentaire sur ce projet.</string>
   <string name="project_comments_empty_state_backer_title" formatted="false">Pas de commentaires</string>
   <string name="project_comments_empty_state_logged_out_message" formatted="false">Oh, quel dommage. Soutenez ce projet afin de pouvoir laisser un commentaire.</string>
+  <string name="project_comments_empty_state_logged_out_message_log_in" formatted="false">Aw, how sad. Log in to become a backer or leave a comment.</string>
   <string name="project_comments_empty_state_logged_out_title" formatted="false">Pas de commentaires</string>
   <string name="project_comments_empty_state_non_backer_message" formatted="false">Oh, quel dommage. Soutenez ce projet afin de pouvoir laisser un commentaire.</string>
   <string name="project_comments_empty_state_non_backer_title" formatted="false">Pas de commentaires</string>
+  <string name="project_comments_posted" formatted="false">Comment posted!</string>
   <string name="project_creator_by_creator" formatted="false">par %{creator_name}</string>
   <string name="project_creator_by_creator_html" formatted="false">par %{creator_name}</string>
   <string name="project_creator_youre_a_backer" formatted="false"> • Vous êtes contributeur</string>

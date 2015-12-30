@@ -580,9 +580,11 @@ Wir würden uns sehr darüber freuen!</string>
   <string name="project_comments_empty_state_backer_message" formatted="false">Oh wie schade. Du könntest der erste Unterstützer sein, der dieses Projekt kommentiert!</string>
   <string name="project_comments_empty_state_backer_title" formatted="false">Keine Kommentare</string>
   <string name="project_comments_empty_state_logged_out_message" formatted="false">Oh wie schade. Werde Unterstützer um einen Kommentar zu hinterlassen.</string>
+  <string name="project_comments_empty_state_logged_out_message_log_in" formatted="false">Aw, how sad. Log in to become a backer or leave a comment.</string>
   <string name="project_comments_empty_state_logged_out_title" formatted="false">Keine Kommentare</string>
   <string name="project_comments_empty_state_non_backer_message" formatted="false">Oh wie schade. Werde Unterstützer um einen Kommentar zu verfassen.</string>
   <string name="project_comments_empty_state_non_backer_title" formatted="false">Keine Kommentare</string>
+  <string name="project_comments_posted" formatted="false">Comment posted!</string>
   <string name="project_creator_by_creator" formatted="false">von %{creator_name}</string>
   <string name="project_creator_by_creator_html" formatted="false">von %{creator_name}</string>
   <string name="project_creator_youre_a_backer" formatted="false"> • Du unterstützt das Projekt</string>

@@ -404,7 +404,7 @@
   <string name="invalid_api_client_alert_title" formatted="false">Por favor actualizar</string>
   <string name="invalid_api_client_alert_upgrade" formatted="false">Actualizar</string>
   <string name="login_buttons_forgot_password" formatted="false">¿Olvidaste tu contraseña?</string>
-  <string name="login_buttons_forgot_password_html" formatted="false">&lt;u>Forgot your password?&lt;/u></string>
+  <string name="login_buttons_forgot_password_html" formatted="false">&lt;u>¿Olvidaste la contraseña?&lt;/u></string>
   <string name="login_buttons_log_in" formatted="false">Iniciar sesión</string>
   <string name="login_buttons_log_in_email" formatted="false">Iniciar con dirección de correo electrónico</string>
   <string name="login_buttons_one_password" formatted="false">1Password</string>
@@ -421,7 +421,7 @@
   <string name="login_tout_back_intent_traditional_login_button" formatted="false">Iniciar sesión</string>
   <string name="login_tout_back_intent_traditional_signup_button" formatted="false">Registrar</string>
   <string name="login_tout_back_intent_traditional_title" formatted="false">Utiliza tu dirección de correo electrónico:</string>
-  <string name="login_tout_buttons_log_in_with_facebook" formatted="false">Log in with Facebook</string>
+  <string name="login_tout_buttons_log_in_with_facebook" formatted="false">Inicia sesión con Facebook</string>
   <string name="login_tout_default_intent_title" formatted="false">Regístrate o inicia sesión con tu cuenta de Facebook o dirección de correo electrónico a continuación:</string>
   <string name="login_tout_default_intent_traditional_login_button" formatted="false">Iniciar sesión</string>
   <string name="login_tout_default_intent_traditional_signup_button" formatted="false">Registrar</string>
@@ -509,10 +509,10 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="profile_settings_about_privacy" formatted="false">Política de privacidad</string>
   <string name="profile_settings_about_terms" formatted="false">Condiciones de uso</string>
   <string name="profile_settings_about_title" formatted="false">Acerca de</string>
-  <string name="profile_settings_accessibility_subscribe_mobile_notifications" formatted="false">Subscribe to mobile notifications</string>
-  <string name="profile_settings_accessibility_subscribe_notifications" formatted="false">Subscribe to notifications</string>
-  <string name="profile_settings_accessibility_unsubscribe_mobile_notifications" formatted="false">Unsubscribe from mobile notifications</string>
-  <string name="profile_settings_accessibility_unsubscribe_notifications" formatted="false">Unsubscribe from notifications</string>
+  <string name="profile_settings_accessibility_subscribe_mobile_notifications" formatted="false">Subscribir a notificaciones para móvil</string>
+  <string name="profile_settings_accessibility_subscribe_notifications" formatted="false">Subscribir a notificaciones</string>
+  <string name="profile_settings_accessibility_unsubscribe_mobile_notifications" formatted="false">Cancelar subscripción a notificaciones para móvil</string>
+  <string name="profile_settings_accessibility_unsubscribe_notifications" formatted="false">Cancelar subscripción a notificaciones</string>
   <string name="profile_settings_backer_notifications" formatted="false">Administrar notificaciones del proyecto</string>
   <string name="profile_settings_backer_project_updates" formatted="false">Actualizaciones del proyecto</string>
   <string name="profile_settings_backer_title" formatted="false">Proyectos que patrocinas</string>
@@ -520,7 +520,7 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="profile_settings_creator_likes" formatted="false">"Me gusta" nuevos</string>
   <string name="profile_settings_creator_pledges" formatted="false">Nuevas contribuciones</string>
   <string name="profile_settings_creator_title" formatted="false">Notificaciones del creador</string>
-  <string name="profile_settings_error" formatted="false">Unable to save</string>
+  <string name="profile_settings_error" formatted="false">No se pudo guardar</string>
   <string name="profile_settings_log_out_button" formatted="false">Cerrar sesión</string>
   <string name="profile_settings_logout_alert_cancel_button" formatted="false">Cancelar</string>
   <string name="profile_settings_logout_alert_confirm_button" formatted="false">Cerrar sesión</string>
@@ -581,9 +581,11 @@ Si tienes un momento, ¿te importaría calificar tu experiencia?\n
   <string name="project_comments_empty_state_backer_message" formatted="false">Ay, ¡qué pena! Pero - ¡tú podrías ser el primer patrocinador que deja un comentario en este proyecto!</string>
   <string name="project_comments_empty_state_backer_title" formatted="false">No hay comentarios</string>
   <string name="project_comments_empty_state_logged_out_message" formatted="false">Ay, ¡qué pena! Hazte patrocinador para dejar un comentario.</string>
+  <string name="project_comments_empty_state_logged_out_message_log_in" formatted="false">Aw, how sad. Log in to become a backer or leave a comment.</string>
   <string name="project_comments_empty_state_logged_out_title" formatted="false">No hay comentarios</string>
   <string name="project_comments_empty_state_non_backer_message" formatted="false">Ay, ¡qué pena! Hazte patrocinador para dejar un comentario.</string>
   <string name="project_comments_empty_state_non_backer_title" formatted="false">No hay comentarios</string>
+  <string name="project_comments_posted" formatted="false">Comment posted!</string>
   <string name="project_creator_by_creator" formatted="false">por %{creator_name}</string>
   <string name="project_creator_by_creator_html" formatted="false">de %{creator_name}</string>
   <string name="project_creator_youre_a_backer" formatted="false"> • Tú eres un patrocinador</string>

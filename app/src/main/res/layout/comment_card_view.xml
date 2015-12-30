@@ -29,7 +29,7 @@
       android:textColor="@color/white"
       android:layout_below="@+id/avatar"
       android:background="@drawable/text_view_green_background"
-      android:text="@string/___Creator"
+      android:text="@string/update_comments_creator"
       android:layout_width="@dimen/grid_7"
       android:layout_height="wrap_content" />
 
@@ -41,7 +41,7 @@
       android:textColor="@color/white"
       android:layout_below="@+id/avatar"
       android:background="@drawable/text_view_blue_background"
-      android:text="@string/___You"
+      android:text="@string/update_comments_you"
       android:layout_width="@dimen/grid_7"
       android:layout_height="wrap_content" />
 

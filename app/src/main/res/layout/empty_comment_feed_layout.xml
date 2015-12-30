@@ -22,7 +22,7 @@
     android:gravity="center_horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="@string/___No_comments"
+    android:text="@string/update_comments_empty_state_backer_title"
     android:padding="@dimen/grid_2"/>
 
   <TextView

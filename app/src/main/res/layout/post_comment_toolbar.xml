@@ -24,7 +24,7 @@
       android:gravity="center"
       android:layout_width="wrap_content"
       android:layout_height="match_parent"
-      android:text="@string/___Cancel"/>
+      android:text="@string/social_buttons_cancel"/>
 
     <RelativeLayout
       android:layout_toRightOf="@id/cancel_button"
@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:singleLine="true"
         android:ellipsize="end"
-        android:text="@string/___Public_comment"/>
+        android:text="@string/social_public_comment"/>
 
       <TextView
         android:id="@+id/comment_project_name"
@@ -71,7 +71,7 @@
       android:layout_width="wrap_content"
       android:layout_height="match_parent"
       android:enabled="false"
-      android:text="@string/___Post"/>
+      android:text="@string/social_buttons_post"/>
 
   </RelativeLayout>
 

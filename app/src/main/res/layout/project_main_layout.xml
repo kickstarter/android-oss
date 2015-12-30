@@ -68,6 +68,9 @@
           android:textSize="@dimen/caption"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_marginTop="1dp"
+          android:layout_marginStart="@dimen/grid_1_half"
+          android:layout_marginLeft="@dimen/grid_1_half"
           android:text="@string/backer_icon"
           android:textColor="@color/green"/>
       </LinearLayout>

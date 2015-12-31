@@ -66,7 +66,9 @@ public final class FriendBackingViewHolder extends ActivityListViewHolder {
       .into(projectPhotoImageView);
     titleTextView.setText(SocialUtils.friendBackingActivityTitle(context,
       activity.user().name(),
-      activity.project().category().rootId()));
+      activity.project().category().rootId(),
+      ksString
+    ));
   }
 
   @OnClick(R.id.friend_backing_card_view)

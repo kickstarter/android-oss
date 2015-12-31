@@ -23,11 +23,9 @@ import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresViewModel(ManageNotificationsViewModel.class)
 public final class ManageNotificationActivity extends BaseActivity<ManageNotificationsViewModel> {
-  private ManageNotificationsAdapter adapter;
-
   protected @Bind(R.id.project_notifications_recycler_view) RecyclerView recyclerView;
 
-  protected @BindString(R.string.___Unable_to_connect) String unableToConnectString;
+  protected @BindString(R.string.general_error_something_wrong) String generalErrorString;
 
   @Inject ApiClient client;
 
@@ -38,7 +36,7 @@ public final class ManageNotificationActivity extends BaseActivity<ManageNotific
     ButterKnife.bind(this);
     ((KSApplication) getApplication()).component().inject(this);
 
-    adapter = new ManageNotificationsAdapter();
+    final ManageNotificationsAdapter adapter = new ManageNotificationsAdapter();
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -50,7 +48,7 @@ public final class ManageNotificationActivity extends BaseActivity<ManageNotific
     viewModel.errors.unableToFetchNotificationsError()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> ViewUtils.showToast(this, unableToConnectString));
+      .subscribe(__ -> ViewUtils.showToast(this, generalErrorString));
   }
 
   @Override

@@ -126,8 +126,6 @@
     This project will only be funded if at least %1$s is pledged by %2$s</string>
   <string name="___title_activity_project">View Project</string>
   <string name="____to_go">\u0020to go</string>
-  <string name="___Unable_to_connect">Unable to connect</string>
-  <string name="___Unable_to_save">Unable to save</string>
   <string name="___Update_sequence">Update #%1$d</string>
   <string name="___Updates">Updates</string>
   <string name="___Upgrade_app">Upgrade app</string>

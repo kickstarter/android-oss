@@ -14,7 +14,7 @@
 
   <com.kickstarter.ui.views.IconButton
     android:id="@+id/play_button_overlay"
-    android:contentDescription="@string/___play_video_button_content_description"
+    android:contentDescription="@string/accessibility_projects_buttons_play_video"
     android:focusable="true"
     android:visibility="gone"
     android:layout_width="wrap_content"

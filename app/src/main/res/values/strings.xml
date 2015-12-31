@@ -125,19 +125,15 @@
   <string name="___You">You</string>
   <string name="___You_launched_a_project">You launched a project: %1$s</string>
   <string name="___You_selected">You selected</string>
-  <string name="___Youre_a_backer">You\'re a backer!</string>
   <string name="___You_starred_this_project">You starred this project.</string>
 
   <!-- Content descriptions -->
   <string name="___activity_button_content_description">Activity feed</string>
   <string name="___comment_button_content_description">Write a comment</string>
-  <string name="___current_user_button_content_description">Current user menu</string>
+  <string name="___user_button_content_description">User menu</string>
   <string name="___filter_button_content_description">Filter by categories</string>
   <string name="___help_menu_button_content_description">Help menu</string>
-  <string name="___login_button_content_description">Log in</string>
   <string name="___overflow_button_content_description">Overflow menu</string>
-  <string name="___play_video_button_content_description">Play video</string>
-  <string name="___search_button_content_description">Search projects</string>
 
   <!-- Strings we do not want to translate -->
   <string name="Build">Build</string>

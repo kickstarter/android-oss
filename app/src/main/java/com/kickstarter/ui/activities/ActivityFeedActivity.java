@@ -43,7 +43,7 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
   private SwipeRefresher swipeRefresher;
 
   @Override
-  protected void onCreate(@Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     ((KSApplication) getApplication()).component().inject(this);
     setContentView(R.layout.activity_feed_layout);
@@ -80,11 +80,11 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
     recyclerViewPaginator.stop();
   }
 
-  public void showActivities(@NonNull final List<Activity> activities) {
+  public void showActivities(final @NonNull List<Activity> activities) {
     adapter.takeActivities(activities);
   }
 
-  public void showLoggedOutEmptyState(@Nullable final User user) {
+  public void showLoggedOutEmptyState(final @Nullable User user) {
     adapter.takeLoggedOutEmptyState(user);
   }
 
@@ -100,20 +100,20 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
     startActivity(intent);
   }
 
-  public void showProjectUpdate(@NonNull final Activity activity) {
+  public void showProjectUpdate(final @NonNull Activity activity) {
     final Intent intent = new Intent(this, DisplayWebViewActivity.class)
       .putExtra(getString(R.string.intent_url), activity.projectUpdateUrl());
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
-  public void startProjectActivity(@NonNull final Project project) {
+  public void startProjectActivity(final @NonNull Project project) {
     final Intent intent = new Intent(this, ProjectActivity.class)
       .putExtra(getString(R.string.intent_project), project);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   @Override
-  protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
+  protected void onActivityResult(final int requestCode, final int resultCode, final @NonNull Intent intent) {
     if (requestCode != ActivityRequestCodes.ACTIVITY_FEED_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED) {
       return;
     }

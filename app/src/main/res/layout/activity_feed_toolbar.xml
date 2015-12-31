@@ -33,7 +33,7 @@
       android:layout_marginLeft="@dimen/grid_3_half"
       android:layout_marginStart="@dimen/grid_3_half"
       android:gravity="center_vertical"
-      android:text="@string/___Activity" />
+      android:text="@string/activity_creator_navigation_header_activity" />
 
     <com.kickstarter.ui.views.IconButton
       style="@style/ToolbarIcon"

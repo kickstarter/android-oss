@@ -100,11 +100,7 @@
   <string name="___Post">Post</string>
   <string name="___Profile">Profile</string>
   <string name="___project_of_the_day">Project of the day!</string>
-  <string name="___project_was_cancelled_by_its_creator">%1$s was cancelled by its creator.</string>
-  <string name="___project_was_not_successfully_funded">%1$s was not successfully funded.</string>
   <string name="___project_was_successfully_funded">%1$s was successfully funded!</string>
-  <string name="___project_resumed">%1$s resumed.</string>
-  <string name="___project_was_suspended">%1$s was suspended.</string>
   <string name="___secs">secs</string>
   <string name="___Search">Search</string>
   <string name="___Search_projects">Search projects</string>
@@ -125,7 +121,6 @@
     This project will only be funded if at least %1$s is pledged by %2$s</string>
   <string name="___title_activity_project">View Project</string>
   <string name="____to_go">\u0020to go</string>
-  <string name="___Update_sequence">Update #%1$d</string>
   <string name="___Updates">Updates</string>
   <string name="___Upgrade_app">Upgrade app</string>
   <string name="___Use_your_email_address">Use your email address:</string>

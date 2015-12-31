@@ -22,14 +22,14 @@ public final class EmptyActivityFeedViewHolder extends KSViewHolder {
     void emptyActivityFeedLoginClicked(EmptyActivityFeedViewHolder viewHolder);
   }
 
-  public EmptyActivityFeedViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
+  public EmptyActivityFeedViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
     this.delegate = delegate;
     ButterKnife.bind(this, view);
   }
 
   @Override
-  public void onBind(@Nullable Object user) {
+  public void onBind(final @Nullable Object user) {
     if (user == null) {
       discoverProjectsButton.setVisibility(View.GONE);
       loginButton.setVisibility(View.VISIBLE);

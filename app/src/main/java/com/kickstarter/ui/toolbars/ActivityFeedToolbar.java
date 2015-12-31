@@ -16,18 +16,18 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public final class ActivityFeedToolbar extends KSToolbar {
-  @Bind(R.id.more_button) IconButton moreButton;
-  @BindString(R.string.___Not_implemented_yet) String notImplementedYetString;
+  protected @Bind(R.id.more_button) IconButton moreButton;
+  protected @BindString(R.string.___Not_implemented_yet) String notImplementedYetString;
 
-  public ActivityFeedToolbar(@NonNull final Context context) {
+  public ActivityFeedToolbar(final @NonNull Context context) {
     super(context);
   }
 
-  public ActivityFeedToolbar(@NonNull final Context context, @Nullable final AttributeSet attrs) {
+  public ActivityFeedToolbar(final @NonNull Context context, final @Nullable AttributeSet attrs) {
     super(context, attrs);
   }
 
-  public ActivityFeedToolbar(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
+  public ActivityFeedToolbar(final @NonNull Context context, final @Nullable AttributeSet attrs, final int defStyleAttr) {
     super(context, attrs, defStyleAttr);
   }
 

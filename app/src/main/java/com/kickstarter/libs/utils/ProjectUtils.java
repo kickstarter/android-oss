@@ -84,16 +84,6 @@ public final class ProjectUtils {
       new Duration(new DateTime(), project.deadline()).getStandardSeconds());
   }
 
-  /**
-   * Returns a String describing the time remaining for a project, e.g.
-   * 25 minutes to go, 8 days to go.
-   */
-  public static @NonNull String timeToGo(final @NonNull Project project, final @NonNull Context context) {
-    return new StringBuilder(deadlineCountdown(project, context))
-      .append(context.getString(R.string.____to_go))
-      .toString();
-  }
-
   public static boolean userIsCreator(@NonNull final Project project, @NonNull final User user) {
     return project.creator().id() == user.id();
   }

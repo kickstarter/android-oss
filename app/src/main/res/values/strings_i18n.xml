@@ -280,6 +280,7 @@
   <string name="dates_time_minutes_two" formatted="false">2 minutes</string>
   <string name="dates_time_minutes_zero" formatted="false">0 minutes</string>
   <string name="dates_yesterday" formatted="false">yesterday</string>
+  <string name="discovery_accessibility_live_project_count" formatted="false">Live projects</string>
   <string name="discovery_activity_sample_alert_buttons_cancel" formatted="false">Cancel</string>
   <string name="discovery_activity_sample_alert_buttons_follow" formatted="false">Follow</string>
   <string name="discovery_activity_sample_alert_follow_friend_name" formatted="false">Follow %{friend_name}?</string>
@@ -577,6 +578,7 @@ We\'d appreciate it!</string>
   <string name="project_checkout_share_twitter_I_just_backed_project_on_kickstarter" formatted="false">I just backed %{project_name} on @Kickstarter</string>
   <string name="project_checkout_share_twitter_via_kickstarter" formatted="false">%{project_or_update_title}, via Kickstarter</string>
   <string name="project_checkout_share_you_just_backed_project_share_this_project" formatted="false">You just backed %{project_name}. Share this project with friends to help it along!</string>
+  <string name="project_checkout_share_you_just_backed_project_share_this_project_html" formatted="false">You just backed &lt;b>%{project_name}&lt;/b>. Share this project with friends to help it along!</string>
   <string name="project_comments_empty_state_backer_button" formatted="false">Leave a comment</string>
   <string name="project_comments_empty_state_backer_message" formatted="false">Aw, how sad. Be the first backer to leave a comment on this project.</string>
   <string name="project_comments_empty_state_backer_title" formatted="false">No comments</string>

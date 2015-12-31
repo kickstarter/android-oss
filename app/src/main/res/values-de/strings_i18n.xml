@@ -280,6 +280,7 @@
   <string name="dates_time_minutes_two" formatted="false">2 MInuten</string>
   <string name="dates_time_minutes_zero" formatted="false">0 Minuten</string>
   <string name="dates_yesterday" formatted="false">Gestern</string>
+  <string name="discovery_accessibility_live_project_count" formatted="false">Live projects</string>
   <string name="discovery_activity_sample_alert_buttons_cancel" formatted="false">Abbrechen</string>
   <string name="discovery_activity_sample_alert_buttons_follow" formatted="false">Folgen</string>
   <string name="discovery_activity_sample_alert_follow_friend_name" formatted="false">%{friend_name} folgen?</string>
@@ -576,6 +577,7 @@ Wir würden uns sehr darüber freuen!</string>
   <string name="project_checkout_share_twitter_I_just_backed_project_on_kickstarter" formatted="false">Ich unterstütze jetzt %{project_name} auf @Kickstarter</string>
   <string name="project_checkout_share_twitter_via_kickstarter" formatted="false">%{project_or_update_title}, über Kickstarter</string>
   <string name="project_checkout_share_you_just_backed_project_share_this_project" formatted="false">Du hast gerade %{project_name} unterstützt. Erzähle deinen Freunden von diesem Projekt, um es weiter zu fördern!</string>
+  <string name="project_checkout_share_you_just_backed_project_share_this_project_html" formatted="false">You just backed &lt;b>%{project_name}&lt;/b>. Share this project with friends to help it along!</string>
   <string name="project_comments_empty_state_backer_button" formatted="false">Kommentar hinterlassen</string>
   <string name="project_comments_empty_state_backer_message" formatted="false">Oh wie schade. Du könntest der erste Unterstützer sein, der dieses Projekt kommentiert!</string>
   <string name="project_comments_empty_state_backer_title" formatted="false">Keine Kommentare</string>

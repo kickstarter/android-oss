@@ -280,6 +280,7 @@
   <string name="dates_time_minutes_two" formatted="false">2 minutos</string>
   <string name="dates_time_minutes_zero" formatted="false">0 minutos</string>
   <string name="dates_yesterday" formatted="false">Ayer</string>
+  <string name="discovery_accessibility_live_project_count" formatted="false">Live projects</string>
   <string name="discovery_activity_sample_alert_buttons_cancel" formatted="false">Cancelar</string>
   <string name="discovery_activity_sample_alert_buttons_follow" formatted="false">Seguir</string>
   <string name="discovery_activity_sample_alert_follow_friend_name" formatted="false">Seguir a %{friend_name}?</string>
@@ -577,6 +578,7 @@ Si tienes un momento, ¿te importaría calificar tu experiencia?\n
   <string name="project_checkout_share_twitter_I_just_backed_project_on_kickstarter" formatted="false">Acabo de patrocinar %{project_name} en @Kickstarter</string>
   <string name="project_checkout_share_twitter_via_kickstarter" formatted="false">%{project_or_update_title}, via Kickstarter</string>
   <string name="project_checkout_share_you_just_backed_project_share_this_project" formatted="false">Acabas de patrocinar a %{project_name}. ¡Comparte este proyecto con amigos para echarle una mano!</string>
+  <string name="project_checkout_share_you_just_backed_project_share_this_project_html" formatted="false">You just backed &lt;b>%{project_name}&lt;/b>. Share this project with friends to help it along!</string>
   <string name="project_comments_empty_state_backer_button" formatted="false">Deja un comentario</string>
   <string name="project_comments_empty_state_backer_message" formatted="false">Ay, ¡qué pena! Pero - ¡tú podrías ser el primer patrocinador que deja un comentario en este proyecto!</string>
   <string name="project_comments_empty_state_backer_title" formatted="false">No hay comentarios</string>

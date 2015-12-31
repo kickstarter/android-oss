@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -48,7 +49,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
 
   protected @BindString(R.string.project_checkout_share_twitter_I_just_backed_project_on_kickstarter) String iJustBackedString;
   protected @BindString(R.string.project_accessibility_button_share_label) String shareThisProjectString;
-  protected @BindString(R.string.project_checkout_share_you_just_backed_project_share_this_project) String youJustBackedString;
+  protected @BindString(R.string.project_checkout_share_you_just_backed_project_share_this_project_html) String youJustBackedString;
 
   public CallbackManager facebookCallbackManager;
   public ShareDialog shareDialog;
@@ -56,7 +57,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   @Inject KSString ksString;
 
   @Override
-  protected void onCreate(@Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.thanks_layout);
     ButterKnife.bind(this);
@@ -74,11 +75,11 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
     viewModel.takeProject(getIntent().getExtras().getParcelable(getString(R.string.intent_project)));
   }
 
-  public void show(@NonNull final Project project) {
-    backedProjectTextView.setText(ksString.format(youJustBackedString, "project_name", project.name()));
+  public void show(final @NonNull Project project) {
+    backedProjectTextView.setText(Html.fromHtml(ksString.format(youJustBackedString, "project_name", project.name())));
   }
 
-  public void showRecommended(@NonNull final List<Project> projects, @NonNull final Category category) {
+  public void showRecommended(final @NonNull List<Project> projects, final @NonNull Category category) {
     recommendedProjectsRecyclerView.setAdapter(new ThanksAdapter(projects, category, viewModel));
   }
 
@@ -95,16 +96,16 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   }
 
   @OnClick(R.id.facebook_button)
-  public void onFacebookButtonClick(@NonNull final View view) {
+  public void onFacebookButtonClick(final @NonNull View view) {
     viewModel.takeFacebookClick();
   }
 
   @OnClick(R.id.twitter_button)
-  public void onTwitterButtonClick(@NonNull final View view) {
+  public void onTwitterButtonClick(final @NonNull View view) {
     viewModel.takeTwitterClick();
   }
 
-  public void startFacebookShareIntent(@NonNull final Project project) {
+  public void startFacebookShareIntent(final @NonNull Project project) {
     if (!ShareDialog.canShow(ShareLinkContent.class)) {
       return;
     }
@@ -130,7 +131,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
     shareDialog.show(content);
   }
 
-  public void startShareIntent(@NonNull final Project project) {
+  public void startShareIntent(final @NonNull Project project) {
     final Intent intent = new Intent(android.content.Intent.ACTION_SEND)
       .setType("text/plain")
       .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
@@ -139,11 +140,11 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
     startActivity(Intent.createChooser(intent, shareThisProjectString));
   }
 
-  public void startTwitterShareIntent(@NonNull final Project project) {
+  public void startTwitterShareIntent(final @NonNull Project project) {
     new TweetComposer.Builder(this).text(shareString(project)).show();
   }
 
-  public void startDiscoveryCategoryIntent(@NonNull final Category category) {
+  public void startDiscoveryCategoryIntent(final @NonNull Category category) {
     final DiscoveryParams params = DiscoveryParams.builder().category(category).build();
     final Intent intent = new Intent(this, DiscoveryActivity.class)
       .putExtra(getString(R.string.intent_discovery_params), params)
@@ -151,14 +152,14 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
     startActivity(intent);
   }
 
-  public void startProjectIntent(@NonNull final Project project) {
+  public void startProjectIntent(final @NonNull Project project) {
     final Intent intent = new Intent(this, ProjectActivity.class)
       .putExtra(getString(R.string.intent_project), project);
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
-  private String shareString(@NonNull final Project project) {
+  private String shareString(final @NonNull Project project) {
     return ksString.format(iJustBackedString, "project_name", project.name());
   }
 

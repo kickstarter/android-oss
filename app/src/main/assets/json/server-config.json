@@ -12,6 +12,9 @@
         "me": "Me"
       },
       "discovery": {
+        "accessibility": {
+          "live_project_count": "Live projects"
+        },
         "recommended": "Staff Picks",
         "popular": "Popular",
         "saved": "Starred",
@@ -618,6 +621,7 @@
             "title_via_kickstarter": "%{project_or_update_title}, via Kickstarter",
             "exclamation": "Woo-hoo!",
             "you_just_backed_project_share_this_project": "You just backed %{project_name}. Share this project with friends to help it along!",
+            "you_just_backed_project_share_this_project_html": "You just backed <b>%{project_name}</b>. Share this project with friends to help it along!",
             "twitter": {
               "I_just_backed_project_on_kickstarter": "I just backed %{project_name} on @Kickstarter"
             },
@@ -1274,6 +1278,9 @@
         "me": "Mein Konto"
       },
       "discovery": {
+        "accessibility": {
+          "live_project_count": "Live projects"
+        },
         "recommended": "Team-Favoriten",
         "popular": "Beliebte Projekte",
         "saved": "Meine Favoriten",
@@ -1880,6 +1887,7 @@
             "title_via_kickstarter": "%{project_or_update_title}, über Kickstarter",
             "exclamation": "Super!",
             "you_just_backed_project_share_this_project": "Du hast gerade %{project_name} unterstützt. Erzähle deinen Freunden von diesem Projekt, um es weiter zu fördern!",
+            "you_just_backed_project_share_this_project_html": "You just backed <b>%{project_name}</b>. Share this project with friends to help it along!",
             "twitter": {
               "I_just_backed_project_on_kickstarter": "Ich unterstütze jetzt %{project_name} auf @Kickstarter"
             },
@@ -2536,6 +2544,9 @@
         "me": "Mi cuenta"
       },
       "discovery": {
+        "accessibility": {
+          "live_project_count": "Live projects"
+        },
         "recommended": "Nuestros favoritos",
         "popular": "Popular",
         "saved": "Los más destacados",
@@ -3142,6 +3153,7 @@
             "title_via_kickstarter": "%{project_or_update_title}, vía Kickstarter",
             "exclamation": "Yu-Juu!",
             "you_just_backed_project_share_this_project": "Acabas de patrocinar a %{project_name}. ¡Comparte este proyecto con amigos para echarle una mano!",
+            "you_just_backed_project_share_this_project_html": "You just backed <b>%{project_name}</b>. Share this project with friends to help it along!",
             "twitter": {
               "I_just_backed_project_on_kickstarter": "Acabo de patrocinar %{project_name} en @Kickstarter"
             },
@@ -3798,6 +3810,9 @@
         "me": "Mon compte"
       },
       "discovery": {
+        "accessibility": {
+          "live_project_count": "Live projects"
+        },
         "recommended": "Nos sélections",
         "popular": "Populaires",
         "saved": "Projets préférés",
@@ -4404,6 +4419,7 @@
             "title_via_kickstarter": "%{project_or_update_title}, via Kickstarter",
             "exclamation": "Félicitations !",
             "you_just_backed_project_share_this_project": "Vous venez de soutenir le projet %{project_name}. Partagez-le avec vos amis pour l'aider à avancer !",
+            "you_just_backed_project_share_this_project_html": "You just backed <b>%{project_name}</b>. Share this project with friends to help it along!",
             "twitter": {
               "I_just_backed_project_on_kickstarter": "Je viens de soutenir le projet %{project_name} sur @Kickstarter"
             },
@@ -5060,6 +5076,9 @@
         "me": "Me"
       },
       "discovery": {
+        "accessibility": {
+          "live_project_count": "Live projects"
+        },
         "recommended": "Staff Picks",
         "popular": "Popular",
         "saved": "Starred",
@@ -5666,6 +5685,7 @@
             "title_via_kickstarter": "%{project_or_update_title}, via Kickstarter",
             "exclamation": "Woo-hoo!",
             "you_just_backed_project_share_this_project": "You just backed %{project_name}. Share this project with friends to help it along!",
+            "you_just_backed_project_share_this_project_html": "You just backed <b>%{project_name}</b>. Share this project with friends to help it along!",
             "twitter": {
               "I_just_backed_project_on_kickstarter": "I just backed %{project_name} on @Kickstarter"
             },
@@ -6459,12 +6479,12 @@
   ],
   "ab_experiments": {
     "discover_sorts_vs_subcategories": "experimental",
-    "native_ios_aa": "experimental",
+    "native_ios_aa": "control",
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
-    "native_iphone_horiz_vs_vert": "control",
+    "native_iphone_horiz_vs_vert": "experimental",
     "recs_thanks_combo_inputs": "combo_inputs",
-    "recs_hp_combo_v1": "collaborative_backings_v2",
+    "recs_hp_combo_v1": "combo_v1",
     "video_autoplay_3": "no_autoplay"
   },
   "stripe": {

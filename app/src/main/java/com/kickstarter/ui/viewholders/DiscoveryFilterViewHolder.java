@@ -34,7 +34,7 @@ public final class DiscoveryFilterViewHolder extends KSViewHolder {
   protected @Bind(R.id.vertical_line_medium_view) View verticalLineView;
 
   protected @BindString(R.string.discovery_all_of_scope) String allOfScopeString;
-  protected @BindString(R.string.___live_project_count_content_description) String liveProjectCountDescriptionString;
+  protected @BindString(R.string.discovery_accessibility_live_project_count) String liveProjectCountDescriptionString;
 
   @Inject Font font;
   @Inject KSString ksString;

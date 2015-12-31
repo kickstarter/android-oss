@@ -12,16 +12,16 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public final class DiscoveryFilterDividerViewHolder extends KSViewHolder {
-  @Bind(R.id.categories_text_view) TextView categoriesTextView;
-  @Bind(R.id.horizontal_line_thin_view) View horizontalLineView;
-  Divider divider;
+  protected @Bind(R.id.categories_text_view) TextView categoriesTextView;
+  protected @Bind(R.id.horizontal_line_thin_view) View horizontalLineView;
+  private Divider divider;
 
-  public DiscoveryFilterDividerViewHolder(@NonNull final View view) {
+  public DiscoveryFilterDividerViewHolder(final @NonNull View view) {
     super(view);
     ButterKnife.bind(this, view);
   }
 
-  public void onBind(@NonNull final Object datum) {
+  public void onBind(final @NonNull Object datum) {
     divider = (Divider) datum;
 
     categoriesTextView.setTextColor(color());

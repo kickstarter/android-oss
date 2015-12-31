@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.Font;
 import com.kickstarter.services.DiscoveryParams;
@@ -22,31 +23,34 @@ import butterknife.ButterKnife;
 
 public final class DiscoveryFilterViewHolder extends KSViewHolder {
   private final Delegate delegate;
-  @Inject Font font;
   private DiscoveryParams params;
   private DiscoveryFilterStyle style;
 
-  @Bind(R.id.discovery_filter_view) View discoveryFilterView;
-  @Bind(R.id.category_live_project_count_view) TextView categoryLiveProjectCountTextView;
-  @Bind(R.id.filter_text_view) TextView filterTextView;
-  @Bind(R.id.text_group) RelativeLayout textGroupLayout;
-  @Bind(R.id.vertical_line_group) View verticalLineGroup;
-  @Bind(R.id.vertical_line_medium_view) View verticalLineView;
+  protected @Bind(R.id.discovery_filter_view) View discoveryFilterView;
+  protected @Bind(R.id.category_live_project_count_view) TextView categoryLiveProjectCountTextView;
+  protected @Bind(R.id.filter_text_view) TextView filterTextView;
+  protected @Bind(R.id.text_group) RelativeLayout textGroupLayout;
+  protected @Bind(R.id.vertical_line_group) View verticalLineGroup;
+  protected @Bind(R.id.vertical_line_medium_view) View verticalLineView;
 
-  @BindString(R.string.___live_project_count_content_description) String liveProjectCountDescriptionString;
+  protected @BindString(R.string.discovery_all_of_scope) String allOfScopeString;
+  protected @BindString(R.string.___live_project_count_content_description) String liveProjectCountDescriptionString;
+
+  @Inject Font font;
+  @Inject KSString ksString;
 
   public interface Delegate {
     void discoveryFilterClick(DiscoveryFilterViewHolder viewHolder, DiscoveryParams discoveryParams);
   }
 
-  public DiscoveryFilterViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
+  public DiscoveryFilterViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
     this.delegate = delegate;
     ButterKnife.bind(this, view);
     ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
   }
 
-  public void onBind(@NonNull final Object datum) {
+  public void onBind(final @NonNull Object datum) {
     final Filter filter = (Filter) datum;
     params = filter.params();
     style = filter.style();
@@ -59,7 +63,7 @@ public final class DiscoveryFilterViewHolder extends KSViewHolder {
   }
 
   @Override
-  public void onClick(@NonNull final View view) {
+  public void onClick(final @NonNull View view) {
     delegate.discoveryFilterClick(this, params);
   }
 
@@ -99,7 +103,7 @@ public final class DiscoveryFilterViewHolder extends KSViewHolder {
 
     String text = params.filterString(view.getContext());
     if (isSecondaryCategoryRoot()) {
-      text = view.getContext().getString(R.string.___All_of_Category, text);
+      text = ksString.format(allOfScopeString, "scope", text);
     }
 
     filterTextView.setText(text);

@@ -18,12 +18,12 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public final class DownloadBetaActivity extends AppCompatActivity {
-  @Bind(R.id.build) TextView buildTextView;
-  @Bind(R.id.changelog) TextView changelogTextView;
+  protected @Bind(R.id.build) TextView buildTextView;
+  protected @Bind(R.id.changelog) TextView changelogTextView;
   InternalBuildEnvelope internalBuildEnvelope;
 
   @Override
-  public void onCreate(@Nullable final Bundle savedInstanceState) {
+  public void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.download_beta_layout);
@@ -39,7 +39,7 @@ public final class DownloadBetaActivity extends AppCompatActivity {
   }
 
   @OnClick(R.id.open_downloads_button)
-  public void openDownloadsOnClick(@NonNull final View v) {
+  public void openDownloadsOnClick(final @NonNull View v) {
     final Intent intent = new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS);
     startActivity(intent);
   }

@@ -15,7 +15,7 @@
     android:layout_marginRight="@dimen/grid_2"
     android:layout_marginEnd="@dimen/grid_2"
     android:textColor="@color/white"
-    android:text="@string/___Categories" />
+    android:text="@string/discovery_filters_categories_title" />
 
   <include layout="@layout/horizontal_line_thin_view" />
 

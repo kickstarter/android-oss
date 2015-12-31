@@ -19,7 +19,6 @@
   <string name="___Backing">Backing</string>
   <string name="____backers">%1$s backers</string>
   <string name="___backers">backers</string>
-  <string name="___Build">Build</string>
   <string name="___Build_date">Build Date</string>
   <string name="___Build_information">Build Information</string>
   <string name="___Blurb_read_more">%1$s &lt;u>Read\u00A0more&lt;/u></string>
@@ -27,7 +26,6 @@
   <string name="___by_creator">by &lt;u>%1$s&lt;/u></string>
   <string name="___Campaign">Campaign</string>
   <string name="___Cancel">Cancel</string>
-  <string name="___Changelog">Changelog</string>
   <string name="___Close">Close</string>
   <string name="___Comments">Comments</string>
   <string name="___creator_launched_a_project">%1$s launched a project: %2$s</string>
@@ -73,7 +71,6 @@
   <string name="___goal">goal</string>
   <string name="___Help">Help</string>
   <string name="___hours">hours</string>
-  <string name="___Instructions">Instructions</string>
   <string name="____is_a_backer">%1$s is a backer.</string>
   <string name="___Launched">Launched</string>
   <string name="___Limited_left_of">Limited (%1$s left of %2$s)</string>
@@ -88,12 +85,6 @@
   <string name="___Nice_to_see_you_again">Nice to see you again.</string>
   <string name="___of_">of\u0020</string>
   <string name="___Okay">Okay</string>
-  <string name="___Open_downloads_folder">Open Downloads folder</string>
-  <string name="___A_request_has_been_made_to_download_the_latest_build">
-    A request has been made to download the latest build. When the request has completed, open your downloads
-    folder and tap the .apk file to install.\n\nYou must enable the option to allow installation of apps from
-    unknown sources in the security settings of your device.
-  </string>
   <string name="___Send_feedback">Send feedback</string>
   <string name="___pledged_of_">pledged of\u0020</string>
   <string name="___pledged_of_goal">pledged of %1$s</string>
@@ -148,4 +139,15 @@
   <string name="___overflow_button_content_description">Overflow menu</string>
   <string name="___play_video_button_content_description">Play video</string>
   <string name="___search_button_content_description">Search projects</string>
+
+  <!-- Strings we do not want to translate -->
+  <string name="Build">Build</string>
+  <string name="Changelog">Changelog</string>
+  <string name="Instructions">Instructions</string>
+  <string name="Open_downloads_folder">Open Downloads folder</string>
+  <string name="A_request_has_been_made_to_download_the_latest_build">
+    A request has been made to download the latest build. When the request has completed, open your downloads
+    folder and tap the .apk file to install.\n\nYou must enable the option to allow installation of apps from
+    unknown sources in the security settings of your device.
+  </string>
 </resources>

@@ -33,7 +33,7 @@ public final class SearchViewModel extends ViewModel<SearchActivity> implements 
   private final PublishSubject<Void> nextPage = PublishSubject.create();
   public void nextPage() { nextPage.onNext(null); }
   public SearchViewModelInputs inputs = this;
-  @Override public void search(@NonNull final String s) { search.onNext(s); }
+  @Override public void search(final @NonNull String s) { search.onNext(s); }
 
   // OUTPUTS
   private final BehaviorSubject<List<Project>> popularProjects = BehaviorSubject.create();
@@ -47,7 +47,7 @@ public final class SearchViewModel extends ViewModel<SearchActivity> implements 
   @Inject ApiClient apiClient;
 
   @Override
-  protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 

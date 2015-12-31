@@ -26,20 +26,18 @@ import rx.android.schedulers.AndroidSchedulers;
 @RequiresViewModel(SearchViewModel.class)
 public final class SearchActivity extends BaseActivity<SearchViewModel> implements SearchAdapter.Delegate {
   private SearchAdapter adapter;
-  LinearLayoutManager layoutManager;
   private RecyclerViewPaginator paginator;
-  @Bind(R.id.search_recycler_view) RecyclerView recyclerView;
-  @Bind(R.id.search_toolbar) SearchToolbar toolbar;
+  protected @Bind(R.id.search_recycler_view) RecyclerView recyclerView;
+  protected @Bind(R.id.search_toolbar) SearchToolbar toolbar;
 
   @Override
-  protected void onCreate(@Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.search_layout);
     ButterKnife.bind(this);
 
-    layoutManager = new LinearLayoutManager(this);
     adapter = new SearchAdapter(this);
-    recyclerView.setLayoutManager(layoutManager);
+    recyclerView.setLayoutManager(new LinearLayoutManager(this));
     recyclerView.setAdapter(adapter);
 
     paginator = new RecyclerViewPaginator(recyclerView, viewModel.inputs::nextPage);
@@ -66,7 +64,8 @@ public final class SearchActivity extends BaseActivity<SearchViewModel> implemen
     super.onDestroy();
     paginator.stop();
   }
-  public void projectSearchResultClick(@NonNull final ProjectSearchResultViewHolder viewHolder, @NonNull final Project project) {
+
+  public void projectSearchResultClick(final @NonNull ProjectSearchResultViewHolder viewHolder, final @NonNull Project project) {
     final Intent intent = new Intent(this, ProjectActivity.class)
       .putExtra(getString(R.string.intent_project), project);
     startActivity(intent);

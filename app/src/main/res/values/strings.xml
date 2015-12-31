@@ -19,8 +19,6 @@
   <string name="___Backing">Backing</string>
   <string name="____backers">%1$s backers</string>
   <string name="___backers">backers</string>
-  <string name="___Build_date">Build Date</string>
-  <string name="___Build_information">Build Information</string>
   <string name="___Blurb_read_more">%1$s &lt;u>Read\u00A0more&lt;/u></string>
   <string name="___by_">by\u0020%1$s</string>
   <string name="___by_creator">by &lt;u>%1$s&lt;/u></string>
@@ -34,13 +32,9 @@
   <string name="___Created_projects">Created projects</string>
   <string name="___Creator">Creator</string>
   <string name="___days">days</string>
-  <string name="___Development_settings">Development Settings</string>
   <string name="___Discover_projects">Discover projects</string>
   <string name="___Done">Done</string>
   <string name="___Download_build">Download Build</string>
-  <string name="___Endpoint">Endpoint</string>
-  <string name="___Enter_the_base_url_of_the_api">Enter the base URL of the API you’d like to use.\n\n
-    e.g.: https://api-christopher.***REMOVED***</string>
   <string name="___Estimated_delivery">Estimated Delivery</string>
   <string name="___Everything">Everything</string>
   <string name="___Explore_new_projects">Explore new projects</string>
@@ -79,7 +73,6 @@
   <string name="___mins">mins</string>
   <string name="___More">More</string>
   <string name="___Nearby">Nearby</string>
-  <string name="___Network">Network</string>
   <string name="___No_activity_yet">No activity yet</string>
   <string name="___Not_implemented_yet">Not implemented yet, coming soon!</string>
   <string name="___Nice_to_see_you_again">Nice to see you again.</string>
@@ -96,7 +89,6 @@
   <string name="___Search">Search</string>
   <string name="___Search_projects">Search projects</string>
   <string name="___Select_email_application">Select email application:</string>
-  <string name="___Sha">SHA</string>
   <string name="___Shipping_destinations">Shipping destinations</string>
   <string name="___Sign_up_or_log_in_with_your_Facebook_account">
     Sign up or log in with your Facebook account or email address below:
@@ -106,7 +98,6 @@
   <string name="___Starred">Starred</string>
   <string name="___Successfully_funded">Successfully funded!</string>
   <string name="___Submit">Submit</string>
-  <string name="___Submit_feedback">Submit feedback</string>
   <string name="___Resend_code_failed">Unable to resend your code.</string>
   <string name="___This_project_will_only_be_funded_if">
     This project will only be funded if at least %1$s is pledged by %2$s</string>
@@ -115,9 +106,6 @@
   <string name="___Upgrade_app">Upgrade app</string>
   <string name="___Use_your_email_address">Use your email address:</string>
   <string name="___username_is_following_you">&lt;b>%1$s&lt;/b> is following you!</string>
-  <string name="___Variant">Variant</string>
-  <string name="___Version_code">Version Code</string>
-  <string name="___Version_name">Version Name</string>
   <string name="___Well_remind_you_48_hours">We\'ll remind you 48 hours before this project ends!</string>
   <string name="___When_you_back_a_project_or_follow_a_friend">
     When you back a project or follow a friend, their activity will appear here.
@@ -137,12 +125,26 @@
 
   <!-- Strings we do not want to translate -->
   <string name="Build">Build</string>
+  <string name="Build_date">Build Date</string>
+  <string name="Build_information">Build Information</string>
   <string name="Changelog">Changelog</string>
+  <string name="Development_settings">Development Settings</string>
+  <string name="Endpoint">Endpoint</string>
+  <string name="Enter_the_base_url_of_the_api">
+    Enter the base URL of the API you’d like to use.\n\n
+    e.g.: https://api-christopher.***REMOVED***
+  </string>
   <string name="Instructions">Instructions</string>
+  <string name="Network">Network</string>
   <string name="Open_downloads_folder">Open Downloads folder</string>
   <string name="A_request_has_been_made_to_download_the_latest_build">
     A request has been made to download the latest build. When the request has completed, open your downloads
     folder and tap the .apk file to install.\n\nYou must enable the option to allow installation of apps from
     unknown sources in the security settings of your device.
   </string>
+  <string name="Sha">SHA</string>
+  <string name="Submit_feedback">Submit feedback</string>
+  <string name="Variant">Variant</string>
+  <string name="Version_code">Version Code</string>
+  <string name="Version_name">Version Name</string>
 </resources>

@@ -15,8 +15,10 @@ import com.kickstarter.ui.activities.LoginActivity;
 import com.kickstarter.ui.activities.ManageNotificationActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.kickstarter.ui.activities.SettingsActivity;
+import com.kickstarter.ui.activities.ThanksActivity;
 import com.kickstarter.ui.activities.ViewPledgeActivity;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
+import com.kickstarter.ui.viewholders.CategoryPromoViewHolder;
 import com.kickstarter.ui.viewholders.CommentViewHolder;
 import com.kickstarter.ui.viewholders.DiscoveryFilterViewHolder;
 import com.kickstarter.ui.viewholders.EmptyActivityFeedViewHolder;
@@ -53,6 +55,7 @@ public interface ApplicationGraph {
   void inject(ActivityFeedActivity __);
   void inject(ActivityFeedViewModel __);
   void inject(ApplicationLifecycleUtil __);
+  void inject(CategoryPromoViewHolder __);
   void inject(CommentFeedActivity __);
   void inject(CommentFeedViewModel __);
   void inject(CommentViewHolder __);
@@ -95,6 +98,7 @@ public interface ApplicationGraph {
   void inject(SettingsActivity __);
   void inject(SettingsViewModel __);
   void inject(SignupViewModel __);
+  void inject(ThanksActivity __);
   void inject(ThanksViewModel __);
   void inject(TwoFactorViewModel __);
   void inject(ViewPledgeActivity __);

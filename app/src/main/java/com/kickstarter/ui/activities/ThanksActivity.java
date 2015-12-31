@@ -9,8 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,8 +19,10 @@ import com.facebook.share.model.ShareOpenGraphAction;
 import com.facebook.share.model.ShareOpenGraphContent;
 import com.facebook.share.model.ShareOpenGraphObject;
 import com.facebook.share.widget.ShareDialog;
+import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.vendor.TweetComposer;
 import com.kickstarter.models.Category;
@@ -33,26 +33,34 @@ import com.kickstarter.ui.adapters.ThanksAdapter;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 @RequiresViewModel(ThanksViewModel.class)
 public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
-  @Bind(R.id.backed_project) TextView backedProjectTextView;
-  @Bind(R.id.recommended_projects_recycler_view) RecyclerView recommendedProjectsRecyclerView;
-  @Bind(R.id.woohoo_background) ImageView woohooBackgroundImageView;
+  protected @Bind(R.id.backed_project) TextView backedProjectTextView;
+  protected @Bind(R.id.recommended_projects_recycler_view) RecyclerView recommendedProjectsRecyclerView;
+  protected @Bind(R.id.woohoo_background) ImageView woohooBackgroundImageView;
 
-  CallbackManager facebookCallbackManager;
-  ThanksAdapter adapter;
-  ShareDialog shareDialog;
+  protected @BindString(R.string.project_checkout_share_twitter_I_just_backed_project_on_kickstarter) String iJustBackedString;
+  protected @BindString(R.string.project_accessibility_button_share_label) String shareThisProjectString;
+  protected @BindString(R.string.project_checkout_share_you_just_backed_project_share_this_project) String youJustBackedString;
+
+  public CallbackManager facebookCallbackManager;
+  public ShareDialog shareDialog;
+
+  @Inject KSString ksString;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
     setContentView(R.layout.thanks_layout);
     ButterKnife.bind(this);
+    ((KSApplication) getApplication()).component().inject(this);
 
     facebookCallbackManager = CallbackManager.Factory.create(); // TODO: Use this to track Facebook shares
     shareDialog = new ShareDialog(this);
@@ -67,12 +75,11 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   }
 
   public void show(@NonNull final Project project) {
-    backedProjectTextView.setText(Html.fromHtml(getString(R.string.___You_just_backed, TextUtils.htmlEncode(project.name()))));
+    backedProjectTextView.setText(ksString.format(youJustBackedString, "project_name", project.name()));
   }
 
   public void showRecommended(@NonNull final List<Project> projects, @NonNull final Category category) {
-    adapter = new ThanksAdapter(projects, category, viewModel);
-    recommendedProjectsRecyclerView.setAdapter(adapter);
+    recommendedProjectsRecyclerView.setAdapter(new ThanksAdapter(projects, category, viewModel));
   }
 
   @OnClick(R.id.close_button)
@@ -129,7 +136,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
       .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
       .putExtra(Intent.EXTRA_TEXT, shareString(project));
 
-    startActivity(Intent.createChooser(intent, getString(R.string.___Share_this_project)));
+    startActivity(Intent.createChooser(intent, shareThisProjectString));
   }
 
   public void startTwitterShareIntent(@NonNull final Project project) {
@@ -152,7 +159,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   }
 
   private String shareString(@NonNull final Project project) {
-    return getString(R.string.___I_just_backed_project_on_Kickstarter, project.name(), project.secureWebProjectUrl());
+    return ksString.format(iJustBackedString, "project_name", project.name());
   }
 
   private void displayWoohooBackground() {

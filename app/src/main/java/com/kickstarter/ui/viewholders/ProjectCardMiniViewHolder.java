@@ -16,24 +16,24 @@ import butterknife.ButterKnife;
 
 public final class ProjectCardMiniViewHolder extends KSViewHolder {
   private Project project;
-  final Delegate delegate;
+  private final Delegate delegate;
 
-  @Bind(R.id.time_to_go_text_view) TextView timeToGoTextView;
-  @Bind(R.id.name) TextView nameTextView;
-  @Bind(R.id.photo) ImageView photoImageView;
+  protected @Bind(R.id.time_to_go_text_view) TextView timeToGoTextView;
+  protected @Bind(R.id.name) TextView nameTextView;
+  protected @Bind(R.id.photo) ImageView photoImageView;
 
   public interface Delegate {
     void projectCardMiniClick(ProjectCardMiniViewHolder viewHolder, Project project);
   }
 
-  public ProjectCardMiniViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
+  public ProjectCardMiniViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
     this.delegate = delegate;
 
     ButterKnife.bind(this, view);
   }
 
-  public void onBind(@NonNull final Object datum) {
+  public void onBind(final @NonNull Object datum) {
     project = (Project) datum;
 
     final Context context = view.getContext();
@@ -51,7 +51,7 @@ public final class ProjectCardMiniViewHolder extends KSViewHolder {
   }
 
   @Override
-  public void onClick(@NonNull final View view) {
+  public void onClick(final @NonNull View view) {
     delegate.projectCardMiniClick(this, project);
   }
 }

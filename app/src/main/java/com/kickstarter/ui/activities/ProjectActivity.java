@@ -11,7 +11,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
@@ -22,8 +21,8 @@ import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
-import com.kickstarter.viewmodels.ProjectViewModel;
 import com.kickstarter.ui.adapters.ProjectAdapter;
+import com.kickstarter.viewmodels.ProjectViewModel;
 
 import javax.inject.Inject;
 

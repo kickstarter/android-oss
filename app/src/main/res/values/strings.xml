@@ -46,7 +46,6 @@
     e.g.: https://api-christopher.***REMOVED***</string>
   <string name="___Estimated_delivery">Estimated Delivery</string>
   <string name="___Everything">Everything</string>
-  <string name="___Explore_Category">Explore %1$s</string>
   <string name="___Explore_new_projects">Explore new projects</string>
   <string name="___Featured_in_">Featured in %1$s</string>
   <string name="___Find_friends">Find friends</string>
@@ -75,13 +74,11 @@
   <string name="___goal">goal</string>
   <string name="___Help">Help</string>
   <string name="___hours">hours</string>
-  <string name="___I_just_backed_project_on_Kickstarter">I just backed %1$s on Kickstarter: %2$s</string>
   <string name="___Instructions">Instructions</string>
   <string name="____is_a_backer">%1$s is a backer.</string>
   <string name="___Launched">Launched</string>
   <string name="___Limited_left_of">Limited (%1$s left of %2$s)</string>
   <string name="___Logged_out">Logged out</string>
-  <string name="___Looking_for_more_projects">Looking for more projects? Check these out.</string>
   <string name="___Manage_pledge">Manage pledge</string>
   <string name="___mins">mins</string>
   <string name="___More">More</string>
@@ -91,7 +88,6 @@
   <string name="___No_activity_yet">No activity yet</string>
   <string name="___Not_implemented_yet">Not implemented yet, coming soon!</string>
   <string name="___Nice_to_see_you_again">Nice to see you again.</string>
-  <string name="___Number_live_projects">%1$s live projects</string>
   <string name="___of_">of\u0020</string>
   <string name="___Okay">Okay</string>
   <string name="___Open_downloads_folder">Open Downloads folder</string>
@@ -116,8 +112,6 @@
   <string name="___Search_projects">Search projects</string>
   <string name="___Select_email_application">Select email application:</string>
   <string name="___Sha">SHA</string>
-  <string name="___Share">Share</string>
-  <string name="___Share_this_project">Share this project</string>
   <string name="___Shipping_destinations">Shipping destinations</string>
   <string name="___Sign_up_or_log_in_with_your_Facebook_account">
     Sign up or log in with your Facebook account or email address below:
@@ -132,7 +126,6 @@
   <string name="___This_project_will_only_be_funded_if">
     This project will only be funded if at least %1$s is pledged by %2$s</string>
   <string name="___title_activity_project">View Project</string>
-  <string name="___Tweet">Tweet</string>
   <string name="____to_go">\u0020to go</string>
   <string name="___Unable_to_connect">Unable to connect</string>
   <string name="___Unable_to_save">Unable to save</string>
@@ -148,9 +141,7 @@
   <string name="___When_you_back_a_project_or_follow_a_friend">
     When you back a project or follow a friend, their activity will appear here.
   </string>
-  <string name="___Woo_hoo">Woo-hoo!</string>
   <string name="___You">You</string>
-  <string name="___You_just_backed">You just backed &lt;b>%1$s&lt;/b>. Share this project with friends to help it along!</string>
   <string name="___You_launched_a_project">You launched a project: %1$s</string>
   <string name="___You_selected">You selected</string>
   <string name="___Youre_a_backer">You\'re a backer!</string>

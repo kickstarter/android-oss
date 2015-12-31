@@ -4,116 +4,11 @@
     is deprecated based on its name.
 
     There may be a few strings here that we *don't* want to translate, we'll figure out a nice space for them later. -->
-  <string name="___Activity">Activity</string>
-  <string name="___action_settings">Settings</string>
-  <string name="___All_gone">All gone</string>
-  <string name="___All_of_Category">All of %1$s</string>
-  <string name="____and_are_backers">%1$s and %2$s are backers.</string>
-  <string name="____and_more_are_backers">%1$s, %2$s, and %3$s more are backers.</string>
   <string name="___A_newer_build_is_available">A newer build is available. Download upgrade?</string>
-  <string name="___Are_those_new_shoes">
-    Are those new shoes? If they’re not new, they look really shiny and beautiful.
-  </string>
-  <string name="___Backed_projects">Backed projects</string>
-  <string name="___Back_this_project">Back this project</string>
-  <string name="___Backing">Backing</string>
-  <string name="____backers">%1$s backers</string>
-  <string name="___backers">backers</string>
-  <string name="___Blurb_read_more">%1$s &lt;u>Read\u00A0more&lt;/u></string>
-  <string name="___by_">by\u0020%1$s</string>
-  <string name="___by_creator">by &lt;u>%1$s&lt;/u></string>
-  <string name="___Campaign">Campaign</string>
-  <string name="___Cancel">Cancel</string>
-  <string name="___Close">Close</string>
-  <string name="___Comments">Comments</string>
-  <string name="___creator_launched_a_project">%1$s launched a project: %2$s</string>
-  <string name="___Created_by">Created by</string>
-  <string name="___Created_by_">Created by&lt;br>&lt;b>%1$s&lt;/b></string>
-  <string name="___Created_projects">Created projects</string>
-  <string name="___Creator">Creator</string>
-  <string name="___days">days</string>
-  <string name="___Discover_projects">Discover projects</string>
-  <string name="___Done">Done</string>
-  <string name="___Download_build">Download Build</string>
-  <string name="___Estimated_delivery">Estimated Delivery</string>
-  <string name="___Everything">Everything</string>
-  <string name="___Explore_new_projects">Explore new projects</string>
-  <string name="___Featured_in_">Featured in %1$s</string>
-  <string name="___Find_friends">Find friends</string>
-  <string name="___Follow">Follow</string>
-  <string name="___friend_name_backed_art_project">%1$s backed an Art project</string>
-  <string name="___friend_name_backed_comics_project">%1$s backed a Comics project</string>
-  <string name="___friend_name_backed_crafts_project">%1$s backed a Crafts project</string>
-  <string name="___friend_name_backed_dance_project">%1$s backed a Dance project</string>
-  <string name="___friend_name_backed_design_project">%1$s backed a Design project</string>
-  <string name="___friend_name_backed_fashion_project">%1$s backed a Fashion project</string>
-  <string name="___friend_name_backed_film_project">%1$s backed a Film \u0026 Video project</string>
-  <string name="___friend_name_backed_food_project">%1$s backed a Food project</string>
-  <string name="___friend_name_backed_games_project">%1$s backed a Games project</string>
-  <string name="___friend_name_backed_journalism_project">%1$s backed a Journalism project</string>
-  <string name="___friend_name_backed_music_project">%1$s backed a Music project</string>
-  <string name="___friend_name_backed_photography_project">%1$s backed a Photography project</string>
-  <string name="___friend_name_backed_publishing_project">%1$s backed a Publishing project</string>
-  <string name="___friend_name_backed_technology_project">%1$s backed a Technology project</string>
-  <string name="___friend_name_backed_theater_project">%1$s backed a Theater project</string>
-  <string name="___Friends_Backed">Friends Backed</string>
   <string name="___funded">funded</string>
-  <string name="___Funded">Funded</string>
-  <string name="___Funding_canceled">Funding canceled</string>
-  <string name="___Funding_suspended_">Funding suspended %1$s</string>
-  <string name="___Funding_unsuccessful_">Funding unsuccessful %1$s</string>
-  <string name="___goal">goal</string>
-  <string name="___Help">Help</string>
-  <string name="___hours">hours</string>
-  <string name="____is_a_backer">%1$s is a backer.</string>
-  <string name="___Launched">Launched</string>
-  <string name="___Limited_left_of">Limited (%1$s left of %2$s)</string>
-  <string name="___Logged_out">Logged out</string>
-  <string name="___Manage_pledge">Manage pledge</string>
-  <string name="___mins">mins</string>
-  <string name="___More">More</string>
-  <string name="___Nearby">Nearby</string>
-  <string name="___No_activity_yet">No activity yet</string>
   <string name="___Not_implemented_yet">Not implemented yet, coming soon!</string>
-  <string name="___Nice_to_see_you_again">Nice to see you again.</string>
-  <string name="___of_">of\u0020</string>
-  <string name="___Okay">Okay</string>
-  <string name="___Send_feedback">Send feedback</string>
-  <string name="___pledged_of_">pledged of\u0020</string>
-  <string name="___pledged_of_goal">pledged of %1$s</string>
-  <string name="___Post">Post</string>
-  <string name="___Profile">Profile</string>
-  <string name="___project_of_the_day">Project of the day!</string>
-  <string name="___project_was_successfully_funded">%1$s was successfully funded!</string>
-  <string name="___secs">secs</string>
-  <string name="___Search">Search</string>
-  <string name="___Search_projects">Search projects</string>
   <string name="___Select_email_application">Select email application:</string>
-  <string name="___Shipping_destinations">Shipping destinations</string>
-  <string name="___Sign_up_or_log_in_with_your_Facebook_account">
-    Sign up or log in with your Facebook account or email address below:
-  </string>
-  <string name="___Something_went_wrong_try_again_later">Something went wrong, please try again later.</string>
-  <string name="___Staff_Picks">Staff Picks</string>
-  <string name="___Starred">Starred</string>
-  <string name="___Successfully_funded">Successfully funded!</string>
-  <string name="___Submit">Submit</string>
-  <string name="___Resend_code_failed">Unable to resend your code.</string>
-  <string name="___This_project_will_only_be_funded_if">
-    This project will only be funded if at least %1$s is pledged by %2$s</string>
-  <string name="___title_activity_project">View Project</string>
-  <string name="___Updates">Updates</string>
   <string name="___Upgrade_app">Upgrade app</string>
-  <string name="___Use_your_email_address">Use your email address:</string>
-  <string name="___username_is_following_you">&lt;b>%1$s&lt;/b> is following you!</string>
-  <string name="___Well_remind_you_48_hours">We\'ll remind you 48 hours before this project ends!</string>
-  <string name="___When_you_back_a_project_or_follow_a_friend">
-    When you back a project or follow a friend, their activity will appear here.
-  </string>
-  <string name="___You">You</string>
-  <string name="___You_launched_a_project">You launched a project: %1$s</string>
-  <string name="___You_selected">You selected</string>
-  <string name="___You_starred_this_project">You starred this project.</string>
 
   <!-- Content descriptions -->
   <string name="___activity_button_content_description">Activity feed</string>

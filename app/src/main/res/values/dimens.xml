@@ -50,9 +50,13 @@
   <dimen name="profile_card_height">@dimen/grid_26</dimen>
 
   <!-- Layout padding -->
+  <dimen name="activity_padding_x">0dp</dimen>
   <dimen name="feed_padding_y">@dimen/grid_5_half</dimen>
   <dimen name="feed_padding_x">@dimen/grid_3</dimen>
   <dimen name="form_margin_x">@dimen/grid_3</dimen>
+  <dimen name="settings_icon_margin_y">0dp</dimen>
+  <dimen name="settings_margin_y">@dimen/grid_2</dimen>
+
 
   <!-- Buttons -->
   <!-- button_icon_fixed_width is useful when we want to place several icons next to each

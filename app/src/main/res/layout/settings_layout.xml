@@ -15,8 +15,8 @@
 
     <LinearLayout
       android:orientation="vertical"
-      android:layout_marginStart="@dimen/grid_2"
-      android:layout_marginLeft="@dimen/grid_2"
+      android:layout_marginStart="@dimen/settings_margin_y"
+      android:layout_marginLeft="@dimen/settings_margin_y"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 
@@ -28,14 +28,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-      <View
-        android:layout_width="wrap_content"
-        android:layout_height="1dp"
-        android:background="@color/gray"
-        android:layout_marginEnd="@dimen/grid_2"
-        android:layout_marginRight="@dimen/grid_2"/>
+      <include layout="@layout/horizontal_line_thin_right_margin_view" />
 
       <RelativeLayout
+        android:layout_marginEnd="@dimen/settings_icon_margin_y"
+        android:layout_marginRight="@dimen/settings_icon_margin_y"
         android:layout_width="match_parent"
         android:layout_height="@dimen/grid_8">
 
@@ -59,15 +56,12 @@
 
       </RelativeLayout>
 
-      <View
-        android:layout_width="wrap_content"
-        android:layout_height="1dp"
-        android:background="@color/gray"
-        android:layout_marginEnd="@dimen/grid_2"
-        android:layout_marginRight="@dimen/grid_2"/>
+      <include layout="@layout/horizontal_line_thin_right_margin_view" />
 
       <RelativeLayout
         android:id="@+id/manage_project_notifications"
+        android:layout_marginEnd="@dimen/settings_icon_margin_y"
+        android:layout_marginRight="@dimen/settings_icon_margin_y"
         android:focusable="true"
         android:background="@drawable/click_indicator_light_masked"
         android:layout_width="match_parent"
@@ -101,12 +95,7 @@
 
       </RelativeLayout>
 
-      <View
-        android:layout_width="wrap_content"
-        android:layout_height="1dp"
-        android:background="@color/gray"
-        android:layout_marginEnd="@dimen/grid_2"
-        android:layout_marginRight="@dimen/grid_2"/>
+      <include layout="@layout/horizontal_line_thin_right_margin_view" />
 
       <TextView
         style="@style/SubheadSecondaryMedium"
@@ -116,20 +105,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-      <View
-        android:layout_width="wrap_content"
-        android:layout_height="1dp"
-        android:background="@color/gray"
-        android:layout_marginEnd="@dimen/grid_2"
-        android:layout_marginRight="@dimen/grid_2"/>
+      <include layout="@layout/horizontal_line_thin_right_margin_view" />
 
       <RelativeLayout
+        android:layout_marginEnd="@dimen/settings_icon_margin_y"
+        android:layout_marginRight="@dimen/settings_icon_margin_y"
         android:layout_width="match_parent"
         android:layout_height="@dimen/grid_8">
 
         <TextView
           style="@style/BodyPrimary"
           android:layout_centerVertical="true"
+          android:layout_marginEnd="@dimen/settings_icon_margin_y"
+          android:layout_marginRight="@dimen/settings_icon_margin_y"
           android:text="@string/profile_settings_social_followers"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
@@ -147,14 +135,11 @@
 
       </RelativeLayout>
 
-      <View
-        android:layout_width="wrap_content"
-        android:layout_height="1dp"
-        android:background="@color/gray"
-        android:layout_marginEnd="@dimen/grid_2"
-        android:layout_marginRight="@dimen/grid_2"/>
+      <include layout="@layout/horizontal_line_thin_right_margin_view" />
 
       <RelativeLayout
+        android:layout_marginEnd="@dimen/settings_icon_margin_y"
+        android:layout_marginRight="@dimen/settings_icon_margin_y"
         android:layout_width="match_parent"
         android:layout_height="@dimen/grid_8">
 
@@ -178,17 +163,12 @@
 
       </RelativeLayout>
 
-      <View
-        android:layout_width="wrap_content"
-        android:layout_height="1dp"
-        android:background="@color/gray"
-        android:layout_marginEnd="@dimen/grid_2"
-        android:layout_marginRight="@dimen/grid_2"/>
+      <include layout="@layout/horizontal_line_thin_right_margin_view" />
 
       <LinearLayout
         android:orientation="vertical"
-        android:layout_marginRight="@dimen/grid_2"
-        android:layout_marginEnd="@dimen/grid_2"
+        android:layout_marginRight="@dimen/settings_margin_y"
+        android:layout_marginEnd="@dimen/settings_margin_y"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

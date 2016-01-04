@@ -2,11 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="vertical"
   android:layout_width="match_parent"
-  android:layout_height="wrap_content" >
+  android:layout_height="wrap_content">
 
   <View
-    android:id="@+id/horizontal_line_thin_view"
     android:layout_width="match_parent"
     android:layout_height="1dp"
-    android:background="@color/gray" />
+    android:background="@color/gray"
+    android:layout_marginEnd="@dimen/settings_margin_y"
+    android:layout_marginRight="@dimen/settings_margin_y"/>
 </LinearLayout>

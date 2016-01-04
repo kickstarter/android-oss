@@ -98,7 +98,9 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
   }
 
   public void signupLoginClick(final @NonNull DiscoveryOnboardingViewHolder viewHolder) {
-    //signup flow
+    final Intent intent = new Intent(this, LoginToutActivity.class)
+      .putExtra(getString(R.string.intent_login_type), LoginToutActivity.REASON_GENERIC);
+    startActivity(intent);
   }
 
   public void loadParams(@NonNull final DiscoveryParams params) {

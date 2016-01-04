@@ -2,15 +2,16 @@ package com.kickstarter.ui.viewholders;
 
 import android.support.annotation.NonNull;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.Button;
 
 import com.kickstarter.R;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public final class DiscoveryOnboardingViewHolder extends KSViewHolder{
-  protected @Bind(R.id.signup_login_button) TextView signupLoginButton;
+  protected @Bind(R.id.signup_login_button) Button signupLoginButton;
 
   private final Delegate delegate;
   public interface Delegate {
@@ -25,4 +26,9 @@ public final class DiscoveryOnboardingViewHolder extends KSViewHolder{
   }
 
   public void onBind(@NonNull final Object datum) {}
+
+  @OnClick(R.id.signup_login_button)
+  public void signupLoginOnClick() {
+    delegate.signupLoginClick(this);
+  }
 }

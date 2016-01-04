@@ -64,6 +64,21 @@
       android:theme="@style/Login" />
 
     <activity android:name=".ui.activities.HelpActivity"
+    android:theme="@style/HelpActivity" />
+
+    <activity android:name=".ui.activities.HelpActivity$CookiePolicy"
+      android:theme="@style/HelpActivity" />
+
+    <activity android:name=".ui.activities.HelpActivity$Faq"
+      android:theme="@style/HelpActivity" />
+
+    <activity android:name=".ui.activities.HelpActivity$HowItWorks"
+      android:theme="@style/HelpActivity" />
+
+    <activity android:name=".ui.activities.HelpActivity$Privacy"
+      android:theme="@style/HelpActivity" />
+
+    <activity android:name=".ui.activities.HelpActivity$Terms"
       android:theme="@style/HelpActivity" />
 
     <activity android:name=".ui.activities.FacebookConfirmationActivity"

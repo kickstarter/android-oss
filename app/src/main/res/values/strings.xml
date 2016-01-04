@@ -5,18 +5,9 @@
 
     There may be a few strings here that we *don't* want to translate, we'll figure out a nice space for them later. -->
   <string name="___A_newer_build_is_available">A newer build is available. Download upgrade?</string>
-  <string name="___funded">funded</string>
   <string name="___Not_implemented_yet">Not implemented yet, coming soon!</string>
   <string name="___Select_email_application">Select email application:</string>
   <string name="___Upgrade_app">Upgrade app</string>
-
-  <!-- Content descriptions -->
-  <string name="___activity_button_content_description">Activity feed</string>
-  <string name="___comment_button_content_description">Write a comment</string>
-  <string name="___user_button_content_description">User menu</string>
-  <string name="___filter_button_content_description">Filter by categories</string>
-  <string name="___help_menu_button_content_description">Help menu</string>
-  <string name="___overflow_button_content_description">Overflow menu</string>
 
   <!-- Strings we do not want to translate -->
   <string name="Build">Build</string>

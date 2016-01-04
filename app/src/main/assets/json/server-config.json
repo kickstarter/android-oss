@@ -13,7 +13,14 @@
       },
       "discovery": {
         "accessibility": {
-          "live_project_count": "Live projects"
+          "live_project_count": "Live projects",
+          "toolbar": {
+            "buttons": {
+              "filter_label": "Filter by category",
+              "activity_label": "Activity feed",
+              "user_menu": "User menu"
+            }
+          }
         },
         "recommended": "Staff Picks",
         "popular": "Popular",
@@ -81,6 +88,7 @@
           },
           "stats": {
             "backers": "backers",
+            "funded": "funded",
             "pledged_of_goal": "pledged of %{goal}",
             "convert_from_pledged_of_goal": "Converted from %{pledged} pledged of %{goal} goal."
           },
@@ -396,7 +404,8 @@
         },
         "button": {
           "ok": "OK"
-        }
+        },
+        "chooser": "Select email application:"
       },
       "login_tout": {
         "buttons": {
@@ -558,6 +567,9 @@
           "ok": "OK"
         },
         "comments": {
+          "accessibility": {
+            "button_write": "Write a comment"
+          },
           "posted": "Comment posted!",
           "empty_state": {
             "backer": {
@@ -1075,6 +1087,12 @@
             },
             "button_close": {
               "label": "Close"
+            },
+            "button_help_menu": {
+              "label": "Help menu"
+            },
+            "button_overflow_menu": {
+              "label": "Overflow menu"
             }
           }
         },
@@ -1279,7 +1297,14 @@
       },
       "discovery": {
         "accessibility": {
-          "live_project_count": "Live projects"
+          "live_project_count": "Live projects",
+          "toolbar": {
+            "buttons": {
+              "filter_label": "Filter by category",
+              "activity_label": "Activity feed",
+              "user_menu": "User menu"
+            }
+          }
         },
         "recommended": "Team-Favoriten",
         "popular": "Beliebte Projekte",
@@ -1347,6 +1372,7 @@
           },
           "stats": {
             "backers": "Unterstützer",
+            "funded": "funded",
             "pledged_of_goal": "von %{goal}",
             "convert_from_pledged_of_goal": "Umgerechneter Betrag: %{pledged} von %{goal} (Fianzierungsziel)."
           },
@@ -1662,7 +1688,8 @@
         },
         "button": {
           "ok": "OK"
-        }
+        },
+        "chooser": "Select email application:"
       },
       "login_tout": {
         "buttons": {
@@ -1824,6 +1851,9 @@
           "ok": "OK"
         },
         "comments": {
+          "accessibility": {
+            "button_write": "Write a comment"
+          },
           "posted": "Comment posted!",
           "empty_state": {
             "backer": {
@@ -2341,6 +2371,12 @@
             },
             "button_close": {
               "label": "Schließen"
+            },
+            "button_help_menu": {
+              "label": "Help menu"
+            },
+            "button_overflow_menu": {
+              "label": "Overflow menu"
             }
           }
         },
@@ -2545,7 +2581,14 @@
       },
       "discovery": {
         "accessibility": {
-          "live_project_count": "Live projects"
+          "live_project_count": "Live projects",
+          "toolbar": {
+            "buttons": {
+              "filter_label": "Filter by category",
+              "activity_label": "Activity feed",
+              "user_menu": "User menu"
+            }
+          }
         },
         "recommended": "Nuestros favoritos",
         "popular": "Popular",
@@ -2613,6 +2656,7 @@
           },
           "stats": {
             "backers": "patrocinadores",
+            "funded": "funded",
             "pledged_of_goal": "de %{goal}",
             "convert_from_pledged_of_goal": "Conversión: %{pledged} de la meta de %{goal}."
           },
@@ -2928,7 +2972,8 @@
         },
         "button": {
           "ok": "Ok"
-        }
+        },
+        "chooser": "Select email application:"
       },
       "login_tout": {
         "buttons": {
@@ -3090,6 +3135,9 @@
           "ok": "Ok"
         },
         "comments": {
+          "accessibility": {
+            "button_write": "Write a comment"
+          },
           "posted": "Comment posted!",
           "empty_state": {
             "backer": {
@@ -3607,6 +3655,12 @@
             },
             "button_close": {
               "label": "Cerrar"
+            },
+            "button_help_menu": {
+              "label": "Help menu"
+            },
+            "button_overflow_menu": {
+              "label": "Overflow menu"
             }
           }
         },
@@ -3811,7 +3865,14 @@
       },
       "discovery": {
         "accessibility": {
-          "live_project_count": "Live projects"
+          "live_project_count": "Live projects",
+          "toolbar": {
+            "buttons": {
+              "filter_label": "Filter by category",
+              "activity_label": "Activity feed",
+              "user_menu": "User menu"
+            }
+          }
         },
         "recommended": "Nos sélections",
         "popular": "Populaires",
@@ -3879,6 +3940,7 @@
           },
           "stats": {
             "backers": "contributeurs",
+            "funded": "funded",
             "pledged_of_goal": "sur %{goal}",
             "convert_from_pledged_of_goal": "Conversion de %{pledged} engagés pour un objectif de %{goal}"
           },
@@ -4194,7 +4256,8 @@
         },
         "button": {
           "ok": "OK"
-        }
+        },
+        "chooser": "Select email application:"
       },
       "login_tout": {
         "buttons": {
@@ -4356,6 +4419,9 @@
           "ok": "OK"
         },
         "comments": {
+          "accessibility": {
+            "button_write": "Write a comment"
+          },
           "posted": "Comment posted!",
           "empty_state": {
             "backer": {
@@ -4873,6 +4939,12 @@
             },
             "button_close": {
               "label": "Fermer"
+            },
+            "button_help_menu": {
+              "label": "Help menu"
+            },
+            "button_overflow_menu": {
+              "label": "Overflow menu"
             }
           }
         },
@@ -5077,7 +5149,14 @@
       },
       "discovery": {
         "accessibility": {
-          "live_project_count": "Live projects"
+          "live_project_count": "Live projects",
+          "toolbar": {
+            "buttons": {
+              "filter_label": "Filter by category",
+              "activity_label": "Activity feed",
+              "user_menu": "User menu"
+            }
+          }
         },
         "recommended": "Staff Picks",
         "popular": "Popular",
@@ -5145,6 +5224,7 @@
           },
           "stats": {
             "backers": "backers",
+            "funded": "funded",
             "pledged_of_goal": "pledged of %{goal}",
             "convert_from_pledged_of_goal": "Converted from %{pledged} pledged of %{goal} goal."
           },
@@ -5460,7 +5540,8 @@
         },
         "button": {
           "ok": "OK"
-        }
+        },
+        "chooser": "Select email application:"
       },
       "login_tout": {
         "buttons": {
@@ -5622,6 +5703,9 @@
           "ok": "OK"
         },
         "comments": {
+          "accessibility": {
+            "button_write": "Write a comment"
+          },
           "posted": "Comment posted!",
           "empty_state": {
             "backer": {
@@ -6139,6 +6223,12 @@
             },
             "button_close": {
               "label": "Close"
+            },
+            "button_help_menu": {
+              "label": "Help menu"
+            },
+            "button_overflow_menu": {
+              "label": "Overflow menu"
             }
           }
         },
@@ -6482,7 +6572,7 @@
     "native_ios_aa": "control",
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
-    "native_iphone_horiz_vs_vert": "experimental",
+    "native_iphone_horiz_vs_vert": "control",
     "recs_thanks_combo_inputs": "combo_inputs",
     "recs_hp_combo_v1": "combo_v1",
     "video_autoplay_3": "no_autoplay"

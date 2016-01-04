@@ -40,7 +40,7 @@
 
       <com.kickstarter.ui.views.IconButton
         android:id="@+id/filter_expand_more_button"
-        android:contentDescription="@string/___filter_button_content_description"
+        android:contentDescription="@string/discovery_accessibility_toolbar_buttons_filter_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/expand_more"
@@ -73,7 +73,7 @@
         style="@style/ToolbarIcon"
         android:id="@+id/activity_feed_button"
         android:focusable="true"
-        android:contentDescription="@string/___activity_button_content_description"
+        android:contentDescription="@string/discovery_accessibility_toolbar_buttons_activity_label"
         android:layout_width="@dimen/button_icon_fixed_width"
         android:layout_height="match_parent"
         android:gravity="center"
@@ -97,7 +97,7 @@
         style="@style/ToolbarIcon"
         android:id="@+id/current_user_button"
         android:focusable="true"
-        android:contentDescription="@string/___user_button_content_description"
+        android:contentDescription="@string/discovery_accessibility_toolbar_buttons_user_menu"
         android:layout_width="@dimen/button_icon_fixed_width"
         android:layout_height="match_parent"
         android:gravity="center"

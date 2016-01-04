@@ -281,6 +281,9 @@
   <string name="dates_time_minutes_zero" formatted="false">0 minutes</string>
   <string name="dates_yesterday" formatted="false">hier</string>
   <string name="discovery_accessibility_live_project_count" formatted="false">Live projects</string>
+  <string name="discovery_accessibility_toolbar_buttons_activity_label" formatted="false">Activity feed</string>
+  <string name="discovery_accessibility_toolbar_buttons_filter_label" formatted="false">Filter by category</string>
+  <string name="discovery_accessibility_toolbar_buttons_user_menu" formatted="false">User menu</string>
   <string name="discovery_activity_sample_alert_buttons_cancel" formatted="false">Annuler</string>
   <string name="discovery_activity_sample_alert_buttons_follow" formatted="false">S\'abonner</string>
   <string name="discovery_activity_sample_alert_follow_friend_name" formatted="false">Suivre %{friend_name} ?</string>
@@ -308,6 +311,7 @@
   <string name="discovery_baseball_card_social_friends_are_backers_zero" formatted="false">Vos amis n\'ont pas soutenu ce projet.</string>
   <string name="discovery_baseball_card_stats_backers" formatted="false">contributeurs</string>
   <string name="discovery_baseball_card_stats_convert_from_pledged_of_goal" formatted="false">Conversion de %{pledged} engagés pour un objectif de %{goal}</string>
+  <string name="discovery_baseball_card_stats_funded" formatted="false">funded</string>
   <string name="discovery_baseball_card_stats_pledged_of_goal" formatted="false">sur %{goal}</string>
   <string name="discovery_baseball_card_status_banner_canceled" formatted="false">Financement annulé</string>
   <string name="discovery_baseball_card_status_banner_canceled_date" formatted="false">Campagne annulée le %{date}</string>
@@ -385,7 +389,9 @@
   <string name="general_error_something_wrong" formatted="false">Un erreur s\'est produite.</string>
   <string name="general_loading" formatted="false">Chargement en cours...</string>
   <string name="general_navigation_accessibility_button_close_label" formatted="false">Fermer</string>
+  <string name="general_navigation_accessibility_button_help_menu_label" formatted="false">Help menu</string>
   <string name="general_navigation_accessibility_button_navigate_back_label" formatted="false">Retour</string>
+  <string name="general_navigation_accessibility_button_overflow_menu_label" formatted="false">Overflow menu</string>
   <string name="general_navigation_buttons_cancel" formatted="false">Annuler</string>
   <string name="general_navigation_buttons_close" formatted="false">Fermer</string>
   <string name="general_navigation_buttons_comment" formatted="false">Commenter</string>
@@ -577,6 +583,7 @@ Nous vous en serions très reconnaissants !</string>
   <string name="project_checkout_share_twitter_via_kickstarter" formatted="false">%{project_or_update_title}, via Kickstarter</string>
   <string name="project_checkout_share_you_just_backed_project_share_this_project" formatted="false">Vous venez de soutenir le projet %{project_name}. Partagez-le avec vos amis pour l\'aider à avancer !</string>
   <string name="project_checkout_share_you_just_backed_project_share_this_project_html" formatted="false">You just backed &lt;b>%{project_name}&lt;/b>. Share this project with friends to help it along!</string>
+  <string name="project_comments_accessibility_button_write" formatted="false">Write a comment</string>
   <string name="project_comments_empty_state_backer_button" formatted="false">Laisser un commentaire</string>
   <string name="project_comments_empty_state_backer_message" formatted="false">Oh, quel dommage. Soyez le premier contributeur à laisser un commentaire sur ce projet.</string>
   <string name="project_comments_empty_state_backer_title" formatted="false">Pas de commentaires</string>
@@ -707,6 +714,7 @@ Nous vous en serions très reconnaissants !</string>
 --------\n
 </string>
   <string name="support_email_button_ok" formatted="false">OK</string>
+  <string name="support_email_chooser" formatted="false">Select email application:</string>
   <string name="support_email_noemail_message" formatted="false">On dirait que vous n\'avez pas de compte e-mail sur votre appareil. Veuillez nous contacter à l\'adresse app@kickstarter.com.</string>
   <string name="support_email_noemail_title" formatted="false">Assistance</string>
   <string name="support_email_subject" formatted="false">Bonjour, Assistance de l\'application Kickstarter</string>

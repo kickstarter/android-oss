@@ -38,7 +38,7 @@
     <com.kickstarter.ui.views.IconButton
       style="@style/ToolbarIcon"
       android:id="@+id/comment_button"
-      android:contentDescription="@string/___comment_button_content_description"
+      android:contentDescription="@string/project_comments_accessibility_button_write"
       android:focusable="true"
       android:visibility="invisible"
       android:layout_alignParentEnd="true"

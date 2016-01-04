@@ -1,21 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:fab="http://schemas.android.com/apk/res-auto"
-  android:layout_height="fill_parent"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_height="match_parent"
   android:layout_width="match_parent" >
 
-  <include
-    layout="@layout/project_toolbar"
-    android:id="@+id/project_toolbar"/>
-
-  <android.support.v7.widget.RecyclerView
-    android:id="@+id/project_recycler_view"
-    android:layout_below="@id/project_toolbar"
-    android:layout_above="@+id/project_action_buttons"
+  <android.support.design.widget.CoordinatorLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/light_gray"/>
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+      android:id="@+id/project_toolbar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <include
+        layout="@layout/project_toolbar"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v7.widget.RecyclerView
+      android:id="@+id/project_recycler_view"
+      app:layout_behavior="@string/appbar_scrolling_view_behavior"
+      android:layout_below="@id/project_toolbar"
+      android:layout_above="@+id/project_action_buttons"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/light_gray"/>
+
+  </android.support.design.widget.CoordinatorLayout>
 
   <RelativeLayout
     android:id="@+id/project_action_buttons"
@@ -50,9 +63,9 @@
   <android.support.design.widget.FloatingActionButton
     android:id="@+id/star_fab"
     style="@style/StarFab"
-    fab:backgroundTint="@color/white"
-    fab:rippleColor="@color/dark_gray_click"
-    fab:fabSize="normal"
+    app:backgroundTint="@color/white"
+    app:rippleColor="@color/dark_gray_click"
+    app:fabSize="normal"
     android:focusable="true"
     android:nextFocusLeft="@id/project_action_buttons"
     android:contentDescription="@string/project_accessibility_button_star_label"

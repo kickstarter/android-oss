@@ -131,8 +131,8 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
 
   public void showBuildAlert(@NonNull final InternalBuildEnvelope envelope) {
     new AlertDialog.Builder(this)
-      .setTitle(getString(R.string.___Upgrade_app))
-      .setMessage(getString(R.string.___A_newer_build_is_available))
+      .setTitle(getString(R.string.Upgrade_app))
+      .setMessage(getString(R.string.A_newer_build_is_available))
       .setPositiveButton(android.R.string.yes, (dialog, which) -> {
         Intent intent = new Intent(this, DownloadBetaActivity.class)
           .putExtra(getString(R.string.intent_internal_build_envelope), envelope);

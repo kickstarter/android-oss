@@ -125,7 +125,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
       .putExtra(Intent.EXTRA_TEXT, body)
       .putExtra(Intent.EXTRA_EMAIL, new String[]{supportEmailString});
     if (intent.resolveActivity(getPackageManager()) != null) {
-      startActivity(Intent.createChooser(intent, getString(R.string.___Select_email_application)));
+      startActivity(Intent.createChooser(intent, getString(R.string.Select_email_application)));
     }
   }
 

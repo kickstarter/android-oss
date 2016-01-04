@@ -2,8 +2,6 @@ package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.text.Html;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,7 +21,7 @@ public final class FriendFollowViewHolder extends ActivityListViewHolder {
   protected @Bind(R.id.title) TextView titleTextView;
   
   protected @BindString(R.string.activity_friend_follow_is_following_you) String isFollowingYouString;
-  protected @BindString(R.string.___Not_implemented_yet) String notImplementedYetString;
+  protected @BindString(R.string.Not_implemented_yet) String notImplementedYetString;
 
   public FriendFollowViewHolder(final @NonNull View view) {
     super(view);

@@ -4,12 +4,7 @@
     is deprecated based on its name.
 
     There may be a few strings here that we *don't* want to translate, we'll figure out a nice space for them later. -->
-  <string name="___A_newer_build_is_available">A newer build is available. Download upgrade?</string>
-  <string name="___Not_implemented_yet">Not implemented yet, coming soon!</string>
-  <string name="___Select_email_application">Select email application:</string>
-  <string name="___Upgrade_app">Upgrade app</string>
-
-  <!-- Strings we do not want to translate -->
+  <string name="A_newer_build_is_available">A newer build is available. Download upgrade?</string>
   <string name="Build">Build</string>
   <string name="Build_date">Build Date</string>
   <string name="Build_information">Build Information</string>
@@ -22,14 +17,17 @@
   </string>
   <string name="Instructions">Instructions</string>
   <string name="Network">Network</string>
+  <string name="Not_implemented_yet">Not implemented yet, coming soon!</string>
   <string name="Open_downloads_folder">Open Downloads folder</string>
   <string name="A_request_has_been_made_to_download_the_latest_build">
     A request has been made to download the latest build. When the request has completed, open your downloads
     folder and tap the .apk file to install.\n\nYou must enable the option to allow installation of apps from
     unknown sources in the security settings of your device.
   </string>
+  <string name="Select_email_application">Select email application:</string>
   <string name="Sha">SHA</string>
   <string name="Submit_feedback">Submit feedback</string>
+  <string name="Upgrade_app">Upgrade app</string>
   <string name="Variant">Variant</string>
   <string name="Version_code">Version Code</string>
   <string name="Version_name">Version Name</string>

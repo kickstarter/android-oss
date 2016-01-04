@@ -32,7 +32,7 @@ public final class RecyclerViewPaginator {
       .map(__ -> recyclerView.getLayoutManager())
       .ofType(LinearLayoutManager.class)
       .map(this::displayedItemFromLinearLayout)
-      .filter(this::someItemsDisplayed)
+      .filter(item -> item.second != 0)
       .distinctUntilChanged()
       .filter(this::visibleItemIsCloseToBottom)
       .subscribe(__ -> nextPage.call());
@@ -62,14 +62,5 @@ public final class RecyclerViewPaginator {
 
   private boolean visibleItemIsCloseToBottom(final @NonNull Pair<Integer, Integer> visibleItemOfTotal) {
     return visibleItemOfTotal.first == visibleItemOfTotal.second - 1;
-  }
-
-  /**
-   * Determine if there are items displayed in the recycler view.
-   * @param displayedItem An (int, int) pair representing the current item visible and the total number of items.
-   * @return `true` if items are displayed in the recycler view and `false` otherwise.
-   */
-  private boolean someItemsDisplayed(final @NonNull Pair<Integer, Integer> displayedItem) {
-    return  displayedItem.second != 0;
   }
 }

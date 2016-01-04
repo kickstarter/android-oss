@@ -33,7 +33,9 @@ public final class SearchViewModel extends ViewModel<SearchActivity> implements 
   private final PublishSubject<Void> nextPage = PublishSubject.create();
   public void nextPage() { nextPage.onNext(null); }
   public SearchViewModelInputs inputs = this;
-  @Override public void search(final @NonNull String s) { search.onNext(s); }
+  @Override public void search(final @NonNull String s) {
+    search.onNext(s);
+  }
 
   // OUTPUTS
   private final BehaviorSubject<List<Project>> popularProjects = BehaviorSubject.create();

@@ -30,9 +30,12 @@ public final class DiscoveryAdapter extends KSAdapter {
     this.user = null;
   }
 
-  public void takeProjects(final @NonNull List<Project> projects, final @Nullable User user) {
+  public void takeUser(final @Nullable User user) {
     this.user = user;
+    notifyDataSetChanged();
+  }
 
+  public void takeProjects(final @NonNull List<Project> projects) {
     data().clear();
     data().add(DISCOVERY_ONBOARDING_VIEW, new ArrayList<>());
     data().add(projects);

@@ -32,13 +32,12 @@ import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.BindDrawable;
 import butterknife.ButterKnife;
+import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresViewModel(DiscoveryViewModel.class)
 public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> implements DiscoveryAdapter.Delegate {
@@ -76,6 +75,16 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
     }
 
     recyclerViewPaginator = new RecyclerViewPaginator(recyclerView, viewModel.inputs::nextPage);
+
+    viewModel.outputs.user()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(adapter::takeUser);
+
+    viewModel.outputs.projects()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(adapter::takeProjects);
   }
 
   @Override
@@ -90,10 +99,6 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
 
   public void signupLoginClick(final @NonNull DiscoveryOnboardingViewHolder viewHolder) {
     //signup flow
-  }
-
-  public void loadProjects(final @NonNull List<Project> projects, final Nullable User user) {
-    adapter.takeProjects(projects, user);
   }
 
   public void loadParams(@NonNull final DiscoveryParams params) {

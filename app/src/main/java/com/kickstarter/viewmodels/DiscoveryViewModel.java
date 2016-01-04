@@ -47,7 +47,6 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   }
 
   // OUTPUTS
-  @Override
   private final BehaviorSubject<List<Project>> projects = BehaviorSubject.create();
   @Override
   public Observable<List<Project>> projects() {
@@ -99,10 +98,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .subscribe(koala::trackDiscovery)
     );
 
-    final Observable<List<Project>> projects = paginator.paginatedData;
-
-    final Observable<Pair<DiscoveryActivity, List<Project>>> viewAndProjects = view
-      .compose(Transformers.combineLatestPair(projects));
+    addSubscription(paginator.paginatedData.subscribe(projects));
 
     final Observable<Pair<DiscoveryActivity, DiscoveryParams>> viewAndParams = view
       .compose(Transformers.combineLatestPair(params));
@@ -110,10 +106,6 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     addSubscription(viewAndParams
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.loadParams(vp.second)));
-
-    addSubscription(viewAndProjects
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.loadProjects(vp.second)));
 
     addSubscription(
       viewAndParams

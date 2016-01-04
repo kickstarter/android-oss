@@ -6,13 +6,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.kickstarter.KSApplication;
+import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.ViewModel;
-import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
-import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
@@ -61,9 +60,9 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
   public final ActivityFeedViewModelInputs inputs = this;
 
   // OUTPUTS
-  private final BehaviorSubject<User> loggedOutEmptyState = BehaviorSubject.create();
-  public final Observable<User> loggedOutEmptyState() {
-    return loggedOutEmptyState;
+  private final BehaviorSubject<Boolean> showLoggedOutEmptyState = BehaviorSubject.create();
+  public final Observable<Boolean> showLoggedOutEmptyState() {
+    return showLoggedOutEmptyState;
   }
   private final PublishSubject<Boolean> isFetchingActivities = PublishSubject.create();
   public final Observable<Boolean> isFetchingActivities() {
@@ -97,9 +96,7 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
         .subscribe(__ -> refresh())
     );
 
-    addSubscription(currentUser.loggedOutUser()
-        .subscribe(__ -> loggedOutEmptyState.onNext(null))
-    );
+    addSubscription(currentUser.isLoggedIn().subscribe(showLoggedOutEmptyState));
 
     addSubscription(view
       .compose(Transformers.takeWhen(discoverProjectsClick))

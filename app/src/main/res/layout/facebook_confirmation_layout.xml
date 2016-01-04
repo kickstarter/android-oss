@@ -43,7 +43,7 @@
         style="@style/BodySecondary"
         android:layout_marginTop="@dimen/grid_3"
         android:layout_marginBottom="@dimen/grid_2"
-        android:text="@string/___Discover_new_projects_with_our_weekly_newsletter"/>
+        android:text="@string/signup_newsletter_full"/>
 
       <Button
         android:id="@+id/create_new_account_button"

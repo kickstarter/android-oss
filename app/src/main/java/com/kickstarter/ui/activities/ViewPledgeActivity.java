@@ -13,6 +13,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Project;
 import com.kickstarter.viewmodels.ViewPledgeViewModel;
@@ -62,7 +63,7 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel> 
       pledgeInfoTextView.setText(String.format(
         getString(R.string.___pledged_amount_on_date),
         ksCurrency.format(backing.amount(), backing.project()),
-        backing.formattedPledgedAt()
+        DateTimeUtils.fullDate(backing.pledgedAt())
       ));
       rewardInfoTextView.setText(String.format(
         getString(R.string.___reward_amount_description),

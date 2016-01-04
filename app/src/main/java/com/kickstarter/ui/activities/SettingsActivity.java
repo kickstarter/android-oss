@@ -143,7 +143,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
 
   @OnClick(R.id.cookie_policy)
   public void cookiePolicyClick() {
-    startHelpActivity(HelpActivity.HELP_TYPE_COOKIE_POLICY);
+    startHelpActivity(HelpActivity.CookiePolicy.class);
   }
 
   public void displayPreferences(final @NonNull User user) {
@@ -170,12 +170,12 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
 
   @OnClick(R.id.faq)
   public void faqClick() {
-    startHelpActivity(HelpActivity.HELP_TYPE_FAQ);
+    startHelpActivity(HelpActivity.Faq.class);
   }
 
   @OnClick(R.id.how_kickstarter_works)
   public void howKickstarterWorksClick() {
-    startHelpActivity(HelpActivity.HELP_TYPE_HOW_IT_WORKS);
+    startHelpActivity(HelpActivity.HowItWorks.class);
   }
 
   @OnClick(R.id.log_out_button)
@@ -194,12 +194,11 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
 
   @OnClick(R.id.privacy_policy)
   public void privacyPolicyClick() {
-    startHelpActivity(HelpActivity.HELP_TYPE_PRIVACY);
+    startHelpActivity(HelpActivity.Privacy.class);
   }
 
-  public void startHelpActivity(final int helpType) {
-    final Intent intent = new Intent(this, HelpActivity.class)
-      .putExtra(getString(R.string.intent_help_type), helpType);
+  public void startHelpActivity(final @NonNull Class<? extends HelpActivity> helpClass) {
+    final Intent intent = new Intent(this, helpClass);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
@@ -235,7 +234,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
 
   @OnClick(R.id.terms_of_use)
   public void termsOfUseClick() {
-    startHelpActivity(HelpActivity.HELP_TYPE_TERMS);
+    startHelpActivity(HelpActivity.Terms.class);
   }
 
   public void toggleIconColor(final @NonNull TextView iconTextView, final boolean typeMobile, final boolean enabled) {

@@ -59,7 +59,7 @@ public final class ProjectStateChangedPositiveViewHolder extends ActivityListVie
         leftStatFirstTextView.setText(ksCurrency.format(activity.project().goal(), activity.project()));
         leftStatSecondTextView.setText(context.getString(R.string.___goal));
         rightStatFirstTextView.setText(context.getString(R.string.___Launched));
-        rightStatSecondTextView.setText(activity.project().launchedAt().toString(DateTimeUtils.defaultFormatter()));
+        rightStatSecondTextView.setText(DateTimeUtils.mediumDate(activity.project().launchedAt()));
         titleTextView.setText(context.getString(
           R.string.___creator_launched_a_project, activity.user().name(), activity.project().name()));
         break;
@@ -70,7 +70,7 @@ public final class ProjectStateChangedPositiveViewHolder extends ActivityListVie
           R.string.___pledged_of_goal,
           ksCurrency.format(activity.project().goal(), activity.project(), true)));
         rightStatFirstTextView.setText(context.getString(R.string.___Funded));
-        rightStatSecondTextView.setText(activity.createdAt().toString(DateTimeUtils.defaultFormatter()));
+        rightStatSecondTextView.setText(DateTimeUtils.mediumDate(activity.createdAt()));
         titleTextView.setText(context
           .getString(R.string.___project_was_successfully_funded, activity.project().name()));
         break;

@@ -287,8 +287,8 @@
   <string name="discovery_activity_sample_title_Since_your_last_visit" formatted="false">Seit deinem letzten Besuch</string>
   <string name="discovery_all_of_scope" formatted="false">Alle in %{scope}</string>
   <string name="discovery_backing" formatted="false">Unterstützte Projekte</string>
-  <string name="discovery_baseball_card_accessibility_category_label" formatted="false">Category</string>
-  <string name="discovery_baseball_card_accessibility_location_label" formatted="false">Location</string>
+  <string name="discovery_baseball_card_accessibility_category_label" formatted="false">Kategorie</string>
+  <string name="discovery_baseball_card_accessibility_location_label" formatted="false">Ort</string>
   <string name="discovery_baseball_card_blurb_read_more" formatted="false">%{blurb}%{space}Mehr%{space}lesen%{space}</string>
   <string name="discovery_baseball_card_button_share" formatted="false">Teilen</string>
   <string name="discovery_baseball_card_deadline_units_days" formatted="false">Tage</string>
@@ -300,18 +300,21 @@
   <string name="discovery_baseball_card_metadata_potd" formatted="false">Projekt des Tages!</string>
   <string name="discovery_baseball_card_metadata_starred" formatted="false">Gehört zu deinen Favoriten.</string>
   <string name="discovery_baseball_card_read_more" formatted="false">Mehr%{space}Info%{space}</string>
-  <string name="discovery_baseball_card_social_friends_are_backers_few" formatted="false">%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.</string>
-  <string name="discovery_baseball_card_social_friends_are_backers_many" formatted="false">%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.</string>
-  <string name="discovery_baseball_card_social_friends_are_backers_one" formatted="false">%{friend_name} is a backer.</string>
-  <string name="discovery_baseball_card_social_friends_are_backers_two" formatted="false">%{friend_name} and %{second_friend_name} are backers.</string>
-  <string name="discovery_baseball_card_social_friends_are_backers_zero" formatted="false">None of your friends are backers.</string>
+  <string name="discovery_baseball_card_social_friends_are_backers_few" formatted="false">%{friend_name}, %{second_friend_name}, und %{remaining_count} weitere unterstützen dieses Projekt.</string>
+  <string name="discovery_baseball_card_social_friends_are_backers_many" formatted="false">%{friend_name}, %{second_friend_name}, und %{remaining_count} weitere unterstützen dieses Projekt.</string>
+  <string name="discovery_baseball_card_social_friends_are_backers_one" formatted="false">%{friend_name} unterstützt dieses Projekt.</string>
+  <string name="discovery_baseball_card_social_friends_are_backers_two" formatted="false">%{friend_name} und %{second_friend_name} unterstützen dieses Projekt.</string>
+  <string name="discovery_baseball_card_social_friends_are_backers_zero" formatted="false">Keiner deiner Freunde unterstützt dieses Projekt.</string>
   <string name="discovery_baseball_card_stats_backers" formatted="false">Unterstützer</string>
   <string name="discovery_baseball_card_stats_convert_from_pledged_of_goal" formatted="false">Umgerechneter Betrag: %{pledged} von %{goal} (Fianzierungsziel).</string>
   <string name="discovery_baseball_card_stats_pledged_of_goal" formatted="false">von %{goal}</string>
   <string name="discovery_baseball_card_status_banner_canceled" formatted="false">Finanzierung abgebrochen</string>
+  <string name="discovery_baseball_card_status_banner_canceled_date" formatted="false">Funding canceled %{date}</string>
   <string name="discovery_baseball_card_status_banner_funding_unsuccessful_date" formatted="false">Finanzierung fehlgeschlagen %{date}</string>
   <string name="discovery_baseball_card_status_banner_successful" formatted="false">Erfolgreich finanziert!</string>
+  <string name="discovery_baseball_card_status_banner_successful_date" formatted="false">Successfully funded %{date}</string>
   <string name="discovery_baseball_card_status_banner_suspended" formatted="false">Finanzierung ausgesetzt %{date}</string>
+  <string name="discovery_baseball_card_status_banner_suspended_date" formatted="false">Funding suspended %{date}</string>
   <string name="discovery_baseball_card_time_left_to_go" formatted="false">%{time_left} zum Ziel</string>
   <string name="discovery_category" formatted="false">Kategorie</string>
   <string name="discovery_empty_states_saved_logged_in_button" formatted="false">Projekte entdecken</string>
@@ -379,8 +382,8 @@
   <string name="general_alert_buttons_ok" formatted="false">OK</string>
   <string name="general_error_something_wrong" formatted="false">Da hat etwas nicht geklappt.</string>
   <string name="general_loading" formatted="false">Wird geladen ...</string>
-  <string name="general_navigation_accessibility_button_close_label" formatted="false">Close</string>
-  <string name="general_navigation_accessibility_button_navigate_back_label" formatted="false">Navigate back</string>
+  <string name="general_navigation_accessibility_button_close_label" formatted="false">Schließen</string>
+  <string name="general_navigation_accessibility_button_navigate_back_label" formatted="false">Zurück</string>
   <string name="general_navigation_buttons_cancel" formatted="false">Abbrechen</string>
   <string name="general_navigation_buttons_close" formatted="false">Schließen</string>
   <string name="general_navigation_buttons_comment" formatted="false">Kommentar</string>
@@ -480,8 +483,13 @@ Für gewöhnlich kann das Problem behoben werden, indem du in den iOS Einstellun
   <string name="profile_projects_backed_project_count_projects_two" formatted="false">HAT 2 PROJEKTE UNTERSTÜTZT</string>
   <string name="profile_projects_backed_project_count_projects_zero" formatted="false">HAT 0 PROJEKTE UNTERSTÜTZT</string>
   <string name="profile_projects_backed_projects" formatted="false">Unterstützte Projekte</string>
+  <string name="profile_projects_created_projects" formatted="false">Created projects</string>
   <string name="profile_projects_empty_state_button" formatted="false">Projekte entdecken</string>
   <string name="profile_projects_empty_state_message" formatted="false">Du hast noch keine Projekte unterstützt. Das sollten wir ändern!</string>
+  <string name="profile_projects_status_canceled" formatted="false">Canceled</string>
+  <string name="profile_projects_status_successful" formatted="false">Successful</string>
+  <string name="profile_projects_status_suspended" formatted="false">Suspended</string>
+  <string name="profile_projects_status_unsuccessful" formatted="false">Unsuccessful</string>
   <string name="profile_projects_time_left_to_go" formatted="false">%{time_left} verbleibend</string>
   <string name="profile_settings_about_contact" formatted="false">Kontakt</string>
   <string name="profile_settings_about_cookie" formatted="false">Cookie-Richtlinien</string>
@@ -521,8 +529,8 @@ Wir würden uns sehr darüber freuen!</string>
   <string name="profile_settings_social_friend_backs" formatted="false">Ein Freund unterstützt ein Projekt</string>
   <string name="profile_settings_social_title" formatted="false">Neues aus deinem Netzwerk</string>
   <string name="profile_settings_version_number" formatted="false">Version %{version_number}</string>
-  <string name="project_accessibility_button_share_label" formatted="false">Share this project</string>
-  <string name="project_accessibility_button_star_label" formatted="false">Star this project</string>
+  <string name="project_accessibility_button_share_label" formatted="false">Andere über dieses Projekt informieren</string>
+  <string name="project_accessibility_button_star_label" formatted="false">Dieses Projekt zu Favoriten hinzufügen</string>
   <string name="project_back_button" formatted="false">Dieses Projekt unterstützen</string>
   <string name="project_backer_title" formatted="false">Du gehörst jetzt zu den Unterstützern!</string>
   <string name="project_checkout_apple_pay_alert_button_ok" formatted="false">OK</string>
@@ -623,8 +631,8 @@ Wir würden uns sehr darüber freuen!</string>
   <string name="rewards_shipping_preferences_location_unrestricted" formatted="false">Weltweiter Versand</string>
   <string name="rewards_title_about_amount_usd" formatted="false">Ungef\'hr %{reward_amount} USD</string>
   <string name="rewards_title_pledge_reward_currency_or_more" formatted="false">Trage %{reward_currency} oder mehr bei</string>
-  <string name="search_by_creator" formatted="false">by %{creator_name}</string>
-  <string name="search_most_popular" formatted="false">Most Popular</string>
+  <string name="search_by_creator" formatted="false">von %{creator_name}</string>
+  <string name="search_most_popular" formatted="false">Publikumslieblinge</string>
   <string name="signup_button" formatted="false">Registrieren</string>
   <string name="signup_error_something_wrong" formatted="false">Da hat etwas nicht geklappt.</string>
   <string name="signup_input_fields_email" formatted="false">E-Mail</string>
@@ -684,7 +692,7 @@ Wir würden uns sehr darüber freuen!</string>
   <string name="tabbar_me" formatted="false">Mein Konto</string>
   <string name="tabbar_profile" formatted="false">Profil</string>
   <string name="tabbar_search" formatted="false">Suche</string>
-  <string name="tabbar_search_projects" formatted="false">Search projects</string>
+  <string name="tabbar_search_projects" formatted="false">Projekte suchen</string>
   <string name="two_factor_buttons_resend" formatted="false">Erneut senden</string>
   <string name="two_factor_buttons_submit" formatted="false">Absenden</string>
   <string name="two_factor_code_placeholder" formatted="false">Code eingeben</string>

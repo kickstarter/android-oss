@@ -22,7 +22,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 @RequiresViewModel(HelpViewModel.class)
-public final class HelpActivity extends BaseActivity<HelpViewModel> {
+public class HelpActivity extends BaseActivity<HelpViewModel> {
   public static final int HELP_TYPE_TERMS = 0;
   public static final int HELP_TYPE_PRIVACY = 1;
   public static final int HELP_TYPE_HOW_IT_WORKS = 2;
@@ -33,9 +33,40 @@ public final class HelpActivity extends BaseActivity<HelpViewModel> {
   @Retention(RetentionPolicy.SOURCE)
   public @interface HelpType {}
 
-  @Bind(R.id.kickstarter_web_view) KSWebView kickstarterWebView;
+  @HelpType int helpType;
 
+  @Bind(R.id.kickstarter_web_view) KSWebView kickstarterWebView;
   @Inject @WebEndpoint String webEndpoint;
+
+  public static class Terms extends HelpActivity {
+    public Terms() {
+      this.helpType = HELP_TYPE_TERMS;
+    }
+  }
+
+  public static class Privacy extends HelpActivity {
+    public Privacy() {
+      this.helpType = HELP_TYPE_PRIVACY;
+    }
+  }
+
+  public static class HowItWorks extends HelpActivity {
+    public HowItWorks() {
+      this.helpType = HELP_TYPE_HOW_IT_WORKS;
+    }
+  }
+
+  public static class CookiePolicy extends HelpActivity {
+    public CookiePolicy() {
+      this.helpType = HELP_TYPE_COOKIE_POLICY;
+    }
+  }
+
+  public static class Faq extends HelpActivity {
+    public Faq() {
+      this.helpType = HELP_TYPE_FAQ;
+    }
+  }
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -45,8 +76,7 @@ public final class HelpActivity extends BaseActivity<HelpViewModel> {
     setContentView(R.layout.help_layout);
     ButterKnife.bind(this);
 
-    @HelpType int helpType = getIntent().getExtras().getInt(getString(R.string.intent_help_type));
-    final String url = getUrlForHelpType(helpType);
+    final String url = getUrlForHelpType(this.helpType);
     kickstarterWebView.loadUrl(url);
   }
 

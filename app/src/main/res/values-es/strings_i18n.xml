@@ -309,9 +309,12 @@
   <string name="discovery_baseball_card_stats_convert_from_pledged_of_goal" formatted="false">Conversión: %{pledged} de la meta de %{goal}.</string>
   <string name="discovery_baseball_card_stats_pledged_of_goal" formatted="false">de %{goal}</string>
   <string name="discovery_baseball_card_status_banner_canceled" formatted="false">Financiamiento cancelado</string>
+  <string name="discovery_baseball_card_status_banner_canceled_date" formatted="false">Funding canceled %{date}</string>
   <string name="discovery_baseball_card_status_banner_funding_unsuccessful_date" formatted="false">Financiamiento fallido %{date}</string>
   <string name="discovery_baseball_card_status_banner_successful" formatted="false">¡Financiado con éxito!</string>
+  <string name="discovery_baseball_card_status_banner_successful_date" formatted="false">Successfully funded %{date}</string>
   <string name="discovery_baseball_card_status_banner_suspended" formatted="false">Financiamiento suspendido %{date}</string>
+  <string name="discovery_baseball_card_status_banner_suspended_date" formatted="false">Funding suspended %{date}</string>
   <string name="discovery_baseball_card_time_left_to_go" formatted="false">%{time_left} más</string>
   <string name="discovery_category" formatted="false">Categoría</string>
   <string name="discovery_empty_states_saved_logged_in_button" formatted="false">Descubre proyectos</string>
@@ -480,9 +483,14 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="profile_projects_backed_project_count_projects_two" formatted="false">2 PROYECTOS PATROCINADOS</string>
   <string name="profile_projects_backed_project_count_projects_zero" formatted="false">0 PROYECTOS PATROCINADOS</string>
   <string name="profile_projects_backed_projects" formatted="false">Proyectos patrocinados</string>
+  <string name="profile_projects_created_projects" formatted="false">Created projects</string>
   <string name="profile_projects_empty_state_button" formatted="false">Descubre proyectos</string>
   <string name="profile_projects_empty_state_message" formatted="false">Aún no has patrocinado ningún proyecto.
 ¡Es hora de cambiar esto!</string>
+  <string name="profile_projects_status_canceled" formatted="false">Canceled</string>
+  <string name="profile_projects_status_successful" formatted="false">Successful</string>
+  <string name="profile_projects_status_suspended" formatted="false">Suspended</string>
+  <string name="profile_projects_status_unsuccessful" formatted="false">Unsuccessful</string>
   <string name="profile_projects_time_left_to_go" formatted="false">%{time_left} restante(s)</string>
   <string name="profile_settings_about_contact" formatted="false">Contacto</string>
   <string name="profile_settings_about_cookie" formatted="false">Política de cookies</string>

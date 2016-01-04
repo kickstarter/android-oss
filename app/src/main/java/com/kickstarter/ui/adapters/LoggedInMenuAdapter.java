@@ -35,8 +35,8 @@ public final class LoggedInMenuAdapter extends BaseAdapter {
     this.user = user;
 
     rows.add(ROW_PROFILE, user.name());
-    rows.add(ROW_SETTINGS, context.getResources().getString(R.string.___Settings));
-    rows.add(ROW_HELP, context.getResources().getString(R.string.___Help));
+    rows.add(ROW_SETTINGS, context.getResources().getString(R.string.profile_buttons_settings));
+    rows.add(ROW_HELP, context.getResources().getString(R.string.general_navigation_buttons_help));
     notifyDataSetChanged();
   }
 
@@ -91,7 +91,7 @@ public final class LoggedInMenuAdapter extends BaseAdapter {
       case ROW_SETTINGS:
         return SettingsActivity.class;
       case ROW_HELP:
-       return HelpActivity.class;
+       return HelpActivity.Faq.class;
       default:
         return Activity.class;
     }

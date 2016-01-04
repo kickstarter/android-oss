@@ -15,8 +15,7 @@
     android:id="@+id/search_term_text_view"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:text="@string/search_most_popular"
-    android:textColor="@color/green" />
+    android:text="@string/search_most_popular" />
 
   <View
     android:layout_width="fill_parent"

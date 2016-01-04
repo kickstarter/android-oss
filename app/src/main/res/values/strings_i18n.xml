@@ -373,7 +373,7 @@
   <string name="facebook_confirmation_detail" formatted="false">Before we make your new account, please double check that we got the right email address from your Facebook profile:</string>
   <string name="facebook_confirmation_navbar_title" formatted="false">Sign up</string>
   <string name="facebook_confirmation_newsletter_bold" formatted="false">Discover projects</string>
-  <string name="facebook_confirmation_newsletter_normal" formatted="false"> with our weekly newsletter.</string>
+  <string name="facebook_confirmation_newsletter_normal" formatted="false">\u0020with our weekly newsletter.</string>
   <string name="facebook_confirmation_title" formatted="false">Welcome to Kickstarter!</string>
   <string name="facebook_confirmation_wrong_account_button" formatted="false">Log in with your email here.</string>
   <string name="facebook_confirmation_wrong_account_title" formatted="false">Already have a Kickstarter account?</string>
@@ -597,7 +597,7 @@ We\'d appreciate it!</string>
   <string name="project_comments_posted" formatted="false">Comment posted!</string>
   <string name="project_creator_by_creator" formatted="false">by %{creator_name}</string>
   <string name="project_creator_by_creator_html" formatted="false">by &lt;u>%{creator_name}&lt;/u></string>
-  <string name="project_creator_youre_a_backer" formatted="false"> • You\'re a backer</string>
+  <string name="project_creator_youre_a_backer" formatted="false">\u0020• You\'re a backer</string>
   <string name="project_disclaimer_goal_not_reached" formatted="false">This project will only be funded if at least %{goal_currency} is pledged by %{deadline}.</string>
   <string name="project_disclaimer_goal_reached" formatted="false">This project will be funded on %{deadline}.</string>
   <string name="project_friends_backing_title_friends" formatted="false">Friends</string>

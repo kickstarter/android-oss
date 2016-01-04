@@ -20,8 +20,8 @@ import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
-import com.kickstarter.viewmodels.ActivityFeedViewModel;
 import com.kickstarter.ui.adapters.ActivityFeedAdapter;
+import com.kickstarter.viewmodels.ActivityFeedViewModel;
 
 import java.util.List;
 
@@ -68,10 +68,11 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::showActivities);
 
-    viewModel.outputs.loggedOutEmptyState()
+    viewModel.outputs.showLoggedOutEmptyState()
+      .filter(loggedIn -> !loggedIn)
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::showLoggedOutEmptyState);
+      .subscribe(__ -> this.showLoggedOutEmptyState());
   }
 
   @Override
@@ -84,8 +85,8 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
     adapter.takeActivities(activities);
   }
 
-  public void showLoggedOutEmptyState(final @Nullable User user) {
-    adapter.takeLoggedOutEmptyState(user);
+  public void showLoggedOutEmptyState() {
+    adapter.takeLoggedOutEmptyState();
   }
 
   public void activityFeedLogin() {

@@ -87,6 +87,7 @@
             android:paddingRight="@dimen/grid_1"
             android:background="@color/medium_gray"
             android:visibility="gone"
+            android:layout_marginTop="@dimen/grid_1"
             style="@style/BodyPrimary"
             android:text="@string/rewards_info_limited_rewards_remaining_left_of_reward_limit"
             android:layout_width="wrap_content"
@@ -98,6 +99,7 @@
             android:paddingRight="@dimen/grid_1"
             android:background="@color/medium_gray"
             android:visibility="gone"
+            android:layout_marginTop="@dimen/grid_1"
             android:text="@string/rewards_info_all_gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

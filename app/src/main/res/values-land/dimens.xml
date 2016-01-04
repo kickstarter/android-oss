@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <dimen name="activity_feed_view_margin_top">@dimen/grid_2</dimen>
+  <dimen name="activity_feed_view_margin_bottom">@dimen/grid_1</dimen>
   <dimen name="activity_padding_x">@dimen/grid_8</dimen>
   <dimen name="feed_padding_x">@dimen/grid_8</dimen>
   <dimen name="form_margin_x">@dimen/grid_8</dimen>

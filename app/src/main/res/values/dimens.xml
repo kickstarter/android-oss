@@ -65,10 +65,10 @@
   <dimen name="progress_bar_min_height">3dp</dimen>
   <dimen name="progress_bar_height">3dp</dimen>
   <dimen name="project_action_button_height">60dp</dimen>
-  <dimen name="star_fab_margin_x">@dimen/grid_3</dimen>
-  <dimen name="star_fab_margin_y">@dimen/grid_7_half</dimen>
-  <dimen name="star_fab_pre21_margin_y">@dimen/grid_3_half</dimen>
+  <dimen name="star_fab_margin_x">@dimen/grid_5_half</dimen>
+  <dimen name="star_fab_margin_y">30dp</dimen>
   <dimen name="star_fab_pre21_margin_x">@dimen/grid_1</dimen>
+  <dimen name="star_fab_pre21_margin_y">@dimen/grid_3_half</dimen>
 
   <!-- Photos -->
   <dimen name="activity_feed_avatar_width">60dp</dimen>

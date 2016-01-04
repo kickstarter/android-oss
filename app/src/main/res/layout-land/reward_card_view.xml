@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/reward_card_view"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  app:cardCornerRadius="4dp"
+  app:cardBackgroundColor="@color/white"
+  app:cardPreventCornerOverlap="false"
+  android:foreground="@drawable/click_indicator_light"
+  android:focusable="true"
+  android:layout_marginTop="@dimen/grid_1"
+  android:layout_marginLeft="@dimen/grid_2"
+  android:layout_marginRight="@dimen/grid_2"
+  android:layout_marginBottom="@dimen/grid_2">
+
+  <View
+    android:id="@+id/green_overlay"
+    android:visibility="invisible"
+    android:alpha="0.2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/green"/>
+
+  <RelativeLayout
+    android:id="@+id/reward_card_info"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <TextView
+      android:id="@+id/selected"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentRight="true"
+      android:visibility="gone"
+      android:paddingTop="@dimen/grid_1"
+      android:paddingBottom="@dimen/grid_1"
+      android:paddingLeft="@dimen/grid_2"
+      android:paddingRight="@dimen/grid_2"
+      android:textColor="@color/white"
+      android:background="@color/green"
+      android:text="@string/rewards_selected_label_you_selected"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content" />
+
+    <LinearLayout
+      android:orientation="vertical"
+      android:layout_below="@id/selected"
+      android:padding="@dimen/grid_3"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+      <TextView
+        android:id="@+id/pledge_minimum"
+        android:text="Pledge $15000 or more"
+        style="@style/Headline"
+        android:paddingBottom="@dimen/grid_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+      <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+          android:id="@+id/backer_reward_info"
+          android:layout_weight="1"
+          android:orientation="vertical"
+          android:layout_marginRight="@dimen/grid_3"
+          android:layout_marginEnd="@dimen/grid_3"
+          android:layout_below="@id/pledge_minimum"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content">
+
+          <TextView
+            android:id="@+id/reward_backers_count"
+            android:text="# backers"
+            style="@style/BodyPrimaryMedium"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+          <TextView
+            android:id="@+id/limited"
+            android:paddingLeft="@dimen/grid_1"
+            android:paddingRight="@dimen/grid_1"
+            android:background="@color/medium_gray"
+            android:visibility="gone"
+            style="@style/BodyPrimary"
+            android:text="@string/rewards_info_limited_rewards_remaining_left_of_reward_limit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+          <TextView
+            android:id="@+id/all_gone"
+            android:paddingLeft="@dimen/grid_1"
+            android:paddingRight="@dimen/grid_1"
+            android:background="@color/medium_gray"
+            android:visibility="gone"
+            android:text="@string/rewards_info_all_gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+          <TextView
+            android:id="@+id/reward_description"
+            android:text="Description about this reward."
+            style="@style/BodyPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/grid_2"
+            android:paddingBottom="@dimen/grid_2"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+          android:id="@+id/estimate"
+          android:layout_marginRight="@dimen/grid_2"
+          android:layout_marginEnd="@dimen/grid_2"
+          android:orientation="vertical"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content">
+
+          <TextView
+            android:id="@+id/estimated_delivery"
+            android:text="@string/rewards_info_estimated_delivery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/CaptionSecondary"/>
+
+          <TextView
+            android:id="@+id/estimated_delivery_date"
+            style="@style/CaptionPrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/grid_2"/>
+
+          <TextView
+            android:id="@+id/shipping_destination"
+            style="@style/CaptionSecondary"
+            android:text="@string/rewards_info_shipping_destinations"
+            android:visibility="visible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+          <TextView
+            android:id="@+id/shipping_summary"
+            style="@style/CaptionPrimary"
+            android:text="@string/rewards_shipping_preferences_location_unrestricted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/grid_1"/>
+
+        </LinearLayout>
+
+      </LinearLayout>
+
+    </LinearLayout>
+
+  </RelativeLayout>
+
+  <View
+    android:id="@+id/white_overlay"
+    android:visibility="gone"
+    android:alpha="0.6"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"/>
+
+</android.support.v7.widget.CardView>

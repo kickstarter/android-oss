@@ -52,6 +52,8 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   protected @BindColor(R.color.green) int green;
   protected @BindColor(R.color.gray) int gray;
 
+  protected @BindString(R.string.mailto) String mailtoString;
+  protected @BindString(R.string.Logged_Out) String loggedOutString;
   protected @BindString(R.string.profile_settings_accessibility_subscribe_mobile_notifications) String subscribeMobileString;
   protected @BindString(R.string.profile_settings_accessibility_subscribe_notifications) String subscribeString;
   protected @BindString(R.string.support_email_body) String supportEmailBodyString;
@@ -104,7 +106,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
 
   protected void composeContactEmail(final @Nullable User user) {
     final List<String> debugInfo = Arrays.asList(
-      (user != null ? user.name() : "Logged Out"),
+      (user != null ? user.name() : loggedOutString),
       release.variant(),
       release.versionName(),
       release.versionCode().toString(),
@@ -120,12 +122,12 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
       .toString();
 
     final Intent intent = new Intent(Intent.ACTION_SENDTO)
-      .setData(Uri.parse("mailto:"))
+      .setData(Uri.parse(mailtoString))
       .putExtra(Intent.EXTRA_SUBJECT, supportEmailSubjectString)
       .putExtra(Intent.EXTRA_TEXT, body)
       .putExtra(Intent.EXTRA_EMAIL, new String[]{supportEmailString});
     if (intent.resolveActivity(getPackageManager()) != null) {
-      startActivity(Intent.createChooser(intent, getString(R.string.Select_email_application)));
+      startActivity(Intent.createChooser(intent, getString(R.string.support_email_chooser)));
     }
   }
 

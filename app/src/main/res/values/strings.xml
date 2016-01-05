@@ -19,7 +19,6 @@
   <string name="Network">Network</string>
   <string name="Not_implemented_yet">Not implemented yet, coming soon!</string>
   <string name="Open_downloads_folder">Open Downloads folder</string>
-  <string name="___profile_button">View profile button</string>
   <string name="A_request_has_been_made_to_download_the_latest_build">
     A request has been made to download the latest build. When the request has completed, open your downloads
     folder and tap the .apk file to install.\n\nYou must enable the option to allow installation of apps from

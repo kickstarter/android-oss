@@ -26,7 +26,7 @@ public class LoggedInMenu extends ListPopupWindow {
     setVerticalOffset(context.getResources().getDimensionPixelSize(R.dimen.logged_in_menu_vertical_offset));
     setBackgroundDrawable(context.getResources().getDrawable(R.drawable.dialog_alert_rounded, null));
 
-    setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) -> {
+    setOnItemClickListener((final AdapterView<?> parent, final View view, final int position, final long id) -> {
       dismiss();
       context.startActivity(new Intent(context, adapter.getActivityClassForRow(position)));
     });

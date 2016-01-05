@@ -14,10 +14,10 @@ import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 
-public class LoggedInMenuProfileViewHolder {
+public final class LoggedInMenuProfileViewHolder {
   @Bind(R.id.menu_item_title) TextView menuItemTitleTextView;
   @Bind(R.id.avatar) ImageView avatarImageView;
-  @BindString(R.string.___profile_button) String profileButtonString;
+  @BindString(R.string.accessibility_discovery_buttons_user_profile) String profileButtonString;
 
   public LoggedInMenuProfileViewHolder(@NonNull final View view, final @NonNull String title, final @NonNull Avatar avatar) {
     ButterKnife.bind(this, view);

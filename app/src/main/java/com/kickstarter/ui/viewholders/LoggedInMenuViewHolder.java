@@ -9,7 +9,7 @@ import com.kickstarter.R;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class LoggedInMenuViewHolder {
+public final class LoggedInMenuViewHolder {
   @Bind(R.id.menu_item_title) TextView menuItemTitleTextView;
 
   public LoggedInMenuViewHolder(final @NonNull View view, final @NonNull String title) {

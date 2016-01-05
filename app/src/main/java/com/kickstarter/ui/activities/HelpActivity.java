@@ -81,13 +81,6 @@ public class HelpActivity extends BaseActivity<HelpViewModel> {
     kickstarterWebView.loadUrl(url);
   }
 
-  @Override
-  public void onBackPressed() {
-    super.onBackPressed();
-
-    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
-  }
-
   protected String getUrlForHelpType(final @HelpType int helpType) {
     final Uri.Builder builder = Uri.parse(webEndpoint).buildUpon();
     switch (helpType) {

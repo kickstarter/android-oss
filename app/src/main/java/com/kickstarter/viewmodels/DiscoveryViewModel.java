@@ -7,14 +7,13 @@ import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.KSApplication;
+import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.ViewModel;
-import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.WebClient;
@@ -60,7 +59,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
 
   private final PublishSubject<Void> filterButtonClick = PublishSubject.create();
   private final PublishSubject<DiscoveryParams> params = PublishSubject.create();
-  private boolean hasSeenOnboardingThisSession = false;
+  private boolean hasSeenOnboarding = false;
 
   public final DiscoveryViewModelInputs inputs = this;
   public final DiscoveryViewModelOutputs outputs = this;
@@ -76,16 +75,6 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     buildCheck.bind(this, webClient);
-
-    final Observable<User> freshUser = apiClient.fetchCurrentUser()
-      .retry(2)
-      .onErrorResumeNext(e -> Observable.empty());
-    freshUser.subscribe(currentUser::refresh);
-
-    addSubscription(params
-      .compose(Transformers.combineLatestPair(currentUser.isLoggedIn()))
-      .subscribe(pu -> updateOnboarding(pu.first, pu.second))
-    );
 
     final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
       ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
@@ -107,6 +96,14 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     );
 
     addSubscription(paginator.paginatedData.subscribe(projects));
+
+    addSubscription(
+      params
+        .compose(Transformers.combineLatestPair(currentUser.isLoggedIn()))
+        .map(pu -> this.isOnboardingVisible(pu.first, pu.second))
+        .doOnNext(show -> this.hasSeenOnboarding = show || this.hasSeenOnboarding)
+        .subscribe(this.shouldShowOnboarding::onNext)
+    );
 
     final Observable<Pair<DiscoveryActivity, DiscoveryParams>> viewAndParams = view
       .compose(Transformers.combineLatestPair(params));
@@ -165,13 +162,8 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     return project.isPotdToday() ? ListUtils.prepend(projects, project) : ListUtils.append(projects, project);
   }
 
-  private void updateOnboarding(final @NonNull DiscoveryParams currentParams, final boolean isLoggedIn) {
-    if (!isLoggedIn && !hasSeenOnboardingThisSession && currentParams.staffPicks()) {
-      hasSeenOnboardingThisSession = true;
-      shouldShowOnboarding.onNext(true);
-    } else {
-      shouldShowOnboarding.onNext(false);
-    }
+  private boolean isOnboardingVisible(final @NonNull DiscoveryParams currentParams, final boolean isLoggedIn) {
+    return !isLoggedIn && !hasSeenOnboarding && currentParams.staffPicks();
   }
 
   public void filterButtonClick() {

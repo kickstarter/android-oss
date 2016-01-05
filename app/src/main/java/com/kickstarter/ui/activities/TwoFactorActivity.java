@@ -31,10 +31,10 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel> {
   public @Bind(R.id.login_button) Button loginButton;
   public @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
 
-  @BindString(R.string.___The_code_provided_does_not_match) String codeMismatchString;
-  @BindString(R.string.___Unable_to_login) String unableToLoginString;
-  @BindString(R.string.___Verify) String verifyString;
-  @BindString(R.string.___Log_in_error) String errorTitleString;
+  @BindString(R.string.two_factor_error_message) String codeMismatchString;
+  @BindString(R.string.login_errors_unable_to_log_in) String unableToLoginString;
+  @BindString(R.string.two_factor_title) String verifyString;
+  @BindString(R.string.login_errors_title) String errorTitleString;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -49,29 +49,25 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel> {
     viewModel.inputs.fbAccessToken(getIntent().getExtras().getString(getString(R.string.intent_facebook_token)));
     viewModel.inputs.password(getIntent().getExtras().getString(getString(R.string.intent_password)));
 
-    addSubscription(
-      viewModel.outputs.tfaSuccess()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(__ -> onSuccess())
-    );
+    viewModel.outputs.tfaSuccess()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> onSuccess());
 
-    addSubscription(
-      viewModel.outputs.formSubmitting()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this::setFormDisabled)
-    );
+    viewModel.outputs.formSubmitting()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::setFormDisabled);
 
-    addSubscription(
-      viewModel.outputs.formIsValid()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this::setFormEnabled)
-    );
+    viewModel.outputs.formIsValid()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::setFormEnabled);
 
-    addSubscription(
-      errorMessages()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e))
-    );
+    errorMessages()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e));
   }
 
   private Observable<String> errorMessages() {

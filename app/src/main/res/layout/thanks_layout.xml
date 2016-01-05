@@ -32,7 +32,7 @@
           android:paddingBottom="46dp"
           android:textColor="@color/white"
           android:textSize="30sp"
-          android:text="@string/___Woo_hoo"
+          android:text="@string/project_checkout_share_exclamation"
           android:layout_gravity="center"
           android:gravity="center_vertical|center_horizontal" />
 
@@ -67,7 +67,7 @@
             android:layout_width="match_parent"
             android:layout_marginLeft="@dimen/grid_1_half"
             android:layout_weight="1"
-            android:text="@string/___Share"
+            android:text="@string/project_checkout_share_buttons_share"
             android:textAllCaps="false" />
 
           <Button
@@ -76,7 +76,7 @@
             android:layout_width="match_parent"
             android:layout_marginLeft="@dimen/grid_1_half"
             android:layout_weight="1"
-            android:text="@string/___Tweet"
+            android:text="@string/project_checkout_share_buttons_tweet"
             android:textAllCaps="false" />
 
         </LinearLayout>
@@ -91,7 +91,7 @@
           android:layout_marginEnd="@dimen/grid_1_half"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:text="@string/___More"
+          android:text="@string/project_checkout_share_buttons_more"
           android:textAllCaps="false" />
 
         <TextView
@@ -99,8 +99,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/grid_3"
-          android:text="@string/___Looking_for_more_projects"
-          />
+          android:text="@string/project_checkout_looking_for_more_projects_check_these_out" />
 
       </LinearLayout>
 

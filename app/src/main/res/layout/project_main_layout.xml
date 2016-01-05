@@ -55,7 +55,7 @@
         android:layout_height="wrap_content">
 
         <TextView
-          android:text="@string/____Youre_a_backer"
+          android:text="@string/project_creator_youre_a_backer"
           android:singleLine="true"
           style="@style/BodySecondary"
           android:layout_width="wrap_content"
@@ -68,6 +68,9 @@
           android:textSize="@dimen/caption"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_marginTop="1dp"
+          android:layout_marginStart="@dimen/grid_1_half"
+          android:layout_marginLeft="@dimen/grid_1_half"
           android:text="@string/backer_icon"
           android:textColor="@color/green"/>
       </LinearLayout>
@@ -94,7 +97,7 @@
 
       <com.kickstarter.ui.views.IconTextView
         android:id="@+id/category_icon"
-        android:contentDescription="@string/___category_icon_content_description"
+        android:contentDescription="@string/discovery_baseball_card_accessibility_category_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/local_offer_icon"
@@ -114,7 +117,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/location_on_icon"
-        android:contentDescription="@string/___location_icon_content_description"
+        android:contentDescription="@string/discovery_baseball_card_accessibility_location_label"
         style="@style/BodyPrimary" />
 
       <TextView

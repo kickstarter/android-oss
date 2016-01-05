@@ -25,7 +25,7 @@ public final class ProjectNotificationViewHolder extends KSViewHolder {
   protected @Bind(R.id.project_name) TextView projectNameTextView;
   protected @Bind(R.id.notification_switch) SwitchCompat notificationSwitch;
 
-  protected @BindString(R.string.___Unable_to_save) String unableToSaveString;
+  protected @BindString(R.string.profile_settings_error) String unableToSaveString;
 
   final PublishSubject<ProjectNotificationViewModel> viewModel = PublishSubject.create();
 

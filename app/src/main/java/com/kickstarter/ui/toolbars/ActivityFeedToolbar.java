@@ -10,11 +10,11 @@ public final class ActivityFeedToolbar extends KSToolbar {
     super(context);
   }
 
-  public ActivityFeedToolbar(@NonNull final Context context, @Nullable final AttributeSet attrs) {
+  public ActivityFeedToolbar(final @NonNull Context context, final @Nullable AttributeSet attrs) {
     super(context, attrs);
   }
 
-  public ActivityFeedToolbar(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
+  public ActivityFeedToolbar(final @NonNull Context context, final @Nullable AttributeSet attrs, final int defStyleAttr) {
     super(context, attrs, defStyleAttr);
   }
 }

@@ -35,7 +35,8 @@ public class HelpActivity extends BaseActivity<HelpViewModel> {
 
   @HelpType int helpType;
 
-  @Bind(R.id.kickstarter_web_view) KSWebView kickstarterWebView;
+  protected @Bind(R.id.kickstarter_web_view) KSWebView kickstarterWebView;
+
   @Inject @WebEndpoint String webEndpoint;
 
   public static class Terms extends HelpActivity {
@@ -69,7 +70,7 @@ public class HelpActivity extends BaseActivity<HelpViewModel> {
   }
 
   @Override
-  protected void onCreate(@Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     ((KSApplication) getApplicationContext()).component().inject(this);
@@ -87,7 +88,7 @@ public class HelpActivity extends BaseActivity<HelpViewModel> {
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
-  protected String getUrlForHelpType(@HelpType final int helpType) {
+  protected String getUrlForHelpType(final @HelpType int helpType) {
     final Uri.Builder builder = Uri.parse(webEndpoint).buildUpon();
     switch (helpType) {
       case HELP_TYPE_TERMS:

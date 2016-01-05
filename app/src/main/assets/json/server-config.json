@@ -12,6 +12,16 @@
         "me": "Me"
       },
       "discovery": {
+        "accessibility": {
+          "live_project_count": "Live projects",
+          "toolbar": {
+            "buttons": {
+              "filter_label": "Filter by category",
+              "activity_label": "Activity feed",
+              "user_menu": "User menu"
+            }
+          }
+        },
         "recommended": "Staff Picks",
         "popular": "Popular",
         "saved": "Starred",
@@ -78,6 +88,7 @@
           },
           "stats": {
             "backers": "backers",
+            "funded": "funded",
             "pledged_of_goal": "pledged of %{goal}",
             "convert_from_pledged_of_goal": "Converted from %{pledged} pledged of %{goal} goal."
           },
@@ -317,6 +328,12 @@
           }
         },
         "settings": {
+          "accessibility": {
+            "subscribe_mobile_notifications": "Subscribe to mobile notifications",
+            "subscribe_notifications": "Subscribe to notifications",
+            "unsubscribe_mobile_notifications": "Unsubscribe from mobile notifications",
+            "unsubscribe_notifications": "Unsubscribe from notifications"
+          },
           "navbar_title": "Settings",
           "navbar_title_notifications": "Notifications",
           "backer": {
@@ -324,6 +341,7 @@
             "project_updates": "Project updates",
             "notifications": "Manage project notifications"
           },
+          "error": "Unable to save",
           "social": {
             "title": "Social notifications",
             "followers": "New followers",
@@ -386,9 +404,13 @@
         },
         "button": {
           "ok": "OK"
-        }
+        },
+        "chooser": "Select email application:"
       },
       "login_tout": {
+        "buttons": {
+          "log_in_with_facebook": "Log in with Facebook"
+        },
         "help_sheet": {
           "how_it_works": "How Kickstarter works",
           "contact": "Contact",
@@ -435,6 +457,10 @@
         },
         "errors": {
           "facebook": {
+            "authorization_exception": {
+              "message": "We're having some trouble getting you logged in.",
+              "button": "Let's try that again"
+            },
             "settings_disabled": {
               "title": "Permission denied",
               "message": "It seems that you have denied Kickstarter access to your Facebook account. Please go to Settings > Facebook and toggle access."
@@ -456,7 +482,8 @@
           "by_signing_up_you_agree_to_terms": "By signing up, you agree to our terms of use, privacy policy, and cookie policy.",
           "we_never_post_anything_without_permission": "We'll never post anything without your permission.",
           "read_more": "Read more"
-        }
+        },
+        "navbar_title": "Log in or sign up"
       },
       "login": {
         "navbar_title": "Log in",
@@ -464,7 +491,9 @@
         "detail": "Are those new shoes? If they’re not new, they look really shiny and beautiful.",
         "buttons": {
           "log_in": "Log in",
+          "log_in_email": "Log in with email",
           "forgot_password": "Forgot your password?",
+          "forgot_password_html": "<u>Forgot your password?</u>",
           "one_password": "1Password"
         },
         "placeholder_email": "Email address",
@@ -472,7 +501,10 @@
         "errors": {
           "button": {
             "ok": "OK"
-          }
+          },
+          "does_not_match": "Login does not match any of our records.",
+          "title": "Login error",
+          "unable_to_log_in": "Unable to log in."
         }
       },
       "forgot_password": {
@@ -490,13 +522,16 @@
         "input_fields": {
           "full_name": "Full name",
           "email": "Email",
-          "password": "Password"
+          "password": "Password",
+          "password_min_characters": "Password (minimum 6 characters)"
         },
         "navbar_title": "Sign up",
         "newsletter_full": "Receive our weekly newsletter and other occasional updates.",
         "button": "Sign up",
+        "button_email": "Sign up with email",
         "error": {
-          "something_wrong": "Something went wrong."
+          "something_wrong": "Something went wrong.",
+          "title": "Sign up error"
         }
       },
       "facebook_confirmation": {
@@ -517,6 +552,9 @@
         "buttons": {
           "submit": "Submit",
           "resend": "Resend"
+        },
+        "error": {
+          "message": "The code provided does not match."
         }
       },
       "project": {
@@ -529,6 +567,10 @@
           "ok": "OK"
         },
         "comments": {
+          "accessibility": {
+            "button_write": "Write a comment"
+          },
+          "posted": "Comment posted!",
           "empty_state": {
             "backer": {
               "title": "No comments",
@@ -541,7 +583,8 @@
             },
             "logged_out": {
               "title": "No comments",
-              "message": "Aw, how sad. Become a backer to leave a comment."
+              "message": "Aw, how sad. Become a backer to leave a comment.",
+              "message_log_in": "Aw, how sad. Log in to become a backer or leave a comment."
             }
           }
         },
@@ -590,6 +633,7 @@
             "title_via_kickstarter": "%{project_or_update_title}, via Kickstarter",
             "exclamation": "Woo-hoo!",
             "you_just_backed_project_share_this_project": "You just backed %{project_name}. Share this project with friends to help it along!",
+            "you_just_backed_project_share_this_project_html": "You just backed <b>%{project_name}</b>. Share this project with friends to help it along!",
             "twitter": {
               "I_just_backed_project_on_kickstarter": "I just backed %{project_name} on @Kickstarter"
             },
@@ -1043,6 +1087,12 @@
             },
             "button_close": {
               "label": "Close"
+            },
+            "button_help_menu": {
+              "label": "Help menu"
+            },
+            "button_overflow_menu": {
+              "label": "Overflow menu"
             }
           }
         },
@@ -1056,6 +1106,7 @@
         "switch_toggle_on": "ON",
         "switch_toggle_off": "OFF",
         "error": {
+          "oops": "Oops!",
           "something_wrong": "Something went wrong."
         },
         "alert": {
@@ -1245,6 +1296,16 @@
         "me": "Mein Konto"
       },
       "discovery": {
+        "accessibility": {
+          "live_project_count": "Live projects",
+          "toolbar": {
+            "buttons": {
+              "filter_label": "Filter by category",
+              "activity_label": "Activity feed",
+              "user_menu": "User menu"
+            }
+          }
+        },
         "recommended": "Team-Favoriten",
         "popular": "Beliebte Projekte",
         "saved": "Meine Favoriten",
@@ -1302,15 +1363,16 @@
           },
           "status_banner": {
             "successful": "Erfolgreich finanziert!",
-            "successful_date": "Successfully funded %{date}",
+            "successful_date": "Erfolgreich finanziert am %{date}",
             "funding_unsuccessful_date": "Finanzierung fehlgeschlagen %{date}",
             "canceled": "Finanzierung abgebrochen",
-            "canceled_date": "Funding canceled %{date}",
+            "canceled_date": "Finanzierung abgebrochen am %{date}",
             "suspended": "Finanzierung ausgesetzt %{date}",
-            "suspended_date": "Funding suspended %{date}"
+            "suspended_date": "Finanzierung ausgesetzt am %{date}"
           },
           "stats": {
             "backers": "Unterstützer",
+            "funded": "funded",
             "pledged_of_goal": "von %{goal}",
             "convert_from_pledged_of_goal": "Umgerechneter Betrag: %{pledged} von %{goal} (Fianzierungsziel)."
           },
@@ -1529,7 +1591,7 @@
         },
         "projects": {
           "time_left_to_go": "%{time_left} verbleibend",
-          "created_projects": "Created projects",
+          "created_projects": "Erstellte Projekte",
           "backed_projects": "Unterstützte Projekte",
           "backed_project_count_projects": {
             "zero": "HAT 0 PROJEKTE UNTERSTÜTZT",
@@ -1543,13 +1605,19 @@
             "button": "Projekte entdecken"
           },
           "status": {
-            "canceled": "Canceled",
-            "successful": "Successful",
-            "suspended": "Suspended",
-            "unsuccessful": "Unsuccessful"
+            "canceled": "Zurückgezogen",
+            "successful": "Erfolgreich",
+            "suspended": "Ausgesetzt",
+            "unsuccessful": "Fehlgeschlagen"
           }
         },
         "settings": {
+          "accessibility": {
+            "subscribe_mobile_notifications": "Subscribe to mobile notifications",
+            "subscribe_notifications": "Subscribe to notifications",
+            "unsubscribe_mobile_notifications": "Unsubscribe from mobile notifications",
+            "unsubscribe_notifications": "Unsubscribe from notifications"
+          },
           "navbar_title": "Einstellungen",
           "navbar_title_notifications": "Benachrichtigungen",
           "backer": {
@@ -1557,6 +1625,7 @@
             "project_updates": "Projekt-Updates",
             "notifications": "Projektbenachrichtigungen verwalten"
           },
+          "error": "Unable to save",
           "social": {
             "title": "Neues aus deinem Netzwerk",
             "followers": "Neue Follower",
@@ -1619,9 +1688,13 @@
         },
         "button": {
           "ok": "OK"
-        }
+        },
+        "chooser": "Select email application:"
       },
       "login_tout": {
+        "buttons": {
+          "log_in_with_facebook": "Log in with Facebook"
+        },
         "help_sheet": {
           "how_it_works": "Wie Kickstarter funktioniert",
           "contact": "Kontakt",
@@ -1668,6 +1741,10 @@
         },
         "errors": {
           "facebook": {
+            "authorization_exception": {
+              "message": "Fehler beim Einloggen aufgetreten.",
+              "button": "Versuche es noch einmal!"
+            },
             "settings_disabled": {
               "title": "Zugriff verweigert",
               "message": "Es scheint, als hättest du Kickstarter den Zugriff auf dein Facebook-Konto verweigert. Bitte gehe zu Einstellungen > Facebook und erlaube den Zugriff."
@@ -1689,7 +1766,8 @@
           "by_signing_up_you_agree_to_terms": "Mit der Registrierung stimmst du unseren Nutzungsbedingungen, Datenschutzrichtlinien und Cookie-Richtlinien zu.",
           "we_never_post_anything_without_permission": "Wir veröffentlichen niemals etwas ohne deine Zustimmung.",
           "read_more": "Weiterlesen"
-        }
+        },
+        "navbar_title": "Einloggen oder anmelden"
       },
       "login": {
         "navbar_title": "Anmelden",
@@ -1697,7 +1775,9 @@
         "detail": "Neue Schuhe? Nein? Dabei sehen sie nigelnagelneu aus!",
         "buttons": {
           "log_in": "Anmelden",
+          "log_in_email": "Mit E-Mail-Adresse anmelden",
           "forgot_password": "Passwort vergessen?",
+          "forgot_password_html": "<u>Forgot your password?</u>",
           "one_password": "1Password"
         },
         "placeholder_email": "E-Mail-Adresse",
@@ -1705,7 +1785,10 @@
         "errors": {
           "button": {
             "ok": "OK"
-          }
+          },
+          "does_not_match": "Anmeldedaten nicht erkannt.",
+          "title": "Fehler beim Einloggen",
+          "unable_to_log_in": "Anmeldung fehlgeschlagen."
         }
       },
       "forgot_password": {
@@ -1723,13 +1806,16 @@
         "input_fields": {
           "full_name": "Vollständiger Name",
           "email": "E-Mail",
-          "password": "Passwort"
+          "password": "Passwort",
+          "password_min_characters": "Passwort (mindestens 6 Zeichen)"
         },
         "navbar_title": "Registrieren",
         "newsletter_full": "Endecke neue Projekte in unserem wöchentlichen Newsletter.",
         "button": "Registrieren",
+        "button_email": "Mit E-Mail-Adresse registrieren",
         "error": {
-          "something_wrong": "Da hat etwas nicht geklappt."
+          "something_wrong": "Da hat etwas nicht geklappt.",
+          "title": "Fehler bei Registrierung"
         }
       },
       "facebook_confirmation": {
@@ -1750,6 +1836,9 @@
         "buttons": {
           "submit": "Absenden",
           "resend": "Erneut senden"
+        },
+        "error": {
+          "message": "Dieser Code ist ungültig."
         }
       },
       "project": {
@@ -1762,6 +1851,10 @@
           "ok": "OK"
         },
         "comments": {
+          "accessibility": {
+            "button_write": "Write a comment"
+          },
+          "posted": "Comment posted!",
           "empty_state": {
             "backer": {
               "title": "Keine Kommentare",
@@ -1774,7 +1867,8 @@
             },
             "logged_out": {
               "title": "Keine Kommentare",
-              "message": "Oh wie schade. Werde Unterstützer um einen Kommentar zu hinterlassen."
+              "message": "Oh wie schade. Werde Unterstützer um einen Kommentar zu hinterlassen.",
+              "message_log_in": "Aw, how sad. Log in to become a backer or leave a comment."
             }
           }
         },
@@ -1823,6 +1917,7 @@
             "title_via_kickstarter": "%{project_or_update_title}, über Kickstarter",
             "exclamation": "Super!",
             "you_just_backed_project_share_this_project": "Du hast gerade %{project_name} unterstützt. Erzähle deinen Freunden von diesem Projekt, um es weiter zu fördern!",
+            "you_just_backed_project_share_this_project_html": "You just backed <b>%{project_name}</b>. Share this project with friends to help it along!",
             "twitter": {
               "I_just_backed_project_on_kickstarter": "Ich unterstütze jetzt %{project_name} auf @Kickstarter"
             },
@@ -2276,6 +2371,12 @@
             },
             "button_close": {
               "label": "Schließen"
+            },
+            "button_help_menu": {
+              "label": "Help menu"
+            },
+            "button_overflow_menu": {
+              "label": "Overflow menu"
             }
           }
         },
@@ -2289,6 +2390,7 @@
         "switch_toggle_on": "JA",
         "switch_toggle_off": "NEIN",
         "error": {
+          "oops": "Huch!",
           "something_wrong": "Da hat etwas nicht geklappt."
         },
         "alert": {
@@ -2478,6 +2580,16 @@
         "me": "Mi cuenta"
       },
       "discovery": {
+        "accessibility": {
+          "live_project_count": "Live projects",
+          "toolbar": {
+            "buttons": {
+              "filter_label": "Filter by category",
+              "activity_label": "Activity feed",
+              "user_menu": "User menu"
+            }
+          }
+        },
         "recommended": "Nuestros favoritos",
         "popular": "Popular",
         "saved": "Los más destacados",
@@ -2535,15 +2647,16 @@
           },
           "status_banner": {
             "successful": "¡Financiado con éxito!",
-            "successful_date": "Successfully funded %{date}",
+            "successful_date": "Financiado con éxito el %{date}",
             "funding_unsuccessful_date": "Financiamiento fallido %{date}",
             "canceled": "Financiamiento cancelado",
-            "canceled_date": "Funding canceled %{date}",
+            "canceled_date": "Financiamiento cancelado el %{date}",
             "suspended": "Financiamiento suspendido %{date}",
-            "suspended_date": "Funding suspended %{date}"
+            "suspended_date": "Financiamiento suspendido el %{date}"
           },
           "stats": {
             "backers": "patrocinadores",
+            "funded": "funded",
             "pledged_of_goal": "de %{goal}",
             "convert_from_pledged_of_goal": "Conversión: %{pledged} de la meta de %{goal}."
           },
@@ -2762,7 +2875,7 @@
         },
         "projects": {
           "time_left_to_go": "%{time_left} restante(s)",
-          "created_projects": "Created projects",
+          "created_projects": "Proyectos creados",
           "backed_projects": "Proyectos patrocinados",
           "backed_project_count_projects": {
             "zero": "0 PROYECTOS PATROCINADOS",
@@ -2776,13 +2889,19 @@
             "button": "Descubre proyectos"
           },
           "status": {
-            "canceled": "Canceled",
-            "successful": "Successful",
-            "suspended": "Suspended",
-            "unsuccessful": "Unsuccessful"
+            "canceled": "Cancelado",
+            "successful": "Exitoso",
+            "suspended": "Suspendido",
+            "unsuccessful": "Sin éxito"
           }
         },
         "settings": {
+          "accessibility": {
+            "subscribe_mobile_notifications": "Subscribir a notificaciones para móvil",
+            "subscribe_notifications": "Subscribir a notificaciones",
+            "unsubscribe_mobile_notifications": "Cancelar subscripción a notificaciones para móvil",
+            "unsubscribe_notifications": "Cancelar subscripción a notificaciones"
+          },
           "navbar_title": "Configuración",
           "navbar_title_notifications": "Notificaciones",
           "backer": {
@@ -2790,6 +2909,7 @@
             "project_updates": "Actualizaciones del proyecto",
             "notifications": "Administrar notificaciones del proyecto"
           },
+          "error": "No se pudo guardar",
           "social": {
             "title": "Notificaciones de redes sociales",
             "followers": "Nuevos seguidores",
@@ -2852,9 +2972,13 @@
         },
         "button": {
           "ok": "Ok"
-        }
+        },
+        "chooser": "Select email application:"
       },
       "login_tout": {
+        "buttons": {
+          "log_in_with_facebook": "Inicia sesión con Facebook"
+        },
         "help_sheet": {
           "how_it_works": "Cómo funciona Kickstarter",
           "contact": "Contacto",
@@ -2901,6 +3025,10 @@
         },
         "errors": {
           "facebook": {
+            "authorization_exception": {
+              "message": "Surgió un problema iniciando sesión.",
+              "button": "¡Inténtalo de nuevo!"
+            },
             "settings_disabled": {
               "title": "Permiso denegado",
               "message": "Parece que le has denegado a Kickstarter acceso a tu cuenta de Facebook. Para cambiarlo, por favor ve a Configuración > Facebook."
@@ -2922,7 +3050,8 @@
           "by_signing_up_you_agree_to_terms": "Al registrarte, estás aceptando nuestros términos de uso, nuestra política de privacidad y de cookies.",
           "we_never_post_anything_without_permission": "Nunca publicaremos nada sin tu consentimiento.",
           "read_more": "Leer más"
-        }
+        },
+        "navbar_title": "Inicia sesión o regístrate"
       },
       "login": {
         "navbar_title": "Iniciar sesión",
@@ -2930,7 +3059,9 @@
         "detail": "¿Estos zapatos son nuevos? Si no lo son, ¡lo parecen!",
         "buttons": {
           "log_in": "Iniciar sesión",
+          "log_in_email": "Iniciar con dirección de correo electrónico",
           "forgot_password": "¿Olvidaste tu contraseña?",
+          "forgot_password_html": "<u>¿Olvidaste la contraseña?</u>",
           "one_password": "1Password"
         },
         "placeholder_email": "Dirección de correo electrónico",
@@ -2938,7 +3069,10 @@
         "errors": {
           "button": {
             "ok": "Ok"
-          }
+          },
+          "does_not_match": "Credenciales no reconocidas.",
+          "title": "Error al iniciar sesión",
+          "unable_to_log_in": "No se pudo iniciar sesión."
         }
       },
       "forgot_password": {
@@ -2956,13 +3090,16 @@
         "input_fields": {
           "full_name": "Nombre completo",
           "email": "Correo electrónico",
-          "password": "Contraseña"
+          "password": "Contraseña",
+          "password_min_characters": "Clave (mínimo 6 caracteres)"
         },
         "navbar_title": "Registrar",
         "newsletter_full": "Descubre nuevos proyectos con nuestro beletín semanal.",
         "button": "Regístrar",
+        "button_email": "Registro con correo electrónico",
         "error": {
-          "something_wrong": "Algo pasó aquí."
+          "something_wrong": "Algo pasó aquí.",
+          "title": "Error de registración"
         }
       },
       "facebook_confirmation": {
@@ -2983,6 +3120,9 @@
         "buttons": {
           "submit": "Enviar",
           "resend": "Volver a enviar"
+        },
+        "error": {
+          "message": "Este código no existe."
         }
       },
       "project": {
@@ -2995,6 +3135,10 @@
           "ok": "Ok"
         },
         "comments": {
+          "accessibility": {
+            "button_write": "Write a comment"
+          },
+          "posted": "Comment posted!",
           "empty_state": {
             "backer": {
               "title": "No hay comentarios",
@@ -3007,7 +3151,8 @@
             },
             "logged_out": {
               "title": "No hay comentarios",
-              "message": "Ay, ¡qué pena! Hazte patrocinador para dejar un comentario."
+              "message": "Ay, ¡qué pena! Hazte patrocinador para dejar un comentario.",
+              "message_log_in": "Aw, how sad. Log in to become a backer or leave a comment."
             }
           }
         },
@@ -3056,6 +3201,7 @@
             "title_via_kickstarter": "%{project_or_update_title}, vía Kickstarter",
             "exclamation": "Yu-Juu!",
             "you_just_backed_project_share_this_project": "Acabas de patrocinar a %{project_name}. ¡Comparte este proyecto con amigos para echarle una mano!",
+            "you_just_backed_project_share_this_project_html": "You just backed <b>%{project_name}</b>. Share this project with friends to help it along!",
             "twitter": {
               "I_just_backed_project_on_kickstarter": "Acabo de patrocinar %{project_name} en @Kickstarter"
             },
@@ -3509,6 +3655,12 @@
             },
             "button_close": {
               "label": "Cerrar"
+            },
+            "button_help_menu": {
+              "label": "Help menu"
+            },
+            "button_overflow_menu": {
+              "label": "Overflow menu"
             }
           }
         },
@@ -3522,6 +3674,7 @@
         "switch_toggle_on": "SÍ",
         "switch_toggle_off": "NO",
         "error": {
+          "oops": "¡Vaya!",
           "something_wrong": "Algo pasó aquí."
         },
         "alert": {
@@ -3711,6 +3864,16 @@
         "me": "Mon compte"
       },
       "discovery": {
+        "accessibility": {
+          "live_project_count": "Live projects",
+          "toolbar": {
+            "buttons": {
+              "filter_label": "Filter by category",
+              "activity_label": "Activity feed",
+              "user_menu": "User menu"
+            }
+          }
+        },
         "recommended": "Nos sélections",
         "popular": "Populaires",
         "saved": "Projets préférés",
@@ -3768,15 +3931,16 @@
           },
           "status_banner": {
             "successful": "Intégralement financé !",
-            "successful_date": "Successfully funded %{date}",
+            "successful_date": "Intégralement financé le %{date}",
             "funding_unsuccessful_date": "Non financé %{date}",
             "canceled": "Financement annulé",
-            "canceled_date": "Funding canceled %{date}",
+            "canceled_date": "Campagne annulée le %{date}",
             "suspended": "Financement suspendu %{date}",
-            "suspended_date": "Funding suspended %{date}"
+            "suspended_date": "Campagne suspendue le %{date}"
           },
           "stats": {
             "backers": "contributeurs",
+            "funded": "funded",
             "pledged_of_goal": "sur %{goal}",
             "convert_from_pledged_of_goal": "Conversion de %{pledged} engagés pour un objectif de %{goal}"
           },
@@ -3995,7 +4159,7 @@
         },
         "projects": {
           "time_left_to_go": "Plus que %{time_left}",
-          "created_projects": "Created projects",
+          "created_projects": "Mes projets",
           "backed_projects": "Projets soutenus",
           "backed_project_count_projects": {
             "zero": "0 PROJETS SOUTENUS",
@@ -4009,13 +4173,19 @@
             "button": "Découvrez des projets"
           },
           "status": {
-            "canceled": "Canceled",
-            "successful": "Successful",
-            "suspended": "Suspended",
-            "unsuccessful": "Unsuccessful"
+            "canceled": "Annulé",
+            "successful": "Intégralement financé",
+            "suspended": "Suspendu",
+            "unsuccessful": "Objectif de financement non atteint"
           }
         },
         "settings": {
+          "accessibility": {
+            "subscribe_mobile_notifications": "Subscribe to mobile notifications",
+            "subscribe_notifications": "Subscribe to notifications",
+            "unsubscribe_mobile_notifications": "Unsubscribe from mobile notifications",
+            "unsubscribe_notifications": "Unsubscribe from notifications"
+          },
           "navbar_title": "Paramètres",
           "navbar_title_notifications": "Notifications",
           "backer": {
@@ -4023,6 +4193,7 @@
             "project_updates": "Actus de projet",
             "notifications": "Gérer les notifications de projet"
           },
+          "error": "Unable to save",
           "social": {
             "title": "Notifications sociales",
             "followers": "Nouveaux abonnés",
@@ -4085,9 +4256,13 @@
         },
         "button": {
           "ok": "OK"
-        }
+        },
+        "chooser": "Select email application:"
       },
       "login_tout": {
+        "buttons": {
+          "log_in_with_facebook": "Connexion Facebook"
+        },
         "help_sheet": {
           "how_it_works": "Comment fonctionne Kickstarter",
           "contact": "Contact",
@@ -4134,6 +4309,10 @@
         },
         "errors": {
           "facebook": {
+            "authorization_exception": {
+              "message": "Nous avons du mal à ouvrir votre compte.",
+              "button": "Réessayons"
+            },
             "settings_disabled": {
               "title": "Autorisation refusée",
               "message": "On dirait que vous avez refusé à Kickstarter l'accès à votre compte Facebook. Veuillez accéder à Paramètres > Facebook pour autoriser l'accès."
@@ -4155,7 +4334,8 @@
           "by_signing_up_you_agree_to_terms": "En vous inscrivant, vous acceptez les Conditions d'utilisation, notre Politique de confidentialité et notre Politique en matière de cookies.",
           "we_never_post_anything_without_permission": "Rien ne sera publié sans votre permission.",
           "read_more": "En savoir plus"
-        }
+        },
+        "navbar_title": "Connexion ou inscription"
       },
       "login": {
         "navbar_title": "Connexion",
@@ -4163,7 +4343,9 @@
         "detail": "Est-ce une nouvelle paire de chaussures ? Ah non ? Pourtant, elles sont jolies.",
         "buttons": {
           "log_in": "Connexion",
+          "log_in_email": "Connexion avec votre adresse e-mail",
           "forgot_password": "Mot de passe oublié ?",
+          "forgot_password_html": "<u>Mot de passe oublié ?</u>",
           "one_password": "1Password"
         },
         "placeholder_email": "Adresse e-mail",
@@ -4171,7 +4353,10 @@
         "errors": {
           "button": {
             "ok": "OK"
-          }
+          },
+          "does_not_match": "Vos informations de connexion ne correspondent pas à nos enregistrements.",
+          "title": "Erreur de connexion",
+          "unable_to_log_in": "Connexion impossible."
         }
       },
       "forgot_password": {
@@ -4189,13 +4374,16 @@
         "input_fields": {
           "full_name": "Nom complet",
           "email": "E-mail",
-          "password": "Mot de passe"
+          "password": "Mot de passe",
+          "password_min_characters": "Mot de passe (6 caractères minimum)"
         },
         "navbar_title": "Inscription",
         "newsletter_full": "Découvrez de nouveaux projets grâce à notre lettre d'informations hebdomadaire.",
         "button": "Inscription",
+        "button_email": "Inscription avec votre adresse e-mail",
         "error": {
-          "something_wrong": "Un erreur s'est produite."
+          "something_wrong": "Un erreur s'est produite.",
+          "title": "Erreur d'inscription"
         }
       },
       "facebook_confirmation": {
@@ -4216,6 +4404,9 @@
         "buttons": {
           "submit": "Envoyer",
           "resend": "Renvoyer"
+        },
+        "error": {
+          "message": "Le code fourni ne correspond pas."
         }
       },
       "project": {
@@ -4228,6 +4419,10 @@
           "ok": "OK"
         },
         "comments": {
+          "accessibility": {
+            "button_write": "Write a comment"
+          },
+          "posted": "Comment posted!",
           "empty_state": {
             "backer": {
               "title": "Pas de commentaires",
@@ -4240,7 +4435,8 @@
             },
             "logged_out": {
               "title": "Pas de commentaires",
-              "message": "Oh, quel dommage. Soutenez ce projet afin de pouvoir laisser un commentaire."
+              "message": "Oh, quel dommage. Soutenez ce projet afin de pouvoir laisser un commentaire.",
+              "message_log_in": "Aw, how sad. Log in to become a backer or leave a comment."
             }
           }
         },
@@ -4289,6 +4485,7 @@
             "title_via_kickstarter": "%{project_or_update_title}, via Kickstarter",
             "exclamation": "Félicitations !",
             "you_just_backed_project_share_this_project": "Vous venez de soutenir le projet %{project_name}. Partagez-le avec vos amis pour l'aider à avancer !",
+            "you_just_backed_project_share_this_project_html": "You just backed <b>%{project_name}</b>. Share this project with friends to help it along!",
             "twitter": {
               "I_just_backed_project_on_kickstarter": "Je viens de soutenir le projet %{project_name} sur @Kickstarter"
             },
@@ -4742,6 +4939,12 @@
             },
             "button_close": {
               "label": "Fermer"
+            },
+            "button_help_menu": {
+              "label": "Help menu"
+            },
+            "button_overflow_menu": {
+              "label": "Overflow menu"
             }
           }
         },
@@ -4755,6 +4958,7 @@
         "switch_toggle_on": "ON",
         "switch_toggle_off": "OFF",
         "error": {
+          "oops": "Oups !",
           "something_wrong": "Un erreur s'est produite."
         },
         "alert": {
@@ -4944,6 +5148,16 @@
         "me": "Me"
       },
       "discovery": {
+        "accessibility": {
+          "live_project_count": "Live projects",
+          "toolbar": {
+            "buttons": {
+              "filter_label": "Filter by category",
+              "activity_label": "Activity feed",
+              "user_menu": "User menu"
+            }
+          }
+        },
         "recommended": "Staff Picks",
         "popular": "Popular",
         "saved": "Starred",
@@ -5010,6 +5224,7 @@
           },
           "stats": {
             "backers": "backers",
+            "funded": "funded",
             "pledged_of_goal": "pledged of %{goal}",
             "convert_from_pledged_of_goal": "Converted from %{pledged} pledged of %{goal} goal."
           },
@@ -5249,6 +5464,12 @@
           }
         },
         "settings": {
+          "accessibility": {
+            "subscribe_mobile_notifications": "Subscribe to mobile notifications",
+            "subscribe_notifications": "Subscribe to notifications",
+            "unsubscribe_mobile_notifications": "Unsubscribe from mobile notifications",
+            "unsubscribe_notifications": "Unsubscribe from notifications"
+          },
           "navbar_title": "Settings",
           "navbar_title_notifications": "Notifications",
           "backer": {
@@ -5256,6 +5477,7 @@
             "project_updates": "Project updates",
             "notifications": "Manage project notifications"
           },
+          "error": "Unable to save",
           "social": {
             "title": "Social notifications",
             "followers": "New followers",
@@ -5318,9 +5540,13 @@
         },
         "button": {
           "ok": "OK"
-        }
+        },
+        "chooser": "Select email application:"
       },
       "login_tout": {
+        "buttons": {
+          "log_in_with_facebook": "Log in with Facebook"
+        },
         "help_sheet": {
           "how_it_works": "How Kickstarter works",
           "contact": "Contact",
@@ -5367,6 +5593,10 @@
         },
         "errors": {
           "facebook": {
+            "authorization_exception": {
+              "message": "We're having some trouble getting you logged in.",
+              "button": "Let's try that again"
+            },
             "settings_disabled": {
               "title": "Permission denied",
               "message": "It seems that you have denied Kickstarter access to your Facebook account. Please go to Settings > Facebook and toggle access."
@@ -5388,7 +5618,8 @@
           "by_signing_up_you_agree_to_terms": "By signing up, you agree to our terms of use, privacy policy, and cookie policy.",
           "we_never_post_anything_without_permission": "We'll never post anything without your permission.",
           "read_more": "Read more"
-        }
+        },
+        "navbar_title": "Log in or sign up"
       },
       "login": {
         "navbar_title": "Log in",
@@ -5396,7 +5627,9 @@
         "detail": "Are those new shoes? If they’re not new, they look really shiny and beautiful.",
         "buttons": {
           "log_in": "Log in",
+          "log_in_email": "Log in with email",
           "forgot_password": "Forgot your password?",
+          "forgot_password_html": "<u>Forgot your password?</u>",
           "one_password": "1Password"
         },
         "placeholder_email": "Email address",
@@ -5404,7 +5637,10 @@
         "errors": {
           "button": {
             "ok": "OK"
-          }
+          },
+          "does_not_match": "Login does not match any of our records.",
+          "title": "Login error",
+          "unable_to_log_in": "Unable to log in."
         }
       },
       "forgot_password": {
@@ -5422,13 +5658,16 @@
         "input_fields": {
           "full_name": "Full name",
           "email": "Email",
-          "password": "Password"
+          "password": "Password",
+          "password_min_characters": "Password (minimum 6 characters)"
         },
         "navbar_title": "Sign up",
         "newsletter_full": "Receive our weekly newsletter and other occasional updates.",
         "button": "Sign up",
+        "button_email": "Sign up with email",
         "error": {
-          "something_wrong": "Something went wrong."
+          "something_wrong": "Something went wrong.",
+          "title": "Sign up error"
         }
       },
       "facebook_confirmation": {
@@ -5449,6 +5688,9 @@
         "buttons": {
           "submit": "Submit",
           "resend": "Resend"
+        },
+        "error": {
+          "message": "The code provided does not match."
         }
       },
       "project": {
@@ -5461,6 +5703,10 @@
           "ok": "OK"
         },
         "comments": {
+          "accessibility": {
+            "button_write": "Write a comment"
+          },
+          "posted": "Comment posted!",
           "empty_state": {
             "backer": {
               "title": "No comments",
@@ -5473,7 +5719,8 @@
             },
             "logged_out": {
               "title": "No comments",
-              "message": "Aw, how sad. Become a backer to leave a comment."
+              "message": "Aw, how sad. Become a backer to leave a comment.",
+              "message_log_in": "Aw, how sad. Log in to become a backer or leave a comment."
             }
           }
         },
@@ -5522,6 +5769,7 @@
             "title_via_kickstarter": "%{project_or_update_title}, via Kickstarter",
             "exclamation": "Woo-hoo!",
             "you_just_backed_project_share_this_project": "You just backed %{project_name}. Share this project with friends to help it along!",
+            "you_just_backed_project_share_this_project_html": "You just backed <b>%{project_name}</b>. Share this project with friends to help it along!",
             "twitter": {
               "I_just_backed_project_on_kickstarter": "I just backed %{project_name} on @Kickstarter"
             },
@@ -5975,6 +6223,12 @@
             },
             "button_close": {
               "label": "Close"
+            },
+            "button_help_menu": {
+              "label": "Help menu"
+            },
+            "button_overflow_menu": {
+              "label": "Overflow menu"
             }
           }
         },
@@ -5988,6 +6242,7 @@
         "switch_toggle_on": "ON",
         "switch_toggle_off": "OFF",
         "error": {
+          "oops": "Oops!",
           "something_wrong": "Something went wrong."
         },
         "alert": {
@@ -6191,8 +6446,6 @@
     "handbook_hero": true,
     "i18n_discovery_touts": true,
     "i18n_start_tout": true,
-    "responsive_manage": true,
-    "manage_pledge_ccs": true,
     "password_reset_banner": true,
     "play_page": true,
     "watch_page": true,
@@ -6316,11 +6569,11 @@
   ],
   "ab_experiments": {
     "discover_sorts_vs_subcategories": "experimental",
-    "native_ios_aa": "experimental",
+    "native_ios_aa": "control",
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
-    "native_iphone_horiz_vs_vert": "experimental",
-    "recs_thanks_combo_inputs": "collaborative_backings_v2",
+    "native_iphone_horiz_vs_vert": "control",
+    "recs_thanks_combo_inputs": "combo_inputs",
     "recs_hp_combo_v1": "combo_v1",
     "video_autoplay_3": "no_autoplay"
   },

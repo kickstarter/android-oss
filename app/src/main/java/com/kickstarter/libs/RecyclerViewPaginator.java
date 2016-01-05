@@ -32,6 +32,7 @@ public final class RecyclerViewPaginator {
       .map(__ -> recyclerView.getLayoutManager())
       .ofType(LinearLayoutManager.class)
       .map(this::displayedItemFromLinearLayout)
+      .filter(item -> item.second != 0)
       .distinctUntilChanged()
       .filter(this::visibleItemIsCloseToBottom)
       .subscribe(__ -> nextPage.call());

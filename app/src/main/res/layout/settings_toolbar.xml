@@ -24,7 +24,7 @@
 
     <TextView
       style="@style/Headline"
-      android:text="@string/___Settings"
+      android:text="@string/profile_settings_navbar_title"
       android:layout_width="wrap_content"
       android:layout_height="match_parent"
       android:layout_toEndOf="@id/back_button"

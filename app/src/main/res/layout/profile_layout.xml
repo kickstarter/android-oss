@@ -41,7 +41,7 @@
           android:layout_height="wrap_content"
           android:paddingLeft="@dimen/feed_padding_x"
           android:paddingRight="@dimen/feed_padding_x"
-          android:text="@string/___You" />
+          android:text="@string/update_comments_you" />
 
         <LinearLayout
           android:gravity="center_horizontal"

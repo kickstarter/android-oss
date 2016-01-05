@@ -20,21 +20,21 @@ import butterknife.ButterKnife;
 
 public final class ProjectSearchResultViewHolder extends KSViewHolder {
   private Project project;
-  final Delegate delegate;
+  private final Delegate delegate;
+
+  protected @Bind(R.id.creator_name_text_view) TextView creatorNameTextView;
+  protected @Bind(R.id.project_name_text_view) TextView projectNameTextView;
+  protected @Bind(R.id.project_image_view) ImageView projectImageView;
+
+  protected @BindString(R.string.search_by_creator) String byCreatorString;
 
   protected @Inject KSString ksString;
-
-  @Bind(R.id.creator_name_text_view) TextView creatorNameTextView;
-  @Bind(R.id.project_name_text_view) TextView projectNameTextView;
-  @Bind(R.id.project_image_view) ImageView projectImageView;
-
-  @BindString(R.string.search_by_creator) String byCreatorString;
 
   public interface Delegate {
     void projectSearchResultClick(ProjectSearchResultViewHolder viewHolder, Project project);
   }
 
-  public ProjectSearchResultViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
+  public ProjectSearchResultViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
     this.delegate = delegate;
 
@@ -42,7 +42,7 @@ public final class ProjectSearchResultViewHolder extends KSViewHolder {
     ButterKnife.bind(this, view);
   }
 
-  public void onBind(@NonNull final Object datum) {
+  public void onBind(final @NonNull Object datum) {
     project = (Project) datum;
     final Context context = view.getContext();
 
@@ -54,7 +54,7 @@ public final class ProjectSearchResultViewHolder extends KSViewHolder {
   }
 
   @Override
-  public void onClick(@NonNull final View view) {
+  public void onClick(final @NonNull View view) {
     delegate.projectSearchResultClick(this, project);
   }
 }

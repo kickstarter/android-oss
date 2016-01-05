@@ -5,17 +5,23 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Html;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
+import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.viewmodels.LoginViewModel;
 import com.kickstarter.ui.toolbars.LoginToolbar;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.BindString;
@@ -27,53 +33,52 @@ import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresViewModel(LoginViewModel.class)
 public final class LoginActivity extends BaseActivity<LoginViewModel> {
-  @Bind(R.id.email) EditText emailEditText;
-  @Bind(R.id.login_button) Button loginButton;
-  @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
-  @Bind(R.id.password) EditText passwordEditText;
+  protected @Bind(R.id.email) EditText emailEditText;
+  protected @Bind(R.id.forgot_your_password_text_view) TextView forgotPasswordTextView;
+  protected @Bind(R.id.login_button) Button loginButton;
+  protected @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
+  protected @Bind(R.id.password) EditText passwordEditText;
 
-  @BindString(R.string.___Login_does_not_match_any_of_our_records) String loginDoesNotMatchString;
-  @BindString(R.string.___Unable_to_login) String unableToLoginString;
-  @BindString(R.string.___Log_in) String loginString;
-  @BindString(R.string.___Log_in_error) String errorTitleString;
+  protected @BindString(R.string.login_buttons_forgot_password_html) String forgotPasswordString;
+  protected @BindString(R.string.forgot_password_we_sent_an_email_to_email_address_with_instructions_to_reset_your_password) String forgotPasswordSentEmailString;
+  protected @BindString(R.string.login_errors_does_not_match) String loginDoesNotMatchString;
+  protected @BindString(R.string.login_errors_unable_to_log_in) String unableToLoginString;
+  protected @BindString(R.string.login_buttons_log_in) String loginString;
+  protected @BindString(R.string.login_errors_title) String errorTitleString;
+
+  @Inject KSString ksString;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.login_layout);
+    ((KSApplication) getApplication()).component().inject(this);
     ButterKnife.bind(this);
     loginToolbar.setTitle(loginString);
+    forgotPasswordTextView.setText(Html.fromHtml(forgotPasswordString));
 
     final boolean forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
 
-    addSubscription(
-      errorMessages()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e))
-    );
+    errorMessages()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e));
 
-    addSubscription(
-      viewModel.errors.tfaChallenge()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(__ -> {
-          startTwoFactorActivity(forward);
-        })
-    );
+    viewModel.errors.tfaChallenge()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> startTwoFactorActivity(forward));
 
-    addSubscription(
-      viewModel.outputs.loginSuccess()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(__ -> {
-          onSuccess(forward);
-        })
-    );
+    viewModel.outputs.loginSuccess()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> onSuccess(forward));
 
     final boolean confirmResetPassword = getIntent().getBooleanExtra(getString(R.string.intent_confirm_reset_password), false);
     if (confirmResetPassword) {
       final String email = getIntent().getExtras().getString(getString(R.string.intent_email));
-      final String message = getResources().getString(R.string.___We_sent_an_email_to_email_with_instructions_to_reset_your_password,
-        email);
+      final String message = ksString.format(forgotPasswordSentEmailString, "email", email);
       ViewUtils.showDialog(this, null, message);
       emailEditText.setText(email);
     }

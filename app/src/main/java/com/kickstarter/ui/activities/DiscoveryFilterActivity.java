@@ -38,28 +38,26 @@ import butterknife.OnClick;
 
 @RequiresViewModel(DiscoveryFilterViewModel.class)
 public final class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterViewModel> {
-  DiscoveryFilterAdapter adapter;
-  LinearLayoutManager layoutManager;
+  private DiscoveryFilterAdapter adapter;
 
-  @Bind(R.id.close_button) TextView closeButton;
-  @Bind(R.id.discovery_filter_layout) RelativeLayout layout;
-  @Bind(R.id.background_gradient) LinearLayout backgroundGradientLayout;
-  @Bind(R.id.background_image_view) ImageView backgroundImageView;
-  @Bind(R.id.recycler_view) RecyclerView recyclerView;
-  @BindColor(R.color.dark_blue_gradient_start) int darkBlueGradientStartColor;
-  @BindDrawable(R.drawable.dark_blue_gradient) Drawable darkBlueGradientDrawable;
+  protected @Bind(R.id.close_button) TextView closeButton;
+  protected @Bind(R.id.discovery_filter_layout) RelativeLayout layout;
+  protected @Bind(R.id.background_gradient) LinearLayout backgroundGradientLayout;
+  protected @Bind(R.id.background_image_view) ImageView backgroundImageView;
+  protected @Bind(R.id.recycler_view) RecyclerView recyclerView;
+  protected @BindColor(R.color.dark_blue_gradient_start) int darkBlueGradientStartColor;
+  protected @BindDrawable(R.drawable.dark_blue_gradient) Drawable darkBlueGradientDrawable;
 
   @Override
-  protected void onCreate(@Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.discovery_filter_layout);
     ButterKnife.bind(this);
 
-    layoutManager = new LinearLayoutManager(this);
     final DiscoveryParams params = getIntent().getParcelableExtra(getString(R.string.intent_discovery_params));
     adapter = new DiscoveryFilterAdapter(viewModel, params);
-    recyclerView.setLayoutManager(layoutManager);
+    recyclerView.setLayoutManager(new LinearLayoutManager(this));
     recyclerView.setAdapter(adapter);
 
     setBackground(params);
@@ -72,25 +70,25 @@ public final class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterV
     onBackPressed();
   }
 
-  public void loadCategories(@NonNull final List<Category> categories) {
+  public void loadCategories(final @NonNull List<Category> categories) {
     adapter.takeCategories(categories);
     recyclerView.scrollToPosition(adapter.scrollPositionForSelectedParams());
   }
 
-  public void startDiscoveryActivity(@NonNull final DiscoveryParams newDiscoveryParams) {
+  public void startDiscoveryActivity(final @NonNull DiscoveryParams newDiscoveryParams) {
     final Intent intent = new Intent().putExtra(getString(R.string.intent_discovery_params), newDiscoveryParams);
     setResult(Activity.RESULT_OK, intent);
     finish();
   }
 
-  private void setBackground(@NonNull final DiscoveryParams params) {
+  private void setBackground(final @NonNull DiscoveryParams params) {
     resizeGradientView();
     layout.setBackgroundColor(DiscoveryUtils.primaryColor(this, params));
     backgroundImageView.setImageDrawable(backgroundDrawable(params));
     backgroundGradientLayout.setBackground(backgroundGradientDrawable(params));
   }
 
-  private void setStatusBarColor(@NonNull final DiscoveryParams params) {
+  private void setStatusBarColor(final @NonNull DiscoveryParams params) {
     if (ApiCapabilities.canSetStatusBarColor() && ApiCapabilities.canSetDarkStatusBarIcons()) {
       if (params.isCategorySet()) {
         final Category category = params.category();
@@ -101,7 +99,7 @@ public final class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterV
     }
   }
 
-  private @Nullable Drawable backgroundDrawable(@NonNull final DiscoveryParams params) {
+  private @Nullable Drawable backgroundDrawable(final @NonNull DiscoveryParams params) {
     if (params.isCategorySet()) {
       return DiscoveryUtils.imageWithOrientation(params.category(), this);
     } else {
@@ -109,7 +107,7 @@ public final class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterV
     }
   }
 
-  private @Nullable GradientDrawable backgroundGradientDrawable(@NonNull final DiscoveryParams params) {
+  private @Nullable GradientDrawable backgroundGradientDrawable(final @NonNull DiscoveryParams params) {
     if (!params.isCategorySet() || backgroundDrawable(params) == null) {
       return null;
     }

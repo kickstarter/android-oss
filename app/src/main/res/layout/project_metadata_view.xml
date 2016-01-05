@@ -43,7 +43,7 @@
       style="@style/BodyPrimaryMedium"
       android:includeFontPadding="false"
       android:layout_gravity="center_vertical"
-      android:text="@string/___Youre_a_backer"
+      android:text="@string/discovery_baseball_card_metadata_backer"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
 
@@ -67,7 +67,7 @@
       android:layout_height="wrap_content" />
 
     <TextView
-      android:text="@string/___You_starred_this_project"
+      android:text="@string/discovery_baseball_card_metadata_starred"
       android:includeFontPadding="false"
       style="@style/BodyPrimaryMedium"
       android:layout_gravity="center_vertical"
@@ -100,7 +100,7 @@
       android:layout_width="wrap_content"
       android:layout_height="match_parent"
       android:gravity="center_vertical"
-      android:text="@string/___project_of_the_day"
+      android:text="@string/discovery_baseball_card_metadata_potd"
       style="@style/BodyPrimaryMedium" />
 
   </LinearLayout>

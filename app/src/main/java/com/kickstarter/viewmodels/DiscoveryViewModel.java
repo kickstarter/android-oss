@@ -7,9 +7,9 @@ import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.KSApplication;
+import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.ViewModel;
-import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Project;

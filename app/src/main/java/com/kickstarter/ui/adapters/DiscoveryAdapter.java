@@ -2,12 +2,10 @@ package com.kickstarter.ui.adapters;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.kickstarter.R;
 import com.kickstarter.models.Project;
-import com.kickstarter.models.User;
 import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
 import com.kickstarter.ui.viewholders.EmptyViewHolder;
 import com.kickstarter.ui.viewholders.KSViewHolder;
@@ -17,40 +15,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class DiscoveryAdapter extends KSAdapter {
-  private static final int DISCOVERY_ONBOARDING_VIEW = 0;
-  private static final int DISCOVERY_PROJECT_CARD_VIEW = 1;
+  private static final int ROW_ONBOARDING_VIEW = 0;
+  private static final int ROW_PROJECT_CARD_VIEW = 1;
 
   private final Delegate delegate;
-  private User user;
+  public boolean shouldShowOnboardingView;
 
   public interface Delegate extends ProjectCardViewHolder.Delegate, DiscoveryOnboardingViewHolder.Delegate {}
 
   public DiscoveryAdapter(@NonNull final Delegate delegate) {
     this.delegate = delegate;
-    this.user = null;
+    this.shouldShowOnboardingView = false;
   }
 
-  public void takeUser(final @Nullable User user) {
-    this.user = user;
+  public void setShouldShowOnboardingView(final boolean shouldShowOnboardingView) {
+    this.shouldShowOnboardingView = shouldShowOnboardingView;
     notifyDataSetChanged();
   }
 
   public void takeProjects(final @NonNull List<Project> projects) {
     data().clear();
-    data().add(DISCOVERY_ONBOARDING_VIEW, new ArrayList<>());
+    data().add(ROW_ONBOARDING_VIEW, new ArrayList<>());
     data().add(projects);
     notifyDataSetChanged();
   }
 
   @Override
   protected @LayoutRes int layout(@NonNull final SectionRow sectionRow) {
-    if (sectionRow.row() == DISCOVERY_ONBOARDING_VIEW) {
-      if (user == null) { //(&& hasn't seen onboarding yet this session - store pref on create, clear on leave)
+    if (sectionRow.row() == ROW_ONBOARDING_VIEW) {
+      if (shouldShowOnboardingView) {
         return R.layout.discovery_onboarding_view;
       } else {
         return R.layout.empty_view;
       }
-    } else if (sectionRow.row() >= DISCOVERY_PROJECT_CARD_VIEW) {
+    } else if (sectionRow.row() >= ROW_PROJECT_CARD_VIEW) {
       return R.layout.project_card_view;
     } else {
       return R.layout.empty_view;

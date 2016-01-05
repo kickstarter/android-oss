@@ -27,9 +27,11 @@ import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.Release;
+import com.kickstarter.libs.preferences.BooleanPreference;
 import com.kickstarter.libs.preferences.StringPreference;
 import com.kickstarter.libs.qualifiers.AccessTokenPreference;
 import com.kickstarter.libs.qualifiers.ConfigPreference;
+import com.kickstarter.libs.qualifiers.OnboardingDismissedPreference;
 import com.kickstarter.libs.qualifiers.UserPreference;
 import com.kickstarter.libs.qualifiers.WebEndpoint;
 import com.kickstarter.services.ApiClient;
@@ -185,6 +187,13 @@ public class ApplicationModule {
   @ConfigPreference
   @NonNull StringPreference providesConfigPreference(final @NonNull SharedPreferences sharedPreferences) {
     return new StringPreference(sharedPreferences, "config");
+  }
+
+  @Provides
+  @Singleton
+  @OnboardingDismissedPreference
+  @NonNull BooleanPreference providesOnboardingDismissedPreference(final @NonNull SharedPreferences sharedPreferences) {
+    return new BooleanPreference(sharedPreferences, "onboarding_dismissed", false);
   }
 
   @Provides

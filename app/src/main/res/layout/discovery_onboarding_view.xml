@@ -24,8 +24,8 @@
     style="@style/BorderButton"
     android:id="@+id/signup_login_button"
     android:layout_width="match_parent"
-    android:layout_marginLeft="@dimen/grid_3"
-    android:layout_marginRight="@dimen/grid_3"
+    android:layout_marginLeft="@dimen/grid_2"
+    android:layout_marginRight="@dimen/grid_2"
     android:layout_marginTop="@dimen/grid_3"
     android:text="@string/discovery_onboarding_buttons_signup_or_login" />
 

@@ -76,10 +76,10 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
 
     recyclerViewPaginator = new RecyclerViewPaginator(recyclerView, viewModel.inputs::nextPage);
 
-    viewModel.outputs.user()
+    viewModel.outputs.shouldShowOnboarding()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(adapter::takeUser);
+      .subscribe(adapter::setShouldShowOnboardingView);
 
     viewModel.outputs.projects()
       .compose(bindToLifecycle())

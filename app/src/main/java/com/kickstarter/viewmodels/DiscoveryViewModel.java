@@ -52,12 +52,15 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   public Observable<List<Project>> projects() {
     return projects;
   }
-  public Observable<User> user() {
-    return currentUser.observable();
+  private final BehaviorSubject<Boolean> shouldShowOnboarding = BehaviorSubject.create();
+  @Override
+  public Observable<Boolean> shouldShowOnboarding() {
+    return shouldShowOnboarding;
   }
 
   private final PublishSubject<Void> filterButtonClick = PublishSubject.create();
   private final PublishSubject<DiscoveryParams> params = PublishSubject.create();
+  private boolean hasSeenOnboardingThisSession = false;
 
   public final DiscoveryViewModelInputs inputs = this;
   public final DiscoveryViewModelOutputs outputs = this;
@@ -78,6 +81,11 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
       .retry(2)
       .onErrorResumeNext(e -> Observable.empty());
     freshUser.subscribe(currentUser::refresh);
+
+    addSubscription(params
+      .compose(Transformers.combineLatestPair(currentUser.isLoggedIn()))
+      .subscribe(pu -> updateOnboarding(pu.first, pu.second))
+    );
 
     final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
       ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
@@ -164,5 +172,14 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
 
   public void takeParams(@NonNull final DiscoveryParams firstPageParams) {
     params.onNext(firstPageParams);
+  }
+
+  public void updateOnboarding(final @NonNull DiscoveryParams currentParams, final boolean isLoggedIn) {
+    if (!isLoggedIn && !hasSeenOnboardingThisSession && currentParams.staffPicks()) {
+      hasSeenOnboardingThisSession = true;
+      shouldShowOnboarding.onNext(true);
+    } else {
+      shouldShowOnboarding.onNext(false);
+    }
   }
 }

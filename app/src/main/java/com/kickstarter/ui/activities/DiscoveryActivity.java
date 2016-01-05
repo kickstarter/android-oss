@@ -17,7 +17,6 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.DiscoveryUtils;
@@ -46,7 +45,6 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
   private RecyclerViewPaginator recyclerViewPaginator;
 
   @Inject ApplicationContainer applicationContainer;
-  @Inject CurrentUser currentUser;
 
   @BindDrawable(R.drawable.dark_blue_gradient) Drawable darkBlueGradientDrawable;
   @Bind(R.id.discovery_layout) LinearLayout discoveryLayout;

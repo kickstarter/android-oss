@@ -132,7 +132,6 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     params.onNext(DiscoveryParams.builder().staffPicks(true).build());
   }
 
-
   /**
    * Given params for a discovery search, returns an observable of the
    * page of projects received from the api.
@@ -166,20 +165,20 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     return project.isPotdToday() ? ListUtils.prepend(projects, project) : ListUtils.append(projects, project);
   }
 
-  public void filterButtonClick() {
-    filterButtonClick.onNext(null);
-  }
-
-  public void takeParams(@NonNull final DiscoveryParams firstPageParams) {
-    params.onNext(firstPageParams);
-  }
-
-  public void updateOnboarding(final @NonNull DiscoveryParams currentParams, final boolean isLoggedIn) {
+  private void updateOnboarding(final @NonNull DiscoveryParams currentParams, final boolean isLoggedIn) {
     if (!isLoggedIn && !hasSeenOnboardingThisSession && currentParams.staffPicks()) {
       hasSeenOnboardingThisSession = true;
       shouldShowOnboarding.onNext(true);
     } else {
       shouldShowOnboarding.onNext(false);
     }
+  }
+
+  public void filterButtonClick() {
+    filterButtonClick.onNext(null);
+  }
+
+  public void takeParams(@NonNull final DiscoveryParams firstPageParams) {
+    params.onNext(firstPageParams);
   }
 }

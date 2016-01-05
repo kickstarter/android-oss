@@ -25,10 +25,10 @@ public final class DiscoveryOnboardingViewHolder extends KSViewHolder{
     ButterKnife.bind(this, view);
   }
 
-  public void onBind(@NonNull final Object datum) {}
+  public void onBind(final @NonNull Object datum) {}
 
   @OnClick(R.id.signup_login_button)
-  public void signupLoginOnClick() {
+  protected void signupLoginOnClick() {
     delegate.signupLoginClick(this);
   }
 }

@@ -23,14 +23,13 @@ public final class DiscoveryAdapter extends KSAdapter {
 
   public interface Delegate extends ProjectCardViewHolder.Delegate, DiscoveryOnboardingViewHolder.Delegate {}
 
-  public DiscoveryAdapter(@NonNull final Delegate delegate) {
+  public DiscoveryAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;
     this.shouldShowOnboardingView = false;
   }
 
   public void setShouldShowOnboardingView(final boolean shouldShowOnboardingView) {
     this.shouldShowOnboardingView = shouldShowOnboardingView;
-    notifyDataSetChanged();
   }
 
   public void takeProjects(final @NonNull List<Project> projects) {
@@ -41,7 +40,7 @@ public final class DiscoveryAdapter extends KSAdapter {
   }
 
   @Override
-  protected @LayoutRes int layout(@NonNull final SectionRow sectionRow) {
+  protected @LayoutRes int layout(final @NonNull SectionRow sectionRow) {
     if (sectionRow.row() == ROW_ONBOARDING_VIEW) {
       if (shouldShowOnboardingView) {
         return R.layout.discovery_onboarding_view;
@@ -56,7 +55,7 @@ public final class DiscoveryAdapter extends KSAdapter {
   }
 
   @Override
-  protected KSViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
+  protected KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     switch (layout) {
       case R.layout.discovery_onboarding_view:
         return new DiscoveryOnboardingViewHolder(view, delegate);

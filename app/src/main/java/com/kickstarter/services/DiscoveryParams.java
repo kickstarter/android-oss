@@ -57,6 +57,11 @@ public abstract class DiscoveryParams implements Parcelable {
     }
   }
 
+  public static @NonNull DiscoveryParams fromPath(final @NonNull String path) {
+    // TODO
+    return DiscoveryParams.builder().build();
+  }
+
   @AutoParcel.Builder
   public abstract static class Builder {
     public abstract Builder backed(int __);

@@ -22,13 +22,15 @@ import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.StatusBarUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.viewmodels.DiscoveryViewModel;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
+import com.kickstarter.ui.IntentExtraName;
 import com.kickstarter.ui.adapters.DiscoveryAdapter;
 import com.kickstarter.ui.containers.ApplicationContainer;
+import com.kickstarter.ui.intents.DiscoveryIntentAction;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
+import com.kickstarter.viewmodels.DiscoveryViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +44,7 @@ import butterknife.ButterKnife;
 @RequiresViewModel(DiscoveryViewModel.class)
 public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> implements DiscoveryAdapter.Delegate {
   DiscoveryAdapter adapter;
+  DiscoveryIntentAction intentAction;
   LinearLayoutManager layoutManager;
   final List<Project> projects = new ArrayList<>();
   private RecyclerViewPaginator recyclerViewPaginator;
@@ -69,10 +72,8 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);
 
-    final DiscoveryParams params = getIntent().getParcelableExtra(getString(R.string.intent_discovery_params));
-    if (params != null) {
-      viewModel.takeParams(params);
-    }
+    intentAction = new DiscoveryIntentAction(viewModel.inputs::initialize, lifecycle());
+    intentAction.intent(getIntent());
 
     recyclerViewPaginator = new RecyclerViewPaginator(recyclerView, viewModel.inputs::nextPage);
   }
@@ -103,7 +104,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
 
   public void startDiscoveryFilterActivity(@NonNull final DiscoveryParams params) {
     final Intent intent = new Intent(this, DiscoveryFilterActivity.class)
-      .putExtra(getString(R.string.intent_discovery_params), params);
+      .putExtra(IntentExtraName.DISCOVERY_PARAMS, params);
 
     startActivityForResult(intent, ActivityRequestCodes.DISCOVERY_ACTIVITY_DISCOVERY_FILTER_ACTIVITY_SELECT_FILTER);
   }
@@ -125,8 +126,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
       return;
     }
 
-    final DiscoveryParams params = intent.getExtras().getParcelable(getString(R.string.intent_discovery_params));
-    viewModel.takeParams(params);
+    intentAction.intent(intent);
   }
 
   public void showBuildAlert(@NonNull final InternalBuildEnvelope envelope) {

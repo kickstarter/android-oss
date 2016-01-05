@@ -24,6 +24,7 @@ import com.kickstarter.libs.utils.KSColorUtils;
 import com.kickstarter.libs.utils.StatusBarUtils;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.models.Category;
+import com.kickstarter.ui.IntentExtraName;
 import com.kickstarter.viewmodels.DiscoveryFilterViewModel;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.adapters.DiscoveryFilterAdapter;
@@ -55,7 +56,7 @@ public final class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterV
     setContentView(R.layout.discovery_filter_layout);
     ButterKnife.bind(this);
 
-    final DiscoveryParams params = getIntent().getParcelableExtra(getString(R.string.intent_discovery_params));
+    final DiscoveryParams params = getIntent().getParcelableExtra(IntentExtraName.DISCOVERY_PARAMS);
     adapter = new DiscoveryFilterAdapter(viewModel, params);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
     recyclerView.setAdapter(adapter);
@@ -76,7 +77,7 @@ public final class DiscoveryFilterActivity extends BaseActivity<DiscoveryFilterV
   }
 
   public void startDiscoveryActivity(final @NonNull DiscoveryParams newDiscoveryParams) {
-    final Intent intent = new Intent().putExtra(getString(R.string.intent_discovery_params), newDiscoveryParams);
+    final Intent intent = new Intent().putExtra(IntentExtraName.DISCOVERY_PARAMS, newDiscoveryParams);
     setResult(Activity.RESULT_OK, intent);
     finish();
   }

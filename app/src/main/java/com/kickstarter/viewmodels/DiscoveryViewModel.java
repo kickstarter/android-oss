@@ -31,11 +31,9 @@ import rx.subjects.PublishSubject;
 
 public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> implements DiscoveryViewModelInputs {
   // INPUTS
-  private final PublishSubject<Project> projectClick = PublishSubject.create();
+  private final PublishSubject<DiscoveryParams> initialize = PublishSubject.create();
   private final PublishSubject<Void> nextPage = PublishSubject.create();
-  public void nextPage() {
-    nextPage.onNext(null);
-  }
+  private final PublishSubject<Project> projectClick = PublishSubject.create();
 
   @Inject ApiClient apiClient;
   @Inject WebClient webClient;
@@ -46,7 +44,14 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
 
   public final DiscoveryViewModelInputs inputs = this;
 
-  @Override
+  public void initialize(DiscoveryParams params) {
+    initialize.onNext(params);
+  }
+
+  public void nextPage() {
+    nextPage.onNext(null);
+  }
+
   public void projectClick(@NonNull final Project project) {
     projectClick.onNext(project);
   }
@@ -107,7 +112,8 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .subscribe(vp -> vp.first.startProjectActivity(vp.second))
     );
 
-    params.onNext(DiscoveryParams.builder().staffPicks(true).build());
+    initialize.subscribe(this.params::onNext);
+    initialize.onNext(DiscoveryParams.builder().staffPicks(true).build());
   }
 
 

@@ -111,7 +111,8 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
 
   public void startProjectActivity(@NonNull final Project project) {
     final Intent intent = new Intent(this, ProjectActivity.class)
-      .putExtra(IntentKey.PROJECT, project);
+      .putExtra(IntentKey.PROJECT_PARAM, project.param());
+      //.putExtra(IntentKey.PROJECT, project);
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }

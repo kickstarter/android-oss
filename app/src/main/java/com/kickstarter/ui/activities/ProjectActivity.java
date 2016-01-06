@@ -21,8 +21,10 @@ import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
+import com.kickstarter.services.ApiClient;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ProjectAdapter;
+import com.kickstarter.ui.intents.ProjectIntentAction;
 import com.kickstarter.viewmodels.ProjectViewModel;
 
 import javax.inject.Inject;
@@ -38,6 +40,7 @@ import rx.android.schedulers.AndroidSchedulers;
 @RequiresViewModel(ProjectViewModel.class)
 public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   private ProjectAdapter adapter;
+  private ProjectIntentAction intentAction;
 
   protected @Bind(R.id.project_recycler_view) RecyclerView projectRecyclerView;
   protected @Bind(R.id.star_fab) FloatingActionButton starFab;
@@ -54,6 +57,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   protected @BindString(R.string.project_checkout_manage_navbar_title) String managePledgeString;
   protected @BindString(R.string.project_star_confirmation) String projectStarConfirmationString;
 
+  @Inject ApiClient client;
   @Inject KSCurrency ksCurrency;
 
   @Override
@@ -63,14 +67,8 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     ButterKnife.bind(this);
     ((KSApplication) getApplication()).component().inject(this);
 
-    final Intent intent = getIntent();
-    final Project project = intent.getParcelableExtra(IntentKey.PROJECT);
-    final String param = intent.getStringExtra(IntentKey.PROJECT_PARAM);
-    if (project != null) {
-      this.viewModel.inputs.initialProject(project);
-    } else if (param != null) {
-      this.viewModel.inputs.initialProjectParam(param);
-    }
+    intentAction = new ProjectIntentAction(viewModel.inputs::initializer, lifecycle(), client);
+    intentAction.intent(getIntent());
 
     adapter = new ProjectAdapter(viewModel);
     projectRecyclerView.setAdapter(adapter);

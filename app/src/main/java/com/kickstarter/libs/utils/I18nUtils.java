@@ -20,9 +20,9 @@ public final class I18nUtils {
     return language.isEmpty() ? "en" : language;
   }
 
-  public static boolean isLocaleGermany(final @NonNull User user) {
-    final Location location = user.location();
-    if (location != null) {
+  public static boolean isLocaleGermany(final @NonNull Location location) {
+    final String country = location.country();
+    if (country != null) {
       return location.country().equals("DE");
     }
     return false;

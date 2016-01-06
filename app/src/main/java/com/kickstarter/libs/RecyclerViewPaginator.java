@@ -33,10 +33,12 @@ public final class RecyclerViewPaginator {
       .ofType(LinearLayoutManager.class)
       .map(this::displayedItemFromLinearLayout)
       .filter(item -> item.second != 0)
-      .distinctUntilChanged()
       .filter(this::visibleItemIsCloseToBottom)
-      // NB: https://rink.hockeyapp.net/manage/apps/239008/crash_reasons/88318986
+      // NB: We think this operation is suffering from back pressure problems due to the volume of scroll events:
+      // https://rink.hockeyapp.net/manage/apps/239008/crash_reasons/88318986
+      // If it continues to happen we can also try `debounce`.
       .onBackpressureDrop()
+      .distinctUntilChanged()
       .subscribe(__ -> nextPage.call());
   }
 

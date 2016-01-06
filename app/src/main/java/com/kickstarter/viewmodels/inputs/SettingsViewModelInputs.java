@@ -1,5 +1,7 @@
 package com.kickstarter.viewmodels.inputs;
 
+import android.support.v7.widget.SwitchCompat;
+
 public interface SettingsViewModelInputs {
   void contactEmailClicked();
   void notifyMobileOfFollower(boolean __);
@@ -8,7 +10,7 @@ public interface SettingsViewModelInputs {
   void notifyOfFollower(boolean __);
   void notifyOfFriendActivity(boolean __);
   void notifyOfUpdates(boolean __);
-  void sendHappeningNewsletter(boolean __);
-  void sendPromoNewsletter(boolean __);
-  void sendWeeklyNewsletter(boolean __);
+  void sendHappeningNewsletter(SwitchCompat __);
+  void sendPromoNewsletter(SwitchCompat __);
+  void sendWeeklyNewsletter(SwitchCompat __);
 }

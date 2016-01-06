@@ -15,6 +15,7 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.Release;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
@@ -52,8 +53,13 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   protected @BindColor(R.color.green) int green;
   protected @BindColor(R.color.gray) int gray;
 
+  protected @BindString(R.string.profile_settings_newsletter_happening) String happeningNewsletterString;
   protected @BindString(R.string.mailto) String mailtoString;
   protected @BindString(R.string.Logged_Out) String loggedOutString;
+  protected @BindString(R.string.profile_settings_newsletter_weekly) String weeklyNewsletterString;
+  protected @BindString(R.string.profile_settings_newsletter_promo) String promoNewsletterString;
+  protected @BindString(R.string.profile_settings_newsletter_opt_in_message) String optInMessageString;
+  protected @BindString(R.string.profile_settings_newsletter_opt_in_title) String optInTitleString;
   protected @BindString(R.string.profile_settings_accessibility_subscribe_mobile_notifications) String subscribeMobileString;
   protected @BindString(R.string.profile_settings_accessibility_subscribe_notifications) String subscribeString;
   protected @BindString(R.string.support_email_body) String supportEmailBodyString;
@@ -64,6 +70,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   protected @BindString(R.string.profile_settings_accessibility_unsubscribe_notifications) String unsubscribeString;
 
   @Inject CurrentUser currentUser;
+  @Inject KSString ksString;
   @Inject Logout logout;
   @Inject Release release;
 
@@ -86,22 +93,27 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::displayPreferences);
 
+    viewModel.outputs.sendNewsletterConfirmation()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::displayNewsletterConfirmation);
+
     viewModel.errors.unableToSavePreferenceError()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> ViewUtils.showToast(this, unableToSaveString));
 
-    RxView.clicks(happeningNewsletterSwitch)
+    RxView.clicks(this.happeningNewsletterSwitch)
       .compose(bindToLifecycle())
-      .subscribe(__ -> viewModel.inputs.sendHappeningNewsletter(this.happeningNewsletterSwitch.isChecked()));
+      .subscribe(__ -> viewModel.inputs.sendHappeningNewsletter(happeningNewsletterSwitch));
 
-    RxView.clicks(promoNewsletterSwitch)
+    RxView.clicks(this.promoNewsletterSwitch)
       .compose(bindToLifecycle())
-      .subscribe(__ -> viewModel.inputs.sendPromoNewsletter(this.promoNewsletterSwitch.isChecked()));
+      .subscribe(__ -> viewModel.inputs.sendPromoNewsletter(promoNewsletterSwitch));
 
-    RxView.clicks(weeklyNewsletterSwitch)
+    RxView.clicks(this.weeklyNewsletterSwitch)
       .compose(bindToLifecycle())
-      .subscribe(__ -> viewModel.inputs.sendWeeklyNewsletter(this.weeklyNewsletterSwitch.isChecked()));
+      .subscribe(__ -> viewModel.inputs.sendWeeklyNewsletter(weeklyNewsletterSwitch));
   }
 
   protected void composeContactEmail(final @Nullable User user) {
@@ -144,6 +156,24 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   @OnClick(R.id.cookie_policy)
   public void cookiePolicyClick() {
     startHelpActivity(HelpActivity.HELP_TYPE_COOKIE_POLICY);
+  }
+
+  public void displayNewsletterConfirmation(final @NonNull SwitchCompat switchCompat) {
+    String optInDialogMessageString = "";
+
+    switch(switchCompat.getId()) {
+      case R.id.happening_now_switch:
+        optInDialogMessageString = ksString.format(optInMessageString, "newsletter", happeningNewsletterString);
+        break;
+      case R.id.kickstarter_news_and_events_switch:
+        optInDialogMessageString = ksString.format(optInMessageString, "newsletter", promoNewsletterString);
+        break;
+      case R.id.projects_we_love_switch:
+        optInDialogMessageString = ksString.format(optInMessageString, "newsletter", weeklyNewsletterString);
+        break;
+    }
+
+    ViewUtils.showDialog(this, optInTitleString, optInDialogMessageString);
   }
 
   public void displayPreferences(final @NonNull User user) {

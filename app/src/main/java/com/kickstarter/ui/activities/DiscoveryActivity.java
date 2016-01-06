@@ -43,10 +43,10 @@ import butterknife.ButterKnife;
 
 @RequiresViewModel(DiscoveryViewModel.class)
 public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> implements DiscoveryAdapter.Delegate {
-  DiscoveryAdapter adapter;
-  DiscoveryIntentAction intentAction;
-  LinearLayoutManager layoutManager;
-  final List<Project> projects = new ArrayList<>();
+  private DiscoveryAdapter adapter;
+  private DiscoveryIntentAction intentAction;
+  private LinearLayoutManager layoutManager;
+  private final List<Project> projects = new ArrayList<>();
   private RecyclerViewPaginator recyclerViewPaginator;
 
   @Inject ApplicationContainer applicationContainer;

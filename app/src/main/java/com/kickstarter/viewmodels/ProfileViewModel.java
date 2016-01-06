@@ -9,6 +9,7 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.ViewModel;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClient;
@@ -56,7 +57,7 @@ public final class ProfileViewModel extends ViewModel<ProfileActivity> implement
 
     final Observable<User> freshUser = client.fetchCurrentUser()
       .retry(2)
-      .onErrorResumeNext(e -> Observable.empty());
+      .compose(Transformers.neverError());
     freshUser.subscribe(currentUser::refresh);
 
     final DiscoveryParams params = DiscoveryParams.builder()

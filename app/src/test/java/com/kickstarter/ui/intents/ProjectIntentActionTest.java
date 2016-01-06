@@ -17,7 +17,7 @@ import rx.subjects.PublishSubject;
 
 public final class ProjectIntentActionTest extends KSRobolectricTestCase {
   @Test
-  public void emitsFromProjectParam() {
+  public void emitsFromProjectParamExtra() {
     final Intent intent = new Intent().putExtra(IntentKey.PROJECT_PARAM, "skull-graphic-tee");
 
     final TestSubscriber<Project> resultTest = TestSubscriber.create();
@@ -28,7 +28,7 @@ public final class ProjectIntentActionTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void params_emitsWithDiscoveryUri() {
+  public void emitsTwiceFromProjectExtra() {
     final Project project = ProjectFactory.project();
     final Intent intent = new Intent().putExtra(IntentKey.PROJECT, project);
 
@@ -37,6 +37,18 @@ public final class ProjectIntentActionTest extends KSRobolectricTestCase {
     intentAction.intent(intent);
 
     resultTest.assertValueCount(2);
+  }
+
+  @Test
+  public void emitsFromProjectUri() {
+    final Uri uri = Uri.parse("https://www.kickstarter.com/projects/1186238668/skull-graphic-tee");
+    final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+
+    final TestSubscriber<Project> resultTest = TestSubscriber.create();
+    final ProjectIntentAction intentAction = new ProjectIntentAction(resultTest::onNext, PublishSubject.create(), new MockApiClient());
+    intentAction.intent(intent);
+
+    resultTest.assertValueCount(1);
   }
 }
 

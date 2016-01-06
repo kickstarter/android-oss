@@ -18,6 +18,7 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.Release;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.utils.SwitchCompatUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.User;
 import com.kickstarter.ui.views.IconTextView;
@@ -141,7 +142,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
 
   @OnClick(R.id.cookie_policy)
   public void cookiePolicyClick() {
-    startHelpActivity(HelpActivity.HELP_TYPE_COOKIE_POLICY);
+    startHelpActivity(HelpActivity.CookiePolicy.class);
   }
 
   public void displayPreferences(final @NonNull User user) {
@@ -161,19 +162,19 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
     toggleIconColor(projectUpdatesMailIconTextView, false, notifyOfUpdates);
     toggleIconColor(projectUpdatesPhoneIconTextView, true, notifyMobileOfUpdates);
 
-    happeningNewsletterSwitch.setChecked(user.happeningNewsletter());
-    promoNewsletterSwitch.setChecked(user.promoNewsletter());
-    weeklyNewsletterSwitch.setChecked(user.weeklyNewsletter());
+    SwitchCompatUtils.setCheckedWithoutAnimation(happeningNewsletterSwitch, user.happeningNewsletter());
+    SwitchCompatUtils.setCheckedWithoutAnimation(promoNewsletterSwitch, user.promoNewsletter());
+    SwitchCompatUtils.setCheckedWithoutAnimation(weeklyNewsletterSwitch, user.weeklyNewsletter());
   }
 
   @OnClick(R.id.faq)
   public void faqClick() {
-    startHelpActivity(HelpActivity.HELP_TYPE_FAQ);
+    startHelpActivity(HelpActivity.Faq.class);
   }
 
   @OnClick(R.id.how_kickstarter_works)
   public void howKickstarterWorksClick() {
-    startHelpActivity(HelpActivity.HELP_TYPE_HOW_IT_WORKS);
+    startHelpActivity(HelpActivity.HowItWorks.class);
   }
 
   @OnClick(R.id.log_out_button)
@@ -192,12 +193,11 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
 
   @OnClick(R.id.privacy_policy)
   public void privacyPolicyClick() {
-    startHelpActivity(HelpActivity.HELP_TYPE_PRIVACY);
+    startHelpActivity(HelpActivity.Privacy.class);
   }
 
-  public void startHelpActivity(final int helpType) {
-    final Intent intent = new Intent(this, HelpActivity.class)
-      .putExtra(getString(R.string.intent_help_type), helpType);
+  public void startHelpActivity(final @NonNull Class<? extends HelpActivity> helpClass) {
+    final Intent intent = new Intent(this, helpClass);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
@@ -233,7 +233,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
 
   @OnClick(R.id.terms_of_use)
   public void termsOfUseClick() {
-    startHelpActivity(HelpActivity.HELP_TYPE_TERMS);
+    startHelpActivity(HelpActivity.Terms.class);
   }
 
   public void toggleIconColor(final @NonNull TextView iconTextView, final boolean typeMobile, final boolean enabled) {

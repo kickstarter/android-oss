@@ -102,21 +102,18 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
   public void sendHappeningNewsletter(final boolean checked, final @NonNull String name) {
     userInput.onNext(userOutput.getValue().toBuilder().happeningNewsletter(checked).build());
     newsletterInput.onNext(new Pair<>(checked, name));
-    koala.trackNewsletterToggle(checked);
   }
 
   @Override
   public void sendPromoNewsletter(final boolean checked, final @NonNull String name) {
     userInput.onNext(userOutput.getValue().toBuilder().promoNewsletter(checked).build());
     newsletterInput.onNext(new Pair<>(checked, name));
-    koala.trackNewsletterToggle(checked);
   }
 
   @Override
   public void sendWeeklyNewsletter(final boolean checked, final @NonNull String name) {
     userInput.onNext(userOutput.getValue().toBuilder().weeklyNewsletter(checked).build());
     newsletterInput.onNext(new Pair<>(checked, name));
-    koala.trackNewsletterToggle(checked);
   }
 
   @Override
@@ -167,6 +164,12 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
 
     addSubscription(
       contactEmailClicked.subscribe(__ -> koala.trackContactEmailClicked())
+    );
+
+    addSubscription(
+      newsletterInput
+        .map(bs -> bs.first)
+        .subscribe(koala::trackNewsletterToggle)
     );
 
     koala.trackSettingsView();

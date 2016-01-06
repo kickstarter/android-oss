@@ -3,7 +3,6 @@ package com.kickstarter.libs.utils;
 import android.support.annotation.NonNull;
 
 import com.kickstarter.models.Location;
-import com.kickstarter.models.User;
 
 import java.util.Locale;
 

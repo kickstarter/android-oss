@@ -136,7 +136,7 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
   public final ProjectViewModelOutputs outputs = this;
 
   @Override
-  protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @NonNull Context context, @Nullable final Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
@@ -189,36 +189,36 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
     koala.trackProjectShow();
   }
 
-  public void projectViewHolderBlurbClicked(@NonNull final ProjectViewHolder viewHolder) {
+  public void projectViewHolderBlurbClicked(final @NonNull ProjectViewHolder viewHolder) {
     this.blurbClicked();
   }
 
-  public void projectViewHolderCommentsClicked(@NonNull final ProjectViewHolder viewHolder) {
+  public void projectViewHolderCommentsClicked(final @NonNull ProjectViewHolder viewHolder) {
     this.commentsClicked();
   }
 
-  public void projectViewHolderCreatorClicked(@NonNull final ProjectViewHolder viewHolder){
+  public void projectViewHolderCreatorClicked(final @NonNull ProjectViewHolder viewHolder){
     this.creatorNameClicked();
   }
 
-  public void rewardViewHolderClicked(@NonNull final RewardViewHolder viewHolder, @NonNull final Reward reward) {
+  public void rewardViewHolderClicked(final @NonNull RewardViewHolder viewHolder, final @NonNull Reward reward) {
     this.rewardClicked(reward);
   }
 
-  public void projectViewHolderVideoStarted(@NonNull final ProjectViewHolder viewHolder) {
+  public void projectViewHolderVideoStarted(final @NonNull ProjectViewHolder viewHolder) {
     this.playVideoClicked();
   }
 
-  public void projectViewHolderUpdatesClicked(@NonNull final ProjectViewHolder viewHolder) {
+  public void projectViewHolderUpdatesClicked(final @NonNull ProjectViewHolder viewHolder) {
     this.updatesClicked();
   }
 
-  public Observable<Project> starProject(@NonNull final Project project) {
+  public Observable<Project> starProject(final @NonNull Project project) {
     return client.starProject(project)
       .onErrorResumeNext(Observable.empty());
   }
 
-  public Observable<Project> toggleProjectStar(@NonNull final Project project) {
+  public Observable<Project> toggleProjectStar(final @NonNull Project project) {
     return client.toggleProjectStar(project)
       .onErrorResumeNext(Observable.empty());
   }

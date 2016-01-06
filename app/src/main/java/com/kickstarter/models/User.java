@@ -16,7 +16,7 @@ public abstract class User implements Parcelable {
   public abstract @Nullable Integer createdProjectsCount();
   public abstract @Nullable Boolean happeningNewsletter();
   public abstract long id();
-  public abstract Location location();
+  public abstract @Nullable Location location();
   public abstract String name();
   public abstract @Nullable Boolean notifyMobileOfBackings();
   public abstract @Nullable Boolean notifyMobileOfComments();

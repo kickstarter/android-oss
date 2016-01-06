@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.SwitchCompat;
+import android.util.Pair;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
@@ -30,12 +31,12 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
 
   // INPUTS
   private final PublishSubject<Void> contactEmailClicked = PublishSubject.create();
-  private final PublishSubject<SwitchCompat> newsletterInput = PublishSubject.create();
+  private final PublishSubject<Pair<Boolean, String>> newsletterInput = PublishSubject.create();
   private final PublishSubject<User> userInput = PublishSubject.create();
 
   // OUTPUTS
-  private final PublishSubject<SwitchCompat> sendNewsletterConfirmation = PublishSubject.create();
-  public Observable<SwitchCompat> sendNewsletterConfirmation() {
+  private final PublishSubject<String> sendNewsletterConfirmation = PublishSubject.create();
+  public Observable<String> sendNewsletterConfirmation() {
     return sendNewsletterConfirmation;
   }
   private final PublishSubject<Void> updateSuccess = PublishSubject.create();
@@ -98,24 +99,24 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
   }
 
   @Override
-  public void sendHappeningNewsletter(final @NonNull SwitchCompat switchCompat) {
-    userInput.onNext(userOutput.getValue().toBuilder().happeningNewsletter(switchCompat.isChecked()).build());
-    newsletterInput.onNext(switchCompat);
-    koala.trackNewsletterToggle(switchCompat.isChecked());
+  public void sendHappeningNewsletter(final boolean checked, final @NonNull String name) {
+    userInput.onNext(userOutput.getValue().toBuilder().happeningNewsletter(checked).build());
+    newsletterInput.onNext(new Pair<>(checked, name));
+    koala.trackNewsletterToggle(checked);
   }
 
   @Override
-  public void sendPromoNewsletter(final @NonNull SwitchCompat switchCompat) {
-    userInput.onNext(userOutput.getValue().toBuilder().promoNewsletter(switchCompat.isChecked()).build());
-    newsletterInput.onNext(switchCompat);
-    koala.trackNewsletterToggle(switchCompat.isChecked());
+  public void sendPromoNewsletter(final boolean checked, final @NonNull String name) {
+    userInput.onNext(userOutput.getValue().toBuilder().promoNewsletter(checked).build());
+    newsletterInput.onNext(new Pair<>(checked, name));
+    koala.trackNewsletterToggle(checked);
   }
 
   @Override
-  public void sendWeeklyNewsletter(final @NonNull SwitchCompat switchCompat) {
-    userInput.onNext(userOutput.getValue().toBuilder().weeklyNewsletter(switchCompat.isChecked()).build());
-    newsletterInput.onNext(switchCompat);
-    koala.trackNewsletterToggle(switchCompat.isChecked());
+  public void sendWeeklyNewsletter(final boolean checked, final @NonNull String name) {
+    userInput.onNext(userOutput.getValue().toBuilder().weeklyNewsletter(checked).build());
+    newsletterInput.onNext(new Pair<>(checked, name));
+    koala.trackNewsletterToggle(checked);
   }
 
   @Override
@@ -156,12 +157,11 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
         .subscribe(userOutput)
     );
 
-    // send opt-in confirmation to German-based users
     addSubscription(
       currentUser.observable()
         .compose(Transformers.takePairWhen(newsletterInput))
-        .filter(us -> I18nUtils.isLocaleGermany(us.first) && us.second.isChecked())
-        .map(us -> us.second)
+        .filter(us -> requiresDoubleOptIn(us.first, us.second.first))
+        .map(us -> us.second.second)
         .subscribe(sendNewsletterConfirmation)
     );
 
@@ -170,6 +170,10 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
     );
 
     koala.trackSettingsView();
+  }
+
+  private boolean requiresDoubleOptIn(final @NonNull User user, final boolean checked) {
+    return I18nUtils.isLocaleGermany(user) && checked;
   }
 
   private void success(final @NonNull User user) {

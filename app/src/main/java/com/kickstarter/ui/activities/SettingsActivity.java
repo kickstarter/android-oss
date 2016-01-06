@@ -106,15 +106,15 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
 
     RxView.clicks(this.happeningNewsletterSwitch)
       .compose(bindToLifecycle())
-      .subscribe(__ -> viewModel.inputs.sendHappeningNewsletter(happeningNewsletterSwitch));
+      .subscribe(__ -> viewModel.inputs.sendHappeningNewsletter(happeningNewsletterSwitch.isChecked(), happeningNewsletterString));
 
     RxView.clicks(this.promoNewsletterSwitch)
       .compose(bindToLifecycle())
-      .subscribe(__ -> viewModel.inputs.sendPromoNewsletter(promoNewsletterSwitch));
+      .subscribe(__ -> viewModel.inputs.sendPromoNewsletter(promoNewsletterSwitch.isChecked(), promoNewsletterString));
 
     RxView.clicks(this.weeklyNewsletterSwitch)
       .compose(bindToLifecycle())
-      .subscribe(__ -> viewModel.inputs.sendWeeklyNewsletter(weeklyNewsletterSwitch));
+      .subscribe(__ -> viewModel.inputs.sendWeeklyNewsletter(weeklyNewsletterSwitch.isChecked(), weeklyNewsletterString));
   }
 
   protected void composeContactEmail(final @Nullable User user) {
@@ -159,21 +159,8 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
     startHelpActivity(HelpActivity.CookiePolicy.class);
   }
 
-  public void displayNewsletterConfirmation(final @NonNull SwitchCompat switchCompat) {
-    String optInDialogMessageString = "";
-
-    switch(switchCompat.getId()) {
-      case R.id.happening_now_switch:
-        optInDialogMessageString = ksString.format(optInMessageString, "newsletter", happeningNewsletterString);
-        break;
-      case R.id.kickstarter_news_and_events_switch:
-        optInDialogMessageString = ksString.format(optInMessageString, "newsletter", promoNewsletterString);
-        break;
-      case R.id.projects_we_love_switch:
-        optInDialogMessageString = ksString.format(optInMessageString, "newsletter", weeklyNewsletterString);
-        break;
-    }
-
+  public void displayNewsletterConfirmation(final @NonNull String name) {
+    final String optInDialogMessageString = ksString.format(optInMessageString, "newsletter", name);
     ViewUtils.showDialog(this, optInTitleString, optInDialogMessageString);
   }
 

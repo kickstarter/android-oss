@@ -7,7 +7,7 @@ import com.kickstarter.models.User;
 import rx.Observable;
 
 public interface SettingsViewModelOutputs {
-  Observable<SwitchCompat> sendNewsletterConfirmation();
+  Observable<String> sendNewsletterConfirmation();
   Observable<Void> updateSuccess();
   Observable<User> user();
 }

@@ -11,46 +11,44 @@ import com.kickstarter.ui.viewholders.EmptyViewHolder;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public final class DiscoveryAdapter extends KSAdapter {
-  private static final int ROW_ONBOARDING_VIEW = 0;
-  private static final int ROW_PROJECT_CARD_VIEW = 1;
+  private static final int SECTION_ONBOARDING_VIEW = 0;
+  private static final int SECTION_PROJECT_CARD_VIEW = 1;
 
   private final Delegate delegate;
-  public boolean shouldShowOnboardingView;
 
   public interface Delegate extends ProjectCardViewHolder.Delegate, DiscoveryOnboardingViewHolder.Delegate {}
 
   public DiscoveryAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;
-    this.shouldShowOnboardingView = false;
+
+    this.data().add(SECTION_ONBOARDING_VIEW, Collections.emptyList());
+    this.data().add(SECTION_PROJECT_CARD_VIEW, Collections.emptyList());
   }
 
   public void setShouldShowOnboardingView(final boolean shouldShowOnboardingView) {
-    this.shouldShowOnboardingView = shouldShowOnboardingView;
+    if (shouldShowOnboardingView) {
+      data().set(SECTION_ONBOARDING_VIEW, Collections.singletonList(null));
+    } else {
+      data().set(SECTION_ONBOARDING_VIEW, Collections.emptyList());
+    }
+    notifyDataSetChanged();
   }
 
   public void takeProjects(final @NonNull List<Project> projects) {
-    data().clear();
-    data().add(ROW_ONBOARDING_VIEW, new ArrayList<>());
-    data().add(projects);
+    data().set(SECTION_PROJECT_CARD_VIEW, projects);
     notifyDataSetChanged();
   }
 
   @Override
   protected @LayoutRes int layout(final @NonNull SectionRow sectionRow) {
-    if (sectionRow.row() == ROW_ONBOARDING_VIEW) {
-      if (shouldShowOnboardingView) {
+    if (sectionRow.section() == SECTION_ONBOARDING_VIEW) {
         return R.layout.discovery_onboarding_view;
-      } else {
-        return R.layout.empty_view;
-      }
-    } else if (sectionRow.row() >= ROW_PROJECT_CARD_VIEW) {
-      return R.layout.project_card_view;
     } else {
-      return R.layout.empty_view;
+      return R.layout.project_card_view;
     }
   }
 

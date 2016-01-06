@@ -14,7 +14,7 @@
     android:src="@drawable/logo" />
 
   <TextView
-    style="@style/EditorialSubHead"
+    style="@style/EditorialSubhead"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/grid_1"

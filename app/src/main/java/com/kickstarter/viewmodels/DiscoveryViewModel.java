@@ -100,9 +100,9 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     addSubscription(
       params
         .compose(Transformers.combineLatestPair(currentUser.isLoggedIn()))
-        .map(pu -> this.isOnboardingVisible(pu.first, pu.second))
-        .doOnNext(show -> this.hasSeenOnboarding = show || this.hasSeenOnboarding)
-        .subscribe(this.shouldShowOnboarding::onNext)
+        .map(pu -> isOnboardingVisible(pu.first, pu.second))
+        .doOnNext(show -> hasSeenOnboarding = show || hasSeenOnboarding)
+        .subscribe(shouldShowOnboarding::onNext)
     );
 
     final Observable<Pair<DiscoveryActivity, DiscoveryParams>> viewAndParams = view

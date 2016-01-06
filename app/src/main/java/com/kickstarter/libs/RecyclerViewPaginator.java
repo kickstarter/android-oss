@@ -33,8 +33,12 @@ public final class RecyclerViewPaginator {
       .ofType(LinearLayoutManager.class)
       .map(this::displayedItemFromLinearLayout)
       .filter(item -> item.second != 0)
-      .distinctUntilChanged()
       .filter(this::visibleItemIsCloseToBottom)
+      // NB: We think this operation is suffering from back pressure problems due to the volume of scroll events:
+      // https://rink.hockeyapp.net/manage/apps/239008/crash_reasons/88318986
+      // If it continues to happen we can also try `debounce`.
+      .onBackpressureDrop()
+      .distinctUntilChanged()
       .subscribe(__ -> nextPage.call());
   }
 
@@ -54,10 +58,7 @@ public final class RecyclerViewPaginator {
    * Returns a (visibleItem, totalItemCount) pair given a linear layout manager.
    */
   private @NonNull Pair<Integer, Integer> displayedItemFromLinearLayout(final @NonNull LinearLayoutManager manager) {
-    final int visibleItemCount = manager.getChildCount();
-    final int totalItemCount = manager.getItemCount();
-    final int pastVisibleItems = manager.findFirstVisibleItemPosition();
-    return new Pair<>(visibleItemCount + pastVisibleItems, totalItemCount);
+    return new Pair<>(manager.findLastVisibleItemPosition(), manager.getItemCount());
   }
 
   private boolean visibleItemIsCloseToBottom(final @NonNull Pair<Integer, Integer> visibleItemOfTotal) {

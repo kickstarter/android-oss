@@ -96,11 +96,11 @@ public final class ProjectViewHolder extends KSViewHolder {
   @Inject KSString ksString;
 
   public interface Delegate {
-    void projectBlurbClicked(ProjectViewHolder viewHolder);
-    void projectCommentsClicked(ProjectViewHolder viewHolder);
-    void projectCreatorNameClicked(ProjectViewHolder viewHolder);
-    void projectUpdatesClicked(ProjectViewHolder viewHolder);
-    void projectVideoStarted(ProjectViewHolder viewHolder);
+    void projectViewHolderBlurbClicked(ProjectViewHolder viewHolder);
+    void projectViewHolderCommentsClicked(ProjectViewHolder viewHolder);
+    void projectViewHolderCreatorClicked(ProjectViewHolder viewHolder);
+    void projectViewHolderUpdatesClicked(ProjectViewHolder viewHolder);
+    void projectViewHolderVideoStarted(ProjectViewHolder viewHolder);
   }
 
   public ProjectViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
@@ -187,22 +187,22 @@ public final class ProjectViewHolder extends KSViewHolder {
 
   @OnClick({R.id.blurb, R.id.campaign})
   public void blurbClick() {
-    delegate.projectBlurbClicked(this);
+    delegate.projectViewHolderBlurbClicked(this);
   }
 
   @OnClick(R.id.comments)
   public void commentsClick() {
-    delegate.projectCommentsClicked(this);
+    delegate.projectViewHolderCommentsClicked(this);
   }
 
   @OnClick({R.id.creator_name, R.id.creator_info})
   public void creatorNameClick() {
-    delegate.projectCreatorNameClicked(this);
+    delegate.projectViewHolderCreatorClicked(this);
   }
 
   @OnClick(R.id.play_button_overlay)
   public void playButtonClick() {
-    delegate.projectVideoStarted(this);
+    delegate.projectViewHolderVideoStarted(this);
   }
 
   public void setProjectSocialClick() {
@@ -297,6 +297,6 @@ public final class ProjectViewHolder extends KSViewHolder {
 
   @OnClick(R.id.updates)
   public void updatesClick() {
-    delegate.projectUpdatesClicked(this);
+    delegate.projectViewHolderUpdatesClicked(this);
   }
 }

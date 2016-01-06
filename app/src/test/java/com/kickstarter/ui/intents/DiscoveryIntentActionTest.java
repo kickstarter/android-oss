@@ -14,7 +14,7 @@ import rx.subjects.PublishSubject;
 
 public final class DiscoveryIntentActionTest extends KSRobolectricTestCase {
   @Test
-  public void emitsWithParamsParcelable() {
+  public void emitsFromParamsExtra() {
     final DiscoveryParams params = DiscoveryParams.builder().build();
     final Intent intent = new Intent().putExtra(IntentKey.DISCOVERY_PARAMS, params);
 
@@ -26,7 +26,7 @@ public final class DiscoveryIntentActionTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void params_emitsWithDiscoveryUri() {
+  public void emitsFromDiscoveryUri() {
     final Uri uri = Uri.parse("https://www.kickstarter.com/discover");
     final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 

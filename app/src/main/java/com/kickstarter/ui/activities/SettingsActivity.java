@@ -18,6 +18,7 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.Release;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.utils.SwitchCompatUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.User;
 import com.kickstarter.ui.views.IconTextView;
@@ -161,9 +162,9 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
     toggleIconColor(projectUpdatesMailIconTextView, false, notifyOfUpdates);
     toggleIconColor(projectUpdatesPhoneIconTextView, true, notifyMobileOfUpdates);
 
-    happeningNewsletterSwitch.setChecked(user.happeningNewsletter());
-    promoNewsletterSwitch.setChecked(user.promoNewsletter());
-    weeklyNewsletterSwitch.setChecked(user.weeklyNewsletter());
+    SwitchCompatUtils.setCheckedWithoutAnimation(happeningNewsletterSwitch, user.happeningNewsletter());
+    SwitchCompatUtils.setCheckedWithoutAnimation(promoNewsletterSwitch, user.promoNewsletter());
+    SwitchCompatUtils.setCheckedWithoutAnimation(weeklyNewsletterSwitch, user.weeklyNewsletter());
   }
 
   @OnClick(R.id.faq)

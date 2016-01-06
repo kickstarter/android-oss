@@ -35,6 +35,8 @@ public final class RecyclerViewPaginator {
       .filter(item -> item.second != 0)
       .distinctUntilChanged()
       .filter(this::visibleItemIsCloseToBottom)
+      // NB: https://rink.hockeyapp.net/manage/apps/239008/crash_reasons/88318986
+      .onBackpressureDrop()
       .subscribe(__ -> nextPage.call());
   }
 

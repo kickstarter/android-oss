@@ -62,6 +62,7 @@ public final class ProfileViewModel extends ViewModel<ProfileActivity> implement
 
     final DiscoveryParams params = DiscoveryParams.builder()
       .backed(1)
+      .perPage(18)
       .sort(DiscoveryParams.Sort.ENDING_SOON)
       .build();
 

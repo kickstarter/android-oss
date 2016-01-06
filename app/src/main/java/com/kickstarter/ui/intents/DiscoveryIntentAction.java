@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.services.DiscoveryParams;
-import com.kickstarter.ui.IntentExtraName;
+import com.kickstarter.ui.IntentKey;
 import com.trello.rxlifecycle.ActivityEvent;
 import com.trello.rxlifecycle.RxLifecycle;
 
@@ -31,6 +31,6 @@ public final class DiscoveryIntentAction extends IntentAction {
   }
 
   private @Nullable DiscoveryParams parceledParams(final @NonNull Intent intent) {
-    return intent.getParcelableExtra(IntentExtraName.DISCOVERY_PARAMS);
+    return intent.getParcelableExtra(IntentKey.DISCOVERY_PARAMS);
   }
 }

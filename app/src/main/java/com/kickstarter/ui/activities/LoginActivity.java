@@ -18,6 +18,7 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.viewmodels.LoginViewModel;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 
@@ -58,7 +59,8 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
     loginToolbar.setTitle(loginString);
     forgotPasswordTextView.setText(Html.fromHtml(forgotPasswordString));
 
-    final boolean forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
+    final Intent intent = getIntent();
+    final boolean forward = intent.getBooleanExtra(IntentKey.FORWARD, false);
 
     errorMessages()
       .compose(bindToLifecycle())
@@ -75,9 +77,9 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> onSuccess(forward));
 
-    final boolean confirmResetPassword = getIntent().getBooleanExtra(getString(R.string.intent_confirm_reset_password), false);
+    final boolean confirmResetPassword = getIntent().getBooleanExtra(IntentKey.CONFIRM_RESET_PASSWORD, false);
     if (confirmResetPassword) {
-      final String email = getIntent().getExtras().getString(getString(R.string.intent_email));
+      final String email = getIntent().getExtras().getString(IntentKey.EMAIL);
       final String message = ksString.format(forgotPasswordSentEmailString, "email", email);
       ViewUtils.showDialog(this, null, message);
       emailEditText.setText(email);
@@ -147,9 +149,9 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
 
   public void startTwoFactorActivity(final boolean forward) {
     final Intent intent = new Intent(this, TwoFactorActivity.class)
-      .putExtra(getString(R.string.intent_email), emailEditText.getText().toString())
-      .putExtra(getString(R.string.intent_password), passwordEditText.getText().toString())
-      .putExtra(getString(R.string.intent_forward), forward);
+      .putExtra(IntentKey.EMAIL, emailEditText.getText().toString())
+      .putExtra(IntentKey.PASSWORD, passwordEditText.getText().toString())
+      .putExtra(IntentKey.FORWARD, forward);
     if (forward) {
       startActivityForResult(intent, ActivityRequestCodes.LOGIN_ACTIVITY_TWO_FACTOR_ACTIVITY_FORWARD);
     } else {

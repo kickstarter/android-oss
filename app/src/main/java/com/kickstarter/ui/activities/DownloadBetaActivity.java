@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
+import com.kickstarter.ui.IntentKey;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -30,7 +31,7 @@ public final class DownloadBetaActivity extends AppCompatActivity {
     ButterKnife.bind(this);
 
     internalBuildEnvelope = getIntent().getExtras()
-      .getParcelable(getString(R.string.intent_internal_build_envelope));
+      .getParcelable(IntentKey.INTERNAL_BUILD_ENVELOPE);
 
     buildTextView.setText(internalBuildEnvelope.build().toString());
     changelogTextView.setText(internalBuildEnvelope.changelog());

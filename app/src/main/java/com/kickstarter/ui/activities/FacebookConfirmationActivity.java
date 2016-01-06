@@ -13,6 +13,7 @@ import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ViewUtils;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.viewmodels.FacebookConfirmationViewModel;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.toolbars.LoginToolbar;
@@ -44,12 +45,13 @@ public class FacebookConfirmationActivity extends BaseActivity<FacebookConfirmat
     ButterKnife.bind(this);
     signUpWithFacebookToolbar.setTitle(signUpWithFacebookString);
 
-    forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
+    final Intent intent = getIntent();
+    forward = intent.getBooleanExtra(IntentKey.FORWARD, false);
 
-    final ErrorEnvelope.FacebookUser fbUser = getIntent().getParcelableExtra(getString(R.string.intent_facebook_user));
+    final ErrorEnvelope.FacebookUser fbUser = intent.getParcelableExtra(IntentKey.FACEBOOK_USER);
     emailTextView.setText(fbUser.email());
 
-    final String fbAccessToken = getIntent().getStringExtra(getString(R.string.intent_facebook_token));
+    final String fbAccessToken = intent.getStringExtra(IntentKey.FACEBOOK_TOKEN);
     viewModel.inputs.fbAccessToken(fbAccessToken);
 
     viewModel.outputs.signupSuccess()
@@ -81,7 +83,7 @@ public class FacebookConfirmationActivity extends BaseActivity<FacebookConfirmat
   public void loginWithEmailClick() {
     final Intent intent = new Intent(this, LoginActivity.class);
     if (forward) {
-      intent.putExtra(getString(R.string.intent_forward), true);
+      intent.putExtra(IntentKey.FORWARD, true);
       startActivityForResult(intent,
         ActivityRequestCodes.FACEBOOK_CONFIRMATION_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
     } else {

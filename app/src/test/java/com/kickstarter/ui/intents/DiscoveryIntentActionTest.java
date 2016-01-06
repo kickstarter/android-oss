@@ -5,7 +5,7 @@ import android.net.Uri;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.services.DiscoveryParams;
-import com.kickstarter.ui.IntentExtraName;
+import com.kickstarter.ui.IntentKey;
 
 import org.junit.Test;
 
@@ -16,7 +16,7 @@ public final class DiscoveryIntentActionTest extends KSRobolectricTestCase {
   @Test
   public void emitsWithParamsParcelable() {
     final DiscoveryParams params = DiscoveryParams.builder().build();
-    final Intent intent = new Intent().putExtra(IntentExtraName.DISCOVERY_PARAMS, params);
+    final Intent intent = new Intent().putExtra(IntentKey.DISCOVERY_PARAMS, params);
 
     final TestSubscriber<DiscoveryParams> resultTest = TestSubscriber.create();
     final DiscoveryIntentAction intentAction = new DiscoveryIntentAction(resultTest::onNext, PublishSubject.create());

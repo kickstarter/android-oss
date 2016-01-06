@@ -24,7 +24,7 @@ import com.kickstarter.libs.utils.StatusBarUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
-import com.kickstarter.ui.IntentExtraName;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.DiscoveryAdapter;
 import com.kickstarter.ui.containers.ApplicationContainer;
 import com.kickstarter.ui.intents.DiscoveryIntentAction;
@@ -104,14 +104,14 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
 
   public void startDiscoveryFilterActivity(@NonNull final DiscoveryParams params) {
     final Intent intent = new Intent(this, DiscoveryFilterActivity.class)
-      .putExtra(IntentExtraName.DISCOVERY_PARAMS, params);
+      .putExtra(IntentKey.DISCOVERY_PARAMS, params);
 
     startActivityForResult(intent, ActivityRequestCodes.DISCOVERY_ACTIVITY_DISCOVERY_FILTER_ACTIVITY_SELECT_FILTER);
   }
 
   public void startProjectActivity(@NonNull final Project project) {
     final Intent intent = new Intent(this, ProjectActivity.class)
-      .putExtra(getString(R.string.intent_project), project);
+      .putExtra(IntentKey.PROJECT, project);
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
@@ -135,7 +135,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
       .setMessage(getString(R.string.A_newer_build_is_available))
       .setPositiveButton(android.R.string.yes, (dialog, which) -> {
         Intent intent = new Intent(this, DownloadBetaActivity.class)
-          .putExtra(getString(R.string.intent_internal_build_envelope), envelope);
+          .putExtra(IntentKey.INTERNAL_BUILD_ENVELOPE, envelope);
         startActivity(intent);
       })
       .setNegativeButton(android.R.string.cancel, (dialog, which) -> {

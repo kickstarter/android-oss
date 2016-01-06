@@ -28,7 +28,7 @@ import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.vendor.TweetComposer;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
-import com.kickstarter.ui.IntentExtraName;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.viewmodels.ThanksViewModel;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.adapters.ThanksAdapter;
@@ -73,7 +73,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
 
     displayWoohooBackground();
 
-    viewModel.takeProject(getIntent().getExtras().getParcelable(getString(R.string.intent_project)));
+    viewModel.takeProject(getIntent().getExtras().getParcelable(IntentKey.PROJECT));
   }
 
   public void show(final @NonNull Project project) {
@@ -148,14 +148,14 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   public void startDiscoveryCategoryIntent(final @NonNull Category category) {
     final DiscoveryParams params = DiscoveryParams.builder().category(category).build();
     final Intent intent = new Intent(this, DiscoveryActivity.class)
-      .putExtra(IntentExtraName.DISCOVERY_PARAMS, params)
+      .putExtra(IntentKey.DISCOVERY_PARAMS, params)
       .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
     startActivity(intent);
   }
 
   public void startProjectIntent(final @NonNull Project project) {
     final Intent intent = new Intent(this, ProjectActivity.class)
-      .putExtra(getString(R.string.intent_project), project);
+      .putExtra(IntentKey.PROJECT, project);
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }

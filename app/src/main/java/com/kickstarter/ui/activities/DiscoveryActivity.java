@@ -72,7 +72,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);
 
-    intentAction = new DiscoveryIntentAction(viewModel.inputs::initialize, lifecycle());
+    intentAction = new DiscoveryIntentAction(viewModel.inputs::initializer, lifecycle());
     intentAction.intent(getIntent());
 
     recyclerViewPaginator = new RecyclerViewPaginator(recyclerView, viewModel.inputs::nextPage);

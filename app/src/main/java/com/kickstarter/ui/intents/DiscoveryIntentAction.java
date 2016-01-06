@@ -25,12 +25,12 @@ public final class DiscoveryIntentAction extends IntentAction {
 
     intent
       .compose(RxLifecycle.bindActivity(lifecycle))
-      .map(this::parceledParams)
+      .map(this::params)
       .filter(ObjectUtils::isNotNull)
       .subscribe(initializer);
   }
 
-  private @Nullable DiscoveryParams parceledParams(final @NonNull Intent intent) {
+  private @Nullable DiscoveryParams params(final @NonNull Intent intent) {
     return intent.getParcelableExtra(IntentKey.DISCOVERY_PARAMS);
   }
 }

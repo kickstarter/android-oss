@@ -16,13 +16,13 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.viewmodels.errors.LoginToutViewModelErrors;
-import com.kickstarter.viewmodels.inputs.LoginToutViewModelInputs;
-import com.kickstarter.viewmodels.outputs.LoginToutViewModelOutputs;
-import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.activities.LoginToutActivity;
+import com.kickstarter.viewmodels.errors.LoginToutViewModelErrors;
+import com.kickstarter.viewmodels.inputs.LoginToutViewModelInputs;
+import com.kickstarter.viewmodels.outputs.LoginToutViewModelOutputs;
 
 import java.util.List;
 
@@ -89,8 +89,8 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
       .map(__ -> null);
   }
 
-  @Inject CurrentUser currentUser;
-  @Inject ApiClient client;
+  protected @Inject CurrentUser currentUser;
+  protected @Inject ApiClientType client;
 
   public final LoginToutViewModelInputs inputs = this;
   public final LoginToutViewModelOutputs outputs = this;

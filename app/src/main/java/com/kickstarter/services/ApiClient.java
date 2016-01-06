@@ -35,7 +35,7 @@ import java.util.List;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
-public final class ApiClient {
+public final class ApiClient implements ApiClientType {
   private final ApiService service;
   private final Gson gson;
 
@@ -46,21 +46,21 @@ public final class ApiClient {
 
   public Observable<AccessTokenEnvelope> loginWithFacebook(@NonNull final String accessToken) {
     return service
-      .loginWithFacebook(LoginWithFacebookBody.builder().accessToken(accessToken).build())
+      .login(LoginWithFacebookBody.builder().accessToken(accessToken).build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 
   public Observable<AccessTokenEnvelope> loginWithFacebook(@NonNull final String fbAccessToken, @NonNull final String code) {
     return service
-      .loginWithFacebook(LoginWithFacebookBody.builder().accessToken(fbAccessToken).code(code).build())
+      .login(LoginWithFacebookBody.builder().accessToken(fbAccessToken).code(code).build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 
   public Observable<AccessTokenEnvelope> registerWithFacebook(@NonNull final String fbAccessToken, final boolean sendNewsletters) {
     return service
-      .registerWithFacebook(RegisterWithFacebookBody.builder()
+      .login(RegisterWithFacebookBody.builder()
         .accessToken(fbAccessToken)
         .sendNewsletters(sendNewsletters)
         .build())
@@ -80,58 +80,64 @@ public final class ApiClient {
     );
 
     return service
-      .fetchActivities(categories)
+      .activities(categories)
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 
   public Observable<ActivityEnvelope> fetchActivities(String paginationPath) {
     return service
-      .fetchActivities(paginationPath)
+      .activities(paginationPath)
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 
-  public Observable<List<Notification>> fetchProjectNotifications() {
+  public Observable<List<Notification>> fetchNotifications() {
     return service
-      .fetchProjectNotifications()
+      .notifications()
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 
   public Observable<List<Category>> fetchCategories() {
-    return service.fetchCategories()
+    return service
+      .categories()
       .lift(apiErrorOperator())
       .map(CategoriesEnvelope::categories)
       .subscribeOn(Schedulers.io());
   }
 
   public Observable<CommentsEnvelope> fetchProjectComments(final @NonNull Project project) {
-    return service.fetchProjectComments(project.param())
+    return service
+      .projectComments(project.param())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 
   public Observable<CommentsEnvelope> fetchProjectComments(final @NonNull String paginationPath) {
-    return service.fetchPaginatedProjectComments(paginationPath)
+    return service
+      .paginatedProjectComments(paginationPath)
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 
   public Observable<DiscoverEnvelope> fetchProjects(@NonNull final DiscoveryParams params) {
-    return service.fetchProjects(params.queryParams())
+    return service
+      .projects(params.queryParams())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 
   public Observable<DiscoverEnvelope> fetchProjects(@NonNull final String paginationUrl) {
-    return service.fetchProjects(paginationUrl)
+    return service
+      .projects(paginationUrl)
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 
   public Observable<Project> fetchProject(@NonNull final String param) {
-    return service.fetchProject(param)
+    return service
+      .project(param)
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
@@ -141,13 +147,15 @@ public final class ApiClient {
   }
 
   public Observable<Backing> fetchProjectBacking(@NonNull final Project project, @NonNull final User user) {
-    return service.fetchProjectBacking(project.param(), user.param())
+    return service
+      .projectBacking(project.param(), user.param())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 
   public Observable<Category> fetchCategory(final long id) {
-    return service.fetchCategory(id)
+    return service
+      .category(id)
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
@@ -157,38 +165,44 @@ public final class ApiClient {
   }
 
   public Observable<User> fetchCurrentUser() {
-    return service.fetchCurrentUser()
+    return service
+      .currentUser()
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 
   public Observable<AccessTokenEnvelope> login(@NonNull final String email, @NonNull final String password) {
-    return service.login(email, password)
+    return service
+      .login(email, password)
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 
   public Observable<AccessTokenEnvelope> login(@NonNull final String email, @NonNull final String password,
     @NonNull final String code) {
-    return service.login(email, password, code)
+    return service
+      .login(email, password, code)
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 
   public Observable<Comment> postProjectComment(@NonNull final Project project, @NonNull final String body) {
-    return service.postProjectComment(project.param(), CommentBody.builder().body(body).build())
+    return service
+      .postProjectComment(project.param(), CommentBody.builder().body(body).build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 
   public @NonNull Observable<Empty> registerPushToken(@NonNull final String token) {
-    return service.registerPushToken(PushTokenBody.builder().token(token).pushServer("development").build())
+    return service
+      .registerPushToken(PushTokenBody.builder().token(token).pushServer("development").build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 
   public @NonNull Observable<User> resetPassword(@NonNull final String email) {
-    return service.resetPassword(ResetPasswordBody.builder().email(email).build())
+    return service
+      .resetPassword(ResetPasswordBody.builder().email(email).build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
@@ -210,48 +224,53 @@ public final class ApiClient {
   }
 
   public Observable<Project> starProject(@NonNull final Project project) {
-    return service.starProject(project.param())
+    return service
+      .starProject(project.param())
       .lift(apiErrorOperator())
       .map(StarEnvelope::project)
       .subscribeOn(Schedulers.io());
   }
 
   public Observable<Project> toggleProjectStar(@NonNull final Project project) {
-    return service.toggleProjectStar(project.param())
+    return service
+      .toggleProjectStar(project.param())
       .lift(apiErrorOperator())
       .map(StarEnvelope::project)
       .subscribeOn(Schedulers.io());
   }
 
   public Observable<Notification> updateProjectNotifications(final @NonNull Notification notification, final boolean checked) {
-    return service.updateProjectNotifications(notification.id(),
-      NotificationBody.builder()
-        .email(checked)
-        .mobile(checked)
-        .build())
+    return service
+      .updateProjectNotifications(notification.id(),
+        NotificationBody.builder()
+          .email(checked)
+          .mobile(checked)
+          .build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 
   public Observable<User> updateUserSettings(final @NonNull User user) {
-    return service.updateUserSettings(
-      SettingsBody.builder()
-        .notifyMobileOfFollower(user.notifyMobileOfFollower())
-        .notifyMobileOfFriendActivity(user.notifyMobileOfFriendActivity())
-        .notifyMobileOfUpdates(user.notifyMobileOfUpdates())
-        .notifyOfFollower(user.notifyOfFollower())
-        .notifyOfFriendActivity(user.notifyOfFriendActivity())
-        .notifyOfUpdates(user.notifyOfUpdates())
-        .happeningNewsletter(user.happeningNewsletter() ? 1 : 0)
-        .promoNewsletter(user.promoNewsletter() ? 1 : 0)
-        .weeklyNewsletter(user.weeklyNewsletter() ? 1 : 0)
-        .build())
+    return service
+      .updateUserSettings(
+        SettingsBody.builder()
+          .notifyMobileOfFollower(user.notifyMobileOfFollower())
+          .notifyMobileOfFriendActivity(user.notifyMobileOfFriendActivity())
+          .notifyMobileOfUpdates(user.notifyMobileOfUpdates())
+          .notifyOfFollower(user.notifyOfFollower())
+          .notifyOfFriendActivity(user.notifyOfFriendActivity())
+          .notifyOfUpdates(user.notifyOfUpdates())
+          .happeningNewsletter(user.happeningNewsletter() ? 1 : 0)
+          .promoNewsletter(user.promoNewsletter() ? 1 : 0)
+          .weeklyNewsletter(user.weeklyNewsletter() ? 1 : 0)
+          .build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 
   public Observable<Config> config() {
-    return service.config()
+    return service
+      .config()
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }

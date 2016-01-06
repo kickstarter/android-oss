@@ -12,7 +12,7 @@ import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
-import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.adapters.ActivityFeedAdapter;
@@ -35,8 +35,8 @@ import rx.subjects.PublishSubject;
 
 public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity> implements ActivityFeedAdapter.Delegate,
   ActivityFeedViewModelInputs, ActivityFeedViewModelOutputs {
-  @Inject ApiClient client;
-  @Inject CurrentUser currentUser;
+  protected @Inject ApiClientType client;
+  protected @Inject CurrentUser currentUser;
 
   private final PublishSubject<Project> discoverProjectsClick = PublishSubject.create();
   private final PublishSubject<Activity> friendBackingClick = PublishSubject.create();

@@ -20,11 +20,11 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.DateTimeTypeConverter;
 import com.kickstarter.libs.Font;
 import com.kickstarter.libs.ForApplication;
+import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.KoalaTrackingClient;
 import com.kickstarter.libs.Logout;
-import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.Release;
 import com.kickstarter.libs.preferences.StringPreference;
@@ -33,6 +33,7 @@ import com.kickstarter.libs.qualifiers.ConfigPreference;
 import com.kickstarter.libs.qualifiers.UserPreference;
 import com.kickstarter.libs.qualifiers.WebEndpoint;
 import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.ApiService;
 import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.services.WebClient;
@@ -69,7 +70,7 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  ApiClient provideApiClient(@NonNull final ApiService apiService, @NonNull final Gson gson) {
+  ApiClientType provideApiClientType(@NonNull final ApiService apiService, @NonNull final Gson gson) {
     return new ApiClient(apiService, gson);
   }
 

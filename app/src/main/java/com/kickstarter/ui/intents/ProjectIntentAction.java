@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.IntentKey;
 import com.trello.rxlifecycle.ActivityEvent;
 import com.trello.rxlifecycle.RxLifecycle;
@@ -17,7 +17,7 @@ import rx.functions.Action1;
 
 public class ProjectIntentAction extends IntentAction {
   public ProjectIntentAction(final @NonNull Action1<Project> initializer, final @NonNull Observable<ActivityEvent> lifecycle,
-    final @NonNull ApiClient client) {
+    final @NonNull ApiClientType client) {
 
     final Observable<Project> initialProject = intent
       .compose(RxLifecycle.bindActivity(lifecycle))

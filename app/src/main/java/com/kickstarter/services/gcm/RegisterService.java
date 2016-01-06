@@ -11,19 +11,17 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.models.User;
-import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.ApiClientType;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.inject.Inject;
 
 import timber.log.Timber;
 
 public class RegisterService extends IntentService {
-  @Inject protected ApiClient apiClient;
-  @Inject protected CurrentUser currentUser;
+  protected @Inject ApiClientType apiClient;
+  protected @Inject CurrentUser currentUser;
 
   public RegisterService() {
     super("RegisterService");

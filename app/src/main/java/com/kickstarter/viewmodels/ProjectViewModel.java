@@ -13,7 +13,7 @@ import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 import com.kickstarter.models.User;
-import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.kickstarter.ui.adapters.ProjectAdapter;
 import com.kickstarter.ui.viewholders.ProjectViewHolder;
@@ -28,8 +28,8 @@ import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public final class ProjectViewModel extends ViewModel<ProjectActivity> implements ProjectAdapter.Delegate, ProjectViewModelInputs, ProjectViewModelOutputs {
-  @Inject ApiClient client;
-  @Inject CurrentUser currentUser;
+  protected @Inject ApiClientType client;
+  protected @Inject CurrentUser currentUser;
 
   // INPUTS
   private final PublishSubject<Project> initializer = PublishSubject.create();

@@ -13,7 +13,7 @@ import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.WebClient;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
@@ -35,9 +35,9 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   private final PublishSubject<Void> nextPage = PublishSubject.create();
   private final PublishSubject<Project> projectClick = PublishSubject.create();
 
-  @Inject ApiClient apiClient;
-  @Inject WebClient webClient;
-  @Inject BuildCheck buildCheck;
+  protected @Inject ApiClientType apiClient;
+  protected @Inject WebClient webClient;
+  protected @Inject BuildCheck buildCheck;
 
   private final PublishSubject<Void> filterButtonClick = PublishSubject.create();
   private final PublishSubject<DiscoveryParams> params = PublishSubject.create();

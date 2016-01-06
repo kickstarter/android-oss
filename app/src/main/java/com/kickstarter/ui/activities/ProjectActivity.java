@@ -21,7 +21,7 @@ import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
-import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ProjectAdapter;
 import com.kickstarter.ui.intents.ProjectIntentAction;
@@ -57,8 +57,8 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   protected @BindString(R.string.project_checkout_manage_navbar_title) String managePledgeString;
   protected @BindString(R.string.project_star_confirmation) String projectStarConfirmationString;
 
-  @Inject ApiClient client;
-  @Inject KSCurrency ksCurrency;
+  protected @Inject ApiClientType client;
+  protected @Inject KSCurrency ksCurrency;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {

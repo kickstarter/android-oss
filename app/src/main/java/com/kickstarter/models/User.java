@@ -16,6 +16,7 @@ public abstract class User implements Parcelable {
   public abstract @Nullable Integer createdProjectsCount();
   public abstract @Nullable Boolean happeningNewsletter();
   public abstract long id();
+  public abstract @Nullable Location location();
   public abstract String name();
   public abstract @Nullable Boolean notifyMobileOfBackings();
   public abstract @Nullable Boolean notifyMobileOfComments();
@@ -38,6 +39,7 @@ public abstract class User implements Parcelable {
     public abstract Builder createdProjectsCount(Integer __);
     public abstract Builder happeningNewsletter(Boolean __);
     public abstract Builder id(long __);
+    public abstract Builder location(Location __);
     public abstract Builder name(String __);
     public abstract Builder notifyMobileOfBackings(Boolean __);
     public abstract Builder notifyMobileOfComments(Boolean __);

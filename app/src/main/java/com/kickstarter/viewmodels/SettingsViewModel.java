@@ -4,11 +4,14 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.SwitchCompat;
+import android.util.Pair;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.libs.utils.I18nUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClient;
@@ -28,9 +31,14 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
 
   // INPUTS
   private final PublishSubject<Void> contactEmailClicked = PublishSubject.create();
+  private final PublishSubject<Pair<Boolean, String>> newsletterInput = PublishSubject.create();
   private final PublishSubject<User> userInput = PublishSubject.create();
 
   // OUTPUTS
+  private final PublishSubject<String> sendNewsletterConfirmation = PublishSubject.create();
+  public Observable<String> sendNewsletterConfirmation() {
+    return sendNewsletterConfirmation;
+  }
   private final PublishSubject<Void> updateSuccess = PublishSubject.create();
   public final Observable<Void> updateSuccess() {
     return updateSuccess;
@@ -91,21 +99,21 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
   }
 
   @Override
-  public void sendHappeningNewsletter(final boolean b) {
-    userInput.onNext(userOutput.getValue().toBuilder().happeningNewsletter(b).build());
-    koala.trackNewsletterToggle(b);
+  public void sendHappeningNewsletter(final boolean checked, final @NonNull String name) {
+    userInput.onNext(userOutput.getValue().toBuilder().happeningNewsletter(checked).build());
+    newsletterInput.onNext(new Pair<>(checked, name));
   }
 
   @Override
-  public void sendPromoNewsletter(final boolean b) {
-    userInput.onNext(userOutput.getValue().toBuilder().promoNewsletter(b).build());
-    koala.trackNewsletterToggle(b);
+  public void sendPromoNewsletter(final boolean checked, final @NonNull String name) {
+    userInput.onNext(userOutput.getValue().toBuilder().promoNewsletter(checked).build());
+    newsletterInput.onNext(new Pair<>(checked, name));
   }
 
   @Override
-  public void sendWeeklyNewsletter(final boolean b) {
-    userInput.onNext(userOutput.getValue().toBuilder().weeklyNewsletter(b).build());
-    koala.trackNewsletterToggle(b);
+  public void sendWeeklyNewsletter(final boolean checked, final @NonNull String name) {
+    userInput.onNext(userOutput.getValue().toBuilder().weeklyNewsletter(checked).build());
+    newsletterInput.onNext(new Pair<>(checked, name));
   }
 
   @Override
@@ -147,10 +155,28 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
     );
 
     addSubscription(
+      currentUser.observable()
+        .compose(Transformers.takePairWhen(newsletterInput))
+        .filter(us -> requiresDoubleOptIn(us.first, us.second.first))
+        .map(us -> us.second.second)
+        .subscribe(sendNewsletterConfirmation)
+    );
+
+    addSubscription(
       contactEmailClicked.subscribe(__ -> koala.trackContactEmailClicked())
     );
 
+    addSubscription(
+      newsletterInput
+        .map(bs -> bs.first)
+        .subscribe(koala::trackNewsletterToggle)
+    );
+
     koala.trackSettingsView();
+  }
+
+  private boolean requiresDoubleOptIn(final @NonNull User user, final boolean checked) {
+    return I18nUtils.isLocaleGermany(user.location()) && checked;
   }
 
   private void success(final @NonNull User user) {

@@ -15,6 +15,7 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.Release;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
@@ -53,6 +54,13 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   protected @BindColor(R.color.green) int green;
   protected @BindColor(R.color.gray) int gray;
 
+  protected @BindString(R.string.profile_settings_newsletter_happening) String happeningNewsletterString;
+  protected @BindString(R.string.mailto) String mailtoString;
+  protected @BindString(R.string.Logged_Out) String loggedOutString;
+  protected @BindString(R.string.profile_settings_newsletter_weekly) String weeklyNewsletterString;
+  protected @BindString(R.string.profile_settings_newsletter_promo) String promoNewsletterString;
+  protected @BindString(R.string.profile_settings_newsletter_opt_in_message) String optInMessageString;
+  protected @BindString(R.string.profile_settings_newsletter_opt_in_title) String optInTitleString;
   protected @BindString(R.string.profile_settings_accessibility_subscribe_mobile_notifications) String subscribeMobileString;
   protected @BindString(R.string.profile_settings_accessibility_subscribe_notifications) String subscribeString;
   protected @BindString(R.string.support_email_body) String supportEmailBodyString;
@@ -63,6 +71,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   protected @BindString(R.string.profile_settings_accessibility_unsubscribe_notifications) String unsubscribeString;
 
   @Inject CurrentUser currentUser;
+  @Inject KSString ksString;
   @Inject Logout logout;
   @Inject Release release;
 
@@ -85,27 +94,32 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::displayPreferences);
 
+    viewModel.outputs.sendNewsletterConfirmation()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::displayNewsletterConfirmation);
+
     viewModel.errors.unableToSavePreferenceError()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> ViewUtils.showToast(this, unableToSaveString));
 
-    RxView.clicks(happeningNewsletterSwitch)
+    RxView.clicks(this.happeningNewsletterSwitch)
       .compose(bindToLifecycle())
-      .subscribe(__ -> viewModel.inputs.sendHappeningNewsletter(this.happeningNewsletterSwitch.isChecked()));
+      .subscribe(__ -> viewModel.inputs.sendHappeningNewsletter(happeningNewsletterSwitch.isChecked(), happeningNewsletterString));
 
-    RxView.clicks(promoNewsletterSwitch)
+    RxView.clicks(this.promoNewsletterSwitch)
       .compose(bindToLifecycle())
-      .subscribe(__ -> viewModel.inputs.sendPromoNewsletter(this.promoNewsletterSwitch.isChecked()));
+      .subscribe(__ -> viewModel.inputs.sendPromoNewsletter(promoNewsletterSwitch.isChecked(), promoNewsletterString));
 
-    RxView.clicks(weeklyNewsletterSwitch)
+    RxView.clicks(this.weeklyNewsletterSwitch)
       .compose(bindToLifecycle())
-      .subscribe(__ -> viewModel.inputs.sendWeeklyNewsletter(this.weeklyNewsletterSwitch.isChecked()));
+      .subscribe(__ -> viewModel.inputs.sendWeeklyNewsletter(weeklyNewsletterSwitch.isChecked(), weeklyNewsletterString));
   }
 
   protected void composeContactEmail(final @Nullable User user) {
     final List<String> debugInfo = Arrays.asList(
-      (user != null ? user.name() : "Logged Out"),
+      (user != null ? user.name() : loggedOutString),
       release.variant(),
       release.versionName(),
       release.versionCode().toString(),
@@ -121,12 +135,12 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
       .toString();
 
     final Intent intent = new Intent(Intent.ACTION_SENDTO)
-      .setData(Uri.parse("mailto:"))
+      .setData(Uri.parse(mailtoString))
       .putExtra(Intent.EXTRA_SUBJECT, supportEmailSubjectString)
       .putExtra(Intent.EXTRA_TEXT, body)
       .putExtra(Intent.EXTRA_EMAIL, new String[]{supportEmailString});
     if (intent.resolveActivity(getPackageManager()) != null) {
-      startActivity(Intent.createChooser(intent, getString(R.string.Select_email_application)));
+      startActivity(Intent.createChooser(intent, getString(R.string.support_email_chooser)));
     }
   }
 
@@ -143,6 +157,11 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   @OnClick(R.id.cookie_policy)
   public void cookiePolicyClick() {
     startHelpActivity(HelpActivity.CookiePolicy.class);
+  }
+
+  public void displayNewsletterConfirmation(final @NonNull String name) {
+    final String optInDialogMessageString = ksString.format(optInMessageString, "newsletter", name);
+    ViewUtils.showDialog(this, optInTitleString, optInDialogMessageString);
   }
 
   public void displayPreferences(final @NonNull User user) {

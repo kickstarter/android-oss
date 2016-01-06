@@ -2,6 +2,8 @@ package com.kickstarter.libs.utils;
 
 import android.support.annotation.NonNull;
 
+import com.kickstarter.models.Location;
+
 import java.util.Locale;
 
 public final class I18nUtils {
@@ -15,5 +17,13 @@ public final class I18nUtils {
   public static @NonNull String language() {
     final String language = Locale.getDefault().getLanguage();
     return language.isEmpty() ? "en" : language;
+  }
+
+  public static boolean isLocaleGermany(final @NonNull Location location) {
+    final String country = location.country();
+    if (country != null) {
+      return location.country().equals("DE");
+    }
+    return false;
   }
 }

@@ -66,12 +66,11 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.project_social_view) ViewGroup projectSocialViewGoup;
   protected @Bind(R.id.project_state_header_text_view) TextView projectStateHeaderTextView;
   protected @Bind(R.id.project_state_subhead_text_view) TextView projectStateSubheadTextView;
-  protected @Bind(R.id.project_state_vertical_line_view) View projectStateVerticalLineView;
   protected @Bind(R.id.project_state_view_group) ViewGroup projectStateViewGroup;
   protected @Bind(R.id.updates_count) TextView updatesCountTextView;
 
-  protected @BindColor(R.color.green) int greenColor;
-  protected @BindColor(R.color.dark_gray) int darkGrayColor;
+  protected @BindColor(R.color.green_alpha_20) int greenAlpha50Color;
+  protected @BindColor(R.color.medium_gray) int mediumGrayColor;
 
   protected @BindDimen(R.dimen.grid_3) int grid3Dimen;
   protected @BindDimen(R.dimen.grid_4) int grid4Dimen;
@@ -225,7 +224,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       case Project.STATE_SUCCESSFUL:
         percentageFundedProgressBar.setVisibility(View.GONE);
         projectStateViewGroup.setVisibility(View.VISIBLE);
-        projectStateVerticalLineView.setBackgroundColor(greenColor);
+        projectStateViewGroup.setBackgroundColor(greenAlpha50Color);
 
         projectStateHeaderTextView.setText(fundedString);
         projectStateSubheadTextView.setText(ksString.format(successfullyFundedOnDeadlineString,
@@ -235,7 +234,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       case Project.STATE_CANCELED:
         percentageFundedProgressBar.setVisibility(View.GONE);
         projectStateViewGroup.setVisibility(View.VISIBLE);
-        projectStateVerticalLineView.setBackgroundColor(darkGrayColor);
+        projectStateViewGroup.setBackgroundColor(mediumGrayColor);
 
         projectStateHeaderTextView.setText(fundingCanceledString);
         projectStateSubheadTextView.setText(fundingCanceledByCreatorString);
@@ -243,7 +242,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       case Project.STATE_FAILED:
         percentageFundedProgressBar.setVisibility(View.GONE);
         projectStateViewGroup.setVisibility(View.VISIBLE);
-        projectStateVerticalLineView.setBackgroundColor(darkGrayColor);
+        projectStateViewGroup.setBackgroundColor(mediumGrayColor);
 
         projectStateHeaderTextView.setText(fundingUnsuccessfulString);
         projectStateSubheadTextView.setText(ksString.format(fundingGoalNotReachedString,
@@ -253,7 +252,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       case Project.STATE_SUSPENDED:
         percentageFundedProgressBar.setVisibility(View.GONE);
         projectStateViewGroup.setVisibility(View.VISIBLE);
-        projectStateVerticalLineView.setBackgroundColor(darkGrayColor);
+        projectStateViewGroup.setBackgroundColor(mediumGrayColor);
 
         projectStateHeaderTextView.setText(fundingSuspendedString);
         projectStateSubheadTextView.setText(fundingProjectSuspendedString);

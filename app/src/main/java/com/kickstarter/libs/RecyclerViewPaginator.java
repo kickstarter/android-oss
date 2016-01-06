@@ -58,10 +58,7 @@ public final class RecyclerViewPaginator {
    * Returns a (visibleItem, totalItemCount) pair given a linear layout manager.
    */
   private @NonNull Pair<Integer, Integer> displayedItemFromLinearLayout(final @NonNull LinearLayoutManager manager) {
-    final int visibleItemCount = manager.getChildCount();
-    final int totalItemCount = manager.getItemCount();
-    final int pastVisibleItems = manager.findFirstVisibleItemPosition();
-    return new Pair<>(visibleItemCount + pastVisibleItems, totalItemCount);
+    return new Pair<>(manager.findLastVisibleItemPosition(), manager.getItemCount());
   }
 
   private boolean visibleItemIsCloseToBottom(final @NonNull Pair<Integer, Integer> visibleItemOfTotal) {

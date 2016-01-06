@@ -14,13 +14,12 @@ public abstract class IntentAction {
     this.intent.onNext(intent);
   }
 
-  protected @Nullable String path(final @NonNull Intent intent) {
+  protected @Nullable Uri uri(final @NonNull Intent intent) {
     final String string = intent.getDataString();
     if (string == null) {
       return null;
     }
 
-    final Uri uri = Uri.parse(string);
-    return uri.getPath();
+    return Uri.parse(string);
   }
 }

@@ -18,9 +18,9 @@ public final class DiscoveryIntentAction extends IntentAction {
   public DiscoveryIntentAction(final @NonNull Action1<DiscoveryParams> initializer, final @NonNull Observable<ActivityEvent> lifecycle) {
     intent
       .compose(RxLifecycle.bindActivity(lifecycle))
-      .map(this::path)
+      .map(this::uri)
       .filter(ObjectUtils::isNotNull)
-      .map(DiscoveryParams::fromPath)
+      .map(DiscoveryParams::fromUri)
       .subscribe(initializer);
 
     intent

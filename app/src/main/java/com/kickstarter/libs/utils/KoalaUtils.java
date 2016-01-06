@@ -28,7 +28,6 @@ public final class KoalaUtils {
 
       put("staff_picks", params.staffPicks());
       put("starred", params.starred());
-      put("nearby", params.nearby());
       put("social", params.social());
       put("term", params.term());
       put("sort", params.sort().toString());

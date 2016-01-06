@@ -14,6 +14,14 @@ public final class KSUri {
     return isKickstarterUri(uri, webEndpoint) && uri.getPath().equals("/cookies");
   }
 
+  public static boolean isDiscoverCategoriesPath(@NonNull final String path) {
+    return DISCOVER_CATEGORIES_PATTERN.matcher(path).matches();
+  }
+
+  public static boolean isDiscoverPlacesPath(@NonNull final String path) {
+    return DISCOVER_PLACES_PATTERN.matcher(path).matches();
+  }
+
   public static boolean isHelloUri(@NonNull final Uri uri, @NonNull final String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && uri.getPath().equals("/hello");
   }
@@ -65,6 +73,12 @@ public final class KSUri {
   // ***REMOVED***
   // ***REMOVED***
   private static final Pattern API_PATTERN = Pattern.compile("\\Aapi(-[a-z0-9\\.]+)?\\.kickstarter.com\\z");
+
+  // /discover/categories/slug
+  private static final Pattern DISCOVER_CATEGORIES_PATTERN = Pattern.compile("\\A\\/discover\\/categories\\/[a-zA-Z0-9-_]+\\z");
+
+  // /discover/places/slug
+  private static final Pattern DISCOVER_PLACES_PATTERN = Pattern.compile("\\A\\/discover\\/places\\/[a-zA-Z0-9-_]+\\z");
 
   // environment.***REMOVED***
   private static final Pattern HIVEQUEEN_PATTERN = Pattern.compile("\\A([a-z0-9]+\\-)?[a-z0-9]+\\.dev\\.kickstarter.com\\z");

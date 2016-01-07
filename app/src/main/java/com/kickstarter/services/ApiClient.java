@@ -45,6 +45,7 @@ public final class ApiClient implements ApiClientType {
     this.service = service;
   }
 
+  @Override
   public @NonNull Observable<Config> config() {
     return service
       .config()
@@ -52,6 +53,7 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
+  @Override
   public @NonNull Observable<ActivityEnvelope> fetchActivities() {
     final List<String> categories = Arrays.asList(
       Activity.CATEGORY_BACKING,
@@ -69,6 +71,8 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
+
+  @Override
   public @NonNull Observable<ActivityEnvelope> fetchActivities(final @NonNull String paginationPath) {
     return service
       .activities(paginationPath)
@@ -76,6 +80,7 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
+  @Override
   public @NonNull Observable<List<Category>> fetchCategories() {
     return service
       .categories()
@@ -84,6 +89,7 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
+  @Override
   public @NonNull Observable<Category> fetchCategory(final @NonNull String id) {
     return service
       .category(id)
@@ -91,10 +97,12 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
+  @Override
   public @NonNull Observable<Category> fetchCategory(final @NonNull Category category) {
     return fetchCategory(String.valueOf(category.id()));
   }
 
+  @Override
   public @NonNull Observable<User> fetchCurrentUser() {
     return service
       .currentUser()
@@ -102,12 +110,14 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
+  @Override
   public @NonNull Observable<Location> fetchLocation(final @NonNull String param) {
     return service.location(param)
       .subscribeOn(Schedulers.io())
       .lift(apiErrorOperator());
   }
 
+  @Override
   public @NonNull Observable<List<Notification>> fetchNotifications() {
     return service
       .notifications()
@@ -115,6 +125,7 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
+  @Override
   public @NonNull Observable<Project> fetchProject(final @NonNull String param) {
     return service
       .project(param)
@@ -122,10 +133,12 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
+  @Override
   public @NonNull Observable<Project> fetchProject(final @NonNull Project project) {
     return fetchProject(project.param()).startWith(project);
   }
 
+  @Override
   public @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
     return service
       .projects(params.queryParams())
@@ -133,6 +146,7 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
+  @Override
   public @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull String paginationUrl) {
     return service
       .projects(paginationUrl)
@@ -140,6 +154,7 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
+  @Override
   public @NonNull Observable<Backing> fetchProjectBacking(final @NonNull Project project, final @NonNull User user) {
     return service
       .projectBacking(project.param(), user.param())
@@ -147,6 +162,7 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
+  @Override
   public @NonNull Observable<CommentsEnvelope> fetchProjectComments(final @NonNull Project project) {
     return service
       .projectComments(project.param())
@@ -154,6 +170,7 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
+  @Override
   public @NonNull Observable<CommentsEnvelope> fetchProjectComments(final @NonNull String paginationPath) {
     return service
       .paginatedProjectComments(paginationPath)
@@ -161,6 +178,7 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
+  @Override
   public @NonNull Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String accessToken) {
     return service
       .login(LoginWithFacebookBody.builder().accessToken(accessToken).build())
@@ -168,6 +186,7 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
+  @Override
   public @NonNull Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String fbAccessToken, final @NonNull String code) {
     return service
       .login(LoginWithFacebookBody.builder().accessToken(fbAccessToken).code(code).build())
@@ -175,6 +194,7 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
+  @Override
   public @NonNull Observable<AccessTokenEnvelope> registerWithFacebook(final @NonNull String fbAccessToken, final boolean sendNewsletters) {
     return service
       .login(RegisterWithFacebookBody.builder()
@@ -185,6 +205,7 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
+  @Override
   public @NonNull Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password) {
     return service
       .login(email, password)
@@ -192,6 +213,7 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
+  @Override
   public @NonNull Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password,
     final @NonNull String code) {
     return service
@@ -200,6 +222,7 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
+  @Override
   public @NonNull Observable<Comment> postProjectComment(final @NonNull Project project, final @NonNull String body) {
     return service
       .postProjectComment(project.param(), CommentBody.builder().body(body).build())
@@ -207,6 +230,7 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
+  @Override
   public @NonNull Observable<Empty> registerPushToken(final @NonNull String token) {
     return service
       .registerPushToken(PushTokenBody.builder().token(token).pushServer("development").build())
@@ -214,6 +238,7 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
+  @Override
   public @NonNull Observable<User> resetPassword(final @NonNull String email) {
     return service
       .resetPassword(ResetPasswordBody.builder().email(email).build())
@@ -221,6 +246,7 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
+  @Override
   public @NonNull Observable<AccessTokenEnvelope> signup(final @NonNull String name, final @NonNull String email,
     final @NonNull String password, final @NonNull String passwordConfirmation,
     final boolean sendNewsletters) {
@@ -237,6 +263,7 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
+  @Override
   public @NonNull Observable<Project> starProject(final @NonNull Project project) {
     return service
       .starProject(project.param())
@@ -245,6 +272,7 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
+  @Override
   public @NonNull Observable<Project> toggleProjectStar(final @NonNull Project project) {
     return service
       .toggleProjectStar(project.param())
@@ -253,6 +281,7 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
+  @Override
   public @NonNull Observable<Notification> updateNotifications(final @NonNull Notification notification, final boolean checked) {
     return service
       .updateProjectNotifications(notification.id(),
@@ -264,6 +293,7 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
+  @Override
   public @NonNull Observable<User> updateUserSettings(final @NonNull User user) {
     return service
       .updateUserSettings(

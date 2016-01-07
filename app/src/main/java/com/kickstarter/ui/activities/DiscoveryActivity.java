@@ -22,6 +22,7 @@ import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.StatusBarUtils;
 import com.kickstarter.models.Project;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.IntentKey;
@@ -49,7 +50,8 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
   private final List<Project> projects = new ArrayList<>();
   private RecyclerViewPaginator recyclerViewPaginator;
 
-  @Inject ApplicationContainer applicationContainer;
+  protected @Inject ApplicationContainer applicationContainer;
+  protected @Inject ApiClientType client;
 
   @BindDrawable(R.drawable.dark_blue_gradient) Drawable darkBlueGradientDrawable;
   @Bind(R.id.discovery_layout) LinearLayout discoveryLayout;
@@ -72,7 +74,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);
 
-    intentAction = new DiscoveryIntentAction(viewModel.inputs::initializer, lifecycle());
+    intentAction = new DiscoveryIntentAction(viewModel.inputs::initializer, lifecycle(), client);
     intentAction.intent(getIntent());
 
     recyclerViewPaginator = new RecyclerViewPaginator(recyclerView, viewModel.inputs::nextPage);

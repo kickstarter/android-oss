@@ -85,7 +85,7 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startDiscoveryCategoryIntent(vp.second)));
 
-    final Observable<Category> rootCategory = apiClient.fetchCategory(project.category().rootId())
+    final Observable<Category> rootCategory = apiClient.fetchCategory(String.valueOf(project.category().rootId()))
       .compose(Transformers.neverError());
     final Observable<Pair<List<Project>, Category>> projectsAndRootCategory = moreProjects(project)
       .compose(Transformers.zipPair(rootCategory));

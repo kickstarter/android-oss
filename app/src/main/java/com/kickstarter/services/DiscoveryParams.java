@@ -22,25 +22,25 @@ import auto.parcel.AutoParcel;
 @AutoGson
 @AutoParcel
 public abstract class DiscoveryParams implements Parcelable {
-  public abstract int backed();
+  @Nullable public abstract Integer backed();
   @Nullable public abstract Category category();
-  @Nullable public abstract String categorySlug();
+  @Nullable public abstract String categoryParam();
   @Nullable public abstract Location location();
-  @Nullable public abstract String locationSlug();
-  public abstract int page();
-  public abstract int perPage();
-  public abstract boolean staffPicks();
-  public abstract int starred();
-  public abstract int social();
-  public abstract Sort sort();
-  public abstract boolean recommended();
+  @Nullable public abstract String locationParam();
+  @Nullable public abstract Integer page();
+  @Nullable public abstract Integer perPage();
+  @Nullable public abstract Boolean staffPicks();
+  @Nullable public abstract Integer starred();
+  @Nullable public abstract Integer social();
+  @Nullable public abstract Sort sort();
+  @Nullable public abstract Boolean recommended();
   @Nullable public abstract Project similarTo();
   @Nullable public abstract String term();
 
   public enum Sort {
     MAGIC, POPULAR, ENDING_SOON, NEWEST, MOST_FUNDED;
     @Override
-    public String toString() throws AssertionError {
+    public @NonNull String toString() throws AssertionError {
       switch (this) {
         case MAGIC:
           return "magic";
@@ -56,7 +56,7 @@ public abstract class DiscoveryParams implements Parcelable {
       throw new AssertionError("Unhandled sort");
     }
 
-    public static Sort fromString(final @NonNull String string) throws AssertionError {
+    public static @NonNull Sort fromString(final @NonNull String string) throws AssertionError {
       switch (string) {
         case "magic":
           return MAGIC;
@@ -73,8 +73,8 @@ public abstract class DiscoveryParams implements Parcelable {
     }
   }
 
-  public static @NonNull DiscoveryParams fromUri(final @NonNull Uri uri) {
-    DiscoveryParams.Builder builder = DiscoveryParams.builder();
+  public static @NonNull DiscoveryParams fromUri(final @NonNull Uri uri, final @NonNull Builder initialBuilder) {
+    Builder builder = initialBuilder;
 
     final Integer backed = ObjectUtils.toInteger(uri.getQueryParameter("backed"));
     if (backed != null) {
@@ -82,21 +82,21 @@ public abstract class DiscoveryParams implements Parcelable {
     }
 
     if (KSUri.isDiscoverCategoriesPath(uri.getPath())) {
-      builder = builder.categorySlug(uri.getLastPathSegment());
+      builder = builder.categoryParam(uri.getLastPathSegment());
     }
 
-    final String categorySlug = uri.getQueryParameter("category_id");
-    if (categorySlug != null) {
-      builder = builder.categorySlug(categorySlug);
+    final String categoryParam = uri.getQueryParameter("category_id");
+    if (categoryParam != null) {
+      builder = builder.categoryParam(categoryParam);
     }
 
     if (KSUri.isDiscoverPlacesPath(uri.getPath())) {
-      builder = builder.locationSlug(uri.getLastPathSegment());
+      builder = builder.locationParam(uri.getLastPathSegment());
     }
 
-    final String locationSlug = uri.getQueryParameter("location_id");
-    if (locationSlug != null) {
-      builder = builder.locationSlug(locationSlug);
+    final String locationParam = uri.getQueryParameter("location_id");
+    if (locationParam != null) {
+      builder = builder.locationParam(locationParam);
     }
 
     final Integer page = ObjectUtils.toInteger(uri.getQueryParameter("page"));
@@ -131,7 +131,7 @@ public abstract class DiscoveryParams implements Parcelable {
         if (sort != null) {
           builder = builder.sort(sort);
         }
-      } catch (AssertionError e) {}
+      } catch (final AssertionError e) {}
     }
 
     final Integer starred = ObjectUtils.toInteger(uri.getQueryParameter("starred"));
@@ -147,83 +147,153 @@ public abstract class DiscoveryParams implements Parcelable {
     return builder.build();
   }
 
+  public static @NonNull DiscoveryParams fromUri(final @NonNull Uri uri) {
+    return fromUri(uri, DiscoveryParams.builder());
+  }
+
   @AutoParcel.Builder
   public abstract static class Builder {
-    public abstract Builder backed(int __);
+    public abstract Builder backed(Integer __);
     public abstract Builder category(Category __);
-    public abstract Builder categorySlug(String __);
+    public abstract Builder categoryParam(String __);
     public abstract Builder location(Location __);
-    public abstract Builder locationSlug(String __);
-    public abstract Builder page(int __);
-    public abstract Builder perPage(int __);
-    public abstract Builder staffPicks(boolean __);
-    public abstract Builder starred(int __);
-    public abstract Builder social(int __);
+    public abstract Builder locationParam(String __);
+    public abstract Builder page(Integer __);
+    public abstract Builder perPage(Integer __);
     public abstract Builder sort(Sort __);
-    public abstract Builder recommended(boolean __);
+    public abstract Builder staffPicks(Boolean __);
+    public abstract Builder starred(Integer __);
+    public abstract Builder social(Integer __);
+    public abstract Builder recommended(Boolean __);
     public abstract Builder similarTo(Project __);
     public abstract Builder term(String __);
     public abstract DiscoveryParams build();
+
+    public @NonNull DiscoveryParams.Builder mergeWith(final @NonNull Builder otherBuilder) {
+      final DiscoveryParams other = otherBuilder.build();
+      DiscoveryParams.Builder retVal = this;
+
+      if (other.backed() != null) {
+        retVal = retVal.backed(other.backed());
+      }
+      if (other.category() != null) {
+        retVal = retVal.category(other.category());
+      }
+      if (other.categoryParam() != null) {
+        retVal = retVal.categoryParam(other.categoryParam());
+      }
+      if (other.location() != null) {
+        retVal = retVal.location(other.location());
+      }
+      if (other.page() != null) {
+        retVal = retVal.page(other.page());
+      }
+      if (other.perPage() != null) {
+        retVal = retVal.perPage(other.perPage());
+      }
+      if (other.social() != null) {
+        retVal = retVal.social(other.social());
+      }
+      if (other.staffPicks() != null) {
+        retVal = retVal.staffPicks(other.staffPicks());
+      }
+      if (other.starred() != null) {
+        retVal = retVal.starred(other.starred());
+      }
+      if (other.sort() != null) {
+        retVal = retVal.sort(other.sort());
+      }
+      if (other.recommended() != null) {
+        retVal = retVal.recommended(other.recommended());
+      }
+      if (other.similarTo() != null) {
+        retVal = retVal.similarTo(other.similarTo());
+      }
+      if (other.term() != null) {
+        retVal = retVal.term(other.term());
+      }
+
+      return retVal;
+    }
   }
 
-  public static Builder builder() {
+  public static @NonNull Builder builder() {
     return new AutoParcel_DiscoveryParams.Builder()
-      .backed(0)
       .page(1)
       .perPage(15)
-      .social(0)
-      .sort(Sort.MAGIC)
-      .staffPicks(false)
-      .starred(0)
-      .recommended(false);
+      .sort(Sort.MAGIC);
   }
 
   public abstract Builder toBuilder();
 
-  public DiscoveryParams nextPage () {
-    return toBuilder().page(page() + 1).build();
+  public @NonNull DiscoveryParams nextPage () {
+    final Integer page = page();
+    return page != null ? toBuilder().page(page + 1).build() : this;
   }
 
-  public Map<String, String> queryParams() {
+  public @NonNull Map<String, String> queryParams() {
     return Collections.unmodifiableMap(new HashMap<String, String>() {{
-      put("staff_picks", String.valueOf(staffPicks()));
-      put("starred", String.valueOf(starred()));
-      put("backed", String.valueOf(backed()));
-      put("social", String.valueOf(social()));
-      put("recommended", String.valueOf(recommended()));
-      put("sort", sort().toString());
-      put("page", String.valueOf(page()));
-      put("per_page", String.valueOf(perPage()));
+      if (backed() != null) {
+        put("backed", String.valueOf(backed()));
+      }
 
       if (category() != null) {
         put("category_id", String.valueOf(category().id()));
       }
 
-      if (categorySlug() != null) {
-        put("category_id", categorySlug());
+      if (categoryParam() != null) {
+        put("category_id", categoryParam());
       }
 
       if (location() != null) {
         put("woe_id", String.valueOf(location().id()));
       }
 
-      if (locationSlug() != null) {
-        put("woe_id", locationSlug());
+      if (locationParam() != null) {
+        put("woe_id", locationParam());
       }
 
-      if (term() != null) {
-        put("q", term());
+      if (page() != null) {
+        put("page", String.valueOf(page()));
+      }
+
+      if (perPage() != null) {
+        put("per_page", String.valueOf(perPage()));
+      }
+
+      if (recommended() != null) {
+        put("recommended", String.valueOf(recommended()));
       }
 
       if (similarTo() != null) {
         put("similar_to", String.valueOf(similarTo().id()));
       }
 
-      if (staffPicks() && page() == 1) {
+      if (starred() != null) {
+        put("starred", String.valueOf(starred()));
+      }
+
+      if (social() != null) {
+        put("social", String.valueOf(social()));
+      }
+
+      if (sort() != null) {
+        put("sort", sort().toString());
+      }
+
+      if (staffPicks() != null) {
+        put("staff_picks", String.valueOf(staffPicks()));
+      }
+
+      if (term() != null) {
+        put("q", term());
+      }
+
+      if (staffPicks() != null && staffPicks() && page() != null && page() == 1) {
         put("include_potd", "true");
       }
 
-      if (category() != null && page() == 1) {
+      if (category() != null && page() != null && page() == 1) {
         put("include_featured", "true");
       }
     }});
@@ -235,22 +305,18 @@ public abstract class DiscoveryParams implements Parcelable {
   }
 
   public @NonNull String filterString(@NonNull final Context context) {
-    if (staffPicks()) {
+    if (staffPicks() != null && staffPicks()) {
       return context.getString(R.string.discovery_recommended);
-    } else if (starred() == 1) {
+    } else if (starred() != null && starred() == 1) {
       return context.getString(R.string.discovery_saved);
-    } else if (backed() == 1) {
+    } else if (backed() != null && backed() == 1) {
       return context.getString(R.string.discovery_backing);
-    } else if (social() == 1) {
+    } else if (social() != null && social() == 1) {
       return context.getString(R.string.discovery_friends_backed);
     } else if (category() != null) {
       return category().name();
-    } else if (categorySlug() != null) {
-      return categorySlug();
     } else if (location() != null) {
-      return location().name();
-    } else if (locationSlug() != null) {
-      return locationSlug();
+      return location().displayableName();
     } else {
       return context.getString(R.string.discovery_everything);
     }

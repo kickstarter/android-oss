@@ -76,7 +76,7 @@ public class ProjectNotificationViewModel extends ViewModel<ProjectNotificationV
 
   private Observable<Notification> updateNotification(final @NonNull ApiClientType client,
     final @NonNull Notification notification, final boolean checked) {
-    return client.updateProjectNotifications(notification, checked)
+    return client.updateNotifications(notification, checked)
       .compose(Transformers.pipeErrorsTo(unableToSavePreferenceError));
   }
 }

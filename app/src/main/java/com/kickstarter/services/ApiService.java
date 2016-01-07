@@ -7,6 +7,7 @@ import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Empty;
+import com.kickstarter.models.Location;
 import com.kickstarter.models.Notification;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
@@ -73,8 +74,8 @@ public interface ApiService {
   @GET("/v1/projects/{param}")
   Observable<Response<Project>> project(@Path("param") String param);
 
-  @GET("/v1/categories/{id}")
-  Observable<Response<Category>> category(@Path("id") long id);
+  @GET("/v1/categories/{param}")
+  Observable<Response<Category>> category(@Path("param") String param);
 
   @GET("/v1/users/self")
   Observable<Response<User>> currentUser();
@@ -121,4 +122,7 @@ public interface ApiService {
 
   @GET("/v1/app/android/config")
   Observable<Response<Config>> config();
+
+  @GET("/v1/locations/{param}")
+  Observable<Response<Location>> location(@Path("param") String param);
 }

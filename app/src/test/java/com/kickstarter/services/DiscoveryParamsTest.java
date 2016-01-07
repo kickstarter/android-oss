@@ -21,7 +21,7 @@ public class DiscoveryParamsTest extends KSRobolectricTestCase {
 
   @Test
   public void testFromUri_categories() {
-    final DiscoveryParams params = DiscoveryParams.builder().categorySlug("music").build();
+    final DiscoveryParams params = DiscoveryParams.builder().categoryParam("music").build();
 
     final Uri categoryUri = Uri.parse("https://www.kickstarter.com/discover/categories/music");
     assertEquals(params, DiscoveryParams.fromUri(categoryUri));
@@ -45,7 +45,7 @@ public class DiscoveryParamsTest extends KSRobolectricTestCase {
 
   @Test
   public void testFromUri_locations() {
-    final DiscoveryParams params = DiscoveryParams.builder().locationSlug("sydney-au").build();
+    final DiscoveryParams params = DiscoveryParams.builder().locationParam("sydney-au").build();
 
     final Uri placesUri = Uri.parse("https://www.kickstarter.com/discover/places/sydney-au");
     assertEquals(params, DiscoveryParams.fromUri(placesUri));

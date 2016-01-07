@@ -51,7 +51,10 @@
         <category android:name="android.intent.category.DEFAULT" />
       </intent-filter>
 
-      <intent-filter>
+      <!-- Setting autoVerify to true in any intent filter for the manifest enables the app for
+        23+ app links: https://www.youtube.com/watch?v=LQoohRwojmw -->
+      <intent-filter
+        android:autoVerify="true">
         <action android:name="android.intent.action.VIEW" />
         <category android:name="android.intent.category.DEFAULT" />
         <category android:name="android.intent.category.BROWSABLE" />

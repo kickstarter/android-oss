@@ -104,7 +104,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     addSubscription(
       params.compose(Transformers.takePairWhen(paginator.loadingPage))
         .map(paramsAndPage -> paramsAndPage.first.toBuilder().page(paramsAndPage.second).build())
-        .subscribe(koala::trackDiscovery)
+        .subscribe(p -> koala.trackDiscovery(p, !hasSeenOnboarding))
     );
 
     addSubscription(paginator.paginatedData.subscribe(projects));

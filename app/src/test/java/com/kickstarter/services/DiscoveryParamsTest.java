@@ -50,7 +50,7 @@ public class DiscoveryParamsTest extends KSRobolectricTestCase {
     final Uri placesUri = Uri.parse("https://www.kickstarter.com/discover/places/sydney-au");
     assertEquals(params, DiscoveryParams.fromUri(placesUri));
 
-    final Uri advancedUri = Uri.parse("https://www.kickstarter.com/discover/advanced?location_id=sydney-au");
+    final Uri advancedUri = Uri.parse("https://www.kickstarter.com/discover/advanced?woe_id=sydney-au");
     assertEquals(params, DiscoveryParams.fromUri(advancedUri));
   }
 

@@ -6,7 +6,6 @@ import android.net.Uri;
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.models.Project;
-import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.MockApiClient;
 import com.kickstarter.ui.IntentKey;
 

@@ -46,7 +46,7 @@ public final class ManageNotificationsViewModel extends ViewModel<ManageNotifica
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    this.notifications = client.fetchNotifications()
+    notifications = client.fetchNotifications()
       .compose(Transformers.pipeErrorsTo(unableToFetchNotificationsError));
   }
 }

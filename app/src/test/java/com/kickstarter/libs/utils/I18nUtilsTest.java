@@ -16,4 +16,9 @@ public final class I18nUtilsTest extends TestCase {
     assertFalse(I18nUtils.isCountryGermany(LocationFactory.unitedStates()));
     assertTrue(I18nUtils.isCountryGermany(LocationFactory.germany()));
   }
+
+  public void testIsCountryUS() {
+    assertTrue(I18nUtils.isCountryUS(LocationFactory.unitedStates()));
+    assertFalse(I18nUtils.isCountryUS(LocationFactory.germany()));
+  }
 }

@@ -313,6 +313,7 @@
   <string name="discovery_baseball_card_stats_convert_from_pledged_of_goal" formatted="false">Converted from %{pledged} pledged of %{goal} goal.</string>
   <string name="discovery_baseball_card_stats_funded" formatted="false">funded</string>
   <string name="discovery_baseball_card_stats_pledged_of_goal" formatted="false">pledged of %{goal}</string>
+  <string name="discovery_baseball_card_stats_pledged_of_goal_short" formatted="false">of %{goal}</string>
   <string name="discovery_baseball_card_status_banner_canceled" formatted="false">Funding canceled</string>
   <string name="discovery_baseball_card_status_banner_canceled_date" formatted="false">Funding canceled %{date}</string>
   <string name="discovery_baseball_card_status_banner_funding_unsuccessful_date" formatted="false">Funding unsuccessful %{date}</string>
@@ -549,6 +550,7 @@ We\'d appreciate it!</string>
   <string name="profile_settings_rating_option_rate_now" formatted="false">Rate It Now</string>
   <string name="profile_settings_rating_option_remind_later" formatted="false">Remind Me Later</string>
   <string name="profile_settings_rating_rate_us" formatted="false">Rate us in the App Store!</string>
+  <string name="profile_settings_rating_rate_us_play_store" formatted="false">Rate us in the Play Store!</string>
   <string name="profile_settings_rating_title" formatted="false">We’re all ears!</string>
   <string name="profile_settings_social_find_friends" formatted="false">Find friends</string>
   <string name="profile_settings_social_followers" formatted="false">New followers</string>

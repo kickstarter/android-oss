@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 
@@ -21,6 +22,7 @@ import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
+import com.kickstarter.models.User;
 import com.kickstarter.ui.adapters.ProjectAdapter;
 import com.kickstarter.viewmodels.ProjectViewModel;
 
@@ -56,7 +58,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   @Inject KSCurrency ksCurrency;
 
   @Override
-  protected void onCreate(@Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.project_layout);
     ButterKnife.bind(this);
@@ -75,7 +77,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     projectRecyclerView.setAdapter(adapter);
     projectRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    this.viewModel.outputs.project()
+    this.viewModel.outputs.projectAndUser()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::renderProject);
@@ -143,8 +145,11 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
       .subscribe(__ -> this.startLoginToutActivity());
   }
 
-  private void renderProject(@NonNull final Project project) {
-    adapter.takeProject(project);
+  private void renderProject(final @NonNull Pair<Project, User> projectAndUser) {
+    final Project project = projectAndUser.first;
+    final User user = projectAndUser.second;
+
+    adapter.takeProject(project, user);
     renderActionButton(project);
     renderStar(project);
   }
@@ -169,7 +174,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     }
   }
 
-  private void renderStar(@NonNull final Project project) {
+  private void renderStar(final @NonNull Project project) {
     if (project.isLive()) {
       starFab.setImageDrawable(starDrawable);
       starFab.setVisibility(View.VISIBLE);
@@ -216,15 +221,15 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     viewModel.inputs.shareClicked();
   }
 
-  private void showProjectDescription(@NonNull final Project project) {
+  private void showProjectDescription(final @NonNull Project project) {
     startWebViewActivity(project.descriptionUrl());
   }
 
-  private void showCreatorBio(@NonNull final Project project) {
+  private void showCreatorBio(final @NonNull Project project) {
     startWebViewActivity(project.creatorBioUrl());
   }
 
-  private void showUpdates(@NonNull final Project project) {
+  private void showUpdates(final @NonNull Project project) {
     startWebViewActivity(project.updatesUrl());
   }
 
@@ -232,7 +237,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     ViewUtils.showToast(this, projectStarConfirmationString);
   }
 
-  private void startCheckoutActivity(@NonNull final Project project) {
+  private void startCheckoutActivity(final @NonNull Project project) {
     final Intent intent = new Intent(this, CheckoutActivity.class)
       .putExtra(getString(R.string.intent_project), project)
       .putExtra(getString(R.string.intent_url), project.newPledgeUrl())
@@ -240,7 +245,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
-  private void startManagePledge(@NonNull final Project project) {
+  private void startManagePledge(final @NonNull Project project) {
     final Intent intent = new Intent(this, CheckoutActivity.class)
       .putExtra(getString(R.string.intent_project), project)
       .putExtra(getString(R.string.intent_url), project.editPledgeUrl())
@@ -248,13 +253,13 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
-  private void startCommentsActivity(@NonNull final Project project) {
+  private void startCommentsActivity(final @NonNull Project project) {
     final Intent intent = new Intent(this, CommentFeedActivity.class)
       .putExtra(getString(R.string.intent_project), project);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
-  private void startRewardSelectedCheckout(@NonNull final Project project, @NonNull final Reward reward) {
+  private void startRewardSelectedCheckout(final @NonNull Project project, final @NonNull Reward reward) {
     final Intent intent = new Intent(this, CheckoutActivity.class)
       .putExtra(getString(R.string.intent_project), project)
       .putExtra(getString(R.string.intent_toolbar_title), projectBackButtonString)
@@ -263,14 +268,14 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   }
 
   // todo: limit the apps you can share to
-  private void startShareIntent(@NonNull final Project project) {
+  private void startShareIntent(final @NonNull Project project) {
     final Intent intent = new Intent(Intent.ACTION_SEND)
       .setType(getString(R.string.intent_share_type))
       .putExtra(Intent.EXTRA_TEXT, String.format("%1$s\r\n\r\n%2$s", project.name(), project.webProjectUrl()));
     startActivity(intent);
   }
 
-  private void startWebViewActivity(@NonNull final String url) {
+  private void startWebViewActivity(final @NonNull String url) {
     final Intent intent = new Intent(this, DisplayWebViewActivity.class)
       .putExtra(getString(R.string.intent_url), url);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
@@ -283,20 +288,20 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     startActivityForResult(intent, ActivityRequestCodes.PROJECT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
   }
 
-  private void startViewPledgeActivity(@NonNull final Project project) {
+  private void startViewPledgeActivity(final @NonNull Project project) {
     final Intent intent = new Intent(this, ViewPledgeActivity.class)
       .putExtra(getString(R.string.intent_project), project);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
-  private void startVideoPlayerActivity(@NonNull final Project project) {
+  private void startVideoPlayerActivity(final @NonNull Project project) {
     final Intent intent = new Intent(this, VideoPlayerActivity.class)
       .putExtra(getString(R.string.intent_project), project);
     startActivity(intent);
   }
 
   @Override
-  protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
+  protected void onActivityResult(final int requestCode, final int resultCode, final @NonNull Intent intent) {
     if (requestCode != ActivityRequestCodes.PROJECT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED) {
       return;
     }

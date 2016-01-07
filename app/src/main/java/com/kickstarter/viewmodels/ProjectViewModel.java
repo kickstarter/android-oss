@@ -92,8 +92,8 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
 
   // OUTPUTS
   final BehaviorSubject<Project> project = BehaviorSubject.create();
-  public Observable<Project> project() {
-    return this.project;
+  public final Observable<Pair<Project, User>> projectAndUser() {
+    return project.compose(Transformers.combineLatestPair(currentUser.observable()));
   }
   public Observable<Project> showShareSheet() {
     return this.project.compose(Transformers.takeWhen(this.shareClicked));
@@ -175,11 +175,7 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
         .subscribe(__ -> this.showStarredPrompt.onNext(null))
     );
 
-    addSubscription(
-      loggedOutUserOnStarClick.subscribe(__ ->
-        this.showLoginTout.onNext(null)
-      )
-    );
+    addSubscription(loggedOutUserOnStarClick.subscribe(__ -> this.showLoginTout.onNext(null)));
 
     addSubscription(shareClicked.subscribe(__ -> koala.trackShowProjectShareSheet()));
 

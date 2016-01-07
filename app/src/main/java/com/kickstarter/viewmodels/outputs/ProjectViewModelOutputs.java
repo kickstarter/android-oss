@@ -4,11 +4,12 @@ import android.util.Pair;
 
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
+import com.kickstarter.models.User;
 
 import rx.Observable;
 
 public interface ProjectViewModelOutputs {
-  Observable<Project> project();
+  Observable<Pair<Project, User>> projectAndUser();
 
   Observable<Project> showShareSheet();
   Observable<Project> playVideo();

@@ -22,4 +22,8 @@ public final class I18nUtils {
   public static boolean isCountryGermany(final @NonNull Location location) {
     return Locale.GERMANY.getCountry().equals(location.country());
   }
+
+  public static boolean isCountryUS(final @NonNull Location location) {
+    return Locale.US.getCountry().equals(location.country());
+  }
 }

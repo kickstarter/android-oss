@@ -183,12 +183,25 @@
 
     </LinearLayout>
 
-    <include layout="@layout/project_stats_view"
+    <LinearLayout
       android:id="@+id/project_stats_view"
-      android:layout_height="wrap_content"
+      android:orientation="vertical"
       android:layout_width="wrap_content"
-      android:layout_marginTop="@dimen/grid_2"
-      android:layout_marginBottom="@dimen/grid_4"/>
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/grid_4">
+
+      <include layout="@layout/project_stats_view" />
+
+      <TextView
+        android:id="@+id/usd_conversion_text_view"
+        android:visibility="gone"
+        android:text="Converted from"
+        style="@style/CaptionSecondary"
+        android:layout_marginTop="@dimen/grid_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    </LinearLayout>
 
     <LinearLayout
       android:id="@+id/project_social_view"

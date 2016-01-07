@@ -8,6 +8,7 @@ import android.view.View;
 import com.kickstarter.R;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
+import com.kickstarter.models.User;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.ProjectViewHolder;
 import com.kickstarter.ui.viewholders.RewardViewHolder;
@@ -21,11 +22,11 @@ public final class ProjectAdapter extends KSAdapter {
 
   public interface Delegate extends ProjectViewHolder.Delegate, RewardViewHolder.Delegate {}
 
-  public ProjectAdapter(@NonNull final Delegate delegate) {
+  public ProjectAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;
   }
 
-  protected @LayoutRes int layout(@NonNull final SectionRow sectionRow) {
+  protected @LayoutRes int layout(final @NonNull SectionRow sectionRow) {
     if (sectionRow.section() == 0) {
       return R.layout.project_main_layout;
     } else {
@@ -36,9 +37,9 @@ public final class ProjectAdapter extends KSAdapter {
   /**
    * Populate adapter data when we know we're working with a Project object.
    */
-  public void takeProject(@NonNull final Project project) {
+  public void takeProject(final @NonNull Project project, final @NonNull User user) {
     data().clear();
-    data().add(Collections.singletonList(project));
+    data().add(Collections.singletonList(new Pair<>(project, user)));
 
     if (project.hasRewards()) {
       data().add(Observable.from(project.rewards())
@@ -50,7 +51,7 @@ public final class ProjectAdapter extends KSAdapter {
     notifyDataSetChanged();
   }
 
-  protected KSViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
+  protected KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     if (layout == R.layout.project_main_layout) {
       return new ProjectViewHolder(view, delegate);
     }

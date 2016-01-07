@@ -75,7 +75,7 @@ public final class KSUri {
   private static final Pattern API_PATTERN = Pattern.compile("\\Aapi(-[a-z0-9\\.]+)?\\.kickstarter.com\\z");
 
   // /discover/categories/param
-  private static final Pattern DISCOVER_CATEGORIES_PATTERN = Pattern.compile("\\A\\/discover\\/categories\\/[a-zA-Z0-9-_]+\\z");
+  private static final Pattern DISCOVER_CATEGORIES_PATTERN = Pattern.compile("\\A\\/discover\\/categories\\/.*");
 
   // /discover/places/param
   private static final Pattern DISCOVER_PLACES_PATTERN = Pattern.compile("\\A\\/discover\\/places\\/[a-zA-Z0-9-_]+\\z");

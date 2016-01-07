@@ -45,7 +45,7 @@ public final class KoalaUtils {
       }
     }});
 
-    return MapUtils.compact(MapUtils.prefixKeys(properties, prefix));
+    return MapUtils.prefixKeys(properties, prefix);
   }
 
   @NonNull public static Map<String, Object> categoryProperties(@NonNull final Category category) {

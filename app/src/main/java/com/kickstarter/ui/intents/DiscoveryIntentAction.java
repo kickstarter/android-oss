@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Location;
@@ -81,14 +82,13 @@ public final class DiscoveryIntentAction extends IntentAction {
   private @NonNull List<Observable<DiscoveryParams.Builder>> paramBuilders(final @NonNull DiscoveryParams params) {
     final List<Observable<DiscoveryParams.Builder>> paramBuilders = new ArrayList<>();
 
-    paramBuilders.add(Observable.just(params.toBuilder()));
-
     final String categoryParam = params.categoryParam();
     if (categoryParam != null) {
       paramBuilders.add(
         client
           .fetchCategory(categoryParam)
           .map(c -> DiscoveryParams.builder().category(c))
+          .compose(Transformers.neverError())
       );
     }
 
@@ -98,8 +98,11 @@ public final class DiscoveryIntentAction extends IntentAction {
         client
           .fetchLocation(locationParam)
           .map(l -> DiscoveryParams.builder().location(l))
+          .compose(Transformers.neverError())
       );
     }
+
+    paramBuilders.add(Observable.just(params.toBuilder()));
 
     return paramBuilders;
   }

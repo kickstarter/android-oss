@@ -40,7 +40,7 @@ public abstract class DiscoveryParams implements Parcelable {
   public enum Sort {
     MAGIC, POPULAR, ENDING_SOON, NEWEST, MOST_FUNDED;
     @Override
-    public @NonNull String toString() throws AssertionError {
+    public @NonNull String toString() {
       switch (this) {
         case MAGIC:
           return "magic";
@@ -53,7 +53,7 @@ public abstract class DiscoveryParams implements Parcelable {
         case MOST_FUNDED:
           return "most_funded";
       }
-      throw new AssertionError("Unhandled sort");
+      return "";
     }
 
     public static @NonNull Sort fromString(final @NonNull String string) throws AssertionError {
@@ -97,7 +97,7 @@ public abstract class DiscoveryParams implements Parcelable {
       builder = builder.locationParam(uri.getLastPathSegment());
     }
 
-    final String locationParam = uri.getQueryParameter("location_id");
+    final String locationParam = uri.getQueryParameter("woe_id");
     if (locationParam != null) {
       builder = builder.locationParam(locationParam);
     }
@@ -218,7 +218,9 @@ public abstract class DiscoveryParams implements Parcelable {
   }
 
   public static @NonNull Builder builder() {
-    return new AutoParcel_DiscoveryParams.Builder();
+    return new AutoParcel_DiscoveryParams.Builder()
+      .page(1)
+      .perPage(15);
   }
 
   public abstract Builder toBuilder();
@@ -286,11 +288,11 @@ public abstract class DiscoveryParams implements Parcelable {
         put("q", term());
       }
 
-      if (staffPicks() != null && staffPicks() && page() != null && page() == 1) {
+      if (staffPicks() != null && staffPicks() && page() != null && page() == 1 && sort() != null && sort() == Sort.MAGIC) {
         put("include_potd", "true");
       }
 
-      if (category() != null && page() != null && page() == 1) {
+      if (category() != null && page() != null && page() == 1 && sort() != null && sort() == Sort.MAGIC) {
         put("include_featured", "true");
       }
     }});

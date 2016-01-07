@@ -15,6 +15,17 @@ import rx.subjects.PublishSubject;
 
 public final class DiscoveryIntentActionTest extends KSRobolectricTestCase {
   @Test
+  public void emitsStaffPicksFromEmptyIntent() {
+    final DiscoveryParams params = DiscoveryParams.builder().staffPicks(true).build();
+
+    final TestSubscriber<DiscoveryParams> resultTest = TestSubscriber.create();
+    final DiscoveryIntentAction intentAction = new DiscoveryIntentAction(resultTest::onNext, PublishSubject.create(), new MockApiClient());
+    intentAction.intent(new Intent());
+
+    resultTest.assertValues(params);
+  }
+
+  @Test
   public void emitsFromParamsExtra() {
     final DiscoveryParams params = DiscoveryParams.builder().build();
     final Intent intent = new Intent().putExtra(IntentKey.DISCOVERY_PARAMS, params);
@@ -63,7 +74,7 @@ public final class DiscoveryIntentActionTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void emitsFromAdvancedCategoryIdAndLocationId() {
+  public void emitsFromAdvancedCategoryIdAndLocationIdUri() {
     final Uri uri = Uri.parse("https://www.kickstarter.com/discover/advanced?category_id=1&location_id=1");
     final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 

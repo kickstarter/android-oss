@@ -20,6 +20,13 @@ public abstract class IntentAction {
   }
 
   /**
+   * Checks if an intent has any data or extras.
+   */
+  protected boolean isEmpty(final @NonNull Intent intent) {
+    return intent.getData() == null && intent.getExtras() == null;
+  }
+
+  /**
    * Extracts the data string from an intent.
    */
   protected @Nullable Uri uri(final @NonNull Intent intent) {

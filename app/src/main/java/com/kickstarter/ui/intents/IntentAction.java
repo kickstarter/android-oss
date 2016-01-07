@@ -14,6 +14,9 @@ public abstract class IntentAction {
     this.intent.onNext(intent);
   }
 
+  /**
+   * Extracts the data string from an intent.
+   */
   protected @Nullable Uri uri(final @NonNull Intent intent) {
     final String string = intent.getDataString();
     if (string == null) {

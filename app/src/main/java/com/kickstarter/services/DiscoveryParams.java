@@ -218,10 +218,7 @@ public abstract class DiscoveryParams implements Parcelable {
   }
 
   public static @NonNull Builder builder() {
-    return new AutoParcel_DiscoveryParams.Builder()
-      .page(1)
-      .perPage(15)
-      .sort(Sort.MAGIC);
+    return new AutoParcel_DiscoveryParams.Builder();
   }
 
   public abstract Builder toBuilder();

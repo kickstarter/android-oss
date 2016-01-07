@@ -30,7 +30,7 @@ public final class KoalaUtils {
       put("starred", params.starred());
       put("social", params.social());
       put("term", params.term());
-      put("sort", params.sort().toString());
+      put("sort", params.sort());
       put("page", params.page());
       put("per_page", params.perPage());
 
@@ -45,7 +45,7 @@ public final class KoalaUtils {
       }
     }});
 
-    return MapUtils.prefixKeys(properties, prefix);
+    return MapUtils.compact(MapUtils.prefixKeys(properties, prefix));
   }
 
   @NonNull public static Map<String, Object> categoryProperties(@NonNull final Category category) {

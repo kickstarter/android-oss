@@ -4,3 +4,4 @@
 [submodule "vendor/qark"]
 	path = vendor/qark
 	url = git@github.com:linkedin/qark.git
+  ignore = dirty

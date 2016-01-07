@@ -1,3 +1,6 @@
 [submodule "vendor/material-design-icons"]
 	path = vendor/material-design-icons
 	url = https://github.com/google/material-design-icons
+[submodule "vendor/qark"]
+	path = vendor/qark
+	url = git@github.com:linkedin/qark.git

@@ -21,7 +21,7 @@ import rx.Observable;
 import rx.functions.Action1;
 
 public class ProjectIntentAction extends IntentAction {
-  final static Pattern PROJECT_PATTERN = Pattern.compile("\\A\\/projects\\/([a-zA-Z0-9_-]+)?\\/([a-zA-Z0-9_-]+)");
+  final static Pattern PROJECT_PATTERN = Pattern.compile("\\A\\/projects\\/([a-zA-Z0-9_-]+)?(\\/([a-zA-Z0-9_-]+))?");
 
   public ProjectIntentAction(final @NonNull Action1<Project> initializer, final @NonNull Observable<ActivityEvent> lifecycle,
     final @NonNull ApiClientType client) {
@@ -65,6 +65,12 @@ public class ProjectIntentAction extends IntentAction {
     return intent.getStringExtra(IntentKey.PROJECT_PARAM);
   }
 
+  /**
+   * Attempts to retrieve project from intent. Supports both:
+   *
+   * /projects/creator-param/project-param
+   * /projects/project-param
+   */
   private @Nullable String param(final @NonNull Intent intent) {
     final Uri uri = uri(intent);
     if (uri == null) {
@@ -72,8 +78,8 @@ public class ProjectIntentAction extends IntentAction {
     }
 
     final Matcher matcher = PROJECT_PATTERN.matcher(uri.getPath());
-    if (matcher.matches() && matcher.groupCount() >= 2) {
-      return matcher.group(2);
+    if (matcher.matches()) {
+      return matcher.group(2) != null ? matcher.group(2) : matcher.group(1);
     }
 
     return null;

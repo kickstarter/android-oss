@@ -50,5 +50,17 @@ public final class ProjectIntentActionTest extends KSRobolectricTestCase {
 
     resultTest.assertValueCount(1);
   }
+
+  @Test
+  public void emitsFromProjectWithoutCreatorUri() {
+    final Uri uri = Uri.parse("https://www.kickstarter.com/projects/skull-graphic-tee");
+    final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+
+    final TestSubscriber<Project> resultTest = TestSubscriber.create();
+    final ProjectIntentAction intentAction = new ProjectIntentAction(resultTest::onNext, PublishSubject.create(), new MockApiClient());
+    intentAction.intent(intent);
+
+    resultTest.assertValueCount(1);
+  }
 }
 

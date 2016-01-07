@@ -20,11 +20,11 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.DateTimeTypeConverter;
 import com.kickstarter.libs.Font;
 import com.kickstarter.libs.ForApplication;
+import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.KoalaTrackingClient;
 import com.kickstarter.libs.Logout;
-import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.Release;
 import com.kickstarter.libs.preferences.StringPreference;
@@ -40,6 +40,7 @@ import com.kickstarter.services.WebService;
 import com.kickstarter.services.interceptors.ApiRequestInterceptor;
 import com.kickstarter.services.interceptors.KSRequestInterceptor;
 import com.kickstarter.services.interceptors.WebRequestInterceptor;
+import com.squareup.okhttp.ConnectionSpec;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 
@@ -47,6 +48,7 @@ import org.joda.time.DateTime;
 
 import java.net.CookieManager;
 import java.util.Arrays;
+import java.util.Collections;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -56,6 +58,8 @@ import dagger.Provides;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 import retrofit.RxJavaCallAdapterFactory;
+
+import static com.squareup.okhttp.TlsVersion.TLS_1_2;
 
 @Module
 public class ApplicationModule {
@@ -80,6 +84,9 @@ public class ApplicationModule {
     @NonNull final HttpLoggingInterceptor httpLoggingInterceptor, @NonNull final KSRequestInterceptor ksRequestInterceptor,
     @NonNull final WebRequestInterceptor webRequestInterceptor) {
     final OkHttpClient okHttpClient = new OkHttpClient();
+
+    final ConnectionSpec spec = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS).tlsVersions(TLS_1_2).build();
+    okHttpClient.setConnectionSpecs(Collections.singletonList(spec));
 
     okHttpClient.interceptors().addAll(
       Arrays.asList(httpLoggingInterceptor, apiRequestInterceptor, webRequestInterceptor, ksRequestInterceptor));

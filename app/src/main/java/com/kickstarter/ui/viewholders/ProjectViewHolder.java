@@ -24,6 +24,7 @@ import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.SocialUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ProjectSocialActivity;
 import com.kickstarter.ui.views.IconButton;
 import com.squareup.picasso.Picasso;
@@ -228,7 +229,7 @@ public final class ProjectViewHolder extends KSViewHolder {
         projectSocialViewGoup.setOnClickListener(view -> {
           final BaseActivity activity = (BaseActivity) view.getContext();
           final Intent intent = new Intent(activity, ProjectSocialActivity.class)
-            .putExtra(activity.getString(R.string.intent_project), project);
+            .putExtra(IntentKey.PROJECT, project);
           activity.startActivity(intent);
           activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
         });

@@ -13,7 +13,7 @@ import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 import com.kickstarter.models.User;
-import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.kickstarter.ui.adapters.ProjectAdapter;
 import com.kickstarter.ui.viewholders.ProjectViewHolder;
@@ -28,17 +28,13 @@ import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public final class ProjectViewModel extends ViewModel<ProjectActivity> implements ProjectAdapter.Delegate, ProjectViewModelInputs, ProjectViewModelOutputs {
-  @Inject ApiClient client;
-  @Inject CurrentUser currentUser;
+  protected @Inject ApiClientType client;
+  protected @Inject CurrentUser currentUser;
 
   // INPUTS
-  private final PublishSubject<String> initialProjectParam = PublishSubject.create();
-  public void initialProjectParam(@NonNull String param) {
-    this.initialProjectParam.onNext(param);
-  }
-  private final PublishSubject<Project> initialProject = PublishSubject.create();
-  public void initialProject(@NonNull Project project) {
-    this.initialProject.onNext(project);
+  private final PublishSubject<Project> initializer = PublishSubject.create();
+  public void initializer(final @NonNull Project project) {
+    initializer.onNext(project);
   }
   private final PublishSubject<Void> backProjectClicked = PublishSubject.create();
   public void backProjectClicked() {
@@ -148,24 +144,21 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
       .compose(Transformers.takeWhen(starClicked))
       .filter(u -> u == null);
 
-    final Observable<Project> projectOnUserChangeStar = initialProject
+    final Observable<Project> projectOnUserChangeStar = initializer
       .compose(Transformers.takeWhen(loggedInUserOnStarClick))
       .switchMap(this::toggleProjectStar)
       .share();
 
-    final Observable<Project> starredProjectOnLoginSuccess = initialProject
+    final Observable<Project> starredProjectOnLoginSuccess = initializer
       .compose(Transformers.takeWhen(loginSuccess))
       .take(1)
       .switchMap(this::starProject)
       .share();
 
     addSubscription(
-      this.initialProject.map(Project::param).mergeWith(this.initialProjectParam)
-        .filter(param -> param != null)
-        .switchMap(param -> client.fetchProject(param).compose(Transformers.neverError()))
+      initializer
         .mergeWith(projectOnUserChangeStar)
         .mergeWith(starredProjectOnLoginSuccess)
-        .mergeWith(initialProject)
         .subscribe(this.project::onNext)
     );
 

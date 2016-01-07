@@ -14,6 +14,7 @@ import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.InputUtils;
 import com.kickstarter.models.Project;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.SearchAdapter;
 import com.kickstarter.ui.toolbars.SearchToolbar;
 import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder;
@@ -67,7 +68,7 @@ public final class SearchActivity extends BaseActivity<SearchViewModel> implemen
 
   public void projectSearchResultClick(final @NonNull ProjectSearchResultViewHolder viewHolder, final @NonNull Project project) {
     final Intent intent = new Intent(this, ProjectActivity.class)
-      .putExtra(getString(R.string.intent_project), project);
+      .putExtra(IntentKey.PROJECT, project);
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }

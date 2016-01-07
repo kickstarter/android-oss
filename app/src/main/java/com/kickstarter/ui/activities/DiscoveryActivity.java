@@ -22,13 +22,16 @@ import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.StatusBarUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.viewmodels.DiscoveryViewModel;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.DiscoveryAdapter;
 import com.kickstarter.ui.containers.ApplicationContainer;
+import com.kickstarter.ui.intents.DiscoveryIntentAction;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
+import com.kickstarter.viewmodels.DiscoveryViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,12 +44,14 @@ import butterknife.ButterKnife;
 
 @RequiresViewModel(DiscoveryViewModel.class)
 public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> implements DiscoveryAdapter.Delegate {
-  DiscoveryAdapter adapter;
-  LinearLayoutManager layoutManager;
-  final List<Project> projects = new ArrayList<>();
+  private DiscoveryAdapter adapter;
+  private DiscoveryIntentAction intentAction;
+  private LinearLayoutManager layoutManager;
+  private final List<Project> projects = new ArrayList<>();
   private RecyclerViewPaginator recyclerViewPaginator;
 
-  @Inject ApplicationContainer applicationContainer;
+  protected @Inject ApplicationContainer applicationContainer;
+  protected @Inject ApiClientType client;
 
   @BindDrawable(R.drawable.dark_blue_gradient) Drawable darkBlueGradientDrawable;
   @Bind(R.id.discovery_layout) LinearLayout discoveryLayout;
@@ -69,12 +74,15 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);
 
-    final DiscoveryParams params = getIntent().getParcelableExtra(getString(R.string.intent_discovery_params));
-    if (params != null) {
-      viewModel.takeParams(params);
-    }
+    intentAction = new DiscoveryIntentAction(viewModel.inputs::initializer, lifecycle(), client);
+    intentAction.intent(getIntent());
 
     recyclerViewPaginator = new RecyclerViewPaginator(recyclerView, viewModel.inputs::nextPage);
+  }
+
+  @Override
+  protected void onNewIntent(final @NonNull Intent intent) {
+    intentAction.intent(intent);
   }
 
   @Override
@@ -103,14 +111,14 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
 
   public void startDiscoveryFilterActivity(@NonNull final DiscoveryParams params) {
     final Intent intent = new Intent(this, DiscoveryFilterActivity.class)
-      .putExtra(getString(R.string.intent_discovery_params), params);
+      .putExtra(IntentKey.DISCOVERY_PARAMS, params);
 
     startActivityForResult(intent, ActivityRequestCodes.DISCOVERY_ACTIVITY_DISCOVERY_FILTER_ACTIVITY_SELECT_FILTER);
   }
 
   public void startProjectActivity(@NonNull final Project project) {
     final Intent intent = new Intent(this, ProjectActivity.class)
-      .putExtra(getString(R.string.intent_project), project);
+      .putExtra(IntentKey.PROJECT, project);
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
@@ -125,8 +133,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
       return;
     }
 
-    final DiscoveryParams params = intent.getExtras().getParcelable(getString(R.string.intent_discovery_params));
-    viewModel.takeParams(params);
+    intentAction.intent(intent);
   }
 
   public void showBuildAlert(@NonNull final InternalBuildEnvelope envelope) {
@@ -135,7 +142,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
       .setMessage(getString(R.string.A_newer_build_is_available))
       .setPositiveButton(android.R.string.yes, (dialog, which) -> {
         Intent intent = new Intent(this, DownloadBetaActivity.class)
-          .putExtra(getString(R.string.intent_internal_build_envelope), envelope);
+          .putExtra(IntentKey.INTERNAL_BUILD_ENVELOPE, envelope);
         startActivity(intent);
       })
       .setNegativeButton(android.R.string.cancel, (dialog, which) -> {

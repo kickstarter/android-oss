@@ -17,6 +17,7 @@ import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Project;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.viewmodels.ViewPledgeViewModel;
 import com.squareup.picasso.Picasso;
 
@@ -53,7 +54,7 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel> 
     ((KSApplication) getApplication()).component().inject(this);
 
     final Intent intent = getIntent();
-    final Project project = intent.getParcelableExtra(getString(R.string.intent_project));
+    final Project project = intent.getParcelableExtra(IntentKey.PROJECT);
     viewModel.initialize(project);
   }
 

@@ -5,6 +5,7 @@ import android.util.Pair;
 
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
+import com.kickstarter.services.ApiClientType;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -21,7 +22,7 @@ import rx.subjects.PublishSubject;
  *
  * @param <Data> The type of data returned from the array, e.g. `Project`, `Activity`, etc.
  * @param <Envelope> The type of envelope the API returns for a list of data, e.g. `DiscoverEnvelope`.
- * @param <Params> The type of params that `ApiClient` can use to make a request. Many times this can just be `Void`.
+ * @param <Params> The type of params that {@link ApiClientType} can use to make a request. Many times this can just be `Void`.
  */
 public final class ApiPaginator<Data, Envelope, Params> {
   private final @NonNull Observable<Void> nextPage;

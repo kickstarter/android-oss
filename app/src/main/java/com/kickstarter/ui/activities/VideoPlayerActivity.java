@@ -17,6 +17,7 @@ import com.kickstarter.libs.KSVideoPlayer;
 import com.kickstarter.libs.KSRendererBuilder;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Video;
+import com.kickstarter.ui.IntentKey;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -39,7 +40,7 @@ public final class VideoPlayerActivity extends BaseActivity implements KSVideoPl
     ButterKnife.bind(this);
 
     final Intent intent = getIntent();
-    final Project project = intent.getParcelableExtra(getString(R.string.intent_project));
+    final Project project = intent.getParcelableExtra(IntentKey.PROJECT);
     video = project.video();
 
     rootView.setOnTouchListener(((view, motionEvent) -> {

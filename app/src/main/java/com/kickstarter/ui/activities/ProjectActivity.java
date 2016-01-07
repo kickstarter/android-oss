@@ -21,7 +21,10 @@ import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
+import com.kickstarter.services.ApiClientType;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ProjectAdapter;
+import com.kickstarter.ui.intents.ProjectIntentAction;
 import com.kickstarter.viewmodels.ProjectViewModel;
 
 import javax.inject.Inject;
@@ -37,6 +40,7 @@ import rx.android.schedulers.AndroidSchedulers;
 @RequiresViewModel(ProjectViewModel.class)
 public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   private ProjectAdapter adapter;
+  private ProjectIntentAction intentAction;
 
   protected @Bind(R.id.project_recycler_view) RecyclerView projectRecyclerView;
   protected @Bind(R.id.star_fab) FloatingActionButton starFab;
@@ -53,7 +57,8 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   protected @BindString(R.string.project_checkout_manage_navbar_title) String managePledgeString;
   protected @BindString(R.string.project_star_confirmation) String projectStarConfirmationString;
 
-  @Inject KSCurrency ksCurrency;
+  protected @Inject ApiClientType client;
+  protected @Inject KSCurrency ksCurrency;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -62,14 +67,8 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     ButterKnife.bind(this);
     ((KSApplication) getApplication()).component().inject(this);
 
-    final Intent intent = getIntent();
-    final Project project = intent.getParcelableExtra(getString(R.string.intent_project));
-    final String param = intent.getStringExtra(getString(R.string.intent_project_param));
-    if (project != null) {
-      this.viewModel.inputs.initialProject(project);
-    } else if (param != null) {
-      this.viewModel.inputs.initialProjectParam(param);
-    }
+    intentAction = new ProjectIntentAction(viewModel.inputs::initializer, lifecycle(), client);
+    intentAction.intent(getIntent());
 
     adapter = new ProjectAdapter(viewModel);
     projectRecyclerView.setAdapter(adapter);
@@ -234,64 +233,64 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
 
   private void startCheckoutActivity(@NonNull final Project project) {
     final Intent intent = new Intent(this, CheckoutActivity.class)
-      .putExtra(getString(R.string.intent_project), project)
-      .putExtra(getString(R.string.intent_url), project.newPledgeUrl())
-      .putExtra(getString(R.string.intent_toolbar_title), projectBackButtonString);
+      .putExtra(IntentKey.PROJECT, project)
+      .putExtra(IntentKey.URL, project.newPledgeUrl())
+      .putExtra(IntentKey.TOOLBAR_TITLE, projectBackButtonString);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   private void startManagePledge(@NonNull final Project project) {
     final Intent intent = new Intent(this, CheckoutActivity.class)
-      .putExtra(getString(R.string.intent_project), project)
-      .putExtra(getString(R.string.intent_url), project.editPledgeUrl())
-      .putExtra(getString(R.string.intent_toolbar_title), managePledgeString);
+      .putExtra(IntentKey.PROJECT, project)
+      .putExtra(IntentKey.URL, project.editPledgeUrl())
+      .putExtra(IntentKey.TOOLBAR_TITLE, managePledgeString);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   private void startCommentsActivity(@NonNull final Project project) {
     final Intent intent = new Intent(this, CommentFeedActivity.class)
-      .putExtra(getString(R.string.intent_project), project);
+      .putExtra(IntentKey.PROJECT, project);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   private void startRewardSelectedCheckout(@NonNull final Project project, @NonNull final Reward reward) {
     final Intent intent = new Intent(this, CheckoutActivity.class)
-      .putExtra(getString(R.string.intent_project), project)
-      .putExtra(getString(R.string.intent_toolbar_title), projectBackButtonString)
-      .putExtra(getString(R.string.intent_url), project.rewardSelectedUrl(reward));
+      .putExtra(IntentKey.PROJECT, project)
+      .putExtra(IntentKey.TOOLBAR_TITLE, projectBackButtonString)
+      .putExtra(IntentKey.URL, project.rewardSelectedUrl(reward));
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   // todo: limit the apps you can share to
   private void startShareIntent(@NonNull final Project project) {
     final Intent intent = new Intent(Intent.ACTION_SEND)
-      .setType(getString(R.string.intent_share_type))
+      .setType("text/plain")
       .putExtra(Intent.EXTRA_TEXT, String.format("%1$s\r\n\r\n%2$s", project.name(), project.webProjectUrl()));
     startActivity(intent);
   }
 
   private void startWebViewActivity(@NonNull final String url) {
     final Intent intent = new Intent(this, DisplayWebViewActivity.class)
-      .putExtra(getString(R.string.intent_url), url);
+      .putExtra(IntentKey.URL, url);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   private void startLoginToutActivity() {
     final Intent intent = new Intent(this, LoginToutActivity.class)
-      .putExtra(getString(R.string.intent_forward), true)
-      .putExtra(getString(R.string.intent_login_type), LoginToutActivity.REASON_STAR_PROJECT);
+      .putExtra(IntentKey.FORWARD, true)
+      .putExtra(IntentKey.LOGIN_TYPE, LoginToutActivity.REASON_STAR_PROJECT);
     startActivityForResult(intent, ActivityRequestCodes.PROJECT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
   }
 
   private void startViewPledgeActivity(@NonNull final Project project) {
     final Intent intent = new Intent(this, ViewPledgeActivity.class)
-      .putExtra(getString(R.string.intent_project), project);
+      .putExtra(IntentKey.PROJECT, project);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   private void startVideoPlayerActivity(@NonNull final Project project) {
     final Intent intent = new Intent(this, VideoPlayerActivity.class)
-      .putExtra(getString(R.string.intent_project), project);
+      .putExtra(IntentKey.PROJECT, project);
     startActivity(intent);
   }
 

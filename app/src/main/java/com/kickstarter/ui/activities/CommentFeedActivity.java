@@ -26,6 +26,7 @@ import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.viewmodels.CommentFeedViewModel;
 import com.kickstarter.ui.adapters.CommentFeedAdapter;
 import com.kickstarter.ui.viewholders.EmptyCommentFeedViewHolder;
@@ -64,7 +65,7 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
     ButterKnife.bind(this);
 
     final Intent intent = getIntent();
-    project = intent.getParcelableExtra(getString(R.string.intent_project));
+    project = intent.getParcelableExtra(IntentKey.PROJECT);
 
     adapter = new CommentFeedAdapter(this);
     recyclerView.setAdapter(adapter);
@@ -111,8 +112,8 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
 
   public void commentFeedLogin() {
     final Intent intent = new Intent(this, LoginToutActivity.class)
-      .putExtra(getString(R.string.intent_forward), true)
-      .putExtra(getString(R.string.intent_login_type), LoginToutActivity.REASON_GENERIC);
+      .putExtra(IntentKey.FORWARD, true)
+      .putExtra(IntentKey.LOGIN_TYPE, LoginToutActivity.REASON_GENERIC);
     startActivityForResult(intent, ActivityRequestCodes.COMMENT_FEED_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
   }
 

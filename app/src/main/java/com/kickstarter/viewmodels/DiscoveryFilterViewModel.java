@@ -10,7 +10,7 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Category;
-import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.activities.DiscoveryFilterActivity;
 import com.kickstarter.ui.adapters.DiscoveryFilterAdapter;
@@ -25,7 +25,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
 public final class DiscoveryFilterViewModel extends ViewModel<DiscoveryFilterActivity> implements DiscoveryFilterAdapter.Delegate {
-  @Inject ApiClient apiClient;
+  protected @Inject ApiClientType apiClient;
 
   private final PublishSubject<DiscoveryParams> discoveryFilterClick = PublishSubject.create();
 

@@ -7,8 +7,8 @@ import com.kickstarter.models.User;
 
 import org.joda.time.DateTime;
 
-public class ProjectFactory {
-  public static Project project() {
+public final class ProjectFactory {
+  public static @NonNull Project project() {
     final User creator = UserFactory.creator();
     final String slug = "slug-1";
     final String projectUrl = "https://www.kickstarter.com/projects/" + String.valueOf(creator.id()) + "/" + slug;
@@ -39,7 +39,7 @@ public class ProjectFactory {
       .build();
   }
 
-  public static Project halfWayProject() {
+  public static @NonNull Project halfWayProject() {
     return project()
       .toBuilder()
       .goal(100.0f)
@@ -47,7 +47,7 @@ public class ProjectFactory {
       .build();
   }
 
-  public static Project allTheWayProject() {
+  public static @NonNull Project allTheWayProject() {
     return project()
       .toBuilder()
       .goal(100.0f)
@@ -55,7 +55,7 @@ public class ProjectFactory {
       .build();
   }
 
-  public static Project doubledGoalProject() {
+  public static @NonNull Project doubledGoalProject() {
     return project()
       .toBuilder()
       .goal(100.0f)

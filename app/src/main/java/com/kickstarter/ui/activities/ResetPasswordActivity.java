@@ -11,6 +11,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ViewUtils;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.viewmodels.ResetPasswordViewModel;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 
@@ -80,8 +81,8 @@ public final class ResetPasswordActivity extends BaseActivity<ResetPasswordViewM
   private void onResetSuccess() {
     setFormEnabled(false);
     final Intent intent = new Intent(this, LoginActivity.class)
-      .putExtra(getString(R.string.intent_confirm_reset_password), true)
-      .putExtra(getString(R.string.intent_email), email.getText().toString());
+      .putExtra(IntentKey.CONFIRM_RESET_PASSWORD, true)
+      .putExtra(IntentKey.EMAIL, email.getText().toString());
     startActivityWithTransition(intent, R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 

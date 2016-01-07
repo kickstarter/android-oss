@@ -13,13 +13,13 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentConfig;
 import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.ApiClientType;
 
 import javax.inject.Inject;
 
 public final class ApplicationLifecycleUtil implements Application.ActivityLifecycleCallbacks, ComponentCallbacks2 {
   @Inject Koala koala;
-  @Inject ApiClient client;
+  @Inject ApiClientType client;
   @Inject CurrentConfig config;
 
   private boolean isInBackground = true;

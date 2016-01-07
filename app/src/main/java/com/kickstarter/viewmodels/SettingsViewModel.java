@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.SwitchCompat;
 import android.util.Pair;
 
 import com.kickstarter.KSApplication;
@@ -176,7 +175,7 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
   }
 
   private boolean requiresDoubleOptIn(final @NonNull User user, final boolean checked) {
-    return I18nUtils.isLocaleGermany(user.location()) && checked;
+    return I18nUtils.isCountryGermany(user.location()) && checked;
   }
 
   private void success(final @NonNull User user) {

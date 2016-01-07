@@ -12,8 +12,8 @@ public final class I18nUtilsTest extends TestCase {
     assertEquals("de", Locale.GERMANY.getLanguage());
   }
 
-  public void testIsGermanLocale() {
-    assertEquals(false, I18nUtils.isLocaleGermany(LocationFactory.unitedStates()));
-    assertEquals(true, I18nUtils.isLocaleGermany(LocationFactory.germany()));
+  public void testIsCountryGermany() {
+    assertFalse(I18nUtils.isCountryGermany(LocationFactory.unitedStates()));
+    assertTrue(I18nUtils.isCountryGermany(LocationFactory.germany()));
   }
 }

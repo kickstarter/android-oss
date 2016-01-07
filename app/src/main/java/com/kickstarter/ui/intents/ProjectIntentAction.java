@@ -35,15 +35,12 @@ public class ProjectIntentAction extends IntentAction {
     final Observable<String> paramFromExtra = intent
       .compose(RxLifecycle.bindActivity(lifecycle))
       .map(this::extraParam)
-      .filter(ObjectUtils::isNotNull)
-      .share();
+      .filter(ObjectUtils::isNotNull);
 
     final Observable<String> paramFromUri = intent
       .compose(RxLifecycle.bindActivity(lifecycle))
-      .filter(ObjectUtils::isNotNull)
       .map(this::param)
-      .filter(ObjectUtils::isNotNull)
-      .share();
+      .filter(ObjectUtils::isNotNull);
 
     projectFromExtra.subscribe(initializer);
 

@@ -1,9 +1,9 @@
 package com.kickstarter;
 
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.KoalaTrackingClient;
-import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.utils.ApplicationLifecycleUtil;
 import com.kickstarter.services.gcm.MessageService;
 import com.kickstarter.services.gcm.RegisterService;
@@ -17,6 +17,7 @@ import com.kickstarter.ui.activities.SettingsActivity;
 import com.kickstarter.ui.activities.ViewPledgeActivity;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
 import com.kickstarter.ui.viewholders.CommentViewHolder;
+import com.kickstarter.ui.viewholders.DiscoveryActivityViewHolder;
 import com.kickstarter.ui.viewholders.DiscoveryFilterViewHolder;
 import com.kickstarter.ui.viewholders.EmptyActivityFeedViewHolder;
 import com.kickstarter.ui.viewholders.EmptyCommentFeedViewHolder;
@@ -56,6 +57,7 @@ public interface ApplicationGraph {
   void inject(CurrentUser __);
   void inject(Koala __);
   void inject(DiscoveryActivity __);
+  void inject(DiscoveryActivityViewHolder __);
   void inject(DiscoveryFilterViewModel __);
   void inject(DiscoveryFilterViewHolder __);
   void inject(DiscoveryViewModel __);

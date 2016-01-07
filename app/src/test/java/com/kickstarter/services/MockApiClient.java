@@ -25,151 +25,151 @@ import rx.Observable;
 
 public class MockApiClient implements ApiClientType {
   @Override
-  public Observable<Config> config() {
+  public @NonNull Observable<Config> config() {
     return Observable.empty();
   }
 
   @Override
-  public Observable<ActivityEnvelope> fetchActivities() {
+  public @NonNull Observable<ActivityEnvelope> fetchActivities() {
     return Observable.empty();
   }
 
   @Override
-  public Observable<ActivityEnvelope> fetchActivities(final @NonNull String paginationPath) {
+  public @NonNull Observable<ActivityEnvelope> fetchActivities(final @NonNull String paginationPath) {
     return Observable.empty();
   }
 
   @Override
-  public Observable<List<Category>> fetchCategories() {
+  public @NonNull Observable<List<Category>> fetchCategories() {
     return Observable.empty();
   }
 
   @Override
-  public Observable<List<Notification>> fetchNotifications() {
+  public @NonNull Observable<List<Notification>> fetchNotifications() {
     return Observable.empty();
   }
 
   @Override
-  public Observable<Project> fetchProject(final @NonNull String param) {
+  public @NonNull Observable<Project> fetchProject(final @NonNull String param) {
     return Observable.just(ProjectFactory.project());
   }
 
   @Override
-  public Observable<Project> fetchProject(final @NonNull Project project) {
+  public @NonNull Observable<Project> fetchProject(final @NonNull Project project) {
     return Observable.empty();
   }
 
   @Override
-  public Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
+  public @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
     return Observable.empty();
   }
 
   @Override
-  public Observable<DiscoverEnvelope> fetchProjects(final @NonNull String paginationUrl) {
+  public @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull String paginationUrl) {
     return Observable.empty();
   }
 
   @Override
-  public Observable<CommentsEnvelope> fetchProjectComments(final @NonNull Project project) {
+  public @NonNull Observable<CommentsEnvelope> fetchProjectComments(final @NonNull Project project) {
     return Observable.empty();
   }
 
   @Override
-  public Observable<CommentsEnvelope> fetchProjectComments(final @NonNull String paginationPath) {
+  public @NonNull Observable<CommentsEnvelope> fetchProjectComments(final @NonNull String paginationPath) {
     return Observable.empty();
   }
 
   @Override
-  public Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String accessToken) {
+  public @NonNull Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String accessToken) {
     return Observable.empty();
   }
 
   @Override
-  public Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String fbAccessToken,
+  public @NonNull Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String fbAccessToken,
     final @NonNull String code) {
     return Observable.empty();
   }
 
   @Override
-  public Observable<AccessTokenEnvelope> registerWithFacebook(final @NonNull String fbAccessToken,
+  public @NonNull Observable<AccessTokenEnvelope> registerWithFacebook(final @NonNull String fbAccessToken,
     final boolean sendNewsletters) {
     return Observable.empty();
   }
 
   @Override
-  public Observable<Backing> fetchProjectBacking(final @NonNull Project project, final @NonNull User user) {
+  public @NonNull Observable<Backing> fetchProjectBacking(final @NonNull Project project, final @NonNull User user) {
     return Observable.empty();
   }
 
   @Override
-  public Observable<Category> fetchCategory(final @NonNull String param) {
+  public @NonNull Observable<Category> fetchCategory(final @NonNull String param) {
     return Observable.just(CategoryFactory.musicCategory());
   }
 
   @Override
-  public Observable<Category> fetchCategory(final @NonNull Category category) {
+  public @NonNull Observable<Category> fetchCategory(final @NonNull Category category) {
     return Observable.empty();
   }
 
   @Override
-  public Observable<User> fetchCurrentUser() {
+  public @NonNull Observable<User> fetchCurrentUser() {
     return Observable.empty();
   }
 
   @Override
-  public Observable<Location> fetchLocation(final @NonNull String param) {
+  public @NonNull Observable<Location> fetchLocation(final @NonNull String param) {
     return Observable.just(LocationFactory.sydney());
   }
 
   @Override
-  public Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password) {
+  public @NonNull Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password) {
     return Observable.empty();
   }
 
   @Override
-  public Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password,
+  public @NonNull Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password,
     final @NonNull String code) {
     return Observable.empty();
   }
 
   @Override
-  public Observable<Comment> postProjectComment(final @NonNull Project project, final @NonNull String body) {
+  public @NonNull Observable<Comment> postProjectComment(final @NonNull Project project, final @NonNull String body) {
     return Observable.empty();
   }
 
   @Override
-  public Observable<Empty> registerPushToken(final @NonNull String token) {
+  public @NonNull Observable<Empty> registerPushToken(final @NonNull String token) {
     return Observable.empty();
   }
 
   @Override
-  public Observable<User> resetPassword(final @NonNull String email) {
+  public @NonNull Observable<User> resetPassword(final @NonNull String email) {
     return Observable.empty();
   }
 
   @Override
-  public Observable<AccessTokenEnvelope> signup(final @NonNull String name, final @NonNull String email,
+  public @NonNull Observable<AccessTokenEnvelope> signup(final @NonNull String name, final @NonNull String email,
     final @NonNull String password, final @NonNull String passwordConfirmation, final boolean sendNewsletters) {
     return Observable.empty();
   }
 
   @Override
-  public Observable<Project> starProject(final @NonNull Project project) {
+  public @NonNull Observable<Project> starProject(final @NonNull Project project) {
     return Observable.empty();
   }
 
   @Override
-  public Observable<Project> toggleProjectStar(final @NonNull Project project) {
+  public @NonNull Observable<Project> toggleProjectStar(final @NonNull Project project) {
     return Observable.empty();
   }
 
   @Override
-  public Observable<Notification> updateNotifications(final @NonNull Notification notification, final boolean checked) {
+  public @NonNull Observable<Notification> updateNotifications(final @NonNull Notification notification, final boolean checked) {
     return Observable.empty();
   }
 
   @Override
-  public Observable<User> updateUserSettings(final @NonNull User user) {
+  public @NonNull Observable<User> updateUserSettings(final @NonNull User user) {
     return Observable.empty();
   }
 }

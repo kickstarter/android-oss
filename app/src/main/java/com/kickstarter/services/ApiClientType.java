@@ -21,62 +21,62 @@ import java.util.List;
 import rx.Observable;
 
 public interface ApiClientType {
-  Observable<Config> config();
+  @NonNull Observable<Config> config();
 
-  Observable<ActivityEnvelope> fetchActivities();
+  @NonNull Observable<ActivityEnvelope> fetchActivities();
 
-  Observable<ActivityEnvelope> fetchActivities(final @NonNull String paginationPath);
+  @NonNull Observable<ActivityEnvelope> fetchActivities(final @NonNull String paginationPath);
 
-  Observable<List<Category>> fetchCategories();
+  @NonNull Observable<List<Category>> fetchCategories();
 
-  Observable<Category> fetchCategory(final @NonNull String param);
+  @NonNull Observable<Category> fetchCategory(final @NonNull String param);
 
-  Observable<Category> fetchCategory(final @NonNull Category category);
+  @NonNull Observable<Category> fetchCategory(final @NonNull Category category);
 
-  Observable<User> fetchCurrentUser();
+  @NonNull Observable<User> fetchCurrentUser();
 
-  Observable<Location> fetchLocation(final @NonNull String param);
+  @NonNull Observable<Location> fetchLocation(final @NonNull String param);
 
-  Observable<List<Notification>> fetchNotifications();
+  @NonNull Observable<List<Notification>> fetchNotifications();
 
-  Observable<Project> fetchProject(final @NonNull String param);
+  @NonNull Observable<Project> fetchProject(final @NonNull String param);
 
-  Observable<Project> fetchProject(final @NonNull Project project);
+  @NonNull Observable<Project> fetchProject(final @NonNull Project project);
 
-  Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params);
+  @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params);
 
-  Observable<DiscoverEnvelope> fetchProjects(final @NonNull String paginationUrl);
+  @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull String paginationUrl);
 
-  Observable<Backing> fetchProjectBacking(final @NonNull Project project, final @NonNull User user);
+  @NonNull Observable<Backing> fetchProjectBacking(final @NonNull Project project, final @NonNull User user);
 
-  Observable<CommentsEnvelope> fetchProjectComments(final @NonNull Project project);
+  @NonNull Observable<CommentsEnvelope> fetchProjectComments(final @NonNull Project project);
 
-  Observable<CommentsEnvelope> fetchProjectComments(final @NonNull String paginationPath);
+  @NonNull Observable<CommentsEnvelope> fetchProjectComments(final @NonNull String paginationPath);
 
-  Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String accessToken);
+  @NonNull Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String accessToken);
 
-  Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String fbAccessToken, final @NonNull String code);
+  @NonNull Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String fbAccessToken, final @NonNull String code);
 
-  Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password);
+  @NonNull Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password);
 
-  Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password, final @NonNull String code);
+  @NonNull Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password, final @NonNull String code);
 
-  Observable<Comment> postProjectComment(final @NonNull Project project, final @NonNull String body);
+  @NonNull Observable<Comment> postProjectComment(final @NonNull Project project, final @NonNull String body);
 
-  Observable<Empty> registerPushToken(final @NonNull String token);
+  @NonNull Observable<Empty> registerPushToken(final @NonNull String token);
 
-  Observable<AccessTokenEnvelope> registerWithFacebook(final @NonNull String fbAccessToken, boolean sendNewsletters);
+  @NonNull Observable<AccessTokenEnvelope> registerWithFacebook(final @NonNull String fbAccessToken, boolean sendNewsletters);
 
-  Observable<User> resetPassword(final @NonNull String email);
+  @NonNull Observable<User> resetPassword(final @NonNull String email);
 
-  Observable<AccessTokenEnvelope> signup(final @NonNull String name, final @NonNull String email, final @NonNull String password,
+  @NonNull Observable<AccessTokenEnvelope> signup(final @NonNull String name, final @NonNull String email, final @NonNull String password,
     final @NonNull String passwordConfirmation, final boolean sendNewsletters);
 
-  Observable<Project> starProject(final @NonNull Project project);
+  @NonNull Observable<Project> starProject(final @NonNull Project project);
 
-  Observable<Project> toggleProjectStar(final @NonNull Project project);
+  @NonNull Observable<Project> toggleProjectStar(final @NonNull Project project);
 
-  Observable<Notification> updateNotifications(final @NonNull Notification notification, final boolean checked);
+  @NonNull Observable<Notification> updateNotifications(final @NonNull Notification notification, final boolean checked);
 
-  Observable<User> updateUserSettings(final @NonNull User user);
+  @NonNull Observable<User> updateUserSettings(final @NonNull User user);
 }

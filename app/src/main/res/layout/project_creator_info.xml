@@ -167,13 +167,12 @@
   </LinearLayout>
 
   <TextView
-    android:id="@+id/fund_message"
+    android:id="@+id/project_disclaimer_text_view"
     style="@style/CaptionSecondary"
     android:paddingRight="@dimen/grid_3"
     android:paddingLeft="@dimen/grid_3"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_below="@id/creator_links"
     android:paddingTop="@dimen/grid_3" />
 
   <include layout="@layout/horizontal_line_thin_view"

@@ -261,6 +261,10 @@ public abstract class Project implements Parcelable {
     return friends() != null && friends().size() > 0;
   }
 
+  public boolean isFunded() {
+    return isLive() && (percentageFunded() >= 100);
+  }
+
   public boolean isPotdToday() {
     if (potdAt() == null) {
       return false;

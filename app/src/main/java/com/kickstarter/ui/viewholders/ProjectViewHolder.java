@@ -52,7 +52,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.creator_name) TextView creatorNameTextView;
   protected @Bind(R.id.deadline_countdown_text_view) TextView deadlineCountdownTextView;
   protected @Bind(R.id.deadline_countdown_unit_text_view) TextView deadlineCountdownUnitTextView;
-  protected @Bind(R.id.fund_message) TextView fundMessageTextView;
+  protected @Bind(R.id.project_disclaimer_text_view) TextView projectDisclaimerTextView;
   protected @Bind(R.id.goal) TextView goalTextView;
   protected @Bind(R.id.location) TextView locationTextView;
   protected @Bind(R.id.percentage_funded) ProgressBar percentageFundedProgressBar;
@@ -80,6 +80,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @BindString(R.string.project_creator_by_creator_html) String byCreatorString;
   protected @BindString(R.string.discovery_baseball_card_blurb_read_more) String blurbReadMoreString;
   protected @BindString(R.string.project_disclaimer_goal_not_reached) String projectDisclaimerGoalNotReachedString;
+  protected @BindString(R.string.project_disclaimer_goal_reached) String projectDisclaimerGoalReachedString;
   protected @BindString(R.string.project_status_funding_canceled) String fundingCanceledString;
   protected @BindString(R.string.project_status_funding_project_canceled_by_creator) String fundingCanceledByCreatorString;
   protected @BindString(R.string.project_status_project_was_successfully_funded_on_deadline) String successfullyFundedOnDeadlineString;
@@ -148,13 +149,6 @@ public final class ProjectViewHolder extends KSViewHolder {
       .transform(new CircleTransformation())
       .into(avatarImageView);
     avatarNameTextView.setText(project.creator().name());
-    fundMessageTextView.setText(ksString.format(
-      projectDisclaimerGoalNotReachedString,
-      "goal_currency",
-      ksCurrency.format(project.goal(), project, true),
-      "deadline",
-      DateTimeUtils.mediumDateTime(project.deadline())
-    ));
     updatesCountTextView.setText(project.formattedUpdatesCount());
     commentsCountTextView.setText(project.formattedCommentsCount());
 
@@ -168,6 +162,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       ));
     }
 
+    setProjectDisclaimerView();
     setProjectSocialClick();
     setProjectStateView();
     setSocialView();
@@ -202,6 +197,28 @@ public final class ProjectViewHolder extends KSViewHolder {
   @OnClick(R.id.play_button_overlay)
   public void playButtonClick() {
     delegate.projectViewHolderVideoStarted(this);
+  }
+
+  public void setProjectDisclaimerView() {
+    if (!project.isLive()) {
+      projectDisclaimerTextView.setVisibility(View.GONE);
+    } else if (project.isFunded()) {
+      projectDisclaimerTextView.setVisibility(View.VISIBLE);
+      projectDisclaimerTextView.setText(ksString.format(
+        projectDisclaimerGoalReachedString,
+        "deadline",
+        DateTimeUtils.mediumDateTime(project.deadline())
+      ));
+    } else {
+      projectDisclaimerTextView.setVisibility(View.VISIBLE);
+      projectDisclaimerTextView.setText(ksString.format(
+        projectDisclaimerGoalNotReachedString,
+        "goal_currency",
+        ksCurrency.format(project.goal(), project, true),
+        "deadline",
+        DateTimeUtils.mediumDateTime(project.deadline())
+      ));
+    }
   }
 
   public void setProjectSocialClick() {

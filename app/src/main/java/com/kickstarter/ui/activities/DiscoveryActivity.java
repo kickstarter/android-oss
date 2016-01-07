@@ -81,6 +81,11 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
   }
 
   @Override
+  protected void onNewIntent(final @NonNull Intent intent) {
+    intentAction.intent(intent);
+  }
+
+  @Override
   protected void onDestroy() {
     super.onDestroy();
     recyclerViewPaginator.stop();

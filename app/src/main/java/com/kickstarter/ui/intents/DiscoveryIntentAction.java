@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.models.Category;
+import com.kickstarter.models.Location;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.IntentKey;
@@ -34,15 +36,19 @@ public final class DiscoveryIntentAction extends IntentAction {
 
     intent
       .compose(RxLifecycle.bindActivity(lifecycle))
-      .map(this::params)
+      .map(this::parceledParams)
       .filter(ObjectUtils::isNotNull)
       .subscribe(initializer);
   }
 
-  private @Nullable DiscoveryParams params(final @NonNull Intent intent) {
+  private @Nullable DiscoveryParams parceledParams(final @NonNull Intent intent) {
     return intent.getParcelableExtra(IntentKey.DISCOVERY_PARAMS);
   }
 
+  /**
+   * Returns params where category and location params have been converted into {@link Category}
+   * and {@link Location} objects.
+   */
   private @NonNull Observable<DiscoveryParams> fromUri(final @NonNull DiscoveryParams params) {
     return Observable.zip(paramBuilders(params), builders -> {
       DiscoveryParams.Builder builder = DiscoveryParams.builder();

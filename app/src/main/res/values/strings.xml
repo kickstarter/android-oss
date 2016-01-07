@@ -16,6 +16,8 @@
     e.g.: https://api-christopher.***REMOVED***
   </string>
   <string name="Instructions">Instructions</string>
+  <string name="Logged_Out">Logged Out</string>
+  <string name="mailto">mailto:</string>
   <string name="Network">Network</string>
   <string name="Not_implemented_yet">Not implemented yet, coming soon!</string>
   <string name="Open_downloads_folder">Open Downloads folder</string>

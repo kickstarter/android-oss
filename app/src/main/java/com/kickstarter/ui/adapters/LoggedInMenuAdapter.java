@@ -20,12 +20,7 @@ import com.kickstarter.ui.viewholders.LoggedInMenuViewHolder;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindString;
-
 public final class LoggedInMenuAdapter extends BaseAdapter {
-  @BindString(R.string.profile_buttons_settings) String settingsString;
-  @BindString(R.string.general_navigation_buttons_help) String helpString;
-
   private static final int ROW_PROFILE = 0;
   private static final int ROW_SETTINGS = 1;
   private static final int ROW_HELP = 2;
@@ -40,8 +35,8 @@ public final class LoggedInMenuAdapter extends BaseAdapter {
     this.user = user;
 
     rows.add(ROW_PROFILE, user.name());
-    rows.add(ROW_SETTINGS, settingsString);
-    rows.add(ROW_HELP, helpString);
+    rows.add(ROW_SETTINGS, context.getResources().getString(R.string.profile_buttons_settings));
+    rows.add(ROW_HELP, context.getResources().getString(R.string.general_navigation_buttons_help));
     notifyDataSetChanged();
   }
 

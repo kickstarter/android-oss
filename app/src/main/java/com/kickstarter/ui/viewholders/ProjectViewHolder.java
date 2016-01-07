@@ -53,7 +53,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.creator_name) TextView creatorNameTextView;
   protected @Bind(R.id.deadline_countdown_text_view) TextView deadlineCountdownTextView;
   protected @Bind(R.id.deadline_countdown_unit_text_view) TextView deadlineCountdownUnitTextView;
-  protected @Bind(R.id.fund_message) TextView fundMessageTextView;
+  protected @Bind(R.id.project_disclaimer_text_view) TextView projectDisclaimerTextView;
   protected @Bind(R.id.goal) TextView goalTextView;
   protected @Bind(R.id.location) TextView locationTextView;
   protected @Bind(R.id.percentage_funded) ProgressBar percentageFundedProgressBar;
@@ -67,12 +67,11 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.project_social_view) ViewGroup projectSocialViewGoup;
   protected @Bind(R.id.project_state_header_text_view) TextView projectStateHeaderTextView;
   protected @Bind(R.id.project_state_subhead_text_view) TextView projectStateSubheadTextView;
-  protected @Bind(R.id.project_state_vertical_line_view) View projectStateVerticalLineView;
   protected @Bind(R.id.project_state_view_group) ViewGroup projectStateViewGroup;
   protected @Bind(R.id.updates_count) TextView updatesCountTextView;
 
-  protected @BindColor(R.color.green) int greenColor;
-  protected @BindColor(R.color.dark_gray) int darkGrayColor;
+  protected @BindColor(R.color.green_alpha_20) int greenAlpha50Color;
+  protected @BindColor(R.color.medium_gray) int mediumGrayColor;
 
   protected @BindDimen(R.dimen.grid_3) int grid3Dimen;
   protected @BindDimen(R.dimen.grid_4) int grid4Dimen;
@@ -82,6 +81,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @BindString(R.string.project_creator_by_creator_html) String byCreatorString;
   protected @BindString(R.string.discovery_baseball_card_blurb_read_more) String blurbReadMoreString;
   protected @BindString(R.string.project_disclaimer_goal_not_reached) String projectDisclaimerGoalNotReachedString;
+  protected @BindString(R.string.project_disclaimer_goal_reached) String projectDisclaimerGoalReachedString;
   protected @BindString(R.string.project_status_funding_canceled) String fundingCanceledString;
   protected @BindString(R.string.project_status_funding_project_canceled_by_creator) String fundingCanceledByCreatorString;
   protected @BindString(R.string.project_status_project_was_successfully_funded_on_deadline) String successfullyFundedOnDeadlineString;
@@ -150,13 +150,6 @@ public final class ProjectViewHolder extends KSViewHolder {
       .transform(new CircleTransformation())
       .into(avatarImageView);
     avatarNameTextView.setText(project.creator().name());
-    fundMessageTextView.setText(ksString.format(
-      projectDisclaimerGoalNotReachedString,
-      "goal_currency",
-      ksCurrency.format(project.goal(), project, true),
-      "deadline",
-      DateTimeUtils.mediumDateTime(project.deadline())
-    ));
     updatesCountTextView.setText(project.formattedUpdatesCount());
     commentsCountTextView.setText(project.formattedCommentsCount());
 
@@ -170,6 +163,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       ));
     }
 
+    setProjectDisclaimerView();
     setProjectSocialClick();
     setProjectStateView();
     setSocialView();
@@ -206,6 +200,28 @@ public final class ProjectViewHolder extends KSViewHolder {
     delegate.projectViewHolderVideoStarted(this);
   }
 
+  public void setProjectDisclaimerView() {
+    if (!project.isLive()) {
+      projectDisclaimerTextView.setVisibility(View.GONE);
+    } else if (project.isFunded()) {
+      projectDisclaimerTextView.setVisibility(View.VISIBLE);
+      projectDisclaimerTextView.setText(ksString.format(
+        projectDisclaimerGoalReachedString,
+        "deadline",
+        DateTimeUtils.mediumDateTime(project.deadline())
+      ));
+    } else {
+      projectDisclaimerTextView.setVisibility(View.VISIBLE);
+      projectDisclaimerTextView.setText(ksString.format(
+        projectDisclaimerGoalNotReachedString,
+        "goal_currency",
+        ksCurrency.format(project.goal(), project, true),
+        "deadline",
+        DateTimeUtils.mediumDateTime(project.deadline())
+      ));
+    }
+  }
+
   public void setProjectSocialClick() {
     if (project.isFriendBacking()) {
       if (project.friends().size() > 2) {
@@ -226,7 +242,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       case Project.STATE_SUCCESSFUL:
         percentageFundedProgressBar.setVisibility(View.GONE);
         projectStateViewGroup.setVisibility(View.VISIBLE);
-        projectStateVerticalLineView.setBackgroundColor(greenColor);
+        projectStateViewGroup.setBackgroundColor(greenAlpha50Color);
 
         projectStateHeaderTextView.setText(fundedString);
         projectStateSubheadTextView.setText(ksString.format(successfullyFundedOnDeadlineString,
@@ -236,7 +252,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       case Project.STATE_CANCELED:
         percentageFundedProgressBar.setVisibility(View.GONE);
         projectStateViewGroup.setVisibility(View.VISIBLE);
-        projectStateVerticalLineView.setBackgroundColor(darkGrayColor);
+        projectStateViewGroup.setBackgroundColor(mediumGrayColor);
 
         projectStateHeaderTextView.setText(fundingCanceledString);
         projectStateSubheadTextView.setText(fundingCanceledByCreatorString);
@@ -244,7 +260,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       case Project.STATE_FAILED:
         percentageFundedProgressBar.setVisibility(View.GONE);
         projectStateViewGroup.setVisibility(View.VISIBLE);
-        projectStateVerticalLineView.setBackgroundColor(darkGrayColor);
+        projectStateViewGroup.setBackgroundColor(mediumGrayColor);
 
         projectStateHeaderTextView.setText(fundingUnsuccessfulString);
         projectStateSubheadTextView.setText(ksString.format(fundingGoalNotReachedString,
@@ -254,7 +270,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       case Project.STATE_SUSPENDED:
         percentageFundedProgressBar.setVisibility(View.GONE);
         projectStateViewGroup.setVisibility(View.VISIBLE);
-        projectStateVerticalLineView.setBackgroundColor(darkGrayColor);
+        projectStateViewGroup.setBackgroundColor(mediumGrayColor);
 
         projectStateHeaderTextView.setText(fundingSuspendedString);
         projectStateSubheadTextView.setText(fundingProjectSuspendedString);

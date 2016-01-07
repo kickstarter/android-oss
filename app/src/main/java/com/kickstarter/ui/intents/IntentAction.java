@@ -7,6 +7,11 @@ import android.support.annotation.Nullable;
 
 import rx.subjects.PublishSubject;
 
+/**
+ * A class that can be configured to inspect the data in an intent, and output data that the
+ * activity/viewmodel can use to initialize itself. Activities should create instances of this
+ * class and feed it any intent it encounters via the `intent()` method.
+ */
 public abstract class IntentAction {
   protected final PublishSubject<Intent> intent = PublishSubject.create();
 

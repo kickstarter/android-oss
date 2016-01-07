@@ -31,7 +31,7 @@ public final class DiscoveryIntentAction extends IntentAction {
       .map(this::uri)
       .filter(ObjectUtils::isNotNull)
       .map(DiscoveryParams::fromUri)
-      .flatMap(this::fromUri)
+      .flatMap(this::paramsFromUri)
       .subscribe(initializer);
 
     intent
@@ -49,7 +49,7 @@ public final class DiscoveryIntentAction extends IntentAction {
    * Returns params where category and location params have been converted into {@link Category}
    * and {@link Location} objects.
    */
-  private @NonNull Observable<DiscoveryParams> fromUri(final @NonNull DiscoveryParams params) {
+  private @NonNull Observable<DiscoveryParams> paramsFromUri(final @NonNull DiscoveryParams params) {
     return Observable.zip(paramBuilders(params), builders -> {
       DiscoveryParams.Builder builder = DiscoveryParams.builder();
 
@@ -62,6 +62,14 @@ public final class DiscoveryIntentAction extends IntentAction {
     });
   }
 
+  /**
+   * Creates observables that will perform API requests to retrieve additional data needed to fill out
+   * a full discovery params object. For example, if `params` holds only a category slug and no actual
+   * category data, we will perform a request to get the full category from the API.
+   * @param params The discovery params that is potentially missing full data.
+   * @return A list of observables, each responsible for retrieving more data from the API. The
+   * observables emit *builders* of params, and hence can later be merged into a single params object.
+   */
   private @NonNull List<Observable<DiscoveryParams.Builder>> paramBuilders(final @NonNull DiscoveryParams params) {
     final List<Observable<DiscoveryParams.Builder>> paramBuilders = new ArrayList<>();
 

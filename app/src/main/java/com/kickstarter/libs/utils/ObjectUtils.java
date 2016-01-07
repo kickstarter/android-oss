@@ -51,7 +51,7 @@ public class ObjectUtils {
     if (s != null) {
       try {
         return Integer.parseInt(s);
-      } catch (final NumberFormatException e) {
+      } catch (final @NonNull NumberFormatException e) {
         return null;
       }
     }

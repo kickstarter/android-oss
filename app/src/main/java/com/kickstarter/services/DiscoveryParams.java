@@ -73,8 +73,11 @@ public abstract class DiscoveryParams implements Parcelable {
     }
   }
 
-  public static @NonNull DiscoveryParams fromUri(final @NonNull Uri uri, final @NonNull Builder initialBuilder) {
-    Builder builder = initialBuilder;
+  /**
+   * Creates {@link DiscoveryParams} by merging parsing information out of the
+   */
+  public static @NonNull DiscoveryParams fromUri(final @NonNull Uri uri) {
+    Builder builder = DiscoveryParams.builder();
 
     final Integer backed = ObjectUtils.toInteger(uri.getQueryParameter("backed"));
     if (backed != null) {
@@ -127,10 +130,7 @@ public abstract class DiscoveryParams implements Parcelable {
     final String sortString = uri.getQueryParameter("sort");
     if (sortString != null) {
       try {
-        final Sort sort = Sort.fromString(uri.getQueryParameter("sort"));
-        if (sort != null) {
-          builder = builder.sort(sort);
-        }
+        builder = builder.sort(Sort.fromString(sortString));
       } catch (final AssertionError e) {}
     }
 
@@ -145,10 +145,6 @@ public abstract class DiscoveryParams implements Parcelable {
     }
 
     return builder.build();
-  }
-
-  public static @NonNull DiscoveryParams fromUri(final @NonNull Uri uri) {
-    return fromUri(uri, DiscoveryParams.builder());
   }
 
   @AutoParcel.Builder

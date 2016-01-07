@@ -45,26 +45,9 @@ public final class ApiClient implements ApiClientType {
     this.service = service;
   }
 
-  public Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String accessToken) {
+  public Observable<Config> config() {
     return service
-      .login(LoginWithFacebookBody.builder().accessToken(accessToken).build())
-      .lift(apiErrorOperator())
-      .subscribeOn(Schedulers.io());
-  }
-
-  public Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String fbAccessToken, final @NonNull String code) {
-    return service
-      .login(LoginWithFacebookBody.builder().accessToken(fbAccessToken).code(code).build())
-      .lift(apiErrorOperator())
-      .subscribeOn(Schedulers.io());
-  }
-
-  public Observable<AccessTokenEnvelope> registerWithFacebook(final @NonNull String fbAccessToken, final boolean sendNewsletters) {
-    return service
-      .login(RegisterWithFacebookBody.builder()
-        .accessToken(fbAccessToken)
-        .sendNewsletters(sendNewsletters)
-        .build())
+      .config()
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
@@ -93,6 +76,38 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
+  public Observable<List<Category>> fetchCategories() {
+    return service
+      .categories()
+      .lift(apiErrorOperator())
+      .map(CategoriesEnvelope::categories)
+      .subscribeOn(Schedulers.io());
+  }
+
+  public Observable<Category> fetchCategory(final @NonNull String id) {
+    return service
+      .category(id)
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
+  public Observable<Category> fetchCategory(final @NonNull Category category) {
+    return fetchCategory(String.valueOf(category.id()));
+  }
+
+  public Observable<User> fetchCurrentUser() {
+    return service
+      .currentUser()
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
+  public Observable<Location> fetchLocation(final @NonNull String param) {
+    return service.location(param)
+      .subscribeOn(Schedulers.io())
+      .lift(apiErrorOperator());
+  }
+
   public Observable<List<Notification>> fetchNotifications() {
     return service
       .notifications()
@@ -100,11 +115,35 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
-  public Observable<List<Category>> fetchCategories() {
+  public Observable<Project> fetchProject(final @NonNull String param) {
     return service
-      .categories()
+      .project(param)
       .lift(apiErrorOperator())
-      .map(CategoriesEnvelope::categories)
+      .subscribeOn(Schedulers.io());
+  }
+
+  public Observable<Project> fetchProject(final @NonNull Project project) {
+    return fetchProject(project.param()).startWith(project);
+  }
+
+  public Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
+    return service
+      .projects(params.queryParams())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
+  public Observable<DiscoverEnvelope> fetchProjects(final @NonNull String paginationUrl) {
+    return service
+      .projects(paginationUrl)
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
+  public Observable<Backing> fetchProjectBacking(final @NonNull Project project, final @NonNull User user) {
+    return service
+      .projectBacking(project.param(), user.param())
+      .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 
@@ -122,58 +161,26 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
-  public Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
+  public Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String accessToken) {
     return service
-      .projects(params.queryParams())
+      .login(LoginWithFacebookBody.builder().accessToken(accessToken).build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 
-  public Observable<DiscoverEnvelope> fetchProjects(final @NonNull String paginationUrl) {
+  public Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String fbAccessToken, final @NonNull String code) {
     return service
-      .projects(paginationUrl)
+      .login(LoginWithFacebookBody.builder().accessToken(fbAccessToken).code(code).build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 
-  public Observable<Project> fetchProject(final @NonNull String param) {
+  public Observable<AccessTokenEnvelope> registerWithFacebook(final @NonNull String fbAccessToken, final boolean sendNewsletters) {
     return service
-      .project(param)
-      .lift(apiErrorOperator())
-      .subscribeOn(Schedulers.io());
-  }
-
-  public Observable<Project> fetchProject(final @NonNull Project project) {
-    return fetchProject(project.param()).startWith(project);
-  }
-
-  public Observable<Backing> fetchProjectBacking(final @NonNull Project project, final @NonNull User user) {
-    return service
-      .projectBacking(project.param(), user.param())
-      .lift(apiErrorOperator())
-      .subscribeOn(Schedulers.io());
-  }
-
-  public Observable<Category> fetchCategory(final @NonNull String id) {
-    return service
-      .category(id)
-      .lift(apiErrorOperator())
-      .subscribeOn(Schedulers.io());
-  }
-
-  public Observable<Category> fetchCategory(final @NonNull Category category) {
-    return fetchCategory(String.valueOf(category.id()));
-  }
-
-  public Observable<Location> fetchLocation(final @NonNull String param) {
-    return service.location(param)
-      .subscribeOn(Schedulers.io())
-      .lift(apiErrorOperator());
-  }
-
-  public Observable<User> fetchCurrentUser() {
-    return service
-      .currentUser()
+      .login(RegisterWithFacebookBody.builder()
+        .accessToken(fbAccessToken)
+        .sendNewsletters(sendNewsletters)
+        .build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
@@ -271,13 +278,6 @@ public final class ApiClient implements ApiClientType {
           .promoNewsletter(user.promoNewsletter() ? 1 : 0)
           .weeklyNewsletter(user.weeklyNewsletter() ? 1 : 0)
           .build())
-      .lift(apiErrorOperator())
-      .subscribeOn(Schedulers.io());
-  }
-
-  public Observable<Config> config() {
-    return service
-      .config()
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }

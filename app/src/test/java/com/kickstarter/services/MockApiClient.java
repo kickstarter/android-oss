@@ -25,19 +25,7 @@ import rx.Observable;
 
 public class MockApiClient implements ApiClientType {
   @Override
-  public Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String accessToken) {
-    return Observable.empty();
-  }
-
-  @Override
-  public Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String fbAccessToken,
-    final @NonNull String code) {
-    return Observable.empty();
-  }
-
-  @Override
-  public Observable<AccessTokenEnvelope> registerWithFacebook(final @NonNull String fbAccessToken,
-    final boolean sendNewsletters) {
+  public Observable<Config> config() {
     return Observable.empty();
   }
 
@@ -52,22 +40,22 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
-  public Observable<List<Notification>> fetchNotifications() {
-    return Observable.empty();
-  }
-
-  @Override
   public Observable<List<Category>> fetchCategories() {
     return Observable.empty();
   }
 
   @Override
-  public Observable<CommentsEnvelope> fetchProjectComments(final @NonNull Project project) {
+  public Observable<List<Notification>> fetchNotifications() {
     return Observable.empty();
   }
 
   @Override
-  public Observable<CommentsEnvelope> fetchProjectComments(final @NonNull String paginationPath) {
+  public Observable<Project> fetchProject(final @NonNull String param) {
+    return Observable.just(ProjectFactory.project());
+  }
+
+  @Override
+  public Observable<Project> fetchProject(final @NonNull Project project) {
     return Observable.empty();
   }
 
@@ -82,12 +70,29 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
-  public Observable<Project> fetchProject(final @NonNull String param) {
-    return Observable.just(ProjectFactory.project());
+  public Observable<CommentsEnvelope> fetchProjectComments(final @NonNull Project project) {
+    return Observable.empty();
   }
 
   @Override
-  public Observable<Project> fetchProject(final @NonNull Project project) {
+  public Observable<CommentsEnvelope> fetchProjectComments(final @NonNull String paginationPath) {
+    return Observable.empty();
+  }
+
+  @Override
+  public Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String accessToken) {
+    return Observable.empty();
+  }
+
+  @Override
+  public Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String fbAccessToken,
+    final @NonNull String code) {
+    return Observable.empty();
+  }
+
+  @Override
+  public Observable<AccessTokenEnvelope> registerWithFacebook(final @NonNull String fbAccessToken,
+    final boolean sendNewsletters) {
     return Observable.empty();
   }
 
@@ -107,13 +112,13 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
-  public Observable<Location> fetchLocation(final @NonNull String param) {
-    return Observable.just(LocationFactory.sydney());
+  public Observable<User> fetchCurrentUser() {
+    return Observable.empty();
   }
 
   @Override
-  public Observable<User> fetchCurrentUser() {
-    return Observable.empty();
+  public Observable<Location> fetchLocation(final @NonNull String param) {
+    return Observable.just(LocationFactory.sydney());
   }
 
   @Override
@@ -165,11 +170,6 @@ public class MockApiClient implements ApiClientType {
 
   @Override
   public Observable<User> updateUserSettings(final @NonNull User user) {
-    return Observable.empty();
-  }
-
-  @Override
-  public Observable<Config> config() {
     return Observable.empty();
   }
 }

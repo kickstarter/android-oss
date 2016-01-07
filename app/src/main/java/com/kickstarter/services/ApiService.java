@@ -50,35 +50,17 @@ public interface ApiService {
   @GET("/v1/categories")
   Observable<Response<CategoriesEnvelope>> categories();
 
-  @GET("/v1/projects/{project_param}/backers/{user_param}")
-  Observable<Response<Backing>> projectBacking(
-    @Path("project_param") String projectParam,
-    @Path("user_param") String userParam
-  );
-
-  @GET("/v1/projects/{project_param}/comments")
-  Observable<Response<CommentsEnvelope>> projectComments(@Path("project_param") String projectParam);
-
-  @GET("/v1/users/self/notifications")
-  Observable<Response<List<Notification>>> notifications();
-
-  @GET
-  Observable<Response<CommentsEnvelope>> paginatedProjectComments(@Url String paginationPath);
-
-  @GET("/v1/discover")
-  Observable<Response<DiscoverEnvelope>> projects(@QueryMap Map<String, String> params);
-
-  @GET
-  Observable<Response<DiscoverEnvelope>> projects(@Url String paginationUrl);
-
-  @GET("/v1/projects/{param}")
-  Observable<Response<Project>> project(@Path("param") String param);
-
   @GET("/v1/categories/{param}")
   Observable<Response<Category>> category(@Path("param") String param);
 
+  @GET("/v1/app/android/config")
+  Observable<Response<Config>> config();
+
   @GET("/v1/users/self")
   Observable<Response<User>> currentUser();
+
+  @GET("/v1/locations/{param}")
+  Observable<Response<Location>> location(@Path("param") String param);
 
   @POST("/xauth/access_token")
   Observable<Response<AccessTokenEnvelope>> login(@Query("email") String email,
@@ -95,8 +77,32 @@ public interface ApiService {
   @PUT("/v1/facebook/access_token?intent=register")
   Observable<Response<AccessTokenEnvelope>> login(@Body RegisterWithFacebookBody body);
 
+  @GET("/v1/users/self/notifications")
+  Observable<Response<List<Notification>>> notifications();
+
+  @GET
+  Observable<Response<CommentsEnvelope>> paginatedProjectComments(@Url String paginationPath);
+
   @POST("/v1/projects/{param}/comments/")
   Observable<Response<Comment>> postProjectComment(@Path("param") String param, @Body CommentBody body);
+
+  @GET("/v1/projects/{project_param}/backers/{user_param}")
+  Observable<Response<Backing>> projectBacking(
+    @Path("project_param") String projectParam,
+    @Path("user_param") String userParam
+  );
+
+  @GET("/v1/projects/{param}")
+  Observable<Response<Project>> project(@Path("param") String param);
+
+  @GET("/v1/projects/{project_param}/comments")
+  Observable<Response<CommentsEnvelope>> projectComments(@Path("project_param") String projectParam);
+
+  @GET("/v1/discover")
+  Observable<Response<DiscoverEnvelope>> projects(@QueryMap Map<String, String> params);
+
+  @GET
+  Observable<Response<DiscoverEnvelope>> projects(@Url String paginationUrl);
 
   @POST("/v1/users/self/push_tokens")
   Observable<Response<Empty>> registerPushToken(@Body PushTokenBody body);
@@ -119,10 +125,4 @@ public interface ApiService {
 
   @PUT("/v1/users/self")
   Observable<Response<User>> updateUserSettings(@Body SettingsBody body);
-
-  @GET("/v1/app/android/config")
-  Observable<Response<Config>> config();
-
-  @GET("/v1/locations/{param}")
-  Observable<Response<Location>> location(@Path("param") String param);
 }

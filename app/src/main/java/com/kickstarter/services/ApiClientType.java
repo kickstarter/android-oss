@@ -21,41 +21,41 @@ import java.util.List;
 import rx.Observable;
 
 public interface ApiClientType {
-  Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String accessToken);
-
-  Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String fbAccessToken, final @NonNull String code);
-
-  Observable<AccessTokenEnvelope> registerWithFacebook(final @NonNull String fbAccessToken, boolean sendNewsletters);
+  Observable<Config> config();
 
   Observable<ActivityEnvelope> fetchActivities();
 
   Observable<ActivityEnvelope> fetchActivities(final @NonNull String paginationPath);
 
-  Observable<List<Notification>> fetchNotifications();
-
   Observable<List<Category>> fetchCategories();
-
-  Observable<CommentsEnvelope> fetchProjectComments(final @NonNull Project project);
-
-  Observable<CommentsEnvelope> fetchProjectComments(final @NonNull String paginationPath);
-
-  Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params);
-
-  Observable<DiscoverEnvelope> fetchProjects(final @NonNull String paginationUrl);
-
-  Observable<Project> fetchProject(final @NonNull String param);
-
-  Observable<Project> fetchProject(final @NonNull Project project);
-
-  Observable<Backing> fetchProjectBacking(final @NonNull Project project, final @NonNull User user);
 
   Observable<Category> fetchCategory(final @NonNull String param);
 
   Observable<Category> fetchCategory(final @NonNull Category category);
 
+  Observable<User> fetchCurrentUser();
+
   Observable<Location> fetchLocation(final @NonNull String param);
 
-  Observable<User> fetchCurrentUser();
+  Observable<List<Notification>> fetchNotifications();
+
+  Observable<Project> fetchProject(final @NonNull String param);
+
+  Observable<Project> fetchProject(final @NonNull Project project);
+
+  Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params);
+
+  Observable<DiscoverEnvelope> fetchProjects(final @NonNull String paginationUrl);
+
+  Observable<Backing> fetchProjectBacking(final @NonNull Project project, final @NonNull User user);
+
+  Observable<CommentsEnvelope> fetchProjectComments(final @NonNull Project project);
+
+  Observable<CommentsEnvelope> fetchProjectComments(final @NonNull String paginationPath);
+
+  Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String accessToken);
+
+  Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String fbAccessToken, final @NonNull String code);
 
   Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password);
 
@@ -64,6 +64,8 @@ public interface ApiClientType {
   Observable<Comment> postProjectComment(final @NonNull Project project, final @NonNull String body);
 
   Observable<Empty> registerPushToken(final @NonNull String token);
+
+  Observable<AccessTokenEnvelope> registerWithFacebook(final @NonNull String fbAccessToken, boolean sendNewsletters);
 
   Observable<User> resetPassword(final @NonNull String email);
 
@@ -77,6 +79,4 @@ public interface ApiClientType {
   Observable<Notification> updateNotifications(final @NonNull Notification notification, final boolean checked);
 
   Observable<User> updateUserSettings(final @NonNull User user);
-
-  Observable<Config> config();
 }

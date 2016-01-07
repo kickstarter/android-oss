@@ -36,19 +36,34 @@
         android:paddingRight="@dimen/grid_3">
 
         <ImageView
-          android:id="@+id/avatar"
+          android:id="@+id/activityImage"
           android:layout_width="@dimen/grid_3"
           android:layout_height="@dimen/grid_3"
           android:layout_marginLeft="@dimen/grid_2"
           android:layout_marginRight="@dimen/grid_1"
           android:scaleType="centerCrop"/>
 
-        <TextView
-          style="@style/BodyPrimary"
-          android:id="@+id/activity_sample"
-          android:layout_width="wrap_content"
+        <LinearLayout
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:text="Jacqueline backed Make the Censors Watch Paint Drying by Charlie Lyne" />
+          android:orientation="vertical">
+
+          <TextView
+            style="@style/BodyPrimaryMedium"
+            android:id="@+id/activity_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Transform this Pile of Wood" />
+
+          <TextView
+            style="@style/BodyPrimary"
+            android:id="@+id/activity_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Jacqueline backed Make the Censors Watch Paint Drying by Charlie Lyne" />
+
+        </LinearLayout>
+
       </LinearLayout>
 
       <Button
@@ -60,6 +75,7 @@
         android:layout_marginTop="@dimen/grid_3"
         android:layout_marginBottom="@dimen/grid_3"
         android:text="@string/discovery_activity_sample_button_see_all_activity" />
+
     </LinearLayout>
 
   </android.support.v7.widget.CardView>

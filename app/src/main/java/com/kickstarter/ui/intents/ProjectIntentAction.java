@@ -48,7 +48,7 @@ public class ProjectIntentAction extends IntentAction {
     projectFromExtra.subscribe(initializer);
 
     // If the intent contained a project param, fetch a project. If it
-    // contained a parceled project, refresh the project.
+    // contained a parceled project, refresh the project to grab the latest data.
     projectFromExtra
       .map(Project::param)
       .mergeWith(paramFromExtra)

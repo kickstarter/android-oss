@@ -1,10 +1,12 @@
 package com.kickstarter.viewmodels.inputs;
 
+import android.support.annotation.NonNull;
+
 import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
 
 public interface DiscoveryViewModelInputs {
-  void initializer(DiscoveryParams __);
+  void initializer(final @NonNull DiscoveryParams params);
   void nextPage();
-  void projectClick(Project __);
+  void projectClick(final @NonNull Project project);
 }

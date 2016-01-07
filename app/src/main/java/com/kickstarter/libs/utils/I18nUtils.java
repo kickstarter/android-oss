@@ -19,11 +19,7 @@ public final class I18nUtils {
     return language.isEmpty() ? "en" : language;
   }
 
-  public static boolean isLocaleGermany(final @NonNull Location location) {
-    final String country = location.country();
-    if (country != null) {
-      return location.country().equals("DE");
-    }
-    return false;
+  public static boolean isCountryGermany(final @NonNull Location location) {
+    return Locale.GERMANY.getCountry().equals(location.country());
   }
 }

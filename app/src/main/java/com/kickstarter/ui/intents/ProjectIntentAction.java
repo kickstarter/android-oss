@@ -47,6 +47,8 @@ public class ProjectIntentAction extends IntentAction {
 
     projectFromExtra.subscribe(initializer);
 
+    // If the intent contained a project param, fetch a project. If it
+    // contained a parceled project, refresh the project.
     projectFromExtra
       .map(Project::param)
       .mergeWith(paramFromExtra)
@@ -54,7 +56,6 @@ public class ProjectIntentAction extends IntentAction {
       .filter(ObjectUtils::isNotNull)
       .switchMap(param -> client.fetchProject(param).compose(Transformers.neverError()))
       .subscribe(initializer);
-
   }
 
   private @Nullable Project parceledProject(final @NonNull Intent intent) {

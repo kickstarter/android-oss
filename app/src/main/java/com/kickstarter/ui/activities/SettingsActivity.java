@@ -259,11 +259,11 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   @OnClick(R.id.settings_rate_us)
   public void rateUsClick() {
     final String packageName = getPackageName();
-    final Uri marketUri = Uri.parse("market://details?id=" + packageName);
-    Intent intent = new Intent(Intent.ACTION_VIEW);
+    final Intent intent = new Intent(Intent.ACTION_VIEW);
 
     try {
       // First try to load the play store native application
+      final Uri marketUri = Uri.parse("market://details?id=" + packageName);
       intent.setData(marketUri);
       startActivity(intent);
     } catch (ActivityNotFoundException __) {

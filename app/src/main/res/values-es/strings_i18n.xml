@@ -313,6 +313,7 @@
   <string name="discovery_baseball_card_stats_convert_from_pledged_of_goal" formatted="false">Conversión: %{pledged} de la meta de %{goal}.</string>
   <string name="discovery_baseball_card_stats_funded" formatted="false">financiado</string>
   <string name="discovery_baseball_card_stats_pledged_of_goal" formatted="false">de %{goal}</string>
+  <string name="discovery_baseball_card_stats_pledged_of_goal_short" formatted="false">of %{goal}</string>
   <string name="discovery_baseball_card_status_banner_canceled" formatted="false">Financiamiento cancelado</string>
   <string name="discovery_baseball_card_status_banner_canceled_date" formatted="false">Financiamiento cancelado el %{date}</string>
   <string name="discovery_baseball_card_status_banner_funding_unsuccessful_date" formatted="false">Financiamiento fallido %{date}</string>
@@ -353,7 +354,7 @@
   <string name="discovery_nearby" formatted="false">Cerca de ti</string>
   <string name="discovery_onboarding_buttons_learn_more" formatted="false">Más información</string>
   <string name="discovery_onboarding_buttons_login" formatted="false">Iniciar sesión</string>
-  <string name="discovery_onboarding_buttons_signup_or_login" formatted="false">Sign up or Log in</string>
+  <string name="discovery_onboarding_buttons_signup_or_login" formatted="false">Regístrate o Inicia sesión</string>
   <string name="discovery_onboarding_learn_login_conjunction_or" formatted="false">o</string>
   <string name="discovery_onboarding_title_bring_creative_projects_to_life" formatted="false">Dale vida a proyectos creativos</string>
   <string name="discovery_popular" formatted="false">Popular</string>
@@ -537,8 +538,8 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="profile_settings_navbar_title" formatted="false">Configuración</string>
   <string name="profile_settings_navbar_title_notifications" formatted="false">Notificaciones</string>
   <string name="profile_settings_newsletter_happening" formatted="false">Eventos</string>
-  <string name="profile_settings_newsletter_opt_in_message" formatted="false">We\'ve sent a confirmation email to the address associated with you account! Please check your email in order to confirm that you\'d like to subscribe to %{newsletter}.</string>
-  <string name="profile_settings_newsletter_opt_in_title" formatted="false">One final step!</string>
+  <string name="profile_settings_newsletter_opt_in_message" formatted="false">Hemos enviado una confirmación a la dirección de correo electrónico asociada con tu cuenta. Por favor checa tu bandeja de entrada y confirma la subscripción a %{newsletter}.</string>
+  <string name="profile_settings_newsletter_opt_in_title" formatted="false">¡Sólo un último paso!</string>
   <string name="profile_settings_newsletter_promo" formatted="false">Novedades y eventos de Kickstarter</string>
   <string name="profile_settings_newsletter_title" formatted="false">Boletines informativos</string>
   <string name="profile_settings_newsletter_weekly" formatted="false">Nuestros Favoritos</string>
@@ -549,6 +550,7 @@ Si tienes un momento, ¿te importaría calificar tu experiencia?\n
   <string name="profile_settings_rating_option_rate_now" formatted="false">Califícala ahora</string>
   <string name="profile_settings_rating_option_remind_later" formatted="false">Recordarme más tarde</string>
   <string name="profile_settings_rating_rate_us" formatted="false">¡Califícanos en la App Store!</string>
+  <string name="profile_settings_rating_rate_us_play_store" formatted="false">¡Califícanos en el Play Store!</string>
   <string name="profile_settings_rating_title" formatted="false">¡Somos todo oídos!</string>
   <string name="profile_settings_social_find_friends" formatted="false">Encontrar amigos</string>
   <string name="profile_settings_social_followers" formatted="false">Nuevos seguidores</string>

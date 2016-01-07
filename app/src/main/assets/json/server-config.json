@@ -90,6 +90,7 @@
             "backers": "backers",
             "funded": "funded",
             "pledged_of_goal": "pledged of %{goal}",
+            "pledged_of_goal_short": "of %{goal}",
             "convert_from_pledged_of_goal": "Converted from %{pledged} pledged of %{goal} goal."
           },
           "time_left_to_go": "%{time_left} to go",
@@ -384,6 +385,7 @@
           "rating": {
             "title": "We’re all ears!",
             "rate_us": "Rate us in the App Store!",
+            "rate_us_play_store": "Rate us in the Play Store!",
             "message": "Thanks for using the Kickstarter app.\nIf you have a moment, would you mind rating your experience?\nWe'd appreciate it!",
             "option": {
               "rate_now": "Rate It Now",
@@ -1379,6 +1381,7 @@
             "backers": "Unterstützer",
             "funded": "funded",
             "pledged_of_goal": "von %{goal}",
+            "pledged_of_goal_short": "of %{goal}",
             "convert_from_pledged_of_goal": "Umgerechneter Betrag: %{pledged} von %{goal} (Fianzierungsziel)."
           },
           "time_left_to_go": "%{time_left} zum Ziel",
@@ -1673,6 +1676,7 @@
           "rating": {
             "title": "Wir sind ganz Ohr!",
             "rate_us": "Bewerte uns im App Store!",
+            "rate_us_play_store": "Rate us in the Play Store!",
             "message": "Danke für die Nutzung der Kickstarter App.\nFalls du einen Moment Zeit hast, könntest du deine Erfahrung bewerten?\nWir würden uns sehr darüber freuen!",
             "option": {
               "rate_now": "Jetzt bewerten",
@@ -2668,6 +2672,7 @@
             "backers": "patrocinadores",
             "funded": "financiado",
             "pledged_of_goal": "de %{goal}",
+            "pledged_of_goal_short": "of %{goal}",
             "convert_from_pledged_of_goal": "Conversión: %{pledged} de la meta de %{goal}."
           },
           "time_left_to_go": "%{time_left} más",
@@ -2741,7 +2746,7 @@
           "buttons": {
             "login": "Iniciar sesión",
             "learn_more": "Más información",
-            "signup_or_login": "Sign up or Log in"
+            "signup_or_login": "Regístrate o Inicia sesión"
           }
         },
         "survey": {
@@ -2939,8 +2944,8 @@
             "promo": "Novedades y eventos de Kickstarter",
             "happening": "Eventos",
             "opt_in": {
-              "title": "One final step!",
-              "message": "We've sent a confirmation email to the address associated with you account! Please check your email in order to confirm that you'd like to subscribe to %{newsletter}."
+              "title": "¡Sólo un último paso!",
+              "message": "Hemos enviado una confirmación a la dirección de correo electrónico asociada con tu cuenta. Por favor checa tu bandeja de entrada y confirma la subscripción a %{newsletter}."
             }
           },
           "about": {
@@ -2962,6 +2967,7 @@
           "rating": {
             "title": "¡Somos todo oídos!",
             "rate_us": "¡Califícanos en la App Store!",
+            "rate_us_play_store": "¡Califícanos en el Play Store!",
             "message": "Gracias por usar la aplicación de Kickstarter.\nSi tienes un momento, ¿te importaría calificar tu experiencia?\n¡Te lo agradeceríamos!",
             "option": {
               "rate_now": "Califícala ahora",
@@ -3880,12 +3886,12 @@
       },
       "discovery": {
         "accessibility": {
-          "live_project_count": "Live projects",
+          "live_project_count": "Projets en cours",
           "toolbar": {
             "buttons": {
-              "filter_label": "Filter by category",
-              "activity_label": "Activity feed",
-              "user_menu": "User menu"
+              "filter_label": "Filtrer par catégorie",
+              "activity_label": "Flux d'activité",
+              "user_menu": "Menu utilisateur"
             }
           }
         },
@@ -3957,6 +3963,7 @@
             "backers": "contributeurs",
             "funded": "funded",
             "pledged_of_goal": "sur %{goal}",
+            "pledged_of_goal_short": "of %{goal}",
             "convert_from_pledged_of_goal": "Conversion de %{pledged} engagés pour un objectif de %{goal}"
           },
           "time_left_to_go": "%{time_left} restant(e)s",
@@ -4197,10 +4204,10 @@
         },
         "settings": {
           "accessibility": {
-            "subscribe_mobile_notifications": "Subscribe to mobile notifications",
-            "subscribe_notifications": "Subscribe to notifications",
-            "unsubscribe_mobile_notifications": "Unsubscribe from mobile notifications",
-            "unsubscribe_notifications": "Unsubscribe from notifications"
+            "subscribe_mobile_notifications": "Inscription aux notifications mobiles",
+            "subscribe_notifications": "Inscription aux notifications",
+            "unsubscribe_mobile_notifications": "Désinscription des notifications mobiles",
+            "unsubscribe_notifications": "Désinscription des notifications"
           },
           "navbar_title": "Paramètres",
           "navbar_title_notifications": "Notifications",
@@ -4209,7 +4216,7 @@
             "project_updates": "Actus de projet",
             "notifications": "Gérer les notifications de projet"
           },
-          "error": "Unable to save",
+          "error": "Enregistrement impossible",
           "social": {
             "title": "Notifications sociales",
             "followers": "Nouveaux abonnés",
@@ -4251,6 +4258,7 @@
           "rating": {
             "title": "Nous sommes tout ouïe !",
             "rate_us": "Évaluez-nous dans l'App Store !",
+            "rate_us_play_store": "Rate us in the Play Store!",
             "message": "Merci d'utiliser l'application Kickstarter.\nAuriez-vous une minute pour évaluer votre expérience ?\nNous vous en serions très reconnaissants !",
             "option": {
               "rate_now": "Évaluez l'application",
@@ -4277,7 +4285,7 @@
         "button": {
           "ok": "OK"
         },
-        "chooser": "Select email application:"
+        "chooser": "Choisissez une application e-mail :"
       },
       "login_tout": {
         "buttons": {
@@ -4440,9 +4448,9 @@
         },
         "comments": {
           "accessibility": {
-            "button_write": "Write a comment"
+            "button_write": "Rédiger un commentaire"
           },
-          "posted": "Comment posted!",
+          "posted": "Commentaire publié !",
           "empty_state": {
             "backer": {
               "title": "Pas de commentaires",
@@ -4456,7 +4464,7 @@
             "logged_out": {
               "title": "Pas de commentaires",
               "message": "Oh, quel dommage. Soutenez ce projet afin de pouvoir laisser un commentaire.",
-              "message_log_in": "Aw, how sad. Log in to become a backer or leave a comment."
+              "message_log_in": "Oh, quel dommage. Connectez-vous pour contribuer ou pour laisser un commentaire."
             }
           }
         },
@@ -4505,7 +4513,7 @@
             "title_via_kickstarter": "%{project_or_update_title}, via Kickstarter",
             "exclamation": "Félicitations !",
             "you_just_backed_project_share_this_project": "Vous venez de soutenir le projet %{project_name}. Partagez-le avec vos amis pour l'aider à avancer !",
-            "you_just_backed_project_share_this_project_html": "You just backed <b>%{project_name}</b>. Share this project with friends to help it along!",
+            "you_just_backed_project_share_this_project_html": "Vous venez de soutenir le projet <b>%{project_name}</b>. Partagez-le avec vos amis pour l'aider à avancer !",
             "twitter": {
               "I_just_backed_project_on_kickstarter": "Je viens de soutenir le projet %{project_name} sur @Kickstarter"
             },
@@ -4961,7 +4969,7 @@
               "label": "Fermer"
             },
             "button_help_menu": {
-              "label": "Help menu"
+              "label": "Menu Aide"
             },
             "button_overflow_menu": {
               "label": "Overflow menu"
@@ -5246,6 +5254,7 @@
             "backers": "backers",
             "funded": "funded",
             "pledged_of_goal": "pledged of %{goal}",
+            "pledged_of_goal_short": "of %{goal}",
             "convert_from_pledged_of_goal": "Converted from %{pledged} pledged of %{goal} goal."
           },
           "time_left_to_go": "%{time_left} to go",
@@ -5540,6 +5549,7 @@
           "rating": {
             "title": "We’re all ears!",
             "rate_us": "Rate us in the App Store!",
+            "rate_us_play_store": "Rate us in the Play Store!",
             "message": "Thanks for using the Kickstarter app.\nIf you have a moment, would you mind rating your experience?\nWe'd appreciate it!",
             "option": {
               "rate_now": "Rate It Now",
@@ -6594,11 +6604,11 @@
   ],
   "ab_experiments": {
     "discover_sorts_vs_subcategories": "experimental",
-    "native_ios_aa": "experimental",
+    "native_ios_aa": "control",
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
     "native_iphone_horiz_vs_vert": "experimental",
-    "recs_thanks_combo_inputs": "collaborative_backings_v2",
+    "recs_thanks_combo_inputs": "combo_inputs",
     "recs_hp_combo_v1": "combo_v1"
   },
   "stripe": {

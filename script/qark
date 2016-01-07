@@ -1,3 +1,21 @@
 #!/bin/bash -e
 
-python ./vendor/qark/qark.py $@
+cd vendor/qark
+
+case "$1" in
+  src-report)
+    python qark.py -t 1 -s 2 -m ../../app/src/main/ -c ../../app/src/main -e 0
+    ;;
+  run)
+    python qark.py ${@:2}
+    ;;
+  *)
+    echo "would you like to qark??????"
+    echo ""
+    echo "usage: $0 [src-report|run <args>]"
+    echo ""
+    echo "   src-report: run a qark report to analyze the app source"
+    echo "   run: run qark with custom arguments"
+    echo ""
+esac
+

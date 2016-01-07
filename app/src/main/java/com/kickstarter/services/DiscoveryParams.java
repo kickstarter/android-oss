@@ -74,7 +74,7 @@ public abstract class DiscoveryParams implements Parcelable {
   }
 
   /**
-   * Creates {@link DiscoveryParams} by merging parsing information out of the
+   * Returns a {@link DiscoveryParams} constructed by parsing data out of the given {@link Uri}.
    */
   public static @NonNull DiscoveryParams fromUri(final @NonNull Uri uri) {
     Builder builder = DiscoveryParams.builder();
@@ -165,6 +165,10 @@ public abstract class DiscoveryParams implements Parcelable {
     public abstract Builder term(String __);
     public abstract DiscoveryParams build();
 
+    /**
+     * Returns a builder containing the contents of this builder and `otherBuilder`. If a value for the same property
+     * exists in both builders, the returned builder will contain the value from `otherBuilder`.
+     */
     public @NonNull DiscoveryParams.Builder mergeWith(final @NonNull Builder otherBuilder) {
       final DiscoveryParams other = otherBuilder.build();
       DiscoveryParams.Builder retVal = this;

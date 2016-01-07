@@ -20,10 +20,6 @@ public final class I18nUtils {
   }
 
   public static boolean isCountryGermany(final @NonNull Location location) {
-    final String country = location.country();
-    if (country != null) {
-      return location.country().equals("DE");
-    }
-    return false;
+    return Locale.GERMANY.getCountry().equals(location.country());
   }
 }

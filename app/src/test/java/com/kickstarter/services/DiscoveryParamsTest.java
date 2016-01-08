@@ -55,6 +55,45 @@ public class DiscoveryParamsTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testFromUri_customScopes() {
+    final DiscoveryParams endingSoonParams = DiscoveryParams.builder().sort(DiscoveryParams.Sort.ENDING_SOON).build();
+    final Uri endingSoonUri = Uri.parse("https://www.kickstarter.com/discover/ending-soon");
+    assertEquals(endingSoonParams, DiscoveryParams.fromUri(endingSoonUri));
+
+    final DiscoveryParams mostFundedParams = DiscoveryParams.builder().sort(DiscoveryParams.Sort.MOST_FUNDED).build();
+    final Uri mostFundedUri = Uri.parse("https://www.kickstarter.com/discover/most-funded");
+    assertEquals(mostFundedParams, DiscoveryParams.fromUri(mostFundedUri));
+
+    final DiscoveryParams newestParams = DiscoveryParams.builder().sort(DiscoveryParams.Sort.NEWEST).staffPicks(true).build();
+    final Uri newestUri = Uri.parse("https://www.kickstarter.com/discover/newest");
+    assertEquals(newestParams, DiscoveryParams.fromUri(newestUri));
+
+    final DiscoveryParams popularParams = DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build();
+    final Uri popularUri = Uri.parse("https://www.kickstarter.com/discover/popular");
+    assertEquals(popularParams, DiscoveryParams.fromUri(popularUri));
+
+    final DiscoveryParams recentlyLaunchedParams = DiscoveryParams.builder().sort(DiscoveryParams.Sort.NEWEST).build();
+    final Uri recentlyLaunchedUri = Uri.parse("https://www.kickstarter.com/discover/recently-launched");
+    assertEquals(recentlyLaunchedParams, DiscoveryParams.fromUri(recentlyLaunchedUri));
+
+    final DiscoveryParams recommendedParams = DiscoveryParams.builder().staffPicks(true).build();
+    final Uri recommendedUri = Uri.parse("https://www.kickstarter.com/discover/recommended");
+    assertEquals(recommendedParams, DiscoveryParams.fromUri(recommendedUri));
+
+    final DiscoveryParams smallProjectsParams = DiscoveryParams.builder().pledged(0).build();
+    final Uri smallProjectsUri = Uri.parse("https://www.kickstarter.com/discover/small-projects");
+    assertEquals(smallProjectsParams, DiscoveryParams.fromUri(smallProjectsUri));
+
+    final DiscoveryParams socialParams = DiscoveryParams.builder().social(0).build();
+    final Uri socialUri = Uri.parse("https://www.kickstarter.com/discover/social");
+    assertEquals(socialParams, DiscoveryParams.fromUri(socialUri));
+
+    final DiscoveryParams successfulParams = DiscoveryParams.builder().sort(DiscoveryParams.Sort.ENDING_SOON).state(DiscoveryParams.State.SUCCESSFUL).build();
+    final Uri successfulUri = Uri.parse("https://www.kickstarter.com/discover/successful");
+    assertEquals(successfulParams, DiscoveryParams.fromUri(successfulUri));
+  }
+
+  @Test
   public void testFromUri_pagination() {
     final DiscoveryParams params = DiscoveryParams.builder().page(5).perPage(21).build();
 

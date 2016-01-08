@@ -29,12 +29,14 @@ public abstract class DiscoveryParams implements Parcelable {
   @Nullable public abstract String locationParam();
   @Nullable public abstract Integer page();
   @Nullable public abstract Integer perPage();
+  @Nullable public abstract Integer pledged();
   @Nullable public abstract Boolean staffPicks();
   @Nullable public abstract Integer starred();
   @Nullable public abstract Integer social();
   @Nullable public abstract Sort sort();
   @Nullable public abstract Boolean recommended();
   @Nullable public abstract Project similarTo();
+  @Nullable public abstract State state();
   @Nullable public abstract String term();
 
   public enum Sort {
@@ -56,7 +58,7 @@ public abstract class DiscoveryParams implements Parcelable {
       return "";
     }
 
-    public static @NonNull Sort fromString(final @NonNull String string) throws AssertionError {
+    public static @Nullable Sort fromString(final @NonNull String string) {
       switch (string) {
         case "magic":
           return MAGIC;
@@ -69,7 +71,35 @@ public abstract class DiscoveryParams implements Parcelable {
         case "most_funded":
           return MOST_FUNDED;
       }
-      throw new AssertionError("Unhandled sort");
+
+      return null;
+    }
+  }
+
+  public enum State {
+    STARTED, SUBMITTED, LIVE, SUCCESSFUL, CANCELED, FAILED;
+    @Override
+    public @NonNull String toString() {
+      return name().toLowerCase();
+    }
+
+    public static @Nullable State fromString(final @NonNull String string) {
+      switch (string) {
+        case "started":
+          return STARTED;
+        case "submitted":
+          return SUBMITTED;
+        case "live":
+          return LIVE;
+        case "successful":
+          return SUCCESSFUL;
+        case "canceled":
+          return CANCELED;
+        case "failed":
+          return FAILED;
+      }
+
+      return null;
     }
   }
 
@@ -79,22 +109,58 @@ public abstract class DiscoveryParams implements Parcelable {
   public static @NonNull DiscoveryParams fromUri(final @NonNull Uri uri) {
     Builder builder = DiscoveryParams.builder();
 
+    if (KSUri.isDiscoverCategoriesPath(uri.getPath())) {
+      builder = builder.categoryParam(uri.getLastPathSegment());
+    }
+
+    if (KSUri.isDiscoverPlacesPath(uri.getPath())) {
+      builder = builder.locationParam(uri.getLastPathSegment());
+    }
+
+    if (KSUri.isDiscoverScopePath(uri.getPath(), "ending-soon")) {
+      builder = builder.sort(Sort.ENDING_SOON);
+    }
+
+    if (KSUri.isDiscoverScopePath(uri.getPath(), "most-funded")) {
+      builder = builder.sort(Sort.MOST_FUNDED);
+    }
+
+    if (KSUri.isDiscoverScopePath(uri.getPath(), "newest")) {
+      builder = builder.sort(Sort.NEWEST).staffPicks(true);
+    }
+
+    if (KSUri.isDiscoverScopePath(uri.getPath(), "popular")) {
+      builder = builder.sort(Sort.POPULAR);
+    }
+
+    if (KSUri.isDiscoverScopePath(uri.getPath(), "recently-launched")) {
+      builder = builder.sort(Sort.NEWEST);
+    }
+
+    if (KSUri.isDiscoverScopePath(uri.getPath(), "recommended")) {
+      builder = builder.staffPicks(true);
+    }
+
+    if (KSUri.isDiscoverScopePath(uri.getPath(), "small-projects")) {
+      builder = builder.pledged(0);
+    }
+
+    if (KSUri.isDiscoverScopePath(uri.getPath(), "social")) {
+      builder = builder.social(0);
+    }
+
+    if (KSUri.isDiscoverScopePath(uri.getPath(), "successful")) {
+      builder = builder.sort(Sort.ENDING_SOON).state(State.SUCCESSFUL);
+    }
+
     final Integer backed = ObjectUtils.toInteger(uri.getQueryParameter("backed"));
     if (backed != null) {
       builder = builder.backed(backed);
     }
 
-    if (KSUri.isDiscoverCategoriesPath(uri.getPath())) {
-      builder = builder.categoryParam(uri.getLastPathSegment());
-    }
-
     final String categoryParam = uri.getQueryParameter("category_id");
     if (categoryParam != null) {
       builder = builder.categoryParam(categoryParam);
-    }
-
-    if (KSUri.isDiscoverPlacesPath(uri.getPath())) {
-      builder = builder.locationParam(uri.getLastPathSegment());
     }
 
     final String locationParam = uri.getQueryParameter("woe_id");
@@ -112,6 +178,11 @@ public abstract class DiscoveryParams implements Parcelable {
       builder = builder.perPage(perPage);
     }
 
+    final Integer pledged = ObjectUtils.toInteger(uri.getQueryParameter("pledged"));
+    if (pledged != null) {
+      builder = builder.pledged(pledged);
+    }
+
     final Boolean recommended = ObjectUtils.toBoolean(uri.getQueryParameter("recommended"));
     if (recommended != null) {
       builder = builder.recommended(recommended);
@@ -127,16 +198,19 @@ public abstract class DiscoveryParams implements Parcelable {
       builder = builder.staffPicks(staffPicks);
     }
 
-    final String sortString = uri.getQueryParameter("sort");
-    if (sortString != null) {
-      try {
-        builder = builder.sort(Sort.fromString(sortString));
-      } catch (final AssertionError e) {}
+    final String sortParam = uri.getQueryParameter("sort");
+    if (sortParam != null) {
+      builder = builder.sort(Sort.fromString(sortParam));
     }
 
     final Integer starred = ObjectUtils.toInteger(uri.getQueryParameter("starred"));
     if (starred != null) {
       builder = builder.starred(starred);
+    }
+
+    final String stateParam = uri.getQueryParameter("state");
+    if (stateParam != null) {
+      builder = builder.state(State.fromString(stateParam));
     }
 
     final String term = uri.getQueryParameter("term");
@@ -156,12 +230,14 @@ public abstract class DiscoveryParams implements Parcelable {
     public abstract Builder locationParam(String __);
     public abstract Builder page(Integer __);
     public abstract Builder perPage(Integer __);
+    public abstract Builder pledged(Integer __);
     public abstract Builder sort(Sort __);
     public abstract Builder staffPicks(Boolean __);
     public abstract Builder starred(Integer __);
     public abstract Builder social(Integer __);
     public abstract Builder recommended(Boolean __);
     public abstract Builder similarTo(Project __);
+    public abstract Builder state(State __);
     public abstract Builder term(String __);
     public abstract DiscoveryParams build();
 
@@ -191,6 +267,9 @@ public abstract class DiscoveryParams implements Parcelable {
       if (other.perPage() != null) {
         retVal = retVal.perPage(other.perPage());
       }
+      if (other.pledged() != null) {
+        retVal = retVal.pledged(other.pledged());
+      }
       if (other.social() != null) {
         retVal = retVal.social(other.social());
       }
@@ -199,6 +278,9 @@ public abstract class DiscoveryParams implements Parcelable {
       }
       if (other.starred() != null) {
         retVal = retVal.starred(other.starred());
+      }
+      if (other.state() != null) {
+        retVal = retVal.state(other.state());
       }
       if (other.sort() != null) {
         retVal = retVal.sort(other.sort());
@@ -260,6 +342,10 @@ public abstract class DiscoveryParams implements Parcelable {
         put("per_page", String.valueOf(perPage()));
       }
 
+      if (pledged() != null) {
+        put("pledged", String.valueOf(pledged()));
+      }
+
       if (recommended() != null) {
         put("recommended", String.valueOf(recommended()));
       }
@@ -276,12 +362,18 @@ public abstract class DiscoveryParams implements Parcelable {
         put("social", String.valueOf(social()));
       }
 
-      if (sort() != null) {
-        put("sort", sort().toString());
+      final Sort sort = sort();
+      if (sort != null) {
+        put("sort", sort.toString());
       }
 
       if (staffPicks() != null) {
         put("staff_picks", String.valueOf(staffPicks()));
+      }
+
+      final State state = state();
+      if (state != null) {
+        put("state", state.toString());
       }
 
       if (term() != null) {

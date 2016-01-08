@@ -15,6 +15,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.viewmodels.LoginToutViewModel;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.toolbars.LoginToolbar;
@@ -44,12 +45,11 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
   @Bind(R.id.help_button) TextView helpButton;
   @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
 
-  @BindString(R.string.___Log_in_or_sign_up) String loginOrSignUpString;
-  @BindString(R.string.___Unable_to_login) String unableToLoginString;
-  @BindString(R.string.intent_login_type) String intentLoginTypeString;
-  @BindString(R.string.___Oops) String errorTitleString;
-  @BindString(R.string.___Were_having_some_trouble_getting_you_logged_in) String troubleLoggingInString;
-  @BindString(R.string.___Lets_try_that_again) String tryAgainString;
+  @BindString(R.string.login_tout_navbar_title) String loginOrSignUpString;
+  @BindString(R.string.login_errors_unable_to_log_in) String unableToLoginString;
+  @BindString(R.string.general_error_oops) String errorTitleString;
+  @BindString(R.string.login_tout_errors_facebook_authorization_exception_message) String troubleLoggingInString;
+  @BindString(R.string.login_tout_errors_facebook_authorization_exception_button) String tryAgainString;
 
   private boolean forward;
 
@@ -61,9 +61,10 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
     ButterKnife.bind(this);
     loginToolbar.setTitle(loginOrSignUpString);
 
-    forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
+    final Intent intent = getIntent();
+    forward = intent.getBooleanExtra(IntentKey.FORWARD, false);
 
-    viewModel.inputs.reason(getIntent().getStringExtra(intentLoginTypeString));
+    viewModel.inputs.reason(intent.getStringExtra(IntentKey.LOGIN_TYPE));
 
     viewModel.errors.facebookAuthorizationError()
       .compose(bindToLifecycle())
@@ -116,7 +117,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
   public void loginButtonClick() {
     final Intent intent = new Intent(this, LoginActivity.class);
     if (forward) {
-      intent.putExtra(getString(R.string.intent_forward), true);
+      intent.putExtra(IntentKey.FORWARD, true);
       startActivityForResult(intent,
         ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_LOGIN_ACTIVITY_FORWARD);
     } else {
@@ -129,7 +130,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
   public void signupButtonClick() {
     final Intent intent = new Intent(this, SignupActivity.class);
     if (forward) {
-      intent.putExtra(getString(R.string.intent_forward), true);
+      intent.putExtra(IntentKey.FORWARD, true);
       startActivityForResult(intent,
         ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_LOGIN_ACTIVITY_FORWARD);
     } else {
@@ -164,9 +165,9 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
 
   public void startFacebookConfirmationActivity(@NonNull final ErrorEnvelope.FacebookUser facebookUser) {
     final Intent intent = new Intent(this, FacebookConfirmationActivity.class)
-      .putExtra(getString(R.string.intent_forward), forward)
-      .putExtra(getString(R.string.intent_facebook_user), facebookUser)
-      .putExtra(getString(R.string.intent_facebook_token), AccessToken.getCurrentAccessToken().getToken());
+      .putExtra(IntentKey.FORWARD, forward)
+      .putExtra(IntentKey.FACEBOOK_USER, facebookUser)
+      .putExtra(IntentKey.FACEBOOK_TOKEN, AccessToken.getCurrentAccessToken().getToken());
     if (forward) {
       startActivityForResult(intent, ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_FACEBOOK_CONFIRMATION_ACTIVITY_FORWARD);
     } else {
@@ -177,9 +178,9 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
 
   public void startTwoFactorActivity(final boolean isFacebookLogin) {
     final Intent intent = new Intent(this, TwoFactorActivity.class)
-      .putExtra(getString(R.string.intent_facebook_login), isFacebookLogin)
-      .putExtra(getString(R.string.intent_forward), forward)
-      .putExtra(getString(R.string.intent_facebook_token), AccessToken.getCurrentAccessToken().getToken());
+      .putExtra(IntentKey.FACEBOOK_LOGIN, isFacebookLogin)
+      .putExtra(IntentKey.FORWARD, forward)
+      .putExtra(IntentKey.FACEBOOK_TOKEN, AccessToken.getCurrentAccessToken().getToken());
     if (forward) {
       startActivityForResult(intent, ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_LOGIN_ACTIVITY_FORWARD);
     } else {

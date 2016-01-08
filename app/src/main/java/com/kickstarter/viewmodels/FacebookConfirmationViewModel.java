@@ -10,13 +10,13 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.viewmodels.errors.FacebookConfirmationViewModelErrors;
-import com.kickstarter.viewmodels.inputs.FacebookConfirmationViewModelInputs;
-import com.kickstarter.viewmodels.outputs.FacebookConfirmationViewModelOutputs;
-import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.activities.FacebookConfirmationActivity;
+import com.kickstarter.viewmodels.errors.FacebookConfirmationViewModelErrors;
+import com.kickstarter.viewmodels.inputs.FacebookConfirmationViewModelInputs;
+import com.kickstarter.viewmodels.outputs.FacebookConfirmationViewModelOutputs;
 
 import javax.inject.Inject;
 
@@ -45,8 +45,8 @@ public class FacebookConfirmationViewModel extends ViewModel<FacebookConfirmatio
       .map(ErrorEnvelope::errorMessage);
   }
 
-  @Inject ApiClient client;
-  @Inject CurrentUser currentUser;
+  protected @Inject ApiClientType client;
+  protected @Inject CurrentUser currentUser;
 
   public final FacebookConfirmationViewModelInputs inputs = this;
   public final FacebookConfirmationViewModelOutputs outputs = this;

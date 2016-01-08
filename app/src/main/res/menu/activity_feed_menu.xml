@@ -2,9 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
   <item
     android:id="@+id/find_friends"
-    android:title="@string/___Find_friends" />
+    android:title="@string/profile_settings_social_find_friends" />
   <item
     android:id="@+id/help"
-    android:title="@string/___Help" />
+    android:title="@string/general_navigation_buttons_help" />
 </menu>
 

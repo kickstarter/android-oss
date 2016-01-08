@@ -34,7 +34,33 @@ public class ObjectUtils {
   }
 
   /**
-   * Converts an {@link Integer} to a {@link String}, or null of the integer is also null.
+   * Converts a {@link String} to a {@link Boolean}, or null if the boolean cannot be parsed.
+   */
+  public static @Nullable Boolean toBoolean(final @Nullable String s) {
+    if (s != null) {
+      return Boolean.parseBoolean(s);
+    }
+
+    return null;
+  }
+
+  /**
+   * Converts a {@link String} to an {@link Integer}, or null if the integer cannot be parsed.
+   */
+  public static @Nullable Integer toInteger(final @Nullable String s) {
+    if (s != null) {
+      try {
+        return Integer.parseInt(s);
+      } catch (final @NonNull NumberFormatException e) {
+        return null;
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Converts an {@link Integer} to a {@link String}, can be null if the integer is also null.
    */
   public static @Nullable String toString(final @Nullable Integer n) {
     if (n != null) {
@@ -45,7 +71,7 @@ public class ObjectUtils {
   }
 
   /**
-   * Converts a {@link Long} to a {@link String}, or null of the long is also null.
+   * Converts a {@link Long} to a {@link String}, can be null if the long is also null.
    */
   public static @Nullable String toString(final @Nullable Long n) {
     if (n != null) {
@@ -56,7 +82,7 @@ public class ObjectUtils {
   }
 
   /**
-   * Converts a {@link Float} to a {@link String}, or null of the float is also null.
+   * Converts a {@link Float} to a {@link String}, can be null if the float is also null.
    */
   public static @Nullable String toString(final @Nullable Float n) {
     if (n != null) {
@@ -67,7 +93,7 @@ public class ObjectUtils {
   }
 
   /**
-   * Converts a {@link Double} to a {@link String}, or null of the double is also null.
+   * Converts a {@link Double} to a {@link String}, can be null if the double is also null.
    */
   public static @Nullable String toString(final @Nullable Double n) {
     if (n != null) {

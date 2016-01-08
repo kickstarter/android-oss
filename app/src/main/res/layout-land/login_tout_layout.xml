@@ -34,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/grid_1"
-        android:text="@string/___Well_never_post_anything" />
+        android:text="@string/login_tout_disclaimer_we_never_post_anything_without_permission" />
 
       <Button
         style="@style/BorderButton"
@@ -42,14 +42,14 @@
         android:layout_width="match_parent"
         android:layout_marginTop="@dimen/grid_3"
         android:layout_marginBottom="@dimen/grid_1"
-        android:text="@string/___Log_in_with_email" />
+        android:text="@string/login_buttons_log_in_email" />
 
       <Button
         style="@style/BorderButton"
         android:id="@+id/sign_up_button"
         android:layout_width="match_parent"
         android:layout_marginTop="@dimen/grid_1"
-        android:text="@string/___Sign_up_with_email" />
+        android:text="@string/signup_button_email" />
 
       <TextView
         android:id="@+id/disclaimer_text_view"
@@ -64,7 +64,7 @@
         android:layout_marginRight="@dimen/grid_2"
         android:textAppearance="@style/CaptionPrimary"
         android:textColor="@color/dark_gray"
-        android:text="@string/___By_signing_up_you_agree_to_our_sign_up" />
+        android:text="@string/login_tout_disclaimer_by_signing_up_you_agree_to_terms" />
 
     </LinearLayout>
   </LinearLayout>

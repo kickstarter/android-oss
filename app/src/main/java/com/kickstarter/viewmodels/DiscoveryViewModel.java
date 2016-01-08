@@ -13,7 +13,7 @@ import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.WebClient;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
@@ -31,10 +31,10 @@ import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> implements DiscoveryViewModelInputs, DiscoveryViewModelOutputs {
-  @Inject ApiClient apiClient;
-  @Inject WebClient webClient;
-  @Inject BuildCheck buildCheck;
-  @Inject CurrentUser currentUser;
+  protected @Inject ApiClientType apiClient;
+  protected @Inject WebClient webClient;
+  protected @Inject BuildCheck buildCheck;
+  protected @Inject CurrentUser currentUser;
 
   // INPUTS
   private final PublishSubject<Project> projectClicked = PublishSubject.create();
@@ -49,6 +49,10 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   private final PublishSubject<Void> filterButtonClicked = PublishSubject.create();
   public void filterButtonClicked() {
     filterButtonClicked.onNext(null);
+  }
+  private final PublishSubject<DiscoveryParams> initializer = PublishSubject.create();
+  public void initializer(final @NonNull DiscoveryParams params) {
+    initializer.onNext(params);
   }
 
   // OUTPUTS
@@ -117,7 +121,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .subscribe(shouldShowOnboarding::onNext)
     );
 
-    params.onNext(DiscoveryParams.builder().staffPicks(true).build());
+    initializer.subscribe(this.params::onNext);
   }
 
   /**

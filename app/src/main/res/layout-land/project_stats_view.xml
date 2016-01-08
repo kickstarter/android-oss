@@ -24,7 +24,7 @@
       android:importantForAccessibility="no"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="@string/___backers"
+      android:text="@string/discovery_baseball_card_stats_backers"
       style="@style/CaptionSecondary" />
 
   </LinearLayout>

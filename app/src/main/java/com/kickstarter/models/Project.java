@@ -136,10 +136,6 @@ public abstract class Project implements Parcelable {
     return NumberUtils.numberWithDelimiter(commentsCount());
   }
 
-  public @Nullable String formattedStateChangedAt() {
-    return DateTimeUtils.relativeDateInWords(stateChangedAt(), false, true);
-  }
-
   public @Nullable String formattedUpdatesCount() {
     return NumberUtils.numberWithDelimiter(updatesCount());
   }
@@ -263,6 +259,10 @@ public abstract class Project implements Parcelable {
 
   public boolean isFriendBacking() {
     return friends() != null && friends().size() > 0;
+  }
+
+  public boolean isFunded() {
+    return isLive() && (percentageFunded() >= 100);
   }
 
   public boolean isPotdToday() {

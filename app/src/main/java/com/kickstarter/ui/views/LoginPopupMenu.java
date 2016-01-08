@@ -18,27 +18,23 @@ public class LoginPopupMenu extends PopupMenu {
     BaseActivity activity = (BaseActivity) context;
 
     setOnMenuItemClickListener(item -> {
-      final Intent intent = new Intent(context, HelpActivity.class);
+      final Intent intent;
       switch (item.getItemId()) {
         case R.id.terms:
-          intent.putExtra(context.getString(R.string.intent_help_type), HelpActivity.HELP_TYPE_TERMS);
+          intent = new Intent(context, HelpActivity.Terms.class);
           activity.startActivity(intent);
-          activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
           break;
         case R.id.privacy_policy:
-          intent.putExtra(context.getString(R.string.intent_help_type), HelpActivity.HELP_TYPE_PRIVACY);
+          intent = new Intent(context, HelpActivity.Privacy.class);
           activity.startActivity(intent);
-          activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
           break;
         case R.id.cookie_policy:
-          intent.putExtra(context.getString(R.string.intent_help_type), HelpActivity.HELP_TYPE_COOKIE_POLICY);
+          intent = new Intent(context, HelpActivity.CookiePolicy.class);
           activity.startActivity(intent);
-          activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
           break;
         case R.id.help:
-          intent.putExtra(context.getString(R.string.intent_help_type), HelpActivity.HELP_TYPE_HOW_IT_WORKS);
+          intent = new Intent(context, HelpActivity.Faq.class);
           activity.startActivity(intent);
-          activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
           break;
       }
       return true;

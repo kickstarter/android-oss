@@ -33,6 +33,7 @@ import com.kickstarter.libs.qualifiers.ConfigPreference;
 import com.kickstarter.libs.qualifiers.UserPreference;
 import com.kickstarter.libs.qualifiers.WebEndpoint;
 import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.ApiService;
 import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.services.WebClient;
@@ -40,6 +41,7 @@ import com.kickstarter.services.WebService;
 import com.kickstarter.services.interceptors.ApiRequestInterceptor;
 import com.kickstarter.services.interceptors.KSRequestInterceptor;
 import com.kickstarter.services.interceptors.WebRequestInterceptor;
+import com.squareup.okhttp.ConnectionSpec;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 
@@ -47,6 +49,7 @@ import org.joda.time.DateTime;
 
 import java.net.CookieManager;
 import java.util.Arrays;
+import java.util.Collections;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -56,6 +59,8 @@ import dagger.Provides;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 import retrofit.RxJavaCallAdapterFactory;
+
+import static com.squareup.okhttp.TlsVersion.TLS_1_2;
 
 @Module
 public class ApplicationModule {
@@ -69,7 +74,7 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  ApiClient provideApiClient(@NonNull final ApiService apiService, @NonNull final Gson gson) {
+  ApiClientType provideApiClientType(@NonNull final ApiService apiService, @NonNull final Gson gson) {
     return new ApiClient(apiService, gson);
   }
 
@@ -80,6 +85,9 @@ public class ApplicationModule {
     @NonNull final HttpLoggingInterceptor httpLoggingInterceptor, @NonNull final KSRequestInterceptor ksRequestInterceptor,
     @NonNull final WebRequestInterceptor webRequestInterceptor) {
     final OkHttpClient okHttpClient = new OkHttpClient();
+
+    final ConnectionSpec spec = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS).tlsVersions(TLS_1_2).build();
+    okHttpClient.setConnectionSpecs(Collections.singletonList(spec));
 
     okHttpClient.interceptors().addAll(
       Arrays.asList(httpLoggingInterceptor, apiRequestInterceptor, webRequestInterceptor, ksRequestInterceptor));

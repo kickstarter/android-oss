@@ -12,25 +12,26 @@ import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
+import com.kickstarter.ui.IntentKey;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public final class DownloadBetaActivity extends AppCompatActivity {
-  @Bind(R.id.build) TextView buildTextView;
-  @Bind(R.id.changelog) TextView changelogTextView;
+  protected @Bind(R.id.build) TextView buildTextView;
+  protected @Bind(R.id.changelog) TextView changelogTextView;
   InternalBuildEnvelope internalBuildEnvelope;
 
   @Override
-  public void onCreate(@Nullable final Bundle savedInstanceState) {
+  public void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.download_beta_layout);
     ButterKnife.bind(this);
 
     internalBuildEnvelope = getIntent().getExtras()
-      .getParcelable(getString(R.string.intent_internal_build_envelope));
+      .getParcelable(IntentKey.INTERNAL_BUILD_ENVELOPE);
 
     buildTextView.setText(internalBuildEnvelope.build().toString());
     changelogTextView.setText(internalBuildEnvelope.changelog());
@@ -39,7 +40,7 @@ public final class DownloadBetaActivity extends AppCompatActivity {
   }
 
   @OnClick(R.id.open_downloads_button)
-  public void openDownloadsOnClick(@NonNull final View v) {
+  public void openDownloadsOnClick(final @NonNull View v) {
     final Intent intent = new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS);
     startActivity(intent);
   }

@@ -12,16 +12,19 @@
 
   <LinearLayout
     android:id="@+id/project_info"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:background="@color/white"
-    android:paddingTop="@dimen/grid_3"
-    android:paddingLeft="@dimen/grid_3"
-    android:paddingRight="@dimen/grid_3"
-    android:orientation="vertical" >
+    android:layout_marginTop="@dimen/grid_3"
+    android:layout_marginRight="@dimen/grid_3"
+    android:layout_marginLeft="@dimen/grid_3"
+    android:layout_marginStart="@dimen/grid_3"
+    android:layout_marginEnd="@dimen/grid_3"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <TextView
       android:id="@+id/project_name"
+      android:text="Secret Hitler"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       style="@style/EditorialHeadline"
@@ -35,6 +38,7 @@
 
       <TextView
         android:id="@+id/creator_name"
+        android:text="by Max Temkin"
         android:focusable="true"
         android:layout_weight="3"
         android:singleLine="true"
@@ -51,7 +55,7 @@
         android:layout_height="wrap_content">
 
         <TextView
-          android:text="@string/____Youre_a_backer"
+          android:text="@string/project_creator_youre_a_backer"
           android:singleLine="true"
           style="@style/BodySecondary"
           android:layout_width="wrap_content"
@@ -64,6 +68,9 @@
           android:textSize="@dimen/caption"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_marginTop="1dp"
+          android:layout_marginStart="@dimen/grid_1_half"
+          android:layout_marginLeft="@dimen/grid_1_half"
           android:text="@string/backer_icon"
           android:textColor="@color/green"/>
       </LinearLayout>
@@ -90,7 +97,7 @@
 
       <com.kickstarter.ui.views.IconTextView
         android:id="@+id/category_icon"
-        android:contentDescription="@string/___category_icon_content_description"
+        android:contentDescription="@string/discovery_baseball_card_accessibility_category_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/local_offer_icon"
@@ -110,7 +117,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/location_on_icon"
-        android:contentDescription="@string/___location_icon_content_description"
+        android:contentDescription="@string/discovery_baseball_card_accessibility_location_label"
         style="@style/BodyPrimary" />
 
       <TextView
@@ -130,6 +137,7 @@
 
     <ProgressBar
       style="@style/ProgressBar"
+      android:visibility="visible"
       android:id="@+id/percentage_funded"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -137,29 +145,80 @@
       android:layout_marginTop="@dimen/grid_3"
       android:progress="50" />
 
+    <LinearLayout
+      android:id="@+id/project_state_view_group"
+      android:visibility="gone"
+      android:gravity="center_vertical"
+      android:layout_marginTop="@dimen/grid_3"
+      android:orientation="horizontal"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <LinearLayout
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/grid_2"
+        android:layout_marginLeft="@dimen/grid_3"
+        android:layout_marginRight="@dimen/grid_3"
+        android:layout_marginStart="@dimen/grid_3"
+        android:layout_marginEnd="@dimen/grid_3"
+        android:layout_marginBottom="@dimen/grid_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+          android:id="@+id/project_state_header_text_view"
+          android:text="Funded!"
+          style="@style/BodyPrimaryMedium"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
+
+        <TextView
+          android:id="@+id/project_state_subhead_text_view"
+          android:text="This project was funded on"
+          style="@style/CaptionPrimary"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
+
+      </LinearLayout>
+
+    </LinearLayout>
+
     <include layout="@layout/project_stats_view"
+      android:id="@+id/project_stats_view"
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
-      android:layout_marginTop="@dimen/grid_3"
+      android:layout_marginTop="@dimen/grid_2"
       android:layout_marginBottom="@dimen/grid_4"/>
+
+    <LinearLayout
+      android:id="@+id/project_social_view"
+      android:orientation="horizontal"
+      android:gravity="center_vertical"
+      android:visibility="gone"
+      android:layout_marginBottom="@dimen/grid_4"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <ImageView
+        android:id="@+id/project_social_image"
+        android:visibility="gone"
+        android:layout_width="@dimen/project_social_photo_height"
+        android:layout_height="@dimen/project_social_photo_height" />
+
+      <TextView
+        android:id="@+id/project_social_text"
+        style="@style/CaptionPrimaryMedium"
+        android:layout_marginStart="@dimen/grid_2"
+        android:layout_marginLeft="@dimen/grid_2"
+        android:text="Gina Binetti, Christopher Wright, and 5 more are backers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    </LinearLayout>
 
   </LinearLayout>
 
   <include layout="@layout/horizontal_line_thin_view" />
-
-  <!-- todo: populate this list with friend backers-->
-  <LinearLayout
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <ListView
-      android:visibility="gone"
-      android:id="@+id/friend_backing_list"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content" />
-
-  </LinearLayout>
 
   <include layout="@layout/project_creator_info" />
 

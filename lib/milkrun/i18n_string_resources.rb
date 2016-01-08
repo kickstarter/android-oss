@@ -13,6 +13,8 @@ module Milkrun
             .sort
             .map { |k, v| [ k, v.gsub(/'/) { "\\'" } # Escape single quotes
                                 .gsub(/&/) { "&amp;" } # Escape ampersands
+                                .gsub("\n") { "\\n\n" } # Add explicit new line
+                                .gsub(/\A([ ]+)/) { $1.gsub(" ", '\u0020') } # Replace leading spaces with hard-coded space
                                 .gsub("<") { "&lt;" } ] } # Escape '<' characters
             .map { |k, v| "  <string name=\"#{k}\" formatted=\"false\">#{v}</string>" }
             .each { |str| f.puts(str) }

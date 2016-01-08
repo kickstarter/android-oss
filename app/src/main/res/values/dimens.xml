@@ -2,20 +2,20 @@
   <!-- Kickstarter eight-point grid keylines-->
   <dimen name="grid_1_half">4dp</dimen>
   <dimen name="grid_1">8dp</dimen>
-  <dimen name="grid_2">16dp</dimen>
-  <dimen name="grid_3">24dp</dimen>
   <dimen name="grid_3_half">12dp</dimen>
-  <dimen name="grid_4">32dp</dimen>
-  <dimen name="grid_5">40dp</dimen>
+  <dimen name="grid_2">16dp</dimen>
   <dimen name="grid_5_half">20dp</dimen>
+  <dimen name="grid_3">24dp</dimen>
+  <dimen name="grid_7_half">28dp</dimen>
+  <dimen name="grid_4">32dp</dimen>
+  <dimen name="grid_9_half">36dp</dimen>
+  <dimen name="grid_5">40dp</dimen>
+  <dimen name="grid_11_half">44dp</dimen>
   <dimen name="grid_6">48dp</dimen>
   <dimen name="grid_7">56dp</dimen>
-  <dimen name="grid_7_half">28dp</dimen>
   <dimen name="grid_8">64dp</dimen>
   <dimen name="grid_9">72dp</dimen>
-  <dimen name="grid_9_half">36dp</dimen>
   <dimen name="grid_10">80dp</dimen>
-  <dimen name="grid_11_half">44dp</dimen>
   <dimen name="grid_11">88dp</dimen>
   <dimen name="grid_12">96dp</dimen>
   <dimen name="grid_13">104dp</dimen>
@@ -23,6 +23,8 @@
   <dimen name="grid_15">120dp</dimen>
   <dimen name="grid_16">128dp</dimen>
   <dimen name="grid_20">160dp</dimen>
+  <dimen name="grid_26">208dp</dimen>
+  <dimen name="grid_35">280dp</dimen>
 
   <!-- Typography-->
   <dimen name="caption">12sp</dimen>
@@ -47,6 +49,7 @@
   <dimen name="card_margin_x">@dimen/grid_2</dimen>
   <dimen name="card_margin_y">@dimen/grid_1</dimen>
   <dimen name="card_padding_action_half">@dimen/grid_1_half</dimen>
+  <dimen name="profile_card_height">@dimen/grid_26</dimen>
 
   <!-- Layout padding -->
   <dimen name="feed_padding_y">@dimen/grid_5_half</dimen>
@@ -76,8 +79,13 @@
   <dimen name="comments_feed_avatar_height">@dimen/grid_7</dimen>
   <dimen name="profile_avatar_width">100dp</dimen>
   <dimen name="profile_avatar_height">@dimen/profile_avatar_width</dimen>
+  <dimen name="profile_card_photo_height">@dimen/grid_15</dimen>
+  <dimen name="profile_card_photo_width">@dimen/grid_20</dimen>
   <dimen name="project_avatar_width">@dimen/grid_8</dimen>
   <dimen name="project_avatar_height">@dimen/grid_8</dimen>
+  <dimen name="project_card_photo_med_height">200dp</dimen>
+  <dimen name="project_card_photo_med_width">266dp</dimen>
+  <dimen name="project_social_photo_height">@dimen/grid_4</dimen>
   <dimen name="project_photo_height">220dp</dimen>
 
   <!-- TextViews -->
@@ -89,4 +97,14 @@
   <!-- Activity feed view -->
   <dimen name="activity_feed_view_margin_top">0dp</dimen>
   <dimen name="activity_feed_view_margin_bottom">@dimen/grid_3_half</dimen>
+
+  <!-- Logged in menu -->
+  <dimen name="logged_in_menu_width">190dp</dimen>
+  <dimen name="logged_in_menu_horizontal_offset">-145dp</dimen>
+  <dimen name="logged_in_menu_vertical_offset">-46dp</dimen>
+
+  <!-- Popup menus -->
+  <dimen name="popup_menu_horizontal_offset">-151dp</dimen>
+  <dimen name="popup_menu_vertical_offset">-46dp</dimen>
+
 </resources>

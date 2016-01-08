@@ -21,10 +21,10 @@
       android:layout_height="wrap_content">
 
       <TextView
-        style="@style/SubheadSecondaryMedium"
+        style="@style/BodySecondary"
         android:layout_marginTop="@dimen/grid_4"
-        android:layout_marginBottom="@dimen/grid_7_half"
-        android:text="@string/___Projects_you_back"
+        android:layout_marginBottom="@dimen/grid_2"
+        android:text="@string/profile_settings_backer_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -40,9 +40,9 @@
         android:layout_height="@dimen/grid_8">
 
         <TextView
-          style="@style/BodyPrimary"
+          style="@style/SubheadPrimary"
           android:layout_centerVertical="true"
-          android:text="@string/___Project_updates"
+          android:text="@string/profile_settings_backer_project_updates"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 
@@ -74,9 +74,9 @@
         android:layout_height="@dimen/grid_8">
 
         <TextView
-          style="@style/BodyPrimary"
+          style="@style/SubheadPrimary"
           android:layout_centerVertical="true"
-          android:text="@string/___Manage_project_notifications"
+          android:text="@string/profile_settings_backer_notifications"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 
@@ -109,10 +109,10 @@
         android:layout_marginRight="@dimen/grid_2"/>
 
       <TextView
-        style="@style/SubheadSecondaryMedium"
+        style="@style/BodySecondary"
         android:layout_marginTop="@dimen/grid_11_half"
-        android:layout_marginBottom="@dimen/grid_7_half"
-        android:text="@string/___Social_notifications"
+        android:layout_marginBottom="@dimen/grid_2"
+        android:text="@string/profile_settings_social_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -128,9 +128,9 @@
         android:layout_height="@dimen/grid_8">
 
         <TextView
-          style="@style/BodyPrimary"
+          style="@style/SubheadPrimary"
           android:layout_centerVertical="true"
-          android:text="@string/___New_followers"
+          android:text="@string/profile_settings_social_followers"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 
@@ -159,9 +159,9 @@
         android:layout_height="@dimen/grid_8">
 
         <TextView
-          style="@style/BodyPrimary"
+          style="@style/SubheadPrimary"
           android:layout_centerVertical="true"
-          android:text="@string/___Friend_backs_a_project"
+          android:text="@string/profile_settings_social_friend_backs"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 
@@ -193,10 +193,10 @@
         android:layout_height="wrap_content">
 
         <TextView
-          style="@style/SubheadSecondaryMedium"
+          style="@style/BodySecondary"
           android:layout_marginTop="@dimen/grid_11_half"
-          android:layout_marginBottom="@dimen/grid_7_half"
-          android:text="@string/___Newsletters"
+          android:layout_marginBottom="@dimen/grid_2"
+          android:text="@string/profile_settings_newsletter_title"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 
@@ -207,9 +207,9 @@
           android:layout_height="@dimen/grid_8">
 
           <TextView
-            style="@style/BodyPrimary"
+            style="@style/SubheadPrimary"
             android:layout_centerVertical="true"
-            android:text="@string/___Projects_We_Love"
+            android:text="@string/profile_settings_newsletter_weekly"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -226,9 +226,9 @@
           android:layout_height="@dimen/grid_8">
 
           <TextView
-            style="@style/BodyPrimary"
+            style="@style/SubheadPrimary"
             android:layout_centerVertical="true"
-            android:text="@string/___Kickstarter_news_and_events"
+            android:text="@string/profile_settings_newsletter_promo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -245,9 +245,9 @@
           android:layout_height="@dimen/grid_8">
 
           <TextView
-            style="@style/BodyPrimary"
+            style="@style/SubheadPrimary"
             android:layout_centerVertical="true"
-            android:text="@string/___Happening_Now"
+            android:text="@string/profile_settings_newsletter_happening"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -260,10 +260,10 @@
         <include layout="@layout/horizontal_line_thin_view"/>
 
         <TextView
-          style="@style/SubheadSecondaryMedium"
+          style="@style/BodySecondary"
           android:layout_marginTop="@dimen/grid_11_half"
-          android:layout_marginBottom="@dimen/grid_7_half"
-          android:text="@string/___About"
+          android:layout_marginBottom="@dimen/grid_2"
+          android:text="@string/profile_settings_about_title"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 
@@ -277,9 +277,9 @@
           android:layout_height="@dimen/grid_8">
 
           <TextView
-            style="@style/BodyPrimary"
+            style="@style/SubheadPrimary"
             android:layout_centerVertical="true"
-            android:text="@string/___Frequently_Asked_Questions"
+            android:text="@string/profile_settings_about_faq"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -300,9 +300,9 @@
           android:layout_height="@dimen/grid_8">
 
           <TextView
-            style="@style/BodyPrimary"
+            style="@style/SubheadPrimary"
             android:layout_centerVertical="true"
-            android:text="@string/___Contact"
+            android:text="@string/profile_settings_about_contact"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -323,9 +323,9 @@
           android:layout_height="@dimen/grid_8">
 
           <TextView
-            style="@style/BodyPrimary"
+            style="@style/SubheadPrimary"
             android:layout_centerVertical="true"
-            android:text="@string/___How_Kickstarter_works"
+            android:text="@string/profile_settings_about_how_it_works"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -346,9 +346,9 @@
           android:layout_height="@dimen/grid_8">
 
           <TextView
-            style="@style/BodyPrimary"
+            style="@style/SubheadPrimary"
             android:layout_centerVertical="true"
-            android:text="@string/___Terms_of_Use"
+            android:text="@string/profile_settings_about_terms"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -371,7 +371,7 @@
           <TextView
             style="@style/BodyPrimary"
             android:layout_centerVertical="true"
-            android:text="@string/___Privacy_Policy"
+            android:text="@string/profile_settings_about_privacy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -392,9 +392,9 @@
           android:layout_height="@dimen/grid_8">
 
           <TextView
-            style="@style/BodyPrimary"
+            style="@style/SubheadPrimary"
             android:layout_centerVertical="true"
-            android:text="@string/___Cookie_Policy"
+            android:text="@string/profile_settings_about_cookie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -407,10 +407,41 @@
 
         <include layout="@layout/horizontal_line_thin_view"/>
 
+        <TextView
+          style="@style/BodySecondary"
+          android:layout_marginTop="@dimen/grid_11_half"
+          android:layout_marginBottom="@dimen/grid_2"
+          android:text="@string/profile_settings_rating_title"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
+
+        <include layout="@layout/horizontal_line_thin_view"/>
+
+        <RelativeLayout
+          android:id="@+id/settings_rate_us"
+          android:focusable="true"
+          android:background="@drawable/click_indicator_light_masked"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_8">
+
+          <TextView
+            style="@style/SubheadPrimary"
+            android:layout_centerVertical="true"
+            android:text="@string/profile_settings_rating_rate_us_play_store"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+          <com.kickstarter.ui.views.IconTextView
+            style="@style/EndSettingsWidget"
+            android:textColor="@color/gray_black"
+            android:text="@string/chevron_right_icon" />
+
+        </RelativeLayout>
+
         <Button
           style="@style/BorderButton"
           android:id="@+id/log_out_button"
-          android:text="@string/___Log_out"
+          android:text="@string/profile_settings_log_out_button"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/grid_3"

@@ -11,11 +11,11 @@ import rx.Subscription;
 import rx.functions.Action0;
 
 public final class RecyclerViewPaginator {
-  private @NonNull final RecyclerView recyclerView;
-  private @NonNull final Action0 nextPage;
+  private final @NonNull RecyclerView recyclerView;
+  private final @NonNull Action0 nextPage;
   private Subscription subscription = null;
 
-  public RecyclerViewPaginator(@NonNull final RecyclerView recyclerView, @NonNull final Action0 nextPage) {
+  public RecyclerViewPaginator(final @NonNull RecyclerView recyclerView, final @NonNull Action0 nextPage) {
     this.recyclerView = recyclerView;
     this.nextPage = nextPage;
     start();
@@ -32,8 +32,13 @@ public final class RecyclerViewPaginator {
       .map(__ -> recyclerView.getLayoutManager())
       .ofType(LinearLayoutManager.class)
       .map(this::displayedItemFromLinearLayout)
-      .distinctUntilChanged()
+      .filter(item -> item.second != 0)
       .filter(this::visibleItemIsCloseToBottom)
+      // NB: We think this operation is suffering from back pressure problems due to the volume of scroll events:
+      // https://rink.hockeyapp.net/manage/apps/239008/crash_reasons/88318986
+      // If it continues to happen we can also try `debounce`.
+      .onBackpressureDrop()
+      .distinctUntilChanged()
       .subscribe(__ -> nextPage.call());
   }
 
@@ -52,14 +57,11 @@ public final class RecyclerViewPaginator {
   /**
    * Returns a (visibleItem, totalItemCount) pair given a linear layout manager.
    */
-  private @NonNull Pair<Integer, Integer> displayedItemFromLinearLayout(@NonNull final LinearLayoutManager manager) {
-    final int visibleItemCount = manager.getChildCount();
-    final int totalItemCount = manager.getItemCount();
-    final int pastVisibleItems = manager.findFirstVisibleItemPosition();
-    return new Pair<>(visibleItemCount + pastVisibleItems, totalItemCount);
+  private @NonNull Pair<Integer, Integer> displayedItemFromLinearLayout(final @NonNull LinearLayoutManager manager) {
+    return new Pair<>(manager.findLastVisibleItemPosition(), manager.getItemCount());
   }
 
-  private boolean visibleItemIsCloseToBottom(@NonNull final Pair<Integer, Integer> visibleItemOfTotal) {
-    return visibleItemOfTotal.first == visibleItemOfTotal.second - 2;
+  private boolean visibleItemIsCloseToBottom(final @NonNull Pair<Integer, Integer> visibleItemOfTotal) {
+    return visibleItemOfTotal.first == visibleItemOfTotal.second - 1;
   }
 }

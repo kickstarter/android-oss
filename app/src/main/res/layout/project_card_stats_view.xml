@@ -34,7 +34,7 @@
     android:layout_marginEnd="@dimen/grid_1_half"/>
 
   <TextView
-    android:text="@string/___funded"
+    android:text="@string/discovery_baseball_card_stats_funded"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginRight="@dimen/grid_2"

@@ -1,58 +1,64 @@
 package com.kickstarter.ui.viewholders;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.kickstarter.KSApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.KSString;
 import com.kickstarter.models.Activity;
 import com.squareup.picasso.Picasso;
 
+import javax.inject.Inject;
+
 import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public final class ProjectStateChangedViewHolder extends ActivityListViewHolder {
-  @Bind(R.id.title) TextView titleTextView;
-  @Bind(R.id.project_photo) ImageView projectPhotoImageView;
+  protected @Bind(R.id.title) TextView titleTextView;
+  protected @Bind(R.id.project_photo) ImageView projectPhotoImageView;
+  protected @BindString(R.string.activity_project_state_change_project_was_not_successfully_funded) String projectNotSuccessfullyFundedString;
+  protected @BindString(R.string.activity_project_state_change_project_was_cancelled_by_creator) String projectCanceledByCreatorString;
+  protected @BindString(R.string.activity_project_state_change_project_was_suspended) String projectSuspendedString;
 
   private final Delegate delegate;
+
+  @Inject KSString ksString;
 
   public interface Delegate {
     void projectStateChangedClicked(ProjectStateChangedViewHolder viewHolder, Activity activity);
   }
 
-  public ProjectStateChangedViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
+  public ProjectStateChangedViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
     this.delegate = delegate;
+    ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
     ButterKnife.bind(this, view);
   }
 
   @Override
-  public void onBind(@NonNull final Object datum) {
+  public void onBind(final @NonNull Object datum) {
     super.onBind(datum);
 
-    final Context context = view.getContext();
-
-    Picasso.with(context)
+    Picasso.with(view.getContext())
       .load(activity.project().photo().little())
       .into(projectPhotoImageView);
 
-    titleTextView.setText(titleText(context, activity));
+    titleTextView.setText(titleText(activity));
   }
 
-  public String titleText(@NonNull final Context context, @NonNull final Activity activity) {
+  public String titleText(final @NonNull Activity activity) {
     switch (activity.category()) {
       case Activity.CATEGORY_FAILURE:
-        return context.getString(R.string.___project_was_not_successfully_funded, activity.project().name());
+        return ksString.format(projectNotSuccessfullyFundedString, "project_name", activity.project().name());
       case Activity.CATEGORY_CANCELLATION:
-        return context.getString(R.string.___project_was_cancelled_by_its_creator, activity.project().name());
+        return ksString.format(projectCanceledByCreatorString, "project_name", activity.project().name());
       case Activity.CATEGORY_SUSPENSION:
-        return context.getString(R.string.___project_was_suspended, activity.project().name());
-      case Activity.CATEGORY_RESUME:
-        return context.getString(R.string.___project_resumed, activity.project().name());
+        return ksString.format(projectSuspendedString, "project_name", activity.project().name());
       default:
         return "";
     }

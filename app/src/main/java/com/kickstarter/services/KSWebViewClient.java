@@ -12,6 +12,7 @@ import android.webkit.WebViewClient;
 import com.kickstarter.R;
 import com.kickstarter.libs.FormContents;
 import com.kickstarter.libs.utils.IOUtils;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.DisplayWebViewActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.squareup.okhttp.MediaType;
@@ -177,7 +178,7 @@ public final class KSWebViewClient extends WebViewClient {
   private boolean startModalWebViewActivity(@NonNull final Request request, @NonNull final WebView webView) {
     final Activity context = (Activity) webView.getContext();
     final Intent intent = new Intent(context, DisplayWebViewActivity.class)
-      .putExtra(context.getString(R.string.intent_url), request.urlString());
+      .putExtra(IntentKey.URL, request.urlString());
     context.startActivity(intent);
     context.overridePendingTransition(R.anim.slide_in_bottom, R.anim.fade_out);
 
@@ -191,7 +192,7 @@ public final class KSWebViewClient extends WebViewClient {
     }
     final Activity activity = (Activity) webView.getContext();
     final Intent intent = new Intent(activity, ProjectActivity.class)
-      .putExtra(activity.getString(R.string.intent_project_param), matcher.group())
+      .putExtra(IntentKey.PROJECT_PARAM, matcher.group())
       .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
     activity.startActivity(intent);
 

@@ -19,7 +19,7 @@
       style="@style/ToolbarIcon"
       android:id="@+id/back_button"
       android:focusable="true"
-      android:contentDescription="@string/project_accessibility_button_share_label"
+      android:contentDescription="@string/general_navigation_accessibility_button_navigate_back_label"
       android:layout_alignParentStart="true"
       android:layout_alignParentLeft="true"
       android:text="@string/arrow_back_icon"/>
@@ -33,12 +33,12 @@
       android:layout_marginLeft="@dimen/grid_3_half"
       android:layout_marginStart="@dimen/grid_3_half"
       android:gravity="center_vertical"
-      android:text="@string/___Comments" />
+      android:text="@string/project_menu_buttons_comments" />
 
     <com.kickstarter.ui.views.IconButton
       style="@style/ToolbarIcon"
       android:id="@+id/comment_button"
-      android:contentDescription="@string/___comment_button_content_description"
+      android:contentDescription="@string/project_comments_accessibility_button_write"
       android:focusable="true"
       android:visibility="invisible"
       android:layout_alignParentEnd="true"

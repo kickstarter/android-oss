@@ -14,7 +14,8 @@
    Keep an eye on the output to see if any manual steps are required.
 6. Import the project. Open Android Studio, then click `File > Import Project` and
    select `build.gradle` in the root of the repository.
-7. Start up the app. Click `Run > Run 'app'`. After the project builds you'll be
+7. Switch the Android build variant to `internalMin21Debug` using `View > Tool Windows > Build Variants`.
+8. Start up the app. Click `Run > Run 'app'`. After the project builds you'll be
    prompted to build or launch an emulator - use `Nexus 5 API 23 x86` for the
    device.
 

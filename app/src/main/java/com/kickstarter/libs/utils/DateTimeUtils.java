@@ -1,33 +1,37 @@
 package com.kickstarter.libs.utils;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Pair;
+
+import com.kickstarter.R;
+import com.kickstarter.libs.KSString;
+import com.kickstarter.libs.NumberOptions;
+import com.kickstarter.libs.RelativeDateTimeOptions;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Seconds;
 import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
-public class DateTimeUtils {
-  public final static int THIRTY_DAYS_IN_SECONDS = 60 * 60 * 24 * 30;
+import java.util.Locale;
 
-  public static DateTimeFormatter defaultFormatter() {
-    // Wrapper to make this easier to refactor later.
-    return DateTimeFormat.forPattern("yyyy/MM/dd");
+public final class DateTimeUtils {
+  private DateTimeUtils() {}
+
+  /**
+   * e.g.: December 2015.
+   */
+  public static @NonNull String estimatedDeliveryOn(final @NonNull DateTime dateTime) {
+    return estimatedDeliveryOn(dateTime, Locale.getDefault());
   }
 
-  // i.e. August 20, 2015 at 7:45 PM.
-  public static DateTimeFormatter writtenDeadline() {
-    return DateTimeFormat.forPattern("MMMM dd, yyyy 'at' h:mm a.");
-  }
-
-  // i.e. Wednesday, September 23, 2015
-  public static DateTimeFormatter pledgedAt() {
-    return DateTimeFormat.forPattern("EEEE, MMMM dd, yyyy");
-  }
-
-  public static DateTimeFormatter estimatedDeliveryOn() {
-    return DateTimeFormat.forPattern("MMMM yyyy");
+  /**
+   * e.g.: December 2015.
+   */
+  public static @NonNull String estimatedDeliveryOn(final @NonNull DateTime dateTime, final @NonNull Locale locale) {
+    return dateTime.toString(DateTimeFormat.forPattern("MMMM yyyy").withLocale(locale).withZoneUTC());
   }
 
   public static boolean isDateToday(final @NonNull DateTime dateTime) {
@@ -35,73 +39,140 @@ public class DateTimeUtils {
       .equals(DateTime.now().withTimeAtStartOfDay().withZoneRetainFields(DateTimeZone.UTC));
   }
 
-  public static String relativeDateInWords(@NonNull final DateTime dateTime) {
-    return relativeDateInWords(dateTime, true, true, THIRTY_DAYS_IN_SECONDS);
+  /**
+   * e.g.: Dec 17, 2015.
+   */
+  public static @NonNull String fullDate(final @NonNull DateTime dateTime) {
+    return fullDate(dateTime, Locale.getDefault());
   }
 
-  public static String relativeDateInWords(@NonNull final DateTime dateTime, final boolean shortText) {
-    return relativeDateInWords(dateTime, shortText, true, THIRTY_DAYS_IN_SECONDS);
+  /**
+   * e.g.: Dec 17, 2015.
+   */
+  public static @NonNull String fullDate(final @NonNull DateTime dateTime, final @NonNull Locale locale) {
+    return dateTime.toString(DateTimeFormat.fullDate().withLocale(locale).withZoneUTC());
   }
 
-  public static String relativeDateInWords(@NonNull final DateTime dateTime, final boolean shortText, final boolean explain) {
-    return relativeDateInWords(dateTime, shortText, explain, THIRTY_DAYS_IN_SECONDS);
+  /**
+   * e.g.: Dec 17, 2015.
+   */
+  public static @NonNull String mediumDate(final @NonNull DateTime dateTime) {
+    return mediumDate(dateTime, Locale.getDefault());
   }
 
-  public static String relativeDateInWords(@NonNull final DateTime dateTime, final boolean shortText,
-    final boolean explain, final int threshold) {
-    // TODO: This method is a quick translation from our iOS code, but it needs another pass, e.g.: we should
-    // extract these strings, look into JodaTime to see if we can clean anything up..
-    final DateTime now = new DateTime();
-    final Seconds seconds = Seconds.secondsBetween(dateTime, now);
-    Integer secondsDifference = seconds.getSeconds();
-    Integer daysDifference = seconds.toStandardDays().getDays();
+  /**
+   * e.g.: Dec 17, 2015.
+   */
+  public static @NonNull String mediumDate(final @NonNull DateTime dateTime, final @NonNull Locale locale) {
+    return dateTime.toString(DateTimeFormat.mediumDate().withLocale(locale).withZoneUTC());
+  }
 
-    String agoString = "";
-    String inString = "";
-    if (secondsDifference < 0 && explain) {
-      inString += "in ";
+  /**
+   * e.g.: Dec 17, 2015 6:35:05 PM.
+   */
+  public static @NonNull String mediumDateTime(final @NonNull DateTime dateTime) {
+    return mediumDateTime(dateTime, DateTimeZone.getDefault());
+  }
+
+  /**
+   * e.g.: Dec 17, 2015 6:35:05 PM.
+   */
+  public static @NonNull String mediumDateTime(final @NonNull DateTime dateTime, final @NonNull DateTimeZone dateTimeZone) {
+    return mediumDateTime(dateTime, dateTimeZone, Locale.getDefault());
+  }
+
+  /**
+   * e.g.: Dec 17, 2015 6:35:05 PM.
+   */
+  public static @NonNull String mediumDateTime(final @NonNull DateTime dateTime, final @NonNull DateTimeZone dateTimeZone,
+    final @NonNull Locale locale) {
+    return dateTime.toString(DateTimeFormat.mediumDateTime().withLocale(locale).withZone(dateTimeZone));
+  }
+
+  /**
+   * Returns a string indicating the distance between {@link DateTime}s. Defaults to comparing the input {@link DateTime} to
+   * the current time.
+   */
+  public static @NonNull String relative(final @NonNull Context context, final @NonNull KSString ksString,
+    final @NonNull DateTime dateTime) {
+    return relative(context, ksString, dateTime, RelativeDateTimeOptions.builder().build());
+  }
+
+  /**
+   * Returns a string indicating the distance between {@link DateTime}s. Defaults to comparing the input {@link DateTime} to
+   * the current time.
+   */
+  public static @NonNull String relative(final @NonNull Context context, final @NonNull KSString ksString,
+    final @NonNull DateTime dateTime, final @NonNull RelativeDateTimeOptions options) {
+
+    final DateTime relativeToDateTime = ObjectUtils.coalesce(options.relativeToDateTime(), DateTime.now());
+    final Seconds seconds = Seconds.secondsBetween(dateTime, relativeToDateTime);
+    final int secondsDifference = seconds.getSeconds();
+
+    if (secondsDifference >= 0.0 && secondsDifference <= 60.0) {
+      return context.getString(R.string.dates_just_now);
+    } else if (secondsDifference >= -60.0 && secondsDifference <= 0.0) {
+      return context.getString(R.string.dates_right_now);
     }
-    if (secondsDifference > 0 && explain) {
-      agoString += " ago";
+
+    final Pair<String, Integer> unitAndDifference = unitAndDifference(secondsDifference, options.threshold());
+    if (unitAndDifference == null) {
+      // Couldn't find a good match, just render the date.
+      return mediumDate(dateTime);
     }
 
-    if (secondsDifference >= 0 && secondsDifference <= 60) {
-      return "just now";
-    } else if (secondsDifference >= -60 && secondsDifference <= 0) {
-      return "right now";
-    }
+    final String unit = unitAndDifference.first;
+    final int difference = unitAndDifference.second;
+    boolean willHappenIn = false;
+    boolean happenedAgo = false;
 
-    secondsDifference = Math.abs(secondsDifference);
-    daysDifference = Math.abs(daysDifference);
-
-    if (secondsDifference < 3600) {
-      int minutesDifference = (int) Math.floor(secondsDifference / 60.0);
-      if (minutesDifference == 1) {
-        return shortText ?
-          inString + "1 min" + agoString :
-          inString + "1 minute" + agoString;
-      } else {
-        return shortText ?
-          minutesDifference + " mins" + agoString :
-          minutesDifference + " minutes" + agoString;
+    if (!options.absolute()) {
+      if (secondsDifference < 0) {
+        willHappenIn = true;
+      } else if (secondsDifference > 0) {
+        happenedAgo = true;
       }
-    } else if (secondsDifference < 86400) {
-      int hoursDifference = (int) Math.floor(secondsDifference / 60.0 / 60.0);
-      if (hoursDifference == 1) {
-        return shortText ?
-          inString + "1 hr" + agoString :
-          inString + "1 hour" + agoString;
-      } else {
-        return shortText ?
-          inString + hoursDifference + " hrs" + agoString :
-          inString + hoursDifference + " hours" + agoString;
-      }
-    } else if (daysDifference == 1) {
-      return "yesterday";
-    } else if (secondsDifference < threshold) {
-      return inString + daysDifference + " days" + agoString;
+    }
+
+    if (happenedAgo && unit.equals("days") && difference == 1) {
+      return context.getString(R.string.dates_yesterday);
+    }
+
+    final StringBuilder baseKeyPath = new StringBuilder();
+    if (willHappenIn) {
+      baseKeyPath.append(String.format("dates_time_in_%s", unit));
+    } else if (happenedAgo) {
+      baseKeyPath.append(String.format("dates_time_%s_ago", unit));
     } else {
-      return dateTime.toString(defaultFormatter());
+      baseKeyPath.append(String.format("dates_time_%s", unit));
     }
+
+    if (options.abbreviated()) {
+      baseKeyPath.append("_abbreviated");
+    }
+
+    return ksString.format(baseKeyPath.toString(), difference,
+      "time_count", NumberUtils.format(difference, NumberOptions.builder().build()));
+  }
+
+  /**
+   * Utility to pair a unit (e.g. "minutes", "hours", "days") with a measurement. Returns `null` if the difference
+   * exceeds the threshold.
+   */
+  private static @Nullable Pair<String, Integer> unitAndDifference(final int initialSecondsDifference, final int threshold) {
+    final int secondsDifference = Math.abs(initialSecondsDifference);
+    final int daysDifference = (int) Math.floor(secondsDifference / 86400);
+
+    if (secondsDifference < 3600) { // 1 hour
+      final int minutesDifference = (int) Math.floor(secondsDifference / 60.0);
+      return new Pair<>("minutes", minutesDifference);
+    } else if (secondsDifference < 86400) { // 24 hours
+      final int hoursDifference = (int) Math.floor(secondsDifference / 60.0 / 60.0);
+      return new Pair<>("hours", hoursDifference);
+    } else if (secondsDifference < threshold) {
+      return new Pair<>("days", daysDifference);
+    }
+
+    return null;
   }
 }

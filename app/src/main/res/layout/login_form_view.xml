@@ -20,7 +20,7 @@
       android:inputType="textEmailAddress"
       android:singleLine="true"
       style="@style/SubheadPrimary"
-      android:hint="@string/___Email_address" />
+      android:hint="@string/login_placeholder_email" />
 
   </android.support.design.widget.TextInputLayout>
 
@@ -37,7 +37,7 @@
       android:layout_marginBottom="@dimen/grid_2"
       android:inputType="textPassword"
       style="@style/SubheadPrimary"
-      android:hint="@string/___Password" />
+      android:hint="@string/login_placeholder_password" />
 
   </android.support.design.widget.TextInputLayout>
 
@@ -47,7 +47,7 @@
     android:enabled="false"
     android:layout_marginTop="@dimen/grid_2"
     android:layout_width="match_parent"
-    android:text="@string/___Log_in" />
+    android:text="@string/login_buttons_log_in" />
 
   <TextView
     style="@style/CaptionPrimary"
@@ -61,8 +61,7 @@
     android:paddingRight="@dimen/grid_1"
     android:paddingTop="@dimen/grid_1"
     android:paddingBottom="@dimen/grid_1"
-    android:gravity="center_horizontal"
-    android:text="@string/___Forgot_your_password" />
+    android:gravity="center_horizontal" />
 
 </LinearLayout>
 

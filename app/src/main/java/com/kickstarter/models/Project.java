@@ -295,7 +295,8 @@ public abstract class Project implements Parcelable {
   }
 
   public @NonNull String param() {
-    return slug() != null ? slug() : String.valueOf(id());
+    final String slug = slug();
+    return slug != null ? slug : String.valueOf(id());
   }
 
   public @NonNull String secureWebProjectUrl() {

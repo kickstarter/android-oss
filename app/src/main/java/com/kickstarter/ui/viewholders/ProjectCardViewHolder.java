@@ -18,6 +18,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.DateTimeUtils;
+import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.SocialUtils;
 import com.kickstarter.libs.utils.StringUtils;
@@ -90,7 +91,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   public void onBind(@NonNull final Object datum) {
     this.project = (Project) datum;
 
-    backersCountTextView.setText(project.formattedBackersCount());
+    backersCountTextView.setText(NumberUtils.format(project.backersCount()));
     blurbTextView.setText(project.blurb());
     categoryTextView.setText(project.category().name());
     deadlineCountdownTextView.setText(Integer.toString(ProjectUtils.deadlineCountdownValue(project)));

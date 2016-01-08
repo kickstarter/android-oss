@@ -128,18 +128,6 @@ public abstract class Project implements Parcelable {
     return urls().web().description();
   }
 
-  public @NonNull String formattedBackersCount() {
-    return NumberUtils.numberWithDelimiter(backersCount());
-  }
-
-  public @Nullable String formattedCommentsCount() {
-    return NumberUtils.numberWithDelimiter(commentsCount());
-  }
-
-  public @Nullable String formattedUpdatesCount() {
-    return NumberUtils.numberWithDelimiter(updatesCount());
-  }
-
   public @NonNull String updatesUrl() {
     return urls().web().updates();
   }

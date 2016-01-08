@@ -20,6 +20,7 @@ import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.DateTimeUtils;
+import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.SocialUtils;
 import com.kickstarter.libs.utils.ViewUtils;
@@ -142,7 +143,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     deadlineCountdownTextView.setText(Integer.toString(ProjectUtils.deadlineCountdownValue(project)));
     deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(project, view.getContext(), ksString));
     pledgedTextView.setText(ksCurrency.format(project.pledged(), project));
-    backersCountTextView.setText(project.formattedBackersCount());
+    backersCountTextView.setText(NumberUtils.format(project.backersCount()));
 
      /* Creator */
     Picasso.with(context).load(project.creator().avatar()
@@ -150,8 +151,10 @@ public final class ProjectViewHolder extends KSViewHolder {
       .transform(new CircleTransformation())
       .into(avatarImageView);
     avatarNameTextView.setText(project.creator().name());
-    updatesCountTextView.setText(project.formattedUpdatesCount());
-    commentsCountTextView.setText(project.formattedCommentsCount());
+    final Integer updatesCount = project.updatesCount();
+    updatesCountTextView.setText(updatesCount != null ? NumberUtils.format(updatesCount) : null);
+    final Integer commentsCount = project.commentsCount();
+    commentsCountTextView.setText(commentsCount != null ? NumberUtils.format(commentsCount) : null);
 
     /* a11y */
     final String goalText = ksCurrency.format(project.goal(), project, true);
@@ -303,7 +306,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   }
 
   public void setStatsContentDescription() {
-    final String backersCountContentDescription = project.formattedBackersCount() + " " +  backersString;
+    final String backersCountContentDescription = NumberUtils.format(project.backersCount()) + " " +  backersString;
     final String pledgedContentDescription = pledgedTextView.getText() + " " + goalTextView.getText();
     final String deadlineCountdownContentDescription = deadlineCountdownTextView.getText() + " " + deadlineCountdownUnitTextView.getText();
 

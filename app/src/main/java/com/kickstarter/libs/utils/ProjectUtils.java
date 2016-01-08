@@ -90,7 +90,7 @@ public final class ProjectUtils {
     return project.creator().id() == user.id();
   }
 
-  public static boolean isUSUserViewingNonUSProject(final @NonNull User user, final @NonNull Project project) {
-    return I18nUtils.isCountryUS(user.location().country()) && !I18nUtils.isCountryUS(project.country());
+  public static boolean isUSUserViewingNonUSProject(final @NonNull String userCountry, final @NonNull String projectCountry) {
+    return I18nUtils.isCountryUS(userCountry) && !I18nUtils.isCountryUS(projectCountry);
   }
 }

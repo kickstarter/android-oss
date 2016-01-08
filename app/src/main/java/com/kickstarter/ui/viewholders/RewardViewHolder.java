@@ -7,17 +7,15 @@ import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
-import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.KSCurrency;
+import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
-import com.kickstarter.models.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -52,7 +50,7 @@ public final class RewardViewHolder extends KSViewHolder {
   private final Delegate delegate;
   private Project project;
   private Reward reward;
-  private User user;
+  private String configCountry;
 
   public interface Delegate {
     void rewardViewHolderClicked(RewardViewHolder viewHolder, Reward reward);
@@ -68,10 +66,10 @@ public final class RewardViewHolder extends KSViewHolder {
   }
 
   public void onBind(@NonNull final Object datum) {
-    final List<Object> projectRewardUser = (ArrayList<Object>) datum;
+    final List<Object> projectRewardUser = (List<Object>) datum;
     project = (Project) projectRewardUser.get(0);
     reward = (Reward) projectRewardUser.get(1);
-    user = (User) projectRewardUser.get(2);
+    configCountry = (String) projectRewardUser.get(2);
 
     minimumTextView.setText(ksString.format(
       pledgeRewardCurrencyOrMoreString,
@@ -169,17 +167,15 @@ public final class RewardViewHolder extends KSViewHolder {
   }
 
   public void toggleUsdConversionView() {
-    if (user != null) {
-      if (ProjectUtils.isUSUserViewingNonUSProject(user, project)) {
-        usdConversionTextView.setVisibility(View.VISIBLE);
-        usdConversionTextView.setText(ksString.format(
-            usdConversionString,
-            "reward_amount",
-            ksCurrency.format(reward.minimum(), project, true, true))
-        );
-      } else {
-        usdConversionTextView.setVisibility(View.GONE);
-      }
+    if (ProjectUtils.isUSUserViewingNonUSProject(configCountry, project.country())) {
+      usdConversionTextView.setVisibility(View.VISIBLE);
+      usdConversionTextView.setText(ksString.format(
+          usdConversionString,
+          "reward_amount",
+          ksCurrency.format(reward.minimum(), project, true, true))
+      );
+    } else {
+      usdConversionTextView.setVisibility(View.GONE);
     }
   }
 

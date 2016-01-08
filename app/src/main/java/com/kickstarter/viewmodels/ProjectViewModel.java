@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.KSApplication;
+import com.kickstarter.libs.Config;
+import com.kickstarter.libs.CurrentConfig;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
@@ -27,9 +29,11 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public final class ProjectViewModel extends ViewModel<ProjectActivity> implements ProjectAdapter.Delegate, ProjectViewModelInputs, ProjectViewModelOutputs {
+public final class ProjectViewModel extends ViewModel<ProjectActivity> implements ProjectAdapter.Delegate,
+  ProjectViewModelInputs, ProjectViewModelOutputs {
   protected @Inject ApiClientType client;
   protected @Inject CurrentUser currentUser;
+  protected @Inject CurrentConfig currentConfig;
 
   // INPUTS
   private final PublishSubject<Project> initializer = PublishSubject.create();
@@ -88,8 +92,8 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
 
   // OUTPUTS
   final BehaviorSubject<Project> project = BehaviorSubject.create();
-  public final Observable<Pair<Project, User>> projectAndUser() {
-    return project.compose(Transformers.combineLatestPair(currentUser.observable()));
+  public final Observable<Pair<Project, Config>> projectAndConfig() {
+    return project.compose(Transformers.combineLatestPair(currentConfig.observable()));
   }
   public Observable<Project> showShareSheet() {
     return this.project.compose(Transformers.takeWhen(this.shareClicked));

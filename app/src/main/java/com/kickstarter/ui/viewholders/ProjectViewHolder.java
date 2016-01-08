@@ -27,7 +27,6 @@ import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.SocialUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.models.User;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ProjectSocialActivity;
 import com.kickstarter.ui.views.IconButton;
@@ -45,7 +44,7 @@ import butterknife.OnClick;
 
 public final class ProjectViewHolder extends KSViewHolder {
   private Project project;
-  private User user;
+  private String configCountry;
   private final Delegate delegate;
 
   protected @Bind(R.id.avatar) ImageView avatarImageView;
@@ -121,9 +120,9 @@ public final class ProjectViewHolder extends KSViewHolder {
   }
 
   public void onBind(@NonNull final Object datum) {
-    final Pair<Project, User> projectAndUser = (Pair<Project, User>) datum;
-    this.project = projectAndUser.first;
-    this.user = projectAndUser.second;
+    final Pair<Project, String> projectAndCountry = (Pair<Project, String>) datum;
+    this.project = projectAndCountry.first;
+    this.configCountry = projectAndCountry.second;
     final Context context = view.getContext();
 
     /* Video */
@@ -205,19 +204,17 @@ public final class ProjectViewHolder extends KSViewHolder {
   }
 
   public void setConvertedUsdView() {
-    if (user != null) {
-      if (I18nUtils.isCountryUS(user.location().country()) && !I18nUtils.isCountryUS(project.country())) {
-        usdConversionTextView.setVisibility(View.VISIBLE);
-        usdConversionTextView.setText(ksString.format(
-          convertedFromString,
-          "pledged",
-          ksCurrency.format(project.pledged(), project),
-          "goal",
-          ksCurrency.format(project.goal(), project)
-        ));
-      } else {
-        usdConversionTextView.setVisibility(View.GONE);
-      }
+    if (I18nUtils.isCountryUS(configCountry) && !I18nUtils.isCountryUS(project.country())) {
+      usdConversionTextView.setVisibility(View.VISIBLE);
+      usdConversionTextView.setText(ksString.format(
+        convertedFromString,
+        "pledged",
+        ksCurrency.format(project.pledged(), project),
+        "goal",
+        ksCurrency.format(project.goal(), project)
+      ));
+    } else {
+      usdConversionTextView.setVisibility(View.GONE);
     }
   }
 

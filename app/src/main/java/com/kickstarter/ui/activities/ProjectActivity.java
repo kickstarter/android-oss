@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 
@@ -22,7 +21,6 @@ import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
-import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ProjectAdapter;
@@ -76,10 +74,10 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     projectRecyclerView.setAdapter(adapter);
     projectRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    this.viewModel.outputs.projectAndUser()
+    this.viewModel.outputs.projectAndConfig()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(pu -> this.renderProject(pu.first, pu.second));
+      .subscribe(pu -> this.renderProject(pu.first, pu.second.countryCode()));
 
     this.viewModel.outputs.showCampaign()
       .compose(bindToLifecycle())
@@ -143,8 +141,8 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
       .subscribe(__ -> this.startLoginToutActivity());
   }
 
-  private void renderProject(final @NonNull Project project, final @NonNull User user) {
-    adapter.takeProject(project, user);
+  private void renderProject(final @NonNull Project project, final @NonNull String configCountry) {
+    adapter.takeProject(project, configCountry);
     renderActionButton(project);
     renderStar(project);
   }

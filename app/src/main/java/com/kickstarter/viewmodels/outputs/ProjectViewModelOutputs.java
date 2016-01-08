@@ -2,14 +2,14 @@ package com.kickstarter.viewmodels.outputs;
 
 import android.util.Pair;
 
+import com.kickstarter.libs.Config;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
-import com.kickstarter.models.User;
 
 import rx.Observable;
 
 public interface ProjectViewModelOutputs {
-  Observable<Pair<Project, User>> projectAndUser();
+  Observable<Pair<Project, Config>> projectAndConfig();
 
   Observable<Project> showShareSheet();
   Observable<Project> playVideo();

@@ -79,7 +79,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     this.viewModel.outputs.projectAndUser()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::renderProject);
+      .subscribe(pu -> this.renderProject(pu.first, pu.second));
 
     this.viewModel.outputs.showCampaign()
       .compose(bindToLifecycle())
@@ -120,8 +120,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(
-        projectAndReward -> this.startRewardSelectedCheckout(projectAndReward.first, projectAndReward.second)
-      );
+        projectAndReward -> this.startRewardSelectedCheckout(projectAndReward.first, projectAndReward.second));
 
     this.viewModel.outputs.startManagePledge()
       .compose(bindToLifecycle())
@@ -144,10 +143,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
       .subscribe(__ -> this.startLoginToutActivity());
   }
 
-  private void renderProject(final @NonNull Pair<Project, User> projectAndUser) {
-    final Project project = projectAndUser.first;
-    final User user = projectAndUser.second;
-
+  private void renderProject(final @NonNull Project project, final @NonNull User user) {
     adapter.takeProject(project, user);
     renderActionButton(project);
     renderStar(project);

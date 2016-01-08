@@ -14,9 +14,8 @@ import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.ProjectViewHolder;
 import com.kickstarter.ui.viewholders.RewardViewHolder;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 import rx.Observable;
 
@@ -47,13 +46,7 @@ public final class ProjectAdapter extends KSAdapter {
     if (project.hasRewards()) {
       data().add(Observable.from(project.rewards())
           .filter(Reward::isReward)
-          .map(reward -> {
-            final List<Object> rewardViewHolderDatum = new ArrayList<>();
-            rewardViewHolderDatum.add(project);
-            rewardViewHolderDatum.add(reward);
-            rewardViewHolderDatum.add(user);
-            return rewardViewHolderDatum;
-          })
+          .map(reward -> Arrays.asList(project, reward, user))
           .toList().toBlocking().single()
       );
     }

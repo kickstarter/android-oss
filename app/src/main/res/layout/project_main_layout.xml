@@ -197,7 +197,7 @@
         android:visibility="gone"
         android:text="Converted from"
         style="@style/CaptionSecondary"
-        android:layout_marginTop="@dimen/grid_3_half"
+        android:layout_marginTop="@dimen/grid_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

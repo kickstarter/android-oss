@@ -91,13 +91,6 @@ public final class ProjectUtils {
   }
 
   public static boolean usUserViewingNonUSProject(final @NonNull Project project, final @NonNull User user) {
-    final String projectCountry = project.location().country();
-    final String userCountry = user.location().country();
-
-    if (projectCountry != null && userCountry != null) {
-      return !projectCountry.equals(Locale.US.getCountry()) && userCountry.equals(Locale.US.getCountry());
-    }
-    return false;
+    return !Locale.US.getCountry().equals(project.country()) && Locale.US.getCountry().equals(user.location().country());
   }
 }
-

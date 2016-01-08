@@ -54,9 +54,4 @@ public abstract class Backing implements Parcelable {
   }
 
   public abstract Builder toBuilder();
-
-
-  public String formattedSequence() {
-    return NumberUtils.numberWithDelimiter((int) this.sequence());
-  }
 }

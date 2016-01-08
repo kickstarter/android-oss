@@ -14,13 +14,6 @@ import java.util.Locale;
 public final class NumberUtils {
   private NumberUtils() {}
 
-  public static @Nullable String numberWithDelimiter(final @Nullable Integer integer) {
-    if (integer != null) {
-      return NumberFormat.getNumberInstance().format(integer);
-    }
-    return null;
-  }
-
   /**
    * Returns a formatted number for the user's locale.
    */

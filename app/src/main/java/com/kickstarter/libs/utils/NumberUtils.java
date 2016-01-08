@@ -22,6 +22,20 @@ public final class NumberUtils {
   }
 
   /**
+   * Returns a formatted number for the user's locale.
+   */
+  public static @NonNull String format(final int value) {
+    return format(value, Locale.getDefault());
+  }
+
+  /**
+   * Returns a formatted number for the specified locale.
+   */
+  public static @NonNull String format(final int value, final @NonNull Locale locale) {
+    return NumberFormat.getInstance(locale).format(value);
+  }
+
+  /**
    * Returns a formatted number for the user's locale. Defaults to 0 precision with no bucketing.
    */
   public static @NonNull String format(final float value) {

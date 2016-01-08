@@ -8,13 +8,22 @@ import java.math.RoundingMode;
 import java.util.Locale;
 
 public class NumberUtilsTest extends TestCase {
-  public void testFormatNumber() {
+  public void testFormatNumber_int() {
+    assertEquals("100", NumberUtils.format(100));
+    assertEquals("1,000", NumberUtils.format(1000));
+  }
+
+  public void testFormatNumber_intWithGermanyLocale() {
+    assertEquals("1.000", NumberUtils.format(1000, Locale.GERMANY));
+  }
+
+  public void testFormatNumber_float() {
     assertEquals("100", NumberUtils.format(100.0f));
     assertEquals("1,000", NumberUtils.format(1000.0f));
     assertEquals("1,001", NumberUtils.format(1000.6f));
   }
 
-  public void testFormatNumber_rounding() {
+  public void testFormatNumber_floatRounding() {
     assertEquals("1", NumberUtils.format(1.1f));
     assertEquals("1", NumberUtils.format(1.5f));
     assertEquals("2", NumberUtils.format(2.5f));
@@ -23,13 +32,13 @@ public class NumberUtilsTest extends TestCase {
     assertEquals("2", NumberUtils.format(1.1f, NumberOptions.builder().roundingMode(RoundingMode.UP).build()));
   }
 
-  public void testFormatNumber_withPrecision() {
+  public void testFormatNumber_floatWithPrecision() {
     assertEquals("100.12", NumberUtils.format(100.12f, NumberOptions.builder().precision(2).build()));
     assertEquals("100.2", NumberUtils.format(100.16f, NumberOptions.builder().precision(1).build()));
     assertEquals("100.00", NumberUtils.format(100.0f, NumberOptions.builder().precision(2).build()));
   }
 
-  public void testFormatNumber_withBucket() {
+  public void testFormatNumber_floatWithBucket() {
     assertEquals("100", NumberUtils.format(100.0f, NumberOptions.builder().bucketAbove(100.0f).build()));
 
     assertEquals("100", NumberUtils.format(100.0f, NumberOptions.builder().bucketAbove(1000.0f).build()));
@@ -65,13 +74,13 @@ public class NumberUtilsTest extends TestCase {
     assertEquals("1,111.1K", NumberUtils.format(1_111_111.0f, NumberOptions.builder().bucketAbove(1000.0f).bucketPrecision(1).build()));
   }
 
-  public void testFormatNumber_withCurrency() {
+  public void testFormatNumber_floatWithCurrency() {
     assertEquals("$100", NumberUtils.format(100.0f, NumberOptions.builder().currencySymbol("$").build()));
     assertEquals("€100", NumberUtils.format(100.0f, NumberOptions.builder().currencySymbol("€").build()));
     assertEquals("$100 CAD", NumberUtils.format(100.0f, NumberOptions.builder().currencySymbol("$").currencyCode("CAD").build()));
   }
 
-  public void testFormatNumber_withGermanLocale() {
+  public void testFormatNumber_floatWithCurrencyAndGermanyLocale() {
     assertEquals("100 $", NumberUtils.format(100.0f, NumberOptions.builder().currencySymbol("$").build(), Locale.GERMANY));
     assertEquals("1.000", NumberUtils.format(1000.0f, NumberOptions.builder().build(), Locale.GERMANY));
     assertEquals("100,12", NumberUtils.format(100.12f, NumberOptions.builder().precision(2).build(), Locale.GERMANY));

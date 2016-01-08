@@ -3,6 +3,8 @@ package com.kickstarter.services;
 import android.net.Uri;
 
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.factories.CategoryFactory;
+import com.kickstarter.factories.LocationFactory;
 
 import org.junit.Test;
 
@@ -79,5 +81,48 @@ public class DiscoveryParamsTest extends KSRobolectricTestCase {
 
     final Uri searchUri = Uri.parse("https://www.kickstarter.com/projects/search?term=skull+graphic+tee");
     assertEquals(params, DiscoveryParams.fromUri(searchUri));
+  }
+
+  @Test
+  public void testRefTag() {
+    assertEquals(
+      DiscoveryParams.builder().category(CategoryFactory.artCategory()).build().refTag(),
+      "category"
+    );
+
+    assertEquals(
+      DiscoveryParams.builder().category(CategoryFactory.artCategory()).sort(DiscoveryParams.Sort.POPULAR).build().refTag(),
+      "category_popular"
+    );
+
+    assertEquals(
+      DiscoveryParams.builder().location(LocationFactory.germany()).build().refTag(),
+      "city"
+    );
+
+    assertEquals(
+      DiscoveryParams.builder().staffPicks(true).build().refTag(),
+      "recommended"
+    );
+
+    assertEquals(
+      DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.POPULAR).build().refTag(),
+      "recommended_popular"
+    );
+
+    assertEquals(
+      DiscoveryParams.builder().social(1).build().refTag(),
+      "social"
+    );
+
+    assertEquals(
+      DiscoveryParams.builder().term("art").build().refTag(),
+      "search"
+    );
+
+    assertEquals(
+      DiscoveryParams.builder().build().refTag(),
+      "discovery"
+    );
   }
 }

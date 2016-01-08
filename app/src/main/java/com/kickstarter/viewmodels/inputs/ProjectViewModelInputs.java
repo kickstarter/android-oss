@@ -1,7 +1,9 @@
 package com.kickstarter.viewmodels.inputs;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
+import com.kickstarter.libs.RefTag;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 
@@ -19,4 +21,9 @@ public interface ProjectViewModelInputs {
   void starClicked();
   void rewardClicked(final @NonNull Reward reward);
   void loginSuccess();
+
+  /**
+   * Call with the un-parceled ref tag from the activity. Pass `null` if there is no parceled ref tag.
+   */
+  void activityRefTag(final @Nullable RefTag refTag);
 }

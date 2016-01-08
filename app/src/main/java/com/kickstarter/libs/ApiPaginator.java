@@ -220,7 +220,6 @@ public final class ApiPaginator<Data, Envelope, Params> {
 
     return (paginatingData.second != null ? loadWithPaginationPath.call(paginatingData.second) : loadWithParams.call(paginatingData.first))
       .retry(2)
-      .onErrorResumeNext(__ -> Observable.empty())
       .compose(Transformers.neverError())
       .doOnNext(this::keepMorePath)
       .map(envelopeToListOfData)

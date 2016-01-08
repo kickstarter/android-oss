@@ -3,7 +3,6 @@ package com.kickstarter.libs;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.kickstarter.libs.utils.KoalaUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
@@ -14,11 +13,12 @@ import java.util.Map;
 
 import static com.kickstarter.libs.utils.KoalaUtils.activityProperties;
 import static com.kickstarter.libs.utils.KoalaUtils.discoveryParamsProperties;
+import static com.kickstarter.libs.utils.KoalaUtils.projectProperties;
 
 public final class Koala {
-  private @NonNull final TrackingClientType client;
+  private final @NonNull TrackingClientType client;
 
-  public Koala(@NonNull final TrackingClientType client) {
+  public Koala(final @NonNull TrackingClientType client) {
     this.client = client;
   }
 
@@ -48,17 +48,34 @@ public final class Koala {
     }});
   }
 
-  public void trackDiscoveryFilterSelected(@NonNull final DiscoveryParams params) {
+  public void trackDiscoveryFilterSelected(final @NonNull DiscoveryParams params) {
     client.track("Discover Modal Selected Filter", discoveryParamsProperties(params));
   }
 
-  // PROJECT
-  public void trackProjectShow() {
-    client.track("Project Page");
+  /**
+   * Tracks a project show event.
+   * @param activityRefTag (nullable) The ref tag present in the activity upon displaying the project.
+   * @param cookieRefTag (nullable) The ref tag extracted from the cookie store upon viewing the project.
+   */
+  public void trackProjectShow(final @NonNull Project project, final @Nullable RefTag activityRefTag, final @Nullable RefTag cookieRefTag) {
+
+    final Map<String, Object> properties = projectProperties(project);
+
+    if (activityRefTag != null) {
+      properties.put("ref_tag", activityRefTag.tag());
+    }
+
+    if (cookieRefTag != null) {
+      properties.put("referrer_credit", cookieRefTag.tag());
+    } else if (activityRefTag != null) {
+      properties.put("referrer_credit", activityRefTag.tag());
+    }
+
+    client.track("Project Page", properties);
   }
 
   // PROJECT STAR
-  public void trackProjectStar(@NonNull final Project project) {
+  public void trackProjectStar(final @NonNull Project project) {
     if (project.isStarred()) {
       client.track("Project Star");
     } else {
@@ -67,16 +84,16 @@ public final class Koala {
   }
 
   // COMMENTING
-  public void trackProjectCommentCreate(@NonNull final Project project, @NonNull final Comment comment) {
-    client.track("Project Comment Create", KoalaUtils.projectProperties(project));
+  public void trackProjectCommentCreate(final @NonNull Project project, final @NonNull Comment comment) {
+    client.track("Project Comment Create", projectProperties(project));
   }
 
-  public void trackProjectCommentsView(@NonNull final Project project) {
-    client.track("Project Comment View", KoalaUtils.projectProperties(project));
+  public void trackProjectCommentsView(final @NonNull Project project) {
+    client.track("Project Comment View", projectProperties(project));
   }
 
-  public void trackProjectCommentLoadMore(@NonNull final Project project) {
-    client.track("Project Comment Load Older", KoalaUtils.projectProperties(project));
+  public void trackProjectCommentLoadMore(final @NonNull Project project) {
+    client.track("Project Comment Load Older", projectProperties(project));
   }
 
   // ACTIVITY
@@ -95,7 +112,7 @@ public final class Koala {
     client.track("Discover Search");
   }
 
-  public void trackSearchResults(@NonNull final String query, final int pageCount) {
+  public void trackSearchResults(final @NonNull String query, final int pageCount) {
     if (pageCount == 1) {
       client.track("Discover Search Results", new HashMap<String, Object>() {{
         put("search_term", query);
@@ -108,7 +125,7 @@ public final class Koala {
     }
   }
 
-  public void trackActivityTapped(@NonNull final Activity activity) {
+  public void trackActivityTapped(final @NonNull Activity activity) {
     client.track("Activity View Item", activityProperties(activity));
   }
 

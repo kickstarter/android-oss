@@ -123,7 +123,7 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
     addSubscription(
       client.fetchCurrentUser()
         .retry(2)
-        .onErrorResumeNext(e -> Observable.empty())
+        .compose(Transformers.neverError())
         .subscribe(currentUser::refresh)
     );
 

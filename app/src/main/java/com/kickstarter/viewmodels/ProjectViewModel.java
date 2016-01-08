@@ -8,8 +8,10 @@ import android.util.Pair;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.libs.utils.RefTagUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 import com.kickstarter.models.User;
@@ -21,6 +23,9 @@ import com.kickstarter.ui.viewholders.RewardViewHolder;
 import com.kickstarter.viewmodels.inputs.ProjectViewModelInputs;
 import com.kickstarter.viewmodels.outputs.ProjectViewModelOutputs;
 
+import java.net.CookieManager;
+import java.net.HttpCookie;
+
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -30,6 +35,23 @@ import rx.subjects.PublishSubject;
 public final class ProjectViewModel extends ViewModel<ProjectActivity> implements ProjectAdapter.Delegate, ProjectViewModelInputs, ProjectViewModelOutputs {
   protected @Inject ApiClientType client;
   protected @Inject CurrentUser currentUser;
+  protected @Inject CookieManager cookieManager;
+
+  /**
+   * A light-weight value to hold two ref tags and a project. Two ref tags are stored: one comes from parceled
+   * data in the activity and the other comes from the ref stored in a cookie associated to the project.
+   */
+  private class RefTagsAndProject {
+    final @NonNull RefTag activityRefTag;
+    final @Nullable RefTag cookieRefTag;
+    final @NonNull Project project;
+
+    private RefTagsAndProject(final @NonNull RefTag activityRefTag, final @Nullable RefTag cookieRefTag, final @NonNull Project project) {
+      this.activityRefTag = activityRefTag;
+      this.cookieRefTag = cookieRefTag;
+      this.project = project;
+    }
+  }
 
   // INPUTS
   private final PublishSubject<Project> initializer = PublishSubject.create();
@@ -83,6 +105,10 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
   private final PublishSubject<Void> loginSuccess = PublishSubject.create();
   public void loginSuccess() {
     this.loginSuccess.onNext(null);
+  }
+  private final PublishSubject<RefTag> activityRefTag = PublishSubject.create();
+  public void activityRefTag(final @Nullable RefTag refTag) {
+    activityRefTag.onNext(refTag);
   }
   public final ProjectViewModelInputs inputs = this;
 
@@ -170,7 +196,7 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
 
     addSubscription(
       loggedOutUserOnStarClick.subscribe(__ ->
-        this.showLoginTout.onNext(null)
+          this.showLoginTout.onNext(null)
       )
     );
 
@@ -179,7 +205,21 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
     addSubscription(projectOnUserChangeStar.mergeWith(starredProjectOnLoginSuccess)
       .subscribe(koala::trackProjectStar));
 
-    koala.trackProjectShow();
+    // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
+    final Observable<RefTag> cookieRefTag = project
+      .take(1)
+      .map(p -> RefTagUtils.storedCookieRefTagForProject(p, cookieManager));
+
+    Observable.combineLatest(activityRefTag, cookieRefTag, project, RefTagsAndProject::new)
+      .take(1)
+      .subscribe(data -> {
+        // If a cookie hasn't been set for this ref+project then do so.
+        if (data.cookieRefTag == null) {
+          final HttpCookie cookie = RefTagUtils.buildCookieForRefTagAndProject(data.activityRefTag, data.project);
+          cookieManager.getCookieStore().add(null, cookie);
+        }
+        koala.trackProjectShow(data.project, data.activityRefTag, data.cookieRefTag);
+      });
   }
 
   public void projectViewHolderBlurbClicked(final @NonNull ProjectViewHolder viewHolder) {
@@ -208,11 +248,11 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
 
   public Observable<Project> starProject(final @NonNull Project project) {
     return client.starProject(project)
-      .onErrorResumeNext(Observable.empty());
+      .compose(Transformers.neverError());
   }
 
   public Observable<Project> toggleProjectStar(final @NonNull Project project) {
     return client.toggleProjectStar(project)
-      .onErrorResumeNext(Observable.empty());
+      .compose(Transformers.neverError());
   }
 }

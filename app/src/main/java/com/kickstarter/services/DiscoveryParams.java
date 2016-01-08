@@ -7,7 +7,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.qualifiers.AutoGson;
+import com.kickstarter.libs.utils.BoolUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Location;
@@ -69,7 +71,24 @@ public abstract class DiscoveryParams implements Parcelable {
         case "most_funded":
           return MOST_FUNDED;
       }
-      throw new AssertionError("Unhandled sort");
+      return MAGIC;
+    }
+
+    public @NonNull String refTagSuffix() {
+      switch (this) {
+        case MAGIC:
+          return "";
+        case POPULAR:
+          return "_popular";
+        case ENDING_SOON:
+          return "_ending_soon";
+        case NEWEST:
+          return "_popular";
+        case MOST_FUNDED:
+          return "_most_funded";
+        default:
+          return "";
+      }
     }
   }
 
@@ -288,14 +307,30 @@ public abstract class DiscoveryParams implements Parcelable {
         put("q", term());
       }
 
-      if (staffPicks() != null && staffPicks() && page() != null && page() == 1 && sort() != null && sort() == Sort.MAGIC) {
+      if (includePotd()) {
         put("include_potd", "true");
       }
 
-      if (category() != null && page() != null && page() == 1 && sort() != null && sort() == Sort.MAGIC) {
+      if (includeFeatured()) {
         put("include_featured", "true");
       }
     }});
+  }
+
+  /**
+   * Determines if the `include_potd` flag should be included in a discovery request so that we guarantee that the
+   * POTD comes back.
+   */
+  public boolean includePotd() {
+    return BoolUtils.isTrue(staffPicks()) && page() != null && page() == 1 && (sort() == null || sort() == Sort.MAGIC);
+  }
+
+  /**
+   * Determines if the `include_featured` flag should be included in a discovery request so that we guarantee that the
+   * featured project for the category comes back.
+   */
+  public boolean includeFeatured() {
+    return category() != null && page() != null && page() == 1 && (sort() == null || sort() == Sort.MAGIC);
   }
 
   @Override
@@ -304,7 +339,7 @@ public abstract class DiscoveryParams implements Parcelable {
   }
 
   public @NonNull String filterString(@NonNull final Context context) {
-    if (staffPicks() != null && staffPicks()) {
+    if (BoolUtils.isTrue(staffPicks())) {
       return context.getString(R.string.discovery_recommended);
     } else if (starred() != null && starred() == 1) {
       return context.getString(R.string.discovery_saved);
@@ -323,5 +358,43 @@ public abstract class DiscoveryParams implements Parcelable {
 
   public boolean isCategorySet() {
     return category() != null;
+  }
+
+  /**
+   * A `ref_tag` representation of this discovery params. This tag is used to attribute checkouts when a user visits
+   * a project from a discovery search using these params.
+   */
+  public @NonNull RefTag refTag() {
+    if (isCategorySet()) {
+      final Sort sort = sort();
+      if (sort != null) {
+        return RefTag.category(sort);
+      }
+      return RefTag.category();
+    }
+
+    if (location() != null) {
+      return RefTag.city();
+    }
+
+    final Boolean staffPicks = staffPicks();
+    if (staffPicks != null && staffPicks) {
+      final Sort sort = sort();
+      if (sort != null) {
+        return RefTag.recommended(sort);
+      }
+      return RefTag.recommended();
+    }
+
+    final Integer social = social();
+    if (social != null && social != 0) {
+      return RefTag.social();
+    }
+
+    if (term() != null) {
+      return RefTag.search();
+    }
+
+    return RefTag.discovery();
   }
 }

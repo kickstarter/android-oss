@@ -4,13 +4,16 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.libs.utils.BoolUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
@@ -38,7 +41,6 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
 
   // INPUTS
   private final PublishSubject<Project> projectClicked = PublishSubject.create();
-  @Override
   public void projectClicked(@NonNull final Project project) {
     projectClicked.onNext(project);
   }
@@ -57,27 +59,23 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
 
   // OUTPUTS
   private final BehaviorSubject<List<Project>> projects = BehaviorSubject.create();
-  @Override
   public Observable<List<Project>> projects() {
     return projects;
   }
   private final BehaviorSubject<DiscoveryParams> params = BehaviorSubject.create();
-  @Override
   public Observable<DiscoveryParams> params() {
     return params;
   }
   private final BehaviorSubject<Boolean> shouldShowOnboarding = BehaviorSubject.create();
-  @Override
   public Observable<Boolean> shouldShowOnboarding() {
     return shouldShowOnboarding;
   }
-  @Override
   public Observable<DiscoveryParams> showFilters() {
     return params.compose(Transformers.takeWhen(filterButtonClicked));
   }
-  @Override
-  public Observable<Project> showProject() {
-    return projectClicked;
+  public Observable<Pair<Project, RefTag>> showProject() {
+    return params.compose(Transformers.takePairWhen(projectClicked))
+      .map(pp -> DiscoveryViewModel.projectAndRefTagFromParamsAndProject(pp.first, pp.second));
   }
 
   private boolean hasSeenOnboarding = false;
@@ -122,6 +120,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     );
 
     initializer.subscribe(this.params::onNext);
+    initializer.onNext(DiscoveryParams.builder().staffPicks(true).build());
   }
 
   /**
@@ -144,10 +143,22 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   }
 
   private boolean isOnboardingVisible(final @NonNull DiscoveryParams currentParams, final boolean isLoggedIn) {
-    return !isLoggedIn && !hasSeenOnboarding && currentParams.staffPicks();
+    return !isLoggedIn && !hasSeenOnboarding && BoolUtils.isTrue(currentParams.staffPicks());
   }
 
-  public void takeParams(final @NonNull DiscoveryParams firstPageParams) {
-    params.onNext(firstPageParams);
+  /**
+   * Converts a pair (params, project) into a (project, refTag) pair that does some extra logic around POTD.
+   */
+  private static @NonNull Pair<Project, RefTag> projectAndRefTagFromParamsAndProject(final @NonNull DiscoveryParams params, final @NonNull Project project) {
+    final RefTag refTag;
+    if (project.isPotdToday()) {
+      refTag = RefTag.discoverPotd();
+    } else if (project.isFeaturedToday()) {
+      refTag = RefTag.categoryFeatured();
+    } else {
+      refTag = params.refTag();
+    }
+
+    return new Pair<>(project, refTag);
   }
 }

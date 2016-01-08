@@ -18,6 +18,7 @@ import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RecyclerViewPaginator;
+import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.StatusBarUtils;
@@ -33,8 +34,8 @@ import com.kickstarter.ui.toolbars.DiscoveryToolbar;
 import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.net.CookieManager;
 
 import javax.inject.Inject;
 
@@ -52,6 +53,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
 
   protected @Inject ApplicationContainer applicationContainer;
   protected @Inject ApiClientType client;
+  protected @Inject CookieManager cookieManager;
 
   @BindDrawable(R.drawable.dark_blue_gradient) Drawable darkBlueGradientDrawable;
   @Bind(R.id.discovery_layout) LinearLayout discoveryLayout;
@@ -102,7 +104,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
     viewModel.outputs.showProject()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::startProjectActivity);
+      .subscribe(projectAndRefTag -> this.startProjectActivity(projectAndRefTag.first, projectAndRefTag.second));
   }
 
   @Override
@@ -141,9 +143,10 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
     startActivityForResult(intent, ActivityRequestCodes.DISCOVERY_ACTIVITY_DISCOVERY_FILTER_ACTIVITY_SELECT_FILTER);
   }
 
-  private void startProjectActivity(final @NonNull Project project) {
+  private void startProjectActivity(final @NonNull Project project, final @NonNull RefTag refTag) {
     final Intent intent = new Intent(this, ProjectActivity.class)
-      .putExtra(IntentKey.PROJECT, project);
+      .putExtra(IntentKey.PROJECT, project)
+      .putExtra(IntentKey.REF_TAG, refTag);
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }

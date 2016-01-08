@@ -77,7 +77,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     this.viewModel.outputs.projectAndConfig()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(pu -> this.renderProject(pu.first, pu.second.countryCode()));
+      .subscribe(pc -> this.renderProject(pc.first, pc.second.countryCode()));
 
     this.viewModel.outputs.showCampaign()
       .compose(bindToLifecycle())

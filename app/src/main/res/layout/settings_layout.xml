@@ -369,7 +369,7 @@
           android:layout_height="@dimen/grid_8">
 
           <TextView
-            style="@style/BodyPrimary"
+            style="@style/SubheadPrimary"
             android:layout_centerVertical="true"
             android:text="@string/profile_settings_about_privacy"
             android:layout_width="wrap_content"

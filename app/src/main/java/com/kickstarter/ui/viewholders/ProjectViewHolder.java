@@ -77,6 +77,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @BindColor(R.color.green_alpha_20) int greenAlpha50Color;
   protected @BindColor(R.color.medium_gray) int mediumGrayColor;
 
+  protected @BindDimen(R.dimen.grid_2) int grid2Dimen;
   protected @BindDimen(R.dimen.grid_3) int grid3Dimen;
   protected @BindDimen(R.dimen.grid_4) int grid4Dimen;
 
@@ -310,7 +311,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     if (project.isFriendBacking()) {
 
       projectSocialViewGroup.setVisibility(View.VISIBLE);
-      adjustStatsViewBottomMargin(grid3Dimen);
+      adjustStatsViewBottomMargin(grid2Dimen);
 
       projectSocialImageView.setVisibility(View.VISIBLE);
       Picasso.with(view.getContext()).load(project.friends().get(0).avatar()

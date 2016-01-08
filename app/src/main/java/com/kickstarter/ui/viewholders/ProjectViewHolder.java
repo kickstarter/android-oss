@@ -201,17 +201,19 @@ public final class ProjectViewHolder extends KSViewHolder {
   }
 
   public void setConvertedUsdView() {
-    if (I18nUtils.isCountryUS(user.location()) && !I18nUtils.isCountryUS(project.location())) {
-      usdConversionTextView.setVisibility(View.VISIBLE);
-      usdConversionTextView.setText(ksString.format(
-        convertedFromString,
-        "pledged",
-        ksCurrency.format(project.pledged(), project),
-        "goal",
-        ksCurrency.format(project.goal(), project)
-      ));
-    } else {
-      usdConversionTextView.setVisibility(View.GONE);
+    if (user != null) {
+      if (I18nUtils.isCountryUS(user.location()) && !I18nUtils.isCountryUS(project.location())) {
+        usdConversionTextView.setVisibility(View.VISIBLE);
+        usdConversionTextView.setText(ksString.format(
+          convertedFromString,
+          "pledged",
+          ksCurrency.format(project.pledged(), project),
+          "goal",
+          ksCurrency.format(project.goal(), project)
+        ));
+      } else {
+        usdConversionTextView.setVisibility(View.GONE);
+      }
     }
   }
 

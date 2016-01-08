@@ -66,7 +66,7 @@
         <TextView
           android:id="@+id/usd_conversion_text_view"
           style="@style/CaptionSecondary"
-          android:visibility="visible"
+          android:visibility="gone"
           android:layout_marginTop="@dimen/grid_1_half"
           android:layout_marginBottom="@dimen/grid_1_half"
           android:layout_width="wrap_content"

@@ -168,15 +168,17 @@ public final class RewardViewHolder extends KSViewHolder {
   }
 
   public void toggleUsdConversionView() {
-    if (ProjectUtils.usUserViewingNonUSProject(project, user)) {
-      usdConversionTextView.setVisibility(View.VISIBLE);
-      usdConversionTextView.setText(ksString.format(
-        usdConversionString,
-        "reward_amount",
-        ksCurrency.format(reward.minimum(), project, true, true))
-      );
-    } else {
-      usdConversionTextView.setVisibility(View.GONE);
+    if (user != null) {
+      if (ProjectUtils.usUserViewingNonUSProject(project, user)) {
+        usdConversionTextView.setVisibility(View.VISIBLE);
+        usdConversionTextView.setText(ksString.format(
+            usdConversionString,
+            "reward_amount",
+            ksCurrency.format(reward.minimum(), project, true, true))
+        );
+      } else {
+        usdConversionTextView.setVisibility(View.GONE);
+      }
     }
   }
 

@@ -2,6 +2,7 @@ package com.kickstarter.ui.adapters;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.View;
 
@@ -39,7 +40,7 @@ public final class ProjectAdapter extends KSAdapter {
   /**
    * Populate adapter data when we know we're working with a Project object.
    */
-  public void takeProject(final @NonNull Project project, final @NonNull User user) {
+  public void takeProject(final @NonNull Project project, final @Nullable User user) {
     data().clear();
     data().add(Collections.singletonList(Pair.create(project, user)));
 

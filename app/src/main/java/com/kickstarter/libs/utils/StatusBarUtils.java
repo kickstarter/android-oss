@@ -9,7 +9,7 @@ import android.view.WindowManager;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
 
-public class StatusBarUtils {
+public final class StatusBarUtils {
   private StatusBarUtils() {}
 
   public static void apply(@NonNull final BaseActivity activity, final @ColorInt int color) {

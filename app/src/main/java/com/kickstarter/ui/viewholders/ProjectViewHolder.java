@@ -140,7 +140,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     categoryTextView.setText(project.category().name());
     locationTextView.setText(project.location().displayableName());
     percentageFundedProgressBar.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
-    deadlineCountdownTextView.setText(Integer.toString(ProjectUtils.deadlineCountdownValue(project)));
+    deadlineCountdownTextView.setText(NumberUtils.format(ProjectUtils.deadlineCountdownValue(project)));
     deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(project, view.getContext(), ksString));
     pledgedTextView.setText(ksCurrency.format(project.pledged(), project));
     backersCountTextView.setText(NumberUtils.format(project.backersCount()));

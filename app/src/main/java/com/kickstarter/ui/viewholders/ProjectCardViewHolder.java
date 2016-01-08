@@ -94,7 +94,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     backersCountTextView.setText(NumberUtils.format(project.backersCount()));
     blurbTextView.setText(project.blurb());
     categoryTextView.setText(project.category().name());
-    deadlineCountdownTextView.setText(Integer.toString(ProjectUtils.deadlineCountdownValue(project)));
+    deadlineCountdownTextView.setText(NumberUtils.format(ProjectUtils.deadlineCountdownValue(project)));
     deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(project, view.getContext(), ksString));
     nameTextView.setText(project.name());
     percentTextView.setText(StringUtils.displayFlooredPercentage(project.percentageFunded()));

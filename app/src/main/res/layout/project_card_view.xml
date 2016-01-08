@@ -72,6 +72,7 @@
           android:id="@+id/percentage_funded"
           android:layout_width="match_parent"
           android:layout_height="@dimen/progress_bar_height"
+          android:max="100"
           android:minHeight="@dimen/progress_bar_min_height"
           android:progress="50" />
 

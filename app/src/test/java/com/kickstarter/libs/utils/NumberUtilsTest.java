@@ -7,7 +7,22 @@ import junit.framework.TestCase;
 import java.math.RoundingMode;
 import java.util.Locale;
 
-public class NumberUtilsTest extends TestCase {
+public final class NumberUtilsTest extends TestCase {
+  public void testFlooredPercentage() {
+    assertEquals("50%", NumberUtils.flooredPercentage(50.0f));
+    assertEquals("99%", NumberUtils.flooredPercentage(99.99f));
+    assertEquals("0%", NumberUtils.flooredPercentage(0.01f));
+    assertEquals("1,000%", NumberUtils.flooredPercentage(1000.0f));
+  }
+
+  public void testFlooredPercentage_withFrenchLocale() {
+    assertEquals("50 %", NumberUtils.flooredPercentage(50.0f, Locale.FRENCH));
+  }
+
+  public void testFlooredPercentage_withGermanLocale() {
+    assertEquals("1.000%", NumberUtils.flooredPercentage(1000.0f, Locale.GERMAN));
+  }
+
   public void testFormatNumber_int() {
     assertEquals("100", NumberUtils.format(100));
     assertEquals("1,000", NumberUtils.format(1000));

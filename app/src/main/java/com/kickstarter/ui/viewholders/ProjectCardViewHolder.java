@@ -19,6 +19,7 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.NumberUtils;
+import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.SocialUtils;
 import com.kickstarter.libs.utils.StringUtils;
@@ -97,8 +98,8 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     deadlineCountdownTextView.setText(NumberUtils.format(ProjectUtils.deadlineCountdownValue(project)));
     deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(project, view.getContext(), ksString));
     nameTextView.setText(project.name());
-    percentTextView.setText(StringUtils.displayFlooredPercentage(project.percentageFunded()));
-    percentageFundedProgressBar.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
+    percentTextView.setText(NumberUtils.flooredPercentage(project.percentageFunded()));
+    percentageFundedProgressBar.setProgress(ProgressBarUtils.progress(project.percentageFunded()));
     Picasso.with(view.getContext())
       .load(project.photo().full())
       .placeholder(grayGradientDrawable)

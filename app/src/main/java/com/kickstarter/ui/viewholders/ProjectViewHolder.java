@@ -21,6 +21,7 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.NumberUtils;
+import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.SocialUtils;
 import com.kickstarter.libs.utils.ViewUtils;
@@ -139,7 +140,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     projectNameTextView.setText(project.name());
     categoryTextView.setText(project.category().name());
     locationTextView.setText(project.location().displayableName());
-    percentageFundedProgressBar.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
+    percentageFundedProgressBar.setProgress(ProgressBarUtils.progress(project.percentageFunded()));
     deadlineCountdownTextView.setText(NumberUtils.format(ProjectUtils.deadlineCountdownValue(project)));
     deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(project, view.getContext(), ksString));
     pledgedTextView.setText(ksCurrency.format(project.pledged(), project));

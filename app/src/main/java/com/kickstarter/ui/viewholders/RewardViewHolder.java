@@ -169,7 +169,7 @@ public final class RewardViewHolder extends KSViewHolder {
 
   public void toggleUsdConversionView() {
     if (user != null) {
-      if (ProjectUtils.usUserViewingNonUSProject(project, user)) {
+      if (ProjectUtils.isUSUserViewingNonUSProject(user, project)) {
         usdConversionTextView.setVisibility(View.VISIBLE);
         usdConversionTextView.setText(ksString.format(
             usdConversionString,

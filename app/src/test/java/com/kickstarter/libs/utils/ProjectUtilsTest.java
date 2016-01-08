@@ -7,8 +7,8 @@ import junit.framework.TestCase;
 
 public final class ProjectUtilsTest extends TestCase {
   public void testIsUsUserViewingNonUsProject() {
-    assertTrue(ProjectUtils.usUserViewingNonUSProject(ProjectFactory.ukProject(), UserFactory.user()));
-    assertFalse(ProjectUtils.usUserViewingNonUSProject(ProjectFactory.project(), UserFactory.user()));
-    assertFalse(ProjectUtils.usUserViewingNonUSProject(ProjectFactory.caProject(), UserFactory.germanUser()));
+    assertTrue(ProjectUtils.isUSUserViewingNonUSProject(UserFactory.user(), ProjectFactory.ukProject()));
+    assertFalse(ProjectUtils.isUSUserViewingNonUSProject(UserFactory.user(), ProjectFactory.project()));
+    assertFalse(ProjectUtils.isUSUserViewingNonUSProject(UserFactory.germanUser(), ProjectFactory.caProject()));
   }
 }

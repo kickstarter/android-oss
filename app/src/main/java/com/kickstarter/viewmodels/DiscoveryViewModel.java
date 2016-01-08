@@ -12,6 +12,7 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
+import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.DiscoveryParams;
@@ -62,6 +63,11 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   public Observable<DiscoveryParams> params() {
     return params;
   }
+  private final BehaviorSubject<List<Activity>> activities = BehaviorSubject.create();
+  @Override
+  public Observable<List<Activity>> activities() {
+    return activities;
+  }
   private final BehaviorSubject<Boolean> shouldShowOnboarding = BehaviorSubject.create();
   @Override
   public Observable<Boolean> shouldShowOnboarding() {
@@ -77,6 +83,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   }
 
   private boolean hasSeenOnboarding = false;
+  public boolean hasLoadedActivitySample = false;
 
   public final DiscoveryViewModelInputs inputs = this;
   public final DiscoveryViewModelOutputs outputs = this;

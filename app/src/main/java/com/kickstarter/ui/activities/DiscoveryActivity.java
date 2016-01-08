@@ -27,6 +27,7 @@ import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.adapters.DiscoveryAdapter;
 import com.kickstarter.ui.containers.ApplicationContainer;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
+import com.kickstarter.ui.viewholders.DiscoveryActivityViewHolder;
 import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
@@ -84,6 +85,11 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(adapter::takeProjects);
 
+    viewModel.outputs.activities()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(adapter::takeActivities);
+
     viewModel.outputs.params()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
@@ -114,6 +120,10 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
     final Intent intent = new Intent(this, LoginToutActivity.class)
       .putExtra(getString(R.string.intent_login_type), LoginToutActivity.REASON_GENERIC);
     startActivity(intent);
+  }
+
+  public void seeActivityClick(final @NonNull DiscoveryActivityViewHolder viewHolder) {
+    startActivity(new Intent(this, ActivityFeedActivity.class));
   }
 
   private void loadParams(final @NonNull DiscoveryParams params) {

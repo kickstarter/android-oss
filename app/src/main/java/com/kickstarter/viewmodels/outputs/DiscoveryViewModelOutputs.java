@@ -1,5 +1,6 @@
 package com.kickstarter.viewmodels.outputs;
 
+import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
 
@@ -10,6 +11,7 @@ import rx.Observable;
 public interface DiscoveryViewModelOutputs {
   Observable<List<Project>> projects();
   Observable<DiscoveryParams> params();
+  Observable<List<Activity>> activities();
   Observable<Boolean> shouldShowOnboarding();
   Observable<DiscoveryParams> showFilters();
   Observable<Project> showProject();

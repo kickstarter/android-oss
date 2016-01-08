@@ -203,7 +203,7 @@ public final class ProjectViewHolder extends KSViewHolder {
 
   public void setConvertedUsdView() {
     if (user != null) {
-      if (I18nUtils.isCountryUS(user.location()) && !I18nUtils.isCountryUS(project.location())) {
+      if (I18nUtils.isCountryUS(user.location().country()) && !I18nUtils.isCountryUS(project.country())) {
         usdConversionTextView.setVisibility(View.VISIBLE);
         usdConversionTextView.setText(ksString.format(
           convertedFromString,

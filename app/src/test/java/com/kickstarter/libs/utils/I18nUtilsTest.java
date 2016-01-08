@@ -13,12 +13,12 @@ public final class I18nUtilsTest extends TestCase {
   }
 
   public void testIsCountryGermany() {
-    assertFalse(I18nUtils.isCountryGermany(LocationFactory.unitedStates()));
-    assertTrue(I18nUtils.isCountryGermany(LocationFactory.germany()));
+    assertFalse(I18nUtils.isCountryGermany(LocationFactory.unitedStates().country()));
+    assertTrue(I18nUtils.isCountryGermany(LocationFactory.germany().country()));
   }
 
   public void testIsCountryUS() {
-    assertTrue(I18nUtils.isCountryUS(LocationFactory.unitedStates()));
-    assertFalse(I18nUtils.isCountryUS(LocationFactory.germany()));
+    assertTrue(I18nUtils.isCountryUS(LocationFactory.unitedStates().country()));
+    assertFalse(I18nUtils.isCountryUS(LocationFactory.germany().country()));
   }
 }

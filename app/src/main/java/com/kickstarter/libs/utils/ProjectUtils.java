@@ -65,7 +65,7 @@ public final class ProjectUtils {
    *
    * @return the Integer time remaining.
    */
-  public static @NonNull Integer deadlineCountdownValue(final @NonNull Project project) {
+  public static int deadlineCountdownValue(final @NonNull Project project) {
     final Long seconds = timeInSecondsUntilDeadline(project);
     if (seconds <= 120.0) {
       return seconds.intValue(); // seconds

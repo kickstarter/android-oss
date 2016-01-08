@@ -15,6 +15,7 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.DateTimeUtils;
+import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.IntentKey;
@@ -66,7 +67,7 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel> 
     sequenceTextView.setText(ksString.format(
       backerNumberString,
       "backer_number",
-      backing.formattedSequence()
+      NumberUtils.format(backing.sequence())
     ));
     pledgeStatusTextView.setText(ksString.format(
       backerStatusString,

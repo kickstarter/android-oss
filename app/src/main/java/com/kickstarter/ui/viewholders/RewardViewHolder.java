@@ -10,6 +10,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.utils.DateTimeUtils;
+import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Project;
@@ -81,7 +82,7 @@ public final class RewardViewHolder extends KSViewHolder {
     final Integer backersCount = reward.backersCount();
     final String backersCountText = (backersCount != null) ?
       ksString.format("rewards_info_backer_count_backers", backersCount,
-        "backer_count", Integer.toString(backersCount)) :
+        "backer_count", NumberUtils.format(backersCount)) :
       "";
     backersCountTextView.setText(backersCountText);
     descriptionTextView.setText(reward.description());

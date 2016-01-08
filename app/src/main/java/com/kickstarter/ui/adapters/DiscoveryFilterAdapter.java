@@ -75,7 +75,7 @@ public final class DiscoveryFilterAdapter extends KSAdapter {
     return R.layout.discovery_filter_view;
   }
 
-  protected KSViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
+  protected @NonNull KSViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
     if (layout == R.layout.discovery_filter_divider_view) {
       return new DiscoveryFilterDividerViewHolder(view);
     } else if (layout == R.layout.grid_2_height_view) {

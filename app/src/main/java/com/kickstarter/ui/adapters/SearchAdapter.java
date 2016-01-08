@@ -47,7 +47,7 @@ public final class SearchAdapter extends KSAdapter {
     return R.layout.project_search_result_view;
   }
 
-  protected KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
+  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     if (layout == R.layout.search_term_view) {
       return new SearchTermViewHolder(view);
     }

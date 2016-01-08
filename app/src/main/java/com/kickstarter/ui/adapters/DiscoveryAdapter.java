@@ -25,7 +25,7 @@ public final class DiscoveryAdapter extends KSAdapter {
     return R.layout.project_card_view;
   }
 
-  protected KSViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
+  protected @NonNull KSViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
     return new ProjectCardViewHolder(view, delegate);
   }
 }

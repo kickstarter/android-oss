@@ -30,7 +30,7 @@ public final class ManageNotificationsAdapter extends KSAdapter {
   }
 
   @Override
-  protected KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
+  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     return new ProjectNotificationViewHolder(view);
   }
 }

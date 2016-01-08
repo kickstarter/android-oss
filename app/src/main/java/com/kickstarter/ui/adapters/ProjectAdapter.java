@@ -53,7 +53,7 @@ public final class ProjectAdapter extends KSAdapter {
     notifyDataSetChanged();
   }
 
-  protected KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
+  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     if (layout == R.layout.project_main_layout) {
       return new ProjectViewHolder(view, delegate);
     }

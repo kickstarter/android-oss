@@ -34,7 +34,7 @@ public final class ThanksAdapter extends KSAdapter {
     }
   }
 
-  protected KSViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
+  protected @NonNull KSViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
     if (layout == R.layout.project_card_mini_view) {
       return new ProjectCardMiniViewHolder(view, delegate);
     }

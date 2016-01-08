@@ -58,7 +58,7 @@ public final class CommentFeedAdapter extends KSAdapter {
     notifyDataSetChanged();
   }
 
-  protected KSViewHolder viewHolder(final @LayoutRes int layout, @NonNull final View view) {
+  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, @NonNull final View view) {
     if (layout == R.layout.project_context_view) {
       return new ProjectContextViewHolder(view, delegate);
     } else if (layout == R.layout.empty_comment_feed_layout) {

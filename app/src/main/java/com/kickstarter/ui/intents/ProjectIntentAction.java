@@ -29,8 +29,7 @@ public class ProjectIntentAction extends IntentAction {
     final Observable<Project> projectFromExtra = intent
       .compose(RxLifecycle.bindActivity(lifecycle))
       .map(this::parceledProject)
-      .filter(ObjectUtils::isNotNull)
-      .share();
+      .filter(ObjectUtils::isNotNull);
 
     final Observable<String> paramFromExtra = intent
       .compose(RxLifecycle.bindActivity(lifecycle))

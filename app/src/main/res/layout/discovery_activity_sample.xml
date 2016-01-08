@@ -37,8 +37,9 @@
 
         <ImageView
           android:id="@+id/activityImage"
-          android:layout_width="@dimen/grid_3"
-          android:layout_height="@dimen/grid_3"
+          android:layout_gravity="center_vertical"
+          android:layout_width="@dimen/grid_4"
+          android:layout_height="@dimen/grid_4"
           android:layout_marginLeft="@dimen/grid_2"
           android:layout_marginRight="@dimen/grid_1"
           android:scaleType="centerCrop"/>

@@ -46,6 +46,9 @@ public interface ApiService {
   @GET
   Observable<Response<ActivityEnvelope>> fetchActivities(@Url @NonNull String paginationUrl);
 
+  @GET("/v1/activities")
+  Observable<Response<ActivityEnvelope>> fetchActivities(@Query("count") int count);
+
   @GET("/v1/categories")
   Observable<Response<CategoriesEnvelope>> fetchCategories();
 

@@ -92,6 +92,13 @@ public final class ApiClient {
       .subscribeOn(Schedulers.io());
   }
 
+  public Observable<ActivityEnvelope> fetchActivities(int count) {
+    return service
+      .fetchActivities(count)
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
   public Observable<List<Notification>> fetchProjectNotifications() {
     return service
       .fetchProjectNotifications()

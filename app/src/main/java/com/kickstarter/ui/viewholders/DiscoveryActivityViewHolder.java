@@ -56,7 +56,7 @@ public class DiscoveryActivityViewHolder extends KSViewHolder {
 
     final Context context = view.getContext();
 
-    if (activity.category() == Activity.CATEGORY_BACKING) {
+    if (activity.category().equals(Activity.CATEGORY_BACKING)) {
       Picasso.with(context).load(activity.user().avatar()
         .small())
         .transform(new CircleTransformation())
@@ -65,7 +65,7 @@ public class DiscoveryActivityViewHolder extends KSViewHolder {
       activityTitleTextView.setVisibility(View.GONE);
       activitysubTitleTextView.setText(ksString.format(categoryBackingString, "friend_name", activity.user().name(),
         "project_name", activity.project().name(), "creator_name", activity.project().creator().name()));
-    } else if (activity.category() == Activity.CATEGORY_FOLLOW) {
+    } else if (activity.category().equals(Activity.CATEGORY_FOLLOW)) {
       Picasso.with(context).load(activity.user().avatar()
         .small())
         .transform(new CircleTransformation())
@@ -82,16 +82,21 @@ public class DiscoveryActivityViewHolder extends KSViewHolder {
       switch(activity.category()) {
         case Activity.CATEGORY_FAILURE:
           activitysubTitleTextView.setText(categoryFailureString);
+          break;
         case Activity.CATEGORY_CANCELLATION:
           activitysubTitleTextView.setText(categoryCancellationString);
+          break;
         case Activity.CATEGORY_LAUNCH:
           activitysubTitleTextView.setText(ksString.format(categoryLaunchString, "user_name", activity.user().name()));
+          break;
         case Activity.CATEGORY_SUCCESS:
           activitysubTitleTextView.setText(categorySuccessString);
+          break;
         case Activity.CATEGORY_UPDATE:
           activitysubTitleTextView.setText(ksString.format(categoryUpdateString,
             "update_number", String.valueOf(activity.update().sequence()),
             "update_title", activity.update().title()));
+          break;
       }
 
       // TODO: update width/height for image

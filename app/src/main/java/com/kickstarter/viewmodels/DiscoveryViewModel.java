@@ -17,7 +17,9 @@ import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.WebClient;
+import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
+import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.viewmodels.inputs.DiscoveryViewModelInputs;
 import com.kickstarter.viewmodels.outputs.DiscoveryViewModelOutputs;
@@ -52,6 +54,11 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     filterButtonClicked.onNext(null);
   }
 
+  private final BehaviorSubject<Boolean> hasLoadedActivitySample = BehaviorSubject.create();
+  public Observable<Boolean> hasLoadedActivitySample() {
+    return hasLoadedActivitySample;
+  }
+
   // OUTPUTS
   private final BehaviorSubject<List<Project>> projects = BehaviorSubject.create();
   @Override
@@ -63,7 +70,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   public Observable<DiscoveryParams> params() {
     return params;
   }
-  private final BehaviorSubject<List<Activity>> activities = BehaviorSubject.create();
+  private final PublishSubject<List<Activity>> activities = PublishSubject.create();
   @Override
   public Observable<List<Activity>> activities() {
     return activities;
@@ -82,8 +89,10 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     return projectClicked;
   }
 
+  // ERRORS
+  private PublishSubject<ErrorEnvelope> activityError = PublishSubject.create();
+
   private boolean hasSeenOnboarding = false;
-  public boolean hasLoadedActivitySample = false;
 
   public final DiscoveryViewModelInputs inputs = this;
   public final DiscoveryViewModelOutputs outputs = this;
@@ -107,6 +116,12 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .clearWhenStartingOver(true)
         .concater(ListUtils::concatDistinct)
         .build();
+
+    addSubscription(currentUser.isLoggedIn()
+        .flatMap(__ -> this.fetchActivities())
+        .map(ActivityEnvelope::activities)
+        .subscribe(activities)
+    );
 
     addSubscription(
       params.compose(Transformers.takePairWhen(paginator.loadingPage))
@@ -153,4 +168,10 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   public void takeParams(final @NonNull DiscoveryParams firstPageParams) {
     params.onNext(firstPageParams);
   }
+
+  public Observable<ActivityEnvelope> fetchActivities() {
+    return apiClient.fetchActivities(1)
+      .compose(Transformers.pipeApiErrorsTo(activityError));
+  }
 }
+

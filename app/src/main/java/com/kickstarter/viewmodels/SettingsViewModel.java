@@ -13,7 +13,7 @@ import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.I18nUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.User;
-import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.activities.SettingsActivity;
 import com.kickstarter.viewmodels.errors.SettingsViewModelErrors;
 import com.kickstarter.viewmodels.inputs.SettingsViewModelInputs;
@@ -59,8 +59,8 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
   public final SettingsViewModelOutputs outputs = this;
   public final SettingsViewModelErrors errors = this;
 
-  @Inject ApiClient client;
-  @Inject CurrentUser currentUser;
+  protected @Inject ApiClientType client;
+  protected @Inject CurrentUser currentUser;
 
   @Override
   public void contactEmailClicked() {

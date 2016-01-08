@@ -17,6 +17,7 @@ import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ProfileAdapter;
 import com.kickstarter.ui.viewholders.ProfileCardViewHolder;
 import com.kickstarter.viewmodels.ProfileViewModel;
@@ -104,7 +105,7 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> implem
 
   public void projectCardClick(final @NonNull ProfileCardViewHolder viewHolder, final @NonNull Project project) {
     final Intent intent = new Intent(this, ProjectActivity.class)
-      .putExtra(getString(R.string.intent_project), project);
+      .putExtra(IntentKey.PROJECT, project);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 }

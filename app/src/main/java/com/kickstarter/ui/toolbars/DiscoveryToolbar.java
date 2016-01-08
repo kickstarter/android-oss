@@ -16,6 +16,7 @@ import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.LoginToutActivity;
@@ -113,10 +114,10 @@ public final class DiscoveryToolbar extends KSToolbar {
     currentUserButton.setVisibility(GONE);
     loginButton.setVisibility(VISIBLE);
     loginButton.setOnClickListener(v -> {
-      final Intent intent = new Intent(getContext(), LoginToutActivity.class)
-        .putExtra(getContext().getResources()
-          .getString(R.string.intent_login_type), LoginToutActivity.REASON_LOGIN_TAB);
-      getContext().startActivity(intent);
+      final Context context = getContext();
+      final Intent intent = new Intent(context, LoginToutActivity.class)
+        .putExtra(IntentKey.LOGIN_TYPE, LoginToutActivity.REASON_LOGIN_TAB);
+      context.startActivity(intent);
     });
   }
 

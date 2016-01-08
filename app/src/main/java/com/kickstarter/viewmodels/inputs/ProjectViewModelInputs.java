@@ -6,9 +6,7 @@ import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 
 public interface ProjectViewModelInputs {
-  void initialProjectParam(final @NonNull String param);
-  void initialProject(final @NonNull Project project);
-
+  void initializer(final @NonNull Project project);
   void backProjectClicked();
   void shareClicked();
   void blurbClicked();
@@ -20,6 +18,5 @@ public interface ProjectViewModelInputs {
   void viewPledgeClicked();
   void starClicked();
   void rewardClicked(final @NonNull Reward reward);
-
   void loginSuccess();
 }

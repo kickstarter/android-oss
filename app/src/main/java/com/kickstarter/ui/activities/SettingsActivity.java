@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -253,6 +254,24 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   @OnClick(R.id.terms_of_use)
   public void termsOfUseClick() {
     startHelpActivity(HelpActivity.Terms.class);
+  }
+
+  @OnClick(R.id.settings_rate_us)
+  public void rateUsClick() {
+    final String packageName = getPackageName();
+    final Intent intent = new Intent(Intent.ACTION_VIEW);
+
+    try {
+      // First try to load the play store native application
+      final Uri marketUri = Uri.parse("market://details?id=" + packageName);
+      intent.setData(marketUri);
+      startActivity(intent);
+    } catch (ActivityNotFoundException __) {
+      // Fallback to the play store web site
+      final Uri httpUri = Uri.parse("http://play.google.com/store/apps/details?id=" + packageName);
+      intent.setData(httpUri);
+      startActivity(intent);
+    }
   }
 
   public void toggleIconColor(final @NonNull TextView iconTextView, final boolean typeMobile, final boolean enabled) {

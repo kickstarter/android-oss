@@ -13,6 +13,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.viewmodels.TwoFactorViewModel;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 
@@ -44,10 +45,12 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel> {
     ButterKnife.bind(this);
     loginToolbar.setTitle(verifyString);
 
-    viewModel.inputs.email(getIntent().getExtras().getString(getString(R.string.intent_email)));
-    viewModel.inputs.isFacebookLogin(getIntent().getBooleanExtra(getString(R.string.intent_facebook_login), false));
-    viewModel.inputs.fbAccessToken(getIntent().getExtras().getString(getString(R.string.intent_facebook_token)));
-    viewModel.inputs.password(getIntent().getExtras().getString(getString(R.string.intent_password)));
+    final Intent intent = getIntent();
+
+    viewModel.inputs.email(intent.getExtras().getString(IntentKey.EMAIL));
+    viewModel.inputs.isFacebookLogin(intent.getBooleanExtra(IntentKey.FACEBOOK_LOGIN, false));
+    viewModel.inputs.fbAccessToken(intent.getExtras().getString(IntentKey.FACEBOOK_TOKEN));
+    viewModel.inputs.password(intent.getExtras().getString(IntentKey.PASSWORD));
 
     viewModel.outputs.tfaSuccess()
       .compose(bindToLifecycle())
@@ -81,7 +84,7 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel> {
   }
 
   public boolean forward() {
-    return getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
+    return getIntent().getBooleanExtra(IntentKey.FORWARD, false);
   }
 
   @OnClick(R.id.resend_button)

@@ -15,6 +15,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ViewUtils;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.viewmodels.SignupViewModel;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 import com.kickstarter.ui.views.LoginPopupMenu;
@@ -48,7 +49,7 @@ public final class SignupActivity extends BaseActivity<SignupViewModel> {
     ButterKnife.bind(this);
     loginToolbar.setTitle(signUpString);
 
-    final boolean forward = getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
+    final boolean forward = getIntent().getBooleanExtra(IntentKey.FORWARD, false);
 
     viewModel.outputs.signupSuccess()
       .compose(bindToLifecycle())

@@ -19,7 +19,7 @@ import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
-import com.kickstarter.models.User;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ActivityFeedAdapter;
 import com.kickstarter.viewmodels.ActivityFeedViewModel;
 
@@ -91,8 +91,8 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
 
   public void activityFeedLogin() {
     final Intent intent = new Intent(this, LoginToutActivity.class)
-      .putExtra(getString(R.string.intent_forward), true)
-      .putExtra(getString(R.string.intent_login_type), LoginToutActivity.REASON_GENERIC);
+      .putExtra(IntentKey.FORWARD, true)
+      .putExtra(IntentKey.LOGIN_TYPE, LoginToutActivity.REASON_GENERIC);
     startActivityForResult(intent, ActivityRequestCodes.ACTIVITY_FEED_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
   }
 
@@ -103,13 +103,13 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
 
   public void showProjectUpdate(final @NonNull Activity activity) {
     final Intent intent = new Intent(this, DisplayWebViewActivity.class)
-      .putExtra(getString(R.string.intent_url), activity.projectUpdateUrl());
+      .putExtra(IntentKey.URL, activity.projectUpdateUrl());
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   public void startProjectActivity(final @NonNull Project project) {
     final Intent intent = new Intent(this, ProjectActivity.class)
-      .putExtra(getString(R.string.intent_project), project);
+      .putExtra(IntentKey.PROJECT, project);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 

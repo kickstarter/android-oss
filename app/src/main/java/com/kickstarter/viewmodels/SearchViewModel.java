@@ -11,7 +11,7 @@ import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.SearchActivity;
@@ -46,7 +46,7 @@ public final class SearchViewModel extends ViewModel<SearchActivity> implements 
 
   private final DiscoveryParams defaultParams = DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build();
 
-  @Inject ApiClient apiClient;
+  protected @Inject ApiClientType apiClient;
 
   @Override
   protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {

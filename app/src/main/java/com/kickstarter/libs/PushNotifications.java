@@ -19,6 +19,7 @@ import com.kickstarter.models.pushdata.GCM;
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 import com.kickstarter.services.gcm.RegisterService;
 import com.kickstarter.services.gcm.UnregisterService;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -141,7 +142,7 @@ public class PushNotifications {
     // TODO: This is still WIP
     final Intent intent = new Intent(context, ProjectActivity.class)
       .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-      .putExtra(context.getString(R.string.intent_project_param), id.toString());
+      .putExtra(IntentKey.PROJECT_PARAM, id.toString());
 
     // TODO: Check the flags!
     return PendingIntent.getActivity(context, 0 /* Request code */, intent, PendingIntent.FLAG_ONE_SHOT);

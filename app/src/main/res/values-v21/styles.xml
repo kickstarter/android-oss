@@ -3,4 +3,9 @@
   <style name="StarFab">
     <item name="android:layout_margin">@dimen/grid_3</item>
   </style>
+
+  <style name="HamburgerActivity" parent="HamburgerStatusBar">
+    <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    <item name="android:statusBarColor">@android:color/transparent</item>
+  </style>
 </resources>

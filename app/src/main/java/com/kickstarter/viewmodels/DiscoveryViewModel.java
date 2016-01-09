@@ -19,6 +19,7 @@ import com.kickstarter.services.WebClient;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.viewmodels.inputs.DiscoveryViewModelInputs;
+import com.kickstarter.viewmodels.outputs.DiscoveryViewModelOutputs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +28,12 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> implements DiscoveryViewModelInputs {
+public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> implements DiscoveryViewModelInputs,
+  DiscoveryViewModelOutputs {
+
   // INPUTS
   private final PublishSubject<DiscoveryParams> initializer = PublishSubject.create();
   private final PublishSubject<Void> nextPage = PublishSubject.create();
@@ -55,6 +59,15 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   public void projectClick(@NonNull final Project project) {
     projectClick.onNext(project);
   }
+
+  // OUTPUTS
+  private final BehaviorSubject<List<DiscoveryParams>> filterParams = BehaviorSubject.create();
+  @Override
+  @NonNull public Observable<List<DiscoveryParams>> filterParams() {
+    return filterParams;
+  }
+
+  public final DiscoveryViewModelOutputs outputs = this;
 
   @Override
   protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {

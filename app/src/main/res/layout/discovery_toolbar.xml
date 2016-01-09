@@ -59,6 +59,18 @@
 
       <com.kickstarter.ui.views.IconButton
         style="@style/ToolbarIcon"
+        android:id="@+id/hamburger_button"
+        android:focusable="true"
+        android:contentDescription="@string/tabbar_search_projects"
+        android:layout_width="@dimen/button_icon_fixed_width"
+        android:layout_height="match_parent"
+        android:background="@drawable/button_selector"
+        android:gravity="center"
+        android:text="@string/menu_icon"
+        android:textColor="@color/white" />
+
+      <com.kickstarter.ui.views.IconButton
+        style="@style/ToolbarIcon"
         android:id="@+id/search_button"
         android:focusable="true"
         android:contentDescription="@string/tabbar_search_projects"

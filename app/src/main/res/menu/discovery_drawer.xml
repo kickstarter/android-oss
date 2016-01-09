@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <group android:checkableBehavior="single">
+    <item
+      android:id="@+id/drawer_item_1"
+      android:icon="@android:drawable/ic_delete"
+      android:title="Item 1"/>
+    <item
+      android:id="@+id/drawer_item_2"
+      android:title="Item 2"/>
+  </group>
+</menu>

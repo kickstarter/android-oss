@@ -67,8 +67,6 @@ public final class Koala {
 
     if (cookieRefTag != null) {
       properties.put("referrer_credit", cookieRefTag.tag());
-    } else if (activityRefTag != null) {
-      properties.put("referrer_credit", activityRefTag.tag());
     }
 
     client.track("Project Page", properties);

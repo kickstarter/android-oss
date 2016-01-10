@@ -218,7 +218,12 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
           final HttpCookie cookie = RefTagUtils.buildCookieForRefTagAndProject(data.activityRefTag, data.project);
           cookieManager.getCookieStore().add(null, cookie);
         }
-        koala.trackProjectShow(data.project, data.activityRefTag, data.cookieRefTag);
+
+        koala.trackProjectShow(
+          data.project,
+          data.activityRefTag,
+          RefTagUtils.storedCookieRefTagForProject(data.project, cookieManager)
+        );
       });
   }
 

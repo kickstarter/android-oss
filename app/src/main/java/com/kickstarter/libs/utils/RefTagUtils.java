@@ -20,7 +20,7 @@ import static com.kickstarter.libs.utils.SystemUtils.*;
 public final class RefTagUtils {
   private RefTagUtils() {}
 
-  static final @NonNull String COOKIE_VALUE_SEPARATOR = "%3F";
+  private static final @NonNull String COOKIE_VALUE_SEPARATOR = "%3F";
 
   /**
    * Name of the cookie that should store the ref tag for a particular project.

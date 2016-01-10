@@ -15,9 +15,15 @@
     android:layout_width="320dp"
     android:layout_gravity="start"
     android:fitsSystemWindows="true"
-    android:background="@color/white"
-    app:headerLayout="@layout/hamburger_navigation_header"
-    app:menu="@menu/hamburger_menu"/>
+    android:background="@color/white">
+
+    <android.support.v7.widget.RecyclerView
+      android:id="@+id/hamburger_navigation_recycler_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:scrollbars="vertical" />
+
+  </android.support.design.widget.NavigationView>
 
 </android.support.v4.widget.DrawerLayout>
 

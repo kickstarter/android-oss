@@ -72,8 +72,7 @@ public class HamburgerNavigationHeader extends LinearLayout implements Hamburger
   }
 
   @Override
-  //public void user(final @Nullable User user) {
-  public void user(@Nullable User user) {
+  public void user(final @Nullable User user) {
     this.user = user;
     final Context context = getContext();
 
@@ -89,32 +88,5 @@ public class HamburgerNavigationHeader extends LinearLayout implements Hamburger
       loggedInContainer.setVisibility(GONE);
       loggedOutContainer.setVisibility(VISIBLE);
     }
-
-/*    if (user != null) {
-      loggedOutTextView.setVisibility(GONE);
-      userNameTextView.setVisibility(VISIBLE);
-      userNameTextView.setText(user.name());
-    } else {
-      loggedOutTextView.setVisibility(VISIBLE);
-      userNameTextView.setVisibility(GONE);
-    }
-
-    if (user != null) {
-      settingsIconButton.setVisibility(GONE);
-      userImageView.setVisibility(VISIBLE);
-      Picasso.with(context)
-        .load(user.avatar().small())
-        .transform(new CircleTransformation())
-        .into(userImageView);
-    } else {
-      settingsIconButton.setVisibility(VISIBLE);
-      userImageView.setVisibility(GONE);
-    }
-
-    if (user != null) {
-      settingsIconButton.setVisibility(VISIBLE);
-    } else {
-      settingsIconButton.setVisibility(GONE);
-    }*/
   }
 }

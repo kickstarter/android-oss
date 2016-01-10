@@ -307,11 +307,11 @@ public abstract class DiscoveryParams implements Parcelable {
         put("q", term());
       }
 
-      if (includePotd()) {
+      if (shouldIncludePotd()) {
         put("include_potd", "true");
       }
 
-      if (includeFeatured()) {
+      if (shouldIncludeFeatured()) {
         put("include_featured", "true");
       }
     }});
@@ -321,7 +321,7 @@ public abstract class DiscoveryParams implements Parcelable {
    * Determines if the `include_potd` flag should be included in a discovery request so that we guarantee that the
    * POTD comes back.
    */
-  public boolean includePotd() {
+  public boolean shouldIncludePotd() {
     return isTrue(staffPicks()) && page() != null && page() == 1 && (sort() == null || sort() == Sort.MAGIC);
   }
 
@@ -329,7 +329,7 @@ public abstract class DiscoveryParams implements Parcelable {
    * Determines if the `include_featured` flag should be included in a discovery request so that we guarantee that the
    * featured project for the category comes back.
    */
-  public boolean includeFeatured() {
+  public boolean shouldIncludeFeatured() {
     return category() != null && page() != null && page() == 1 && (sort() == null || sort() == Sort.MAGIC);
   }
 

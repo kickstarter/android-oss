@@ -165,6 +165,8 @@ public abstract class Project implements Parcelable {
       return new AutoParcel_Project_Urls.Builder();
     }
 
+    public abstract Builder toBuilder();
+
     @AutoParcel
     @AutoGson
     public abstract static class Web implements Parcelable {
@@ -185,6 +187,8 @@ public abstract class Project implements Parcelable {
       public static Builder builder() {
         return new AutoParcel_Project_Urls_Web.Builder();
       }
+
+      public abstract Builder toBuilder();
 
       public @NonNull String creatorBio() {
         return Uri.parse(project())
@@ -219,6 +223,8 @@ public abstract class Project implements Parcelable {
       public static Builder builder() {
         return new AutoParcel_Project_Urls_Api.Builder();
       }
+
+      public abstract Builder toBuilder();
     }
   }
 

@@ -37,22 +37,6 @@ public final class RefTagUtils {
   }
 
   /**
-     * Finds the ref tag cookie associated with a project. Returns `null` if no cookie has yet been set.
-   */
-  public static @Nullable HttpCookie findRefTagCookieForProject(final @NonNull Project project, final @NonNull CookieManager cookieManager) {
-    final CookieStore cookieStore = cookieManager.getCookieStore();
-    final List<HttpCookie> cookies = cookieStore.getCookies();
-
-    for (final HttpCookie cookie : cookies) {
-      if (cookieNameForProject(project).equals(cookie.getName())) {
-        return cookie;
-      }
-    }
-
-    return null;
-  }
-
-  /**
    * If a ref tag cookie has been stored for this project this returns the ref tag embedded in the cookie. If a
    * cookie has not yet been set it returns `null`.
    */
@@ -83,7 +67,7 @@ public final class RefTagUtils {
     // Try extracting the path and domain for the cookie from the project.
     try {
       final URL url = new URL(project.webProjectUrl());
-      cookie.setPath(url.getPath());/**/
+      cookie.setPath(url.getPath());
       cookie.setDomain(url.getHost());
     } catch (MalformedURLException e) {
       return null;
@@ -94,11 +78,27 @@ public final class RefTagUtils {
     // Cookie expires on the project deadline, or some days into the future if there is no deadline.
     final DateTime deadline = project.deadline();
     if (deadline != null) {
-      cookie.setMaxAge(deadline.getMillis() / 1000l);
+      cookie.setMaxAge(ProjectUtils.timeInSecondsUntilDeadline(project));
     } else {
       cookie.setMaxAge(new DateTime().plusDays(10).getMillis() / 1000l);
     }
 
     return cookie;
+  }
+
+  /**
+   * Finds the ref tag cookie associated with a project. Returns `null` if no cookie has yet been set.
+   */
+  protected static @Nullable HttpCookie findRefTagCookieForProject(final @NonNull Project project, final @NonNull CookieManager cookieManager) {
+    final CookieStore cookieStore = cookieManager.getCookieStore();
+    final List<HttpCookie> cookies = cookieStore.getCookies();
+
+    for (final HttpCookie cookie : cookies) {
+      if (cookieNameForProject(project).equals(cookie.getName())) {
+        return cookie;
+      }
+    }
+
+    return null;
   }
 }

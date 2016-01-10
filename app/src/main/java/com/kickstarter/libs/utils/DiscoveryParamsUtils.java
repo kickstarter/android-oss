@@ -6,6 +6,7 @@ import com.kickstarter.libs.RefTag;
 import com.kickstarter.services.DiscoveryParams;
 
 import static com.kickstarter.libs.utils.BoolUtils.*;
+import static com.kickstarter.libs.utils.IntegerUtils.isNonZero;
 
 public final class DiscoveryParamsUtils {
   private DiscoveryParamsUtils() {}
@@ -36,8 +37,7 @@ public final class DiscoveryParamsUtils {
       return RefTag.recommended();
     }
 
-    final Integer social = params.social();
-    if (social != null && social != 0) {
+    if (isNonZero(params.social())) {
       return RefTag.social();
     }
 

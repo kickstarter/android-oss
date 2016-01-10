@@ -112,14 +112,4 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
       .putExtra(IntentKey.PROJECT, project);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
-
-  @Override
-  protected void onActivityResult(final int requestCode, final int resultCode, final @NonNull Intent intent) {
-    if (requestCode != ActivityRequestCodes.ACTIVITY_FEED_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED) {
-      return;
-    }
-    if (resultCode != RESULT_OK) {
-      return;
-    }
-  }
 }

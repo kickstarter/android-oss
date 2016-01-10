@@ -98,6 +98,12 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
       .subscribe(__ -> dismissCommentDialog());
   }
 
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    recyclerViewPaginator.stop();
+  }
+
   public void show(@NonNull final Project project, @NonNull final List<Comment> comments,
     @Nullable final User user) {
     adapter.takeProjectComments(project, comments, user);

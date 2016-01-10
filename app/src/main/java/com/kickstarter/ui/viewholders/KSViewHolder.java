@@ -1,6 +1,7 @@
 package com.kickstarter.ui.viewholders;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -25,8 +26,15 @@ public abstract class KSViewHolder extends RecyclerView.ViewHolder implements Vi
   }
 
   /**
-   * Populate a view with data. Subclasses should override this method and cast the Object to the
-   * appropriate type.
+   * Populate a view with data that was bound in `bindData`.
    */
-  abstract public void onBind(@NonNull final Object datum);
+  abstract public void onBind();
+
+  /**
+   * Implementations of this should inspect `data` to set instance variables in the view holder that
+   * `onBind` can then use without worrying about type safety.
+   *
+   * @return Return a `boolean` that indicates if this binding happened successfully.
+   */
+  abstract public boolean bindData(final @Nullable Object data);
 }

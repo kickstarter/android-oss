@@ -2,6 +2,7 @@ package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
@@ -24,6 +25,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public final class CommentViewHolder extends KSViewHolder {
+  private Project project;
+  private Comment comment;
   public @Bind(R.id.avatar) ImageView avatarImageView;
   public @Bind(R.id.creator_label) TextView creatorLabelTextView;
   public @Bind(R.id.user_label) TextView userLabelTextView;
@@ -40,10 +43,21 @@ public final class CommentViewHolder extends KSViewHolder {
     ButterKnife.bind(this, view);
   }
 
-  public void onBind(@NonNull final Object datum) {
-    final Pair<Project, Comment> projectAndComment = (Pair<Project, Comment>) datum;
-    final Project project = projectAndComment.first;
-    final Comment comment = projectAndComment.second;
+  @Override
+  public boolean bindData(final @Nullable Object data) {
+    if (data == null) { return false; }
+
+    try {
+      final Pair projectAndComment = (Pair) data;
+      project = (Project) projectAndComment.first;
+      comment = (Comment) projectAndComment.second;
+      return project != null && comment != null;
+    } catch (Exception __) {
+      return false;
+    }
+  }
+
+  public void onBind() {
     final Context context = view.getContext();
 
     creatorLabelTextView.setVisibility(View.GONE);

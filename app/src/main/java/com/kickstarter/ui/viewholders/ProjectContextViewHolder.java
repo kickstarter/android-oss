@@ -2,6 +2,7 @@ package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
+import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
 import com.squareup.picasso.Picasso;
 
@@ -42,10 +44,26 @@ public final class ProjectContextViewHolder extends KSViewHolder {
     ((KSApplication) context.getApplicationContext()).component().inject(this);
   }
 
-  public void onBind(final @NonNull Object datum) {
-    this.project = (Project) datum;
+  @Override
+  public boolean bindData(final @Nullable Object data) {
+    try {
+      project = (Project) data;
+      return project != null;
+    } catch (Exception __) {
+      return false;
+    }
+  }
 
-    Picasso.with(context).load(project.photo().full()).into(projectContextImageView);
+  public void onBind() {
+    final Photo photo = project.photo();
+
+    if (photo != null) {
+      projectContextImageView.setVisibility(View.VISIBLE);
+      Picasso.with(context).load(photo.full()).into(projectContextImageView);
+    } else {
+      projectContextImageView.setVisibility(View.INVISIBLE);
+    }
+
     projectNameTextView.setText(project.name());
     creatorNameTextView.setText(ksString.format(
       projectCreatorByCreatorString,

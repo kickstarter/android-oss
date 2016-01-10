@@ -2,6 +2,7 @@ package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
 
@@ -65,12 +66,22 @@ public final class RewardViewHolder extends KSViewHolder {
     ButterKnife.bind(this, view);
   }
 
-  public void onBind(@NonNull final Object datum) {
-    final List<Object> projectRewardUser = (List<Object>) datum;
-    project = (Project) projectRewardUser.get(0);
-    reward = (Reward) projectRewardUser.get(1);
-    configCountry = (String) projectRewardUser.get(2);
+  @Override
+  public boolean bindData(final @Nullable Object data) {
+    if (data == null) { return false; }
 
+    try {
+      final List projectRewardUser = (List) data;
+      project = (Project) projectRewardUser.get(0);
+      reward = (Reward) projectRewardUser.get(1);
+      configCountry = (String) projectRewardUser.get(2);
+      return project != null && reward != null && configCountry != null;
+    } catch (Exception e) {
+      return false;
+    }
+  }
+
+  public void onBind() {
     minimumTextView.setText(ksString.format(
       pledgeRewardCurrencyOrMoreString,
       "reward_currency",

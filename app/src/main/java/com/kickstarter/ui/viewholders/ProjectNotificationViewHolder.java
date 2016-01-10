@@ -1,6 +1,7 @@
 package com.kickstarter.ui.viewholders;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.TextView;
@@ -50,9 +51,21 @@ public final class ProjectNotificationViewHolder extends KSViewHolder {
   }
 
   @Override
-  public void onBind(final @NonNull Object datum) {
-    final ProjectNotificationViewModel viewModel = (ProjectNotificationViewModel) datum;
-    this.viewModel.onNext(viewModel);
+  public boolean bindData(final @Nullable Object data) {
+    try {
+      final ProjectNotificationViewModel viewModel = (ProjectNotificationViewModel) data;
+      if (viewModel != null) {
+        this.viewModel.onNext(viewModel);
+        return true;
+      }
+      return false;
+    } catch (Exception __) {
+      return false;
+    }
+  }
+
+  @Override
+  public void onBind() {
   }
 
   public void renderNotification(final @NonNull Notification notification) {

@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.kickstarter.BuildConfig;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 
 import java.util.ArrayList;
@@ -37,7 +38,13 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
 
   @Override
   public final void onBindViewHolder(final @NonNull KSViewHolder viewHolder, final int position) {
-    viewHolder.onBind(objectFromPosition(position));
+    final Object data = objectFromPosition(position);
+
+    if (viewHolder.bindData(data)) {
+      viewHolder.onBind();
+    } else if (BuildConfig.DEBUG){
+      throw new RuntimeException("The view holder " + viewHolder.getClass().toString() + " was not able to process the data provided " + data.toString());
+    }
   }
 
   @Override

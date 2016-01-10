@@ -3,6 +3,7 @@ package com.kickstarter.ui.viewholders;
 import android.content.Context;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.TextView;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
+import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Category;
 
 import javax.inject.Inject;
@@ -45,18 +47,34 @@ public final class CategoryPromoViewHolder extends KSViewHolder {
     ButterKnife.bind(this, view);
   }
 
-  public void onBind(final @NonNull Object datum) {
-    category = (Category) datum;
+  @Override
+  public boolean bindData(final @Nullable Object data) {
+    try {
+      category = (Category) data;
+      return category != null;
+    } catch (Exception __) {
+      return false;
+    }
+  }
 
+  public void onBind() {
     cardView.setCardBackgroundColor(category.colorWithAlpha());
     final @ColorInt int categoryTextColor = category.overlayTextColor(context);
     exploreTextView.setTextColor(categoryTextColor);
     exploreTextView.setText(ksString.format(exploreCategoryString, "category_name", category.name()));
-    liveProjectsTextView.setText(ksString.format(
-      countLiveProjectsString,
-      "project_count",
-      category.projectsCount().toString()
-    ));
+
+    final Integer projectsCount = category.projectsCount();
+    if (projectsCount != null) {
+      liveProjectsTextView.setVisibility(View.VISIBLE);
+      liveProjectsTextView.setText(ksString.format(
+        countLiveProjectsString,
+        "project_count",
+        NumberUtils.format(projectsCount)
+      ));
+    } else {
+      liveProjectsTextView.setVisibility(View.GONE);
+    }
+
     liveProjectsTextView.setTextColor(categoryTextColor);
   }
 

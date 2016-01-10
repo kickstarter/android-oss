@@ -16,6 +16,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public final class EmptyCommentFeedViewHolder extends KSViewHolder {
+  Project project;
+  User user;
   private final Delegate delegate;
   protected @Bind(R.id.comment_feed_login_button) Button commentFeedLoginButton;
   protected @Bind(R.id.no_comments_message) TextView noCommentsMessageTextView;
@@ -30,11 +32,21 @@ public final class EmptyCommentFeedViewHolder extends KSViewHolder {
     ButterKnife.bind(this, view);
   }
 
-  public void onBind(@NonNull final Object datum) {
-    final Pair<Project, User> projectAndUser = (Pair<Project, User>) datum;
-    final Project project = projectAndUser.first;
-    final User user = projectAndUser.second;
+  @Override
+  public boolean bindData(final @Nullable Object data) {
+    if (data == null) { return false; }
 
+    try {
+      final Pair projectAndUser = (Pair) data;
+      project = (Project) projectAndUser.first;
+      user = (User) projectAndUser.second;
+      return project != null && user != null;
+    } catch (Exception e) {
+      return false;
+    }
+  }
+
+  public void onBind() {
     if (user == null) {
       commentFeedLoginButton.setVisibility(View.VISIBLE);
       noCommentsMessageTextView.setText(R.string.project_comments_empty_state_logged_out_message_log_in);

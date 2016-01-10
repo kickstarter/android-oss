@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Pair;
@@ -27,11 +28,16 @@ import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.SocialUtils;
 import com.kickstarter.libs.utils.ViewUtils;
+import com.kickstarter.models.Category;
+import com.kickstarter.models.Location;
+import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ProjectSocialActivity;
 import com.kickstarter.ui.views.IconButton;
 import com.squareup.picasso.Picasso;
+
+import org.joda.time.DateTime;
 
 import javax.inject.Inject;
 
@@ -42,6 +48,8 @@ import butterknife.BindDrawable;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.kickstarter.libs.utils.ObjectUtils.coalesce;
 
 public final class ProjectViewHolder extends KSViewHolder {
   private Project project;
@@ -120,14 +128,30 @@ public final class ProjectViewHolder extends KSViewHolder {
     ButterKnife.bind(this, view);
   }
 
-  public void onBind(@NonNull final Object datum) {
-    final Pair<Project, String> projectAndCountry = (Pair<Project, String>) datum;
-    this.project = projectAndCountry.first;
-    this.configCountry = projectAndCountry.second;
+  @Override
+  public boolean bindData(final @Nullable Object data) {
+    if (data == null) {
+      return false;
+    }
+
+    try {
+      final Pair projectAndCountry = (Pair) data;
+      project = (Project) projectAndCountry.first;
+      configCountry = (String) projectAndCountry.second;
+      return project != null && configCountry != null;
+    } catch (Exception __) {
+      return false;
+    }
+  }
+
+  public void onBind() {
     final Context context = view.getContext();
 
-    /* Video */
-    Picasso.with(context).load(project.photo().full()).into(photoImageView);
+    final Photo photo = project.photo();
+    if (photo != null) {
+      Picasso.with(context).load(photo.full()).into(photoImageView);
+    }
+
     if (project.hasVideo()) {
       playButton.setVisibility(View.VISIBLE);
     } else {
@@ -147,8 +171,14 @@ public final class ProjectViewHolder extends KSViewHolder {
       backerLabelLinearLayout.setVisibility(View.GONE);
     }
     projectNameTextView.setText(project.name());
-    categoryTextView.setText(project.category().name());
-    locationTextView.setText(project.location().displayableName());
+    final Category category = project.category();
+    if (category != null) {
+      categoryTextView.setText(category.name());
+    }
+    final Location location = project.location();
+    if (location != null) {
+      locationTextView.setText(location.displayableName());
+    }
     percentageFundedProgressBar.setProgress(ProgressBarUtils.progress(project.percentageFunded()));
     deadlineCountdownTextView.setText(NumberUtils.format(ProjectUtils.deadlineCountdownValue(project)));
     deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(project, view.getContext(), ksString));
@@ -230,14 +260,18 @@ public final class ProjectViewHolder extends KSViewHolder {
   }
 
   public void setProjectDisclaimerView() {
-    if (!project.isLive()) {
+    final DateTime deadline = project.deadline();
+
+    if (deadline == null) {
+      projectDisclaimerTextView.setVisibility(View.GONE);
+    } else if (!project.isLive()) {
       projectDisclaimerTextView.setVisibility(View.GONE);
     } else if (project.isFunded()) {
       projectDisclaimerTextView.setVisibility(View.VISIBLE);
       projectDisclaimerTextView.setText(ksString.format(
         projectDisclaimerGoalReachedString,
         "deadline",
-        DateTimeUtils.mediumDateTime(project.deadline())
+        DateTimeUtils.mediumDateTime(deadline)
       ));
     } else {
       projectDisclaimerTextView.setVisibility(View.VISIBLE);
@@ -246,7 +280,7 @@ public final class ProjectViewHolder extends KSViewHolder {
         "goal_currency",
         ksCurrency.format(project.goal(), project, true),
         "deadline",
-        DateTimeUtils.mediumDateTime(project.deadline())
+        DateTimeUtils.mediumDateTime(deadline)
       ));
     }
   }
@@ -267,6 +301,8 @@ public final class ProjectViewHolder extends KSViewHolder {
   }
 
   public void setProjectStateView() {
+    final DateTime stateChangedAt = coalesce(project.stateChangedAt(), new DateTime());
+
     switch(project.state()) {
       case Project.STATE_SUCCESSFUL:
         percentageFundedProgressBar.setVisibility(View.GONE);
@@ -275,7 +311,7 @@ public final class ProjectViewHolder extends KSViewHolder {
 
         projectStateHeaderTextView.setText(fundedString);
         projectStateSubheadTextView.setText(ksString.format(successfullyFundedOnDeadlineString,
-          "deadline", DateTimeUtils.mediumDate(project.stateChangedAt())
+          "deadline", DateTimeUtils.mediumDate(stateChangedAt)
         ));
         break;
       case Project.STATE_CANCELED:
@@ -293,7 +329,7 @@ public final class ProjectViewHolder extends KSViewHolder {
 
         projectStateHeaderTextView.setText(fundingUnsuccessfulString);
         projectStateSubheadTextView.setText(ksString.format(fundingGoalNotReachedString,
-          "deadline", DateTimeUtils.mediumDate(project.stateChangedAt())
+          "deadline", DateTimeUtils.mediumDate(stateChangedAt)
         ));
         break;
       case Project.STATE_SUSPENDED:

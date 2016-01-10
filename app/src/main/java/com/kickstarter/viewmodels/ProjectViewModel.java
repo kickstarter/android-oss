@@ -42,11 +42,11 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
    * data in the activity and the other comes from the ref stored in a cookie associated to the project.
    */
   private class RefTagsAndProject {
-    final @NonNull RefTag activityRefTag;
+    final @Nullable RefTag activityRefTag;
     final @Nullable RefTag cookieRefTag;
     final @NonNull Project project;
 
-    private RefTagsAndProject(final @NonNull RefTag activityRefTag, final @Nullable RefTag cookieRefTag, final @NonNull Project project) {
+    private RefTagsAndProject(final @Nullable RefTag activityRefTag, final @Nullable RefTag cookieRefTag, final @NonNull Project project) {
       this.activityRefTag = activityRefTag;
       this.cookieRefTag = cookieRefTag;
       this.project = project;
@@ -214,7 +214,7 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
       .take(1)
       .subscribe(data -> {
         // If a cookie hasn't been set for this ref+project then do so.
-        if (data.cookieRefTag == null) {
+        if (data.cookieRefTag == null && data.activityRefTag != null) {
           final HttpCookie cookie = RefTagUtils.buildCookieForRefTagAndProject(data.activityRefTag, data.project);
           cookieManager.getCookieStore().add(null, cookie);
         }

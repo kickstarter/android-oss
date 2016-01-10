@@ -13,7 +13,7 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.BoolUtils;
+import com.kickstarter.libs.utils.DiscoveryParamsUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
@@ -32,6 +32,8 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
+
+import static com.kickstarter.libs.utils.BoolUtils.isTrue;
 
 public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> implements DiscoveryViewModelInputs, DiscoveryViewModelOutputs {
   protected @Inject ApiClientType apiClient;
@@ -143,7 +145,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   }
 
   private boolean isOnboardingVisible(final @NonNull DiscoveryParams currentParams, final boolean isLoggedIn) {
-    return !isLoggedIn && !hasSeenOnboarding && BoolUtils.isTrue(currentParams.staffPicks());
+    return !isLoggedIn && !hasSeenOnboarding && isTrue(currentParams.staffPicks());
   }
 
   /**
@@ -156,7 +158,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     } else if (project.isFeaturedToday()) {
       refTag = RefTag.categoryFeatured();
     } else {
-      refTag = params.refTag();
+      refTag = DiscoveryParamsUtils.refTag(params);
     }
 
     return new Pair<>(project, refTag);

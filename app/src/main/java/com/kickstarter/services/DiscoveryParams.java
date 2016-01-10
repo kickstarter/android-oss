@@ -7,9 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.qualifiers.AutoGson;
-import com.kickstarter.libs.utils.BoolUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Location;
@@ -20,6 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import auto.parcel.AutoParcel;
+
+import static com.kickstarter.libs.utils.BoolUtils.isTrue;
 
 @AutoGson
 @AutoParcel
@@ -322,7 +322,7 @@ public abstract class DiscoveryParams implements Parcelable {
    * POTD comes back.
    */
   public boolean includePotd() {
-    return BoolUtils.isTrue(staffPicks()) && page() != null && page() == 1 && (sort() == null || sort() == Sort.MAGIC);
+    return isTrue(staffPicks()) && page() != null && page() == 1 && (sort() == null || sort() == Sort.MAGIC);
   }
 
   /**
@@ -339,7 +339,7 @@ public abstract class DiscoveryParams implements Parcelable {
   }
 
   public @NonNull String filterString(@NonNull final Context context) {
-    if (BoolUtils.isTrue(staffPicks())) {
+    if (isTrue(staffPicks())) {
       return context.getString(R.string.discovery_recommended);
     } else if (starred() != null && starred() == 1) {
       return context.getString(R.string.discovery_saved);
@@ -358,43 +358,5 @@ public abstract class DiscoveryParams implements Parcelable {
 
   public boolean isCategorySet() {
     return category() != null;
-  }
-
-  /**
-   * A `ref_tag` representation of this discovery params. This tag is used to attribute checkouts when a user visits
-   * a project from a discovery search using these params.
-   */
-  public @NonNull RefTag refTag() {
-    if (isCategorySet()) {
-      final Sort sort = sort();
-      if (sort != null) {
-        return RefTag.category(sort);
-      }
-      return RefTag.category();
-    }
-
-    if (location() != null) {
-      return RefTag.city();
-    }
-
-    final Boolean staffPicks = staffPicks();
-    if (staffPicks != null && staffPicks) {
-      final Sort sort = sort();
-      if (sort != null) {
-        return RefTag.recommended(sort);
-      }
-      return RefTag.recommended();
-    }
-
-    final Integer social = social();
-    if (social != null && social != 0) {
-      return RefTag.social();
-    }
-
-    if (term() != null) {
-      return RefTag.search();
-    }
-
-    return RefTag.discovery();
   }
 }

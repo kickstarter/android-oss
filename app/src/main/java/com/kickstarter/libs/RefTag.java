@@ -2,6 +2,7 @@ package com.kickstarter.libs;
 
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.kickstarter.services.DiscoveryParams;
 
@@ -67,7 +68,7 @@ public abstract class RefTag implements Parcelable {
     return new AutoParcel_RefTag("category_featured");
   }
 
-  @Override public boolean equals(final Object other) {
+  @Override public boolean equals(final @Nullable Object other) {
     if (other != null && other instanceof RefTag) {
       return tag().equals(((RefTag) other).tag());
     }

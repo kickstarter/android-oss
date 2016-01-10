@@ -2,14 +2,12 @@ package com.kickstarter.ui.adapters;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.View;
 
 import com.kickstarter.R;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
-import com.kickstarter.models.User;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.ProjectViewHolder;
 import com.kickstarter.ui.viewholders.RewardViewHolder;

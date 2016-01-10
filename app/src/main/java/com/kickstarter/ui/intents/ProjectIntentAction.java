@@ -9,7 +9,6 @@ import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
-import com.kickstarter.services.KSUri;
 import com.kickstarter.ui.IntentKey;
 import com.trello.rxlifecycle.ActivityEvent;
 import com.trello.rxlifecycle.RxLifecycle;

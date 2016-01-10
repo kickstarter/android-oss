@@ -8,7 +8,6 @@ import android.support.annotation.StringDef;
 
 import com.kickstarter.libs.qualifiers.AutoGson;
 import com.kickstarter.libs.utils.DateTimeUtils;
-import com.kickstarter.libs.utils.NumberUtils;
 
 import org.joda.time.DateTime;
 

@@ -70,27 +70,27 @@ public abstract class ErrorEnvelope implements Parcelable {
   }
 
   public boolean isConfirmFacebookSignupError() {
-    return ksrCode().equals(CONFIRM_FACEBOOK_SIGNUP);
+    return CONFIRM_FACEBOOK_SIGNUP.equals(ksrCode());
   }
 
   public boolean isInvalidLoginError() {
-    return ksrCode().equals(INVALID_XAUTH_LOGIN);
+    return INVALID_XAUTH_LOGIN.equals(ksrCode());
   }
 
   public boolean isTfaRequiredError() {
-    return ksrCode().equals(TFA_REQUIRED);
+    return TFA_REQUIRED.equals(ksrCode());
   }
 
   public boolean isTfaFailedError() {
-    return ksrCode().equals(TFA_FAILED);
+    return TFA_FAILED.equals(ksrCode());
   }
 
   public boolean isMissingFacebookEmailError() {
-    return ksrCode().equals(MISSING_FACEBOOK_EMAIL);
+    return MISSING_FACEBOOK_EMAIL.equals(ksrCode());
   }
 
   public boolean isFacebookInvalidAccessTokenError() {
-    return ksrCode().equals(FACEBOOK_INVALID_ACCESS_TOKEN);
+    return FACEBOOK_INVALID_ACCESS_TOKEN.equals(ksrCode());
   }
 
   /*
@@ -99,8 +99,8 @@ public abstract class ErrorEnvelope implements Parcelable {
    */
   public boolean isGenericLoginError() {
     return
-      !ksrCode().equals(INVALID_XAUTH_LOGIN) &&
-        !ksrCode().equals(TFA_REQUIRED);
+      !INVALID_XAUTH_LOGIN.equals(ksrCode()) &&
+        !TFA_REQUIRED.equals(ksrCode());
   }
 
   /**

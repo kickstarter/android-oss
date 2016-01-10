@@ -31,6 +31,7 @@
         android:id="@+id/logged_out_icon_button"
         android:gravity="center"
         android:text="@string/account_circle"
+        android:textColor="@color/black"
         android:textSize="30sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

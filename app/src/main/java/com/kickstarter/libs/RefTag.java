@@ -13,8 +13,6 @@ import auto.parcel.AutoParcel;
  */
 @AutoParcel
 public abstract class RefTag implements Parcelable {
-  static final @NonNull String COOKIE_VALUE_SEPARATOR = "%3F";
-
   public abstract @NonNull String tag();
 
   public static RefTag from(final @NonNull String tag) {
@@ -69,8 +67,10 @@ public abstract class RefTag implements Parcelable {
     return new AutoParcel_RefTag("category_featured");
   }
 
-  @Override
-  public String toString() {
-    return tag();
+  @Override public boolean equals(final Object other) {
+    if (other != null && other instanceof RefTag) {
+      return tag().equals(((RefTag) other).tag());
+    }
+    return false;
   }
 }

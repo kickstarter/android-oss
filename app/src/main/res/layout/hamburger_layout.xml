@@ -7,7 +7,7 @@
   android:layout_width="match_parent"
   android:fitsSystemWindows="true">
 
-  <include layout="@layout/hamburger_view"/>
+  <include layout="@layout/hamburger_view" />
 
   <android.support.design.widget.NavigationView
     android:id="@+id/hamburger_navigation_view"

@@ -4,6 +4,7 @@
     Icons from: https://www.google.com/design/icons/
     Unicode for an icon can be looked up at: https://github.com/google/material-design-icons/blob/03e5ebc7f534d034494c7abd5a80e97fad1e32b5/iconfont/codepoints
   -->
+  <string name="account_circle">\ue853</string>
   <string name="arrow_back_icon">\ue5c4</string>
   <string name="chevron_right_icon">\ue5cc</string>
   <string name="close_icon">\ue5cd</string>
@@ -24,6 +25,7 @@
   <string name="phone_android_icon">\ue324</string>
   <string name="play_circle_outline_icon">\ue039</string>
   <string name="search_icon">\ue8b6</string>
+  <string name="settings_icon">\ue8b8</string>
   <string name="share_icon">\ue80d</string>
   <string name="speaker_notes_icon">\ue8cd</string>
   <string name="star_icon">\ue838</string>

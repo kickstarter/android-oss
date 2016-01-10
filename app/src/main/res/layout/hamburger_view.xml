@@ -1,6 +1,7 @@
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:id="@+id/hamburger_view"
+  android:background="@color/hamburger_background"
   android:nextFocusDown="@+id/recycler_view"
   android:layout_width="match_parent"
   android:layout_height="match_parent"

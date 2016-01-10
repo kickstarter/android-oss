@@ -13,8 +13,9 @@
   <color name="discovery_primary">@color/dark_blue</color>
   <color name="discovery_secondary">#ff083e8f</color>
   <color name="discovery_background">#fff8f8f8</color>
-  <color name="hamburger_toolbar">@color/royal_blue</color>
-  <color name="hamburger_statusbar">#ff1238d2</color>
+  <color name="hamburger_background">#fff8f8f8</color>
+  <color name="hamburger_toolbar">@color/dark_blue</color>
+  <color name="hamburger_statusbar">#ff030821</color>
   <color name="hamburger_navigation_header">@color/light_gray</color>
 
   <!-- Kickstarter colors -->
@@ -29,6 +30,7 @@
   <color name="gray">#d9d9de</color>
   <color name="gray_black">#ff464646</color>
   <color name="off_white">#fafafa</color>
+  <color name="mint">#ffe3fdf9</color>
   <color name="pink">#ffecf0</color>
   <color name="royal_blue">#ff2752ff</color>
   <color name="text_dark">#ff0f2105</color>

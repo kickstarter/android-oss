@@ -29,7 +29,9 @@
 
     <activity
       android:name=".ui.activities.HamburgerActivity"
-      android:theme="@style/HamburgerActivity" />
+      android:theme="@style/HamburgerActivity">
+
+    </activity>
 
     <activity
       android:name=".ui.activities.ActivityFeedActivity"

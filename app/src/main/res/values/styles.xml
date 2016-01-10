@@ -68,7 +68,7 @@
   </style>
 
   <style name="HamburgerActivity" parent="HamburgerStatusBar">
-    <item name="android:windowBackground">@color/window_background</item>
+    <item name="android:windowBackground">@color/discovery_background</item>
   </style>
 
   <style name="HelpActivity" parent="KSTheme">
@@ -218,7 +218,7 @@
     <item name="android:maxWidth">@dimen/button_icon_fixed_width</item>
     <item name="android:gravity">center</item>
     <item name="android:textColor">@color/primary_dark</item>
-    <item name="android:textSize">22sp</item>
+    <item name="android:textSize">@dimen/icon</item>
   </style>
 
   <style name="ToolbarTitle" parent="SubheadPrimary">

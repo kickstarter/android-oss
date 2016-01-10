@@ -22,6 +22,9 @@
   <dimen name="grid_14">112dp</dimen>
   <dimen name="grid_15">120dp</dimen>
   <dimen name="grid_16">128dp</dimen>
+  <dimen name="grid_17">136dp</dimen>
+  <dimen name="grid_18">144dp</dimen>
+  <dimen name="grid_19">152dp</dimen>
   <dimen name="grid_20">160dp</dimen>
   <dimen name="grid_26">208dp</dimen>
   <dimen name="grid_35">280dp</dimen>
@@ -38,6 +41,7 @@
   <dimen name="subhead_line_spacing_extra">4dp</dimen>
 
   <!-- Icon sizes -->
+  <dimen name="icon">22sp</dimen>
   <dimen name="chevron_right_icon">24sp</dimen>
   <dimen name="empty_feed_icon">50sp</dimen>
   <dimen name="settings_icon">20sp</dimen>

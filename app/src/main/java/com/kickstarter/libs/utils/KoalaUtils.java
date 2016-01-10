@@ -71,7 +71,7 @@ public final class KoalaUtils {
       put("id", location.id());
       put("name", location.name());
       put("displayable_name", location.displayableName());
-      put("location", location.city());
+      put("city", location.city());
       put("state", location.state());
       put("country", location.country());
       put("projects_count", location.projectsCount());
@@ -134,7 +134,7 @@ public final class KoalaUtils {
 
       final Location location = project.location();
       if (location != null) {
-        put("city", location.name());
+        put("location", location.name());
       }
 
       putAll(userProperties(project.creator(), "creator_"));

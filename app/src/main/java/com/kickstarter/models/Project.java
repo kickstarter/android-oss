@@ -210,7 +210,7 @@ public abstract class Project implements Parcelable {
   }
 
   public boolean hasComments() {
-    return this.commentsCount() != null && Integer.valueOf(this.commentsCount()) != 0;
+    return this.commentsCount() != null && this.commentsCount() != 0;
   }
 
   public boolean hasRewards() {

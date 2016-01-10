@@ -208,11 +208,11 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
 
   public Observable<Project> starProject(final @NonNull Project project) {
     return client.starProject(project)
-      .onErrorResumeNext(Observable.empty());
+      .compose(Transformers.neverError());
   }
 
   public Observable<Project> toggleProjectStar(final @NonNull Project project) {
     return client.toggleProjectStar(project)
-      .onErrorResumeNext(Observable.empty());
+      .compose(Transformers.neverError());
   }
 }

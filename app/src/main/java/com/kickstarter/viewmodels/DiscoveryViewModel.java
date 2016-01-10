@@ -125,7 +125,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   private Observable<List<Project>> projectsFromParams(@NonNull final DiscoveryParams params) {
     return apiClient.fetchProjects(params)
       .retry(2)
-      .onErrorResumeNext(e -> Observable.empty())
+      .compose(Transformers.neverError())
       .map(DiscoverEnvelope::projects)
       .map(this::bringPotdToFront);
   }

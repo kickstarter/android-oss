@@ -17,13 +17,13 @@ public final class RefTagUtilsTest extends TestCase {
   public void testCookieNameForProject() {
     final Project project = ProjectFactory.project();
 
-    assertEquals(RefTagUtils.cookieNameForProject(project), "ref_" + String.valueOf(project.id()));
+    assertEquals("ref_" + String.valueOf(project.id()), RefTagUtils.cookieNameForProject(project));
   }
 
   public void testCookieValueForRefTag() {
     final RefTag refTag = RefTag.from("test");
 
-    assertEquals(RefTagUtils.cookieValueForRefTag(refTag), "test%3F" + secondsSinceEpoch());
+    assertEquals("test%3F" + secondsSinceEpoch(), RefTagUtils.cookieValueForRefTag(refTag));
   }
 
   public void testStoredCookieRefTagForProject() {
@@ -37,7 +37,7 @@ public final class RefTagUtilsTest extends TestCase {
     final RefTag retrievedRefTag = RefTagUtils.storedCookieRefTagForProject(project, cookieManager);
 
     assertNotNull(retrievedRefTag);
-    assertEquals(retrievedRefTag, refTag);
+    assertEquals(refTag, retrievedRefTag);
   }
 
   public void testBuildCookieForRefTagAndProject_WithWellFormedUrl() {
@@ -46,8 +46,8 @@ public final class RefTagUtilsTest extends TestCase {
     final HttpCookie cookie = RefTagUtils.buildCookieForRefTagAndProject(refTag, project);
 
     assertNotNull(cookie);
-    assertEquals(cookie.getMaxAge(), ProjectUtils.timeInSecondsUntilDeadline(project).longValue());
-    assertEquals(cookie.getDomain(), "www.kickstarter.com");
+    assertEquals(ProjectUtils.timeInSecondsUntilDeadline(project).longValue(), cookie.getMaxAge());
+    assertEquals("www.kickstarter.com", cookie.getDomain());
   }
 
   public void testBuildCookieForRefTagAndProject_WithMalformedUrl() {
@@ -72,8 +72,8 @@ public final class RefTagUtilsTest extends TestCase {
     final HttpCookie cookie = RefTagUtils.findRefTagCookieForProject(project, cookieManager);
 
     assertNotNull(cookie);
-    assertEquals(cookie.getName(), RefTagUtils.cookieNameForProject(project));
-    assertEquals(cookie.getValue(), RefTagUtils.cookieValueForRefTag(refTag));
+    assertEquals(RefTagUtils.cookieNameForProject(project), cookie.getName());
+    assertEquals(RefTagUtils.cookieValueForRefTag(refTag), cookie.getValue());
   }
 
   public void testFindRefTagCookieForProject_WhenCookieDoesNotExist() {

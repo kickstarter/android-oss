@@ -16,41 +16,38 @@ public class DiscoveryParamsUtilsTest extends TestCase {
     );
 
     assertEquals(
-      DiscoveryParamsUtils.refTag(DiscoveryParams.builder()
-        .category(CategoryFactory.artCategory())
-        .sort(DiscoveryParams.Sort.POPULAR)
-        .build()),
-      RefTag.category(DiscoveryParams.Sort.POPULAR)
+      RefTag.category(DiscoveryParams.Sort.POPULAR),
+      DiscoveryParamsUtils.refTag(DiscoveryParams.builder().category(CategoryFactory.artCategory()).sort(DiscoveryParams.Sort.POPULAR).build())
     );
 
     assertEquals(
-      DiscoveryParamsUtils.refTag(DiscoveryParams.builder().location(LocationFactory.germany()).build()),
-      RefTag.city()
+      RefTag.city(),
+      DiscoveryParamsUtils.refTag(DiscoveryParams.builder().location(LocationFactory.germany()).build())
     );
 
     assertEquals(
-      DiscoveryParamsUtils.refTag(DiscoveryParams.builder().staffPicks(true).build()),
-      RefTag.recommended()
+      RefTag.recommended(),
+      DiscoveryParamsUtils.refTag(DiscoveryParams.builder().staffPicks(true).build())
     );
 
     assertEquals(
-      DiscoveryParamsUtils.refTag(DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.POPULAR).build()),
-      RefTag.recommended(DiscoveryParams.Sort.POPULAR)
+      RefTag.recommended(DiscoveryParams.Sort.POPULAR),
+      DiscoveryParamsUtils.refTag(DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.POPULAR).build())
     );
 
     assertEquals(
-      DiscoveryParamsUtils.refTag(DiscoveryParams.builder().social(1).build()),
-      RefTag.social()
+      RefTag.social(),
+      DiscoveryParamsUtils.refTag(DiscoveryParams.builder().social(1).build())
     );
 
     assertEquals(
-      DiscoveryParamsUtils.refTag(DiscoveryParams.builder().term("art").build()),
-      RefTag.search()
+      RefTag.search(),
+      DiscoveryParamsUtils.refTag(DiscoveryParams.builder().term("art").build())
     );
 
     assertEquals(
-      DiscoveryParamsUtils.refTag(DiscoveryParams.builder().build()),
-      RefTag.discovery()
+      RefTag.discovery(),
+      DiscoveryParamsUtils.refTag(DiscoveryParams.builder().build())
     );
   }
 }

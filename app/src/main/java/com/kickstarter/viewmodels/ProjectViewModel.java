@@ -210,21 +210,23 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
       .take(1)
       .map(p -> RefTagUtils.storedCookieRefTagForProject(p, cookieManager));
 
-    Observable.combineLatest(activityRefTag, cookieRefTag, project, RefTagsAndProject::new)
-      .take(1)
-      .subscribe(data -> {
-        // If a cookie hasn't been set for this ref+project then do so.
-        if (data.cookieRefTag == null && data.activityRefTag != null) {
-          final HttpCookie cookie = RefTagUtils.buildCookieForRefTagAndProject(data.activityRefTag, data.project);
-          cookieManager.getCookieStore().add(null, cookie);
-        }
+    addSubscription(
+      Observable.combineLatest(activityRefTag, cookieRefTag, project, RefTagsAndProject::new)
+        .take(1)
+        .subscribe(data -> {
+          // If a cookie hasn't been set for this ref+project then do so.
+          if (data.cookieRefTag == null && data.activityRefTag != null) {
+            final HttpCookie cookie = RefTagUtils.buildCookieForRefTagAndProject(data.activityRefTag, data.project);
+            cookieManager.getCookieStore().add(null, cookie);
+          }
 
-        koala.trackProjectShow(
-          data.project,
-          data.activityRefTag,
-          RefTagUtils.storedCookieRefTagForProject(data.project, cookieManager)
-        );
-      });
+          koala.trackProjectShow(
+            data.project,
+            data.activityRefTag,
+            RefTagUtils.storedCookieRefTagForProject(data.project, cookieManager)
+          );
+        })
+    );
   }
 
   public void projectViewHolderBlurbClicked(final @NonNull ProjectViewHolder viewHolder) {

@@ -35,8 +35,6 @@ import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
 
-import java.net.CookieManager;
-
 import javax.inject.Inject;
 
 import butterknife.Bind;
@@ -53,7 +51,6 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
 
   protected @Inject ApplicationContainer applicationContainer;
   protected @Inject ApiClientType client;
-  protected @Inject CookieManager cookieManager;
 
   @BindDrawable(R.drawable.dark_blue_gradient) Drawable darkBlueGradientDrawable;
   @Bind(R.id.discovery_layout) LinearLayout discoveryLayout;

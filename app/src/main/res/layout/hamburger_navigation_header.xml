@@ -76,8 +76,8 @@
         <TextView
           style="@style/BodyPrimaryMedium"
           android:id="@+id/user_name_text_view"
-          android:layout_marginLeft="@dimen/grid_2"
-          android:layout_marginStart="@dimen/grid_2"
+          android:layout_marginLeft="@dimen/grid_1"
+          android:layout_marginStart="@dimen/grid_1"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:textColor="@color/black" />

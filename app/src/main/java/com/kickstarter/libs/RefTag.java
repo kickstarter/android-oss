@@ -9,7 +9,7 @@ import com.kickstarter.services.DiscoveryParams;
 import auto.parcel.AutoParcel;
 
 /**
- * A `RefTag` is a string identifier that Kickstarter uses to credit a pledge to a source of traffic, e.g. discovery,
+ * A {@link RefTag} is a string identifier that Kickstarter uses to credit a pledge to a source of traffic, e.g. discovery,
  * activity, search, etc. This class represents all possible ref tags we support in the app.
  */
 @AutoParcel

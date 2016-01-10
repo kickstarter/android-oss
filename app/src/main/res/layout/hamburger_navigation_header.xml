@@ -2,9 +2,9 @@
 <com.kickstarter.ui.views.HamburgerNavigationHeader
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
-  android:layout_height="@dimen/grid_8"
+  android:layout_height="@dimen/grid_11"
   android:background="@color/hamburger_navigation_header"
-  android:layout_marginTop="@dimen/grid_3"
+  android:paddingTop="@dimen/grid_3"
   android:theme="@style/ThemeOverlay.AppCompat.Light"
   android:orientation="vertical"
   android:gravity="bottom">

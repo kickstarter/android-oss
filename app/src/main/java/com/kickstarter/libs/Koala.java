@@ -54,15 +54,15 @@ public final class Koala {
 
   /**
    * Tracks a project show event.
-   * @param activityRefTag (nullable) The ref tag present in the activity upon displaying the project.
+   * @param intentRefTag (nullable) The ref tag present in the activity upon displaying the project.
    * @param cookieRefTag (nullable) The ref tag extracted from the cookie store upon viewing the project.
    */
-  public void trackProjectShow(final @NonNull Project project, final @Nullable RefTag activityRefTag, final @Nullable RefTag cookieRefTag) {
+  public void trackProjectShow(final @NonNull Project project, final @Nullable RefTag intentRefTag, final @Nullable RefTag cookieRefTag) {
 
     final Map<String, Object> properties = projectProperties(project);
 
-    if (activityRefTag != null) {
-      properties.put("ref_tag", activityRefTag.tag());
+    if (intentRefTag != null) {
+      properties.put("ref_tag", intentRefTag.tag());
     }
 
     if (cookieRefTag != null) {

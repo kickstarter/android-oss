@@ -42,12 +42,12 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
    * data in the activity and the other comes from the ref stored in a cookie associated to the project.
    */
   private class RefTagsAndProject {
-    final @Nullable RefTag activityRefTag;
+    final @Nullable RefTag intentRefTag;
     final @Nullable RefTag cookieRefTag;
     final @NonNull Project project;
 
-    private RefTagsAndProject(final @Nullable RefTag activityRefTag, final @Nullable RefTag cookieRefTag, final @NonNull Project project) {
-      this.activityRefTag = activityRefTag;
+    private RefTagsAndProject(final @Nullable RefTag intentRefTag, final @Nullable RefTag cookieRefTag, final @NonNull Project project) {
+      this.intentRefTag = intentRefTag;
       this.cookieRefTag = cookieRefTag;
       this.project = project;
     }
@@ -106,9 +106,9 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
   public void loginSuccess() {
     this.loginSuccess.onNext(null);
   }
-  private final PublishSubject<RefTag> activityRefTag = PublishSubject.create();
-  public void activityRefTag(final @Nullable RefTag refTag) {
-    activityRefTag.onNext(refTag);
+  private final PublishSubject<RefTag> intentRefTag = PublishSubject.create();
+  public void intentRefTag(final @Nullable RefTag refTag) {
+    intentRefTag.onNext(refTag);
   }
   public final ProjectViewModelInputs inputs = this;
 
@@ -211,18 +211,18 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
       .map(p -> RefTagUtils.storedCookieRefTagForProject(p, cookieManager));
 
     addSubscription(
-      Observable.combineLatest(activityRefTag, cookieRefTag, project, RefTagsAndProject::new)
+      Observable.combineLatest(intentRefTag, cookieRefTag, project, RefTagsAndProject::new)
         .take(1)
         .subscribe(data -> {
           // If a cookie hasn't been set for this ref+project then do so.
-          if (data.cookieRefTag == null && data.activityRefTag != null) {
-            final HttpCookie cookie = RefTagUtils.buildCookieForRefTagAndProject(data.activityRefTag, data.project);
+          if (data.cookieRefTag == null && data.intentRefTag != null) {
+            final HttpCookie cookie = RefTagUtils.buildCookieForRefTagAndProject(data.intentRefTag, data.project);
             cookieManager.getCookieStore().add(null, cookie);
           }
 
           koala.trackProjectShow(
             data.project,
-            data.activityRefTag,
+            data.intentRefTag,
             RefTagUtils.storedCookieRefTagForProject(data.project, cookieManager)
           );
         })

@@ -25,5 +25,5 @@ public interface ProjectViewModelInputs {
   /**
    * Call with the un-parceled ref tag from the activity. Pass `null` if there is no parceled ref tag.
    */
-  void activityRefTag(final @Nullable RefTag refTag);
+  void intentRefTag(final @Nullable RefTag refTag);
 }

@@ -63,8 +63,7 @@ public abstract class ErrorEnvelope implements Parcelable {
   public static @Nullable ErrorEnvelope fromThrowable(@NonNull final Throwable t) {
     if (t instanceof ApiException) {
       final ApiException exception = (ApiException) t;
-      final ErrorEnvelope envelope = exception.errorEnvelope();
-      return envelope;
+      return exception.errorEnvelope();
     }
 
     return null;

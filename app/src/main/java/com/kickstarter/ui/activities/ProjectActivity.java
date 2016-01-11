@@ -2,7 +2,6 @@ package com.kickstarter.ui.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -35,7 +34,6 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.BindColor;
 import butterknife.BindDimen;
-import butterknife.BindDrawable;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -56,7 +54,6 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   protected @BindColor(R.color.text_primary) int textPrimary;
 
   protected @BindDimen(R.dimen.grid_8) int grid8Dimen;
-  protected @BindDrawable(R.drawable.ic_star_black_24dp) Drawable starDrawable;
 
   protected @BindString(R.string.project_back_button) String projectBackButtonString;
   protected @BindString(R.string.project_checkout_manage_navbar_title) String managePledgeString;

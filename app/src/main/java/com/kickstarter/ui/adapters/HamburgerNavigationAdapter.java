@@ -31,8 +31,10 @@ public final class HamburgerNavigationAdapter extends KSAdapter {
     data().add(data.topFilters());
 
     // DIVIDER
+    data().add(Collections.singletonList(Empty.get()));
 
     // CATEGORY FILTERS
+    data().add(data.categoryFilters());
 
     notifyDataSetChanged();
   }

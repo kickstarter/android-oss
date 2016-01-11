@@ -158,6 +158,10 @@ public final class ProjectCardViewHolder extends KSViewHolder {
           "date", DateTimeUtils.relative(context, ksString, project.stateChangedAt())
         ));
         break;
+      default:
+        percentageFundedProgressBar.setVisibility(View.VISIBLE);
+        projectStateViewGroup.setVisibility(View.GONE);
+        break;
     }
   }
 

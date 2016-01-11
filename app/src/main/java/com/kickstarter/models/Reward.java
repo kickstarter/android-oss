@@ -9,6 +9,8 @@ import org.joda.time.DateTime;
 
 import auto.parcel.AutoParcel;
 
+import static com.kickstarter.libs.utils.IntegerUtils.isZero;
+
 @AutoGson
 @AutoParcel
 public abstract class Reward implements Parcelable {
@@ -51,7 +53,7 @@ public abstract class Reward implements Parcelable {
   }
 
   public boolean isAllGone() {
-    return this.remaining() != null && this.remaining() == 0;
+    return isZero(this.remaining());
   }
 
   public boolean isLimited() {

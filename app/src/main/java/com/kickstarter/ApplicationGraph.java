@@ -42,6 +42,7 @@ import com.kickstarter.viewmodels.CommentFeedViewModel;
 import com.kickstarter.viewmodels.DiscoveryFilterViewModel;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
 import com.kickstarter.viewmodels.FacebookConfirmationViewModel;
+import com.kickstarter.viewmodels.HamburgerViewModel;
 import com.kickstarter.viewmodels.LoginToutViewModel;
 import com.kickstarter.viewmodels.LoginViewModel;
 import com.kickstarter.viewmodels.ManageNotificationsViewModel;
@@ -76,6 +77,7 @@ public interface ApplicationGraph {
   void inject(FriendBackingViewHolder __);
   void inject(HamburgerActivity __);
   void inject(ResetPasswordViewModel __);
+  void inject(HamburgerViewModel __);
   void inject(HelpActivity __);
   void inject(IconTextView __);
   void inject(KoalaTrackingClient __);

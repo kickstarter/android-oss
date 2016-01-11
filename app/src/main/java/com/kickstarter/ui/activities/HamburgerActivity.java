@@ -49,10 +49,10 @@ public final class HamburgerActivity extends BaseActivity<HamburgerViewModel> {
     navigationRecyclerView.setLayoutManager(navigationLayoutManager);
     navigationRecyclerView.setAdapter(navigationAdapter);
 
-    currentUser.observable()
+    viewModel.hamburgerNavigationData()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::user);
+      .subscribe(navigationAdapter::data);
   }
 
   @OnClick({R.id.menu_button, R.id.filter_text_view})
@@ -68,9 +68,5 @@ public final class HamburgerActivity extends BaseActivity<HamburgerViewModel> {
   @OnClick(R.id.search_button)
   protected void searchButtonClick() {
     Timber.d("Search clicked");
-  }
-
-  protected void user(final @Nullable User user) {
-    navigationAdapter.data(user, new ArrayList<Object>());
   }
 }

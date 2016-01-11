@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
@@ -27,6 +28,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
+import timber.log.Timber;
 
 public final class HamburgerViewModel extends ViewModel<HamburgerActivity> implements HamburgerViewModelInputs,
   HamburgerViewModelOutputs {
@@ -35,6 +37,7 @@ public final class HamburgerViewModel extends ViewModel<HamburgerActivity> imple
   PublishSubject<HamburgerNavigationItem> hamburgerNavigationItemClick = PublishSubject.create();
   @Override
   public void filterClicked(final @NonNull HamburgerNavigationItem item) {
+    Timber.d("Filter clicked!");
     hamburgerNavigationItemClick.onNext(item);
   }
 
@@ -60,9 +63,23 @@ public final class HamburgerViewModel extends ViewModel<HamburgerActivity> imple
       .compose(Transformers.neverError())
       .share();
 
+    final Observable<Pair<List<Category>, User>> categoriesAndUser = categories
+      .compose(Transformers.combineLatestPair(currentUser.observable()));
+
     addSubscription(
-      categories
-        .compose(Transformers.combineLatestPair(currentUser.observable()))
+      categoriesAndUser
+        .compose(Transformers.takeWhen(hamburgerNavigationItemClick))
+        .map(cu -> {
+          return HamburgerNavigationData.builder()
+            .categoryFilters(subCategoryFilters(cu.first))
+            .user(cu.second)
+            .topFilters(topFilters(cu.second)).build();
+        })
+        .subscribe(hamburgerNavigationData::onNext)
+    );
+
+    addSubscription(
+      categoriesAndUser
         .map(cu -> {
           return HamburgerNavigationData.builder()
             .categoryFilters(categoryFilters(cu.first))
@@ -74,6 +91,18 @@ public final class HamburgerViewModel extends ViewModel<HamburgerActivity> imple
   }
 
   private @NonNull List<HamburgerNavigationItem> categoryFilters(final @NonNull List<Category> categories) {
+    HamburgerNavigationItem musicCategoryFilter = HamburgerNavigationItem.builder().discoveryParams(DiscoveryParams.builder().build()).build();
+    for (final Category category : categories) {
+      if (category.name().equals("Music")) {
+        musicCategoryFilter = HamburgerNavigationItem.builder().discoveryParams(DiscoveryParams.builder().category(category).build()).build();
+      }
+    }
+    final List<HamburgerNavigationItem> categoryFilters = new ArrayList<HamburgerNavigationItem>();
+    categoryFilters.add(musicCategoryFilter);
+    return categoryFilters;
+  }
+
+  private @NonNull List<HamburgerNavigationItem> subCategoryFilters(final @NonNull List<Category> categories) {
     HamburgerNavigationItem musicCategoryFilter = HamburgerNavigationItem.builder().discoveryParams(DiscoveryParams.builder().build()).build();
     final List<HamburgerNavigationItem> musicSubCategoryFilters = new ArrayList<>();
     for (final Category category : categories) {

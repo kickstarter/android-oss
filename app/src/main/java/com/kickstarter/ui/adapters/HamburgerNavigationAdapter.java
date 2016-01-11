@@ -10,7 +10,6 @@ import com.kickstarter.models.Empty;
 import com.kickstarter.models.HamburgerNavigationData;
 import com.kickstarter.models.HamburgerNavigationItem;
 import com.kickstarter.models.User;
-import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.viewholders.EmptyViewHolder;
 import com.kickstarter.ui.viewholders.HamburgerNavigationFilterViewHolder;
 import com.kickstarter.ui.viewholders.HamburgerNavigationHeaderLoggedInViewHolder;
@@ -30,6 +29,7 @@ public final class HamburgerNavigationAdapter extends KSAdapter {
 
   // TODO: Replace object type for filters list
   public void data(final @NonNull HamburgerNavigationData data) {
+    final int oldCount = getItemCount();
     data().clear();
 
     // HEADER
@@ -44,7 +44,10 @@ public final class HamburgerNavigationAdapter extends KSAdapter {
     // CATEGORY FILTERS
     data().add(data.categoryFilters());
 
-    notifyDataSetChanged();
+    final int newCount = getItemCount();
+    notifyItemRangeInserted(oldCount, newCount - oldCount);
+
+    //notifyDataSetChanged();
   }
 
   @Override
@@ -79,7 +82,7 @@ public final class HamburgerNavigationAdapter extends KSAdapter {
       case R.layout.hamburger_navigation_top_filter_view:
       case R.layout.hamburger_navigation_parent_filter_view: // TODO: Change to separate viewholder?
       case R.layout.hamburger_navigation_child_filter_view: // TODO: Change to separate viewholder?
-        return new HamburgerNavigationFilterViewHolder(view);
+        return new HamburgerNavigationFilterViewHolder(view, delegate);
       default:
         return new EmptyViewHolder(view);
     }

@@ -6,16 +6,38 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
-  <TextView
-    style="@style/SubheadPrimary"
-    android:paddingTop="@dimen/hamburger_drawer_item_padding_y"
-    android:paddingBottom="@dimen/hamburger_drawer_item_padding_y"
-    android:paddingStart="@dimen/grid_2"
-    android:paddingLeft="@dimen/grid_2"
-    android:background="@drawable/click_indicator_light_masked"
-    android:id="@+id/filter_text_view"
+  <RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent">
+
+    <TextView
+      style="@style/SubheadPrimary"
+      android:paddingTop="@dimen/hamburger_drawer_item_padding_y"
+      android:paddingBottom="@dimen/hamburger_drawer_item_padding_y"
+      android:paddingStart="@dimen/grid_2"
+      android:paddingLeft="@dimen/grid_2"
+      android:background="@drawable/click_indicator_light_masked"
+      android:layout_centerVertical="true"
+      android:layout_alignParentLeft="true"
+      android:layout_alignParentStart="true"
+      android:id="@+id/filter_text_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent" />
+
+    <com.kickstarter.ui.views.IconButton
+      android:background="@drawable/click_indicator_light"
+      android:id="@+id/settings_icon_button"
+      android:layout_height="@dimen/grid_6"
+      android:layout_width="@dimen/grid_6"
+      android:gravity="center"
+      android:textSize="@dimen/icon"
+      android:layout_centerVertical="true"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentRight="true"
+      android:textColor="@color/gray"
+      android:text="@string/keyboard_arrow_down_icon" />
+
+  </RelativeLayout>
 
 </LinearLayout>
 

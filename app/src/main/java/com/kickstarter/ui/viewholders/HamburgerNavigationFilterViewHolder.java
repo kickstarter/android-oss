@@ -21,13 +21,15 @@ public final class HamburgerNavigationFilterViewHolder extends KSViewHolder {
   protected @BindColor(R.color.hamburger_navigation_item_selected) int filterSelectedColor;
   protected @BindColor(R.color.transparent) int filterUnselectedColor;
   private HamburgerNavigationItem item;
+  private Delegate delegate;
 
   public interface Delegate {
-    void filterClicked(HamburgerNavigationFilterViewHolder viewHolder, HamburgerNavigationItem hamburgerNavigationItem);
+    void filterClicked(final @NonNull HamburgerNavigationFilterViewHolder viewHolder, final @NonNull HamburgerNavigationItem hamburgerNavigationItem);
   }
 
-  public HamburgerNavigationFilterViewHolder(final @NonNull View view) {
+  public HamburgerNavigationFilterViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
+    this.delegate = delegate;
     ButterKnife.bind(this, view);
   }
 
@@ -45,6 +47,7 @@ public final class HamburgerNavigationFilterViewHolder extends KSViewHolder {
   @OnClick(R.id.filter_text_view)
   protected void textViewClick() {
     Timber.d("Text view click");
+    delegate.filterClicked(this, item);
   }
 }
 

@@ -8,6 +8,7 @@ import com.kickstarter.R;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.HamburgerNavigationData;
+import com.kickstarter.models.HamburgerNavigationItem;
 import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.viewholders.EmptyViewHolder;
@@ -19,7 +20,13 @@ import com.kickstarter.ui.viewholders.KSViewHolder;
 import java.util.Collections;
 
 public final class HamburgerNavigationAdapter extends KSAdapter {
-  public HamburgerNavigationAdapter() {}
+  private final Delegate delegate;
+
+  public interface Delegate extends HamburgerNavigationFilterViewHolder.Delegate {}
+
+  public HamburgerNavigationAdapter(final @NonNull Delegate delegate) {
+    this.delegate = delegate;
+  }
 
   // TODO: Replace object type for filters list
   public void data(final @NonNull HamburgerNavigationData data) {
@@ -48,9 +55,9 @@ public final class HamburgerNavigationAdapter extends KSAdapter {
       return (object instanceof User) ?
         R.layout.hamburger_navigation_header_logged_in_view :
         R.layout.hamburger_navigation_header_logged_out_view;
-    } else if (object instanceof DiscoveryParams) {
-      final DiscoveryParams params = (DiscoveryParams) object;
-      final Category category = params.category();
+    } else if (object instanceof HamburgerNavigationItem) {
+      final HamburgerNavigationItem item = (HamburgerNavigationItem) object;
+      final Category category = item.discoveryParams().category();
       if (category != null) {
         return category.isRoot() ?
           R.layout.hamburger_navigation_parent_filter_view :

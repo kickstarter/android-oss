@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/filter_view"
   android:orientation="vertical"
-  android:paddingTop="@dimen/grid_3_half"
-  android:paddingBottom="@dimen/grid_3_half"
-  android:background="@drawable/click_indicator_light_masked"
-  android:paddingStart="@dimen/grid_2"
-  android:paddingLeft="@dimen/grid_2"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
   <TextView
     style="@style/SubheadPrimary"
-    android:background="@color/category_film"
+    android:background="@drawable/click_indicator_light_masked"
+    android:paddingTop="@dimen/hamburger_drawer_item_padding_y"
+    android:paddingBottom="@dimen/hamburger_drawer_item_padding_y"
+    android:paddingStart="@dimen/grid_2"
+    android:paddingLeft="@dimen/grid_2"
     android:id="@+id/filter_text_view"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content" />
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
 
 </LinearLayout>
 

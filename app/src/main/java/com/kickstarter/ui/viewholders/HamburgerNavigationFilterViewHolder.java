@@ -3,17 +3,28 @@ package com.kickstarter.ui.viewholders;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kickstarter.R;
-import com.kickstarter.services.DiscoveryParams;
+import com.kickstarter.models.HamburgerNavigationItem;
 
 import butterknife.Bind;
+import butterknife.BindColor;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import timber.log.Timber;
 
 public final class HamburgerNavigationFilterViewHolder extends KSViewHolder {
+  protected @Bind(R.id.filter_view) LinearLayout filterView;
   protected @Bind(R.id.filter_text_view) TextView filterTextView;
-  private DiscoveryParams params;
+  protected @BindColor(R.color.hamburger_navigation_item_selected) int filterSelectedColor;
+  protected @BindColor(R.color.transparent) int filterUnselectedColor;
+  private HamburgerNavigationItem item;
+
+  public interface Delegate {
+    void filterClicked(HamburgerNavigationFilterViewHolder viewHolder, HamburgerNavigationItem hamburgerNavigationItem);
+  }
 
   public HamburgerNavigationFilterViewHolder(final @NonNull View view) {
     super(view);
@@ -22,10 +33,18 @@ public final class HamburgerNavigationFilterViewHolder extends KSViewHolder {
 
   @Override
   public void onBind(final @NonNull Object datum) {
-    this.params = (DiscoveryParams) datum;
+    this.item = (HamburgerNavigationItem) datum;
     final Context context = view.getContext();
 
-    filterTextView.setText(params.filterString(context));
+    filterTextView.setText(item.discoveryParams().filterString(context));
+    filterTextView.setTextAppearance(context, item.selected() ? R.style.SubheadPrimaryMedium : R.style.SubheadPrimary);
+
+    filterView.setBackgroundColor(item.selected() ? filterSelectedColor : filterUnselectedColor);
+  }
+
+  @OnClick(R.id.filter_text_view)
+  protected void textViewClick() {
+    Timber.d("Text view click");
   }
 }
 

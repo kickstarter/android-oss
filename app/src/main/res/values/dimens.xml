@@ -54,6 +54,9 @@
   <dimen name="card_padding_action_half">@dimen/grid_1_half</dimen>
   <dimen name="profile_card_height">@dimen/grid_26</dimen>
 
+  <!-- Hamburger -->
+  <dimen name="hamburger_drawer_item_padding_y">14dp</dimen>
+
   <!-- Layout padding -->
   <dimen name="feed_padding_y">@dimen/grid_5_half</dimen>
   <dimen name="feed_padding_x">@dimen/grid_3</dimen>

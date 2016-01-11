@@ -11,26 +11,42 @@ import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.HamburgerNavigationData;
+import com.kickstarter.models.HamburgerNavigationItem;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.activities.HamburgerActivity;
+import com.kickstarter.viewmodels.inputs.HamburgerViewModelInputs;
+import com.kickstarter.viewmodels.outputs.HamburgerViewModelOutputs;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
 
-public final class HamburgerViewModel extends ViewModel<HamburgerActivity> {
+public final class HamburgerViewModel extends ViewModel<HamburgerActivity> implements HamburgerViewModelInputs,
+  HamburgerViewModelOutputs {
+
+  // INPUTS
+  PublishSubject<HamburgerNavigationItem> hamburgerNavigationItemClick = PublishSubject.create();
+  @Override
+  public void filterClicked(final @NonNull HamburgerNavigationItem item) {
+    hamburgerNavigationItemClick.onNext(item);
+  }
+
+  // OUTPUTS
   BehaviorSubject<HamburgerNavigationData> hamburgerNavigationData = BehaviorSubject.create();
-  public @NonNull
-  Observable<HamburgerNavigationData> hamburgerNavigationData() {
+  @Override
+  public @NonNull Observable<HamburgerNavigationData> hamburgerNavigationData() {
     return hamburgerNavigationData;
   }
+
+  public final HamburgerViewModelInputs inputs = this;
+  public final HamburgerViewModelOutputs outputs = this;
 
   protected @Inject ApiClientType apiClient;
   protected @Inject CurrentUser currentUser;
@@ -57,30 +73,30 @@ public final class HamburgerViewModel extends ViewModel<HamburgerActivity> {
     );
   }
 
-  private @NonNull List<DiscoveryParams> categoryFilters(final @NonNull List<Category> categories) {
-    DiscoveryParams musicCategoryFilter = DiscoveryParams.builder().build();
-    final List<DiscoveryParams> musicSubCategoryFilters = new ArrayList<>();
+  private @NonNull List<HamburgerNavigationItem> categoryFilters(final @NonNull List<Category> categories) {
+    HamburgerNavigationItem musicCategoryFilter = HamburgerNavigationItem.builder().discoveryParams(DiscoveryParams.builder().build()).build();
+    final List<HamburgerNavigationItem> musicSubCategoryFilters = new ArrayList<>();
     for (final Category category : categories) {
       if (category.name().equals("Music")) {
-        musicCategoryFilter = DiscoveryParams.builder().category(category).build();
+        musicCategoryFilter = HamburgerNavigationItem.builder().discoveryParams(DiscoveryParams.builder().category(category).build()).build();
       } else if (category.parent() != null && category.parent().name().equals("Music")) {
-        musicSubCategoryFilters.add(DiscoveryParams.builder().category(category).build());
+        musicSubCategoryFilters.add(HamburgerNavigationItem.builder().discoveryParams(DiscoveryParams.builder().category(category).build()).build());
       }
     }
-    final List<DiscoveryParams> categoryFilters = new ArrayList<DiscoveryParams>();
+    final List<HamburgerNavigationItem> categoryFilters = new ArrayList<HamburgerNavigationItem>();
     categoryFilters.add(musicCategoryFilter);
     categoryFilters.addAll(musicSubCategoryFilters);
     return categoryFilters;
   }
 
-  private @NonNull List<DiscoveryParams> topFilters(final @Nullable User user) {
-    final List<DiscoveryParams> topFilters = new ArrayList<DiscoveryParams>();
-    topFilters.add(DiscoveryParams.builder().staffPicks(true).build());
-    topFilters.add(DiscoveryParams.builder().starred(1).build());
+  private @NonNull List<HamburgerNavigationItem> topFilters(final @Nullable User user) {
+    final List<HamburgerNavigationItem> topFilters = new ArrayList<HamburgerNavigationItem>();
+    topFilters.add(HamburgerNavigationItem.builder().discoveryParams(DiscoveryParams.builder().staffPicks(true).build()).build());
+    topFilters.add(HamburgerNavigationItem.builder().selected(true).discoveryParams(DiscoveryParams.builder().starred(1).build()).build());
     if (user != null) {
-      topFilters.add(DiscoveryParams.builder().social(1).build());
+      topFilters.add(HamburgerNavigationItem.builder().discoveryParams(DiscoveryParams.builder().social(1).build()).build());
     }
-    topFilters.add(DiscoveryParams.builder().build());
+    topFilters.add(HamburgerNavigationItem.builder().discoveryParams(DiscoveryParams.builder().build()).build());
     return topFilters;
   }
 }

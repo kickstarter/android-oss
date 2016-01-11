@@ -17,6 +17,7 @@
   <color name="hamburger_toolbar">@color/dark_blue</color>
   <color name="hamburger_statusbar">#ff030821</color>
   <color name="hamburger_navigation_header">@color/light_gray</color>
+  <color name="hamburger_navigation_item_selected">#ffededed</color>
 
   <!-- Kickstarter colors -->
   <color name="black">#000000</color>

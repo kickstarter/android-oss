@@ -1,6 +1,7 @@
 package com.kickstarter.ui.activities;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,11 +14,10 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
-import com.kickstarter.models.User;
+import com.kickstarter.models.HamburgerNavigationItem;
 import com.kickstarter.ui.adapters.HamburgerNavigationAdapter;
+import com.kickstarter.ui.viewholders.HamburgerNavigationFilterViewHolder;
 import com.kickstarter.viewmodels.HamburgerViewModel;
-
-import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -28,9 +28,9 @@ import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 @RequiresViewModel(HamburgerViewModel.class)
-public final class HamburgerActivity extends BaseActivity<HamburgerViewModel> {
+public final class HamburgerActivity extends BaseActivity<HamburgerViewModel> implements HamburgerNavigationAdapter.Delegate {
   private final RecyclerView.LayoutManager navigationLayoutManager = new LinearLayoutManager(this);
-  private final HamburgerNavigationAdapter navigationAdapter = new HamburgerNavigationAdapter();
+  private HamburgerNavigationAdapter navigationAdapter;
 
   protected @Inject CurrentUser currentUser;
 
@@ -46,6 +46,7 @@ public final class HamburgerActivity extends BaseActivity<HamburgerViewModel> {
     ButterKnife.bind(this);
     ((KSApplication) getApplication()).component().inject(this);
 
+    navigationAdapter = new HamburgerNavigationAdapter(this);
     navigationRecyclerView.setLayoutManager(navigationLayoutManager);
     navigationRecyclerView.setAdapter(navigationAdapter);
 
@@ -68,5 +69,11 @@ public final class HamburgerActivity extends BaseActivity<HamburgerViewModel> {
   @OnClick(R.id.search_button)
   protected void searchButtonClick() {
     Timber.d("Search clicked");
+  }
+
+  @Override
+  public void filterClicked(final @NonNull HamburgerNavigationFilterViewHolder viewHolder,
+    final @NonNull HamburgerNavigationItem hamburgerNavigationItem) {
+    viewModel.inputs.filterClicked(hamburgerNavigationItem);
   }
 }

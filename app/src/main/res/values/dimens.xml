@@ -66,8 +66,8 @@
   <dimen name="progress_bar_height">3dp</dimen>
 
   <!-- Photos -->
-  <dimen name="discovery_activity_photo_width">67dp</dimen>
-  <dimen name="discovery_activity_photo_height">52dp</dimen>
+  <dimen name="discovery_activity_photo_width">62dp</dimen>
+  <dimen name="discovery_activity_photo_height">48dp</dimen>
   <dimen name="activity_feed_avatar_width">60dp</dimen>
   <dimen name="activity_feed_avatar_height">60dp</dimen>
   <dimen name="activity_feed_small_photo_width">96dp</dimen>

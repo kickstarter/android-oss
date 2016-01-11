@@ -1,6 +1,7 @@
 package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.text.Html;
 import android.view.View;
@@ -27,6 +28,7 @@ import butterknife.OnClick;
 public class DiscoveryActivityViewHolder extends KSViewHolder {
   @Inject KSString ksString;
 
+  protected @Bind(R.id.activity_click_area) LinearLayout activityClickArea;
   protected @Bind(R.id.activity_image) ImageView activityImageView;
   protected @Bind(R.id.activity_title) TextView activityTitleTextView;
   protected @Bind(R.id.activity_subtitle) TextView activitysubTitleTextView;
@@ -62,6 +64,21 @@ public class DiscoveryActivityViewHolder extends KSViewHolder {
 
     final Context context = view.getContext();
 
+    activityImageView.setVisibility(View.VISIBLE);
+    activityTitleTextView.setVisibility(View.VISIBLE);
+    activitysubTitleTextView.setVisibility(View.VISIBLE);
+
+    LinearLayout.LayoutParams layoutParams =
+      new LinearLayout.LayoutParams(context.getResources().getDimensionPixelSize(R.dimen.grid_4),
+        context.getResources().getDimensionPixelSize(R.dimen.grid_4));
+    activityImageView.setLayoutParams(layoutParams);
+
+    // temp until followable :
+    activityClickArea.setBackground(context.getResources().getDrawable(R.drawable.click_indicator_light_masked, null));
+    LinearLayout.LayoutParams titleLayoutParams = (LinearLayout.LayoutParams)activitysubTitleTextView.getLayoutParams();
+    titleLayoutParams.topMargin = 0;
+    activityTitleTextView.setLayoutParams(titleLayoutParams);
+
     if (activity.category().equals(Activity.CATEGORY_BACKING)) {
       Picasso.with(context).load(activity.user().avatar()
         .small())
@@ -78,18 +95,26 @@ public class DiscoveryActivityViewHolder extends KSViewHolder {
         .small())
         .transform(new CircleTransformation())
         .into(activityImageView);
+
       activityTitleTextView.setText(ksString.format(categoryFollowingString, "user_name", activity.user().name()));
       activitysubTitleTextView.setText(categoryFollowBackString);
+
+      // temp until followable :
+      activityClickArea.setBackgroundResource(0);
+      activitysubTitleTextView.setVisibility(View.GONE);
+      titleLayoutParams.topMargin = (int)(10 * Resources.getSystem().getDisplayMetrics().density);
+      activityTitleTextView.setLayoutParams(titleLayoutParams);
+
     } else {
       Picasso.with(context)
         .load(activity.project().photo().little())
         .into(activityImageView);
 
-      LinearLayout.LayoutParams layoutParams =
-        new LinearLayout.LayoutParams(context.getResources().getDimensionPixelSize(R.dimen.discovery_activity_photo_width),
+      layoutParams = new LinearLayout.LayoutParams(context.getResources().getDimensionPixelSize(R.dimen.discovery_activity_photo_width),
           context.getResources().getDimensionPixelSize(R.dimen.discovery_activity_photo_height));
       activityImageView.setLayoutParams(layoutParams);
 
+      activityTitleTextView.setVisibility(View.VISIBLE);
       activityTitleTextView.setText(activity.project().name());
 
       switch(activity.category()) {
@@ -110,6 +135,11 @@ public class DiscoveryActivityViewHolder extends KSViewHolder {
             "update_number", String.valueOf(activity.update().sequence()),
             "update_title", activity.update().title()));
           break;
+        default:
+          activityTitleTextView.setVisibility(View.GONE);
+          activitysubTitleTextView.setVisibility(View.GONE);
+          activityImageView.setVisibility(View.GONE);
+          break;
       }
     }
   }
@@ -119,10 +149,12 @@ public class DiscoveryActivityViewHolder extends KSViewHolder {
     delegate.discoveryActivityViewHolderSeeActivityClicked(this);
   }
 
-  @OnClick({R.id.activity_image, R.id.activity_title, R.id.activity_subtitle})
+  @OnClick(R.id.activity_click_area)
   protected void activityProjectOnClick() {
     if (activity.category().equals(Activity.CATEGORY_UPDATE)) {
       delegate.discoveryActivityViewHolderUpdateClicked(this, activity);
+    } else if(activity.category().equals(Activity.CATEGORY_FOLLOW)) {
+      // TODO: HOLLA BACK GIRL
     } else {
       delegate.discoveryActivityViewHolderProjectClicked(this, activity.project());
     }

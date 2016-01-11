@@ -11,7 +11,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     card_view:cardCornerRadius="4dp"
-    card_view:cardBackgroundColor="@color/transparent"
+    card_view:cardBackgroundColor="@color/white"
     android:elevation="@dimen/card_elevation"
     android:focusable="true"
     android:layout_marginBottom="@dimen/grid_1"
@@ -25,29 +25,29 @@
       android:background="@color/white"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/grid_3"
+      android:layout_marginLeft="@dimen/grid_3"
+      android:layout_marginRight="@dimen/grid_3"
       android:orientation="vertical">
 
       <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/activity_click_area"
+        android:background="@drawable/click_indicator_light_masked"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="@dimen/grid_3"
-        android:paddingLeft="@dimen/grid_3"
-        android:paddingRight="@dimen/grid_3">
+        android:orientation="horizontal">
 
         <ImageView
           android:id="@+id/activity_image"
-          android:layout_gravity="top"
           android:layout_width="@dimen/grid_4"
           android:layout_height="@dimen/grid_4"
-          android:layout_marginLeft="@dimen/grid_2"
-          android:layout_marginTop="@dimen/grid_1_half"
           android:scaleType="centerCrop"/>
 
         <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginLeft="@dimen/grid_1"
+          android:layout_marginTop="-5dp"
+          android:layout_marginLeft="@dimen/grid_3_half"
           android:orientation="vertical">
 
           <TextView
@@ -72,8 +72,6 @@
         style="@style/BorderButton"
         android:id="@+id/see_activity_button"
         android:layout_width="match_parent"
-        android:layout_marginLeft="@dimen/grid_3"
-        android:layout_marginRight="@dimen/grid_3"
         android:layout_marginTop="@dimen/grid_3"
         android:layout_marginBottom="@dimen/grid_3"
         android:text="@string/discovery_activity_sample_button_see_all_activity" />

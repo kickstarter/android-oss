@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import com.kickstarter.BuildConfig;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 
+import net.hockeyapp.android.ExceptionHandler;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,8 +44,13 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
 
     if (viewHolder.bindData(data)) {
       viewHolder.onBind();
-    } else if (BuildConfig.DEBUG){
-      throw new RuntimeException("The view holder " + viewHolder.getClass().toString() + " was not able to process the data provided " + data.toString());
+    } else {
+      final RuntimeException exception = new RuntimeException("The view holder " + viewHolder.getClass().toString() + " was not able to process the data provided " + String.valueOf(data));
+      if (BuildConfig.DEBUG) {
+        throw exception;
+      } else {
+        ExceptionHandler.saveException(exception, null);
+      }
     }
   }
 

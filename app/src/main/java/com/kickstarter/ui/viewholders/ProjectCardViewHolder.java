@@ -100,6 +100,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       return false;
     }
   }
+
   public void onBind() {
     backersCountTextView.setText(NumberUtils.format(project.backersCount()));
     blurbTextView.setText(project.blurb());

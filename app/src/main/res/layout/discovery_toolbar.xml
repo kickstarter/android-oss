@@ -66,7 +66,7 @@
         android:layout_height="match_parent"
         android:background="@drawable/button_selector"
         android:gravity="center"
-        android:text="@string/menu_icon"
+        android:text="\uE556"
         android:textColor="@color/white" />
 
       <com.kickstarter.ui.views.IconButton

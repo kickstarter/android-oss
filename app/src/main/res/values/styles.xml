@@ -213,9 +213,14 @@
     <item name="android:textSize">22sp</item>
   </style>
 
-  <style name="ToolbarTitle" parent="SubheadPrimary">
+  <style name="ToolbarTitle" parent="Headline">
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_centerVertical">true</item>
     <item name="android:color">@color/black</item>
     <item name="android:textColorHint">@color/dark_gray</item>
+    <item name="android:layout_marginLeft">@dimen/grid_3_half</item>
+    <item name="android:layout_marginStart">@dimen/grid_3_half</item>
   </style>
 
   <!-- Reduce margin size for < v21 devices, due to different FAB shadow rendering -->

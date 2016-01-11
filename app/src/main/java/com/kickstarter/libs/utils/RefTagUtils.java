@@ -15,8 +15,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-import static com.kickstarter.libs.utils.SystemUtils.*;
-
 public final class RefTagUtils {
   private RefTagUtils() {}
 
@@ -33,7 +31,7 @@ public final class RefTagUtils {
    * Value to store in the ref tag cookie.
    */
   protected static @NonNull String cookieValueForRefTag(final @NonNull RefTag refTag) {
-    return refTag.tag() + COOKIE_VALUE_SEPARATOR + String.valueOf(secondsSinceEpoch());
+    return refTag.tag() + COOKIE_VALUE_SEPARATOR + String.valueOf(SystemUtils.secondsSinceEpoch());
   }
 
   /**

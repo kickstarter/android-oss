@@ -3,6 +3,7 @@ package com.kickstarter.libs;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.kickstarter.libs.utils.KoalaUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
@@ -10,10 +11,6 @@ import com.kickstarter.services.DiscoveryParams;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.kickstarter.libs.utils.KoalaUtils.activityProperties;
-import static com.kickstarter.libs.utils.KoalaUtils.discoveryParamsProperties;
-import static com.kickstarter.libs.utils.KoalaUtils.projectProperties;
 
 public final class Koala {
   private final @NonNull TrackingClientType client;
@@ -37,7 +34,7 @@ public final class Koala {
 
   // DISCOVERY
   public void trackDiscovery(final @NonNull DiscoveryParams params, final boolean isOnboardingVisible) {
-    final Map<String, Object> props = discoveryParamsProperties(params);
+    final Map<String, Object> props = KoalaUtils.discoveryParamsProperties(params);
     props.put("discover_onboarding_is_visible", isOnboardingVisible);
     client.track("Discover List View", props);
   }
@@ -49,7 +46,7 @@ public final class Koala {
   }
 
   public void trackDiscoveryFilterSelected(final @NonNull DiscoveryParams params) {
-    client.track("Discover Modal Selected Filter", discoveryParamsProperties(params));
+    client.track("Discover Modal Selected Filter", KoalaUtils.discoveryParamsProperties(params));
   }
 
   /**
@@ -59,7 +56,7 @@ public final class Koala {
    */
   public void trackProjectShow(final @NonNull Project project, final @Nullable RefTag intentRefTag, final @Nullable RefTag cookieRefTag) {
 
-    final Map<String, Object> properties = projectProperties(project);
+    final Map<String, Object> properties = KoalaUtils.projectProperties(project);
 
     if (intentRefTag != null) {
       properties.put("ref_tag", intentRefTag.tag());
@@ -83,15 +80,15 @@ public final class Koala {
 
   // COMMENTING
   public void trackProjectCommentCreate(final @NonNull Project project, final @NonNull Comment comment) {
-    client.track("Project Comment Create", projectProperties(project));
+    client.track("Project Comment Create", KoalaUtils.projectProperties(project));
   }
 
   public void trackProjectCommentsView(final @NonNull Project project) {
-    client.track("Project Comment View", projectProperties(project));
+    client.track("Project Comment View", KoalaUtils.projectProperties(project));
   }
 
   public void trackProjectCommentLoadMore(final @NonNull Project project) {
-    client.track("Project Comment Load Older", projectProperties(project));
+    client.track("Project Comment Load Older", KoalaUtils.projectProperties(project));
   }
 
   // ACTIVITY
@@ -124,7 +121,7 @@ public final class Koala {
   }
 
   public void trackActivityTapped(final @NonNull Activity activity) {
-    client.track("Activity View Item", activityProperties(activity));
+    client.track("Activity View Item", KoalaUtils.activityProperties(activity));
   }
 
   // SESSION EVENTS

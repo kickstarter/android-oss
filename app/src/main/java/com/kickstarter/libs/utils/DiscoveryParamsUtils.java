@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.services.DiscoveryParams;
 
-import static com.kickstarter.libs.utils.BoolUtils.*;
+import static com.kickstarter.libs.utils.BoolUtils.isTrue;
 import static com.kickstarter.libs.utils.IntegerUtils.isNonZero;
 
 public final class DiscoveryParamsUtils {

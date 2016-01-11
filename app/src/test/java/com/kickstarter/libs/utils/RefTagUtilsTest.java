@@ -10,8 +10,6 @@ import java.net.CookieManager;
 import java.net.CookieStore;
 import java.net.HttpCookie;
 
-import static com.kickstarter.libs.utils.SystemUtils.secondsSinceEpoch;
-
 public final class RefTagUtilsTest extends TestCase {
 
   public void testCookieNameForProject() {
@@ -23,7 +21,7 @@ public final class RefTagUtilsTest extends TestCase {
   public void testCookieValueForRefTag() {
     final RefTag refTag = RefTag.from("test");
 
-    assertEquals("test%3F" + secondsSinceEpoch(), RefTagUtils.cookieValueForRefTag(refTag));
+    assertEquals("test%3F" + SystemUtils.secondsSinceEpoch(), RefTagUtils.cookieValueForRefTag(refTag));
   }
 
   public void testStoredCookieRefTagForProject() {

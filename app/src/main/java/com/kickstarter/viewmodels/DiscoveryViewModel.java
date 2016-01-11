@@ -146,8 +146,4 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   private boolean isOnboardingVisible(final @NonNull DiscoveryParams currentParams, final boolean isLoggedIn) {
     return !isLoggedIn && !hasSeenOnboarding && currentParams.staffPicks();
   }
-
-  public void takeParams(final @NonNull DiscoveryParams firstPageParams) {
-    params.onNext(firstPageParams);
-  }
 }

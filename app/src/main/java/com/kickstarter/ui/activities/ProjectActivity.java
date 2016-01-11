@@ -1,12 +1,10 @@
 package com.kickstarter.ui.activities;
 
 import android.content.Intent;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -25,6 +23,7 @@ import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ProjectAdapter;
 import com.kickstarter.ui.intents.ProjectIntentAction;
+import com.kickstarter.ui.views.IconButton;
 import com.kickstarter.viewmodels.ProjectViewModel;
 
 import javax.inject.Inject;
@@ -43,7 +42,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   private ProjectIntentAction intentAction;
 
   protected @Bind(R.id.project_recycler_view) RecyclerView projectRecyclerView;
-  protected @Bind(R.id.star_fab) FloatingActionButton starFab;
+  protected @Bind(R.id.star_icon) IconButton starButton;
   protected @Bind(R.id.back_project_button) Button backProjectButton;
   protected @Bind(R.id.manage_pledge_button) Button managePledgeButton;
   protected @Bind(R.id.view_pledge_button) Button viewPledgeButton;
@@ -170,15 +169,8 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   }
 
   private void renderStar(final @NonNull Project project) {
-    if (project.isLive()) {
-      starFab.setImageDrawable(starDrawable);
-      starFab.setVisibility(View.VISIBLE);
-    } else {
-      starFab.setVisibility(View.GONE);
-    }
-
     final int starColor = (project.isStarred()) ? green : textPrimary;
-    starDrawable.setColorFilter(starColor, PorterDuff.Mode.SRC_ATOP);
+    starButton.setTextColor(starColor);
   }
 
   @OnClick(R.id.back_project_button)
@@ -206,7 +198,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
-  @OnClick(R.id.star_fab)
+  @OnClick(R.id.star_icon)
   public void starProjectClick() {
     viewModel.inputs.starClicked();
   }

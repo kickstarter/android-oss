@@ -17,7 +17,6 @@ import butterknife.ButterKnife;
 
 public final class FriendFollowViewHolder extends ActivityListViewHolder {
   protected @Bind(R.id.avatar) ImageView avatarImageView;
-  protected @Bind(R.id.follow_button) View followButton;
   protected @Bind(R.id.title) TextView titleTextView;
   
   protected @BindString(R.string.activity_friend_follow_is_following_you) String isFollowingYouString;

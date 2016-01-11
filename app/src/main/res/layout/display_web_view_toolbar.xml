@@ -4,7 +4,7 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   style="@style/Toolbar"
-  android:id="@+id/toolbar"
+  android:id="@+id/web_view_toolbar"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
   tools:showIn="@layout/web_view_layout">

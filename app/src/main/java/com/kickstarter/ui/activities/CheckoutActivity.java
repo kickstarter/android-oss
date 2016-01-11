@@ -11,18 +11,17 @@ import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.models.Project;
-import com.kickstarter.ui.IntentKey;
-import com.kickstarter.viewmodels.CheckoutViewModel;
 import com.kickstarter.services.KSUri;
 import com.kickstarter.services.RequestHandler;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.toolbars.KSToolbar;
 import com.kickstarter.ui.views.KSWebView;
+import com.kickstarter.viewmodels.CheckoutViewModel;
 import com.squareup.okhttp.Request;
 
 import java.util.Arrays;
 
 import butterknife.Bind;
-import butterknife.BindString;
 import butterknife.ButterKnife;
 
 @RequiresViewModel(CheckoutViewModel.class)
@@ -31,7 +30,6 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> {
   private String urlToReload;
   @Bind(R.id.checkout_toolbar) KSToolbar checkoutToolbar;
   @Bind(R.id.web_view) KSWebView webView;
-  @BindString(R.string.project_back_button) String projectBackButtonString;
 
   private static String SAVE_URL_KEY = "save_url";
 
@@ -48,7 +46,7 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> {
     }
     project = intent.getExtras().getParcelable(IntentKey.PROJECT);
 
-    final String title = intent.getExtras().getString(IntentKey.TOOLBAR_TITLE, projectBackButtonString);
+    final String title = intent.getExtras().getString(IntentKey.TOOLBAR_TITLE, "");
     checkoutToolbar.setTitle(title);
 
     webView.client().registerRequestHandlers(Arrays.asList(

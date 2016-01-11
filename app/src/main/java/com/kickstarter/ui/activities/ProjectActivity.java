@@ -56,6 +56,9 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   protected @BindString(R.string.project_back_button) String projectBackButtonString;
   protected @BindString(R.string.project_checkout_manage_navbar_title) String managePledgeString;
   protected @BindString(R.string.project_star_confirmation) String projectStarConfirmationString;
+  protected @BindString(R.string.project_subpages_menu_buttons_campaign) String campaignString;
+  protected @BindString(R.string.project_subpages_menu_buttons_creator) String creatorString;
+  protected @BindString(R.string.project_subpages_menu_buttons_updates) String updatesString;
 
   protected @Inject ApiClientType client;
   protected @Inject KSCurrency ksCurrency;
@@ -217,15 +220,15 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   }
 
   private void showProjectDescription(final @NonNull Project project) {
-    startWebViewActivity(project.descriptionUrl());
+    startWebViewActivity(campaignString, project.descriptionUrl());
   }
 
   private void showCreatorBio(final @NonNull Project project) {
-    startWebViewActivity(project.creatorBioUrl());
+    startWebViewActivity(creatorString, project.creatorBioUrl());
   }
 
   private void showUpdates(final @NonNull Project project) {
-    startWebViewActivity(project.updatesUrl());
+    startWebViewActivity(updatesString, project.updatesUrl());
   }
 
   private void showStarPrompt() {
@@ -270,8 +273,9 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     startActivity(intent);
   }
 
-  private void startWebViewActivity(final @NonNull String url) {
+  private void startWebViewActivity(final @NonNull String toolbarTitle, final @NonNull String url) {
     final Intent intent = new Intent(this, DisplayWebViewActivity.class)
+      .putExtra(IntentKey.TOOLBAR_TITLE, toolbarTitle)
       .putExtra(IntentKey.URL, url);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }

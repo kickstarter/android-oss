@@ -26,9 +26,6 @@ public final class HamburgerNavigationAdapter extends KSAdapter {
     // HEADER
     data().add(Collections.singletonList(user != null ? user : Empty.get()));
 
-    // DIVIDER
-    data().add(Collections.singletonList(Empty.get()));
-
     // NON-CATEGORY FILTERS
     // data().add(filters);
 
@@ -46,8 +43,6 @@ public final class HamburgerNavigationAdapter extends KSAdapter {
       return (objectFromSectionRow(sectionRow) instanceof User) ?
         R.layout.hamburger_navigation_header_logged_in_view :
         R.layout.hamburger_navigation_header_logged_out_view;
-    } else if (section == 1) {
-      return R.layout.hamburger_divider_view;
     }
     return R.layout.empty_view;
   }

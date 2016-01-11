@@ -1,57 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
-  android:layout_height="@dimen/grid_11"
-  android:background="@color/hamburger_navigation_header"
-  android:paddingTop="@dimen/grid_3"
-  android:theme="@style/ThemeOverlay.AppCompat.Light"
-  android:gravity="center_vertical"
-  android:orientation="vertical">
+  android:layout_height="wrap_content"
+  android:layout_marginBottom="@dimen/grid_1"
+  android:layout_marginTop="@dimen/grid_3"
+  android:orientation="vertical"
+  android:theme="@style/ThemeOverlay.AppCompat.Light">
 
-  <LinearLayout
-    android:id="@+id/user_container"
-    android:background="@drawable/click_indicator_light"
-    android:orientation="horizontal"
-    android:layout_centerVertical="true"
-    android:paddingLeft="@dimen/grid_2"
-    android:paddingStart="@dimen/grid_2"
-    android:paddingRight="@dimen/grid_2"
-    android:paddingEnd="@dimen/grid_2"
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/grid_7"
     android:paddingTop="@dimen/grid_1"
     android:paddingBottom="@dimen/grid_1"
-    android:gravity="center_vertical"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:background="@color/hamburger_navigation_header"
+    android:gravity="center_vertical">
 
-    <ImageView
-      android:id="@+id/user_image_view"
-      android:adjustViewBounds="true"
-      android:layout_width="@dimen/grid_4"
-      android:layout_height="@dimen/grid_4" />
-
-    <TextView
-      style="@style/BodyPrimaryMedium"
-      android:id="@+id/user_name_text_view"
-      android:layout_marginLeft="@dimen/grid_1"
-      android:layout_marginStart="@dimen/grid_1"
+    <LinearLayout
+      android:id="@+id/user_container"
+      android:background="@drawable/click_indicator_light"
+      android:orientation="horizontal"
+      android:layout_centerVertical="true"
+      android:paddingLeft="@dimen/grid_2"
+      android:paddingStart="@dimen/grid_2"
+      android:paddingRight="@dimen/grid_2"
+      android:paddingEnd="@dimen/grid_2"
+      android:gravity="center_vertical"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:textColor="@color/black" />
+      android:layout_height="match_parent">
 
-  </LinearLayout>
+      <ImageView
+        android:id="@+id/user_image_view"
+        android:adjustViewBounds="true"
+        android:layout_width="@dimen/grid_4"
+        android:layout_height="@dimen/grid_4" />
 
-  <com.kickstarter.ui.views.IconButton
-    android:background="@drawable/click_indicator_light"
-    android:id="@+id/settings_icon_button"
-    android:layout_height="@dimen/grid_6"
-    android:layout_width="@dimen/grid_6"
-    android:gravity="center"
-    android:textSize="@dimen/icon"
-    android:layout_centerVertical="true"
-    android:layout_alignParentEnd="true"
-    android:layout_alignParentRight="true"
-    android:textColor="@color/black"
-    android:text="@string/settings_icon" />
+      <TextView
+        style="@style/BodyPrimaryMedium"
+        android:id="@+id/user_name_text_view"
+        android:layout_marginLeft="@dimen/grid_1"
+        android:layout_marginStart="@dimen/grid_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black" />
 
-</RelativeLayout>
+    </LinearLayout>
+
+    <com.kickstarter.ui.views.IconButton
+      android:background="@drawable/click_indicator_light"
+      android:id="@+id/settings_icon_button"
+      android:layout_height="@dimen/grid_6"
+      android:layout_width="@dimen/grid_6"
+      android:gravity="center"
+      android:textSize="@dimen/icon"
+      android:layout_centerVertical="true"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentRight="true"
+      android:textColor="@color/black"
+      android:text="@string/settings_icon" />
+
+  </RelativeLayout>
+
+  <include layout="@layout/horizontal_line_0_5dp_view" />
+
+</LinearLayout>

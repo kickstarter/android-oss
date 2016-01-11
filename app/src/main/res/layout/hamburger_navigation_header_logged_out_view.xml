@@ -2,47 +2,57 @@
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
-  android:layout_height="@dimen/grid_11"
-  android:background="@color/hamburger_navigation_header"
-  android:paddingTop="@dimen/grid_3"
+  android:layout_height="wrap_content"
+  android:layout_marginBottom="@dimen/grid_1"
+  android:layout_marginTop="@dimen/grid_3"
   android:theme="@style/ThemeOverlay.AppCompat.Light"
   android:gravity="center_vertical"
   android:orientation="vertical">
 
   <LinearLayout
-    android:id="@+id/logged_out_container"
-    android:orientation="horizontal"
-    android:background="@drawable/click_indicator_light"
-    android:paddingLeft="@dimen/grid_2"
-    android:paddingStart="@dimen/grid_2"
-    android:paddingRight="@dimen/grid_2"
-    android:paddingEnd="@dimen/grid_2"
-    android:paddingTop="@dimen/grid_1"
-    android:paddingBottom="@dimen/grid_1"
+    android:background="@color/hamburger_navigation_header"
     android:gravity="center_vertical"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/grid_7">
 
-    <com.kickstarter.ui.views.IconButton
-      android:id="@+id/logged_out_icon_button"
-      android:gravity="center"
-      android:text="@string/account_circle"
-      android:textColor="@color/black"
-      android:textSize="30sp"
+    <LinearLayout
+      android:id="@+id/logged_out_container"
+      android:orientation="horizontal"
+      android:background="@drawable/click_indicator_light"
+      android:paddingLeft="@dimen/grid_2"
+      android:paddingStart="@dimen/grid_2"
+      android:paddingRight="@dimen/grid_2"
+      android:paddingEnd="@dimen/grid_2"
+      android:paddingTop="@dimen/grid_1"
+      android:paddingBottom="@dimen/grid_1"
+      android:gravity="center_vertical"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content" />
+      android:layout_height="wrap_content">
 
-    <TextView
-      android:id="@+id/logged_out_text_view"
-      style="@style/BodyPrimaryMedium"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginLeft="@dimen/grid_1"
-      android:layout_marginStart="@dimen/grid_1"
-      android:text="@string/___Log_in"
-      android:textColor="@color/black" />
+      <com.kickstarter.ui.views.IconButton
+        android:id="@+id/logged_out_icon_button"
+        android:gravity="center"
+        android:text="@string/account_circle"
+        android:textColor="@color/black"
+        android:textSize="30sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+      <TextView
+        android:id="@+id/logged_out_text_view"
+        style="@style/BodyPrimaryMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/grid_1"
+        android:layout_marginStart="@dimen/grid_1"
+        android:text="@string/___Log_in"
+        android:textColor="@color/black" />
+
+    </LinearLayout>
 
   </LinearLayout>
+
+  <include layout="@layout/horizontal_line_0_5dp_view" />
 
 </LinearLayout>
 

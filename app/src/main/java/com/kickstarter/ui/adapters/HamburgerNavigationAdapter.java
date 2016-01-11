@@ -10,6 +10,7 @@ import com.kickstarter.models.HamburgerNavigationData;
 import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.viewholders.EmptyViewHolder;
+import com.kickstarter.ui.viewholders.HamburgerNavigationFilterViewHolder;
 import com.kickstarter.ui.viewholders.HamburgerNavigationHeaderLoggedInViewHolder;
 import com.kickstarter.ui.viewholders.HamburgerNavigationHeaderLoggedOutViewHolder;
 import com.kickstarter.ui.viewholders.KSViewHolder;
@@ -45,9 +46,9 @@ public final class HamburgerNavigationAdapter extends KSAdapter {
         R.layout.hamburger_navigation_header_logged_in_view :
         R.layout.hamburger_navigation_header_logged_out_view;
     } else if (object instanceof DiscoveryParams) {
-      return R.layout.hamburger_navigation_filter;
+      return R.layout.hamburger_navigation_filter_view;
     }
-    return R.layout.empty_view;
+    return R.layout.hamburger_divider_view;
   }
 
   @Override
@@ -57,8 +58,8 @@ public final class HamburgerNavigationAdapter extends KSAdapter {
         return new HamburgerNavigationHeaderLoggedInViewHolder(view);
       case R.layout.hamburger_navigation_header_logged_out_view:
         return new HamburgerNavigationHeaderLoggedOutViewHolder(view);
-      case R.layout.hamburger_navigation_filter:
-        return new EmptyViewHolder(view);
+      case R.layout.hamburger_navigation_filter_view:
+        return new HamburgerNavigationFilterViewHolder(view);
       default:
         return new EmptyViewHolder(view);
     }

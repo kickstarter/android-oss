@@ -84,6 +84,6 @@
 
   </RelativeLayout>
 
-  <include layout="@layout/horizontal_line_thin_view" />
+  <include layout="@layout/horizontal_line_1dp_view" />
 
 </LinearLayout>

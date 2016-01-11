@@ -200,7 +200,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 
-        <include layout="@layout/horizontal_line_thin_view"/>
+        <include layout="@layout/horizontal_line_1dp_view"/>
 
         <RelativeLayout
           android:layout_width="match_parent"
@@ -219,7 +219,7 @@
 
         </RelativeLayout>
 
-        <include layout="@layout/horizontal_line_thin_view"/>
+        <include layout="@layout/horizontal_line_1dp_view"/>
 
         <RelativeLayout
           android:layout_width="match_parent"
@@ -238,7 +238,7 @@
 
         </RelativeLayout>
 
-        <include layout="@layout/horizontal_line_thin_view"/>
+        <include layout="@layout/horizontal_line_1dp_view"/>
 
         <RelativeLayout
           android:layout_width="match_parent"
@@ -257,7 +257,7 @@
 
         </RelativeLayout>
 
-        <include layout="@layout/horizontal_line_thin_view"/>
+        <include layout="@layout/horizontal_line_1dp_view"/>
 
         <TextView
           style="@style/BodySecondary"
@@ -267,7 +267,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 
-        <include layout="@layout/horizontal_line_thin_view"/>
+        <include layout="@layout/horizontal_line_1dp_view"/>
 
         <RelativeLayout
           android:id="@+id/faq"
@@ -290,7 +290,7 @@
 
         </RelativeLayout>
 
-        <include layout="@layout/horizontal_line_thin_view"/>
+        <include layout="@layout/horizontal_line_1dp_view"/>
 
         <RelativeLayout
           android:id="@+id/contact"
@@ -313,7 +313,7 @@
 
         </RelativeLayout>
 
-        <include layout="@layout/horizontal_line_thin_view"/>
+        <include layout="@layout/horizontal_line_1dp_view"/>
 
         <RelativeLayout
           android:id="@+id/how_kickstarter_works"
@@ -336,7 +336,7 @@
 
         </RelativeLayout>
 
-        <include layout="@layout/horizontal_line_thin_view"/>
+        <include layout="@layout/horizontal_line_1dp_view"/>
 
         <RelativeLayout
           android:id="@+id/terms_of_use"
@@ -359,7 +359,7 @@
 
         </RelativeLayout>
 
-        <include layout="@layout/horizontal_line_thin_view"/>
+        <include layout="@layout/horizontal_line_1dp_view"/>
 
         <RelativeLayout
           android:id="@+id/privacy_policy"
@@ -382,7 +382,7 @@
 
         </RelativeLayout>
 
-        <include layout="@layout/horizontal_line_thin_view"/>
+        <include layout="@layout/horizontal_line_1dp_view"/>
 
         <RelativeLayout
           android:id="@+id/cookie_policy"
@@ -405,7 +405,7 @@
 
         </RelativeLayout>
 
-        <include layout="@layout/horizontal_line_thin_view"/>
+        <include layout="@layout/horizontal_line_1dp_view"/>
 
         <TextView
           style="@style/BodySecondary"
@@ -415,7 +415,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 
-        <include layout="@layout/horizontal_line_thin_view"/>
+        <include layout="@layout/horizontal_line_1dp_view"/>
 
         <RelativeLayout
           android:id="@+id/settings_rate_us"

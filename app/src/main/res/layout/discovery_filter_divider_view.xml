@@ -17,6 +17,6 @@
     android:textColor="@color/white"
     android:text="@string/discovery_filters_categories_title" />
 
-  <include layout="@layout/horizontal_line_thin_view" />
+  <include layout="@layout/horizontal_line_1dp_view" />
 
 </LinearLayout>

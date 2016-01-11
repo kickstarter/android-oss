@@ -16,7 +16,7 @@
     android:layout_marginEnd="@dimen/grid_3_half"
     android:layout_marginRight="@dimen/grid_3_half">
 
-    <include layout="@layout/vertical_line_medium_view" />
+    <include layout="@layout/vertical_line_1_5dp_view" />
   </LinearLayout>
 
   <RelativeLayout

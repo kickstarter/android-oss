@@ -2,6 +2,7 @@ package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -13,6 +14,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.models.Activity;
+import com.kickstarter.models.Project;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
@@ -25,12 +27,13 @@ import butterknife.OnClick;
 public class DiscoveryActivityViewHolder extends KSViewHolder {
   @Inject KSString ksString;
 
-  protected @Bind(R.id.activityImage) ImageView activityImageView;
+  protected @Bind(R.id.activity_image) ImageView activityImageView;
   protected @Bind(R.id.activity_title) TextView activityTitleTextView;
   protected @Bind(R.id.activity_subtitle) TextView activitysubTitleTextView;
   protected @Bind(R.id.see_activity_button) Button seeActivityButton;
   protected @BindString(R.string.activity_friend_backed_project_name_by_creator_name) String categoryBackingString;
-  protected @BindString(R.string.activity_follow_back) String cateogryFollowString;
+  protected @BindString(R.string.activity_user_name_is_now_following_you) String categoryFollowingString;
+  protected @BindString(R.string.activity_follow_back) String categoryFollowBackString;
   protected @BindString(R.string.activity_project_was_not_successfully_funded) String categoryFailureString;
   protected @BindString(R.string.activity_user_name_launched_project) String categoryLaunchString;
   protected @BindString(R.string.activity_successfully_funded) String categorySuccessString;
@@ -41,7 +44,9 @@ public class DiscoveryActivityViewHolder extends KSViewHolder {
 
   private final Delegate delegate;
   public interface Delegate {
-    void seeActivityClick(DiscoveryActivityViewHolder viewHolder);
+    void discoveryActivityViewHolderSeeActivityClicked(DiscoveryActivityViewHolder viewHolder);
+    void discoveryActivityViewHolderProjectClicked(DiscoveryActivityViewHolder viewHolder, Project project);
+    void discoveryActivityViewHolderUpdateClicked(DiscoveryActivityViewHolder viewHolder, Activity activity);
   }
 
   public DiscoveryActivityViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
@@ -64,15 +69,17 @@ public class DiscoveryActivityViewHolder extends KSViewHolder {
         .into(activityImageView);
 
       activityTitleTextView.setVisibility(View.GONE);
-      activitysubTitleTextView.setText(ksString.format(categoryBackingString, "friend_name", activity.user().name(),
-        "project_name", activity.project().name(), "creator_name", activity.project().creator().name()));
+      activitysubTitleTextView.setText(Html.fromHtml(ksString.format(categoryBackingString,
+        "friend_name", activity.user().name(),
+        "project_name", activity.project().name(),
+        "creator_name", activity.project().creator().name())));
     } else if (activity.category().equals(Activity.CATEGORY_FOLLOW)) {
       Picasso.with(context).load(activity.user().avatar()
         .small())
         .transform(new CircleTransformation())
         .into(activityImageView);
-      activityTitleTextView.setText(activity.project().name());
-      activitysubTitleTextView.setText(cateogryFollowString);
+      activityTitleTextView.setText(ksString.format(categoryFollowingString, "user_name", activity.user().name()));
+      activitysubTitleTextView.setText(categoryFollowBackString);
     } else {
       Picasso.with(context)
         .load(activity.project().photo().little())
@@ -104,13 +111,20 @@ public class DiscoveryActivityViewHolder extends KSViewHolder {
             "update_title", activity.update().title()));
           break;
       }
-
-      // TODO: update width/height for image
     }
   }
 
   @OnClick(R.id.see_activity_button)
   protected void seeActivityOnClick() {
-    delegate.seeActivityClick(this);
+    delegate.discoveryActivityViewHolderSeeActivityClicked(this);
+  }
+
+  @OnClick({R.id.activity_image, R.id.activity_title, R.id.activity_subtitle})
+  protected void activityProjectOnClick() {
+    if (activity.category().equals(Activity.CATEGORY_UPDATE)) {
+      delegate.discoveryActivityViewHolderUpdateClicked(this, activity);
+    } else {
+      delegate.discoveryActivityViewHolderProjectClicked(this, activity.project());
+    }
   }
 }

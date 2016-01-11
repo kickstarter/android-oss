@@ -15,4 +15,7 @@ public interface DiscoveryViewModelOutputs {
   Observable<Boolean> shouldShowOnboarding();
   Observable<DiscoveryParams> showFilters();
   Observable<Project> showProject();
+  Observable<Void> showSignupLogin();
+  Observable<Void> showActivityFeed();
+  Observable<Activity> showActivityUpdate();
 }

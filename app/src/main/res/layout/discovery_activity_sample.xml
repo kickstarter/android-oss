@@ -36,7 +36,7 @@
         android:paddingRight="@dimen/grid_3">
 
         <ImageView
-          android:id="@+id/activityImage"
+          android:id="@+id/activity_image"
           android:layout_gravity="top"
           android:layout_width="@dimen/grid_4"
           android:layout_height="@dimen/grid_4"

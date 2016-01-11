@@ -15,6 +15,8 @@ import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.ProfileActivity;
+import com.kickstarter.ui.adapters.ProfileAdapter;
+import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 import com.kickstarter.viewmodels.inputs.ProfileViewModelInputs;
 import com.kickstarter.viewmodels.outputs.ProfileViewModelOutputs;
 
@@ -26,7 +28,7 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public final class ProfileViewModel extends ViewModel<ProfileActivity> implements ProfileViewModelInputs, ProfileViewModelOutputs {
+public final class ProfileViewModel extends ViewModel<ProfileActivity> implements ProfileAdapter.Delegate, ProfileViewModelInputs, ProfileViewModelOutputs {
   @Inject ApiClient client;
   @Inject CurrentUser currentUser;
 
@@ -41,9 +43,13 @@ public final class ProfileViewModel extends ViewModel<ProfileActivity> implement
   @Override public Observable<List<Project>> projects() {
     return projects;
   }
-
   @Override public Observable<User> user() {
     return currentUser.observable();
+  }
+  private final PublishSubject<Project> showProject = PublishSubject.create();
+  @Override
+  public Observable<Project> showProject() {
+    return showProject;
   }
 
   public final ProfileViewModelInputs inputs = this;
@@ -75,5 +81,9 @@ public final class ProfileViewModel extends ViewModel<ProfileActivity> implement
     addSubscription(paginator.paginatedData.subscribe(projects));
 
     koala.trackProfileView();
+  }
+
+  public void projectCardViewHolderClicked(final @NonNull ProjectCardViewHolder viewHolder, final @NonNull Project project) {
+    this.showProject.onNext(project);
   }
 }

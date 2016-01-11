@@ -21,6 +21,10 @@ import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.activities.DiscoveryActivity;
+import com.kickstarter.ui.adapters.DiscoveryAdapter;
+import com.kickstarter.ui.viewholders.DiscoveryActivityViewHolder;
+import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
+import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 import com.kickstarter.viewmodels.inputs.DiscoveryViewModelInputs;
 import com.kickstarter.viewmodels.outputs.DiscoveryViewModelOutputs;
 
@@ -33,18 +37,13 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> implements DiscoveryViewModelInputs, DiscoveryViewModelOutputs {
+public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> implements DiscoveryAdapter.Delegate, DiscoveryViewModelInputs, DiscoveryViewModelOutputs {
   @Inject ApiClient apiClient;
   @Inject WebClient webClient;
   @Inject BuildCheck buildCheck;
   @Inject CurrentUser currentUser;
 
   // INPUTS
-  private final PublishSubject<Project> projectClicked = PublishSubject.create();
-  @Override
-  public void projectClicked(@NonNull final Project project) {
-    projectClicked.onNext(project);
-  }
   private final PublishSubject<Void> nextPage = PublishSubject.create();
   public void nextPage() {
     nextPage.onNext(null);
@@ -53,7 +52,6 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   public void filterButtonClicked() {
     filterButtonClicked.onNext(null);
   }
-
   private final BehaviorSubject<Boolean> hasLoadedActivitySample = BehaviorSubject.create();
   public Observable<Boolean> hasLoadedActivitySample() {
     return hasLoadedActivitySample;
@@ -84,9 +82,25 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   public Observable<DiscoveryParams> showFilters() {
     return params.compose(Transformers.takeWhen(filterButtonClicked));
   }
+  private final PublishSubject<Project> showProject = PublishSubject.create();
   @Override
   public Observable<Project> showProject() {
-    return projectClicked;
+    return showProject;
+  }
+  private final PublishSubject<Void> showSignupLogin = PublishSubject.create();
+  @Override
+  public Observable<Void> showSignupLogin() {
+    return showSignupLogin;
+  }
+  private final PublishSubject<Void> showActivityFeed = PublishSubject.create();
+  @Override
+  public Observable<Void> showActivityFeed() {
+    return showActivityFeed;
+  }
+  private final PublishSubject<Activity> showActivityUpdate = PublishSubject.create();
+  @Override
+  public Observable<Activity> showActivityUpdate() {
+    return showActivityUpdate;
   }
 
   // ERRORS
@@ -172,6 +186,26 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   public Observable<ActivityEnvelope> fetchActivities() {
     return apiClient.fetchActivities(1)
       .compose(Transformers.pipeApiErrorsTo(activityError));
+  }
+
+  public void projectCardViewHolderClicked(final @NonNull ProjectCardViewHolder viewHolder, final @NonNull Project project) {
+    this.showProject.onNext(project);
+  }
+
+  public void discoveryOnboardingViewHolderSignupLoginClicked(final @NonNull DiscoveryOnboardingViewHolder viewHolder) {
+    this.showSignupLogin.onNext(null);
+  }
+
+  public void discoveryActivityViewHolderSeeActivityClicked(final @NonNull DiscoveryActivityViewHolder viewHolder) {
+    this.showActivityFeed.onNext(null);
+  }
+
+  public void discoveryActivityViewHolderProjectClicked(final @NonNull DiscoveryActivityViewHolder viewHolder, final @NonNull Project project) {
+    this.showProject.onNext(project);
+  }
+
+  public void discoveryActivityViewHolderUpdateClicked(final @NonNull DiscoveryActivityViewHolder viewHolder, final @NonNull Activity activity) {
+    this.showActivityUpdate.onNext(activity);
   }
 }
 

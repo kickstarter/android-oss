@@ -30,9 +30,9 @@ import com.kickstarter.ui.adapters.DiscoveryAdapter;
 import com.kickstarter.ui.containers.ApplicationContainer;
 import com.kickstarter.ui.intents.DiscoveryIntentAction;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
+import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,13 +41,13 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.BindDrawable;
 import butterknife.ButterKnife;
+import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresViewModel(DiscoveryViewModel.class)
 public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> implements DiscoveryAdapter.Delegate {
   private DiscoveryAdapter adapter;
   private DiscoveryIntentAction intentAction;
   private LinearLayoutManager layoutManager;
-  private final List<Project> projects = new ArrayList<>();
   private RecyclerViewPaginator recyclerViewPaginator;
 
   protected @Inject ApplicationContainer applicationContainer;
@@ -59,7 +59,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
   public @Bind(R.id.recycler_view) RecyclerView recyclerView;
 
   @Override
-  protected void onCreate(@Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     ((KSApplication) getApplication()).component().inject(this);
@@ -70,7 +70,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
     ButterKnife.bind(this, container);
 
     layoutManager = new LinearLayoutManager(this);
-    adapter = new DiscoveryAdapter(projects, this);
+    adapter = new DiscoveryAdapter(this);
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);
 
@@ -78,6 +78,31 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
     intentAction.intent(getIntent());
 
     recyclerViewPaginator = new RecyclerViewPaginator(recyclerView, viewModel.inputs::nextPage);
+
+    viewModel.outputs.shouldShowOnboarding()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(adapter::setShouldShowOnboardingView);
+
+    viewModel.outputs.projects()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(adapter::takeProjects);
+
+    viewModel.outputs.params()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::loadParams);
+
+    viewModel.outputs.showFilters()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::startDiscoveryFilterActivity);
+
+    viewModel.outputs.showProject()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::startProjectActivity);
   }
 
   @Override
@@ -91,17 +116,17 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
     recyclerViewPaginator.stop();
   }
 
-  public void projectCardClick(@NonNull final ProjectCardViewHolder viewHolder, @NonNull final Project project) {
-    viewModel.inputs.projectClick(project);
+  public void projectCardClick(final @NonNull ProjectCardViewHolder viewHolder, final @NonNull Project project) {
+    viewModel.inputs.projectClicked(project);
   }
 
-  public void loadProjects(@NonNull final List<Project> newProjects) {
-    projects.clear();
-    projects.addAll(newProjects);
-    adapter.notifyDataSetChanged();
+  public void signupLoginClick(final @NonNull DiscoveryOnboardingViewHolder viewHolder) {
+    final Intent intent = new Intent(this, LoginToutActivity.class)
+      .putExtra(IntentKey.LOGIN_TYPE, LoginToutActivity.REASON_GENERIC);
+    startActivity(intent);
   }
 
-  public void loadParams(@NonNull final DiscoveryParams params) {
+  private void loadParams(final @NonNull DiscoveryParams params) {
     discoveryToolbar.loadParams(params);
 
     if (ApiCapabilities.canSetStatusBarColor() && ApiCapabilities.canSetDarkStatusBarIcons()) {
@@ -109,14 +134,14 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
     }
   }
 
-  public void startDiscoveryFilterActivity(@NonNull final DiscoveryParams params) {
+  private void startDiscoveryFilterActivity(final @NonNull DiscoveryParams params) {
     final Intent intent = new Intent(this, DiscoveryFilterActivity.class)
       .putExtra(IntentKey.DISCOVERY_PARAMS, params);
 
     startActivityForResult(intent, ActivityRequestCodes.DISCOVERY_ACTIVITY_DISCOVERY_FILTER_ACTIVITY_SELECT_FILTER);
   }
 
-  public void startProjectActivity(@NonNull final Project project) {
+  private void startProjectActivity(final @NonNull Project project) {
     final Intent intent = new Intent(this, ProjectActivity.class)
       .putExtra(IntentKey.PROJECT, project);
     startActivity(intent);
@@ -124,7 +149,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
   }
 
   @Override
-  protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
+  protected void onActivityResult(final int requestCode, final int resultCode, final @NonNull Intent intent) {
     if (requestCode != ActivityRequestCodes.DISCOVERY_ACTIVITY_DISCOVERY_FILTER_ACTIVITY_SELECT_FILTER) {
       return;
     }
@@ -136,7 +161,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
     intentAction.intent(intent);
   }
 
-  public void showBuildAlert(@NonNull final InternalBuildEnvelope envelope) {
+  public void showBuildAlert(final @NonNull InternalBuildEnvelope envelope) {
     new AlertDialog.Builder(this)
       .setTitle(getString(R.string.Upgrade_app))
       .setMessage(getString(R.string.A_newer_build_is_available))

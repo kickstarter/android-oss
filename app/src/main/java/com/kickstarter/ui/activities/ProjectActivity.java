@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -7,8 +8,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
@@ -16,7 +21,6 @@ import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
-import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 import com.kickstarter.services.ApiClientType;
@@ -30,6 +34,7 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.BindColor;
+import butterknife.BindDimen;
 import butterknife.BindDrawable;
 import butterknife.BindString;
 import butterknife.ButterKnife;
@@ -50,6 +55,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   protected @BindColor(R.color.green) int green;
   protected @BindColor(R.color.text_primary) int textPrimary;
 
+  protected @BindDimen(R.dimen.grid_8) int grid8Dimen;
   protected @BindDrawable(R.drawable.ic_star_black_24dp) Drawable starDrawable;
 
   protected @BindString(R.string.project_back_button) String projectBackButtonString;
@@ -221,7 +227,15 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   }
 
   private void showStarPrompt() {
-    ViewUtils.showToast(this, projectStarConfirmationString);
+    final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    final View view = inflater.inflate(R.layout.toast, null);
+    final TextView text = (TextView) view.findViewById(R.id.toast_text_view);
+    text.setText(projectStarConfirmationString);
+
+    final Toast toast = new Toast(this);
+    toast.setView(view);
+    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, grid8Dimen);
+    toast.show();
   }
 
   private void startCheckoutActivity(final @NonNull Project project) {

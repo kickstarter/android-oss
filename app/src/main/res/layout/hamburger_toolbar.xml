@@ -25,16 +25,12 @@
       android:gravity="center_vertical"
       android:clipChildren="false"
       android:clipToPadding="false"
-      android:layout_toLeftOf="@+id/toolbar_icons"
-      android:layout_toStartOf="@+id/toolbar_icons"
       android:layout_alignParentLeft="true"
       android:layout_alignParentStart="true">
 
-      <com.kickstarter.ui.views.IconTextView
-        style="@style/ToolbarIcon"
+      <com.kickstarter.ui.views.IconButton
+        style="@style/HamburgerToolbarIcon"
         android:id="@+id/menu_button"
-        android:focusable="true"
-        android:textColor="@color/white"
         android:text="@string/menu_icon" />
 
       <TextView
@@ -61,18 +57,14 @@
       android:orientation="horizontal">
 
       <com.kickstarter.ui.views.IconButton
-        style="@style/ToolbarIcon"
+        style="@style/HamburgerToolbarIcon"
         android:id="@+id/activity_feed_button"
-        android:focusable="true"
-        android:text="@string/flash_on_icon"
-        android:textColor="@color/white" />
+        android:text="@string/flash_on_icon" />
 
       <com.kickstarter.ui.views.IconButton
-        style="@style/ToolbarIcon"
+        style="@style/HamburgerToolbarIcon"
         android:id="@+id/search_button"
-        android:focusable="true"
-        android:text="@string/search_icon"
-        android:textColor="@color/white" />
+        android:text="@string/search_icon" />
 
     </LinearLayout>
 

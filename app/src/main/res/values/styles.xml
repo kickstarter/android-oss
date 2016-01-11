@@ -194,6 +194,12 @@
     <item name="android:layout_alignParentEnd">true</item>
   </style>
 
+  <style name="HamburgerToolbarIcon" parent="ToolbarIcon">
+    <item name="android:background">@drawable/button_selector</item>
+    <item name="android:focusable">true</item>
+    <item name="android:textColor">@color/white</item>
+  </style>
+
   <style name="KSSettingsPhoneIcon" parent="EndSettingsWidget">
     <item name="android:focusable">true</item>
     <item name="android:layout_marginRight">@dimen/grid_1</item>

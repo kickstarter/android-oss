@@ -313,6 +313,7 @@
   <string name="discovery_baseball_card_stats_convert_from_pledged_of_goal" formatted="false">Converted from %{pledged} pledged of %{goal} goal.</string>
   <string name="discovery_baseball_card_stats_funded" formatted="false">funded</string>
   <string name="discovery_baseball_card_stats_pledged_of_goal" formatted="false">pledged of %{goal}</string>
+  <string name="discovery_baseball_card_stats_pledged_of_goal_short" formatted="false">of %{goal}</string>
   <string name="discovery_baseball_card_status_banner_canceled" formatted="false">Funding canceled</string>
   <string name="discovery_baseball_card_status_banner_canceled_date" formatted="false">Funding canceled %{date}</string>
   <string name="discovery_baseball_card_status_banner_funding_unsuccessful_date" formatted="false">Funding unsuccessful %{date}</string>
@@ -353,6 +354,7 @@
   <string name="discovery_nearby" formatted="false">Nearby</string>
   <string name="discovery_onboarding_buttons_learn_more" formatted="false">Learn more</string>
   <string name="discovery_onboarding_buttons_login" formatted="false">Login</string>
+  <string name="discovery_onboarding_buttons_signup_or_login" formatted="false">Sign up or Log in</string>
   <string name="discovery_onboarding_learn_login_conjunction_or" formatted="false">or</string>
   <string name="discovery_onboarding_title_bring_creative_projects_to_life" formatted="false">Bring creative projects to life</string>
   <string name="discovery_popular" formatted="false">Popular</string>
@@ -373,7 +375,7 @@
   <string name="facebook_confirmation_detail" formatted="false">Before we make your new account, please double check that we got the right email address from your Facebook profile:</string>
   <string name="facebook_confirmation_navbar_title" formatted="false">Sign up</string>
   <string name="facebook_confirmation_newsletter_bold" formatted="false">Discover projects</string>
-  <string name="facebook_confirmation_newsletter_normal" formatted="false"> with our weekly newsletter.</string>
+  <string name="facebook_confirmation_newsletter_normal" formatted="false">\u0020with our weekly newsletter.</string>
   <string name="facebook_confirmation_title" formatted="false">Welcome to Kickstarter!</string>
   <string name="facebook_confirmation_wrong_account_button" formatted="false">Log in with your email here.</string>
   <string name="facebook_confirmation_wrong_account_title" formatted="false">Already have a Kickstarter account?</string>
@@ -536,6 +538,8 @@ Let’s change that!</string>
   <string name="profile_settings_navbar_title" formatted="false">Settings</string>
   <string name="profile_settings_navbar_title_notifications" formatted="false">Notifications</string>
   <string name="profile_settings_newsletter_happening" formatted="false">Happening Now</string>
+  <string name="profile_settings_newsletter_opt_in_message" formatted="false">We\'ve sent a confirmation email to the address associated with you account! Please check your email in order to confirm that you\'d like to subscribe to %{newsletter}.</string>
+  <string name="profile_settings_newsletter_opt_in_title" formatted="false">One final step!</string>
   <string name="profile_settings_newsletter_promo" formatted="false">Kickstarter news and events</string>
   <string name="profile_settings_newsletter_title" formatted="false">Newsletters</string>
   <string name="profile_settings_newsletter_weekly" formatted="false">Projects We Love</string>
@@ -546,6 +550,7 @@ We\'d appreciate it!</string>
   <string name="profile_settings_rating_option_rate_now" formatted="false">Rate It Now</string>
   <string name="profile_settings_rating_option_remind_later" formatted="false">Remind Me Later</string>
   <string name="profile_settings_rating_rate_us" formatted="false">Rate us in the App Store!</string>
+  <string name="profile_settings_rating_rate_us_play_store" formatted="false">Rate us in the Play Store!</string>
   <string name="profile_settings_rating_title" formatted="false">We’re all ears!</string>
   <string name="profile_settings_social_find_friends" formatted="false">Find friends</string>
   <string name="profile_settings_social_followers" formatted="false">New followers</string>
@@ -597,7 +602,7 @@ We\'d appreciate it!</string>
   <string name="project_comments_posted" formatted="false">Comment posted!</string>
   <string name="project_creator_by_creator" formatted="false">by %{creator_name}</string>
   <string name="project_creator_by_creator_html" formatted="false">by &lt;u>%{creator_name}&lt;/u></string>
-  <string name="project_creator_youre_a_backer" formatted="false"> • You\'re a backer</string>
+  <string name="project_creator_youre_a_backer" formatted="false">\u0020• You\'re a backer</string>
   <string name="project_disclaimer_goal_not_reached" formatted="false">This project will only be funded if at least %{goal_currency} is pledged by %{deadline}.</string>
   <string name="project_disclaimer_goal_reached" formatted="false">This project will be funded on %{deadline}.</string>
   <string name="project_friends_backing_title_friends" formatted="false">Friends</string>

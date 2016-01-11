@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -20,13 +22,22 @@ import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.DateTimeUtils;
+import com.kickstarter.libs.utils.I18nUtils;
+import com.kickstarter.libs.utils.NumberUtils;
+import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.SocialUtils;
 import com.kickstarter.libs.utils.ViewUtils;
+import com.kickstarter.models.Category;
+import com.kickstarter.models.Location;
+import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ProjectSocialActivity;
 import com.kickstarter.ui.views.IconButton;
 import com.squareup.picasso.Picasso;
+
+import org.joda.time.DateTime;
 
 import javax.inject.Inject;
 
@@ -38,8 +49,12 @@ import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.kickstarter.libs.utils.ObjectUtils.coalesce;
+import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
+
 public final class ProjectViewHolder extends KSViewHolder {
   private Project project;
+  private String configCountry;
   private final Delegate delegate;
 
   protected @Bind(R.id.avatar) ImageView avatarImageView;
@@ -52,7 +67,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.creator_name) TextView creatorNameTextView;
   protected @Bind(R.id.deadline_countdown_text_view) TextView deadlineCountdownTextView;
   protected @Bind(R.id.deadline_countdown_unit_text_view) TextView deadlineCountdownUnitTextView;
-  protected @Bind(R.id.fund_message) TextView fundMessageTextView;
+  protected @Bind(R.id.project_disclaimer_text_view) TextView projectDisclaimerTextView;
   protected @Bind(R.id.goal) TextView goalTextView;
   protected @Bind(R.id.location) TextView locationTextView;
   protected @Bind(R.id.percentage_funded) ProgressBar percentageFundedProgressBar;
@@ -63,16 +78,17 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.project_social_image) ImageView projectSocialImageView;
   protected @Bind(R.id.project_social_text) TextView projectSocialTextView;
   protected @Bind(R.id.project_stats_view) ViewGroup projectStatsViewGroup;
-  protected @Bind(R.id.project_social_view) ViewGroup projectSocialViewGoup;
+  protected @Bind(R.id.project_social_view) ViewGroup projectSocialViewGroup;
   protected @Bind(R.id.project_state_header_text_view) TextView projectStateHeaderTextView;
   protected @Bind(R.id.project_state_subhead_text_view) TextView projectStateSubheadTextView;
-  protected @Bind(R.id.project_state_vertical_line_view) View projectStateVerticalLineView;
   protected @Bind(R.id.project_state_view_group) ViewGroup projectStateViewGroup;
   protected @Bind(R.id.updates_count) TextView updatesCountTextView;
+  protected @Bind(R.id.usd_conversion_text_view) TextView usdConversionTextView;
 
-  protected @BindColor(R.color.green) int greenColor;
-  protected @BindColor(R.color.dark_gray) int darkGrayColor;
+  protected @BindColor(R.color.green_alpha_20) int greenAlpha50Color;
+  protected @BindColor(R.color.medium_gray) int mediumGrayColor;
 
+  protected @BindDimen(R.dimen.grid_2) int grid2Dimen;
   protected @BindDimen(R.dimen.grid_3) int grid3Dimen;
   protected @BindDimen(R.dimen.grid_4) int grid4Dimen;
 
@@ -80,7 +96,9 @@ public final class ProjectViewHolder extends KSViewHolder {
 
   protected @BindString(R.string.project_creator_by_creator_html) String byCreatorString;
   protected @BindString(R.string.discovery_baseball_card_blurb_read_more) String blurbReadMoreString;
+  protected @BindString(R.string.discovery_baseball_card_stats_convert_from_pledged_of_goal) String convertedFromString;
   protected @BindString(R.string.project_disclaimer_goal_not_reached) String projectDisclaimerGoalNotReachedString;
+  protected @BindString(R.string.project_disclaimer_goal_reached) String projectDisclaimerGoalReachedString;
   protected @BindString(R.string.project_status_funding_canceled) String fundingCanceledString;
   protected @BindString(R.string.project_status_funding_project_canceled_by_creator) String fundingCanceledByCreatorString;
   protected @BindString(R.string.project_status_project_was_successfully_funded_on_deadline) String successfullyFundedOnDeadlineString;
@@ -90,17 +108,18 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @BindString(R.string.project_status_project_funding_goal_not_reached) String fundingGoalNotReachedString;
   protected @BindString(R.string.project_status_funded) String fundedString;
   protected @BindString(R.string.discovery_baseball_card_stats_pledged_of_goal) String pledgedOfGoalString;
+  protected @BindString(R.string.discovery_baseball_card_stats_pledged_of_goal_short) String ofGoalString;
   protected @BindString(R.string.discovery_baseball_card_stats_backers) String backersString;
 
   @Inject KSCurrency ksCurrency;
   @Inject KSString ksString;
 
   public interface Delegate {
-    void projectBlurbClicked(ProjectViewHolder viewHolder);
-    void projectCommentsClicked(ProjectViewHolder viewHolder);
-    void projectCreatorNameClicked(ProjectViewHolder viewHolder);
-    void projectUpdatesClicked(ProjectViewHolder viewHolder);
-    void projectVideoStarted(ProjectViewHolder viewHolder);
+    void projectViewHolderBlurbClicked(ProjectViewHolder viewHolder);
+    void projectViewHolderCommentsClicked(ProjectViewHolder viewHolder);
+    void projectViewHolderCreatorClicked(ProjectViewHolder viewHolder);
+    void projectViewHolderUpdatesClicked(ProjectViewHolder viewHolder);
+    void projectViewHolderVideoStarted(ProjectViewHolder viewHolder);
   }
 
   public ProjectViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
@@ -110,12 +129,22 @@ public final class ProjectViewHolder extends KSViewHolder {
     ButterKnife.bind(this, view);
   }
 
-  public void onBind(@NonNull final Object datum) {
-    this.project = (Project) datum;
+  @Override
+  public void bindData(final @Nullable Object data) throws Exception {
+    @SuppressWarnings("unchecked")
+    final Pair<Project, String> projectAndCountry = requireNonNull((Pair<Project, String>) data);
+    project = requireNonNull(projectAndCountry.first, Project.class);
+    configCountry = requireNonNull(projectAndCountry.second, String.class);
+  }
+
+  public void onBind() {
     final Context context = view.getContext();
 
-    /* Video */
-    Picasso.with(context).load(project.photo().full()).into(photoImageView);
+    final Photo photo = project.photo();
+    if (photo != null) {
+      Picasso.with(context).load(photo.full()).into(photoImageView);
+    }
+
     if (project.hasVideo()) {
       playButton.setVisibility(View.VISIBLE);
     } else {
@@ -135,13 +164,18 @@ public final class ProjectViewHolder extends KSViewHolder {
       backerLabelLinearLayout.setVisibility(View.GONE);
     }
     projectNameTextView.setText(project.name());
-    categoryTextView.setText(project.category().name());
-    locationTextView.setText(project.location().displayableName());
-    percentageFundedProgressBar.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
-    deadlineCountdownTextView.setText(Integer.toString(ProjectUtils.deadlineCountdownValue(project)));
+    final Category category = project.category();
+    if (category != null) {
+      categoryTextView.setText(category.name());
+    }
+    final Location location = project.location();
+    if (location != null) {
+      locationTextView.setText(location.displayableName());
+    }
+    percentageFundedProgressBar.setProgress(ProgressBarUtils.progress(project.percentageFunded()));
+    deadlineCountdownTextView.setText(NumberUtils.format(ProjectUtils.deadlineCountdownValue(project)));
     deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(project, view.getContext(), ksString));
-    pledgedTextView.setText(ksCurrency.format(project.pledged(), project));
-    backersCountTextView.setText(project.formattedBackersCount());
+    backersCountTextView.setText(NumberUtils.format(project.backersCount()));
 
      /* Creator */
     Picasso.with(context).load(project.creator().avatar()
@@ -149,26 +183,14 @@ public final class ProjectViewHolder extends KSViewHolder {
       .transform(new CircleTransformation())
       .into(avatarImageView);
     avatarNameTextView.setText(project.creator().name());
-    fundMessageTextView.setText(ksString.format(
-      projectDisclaimerGoalNotReachedString,
-      "goal_currency",
-      ksCurrency.format(project.goal(), project, true),
-      "deadline",
-      DateTimeUtils.mediumDateTime(project.deadline())
-    ));
-    updatesCountTextView.setText(project.formattedUpdatesCount());
-    commentsCountTextView.setText(project.formattedCommentsCount());
+    final Integer updatesCount = project.updatesCount();
+    updatesCountTextView.setText(updatesCount != null ? NumberUtils.format(updatesCount) : null);
+    final Integer commentsCount = project.commentsCount();
+    commentsCountTextView.setText(commentsCount != null ? NumberUtils.format(commentsCount) : null);
 
-    /* a11y */
-    final String goalText = ksCurrency.format(project.goal(), project, true);
-    if (ViewUtils.isFontScaleLarge(view.getContext())) {
-      goalTextView.setText(goalText);
-    } else {
-      goalTextView.setText(ksString.format(pledgedOfGoalString,
-        "goal", goalText
-      ));
-    }
-
+    setConvertedUsdView();
+    setPledgedOfGoalView();
+    setProjectDisclaimerView();
     setProjectSocialClick();
     setProjectStateView();
     setSocialView();
@@ -187,32 +209,83 @@ public final class ProjectViewHolder extends KSViewHolder {
 
   @OnClick({R.id.blurb, R.id.campaign})
   public void blurbClick() {
-    delegate.projectBlurbClicked(this);
+    delegate.projectViewHolderBlurbClicked(this);
   }
 
   @OnClick(R.id.comments)
   public void commentsClick() {
-    delegate.projectCommentsClicked(this);
+    delegate.projectViewHolderCommentsClicked(this);
   }
 
   @OnClick({R.id.creator_name, R.id.creator_info})
   public void creatorNameClick() {
-    delegate.projectCreatorNameClicked(this);
+    delegate.projectViewHolderCreatorClicked(this);
   }
 
   @OnClick(R.id.play_button_overlay)
   public void playButtonClick() {
-    delegate.projectVideoStarted(this);
+    delegate.projectViewHolderVideoStarted(this);
+  }
+
+  public void setConvertedUsdView() {
+    if (I18nUtils.isCountryUS(configCountry) && !I18nUtils.isCountryUS(project.country())) {
+      usdConversionTextView.setVisibility(View.VISIBLE);
+      usdConversionTextView.setText(ksString.format(
+        convertedFromString,
+        "pledged",
+        ksCurrency.format(project.pledged(), project),
+        "goal",
+        ksCurrency.format(project.goal(), project)
+      ));
+    } else {
+      usdConversionTextView.setVisibility(View.GONE);
+    }
+  }
+
+  public void setPledgedOfGoalView() {
+    pledgedTextView.setText(ksCurrency.format(project.pledged(), project, false, true));
+
+    /* a11y */
+    final String goalString = ksCurrency.format(project.goal(), project, false, true);
+    final String goalText = ViewUtils.isFontScaleLarge(view.getContext()) ?
+      ksString.format(ofGoalString, "goal", goalString) : ksString.format(pledgedOfGoalString, "goal", goalString);
+    goalTextView.setText(goalText);
+  }
+
+  public void setProjectDisclaimerView() {
+    final DateTime deadline = project.deadline();
+
+    if (deadline == null) {
+      projectDisclaimerTextView.setVisibility(View.GONE);
+    } else if (!project.isLive()) {
+      projectDisclaimerTextView.setVisibility(View.GONE);
+    } else if (project.isFunded()) {
+      projectDisclaimerTextView.setVisibility(View.VISIBLE);
+      projectDisclaimerTextView.setText(ksString.format(
+        projectDisclaimerGoalReachedString,
+        "deadline",
+        DateTimeUtils.mediumDateTime(deadline)
+      ));
+    } else {
+      projectDisclaimerTextView.setVisibility(View.VISIBLE);
+      projectDisclaimerTextView.setText(ksString.format(
+        projectDisclaimerGoalNotReachedString,
+        "goal_currency",
+        ksCurrency.format(project.goal(), project, true),
+        "deadline",
+        DateTimeUtils.mediumDateTime(deadline)
+      ));
+    }
   }
 
   public void setProjectSocialClick() {
     if (project.isFriendBacking()) {
       if (project.friends().size() > 2) {
-        projectSocialViewGoup.setBackground(clickIndicatorLightMaskedDrawable);
-        projectSocialViewGoup.setOnClickListener(view -> {
+        projectSocialViewGroup.setBackground(clickIndicatorLightMaskedDrawable);
+        projectSocialViewGroup.setOnClickListener(view -> {
           final BaseActivity activity = (BaseActivity) view.getContext();
           final Intent intent = new Intent(activity, ProjectSocialActivity.class)
-            .putExtra(activity.getString(R.string.intent_project), project);
+            .putExtra(IntentKey.PROJECT, project);
           activity.startActivity(intent);
           activity.overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
         });
@@ -221,21 +294,23 @@ public final class ProjectViewHolder extends KSViewHolder {
   }
 
   public void setProjectStateView() {
+    final DateTime stateChangedAt = coalesce(project.stateChangedAt(), new DateTime());
+
     switch(project.state()) {
       case Project.STATE_SUCCESSFUL:
         percentageFundedProgressBar.setVisibility(View.GONE);
         projectStateViewGroup.setVisibility(View.VISIBLE);
-        projectStateVerticalLineView.setBackgroundColor(greenColor);
+        projectStateViewGroup.setBackgroundColor(greenAlpha50Color);
 
         projectStateHeaderTextView.setText(fundedString);
         projectStateSubheadTextView.setText(ksString.format(successfullyFundedOnDeadlineString,
-          "deadline", DateTimeUtils.mediumDate(project.stateChangedAt())
+          "deadline", DateTimeUtils.mediumDate(stateChangedAt)
         ));
         break;
       case Project.STATE_CANCELED:
         percentageFundedProgressBar.setVisibility(View.GONE);
         projectStateViewGroup.setVisibility(View.VISIBLE);
-        projectStateVerticalLineView.setBackgroundColor(darkGrayColor);
+        projectStateViewGroup.setBackgroundColor(mediumGrayColor);
 
         projectStateHeaderTextView.setText(fundingCanceledString);
         projectStateSubheadTextView.setText(fundingCanceledByCreatorString);
@@ -243,17 +318,17 @@ public final class ProjectViewHolder extends KSViewHolder {
       case Project.STATE_FAILED:
         percentageFundedProgressBar.setVisibility(View.GONE);
         projectStateViewGroup.setVisibility(View.VISIBLE);
-        projectStateVerticalLineView.setBackgroundColor(darkGrayColor);
+        projectStateViewGroup.setBackgroundColor(mediumGrayColor);
 
         projectStateHeaderTextView.setText(fundingUnsuccessfulString);
         projectStateSubheadTextView.setText(ksString.format(fundingGoalNotReachedString,
-          "deadline", DateTimeUtils.mediumDate(project.stateChangedAt())
+          "deadline", DateTimeUtils.mediumDate(stateChangedAt)
         ));
         break;
       case Project.STATE_SUSPENDED:
         percentageFundedProgressBar.setVisibility(View.GONE);
         projectStateViewGroup.setVisibility(View.VISIBLE);
-        projectStateVerticalLineView.setBackgroundColor(darkGrayColor);
+        projectStateViewGroup.setBackgroundColor(mediumGrayColor);
 
         projectStateHeaderTextView.setText(fundingSuspendedString);
         projectStateSubheadTextView.setText(fundingProjectSuspendedString);
@@ -268,8 +343,8 @@ public final class ProjectViewHolder extends KSViewHolder {
   public void setSocialView() {
     if (project.isFriendBacking()) {
 
-      projectSocialViewGoup.setVisibility(View.VISIBLE);
-      adjustStatsViewBottomMargin(grid3Dimen);
+      projectSocialViewGroup.setVisibility(View.VISIBLE);
+      adjustStatsViewBottomMargin(grid2Dimen);
 
       projectSocialImageView.setVisibility(View.VISIBLE);
       Picasso.with(view.getContext()).load(project.friends().get(0).avatar()
@@ -280,13 +355,13 @@ public final class ProjectViewHolder extends KSViewHolder {
       projectSocialTextView.setText(SocialUtils.projectCardFriendNamepile(project.friends(), ksString));
 
     } else {
-      projectSocialViewGoup.setVisibility(View.GONE);
+      projectSocialViewGroup.setVisibility(View.GONE);
       adjustStatsViewBottomMargin(grid4Dimen);
     }
   }
 
   public void setStatsContentDescription() {
-    final String backersCountContentDescription = project.formattedBackersCount() + " " +  backersString;
+    final String backersCountContentDescription = NumberUtils.format(project.backersCount()) + " " +  backersString;
     final String pledgedContentDescription = pledgedTextView.getText() + " " + goalTextView.getText();
     final String deadlineCountdownContentDescription = deadlineCountdownTextView.getText() + " " + deadlineCountdownUnitTextView.getText();
 
@@ -297,6 +372,6 @@ public final class ProjectViewHolder extends KSViewHolder {
 
   @OnClick(R.id.updates)
   public void updatesClick() {
-    delegate.projectUpdatesClicked(this);
+    delegate.projectViewHolderUpdatesClicked(this);
   }
 }

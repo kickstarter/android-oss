@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.models.Project;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ProjectSocialAdapter;
 import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
 
@@ -27,7 +28,7 @@ public final class ProjectSocialActivity extends BaseActivity implements Project
     ButterKnife.bind(this);
 
     final Intent intent = getIntent();
-    final Project project = intent.getParcelableExtra(getString(R.string.intent_project));
+    final Project project = intent.getParcelableExtra(IntentKey.PROJECT);
     final ProjectSocialAdapter adapter = new ProjectSocialAdapter(this);
 
     recyclerView.setAdapter(adapter);

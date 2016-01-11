@@ -9,9 +9,10 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.ViewModel;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
-import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.ProfileActivity;
@@ -27,8 +28,8 @@ import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public final class ProfileViewModel extends ViewModel<ProfileActivity> implements ProfileViewModelInputs, ProfileViewModelOutputs {
-  @Inject ApiClient client;
-  @Inject CurrentUser currentUser;
+  protected @Inject ApiClientType client;
+  protected @Inject CurrentUser currentUser;
 
   // INPUTS
   private final PublishSubject<Void> nextPage = PublishSubject.create();
@@ -56,11 +57,12 @@ public final class ProfileViewModel extends ViewModel<ProfileActivity> implement
 
     final Observable<User> freshUser = client.fetchCurrentUser()
       .retry(2)
-      .onErrorResumeNext(e -> Observable.empty());
+      .compose(Transformers.neverError());
     freshUser.subscribe(currentUser::refresh);
 
     final DiscoveryParams params = DiscoveryParams.builder()
       .backed(1)
+      .perPage(18)
       .sort(DiscoveryParams.Sort.ENDING_SOON)
       .build();
 

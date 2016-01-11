@@ -3,6 +3,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:card_view="http://schemas.android.com/apk/res-auto"
   android:id="@+id/project_card_view_group"
+  android:background="@color/light_gray"
   android:layout_height="match_parent"
   android:layout_width="match_parent">
 
@@ -72,6 +73,7 @@
           android:id="@+id/percentage_funded"
           android:layout_width="match_parent"
           android:layout_height="@dimen/progress_bar_height"
+          android:max="100"
           android:minHeight="@dimen/progress_bar_min_height"
           android:progress="50" />
 

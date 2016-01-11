@@ -1,11 +1,11 @@
 package com.kickstarter.ui.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.views.KSWebView;
 
 import butterknife.Bind;
@@ -20,8 +20,7 @@ public final class DisplayWebViewActivity extends BaseActivity {
     setContentView(R.layout.web_view_layout);
     ButterKnife.bind(this);
 
-    final Intent intent = getIntent();
-    final String url = intent.getExtras().getString(getString(R.string.intent_url));
+    final String url = getIntent().getExtras().getString(IntentKey.URL);
 
     webView.loadUrl(url);
   }

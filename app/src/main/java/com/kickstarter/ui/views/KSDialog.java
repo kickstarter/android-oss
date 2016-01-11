@@ -37,7 +37,7 @@ public class KSDialog extends AppCompatDialog {
   }
 
   public KSDialog(final @NonNull Context context, final @Nullable String title, final @NonNull String message,
-    final @NonNull String buttonText) {
+    final @Nullable String buttonText) {
     super(context);
     this.title = title;
     this.message = message;

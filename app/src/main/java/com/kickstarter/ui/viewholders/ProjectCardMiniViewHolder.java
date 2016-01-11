@@ -2,6 +2,7 @@ package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,6 +11,7 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.utils.ProjectUtils;
+import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
 import com.squareup.picasso.Picasso;
 
@@ -18,6 +20,8 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
+
+import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
 public final class ProjectCardMiniViewHolder extends KSViewHolder {
   private Project project;
@@ -43,9 +47,12 @@ public final class ProjectCardMiniViewHolder extends KSViewHolder {
     ButterKnife.bind(this, view);
   }
 
-  public void onBind(final @NonNull Object datum) {
-    project = (Project) datum;
+  @Override
+  public void bindData(final @Nullable Object data) throws Exception {
+    project = requireNonNull((Project) data, Project.class);
+  }
 
+  public void onBind() {
     nameTextView.setText(project.name());
 
     if (project.isLive()) {
@@ -59,7 +66,13 @@ public final class ProjectCardMiniViewHolder extends KSViewHolder {
       timeToGoTextView.setVisibility(View.GONE);
     }
 
-    Picasso.with(context).load(project.photo().med()).into(photoImageView);
+    final Photo photo = project.photo();
+    if (photo != null) {
+      photoImageView.setVisibility(View.VISIBLE);
+      Picasso.with(context).load(photo.med()).into(photoImageView);
+    } else {
+      photoImageView.setVisibility(View.INVISIBLE);
+    }
   }
 
   @Override

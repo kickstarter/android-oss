@@ -12,7 +12,7 @@ import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
-import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.ThanksActivity;
@@ -35,7 +35,7 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
   private final PublishSubject<Project> projectCardMiniClick = PublishSubject.create();
   private final PublishSubject<Category> categoryPromoClick = PublishSubject.create();
 
-  @Inject ApiClient apiClient;
+  protected @Inject ApiClientType apiClient;
 
   @Override
   protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
@@ -85,7 +85,7 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startDiscoveryCategoryIntent(vp.second)));
 
-    final Observable<Category> rootCategory = apiClient.fetchCategory(project.category().rootId())
+    final Observable<Category> rootCategory = apiClient.fetchCategory(String.valueOf(project.category().rootId()))
       .compose(Transformers.neverError());
     final Observable<Pair<List<Project>, Category>> projectsAndRootCategory = moreProjects(project)
       .compose(Transformers.zipPair(rootCategory));
@@ -119,25 +119,28 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .perPage(3)
       .build();
 
+    final Category category = project.category();
     final DiscoveryParams staffPickParams = DiscoveryParams.builder()
-      .category(project.category().root())
+      .category(category == null ? null : category.root())
       .backed(-1)
       .staffPicks(true)
       .perPage(3)
       .build();
 
-    // shuffle projects since recommendations are updated only once a day
     final Observable<Project> recommendedProjects = apiClient.fetchProjects(recommendedParams)
+      .retry(2)
       .map(DiscoverEnvelope::projects)
       .map(ListUtils::shuffle)
       .flatMap(Observable::from)
       .take(3);
 
     final Observable<Project> similarToProjects = apiClient.fetchProjects(similarToParams)
+      .retry(2)
       .map(DiscoverEnvelope::projects)
       .flatMap(Observable::from);
 
     final Observable<Project> staffPickProjects = apiClient.fetchProjects(staffPickParams)
+      .retry(2)
       .map(DiscoverEnvelope::projects)
       .flatMap(Observable::from);
 

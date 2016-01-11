@@ -280,10 +280,10 @@
   <string name="dates_time_minutes_two" formatted="false">2 minutos</string>
   <string name="dates_time_minutes_zero" formatted="false">0 minutos</string>
   <string name="dates_yesterday" formatted="false">Ayer</string>
-  <string name="discovery_accessibility_live_project_count" formatted="false">Live projects</string>
-  <string name="discovery_accessibility_toolbar_buttons_activity_label" formatted="false">Activity feed</string>
-  <string name="discovery_accessibility_toolbar_buttons_filter_label" formatted="false">Filter by category</string>
-  <string name="discovery_accessibility_toolbar_buttons_user_menu" formatted="false">User menu</string>
+  <string name="discovery_accessibility_live_project_count" formatted="false">Proyectos activos</string>
+  <string name="discovery_accessibility_toolbar_buttons_activity_label" formatted="false">Resumen de actividad</string>
+  <string name="discovery_accessibility_toolbar_buttons_filter_label" formatted="false">Ordenar por categoría</string>
+  <string name="discovery_accessibility_toolbar_buttons_user_menu" formatted="false">Menú Usuario</string>
   <string name="discovery_activity_sample_alert_buttons_cancel" formatted="false">Cancelar</string>
   <string name="discovery_activity_sample_alert_buttons_follow" formatted="false">Seguir</string>
   <string name="discovery_activity_sample_alert_follow_friend_name" formatted="false">Seguir a %{friend_name}?</string>
@@ -293,7 +293,7 @@
   <string name="discovery_backing" formatted="false">Proyectos patrocinados</string>
   <string name="discovery_baseball_card_accessibility_category_label" formatted="false">Categoría</string>
   <string name="discovery_baseball_card_accessibility_location_label" formatted="false">Ubicación</string>
-  <string name="discovery_baseball_card_blurb_read_more" formatted="false">%{blurb}%{space}Leer%{space}más%{space}</string>
+  <string name="discovery_baseball_card_blurb_read_more" formatted="false">%{blurb}%{space}&lt;u>Leer%{space}más&lt;/u>%{space}</string>
   <string name="discovery_baseball_card_button_share" formatted="false">Compartir</string>
   <string name="discovery_baseball_card_deadline_units_days" formatted="false">días</string>
   <string name="discovery_baseball_card_deadline_units_hours" formatted="false">hrs</string>
@@ -311,8 +311,9 @@
   <string name="discovery_baseball_card_social_friends_are_backers_zero" formatted="false">Ninguno de tus amigos patrocina este proyecto.</string>
   <string name="discovery_baseball_card_stats_backers" formatted="false">patrocinadores</string>
   <string name="discovery_baseball_card_stats_convert_from_pledged_of_goal" formatted="false">Conversión: %{pledged} de la meta de %{goal}.</string>
-  <string name="discovery_baseball_card_stats_funded" formatted="false">funded</string>
+  <string name="discovery_baseball_card_stats_funded" formatted="false">financiado</string>
   <string name="discovery_baseball_card_stats_pledged_of_goal" formatted="false">de %{goal}</string>
+  <string name="discovery_baseball_card_stats_pledged_of_goal_short" formatted="false">of %{goal}</string>
   <string name="discovery_baseball_card_status_banner_canceled" formatted="false">Financiamiento cancelado</string>
   <string name="discovery_baseball_card_status_banner_canceled_date" formatted="false">Financiamiento cancelado el %{date}</string>
   <string name="discovery_baseball_card_status_banner_funding_unsuccessful_date" formatted="false">Financiamiento fallido %{date}</string>
@@ -353,6 +354,7 @@
   <string name="discovery_nearby" formatted="false">Cerca de ti</string>
   <string name="discovery_onboarding_buttons_learn_more" formatted="false">Más información</string>
   <string name="discovery_onboarding_buttons_login" formatted="false">Iniciar sesión</string>
+  <string name="discovery_onboarding_buttons_signup_or_login" formatted="false">Regístrate o Inicia sesión</string>
   <string name="discovery_onboarding_learn_login_conjunction_or" formatted="false">o</string>
   <string name="discovery_onboarding_title_bring_creative_projects_to_life" formatted="false">Dale vida a proyectos creativos</string>
   <string name="discovery_popular" formatted="false">Popular</string>
@@ -373,7 +375,7 @@
   <string name="facebook_confirmation_detail" formatted="false">Antes de crear nueva cuenta, por favor verifica si hemos seleccionado la dirección de correo electrónico correcta de tu perfil de Facebook:</string>
   <string name="facebook_confirmation_navbar_title" formatted="false">Registración</string>
   <string name="facebook_confirmation_newsletter_bold" formatted="false">Descubre proyectos</string>
-  <string name="facebook_confirmation_newsletter_normal" formatted="false"> con nuestro boletín semanal.</string>
+  <string name="facebook_confirmation_newsletter_normal" formatted="false">\u0020con nuestro boletín semanal.</string>
   <string name="facebook_confirmation_title" formatted="false">¡Bienvenido a Kickstarter!</string>
   <string name="facebook_confirmation_wrong_account_button" formatted="false">Inicia sesión aquí con tu correo electrónico.</string>
   <string name="facebook_confirmation_wrong_account_title" formatted="false">¿Ya tienes una cuenta de Kickstarter?</string>
@@ -389,9 +391,9 @@
   <string name="general_error_something_wrong" formatted="false">Algo pasó aquí.</string>
   <string name="general_loading" formatted="false">Cargando...</string>
   <string name="general_navigation_accessibility_button_close_label" formatted="false">Cerrar</string>
-  <string name="general_navigation_accessibility_button_help_menu_label" formatted="false">Help menu</string>
+  <string name="general_navigation_accessibility_button_help_menu_label" formatted="false">Menú Ayuda</string>
   <string name="general_navigation_accessibility_button_navigate_back_label" formatted="false">Atrás</string>
-  <string name="general_navigation_accessibility_button_overflow_menu_label" formatted="false">Overflow menu</string>
+  <string name="general_navigation_accessibility_button_overflow_menu_label" formatted="false">Menú Overflow</string>
   <string name="general_navigation_buttons_cancel" formatted="false">Cancelar</string>
   <string name="general_navigation_buttons_close" formatted="false">Cerrar</string>
   <string name="general_navigation_buttons_comment" formatted="false">Comentar</string>
@@ -536,6 +538,8 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="profile_settings_navbar_title" formatted="false">Configuración</string>
   <string name="profile_settings_navbar_title_notifications" formatted="false">Notificaciones</string>
   <string name="profile_settings_newsletter_happening" formatted="false">Eventos</string>
+  <string name="profile_settings_newsletter_opt_in_message" formatted="false">Hemos enviado una confirmación a la dirección de correo electrónico asociada con tu cuenta. Por favor checa tu bandeja de entrada y confirma la subscripción a %{newsletter}.</string>
+  <string name="profile_settings_newsletter_opt_in_title" formatted="false">¡Sólo un último paso!</string>
   <string name="profile_settings_newsletter_promo" formatted="false">Novedades y eventos de Kickstarter</string>
   <string name="profile_settings_newsletter_title" formatted="false">Boletines informativos</string>
   <string name="profile_settings_newsletter_weekly" formatted="false">Nuestros Favoritos</string>
@@ -546,6 +550,7 @@ Si tienes un momento, ¿te importaría calificar tu experiencia?\n
   <string name="profile_settings_rating_option_rate_now" formatted="false">Califícala ahora</string>
   <string name="profile_settings_rating_option_remind_later" formatted="false">Recordarme más tarde</string>
   <string name="profile_settings_rating_rate_us" formatted="false">¡Califícanos en la App Store!</string>
+  <string name="profile_settings_rating_rate_us_play_store" formatted="false">¡Califícanos en el Play Store!</string>
   <string name="profile_settings_rating_title" formatted="false">¡Somos todo oídos!</string>
   <string name="profile_settings_social_find_friends" formatted="false">Encontrar amigos</string>
   <string name="profile_settings_social_followers" formatted="false">Nuevos seguidores</string>
@@ -584,20 +589,20 @@ Si tienes un momento, ¿te importaría calificar tu experiencia?\n
   <string name="project_checkout_share_twitter_I_just_backed_project_on_kickstarter" formatted="false">Acabo de patrocinar %{project_name} en @Kickstarter</string>
   <string name="project_checkout_share_twitter_via_kickstarter" formatted="false">%{project_or_update_title}, via Kickstarter</string>
   <string name="project_checkout_share_you_just_backed_project_share_this_project" formatted="false">Acabas de patrocinar a %{project_name}. ¡Comparte este proyecto con amigos para echarle una mano!</string>
-  <string name="project_checkout_share_you_just_backed_project_share_this_project_html" formatted="false">You just backed &lt;b>%{project_name}&lt;/b>. Share this project with friends to help it along!</string>
-  <string name="project_comments_accessibility_button_write" formatted="false">Write a comment</string>
+  <string name="project_checkout_share_you_just_backed_project_share_this_project_html" formatted="false">Acabas de patrocinar el proyecto &lt;b>%{project_name}&lt;/b>. ¡Compártelo con tus amigos, para que se unan más a la causa!</string>
+  <string name="project_comments_accessibility_button_write" formatted="false">Escribe un comentario</string>
   <string name="project_comments_empty_state_backer_button" formatted="false">Deja un comentario</string>
   <string name="project_comments_empty_state_backer_message" formatted="false">Ay, ¡qué pena! Pero - ¡tú podrías ser el primer patrocinador que deja un comentario en este proyecto!</string>
   <string name="project_comments_empty_state_backer_title" formatted="false">No hay comentarios</string>
   <string name="project_comments_empty_state_logged_out_message" formatted="false">Ay, ¡qué pena! Hazte patrocinador para dejar un comentario.</string>
-  <string name="project_comments_empty_state_logged_out_message_log_in" formatted="false">Aw, how sad. Log in to become a backer or leave a comment.</string>
+  <string name="project_comments_empty_state_logged_out_message_log_in" formatted="false">¡Ay qué triste! Por favor inicia sesión para patrocinar este proyecto o para publicar un comentario.</string>
   <string name="project_comments_empty_state_logged_out_title" formatted="false">No hay comentarios</string>
   <string name="project_comments_empty_state_non_backer_message" formatted="false">Ay, ¡qué pena! Hazte patrocinador para dejar un comentario.</string>
   <string name="project_comments_empty_state_non_backer_title" formatted="false">No hay comentarios</string>
-  <string name="project_comments_posted" formatted="false">Comment posted!</string>
+  <string name="project_comments_posted" formatted="false">¡Comentario fue publicado!</string>
   <string name="project_creator_by_creator" formatted="false">por %{creator_name}</string>
   <string name="project_creator_by_creator_html" formatted="false">de %{creator_name}</string>
-  <string name="project_creator_youre_a_backer" formatted="false"> • Tú eres un patrocinador</string>
+  <string name="project_creator_youre_a_backer" formatted="false">\u0020• Tú eres un patrocinador</string>
   <string name="project_disclaimer_goal_not_reached" formatted="false">Este proyecto será financiado únicamente si se contribuye por lo menos %{goal_currency} hasta %{deadline}.</string>
   <string name="project_disclaimer_goal_reached" formatted="false">Este proyecto será financiado el  %{deadline}.</string>
   <string name="project_friends_backing_title_friends" formatted="false">Amigos</string>
@@ -716,7 +721,7 @@ Si tienes un momento, ¿te importaría calificar tu experiencia?\n
 --------\n
 </string>
   <string name="support_email_button_ok" formatted="false">Ok</string>
-  <string name="support_email_chooser" formatted="false">Select email application:</string>
+  <string name="support_email_chooser" formatted="false">Escoge la app de correo:</string>
   <string name="support_email_noemail_message" formatted="false">Parece que no tienes una cuenta de correo electrónico en tu dispositivo. Por favor ponte en contacto con nosotros a través de app@kickstarter.com.</string>
   <string name="support_email_noemail_title" formatted="false">Atención al cliente</string>
   <string name="support_email_subject" formatted="false">Saludos al equipo de atención al cliente de Kickstarter</string>

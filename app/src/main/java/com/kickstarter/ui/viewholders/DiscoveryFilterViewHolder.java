@@ -1,6 +1,7 @@
 package com.kickstarter.ui.viewholders;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -8,9 +9,9 @@ import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.Font;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.utils.DiscoveryUtils;
-import com.kickstarter.libs.Font;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.DiscoveryFilterStyle;
 
@@ -20,6 +21,8 @@ import auto.parcel.AutoParcel;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
+
+import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
 public final class DiscoveryFilterViewHolder extends KSViewHolder {
   private final Delegate delegate;
@@ -50,11 +53,14 @@ public final class DiscoveryFilterViewHolder extends KSViewHolder {
     ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
   }
 
-  public void onBind(final @NonNull Object datum) {
-    final Filter filter = (Filter) datum;
-    params = filter.params();
-    style = filter.style();
+  @Override
+  public void bindData(final @Nullable Object data) throws Exception {
+    final Filter filter = requireNonNull((Filter) data);
+    params = requireNonNull(filter.params(), DiscoveryParams.class);
+    style = requireNonNull(filter.style(), DiscoveryFilterStyle.class);
+  }
 
+  public void onBind() {
     setCategoryLiveProjectCountTextView();
     setFilterTextView();
     setViewSpacing();
@@ -77,6 +83,7 @@ public final class DiscoveryFilterViewHolder extends KSViewHolder {
     } else {
       categoryLiveProjectCountTextView.setVisibility(View.GONE);
       categoryLiveProjectCountTextView.setText("");
+      categoryLiveProjectCountTextView.setContentDescription("");
     }
   }
 

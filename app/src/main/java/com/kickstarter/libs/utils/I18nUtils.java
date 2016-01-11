@@ -16,4 +16,12 @@ public final class I18nUtils {
     final String language = Locale.getDefault().getLanguage();
     return language.isEmpty() ? "en" : language;
   }
+
+  public static boolean isCountryGermany(final @NonNull String country) {
+    return Locale.GERMANY.getCountry().equals(country);
+  }
+
+  public static boolean isCountryUS(final @NonNull String country) {
+    return Locale.US.getCountry().equals(country);
+  }
 }

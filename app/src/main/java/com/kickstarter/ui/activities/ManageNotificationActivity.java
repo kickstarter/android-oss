@@ -10,7 +10,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.adapters.ManageNotificationsAdapter;
 import com.kickstarter.viewmodels.ManageNotificationsViewModel;
 
@@ -27,7 +27,7 @@ public final class ManageNotificationActivity extends BaseActivity<ManageNotific
 
   protected @BindString(R.string.general_error_something_wrong) String generalErrorString;
 
-  @Inject ApiClient client;
+  protected @Inject ApiClientType client;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {

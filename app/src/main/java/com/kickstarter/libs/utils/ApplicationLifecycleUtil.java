@@ -3,6 +3,7 @@ package com.kickstarter.libs.utils;
 import android.app.Activity;
 import android.app.Application;
 import android.content.ComponentCallbacks2;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,19 +13,25 @@ import com.facebook.appevents.AppEventsLogger;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentConfig;
 import com.kickstarter.libs.Koala;
+import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.ApiClientType;
+import com.kickstarter.services.apiresponses.ErrorEnvelope;
+import com.kickstarter.ui.activities.DiscoveryActivity;
 
 import javax.inject.Inject;
 
 public final class ApplicationLifecycleUtil implements Application.ActivityLifecycleCallbacks, ComponentCallbacks2 {
-  @Inject Koala koala;
-  @Inject ApiClient client;
-  @Inject CurrentConfig config;
+  protected @Inject Koala koala;
+  protected @Inject ApiClientType client;
+  protected @Inject CurrentConfig config;
+  protected @Inject Logout logout;
 
+  private final KSApplication application;
   private boolean isInBackground = true;
 
   public ApplicationLifecycleUtil(@NonNull final KSApplication application) {
+    this.application = application;
     application.component().inject(this);
   }
 
@@ -46,10 +53,25 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
 
       // Refresh the config file
       this.client.config()
+        .compose(Transformers.pipeApiErrorsTo(this::handleConfigApiError))
         .compose(Transformers.neverError())
         .subscribe(this.config::refresh);
 
       isInBackground = false;
+    }
+  }
+
+  /**
+   * Handles a config API error by logging the user out in the case of a 401. We will interpret
+   * 401's on the config request as meaning the user's current access token is no longer valid,
+   * as that endpoint should never 401 othewise.
+   */
+  private void handleConfigApiError(final @NonNull ErrorEnvelope error) {
+    if (error.httpCode() == 401) {
+      logout.execute();
+      final Intent intent = new Intent(this.application, DiscoveryActivity.class)
+        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+      this.application.startActivity(intent);
     }
   }
 

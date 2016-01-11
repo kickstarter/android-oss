@@ -6,17 +6,17 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.kickstarter.KSApplication;
-import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.StringUtils;
-import com.kickstarter.viewmodels.errors.SignupViewModelErrors;
-import com.kickstarter.viewmodels.inputs.SignupViewModelInputs;
-import com.kickstarter.viewmodels.outputs.SignupViewModelOutputs;
-import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.activities.SignupActivity;
+import com.kickstarter.viewmodels.errors.SignupViewModelErrors;
+import com.kickstarter.viewmodels.inputs.SignupViewModelInputs;
+import com.kickstarter.viewmodels.outputs.SignupViewModelOutputs;
 
 import javax.inject.Inject;
 
@@ -74,8 +74,8 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
       .map(ErrorEnvelope::errorMessage);
   }
 
-  @Inject ApiClient client;
-  @Inject CurrentUser currentUser;
+  protected @Inject ApiClientType client;
+  protected @Inject CurrentUser currentUser;
 
   public final SignupViewModelInputs inputs = this;
   public final SignupViewModelOutputs outputs = this;

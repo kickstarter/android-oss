@@ -12,13 +12,13 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.StringUtils;
-import com.kickstarter.viewmodels.errors.LoginViewModelErrors;
-import com.kickstarter.viewmodels.inputs.LoginViewModelInputs;
-import com.kickstarter.viewmodels.outputs.LoginViewModelOutputs;
-import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.activities.LoginActivity;
+import com.kickstarter.viewmodels.errors.LoginViewModelErrors;
+import com.kickstarter.viewmodels.inputs.LoginViewModelInputs;
+import com.kickstarter.viewmodels.outputs.LoginViewModelOutputs;
 
 import javax.inject.Inject;
 
@@ -57,8 +57,8 @@ public final class LoginViewModel extends ViewModel<LoginActivity> implements Lo
       .map(ErrorEnvelope::errorMessage);
   }
 
-  @Inject ApiClient client;
-  @Inject CurrentUser currentUser;
+  protected @Inject ApiClientType client;
+  protected @Inject CurrentUser currentUser;
 
   public final LoginViewModelInputs inputs = this;
   public final LoginViewModelOutputs outputs = this;

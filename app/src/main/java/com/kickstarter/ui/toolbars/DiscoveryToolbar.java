@@ -5,25 +5,23 @@ import android.content.Intent;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.PopupMenu;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
-import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.LoginToutActivity;
-import com.kickstarter.ui.activities.ProfileActivity;
 import com.kickstarter.ui.activities.SearchActivity;
-import com.kickstarter.ui.activities.SettingsActivity;
+import com.kickstarter.ui.views.LoggedInMenu;
 
 import javax.inject.Inject;
 
@@ -75,7 +73,7 @@ public final class DiscoveryToolbar extends KSToolbar {
   @OnClick(R.id.filter_button)
   public void filterButtonClick(@NonNull final View view) {
     final DiscoveryActivity activity = (DiscoveryActivity) getContext();
-    activity.viewModel().filterButtonClick();
+    activity.viewModel().inputs.filterButtonClicked();
   }
 
   public void loadParams(@NonNull final DiscoveryParams params) {
@@ -103,47 +101,23 @@ public final class DiscoveryToolbar extends KSToolbar {
     context.startActivity(new Intent(context, SearchActivity.class));
   }
 
-  protected void showLoggedInMenu(@NonNull final User user) {
+  protected void configureForLoggedIn(final @NonNull User user) {
     loginButton.setVisibility(GONE);
     currentUserButton.setVisibility(VISIBLE);
     currentUserButton.setOnClickListener(v -> {
-      final BaseActivity activity = (BaseActivity) v.getContext();
-
-      final PopupMenu popup = new PopupMenu(activity, currentUserButton);
-      popup.getMenuInflater().inflate(R.menu.current_user_menu, popup.getMenu());
-
-      popup.setOnMenuItemClickListener(item -> {
-        switch (item.getItemId()) {
-          case R.id.profile:
-            final Intent profileIntent = new Intent(activity, ProfileActivity.class);
-            activity.startActivity(profileIntent);
-            break;
-          case R.id.settings:
-            final Intent settingsIntent = new Intent(activity, SettingsActivity.class);
-            activity.startActivity(settingsIntent);
-            break;
-          case R.id.logout:
-            logout.execute();
-            final Intent intent = new Intent(activity, DiscoveryActivity.class)
-              .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            activity.startActivity(intent);
-            break;
-        }
-
-        return true;
-      });
-
-      popup.show();
+      final LoggedInMenu menu = new LoggedInMenu(v.getContext(), user, currentUserButton);
+      menu.show();
     });
   }
 
-  protected void showLoggedOutMenu() {
+  protected void configureForLoggedOut() {
     currentUserButton.setVisibility(GONE);
     loginButton.setVisibility(VISIBLE);
     loginButton.setOnClickListener(v -> {
-      final Intent intent = new Intent(getContext(), LoginToutActivity.class)
-        .putExtra(getContext().getResources().getString(R.string.intent_login_type), LoginToutActivity.REASON_LOGIN_TAB);
-      getContext().startActivity(intent);
+      final Context context = getContext();
+      final Intent intent = new Intent(context, LoginToutActivity.class)
+        .putExtra(IntentKey.LOGIN_TYPE, LoginToutActivity.REASON_LOGIN_TAB);
+      context.startActivity(intent);
     });
   }
 
@@ -155,17 +129,13 @@ public final class DiscoveryToolbar extends KSToolbar {
       return;
     }
 
-    if (currentUser.getUser() == null) {
-      showLoggedOutMenu();
-    }
+    addSubscription(currentUser.loggedOutUser()
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(__ -> this.configureForLoggedOut())
+    );
 
     addSubscription(currentUser.loggedInUser()
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::showLoggedInMenu));
-  }
-
-  @Override
-  protected void onDetachedFromWindow() {
-    super.onDetachedFromWindow();
+      .subscribe(this::configureForLoggedIn));
   }
 }

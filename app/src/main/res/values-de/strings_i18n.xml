@@ -293,7 +293,7 @@
   <string name="discovery_backing" formatted="false">Unterstützte Projekte</string>
   <string name="discovery_baseball_card_accessibility_category_label" formatted="false">Kategorie</string>
   <string name="discovery_baseball_card_accessibility_location_label" formatted="false">Ort</string>
-  <string name="discovery_baseball_card_blurb_read_more" formatted="false">%{blurb}%{space}Mehr%{space}lesen%{space}</string>
+  <string name="discovery_baseball_card_blurb_read_more" formatted="false">%{blurb}%{space}&lt;u>Mehr%{space}lesen&lt;/u>%{space}</string>
   <string name="discovery_baseball_card_button_share" formatted="false">Teilen</string>
   <string name="discovery_baseball_card_deadline_units_days" formatted="false">Tage</string>
   <string name="discovery_baseball_card_deadline_units_hours" formatted="false">Std</string>
@@ -313,6 +313,7 @@
   <string name="discovery_baseball_card_stats_convert_from_pledged_of_goal" formatted="false">Umgerechneter Betrag: %{pledged} von %{goal} (Fianzierungsziel).</string>
   <string name="discovery_baseball_card_stats_funded" formatted="false">funded</string>
   <string name="discovery_baseball_card_stats_pledged_of_goal" formatted="false">von %{goal}</string>
+  <string name="discovery_baseball_card_stats_pledged_of_goal_short" formatted="false">of %{goal}</string>
   <string name="discovery_baseball_card_status_banner_canceled" formatted="false">Finanzierung abgebrochen</string>
   <string name="discovery_baseball_card_status_banner_canceled_date" formatted="false">Finanzierung abgebrochen am %{date}</string>
   <string name="discovery_baseball_card_status_banner_funding_unsuccessful_date" formatted="false">Finanzierung fehlgeschlagen %{date}</string>
@@ -353,6 +354,7 @@
   <string name="discovery_nearby" formatted="false">Projekte in deiner Nähe</string>
   <string name="discovery_onboarding_buttons_learn_more" formatted="false">Weitere Info</string>
   <string name="discovery_onboarding_buttons_login" formatted="false">Anmelden</string>
+  <string name="discovery_onboarding_buttons_signup_or_login" formatted="false">Sign up or Log in</string>
   <string name="discovery_onboarding_learn_login_conjunction_or" formatted="false">oder</string>
   <string name="discovery_onboarding_title_bring_creative_projects_to_life" formatted="false">Du kannst kreative Projekte ins Leben rufen!</string>
   <string name="discovery_popular" formatted="false">Beliebte Projekte</string>
@@ -373,7 +375,7 @@
   <string name="facebook_confirmation_detail" formatted="false">Bevor wir dein neues Konto anlegen, überprüfe bitte, dass wir die richtige E-Mail-Adresse von deinem Facebook-Konto erhalten haben:</string>
   <string name="facebook_confirmation_navbar_title" formatted="false">Registrieren</string>
   <string name="facebook_confirmation_newsletter_bold" formatted="false">Entdecke neue Projekte</string>
-  <string name="facebook_confirmation_newsletter_normal" formatted="false"> in unserem wöchentlichen Newsletter.</string>
+  <string name="facebook_confirmation_newsletter_normal" formatted="false">\u0020in unserem wöchentlichen Newsletter.</string>
   <string name="facebook_confirmation_title" formatted="false">Willkommen bei Kickstarter!</string>
   <string name="facebook_confirmation_wrong_account_button" formatted="false">Melde dich hier mit deiner E-Mail-Adresse an.</string>
   <string name="facebook_confirmation_wrong_account_title" formatted="false">Du hast bereits ein Kickstarter-Konto?</string>
@@ -535,6 +537,8 @@ Für gewöhnlich kann das Problem behoben werden, indem du in den iOS Einstellun
   <string name="profile_settings_navbar_title" formatted="false">Einstellungen</string>
   <string name="profile_settings_navbar_title_notifications" formatted="false">Benachrichtigungen</string>
   <string name="profile_settings_newsletter_happening" formatted="false">Happening Now</string>
+  <string name="profile_settings_newsletter_opt_in_message" formatted="false">We\'ve sent a confirmation email to the address associated with you account! Please check your email in order to confirm that you\'d like to subscribe to %{newsletter}.</string>
+  <string name="profile_settings_newsletter_opt_in_title" formatted="false">One final step!</string>
   <string name="profile_settings_newsletter_promo" formatted="false">Kickstarter Neuigkeiten und Events</string>
   <string name="profile_settings_newsletter_title" formatted="false">Newsletter</string>
   <string name="profile_settings_newsletter_weekly" formatted="false">Unsere Lieblingsprojekte</string>
@@ -545,6 +549,7 @@ Wir würden uns sehr darüber freuen!</string>
   <string name="profile_settings_rating_option_rate_now" formatted="false">Jetzt bewerten</string>
   <string name="profile_settings_rating_option_remind_later" formatted="false">Später</string>
   <string name="profile_settings_rating_rate_us" formatted="false">Bewerte uns im App Store!</string>
+  <string name="profile_settings_rating_rate_us_play_store" formatted="false">Rate us in the Play Store!</string>
   <string name="profile_settings_rating_title" formatted="false">Wir sind ganz Ohr!</string>
   <string name="profile_settings_social_find_friends" formatted="false">Freunde finden</string>
   <string name="profile_settings_social_followers" formatted="false">Neue Follower</string>
@@ -596,7 +601,7 @@ Wir würden uns sehr darüber freuen!</string>
   <string name="project_comments_posted" formatted="false">Comment posted!</string>
   <string name="project_creator_by_creator" formatted="false">von %{creator_name}</string>
   <string name="project_creator_by_creator_html" formatted="false">von %{creator_name}</string>
-  <string name="project_creator_youre_a_backer" formatted="false"> • Du unterstützt das Projekt</string>
+  <string name="project_creator_youre_a_backer" formatted="false">\u0020• Du unterstützt das Projekt</string>
   <string name="project_disclaimer_goal_not_reached" formatted="false">Dieses Projekt wird nur finanziert, wenn bis %{deadline} mindestens %{goal_currency} zusammenkommen.</string>
   <string name="project_disclaimer_goal_reached" formatted="false">Dieses Projekt wird am %{deadline} finanziert.</string>
   <string name="project_friends_backing_title_friends" formatted="false">Freunde</string>

@@ -1,13 +1,8 @@
 package com.kickstarter.libs.rx.transformers;
 
-import com.kickstarter.BuildConfig;
-import com.kickstarter.KSRobolectricGradleTestRunner;
 import com.kickstarter.KSRobolectricTestCase;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.annotation.Config;
-import org.robolectric.shadows.multidex.ShadowMultiDex;
 
 import rx.Observable;
 import rx.observers.TestSubscriber;

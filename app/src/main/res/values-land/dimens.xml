@@ -11,4 +11,10 @@
   <dimen name="star_fab_margin_x">@dimen/grid_5_half</dimen>
   <dimen name="star_fab_margin_y">@dimen/grid_5_half</dimen>
   <dimen name="star_fab_pre21_margin_y">@dimen/grid_1_half</dimen>
+
+  <!-- Logged in menu -->
+  <dimen name="logged_in_menu_vertical_offset">-38dp</dimen>
+
+  <!-- Popup menus -->
+  <dimen name="popup_menu_vertical_offset">-38dp</dimen>
 </resources>

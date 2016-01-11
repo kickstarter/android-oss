@@ -5,10 +5,10 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.transformations.CircleTransformation;
+import com.kickstarter.models.User;
 import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
@@ -17,7 +17,6 @@ import butterknife.ButterKnife;
 
 public final class FriendFollowViewHolder extends ActivityListViewHolder {
   protected @Bind(R.id.avatar) ImageView avatarImageView;
-  protected @Bind(R.id.follow_button) View followButton;
   protected @Bind(R.id.title) TextView titleTextView;
   
   protected @BindString(R.string.activity_friend_follow_is_following_you) String isFollowingYouString;
@@ -29,26 +28,22 @@ public final class FriendFollowViewHolder extends ActivityListViewHolder {
   }
 
   @Override
-  public void onBind(final @NonNull Object datum) {
-    super.onBind(datum);
-
+  public void onBind() {
     final Context context = view.getContext();
 
+    final User friend = activity.user();
+    if (friend == null) { return; }
+
     Picasso.with(context)
-      .load(activity.user().avatar().small())
+      .load(friend.avatar().small())
       .transform(new CircleTransformation())
       .into(avatarImageView);
 
     // TODO: bold username
     titleTextView.setText(
-      new StringBuilder(activity.user().name())
+      new StringBuilder(friend.name())
         .append(" ")
         .append(isFollowingYouString)
     );
-  }
-
-  @Override
-  public void onClick(final @NonNull View view) {
-    Toast.makeText(view.getContext(), notImplementedYetString, Toast.LENGTH_LONG).show();
   }
 }

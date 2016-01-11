@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-  android:color="@color/off_white">
   <item>
     <shape>
       <corners android:radius="@dimen/button_corner_radius"/>

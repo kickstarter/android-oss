@@ -2,13 +2,11 @@ package com.kickstarter.ui.adapters;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.kickstarter.R;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Empty;
-import com.kickstarter.models.User;
 import com.kickstarter.ui.viewholders.EmptyActivityFeedViewHolder;
 import com.kickstarter.ui.viewholders.EmptyViewHolder;
 import com.kickstarter.ui.viewholders.FriendBackingViewHolder;
@@ -41,9 +39,9 @@ public final class ActivityFeedAdapter extends KSAdapter {
     notifyDataSetChanged();
   }
 
-  public void takeLoggedOutEmptyState(final @Nullable User user) {
+  public void takeLoggedOutEmptyState() {
     data().clear();
-    data().add(Collections.singletonList(user));
+    data().add(Collections.singletonList(null));
     notifyDataSetChanged();
   }
 
@@ -74,7 +72,7 @@ public final class ActivityFeedAdapter extends KSAdapter {
   }
 
   @Override
-  protected KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
+  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     switch (layout) {
       case R.layout.activity_friend_backing_view:
         return new FriendBackingViewHolder(view, delegate);

@@ -313,7 +313,7 @@
   <string name="discovery_baseball_card_stats_convert_from_pledged_of_goal" formatted="false">Conversión: %{pledged} de la meta de %{goal}.</string>
   <string name="discovery_baseball_card_stats_funded" formatted="false">financiado</string>
   <string name="discovery_baseball_card_stats_pledged_of_goal" formatted="false">de %{goal}</string>
-  <string name="discovery_baseball_card_stats_pledged_of_goal_short" formatted="false">of %{goal}</string>
+  <string name="discovery_baseball_card_stats_pledged_of_goal_short" formatted="false">de %{goal}</string>
   <string name="discovery_baseball_card_status_banner_canceled" formatted="false">Financiamiento cancelado</string>
   <string name="discovery_baseball_card_status_banner_canceled_date" formatted="false">Financiamiento cancelado el %{date}</string>
   <string name="discovery_baseball_card_status_banner_funding_unsuccessful_date" formatted="false">Financiamiento fallido %{date}</string>

@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.transformations.CircleTransformation;
@@ -44,10 +43,5 @@ public final class FriendFollowViewHolder extends ActivityListViewHolder {
         .append(" ")
         .append(isFollowingYouString)
     );
-  }
-
-  @Override
-  public void onClick(final @NonNull View view) {
-    Toast.makeText(view.getContext(), notImplementedYetString, Toast.LENGTH_LONG).show();
   }
 }

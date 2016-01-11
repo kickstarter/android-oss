@@ -1,5 +1,8 @@
 package com.kickstarter.viewmodels.outputs;
 
+import android.util.Pair;
+
+import com.kickstarter.libs.RefTag;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
 
@@ -12,5 +15,5 @@ public interface DiscoveryViewModelOutputs {
   Observable<DiscoveryParams> params();
   Observable<Boolean> shouldShowOnboarding();
   Observable<DiscoveryParams> showFilters();
-  Observable<Project> showProject();
+  Observable<Pair<Project, RefTag>> showProject();
 }

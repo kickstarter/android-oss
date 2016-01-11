@@ -8,6 +8,8 @@ import android.support.annotation.StringDef;
 
 import com.kickstarter.libs.qualifiers.AutoGson;
 import com.kickstarter.libs.utils.DateTimeUtils;
+import com.kickstarter.libs.utils.IntegerUtils;
+import com.kickstarter.libs.utils.NumberUtils;
 
 import org.joda.time.DateTime;
 
@@ -152,6 +154,8 @@ public abstract class Project implements Parcelable {
       return new AutoParcel_Project_Urls.Builder();
     }
 
+    public abstract Builder toBuilder();
+
     @AutoParcel
     @AutoGson
     public abstract static class Web implements Parcelable {
@@ -172,6 +176,8 @@ public abstract class Project implements Parcelable {
       public static Builder builder() {
         return new AutoParcel_Project_Urls_Web.Builder();
       }
+
+      public abstract Builder toBuilder();
 
       public @NonNull String creatorBio() {
         return Uri.parse(project())
@@ -206,11 +212,13 @@ public abstract class Project implements Parcelable {
       public static Builder builder() {
         return new AutoParcel_Project_Urls_Api.Builder();
       }
+
+      public abstract Builder toBuilder();
     }
   }
 
   public boolean hasComments() {
-    return this.commentsCount() != null && this.commentsCount() != 0;
+    return IntegerUtils.isNonZero(this.commentsCount());
   }
 
   public boolean hasRewards() {

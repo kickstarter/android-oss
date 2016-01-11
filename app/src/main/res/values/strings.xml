@@ -1,9 +1,4 @@
 <resources>
-  <!-- Deprecated strings, these should to be replaced in favor of strings that have been translated.
-    Prefix keys name with ___, that way when working with strings elsewhere it is immediately obvious when a string
-    is deprecated based on its name.
-
-    There may be a few strings here that we *don't* want to translate, we'll figure out a nice space for them later. -->
   <string name="A_newer_build_is_available">A newer build is available. Download upgrade?</string>
   <string name="Build">Build</string>
   <string name="Build_date">Build Date</string>

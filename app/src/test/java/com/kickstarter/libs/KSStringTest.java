@@ -1,7 +1,5 @@
 package com.kickstarter.libs;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.R;
 

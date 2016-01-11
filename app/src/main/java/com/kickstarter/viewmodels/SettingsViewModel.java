@@ -175,7 +175,7 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
   }
 
   private boolean requiresDoubleOptIn(final @NonNull User user, final boolean checked) {
-    return I18nUtils.isCountryGermany(user.location()) && checked;
+    return I18nUtils.isCountryGermany(user.location().country()) && checked;
   }
 
   private void success(final @NonNull User user) {

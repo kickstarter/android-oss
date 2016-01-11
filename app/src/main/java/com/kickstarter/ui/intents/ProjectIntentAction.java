@@ -9,7 +9,6 @@ import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
-import com.kickstarter.services.KSUri;
 import com.kickstarter.ui.IntentKey;
 import com.trello.rxlifecycle.ActivityEvent;
 import com.trello.rxlifecycle.RxLifecycle;
@@ -29,8 +28,7 @@ public class ProjectIntentAction extends IntentAction {
     final Observable<Project> projectFromExtra = intent
       .compose(RxLifecycle.bindActivity(lifecycle))
       .map(this::parceledProject)
-      .filter(ObjectUtils::isNotNull)
-      .share();
+      .filter(ObjectUtils::isNotNull);
 
     final Observable<String> paramFromExtra = intent
       .compose(RxLifecycle.bindActivity(lifecycle))

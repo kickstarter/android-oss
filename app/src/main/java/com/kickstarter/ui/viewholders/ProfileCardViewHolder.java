@@ -9,6 +9,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.models.Project;
 import com.squareup.picasso.Picasso;
 
@@ -53,7 +54,7 @@ public class ProfileCardViewHolder extends KSViewHolder {
       .placeholder(grayGradientDrawable)
       .into(profileCardImageView);
     profileCardNameTextView.setText(project.name());
-    percentageFundedProgressBar.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
+    percentageFundedProgressBar.setProgress(ProgressBarUtils.progress(project.percentageFunded()));
 
     setProjectStateView();
   }

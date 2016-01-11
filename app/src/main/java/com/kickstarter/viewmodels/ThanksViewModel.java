@@ -119,25 +119,28 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .perPage(3)
       .build();
 
+    final Category category = project.category();
     final DiscoveryParams staffPickParams = DiscoveryParams.builder()
-      .category(project.category().root())
+      .category(category == null ? null : category.root())
       .backed(-1)
       .staffPicks(true)
       .perPage(3)
       .build();
 
-    // shuffle projects since recommendations are updated only once a day
     final Observable<Project> recommendedProjects = apiClient.fetchProjects(recommendedParams)
+      .retry(2)
       .map(DiscoverEnvelope::projects)
       .map(ListUtils::shuffle)
       .flatMap(Observable::from)
       .take(3);
 
     final Observable<Project> similarToProjects = apiClient.fetchProjects(similarToParams)
+      .retry(2)
       .map(DiscoverEnvelope::projects)
       .flatMap(Observable::from);
 
     final Observable<Project> staffPickProjects = apiClient.fetchProjects(staffPickParams)
+      .retry(2)
       .map(DiscoverEnvelope::projects)
       .flatMap(Observable::from);
 

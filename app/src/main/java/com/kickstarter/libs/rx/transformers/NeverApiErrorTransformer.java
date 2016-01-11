@@ -6,17 +6,17 @@ import android.support.annotation.Nullable;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 
 import rx.Observable;
-import rx.subjects.PublishSubject;
+import rx.functions.Action1;
 
 final class NeverApiErrorTransformer<T> implements Observable.Transformer<T, T> {
-  @Nullable private final PublishSubject<ErrorEnvelope> errors;
+  private final @Nullable Action1<ErrorEnvelope> errorAction;
 
   protected NeverApiErrorTransformer() {
-    this.errors = null;
+    this.errorAction = null;
   }
 
-  protected NeverApiErrorTransformer(@Nullable final PublishSubject<ErrorEnvelope> errors) {
-    this.errors = errors;
+  protected NeverApiErrorTransformer(@Nullable final Action1<ErrorEnvelope> errorAction) {
+    this.errorAction = errorAction;
   }
 
   @Override
@@ -24,8 +24,8 @@ final class NeverApiErrorTransformer<T> implements Observable.Transformer<T, T> 
     return source
       .doOnError(e -> {
         final ErrorEnvelope env = ErrorEnvelope.fromThrowable(e);
-        if (env != null && errors != null) {
-          errors.onNext(env);
+        if (env != null && errorAction != null) {
+          errorAction.call(env);
         }
       })
       .onErrorResumeNext(e -> {

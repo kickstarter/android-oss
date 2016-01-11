@@ -4,7 +4,6 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
 import com.kickstarter.libs.qualifiers.AutoGson;
-import com.kickstarter.libs.utils.NumberUtils;
 
 import org.joda.time.DateTime;
 
@@ -54,9 +53,4 @@ public abstract class Backing implements Parcelable {
   }
 
   public abstract Builder toBuilder();
-
-
-  public String formattedSequence() {
-    return NumberUtils.numberWithDelimiter((int) this.sequence());
-  }
 }

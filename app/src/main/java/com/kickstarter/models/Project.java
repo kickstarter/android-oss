@@ -129,18 +129,6 @@ public abstract class Project implements Parcelable {
     return urls().web().description();
   }
 
-  public @NonNull String formattedBackersCount() {
-    return NumberUtils.numberWithDelimiter(backersCount());
-  }
-
-  public @Nullable String formattedCommentsCount() {
-    return NumberUtils.numberWithDelimiter(commentsCount());
-  }
-
-  public @Nullable String formattedUpdatesCount() {
-    return NumberUtils.numberWithDelimiter(updatesCount());
-  }
-
   public @NonNull String updatesUrl() {
     return urls().web().updates();
   }
@@ -305,7 +293,7 @@ public abstract class Project implements Parcelable {
     return STATE_SUCCESSFUL.equals(state());
   }
 
-  public @NonNull Float percentageFunded() {
+  public float percentageFunded() {
     if (goal() > 0.0f) {
       return (pledged() / goal()) * 100.0f;
     }
@@ -314,7 +302,8 @@ public abstract class Project implements Parcelable {
   }
 
   public @NonNull String param() {
-    return slug() != null ? slug() : String.valueOf(id());
+    final String slug = slug();
+    return slug != null ? slug : String.valueOf(id());
   }
 
   public @NonNull String secureWebProjectUrl() {

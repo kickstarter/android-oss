@@ -230,10 +230,8 @@ public final class ApiPaginator<Data, Envelope, Params> {
 
   private void keepMorePath(final @NonNull Envelope envelope) {
     try {
-      if (envelopeToMoreUrl != null) {
-        final URL url = new URL(envelopeToMoreUrl.call(envelope));
-        _morePath.onNext(pathAndQueryFromURL(url));
-      }
+      final URL url = new URL(envelopeToMoreUrl.call(envelope));
+      _morePath.onNext(pathAndQueryFromURL(url));
     } catch (MalformedURLException e) {}
   }
 

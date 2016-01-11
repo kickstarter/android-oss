@@ -10,6 +10,7 @@ import com.google.android.gms.iid.InstanceID;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.services.ApiClientType;
 
@@ -62,9 +63,10 @@ public class RegisterService extends IntentService {
     currentUser.observable()
       .take(1)
       .filter(ObjectUtils::isNotNull)
-      .toBlocking()
       .subscribe(__ ->
-        apiClient.registerPushToken(token).first().toBlocking().single()
+        apiClient.registerPushToken(token)
+          .compose(Transformers.neverError())
+          .first().toBlocking().single()
       );
   }
 

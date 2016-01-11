@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
@@ -76,6 +77,11 @@ public class DiscoveryActivityViewHolder extends KSViewHolder {
       Picasso.with(context)
         .load(activity.project().photo().little())
         .into(activityImageView);
+
+      LinearLayout.LayoutParams layoutParams =
+        new LinearLayout.LayoutParams(context.getResources().getDimensionPixelSize(R.dimen.discovery_activity_photo_width),
+          context.getResources().getDimensionPixelSize(R.dimen.discovery_activity_photo_height));
+      activityImageView.setLayoutParams(layoutParams);
 
       activityTitleTextView.setText(activity.project().name());
 

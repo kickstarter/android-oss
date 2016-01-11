@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.KSApplication;
+import com.kickstarter.libs.Config;
+import com.kickstarter.libs.CurrentConfig;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
@@ -27,9 +29,11 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public final class ProjectViewModel extends ViewModel<ProjectActivity> implements ProjectAdapter.Delegate, ProjectViewModelInputs, ProjectViewModelOutputs {
+public final class ProjectViewModel extends ViewModel<ProjectActivity> implements ProjectAdapter.Delegate,
+  ProjectViewModelInputs, ProjectViewModelOutputs {
   protected @Inject ApiClientType client;
   protected @Inject CurrentUser currentUser;
+  protected @Inject CurrentConfig currentConfig;
 
   // INPUTS
   private final PublishSubject<Project> initializer = PublishSubject.create();
@@ -88,8 +92,8 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
 
   // OUTPUTS
   final BehaviorSubject<Project> project = BehaviorSubject.create();
-  public Observable<Project> project() {
-    return this.project;
+  public final Observable<Pair<Project, Config>> projectAndConfig() {
+    return project.compose(Transformers.combineLatestPair(currentConfig.observable()));
   }
   public Observable<Project> showShareSheet() {
     return this.project.compose(Transformers.takeWhen(this.shareClicked));
@@ -168,11 +172,7 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
         .subscribe(__ -> this.showStarredPrompt.onNext(null))
     );
 
-    addSubscription(
-      loggedOutUserOnStarClick.subscribe(__ ->
-        this.showLoginTout.onNext(null)
-      )
-    );
+    addSubscription(loggedOutUserOnStarClick.subscribe(__ -> this.showLoginTout.onNext(null)));
 
     addSubscription(shareClicked.subscribe(__ -> koala.trackShowProjectShareSheet()));
 
@@ -208,11 +208,11 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
 
   public Observable<Project> starProject(final @NonNull Project project) {
     return client.starProject(project)
-      .onErrorResumeNext(Observable.empty());
+      .compose(Transformers.neverError());
   }
 
   public Observable<Project> toggleProjectStar(final @NonNull Project project) {
     return client.toggleProjectStar(project)
-      .onErrorResumeNext(Observable.empty());
+      .compose(Transformers.neverError());
   }
 }

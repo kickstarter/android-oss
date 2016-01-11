@@ -63,7 +63,7 @@ public final class ProjectUtils {
    *
    * @return the Integer time remaining.
    */
-  public static @NonNull Integer deadlineCountdownValue(final @NonNull Project project) {
+  public static int deadlineCountdownValue(final @NonNull Project project) {
     final Long seconds = timeInSecondsUntilDeadline(project);
     if (seconds <= 120.0) {
       return seconds.intValue(); // seconds
@@ -84,8 +84,11 @@ public final class ProjectUtils {
       new Duration(new DateTime(), project.deadline()).getStandardSeconds());
   }
 
-  public static boolean userIsCreator(@NonNull final Project project, @NonNull final User user) {
+  public static boolean userIsCreator(final @NonNull Project project, final @NonNull User user) {
     return project.creator().id() == user.id();
   }
-}
 
+  public static boolean isUSUserViewingNonUSProject(final @NonNull String userCountry, final @NonNull String projectCountry) {
+    return I18nUtils.isCountryUS(userCountry) && !I18nUtils.isCountryUS(projectCountry);
+  }
+}

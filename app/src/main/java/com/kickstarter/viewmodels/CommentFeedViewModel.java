@@ -85,7 +85,7 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
 
     final Observable<Project> project = initialProject
       .compose(Transformers.takeWhen(loginSuccess))
-      .flatMap(client::fetchProject)
+      .flatMap(p -> client.fetchProject(p).compose(Transformers.neverError()))
       .mergeWith(initialProject)
       .share();
 

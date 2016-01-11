@@ -72,7 +72,7 @@ public final class ActivityFeedAdapter extends KSAdapter {
   }
 
   @Override
-  protected KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
+  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     switch (layout) {
       case R.layout.activity_friend_backing_view:
         return new FriendBackingViewHolder(view, delegate);

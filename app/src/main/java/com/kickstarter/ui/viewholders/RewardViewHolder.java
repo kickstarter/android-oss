@@ -2,18 +2,21 @@ package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Pair;
 import android.view.View;
 import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
-import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.KSCurrency;
+import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.utils.DateTimeUtils;
+import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -34,9 +37,11 @@ public final class RewardViewHolder extends KSViewHolder {
   protected @Bind(R.id.white_overlay) View whiteOverlayView;
   protected @Bind(R.id.shipping_destination) TextView shippingDestinationTextView;
   protected @Bind(R.id.shipping_summary) TextView shippingSummaryTextView;
+  protected @Bind(R.id.usd_conversion_text_view) TextView usdConversionTextView;
 
   protected @BindString(R.string.rewards_info_limited_rewards_remaining_left_of_reward_limit) String limitedRewardsRemainingString;
   protected @BindString(R.string.rewards_title_pledge_reward_currency_or_more) String pledgeRewardCurrencyOrMoreString;
+  protected @BindString(R.string.rewards_title_about_amount_usd) String usdConversionString;
 
   @Inject KSCurrency ksCurrency;
   @Inject KSString ksString;
@@ -45,6 +50,7 @@ public final class RewardViewHolder extends KSViewHolder {
   private final Delegate delegate;
   private Project project;
   private Reward reward;
+  private String configCountry;
 
   public interface Delegate {
     void rewardViewHolderClicked(RewardViewHolder viewHolder, Reward reward);
@@ -60,9 +66,10 @@ public final class RewardViewHolder extends KSViewHolder {
   }
 
   public void onBind(@NonNull final Object datum) {
-    final Pair<Project, Reward> projectAndReward = (Pair<Project, Reward>) datum;
-    project = projectAndReward.first;
-    reward = projectAndReward.second;
+    final List<Object> projectRewardUser = (List<Object>) datum;
+    project = (Project) projectRewardUser.get(0);
+    reward = (Reward) projectRewardUser.get(1);
+    configCountry = (String) projectRewardUser.get(2);
 
     minimumTextView.setText(ksString.format(
       pledgeRewardCurrencyOrMoreString,
@@ -73,14 +80,10 @@ public final class RewardViewHolder extends KSViewHolder {
     final Integer backersCount = reward.backersCount();
     final String backersCountText = (backersCount != null) ?
       ksString.format("rewards_info_backer_count_backers", backersCount,
-        "backer_count", Integer.toString(backersCount)) :
+        "backer_count", NumberUtils.format(backersCount)) :
       "";
     backersCountTextView.setText(backersCountText);
     descriptionTextView.setText(reward.description());
-
-    if (reward.hasEstimatedDelivery()) {
-      estimatedDeliveryTextView.setText(DateTimeUtils.estimatedDeliveryOn(reward.estimatedDeliveryOn()));
-    }
 
     toggleAllGoneRewardView();
     toggleClickableReward();
@@ -88,6 +91,7 @@ public final class RewardViewHolder extends KSViewHolder {
     toggleLimitedRewardView();
     toggleSelectedRewardView();
     toggleShippingDestinationView();
+    toggleUsdConversionView();
   }
 
   public void toggleAllGoneRewardView() {
@@ -97,6 +101,20 @@ public final class RewardViewHolder extends KSViewHolder {
     } else {
       allGoneTextView.setVisibility(View.GONE);
       whiteOverlayView.setVisibility(View.INVISIBLE);
+    }
+  }
+
+  public void toggleClickableReward() {
+    if (project.isBacking()) {
+      view.setClickable(false);
+    }
+    else if (!project.isLive()) {
+      view.setClickable(false);
+    }
+    else if (reward.isAllGone()) {
+      view.setClickable(false);
+    } else {
+      view.setClickable(true);
     }
   }
 
@@ -116,10 +134,12 @@ public final class RewardViewHolder extends KSViewHolder {
   public void toggleLimitedRewardView() {
     if (reward.isLimited()) {
       limitedTextView.setVisibility(View.VISIBLE);
-      limitedTextView.setText(ksString.format(limitedRewardsRemainingString,
-        "rewards_remaining", ObjectUtils.toString(reward.remaining()),
-        "reward_limit", ObjectUtils.toString(reward.limit()))
-      );
+      limitedTextView.setText(ksString.format(
+        limitedRewardsRemainingString,
+        "rewards_remaining",
+        ObjectUtils.toString(reward.remaining()),
+        "reward_limit", ObjectUtils.toString(reward.limit())
+      ));
     } else {
       limitedTextView.setVisibility(View.GONE);
     }
@@ -146,18 +166,16 @@ public final class RewardViewHolder extends KSViewHolder {
     }
   }
 
-  public void toggleClickableReward() {
-    if (project.isBacking()) {
-      view.setClickable(false);
-    }
-    else if (!project.isLive()) {
-      view.setClickable(false);
-    }
-    else if (reward.isAllGone()) {
-      view.setClickable(false);
-    }
-    else {
-      view.setClickable(true);
+  public void toggleUsdConversionView() {
+    if (ProjectUtils.isUSUserViewingNonUSProject(configCountry, project.country())) {
+      usdConversionTextView.setVisibility(View.VISIBLE);
+      usdConversionTextView.setText(ksString.format(
+          usdConversionString,
+          "reward_amount",
+          ksCurrency.format(reward.minimum(), project, true, true))
+      );
+    } else {
+      usdConversionTextView.setVisibility(View.GONE);
     }
   }
 

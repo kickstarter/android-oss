@@ -75,7 +75,7 @@ public final class DiscoveryFilterAdapter extends KSAdapter {
     return R.layout.discovery_filter_view;
   }
 
-  protected KSViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
+  protected @NonNull KSViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
     if (layout == R.layout.discovery_filter_divider_view) {
       return new DiscoveryFilterDividerViewHolder(view);
     } else if (layout == R.layout.grid_2_height_view) {
@@ -143,7 +143,7 @@ public final class DiscoveryFilterAdapter extends KSAdapter {
     TreeMap<String, ArrayList<DiscoveryFilterViewHolder.Filter>> groupedFilters = filters.reduce(new TreeMap<String, ArrayList<DiscoveryFilterViewHolder.Filter>>(), (hash, filter) -> {
       final String key = filter.params().category().root().name();
       if (!hash.containsKey(key)) {
-        hash.put(key, new ArrayList<DiscoveryFilterViewHolder.Filter>());
+        hash.put(key, new ArrayList<>());
       }
       hash.get(key).add(filter);
       return hash;

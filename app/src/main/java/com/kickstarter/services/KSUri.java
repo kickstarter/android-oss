@@ -3,6 +3,7 @@ package com.kickstarter.services;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class KSUri {
@@ -16,6 +17,11 @@ public final class KSUri {
 
   public static boolean isDiscoverCategoriesPath(@NonNull final String path) {
     return DISCOVER_CATEGORIES_PATTERN.matcher(path).matches();
+  }
+
+  public static boolean isDiscoverScopePath(@NonNull final String path, @NonNull final String scope) {
+    final Matcher matcher = DISCOVER_SCOPE_PATTERN.matcher(path);
+    return matcher.matches() && scope.equals(matcher.group(1));
   }
 
   public static boolean isDiscoverPlacesPath(@NonNull final String path) {
@@ -76,6 +82,9 @@ public final class KSUri {
 
   // /discover/categories/param
   private static final Pattern DISCOVER_CATEGORIES_PATTERN = Pattern.compile("\\A\\/discover\\/categories\\/.*");
+
+  // /discover/param
+  private static final Pattern DISCOVER_SCOPE_PATTERN = Pattern.compile("\\A\\/discover\\/([a-zA-Z0-9-_]+)\\z");
 
   // /discover/places/param
   private static final Pattern DISCOVER_PLACES_PATTERN = Pattern.compile("\\A\\/discover\\/places\\/[a-zA-Z0-9-_]+\\z");

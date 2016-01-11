@@ -3,9 +3,6 @@ package com.kickstarter.ui.viewholders;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.text.Html;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -18,9 +15,10 @@ import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.DateTimeUtils;
+import com.kickstarter.libs.utils.NumberUtils;
+import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.SocialUtils;
-import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
 import com.squareup.picasso.Picasso;
@@ -90,14 +88,14 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   public void onBind(@NonNull final Object datum) {
     this.project = (Project) datum;
 
-    backersCountTextView.setText(project.formattedBackersCount());
+    backersCountTextView.setText(NumberUtils.format(project.backersCount()));
     blurbTextView.setText(project.blurb());
     categoryTextView.setText(project.category().name());
-    deadlineCountdownTextView.setText(Integer.toString(ProjectUtils.deadlineCountdownValue(project)));
+    deadlineCountdownTextView.setText(NumberUtils.format(ProjectUtils.deadlineCountdownValue(project)));
     deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(project, view.getContext(), ksString));
     nameTextView.setText(project.name());
-    percentTextView.setText(StringUtils.displayFlooredPercentage(project.percentageFunded()));
-    percentageFundedProgressBar.setProgress(Math.round(Math.min(100.0f, project.percentageFunded())));
+    percentTextView.setText(NumberUtils.flooredPercentage(project.percentageFunded()));
+    percentageFundedProgressBar.setProgress(ProgressBarUtils.progress(project.percentageFunded()));
     Picasso.with(view.getContext())
       .load(project.photo().full())
       .placeholder(grayGradientDrawable)

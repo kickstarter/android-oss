@@ -253,11 +253,9 @@ public class ApplicationModule {
   @Singleton
   @WebEndpoint
   @NonNull String provideWebEndpoint(@NonNull final ApiEndpoint apiEndpoint) {
-    final String url = (apiEndpoint == ApiEndpoint.PRODUCTION) ?
+    return (apiEndpoint == ApiEndpoint.PRODUCTION) ?
       "https://www.kickstarter.com" :
       apiEndpoint.url.replaceAll("(?<=\\Ahttps?:\\/\\/)api.", "");
-
-    return url;
   }
 
   @Provides

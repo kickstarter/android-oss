@@ -30,7 +30,7 @@ public final class ProfileAdapter extends KSAdapter {
     return R.layout.profile_card_view;
   }
 
-  protected KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
+  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     return new ProfileCardViewHolder(view, delegate);
   }
 }

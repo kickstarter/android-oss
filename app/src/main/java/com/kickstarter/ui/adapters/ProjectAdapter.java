@@ -12,6 +12,7 @@ import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.ProjectViewHolder;
 import com.kickstarter.ui.viewholders.RewardViewHolder;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import rx.Observable;
@@ -21,11 +22,11 @@ public final class ProjectAdapter extends KSAdapter {
 
   public interface Delegate extends ProjectViewHolder.Delegate, RewardViewHolder.Delegate {}
 
-  public ProjectAdapter(@NonNull final Delegate delegate) {
+  public ProjectAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;
   }
 
-  protected @LayoutRes int layout(@NonNull final SectionRow sectionRow) {
+  protected @LayoutRes int layout(final @NonNull SectionRow sectionRow) {
     if (sectionRow.section() == 0) {
       return R.layout.project_main_layout;
     } else {
@@ -36,21 +37,21 @@ public final class ProjectAdapter extends KSAdapter {
   /**
    * Populate adapter data when we know we're working with a Project object.
    */
-  public void takeProject(@NonNull final Project project) {
+  public void takeProject(final @NonNull Project project, final @NonNull String configCountry) {
     data().clear();
-    data().add(Collections.singletonList(project));
+    data().add(Collections.singletonList(Pair.create(project, configCountry)));
 
     if (project.hasRewards()) {
       data().add(Observable.from(project.rewards())
-        .filter(Reward::isReward)
-        .map(reward -> Pair.create(project, reward))
-        .toList().toBlocking().single()
+          .filter(Reward::isReward)
+          .map(reward -> Arrays.asList(project, reward, configCountry))
+          .toList().toBlocking().single()
       );
     }
     notifyDataSetChanged();
   }
 
-  protected KSViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
+  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     if (layout == R.layout.project_main_layout) {
       return new ProjectViewHolder(view, delegate);
     }

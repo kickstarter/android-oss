@@ -26,21 +26,30 @@ public final class HamburgerNavigationAdapter extends KSAdapter {
     // HEADER
     data().add(Collections.singletonList(user != null ? user : Empty.get()));
 
-    // FILTERS
+    // DIVIDER
+    data().add(Collections.singletonList(Empty.get()));
+
+    // NON-CATEGORY FILTERS
     // data().add(filters);
+
+    // DIVIDER
+
+    // CATEGORY FILTERS
 
     notifyDataSetChanged();
   }
 
   @Override
   protected int layout(final @NonNull SectionRow sectionRow) {
-    if (sectionRow.section() == 0) {
+    final int section = sectionRow.section();
+    if (section == 0) {
       return (objectFromSectionRow(sectionRow) instanceof User) ?
         R.layout.hamburger_navigation_header_logged_in_view :
         R.layout.hamburger_navigation_header_logged_out_view;
-    } else {
-      return R.layout.reward_card_view;
+    } else if (section == 1) {
+      return R.layout.hamburger_divider_view;
     }
+    return R.layout.empty_view;
   }
 
   @Override

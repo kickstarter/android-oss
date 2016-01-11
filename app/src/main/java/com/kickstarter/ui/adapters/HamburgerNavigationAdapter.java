@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.kickstarter.R;
+import com.kickstarter.models.Category;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.HamburgerNavigationData;
 import com.kickstarter.models.User;
@@ -48,7 +49,15 @@ public final class HamburgerNavigationAdapter extends KSAdapter {
         R.layout.hamburger_navigation_header_logged_in_view :
         R.layout.hamburger_navigation_header_logged_out_view;
     } else if (object instanceof DiscoveryParams) {
-      return R.layout.hamburger_navigation_filter_view;
+      final DiscoveryParams params = (DiscoveryParams) object;
+      final Category category = params.category();
+      if (category != null) {
+        return category.isRoot() ?
+          R.layout.hamburger_navigation_parent_filter_view :
+          R.layout.hamburger_navigation_child_filter_view;
+      } else {
+        return R.layout.hamburger_navigation_top_filter_view;
+      }
     }
     return R.layout.hamburger_divider_view;
   }
@@ -60,7 +69,9 @@ public final class HamburgerNavigationAdapter extends KSAdapter {
         return new HamburgerNavigationHeaderLoggedInViewHolder(view);
       case R.layout.hamburger_navigation_header_logged_out_view:
         return new HamburgerNavigationHeaderLoggedOutViewHolder(view);
-      case R.layout.hamburger_navigation_filter_view:
+      case R.layout.hamburger_navigation_top_filter_view:
+      case R.layout.hamburger_navigation_parent_filter_view: // TODO: Change to separate viewholder?
+      case R.layout.hamburger_navigation_child_filter_view: // TODO: Change to separate viewholder?
         return new HamburgerNavigationFilterViewHolder(view);
       default:
         return new EmptyViewHolder(view);

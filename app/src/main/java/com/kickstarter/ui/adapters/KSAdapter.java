@@ -7,7 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.kickstarter.BuildConfig;
+import com.kickstarter.libs.utils.ExceptionUtils;
 import com.kickstarter.ui.viewholders.KSViewHolder;
+
+import net.hockeyapp.android.ExceptionHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +41,18 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
 
   @Override
   public final void onBindViewHolder(final @NonNull KSViewHolder viewHolder, final int position) {
-    viewHolder.onBind(objectFromPosition(position));
+    final Object data = objectFromPosition(position);
+
+    try {
+      viewHolder.bindData(data);
+      viewHolder.onBind();
+    } catch (final Exception e) {
+      if (BuildConfig.DEBUG) {
+        ExceptionUtils.rethrowAsRuntimeException(e);
+      } else {
+        ExceptionHandler.saveException(e, null);
+      }
+    }
   }
 
   @Override

@@ -12,6 +12,10 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.SocialUtils;
 import com.kickstarter.models.Activity;
+import com.kickstarter.models.Category;
+import com.kickstarter.models.Photo;
+import com.kickstarter.models.Project;
+import com.kickstarter.models.User;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
@@ -46,27 +50,40 @@ public final class FriendBackingViewHolder extends ActivityListViewHolder {
   }
 
   @Override
-  public void onBind(final @NonNull Object datum) {
-    super.onBind(datum);
-
+  public void onBind() {
     final Context context = view.getContext();
 
+    final User activityUser = activity.user();
+    if (activityUser == null) { return; }
+    final Project activityProject = activity.project();
+    if (activityProject == null) { return; }
+    final User projectCreator = activityProject.creator();
+    if (projectCreator == null) { return; }
+    final Category projectCategory = activityProject.category();
+    if (projectCategory == null) { return; }
+    final Photo projectPhoto = activityProject.photo();
+    if (projectPhoto == null) { return ; }
+
     Picasso.with(context)
-      .load(activity.user().avatar().small())
+      .load(activityUser.avatar().small())
       .transform(new CircleTransformation())
       .into(avatarImageView);
+
     creatorNameTextView.setText(ksString.format(
       projectByCreatorString,
       "creator_name",
-      activity.project().creator().name()
+      projectCreator.name()
     ));
-    projectNameTextView.setText(activity.project().name());
+
+    projectNameTextView.setText(activityProject.name());
+
     Picasso.with(context)
-      .load(activity.project().photo().little())
+      .load(projectPhoto.little())
       .into(projectPhotoImageView);
+
     titleTextView.setText(SocialUtils.friendBackingActivityTitle(context,
-      activity.user().name(),
-      activity.project().category().rootId(),
+      activityUser.name(),
+      projectCategory.rootId(),
       ksString
     ));
   }

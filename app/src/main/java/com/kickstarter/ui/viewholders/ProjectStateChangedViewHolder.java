@@ -9,6 +9,9 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.models.Activity;
+import com.kickstarter.models.Photo;
+import com.kickstarter.models.Project;
+import com.kickstarter.models.User;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
@@ -41,26 +44,30 @@ public final class ProjectStateChangedViewHolder extends ActivityListViewHolder 
   }
 
   @Override
-  public void onBind(final @NonNull Object datum) {
-    super.onBind(datum);
+  public void onBind() {
+    final Project project = activity.project();
+    if (project == null) { return; }
+    final User user = activity.user();
+    if (user == null) { return; }
+    final Photo photo = project.photo();
+    if (photo == null) { return; }
 
     Picasso.with(view.getContext())
-      .load(activity.project().photo().little())
+      .load(photo.little())
       .into(projectPhotoImageView);
 
-    titleTextView.setText(titleText(activity));
-  }
-
-  public String titleText(final @NonNull Activity activity) {
     switch (activity.category()) {
       case Activity.CATEGORY_FAILURE:
-        return ksString.format(projectNotSuccessfullyFundedString, "project_name", activity.project().name());
+        titleTextView.setText(ksString.format(projectNotSuccessfullyFundedString, "project_name", project.name()));
+        break;
       case Activity.CATEGORY_CANCELLATION:
-        return ksString.format(projectCanceledByCreatorString, "project_name", activity.project().name());
+        titleTextView.setText(ksString.format(projectCanceledByCreatorString, "project_name", project.name()));
+        break;
       case Activity.CATEGORY_SUSPENSION:
-        return ksString.format(projectSuspendedString, "project_name", activity.project().name());
+        titleTextView.setText(ksString.format(projectSuspendedString, "project_name", project.name()));
+        break;
       default:
-        return "";
+        titleTextView.setText("");
     }
   }
 

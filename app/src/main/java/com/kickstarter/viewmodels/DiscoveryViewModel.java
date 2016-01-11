@@ -4,11 +4,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.BuildCheck;
+import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
@@ -19,6 +19,7 @@ import com.kickstarter.services.WebClient;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.viewmodels.inputs.DiscoveryViewModelInputs;
+import com.kickstarter.viewmodels.outputs.DiscoveryViewModelOutputs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,35 +27,63 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> implements DiscoveryViewModelInputs {
-  // INPUTS
-  private final PublishSubject<DiscoveryParams> initializer = PublishSubject.create();
-  private final PublishSubject<Void> nextPage = PublishSubject.create();
-  private final PublishSubject<Project> projectClick = PublishSubject.create();
-
+public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> implements DiscoveryViewModelInputs, DiscoveryViewModelOutputs {
   protected @Inject ApiClientType apiClient;
   protected @Inject WebClient webClient;
   protected @Inject BuildCheck buildCheck;
+  protected @Inject CurrentUser currentUser;
 
-  private final PublishSubject<Void> filterButtonClick = PublishSubject.create();
-  private final PublishSubject<DiscoveryParams> params = PublishSubject.create();
-
-  public final DiscoveryViewModelInputs inputs = this;
-
+  // INPUTS
+  private final PublishSubject<Project> projectClicked = PublishSubject.create();
+  @Override
+  public void projectClicked(@NonNull final Project project) {
+    projectClicked.onNext(project);
+  }
+  private final PublishSubject<Void> nextPage = PublishSubject.create();
+  public void nextPage() {
+    nextPage.onNext(null);
+  }
+  private final PublishSubject<Void> filterButtonClicked = PublishSubject.create();
+  public void filterButtonClicked() {
+    filterButtonClicked.onNext(null);
+  }
+  private final PublishSubject<DiscoveryParams> initializer = PublishSubject.create();
   public void initializer(final @NonNull DiscoveryParams params) {
     initializer.onNext(params);
   }
 
-  public void nextPage() {
-    nextPage.onNext(null);
+  // OUTPUTS
+  private final BehaviorSubject<List<Project>> projects = BehaviorSubject.create();
+  @Override
+  public Observable<List<Project>> projects() {
+    return projects;
+  }
+  private final BehaviorSubject<DiscoveryParams> params = BehaviorSubject.create();
+  @Override
+  public Observable<DiscoveryParams> params() {
+    return params;
+  }
+  private final BehaviorSubject<Boolean> shouldShowOnboarding = BehaviorSubject.create();
+  @Override
+  public Observable<Boolean> shouldShowOnboarding() {
+    return shouldShowOnboarding;
+  }
+  @Override
+  public Observable<DiscoveryParams> showFilters() {
+    return params.compose(Transformers.takeWhen(filterButtonClicked));
+  }
+  @Override
+  public Observable<Project> showProject() {
+    return projectClicked;
   }
 
-  public void projectClick(@NonNull final Project project) {
-    projectClick.onNext(project);
-  }
+  private boolean hasSeenOnboarding = false;
+
+  public final DiscoveryViewModelInputs inputs = this;
+  public final DiscoveryViewModelOutputs outputs = this;
 
   @Override
   protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
@@ -79,62 +108,27 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     addSubscription(
       params.compose(Transformers.takePairWhen(paginator.loadingPage))
         .map(paramsAndPage -> paramsAndPage.first.toBuilder().page(paramsAndPage.second).build())
-        .subscribe(koala::trackDiscovery)
+        .subscribe(p -> koala.trackDiscovery(p, !hasSeenOnboarding))
     );
 
-    final Observable<List<Project>> projects = paginator.paginatedData;
-
-    final Observable<Pair<DiscoveryActivity, List<Project>>> viewAndProjects = view
-      .compose(Transformers.combineLatestPair(projects));
-
-    final Observable<Pair<DiscoveryActivity, DiscoveryParams>> viewAndParams = view
-      .compose(Transformers.combineLatestPair(params));
-
-    addSubscription(viewAndParams
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.loadParams(vp.second)));
-
-    addSubscription(viewAndProjects
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.loadProjects(vp.second)));
+    addSubscription(paginator.paginatedData.subscribe(projects));
 
     addSubscription(
-      viewAndParams
-        .compose(Transformers.takeWhen(filterButtonClick))
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(vp -> vp.first.startDiscoveryFilterActivity(vp.second))
-    );
-
-    addSubscription(
-      view
-        .compose(Transformers.takePairWhen(projectClick))
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(vp -> vp.first.startProjectActivity(vp.second))
+      params
+        .compose(Transformers.combineLatestPair(currentUser.isLoggedIn()))
+        .map(pu -> isOnboardingVisible(pu.first, pu.second))
+        .doOnNext(show -> hasSeenOnboarding = show || hasSeenOnboarding)
+        .subscribe(shouldShowOnboarding::onNext)
     );
 
     initializer.subscribe(this.params::onNext);
-  }
-
-
-  /**
-   * Given params for a discovery search, returns an observable of the
-   * page of projects received from the api.
-   *
-   * Note: This ignores any api errors.
-   */
-  private Observable<List<Project>> projectsFromParams(@NonNull final DiscoveryParams params) {
-    return apiClient.fetchProjects(params)
-      .retry(2)
-      .compose(Transformers.neverError())
-      .map(DiscoverEnvelope::projects)
-      .map(this::bringPotdToFront);
   }
 
   /**
    * Given a list of projects, finds if it contains the POTD and if so
    * bumps it to the front of the list.
    */
-  private List<Project> bringPotdToFront(@NonNull final List<Project> projects) {
+  private List<Project> bringPotdToFront(final @NonNull List<Project> projects) {
 
     return Observable.from(projects)
       .reduce(new ArrayList<>(), this::prependPotdElseAppend)
@@ -145,15 +139,11 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
    * Given a list of projects and a particular project, returns the list
    * when the project prepended if it's POTD and appends otherwise.
    */
-  @NonNull private List<Project> prependPotdElseAppend(@NonNull final List<Project> projects, @NonNull final Project project) {
+  @NonNull private List<Project> prependPotdElseAppend(final @NonNull List<Project> projects, final @NonNull Project project) {
     return project.isPotdToday() ? ListUtils.prepend(projects, project) : ListUtils.append(projects, project);
   }
 
-  public void filterButtonClick() {
-    filterButtonClick.onNext(null);
-  }
-
-  public void takeParams(@NonNull final DiscoveryParams firstPageParams) {
-    params.onNext(firstPageParams);
+  private boolean isOnboardingVisible(final @NonNull DiscoveryParams currentParams, final boolean isLoggedIn) {
+    return !isLoggedIn && !hasSeenOnboarding && currentParams.staffPicks();
   }
 }

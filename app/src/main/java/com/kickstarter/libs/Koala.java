@@ -10,6 +10,7 @@ import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static com.kickstarter.libs.utils.KoalaUtils.activityProperties;
 import static com.kickstarter.libs.utils.KoalaUtils.discoveryParamsProperties;
@@ -35,8 +36,10 @@ public final class Koala {
   }
 
   // DISCOVERY
-  public void trackDiscovery(@NonNull final DiscoveryParams params) {
-    client.track("Discover List View", discoveryParamsProperties(params));
+  public void trackDiscovery(final @NonNull DiscoveryParams params, final boolean isOnboardingVisible) {
+    final Map<String, Object> props = discoveryParamsProperties(params);
+    props.put("discover_onboarding_is_visible", isOnboardingVisible);
+    client.track("Discover List View", props);
   }
 
   public void trackDiscoveryFilters() {

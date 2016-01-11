@@ -25,6 +25,8 @@ import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 
+import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
+
 public final class RewardViewHolder extends KSViewHolder {
   protected @Bind(R.id.pledge_minimum) TextView minimumTextView;
   protected @Bind(R.id.reward_backers_count) TextView backersCountTextView;
@@ -67,18 +69,11 @@ public final class RewardViewHolder extends KSViewHolder {
   }
 
   @Override
-  public boolean bindData(final @Nullable Object data) {
-    if (data == null) { return false; }
-
-    try {
-      final List projectRewardUser = (List) data;
-      project = (Project) projectRewardUser.get(0);
-      reward = (Reward) projectRewardUser.get(1);
-      configCountry = (String) projectRewardUser.get(2);
-      return project != null && reward != null && configCountry != null;
-    } catch (Exception e) {
-      return false;
-    }
+  public void bindData(final @Nullable Object data) throws Exception {
+    final List projectRewardUser = requireNonNull((List) data);
+    project = requireNonNull((Project) projectRewardUser.get(0));
+    reward = requireNonNull((Reward) projectRewardUser.get(1));
+    configCountry = requireNonNull((String) projectRewardUser.get(2));
   }
 
   public void onBind() {

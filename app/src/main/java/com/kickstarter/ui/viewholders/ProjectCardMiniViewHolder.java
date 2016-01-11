@@ -21,6 +21,8 @@ import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 
+import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
+
 public final class ProjectCardMiniViewHolder extends KSViewHolder {
   private Project project;
   private final Context context;
@@ -46,13 +48,8 @@ public final class ProjectCardMiniViewHolder extends KSViewHolder {
   }
 
   @Override
-  public boolean bindData(final @Nullable Object data) {
-    try {
-      project = (Project) data;
-      return project != null;
-    } catch (Exception __) {
-      return false;
-    }
+  public void bindData(final @Nullable Object data) throws Exception {
+    project = requireNonNull((Project) data, Project.class);
   }
 
   public void onBind() {

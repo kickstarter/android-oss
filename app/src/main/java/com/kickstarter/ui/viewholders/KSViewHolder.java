@@ -36,5 +36,5 @@ public abstract class KSViewHolder extends RecyclerView.ViewHolder implements Vi
    *
    * @return Return a `boolean` that indicates if this binding happened successfully.
    */
-  abstract public boolean bindData(final @Nullable Object data);
+  abstract public void bindData(final @Nullable Object data) throws Exception;
 }

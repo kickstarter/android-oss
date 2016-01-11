@@ -50,6 +50,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.kickstarter.libs.utils.ObjectUtils.coalesce;
+import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
 public final class ProjectViewHolder extends KSViewHolder {
   private Project project;
@@ -129,19 +130,11 @@ public final class ProjectViewHolder extends KSViewHolder {
   }
 
   @Override
-  public boolean bindData(final @Nullable Object data) {
-    if (data == null) {
-      return false;
-    }
-
-    try {
-      final Pair projectAndCountry = (Pair) data;
-      project = (Project) projectAndCountry.first;
-      configCountry = (String) projectAndCountry.second;
-      return project != null && configCountry != null;
-    } catch (Exception __) {
-      return false;
-    }
+  public void bindData(final @Nullable Object data) throws Exception {
+    @SuppressWarnings("unchecked")
+    final Pair<Project, String> projectAndCountry = requireNonNull((Pair<Project, String>) data);
+    project = requireNonNull(projectAndCountry.first, Project.class);
+    configCountry = requireNonNull(projectAndCountry.second, String.class);
   }
 
   public void onBind() {

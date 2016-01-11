@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
 import com.squareup.picasso.Picasso;
@@ -45,13 +46,8 @@ public final class ProjectSearchResultViewHolder extends KSViewHolder {
   }
 
   @Override
-  public boolean bindData(final @Nullable Object data) {
-    try {
-      project = (Project) data;
-      return project != null;
-    } catch (Exception __) {
-      return false;
-    }
+  public void bindData(final @Nullable Object data) throws Exception {
+    project = ObjectUtils.requireNonNull((Project) data, Project.class);
   }
 
   public void onBind() {

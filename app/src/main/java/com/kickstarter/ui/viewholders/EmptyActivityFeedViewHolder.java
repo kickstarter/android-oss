@@ -31,14 +31,8 @@ public final class EmptyActivityFeedViewHolder extends KSViewHolder {
   }
 
   @Override
-  public boolean bindData(final @Nullable Object data) {
-    if (data != null && data instanceof User) {
-      user = (User) data;
-    } else {
-      user = null;
-    }
-
-    return true;
+  public void bindData(final @Nullable Object data) throws Exception {
+    user = (User) data;
   }
 
   @Override

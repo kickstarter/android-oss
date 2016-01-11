@@ -27,8 +27,7 @@ public final class SearchTermViewHolder extends KSViewHolder {
   }
 
   @Override
-  public boolean bindData(final @Nullable Object data) {
-    return true;
+  public void bindData(final @Nullable Object data) throws Exception {
   }
 
   public void onBind() {

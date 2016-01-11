@@ -10,6 +10,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
@@ -49,13 +50,8 @@ public class ProfileCardViewHolder extends KSViewHolder {
   }
 
   @Override
-  public boolean bindData(final @Nullable Object data) {
-    try {
-      project = (Project) data;
-      return project != null;
-    } catch (Exception __) {
-      return false;
-    }
+  public void bindData(final @Nullable Object data) throws Exception {
+    project = ObjectUtils.requireNonNull((Project) data, Project.class);
   }
 
   @Override

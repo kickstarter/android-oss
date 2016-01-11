@@ -20,6 +20,8 @@ import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 
+import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
+
 public final class CategoryPromoViewHolder extends KSViewHolder {
   private Category category;
   private final Context context;
@@ -48,13 +50,8 @@ public final class CategoryPromoViewHolder extends KSViewHolder {
   }
 
   @Override
-  public boolean bindData(final @Nullable Object data) {
-    try {
-      category = (Category) data;
-      return category != null;
-    } catch (Exception __) {
-      return false;
-    }
+  public void bindData(final @Nullable Object data) throws Exception {
+    category = requireNonNull((Category) data, Category.class);
   }
 
   public void onBind() {

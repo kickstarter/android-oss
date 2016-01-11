@@ -10,10 +10,10 @@ import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.CommentUtils;
-import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
@@ -23,6 +23,8 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+
+import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
 public final class CommentViewHolder extends KSViewHolder {
   private Project project;
@@ -44,17 +46,11 @@ public final class CommentViewHolder extends KSViewHolder {
   }
 
   @Override
-  public boolean bindData(final @Nullable Object data) {
-    if (data == null) { return false; }
-
-    try {
-      final Pair projectAndComment = (Pair) data;
-      project = (Project) projectAndComment.first;
-      comment = (Comment) projectAndComment.second;
-      return project != null && comment != null;
-    } catch (Exception __) {
-      return false;
-    }
+  public void bindData(final @Nullable Object data) throws Exception {
+    @SuppressWarnings("unchecked")
+    final Pair<Project, Comment> projectAndComment = requireNonNull((Pair<Project, Comment>) data);
+    project = requireNonNull(projectAndComment.first, Project.class);
+    comment = requireNonNull(projectAndComment.second, Comment.class);
   }
 
   public void onBind() {

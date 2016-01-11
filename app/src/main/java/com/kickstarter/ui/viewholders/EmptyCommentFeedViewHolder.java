@@ -15,6 +15,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
+
 public final class EmptyCommentFeedViewHolder extends KSViewHolder {
   Project project;
   User user;
@@ -33,17 +35,11 @@ public final class EmptyCommentFeedViewHolder extends KSViewHolder {
   }
 
   @Override
-  public boolean bindData(final @Nullable Object data) {
-    if (data == null) { return false; }
-
-    try {
-      final Pair projectAndUser = (Pair) data;
-      project = (Project) projectAndUser.first;
-      user = (User) projectAndUser.second;
-      return project != null && user != null;
-    } catch (Exception e) {
-      return false;
-    }
+  public void bindData(final @Nullable Object data) throws Exception {
+    @SuppressWarnings("unchecked")
+    final Pair<Project, User> projectAndUser = requireNonNull((Pair<Project, User>) data);
+    project = requireNonNull(projectAndUser.first, Project.class);
+    user = requireNonNull(projectAndUser.second, User.class);
   }
 
   public void onBind() {

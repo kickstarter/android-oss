@@ -21,6 +21,8 @@ import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
+
 @RequiresViewModel(ProjectNotificationViewModel.class)
 public final class ProjectNotificationViewHolder extends KSViewHolder {
   protected @Bind(R.id.project_name) TextView projectNameTextView;
@@ -51,17 +53,9 @@ public final class ProjectNotificationViewHolder extends KSViewHolder {
   }
 
   @Override
-  public boolean bindData(final @Nullable Object data) {
-    try {
-      final ProjectNotificationViewModel viewModel = (ProjectNotificationViewModel) data;
-      if (viewModel != null) {
-        this.viewModel.onNext(viewModel);
-        return true;
-      }
-      return false;
-    } catch (Exception __) {
-      return false;
-    }
+  public void bindData(final @Nullable Object data) throws Exception {
+    final ProjectNotificationViewModel viewModel = requireNonNull((ProjectNotificationViewModel) data, ProjectNotificationViewModel.class);
+    this.viewModel.onNext(viewModel);
   }
 
   @Override

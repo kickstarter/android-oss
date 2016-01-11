@@ -22,6 +22,8 @@ import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 
+import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
+
 public final class DiscoveryFilterViewHolder extends KSViewHolder {
   private final Delegate delegate;
   private DiscoveryParams params;
@@ -52,18 +54,12 @@ public final class DiscoveryFilterViewHolder extends KSViewHolder {
   }
 
   @Override
-  public boolean bindData(final @Nullable Object data) {
-    if (data == null) { return false; }
-
-    try {
-      final Filter filter = (Filter) data;
-      params = filter.params();
-      style = filter.style();
-      return params != null && style != null;
-    } catch (Exception __) {
-      return false;
-    }
+  public void bindData(final @Nullable Object data) throws Exception {
+    final Filter filter = requireNonNull((Filter) data);
+    params = requireNonNull(filter.params(), DiscoveryParams.class);
+    style = requireNonNull(filter.style(), DiscoveryFilterStyle.class);
   }
+
   public void onBind() {
     setCategoryLiveProjectCountTextView();
     setFilterTextView();

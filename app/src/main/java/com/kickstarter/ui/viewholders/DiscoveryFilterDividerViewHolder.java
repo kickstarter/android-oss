@@ -12,6 +12,8 @@ import auto.parcel.AutoParcel;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
+
 public final class DiscoveryFilterDividerViewHolder extends KSViewHolder {
   protected @Bind(R.id.categories_text_view) TextView categoriesTextView;
   protected @Bind(R.id.horizontal_line_thin_view) View horizontalLineView;
@@ -23,13 +25,8 @@ public final class DiscoveryFilterDividerViewHolder extends KSViewHolder {
   }
 
   @Override
-  public boolean bindData(final @Nullable Object data) {
-    try {
-      divider = (Divider) data;
-      return divider != null;
-    } catch (Exception __) {
-      return false;
-    }
+  public void bindData(final @Nullable Object data) throws Exception {
+    divider = requireNonNull((Divider) data);
   }
   public void onBind() {
     categoriesTextView.setTextColor(color());

@@ -14,6 +14,8 @@ import com.squareup.picasso.Picasso;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
+
 public class ProjectSocialViewHolder extends KSViewHolder {
   private User user;
   protected @Bind(R.id.friend_image) ImageView friendImageView;
@@ -25,13 +27,8 @@ public class ProjectSocialViewHolder extends KSViewHolder {
   }
 
   @Override
-  public boolean bindData(final @Nullable Object data) {
-    try {
-      user = (User) data;
-      return user != null;
-    } catch (Exception __) {
-      return false;
-    }
+  public void bindData(final @Nullable Object data) throws Exception {
+    user = requireNonNull((User) data, User.class);
   }
 
   @Override

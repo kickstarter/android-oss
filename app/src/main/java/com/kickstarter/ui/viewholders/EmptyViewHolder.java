@@ -9,8 +9,7 @@ public final class EmptyViewHolder extends KSViewHolder {
   }
 
   @Override
-  public boolean bindData(final @Nullable Object data) {
-    return true;
+  public void bindData(final @Nullable Object data) throws Exception {
   }
 
   @Override

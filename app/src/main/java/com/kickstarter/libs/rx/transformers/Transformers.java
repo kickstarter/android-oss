@@ -6,6 +6,7 @@ import com.kickstarter.services.ApiException;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 
 import rx.Observable;
+import rx.functions.Action1;
 import rx.subjects.PublishSubject;
 
 public final class Transformers {
@@ -22,9 +23,18 @@ public final class Transformers {
    * Prevents an observable from erroring by chaining `onErrorResumeNext`,
    * and any errors that occur will be piped into the supplied errors publish
    * subject. `null` values will never be sent to the publish subject.
- */
-  public static <T> NeverErrorTransformer<T> pipeErrorsTo(@NonNull final PublishSubject<Throwable> errors) {
-    return new NeverErrorTransformer<>(errors);
+   */
+  public static <T> NeverErrorTransformer<T> pipeErrorsTo(@NonNull final PublishSubject<Throwable> errorSubject) {
+    return new NeverErrorTransformer<>(errorSubject::onNext);
+  }
+
+  /**
+   * Prevents an observable from erroring by chaining `onErrorResumeNext`,
+   * and any errors that occur will be piped into the supplied errors action.
+   * `null` values will never be sent to the publish subject.
+   */
+  public static <T> NeverErrorTransformer<T> pipeErrorsTo(@NonNull final Action1<Throwable> errorAction) {
+    return new NeverErrorTransformer<>(errorAction);
   }
 
   /**
@@ -40,8 +50,17 @@ public final class Transformers {
    * errors publish subject. `null` values will never be sent to
    * the publish subject.
    */
-  public static <T> NeverApiErrorTransformer<T> pipeApiErrorsTo(@NonNull final PublishSubject<ErrorEnvelope> errors) {
-    return new NeverApiErrorTransformer<>(errors);
+  public static <T> NeverApiErrorTransformer<T> pipeApiErrorsTo(@NonNull final PublishSubject<ErrorEnvelope> errorSubject) {
+    return new NeverApiErrorTransformer<>(errorSubject::onNext);
+  }
+
+  /**
+   * Prevents an observable from erroring on any {@link ApiException} exceptions,
+   * and any errors that do occur will be piped into the supplied
+   * errors actions. `null` values will never be sent to the action.
+   */
+  public static <T> NeverApiErrorTransformer<T> pipeApiErrorsTo(@NonNull final Action1<ErrorEnvelope> errorAction) {
+    return new NeverApiErrorTransformer<>(errorAction);
   }
 
   /**

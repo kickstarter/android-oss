@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.widget.TextView;
@@ -82,6 +83,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   private boolean notifyOfFollower;
   private boolean notifyOfFriendActivity;
   private boolean notifyOfUpdates;
+  private AlertDialog logoutConfirmationDialog;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -116,6 +118,43 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
     RxView.clicks(this.weeklyNewsletterSwitch)
       .compose(bindToLifecycle())
       .subscribe(__ -> viewModel.inputs.sendWeeklyNewsletter(weeklyNewsletterSwitch.isChecked(), weeklyNewsletterString));
+
+    viewModel.outputs.showConfirmLogoutPrompt()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(show -> {
+        if (show) {
+          lazyLogoutConfirmationDialog().show();
+        } else {
+          lazyLogoutConfirmationDialog().dismiss();
+        }
+      });
+  }
+
+  /**
+   * Lazily creates a logout confirmation dialog and stores it in an instance variable.
+   */
+  private @NonNull AlertDialog lazyLogoutConfirmationDialog() {
+    if (logoutConfirmationDialog == null) {
+      logoutConfirmationDialog = new AlertDialog.Builder(this)
+        .setTitle(getString(R.string.profile_settings_logout_alert_title))
+        .setMessage(getString(R.string.profile_settings_logout_alert_message))
+        .setPositiveButton(getString(R.string.profile_settings_logout_alert_confirm_button), (__, ___) -> {
+          logout();
+        })
+        .setNegativeButton(getString(R.string.profile_settings_logout_alert_cancel_button), (__, ___) -> {
+          viewModel.inputs.closeLogoutConfirmationClicked();
+        })
+        .create();
+    }
+    return logoutConfirmationDialog;
+  }
+
+  private void logout() {
+    logout.execute();
+    final Intent intent = new Intent(this, DiscoveryActivity.class)
+      .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+    startActivity(intent);
   }
 
   protected void composeContactEmail(final @Nullable User user) {
@@ -198,11 +237,8 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   }
 
   @OnClick(R.id.log_out_button)
-  public void logout() {
-    logout.execute();
-    final Intent intent = new Intent(this, DiscoveryActivity.class)
-      .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-    startActivity(intent);
+  public void logoutClick() {
+    viewModel.inputs.logoutClicked();
   }
 
   @OnClick(R.id.manage_project_notifications)

@@ -11,4 +11,14 @@ public interface SettingsViewModelInputs {
   void sendHappeningNewsletter(boolean checked, String name);
   void sendPromoNewsletter(boolean checked, String name);
   void sendWeeklyNewsletter(boolean checked, String name);
+
+  /**
+   * Call when the user taps the logout button
+   */
+  void logoutClicked();
+
+  /**
+   * Call when the user dismiss the logout confirmation dialog.
+   */
+  void closeLogoutConfirmationClicked();
 }

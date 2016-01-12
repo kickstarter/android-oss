@@ -13,8 +13,8 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 
@@ -95,6 +95,7 @@ public final class RewardViewHolder extends KSViewHolder {
     toggleAllGoneRewardView();
     toggleClickableReward();
     toggleEstimatedDeliveryView();
+    toggleLandscapeSelectTextView();
     toggleLimitedRewardView();
     toggleSelectedRewardView();
     toggleShippingDestinationView();
@@ -135,6 +136,18 @@ public final class RewardViewHolder extends KSViewHolder {
     } else {
       estimatedDeliveryTextView.setVisibility(View.GONE);
       estimatedDeliveryDateTextView.setVisibility(View.GONE);
+    }
+  }
+
+  public void toggleLandscapeSelectTextView() {
+    if (ViewUtils.isLandscape(context)) {
+      final View selectTextView = ButterKnife.findById(view, R.id.select_text_view);
+
+      if (!project.isLive() || project.isBacking()) {
+        selectTextView.setVisibility(View.GONE);
+      } else {
+        selectTextView.setVisibility(View.VISIBLE);
+      }
     }
   }
 

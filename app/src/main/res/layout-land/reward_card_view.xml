@@ -64,13 +64,17 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"/>
 
-        <Button
+        <TextView
+          android:id="@+id/select_text_view"
           android:layout_alignParentTop="true"
-          android:enabled="false"
           android:layout_alignParentRight="true"
           android:layout_alignParentEnd="true"
-          style="@style/BorderButton"
+          android:background="@drawable/view_gray_rounded_border"
           android:text="@string/rewards_select_label_select"
+          style="@style/BodyPrimaryMedium"
+          android:paddingLeft="@dimen/grid_3"
+          android:paddingRight="@dimen/grid_3"
+          android:gravity="center"
           android:layout_width="wrap_content"
           android:layout_height="@dimen/grid_4" />
 

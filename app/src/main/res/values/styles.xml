@@ -236,6 +236,12 @@
     <item name="android:fontFamily">sans-serif</item>
   </style>
 
+  <style name="TextWhite">
+    <item name="android:textColor">@color/white</item>
+    <item name="android:textStyle">normal</item>
+    <item name="android:fontFamily">sans-serif</item>
+  </style>
+
   <style name="CaptionPrimary" parent="TextPrimary">
     <item name="android:textSize">@dimen/caption</item>
     <item name="android:lineSpacingExtra">@dimen/caption_line_spacing_extra</item>
@@ -264,6 +270,11 @@
   </style>
   
   <style name="BodySecondary" parent="TextSecondary">
+    <item name="android:textSize">@dimen/body</item>
+    <item name="android:lineSpacingExtra">@dimen/body_line_spacing_extra</item>
+  </style>
+
+  <style name="BodyWhite" parent="TextWhite">
     <item name="android:textSize">@dimen/body</item>
     <item name="android:lineSpacingExtra">@dimen/body_line_spacing_extra</item>
   </style>

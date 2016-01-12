@@ -12,7 +12,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gray_gradient"
-    android:adjustViewBounds="true"/>
+    android:adjustViewBounds="true" />
 
   <View
     android:id="@+id/photo_gradient"
@@ -38,6 +38,7 @@
       android:contentDescription="@string/accessibility_projects_buttons_play_video"
       android:focusable="true"
       android:visibility="visible"
+      android:layout_centerVertical="true"
       android:layout_marginRight="@dimen/grid_3"
       android:layout_marginEnd="@dimen/grid_3"
       android:layout_width="wrap_content"
@@ -46,10 +47,15 @@
       android:text="@string/play_circle_outline_icon"
       android:textColor="@color/white" />
 
+    <RelativeLayout
+      android:layout_centerVertical="true"
+      android:layout_toEndOf="@id/play_button_overlay"
+      android:layout_toRightOf="@id/play_button_overlay"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
       <TextView
         android:id="@+id/project_name"
-        android:layout_toEndOf="@id/play_button_overlay"
-        android:layout_toRightOf="@id/play_button_overlay"
         android:text="Secret Hitler"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -59,8 +65,6 @@
 
       <TextView
         android:id="@+id/creator_name"
-        android:layout_toEndOf="@id/play_button_overlay"
-        android:layout_toRightOf="@id/play_button_overlay"
         android:layout_below="@id/project_name"
         android:text="by Max Temkin"
         android:focusable="true"
@@ -68,8 +72,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/click_indicator_light_masked"
-        style="@style/BodySecondary"
-        android:textColor="@color/white"/>
+        style="@style/BodyWhite" />
 
       <LinearLayout
         android:id="@+id/backer_label"
@@ -84,8 +87,7 @@
         <TextView
           android:text="@string/project_creator_youre_a_backer"
           android:singleLine="true"
-          style="@style/BodyPrimary"
-          android:textColor="@color/white"
+          style="@style/BodyWhite"
           android:layout_marginLeft="@dimen/grid_1_half"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
@@ -101,8 +103,10 @@
           android:layout_marginStart="@dimen/grid_1_half"
           android:layout_marginLeft="@dimen/grid_1_half"
           android:text="@string/backer_icon"
-          android:textColor="@color/white"/>
+          android:textColor="@color/white" />
       </LinearLayout>
+
+    </RelativeLayout>
 
   </RelativeLayout>
 
@@ -116,7 +120,7 @@
 
     <TextView
       android:id="@+id/blurb"
-      style="@style/BodyPrimary"
+      style="@style/SubheadPrimary"
       android:textColor="@color/white"
       android:text="Description about this project."
       android:focusable="true"
@@ -138,8 +142,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/local_offer_icon"
-        style="@style/BodyPrimary"
-        android:textColor="@color/white"/>
+        style="@style/BodyWhite" />
 
       <TextView
         android:id="@+id/category"
@@ -148,8 +151,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/grid_1_half"
         android:paddingRight="@dimen/grid_2"
-        style="@style/BodyPrimary"
-        android:textColor="@color/white"/>
+        style="@style/BodyWhite" />
 
       <com.kickstarter.ui.views.IconTextView
         android:id="@+id/location_icon"
@@ -157,8 +159,7 @@
         android:layout_height="wrap_content"
         android:text="@string/location_on_icon"
         android:contentDescription="@string/discovery_baseball_card_accessibility_location_label"
-        style="@style/BodyPrimary"
-        android:textColor="@color/white"/>
+        style="@style/BodyWhite" />
 
       <TextView
         android:id="@+id/location"
@@ -171,8 +172,7 @@
         android:paddingRight="@dimen/grid_1_half"
         android:paddingStart="@dimen/grid_1_half"
         android:paddingEnd="@dimen/grid_1_half"
-        style="@style/BodyPrimary"
-        android:textColor="@color/white"/>
+        style="@style/BodyWhite" />
 
     </LinearLayout>
 

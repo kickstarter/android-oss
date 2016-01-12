@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.kickstarter.KSApplication;
@@ -44,6 +45,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   protected @Bind(R.id.star_icon) IconButton starButton;
   protected @Bind(R.id.back_project_button) Button backProjectButton;
   protected @Bind(R.id.manage_pledge_button) Button managePledgeButton;
+  protected @Bind(R.id.project_action_buttons) ViewGroup projectActionButtonsViewGroup;
   protected @Bind(R.id.view_pledge_button) Button viewPledgeButton;
 
   protected @BindColor(R.color.green) int green;
@@ -67,6 +69,9 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     setContentView(R.layout.project_layout);
     ButterKnife.bind(this);
     ((KSApplication) getApplication()).component().inject(this);
+
+    final int bottomButtonVisibility = ViewUtils.isLandscape(this) ? View.GONE : View.VISIBLE;
+    projectActionButtonsViewGroup.setVisibility(bottomButtonVisibility);
 
     intentAction = new ProjectIntentAction(viewModel.inputs::initializer, lifecycle(), client);
     intentAction.intent(getIntent());

@@ -15,15 +15,6 @@ import rx.subjects.PublishSubject;
 
 public final class DiscoveryIntentActionTest extends KSRobolectricTestCase {
   @Test
-  public void emitsStaffPicksFromEmptyIntent() {
-    final TestSubscriber<DiscoveryParams> resultTest = TestSubscriber.create();
-    final DiscoveryIntentAction intentAction = new DiscoveryIntentAction(resultTest::onNext, PublishSubject.create(), new MockApiClient());
-    intentAction.intent(new Intent());
-
-    resultTest.assertValues(DiscoveryParams.builder().staffPicks(true).build());
-  }
-
-  @Test
   public void emitsFromParamsExtra() {
     final DiscoveryParams params = DiscoveryParams.builder().build();
     final Intent intent = new Intent().putExtra(IntentKey.DISCOVERY_PARAMS, params);

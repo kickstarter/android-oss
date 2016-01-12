@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-  <style name="StarFab">
-    <item name="android:layout_marginRight">@dimen/star_fab_margin_x</item>
-    <item name="android:layout_marginBottom">@dimen/star_fab_margin_y</item>
-  </style>
-</resources>

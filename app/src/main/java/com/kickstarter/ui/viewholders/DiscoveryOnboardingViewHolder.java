@@ -27,12 +27,9 @@ public final class DiscoveryOnboardingViewHolder extends KSViewHolder {
   }
 
   @Override
+  public void bindData(final @Nullable Object data) throws Exception {}
+
   public void onBind() {}
-
-  @Override
-  public void bindData(final @Nullable Object data) throws Exception {
-
-  }
 
   @OnClick(R.id.signup_login_button)
   protected void signupLoginOnClick() {

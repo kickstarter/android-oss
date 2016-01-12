@@ -22,11 +22,21 @@
       style="@style/ToolbarIcon"
       android:id="@+id/back_icon"
       android:focusable="true"
-      android:nextFocusRight="@+id/share_icon"
+      android:nextFocusRight="@+id/star_icon"
       android:contentDescription="@string/general_navigation_accessibility_button_navigate_back_label"
       android:layout_alignParentStart="true"
       android:layout_alignParentLeft="true"
       android:text="@string/arrow_back_icon" />
+
+    <com.kickstarter.ui.views.IconButton
+      style="@style/ToolbarIcon"
+      android:id="@+id/star_icon"
+      android:focusable="true"
+      android:nextFocusRight="@+id/share_icon"
+      android:contentDescription="@string/project_accessibility_button_star_label"
+      android:layout_toLeftOf="@+id/share_icon"
+      android:layout_toStartOf="@+id/share_icon"
+      android:text="@string/star_icon" />
 
     <!-- Override the text size because this looks enormous compared to the back icon -->
     <com.kickstarter.ui.views.IconButton
@@ -34,8 +44,7 @@
       android:id="@+id/share_icon"
       android:focusable="true"
       android:nextFocusLeft="@id/back_icon"
-      android:nextFocusRight="@+id/star_fab"
-      android:contentDescription="@string/general_navigation_accessibility_button_navigate_back_label"
+      android:contentDescription="@string/project_accessibility_button_share_label"
       android:layout_alignParentEnd="true"
       android:layout_alignParentRight="true"
       android:textSize="20sp"

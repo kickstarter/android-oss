@@ -280,10 +280,10 @@
   <string name="dates_time_minutes_two" formatted="false">2 MInuten</string>
   <string name="dates_time_minutes_zero" formatted="false">0 Minuten</string>
   <string name="dates_yesterday" formatted="false">Gestern</string>
-  <string name="discovery_accessibility_live_project_count" formatted="false">Live projects</string>
-  <string name="discovery_accessibility_toolbar_buttons_activity_label" formatted="false">Activity feed</string>
-  <string name="discovery_accessibility_toolbar_buttons_filter_label" formatted="false">Filter by category</string>
-  <string name="discovery_accessibility_toolbar_buttons_user_menu" formatted="false">User menu</string>
+  <string name="discovery_accessibility_live_project_count" formatted="false">Live-Projekte</string>
+  <string name="discovery_accessibility_toolbar_buttons_activity_label" formatted="false">Aktivität-Übersicht</string>
+  <string name="discovery_accessibility_toolbar_buttons_filter_label" formatted="false">Filter: Kategorie</string>
+  <string name="discovery_accessibility_toolbar_buttons_user_menu" formatted="false">Benutzermenü</string>
   <string name="discovery_activity_sample_alert_buttons_cancel" formatted="false">Abbrechen</string>
   <string name="discovery_activity_sample_alert_buttons_follow" formatted="false">Folgen</string>
   <string name="discovery_activity_sample_alert_follow_friend_name" formatted="false">%{friend_name} folgen?</string>
@@ -311,9 +311,9 @@
   <string name="discovery_baseball_card_social_friends_are_backers_zero" formatted="false">Keiner deiner Freunde unterstützt dieses Projekt.</string>
   <string name="discovery_baseball_card_stats_backers" formatted="false">Unterstützer</string>
   <string name="discovery_baseball_card_stats_convert_from_pledged_of_goal" formatted="false">Umgerechneter Betrag: %{pledged} von %{goal} (Fianzierungsziel).</string>
-  <string name="discovery_baseball_card_stats_funded" formatted="false">funded</string>
+  <string name="discovery_baseball_card_stats_funded" formatted="false">finanziert</string>
   <string name="discovery_baseball_card_stats_pledged_of_goal" formatted="false">von %{goal}</string>
-  <string name="discovery_baseball_card_stats_pledged_of_goal_short" formatted="false">of %{goal}</string>
+  <string name="discovery_baseball_card_stats_pledged_of_goal_short" formatted="false">von %{goal}</string>
   <string name="discovery_baseball_card_status_banner_canceled" formatted="false">Finanzierung abgebrochen</string>
   <string name="discovery_baseball_card_status_banner_canceled_date" formatted="false">Finanzierung abgebrochen am %{date}</string>
   <string name="discovery_baseball_card_status_banner_funding_unsuccessful_date" formatted="false">Finanzierung fehlgeschlagen %{date}</string>
@@ -354,7 +354,7 @@
   <string name="discovery_nearby" formatted="false">Projekte in deiner Nähe</string>
   <string name="discovery_onboarding_buttons_learn_more" formatted="false">Weitere Info</string>
   <string name="discovery_onboarding_buttons_login" formatted="false">Anmelden</string>
-  <string name="discovery_onboarding_buttons_signup_or_login" formatted="false">Sign up or Log in</string>
+  <string name="discovery_onboarding_buttons_signup_or_login" formatted="false">Registrieren oder Anmelden</string>
   <string name="discovery_onboarding_learn_login_conjunction_or" formatted="false">oder</string>
   <string name="discovery_onboarding_title_bring_creative_projects_to_life" formatted="false">Du kannst kreative Projekte ins Leben rufen!</string>
   <string name="discovery_popular" formatted="false">Beliebte Projekte</string>
@@ -391,9 +391,9 @@
   <string name="general_error_something_wrong" formatted="false">Da hat etwas nicht geklappt.</string>
   <string name="general_loading" formatted="false">Wird geladen ...</string>
   <string name="general_navigation_accessibility_button_close_label" formatted="false">Schließen</string>
-  <string name="general_navigation_accessibility_button_help_menu_label" formatted="false">Help menu</string>
+  <string name="general_navigation_accessibility_button_help_menu_label" formatted="false">Hilfe-Menü</string>
   <string name="general_navigation_accessibility_button_navigate_back_label" formatted="false">Zurück</string>
-  <string name="general_navigation_accessibility_button_overflow_menu_label" formatted="false">Overflow menu</string>
+  <string name="general_navigation_accessibility_button_overflow_menu_label" formatted="false">Overflow-Menu</string>
   <string name="general_navigation_buttons_cancel" formatted="false">Abbrechen</string>
   <string name="general_navigation_buttons_close" formatted="false">Schließen</string>
   <string name="general_navigation_buttons_comment" formatted="false">Kommentar</string>
@@ -413,7 +413,7 @@
   <string name="invalid_api_client_alert_title" formatted="false">Bitte aktualisieren</string>
   <string name="invalid_api_client_alert_upgrade" formatted="false">Aktualisierung</string>
   <string name="login_buttons_forgot_password" formatted="false">Passwort vergessen?</string>
-  <string name="login_buttons_forgot_password_html" formatted="false">&lt;u>Forgot your password?&lt;/u></string>
+  <string name="login_buttons_forgot_password_html" formatted="false">&lt;u>Passwort vergessen?&lt;/u></string>
   <string name="login_buttons_log_in" formatted="false">Anmelden</string>
   <string name="login_buttons_log_in_email" formatted="false">Mit E-Mail-Adresse anmelden</string>
   <string name="login_buttons_one_password" formatted="false">1Password</string>
@@ -430,7 +430,7 @@
   <string name="login_tout_back_intent_traditional_login_button" formatted="false">Anmelden</string>
   <string name="login_tout_back_intent_traditional_signup_button" formatted="false">Registrieren</string>
   <string name="login_tout_back_intent_traditional_title" formatted="false">Benutze deine E-Mail-Adresse:</string>
-  <string name="login_tout_buttons_log_in_with_facebook" formatted="false">Log in with Facebook</string>
+  <string name="login_tout_buttons_log_in_with_facebook" formatted="false">Über Facebook anmelden</string>
   <string name="login_tout_default_intent_title" formatted="false">Registriere dich oder melde dich mit deinem Facebook-Konto oder deiner E-Mail-Adresse hier an:</string>
   <string name="login_tout_default_intent_traditional_login_button" formatted="false">Anmelden</string>
   <string name="login_tout_default_intent_traditional_signup_button" formatted="false">Registrieren</string>
@@ -517,10 +517,10 @@ Für gewöhnlich kann das Problem behoben werden, indem du in den iOS Einstellun
   <string name="profile_settings_about_privacy" formatted="false">Datenschutzrichtlinien</string>
   <string name="profile_settings_about_terms" formatted="false">Nutzungsbedingungen</string>
   <string name="profile_settings_about_title" formatted="false">Über uns</string>
-  <string name="profile_settings_accessibility_subscribe_mobile_notifications" formatted="false">Subscribe to mobile notifications</string>
-  <string name="profile_settings_accessibility_subscribe_notifications" formatted="false">Subscribe to notifications</string>
-  <string name="profile_settings_accessibility_unsubscribe_mobile_notifications" formatted="false">Unsubscribe from mobile notifications</string>
-  <string name="profile_settings_accessibility_unsubscribe_notifications" formatted="false">Unsubscribe from notifications</string>
+  <string name="profile_settings_accessibility_subscribe_mobile_notifications" formatted="false">Mobil-Benachrichtigungen aktivieren</string>
+  <string name="profile_settings_accessibility_subscribe_notifications" formatted="false">Benachrichtigungen aktivieren</string>
+  <string name="profile_settings_accessibility_unsubscribe_mobile_notifications" formatted="false">Mobil-Benachrichtigungen deaktivieren</string>
+  <string name="profile_settings_accessibility_unsubscribe_notifications" formatted="false">Benachrichtigungen deaktivieren</string>
   <string name="profile_settings_backer_notifications" formatted="false">Projektbenachrichtigungen verwalten</string>
   <string name="profile_settings_backer_project_updates" formatted="false">Projekt-Updates</string>
   <string name="profile_settings_backer_title" formatted="false">Deine unterstützten Projekte</string>
@@ -528,7 +528,7 @@ Für gewöhnlich kann das Problem behoben werden, indem du in den iOS Einstellun
   <string name="profile_settings_creator_likes" formatted="false">Neue Likes</string>
   <string name="profile_settings_creator_pledges" formatted="false">Neue Beiträge</string>
   <string name="profile_settings_creator_title" formatted="false">Projektgründer-Meldungen</string>
-  <string name="profile_settings_error" formatted="false">Unable to save</string>
+  <string name="profile_settings_error" formatted="false">Konnte nicht gespeichert werden</string>
   <string name="profile_settings_log_out_button" formatted="false">Abmelden</string>
   <string name="profile_settings_logout_alert_cancel_button" formatted="false">Abbrechen</string>
   <string name="profile_settings_logout_alert_confirm_button" formatted="false">Abmelden</string>
@@ -537,8 +537,8 @@ Für gewöhnlich kann das Problem behoben werden, indem du in den iOS Einstellun
   <string name="profile_settings_navbar_title" formatted="false">Einstellungen</string>
   <string name="profile_settings_navbar_title_notifications" formatted="false">Benachrichtigungen</string>
   <string name="profile_settings_newsletter_happening" formatted="false">Happening Now</string>
-  <string name="profile_settings_newsletter_opt_in_message" formatted="false">We\'ve sent a confirmation email to the address associated with you account! Please check your email in order to confirm that you\'d like to subscribe to %{newsletter}.</string>
-  <string name="profile_settings_newsletter_opt_in_title" formatted="false">One final step!</string>
+  <string name="profile_settings_newsletter_opt_in_message" formatted="false">Wir haben eine Bestätigung an die mit deinem Konto verbundene E-Mail-Adresse geschickt! Bitte sieh in deinem Posteingang nach und bestätige dein Abo von %{newsletter}.</string>
+  <string name="profile_settings_newsletter_opt_in_title" formatted="false">Nur noch ein letzter Schritt!</string>
   <string name="profile_settings_newsletter_promo" formatted="false">Kickstarter Neuigkeiten und Events</string>
   <string name="profile_settings_newsletter_title" formatted="false">Newsletter</string>
   <string name="profile_settings_newsletter_weekly" formatted="false">Unsere Lieblingsprojekte</string>
@@ -549,7 +549,7 @@ Wir würden uns sehr darüber freuen!</string>
   <string name="profile_settings_rating_option_rate_now" formatted="false">Jetzt bewerten</string>
   <string name="profile_settings_rating_option_remind_later" formatted="false">Später</string>
   <string name="profile_settings_rating_rate_us" formatted="false">Bewerte uns im App Store!</string>
-  <string name="profile_settings_rating_rate_us_play_store" formatted="false">Rate us in the Play Store!</string>
+  <string name="profile_settings_rating_rate_us_play_store" formatted="false">Bewerte uns im Play Store!</string>
   <string name="profile_settings_rating_title" formatted="false">Wir sind ganz Ohr!</string>
   <string name="profile_settings_social_find_friends" formatted="false">Freunde finden</string>
   <string name="profile_settings_social_followers" formatted="false">Neue Follower</string>
@@ -588,17 +588,17 @@ Wir würden uns sehr darüber freuen!</string>
   <string name="project_checkout_share_twitter_I_just_backed_project_on_kickstarter" formatted="false">Ich unterstütze jetzt %{project_name} auf @Kickstarter</string>
   <string name="project_checkout_share_twitter_via_kickstarter" formatted="false">%{project_or_update_title}, über Kickstarter</string>
   <string name="project_checkout_share_you_just_backed_project_share_this_project" formatted="false">Du hast gerade %{project_name} unterstützt. Erzähle deinen Freunden von diesem Projekt, um es weiter zu fördern!</string>
-  <string name="project_checkout_share_you_just_backed_project_share_this_project_html" formatted="false">You just backed &lt;b>%{project_name}&lt;/b>. Share this project with friends to help it along!</string>
-  <string name="project_comments_accessibility_button_write" formatted="false">Write a comment</string>
+  <string name="project_checkout_share_you_just_backed_project_share_this_project_html" formatted="false">Du gehörst nun zu den Unterstützern des Projekts &lt;b>%{project_name}&lt;/b>. Teile es mit deinen Freunden - je mehr Unterstützer, desto besser!</string>
+  <string name="project_comments_accessibility_button_write" formatted="false">Hinterlasse einen Kommentar</string>
   <string name="project_comments_empty_state_backer_button" formatted="false">Kommentar hinterlassen</string>
   <string name="project_comments_empty_state_backer_message" formatted="false">Oh wie schade. Du könntest der erste Unterstützer sein, der dieses Projekt kommentiert!</string>
   <string name="project_comments_empty_state_backer_title" formatted="false">Keine Kommentare</string>
   <string name="project_comments_empty_state_logged_out_message" formatted="false">Oh wie schade. Werde Unterstützer um einen Kommentar zu hinterlassen.</string>
-  <string name="project_comments_empty_state_logged_out_message_log_in" formatted="false">Aw, how sad. Log in to become a backer or leave a comment.</string>
+  <string name="project_comments_empty_state_logged_out_message_log_in" formatted="false">Ach, wie schade! Wenn du das das Projekt unterstützen oder einen Kommentar hinterlassen möchtest, melde dich bitte an.</string>
   <string name="project_comments_empty_state_logged_out_title" formatted="false">Keine Kommentare</string>
   <string name="project_comments_empty_state_non_backer_message" formatted="false">Oh wie schade. Werde Unterstützer um einen Kommentar zu verfassen.</string>
   <string name="project_comments_empty_state_non_backer_title" formatted="false">Keine Kommentare</string>
-  <string name="project_comments_posted" formatted="false">Comment posted!</string>
+  <string name="project_comments_posted" formatted="false">Kommentar veröffentlicht!</string>
   <string name="project_creator_by_creator" formatted="false">von %{creator_name}</string>
   <string name="project_creator_by_creator_html" formatted="false">von %{creator_name}</string>
   <string name="project_creator_youre_a_backer" formatted="false">\u0020• Du unterstützt das Projekt</string>
@@ -715,7 +715,7 @@ Wir würden uns sehr darüber freuen!</string>
   <string name="support_email_body" formatted="false">Wie können wir dir helfen? Mache deine Angaben bitte so genau wie möglich.\n
 </string>
   <string name="support_email_button_ok" formatted="false">OK</string>
-  <string name="support_email_chooser" formatted="false">Select email application:</string>
+  <string name="support_email_chooser" formatted="false">Auswahl E-Mail-App:</string>
   <string name="support_email_noemail_message" formatted="false">Es sieht so aus, als hättest du keinen E-Mail-Account auf deinem Gerät. Bitte kontaktiere uns unter app@kickstarter.com.</string>
   <string name="support_email_noemail_title" formatted="false">Support</string>
   <string name="support_email_subject" formatted="false">Hallo Kickstarter App Support</string>

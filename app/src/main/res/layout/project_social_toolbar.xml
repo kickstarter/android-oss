@@ -23,16 +23,11 @@
       android:text="@string/arrow_back_icon" />
 
     <TextView
-      style="@style/Headline"
+      style="@style/ToolbarTitle"
       android:id="@+id/title_text_view"
       android:text="@string/discovery_friends_backed"
-      android:layout_width="wrap_content"
-      android:layout_height="match_parent"
       android:layout_toEndOf="@id/back_button"
-      android:layout_toRightOf="@id/back_button"
-      android:layout_marginLeft="@dimen/grid_3_half"
-      android:layout_marginStart="@dimen/grid_3_half"
-      android:gravity="center_vertical" />
+      android:layout_toRightOf="@id/back_button" />
 
   </RelativeLayout>
 

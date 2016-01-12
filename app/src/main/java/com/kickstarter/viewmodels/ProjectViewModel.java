@@ -10,8 +10,10 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfig;
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.libs.utils.RefTagUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 import com.kickstarter.models.User;
@@ -23,8 +25,12 @@ import com.kickstarter.ui.viewholders.RewardViewHolder;
 import com.kickstarter.viewmodels.inputs.ProjectViewModelInputs;
 import com.kickstarter.viewmodels.outputs.ProjectViewModelOutputs;
 
+import java.net.CookieManager;
+import java.net.HttpCookie;
+
 import javax.inject.Inject;
 
+import retrofit.http.HEAD;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
@@ -33,7 +39,24 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
   ProjectViewModelInputs, ProjectViewModelOutputs {
   protected @Inject ApiClientType client;
   protected @Inject CurrentUser currentUser;
+  protected @Inject CookieManager cookieManager;
   protected @Inject CurrentConfig currentConfig;
+
+  /**
+   * A light-weight value to hold two ref tags and a project. Two ref tags are stored: one comes from parceled
+   * data in the activity and the other comes from the ref stored in a cookie associated to the project.
+   */
+  private class RefTagsAndProject {
+    final @Nullable RefTag intentRefTag;
+    final @Nullable RefTag cookieRefTag;
+    final @NonNull Project project;
+
+    private RefTagsAndProject(final @Nullable RefTag intentRefTag, final @Nullable RefTag cookieRefTag, final @NonNull Project project) {
+      this.intentRefTag = intentRefTag;
+      this.cookieRefTag = cookieRefTag;
+      this.project = project;
+    }
+  }
 
   // INPUTS
   private final PublishSubject<Project> initializer = PublishSubject.create();
@@ -87,6 +110,10 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
   private final PublishSubject<Void> loginSuccess = PublishSubject.create();
   public void loginSuccess() {
     this.loginSuccess.onNext(null);
+  }
+  private final PublishSubject<RefTag> intentRefTag = PublishSubject.create();
+  public void intentRefTag(final @Nullable RefTag refTag) {
+    intentRefTag.onNext(refTag);
   }
   public final ProjectViewModelInputs inputs = this;
 
@@ -179,7 +206,28 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
     addSubscription(projectOnUserChangeStar.mergeWith(starredProjectOnLoginSuccess)
       .subscribe(koala::trackProjectStar));
 
-    koala.trackProjectShow();
+    // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
+    final Observable<RefTag> cookieRefTag = project
+      .take(1)
+      .map(p -> RefTagUtils.storedCookieRefTagForProject(p, cookieManager));
+
+    addSubscription(
+      Observable.combineLatest(intentRefTag, cookieRefTag, project, RefTagsAndProject::new)
+        .take(1)
+        .subscribe(data -> {
+          // If a cookie hasn't been set for this ref+project then do so.
+          if (data.cookieRefTag == null && data.intentRefTag != null) {
+            final HttpCookie cookie = RefTagUtils.buildCookieForRefTagAndProject(data.intentRefTag, data.project);
+            cookieManager.getCookieStore().add(null, cookie);
+          }
+
+          koala.trackProjectShow(
+            data.project,
+            data.intentRefTag,
+            RefTagUtils.storedCookieRefTagForProject(data.project, cookieManager)
+          );
+        })
+    );
   }
 
   public void projectViewHolderBlurbClicked(final @NonNull ProjectViewHolder viewHolder) {

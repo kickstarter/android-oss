@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -115,11 +116,14 @@ public final class ProjectViewHolder extends KSViewHolder {
   @Inject KSString ksString;
 
   public interface Delegate {
+    void projectViewHolderBackProjectClicked(ProjectViewHolder viewHolder);
     void projectViewHolderBlurbClicked(ProjectViewHolder viewHolder);
     void projectViewHolderCommentsClicked(ProjectViewHolder viewHolder);
     void projectViewHolderCreatorClicked(ProjectViewHolder viewHolder);
+    void projectViewHolderManagePledgeClicked(ProjectViewHolder viewHolder);
     void projectViewHolderUpdatesClicked(ProjectViewHolder viewHolder);
     void projectViewHolderVideoStarted(ProjectViewHolder viewHolder);
+    void projectViewHolderViewPledgeClicked(ProjectViewHolder viewHolder);
   }
 
   public ProjectViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
@@ -189,6 +193,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     commentsCountTextView.setText(commentsCount != null ? NumberUtils.format(commentsCount) : null);
 
     setConvertedUsdView();
+    setLandscapeActionButton();
     setPledgedOfGoalView();
     setProjectDisclaimerView();
     setProjectSocialClick();
@@ -207,6 +212,11 @@ public final class ProjectViewHolder extends KSViewHolder {
     projectStatsViewGroup.setLayoutParams(layoutParams);
   }
 
+  @Nullable @OnClick(R.id.back_project_button)
+  public void backProjectButtonOnClick() {
+    delegate.projectViewHolderBackProjectClicked(this);
+  }
+
   @OnClick({R.id.blurb, R.id.campaign})
   public void blurbClick() {
     delegate.projectViewHolderBlurbClicked(this);
@@ -222,9 +232,19 @@ public final class ProjectViewHolder extends KSViewHolder {
     delegate.projectViewHolderCreatorClicked(this);
   }
 
+  @Nullable @OnClick(R.id.manage_pledge_button)
+  public void managePledgeOnClick() {
+    delegate.projectViewHolderManagePledgeClicked(this);
+  }
+
   @OnClick(R.id.play_button_overlay)
   public void playButtonClick() {
     delegate.projectViewHolderVideoStarted(this);
+  }
+
+  @Nullable @OnClick(R.id.view_pledge_button)
+  public void viewPledgeOnClick() {
+    delegate.projectViewHolderViewPledgeClicked(this);
   }
 
   public void setConvertedUsdView() {
@@ -239,6 +259,18 @@ public final class ProjectViewHolder extends KSViewHolder {
       ));
     } else {
       usdConversionTextView.setVisibility(View.GONE);
+    }
+  }
+
+  /**
+   * Landscape project action buttons live in the ViewHolder rather than Activity layout.
+   */
+  public void setLandscapeActionButton() {
+    if (ViewUtils.isLandscape(view.getContext())) {
+      final Button backProjectButton = ButterKnife.findById(view, R.id.back_project_button);
+      final Button managePledgeButton = ButterKnife.findById(view, R.id.manage_pledge_button);
+      final Button viewPledgeButton = ButterKnife.findById(view, R.id.view_pledge_button);
+      ProjectUtils.setActionButton(project, backProjectButton, managePledgeButton, viewPledgeButton);
     }
   }
 

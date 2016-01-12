@@ -16,6 +16,7 @@ import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
@@ -151,28 +152,8 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
 
   private void renderProject(final @NonNull Project project, final @NonNull String configCountry) {
     adapter.takeProject(project, configCountry);
-    renderActionButton(project);
+    ProjectUtils.setActionButton(project, backProjectButton, managePledgeButton, viewPledgeButton);
     renderStar(project);
-  }
-
-  private void renderActionButton(@NonNull final Project project) {
-    if (!project.isBacking() && project.isLive()) {
-      backProjectButton.setVisibility(View.VISIBLE);
-    } else {
-      backProjectButton.setVisibility(View.GONE);
-    }
-
-    if (project.isBacking() && project.isLive()) {
-      managePledgeButton.setVisibility(View.VISIBLE);
-    } else {
-      managePledgeButton.setVisibility(View.GONE);
-    }
-
-    if (project.isBacking() && !project.isLive()) {
-      viewPledgeButton.setVisibility(View.VISIBLE);
-    } else {
-      viewPledgeButton.setVisibility(View.GONE);
-    }
   }
 
   private void renderStar(final @NonNull Project project) {

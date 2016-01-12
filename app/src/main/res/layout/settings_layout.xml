@@ -15,8 +15,8 @@
 
     <LinearLayout
       android:orientation="vertical"
-      android:layout_marginStart="@dimen/settings_margin_y"
-      android:layout_marginLeft="@dimen/settings_margin_y"
+      android:layout_marginStart="@dimen/form_margin_x"
+      android:layout_marginLeft="@dimen/form_margin_x"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 
@@ -31,8 +31,8 @@
       <include layout="@layout/horizontal_line_thin_right_margin_view" />
 
       <RelativeLayout
-        android:layout_marginEnd="@dimen/settings_icon_margin_y"
-        android:layout_marginRight="@dimen/settings_icon_margin_y"
+        android:layout_marginEnd="@dimen/settings_icon_margin_x"
+        android:layout_marginRight="@dimen/settings_icon_margin_x"
         android:layout_width="match_parent"
         android:layout_height="@dimen/grid_8">
 
@@ -60,8 +60,8 @@
 
       <RelativeLayout
         android:id="@+id/manage_project_notifications"
-        android:layout_marginEnd="@dimen/settings_icon_margin_y"
-        android:layout_marginRight="@dimen/settings_icon_margin_y"
+        android:layout_marginEnd="@dimen/settings_icon_margin_x"
+        android:layout_marginRight="@dimen/settings_icon_margin_x"
         android:focusable="true"
         android:background="@drawable/click_indicator_light_masked"
         android:layout_width="match_parent"
@@ -108,16 +108,16 @@
       <include layout="@layout/horizontal_line_thin_right_margin_view" />
 
       <RelativeLayout
-        android:layout_marginEnd="@dimen/settings_icon_margin_y"
-        android:layout_marginRight="@dimen/settings_icon_margin_y"
+        android:layout_marginEnd="@dimen/settings_icon_margin_x"
+        android:layout_marginRight="@dimen/settings_icon_margin_x"
         android:layout_width="match_parent"
         android:layout_height="@dimen/grid_8">
 
         <TextView
           style="@style/SubheadPrimary"
           android:layout_centerVertical="true"
-          android:layout_marginEnd="@dimen/settings_icon_margin_y"
-          android:layout_marginRight="@dimen/settings_icon_margin_y"
+          android:layout_marginEnd="@dimen/settings_icon_margin_x"
+          android:layout_marginRight="@dimen/settings_icon_margin_x"
           android:text="@string/profile_settings_social_followers"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
@@ -138,8 +138,8 @@
       <include layout="@layout/horizontal_line_thin_right_margin_view" />
 
       <RelativeLayout
-        android:layout_marginEnd="@dimen/settings_icon_margin_y"
-        android:layout_marginRight="@dimen/settings_icon_margin_y"
+        android:layout_marginEnd="@dimen/settings_icon_margin_x"
+        android:layout_marginRight="@dimen/settings_icon_margin_x"
         android:layout_width="match_parent"
         android:layout_height="@dimen/grid_8">
 
@@ -167,8 +167,8 @@
 
       <LinearLayout
         android:orientation="vertical"
-        android:layout_marginRight="@dimen/settings_margin_y"
-        android:layout_marginEnd="@dimen/settings_margin_y"
+        android:layout_marginRight="@dimen/form_margin_x"
+        android:layout_marginEnd="@dimen/form_margin_x"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -418,13 +418,15 @@
 
         </RelativeLayout>
 
+        <include layout="@layout/horizontal_line_thin_view"/>
+
         <Button
           style="@style/BorderButton"
           android:id="@+id/log_out_button"
           android:text="@string/profile_settings_log_out_button"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/grid_3"
+          android:layout_marginTop="@dimen/grid_4"
           android:layout_marginBottom="@dimen/grid_3"/>
 
       </LinearLayout>

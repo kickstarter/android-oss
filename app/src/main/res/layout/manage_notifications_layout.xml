@@ -10,7 +10,9 @@
     android:id="@+id/project_notifications_recycler_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="@dimen/settings_margin_y"
-    android:layout_marginRight="@dimen/settings_margin_y"/>
+    android:layout_marginLeft="@dimen/form_margin_x"
+    android:layout_marginStart="@dimen/form_margin_x"
+    android:layout_marginEnd="@dimen/form_margin_x"
+    android:layout_marginRight="@dimen/form_margin_x"/>
 
 </LinearLayout>

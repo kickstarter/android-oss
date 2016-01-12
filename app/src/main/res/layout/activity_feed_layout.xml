@@ -16,10 +16,6 @@
 
     <android.support.v7.widget.RecyclerView
       android:id="@+id/recycler_view"
-      android:paddingLeft="@dimen/activity_padding_x"
-      android:paddingStart="@dimen/activity_padding_x"
-      android:paddingRight="@dimen/activity_padding_x"
-      android:paddingEnd="@dimen/activity_padding_x"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:scrollbars="vertical" />

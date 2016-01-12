@@ -10,7 +10,6 @@
   android:background="@color/light_gray"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
-  app:layout_scrollFlags="scroll|enterAlways"
   android:elevation="@dimen/toolbar_elevation">
 
   <RelativeLayout

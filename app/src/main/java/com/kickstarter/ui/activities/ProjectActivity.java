@@ -1,18 +1,13 @@
 package com.kickstarter.ui.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
@@ -20,6 +15,7 @@ import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 import com.kickstarter.services.ApiClientType;
@@ -137,7 +133,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     this.viewModel.outputs.showStarredPrompt()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> this.showStarPrompt());
+      .subscribe(__ -> this.showStarToast());
 
     this.viewModel.outputs.showLoginTout()
       .compose(bindToLifecycle())
@@ -223,16 +219,8 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     startWebViewActivity(project.updatesUrl());
   }
 
-  private void showStarPrompt() {
-    final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    final View view = inflater.inflate(R.layout.toast, null);
-    final TextView text = (TextView) view.findViewById(R.id.toast_text_view);
-    text.setText(projectStarConfirmationString);
-
-    final Toast toast = new Toast(this);
-    toast.setView(view);
-    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, grid8Dimen);
-    toast.show();
+  private void showStarToast() {
+    ViewUtils.showToastFromTop(this, projectStarConfirmationString, 0, grid8Dimen);
   }
 
   private void startCheckoutActivity(final @NonNull Project project) {

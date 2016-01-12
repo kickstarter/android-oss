@@ -43,10 +43,10 @@
     android:orientation="vertical"
     android:background="@color/white"
     android:layout_marginTop="@dimen/grid_1"
-    android:layout_marginRight="@dimen/grid_3"
-    android:layout_marginLeft="@dimen/grid_3"
-    android:layout_marginStart="@dimen/grid_3"
-    android:layout_marginEnd="@dimen/grid_3"
+    android:layout_marginRight="@dimen/project_padding_x"
+    android:layout_marginLeft="@dimen/project_padding_x"
+    android:layout_marginStart="@dimen/project_padding_x"
+    android:layout_marginEnd="@dimen/project_padding_x"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 

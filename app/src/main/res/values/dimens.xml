@@ -58,6 +58,7 @@
   <dimen name="feed_padding_y">@dimen/grid_5_half</dimen>
   <dimen name="feed_padding_x">@dimen/grid_3</dimen>
   <dimen name="form_margin_x">@dimen/grid_3</dimen>
+  <dimen name="project_padding_x">@dimen/grid_3</dimen>
   <dimen name="settings_icon_margin_x">@dimen/grid_1</dimen>
 
   <!-- Buttons -->

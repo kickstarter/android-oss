@@ -86,6 +86,7 @@
           android:singleLine="true"
           style="@style/BodyPrimary"
           android:textColor="@color/white"
+          android:layout_marginLeft="@dimen/grid_1_half"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 

@@ -4,8 +4,8 @@
   android:orientation="vertical"
   android:gravity="center"
   android:layout_gravity="center"
-  android:layout_height="@dimen/profile_card_height"
-  android:layout_width="@dimen/profile_card_photo_width"
+  android:layout_height="wrap_content"
+  android:layout_width="wrap_content"
   android:layout_marginTop="@dimen/grid_3"
   android:layout_marginRight="@dimen/grid_2"
   android:layout_marginEnd="@dimen/grid_2">
@@ -17,8 +17,8 @@
     android:foreground="@drawable/click_indicator_light"
     android:elevation="@dimen/card_elevation"
     android:focusable="true"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_width="@dimen/profile_card_photo_width"
+    android:layout_height="@dimen/profile_card_height" >
 
     <RelativeLayout
       android:layout_width="match_parent"
@@ -26,7 +26,7 @@
 
       <ImageView
         android:id="@+id/profile_card_image"
-        android:scaleType="centerCrop"
+        android:scaleType="fitXY"
         android:background="@drawable/gray_gradient"
         android:layout_alignParentTop="true"
         android:layout_width="match_parent"

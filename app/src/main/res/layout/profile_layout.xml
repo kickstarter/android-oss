@@ -39,8 +39,8 @@
           android:gravity="center_horizontal"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:paddingLeft="@dimen/feed_padding_x"
-          android:paddingRight="@dimen/feed_padding_x"
+          android:paddingLeft="@dimen/grid_3"
+          android:paddingRight="@dimen/grid_3"
           android:text="@string/update_comments_you" />
 
         <LinearLayout

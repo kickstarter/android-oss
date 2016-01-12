@@ -13,6 +13,7 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
@@ -167,8 +168,9 @@ public final class RewardViewHolder extends KSViewHolder {
       shippingSummaryTextView.setVisibility(View.VISIBLE);
       shippingSummaryTextView.setText(reward.shippingSummary());
     } else {
-      shippingDestinationTextView.setVisibility(View.GONE);
-      shippingSummaryTextView.setVisibility(View.GONE);
+      final int visibility = ViewUtils.isLandscape(context) ? View.INVISIBLE : View.GONE;
+      shippingDestinationTextView.setVisibility(visibility);
+      shippingSummaryTextView.setVisibility(visibility);
     }
   }
 

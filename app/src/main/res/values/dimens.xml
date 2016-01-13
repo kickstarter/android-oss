@@ -27,6 +27,7 @@
   <dimen name="grid_35">280dp</dimen>
   <dimen name="grid_38">304dp</dimen>
   <dimen name="grid_40">320dp</dimen>
+  <dimen name="grid_50">400dp</dimen>
 
   <!-- Typography-->
   <dimen name="caption">12sp</dimen>

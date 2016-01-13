@@ -89,6 +89,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @BindColor(R.color.green_alpha_20) int greenAlpha50Color;
   protected @BindColor(R.color.medium_gray) int mediumGrayColor;
 
+  protected @BindDimen(R.dimen.grid_1) int grid1Dimen;
   protected @BindDimen(R.dimen.grid_2) int grid2Dimen;
   protected @BindDimen(R.dimen.grid_3) int grid3Dimen;
   protected @BindDimen(R.dimen.grid_4) int grid4Dimen;
@@ -194,22 +195,13 @@ public final class ProjectViewHolder extends KSViewHolder {
 
     setConvertedUsdView();
     setLandscapeActionButton();
+    setLandscapeOverlayText();
     setPledgedOfGoalView();
     setProjectDisclaimerView();
     setProjectSocialClick();
     setProjectStateView();
     setSocialView();
     setStatsContentDescription();
-  }
-
-  // adjust spacing between stats and divider when social is present
-  public void adjustStatsViewBottomMargin(final int bottomMargin) {
-    final LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-      projectStatsViewGroup.getLayoutParams()
-    );
-
-    layoutParams.setMargins(0, grid3Dimen, 0, bottomMargin);
-    projectStatsViewGroup.setLayoutParams(layoutParams);
   }
 
   @Nullable @OnClick(R.id.back_project_button)
@@ -271,6 +263,26 @@ public final class ProjectViewHolder extends KSViewHolder {
       final Button managePledgeButton = ButterKnife.findById(view, R.id.manage_pledge_button);
       final Button viewPledgeButton = ButterKnife.findById(view, R.id.view_pledge_button);
       ProjectUtils.setActionButton(project, backProjectButton, managePledgeButton, viewPledgeButton);
+    }
+  }
+
+  /**
+   * Set top margin of overlay text based on landscape screen height, scaled by screen density.
+   */
+  public void setLandscapeOverlayText() {
+    if (ViewUtils.isLandscape(view.getContext())) {
+      final ViewGroup overlayTextViewGroup = ButterKnife.findById(view, R.id.land_overlay_text);
+      final int screenHeight = ViewUtils.getScreenHeightDp(view.getContext());
+      final float densityOffset = view.getContext().getResources().getDisplayMetrics().density;
+      final float topMargin = ((screenHeight / 3 * 2) * densityOffset) - grid4Dimen;  // offset for toolbar
+      ViewUtils.setRelativeViewGroupMargins(overlayTextViewGroup, grid4Dimen, (int) topMargin, grid4Dimen, 0);
+
+      final ViewGroup nameCreatorViewGroup = ButterKnife.findById(view, R.id.name_creator_view);
+      if (!project.hasVideo()) {
+        ViewUtils.setRelativeViewGroupMargins(nameCreatorViewGroup, 0, 0, 0, grid2Dimen);
+      } else {
+        ViewUtils.setRelativeViewGroupMargins(nameCreatorViewGroup, 0, 0, 0, grid1Dimen);
+      }
     }
   }
 
@@ -374,9 +386,8 @@ public final class ProjectViewHolder extends KSViewHolder {
 
   public void setSocialView() {
     if (project.isFriendBacking()) {
-
       projectSocialViewGroup.setVisibility(View.VISIBLE);
-      adjustStatsViewBottomMargin(grid2Dimen);
+      ViewUtils.setLinearViewGroupMargins(projectStatsViewGroup, 0, grid3Dimen, 0, grid2Dimen);
 
       projectSocialImageView.setVisibility(View.VISIBLE);
       Picasso.with(view.getContext()).load(project.friends().get(0).avatar()
@@ -388,7 +399,7 @@ public final class ProjectViewHolder extends KSViewHolder {
 
     } else {
       projectSocialViewGroup.setVisibility(View.GONE);
-      adjustStatsViewBottomMargin(grid4Dimen);
+      ViewUtils.setLinearViewGroupMargins(projectStatsViewGroup, 0, grid3Dimen, 0, grid4Dimen);
     }
   }
 

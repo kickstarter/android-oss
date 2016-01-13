@@ -136,10 +136,9 @@
 
       <TextView
         android:id="@+id/project_social_text"
-        style="@style/CaptionPrimaryMedium"
-        android:layout_marginStart="@dimen/grid_2"
-        android:layout_marginLeft="@dimen/grid_2"
-        android:text="Gina Binetti, Christopher Wright, and 5 more are backers"
+        style="@style/BodyPrimaryMedium"
+        android:layout_marginStart="@dimen/grid_3"
+        android:layout_marginLeft="@dimen/grid_3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

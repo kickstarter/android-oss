@@ -200,6 +200,7 @@ public final class ApiClient implements ApiClientType {
       .login(RegisterWithFacebookBody.builder()
         .accessToken(fbAccessToken)
         .sendNewsletters(sendNewsletters)
+        .newsletterOptIn(sendNewsletters)
         .build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
@@ -258,6 +259,7 @@ public final class ApiClient implements ApiClientType {
           .password(password)
           .passwordConfirmation(passwordConfirmation)
           .sendNewsletters(sendNewsletters)
+          .newsletterOptIn(sendNewsletters)
           .build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());

@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.kickstarter.KSApplication;
+import com.kickstarter.libs.CurrentConfig;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
@@ -21,10 +22,14 @@ import com.kickstarter.viewmodels.outputs.SignupViewModelOutputs;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public final class SignupViewModel extends ViewModel<SignupActivity> implements SignupViewModelInputs, SignupViewModelOutputs,
   SignupViewModelErrors {
+  protected @Inject ApiClientType client;
+  protected @Inject CurrentUser currentUser;
+  protected @Inject CurrentConfig currentConfig;
 
   protected final static class SignupData {
     @NonNull final String fullName;
@@ -51,6 +56,7 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
   private final PublishSubject<String> password = PublishSubject.create();
   private final PublishSubject<Boolean> sendNewsletters = PublishSubject.create();
   private final PublishSubject<Void> signupClick = PublishSubject.create();
+  private final PublishSubject<Boolean> checkInitialNewsletterInput = PublishSubject.create();
 
   // OUTPUTS
   private final PublishSubject<Void> signupSuccess = PublishSubject.create();
@@ -65,6 +71,10 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
   public final Observable<Boolean> formIsValid() {
     return formIsValid.asObservable();
   }
+  private final BehaviorSubject<Boolean> checkInitialNewsletter = BehaviorSubject.create();
+  public final Observable<Boolean> checkInitialNewsletter() {
+    return checkInitialNewsletter;
+  }
 
   // ERRORS
   private final PublishSubject<ErrorEnvelope> signupError = PublishSubject.create();
@@ -73,9 +83,6 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
       .takeUntil(signupSuccess)
       .map(ErrorEnvelope::errorMessage);
   }
-
-  protected @Inject ApiClientType client;
-  protected @Inject CurrentUser currentUser;
 
   public final SignupViewModelInputs inputs = this;
   public final SignupViewModelOutputs outputs = this;
@@ -138,6 +145,9 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
         })
     );
 
+    addSubscription(checkInitialNewsletterInput.subscribe(checkInitialNewsletter));
+    checkInitialNewsletterInput.onNext(this.isInitialNewsletterChecked());
+
     koala.trackRegisterFormView();
   }
 
@@ -151,5 +161,9 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
   private void success(@NonNull final AccessTokenEnvelope envelope) {
     currentUser.login(envelope.user(), envelope.accessToken());
     signupSuccess.onNext(null);
+  }
+
+  private boolean isInitialNewsletterChecked() {
+    return currentConfig.getConfig().countryCode().equals("US");
   }
 }

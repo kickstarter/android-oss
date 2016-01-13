@@ -11,11 +11,13 @@ import auto.parcel.AutoParcel;
 public abstract class RegisterWithFacebookBody implements Parcelable {
   public abstract String accessToken();
   public abstract boolean sendNewsletters();
+  public abstract boolean newsletterOptIn();
 
   @AutoParcel.Builder
   public abstract static class Builder {
     public abstract Builder accessToken(String __);
     public abstract Builder sendNewsletters(boolean __);
+    public abstract Builder newsletterOptIn(boolean __);
     public abstract RegisterWithFacebookBody build();
   }
 

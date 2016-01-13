@@ -12,6 +12,7 @@ public abstract class SignupBody {
   public abstract String password();
   public abstract String passwordConfirmation();
   public abstract boolean sendNewsletters();
+  public abstract boolean newsletterOptIn();
 
   @AutoParcel.Builder
   public abstract static class Builder {
@@ -20,6 +21,7 @@ public abstract class SignupBody {
     public abstract Builder password(String __);
     public abstract Builder passwordConfirmation(String __);
     public abstract Builder sendNewsletters(boolean __);
+    public abstract Builder newsletterOptIn(boolean __);
     public abstract SignupBody build();
   }
 

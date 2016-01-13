@@ -14,11 +14,12 @@ import com.jakewharton.rxbinding.widget.RxCompoundButton;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.utils.SwitchCompatUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.ui.IntentKey;
-import com.kickstarter.viewmodels.SignupViewModel;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 import com.kickstarter.ui.views.LoginPopupMenu;
+import com.kickstarter.viewmodels.SignupViewModel;
 
 import butterknife.Bind;
 import butterknife.BindString;
@@ -65,6 +66,11 @@ public final class SignupActivity extends BaseActivity<SignupViewModel> {
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::setFormEnabled);
+
+    viewModel.outputs.checkInitialNewsletter()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(b -> SwitchCompatUtils.setCheckedWithoutAnimation(newsletterSwitch, b));
 
     viewModel.errors.signupError()
       .compose(bindToLifecycle())

@@ -12,6 +12,7 @@ import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.I18nUtils;
 import com.kickstarter.libs.utils.ListUtils;
+import com.kickstarter.models.Location;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.activities.SettingsActivity;
@@ -185,7 +186,8 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
   }
 
   private boolean requiresDoubleOptIn(final @NonNull User user, final boolean checked) {
-    return I18nUtils.isCountryGermany(user.location().country()) && checked;
+    final Location location = user.location();
+    return location != null && I18nUtils.isCountryGermany(location.country()) && checked;
   }
 
   private void success(final @NonNull User user) {

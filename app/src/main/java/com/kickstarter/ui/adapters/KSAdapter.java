@@ -19,6 +19,8 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
     return sections;
   }
 
+  
+
   /**
    * Fetch the layout id associated with a sectionRow.
    */

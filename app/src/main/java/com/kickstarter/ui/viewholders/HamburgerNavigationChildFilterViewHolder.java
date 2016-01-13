@@ -9,7 +9,7 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.models.Category;
-import com.kickstarter.ui.adapters.NavigationDrawerAdapter;
+import com.kickstarter.ui.adapters.data.NavigationDrawerData;
 
 import javax.inject.Inject;
 
@@ -26,11 +26,11 @@ public final class HamburgerNavigationChildFilterViewHolder extends KSViewHolder
 
   protected @Inject KSString ksString;
 
-  private NavigationDrawerAdapter.Data.Section.Row item;
+  private NavigationDrawerData.Section.Row item;
   private Delegate delegate;
 
   public interface Delegate {
-    void rowClick(final @NonNull HamburgerNavigationChildFilterViewHolder viewHolder, final @NonNull NavigationDrawerAdapter.Data.Section.Row row);
+    void rowClick(final @NonNull HamburgerNavigationChildFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row);
   }
 
   public HamburgerNavigationChildFilterViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
@@ -42,7 +42,7 @@ public final class HamburgerNavigationChildFilterViewHolder extends KSViewHolder
 
   @Override
   public void onBind(final @NonNull Object datum) {
-    this.item = (NavigationDrawerAdapter.Data.Section.Row) datum;
+    this.item = (NavigationDrawerData.Section.Row) datum;
     final Context context = view.getContext();
 
     final Category category = item.params().category();

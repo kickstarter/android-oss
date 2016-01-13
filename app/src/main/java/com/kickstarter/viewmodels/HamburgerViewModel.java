@@ -17,6 +17,7 @@ import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.activities.HamburgerActivity;
 import com.kickstarter.ui.adapters.NavigationDrawerAdapter;
+import com.kickstarter.ui.adapters.data.NavigationDrawerData;
 import com.kickstarter.ui.viewholders.HamburgerNavigationChildFilterViewHolder;
 import com.kickstarter.ui.viewholders.HamburgerNavigationRootFilterViewHolder;
 import com.kickstarter.ui.viewholders.HamburgerNavigationTopFilterViewHolder;
@@ -38,26 +39,26 @@ public final class HamburgerViewModel extends ViewModel<HamburgerActivity> imple
   protected @Inject ApiClientType apiClient;
   protected @Inject CurrentUser currentUser;
 
-  private BehaviorSubject<NavigationDrawerAdapter.Data> navigationDrawerData = BehaviorSubject.create();
-  public Observable<NavigationDrawerAdapter.Data> navigationDrawerData() {
+  private BehaviorSubject<NavigationDrawerData> navigationDrawerData = BehaviorSubject.create();
+  public Observable<NavigationDrawerData> navigationDrawerData() {
     return navigationDrawerData;
   }
 
-  private PublishSubject<NavigationDrawerAdapter.Data.Section.Row> childFilterRowCLick = PublishSubject.create();
+  private PublishSubject<NavigationDrawerData.Section.Row> childFilterRowCLick = PublishSubject.create();
   @Override
-  public void rowClick(@NonNull HamburgerNavigationChildFilterViewHolder viewHolder, @NonNull NavigationDrawerAdapter.Data.Section.Row row) {
+  public void rowClick(@NonNull HamburgerNavigationChildFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
     childFilterRowCLick.onNext(row);
   }
 
-  private PublishSubject<NavigationDrawerAdapter.Data.Section.Row> rootFilterRowClick = PublishSubject.create();
+  private PublishSubject<NavigationDrawerData.Section.Row> rootFilterRowClick = PublishSubject.create();
   @Override
-  public void rowClick(@NonNull HamburgerNavigationRootFilterViewHolder viewHolder, @NonNull NavigationDrawerAdapter.Data.Section.Row row) {
+  public void rowClick(@NonNull HamburgerNavigationRootFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
     rootFilterRowClick.onNext(row);
   }
 
-  private PublishSubject<NavigationDrawerAdapter.Data.Section.Row> topFilterRowClick = PublishSubject.create();
+  private PublishSubject<NavigationDrawerData.Section.Row> topFilterRowClick = PublishSubject.create();
   @Override
-  public void rowClick(@NonNull HamburgerNavigationTopFilterViewHolder viewHolder, @NonNull NavigationDrawerAdapter.Data.Section.Row row) {
+  public void rowClick(@NonNull HamburgerNavigationTopFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
     topFilterRowClick.onNext(row);
   }
 
@@ -84,15 +85,15 @@ public final class HamburgerViewModel extends ViewModel<HamburgerActivity> imple
     expandedParams.onNext(null);
 
     rootFilterRowClick
-      .map(NavigationDrawerAdapter.Data.Section.Row::params)
+      .map(NavigationDrawerData.Section.Row::params)
       .subscribe(expandedParams::onNext);
   }
 
-  static NavigationDrawerAdapter.Data magic(List<Category> categories, DiscoveryParams selected, @Nullable DiscoveryParams expanded, User user) {
+  static NavigationDrawerData magic(List<Category> categories, DiscoveryParams selected, @Nullable DiscoveryParams expanded, User user) {
 
-    NavigationDrawerAdapter.Data.Builder builder = NavigationDrawerAdapter.Data.builder();
+    NavigationDrawerData.Builder builder = NavigationDrawerData.builder();
 
-    List<NavigationDrawerAdapter.Data.Section> categorySections = Observable.from(categories)
+    List<NavigationDrawerData.Section> categorySections = Observable.from(categories)
       .filter(c -> isVisible(c, expanded))
       .flatMap(c -> doubleRootIfExpanded(c, expanded))
       .map(c -> DiscoveryParams.builder().category(c).build())
@@ -101,7 +102,7 @@ public final class HamburgerViewModel extends ViewModel<HamburgerActivity> imple
       .flatMap(HamburgerViewModel::massageSections)
       .toBlocking().single();
 
-    List<NavigationDrawerAdapter.Data.Section> sections = Observable
+    List<NavigationDrawerData.Section> sections = Observable
       .from(categorySections)
       .startWith(topSections(user))
       .toList().toBlocking().single();
@@ -123,17 +124,17 @@ public final class HamburgerViewModel extends ViewModel<HamburgerActivity> imple
     return new ArrayList<>(grouped.values());
   }
 
-  static Observable<List<NavigationDrawerAdapter.Data.Section>> massageSections(List<List<DiscoveryParams>> sections) {
+  static Observable<List<NavigationDrawerData.Section>> massageSections(List<List<DiscoveryParams>> sections) {
 
     return Observable.from(sections)
       .flatMap(HamburgerViewModel::massageRows)
-      .map(rows -> NavigationDrawerAdapter.Data.Section.builder().rows(rows).build())
+      .map(rows -> NavigationDrawerData.Section.builder().rows(rows).build())
       .toList();
   }
 
-  static Observable<List<NavigationDrawerAdapter.Data.Section.Row>> massageRows(List<DiscoveryParams> rows) {
+  static Observable<List<NavigationDrawerData.Section.Row>> massageRows(List<DiscoveryParams> rows) {
     return Observable.from(rows)
-      .map(p -> NavigationDrawerAdapter.Data.Section.Row.builder().params(p).build())
+      .map(p -> NavigationDrawerData.Section.Row.builder().params(p).build())
       .toList();
   }
 
@@ -165,7 +166,7 @@ public final class HamburgerViewModel extends ViewModel<HamburgerActivity> imple
     return category.isRoot() && category.id() == expandedCategory.id() ? Observable.just(category, category) : Observable.just(category);
   }
 
-  static Observable<NavigationDrawerAdapter.Data.Section> topSections(@Nullable User user) {
+  static Observable<NavigationDrawerData.Section> topSections(@Nullable User user) {
     List<DiscoveryParams> filters = ListUtils.empty();
 
     filters.add(DiscoveryParams.builder().staffPicks(true).build());
@@ -175,8 +176,8 @@ public final class HamburgerViewModel extends ViewModel<HamburgerActivity> imple
     filters.add(DiscoveryParams.builder().build());
 
     return Observable.from(filters)
-      .map(p -> NavigationDrawerAdapter.Data.Section.Row.builder().params(p).build())
+      .map(p -> NavigationDrawerData.Section.Row.builder().params(p).build())
       .map(Collections::singletonList)
-      .map(rows -> NavigationDrawerAdapter.Data.Section.builder().rows(rows).build());
+      .map(rows -> NavigationDrawerData.Section.builder().rows(rows).build());
   }
 }

@@ -7,7 +7,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kickstarter.R;
-import com.kickstarter.ui.adapters.NavigationDrawerAdapter;
+import com.kickstarter.ui.adapters.data.NavigationDrawerData;
 
 import butterknife.Bind;
 import butterknife.BindColor;
@@ -20,11 +20,11 @@ public final class HamburgerNavigationTopFilterViewHolder extends KSViewHolder {
   protected @Bind(R.id.filter_text_view) TextView filterTextView;
   protected @BindColor(R.color.hamburger_navigation_item_selected) int filterSelectedColor;
   protected @BindColor(R.color.transparent) int filterUnselectedColor;
-  private NavigationDrawerAdapter.Data.Section.Row item;
+  private NavigationDrawerData.Section.Row item;
   private Delegate delegate;
 
   public interface Delegate {
-    void rowClick(final @NonNull HamburgerNavigationTopFilterViewHolder viewHolder, final @NonNull NavigationDrawerAdapter.Data.Section.Row row);
+    void rowClick(final @NonNull HamburgerNavigationTopFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row);
   }
 
   public HamburgerNavigationTopFilterViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
@@ -35,7 +35,7 @@ public final class HamburgerNavigationTopFilterViewHolder extends KSViewHolder {
 
   @Override
   public void onBind(final @NonNull Object datum) {
-    this.item = (NavigationDrawerAdapter.Data.Section.Row) datum;
+    this.item = (NavigationDrawerData.Section.Row) datum;
     final Context context = view.getContext();
 
     filterTextView.setText(item.params().filterString(context));

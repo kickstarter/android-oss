@@ -2,9 +2,12 @@ package com.kickstarter.libs.utils;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import rx.functions.Func2;
 
 public class ListUtils {
   private ListUtils() {
@@ -112,4 +115,74 @@ public class ListUtils {
 
     return ys;
   }
+
+  public static @NonNull <T> List<T> flatten(final @NonNull List<List<T>> xss) {
+    final List<T> result = new ArrayList<>();
+    for (final List<T> xs : xss) {
+      result.addAll(xs);
+    }
+    return result;
+  }
+
+  public static <T> boolean contains(final @NonNull List<T> xs, final @NonNull T y) {
+    return ListUtils.contains(xs, y, Object::equals);
+  }
+
+  public static <T> boolean contains(final @NonNull List<T> xs, final @NonNull T y, final @NonNull Func2<T, T, Boolean> equality) {
+    return ListUtils.indexOf(xs, y, equality) != -1;
+  }
+
+  public static @Nullable <T> T find(final @NonNull List<T> xs, final @NonNull T x) {
+    return ListUtils.find(xs, x, Object::equals);
+  }
+
+  public static @Nullable <T> T find(final @NonNull List<T> xs, final @NonNull T y, final @NonNull Func2<T, T, Boolean> equality) {
+    final int idx = ListUtils.indexOf(xs, y, equality);
+    if (idx == -1) {
+      return null;
+    }
+    return xs.get(idx);
+  }
+
+  public static <T> int indexOf(final @NonNull List<T> xs, final @NonNull T x) {
+    return ListUtils.indexOf(xs, x, Object::equals);
+  }
+
+  public static <T> int indexOf(final @NonNull List<T> xs, final @NonNull T y, final @NonNull Func2<T, T, Boolean> equality) {
+    for (int idx = 0; idx < xs.size(); idx++) {
+      if (equality.call(xs.get(idx), y)) {
+        return idx;
+      }
+    }
+    return -1;
+  }
+
+  public static @NonNull <T> List<T> difference(final @NonNull List<T> lhs, final @NonNull List<T> rhs) {
+    return ListUtils.difference(lhs, rhs, Object::equals);
+  }
+
+  public static @NonNull <T> List<T> difference(final @NonNull List<T> lhs, final @NonNull List<T> rhs, Func2<T, T, Boolean> equality) {
+    final List<T> result = new ArrayList<>();
+    for (final T litem : lhs) {
+      if (!ListUtils.contains(rhs, litem, equality)) {
+        result.add(litem);
+      }
+    }
+    return result;
+  }
+
+  public static @NonNull <T> List<T> intersection(final @NonNull List<T> lhs, final @NonNull List<T> rhs) {
+    return ListUtils.intersection(lhs, rhs, Object::equals);
+  }
+
+  public static @NonNull <T> List<T> intersection(final @NonNull List<T> lhs, final @NonNull List<T> rhs, Func2<T, T, Boolean> equality) {
+    final List<T> result = new ArrayList<>();
+    for (final T litem : lhs) {
+      if (ListUtils.contains(rhs, litem, equality)) {
+        result.add(litem);
+      }
+    }
+    return result;
+  }
+
 }

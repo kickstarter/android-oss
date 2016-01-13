@@ -2,13 +2,12 @@ package com.kickstarter.ui.adapters;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.utils.DiffUtils;
 import com.kickstarter.libs.utils.ListUtils;
-import com.kickstarter.models.User;
-import com.kickstarter.services.DiscoveryParams;
+import com.kickstarter.ui.adapters.data.NavigationDrawerData;
 import com.kickstarter.ui.viewholders.EmptyViewHolder;
 import com.kickstarter.ui.viewholders.HamburgerNavigationChildFilterViewHolder;
 import com.kickstarter.ui.viewholders.HamburgerNavigationHeaderLoggedInViewHolder;
@@ -20,8 +19,6 @@ import com.kickstarter.ui.viewholders.KSViewHolder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import auto.parcel.AutoParcel;
 
 public class NavigationDrawerAdapter extends KSAdapter {
 
@@ -48,8 +45,8 @@ public class NavigationDrawerAdapter extends KSAdapter {
   }
 
   private int layoutForDatum(Object datum, SectionRow sectionRow) {
-    if (datum instanceof Data.Section.Row) {
-      Data.Section.Row row = (Data.Section.Row) datum;
+    if (datum instanceof NavigationDrawerData.Section.Row) {
+      NavigationDrawerData.Section.Row row = (NavigationDrawerData.Section.Row) datum;
       if (sectionRow.row() == 0) {
         return row.params().isCategorySet() ?
           R.layout.hamburger_navigation_root_filter_view :
@@ -80,10 +77,18 @@ public class NavigationDrawerAdapter extends KSAdapter {
     }
   }
 
-  public void initialize(final @NonNull Data data) {
+  public void initialize(final @NonNull NavigationDrawerData data) {
 
     final List<List<?>> newSections = sectionsFromData(data);
 
+//    final DiffUtils.Diff diff = DiffUtils.diff(
+//      ListUtils.flatten(sections()),
+//      ListUtils.flatten(newSections)
+//    )
+
+
+
+    notifyDataSetChanged();
 
     this.sections().clear();
 
@@ -92,74 +97,12 @@ public class NavigationDrawerAdapter extends KSAdapter {
     //notifyDataSetChanged();
   }
 
-  List<List<?>> sectionsFromData(Data data) {
+  List<List<?>> sectionsFromData(NavigationDrawerData data) {
     final List<List<?>> sections = Collections.singletonList(Collections.singletonList(data.user()));
-    for (final Data.Section section : data.sections()) {
+    for (final NavigationDrawerData.Section section : data.sections()) {
       sections().add(section.rows());
     }
     return sections;
   }
 
-  @AutoParcel
-  static public abstract class Data {
-    public abstract @Nullable User user();
-    public abstract List<Section> sections();
-
-    @AutoParcel.Builder
-    public abstract static class Builder {
-      public abstract Builder user(User __);
-      public abstract Builder sections(List<Section> __);
-      public abstract Data build();
-    }
-    public static Builder builder() {
-      return new AutoParcel_NavigationDrawerAdapter_Data.Builder()
-        .user(null)
-        .sections(ListUtils.empty());
-    }
-    public abstract Builder toBuilder();
-
-    @AutoParcel
-    static public abstract class Section {
-      public abstract boolean expandable();
-      public abstract boolean expanded();
-      public abstract List<Row> rows();
-
-      @AutoParcel.Builder
-      public abstract static class Builder {
-      public abstract Builder expandable(boolean __);
-      public abstract Builder expanded(boolean __);
-      public abstract Builder rows(List<Row> __);
-      public abstract Section build();
-    }
-      public static Builder builder() {
-        return new AutoParcel_NavigationDrawerAdapter_Data_Section.Builder()
-          .expandable(false)
-          .expanded(false)
-          .rows(ListUtils.empty());
-      }
-      public abstract Builder toBuilder();
-
-      @AutoParcel
-      static public abstract class Row {
-        public abstract @NonNull DiscoveryParams params();
-        public abstract boolean selected();
-        public abstract boolean root();
-
-        @AutoParcel.Builder
-        public static abstract class Builder {
-          public abstract Builder params(DiscoveryParams __);
-          public abstract Builder selected( boolean __);
-          public abstract Builder root(boolean __);
-          public abstract Row build();
-        }
-        public static Builder builder() {
-          return new AutoParcel_NavigationDrawerAdapter_Data_Section_Row.Builder()
-            .params(DiscoveryParams.builder().build())
-            .selected(false)
-            .root(false);
-        }
-        public abstract Builder toBuilder();
-      }
-    }
-  }
 }

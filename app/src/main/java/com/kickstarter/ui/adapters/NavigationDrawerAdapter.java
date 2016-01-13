@@ -17,6 +17,7 @@ import com.kickstarter.ui.viewholders.HamburgerNavigationRootFilterViewHolder;
 import com.kickstarter.ui.viewholders.HamburgerNavigationTopFilterViewHolder;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -80,19 +81,23 @@ public class NavigationDrawerAdapter extends KSAdapter {
   }
 
   public void initialize(final @NonNull Data data) {
-    this.data().clear();
-    this.data().add(Collections.singletonList(data.user()));
+
+    final List<List<?>> newSections = sectionsFromData(data);
+
+
+    this.sections().clear();
+
+    // no animation
+    //this.sections().addAll(newSections);
+    //notifyDataSetChanged();
+  }
+
+  List<List<?>> sectionsFromData(Data data) {
+    final List<List<?>> sections = Collections.singletonList(Collections.singletonList(data.user()));
     for (final Data.Section section : data.sections()) {
-      this.data().add(section.rows());
+      sections().add(section.rows());
     }
-//    this.data().add(Collections.singletonList(null));
-
-    notifyDataSetChanged();
-
-    // user
-    // top filters
-    // divider
-    // category filters
+    return sections;
   }
 
   @AutoParcel
@@ -156,65 +161,5 @@ public class NavigationDrawerAdapter extends KSAdapter {
         public abstract Builder toBuilder();
       }
     }
-
-
-
-
-
-    public Data dataFromClickingRow(Section.Row clickedRow) {
-
-      Builder builder = this.toBuilder();
-
-      Section section = findSectionForRow(clickedRow);
-      Section currentlyExpandedSection = findExpandedSection();
-
-
-
-
-      return builder.build();
-    }
-
-    public Data expandSection(Section section) {
-
-      ListUtils.replace(sections(), section, section.toBuilder().expanded(true).build());
-
-      return null;
-    }
-
-    public Data collapseSection(Section section) {
-      return null;
-    }
-
-    public Data selectRow(Section.Row row) {
-      return null;
-    }
-    public Data deselectRow(Section.Row row) {
-      return null;
-
-
-//      ListUtils.replace(xs, oldx, newx)
-    }
-
-    public @Nullable Section findSectionForRow(Section.Row row) {
-      for (Section section : sections()) {
-        if (section.rows().contains(row)) {
-          return section;
-        }
-      }
-      return null;
-    }
-
-    public @Nullable Section findExpandedSection() {
-      for (Section section : sections()) {
-        if (section.expanded()) {
-          return section;
-        }
-      }
-      return null;
-    }
-
-
-
-
   }
 }

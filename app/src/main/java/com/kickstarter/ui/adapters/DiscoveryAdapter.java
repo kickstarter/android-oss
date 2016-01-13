@@ -17,7 +17,7 @@ public final class DiscoveryAdapter extends KSAdapter {
   public interface Delegate extends ProjectCardViewHolder.Delegate {}
 
   public DiscoveryAdapter(@NonNull final List<Project> projects, @NonNull final Delegate delegate) {
-    data().add(projects);
+    sections().add(projects);
     this.delegate = delegate;
   }
 

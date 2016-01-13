@@ -30,19 +30,19 @@ public final class HamburgerNavigationAdapter extends KSAdapter {
   // TODO: Replace object type for filters list
   public void data(final @NonNull HamburgerNavigationData data) {
     final int oldCount = getItemCount();
-    data().clear();
+    sections().clear();
 
     // HEADER
-    data().add(Collections.singletonList(data.user() != null ? data.user() : Empty.get()));
+    sections().add(Collections.singletonList(data.user() != null ? data.user() : Empty.get()));
 
     // TOP FILTERS (e.g. staff picks, friends backed, ...)
-    data().add(data.topFilters());
+    sections().add(data.topFilters());
 
     // DIVIDER
-    data().add(Collections.singletonList(Empty.get()));
+    sections().add(Collections.singletonList(Empty.get()));
 
     // CATEGORY FILTERS
-    data().add(data.categoryFilters());
+    sections().add(data.categoryFilters());
 
     final int newCount = getItemCount();
     notifyItemRangeInserted(oldCount, newCount - oldCount);

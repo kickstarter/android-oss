@@ -13,10 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
-  private List<List<?>> data = new ArrayList<>();
+  private List<List<?>> sections = new ArrayList<>();
 
-  public List<List<?>> data() {
-    return data;
+  public List<List<?>> sections() {
+    return sections;
   }
 
   /**
@@ -48,7 +48,7 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
   @Override
   public final int getItemCount() {
     int itemCount = 0;
-    for (final List<?> section : data) {
+    for (final List<?> section : sections) {
       itemCount += section.size();
     }
 
@@ -59,14 +59,14 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
    * Gets the data object associated with a sectionRow.
    */
   protected Object objectFromSectionRow(final @NonNull SectionRow sectionRow) {
-    return data.get(sectionRow.section()).get(sectionRow.row());
+    return sections.get(sectionRow.section()).get(sectionRow.row());
   }
 
   protected int sectionCount(final int section) {
-    if (section > data().size() - 1) {
+    if (section > sections().size() - 1) {
       return 0;
     }
-    return data().get(section).size();
+    return sections().get(section).size();
   }
 
   /**
@@ -79,7 +79,7 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
   private @NonNull SectionRow sectionRowFromPosition(final int position) {
     final SectionRow sectionRow = new SectionRow();
     int cursor = 0;
-    for (final List<?> section : data) {
+    for (final List<?> section : sections) {
       for (final Object __ : section) {
         if (cursor == position) {
           return sectionRow;
@@ -90,7 +90,7 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
       sectionRow.nextSection();
     }
 
-    throw new RuntimeException("Position " + position + " not found in data");
+    throw new RuntimeException("Position " + position + " not found in sections");
   }
 
   private @NonNull View inflateView(final @NonNull ViewGroup viewGroup, @LayoutRes final int viewType) {

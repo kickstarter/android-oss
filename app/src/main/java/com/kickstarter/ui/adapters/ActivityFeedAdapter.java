@@ -30,18 +30,18 @@ public final class ActivityFeedAdapter extends KSAdapter {
   }
 
   public void takeActivities(final @NonNull List<Activity> activities) {
-    data().clear();
+    sections().clear();
     if (activities.size() == 0) {
-      data().add(Collections.singletonList(Empty.get()));
+      sections().add(Collections.singletonList(Empty.get()));
     } else {
-      data().add(activities);
+      sections().add(activities);
     }
     notifyDataSetChanged();
   }
 
   public void takeLoggedOutEmptyState() {
-    data().clear();
-    data().add(Collections.singletonList(null));
+    sections().clear();
+    sections().add(Collections.singletonList(null));
     notifyDataSetChanged();
   }
 

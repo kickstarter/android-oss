@@ -2,14 +2,12 @@ package com.kickstarter.ui.adapters;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.View;
 
 import com.kickstarter.R;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
-import com.kickstarter.models.User;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.ProjectViewHolder;
 import com.kickstarter.ui.viewholders.RewardViewHolder;
@@ -40,11 +38,11 @@ public final class ProjectAdapter extends KSAdapter {
    * Populate adapter data when we know we're working with a Project object.
    */
   public void takeProject(final @NonNull Project project, final @NonNull String configCountry) {
-    data().clear();
-    data().add(Collections.singletonList(Pair.create(project, configCountry)));
+    sections().clear();
+    sections().add(Collections.singletonList(Pair.create(project, configCountry)));
 
     if (project.hasRewards()) {
-      data().add(Observable.from(project.rewards())
+      sections().add(Observable.from(project.rewards())
           .filter(Reward::isReward)
           .map(reward -> Arrays.asList(project, reward, configCountry))
           .toList().toBlocking().single()

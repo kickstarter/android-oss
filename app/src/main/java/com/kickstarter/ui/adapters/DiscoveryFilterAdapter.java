@@ -40,7 +40,7 @@ public final class DiscoveryFilterAdapter extends KSAdapter {
       return 0;
     }
 
-    final Pair<Boolean, Integer> foundAndPosition = Observable.from(data())
+    final Pair<Boolean, Integer> foundAndPosition = Observable.from(sections())
       .scan(new Pair<>(false, 0), (accum, list) -> {
         // For each list, check if there are filters where the category root matches the category
         // root for the selected params.
@@ -69,7 +69,7 @@ public final class DiscoveryFilterAdapter extends KSAdapter {
      */
     if (sectionRow.section() == 1) {
       return R.layout.discovery_filter_divider_view;
-    } else if (sectionRow.section() == data().size() - 1) {
+    } else if (sectionRow.section() == sections().size() - 1) {
       return R.layout.grid_2_height_view;
     }
     return R.layout.discovery_filter_view;
@@ -85,11 +85,11 @@ public final class DiscoveryFilterAdapter extends KSAdapter {
   }
 
   public void takeCategories(@NonNull final List<Category> initialCategories) {
-    data().clear();
+    sections().clear();
 
-    data().addAll(paramsSections(initialCategories).toList().toBlocking().single());
-    data().add(1, Collections.singletonList(DiscoveryFilterDividerViewHolder.Divider.builder().light(light()).build()));
-    data().add(Collections.singletonList(Empty.get()));
+    sections().addAll(paramsSections(initialCategories).toList().toBlocking().single());
+    sections().add(1, Collections.singletonList(DiscoveryFilterDividerViewHolder.Divider.builder().light(light()).build()));
+    sections().add(Collections.singletonList(Empty.get()));
 
     notifyDataSetChanged();
   }

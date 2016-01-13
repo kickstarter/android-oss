@@ -39,6 +39,7 @@
 
         <ImageView
           android:id="@+id/activity_image"
+          android:background="@color/light_gray"
           android:layout_width="@dimen/grid_4"
           android:layout_height="@dimen/grid_4"
           android:scaleType="centerCrop"/>
@@ -54,15 +55,13 @@
             style="@style/BodyPrimaryMedium"
             android:id="@+id/activity_title"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Title" />
+            android:layout_height="wrap_content" />
 
           <TextView
             style="@style/BodyPrimary"
             android:id="@+id/activity_subtitle"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Subtitle" />
+            android:layout_height="wrap_content" />
 
         </LinearLayout>
 

@@ -138,17 +138,15 @@ public class DiscoveryActivityViewHolder extends KSViewHolder {
         return;
       }
       final Photo photo = project.photo();
-      if (photo == null) {
-        return;
+      if (photo != null) {
+        Picasso.with(context)
+          .load(photo.little())
+          .into(activityImageView);
       }
 
       activityImageView.setVisibility(View.VISIBLE);
       activityTitleTextView.setVisibility(View.VISIBLE);
       activitysubTitleTextView.setVisibility(View.VISIBLE);
-
-      Picasso.with(context)
-        .load(photo.little())
-        .into(activityImageView);
 
       layoutParams = new LinearLayout.LayoutParams(context.getResources().getDimensionPixelSize(R.dimen.discovery_activity_photo_width),
           context.getResources().getDimensionPixelSize(R.dimen.discovery_activity_photo_height));

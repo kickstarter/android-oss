@@ -18,7 +18,6 @@ import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.ProfileActivity;
 import com.kickstarter.ui.adapters.ProfileAdapter;
 import com.kickstarter.ui.viewholders.ProfileCardViewHolder;
-import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 import com.kickstarter.viewmodels.inputs.ProfileViewModelInputs;
 import com.kickstarter.viewmodels.outputs.ProfileViewModelOutputs;
 
@@ -87,7 +86,7 @@ public final class ProfileViewModel extends ViewModel<ProfileActivity> implement
     koala.trackProfileView();
   }
 
-  public void projectCardViewHolderClicked(final @NonNull ProfileCardViewHolder viewHolder, final @NonNull Project project) {
+  public void profileCardViewHolderClicked(final @NonNull ProfileCardViewHolder viewHolder, final @NonNull Project project) {
     this.showProject.onNext(project);
   }
 }

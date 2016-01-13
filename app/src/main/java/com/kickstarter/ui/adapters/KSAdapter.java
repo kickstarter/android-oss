@@ -95,7 +95,7 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
   /**
    * Gets the data object associated with a position.
    */
-  private Object objectFromPosition(final int position) {
+  public Object objectFromPosition(final int position) {
     return objectFromSectionRow(sectionRowFromPosition(position));
   }
 

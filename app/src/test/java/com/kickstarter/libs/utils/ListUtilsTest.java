@@ -1,8 +1,6 @@
 package com.kickstarter.libs.utils;
 
-import android.content.Intent;
-
-import com.kickstarter.ui.intents.IntentAction;
+import android.util.Pair;
 
 import junit.framework.TestCase;
 

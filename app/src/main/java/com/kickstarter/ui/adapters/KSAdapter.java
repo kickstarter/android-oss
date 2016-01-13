@@ -62,6 +62,13 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
     return data.get(sectionRow.section()).get(sectionRow.row());
   }
 
+  protected int sectionCount(final int section) {
+    if (section > data().size() - 1) {
+      return 0;
+    }
+    return data().get(section).size();
+  }
+
   /**
    * Gets the data object associated with a position.
    */

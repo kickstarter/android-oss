@@ -134,7 +134,7 @@ public final class DiscoveryFilterAdapter extends KSAdapter {
 
     final Observable<DiscoveryFilterViewHolder.Filter> filters = primaryCategoryFilters(categories.filter(Category::isRoot))
       .concatWith(secondaryCategoryFilters(categories))
-      .toSortedList((f1, f2) -> f1.params().category().discoveryFilterCompareTo(f2.params().category()))
+      .toSortedList((f1, f2) -> f1.params().category().compareTo(f2.params().category()))
       .flatMap(Observable::from);
 
     // RxJava has groupBy. groupBy creates an Observable of GroupedObservables - the Observable doesn't complete

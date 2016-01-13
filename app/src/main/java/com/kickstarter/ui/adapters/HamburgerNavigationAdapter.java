@@ -11,7 +11,7 @@ import com.kickstarter.models.HamburgerNavigationData;
 import com.kickstarter.models.HamburgerNavigationItem;
 import com.kickstarter.models.User;
 import com.kickstarter.ui.viewholders.EmptyViewHolder;
-import com.kickstarter.ui.viewholders.HamburgerNavigationFilterViewHolder;
+import com.kickstarter.ui.viewholders.HamburgerNavigationTopFilterViewHolder;
 import com.kickstarter.ui.viewholders.HamburgerNavigationHeaderLoggedInViewHolder;
 import com.kickstarter.ui.viewholders.HamburgerNavigationHeaderLoggedOutViewHolder;
 import com.kickstarter.ui.viewholders.KSViewHolder;
@@ -21,7 +21,7 @@ import java.util.Collections;
 public final class HamburgerNavigationAdapter extends KSAdapter {
   private final Delegate delegate;
 
-  public interface Delegate extends HamburgerNavigationFilterViewHolder.Delegate {}
+  public interface Delegate extends HamburgerNavigationTopFilterViewHolder.Delegate {}
 
   public HamburgerNavigationAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;
@@ -63,10 +63,10 @@ public final class HamburgerNavigationAdapter extends KSAdapter {
       final Category category = item.discoveryParams().category();
       if (category != null) {
         return category.isRoot() ?
-          R.layout.hamburger_navigation_parent_filter_view :
+          R.layout.hamburger_navigation_top_filter_view :
           R.layout.hamburger_navigation_child_filter_view;
       } else {
-        return R.layout.hamburger_navigation_top_filter_view;
+        return R.layout.hamburger_navigation_root_filter_view;
       }
     }
     return R.layout.hamburger_divider_view;
@@ -79,10 +79,10 @@ public final class HamburgerNavigationAdapter extends KSAdapter {
         return new HamburgerNavigationHeaderLoggedInViewHolder(view);
       case R.layout.hamburger_navigation_header_logged_out_view:
         return new HamburgerNavigationHeaderLoggedOutViewHolder(view);
+      case R.layout.hamburger_navigation_root_filter_view:
       case R.layout.hamburger_navigation_top_filter_view:
-      case R.layout.hamburger_navigation_parent_filter_view: // TODO: Change to separate viewholder?
-      case R.layout.hamburger_navigation_child_filter_view: // TODO: Change to separate viewholder?
-        return new HamburgerNavigationFilterViewHolder(view, delegate);
+      case R.layout.hamburger_navigation_child_filter_view:
+        return new HamburgerNavigationTopFilterViewHolder(view, delegate);
       default:
         return new EmptyViewHolder(view);
     }

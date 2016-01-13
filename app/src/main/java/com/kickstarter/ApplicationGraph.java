@@ -25,6 +25,7 @@ import com.kickstarter.ui.viewholders.DiscoveryFilterViewHolder;
 import com.kickstarter.ui.viewholders.EmptyActivityFeedViewHolder;
 import com.kickstarter.ui.viewholders.EmptyCommentFeedViewHolder;
 import com.kickstarter.ui.viewholders.FriendBackingViewHolder;
+import com.kickstarter.ui.viewholders.HamburgerNavigationChildFilterViewHolder;
 import com.kickstarter.ui.viewholders.ProfileCardViewHolder;
 import com.kickstarter.ui.viewholders.ProjectCardMiniViewHolder;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
@@ -77,6 +78,7 @@ public interface ApplicationGraph {
   void inject(FriendBackingViewHolder __);
   void inject(HamburgerActivity __);
   void inject(ResetPasswordViewModel __);
+  void inject(HamburgerNavigationChildFilterViewHolder __);
   void inject(HamburgerViewModel __);
   void inject(HelpActivity __);
   void inject(IconTextView __);

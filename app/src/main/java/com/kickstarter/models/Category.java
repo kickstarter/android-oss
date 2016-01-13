@@ -14,7 +14,7 @@ import auto.parcel.AutoParcel;
 
 @AutoParcel
 @AutoGson
-abstract public class Category implements Parcelable {
+abstract public class Category implements Parcelable, Comparable<Category> {
   public abstract int color();
   public abstract long id();
   public abstract String name();
@@ -68,7 +68,8 @@ abstract public class Category implements Parcelable {
     return KSColorUtils.setAlpha(color(), 255);
   }
 
-  public int discoveryFilterCompareTo(@NonNull final Category other) {
+  @Override
+  public int compareTo(Category other) {
     if (id() == other.id()) {
       return 0;
     }

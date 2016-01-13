@@ -101,7 +101,7 @@ public class PushNotifications {
 
     final Notification notification = notificationBuilder(gcm.title(), gcm.alert())
       .setLargeIcon(fetchBitmap(activity.projectPhoto(), false))
-      //.setContentIntent(projectContentIntent(activity.projectId()))
+      .setContentIntent(projectContentIntent(activity.projectId()))
       .build();
     notificationManager().notify(envelope.signature(), notification);
   }

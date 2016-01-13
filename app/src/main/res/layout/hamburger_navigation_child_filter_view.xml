@@ -11,8 +11,8 @@
     android:background="@drawable/click_indicator_light_masked"
     android:paddingTop="@dimen/hamburger_drawer_item_padding_y"
     android:paddingBottom="@dimen/hamburger_drawer_item_padding_y"
-    android:paddingStart="@dimen/grid_6"
-    android:paddingLeft="@dimen/grid_6"
+    android:paddingStart="@dimen/grid_5"
+    android:paddingLeft="@dimen/grid_5"
     android:id="@+id/filter_text_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent" />

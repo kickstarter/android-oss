@@ -10,13 +10,13 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.viewmodels.errors.TwoFactorViewModelErrors;
-import com.kickstarter.viewmodels.inputs.TwoFactorViewModelInputs;
-import com.kickstarter.viewmodels.outputs.TwoFactorViewModelOutputs;
-import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.activities.TwoFactorActivity;
+import com.kickstarter.viewmodels.errors.TwoFactorViewModelErrors;
+import com.kickstarter.viewmodels.inputs.TwoFactorViewModelInputs;
+import com.kickstarter.viewmodels.outputs.TwoFactorViewModelOutputs;
 
 import javax.inject.Inject;
 
@@ -83,8 +83,8 @@ public final class TwoFactorViewModel extends ViewModel<TwoFactorActivity> imple
       .map(__ -> null);
   }
 
-  @Inject CurrentUser currentUser;
-  @Inject ApiClient client;
+  protected @Inject CurrentUser currentUser;
+  protected @Inject ApiClientType client;
 
   public final TwoFactorViewModelInputs inputs = this;
   public final TwoFactorViewModelOutputs outputs = this;

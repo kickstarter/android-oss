@@ -7,14 +7,14 @@ import android.view.View;
 import com.kickstarter.R;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.viewholders.KSViewHolder;
-import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
+import com.kickstarter.ui.viewholders.ProfileCardViewHolder;
 
 import java.util.List;
 
 public final class ProfileAdapter extends KSAdapter {
   private final Delegate delegate;
 
-  public interface Delegate extends ProjectCardViewHolder.Delegate {}
+  public interface Delegate extends ProfileCardViewHolder.Delegate {}
 
   public ProfileAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;
@@ -26,12 +26,11 @@ public final class ProfileAdapter extends KSAdapter {
     notifyDataSetChanged();
   }
 
-  protected @LayoutRes
-  int layout(@NonNull final SectionRow sectionRow) {
-    return R.layout.project_card_view;
+  protected @LayoutRes int layout(final @NonNull SectionRow sectionRow) {
+    return R.layout.profile_card_view;
   }
 
-  protected KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
-    return new ProjectCardViewHolder(view, delegate);
+  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
+    return new ProfileCardViewHolder(view, delegate);
   }
 }

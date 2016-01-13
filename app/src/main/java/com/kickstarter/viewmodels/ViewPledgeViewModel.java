@@ -13,10 +13,10 @@ import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
-import com.kickstarter.viewmodels.errors.ViewPledgeViewModelErrors;
-import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.activities.ViewPledgeActivity;
+import com.kickstarter.viewmodels.errors.ViewPledgeViewModelErrors;
 
 import javax.inject.Inject;
 
@@ -27,8 +27,8 @@ import rx.subjects.PublishSubject;
 public final class ViewPledgeViewModel extends ViewModel<ViewPledgeActivity> implements ViewPledgeViewModelErrors {
   private final PublishSubject<Project> project = PublishSubject.create();
 
-  @Inject ApiClient client;
-  @Inject CurrentUser currentUser;
+  protected @Inject ApiClientType client;
+  protected @Inject CurrentUser currentUser;
 
   // Errors
   private PublishSubject<ErrorEnvelope> backingLoadFailed = PublishSubject.create();

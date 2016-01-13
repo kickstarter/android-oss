@@ -1,6 +1,7 @@
 package com.kickstarter.ui.viewholders;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.TextView;
@@ -20,12 +21,14 @@ import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
+
 @RequiresViewModel(ProjectNotificationViewModel.class)
 public final class ProjectNotificationViewHolder extends KSViewHolder {
   protected @Bind(R.id.project_name) TextView projectNameTextView;
   protected @Bind(R.id.notification_switch) SwitchCompat notificationSwitch;
 
-  protected @BindString(R.string.___Unable_to_save) String unableToSaveString;
+  protected @BindString(R.string.profile_settings_error) String unableToSaveString;
 
   final PublishSubject<ProjectNotificationViewModel> viewModel = PublishSubject.create();
 
@@ -50,9 +53,13 @@ public final class ProjectNotificationViewHolder extends KSViewHolder {
   }
 
   @Override
-  public void onBind(final @NonNull Object datum) {
-    final ProjectNotificationViewModel viewModel = (ProjectNotificationViewModel) datum;
+  public void bindData(final @Nullable Object data) throws Exception {
+    final ProjectNotificationViewModel viewModel = requireNonNull((ProjectNotificationViewModel) data, ProjectNotificationViewModel.class);
     this.viewModel.onNext(viewModel);
+  }
+
+  @Override
+  public void onBind() {
   }
 
   public void renderNotification(final @NonNull Notification notification) {

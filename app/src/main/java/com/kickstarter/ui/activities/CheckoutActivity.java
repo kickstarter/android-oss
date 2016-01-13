@@ -11,17 +11,17 @@ import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.models.Project;
-import com.kickstarter.viewmodels.CheckoutViewModel;
 import com.kickstarter.services.KSUri;
 import com.kickstarter.services.RequestHandler;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.toolbars.KSToolbar;
 import com.kickstarter.ui.views.KSWebView;
+import com.kickstarter.viewmodels.CheckoutViewModel;
 import com.squareup.okhttp.Request;
 
 import java.util.Arrays;
 
 import butterknife.Bind;
-import butterknife.BindString;
 import butterknife.ButterKnife;
 
 @RequiresViewModel(CheckoutViewModel.class)
@@ -30,8 +30,8 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> {
   private String urlToReload;
   @Bind(R.id.checkout_toolbar) KSToolbar checkoutToolbar;
   @Bind(R.id.web_view) KSWebView webView;
-  @BindString(R.string.project_back_button) String projectBackButtonString;
-  @BindString(R.string.intent_toolbar_title) String intentToolbarTitleString;
+
+  private static String SAVE_URL_KEY = "save_url";
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -42,11 +42,11 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> {
 
     final Intent intent = getIntent();
     if (savedInstanceState == null) {
-      urlToReload = intent.getExtras().getString(getString(R.string.intent_url));
+      urlToReload = intent.getExtras().getString(IntentKey.URL);
     }
-    project = intent.getExtras().getParcelable(getString(R.string.intent_project));
+    project = intent.getExtras().getParcelable(IntentKey.PROJECT);
 
-    final String title = intent.getExtras().getString(intentToolbarTitleString, projectBackButtonString);
+    final String title = intent.getExtras().getString(IntentKey.TOOLBAR_TITLE, "");
     checkoutToolbar.setTitle(title);
 
     webView.client().registerRequestHandlers(Arrays.asList(
@@ -60,7 +60,7 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> {
    super.onRestoreInstanceState(savedInstanceState);
 
     if (savedInstanceState != null) {
-      urlToReload = savedInstanceState.getString(getString(R.string.save_url));
+      urlToReload = savedInstanceState.getString(SAVE_URL_KEY);
     }
   }
 
@@ -77,7 +77,7 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> {
   @Override
   protected void onSaveInstanceState(@NonNull final Bundle outState) {
     urlToReload = webView.lastClientUrl();
-    outState.putString(getString(R.string.save_url), urlToReload);
+    outState.putString(SAVE_URL_KEY, urlToReload);
     super.onSaveInstanceState(outState);
   }
 
@@ -90,17 +90,16 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> {
 
   private boolean handleCheckoutThanksUriRequest(@NonNull final Request request, @NonNull final WebView webView) {
     final Intent intent = new Intent(this, ThanksActivity.class)
-      .putExtra(getString(R.string.intent_project), project);
+      .putExtra(IntentKey.PROJECT, project);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
     return true;
   }
 
   private boolean handleSignupUriRequest(@NonNull final Request request, @NonNull final WebView webView) {
     final Intent intent = new Intent(this, LoginToutActivity.class)
-      .putExtra(getString(R.string.intent_forward), true)
-      .putExtra(getString(R.string.intent_login_type), LoginToutActivity.REASON_BACK_PROJECT);
-    startActivityForResult(intent,
-      ActivityRequestCodes.CHECKOUT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
+      .putExtra(IntentKey.FORWARD, true)
+      .putExtra(IntentKey.LOGIN_TYPE, LoginToutActivity.REASON_BACK_PROJECT);
+    startActivityForResult(intent, ActivityRequestCodes.CHECKOUT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
     return true;
   }
 

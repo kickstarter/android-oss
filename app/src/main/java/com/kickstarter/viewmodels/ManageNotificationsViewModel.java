@@ -9,7 +9,7 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Notification;
-import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.activities.ManageNotificationActivity;
 import com.kickstarter.viewmodels.errors.ManageNotificationsViewModelErrors;
 import com.kickstarter.viewmodels.outputs.ManageNotificationsViewModelOutputs;
@@ -23,7 +23,7 @@ import rx.subjects.PublishSubject;
 
 public final class ManageNotificationsViewModel extends ViewModel<ManageNotificationActivity> implements
   ManageNotificationsViewModelOutputs, ManageNotificationsViewModelErrors {
-  @Inject ApiClient client;
+  protected @Inject ApiClientType client;
 
   // OUTPUTS
   private Observable<List<Notification>> notifications;
@@ -46,7 +46,7 @@ public final class ManageNotificationsViewModel extends ViewModel<ManageNotifica
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    this.notifications = client.fetchProjectNotifications()
+    notifications = client.fetchNotifications()
       .compose(Transformers.pipeErrorsTo(unableToFetchNotificationsError));
   }
 }

@@ -8,7 +8,7 @@ import android.support.annotation.StringDef;
 
 import com.kickstarter.libs.qualifiers.AutoGson;
 import com.kickstarter.libs.utils.DateTimeUtils;
-import com.kickstarter.libs.utils.NumberUtils;
+import com.kickstarter.libs.utils.IntegerUtils;
 
 import org.joda.time.DateTime;
 
@@ -128,22 +128,6 @@ public abstract class Project implements Parcelable {
     return urls().web().description();
   }
 
-  public @NonNull String formattedBackersCount() {
-    return NumberUtils.numberWithDelimiter(backersCount());
-  }
-
-  public @Nullable String formattedCommentsCount() {
-    return NumberUtils.numberWithDelimiter(commentsCount());
-  }
-
-  public @Nullable String formattedStateChangedAt() {
-    return DateTimeUtils.relativeDateInWords(stateChangedAt(), false, true);
-  }
-
-  public @Nullable String formattedUpdatesCount() {
-    return NumberUtils.numberWithDelimiter(updatesCount());
-  }
-
   public @NonNull String updatesUrl() {
     return urls().web().updates();
   }
@@ -169,6 +153,8 @@ public abstract class Project implements Parcelable {
       return new AutoParcel_Project_Urls.Builder();
     }
 
+    public abstract Builder toBuilder();
+
     @AutoParcel
     @AutoGson
     public abstract static class Web implements Parcelable {
@@ -189,6 +175,8 @@ public abstract class Project implements Parcelable {
       public static Builder builder() {
         return new AutoParcel_Project_Urls_Web.Builder();
       }
+
+      public abstract Builder toBuilder();
 
       public @NonNull String creatorBio() {
         return Uri.parse(project())
@@ -223,11 +211,13 @@ public abstract class Project implements Parcelable {
       public static Builder builder() {
         return new AutoParcel_Project_Urls_Api.Builder();
       }
+
+      public abstract Builder toBuilder();
     }
   }
 
   public boolean hasComments() {
-    return this.commentsCount() != null && Integer.valueOf(this.commentsCount()) != 0;
+    return IntegerUtils.isNonZero(this.commentsCount());
   }
 
   public boolean hasRewards() {
@@ -265,6 +255,10 @@ public abstract class Project implements Parcelable {
     return friends() != null && friends().size() > 0;
   }
 
+  public boolean isFunded() {
+    return isLive() && (percentageFunded() >= 100);
+  }
+
   public boolean isPotdToday() {
     if (potdAt() == null) {
       return false;
@@ -298,7 +292,7 @@ public abstract class Project implements Parcelable {
     return STATE_SUCCESSFUL.equals(state());
   }
 
-  public @NonNull Float percentageFunded() {
+  public float percentageFunded() {
     if (goal() > 0.0f) {
       return (pledged() / goal()) * 100.0f;
     }
@@ -307,7 +301,8 @@ public abstract class Project implements Parcelable {
   }
 
   public @NonNull String param() {
-    return slug() != null ? slug() : String.valueOf(id());
+    final String slug = slug();
+    return slug != null ? slug : String.valueOf(id());
   }
 
   public @NonNull String secureWebProjectUrl() {

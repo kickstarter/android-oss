@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_marginStart="@dimen/feed_padding_x"
+  android:layout_marginRight="@dimen/feed_padding_x"
+  android:layout_marginLeft="@dimen/feed_padding_x"
+  android:layout_marginEnd="@dimen/feed_padding_x"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <LinearLayout
+    android:focusable="true"
+    android:layout_marginTop="@dimen/feed_padding_y"
+    android:layout_marginBottom="@dimen/feed_padding_y"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+      android:id="@+id/friend_image"
+      android:layout_marginRight="@dimen/grid_3"
+      android:layout_width="@dimen/comments_feed_avatar_width"
+      android:layout_height="@dimen/comments_feed_avatar_height" />
+
+    <TextView
+      android:id="@+id/friend_name"
+      style="@style/SubheadPrimaryMedium"
+      android:text="Lisa Luo"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content" />
+
+  </LinearLayout>
+
+  <include layout="@layout/horizontal_line_thin_view" />
+
+</LinearLayout>

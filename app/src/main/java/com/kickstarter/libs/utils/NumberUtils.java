@@ -1,7 +1,6 @@
 package com.kickstarter.libs.utils;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.kickstarter.libs.NumberOptions;
 
@@ -14,11 +13,28 @@ import java.util.Locale;
 public final class NumberUtils {
   private NumberUtils() {}
 
-  public static @Nullable String numberWithDelimiter(final @Nullable Integer integer) {
-    if (integer != null) {
-      return NumberFormat.getNumberInstance().format(integer);
-    }
-    return null;
+  public static @NonNull String flooredPercentage(final float value) {
+    return flooredPercentage(value, Locale.getDefault());
+  }
+
+  public static @NonNull String flooredPercentage(final float value, final @NonNull Locale locale) {
+    final NumberFormat numberFormat = NumberFormat.getPercentInstance(locale);
+    numberFormat.setRoundingMode(RoundingMode.DOWN);
+    return numberFormat.format(value / 100);
+  }
+
+  /**
+   * Returns a formatted number for the user's locale.
+   */
+  public static @NonNull String format(final int value) {
+    return format(value, Locale.getDefault());
+  }
+
+  /**
+   * Returns a formatted number for the specified locale.
+   */
+  public static @NonNull String format(final int value, final @NonNull Locale locale) {
+    return NumberFormat.getIntegerInstance(locale).format(value);
   }
 
   /**

@@ -280,6 +280,10 @@
   <string name="dates_time_minutes_two" formatted="false">2 minutes</string>
   <string name="dates_time_minutes_zero" formatted="false">0 minutes</string>
   <string name="dates_yesterday" formatted="false">yesterday</string>
+  <string name="discovery_accessibility_live_project_count" formatted="false">Live projects</string>
+  <string name="discovery_accessibility_toolbar_buttons_activity_label" formatted="false">Activity feed</string>
+  <string name="discovery_accessibility_toolbar_buttons_filter_label" formatted="false">Filter by category</string>
+  <string name="discovery_accessibility_toolbar_buttons_user_menu" formatted="false">User menu</string>
   <string name="discovery_activity_sample_alert_buttons_cancel" formatted="false">Cancel</string>
   <string name="discovery_activity_sample_alert_buttons_follow" formatted="false">Follow</string>
   <string name="discovery_activity_sample_alert_follow_friend_name" formatted="false">Follow %{friend_name}?</string>
@@ -307,11 +311,16 @@
   <string name="discovery_baseball_card_social_friends_are_backers_zero" formatted="false">None of your friends are backers.</string>
   <string name="discovery_baseball_card_stats_backers" formatted="false">backers</string>
   <string name="discovery_baseball_card_stats_convert_from_pledged_of_goal" formatted="false">Converted from %{pledged} pledged of %{goal} goal.</string>
+  <string name="discovery_baseball_card_stats_funded" formatted="false">funded</string>
   <string name="discovery_baseball_card_stats_pledged_of_goal" formatted="false">pledged of %{goal}</string>
+  <string name="discovery_baseball_card_stats_pledged_of_goal_short" formatted="false">of %{goal}</string>
   <string name="discovery_baseball_card_status_banner_canceled" formatted="false">Funding canceled</string>
+  <string name="discovery_baseball_card_status_banner_canceled_date" formatted="false">Funding canceled %{date}</string>
   <string name="discovery_baseball_card_status_banner_funding_unsuccessful_date" formatted="false">Funding unsuccessful %{date}</string>
   <string name="discovery_baseball_card_status_banner_successful" formatted="false">Successfully funded!</string>
+  <string name="discovery_baseball_card_status_banner_successful_date" formatted="false">Successfully funded %{date}</string>
   <string name="discovery_baseball_card_status_banner_suspended" formatted="false">Funding suspended %{date}</string>
+  <string name="discovery_baseball_card_status_banner_suspended_date" formatted="false">Funding suspended %{date}</string>
   <string name="discovery_baseball_card_time_left_to_go" formatted="false">%{time_left} to go</string>
   <string name="discovery_category" formatted="false">Category</string>
   <string name="discovery_empty_states_saved_logged_in_button" formatted="false">Discover projects</string>
@@ -345,6 +354,7 @@
   <string name="discovery_nearby" formatted="false">Nearby</string>
   <string name="discovery_onboarding_buttons_learn_more" formatted="false">Learn more</string>
   <string name="discovery_onboarding_buttons_login" formatted="false">Login</string>
+  <string name="discovery_onboarding_buttons_signup_or_login" formatted="false">Sign up or Log in</string>
   <string name="discovery_onboarding_learn_login_conjunction_or" formatted="false">or</string>
   <string name="discovery_onboarding_title_bring_creative_projects_to_life" formatted="false">Bring creative projects to life</string>
   <string name="discovery_popular" formatted="false">Popular</string>
@@ -365,7 +375,7 @@
   <string name="facebook_confirmation_detail" formatted="false">Before we make your new account, please double check that we got the right email address from your Facebook profile:</string>
   <string name="facebook_confirmation_navbar_title" formatted="false">Sign up</string>
   <string name="facebook_confirmation_newsletter_bold" formatted="false">Discover projects</string>
-  <string name="facebook_confirmation_newsletter_normal" formatted="false"> with our weekly newsletter.</string>
+  <string name="facebook_confirmation_newsletter_normal" formatted="false">\u0020with our weekly newsletter.</string>
   <string name="facebook_confirmation_title" formatted="false">Welcome to Kickstarter!</string>
   <string name="facebook_confirmation_wrong_account_button" formatted="false">Log in with your email here.</string>
   <string name="facebook_confirmation_wrong_account_title" formatted="false">Already have a Kickstarter account?</string>
@@ -377,10 +387,13 @@
   <string name="forgot_password_title" formatted="false">Forgot your password?</string>
   <string name="forgot_password_we_sent_an_email_to_email_address_with_instructions_to_reset_your_password" formatted="false">We’ve sent an email to %{email} with instructions to reset your password.</string>
   <string name="general_alert_buttons_ok" formatted="false">OK</string>
+  <string name="general_error_oops" formatted="false">Oops!</string>
   <string name="general_error_something_wrong" formatted="false">Something went wrong.</string>
   <string name="general_loading" formatted="false">Loading...</string>
   <string name="general_navigation_accessibility_button_close_label" formatted="false">Close</string>
+  <string name="general_navigation_accessibility_button_help_menu_label" formatted="false">Help menu</string>
   <string name="general_navigation_accessibility_button_navigate_back_label" formatted="false">Navigate back</string>
+  <string name="general_navigation_accessibility_button_overflow_menu_label" formatted="false">Overflow menu</string>
   <string name="general_navigation_buttons_cancel" formatted="false">Cancel</string>
   <string name="general_navigation_buttons_close" formatted="false">Close</string>
   <string name="general_navigation_buttons_comment" formatted="false">Comment</string>
@@ -400,10 +413,15 @@
   <string name="invalid_api_client_alert_title" formatted="false">Please Upgrade</string>
   <string name="invalid_api_client_alert_upgrade" formatted="false">Upgrade</string>
   <string name="login_buttons_forgot_password" formatted="false">Forgot your password?</string>
+  <string name="login_buttons_forgot_password_html" formatted="false">&lt;u>Forgot your password?&lt;/u></string>
   <string name="login_buttons_log_in" formatted="false">Log in</string>
+  <string name="login_buttons_log_in_email" formatted="false">Log in with email</string>
   <string name="login_buttons_one_password" formatted="false">1Password</string>
   <string name="login_detail" formatted="false">Are those new shoes? If they’re not new, they look really shiny and beautiful.</string>
   <string name="login_errors_button_ok" formatted="false">OK</string>
+  <string name="login_errors_does_not_match" formatted="false">Login does not match any of our records.</string>
+  <string name="login_errors_title" formatted="false">Login error</string>
+  <string name="login_errors_unable_to_log_in" formatted="false">Unable to log in.</string>
   <string name="login_navbar_title" formatted="false">Log in</string>
   <string name="login_placeholder_email" formatted="false">Email address</string>
   <string name="login_placeholder_password" formatted="false">Password</string>
@@ -412,6 +430,7 @@
   <string name="login_tout_back_intent_traditional_login_button" formatted="false">Log in</string>
   <string name="login_tout_back_intent_traditional_signup_button" formatted="false">Sign up</string>
   <string name="login_tout_back_intent_traditional_title" formatted="false">Use your email address:</string>
+  <string name="login_tout_buttons_log_in_with_facebook" formatted="false">Log in with Facebook</string>
   <string name="login_tout_default_intent_title" formatted="false">Sign up or log in with your Facebook account or email address below:</string>
   <string name="login_tout_default_intent_traditional_login_button" formatted="false">Log in</string>
   <string name="login_tout_default_intent_traditional_signup_button" formatted="false">Sign up</string>
@@ -420,10 +439,12 @@
   <string name="login_tout_disclaimer_read_more" formatted="false">Read more</string>
   <string name="login_tout_disclaimer_we_never_post_anything_without_permission" formatted="false">We\'ll never post anything without your permission.</string>
   <string name="login_tout_errors_button_ok" formatted="false">OK</string>
+  <string name="login_tout_errors_facebook_authorization_exception_button" formatted="false">Let\'s try that again</string>
+  <string name="login_tout_errors_facebook_authorization_exception_message" formatted="false">We\'re having some trouble getting you logged in.</string>
   <string name="login_tout_errors_facebook_generic_error_message" formatted="false">Couldn’t log into Facebook.</string>
   <string name="login_tout_errors_facebook_generic_error_title" formatted="false">Facebook login</string>
-  <string name="login_tout_errors_facebook_invalid_token_message" formatted="false">There was a problem logging you in with Facebook.
-
+  <string name="login_tout_errors_facebook_invalid_token_message" formatted="false">There was a problem logging you in with Facebook.\n
+\n
 This is commonly fixed by going to iOS Settings > Facebook and toggling access for Kickstarter.</string>
   <string name="login_tout_errors_facebook_invalid_token_title" formatted="false">Facebook login</string>
   <string name="login_tout_errors_facebook_settings_disabled_message" formatted="false">It seems that you have denied Kickstarter access to your Facebook account. Please go to Settings > Facebook and toggle access.</string>
@@ -446,6 +467,7 @@ This is commonly fixed by going to iOS Settings > Facebook and toggling access f
   <string name="login_tout_message_creator_intent_traditional_login_button" formatted="false">Log in</string>
   <string name="login_tout_message_creator_intent_traditional_signup_button" formatted="false">Sign up</string>
   <string name="login_tout_message_creator_intent_traditional_title" formatted="false">Use your email address:</string>
+  <string name="login_tout_navbar_title" formatted="false">Log in or sign up</string>
   <string name="login_tout_save_intent_title" formatted="false">Log in to star this project and we’ll remind you about it before it ends.</string>
   <string name="login_tout_save_intent_traditional_login_button" formatted="false">Log in</string>
   <string name="login_tout_save_intent_traditional_signup_button" formatted="false">Sign up</string>
@@ -480,9 +502,14 @@ This is commonly fixed by going to iOS Settings > Facebook and toggling access f
   <string name="profile_projects_backed_project_count_projects_two" formatted="false">BACKED 2 PROJECTS</string>
   <string name="profile_projects_backed_project_count_projects_zero" formatted="false">BACKED 0 PROJECTS</string>
   <string name="profile_projects_backed_projects" formatted="false">Backed projects</string>
+  <string name="profile_projects_created_projects" formatted="false">Created projects</string>
   <string name="profile_projects_empty_state_button" formatted="false">Discover projects</string>
-  <string name="profile_projects_empty_state_message" formatted="false">You haven’t backed any projects yet.
+  <string name="profile_projects_empty_state_message" formatted="false">You haven’t backed any projects yet.\n
 Let’s change that!</string>
+  <string name="profile_projects_status_canceled" formatted="false">Canceled</string>
+  <string name="profile_projects_status_successful" formatted="false">Successful</string>
+  <string name="profile_projects_status_suspended" formatted="false">Suspended</string>
+  <string name="profile_projects_status_unsuccessful" formatted="false">Unsuccessful</string>
   <string name="profile_projects_time_left_to_go" formatted="false">%{time_left} to go</string>
   <string name="profile_settings_about_contact" formatted="false">Contact</string>
   <string name="profile_settings_about_cookie" formatted="false">Cookie Policy</string>
@@ -491,6 +518,10 @@ Let’s change that!</string>
   <string name="profile_settings_about_privacy" formatted="false">Privacy Policy</string>
   <string name="profile_settings_about_terms" formatted="false">Terms of Use</string>
   <string name="profile_settings_about_title" formatted="false">About</string>
+  <string name="profile_settings_accessibility_subscribe_mobile_notifications" formatted="false">Subscribe to mobile notifications</string>
+  <string name="profile_settings_accessibility_subscribe_notifications" formatted="false">Subscribe to notifications</string>
+  <string name="profile_settings_accessibility_unsubscribe_mobile_notifications" formatted="false">Unsubscribe from mobile notifications</string>
+  <string name="profile_settings_accessibility_unsubscribe_notifications" formatted="false">Unsubscribe from notifications</string>
   <string name="profile_settings_backer_notifications" formatted="false">Manage project notifications</string>
   <string name="profile_settings_backer_project_updates" formatted="false">Project updates</string>
   <string name="profile_settings_backer_title" formatted="false">Projects you back</string>
@@ -498,6 +529,7 @@ Let’s change that!</string>
   <string name="profile_settings_creator_likes" formatted="false">New likes</string>
   <string name="profile_settings_creator_pledges" formatted="false">New pledges</string>
   <string name="profile_settings_creator_title" formatted="false">Creator notifications</string>
+  <string name="profile_settings_error" formatted="false">Unable to save</string>
   <string name="profile_settings_log_out_button" formatted="false">Log out</string>
   <string name="profile_settings_logout_alert_cancel_button" formatted="false">Cancel</string>
   <string name="profile_settings_logout_alert_confirm_button" formatted="false">Log out</string>
@@ -506,16 +538,19 @@ Let’s change that!</string>
   <string name="profile_settings_navbar_title" formatted="false">Settings</string>
   <string name="profile_settings_navbar_title_notifications" formatted="false">Notifications</string>
   <string name="profile_settings_newsletter_happening" formatted="false">Happening Now</string>
+  <string name="profile_settings_newsletter_opt_in_message" formatted="false">We\'ve sent a confirmation email to the address associated with your account! Please check your email in order to confirm that you\'d like to subscribe to %{newsletter}.</string>
+  <string name="profile_settings_newsletter_opt_in_title" formatted="false">One final step!</string>
   <string name="profile_settings_newsletter_promo" formatted="false">Kickstarter news and events</string>
   <string name="profile_settings_newsletter_title" formatted="false">Newsletters</string>
   <string name="profile_settings_newsletter_weekly" formatted="false">Projects We Love</string>
-  <string name="profile_settings_rating_message" formatted="false">Thanks for using the Kickstarter app.
-If you have a moment, would you mind rating your experience?
+  <string name="profile_settings_rating_message" formatted="false">Thanks for using the Kickstarter app.\n
+If you have a moment, would you mind rating your experience?\n
 We\'d appreciate it!</string>
   <string name="profile_settings_rating_option_no_thanks" formatted="false">No, Thanks</string>
   <string name="profile_settings_rating_option_rate_now" formatted="false">Rate It Now</string>
   <string name="profile_settings_rating_option_remind_later" formatted="false">Remind Me Later</string>
   <string name="profile_settings_rating_rate_us" formatted="false">Rate us in the App Store!</string>
+  <string name="profile_settings_rating_rate_us_play_store" formatted="false">Rate us in the Play Store!</string>
   <string name="profile_settings_rating_title" formatted="false">We’re all ears!</string>
   <string name="profile_settings_social_find_friends" formatted="false">Find friends</string>
   <string name="profile_settings_social_followers" formatted="false">New followers</string>
@@ -544,26 +579,30 @@ We\'d appreciate it!</string>
   <string name="project_checkout_share_buttons_tweet" formatted="false">Tweet</string>
   <string name="project_checkout_share_exclamation" formatted="false">Woo-hoo!</string>
   <string name="project_checkout_share_link_OK" formatted="false">OK</string>
-  <string name="project_checkout_share_link_the_project_url_has_been_copied_to_your_clipboard" formatted="false">The project’s URL has been copied to your clipboard:
-
+  <string name="project_checkout_share_link_the_project_url_has_been_copied_to_your_clipboard" formatted="false">The project’s URL has been copied to your clipboard:\n
+\n
 %{project_url}</string>
-  <string name="project_checkout_share_link_the_update_url_has_been_copied_to_your_clipboard" formatted="false">The update’s URL has been copied to your clipboard:
-
+  <string name="project_checkout_share_link_the_update_url_has_been_copied_to_your_clipboard" formatted="false">The update’s URL has been copied to your clipboard:\n
+\n
 %{update_url}</string>
   <string name="project_checkout_share_title_via_kickstarter" formatted="false">%{project_or_update_title}, via Kickstarter</string>
   <string name="project_checkout_share_twitter_I_just_backed_project_on_kickstarter" formatted="false">I just backed %{project_name} on @Kickstarter</string>
   <string name="project_checkout_share_twitter_via_kickstarter" formatted="false">%{project_or_update_title}, via Kickstarter</string>
   <string name="project_checkout_share_you_just_backed_project_share_this_project" formatted="false">You just backed %{project_name}. Share this project with friends to help it along!</string>
+  <string name="project_checkout_share_you_just_backed_project_share_this_project_html" formatted="false">You just backed &lt;b>%{project_name}&lt;/b>. Share this project with friends to help it along!</string>
+  <string name="project_comments_accessibility_button_write" formatted="false">Write a comment</string>
   <string name="project_comments_empty_state_backer_button" formatted="false">Leave a comment</string>
   <string name="project_comments_empty_state_backer_message" formatted="false">Aw, how sad. Be the first backer to leave a comment on this project.</string>
   <string name="project_comments_empty_state_backer_title" formatted="false">No comments</string>
   <string name="project_comments_empty_state_logged_out_message" formatted="false">Aw, how sad. Become a backer to leave a comment.</string>
+  <string name="project_comments_empty_state_logged_out_message_log_in" formatted="false">Aw, how sad. Log in to become a backer or leave a comment.</string>
   <string name="project_comments_empty_state_logged_out_title" formatted="false">No comments</string>
   <string name="project_comments_empty_state_non_backer_message" formatted="false">Aw, how sad. Become a backer to leave a comment.</string>
   <string name="project_comments_empty_state_non_backer_title" formatted="false">No comments</string>
+  <string name="project_comments_posted" formatted="false">Comment posted!</string>
   <string name="project_creator_by_creator" formatted="false">by %{creator_name}</string>
   <string name="project_creator_by_creator_html" formatted="false">by &lt;u>%{creator_name}&lt;/u></string>
-  <string name="project_creator_youre_a_backer" formatted="false"> • You\'re a backer</string>
+  <string name="project_creator_youre_a_backer" formatted="false">\u0020• You\'re a backer</string>
   <string name="project_disclaimer_goal_not_reached" formatted="false">This project will only be funded if at least %{goal_currency} is pledged by %{deadline}.</string>
   <string name="project_disclaimer_goal_reached" formatted="false">This project will be funded on %{deadline}.</string>
   <string name="project_friends_backing_title_friends" formatted="false">Friends</string>
@@ -627,10 +666,13 @@ We\'d appreciate it!</string>
   <string name="search_by_creator" formatted="false">by %{creator_name}</string>
   <string name="search_most_popular" formatted="false">Most Popular</string>
   <string name="signup_button" formatted="false">Sign up</string>
+  <string name="signup_button_email" formatted="false">Sign up with email</string>
   <string name="signup_error_something_wrong" formatted="false">Something went wrong.</string>
+  <string name="signup_error_title" formatted="false">Sign up error</string>
   <string name="signup_input_fields_email" formatted="false">Email</string>
   <string name="signup_input_fields_full_name" formatted="false">Full name</string>
   <string name="signup_input_fields_password" formatted="false">Password</string>
+  <string name="signup_input_fields_password_min_characters" formatted="false">Password (minimum 6 characters)</string>
   <string name="signup_navbar_title" formatted="false">Sign up</string>
   <string name="signup_newsletter_full" formatted="false">Receive our weekly newsletter and other occasional updates.</string>
   <string name="social_buttons_cancel" formatted="false">Cancel</string>
@@ -671,14 +713,15 @@ We\'d appreciate it!</string>
   <string name="social_public_comment" formatted="false">Public comment</string>
   <string name="social_update" formatted="false">Update</string>
   <string name="social_update_number" formatted="false">Update #%{update_number}</string>
-  <string name="support_email_body" formatted="false">How can we help you? Please try to be as specific as possible.
-
-
-
-
---------
+  <string name="support_email_body" formatted="false">How can we help you? Please try to be as specific as possible.\n
+\n
+\n
+\n
+\n
+--------\n
 </string>
   <string name="support_email_button_ok" formatted="false">OK</string>
+  <string name="support_email_chooser" formatted="false">Select email application:</string>
   <string name="support_email_noemail_message" formatted="false">Looks like you don’t have an e-mail account on your device. Please contact us at app@kickstarter.com.</string>
   <string name="support_email_noemail_title" formatted="false">Support</string>
   <string name="support_email_subject" formatted="false">Hello Kickstarter App Support</string>
@@ -694,6 +737,7 @@ We\'d appreciate it!</string>
   <string name="two_factor_buttons_resend" formatted="false">Resend</string>
   <string name="two_factor_buttons_submit" formatted="false">Submit</string>
   <string name="two_factor_code_placeholder" formatted="false">Enter code</string>
+  <string name="two_factor_error_message" formatted="false">The code provided does not match.</string>
   <string name="two_factor_message" formatted="false">Please enter your verification code to continue.</string>
   <string name="two_factor_title" formatted="false">Verify</string>
   <string name="update_comments_creator" formatted="false">Creator</string>

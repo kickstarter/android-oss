@@ -7,7 +7,6 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.ui.views.LoginPopupMenu;
 
 import butterknife.Bind;

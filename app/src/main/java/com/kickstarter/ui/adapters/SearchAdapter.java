@@ -18,7 +18,7 @@ public final class SearchAdapter extends KSAdapter {
 
   public interface Delegate extends ProjectSearchResultViewHolder.Delegate {}
 
-  public SearchAdapter(@NonNull final Delegate delegate) {
+  public SearchAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;
   }
 
@@ -40,14 +40,14 @@ public final class SearchAdapter extends KSAdapter {
     notifyDataSetChanged();
   }
 
-  protected @LayoutRes int layout(@NonNull final SectionRow sectionRow) {
+  protected @LayoutRes int layout(final @NonNull SectionRow sectionRow) {
     if (sectionRow.section() == 0) {
       return R.layout.search_term_view;
     }
     return R.layout.project_search_result_view;
   }
 
-  protected KSViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
+  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     if (layout == R.layout.search_term_view) {
       return new SearchTermViewHolder(view);
     }

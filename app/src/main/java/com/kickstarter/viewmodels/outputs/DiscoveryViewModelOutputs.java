@@ -1,6 +1,9 @@
 package com.kickstarter.viewmodels.outputs;
 
 import com.kickstarter.models.Activity;
+import android.util.Pair;
+
+import com.kickstarter.libs.RefTag;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
 
@@ -14,7 +17,7 @@ public interface DiscoveryViewModelOutputs {
   Observable<List<Activity>> activities();
   Observable<Boolean> shouldShowOnboarding();
   Observable<DiscoveryParams> showFilters();
-  Observable<Project> showProject();
+  Observable<Pair<Project, RefTag>> showProject();
   Observable<Void> showSignupLogin();
   Observable<Void> showActivityFeed();
   Observable<Activity> showActivityUpdate();

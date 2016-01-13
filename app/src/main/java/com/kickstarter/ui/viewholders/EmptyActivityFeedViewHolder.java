@@ -6,12 +6,14 @@ import android.view.View;
 import android.widget.Button;
 
 import com.kickstarter.R;
+import com.kickstarter.models.User;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public final class EmptyActivityFeedViewHolder extends KSViewHolder {
+  User user;
   protected @Bind(R.id.discover_projects_button) Button discoverProjectsButton;
   protected @Bind(R.id.login_button) Button loginButton;
 
@@ -22,14 +24,19 @@ public final class EmptyActivityFeedViewHolder extends KSViewHolder {
     void emptyActivityFeedLoginClicked(EmptyActivityFeedViewHolder viewHolder);
   }
 
-  public EmptyActivityFeedViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
+  public EmptyActivityFeedViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
     this.delegate = delegate;
     ButterKnife.bind(this, view);
   }
 
   @Override
-  public void onBind(@Nullable Object user) {
+  public void bindData(final @Nullable Object data) throws Exception {
+    user = (User) data;
+  }
+
+  @Override
+  public void onBind() {
     if (user == null) {
       discoverProjectsButton.setVisibility(View.GONE);
       loginButton.setVisibility(View.VISIBLE);

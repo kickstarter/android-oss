@@ -7,7 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.kickstarter.BuildConfig;
+import com.kickstarter.libs.utils.ExceptionUtils;
 import com.kickstarter.ui.viewholders.KSViewHolder;
+
+import net.hockeyapp.android.ExceptionHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,22 +26,33 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
   /**
    * Fetch the layout id associated with a sectionRow.
    */
-  protected abstract int layout(@NonNull final SectionRow sectionRow);
+  protected abstract int layout(final @NonNull SectionRow sectionRow);
 
   /**
    * Returns a new KSViewHolder given a layout and view.
    */
-  protected abstract KSViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view);
+  protected abstract @NonNull KSViewHolder viewHolder(@LayoutRes final int layout, final @NonNull View view);
 
   @Override
-  public final KSViewHolder onCreateViewHolder(@NonNull final ViewGroup viewGroup, @LayoutRes final int layout) {
+  public final @NonNull KSViewHolder onCreateViewHolder(final @NonNull ViewGroup viewGroup, @LayoutRes final int layout) {
     final View view = inflateView(viewGroup, layout);
     return viewHolder(layout, view);
   }
 
   @Override
-  public final void onBindViewHolder(@NonNull final KSViewHolder viewHolder, final int position) {
-    viewHolder.onBind(objectFromPosition(position));
+  public final void onBindViewHolder(final @NonNull KSViewHolder viewHolder, final int position) {
+    final Object data = objectFromPosition(position);
+
+    try {
+      viewHolder.bindData(data);
+      viewHolder.onBind();
+    } catch (final Exception e) {
+      if (BuildConfig.DEBUG) {
+        ExceptionUtils.rethrowAsRuntimeException(e);
+      } else {
+        ExceptionHandler.saveException(e, null);
+      }
+    }
   }
 
   @Override
@@ -58,7 +73,7 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
   /**
    * Gets the data object associated with a sectionRow.
    */
-  protected Object objectFromSectionRow(@NonNull final SectionRow sectionRow) {
+  protected Object objectFromSectionRow(final @NonNull SectionRow sectionRow) {
     return data.get(sectionRow.section()).get(sectionRow.row());
   }
 
@@ -69,7 +84,7 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
     return objectFromSectionRow(sectionRowFromPosition(position));
   }
 
-  private SectionRow sectionRowFromPosition(final int position) {
+  private @NonNull SectionRow sectionRowFromPosition(final int position) {
     final SectionRow sectionRow = new SectionRow();
     int cursor = 0;
     for (final List<?> section : data) {
@@ -86,7 +101,7 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
     throw new RuntimeException("Position " + position + " not found in data");
   }
 
-  private View inflateView(@NonNull final ViewGroup viewGroup, @LayoutRes final int viewType) {
+  private @NonNull View inflateView(final @NonNull ViewGroup viewGroup, @LayoutRes final int viewType) {
     final LayoutInflater layoutInflater = LayoutInflater.from(viewGroup.getContext());
     return layoutInflater.inflate(viewType, viewGroup, false);
   }

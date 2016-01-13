@@ -14,7 +14,7 @@ import com.kickstarter.models.Comment;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
-import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.activities.CommentFeedActivity;
@@ -66,8 +66,8 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   private final PublishSubject<String> bodyOnPostClick = PublishSubject.create();
   private final PublishSubject<Boolean> commentIsPosting = PublishSubject.create();
 
-  @Inject ApiClient client;
-  @Inject CurrentUser currentUser;
+  protected @Inject ApiClientType client;
+  protected @Inject CurrentUser currentUser;
 
   public final CommentFeedViewModelInputs inputs = this;
   public final CommentFeedViewModelOutputs outputs = this;
@@ -85,7 +85,7 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
 
     final Observable<Project> project = initialProject
       .compose(Transformers.takeWhen(loginSuccess))
-      .flatMap(client::fetchProject)
+      .flatMap(p -> client.fetchProject(p).compose(Transformers.neverError()))
       .mergeWith(initialProject)
       .share();
 

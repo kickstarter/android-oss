@@ -8,8 +8,8 @@
   <include layout="@layout/display_web_view_toolbar" />
 
   <com.kickstarter.ui.views.KSWebView
-    android:id="@+id/generic_webview"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" />
+    android:id="@+id/generic_web_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
   
 </LinearLayout>

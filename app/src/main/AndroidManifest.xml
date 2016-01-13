@@ -44,10 +44,24 @@
       android:label="@string/app_name"
       android:launchMode="singleTop"
       android:theme="@style/DiscoveryActivity">
+
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
         <category android:name="android.intent.category.DEFAULT" />
+      </intent-filter>
+
+      <!-- Setting autoVerify to true in any intent filter for the manifest enables the app for
+        23+ app links: https://www.youtube.com/watch?v=LQoohRwojmw -->
+      <intent-filter
+        android:autoVerify="true">
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data
+          android:host="www.kickstarter.com"
+          android:scheme="https"
+          android:pathPrefix="/discover" />
       </intent-filter>
     </activity>
 
@@ -64,6 +78,21 @@
       android:theme="@style/Login" />
 
     <activity android:name=".ui.activities.HelpActivity"
+    android:theme="@style/HelpActivity" />
+
+    <activity android:name=".ui.activities.HelpActivity$CookiePolicy"
+      android:theme="@style/HelpActivity" />
+
+    <activity android:name=".ui.activities.HelpActivity$Faq"
+      android:theme="@style/HelpActivity" />
+
+    <activity android:name=".ui.activities.HelpActivity$HowItWorks"
+      android:theme="@style/HelpActivity" />
+
+    <activity android:name=".ui.activities.HelpActivity$Privacy"
+      android:theme="@style/HelpActivity" />
+
+    <activity android:name=".ui.activities.HelpActivity$Terms"
       android:theme="@style/HelpActivity" />
 
     <activity android:name=".ui.activities.FacebookConfirmationActivity"
@@ -83,14 +112,25 @@
 
     <activity
       android:name=".ui.activities.ProjectActivity"
-      android:label="@string/___title_activity_project"
       android:parentActivityName=".ui.activities.DiscoveryActivity"
       android:theme="@style/ProjectActivity">
       <!-- Parent activity meta-data to support 4.0 and lower -->
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"
         android:value=".ui.activities.DiscoveryActivity" />
+
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data
+          android:host="www.kickstarter.com"
+          android:scheme="https"
+          android:pathPrefix="/projects/" />
+      </intent-filter>
     </activity>
+
+    <activity android:name=".ui.activities.ProjectSocialActivity" />
 
     <activity
       android:name=".ui.activities.SearchActivity"

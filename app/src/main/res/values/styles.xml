@@ -13,7 +13,7 @@
     <item name="android:windowAllowReturnTransitionOverlap">true</item>
 
     <!-- Pop-up menu -->
-    <item name="android:popupMenuStyle">@style/PopupMenu</item>
+    <item name="popupMenuStyle">@style/PopupMenu</item>
 
     <!-- Toolbar -->
     <!-- Using toolbar, so disable the action bar -->
@@ -69,6 +69,7 @@
 
   <style name="Login" parent="KSTheme">
     <item name="android:windowBackground">@color/light_gray</item>
+    <item name="android:popupMenuStyle">@style/PopupMenu</item>
   </style>
 
   <style name="ProjectActivity" parent="KSTheme">
@@ -94,7 +95,9 @@
 
   <!-- Widgets -->
   <style name="PopupMenu" parent="Base.Widget.AppCompat.PopupMenu">
-    <item name="android:popupBackground">#FFFAFAFA</item>
+    <item name="android:popupBackground">@drawable/dialog_alert_rounded</item>
+    <item name="android:dropDownVerticalOffset">@dimen/popup_menu_vertical_offset</item>
+    <item name="android:dropDownHorizontalOffset">@dimen/popup_menu_horizontal_offset</item>
   </style>
 
   <style name="ProgressBar" parent="Base.Widget.AppCompat.ProgressBar">
@@ -130,7 +133,7 @@
     <item name="android:textColor">@color/white</item>
     <item name="android:layout_centerInParent">true</item>
     <item name="android:singleLine">true</item>
-    <item name="android:text">@string/___Log_in_with_Facebook</item>
+    <item name="android:text">@string/login_tout_buttons_log_in_with_facebook</item>
     <item name="android:paddingLeft">@dimen/grid_1</item>
     <item name="android:paddingRight">@dimen/grid_3</item>
     <item name="android:drawableLeft">@drawable/ic_social_facebook</item>
@@ -210,9 +213,14 @@
     <item name="android:textSize">22sp</item>
   </style>
 
-  <style name="ToolbarTitle" parent="SubheadPrimary">
+  <style name="ToolbarTitle" parent="Headline">
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_centerVertical">true</item>
     <item name="android:color">@color/black</item>
     <item name="android:textColorHint">@color/dark_gray</item>
+    <item name="android:layout_marginLeft">@dimen/grid_3_half</item>
+    <item name="android:layout_marginStart">@dimen/grid_3_half</item>
   </style>
 
   <!-- Reduce margin size for < v21 devices, due to different FAB shadow rendering -->

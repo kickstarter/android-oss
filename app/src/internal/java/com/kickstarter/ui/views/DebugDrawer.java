@@ -119,7 +119,7 @@ public class DebugDrawer extends FrameLayout {
       .putExtra(Intent.EXTRA_TEXT, body)
       .putExtra(Intent.EXTRA_EMAIL, new String[]{email});
 
-    context.startActivity(Intent.createChooser(intent, context.getString(R.string.___Select_email_application)));
+    context.startActivity(Intent.createChooser(intent, context.getString(R.string.Select_email_application)));
   }
 
   private void setupNetworkSection() {

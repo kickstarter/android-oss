@@ -6,14 +6,13 @@ import android.view.View;
 
 import com.kickstarter.R;
 import com.kickstarter.models.Notification;
-import com.kickstarter.services.ApiClient;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.ProjectNotificationViewHolder;
 import com.kickstarter.viewmodels.ProjectNotificationViewModel;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Observable;
 
 public final class ManageNotificationsAdapter extends KSAdapter {
 
@@ -22,7 +21,7 @@ public final class ManageNotificationsAdapter extends KSAdapter {
     return R.layout.manage_notification_view;
   }
 
-  public void takeNotifications(final @NonNull List<Notification> projectNotifications, final @NonNull ApiClient client) {
+  public void takeNotifications(final @NonNull List<Notification> projectNotifications, final @NonNull ApiClientType client) {
     data().clear();
     for (final Notification notification : projectNotifications) {
       data().add(Collections.singletonList(new ProjectNotificationViewModel(notification, client)));
@@ -31,7 +30,7 @@ public final class ManageNotificationsAdapter extends KSAdapter {
   }
 
   @Override
-  protected KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
+  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     return new ProjectNotificationViewHolder(view);
   }
 }

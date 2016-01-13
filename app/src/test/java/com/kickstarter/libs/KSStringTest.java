@@ -1,7 +1,5 @@
 package com.kickstarter.libs;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.R;
 
@@ -97,9 +95,5 @@ public class KSStringTest extends KSRobolectricTestCase {
   public void testFormat_german() {
     assertEquals("von Kristof", ksString().format(application().getString(R.string.project_creator_by_creator),
       "creator_name", "Kristof"));
-  }
-
-  private @NonNull KSString ksString() {
-    return new KSString(application().getPackageName(), application().getResources());
   }
 }

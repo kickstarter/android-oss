@@ -18,15 +18,19 @@ import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RecyclerViewPaginator;
+import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.StatusBarUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
+import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.DiscoveryAdapter;
 import com.kickstarter.ui.containers.ApplicationContainer;
+import com.kickstarter.ui.intents.DiscoveryIntentAction;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
 
@@ -39,10 +43,12 @@ import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresViewModel(DiscoveryViewModel.class)
 public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
-  DiscoveryAdapter adapter;
+  private DiscoveryAdapter adapter;
+  private DiscoveryIntentAction intentAction;
   private RecyclerViewPaginator recyclerViewPaginator;
 
-  @Inject ApplicationContainer applicationContainer;
+  protected @Inject ApplicationContainer applicationContainer;
+  protected @Inject ApiClientType client;
 
   @BindDrawable(R.drawable.dark_blue_gradient) Drawable darkBlueGradientDrawable;
   @Bind(R.id.discovery_layout) LinearLayout discoveryLayout;
@@ -64,10 +70,8 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    final DiscoveryParams params = getIntent().getParcelableExtra(getString(R.string.intent_discovery_params));
-    if (params != null) {
-      viewModel.takeParams(params);
-    }
+    intentAction = new DiscoveryIntentAction(viewModel.inputs::initializer, lifecycle(), client);
+    intentAction.intent(getIntent());
 
     recyclerViewPaginator = new RecyclerViewPaginator(recyclerView, viewModel.inputs::nextPage);
 
@@ -99,7 +103,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
     viewModel.outputs.showProject()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::startProjectActivity);
+      .subscribe(projectAndRefTag -> this.startProjectActivity(projectAndRefTag.first, projectAndRefTag.second));
 
     viewModel.outputs.showSignupLogin()
       .compose(bindToLifecycle())
@@ -118,6 +122,11 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
   }
 
   @Override
+  protected void onNewIntent(final @NonNull Intent intent) {
+    intentAction.intent(intent);
+  }
+
+  @Override
   protected void onDestroy() {
     super.onDestroy();
     recyclerViewPaginator.stop();
@@ -133,27 +142,28 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
 
   private void startDiscoveryFilterActivity(final @NonNull DiscoveryParams params) {
     final Intent intent = new Intent(this, DiscoveryFilterActivity.class)
-      .putExtra(getString(R.string.intent_discovery_params), params);
+      .putExtra(IntentKey.DISCOVERY_PARAMS, params);
 
     startActivityForResult(intent, ActivityRequestCodes.DISCOVERY_ACTIVITY_DISCOVERY_FILTER_ACTIVITY_SELECT_FILTER);
   }
 
-  private void startProjectActivity(final @NonNull Project project) {
+  private void startProjectActivity(final @NonNull Project project, final @NonNull RefTag refTag) {
     final Intent intent = new Intent(this, ProjectActivity.class)
-      .putExtra(getString(R.string.intent_project), project);
+      .putExtra(IntentKey.PROJECT, project)
+      .putExtra(IntentKey.REF_TAG, refTag);
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   private void startSignupLoginActivity() {
     final Intent intent = new Intent(this, LoginToutActivity.class)
-      .putExtra(getString(R.string.intent_login_type), LoginToutActivity.REASON_GENERIC);
+      .putExtra(IntentKey.LOGIN_TYPE, LoginToutActivity.REASON_GENERIC);
     startActivity(intent);
   }
 
   private void startActivityUpdateActivity(final @NonNull Activity activity) {
     final Intent intent = new Intent(this, DisplayWebViewActivity.class)
-      .putExtra(getString(R.string.intent_url), activity.projectUpdateUrl());
+      .putExtra(IntentKey.URL, activity.projectUpdateUrl());
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
@@ -171,17 +181,16 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
       return;
     }
 
-    final DiscoveryParams params = intent.getExtras().getParcelable(getString(R.string.intent_discovery_params));
-    viewModel.takeParams(params);
+    intentAction.intent(intent);
   }
 
   public void showBuildAlert(final @NonNull InternalBuildEnvelope envelope) {
     new AlertDialog.Builder(this)
-      .setTitle(getString(R.string.___Upgrade_app))
-      .setMessage(getString(R.string.___A_newer_build_is_available))
+      .setTitle(getString(R.string.Upgrade_app))
+      .setMessage(getString(R.string.A_newer_build_is_available))
       .setPositiveButton(android.R.string.yes, (dialog, which) -> {
         Intent intent = new Intent(this, DownloadBetaActivity.class)
-          .putExtra(getString(R.string.intent_internal_build_envelope), envelope);
+          .putExtra(IntentKey.INTERNAL_BUILD_ENVELOPE, envelope);
         startActivity(intent);
       })
       .setNegativeButton(android.R.string.cancel, (dialog, which) -> {

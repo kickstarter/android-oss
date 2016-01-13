@@ -13,6 +13,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.viewmodels.TwoFactorViewModel;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 
@@ -31,10 +32,10 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel> {
   public @Bind(R.id.login_button) Button loginButton;
   public @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
 
-  @BindString(R.string.___The_code_provided_does_not_match) String codeMismatchString;
-  @BindString(R.string.___Unable_to_login) String unableToLoginString;
-  @BindString(R.string.___Verify) String verifyString;
-  @BindString(R.string.___Log_in_error) String errorTitleString;
+  @BindString(R.string.two_factor_error_message) String codeMismatchString;
+  @BindString(R.string.login_errors_unable_to_log_in) String unableToLoginString;
+  @BindString(R.string.two_factor_title) String verifyString;
+  @BindString(R.string.login_errors_title) String errorTitleString;
 
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -44,34 +45,32 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel> {
     ButterKnife.bind(this);
     loginToolbar.setTitle(verifyString);
 
-    viewModel.inputs.email(getIntent().getExtras().getString(getString(R.string.intent_email)));
-    viewModel.inputs.isFacebookLogin(getIntent().getBooleanExtra(getString(R.string.intent_facebook_login), false));
-    viewModel.inputs.fbAccessToken(getIntent().getExtras().getString(getString(R.string.intent_facebook_token)));
-    viewModel.inputs.password(getIntent().getExtras().getString(getString(R.string.intent_password)));
+    final Intent intent = getIntent();
 
-    addSubscription(
-      viewModel.outputs.tfaSuccess()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(__ -> onSuccess())
-    );
+    viewModel.inputs.email(intent.getExtras().getString(IntentKey.EMAIL));
+    viewModel.inputs.isFacebookLogin(intent.getBooleanExtra(IntentKey.FACEBOOK_LOGIN, false));
+    viewModel.inputs.fbAccessToken(intent.getExtras().getString(IntentKey.FACEBOOK_TOKEN));
+    viewModel.inputs.password(intent.getExtras().getString(IntentKey.PASSWORD));
 
-    addSubscription(
-      viewModel.outputs.formSubmitting()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this::setFormDisabled)
-    );
+    viewModel.outputs.tfaSuccess()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> onSuccess());
 
-    addSubscription(
-      viewModel.outputs.formIsValid()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this::setFormEnabled)
-    );
+    viewModel.outputs.formSubmitting()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::setFormDisabled);
 
-    addSubscription(
-      errorMessages()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e))
-    );
+    viewModel.outputs.formIsValid()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::setFormEnabled);
+
+    errorMessages()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e));
   }
 
   private Observable<String> errorMessages() {
@@ -85,7 +84,7 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel> {
   }
 
   public boolean forward() {
-    return getIntent().getBooleanExtra(getString(R.string.intent_forward), false);
+    return getIntent().getBooleanExtra(IntentKey.FORWARD, false);
   }
 
   @OnClick(R.id.resend_button)

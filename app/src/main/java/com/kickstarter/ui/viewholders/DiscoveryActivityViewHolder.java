@@ -3,6 +3,7 @@ package com.kickstarter.ui.viewholders;
 import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Html;
 import android.view.View;
 import android.widget.Button;
@@ -14,8 +15,12 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Activity;
+import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.Update;
+import com.kickstarter.models.User;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
@@ -59,14 +64,17 @@ public class DiscoveryActivityViewHolder extends KSViewHolder {
     ButterKnife.bind(this, view);
   }
 
-  public void onBind(final @NonNull Object datum) {
-    this.activity = (Activity) datum;
+  @Override
+  public void bindData(final @Nullable Object data) throws Exception {
+    activity = ObjectUtils.requireNonNull((Activity)data, Activity.class);
+  }
 
+  public void onBind() {
     final Context context = view.getContext();
 
-    activityImageView.setVisibility(View.VISIBLE);
-    activityTitleTextView.setVisibility(View.VISIBLE);
-    activitysubTitleTextView.setVisibility(View.VISIBLE);
+    activityTitleTextView.setVisibility(View.GONE);
+    activitysubTitleTextView.setVisibility(View.GONE);
+    activityImageView.setVisibility(View.GONE);
 
     LinearLayout.LayoutParams layoutParams =
       new LinearLayout.LayoutParams(context.getResources().getDimensionPixelSize(R.dimen.grid_4),
@@ -79,24 +87,44 @@ public class DiscoveryActivityViewHolder extends KSViewHolder {
     titleLayoutParams.topMargin = 0;
     activityTitleTextView.setLayoutParams(titleLayoutParams);
 
+    final User user = activity.user();
+    final Project project = activity.project();
+
     if (activity.category().equals(Activity.CATEGORY_BACKING)) {
-      Picasso.with(context).load(activity.user().avatar()
+      if (user == null) {
+        return;
+      }
+      if (project == null) {
+        return;
+      }
+
+      activityImageView.setVisibility(View.VISIBLE);
+      activitysubTitleTextView.setVisibility(View.VISIBLE);
+
+      Picasso.with(context).load(user.avatar()
         .small())
         .transform(new CircleTransformation())
         .into(activityImageView);
 
-      activityTitleTextView.setVisibility(View.GONE);
       activitysubTitleTextView.setText(Html.fromHtml(ksString.format(categoryBackingString,
-        "friend_name", activity.user().name(),
-        "project_name", activity.project().name(),
-        "creator_name", activity.project().creator().name())));
+        "friend_name", user.name(),
+        "project_name", project.name(),
+        "creator_name", project.creator().name())));
     } else if (activity.category().equals(Activity.CATEGORY_FOLLOW)) {
-      Picasso.with(context).load(activity.user().avatar()
+      if (user == null) {
+        return;
+      }
+
+      activityImageView.setVisibility(View.VISIBLE);
+      activityTitleTextView.setVisibility(View.VISIBLE);
+      activitysubTitleTextView.setVisibility(View.VISIBLE);
+
+      Picasso.with(context).load(user.avatar()
         .small())
         .transform(new CircleTransformation())
         .into(activityImageView);
 
-      activityTitleTextView.setText(ksString.format(categoryFollowingString, "user_name", activity.user().name()));
+      activityTitleTextView.setText(ksString.format(categoryFollowingString, "user_name", user.name()));
       activitysubTitleTextView.setText(categoryFollowBackString);
 
       // temp until followable :
@@ -106,16 +134,27 @@ public class DiscoveryActivityViewHolder extends KSViewHolder {
       activityTitleTextView.setLayoutParams(titleLayoutParams);
 
     } else {
+      if (project == null) {
+        return;
+      }
+      final Photo photo = project.photo();
+      if (photo == null) {
+        return;
+      }
+
+      activityImageView.setVisibility(View.VISIBLE);
+      activityTitleTextView.setVisibility(View.VISIBLE);
+      activitysubTitleTextView.setVisibility(View.VISIBLE);
+
       Picasso.with(context)
-        .load(activity.project().photo().little())
+        .load(photo.little())
         .into(activityImageView);
 
       layoutParams = new LinearLayout.LayoutParams(context.getResources().getDimensionPixelSize(R.dimen.discovery_activity_photo_width),
           context.getResources().getDimensionPixelSize(R.dimen.discovery_activity_photo_height));
       activityImageView.setLayoutParams(layoutParams);
 
-      activityTitleTextView.setVisibility(View.VISIBLE);
-      activityTitleTextView.setText(activity.project().name());
+      activityTitleTextView.setText(project.name());
 
       switch(activity.category()) {
         case Activity.CATEGORY_FAILURE:
@@ -125,20 +164,24 @@ public class DiscoveryActivityViewHolder extends KSViewHolder {
           activitysubTitleTextView.setText(categoryCancellationString);
           break;
         case Activity.CATEGORY_LAUNCH:
-          activitysubTitleTextView.setText(ksString.format(categoryLaunchString, "user_name", activity.user().name()));
+          if (user == null) {
+            break;
+          }
+          activitysubTitleTextView.setText(ksString.format(categoryLaunchString, "user_name", user.name()));
           break;
         case Activity.CATEGORY_SUCCESS:
           activitysubTitleTextView.setText(categorySuccessString);
           break;
         case Activity.CATEGORY_UPDATE:
+          final Update update = activity.update();
+          if (update == null) {
+            break;
+          }
           activitysubTitleTextView.setText(ksString.format(categoryUpdateString,
-            "update_number", String.valueOf(activity.update().sequence()),
-            "update_title", activity.update().title()));
+            "update_number", String.valueOf(update.sequence()),
+            "update_title", update.title()));
           break;
         default:
-          activityTitleTextView.setVisibility(View.GONE);
-          activitysubTitleTextView.setVisibility(View.GONE);
-          activityImageView.setVisibility(View.GONE);
           break;
       }
     }

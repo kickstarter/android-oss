@@ -1,7 +1,6 @@
 package com.kickstarter.viewmodels.outputs;
 
 import com.kickstarter.models.Activity;
-import com.kickstarter.models.User;
 
 import java.util.List;
 
@@ -14,9 +13,9 @@ public interface ActivityFeedViewModelOutputs {
   Observable<List<Activity>> activities();
 
   /**
-   * Emits when there is no logged-in user, and so an empty state should be shown.
+   * Emits a boolean that determines if a logged-out, empty state should be displayed.
    */
-  Observable<User> loggedOutEmptyState();
+  Observable<Boolean> showLoggedOutEmptyState();
 
   /**
    * Emits a boolean indicating whether activities are being fetched from the API.

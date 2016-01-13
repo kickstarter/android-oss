@@ -11,105 +11,124 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-      android:padding="@dimen/grid_2"
       android:orientation="vertical"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 
-      <RelativeLayout
-        android:id="@+id/backer_info"
-        android:layout_marginBottom="@dimen/grid_3"
+      <include layout="@layout/project_context_view" />
+
+      <LinearLayout
+        android:orientation="vertical"
+        android:padding="@dimen/feed_padding_x"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
-          android:id="@+id/avatar"
-          android:layout_width="@dimen/grid_8"
-          android:layout_height="@dimen/grid_8"/>
-
         <RelativeLayout
-          android:layout_toRightOf="@id/avatar"
-          android:layout_toEndOf="@id/avatar"
-          android:paddingLeft="@dimen/grid_2"
-          android:paddingStart="@dimen/grid_2"
-          android:paddingRight="@dimen/grid_2"
-          android:paddingEnd="@dimen/grid_2"
-          android:layout_centerInParent="true"
-          android:layout_width="wrap_content"
+          android:id="@+id/backer_info"
+          android:layout_marginBottom="@dimen/grid_3"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content">
 
-          <TextView
-            android:id="@+id/name"
-            android:textSize="@dimen/subhead"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+          <ImageView
+            android:id="@+id/avatar"
+            android:layout_width="@dimen/grid_8"
+            android:layout_height="@dimen/grid_8"/>
 
-          <TextView
-            android:id="@+id/sequence"
-            style="@style/BodyPrimary"
+          <RelativeLayout
+            android:layout_toRightOf="@id/avatar"
+            android:layout_toEndOf="@id/avatar"
+            android:paddingLeft="@dimen/grid_2"
+            android:paddingStart="@dimen/grid_2"
+            android:paddingRight="@dimen/grid_2"
+            android:paddingEnd="@dimen/grid_2"
+            android:layout_centerInParent="true"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/name"/>
+            android:layout_height="wrap_content">
+
+            <TextView
+              android:id="@+id/name"
+              style="@style/SubheadPrimaryMedium"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content" />
+
+            <TextView
+              android:id="@+id/sequence"
+              style="@style/BodySecondary"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_below="@id/name"/>
+          </RelativeLayout>
+
         </RelativeLayout>
 
-      </RelativeLayout>
+        <include layout="@layout/horizontal_line_thin_view"/>
 
-      <TextView
-        android:text="@string/___Pledged"
-        android:paddingBottom="@dimen/grid_1"
-        style="@style/SubheadPrimaryMedium"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        <TextView
+          android:text="@string/backer_modal_pledged_title"
+          android:paddingTop="@dimen/grid_2"
+          android:paddingBottom="@dimen/grid_1"
+          style="@style/SubheadPrimaryMedium"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"/>
 
-      <TextView
-        android:id="@+id/pledge_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        <TextView
+          android:id="@+id/pledge_info"
+          style="@style/BodyPrimary"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"/>
 
-      <TextView
-        android:id="@+id/pledge_status"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/grid_3"/>
+        <TextView
+          android:id="@+id/pledge_status"
+          style="@style/BodyPrimary"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:paddingBottom="@dimen/grid_3"/>
 
-      <include layout="@layout/horizontal_line_thin_view"/>
+        <include layout="@layout/horizontal_line_thin_view"/>
 
-      <TextView
-        android:text="@string/___Reward"
-        android:paddingTop="@dimen/grid_3"
-        android:paddingBottom="@dimen/grid_1"
-        style="@style/SubheadPrimaryMedium"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        <TextView
+          android:text="@string/backer_modal_reward_title"
+          android:paddingTop="@dimen/grid_2"
+          android:paddingBottom="@dimen/grid_1"
+          style="@style/SubheadPrimaryMedium"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"/>
 
-      <TextView
-        android:id="@+id/reward_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/grid_3"/>
+        <TextView
+          android:id="@+id/reward_info"
+          style="@style/BodyPrimary"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:paddingBottom="@dimen/grid_3"/>
 
-      <include layout="@layout/horizontal_line_thin_view"/>
+        <include layout="@layout/horizontal_line_thin_view"/>
 
-      <TextView
-        android:text="@string/___Shipping"
-        android:paddingTop="@dimen/grid_3"
-        android:paddingBottom="@dimen/grid_1"
-        style="@style/SubheadPrimaryMedium"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <TextView
+          android:text="@string/backer_modal_shipping_title"
+          android:paddingTop="@dimen/grid_2"
+          android:paddingBottom="@dimen/grid_1"
+          style="@style/SubheadPrimaryMedium"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
 
-      <TextView
-        android:id="@+id/shipping_info"
-        android:text="@string/___NA"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        <TextView
+          android:id="@+id/shipping_info"
+          android:text="@string/backer_modal_not_available"
+          style="@style/BodyPrimary"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"/>
 
-      <TextView
-        android:id="@+id/shipping_amount"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/grid_3"/>
+        <TextView
+          android:id="@+id/shipping_amount"
+          style="@style/BodyPrimary"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:paddingBottom="@dimen/grid_3"/>
+
+      </LinearLayout>
 
     </LinearLayout>
+
   </ScrollView>
+
 </LinearLayout>

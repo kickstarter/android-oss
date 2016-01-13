@@ -1,10 +1,7 @@
 package com.kickstarter.libs.utils;
 
-import android.support.annotation.NonNull;
-
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.UserFactory;
-import com.kickstarter.libs.KSString;
 import com.kickstarter.models.User;
 
 import org.junit.Test;
@@ -37,11 +34,6 @@ public class SocialUtilsTest extends KSRobolectricTestCase {
       UserFactory.user().toBuilder().name("Charles").build()
     );
     assertEquals("Anna, Ben, and 1 more are backers.", SocialUtils.projectCardFriendNamepile(friends, ksString()));
-  }
-
-  private @NonNull
-  KSString ksString() {
-    return new KSString(application().getPackageName(), application().getResources());
   }
 }
 

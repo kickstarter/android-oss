@@ -11,7 +11,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
@@ -19,10 +18,14 @@ import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
-import com.kickstarter.viewmodels.ProjectViewModel;
+import com.kickstarter.services.ApiClientType;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ProjectAdapter;
+import com.kickstarter.ui.intents.ProjectIntentAction;
+import com.kickstarter.viewmodels.ProjectViewModel;
 
 import javax.inject.Inject;
 
@@ -32,55 +35,124 @@ import butterknife.BindDrawable;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresViewModel(ProjectViewModel.class)
 public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   private ProjectAdapter adapter;
+  private ProjectIntentAction intentAction;
 
-  @Bind(R.id.project_recycler_view) RecyclerView projectRecyclerView;
-  @Bind(R.id.star_fab) FloatingActionButton starFab;
-  @Bind(R.id.back_project_button) Button backProjectButton;
-  @Bind(R.id.manage_pledge_button) Button managePledgeButton;
-  @Bind(R.id.view_pledge_button) Button viewPledgeButton;
+  protected @Bind(R.id.project_recycler_view) RecyclerView projectRecyclerView;
+  protected @Bind(R.id.star_fab) FloatingActionButton starFab;
+  protected @Bind(R.id.back_project_button) Button backProjectButton;
+  protected @Bind(R.id.manage_pledge_button) Button managePledgeButton;
+  protected @Bind(R.id.view_pledge_button) Button viewPledgeButton;
 
-  @BindDrawable(R.drawable.ic_star_black_24dp) Drawable starDrawable;
-  @BindColor(R.color.green) int green;
-  @BindColor(R.color.text_primary) int textPrimary;
-  @BindString(R.string.project_back_button) String projectBackButtonString;
+  protected @BindColor(R.color.green) int green;
+  protected @BindColor(R.color.text_primary) int textPrimary;
 
-  @Inject KSCurrency ksCurrency;
+  protected @BindDrawable(R.drawable.ic_star_black_24dp) Drawable starDrawable;
+
+  protected @BindString(R.string.project_back_button) String projectBackButtonString;
+  protected @BindString(R.string.project_checkout_manage_navbar_title) String managePledgeString;
+  protected @BindString(R.string.project_star_confirmation) String projectStarConfirmationString;
+  protected @BindString(R.string.project_subpages_menu_buttons_campaign) String campaignString;
+  protected @BindString(R.string.project_subpages_menu_buttons_creator) String creatorString;
+  protected @BindString(R.string.project_subpages_menu_buttons_updates) String updatesString;
+
+  protected @Inject ApiClientType client;
+  protected @Inject KSCurrency ksCurrency;
 
   @Override
-  protected void onCreate(@Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.project_layout);
     ButterKnife.bind(this);
     ((KSApplication) getApplication()).component().inject(this);
 
-    final Intent intent = getIntent();
-    final Project project = intent.getParcelableExtra(getString(R.string.intent_project)); // Project can be null!
-    final String param = intent.getStringExtra(getString(R.string.intent_project_param));
-    viewModel.initialize(project, param);
+    intentAction = new ProjectIntentAction(viewModel.inputs::initializer, lifecycle(), client);
+    intentAction.intent(getIntent());
 
     adapter = new ProjectAdapter(viewModel);
     projectRecyclerView.setAdapter(adapter);
     projectRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+    this.viewModel.inputs.intentRefTag(getIntent().getParcelableExtra(IntentKey.REF_TAG));
+
+    this.viewModel.outputs.projectAndConfig()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(pc -> this.renderProject(pc.first, pc.second.countryCode()));
+
+    this.viewModel.outputs.showCampaign()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::showProjectDescription);
+
+    this.viewModel.outputs.showComments()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::startCommentsActivity);
+
+    this.viewModel.outputs.showCreator()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::showCreatorBio);
+
+    this.viewModel.outputs.showShareSheet()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::startShareIntent);
+
+    this.viewModel.outputs.showUpdates()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::showUpdates);
+
+    this.viewModel.outputs.playVideo()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::startVideoPlayerActivity);
+
+    this.viewModel.outputs.startCheckout()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::startCheckoutActivity);
+
+    this.viewModel.outputs.startCheckoutWithReward()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(
+        projectAndReward -> this.startRewardSelectedCheckout(projectAndReward.first, projectAndReward.second));
+
+    this.viewModel.outputs.startManagePledge()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::startManagePledge);
+
+    this.viewModel.outputs.startViewPledge()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::startViewPledgeActivity);
+
+    this.viewModel.outputs.showStarredPrompt()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> this.showStarPrompt());
+
+    this.viewModel.outputs.showLoginTout()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> this.startLoginToutActivity());
   }
 
-  public void show(@NonNull final Project project) {
-    adapter.takeProject(project);
-    setProjectActionButton(project);
-    toggleStarColor(project);
+  private void renderProject(final @NonNull Project project, final @NonNull String configCountry) {
+    adapter.takeProject(project, configCountry);
+    renderActionButton(project);
+    renderStar(project);
   }
 
-  public void setProjectActionButton(@NonNull final Project project) {
-    if (project.isLive()) {
-      starFab.setImageDrawable(starDrawable);
-      starFab.setVisibility(View.VISIBLE);
-    } else {
-      starFab.setVisibility(View.GONE);
-    }
-
+  private void renderActionButton(@NonNull final Project project) {
     if (!project.isBacking() && project.isLive()) {
       backProjectButton.setVisibility(View.VISIBLE);
     } else {
@@ -100,32 +172,31 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     }
   }
 
-  public void toggleStarColor(@NonNull final Project project) {
+  private void renderStar(final @NonNull Project project) {
+    if (project.isLive()) {
+      starFab.setImageDrawable(starDrawable);
+      starFab.setVisibility(View.VISIBLE);
+    } else {
+      starFab.setVisibility(View.GONE);
+    }
+
     final int starColor = (project.isStarred()) ? green : textPrimary;
     starDrawable.setColorFilter(starColor, PorterDuff.Mode.SRC_ATOP);
   }
 
   @OnClick(R.id.back_project_button)
   public void backProjectButtonOnClick() {
-    viewModel.takeBackProjectClick();
+    viewModel.inputs.backProjectClicked();
   }
 
   @OnClick(R.id.manage_pledge_button)
   public void managePledgeOnClick() {
-    viewModel.takeManagePledgeClick();
+    viewModel.inputs.managePledgeClicked();
   }
 
   @OnClick(R.id.view_pledge_button)
   public void viewPledgeOnClick() {
-    viewModel.takeViewPledgeClick();
-  }
-
-  public void managePledge(@NonNull final Project project) {
-    final Intent intent = new Intent(this, CheckoutActivity.class)
-      .putExtra(getString(R.string.intent_project), project)
-      .putExtra(getString(R.string.intent_url), project.editPledgeUrl())
-      .putExtra(getString(R.string.intent_toolbar_title), getString(R.string.___Manage_pledge));
-    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+    viewModel.inputs.viewPledgeClicked();
   }
 
   @Override
@@ -134,100 +205,108 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     overrideExitTransition();
   }
 
-  public void overrideExitTransition() {
+  private void overrideExitTransition() {
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
   @OnClick(R.id.star_fab)
   public void starProjectClick() {
-    viewModel.takeStarClick();
+    viewModel.inputs.starClicked();
   }
 
   @OnClick(R.id.share_icon)
-  public void shareProject() {
-    viewModel.takeShareClick();
+  public void shareProjectClick() {
+    viewModel.inputs.shareClicked();
   }
 
-  public void showProjectDescription(@NonNull final Project project) {
-    startWebViewActivity(project.descriptionUrl());
+  private void showProjectDescription(final @NonNull Project project) {
+    startWebViewActivity(campaignString, project.descriptionUrl());
   }
 
-  public void showCreatorBio(@NonNull final Project project) {
-    startWebViewActivity(project.creatorBioUrl());
+  private void showCreatorBio(final @NonNull Project project) {
+    startWebViewActivity(creatorString, project.creatorBioUrl());
   }
 
-  public void showUpdates(@NonNull final Project project) {
-    startWebViewActivity(project.updatesUrl());
+  private void showUpdates(final @NonNull Project project) {
+    startWebViewActivity(updatesString, project.updatesUrl());
   }
 
-  public void showStarPrompt() {
-    final Toast toast = Toast.makeText(this, R.string.___Well_remind_you_48_hours, Toast.LENGTH_LONG);
-    toast.show();
+  private void showStarPrompt() {
+    ViewUtils.showToast(this, projectStarConfirmationString);
   }
 
-  public void startCheckoutActivity(@NonNull final Project project) {
+  private void startCheckoutActivity(final @NonNull Project project) {
     final Intent intent = new Intent(this, CheckoutActivity.class)
-      .putExtra(getString(R.string.intent_project), project)
-      .putExtra(getString(R.string.intent_url), project.newPledgeUrl())
-      .putExtra(getString(R.string.intent_toolbar_title), projectBackButtonString);
+      .putExtra(IntentKey.PROJECT, project)
+      .putExtra(IntentKey.URL, project.newPledgeUrl())
+      .putExtra(IntentKey.TOOLBAR_TITLE, projectBackButtonString);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
-  public void startCommentsActivity(@NonNull final Project project) {
+  private void startManagePledge(final @NonNull Project project) {
+    final Intent intent = new Intent(this, CheckoutActivity.class)
+      .putExtra(IntentKey.PROJECT, project)
+      .putExtra(IntentKey.URL, project.editPledgeUrl())
+      .putExtra(IntentKey.TOOLBAR_TITLE, managePledgeString);
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  private void startCommentsActivity(final @NonNull Project project) {
     final Intent intent = new Intent(this, CommentFeedActivity.class)
-      .putExtra(getString(R.string.intent_project), project);
+      .putExtra(IntentKey.PROJECT, project);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
-  public void startRewardSelectedCheckout(@NonNull final Project project, @NonNull final Reward reward) {
+  private void startRewardSelectedCheckout(final @NonNull Project project, final @NonNull Reward reward) {
     final Intent intent = new Intent(this, CheckoutActivity.class)
-      .putExtra(getString(R.string.intent_project), project)
-      .putExtra(getString(R.string.intent_toolbar_title), projectBackButtonString)
-      .putExtra(getString(R.string.intent_url), project.rewardSelectedUrl(reward));
+      .putExtra(IntentKey.PROJECT, project)
+      .putExtra(IntentKey.TOOLBAR_TITLE, projectBackButtonString)
+      .putExtra(IntentKey.URL, project.rewardSelectedUrl(reward));
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   // todo: limit the apps you can share to
-  public void startShareIntent(@NonNull final Project project) {
+  private void startShareIntent(final @NonNull Project project) {
     final Intent intent = new Intent(Intent.ACTION_SEND)
-      .setType(getString(R.string.intent_share_type))
-      .putExtra(Intent.EXTRA_TEXT, String.format(getString(R.string.___share_message), project.name(), project.webProjectUrl()));
+      .setType("text/plain")
+      .putExtra(Intent.EXTRA_TEXT, String.format("%1$s\r\n\r\n%2$s", project.name(), project.webProjectUrl()));
     startActivity(intent);
   }
 
-  private void startWebViewActivity(@NonNull final String url) {
+  private void startWebViewActivity(final @NonNull String toolbarTitle, final @NonNull String url) {
     final Intent intent = new Intent(this, DisplayWebViewActivity.class)
-      .putExtra(getString(R.string.intent_url), url);
+      .putExtra(IntentKey.TOOLBAR_TITLE, toolbarTitle)
+      .putExtra(IntentKey.URL, url);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
-  public void startLoginToutActivity() {
+  private void startLoginToutActivity() {
     final Intent intent = new Intent(this, LoginToutActivity.class)
-      .putExtra(getString(R.string.intent_forward), true)
-      .putExtra(getString(R.string.intent_login_type), LoginToutActivity.REASON_STAR_PROJECT);
+      .putExtra(IntentKey.FORWARD, true)
+      .putExtra(IntentKey.LOGIN_TYPE, LoginToutActivity.REASON_STAR_PROJECT);
     startActivityForResult(intent, ActivityRequestCodes.PROJECT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
   }
 
-  public void startViewPledgeActivity(@NonNull final Project project) {
+  private void startViewPledgeActivity(final @NonNull Project project) {
     final Intent intent = new Intent(this, ViewPledgeActivity.class)
-      .putExtra(getString(R.string.intent_project), project);
+      .putExtra(IntentKey.PROJECT, project);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
-  public void startVideoPlayerActivity(@NonNull final Project project) {
+  private void startVideoPlayerActivity(final @NonNull Project project) {
     final Intent intent = new Intent(this, VideoPlayerActivity.class)
-      .putExtra(getString(R.string.intent_project), project);
+      .putExtra(IntentKey.PROJECT, project);
     startActivity(intent);
   }
 
   @Override
-  protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
+  protected void onActivityResult(final int requestCode, final int resultCode, final @NonNull Intent intent) {
     if (requestCode != ActivityRequestCodes.PROJECT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED) {
       return;
     }
     if (resultCode != RESULT_OK) {
       return;
     }
-    viewModel.takeLoginSuccess();
+    viewModel.inputs.loginSuccess();
   }
 }

@@ -2,13 +2,11 @@ package com.kickstarter.ui.adapters;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.kickstarter.R;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Empty;
-import com.kickstarter.models.User;
 import com.kickstarter.ui.viewholders.EmptyActivityFeedViewHolder;
 import com.kickstarter.ui.viewholders.EmptyViewHolder;
 import com.kickstarter.ui.viewholders.FriendBackingViewHolder;
@@ -27,11 +25,11 @@ public final class ActivityFeedAdapter extends KSAdapter {
   public interface Delegate extends FriendBackingViewHolder.Delegate, ProjectStateChangedPositiveViewHolder.Delegate,
     ProjectStateChangedViewHolder.Delegate, ProjectUpdateViewHolder.Delegate, EmptyActivityFeedViewHolder.Delegate {}
 
-  public ActivityFeedAdapter(@NonNull final Delegate delegate) {
+  public ActivityFeedAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;
   }
 
-  public void takeActivities(@NonNull final List<Activity> activities) {
+  public void takeActivities(final @NonNull List<Activity> activities) {
     data().clear();
     if (activities.size() == 0) {
       data().add(Collections.singletonList(Empty.get()));
@@ -41,14 +39,14 @@ public final class ActivityFeedAdapter extends KSAdapter {
     notifyDataSetChanged();
   }
 
-  public void takeLoggedOutEmptyState(@Nullable final User user) {
+  public void takeLoggedOutEmptyState() {
     data().clear();
-    data().add(Collections.singletonList(user));
+    data().add(Collections.singletonList(null));
     notifyDataSetChanged();
   }
 
   @Override
-  protected @LayoutRes int layout(@NonNull final SectionRow sectionRow) {
+  protected @LayoutRes int layout(final @NonNull SectionRow sectionRow) {
     if (objectFromSectionRow(sectionRow) instanceof Activity) {
       final Activity activity = (Activity) objectFromSectionRow(sectionRow);
       switch (activity.category()) {
@@ -59,7 +57,6 @@ public final class ActivityFeedAdapter extends KSAdapter {
         case Activity.CATEGORY_FAILURE:
         case Activity.CATEGORY_CANCELLATION:
         case Activity.CATEGORY_SUSPENSION:
-        case Activity.CATEGORY_RESUME:
           return R.layout.activity_project_state_changed_view;
         case Activity.CATEGORY_LAUNCH:
         case Activity.CATEGORY_SUCCESS:
@@ -75,7 +72,7 @@ public final class ActivityFeedAdapter extends KSAdapter {
   }
 
   @Override
-  protected KSViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
+  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     switch (layout) {
       case R.layout.activity_friend_backing_view:
         return new FriendBackingViewHolder(view, delegate);

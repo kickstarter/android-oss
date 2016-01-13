@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,6 +17,7 @@ import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ProfileAdapter;
 import com.kickstarter.viewmodels.ProfileViewModel;
 import com.squareup.picasso.Picasso;
@@ -48,8 +49,8 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
     ButterKnife.bind(this);
 
     adapter = new ProfileAdapter(viewModel);
+    recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
     recyclerView.setAdapter(adapter);
-    recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
     paginator = new RecyclerViewPaginator(recyclerView, viewModel.inputs::nextPage);
 
@@ -108,7 +109,7 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
 
   private void startProjectActivity(final @NonNull Project project) {
     final Intent intent = new Intent(this, ProjectActivity.class)
-      .putExtra(getString(R.string.intent_project), project);
+      .putExtra(IntentKey.PROJECT, project);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 }

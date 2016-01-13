@@ -11,12 +11,12 @@ import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.models.User;
+import com.kickstarter.services.ApiClientType;
+import com.kickstarter.services.apiresponses.ErrorEnvelope;
+import com.kickstarter.ui.activities.ResetPasswordActivity;
 import com.kickstarter.viewmodels.errors.ResetPasswordViewModelErrors;
 import com.kickstarter.viewmodels.inputs.ResetPasswordViewModelInputs;
 import com.kickstarter.viewmodels.outputs.ResetPasswordViewModelOutputs;
-import com.kickstarter.services.ApiClient;
-import com.kickstarter.services.apiresponses.ErrorEnvelope;
-import com.kickstarter.ui.activities.ResetPasswordActivity;
 
 import javax.inject.Inject;
 
@@ -52,8 +52,8 @@ public final class ResetPasswordViewModel extends ViewModel<ResetPasswordActivit
       .map(ErrorEnvelope::errorMessage);
   }
 
-  @Inject ApiClient client;
-  @Inject CurrentUser currentUser;
+  protected @Inject ApiClientType client;
+  protected @Inject CurrentUser currentUser;
 
   public final ResetPasswordViewModelInputs inputs = this;
   public final ResetPasswordViewModelOutputs outputs = this;

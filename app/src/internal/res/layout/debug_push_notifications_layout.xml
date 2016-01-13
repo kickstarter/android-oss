@@ -44,30 +44,30 @@
       android:layout_height="wrap_content"
       layout="@layout/horizontal_line_thin_view" />
 
+    <Button
+      android:id="@+id/simulate_project_launch_button"
+      android:layout_marginTop="@dimen/grid_1_half"
+      android:layout_marginBottom="@dimen/grid_1_half"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="Project launch"
+      style="@style/GreenRoundedButton" />
+
+    <Button
+      android:id="@+id/simulate_project_success_button"
+      android:layout_marginTop="@dimen/grid_1_half"
+      android:layout_marginBottom="@dimen/grid_1_half"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="Project success"
+      style="@style/GreenRoundedButton" />
+
     <TextView
       style="@style/SubheadPrimaryMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_2"
       android:text="Simulate notifications" />
-
-    <Button
-      android:id="@+id/simulate_friend_backing_button"
-      android:layout_marginTop="@dimen/grid_1_half"
-      android:layout_marginBottom="@dimen/grid_1_half"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:text="Friend backing"
-      style="@style/GreenRoundedButton" />
-
-    <Button
-      android:id="@+id/simulate_friend_follow_button"
-      android:layout_marginTop="@dimen/grid_1_half"
-      android:layout_marginBottom="@dimen/grid_1_half"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:text="Friend follow"
-      style="@style/GreenRoundedButton" />
 
     <Button
       android:id="@+id/simulate_project_cancellation_button"
@@ -88,12 +88,21 @@
       style="@style/GreenRoundedButton" />
 
     <Button
-      android:id="@+id/simulate_project_launch_button"
+      android:id="@+id/simulate_friend_backing_button"
       android:layout_marginTop="@dimen/grid_1_half"
       android:layout_marginBottom="@dimen/grid_1_half"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="Project launch"
+      android:text="Friend backing"
+      style="@style/GreenRoundedButton" />
+
+    <Button
+      android:id="@+id/simulate_friend_follow_button"
+      android:layout_marginTop="@dimen/grid_1_half"
+      android:layout_marginBottom="@dimen/grid_1_half"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="Friend follow"
       style="@style/GreenRoundedButton" />
 
     <Button
@@ -103,15 +112,6 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="Project reminder"
-      style="@style/GreenRoundedButton" />
-
-    <Button
-      android:id="@+id/simulate_project_success_button"
-      android:layout_marginTop="@dimen/grid_1_half"
-      android:layout_marginBottom="@dimen/grid_1_half"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:text="Project success"
       style="@style/GreenRoundedButton" />
 
     <Button

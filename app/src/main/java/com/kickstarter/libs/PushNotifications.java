@@ -44,22 +44,22 @@ public class PushNotifications {
     subscriptions.add(notifications
       .filter(PushNotificationEnvelope::isFriendFollow)
       .observeOn(Schedulers.newThread())
-      .subscribe(this::showFriendFollow));
+      .subscribe(this::displayNotificationFromFriendFollowActivity));
 
     subscriptions.add(notifications
       .filter(PushNotificationEnvelope::isProjectActivity)
       .observeOn(Schedulers.newThread())
-      .subscribe(this::showProjectActivity));
+      .subscribe(this::displayNotificationFromProjectActivity));
 
     subscriptions.add(notifications
       .filter(PushNotificationEnvelope::isProjectReminder)
       .observeOn(Schedulers.newThread())
-      .subscribe(this::showProjectReminder));
+      .subscribe(this::displayNotificationFromProjectReminder));
 
     subscriptions.add(notifications
       .filter(PushNotificationEnvelope::isProjectUpdateActivity)
       .observeOn(Schedulers.newThread())
-      .subscribe(this::showProjectUpdateActivity));
+      .subscribe(this::displayNotificationFromUpdateActivity));
 
     registerDevice();
   }
@@ -84,7 +84,7 @@ public class PushNotifications {
     notifications.onNext(envelope);
   }
 
-  private void showFriendFollow(@NonNull final PushNotificationEnvelope envelope) {
+  private void displayNotificationFromFriendFollowActivity(@NonNull final PushNotificationEnvelope envelope) {
     final Activity activity = envelope.activity();
     final GCM gcm = envelope.gcm();
 
@@ -95,29 +95,35 @@ public class PushNotifications {
     notificationManager().notify(envelope.signature(), notification);
   }
 
-  private void showProjectActivity(@NonNull final PushNotificationEnvelope envelope) {
-    final Activity activity = envelope.activity();
+  private void displayNotificationFromProjectActivity(@NonNull final PushNotificationEnvelope envelope) {
     final GCM gcm = envelope.gcm();
 
+    final Activity activity = envelope.activity();
+    if (activity == null) { return; }
+    final String projectPhoto = activity.projectPhoto();
+    if (projectPhoto == null) { return; }
+    final Long projectId = activity.projectId();
+    if (projectId == null) { return; }
+
     final Notification notification = notificationBuilder(gcm.title(), gcm.alert())
-      .setLargeIcon(fetchBitmap(activity.projectPhoto(), false))
-      //.setContentIntent(projectContentIntent(activity.projectId()))
+      .setLargeIcon(fetchBitmap(projectPhoto, false))
+      .setContentIntent(projectContentIntent(projectId, envelope.signature()))
       .build();
     notificationManager().notify(envelope.signature(), notification);
   }
 
-  private void showProjectReminder(@NonNull final PushNotificationEnvelope envelope) {
+  private void displayNotificationFromProjectReminder(@NonNull final PushNotificationEnvelope envelope) {
     final GCM gcm = envelope.gcm();
 
     final Notification notification = notificationBuilder(gcm.title(), gcm.alert())
       .setLargeIcon(fetchBitmap(envelope.project().photo(), false))
-      //.setContentIntent(projectContentIntent(envelope.project().id()))
+      .setContentIntent(projectContentIntent(envelope.project().id(), envelope.signature()))
       .build();
 
     notificationManager().notify(envelope.signature(), notification);
   }
 
-  private void showProjectUpdateActivity(@NonNull final PushNotificationEnvelope envelope) {
+  private void displayNotificationFromUpdateActivity(@NonNull final PushNotificationEnvelope envelope) {
     final Activity activity = envelope.activity();
     final GCM gcm = envelope.gcm();
 
@@ -138,14 +144,14 @@ public class PushNotifications {
       .setAutoCancel(true);
   }
 
-  private @NonNull PendingIntent projectContentIntent(@NonNull final Long id) {
+  private @NonNull PendingIntent projectContentIntent(@NonNull final Long projectId, final int uniqueNotificationId) {
     // TODO: This is still WIP
     final Intent intent = new Intent(context, ProjectActivity.class)
-      .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-      .putExtra(IntentKey.PROJECT_PARAM, id.toString());
+      .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK)
+      .putExtra(IntentKey.PROJECT_PARAM, projectId.toString());
 
     // TODO: Check the flags!
-    return PendingIntent.getActivity(context, 0 /* Request code */, intent, PendingIntent.FLAG_ONE_SHOT);
+    return PendingIntent.getActivity(context, uniqueNotificationId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
   }
 
   private @Nullable Bitmap fetchBitmap(@NonNull final String url, final boolean transformIntoCircle) {

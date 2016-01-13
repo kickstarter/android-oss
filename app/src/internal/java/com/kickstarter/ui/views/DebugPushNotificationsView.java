@@ -86,7 +86,7 @@ public class DebugPushNotificationsView extends ScrollView {
 
     final Activity activity = Activity.builder()
       .category(com.kickstarter.models.Activity.CATEGORY_FOLLOW)
-      .id(1)
+      .id(2)
       .userPhoto(USER_PHOTO)
       .build();
 
@@ -103,7 +103,7 @@ public class DebugPushNotificationsView extends ScrollView {
 
     final Activity activity = Activity.builder()
       .category(com.kickstarter.models.Activity.CATEGORY_CANCELLATION)
-      .id(1)
+      .id(3)
       .projectId(PROJECT_ID)
       .projectPhoto(PROJECT_PHOTO)
       .build();
@@ -121,7 +121,7 @@ public class DebugPushNotificationsView extends ScrollView {
 
     final Activity activity = Activity.builder()
       .category(com.kickstarter.models.Activity.CATEGORY_FAILURE)
-      .id(1)
+      .id(4)
       .projectId(PROJECT_ID)
       .projectPhoto(PROJECT_PHOTO)
       .build();
@@ -139,7 +139,7 @@ public class DebugPushNotificationsView extends ScrollView {
 
     final Activity activity = Activity.builder()
       .category(com.kickstarter.models.Activity.CATEGORY_LAUNCH)
-      .id(1)
+      .id(5)
       .projectId(PROJECT_ID)
       .projectPhoto(PROJECT_PHOTO)
       .build();
@@ -171,7 +171,7 @@ public class DebugPushNotificationsView extends ScrollView {
 
     final Activity activity = Activity.builder()
       .category(com.kickstarter.models.Activity.CATEGORY_SUCCESS)
-      .id(1)
+      .id(6)
       .projectId(PROJECT_ID)
       .projectPhoto(PROJECT_PHOTO)
       .build();
@@ -189,7 +189,7 @@ public class DebugPushNotificationsView extends ScrollView {
 
     final Activity activity = Activity.builder()
       .category(com.kickstarter.models.Activity.CATEGORY_UPDATE)
-      .id(1)
+      .id(7)
       .projectId(PROJECT_ID)
       .projectPhoto(PROJECT_PHOTO)
       .updateId(175622L)

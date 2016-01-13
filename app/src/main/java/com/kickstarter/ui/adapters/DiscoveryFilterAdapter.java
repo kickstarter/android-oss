@@ -87,9 +87,9 @@ public final class DiscoveryFilterAdapter extends KSAdapter {
   public void takeCategories(@NonNull final List<Category> initialCategories) {
     sections().clear();
 
-    sections().addAll(paramsSections(initialCategories).toList().toBlocking().single());
-    sections().add(1, Collections.singletonList(DiscoveryFilterDividerViewHolder.Divider.builder().light(light()).build()));
-    sections().add(Collections.singletonList(Empty.get()));
+    addSections(paramsSections(initialCategories).toList().toBlocking().single());
+    insertSection(1, Collections.singletonList(DiscoveryFilterDividerViewHolder.Divider.builder().light(light()).build()));
+    addSection(Collections.singletonList(Empty.get()));
 
     notifyDataSetChanged();
   }

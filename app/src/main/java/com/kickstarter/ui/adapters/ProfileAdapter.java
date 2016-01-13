@@ -21,8 +21,8 @@ public final class ProfileAdapter extends KSAdapter {
   }
 
   public void takeProjects(final @NonNull List<Project> projects) {
-    sections().clear();
-    sections().add(projects);
+    clearSections();
+    addSection(projects);
     notifyDataSetChanged();
   }
 

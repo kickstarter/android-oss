@@ -32,9 +32,9 @@ public final class ActivityFeedAdapter extends KSAdapter {
   public void takeActivities(final @NonNull List<Activity> activities) {
     sections().clear();
     if (activities.size() == 0) {
-      sections().add(Collections.singletonList(Empty.get()));
+      addSection(Collections.singletonList(Empty.get()));
     } else {
-      sections().add(activities);
+      addSection(activities);
     }
     notifyDataSetChanged();
   }

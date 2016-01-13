@@ -22,8 +22,8 @@ public final class ThanksAdapter extends KSAdapter {
   public ThanksAdapter(@NonNull final List<Project> projects, @NonNull final Category category,
     @NonNull final Delegate delegate) {
     this.delegate = delegate;
-    sections().add(projects);
-    sections().add(Collections.singletonList(category));
+    addSection(projects);
+    addSection(Collections.singletonList(category));
   }
 
   protected @LayoutRes int layout(@NonNull final SectionRow sectionRow) {

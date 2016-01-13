@@ -36,13 +36,13 @@ public final class HamburgerNavigationAdapter extends KSAdapter {
     sections().add(Collections.singletonList(data.user() != null ? data.user() : Empty.get()));
 
     // TOP FILTERS (e.g. staff picks, friends backed, ...)
-    sections().add(data.topFilters());
+    addSection(data.topFilters());
 
     // DIVIDER
-    sections().add(Collections.singletonList(Empty.get()));
+    addSection(Collections.singletonList(Empty.get()));
 
     // CATEGORY FILTERS
-    sections().add(data.categoryFilters());
+    addSection(data.categoryFilters());
 
     final int newCount = getItemCount();
     notifyItemRangeInserted(oldCount, newCount - oldCount);

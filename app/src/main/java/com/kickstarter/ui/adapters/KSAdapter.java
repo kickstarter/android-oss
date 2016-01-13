@@ -13,13 +13,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
-  private List<List<?>> sections = new ArrayList<>();
+  private List<List<Object>> sections = new ArrayList<>();
 
-  public List<List<?>> sections() {
+  public List<List<Object>> sections() {
     return sections;
   }
 
-  
+  public void clearSections() {
+    sections.clear();
+  }
+
+  public <T> void addSection(final @NonNull List<T> section) {
+    sections.add(new ArrayList<>(section));
+  }
+
+  public <T> void addSections(final @NonNull List<List<T>> sections) {
+    for (final List<T> section : sections) {
+      addSection(section);
+    }
+  }
+
+  public <T> void setSection(final int location, final @NonNull List<T> section) {
+    sections.set(location, new ArrayList<>(section));
+  }
+
+  public <T> void insertSection(final int location, final @NonNull List<T> section) {
+    sections.add(location, new ArrayList<>(section));
+  }
+
 
   /**
    * Fetch the layout id associated with a sectionRow.

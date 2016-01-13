@@ -45,7 +45,7 @@ public final class CommentFeedAdapter extends KSAdapter {
 
     sections().add(Collections.singletonList(project));
 
-    sections().add(Observable.from(comments)
+    addSection(Observable.from(comments)
       .map(comment -> Pair.create(project, comment))
       .toList().toBlocking().single());
 

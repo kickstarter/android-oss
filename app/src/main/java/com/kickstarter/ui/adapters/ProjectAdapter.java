@@ -42,7 +42,7 @@ public final class ProjectAdapter extends KSAdapter {
     sections().add(Collections.singletonList(Pair.create(project, configCountry)));
 
     if (project.hasRewards()) {
-      sections().add(Observable.from(project.rewards())
+      addSection(Observable.from(project.rewards())
           .filter(Reward::isReward)
           .map(reward -> Arrays.asList(project, reward, configCountry))
           .toList().toBlocking().single()

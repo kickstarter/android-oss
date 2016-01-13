@@ -16,7 +16,6 @@ import com.kickstarter.ui.viewholders.HamburgerNavigationRootFilterViewHolder;
 import com.kickstarter.ui.viewholders.HamburgerNavigationTopFilterViewHolder;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -79,12 +78,12 @@ public class NavigationDrawerAdapter extends KSAdapter {
 
   public void initialize(final @NonNull NavigationDrawerData data) {
 
-    final List<List<?>> newSections = sectionsFromData(data);
+    final List<List<Object>> newSections = sectionsFromData(data);
 
-//    final DiffUtils.Diff diff = DiffUtils.diff(
-//      ListUtils.flatten(sections()),
-//      ListUtils.flatten(newSections)
-//    )
+    final DiffUtils.Diff diff = DiffUtils.diff(
+      ListUtils.flatten(sections()),
+      ListUtils.flatten(newSections)
+    );
 
 
 
@@ -97,11 +96,11 @@ public class NavigationDrawerAdapter extends KSAdapter {
     //notifyDataSetChanged();
   }
 
-  List<List<?>> sectionsFromData(NavigationDrawerData data) {
-    final List<List<?>> sections = Collections.singletonList(Collections.singletonList(data.user()));
-    for (final NavigationDrawerData.Section section : data.sections()) {
-      sections().add(section.rows());
-    }
+  List<List<Object>> sectionsFromData(NavigationDrawerData data) {
+    final List<List<Object>> sections = Collections.singletonList(Collections.singletonList(data.user()));
+//    for (final NavigationDrawerData.Section section : data.sections()) {
+//      sections().add(section.rows());
+//    }
     return sections;
   }
 

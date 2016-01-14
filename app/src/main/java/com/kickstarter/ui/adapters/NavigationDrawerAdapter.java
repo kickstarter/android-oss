@@ -2,13 +2,11 @@ package com.kickstarter.ui.adapters;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.Range;
-import com.kickstarter.libs.utils.DiffUtils;
-import com.kickstarter.libs.utils.ListUtils;
-import com.kickstarter.libs.utils.RangeUtils;
+import com.kickstarter.models.User;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
 import com.kickstarter.ui.viewholders.EmptyViewHolder;
 import com.kickstarter.ui.viewholders.HamburgerNavigationChildFilterViewHolder;
@@ -21,8 +19,6 @@ import com.kickstarter.ui.viewholders.KSViewHolder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import timber.log.Timber;
 
 public class NavigationDrawerAdapter extends KSAdapter {
 
@@ -93,28 +89,28 @@ public class NavigationDrawerAdapter extends KSAdapter {
 
     final List<List<Object>> newSections = sectionsFromData(data);
 
-    final DiffUtils.Diff diff = DiffUtils.diff(
-      ListUtils.flatten(sections()),
-      ListUtils.flatten(newSections)
-    );
+//    final DiffUtils.Diff diff = DiffUtils.diff(
+//      ListUtils.flatten(sections()),
+//      ListUtils.flatten(newSections)
+//    );
 
     this.sections().clear();
     this.sections().addAll(newSections);
 
-    List<Range> deleteRanges = RangeUtils.positionalRanges(diff.deletions());
-    for (final Range range : deleteRanges) {
-      notifyItemRangeRemoved(range.start, range.length);
-    }
-
-    List<Range> insertRanges = RangeUtils.positionalRanges(diff.insertions());
-    for (final Range range : insertRanges) {
-      notifyItemRangeInserted(range.start, range.length);
-    }
-
-    Timber.d("");
+//    List<Range> deleteRanges = RangeUtils.positionalRanges(diff.deletions());
+//    for (final Range range : deleteRanges) {
+//      notifyItemRangeRemoved(range.start, range.length);
+//    }
+//
+//    List<Range> insertRanges = RangeUtils.positionalRanges(diff.insertions());
+//    for (final Range range : insertRanges) {
+//      notifyItemRangeInserted(range.start, range.length);
+//    }
+//
+//    Timber.d("");
 
 //    // no animation
-//    notifyDataSetChanged();
+    notifyDataSetChanged();
   }
 
   List<List<Object>> sectionsFromData(NavigationDrawerData data) {
@@ -127,5 +123,31 @@ public class NavigationDrawerAdapter extends KSAdapter {
     }
 
     return newSections;
+  }
+
+  private static boolean weakEquality(final @Nullable Object lhs, final @Nullable Object rhs) {
+
+    if ((lhs == null && rhs != null) || (lhs != null && rhs == null)) {
+      return false;
+    }
+    if (lhs == null && rhs == null) {
+      return true;
+    }
+    if (!lhs.getClass().equals(rhs.getClass())) {
+      return false;
+    }
+
+    if (lhs instanceof User && rhs instanceof User) {
+      return lhs.equals(rhs);
+    }
+
+    if (lhs instanceof NavigationDrawerData.Section.Row && rhs instanceof NavigationDrawerData.Section.Row) {
+      final NavigationDrawerData.Section.Row lhsRow = (NavigationDrawerData.Section.Row) lhs;
+      final NavigationDrawerData.Section.Row rhsRow = (NavigationDrawerData.Section.Row) rhs;
+
+      return lhsRow.params().equals(rhsRow.params());
+    }
+
+    return false;
   }
 }

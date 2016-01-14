@@ -32,4 +32,17 @@
     android:textColor="@color/dark_gray"
     android:text="@string/keyboard_arrow_down_icon" />
 
+  <com.kickstarter.ui.views.IconButton
+    android:id="@+id/collapse_button"
+    android:background="@drawable/click_indicator_light"
+    android:layout_height="@dimen/grid_6"
+    android:layout_width="@dimen/grid_6"
+    android:gravity="center"
+    android:textSize="@dimen/icon"
+    android:layout_centerVertical="true"
+    android:layout_alignParentEnd="true"
+    android:layout_alignParentRight="true"
+    android:textColor="@color/dark_gray"
+    android:text="@string/keyboard_arrow_up_icon" />
+
 </RelativeLayout>

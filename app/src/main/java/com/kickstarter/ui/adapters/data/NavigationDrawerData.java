@@ -4,9 +4,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.kickstarter.libs.utils.ListUtils;
+import com.kickstarter.models.Category;
 import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
-import com.kickstarter.ui.adapters.NavigationDrawerAdapter;
 
 import java.util.List;
 
@@ -14,19 +14,25 @@ import auto.parcel.AutoParcel;
 
 @AutoParcel
 public abstract class NavigationDrawerData {
-  public abstract @Nullable
-  User user();
+  public abstract @Nullable User user();
   public abstract List<Section> sections();
+
+  public abstract @Nullable Category expandedCategory();
+  public abstract @Nullable DiscoveryParams selectedParams();
 
   @AutoParcel.Builder
   public abstract static class Builder {
     public abstract Builder user(User __);
     public abstract Builder sections(List<Section> __);
+    public abstract Builder expandedCategory(Category __);
+    public abstract Builder selectedParams(DiscoveryParams __);
     public abstract NavigationDrawerData build();
   }
   public static Builder builder() {
     return new AutoParcel_NavigationDrawerData.Builder()
       .user(null)
+      .expandedCategory(null)
+      .selectedParams(null)
       .sections(ListUtils.empty());
   }
   public abstract Builder toBuilder();
@@ -58,20 +64,20 @@ public abstract class NavigationDrawerData {
       public abstract @NonNull
       DiscoveryParams params();
       public abstract boolean selected();
-      public abstract boolean root();
+      public abstract boolean rootIsExpanded();
 
       @AutoParcel.Builder
       public static abstract class Builder {
-        public abstract Section.Row.Builder params(DiscoveryParams __);
-        public abstract Section.Row.Builder selected( boolean __);
-        public abstract Section.Row.Builder root(boolean __);
+        public abstract Builder params(DiscoveryParams __);
+        public abstract Builder selected(boolean __);
+        public abstract Builder rootIsExpanded(boolean __);
         public abstract Section.Row build();
       }
-      public static Section.Row.Builder builder() {
+      public static Builder builder() {
         return new AutoParcel_NavigationDrawerData_Section_Row.Builder()
           .params(DiscoveryParams.builder().build())
           .selected(false)
-          .root(false);
+          .rootIsExpanded(false);
       }
       public abstract Section.Row.Builder toBuilder();
     }

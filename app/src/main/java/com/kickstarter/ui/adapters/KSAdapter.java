@@ -95,7 +95,7 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
   /**
    * Gets the data object associated with a position.
    */
-  public Object objectFromPosition(final int position) {
+  protected Object objectFromPosition(final int position) {
     return objectFromSectionRow(sectionRowFromPosition(position));
   }
 
@@ -122,7 +122,7 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
   }
 
   /**
-   * SectionRows allow RecyclerViews to be structured into one or more sections. Sections can contain one or more rows.
+   * SectionRows allow RecyclerViews to be structured into sections of rows.
    */
   protected class SectionRow {
     private int section;

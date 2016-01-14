@@ -21,8 +21,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class NavigationDrawerAdapter extends KSAdapter {
-
   private @NonNull Delegate delegate;
+  private @NonNull NavigationDrawerData drawerData;
 
   public NavigationDrawerAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;
@@ -64,7 +64,29 @@ public class NavigationDrawerAdapter extends KSAdapter {
     return R.layout.hamburger_divider_view;
   }
 
+  @Override
+  protected Object objectFromSectionRow(@NonNull SectionRow sectionRow) {
+    final Object object = super.objectFromSectionRow(sectionRow);
 
+    if (object == null) {
+      return null;
+    }
+    if (object instanceof User) {
+      return object;
+    }
+
+    final NavigationDrawerData.Section.Row row = (NavigationDrawerData.Section.Row) object;
+
+    if (row.params().category() == null || drawerData.expandedCategory() == null) {
+      return row;
+    }
+
+    return row
+      .toBuilder()
+      .selected(row.params().equals(drawerData.selectedParams()))
+      .rootIsExpanded(row.params().category().rootId() == drawerData.expandedCategory().rootId())
+      .build();
+  }
 
   @NonNull
   @Override
@@ -85,33 +107,20 @@ public class NavigationDrawerAdapter extends KSAdapter {
     }
   }
 
-  public void initialize(final @NonNull NavigationDrawerData data) {
-
-    final List<List<Object>> newSections = sectionsFromData(data);
-
-//    final DiffUtils.Diff diff = DiffUtils.diff(
-//      ListUtils.flatten(sections()),
-//      ListUtils.flatten(newSections)
-//    );
-
+  public void takeData(final @NonNull NavigationDrawerData data) {
+    drawerData = data;
     this.sections().clear();
-    this.sections().addAll(newSections);
-
-//    List<Range> deleteRanges = RangeUtils.positionalRanges(diff.deletions());
-//    for (final Range range : deleteRanges) {
-//      notifyItemRangeRemoved(range.start, range.length);
-//    }
-//
-//    List<Range> insertRanges = RangeUtils.positionalRanges(diff.insertions());
-//    for (final Range range : insertRanges) {
-//      notifyItemRangeInserted(range.start, range.length);
-//    }
-//
-//    Timber.d("");
-
-//    // no animation
+    this.sections().addAll(sectionsFromData(data));
     notifyDataSetChanged();
   }
+
+//  public int selectedPosition() {
+//    for (final List<NavigationDrawerData.Section.Row> section : sections()) {
+//      for (final NavigationDrawerData.Section.Row row : section) {
+//
+//      }
+//    }
+//  }
 
   List<List<Object>> sectionsFromData(NavigationDrawerData data) {
     final List<List<Object>> newSections = new ArrayList<>();

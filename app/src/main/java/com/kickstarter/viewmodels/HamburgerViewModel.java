@@ -33,8 +33,6 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
-
 public final class HamburgerViewModel extends ViewModel<HamburgerActivity> implements NavigationDrawerAdapter.Delegate {
   protected @Inject ApiClientType apiClient;
   protected @Inject CurrentUser currentUser;
@@ -44,10 +42,10 @@ public final class HamburgerViewModel extends ViewModel<HamburgerActivity> imple
     return navigationDrawerData;
   }
 
-  private PublishSubject<NavigationDrawerData.Section.Row> childFilterRowCLick = PublishSubject.create();
+  private PublishSubject<NavigationDrawerData.Section.Row> childFilterRowClick = PublishSubject.create();
   @Override
   public void rowClick(@NonNull HamburgerNavigationChildFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
-    childFilterRowCLick.onNext(row);
+    childFilterRowClick.onNext(row);
   }
 
   private PublishSubject<NavigationDrawerData.Section.Row> rootFilterRowClick = PublishSubject.create();
@@ -74,9 +72,7 @@ public final class HamburgerViewModel extends ViewModel<HamburgerActivity> imple
       .share();
 
     PublishSubject<DiscoveryParams> selectedParams = PublishSubject.create();
-    PublishSubject<DiscoveryParams> expandedParams = PublishSubject.create();
-    Observable<Pair<DiscoveryParams, DiscoveryParams>> selectedAndExpandedParams = selectedParams
-      .compose(combineLatestPair(expandedParams));
+    PublishSubject<Category> expandedParams = PublishSubject.create();
 
     Observable.combineLatest(categories, selectedParams, expandedParams, currentUser.observable(), HamburgerViewModel::magic)
       .subscribe(navigationDrawerData::onNext);
@@ -84,35 +80,66 @@ public final class HamburgerViewModel extends ViewModel<HamburgerActivity> imple
     selectedParams.onNext(DiscoveryParams.builder().staffPicks(true).build());
     expandedParams.onNext(null);
 
-    rootFilterRowClick
+    final Observable<Category> clickedCategory = rootFilterRowClick
       .map(NavigationDrawerData.Section.Row::params)
+      .map(DiscoveryParams::category);
+
+//    childFilterRowClick
+//      .mergeWith(topFilterRowClick)
+
+    navigationDrawerData
+      .map(NavigationDrawerData::expandedCategory)
+      .compose(Transformers.takePairWhen(clickedCategory))
+      .map(expandedAndClickedCategory -> toggleExpandedCategory(expandedAndClickedCategory.first, expandedAndClickedCategory.second))
       .subscribe(expandedParams::onNext);
   }
 
-  static NavigationDrawerData magic(List<Category> categories, DiscoveryParams selected, @Nullable DiscoveryParams expanded, User user) {
+  private static @Nullable Category toggleExpandedCategory(final @Nullable Category expandedCategory, final @NonNull Category clickedCategory) {
+    if (expandedCategory != null && clickedCategory.id() == expandedCategory.id()) {
+      return null;
+    }
+    return clickedCategory;
+  }
 
-    NavigationDrawerData.Builder builder = NavigationDrawerData.builder();
+  /**
+   * Converts all the disparate data representing the state of the menu data into a `NavigationDrawerData` object
+   * that can be used to populate a view.
+   * @param categories The full list of categories that can be displayed.
+   * @param selected The params that correspond to what is currently selected in the menu.
+   * @param expandedCategory The category that correspond to what is currently expanded in the menu.
+   * @param user The currently logged in user.
+   */
+  static NavigationDrawerData magic(final @NonNull List<Category> categories, final @NonNull DiscoveryParams selected, final @Nullable Category expandedCategory, final @Nullable User user) {
+
+    final NavigationDrawerData.Builder builder = NavigationDrawerData.builder();
 
     List<NavigationDrawerData.Section> categorySections = Observable.from(categories)
-      .filter(c -> isVisible(c, expanded))
-      .flatMap(c -> doubleRootIfExpanded(c, expanded))
+      .filter(c -> isVisible(c, expandedCategory))
+      .flatMap(c -> doubleRootIfExpanded(c, expandedCategory))
       .map(c -> DiscoveryParams.builder().category(c).build())
       .toList()
-      .map(HamburgerViewModel::massage)
-      .flatMap(HamburgerViewModel::massageSections)
+      .map(HamburgerViewModel::paramsGroupedByRootCategory)
+      .map(sections -> massageSections(sections, expandedCategory))
       .toBlocking().single();
 
-    List<NavigationDrawerData.Section> sections = Observable
+    final List<NavigationDrawerData.Section> sections = Observable
       .from(categorySections)
       .startWith(topSections(user))
       .toList().toBlocking().single();
 
-    return builder.sections(sections)
+    return builder
+      .sections(sections)
       .user(user)
+      .selectedParams(selected)
+      .expandedCategory(expandedCategory)
       .build();
   }
 
-  static public List<List<DiscoveryParams>> massage(List<DiscoveryParams> ps) {
+  /**
+   * Converts the full list of category discovery params into a grouped list of params. A group corresponds to a root
+   * category, and the list contains all subcategories.
+   */
+  static public List<List<DiscoveryParams>> paramsGroupedByRootCategory(final @NonNull List<DiscoveryParams> ps) {
     TreeMap<String, List<DiscoveryParams>> grouped = new TreeMap<>();
     for (final DiscoveryParams p : ps) {
       if (!grouped.containsKey(p.category().root().name())) {
@@ -124,25 +151,48 @@ public final class HamburgerViewModel extends ViewModel<HamburgerActivity> imple
     return new ArrayList<>(grouped.values());
   }
 
-  static Observable<List<NavigationDrawerData.Section>> massageSections(List<List<DiscoveryParams>> sections) {
+  /**
+   *
+   * @param sections
+   * @return
+   */
+  static List<NavigationDrawerData.Section> massageSections(final @NonNull List<List<DiscoveryParams>> sections, final @Nullable Category expandedCategory) {
 
     return Observable.from(sections)
-      .flatMap(HamburgerViewModel::massageRows)
-      .map(rows -> NavigationDrawerData.Section.builder().rows(rows).build())
-      .toList();
+      .map(HamburgerViewModel::massageRows)
+      .map(rows -> {
+        final Category sectionCategory = rows.get(0).params().category();
+        if (sectionCategory != null && expandedCategory != null) {
+          return Pair.create(rows, sectionCategory.rootId() == expandedCategory.rootId());
+        }
+        return Pair.create(rows, false);
+      })
+      .map(rowsAndIsExpanded ->
+        NavigationDrawerData.Section.builder()
+          .rows(rowsAndIsExpanded.first)
+          .expanded(rowsAndIsExpanded.second)
+          .build()
+      )
+      .toList().toBlocking().single();
   }
 
-  static Observable<List<NavigationDrawerData.Section.Row>> massageRows(List<DiscoveryParams> rows) {
+  /**
+   *
+   * @param rows
+   * @return
+   */
+  static List<NavigationDrawerData.Section.Row> massageRows(final @NonNull List<DiscoveryParams> rows) {
     return Observable.from(rows)
       .map(p -> NavigationDrawerData.Section.Row.builder().params(p).build())
-      .toList();
+      .toList().toBlocking().single();
   }
 
-  static boolean isVisible(Category category, @Nullable DiscoveryParams expandedParams) {
-    if (expandedParams == null) {
-      return category.isRoot();
-    }
-    final Category expandedCategory = expandedParams.category();
+  /**
+   * Determines if a category is visible given what is the currently expanded category.
+   * @param category The category to determine its visibility.
+   * @param expandedCategory The category that is currently expandable, possible `null`.
+   */
+  static boolean isVisible(final @NonNull Category category, final @Nullable Category expandedCategory) {
     if (expandedCategory == null) {
       return category.isRoot();
     }
@@ -154,19 +204,29 @@ public final class HamburgerViewModel extends ViewModel<HamburgerActivity> imple
     return category.root().id() == expandedCategory.id();
   }
 
-  static Observable<Category> doubleRootIfExpanded(Category category, @Nullable DiscoveryParams expandedParams) {
-    if (expandedParams == null) {
-      return Observable.just(category);
-    }
-    final Category expandedCategory = expandedParams.category();
+  /**
+   * Since there are two rows that correspond to a root category in an expanded section (e.g. "Art" & "All of Art"),
+   * this method will double up that root category in such a situation.
+   * @param category The category that might potentially be doubled up.
+   * @param expandedCategory The currently expanded category.
+   */
+  static Observable<Category> doubleRootIfExpanded(final @NonNull Category category, final @Nullable Category expandedCategory) {
     if (expandedCategory == null) {
       return Observable.just(category);
     }
 
-    return category.isRoot() && category.id() == expandedCategory.id() ? Observable.just(category, category) : Observable.just(category);
+    if (category.isRoot() && category.id() == expandedCategory.id()) {
+      return Observable.just(category, category);
+    }
+
+    return Observable.just(category);
   }
 
-  static Observable<NavigationDrawerData.Section> topSections(@Nullable User user) {
+  /**
+   * Returns a list of top-level section filters that can be used based on the current user, which could be `null`.
+   * @param user The currently logged in user, can be `null`.
+   */
+  static Observable<NavigationDrawerData.Section> topSections(final @Nullable User user) {
     List<DiscoveryParams> filters = ListUtils.empty();
 
     filters.add(DiscoveryParams.builder().staffPicks(true).build());

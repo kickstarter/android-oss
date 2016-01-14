@@ -50,7 +50,8 @@ public final class HamburgerActivity extends BaseActivity<HamburgerViewModel> {
     viewModel.navigationDrawerData()
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(data -> {
-        navigationAdapter.initialize(data);
+        navigationAdapter.takeData(data);
+//        navigationRecyclerView.scrollToPosition(6);
       });
   }
 

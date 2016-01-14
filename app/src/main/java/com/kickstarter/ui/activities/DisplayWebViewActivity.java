@@ -6,13 +6,15 @@ import android.support.annotation.Nullable;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.ui.IntentKey;
+import com.kickstarter.ui.toolbars.KSToolbar;
 import com.kickstarter.ui.views.KSWebView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public final class DisplayWebViewActivity extends BaseActivity {
-  protected @Bind(R.id.generic_webview) KSWebView webView;
+  protected @Bind(R.id.generic_web_view) KSWebView webView;
+  protected @Bind(R.id.web_view_toolbar) KSToolbar webViewToolbar;
 
   @Override
   public void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -20,8 +22,10 @@ public final class DisplayWebViewActivity extends BaseActivity {
     setContentView(R.layout.web_view_layout);
     ButterKnife.bind(this);
 
-    final String url = getIntent().getExtras().getString(IntentKey.URL);
+    final String toolbarTitle = getIntent().getExtras().getString(IntentKey.TOOLBAR_TITLE, "");
+    webViewToolbar.setTitle(toolbarTitle);
 
+    final String url = getIntent().getExtras().getString(IntentKey.URL);
     webView.loadUrl(url);
   }
 

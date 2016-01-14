@@ -19,6 +19,8 @@ import java.util.Map;
 
 import auto.parcel.AutoParcel;
 
+import static com.kickstarter.libs.utils.BoolUtils.isTrue;
+
 @AutoGson
 @AutoParcel
 public abstract class DiscoveryParams implements Parcelable {
@@ -71,8 +73,24 @@ public abstract class DiscoveryParams implements Parcelable {
         case "most_funded":
           return MOST_FUNDED;
       }
+      return MAGIC;
+    }
 
-      return null;
+    public @NonNull String refTagSuffix() {
+      switch (this) {
+        case MAGIC:
+          return "";
+        case POPULAR:
+          return "_popular";
+        case ENDING_SOON:
+          return "_ending_soon";
+        case NEWEST:
+          return "_popular";
+        case MOST_FUNDED:
+          return "_most_funded";
+        default:
+          return "";
+      }
     }
   }
 
@@ -380,14 +398,30 @@ public abstract class DiscoveryParams implements Parcelable {
         put("q", term());
       }
 
-      if (staffPicks() != null && staffPicks() && page() != null && page() == 1 && sort() != null && sort() == Sort.MAGIC) {
+      if (shouldIncludePotd()) {
         put("include_potd", "true");
       }
 
-      if (category() != null && page() != null && page() == 1 && sort() != null && sort() == Sort.MAGIC) {
+      if (shouldIncludeFeatured()) {
         put("include_featured", "true");
       }
     }});
+  }
+
+  /**
+   * Determines if the `include_potd` flag should be included in a discovery request so that we guarantee that the
+   * POTD comes back.
+   */
+  public boolean shouldIncludePotd() {
+    return isTrue(staffPicks()) && page() != null && page() == 1 && (sort() == null || sort() == Sort.MAGIC);
+  }
+
+  /**
+   * Determines if the `include_featured` flag should be included in a discovery request so that we guarantee that the
+   * featured project for the category comes back.
+   */
+  public boolean shouldIncludeFeatured() {
+    return category() != null && page() != null && page() == 1 && (sort() == null || sort() == Sort.MAGIC);
   }
 
   @Override
@@ -396,7 +430,7 @@ public abstract class DiscoveryParams implements Parcelable {
   }
 
   public @NonNull String filterString(@NonNull final Context context) {
-    if (staffPicks() != null && staffPicks()) {
+    if (isTrue(staffPicks())) {
       return context.getString(R.string.discovery_recommended);
     } else if (starred() != null && starred() == 1) {
       return context.getString(R.string.discovery_saved);

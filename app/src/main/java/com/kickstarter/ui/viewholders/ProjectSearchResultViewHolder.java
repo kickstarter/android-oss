@@ -2,6 +2,7 @@ package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -9,6 +10,8 @@ import android.widget.TextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
+import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
 import com.squareup.picasso.Picasso;
 
@@ -42,15 +45,26 @@ public final class ProjectSearchResultViewHolder extends KSViewHolder {
     ButterKnife.bind(this, view);
   }
 
-  public void onBind(final @NonNull Object datum) {
-    project = (Project) datum;
+  @Override
+  public void bindData(final @Nullable Object data) throws Exception {
+    project = ObjectUtils.requireNonNull((Project) data, Project.class);
+  }
+
+  public void onBind() {
     final Context context = view.getContext();
 
     creatorNameTextView.setText(ksString.format(byCreatorString,
       "creator_name", project.creator().name()
     ));
     projectNameTextView.setText(project.name());
-    Picasso.with(context).load(project.photo().small()).into(projectImageView);
+
+    final Photo photo = project.photo();
+    if (photo != null) {
+      projectImageView.setVisibility(View.VISIBLE);
+      Picasso.with(context).load(photo.small()).into(projectImageView);
+    } else {
+      projectImageView.setVisibility(View.INVISIBLE);
+    }
   }
 
   @Override

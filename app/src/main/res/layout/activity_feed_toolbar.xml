@@ -20,19 +20,12 @@
       android:id="@+id/back_button"
       android:focusable="true"
       android:contentDescription="@string/general_navigation_accessibility_button_navigate_back_label"
-      android:layout_marginEnd="@dimen/grid_2"
-      android:layout_marginRight="@dimen/grid_2"
       android:text="@string/arrow_back_icon" />
     
     <TextView
-      style="@style/Headline"
-      android:layout_width="wrap_content"
-      android:layout_height="match_parent"
+      style="@style/ToolbarTitle"
       android:layout_toEndOf="@id/back_button"
       android:layout_toRightOf="@id/back_button"
-      android:layout_marginLeft="@dimen/grid_3_half"
-      android:layout_marginStart="@dimen/grid_3_half"
-      android:gravity="center_vertical"
       android:text="@string/activity_creator_navigation_header_activity" />
 
   </RelativeLayout>

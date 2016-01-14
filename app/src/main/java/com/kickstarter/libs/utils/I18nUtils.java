@@ -2,8 +2,6 @@ package com.kickstarter.libs.utils;
 
 import android.support.annotation.NonNull;
 
-import com.kickstarter.models.Location;
-
 import java.util.Locale;
 
 public final class I18nUtils {

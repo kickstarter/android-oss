@@ -4,8 +4,6 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.Html;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -19,13 +17,17 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.NumberUtils;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.SocialUtils;
-import com.kickstarter.libs.utils.StringUtils;
+import com.kickstarter.models.Category;
+import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
 import com.squareup.picasso.Picasso;
+
+import org.joda.time.DateTime;
 
 import javax.inject.Inject;
 
@@ -34,6 +36,8 @@ import butterknife.BindDimen;
 import butterknife.BindDrawable;
 import butterknife.BindString;
 import butterknife.ButterKnife;
+
+import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
 public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.backers_count) TextView backersCountTextView;
@@ -89,21 +93,38 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     ButterKnife.bind(this, view);
   }
 
-  public void onBind(@NonNull final Object datum) {
-    this.project = (Project) datum;
+  @Override
+  public void bindData(final @Nullable Object data) throws Exception {
+    project = requireNonNull((Project) data, Project.class);
+  }
 
+  public void onBind() {
     backersCountTextView.setText(NumberUtils.format(project.backersCount()));
     blurbTextView.setText(project.blurb());
-    categoryTextView.setText(project.category().name());
+
+    final Category category = project.category();
+    if (category != null) {
+      categoryTextView.setText(category.name());
+    } else {
+      categoryTextView.setText("");
+    }
+
     deadlineCountdownTextView.setText(NumberUtils.format(ProjectUtils.deadlineCountdownValue(project)));
     deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(project, view.getContext(), ksString));
     nameTextView.setText(project.name());
     percentTextView.setText(NumberUtils.flooredPercentage(project.percentageFunded()));
     percentageFundedProgressBar.setProgress(ProgressBarUtils.progress(project.percentageFunded()));
-    Picasso.with(view.getContext())
-      .load(project.photo().full())
-      .placeholder(grayGradientDrawable)
-      .into(photoImageView);
+
+    final Photo photo = project.photo();
+    if (photo != null) {
+      photoImageView.setVisibility(View.VISIBLE);
+      Picasso.with(view.getContext())
+        .load(photo.full())
+        .placeholder(grayGradientDrawable)
+        .into(photoImageView);
+    } else {
+      photoImageView.setVisibility(View.INVISIBLE);
+    }
 
     setProjectMetadataView();
     setProjectStateView(view.getContext());
@@ -125,6 +146,8 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   }
 
   public void setProjectStateView(final @NonNull Context context) {
+    final DateTime stateChangedAt = ObjectUtils.coalesce(project.stateChangedAt(), new DateTime());
+
     switch(project.state()) {
       case Project.STATE_SUCCESSFUL:
         percentageFundedProgressBar.setVisibility(View.GONE);
@@ -132,7 +155,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
         fundingUnsuccessfulTextView.setVisibility(View.GONE);
         successfullyFundedTextView.setVisibility(View.VISIBLE);
         successfullyFundedTextView.setText(ksString.format(bannerSuccessfulDateString,
-          "date", DateTimeUtils.relative(context, ksString, project.stateChangedAt())
+          "date", DateTimeUtils.relative(context, ksString, stateChangedAt)
         ));
         break;
       case Project.STATE_CANCELED:
@@ -141,7 +164,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
         successfullyFundedTextView.setVisibility(View.GONE);
         fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
         fundingUnsuccessfulTextView.setText(ksString.format(bannerCanceledDateString,
-          "date", DateTimeUtils.relative(context, ksString, project.stateChangedAt())
+          "date", DateTimeUtils.relative(context, ksString, stateChangedAt)
         ));
         break;
       case Project.STATE_FAILED:
@@ -150,7 +173,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
         successfullyFundedTextView.setVisibility(View.GONE);
         fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
         fundingUnsuccessfulTextView.setText(ksString.format(fundingUnsuccessfulDateString,
-          "date", DateTimeUtils.relative(context, ksString, project.stateChangedAt())
+          "date", DateTimeUtils.relative(context, ksString, stateChangedAt)
         ));
         break;
       case Project.STATE_SUSPENDED:
@@ -159,8 +182,12 @@ public final class ProjectCardViewHolder extends KSViewHolder {
         successfullyFundedTextView.setVisibility(View.GONE);
         fundingUnsuccessfulTextView.setVisibility(View.VISIBLE);
         fundingUnsuccessfulTextView.setText(ksString.format(bannerSuspendedDateString,
-          "date", DateTimeUtils.relative(context, ksString, project.stateChangedAt())
+          "date", DateTimeUtils.relative(context, ksString, stateChangedAt)
         ));
+        break;
+      default:
+        percentageFundedProgressBar.setVisibility(View.VISIBLE);
+        projectStateViewGroup.setVisibility(View.GONE);
         break;
     }
   }

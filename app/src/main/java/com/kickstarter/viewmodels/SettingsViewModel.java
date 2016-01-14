@@ -32,6 +32,12 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
   private final PublishSubject<Void> contactEmailClicked = PublishSubject.create();
   private final PublishSubject<Pair<Boolean, String>> newsletterInput = PublishSubject.create();
   private final PublishSubject<User> userInput = PublishSubject.create();
+  public void logoutClicked() {
+    showConfirmLogoutPrompt.onNext(true);
+  }
+  public void closeLogoutConfirmationClicked() {
+    showConfirmLogoutPrompt.onNext(false);
+  }
 
   // OUTPUTS
   private final PublishSubject<String> sendNewsletterConfirmation = PublishSubject.create();
@@ -45,6 +51,10 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
   private final BehaviorSubject<User> userOutput = BehaviorSubject.create();
   public Observable<User> user() {
     return userOutput;
+  }
+  private final BehaviorSubject<Boolean> showConfirmLogoutPrompt = BehaviorSubject.create();
+  public Observable<Boolean> showConfirmLogoutPrompt() {
+    return showConfirmLogoutPrompt;
   }
 
   // ERRORS
@@ -123,7 +133,7 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
     addSubscription(
       client.fetchCurrentUser()
         .retry(2)
-        .onErrorResumeNext(e -> Observable.empty())
+        .compose(Transformers.neverError())
         .subscribe(currentUser::refresh)
     );
 

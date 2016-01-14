@@ -143,7 +143,7 @@ public final class DiscoveryFilterAdapter extends KSAdapter {
     TreeMap<String, ArrayList<DiscoveryFilterViewHolder.Filter>> groupedFilters = filters.reduce(new TreeMap<String, ArrayList<DiscoveryFilterViewHolder.Filter>>(), (hash, filter) -> {
       final String key = filter.params().category().root().name();
       if (!hash.containsKey(key)) {
-        hash.put(key, new ArrayList<DiscoveryFilterViewHolder.Filter>());
+        hash.put(key, new ArrayList<>());
       }
       hash.get(key).add(filter);
       return hash;

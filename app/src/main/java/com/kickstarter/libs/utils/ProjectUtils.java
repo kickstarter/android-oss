@@ -11,8 +11,6 @@ import com.kickstarter.models.User;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
-import java.util.Locale;
-
 public final class ProjectUtils {
   private ProjectUtils() {}
 

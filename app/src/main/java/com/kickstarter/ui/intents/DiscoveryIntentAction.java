@@ -28,13 +28,6 @@ public final class DiscoveryIntentAction extends IntentAction {
 
     this.client = client;
 
-    // Default to staff picks if intent is empty.
-    intent
-      .compose(RxLifecycle.bindActivity(lifecycle))
-      .filter(this::isEmpty)
-      .map(__ -> DiscoveryParams.builder().staffPicks(true).build())
-      .subscribe(initializer);
-
     intent
       .compose(RxLifecycle.bindActivity(lifecycle))
       .map(this::uri)

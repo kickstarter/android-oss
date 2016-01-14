@@ -6,7 +6,8 @@ import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
 
 public interface DiscoveryViewModelInputs {
-  void initializer(final @NonNull DiscoveryParams params);
+  void projectClicked(final @NonNull Project project);
   void nextPage();
-  void projectClick(final @NonNull Project project);
+  void filterButtonClicked();
+  void initializer(final @NonNull DiscoveryParams params);
 }

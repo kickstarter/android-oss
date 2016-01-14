@@ -2,6 +2,7 @@ package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
 
@@ -12,6 +13,7 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
@@ -23,6 +25,8 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
+
+import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
 public final class RewardViewHolder extends KSViewHolder {
   protected @Bind(R.id.pledge_minimum) TextView minimumTextView;
@@ -65,12 +69,15 @@ public final class RewardViewHolder extends KSViewHolder {
     ButterKnife.bind(this, view);
   }
 
-  public void onBind(@NonNull final Object datum) {
-    final List<Object> projectRewardUser = (List<Object>) datum;
-    project = (Project) projectRewardUser.get(0);
-    reward = (Reward) projectRewardUser.get(1);
-    configCountry = (String) projectRewardUser.get(2);
+  @Override
+  public void bindData(final @Nullable Object data) throws Exception {
+    final List projectRewardUser = requireNonNull((List) data);
+    project = requireNonNull((Project) projectRewardUser.get(0));
+    reward = requireNonNull((Reward) projectRewardUser.get(1));
+    configCountry = requireNonNull((String) projectRewardUser.get(2));
+  }
 
+  public void onBind() {
     minimumTextView.setText(ksString.format(
       pledgeRewardCurrencyOrMoreString,
       "reward_currency",
@@ -161,8 +168,9 @@ public final class RewardViewHolder extends KSViewHolder {
       shippingSummaryTextView.setVisibility(View.VISIBLE);
       shippingSummaryTextView.setText(reward.shippingSummary());
     } else {
-      shippingDestinationTextView.setVisibility(View.GONE);
-      shippingSummaryTextView.setVisibility(View.GONE);
+      final int visibility = ViewUtils.isLandscape(context) ? View.INVISIBLE : View.GONE;
+      shippingDestinationTextView.setVisibility(visibility);
+      shippingSummaryTextView.setVisibility(visibility);
     }
   }
 

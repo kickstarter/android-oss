@@ -3,6 +3,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="vertical"
   android:gravity="center"
+  android:layout_gravity="center"
   android:layout_height="wrap_content"
   android:layout_width="wrap_content"
   android:layout_marginTop="@dimen/grid_3"
@@ -12,7 +13,7 @@
   <android.support.v7.widget.CardView
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     card_view:cardCornerRadius="4dp"
-    card_view:cardBackgroundColor="@color/transparent"
+    card_view:cardBackgroundColor="@color/white"
     android:foreground="@drawable/click_indicator_light"
     android:elevation="@dimen/card_elevation"
     android:focusable="true"
@@ -20,9 +21,8 @@
     android:layout_height="@dimen/profile_card_height" >
 
     <RelativeLayout
-      android:orientation="vertical"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
+      android:layout_height="match_parent">
 
       <ImageView
         android:id="@+id/profile_card_image"
@@ -103,4 +103,5 @@
     </RelativeLayout>
 
   </android.support.v7.widget.CardView>
+
 </LinearLayout>

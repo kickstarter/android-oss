@@ -15,6 +15,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.transformations.CircleTransformation;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.ui.IntentKey;
@@ -49,8 +50,9 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> implem
     setContentView(R.layout.profile_layout);
     ButterKnife.bind(this);
 
+    final int spanCount = ViewUtils.isLandscape(this) ? 3 : 2;
     adapter = new ProfileAdapter(this);
-    recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+    recyclerView.setLayoutManager(new GridLayoutManager(this, spanCount));
     recyclerView.setAdapter(adapter);
 
     paginator = new RecyclerViewPaginator(recyclerView, viewModel.inputs::nextPage);

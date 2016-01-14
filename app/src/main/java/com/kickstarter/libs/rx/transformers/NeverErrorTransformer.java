@@ -4,27 +4,27 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import rx.Observable;
-import rx.subjects.PublishSubject;
+import rx.functions.Action1;
 
 public final class NeverErrorTransformer<T> implements Observable.Transformer<T, T> {
-  @Nullable private final PublishSubject<Throwable> errors;
+  private final @Nullable Action1<Throwable> errorAction;
 
   protected NeverErrorTransformer() {
-    this.errors = null;
+    this.errorAction = null;
   }
 
-  protected NeverErrorTransformer(@Nullable final PublishSubject<Throwable> errors) {
-    this.errors = errors;
+  protected NeverErrorTransformer(final @Nullable Action1<Throwable> errorAction) {
+    this.errorAction = errorAction;
   }
 
   @Override
   @NonNull public Observable<T> call(@NonNull final Observable<T> source) {
     return source
       .doOnError(e -> {
-        if (errors != null) {
-          errors.onNext(e);
+        if (errorAction != null) {
+          errorAction.call(e);
         }
       })
-      .onErrorResumeNext(__ -> Observable.empty());
+      .onErrorResumeNext(Observable.empty());
   }
 }

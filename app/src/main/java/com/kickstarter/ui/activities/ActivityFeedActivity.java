@@ -14,6 +14,7 @@ import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.RecyclerViewPaginator;
+import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.SwipeRefresher;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ObjectUtils;
@@ -109,17 +110,8 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
 
   public void startProjectActivity(final @NonNull Project project) {
     final Intent intent = new Intent(this, ProjectActivity.class)
-      .putExtra(IntentKey.PROJECT, project);
+      .putExtra(IntentKey.PROJECT, project)
+      .putExtra(IntentKey.REF_TAG, RefTag.activity());
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
-  }
-
-  @Override
-  protected void onActivityResult(final int requestCode, final int resultCode, final @NonNull Intent intent) {
-    if (requestCode != ActivityRequestCodes.ACTIVITY_FEED_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED) {
-      return;
-    }
-    if (resultCode != RESULT_OK) {
-      return;
-    }
   }
 }

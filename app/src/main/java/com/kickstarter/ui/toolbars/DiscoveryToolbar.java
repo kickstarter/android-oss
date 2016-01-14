@@ -75,7 +75,7 @@ public final class DiscoveryToolbar extends KSToolbar {
   @OnClick(R.id.filter_button)
   public void filterButtonClick(@NonNull final View view) {
     final DiscoveryActivity activity = (DiscoveryActivity) getContext();
-    activity.viewModel().filterButtonClick();
+    activity.viewModel().inputs.filterButtonClicked();
   }
 
   @OnClick(R.id.hamburger_button)

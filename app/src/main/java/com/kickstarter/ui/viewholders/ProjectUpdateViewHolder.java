@@ -10,8 +10,15 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.utils.DateTimeUtils;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Activity;
+import com.kickstarter.models.Photo;
+import com.kickstarter.models.Project;
+import com.kickstarter.models.Update;
+import com.kickstarter.models.User;
 import com.squareup.picasso.Picasso;
+
+import org.joda.time.DateTime;
 
 import javax.inject.Inject;
 
@@ -47,23 +54,36 @@ public final class ProjectUpdateViewHolder extends ActivityListViewHolder {
   }
 
   @Override
-  public void onBind(final @NonNull Object datum) {
-    super.onBind(datum);
+  public void onBind() {
     final Context context = view.getContext();
 
-    projectNameTextView.setText(activity.project().name());
+    final Project project = activity.project();
+    if (project == null) { return; }
+    final User user = activity.user();
+    if (user == null) { return; }
+    final Photo photo = project.photo();
+    if (photo == null) { return; }
+    final Update update = activity.update();
+    if (update == null) { return; }
+    final DateTime publishedAt = ObjectUtils.coalesce(update.publishedAt(), new DateTime());
+
+    projectNameTextView.setText(project.name());
+
     Picasso.with(context)
-      .load(activity.project().photo().little())
+      .load(photo.little())
       .into(projectPhotoImageView);
-    timestampTextView.setText(DateTimeUtils.relative(context, ksString, activity.update().publishedAt()));
-    updateBodyTextView.setText(activity.update().truncatedBody());
+
+    timestampTextView.setText(DateTimeUtils.relative(context, ksString, publishedAt));
+
+    updateBodyTextView.setText(update.truncatedBody());
+
     updateSequenceTextView.setText(ksString.format(
       projectUpdateCountString,
       "update_count",
-      String.valueOf(activity.update().sequence())
+      String.valueOf(update.sequence())
     ));
 
-    updateTitleTextView.setText(activity.update().title());
+    updateTitleTextView.setText(update.title());
   }
 
   @OnClick(R.id.project_info)

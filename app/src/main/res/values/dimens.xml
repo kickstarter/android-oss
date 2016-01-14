@@ -34,6 +34,7 @@
   <dimen name="body">14sp</dimen>
   <dimen name="subhead">16sp</dimen>
   <dimen name="headline">18sp</dimen>
+  <dimen name="editorial_subhead">20sp</dimen>
   <dimen name="editorial_headline">22sp</dimen>
 
   <dimen name="caption_line_spacing_extra">2dp</dimen>
@@ -58,21 +59,27 @@
   <dimen name="hamburger_drawer_item_padding_y">14dp</dimen>
 
   <!-- Layout padding -->
+  <dimen name="activity_padding_x">0dp</dimen>
   <dimen name="feed_padding_y">@dimen/grid_5_half</dimen>
   <dimen name="feed_padding_x">@dimen/grid_3</dimen>
   <dimen name="form_margin_x">@dimen/grid_3</dimen>
+  <dimen name="settings_icon_margin_x">@dimen/grid_1</dimen>
 
   <!-- Buttons -->
   <!-- button_icon_fixed_width is useful when we want to place several icons next to each
   other where they all take up the same width. This helps with UI effects like ripples that
   use the button size to calculate the ripple radius. -->
   <dimen name="button_icon_fixed_width">54dp</dimen>
-  <dimen name="settings_icon_fixed_width">48dp</dimen>
-  <dimen name="button_corner_radius">4dp</dimen>
+  <dimen name="settings_icon_fixed_width">@dimen/grid_6</dimen>
+  <dimen name="button_corner_radius">@dimen/grid_1_half</dimen>
   <dimen name="button_stroke_width">1dp</dimen>
-
   <dimen name="progress_bar_min_height">3dp</dimen>
   <dimen name="progress_bar_height">3dp</dimen>
+  <dimen name="project_action_button_height">60dp</dimen>
+  <dimen name="star_fab_margin_x">@dimen/grid_5_half</dimen>
+  <dimen name="star_fab_margin_y">30dp</dimen>
+  <dimen name="star_fab_pre21_margin_x">@dimen/grid_1</dimen>
+  <dimen name="star_fab_pre21_margin_y">@dimen/grid_3_half</dimen>
 
   <!-- Photos -->
   <dimen name="activity_feed_avatar_width">60dp</dimen>

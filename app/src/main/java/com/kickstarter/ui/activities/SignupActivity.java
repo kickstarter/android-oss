@@ -67,12 +67,10 @@ public final class SignupActivity extends BaseActivity<SignupViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::setFormEnabled);
 
-    viewModel.outputs.checkInitialNewsletter()
+    viewModel.outputs.sendNewslettersIsChecked()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(b -> {
-        SwitchCompatUtils.setCheckedWithoutAnimation(newsletterSwitch, b);
-      });
+      .subscribe(b -> SwitchCompatUtils.setCheckedWithoutAnimation(newsletterSwitch, b));
 
     viewModel.errors.signupError()
       .compose(bindToLifecycle())
@@ -81,7 +79,7 @@ public final class SignupActivity extends BaseActivity<SignupViewModel> {
 
     RxView.clicks(newsletterSwitch)
       .compose(bindToLifecycle())
-      .subscribe(__ -> viewModel.inputs.sendNewsletters(newsletterSwitch.isChecked()));
+      .subscribe(__ -> viewModel.inputs.sendNewslettersClick(newsletterSwitch.isChecked()));
   }
 
   @OnClick(R.id.disclaimer)

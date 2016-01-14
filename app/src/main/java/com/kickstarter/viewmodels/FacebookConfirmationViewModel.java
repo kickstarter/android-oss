@@ -33,18 +33,26 @@ public class FacebookConfirmationViewModel extends ViewModel<FacebookConfirmatio
 
   // INPUTS
   private final PublishSubject<Void> createNewAccountClick = PublishSubject.create();
+  public void createNewAccountClick() {
+    createNewAccountClick.onNext(null);
+  }
   private final PublishSubject<String> fbAccessToken = PublishSubject.create();
-  private final PublishSubject<Boolean> sendNewsletters = PublishSubject.create();
-  private final PublishSubject<Boolean> checkInitialNewsletterInput = PublishSubject.create();
+  public void fbAccessToken(@NonNull final String s) {
+    fbAccessToken.onNext(s);
+  }
+  private final PublishSubject<Boolean> sendNewslettersClick = PublishSubject.create();
+  public void sendNewslettersClick(final boolean b) {
+    sendNewslettersClick.onNext(b);
+  }
 
   // OUTPUTS
   private final PublishSubject<Void> signupSuccess = PublishSubject.create();
   public Observable<Void> signupSuccess() {
     return signupSuccess.asObservable();
   }
-  private final BehaviorSubject<Boolean> checkInitialNewsletter = BehaviorSubject.create();
-  public final Observable<Boolean> checkInitialNewsletter() {
-    return checkInitialNewsletter;
+  final BehaviorSubject<Boolean> sendNewslettersIsChecked = BehaviorSubject.create();
+  public final Observable<Boolean> sendNewslettersIsChecked() {
+    return sendNewslettersIsChecked;
   }
 
   // ERRORS
@@ -59,30 +67,19 @@ public class FacebookConfirmationViewModel extends ViewModel<FacebookConfirmatio
   public final FacebookConfirmationViewModelOutputs outputs = this;
   public final FacebookConfirmationViewModelErrors errors = this;
 
-  @Override
-  public void createNewAccountClick() {
-    createNewAccountClick.onNext(null);
-  }
-
-  @Override
-  public void fbAccessToken(@NonNull final String s) {
-    fbAccessToken.onNext(s);
-  }
-
-  @Override
-  public void sendNewsletters(final boolean b) {
-    sendNewsletters.onNext(b);
-  }
-
   public FacebookConfirmationViewModel() {
     final Observable<Pair<String, Boolean>> tokenAndNewsletter = fbAccessToken
-      .compose(Transformers.combineLatestPair(sendNewsletters));
+      .compose(Transformers.combineLatestPair(sendNewslettersIsChecked));
 
     addSubscription(
       tokenAndNewsletter
         .compose(Transformers.takeWhen(createNewAccountClick))
         .flatMap(tn -> createNewAccount(tn.first, tn.second))
         .subscribe(this::registerWithFacebookSuccess)
+    );
+
+    addSubscription(
+      sendNewslettersClick.subscribe(sendNewslettersIsChecked::onNext)
     );
   }
 
@@ -91,22 +88,20 @@ public class FacebookConfirmationViewModel extends ViewModel<FacebookConfirmatio
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    addSubscription(checkInitialNewsletterInput.subscribe(checkInitialNewsletter));
-    checkInitialNewsletterInput.onNext(this.isInitialNewsletterChecked());
+    currentConfig.observable()
+      .take(1)
+      .map(config -> config.countryCode().equals("US"))
+      .subscribe(sendNewslettersIsChecked::onNext);
 
     addSubscription(signupError.subscribe(__ -> koala.trackRegisterError()));
-
-    addSubscription(sendNewsletters.subscribe(koala::trackSignupNewsletterToggle));
-
+    addSubscription(sendNewslettersClick.subscribe(koala::trackSignupNewsletterToggle));
     addSubscription(signupSuccess
         .subscribe(__ -> {
           koala.trackLoginSuccess();
           koala.trackRegisterSuccess();
         })
     );
-
     koala.trackFacebookConfirmation();
-
     koala.trackRegisterFormView();
   }
 
@@ -118,9 +113,5 @@ public class FacebookConfirmationViewModel extends ViewModel<FacebookConfirmatio
   private void registerWithFacebookSuccess(@NonNull final AccessTokenEnvelope envelope) {
     currentUser.login(envelope.user(), envelope.accessToken());
     signupSuccess.onNext(null);
-  }
-
-  private boolean isInitialNewsletterChecked() {
-    return currentConfig.getConfig().countryCode().equals("US");
   }
 }

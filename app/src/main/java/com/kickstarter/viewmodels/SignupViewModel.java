@@ -52,11 +52,25 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
 
   // INPUTS
   private final PublishSubject<String> fullName = PublishSubject.create();
+  public void fullName(@NonNull final String s) {
+    fullName.onNext(s);
+  }
   private final PublishSubject<String> email = PublishSubject.create();
+  public void email(@NonNull final String s) {
+    email.onNext(s);
+  }
   private final PublishSubject<String> password = PublishSubject.create();
-  private final PublishSubject<Boolean> sendNewsletters = PublishSubject.create();
+  public void password(@NonNull final String s) {
+    password.onNext(s);
+  }
+  private final PublishSubject<Boolean> sendNewslettersClick = PublishSubject.create();
+  public void sendNewslettersClick(final boolean b) {
+    sendNewslettersClick.onNext(b);
+  }
   private final PublishSubject<Void> signupClick = PublishSubject.create();
-  private final PublishSubject<Boolean> checkInitialNewsletterInput = PublishSubject.create();
+  public void signupClick() {
+    signupClick.onNext(null);
+  }
 
   // OUTPUTS
   private final PublishSubject<Void> signupSuccess = PublishSubject.create();
@@ -71,9 +85,9 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
   public final Observable<Boolean> formIsValid() {
     return formIsValid.asObservable();
   }
-  private final BehaviorSubject<Boolean> checkInitialNewsletter = BehaviorSubject.create();
-  public final Observable<Boolean> checkInitialNewsletter() {
-    return checkInitialNewsletter;
+  final BehaviorSubject<Boolean> sendNewslettersIsChecked = BehaviorSubject.create();
+  public final Observable<Boolean> sendNewslettersIsChecked() {
+    return sendNewslettersIsChecked;
   }
 
   // ERRORS
@@ -88,33 +102,14 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
   public final SignupViewModelOutputs outputs = this;
   public final SignupViewModelErrors errors = this;
 
-  @Override
-  public void fullName(@NonNull final String s) {
-    fullName.onNext(s);
-  }
-
-  @Override
-  public void email(@NonNull final String s) {
-    email.onNext(s);
-  }
-
-  @Override
-  public void password(@NonNull final String s) {
-    password.onNext(s);
-  }
-
-  @Override
-  public void sendNewsletters(final boolean b) {
-    sendNewsletters.onNext(b);
-  }
-
-  @Override
-  public void signupClick() {
-    signupClick.onNext(null);
-  }
-
   public SignupViewModel() {
-    final Observable<SignupData> signupData = Observable.combineLatest(fullName, email, password, sendNewsletters, SignupData::new);
+    final Observable<SignupData> signupData = Observable.combineLatest(
+      fullName, email, password, sendNewslettersIsChecked,
+      SignupData::new);
+
+    addSubscription(
+      sendNewslettersClick.subscribe(sendNewslettersIsChecked::onNext)
+    );
 
     addSubscription(signupData
         .map(SignupData::isValid)
@@ -134,20 +129,19 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    addSubscription(checkInitialNewsletterInput.subscribe(checkInitialNewsletter));
-    checkInitialNewsletterInput.onNext(this.isInitialNewsletterChecked());
+    currentConfig.observable()
+      .take(1)
+      .map(config -> config.countryCode().equals("US"))
+      .subscribe(sendNewslettersIsChecked::onNext);
 
     addSubscription(signupError.subscribe(__ -> koala.trackRegisterError()));
-
-    addSubscription(sendNewsletters.subscribe(koala::trackSignupNewsletterToggle));
-
+    addSubscription(sendNewslettersClick.subscribe(koala::trackSignupNewsletterToggle));
     addSubscription(signupSuccess
         .subscribe(__ -> {
           koala.trackLoginSuccess();
           koala.trackRegisterSuccess();
         })
     );
-
     koala.trackRegisterFormView();
   }
 
@@ -161,9 +155,5 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
   private void success(@NonNull final AccessTokenEnvelope envelope) {
     currentUser.login(envelope.user(), envelope.accessToken());
     signupSuccess.onNext(null);
-  }
-
-  private boolean isInitialNewsletterChecked() {
-    return currentConfig.getConfig().countryCode().equals("US");
   }
 }

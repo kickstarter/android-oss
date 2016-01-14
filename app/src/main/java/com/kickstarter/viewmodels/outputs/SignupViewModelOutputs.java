@@ -6,5 +6,5 @@ public interface SignupViewModelOutputs {
   Observable<Void> signupSuccess();
   Observable<Boolean> formSubmitting();
   Observable<Boolean> formIsValid();
-  Observable<Boolean> checkInitialNewsletter();
+  Observable<Boolean> sendNewslettersIsChecked();
 }

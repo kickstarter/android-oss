@@ -207,14 +207,14 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   }
 
   public void displayPreferences(final @NonNull User user) {
-    projectNotificationsCountTextView.setText(user.backedProjectsCount().toString());
+    projectNotificationsCountTextView.setText(String.valueOf(IntegerUtils.safeUnboxWithDefaultValueZero(user.backedProjectsCount())));
 
-    notifyMobileOfFriendActivity = user.notifyMobileOfFriendActivity();
-    notifyOfFriendActivity = user.notifyOfFriendActivity();
-    notifyMobileOfFollower = user.notifyMobileOfFollower();
-    notifyOfFollower = user.notifyOfFollower();
-    notifyMobileOfUpdates = user.notifyMobileOfUpdates();
-    notifyOfUpdates = user.notifyOfUpdates();
+    notifyMobileOfFriendActivity = BooleanUtils.isTrue(user.notifyMobileOfFriendActivity());
+    notifyOfFriendActivity = BooleanUtils.isTrue(user.notifyOfFriendActivity());
+    notifyMobileOfFollower = BooleanUtils.isTrue(user.notifyMobileOfFollower());
+    notifyOfFollower = BooleanUtils.isTrue(user.notifyOfFollower());
+    notifyMobileOfUpdates = BooleanUtils.isTrue(user.notifyMobileOfUpdates());
+    notifyOfUpdates = BooleanUtils.isTrue(user.notifyOfUpdates());
 
     toggleIconColor(friendActivityMailIconTextView, false, notifyOfFriendActivity);
     toggleIconColor(friendActivityPhoneIconTextView, true, notifyMobileOfFriendActivity);
@@ -223,9 +223,9 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
     toggleIconColor(projectUpdatesMailIconTextView, false, notifyOfUpdates);
     toggleIconColor(projectUpdatesPhoneIconTextView, true, notifyMobileOfUpdates);
 
-    SwitchCompatUtils.setCheckedWithoutAnimation(happeningNewsletterSwitch, user.happeningNewsletter());
-    SwitchCompatUtils.setCheckedWithoutAnimation(promoNewsletterSwitch, user.promoNewsletter());
-    SwitchCompatUtils.setCheckedWithoutAnimation(weeklyNewsletterSwitch, user.weeklyNewsletter());
+    SwitchCompatUtils.setCheckedWithoutAnimation(happeningNewsletterSwitch, BooleanUtils.isTrue(user.happeningNewsletter()));
+    SwitchCompatUtils.setCheckedWithoutAnimation(promoNewsletterSwitch, BooleanUtils.isTrue(user.promoNewsletter()));
+    SwitchCompatUtils.setCheckedWithoutAnimation(weeklyNewsletterSwitch, BooleanUtils.isTrue(user.weeklyNewsletter()));
   }
 
   @OnClick(R.id.faq)

@@ -17,4 +17,9 @@ public class IntegerUtilsTest extends TestCase {
     assertTrue(IntegerUtils.isZero(0));
     assertFalse(IntegerUtils.isZero(null));
   }
+
+  public void testSafeUnboxWithDefaultValueZero() {
+    assertEquals(5 , IntegerUtils.safeUnboxWithDefaultValueZero(5));
+    assertEquals(0, IntegerUtils.safeUnboxWithDefaultValueZero(null));
+  }
 }

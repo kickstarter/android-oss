@@ -62,6 +62,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.avatar_name) TextView avatarNameTextView;
   protected @Bind(R.id.backers_count) TextView backersCountTextView;
   protected @Bind(R.id.backer_label) LinearLayout backerLabelLinearLayout;
+  protected @Bind(R.id.back_project_button) @Nullable Button backProjectButton;
   protected @Bind(R.id.blurb) TextView blurbTextView;
   protected @Bind(R.id.category) TextView categoryTextView;
   protected @Bind(R.id.comments_count) TextView commentsCountTextView;
@@ -70,7 +71,10 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.deadline_countdown_unit_text_view) TextView deadlineCountdownUnitTextView;
   protected @Bind(R.id.project_disclaimer_text_view) TextView projectDisclaimerTextView;
   protected @Bind(R.id.goal) TextView goalTextView;
+  protected @Bind(R.id.land_overlay_text) @Nullable ViewGroup landOverlayTextViewGroup;
   protected @Bind(R.id.location) TextView locationTextView;
+  protected @Bind(R.id.manage_pledge_button) @Nullable Button managePledgeButton;
+  protected @Bind(R.id.name_creator_view) @Nullable ViewGroup nameCreatorViewGroup;
   protected @Bind(R.id.percentage_funded) ProgressBar percentageFundedProgressBar;
   protected @Bind(R.id.project_photo) ImageView photoImageView;
   protected @Bind(R.id.play_button_overlay) IconButton playButton;
@@ -83,6 +87,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.project_state_header_text_view) TextView projectStateHeaderTextView;
   protected @Bind(R.id.project_state_subhead_text_view) TextView projectStateSubheadTextView;
   protected @Bind(R.id.project_state_view_group) ViewGroup projectStateViewGroup;
+  protected @Bind(R.id.view_pledge_button) @Nullable Button viewPledgeButton;
   protected @Bind(R.id.updates_count) TextView updatesCountTextView;
   protected @Bind(R.id.usd_conversion_text_view) TextView usdConversionTextView;
 
@@ -255,13 +260,10 @@ public final class ProjectViewHolder extends KSViewHolder {
   }
 
   /**
-   * Landscape project action buttons live in the ViewHolder rather than Activity layout.
+   * Set landscape project action buttons in the ViewHolder rather than Activity.
    */
   public void setLandscapeActionButton() {
-    if (ViewUtils.isLandscape(view.getContext())) {
-      final Button backProjectButton = ButterKnife.findById(view, R.id.back_project_button);
-      final Button managePledgeButton = ButterKnife.findById(view, R.id.manage_pledge_button);
-      final Button viewPledgeButton = ButterKnife.findById(view, R.id.view_pledge_button);
+    if (backProjectButton != null && managePledgeButton != null && viewPledgeButton != null) {
       ProjectUtils.setActionButton(project, backProjectButton, managePledgeButton, viewPledgeButton);
     }
   }
@@ -270,14 +272,12 @@ public final class ProjectViewHolder extends KSViewHolder {
    * Set top margin of overlay text based on landscape screen height, scaled by screen density.
    */
   public void setLandscapeOverlayText() {
-    if (ViewUtils.isLandscape(view.getContext())) {
-      final ViewGroup overlayTextViewGroup = ButterKnife.findById(view, R.id.land_overlay_text);
+    if (landOverlayTextViewGroup != null && nameCreatorViewGroup != null) {
       final int screenHeight = ViewUtils.getScreenHeightDp(view.getContext());
       final float densityOffset = view.getContext().getResources().getDisplayMetrics().density;
       final float topMargin = ((screenHeight / 3 * 2) * densityOffset) - grid4Dimen;  // offset for toolbar
-      ViewUtils.setRelativeViewGroupMargins(overlayTextViewGroup, grid4Dimen, (int) topMargin, grid4Dimen, 0);
+      ViewUtils.setRelativeViewGroupMargins(landOverlayTextViewGroup, grid4Dimen, (int) topMargin, grid4Dimen, 0);
 
-      final ViewGroup nameCreatorViewGroup = ButterKnife.findById(view, R.id.name_creator_view);
       if (!project.hasVideo()) {
         ViewUtils.setRelativeViewGroupMargins(nameCreatorViewGroup, 0, 0, 0, grid2Dimen);
       } else {

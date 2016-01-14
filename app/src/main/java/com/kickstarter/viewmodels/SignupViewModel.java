@@ -134,6 +134,9 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
+    addSubscription(checkInitialNewsletterInput.subscribe(checkInitialNewsletter));
+    checkInitialNewsletterInput.onNext(this.isInitialNewsletterChecked());
+
     addSubscription(signupError.subscribe(__ -> koala.trackRegisterError()));
 
     addSubscription(sendNewsletters.subscribe(koala::trackSignupNewsletterToggle));
@@ -144,9 +147,6 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
           koala.trackRegisterSuccess();
         })
     );
-
-    addSubscription(checkInitialNewsletterInput.subscribe(checkInitialNewsletter));
-    checkInitialNewsletterInput.onNext(this.isInitialNewsletterChecked());
 
     koala.trackRegisterFormView();
   }

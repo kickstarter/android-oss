@@ -210,30 +210,12 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
       projectNotificationsCountTextView.setText(backedProjectsCount.toString());
     }
 
-    final Boolean notifyMobileFriendActivity = user.notifyMobileOfFriendActivity();
-    if (notifyMobileFriendActivity != null) {
-      notifyMobileOfFriendActivity = notifyMobileFriendActivity;
-    }
-    final Boolean notifyFriendActivity = user.notifyOfFriendActivity();
-    if (notifyFriendActivity != null) {
-      notifyOfFriendActivity = notifyFriendActivity;
-    }
-    final Boolean notifyMobileFollower = user.notifyMobileOfFollower();
-    if (notifyMobileFollower != null) {
-      notifyMobileOfFollower = notifyMobileFollower;
-    }
-    final Boolean notifyFollower = user.notifyOfFollower();
-    if (notifyFollower != null) {
-      notifyOfFollower = notifyFollower;
-    }
-    final Boolean notifyMobileUpdates = user.notifyMobileOfUpdates();
-    if (notifyMobileUpdates != null) {
-      notifyMobileOfUpdates = notifyMobileUpdates;
-    }
-    final Boolean notifyUpdates = user.notifyOfUpdates();
-    if (notifyUpdates != null) {
-      notifyOfUpdates = notifyUpdates;
-    }
+    notifyMobileOfFriendActivity = user.notifyMobileOfFriendActivity();
+    notifyOfFriendActivity = user.notifyOfFriendActivity();
+    notifyMobileOfFollower = user.notifyMobileOfFollower();
+    notifyOfFollower = user.notifyOfFollower();
+    notifyMobileOfUpdates = user.notifyMobileOfUpdates();
+    notifyOfUpdates = user.notifyOfUpdates();
 
     toggleIconColor(friendActivityMailIconTextView, false, notifyOfFriendActivity);
     toggleIconColor(friendActivityPhoneIconTextView, true, notifyMobileOfFriendActivity);
@@ -242,18 +224,9 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
     toggleIconColor(projectUpdatesMailIconTextView, false, notifyOfUpdates);
     toggleIconColor(projectUpdatesPhoneIconTextView, true, notifyMobileOfUpdates);
 
-    final Boolean happeningNews = user.happeningNewsletter();
-    if (happeningNews != null) {
-      SwitchCompatUtils.setCheckedWithoutAnimation(happeningNewsletterSwitch, happeningNews);
-    }
-    final Boolean promoNews = user.promoNewsletter();
-    if (promoNews != null) {
-      SwitchCompatUtils.setCheckedWithoutAnimation(promoNewsletterSwitch, promoNews);
-    }
-    final Boolean weeklyNews = user.weeklyNewsletter();
-    if (weeklyNews != null) {
-      SwitchCompatUtils.setCheckedWithoutAnimation(weeklyNewsletterSwitch, weeklyNews);
-    }
+    SwitchCompatUtils.setCheckedWithoutAnimation(happeningNewsletterSwitch, user.happeningNewsletter());
+    SwitchCompatUtils.setCheckedWithoutAnimation(promoNewsletterSwitch, user.promoNewsletter());
+    SwitchCompatUtils.setCheckedWithoutAnimation(weeklyNewsletterSwitch, user.weeklyNewsletter());
   }
 
   @OnClick(R.id.faq)

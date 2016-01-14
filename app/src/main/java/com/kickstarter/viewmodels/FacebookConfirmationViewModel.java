@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.KSApplication;
+import com.kickstarter.libs.CurrentConfig;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
@@ -21,20 +22,29 @@ import com.kickstarter.viewmodels.outputs.FacebookConfirmationViewModelOutputs;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public class FacebookConfirmationViewModel extends ViewModel<FacebookConfirmationActivity> implements
   FacebookConfirmationViewModelInputs, FacebookConfirmationViewModelOutputs, FacebookConfirmationViewModelErrors {
+  protected @Inject ApiClientType client;
+  protected @Inject CurrentUser currentUser;
+  protected @Inject CurrentConfig currentConfig;
 
   // INPUTS
   private final PublishSubject<Void> createNewAccountClick = PublishSubject.create();
   private final PublishSubject<String> fbAccessToken = PublishSubject.create();
   private final PublishSubject<Boolean> sendNewsletters = PublishSubject.create();
+  private final PublishSubject<Boolean> checkInitialNewsletterInput = PublishSubject.create();
 
   // OUTPUTS
   private final PublishSubject<Void> signupSuccess = PublishSubject.create();
   public Observable<Void> signupSuccess() {
     return signupSuccess.asObservable();
+  }
+  private final BehaviorSubject<Boolean> checkInitialNewsletter = BehaviorSubject.create();
+  public final Observable<Boolean> checkInitialNewsletter() {
+    return checkInitialNewsletter;
   }
 
   // ERRORS
@@ -44,9 +54,6 @@ public class FacebookConfirmationViewModel extends ViewModel<FacebookConfirmatio
       .takeUntil(signupSuccess)
       .map(ErrorEnvelope::errorMessage);
   }
-
-  protected @Inject ApiClientType client;
-  protected @Inject CurrentUser currentUser;
 
   public final FacebookConfirmationViewModelInputs inputs = this;
   public final FacebookConfirmationViewModelOutputs outputs = this;
@@ -84,6 +91,9 @@ public class FacebookConfirmationViewModel extends ViewModel<FacebookConfirmatio
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
+    addSubscription(checkInitialNewsletterInput.subscribe(checkInitialNewsletter));
+    checkInitialNewsletterInput.onNext(this.isInitialNewsletterChecked());
+
     addSubscription(signupError.subscribe(__ -> koala.trackRegisterError()));
 
     addSubscription(sendNewsletters.subscribe(koala::trackSignupNewsletterToggle));
@@ -108,5 +118,9 @@ public class FacebookConfirmationViewModel extends ViewModel<FacebookConfirmatio
   private void registerWithFacebookSuccess(@NonNull final AccessTokenEnvelope envelope) {
     currentUser.login(envelope.user(), envelope.accessToken());
     signupSuccess.onNext(null);
+  }
+
+  private boolean isInitialNewsletterChecked() {
+    return currentConfig.getConfig().countryCode().equals("US");
   }
 }

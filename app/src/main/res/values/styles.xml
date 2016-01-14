@@ -142,6 +142,20 @@
 
   <style name="GreenRoundedButton" parent="Button">
     <item name="android:background">@drawable/button_green_rounded</item>
+    <item name="android:paddingLeft">@dimen/grid_5</item>
+    <item name="android:paddingRight">@dimen/grid_5</item>
+    <item name="android:paddingStart">@dimen/grid_5</item>
+    <item name="android:paddingEnd">@dimen/grid_5</item>
+    <item name="android:fontFamily">@string/font_family_medium</item>
+  </style>
+
+  <style name="BlueRoundedButton" parent="Button">
+    <item name="android:background">@drawable/button_blue_rounded</item>
+    <item name="android:paddingLeft">@dimen/grid_5</item>
+    <item name="android:paddingRight">@dimen/grid_5</item>
+    <item name="android:paddingStart">@dimen/grid_5</item>
+    <item name="android:paddingEnd">@dimen/grid_5</item>
+    <item name="android:fontFamily">@string/font_family_medium</item>
   </style>
 
   <style name="TwitterButton" parent="Base.Widget.AppCompat.Button.Borderless">

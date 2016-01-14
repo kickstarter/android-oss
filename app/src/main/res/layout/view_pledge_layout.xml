@@ -19,6 +19,7 @@
 
       <LinearLayout
         android:orientation="vertical"
+        android:layout_marginTop="@dimen/grid_3"
         android:paddingLeft="@dimen/feed_padding_x"
         android:paddingRight="@dimen/feed_padding_x"
         android:paddingStart="@dimen/feed_padding_x"

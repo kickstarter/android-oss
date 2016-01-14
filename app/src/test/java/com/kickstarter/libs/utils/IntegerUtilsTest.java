@@ -18,8 +18,8 @@ public class IntegerUtilsTest extends TestCase {
     assertFalse(IntegerUtils.isZero(null));
   }
 
-  public void testSafeUnboxWithDefaultValueZero() {
-    assertEquals(5 , IntegerUtils.safeUnboxWithDefaultValueZero(5));
-    assertEquals(0, IntegerUtils.safeUnboxWithDefaultValueZero(null));
+  public void testIntValueOrZero() {
+    assertEquals(5 , IntegerUtils.intValueOrZero(5));
+    assertEquals(0, IntegerUtils.intValueOrZero(null));
   }
 }

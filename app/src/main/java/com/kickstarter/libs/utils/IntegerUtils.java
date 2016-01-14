@@ -20,7 +20,7 @@ public final class IntegerUtils {
   /**
    * Returns `value` if not null, and `0` otherwise.
    */
-  public static int safeUnboxWithDefaultValueZero(final @Nullable Integer value) {
+  public static int intValueOrZero(final @Nullable Integer value) {
     return value != null ? value : 0;
   }
 }

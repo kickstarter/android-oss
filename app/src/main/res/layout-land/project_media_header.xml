@@ -16,7 +16,7 @@
 
   <View
     android:id="@+id/photo_gradient"
-    android:background="@drawable/photo_gradient_dark"
+    android:background="@drawable/project_photo_gradient"
     android:layout_width="match_parent"
     android:layout_height="@dimen/grid_40"
     android:layout_alignParentBottom="true" />

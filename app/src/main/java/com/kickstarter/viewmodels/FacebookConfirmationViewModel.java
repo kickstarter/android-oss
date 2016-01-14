@@ -37,7 +37,7 @@ public class FacebookConfirmationViewModel extends ViewModel<FacebookConfirmatio
     createNewAccountClick.onNext(null);
   }
   private final PublishSubject<String> fbAccessToken = PublishSubject.create();
-  public void fbAccessToken(@NonNull final String s) {
+  public void fbAccessToken(final @NonNull String s) {
     fbAccessToken.onNext(s);
   }
   private final PublishSubject<Boolean> sendNewslettersClick = PublishSubject.create();

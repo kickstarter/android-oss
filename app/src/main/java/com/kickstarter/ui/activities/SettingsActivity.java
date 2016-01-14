@@ -205,10 +205,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   }
 
   public void displayPreferences(final @NonNull User user) {
-    final Integer backedProjectsCount = user.backedProjectsCount();
-    if (backedProjectsCount != null) {
-      projectNotificationsCountTextView.setText(backedProjectsCount.toString());
-    }
+    projectNotificationsCountTextView.setText(user.backedProjectsCount().toString());
 
     notifyMobileOfFriendActivity = user.notifyMobileOfFriendActivity();
     notifyOfFriendActivity = user.notifyOfFriendActivity();

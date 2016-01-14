@@ -52,15 +52,15 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
 
   // INPUTS
   private final PublishSubject<String> fullName = PublishSubject.create();
-  public void fullName(@NonNull final String s) {
+  public void fullName(final @NonNull String s) {
     fullName.onNext(s);
   }
   private final PublishSubject<String> email = PublishSubject.create();
-  public void email(@NonNull final String s) {
+  public void email(final @NonNull String s) {
     email.onNext(s);
   }
   private final PublishSubject<String> password = PublishSubject.create();
-  public void password(@NonNull final String s) {
+  public void password(final @NonNull String s) {
     password.onNext(s);
   }
   private final PublishSubject<Boolean> sendNewslettersClick = PublishSubject.create();
@@ -125,7 +125,7 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
   }
 
   @Override
-  public void onCreate(@NonNull final Context context, @Nullable Bundle savedInstanceState) {
+  public void onCreate(final @NonNull Context context, @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
@@ -145,14 +145,14 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
     koala.trackRegisterFormView();
   }
 
-  private Observable<AccessTokenEnvelope> submit(@NonNull final SignupData data) {
+  private Observable<AccessTokenEnvelope> submit(final @NonNull SignupData data) {
     return client.signup(data.fullName, data.email, data.password, data.password, data.sendNewsletters)
       .compose(Transformers.pipeApiErrorsTo(signupError))
       .doOnSubscribe(() -> formSubmitting.onNext(true))
       .finallyDo(() -> formSubmitting.onNext(false));
   }
 
-  private void success(@NonNull final AccessTokenEnvelope envelope) {
+  private void success(final @NonNull AccessTokenEnvelope envelope) {
     currentUser.login(envelope.user(), envelope.accessToken());
     signupSuccess.onNext(null);
   }

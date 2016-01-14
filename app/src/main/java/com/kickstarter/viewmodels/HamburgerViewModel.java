@@ -84,8 +84,10 @@ public final class HamburgerViewModel extends ViewModel<HamburgerActivity> imple
       .map(NavigationDrawerData.Section.Row::params)
       .map(DiscoveryParams::category);
 
-//    childFilterRowClick
-//      .mergeWith(topFilterRowClick)
+    childFilterRowClick
+      .mergeWith(topFilterRowClick)
+      .map(NavigationDrawerData.Section.Row::params)
+      .subscribe(selectedParams::onNext);
 
     navigationDrawerData
       .map(NavigationDrawerData::expandedCategory)

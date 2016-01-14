@@ -37,7 +37,6 @@ public final class HamburgerNavigationRootFilterViewHolder extends KSViewHolder 
     final Context context = view.getContext();
 
     filterTextView.setText(item.params().filterString(context));
-    filterTextView.setTextAppearance(context, item.selected() ? R.style.SubheadPrimaryMedium : R.style.SubheadPrimary);
 
     if (item.rootIsExpanded()) {
       expandButton.setVisibility(View.GONE);

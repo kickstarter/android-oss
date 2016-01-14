@@ -77,14 +77,17 @@ public class NavigationDrawerAdapter extends KSAdapter {
 
     final NavigationDrawerData.Section.Row row = (NavigationDrawerData.Section.Row) object;
 
+    final boolean expanded;
     if (row.params().category() == null || drawerData.expandedCategory() == null) {
-      return row;
+      expanded = false;
+    } else {
+      expanded = row.params().category().rootId() == drawerData.expandedCategory().rootId();
     }
 
     return row
       .toBuilder()
       .selected(row.params().equals(drawerData.selectedParams()))
-      .rootIsExpanded(row.params().category().rootId() == drawerData.expandedCategory().rootId())
+      .rootIsExpanded(expanded)
       .build();
   }
 

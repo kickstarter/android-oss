@@ -5,8 +5,8 @@ import junit.framework.TestCase;
 public class BoolUtilsTest extends TestCase {
 
   public void testIsTrue() {
-    assertTrue(BoolUtils.isTrue(true));
-    assertFalse(BoolUtils.isTrue(false));
-    assertFalse(BoolUtils.isTrue(null));
+    assertTrue(BooleanUtils.isTrue(true));
+    assertFalse(BooleanUtils.isTrue(false));
+    assertFalse(BooleanUtils.isTrue(null));
   }
 }

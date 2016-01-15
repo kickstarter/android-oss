@@ -49,6 +49,8 @@ import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.kickstarter.libs.utils.DateTimeUtils.mediumDateShortTime;
+import static com.kickstarter.libs.utils.DateTimeUtils.mediumDate;
 import static com.kickstarter.libs.utils.ObjectUtils.coalesce;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
@@ -264,7 +266,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       projectDisclaimerTextView.setText(ksString.format(
         projectDisclaimerGoalReachedString,
         "deadline",
-        DateTimeUtils.mediumDateShortTime(deadline)
+        mediumDateShortTime(deadline)
       ));
     } else {
       projectDisclaimerTextView.setVisibility(View.VISIBLE);
@@ -273,7 +275,7 @@ public final class ProjectViewHolder extends KSViewHolder {
         "goal_currency",
         ksCurrency.format(project.goal(), project, true),
         "deadline",
-        DateTimeUtils.mediumDateShortTime(deadline)
+        mediumDateShortTime(deadline)
       ));
     }
   }
@@ -304,7 +306,7 @@ public final class ProjectViewHolder extends KSViewHolder {
 
         projectStateHeaderTextView.setText(fundedString);
         projectStateSubheadTextView.setText(ksString.format(successfullyFundedOnDeadlineString,
-          "deadline", DateTimeUtils.mediumDate(stateChangedAt)
+          "deadline", mediumDate(stateChangedAt)
         ));
         break;
       case Project.STATE_CANCELED:
@@ -322,7 +324,7 @@ public final class ProjectViewHolder extends KSViewHolder {
 
         projectStateHeaderTextView.setText(fundingUnsuccessfulString);
         projectStateSubheadTextView.setText(ksString.format(fundingGoalNotReachedString,
-          "deadline", DateTimeUtils.mediumDate(stateChangedAt)
+          "deadline", mediumDate(stateChangedAt)
         ));
         break;
       case Project.STATE_SUSPENDED:

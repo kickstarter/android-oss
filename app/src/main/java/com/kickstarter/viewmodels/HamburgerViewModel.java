@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.view.GravityCompat;
 import android.util.Pair;
 
 import com.kickstarter.KSApplication;
@@ -37,11 +38,7 @@ public final class HamburgerViewModel extends ViewModel<HamburgerActivity> imple
   protected @Inject ApiClientType apiClient;
   protected @Inject CurrentUser currentUser;
 
-  private BehaviorSubject<NavigationDrawerData> navigationDrawerData = BehaviorSubject.create();
-  public Observable<NavigationDrawerData> navigationDrawerData() {
-    return navigationDrawerData;
-  }
-
+  // ADAPTER DELEGATE INPUTS
   private PublishSubject<NavigationDrawerData.Section.Row> childFilterRowClick = PublishSubject.create();
   @Override
   public void rowClick(@NonNull HamburgerNavigationChildFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
@@ -58,6 +55,19 @@ public final class HamburgerViewModel extends ViewModel<HamburgerActivity> imple
   @Override
   public void rowClick(@NonNull HamburgerNavigationTopFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
     topFilterRowClick.onNext(row);
+  }
+
+  // INPUTS
+
+  // OUTPUTS
+  private BehaviorSubject<NavigationDrawerData> navigationDrawerData = BehaviorSubject.create();
+  public Observable<NavigationDrawerData> navigationDrawerData() {
+    return navigationDrawerData;
+  }
+
+  private BehaviorSubject<Boolean> openDrawer = BehaviorSubject.create(false);
+  public Observable<Boolean> openDrawer() {
+    return openDrawer;
   }
 
   @Override
@@ -83,6 +93,12 @@ public final class HamburgerViewModel extends ViewModel<HamburgerActivity> imple
     final Observable<Category> clickedCategory = rootFilterRowClick
       .map(NavigationDrawerData.Section.Row::params)
       .map(DiscoveryParams::category);
+
+    addSubscription(
+      childFilterRowClick
+        .mergeWith(topFilterRowClick)
+        .subscribe(__ -> openDrawer.onNext(false))
+    );
 
     childFilterRowClick
       .mergeWith(topFilterRowClick)

@@ -8,6 +8,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.jakewharton.rxbinding.support.v4.widget.RxDrawerLayout;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
@@ -22,6 +23,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import timber.log.Timber;
 
 @RequiresViewModel(HamburgerViewModel.class)
@@ -48,11 +50,18 @@ public final class HamburgerActivity extends BaseActivity<HamburgerViewModel> {
     navigationRecyclerView.setAdapter(navigationAdapter);
 
     viewModel.navigationDrawerData()
+      .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(data -> {
         navigationAdapter.takeData(data);
-//        navigationRecyclerView.scrollToPosition(6);
+        //        navigationRecyclerView.scrollToPosition(6);
       });
+
+    viewModel
+      .openDrawer()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(RxDrawerLayout.open(drawerLayout, GravityCompat.START));
   }
 
   @OnClick({R.id.menu_button, R.id.filter_text_view})
@@ -62,11 +71,17 @@ public final class HamburgerActivity extends BaseActivity<HamburgerViewModel> {
 
   @OnClick(R.id.activity_feed_button)
   protected void activityFeedButtonClick() {
-    Timber.d("Activity feed clicked");
   }
 
   @OnClick(R.id.search_button)
   protected void searchButtonClick() {
-    Timber.d("Search clicked");
+  }
+
+  private void toggleDrawer(final boolean open) {
+    if (open) {
+      drawerLayout.openDrawer(GravityCompat.START);
+    } else {
+      drawerLayout.closeDrawers();
+    }
   }
 }

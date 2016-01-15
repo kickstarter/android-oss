@@ -11,6 +11,7 @@ import com.kickstarter.libs.CurrentConfig;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.libs.utils.I18nUtils;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
@@ -90,7 +91,7 @@ public class FacebookConfirmationViewModel extends ViewModel<FacebookConfirmatio
 
     currentConfig.observable()
       .take(1)
-      .map(config -> config.countryCode().equals("US"))
+      .map(config -> I18nUtils.isCountryUS(config.countryCode()))
       .subscribe(sendNewslettersIsChecked::onNext);
 
     addSubscription(signupError.subscribe(__ -> koala.trackRegisterError()));

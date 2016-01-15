@@ -68,6 +68,28 @@ public final class DateTimeUtils {
   }
 
   /**
+   * e.g.: Jan 14, 2016 2:20 PM.
+   */
+  public static @NonNull String mediumDateShortTime(final @NonNull DateTime dateTime) {
+    return mediumDateShortTime(dateTime, DateTimeZone.getDefault());
+  }
+
+  /**
+   * e.g.: Jan 14, 2016 2:20 PM.
+   */
+  public static @NonNull String mediumDateShortTime(final @NonNull DateTime dateTime, final @NonNull DateTimeZone dateTimeZone,
+    final @NonNull Locale locale) {
+    return mediumDate(dateTime, locale) + " " + shortTime(dateTime, dateTimeZone, locale);
+  }
+
+  /**
+   * e.g.: Jan 14, 2016 2:20 PM.
+   */
+  public static @NonNull String mediumDateShortTime(final @NonNull DateTime dateTime, final @NonNull DateTimeZone dateTimeZone) {
+    return mediumDateShortTime(dateTime, dateTimeZone, Locale.getDefault());
+  }
+
+  /**
    * e.g.: Dec 17, 2015 6:35:05 PM.
    */
   public static @NonNull String mediumDateTime(final @NonNull DateTime dateTime) {
@@ -153,6 +175,14 @@ public final class DateTimeUtils {
 
     return ksString.format(baseKeyPath.toString(), difference,
       "time_count", NumberUtils.format(difference, NumberOptions.builder().build()));
+  }
+
+  /**
+   * e.g.: 2:20 PM.
+   */
+  public static @NonNull String shortTime(final @NonNull DateTime dateTime, final @NonNull DateTimeZone dateTimeZone,
+    final @NonNull Locale locale) {
+    return dateTime.toString(DateTimeFormat.shortTime().withLocale(locale).withZone(dateTimeZone));
   }
 
   /**

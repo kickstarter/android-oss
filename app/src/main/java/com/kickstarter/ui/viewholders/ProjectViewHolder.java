@@ -264,7 +264,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       projectDisclaimerTextView.setText(ksString.format(
         projectDisclaimerGoalReachedString,
         "deadline",
-        DateTimeUtils.mediumDateTime(deadline)
+        DateTimeUtils.mediumDateShortTime(deadline)
       ));
     } else {
       projectDisclaimerTextView.setVisibility(View.VISIBLE);
@@ -273,7 +273,7 @@ public final class ProjectViewHolder extends KSViewHolder {
         "goal_currency",
         ksCurrency.format(project.goal(), project, true),
         "deadline",
-        DateTimeUtils.mediumDateTime(deadline)
+        DateTimeUtils.mediumDateShortTime(deadline)
       ));
     }
   }

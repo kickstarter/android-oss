@@ -85,10 +85,9 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   public Observable<DiscoveryParams> showFilters() {
     return params.compose(Transformers.takeWhen(filterButtonClicked));
   }
-  private final PublishSubject<Project> showProject = PublishSubject.create();
+  private final PublishSubject<Pair<Project, RefTag>> showProject = PublishSubject.create();
   public Observable<Pair<Project, RefTag>> showProject() {
-    return params.compose(Transformers.takePairWhen(showProject))
-      .map(pp -> DiscoveryViewModel.projectAndRefTagFromParamsAndProject(pp.first, pp.second));
+    return showProject;
   }
   private final PublishSubject<Void> showSignupLogin = PublishSubject.create();
   public Observable<Void> showSignupLogin() {
@@ -111,6 +110,9 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   private PublishSubject<ErrorEnvelope> activityError = PublishSubject.create();
 
   private boolean hasSeenOnboarding = false;
+
+  private PublishSubject<Project> clickActivityProject = PublishSubject.create();
+  private PublishSubject<Project> clickProject = PublishSubject.create();
 
   public final DiscoveryViewModelInputs inputs = this;
   public final DiscoveryViewModelOutputs outputs = this;
@@ -160,7 +162,20 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .subscribe(activity::onNext)
     );
 
-    initializer.subscribe(this.params::onNext);
+    addSubscription(params
+      .compose(Transformers.takePairWhen(clickProject))
+      .map(pp -> DiscoveryViewModel.projectAndRefTagFromParamsAndProject(pp.first, pp.second))
+      .subscribe(showProject::onNext)
+    );
+
+    addSubscription(clickActivityProject
+      .map(p -> Pair.create(p, RefTag.activitySample()))
+      .subscribe(showProject::onNext)
+    );
+
+    addSubscription(
+      initializer.subscribe(this.params::onNext)
+    );
     initializer.onNext(DiscoveryParams.builder().staffPicks(true).build());
   }
 
@@ -204,9 +219,9 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   }
 
   public Observable<Activity> fetchActivity() {
-    return apiClient.fetchActivities(1)
+    return apiClient.fetchActivities(2)
       .map(ActivityEnvelope::activities)
-      .map(activities -> activities.get(0))
+      .map(activities -> activities.get(1))
       .compose(Transformers.pipeApiErrorsTo(activityError));
   }
 
@@ -224,7 +239,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   }
 
   public void projectCardViewHolderClicked(final @NonNull ProjectCardViewHolder viewHolder, final @NonNull Project project) {
-    this.showProject.onNext(project);
+    this.clickProject.onNext(project);
   }
 
   public void discoveryOnboardingViewHolderSignupLoginClicked(final @NonNull DiscoveryOnboardingViewHolder viewHolder) {
@@ -236,7 +251,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   }
 
   public void discoveryActivityViewHolderProjectClicked(final @NonNull DiscoveryActivityViewHolder viewHolder, final @NonNull Project project) {
-    this.showProject.onNext(project);
+    this.clickActivityProject.onNext(project);
   }
 
   public void discoveryActivityViewHolderUpdateClicked(final @NonNull DiscoveryActivityViewHolder viewHolder, final @NonNull Activity activity) {

@@ -43,9 +43,18 @@ public final class DiscoveryAdapter extends KSAdapter {
     notifyDataSetChanged();
   }
 
-  public void takeActivities(final @NonNull List<Activity> activities) {
-    data().set(SECTION_ACTIVITY_SAMPLE_VIEW, activities);
+  public void setShouldShowActivitySample(final boolean shouldShowActivitySample) {
+    if (!shouldShowActivitySample) {
+      data().set(SECTION_ACTIVITY_SAMPLE_VIEW, Collections.emptyList());
+    }
     notifyDataSetChanged();
+  }
+
+  public void takeActivities(final @NonNull List<Activity> activities) {
+    if (!activities.isEmpty()) {
+      data().set(SECTION_ACTIVITY_SAMPLE_VIEW, activities);
+      notifyDataSetChanged();
+    }
   }
 
   public void takeProjects(final @NonNull List<Project> projects) {

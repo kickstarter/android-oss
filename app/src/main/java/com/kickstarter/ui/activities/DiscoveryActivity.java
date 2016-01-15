@@ -80,6 +80,11 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(adapter::setShouldShowOnboardingView);
 
+//    viewModel.outputs.shouldShowActivitySample()
+//      .compose(bindToLifecycle())
+//      .observeOn(AndroidSchedulers.mainThread())
+//      .subscribe(adapter::setShouldShowActivitySample);
+
     viewModel.outputs.projects()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
@@ -138,6 +143,11 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
     if (ApiCapabilities.canSetStatusBarColor() && ApiCapabilities.canSetDarkStatusBarIcons()) {
       StatusBarUtils.apply(this, DiscoveryUtils.primaryColor(this, params), DiscoveryUtils.overlayShouldBeLight(params));
     }
+
+    viewModel.outputs.shouldShowActivitySample()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(adapter::setShouldShowActivitySample);
   }
 
   private void startDiscoveryFilterActivity(final @NonNull DiscoveryParams params) {

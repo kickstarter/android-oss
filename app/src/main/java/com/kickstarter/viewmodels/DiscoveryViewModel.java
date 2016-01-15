@@ -15,7 +15,6 @@ import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.DiscoveryParamsUtils;
 import com.kickstarter.libs.utils.ListUtils;
-import static com.kickstarter.libs.utils.BoolUtils.isTrue;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
@@ -41,12 +40,15 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.utils.BoolUtils.isTrue;
+
 public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> implements DiscoveryAdapter.Delegate, DiscoveryViewModelInputs, DiscoveryViewModelOutputs {
   protected @Inject ApiClientType apiClient;
   protected @Inject WebClient webClient;
   protected @Inject BuildCheck buildCheck;
   protected @Inject CurrentUser currentUser;
 
+  // INPUTS
   private final PublishSubject<Void> nextPage = PublishSubject.create();
   public void nextPage() {
     nextPage.onNext(null);
@@ -54,10 +56,6 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   private final PublishSubject<Void> filterButtonClicked = PublishSubject.create();
   public void filterButtonClicked() {
     filterButtonClicked.onNext(null);
-  }
-  private final BehaviorSubject<Boolean> hasLoadedActivitySample = BehaviorSubject.create();
-  public Observable<Boolean> hasLoadedActivitySample() {
-    return hasLoadedActivitySample;
   }
   private final PublishSubject<DiscoveryParams> initializer = PublishSubject.create();
   public void initializer(final @NonNull DiscoveryParams params) {
@@ -74,7 +72,6 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     return params;
   }
   private final PublishSubject<List<Activity>> activities = PublishSubject.create();
-  @Override
   public Observable<List<Activity>> activities() {
     return activities;
   }
@@ -86,25 +83,25 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     return params.compose(Transformers.takeWhen(filterButtonClicked));
   }
   private final PublishSubject<Project> showProject = PublishSubject.create();
-  @Override
   public Observable<Pair<Project, RefTag>> showProject() {
     return params.compose(Transformers.takePairWhen(showProject))
       .map(pp -> DiscoveryViewModel.projectAndRefTagFromParamsAndProject(pp.first, pp.second));
   }
   private final PublishSubject<Void> showSignupLogin = PublishSubject.create();
-  @Override
   public Observable<Void> showSignupLogin() {
     return showSignupLogin;
   }
   private final PublishSubject<Void> showActivityFeed = PublishSubject.create();
-  @Override
   public Observable<Void> showActivityFeed() {
     return showActivityFeed;
   }
   private final PublishSubject<Activity> showActivityUpdate = PublishSubject.create();
-  @Override
   public Observable<Activity> showActivityUpdate() {
     return showActivityUpdate;
+  }
+  private final BehaviorSubject<Boolean> shouldShowActivitySample = BehaviorSubject.create();
+  public Observable<Boolean> shouldShowActivitySample() {
+    return shouldShowActivitySample;
   }
 
   // ERRORS
@@ -135,12 +132,6 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .concater(ListUtils::concatDistinct)
         .build();
 
-    addSubscription(currentUser.isLoggedIn()
-        .flatMap(__ -> this.fetchActivities())
-        .map(ActivityEnvelope::activities)
-        .subscribe(activities)
-    );
-
     addSubscription(
       params.compose(Transformers.takePairWhen(paginator.loadingPage))
         .map(paramsAndPage -> paramsAndPage.first.toBuilder().page(paramsAndPage.second).build())
@@ -156,6 +147,19 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .doOnNext(show -> hasSeenOnboarding = show || hasSeenOnboarding)
         .subscribe(shouldShowOnboarding::onNext)
     );
+
+    addSubscription(currentUser.isLoggedIn()
+        .compose(Transformers.takePairWhen(shouldShowActivitySample))
+        .filter(ub -> ub.second)
+        .flatMap(__ -> this.fetchActivities())
+        .map(ActivityEnvelope::activities)
+        .subscribe(a -> {
+          shouldShowActivitySample.onNext(false);
+          activities.onNext(a);
+        })
+    );
+
+    shouldShowActivitySample.onNext(true);
 
     initializer.subscribe(this.params::onNext);
     initializer.onNext(DiscoveryParams.builder().staffPicks(true).build());

@@ -23,6 +23,7 @@ import com.kickstarter.services.apirequests.RegisterWithFacebookBody;
 import com.kickstarter.services.apirequests.ResetPasswordBody;
 import com.kickstarter.services.apirequests.SettingsBody;
 import com.kickstarter.services.apirequests.SignupBody;
+import com.kickstarter.services.apirequests.XauthBody;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.CategoriesEnvelope;
@@ -216,7 +217,10 @@ public final class ApiClient implements ApiClientType {
   @Override
   public @NonNull Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password) {
     return service
-      .login(email, password)
+      .login(XauthBody.builder()
+        .email(email)
+        .password(password)
+        .build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
@@ -225,7 +229,11 @@ public final class ApiClient implements ApiClientType {
   public @NonNull Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password,
     final @NonNull String code) {
     return service
-      .login(email, password, code)
+      .login(XauthBody.builder()
+        .email(email)
+        .password(password)
+        .code(code)
+        .build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }

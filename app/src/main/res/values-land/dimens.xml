@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <dimen name="form_margin_x">@dimen/grid_16</dimen>
+  <dimen name="activity_feed_view_margin_top">@dimen/grid_2</dimen>
+  <dimen name="activity_feed_view_margin_bottom">@dimen/grid_1</dimen>
+  <dimen name="activity_padding_x">@dimen/grid_8</dimen>
+  <dimen name="feed_padding_x">@dimen/grid_8</dimen>
+  <dimen name="form_margin_x">@dimen/grid_8</dimen>
+  <dimen name="project_action_button_height">50dp</dimen>
+  <dimen name="settings_icon_margin_x">@dimen/grid_6</dimen>
+  <dimen name="star_fab_margin_x">@dimen/grid_5_half</dimen>
+  <dimen name="star_fab_margin_y">@dimen/grid_5_half</dimen>
+  <dimen name="star_fab_pre21_margin_y">@dimen/grid_1_half</dimen>
 
   <!-- Logged in menu -->
   <dimen name="logged_in_menu_vertical_offset">-38dp</dimen>

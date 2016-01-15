@@ -40,7 +40,7 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-import static com.kickstarter.libs.utils.BoolUtils.isTrue;
+import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
 
 public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> implements DiscoveryAdapter.Delegate, DiscoveryViewModelInputs, DiscoveryViewModelOutputs {
   protected @Inject ApiClientType apiClient;

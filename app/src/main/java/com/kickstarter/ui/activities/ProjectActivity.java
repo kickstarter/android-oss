@@ -1,12 +1,9 @@
 package com.kickstarter.ui.activities;
 
 import android.content.Intent;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -25,13 +22,14 @@ import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ProjectAdapter;
 import com.kickstarter.ui.intents.ProjectIntentAction;
+import com.kickstarter.ui.views.IconButton;
 import com.kickstarter.viewmodels.ProjectViewModel;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.BindColor;
-import butterknife.BindDrawable;
+import butterknife.BindDimen;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -43,7 +41,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   private ProjectIntentAction intentAction;
 
   protected @Bind(R.id.project_recycler_view) RecyclerView projectRecyclerView;
-  protected @Bind(R.id.star_fab) FloatingActionButton starFab;
+  protected @Bind(R.id.star_icon) IconButton starButton;
   protected @Bind(R.id.back_project_button) Button backProjectButton;
   protected @Bind(R.id.manage_pledge_button) Button managePledgeButton;
   protected @Bind(R.id.view_pledge_button) Button viewPledgeButton;
@@ -51,7 +49,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   protected @BindColor(R.color.green) int green;
   protected @BindColor(R.color.text_primary) int textPrimary;
 
-  protected @BindDrawable(R.drawable.ic_star_black_24dp) Drawable starDrawable;
+  protected @BindDimen(R.dimen.grid_8) int grid8Dimen;
 
   protected @BindString(R.string.project_back_button) String projectBackButtonString;
   protected @BindString(R.string.project_checkout_manage_navbar_title) String managePledgeString;
@@ -138,7 +136,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     this.viewModel.outputs.showStarredPrompt()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> this.showStarPrompt());
+      .subscribe(__ -> this.showStarToast());
 
     this.viewModel.outputs.showLoginTout()
       .compose(bindToLifecycle())
@@ -173,15 +171,8 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   }
 
   private void renderStar(final @NonNull Project project) {
-    if (project.isLive()) {
-      starFab.setImageDrawable(starDrawable);
-      starFab.setVisibility(View.VISIBLE);
-    } else {
-      starFab.setVisibility(View.GONE);
-    }
-
     final int starColor = (project.isStarred()) ? green : textPrimary;
-    starDrawable.setColorFilter(starColor, PorterDuff.Mode.SRC_ATOP);
+    starButton.setTextColor(starColor);
   }
 
   @OnClick(R.id.back_project_button)
@@ -209,7 +200,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
-  @OnClick(R.id.star_fab)
+  @OnClick(R.id.star_icon)
   public void starProjectClick() {
     viewModel.inputs.starClicked();
   }
@@ -231,8 +222,8 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     startWebViewActivity(updatesString, project.updatesUrl());
   }
 
-  private void showStarPrompt() {
-    ViewUtils.showToast(this, projectStarConfirmationString);
+  private void showStarToast() {
+    ViewUtils.showToastFromTop(this, projectStarConfirmationString, 0, grid8Dimen);
   }
 
   private void startCheckoutActivity(final @NonNull Project project) {

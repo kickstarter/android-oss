@@ -22,6 +22,7 @@ import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 
+import static com.kickstarter.libs.utils.IntegerUtils.intValueOrZero;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
 public final class DiscoveryFilterViewHolder extends KSViewHolder {
@@ -37,7 +38,7 @@ public final class DiscoveryFilterViewHolder extends KSViewHolder {
   protected @Bind(R.id.vertical_line_medium_view) View verticalLineView;
 
   protected @BindString(R.string.discovery_all_of_scope) String allOfScopeString;
-  protected @BindString(R.string.discovery_accessibility_live_project_count) String liveProjectCountDescriptionString;
+  protected @BindString(R.string.category_promo_project_count_live_projects) String liveProjectCountDescriptionString;
 
   @Inject Font font;
   @Inject KSString ksString;
@@ -79,7 +80,11 @@ public final class DiscoveryFilterViewHolder extends KSViewHolder {
     if (style.showLiveProjectsCount()) {
       categoryLiveProjectCountTextView.setVisibility(View.VISIBLE);
       categoryLiveProjectCountTextView.setText(params.category().projectsCount().toString());
-      categoryLiveProjectCountTextView.setContentDescription(params.category().projectsCount() + liveProjectCountDescriptionString);
+      categoryLiveProjectCountTextView.setContentDescription(ksString.format(
+        liveProjectCountDescriptionString,
+        "project_count",
+        String.valueOf(intValueOrZero(params.category().projectsCount()))
+      ));
     } else {
       categoryLiveProjectCountTextView.setVisibility(View.GONE);
       categoryLiveProjectCountTextView.setText("");

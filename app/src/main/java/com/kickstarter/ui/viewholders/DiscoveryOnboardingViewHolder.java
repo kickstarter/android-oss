@@ -11,7 +11,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public final class DiscoveryOnboardingViewHolder extends KSViewHolder{
+public final class DiscoveryOnboardingViewHolder extends KSViewHolder {
   protected @Bind(R.id.signup_login_button) Button signupLoginButton;
 
   private final Delegate delegate;

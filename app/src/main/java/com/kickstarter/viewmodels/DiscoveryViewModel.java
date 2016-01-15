@@ -219,9 +219,9 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   }
 
   public Observable<Activity> fetchActivity() {
-    return apiClient.fetchActivities(2)
+    return apiClient.fetchActivities(1)
       .map(ActivityEnvelope::activities)
-      .map(activities -> activities.get(1))
+      .map(activities -> activities.get(0))
       .compose(Transformers.pipeApiErrorsTo(activityError));
   }
 

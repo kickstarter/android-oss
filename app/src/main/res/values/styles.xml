@@ -40,7 +40,7 @@
   </style>
 
   <style name="HamburgerStatusBar" parent="KSTheme">
-    <item name="colorPrimaryDark">@color/hamburger_statusbar</item>
+    <item name="colorPrimaryDark">@color/discovery_statusbar</item>
   </style>
 
   <!-- Activities -->

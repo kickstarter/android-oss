@@ -8,6 +8,6 @@ import com.kickstarter.services.DiscoveryParams;
 public interface DiscoveryViewModelInputs {
   void projectClicked(final @NonNull Project project);
   void nextPage();
-  void filterButtonClicked();
+  void menuButtonClicked();
   void initializer(final @NonNull DiscoveryParams params);
 }

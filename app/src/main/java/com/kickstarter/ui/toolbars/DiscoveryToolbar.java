@@ -34,10 +34,8 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public final class DiscoveryToolbar extends KSToolbar {
   @Bind(R.id.activity_feed_button) TextView activityFeedButton;
-  @Bind(R.id.current_user_button) TextView currentUserButton;
-  @Bind(R.id.filter_expand_more_button) TextView filterExpandMoreButton;
   @Bind(R.id.filter_text_view) TextView filterTextView;
-  @Bind(R.id.login_button) TextView loginButton;
+  //@Bind(R.id.login_button) TextView loginButton;
   @Bind(R.id.hamburger_button) TextView hamburgerButton;
   @Bind(R.id.search_button) TextView searchButton;
   @Inject CurrentUser currentUser;
@@ -72,10 +70,10 @@ public final class DiscoveryToolbar extends KSToolbar {
     });
   }
 
-  @OnClick(R.id.filter_button)
-  public void filterButtonClick(@NonNull final View view) {
+  @OnClick({R.id.filter_text_view, R.id.menu_button})
+  public void menuButtonClick(@NonNull final View view) {
     final DiscoveryActivity activity = (DiscoveryActivity) getContext();
-    activity.viewModel().inputs.filterButtonClicked();
+    activity.viewModel().inputs.menuButtonClicked();
   }
 
   @OnClick(R.id.hamburger_button)
@@ -86,6 +84,8 @@ public final class DiscoveryToolbar extends KSToolbar {
 
   public void loadParams(@NonNull final DiscoveryParams params) {
     final Context context = getContext();
+
+    /*
 
     this.setBackgroundColor(DiscoveryUtils.primaryColor(context, params));
 
@@ -102,6 +102,7 @@ public final class DiscoveryToolbar extends KSToolbar {
     final @ColorInt int overlayTextColor = DiscoveryUtils.overlayTextColor(context, params);
 
     views.subscribe(view -> view.setTextColor(overlayTextColor));
+    */
   }
 
   @OnClick(R.id.search_button)
@@ -111,15 +112,18 @@ public final class DiscoveryToolbar extends KSToolbar {
   }
 
   protected void configureForLoggedIn(final @NonNull User user) {
+    /*
     loginButton.setVisibility(GONE);
     currentUserButton.setVisibility(VISIBLE);
     currentUserButton.setOnClickListener(v -> {
       final LoggedInMenu menu = new LoggedInMenu(v.getContext(), user, currentUserButton);
       menu.show();
     });
+    */
   }
 
   protected void configureForLoggedOut() {
+    /*
     currentUserButton.setVisibility(GONE);
     loginButton.setVisibility(VISIBLE);
     loginButton.setOnClickListener(v -> {
@@ -128,6 +132,7 @@ public final class DiscoveryToolbar extends KSToolbar {
         .putExtra(IntentKey.LOGIN_TYPE, LoginToutActivity.REASON_LOGIN_TAB);
       context.startActivity(intent);
     });
+    */
   }
 
   @Override

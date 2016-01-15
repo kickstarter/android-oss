@@ -6,7 +6,7 @@
   style="@style/Toolbar"
   android:id="@+id/hamburger_toolbar"
   tools:showIn="@layout/hamburger_layout"
-  android:background="@color/hamburger_toolbar"
+  android:background="@color/discovery_toolbar"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp">
 

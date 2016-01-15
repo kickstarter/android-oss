@@ -43,38 +43,55 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
 
   // INPUTS
   private final PublishSubject<Project> projectClicked = PublishSubject.create();
+  @Override
   public void projectClicked(@NonNull final Project project) {
     projectClicked.onNext(project);
   }
+
   private final PublishSubject<Void> nextPage = PublishSubject.create();
+  @Override
   public void nextPage() {
     nextPage.onNext(null);
   }
+
   private final PublishSubject<Void> filterButtonClicked = PublishSubject.create();
-  public void filterButtonClicked() {
+
+  @Override
+  public void menuButtonClicked() {
     filterButtonClicked.onNext(null);
   }
+
   private final PublishSubject<DiscoveryParams> initializer = PublishSubject.create();
+  @Override
   public void initializer(final @NonNull DiscoveryParams params) {
     initializer.onNext(params);
   }
 
   // OUTPUTS
   private final BehaviorSubject<List<Project>> projects = BehaviorSubject.create();
+  @Override
   public Observable<List<Project>> projects() {
     return projects;
   }
   private final BehaviorSubject<DiscoveryParams> params = BehaviorSubject.create();
+
+  @Override
   public Observable<DiscoveryParams> params() {
     return params;
   }
+
   private final BehaviorSubject<Boolean> shouldShowOnboarding = BehaviorSubject.create();
+  @Override
   public Observable<Boolean> shouldShowOnboarding() {
     return shouldShowOnboarding;
   }
+
+  @Override
   public Observable<DiscoveryParams> showFilters() {
     return params.compose(Transformers.takeWhen(filterButtonClicked));
   }
+
+  @Override
   public Observable<Pair<Project, RefTag>> showProject() {
     return params.compose(Transformers.takePairWhen(projectClicked))
       .map(pp -> DiscoveryViewModel.projectAndRefTagFromParamsAndProject(pp.first, pp.second));

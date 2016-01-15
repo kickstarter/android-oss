@@ -67,7 +67,7 @@ public final class DiscoveryAdapter extends KSAdapter {
     if (sectionRow.section() == SECTION_ONBOARDING_VIEW) {
       return R.layout.discovery_onboarding_view;
     } else if (sectionRow.section() == SECTION_ACTIVITY_SAMPLE_VIEW) {
-      return R.layout.discovery_activity_sample;
+      return R.layout.discovery_activity_sample_view;
     } else {
       return R.layout.project_card_view;
     }
@@ -78,7 +78,7 @@ public final class DiscoveryAdapter extends KSAdapter {
     switch (layout) {
       case R.layout.discovery_onboarding_view:
         return new DiscoveryOnboardingViewHolder(view, delegate);
-      case R.layout.discovery_activity_sample:
+      case R.layout.discovery_activity_sample_view:
         return new DiscoveryActivityViewHolder(view, delegate);
       case R.layout.project_card_view:
         return new ProjectCardViewHolder(view, delegate);

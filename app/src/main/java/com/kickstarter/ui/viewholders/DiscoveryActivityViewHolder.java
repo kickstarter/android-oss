@@ -1,7 +1,6 @@
 package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Html;
@@ -76,112 +75,107 @@ public class DiscoveryActivityViewHolder extends KSViewHolder {
     activitysubTitleTextView.setVisibility(View.GONE);
     activityImageView.setVisibility(View.GONE);
 
-    LinearLayout.LayoutParams layoutParams =
-      new LinearLayout.LayoutParams(context.getResources().getDimensionPixelSize(R.dimen.grid_4),
-        context.getResources().getDimensionPixelSize(R.dimen.grid_4));
-    activityImageView.setLayoutParams(layoutParams);
-
-    // temp until followable :
-    activityClickArea.setBackground(context.getResources().getDrawable(R.drawable.click_indicator_light_masked, null));
-    LinearLayout.LayoutParams titleLayoutParams = (LinearLayout.LayoutParams)activitysubTitleTextView.getLayoutParams();
-    titleLayoutParams.topMargin = 0;
-    activityTitleTextView.setLayoutParams(titleLayoutParams);
-
     final User user = activity.user();
     final Project project = activity.project();
 
     if (activity.category().equals(Activity.CATEGORY_BACKING)) {
-      if (user == null) {
+      if (user == null || project == null) {
         return;
       }
-      if (project == null) {
-        return;
-      }
+      setBackingView(context, user, project);
 
-      activityImageView.setVisibility(View.VISIBLE);
-      activitysubTitleTextView.setVisibility(View.VISIBLE);
-
-      Picasso.with(context).load(user.avatar()
-        .small())
-        .transform(new CircleTransformation())
-        .into(activityImageView);
-
-      activitysubTitleTextView.setText(Html.fromHtml(ksString.format(categoryBackingString,
-        "friend_name", user.name(),
-        "project_name", project.name(),
-        "creator_name", project.creator().name())));
     } else if (activity.category().equals(Activity.CATEGORY_FOLLOW)) {
       if (user == null) {
         return;
       }
-
-      activityImageView.setVisibility(View.VISIBLE);
-      activityTitleTextView.setVisibility(View.VISIBLE);
-      activitysubTitleTextView.setVisibility(View.VISIBLE);
-
-      Picasso.with(context).load(user.avatar()
-        .small())
-        .transform(new CircleTransformation())
-        .into(activityImageView);
-
-      activityTitleTextView.setText(ksString.format(categoryFollowingString, "user_name", user.name()));
-      activitysubTitleTextView.setText(categoryFollowBackString);
-
-      // temp until followable :
-      activityClickArea.setBackgroundResource(0);
-      activitysubTitleTextView.setVisibility(View.GONE);
-      titleLayoutParams.topMargin = (int)(10 * Resources.getSystem().getDisplayMetrics().density);
-      activityTitleTextView.setLayoutParams(titleLayoutParams);
+      setFollowView(context, user);
 
     } else {
       if (project == null) {
         return;
       }
-      final Photo photo = project.photo();
-      if (photo != null) {
-        Picasso.with(context)
-          .load(photo.little())
-          .into(activityImageView);
-      }
+      setProjectView(context, project, user);
+    }
+  }
 
-      activityImageView.setVisibility(View.VISIBLE);
-      activityTitleTextView.setVisibility(View.VISIBLE);
-      activitysubTitleTextView.setVisibility(View.VISIBLE);
+  private void setBackingView(final @NonNull Context context, final @NonNull User user, final @NonNull Project project) {
+    activityImageView.setVisibility(View.VISIBLE);
+    activitysubTitleTextView.setVisibility(View.VISIBLE);
 
-      layoutParams = new LinearLayout.LayoutParams(context.getResources().getDimensionPixelSize(R.dimen.discovery_activity_photo_width),
-          context.getResources().getDimensionPixelSize(R.dimen.discovery_activity_photo_height));
-      activityImageView.setLayoutParams(layoutParams);
+    Picasso.with(context).load(user.avatar()
+      .small())
+      .transform(new CircleTransformation())
+      .into(activityImageView);
 
-      activityTitleTextView.setText(project.name());
+    activitysubTitleTextView.setText(Html.fromHtml(ksString.format(categoryBackingString,
+      "friend_name", user.name(),
+      "project_name", project.name(),
+      "creator_name", project.creator().name())));
+  }
 
-      switch(activity.category()) {
-        case Activity.CATEGORY_FAILURE:
-          activitysubTitleTextView.setText(categoryFailureString);
+  private void setFollowView(final @NonNull Context context, final @NonNull User user) {
+    activityImageView.setVisibility(View.VISIBLE);
+    activityTitleTextView.setVisibility(View.VISIBLE);
+    activitysubTitleTextView.setVisibility(View.VISIBLE);
+
+    Picasso.with(context).load(user.avatar()
+      .small())
+      .transform(new CircleTransformation())
+      .into(activityImageView);
+
+    activityTitleTextView.setText(ksString.format(categoryFollowingString, "user_name", user.name()));
+    activitysubTitleTextView.setText(categoryFollowBackString);
+
+    // temp until followable :
+    activityClickArea.setBackgroundResource(0);
+    activitysubTitleTextView.setVisibility(View.GONE);
+  }
+
+  private void setProjectView(final @NonNull Context context, final @NonNull Project project, final @Nullable User user) {
+    final Photo photo = project.photo();
+    if (photo != null) {
+      Picasso.with(context)
+        .load(photo.little())
+        .into(activityImageView);
+    }
+
+    activityImageView.setVisibility(View.VISIBLE);
+    activityTitleTextView.setVisibility(View.VISIBLE);
+    activitysubTitleTextView.setVisibility(View.VISIBLE);
+
+    final LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(context.getResources().getDimensionPixelSize(R.dimen.discovery_activity_photo_width),
+      context.getResources().getDimensionPixelSize(R.dimen.discovery_activity_photo_height));
+    activityImageView.setLayoutParams(layoutParams);
+
+    activityTitleTextView.setText(project.name());
+
+    switch(activity.category()) {
+      case Activity.CATEGORY_FAILURE:
+        activitysubTitleTextView.setText(categoryFailureString);
+        break;
+      case Activity.CATEGORY_CANCELLATION:
+        activitysubTitleTextView.setText(categoryCancellationString);
+        break;
+      case Activity.CATEGORY_LAUNCH:
+        if (user == null) {
           break;
-        case Activity.CATEGORY_CANCELLATION:
-          activitysubTitleTextView.setText(categoryCancellationString);
+        }
+        activitysubTitleTextView.setText(ksString.format(categoryLaunchString, "user_name", user.name()));
+        break;
+      case Activity.CATEGORY_SUCCESS:
+        activitysubTitleTextView.setText(categorySuccessString);
+        break;
+      case Activity.CATEGORY_UPDATE:
+        final Update update = activity.update();
+        if (update == null) {
           break;
-        case Activity.CATEGORY_LAUNCH:
-          if (user == null) {
-            break;
-          }
-          activitysubTitleTextView.setText(ksString.format(categoryLaunchString, "user_name", user.name()));
-          break;
-        case Activity.CATEGORY_SUCCESS:
-          activitysubTitleTextView.setText(categorySuccessString);
-          break;
-        case Activity.CATEGORY_UPDATE:
-          final Update update = activity.update();
-          if (update == null) {
-            break;
-          }
-          activitysubTitleTextView.setText(ksString.format(categoryUpdateString,
-            "update_number", String.valueOf(update.sequence()),
-            "update_title", update.title()));
-          break;
-        default:
-          break;
-      }
+        }
+        activitysubTitleTextView.setText(ksString.format(categoryUpdateString,
+          "update_number", String.valueOf(update.sequence()),
+          "update_title", update.title()));
+        break;
+      default:
+        break;
     }
   }
 

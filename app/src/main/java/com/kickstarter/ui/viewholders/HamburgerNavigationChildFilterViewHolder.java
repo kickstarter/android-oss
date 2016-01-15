@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
@@ -24,9 +25,12 @@ import timber.log.Timber;
 import static com.kickstarter.libs.utils.ObjectUtils.*;
 
 public final class HamburgerNavigationChildFilterViewHolder extends KSViewHolder {
+  protected @Bind(R.id.filter_view) LinearLayout filterView;
   protected @Bind(R.id.filter_text_view) TextView filterTextView;
   protected @BindColor(R.color.black) int blackColor;
   protected @BindColor(R.color.dark_gray) int darkGrayColor;
+  protected @BindColor(R.color.hamburger_navigation_item_selected) int filterSelectedColor;
+  protected @BindColor(R.color.transparent) int filterUnselectedColor;
 
   protected @Inject KSString ksString;
 
@@ -66,6 +70,8 @@ public final class HamburgerNavigationChildFilterViewHolder extends KSViewHolder
       filterTextView.setTextAppearance(context, R.style.SubheadPrimary);
       filterTextView.setTextColor(darkGrayColor);
     }
+
+    filterView.setBackgroundColor(item.selected() ? filterSelectedColor : filterUnselectedColor);
   }
 
   @OnClick(R.id.filter_text_view)

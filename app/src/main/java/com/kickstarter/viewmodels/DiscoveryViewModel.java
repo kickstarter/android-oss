@@ -160,8 +160,6 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .subscribe(activity::onNext)
     );
 
-    //params.subscribe(__ -> activity.onNext(null));
-
     initializer.subscribe(this.params::onNext);
     initializer.onNext(DiscoveryParams.builder().staffPicks(true).build());
   }

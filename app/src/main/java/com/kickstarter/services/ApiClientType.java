@@ -1,6 +1,7 @@
 package com.kickstarter.services;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.kickstarter.libs.Config;
 import com.kickstarter.models.Backing;
@@ -25,9 +26,9 @@ public interface ApiClientType {
 
   @NonNull Observable<ActivityEnvelope> fetchActivities();
 
-  @NonNull Observable<ActivityEnvelope> fetchActivities(final @NonNull String paginationPath);
+  @NonNull Observable<ActivityEnvelope> fetchActivities(final @Nullable Integer count);
 
-  @NonNull Observable<ActivityEnvelope> fetchActivities(int count);
+  @NonNull Observable<ActivityEnvelope> fetchActivitiesWithPaginationPath(final @NonNull String paginationPath);
 
   @NonNull Observable<List<Category>> fetchCategories();
 

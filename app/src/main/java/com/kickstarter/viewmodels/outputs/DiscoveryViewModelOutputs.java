@@ -14,7 +14,7 @@ import rx.Observable;
 public interface DiscoveryViewModelOutputs {
   Observable<List<Project>> projects();
   Observable<DiscoveryParams> params();
-  Observable<List<Activity>> activities();
+  Observable<Activity> activity();
   Observable<Boolean> shouldShowOnboarding();
   Observable<DiscoveryParams> showFilters();
   Observable<Pair<Project, RefTag>> showProject();

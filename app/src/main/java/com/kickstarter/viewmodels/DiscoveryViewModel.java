@@ -12,6 +12,8 @@ import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.ViewModel;
+import com.kickstarter.libs.preferences.IntPreference;
+import com.kickstarter.libs.qualifiers.ActivitySamplePreference;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.DiscoveryParamsUtils;
 import com.kickstarter.libs.utils.ListUtils;
@@ -47,6 +49,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   protected @Inject WebClient webClient;
   protected @Inject BuildCheck buildCheck;
   protected @Inject CurrentUser currentUser;
+  protected @Inject @ActivitySamplePreference IntPreference activitySamplePreference;
 
   // INPUTS
   private final PublishSubject<Void> nextPage = PublishSubject.create();
@@ -71,9 +74,9 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   public Observable<DiscoveryParams> params() {
     return params;
   }
-  private final PublishSubject<List<Activity>> activities = PublishSubject.create();
-  public Observable<List<Activity>> activities() {
-    return activities;
+  private final BehaviorSubject<Activity> activity = BehaviorSubject.create();
+  public Observable<Activity> activity() {
+    return activity;
   }
   private final BehaviorSubject<Boolean> shouldShowOnboarding = BehaviorSubject.create();
   public Observable<Boolean> shouldShowOnboarding() {
@@ -148,18 +151,16 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .subscribe(shouldShowOnboarding::onNext)
     );
 
-    addSubscription(currentUser.isLoggedIn()
-        .compose(Transformers.takePairWhen(shouldShowActivitySample))
-        .filter(ub -> ub.second)
-        .flatMap(__ -> this.fetchActivities())
-        .map(ActivityEnvelope::activities)
-        .subscribe(a -> {
-          shouldShowActivitySample.onNext(false);
-          activities.onNext(a);
-        })
+    addSubscription(
+      currentUser.loggedInUser()
+        .compose(Transformers.combineLatestPair(params))
+        .flatMap(__ -> this.fetchActivity())
+        .map(this::activityIfNotSeen)
+        .doOnNext(this::saveLastSeenActivityId)
+        .subscribe(activity::onNext)
     );
 
-    shouldShowActivitySample.onNext(true);
+    //params.subscribe(__ -> activity.onNext(null));
 
     initializer.subscribe(this.params::onNext);
     initializer.onNext(DiscoveryParams.builder().staffPicks(true).build());
@@ -204,9 +205,24 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     return new Pair<>(project, refTag);
   }
 
-  public Observable<ActivityEnvelope> fetchActivities() {
+  public Observable<Activity> fetchActivity() {
     return apiClient.fetchActivities(1)
+      .map(ActivityEnvelope::activities)
+      .map(activities -> activities.get(0))
       .compose(Transformers.pipeApiErrorsTo(activityError));
+  }
+
+  private @Nullable Activity activityIfNotSeen(final @Nullable Activity activity) {
+    if (activity != null && activity.id() != activitySamplePreference.get()) {
+      return activity;
+    }
+    return null;
+  }
+
+  private void saveLastSeenActivityId(final @Nullable Activity activity) {
+    if (activity != null) {
+      activitySamplePreference.set((int) activity.id());
+    }
   }
 
   public void projectCardViewHolderClicked(final @NonNull ProjectCardViewHolder viewHolder, final @NonNull Project project) {

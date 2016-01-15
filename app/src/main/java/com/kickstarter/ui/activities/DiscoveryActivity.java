@@ -80,11 +80,6 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(adapter::setShouldShowOnboardingView);
 
-//    viewModel.outputs.shouldShowActivitySample()
-//      .compose(bindToLifecycle())
-//      .observeOn(AndroidSchedulers.mainThread())
-//      .subscribe(adapter::setShouldShowActivitySample);
-
     viewModel.outputs.projects()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())

@@ -30,7 +30,7 @@
       android:layout_alignParentStart="true">
 
       <com.kickstarter.ui.views.IconButton
-        style="@style/HamburgerToolbarIcon"
+        style="@style/ToolbarIconDarkBackground"
         android:id="@+id/menu_button"
         android:text="@string/menu_icon" />
 
@@ -58,12 +58,12 @@
       android:orientation="horizontal">
 
       <com.kickstarter.ui.views.IconButton
-        style="@style/HamburgerToolbarIcon"
+        style="@style/ToolbarIconDarkBackground"
         android:id="@+id/activity_feed_button"
         android:text="@string/flash_on_icon" />
 
       <com.kickstarter.ui.views.IconButton
-        style="@style/HamburgerToolbarIcon"
+        style="@style/ToolbarIconDarkBackground"
         android:id="@+id/search_button"
         android:text="@string/search_icon" />
 

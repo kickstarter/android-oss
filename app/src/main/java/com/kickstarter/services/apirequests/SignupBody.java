@@ -9,6 +9,7 @@ import auto.parcel.AutoParcel;
 public abstract class SignupBody {
   public abstract String name();
   public abstract String email();
+  public abstract boolean newsletterOptIn();
   public abstract String password();
   public abstract String passwordConfirmation();
   public abstract boolean sendNewsletters();
@@ -17,6 +18,7 @@ public abstract class SignupBody {
   public abstract static class Builder {
     public abstract Builder name(String __);
     public abstract Builder email(String __);
+    public abstract Builder newsletterOptIn(boolean __);
     public abstract Builder password(String __);
     public abstract Builder passwordConfirmation(String __);
     public abstract Builder sendNewsletters(boolean __);

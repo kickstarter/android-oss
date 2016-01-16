@@ -44,9 +44,7 @@ import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresViewModel(DiscoveryViewModel.class)
 public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> implements DiscoveryAdapter.Delegate {
-  private DiscoveryAdapter adapter;
   private DiscoveryIntentAction intentAction;
-  private LinearLayoutManager layoutManager;
   private RecyclerViewPaginator recyclerViewPaginator;
 
   protected @Inject ApplicationContainer applicationContainer;
@@ -68,8 +66,8 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
     layoutInflater.inflate(R.layout.discovery_layout, container);
     ButterKnife.bind(this, container);
 
-    layoutManager = new LinearLayoutManager(this);
-    adapter = new DiscoveryAdapter(this);
+    final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+    final DiscoveryAdapter adapter = new DiscoveryAdapter(this);
     recyclerView.setLayoutManager(layoutManager);
     recyclerView.setAdapter(adapter);
 

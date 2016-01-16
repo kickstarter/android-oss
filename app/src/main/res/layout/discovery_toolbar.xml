@@ -59,11 +59,6 @@
 
       <com.kickstarter.ui.views.IconButton
         style="@style/ToolbarIconDarkBackground"
-        android:id="@+id/hamburger_button"
-        android:text="\uE556" />
-
-      <com.kickstarter.ui.views.IconButton
-        style="@style/ToolbarIconDarkBackground"
         android:id="@+id/activity_feed_button"
         android:text="@string/flash_on_icon" />
 

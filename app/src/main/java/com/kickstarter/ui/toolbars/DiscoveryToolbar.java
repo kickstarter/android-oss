@@ -2,7 +2,6 @@ package com.kickstarter.ui.toolbars;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.GravityCompat;
@@ -14,30 +13,23 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Logout;
-import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
-import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
-import com.kickstarter.ui.activities.HamburgerActivity;
-import com.kickstarter.ui.activities.LoginToutActivity;
 import com.kickstarter.ui.activities.SearchActivity;
-import com.kickstarter.ui.views.LoggedInMenu;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
 public final class DiscoveryToolbar extends KSToolbar {
   @Bind(R.id.activity_feed_button) TextView activityFeedButton;
   @Bind(R.id.filter_text_view) TextView filterTextView;
   //@Bind(R.id.login_button) TextView loginButton;
-  @Bind(R.id.hamburger_button) TextView hamburgerButton;
   @Bind(R.id.search_button) TextView searchButton;
   @Inject CurrentUser currentUser;
   @Inject Logout logout;
@@ -78,12 +70,6 @@ public final class DiscoveryToolbar extends KSToolbar {
     //activity.viewModel().inputs.menuButtonClicked();
   }
 
-  @OnClick(R.id.hamburger_button)
-  public void hamburgerButtonClick(@NonNull final View view) {
-    final Context context = getContext();
-    context.startActivity(new Intent(context, HamburgerActivity.class));
-  }
-
   public void loadParams(@NonNull final DiscoveryParams params) {
     final Context context = getContext();
 
@@ -98,8 +84,7 @@ public final class DiscoveryToolbar extends KSToolbar {
       filterExpandMoreButton,
       filterTextView,
       loginButton,
-      searchButton,
-      hamburgerButton);
+      searchButton);
 
     final @ColorInt int overlayTextColor = DiscoveryUtils.overlayTextColor(context, params);
 

@@ -87,11 +87,11 @@ public final class DiscoveryToolbar extends KSToolbar {
   public void loadParams(@NonNull final DiscoveryParams params) {
     final Context context = getContext();
 
+    filterTextView.setText(params.filterString(context));
+
     /*
 
     this.setBackgroundColor(DiscoveryUtils.primaryColor(context, params));
-
-    filterTextView.setText(params.filterString(context));
 
     final Observable<TextView> views = Observable.just(activityFeedButton,
       currentUserButton,

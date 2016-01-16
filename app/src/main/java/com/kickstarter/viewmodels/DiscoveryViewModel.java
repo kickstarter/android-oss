@@ -102,11 +102,12 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   public Observable<List<Project>> projects() {
     return projects;
   }
-  private final BehaviorSubject<DiscoveryParams> params = BehaviorSubject.create();
+
+  private final BehaviorSubject<DiscoveryParams> selectedParams = BehaviorSubject.create();
 
   @Override
   public Observable<DiscoveryParams> params() {
-    return params;
+    return selectedParams;
   }
 
   private final BehaviorSubject<Boolean> shouldShowOnboarding = BehaviorSubject.create();
@@ -117,12 +118,12 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
 
   @Override
   public Observable<DiscoveryParams> showFilters() {
-    return params.compose(Transformers.takeWhen(filterButtonClicked));
+    return selectedParams.compose(Transformers.takeWhen(filterButtonClicked));
   }
 
   @Override
   public Observable<Pair<Project, RefTag>> showProject() {
-    return params.compose(Transformers.takePairWhen(projectClicked))
+    return selectedParams.compose(Transformers.takePairWhen(projectClicked))
       .map(pp -> DiscoveryViewModel.projectAndRefTagFromParamsAndProject(pp.first, pp.second));
   }
 
@@ -141,7 +142,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
       ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
         .nextPage(nextPage)
-        .startOverWith(params)
+        .startOverWith(selectedParams)
         .envelopeToListOfData(DiscoverEnvelope::projects)
         .envelopeToMoreUrl(env -> env.urls().api().moreProjects())
         .loadWithParams(apiClient::fetchProjects)
@@ -152,7 +153,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .build();
 
     addSubscription(
-      params.compose(Transformers.takePairWhen(paginator.loadingPage))
+      selectedParams.compose(Transformers.takePairWhen(paginator.loadingPage))
         .map(paramsAndPage -> paramsAndPage.first.toBuilder().page(paramsAndPage.second).build())
         .subscribe(p -> koala.trackDiscovery(p, !hasSeenOnboarding))
     );
@@ -160,14 +161,14 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     addSubscription(paginator.paginatedData.subscribe(projects));
 
     addSubscription(
-      params
+      selectedParams
         .compose(Transformers.combineLatestPair(currentUser.isLoggedIn()))
         .map(pu -> isOnboardingVisible(pu.first, pu.second))
         .doOnNext(show -> hasSeenOnboarding = show || hasSeenOnboarding)
         .subscribe(shouldShowOnboarding::onNext)
     );
 
-    initializer.subscribe(this.params::onNext);
+    initializer.subscribe(this.selectedParams::onNext);
     initializer.onNext(DiscoveryParams.builder().staffPicks(true).build());
 
 
@@ -180,13 +181,12 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
       .toSortedList()
       .share();
 
-    PublishSubject<DiscoveryParams> selectedParams = PublishSubject.create();
     PublishSubject<Category> expandedParams = PublishSubject.create();
 
     Observable.combineLatest(categories, selectedParams, expandedParams, currentUser.observable(), HamburgerViewModel::magic)
       .subscribe(navigationDrawerData::onNext);
 
-    selectedParams.onNext(DiscoveryParams.builder().staffPicks(true).build());
+    // selectedParams.onNext(DiscoveryParams.builder().staffPicks(true).build());
     expandedParams.onNext(null);
 
     final Observable<Category> clickedCategory = parentFilterRowClick

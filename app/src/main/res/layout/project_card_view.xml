@@ -29,11 +29,10 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 
-      <include layout="@layout/project_card_photo_view"/>
+      <include layout="@layout/project_card_photo_view" />
 
       <LinearLayout
         android:id="@+id/project_card_info"
-        android:layout_below="@id/project_card_photo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/grid_2"

@@ -612,6 +612,7 @@ We\'d appreciate it!</string>
   <string name="project_menu_buttons_updates" formatted="false">Updates</string>
   <string name="project_menu_created_by" formatted="false">Created by</string>
   <string name="project_menu_explore_this_project" formatted="false">Explore this project</string>
+  <string name="project_share_twitter_message" formatted="false">%{project_title}, via @Kickstarter</string>
   <string name="project_social_friend_and_friend_are_backers" formatted="false">%{friend_name} and %{second_friend_name} are backers.</string>
   <string name="project_social_friend_is_backer" formatted="false">%{friend_name} is a backer.</string>
   <string name="project_social_friends_are_backers_and_more_bold_few" formatted="false">%{backer_count} more</string>

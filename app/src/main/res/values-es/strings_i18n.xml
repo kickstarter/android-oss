@@ -612,6 +612,7 @@ Si tienes un momento, ¿te importaría calificar tu experiencia?\n
   <string name="project_menu_buttons_updates" formatted="false">Actualizaciones</string>
   <string name="project_menu_created_by" formatted="false">Creado por</string>
   <string name="project_menu_explore_this_project" formatted="false">Explorar este proyecto</string>
+  <string name="project_share_twitter_message" formatted="false">%{project_title}, via @Kickstarter</string>
   <string name="project_social_friend_and_friend_are_backers" formatted="false">%{friend_name} y %{second_friend_name} patrocinan este proyecto.</string>
   <string name="project_social_friend_is_backer" formatted="false">%{friend_name} patrocina este proyecto.</string>
   <string name="project_social_friends_are_backers_and_more_bold_few" formatted="false">%{backer_count} más</string>

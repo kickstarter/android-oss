@@ -569,6 +569,11 @@
         "back_button": "Back this project",
         "manage_button": "Manage pledge",
         "view_button": "View pledge",
+        "share": {
+          "twitter": {
+            "message": "%{project_title}, via @Kickstarter"
+          }
+        },
         "star": {
           "confirmation": "We'll remind you 48 hours before this project ends!",
           "ok": "OK"
@@ -1860,6 +1865,11 @@
         "back_button": "Dieses Projekt unterstützen",
         "manage_button": "Finanzierungsbeitrag verwalten",
         "view_button": "Finanzierungsbeitrag anzeigen",
+        "share": {
+          "twitter": {
+            "message": "%{project_title}, via @Kickstarter"
+          }
+        },
         "star": {
           "confirmation": "Wir werden dich 48 Stunden vor Ende dieses Projekts daran erinnern!",
           "ok": "OK"
@@ -3151,6 +3161,11 @@
         "back_button": "Patrocinar este proyecto",
         "manage_button": "Administrar contribución",
         "view_button": "Ver contribución",
+        "share": {
+          "twitter": {
+            "message": "%{project_title}, via @Kickstarter"
+          }
+        },
         "star": {
           "confirmation": "¡Te avisaremos 48 horas antes de que finalice este proyecto !",
           "ok": "Ok"
@@ -3963,7 +3978,7 @@
             "backers": "contributeurs",
             "funded": "funded",
             "pledged_of_goal": "sur %{goal}",
-            "pledged_of_goal_short": "of %{goal}",
+            "pledged_of_goal_short": "sur %{goal}",
             "convert_from_pledged_of_goal": "Conversion de %{pledged} engagés pour un objectif de %{goal}"
           },
           "time_left_to_go": "%{time_left} restant(e)s",
@@ -4037,7 +4052,7 @@
           "buttons": {
             "login": "Connexion",
             "learn_more": "En savoir plus",
-            "signup_or_login": "Sign up or Log in"
+            "signup_or_login": "Inscription ou connexion"
           }
         },
         "survey": {
@@ -4235,8 +4250,8 @@
             "promo": "Nouvelles et évènements Kickstarter",
             "happening": "Happening",
             "opt_in": {
-              "title": "One final step!",
-              "message": "We've sent a confirmation email to the address associated with your account! Please check your email in order to confirm that you'd like to subscribe to %{newsletter}."
+              "title": "Dernière étape !",
+              "message": "Nous vous avons envoyé un e-mail de confirmation à l'adresse associée à votre compte ! Veuillez ouvrir votre boîte de réception et confirmer votre abonnement à %{newsletter}."
             }
           },
           "about": {
@@ -4258,7 +4273,7 @@
           "rating": {
             "title": "Nous sommes tout ouïe !",
             "rate_us": "Évaluez-nous dans l'App Store !",
-            "rate_us_play_store": "Rate us in the Play Store!",
+            "rate_us_play_store": "Évaluez-nous dans le Play Store !",
             "message": "Merci d'utiliser l'application Kickstarter.\nAuriez-vous une minute pour évaluer votre expérience ?\nNous vous en serions très reconnaissants !",
             "option": {
               "rate_now": "Évaluez l'application",
@@ -4442,6 +4457,11 @@
         "back_button": "Je soutiens ce projet",
         "manage_button": "Gérer",
         "view_button": "Afficher mon engagement",
+        "share": {
+          "twitter": {
+            "message": "%{project_title}, via @Kickstarter"
+          }
+        },
         "star": {
           "confirmation": "Nous vous enverrons un rappel 48 heures avant la fin de la campagne de ce projet !",
           "ok": "OK"
@@ -5733,6 +5753,11 @@
         "back_button": "Back this project",
         "manage_button": "Manage pledge",
         "view_button": "View pledge",
+        "share": {
+          "twitter": {
+            "message": "%{project_title}, via @Kickstarter"
+          }
+        },
         "star": {
           "confirmation": "We'll remind you 48 hours before this project ends!",
           "ok": "OK"
@@ -6489,8 +6514,7 @@
     "recaptcha": true,
     "log_devices": true,
     "backer_report_formats": true,
-    "discover_cards": true,
-    "fulfillment_report": true
+    "discover_cards": true
   },
   "launched_countries": [
     {
@@ -6607,9 +6631,9 @@
     "native_ios_aa": "control",
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
-    "native_iphone_horiz_vs_vert": "experimental",
-    "recs_thanks_combo_inputs": "combo_inputs",
-    "recs_hp_combo_v1": "collaborative_backings_v2"
+    "native_iphone_horiz_vs_vert": "control",
+    "recs_thanks_combo_inputs": "collaborative_backings_v2",
+    "recs_hp_combo_v1": "combo_v1"
   },
   "stripe": {
     "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"

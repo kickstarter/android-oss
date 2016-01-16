@@ -1,6 +1,7 @@
 package com.kickstarter.services;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.kickstarter.factories.CategoryFactory;
 import com.kickstarter.factories.LocationFactory;
@@ -35,7 +36,12 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<ActivityEnvelope> fetchActivities(final @NonNull String paginationPath) {
+  public @NonNull Observable<ActivityEnvelope> fetchActivities(final @Nullable Integer count) {
+    return Observable.empty();
+  }
+
+  @Override
+  public @NonNull Observable<ActivityEnvelope> fetchActivitiesWithPaginationPath(final @NonNull String paginationPath) {
     return Observable.empty();
   }
 

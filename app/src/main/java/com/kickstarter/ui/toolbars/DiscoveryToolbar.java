@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.view.GravityCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
@@ -70,10 +71,11 @@ public final class DiscoveryToolbar extends KSToolbar {
     });
   }
 
-  @OnClick({R.id.filter_text_view, R.id.menu_button})
-  public void menuButtonClick(@NonNull final View view) {
+  @OnClick({R.id.menu_button, R.id.filter_text_view})
+  protected void menuButtonClick() {
     final DiscoveryActivity activity = (DiscoveryActivity) getContext();
-    activity.viewModel().inputs.menuButtonClicked();
+    activity.discoveryLayout().openDrawer(GravityCompat.START);
+    //activity.viewModel().inputs.menuButtonClicked();
   }
 
   @OnClick(R.id.hamburger_button)

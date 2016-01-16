@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.jakewharton.rxbinding.support.v4.widget.RxDrawerLayout;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
@@ -44,6 +46,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.BindDrawable;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresViewModel(DiscoveryViewModel.class)
@@ -58,9 +61,9 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
   protected @Inject ApplicationContainer applicationContainer;
   protected @Inject ApiClientType client;
 
-  @BindDrawable(R.drawable.dark_blue_gradient) Drawable darkBlueGradientDrawable;
-  @Bind(R.id.discovery_layout) DrawerLayout discoveryLayout;
-  @Bind(R.id.discovery_toolbar) DiscoveryToolbar discoveryToolbar;
+  protected @BindDrawable(R.drawable.dark_blue_gradient) Drawable darkBlueGradientDrawable;
+  protected @Bind(R.id.discovery_layout) DrawerLayout discoveryLayout;
+  protected @Bind(R.id.discovery_toolbar) DiscoveryToolbar discoveryToolbar;
   protected @Bind(R.id.recycler_view) RecyclerView recyclerView;
   protected @Bind(R.id.discovery_drawer_recycler_view) RecyclerView drawerRecyclerView;
 
@@ -116,6 +119,20 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(projectAndRefTag -> this.startProjectActivity(projectAndRefTag.first, projectAndRefTag.second));
+
+    viewModel.navigationDrawerData()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(data -> {
+        drawerAdapter.takeData(data);
+        // navigationRecyclerView.scrollToPosition(6);
+      });
+
+    viewModel
+      .openDrawer()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(RxDrawerLayout.open(discoveryLayout, GravityCompat.START));
   }
 
   @Override
@@ -127,6 +144,10 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
   protected void onDestroy() {
     super.onDestroy();
     recyclerViewPaginator.stop();
+  }
+
+  public @NonNull DrawerLayout discoveryLayout() {
+    return discoveryLayout;
   }
 
   public void projectCardClick(final @NonNull ProjectCardViewHolder viewHolder, final @NonNull Project project) {

@@ -1,4 +1,4 @@
-package com.kickstarter.ui.viewholders;
+package com.kickstarter.ui.viewholders.discoverydrawer;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -7,8 +7,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
+import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.views.IconButton;
 
 import butterknife.Bind;
@@ -18,7 +18,7 @@ import timber.log.Timber;
 
 import static com.kickstarter.libs.utils.ObjectUtils.*;
 
-public final class HamburgerNavigationRootFilterViewHolder extends KSViewHolder {
+public final class ParentFilterViewHolder extends KSViewHolder {
   protected @Bind(R.id.filter_text_view) TextView filterTextView;
   protected @Bind(R.id.expand_button) IconButton expandButton;
   protected @Bind(R.id.collapse_button) IconButton collapseButton;
@@ -26,10 +26,10 @@ public final class HamburgerNavigationRootFilterViewHolder extends KSViewHolder 
   private Delegate delegate;
 
   public interface Delegate {
-    void rowClick(final @NonNull HamburgerNavigationRootFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row);
+    void rowClick(final @NonNull ParentFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row);
   }
 
-  public HamburgerNavigationRootFilterViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
+  public ParentFilterViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
     this.delegate = delegate;
     ButterKnife.bind(this, view);
@@ -57,7 +57,6 @@ public final class HamburgerNavigationRootFilterViewHolder extends KSViewHolder 
 
   @OnClick(R.id.filter_text_view)
   protected void textViewClick() {
-    Timber.d("HamburgerNavigationRootFilterViewHolder rowClick");
     delegate.rowClick(this, item);
   }
 }

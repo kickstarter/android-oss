@@ -1,4 +1,4 @@
-package com.kickstarter.ui.viewholders;
+package com.kickstarter.ui.viewholders.discoverydrawer;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -8,8 +8,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kickstarter.R;
-import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
+import com.kickstarter.ui.viewholders.KSViewHolder;
 
 import butterknife.Bind;
 import butterknife.BindColor;
@@ -17,9 +17,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-import static com.kickstarter.libs.utils.ObjectUtils.*;
+import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
-public final class HamburgerNavigationTopFilterViewHolder extends KSViewHolder {
+public final class TopFilterViewHolder extends KSViewHolder {
   protected @Bind(R.id.filter_view) LinearLayout filterView;
   protected @Bind(R.id.filter_text_view) TextView filterTextView;
   protected @BindColor(R.color.hamburger_navigation_item_selected) int filterSelectedColor;
@@ -28,10 +28,10 @@ public final class HamburgerNavigationTopFilterViewHolder extends KSViewHolder {
   private Delegate delegate;
 
   public interface Delegate {
-    void rowClick(final @NonNull HamburgerNavigationTopFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row);
+    void rowClick(final @NonNull TopFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row);
   }
 
-  public HamburgerNavigationTopFilterViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
+  public TopFilterViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
     this.delegate = delegate;
     ButterKnife.bind(this, view);
@@ -54,7 +54,6 @@ public final class HamburgerNavigationTopFilterViewHolder extends KSViewHolder {
 
   @OnClick(R.id.filter_text_view)
   protected void textViewClick() {
-    Timber.d("HamburgerNavigationTopFilterViewHolder rowClick");
     delegate.rowClick(this, item);
   }
 }

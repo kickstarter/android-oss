@@ -5,6 +5,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +19,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
@@ -28,6 +31,7 @@ import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.DiscoveryAdapter;
+import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter;
 import com.kickstarter.ui.containers.ApplicationContainer;
 import com.kickstarter.ui.intents.DiscoveryIntentAction;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
@@ -47,21 +51,25 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
   private DiscoveryAdapter adapter;
   private DiscoveryIntentAction intentAction;
   private LinearLayoutManager layoutManager;
+  private DiscoveryDrawerAdapter drawerAdapter;
+  private LinearLayoutManager drawerLayoutManager;
   private RecyclerViewPaginator recyclerViewPaginator;
 
   protected @Inject ApplicationContainer applicationContainer;
   protected @Inject ApiClientType client;
 
   @BindDrawable(R.drawable.dark_blue_gradient) Drawable darkBlueGradientDrawable;
-  @Bind(R.id.discovery_layout) LinearLayout discoveryLayout;
+  @Bind(R.id.discovery_layout) DrawerLayout discoveryLayout;
   @Bind(R.id.discovery_toolbar) DiscoveryToolbar discoveryToolbar;
-  public @Bind(R.id.recycler_view) RecyclerView recyclerView;
+  protected @Bind(R.id.recycler_view) RecyclerView recyclerView;
+  protected @Bind(R.id.discovery_drawer_recycler_view) RecyclerView drawerRecyclerView;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     ((KSApplication) getApplication()).component().inject(this);
+
     final ViewGroup container = applicationContainer.bind(this);
     final LayoutInflater layoutInflater = getLayoutInflater();
 
@@ -69,9 +77,15 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
     ButterKnife.bind(this, container);
 
     layoutManager = new LinearLayoutManager(this);
-    adapter = new DiscoveryAdapter(this);
     recyclerView.setLayoutManager(layoutManager);
+    adapter = new DiscoveryAdapter(this);
     recyclerView.setAdapter(adapter);
+
+    drawerLayoutManager = new LinearLayoutManager(this); // TODO: Can we reuse the other layout manager?
+    drawerRecyclerView.setLayoutManager(drawerLayoutManager);
+    drawerAdapter = new DiscoveryDrawerAdapter(viewModel);
+    drawerRecyclerView.setAdapter(drawerAdapter);
+
 
     intentAction = new DiscoveryIntentAction(viewModel.inputs::initializer, lifecycle(), client);
     intentAction.intent(getIntent());

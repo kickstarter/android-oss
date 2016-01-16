@@ -20,11 +20,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class NavigationDrawerAdapter extends KSAdapter {
+public class DiscoveryDrawerAdapter extends KSAdapter {
   private @NonNull Delegate delegate;
   private @NonNull NavigationDrawerData drawerData;
 
-  public NavigationDrawerAdapter(final @NonNull Delegate delegate) {
+  public DiscoveryDrawerAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;
     setHasStableIds(true);
   }
@@ -34,8 +34,7 @@ public class NavigationDrawerAdapter extends KSAdapter {
     return position;
   }
 
-  public interface Delegate extends ChildFilterViewHolder.Delegate, ParentFilterViewHolder.Delegate,
-    TopFilterViewHolder.Delegate {}
+  public interface Delegate extends TopFilterViewHolder.Delegate, ParentFilterViewHolder.Delegate, ChildFilterViewHolder.Delegate {}
 
   @Override
   protected int layout(@NonNull SectionRow sectionRow) {
@@ -99,12 +98,12 @@ public class NavigationDrawerAdapter extends KSAdapter {
         return new LoggedInViewHolder(view);
       case R.layout.discovery_drawer_logged_out_view:
         return new LoggedOutViewHolder(view);
-      case R.layout.discovery_drawer_child_filter_view:
-        return new ChildFilterViewHolder(view, delegate);
       case R.layout.discovery_drawer_parent_filter_view:
         return new ParentFilterViewHolder(view, delegate);
       case R.layout.discovery_drawer_top_filter_view:
         return new TopFilterViewHolder(view, delegate);
+      case R.layout.discovery_drawer_child_filter_view:
+        return new ChildFilterViewHolder(view, delegate);
       default:
         return new EmptyViewHolder(view);
     }

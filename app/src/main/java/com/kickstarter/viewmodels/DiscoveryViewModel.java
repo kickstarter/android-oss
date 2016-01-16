@@ -21,6 +21,11 @@ import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.WebClient;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.DiscoveryActivity;
+import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter;
+import com.kickstarter.ui.adapters.data.NavigationDrawerData;
+import com.kickstarter.ui.viewholders.discoverydrawer.ChildFilterViewHolder;
+import com.kickstarter.ui.viewholders.discoverydrawer.ParentFilterViewHolder;
+import com.kickstarter.ui.viewholders.discoverydrawer.TopFilterViewHolder;
 import com.kickstarter.viewmodels.inputs.DiscoveryViewModelInputs;
 import com.kickstarter.viewmodels.outputs.DiscoveryViewModelOutputs;
 
@@ -35,11 +40,31 @@ import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.utils.BoolUtils.isTrue;
 
-public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> implements DiscoveryViewModelInputs, DiscoveryViewModelOutputs {
+public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> implements DiscoveryViewModelInputs,
+  DiscoveryViewModelOutputs, DiscoveryDrawerAdapter.Delegate {
   protected @Inject ApiClientType apiClient;
   protected @Inject WebClient webClient;
   protected @Inject BuildCheck buildCheck;
   protected @Inject CurrentUser currentUser;
+
+  // ADAPTER DELEGATE INPUTS
+  private PublishSubject<NavigationDrawerData.Section.Row> childFilterRowClick = PublishSubject.create();
+  @Override
+  public void rowClick(@NonNull ChildFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
+    childFilterRowClick.onNext(row);
+  }
+
+  private PublishSubject<NavigationDrawerData.Section.Row> parentFilterRowClick = PublishSubject.create();
+  @Override
+  public void rowClick(@NonNull ParentFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
+    parentFilterRowClick.onNext(row);
+  }
+
+  private PublishSubject<NavigationDrawerData.Section.Row> topFilterRowClick = PublishSubject.create();
+  @Override
+  public void rowClick(@NonNull TopFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
+    topFilterRowClick.onNext(row);
+  }
 
   // INPUTS
   private final PublishSubject<Project> projectClicked = PublishSubject.create();

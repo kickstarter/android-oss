@@ -1,9 +1,9 @@
 package com.kickstarter;
 
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.KoalaTrackingClient;
-import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.utils.ApplicationLifecycleUtil;
 import com.kickstarter.services.gcm.MessageService;
 import com.kickstarter.services.gcm.RegisterService;
@@ -25,7 +25,6 @@ import com.kickstarter.ui.viewholders.DiscoveryFilterViewHolder;
 import com.kickstarter.ui.viewholders.EmptyActivityFeedViewHolder;
 import com.kickstarter.ui.viewholders.EmptyCommentFeedViewHolder;
 import com.kickstarter.ui.viewholders.FriendBackingViewHolder;
-import com.kickstarter.ui.viewholders.HamburgerNavigationChildFilterViewHolder;
 import com.kickstarter.ui.viewholders.ProfileCardViewHolder;
 import com.kickstarter.ui.viewholders.ProjectCardMiniViewHolder;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
@@ -36,6 +35,7 @@ import com.kickstarter.ui.viewholders.ProjectStateChangedViewHolder;
 import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder;
 import com.kickstarter.ui.viewholders.ProjectViewHolder;
 import com.kickstarter.ui.viewholders.RewardViewHolder;
+import com.kickstarter.ui.viewholders.discoverydrawer.ChildFilterViewHolder;
 import com.kickstarter.ui.views.IconTextView;
 import com.kickstarter.ui.views.KSWebView;
 import com.kickstarter.viewmodels.ActivityFeedViewModel;
@@ -78,7 +78,7 @@ public interface ApplicationGraph {
   void inject(FriendBackingViewHolder __);
   void inject(HamburgerActivity __);
   void inject(ResetPasswordViewModel __);
-  void inject(HamburgerNavigationChildFilterViewHolder __);
+  void inject(ChildFilterViewHolder __);
   void inject(HamburgerViewModel __);
   void inject(HelpActivity __);
   void inject(IconTextView __);

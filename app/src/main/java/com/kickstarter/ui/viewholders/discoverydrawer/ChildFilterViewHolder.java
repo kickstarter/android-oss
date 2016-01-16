@@ -1,4 +1,4 @@
-package com.kickstarter.ui.viewholders;
+package com.kickstarter.ui.viewholders.discoverydrawer;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,9 +10,9 @@ import android.widget.TextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
-import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
+import com.kickstarter.ui.viewholders.KSViewHolder;
 
 import javax.inject.Inject;
 
@@ -24,7 +24,7 @@ import timber.log.Timber;
 
 import static com.kickstarter.libs.utils.ObjectUtils.*;
 
-public final class HamburgerNavigationChildFilterViewHolder extends KSViewHolder {
+public final class ChildFilterViewHolder extends KSViewHolder {
   protected @Bind(R.id.filter_view) LinearLayout filterView;
   protected @Bind(R.id.filter_text_view) TextView filterTextView;
   protected @BindColor(R.color.black) int blackColor;
@@ -38,10 +38,10 @@ public final class HamburgerNavigationChildFilterViewHolder extends KSViewHolder
   private Delegate delegate;
 
   public interface Delegate {
-    void rowClick(final @NonNull HamburgerNavigationChildFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row);
+    void rowClick(final @NonNull ChildFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row);
   }
 
-  public HamburgerNavigationChildFilterViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
+  public ChildFilterViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
     this.delegate = delegate;
     ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
@@ -76,7 +76,7 @@ public final class HamburgerNavigationChildFilterViewHolder extends KSViewHolder
 
   @OnClick(R.id.filter_text_view)
   protected void textViewClick() {
-    Timber.d("HamburgerNavigationChildFilterViewHolder rowClick");
+    Timber.d("DiscoveryDrawerChildParamsViewHolder rowClick");
     delegate.rowClick(this, item);
   }
 }

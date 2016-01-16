@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.view.GravityCompat;
 import android.util.Pair;
 
 import com.kickstarter.KSApplication;
@@ -17,11 +16,11 @@ import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.activities.HamburgerActivity;
-import com.kickstarter.ui.adapters.NavigationDrawerAdapter;
+import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
-import com.kickstarter.ui.viewholders.HamburgerNavigationChildFilterViewHolder;
-import com.kickstarter.ui.viewholders.HamburgerNavigationRootFilterViewHolder;
-import com.kickstarter.ui.viewholders.HamburgerNavigationTopFilterViewHolder;
+import com.kickstarter.ui.viewholders.discoverydrawer.ChildFilterViewHolder;
+import com.kickstarter.ui.viewholders.discoverydrawer.ParentFilterViewHolder;
+import com.kickstarter.ui.viewholders.discoverydrawer.TopFilterViewHolder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,26 +33,26 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public final class HamburgerViewModel extends ViewModel<HamburgerActivity> implements NavigationDrawerAdapter.Delegate {
+public final class HamburgerViewModel extends ViewModel<HamburgerActivity> implements DiscoveryDrawerAdapter.Delegate {
   protected @Inject ApiClientType apiClient;
   protected @Inject CurrentUser currentUser;
 
   // ADAPTER DELEGATE INPUTS
   private PublishSubject<NavigationDrawerData.Section.Row> childFilterRowClick = PublishSubject.create();
   @Override
-  public void rowClick(@NonNull HamburgerNavigationChildFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
+  public void rowClick(@NonNull ChildFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
     childFilterRowClick.onNext(row);
   }
 
-  private PublishSubject<NavigationDrawerData.Section.Row> rootFilterRowClick = PublishSubject.create();
+  private PublishSubject<NavigationDrawerData.Section.Row> parentFilterRowClick = PublishSubject.create();
   @Override
-  public void rowClick(@NonNull HamburgerNavigationRootFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
-    rootFilterRowClick.onNext(row);
+  public void rowClick(@NonNull ParentFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
+    parentFilterRowClick.onNext(row);
   }
 
   private PublishSubject<NavigationDrawerData.Section.Row> topFilterRowClick = PublishSubject.create();
   @Override
-  public void rowClick(@NonNull HamburgerNavigationTopFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
+  public void rowClick(@NonNull TopFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
     topFilterRowClick.onNext(row);
   }
 
@@ -90,7 +89,7 @@ public final class HamburgerViewModel extends ViewModel<HamburgerActivity> imple
     selectedParams.onNext(DiscoveryParams.builder().staffPicks(true).build());
     expandedParams.onNext(null);
 
-    final Observable<Category> clickedCategory = rootFilterRowClick
+    final Observable<Category> clickedCategory = parentFilterRowClick
       .map(NavigationDrawerData.Section.Row::params)
       .map(DiscoveryParams::category);
 

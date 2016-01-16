@@ -1,4 +1,4 @@
-package com.kickstarter.ui.viewholders;
+package com.kickstarter.ui.viewholders.discoverydrawer;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,23 +9,23 @@ import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.transformations.CircleTransformation;
-import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.User;
+import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.kickstarter.libs.utils.ObjectUtils.*;
+import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
-public final class HamburgerNavigationHeaderLoggedInViewHolder extends KSViewHolder {
+public final class LoggedInViewHolder extends KSViewHolder {
   private User user;
 
   protected @Bind(R.id.user_image_view) ImageView userImageView;
   protected @Bind(R.id.user_name_text_view) TextView userNameTextView;
 
-  public HamburgerNavigationHeaderLoggedInViewHolder(final @NonNull View view) {
+  public LoggedInViewHolder(final @NonNull View view) {
     super(view);
     ButterKnife.bind(this, view);
   }

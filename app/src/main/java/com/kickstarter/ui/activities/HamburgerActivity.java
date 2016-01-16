@@ -14,7 +14,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
-import com.kickstarter.ui.adapters.NavigationDrawerAdapter;
+import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter;
 import com.kickstarter.viewmodels.HamburgerViewModel;
 
 import javax.inject.Inject;
@@ -23,13 +23,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import timber.log.Timber;
 
 @RequiresViewModel(HamburgerViewModel.class)
 public final class HamburgerActivity extends BaseActivity<HamburgerViewModel> {
   private final RecyclerView.LayoutManager navigationLayoutManager = new LinearLayoutManager(this);
-  private NavigationDrawerAdapter navigationAdapter;
+  private DiscoveryDrawerAdapter navigationAdapter;
 
   protected @Inject CurrentUser currentUser;
 
@@ -45,7 +43,7 @@ public final class HamburgerActivity extends BaseActivity<HamburgerViewModel> {
     ButterKnife.bind(this);
     ((KSApplication) getApplication()).component().inject(this);
 
-    navigationAdapter = new NavigationDrawerAdapter(viewModel);
+    navigationAdapter = new DiscoveryDrawerAdapter(viewModel);
     navigationRecyclerView.setLayoutManager(navigationLayoutManager);
     navigationRecyclerView.setAdapter(navigationAdapter);
 

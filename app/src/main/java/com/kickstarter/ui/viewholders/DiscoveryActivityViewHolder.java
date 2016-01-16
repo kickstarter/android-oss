@@ -78,22 +78,11 @@ public class DiscoveryActivityViewHolder extends KSViewHolder {
     final User user = activity.user();
     final Project project = activity.project();
 
-    if (activity.category().equals(Activity.CATEGORY_BACKING)) {
-      if (user == null || project == null) {
-        return;
-      }
+    if (user != null && project != null && activity.category().equals(Activity.CATEGORY_BACKING)) {
       setBackingView(context, user, project);
-
-    } else if (activity.category().equals(Activity.CATEGORY_FOLLOW)) {
-      if (user == null) {
-        return;
-      }
+    } else if (user != null && activity.category().equals(Activity.CATEGORY_FOLLOW)) {
       setFollowView(context, user);
-
-    } else {
-      if (project == null) {
-        return;
-      }
+    } else if (project != null) {
       setProjectView(context, project, user);
     }
   }

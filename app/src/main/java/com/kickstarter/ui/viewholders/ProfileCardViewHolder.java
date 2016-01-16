@@ -40,7 +40,7 @@ public class ProfileCardViewHolder extends KSViewHolder {
   protected @BindString(R.string.profile_projects_status_suspended) String suspendedString;
 
   public interface Delegate {
-    void projectCardClick(ProfileCardViewHolder viewHolder, Project project);
+    void profileCardViewHolderClicked(ProfileCardViewHolder viewHolder, Project project);
   }
 
   public ProfileCardViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
@@ -75,7 +75,7 @@ public class ProfileCardViewHolder extends KSViewHolder {
 
   @Override
   public void onClick(@NonNull final View view) {
-    delegate.projectCardClick(this, project);
+    delegate.profileCardViewHolderClicked(this, project);
   }
 
   public void setProjectStateView() {

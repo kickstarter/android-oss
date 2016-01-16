@@ -20,7 +20,6 @@ import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ProfileAdapter;
-import com.kickstarter.ui.viewholders.ProfileCardViewHolder;
 import com.kickstarter.viewmodels.ProfileViewModel;
 import com.squareup.picasso.Picasso;
 
@@ -31,7 +30,7 @@ import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresViewModel(ProfileViewModel.class)
-public final class ProfileActivity extends BaseActivity<ProfileViewModel> implements ProfileAdapter.Delegate {
+public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
   private ProfileAdapter adapter;
   private RecyclerViewPaginator paginator;
 
@@ -50,8 +49,8 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> implem
     setContentView(R.layout.profile_layout);
     ButterKnife.bind(this);
 
+    adapter = new ProfileAdapter(viewModel);
     final int spanCount = ViewUtils.isLandscape(this) ? 3 : 2;
-    adapter = new ProfileAdapter(this);
     recyclerView.setLayoutManager(new GridLayoutManager(this, spanCount));
     recyclerView.setAdapter(adapter);
 
@@ -66,6 +65,11 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> implem
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::loadProjects);
+
+    viewModel.outputs.showProject()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::startProjectActivity);
   }
 
   @Override
@@ -105,7 +109,7 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> implem
     }
   }
 
-  public void projectCardClick(final @NonNull ProfileCardViewHolder viewHolder, final @NonNull Project project) {
+  private void startProjectActivity(final @NonNull Project project) {
     final Intent intent = new Intent(this, ProjectActivity.class)
       .putExtra(IntentKey.PROJECT, project);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);

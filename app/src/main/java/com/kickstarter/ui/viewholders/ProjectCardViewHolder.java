@@ -82,7 +82,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   @Inject KSString ksString;
 
   public interface Delegate {
-    void projectCardClick(ProjectCardViewHolder viewHolder, Project project);
+    void projectCardViewHolderClicked(ProjectCardViewHolder viewHolder, Project project);
   }
 
   public ProjectCardViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
@@ -132,7 +132,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
 
   @Override
   public void onClick(@NonNull final View view) {
-    delegate.projectCardClick(this, project);
+    delegate.projectCardViewHolderClicked(this, project);
   }
 
   // adjust spacing between cards when metadata label is present

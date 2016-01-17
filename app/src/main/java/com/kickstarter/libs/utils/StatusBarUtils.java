@@ -25,14 +25,25 @@ public final class StatusBarUtils {
   public static void apply(@NonNull final BaseActivity activity, final @ColorInt int color,
     final boolean overlayShouldBeLight) {
     apply(activity, color);
+    setIconOverlay(activity, overlayShouldBeLight);
+  }
 
+  public static void setDarkStatusBarIcons(@NonNull final BaseActivity activity) {
+    setIconOverlay(activity, true);
+  }
+
+  public static void setLightStatusBarIcons(@NonNull final BaseActivity activity) {
+    setIconOverlay(activity, false);
+  }
+
+  private static void setIconOverlay(final @NonNull BaseActivity activity, final boolean light) {
     if (!ApiCapabilities.canSetDarkStatusBarIcons()) {
       return;
     }
 
-    final int uiFlag = overlayShouldBeLight ?
-      View.SYSTEM_UI_FLAG_VISIBLE :
-      View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+    final int uiFlag = light ?
+      View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR :
+      View.SYSTEM_UI_FLAG_VISIBLE;
     final Window window = activity.getWindow();
     window.getDecorView().setSystemUiVisibility(uiFlag);
   }

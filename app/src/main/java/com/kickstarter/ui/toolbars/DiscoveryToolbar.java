@@ -2,6 +2,7 @@ package com.kickstarter.ui.toolbars;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.GravityCompat;
@@ -11,8 +12,11 @@ import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Logout;
+import com.kickstarter.libs.utils.DiscoveryUtils;
+import com.kickstarter.libs.utils.StatusBarUtils;
 import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
@@ -24,12 +28,14 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
 public final class DiscoveryToolbar extends KSToolbar {
   @Bind(R.id.activity_feed_button) TextView activityFeedButton;
   @Bind(R.id.filter_text_view) TextView filterTextView;
-  //@Bind(R.id.login_button) TextView loginButton;
+  @Bind(R.id.discovery_status_bar) View discoveryStatusBar;
+  @Bind(R.id.menu_button) TextView menuButton;
   @Bind(R.id.search_button) TextView searchButton;
   @Inject CurrentUser currentUser;
   @Inject Logout logout;
@@ -71,25 +77,29 @@ public final class DiscoveryToolbar extends KSToolbar {
   }
 
   public void loadParams(@NonNull final DiscoveryParams params) {
-    final Context context = getContext();
+    final DiscoveryActivity activity = (DiscoveryActivity) getContext();
 
-    filterTextView.setText(params.filterString(context));
+    filterTextView.setText(params.filterString(activity));
 
-    /*
+    if (ApiCapabilities.canSetStatusBarColor() && ApiCapabilities.canSetDarkStatusBarIcons()) {
+      discoveryStatusBar.setBackgroundColor(DiscoveryUtils.secondaryColor(activity, params));
+      if (DiscoveryUtils.overlayShouldBeLight(params)) {
+        StatusBarUtils.setLightStatusBarIcons(activity);
+      } else {
+        StatusBarUtils.setDarkStatusBarIcons(activity);
+      }
+    }
 
-    this.setBackgroundColor(DiscoveryUtils.primaryColor(context, params));
+    this.setBackgroundColor(DiscoveryUtils.primaryColor(activity, params));
 
     final Observable<TextView> views = Observable.just(activityFeedButton,
-      currentUserButton,
-      filterExpandMoreButton,
       filterTextView,
-      loginButton,
+      menuButton,
       searchButton);
 
-    final @ColorInt int overlayTextColor = DiscoveryUtils.overlayTextColor(context, params);
+    final @ColorInt int overlayTextColor = DiscoveryUtils.overlayTextColor(activity, params);
 
     views.subscribe(view -> view.setTextColor(overlayTextColor));
-    */
   }
 
   @OnClick(R.id.search_button)

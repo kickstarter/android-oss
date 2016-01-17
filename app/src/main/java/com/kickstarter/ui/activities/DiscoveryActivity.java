@@ -73,11 +73,13 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
 
     ((KSApplication) getApplication()).component().inject(this);
 
-    final ViewGroup container = applicationContainer.bind(this);
+/*    final ViewGroup container = applicationContainer.bind(this);
     final LayoutInflater layoutInflater = getLayoutInflater();
 
     layoutInflater.inflate(R.layout.discovery_layout, container);
-    ButterKnife.bind(this, container);
+    ButterKnife.bind(this, container);*/
+    setContentView(R.layout.discovery_layout);
+    ButterKnife.bind(this);
 
     layoutManager = new LinearLayoutManager(this);
     recyclerView.setLayoutManager(layoutManager);

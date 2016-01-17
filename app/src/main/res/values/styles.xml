@@ -40,7 +40,7 @@
   </style>
 
   <style name="HamburgerStatusBar" parent="KSTheme">
-    <item name="colorPrimaryDark">@color/discovery_statusbar</item>
+    <item name="colorPrimaryDark">@color/discovery_status_bar</item>
   </style>
 
   <!-- Activities -->
@@ -58,7 +58,7 @@
 
   <style name="DiscoveryBase" parent="KSTheme">
     <item name="android:windowBackground">@color/discovery_background</item>
-    <item name="android:colorPrimaryDark">@color/discovery_statusbar</item>
+    <item name="android:colorPrimaryDark">@color/discovery_status_bar</item>
   </style>
 
   <style name="DiscoveryActivity" parent="DiscoveryBase">

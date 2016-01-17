@@ -15,6 +15,9 @@
     android:nextFocusDown="@+id/recycler_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="-25dp"
+    android:paddingTop="25dp"
+    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <include layout="@layout/discovery_toolbar" />

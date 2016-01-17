@@ -58,10 +58,10 @@
 
   <style name="DiscoveryBase" parent="KSTheme">
     <item name="android:windowBackground">@color/discovery_background</item>
+    <item name="android:colorPrimaryDark">@color/discovery_statusbar</item>
   </style>
 
-  <style name="DiscoveryActivity" parent="KSTheme">
-    <item name="android:colorPrimaryDark">@color/discovery_statusbar</item>
+  <style name="DiscoveryActivity" parent="DiscoveryBase">
   </style>
 
   <style name="DiscoveryFilterActivity" parent="KSTheme">

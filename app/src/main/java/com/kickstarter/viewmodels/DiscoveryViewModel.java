@@ -204,6 +204,9 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
       .map(NavigationDrawerData.Section.Row::params)
       .subscribe(selectedParams::onNext);
 
+    topFilterRowClick
+      .subscribe(__ -> expandedParams.onNext(null));
+
     navigationDrawerData
       .map(NavigationDrawerData::expandedCategory)
       .compose(Transformers.takePairWhen(clickedCategory))

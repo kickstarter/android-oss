@@ -162,10 +162,6 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
 
   private void loadParams(final @NonNull DiscoveryParams params) {
     discoveryToolbar.loadParams(params);
-
-    if (ApiCapabilities.canSetStatusBarColor() && ApiCapabilities.canSetDarkStatusBarIcons()) {
-      StatusBarUtils.apply(this, DiscoveryUtils.primaryColor(this, params), DiscoveryUtils.overlayShouldBeLight(params));
-    }
   }
 
   private void startDiscoveryFilterActivity(final @NonNull DiscoveryParams params) {

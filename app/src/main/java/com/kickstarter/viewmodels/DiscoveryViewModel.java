@@ -204,6 +204,18 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
 
     buildCheck.bind(this, webClient);
 
+    final Observable<List<Category>> categories = apiClient.fetchCategories()
+      .compose(Transformers.neverError())
+      .flatMap(Observable::from)
+      .toSortedList()
+      .share();
+
+    final Observable<Category> clickedCategory = parentFilterRowClick
+      .map(NavigationDrawerData.Section.Row::params)
+      .map(DiscoveryParams::category);
+
+    PublishSubject<Category> expandedParams = PublishSubject.create();
+
     final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
       ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
         .nextPage(nextPage)
@@ -233,19 +245,6 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .subscribe(shouldShowOnboarding::onNext)
     );
 
-    initializer.subscribe(this.selectedParams::onNext);
-    initializer.onNext(DiscoveryParams.builder().staffPicks(true).build());
-
-
-    // NAVIGATION DRAWER ONCREATE
-    final Observable<List<Category>> categories = apiClient.fetchCategories()
-      .compose(Transformers.neverError())
-      .flatMap(Observable::from)
-      .toSortedList()
-      .share();
-
-    PublishSubject<Category> expandedParams = PublishSubject.create();
-
     addSubscription(
       Observable.combineLatest(
         categories,
@@ -256,12 +255,6 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .subscribe(navigationDrawerData::onNext)
     );
     
-    expandedParams.onNext(null);
-
-    final Observable<Category> clickedCategory = parentFilterRowClick
-      .map(NavigationDrawerData.Section.Row::params)
-      .map(DiscoveryParams::category);
-
     addSubscription(
       childFilterRowClick
         .mergeWith(topFilterRowClick)
@@ -275,10 +268,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .subscribe(selectedParams::onNext)
     );
 
-    addSubscription(
-      topFilterRowClick
-        .subscribe(__ -> expandedParams.onNext(null))
-    );
+    addSubscription(topFilterRowClick.subscribe(__ -> expandedParams.onNext(null)));
 
     addSubscription(
       navigationDrawerData
@@ -288,25 +278,10 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .subscribe(expandedParams::onNext)
     );
 
-    addSubscription(
-      internalToolsClick
-        .subscribe(__ -> showInternalTools.onNext(null))
-    );
-
-    addSubscription(
-      loginClick
-        .subscribe(__ -> showLogin.onNext(null))
-    );
-
-    addSubscription(
-      profileClick
-        .subscribe(__ -> showProfile.onNext(null))
-    );
-
-    addSubscription(
-      settingsClick
-        .subscribe(__ -> showSettings.onNext(null))
-    );
+    addSubscription(internalToolsClick.subscribe(__ -> showInternalTools.onNext(null)));
+    addSubscription(loginClick.subscribe(__ -> showLogin.onNext(null)));
+    addSubscription(profileClick.subscribe(__ -> showProfile.onNext(null)));
+    addSubscription(settingsClick.subscribe(__ -> showSettings.onNext(null)));
 
     // Closing the drawer while starting an activity is a little overwhelming,
     // so put the close on a delay so it happens out of sight.
@@ -320,6 +295,12 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
           openDrawer.onNext(false);
         })
     );
+
+    expandedParams.onNext(null);
+
+    initializer.subscribe(this.selectedParams::onNext);
+
+    initializer.onNext(DiscoveryParams.builder().staffPicks(true).build());
   }
 
   /**

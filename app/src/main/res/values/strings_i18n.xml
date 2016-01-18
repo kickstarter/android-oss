@@ -505,8 +505,10 @@ This is commonly fixed by going to iOS Settings > Facebook and toggling access f
   <string name="profile_projects_backed_projects" formatted="false">Backed projects</string>
   <string name="profile_projects_created_projects" formatted="false">Created projects</string>
   <string name="profile_projects_empty_state_button" formatted="false">Discover projects</string>
-  <string name="profile_projects_empty_state_message" formatted="false">You haven’t backed any projects yet.\n
-Let’s change that!</string>
+  <string name="profile_projects_empty_state_button_explore_new_projects" formatted="false">Explore new projects</string>
+  <string name="profile_projects_empty_state_message" formatted="false">You haven\'t backed any projects yet.\n
+Let\'s change that!</string>
+  <string name="profile_projects_empty_state_message_no_backed_projects_yet" formatted="false">No backed projects yet</string>
   <string name="profile_projects_status_canceled" formatted="false">Canceled</string>
   <string name="profile_projects_status_successful" formatted="false">Successful</string>
   <string name="profile_projects_status_suspended" formatted="false">Suspended</string>

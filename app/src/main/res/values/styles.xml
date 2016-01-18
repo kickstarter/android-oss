@@ -320,7 +320,6 @@
 
   <style name="EditorialSubhead" parent="TextPrimary">
     <item name="android:textSize">@dimen/editorial_subhead</item>
-    <item name="android:fontFamily">@string/font_family_medium</item>
   </style>
 
   <!-- Cards -->

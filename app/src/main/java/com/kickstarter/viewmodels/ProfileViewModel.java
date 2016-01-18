@@ -17,10 +17,12 @@ import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.ProfileActivity;
 import com.kickstarter.ui.adapters.ProfileAdapter;
+import com.kickstarter.ui.viewholders.EmptyProfileViewHolder;
 import com.kickstarter.ui.viewholders.ProfileCardViewHolder;
 import com.kickstarter.viewmodels.inputs.ProfileViewModelInputs;
 import com.kickstarter.viewmodels.outputs.ProfileViewModelOutputs;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -81,12 +83,20 @@ public final class ProfileViewModel extends ViewModel<ProfileActivity> implement
         .loadWithPaginationPath(client::fetchProjects)
         .build();
 
-    addSubscription(paginator.paginatedData.subscribe(projects::onNext));
+    addSubscription(paginator.paginatedData.subscribe(p -> {
+        projects.onNext(new ArrayList<>());
+      }
+    ));
+    //projects::onNext));
 
     koala.trackProfileView();
   }
 
   public void profileCardViewHolderClicked(final @NonNull ProfileCardViewHolder viewHolder, final @NonNull Project project) {
     this.showProject.onNext(project);
+  }
+
+  public void emptyProfileViewHolderExploreProjectsClicked(final @NonNull EmptyProfileViewHolder viewHolder) {
+    //go to discovery
   }
 }

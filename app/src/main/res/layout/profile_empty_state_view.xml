@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:gravity="center_horizontal|center_vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:layout_marginLeft="@dimen/grid_4"
+  android:layout_marginRight="@dimen/grid_4">
+
+  <TextView
+    style="@style/EditorialSubhead"
+    android:gravity="center_horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/profile_projects_empty_state_message_no_backed_projects_yet" />
+
+  <TextView
+    style="@style/BodySecondary"
+    android:gravity="center_horizontal"
+    android:layout_marginTop="@dimen/grid_1"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/profile_projects_empty_state_message" />
+
+  <Button
+    style="@style/BorderButton"
+    android:id="@+id/explore_projects_button"
+    android:layout_width="match_parent"
+    android:layout_marginTop="@dimen/grid_4"
+    android:text="@string/profile_projects_empty_state_button_explore_new_projects" />
+
+</LinearLayout>

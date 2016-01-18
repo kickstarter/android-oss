@@ -9,6 +9,13 @@ import rx.functions.Func2;
 
 public class ListUtilsTest extends TestCase {
 
+  public void testAllReplaced() {
+    final List<Integer> xs = Arrays.asList(1, 2, 2, 4, 5);
+    final List<Integer> expected = Arrays.asList(1, 9, 9, 4, 5);
+
+    assertEquals(expected, ListUtils.allReplaced(xs, 2, 9));
+  }
+
   public void testContains() {
     final List<Integer> xs = Arrays.asList(1, 2, 3, 4, 5);
     final Func2<Integer, Integer, Boolean> equality = (x, y) -> (x % 2 == 0 && y % 2 == 0);

@@ -14,9 +14,24 @@ public final class ListUtils {
   }
 
   /**
+   * Returns a new list with all elements in `xs` equal to `x` replaced by `newx`.
+   */
+  public static @NonNull <T> List<T> allReplaced(final @NonNull List<T> xs, final @NonNull T x, final @NonNull T newx) {
+    final List<T> ys = new ArrayList<>(xs);
+
+    for (int idx = 0; idx < xs.size(); idx++) {
+      if (x.equals(xs.get(idx))) {
+        ys.set(idx, newx);
+      }
+    }
+
+    return ys;
+  }
+
+  /**
    * Appends `x` to the end of the list `xs`.
    */
-  public static <T> List<T> append(final @NonNull List<T> xs, final @NonNull T x) {
+  public static @NonNull <T> List<T> append(final @NonNull List<T> xs, final @NonNull T x) {
     final List<T> ys = new ArrayList<>(xs);
     ys.add(x);
     return ys;
@@ -189,21 +204,6 @@ public final class ListUtils {
   public static <T> List<T> prepend(final @NonNull List<T> xs, final @NonNull T x) {
     final List<T> ys = new ArrayList<>(xs);
     ys.add(0, x);
-    return ys;
-  }
-
-  /**
-   * Returns a new list with all elements in `xs` equal to `x` replaced by `newx`.
-   */
-  public static @NonNull <T> List<T> allReplaced(final @NonNull List<T> xs, final @NonNull T x, final @NonNull T newx) {
-    final List<T> ys = new ArrayList<>(xs);
-
-    for (int idx = 0; idx < xs.size(); idx++) {
-      if (x.equals(xs.get(idx))) {
-        ys.set(idx, newx);
-      }
-    }
-
     return ys;
   }
 

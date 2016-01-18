@@ -64,6 +64,7 @@ public final class ViewPledgeViewModel extends ViewModel<ViewPledgeActivity> imp
 
   public Observable<Backing> fetchProjectBacking(@NonNull final Project project, @NonNull final User user) {
     return client.fetchProjectBacking(project, user)
-      .compose(Transformers.pipeApiErrorsTo(backingLoadFailed));
+      .compose(Transformers.pipeApiErrorsTo(backingLoadFailed))
+      .compose(Transformers.neverError());
   }
 }

@@ -222,7 +222,8 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     return apiClient.fetchActivities(1)
       .map(ActivityEnvelope::activities)
       .map(activities -> activities.get(0))
-      .compose(Transformers.pipeApiErrorsTo(activityError));
+      .compose(Transformers.pipeApiErrorsTo(activityError))
+      .compose(Transformers.neverError());
   }
 
   private @Nullable Activity activityIfNotSeen(final @Nullable Activity activity) {

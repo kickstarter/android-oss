@@ -169,7 +169,8 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
 
   private Observable<AccessTokenEnvelope> loginWithFacebookAccessToken(@NonNull final String fbAccessToken) {
     return client.loginWithFacebook(fbAccessToken)
-      .compose(Transformers.pipeApiErrorsTo(loginError));
+      .compose(Transformers.pipeApiErrorsTo(loginError))
+      .compose(Transformers.neverError());
   }
 
   @Override

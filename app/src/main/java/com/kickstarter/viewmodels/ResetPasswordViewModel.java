@@ -97,6 +97,7 @@ public final class ResetPasswordViewModel extends ViewModel<ResetPasswordActivit
   private Observable<User> submitEmail(@NonNull final String email) {
     return client.resetPassword(email)
       .compose(Transformers.pipeApiErrorsTo(resetError))
+      .compose(Transformers.neverError())
       .doOnSubscribe(() -> isFormSubmitting.onNext(true))
       .finallyDo(() -> isFormSubmitting.onNext(false));
   }

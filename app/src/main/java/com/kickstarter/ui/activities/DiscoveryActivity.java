@@ -5,28 +5,20 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.jakewharton.rxbinding.support.v4.widget.RxDrawerLayout;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
-import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
-import com.kickstarter.libs.utils.DiscoveryUtils;
-import com.kickstarter.libs.utils.StatusBarUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
@@ -46,7 +38,6 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.BindDrawable;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresViewModel(DiscoveryViewModel.class)
@@ -112,10 +103,20 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::loadParams);
 
+    viewModel.outputs.showLogin()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> this.startLoginActivity());
+
     viewModel.outputs.showFilters()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::startDiscoveryFilterActivity);
+
+    viewModel.outputs.showProfile()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> this.startProfileActivity());
 
     viewModel.outputs.showProject()
       .compose(bindToLifecycle())
@@ -166,11 +167,23 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
     discoveryToolbar.loadParams(params);
   }
 
+  private void startLoginActivity() {
+    final Intent intent = new Intent(this, LoginActivity.class);
+    startActivity(intent);
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
   private void startDiscoveryFilterActivity(final @NonNull DiscoveryParams params) {
     final Intent intent = new Intent(this, DiscoveryFilterActivity.class)
       .putExtra(IntentKey.DISCOVERY_PARAMS, params);
 
     startActivityForResult(intent, ActivityRequestCodes.DISCOVERY_ACTIVITY_DISCOVERY_FILTER_ACTIVITY_SELECT_FILTER);
+  }
+
+  private void startProfileActivity() {
+    final Intent intent = new Intent(this, ProfileActivity.class);
+    startActivity(intent);
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   private void startProjectActivity(final @NonNull Project project, final @NonNull RefTag refTag) {

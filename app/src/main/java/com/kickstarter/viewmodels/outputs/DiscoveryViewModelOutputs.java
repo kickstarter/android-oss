@@ -13,7 +13,10 @@ import rx.Observable;
 public interface DiscoveryViewModelOutputs {
   Observable<List<Project>> projects();
   Observable<DiscoveryParams> params();
+  Observable<Boolean> openDrawer();
   Observable<Boolean> shouldShowOnboarding();
   Observable<DiscoveryParams> showFilters();
+  Observable<Void> showLogin();
   Observable<Pair<Project, RefTag>> showProject();
+  Observable<Void> showProfile();
 }

@@ -26,6 +26,8 @@ import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
 import com.kickstarter.ui.viewholders.discoverydrawer.ChildFilterViewHolder;
+import com.kickstarter.ui.viewholders.discoverydrawer.LoggedInViewHolder;
+import com.kickstarter.ui.viewholders.discoverydrawer.LoggedOutViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.ParentFilterViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.TopFilterViewHolder;
 import com.kickstarter.viewmodels.inputs.DiscoveryViewModelInputs;
@@ -35,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -58,10 +61,28 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     childFilterRowClick.onNext(row);
   }
 
+  private PublishSubject<Void> loginClick = PublishSubject.create();
+  @Override
+  public void loginClick(final @NonNull LoggedOutViewHolder viewHolder) {
+    loginClick.onNext(null);
+  }
+
   private PublishSubject<NavigationDrawerData.Section.Row> parentFilterRowClick = PublishSubject.create();
   @Override
   public void rowClick(@NonNull ParentFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
     parentFilterRowClick.onNext(row);
+  }
+
+  private PublishSubject<User> profileClick = PublishSubject.create();
+  @Override
+  public void profileClick(final @NonNull LoggedInViewHolder viewHolder, final @NonNull User user) {
+    profileClick.onNext(user);
+  }
+
+  private PublishSubject<User> settingsClick = PublishSubject.create();
+  @Override
+  public void settingsClick(final @NonNull LoggedInViewHolder viewHolder, final @NonNull User user) {
+    settingsClick.onNext(user);
   }
 
   private PublishSubject<NavigationDrawerData.Section.Row> topFilterRowClick = PublishSubject.create();
@@ -116,9 +137,21 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     return shouldShowOnboarding;
   }
 
+  private final PublishSubject<Void> showLogin = PublishSubject.create();
+  @Override
+  public Observable<Void> showLogin() {
+    return showLogin;
+  }
+
   @Override
   public Observable<DiscoveryParams> showFilters() {
     return selectedParams.compose(Transformers.takeWhen(filterButtonClicked));
+  }
+
+  private final PublishSubject<Void> showProfile = PublishSubject.create();
+  @Override
+  public Observable<Void> showProfile() {
+    return showProfile;
   }
 
   @Override
@@ -172,8 +205,6 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     initializer.onNext(DiscoveryParams.builder().staffPicks(true).build());
 
 
-
-
     // NAVIGATION DRAWER ONCREATE
     final Observable<List<Category>> categories = apiClient.fetchCategories()
       .compose(Transformers.neverError())
@@ -183,7 +214,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
 
     PublishSubject<Category> expandedParams = PublishSubject.create();
 
-    Observable.combineLatest(categories, selectedParams, expandedParams, currentUser.observable(), HamburgerViewModel::magic)
+    Observable.combineLatest(categories, selectedParams, expandedParams, currentUser.observable(), DiscoveryViewModel::magic)
       .subscribe(navigationDrawerData::onNext);
 
     // selectedParams.onNext(DiscoveryParams.builder().staffPicks(true).build());
@@ -212,6 +243,26 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
       .compose(Transformers.takePairWhen(clickedCategory))
       .map(expandedAndClickedCategory -> toggleExpandedCategory(expandedAndClickedCategory.first, expandedAndClickedCategory.second))
       .subscribe(expandedParams::onNext);
+
+    addSubscription(
+      loginClick
+        .subscribe(__ -> showLogin.onNext(null))
+    );
+
+    addSubscription(
+      profileClick
+        .subscribe(__ -> showProfile.onNext(null))
+    );
+
+    addSubscription(
+      profileClick
+        .mergeWith(settingsClick)
+        .mergeWith(loginClick.map(__ -> null))
+        .delay(1, TimeUnit.SECONDS)
+        .subscribe(__ -> {
+          openDrawer.onNext(false);
+        })
+    );
   }
 
   /**
@@ -290,7 +341,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
       .flatMap(c -> doubleRootIfExpanded(c, expandedCategory))
       .map(c -> DiscoveryParams.builder().category(c).build())
       .toList()
-      .map(HamburgerViewModel::paramsGroupedByRootCategory)
+      .map(DiscoveryViewModel::paramsGroupedByRootCategory)
       .map(sections -> massageSections(sections, expandedCategory))
       .toBlocking().single();
 
@@ -331,7 +382,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   static List<NavigationDrawerData.Section> massageSections(final @NonNull List<List<DiscoveryParams>> sections, final @Nullable Category expandedCategory) {
 
     return Observable.from(sections)
-      .map(HamburgerViewModel::massageRows)
+      .map(DiscoveryViewModel::massageRows)
       .map(rows -> {
         final Category sectionCategory = rows.get(0).params().category();
         if (sectionCategory != null && expandedCategory != null) {

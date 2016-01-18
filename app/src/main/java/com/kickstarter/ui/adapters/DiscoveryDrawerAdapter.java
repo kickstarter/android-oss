@@ -34,7 +34,8 @@ public class DiscoveryDrawerAdapter extends KSAdapter {
     return position;
   }
 
-  public interface Delegate extends TopFilterViewHolder.Delegate, ParentFilterViewHolder.Delegate, ChildFilterViewHolder.Delegate {}
+  public interface Delegate extends LoggedInViewHolder.Delegate, LoggedOutViewHolder.Delegate,
+    TopFilterViewHolder.Delegate, ParentFilterViewHolder.Delegate, ChildFilterViewHolder.Delegate {}
 
   @Override
   protected int layout(@NonNull SectionRow sectionRow) {
@@ -95,9 +96,9 @@ public class DiscoveryDrawerAdapter extends KSAdapter {
   protected KSViewHolder viewHolder(@LayoutRes int layout, @NonNull View view) {
     switch (layout) {
       case R.layout.discovery_drawer_logged_in_view:
-        return new LoggedInViewHolder(view);
+        return new LoggedInViewHolder(view, delegate);
       case R.layout.discovery_drawer_logged_out_view:
-        return new LoggedOutViewHolder(view);
+        return new LoggedOutViewHolder(view, delegate);
       case R.layout.discovery_drawer_parent_filter_view:
         return new ParentFilterViewHolder(view, delegate);
       case R.layout.discovery_drawer_top_filter_view:

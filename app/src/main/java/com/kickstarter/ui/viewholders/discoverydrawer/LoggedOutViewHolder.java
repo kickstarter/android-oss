@@ -11,9 +11,16 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public final class LoggedOutViewHolder extends KSViewHolder {
-  public LoggedOutViewHolder(final @NonNull View view) {
+  private Delegate delegate;
+
+  public interface Delegate {
+    void loginClick(final @NonNull LoggedOutViewHolder viewHolder);
+  }
+
+  public LoggedOutViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
     ButterKnife.bind(this, view);
+    this.delegate = delegate;
   }
 
   @Override
@@ -25,6 +32,7 @@ public final class LoggedOutViewHolder extends KSViewHolder {
   }
 
   @OnClick(R.id.logged_out_container)
-  public void loggedOutClick() {
+  public void loginClick() {
+    delegate.loginClick(this);
   }
 }

@@ -225,10 +225,6 @@
     <item name="android:gravity">center</item>
     <item name="android:textColor">@color/primary_dark</item>
     <item name="android:textSize">22sp</item>
-    <item name="android:paddingRight">@dimen/grid_2</item>
-    <item name="android:paddingLeft">@dimen/grid_2</item>
-    <item name="android:paddingStart">@dimen/grid_2</item>
-    <item name="android:paddingEnd">@dimen/grid_2</item>
   </style>
 
   <style name="ToolbarTitle" parent="Headline">

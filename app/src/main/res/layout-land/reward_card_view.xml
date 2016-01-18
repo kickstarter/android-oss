@@ -11,8 +11,10 @@
   android:foreground="@drawable/click_indicator_light"
   android:focusable="true"
   android:layout_marginTop="@dimen/grid_1"
-  android:layout_marginLeft="@dimen/grid_2"
-  android:layout_marginRight="@dimen/grid_2"
+  android:layout_marginStart="@dimen/project_padding_x"
+  android:layout_marginLeft="@dimen/project_padding_x"
+  android:layout_marginRight="@dimen/project_padding_x"
+  android:layout_marginEnd="@dimen/project_padding_x"
   android:layout_marginBottom="@dimen/grid_2">
 
   <View
@@ -50,29 +52,45 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent">
 
-      <LinearLayout
-        android:orientation="vertical"
+      <RelativeLayout
         android:layout_marginBottom="@dimen/grid_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <TextView
           android:id="@+id/pledge_minimum"
+          android:layout_alignParentLeft="true"
+          android:layout_alignParentStart="true"
           android:text="Pledge $15000 or more"
           style="@style/Headline"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"/>
 
         <TextView
+          android:id="@+id/select_text_view"
+          android:layout_alignParentTop="true"
+          android:layout_alignParentRight="true"
+          android:layout_alignParentEnd="true"
+          android:background="@drawable/text_view_gray_rounded_border"
+          android:text="@string/rewards_select_label_select"
+          style="@style/BodyPrimaryMedium"
+          android:paddingLeft="@dimen/grid_3"
+          android:paddingRight="@dimen/grid_3"
+          android:gravity="center"
+          android:layout_width="wrap_content"
+          android:layout_height="@dimen/grid_4" />
+
+        <TextView
           android:id="@+id/usd_conversion_text_view"
           style="@style/CaptionSecondary"
+          android:layout_below="@id/pledge_minimum"
           android:visibility="gone"
           android:layout_marginTop="@dimen/grid_1_half"
           android:layout_marginBottom="@dimen/grid_1_half"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 
-      </LinearLayout>
+      </RelativeLayout>
 
       <LinearLayout
         android:orientation="horizontal"
@@ -129,45 +147,58 @@
             android:paddingTop="@dimen/grid_2"
             android:paddingBottom="@dimen/grid_2"/>
 
-        </LinearLayout>
+          <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <LinearLayout
-          android:id="@+id/estimate"
-          android:layout_marginRight="@dimen/grid_2"
-          android:layout_marginEnd="@dimen/grid_2"
-          android:orientation="vertical"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content">
+            <LinearLayout
+              android:id="@+id/estimate"
+              android:layout_marginRight="@dimen/grid_4"
+              android:layout_marginEnd="@dimen/grid_4"
+              android:orientation="vertical"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content">
 
-          <TextView
-            android:id="@+id/estimated_delivery"
-            android:text="@string/rewards_info_estimated_delivery"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/CaptionSecondary"/>
+              <TextView
+                android:id="@+id/estimated_delivery"
+                android:text="@string/rewards_info_estimated_delivery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/CaptionSecondary"/>
 
-          <TextView
-            android:id="@+id/estimated_delivery_date"
-            style="@style/CaptionPrimary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/grid_2"/>
+              <TextView
+                android:id="@+id/estimated_delivery_date"
+                style="@style/CaptionPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/grid_1"/>
 
-          <TextView
-            android:id="@+id/shipping_destination"
-            style="@style/CaptionSecondary"
-            android:text="@string/rewards_info_shipping_destinations"
-            android:visibility="visible"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            </LinearLayout>
 
-          <TextView
-            android:id="@+id/shipping_summary"
-            style="@style/CaptionPrimary"
-            android:text="@string/rewards_shipping_preferences_location_unrestricted"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/grid_1"/>
+            <LinearLayout
+              android:orientation="vertical"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content">
+
+              <TextView
+                android:id="@+id/shipping_destination"
+                style="@style/CaptionSecondary"
+                android:text="@string/rewards_info_shipping_destinations"
+                android:visibility="visible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+              <TextView
+                android:id="@+id/shipping_summary"
+                style="@style/CaptionPrimary"
+                android:text="@string/rewards_shipping_preferences_location_unrestricted"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+          </LinearLayout>
 
         </LinearLayout>
 

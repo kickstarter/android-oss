@@ -7,6 +7,9 @@ import android.support.annotation.Nullable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +21,10 @@ import rx.functions.Action1;
 public class ViewUtils {
   public ViewUtils() {}
 
+  public static int getScreenHeightDp(final @NonNull Context context) {
+    return context.getResources().getConfiguration().screenHeightDp;
+  }
+
   public static boolean isFontScaleLarge(final @NonNull Context context) {
     return context.getResources().getConfiguration().fontScale > 1.5f;
   }
@@ -28,6 +35,26 @@ public class ViewUtils {
 
   public static boolean isPortrait(final @NonNull Context context) {
     return !isLandscape(context);
+  }
+
+  /**
+   * Set layout margins for a ViewGroup with LinearLayout parent.
+   */
+  public static void setLinearViewGroupMargins(final @NonNull ViewGroup viewGroup, final int leftMargin, final int topMargin,
+    final int rightMargin, final int bottomMargin) {
+    final LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(viewGroup.getLayoutParams());
+    layoutParams.setMargins(leftMargin, topMargin, rightMargin, bottomMargin);
+    viewGroup.setLayoutParams(layoutParams);
+  }
+
+  /**
+   * Set layout margins for a ViewGroup with RelativeLayout parent.
+   */
+  public static void setRelativeViewGroupMargins(final @NonNull ViewGroup viewGroup, final int leftMargin, final int topMargin,
+    final int rightMargin, final int bottomMargin) {
+    final RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(viewGroup.getLayoutParams());
+    layoutParams.setMargins(leftMargin, topMargin, rightMargin, bottomMargin);
+    viewGroup.setLayoutParams(layoutParams);
   }
 
   /**

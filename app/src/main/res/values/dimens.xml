@@ -25,6 +25,9 @@
   <dimen name="grid_20">160dp</dimen>
   <dimen name="grid_26">208dp</dimen>
   <dimen name="grid_35">280dp</dimen>
+  <dimen name="grid_38">304dp</dimen>
+  <dimen name="grid_40">320dp</dimen>
+  <dimen name="grid_50">400dp</dimen>
 
   <!-- Typography-->
   <dimen name="caption">12sp</dimen>
@@ -56,6 +59,7 @@
   <dimen name="feed_padding_y">@dimen/grid_5_half</dimen>
   <dimen name="feed_padding_x">@dimen/grid_3</dimen>
   <dimen name="form_margin_x">@dimen/grid_3</dimen>
+  <dimen name="project_padding_x">@dimen/grid_3</dimen>
   <dimen name="settings_icon_margin_x">@dimen/grid_1</dimen>
 
   <!-- Buttons -->
@@ -94,7 +98,7 @@
   <dimen name="project_card_photo_med_height">200dp</dimen>
   <dimen name="project_card_photo_med_width">266dp</dimen>
   <dimen name="project_social_photo_height">@dimen/grid_4</dimen>
-  <dimen name="project_photo_height">220dp</dimen>
+  <dimen name="project_photo_full_height">420dp</dimen>
 
   <!-- TextViews -->
   <dimen name="text_view_corner_radius">@dimen/grid_1_half</dimen>

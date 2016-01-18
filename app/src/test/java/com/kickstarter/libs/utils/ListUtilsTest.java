@@ -1,7 +1,5 @@
 package com.kickstarter.libs.utils;
 
-import android.util.Pair;
-
 import junit.framework.TestCase;
 
 import java.util.Arrays;
@@ -11,8 +9,11 @@ import rx.functions.Func2;
 
 public class ListUtilsTest extends TestCase {
 
-  public void testReplace() {
+  public void testAllReplaced() {
+    final List<Integer> xs = Arrays.asList(1, 2, 2, 4, 5);
+    final List<Integer> expected = Arrays.asList(1, 9, 9, 4, 5);
 
+    assertEquals(expected, ListUtils.allReplaced(xs, 2, 9));
   }
 
   public void testContains() {
@@ -32,14 +33,6 @@ public class ListUtilsTest extends TestCase {
     assertEquals(expected, ListUtils.difference(xs, ys));
   }
 
-  public void testIntersection() {
-    final List<Integer> xs = Arrays.asList(1, 2, 3, 4, 5);
-    final List<Integer> ys = Arrays.asList(1, 4, 6, 4, 5, 7);
-    final List<Integer> expected = Arrays.asList(1, 4, 5);
-
-    assertEquals(expected, ListUtils.intersection(xs, ys));
-  }
-
   public void testIndexOf() {
     final List<Integer> xs = Arrays.asList(1, 2, 3, 4, 5);
     final Func2<Integer, Integer, Boolean> equality = (x, y) -> (x % 2 == 0 && y % 2 == 0);
@@ -47,6 +40,14 @@ public class ListUtilsTest extends TestCase {
     assertEquals(1, ListUtils.indexOf(xs, 2, equality));
     assertEquals(1, ListUtils.indexOf(xs, 4, equality));
     assertEquals(-1, ListUtils.indexOf(xs, 1, equality));
+  }
+
+  public void testIntersection() {
+    final List<Integer> xs = Arrays.asList(1, 2, 3, 4, 5);
+    final List<Integer> ys = Arrays.asList(1, 4, 6, 4, 5, 7);
+    final List<Integer> expected = Arrays.asList(1, 4, 5);
+
+    assertEquals(expected, ListUtils.intersection(xs, ys));
   }
 
   public void testFind() {

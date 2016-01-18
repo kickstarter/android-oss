@@ -73,7 +73,6 @@ public final class DiscoveryToolbar extends KSToolbar {
   protected void menuButtonClick() {
     final DiscoveryActivity activity = (DiscoveryActivity) getContext();
     activity.discoveryLayout().openDrawer(GravityCompat.START);
-    //activity.viewModel().inputs.menuButtonClicked();
   }
 
   public void loadParams(@NonNull final DiscoveryParams params) {
@@ -106,47 +105,5 @@ public final class DiscoveryToolbar extends KSToolbar {
   public void searchButtonClick(@NonNull final View view) {
     final Context context = getContext();
     context.startActivity(new Intent(context, SearchActivity.class));
-  }
-
-  protected void configureForLoggedIn(final @NonNull User user) {
-    /*
-    loginButton.setVisibility(GONE);
-    currentUserButton.setVisibility(VISIBLE);
-    currentUserButton.setOnClickListener(v -> {
-      final LoggedInMenu menu = new LoggedInMenu(v.getContext(), user, currentUserButton);
-      menu.show();
-    });
-    */
-  }
-
-  protected void configureForLoggedOut() {
-    /*
-    currentUserButton.setVisibility(GONE);
-    loginButton.setVisibility(VISIBLE);
-    loginButton.setOnClickListener(v -> {
-      final Context context = getContext();
-      final Intent intent = new Intent(context, LoginToutActivity.class)
-        .putExtra(IntentKey.LOGIN_TYPE, LoginToutActivity.REASON_LOGIN_TAB);
-      context.startActivity(intent);
-    });
-    */
-  }
-
-  @Override
-  protected void onAttachedToWindow() {
-    super.onAttachedToWindow();
-
-    if (isInEditMode()) {
-      return;
-    }
-
-    addSubscription(currentUser.loggedOutUser()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(__ -> this.configureForLoggedOut())
-    );
-
-    addSubscription(currentUser.loggedInUser()
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::configureForLoggedIn));
   }
 }

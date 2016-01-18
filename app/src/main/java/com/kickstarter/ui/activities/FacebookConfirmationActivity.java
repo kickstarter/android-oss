@@ -14,10 +14,10 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.ui.IntentKey;
+import com.kickstarter.ui.views.LoginPopupMenu;
 import com.kickstarter.viewmodels.FacebookConfirmationViewModel;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.toolbars.LoginToolbar;
-import com.kickstarter.ui.views.LoginPopupMenu;
 
 import butterknife.Bind;
 import butterknife.BindString;

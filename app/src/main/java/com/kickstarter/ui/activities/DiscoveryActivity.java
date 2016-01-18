@@ -22,6 +22,7 @@ import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.StatusBarUtils;
+import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
@@ -31,8 +32,6 @@ import com.kickstarter.ui.adapters.DiscoveryAdapter;
 import com.kickstarter.ui.containers.ApplicationContainer;
 import com.kickstarter.ui.intents.DiscoveryIntentAction;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
-import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
-import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
 
 import javax.inject.Inject;
@@ -43,7 +42,7 @@ import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresViewModel(DiscoveryViewModel.class)
-public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> implements DiscoveryAdapter.Delegate {
+public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
   private DiscoveryIntentAction intentAction;
   private RecyclerViewPaginator recyclerViewPaginator;
 
@@ -66,10 +65,9 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
     layoutInflater.inflate(R.layout.discovery_layout, container);
     ButterKnife.bind(this, container);
 
-    final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-    final DiscoveryAdapter adapter = new DiscoveryAdapter(this);
-    recyclerView.setLayoutManager(layoutManager);
+    final DiscoveryAdapter adapter = new DiscoveryAdapter(viewModel);
     recyclerView.setAdapter(adapter);
+    recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
     intentAction = new DiscoveryIntentAction(viewModel.inputs::initializer, lifecycle(), client);
     intentAction.intent(getIntent());
@@ -86,6 +84,11 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(adapter::takeProjects);
 
+    viewModel.outputs.activity()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(adapter::takeActivity);
+
     viewModel.outputs.params()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
@@ -100,6 +103,21 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(projectAndRefTag -> this.startProjectActivity(projectAndRefTag.first, projectAndRefTag.second));
+
+    viewModel.outputs.showSignupLogin()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> startSignupLoginActivity());
+
+    viewModel.outputs.showActivityFeed()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> startActivityFeedActivity());
+
+    viewModel.outputs.showActivityUpdate()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::startActivityUpdateActivity);
   }
 
   @Override
@@ -111,16 +129,6 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
   protected void onDestroy() {
     super.onDestroy();
     recyclerViewPaginator.stop();
-  }
-
-  public void projectCardClick(final @NonNull ProjectCardViewHolder viewHolder, final @NonNull Project project) {
-    viewModel.inputs.projectClicked(project);
-  }
-
-  public void signupLoginClick(final @NonNull DiscoveryOnboardingViewHolder viewHolder) {
-    final Intent intent = new Intent(this, LoginToutActivity.class)
-      .putExtra(IntentKey.LOGIN_TYPE, LoginToutActivity.REASON_GENERIC);
-    startActivity(intent);
   }
 
   private void loadParams(final @NonNull DiscoveryParams params) {
@@ -144,6 +152,22 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
       .putExtra(IntentKey.REF_TAG, refTag);
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  private void startSignupLoginActivity() {
+    final Intent intent = new Intent(this, LoginToutActivity.class)
+      .putExtra(IntentKey.LOGIN_TYPE, LoginToutActivity.REASON_GENERIC);
+    startActivity(intent);
+  }
+
+  private void startActivityUpdateActivity(final @NonNull Activity activity) {
+    final Intent intent = new Intent(this, DisplayWebViewActivity.class)
+      .putExtra(IntentKey.URL, activity.projectUpdateUrl());
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  private void startActivityFeedActivity() {
+    startActivity(new Intent(this, ActivityFeedActivity.class));
   }
 
   @Override

@@ -108,7 +108,8 @@ public class FacebookConfirmationViewModel extends ViewModel<FacebookConfirmatio
 
   public Observable<AccessTokenEnvelope> createNewAccount(@NonNull final String fbAccessToken, final boolean sendNewsletters) {
     return client.registerWithFacebook(fbAccessToken, sendNewsletters)
-      .compose(Transformers.pipeApiErrorsTo(signupError));
+      .compose(Transformers.pipeApiErrorsTo(signupError))
+      .compose(Transformers.neverError());
   }
 
   private void registerWithFacebookSuccess(@NonNull final AccessTokenEnvelope envelope) {

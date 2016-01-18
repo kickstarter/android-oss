@@ -66,6 +66,7 @@
   <string name="activity_funding_canceled" formatted="false">Funding canceled.</string>
   <string name="activity_navigation_title_activity" formatted="false">Activity</string>
   <string name="activity_posted_update_number_title" formatted="false">Posted update #%{update_number}: %{update_title}</string>
+  <string name="activity_friend_backed_project_name_by_creator_name" formatted="false">&lt;b>%{friend_name} backed&lt;/b> %{project_name} by %{creator_name}</string>
   <string name="activity_project_name_by_creator_name" formatted="false">%{project_name} by %{creator_name}</string>
   <string name="activity_project_state_change_creator_launched_a_project" formatted="false">%{creator_name} launched a project: %{project_name}</string>
   <string name="activity_project_state_change_funded" formatted="false">Funded</string>

@@ -175,6 +175,7 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   private Observable<Comment> postComment(@NonNull final Project project, @NonNull final String body) {
     return client.postProjectComment(project, body)
       .compose(Transformers.pipeApiErrorsTo(postCommentError))
+      .compose(Transformers.neverError())
       .doOnSubscribe(() -> commentIsPosting.onNext(true))
       .finallyDo(() -> {
         commentIsPosting.onNext(false);

@@ -1,6 +1,7 @@
 package com.kickstarter.services;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.kickstarter.libs.Config;
@@ -56,6 +57,11 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<ActivityEnvelope> fetchActivities() {
+    return fetchActivities(null);
+  }
+
+  @Override
+  public @NonNull Observable<ActivityEnvelope> fetchActivities(final @Nullable Integer count) {
     final List<String> categories = Arrays.asList(
       Activity.CATEGORY_BACKING,
       Activity.CATEGORY_CANCELLATION,
@@ -67,14 +73,13 @@ public final class ApiClient implements ApiClientType {
     );
 
     return service
-      .activities(categories)
+      .activities(categories, count)
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 
-
   @Override
-  public @NonNull Observable<ActivityEnvelope> fetchActivities(final @NonNull String paginationPath) {
+  public @NonNull Observable<ActivityEnvelope> fetchActivitiesWithPaginationPath(final @NonNull String paginationPath) {
     return service
       .activities(paginationPath)
       .lift(apiErrorOperator())

@@ -468,6 +468,9 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     filters.add(DiscoveryParams.builder().staffPicks(true).build());
     if (user != null) {
       filters.add(DiscoveryParams.builder().starred(1).build());
+      if (isTrue(user.social())) {
+        filters.add(DiscoveryParams.builder().social(1).build());
+      }
     }
     filters.add(DiscoveryParams.builder().build());
 

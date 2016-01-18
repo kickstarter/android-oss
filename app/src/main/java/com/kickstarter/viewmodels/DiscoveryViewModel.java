@@ -156,11 +156,6 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     return showLogin;
   }
 
-  @Override
-  public Observable<DiscoveryParams> showFilters() {
-    return selectedParams.compose(Transformers.takeWhen(filterButtonClicked));
-  }
-
   private final PublishSubject<Void> showInternalTools = PublishSubject.create();
   @Override
   public Observable<Void> showInternalTools() {

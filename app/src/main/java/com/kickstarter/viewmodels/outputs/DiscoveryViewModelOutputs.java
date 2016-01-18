@@ -17,7 +17,6 @@ public interface DiscoveryViewModelOutputs {
   Observable<List<Project>> projects();
   Observable<DiscoveryParams> params();
   Observable<Boolean> shouldShowOnboarding();
-  Observable<DiscoveryParams> showFilters();
   Observable<Void> showInternalTools();
   Observable<Void> showLogin();
   Observable<Pair<Project, RefTag>> showProject();

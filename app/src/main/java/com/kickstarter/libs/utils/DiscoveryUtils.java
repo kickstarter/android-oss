@@ -16,26 +16,6 @@ import com.kickstarter.services.DiscoveryParams;
 public class DiscoveryUtils {
   private DiscoveryUtils() {}
 
-  public static @Nullable Drawable imageWithOrientation(@NonNull final Category category,
-    @NonNull final Context context) {
-    final String baseImageName = category.baseImageName();
-    if (baseImageName == null) {
-      return null;
-    }
-
-    final String name = "category_"
-      + baseImageName
-      + "_"
-      + (ViewUtils.isPortrait(context) ? "portrait" : "landscape");
-
-    final @DrawableRes int identifier = context.getResources().getIdentifier(name, "drawable", context.getPackageName());
-    if (identifier == 0) {
-      return null;
-    }
-
-    return ContextCompat.getDrawable(context, identifier);
-  }
-
   public static @ColorInt int primaryColor(@NonNull final Context context, @NonNull final DiscoveryParams params) {
     return params.category() != null ?
       params.category().colorWithAlpha() :

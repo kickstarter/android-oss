@@ -1,7 +1,6 @@
 package com.kickstarter.ui.activities;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -34,7 +33,6 @@ import com.kickstarter.viewmodels.DiscoveryViewModel;
 import javax.inject.Inject;
 
 import butterknife.Bind;
-import butterknife.BindDrawable;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -50,7 +48,6 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
   protected @Inject ApiClientType client;
   protected @Inject InternalToolsType internalTools;
 
-  protected @BindDrawable(R.drawable.dark_blue_gradient) Drawable darkBlueGradientDrawable;
   protected @Bind(R.id.discovery_layout) DrawerLayout discoveryLayout;
   protected @Bind(R.id.discovery_toolbar) DiscoveryToolbar discoveryToolbar;
   protected @Bind(R.id.recycler_view) RecyclerView recyclerView;
@@ -105,11 +102,6 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> this.startLoginActivity());
 
-    viewModel.outputs.showFilters()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::startDiscoveryFilterActivity);
-
     viewModel.outputs.showProfile()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
@@ -159,13 +151,6 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
     final Intent intent = new Intent(this, LoginActivity.class);
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
-  }
-
-  private void startDiscoveryFilterActivity(final @NonNull DiscoveryParams params) {
-    final Intent intent = new Intent(this, DiscoveryFilterActivity.class)
-      .putExtra(IntentKey.DISCOVERY_PARAMS, params);
-
-    startActivityForResult(intent, ActivityRequestCodes.DISCOVERY_ACTIVITY_DISCOVERY_FILTER_ACTIVITY_SELECT_FILTER);
   }
 
   private void startProfileActivity() {

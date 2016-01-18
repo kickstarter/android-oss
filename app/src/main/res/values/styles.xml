@@ -64,9 +64,6 @@
   <style name="DiscoveryActivity" parent="DiscoveryBase">
   </style>
 
-  <style name="DiscoveryFilterActivity" parent="KSTheme">
-  </style>
-
   <style name="DisplayWebViewActivity" parent="KSTheme">
     <item name="android:windowBackground">@color/white</item>
   </style>

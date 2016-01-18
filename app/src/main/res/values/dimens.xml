@@ -120,4 +120,7 @@
   <dimen name="popup_menu_horizontal_offset">-151dp</dimen>
   <dimen name="popup_menu_vertical_offset">-46dp</dimen>
 
+  <dimen name="status_bar_height">0dp</dimen>
+  <dimen name="status_bar_height_negative">0dp</dimen>
+
 </resources>

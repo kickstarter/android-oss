@@ -8,6 +8,7 @@
   android:id="@+id/discovery_toolbar"
   tools:showIn="@layout/discovery_layout"
   android:background="@color/discovery_toolbar"
+  android:elevation="@dimen/toolbar_elevation"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp">
 
@@ -19,9 +20,9 @@
     <LinearLayout
       android:orientation="vertical"
       android:id="@+id/discovery_status_bar"
-      android:background="@color/black"
+      android:background="@color/discovery_status_bar"
       android:layout_width="match_parent"
-      android:layout_height="24dp" />
+      android:layout_height="@dimen/status_bar_height" />
 
     <RelativeLayout
       android:layout_width="match_parent"

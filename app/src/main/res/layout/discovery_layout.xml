@@ -11,12 +11,12 @@
 
   <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@color/discovery_background"
+    android:background="@color/black"
     android:nextFocusDown="@+id/recycler_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="-25dp"
-    android:paddingTop="25dp"
+    android:layout_marginTop="@dimen/status_bar_height_negative"
+    android:paddingTop="@dimen/status_bar_height"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
@@ -24,6 +24,7 @@
 
     <android.support.v7.widget.RecyclerView
       android:id="@+id/recycler_view"
+      android:background="@color/discovery_background"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:scrollbars="vertical" />

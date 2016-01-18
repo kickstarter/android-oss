@@ -16,6 +16,7 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
@@ -49,6 +50,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
 
   protected @Inject ApplicationContainer applicationContainer;
   protected @Inject ApiClientType client;
+  protected @Inject InternalToolsType internalTools;
 
   protected @BindDrawable(R.drawable.dark_blue_gradient) Drawable darkBlueGradientDrawable;
   protected @Bind(R.id.discovery_layout) DrawerLayout discoveryLayout;
@@ -59,16 +61,10 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
-    ((KSApplication) getApplication()).component().inject(this);
-
-/*    final ViewGroup container = applicationContainer.bind(this);
-    final LayoutInflater layoutInflater = getLayoutInflater();
-
-    layoutInflater.inflate(R.layout.discovery_layout, container);
-    ButterKnife.bind(this, container);*/
     setContentView(R.layout.discovery_layout);
     ButterKnife.bind(this);
+
+    ((KSApplication) getApplication()).component().inject(this);
 
     layoutManager = new LinearLayoutManager(this);
     recyclerView.setLayoutManager(layoutManager);
@@ -100,6 +96,11 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::loadParams);
+
+    viewModel.outputs.showDebug()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> internalTools.maybeStartDebugActivity(this));
 
     viewModel.outputs.showLogin()
       .compose(bindToLifecycle())

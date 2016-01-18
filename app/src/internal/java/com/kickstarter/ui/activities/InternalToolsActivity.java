@@ -1,19 +1,17 @@
-package com.kickstarter.ui.views;
+package com.kickstarter.ui.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -21,13 +19,16 @@ import com.jakewharton.processphoenix.ProcessPhoenix;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ApiEndpoint;
+import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.EnumAdapter;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.Release;
 import com.kickstarter.libs.preferences.StringPreference;
 import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
+import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.models.User;
+import com.kickstarter.ui.viewmodels.InternalToolsViewModel;
 
 import org.joda.time.format.DateTimeFormat;
 
@@ -42,7 +43,8 @@ import butterknife.BindDrawable;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class DebugDrawer extends FrameLayout {
+@RequiresViewModel(InternalToolsViewModel.class)
+public final class InternalToolsActivity extends BaseActivity<InternalToolsViewModel> {
   @Inject @ApiEndpointPreference StringPreference apiEndpointPreference;
   @Inject Release release;
   @Inject CurrentUser currentUser;
@@ -56,31 +58,29 @@ public class DebugDrawer extends FrameLayout {
   @Bind(R.id.version_name) TextView versionName;
   @BindDrawable(android.R.drawable.ic_dialog_alert) Drawable icDialogAlertDrawable;
 
-  public DebugDrawer(@NonNull final Context context) {
-    this(context, null);
-  }
-
-  public DebugDrawer(@NonNull final Context context, @Nullable final AttributeSet attrs) {
-    this(context, attrs, 0);
-  }
-
-  public DebugDrawer(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
-    super(context, attrs, defStyleAttr);
-
-    ((KSApplication) getContext().getApplicationContext()).component().inject(this);
-
-    LayoutInflater.from(context).inflate(R.layout.debug_drawer_view, this);
+  @Override
+  protected void onCreate(final @Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.internal_tools_layout);
     ButterKnife.bind(this);
+
+    ((KSApplication) getApplicationContext()).component().inject(this);
 
     setupNetworkSection();
     setupBuildInformationSection();
   }
 
+  @Override
+  public void onBackPressed() {
+    super.onBackPressed();
+    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
+  }
+
   @OnClick(R.id.push_notifications_button)
   public void pushNotificationsButtonClick() {
-    final View view = LayoutInflater.from(getContext().getApplicationContext()).inflate(R.layout.debug_push_notifications_layout, null);
+    final View view = LayoutInflater.from(this).inflate(R.layout.debug_push_notifications_layout, null);
 
-    new AlertDialog.Builder(getContext())
+    new AlertDialog.Builder(this)
       .setTitle("Push notifications")
       .setView(view)
       .show();
@@ -92,8 +92,6 @@ public class DebugDrawer extends FrameLayout {
   }
 
   private void submitBugReport(@Nullable final User user) {
-    final Context context = getContext();
-
     final String email = "chrstphrwrght+21qbymyz894ttajaomwh@***REMOVED***";
 
     final List<String> debugInfo = Arrays.asList(
@@ -119,13 +117,13 @@ public class DebugDrawer extends FrameLayout {
       .putExtra(Intent.EXTRA_TEXT, body)
       .putExtra(Intent.EXTRA_EMAIL, new String[]{email});
 
-    context.startActivity(Intent.createChooser(intent, context.getString(R.string.Select_email_application)));
+    startActivity(Intent.createChooser(intent, getString(R.string.Select_email_application)));
   }
 
   private void setupNetworkSection() {
     final ApiEndpoint currentApiEndpoint = ApiEndpoint.from(apiEndpointPreference.get());
     final EnumAdapter<ApiEndpoint> endpointAdapter =
-      new EnumAdapter<>(getContext(), ApiEndpoint.class, false, R.layout.black_spinner_item);
+      new EnumAdapter<>(this, ApiEndpoint.class, false, R.layout.black_spinner_item);
     endpointSpinner.setAdapter(endpointAdapter);
     endpointSpinner.setSelection(currentApiEndpoint.ordinal());
     endpointSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -156,12 +154,12 @@ public class DebugDrawer extends FrameLayout {
   }
 
   private void showCustomEndpointDialog(final int originalSelection, @NonNull final String defaultUrl) {
-    final View view = LayoutInflater.from(getContext().getApplicationContext()).inflate(R.layout.api_endpoint_layout, null);
+    final View view = LayoutInflater.from(this).inflate(R.layout.api_endpoint_layout, null);
     final EditText url = ButterKnife.findById(view, R.id.url);
     url.setText(defaultUrl);
     url.setSelection(url.length());
 
-    new AlertDialog.Builder(getContext())
+    new AlertDialog.Builder(this)
       .setTitle("Set API Endpoint")
       .setView(view)
       .setPositiveButton(android.R.string.yes, (dialog, which) -> {
@@ -191,6 +189,6 @@ public class DebugDrawer extends FrameLayout {
   private void setEndpointAndRelaunch(@NonNull final String endpoint) {
     apiEndpointPreference.set(endpoint);
     logout.execute();
-    ProcessPhoenix.triggerRebirth(getContext());
+    ProcessPhoenix.triggerRebirth(this);
   }
 }

@@ -5,6 +5,9 @@ import android.support.annotation.NonNull;
 
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.BuildCheck;
+import com.kickstarter.libs.InternalTools;
+import com.kickstarter.libs.InternalToolsType;
+import com.kickstarter.libs.NoopInternalTools;
 import com.kickstarter.libs.preferences.StringPreference;
 import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
 import com.kickstarter.ui.containers.ApplicationContainer;
@@ -39,5 +42,12 @@ public class InternalApplicationModule {
   @Provides
   BuildCheck provideBuildCheck() {
     return BuildCheck.DEFAULT;
+  }
+
+  @Provides
+  @Singleton
+  @NonNull
+  InternalToolsType providesInternalToolsType() {
+    return new InternalTools();
   }
 }

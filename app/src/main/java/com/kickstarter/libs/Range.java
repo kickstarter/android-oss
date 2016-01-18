@@ -1,6 +1,7 @@
 package com.kickstarter.libs;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public final class Range {
   public final int start;
@@ -15,11 +16,13 @@ public final class Range {
     return new Range(start, length);
   }
 
-  @Override public String toString() {
+  @Override
+  public String toString() {
     return "[start: " + start + ", length: " + length + "]";
   }
 
-  @Override public boolean equals(Object o) {
+  @Override
+  public boolean equals(final @Nullable Object o) {
     if (o instanceof Range) {
       final Range other = (Range) o;
       return start == other.start && length == other.length;

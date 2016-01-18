@@ -17,7 +17,7 @@ public final class DiffUtils {
   private DiffUtils() {}
 
   @AutoParcel
-  public static abstract class Diff implements Parcelable {
+  public abstract static class Diff implements Parcelable {
     public abstract @NonNull List<Integer> insertions();
     public abstract @NonNull List<Integer> deletions();
     public abstract @NonNull List<Integer> updates();
@@ -44,7 +44,9 @@ public final class DiffUtils {
     return DiffUtils.diff(oldItems, newItems, Object::equals);
   }
 
-  public static @NonNull <T> Diff diff(final @NonNull List<T> oldItems, final @NonNull List<T> newItems, Func2<T, T, Boolean> matches) {
+  public static @NonNull <T> Diff diff(final @NonNull List<T> oldItems, final @NonNull List<T> newItems,
+    final @NonNull Func2<T, T, Boolean> matches) {
+
     final List<Integer> insertions = new ArrayList<>();
     final List<Integer> deletions = new ArrayList<>();
     final List<Integer> updates = new ArrayList<>();

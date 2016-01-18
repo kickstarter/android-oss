@@ -64,7 +64,7 @@
         android:layout_marginRight="@dimen/grid_2"
         android:textAppearance="@style/CaptionPrimary"
         android:textColor="@color/dark_gray"
-        android:text="@string/login_tout_disclaimer_by_signing_up_you_agree_to_terms" />
+        android:text="@string/login_tout_disclaimer_by_signing_up_you_agree_to_terms_html" />
 
     </LinearLayout>
   </LinearLayout>

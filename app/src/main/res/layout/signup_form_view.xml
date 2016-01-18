@@ -88,7 +88,7 @@
     android:paddingRight="@dimen/grid_1"
     android:paddingTop="@dimen/grid_1"
     android:paddingBottom="@dimen/grid_1"
-    android:text="@string/login_tout_disclaimer_by_signing_up_you_agree_to_terms" />
+    android:text="@string/login_tout_disclaimer_by_signing_up_you_agree_to_terms_html" />
 
 </LinearLayout>
 

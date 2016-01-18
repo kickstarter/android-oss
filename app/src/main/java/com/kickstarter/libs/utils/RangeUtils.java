@@ -10,7 +10,10 @@ import java.util.List;
 public final class RangeUtils {
   private RangeUtils() {}
 
-  public static @NonNull List<Range> ranges(final @NonNull List<Integer> xs) {
+  /**
+   * Given a list of integers computes a list of consecutive, monotonically non-descreasing ranges.
+   */
+  public static @NonNull List<Range> consecutiveRanges(final @NonNull List<Integer> xs) {
     final List<Range> result = new ArrayList<>();
 
     for (int idx = 0; idx < xs.size(); idx++) {
@@ -26,7 +29,7 @@ public final class RangeUtils {
 
       if (previous == null) {
         result.add(Range.create(0, 1));
-      } else if (current == previous + 1 || current == previous) {
+      } else if (current == previous + 1 || current.equals(previous)) {
         final int lastIdx = result.size() - 1;
         final Range lastRange = result.get(lastIdx);
         result.set(lastIdx, Range.create(lastRange.start, lastRange.length + 1));
@@ -45,7 +48,7 @@ public final class RangeUtils {
     }
     firstPosition = positions.get(0);
 
-    final List<Range> ranges = RangeUtils.ranges(positions);
+    final List<Range> ranges = RangeUtils.consecutiveRanges(positions);
     final List<Range> result = new ArrayList<>();
     for (final Range range : ranges) {
       result.add(Range.create(range.start + firstPosition, range.length));

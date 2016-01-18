@@ -19,14 +19,14 @@ public final class RangeUtilsTest extends TestCase {
       Range.create(6, 2)
     );
 
-    assertEquals(expected, RangeUtils.ranges(xs));
+    assertEquals(expected, RangeUtils.consecutiveRanges(xs));
   }
 
   public void testRanges_WithEmptyArray() {
     final List<Integer> xs = Collections.emptyList();
     final List<Range> expected = Collections.emptyList();
 
-    assertEquals(expected, RangeUtils.ranges(xs));
+    assertEquals(expected, RangeUtils.consecutiveRanges(xs));
   }
 
   public void testRanges_WithRepeatedEntries() {
@@ -35,7 +35,7 @@ public final class RangeUtilsTest extends TestCase {
       Range.create(0, 4)
     );
 
-    assertEquals(expected, RangeUtils.ranges(xs));
+    assertEquals(expected, RangeUtils.consecutiveRanges(xs));
   }
 
   public void testRanges_WithNonMonotonicArray() {
@@ -46,7 +46,7 @@ public final class RangeUtilsTest extends TestCase {
       Range.create(4, 2)
     );
 
-    assertEquals(expected, RangeUtils.ranges(xs));
+    assertEquals(expected, RangeUtils.consecutiveRanges(xs));
   }
 
   public void testRanges_WithSingleton() {
@@ -55,6 +55,6 @@ public final class RangeUtilsTest extends TestCase {
       Range.create(0, 1)
     );
 
-    assertEquals(expected, RangeUtils.ranges(xs));
+    assertEquals(expected, RangeUtils.consecutiveRanges(xs));
   }
 }

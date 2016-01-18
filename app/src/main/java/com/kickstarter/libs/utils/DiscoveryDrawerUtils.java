@@ -41,7 +41,7 @@ public final class DiscoveryDrawerUtils {
       .map(c -> DiscoveryParams.builder().category(c).build())
       .toList()
       .map(DiscoveryDrawerUtils::paramsGroupedByRootCategory)
-      .map(sections -> massageSections(sections, expandedCategory))
+      .map(sections -> sectionsFromAllParams(sections, expandedCategory))
       .toBlocking().single();
 
     final List<NavigationDrawerData.Section> sections = Observable
@@ -58,21 +58,14 @@ public final class DiscoveryDrawerUtils {
   }
 
   /**
-   *
-   * @param sections
-   * @return
+   * Given a doubly nested list of all possible category params and an (optional) expanded category this will
+   * create a list of sections that can be used in the drawer.
    */
-  private static @NonNull List<NavigationDrawerData.Section> massageSections(final @NonNull List<List<DiscoveryParams>> sections, final @Nullable Category expandedCategory) {
+  private static @NonNull List<NavigationDrawerData.Section> sectionsFromAllParams(final @NonNull List<List<DiscoveryParams>> sections, final @Nullable Category expandedCategory) {
 
     return Observable.from(sections)
-      .map(DiscoveryDrawerUtils::massageRows)
-      .map(rows -> {
-        final Category sectionCategory = rows.get(0).params().category();
-        if (sectionCategory != null && expandedCategory != null) {
-          return Pair.create(rows, sectionCategory.rootId() == expandedCategory.rootId());
-        }
-        return Pair.create(rows, false);
-      })
+      .map(DiscoveryDrawerUtils::rowsFromParams)
+      .map(rows -> Pair.create(rows, rowsAreExpanded(rows, expandedCategory)))
       .map(rowsAndIsExpanded ->
           NavigationDrawerData.Section.builder()
             .rows(rowsAndIsExpanded.first)
@@ -83,14 +76,20 @@ public final class DiscoveryDrawerUtils {
   }
 
   /**
-   *
-   * @param rows
-   * @return
+   * Converts a list of params into a list of rows that the drawer can use to display rows.
    */
-  private static @NonNull List<NavigationDrawerData.Section.Row> massageRows(final @NonNull List<DiscoveryParams> rows) {
-    return Observable.from(rows)
+  private static @NonNull List<NavigationDrawerData.Section.Row> rowsFromParams(final @NonNull List<DiscoveryParams> params) {
+    return Observable.from(params)
       .map(p -> NavigationDrawerData.Section.Row.builder().params(p).build())
       .toList().toBlocking().single();
+  }
+
+  /**
+   * From a list of rows and the currently expanded category figures out if the rows are expanded.
+   */
+  private static boolean rowsAreExpanded(final List<NavigationDrawerData.Section.Row> rows, final @Nullable Category expandedCategory) {
+    final Category sectionCategory = rows.get(0).params().category();
+    return sectionCategory != null && expandedCategory != null && sectionCategory.rootId() == expandedCategory.rootId();
   }
 
   /**

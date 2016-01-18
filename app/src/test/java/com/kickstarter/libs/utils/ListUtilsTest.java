@@ -1,7 +1,5 @@
 package com.kickstarter.libs.utils;
 
-import android.util.Pair;
-
 import junit.framework.TestCase;
 
 import java.util.Arrays;

@@ -128,13 +128,10 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> this.startSettingsActivity());
 
-    viewModel.navigationDrawerData()
+    viewModel.outputs.navigationDrawerData()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(data -> {
-        drawerAdapter.takeData(data);
-        // navigationRecyclerView.scrollToPosition(6);
-      });
+      .subscribe(drawerAdapter::takeData);
 
     viewModel
       .openDrawer()

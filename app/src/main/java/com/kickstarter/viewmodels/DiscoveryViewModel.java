@@ -243,8 +243,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         DiscoveryDrawerUtils::deriveNavigationDrawerData)
         .subscribe(navigationDrawerData::onNext)
     );
-
-    // selectedParams.onNext(DiscoveryParams.builder().staffPicks(true).build());
+    
     expandedParams.onNext(null);
 
     final Observable<Category> clickedCategory = parentFilterRowClick

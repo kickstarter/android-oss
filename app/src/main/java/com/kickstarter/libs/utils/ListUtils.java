@@ -8,7 +8,7 @@ import java.util.List;
 
 import rx.functions.Func2;
 
-public class ListUtils {
+public final class ListUtils {
   private ListUtils() {
     throw new AssertionError();
   }
@@ -16,7 +16,7 @@ public class ListUtils {
   /**
    * Appends `x` to the end of the list `xs`.
    */
-  public static <T> List<T> append(@NonNull final List<T> xs, @NonNull final T x) {
+  public static <T> List<T> append(final @NonNull List<T> xs, final @NonNull T x) {
     final List<T> ys = new ArrayList<>(xs);
     ys.add(x);
     return ys;
@@ -26,7 +26,7 @@ public class ListUtils {
    * Concats the second argument onto the end of the first without mutating
    * either list.
    */
-  public static <T> List<T> concat(@NonNull final List<T> xs, @NonNull final List<T> ys) {
+  public static <T> List<T> concat(final @NonNull List<T> xs, final @NonNull List<T> ys) {
     final List<T> zs = new ArrayList<>(xs);
     ListUtils.mutatingConcat(zs, ys);
     return zs;
@@ -35,25 +35,40 @@ public class ListUtils {
   /**
    * Concats the distinct elements of `ys` onto the end of the `xs` without mutating either list.
    */
-  public static <T> List<T> concatDistinct(@NonNull final List<T> xs, @NonNull final List<T> ys) {
+  public static <T> List<T> concatDistinct(final @NonNull List<T> xs, final @NonNull List<T> ys) {
     final List<T> zs = new ArrayList<>(xs);
     ListUtils.mutatingConcatDistinct(zs, ys);
     return zs;
   }
 
+  /**
+   * Returns true if `y` is equal to any of the values in `xs`.
+   */
   public static <T> boolean contains(final @NonNull List<T> xs, final @NonNull T y) {
     return ListUtils.contains(xs, y, Object::equals);
   }
 
+  /**
+   * Returns true if `y` is equal to any of the values in `xs`, where equality is determined by a given function.
+   */
   public static <T> boolean contains(final @NonNull List<T> xs, final @NonNull T y, final @NonNull Func2<T, T, Boolean> equality) {
     return ListUtils.indexOf(xs, y, equality) != -1;
   }
 
+  /**
+   * Returns a list containing elements of `lhs` that do not exist in `rhs`.
+   */
   public static @NonNull <T> List<T> difference(final @NonNull List<T> lhs, final @NonNull List<T> rhs) {
     return ListUtils.difference(lhs, rhs, Object::equals);
   }
 
-  public static @NonNull <T> List<T> difference(final @NonNull List<T> lhs, final @NonNull List<T> rhs, Func2<T, T, Boolean> equality) {
+  /**
+   * Returns a list containing elements of `lhs` that do not exist in `rhs`, where equality between elements is
+   * determined by a given function.
+   */
+  public static @NonNull <T> List<T> difference(final @NonNull List<T> lhs, final @NonNull List<T> rhs,
+    final @NonNull Func2<T, T, Boolean> equality) {
+
     final List<T> result = new ArrayList<>();
     for (final T litem : lhs) {
       if (!ListUtils.contains(rhs, litem, equality)) {
@@ -70,10 +85,17 @@ public class ListUtils {
     return new ArrayList<>();
   }
 
+  /**
+   * Returns the first element in `xs` that equals `x`, or `null` if `x` is not found in `xs`.
+   */
   public static @Nullable <T> T find(final @NonNull List<T> xs, final @NonNull T x) {
     return ListUtils.find(xs, x, Object::equals);
   }
 
+  /**
+   * Returns the first element in `xs` that equals `x`, or `null` if `x` is not found in `xs`. Equality is determined
+   * by the given function.
+   */
   public static @Nullable <T> T find(final @NonNull List<T> xs, final @NonNull T y, final @NonNull Func2<T, T, Boolean> equality) {
     final int idx = ListUtils.indexOf(xs, y, equality);
     if (idx == -1) {
@@ -85,10 +107,13 @@ public class ListUtils {
   /**
    * Returns the first object or `null` if empty.
    */
-  @Nullable public static <T> T first(@NonNull final List<T> xs) {
+  public static @Nullable <T> T first(final @NonNull List<T> xs) {
     return xs.size() > 0 ? xs.get(0) : null;
   }
 
+  /**
+   * Combines a list of lists into a new single, flat list.
+   */
   public static @NonNull <T> List<T> flatten(final @NonNull List<List<T>> xss) {
     final List<T> result = new ArrayList<>();
     for (final List<T> xs : xss) {
@@ -97,10 +122,17 @@ public class ListUtils {
     return result;
   }
 
-  public static <T> int indexOf(final @NonNull List<T> xs, final @NonNull T x) {
-    return ListUtils.indexOf(xs, x, Object::equals);
+  /**
+   * Returns the index of the first element in `xs` that equals `x`, or `-1` if `x` is not found in `xs`.
+   */
+  public static <T> int indexOf(final @NonNull List<T> xs, final @NonNull T y) {
+    return ListUtils.indexOf(xs, y, Object::equals);
   }
 
+  /**
+   * Returns the index of the first element in `xs` that equals `x`, or `-1` if `x` is not found in `xs`. Equality is determined
+   * by the given function.
+   */
   public static <T> int indexOf(final @NonNull List<T> xs, final @NonNull T y, final @NonNull Func2<T, T, Boolean> equality) {
     for (int idx = 0; idx < xs.size(); idx++) {
       if (equality.call(xs.get(idx), y)) {
@@ -110,10 +142,16 @@ public class ListUtils {
     return -1;
   }
 
+  /**
+   * Returns a list containing the elements of `lhs` that exist in `rhs`.
+   */
   public static @NonNull <T> List<T> intersection(final @NonNull List<T> lhs, final @NonNull List<T> rhs) {
     return ListUtils.intersection(lhs, rhs, Object::equals);
   }
 
+  /**
+   * Returns a list containing the elements of `lhs` that exist in `rhs`, where equality is determined by the given function.
+   */
   public static @NonNull <T> List<T> intersection(final @NonNull List<T> lhs, final @NonNull List<T> rhs, Func2<T, T, Boolean> equality) {
     final List<T> result = new ArrayList<>();
     for (final T litem : lhs) {
@@ -128,7 +166,7 @@ public class ListUtils {
    * Concats the second argument onto the end of the first, but also mutates the
    * first argument.
    */
-  public static <T> List<T> mutatingConcat(@NonNull final List<T> xs, @NonNull final List<T> ys) {
+  public static <T> List<T> mutatingConcat(final @NonNull List<T> xs, final @NonNull List<T> ys) {
     xs.addAll(ys);
     return xs;
   }
@@ -136,7 +174,7 @@ public class ListUtils {
   /**
    * Concats the distinct elements of `ys` onto the end of the `xs`, but also mutates the first.
    */
-  public static <T> List<T> mutatingConcatDistinct(@NonNull final List<T> xs, @NonNull final List<T> ys) {
+  public static <T> List<T> mutatingConcatDistinct(final @NonNull List<T> xs, final @NonNull List<T> ys) {
     for (final T y : ys) {
       if (! xs.contains(y)) {
         xs.add(y);
@@ -148,12 +186,15 @@ public class ListUtils {
   /**
    * Prepends `x` to the beginning of the list `xs`.
    */
-  public static <T> List<T> prepend(@NonNull final List<T> xs, @NonNull final T x) {
+  public static <T> List<T> prepend(final @NonNull List<T> xs, final @NonNull T x) {
     final List<T> ys = new ArrayList<>(xs);
     ys.add(0, x);
     return ys;
   }
 
+  /**
+   * Returns a new list with all elements in `xs` equal to `x` replaced by `newx`.
+   */
   public static @NonNull <T> List<T> replace(final @NonNull List<T> xs, final @NonNull T x, final @NonNull T newx) {
     final List<T> ys = new ArrayList<>(xs);
 

@@ -14,6 +14,7 @@ import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.DiscoveryParamsUtils;
+import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
@@ -210,8 +211,8 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     addSubscription(
       paginator.paginatedData
         .compose(Transformers.combineLatestPair(rootCategories))
-        .map(pc -> this.fillRootCategoryForFeaturedProjects(pc.first, pc.second))
-        .subscribe(projects)
+        .map(pc -> DiscoveryUtils.fillRootCategoryForFeaturedProjects(pc.first, pc.second))
+        .subscribe(projects::onNext)
     );
 
     addSubscription(
@@ -285,56 +286,6 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
           openDrawer.onNext(false);
         })
     );
-  }
-
-  /**
-   * Given a list of projects and root categories this will determine if the first project is featured
-   * and is in need of its root category. If that is the case we will find its root and fill in that
-   * data and return a new list of projects.
-   */
-  private List<Project> fillRootCategoryForFeaturedProjects(final @NonNull List<Project> projects,
-    final @NonNull List<Category> rootCategories) {
-
-    // Guard against no projects
-    if (projects.size() == 0) {
-      return ListUtils.empty();
-    }
-
-    final Project firstProject = projects.get(0);
-
-    // Guard against bad category data on first project
-    final Category category = firstProject.category();
-    if (category == null) {
-      return projects;
-    }
-    final Long categoryParentId = category.parentId();
-    if (categoryParentId == null) {
-      return projects;
-    }
-
-    // Guard against not needing to find the root category
-    if (!projectNeedsRootCategory(firstProject, category)) {
-      return projects;
-    }
-
-    // Find the root category for the featured project's category
-    final Category projectRootCategory = Observable.from(rootCategories)
-      .filter(rootCategory -> rootCategory.id() == categoryParentId)
-      .take(1)
-      .toBlocking().single();
-
-    // Sub in the found root category in our featured project.
-    final Category newCategory = category.toBuilder().parent(projectRootCategory).build();
-    final Project newProject = firstProject.toBuilder().category(newCategory).build();
-
-    return ListUtils.replaced(projects, 0, newProject);
-  }
-
-  /**
-   * Determines if the project and supplied require us to find the root category.
-   */
-  private boolean projectNeedsRootCategory(final @NonNull Project project, final @NonNull Category category) {
-    return !category.isRoot() && category.parent() == null && project.isFeaturedToday();
   }
 
   private boolean isOnboardingVisible(final @NonNull DiscoveryParams currentParams, final boolean isLoggedIn) {

@@ -27,7 +27,6 @@ import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.DiscoveryAdapter;
 import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter;
-import com.kickstarter.ui.containers.ApplicationContainer;
 import com.kickstarter.ui.intents.DiscoveryIntentAction;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
@@ -48,7 +47,6 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
   private LinearLayoutManager drawerLayoutManager;
   private RecyclerViewPaginator recyclerViewPaginator;
 
-  protected @Inject ApplicationContainer applicationContainer;
   protected @Inject ApiClientType client;
   protected @Inject InternalToolsType internalTools;
 

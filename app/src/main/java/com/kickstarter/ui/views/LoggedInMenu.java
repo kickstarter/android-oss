@@ -3,6 +3,7 @@ package com.kickstarter.ui.views;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListPopupWindow;
@@ -24,7 +25,7 @@ public class LoggedInMenu extends ListPopupWindow {
     setWidth(context.getResources().getDimensionPixelSize(R.dimen.logged_in_menu_width));
     setHorizontalOffset(context.getResources().getDimensionPixelSize(R.dimen.logged_in_menu_horizontal_offset));
     setVerticalOffset(context.getResources().getDimensionPixelSize(R.dimen.logged_in_menu_vertical_offset));
-    setBackgroundDrawable(context.getResources().getDrawable(R.drawable.dialog_alert_rounded, null));
+    setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.dialog_alert_rounded));
 
     setOnItemClickListener((final AdapterView<?> parent, final View view, final int position, final long id) -> {
       dismiss();

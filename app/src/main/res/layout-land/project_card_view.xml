@@ -27,7 +27,7 @@
 
     <RelativeLayout
       android:background="@color/white"
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="@dimen/project_card_photo_med_height">
 
       <include layout="@layout/project_card_photo_view"

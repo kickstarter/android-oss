@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.transformations.CircleTransformation;
@@ -131,7 +132,7 @@ public class PushNotifications {
   private @NonNull NotificationCompat.Builder notificationBuilder(@NonNull final String title, @NonNull final String text) {
     return new NotificationCompat.Builder(context)
       .setSmallIcon(R.drawable.ic_kickstarter_k)
-      .setColor(context.getResources().getColor(R.color.green))
+      .setColor(ContextCompat.getColor(context, R.color.green))
       .setContentText(text)
       .setContentTitle(title)
       .setStyle(new NotificationCompat.BigTextStyle().bigText(text))

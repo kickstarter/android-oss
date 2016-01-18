@@ -30,7 +30,6 @@ import java.net.HttpCookie;
 
 import javax.inject.Inject;
 
-import retrofit.http.HEAD;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
@@ -230,6 +229,10 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
     );
   }
 
+  public void projectViewHolderBackProjectClicked(final @NonNull ProjectViewHolder viewHolder) {
+    this.backProjectClicked();
+  }
+
   public void projectViewHolderBlurbClicked(final @NonNull ProjectViewHolder viewHolder) {
     this.blurbClicked();
   }
@@ -242,16 +245,24 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
     this.creatorNameClicked();
   }
 
-  public void rewardViewHolderClicked(final @NonNull RewardViewHolder viewHolder, final @NonNull Reward reward) {
-    this.rewardClicked(reward);
+  public void projectViewHolderManagePledgeClicked(final @NonNull ProjectViewHolder viewHolder) {
+    this.managePledgeClicked();
   }
 
   public void projectViewHolderVideoStarted(final @NonNull ProjectViewHolder viewHolder) {
     this.playVideoClicked();
   }
 
+  public void projectViewHolderViewPledgeClicked(final @NonNull ProjectViewHolder viewHolder) {
+    this.viewPledgeClicked();
+  }
+
   public void projectViewHolderUpdatesClicked(final @NonNull ProjectViewHolder viewHolder) {
     this.updatesClicked();
+  }
+
+  public void rewardViewHolderClicked(final @NonNull RewardViewHolder viewHolder, final @NonNull Reward reward) {
+    this.rewardClicked(reward);
   }
 
   public Observable<Project> starProject(final @NonNull Project project) {

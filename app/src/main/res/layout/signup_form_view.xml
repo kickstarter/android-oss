@@ -76,7 +76,7 @@
     android:layout_width="match_parent"
     android:text="@string/signup_button" />
 
-  <TextView
+  <com.kickstarter.ui.views.HtmlTextView
     style="@style/CaptionSecondary"
     android:id="@+id/disclaimer"
     android:background="@drawable/click_indicator_light_masked"

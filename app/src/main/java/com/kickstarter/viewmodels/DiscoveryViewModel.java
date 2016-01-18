@@ -178,6 +178,17 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
 
     buildCheck.bind(this, webClient);
 
+    final Observable<List<Category>> categories = apiClient.fetchCategories()
+      .compose(Transformers.neverError())
+      .flatMap(Observable::from)
+      .toSortedList()
+      .share();
+
+    final Observable<List<Category>> rootCategories = categories
+      .flatMap(Observable::from)
+      .filter(Category::isRoot)
+      .toList();
+
     final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
       ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
         .nextPage(nextPage)
@@ -186,7 +197,6 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .envelopeToMoreUrl(env -> env.urls().api().moreProjects())
         .loadWithParams(apiClient::fetchProjects)
         .loadWithPaginationPath(apiClient::fetchProjects)
-        .pageTransformation(this::bringPotdToFront)
         .clearWhenStartingOver(true)
         .concater(ListUtils::concatDistinct)
         .build();
@@ -197,7 +207,12 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .subscribe(p -> koala.trackDiscovery(p, !hasSeenOnboarding))
     );
 
-    addSubscription(paginator.paginatedData.subscribe(projects));
+    addSubscription(
+      paginator.paginatedData
+        .compose(Transformers.combineLatestPair(rootCategories))
+        .map(pc -> this.fillRootCategoryForFeaturedProjects(pc.first, pc.second))
+        .subscribe(projects)
+    );
 
     addSubscription(
       selectedParams
@@ -210,13 +225,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     initializer.subscribe(this.selectedParams::onNext);
     initializer.onNext(DiscoveryParams.builder().staffPicks(true).build());
 
-
     // NAVIGATION DRAWER ONCREATE
-    final Observable<List<Category>> categories = apiClient.fetchCategories()
-      .compose(Transformers.neverError())
-      .flatMap(Observable::from)
-      .toSortedList()
-      .share();
 
     PublishSubject<Category> expandedParams = PublishSubject.create();
 
@@ -279,22 +288,53 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   }
 
   /**
-   * Given a list of projects, finds if it contains the POTD and if so
-   * bumps it to the front of the list.
+   * Given a list of projects and root categories this will determine if the first project is featured
+   * and is in need of its root category. If that is the case we will find its root and fill in that
+   * data and return a new list of projects.
    */
-  private List<Project> bringPotdToFront(final @NonNull List<Project> projects) {
+  private List<Project> fillRootCategoryForFeaturedProjects(final @NonNull List<Project> projects,
+    final @NonNull List<Category> rootCategories) {
 
-    return Observable.from(projects)
-      .reduce(new ArrayList<>(), this::prependPotdElseAppend)
+    // Guard against no projects
+    if (projects.size() == 0) {
+      return ListUtils.empty();
+    }
+
+    final Project firstProject = projects.get(0);
+
+    // Guard against bad category data on first project
+    final Category category = firstProject.category();
+    if (category == null) {
+      return projects;
+    }
+    final Long categoryParentId = category.parentId();
+    if (categoryParentId == null) {
+      return projects;
+    }
+
+    // Guard against not needing to find the root category
+    if (!projectNeedsRootCategory(firstProject, category)) {
+      return projects;
+    }
+
+    // Find the root category for the featured project's category
+    final Category projectRootCategory = Observable.from(rootCategories)
+      .filter(rootCategory -> rootCategory.id() == categoryParentId)
+      .take(1)
       .toBlocking().single();
+
+    // Sub in the found root category in our featured project.
+    final Category newCategory = category.toBuilder().parent(projectRootCategory).build();
+    final Project newProject = firstProject.toBuilder().category(newCategory).build();
+
+    return ListUtils.replaced(projects, 0, newProject);
   }
 
   /**
-   * Given a list of projects and a particular project, returns the list
-   * when the project prepended if it's POTD and appends otherwise.
+   * Determines if the project and supplied require us to find the root category.
    */
-  @NonNull private List<Project> prependPotdElseAppend(final @NonNull List<Project> projects, final @NonNull Project project) {
-    return project.isPotdToday() ? ListUtils.prepend(projects, project) : ListUtils.append(projects, project);
+  private boolean projectNeedsRootCategory(final @NonNull Project project, final @NonNull Category category) {
+    return !category.isRoot() && category.parent() == null && project.isFeaturedToday();
   }
 
   private boolean isOnboardingVisible(final @NonNull DiscoveryParams currentParams, final boolean isLoggedIn) {

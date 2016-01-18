@@ -154,7 +154,7 @@ public class ListUtils {
     return ys;
   }
 
-  public static @NonNull <T> List<T> replace(final @NonNull List<T> xs, final @NonNull T x, final @NonNull T newx) {
+  public static @NonNull <T> List<T> allReplaced(final @NonNull List<T> xs, final @NonNull T x, final @NonNull T newx) {
     final List<T> ys = new ArrayList<>(xs);
 
     for (int idx = 0; idx < xs.size(); idx++) {
@@ -163,6 +163,16 @@ public class ListUtils {
       }
     }
 
+    return ys;
+  }
+
+  /**
+   * Replaces the element at index `idx` with the element `x`. Does so by return a whole new list without
+   * mutating the original.
+   */
+  public static @NonNull <T> List<T> replaced(final @NonNull List<T> xs, final int idx, final @Nullable T x) {
+    final List<T> ys = new ArrayList<>(xs);
+    ys.set(idx, x);
     return ys;
   }
 

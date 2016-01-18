@@ -234,13 +234,15 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
 
     PublishSubject<Category> expandedParams = PublishSubject.create();
 
-    Observable.combineLatest(
-      categories,
-      selectedParams,
-      expandedParams,
-      currentUser.observable(),
-      DiscoveryDrawerUtils::deriveNavigationDrawerData)
-      .subscribe(navigationDrawerData::onNext);
+    addSubscription(
+      Observable.combineLatest(
+        categories,
+        selectedParams,
+        expandedParams,
+        currentUser.observable(),
+        DiscoveryDrawerUtils::deriveNavigationDrawerData)
+        .subscribe(navigationDrawerData::onNext)
+    );
 
     // selectedParams.onNext(DiscoveryParams.builder().staffPicks(true).build());
     expandedParams.onNext(null);
@@ -255,19 +257,25 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .subscribe(__ -> openDrawer.onNext(false))
     );
 
-    childFilterRowClick
-      .mergeWith(topFilterRowClick)
-      .map(NavigationDrawerData.Section.Row::params)
-      .subscribe(selectedParams::onNext);
+    addSubscription(
+      childFilterRowClick
+        .mergeWith(topFilterRowClick)
+        .map(NavigationDrawerData.Section.Row::params)
+        .subscribe(selectedParams::onNext)
+    );
 
-    topFilterRowClick
-      .subscribe(__ -> expandedParams.onNext(null));
+    addSubscription(
+      topFilterRowClick
+        .subscribe(__ -> expandedParams.onNext(null))
+    );
 
-    navigationDrawerData
-      .map(NavigationDrawerData::expandedCategory)
-      .compose(Transformers.takePairWhen(clickedCategory))
-      .map(expandedAndClickedCategory -> toggleExpandedCategory(expandedAndClickedCategory.first, expandedAndClickedCategory.second))
-      .subscribe(expandedParams::onNext);
+    addSubscription(
+      navigationDrawerData
+        .map(NavigationDrawerData::expandedCategory)
+        .compose(Transformers.takePairWhen(clickedCategory))
+        .map(expandedAndClickedCategory -> toggleExpandedCategory(expandedAndClickedCategory.first, expandedAndClickedCategory.second))
+        .subscribe(expandedParams::onNext)
+    );
 
     addSubscription(
       loginClick

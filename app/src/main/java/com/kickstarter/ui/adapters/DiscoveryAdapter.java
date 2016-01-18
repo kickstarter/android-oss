@@ -53,7 +53,7 @@ public final class DiscoveryAdapter extends KSAdapter {
   }
 
   @Override
-  protected KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
+  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     switch (layout) {
       case R.layout.discovery_onboarding_view:
         return new DiscoveryOnboardingViewHolder(view, delegate);

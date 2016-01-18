@@ -15,7 +15,6 @@ import butterknife.Bind;
 import butterknife.BindColor;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import timber.log.Timber;
 
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
@@ -28,7 +27,7 @@ public final class TopFilterViewHolder extends KSViewHolder {
   private Delegate delegate;
 
   public interface Delegate {
-    void rowClick(final @NonNull TopFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row);
+    void topFilterViewHolderRowClick(final @NonNull TopFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row);
   }
 
   public TopFilterViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
@@ -54,7 +53,7 @@ public final class TopFilterViewHolder extends KSViewHolder {
 
   @OnClick(R.id.filter_text_view)
   protected void textViewClick() {
-    delegate.rowClick(this, item);
+    delegate.topFilterViewHolderRowClick(this, item);
   }
 }
 

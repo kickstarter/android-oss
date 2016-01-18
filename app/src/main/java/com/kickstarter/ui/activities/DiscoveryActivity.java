@@ -29,8 +29,6 @@ import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter;
 import com.kickstarter.ui.containers.ApplicationContainer;
 import com.kickstarter.ui.intents.DiscoveryIntentAction;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
-import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
-import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
 
 import javax.inject.Inject;
@@ -41,7 +39,7 @@ import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresViewModel(DiscoveryViewModel.class)
-public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> implements DiscoveryAdapter.Delegate {
+public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
   private DiscoveryAdapter adapter;
   private DiscoveryIntentAction intentAction;
   private LinearLayoutManager layoutManager;
@@ -74,12 +72,12 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
 
     layoutManager = new LinearLayoutManager(this);
     recyclerView.setLayoutManager(layoutManager);
-    adapter = new DiscoveryAdapter(this);
+    adapter = new DiscoveryAdapter(this.viewModel.inputs);
     recyclerView.setAdapter(adapter);
 
     drawerLayoutManager = new LinearLayoutManager(this); // TODO: Can we reuse the other layout manager?
     drawerRecyclerView.setLayoutManager(drawerLayoutManager);
-    drawerAdapter = new DiscoveryDrawerAdapter(viewModel);
+    drawerAdapter = new DiscoveryDrawerAdapter(viewModel.inputs);
     drawerRecyclerView.setAdapter(drawerAdapter);
 
 
@@ -152,16 +150,6 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
 
   public @NonNull DrawerLayout discoveryLayout() {
     return discoveryLayout;
-  }
-
-  public void projectCardClick(final @NonNull ProjectCardViewHolder viewHolder, final @NonNull Project project) {
-    viewModel.inputs.projectClicked(project);
-  }
-
-  public void signupLoginClick(final @NonNull DiscoveryOnboardingViewHolder viewHolder) {
-    final Intent intent = new Intent(this, LoginToutActivity.class)
-      .putExtra(IntentKey.LOGIN_TYPE, LoginToutActivity.REASON_GENERIC);
-    startActivity(intent);
   }
 
   private void loadParams(final @NonNull DiscoveryParams params) {

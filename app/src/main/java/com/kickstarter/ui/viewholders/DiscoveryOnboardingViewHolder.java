@@ -16,7 +16,7 @@ public final class DiscoveryOnboardingViewHolder extends KSViewHolder {
 
   private final Delegate delegate;
   public interface Delegate {
-    void signupLoginClick(DiscoveryOnboardingViewHolder viewHolder);
+    void discoveryOnboardingViewHolderSignupLoginClick(DiscoveryOnboardingViewHolder viewHolder);
   }
 
   public DiscoveryOnboardingViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
@@ -33,6 +33,6 @@ public final class DiscoveryOnboardingViewHolder extends KSViewHolder {
 
   @OnClick(R.id.signup_login_button)
   protected void signupLoginOnClick() {
-    delegate.signupLoginClick(this);
+    delegate.discoveryOnboardingViewHolderSignupLoginClick(this);
   }
 }

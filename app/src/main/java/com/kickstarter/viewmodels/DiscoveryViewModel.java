@@ -23,8 +23,9 @@ import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.WebClient;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.DiscoveryActivity;
-import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
+import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
+import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.ChildFilterViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.LoggedInViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.LoggedOutViewHolder;
@@ -48,56 +49,13 @@ import rx.subjects.PublishSubject;
 import static com.kickstarter.libs.utils.BoolUtils.isTrue;
 
 public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> implements DiscoveryViewModelInputs,
-  DiscoveryViewModelOutputs, DiscoveryDrawerAdapter.Delegate {
+  DiscoveryViewModelOutputs {
   protected @Inject ApiClientType apiClient;
   protected @Inject WebClient webClient;
   protected @Inject BuildCheck buildCheck;
   protected @Inject CurrentUser currentUser;
 
-  // ADAPTER DELEGATE INPUTS
-  private PublishSubject<NavigationDrawerData.Section.Row> childFilterRowClick = PublishSubject.create();
-  @Override
-  public void rowClick(@NonNull ChildFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
-    childFilterRowClick.onNext(row);
-  }
-
-  private PublishSubject<Void> loginClick = PublishSubject.create();
-  @Override
-  public void loginClick(final @NonNull LoggedOutViewHolder viewHolder) {
-    loginClick.onNext(null);
-  }
-
-  private PublishSubject<NavigationDrawerData.Section.Row> parentFilterRowClick = PublishSubject.create();
-  @Override
-  public void rowClick(@NonNull ParentFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
-    parentFilterRowClick.onNext(row);
-  }
-
-  private PublishSubject<User> profileClick = PublishSubject.create();
-  @Override
-  public void profileClick(final @NonNull LoggedInViewHolder viewHolder, final @NonNull User user) {
-    profileClick.onNext(user);
-  }
-
-  private PublishSubject<User> settingsClick = PublishSubject.create();
-  @Override
-  public void settingsClick(final @NonNull LoggedInViewHolder viewHolder, final @NonNull User user) {
-    settingsClick.onNext(user);
-  }
-
-  private PublishSubject<NavigationDrawerData.Section.Row> topFilterRowClick = PublishSubject.create();
-  @Override
-  public void rowClick(@NonNull TopFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
-    topFilterRowClick.onNext(row);
-  }
-
   // INPUTS
-  private final PublishSubject<Project> projectClicked = PublishSubject.create();
-  @Override
-  public void projectClicked(@NonNull final Project project) {
-    projectClicked.onNext(project);
-  }
-
   private final PublishSubject<Void> nextPage = PublishSubject.create();
   @Override
   public void nextPage() {
@@ -106,15 +64,60 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
 
   private final PublishSubject<Void> filterButtonClicked = PublishSubject.create();
 
-  @Override
-  public void menuButtonClicked() {
-    filterButtonClicked.onNext(null);
-  }
-
   private final PublishSubject<DiscoveryParams> initializer = PublishSubject.create();
   @Override
   public void initializer(final @NonNull DiscoveryParams params) {
     initializer.onNext(params);
+  }
+
+  // ONBOARDING DELEGATE INPUTS
+  @Override
+  public void discoveryOnboardingViewHolderSignupLoginClick(DiscoveryOnboardingViewHolder viewHolder) {
+    loginClick.onNext(null);
+  }
+
+  // PROJECT VIEW HOLDER DELEGATE INPUTS
+  private final PublishSubject<Project> projectClicked = PublishSubject.create();
+  @Override
+  public void projectCardViewHolderClick(ProjectCardViewHolder viewHolder, Project project) {
+    projectClicked.onNext(project);
+  }
+
+  // NAVIGATION DRAWER DELEGATE INPUTS
+  private PublishSubject<NavigationDrawerData.Section.Row> childFilterRowClick = PublishSubject.create();
+  @Override
+  public void childFilterViewHolderRowClick(@NonNull ChildFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
+    childFilterRowClick.onNext(row);
+  }
+
+  private PublishSubject<Void> loginClick = PublishSubject.create();
+  @Override
+  public void loggedOutViewHolderLoginClick(final @NonNull LoggedOutViewHolder viewHolder) {
+    loginClick.onNext(null);
+  }
+
+  private PublishSubject<NavigationDrawerData.Section.Row> parentFilterRowClick = PublishSubject.create();
+  @Override
+  public void parentFilterViewHolderRowClick(@NonNull ParentFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
+    parentFilterRowClick.onNext(row);
+  }
+
+  private PublishSubject<User> profileClick = PublishSubject.create();
+  @Override
+  public void loggedInViewHolderProfileClick(final @NonNull LoggedInViewHolder viewHolder, final @NonNull User user) {
+    profileClick.onNext(user);
+  }
+
+  private PublishSubject<User> settingsClick = PublishSubject.create();
+  @Override
+  public void loggedInViewHolderSettingsClick(final @NonNull LoggedInViewHolder viewHolder, final @NonNull User user) {
+    settingsClick.onNext(user);
+  }
+
+  private PublishSubject<NavigationDrawerData.Section.Row> topFilterRowClick = PublishSubject.create();
+  @Override
+  public void topFilterViewHolderRowClick(@NonNull TopFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
+    topFilterRowClick.onNext(row);
   }
 
   // OUTPUTS

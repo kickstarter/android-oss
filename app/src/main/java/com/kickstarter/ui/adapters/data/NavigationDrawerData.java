@@ -59,10 +59,17 @@ public abstract class NavigationDrawerData {
     }
     public abstract Section.Builder toBuilder();
 
+    public boolean isCategoryFilter() {
+      return rows().size() >= 1 && rows().get(0).params().isCategorySet();
+    }
+
+    public boolean isTopFilter() {
+      return !isCategoryFilter();
+    }
+
     @AutoParcel
     static public abstract class Row {
-      public abstract @NonNull
-      DiscoveryParams params();
+      public abstract @NonNull DiscoveryParams params();
       public abstract boolean selected();
       public abstract boolean rootIsExpanded();
 

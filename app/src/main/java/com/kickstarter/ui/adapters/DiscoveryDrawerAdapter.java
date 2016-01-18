@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import rx.Observable;
+
 public class DiscoveryDrawerAdapter extends KSAdapter {
   private @NonNull Delegate delegate;
   private @NonNull NavigationDrawerData drawerData;
@@ -61,7 +63,7 @@ public class DiscoveryDrawerAdapter extends KSAdapter {
         return R.layout.discovery_drawer_child_filter_view;
       }
     }
-    return R.layout.discovery_drawer_divider;
+    return R.layout.discovery_drawer_divider_view;
   }
 
   @Override
@@ -105,6 +107,7 @@ public class DiscoveryDrawerAdapter extends KSAdapter {
         return new TopFilterViewHolder(view, delegate);
       case R.layout.discovery_drawer_child_filter_view:
         return new ChildFilterViewHolder(view, delegate);
+      case R.layout.discovery_drawer_divider_view:
       default:
         return new EmptyViewHolder(view);
     }
@@ -130,7 +133,21 @@ public class DiscoveryDrawerAdapter extends KSAdapter {
 
     newSections.add(Collections.singletonList(data.user()));
 
-    for (final NavigationDrawerData.Section section : data.sections()) {
+    List<NavigationDrawerData.Section> topFilterSections = Observable.from(data.sections())
+      .filter(NavigationDrawerData.Section::isTopFilter)
+      .toList().toBlocking().single();
+
+    List<NavigationDrawerData.Section> categoryFilterSections = Observable.from(data.sections())
+      .filter(NavigationDrawerData.Section::isCategoryFilter)
+      .toList().toBlocking().single();
+
+    for (final NavigationDrawerData.Section section : topFilterSections) {
+      newSections.add(new ArrayList<>(section.rows()));
+    }
+
+    newSections.add(Collections.singletonList(null)); // Divider
+
+    for (final NavigationDrawerData.Section section : categoryFilterSections) {
       newSections.add(new ArrayList<>(section.rows()));
     }
 

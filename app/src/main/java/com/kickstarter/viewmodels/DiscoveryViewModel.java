@@ -265,6 +265,8 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .subscribe(__ -> showSettings.onNext(null))
     );
 
+    // Closing the drawer while starting an activity is a little overwhelming,
+    // so put the close on a delay so it happens out of sight.
     addSubscription(
       profileClick
         .mergeWith(settingsClick)

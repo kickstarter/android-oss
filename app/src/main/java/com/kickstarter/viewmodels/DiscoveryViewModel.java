@@ -101,10 +101,6 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   public Observable<Activity> showActivityUpdate() {
     return showActivityUpdate;
   }
-  private final BehaviorSubject<Boolean> shouldShowActivitySample = BehaviorSubject.create();
-  public Observable<Boolean> shouldShowActivitySample() {
-    return shouldShowActivitySample;
-  }
 
   // ERRORS
   private PublishSubject<ErrorEnvelope> activityError = PublishSubject.create();
@@ -143,7 +139,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .subscribe(p -> koala.trackDiscovery(p, !hasSeenOnboarding))
     );
 
-    addSubscription(paginator.paginatedData.subscribe(projects));
+    addSubscription(paginator.paginatedData.subscribe(projects::onNext));
 
     addSubscription(
       params

@@ -23,15 +23,14 @@ import com.kickstarter.ui.adapters.ProfileAdapter;
 import com.kickstarter.viewmodels.ProfileViewModel;
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 
+import static com.kickstarter.libs.utils.IntegerUtils.isNonZero;
+
 @RequiresViewModel(ProfileViewModel.class)
 public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
-  private ProfileAdapter adapter;
   private RecyclerViewPaginator paginator;
 
   protected @Bind(R.id.avatar) ImageView avatarImageView;
@@ -49,7 +48,7 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
     setContentView(R.layout.profile_layout);
     ButterKnife.bind(this);
 
-    adapter = new ProfileAdapter(viewModel);
+    final ProfileAdapter adapter = new ProfileAdapter(viewModel);
     final int spanCount = ViewUtils.isLandscape(this) ? 3 : 2;
     recyclerView.setLayoutManager(new GridLayoutManager(this, spanCount));
     recyclerView.setAdapter(adapter);
@@ -64,7 +63,7 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
     viewModel.outputs.projects()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::loadProjects);
+      .subscribe(adapter::takeProjects);
 
     viewModel.outputs.showProject()
       .compose(bindToLifecycle())
@@ -78,10 +77,6 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
     paginator.stop();
   }
 
-  private void loadProjects(final @NonNull List<Project> projects) {
-    adapter.takeProjects(projects);
-  }
-
   private void setViews(final @NonNull User user) {
     Picasso.with(this).load(user.avatar()
       .medium())
@@ -91,21 +86,21 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
     userNameTextView.setText(user.name());
 
     final Integer createdNum = user.createdProjectsCount();
-    if (createdNum == null || createdNum == 0) {
+    if (isNonZero(createdNum)) {
+      createdNumTextView.setText(String.valueOf(createdNum));
+    } else {
       createdTextView.setVisibility(View.GONE);
       createdNumTextView.setVisibility(View.GONE);
       dividerView.setVisibility(View.GONE);
-    } else {
-      createdNumTextView.setText(createdNum.toString());
     }
 
     final Integer backedNum = user.backedProjectsCount();
-    if (backedNum == null || backedNum == 0) {
+    if (isNonZero(backedNum)) {
+      backedNumTextView.setText(String.valueOf(backedNum));
+    } else {
       backedTextView.setVisibility(View.GONE);
       backedNumTextView.setVisibility(View.GONE);
       dividerView.setVisibility(View.GONE);
-    } else {
-      backedNumTextView.setText(backedNum.toString());
     }
   }
 

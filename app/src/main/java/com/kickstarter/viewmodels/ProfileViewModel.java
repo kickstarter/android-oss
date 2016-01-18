@@ -81,7 +81,7 @@ public final class ProfileViewModel extends ViewModel<ProfileActivity> implement
         .loadWithPaginationPath(client::fetchProjects)
         .build();
 
-    addSubscription(paginator.paginatedData.subscribe(projects));
+    addSubscription(paginator.paginatedData.subscribe(projects::onNext));
 
     koala.trackProfileView();
   }

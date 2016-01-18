@@ -16,29 +16,34 @@ import java.util.Collections;
 import java.util.List;
 
 public final class ProfileAdapter extends KSAdapter {
+  private static final int SECTION_EMPTY_VIEW = 0;
+  private static final int SECTION_PROJECTS_VIEW = 1;
+
   private final Delegate delegate;
 
   public interface Delegate extends ProfileCardViewHolder.Delegate, EmptyProfileViewHolder.Delegate {}
 
   public ProfileAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;
+
+    this.data().add(SECTION_EMPTY_VIEW, Collections.emptyList());
+    this.data().add(SECTION_PROJECTS_VIEW, Collections.emptyList());
   }
 
   public void takeProjects(final @NonNull List<Project> projects) {
-    data().clear();
     if (projects.size() == 0) {
-      data().add(Collections.singletonList(Empty.get()));
+      data().set(SECTION_EMPTY_VIEW, Collections.singletonList(Empty.get()));
     } else {
-      data().add(projects);
+      data().set(SECTION_PROJECTS_VIEW, projects);
     }
     notifyDataSetChanged();
   }
 
   protected @LayoutRes int layout(final @NonNull SectionRow sectionRow) {
-    if (objectFromSectionRow(sectionRow) instanceof Project) {
-      return R.layout.profile_card_view;
-    } else {
+    if (sectionRow.section() == SECTION_EMPTY_VIEW) {
       return R.layout.profile_empty_state_view;
+    } else {
+      return R.layout.profile_card_view;
     }
   }
 

@@ -12,7 +12,7 @@ import com.kickstarter.libs.BaseActivity;
 public final class StatusBarUtils {
   private StatusBarUtils() {}
 
-  public static void apply(@NonNull final BaseActivity activity, final @ColorInt int color) {
+  public static void apply(final @NonNull BaseActivity activity, final @ColorInt int color) {
     if (!ApiCapabilities.canSetStatusBarColor()) {
       return;
     }
@@ -22,17 +22,17 @@ public final class StatusBarUtils {
     window.setStatusBarColor(color);
   }
 
-  public static void apply(@NonNull final BaseActivity activity, final @ColorInt int color,
+  public static void apply(final @NonNull BaseActivity activity, final @ColorInt int color,
     final boolean overlayShouldBeLight) {
     apply(activity, color);
     setIconOverlay(activity, overlayShouldBeLight);
   }
 
-  public static void setDarkStatusBarIcons(@NonNull final BaseActivity activity) {
+  public static void setDarkStatusBarIcons(final @NonNull BaseActivity activity) {
     setIconOverlay(activity, true);
   }
 
-  public static void setLightStatusBarIcons(@NonNull final BaseActivity activity) {
+  public static void setLightStatusBarIcons(final @NonNull BaseActivity activity) {
     setIconOverlay(activity, false);
   }
 

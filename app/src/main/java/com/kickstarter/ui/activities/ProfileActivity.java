@@ -106,7 +106,7 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
 
     userNameTextView.setText(user.name());
 
-    final Integer createdNum = 0;//user.createdProjectsCount();
+    final Integer createdNum = user.createdProjectsCount();
     if (isNonZero(createdNum)) {
       createdNumTextView.setText(String.valueOf(createdNum));
     } else {
@@ -115,7 +115,7 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
       dividerView.setVisibility(View.GONE);
     }
 
-    final Integer backedNum = 0;//user.backedProjectsCount();
+    final Integer backedNum = user.backedProjectsCount();
     if (isNonZero(backedNum)) {
       backedNumTextView.setText(String.valueOf(backedNum));
     } else {

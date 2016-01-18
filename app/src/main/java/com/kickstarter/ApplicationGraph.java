@@ -1,9 +1,9 @@
 package com.kickstarter;
 
 import com.kickstarter.libs.CurrentUser;
-import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.KoalaTrackingClient;
+import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.utils.ApplicationLifecycleUtil;
 import com.kickstarter.services.gcm.MessageService;
 import com.kickstarter.services.gcm.RegisterService;

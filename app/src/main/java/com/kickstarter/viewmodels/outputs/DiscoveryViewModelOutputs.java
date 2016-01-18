@@ -19,4 +19,5 @@ public interface DiscoveryViewModelOutputs {
   Observable<Void> showLogin();
   Observable<Pair<Project, RefTag>> showProject();
   Observable<Void> showProfile();
+  Observable<Void> showSettings();
 }

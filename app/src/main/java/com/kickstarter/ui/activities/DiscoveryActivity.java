@@ -123,6 +123,11 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(projectAndRefTag -> this.startProjectActivity(projectAndRefTag.first, projectAndRefTag.second));
 
+    viewModel.outputs.showSettings()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> this.startSettingsActivity());
+
     viewModel.navigationDrawerData()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
@@ -190,6 +195,12 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
     final Intent intent = new Intent(this, ProjectActivity.class)
       .putExtra(IntentKey.PROJECT, project)
       .putExtra(IntentKey.REF_TAG, refTag);
+    startActivity(intent);
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  private void startSettingsActivity() {
+    final Intent intent = new Intent(this, SettingsActivity.class);
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }

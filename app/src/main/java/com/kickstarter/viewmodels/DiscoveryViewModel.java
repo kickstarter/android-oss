@@ -160,6 +160,12 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
       .map(pp -> DiscoveryViewModel.projectAndRefTagFromParamsAndProject(pp.first, pp.second));
   }
 
+  private final PublishSubject<Void> showSettings = PublishSubject.create();
+  @Override
+  public Observable<Void> showSettings() {
+    return showSettings;
+  }
+
   private boolean hasSeenOnboarding = false;
 
   public final DiscoveryViewModelInputs inputs = this;
@@ -252,6 +258,11 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     addSubscription(
       profileClick
         .subscribe(__ -> showProfile.onNext(null))
+    );
+
+    addSubscription(
+      settingsClick
+        .subscribe(__ -> showSettings.onNext(null))
     );
 
     addSubscription(

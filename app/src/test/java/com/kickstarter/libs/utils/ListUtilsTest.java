@@ -7,7 +7,7 @@ import java.util.List;
 
 import rx.functions.Func2;
 
-public class ListUtilsTest extends TestCase {
+public final class ListUtilsTest extends TestCase {
 
   public void testAllReplaced() {
     final List<Integer> xs = Arrays.asList(1, 2, 2, 4, 5);

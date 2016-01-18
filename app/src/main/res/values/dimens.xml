@@ -55,8 +55,10 @@
   <dimen name="card_padding_action_half">@dimen/grid_1_half</dimen>
   <dimen name="profile_card_height">@dimen/grid_26</dimen>
 
-  <!-- Hamburger -->
-  <dimen name="hamburger_drawer_item_padding_y">14dp</dimen>
+  <!-- Discovery drawer -->
+  <dimen name="discovery_drawer_filter_padding_y">14dp</dimen>
+  <dimen name="discovery_drawer_status_bar_height">0dp</dimen>
+  <dimen name="discovery_drawer_status_bar_height_negative">0dp</dimen>
 
   <!-- Layout padding -->
   <dimen name="activity_padding_x">0dp</dimen>
@@ -111,16 +113,8 @@
   <dimen name="activity_feed_view_margin_top">0dp</dimen>
   <dimen name="activity_feed_view_margin_bottom">@dimen/grid_3_half</dimen>
 
-  <!-- Logged in menu -->
-  <dimen name="logged_in_menu_width">190dp</dimen>
-  <dimen name="logged_in_menu_horizontal_offset">-145dp</dimen>
-  <dimen name="logged_in_menu_vertical_offset">-46dp</dimen>
-
   <!-- Popup menus -->
   <dimen name="popup_menu_horizontal_offset">-151dp</dimen>
   <dimen name="popup_menu_vertical_offset">-46dp</dimen>
-
-  <dimen name="status_bar_height">0dp</dimen>
-  <dimen name="status_bar_height_negative">0dp</dimen>
 
 </resources>

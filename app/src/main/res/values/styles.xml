@@ -39,10 +39,6 @@
     <item name="android:textAllCaps">false</item>
   </style>
 
-  <style name="HamburgerStatusBar" parent="KSTheme">
-    <item name="colorPrimaryDark">@color/discovery_status_bar</item>
-  </style>
-
   <!-- Activities -->
   <style name="ActivityFeedActivity" parent="KSTheme">
     <item name="android:windowBackground">@color/activity_feed_background</item>
@@ -66,10 +62,6 @@
 
   <style name="DisplayWebViewActivity" parent="KSTheme">
     <item name="android:windowBackground">@color/white</item>
-  </style>
-
-  <style name="HamburgerActivity" parent="HamburgerStatusBar">
-    <item name="android:windowBackground">@color/discovery_background</item>
   </style>
 
   <style name="HelpActivity" parent="KSTheme">

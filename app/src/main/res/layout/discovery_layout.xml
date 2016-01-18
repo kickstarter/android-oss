@@ -15,8 +15,8 @@
     android:nextFocusDown="@+id/recycler_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="@dimen/status_bar_height_negative"
-    android:paddingTop="@dimen/status_bar_height"
+    android:layout_marginTop="@dimen/discovery_drawer_status_bar_height_negative"
+    android:paddingTop="@dimen/discovery_drawer_status_bar_height"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 

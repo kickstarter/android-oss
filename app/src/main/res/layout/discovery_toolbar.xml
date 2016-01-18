@@ -22,7 +22,7 @@
       android:id="@+id/discovery_status_bar"
       android:background="@color/discovery_status_bar"
       android:layout_width="match_parent"
-      android:layout_height="@dimen/status_bar_height" />
+      android:layout_height="@dimen/discovery_drawer_status_bar_height" />
 
     <RelativeLayout
       android:layout_width="match_parent"

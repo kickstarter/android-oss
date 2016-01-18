@@ -9,8 +9,8 @@
   <TextView
     style="@style/SubheadPrimary"
     android:background="@drawable/click_indicator_light_masked"
-    android:paddingTop="@dimen/hamburger_drawer_item_padding_y"
-    android:paddingBottom="@dimen/hamburger_drawer_item_padding_y"
+    android:paddingTop="@dimen/discovery_drawer_filter_padding_y"
+    android:paddingBottom="@dimen/discovery_drawer_filter_padding_y"
     android:paddingStart="@dimen/grid_2"
     android:paddingLeft="@dimen/grid_2"
     android:id="@+id/filter_text_view"

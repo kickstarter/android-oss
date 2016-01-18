@@ -54,6 +54,11 @@ public final class ProfileViewModel extends ViewModel<ProfileActivity> implement
   public Observable<Project> showProject() {
     return showProject;
   }
+  private final PublishSubject<Void> showDiscovery = PublishSubject.create();
+  @Override
+  public Observable<Void> showDiscovery() {
+    return showDiscovery;
+  }
 
   public final ProfileViewModelInputs inputs = this;
   public final ProfileViewModelOutputs outputs = this;
@@ -97,6 +102,6 @@ public final class ProfileViewModel extends ViewModel<ProfileActivity> implement
   }
 
   public void emptyProfileViewHolderExploreProjectsClicked(final @NonNull EmptyProfileViewHolder viewHolder) {
-    //go to discovery
+    this.showDiscovery.onNext(null);
   }
 }

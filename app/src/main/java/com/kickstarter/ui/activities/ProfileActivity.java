@@ -73,6 +73,11 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::startProjectActivity);
+
+    viewModel.outputs.showDiscovery()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> startDiscoveryActivity());
   }
 
   @Override
@@ -84,6 +89,10 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
   private void loadProjects(final @NonNull List<Project> projects) {
     if (projects.size() == 0) {
       recyclerView.setLayoutManager(new LinearLayoutManager(this));
+      recyclerView.setPadding(0, recyclerView.getPaddingTop(), recyclerView.getPaddingRight(), recyclerView.getPaddingBottom());
+      if (ViewUtils.isPortrait(this)) {
+        recyclerView.setNestedScrollingEnabled(false);
+      }
     }
 
     adapter.takeProjects(projects);
@@ -120,5 +129,10 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
     final Intent intent = new Intent(this, ProjectActivity.class)
       .putExtra(IntentKey.PROJECT, project);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  private void startDiscoveryActivity() {
+    final Intent intent = new Intent(this, DiscoveryActivity.class);
+    startActivity(intent);
   }
 }

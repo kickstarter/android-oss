@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,6 +24,8 @@ import com.kickstarter.ui.adapters.ProfileAdapter;
 import com.kickstarter.viewmodels.ProfileViewModel;
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
@@ -31,6 +34,7 @@ import static com.kickstarter.libs.utils.IntegerUtils.isNonZero;
 
 @RequiresViewModel(ProfileViewModel.class)
 public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
+  private ProfileAdapter adapter;
   private RecyclerViewPaginator paginator;
 
   protected @Bind(R.id.avatar) ImageView avatarImageView;
@@ -48,7 +52,7 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
     setContentView(R.layout.profile_layout);
     ButterKnife.bind(this);
 
-    final ProfileAdapter adapter = new ProfileAdapter(viewModel);
+    adapter = new ProfileAdapter(viewModel);
     final int spanCount = ViewUtils.isLandscape(this) ? 3 : 2;
     recyclerView.setLayoutManager(new GridLayoutManager(this, spanCount));
     recyclerView.setAdapter(adapter);
@@ -63,7 +67,7 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
     viewModel.outputs.projects()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(adapter::takeProjects);
+      .subscribe(this::loadProjects);
 
     viewModel.outputs.showProject()
       .compose(bindToLifecycle())
@@ -77,6 +81,14 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
     paginator.stop();
   }
 
+  private void loadProjects(final @NonNull List<Project> projects) {
+    if (projects.size() == 0) {
+      recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    adapter.takeProjects(projects);
+  }
+
   private void setViews(final @NonNull User user) {
     Picasso.with(this).load(user.avatar()
       .medium())
@@ -85,7 +97,7 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
 
     userNameTextView.setText(user.name());
 
-    final Integer createdNum = user.createdProjectsCount();
+    final Integer createdNum = 0;//user.createdProjectsCount();
     if (isNonZero(createdNum)) {
       createdNumTextView.setText(String.valueOf(createdNum));
     } else {
@@ -94,7 +106,7 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
       dividerView.setVisibility(View.GONE);
     }
 
-    final Integer backedNum = user.backedProjectsCount();
+    final Integer backedNum = 0;//user.backedProjectsCount();
     if (isNonZero(backedNum)) {
       backedNumTextView.setText(String.valueOf(backedNum));
     } else {

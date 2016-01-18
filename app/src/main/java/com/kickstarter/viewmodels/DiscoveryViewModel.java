@@ -169,6 +169,18 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     return showSettings;
   }
 
+  private BehaviorSubject<NavigationDrawerData> navigationDrawerData = BehaviorSubject.create();
+  @Override
+  public Observable<NavigationDrawerData> navigationDrawerData() {
+    return navigationDrawerData;
+  }
+
+  private BehaviorSubject<Boolean> openDrawer = BehaviorSubject.create(false);
+  @Override
+  public Observable<Boolean> openDrawer() {
+    return openDrawer;
+  }
+
   private boolean hasSeenOnboarding = false;
 
   public final DiscoveryViewModelInputs inputs = this;
@@ -318,19 +330,6 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     }
 
     return new Pair<>(project, refTag);
-  }
-
-  // NAVIGATION DRAWER METHODS
-
-  // OUTPUTS
-  private BehaviorSubject<NavigationDrawerData> navigationDrawerData = BehaviorSubject.create();
-  public Observable<NavigationDrawerData> navigationDrawerData() {
-    return navigationDrawerData;
-  }
-
-  private BehaviorSubject<Boolean> openDrawer = BehaviorSubject.create(false);
-  public Observable<Boolean> openDrawer() {
-    return openDrawer;
   }
 
   private static @Nullable Category toggleExpandedCategory(final @Nullable Category expandedCategory, final @NonNull Category clickedCategory) {

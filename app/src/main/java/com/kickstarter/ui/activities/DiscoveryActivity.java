@@ -97,10 +97,10 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::loadParams);
 
-    viewModel.outputs.showDebug()
+    viewModel.outputs.showInternalTools()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> internalTools.maybeStartDebugActivity(this));
+      .subscribe(__ -> internalTools.maybeStartInternalToolsActivity(this));
 
     viewModel.outputs.showLogin()
       .compose(bindToLifecycle())

@@ -9,11 +9,13 @@
   android:gravity="center_vertical"
   android:orientation="vertical">
 
-  <LinearLayout
-    android:background="@color/hamburger_navigation_header"
-    android:gravity="center_vertical"
+  <RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="@dimen/grid_7">
+    android:layout_height="@dimen/grid_7"
+    android:paddingTop="@dimen/grid_1"
+    android:paddingBottom="@dimen/grid_1"
+    android:background="@color/hamburger_navigation_header"
+    android:gravity="center_vertical">
 
     <LinearLayout
       android:id="@+id/logged_out_container"
@@ -50,7 +52,20 @@
 
     </LinearLayout>
 
-  </LinearLayout>
+    <LinearLayout
+      android:orientation="horizontal"
+      android:layout_centerVertical="true"
+      android:gravity="center_vertical"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentRight="true"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content">
+
+      <include layout="@layout/internal_tools_button_view" />
+
+    </LinearLayout>
+
+  </RelativeLayout>
 
   <include layout="@layout/horizontal_line_0_5dp_view" />
 

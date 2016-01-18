@@ -6,7 +6,7 @@
 
   <com.kickstarter.ui.views.IconButton
     android:background="@drawable/click_indicator_light"
-    android:id="@+id/debug_icon_button"
+    android:id="@+id/internal_tools_icon_button"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:gravity="center"

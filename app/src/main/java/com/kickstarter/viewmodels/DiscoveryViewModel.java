@@ -101,10 +101,15 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     parentFilterRowClick.onNext(row);
   }
 
-  private PublishSubject<Void> debugClick = PublishSubject.create();
+  private PublishSubject<Void> internalToolsClick = PublishSubject.create();
   @Override
-  public void loggedInViewHolderDebugClick(final @NonNull LoggedInViewHolder viewHolder) {
-    debugClick.onNext(null);
+  public void loggedInViewHolderInternalToolsClick(final @NonNull LoggedInViewHolder viewHolder) {
+    internalToolsClick.onNext(null);
+  }
+
+  @Override
+  public void loggedOutViewHolderInternalToolsClick(final @NonNull LoggedOutViewHolder viewHolder) {
+    internalToolsClick.onNext(null);
   }
 
   private PublishSubject<User> profileClick = PublishSubject.create();
@@ -156,10 +161,10 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     return selectedParams.compose(Transformers.takeWhen(filterButtonClicked));
   }
 
-  private final PublishSubject<Void> showDebug = PublishSubject.create();
+  private final PublishSubject<Void> showInternalTools = PublishSubject.create();
   @Override
-  public Observable<Void> showDebug() {
-    return showDebug;
+  public Observable<Void> showInternalTools() {
+    return showInternalTools;
   }
 
   private final PublishSubject<Void> showProfile = PublishSubject.create();
@@ -289,8 +294,8 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     );
 
     addSubscription(
-      debugClick
-        .subscribe(__ -> showDebug.onNext(null))
+      internalToolsClick
+        .subscribe(__ -> showInternalTools.onNext(null))
     );
 
     addSubscription(
@@ -312,7 +317,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     // so put the close on a delay so it happens out of sight.
     addSubscription(
       profileClick.map(__ -> null)
-        .mergeWith(debugClick)
+        .mergeWith(internalToolsClick)
         .mergeWith(settingsClick)
         .mergeWith(loginClick.map(__ -> null))
         .delay(1, TimeUnit.SECONDS)

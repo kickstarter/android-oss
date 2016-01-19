@@ -4,11 +4,9 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.MediaController;
-import android.widget.ProgressBar;
 
 import com.google.android.exoplayer.ExoPlayer;
 import com.jakewharton.rxbinding.view.RxView;

@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,7 +27,6 @@ import com.kickstarter.viewmodels.inputs.ProjectViewModelInputs;
 import com.kickstarter.viewmodels.outputs.ProjectViewModelOutputs;
 
 import java.net.CookieManager;
-import java.net.HttpCookie;
 
 import javax.inject.Inject;
 
@@ -46,13 +46,13 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
    * data in the activity and the other comes from the ref stored in a cookie associated to the project.
    */
   private class RefTagsAndProject {
-    final @Nullable RefTag intentRefTag;
-    final @Nullable RefTag cookieRefTag;
+    final @Nullable RefTag refTagFromIntent;
+    final @Nullable RefTag refTagFromCookie;
     final @NonNull Project project;
 
-    private RefTagsAndProject(final @Nullable RefTag intentRefTag, final @Nullable RefTag cookieRefTag, final @NonNull Project project) {
-      this.intentRefTag = intentRefTag;
-      this.cookieRefTag = cookieRefTag;
+    private RefTagsAndProject(final @Nullable RefTag refTagFromIntent, final @Nullable RefTag refTagFromCookie, final @NonNull Project project) {
+      this.refTagFromIntent = refTagFromIntent;
+      this.refTagFromCookie = refTagFromCookie;
       this.project = project;
     }
   }
@@ -207,23 +207,31 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
 
     // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
     final Observable<RefTag> cookieRefTag = project
+      .compose(Transformers.combineLatestPair(view))
       .take(1)
-      .map(p -> RefTagUtils.storedCookieRefTagForProject(p, cookieManager));
+      .map(projectAndView -> {
+        final Project project = projectAndView.first;
+        final SharedPreferences prefs = projectAndView.second.getPreferences(Context.MODE_PRIVATE);
+        return RefTagUtils.storedCookieRefTagForProject(project, cookieManager, prefs);
+      });
 
     addSubscription(
       Observable.combineLatest(intentRefTag, cookieRefTag, project, RefTagsAndProject::new)
+        .compose(Transformers.combineLatestPair(view))
         .take(1)
-        .subscribe(data -> {
+        .subscribe(dataAndView -> {
+          final RefTagsAndProject data = dataAndView.first;
+          final SharedPreferences prefs = dataAndView.second.getPreferences(Context.MODE_PRIVATE);
+
           // If a cookie hasn't been set for this ref+project then do so.
-          if (data.cookieRefTag == null && data.intentRefTag != null) {
-            final HttpCookie cookie = RefTagUtils.buildCookieForRefTagAndProject(data.intentRefTag, data.project);
-            cookieManager.getCookieStore().add(null, cookie);
+          if (data.refTagFromCookie == null && data.refTagFromIntent != null) {
+            RefTagUtils.storeCookie(data.refTagFromIntent, data.project, cookieManager, prefs);
           }
 
           koala.trackProjectShow(
             data.project,
-            data.intentRefTag,
-            RefTagUtils.storedCookieRefTagForProject(data.project, cookieManager)
+            data.refTagFromIntent,
+            RefTagUtils.storedCookieRefTagForProject(data.project, cookieManager, prefs)
           );
         })
     );

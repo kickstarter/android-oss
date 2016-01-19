@@ -134,16 +134,10 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   }
 
   public void startShareIntent(final @NonNull Project project) {
-    final String genericShareMessage = new StringBuilder()
-      .append(shareString(project))
-      .append("\r\n\r\n")
-      .append(project.webProjectUrl())
-      .toString();
-
     final Intent intent = new Intent(android.content.Intent.ACTION_SEND)
       .setType("text/plain")
       .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
-      .putExtra(Intent.EXTRA_TEXT, genericShareMessage);
+      .putExtra(Intent.EXTRA_TEXT, shareString(project) + " " + project.webProjectUrl());
 
     startActivity(Intent.createChooser(intent, shareThisProjectString));
   }

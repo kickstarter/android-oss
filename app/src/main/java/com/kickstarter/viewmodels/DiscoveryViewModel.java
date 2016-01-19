@@ -302,6 +302,13 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .subscribe(activity::onNext)
     );
 
+    // Clear activity sample when params change
+    addSubscription(
+      selectedParams
+        .map(__ -> (Activity) null)
+        .subscribe(activity::onNext)
+    );
+
     addSubscription(
       Observable.combineLatest(
         categories,
@@ -313,14 +320,14 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     );
     
     addSubscription(selectedParams
-      .compose(Transformers.takePairWhen(clickProject))
-      .map(pp -> DiscoveryViewModel.projectAndRefTagFromParamsAndProject(pp.first, pp.second))
-      .subscribe(showProject::onNext)
+        .compose(Transformers.takePairWhen(clickProject))
+        .map(pp -> DiscoveryViewModel.projectAndRefTagFromParamsAndProject(pp.first, pp.second))
+        .subscribe(showProject::onNext)
     );
 
     addSubscription(clickActivityProject
-      .map(p -> Pair.create(p, RefTag.activitySample()))
-      .subscribe(showProject::onNext)
+        .map(p -> Pair.create(p, RefTag.activitySample()))
+        .subscribe(showProject::onNext)
     );
 
     addSubscription(

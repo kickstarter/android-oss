@@ -121,7 +121,7 @@ public class VideoViewModel extends ViewModel<VideoActivity> implements VideoVie
 
   public void preparePlayer(final @NonNull Context context, final @NonNull Video video, final long position,
     final @NonNull SurfaceView surfaceView, final @NonNull View rootView) {
-    final KSVideoPlayer player = new KSVideoPlayer(new KSRendererBuilder(context, video.high()));
+    final KSVideoPlayer player = new KSVideoPlayer(context, new KSRendererBuilder(context, video.high()));
     player.setListener(this);
     player.seekTo(position);
 

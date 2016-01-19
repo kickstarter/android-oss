@@ -65,6 +65,16 @@ public class VideoViewModel extends ViewModel<VideoActivity> implements VideoVie
   }
 
   @Override
+  public void videoPaused() {
+    koala.trackVideoPaused();
+  }
+
+  @Override
+  public void videoStopped() {
+    koala.trackVideoStop();
+  }
+
+  @Override
   protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
@@ -106,6 +116,7 @@ public class VideoViewModel extends ViewModel<VideoActivity> implements VideoVie
     switch (state) {
       case ExoPlayer.STATE_ENDED:
         videoEnded.onNext(null);
+        koala.trackVideoStop();
         koala.trackVideoCompleted();
         break;
     }

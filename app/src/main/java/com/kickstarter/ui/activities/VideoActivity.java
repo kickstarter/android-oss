@@ -46,6 +46,7 @@ public final class VideoActivity extends BaseActivity<VideoViewModel> {
 
   @Override
   public void onDestroy() {
+    viewModel.inputs.videoStopped();
     viewModel.inputs.playerNeedsRelease();
     super.onDestroy();
   }
@@ -60,6 +61,7 @@ public final class VideoActivity extends BaseActivity<VideoViewModel> {
   public void onPause() {
     super.onPause();
     viewModel.inputs.playerNeedsRelease();
+    viewModel.inputs.videoPaused();
   }
 
   @Override

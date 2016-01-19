@@ -9,4 +9,6 @@ import com.kickstarter.models.Video;
 public interface VideoViewModelInputs {
   void playerNeedsPrepare(Video video, SurfaceView surfaceView, View rootView);
   void playerNeedsRelease();
+  void videoPaused();
+  void videoStopped();
 }

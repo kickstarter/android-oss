@@ -31,11 +31,12 @@ import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.libs.vendor.TweetComposer;
 import com.kickstarter.models.Category;
+import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
-import com.kickstarter.ui.IntentKey;
-import com.kickstarter.viewmodels.ThanksViewModel;
 import com.kickstarter.services.DiscoveryParams;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ThanksAdapter;
+import com.kickstarter.viewmodels.ThanksViewModel;
 
 import java.util.List;
 
@@ -77,10 +78,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
     recommendedProjectsRecyclerView.setLayoutManager(layoutManager);
 
     displayWoohooBackground();
-
-    if (!hasSeenAppRatingPreference.get()) {
-      ViewUtils.showRatingDialog(this);
-    }
+    displayRating();
 
     viewModel.takeProject(getIntent().getExtras().getParcelable(IntentKey.PROJECT));
   }
@@ -120,11 +118,12 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
       return;
     }
 
+    final Photo photo = project.photo();
     final ShareOpenGraphObject object = new ShareOpenGraphObject.Builder()
       .putString("og:type", "kickstarter:project")
       .putString("og:title", project.name())
       .putString("og:description", project.blurb())
-      .putString("og:image", project.photo().small())
+      .putString("og:image", photo == null ? null : photo.small())
       .putString("og:url", project.webProjectUrl())
       .build();
 
@@ -182,5 +181,13 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
         ((Animatable) drawable).start();
       }
     }, 500);
+  }
+
+  private void displayRating() {
+    if (!hasSeenAppRatingPreference.get()) {
+      new Handler().postDelayed(() -> {
+        ViewUtils.showRatingDialog(this);
+      }, 700);
+    }
   }
 }

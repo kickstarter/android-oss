@@ -39,7 +39,7 @@
       </RelativeLayout>
 
       <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginBottom="@dimen/grid_1"
@@ -52,10 +52,10 @@
           android:id="@+id/backed_project"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:text="You just backed Some Secret Project. Share this project with friends to help it along!" />
+          android:text="You just backed a project. Share this project with friends to help it along!" />
 
         <LinearLayout
-          android:layout_width="wrap_content"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:paddingTop="@dimen/grid_3"
           android:orientation="horizontal"
@@ -64,19 +64,19 @@
           <Button
             style="@style/FacebookButton"
             android:id="@+id/facebook_button"
+            android:ellipsize="none"
             android:layout_marginRight="@dimen/grid_3_half"
             android:layout_weight="1"
-            android:paddingLeft="@dimen/grid_6"
-            android:paddingRight="52dp"
+            android:layout_width="0dp"
             android:text="@string/project_checkout_share_buttons_share"
             android:textAllCaps="false" />
 
           <Button
             style="@style/TwitterButton"
             android:id="@+id/twitter_button"
+            android:ellipsize="none"
             android:layout_weight="1"
-            android:paddingLeft="@dimen/grid_6"
-            android:paddingRight="@dimen/grid_7"
+            android:layout_width="0dp"
             android:text="@string/project_checkout_share_buttons_tweet"
             android:textAllCaps="false" />
 
@@ -105,7 +105,9 @@
         android:id="@+id/recommended_projects_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:layout_margin="@dimen/grid_2"
+        android:layout_marginTop="@dimen/grid_2"
+        android:layout_marginLeft="@dimen/grid_2"
+        android:layout_marginBottom="@dimen/grid_2"
         android:scrollbars="horizontal" />
 
     </LinearLayout>

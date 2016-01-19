@@ -56,17 +56,18 @@
 
   <!-- Layout padding -->
   <dimen name="activity_padding_x">0dp</dimen>
+  <dimen name="comment_body_padding_x">@dimen/grid_7</dimen>
   <dimen name="feed_padding_y">@dimen/grid_5_half</dimen>
-  <dimen name="feed_padding_x">@dimen/grid_3</dimen>
-  <dimen name="form_margin_x">@dimen/grid_3</dimen>
-  <dimen name="project_padding_x">@dimen/grid_3</dimen>
-  <dimen name="settings_icon_margin_x">@dimen/grid_1</dimen>
+  <dimen name="feed_padding_x">@dimen/grid_2</dimen>
+  <dimen name="form_margin_x">@dimen/grid_2</dimen>
+  <dimen name="project_padding_x">@dimen/grid_2</dimen>
+  <dimen name="settings_icon_margin_x">@dimen/grid_1_half</dimen>
 
   <!-- Buttons -->
   <!-- button_icon_fixed_width is useful when we want to place several icons next to each
   other where they all take up the same width. This helps with UI effects like ripples that
   use the button size to calculate the ripple radius. -->
-  <dimen name="button_icon_fixed_width">54dp</dimen>
+  <dimen name="button_icon_fixed_width">48dp</dimen>
   <dimen name="settings_icon_fixed_width">@dimen/grid_6</dimen>
   <dimen name="button_corner_radius">@dimen/grid_1_half</dimen>
   <dimen name="button_stroke_width">1dp</dimen>
@@ -87,8 +88,8 @@
   <dimen name="activity_feed_small_photo_height">72dp</dimen>
   <dimen name="activity_feed_medium_photo_width">120dp</dimen>
   <dimen name="activity_feed_medium_photo_height">90dp</dimen>
-  <dimen name="comments_feed_avatar_width">@dimen/grid_7</dimen>
-  <dimen name="comments_feed_avatar_height">@dimen/grid_7</dimen>
+  <dimen name="comments_feed_avatar_width">@dimen/grid_11_half</dimen>
+  <dimen name="comments_feed_avatar_height">@dimen/grid_11_half</dimen>
   <dimen name="profile_avatar_width">100dp</dimen>
   <dimen name="profile_avatar_height">@dimen/profile_avatar_width</dimen>
   <dimen name="profile_card_photo_height">@dimen/grid_15</dimen>

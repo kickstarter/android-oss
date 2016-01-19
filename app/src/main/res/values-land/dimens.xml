@@ -2,14 +2,15 @@
 <resources>
   <dimen name="activity_feed_view_margin_top">@dimen/grid_2</dimen>
   <dimen name="activity_feed_view_margin_bottom">@dimen/grid_1</dimen>
-  <dimen name="activity_padding_x">@dimen/grid_8</dimen>
-  <dimen name="feed_padding_x">@dimen/grid_8</dimen>
-  <dimen name="form_margin_x">@dimen/grid_8</dimen>
+  <dimen name="activity_padding_x">@dimen/grid_9</dimen>
+  <dimen name="comment_body_padding_x">@dimen/grid_10</dimen>
+  <dimen name="feed_padding_x">@dimen/grid_9</dimen>
+  <dimen name="form_margin_x">@dimen/grid_9</dimen>
   <dimen name="project_action_button_height">60dp</dimen>
   <dimen name="project_padding_x">@dimen/grid_4</dimen>
   <dimen name="project_play_button_size">80sp</dimen>
   <dimen name="project_social_photo_height">@dimen/grid_6</dimen>
-  <dimen name="settings_icon_margin_x">@dimen/grid_6</dimen>
+  <dimen name="settings_icon_margin_x">@dimen/grid_7</dimen>
   <dimen name="star_fab_margin_x">@dimen/grid_5_half</dimen>
   <dimen name="star_fab_margin_y">@dimen/grid_5_half</dimen>
   <dimen name="star_fab_pre21_margin_y">@dimen/grid_1_half</dimen>

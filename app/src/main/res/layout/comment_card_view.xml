@@ -7,6 +7,8 @@
   android:layout_height="wrap_content"
   android:paddingTop="@dimen/feed_padding_y"
   android:paddingLeft="@dimen/feed_padding_x"
+  android:paddingStart="@dimen/feed_padding_x"
+  android:paddingEnd="@dimen/feed_padding_x"
   android:paddingRight="@dimen/feed_padding_x">
 
   <RelativeLayout
@@ -21,38 +23,11 @@
       android:layout_width="@dimen/comments_feed_avatar_width"
       android:layout_height="@dimen/comments_feed_avatar_height" />
 
-    <TextView
-      android:id="@+id/creator_label"
-      android:visibility="gone"
-      android:layout_marginTop="@dimen/grid_2"
-      android:gravity="center"
-      android:textColor="@color/white"
-      android:layout_below="@+id/avatar"
-      android:background="@drawable/text_view_green_background"
-      android:text="@string/update_comments_creator"
-      android:layout_width="@dimen/grid_7"
-      android:layout_height="wrap_content" />
-
-    <TextView
-      android:id="@+id/user_label"
-      android:visibility="gone"
-      android:layout_marginTop="@dimen/grid_2"
-      android:gravity="center"
-      android:textColor="@color/white"
-      android:layout_below="@+id/avatar"
-      android:background="@drawable/text_view_blue_background"
-      android:text="@string/update_comments_you"
-      android:layout_width="@dimen/grid_7"
-      android:layout_height="wrap_content" />
-
     <LinearLayout
       android:id="@+id/author"
       android:orientation="vertical"
-      android:layout_toRightOf="@+id/avatar"
-      android:layout_toEndOf="@+id/avatar"
-      android:paddingLeft="@dimen/grid_2"
-      android:paddingStart="@dimen/grid_2"
-      android:layout_marginTop="@dimen/grid_1"
+      android:layout_marginLeft="@dimen/comment_body_padding_x"
+      android:layout_marginStart="@dimen/comment_body_padding_x"
       android:layout_marginBottom="@dimen/grid_1"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content">
@@ -65,16 +40,47 @@
         android:layout_height="wrap_content" />
 
       <TextView
+        android:id="@+id/creator_label"
+        android:visibility="gone"
+        android:gravity="center"
+        style="@style/CaptionPrimary"
+        android:textColor="@color/white"
+        android:background="@drawable/text_view_green_background"
+        android:text="@string/update_comments_creator"
+        android:paddingStart="@dimen/grid_1_half"
+        android:paddingLeft="@dimen/grid_1_half"
+        android:paddingEnd="@dimen/grid_1_half"
+        android:paddingRight="@dimen/grid_1_half"
+        android:layout_marginTop="@dimen/grid_1_half"
+        android:layout_marginBottom="@dimen/grid_1_half"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+      <TextView
+        android:id="@+id/user_label"
+        android:visibility="gone"
+        android:gravity="center"
+        style="@style/CaptionPrimary"
+        android:paddingStart="@dimen/grid_1_half"
+        android:paddingLeft="@dimen/grid_1_half"
+        android:paddingEnd="@dimen/grid_1_half"
+        android:paddingRight="@dimen/grid_1_half"
+        android:layout_marginTop="@dimen/grid_1_half"
+        android:layout_marginBottom="@dimen/grid_1"
+        android:textColor="@color/white"
+        android:background="@drawable/text_view_blue_background"
+        android:text="@string/update_comments_you"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+      <TextView
         android:id="@+id/post_date"
         style="@style/CaptionSecondary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-
       <TextView
         android:id="@+id/comment_body"
-        android:layout_below="@id/author"
-        android:layout_toRightOf="@id/avatar"
         android:layout_marginTop="@dimen/grid_2"
         style="@style/BodyPrimary"
         android:layout_width="wrap_content"

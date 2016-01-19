@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.kickstarter.R;
 import com.kickstarter.libs.utils.KoalaUtils;
 import com.kickstarter.libs.utils.MapUtils;
 import com.kickstarter.models.User;
@@ -63,9 +64,7 @@ public final class KoalaTrackingClient implements TrackingClientType {
       put("android_play_services_available", isGooglePlayServicesAvailable());
       put("client_platform", "android");
       put("device_orientation", orientation());
-
-      // TODO: can we detect phone app running on tablets?
-      put("device_format", "phone");
+      put("device_format", context.getResources().getBoolean(R.bool.isTablet) ? "tablet" : "phone");
 
       // TODO: any equivalent to iOS's UIDevice.currentDevice.identifierForVendor.UUIDString?
       // put("device_fingerprint", "deadbeef");

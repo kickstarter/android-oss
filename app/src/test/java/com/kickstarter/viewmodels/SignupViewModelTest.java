@@ -24,7 +24,7 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
     p.inputs.password("danisawesome");
     test.assertNoValues();
 
-    p.inputs.sendNewsletters(true);
+    p.inputs.sendNewslettersClick(true);
     test.assertValues(true);
 
     p.inputs.email("incorrect@kickstarter");

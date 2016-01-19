@@ -4,6 +4,6 @@ public interface SignupViewModelInputs {
   void fullName(String __);
   void email(String __);
   void password(String __);
-  void sendNewsletters(boolean __);
+  void sendNewslettersClick(boolean __);
   void signupClick();
 }

@@ -29,8 +29,10 @@ import com.kickstarter.libs.KoalaTrackingClient;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.Release;
+import com.kickstarter.libs.preferences.IntPreference;
 import com.kickstarter.libs.preferences.StringPreference;
 import com.kickstarter.libs.qualifiers.AccessTokenPreference;
+import com.kickstarter.libs.qualifiers.ActivitySamplePreference;
 import com.kickstarter.libs.qualifiers.ConfigPreference;
 import com.kickstarter.libs.qualifiers.UserPreference;
 import com.kickstarter.libs.qualifiers.WebEndpoint;
@@ -188,6 +190,13 @@ public class ApplicationModule {
   @ConfigPreference
   @NonNull StringPreference providesConfigPreference(final @NonNull SharedPreferences sharedPreferences) {
     return new StringPreference(sharedPreferences, "config");
+  }
+
+  @Provides
+  @Singleton
+  @ActivitySamplePreference
+  @NonNull IntPreference provideActivitySamplePreference(@NonNull final SharedPreferences sharedPreferences) {
+    return new IntPreference(sharedPreferences, "last_seen_activity_id");
   }
 
   @Provides

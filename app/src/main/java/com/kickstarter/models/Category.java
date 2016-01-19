@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.utils.KSColorUtils;
@@ -95,7 +96,7 @@ public abstract class Category implements Parcelable, Comparable<Category> {
       default:  identifier = R.color.white; break;
     }
 
-    return context.getResources().getColor(identifier);
+    return ContextCompat.getColor(context, identifier);
   }
 
   public @ColorInt int overlayTextColor(final Context context) {

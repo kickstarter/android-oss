@@ -19,7 +19,7 @@ import java.util.Map;
 
 import auto.parcel.AutoParcel;
 
-import static com.kickstarter.libs.utils.BoolUtils.isTrue;
+import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
 
 @AutoGson
 @AutoParcel

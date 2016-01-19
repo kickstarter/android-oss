@@ -1,6 +1,7 @@
 package com.kickstarter.services;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.kickstarter.libs.Config;
 import com.kickstarter.models.Backing;
@@ -43,7 +44,8 @@ import rx.Observable;
 
 public interface ApiService {
   @GET("/v1/activities")
-  Observable<Response<ActivityEnvelope>> activities(@NonNull @Query("categories[]") List<String> categories);
+  Observable<Response<ActivityEnvelope>> activities(@NonNull @Query("categories[]") List<String> categories,
+    @Nullable @Query("count") Integer count);
 
   @GET
   Observable<Response<ActivityEnvelope>> activities(@Url @NonNull String paginationUrl);

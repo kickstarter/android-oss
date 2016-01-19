@@ -19,8 +19,8 @@
 
     <ImageView
       android:id="@+id/friend_image"
-      android:layout_marginStart="@dimen/grid_3"
       android:layout_marginRight="@dimen/grid_3"
+      android:layout_marginEnd="@dimen/grid_3"
       android:layout_width="@dimen/comments_feed_avatar_width"
       android:layout_height="@dimen/comments_feed_avatar_height" />
 

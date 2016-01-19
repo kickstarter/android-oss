@@ -38,7 +38,6 @@ import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresViewModel(DiscoveryViewModel.class)
 public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
-  private DiscoveryAdapter adapter;
   private DiscoveryIntentAction intentAction;
   private LinearLayoutManager layoutManager;
   private DiscoveryDrawerAdapter drawerAdapter;
@@ -71,7 +70,6 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
     drawerAdapter = new DiscoveryDrawerAdapter(viewModel.inputs);
     drawerRecyclerView.setAdapter(drawerAdapter);
 
-
     intentAction = new DiscoveryIntentAction(viewModel.inputs::initializer, lifecycle(), client);
     intentAction.intent(getIntent());
 
@@ -87,10 +85,10 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(adapter::takeProjects);
 
-    viewModel.outputs.params()
+    viewModel.outputs.activity()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::loadParams);
+      .subscribe(adapter::takeActivity);
 
     viewModel.outputs.showInternalTools()
       .compose(bindToLifecycle())
@@ -169,8 +167,18 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
 
   private void startSettingsActivity() {
     final Intent intent = new Intent(this, SettingsActivity.class);
+      .putExtra(IntentKey.LOGIN_TYPE, LoginToutActivity.REASON_GENERIC);
     startActivity(intent);
-    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  private void startActivityUpdateActivity(final @NonNull Activity activity) {
+    final Intent intent = new Intent(this, DisplayWebViewActivity.class)
+      .putExtra(IntentKey.URL, activity.projectUpdateUrl());
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  private void startActivityFeedActivity() {
+    startActivity(new Intent(this, ActivityFeedActivity.class));
   }
 
   @Override

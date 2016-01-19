@@ -12,6 +12,8 @@ import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.ViewModel;
+import com.kickstarter.libs.preferences.IntPreference;
+import com.kickstarter.libs.qualifiers.ActivitySamplePreference;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.DiscoveryDrawerUtils;
 import com.kickstarter.libs.utils.DiscoveryParamsUtils;
@@ -22,9 +24,12 @@ import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.WebClient;
+import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
+import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
+import com.kickstarter.ui.viewholders.DiscoveryActivityViewHolder;
 import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.ChildFilterViewHolder;
@@ -45,7 +50,7 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-import static com.kickstarter.libs.utils.BoolUtils.isTrue;
+import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
 
 public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> implements DiscoveryViewModelInputs,
   DiscoveryViewModelOutputs {
@@ -53,6 +58,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   protected @Inject WebClient webClient;
   protected @Inject BuildCheck buildCheck;
   protected @Inject CurrentUser currentUser;
+  protected @Inject @ActivitySamplePreference IntPreference activitySamplePreference;
 
   // INPUTS
   private final PublishSubject<Void> nextPage = PublishSubject.create();
@@ -143,6 +149,10 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   public Observable<DiscoveryParams> params() {
     return selectedParams;
   }
+  private final BehaviorSubject<Activity> activity = BehaviorSubject.create();
+  public Observable<Activity> activity() {
+    return activity;
+  }
 
   private final BehaviorSubject<Boolean> shouldShowOnboarding = BehaviorSubject.create();
   @Override
@@ -168,10 +178,34 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     return showProfile;
   }
 
+  private final PublishSubject<Pair<Project, RefTag>> showProject = PublishSubject.create();
   @Override
   public Observable<Pair<Project, RefTag>> showProject() {
-    return selectedParams.compose(Transformers.takePairWhen(projectClicked))
-      .map(pp -> DiscoveryViewModel.projectAndRefTagFromParamsAndProject(pp.first, pp.second));
+    return showProject;
+  }
+
+  private final PublishSubject<Activity> showActivityUpdate = PublishSubject.create();
+  @Override
+  public Observable<Activity> showActivityUpdate() {
+    return showActivityUpdate;
+  }
+
+  private final BehaviorSubject<Boolean> shouldShowActivitySample = BehaviorSubject.create();
+  @Override
+  public Observable<Boolean> shouldShowActivitySample() {
+    return shouldShowActivitySample;
+  }
+
+  private final PublishSubject<Void> showActivityFeed = PublishSubject.create();
+  @Override
+  public Observable<Void> showActivityFeed() {
+    return showActivityFeed;
+  }
+
+  private final PublishSubject<Void> showSignupLogin = PublishSubject.create();
+  @Override
+  public Observable<Void> showSignupLogin() {
+    return showSignupLogin;
   }
 
   private final PublishSubject<Void> showSettings = PublishSubject.create();
@@ -192,7 +226,13 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     return openDrawer;
   }
 
+  // ERRORS
+  private PublishSubject<ErrorEnvelope> activityError = PublishSubject.create();
+
   private boolean hasSeenOnboarding = false;
+
+  private PublishSubject<Project> clickActivityProject = PublishSubject.create();
+  private PublishSubject<Project> clickProject = PublishSubject.create();
 
   public final DiscoveryViewModelInputs inputs = this;
   public final DiscoveryViewModelOutputs outputs = this;
@@ -246,6 +286,15 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     );
 
     addSubscription(
+      currentUser.loggedInUser()
+        .compose(Transformers.combineLatestPair(params))
+        .flatMap(__ -> this.fetchActivity())
+        .map(this::activityIfNotSeen)
+        .doOnNext(this::saveLastSeenActivityId)
+        .subscribe(activity::onNext)
+    );
+
+    addSubscription(
       Observable.combineLatest(
         categories,
         selectedParams,
@@ -255,6 +304,17 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .subscribe(navigationDrawerData::onNext)
     );
     
+    addSubscription(params
+      .compose(Transformers.takePairWhen(clickProject))
+      .map(pp -> DiscoveryViewModel.projectAndRefTagFromParamsAndProject(pp.first, pp.second))
+      .subscribe(showProject::onNext)
+    );
+
+    addSubscription(clickActivityProject
+      .map(p -> Pair.create(p, RefTag.activitySample()))
+      .subscribe(showProject::onNext)
+    );
+
     addSubscription(
       childFilterRowClick
         .mergeWith(topFilterRowClick)
@@ -298,8 +358,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
 
     expandedParams.onNext(null);
 
-    initializer.subscribe(this.selectedParams::onNext);
-
+    addSubscription(initializer.subscribe(this.params::onNext));
     initializer.onNext(DiscoveryParams.builder().staffPicks(true).build());
   }
 
@@ -343,10 +402,52 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     return new Pair<>(project, refTag);
   }
 
+  public Observable<Activity> fetchActivity() {
+    return apiClient.fetchActivities(1)
+      .map(ActivityEnvelope::activities)
+      .map(activities -> activities.get(0))
+      .compose(Transformers.pipeApiErrorsTo(activityError))
+      .compose(Transformers.neverError());
+  }
+
+  private @Nullable Activity activityIfNotSeen(final @Nullable Activity activity) {
+    if (activity != null && activity.id() != activitySamplePreference.get()) {
+      return activity;
+    }
+    return null;
+  }
+
   private static @Nullable Category toggleExpandedCategory(final @Nullable Category expandedCategory, final @NonNull Category clickedCategory) {
     if (expandedCategory != null && clickedCategory.id() == expandedCategory.id()) {
       return null;
     }
+    return null;
+  }
+
+  private void saveLastSeenActivityId(final @Nullable Activity activity) {
+    if (activity != null) {
+      activitySamplePreference.set((int) activity.id());
+    }
     return clickedCategory;
+
+  public void projectCardViewHolderClicked(final @NonNull ProjectCardViewHolder viewHolder, final @NonNull Project project) {
+    this.clickProject.onNext(project);
+  }
+
+  public void discoveryOnboardingViewHolderSignupLoginClicked(final @NonNull DiscoveryOnboardingViewHolder viewHolder) {
+    this.showSignupLogin.onNext(null);
+  }
+
+  public void discoveryActivityViewHolderSeeActivityClicked(final @NonNull DiscoveryActivityViewHolder viewHolder) {
+    this.showActivityFeed.onNext(null);
+  }
+
+  public void discoveryActivityViewHolderProjectClicked(final @NonNull DiscoveryActivityViewHolder viewHolder, final @NonNull Project project) {
+    this.clickActivityProject.onNext(project);
+  }
+
+  public void discoveryActivityViewHolderUpdateClicked(final @NonNull DiscoveryActivityViewHolder viewHolder, final @NonNull Activity activity) {
+    this.showActivityUpdate.onNext(activity);
   }
 }
+

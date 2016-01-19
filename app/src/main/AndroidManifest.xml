@@ -148,7 +148,7 @@
       android:theme="@style/Login" />
 
     <activity
-      android:name=".ui.activities.VideoPlayerActivity"
+      android:name=".ui.activities.VideoActivity"
       android:theme="@style/VideoPlayerActivity"
       android:screenOrientation="landscape" />
 

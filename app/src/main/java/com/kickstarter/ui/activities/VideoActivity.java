@@ -13,28 +13,31 @@ import com.google.android.exoplayer.AspectRatioFrameLayout;
 import com.google.android.exoplayer.ExoPlayer;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.KSVideoPlayer;
 import com.kickstarter.libs.KSRendererBuilder;
+import com.kickstarter.libs.KSVideoPlayer;
+import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Video;
 import com.kickstarter.ui.IntentKey;
+import com.kickstarter.viewmodels.VideoViewModel;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public final class VideoPlayerActivity extends BaseActivity implements KSVideoPlayer.Listener {
+@RequiresViewModel(VideoViewModel.class)
+public final class VideoActivity extends BaseActivity<VideoViewModel> implements KSVideoPlayer.Listener {
   private MediaController mediaController;
   private KSVideoPlayer player;
   private long playerPosition;
   private Video video;
 
-  public @Bind(R.id.video_player_layout) View rootView;
-  public @Bind(R.id.surface_view) SurfaceView surfaceView;
-  public @Bind(R.id.loading_indicator) ProgressBar loadingIndicatorProgressBar;
-  public @Bind(R.id.video_frame) AspectRatioFrameLayout videoFrame;
+  protected @Bind(R.id.video_player_layout) View rootView;
+  protected @Bind(R.id.surface_view) SurfaceView surfaceView;
+  protected @Bind(R.id.loading_indicator) ProgressBar loadingIndicatorProgressBar;
+  protected @Bind(R.id.video_frame) AspectRatioFrameLayout videoFrame;
 
   @Override
-  public void onCreate(@Nullable final Bundle savedInstanceState) {
+  public void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.video_player_layout);
     ButterKnife.bind(this);

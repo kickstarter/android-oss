@@ -33,7 +33,9 @@ public class VideoViewModel extends ViewModel<VideoActivity> implements VideoVie
   VideoViewModelErrors, KSVideoPlayer.Listener {
 
   // INPUTS
+  private final BehaviorSubject<Long> currentPosition = BehaviorSubject.create(0l);
   private final BehaviorSubject<MediaController> mediaControllerBehaviorSubject = BehaviorSubject.create();
+  private final PublishSubject<KSVideoPlayer> playerIsPrepared = PublishSubject.create();
   private final PublishSubject<List<Object>> playerNeedsPrepare = PublishSubject.create();
   private final PublishSubject<KSVideoPlayer> playerNeedsRelease = PublishSubject.create();
   private final PublishSubject<Void> videoEnded = PublishSubject.create();
@@ -43,14 +45,6 @@ public class VideoViewModel extends ViewModel<VideoActivity> implements VideoVie
   public Observable<Integer> playbackState() {
     return playbackState;
   }
-  private final PublishSubject<Long> playerPositionOutput = PublishSubject.create();
-  public Observable<Long> playerPositionOutput() {
-    return playerPositionOutput;
-  }
-  private final PublishSubject<KSVideoPlayer> playerIsPrepared = PublishSubject.create();
-  public Observable<KSVideoPlayer> playerIsPrepared() {
-    return playerIsPrepared;
-  }
 
   // ERRORS
 
@@ -59,15 +53,15 @@ public class VideoViewModel extends ViewModel<VideoActivity> implements VideoVie
   public final VideoViewModelErrors errors = this;
 
   @Override
-  public void playerNeedsPrepare(final @NonNull Video video, final long position, final @NonNull SurfaceView surfaceView,
+  public void playerNeedsPrepare(final @NonNull Video video, final @NonNull SurfaceView surfaceView,
     final @NonNull View rootView) {
-    final List<Object> videoPositionSurfaceRoot = Arrays.asList(video, position, surfaceView, rootView);
+    final List<Object> videoPositionSurfaceRoot = Arrays.asList(video, surfaceView, rootView);
     this.playerNeedsPrepare.onNext(videoPositionSurfaceRoot);
   }
 
   @Override
-  public void playerNeedsRelease(final @Nullable KSVideoPlayer player) {
-    this.playerNeedsRelease.onNext(player);
+  public void playerNeedsRelease() {
+    this.playerNeedsRelease.onNext(null);
   }
 
   @Override
@@ -76,20 +70,20 @@ public class VideoViewModel extends ViewModel<VideoActivity> implements VideoVie
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     addSubscription(
-      playerNeedsPrepare
-        .subscribe(videoSurfaceRoot -> {
-          final Video video = (Video) videoSurfaceRoot.get(0);
-          final long position = (Long) videoSurfaceRoot.get(1);
-          final SurfaceView surfaceView = (SurfaceView) videoSurfaceRoot.get(2);
-          final View rootView = (View) videoSurfaceRoot.get(3);
-          preparePlayer(context, video, position, surfaceView, rootView);
-        })
+      playerIsPrepared
+        .compose(Transformers.takeWhen(playerNeedsRelease))
+        .filter(p -> p != null)
+        .subscribe(this::releasePlayer)
     );
 
     addSubscription(
-      playerNeedsRelease
-        .filter(p -> p != null)
-        .subscribe(this::releasePlayer)
+      playerNeedsPrepare
+        .subscribe(videoSurfaceRootPosition -> {
+          final Video video = (Video) videoSurfaceRootPosition.get(0);
+          final SurfaceView surfaceView = (SurfaceView) videoSurfaceRootPosition.get(1);
+          final View rootView = (View) videoSurfaceRootPosition.get(2);
+          preparePlayer(context, video, currentPosition.getValue(), surfaceView, rootView);
+        })
     );
 
     addSubscription(
@@ -132,27 +126,26 @@ public class VideoViewModel extends ViewModel<VideoActivity> implements VideoVie
     player.setSurface(surfaceView.getHolder().getSurface());
     player.setPlayWhenReady(true);
 
-    playerIsPrepared.onNext(player);
-    mediaControllerBehaviorSubject.onNext(mediaController);
-
     addSubscription(
       RxView.clicks(rootView)
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(__ -> toggleController(mediaController))
     );
+
+    playerIsPrepared.onNext(player);
+    mediaControllerBehaviorSubject.onNext(mediaController);
   }
 
-  public void releasePlayer(final @NonNull KSVideoPlayer player) {
-    playerPositionOutput.onNext(player.getCurrentPosition());
-    player.release();
-    koala.trackVideoStop();
+  public void releasePlayer(final @NonNull KSVideoPlayer ksVideoPlayer) {
+    currentPosition.onNext(ksVideoPlayer.getCurrentPosition());
+    ksVideoPlayer.release();
   }
 
   public void toggleController(final @NonNull MediaController mediaController) {
     if (mediaController.isShowing()) {
       mediaController.hide();
     } else {
-      mediaController.show(0);
+      mediaController.show();
     }
   }
 }

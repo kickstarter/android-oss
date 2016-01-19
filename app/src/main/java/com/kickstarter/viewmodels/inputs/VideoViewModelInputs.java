@@ -7,6 +7,6 @@ import com.kickstarter.libs.KSVideoPlayer;
 import com.kickstarter.models.Video;
 
 public interface VideoViewModelInputs {
-  void playerNeedsPrepare(Video video, long position, SurfaceView surfaceView, View rootView);
-  void playerNeedsRelease(KSVideoPlayer player);
+  void playerNeedsPrepare(Video video, SurfaceView surfaceView, View rootView);
+  void playerNeedsRelease();
 }

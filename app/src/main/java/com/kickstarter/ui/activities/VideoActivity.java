@@ -2,7 +2,6 @@ package com.kickstarter.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.SurfaceView;
 import android.view.View;
@@ -12,7 +11,6 @@ import com.google.android.exoplayer.AspectRatioFrameLayout;
 import com.google.android.exoplayer.ExoPlayer;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.KSVideoPlayer;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Video;
@@ -21,12 +19,9 @@ import com.kickstarter.viewmodels.VideoViewModel;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresViewModel(VideoViewModel.class)
 public final class VideoActivity extends BaseActivity<VideoViewModel> {
-  private KSVideoPlayer player;
-  private long playerPosition;
   private Video video;
 
   protected @Bind(R.id.video_player_layout) View rootView;
@@ -47,35 +42,24 @@ public final class VideoActivity extends BaseActivity<VideoViewModel> {
     viewModel.outputs.playbackState()
       .compose(bindToLifecycle())
       .subscribe(this::showLoadingIndicator);
-
-    viewModel.outputs.playerIsPrepared()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::setPlayer);
-
-    viewModel.outputs.playerPositionOutput()
-      .compose(bindToLifecycle())
-      .subscribe(this::setPlayerPosition);
   }
 
   @Override
   public void onDestroy() {
-    viewModel.inputs.playerNeedsRelease(player);
+    viewModel.inputs.playerNeedsRelease();
     super.onDestroy();
-    player = null;
   }
 
   @Override
   public void onResume() {
     super.onResume();
-    viewModel.inputs.playerNeedsPrepare(video, playerPosition, surfaceView, rootView);
+    viewModel.inputs.playerNeedsPrepare(video, surfaceView, rootView);
   }
 
   @Override
   public void onPause() {
     super.onPause();
-    viewModel.inputs.playerNeedsRelease(player);
-    player = null;
+    viewModel.inputs.playerNeedsRelease();
   }
 
   @Override
@@ -98,13 +82,5 @@ public final class VideoActivity extends BaseActivity<VideoViewModel> {
     } else {
       loadingIndicatorProgressBar.setVisibility(View.GONE);
     }
-  }
-
-  private void setPlayer(final @NonNull KSVideoPlayer player) {
-    this.player = player;
-  }
-
-  private void setPlayerPosition(final long position) {
-    this.playerPosition = position;
   }
 }

@@ -25,7 +25,7 @@
     <TextView
       style="@style/ToolbarTitle"
       android:id="@+id/title_text_view"
-      android:text="Internal Tools" />
+      android:text="Internal tools" />
 
   </RelativeLayout>
 

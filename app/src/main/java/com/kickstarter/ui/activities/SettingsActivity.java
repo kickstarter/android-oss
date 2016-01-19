@@ -131,6 +131,11 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
           lazyLogoutConfirmationDialog().dismiss();
         }
       });
+
+    viewModel.outputs.logout()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> this.logout());
   }
 
   /**
@@ -142,7 +147,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
         .setTitle(getString(R.string.profile_settings_logout_alert_title))
         .setMessage(getString(R.string.profile_settings_logout_alert_message))
         .setPositiveButton(getString(R.string.profile_settings_logout_alert_confirm_button), (__, ___) -> {
-          logout();
+          viewModel.inputs.confirmLogoutClicked();
         })
         .setNegativeButton(getString(R.string.profile_settings_logout_alert_cancel_button), (__, ___) -> {
           viewModel.inputs.closeLogoutConfirmationClicked();

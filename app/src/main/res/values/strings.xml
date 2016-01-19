@@ -29,6 +29,8 @@
   <string name="Version_code">Version Code</string>
   <string name="Version_name">Version Name</string>
 
+  <bool name="isTablet">false</bool>
+
   <!-- Strings that need to be translated are underneath this line. This should be empty in master, but is useful
     in branches to keep track of things that need to be pulled out into our app's config file. Prefix keys
     with '___'. -->

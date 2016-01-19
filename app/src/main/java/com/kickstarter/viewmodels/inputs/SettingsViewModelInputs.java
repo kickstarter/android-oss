@@ -18,6 +18,11 @@ public interface SettingsViewModelInputs {
   void logoutClicked();
 
   /**
+   * Call when the user has confirmed that they want to log out.
+   */
+  void confirmLogoutClicked();
+
+  /**
    * Call when the user dismiss the logout confirmation dialog.
    */
   void closeLogoutConfirmationClicked();

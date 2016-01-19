@@ -13,4 +13,9 @@ public interface SettingsViewModelOutputs {
    * Emits a boolean that determines if the logout confirmation should be displayed.
    */
   Observable<Boolean> showConfirmLogoutPrompt();
+
+  /**
+   * Emits when its time to log the user out.
+   */
+  Observable<Void> logout();
 }

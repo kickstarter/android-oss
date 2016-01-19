@@ -14,7 +14,11 @@ import rx.Observable;
 
 public interface DiscoveryViewModelOutputs {
   Observable<NavigationDrawerData> navigationDrawerData();
-  Observable<Boolean> openDrawer();
+
+  /**
+   * Emits a boolean that determines if the drawer is open or not.
+   */
+  Observable<Boolean> drawerIsOpen();
 
   /**
    * Emits a list of projects to display

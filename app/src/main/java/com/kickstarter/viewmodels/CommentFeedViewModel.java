@@ -162,9 +162,10 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .subscribe(cp -> koala.trackProjectCommentCreate(cp.first, cp.second))
     );
     addSubscription(initialProject.take(1).subscribe(koala::trackProjectCommentsView));
-    addSubscription(initialProject
-      .compose(Transformers.takeWhen(nextPage))
-      .subscribe(koala::trackProjectCommentLoadMore)
+    addSubscription(
+      initialProject
+        .compose(Transformers.takeWhen(nextPage.skip(1)))
+        .subscribe(koala::trackProjectCommentLoadMore)
     );
 
     addSubscription(paginator.isFetching.subscribe(isFetchingComments));

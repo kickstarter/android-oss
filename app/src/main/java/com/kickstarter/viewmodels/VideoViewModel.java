@@ -55,8 +55,8 @@ public class VideoViewModel extends ViewModel<VideoActivity> implements VideoVie
   @Override
   public void playerNeedsPrepare(final @NonNull Video video, final @NonNull SurfaceView surfaceView,
     final @NonNull View rootView) {
-    final List<Object> videoPositionSurfaceRoot = Arrays.asList(video, surfaceView, rootView);
-    this.playerNeedsPrepare.onNext(videoPositionSurfaceRoot);
+    final List<Object> videoSurfaceRoot = Arrays.asList(video, surfaceView, rootView);
+    this.playerNeedsPrepare.onNext(videoSurfaceRoot);
   }
 
   @Override
@@ -88,11 +88,11 @@ public class VideoViewModel extends ViewModel<VideoActivity> implements VideoVie
 
     addSubscription(
       playerNeedsPrepare
-        .subscribe(videoSurfaceRootPosition -> {
-          final Video video = (Video) videoSurfaceRootPosition.get(0);
-          final SurfaceView surfaceView = (SurfaceView) videoSurfaceRootPosition.get(1);
-          final View rootView = (View) videoSurfaceRootPosition.get(2);
-          preparePlayer(context, video, currentPosition.getValue(), surfaceView, rootView);
+        .subscribe(videoSurfaceRoot -> {
+          final Video video = (Video) videoSurfaceRoot.get(0);
+          final SurfaceView surfaceView = (SurfaceView) videoSurfaceRoot.get(1);
+          final View rootView = (View) videoSurfaceRoot.get(2);
+          preparePlayer(context, video, surfaceView, rootView, currentPosition.getValue());
         })
     );
 
@@ -122,8 +122,8 @@ public class VideoViewModel extends ViewModel<VideoActivity> implements VideoVie
     }
   }
 
-  public void preparePlayer(final @NonNull Context context, final @NonNull Video video, final long position,
-    final @NonNull SurfaceView surfaceView, final @NonNull View rootView) {
+  public void preparePlayer(final @NonNull Context context, final @NonNull Video video, final @NonNull SurfaceView surfaceView,
+    final @NonNull View rootView, final long position) {
     final KSVideoPlayer player = new KSVideoPlayer(context, new KSRendererBuilder(context, video.high()));
     player.setListener(this);
     player.seekTo(position);

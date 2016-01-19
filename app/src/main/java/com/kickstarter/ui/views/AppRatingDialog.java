@@ -8,14 +8,21 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatDialog;
 import android.widget.Button;
 
+import com.kickstarter.KSApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.preferences.BooleanPreference;
+import com.kickstarter.libs.qualifiers.AppRatingPreference;
 import com.kickstarter.libs.utils.ViewUtils;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class AppRatingDialog extends AppCompatDialog {
+  protected @Inject @AppRatingPreference BooleanPreference hasSeenAppRatingPreference;
+
   protected @Bind(R.id.no_thanks_button) Button noThanksButton;
   protected @Bind(R.id.remind_button) Button remindButton;
   protected @Bind(R.id.rate_button) Button rateButton;
@@ -30,12 +37,14 @@ public class AppRatingDialog extends AppCompatDialog {
     getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
     setContentView(R.layout.app_rating_prompt);
     ButterKnife.bind(this);
+
+    ((KSApplication) getContext().getApplicationContext()).component().inject(this);
   }
 
   @OnClick(R.id.rate_button)
   protected void rateButtonClick() {
+    hasSeenAppRatingPreference.set(true);
     dismiss();
-    // store pref to never show again
     ViewUtils.openStoreRating(getContext(), getContext().getPackageName());
   }
 
@@ -46,7 +55,7 @@ public class AppRatingDialog extends AppCompatDialog {
 
   @OnClick(R.id.no_thanks_button)
   protected void noThanksButtonClick() {
+    hasSeenAppRatingPreference.set(true);
     dismiss();
-    // store pref to never show again
   }
 }

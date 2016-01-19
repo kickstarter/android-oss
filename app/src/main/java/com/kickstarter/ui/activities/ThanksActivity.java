@@ -25,6 +25,8 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.preferences.BooleanPreference;
+import com.kickstarter.libs.qualifiers.AppRatingPreference;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.libs.vendor.TweetComposer;
@@ -46,6 +48,9 @@ import butterknife.OnClick;
 
 @RequiresViewModel(ThanksViewModel.class)
 public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
+  protected @Inject KSString ksString;
+  protected @Inject @AppRatingPreference BooleanPreference hasSeenAppRatingPreference;
+
   protected @Bind(R.id.backed_project) TextView backedProjectTextView;
   protected @Bind(R.id.recommended_projects_recycler_view) RecyclerView recommendedProjectsRecyclerView;
   protected @Bind(R.id.woohoo_background) ImageView woohooBackgroundImageView;
@@ -56,8 +61,6 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
 
   public CallbackManager facebookCallbackManager;
   public ShareDialog shareDialog;
-
-  @Inject KSString ksString;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -75,7 +78,9 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
 
     displayWoohooBackground();
 
-    ViewUtils.showRatingDialog(this);
+    if (!hasSeenAppRatingPreference.get()) {
+      ViewUtils.showRatingDialog(this);
+    }
 
     viewModel.takeProject(getIntent().getExtras().getParcelable(IntentKey.PROJECT));
   }

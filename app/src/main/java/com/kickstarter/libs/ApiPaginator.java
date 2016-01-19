@@ -154,7 +154,7 @@ public final class ApiPaginator<Data, Envelope, Params> {
     }
 
     public @NonNull ApiPaginator<Data, Envelope, Params> build() throws RuntimeException {
-      // Early error when arequired field is not set
+      // Early error when required field is not set
       if (nextPage == null) {
         throw new RuntimeException("`nextPage` is required");
       }

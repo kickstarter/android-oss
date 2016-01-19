@@ -5,23 +5,23 @@ import android.content.Intent;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.view.GravityCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.utils.DiscoveryUtils;
+import com.kickstarter.libs.utils.StatusBarUtils;
 import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
-import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
-import com.kickstarter.ui.activities.LoginToutActivity;
 import com.kickstarter.ui.activities.SearchActivity;
-import com.kickstarter.ui.views.LoggedInMenu;
 
 import javax.inject.Inject;
 
@@ -33,10 +33,9 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public final class DiscoveryToolbar extends KSToolbar {
   @Bind(R.id.activity_feed_button) TextView activityFeedButton;
-  @Bind(R.id.current_user_button) TextView currentUserButton;
-  @Bind(R.id.filter_expand_more_button) TextView filterExpandMoreButton;
   @Bind(R.id.filter_text_view) TextView filterTextView;
-  @Bind(R.id.login_button) TextView loginButton;
+  @Bind(R.id.discovery_status_bar) View discoveryStatusBar;
+  @Bind(R.id.menu_button) TextView menuButton;
   @Bind(R.id.search_button) TextView searchButton;
   @Inject CurrentUser currentUser;
   @Inject Logout logout;
@@ -70,27 +69,34 @@ public final class DiscoveryToolbar extends KSToolbar {
     });
   }
 
-  @OnClick(R.id.filter_button)
-  public void filterButtonClick(@NonNull final View view) {
+  @OnClick({R.id.menu_button, R.id.filter_text_view})
+  protected void menuButtonClick() {
     final DiscoveryActivity activity = (DiscoveryActivity) getContext();
-    activity.viewModel().inputs.filterButtonClicked();
+    activity.discoveryLayout().openDrawer(GravityCompat.START);
   }
 
   public void loadParams(@NonNull final DiscoveryParams params) {
-    final Context context = getContext();
+    final DiscoveryActivity activity = (DiscoveryActivity) getContext();
 
-    this.setBackgroundColor(DiscoveryUtils.primaryColor(context, params));
+    filterTextView.setText(params.filterString(activity));
 
-    filterTextView.setText(params.filterString(context));
+    if (ApiCapabilities.canSetStatusBarColor() && ApiCapabilities.canSetDarkStatusBarIcons()) {
+      discoveryStatusBar.setBackgroundColor(DiscoveryUtils.secondaryColor(activity, params));
+      if (DiscoveryUtils.overlayShouldBeLight(params)) {
+        StatusBarUtils.setLightStatusBarIcons(activity);
+      } else {
+        StatusBarUtils.setDarkStatusBarIcons(activity);
+      }
+    }
+
+    this.setBackgroundColor(DiscoveryUtils.primaryColor(activity, params));
 
     final Observable<TextView> views = Observable.just(activityFeedButton,
-      currentUserButton,
-      filterExpandMoreButton,
       filterTextView,
-      loginButton,
+      menuButton,
       searchButton);
 
-    final @ColorInt int overlayTextColor = DiscoveryUtils.overlayTextColor(context, params);
+    final @ColorInt int overlayTextColor = DiscoveryUtils.overlayTextColor(activity, params);
 
     views.subscribe(view -> view.setTextColor(overlayTextColor));
   }
@@ -99,43 +105,5 @@ public final class DiscoveryToolbar extends KSToolbar {
   public void searchButtonClick(@NonNull final View view) {
     final Context context = getContext();
     context.startActivity(new Intent(context, SearchActivity.class));
-  }
-
-  protected void configureForLoggedIn(final @NonNull User user) {
-    loginButton.setVisibility(GONE);
-    currentUserButton.setVisibility(VISIBLE);
-    currentUserButton.setOnClickListener(v -> {
-      final LoggedInMenu menu = new LoggedInMenu(v.getContext(), user, currentUserButton);
-      menu.show();
-    });
-  }
-
-  protected void configureForLoggedOut() {
-    currentUserButton.setVisibility(GONE);
-    loginButton.setVisibility(VISIBLE);
-    loginButton.setOnClickListener(v -> {
-      final Context context = getContext();
-      final Intent intent = new Intent(context, LoginToutActivity.class)
-        .putExtra(IntentKey.LOGIN_TYPE, LoginToutActivity.REASON_LOGIN_TAB);
-      context.startActivity(intent);
-    });
-  }
-
-  @Override
-  protected void onAttachedToWindow() {
-    super.onAttachedToWindow();
-
-    if (isInEditMode()) {
-      return;
-    }
-
-    addSubscription(currentUser.loggedOutUser()
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(__ -> this.configureForLoggedOut())
-    );
-
-    addSubscription(currentUser.loggedInUser()
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::configureForLoggedIn));
   }
 }

@@ -149,6 +149,7 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
   private Observable<AccessTokenEnvelope> submit(final @NonNull SignupData data) {
     return client.signup(data.fullName, data.email, data.password, data.password, data.sendNewsletters)
       .compose(Transformers.pipeApiErrorsTo(signupError))
+      .compose(Transformers.neverError())
       .doOnSubscribe(() -> formSubmitting.onNext(true))
       .finallyDo(() -> formSubmitting.onNext(false));
   }

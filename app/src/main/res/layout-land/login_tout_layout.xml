@@ -51,7 +51,7 @@
         android:layout_marginTop="@dimen/grid_1"
         android:text="@string/signup_button_email" />
 
-      <TextView
+      <com.kickstarter.ui.views.HtmlTextView
         android:id="@+id/disclaimer_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
         android:layout_marginRight="@dimen/grid_2"
         android:textAppearance="@style/CaptionPrimary"
         android:textColor="@color/dark_gray"
-        android:text="@string/login_tout_disclaimer_by_signing_up_you_agree_to_terms" />
+        android:text="@string/login_tout_disclaimer_by_signing_up_you_agree_to_terms_html" />
 
     </LinearLayout>
   </LinearLayout>

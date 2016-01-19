@@ -5,10 +5,10 @@ import android.support.annotation.NonNull;
 
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.BuildCheck;
+import com.kickstarter.libs.InternalTools;
+import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.preferences.StringPreference;
 import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
-import com.kickstarter.ui.containers.ApplicationContainer;
-import com.kickstarter.ui.containers.InternalApplicationContainer;
 
 import javax.inject.Singleton;
 
@@ -17,12 +17,6 @@ import dagger.Provides;
 
 @Module(includes = ApplicationModule.class)
 public class InternalApplicationModule {
-  @Provides
-  @Singleton
-  ApplicationContainer provideApplicationContainer() {
-    return new InternalApplicationContainer();
-  }
-
   @Provides
   @Singleton
   ApiEndpoint provideApiEndpoint(@ApiEndpointPreference @NonNull final StringPreference apiEndpointPreference) {
@@ -39,5 +33,12 @@ public class InternalApplicationModule {
   @Provides
   BuildCheck provideBuildCheck() {
     return BuildCheck.DEFAULT;
+  }
+
+  @Provides
+  @Singleton
+  @NonNull
+  InternalToolsType providesInternalToolsType() {
+    return new InternalTools();
   }
 }

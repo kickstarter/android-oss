@@ -24,8 +24,6 @@
     
     <TextView
       style="@style/ToolbarTitle"
-      android:layout_toEndOf="@id/back_button"
-      android:layout_toRightOf="@id/back_button"
       android:text="@string/activity_creator_navigation_header_activity" />
 
   </RelativeLayout>

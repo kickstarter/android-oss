@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/filter_view"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <TextView
+    style="@style/SubheadPrimary"
+    android:paddingTop="@dimen/discovery_drawer_filter_padding_y"
+    android:paddingBottom="@dimen/discovery_drawer_filter_padding_y"
+    android:paddingStart="@dimen/grid_2"
+    android:paddingLeft="@dimen/grid_2"
+    android:background="@drawable/click_indicator_light_masked"
+    android:layout_centerVertical="true"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentStart="true"
+    android:id="@+id/filter_text_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+
+  <com.kickstarter.ui.views.IconButton
+    android:id="@+id/expand_button"
+    android:background="@drawable/click_indicator_light"
+    android:layout_height="@dimen/grid_6"
+    android:layout_width="@dimen/grid_6"
+    android:gravity="center"
+    android:textSize="@dimen/icon"
+    android:layout_centerVertical="true"
+    android:layout_alignParentEnd="true"
+    android:layout_alignParentRight="true"
+    android:textColor="@color/dark_gray"
+    android:text="@string/keyboard_arrow_down_icon" />
+
+  <com.kickstarter.ui.views.IconButton
+    android:id="@+id/collapse_button"
+    android:background="@drawable/click_indicator_light"
+    android:layout_height="@dimen/grid_6"
+    android:layout_width="@dimen/grid_6"
+    android:gravity="center"
+    android:textSize="@dimen/icon"
+    android:layout_centerVertical="true"
+    android:layout_alignParentEnd="true"
+    android:layout_alignParentRight="true"
+    android:textColor="@color/dark_gray"
+    android:text="@string/keyboard_arrow_up_icon" />
+
+</RelativeLayout>

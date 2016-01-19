@@ -26,16 +26,17 @@ public final class ProfileAdapter extends KSAdapter {
   public ProfileAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;
 
-    this.data().add(SECTION_EMPTY_VIEW, Collections.emptyList());
-    this.data().add(SECTION_PROJECTS_VIEW, Collections.emptyList());
+    insertSection(SECTION_EMPTY_VIEW, Collections.emptyList());
+    insertSection(SECTION_PROJECTS_VIEW, Collections.emptyList());
   }
 
   public void takeProjects(final @NonNull List<Project> projects) {
     if (projects.size() == 0) {
-      data().set(SECTION_EMPTY_VIEW, Collections.singletonList(Empty.get()));
+      setSection(SECTION_EMPTY_VIEW, Collections.singletonList(Empty.get()));
     } else {
-      data().set(SECTION_PROJECTS_VIEW, projects);
+      setSection(SECTION_PROJECTS_VIEW, projects);
     }
+
     notifyDataSetChanged();
   }
 

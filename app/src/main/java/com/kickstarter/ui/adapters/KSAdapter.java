@@ -17,11 +17,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
-  private List<List<?>> data = new ArrayList<>();
+  private List<List<Object>> sections = new ArrayList<>();
 
-  public List<List<?>> data() {
-    return data;
+  public List<List<Object>> sections() {
+    return sections;
   }
+
+  public void clearSections() {
+    sections.clear();
+  }
+
+  public <T> void addSection(final @NonNull List<T> section) {
+    sections.add(new ArrayList<>(section));
+  }
+
+  public <T> void addSections(final @NonNull List<List<T>> sections) {
+    for (final List<T> section : sections) {
+      addSection(section);
+    }
+  }
+
+  public <T> void setSection(final int location, final @NonNull List<T> section) {
+    sections.set(location, new ArrayList<>(section));
+  }
+
+  public <T> void insertSection(final int location, final @NonNull List<T> section) {
+    sections.add(location, new ArrayList<>(section));
+  }
+
 
   /**
    * Fetch the layout id associated with a sectionRow.
@@ -63,7 +86,7 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
   @Override
   public final int getItemCount() {
     int itemCount = 0;
-    for (final List<?> section : data) {
+    for (final List<?> section : sections) {
       itemCount += section.size();
     }
 
@@ -74,20 +97,27 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
    * Gets the data object associated with a sectionRow.
    */
   protected Object objectFromSectionRow(final @NonNull SectionRow sectionRow) {
-    return data.get(sectionRow.section()).get(sectionRow.row());
+    return sections.get(sectionRow.section()).get(sectionRow.row());
+  }
+
+  protected int sectionCount(final int section) {
+    if (section > sections().size() - 1) {
+      return 0;
+    }
+    return sections().get(section).size();
   }
 
   /**
    * Gets the data object associated with a position.
    */
-  private Object objectFromPosition(final int position) {
+  protected Object objectFromPosition(final int position) {
     return objectFromSectionRow(sectionRowFromPosition(position));
   }
 
   private @NonNull SectionRow sectionRowFromPosition(final int position) {
     final SectionRow sectionRow = new SectionRow();
     int cursor = 0;
-    for (final List<?> section : data) {
+    for (final List<?> section : sections) {
       for (final Object __ : section) {
         if (cursor == position) {
           return sectionRow;
@@ -98,7 +128,7 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
       sectionRow.nextSection();
     }
 
-    throw new RuntimeException("Position " + position + " not found in data");
+    throw new RuntimeException("Position " + position + " not found in sections");
   }
 
   private @NonNull View inflateView(final @NonNull ViewGroup viewGroup, @LayoutRes final int viewType) {
@@ -107,7 +137,7 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
   }
 
   /**
-   * SectionRows allow RecyclerViews to be structured into one or more sections. Sections can contain one or more rows.
+   * SectionRows allow RecyclerViews to be structured into sections of rows.
    */
   protected class SectionRow {
     private int section;

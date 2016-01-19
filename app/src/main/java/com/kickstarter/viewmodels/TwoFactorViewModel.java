@@ -168,7 +168,8 @@ public final class TwoFactorViewModel extends ViewModel<TwoFactorActivity> imple
 
   public Observable<AccessTokenEnvelope> loginWithFacebook(@NonNull final String fbAccessToken, @NonNull final String code) {
     return client.loginWithFacebook(fbAccessToken, code)
-      .compose(Transformers.pipeApiErrorsTo(tfaError));
+      .compose(Transformers.pipeApiErrorsTo(tfaError))
+      .compose(Transformers.neverError());
   }
 
   private void success(@NonNull final AccessTokenEnvelope envelope) {
@@ -179,6 +180,7 @@ public final class TwoFactorViewModel extends ViewModel<TwoFactorActivity> imple
   private Observable<AccessTokenEnvelope> submit(@NonNull final TfaData data) {
     return client.login(data.email, data.password, data.code)
       .compose(Transformers.pipeApiErrorsTo(tfaError))
+      .compose(Transformers.neverError())
       .doOnSubscribe(() -> formSubmitting.onNext(true))
       .finallyDo(() -> formSubmitting.onNext(false));
   }

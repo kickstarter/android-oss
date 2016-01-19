@@ -58,8 +58,10 @@
   </RelativeLayout>
 
   <LinearLayout
-    android:paddingLeft="@dimen/grid_3"
-    android:paddingRight="@dimen/grid_3"
+    android:paddingStart="@dimen/project_padding_x"
+    android:paddingEnd="@dimen/project_padding_x"
+    android:paddingLeft="@dimen/project_padding_x"
+    android:paddingRight="@dimen/project_padding_x"
     android:orientation="vertical"
     android:id="@+id/creator_links"
     android:layout_width="match_parent"
@@ -96,7 +98,7 @@
     </RelativeLayout>
 
     <include
-      layout="@layout/horizontal_line_thin_view"
+      layout="@layout/horizontal_line_1dp_view"
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
       android:layout_marginTop="@dimen/grid_1"
@@ -132,7 +134,7 @@
     </RelativeLayout>
 
     <include
-      layout="@layout/horizontal_line_thin_view"
+      layout="@layout/horizontal_line_1dp_view"
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
       android:layout_marginTop="@dimen/grid_1_half"
@@ -171,13 +173,15 @@
   <TextView
     android:id="@+id/project_disclaimer_text_view"
     style="@style/CaptionSecondary"
-    android:paddingRight="@dimen/grid_3"
-    android:paddingLeft="@dimen/grid_3"
+    android:paddingRight="@dimen/project_padding_x"
+    android:paddingLeft="@dimen/project_padding_x"
+    android:paddingStart="@dimen/project_padding_x"
+    android:paddingEnd="@dimen/project_padding_x"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/grid_3" />
 
-  <include layout="@layout/horizontal_line_thin_view"
+  <include layout="@layout/horizontal_line_1dp_view"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:layout_marginTop="@dimen/grid_4"

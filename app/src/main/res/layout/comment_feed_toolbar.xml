@@ -26,8 +26,6 @@
 
     <TextView
       style="@style/ToolbarTitle"
-      android:layout_toEndOf="@id/back_button"
-      android:layout_toRightOf="@id/back_button"
       android:text="@string/project_menu_buttons_comments" />
 
     <com.kickstarter.ui.views.IconButton

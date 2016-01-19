@@ -15,7 +15,7 @@ import auto.parcel.AutoParcel;
 
 @AutoParcel
 @AutoGson
-abstract public class Category implements Parcelable {
+public abstract class Category implements Parcelable, Comparable<Category> {
   public abstract int color();
   public abstract long id();
   public abstract String name();
@@ -44,32 +44,12 @@ abstract public class Category implements Parcelable {
 
   public abstract Builder toBuilder();
 
-  public String baseImageName() {
-    switch ((int) rootId()) {
-      case 1:   return "art";
-      case 3:   return "comics";
-      case 26:  return "crafts";
-      case 6:   return "dance";
-      case 7:   return "design";
-      case 9:   return "fashion";
-      case 11:  return "film";
-      case 10:  return "food";
-      case 12:  return "games";
-      case 13:  return "journalism";
-      case 14:  return "music";
-      case 15:  return "photography";
-      case 18:  return "publishing";
-      case 16:  return "technology";
-      case 17:  return "theater";
-      default:  return null;
-    }
-  }
-
   public @ColorInt int colorWithAlpha() {
     return KSColorUtils.setAlpha(color(), 255);
   }
 
-  public int discoveryFilterCompareTo(@NonNull final Category other) {
+  @Override
+  public int compareTo(final @NonNull Category other) {
     if (id() == other.id()) {
       return 0;
     }

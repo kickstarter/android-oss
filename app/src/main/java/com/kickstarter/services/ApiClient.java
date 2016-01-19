@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.kickstarter.libs.Config;
 import com.kickstarter.libs.rx.operators.ApiErrorOperator;
 import com.kickstarter.libs.rx.operators.Operators;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
@@ -15,6 +16,7 @@ import com.kickstarter.models.Empty;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.Notification;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apirequests.CommentBody;
 import com.kickstarter.services.apirequests.LoginWithFacebookBody;
@@ -182,6 +184,23 @@ public final class ApiClient implements ApiClientType {
       .paginatedProjectComments(paginationPath)
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
+  }
+
+  @Override
+  public @NonNull Observable<Update> fetchUpdate(final @NonNull String projectParam, final @NonNull String updateParam) {
+    return service
+      .update(projectParam, updateParam)
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
+  @Override
+  public @NonNull Observable<Update> fetchUpdate(final @NonNull Update update) {
+    final String projectParam = ObjectUtils.toString(update.projectId());
+    final String updateParam = ObjectUtils.toString(update.id());
+
+    return fetchUpdate(projectParam, updateParam)
+      .startWith(update);
   }
 
   @Override

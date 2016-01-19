@@ -29,10 +29,10 @@ import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.vendor.TweetComposer;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
-import com.kickstarter.ui.IntentKey;
-import com.kickstarter.viewmodels.ThanksViewModel;
 import com.kickstarter.services.DiscoveryParams;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ThanksAdapter;
+import com.kickstarter.viewmodels.ThanksViewModel;
 
 import java.util.List;
 
@@ -134,16 +134,25 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   }
 
   public void startShareIntent(final @NonNull Project project) {
+    final String genericShareMessage = new StringBuilder()
+      .append(shareString(project))
+      .append("\r\n\r\n")
+      .append(project.webProjectUrl())
+      .toString();
+
     final Intent intent = new Intent(android.content.Intent.ACTION_SEND)
       .setType("text/plain")
       .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
-      .putExtra(Intent.EXTRA_TEXT, shareString(project));
+      .putExtra(Intent.EXTRA_TEXT, genericShareMessage);
 
     startActivity(Intent.createChooser(intent, shareThisProjectString));
   }
 
   public void startTwitterShareIntent(final @NonNull Project project) {
-    new TweetComposer.Builder(this).text(shareString(project)).show();
+    new TweetComposer.Builder(this)
+      .text(shareString(project))
+      .url(project.shareUrl())
+      .show();
   }
 
   public void startDiscoveryCategoryIntent(final @NonNull Category category) {

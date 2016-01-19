@@ -14,6 +14,8 @@ import org.joda.time.DateTime;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -325,6 +327,15 @@ public abstract class Project implements Parcelable {
       .appendQueryParameter("clicked_reward", "true")
       .build()
       .toString();
+  }
+
+  public @Nullable URL shareUrl() {
+    try {
+      return new URL(webProjectUrl());
+    } catch (final @NonNull MalformedURLException e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 
   @Override

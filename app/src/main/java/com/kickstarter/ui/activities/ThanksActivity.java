@@ -3,6 +3,7 @@ package com.kickstarter.ui.activities;
 import android.content.Intent;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -145,7 +146,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   public void startTwitterShareIntent(final @NonNull Project project) {
     new TweetComposer.Builder(this)
       .text(shareString(project))
-      .url(project.shareUrl())
+      .uri(Uri.parse(project.webProjectUrl()))
       .show();
   }
 

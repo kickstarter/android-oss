@@ -117,16 +117,16 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     internalToolsClick.onNext(null);
   }
 
-  private PublishSubject<User> profileClick = PublishSubject.create();
+  private PublishSubject<Void> profileClick = PublishSubject.create();
   @Override
   public void loggedInViewHolderProfileClick(final @NonNull LoggedInViewHolder viewHolder, final @NonNull User user) {
-    profileClick.onNext(user);
+    profileClick.onNext(null);
   }
 
-  private PublishSubject<User> settingsClick = PublishSubject.create();
+  private PublishSubject<Void> settingsClick = PublishSubject.create();
   @Override
   public void loggedInViewHolderSettingsClick(final @NonNull LoggedInViewHolder viewHolder, final @NonNull User user) {
-    settingsClick.onNext(user);
+    settingsClick.onNext(null);
   }
 
   private PublishSubject<NavigationDrawerData.Section.Row> topFilterRowClick = PublishSubject.create();
@@ -316,7 +316,8 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     addSubscription(
       childFilterRowClick
         .mergeWith(topFilterRowClick)
-        .subscribe(__ -> openDrawer.onNext(false))
+        .map(__ -> false)
+        .subscribe(openDrawer::onNext)
     );
 
     addSubscription(
@@ -344,14 +345,13 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     // Closing the drawer while starting an activity is a little overwhelming,
     // so put the close on a delay so it happens out of sight.
     addSubscription(
-      profileClick.map(__ -> null)
+      profileClick
         .mergeWith(internalToolsClick)
         .mergeWith(settingsClick)
-        .mergeWith(loginClick.map(__ -> null))
+        .mergeWith(loginClick)
         .delay(1, TimeUnit.SECONDS)
-        .subscribe(__ -> {
-          openDrawer.onNext(false);
-        })
+        .map(__ -> false)
+        .subscribe(openDrawer::onNext)
     );
 
     expandedParams.onNext(null);

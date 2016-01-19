@@ -6507,6 +6507,7 @@
     "koala_devices": true,
     "security_history_read": true,
     "security_history_write": true,
+    "redshift": true,
     "advanced_discovery_es": true,
     "ios_crashlytics": true,
     "ios_koala": true,
@@ -6650,12 +6651,12 @@
     "native_ios_aa": "control",
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
-    "native_iphone_horiz_vs_vert": "control",
-    "recs_thanks_combo_inputs": "collaborative_backings_v2",
-    "recs_hp_combo_v1": "collaborative_backings_v2"
+    "native_iphone_horiz_vs_vert": "experimental",
+    "recs_thanks_combo_inputs": "combo_inputs",
+    "recs_hp_combo_v1": "combo_v1"
   },
   "stripe": {
-    "publishable_key": "pk_test_L0x4mLeycKEvj9YuNSkHM35T"
+    "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"
   },
   "colors": {
     "green-light": {

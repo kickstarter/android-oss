@@ -4,10 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
-import android.widget.MediaController;
 import android.widget.ProgressBar;
 
 import com.google.android.exoplayer.AspectRatioFrameLayout;
@@ -26,7 +24,6 @@ import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresViewModel(VideoViewModel.class)
 public final class VideoActivity extends BaseActivity<VideoViewModel> {
-  private MediaController mediaController;
   private KSVideoPlayer player;
   private Video video;
 
@@ -45,17 +42,10 @@ public final class VideoActivity extends BaseActivity<VideoViewModel> {
     final Project project = intent.getParcelableExtra(IntentKey.PROJECT);
     video = project.video();
 
-    // TODO
-//    viewModel.outputs.playerPositionOutput()
-//      .compose(bindToLifecycle())
-//      .filter(p -> p != null)
-//      .subscribe(this.player::seekTo);
-
     viewModel.outputs.playerIsPrepared()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::setMediaController);
-
+      .subscribe(this::setPlayer);
   }
 
   @Override
@@ -67,7 +57,7 @@ public final class VideoActivity extends BaseActivity<VideoViewModel> {
   @Override
   public void onResume() {
     super.onResume();
-    viewModel.inputs.playerNeedsPrepare(video, surfaceView);
+    viewModel.inputs.playerNeedsPrepare(video, surfaceView, rootView);
   }
 
   @Override
@@ -90,27 +80,7 @@ public final class VideoActivity extends BaseActivity<VideoViewModel> {
     }
   }
 
-  private void setMediaController(final @NonNull KSVideoPlayer player) {
+  private void setPlayer(final @NonNull KSVideoPlayer player) {
     this.player = player;
-
-    mediaController = new MediaController(this);
-    mediaController.setMediaPlayer(player.getPlayerControl());
-    mediaController.setAnchorView(rootView);
-    mediaController.setEnabled(true);
-
-    rootView.setOnTouchListener(((view, motionEvent) -> {
-      if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-        toggleControlsVisibility();
-      }
-      return true;
-    }));
-  }
-
-  public void toggleControlsVisibility() {
-    if (mediaController.isShowing()) {
-      mediaController.hide();
-    } else {
-      mediaController.show(0);
-    }
   }
 }

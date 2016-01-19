@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.Release;
 import com.kickstarter.services.KSUri;
 import com.squareup.okhttp.Interceptor;
@@ -12,27 +13,31 @@ import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 
+import static com.kickstarter.libs.utils.ObjectUtils.isNotNull;
+
 /**
  * Interceptor for web requests to Kickstarter, not API requests. Used by web views and the web client.
  */
 public final class WebRequestInterceptor implements Interceptor {
-  final CurrentUser currentUser;
-  final String endpoint;
-  final Release release;
+  private final @NonNull CurrentUser currentUser;
+  private final @NonNull String endpoint;
+  private final @NonNull InternalToolsType internalTools;
+  private final @NonNull Release release;
 
-  public WebRequestInterceptor(@NonNull final CurrentUser currentUser, @NonNull final String endpoint,
-    @NonNull final Release release) {
+  public WebRequestInterceptor(final @NonNull CurrentUser currentUser, final @NonNull String endpoint,
+    final InternalToolsType internalTools, final @NonNull Release release) {
     this.currentUser = currentUser;
     this.endpoint = endpoint;
+    this.internalTools = internalTools;
     this.release = release;
   }
 
   @Override
-  public Response intercept(@NonNull final Chain chain) throws IOException {
+  public Response intercept(final @NonNull Chain chain) throws IOException {
     return chain.proceed(request(chain.request()));
   }
 
-  private Request request(@NonNull final Request initialRequest) {
+  private Request request(final @NonNull Request initialRequest) {
     if (!shouldIntercept(initialRequest)) {
       return initialRequest;
     }
@@ -40,8 +45,9 @@ public final class WebRequestInterceptor implements Interceptor {
     final Request.Builder requestBuilder = initialRequest.newBuilder()
       .header("User-Agent", userAgent());
 
-    if (shouldAddBasicAuthorizationHeader(initialRequest)) {
-      requestBuilder.addHeader("Authorization", "Basic ZnV6enk6d3V6enk=");
+    final String basicAuthorizationHeader = internalTools.basicAuthorizationHeader();
+    if (shouldAddBasicAuthorizationHeader(initialRequest) && isNotNull(basicAuthorizationHeader)) {
+      requestBuilder.addHeader("Authorization", basicAuthorizationHeader);
     }
     if (currentUser.exists()) {
       requestBuilder.addHeader("Authorization", "token " + currentUser.getAccessToken());
@@ -50,11 +56,11 @@ public final class WebRequestInterceptor implements Interceptor {
     return requestBuilder.build();
   }
 
-  private boolean shouldIntercept(@NonNull final Request request) {
+  private boolean shouldIntercept(final @NonNull Request request) {
     return KSUri.isWebUri(Uri.parse(request.urlString()), endpoint);
   }
 
-  private boolean shouldAddBasicAuthorizationHeader(@NonNull final Request request) {
+  private boolean shouldAddBasicAuthorizationHeader(final @NonNull Request request) {
     final Uri initialRequestUri = Uri.parse(request.urlString());
     return KSUri.isHivequeenUri(initialRequestUri, endpoint) || KSUri.isStagingUri(initialRequestUri, endpoint);
   }

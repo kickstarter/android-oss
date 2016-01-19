@@ -14,7 +14,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/grid_3"
-    android:layout_marginBottom="@dimen/grid_2"
     android:layout_marginLeft="@dimen/grid_2"
     android:layout_marginRight="@dimen/grid_2"
     android:text="@string/profile_settings_rating_option_title_show_us_some_love" />
@@ -25,9 +24,7 @@
     android:gravity="center_horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/grid_3"
-    android:layout_marginLeft="@dimen/grid_2"
-    android:layout_marginRight="@dimen/grid_2"
+    android:layout_margin="@dimen/grid_2"
     android:text="@string/profile_settings_rating_option_message_if_you_enjoy_using_Kickstarter"
     android:textColor="@color/text_secondary" />
 
@@ -35,6 +32,7 @@
     style="@style/BorderButton"
     android:id="@+id/rate_button"
     android:layout_width="match_parent"
+    android:layout_marginTop="@dimen/grid_1"
     android:layout_marginBottom="@dimen/grid_2"
     android:layout_marginLeft="@dimen/grid_2"
     android:layout_marginRight="@dimen/grid_2"
@@ -53,7 +51,7 @@
     style="@style/BorderButton"
     android:id="@+id/no_thanks_button"
     android:layout_width="match_parent"
-    android:layout_marginBottom="@dimen/grid_2"
+    android:layout_marginBottom="@dimen/grid_3"
     android:layout_marginLeft="@dimen/grid_2"
     android:layout_marginRight="@dimen/grid_2"
     android:text="@string/profile_settings_rating_option_no_thanks" />

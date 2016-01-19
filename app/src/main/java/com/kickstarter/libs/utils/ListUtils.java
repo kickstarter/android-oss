@@ -208,6 +208,16 @@ public final class ListUtils {
   }
 
   /**
+   * Replaces the element at index `idx` with the element `x`. Does so by return a whole new list without
+   * mutating the original.
+   */
+  public static @NonNull <T> List<T> replaced(final @NonNull List<T> xs, final int idx, final @Nullable T x) {
+    final List<T> ys = new ArrayList<>(xs);
+    ys.set(idx, x);
+    return ys;
+  }
+
+  /**
    * Uses Fisher-Yates algorithm to shuffle an array without mutating input arg.
    * http://www.dotnetperls.com/shuffle-java
    */

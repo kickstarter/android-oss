@@ -17,6 +17,7 @@ import com.kickstarter.libs.qualifiers.ActivitySamplePreference;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.DiscoveryDrawerUtils;
 import com.kickstarter.libs.utils.DiscoveryParamsUtils;
+import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Activity;
@@ -41,7 +42,6 @@ import com.kickstarter.ui.viewholders.discoverydrawer.TopFilterViewHolder;
 import com.kickstarter.viewmodels.inputs.DiscoveryViewModelInputs;
 import com.kickstarter.viewmodels.outputs.DiscoveryViewModelOutputs;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -248,6 +248,11 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
       .toSortedList()
       .share();
 
+    final Observable<List<Category>> rootCategories = categories
+      .flatMap(Observable::from)
+      .filter(Category::isRoot)
+      .toList();
+
     final Observable<Category> clickedCategory = parentFilterRowClick
       .map(NavigationDrawerData.Section.Row::params)
       .map(DiscoveryParams::category);
@@ -262,18 +267,22 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .envelopeToMoreUrl(env -> env.urls().api().moreProjects())
         .loadWithParams(apiClient::fetchProjects)
         .loadWithPaginationPath(apiClient::fetchProjects)
-        .pageTransformation(this::bringPotdToFront)
         .clearWhenStartingOver(true)
         .concater(ListUtils::concatDistinct)
         .build();
+
+    addSubscription(
+      paginator.paginatedData
+        .compose(Transformers.combineLatestPair(rootCategories))
+        .map(pc -> DiscoveryUtils.fillRootCategoryForFeaturedProjects(pc.first, pc.second))
+        .subscribe(projects::onNext)
+    );
 
     addSubscription(
       selectedParams.compose(Transformers.takePairWhen(paginator.loadingPage))
         .map(paramsAndPage -> paramsAndPage.first.toBuilder().page(paramsAndPage.second).build())
         .subscribe(p -> koala.trackDiscovery(p, !hasSeenOnboarding))
     );
-
-    addSubscription(paginator.paginatedData.subscribe(projects));
 
     addSubscription(
       selectedParams
@@ -355,28 +364,8 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     );
 
     expandedParams.onNext(null);
-
     addSubscription(initializer.subscribe(selectedParams::onNext));
     initializer.onNext(DiscoveryParams.builder().staffPicks(true).build());
-  }
-
-  /**
-   * Given a list of projects, finds if it contains the POTD and if so
-   * bumps it to the front of the list.
-   */
-  private List<Project> bringPotdToFront(final @NonNull List<Project> projects) {
-
-    return Observable.from(projects)
-      .reduce(new ArrayList<>(), this::prependPotdElseAppend)
-      .toBlocking().single();
-  }
-
-  /**
-   * Given a list of projects and a particular project, returns the list
-   * when the project prepended if it's POTD and appends otherwise.
-   */
-  @NonNull private List<Project> prependPotdElseAppend(final @NonNull List<Project> projects, final @NonNull Project project) {
-    return project.isPotdToday() ? ListUtils.prepend(projects, project) : ListUtils.append(projects, project);
   }
 
   private boolean isOnboardingVisible(final @NonNull DiscoveryParams currentParams, final boolean isLoggedIn) {

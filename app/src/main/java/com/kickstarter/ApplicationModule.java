@@ -21,8 +21,6 @@ import com.kickstarter.libs.DateTimeTypeConverter;
 import com.kickstarter.libs.Font;
 import com.kickstarter.libs.ForApplication;
 import com.kickstarter.libs.KSCurrency;
-import com.kickstarter.libs.NoopInternalTools;
-import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.KoalaTrackingClient;

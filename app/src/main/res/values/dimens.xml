@@ -22,6 +22,9 @@
   <dimen name="grid_14">112dp</dimen>
   <dimen name="grid_15">120dp</dimen>
   <dimen name="grid_16">128dp</dimen>
+  <dimen name="grid_17">136dp</dimen>
+  <dimen name="grid_18">144dp</dimen>
+  <dimen name="grid_19">152dp</dimen>
   <dimen name="grid_20">160dp</dimen>
   <dimen name="grid_26">208dp</dimen>
   <dimen name="grid_35">280dp</dimen>
@@ -42,6 +45,7 @@
   <dimen name="subhead_line_spacing_extra">4dp</dimen>
 
   <!-- Icon sizes -->
+  <dimen name="icon">22sp</dimen>
   <dimen name="chevron_right_icon">24sp</dimen>
   <dimen name="empty_feed_icon">50sp</dimen>
   <dimen name="settings_icon">20sp</dimen>
@@ -53,6 +57,11 @@
   <dimen name="card_margin_y">@dimen/grid_1</dimen>
   <dimen name="card_padding_action_half">@dimen/grid_1_half</dimen>
   <dimen name="profile_card_height">@dimen/grid_26</dimen>
+
+  <!-- Discovery drawer -->
+  <dimen name="discovery_drawer_filter_padding_y">14dp</dimen>
+  <dimen name="discovery_drawer_status_bar_height">0dp</dimen>
+  <dimen name="discovery_drawer_status_bar_height_negative">0dp</dimen>
 
   <!-- Layout padding -->
   <dimen name="activity_padding_x">0dp</dimen>
@@ -110,11 +119,6 @@
   <!-- Activity feed view -->
   <dimen name="activity_feed_view_margin_top">0dp</dimen>
   <dimen name="activity_feed_view_margin_bottom">@dimen/grid_3_half</dimen>
-
-  <!-- Logged in menu -->
-  <dimen name="logged_in_menu_width">190dp</dimen>
-  <dimen name="logged_in_menu_horizontal_offset">-145dp</dimen>
-  <dimen name="logged_in_menu_vertical_offset">-46dp</dimen>
 
   <!-- Popup menus -->
   <dimen name="popup_menu_horizontal_offset">-151dp</dimen>

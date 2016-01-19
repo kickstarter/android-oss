@@ -6,12 +6,16 @@ import com.kickstarter.libs.RefTag;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
+import com.kickstarter.ui.adapters.data.NavigationDrawerData;
 
 import java.util.List;
 
 import rx.Observable;
 
 public interface DiscoveryViewModelOutputs {
+  Observable<NavigationDrawerData> navigationDrawerData();
+  Observable<Boolean> openDrawer();
+
   /**
    * Emits a list of projects to display
    */
@@ -20,7 +24,7 @@ public interface DiscoveryViewModelOutputs {
   /**
    * Emits discovery params when an update to projects and related view elements is needed
    */
-  Observable<DiscoveryParams> params();
+  Observable<DiscoveryParams> selectedParams();
 
   /**
    * Emits an activity for the activity sampler view
@@ -31,11 +35,6 @@ public interface DiscoveryViewModelOutputs {
    * Emtis a boolean to determine if onboarding should be shown
    */
   Observable<Boolean> shouldShowOnboarding();
-
-  /**
-   * Emits discovery params when filters should be shown
-   */
-  Observable<DiscoveryParams> showFilters();
 
   /**
    * Emits a pair containing a project and a ref tag when a project should be shown
@@ -56,4 +55,9 @@ public interface DiscoveryViewModelOutputs {
    * Emits an activity when an update should be shown
    */
   Observable<Activity> showActivityUpdate();
+
+  Observable<Void> showProfile();
+  Observable<Void> showSettings();
+
+  Observable<Void> showInternalTools();
 }

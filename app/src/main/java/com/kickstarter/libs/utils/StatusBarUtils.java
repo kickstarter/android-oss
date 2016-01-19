@@ -12,7 +12,7 @@ import com.kickstarter.libs.BaseActivity;
 public final class StatusBarUtils {
   private StatusBarUtils() {}
 
-  public static void apply(@NonNull final BaseActivity activity, final @ColorInt int color) {
+  public static void apply(final @NonNull BaseActivity activity, final @ColorInt int color) {
     if (!ApiCapabilities.canSetStatusBarColor()) {
       return;
     }
@@ -22,17 +22,28 @@ public final class StatusBarUtils {
     window.setStatusBarColor(color);
   }
 
-  public static void apply(@NonNull final BaseActivity activity, final @ColorInt int color,
+  public static void apply(final @NonNull BaseActivity activity, final @ColorInt int color,
     final boolean overlayShouldBeLight) {
     apply(activity, color);
+    setIconOverlay(activity, overlayShouldBeLight);
+  }
 
+  public static void setDarkStatusBarIcons(final @NonNull BaseActivity activity) {
+    setIconOverlay(activity, true);
+  }
+
+  public static void setLightStatusBarIcons(final @NonNull BaseActivity activity) {
+    setIconOverlay(activity, false);
+  }
+
+  private static void setIconOverlay(final @NonNull BaseActivity activity, final boolean light) {
     if (!ApiCapabilities.canSetDarkStatusBarIcons()) {
       return;
     }
 
-    final int uiFlag = overlayShouldBeLight ?
-      View.SYSTEM_UI_FLAG_VISIBLE :
-      View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+    final int uiFlag = light ?
+      View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR :
+      View.SYSTEM_UI_FLAG_VISIBLE;
     final Window window = activity.getWindow();
     window.getDecorView().setSystemUiVisibility(uiFlag);
   }

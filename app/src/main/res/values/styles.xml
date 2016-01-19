@@ -52,11 +52,12 @@
     <item name="android:windowBackground">@color/white</item>
   </style>
 
-  <style name="DiscoveryActivity" parent="KSTheme">
+  <style name="DiscoveryBase" parent="KSTheme">
     <item name="android:windowBackground">@color/discovery_background</item>
+    <item name="android:colorPrimaryDark">@color/discovery_status_bar</item>
   </style>
 
-  <style name="DiscoveryFilterActivity" parent="KSTheme">
+  <style name="DiscoveryActivity" parent="DiscoveryBase">
   </style>
 
   <style name="DisplayWebViewActivity" parent="KSTheme">
@@ -224,7 +225,13 @@
     <item name="android:maxWidth">@dimen/button_icon_fixed_width</item>
     <item name="android:gravity">center</item>
     <item name="android:textColor">@color/primary_dark</item>
-    <item name="android:textSize">22sp</item>
+    <item name="android:textSize">@dimen/icon</item>
+  </style>
+
+  <style name="ToolbarIconDarkBackground" parent="ToolbarIcon">
+    <item name="android:background">@drawable/button_selector</item>
+    <item name="android:focusable">true</item>
+    <item name="android:textColor">@color/white</item>
   </style>
 
   <style name="ToolbarTitle" parent="Headline">

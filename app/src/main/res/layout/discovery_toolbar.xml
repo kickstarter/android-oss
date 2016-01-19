@@ -1,112 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
 <com.kickstarter.ui.toolbars.DiscoveryToolbar
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  tools:showIn="@layout/discovery_layout"
+  style="@style/Toolbar"
+  android:layout_height="wrap_content"
   android:id="@+id/discovery_toolbar"
-  android:layout_width="match_parent"
-  android:layout_height="?attr/actionBarSize"
-  android:background="@color/dark_blue"
-  android:elevation="3dp">
+  tools:showIn="@layout/discovery_layout"
+  android:background="@color/discovery_toolbar"
+  android:elevation="@dimen/toolbar_elevation"
+  app:contentInsetLeft="0dp"
+  app:contentInsetStart="0dp">
 
-  <RelativeLayout
+  <LinearLayout
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <LinearLayout
-      android:id="@+id/filter_button"
-      android:focusable="true"
-      android:layout_width="wrap_content"
-      android:layout_height="match_parent"
-      android:background="?attr/selectableItemBackgroundBorderless"
-      android:orientation="horizontal"
+      android:orientation="vertical"
+      android:id="@+id/discovery_status_bar"
+      android:background="@color/discovery_status_bar"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/discovery_drawer_status_bar_height" />
+
+    <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="?attr/actionBarSize"
       android:gravity="center_vertical"
-      android:clipChildren="false"
-      android:clipToPadding="false"
-      android:layout_toLeftOf="@+id/toolbar_icons"
-      android:layout_toStartOf="@+id/toolbar_icons"
-      android:layout_alignParentLeft="true"
-      android:layout_alignParentStart="true">
-
-      <TextView
-        android:id="@+id/filter_text_view"
-        android:ellipsize="end"
-        android:singleLine="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/grid_1_half"
-        android:layout_marginEnd="@dimen/grid_1_half"
-        android:textSize="20sp"
-        android:textColor="@color/white" />
-
-      <com.kickstarter.ui.views.IconButton
-        android:id="@+id/filter_expand_more_button"
-        android:contentDescription="@string/discovery_accessibility_toolbar_buttons_filter_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/expand_more"
-        android:textColor="@color/white"
-        android:textSize="28sp"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-      android:id="@+id/toolbar_icons"
-      android:layout_width="wrap_content"
-      android:layout_height="match_parent"
-      android:layout_alignParentRight="true"
-      android:layout_alignParentEnd="true"
       android:orientation="horizontal">
 
-      <com.kickstarter.ui.views.IconButton
-        style="@style/ToolbarIcon"
-        android:id="@+id/search_button"
-        android:focusable="true"
-        android:contentDescription="@string/tabbar_search_projects"
-        android:layout_width="@dimen/button_icon_fixed_width"
+      <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="@drawable/button_selector"
-        android:gravity="center"
-        android:text="@string/search_icon"
-        android:textColor="@color/white" />
-
-      <com.kickstarter.ui.views.IconButton
-        style="@style/ToolbarIcon"
-        android:id="@+id/activity_feed_button"
         android:focusable="true"
-        android:contentDescription="@string/discovery_accessibility_toolbar_buttons_activity_label"
-        android:layout_width="@dimen/button_icon_fixed_width"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingRight="@dimen/grid_2"
+        android:paddingEnd="@dimen/grid_2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <com.kickstarter.ui.views.IconButton
+          style="@style/ToolbarIconDarkBackground"
+          android:id="@+id/menu_button"
+          android:text="@string/menu_icon" />
+
+        <TextView
+          android:id="@+id/filter_text_view"
+          style="@style/Headline"
+          android:background="@drawable/button_selector"
+          android:text="Staff Picks"
+          android:textColor="@color/white"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:paddingLeft="@dimen/grid_3_half"
+          android:paddingStart="@dimen/grid_3_half"
+          android:paddingRight="@dimen/grid_3_half"
+          android:paddingEnd="@dimen/grid_3_half"
+          android:gravity="center_vertical" />
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:background="@drawable/button_selector"
-        android:text="@string/flash_on_icon"
-        android:textColor="@color/white" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:orientation="horizontal">
 
-      <com.kickstarter.ui.views.IconButton
-        style="@style/ToolbarIcon"
-        android:id="@+id/login_button"
-        android:focusable="true"
-        android:contentDescription="@string/login_buttons_log_in"
-        android:background="@drawable/button_selector"
-        android:layout_width="@dimen/button_icon_fixed_width"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="@string/lock_icon"
-        android:textColor="@color/white" />
+        <com.kickstarter.ui.views.IconButton
+          style="@style/ToolbarIconDarkBackground"
+          android:id="@+id/activity_feed_button"
+          android:text="@string/flash_on_icon" />
 
-      <com.kickstarter.ui.views.IconButton
-        style="@style/ToolbarIcon"
-        android:id="@+id/current_user_button"
-        android:focusable="true"
-        android:contentDescription="@string/discovery_accessibility_toolbar_buttons_user_menu"
-        android:layout_width="@dimen/button_icon_fixed_width"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:background="@drawable/button_selector"
-        android:text="@string/more_vert_icon"
-        android:textColor="@color/white"
-        android:visibility="gone" />
+        <com.kickstarter.ui.views.IconButton
+          style="@style/ToolbarIconDarkBackground"
+          android:id="@+id/search_button"
+          android:text="@string/search_icon" />
 
-    </LinearLayout>
+      </LinearLayout>
 
-  </RelativeLayout>
+    </RelativeLayout>
+
+  </LinearLayout>
+
 </com.kickstarter.ui.toolbars.DiscoveryToolbar>

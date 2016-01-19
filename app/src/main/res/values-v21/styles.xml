@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <style name="StarFab">
+    <item name="android:layout_margin">@dimen/grid_3</item>
+  </style>
+
+  <style name="DiscoveryActivity" parent="DiscoveryBase">
+    <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    <item name="android:statusBarColor">@android:color/transparent</item>
+  </style>
+</resources>

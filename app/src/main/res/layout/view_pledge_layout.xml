@@ -65,7 +65,7 @@
 
         </RelativeLayout>
 
-        <include layout="@layout/horizontal_line_thin_view"/>
+        <include layout="@layout/horizontal_line_1dp_view"/>
 
         <TextView
           android:text="@string/backer_modal_pledged_title"
@@ -88,7 +88,7 @@
           android:layout_height="wrap_content"
           android:paddingBottom="@dimen/grid_3"/>
 
-        <include layout="@layout/horizontal_line_thin_view"/>
+        <include layout="@layout/horizontal_line_1dp_view"/>
 
         <TextView
           android:text="@string/backer_modal_reward_title"
@@ -105,7 +105,7 @@
           android:layout_height="wrap_content"
           android:paddingBottom="@dimen/grid_3"/>
 
-        <include layout="@layout/horizontal_line_thin_view"/>
+        <include layout="@layout/horizontal_line_1dp_view"/>
 
         <TextView
           android:text="@string/backer_modal_shipping_title"

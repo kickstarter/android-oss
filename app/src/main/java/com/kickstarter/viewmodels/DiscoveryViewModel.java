@@ -28,7 +28,6 @@ import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.WebClient;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
-import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
 import com.kickstarter.ui.viewholders.DiscoveryActivityViewHolder;
@@ -231,9 +230,6 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     return openDrawer;
   }
 
-  // ERRORS
-  private PublishSubject<ErrorEnvelope> activityError = PublishSubject.create();
-
   private boolean hasSeenOnboarding = false;
 
   public final DiscoveryViewModelInputs inputs = this;
@@ -409,7 +405,6 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
       .map(ActivityEnvelope::activities)
       .map(ListUtils::first)
       .filter(ObjectUtils::isNotNull)
-      .compose(Transformers.pipeApiErrorsTo(activityError))
       .compose(Transformers.neverError());
   }
 

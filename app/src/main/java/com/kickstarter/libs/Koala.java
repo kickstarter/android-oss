@@ -291,4 +291,29 @@ public final class Koala {
   public void trackProfileView() {
     client.track("Profile View My");
   }
+
+  // VIDEO
+  public void trackVideoStart() {
+    client.track("Project Video Start");
+  }
+
+  public void trackVideoEndedScrubbing() {
+    client.track("Project Video End Scrubbing");
+  }
+
+  public void trackVideoPaused() {
+    client.track("Project Video Pause");
+  }
+
+  public void trackVideoResume() {
+    client.track("Project Video Resume");
+  }
+
+  public void trackVideoStop() {
+    client.track("Project Video Stop");
+  }
+
+  public void trackVideoCompleted() {
+    client.track("Project Video Complete");
+  }
 }

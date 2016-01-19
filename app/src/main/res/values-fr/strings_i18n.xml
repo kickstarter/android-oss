@@ -57,6 +57,7 @@
   <string name="activity_friend_backed_journalism_project" formatted="false">%{friend_name} a soutenu un projet de journalisme.</string>
   <string name="activity_friend_backed_music_project" formatted="false">%{friend_name} a soutenu un projet musical.</string>
   <string name="activity_friend_backed_photography_project" formatted="false">%{friend_name} a soutenu un projet de photographie.</string>
+  <string name="activity_friend_backed_project_name_by_creator_name" formatted="false">&lt;b>%{friend_name} a soutenu le projet &lt;/b> %{project_name} par %{creator_name}</string>
   <string name="activity_friend_backed_publishing_project" formatted="false">%{friend_name} a soutenu un projet d\'édition.</string>
   <string name="activity_friend_backed_tech_project" formatted="false">%{friend_name} a soutenu un projet de technologie.</string>
   <string name="activity_friend_backed_theater_project" formatted="false">%{friend_name} a soutenu un projet de théâtre.</string>
@@ -313,7 +314,7 @@
   <string name="discovery_baseball_card_stats_convert_from_pledged_of_goal" formatted="false">Conversion de %{pledged} engagés pour un objectif de %{goal}</string>
   <string name="discovery_baseball_card_stats_funded" formatted="false">funded</string>
   <string name="discovery_baseball_card_stats_pledged_of_goal" formatted="false">sur %{goal}</string>
-  <string name="discovery_baseball_card_stats_pledged_of_goal_short" formatted="false">of %{goal}</string>
+  <string name="discovery_baseball_card_stats_pledged_of_goal_short" formatted="false">sur %{goal}</string>
   <string name="discovery_baseball_card_status_banner_canceled" formatted="false">Financement annulé</string>
   <string name="discovery_baseball_card_status_banner_canceled_date" formatted="false">Campagne annulée le %{date}</string>
   <string name="discovery_baseball_card_status_banner_funding_unsuccessful_date" formatted="false">Non financé %{date}</string>
@@ -354,7 +355,7 @@
   <string name="discovery_nearby" formatted="false">Projets à proximité</string>
   <string name="discovery_onboarding_buttons_learn_more" formatted="false">En savoir plus</string>
   <string name="discovery_onboarding_buttons_login" formatted="false">Connexion</string>
-  <string name="discovery_onboarding_buttons_signup_or_login" formatted="false">Sign up or Log in</string>
+  <string name="discovery_onboarding_buttons_signup_or_login" formatted="false">Inscription ou connexion</string>
   <string name="discovery_onboarding_learn_login_conjunction_or" formatted="false">ou</string>
   <string name="discovery_onboarding_title_bring_creative_projects_to_life" formatted="false">Soutenez des projets créatifs</string>
   <string name="discovery_popular" formatted="false">Populaires</string>
@@ -436,6 +437,7 @@
   <string name="login_tout_default_intent_traditional_signup_button" formatted="false">Inscription</string>
   <string name="login_tout_default_intent_traditional_title" formatted="false">Utilisez votre adresse e-mail :</string>
   <string name="login_tout_disclaimer_by_signing_up_you_agree_to_terms" formatted="false">En vous inscrivant, vous acceptez les Conditions d\'utilisation, notre Politique de confidentialité et notre Politique en matière de cookies.</string>
+  <string name="login_tout_disclaimer_by_signing_up_you_agree_to_terms_html" formatted="false">By signing up, you agree to our &lt;u>terms of use&lt;/u>, &lt;u>privacy policy&lt;/u>, and &lt;u>cookie policy&lt;/u>.</string>
   <string name="login_tout_disclaimer_read_more" formatted="false">En savoir plus</string>
   <string name="login_tout_disclaimer_we_never_post_anything_without_permission" formatted="false">Rien ne sera publié sans votre permission.</string>
   <string name="login_tout_errors_button_ok" formatted="false">OK</string>
@@ -504,7 +506,9 @@ Ce problème peut généralement être résolu en accédant à Réglages iOS > F
   <string name="profile_projects_backed_projects" formatted="false">Projets soutenus</string>
   <string name="profile_projects_created_projects" formatted="false">Mes projets</string>
   <string name="profile_projects_empty_state_button" formatted="false">Découvrez des projets</string>
+  <string name="profile_projects_empty_state_button_explore_new_projects" formatted="false">Découvrir de nouveaux projets</string>
   <string name="profile_projects_empty_state_message" formatted="false">Vous n\'avez pas encore soutenu de projets. On change ça ?</string>
+  <string name="profile_projects_empty_state_message_no_backed_projects_yet" formatted="false">Pas de projets soutenus</string>
   <string name="profile_projects_status_canceled" formatted="false">Annulé</string>
   <string name="profile_projects_status_successful" formatted="false">Intégralement financé</string>
   <string name="profile_projects_status_suspended" formatted="false">Suspendu</string>
@@ -537,8 +541,8 @@ Ce problème peut généralement être résolu en accédant à Réglages iOS > F
   <string name="profile_settings_navbar_title" formatted="false">Paramètres</string>
   <string name="profile_settings_navbar_title_notifications" formatted="false">Notifications</string>
   <string name="profile_settings_newsletter_happening" formatted="false">Happening</string>
-  <string name="profile_settings_newsletter_opt_in_message" formatted="false">We\'ve sent a confirmation email to the address associated with your account! Please check your email in order to confirm that you\'d like to subscribe to %{newsletter}.</string>
-  <string name="profile_settings_newsletter_opt_in_title" formatted="false">One final step!</string>
+  <string name="profile_settings_newsletter_opt_in_message" formatted="false">Nous vous avons envoyé un e-mail de confirmation à l\'adresse associée à votre compte ! Veuillez ouvrir votre boîte de réception et confirmer votre abonnement à %{newsletter}.</string>
+  <string name="profile_settings_newsletter_opt_in_title" formatted="false">Dernière étape !</string>
   <string name="profile_settings_newsletter_promo" formatted="false">Nouvelles et évènements Kickstarter</string>
   <string name="profile_settings_newsletter_title" formatted="false">Lettres d\'information</string>
   <string name="profile_settings_newsletter_weekly" formatted="false">Nos coups de cœur</string>
@@ -549,7 +553,7 @@ Nous vous en serions très reconnaissants !</string>
   <string name="profile_settings_rating_option_rate_now" formatted="false">Évaluez l\'application</string>
   <string name="profile_settings_rating_option_remind_later" formatted="false">Rappelez-moi plus tard</string>
   <string name="profile_settings_rating_rate_us" formatted="false">Évaluez-nous dans l\'App Store !</string>
-  <string name="profile_settings_rating_rate_us_play_store" formatted="false">Rate us in the Play Store!</string>
+  <string name="profile_settings_rating_rate_us_play_store" formatted="false">Évaluez-nous dans le Play Store !</string>
   <string name="profile_settings_rating_title" formatted="false">Nous sommes tout ouïe !</string>
   <string name="profile_settings_social_find_friends" formatted="false">Rechercher mes amis</string>
   <string name="profile_settings_social_followers" formatted="false">Nouveaux abonnés</string>
@@ -610,6 +614,7 @@ Nous vous en serions très reconnaissants !</string>
   <string name="project_menu_buttons_updates" formatted="false">Actus</string>
   <string name="project_menu_created_by" formatted="false">Créé par</string>
   <string name="project_menu_explore_this_project" formatted="false">Découvrir ce projet</string>
+  <string name="project_share_twitter_message" formatted="false">%{project_title}, via @Kickstarter</string>
   <string name="project_social_friend_and_friend_are_backers" formatted="false">%{friend_name} et %{second_friend_name} sont contributeurs.</string>
   <string name="project_social_friend_is_backer" formatted="false">%{friend_name} est contributeur.</string>
   <string name="project_social_friends_are_backers_and_more_bold_few" formatted="false">%{backer_count} autres personnes</string>

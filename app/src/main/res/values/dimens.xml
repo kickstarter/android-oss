@@ -71,6 +71,7 @@
   <dimen name="form_margin_x">@dimen/grid_2</dimen>
   <dimen name="project_padding_x">@dimen/grid_2</dimen>
   <dimen name="settings_icon_margin_x">@dimen/grid_1_half</dimen>
+  <dimen name="profile_empty_padding_y">@dimen/grid_8</dimen>
 
   <!-- Buttons -->
   <!-- button_icon_fixed_width is useful when we want to place several icons next to each

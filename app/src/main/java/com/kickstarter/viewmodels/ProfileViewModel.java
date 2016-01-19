@@ -17,6 +17,7 @@ import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.ProfileActivity;
 import com.kickstarter.ui.adapters.ProfileAdapter;
+import com.kickstarter.ui.viewholders.EmptyProfileViewHolder;
 import com.kickstarter.ui.viewholders.ProfileCardViewHolder;
 import com.kickstarter.viewmodels.inputs.ProfileViewModelInputs;
 import com.kickstarter.viewmodels.outputs.ProfileViewModelOutputs;
@@ -52,6 +53,11 @@ public final class ProfileViewModel extends ViewModel<ProfileActivity> implement
   public Observable<Project> showProject() {
     return showProject;
   }
+  private final PublishSubject<Void> showDiscovery = PublishSubject.create();
+  @Override
+  public Observable<Void> showDiscovery() {
+    return showDiscovery;
+  }
 
   public final ProfileViewModelInputs inputs = this;
   public final ProfileViewModelOutputs outputs = this;
@@ -81,12 +87,16 @@ public final class ProfileViewModel extends ViewModel<ProfileActivity> implement
         .loadWithPaginationPath(client::fetchProjects)
         .build();
 
-    addSubscription(paginator.paginatedData.subscribe(projects));
+    addSubscription(paginator.paginatedData.subscribe(projects::onNext));
 
     koala.trackProfileView();
   }
 
   public void profileCardViewHolderClicked(final @NonNull ProfileCardViewHolder viewHolder, final @NonNull Project project) {
     this.showProject.onNext(project);
+  }
+
+  public void emptyProfileViewHolderExploreProjectsClicked(final @NonNull EmptyProfileViewHolder viewHolder) {
+    this.showDiscovery.onNext(null);
   }
 }

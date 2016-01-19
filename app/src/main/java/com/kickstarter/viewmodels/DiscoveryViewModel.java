@@ -272,16 +272,16 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .build();
 
     addSubscription(
-      selectedParams.compose(Transformers.takePairWhen(paginator.loadingPage))
-        .map(paramsAndPage -> paramsAndPage.first.toBuilder().page(paramsAndPage.second).build())
-        .subscribe(p -> koala.trackDiscovery(p, !hasSeenOnboarding))
-    );
-
-    addSubscription(
       paginator.paginatedData
         .compose(Transformers.combineLatestPair(rootCategories))
         .map(pc -> DiscoveryUtils.fillRootCategoryForFeaturedProjects(pc.first, pc.second))
         .subscribe(projects::onNext)
+    );
+
+    addSubscription(
+      selectedParams.compose(Transformers.takePairWhen(paginator.loadingPage))
+        .map(paramsAndPage -> paramsAndPage.first.toBuilder().page(paramsAndPage.second).build())
+        .subscribe(p -> koala.trackDiscovery(p, !hasSeenOnboarding))
     );
 
     addSubscription(
@@ -291,8 +291,8 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .doOnNext(show -> hasSeenOnboarding = show || hasSeenOnboarding)
         .subscribe(shouldShowOnboarding::onNext)
     );
-    addSubscription(
 
+    addSubscription(
       currentUser.loggedInUser()
         .compose(Transformers.combineLatestPair(selectedParams))
         .flatMap(__ -> this.fetchActivity())
@@ -329,20 +329,6 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .subscribe(openDrawer::onNext)
     );
 
-    childFilterRowClick
-      .mergeWith(topFilterRowClick)
-      .map(NavigationDrawerData.Section.Row::params)
-      .subscribe(selectedParams::onNext);
-
-    topFilterRowClick
-      .subscribe(__ -> expandedParams.onNext(null));
-
-    navigationDrawerData
-      .map(NavigationDrawerData::expandedCategory)
-      .compose(Transformers.takePairWhen(clickedCategory))
-      .map(expandedAndClickedCategory -> toggleExpandedCategory(expandedAndClickedCategory.first, expandedAndClickedCategory.second))
-      .subscribe(expandedParams::onNext);
-
     addSubscription(
       childFilterRowClick
         .mergeWith(topFilterRowClick)
@@ -376,6 +362,10 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .map(__ -> false)
         .subscribe(openDrawer::onNext)
     );
+
+    expandedParams.onNext(null);
+    addSubscription(initializer.subscribe(selectedParams::onNext));
+    initializer.onNext(DiscoveryParams.builder().staffPicks(true).build());
   }
 
   private boolean isOnboardingVisible(final @NonNull DiscoveryParams currentParams, final boolean isLoggedIn) {

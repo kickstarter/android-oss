@@ -88,6 +88,7 @@ public class VideoViewModel extends ViewModel<VideoActivity> implements VideoVie
 
     addSubscription(
       playerNeedsPrepare
+        .observeOn(AndroidSchedulers.mainThread())
         .subscribe(videoSurfaceRoot -> {
           final Video video = (Video) videoSurfaceRoot.get(0);
           final SurfaceView surfaceView = (SurfaceView) videoSurfaceRoot.get(1);

@@ -19,6 +19,7 @@ import com.kickstarter.viewmodels.VideoViewModel;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresViewModel(VideoViewModel.class)
 public final class VideoActivity extends BaseActivity<VideoViewModel> {
@@ -41,6 +42,7 @@ public final class VideoActivity extends BaseActivity<VideoViewModel> {
 
     viewModel.outputs.playbackState()
       .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::showLoadingIndicator);
   }
 

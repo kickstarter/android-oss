@@ -24,7 +24,7 @@ public interface DiscoveryViewModelOutputs {
   /**
    * Emits discovery params when an update to projects and related view elements is needed
    */
-  Observable<DiscoveryParams> params();
+  Observable<DiscoveryParams> selectedParams();
 
   /**
    * Emits an activity for the activity sampler view

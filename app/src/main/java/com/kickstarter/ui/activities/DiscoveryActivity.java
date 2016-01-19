@@ -87,7 +87,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(adapter::takeProjects);
 
-    viewModel.outputs.params()
+    viewModel.outputs.selectedParams()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::loadParams);

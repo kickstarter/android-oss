@@ -163,7 +163,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   private final BehaviorSubject<DiscoveryParams> selectedParams = BehaviorSubject.create();
 
   @Override
-  public Observable<DiscoveryParams> params() {
+  public Observable<DiscoveryParams> selectedParams() {
     return selectedParams;
   }
   private final BehaviorSubject<Activity> activity = BehaviorSubject.create();

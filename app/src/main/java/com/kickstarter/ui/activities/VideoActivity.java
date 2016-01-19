@@ -2,6 +2,7 @@ package com.kickstarter.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
@@ -10,10 +11,8 @@ import android.widget.MediaController;
 import android.widget.ProgressBar;
 
 import com.google.android.exoplayer.AspectRatioFrameLayout;
-import com.google.android.exoplayer.ExoPlayer;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.KSRendererBuilder;
 import com.kickstarter.libs.KSVideoPlayer;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.models.Project;
@@ -23,12 +22,12 @@ import com.kickstarter.viewmodels.VideoViewModel;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresViewModel(VideoViewModel.class)
-public final class VideoActivity extends BaseActivity<VideoViewModel> implements KSVideoPlayer.Listener {
+public final class VideoActivity extends BaseActivity<VideoViewModel> {
   private MediaController mediaController;
   private KSVideoPlayer player;
-  private long playerPosition;
   private Video video;
 
   protected @Bind(R.id.video_player_layout) View rootView;
@@ -46,43 +45,35 @@ public final class VideoActivity extends BaseActivity<VideoViewModel> implements
     final Project project = intent.getParcelableExtra(IntentKey.PROJECT);
     video = project.video();
 
-    rootView.setOnTouchListener(((view, motionEvent) -> {
-      if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-        toggleControlsVisibility();
-      }
-      return true;
-    }));
+    // TODO
+//    viewModel.outputs.playerPositionOutput()
+//      .compose(bindToLifecycle())
+//      .filter(p -> p != null)
+//      .subscribe(this.player::seekTo);
+
+    viewModel.outputs.playerIsPrepared()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::setMediaController);
+
   }
 
   @Override
   public void onDestroy() {
+    viewModel.inputs.playerNeedsRelease(player);
     super.onDestroy();
-    releasePlayer();
   }
 
   @Override
   public void onResume() {
     super.onResume();
-    preparePlayer();
+    viewModel.inputs.playerNeedsPrepare(video, surfaceView);
   }
 
   @Override
   public void onPause() {
     super.onPause();
-    releasePlayer();
-  }
-
-  @Override
-  public void onStateChanged(final boolean playWhenReady, final int playbackState) {
-    if (playbackState == ExoPlayer.STATE_ENDED) {
-      mediaController.show();
-    }
-
-    if (playbackState == ExoPlayer.STATE_BUFFERING) {
-      loadingIndicatorProgressBar.setVisibility(View.VISIBLE);
-    } else {
-      loadingIndicatorProgressBar.setVisibility(View.GONE);
-    }
+    viewModel.inputs.playerNeedsRelease(player);
   }
 
   @Override
@@ -99,29 +90,20 @@ public final class VideoActivity extends BaseActivity<VideoViewModel> implements
     }
   }
 
-  private void releasePlayer() {
-    if (player != null) {
-      playerPosition = player.getCurrentPosition();
-      player.release();
-      player = null;
-    }
-  }
+  private void setMediaController(final @NonNull KSVideoPlayer player) {
+    this.player = player;
 
-  public void preparePlayer() {
-    // Create player
-    player = new KSVideoPlayer(new KSRendererBuilder(this, video.high()));
-    player.setListener(this);
-    player.seekTo(playerPosition);  // todo: will be used for inline video playing
-
-    // Set media controller
     mediaController = new MediaController(this);
     mediaController.setMediaPlayer(player.getPlayerControl());
     mediaController.setAnchorView(rootView);
     mediaController.setEnabled(true);
 
-    player.prepare();
-    player.setSurface(surfaceView.getHolder().getSurface());
-    player.setPlayWhenReady(true);
+    rootView.setOnTouchListener(((view, motionEvent) -> {
+      if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+        toggleControlsVisibility();
+      }
+      return true;
+    }));
   }
 
   public void toggleControlsVisibility() {

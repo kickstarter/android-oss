@@ -52,7 +52,7 @@
 
   <!-- Cards -->
   <dimen name="card_corner_radius">4dp</dimen>
-  <dimen name="card_elevation">3dp</dimen>
+  <dimen name="card_elevation">2dp</dimen>
   <dimen name="card_margin_x">@dimen/grid_2</dimen>
   <dimen name="card_margin_y">@dimen/grid_1</dimen>
   <dimen name="card_padding_action_half">@dimen/grid_1_half</dimen>

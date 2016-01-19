@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:background="@drawable/dialog_alert_rounded"
+  android:layout_width="@dimen/grid_35"
+  android:layout_height="wrap_content"
+  android:layout_gravity="center"
+  android:orientation="vertical">
+
+  <TextView
+    style="@style/EditorialSubheadMedium"
+    android:id="@+id/title_text_view"
+    android:gravity="center_horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/grid_3"
+    android:layout_marginBottom="@dimen/grid_2"
+    android:layout_marginLeft="@dimen/grid_2"
+    android:layout_marginRight="@dimen/grid_2"
+    android:text="@string/profile_settings_rating_option_title_show_us_some_love" />
+
+  <TextView
+    style="@style/BodySecondary"
+    android:id="@+id/message_text_view"
+    android:gravity="center_horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/grid_3"
+    android:layout_marginLeft="@dimen/grid_2"
+    android:layout_marginRight="@dimen/grid_2"
+    android:text="@string/profile_settings_rating_option_message_if_you_enjoy_using_Kickstarter"
+    android:textColor="@color/text_secondary" />
+
+  <Button
+    style="@style/BorderButton"
+    android:id="@+id/rate_button"
+    android:layout_width="match_parent"
+    android:layout_marginBottom="@dimen/grid_2"
+    android:layout_marginLeft="@dimen/grid_2"
+    android:layout_marginRight="@dimen/grid_2"
+    android:text="@string/profile_settings_rating_option_rate_now" />
+
+  <Button
+    style="@style/BorderButton"
+    android:id="@+id/remind_button"
+    android:layout_width="match_parent"
+    android:layout_marginBottom="@dimen/grid_2"
+    android:layout_marginLeft="@dimen/grid_2"
+    android:layout_marginRight="@dimen/grid_2"
+    android:text="@string/profile_settings_rating_option_remind_later" />
+
+  <Button
+    style="@style/BorderButton"
+    android:id="@+id/no_thanks_button"
+    android:layout_width="match_parent"
+    android:layout_marginBottom="@dimen/grid_2"
+    android:layout_marginLeft="@dimen/grid_2"
+    android:layout_marginRight="@dimen/grid_2"
+    android:text="@string/profile_settings_rating_option_no_thanks" />
+
+</LinearLayout>

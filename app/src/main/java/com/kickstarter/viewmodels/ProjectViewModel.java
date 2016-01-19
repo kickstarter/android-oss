@@ -40,6 +40,7 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
   protected @Inject CurrentUser currentUser;
   protected @Inject CookieManager cookieManager;
   protected @Inject CurrentConfig currentConfig;
+  protected @Inject SharedPreferences sharedPreferences;
 
   /**
    * A light-weight value to hold two ref tags and a project. Two ref tags are stored: one comes from parceled
@@ -207,31 +208,22 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
 
     // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
     final Observable<RefTag> cookieRefTag = project
-      .compose(Transformers.combineLatestPair(view))
       .take(1)
-      .map(projectAndView -> {
-        final Project project = projectAndView.first;
-        final SharedPreferences prefs = projectAndView.second.getPreferences(Context.MODE_PRIVATE);
-        return RefTagUtils.storedCookieRefTagForProject(project, cookieManager, prefs);
-      });
+      .map(p -> RefTagUtils.storedCookieRefTagForProject(p, cookieManager, sharedPreferences));
 
     addSubscription(
       Observable.combineLatest(intentRefTag, cookieRefTag, project, RefTagsAndProject::new)
-        .compose(Transformers.combineLatestPair(view))
         .take(1)
-        .subscribe(dataAndView -> {
-          final RefTagsAndProject data = dataAndView.first;
-          final SharedPreferences prefs = dataAndView.second.getPreferences(Context.MODE_PRIVATE);
-
+        .subscribe(data -> {
           // If a cookie hasn't been set for this ref+project then do so.
           if (data.refTagFromCookie == null && data.refTagFromIntent != null) {
-            RefTagUtils.storeCookie(data.refTagFromIntent, data.project, cookieManager, prefs);
+            RefTagUtils.storeCookie(data.refTagFromIntent, data.project, cookieManager, sharedPreferences);
           }
 
           koala.trackProjectShow(
             data.project,
             data.refTagFromIntent,
-            RefTagUtils.storedCookieRefTagForProject(data.project, cookieManager, prefs)
+            RefTagUtils.storedCookieRefTagForProject(data.project, cookieManager, sharedPreferences)
           );
         })
     );

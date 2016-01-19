@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 
 import com.google.android.exoplayer.ExoPlayer;
 import com.jakewharton.rxbinding.view.RxView;
+import com.kickstarter.KSApplication;
 import com.kickstarter.libs.KSRendererBuilder;
 import com.kickstarter.libs.KSVideoPlayer;
 import com.kickstarter.libs.ViewModel;
@@ -74,6 +75,7 @@ public class VideoViewModel extends ViewModel<VideoActivity> implements VideoVie
   @Override
   protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
+    ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     addSubscription(
       playerNeedsPrepare
@@ -92,17 +94,27 @@ public class VideoViewModel extends ViewModel<VideoActivity> implements VideoVie
         .subscribe(this::releasePlayer)
     );
 
-    // todo
-    addSubscription(videoEnded.subscribe(__ -> koala.trackVideoCompleted()));
+    addSubscription(
+      mediaControllerBehaviorSubject
+        .compose(Transformers.takeWhen(videoEnded))
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(MediaController::show)
+    );
   }
 
   @Override
   public void onStateChanged(final boolean playWhenReady, final int state) {
     playbackState.onNext(state);
+    if (playWhenReady) {
+      koala.trackVideoResume();
+    } else {
+      koala.trackVideoPaused();
+    }
 
     switch (state) {
       case ExoPlayer.STATE_ENDED:
         videoEnded.onNext(null);
+        koala.trackVideoCompleted();
         break;
     }
   }
@@ -111,7 +123,7 @@ public class VideoViewModel extends ViewModel<VideoActivity> implements VideoVie
     final @NonNull SurfaceView surfaceView, final @NonNull View rootView) {
     final KSVideoPlayer player = new KSVideoPlayer(new KSRendererBuilder(context, video.high()));
     player.setListener(this);
-    player.seekTo(position); // todo: will be used for inline video playing
+    player.seekTo(position);
 
     final MediaController mediaController = new MediaController(context);
     mediaController.setMediaPlayer(player.getPlayerControl());
@@ -135,6 +147,7 @@ public class VideoViewModel extends ViewModel<VideoActivity> implements VideoVie
   public void releasePlayer(final @NonNull KSVideoPlayer player) {
     playerPositionOutput.onNext(player.getCurrentPosition());
     player.release();
+    koala.trackVideoStop();
   }
 
   public void toggleController(final @NonNull MediaController mediaController) {

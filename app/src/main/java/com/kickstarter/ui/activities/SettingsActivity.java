@@ -132,6 +132,11 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
           lazyLogoutConfirmationDialog().dismiss();
         }
       });
+
+    viewModel.outputs.logout()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> this.logout());
   }
 
   /**

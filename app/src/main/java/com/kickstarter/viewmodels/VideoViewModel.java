@@ -33,15 +33,17 @@ import rx.subjects.PublishSubject;
 public class VideoViewModel extends ViewModel<VideoActivity> implements VideoViewModelInputs, VideoViewModelOutputs,
   VideoViewModelErrors, KSVideoPlayer.Listener {
 
-  private final BehaviorSubject<MediaController> mediaControllerBehaviorSubject = BehaviorSubject.create();
-  private final PublishSubject<Pair<Boolean, Integer>> stateChanged= PublishSubject.create();
-
   // INPUTS
-  private final PublishSubject<ProgressBar> loadingIndicator = PublishSubject.create();
+  private final BehaviorSubject<MediaController> mediaControllerBehaviorSubject = BehaviorSubject.create();
   private final PublishSubject<List<Object>> playerNeedsPrepare = PublishSubject.create();
   private final PublishSubject<KSVideoPlayer> playerNeedsRelease = PublishSubject.create();
+  private final PublishSubject<Void> videoEnded = PublishSubject.create();
 
   // OUTPUTS
+  private final PublishSubject<Integer> playbackState = PublishSubject.create();
+  public Observable<Integer> playbackState() {
+    return playbackState;
+  }
   private final PublishSubject<Long> playerPositionOutput = PublishSubject.create();
   public Observable<Long> playerPositionOutput() {
     return playerPositionOutput;
@@ -58,15 +60,10 @@ public class VideoViewModel extends ViewModel<VideoActivity> implements VideoVie
   public final VideoViewModelErrors errors = this;
 
   @Override
-  public void loadingIndicator(final @NonNull ProgressBar progressBar) {
-    this.loadingIndicator.onNext(progressBar);
-  }
-
-  @Override
-  public void playerNeedsPrepare(final @NonNull Video video, final @NonNull SurfaceView surfaceView,
+  public void playerNeedsPrepare(final @NonNull Video video, final long position, final @NonNull SurfaceView surfaceView,
     final @NonNull View rootView) {
-    final List<Object> videoSurfaceRoot = Arrays.asList(video, surfaceView, rootView);
-    this.playerNeedsPrepare.onNext(videoSurfaceRoot);
+    final List<Object> videoPositionSurfaceRoot = Arrays.asList(video, position, surfaceView, rootView);
+    this.playerNeedsPrepare.onNext(videoPositionSurfaceRoot);
   }
 
   @Override
@@ -79,19 +76,13 @@ public class VideoViewModel extends ViewModel<VideoActivity> implements VideoVie
     super.onCreate(context, savedInstanceState);
 
     addSubscription(
-      mediaControllerBehaviorSubject
-        .compose(Transformers.takePairWhen(stateChanged))
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(mps -> handlePlaybackState(mps.first, mps.second.first, mps.second.second))
-    );
-
-    addSubscription(
       playerNeedsPrepare
         .subscribe(videoSurfaceRoot -> {
           final Video video = (Video) videoSurfaceRoot.get(0);
-          final SurfaceView surfaceView = (SurfaceView) videoSurfaceRoot.get(1);
-          final View rootView = (View) videoSurfaceRoot.get(2);
-          preparePlayer(context, video, surfaceView, rootView);
+          final long position = (Long) videoSurfaceRoot.get(1);
+          final SurfaceView surfaceView = (SurfaceView) videoSurfaceRoot.get(2);
+          final View rootView = (View) videoSurfaceRoot.get(3);
+          preparePlayer(context, video, position, surfaceView, rootView);
         })
     );
 
@@ -100,33 +91,27 @@ public class VideoViewModel extends ViewModel<VideoActivity> implements VideoVie
         .filter(p -> p != null)
         .subscribe(this::releasePlayer)
     );
+
+    // todo
+    addSubscription(videoEnded.subscribe(__ -> koala.trackVideoCompleted()));
   }
 
   @Override
-  public void onStateChanged(final boolean playWhenReady, final int playbackState) {
-    stateChanged.onNext(new Pair<>(playWhenReady, playbackState));
-  }
+  public void onStateChanged(final boolean playWhenReady, final int state) {
+    playbackState.onNext(state);
 
-  public void handlePlaybackState(final @NonNull MediaController mediaController, final boolean playWhenReady,
-    final int playbackState) {
-    if (playbackState == ExoPlayer.STATE_ENDED) {
-      mediaController.show();
-      koala.trackVideoCompleted();
+    switch (state) {
+      case ExoPlayer.STATE_ENDED:
+        videoEnded.onNext(null);
+        break;
     }
-
-    // TODO: pass along progress bar (loading indicator) view
-    //    if (playbackState == ExoPlayer.STATE_BUFFERING) {
-    //      loadingIndicatorProgressBar.setVisibility(View.VISIBLE);
-    //    } else {
-    //      loadingIndicatorProgressBar.setVisibility(View.GONE);
-    //    }
   }
 
-  public void preparePlayer(final @NonNull Context context, final @NonNull Video video,
+  public void preparePlayer(final @NonNull Context context, final @NonNull Video video, final long position,
     final @NonNull SurfaceView surfaceView, final @NonNull View rootView) {
     final KSVideoPlayer player = new KSVideoPlayer(new KSRendererBuilder(context, video.high()));
     player.setListener(this);
-//    player.seekTo(position); // todo: will be used for inline video playing
+    player.seekTo(position); // todo: will be used for inline video playing
 
     final MediaController mediaController = new MediaController(context);
     mediaController.setMediaPlayer(player.getPlayerControl());
@@ -150,7 +135,6 @@ public class VideoViewModel extends ViewModel<VideoActivity> implements VideoVie
   public void releasePlayer(final @NonNull KSVideoPlayer player) {
     playerPositionOutput.onNext(player.getCurrentPosition());
     player.release();
-    playerIsPrepared.onNext(null);  // clear the player
   }
 
   public void toggleController(final @NonNull MediaController mediaController) {

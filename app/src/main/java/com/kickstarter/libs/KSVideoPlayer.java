@@ -11,6 +11,7 @@ import com.google.android.exoplayer.util.PlayerControl;
 
 /**
  * ExoPlayer wrapper that provides higher level interface.
+ * Reference: https://github.com/google/ExoPlayer/blob/master/demo/src/main/java/com/google/android/exoplayer/demo/player/DemoPlayer.java
  */
 public final class KSVideoPlayer implements ExoPlayer.Listener {
   private final int TRACK_RENDERER_COUNT = 3; // audio, video, text
@@ -60,10 +61,6 @@ public final class KSVideoPlayer implements ExoPlayer.Listener {
 
   public long getDuration() {
     return player.getDuration();
-  }
-
-  public int getPlaybackState() {
-    return player.getPlaybackState();
   }
 
   public PlayerControl getPlayerControl() {

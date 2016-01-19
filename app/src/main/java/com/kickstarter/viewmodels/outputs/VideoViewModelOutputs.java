@@ -7,4 +7,5 @@ import rx.Observable;
 public interface VideoViewModelOutputs {
   Observable<Long> playerPositionOutput();
   Observable<KSVideoPlayer> playerIsPrepared();
+  Observable<Integer> playbackState();
 }

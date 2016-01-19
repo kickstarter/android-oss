@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.google.android.exoplayer.AspectRatioFrameLayout;
+import com.google.android.exoplayer.ExoPlayer;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSVideoPlayer;
@@ -25,6 +26,7 @@ import rx.android.schedulers.AndroidSchedulers;
 @RequiresViewModel(VideoViewModel.class)
 public final class VideoActivity extends BaseActivity<VideoViewModel> {
   private KSVideoPlayer player;
+  private long playerPosition;
   private Video video;
 
   protected @Bind(R.id.video_player_layout) View rootView;
@@ -42,28 +44,38 @@ public final class VideoActivity extends BaseActivity<VideoViewModel> {
     final Project project = intent.getParcelableExtra(IntentKey.PROJECT);
     video = project.video();
 
+    viewModel.outputs.playbackState()
+      .compose(bindToLifecycle())
+      .subscribe(this::showLoadingIndicator);
+
     viewModel.outputs.playerIsPrepared()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::setPlayer);
+
+    viewModel.outputs.playerPositionOutput()
+      .compose(bindToLifecycle())
+      .subscribe(this::setPlayerPosition);
   }
 
   @Override
   public void onDestroy() {
     viewModel.inputs.playerNeedsRelease(player);
     super.onDestroy();
+    player = null;
   }
 
   @Override
   public void onResume() {
     super.onResume();
-    viewModel.inputs.playerNeedsPrepare(video, surfaceView, rootView);
+    viewModel.inputs.playerNeedsPrepare(video, playerPosition, surfaceView, rootView);
   }
 
   @Override
   public void onPause() {
     super.onPause();
     viewModel.inputs.playerNeedsRelease(player);
+    player = null;
   }
 
   @Override
@@ -80,7 +92,19 @@ public final class VideoActivity extends BaseActivity<VideoViewModel> {
     }
   }
 
+  private void showLoadingIndicator(final int playbackState) {
+    if (playbackState == ExoPlayer.STATE_BUFFERING) {
+      loadingIndicatorProgressBar.setVisibility(View.VISIBLE);
+    } else {
+      loadingIndicatorProgressBar.setVisibility(View.GONE);
+    }
+  }
+
   private void setPlayer(final @NonNull KSVideoPlayer player) {
     this.player = player;
+  }
+
+  private void setPlayerPosition(final long position) {
+    this.playerPosition = position;
   }
 }

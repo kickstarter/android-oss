@@ -36,10 +36,6 @@ public final class KoalaTrackingClient implements TrackingClientType {
     this.currentUser.observable().subscribe(u -> loggedInUser = u);
 
     mixpanel = MixpanelAPI.getInstance(context, "koala");
-
-    mixpanel.getDistinctId();
-    mixpanel.getDeviceInfo();
-
   }
 
   @Override

@@ -9,4 +9,9 @@ import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter;
 public interface DiscoveryViewModelInputs extends DiscoveryAdapter.Delegate, DiscoveryDrawerAdapter.Delegate {
   void nextPage();
   void initializer(final @NonNull DiscoveryParams params);
+
+  /**
+   * Call when you want to open or close the drawer.
+   */
+  void openDrawer(final boolean open);
 }

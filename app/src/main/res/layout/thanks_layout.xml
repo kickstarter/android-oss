@@ -43,19 +43,19 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginBottom="@dimen/grid_1"
-        android:layout_marginLeft="@dimen/grid_2"
-        android:layout_marginRight="@dimen/grid_2"
-        android:layout_marginTop="@dimen/grid_2">
+        android:layout_marginLeft="@dimen/grid_3"
+        android:layout_marginRight="@dimen/grid_3"
+        android:layout_marginTop="@dimen/grid_3">
 
         <TextView
           style="@style/SubheadPrimary"
           android:id="@+id/backed_project"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:text="You_just_backed" />
+          android:text="You just backed Some Secret Project. Share this project with friends to help it along!" />
 
         <LinearLayout
-          android:layout_width="match_parent"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:paddingTop="@dimen/grid_3"
           android:orientation="horizontal"
@@ -64,18 +64,19 @@
           <Button
             style="@style/FacebookButton"
             android:id="@+id/facebook_button"
-            android:layout_width="match_parent"
-            android:layout_marginLeft="@dimen/grid_1_half"
+            android:layout_marginRight="@dimen/grid_3_half"
             android:layout_weight="1"
+            android:paddingLeft="@dimen/grid_6"
+            android:paddingRight="52dp"
             android:text="@string/project_checkout_share_buttons_share"
             android:textAllCaps="false" />
 
           <Button
             style="@style/TwitterButton"
             android:id="@+id/twitter_button"
-            android:layout_width="match_parent"
-            android:layout_marginLeft="@dimen/grid_1_half"
             android:layout_weight="1"
+            android:paddingLeft="@dimen/grid_6"
+            android:paddingRight="@dimen/grid_7"
             android:text="@string/project_checkout_share_buttons_tweet"
             android:textAllCaps="false" />
 
@@ -84,21 +85,18 @@
         <Button
           style="@style/BorderButton"
           android:id="@+id/share_button"
-          android:layout_marginTop="@dimen/grid_1"
-          android:layout_marginLeft="@dimen/grid_1_half"
-          android:layout_marginStart="@dimen/grid_1_half"
-          android:layout_marginRight="@dimen/grid_1_half"
-          android:layout_marginEnd="@dimen/grid_1_half"
+          android:layout_marginTop="@dimen/grid_3_half"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:text="@string/project_checkout_share_buttons_more"
+          android:text="@string/project_checkout_share_buttons_more_share_options"
           android:textAllCaps="false" />
 
         <TextView
-          style="@style/BodyPrimary"
+          style="@style/SubheadPrimary"
+          android:gravity="center_horizontal"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/grid_3"
+          android:layout_marginTop="@dimen/grid_4"
           android:text="@string/project_checkout_looking_for_more_projects_check_these_out" />
 
       </LinearLayout>
@@ -107,7 +105,7 @@
         android:id="@+id/recommended_projects_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:layout_marginBottom="@dimen/grid_2"
+        android:layout_margin="@dimen/grid_2"
         android:scrollbars="horizontal" />
 
     </LinearLayout>

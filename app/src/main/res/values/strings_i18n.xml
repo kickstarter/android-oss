@@ -581,6 +581,7 @@ We\'d appreciate it!</string>
   <string name="project_checkout_share_alert_button_ok" formatted="false">OK</string>
   <string name="project_checkout_share_alert_this_device_not_capable_of_sending_email" formatted="false">This device is not capable of sending email.</string>
   <string name="project_checkout_share_buttons_more" formatted="false">More</string>
+  <string name="project_checkout_share_buttons_more_share_options" formatted="false">More share options</string>
   <string name="project_checkout_share_buttons_share" formatted="false">Share</string>
   <string name="project_checkout_share_buttons_tweet" formatted="false">Tweet</string>
   <string name="project_checkout_share_exclamation" formatted="false">Woo-hoo!</string>

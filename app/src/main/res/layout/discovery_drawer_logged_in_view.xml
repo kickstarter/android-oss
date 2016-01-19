@@ -4,7 +4,7 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
   android:layout_marginBottom="@dimen/grid_1"
-  android:layout_marginTop="@dimen/status_bar_height"
+  android:layout_marginTop="@dimen/discovery_drawer_status_bar_height"
   android:orientation="vertical"
   android:theme="@style/ThemeOverlay.AppCompat.Light">
 
@@ -13,7 +13,7 @@
     android:layout_height="@dimen/grid_7"
     android:paddingTop="@dimen/grid_1"
     android:paddingBottom="@dimen/grid_1"
-    android:background="@color/hamburger_navigation_header"
+    android:background="@color/discovery_drawer_header"
     android:gravity="center_vertical">
 
     <LinearLayout
@@ -46,18 +46,27 @@
 
     </LinearLayout>
 
-    <com.kickstarter.ui.views.IconButton
-      android:background="@drawable/click_indicator_light"
-      android:id="@+id/settings_icon_button"
-      android:layout_height="@dimen/grid_6"
-      android:layout_width="@dimen/grid_6"
-      android:gravity="center"
-      android:textSize="@dimen/icon"
+    <LinearLayout
+      android:orientation="horizontal"
       android:layout_centerVertical="true"
+      android:gravity="center_vertical"
       android:layout_alignParentEnd="true"
       android:layout_alignParentRight="true"
-      android:textColor="@color/black"
-      android:text="@string/settings_icon" />
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content">
+
+      <include layout="@layout/internal_tools_button_view" />
+
+      <com.kickstarter.ui.views.IconButton
+        android:background="@drawable/click_indicator_light"
+        android:id="@+id/settings_icon_button"
+        android:layout_height="@dimen/grid_6"
+        android:layout_width="@dimen/grid_6"
+        android:gravity="center"
+        android:textSize="@dimen/icon"
+        android:textColor="@color/black"
+        android:text="@string/settings_icon" />
+    </LinearLayout>
 
   </RelativeLayout>
 

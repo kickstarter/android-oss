@@ -1,9 +1,9 @@
 package com.kickstarter;
 
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.KoalaTrackingClient;
-import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.utils.ApplicationLifecycleUtil;
 import com.kickstarter.services.gcm.MessageService;
 import com.kickstarter.services.gcm.RegisterService;
@@ -20,7 +20,7 @@ import com.kickstarter.ui.activities.ViewPledgeActivity;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
 import com.kickstarter.ui.viewholders.CategoryPromoViewHolder;
 import com.kickstarter.ui.viewholders.CommentViewHolder;
-import com.kickstarter.ui.viewholders.DiscoveryFilterViewHolder;
+import com.kickstarter.ui.viewholders.DiscoveryActivityViewHolder;
 import com.kickstarter.ui.viewholders.EmptyActivityFeedViewHolder;
 import com.kickstarter.ui.viewholders.EmptyCommentFeedViewHolder;
 import com.kickstarter.ui.viewholders.FriendBackingViewHolder;
@@ -39,7 +39,6 @@ import com.kickstarter.ui.views.IconTextView;
 import com.kickstarter.ui.views.KSWebView;
 import com.kickstarter.viewmodels.ActivityFeedViewModel;
 import com.kickstarter.viewmodels.CommentFeedViewModel;
-import com.kickstarter.viewmodels.DiscoveryFilterViewModel;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
 import com.kickstarter.viewmodels.FacebookConfirmationViewModel;
 import com.kickstarter.viewmodels.LoginToutViewModel;
@@ -66,8 +65,7 @@ public interface ApplicationGraph {
   void inject(CurrentUser __);
   void inject(Koala __);
   void inject(DiscoveryActivity __);
-  void inject(DiscoveryFilterViewModel __);
-  void inject(DiscoveryFilterViewHolder __);
+  void inject(DiscoveryActivityViewHolder __);
   void inject(DiscoveryViewModel __);
   void inject(DiscoveryToolbar __);
   void inject(EmptyActivityFeedViewHolder __);

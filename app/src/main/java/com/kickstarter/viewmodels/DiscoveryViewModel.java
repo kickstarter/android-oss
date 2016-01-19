@@ -12,20 +12,28 @@ import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.ViewModel;
+import com.kickstarter.libs.preferences.IntPreference;
+import com.kickstarter.libs.qualifiers.ActivitySamplePreference;
 import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.libs.utils.DiscoveryDrawerUtils;
 import com.kickstarter.libs.utils.DiscoveryParamsUtils;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.ListUtils;
+import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.models.Activity;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.WebClient;
+import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.DiscoveryActivity;
-import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
+import com.kickstarter.ui.viewholders.DiscoveryActivityViewHolder;
+import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
+import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.ChildFilterViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.LoggedInViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.LoggedOutViewHolder;
@@ -34,10 +42,7 @@ import com.kickstarter.ui.viewholders.discoverydrawer.TopFilterViewHolder;
 import com.kickstarter.viewmodels.inputs.DiscoveryViewModelInputs;
 import com.kickstarter.viewmodels.outputs.DiscoveryViewModelOutputs;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -46,76 +51,105 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-import static com.kickstarter.libs.utils.BoolUtils.isTrue;
+import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
 
 public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> implements DiscoveryViewModelInputs,
-  DiscoveryViewModelOutputs, DiscoveryDrawerAdapter.Delegate {
+  DiscoveryViewModelOutputs {
   protected @Inject ApiClientType apiClient;
   protected @Inject WebClient webClient;
   protected @Inject BuildCheck buildCheck;
   protected @Inject CurrentUser currentUser;
-
-  // ADAPTER DELEGATE INPUTS
-  private PublishSubject<NavigationDrawerData.Section.Row> childFilterRowClick = PublishSubject.create();
-  @Override
-  public void rowClick(@NonNull ChildFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
-    childFilterRowClick.onNext(row);
-  }
-
-  private PublishSubject<Void> loginClick = PublishSubject.create();
-  @Override
-  public void loginClick(final @NonNull LoggedOutViewHolder viewHolder) {
-    loginClick.onNext(null);
-  }
-
-  private PublishSubject<NavigationDrawerData.Section.Row> parentFilterRowClick = PublishSubject.create();
-  @Override
-  public void rowClick(@NonNull ParentFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
-    parentFilterRowClick.onNext(row);
-  }
-
-  private PublishSubject<User> profileClick = PublishSubject.create();
-  @Override
-  public void profileClick(final @NonNull LoggedInViewHolder viewHolder, final @NonNull User user) {
-    profileClick.onNext(user);
-  }
-
-  private PublishSubject<User> settingsClick = PublishSubject.create();
-  @Override
-  public void settingsClick(final @NonNull LoggedInViewHolder viewHolder, final @NonNull User user) {
-    settingsClick.onNext(user);
-  }
-
-  private PublishSubject<NavigationDrawerData.Section.Row> topFilterRowClick = PublishSubject.create();
-  @Override
-  public void rowClick(@NonNull TopFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
-    topFilterRowClick.onNext(row);
-  }
+  protected @Inject @ActivitySamplePreference IntPreference activitySamplePreference;
 
   // INPUTS
-  private final PublishSubject<Project> projectClicked = PublishSubject.create();
-  @Override
-  public void projectClicked(@NonNull final Project project) {
-    projectClicked.onNext(project);
-  }
-
   private final PublishSubject<Void> nextPage = PublishSubject.create();
   @Override
   public void nextPage() {
     nextPage.onNext(null);
   }
 
-  private final PublishSubject<Void> filterButtonClicked = PublishSubject.create();
-
-  @Override
-  public void menuButtonClicked() {
-    filterButtonClicked.onNext(null);
-  }
-
   private final PublishSubject<DiscoveryParams> initializer = PublishSubject.create();
   @Override
   public void initializer(final @NonNull DiscoveryParams params) {
     initializer.onNext(params);
+  }
+
+  // ONBOARDING DELEGATE INPUTS
+  @Override
+  public void discoveryOnboardingViewHolderSignupLoginClick(DiscoveryOnboardingViewHolder viewHolder) {
+    loginClick.onNext(null);
+  }
+
+  // PROJECT VIEW HOLDER DELEGATE INPUTS
+  private PublishSubject<Project> clickProject = PublishSubject.create();
+  @Override
+  public void projectCardViewHolderClick(ProjectCardViewHolder viewHolder, Project project) {
+    clickProject.onNext(project);
+  }
+
+  // NAVIGATION DRAWER DELEGATE INPUTS
+  private PublishSubject<NavigationDrawerData.Section.Row> childFilterRowClick = PublishSubject.create();
+  @Override
+  public void childFilterViewHolderRowClick(@NonNull ChildFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
+    childFilterRowClick.onNext(row);
+  }
+
+  private PublishSubject<Void> loginClick = PublishSubject.create();
+  @Override
+  public void loggedOutViewHolderLoginClick(final @NonNull LoggedOutViewHolder viewHolder) {
+    loginClick.onNext(null);
+  }
+
+  private PublishSubject<NavigationDrawerData.Section.Row> parentFilterRowClick = PublishSubject.create();
+  @Override
+  public void parentFilterViewHolderRowClick(@NonNull ParentFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
+    parentFilterRowClick.onNext(row);
+  }
+
+  private PublishSubject<Void> internalToolsClick = PublishSubject.create();
+  @Override
+  public void loggedInViewHolderInternalToolsClick(final @NonNull LoggedInViewHolder viewHolder) {
+    internalToolsClick.onNext(null);
+  }
+
+  @Override
+  public void loggedOutViewHolderInternalToolsClick(final @NonNull LoggedOutViewHolder viewHolder) {
+    internalToolsClick.onNext(null);
+  }
+
+  private PublishSubject<Void> profileClick = PublishSubject.create();
+  @Override
+  public void loggedInViewHolderProfileClick(final @NonNull LoggedInViewHolder viewHolder, final @NonNull User user) {
+    profileClick.onNext(null);
+  }
+
+  private PublishSubject<Void> settingsClick = PublishSubject.create();
+  @Override
+  public void loggedInViewHolderSettingsClick(final @NonNull LoggedInViewHolder viewHolder, final @NonNull User user) {
+    settingsClick.onNext(null);
+  }
+
+  private PublishSubject<NavigationDrawerData.Section.Row> topFilterRowClick = PublishSubject.create();
+  @Override
+  public void topFilterViewHolderRowClick(@NonNull TopFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
+    topFilterRowClick.onNext(row);
+  }
+
+  // ACTIVITY SAMPLE DELEGATE INPUTS
+  private PublishSubject<Project> clickActivityProject = PublishSubject.create();
+  @Override
+  public void discoveryActivityViewHolderProjectClicked(final @NonNull DiscoveryActivityViewHolder viewHolder, final @NonNull Project project) {
+    clickActivityProject.onNext(project);
+  }
+
+  @Override
+  public void discoveryActivityViewHolderSeeActivityClicked(final @NonNull DiscoveryActivityViewHolder viewHolder) {
+    showActivityFeed.onNext(null);
+  }
+
+  @Override
+  public void discoveryActivityViewHolderUpdateClicked(final @NonNull DiscoveryActivityViewHolder viewHolder, final @NonNull Activity activity) {
+    showActivityUpdate.onNext(activity);
   }
 
   // OUTPUTS
@@ -128,8 +162,12 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   private final BehaviorSubject<DiscoveryParams> selectedParams = BehaviorSubject.create();
 
   @Override
-  public Observable<DiscoveryParams> params() {
+  public Observable<DiscoveryParams> selectedParams() {
     return selectedParams;
+  }
+  private final BehaviorSubject<Activity> activity = BehaviorSubject.create();
+  public Observable<Activity> activity() {
+    return activity;
   }
 
   private final BehaviorSubject<Boolean> shouldShowOnboarding = BehaviorSubject.create();
@@ -138,15 +176,10 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     return shouldShowOnboarding;
   }
 
-  private final PublishSubject<Void> showLogin = PublishSubject.create();
+  private final PublishSubject<Void> showInternalTools = PublishSubject.create();
   @Override
-  public Observable<Void> showLogin() {
-    return showLogin;
-  }
-
-  @Override
-  public Observable<DiscoveryParams> showFilters() {
-    return selectedParams.compose(Transformers.takeWhen(filterButtonClicked));
+  public Observable<Void> showInternalTools() {
+    return showInternalTools;
   }
 
   private final PublishSubject<Void> showProfile = PublishSubject.create();
@@ -155,16 +188,46 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     return showProfile;
   }
 
+  private final PublishSubject<Pair<Project, RefTag>> showProject = PublishSubject.create();
   @Override
   public Observable<Pair<Project, RefTag>> showProject() {
-    return selectedParams.compose(Transformers.takePairWhen(projectClicked))
-      .map(pp -> DiscoveryViewModel.projectAndRefTagFromParamsAndProject(pp.first, pp.second));
+    return showProject;
+  }
+
+  private final PublishSubject<Activity> showActivityUpdate = PublishSubject.create();
+  @Override
+  public Observable<Activity> showActivityUpdate() {
+    return showActivityUpdate;
+  }
+
+  private final PublishSubject<Void> showActivityFeed = PublishSubject.create();
+  @Override
+  public Observable<Void> showActivityFeed() {
+    return showActivityFeed;
+  }
+
+  private final PublishSubject<Void> showSignupLogin = PublishSubject.create();
+  @Override
+  public Observable<Void> showSignupLogin() {
+    return showSignupLogin;
   }
 
   private final PublishSubject<Void> showSettings = PublishSubject.create();
   @Override
   public Observable<Void> showSettings() {
     return showSettings;
+  }
+
+  private BehaviorSubject<NavigationDrawerData> navigationDrawerData = BehaviorSubject.create();
+  @Override
+  public Observable<NavigationDrawerData> navigationDrawerData() {
+    return navigationDrawerData;
+  }
+
+  private BehaviorSubject<Boolean> openDrawer = BehaviorSubject.create(false);
+  @Override
+  public Observable<Boolean> openDrawer() {
+    return openDrawer;
   }
 
   private boolean hasSeenOnboarding = false;
@@ -189,6 +252,12 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
       .flatMap(Observable::from)
       .filter(Category::isRoot)
       .toList();
+
+    final Observable<Category> clickedCategory = parentFilterRowClick
+      .map(NavigationDrawerData.Section.Row::params)
+      .map(DiscoveryParams::category);
+
+    PublishSubject<Category> expandedParams = PublishSubject.create();
 
     final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
       ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
@@ -222,28 +291,42 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .doOnNext(show -> hasSeenOnboarding = show || hasSeenOnboarding)
         .subscribe(shouldShowOnboarding::onNext)
     );
+    addSubscription(
 
-    initializer.subscribe(this.selectedParams::onNext);
-    initializer.onNext(DiscoveryParams.builder().staffPicks(true).build());
+      currentUser.loggedInUser()
+        .compose(Transformers.combineLatestPair(selectedParams))
+        .flatMap(__ -> this.fetchActivity())
+        .filter(this::activityHasNotBeenSeen)
+        .doOnNext(this::saveLastSeenActivityId)
+        .subscribe(activity::onNext)
+    );
 
-    // NAVIGATION DRAWER ONCREATE
+    addSubscription(
+      Observable.combineLatest(
+        categories,
+        selectedParams,
+        expandedParams,
+        currentUser.observable(),
+        DiscoveryDrawerUtils::deriveNavigationDrawerData)
+        .subscribe(navigationDrawerData::onNext)
+    );
+    
+    addSubscription(selectedParams
+      .compose(Transformers.takePairWhen(clickProject))
+      .map(pp -> DiscoveryViewModel.projectAndRefTagFromParamsAndProject(pp.first, pp.second))
+      .subscribe(showProject::onNext)
+    );
 
-    PublishSubject<Category> expandedParams = PublishSubject.create();
-
-    Observable.combineLatest(categories, selectedParams, expandedParams, currentUser.observable(), DiscoveryViewModel::magic)
-      .subscribe(navigationDrawerData::onNext);
-
-    // selectedParams.onNext(DiscoveryParams.builder().staffPicks(true).build());
-    expandedParams.onNext(null);
-
-    final Observable<Category> clickedCategory = parentFilterRowClick
-      .map(NavigationDrawerData.Section.Row::params)
-      .map(DiscoveryParams::category);
+    addSubscription(clickActivityProject
+      .map(p -> Pair.create(p, RefTag.activitySample()))
+      .subscribe(showProject::onNext)
+    );
 
     addSubscription(
       childFilterRowClick
         .mergeWith(topFilterRowClick)
-        .subscribe(__ -> openDrawer.onNext(false))
+        .map(__ -> false)
+        .subscribe(openDrawer::onNext)
     );
 
     childFilterRowClick
@@ -261,30 +344,37 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
       .subscribe(expandedParams::onNext);
 
     addSubscription(
-      loginClick
-        .subscribe(__ -> showLogin.onNext(null))
+      childFilterRowClick
+        .mergeWith(topFilterRowClick)
+        .map(NavigationDrawerData.Section.Row::params)
+        .subscribe(selectedParams::onNext)
     );
 
-    addSubscription(
-      profileClick
-        .subscribe(__ -> showProfile.onNext(null))
-    );
+    addSubscription(topFilterRowClick.subscribe(__ -> expandedParams.onNext(null)));
 
     addSubscription(
-      settingsClick
-        .subscribe(__ -> showSettings.onNext(null))
+      navigationDrawerData
+        .map(NavigationDrawerData::expandedCategory)
+        .compose(Transformers.takePairWhen(clickedCategory))
+        .map(expandedAndClickedCategory -> toggleExpandedCategory(expandedAndClickedCategory.first, expandedAndClickedCategory.second))
+        .subscribe(expandedParams::onNext)
     );
+
+    addSubscription(internalToolsClick.subscribe(__ -> showInternalTools.onNext(null)));
+    addSubscription(loginClick.subscribe(__ -> showSignupLogin.onNext(null)));
+    addSubscription(profileClick.subscribe(__ -> showProfile.onNext(null)));
+    addSubscription(settingsClick.subscribe(__ -> showSettings.onNext(null)));
 
     // Closing the drawer while starting an activity is a little overwhelming,
     // so put the close on a delay so it happens out of sight.
     addSubscription(
       profileClick
+        .mergeWith(internalToolsClick)
         .mergeWith(settingsClick)
-        .mergeWith(loginClick.map(__ -> null))
+        .mergeWith(loginClick)
         .delay(1, TimeUnit.SECONDS)
-        .subscribe(__ -> {
-          openDrawer.onNext(false);
-        })
+        .map(__ -> false)
+        .subscribe(openDrawer::onNext)
     );
   }
 
@@ -293,7 +383,8 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   }
 
   /**
-   * Converts a pair (params, project) into a (project, refTag) pair that does some extra logic around POTD.
+   * Converts a pair (params, project) into a (project, refTag) pair that does some extra logic around POTD and
+   * featured projects..
    */
   private static @NonNull Pair<Project, RefTag> projectAndRefTagFromParamsAndProject(final @NonNull DiscoveryParams params, final @NonNull Project project) {
     final RefTag refTag;
@@ -308,17 +399,16 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     return new Pair<>(project, refTag);
   }
 
-  // NAVIGATION DRAWER METHODS
-
-  // OUTPUTS
-  private BehaviorSubject<NavigationDrawerData> navigationDrawerData = BehaviorSubject.create();
-  public Observable<NavigationDrawerData> navigationDrawerData() {
-    return navigationDrawerData;
+  public Observable<Activity> fetchActivity() {
+    return apiClient.fetchActivities(1)
+      .map(ActivityEnvelope::activities)
+      .map(ListUtils::first)
+      .filter(ObjectUtils::isNotNull)
+      .compose(Transformers.neverError());
   }
 
-  private BehaviorSubject<Boolean> openDrawer = BehaviorSubject.create(false);
-  public Observable<Boolean> openDrawer() {
-    return openDrawer;
+  private boolean activityHasNotBeenSeen(final @Nullable Activity activity) {
+    return activity != null && activity.id() != activitySamplePreference.get();
   }
 
   private static @Nullable Category toggleExpandedCategory(final @Nullable Category expandedCategory, final @NonNull Category clickedCategory) {
@@ -328,146 +418,9 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     return clickedCategory;
   }
 
-  /**
-   * Converts all the disparate data representing the state of the menu data into a `NavigationDrawerData` object
-   * that can be used to populate a view.
-   * @param categories The full list of categories that can be displayed.
-   * @param selected The params that correspond to what is currently selected in the menu.
-   * @param expandedCategory The category that correspond to what is currently expanded in the menu.
-   * @param user The currently logged in user.
-   */
-  static NavigationDrawerData magic(final @NonNull List<Category> categories, final @NonNull DiscoveryParams selected, final @Nullable Category expandedCategory, final @Nullable User user) {
-
-    final NavigationDrawerData.Builder builder = NavigationDrawerData.builder();
-
-    List<NavigationDrawerData.Section> categorySections = Observable.from(categories)
-      .filter(c -> isVisible(c, expandedCategory))
-      .flatMap(c -> doubleRootIfExpanded(c, expandedCategory))
-      .map(c -> DiscoveryParams.builder().category(c).build())
-      .toList()
-      .map(DiscoveryViewModel::paramsGroupedByRootCategory)
-      .map(sections -> massageSections(sections, expandedCategory))
-      .toBlocking().single();
-
-    final List<NavigationDrawerData.Section> sections = Observable
-      .from(categorySections)
-      .startWith(topSections(user))
-      .toList().toBlocking().single();
-
-    return builder
-      .sections(sections)
-      .user(user)
-      .selectedParams(selected)
-      .expandedCategory(expandedCategory)
-      .build();
-  }
-
-  /**
-   * Converts the full list of category discovery params into a grouped list of params. A group corresponds to a root
-   * category, and the list contains all subcategories.
-   */
-  static public List<List<DiscoveryParams>> paramsGroupedByRootCategory(final @NonNull List<DiscoveryParams> ps) {
-    TreeMap<String, List<DiscoveryParams>> grouped = new TreeMap<>();
-    for (final DiscoveryParams p : ps) {
-      if (!grouped.containsKey(p.category().root().name())) {
-        grouped.put(p.category().root().name(), new ArrayList<>());
-      }
-      grouped.get(p.category().root().name()).add(p);
+  private void saveLastSeenActivityId(final @Nullable Activity activity) {
+    if (activity != null) {
+      activitySamplePreference.set((int) activity.id());
     }
-
-    return new ArrayList<>(grouped.values());
-  }
-
-  /**
-   *
-   * @param sections
-   * @return
-   */
-  static List<NavigationDrawerData.Section> massageSections(final @NonNull List<List<DiscoveryParams>> sections, final @Nullable Category expandedCategory) {
-
-    return Observable.from(sections)
-      .map(DiscoveryViewModel::massageRows)
-      .map(rows -> {
-        final Category sectionCategory = rows.get(0).params().category();
-        if (sectionCategory != null && expandedCategory != null) {
-          return Pair.create(rows, sectionCategory.rootId() == expandedCategory.rootId());
-        }
-        return Pair.create(rows, false);
-      })
-      .map(rowsAndIsExpanded ->
-          NavigationDrawerData.Section.builder()
-            .rows(rowsAndIsExpanded.first)
-            .expanded(rowsAndIsExpanded.second)
-            .build()
-      )
-      .toList().toBlocking().single();
-  }
-
-  /**
-   *
-   * @param rows
-   * @return
-   */
-  static List<NavigationDrawerData.Section.Row> massageRows(final @NonNull List<DiscoveryParams> rows) {
-    return Observable.from(rows)
-      .map(p -> NavigationDrawerData.Section.Row.builder().params(p).build())
-      .toList().toBlocking().single();
-  }
-
-  /**
-   * Determines if a category is visible given what is the currently expanded category.
-   * @param category The category to determine its visibility.
-   * @param expandedCategory The category that is currently expandable, possible `null`.
-   */
-  static boolean isVisible(final @NonNull Category category, final @Nullable Category expandedCategory) {
-    if (expandedCategory == null) {
-      return category.isRoot();
-    }
-
-    if (category.isRoot()) {
-      return true;
-    }
-
-    return category.root().id() == expandedCategory.id();
-  }
-
-  /**
-   * Since there are two rows that correspond to a root category in an expanded section (e.g. "Art" & "All of Art"),
-   * this method will double up that root category in such a situation.
-   * @param category The category that might potentially be doubled up.
-   * @param expandedCategory The currently expanded category.
-   */
-  static Observable<Category> doubleRootIfExpanded(final @NonNull Category category, final @Nullable Category expandedCategory) {
-    if (expandedCategory == null) {
-      return Observable.just(category);
-    }
-
-    if (category.isRoot() && category.id() == expandedCategory.id()) {
-      return Observable.just(category, category);
-    }
-
-    return Observable.just(category);
-  }
-
-  /**
-   * Returns a list of top-level section filters that can be used based on the current user, which could be `null`.
-   * @param user The currently logged in user, can be `null`.
-   */
-  static Observable<NavigationDrawerData.Section> topSections(final @Nullable User user) {
-    List<DiscoveryParams> filters = ListUtils.empty();
-
-    filters.add(DiscoveryParams.builder().staffPicks(true).build());
-    if (user != null) {
-      filters.add(DiscoveryParams.builder().starred(1).build());
-      if (isTrue(user.social())) {
-        filters.add(DiscoveryParams.builder().social(1).build());
-      }
-    }
-    filters.add(DiscoveryParams.builder().build());
-
-    return Observable.from(filters)
-      .map(p -> NavigationDrawerData.Section.Row.builder().params(p).build())
-      .map(Collections::singletonList)
-      .map(rows -> NavigationDrawerData.Section.builder().rows(rows).build());
   }
 }

@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
   tools:showIn="@layout/project_card_view"
+  android:orientation="vertical"
   android:background="@drawable/gray_gradient"
   android:id="@+id/project_card_photo"
+  android:gravity="center"
   android:layout_width="match_parent"
   android:layout_height="wrap_content">
 
   <ImageView
     android:id="@+id/photo"
-    android:scaleType="centerCrop"
+    android:scaleType="fitXY"
     android:adjustViewBounds="true"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" />
+    android:layout_height="match_parent" />
 
-</RelativeLayout>
+</LinearLayout>

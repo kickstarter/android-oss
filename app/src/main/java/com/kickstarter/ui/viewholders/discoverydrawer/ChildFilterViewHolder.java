@@ -29,7 +29,7 @@ public final class ChildFilterViewHolder extends KSViewHolder {
   protected @Bind(R.id.filter_text_view) TextView filterTextView;
   protected @BindColor(R.color.black) int blackColor;
   protected @BindColor(R.color.dark_gray) int darkGrayColor;
-  protected @BindColor(R.color.hamburger_navigation_item_selected) int filterSelectedColor;
+  protected @BindColor(R.color.discovery_drawer_item_selected) int filterSelectedColor;
   protected @BindColor(R.color.transparent) int filterUnselectedColor;
 
   protected @Inject KSString ksString;
@@ -38,7 +38,7 @@ public final class ChildFilterViewHolder extends KSViewHolder {
   private Delegate delegate;
 
   public interface Delegate {
-    void rowClick(final @NonNull ChildFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row);
+    void childFilterViewHolderRowClick(final @NonNull ChildFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row);
   }
 
   public ChildFilterViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
@@ -76,8 +76,8 @@ public final class ChildFilterViewHolder extends KSViewHolder {
 
   @OnClick(R.id.filter_text_view)
   protected void textViewClick() {
-    Timber.d("DiscoveryDrawerChildParamsViewHolder rowClick");
-    delegate.rowClick(this, item);
+    Timber.d("DiscoveryDrawerChildParamsViewHolder topFilterViewHolderRowClick");
+    delegate.childFilterViewHolderRowClick(this, item);
   }
 }
 

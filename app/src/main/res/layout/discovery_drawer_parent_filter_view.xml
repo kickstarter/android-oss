@@ -7,8 +7,8 @@
 
   <TextView
     style="@style/SubheadPrimary"
-    android:paddingTop="@dimen/hamburger_drawer_item_padding_y"
-    android:paddingBottom="@dimen/hamburger_drawer_item_padding_y"
+    android:paddingTop="@dimen/discovery_drawer_filter_padding_y"
+    android:paddingBottom="@dimen/discovery_drawer_filter_padding_y"
     android:paddingStart="@dimen/grid_2"
     android:paddingLeft="@dimen/grid_2"
     android:background="@drawable/click_indicator_light_masked"

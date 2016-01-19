@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  android:orientation="vertical"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/project_scroll_view"
+  android:layout_width="match_parent"
+  android:background="@color/white"
+  android:layout_height="match_parent">
+
+  <include layout="@layout/project_media_header"/>
+
+  <LinearLayout
+    android:id="@+id/project_info"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:layout_marginRight="@dimen/project_padding_x"
+    android:layout_marginLeft="@dimen/project_padding_x"
+    android:layout_marginStart="@dimen/project_padding_x"
+    android:layout_marginEnd="@dimen/project_padding_x"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ProgressBar
+      style="@style/ProgressBar"
+      android:visibility="visible"
+      android:id="@+id/percentage_funded"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:minHeight="@dimen/progress_bar_min_height"
+      android:layout_marginTop="@dimen/grid_3"
+      android:progress="50" />
+
+    <LinearLayout
+      android:id="@+id/project_state_view_group"
+      android:visibility="gone"
+      android:gravity="center_vertical"
+      android:layout_marginTop="@dimen/grid_3"
+      android:orientation="horizontal"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <LinearLayout
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/grid_2"
+        android:layout_marginLeft="@dimen/grid_3"
+        android:layout_marginRight="@dimen/grid_3"
+        android:layout_marginStart="@dimen/grid_3"
+        android:layout_marginEnd="@dimen/grid_3"
+        android:layout_marginBottom="@dimen/grid_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+          android:id="@+id/project_state_header_text_view"
+          android:text="Funded!"
+          style="@style/BodyPrimaryMedium"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
+
+        <TextView
+          android:id="@+id/project_state_subhead_text_view"
+          android:text="This project was funded on"
+          style="@style/CaptionPrimary"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
+
+      </LinearLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
+      android:id="@+id/project_stats_view"
+      android:orientation="vertical"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/grid_4">
+
+      <include layout="@layout/project_stats_view"
+        android:id="@+id/stats_view"/>
+
+      <RelativeLayout
+        android:id="@+id/project_action_buttons"
+        android:layout_alignTop="@id/stats_view"
+        android:layout_alignParentEnd="true"
+        android:focusable="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <Button
+          style="@style/GreenRoundedButton"
+          android:id="@+id/back_project_button"
+          android:visibility="visible"
+          android:text="@string/project_back_button" />
+
+        <Button
+          style="@style/BlueRoundedButton"
+          android:id="@+id/manage_pledge_button"
+          android:visibility="gone"
+          android:text="@string/project_manage_button" />
+
+        <Button
+          style="@style/BlueRoundedButton"
+          android:id="@+id/view_pledge_button"
+          android:visibility="gone"
+          android:text="@string/project_view_button" />
+      </RelativeLayout>
+
+      <TextView
+        android:id="@+id/usd_conversion_text_view"
+        android:visibility="gone"
+        android:text="Converted from"
+        android:layout_below="@id/stats_view"
+        style="@style/BodySecondary"
+        android:layout_marginTop="@dimen/grid_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+      android:id="@+id/project_social_view"
+      android:orientation="horizontal"
+      android:gravity="center_vertical"
+      android:visibility="gone"
+      android:layout_marginTop="@dimen/grid_1"
+      android:layout_marginBottom="@dimen/grid_4"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <ImageView
+        android:id="@+id/project_social_image"
+        android:visibility="gone"
+        android:layout_width="@dimen/project_social_photo_height"
+        android:layout_height="@dimen/project_social_photo_height" />
+
+      <TextView
+        android:id="@+id/project_social_text"
+        style="@style/BodyPrimaryMedium"
+        android:layout_marginStart="@dimen/grid_3"
+        android:layout_marginLeft="@dimen/grid_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+  </LinearLayout>
+
+  <include layout="@layout/horizontal_line_0_5dp_view" />
+
+  <include layout="@layout/project_creator_info" />
+
+</LinearLayout>

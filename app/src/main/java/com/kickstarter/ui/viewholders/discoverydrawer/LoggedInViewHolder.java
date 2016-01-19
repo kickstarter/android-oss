@@ -27,8 +27,9 @@ public final class LoggedInViewHolder extends KSViewHolder {
   protected @Bind(R.id.user_name_text_view) TextView userNameTextView;
 
   public interface Delegate {
-    void profileClick(final @NonNull LoggedInViewHolder viewHolder, final @NonNull User user);
-    void settingsClick(final @NonNull LoggedInViewHolder viewHolder, final @NonNull User user);
+    void loggedInViewHolderInternalToolsClick(final @NonNull LoggedInViewHolder viewHolder);
+    void loggedInViewHolderProfileClick(final @NonNull LoggedInViewHolder viewHolder, final @NonNull User user);
+    void loggedInViewHolderSettingsClick(final @NonNull LoggedInViewHolder viewHolder, final @NonNull User user);
   }
 
   public LoggedInViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
@@ -56,11 +57,16 @@ public final class LoggedInViewHolder extends KSViewHolder {
 
   @OnClick(R.id.user_container)
   public void userClick() {
-    delegate.profileClick(this, user);
+    delegate.loggedInViewHolderProfileClick(this, user);
+  }
+
+  @Nullable @OnClick(R.id.internal_tools_icon_button)
+  public void internalToolsClick() {
+    delegate.loggedInViewHolderInternalToolsClick(this);
   }
 
   @OnClick(R.id.settings_icon_button)
   public void settingsClick() {
-    delegate.settingsClick(this, user);
+    delegate.loggedInViewHolderSettingsClick(this, user);
   }
 }

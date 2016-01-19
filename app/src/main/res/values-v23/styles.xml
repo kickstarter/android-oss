@@ -1,6 +1,0 @@
-<resources>
-  <style name="DiscoveryFilterActivity" parent="KSTheme">
-    <item name="android:statusBarColor">@color/discovery_secondary</item>
-  </style>
-</resources>
-

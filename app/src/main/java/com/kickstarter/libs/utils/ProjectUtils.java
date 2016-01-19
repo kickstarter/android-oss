@@ -2,6 +2,8 @@ package com.kickstarter.libs.utils;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.view.View;
+import android.widget.Button;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
@@ -73,6 +75,30 @@ public final class ProjectUtils {
       return (int) Math.floor(seconds / 60.0 / 60.0); // hours
     }
     return (int) Math.floor(seconds / 60.0 / 60.0 / 24.0); // days
+  }
+
+  /**
+   * Set correct button view based on project and backing status.
+   */
+  public static void setActionButton(final @NonNull Project project, final @NonNull Button backProjectButton,
+    final @NonNull Button managePledgeButton, final @NonNull Button viewPledgeButton) {
+    if (!project.isBacking() && project.isLive()) {
+      backProjectButton.setVisibility(View.VISIBLE);
+    } else {
+      backProjectButton.setVisibility(View.GONE);
+    }
+
+    if (project.isBacking() && project.isLive()) {
+      managePledgeButton.setVisibility(View.VISIBLE);
+    } else {
+      managePledgeButton.setVisibility(View.GONE);
+    }
+
+    if (project.isBacking() && !project.isLive()) {
+      viewPledgeButton.setVisibility(View.VISIBLE);
+    } else {
+      viewPledgeButton.setVisibility(View.GONE);
+    }
   }
 
   /**

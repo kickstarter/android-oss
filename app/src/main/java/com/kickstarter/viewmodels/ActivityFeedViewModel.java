@@ -85,7 +85,7 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
       .envelopeToListOfData(ActivityEnvelope::activities)
       .envelopeToMoreUrl(env -> env.urls().api().moreActivities())
       .loadWithParams(__ -> client.fetchActivities())
-      .loadWithPaginationPath(client::fetchActivities)
+      .loadWithPaginationPath(client::fetchActivitiesWithPaginationPath)
       .build();
 
     addSubscription(paginator.paginatedData.subscribe(activities));

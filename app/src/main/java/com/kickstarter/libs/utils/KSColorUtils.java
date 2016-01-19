@@ -7,6 +7,7 @@ import android.support.annotation.ColorRes;
 import android.support.annotation.FloatRange;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.ColorUtils;
 
 import com.kickstarter.R;
@@ -27,7 +28,7 @@ public class KSColorUtils {
   }
 
   public static @ColorInt int darkColor(final Context context) {
-    return context.getResources().getColor(darkColorId());
+    return ContextCompat.getColor(context, darkColorId());
   }
 
   public static @ColorRes int darkColorId() {
@@ -49,7 +50,7 @@ public class KSColorUtils {
   }
 
   public static @ColorInt int lightColor(final Context context) {
-    return context.getResources().getColor(lightColorId());
+    return ContextCompat.getColor(context, lightColorId());
   }
 
   public static @ColorRes int lightColorId() {
@@ -90,7 +91,7 @@ public class KSColorUtils {
 
   public static @ColorInt int foregroundColor(final int backgroundColor, @NonNull final Context context) {
     final @ColorRes int colorId = isLight(backgroundColor) ? darkColorId() : lightColorId();
-    return context.getResources().getColor(colorId);
+    return ContextCompat.getColor(context, colorId);
   }
 
   /*

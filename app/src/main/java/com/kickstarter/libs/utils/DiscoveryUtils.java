@@ -21,36 +21,16 @@ import rx.Observable;
 public class DiscoveryUtils {
   private DiscoveryUtils() {}
 
-  public static @Nullable Drawable imageWithOrientation(@NonNull final Category category,
-    @NonNull final Context context) {
-    final String baseImageName = category.baseImageName();
-    if (baseImageName == null) {
-      return null;
-    }
-
-    final String name = "category_"
-      + baseImageName
-      + "_"
-      + (ViewUtils.isPortrait(context) ? "portrait" : "landscape");
-
-    final @DrawableRes int identifier = context.getResources().getIdentifier(name, "drawable", context.getPackageName());
-    if (identifier == 0) {
-      return null;
-    }
-
-    return ContextCompat.getDrawable(context, identifier);
-  }
-
   public static @ColorInt int primaryColor(@NonNull final Context context, @NonNull final DiscoveryParams params) {
     return params.category() != null ?
       params.category().colorWithAlpha() :
-      context.getResources().getColor(R.color.discovery_primary);
+      ContextCompat.getColor(context, R.color.discovery_primary);
   }
 
   public static @ColorInt int secondaryColor(@NonNull final Context context, @NonNull final DiscoveryParams params) {
     return params.category() != null ?
       params.category().secondaryColor(context) :
-      context.getResources().getColor(R.color.discovery_secondary);
+      ContextCompat.getColor(context, R.color.discovery_secondary);
   }
 
   public static boolean overlayShouldBeLight(@NonNull final DiscoveryParams params) {
@@ -63,7 +43,7 @@ public class DiscoveryUtils {
 
   public static @ColorInt int overlayTextColor(@NonNull final Context context, final boolean light) {
     final @ColorRes int color = light ? KSColorUtils.lightColorId() : KSColorUtils.darkColorId();
-    return context.getResources().getColor(color);
+    return ContextCompat.getColor(context, color);
   }
 
   /**

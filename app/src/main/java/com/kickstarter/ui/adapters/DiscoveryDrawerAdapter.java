@@ -120,14 +120,6 @@ public class DiscoveryDrawerAdapter extends KSAdapter {
     notifyDataSetChanged();
   }
 
-//  public int selectedPosition() {
-//    for (final List<NavigationDrawerData.Section.Row> section : sections()) {
-//      for (final NavigationDrawerData.Section.Row row : section) {
-//
-//      }
-//    }
-//  }
-
   List<List<Object>> sectionsFromData(NavigationDrawerData data) {
     final List<List<Object>> newSections = new ArrayList<>();
 
@@ -152,31 +144,5 @@ public class DiscoveryDrawerAdapter extends KSAdapter {
     }
 
     return newSections;
-  }
-
-  private static boolean weakEquality(final @Nullable Object lhs, final @Nullable Object rhs) {
-
-    if ((lhs == null && rhs != null) || (lhs != null && rhs == null)) {
-      return false;
-    }
-    if (lhs == null && rhs == null) {
-      return true;
-    }
-    if (!lhs.getClass().equals(rhs.getClass())) {
-      return false;
-    }
-
-    if (lhs instanceof User && rhs instanceof User) {
-      return lhs.equals(rhs);
-    }
-
-    if (lhs instanceof NavigationDrawerData.Section.Row && rhs instanceof NavigationDrawerData.Section.Row) {
-      final NavigationDrawerData.Section.Row lhsRow = (NavigationDrawerData.Section.Row) lhs;
-      final NavigationDrawerData.Section.Row rhsRow = (NavigationDrawerData.Section.Row) rhs;
-
-      return lhsRow.params().equals(rhsRow.params());
-    }
-
-    return false;
   }
 }

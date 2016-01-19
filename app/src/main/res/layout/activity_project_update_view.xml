@@ -15,7 +15,7 @@
       android:foreground="@drawable/click_indicator_light"
       android:focusable="true"
       android:orientation="horizontal"
-      android:padding="@dimen/grid_3"
+      android:padding="@dimen/grid_2"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 
@@ -47,8 +47,10 @@
     <View
       android:layout_width="fill_parent"
       android:layout_height="1dp"
-      android:layout_marginLeft="@dimen/grid_3"
-      android:layout_marginRight="@dimen/grid_3"
+      android:layout_marginStart="@dimen/grid_2"
+      android:layout_marginEnd="@dimen/grid_2"
+      android:layout_marginLeft="@dimen/grid_2"
+      android:layout_marginRight="@dimen/grid_2"
       android:background="@color/black_alpha_10" />
 
     <LinearLayout
@@ -57,7 +59,7 @@
       android:background="@color/transparent"
       android:foreground="@drawable/click_indicator_light"
       android:clickable="true"
-      android:padding="@dimen/grid_3"
+      android:padding="@dimen/grid_2"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical">

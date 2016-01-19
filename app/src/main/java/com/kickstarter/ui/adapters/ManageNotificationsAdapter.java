@@ -22,9 +22,9 @@ public final class ManageNotificationsAdapter extends KSAdapter {
   }
 
   public void takeNotifications(final @NonNull List<Notification> projectNotifications, final @NonNull ApiClientType client) {
-    data().clear();
+    sections().clear();
     for (final Notification notification : projectNotifications) {
-      data().add(Collections.singletonList(new ProjectNotificationViewModel(notification, client)));
+      sections().add(Collections.singletonList(new ProjectNotificationViewModel(notification, client)));
     }
     notifyDataSetChanged();
   }

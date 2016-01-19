@@ -2,12 +2,11 @@ package com.kickstarter.viewmodels.inputs;
 
 import android.support.annotation.NonNull;
 
-import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
+import com.kickstarter.ui.adapters.DiscoveryAdapter;
+import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter;
 
-public interface DiscoveryViewModelInputs {
-  void projectClicked(final @NonNull Project project);
+public interface DiscoveryViewModelInputs extends DiscoveryAdapter.Delegate, DiscoveryDrawerAdapter.Delegate {
   void nextPage();
-  void filterButtonClicked();
   void initializer(final @NonNull DiscoveryParams params);
 }

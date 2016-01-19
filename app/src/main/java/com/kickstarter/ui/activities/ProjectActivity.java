@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.kickstarter.KSApplication;
@@ -14,7 +15,9 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSCurrency;
+import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
@@ -44,6 +47,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   protected @Bind(R.id.star_icon) IconButton starButton;
   protected @Bind(R.id.back_project_button) Button backProjectButton;
   protected @Bind(R.id.manage_pledge_button) Button managePledgeButton;
+  protected @Bind(R.id.project_action_buttons) ViewGroup projectActionButtonsViewGroup;
   protected @Bind(R.id.view_pledge_button) Button viewPledgeButton;
 
   protected @BindColor(R.color.green) int green;
@@ -53,6 +57,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
 
   protected @BindString(R.string.project_back_button) String projectBackButtonString;
   protected @BindString(R.string.project_checkout_manage_navbar_title) String managePledgeString;
+  protected @BindString(R.string.project_share_twitter_message) String projectShareString;
   protected @BindString(R.string.project_star_confirmation) String projectStarConfirmationString;
   protected @BindString(R.string.project_subpages_menu_buttons_campaign) String campaignString;
   protected @BindString(R.string.project_subpages_menu_buttons_creator) String creatorString;
@@ -60,6 +65,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
 
   protected @Inject ApiClientType client;
   protected @Inject KSCurrency ksCurrency;
+  protected @Inject KSString ksString;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -67,6 +73,9 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     setContentView(R.layout.project_layout);
     ButterKnife.bind(this);
     ((KSApplication) getApplication()).component().inject(this);
+
+    final int bottomButtonVisibility = ViewUtils.isLandscape(this) ? View.GONE : View.VISIBLE;
+    projectActionButtonsViewGroup.setVisibility(bottomButtonVisibility);
 
     intentAction = new ProjectIntentAction(viewModel.inputs::initializer, lifecycle(), client);
     intentAction.intent(getIntent());
@@ -146,28 +155,8 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
 
   private void renderProject(final @NonNull Project project, final @NonNull String configCountry) {
     adapter.takeProject(project, configCountry);
-    renderActionButton(project);
+    ProjectUtils.setActionButton(project, backProjectButton, managePledgeButton, viewPledgeButton);
     renderStar(project);
-  }
-
-  private void renderActionButton(@NonNull final Project project) {
-    if (!project.isBacking() && project.isLive()) {
-      backProjectButton.setVisibility(View.VISIBLE);
-    } else {
-      backProjectButton.setVisibility(View.GONE);
-    }
-
-    if (project.isBacking() && project.isLive()) {
-      managePledgeButton.setVisibility(View.VISIBLE);
-    } else {
-      managePledgeButton.setVisibility(View.GONE);
-    }
-
-    if (project.isBacking() && !project.isLive()) {
-      viewPledgeButton.setVisibility(View.VISIBLE);
-    } else {
-      viewPledgeButton.setVisibility(View.GONE);
-    }
   }
 
   private void renderStar(final @NonNull Project project) {
@@ -258,9 +247,11 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
 
   // todo: limit the apps you can share to
   private void startShareIntent(final @NonNull Project project) {
+    final String shareMessage = ksString.format(projectShareString, "project_title", project.name());
+
     final Intent intent = new Intent(Intent.ACTION_SEND)
       .setType("text/plain")
-      .putExtra(Intent.EXTRA_TEXT, String.format("%1$s\r\n\r\n%2$s", project.name(), project.webProjectUrl()));
+      .putExtra(Intent.EXTRA_TEXT, shareMessage + " " + project.webProjectUrl());
     startActivity(intent);
   }
 

@@ -1,6 +1,7 @@
 package com.kickstarter.services;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.kickstarter.libs.Config;
@@ -23,6 +24,7 @@ import com.kickstarter.services.apirequests.RegisterWithFacebookBody;
 import com.kickstarter.services.apirequests.ResetPasswordBody;
 import com.kickstarter.services.apirequests.SettingsBody;
 import com.kickstarter.services.apirequests.SignupBody;
+import com.kickstarter.services.apirequests.XauthBody;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.CategoriesEnvelope;
@@ -55,6 +57,11 @@ public final class ApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<ActivityEnvelope> fetchActivities() {
+    return fetchActivities(null);
+  }
+
+  @Override
+  public @NonNull Observable<ActivityEnvelope> fetchActivities(final @Nullable Integer count) {
     final List<String> categories = Arrays.asList(
       Activity.CATEGORY_BACKING,
       Activity.CATEGORY_CANCELLATION,
@@ -66,14 +73,13 @@ public final class ApiClient implements ApiClientType {
     );
 
     return service
-      .activities(categories)
+      .activities(categories, count)
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
 
-
   @Override
-  public @NonNull Observable<ActivityEnvelope> fetchActivities(final @NonNull String paginationPath) {
+  public @NonNull Observable<ActivityEnvelope> fetchActivitiesWithPaginationPath(final @NonNull String paginationPath) {
     return service
       .activities(paginationPath)
       .lift(apiErrorOperator())
@@ -200,6 +206,7 @@ public final class ApiClient implements ApiClientType {
       .login(RegisterWithFacebookBody.builder()
         .accessToken(fbAccessToken)
         .sendNewsletters(sendNewsletters)
+        .newsletterOptIn(sendNewsletters)
         .build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
@@ -208,7 +215,10 @@ public final class ApiClient implements ApiClientType {
   @Override
   public @NonNull Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password) {
     return service
-      .login(email, password)
+      .login(XauthBody.builder()
+        .email(email)
+        .password(password)
+        .build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
@@ -217,7 +227,11 @@ public final class ApiClient implements ApiClientType {
   public @NonNull Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password,
     final @NonNull String code) {
     return service
-      .login(email, password, code)
+      .login(XauthBody.builder()
+        .email(email)
+        .password(password)
+        .code(code)
+        .build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
@@ -258,6 +272,7 @@ public final class ApiClient implements ApiClientType {
           .password(password)
           .passwordConfirmation(passwordConfirmation)
           .sendNewsletters(sendNewsletters)
+          .newsletterOptIn(sendNewsletters)
           .build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());

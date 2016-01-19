@@ -1,77 +1,76 @@
 package com.kickstarter.ui.activities;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
+import com.jakewharton.rxbinding.support.v4.widget.RxDrawerLayout;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
-import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
-import com.kickstarter.libs.utils.DiscoveryUtils;
-import com.kickstarter.libs.utils.StatusBarUtils;
+import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.DiscoveryAdapter;
-import com.kickstarter.ui.containers.ApplicationContainer;
+import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter;
 import com.kickstarter.ui.intents.DiscoveryIntentAction;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
-import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
-import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
-import butterknife.BindDrawable;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresViewModel(DiscoveryViewModel.class)
-public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> implements DiscoveryAdapter.Delegate {
+public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
   private DiscoveryAdapter adapter;
   private DiscoveryIntentAction intentAction;
   private LinearLayoutManager layoutManager;
+  private DiscoveryDrawerAdapter drawerAdapter;
+  private LinearLayoutManager drawerLayoutManager;
   private RecyclerViewPaginator recyclerViewPaginator;
 
-  protected @Inject ApplicationContainer applicationContainer;
   protected @Inject ApiClientType client;
+  protected @Inject InternalToolsType internalTools;
 
-  @BindDrawable(R.drawable.dark_blue_gradient) Drawable darkBlueGradientDrawable;
-  @Bind(R.id.discovery_layout) LinearLayout discoveryLayout;
-  @Bind(R.id.discovery_toolbar) DiscoveryToolbar discoveryToolbar;
-  public @Bind(R.id.recycler_view) RecyclerView recyclerView;
+  protected @Bind(R.id.discovery_layout) DrawerLayout discoveryLayout;
+  protected @Bind(R.id.discovery_toolbar) DiscoveryToolbar discoveryToolbar;
+  protected @Bind(R.id.recycler_view) RecyclerView recyclerView;
+  protected @Bind(R.id.discovery_drawer_recycler_view) RecyclerView drawerRecyclerView;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    setContentView(R.layout.discovery_layout);
+    ButterKnife.bind(this);
 
     ((KSApplication) getApplication()).component().inject(this);
-    final ViewGroup container = applicationContainer.bind(this);
-    final LayoutInflater layoutInflater = getLayoutInflater();
-
-    layoutInflater.inflate(R.layout.discovery_layout, container);
-    ButterKnife.bind(this, container);
 
     layoutManager = new LinearLayoutManager(this);
-    adapter = new DiscoveryAdapter(this);
     recyclerView.setLayoutManager(layoutManager);
+    adapter = new DiscoveryAdapter(viewModel.inputs);
     recyclerView.setAdapter(adapter);
+
+    drawerLayoutManager = new LinearLayoutManager(this); // TODO: Can we reuse the other layout manager?
+    drawerRecyclerView.setLayoutManager(drawerLayoutManager);
+    drawerAdapter = new DiscoveryDrawerAdapter(viewModel.inputs);
+    drawerRecyclerView.setAdapter(drawerAdapter);
 
     intentAction = new DiscoveryIntentAction(viewModel.inputs::initializer, lifecycle(), client);
     intentAction.intent(getIntent());
@@ -88,20 +87,60 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(adapter::takeProjects);
 
-    viewModel.outputs.params()
+    viewModel.outputs.selectedParams()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::loadParams);
 
-    viewModel.outputs.showFilters()
+    viewModel.outputs.activity()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::startDiscoveryFilterActivity);
+      .subscribe(adapter::takeActivity);
+
+    viewModel.outputs.showInternalTools()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> internalTools.maybeStartInternalToolsActivity(this));
+
+    viewModel.outputs.showLoginTout()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> this.startLoginToutActivity());
+
+    viewModel.outputs.showProfile()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> this.startProfileActivity());
 
     viewModel.outputs.showProject()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(projectAndRefTag -> this.startProjectActivity(projectAndRefTag.first, projectAndRefTag.second));
+
+    viewModel.outputs.showSettings()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> this.startSettingsActivity());
+
+    viewModel.outputs.navigationDrawerData()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(drawerAdapter::takeData);
+
+    viewModel.outputs.openDrawer()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(RxDrawerLayout.open(discoveryLayout, GravityCompat.START));
+
+    viewModel.outputs.showActivityFeed()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> startActivityFeedActivity());
+
+    viewModel.outputs.showActivityUpdate()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::startActivityUpdateActivity);
   }
 
   @Override
@@ -115,29 +154,24 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
     recyclerViewPaginator.stop();
   }
 
-  public void projectCardClick(final @NonNull ProjectCardViewHolder viewHolder, final @NonNull Project project) {
-    viewModel.inputs.projectClicked(project);
-  }
-
-  public void signupLoginClick(final @NonNull DiscoveryOnboardingViewHolder viewHolder) {
-    final Intent intent = new Intent(this, LoginToutActivity.class)
-      .putExtra(IntentKey.LOGIN_TYPE, LoginToutActivity.REASON_GENERIC);
-    startActivity(intent);
+  public @NonNull DrawerLayout discoveryLayout() {
+    return discoveryLayout;
   }
 
   private void loadParams(final @NonNull DiscoveryParams params) {
     discoveryToolbar.loadParams(params);
-
-    if (ApiCapabilities.canSetStatusBarColor() && ApiCapabilities.canSetDarkStatusBarIcons()) {
-      StatusBarUtils.apply(this, DiscoveryUtils.primaryColor(this, params), DiscoveryUtils.overlayShouldBeLight(params));
-    }
   }
 
-  private void startDiscoveryFilterActivity(final @NonNull DiscoveryParams params) {
-    final Intent intent = new Intent(this, DiscoveryFilterActivity.class)
-      .putExtra(IntentKey.DISCOVERY_PARAMS, params);
+  private void startLoginToutActivity() {
+    final Intent intent = new Intent(this, LoginToutActivity.class);
+    startActivity(intent);
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
 
-    startActivityForResult(intent, ActivityRequestCodes.DISCOVERY_ACTIVITY_DISCOVERY_FILTER_ACTIVITY_SELECT_FILTER);
+  private void startProfileActivity() {
+    final Intent intent = new Intent(this, ProfileActivity.class);
+    startActivity(intent);
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   private void startProjectActivity(final @NonNull Project project, final @NonNull RefTag refTag) {
@@ -146,6 +180,22 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> im
       .putExtra(IntentKey.REF_TAG, refTag);
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  private void startSettingsActivity() {
+    final Intent intent = new Intent(this, SettingsActivity.class)
+      .putExtra(IntentKey.LOGIN_TYPE, LoginToutActivity.REASON_GENERIC);
+    startActivity(intent);
+  }
+
+  private void startActivityUpdateActivity(final @NonNull Activity activity) {
+    final Intent intent = new Intent(this, DisplayWebViewActivity.class)
+      .putExtra(IntentKey.URL, activity.projectUpdateUrl());
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  private void startActivityFeedActivity() {
+    startActivity(new Intent(this, ActivityFeedActivity.class));
   }
 
   @Override

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,7 +21,6 @@ import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ProfileAdapter;
-import com.kickstarter.ui.viewholders.ProfileCardViewHolder;
 import com.kickstarter.viewmodels.ProfileViewModel;
 import com.squareup.picasso.Picasso;
 
@@ -30,8 +30,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 
+import static com.kickstarter.libs.utils.IntegerUtils.isNonZero;
+
 @RequiresViewModel(ProfileViewModel.class)
-public final class ProfileActivity extends BaseActivity<ProfileViewModel> implements ProfileAdapter.Delegate {
+public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
   private ProfileAdapter adapter;
   private RecyclerViewPaginator paginator;
 
@@ -50,8 +52,8 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> implem
     setContentView(R.layout.profile_layout);
     ButterKnife.bind(this);
 
+    adapter = new ProfileAdapter(viewModel);
     final int spanCount = ViewUtils.isLandscape(this) ? 3 : 2;
-    adapter = new ProfileAdapter(this);
     recyclerView.setLayoutManager(new GridLayoutManager(this, spanCount));
     recyclerView.setAdapter(adapter);
 
@@ -66,6 +68,16 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> implem
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::loadProjects);
+
+    viewModel.outputs.showProject()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::startProjectActivity);
+
+    viewModel.outputs.showDiscovery()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> startDiscoveryActivity());
   }
 
   @Override
@@ -75,6 +87,14 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> implem
   }
 
   private void loadProjects(final @NonNull List<Project> projects) {
+    if (projects.size() == 0) {
+      recyclerView.setLayoutManager(new LinearLayoutManager(this));
+      recyclerView.setPadding(0, recyclerView.getPaddingTop(), recyclerView.getPaddingRight(), recyclerView.getPaddingBottom());
+      if (ViewUtils.isPortrait(this)) {
+        recyclerView.setNestedScrollingEnabled(false);
+      }
+    }
+
     adapter.takeProjects(projects);
   }
 
@@ -87,27 +107,32 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> implem
     userNameTextView.setText(user.name());
 
     final Integer createdNum = user.createdProjectsCount();
-    if (createdNum == null || createdNum == 0) {
+    if (isNonZero(createdNum)) {
+      createdNumTextView.setText(String.valueOf(createdNum));
+    } else {
       createdTextView.setVisibility(View.GONE);
       createdNumTextView.setVisibility(View.GONE);
       dividerView.setVisibility(View.GONE);
-    } else {
-      createdNumTextView.setText(createdNum.toString());
     }
 
     final Integer backedNum = user.backedProjectsCount();
-    if (backedNum == null || backedNum == 0) {
+    if (isNonZero(backedNum)) {
+      backedNumTextView.setText(String.valueOf(backedNum));
+    } else {
       backedTextView.setVisibility(View.GONE);
       backedNumTextView.setVisibility(View.GONE);
       dividerView.setVisibility(View.GONE);
-    } else {
-      backedNumTextView.setText(backedNum.toString());
     }
   }
 
-  public void projectCardClick(final @NonNull ProfileCardViewHolder viewHolder, final @NonNull Project project) {
+  private void startProjectActivity(final @NonNull Project project) {
     final Intent intent = new Intent(this, ProjectActivity.class)
       .putExtra(IntentKey.PROJECT, project);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  private void startDiscoveryActivity() {
+    final Intent intent = new Intent(this, DiscoveryActivity.class);
+    startActivity(intent);
   }
 }

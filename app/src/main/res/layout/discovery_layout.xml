@@ -1,19 +1,49 @@
-<LinearLayout
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/discovery_layout"
-  android:background="@color/light_gray"
-  android:nextFocusDown="@+id/recycler_view"
-  android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:fitsSystemWindows="true"
+  android:nextFocusDown="@+id/recycler_view"
   tools:context=".DiscoveryActivity">
 
-  <include layout="@layout/discovery_toolbar"/>
-
-  <android.support.v7.widget.RecyclerView
-    android:id="@+id/recycler_view"
+  <LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:nextFocusDown="@+id/recycler_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:scrollbars="vertical" />
-</LinearLayout>
+    android:layout_marginTop="@dimen/discovery_drawer_status_bar_height_negative"
+    android:paddingTop="@dimen/discovery_drawer_status_bar_height"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <include layout="@layout/discovery_toolbar" />
+
+    <android.support.v7.widget.RecyclerView
+      android:id="@+id/recycler_view"
+      android:background="@color/discovery_background"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:scrollbars="vertical" />
+
+  </LinearLayout>
+
+  <android.support.design.widget.NavigationView
+    android:id="@+id/discovery_navigation_view"
+    android:layout_height="match_parent"
+    android:layout_width="320dp"
+    android:layout_gravity="start"
+    android:fitsSystemWindows="true"
+    android:background="@color/white">
+
+    <android.support.v7.widget.RecyclerView
+      android:id="@+id/discovery_drawer_recycler_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:scrollbars="vertical" />
+
+  </android.support.design.widget.NavigationView>
+
+</android.support.v4.widget.DrawerLayout>

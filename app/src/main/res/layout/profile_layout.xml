@@ -30,7 +30,7 @@
           android:layout_width="@dimen/profile_avatar_width"
           android:layout_height="@dimen/profile_avatar_height"
           android:layout_marginTop="@dimen/grid_2"
-          android:layout_marginBottom="@dimen/grid_1_half"
+          android:layout_marginBottom="@dimen/grid_1"
           android:scaleType="centerCrop" />
 
         <TextView
@@ -103,7 +103,6 @@
     android:id="@+id/recycler_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="-12dp"
     android:paddingStart="@dimen/grid_2"
     android:paddingLeft="@dimen/grid_2"
     android:paddingBottom="@dimen/grid_3"

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="@dimen/grid_6"
+  android:layout_height="@dimen/grid_6">
+
+  <com.kickstarter.ui.views.IconButton
+    android:background="@drawable/click_indicator_light"
+    android:id="@+id/internal_tools_icon_button"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:gravity="center"
+    android:textSize="@dimen/icon"
+    android:textColor="@color/black"
+    android:text="@string/bug_report_icon" />
+
+</LinearLayout>

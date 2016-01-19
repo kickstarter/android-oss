@@ -22,9 +22,15 @@
   <dimen name="grid_14">112dp</dimen>
   <dimen name="grid_15">120dp</dimen>
   <dimen name="grid_16">128dp</dimen>
+  <dimen name="grid_17">136dp</dimen>
+  <dimen name="grid_18">144dp</dimen>
+  <dimen name="grid_19">152dp</dimen>
   <dimen name="grid_20">160dp</dimen>
   <dimen name="grid_26">208dp</dimen>
   <dimen name="grid_35">280dp</dimen>
+  <dimen name="grid_38">304dp</dimen>
+  <dimen name="grid_40">320dp</dimen>
+  <dimen name="grid_50">400dp</dimen>
 
   <!-- Typography-->
   <dimen name="caption">12sp</dimen>
@@ -39,30 +45,39 @@
   <dimen name="subhead_line_spacing_extra">4dp</dimen>
 
   <!-- Icon sizes -->
+  <dimen name="icon">22sp</dimen>
   <dimen name="chevron_right_icon">24sp</dimen>
   <dimen name="empty_feed_icon">50sp</dimen>
   <dimen name="settings_icon">20sp</dimen>
 
   <!-- Cards -->
   <dimen name="card_corner_radius">4dp</dimen>
-  <dimen name="card_elevation">1dp</dimen>
+  <dimen name="card_elevation">2dp</dimen>
   <dimen name="card_margin_x">@dimen/grid_2</dimen>
   <dimen name="card_margin_y">@dimen/grid_1</dimen>
   <dimen name="card_padding_action_half">@dimen/grid_1_half</dimen>
   <dimen name="profile_card_height">@dimen/grid_26</dimen>
 
+  <!-- Discovery drawer -->
+  <dimen name="discovery_drawer_filter_padding_y">14dp</dimen>
+  <dimen name="discovery_drawer_status_bar_height">0dp</dimen>
+  <dimen name="discovery_drawer_status_bar_height_negative">0dp</dimen>
+
   <!-- Layout padding -->
   <dimen name="activity_padding_x">0dp</dimen>
+  <dimen name="comment_body_padding_x">@dimen/grid_7</dimen>
   <dimen name="feed_padding_y">@dimen/grid_5_half</dimen>
-  <dimen name="feed_padding_x">@dimen/grid_3</dimen>
-  <dimen name="form_margin_x">@dimen/grid_3</dimen>
-  <dimen name="settings_icon_margin_x">@dimen/grid_1</dimen>
+  <dimen name="feed_padding_x">@dimen/grid_2</dimen>
+  <dimen name="form_margin_x">@dimen/grid_2</dimen>
+  <dimen name="project_padding_x">@dimen/grid_2</dimen>
+  <dimen name="settings_icon_margin_x">@dimen/grid_1_half</dimen>
+  <dimen name="profile_empty_padding_y">@dimen/grid_8</dimen>
 
   <!-- Buttons -->
   <!-- button_icon_fixed_width is useful when we want to place several icons next to each
   other where they all take up the same width. This helps with UI effects like ripples that
   use the button size to calculate the ripple radius. -->
-  <dimen name="button_icon_fixed_width">54dp</dimen>
+  <dimen name="button_icon_fixed_width">48dp</dimen>
   <dimen name="settings_icon_fixed_width">@dimen/grid_6</dimen>
   <dimen name="button_corner_radius">@dimen/grid_1_half</dimen>
   <dimen name="button_stroke_width">1dp</dimen>
@@ -75,14 +90,16 @@
   <dimen name="star_fab_pre21_margin_y">@dimen/grid_3_half</dimen>
 
   <!-- Photos -->
+  <dimen name="discovery_activity_photo_width">62dp</dimen>
+  <dimen name="discovery_activity_photo_height">48dp</dimen>
   <dimen name="activity_feed_avatar_width">60dp</dimen>
   <dimen name="activity_feed_avatar_height">60dp</dimen>
   <dimen name="activity_feed_small_photo_width">96dp</dimen>
   <dimen name="activity_feed_small_photo_height">72dp</dimen>
   <dimen name="activity_feed_medium_photo_width">120dp</dimen>
   <dimen name="activity_feed_medium_photo_height">90dp</dimen>
-  <dimen name="comments_feed_avatar_width">@dimen/grid_7</dimen>
-  <dimen name="comments_feed_avatar_height">@dimen/grid_7</dimen>
+  <dimen name="comments_feed_avatar_width">@dimen/grid_11_half</dimen>
+  <dimen name="comments_feed_avatar_height">@dimen/grid_11_half</dimen>
   <dimen name="profile_avatar_width">100dp</dimen>
   <dimen name="profile_avatar_height">@dimen/profile_avatar_width</dimen>
   <dimen name="profile_card_photo_height">@dimen/grid_15</dimen>
@@ -92,7 +109,7 @@
   <dimen name="project_card_photo_med_height">200dp</dimen>
   <dimen name="project_card_photo_med_width">266dp</dimen>
   <dimen name="project_social_photo_height">@dimen/grid_4</dimen>
-  <dimen name="project_photo_height">220dp</dimen>
+  <dimen name="project_photo_full_height">420dp</dimen>
 
   <!-- TextViews -->
   <dimen name="text_view_corner_radius">@dimen/grid_1_half</dimen>
@@ -103,11 +120,6 @@
   <!-- Activity feed view -->
   <dimen name="activity_feed_view_margin_top">0dp</dimen>
   <dimen name="activity_feed_view_margin_bottom">@dimen/grid_3_half</dimen>
-
-  <!-- Logged in menu -->
-  <dimen name="logged_in_menu_width">190dp</dimen>
-  <dimen name="logged_in_menu_horizontal_offset">-145dp</dimen>
-  <dimen name="logged_in_menu_vertical_offset">-46dp</dimen>
 
   <!-- Popup menus -->
   <dimen name="popup_menu_horizontal_offset">-151dp</dimen>

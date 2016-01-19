@@ -82,7 +82,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   @Inject KSString ksString;
 
   public interface Delegate {
-    void projectCardClick(ProjectCardViewHolder viewHolder, Project project);
+    void projectCardViewHolderClick(ProjectCardViewHolder viewHolder, Project project);
   }
 
   public ProjectCardViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
@@ -132,7 +132,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
 
   @Override
   public void onClick(@NonNull final View view) {
-    delegate.projectCardClick(this, project);
+    delegate.projectCardViewHolderClick(this, project);
   }
 
   // adjust spacing between cards when metadata label is present
@@ -239,12 +239,12 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     }
 
     else if (project.isFeaturedToday() && project.category() != null) {
+      final Category rootCategory = project.category().root();
+
       projectMetadataViewGroup.setVisibility(View.VISIBLE);
       featuredViewGroup.setVisibility(View.VISIBLE);
-      // TODO: Mini serialized category does not have access to root category name. This is a bug right now,
-      // it's using the subcategory instead of the root category.
       featuredTextView.setText(ksString.format(featuredInString,
-        "category_name", project.category().name()));
+        "category_name", rootCategory.name()));
       adjustCardViewTopMargin(grid1Dimen);
 
       backingViewGroup.setVisibility(View.GONE);

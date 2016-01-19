@@ -13,8 +13,8 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 
@@ -29,19 +29,20 @@ import butterknife.ButterKnife;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
 public final class RewardViewHolder extends KSViewHolder {
-  protected @Bind(R.id.pledge_minimum) TextView minimumTextView;
+  protected @Bind(R.id.all_gone) TextView allGoneTextView;
   protected @Bind(R.id.reward_backers_count) TextView backersCountTextView;
   protected @Bind(R.id.reward_description) TextView descriptionTextView;
   protected @Bind(R.id.estimated_delivery) TextView estimatedDeliveryTextView;
   protected @Bind(R.id.estimated_delivery_date) TextView estimatedDeliveryDateTextView;
   protected @Bind(R.id.green_overlay) View greenOverlayView;
-  protected @Bind(R.id.selected) TextView selectedTextView;
   protected @Bind(R.id.limited) TextView limitedTextView;
-  protected @Bind(R.id.all_gone) TextView allGoneTextView;
-  protected @Bind(R.id.white_overlay) View whiteOverlayView;
+  protected @Bind(R.id.pledge_minimum) TextView minimumTextView;
+  protected @Bind(R.id.select_text_view) @Nullable View selectTextView;
+  protected @Bind(R.id.selected) TextView selectedTextView;
   protected @Bind(R.id.shipping_destination) TextView shippingDestinationTextView;
   protected @Bind(R.id.shipping_summary) TextView shippingSummaryTextView;
   protected @Bind(R.id.usd_conversion_text_view) TextView usdConversionTextView;
+  protected @Bind(R.id.white_overlay) View whiteOverlayView;
 
   protected @BindString(R.string.rewards_info_limited_rewards_remaining_left_of_reward_limit) String limitedRewardsRemainingString;
   protected @BindString(R.string.rewards_title_pledge_reward_currency_or_more) String pledgeRewardCurrencyOrMoreString;
@@ -95,6 +96,7 @@ public final class RewardViewHolder extends KSViewHolder {
     toggleAllGoneRewardView();
     toggleClickableReward();
     toggleEstimatedDeliveryView();
+    toggleLandscapeSelectTextView();
     toggleLimitedRewardView();
     toggleSelectedRewardView();
     toggleShippingDestinationView();
@@ -135,6 +137,16 @@ public final class RewardViewHolder extends KSViewHolder {
     } else {
       estimatedDeliveryTextView.setVisibility(View.GONE);
       estimatedDeliveryDateTextView.setVisibility(View.GONE);
+    }
+  }
+
+  public void toggleLandscapeSelectTextView() {
+    if (selectTextView != null) {
+      if (!project.isLive() || project.isBacking()) {
+        selectTextView.setVisibility(View.GONE);
+      } else {
+        selectTextView.setVisibility(View.VISIBLE);
+      }
     }
   }
 

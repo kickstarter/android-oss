@@ -4,7 +4,9 @@
     Icons from: https://www.google.com/design/icons/
     Unicode for an icon can be looked up at: https://github.com/google/material-design-icons/blob/03e5ebc7f534d034494c7abd5a80e97fad1e32b5/iconfont/codepoints
   -->
+  <string name="account_circle">\ue853</string>
   <string name="arrow_back_icon">\ue5c4</string>
+  <string name="bug_report_icon">\ue868</string>
   <string name="chevron_right_icon">\ue5cc</string>
   <string name="close_icon">\ue5cd</string>
   <string name="comment_icon">\ue0b9</string>
@@ -13,15 +15,20 @@
   <string name="favorite_icon">\ue87d</string>
   <string name="flash_on_icon">\ue3e7</string>
   <string name="forum_icon">\ue0bf</string>
+  <string name="keyboard_arrow_down_icon">\ue313</string>
+  <string name="keyboard_arrow_up_icon">\ue316</string>
   <string name="local_offer_icon">\ue54e</string>
   <string name="location_on_icon">\ue0c8</string>
   <string name="lock_icon">\ue897</string>
   <string name="mode_comment_icon">\ue253</string>
+  <string name="menu_icon">\ue5d2</string>
   <string name="more_vert_icon">\ue5d4</string>
+  <string name="notifications_icon">\ue7f4</string>
   <string name="person_add_icon">\ue7fe</string>
   <string name="phone_android_icon">\ue324</string>
   <string name="play_circle_outline_icon">\ue039</string>
   <string name="search_icon">\ue8b6</string>
+  <string name="settings_icon">\ue8b8</string>
   <string name="share_icon">\ue80d</string>
   <string name="speaker_notes_icon">\ue8cd</string>
   <string name="star_icon">\ue838</string>

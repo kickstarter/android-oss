@@ -13,6 +13,10 @@ public class UserFactory {
       .build();
   }
 
+  public static User socialUser() {
+    return user().toBuilder().social(true).build();
+  }
+
   public static User creator() {
     return user();
   }

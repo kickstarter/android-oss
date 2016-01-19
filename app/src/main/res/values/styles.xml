@@ -52,11 +52,12 @@
     <item name="android:windowBackground">@color/white</item>
   </style>
 
-  <style name="DiscoveryActivity" parent="KSTheme">
+  <style name="DiscoveryBase" parent="KSTheme">
     <item name="android:windowBackground">@color/discovery_background</item>
+    <item name="android:colorPrimaryDark">@color/discovery_status_bar</item>
   </style>
 
-  <style name="DiscoveryFilterActivity" parent="KSTheme">
+  <style name="DiscoveryActivity" parent="DiscoveryBase">
   </style>
 
   <style name="DisplayWebViewActivity" parent="KSTheme">
@@ -142,6 +143,20 @@
 
   <style name="GreenRoundedButton" parent="Button">
     <item name="android:background">@drawable/button_green_rounded</item>
+    <item name="android:paddingLeft">@dimen/grid_5</item>
+    <item name="android:paddingRight">@dimen/grid_5</item>
+    <item name="android:paddingStart">@dimen/grid_5</item>
+    <item name="android:paddingEnd">@dimen/grid_5</item>
+    <item name="android:fontFamily">@string/font_family_medium</item>
+  </style>
+
+  <style name="BlueRoundedButton" parent="Button">
+    <item name="android:background">@drawable/button_blue_rounded</item>
+    <item name="android:paddingLeft">@dimen/grid_5</item>
+    <item name="android:paddingRight">@dimen/grid_5</item>
+    <item name="android:paddingStart">@dimen/grid_5</item>
+    <item name="android:paddingEnd">@dimen/grid_5</item>
+    <item name="android:fontFamily">@string/font_family_medium</item>
   </style>
 
   <style name="TwitterButton" parent="Base.Widget.AppCompat.Button.Borderless">
@@ -210,7 +225,13 @@
     <item name="android:maxWidth">@dimen/button_icon_fixed_width</item>
     <item name="android:gravity">center</item>
     <item name="android:textColor">@color/primary_dark</item>
-    <item name="android:textSize">22sp</item>
+    <item name="android:textSize">@dimen/icon</item>
+  </style>
+
+  <style name="ToolbarIconDarkBackground" parent="ToolbarIcon">
+    <item name="android:background">@drawable/button_selector</item>
+    <item name="android:focusable">true</item>
+    <item name="android:textColor">@color/white</item>
   </style>
 
   <style name="ToolbarTitle" parent="Headline">
@@ -219,8 +240,8 @@
     <item name="android:layout_centerVertical">true</item>
     <item name="android:color">@color/black</item>
     <item name="android:textColorHint">@color/dark_gray</item>
-    <item name="android:layout_marginLeft">@dimen/grid_3_half</item>
-    <item name="android:layout_marginStart">@dimen/grid_3_half</item>
+    <item name="android:layout_marginLeft">@dimen/grid_9</item>
+    <item name="android:layout_marginStart">@dimen/grid_9</item>
   </style>
 
   <!-- Typography -->
@@ -232,6 +253,12 @@
   
   <style name="TextSecondary">
     <item name="android:textColor">@color/text_secondary</item>
+    <item name="android:textStyle">normal</item>
+    <item name="android:fontFamily">sans-serif</item>
+  </style>
+
+  <style name="TextWhite">
+    <item name="android:textColor">@color/white</item>
     <item name="android:textStyle">normal</item>
     <item name="android:fontFamily">sans-serif</item>
   </style>
@@ -268,6 +295,11 @@
     <item name="android:lineSpacingExtra">@dimen/body_line_spacing_extra</item>
   </style>
 
+  <style name="BodyWhite" parent="TextWhite">
+    <item name="android:textSize">@dimen/body</item>
+    <item name="android:lineSpacingExtra">@dimen/body_line_spacing_extra</item>
+  </style>
+
   <style name="SubheadPrimary" parent="TextPrimary">
     <item name="android:textSize">@dimen/subhead</item>
     <item name="android:lineSpacingExtra">@dimen/subhead_line_spacing_extra</item>
@@ -295,7 +327,6 @@
 
   <style name="EditorialSubhead" parent="TextPrimary">
     <item name="android:textSize">@dimen/editorial_subhead</item>
-    <item name="android:fontFamily">@string/font_family_medium</item>
   </style>
 
   <!-- Cards -->

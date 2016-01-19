@@ -26,7 +26,6 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import java.net.URL;
 import java.util.List;
 
 /**
@@ -45,7 +44,7 @@ public class TweetComposer {
   public static class Builder {
     private final Context context;
     private String text;
-    private URL url;
+    private Uri uri;
     private Uri imageUri;
 
     /**
@@ -75,17 +74,17 @@ public class TweetComposer {
     }
 
     /**
-     * Sets URL for Tweet Intent, no length validation is performed
+     * Sets Uri for Tweet Intent, no length validation is performed
      */
-    public Builder url(URL url) {
-      if (url == null) {
-        throw new IllegalArgumentException("url must not be null.");
+    public Builder uri(Uri uri) {
+      if (uri == null) {
+        throw new IllegalArgumentException("uri must not be null.");
       }
 
-      if (this.url != null) {
+      if (this.uri != null) {
         throw new IllegalStateException("url already set.");
       }
-      this.url = url;
+      this.uri = uri;
 
       return this;
     }
@@ -130,11 +129,11 @@ public class TweetComposer {
         builder.append(text);
       }
 
-      if (url != null) {
+      if (uri != null) {
         if (builder.length() > 0) {
           builder.append(' ');
         }
-        builder.append(url.toString());
+        builder.append(uri.toString());
       }
 
       intent.putExtra(Intent.EXTRA_TEXT, builder.toString());
@@ -161,11 +160,11 @@ public class TweetComposer {
     }
 
     Intent createWebIntent() {
-      final String url = (this.url == null ? "" : this.url.toString());
+      final String uri = (this.uri == null ? "" : this.uri.toString());
 
 
       final String tweetUrl =
-        String.format(WEB_INTENT, Uri.encode(text), url);
+        String.format(WEB_INTENT, Uri.encode(text), uri);
       return new Intent(Intent.ACTION_VIEW, Uri.parse(tweetUrl));
     }
 

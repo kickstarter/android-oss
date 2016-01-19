@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -49,6 +50,8 @@ import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.kickstarter.libs.utils.DateTimeUtils.mediumDateShortTime;
+import static com.kickstarter.libs.utils.DateTimeUtils.mediumDate;
 import static com.kickstarter.libs.utils.ObjectUtils.coalesce;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
@@ -61,6 +64,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.avatar_name) TextView avatarNameTextView;
   protected @Bind(R.id.backers_count) TextView backersCountTextView;
   protected @Bind(R.id.backer_label) LinearLayout backerLabelLinearLayout;
+  protected @Bind(R.id.back_project_button) @Nullable Button backProjectButton;
   protected @Bind(R.id.blurb) TextView blurbTextView;
   protected @Bind(R.id.category) TextView categoryTextView;
   protected @Bind(R.id.comments_count) TextView commentsCountTextView;
@@ -69,7 +73,10 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.deadline_countdown_unit_text_view) TextView deadlineCountdownUnitTextView;
   protected @Bind(R.id.project_disclaimer_text_view) TextView projectDisclaimerTextView;
   protected @Bind(R.id.goal) TextView goalTextView;
+  protected @Bind(R.id.land_overlay_text) @Nullable ViewGroup landOverlayTextViewGroup;
   protected @Bind(R.id.location) TextView locationTextView;
+  protected @Bind(R.id.manage_pledge_button) @Nullable Button managePledgeButton;
+  protected @Bind(R.id.name_creator_view) @Nullable ViewGroup nameCreatorViewGroup;
   protected @Bind(R.id.percentage_funded) ProgressBar percentageFundedProgressBar;
   protected @Bind(R.id.project_photo) ImageView photoImageView;
   protected @Bind(R.id.play_button_overlay) IconButton playButton;
@@ -82,12 +89,14 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @Bind(R.id.project_state_header_text_view) TextView projectStateHeaderTextView;
   protected @Bind(R.id.project_state_subhead_text_view) TextView projectStateSubheadTextView;
   protected @Bind(R.id.project_state_view_group) ViewGroup projectStateViewGroup;
+  protected @Bind(R.id.view_pledge_button) @Nullable Button viewPledgeButton;
   protected @Bind(R.id.updates_count) TextView updatesCountTextView;
   protected @Bind(R.id.usd_conversion_text_view) TextView usdConversionTextView;
 
   protected @BindColor(R.color.green_alpha_20) int greenAlpha50Color;
   protected @BindColor(R.color.medium_gray) int mediumGrayColor;
 
+  protected @BindDimen(R.dimen.grid_1) int grid1Dimen;
   protected @BindDimen(R.dimen.grid_2) int grid2Dimen;
   protected @BindDimen(R.dimen.grid_3) int grid3Dimen;
   protected @BindDimen(R.dimen.grid_4) int grid4Dimen;
@@ -115,11 +124,14 @@ public final class ProjectViewHolder extends KSViewHolder {
   @Inject KSString ksString;
 
   public interface Delegate {
+    void projectViewHolderBackProjectClicked(ProjectViewHolder viewHolder);
     void projectViewHolderBlurbClicked(ProjectViewHolder viewHolder);
     void projectViewHolderCommentsClicked(ProjectViewHolder viewHolder);
     void projectViewHolderCreatorClicked(ProjectViewHolder viewHolder);
+    void projectViewHolderManagePledgeClicked(ProjectViewHolder viewHolder);
     void projectViewHolderUpdatesClicked(ProjectViewHolder viewHolder);
     void projectViewHolderVideoStarted(ProjectViewHolder viewHolder);
+    void projectViewHolderViewPledgeClicked(ProjectViewHolder viewHolder);
   }
 
   public ProjectViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
@@ -189,6 +201,8 @@ public final class ProjectViewHolder extends KSViewHolder {
     commentsCountTextView.setText(commentsCount != null ? NumberUtils.format(commentsCount) : null);
 
     setConvertedUsdView();
+    setLandscapeActionButton();
+    setLandscapeOverlayText();
     setPledgedOfGoalView();
     setProjectDisclaimerView();
     setProjectSocialClick();
@@ -197,14 +211,9 @@ public final class ProjectViewHolder extends KSViewHolder {
     setStatsContentDescription();
   }
 
-  // adjust spacing between stats and divider when social is present
-  public void adjustStatsViewBottomMargin(final int bottomMargin) {
-    final LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-      projectStatsViewGroup.getLayoutParams()
-    );
-
-    layoutParams.setMargins(0, grid3Dimen, 0, bottomMargin);
-    projectStatsViewGroup.setLayoutParams(layoutParams);
+  @Nullable @OnClick(R.id.back_project_button)
+  public void backProjectButtonOnClick() {
+    delegate.projectViewHolderBackProjectClicked(this);
   }
 
   @OnClick({R.id.blurb, R.id.campaign})
@@ -222,9 +231,19 @@ public final class ProjectViewHolder extends KSViewHolder {
     delegate.projectViewHolderCreatorClicked(this);
   }
 
+  @Nullable @OnClick(R.id.manage_pledge_button)
+  public void managePledgeOnClick() {
+    delegate.projectViewHolderManagePledgeClicked(this);
+  }
+
   @OnClick(R.id.play_button_overlay)
   public void playButtonClick() {
     delegate.projectViewHolderVideoStarted(this);
+  }
+
+  @Nullable @OnClick(R.id.view_pledge_button)
+  public void viewPledgeOnClick() {
+    delegate.projectViewHolderViewPledgeClicked(this);
   }
 
   public void setConvertedUsdView() {
@@ -239,6 +258,33 @@ public final class ProjectViewHolder extends KSViewHolder {
       ));
     } else {
       usdConversionTextView.setVisibility(View.GONE);
+    }
+  }
+
+  /**
+   * Set landscape project action buttons in the ViewHolder rather than Activity.
+   */
+  public void setLandscapeActionButton() {
+    if (backProjectButton != null && managePledgeButton != null && viewPledgeButton != null) {
+      ProjectUtils.setActionButton(project, backProjectButton, managePledgeButton, viewPledgeButton);
+    }
+  }
+
+  /**
+   * Set top margin of overlay text based on landscape screen height, scaled by screen density.
+   */
+  public void setLandscapeOverlayText() {
+    if (landOverlayTextViewGroup != null && nameCreatorViewGroup != null) {
+      final int screenHeight = ViewUtils.getScreenHeightDp(view.getContext());
+      final float densityOffset = view.getContext().getResources().getDisplayMetrics().density;
+      final float topMargin = ((screenHeight / 3 * 2) * densityOffset) - grid4Dimen;  // offset for toolbar
+      ViewUtils.setRelativeViewGroupMargins(landOverlayTextViewGroup, grid4Dimen, (int) topMargin, grid4Dimen, 0);
+
+      if (!project.hasVideo()) {
+        ViewUtils.setRelativeViewGroupMargins(nameCreatorViewGroup, 0, 0, 0, grid2Dimen);
+      } else {
+        ViewUtils.setRelativeViewGroupMargins(nameCreatorViewGroup, 0, 0, 0, grid1Dimen);
+      }
     }
   }
 
@@ -264,7 +310,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       projectDisclaimerTextView.setText(ksString.format(
         projectDisclaimerGoalReachedString,
         "deadline",
-        DateTimeUtils.mediumDateTime(deadline)
+        mediumDateShortTime(deadline)
       ));
     } else {
       projectDisclaimerTextView.setVisibility(View.VISIBLE);
@@ -273,7 +319,7 @@ public final class ProjectViewHolder extends KSViewHolder {
         "goal_currency",
         ksCurrency.format(project.goal(), project, true),
         "deadline",
-        DateTimeUtils.mediumDateTime(deadline)
+        mediumDateShortTime(deadline)
       ));
     }
   }
@@ -304,7 +350,7 @@ public final class ProjectViewHolder extends KSViewHolder {
 
         projectStateHeaderTextView.setText(fundedString);
         projectStateSubheadTextView.setText(ksString.format(successfullyFundedOnDeadlineString,
-          "deadline", DateTimeUtils.mediumDate(stateChangedAt)
+          "deadline", mediumDate(stateChangedAt)
         ));
         break;
       case Project.STATE_CANCELED:
@@ -322,7 +368,7 @@ public final class ProjectViewHolder extends KSViewHolder {
 
         projectStateHeaderTextView.setText(fundingUnsuccessfulString);
         projectStateSubheadTextView.setText(ksString.format(fundingGoalNotReachedString,
-          "deadline", DateTimeUtils.mediumDate(stateChangedAt)
+          "deadline", mediumDate(stateChangedAt)
         ));
         break;
       case Project.STATE_SUSPENDED:
@@ -342,9 +388,8 @@ public final class ProjectViewHolder extends KSViewHolder {
 
   public void setSocialView() {
     if (project.isFriendBacking()) {
-
       projectSocialViewGroup.setVisibility(View.VISIBLE);
-      adjustStatsViewBottomMargin(grid2Dimen);
+      ViewUtils.setLinearViewGroupMargins(projectStatsViewGroup, 0, grid3Dimen, 0, grid2Dimen);
 
       projectSocialImageView.setVisibility(View.VISIBLE);
       Picasso.with(view.getContext()).load(project.friends().get(0).avatar()
@@ -356,7 +401,7 @@ public final class ProjectViewHolder extends KSViewHolder {
 
     } else {
       projectSocialViewGroup.setVisibility(View.GONE);
-      adjustStatsViewBottomMargin(grid4Dimen);
+      ViewUtils.setLinearViewGroupMargins(projectStatsViewGroup, 0, grid3Dimen, 0, grid4Dimen);
     }
   }
 

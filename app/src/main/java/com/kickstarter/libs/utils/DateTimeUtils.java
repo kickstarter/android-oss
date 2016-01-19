@@ -14,6 +14,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Seconds;
 import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.util.Locale;
 
@@ -65,6 +66,30 @@ public final class DateTimeUtils {
    */
   public static @NonNull String mediumDate(final @NonNull DateTime dateTime, final @NonNull Locale locale) {
     return dateTime.toString(DateTimeFormat.mediumDate().withLocale(locale).withZoneUTC());
+  }
+
+  /**
+   * e.g.: Jan 14, 2016 2:20 PM.
+   */
+  public static @NonNull String mediumDateShortTime(final @NonNull DateTime dateTime) {
+    return mediumDateShortTime(dateTime, DateTimeZone.getDefault(), Locale.getDefault());
+  }
+
+  /**
+   * e.g.: Jan 14, 2016 2:20 PM.
+   */
+  public static @NonNull String mediumDateShortTime(final @NonNull DateTime dateTime, final @NonNull DateTimeZone dateTimeZone) {
+    return mediumDateShortTime(dateTime, dateTimeZone, Locale.getDefault());
+  }
+
+  /**
+   * e.g.: Jan 14, 2016 2:20 PM.
+   */
+  public static @NonNull String mediumDateShortTime(final @NonNull DateTime dateTime, final @NonNull DateTimeZone dateTimeZone,
+    final @NonNull Locale locale) {
+    final String mediumShortStyle = DateTimeFormat.patternForStyle("MS", locale);
+    final DateTimeFormatter formatter = DateTimeFormat.forPattern(mediumShortStyle).withZone(dateTimeZone).withLocale(locale);
+    return dateTime.toString(formatter);
   }
 
   /**

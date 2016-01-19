@@ -228,6 +228,7 @@
         "friend_backed_publishing_project": "%{friend_name} backed a Publishing project.",
         "friend_backed_tech_project": "%{friend_name} backed a Technology project.",
         "friend_backed_theater_project": "%{friend_name} backed a Theater project.",
+        "friend_backed_project_name_by_creator_name": "<b>%{friend_name} backed</b> %{project_name} by %{creator_name}",
         "friend_follow": {
           "is_following_you": "is following you!",
           "buttons": {
@@ -319,8 +320,10 @@
             "many": "BACKED %{project_count} PROJECTS"
           },
           "empty_state": {
-            "message": "You haven’t backed any projects yet.\nLet’s change that!",
-            "button": "Discover projects"
+            "message": "You haven't backed any projects yet.\nLet's change that!",
+            "message_no_backed_projects_yet": "No backed projects yet",
+            "button": "Discover projects",
+            "button_explore_new_projects": "Explore new projects"
           },
           "status": {
             "canceled": "Canceled",
@@ -487,6 +490,7 @@
         },
         "disclaimer": {
           "by_signing_up_you_agree_to_terms": "By signing up, you agree to our terms of use, privacy policy, and cookie policy.",
+          "by_signing_up_you_agree_to_terms_html": "By signing up, you agree to our <u>terms of use</u>, <u>privacy policy</u>, and <u>cookie policy</u>.",
           "we_never_post_anything_without_permission": "We'll never post anything without your permission.",
           "read_more": "Read more"
         },
@@ -569,6 +573,11 @@
         "back_button": "Back this project",
         "manage_button": "Manage pledge",
         "view_button": "View pledge",
+        "share": {
+          "twitter": {
+            "message": "%{project_title}, via @Kickstarter"
+          }
+        },
         "star": {
           "confirmation": "We'll remind you 48 hours before this project ends!",
           "ok": "OK"
@@ -1519,6 +1528,7 @@
         "friend_backed_publishing_project": "%{friend_name} hat ein Publishing-Projekt unterstützt.",
         "friend_backed_tech_project": "%{friend_name} hat ein Technologie-Projekt unterstützt.",
         "friend_backed_theater_project": "%{friend_name} hat ein Theater-Projekt unterstützt.",
+        "friend_backed_project_name_by_creator_name": "<b>%{friend_name} backed</b> %{project_name} by %{creator_name}",
         "friend_follow": {
           "is_following_you": "folgt dir!",
           "buttons": {
@@ -1611,7 +1621,9 @@
           },
           "empty_state": {
             "message": "Du hast noch keine Projekte unterstützt. Das sollten wir ändern!",
-            "button": "Projekte entdecken"
+            "message_no_backed_projects_yet": "No backed projects yet",
+            "button": "Projekte entdecken",
+            "button_explore_new_projects": "Explore new projects"
           },
           "status": {
             "canceled": "Zurückgezogen",
@@ -1778,6 +1790,7 @@
         },
         "disclaimer": {
           "by_signing_up_you_agree_to_terms": "Mit der Registrierung stimmst du unseren Nutzungsbedingungen, Datenschutzrichtlinien und Cookie-Richtlinien zu.",
+          "by_signing_up_you_agree_to_terms_html": "By signing up, you agree to our <u>terms of use</u>, <u>privacy policy</u>, and <u>cookie policy</u>.",
           "we_never_post_anything_without_permission": "Wir veröffentlichen niemals etwas ohne deine Zustimmung.",
           "read_more": "Weiterlesen"
         },
@@ -1860,6 +1873,11 @@
         "back_button": "Dieses Projekt unterstützen",
         "manage_button": "Finanzierungsbeitrag verwalten",
         "view_button": "Finanzierungsbeitrag anzeigen",
+        "share": {
+          "twitter": {
+            "message": "%{project_title}, via @Kickstarter"
+          }
+        },
         "star": {
           "confirmation": "Wir werden dich 48 Stunden vor Ende dieses Projekts daran erinnern!",
           "ok": "OK"
@@ -2810,6 +2828,7 @@
         "friend_backed_publishing_project": "%{friend_name} patrocinó un proyecto de Publicaciones.",
         "friend_backed_tech_project": "%{friend_name} patrocinó un proyecto de Tecnología.",
         "friend_backed_theater_project": "%{friend_name} patrocinó un proyecto de Teatro.",
+        "friend_backed_project_name_by_creator_name": "<b>%{friend_name} backed</b> %{project_name} by %{creator_name}",
         "friend_follow": {
           "is_following_you": "te sigue",
           "buttons": {
@@ -2902,7 +2921,9 @@
           },
           "empty_state": {
             "message": "Aún no has patrocinado ningún proyecto.\n¡Es hora de cambiar esto!",
-            "button": "Descubre proyectos"
+            "message_no_backed_projects_yet": "No backed projects yet",
+            "button": "Descubre proyectos",
+            "button_explore_new_projects": "Explore new projects"
           },
           "status": {
             "canceled": "Cancelado",
@@ -3069,6 +3090,7 @@
         },
         "disclaimer": {
           "by_signing_up_you_agree_to_terms": "Al registrarte, estás aceptando nuestros términos de uso, nuestra política de privacidad y de cookies.",
+          "by_signing_up_you_agree_to_terms_html": "By signing up, you agree to our <u>terms of use</u>, <u>privacy policy</u>, and <u>cookie policy</u>.",
           "we_never_post_anything_without_permission": "Nunca publicaremos nada sin tu consentimiento.",
           "read_more": "Leer más"
         },
@@ -3151,6 +3173,11 @@
         "back_button": "Patrocinar este proyecto",
         "manage_button": "Administrar contribución",
         "view_button": "Ver contribución",
+        "share": {
+          "twitter": {
+            "message": "%{project_title}, via @Kickstarter"
+          }
+        },
         "star": {
           "confirmation": "¡Te avisaremos 48 horas antes de que finalice este proyecto !",
           "ok": "Ok"
@@ -3963,7 +3990,7 @@
             "backers": "contributeurs",
             "funded": "funded",
             "pledged_of_goal": "sur %{goal}",
-            "pledged_of_goal_short": "of %{goal}",
+            "pledged_of_goal_short": "sur %{goal}",
             "convert_from_pledged_of_goal": "Conversion de %{pledged} engagés pour un objectif de %{goal}"
           },
           "time_left_to_go": "%{time_left} restant(e)s",
@@ -4037,7 +4064,7 @@
           "buttons": {
             "login": "Connexion",
             "learn_more": "En savoir plus",
-            "signup_or_login": "Sign up or Log in"
+            "signup_or_login": "Inscription ou connexion"
           }
         },
         "survey": {
@@ -4101,6 +4128,7 @@
         "friend_backed_publishing_project": "%{friend_name} a soutenu un projet d'édition.",
         "friend_backed_tech_project": "%{friend_name} a soutenu un projet de technologie.",
         "friend_backed_theater_project": "%{friend_name} a soutenu un projet de théâtre.",
+        "friend_backed_project_name_by_creator_name": "<b>%{friend_name} a soutenu le projet </b> %{project_name} par %{creator_name}",
         "friend_follow": {
           "is_following_you": "vous suit !",
           "buttons": {
@@ -4193,7 +4221,9 @@
           },
           "empty_state": {
             "message": "Vous n'avez pas encore soutenu de projets. On change ça ?",
-            "button": "Découvrez des projets"
+            "message_no_backed_projects_yet": "Pas de projets soutenus",
+            "button": "Découvrez des projets",
+            "button_explore_new_projects": "Découvrir de nouveaux projets"
           },
           "status": {
             "canceled": "Annulé",
@@ -4235,8 +4265,8 @@
             "promo": "Nouvelles et évènements Kickstarter",
             "happening": "Happening",
             "opt_in": {
-              "title": "One final step!",
-              "message": "We've sent a confirmation email to the address associated with your account! Please check your email in order to confirm that you'd like to subscribe to %{newsletter}."
+              "title": "Dernière étape !",
+              "message": "Nous vous avons envoyé un e-mail de confirmation à l'adresse associée à votre compte ! Veuillez ouvrir votre boîte de réception et confirmer votre abonnement à %{newsletter}."
             }
           },
           "about": {
@@ -4258,7 +4288,7 @@
           "rating": {
             "title": "Nous sommes tout ouïe !",
             "rate_us": "Évaluez-nous dans l'App Store !",
-            "rate_us_play_store": "Rate us in the Play Store!",
+            "rate_us_play_store": "Évaluez-nous dans le Play Store !",
             "message": "Merci d'utiliser l'application Kickstarter.\nAuriez-vous une minute pour évaluer votre expérience ?\nNous vous en serions très reconnaissants !",
             "option": {
               "rate_now": "Évaluez l'application",
@@ -4360,6 +4390,7 @@
         },
         "disclaimer": {
           "by_signing_up_you_agree_to_terms": "En vous inscrivant, vous acceptez les Conditions d'utilisation, notre Politique de confidentialité et notre Politique en matière de cookies.",
+          "by_signing_up_you_agree_to_terms_html": "By signing up, you agree to our <u>terms of use</u>, <u>privacy policy</u>, and <u>cookie policy</u>.",
           "we_never_post_anything_without_permission": "Rien ne sera publié sans votre permission.",
           "read_more": "En savoir plus"
         },
@@ -4442,6 +4473,11 @@
         "back_button": "Je soutiens ce projet",
         "manage_button": "Gérer",
         "view_button": "Afficher mon engagement",
+        "share": {
+          "twitter": {
+            "message": "%{project_title}, via @Kickstarter"
+          }
+        },
         "star": {
           "confirmation": "Nous vous enverrons un rappel 48 heures avant la fin de la campagne de ce projet !",
           "ok": "OK"
@@ -5392,6 +5428,7 @@
         "friend_backed_publishing_project": "%{friend_name} backed a Publishing project.",
         "friend_backed_tech_project": "%{friend_name} backed a Technology project.",
         "friend_backed_theater_project": "%{friend_name} backed a Theater project.",
+        "friend_backed_project_name_by_creator_name": "<b>%{friend_name} backed</b> %{project_name} by %{creator_name}",
         "friend_follow": {
           "is_following_you": "is following you!",
           "buttons": {
@@ -5483,8 +5520,10 @@
             "many": "BACKED %{project_count} PROJECTS"
           },
           "empty_state": {
-            "message": "You haven’t backed any projects yet.\nLet’s change that!",
-            "button": "Discover projects"
+            "message": "You haven't backed any projects yet.\nLet's change that!",
+            "message_no_backed_projects_yet": "No backed projects yet",
+            "button": "Discover projects",
+            "button_explore_new_projects": "Explore new projects"
           },
           "status": {
             "canceled": "Canceled",
@@ -5651,6 +5690,7 @@
         },
         "disclaimer": {
           "by_signing_up_you_agree_to_terms": "By signing up, you agree to our terms of use, privacy policy, and cookie policy.",
+          "by_signing_up_you_agree_to_terms_html": "By signing up, you agree to our <u>terms of use</u>, <u>privacy policy</u>, and <u>cookie policy</u>.",
           "we_never_post_anything_without_permission": "We'll never post anything without your permission.",
           "read_more": "Read more"
         },
@@ -5733,6 +5773,11 @@
         "back_button": "Back this project",
         "manage_button": "Manage pledge",
         "view_button": "View pledge",
+        "share": {
+          "twitter": {
+            "message": "%{project_title}, via @Kickstarter"
+          }
+        },
         "star": {
           "confirmation": "We'll remind you 48 hours before this project ends!",
           "ok": "OK"
@@ -6489,8 +6534,7 @@
     "recaptcha": true,
     "log_devices": true,
     "backer_report_formats": true,
-    "discover_cards": true,
-    "fulfillment_report": true
+    "discover_cards": true
   },
   "launched_countries": [
     {
@@ -6609,7 +6653,7 @@
     "native_iphone_read_more": "control",
     "native_iphone_horiz_vs_vert": "experimental",
     "recs_thanks_combo_inputs": "combo_inputs",
-    "recs_hp_combo_v1": "collaborative_backings_v2"
+    "recs_hp_combo_v1": "combo_v1"
   },
   "stripe": {
     "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"

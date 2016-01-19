@@ -1,6 +1,7 @@
 package com.kickstarter.services;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.kickstarter.libs.Config;
 import com.kickstarter.models.Backing;
@@ -19,6 +20,7 @@ import com.kickstarter.services.apirequests.RegisterWithFacebookBody;
 import com.kickstarter.services.apirequests.ResetPasswordBody;
 import com.kickstarter.services.apirequests.SettingsBody;
 import com.kickstarter.services.apirequests.SignupBody;
+import com.kickstarter.services.apirequests.XauthBody;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.CategoriesEnvelope;
@@ -42,7 +44,8 @@ import rx.Observable;
 
 public interface ApiService {
   @GET("/v1/activities")
-  Observable<Response<ActivityEnvelope>> activities(@NonNull @Query("categories[]") List<String> categories);
+  Observable<Response<ActivityEnvelope>> activities(@NonNull @Query("categories[]") List<String> categories,
+    @Nullable @Query("count") Integer count);
 
   @GET
   Observable<Response<ActivityEnvelope>> activities(@Url @NonNull String paginationUrl);
@@ -63,13 +66,7 @@ public interface ApiService {
   Observable<Response<Location>> location(@Path("param") String param);
 
   @POST("/xauth/access_token")
-  Observable<Response<AccessTokenEnvelope>> login(@Query("email") String email,
-    @Query("password") String password);
-
-  @POST("/xauth/access_token")
-  Observable<Response<AccessTokenEnvelope>> login(@Query("email") String email,
-    @Query("password") String password,
-    @Query("code") String code);
+  Observable<Response<AccessTokenEnvelope>> login(@Body XauthBody body);
 
   @PUT("/v1/facebook/access_token?intent=login")
   Observable<Response<AccessTokenEnvelope>> login(@Body LoginWithFacebookBody body);

@@ -22,7 +22,7 @@
 
   <Button
     style="@style/BorderButton"
-    android:id="@+id/signup_login_button"
+    android:id="@+id/login_tout_button"
     android:layout_width="match_parent"
     android:layout_marginLeft="@dimen/grid_2"
     android:layout_marginRight="@dimen/grid_2"

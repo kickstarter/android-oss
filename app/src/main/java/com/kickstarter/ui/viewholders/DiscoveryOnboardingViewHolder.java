@@ -12,11 +12,11 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public final class DiscoveryOnboardingViewHolder extends KSViewHolder {
-  protected @Bind(R.id.signup_login_button) Button signupLoginButton;
+  protected @Bind(R.id.login_tout_button) Button lgoinToutButton;
 
   private final Delegate delegate;
   public interface Delegate {
-    void discoveryOnboardingViewHolderSignupLoginClick(DiscoveryOnboardingViewHolder viewHolder);
+    void discoveryOnboardingViewHolderLoginToutClick(DiscoveryOnboardingViewHolder viewHolder);
   }
 
   public DiscoveryOnboardingViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
@@ -31,8 +31,8 @@ public final class DiscoveryOnboardingViewHolder extends KSViewHolder {
 
   public void onBind() {}
 
-  @OnClick(R.id.signup_login_button)
-  protected void signupLoginOnClick() {
-    delegate.discoveryOnboardingViewHolderSignupLoginClick(this);
+  @OnClick(R.id.login_tout_button)
+  protected void loginToutClick() {
+    delegate.discoveryOnboardingViewHolderLoginToutClick(this);
   }
 }

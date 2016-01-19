@@ -75,9 +75,10 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   }
 
   // ONBOARDING DELEGATE INPUTS
+  private PublishSubject<Void> discoveryOnboardingLoginToutClick = PublishSubject.create();
   @Override
-  public void discoveryOnboardingViewHolderSignupLoginClick(DiscoveryOnboardingViewHolder viewHolder) {
-    loginClick.onNext(null);
+  public void discoveryOnboardingViewHolderLoginToutClick(DiscoveryOnboardingViewHolder viewHolder) {
+    discoveryOnboardingLoginToutClick.onNext(null);
   }
 
   // PROJECT VIEW HOLDER DELEGATE INPUTS
@@ -94,10 +95,10 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     childFilterRowClick.onNext(row);
   }
 
-  private PublishSubject<Void> loginClick = PublishSubject.create();
+  private PublishSubject<Void> loggedOutLoginToutClick = PublishSubject.create();
   @Override
-  public void loggedOutViewHolderLoginClick(final @NonNull LoggedOutViewHolder viewHolder) {
-    loginClick.onNext(null);
+  public void loggedOutViewHolderLoginToutClick(final @NonNull LoggedOutViewHolder viewHolder) {
+    discoveryOnboardingLoginToutClick.onNext(null);
   }
 
   private PublishSubject<NavigationDrawerData.Section.Row> parentFilterRowClick = PublishSubject.create();
@@ -206,10 +207,10 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     return showActivityFeed;
   }
 
-  private final PublishSubject<Void> showSignupLogin = PublishSubject.create();
+  private final PublishSubject<Void> showLoginTout = PublishSubject.create();
   @Override
-  public Observable<Void> showSignupLogin() {
-    return showSignupLogin;
+  public Observable<Void> showLoginTout() {
+    return showLoginTout;
   }
 
   private final PublishSubject<Void> showSettings = PublishSubject.create();
@@ -347,9 +348,12 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     );
 
     addSubscription(internalToolsClick.subscribe(__ -> showInternalTools.onNext(null)));
-    addSubscription(loginClick.subscribe(__ -> showSignupLogin.onNext(null)));
     addSubscription(profileClick.subscribe(__ -> showProfile.onNext(null)));
     addSubscription(settingsClick.subscribe(__ -> showSettings.onNext(null)));
+    addSubscription(
+      discoveryOnboardingLoginToutClick
+        .mergeWith(loggedOutLoginToutClick)
+        .subscribe(__ -> showLoginTout.onNext(null)));
 
     // Closing the drawer while starting an activity is a little overwhelming,
     // so put the close on a delay so it happens out of sight.
@@ -357,7 +361,8 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
       profileClick
         .mergeWith(internalToolsClick)
         .mergeWith(settingsClick)
-        .mergeWith(loginClick)
+        .mergeWith(discoveryOnboardingLoginToutClick)
+        .mergeWith(loggedOutLoginToutClick)
         .delay(1, TimeUnit.SECONDS)
         .map(__ -> false)
         .subscribe(openDrawer::onNext)

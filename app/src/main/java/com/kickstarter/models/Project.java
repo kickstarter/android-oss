@@ -329,12 +329,13 @@ public abstract class Project implements Parcelable {
       .toString();
   }
 
+
   public @Nullable URL shareUrl() {
     try {
       return new URL(webProjectUrl());
-    } catch (final @NonNull MalformedURLException e) {
-      e.printStackTrace();
+    } catch (final @NonNull MalformedURLException ignored) {
     }
+
     return null;
   }
 

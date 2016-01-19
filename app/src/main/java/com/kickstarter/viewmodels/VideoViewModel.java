@@ -15,6 +15,7 @@ import com.kickstarter.libs.KSRendererBuilder;
 import com.kickstarter.libs.KSVideoPlayer;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.models.Project;
 import com.kickstarter.models.Video;
 import com.kickstarter.ui.activities.VideoActivity;
 import com.kickstarter.viewmodels.errors.VideoViewModelErrors;
@@ -31,6 +32,14 @@ import rx.subjects.PublishSubject;
 
 public class VideoViewModel extends ViewModel<VideoActivity> implements VideoViewModelInputs, VideoViewModelOutputs,
   VideoViewModelErrors, KSVideoPlayer.Listener {
+
+  // SINFUL INPUT
+  private Project project;
+
+  @Override
+  public void project(final Project project) {
+    this.project = project;
+  }
 
   // INPUTS
   private final BehaviorSubject<Long> currentPosition = BehaviorSubject.create(0l);
@@ -65,13 +74,8 @@ public class VideoViewModel extends ViewModel<VideoActivity> implements VideoVie
   }
 
   @Override
-  public void videoPaused() {
-    koala.trackVideoPaused();
-  }
-
-  @Override
   public void videoStopped() {
-    koala.trackVideoStop();
+    koala.trackVideoStop(project); // if progress is 80p or more, complete
   }
 
   @Override
@@ -108,17 +112,19 @@ public class VideoViewModel extends ViewModel<VideoActivity> implements VideoVie
   @Override
   public void onStateChanged(final boolean playWhenReady, final int state) {
     playbackState.onNext(state);
-    if (playWhenReady) {
-      koala.trackVideoResume();
-    } else {
-      koala.trackVideoPaused();
-    }
 
     switch (state) {
       case ExoPlayer.STATE_ENDED:
         videoEnded.onNext(null);
-        koala.trackVideoStop();
-        koala.trackVideoCompleted();
+        koala.trackVideoStop(project);
+        koala.trackVideoCompleted(project);
+        break;
+      case ExoPlayer.STATE_READY:
+        if (playWhenReady) {
+          koala.trackVideoResume(project);
+        } else {
+          koala.trackVideoPaused(project);
+        }
         break;
     }
   }

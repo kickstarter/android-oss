@@ -39,6 +39,7 @@ public final class VideoActivity extends BaseActivity<VideoViewModel> {
     final Intent intent = getIntent();
     final Project project = intent.getParcelableExtra(IntentKey.PROJECT);
     video = project.video();
+    viewModel.inputs.project(project);
 
     viewModel.outputs.playbackState()
       .compose(bindToLifecycle())
@@ -63,7 +64,6 @@ public final class VideoActivity extends BaseActivity<VideoViewModel> {
   public void onPause() {
     super.onPause();
     viewModel.inputs.playerNeedsRelease();
-    viewModel.inputs.videoPaused();
   }
 
   @Override

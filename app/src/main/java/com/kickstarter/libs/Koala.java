@@ -306,27 +306,28 @@ public final class Koala {
   }
 
   // VIDEO
-  public void trackVideoStart() {
-    client.track("Project Video Start");
+  // todo: add properties
+  public void trackVideoStart(final @NonNull Project project) {
+    client.track("Project Video Start", KoalaUtils.projectProperties(project));
   }
 
-  public void trackVideoEndedScrubbing() {
-    client.track("Project Video End Scrubbing");
+  public void trackVideoEndedScrubbing(final @NonNull Project project) {
+    client.track("Project Video End Scrubbing", KoalaUtils.projectProperties(project));
   }
 
-  public void trackVideoPaused() {
-    client.track("Project Video Pause");
+  public void trackVideoPaused(final @NonNull Project project) {
+    client.track("Project Video Pause", KoalaUtils.projectProperties(project));
   }
 
-  public void trackVideoResume() {
-    client.track("Project Video Resume");
+  public void trackVideoResume(final @NonNull Project project) {
+    client.track("Project Video Resume", KoalaUtils.projectProperties(project));
   }
 
-  public void trackVideoStop() {
-    client.track("Project Video Stop");
+  public void trackVideoStop(final @NonNull Project project) {
+    client.track("Project Video Stop", KoalaUtils.projectProperties(project));
   }
 
-  public void trackVideoCompleted() {
-    client.track("Project Video Complete");
+  public void trackVideoCompleted(final @NonNull Project project) {
+    client.track("Project Video Complete", KoalaUtils.projectProperties(project));
   }
 }

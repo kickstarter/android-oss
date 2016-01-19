@@ -35,6 +35,7 @@ import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder;
 import com.kickstarter.ui.viewholders.ProjectViewHolder;
 import com.kickstarter.ui.viewholders.RewardViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.ChildFilterViewHolder;
+import com.kickstarter.ui.views.AppRatingDialog;
 import com.kickstarter.ui.views.IconTextView;
 import com.kickstarter.ui.views.KSWebView;
 import com.kickstarter.viewmodels.ActivityFeedViewModel;
@@ -59,6 +60,7 @@ public interface ApplicationGraph {
   void inject(ActivityFeedActivity __);
   void inject(ActivityFeedViewModel __);
   void inject(ApplicationLifecycleUtil __);
+  void inject(AppRatingDialog __);
   void inject(CategoryPromoViewHolder __);
   void inject(CommentFeedActivity __);
   void inject(CommentFeedViewModel __);

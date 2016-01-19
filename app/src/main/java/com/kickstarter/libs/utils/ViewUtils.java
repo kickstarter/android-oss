@@ -1,7 +1,10 @@
 package com.kickstarter.libs.utils;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.Gravity;
@@ -14,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kickstarter.R;
+import com.kickstarter.ui.views.AppRatingDialog;
 import com.kickstarter.ui.views.KSDialog;
 
 import rx.functions.Action1;
@@ -67,6 +71,29 @@ public class ViewUtils {
   public static void showDialog(final @NonNull Context context, final @Nullable String title,
     final @NonNull String message, final @NonNull String buttonMessage) {
     new KSDialog(context, title, message, buttonMessage).show();
+  }
+
+  public static void showRatingDialog(final @NonNull Context context) {
+    new AppRatingDialog(context).show();
+  }
+
+  /**
+   * Opens the play store native app or the play store web site.
+   */
+  public static void openStoreRating(final @NonNull Context context, final @NonNull String packageName) {
+    final Intent intent = new Intent(Intent.ACTION_VIEW);
+
+    try {
+      // First try to load the play store native application
+      final Uri marketUri = Uri.parse("market://details?id=" + packageName);
+      intent.setData(marketUri);
+      context.startActivity(intent);
+    } catch (ActivityNotFoundException __) {
+      // Fallback to the play store web site
+      final Uri httpUri = Uri.parse("http://play.google.com/store/apps/details?id=" + packageName);
+      intent.setData(httpUri);
+      context.startActivity(intent);
+    }
   }
 
   /**

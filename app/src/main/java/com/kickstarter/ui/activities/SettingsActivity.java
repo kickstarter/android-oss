@@ -1,6 +1,5 @@
 package com.kickstarter.ui.activities;
 
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -132,6 +131,11 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
           lazyLogoutConfirmationDialog().dismiss();
         }
       });
+
+    viewModel.outputs.logout()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> this.logout());
   }
 
   /**
@@ -143,7 +147,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
         .setTitle(getString(R.string.profile_settings_logout_alert_title))
         .setMessage(getString(R.string.profile_settings_logout_alert_message))
         .setPositiveButton(getString(R.string.profile_settings_logout_alert_confirm_button), (__, ___) -> {
-          logout();
+          viewModel.inputs.confirmLogoutClicked();
         })
         .setNegativeButton(getString(R.string.profile_settings_logout_alert_cancel_button), (__, ___) -> {
           viewModel.inputs.closeLogoutConfirmationClicked();
@@ -297,20 +301,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
 
   @OnClick(R.id.settings_rate_us)
   public void rateUsClick() {
-    final String packageName = getPackageName();
-    final Intent intent = new Intent(Intent.ACTION_VIEW);
-
-    try {
-      // First try to load the play store native application
-      final Uri marketUri = Uri.parse("market://details?id=" + packageName);
-      intent.setData(marketUri);
-      startActivity(intent);
-    } catch (ActivityNotFoundException __) {
-      // Fallback to the play store web site
-      final Uri httpUri = Uri.parse("http://play.google.com/store/apps/details?id=" + packageName);
-      intent.setData(httpUri);
-      startActivity(intent);
-    }
+    ViewUtils.openStoreRating(this, getPackageName());
   }
 
   public void toggleIconColor(final @NonNull TextView iconTextView, final boolean typeMobile, final boolean enabled) {

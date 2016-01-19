@@ -100,6 +100,15 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
           view.showRecommended(ps, category);
         })
     );
+
+    addSubscription(
+      categoryPromoClick
+        .subscribe(__ -> koala.trackCheckoutFinishJumpToDiscovery())
+    );
+    addSubscription(
+      projectCardMiniClick
+        .subscribe(__ -> koala.trackCheckoutFinishJumpToProject())
+    );
   }
 
   /**

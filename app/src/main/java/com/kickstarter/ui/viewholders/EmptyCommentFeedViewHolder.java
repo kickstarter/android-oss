@@ -39,7 +39,7 @@ public final class EmptyCommentFeedViewHolder extends KSViewHolder {
     @SuppressWarnings("unchecked")
     final Pair<Project, User> projectAndUser = requireNonNull((Pair<Project, User>) data);
     project = requireNonNull(projectAndUser.first, Project.class);
-    user = requireNonNull(projectAndUser.second, User.class);
+    user = projectAndUser.second;
   }
 
   public void onBind() {

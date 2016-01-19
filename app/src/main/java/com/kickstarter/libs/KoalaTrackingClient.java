@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.kickstarter.R;
 import com.kickstarter.libs.utils.KoalaUtils;
 import com.kickstarter.libs.utils.MapUtils;
 import com.kickstarter.models.User;
@@ -62,15 +63,10 @@ public final class KoalaTrackingClient implements TrackingClientType {
       put("client_type", "native");
       put("android_play_services_available", isGooglePlayServicesAvailable());
       put("client_platform", "android");
-      put("device_orientation", orientation());
-
-      // TODO: can we detect phone app running on tablets?
-      put("device_format", "phone");
-
-      // TODO: any equivalent to iOS's UIDevice.currentDevice.identifierForVendor.UUIDString?
-      // put("device_fingerprint", "deadbeef");
-      // TODO: same value as above
-      //put("android_uuid", "deadbeef");
+      put("device_orientation", deviceOrientation());
+      put("device_format", deviceFormat());
+      put("device_fingerprint", mixpanel.getDistinctId());
+      put("android_uuid", mixpanel.getDistinctId());
 
       // TODO: any way to detect if android pay is available?
       // put("android_pay_capable", false);
@@ -80,11 +76,15 @@ public final class KoalaTrackingClient implements TrackingClientType {
   /**
    * Derives the device's orientation (portrait/landscape) from the `context`.
    */
-  private @NonNull String orientation() {
+  private @NonNull String deviceOrientation() {
     if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
       return "landscape";
     }
     return "portrait";
+  }
+
+  private @NonNull String deviceFormat() {
+    return context.getResources().getBoolean(R.bool.isTablet) ? "tablet" : "phone";
   }
 
   /**

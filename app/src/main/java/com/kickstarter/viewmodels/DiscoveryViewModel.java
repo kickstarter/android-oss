@@ -15,6 +15,7 @@ import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.preferences.IntPreference;
 import com.kickstarter.libs.qualifiers.ActivitySamplePreference;
 import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.DiscoveryDrawerUtils;
 import com.kickstarter.libs.utils.DiscoveryParamsUtils;
 import com.kickstarter.libs.utils.DiscoveryUtils;
@@ -72,6 +73,11 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   @Override
   public void initializer(final @NonNull DiscoveryParams params) {
     initializer.onNext(params);
+  }
+  private final PublishSubject<Boolean> openDrawer = PublishSubject.create();
+  @Override
+  public void openDrawer(boolean open) {
+    openDrawer.onNext(open);
   }
 
   // ONBOARDING DELEGATE INPUTS
@@ -225,10 +231,10 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     return navigationDrawerData;
   }
 
-  private BehaviorSubject<Boolean> openDrawer = BehaviorSubject.create(false);
+  private BehaviorSubject<Boolean> drawerIsOpen = BehaviorSubject.create(false);
   @Override
-  public Observable<Boolean> openDrawer() {
-    return openDrawer;
+  public Observable<Boolean> drawerIsOpen() {
+    return drawerIsOpen;
   }
 
   private boolean hasSeenOnboarding = false;
@@ -302,6 +308,13 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .subscribe(activity::onNext)
     );
 
+    // Clear activity sample when params change
+    addSubscription(
+      selectedParams
+        .map(__ -> (Activity) null)
+        .subscribe(activity::onNext)
+    );
+
     addSubscription(
       Observable.combineLatest(
         categories,
@@ -313,27 +326,34 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     );
     
     addSubscription(selectedParams
-      .compose(Transformers.takePairWhen(clickProject))
-      .map(pp -> DiscoveryViewModel.projectAndRefTagFromParamsAndProject(pp.first, pp.second))
-      .subscribe(showProject::onNext)
+        .compose(Transformers.takePairWhen(clickProject))
+        .map(pp -> DiscoveryViewModel.projectAndRefTagFromParamsAndProject(pp.first, pp.second))
+        .subscribe(showProject::onNext)
     );
 
     addSubscription(clickActivityProject
-      .map(p -> Pair.create(p, RefTag.activitySample()))
-      .subscribe(showProject::onNext)
+        .map(p -> Pair.create(p, RefTag.activitySample()))
+        .subscribe(showProject::onNext)
     );
 
     addSubscription(
       childFilterRowClick
         .mergeWith(topFilterRowClick)
         .map(__ -> false)
-        .subscribe(openDrawer::onNext)
+        .subscribe(drawerIsOpen::onNext)
     );
 
     addSubscription(
+      openDrawer.subscribe(drawerIsOpen::onNext)
+    );
+
+    final Observable<DiscoveryParams> paramsClicked =
       childFilterRowClick
         .mergeWith(topFilterRowClick)
-        .map(NavigationDrawerData.Section.Row::params)
+        .map(NavigationDrawerData.Section.Row::params);
+
+    addSubscription(
+      paramsClicked
         .subscribe(selectedParams::onNext)
     );
 
@@ -365,8 +385,19 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .mergeWith(loggedOutLoginToutClick)
         .delay(1, TimeUnit.SECONDS)
         .map(__ -> false)
-        .subscribe(openDrawer::onNext)
+        .subscribe(drawerIsOpen::onNext)
     );
+
+    addSubscription(
+      paramsClicked
+        .subscribe(koala::trackDiscoveryFilterSelected)
+    );
+    addSubscription(
+      openDrawer
+        .filter(BooleanUtils::isTrue)
+        .subscribe(__ -> koala.trackDiscoveryFilters())
+    );
+
 
     expandedParams.onNext(null);
     addSubscription(initializer.subscribe(selectedParams::onNext));

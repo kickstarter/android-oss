@@ -292,6 +292,19 @@ public final class Koala {
     client.track("Profile View My");
   }
 
+  // RATING
+  public void trackAppRatingNow() {
+    client.track("Checkout Finished Alert App Store Rating Rate Now");
+  }
+
+  public void trackAppRatingRemindLater() {
+    client.track("Checkout Finished Alert App Store Rating Remind Later");
+  }
+
+  public void trackAppRatingNoThanks() {
+    client.track("Checkout Finished Alert App Store Rating No Thanks");
+  }
+
   // VIDEO
   public void trackVideoStart() {
     client.track("Project Video Start");

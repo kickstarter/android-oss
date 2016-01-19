@@ -39,6 +39,11 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
   public void closeLogoutConfirmationClicked() {
     showConfirmLogoutPrompt.onNext(false);
   }
+  private final PublishSubject<Void> confirmLogoutClicked = PublishSubject.create();
+  @Override
+  public void confirmLogoutClicked() {
+    confirmLogoutClicked.onNext(null);
+  }
 
   // OUTPUTS
   private final PublishSubject<String> sendNewsletterConfirmation = PublishSubject.create();
@@ -57,7 +62,11 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
   public Observable<Boolean> showConfirmLogoutPrompt() {
     return showConfirmLogoutPrompt;
   }
-
+  private final BehaviorSubject<Void> logout = BehaviorSubject.create();
+  @Override
+  public Observable<Void> logout() {
+    return logout;
+  }
   // ERRORS
   private final PublishSubject<Throwable> unableToSavePreferenceError = PublishSubject.create();
   public final Observable<String> unableToSavePreferenceError() {
@@ -180,6 +189,14 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
       newsletterInput
         .map(bs -> bs.first)
         .subscribe(koala::trackNewsletterToggle)
+    );
+
+    addSubscription(
+      confirmLogoutClicked
+        .subscribe(__ -> {
+          koala.trackLogout();
+          logout.onNext(null);
+        })
     );
 
     koala.trackSettingsView();

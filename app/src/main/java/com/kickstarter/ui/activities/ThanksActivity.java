@@ -26,9 +26,13 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.preferences.BooleanPreference;
+import com.kickstarter.libs.qualifiers.AppRatingPreference;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.libs.vendor.TweetComposer;
 import com.kickstarter.models.Category;
+import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.IntentKey;
@@ -46,6 +50,9 @@ import butterknife.OnClick;
 
 @RequiresViewModel(ThanksViewModel.class)
 public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
+  protected @Inject KSString ksString;
+  protected @Inject @AppRatingPreference BooleanPreference hasSeenAppRatingPreference;
+
   protected @Bind(R.id.backed_project) TextView backedProjectTextView;
   protected @Bind(R.id.recommended_projects_recycler_view) RecyclerView recommendedProjectsRecyclerView;
   protected @Bind(R.id.woohoo_background) ImageView woohooBackgroundImageView;
@@ -56,8 +63,6 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
 
   public CallbackManager facebookCallbackManager;
   public ShareDialog shareDialog;
-
-  @Inject KSString ksString;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -74,6 +79,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
     recommendedProjectsRecyclerView.setLayoutManager(layoutManager);
 
     displayWoohooBackground();
+    displayRating();
 
     viewModel.takeProject(getIntent().getExtras().getParcelable(IntentKey.PROJECT));
   }
@@ -113,11 +119,12 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
       return;
     }
 
+    final Photo photo = project.photo();
     final ShareOpenGraphObject object = new ShareOpenGraphObject.Builder()
       .putString("og:type", "kickstarter:project")
       .putString("og:title", project.name())
       .putString("og:description", project.blurb())
-      .putString("og:image", project.photo().small())
+      .putString("og:image", photo == null ? null : photo.small())
       .putString("og:url", project.webProjectUrl())
       .build();
 
@@ -178,5 +185,19 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
         ((Animatable) drawable).start();
       }
     }, 500);
+  }
+
+  private void displayRating() {
+    if (!hasSeenAppRatingPreference.get()) {
+      new Handler().postDelayed(() -> {
+        ViewUtils.showRatingDialog(this);
+      }, 700);
+    }
+  }
+
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    facebookCallbackManager.onActivityResult(requestCode, resultCode, data);
   }
 }

@@ -20,6 +20,7 @@ import com.kickstarter.ui.activities.ViewPledgeActivity;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
 import com.kickstarter.ui.viewholders.CategoryPromoViewHolder;
 import com.kickstarter.ui.viewholders.CommentViewHolder;
+import com.kickstarter.ui.viewholders.DiscoveryActivityViewHolder;
 import com.kickstarter.ui.viewholders.EmptyActivityFeedViewHolder;
 import com.kickstarter.ui.viewholders.EmptyCommentFeedViewHolder;
 import com.kickstarter.ui.viewholders.FriendBackingViewHolder;
@@ -64,6 +65,7 @@ public interface ApplicationGraph {
   void inject(CurrentUser __);
   void inject(Koala __);
   void inject(DiscoveryActivity __);
+  void inject(DiscoveryActivityViewHolder __);
   void inject(DiscoveryViewModel __);
   void inject(DiscoveryToolbar __);
   void inject(EmptyActivityFeedViewHolder __);

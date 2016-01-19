@@ -16,7 +16,7 @@ import java.util.TreeMap;
 
 import rx.Observable;
 
-import static com.kickstarter.libs.utils.BoolUtils.isTrue;
+import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
 
 public final class DiscoveryDrawerUtils {
   private DiscoveryDrawerUtils() {}

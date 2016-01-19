@@ -44,18 +44,11 @@ public final class DiscoveryAdapter extends KSAdapter {
     notifyDataSetChanged();
   }
 
-  public void setShouldShowActivitySample(final boolean shouldShowActivitySample) {
-    if (!shouldShowActivitySample) {
-      setSection(SECTION_ACTIVITY_SAMPLE_VIEW, Collections.emptyList());
-    }
-    notifyDataSetChanged();
-  }
-
   public void takeActivity(final @Nullable Activity activity) {
     if (activity == null) {
       setSection(SECTION_ACTIVITY_SAMPLE_VIEW, Collections.emptyList());
     } else {
-      setSection(SECTION_ONBOARDING_VIEW, Collections.emptyList());
+      setSection(SECTION_ACTIVITY_SAMPLE_VIEW, Collections.singletonList(activity));
     }
     notifyDataSetChanged();
   }

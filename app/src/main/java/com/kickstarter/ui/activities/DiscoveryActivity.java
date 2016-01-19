@@ -19,6 +19,7 @@ import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
@@ -38,6 +39,7 @@ import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresViewModel(DiscoveryViewModel.class)
 public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
+  private DiscoveryAdapter adapter;
   private DiscoveryIntentAction intentAction;
   private LinearLayoutManager layoutManager;
   private DiscoveryDrawerAdapter drawerAdapter;
@@ -62,7 +64,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
 
     layoutManager = new LinearLayoutManager(this);
     recyclerView.setLayoutManager(layoutManager);
-    adapter = new DiscoveryAdapter(this.viewModel.inputs);
+    adapter = new DiscoveryAdapter(viewModel.inputs);
     recyclerView.setAdapter(adapter);
 
     drawerLayoutManager = new LinearLayoutManager(this); // TODO: Can we reuse the other layout manager?
@@ -85,6 +87,11 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(adapter::takeProjects);
 
+    viewModel.outputs.params()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::loadParams);
+
     viewModel.outputs.activity()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
@@ -95,7 +102,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> internalTools.maybeStartInternalToolsActivity(this));
 
-    viewModel.outputs.showLogin()
+    viewModel.outputs.showSignupLogin()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> this.startLoginActivity());
@@ -124,6 +131,16 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(RxDrawerLayout.open(discoveryLayout, GravityCompat.START));
+
+    viewModel.outputs.showActivityFeed()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> startActivityFeedActivity());
+
+    viewModel.outputs.showActivityUpdate()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::startActivityUpdateActivity);
   }
 
   @Override
@@ -166,7 +183,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
   }
 
   private void startSettingsActivity() {
-    final Intent intent = new Intent(this, SettingsActivity.class);
+    final Intent intent = new Intent(this, SettingsActivity.class)
       .putExtra(IntentKey.LOGIN_TYPE, LoginToutActivity.REASON_GENERIC);
     startActivity(intent);
   }

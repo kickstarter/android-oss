@@ -37,11 +37,6 @@ public interface DiscoveryViewModelOutputs {
   Observable<Boolean> shouldShowOnboarding();
 
   /**
-   * Emits discovery params when filters should be shown
-   */
-  Observable<DiscoveryParams> showFilters();
-
-  /**
    * Emits a pair containing a project and a ref tag when a project should be shown
    */
   Observable<Pair<Project, RefTag>> showProject();

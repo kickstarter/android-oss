@@ -4,7 +4,7 @@ require "fileutils"
 
 def usage
   puts <<-usage
-Usage: script/ic_launch directory
+Usage: script/ic_launcher directory
 
 Directory should contain pngs with filenames in the format:
 

@@ -102,10 +102,10 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> internalTools.maybeStartInternalToolsActivity(this));
 
-    viewModel.outputs.showSignupLogin()
+    viewModel.outputs.showLoginTout()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> this.startLoginActivity());
+      .subscribe(__ -> this.startLoginToutActivity());
 
     viewModel.outputs.showProfile()
       .compose(bindToLifecycle())
@@ -162,8 +162,8 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
     discoveryToolbar.loadParams(params);
   }
 
-  private void startLoginActivity() {
-    final Intent intent = new Intent(this, LoginActivity.class);
+  private void startLoginToutActivity() {
+    final Intent intent = new Intent(this, LoginToutActivity.class);
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }

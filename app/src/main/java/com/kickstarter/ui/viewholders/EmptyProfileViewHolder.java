@@ -11,28 +11,29 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public final class DiscoveryOnboardingViewHolder extends KSViewHolder {
-  protected @Bind(R.id.login_tout_button) Button lgoinToutButton;
+public final class EmptyProfileViewHolder extends KSViewHolder {
+  protected @Bind(R.id.explore_projects_button) Button exploreButton;
 
   private final Delegate delegate;
+
   public interface Delegate {
-    void discoveryOnboardingViewHolderLoginToutClick(DiscoveryOnboardingViewHolder viewHolder);
+    void emptyProfileViewHolderExploreProjectsClicked(EmptyProfileViewHolder viewHolder);
   }
 
-  public DiscoveryOnboardingViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
+  public EmptyProfileViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
     this.delegate = delegate;
-
     ButterKnife.bind(this, view);
   }
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {}
 
+  @Override
   public void onBind() {}
 
-  @OnClick(R.id.login_tout_button)
-  protected void loginToutClick() {
-    delegate.discoveryOnboardingViewHolderLoginToutClick(this);
+  @OnClick(R.id.explore_projects_button)
+  public void exploreProjectsClicked() {
+    delegate.emptyProfileViewHolderExploreProjectsClicked(this);
   }
 }

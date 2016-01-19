@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -28,6 +29,8 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
+
+import static com.kickstarter.libs.utils.IntegerUtils.isNonZero;
 
 @RequiresViewModel(ProfileViewModel.class)
 public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
@@ -70,6 +73,11 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::startProjectActivity);
+
+    viewModel.outputs.showDiscovery()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> startDiscoveryActivity());
   }
 
   @Override
@@ -79,6 +87,14 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
   }
 
   private void loadProjects(final @NonNull List<Project> projects) {
+    if (projects.size() == 0) {
+      recyclerView.setLayoutManager(new LinearLayoutManager(this));
+      recyclerView.setPadding(0, recyclerView.getPaddingTop(), recyclerView.getPaddingRight(), recyclerView.getPaddingBottom());
+      if (ViewUtils.isPortrait(this)) {
+        recyclerView.setNestedScrollingEnabled(false);
+      }
+    }
+
     adapter.takeProjects(projects);
   }
 
@@ -91,21 +107,21 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
     userNameTextView.setText(user.name());
 
     final Integer createdNum = user.createdProjectsCount();
-    if (createdNum == null || createdNum == 0) {
+    if (isNonZero(createdNum)) {
+      createdNumTextView.setText(String.valueOf(createdNum));
+    } else {
       createdTextView.setVisibility(View.GONE);
       createdNumTextView.setVisibility(View.GONE);
       dividerView.setVisibility(View.GONE);
-    } else {
-      createdNumTextView.setText(createdNum.toString());
     }
 
     final Integer backedNum = user.backedProjectsCount();
-    if (backedNum == null || backedNum == 0) {
+    if (isNonZero(backedNum)) {
+      backedNumTextView.setText(String.valueOf(backedNum));
+    } else {
       backedTextView.setVisibility(View.GONE);
       backedNumTextView.setVisibility(View.GONE);
       dividerView.setVisibility(View.GONE);
-    } else {
-      backedNumTextView.setText(backedNum.toString());
     }
   }
 
@@ -113,5 +129,10 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
     final Intent intent = new Intent(this, ProjectActivity.class)
       .putExtra(IntentKey.PROJECT, project);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  private void startDiscoveryActivity() {
+    final Intent intent = new Intent(this, DiscoveryActivity.class);
+    startActivity(intent);
   }
 }

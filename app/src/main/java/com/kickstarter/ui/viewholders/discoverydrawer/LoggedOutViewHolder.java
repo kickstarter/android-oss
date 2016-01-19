@@ -15,7 +15,7 @@ public final class LoggedOutViewHolder extends KSViewHolder {
 
   public interface Delegate {
     void loggedOutViewHolderInternalToolsClick(final @NonNull LoggedOutViewHolder viewHolder);
-    void loggedOutViewHolderLoginClick(final @NonNull LoggedOutViewHolder viewHolder);
+    void loggedOutViewHolderLoginToutClick(final @NonNull LoggedOutViewHolder viewHolder);
   }
 
   public LoggedOutViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
@@ -38,7 +38,7 @@ public final class LoggedOutViewHolder extends KSViewHolder {
   }
 
   @OnClick(R.id.logged_out_container)
-  public void loginClick() {
-    delegate.loggedOutViewHolderLoginClick(this);
+  public void loginToutClick() {
+    delegate.loggedOutViewHolderLoginToutClick(this);
   }
 }

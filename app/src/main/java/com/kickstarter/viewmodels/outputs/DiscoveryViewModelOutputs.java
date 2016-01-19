@@ -44,7 +44,7 @@ public interface DiscoveryViewModelOutputs {
   /**
    * Emits when the login tout activity should be shown
    */
-  Observable<Void> showSignupLogin();
+  Observable<Void> showLoginTout();
 
   /**
    * Emits when the activity feed should be shown

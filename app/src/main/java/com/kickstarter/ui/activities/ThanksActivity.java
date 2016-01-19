@@ -3,6 +3,7 @@ package com.kickstarter.ui.activities;
 import android.content.Intent;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -144,13 +145,16 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
     final Intent intent = new Intent(android.content.Intent.ACTION_SEND)
       .setType("text/plain")
       .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
-      .putExtra(Intent.EXTRA_TEXT, shareString(project));
+      .putExtra(Intent.EXTRA_TEXT, shareString(project) + " " + project.webProjectUrl());
 
     startActivity(Intent.createChooser(intent, shareThisProjectString));
   }
 
   public void startTwitterShareIntent(final @NonNull Project project) {
-    new TweetComposer.Builder(this).text(shareString(project)).show();
+    new TweetComposer.Builder(this)
+      .text(shareString(project))
+      .uri(Uri.parse(project.webProjectUrl()))
+      .show();
   }
 
   public void startDiscoveryCategoryIntent(final @NonNull Category category) {

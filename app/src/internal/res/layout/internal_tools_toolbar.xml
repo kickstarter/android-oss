@@ -3,11 +3,11 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
+  tools:showIn="@layout/internal_tools_layout"
   style="@style/Toolbar"
-  android:id="@+id/web_view_toolbar"
+  android:id="@+id/internal_tools_toolbar"
   app:contentInsetLeft="0dp"
-  app:contentInsetStart="0dp"
-  tools:showIn="@layout/web_view_layout">
+  app:contentInsetStart="0dp">
 
   <RelativeLayout
     android:layout_width="match_parent"
@@ -18,14 +18,16 @@
     <com.kickstarter.ui.views.IconButton
       style="@style/ToolbarIcon"
       android:id="@+id/back_button"
-      android:contentDescription="@string/general_navigation_accessibility_button_navigate_back_label"
       android:focusable="true"
+      android:contentDescription="@string/general_navigation_accessibility_button_navigate_back_label"
       android:text="@string/arrow_back_icon" />
 
     <TextView
       style="@style/ToolbarTitle"
-      android:id="@+id/web_view_title_text_view" />
+      android:id="@+id/title_text_view"
+      android:text="Internal tools" />
 
   </RelativeLayout>
 
 </com.kickstarter.ui.toolbars.KSToolbar>
+

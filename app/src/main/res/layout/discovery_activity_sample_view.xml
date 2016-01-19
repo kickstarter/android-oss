@@ -2,7 +2,6 @@
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:card_view="http://schemas.android.com/apk/res-auto"
-  android:background="@color/light_gray"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
@@ -11,7 +10,7 @@
     android:layout_height="wrap_content"
     card_view:cardCornerRadius="4dp"
     card_view:cardBackgroundColor="@color/white"
-    android:elevation="@dimen/card_elevation"
+    card_view:cardElevation="@dimen/card_elevation"
     android:focusable="true"
     android:layout_marginBottom="@dimen/grid_1"
     android:layout_marginTop="@dimen/grid_3"

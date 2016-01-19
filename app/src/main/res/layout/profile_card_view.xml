@@ -14,8 +14,8 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     card_view:cardCornerRadius="4dp"
     card_view:cardBackgroundColor="@color/white"
+    card_view:cardElevation="@dimen/card_elevation"
     android:foreground="@drawable/click_indicator_light"
-    android:elevation="@dimen/card_elevation"
     android:focusable="true"
     android:layout_width="@dimen/profile_card_photo_width"
     android:layout_height="@dimen/profile_card_height" >
@@ -50,7 +50,6 @@
           android:layout_marginTop="@dimen/grid_1"
           android:maxLines="3"
           android:lines="3"
-          android:text="Secret Hitler or a three lined long project yay here it is"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 

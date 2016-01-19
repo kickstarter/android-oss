@@ -12,7 +12,7 @@
   <color name="debug_background">#EE222222</color>
   <color name="discovery_primary">@color/dark_blue</color>
   <color name="discovery_secondary">@color/discovery_status_bar</color>
-  <color name="discovery_background">#fff8f8f8</color>
+  <color name="discovery_background">@color/light_gray</color>
   <color name="discovery_toolbar">@color/dark_blue</color>
   <color name="discovery_status_bar">@color/black</color>
   <color name="discovery_drawer_item_selected">#ffededed</color>

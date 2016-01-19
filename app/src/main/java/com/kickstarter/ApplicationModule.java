@@ -20,6 +20,7 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.DateTimeTypeConverter;
 import com.kickstarter.libs.Font;
 import com.kickstarter.libs.ForApplication;
+import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.Koala;
@@ -155,9 +156,9 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  @NonNull WebRequestInterceptor provideWebRequestInterceptor(@NonNull final CurrentUser currentUser,
-    @NonNull @WebEndpoint final String endpoint, @NonNull final Release release) {
-    return new WebRequestInterceptor(currentUser, endpoint, release);
+  @NonNull WebRequestInterceptor provideWebRequestInterceptor(final @NonNull CurrentUser currentUser,
+    @NonNull @WebEndpoint final String endpoint, final @NonNull InternalToolsType internalTools, final @NonNull Release release) {
+    return new WebRequestInterceptor(currentUser, endpoint, internalTools, release);
   }
 
   @Provides

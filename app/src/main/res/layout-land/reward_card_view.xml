@@ -117,9 +117,7 @@
 
           <TextView
             android:id="@+id/limited"
-            android:paddingLeft="@dimen/grid_1"
-            android:paddingRight="@dimen/grid_1"
-            android:background="@color/medium_gray"
+            android:background="@color/yellow"
             android:visibility="gone"
             android:layout_marginTop="@dimen/grid_1"
             style="@style/BodyPrimary"
@@ -129,8 +127,6 @@
 
           <TextView
             android:id="@+id/all_gone"
-            android:paddingLeft="@dimen/grid_1"
-            android:paddingRight="@dimen/grid_1"
             android:background="@color/medium_gray"
             android:visibility="gone"
             android:layout_marginTop="@dimen/grid_1"

@@ -50,7 +50,6 @@
           android:layout_marginTop="@dimen/grid_1"
           android:maxLines="3"
           android:lines="3"
-          android:text="Secret Hitler or a three lined long project yay here it is"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 

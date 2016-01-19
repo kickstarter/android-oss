@@ -57,6 +57,7 @@
   <string name="activity_friend_backed_journalism_project" formatted="false">%{friend_name} patrocinó un proyecto de Periodismo.</string>
   <string name="activity_friend_backed_music_project" formatted="false">%{friend_name} patrocinó un proyecto de Música.</string>
   <string name="activity_friend_backed_photography_project" formatted="false">%{friend_name} patrocinó un proyecto de Fotografía.</string>
+  <string name="activity_friend_backed_project_name_by_creator_name" formatted="false">&lt;b>%{friend_name} backed&lt;/b> %{project_name} by %{creator_name}</string>
   <string name="activity_friend_backed_publishing_project" formatted="false">%{friend_name} patrocinó un proyecto de Publicaciones.</string>
   <string name="activity_friend_backed_tech_project" formatted="false">%{friend_name} patrocinó un proyecto de Tecnología.</string>
   <string name="activity_friend_backed_theater_project" formatted="false">%{friend_name} patrocinó un proyecto de Teatro.</string>
@@ -436,6 +437,7 @@
   <string name="login_tout_default_intent_traditional_signup_button" formatted="false">Registrar</string>
   <string name="login_tout_default_intent_traditional_title" formatted="false">Utiliza tu dirección de correo electrónico:</string>
   <string name="login_tout_disclaimer_by_signing_up_you_agree_to_terms" formatted="false">Al registrarte, estás aceptando nuestros términos de uso, nuestra política de privacidad y de cookies.</string>
+  <string name="login_tout_disclaimer_by_signing_up_you_agree_to_terms_html" formatted="false">By signing up, you agree to our &lt;u>terms of use&lt;/u>, &lt;u>privacy policy&lt;/u>, and &lt;u>cookie policy&lt;/u>.</string>
   <string name="login_tout_disclaimer_read_more" formatted="false">Leer más</string>
   <string name="login_tout_disclaimer_we_never_post_anything_without_permission" formatted="false">Nunca publicaremos nada sin tu consentimiento.</string>
   <string name="login_tout_errors_button_ok" formatted="false">Ok</string>
@@ -504,8 +506,10 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="profile_projects_backed_projects" formatted="false">Proyectos patrocinados</string>
   <string name="profile_projects_created_projects" formatted="false">Proyectos creados</string>
   <string name="profile_projects_empty_state_button" formatted="false">Descubre proyectos</string>
+  <string name="profile_projects_empty_state_button_explore_new_projects" formatted="false">Explore new projects</string>
   <string name="profile_projects_empty_state_message" formatted="false">Aún no has patrocinado ningún proyecto.\n
 ¡Es hora de cambiar esto!</string>
+  <string name="profile_projects_empty_state_message_no_backed_projects_yet" formatted="false">No backed projects yet</string>
   <string name="profile_projects_status_canceled" formatted="false">Cancelado</string>
   <string name="profile_projects_status_successful" formatted="false">Exitoso</string>
   <string name="profile_projects_status_suspended" formatted="false">Suspendido</string>

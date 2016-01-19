@@ -23,20 +23,20 @@ public final class SearchAdapter extends KSAdapter {
   }
 
   public void loadPopularProjects(final @NonNull List<Project> newProjects) {
-    data().clear();
+    clearSections();
     if (newProjects.size() == 0) {
-      data().add(Collections.emptyList());
+      addSection(Collections.emptyList());
     } else {
-      data().add(Collections.singletonList(null));
+      addSection(Collections.singletonList(null));
     }
-    data().add(newProjects);
+    addSection(newProjects);
     notifyDataSetChanged();
   }
 
   public void loadSearchProjects(final @NonNull List<Project> newProjects) {
-    data().clear();
-    data().add(Collections.emptyList());
-    data().add(newProjects);
+    clearSections();
+    addSection(Collections.emptyList());
+    addSection(newProjects);
     notifyDataSetChanged();
   }
 

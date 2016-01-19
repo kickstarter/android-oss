@@ -3,6 +3,7 @@
   android:orientation="vertical"
   android:background="@color/light_gray"
   android:gravity="center_horizontal"
+  android:layout_marginBottom="@dimen/grid_3_half"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 

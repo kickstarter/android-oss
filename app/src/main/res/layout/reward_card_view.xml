@@ -76,47 +76,31 @@
 
       </LinearLayout>
 
-      <LinearLayout
-        android:orientation="horizontal"
-        android:id="@+id/backer_reward_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+      <TextView
+        android:id="@+id/reward_backers_count"
+        android:text="# backers"
+        style="@style/BodyPrimaryMedium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
-        <TextView
-          android:id="@+id/reward_backers_count"
-          android:text="# backers"
-          style="@style/BodyPrimaryMedium"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"/>
+      <TextView
+        android:id="@+id/limited"
+        android:layout_marginTop="@dimen/grid_1"
+        android:background="@color/yellow"
+        android:visibility="gone"
+        style="@style/BodyPrimary"
+        android:text="@string/rewards_info_limited_rewards_remaining_left_of_reward_limit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
-        <TextView
-          android:id="@+id/limited"
-          android:paddingLeft="@dimen/grid_1"
-          android:paddingRight="@dimen/grid_1"
-          android:background="@color/medium_gray"
-          android:visibility="gone"
-          style="@style/BodyPrimary"
-          android:text="@string/rewards_info_limited_rewards_remaining_left_of_reward_limit"
-          android:layout_marginLeft="@dimen/grid_1"
-          android:layout_marginStart="@dimen/grid_1"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content" />
-
-        <TextView
-          android:id="@+id/all_gone"
-          android:paddingLeft="@dimen/grid_1"
-          android:paddingRight="@dimen/grid_1"
-          android:background="@color/medium_gray"
-          android:visibility="gone"
-          android:layout_marginStart="@dimen/grid_1"
-          android:layout_marginLeft="@dimen/grid_1"
-          android:layout_marginEnd="@dimen/grid_1"
-          android:layout_marginRight="@dimen/grid_1"
-          android:text="@string/rewards_info_all_gone"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content" />
-
-      </LinearLayout>
+      <TextView
+        android:id="@+id/all_gone"
+        android:layout_marginTop="@dimen/grid_1"
+        android:background="@color/medium_gray"
+        android:visibility="gone"
+        android:text="@string/rewards_info_all_gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
       <TextView
         android:id="@+id/reward_description"

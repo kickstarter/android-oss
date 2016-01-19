@@ -57,6 +57,7 @@
   <string name="activity_friend_backed_journalism_project" formatted="false">%{friend_name} backed a Journalism project.</string>
   <string name="activity_friend_backed_music_project" formatted="false">%{friend_name} backed a Music project.</string>
   <string name="activity_friend_backed_photography_project" formatted="false">%{friend_name} backed a Photography project.</string>
+  <string name="activity_friend_backed_project_name_by_creator_name" formatted="false">&lt;b>%{friend_name} backed&lt;/b> %{project_name} by %{creator_name}</string>
   <string name="activity_friend_backed_publishing_project" formatted="false">%{friend_name} backed a Publishing project.</string>
   <string name="activity_friend_backed_tech_project" formatted="false">%{friend_name} backed a Technology project.</string>
   <string name="activity_friend_backed_theater_project" formatted="false">%{friend_name} backed a Theater project.</string>
@@ -66,7 +67,6 @@
   <string name="activity_funding_canceled" formatted="false">Funding canceled.</string>
   <string name="activity_navigation_title_activity" formatted="false">Activity</string>
   <string name="activity_posted_update_number_title" formatted="false">Posted update #%{update_number}: %{update_title}</string>
-  <string name="activity_friend_backed_project_name_by_creator_name" formatted="false">&lt;b>%{friend_name} backed&lt;/b> %{project_name} by %{creator_name}</string>
   <string name="activity_project_name_by_creator_name" formatted="false">%{project_name} by %{creator_name}</string>
   <string name="activity_project_state_change_creator_launched_a_project" formatted="false">%{creator_name} launched a project: %{project_name}</string>
   <string name="activity_project_state_change_funded" formatted="false">Funded</string>
@@ -437,6 +437,7 @@
   <string name="login_tout_default_intent_traditional_signup_button" formatted="false">Sign up</string>
   <string name="login_tout_default_intent_traditional_title" formatted="false">Use your email address:</string>
   <string name="login_tout_disclaimer_by_signing_up_you_agree_to_terms" formatted="false">By signing up, you agree to our terms of use, privacy policy, and cookie policy.</string>
+  <string name="login_tout_disclaimer_by_signing_up_you_agree_to_terms_html" formatted="false">By signing up, you agree to our &lt;u>terms of use&lt;/u>, &lt;u>privacy policy&lt;/u>, and &lt;u>cookie policy&lt;/u>.</string>
   <string name="login_tout_disclaimer_read_more" formatted="false">Read more</string>
   <string name="login_tout_disclaimer_we_never_post_anything_without_permission" formatted="false">We\'ll never post anything without your permission.</string>
   <string name="login_tout_errors_button_ok" formatted="false">OK</string>
@@ -505,8 +506,10 @@ This is commonly fixed by going to iOS Settings > Facebook and toggling access f
   <string name="profile_projects_backed_projects" formatted="false">Backed projects</string>
   <string name="profile_projects_created_projects" formatted="false">Created projects</string>
   <string name="profile_projects_empty_state_button" formatted="false">Discover projects</string>
-  <string name="profile_projects_empty_state_message" formatted="false">You haven’t backed any projects yet.\n
-Let’s change that!</string>
+  <string name="profile_projects_empty_state_button_explore_new_projects" formatted="false">Explore new projects</string>
+  <string name="profile_projects_empty_state_message" formatted="false">You haven\'t backed any projects yet.\n
+Let\'s change that!</string>
+  <string name="profile_projects_empty_state_message_no_backed_projects_yet" formatted="false">No backed projects yet</string>
   <string name="profile_projects_status_canceled" formatted="false">Canceled</string>
   <string name="profile_projects_status_successful" formatted="false">Successful</string>
   <string name="profile_projects_status_suspended" formatted="false">Suspended</string>

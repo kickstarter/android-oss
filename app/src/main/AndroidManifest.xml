@@ -65,9 +65,6 @@
       </intent-filter>
     </activity>
 
-    <activity android:name=".ui.activities.DiscoveryFilterActivity"
-      android:theme="@style/DiscoveryFilterActivity" />
-
     <activity android:name=".ui.activities.DisplayWebViewActivity"
       android:theme="@style/DisplayWebViewActivity" />
 

@@ -30,38 +30,31 @@ public final class DiscoveryAdapter extends KSAdapter {
   public DiscoveryAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;
 
-    this.data().add(SECTION_ONBOARDING_VIEW, Collections.emptyList());
-    this.data().add(SECTION_ACTIVITY_SAMPLE_VIEW, Collections.emptyList());
-    this.data().add(SECTION_PROJECT_CARD_VIEW, Collections.emptyList());
+    insertSection(SECTION_ONBOARDING_VIEW, Collections.emptyList());
+    insertSection(SECTION_ACTIVITY_SAMPLE_VIEW, Collections.emptyList());
+    insertSection(SECTION_PROJECT_CARD_VIEW, Collections.emptyList());
   }
 
   public void setShouldShowOnboardingView(final boolean shouldShowOnboardingView) {
     if (shouldShowOnboardingView) {
-      data().set(SECTION_ONBOARDING_VIEW, Collections.singletonList(null));
+      setSection(SECTION_ONBOARDING_VIEW, Collections.singletonList(null));
     } else {
-      data().set(SECTION_ONBOARDING_VIEW, Collections.emptyList());
-    }
-    notifyDataSetChanged();
-  }
-
-  public void setShouldShowActivitySample(final boolean shouldShowActivitySample) {
-    if (!shouldShowActivitySample) {
-      data().set(SECTION_ACTIVITY_SAMPLE_VIEW, Collections.emptyList());
+      setSection(SECTION_ONBOARDING_VIEW, Collections.emptyList());
     }
     notifyDataSetChanged();
   }
 
   public void takeActivity(final @Nullable Activity activity) {
     if (activity == null) {
-      data().set(SECTION_ACTIVITY_SAMPLE_VIEW, Collections.emptyList());
+      setSection(SECTION_ACTIVITY_SAMPLE_VIEW, Collections.emptyList());
     } else {
-      data().set(SECTION_ACTIVITY_SAMPLE_VIEW, Collections.singletonList(activity));
+      setSection(SECTION_ACTIVITY_SAMPLE_VIEW, Collections.singletonList(activity));
     }
     notifyDataSetChanged();
   }
 
   public void takeProjects(final @NonNull List<Project> projects) {
-    data().set(SECTION_PROJECT_CARD_VIEW, projects);
+    setSection(SECTION_PROJECT_CARD_VIEW, projects);
     notifyDataSetChanged();
   }
 
@@ -77,7 +70,7 @@ public final class DiscoveryAdapter extends KSAdapter {
   }
 
   @Override
-  protected KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
+  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     switch (layout) {
       case R.layout.discovery_onboarding_view:
         return new DiscoveryOnboardingViewHolder(view, delegate);

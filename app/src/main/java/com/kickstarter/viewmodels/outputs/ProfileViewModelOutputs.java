@@ -11,4 +11,5 @@ public interface ProfileViewModelOutputs {
   Observable<List<Project>> projects();
   Observable<User> user();
   Observable<Project> showProject();
+  Observable<Void> showDiscovery();
 }

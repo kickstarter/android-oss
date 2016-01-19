@@ -31,9 +31,9 @@ public final class ProjectSocialAdapter extends KSAdapter {
   }
 
   public void takeProject(final @NonNull Project project) {
-    data().clear();
-    data().add(Collections.singletonList(project));
-    data().add(project.friends());
+    sections().clear();
+    addSection(Collections.singletonList(project));
+    addSection(project.friends());
     notifyDataSetChanged();
   }
 

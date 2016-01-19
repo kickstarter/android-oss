@@ -57,6 +57,7 @@
   <string name="activity_friend_backed_journalism_project" formatted="false">%{friend_name} hat ein Journalismus-Projekt unterstützt.</string>
   <string name="activity_friend_backed_music_project" formatted="false">%{friend_name} hat ein Musik-Projekt unterstützt.</string>
   <string name="activity_friend_backed_photography_project" formatted="false">%{friend_name} hat ein Fotografie-Projekt unterstützt.</string>
+  <string name="activity_friend_backed_project_name_by_creator_name" formatted="false">&lt;b>%{friend_name} backed&lt;/b> %{project_name} by %{creator_name}</string>
   <string name="activity_friend_backed_publishing_project" formatted="false">%{friend_name} hat ein Publishing-Projekt unterstützt.</string>
   <string name="activity_friend_backed_tech_project" formatted="false">%{friend_name} hat ein Technologie-Projekt unterstützt.</string>
   <string name="activity_friend_backed_theater_project" formatted="false">%{friend_name} hat ein Theater-Projekt unterstützt.</string>
@@ -436,6 +437,7 @@
   <string name="login_tout_default_intent_traditional_signup_button" formatted="false">Registrieren</string>
   <string name="login_tout_default_intent_traditional_title" formatted="false">Benutze deine E-Mail-Adresse:</string>
   <string name="login_tout_disclaimer_by_signing_up_you_agree_to_terms" formatted="false">Mit der Registrierung stimmst du unseren Nutzungsbedingungen, Datenschutzrichtlinien und Cookie-Richtlinien zu.</string>
+  <string name="login_tout_disclaimer_by_signing_up_you_agree_to_terms_html" formatted="false">By signing up, you agree to our &lt;u>terms of use&lt;/u>, &lt;u>privacy policy&lt;/u>, and &lt;u>cookie policy&lt;/u>.</string>
   <string name="login_tout_disclaimer_read_more" formatted="false">Weiterlesen</string>
   <string name="login_tout_disclaimer_we_never_post_anything_without_permission" formatted="false">Wir veröffentlichen niemals etwas ohne deine Zustimmung.</string>
   <string name="login_tout_errors_button_ok" formatted="false">OK</string>
@@ -504,7 +506,9 @@ Für gewöhnlich kann das Problem behoben werden, indem du in den iOS Einstellun
   <string name="profile_projects_backed_projects" formatted="false">Unterstützte Projekte</string>
   <string name="profile_projects_created_projects" formatted="false">Erstellte Projekte</string>
   <string name="profile_projects_empty_state_button" formatted="false">Projekte entdecken</string>
+  <string name="profile_projects_empty_state_button_explore_new_projects" formatted="false">Explore new projects</string>
   <string name="profile_projects_empty_state_message" formatted="false">Du hast noch keine Projekte unterstützt. Das sollten wir ändern!</string>
+  <string name="profile_projects_empty_state_message_no_backed_projects_yet" formatted="false">No backed projects yet</string>
   <string name="profile_projects_status_canceled" formatted="false">Zurückgezogen</string>
   <string name="profile_projects_status_successful" formatted="false">Erfolgreich</string>
   <string name="profile_projects_status_suspended" formatted="false">Ausgesetzt</string>

@@ -41,18 +41,18 @@ public final class CommentFeedAdapter extends KSAdapter {
 
   public void takeProjectComments(@NonNull final Project project, @NonNull final List<Comment> comments,
     @Nullable final User user) {
-    data().clear();
+    sections().clear();
 
-    data().add(Collections.singletonList(project));
+    sections().add(Collections.singletonList(project));
 
-    data().add(Observable.from(comments)
+    addSection(Observable.from(comments)
       .map(comment -> Pair.create(project, comment))
       .toList().toBlocking().single());
 
     if (comments.size() == 0) {
-      data().add(Collections.singletonList(new Pair<>(project, user)));
+      sections().add(Collections.singletonList(new Pair<>(project, user)));
     } else {
-      data().add(Collections.emptyList());
+      sections().add(Collections.emptyList());
     }
 
     notifyDataSetChanged();

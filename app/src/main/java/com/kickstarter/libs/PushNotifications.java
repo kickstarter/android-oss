@@ -176,8 +176,7 @@ public class PushNotifications {
       .putExtra(IntentKey.PROJECT_PARAM, projectParam);
 
     final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context)
-      .addParentStack(ProjectActivity.class)
-      .addNextIntent(projectIntent);
+      .addNextIntentWithParentStack(projectIntent);
 
     return taskStackBuilder.getPendingIntent(uniqueNotificationId, PendingIntent.FLAG_UPDATE_CURRENT);
   }
@@ -192,8 +191,7 @@ public class PushNotifications {
       .putExtra(IntentKey.URL, update.urls().web().update());
 
     final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context)
-      .addParentStack(ProjectActivity.class)
-      .addNextIntent(projectIntent)
+      .addNextIntentWithParentStack(projectIntent)
       .addNextIntent(updateIntent);
 
     return taskStackBuilder.getPendingIntent(uniqueNotificationId, PendingIntent.FLAG_UPDATE_CURRENT);

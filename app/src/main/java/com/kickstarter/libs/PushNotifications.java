@@ -18,14 +18,11 @@ import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.transformations.CropSquareTransformation;
 import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.libs.utils.PlayServicesUtils;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.pushdata.Activity;
 import com.kickstarter.models.pushdata.GCM;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
-import com.kickstarter.services.gcm.RegisterService;
-import com.kickstarter.services.gcm.UnregisterService;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.kickstarter.ui.activities.WebViewActivity;
@@ -43,12 +40,17 @@ import timber.log.Timber;
 public class PushNotifications {
   protected final @ForApplication Context context;
   protected final ApiClientType client;
+  protected final DeviceRegistrarType deviceRegistrar;
+
   protected PublishSubject<PushNotificationEnvelope> notifications = PublishSubject.create();
   protected CompositeSubscription subscriptions = new CompositeSubscription();
 
-  public PushNotifications(final @ForApplication Context context, final @NonNull ApiClientType client) {
+  public PushNotifications(final @ForApplication Context context, final @NonNull ApiClientType client,
+    final @NonNull DeviceRegistrarType deviceRegistrar) {
+
     this.context = context;
     this.client = client;
+    this.deviceRegistrar = deviceRegistrar;
   }
 
   public void initialize() {
@@ -74,23 +76,7 @@ public class PushNotifications {
       .observeOn(Schedulers.newThread())
       .subscribe(envelopeAndUpdate -> displayNotificationFromUpdateActivity(envelopeAndUpdate.first, envelopeAndUpdate.second)));
 
-    registerDevice();
-  }
-
-  public void registerDevice() {
-    if (!PlayServicesUtils.isAvailable(context)) {
-      return;
-    }
-
-    context.startService(new Intent(context, RegisterService.class));
-  }
-
-  public void unregisterDevice() {
-    if (!PlayServicesUtils.isAvailable(context)) {
-      return;
-    }
-
-    context.startService(new Intent(context, UnregisterService.class));
+    deviceRegistrar.registerDevice();
   }
 
   public void add(@NonNull final PushNotificationEnvelope envelope) {
@@ -127,6 +113,7 @@ public class PushNotifications {
       .build();
     notificationManager().notify(envelope.signature(), notification);
   }
+
 
   private void displayNotificationFromProjectReminder(final @NonNull PushNotificationEnvelope envelope) {
     final GCM gcm = envelope.gcm();

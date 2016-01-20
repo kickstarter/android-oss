@@ -320,8 +320,9 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  @NonNull PushNotifications providePushNotifications(final @ForApplication @NonNull Context context, final @NonNull ApiClientType client) {
-    return new PushNotifications(context, client);
+  @NonNull PushNotifications providePushNotifications(final @ForApplication @NonNull Context context, final @NonNull ApiClientType client,
+    final @NonNull DeviceRegistrarType deviceRegistrar) {
+    return new PushNotifications(context, client, deviceRegistrar);
   }
 
   @Provides

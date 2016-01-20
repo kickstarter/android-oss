@@ -8,6 +8,7 @@ import android.widget.ScrollView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.DeviceRegistrarType;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.models.pushdata.Activity;
 import com.kickstarter.models.pushdata.GCM;
@@ -19,7 +20,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class DebugPushNotificationsView extends ScrollView {
-  @Inject protected PushNotifications pushNotifications;
+  protected @Inject DeviceRegistrarType deviceRegistrar;
+  protected @Inject PushNotifications pushNotifications;
 
   private static final String PROJECT_PHOTO = "https://ksr-ugc.imgix.net/projects/73409/photo-original.jpg?v=1397770628&w=120&h=120&fit=crop&auto=format&q=92&s=5adcd60781d0a7644975f845f03a4cf6";
   private static final String USER_PHOTO = "https://ksr-ugc.imgix.net/avatars/1583412/portrait.original.png?v=1330782076&w=120&h=120&fit=crop&auto=format&q=92&s=a9029da56a3deab8c4b87818433e3430";
@@ -51,12 +53,12 @@ public class DebugPushNotificationsView extends ScrollView {
 
   @OnClick(R.id.register_device_button)
   public void registerDeviceButtonClick() {
-    pushNotifications.registerDevice();
+    deviceRegistrar.registerDevice();
   }
 
   @OnClick(R.id.unregister_device_button)
   public void unregisterDeviceButtonClick() {
-    pushNotifications.unregisterDevice();
+    deviceRegistrar.unregisterDevice();
   }
 
   @OnClick(R.id.simulate_friend_backing_button)

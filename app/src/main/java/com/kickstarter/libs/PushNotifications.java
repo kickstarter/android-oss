@@ -172,12 +172,12 @@ public class PushNotifications {
   }
 
   private @NonNull PendingIntent projectContentIntent(final @NonNull String projectParam, final int uniqueNotificationId) {
-    final Intent resultIntent = new Intent(context, ProjectActivity.class)
+    final Intent projectIntent = new Intent(context, ProjectActivity.class)
       .putExtra(IntentKey.PROJECT_PARAM, projectParam);
 
     final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context)
       .addParentStack(ProjectActivity.class)
-      .addNextIntent(resultIntent);
+      .addNextIntent(projectIntent);
 
     return taskStackBuilder.getPendingIntent(uniqueNotificationId, PendingIntent.FLAG_UPDATE_CURRENT);
   }

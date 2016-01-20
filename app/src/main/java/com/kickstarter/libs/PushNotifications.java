@@ -11,8 +11,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
+import android.util.Pair;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.transformations.CropSquareTransformation;
 import com.kickstarter.libs.utils.ObjectUtils;
@@ -32,6 +34,7 @@ import com.squareup.picasso.RequestCreator;
 
 import java.io.IOException;
 
+import rx.Observable;
 import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
@@ -66,8 +69,10 @@ public class PushNotifications {
 
     subscriptions.add(notifications
       .filter(PushNotificationEnvelope::isProjectUpdateActivity)
+      .flatMap(this::fetchUpdateWithEnvelope)
+      .filter(ObjectUtils::isNotNull)
       .observeOn(Schedulers.newThread())
-      .subscribe(this::displayNotificationFromUpdateActivity));
+      .subscribe(envelopeAndUpdate -> displayNotificationFromUpdateActivity(envelopeAndUpdate.first, envelopeAndUpdate.second)));
 
     registerDevice();
   }
@@ -137,7 +142,7 @@ public class PushNotifications {
     notificationManager().notify(envelope.signature(), notification);
   }
 
-  private void displayNotificationFromUpdateActivity(final @NonNull PushNotificationEnvelope envelope) {
+  private void displayNotificationFromUpdateActivity(final @NonNull PushNotificationEnvelope envelope, final @NonNull Update update) {
     final GCM gcm = envelope.gcm();
 
     final Activity activity = envelope.activity();
@@ -148,11 +153,6 @@ public class PushNotifications {
     if (projectId == null) { return; }
 
     final String projectParam = ObjectUtils.toString(projectId);
-    final String updateParam = ObjectUtils.toString(updateId);
-
-    final Update update = client
-      .fetchUpdate(projectParam, updateParam)
-      .toBlocking().single();
 
     final Notification notification = notificationBuilder(gcm.title(), gcm.alert())
       .setContentIntent(projectUpdateContentIntent(update, projectParam, envelope.signature()))
@@ -216,5 +216,24 @@ public class PushNotifications {
 
   private @NonNull NotificationManager notificationManager() {
     return (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+  }
+
+  private @Nullable Observable<Pair<PushNotificationEnvelope, Update>> fetchUpdateWithEnvelope(final @NonNull PushNotificationEnvelope envelope) {
+    final Activity activity = envelope.activity();
+    if (activity == null) { return null; }
+
+    final Long updateId = activity.updateId();
+    if (updateId == null) { return null; }
+
+    final Long projectId = activity.projectId();
+    if (projectId == null) { return null; }
+
+    final String projectParam = ObjectUtils.toString(projectId);
+    final String updateParam = ObjectUtils.toString(updateId);
+
+    final Observable<Update> update = client.fetchUpdate(projectParam, updateParam);
+
+    return Observable.just(envelope)
+      .compose(Transformers.combineLatestPair(update));
   }
 }

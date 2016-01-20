@@ -437,7 +437,7 @@
   <string name="login_tout_default_intent_traditional_signup_button" formatted="false">Inscription</string>
   <string name="login_tout_default_intent_traditional_title" formatted="false">Utilisez votre adresse e-mail :</string>
   <string name="login_tout_disclaimer_by_signing_up_you_agree_to_terms" formatted="false">En vous inscrivant, vous acceptez les Conditions d\'utilisation, notre Politique de confidentialité et notre Politique en matière de cookies.</string>
-  <string name="login_tout_disclaimer_by_signing_up_you_agree_to_terms_html" formatted="false">By signing up, you agree to our &lt;u>terms of use&lt;/u>, &lt;u>privacy policy&lt;/u>, and &lt;u>cookie policy&lt;/u>.</string>
+  <string name="login_tout_disclaimer_by_signing_up_you_agree_to_terms_html" formatted="false">En vous inscrivant, vous acceptez nos &lt;u>Conditions d\'utilisation&lt;/u>, notre &lt;u>Politique de confidentialité&lt;/u> et notre &lt;u>Politique en matière de cookies&lt;/u>.</string>
   <string name="login_tout_disclaimer_read_more" formatted="false">En savoir plus</string>
   <string name="login_tout_disclaimer_we_never_post_anything_without_permission" formatted="false">Rien ne sera publié sans votre permission.</string>
   <string name="login_tout_errors_button_ok" formatted="false">OK</string>
@@ -517,6 +517,7 @@ Ce problème peut généralement être résolu en accédant à Réglages iOS > F
   <string name="profile_settings_about_contact" formatted="false">Contact</string>
   <string name="profile_settings_about_cookie" formatted="false">Politique en matière de cookies</string>
   <string name="profile_settings_about_faq" formatted="false">Questions fréquentes</string>
+  <string name="profile_settings_about_faq_short" formatted="false">FAQ</string>
   <string name="profile_settings_about_how_it_works" formatted="false">Comment fonctionne Kickstarter</string>
   <string name="profile_settings_about_privacy" formatted="false">Politique de confidentialité</string>
   <string name="profile_settings_about_terms" formatted="false">Conditions d\'utilisation</string>
@@ -549,13 +550,13 @@ Ce problème peut généralement être résolu en accédant à Réglages iOS > F
   <string name="profile_settings_rating_message" formatted="false">Merci d\'utiliser l\'application Kickstarter.\n
 Auriez-vous une minute pour évaluer votre expérience ?\n
 Nous vous en serions très reconnaissants !</string>
-  <string name="profile_settings_rating_option_message_if_you_enjoy_using_Kickstarter" formatted="false">If you enjoy using the Kickstarter app, would you mind taking a moment to rate it in the Play store?\n
+  <string name="profile_settings_rating_option_message_if_you_enjoy_using_Kickstarter" formatted="false">Si l\'application Kickstarter vous plaît, pourquoi ne pas prendre le temps de la noter dans le Play Store ?\n
 \n
-Thank you for your support!</string>
+Merci pour votre soutien !</string>
   <string name="profile_settings_rating_option_no_thanks" formatted="false">Non, merci</string>
   <string name="profile_settings_rating_option_rate_now" formatted="false">Évaluez l\'application</string>
   <string name="profile_settings_rating_option_remind_later" formatted="false">Rappelez-moi plus tard</string>
-  <string name="profile_settings_rating_option_title_show_us_some_love" formatted="false">Show us some love</string>
+  <string name="profile_settings_rating_option_title_show_us_some_love" formatted="false">Parlez de nous autour de vous</string>
   <string name="profile_settings_rating_rate_us" formatted="false">Évaluez-nous dans l\'App Store !</string>
   <string name="profile_settings_rating_rate_us_play_store" formatted="false">Évaluez-nous dans le Play Store !</string>
   <string name="profile_settings_rating_title" formatted="false">Nous sommes tout ouïe !</string>
@@ -582,7 +583,7 @@ Thank you for your support!</string>
   <string name="project_checkout_share_alert_button_ok" formatted="false">OK</string>
   <string name="project_checkout_share_alert_this_device_not_capable_of_sending_email" formatted="false">Impossible d\'envoyer un e-mail à partir de cet appareil.</string>
   <string name="project_checkout_share_buttons_more" formatted="false">Plus</string>
-  <string name="project_checkout_share_buttons_more_share_options" formatted="false">More share options</string>
+  <string name="project_checkout_share_buttons_more_share_options" formatted="false">Plus de fonctions de partage</string>
   <string name="project_checkout_share_buttons_share" formatted="false">Partager</string>
   <string name="project_checkout_share_buttons_tweet" formatted="false">Twitter</string>
   <string name="project_checkout_share_exclamation" formatted="false">Félicitations !</string>

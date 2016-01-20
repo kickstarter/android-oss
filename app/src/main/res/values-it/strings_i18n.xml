@@ -462,7 +462,7 @@ This is commonly fixed by going to iOS Settings > Facebook and toggling access f
   <string name="login_tout_help_sheet_cancel" formatted="false">Cancel</string>
   <string name="login_tout_help_sheet_contact" formatted="false">Contact</string>
   <string name="login_tout_help_sheet_cookie" formatted="false">Cookie Policy</string>
-  <string name="login_tout_help_sheet_how_it_works" formatted="false">How Kickstarter works</string>
+  <string name="login_tout_help_sheet_how_it_works" formatted="false">How Kickstarter Works</string>
   <string name="login_tout_help_sheet_privacy" formatted="false">Privacy Policy</string>
   <string name="login_tout_help_sheet_terms" formatted="false">Terms of Use</string>
   <string name="login_tout_message_creator_intent_title" formatted="false">To message a creator, you need to be logged in.</string>
@@ -518,7 +518,8 @@ Let\'s change that!</string>
   <string name="profile_settings_about_contact" formatted="false">Contact</string>
   <string name="profile_settings_about_cookie" formatted="false">Cookie Policy</string>
   <string name="profile_settings_about_faq" formatted="false">Frequently Asked Questions</string>
-  <string name="profile_settings_about_how_it_works" formatted="false">How Kickstarter works</string>
+  <string name="profile_settings_about_faq_short" formatted="false">FAQ</string>
+  <string name="profile_settings_about_how_it_works" formatted="false">How Kickstarter Works</string>
   <string name="profile_settings_about_privacy" formatted="false">Privacy Policy</string>
   <string name="profile_settings_about_terms" formatted="false">Terms of Use</string>
   <string name="profile_settings_about_title" formatted="false">Help</string>
@@ -544,7 +545,7 @@ Let\'s change that!</string>
   <string name="profile_settings_newsletter_happening" formatted="false">Happening Now</string>
   <string name="profile_settings_newsletter_opt_in_message" formatted="false">We\'ve sent a confirmation email to the address associated with your account! Please check your email in order to confirm that you\'d like to subscribe to %{newsletter}.</string>
   <string name="profile_settings_newsletter_opt_in_title" formatted="false">One final step!</string>
-  <string name="profile_settings_newsletter_promo" formatted="false">Kickstarter news and events</string>
+  <string name="profile_settings_newsletter_promo" formatted="false">Kickstarter News and Events</string>
   <string name="profile_settings_newsletter_title" formatted="false">Newsletters</string>
   <string name="profile_settings_newsletter_weekly" formatted="false">Projects We Love</string>
   <string name="profile_settings_rating_message" formatted="false">Thanks for using the Kickstarter app.\n

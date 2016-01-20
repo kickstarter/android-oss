@@ -183,7 +183,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
 
     final Intent intent = new Intent(Intent.ACTION_SENDTO)
       .setData(Uri.parse(mailtoString))
-      .putExtra(Intent.EXTRA_SUBJECT, supportEmailSubjectString)
+      .putExtra(Intent.EXTRA_SUBJECT, "[Android] " + supportEmailSubjectString)
       .putExtra(Intent.EXTRA_TEXT, body)
       .putExtra(Intent.EXTRA_EMAIL, new String[]{supportEmailString});
     if (intent.resolveActivity(getPackageManager()) != null) {

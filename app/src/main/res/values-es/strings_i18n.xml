@@ -518,6 +518,7 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="profile_settings_about_contact" formatted="false">Contacto</string>
   <string name="profile_settings_about_cookie" formatted="false">Política de cookies</string>
   <string name="profile_settings_about_faq" formatted="false">Preguntas frecuentes</string>
+  <string name="profile_settings_about_faq_short" formatted="false">FAQ</string>
   <string name="profile_settings_about_how_it_works" formatted="false">Cómo funciona Kickstarter</string>
   <string name="profile_settings_about_privacy" formatted="false">Política de privacidad</string>
   <string name="profile_settings_about_terms" formatted="false">Condiciones de uso</string>

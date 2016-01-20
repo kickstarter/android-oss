@@ -18,6 +18,8 @@ import com.kickstarter.libs.AutoParcelAdapterFactory;
 import com.kickstarter.libs.CurrentConfig;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.DateTimeTypeConverter;
+import com.kickstarter.libs.DeviceRegistrarType;
+import com.kickstarter.libs.DeviceRegistrar;
 import com.kickstarter.libs.Font;
 import com.kickstarter.libs.ForApplication;
 import com.kickstarter.libs.InternalToolsType;
@@ -255,10 +257,16 @@ public class ApplicationModule {
   @Provides
   @Singleton
   CurrentUser provideCurrentUser(@AccessTokenPreference @NonNull final StringPreference accessTokenPreference,
+    @NonNull final DeviceRegistrarType deviceRegistrar,
     @NonNull final Gson gson,
-    @NonNull final PushNotifications pushNotifications,
     @NonNull @UserPreference final StringPreference userPreference) {
-    return new CurrentUser(accessTokenPreference, gson, pushNotifications, userPreference);
+    return new CurrentUser(accessTokenPreference, deviceRegistrar, gson, userPreference);
+  }
+
+  @Provides
+  @Singleton
+  @NonNull DeviceRegistrarType provideDeviceRegistrar(final @ForApplication @NonNull Context context) {
+    return new DeviceRegistrar(context);
   }
 
   @Provides
@@ -312,8 +320,9 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  PushNotifications providePushNotifications(@ForApplication @NonNull final Context context) {
-    return new PushNotifications(context);
+  @NonNull PushNotifications providePushNotifications(final @ForApplication @NonNull Context context, final @NonNull ApiClientType client,
+    final @NonNull DeviceRegistrarType deviceRegistrar) {
+    return new PushNotifications(context, client, deviceRegistrar);
   }
 
   @Provides

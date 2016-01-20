@@ -11,6 +11,7 @@ import com.kickstarter.models.Empty;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.Notification;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
@@ -55,6 +56,10 @@ public interface ApiClientType {
   @NonNull Observable<CommentsEnvelope> fetchProjectComments(final @NonNull Project project);
 
   @NonNull Observable<CommentsEnvelope> fetchProjectComments(final @NonNull String paginationPath);
+
+  @NonNull Observable<Update> fetchUpdate(final @NonNull String projectParam, final @NonNull String updateParam);
+
+  @NonNull Observable<Update> fetchUpdate(final @NonNull Update update);
 
   @NonNull Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String accessToken);
 

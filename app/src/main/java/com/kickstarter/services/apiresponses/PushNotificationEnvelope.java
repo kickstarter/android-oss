@@ -46,13 +46,8 @@ public abstract class PushNotificationEnvelope implements Parcelable {
 
   public boolean isProjectActivity() {
     if (activity() != null) {
-      for (final String category : PROJECT_NOTIFICATION_CATEGORIES) {
-        if (activity().category().equals(category)) {
-          return true;
-        }
-      }
+      return PROJECT_NOTIFICATION_CATEGORIES.contains(activity().category());
     }
-
     return false;
   }
 
@@ -90,5 +85,16 @@ public abstract class PushNotificationEnvelope implements Parcelable {
       return new AutoParcel_PushNotificationEnvelope_Project.Builder();
     }
   }
-}
 
+  @AutoGson
+  @AutoParcel
+  public abstract static class ActivityPushData implements Parcelable {
+    public abstract Long id();
+    public abstract String category();
+    public abstract @Nullable Long projectId();
+    public abstract @Nullable String projectPhoto();
+    public abstract @Nullable String userPhoto();
+    public abstract @Nullable Long commentId();
+    public abstract @Nullable Long updateId();
+  }
+}

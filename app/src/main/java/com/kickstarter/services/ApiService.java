@@ -11,6 +11,7 @@ import com.kickstarter.models.Empty;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.Notification;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apirequests.CommentBody;
 import com.kickstarter.services.apirequests.LoginWithFacebookBody;
@@ -115,6 +116,9 @@ public interface ApiService {
 
   @POST("/v1/projects/{param}/star/toggle")
   Observable<Response<StarEnvelope>> toggleProjectStar(@Path("param") String param);
+
+  @GET("/v1/projects/{project_param}/updates/{update_param}")
+  Observable<Response<Update>> update(@Path("project_param") String projectParam, @Path("update_param") String updateParam);
 
   @PUT("/v1/users/self/notifications/{id}")
   Observable<Response<Notification>> updateProjectNotifications(@Path("id") long notificationId,

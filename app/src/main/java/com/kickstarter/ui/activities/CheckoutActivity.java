@@ -123,7 +123,7 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
 
 
   @Override
-  public void webViewOnPageStarted(@NonNull KSWebViewClient webViewClient, @NonNull String url) {
+  public void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
     final AlphaAnimation animation = new AlphaAnimation(0.0f, 1.0f);
     animation.setDuration(300l);
     animation.setFillAfter(true);
@@ -131,7 +131,7 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
   }
 
   @Override
-  public void webViewOnPageFinished(@NonNull KSWebViewClient webViewClient, @NonNull String url) {
+  public void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
     final AlphaAnimation animation = new AlphaAnimation(1.0f, 0.0f);
     animation.setDuration(300l);
     animation.setFillAfter(true);

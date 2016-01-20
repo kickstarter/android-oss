@@ -39,8 +39,8 @@ import java.util.regex.Pattern;
 public final class KSWebViewClient extends WebViewClient {
 
   public interface Delegate {
-    void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, @NonNull final String url);
-    void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, @NonNull final String url);
+    void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, @Nullable final String url);
+    void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, @Nullable final String url);
   }
 
   private boolean initialPageLoad = true;
@@ -82,7 +82,7 @@ public final class KSWebViewClient extends WebViewClient {
   }
 
   @Override
-  public void onPageStarted(WebView view, String url, Bitmap favicon) {
+  public void onPageStarted(final @Nullable WebView view, final @Nullable String url, final @Nullable Bitmap favicon) {
     if (delegate != null) {
       delegate.webViewOnPageStarted(this, url);
     }

@@ -22,7 +22,6 @@
 
   <ProgressBar
     android:id="@+id/loading_indicator"
-    style="@android:style/Widget.ProgressBar.Inverse"
     android:visibility="gone"
     android:layout_gravity="center"
     android:layout_width="wrap_content"

@@ -93,13 +93,20 @@
     </activity>
 
     <activity
-      android:name=".ui.activities.DisplayWebViewActivity"
-      android:theme="@style/DisplayWebViewActivity"
-      />
-
-    <activity
       android:name=".ui.activities.DownloadBetaActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity">
+
+      <meta-data
+        android:name="android.support.PARENT_ACTIVITY"
+        android:value=".ui.activities.DiscoveryActivity"
+        />
+
+    </activity>
+
+    <activity
+      android:name=".ui.activities.WebViewActivity"
+      android:parentActivityName=".ui.activities.DiscoveryActivity"
+      android:theme="@style/WebViewActivity">
 
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"

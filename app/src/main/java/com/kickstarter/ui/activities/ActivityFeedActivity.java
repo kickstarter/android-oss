@@ -103,7 +103,7 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
   }
 
   public void showProjectUpdate(final @NonNull Activity activity) {
-    final Intent intent = new Intent(this, DisplayWebViewActivity.class)
+    final Intent intent = new Intent(this, WebViewActivity.class)
       .putExtra(IntentKey.URL, activity.projectUpdateUrl());
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }

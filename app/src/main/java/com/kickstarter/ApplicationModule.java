@@ -311,8 +311,8 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  PushNotifications providePushNotifications(@ForApplication @NonNull final Context context) {
-    return new PushNotifications(context);
+  PushNotifications providePushNotifications(final @ForApplication @NonNull Context context, final @NonNull ApiClientType client) {
+    return new PushNotifications(context, client);
   }
 
   @Provides

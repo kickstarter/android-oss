@@ -60,10 +60,6 @@
   <style name="DiscoveryActivity" parent="DiscoveryBase">
   </style>
 
-  <style name="DisplayWebViewActivity" parent="KSTheme">
-    <item name="android:windowBackground">@color/white</item>
-  </style>
-
   <style name="HelpActivity" parent="KSTheme">
     <item name="android:windowBackground">@color/white</item>
   </style>
@@ -81,6 +77,10 @@
   </style>
 
   <style name="ThanksActivity" parent="KSTheme">
+    <item name="android:windowBackground">@color/white</item>
+  </style>
+
+  <style name="WebViewActivity" parent="KSTheme">
     <item name="android:windowBackground">@color/white</item>
   </style>
 

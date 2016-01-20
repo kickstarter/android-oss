@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="vertical"
   android:layout_width="match_parent"
-  android:layout_height="match_parent" >
+  android:layout_height="match_parent">
 
-  <include layout="@layout/display_web_view_toolbar" />
+  <include layout="@layout/web_view_toolbar" />
 
   <com.kickstarter.ui.views.KSWebView
-    android:id="@+id/generic_web_view"
+    android:id="@+id/web_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent" />
-  
+
 </LinearLayout>
+

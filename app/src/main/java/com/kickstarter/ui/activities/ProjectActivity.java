@@ -85,6 +85,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     projectRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
     this.viewModel.inputs.intentRefTag(getIntent().getParcelableExtra(IntentKey.REF_TAG));
+    viewModel.inputs.takePushNotificationEnvelope(getIntent().getParcelableExtra(IntentKey.PUSH_NOTIFICATION_ENVELOPE));
 
     this.viewModel.outputs.projectAndConfig()
       .compose(bindToLifecycle())

@@ -8,6 +8,7 @@ import com.kickstarter.models.Activity;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
+import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -308,5 +309,19 @@ public final class Koala {
   // VIDEO
   public void trackVideoStart(final @NonNull Project project) {
     client.track("Project Video Start", KoalaUtils.projectProperties(project));
+  }
+
+  // PUSH NOTIFICATIONS
+  public void trackPushNotification(final @NonNull PushNotificationEnvelope envelope) {
+    final Map<String, Object> properties = new HashMap<String, Object>() {{
+      put("notification_type", "push");
+
+      if (envelope.activity() != null) {
+        put("notification_subject", "activity");
+        put("notification_activity_category", envelope.activity().category());
+      }
+    }};
+
+    client.track("Notification Opened", properties);
   }
 }

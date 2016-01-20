@@ -31,6 +31,8 @@ public final class WebViewActivity extends BaseActivity<WebViewViewModel> {
 
     final String url = getIntent().getExtras().getString(IntentKey.URL);
     webView.loadUrl(url);
+
+    viewModel.inputs.takePushNotificationEnvelope(getIntent().getParcelableExtra(IntentKey.PUSH_NOTIFICATION_ENVELOPE));
   }
 
   @Override

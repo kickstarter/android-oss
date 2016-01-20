@@ -24,4 +24,5 @@ public final class IntentKey {
   public static final String TOOLBAR_TITLE = "com.kickstarter.kickstarter.intent_toolbar_title";
   public static final String URL = "com.kickstarter.kickstarter.intent_url";
   public static final String REF_TAG = "com.kickstarter.kickstarter.ref_tag";
+  public static final String PUSH_NOTIFICATION_ENVELOPE = "com.kickstarter.kickstarter.push_notification_envelope";
 }

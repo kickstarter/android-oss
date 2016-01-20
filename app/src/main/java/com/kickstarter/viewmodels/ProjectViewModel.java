@@ -14,11 +14,13 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.RefTagUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
+import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.kickstarter.ui.adapters.ProjectAdapter;
 import com.kickstarter.ui.viewholders.ProjectViewHolder;
@@ -114,6 +116,10 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
   private final PublishSubject<RefTag> intentRefTag = PublishSubject.create();
   public void intentRefTag(final @Nullable RefTag refTag) {
     intentRefTag.onNext(refTag);
+  }
+  final PublishSubject<PushNotificationEnvelope> pushNotificationEnvelope = PublishSubject.create();
+  public void takePushNotificationEnvelope(final @Nullable PushNotificationEnvelope envelope) {
+    pushNotificationEnvelope.onNext(envelope);
   }
   public final ProjectViewModelInputs inputs = this;
 
@@ -230,6 +236,13 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
             RefTagUtils.storedCookieRefTagForProject(data.project, cookieManager, sharedPreferences)
           );
         })
+    );
+
+    addSubscription(
+      pushNotificationEnvelope
+        .filter(ObjectUtils::isNotNull)
+        .take(1)
+        .subscribe(koala::trackPushNotification)
     );
   }
 

@@ -54,6 +54,7 @@ import com.kickstarter.viewmodels.SignupViewModel;
 import com.kickstarter.viewmodels.ThanksViewModel;
 import com.kickstarter.viewmodels.TwoFactorViewModel;
 import com.kickstarter.viewmodels.ViewPledgeViewModel;
+import com.kickstarter.viewmodels.WebViewViewModel;
 
 public interface ApplicationGraph {
   void inject(ActivityFeedActivity __);
@@ -111,4 +112,5 @@ public interface ApplicationGraph {
   void inject(TwoFactorViewModel __);
   void inject(ViewPledgeActivity __);
   void inject(ViewPledgeViewModel __);
+  void inject(WebViewViewModel __);
 }

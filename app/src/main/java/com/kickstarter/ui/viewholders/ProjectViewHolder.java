@@ -22,7 +22,6 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
-import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.I18nUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ProgressBarUtils;
@@ -50,14 +49,19 @@ import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.kickstarter.libs.utils.DateTimeUtils.mediumDateShortTime;
 import static com.kickstarter.libs.utils.DateTimeUtils.mediumDate;
+import static com.kickstarter.libs.utils.DateTimeUtils.mediumDateShortTime;
 import static com.kickstarter.libs.utils.ObjectUtils.coalesce;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
+import static com.kickstarter.libs.utils.ProjectUtils.photoHeightFromWidthRatio;
+import static com.kickstarter.libs.utils.ViewUtils.getScreenDensity;
+import static com.kickstarter.libs.utils.ViewUtils.getScreenHeightDp;
+import static com.kickstarter.libs.utils.ViewUtils.getScreenWidthDp;
 
 public final class ProjectViewHolder extends KSViewHolder {
   private Project project;
   private String configCountry;
+  private Context context;
   private final Delegate delegate;
 
   protected @Bind(R.id.avatar) ImageView avatarImageView;
@@ -102,6 +106,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @BindDimen(R.dimen.grid_4) int grid4Dimen;
 
   protected @BindDrawable(R.drawable.click_indicator_light_masked) Drawable clickIndicatorLightMaskedDrawable;
+  protected @BindDrawable(R.drawable.gray_gradient) Drawable grayGradientDrawable;
 
   protected @BindString(R.string.project_creator_by_creator_html) String byCreatorString;
   protected @BindString(R.string.discovery_baseball_card_blurb_read_more) String blurbReadMoreString;
@@ -137,7 +142,9 @@ public final class ProjectViewHolder extends KSViewHolder {
   public ProjectViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
     super(view);
     this.delegate = delegate;
-    ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
+    this.context = view.getContext();
+
+    ((KSApplication) context.getApplicationContext()).component().inject(this);
     ButterKnife.bind(this, view);
   }
 
@@ -150,11 +157,16 @@ public final class ProjectViewHolder extends KSViewHolder {
   }
 
   public void onBind() {
-    final Context context = view.getContext();
-
     final Photo photo = project.photo();
     if (photo != null) {
-      Picasso.with(context).load(photo.full()).into(photoImageView);
+      final int targetImageWidth = (int) (getScreenWidthDp(context) * getScreenDensity(context));
+      photoImageView.setMaxHeight(photoHeightFromWidthRatio(targetImageWidth));
+
+      Picasso.with(context)
+        .load(photo.full())
+        .resize(targetImageWidth, 0)
+        .placeholder(grayGradientDrawable)
+        .into(photoImageView);
     }
 
     if (project.hasVideo()) {
@@ -186,7 +198,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     }
     percentageFundedProgressBar.setProgress(ProgressBarUtils.progress(project.percentageFunded()));
     deadlineCountdownTextView.setText(NumberUtils.format(ProjectUtils.deadlineCountdownValue(project)));
-    deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(project, view.getContext(), ksString));
+    deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(project, context, ksString));
     backersCountTextView.setText(NumberUtils.format(project.backersCount()));
 
      /* Creator */
@@ -275,8 +287,8 @@ public final class ProjectViewHolder extends KSViewHolder {
    */
   public void setLandscapeOverlayText() {
     if (landOverlayTextViewGroup != null && nameCreatorViewGroup != null) {
-      final int screenHeight = ViewUtils.getScreenHeightDp(view.getContext());
-      final float densityOffset = view.getContext().getResources().getDisplayMetrics().density;
+      final int screenHeight = getScreenHeightDp(context);
+      final float densityOffset = context.getResources().getDisplayMetrics().density;
       final float topMargin = ((screenHeight / 3 * 2) * densityOffset) - grid4Dimen;  // offset for toolbar
       ViewUtils.setRelativeViewGroupMargins(landOverlayTextViewGroup, grid4Dimen, (int) topMargin, grid4Dimen, 0);
 
@@ -293,7 +305,7 @@ public final class ProjectViewHolder extends KSViewHolder {
 
     /* a11y */
     final String goalString = ksCurrency.format(project.goal(), project, false, true);
-    final String goalText = ViewUtils.isFontScaleLarge(view.getContext()) ?
+    final String goalText = ViewUtils.isFontScaleLarge(context) ?
       ksString.format(ofGoalString, "goal", goalString) : ksString.format(pledgedOfGoalString, "goal", goalString);
     goalTextView.setText(goalText);
   }
@@ -329,7 +341,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       if (project.friends().size() > 2) {
         projectSocialViewGroup.setBackground(clickIndicatorLightMaskedDrawable);
         projectSocialViewGroup.setOnClickListener(view -> {
-          final BaseActivity activity = (BaseActivity) view.getContext();
+          final BaseActivity activity = (BaseActivity) context;
           final Intent intent = new Intent(activity, ProjectSocialActivity.class)
             .putExtra(IntentKey.PROJECT, project);
           activity.startActivity(intent);
@@ -392,7 +404,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       ViewUtils.setLinearViewGroupMargins(projectStatsViewGroup, 0, grid3Dimen, 0, grid2Dimen);
 
       projectSocialImageView.setVisibility(View.VISIBLE);
-      Picasso.with(view.getContext()).load(project.friends().get(0).avatar()
+      Picasso.with(context).load(project.friends().get(0).avatar()
         .small())
         .transform(new CircleTransformation())
         .into(projectSocialImageView);

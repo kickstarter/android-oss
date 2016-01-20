@@ -78,6 +78,13 @@ public final class ProjectUtils {
   }
 
   /**
+   * Returns 4:3 height relative to input width.
+   */
+  public static int photoHeightFromWidthRatio(final int width) {
+    return width * 3 / 4;
+  }
+
+  /**
    * Set correct button view based on project and backing status.
    */
   public static void setActionButton(final @NonNull Project project, final @NonNull Button backProjectButton,

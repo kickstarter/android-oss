@@ -38,6 +38,9 @@ import butterknife.BindString;
 import butterknife.ButterKnife;
 
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
+import static com.kickstarter.libs.utils.ProjectUtils.photoHeightFromWidthRatio;
+import static com.kickstarter.libs.utils.ViewUtils.getScreenDensity;
+import static com.kickstarter.libs.utils.ViewUtils.getScreenWidthDp;
 
 public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.backers_count) TextView backersCountTextView;
@@ -76,6 +79,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @BindString(R.string.discovery_baseball_card_stats_pledged_of_goal) String pledgedOfGoalString;
 
   protected Project project;
+  private Context context;
   private final Delegate delegate;
   protected DiscoveryViewModel viewModel;
 
@@ -88,8 +92,9 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   public ProjectCardViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
     super(view);
     this.delegate = delegate;
+    this.context = view.getContext();
 
-    ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
+    ((KSApplication) context.getApplicationContext()).component().inject(this);
     ButterKnife.bind(this, view);
   }
 
@@ -110,7 +115,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     }
 
     deadlineCountdownTextView.setText(NumberUtils.format(ProjectUtils.deadlineCountdownValue(project)));
-    deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(project, view.getContext(), ksString));
+    deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(project, context, ksString));
     nameTextView.setText(project.name());
     percentTextView.setText(NumberUtils.flooredPercentage(project.percentageFunded()));
     percentageFundedProgressBar.setProgress(ProgressBarUtils.progress(project.percentageFunded()));
@@ -118,16 +123,22 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     final Photo photo = project.photo();
     if (photo != null) {
       photoImageView.setVisibility(View.VISIBLE);
-      Picasso.with(view.getContext())
+
+      final int targetImageWidth = (int) (getScreenWidthDp(context) * getScreenDensity(context));
+      photoImageView.setMaxHeight(photoHeightFromWidthRatio(targetImageWidth));
+
+      Picasso.with(context)
         .load(photo.full())
+        .resize(targetImageWidth, 0)  // required to fit properly into apis < 18
         .placeholder(grayGradientDrawable)
         .into(photoImageView);
+
     } else {
       photoImageView.setVisibility(View.INVISIBLE);
     }
 
     setProjectMetadataView();
-    setProjectStateView(view.getContext());
+    setProjectStateView(context);
   }
 
   @Override
@@ -198,7 +209,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     if (project.isFriendBacking()) {
       friendBackingViewGroup.setVisibility(View.VISIBLE);
 
-      Picasso.with(view.getContext()).load(project.friends().get(0).avatar()
+      Picasso.with(context).load(project.friends().get(0).avatar()
         .small())
         .transform(new CircleTransformation())
         .into(friendBackingAvatarImageView);

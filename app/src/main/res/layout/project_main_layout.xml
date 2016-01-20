@@ -208,8 +208,9 @@
       android:orientation="horizontal"
       android:gravity="center_vertical"
       android:visibility="gone"
-      android:layout_marginTop="@dimen/grid_1"
-      android:layout_marginBottom="@dimen/grid_4"
+      android:paddingTop="@dimen/grid_1"
+      android:paddingBottom="@dimen/grid_1"
+      android:layout_marginBottom="@dimen/grid_3"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 

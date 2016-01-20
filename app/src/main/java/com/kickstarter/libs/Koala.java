@@ -304,4 +304,9 @@ public final class Koala {
   public void trackAppRatingNoThanks() {
     client.track("Checkout Finished Alert App Store Rating No Thanks");
   }
+
+  // VIDEO
+  public void trackVideoStart(final @NonNull Project project) {
+    client.track("Project Video Start", KoalaUtils.projectProperties(project));
+  }
 }

@@ -313,7 +313,7 @@
       android:parentActivityName=".ui.activities.ProjectActivity"
       android:theme="@style/VideoPlayerActivity"
       android:screenOrientation="sensorLandscape"
-      android:configChanges="screenSize|keyboardHidden">
+      android:configChanges="keyboardHidden|screenSize">
 
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"

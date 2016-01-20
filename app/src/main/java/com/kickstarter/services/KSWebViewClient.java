@@ -3,8 +3,10 @@ package com.kickstarter.services;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -35,19 +37,40 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class KSWebViewClient extends WebViewClient {
+
+  public interface Delegate {
+    void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, @NonNull final String url);
+    void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, @NonNull final String url);
+  }
+
   private boolean initialPageLoad = true;
   private String lastUrl;
   private final OkHttpClient client;
   private final String webEndpoint;
   private final List<RequestHandler> requestHandlers = new ArrayList<>();
   private FormContents formContents = null;
+  private @Nullable Delegate delegate;
 
-  public KSWebViewClient(@NonNull final OkHttpClient client,
-    @NonNull final String webEndpoint) {
+  public KSWebViewClient(final @NonNull OkHttpClient client, final @NonNull String webEndpoint) {
+    this(client, webEndpoint, null);
+  }
+
+  public KSWebViewClient(final @NonNull OkHttpClient client, final @NonNull String webEndpoint,
+    final @Nullable Delegate delegate) {
+
     this.client = client;
     this.webEndpoint = webEndpoint;
+    this.delegate = delegate;
 
     initializeRequestHandlers();
+  }
+
+  public void setDelegate(final @Nullable Delegate delegate) {
+    this.delegate = delegate;
+  }
+
+  public @Nullable Delegate delegate() {
+    return delegate;
   }
 
   /**
@@ -59,7 +82,17 @@ public final class KSWebViewClient extends WebViewClient {
   }
 
   @Override
+  public void onPageStarted(WebView view, String url, Bitmap favicon) {
+    if (delegate != null) {
+      delegate.webViewOnPageStarted(this, url);
+    }
+  }
+
+  @Override
   public void onPageFinished(@NonNull final WebView view, @NonNull final String url) {
+    if (delegate != null) {
+      delegate.webViewOnPageFinished(this, url);
+    }
     initialPageLoad = false;
   }
 

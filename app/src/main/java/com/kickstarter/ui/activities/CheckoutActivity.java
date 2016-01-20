@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.webkit.WebView;
 
 import com.kickstarter.R;
@@ -12,6 +14,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.KSUri;
+import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.services.RequestHandler;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.toolbars.KSToolbar;
@@ -25,11 +28,12 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 @RequiresViewModel(CheckoutViewModel.class)
-public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> {
+public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> implements KSWebViewClient.Delegate {
   private Project project;
   private String urlToReload;
   @Bind(R.id.checkout_toolbar) KSToolbar checkoutToolbar;
   @Bind(R.id.web_view) KSWebView webView;
+  @Bind(R.id.checkout_loading_indicator) View loadingIndicatorView;
 
   private static String SAVE_URL_KEY = "save_url";
 
@@ -53,6 +57,9 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> {
       new RequestHandler(KSUri::isCheckoutThanksUri, this::handleCheckoutThanksUriRequest),
       new RequestHandler(KSUri::isSignupUri, this::handleSignupUriRequest)
     ));
+    webView.client().setDelegate(this);
+
+
   }
 
   @Override
@@ -112,5 +119,22 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> {
     if (resultCode != RESULT_OK) {
       finish();
     }
+  }
+
+
+  @Override
+  public void webViewOnPageStarted(@NonNull KSWebViewClient webViewClient, @NonNull String url) {
+    final AlphaAnimation animation = new AlphaAnimation(0.0f, 1.0f);
+    animation.setDuration(300l);
+    animation.setFillAfter(true);
+    loadingIndicatorView.startAnimation(animation);
+  }
+
+  @Override
+  public void webViewOnPageFinished(@NonNull KSWebViewClient webViewClient, @NonNull String url) {
+    final AlphaAnimation animation = new AlphaAnimation(1.0f, 0.0f);
+    animation.setDuration(300l);
+    animation.setFillAfter(true);
+    loadingIndicatorView.startAnimation(animation);
   }
 }

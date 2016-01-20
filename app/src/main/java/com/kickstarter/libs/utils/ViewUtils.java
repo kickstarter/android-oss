@@ -25,8 +25,16 @@ import rx.functions.Action1;
 public class ViewUtils {
   public ViewUtils() {}
 
+  public static float getScreenDensity(final @NonNull Context context) {
+    return context.getResources().getDisplayMetrics().density;
+  }
+
   public static int getScreenHeightDp(final @NonNull Context context) {
     return context.getResources().getConfiguration().screenHeightDp;
+  }
+
+  public static int getScreenWidthDp(final @NonNull Context context) {
+    return context.getResources().getConfiguration().screenWidthDp;
   }
 
   public static boolean isFontScaleLarge(final @NonNull Context context) {

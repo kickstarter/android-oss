@@ -517,6 +517,7 @@ Für gewöhnlich kann das Problem behoben werden, indem du in den iOS Einstellun
   <string name="profile_settings_about_contact" formatted="false">Kontakt</string>
   <string name="profile_settings_about_cookie" formatted="false">Cookie-Richtlinien</string>
   <string name="profile_settings_about_faq" formatted="false">Häufig gestellte Fragen</string>
+  <string name="profile_settings_about_faq_short" formatted="false">FAQ</string>
   <string name="profile_settings_about_how_it_works" formatted="false">Wie Kickstarter funktioniert</string>
   <string name="profile_settings_about_privacy" formatted="false">Datenschutzrichtlinien</string>
   <string name="profile_settings_about_terms" formatted="false">Nutzungsbedingungen</string>

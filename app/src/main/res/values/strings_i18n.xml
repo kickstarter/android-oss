@@ -521,7 +521,7 @@ Let\'s change that!</string>
   <string name="profile_settings_about_how_it_works" formatted="false">How Kickstarter works</string>
   <string name="profile_settings_about_privacy" formatted="false">Privacy Policy</string>
   <string name="profile_settings_about_terms" formatted="false">Terms of Use</string>
-  <string name="profile_settings_about_title" formatted="false">About</string>
+  <string name="profile_settings_about_title" formatted="false">Help</string>
   <string name="profile_settings_accessibility_subscribe_mobile_notifications" formatted="false">Subscribe to mobile notifications</string>
   <string name="profile_settings_accessibility_subscribe_notifications" formatted="false">Subscribe to notifications</string>
   <string name="profile_settings_accessibility_unsubscribe_mobile_notifications" formatted="false">Unsubscribe from mobile notifications</string>
@@ -550,7 +550,9 @@ Let\'s change that!</string>
   <string name="profile_settings_rating_message" formatted="false">Thanks for using the Kickstarter app.\n
 If you have a moment, would you mind rating your experience?\n
 We\'d appreciate it!</string>
-  <string name="profile_settings_rating_option_message_if_you_enjoy_using_Kickstarter" formatted="false">If you enjoy using the Kickstarter app, would you mind taking a moment to rate it in the Play store?\n\nThank you for your support!</string>
+  <string name="profile_settings_rating_option_message_if_you_enjoy_using_Kickstarter" formatted="false">If you enjoy using the Kickstarter app, would you mind taking a moment to rate it in the Play store?\n
+\n
+Thank you for your support!</string>
   <string name="profile_settings_rating_option_no_thanks" formatted="false">No, Thanks</string>
   <string name="profile_settings_rating_option_rate_now" formatted="false">Rate It Now</string>
   <string name="profile_settings_rating_option_remind_later" formatted="false">Remind Me Later</string>

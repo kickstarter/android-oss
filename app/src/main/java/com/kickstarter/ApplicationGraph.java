@@ -53,7 +53,6 @@ import com.kickstarter.viewmodels.SettingsViewModel;
 import com.kickstarter.viewmodels.SignupViewModel;
 import com.kickstarter.viewmodels.ThanksViewModel;
 import com.kickstarter.viewmodels.TwoFactorViewModel;
-import com.kickstarter.viewmodels.VideoViewModel;
 import com.kickstarter.viewmodels.ViewPledgeViewModel;
 
 public interface ApplicationGraph {
@@ -110,7 +109,6 @@ public interface ApplicationGraph {
   void inject(ThanksActivity __);
   void inject(ThanksViewModel __);
   void inject(TwoFactorViewModel __);
-  void inject(VideoViewModel __);
   void inject(ViewPledgeActivity __);
   void inject(ViewPledgeViewModel __);
 }

@@ -40,6 +40,8 @@ import java.util.List;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
+import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
+
 public final class ApiClient implements ApiClientType {
   private final ApiService service;
   private final Gson gson;
@@ -332,15 +334,15 @@ public final class ApiClient implements ApiClientType {
     return service
       .updateUserSettings(
         SettingsBody.builder()
-          .notifyMobileOfFollower(user.notifyMobileOfFollower())
-          .notifyMobileOfFriendActivity(user.notifyMobileOfFriendActivity())
-          .notifyMobileOfUpdates(user.notifyMobileOfUpdates())
-          .notifyOfFollower(user.notifyOfFollower())
-          .notifyOfFriendActivity(user.notifyOfFriendActivity())
-          .notifyOfUpdates(user.notifyOfUpdates())
-          .happeningNewsletter(user.happeningNewsletter() ? 1 : 0)
-          .promoNewsletter(user.promoNewsletter() ? 1 : 0)
-          .weeklyNewsletter(user.weeklyNewsletter() ? 1 : 0)
+          .notifyMobileOfFollower(isTrue(user.notifyMobileOfFollower()))
+          .notifyMobileOfFriendActivity(isTrue(user.notifyMobileOfFriendActivity()))
+          .notifyMobileOfUpdates(isTrue(user.notifyMobileOfUpdates()))
+          .notifyOfFollower(isTrue(user.notifyOfFollower()))
+          .notifyOfFriendActivity(isTrue(user.notifyOfFriendActivity()))
+          .notifyOfUpdates(isTrue(user.notifyOfUpdates()))
+          .happeningNewsletter(isTrue(user.happeningNewsletter()) ? 1 : 0)
+          .promoNewsletter(isTrue(user.promoNewsletter()) ? 1 : 0)
+          .weeklyNewsletter(isTrue(user.weeklyNewsletter()) ? 1 : 0)
           .build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());

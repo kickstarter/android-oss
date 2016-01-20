@@ -549,9 +549,13 @@ Für gewöhnlich kann das Problem behoben werden, indem du in den iOS Einstellun
   <string name="profile_settings_rating_message" formatted="false">Danke für die Nutzung der Kickstarter App.\n
 Falls du einen Moment Zeit hast, könntest du deine Erfahrung bewerten?\n
 Wir würden uns sehr darüber freuen!</string>
+  <string name="profile_settings_rating_option_message_if_you_enjoy_using_Kickstarter" formatted="false">If you enjoy using the Kickstarter app, would you mind taking a moment to rate it in the Play store?\n
+\n
+Thank you for your support!</string>
   <string name="profile_settings_rating_option_no_thanks" formatted="false">Nein, Danke</string>
   <string name="profile_settings_rating_option_rate_now" formatted="false">Jetzt bewerten</string>
   <string name="profile_settings_rating_option_remind_later" formatted="false">Später</string>
+  <string name="profile_settings_rating_option_title_show_us_some_love" formatted="false">Show us some love</string>
   <string name="profile_settings_rating_rate_us" formatted="false">Bewerte uns im App Store!</string>
   <string name="profile_settings_rating_rate_us_play_store" formatted="false">Bewerte uns im Play Store!</string>
   <string name="profile_settings_rating_title" formatted="false">Wir sind ganz Ohr!</string>
@@ -578,6 +582,7 @@ Wir würden uns sehr darüber freuen!</string>
   <string name="project_checkout_share_alert_button_ok" formatted="false">OK</string>
   <string name="project_checkout_share_alert_this_device_not_capable_of_sending_email" formatted="false">Dieses Gerät kann keine E-Mails versenden.</string>
   <string name="project_checkout_share_buttons_more" formatted="false">Mehr</string>
+  <string name="project_checkout_share_buttons_more_share_options" formatted="false">More share options</string>
   <string name="project_checkout_share_buttons_share" formatted="false">Teilen</string>
   <string name="project_checkout_share_buttons_tweet" formatted="false">Twittern</string>
   <string name="project_checkout_share_exclamation" formatted="false">Super!</string>

@@ -309,7 +309,7 @@
     </activity>
 
     <activity
-      android:name=".ui.activities.VideoActivity"
+      android:name=".ui.activities.VideoPlayerActivity"
       android:parentActivityName=".ui.activities.ProjectActivity"
       android:theme="@style/VideoPlayerActivity"
       android:screenOrientation="sensorLandscape"

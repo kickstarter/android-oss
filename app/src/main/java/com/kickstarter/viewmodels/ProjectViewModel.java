@@ -196,6 +196,8 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
     addSubscription(
       projectOnUserChangeStar.mergeWith(starredProjectOnLoginSuccess)
         .filter(Project::isStarred)
+        .filter(Project::isLive)
+        .filter(p -> !p.isApproachingDeadline())
         .subscribe(__ -> this.showStarredPrompt.onNext(null))
     );
 

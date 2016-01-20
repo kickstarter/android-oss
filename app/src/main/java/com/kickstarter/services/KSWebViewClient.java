@@ -13,8 +13,8 @@ import com.kickstarter.R;
 import com.kickstarter.libs.FormContents;
 import com.kickstarter.libs.utils.IOUtils;
 import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.activities.DisplayWebViewActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
+import com.kickstarter.ui.activities.WebViewActivity;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -177,7 +177,7 @@ public final class KSWebViewClient extends WebViewClient {
 
   private boolean startModalWebViewActivity(@NonNull final Request request, @NonNull final WebView webView) {
     final Activity context = (Activity) webView.getContext();
-    final Intent intent = new Intent(context, DisplayWebViewActivity.class)
+    final Intent intent = new Intent(context, WebViewActivity.class)
       .putExtra(IntentKey.URL, request.urlString());
     context.startActivity(intent);
     context.overridePendingTransition(R.anim.slide_in_bottom, R.anim.fade_out);

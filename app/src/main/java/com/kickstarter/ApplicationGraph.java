@@ -35,6 +35,7 @@ import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder;
 import com.kickstarter.ui.viewholders.ProjectViewHolder;
 import com.kickstarter.ui.viewholders.RewardViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.ChildFilterViewHolder;
+import com.kickstarter.ui.views.AppRatingDialog;
 import com.kickstarter.ui.views.IconTextView;
 import com.kickstarter.ui.views.KSWebView;
 import com.kickstarter.viewmodels.ActivityFeedViewModel;
@@ -52,12 +53,14 @@ import com.kickstarter.viewmodels.SettingsViewModel;
 import com.kickstarter.viewmodels.SignupViewModel;
 import com.kickstarter.viewmodels.ThanksViewModel;
 import com.kickstarter.viewmodels.TwoFactorViewModel;
+import com.kickstarter.viewmodels.VideoViewModel;
 import com.kickstarter.viewmodels.ViewPledgeViewModel;
 
 public interface ApplicationGraph {
   void inject(ActivityFeedActivity __);
   void inject(ActivityFeedViewModel __);
   void inject(ApplicationLifecycleUtil __);
+  void inject(AppRatingDialog __);
   void inject(CategoryPromoViewHolder __);
   void inject(CommentFeedActivity __);
   void inject(CommentFeedViewModel __);
@@ -107,6 +110,7 @@ public interface ApplicationGraph {
   void inject(ThanksActivity __);
   void inject(ThanksViewModel __);
   void inject(TwoFactorViewModel __);
+  void inject(VideoViewModel __);
   void inject(ViewPledgeActivity __);
   void inject(ViewPledgeViewModel __);
 }

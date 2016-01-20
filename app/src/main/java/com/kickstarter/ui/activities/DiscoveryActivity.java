@@ -127,7 +127,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(drawerAdapter::takeData);
 
-    viewModel.outputs.openDrawer()
+    viewModel.outputs.drawerIsOpen()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(RxDrawerLayout.open(discoveryLayout, GravityCompat.START));
@@ -141,6 +141,12 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::startActivityUpdateActivity);
+
+    RxDrawerLayout.drawerOpen(discoveryLayout, GravityCompat.START)
+      .skip(1)
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(viewModel.inputs::openDrawer);
   }
 
   @Override

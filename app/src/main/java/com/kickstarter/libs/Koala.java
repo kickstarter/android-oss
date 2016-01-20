@@ -291,4 +291,43 @@ public final class Koala {
   public void trackProfileView() {
     client.track("Profile View My");
   }
+
+  // RATING
+  public void trackAppRatingNow() {
+    client.track("Checkout Finished Alert App Store Rating Rate Now");
+  }
+
+  public void trackAppRatingRemindLater() {
+    client.track("Checkout Finished Alert App Store Rating Remind Later");
+  }
+
+  public void trackAppRatingNoThanks() {
+    client.track("Checkout Finished Alert App Store Rating No Thanks");
+  }
+
+  // VIDEO
+  // todo: add properties
+  public void trackVideoStart(final @NonNull Project project) {
+    client.track("Project Video Start", KoalaUtils.projectProperties(project));
+  }
+
+  public void trackVideoEndedScrubbing(final @NonNull Project project) {
+    client.track("Project Video End Scrubbing", KoalaUtils.projectProperties(project));
+  }
+
+  public void trackVideoPaused(final @NonNull Project project) {
+    client.track("Project Video Pause", KoalaUtils.projectProperties(project));
+  }
+
+  public void trackVideoResume(final @NonNull Project project) {
+    client.track("Project Video Resume", KoalaUtils.projectProperties(project));
+  }
+
+  public void trackVideoStop(final @NonNull Project project) {
+    client.track("Project Video Stop", KoalaUtils.projectProperties(project));
+  }
+
+  public void trackVideoCompleted(final @NonNull Project project) {
+    client.track("Project Video Complete", KoalaUtils.projectProperties(project));
+  }
 }

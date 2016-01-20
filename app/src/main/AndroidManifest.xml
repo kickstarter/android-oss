@@ -309,10 +309,11 @@
     </activity>
 
     <activity
-      android:name=".ui.activities.VideoPlayerActivity"
+      android:name=".ui.activities.VideoActivity"
       android:parentActivityName=".ui.activities.ProjectActivity"
       android:theme="@style/VideoPlayerActivity"
-      android:screenOrientation="landscape">
+      android:screenOrientation="sensorLandscape"
+      android:configChanges="screenSize|keyboardHidden">
 
       <meta-data
         android:name="android.support.PARENT_ACTIVITY"

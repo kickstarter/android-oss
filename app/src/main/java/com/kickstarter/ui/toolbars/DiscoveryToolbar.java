@@ -17,7 +17,6 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.StatusBarUtils;
-import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
@@ -29,7 +28,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 
 public final class DiscoveryToolbar extends KSToolbar {
   @Bind(R.id.activity_feed_button) TextView activityFeedButton;

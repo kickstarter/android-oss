@@ -1,5 +1,6 @@
 package com.kickstarter.libs;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.Surface;
 
@@ -8,12 +9,15 @@ import com.google.android.exoplayer.ExoPlayer;
 import com.google.android.exoplayer.MediaCodecAudioTrackRenderer;
 import com.google.android.exoplayer.MediaCodecVideoTrackRenderer;
 import com.google.android.exoplayer.util.PlayerControl;
+import com.kickstarter.libs.utils.ViewUtils;
 
 /**
  * ExoPlayer wrapper that provides higher level interface.
+ * Reference: https://github.com/google/ExoPlayer/blob/master/demo/src/main/java/com/google/android/exoplayer/demo/player/DemoPlayer.java
  */
 public final class KSVideoPlayer implements ExoPlayer.Listener {
   private final int TRACK_RENDERER_COUNT = 3; // audio, video, text
+  private final Context context;
   private boolean lastReportedPlayWhenReady;
   private int lastReportedPlaybackState;
   private final ExoPlayer player;
@@ -31,7 +35,8 @@ public final class KSVideoPlayer implements ExoPlayer.Listener {
     void buildRenderers(KSVideoPlayer player);
   }
 
-  public KSVideoPlayer(@NonNull final RendererBuilder rendererBuilder) {
+  public KSVideoPlayer(final @NonNull Context context, final @NonNull RendererBuilder rendererBuilder) {
+    this.context = context;
     this.player = ExoPlayer.Factory.newInstance(TRACK_RENDERER_COUNT);
     this.rendererBuilder = rendererBuilder;
     playerControl = new PlayerControl(player);
@@ -44,13 +49,11 @@ public final class KSVideoPlayer implements ExoPlayer.Listener {
   }
 
   @Override
-  public void onPlayWhenReadyCommitted() {
-
-  }
+  public void onPlayWhenReadyCommitted() {}
 
   @Override
-  public void onPlayerError(@NonNull final ExoPlaybackException error) {
-
+  public void onPlayerError(final @NonNull ExoPlaybackException error) {
+    ViewUtils.showToast(context, error.getMessage());
   }
 
   /* ExoPlayer helpers */
@@ -60,10 +63,6 @@ public final class KSVideoPlayer implements ExoPlayer.Listener {
 
   public long getDuration() {
     return player.getDuration();
-  }
-
-  public int getPlaybackState() {
-    return player.getPlaybackState();
   }
 
   public PlayerControl getPlayerControl() {
@@ -87,8 +86,8 @@ public final class KSVideoPlayer implements ExoPlayer.Listener {
     rendererBuilder.buildRenderers(this);
   }
 
-  public void prepareRenderers(@NonNull final MediaCodecVideoTrackRenderer videoRenderer,
-    @NonNull final MediaCodecAudioTrackRenderer audioTrackRenderer) {
+  public void prepareRenderers(final @NonNull MediaCodecVideoTrackRenderer videoRenderer,
+    final @NonNull MediaCodecAudioTrackRenderer audioTrackRenderer) {
     this.videoRenderer = videoRenderer;
     player.sendMessage(videoRenderer, MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, surface);
     player.prepare(videoRenderer, audioTrackRenderer);
@@ -115,7 +114,7 @@ public final class KSVideoPlayer implements ExoPlayer.Listener {
     player.seekTo(position);
   }
 
-  public void setListener(@NonNull final Listener listener) {
+  public void setListener(final @NonNull Listener listener) {
     this.listener = listener;
   }
 
@@ -123,7 +122,7 @@ public final class KSVideoPlayer implements ExoPlayer.Listener {
     player.setPlayWhenReady(playWhenReady);
   }
 
-  public void setSurface(@NonNull final Surface surface) {
+  public void setSurface(final @NonNull Surface surface) {
     this.surface = surface;
     pushSurface(false);
   }

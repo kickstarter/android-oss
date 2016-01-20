@@ -126,8 +126,8 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       final int targetImageWidth = (int) (getScreenWidthDp(context) * getScreenDensity(context));
       Picasso.with(context)
         .load(photo.full())
-        .placeholder(grayGradientDrawable)  // todo: set placeholder size
         .resize(targetImageWidth, 0)
+        .placeholder(grayGradientDrawable)
         .into(photoImageView);
       photoImageView.setAdjustViewBounds(true);
 

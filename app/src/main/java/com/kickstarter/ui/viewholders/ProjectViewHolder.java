@@ -105,6 +105,7 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @BindDimen(R.dimen.grid_4) int grid4Dimen;
 
   protected @BindDrawable(R.drawable.click_indicator_light_masked) Drawable clickIndicatorLightMaskedDrawable;
+  protected @BindDrawable(R.drawable.gray_gradient) Drawable grayGradientDrawable;
 
   protected @BindString(R.string.project_creator_by_creator_html) String byCreatorString;
   protected @BindString(R.string.discovery_baseball_card_blurb_read_more) String blurbReadMoreString;
@@ -162,6 +163,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       Picasso.with(context)
         .load(photo.full())
         .resize(targetImageWidth, 0)
+        .placeholder(grayGradientDrawable)
         .into(photoImageView);
       photoImageView.setAdjustViewBounds(true);
     }

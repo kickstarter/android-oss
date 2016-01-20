@@ -38,6 +38,7 @@ import butterknife.BindString;
 import butterknife.ButterKnife;
 
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
+import static com.kickstarter.libs.utils.ProjectUtils.photoHeightFromWidthRatio;
 import static com.kickstarter.libs.utils.ViewUtils.getScreenDensity;
 import static com.kickstarter.libs.utils.ViewUtils.getScreenWidthDp;
 
@@ -124,12 +125,13 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       photoImageView.setVisibility(View.VISIBLE);
 
       final int targetImageWidth = (int) (getScreenWidthDp(context) * getScreenDensity(context));
+      photoImageView.setMaxHeight(photoHeightFromWidthRatio(targetImageWidth));
+
       Picasso.with(context)
         .load(photo.full())
-        .resize(targetImageWidth, 0)
+        .resize(targetImageWidth, 0)  // required to fit properly into apis < 18
         .placeholder(grayGradientDrawable)
         .into(photoImageView);
-      photoImageView.setAdjustViewBounds(true);
 
     } else {
       photoImageView.setVisibility(View.INVISIBLE);

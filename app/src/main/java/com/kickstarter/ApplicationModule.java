@@ -256,7 +256,7 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  DeviceRegistrationServiceType provideDeviceRegistrationServiceType(final @ForApplication @NonNull Context context) {
+  @NonNull DeviceRegistrationServiceType provideDeviceRegistrationServiceType(final @ForApplication @NonNull Context context) {
     return new DeviceRegistrationService(context);
   }
 

@@ -92,7 +92,7 @@ public class PushNotifications {
     notifications.onNext(envelope);
   }
 
-  private void displayNotificationFromFriendFollowActivity(@NonNull final PushNotificationEnvelope envelope) {
+  private void displayNotificationFromFriendFollowActivity(final @NonNull PushNotificationEnvelope envelope) {
     final Activity activity = envelope.activity();
     final GCM gcm = envelope.gcm();
 
@@ -102,7 +102,7 @@ public class PushNotifications {
     notificationManager().notify(envelope.signature(), notification);
   }
 
-  private void displayNotificationFromProjectActivity(@NonNull final PushNotificationEnvelope envelope) {
+  private void displayNotificationFromProjectActivity(final @NonNull PushNotificationEnvelope envelope) {
     final GCM gcm = envelope.gcm();
 
     final Activity activity = envelope.activity();
@@ -119,7 +119,7 @@ public class PushNotifications {
     notificationManager().notify(envelope.signature(), notification);
   }
 
-  private void displayNotificationFromProjectReminder(@NonNull final PushNotificationEnvelope envelope) {
+  private void displayNotificationFromProjectReminder(final @NonNull PushNotificationEnvelope envelope) {
     final PushNotificationEnvelope.Project project = envelope.project();
     final GCM gcm = envelope.gcm();
 
@@ -131,7 +131,7 @@ public class PushNotifications {
     notificationManager().notify(envelope.signature(), notification);
   }
 
-  private void displayNotificationFromUpdateActivity(@NonNull final PushNotificationEnvelope envelope) {
+  private void displayNotificationFromUpdateActivity(final @NonNull PushNotificationEnvelope envelope) {
     final Activity activity = envelope.activity();
     final GCM gcm = envelope.gcm();
 
@@ -149,7 +149,7 @@ public class PushNotifications {
     notificationManager().notify(envelope.signature(), notification);
   }
 
-  private @NonNull NotificationCompat.Builder notificationBuilder(@NonNull final String title, @NonNull final String text) {
+  private @NonNull NotificationCompat.Builder notificationBuilder(final @NonNull String title, final @NonNull String text) {
     return new NotificationCompat.Builder(context)
       .setSmallIcon(R.drawable.ic_kickstarter_k)
       .setColor(ContextCompat.getColor(context, R.color.green))
@@ -187,7 +187,7 @@ public class PushNotifications {
     return taskStackBuilder.getPendingIntent(uniqueNotificationId, PendingIntent.FLAG_UPDATE_CURRENT);
   }
 
-  private @Nullable Bitmap fetchBitmap(@NonNull final String url, final boolean transformIntoCircle) {
+  private @Nullable Bitmap fetchBitmap(final @NonNull String url, final boolean transformIntoCircle) {
     try {
       RequestCreator requestCreator = Picasso.with(context).load(url).transform(new CropSquareTransformation());
       if (transformIntoCircle) {

@@ -11,7 +11,7 @@ import com.kickstarter.services.gcm.UnregisterService;
 public final class DeviceRegistrationService implements DeviceRegistrationServiceType {
   private @ForApplication @NonNull Context context;
 
-  public DeviceRegistrationService(final @NonNull @ForApplication Context context) {
+  public DeviceRegistrationService(final @ForApplication @NonNull Context context) {
     this.context = context;
   }
 

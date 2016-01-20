@@ -15,6 +15,9 @@ public final class DeviceRegistrationService implements DeviceRegistrationServic
     this.context = context;
   }
 
+  /**
+   * If Play Services is available on this device, start a service to register it with Google Cloud Messaging.
+   */
   public void registerDevice() {
     if (!PlayServicesUtils.isAvailable(context)) {
       return;
@@ -23,6 +26,9 @@ public final class DeviceRegistrationService implements DeviceRegistrationServic
     context.startService(new Intent(context, RegisterService.class));
   }
 
+  /**
+   * If Play Services is available on this device, start a service to unregister it with Google Cloud Messaging.
+   */
   public void unregisterDevice() {
     if (!PlayServicesUtils.isAvailable(context)) {
       return;

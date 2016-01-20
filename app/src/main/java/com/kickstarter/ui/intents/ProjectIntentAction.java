@@ -20,7 +20,7 @@ import rx.Observable;
 import rx.functions.Action1;
 
 public class ProjectIntentAction extends IntentAction {
-  final static Pattern PROJECT_PATTERN = Pattern.compile("\\A\\/projects\\/([a-zA-Z0-9_-]+)?(\\/([a-zA-Z0-9_-]+))?");
+  final static Pattern PROJECT_PATTERN = Pattern.compile("\\A\\/projects\\/([a-zA-Z0-9_-]+)(\\/([a-zA-Z0-9_-]+)).*");
 
   public ProjectIntentAction(final @NonNull Action1<Project> initializer, final @NonNull Observable<ActivityEvent> lifecycle,
     final @NonNull ApiClientType client) {
@@ -73,9 +73,13 @@ public class ProjectIntentAction extends IntentAction {
       return null;
     }
 
+    if (!uri.getScheme().equals("ksr")) {
+      return null;
+    }
+
     final Matcher matcher = PROJECT_PATTERN.matcher(uri.getPath());
-    if (matcher.matches()) {
-      return matcher.group(2) != null ? matcher.group(2) : matcher.group(1);
+    if (matcher.matches() && matcher.group(3) != null) {
+      return matcher.group(3);
     }
 
     return null;

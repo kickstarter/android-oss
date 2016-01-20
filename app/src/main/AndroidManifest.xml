@@ -88,6 +88,9 @@
           android:host="www.kickstarter.com"
           android:scheme="https"
           android:pathPrefix="/discover" />
+        <data
+          android:host="www.kickstarter.com"
+          android:scheme="ksr" />
       </intent-filter>
 
     </activity>
@@ -232,7 +235,7 @@
         <category android:name="android.intent.category.BROWSABLE" />
         <data
           android:host="www.kickstarter.com"
-          android:scheme="https"
+          android:scheme="ksr"
           android:pathPrefix="/projects/" />
       </intent-filter>
     </activity>

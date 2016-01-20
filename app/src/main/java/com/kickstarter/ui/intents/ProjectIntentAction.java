@@ -73,6 +73,10 @@ public class ProjectIntentAction extends IntentAction {
       return null;
     }
 
+    if (!uri.getScheme().equals("ksr")) {
+      return null;
+    }
+
     final Matcher matcher = PROJECT_PATTERN.matcher(uri.getPath());
     if (matcher.matches() && matcher.group(3) != null) {
       return matcher.group(3);

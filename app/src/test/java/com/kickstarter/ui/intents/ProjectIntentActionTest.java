@@ -39,8 +39,8 @@ public final class ProjectIntentActionTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void emitsFromProjectUri() {
-    final Uri uri = Uri.parse("https://www.kickstarter.com/projects/1186238668/skull-graphic-tee");
+  public void emitsFromKsrProjectUri() {
+    final Uri uri = Uri.parse("ksr://www.kickstarter.com/projects/1186238668/skull-graphic-tee");
     final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 
     final TestSubscriber<Project> resultTest = TestSubscriber.create();
@@ -51,15 +51,15 @@ public final class ProjectIntentActionTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void emitsFromProjectWithoutCreatorUri() {
-    final Uri uri = Uri.parse("https://www.kickstarter.com/projects/skull-graphic-tee");
+  public void doesNotEmitFromHttpsProjectUri() {
+    final Uri uri = Uri.parse("https://www.kickstarter.com/projects/1186238668/skull-graphic-tee");
     final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 
     final TestSubscriber<Project> resultTest = TestSubscriber.create();
     final ProjectIntentAction intentAction = new ProjectIntentAction(resultTest::onNext, PublishSubject.create(), new MockApiClient());
     intentAction.intent(intent);
 
-    resultTest.assertValueCount(1);
+    resultTest.assertNoValues();
   }
 }
 

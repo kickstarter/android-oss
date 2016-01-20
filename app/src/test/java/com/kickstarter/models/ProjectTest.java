@@ -3,6 +3,8 @@ package com.kickstarter.models;
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.ProjectFactory;
 
+import org.joda.time.DateTime;
+
 import org.junit.Test;
 
 public class ProjectTest extends KSRobolectricTestCase {
@@ -43,5 +45,16 @@ public class ProjectTest extends KSRobolectricTestCase {
     assertEquals(50.0f, ProjectFactory.halfWayProject().percentageFunded());
     assertEquals(100.0f, ProjectFactory.allTheWayProject().percentageFunded());
     assertEquals(200.0f, ProjectFactory.doubledGoalProject().percentageFunded());
+  }
+
+  @Test
+  public void testIsApproachingDeadline() {
+    final Project projectApproachingDeadline = ProjectFactory.project().toBuilder()
+      .deadline(new DateTime().plusDays(1)).build();
+    final Project projectNotApproachingDeadline = ProjectFactory.project().toBuilder()
+      .deadline(new DateTime().plusDays(3)).build();
+
+    assertTrue(projectApproachingDeadline.isApproachingDeadline());
+    assertFalse(projectNotApproachingDeadline.isApproachingDeadline());
   }
 }

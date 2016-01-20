@@ -45,7 +45,7 @@ public class PushNotifications {
   protected PublishSubject<PushNotificationEnvelope> notifications = PublishSubject.create();
   protected CompositeSubscription subscriptions = new CompositeSubscription();
 
-  public PushNotifications(final @ForApplication Context context, final @NonNull ApiClientType client,
+  public PushNotifications(final @ForApplication @NonNull Context context, final @NonNull ApiClientType client,
     final @NonNull DeviceRegistrarType deviceRegistrar) {
 
     this.context = context;

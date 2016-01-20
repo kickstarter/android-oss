@@ -35,6 +35,7 @@
 
       <com.kickstarter.ui.views.IconButton
         android:id="@+id/play_button_overlay"
+        android:background="@drawable/video_button_background"
         android:contentDescription="@string/accessibility_projects_buttons_play_video"
         android:focusable="true"
         android:visibility="visible"
@@ -43,8 +44,9 @@
         android:layout_marginEnd="@dimen/grid_3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/project_play_button_size"
-        android:text="@string/play_circle_outline_icon"
+        android:padding="10dp"
+        android:textSize="30dp"
+        android:text="@string/play_arrow"
         android:textColor="@color/white" />
 
       <RelativeLayout

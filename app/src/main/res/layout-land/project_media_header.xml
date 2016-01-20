@@ -44,8 +44,8 @@
         android:layout_marginEnd="@dimen/grid_3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:textSize="30dp"
+        android:padding="14dp"
+        android:textSize="@dimen/grid_5"
         android:text="@string/play_arrow"
         android:textColor="@color/white" />
 
@@ -58,7 +58,7 @@
 
         <TextView
           android:id="@+id/project_name"
-          android:text="Secret Hitler"
+          android:text="Secret Bunnies"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:maxLines="2"
@@ -69,7 +69,7 @@
         <TextView
           android:id="@+id/creator_name"
           android:layout_below="@id/project_name"
-          android:text="by Max Temkin"
+          android:text="by Beatrix Potter"
           android:focusable="true"
           android:singleLine="true"
           android:layout_width="wrap_content"

@@ -93,8 +93,10 @@ public class PushNotifications {
   }
 
   private void displayNotificationFromFriendFollowActivity(final @NonNull PushNotificationEnvelope envelope) {
-    final Activity activity = envelope.activity();
     final GCM gcm = envelope.gcm();
+
+    final Activity activity = envelope.activity();
+    if (activity == null) { return; }
 
     final Notification notification = notificationBuilder(gcm.title(), gcm.alert())
       .setLargeIcon(fetchBitmap(activity.userPhoto(), true))
@@ -112,19 +114,23 @@ public class PushNotifications {
     final Long projectId = activity.projectId();
     if (projectId == null) { return; }
 
+    final String projectParam = ObjectUtils.toString(projectId);
+
     final Notification notification = notificationBuilder(gcm.title(), gcm.alert())
-      .setContentIntent(projectContentIntent(projectId, envelope.signature()))
+      .setContentIntent(projectContentIntent(projectParam, envelope.signature()))
       .setLargeIcon(fetchBitmap(projectPhoto, false))
       .build();
     notificationManager().notify(envelope.signature(), notification);
   }
 
   private void displayNotificationFromProjectReminder(final @NonNull PushNotificationEnvelope envelope) {
-    final PushNotificationEnvelope.Project project = envelope.project();
     final GCM gcm = envelope.gcm();
 
+    final PushNotificationEnvelope.Project project = envelope.project();
+    if (project == null) { return; }
+
     final Notification notification = notificationBuilder(gcm.title(), gcm.alert())
-      .setContentIntent(projectContentIntent(project.id(), envelope.signature()))
+      .setContentIntent(projectContentIntent(ObjectUtils.toString(project.id()), envelope.signature()))
       .setLargeIcon(fetchBitmap(project.photo(), false))
       .build();
 
@@ -132,18 +138,24 @@ public class PushNotifications {
   }
 
   private void displayNotificationFromUpdateActivity(final @NonNull PushNotificationEnvelope envelope) {
-    final Activity activity = envelope.activity();
     final GCM gcm = envelope.gcm();
 
-    final String updateId = ObjectUtils.toString(activity.updateId());
-    final String projectId = ObjectUtils.toString(activity.projectId());
+    final Activity activity = envelope.activity();
+    if (activity == null) { return; }
+    final Long updateId = activity.updateId();
+    if (updateId == null) { return; }
+    final Long projectId = activity.projectId();
+    if (projectId == null) { return; }
+
+    final String projectParam = ObjectUtils.toString(projectId);
+    final String updateParam = ObjectUtils.toString(updateId);
 
     final Update update = client
-      .fetchUpdate(projectId, updateId)
+      .fetchUpdate(projectParam, updateParam)
       .toBlocking().single();
 
     final Notification notification = notificationBuilder(gcm.title(), gcm.alert())
-      .setContentIntent(projectUpdateContentIntent(update, projectId, envelope.signature()))
+      .setContentIntent(projectUpdateContentIntent(update, projectParam, envelope.signature()))
       .setLargeIcon(fetchBitmap(activity.projectPhoto(), false))
       .build();
     notificationManager().notify(envelope.signature(), notification);
@@ -159,9 +171,9 @@ public class PushNotifications {
       .setAutoCancel(true);
   }
 
-  private @NonNull PendingIntent projectContentIntent(final @NonNull Long projectId, final int uniqueNotificationId) {
+  private @NonNull PendingIntent projectContentIntent(final @NonNull String projectParam, final int uniqueNotificationId) {
     final Intent resultIntent = new Intent(context, ProjectActivity.class)
-      .putExtra(IntentKey.PROJECT_PARAM, projectId.toString());
+      .putExtra(IntentKey.PROJECT_PARAM, projectParam);
 
     final TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context)
       .addParentStack(ProjectActivity.class)
@@ -170,11 +182,11 @@ public class PushNotifications {
     return taskStackBuilder.getPendingIntent(uniqueNotificationId, PendingIntent.FLAG_UPDATE_CURRENT);
   }
 
-  private @NonNull PendingIntent projectUpdateContentIntent(final @NonNull Update update, final @NonNull String projectId,
+  private @NonNull PendingIntent projectUpdateContentIntent(final @NonNull Update update, final @NonNull String projectParam,
     final int uniqueNotificationId) {
 
     final Intent projectIntent = new Intent(context, ProjectActivity.class)
-      .putExtra(IntentKey.PROJECT_PARAM, projectId.toString());
+      .putExtra(IntentKey.PROJECT_PARAM, projectParam);
 
     final Intent updateIntent = new Intent(context, WebViewActivity.class)
       .putExtra(IntentKey.URL, update.urls().web().update());
@@ -187,7 +199,11 @@ public class PushNotifications {
     return taskStackBuilder.getPendingIntent(uniqueNotificationId, PendingIntent.FLAG_UPDATE_CURRENT);
   }
 
-  private @Nullable Bitmap fetchBitmap(final @NonNull String url, final boolean transformIntoCircle) {
+  private @Nullable Bitmap fetchBitmap(final @Nullable String url, final boolean transformIntoCircle) {
+    if (url == null) {
+      return null;
+    }
+
     try {
       RequestCreator requestCreator = Picasso.with(context).load(url).transform(new CropSquareTransformation());
       if (transformIntoCircle) {

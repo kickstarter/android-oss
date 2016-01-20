@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.kickstarter.libs.Config;
 import com.kickstarter.libs.rx.operators.ApiErrorOperator;
 import com.kickstarter.libs.rx.operators.Operators;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
@@ -15,6 +16,7 @@ import com.kickstarter.models.Empty;
 import com.kickstarter.models.Location;
 import com.kickstarter.models.Notification;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apirequests.CommentBody;
 import com.kickstarter.services.apirequests.LoginWithFacebookBody;
@@ -37,6 +39,8 @@ import java.util.List;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
+
+import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
 
 public final class ApiClient implements ApiClientType {
   private final ApiService service;
@@ -185,6 +189,23 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
+  public @NonNull Observable<Update> fetchUpdate(final @NonNull String projectParam, final @NonNull String updateParam) {
+    return service
+      .update(projectParam, updateParam)
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
+  @Override
+  public @NonNull Observable<Update> fetchUpdate(final @NonNull Update update) {
+    final String projectParam = ObjectUtils.toString(update.projectId());
+    final String updateParam = ObjectUtils.toString(update.id());
+
+    return fetchUpdate(projectParam, updateParam)
+      .startWith(update);
+  }
+
+  @Override
   public @NonNull Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String accessToken) {
     return service
       .login(LoginWithFacebookBody.builder().accessToken(accessToken).build())
@@ -313,15 +334,15 @@ public final class ApiClient implements ApiClientType {
     return service
       .updateUserSettings(
         SettingsBody.builder()
-          .notifyMobileOfFollower(user.notifyMobileOfFollower())
-          .notifyMobileOfFriendActivity(user.notifyMobileOfFriendActivity())
-          .notifyMobileOfUpdates(user.notifyMobileOfUpdates())
-          .notifyOfFollower(user.notifyOfFollower())
-          .notifyOfFriendActivity(user.notifyOfFriendActivity())
-          .notifyOfUpdates(user.notifyOfUpdates())
-          .happeningNewsletter(user.happeningNewsletter() ? 1 : 0)
-          .promoNewsletter(user.promoNewsletter() ? 1 : 0)
-          .weeklyNewsletter(user.weeklyNewsletter() ? 1 : 0)
+          .notifyMobileOfFollower(isTrue(user.notifyMobileOfFollower()))
+          .notifyMobileOfFriendActivity(isTrue(user.notifyMobileOfFriendActivity()))
+          .notifyMobileOfUpdates(isTrue(user.notifyMobileOfUpdates()))
+          .notifyOfFollower(isTrue(user.notifyOfFollower()))
+          .notifyOfFriendActivity(isTrue(user.notifyOfFriendActivity()))
+          .notifyOfUpdates(isTrue(user.notifyOfUpdates()))
+          .happeningNewsletter(isTrue(user.happeningNewsletter()) ? 1 : 0)
+          .promoNewsletter(isTrue(user.promoNewsletter()) ? 1 : 0)
+          .weeklyNewsletter(isTrue(user.weeklyNewsletter()) ? 1 : 0)
           .build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());

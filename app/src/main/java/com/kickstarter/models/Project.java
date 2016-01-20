@@ -292,6 +292,14 @@ public abstract class Project implements Parcelable {
     return STATE_SUCCESSFUL.equals(state());
   }
 
+  public boolean isApproachingDeadline() {
+    if (deadline().isBeforeNow()) {
+      return false;
+    }
+
+    return deadline().isBefore(new DateTime().plusDays(2));
+  }
+
   public float percentageFunded() {
     if (goal() > 0.0f) {
       return (pledged() / goal()) * 100.0f;

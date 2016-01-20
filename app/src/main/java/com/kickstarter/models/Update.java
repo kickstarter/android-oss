@@ -22,8 +22,9 @@ public abstract class Update implements Parcelable {
   @Nullable public abstract DateTime publishedAt();
   public abstract int sequence();
   public abstract String title();
-  @Nullable public abstract User user();
   @Nullable public abstract DateTime updatedAt();
+  public abstract Urls urls();
+  @Nullable public abstract User user();
   @Nullable public abstract Boolean visible();
 
   @AutoParcel.Builder
@@ -37,8 +38,9 @@ public abstract class Update implements Parcelable {
     public abstract Builder publishedAt(DateTime __);
     public abstract Builder sequence(int __);
     public abstract Builder title(String __);
-    public abstract Builder user(User __);
     public abstract Builder updatedAt(DateTime __);
+    public abstract Builder urls(Urls __);
+    public abstract Builder user(User __);
     public abstract Builder visible(Boolean __);
     public abstract Update build();
   }
@@ -48,6 +50,67 @@ public abstract class Update implements Parcelable {
   }
 
   public abstract Builder toBuilder();
+
+  @AutoParcel
+  @AutoGson
+  public abstract static class Urls implements Parcelable {
+    public abstract Web web();
+    @Nullable public abstract Api api();
+
+    @AutoParcel.Builder
+    public abstract static class Builder {
+      public abstract Builder web(Web __);
+      public abstract Builder api(Api __);
+      public abstract Urls build();
+    }
+
+    public static Builder builder() {
+      return new AutoParcel_Update_Urls.Builder();
+    }
+
+    public abstract Builder toBuilder();
+
+    @AutoParcel
+    @AutoGson
+    public abstract static class Web implements Parcelable {
+      public abstract String likes();
+      public abstract String update();
+
+      @AutoParcel.Builder
+      public abstract static class Builder {
+        public abstract Builder likes(String __);
+        public abstract Builder update(String __);
+        public abstract Web build();
+      }
+
+      public static Builder builder() {
+        return new AutoParcel_Update_Urls_Web.Builder();
+      }
+
+      public abstract Builder toBuilder();
+    }
+
+    @AutoParcel
+    @AutoGson
+    public abstract static class Api implements Parcelable {
+      @Nullable public abstract String comments();
+      @Nullable public abstract String update();
+
+      @AutoParcel.Builder
+      public abstract static class Builder {
+        public abstract Builder comments(String __);
+        public abstract Builder update(String __);
+        public abstract Api build();
+      }
+
+      public static Builder builder() {
+        return new AutoParcel_Update_Urls_Api.Builder();
+      }
+
+      public abstract Builder toBuilder();
+    }
+  }
+
   private static final int TRUNCATED_BODY_LENGTH = 400;
 
   public String truncatedBody() {

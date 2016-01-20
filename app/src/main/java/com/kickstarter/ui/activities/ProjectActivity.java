@@ -256,7 +256,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   }
 
   private void startWebViewActivity(final @NonNull String toolbarTitle, final @NonNull String url) {
-    final Intent intent = new Intent(this, DisplayWebViewActivity.class)
+    final Intent intent = new Intent(this, WebViewActivity.class)
       .putExtra(IntentKey.TOOLBAR_TITLE, toolbarTitle)
       .putExtra(IntentKey.URL, url);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);

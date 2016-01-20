@@ -370,7 +370,7 @@
             }
           },
           "about": {
-            "title": "About",
+            "title": "Help",
             "contact": "Contact",
             "how_it_works": "How Kickstarter works",
             "terms": "Terms of Use",
@@ -393,7 +393,9 @@
             "option": {
               "rate_now": "Rate It Now",
               "remind_later": "Remind Me Later",
-              "no_thanks": "No, Thanks"
+              "no_thanks": "No, Thanks",
+              "title_show_us_some_love": "Show us some love",
+              "message_if_you_enjoy_using_Kickstarter": "If you enjoy using the Kickstarter app, would you mind taking a moment to rate it in the Play store?\n\nThank you for your support!"
             }
           },
           "version_number": "Version %{version_number}"
@@ -643,7 +645,8 @@
             "buttons": {
               "share": "Share",
               "tweet": "Tweet",
-              "more": "More"
+              "more": "More",
+              "more_share_options": "More share options"
             },
             "twitter_via_kickstarter": "%{project_or_update_title}, via Kickstarter",
             "title_via_kickstarter": "%{project_or_update_title}, via Kickstarter",
@@ -1693,7 +1696,9 @@
             "option": {
               "rate_now": "Jetzt bewerten",
               "remind_later": "Später",
-              "no_thanks": "Nein, Danke"
+              "no_thanks": "Nein, Danke",
+              "title_show_us_some_love": "Show us some love",
+              "message_if_you_enjoy_using_Kickstarter": "If you enjoy using the Kickstarter app, would you mind taking a moment to rate it in the Play store?\n\nThank you for your support!"
             }
           },
           "version_number": "Version %{version_number}"
@@ -1943,7 +1948,8 @@
             "buttons": {
               "share": "Teilen",
               "tweet": "Twittern",
-              "more": "Mehr"
+              "more": "Mehr",
+              "more_share_options": "More share options"
             },
             "twitter_via_kickstarter": "%{project_or_update_title}, über Kickstarter",
             "title_via_kickstarter": "%{project_or_update_title}, über Kickstarter",
@@ -2993,7 +2999,9 @@
             "option": {
               "rate_now": "Califícala ahora",
               "remind_later": "Recordarme más tarde",
-              "no_thanks": "No, gracias"
+              "no_thanks": "No, gracias",
+              "title_show_us_some_love": "Show us some love",
+              "message_if_you_enjoy_using_Kickstarter": "If you enjoy using the Kickstarter app, would you mind taking a moment to rate it in the Play store?\n\nThank you for your support!"
             }
           },
           "version_number": "Versión %{version_number}"
@@ -3243,7 +3251,8 @@
             "buttons": {
               "share": "Compartir",
               "tweet": "Tweet",
-              "more": "Más"
+              "more": "Más",
+              "more_share_options": "More share options"
             },
             "twitter_via_kickstarter": "%{project_or_update_title}, via Kickstarter",
             "title_via_kickstarter": "%{project_or_update_title}, vía Kickstarter",
@@ -4293,7 +4302,9 @@
             "option": {
               "rate_now": "Évaluez l'application",
               "remind_later": "Rappelez-moi plus tard",
-              "no_thanks": "Non, merci"
+              "no_thanks": "Non, merci",
+              "title_show_us_some_love": "Show us some love",
+              "message_if_you_enjoy_using_Kickstarter": "If you enjoy using the Kickstarter app, would you mind taking a moment to rate it in the Play store?\n\nThank you for your support!"
             }
           },
           "version_number": "Version %{version_number}"
@@ -4543,7 +4554,8 @@
             "buttons": {
               "share": "Partager",
               "tweet": "Twitter",
-              "more": "Plus"
+              "more": "Plus",
+              "more_share_options": "More share options"
             },
             "twitter_via_kickstarter": "%{project_or_update_title}, via Kickstarter",
             "title_via_kickstarter": "%{project_or_update_title}, via Kickstarter",
@@ -5570,7 +5582,7 @@
             }
           },
           "about": {
-            "title": "About",
+            "title": "Help",
             "contact": "Contact",
             "how_it_works": "How Kickstarter works",
             "terms": "Terms of Use",
@@ -5593,7 +5605,9 @@
             "option": {
               "rate_now": "Rate It Now",
               "remind_later": "Remind Me Later",
-              "no_thanks": "No, Thanks"
+              "no_thanks": "No, Thanks",
+              "title_show_us_some_love": "Show us some love",
+              "message_if_you_enjoy_using_Kickstarter": "If you enjoy using the Kickstarter app, would you mind taking a moment to rate it in the Play store?\n\nThank you for your support!"
             }
           },
           "version_number": "Version %{version_number}"
@@ -5843,7 +5857,8 @@
             "buttons": {
               "share": "Share",
               "tweet": "Tweet",
-              "more": "More"
+              "more": "More",
+              "more_share_options": "More share options"
             },
             "twitter_via_kickstarter": "%{project_or_update_title}, via Kickstarter",
             "title_via_kickstarter": "%{project_or_update_title}, via Kickstarter",
@@ -6648,10 +6663,10 @@
   ],
   "ab_experiments": {
     "discover_sorts_vs_subcategories": "experimental",
-    "native_ios_aa": "control",
+    "native_ios_aa": "experimental",
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
-    "native_iphone_horiz_vs_vert": "experimental",
+    "native_iphone_horiz_vs_vert": "control",
     "recs_thanks_combo_inputs": "combo_inputs",
     "recs_hp_combo_v1": "combo_v1"
   },

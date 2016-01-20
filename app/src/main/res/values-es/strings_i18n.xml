@@ -550,9 +550,13 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="profile_settings_rating_message" formatted="false">Gracias por usar la aplicación de Kickstarter.\n
 Si tienes un momento, ¿te importaría calificar tu experiencia?\n
 ¡Te lo agradeceríamos!</string>
+  <string name="profile_settings_rating_option_message_if_you_enjoy_using_Kickstarter" formatted="false">If you enjoy using the Kickstarter app, would you mind taking a moment to rate it in the Play store?\n
+\n
+Thank you for your support!</string>
   <string name="profile_settings_rating_option_no_thanks" formatted="false">No, gracias</string>
   <string name="profile_settings_rating_option_rate_now" formatted="false">Califícala ahora</string>
   <string name="profile_settings_rating_option_remind_later" formatted="false">Recordarme más tarde</string>
+  <string name="profile_settings_rating_option_title_show_us_some_love" formatted="false">Show us some love</string>
   <string name="profile_settings_rating_rate_us" formatted="false">¡Califícanos en la App Store!</string>
   <string name="profile_settings_rating_rate_us_play_store" formatted="false">¡Califícanos en el Play Store!</string>
   <string name="profile_settings_rating_title" formatted="false">¡Somos todo oídos!</string>
@@ -579,6 +583,7 @@ Si tienes un momento, ¿te importaría calificar tu experiencia?\n
   <string name="project_checkout_share_alert_button_ok" formatted="false">Ok</string>
   <string name="project_checkout_share_alert_this_device_not_capable_of_sending_email" formatted="false">Este dispositivo no puede enviar correos.</string>
   <string name="project_checkout_share_buttons_more" formatted="false">Más</string>
+  <string name="project_checkout_share_buttons_more_share_options" formatted="false">More share options</string>
   <string name="project_checkout_share_buttons_share" formatted="false">Compartir</string>
   <string name="project_checkout_share_buttons_tweet" formatted="false">Tweet</string>
   <string name="project_checkout_share_exclamation" formatted="false">Yu-Juu!</string>

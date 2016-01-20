@@ -13,18 +13,18 @@ import timber.log.Timber;
 
 public class CurrentUser {
   private final StringPreference accessTokenPreference;
-  private final DeviceRegistrationServiceType deviceRegistrationService;
+  private final DeviceRegistrarType deviceRegistrar;
   private final StringPreference userPreference;
 
   private final BehaviorSubject<User> user = BehaviorSubject.create();
   private User currentUser;
 
   public CurrentUser(@NonNull final StringPreference accessTokenPreference,
-    @NonNull final DeviceRegistrationServiceType deviceRegistrationService,
+    @NonNull final DeviceRegistrarType deviceRegistrar,
     @NonNull final Gson gson,
     @NonNull final StringPreference userPreference) {
     this.accessTokenPreference = accessTokenPreference;
-    this.deviceRegistrationService = deviceRegistrationService;
+    this.deviceRegistrar = deviceRegistrar;
     this.userPreference = userPreference;
 
     user.subscribe(user -> currentUser = user);
@@ -55,7 +55,7 @@ public class CurrentUser {
 
     accessTokenPreference.set(accessToken);
     user.onNext(newUser);
-    deviceRegistrationService.registerDevice();
+    deviceRegistrar.registerDevice();
   }
 
   public void logout() {
@@ -64,7 +64,7 @@ public class CurrentUser {
     userPreference.delete();
     accessTokenPreference.delete();
     user.onNext(null);
-    deviceRegistrationService.unregisterDevice();
+    deviceRegistrar.unregisterDevice();
   }
 
   public void refresh(final @NonNull User freshUser) {

@@ -1,6 +1,6 @@
 package com.kickstarter.libs;
 
-public interface DeviceRegistrationServiceType {
+public interface DeviceRegistrarType {
   /**
    * Call a service to register the device with Google Cloud Messaging.
    */

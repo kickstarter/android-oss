@@ -8,10 +8,10 @@ import com.kickstarter.libs.utils.PlayServicesUtils;
 import com.kickstarter.services.gcm.RegisterService;
 import com.kickstarter.services.gcm.UnregisterService;
 
-public final class DeviceRegistrationService implements DeviceRegistrationServiceType {
+public final class DeviceRegistrar implements DeviceRegistrarType {
   private @ForApplication @NonNull Context context;
 
-  public DeviceRegistrationService(final @ForApplication @NonNull Context context) {
+  public DeviceRegistrar(final @ForApplication @NonNull Context context) {
     this.context = context;
   }
 

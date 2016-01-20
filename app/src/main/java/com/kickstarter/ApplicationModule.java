@@ -18,8 +18,8 @@ import com.kickstarter.libs.AutoParcelAdapterFactory;
 import com.kickstarter.libs.CurrentConfig;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.DateTimeTypeConverter;
-import com.kickstarter.libs.DeviceRegistrationService;
-import com.kickstarter.libs.DeviceRegistrationServiceType;
+import com.kickstarter.libs.DeviceRegistrarType;
+import com.kickstarter.libs.DeviceRegistrar;
 import com.kickstarter.libs.Font;
 import com.kickstarter.libs.ForApplication;
 import com.kickstarter.libs.InternalToolsType;
@@ -257,16 +257,16 @@ public class ApplicationModule {
   @Provides
   @Singleton
   CurrentUser provideCurrentUser(@AccessTokenPreference @NonNull final StringPreference accessTokenPreference,
-    @NonNull final DeviceRegistrationServiceType deviceRegistrationService,
+    @NonNull final DeviceRegistrarType deviceRegistrar,
     @NonNull final Gson gson,
     @NonNull @UserPreference final StringPreference userPreference) {
-    return new CurrentUser(accessTokenPreference, deviceRegistrationService, gson, userPreference);
+    return new CurrentUser(accessTokenPreference, deviceRegistrar, gson, userPreference);
   }
 
   @Provides
   @Singleton
-  @NonNull DeviceRegistrationServiceType provideDeviceRegistrationServiceType(final @ForApplication @NonNull Context context) {
-    return new DeviceRegistrationService(context);
+  @NonNull DeviceRegistrarType provideDeviceRegistrar(final @ForApplication @NonNull Context context) {
+    return new DeviceRegistrar(context);
   }
 
   @Provides

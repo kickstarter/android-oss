@@ -203,8 +203,6 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
 
     addSubscription(shareClicked.subscribe(__ -> koala.trackShowProjectShareSheet()));
 
-    addSubscription(playVideoClicked.subscribe(__ -> koala.trackVideoStart(project.getValue())));
-
     addSubscription(projectOnUserChangeStar.mergeWith(starredProjectOnLoginSuccess)
       .subscribe(koala::trackProjectStar));
 

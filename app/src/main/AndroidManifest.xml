@@ -148,10 +148,9 @@
       android:theme="@style/Login" />
 
     <activity
-      android:name=".ui.activities.VideoActivity"
+      android:name=".ui.activities.VideoPlayerActivity"
       android:theme="@style/VideoPlayerActivity"
-      android:screenOrientation="sensorLandscape"
-      android:configChanges="screenSize|keyboardHidden" />
+      android:screenOrientation="landscape" />
 
     <activity
       android:name=".ui.activities.ViewPledgeActivity"

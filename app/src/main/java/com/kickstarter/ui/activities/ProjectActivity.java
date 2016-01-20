@@ -276,7 +276,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   }
 
   private void startVideoPlayerActivity(final @NonNull Project project) {
-    final Intent intent = new Intent(this, VideoActivity.class)
+    final Intent intent = new Intent(this, VideoPlayerActivity.class)
       .putExtra(IntentKey.PROJECT, project);
     startActivity(intent);
   }

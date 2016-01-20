@@ -218,7 +218,8 @@ public class PushNotifications {
     final String projectParam = ObjectUtils.toString(projectId);
     final String updateParam = ObjectUtils.toString(updateId);
 
-    final Observable<Update> update = client.fetchUpdate(projectParam, updateParam);
+    final Observable<Update> update = client.fetchUpdate(projectParam, updateParam)
+      .compose(Transformers.neverError());
 
     return Observable.just(envelope)
       .compose(Transformers.combineLatestPair(update));

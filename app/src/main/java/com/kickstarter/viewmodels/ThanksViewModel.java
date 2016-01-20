@@ -26,16 +26,24 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public final class ThanksViewModel extends ViewModel<ThanksActivity> implements ThanksAdapter.Delegate {
+  protected @Inject ApiClientType apiClient;
+
+  // INPUTS
   private final PublishSubject<Void> facebookClick = PublishSubject.create();
   private final PublishSubject<Void> shareClick = PublishSubject.create();
   private final PublishSubject<Void> twitterClick = PublishSubject.create();
   private final PublishSubject<Project> projectCardMiniClick = PublishSubject.create();
   private final PublishSubject<Category> categoryPromoClick = PublishSubject.create();
 
-  protected @Inject ApiClientType apiClient;
+  // OUTPUTS
+  private final BehaviorSubject<List<Project>> projects = BehaviorSubject.create();
+  public Observable<List<Project>> projects() {
+    return projects;
+  }
 
   @Override
   protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
@@ -85,21 +93,25 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vp -> vp.first.startDiscoveryCategoryIntent(vp.second)));
 
-    final Observable<Category> rootCategory = apiClient.fetchCategory(String.valueOf(project.category().rootId()))
-      .compose(Transformers.neverError());
-    final Observable<Pair<List<Project>, Category>> projectsAndRootCategory = moreProjects(project)
-      .compose(Transformers.zipPair(rootCategory));
+    final Category projectCategory = project.category();
+    if (projectCategory != null) {
+      final Observable<Category> rootCategory = apiClient.fetchCategory(String.valueOf(projectCategory.rootId()))
+        .compose(Transformers.neverError());
 
-    addSubscription(view
-        .compose(Transformers.combineLatestPair(projectsAndRootCategory))
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(vpc -> {
-          final ThanksActivity view = vpc.first;
-          final List<Project> ps = vpc.second.first;
-          final Category category = vpc.second.second;
-          view.showRecommended(ps, category);
-        })
-    );
+      final Observable<Pair<List<Project>, Category>> projectsAndRootCategory = moreProjects(project)
+        .compose(Transformers.zipPair(rootCategory));
+
+      addSubscription(view
+          .compose(Transformers.combineLatestPair(projectsAndRootCategory))
+          .observeOn(AndroidSchedulers.mainThread())
+          .subscribe(vpc -> {
+            final ThanksActivity view = vpc.first;
+            final List<Project> ps = vpc.second.first;
+            final Category category = vpc.second.second;
+            view.showRecommended(ps, category);
+          })
+      );
+    }
 
     addSubscription(
       categoryPromoClick

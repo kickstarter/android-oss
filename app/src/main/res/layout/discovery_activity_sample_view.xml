@@ -28,6 +28,13 @@
       android:layout_marginRight="@dimen/grid_3"
       android:orientation="vertical">
 
+      <TextView
+        style="@style/BodySecondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/grid_3"
+        android:text="@string/discovery_activity_sample_title_Since_your_last_visit" />
+
       <LinearLayout
         android:id="@+id/activity_click_area"
         android:background="@drawable/click_indicator_light_masked"

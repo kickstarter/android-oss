@@ -33,7 +33,7 @@ import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
-import com.kickstarter.ui.intents.DiscoveryIntentMapper;
+import com.kickstarter.ui.intentmappers.DiscoveryIntentMapper;
 import com.kickstarter.ui.viewholders.DiscoveryActivityViewHolder;
 import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;

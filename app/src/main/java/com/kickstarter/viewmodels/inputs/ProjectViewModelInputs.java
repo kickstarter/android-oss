@@ -9,7 +9,6 @@ import com.kickstarter.models.Reward;
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 
 public interface ProjectViewModelInputs {
-  void initializer(final @NonNull Project project);
   void backProjectClicked();
   void shareClicked();
   void blurbClicked();

@@ -24,7 +24,7 @@ import com.kickstarter.models.Reward;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ProjectAdapter;
-import com.kickstarter.ui.intents.ProjectIntentAction;
+import com.kickstarter.ui.intentmappers.ProjectIntentMapper;
 import com.kickstarter.ui.views.IconButton;
 import com.kickstarter.viewmodels.ProjectViewModel;
 
@@ -41,7 +41,7 @@ import rx.android.schedulers.AndroidSchedulers;
 @RequiresViewModel(ProjectViewModel.class)
 public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   private ProjectAdapter adapter;
-  private ProjectIntentAction intentAction;
+  private ProjectIntentMapper intentAction;
 
   protected @Bind(R.id.project_recycler_view) RecyclerView projectRecyclerView;
   protected @Bind(R.id.star_icon) IconButton starButton;
@@ -76,9 +76,6 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
 
     final int bottomButtonVisibility = ViewUtils.isLandscape(this) ? View.GONE : View.VISIBLE;
     projectActionButtonsViewGroup.setVisibility(bottomButtonVisibility);
-
-    intentAction = new ProjectIntentAction(viewModel.inputs::initializer, lifecycle(), client);
-    intentAction.intent(getIntent());
 
     adapter = new ProjectAdapter(viewModel);
     projectRecyclerView.setAdapter(adapter);

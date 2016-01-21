@@ -1,7 +1,6 @@
-  package com.kickstarter.ui.intents;
+package com.kickstarter.ui.intentmappers;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -24,18 +23,19 @@ public final class DiscoveryIntentMapper {
   public static Observable<DiscoveryParams> params(final @NonNull Intent intent,
     final @NonNull ApiClientType client) {
 
-    final Observable<DiscoveryParams> paramsFromParcel = Observable.<DiscoveryParams>just(
-      intent.getParcelableExtra(IntentKey.DISCOVERY_PARAMS)
-    ).filter(ObjectUtils::isNotNull);
+    final Observable<DiscoveryParams> paramsFromParcel = Observable.just(paramsFromIntent(intent))
+      .filter(ObjectUtils::isNotNull);
 
-    final Observable<DiscoveryParams> paramsFromUri = Observable.<Uri>just(
-      intentUri(intent)
-    )
+    final Observable<DiscoveryParams> paramsFromUri = Observable.just(IntentMapper.uri(intent))
       .filter(ObjectUtils::isNotNull)
       .map(DiscoveryParams::fromUri)
-      .flatMap(uri -> DiscoveryIntentMapper.paramsFromUri(uri, client));
+      .flatMap(uri -> paramsFromUri(uri, client));
 
     return paramsFromParcel.mergeWith(paramsFromUri);
+  }
+
+  private static @Nullable DiscoveryParams paramsFromIntent(final @NonNull Intent intent) {
+    return intent.getParcelableExtra(IntentKey.DISCOVERY_PARAMS);
   }
 
   /**
@@ -92,15 +92,5 @@ public final class DiscoveryIntentMapper {
     paramBuilders.add(Observable.just(params.toBuilder()));
 
     return paramBuilders;
-  }
-
-  protected static @Nullable
-  Uri intentUri(final @NonNull Intent intent) {
-    final String string = intent.getDataString();
-    if (string == null) {
-      return null;
-    }
-
-    return Uri.parse(string);
   }
 }

@@ -8,20 +8,20 @@ import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.MockApiClient;
 import com.kickstarter.ui.IntentKey;
+import com.kickstarter.ui.intentmappers.ProjectIntentMapper;
 
 import org.junit.Test;
 
 import rx.observers.TestSubscriber;
-import rx.subjects.PublishSubject;
 
-public final class ProjectIntentActionTest extends KSRobolectricTestCase {
+public final class ProjectIntentMapperTest extends KSRobolectricTestCase {
   @Test
   public void emitsFromProjectParamExtra() {
     final Intent intent = new Intent().putExtra(IntentKey.PROJECT_PARAM, "skull-graphic-tee");
 
     final TestSubscriber<Project> resultTest = TestSubscriber.create();
-    final ProjectIntentAction intentAction = new ProjectIntentAction(resultTest::onNext, PublishSubject.create(), new MockApiClient());
-    intentAction.intent(intent);
+    ProjectIntentMapper.project(intent, new MockApiClient())
+      .subscribe(resultTest);
 
     resultTest.assertValueCount(1);
   }
@@ -32,8 +32,8 @@ public final class ProjectIntentActionTest extends KSRobolectricTestCase {
     final Intent intent = new Intent().putExtra(IntentKey.PROJECT, project);
 
     final TestSubscriber<Project> resultTest = TestSubscriber.create();
-    final ProjectIntentAction intentAction = new ProjectIntentAction(resultTest::onNext, PublishSubject.create(), new MockApiClient());
-    intentAction.intent(intent);
+    ProjectIntentMapper.project(intent, new MockApiClient())
+      .subscribe(resultTest);
 
     resultTest.assertValueCount(2);
   }
@@ -44,8 +44,8 @@ public final class ProjectIntentActionTest extends KSRobolectricTestCase {
     final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 
     final TestSubscriber<Project> resultTest = TestSubscriber.create();
-    final ProjectIntentAction intentAction = new ProjectIntentAction(resultTest::onNext, PublishSubject.create(), new MockApiClient());
-    intentAction.intent(intent);
+    ProjectIntentMapper.project(intent, new MockApiClient())
+      .subscribe(resultTest);
 
     resultTest.assertValueCount(1);
   }
@@ -56,8 +56,8 @@ public final class ProjectIntentActionTest extends KSRobolectricTestCase {
     final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 
     final TestSubscriber<Project> resultTest = TestSubscriber.create();
-    final ProjectIntentAction intentAction = new ProjectIntentAction(resultTest::onNext, PublishSubject.create(), new MockApiClient());
-    intentAction.intent(intent);
+    ProjectIntentMapper.project(intent, new MockApiClient())
+      .subscribe(resultTest);
 
     resultTest.assertNoValues();
   }

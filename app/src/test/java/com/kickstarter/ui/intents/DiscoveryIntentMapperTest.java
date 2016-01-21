@@ -7,6 +7,7 @@ import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.MockApiClient;
 import com.kickstarter.ui.IntentKey;
+import com.kickstarter.ui.intentmappers.DiscoveryIntentMapper;
 
 import org.junit.Test;
 

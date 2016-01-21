@@ -27,14 +27,14 @@ public final class TwoFactorViewModel extends ViewModel<TwoFactorActivity> imple
   TwoFactorViewModelOutputs, TwoFactorViewModelErrors {
 
   protected final static class TfaData {
-    @Nullable final String email;
-    @Nullable final String fbAccessToken;
+    final @Nullable String email;
+    final @Nullable String fbAccessToken;
     final boolean isFacebookLogin;
-    @Nullable final String password;
-    @NonNull final String code;
+    final @Nullable String password;
+    final @NonNull String code;
 
-    protected TfaData(@Nullable final String email, @Nullable final String fbAccessToken, final boolean isFacebookLogin,
-      @Nullable final String password, @NonNull final String code) {
+    protected TfaData(final @Nullable String email, final @Nullable String fbAccessToken, final boolean isFacebookLogin,
+      final @Nullable String password, final @NonNull String code) {
       this.email = email;
       this.fbAccessToken = fbAccessToken;
       this.isFacebookLogin = isFacebookLogin;
@@ -91,12 +91,12 @@ public final class TwoFactorViewModel extends ViewModel<TwoFactorActivity> imple
   public final TwoFactorViewModelErrors errors = this;
 
   @Override
-  public void email(@NonNull final String s) {
+  public void email(final @NonNull String s) {
     email.onNext(s);
   }
 
   @Override
-  public void fbAccessToken(@NonNull final String s) {
+  public void fbAccessToken(final @NonNull String s) {
     fbAccessToken.onNext(s);
   }
 
@@ -106,12 +106,12 @@ public final class TwoFactorViewModel extends ViewModel<TwoFactorActivity> imple
   }
 
   @Override
-  public void code(@NonNull final String s) {
+  public void code(final @NonNull String s) {
     code.onNext(s);
   }
 
   @Override
-  public void password(@NonNull final String s) {
+  public void password(final @NonNull String s) {
     password.onNext(s);
   }
 
@@ -126,12 +126,13 @@ public final class TwoFactorViewModel extends ViewModel<TwoFactorActivity> imple
   }
 
   @Override
-  protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     final Observable<TfaData> tfaData = Observable.combineLatest(email, fbAccessToken, isFacebookLogin, password, code,
       TfaData::new);
+
     final Observable<Pair<String, String>> emailAndPassword = email
       .compose(Transformers.combineLatestPair(password));
 
@@ -153,9 +154,15 @@ public final class TwoFactorViewModel extends ViewModel<TwoFactorActivity> imple
 
     addSubscription(emailAndPassword
       .compose(Transformers.takeWhen(resendClick))
+      .filter(ep -> ep.first != null)
       .switchMap(ep -> resendCode(ep.first, ep.second))
-      .subscribe()
-    );
+      .subscribe());
+
+    addSubscription(fbAccessToken
+      .compose(Transformers.takeWhen(resendClick))
+      .filter(token -> token != null)
+      .switchMap(this::resendCodeFbLogin)
+      .subscribe());
 
     addSubscription(tfaSuccess.subscribe(__ -> koala.trackLoginSuccess()));
 
@@ -166,18 +173,18 @@ public final class TwoFactorViewModel extends ViewModel<TwoFactorActivity> imple
     koala.trackTwoFactorAuthView();
   }
 
-  public Observable<AccessTokenEnvelope> loginWithFacebook(@NonNull final String fbAccessToken, @NonNull final String code) {
+  public Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String fbAccessToken, final @NonNull String code) {
     return client.loginWithFacebook(fbAccessToken, code)
       .compose(Transformers.pipeApiErrorsTo(tfaError))
       .compose(Transformers.neverError());
   }
 
-  private void success(@NonNull final AccessTokenEnvelope envelope) {
+  private void success(final @NonNull AccessTokenEnvelope envelope) {
     currentUser.login(envelope.user(), envelope.accessToken());
     tfaSuccess.onNext(null);
   }
 
-  private Observable<AccessTokenEnvelope> submit(@NonNull final TfaData data) {
+  private Observable<AccessTokenEnvelope> submit(final @NonNull TfaData data) {
     return client.login(data.email, data.password, data.code)
       .compose(Transformers.pipeApiErrorsTo(tfaError))
       .compose(Transformers.neverError())
@@ -185,8 +192,13 @@ public final class TwoFactorViewModel extends ViewModel<TwoFactorActivity> imple
       .finallyDo(() -> formSubmitting.onNext(false));
   }
 
-  private Observable<AccessTokenEnvelope> resendCode(@NonNull final String email, @NonNull final String password) {
+  private Observable<AccessTokenEnvelope> resendCode(final @NonNull String email, final @NonNull String password) {
     return client.login(email, password)
+      .compose(Transformers.neverError());
+  }
+
+  private Observable<AccessTokenEnvelope> resendCodeFbLogin(final @NonNull String fbAccessToken) {
+    return client.loginWithFacebook(fbAccessToken)
       .compose(Transformers.neverError());
   }
 }

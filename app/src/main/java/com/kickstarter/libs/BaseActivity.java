@@ -75,6 +75,13 @@ public class BaseActivity<ViewModelType extends ViewModel> extends AppCompatActi
 
   @CallSuper
   @Override
+  protected void onNewIntent(Intent intent) {
+    super.onNewIntent(intent);
+    viewModel.intent(intent);
+  }
+
+  @CallSuper
+  @Override
   protected void onStart() {
     super.onStart();
     Timber.d("onStart %s", this.toString());

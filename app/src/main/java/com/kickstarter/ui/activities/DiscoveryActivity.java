@@ -13,7 +13,6 @@ import android.support.v7.widget.RecyclerView;
 import com.jakewharton.rxbinding.support.v4.widget.RxDrawerLayout;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
-import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.RecyclerViewPaginator;
@@ -27,7 +26,7 @@ import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.DiscoveryAdapter;
 import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter;
-import com.kickstarter.ui.intents.DiscoveryIntentAction;
+import com.kickstarter.ui.intents.DiscoveryIntentMapper;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
 
@@ -40,7 +39,7 @@ import rx.android.schedulers.AndroidSchedulers;
 @RequiresViewModel(DiscoveryViewModel.class)
 public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
   private DiscoveryAdapter adapter;
-  private DiscoveryIntentAction intentAction;
+  private DiscoveryIntentMapper intentAction;
   private LinearLayoutManager layoutManager;
   private DiscoveryDrawerAdapter drawerAdapter;
   private LinearLayoutManager drawerLayoutManager;
@@ -71,9 +70,6 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
     drawerRecyclerView.setLayoutManager(drawerLayoutManager);
     drawerAdapter = new DiscoveryDrawerAdapter(viewModel.inputs);
     drawerRecyclerView.setAdapter(drawerAdapter);
-
-    intentAction = new DiscoveryIntentAction(viewModel.inputs::initializer, lifecycle(), client);
-    intentAction.intent(getIntent());
 
     recyclerViewPaginator = new RecyclerViewPaginator(recyclerView, viewModel.inputs::nextPage);
 
@@ -150,11 +146,6 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
   }
 
   @Override
-  protected void onNewIntent(final @NonNull Intent intent) {
-    intentAction.intent(intent);
-  }
-
-  @Override
   protected void onDestroy() {
     super.onDestroy();
     recyclerViewPaginator.stop();
@@ -202,19 +193,6 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
 
   private void startActivityFeedActivity() {
     startActivity(new Intent(this, ActivityFeedActivity.class));
-  }
-
-  @Override
-  protected void onActivityResult(final int requestCode, final int resultCode, final @NonNull Intent intent) {
-    if (requestCode != ActivityRequestCodes.DISCOVERY_ACTIVITY_DISCOVERY_FILTER_ACTIVITY_SELECT_FILTER) {
-      return;
-    }
-
-    if (resultCode != RESULT_OK) {
-      return;
-    }
-
-    intentAction.intent(intent);
   }
 
   public void showBuildAlert(final @NonNull InternalBuildEnvelope envelope) {

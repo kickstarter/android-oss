@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -32,6 +33,7 @@ import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
+import com.kickstarter.ui.intents.DiscoveryIntentMapper;
 import com.kickstarter.ui.viewholders.DiscoveryActivityViewHolder;
 import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
@@ -69,11 +71,6 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     nextPage.onNext(null);
   }
 
-  private final PublishSubject<DiscoveryParams> initializer = PublishSubject.create();
-  @Override
-  public void initializer(final @NonNull DiscoveryParams params) {
-    initializer.onNext(params);
-  }
   private final PublishSubject<Boolean> openDrawer = PublishSubject.create();
   @Override
   public void openDrawer(boolean open) {
@@ -398,10 +395,21 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .subscribe(__ -> koala.trackDiscoveryFilters())
     );
 
-
     expandedParams.onNext(null);
-    addSubscription(initializer.subscribe(selectedParams::onNext));
-    initializer.onNext(DiscoveryParams.builder().staffPicks(true).build());
+
+    addSubscription(
+      intent
+        .flatMap(i -> DiscoveryIntentMapper.params(i, apiClient))
+        .subscribe(selectedParams::onNext)
+    );
+
+    // Seed selected params when we are freshly launching the app with no data.
+    intent
+      .map(Intent::getAction)
+      .filter(Intent.ACTION_MAIN::equals)
+      .take(1)
+      .map(__ -> DiscoveryParams.builder().staffPicks(true).build())
+      .subscribe(selectedParams::onNext);
   }
 
   private boolean isOnboardingVisible(final @NonNull DiscoveryParams currentParams, final boolean isLoggedIn) {

@@ -37,4 +37,13 @@ public abstract class IntentAction {
 
     return Uri.parse(string);
   }
+
+  protected static @Nullable Uri intentUri(final @NonNull Intent intent) {
+    final String string = intent.getDataString();
+    if (string == null) {
+      return null;
+    }
+
+    return Uri.parse(string);
+  }
 }

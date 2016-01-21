@@ -11,17 +11,16 @@ import com.kickstarter.ui.IntentKey;
 import org.junit.Test;
 
 import rx.observers.TestSubscriber;
-import rx.subjects.PublishSubject;
 
-public final class DiscoveryIntentActionTest extends KSRobolectricTestCase {
+public final class DiscoveryIntentMapperTest extends KSRobolectricTestCase {
   @Test
   public void emitsFromParamsExtra() {
     final DiscoveryParams params = DiscoveryParams.builder().build();
     final Intent intent = new Intent().putExtra(IntentKey.DISCOVERY_PARAMS, params);
-
     final TestSubscriber<DiscoveryParams> resultTest = TestSubscriber.create();
-    final DiscoveryIntentAction intentAction = new DiscoveryIntentAction(resultTest::onNext, PublishSubject.create(), new MockApiClient());
-    intentAction.intent(intent);
+
+    DiscoveryIntentMapper.params(intent, new MockApiClient())
+      .subscribe(resultTest);
 
     resultTest.assertValues(params);
   }
@@ -32,8 +31,8 @@ public final class DiscoveryIntentActionTest extends KSRobolectricTestCase {
     final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 
     final TestSubscriber<DiscoveryParams> resultTest = TestSubscriber.create();
-    final DiscoveryIntentAction intentAction = new DiscoveryIntentAction(resultTest::onNext, PublishSubject.create(), new MockApiClient());
-    intentAction.intent(intent);
+    DiscoveryIntentMapper.params(intent, new MockApiClient())
+      .subscribe(resultTest);
 
     resultTest.assertValues(DiscoveryParams.builder().build());
   }
@@ -44,8 +43,8 @@ public final class DiscoveryIntentActionTest extends KSRobolectricTestCase {
     final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 
     final TestSubscriber<DiscoveryParams> resultTest = TestSubscriber.create();
-    final DiscoveryIntentAction intentAction = new DiscoveryIntentAction(resultTest::onNext, PublishSubject.create(), new MockApiClient());
-    intentAction.intent(intent);
+    DiscoveryIntentMapper.params(intent, new MockApiClient())
+      .subscribe(resultTest);
 
     resultTest.assertValueCount(1);
   }
@@ -56,8 +55,8 @@ public final class DiscoveryIntentActionTest extends KSRobolectricTestCase {
     final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 
     final TestSubscriber<DiscoveryParams> resultTest = TestSubscriber.create();
-    final DiscoveryIntentAction intentAction = new DiscoveryIntentAction(resultTest::onNext, PublishSubject.create(), new MockApiClient());
-    intentAction.intent(intent);
+    DiscoveryIntentMapper.params(intent, new MockApiClient())
+      .subscribe(resultTest);
 
     resultTest.assertValueCount(1);
   }
@@ -68,8 +67,8 @@ public final class DiscoveryIntentActionTest extends KSRobolectricTestCase {
     final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 
     final TestSubscriber<DiscoveryParams> resultTest = TestSubscriber.create();
-    final DiscoveryIntentAction intentAction = new DiscoveryIntentAction(resultTest::onNext, PublishSubject.create(), new MockApiClient());
-    intentAction.intent(intent);
+    DiscoveryIntentMapper.params(intent, new MockApiClient())
+      .subscribe(resultTest);
 
     resultTest.assertValueCount(1);
   }

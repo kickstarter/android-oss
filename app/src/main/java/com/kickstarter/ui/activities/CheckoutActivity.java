@@ -40,7 +40,6 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
   @Override
   protected void onCreate(@Nullable final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
     setContentView(R.layout.checkout_layout);
     ButterKnife.bind(this);
 
@@ -58,8 +57,6 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
       new RequestHandler(KSUri::isSignupUri, this::handleSignupUriRequest)
     ));
     webView.client().setDelegate(this);
-
-
   }
 
   @Override
@@ -91,7 +88,6 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
   @Override
   public void onBackPressed() {
     super.onBackPressed();
-
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
@@ -120,7 +116,6 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
       finish();
     }
   }
-
 
   @Override
   public void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {

@@ -407,8 +407,8 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     intent
       .map(Intent::getAction)
       .filter(Intent.ACTION_MAIN::equals)
-      .take(1)
       .map(__ -> DiscoveryParams.builder().staffPicks(true).build())
+      .take(1)
       .subscribe(selectedParams::onNext);
   }
 

@@ -89,7 +89,7 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
     final Observable<Project> project = initialProject
       .compose(Transformers.takeWhen(loginSuccess))
       .flatMap(p -> client.fetchProject(p).compose(Transformers.neverError()))
-      .startWith(initialProject)
+      .mergeWith(initialProject)
       .share();
 
     final ApiPaginator<Comment, CommentsEnvelope, Void> paginator =

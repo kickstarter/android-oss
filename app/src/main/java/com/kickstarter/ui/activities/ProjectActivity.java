@@ -41,7 +41,6 @@ import rx.android.schedulers.AndroidSchedulers;
 @RequiresViewModel(ProjectViewModel.class)
 public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   private ProjectAdapter adapter;
-  private ProjectIntentMapper intentAction;
 
   protected @Bind(R.id.project_recycler_view) RecyclerView projectRecyclerView;
   protected @Bind(R.id.star_icon) IconButton starButton;

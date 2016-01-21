@@ -25,6 +25,7 @@ public class ViewModel<ViewType> {
   protected final Observable<ViewType> view = viewChange.filter(v -> v != null);
   private final List<Subscription> subscriptions = new ArrayList<>();
 
+  // TODO: Justify BehaviorSubject vs PublishSubject
   protected final BehaviorSubject<Intent> intent = BehaviorSubject.create();
   public void intent(final @NonNull Intent intent) {
     this.intent.onNext(intent);

@@ -26,7 +26,6 @@ import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.DiscoveryAdapter;
 import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter;
-import com.kickstarter.ui.intentmappers.DiscoveryIntentMapper;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
 
@@ -39,7 +38,6 @@ import rx.android.schedulers.AndroidSchedulers;
 @RequiresViewModel(DiscoveryViewModel.class)
 public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
   private DiscoveryAdapter adapter;
-  private DiscoveryIntentMapper intentAction;
   private LinearLayoutManager layoutManager;
   private DiscoveryDrawerAdapter drawerAdapter;
   private LinearLayoutManager drawerLayoutManager;

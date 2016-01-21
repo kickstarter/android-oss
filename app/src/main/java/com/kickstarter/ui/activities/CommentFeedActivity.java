@@ -71,8 +71,6 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    viewModel.inputs.initialProject(project);
-
     recyclerViewPaginator = new RecyclerViewPaginator(recyclerView, viewModel.inputs::nextPage);
     swipeRefresher = new SwipeRefresher(this, swipeRefreshLayout, viewModel.inputs::refresh, viewModel.outputs::isFetchingComments);
 

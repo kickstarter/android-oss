@@ -1,13 +1,6 @@
 package com.kickstarter.viewmodels.inputs;
 
-import com.kickstarter.models.Project;
-
 public interface CommentFeedViewModelInputs {
-  /**
-   * Invoke with the project that is unparceled from the intent.
-   */
-  void initialProject(Project __);
-
   /**
    * Invoke with the comment body every time it changes.
    */

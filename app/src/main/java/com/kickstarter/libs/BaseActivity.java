@@ -69,6 +69,8 @@ public class BaseActivity<ViewModelType extends ViewModel> extends AppCompatActi
 
     lifecycle.onNext(ActivityEvent.CREATE);
     fetchViewModel(savedInstanceState);
+
+    viewModel.intent(getIntent());
   }
 
   @CallSuper

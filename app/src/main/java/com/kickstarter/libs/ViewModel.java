@@ -1,6 +1,7 @@
 package com.kickstarter.libs;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
@@ -13,6 +14,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
@@ -22,6 +24,11 @@ public class ViewModel<ViewType> {
   protected final PublishSubject<ViewType> viewChange = PublishSubject.create();
   protected final Observable<ViewType> view = viewChange.filter(v -> v != null);
   private final List<Subscription> subscriptions = new ArrayList<>();
+
+  protected final BehaviorSubject<Intent> intent = BehaviorSubject.create();
+  public void intent(final @NonNull Intent intent) {
+    this.intent.onNext(intent);
+  }
 
   @CallSuper
   protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {

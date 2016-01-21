@@ -24,7 +24,6 @@ import com.kickstarter.models.Reward;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ProjectAdapter;
-import com.kickstarter.ui.intentmappers.ProjectIntentMapper;
 import com.kickstarter.ui.views.IconButton;
 import com.kickstarter.viewmodels.ProjectViewModel;
 

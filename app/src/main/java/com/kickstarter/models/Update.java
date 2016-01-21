@@ -1,6 +1,7 @@
 package com.kickstarter.models;
 
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Html;
 
@@ -114,11 +115,13 @@ public abstract class Update implements Parcelable {
   private static final int TRUNCATED_BODY_LENGTH = 400;
 
   public String truncatedBody() {
-    String str = Html.fromHtml(body()).toString();
-    if (str.length() > TRUNCATED_BODY_LENGTH) {
-      str = str.substring(0, TRUNCATED_BODY_LENGTH - 1) + "\u2026";
-    }
-
-    return str;
+    try {
+      String str = Html.fromHtml(body()).toString();
+      if (str.length() > TRUNCATED_BODY_LENGTH) {
+        str = str.substring(0, TRUNCATED_BODY_LENGTH - 1) + "\u2026";
+      }
+      return str;
+    } catch (final @NonNull NullPointerException ignore) {}
+    return "";
   }
 }

@@ -33,18 +33,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/grid_3"
-        android:text="@string/discovery_activity_sample_title_Since_your_last_visit" />
+        android:text="@string/discovery_activity_sample_title_since_youve_been_gone" />
 
       <LinearLayout
         android:id="@+id/activity_click_area"
         android:background="@drawable/click_indicator_light_masked"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
         <ImageView
           android:id="@+id/activity_image"
           android:background="@color/light_gray"
+          android:layout_gravity="top"
           android:layout_width="@dimen/grid_4"
           android:layout_height="@dimen/grid_4"
           android:scaleType="centerCrop"/>
@@ -60,7 +62,8 @@
             style="@style/BodyPrimaryMedium"
             android:id="@+id/activity_title"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp" />
 
           <TextView
             style="@style/BodyPrimary"

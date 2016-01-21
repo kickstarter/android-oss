@@ -15,13 +15,15 @@
 
   <com.kickstarter.ui.views.IconButton
     android:id="@+id/play_button_overlay"
+    android:background="@drawable/video_button_background"
     android:contentDescription="@string/accessibility_projects_buttons_play_video"
     android:focusable="true"
-    android:visibility="gone"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:textSize="@dimen/notification_large_icon_height"
-    android:text="@string/play_circle_outline_icon"
-    android:textColor="@color/white" />
+    android:padding="14dp"
+    android:textSize="@dimen/grid_5"
+    android:text="@string/play_arrow"
+    android:textColor="@color/white"
+    android:visibility="gone" />
 </FrameLayout>

@@ -248,7 +248,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     delegate.projectViewHolderManagePledgeClicked(this);
   }
 
-  @OnClick(R.id.play_button_overlay)
+  @OnClick({R.id.play_button_overlay, R.id.project_photo})
   public void playButtonClick() {
     delegate.projectViewHolderVideoStarted(this);
   }

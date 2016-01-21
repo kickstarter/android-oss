@@ -67,6 +67,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.successfully_funded_text_view) TextView successfullyFundedTextView;
 
   protected @BindDimen(R.dimen.grid_1) int grid1Dimen;
+  protected @BindDimen(R.dimen.grid_4) int grid4Dimen;
 
   protected @BindDrawable(R.drawable.gray_gradient) Drawable grayGradientDrawable;
 
@@ -124,7 +125,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     if (photo != null) {
       photoImageView.setVisibility(View.VISIBLE);
 
-      final int targetImageWidth = (int) (getScreenWidthDp(context) * getScreenDensity(context));
+      final int targetImageWidth = (int) (getScreenWidthDp(context) * getScreenDensity(context) - grid4Dimen);
       photoImageView.setMaxHeight(photoHeightFromWidthRatio(targetImageWidth));
 
       Picasso.with(context)

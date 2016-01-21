@@ -19,7 +19,9 @@
       <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/dark_blue">
+        android:background="@color/dark_blue"
+        android:focusableInTouchMode="true"
+        android:focusable="true">
 
         <include layout="@layout/woohoo_background_view" />
 
@@ -104,9 +106,9 @@
         android:id="@+id/recommended_projects_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="150dp"
+        android:layout_marginBottom="@dimen/grid_2"
         android:layout_marginTop="@dimen/grid_2"
         android:layout_marginLeft="@dimen/grid_2"
-        android:layout_marginBottom="@dimen/grid_2"
         android:scrollbars="horizontal" />
 
     </LinearLayout>

@@ -73,6 +73,7 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
       if (BuildConfig.DEBUG) {
         ExceptionUtils.rethrowAsRuntimeException(e);
       } else {
+        // TODO: alter the exception message to say we are just reporting it and it's not a real crash.
         ExceptionHandler.saveException(e, null);
       }
     }

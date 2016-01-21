@@ -14,7 +14,7 @@ public abstract class Location implements Parcelable {
   public abstract String displayableName();
   public abstract String name();
   public abstract @Nullable String city();
-  public abstract String state();
+  public abstract @Nullable String state();
   public abstract String country();
   public abstract @Nullable Integer projectsCount();
 

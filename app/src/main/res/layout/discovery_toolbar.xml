@@ -68,8 +68,6 @@
       <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
         android:orientation="horizontal">
 
         <com.kickstarter.ui.views.IconButton

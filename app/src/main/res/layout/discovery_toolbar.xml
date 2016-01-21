@@ -24,7 +24,7 @@
       android:layout_width="match_parent"
       android:layout_height="@dimen/discovery_drawer_status_bar_height" />
 
-    <RelativeLayout
+    <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="?attr/actionBarSize"
       android:gravity="center_vertical"
@@ -34,14 +34,13 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:focusable="true"
+        android:layout_weight="1"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:paddingRight="@dimen/grid_2"
-        android:paddingEnd="@dimen/grid_2"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:paddingEnd="@dimen/grid_2">
 
         <com.kickstarter.ui.views.IconButton
           style="@style/ToolbarIconDarkBackground"
@@ -52,9 +51,11 @@
           android:id="@+id/filter_text_view"
           style="@style/Headline"
           android:background="@drawable/button_selector"
+          android:ellipsize="end"
+          android:singleLine="true"
           android:text="Staff Picks"
           android:textColor="@color/white"
-          android:layout_width="wrap_content"
+          android:layout_width="fill_parent"
           android:layout_height="match_parent"
           android:paddingLeft="@dimen/grid_3_half"
           android:paddingStart="@dimen/grid_3_half"
@@ -83,7 +84,7 @@
 
       </LinearLayout>
 
-    </RelativeLayout>
+    </LinearLayout>
 
   </LinearLayout>
 

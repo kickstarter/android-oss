@@ -132,6 +132,7 @@ public final class TwoFactorViewModel extends ViewModel<TwoFactorActivity> imple
 
     final Observable<TfaData> tfaData = Observable.combineLatest(email, fbAccessToken, isFacebookLogin, password, code,
       TfaData::new);
+
     final Observable<Pair<String, String>> emailAndPassword = email
       .compose(Transformers.combineLatestPair(password));
 
@@ -153,9 +154,15 @@ public final class TwoFactorViewModel extends ViewModel<TwoFactorActivity> imple
 
     addSubscription(emailAndPassword
       .compose(Transformers.takeWhen(resendClick))
+      .filter(ep -> ep.first != null)
       .switchMap(ep -> resendCode(ep.first, ep.second))
-      .subscribe()
-    );
+      .subscribe());
+
+    addSubscription(fbAccessToken
+      .compose(Transformers.takeWhen(resendClick))
+      .filter(token -> token != null)
+      .switchMap(this::resendCodeFbLogin)
+      .subscribe());
 
     addSubscription(tfaSuccess.subscribe(__ -> koala.trackLoginSuccess()));
 
@@ -187,6 +194,11 @@ public final class TwoFactorViewModel extends ViewModel<TwoFactorActivity> imple
 
   private Observable<AccessTokenEnvelope> resendCode(@NonNull final String email, @NonNull final String password) {
     return client.login(email, password)
+      .compose(Transformers.neverError());
+  }
+
+  private Observable<AccessTokenEnvelope> resendCodeFbLogin(@NonNull final String fbAccessToken) {
+    return client.loginWithFacebook(fbAccessToken)
       .compose(Transformers.neverError());
   }
 }

@@ -14,18 +14,18 @@ import auto.parcel.AutoParcel;
 @AutoParcel
 public abstract class CommentsEnvelope implements Parcelable {
   public abstract List<Comment> comments();
-  @Nullable public abstract UrlsEnvelope urls();
+  public abstract @Nullable UrlsEnvelope urls();
 
   @AutoGson
   @AutoParcel
   public abstract static class UrlsEnvelope implements Parcelable {
-    @Nullable public abstract ApiEnvelope api();
+    public abstract @Nullable ApiEnvelope api();
 
     @AutoGson
     @AutoParcel
     public abstract static class ApiEnvelope implements Parcelable {
-      @Nullable public abstract String moreComments();
-      @Nullable public abstract String newerComments();
+      public abstract @Nullable String moreComments();
+      public abstract @Nullable String newerComments();
     }
   }
 }

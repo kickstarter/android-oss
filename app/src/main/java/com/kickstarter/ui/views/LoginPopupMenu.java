@@ -12,7 +12,7 @@ import com.kickstarter.ui.activities.HelpActivity;
 
 public class LoginPopupMenu extends PopupMenu {
 
-  public LoginPopupMenu(@NonNull final Context context, @NonNull final View anchor) {
+  public LoginPopupMenu(final @NonNull Context context, final @NonNull View anchor) {
     super(context, anchor);
     getMenuInflater().inflate(R.menu.login_help_menu, getMenu());
     BaseActivity activity = (BaseActivity) context;

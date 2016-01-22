@@ -10,7 +10,7 @@ public class Logout {
   private final CookieManager cookieManager;
   private final CurrentUser currentUser;
 
-  public Logout(@NonNull final CookieManager cookieManager, @NonNull final CurrentUser currentUser) {
+  public Logout(final @NonNull CookieManager cookieManager, final @NonNull CurrentUser currentUser) {
     this.cookieManager = cookieManager;
     this.currentUser = currentUser;
   }

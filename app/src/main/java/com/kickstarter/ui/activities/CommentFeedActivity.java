@@ -59,7 +59,7 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
   @BindString(R.string.project_comments_posted) String commentPostedString;
 
   @Override
-  protected void onCreate(@Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.comment_feed_layout);
     ButterKnife.bind(this);
@@ -104,8 +104,8 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
     recyclerViewPaginator.stop();
   }
 
-  public void show(@NonNull final Project project, @NonNull final List<Comment> comments,
-    @Nullable final User user) {
+  public void show(final @NonNull Project project, final @NonNull List<Comment> comments,
+    final @Nullable User user) {
     adapter.takeProjectComments(project, comments, user);
   }
 
@@ -138,19 +138,19 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
     postCommentButton = ButterKnife.findById(commentDialog, R.id.post_button);
 
     projectNameTextView.setText(project.name());
-    cancelButtonTextView.setOnClickListener((@NonNull final View v) -> dismissCommentDialog());
+    cancelButtonTextView.setOnClickListener((final @NonNull View v) -> dismissCommentDialog());
     if (commentBodyEditText != null) {
       commentBodyEditText.addTextChangedListener(new TextWatcher() {
-        public void beforeTextChanged(@NonNull final CharSequence s, final int start, final int count, final int after) {}
-        public void onTextChanged(@NonNull final CharSequence s, final int start, final int before, final int count) {}
-        public void afterTextChanged(@NonNull final Editable s) {
+        public void beforeTextChanged(final @NonNull CharSequence s, final int start, final int count, final int after) {}
+        public void onTextChanged(final @NonNull CharSequence s, final int start, final int before, final int count) {}
+        public void afterTextChanged(final @NonNull Editable s) {
           viewModel.inputs.commentBody(s.toString());
         }
       });
     }
 
     if (postCommentButton != null && commentBodyEditText != null) {
-      postCommentButton.setOnClickListener((@NonNull final View v) -> {
+      postCommentButton.setOnClickListener((final @NonNull View v) -> {
         viewModel.postClick(commentBodyEditText.getText().toString());
       });
     }
@@ -176,17 +176,17 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
   }
 
   @Override
-  public void projectContextClicked(@NonNull final ProjectContextViewHolder viewHolder) {
+  public void projectContextClicked(final @NonNull ProjectContextViewHolder viewHolder) {
     onBackPressed();
   }
 
   @Override
-  public void emptyCommentFeedLoginClicked(@NonNull final EmptyCommentFeedViewHolder viewHolder) {
+  public void emptyCommentFeedLoginClicked(final @NonNull EmptyCommentFeedViewHolder viewHolder) {
     commentFeedLogin();
   }
 
   @Override
-  protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
+  protected void onActivityResult(final int requestCode, final int resultCode, final @NonNull Intent intent) {
     if (requestCode != ActivityRequestCodes.COMMENT_FEED_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED) {
       return;
     }

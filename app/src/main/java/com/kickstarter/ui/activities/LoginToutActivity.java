@@ -54,7 +54,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
   private boolean forward;
 
   @Override
-  protected void onCreate(@Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.login_tout_layout);
@@ -140,7 +140,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
   }
 
   @Override
-  protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
+  protected void onActivityResult(final int requestCode, final int resultCode, final @NonNull Intent intent) {
     super.onActivityResult(requestCode, resultCode, intent);
     viewModel.inputs.activityResult(requestCode, resultCode, intent);
 
@@ -163,7 +163,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
     }
   }
 
-  public void startFacebookConfirmationActivity(@NonNull final ErrorEnvelope.FacebookUser facebookUser) {
+  public void startFacebookConfirmationActivity(final @NonNull ErrorEnvelope.FacebookUser facebookUser) {
     final Intent intent = new Intent(this, FacebookConfirmationActivity.class)
       .putExtra(IntentKey.FORWARD, forward)
       .putExtra(IntentKey.FACEBOOK_USER, facebookUser)

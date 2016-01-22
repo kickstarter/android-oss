@@ -65,7 +65,7 @@ public final class LoginViewModel extends ViewModel<LoginActivity> implements Lo
   public final LoginViewModelErrors errors = this;
 
   @Override
-  public void email(@NonNull final String s) {
+  public void email(final @NonNull String s) {
     email.onNext(s);
   }
 
@@ -75,12 +75,12 @@ public final class LoginViewModel extends ViewModel<LoginActivity> implements Lo
   }
 
   @Override
-  public void password(@NonNull final String s) {
+  public void password(final @NonNull String s) {
     password.onNext(s);
   }
 
   @Override
-  protected void onCreate(@NonNull final Context context, @Nullable Bundle savedInstanceState) {
+  protected void onCreate(final @NonNull Context context, @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
@@ -112,17 +112,17 @@ public final class LoginViewModel extends ViewModel<LoginActivity> implements Lo
     );
   }
 
-  private static boolean isValid(@NonNull final String email, @NonNull final String password) {
+  private static boolean isValid(final @NonNull String email, final @NonNull String password) {
     return StringUtils.isEmail(email) && password.length() > 0;
   }
 
-  private Observable<AccessTokenEnvelope> submit(@NonNull final String email, @NonNull final String password) {
+  private Observable<AccessTokenEnvelope> submit(final @NonNull String email, final @NonNull String password) {
     return client.login(email, password)
       .compose(Transformers.pipeApiErrorsTo(loginError))
       .compose(Transformers.neverError());
   }
 
-  private void success(@NonNull final AccessTokenEnvelope envelope) {
+  private void success(final @NonNull AccessTokenEnvelope envelope) {
     currentUser.login(envelope.user(), envelope.accessToken());
     loginSuccess.onNext(null);
   }

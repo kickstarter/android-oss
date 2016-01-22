@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 public class BundleUtils {
   private BundleUtils() {}
 
-  public static Bundle maybeGetBundle(@Nullable final Bundle state, @NonNull final String key) {
+  public static Bundle maybeGetBundle(final @Nullable Bundle state, final @NonNull String key) {
     if (state == null) {
       return null;
     }

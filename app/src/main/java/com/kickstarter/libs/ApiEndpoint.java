@@ -12,7 +12,7 @@ public enum ApiEndpoint {
   public String name;
   public String url;
 
-  ApiEndpoint(@NonNull final String name, @Nullable final String url) {
+  ApiEndpoint(final @NonNull String name, final @Nullable String url) {
     this.name = name;
     this.url = url;
   }
@@ -21,7 +21,7 @@ public enum ApiEndpoint {
     return name;
   }
 
-  public static ApiEndpoint from(@NonNull final String url) {
+  public static ApiEndpoint from(final @NonNull String url) {
     for (final ApiEndpoint value : values()) {
       if (value.url != null && value.url.equals(url)) {
         return value;

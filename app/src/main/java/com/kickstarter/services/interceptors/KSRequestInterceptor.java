@@ -16,16 +16,16 @@ import java.io.IOException;
 public final class KSRequestInterceptor implements Interceptor {
   final Release release;
 
-  public KSRequestInterceptor(@NonNull final Release release) {
+  public KSRequestInterceptor(final @NonNull Release release) {
     this.release = release;
   }
 
   @Override
-  public Response intercept(@NonNull final Chain chain) throws IOException {
+  public Response intercept(final @NonNull Chain chain) throws IOException {
     return chain.proceed(request(chain.request()));
   }
 
-  private Request request(@NonNull final Request initialRequest) {
+  private Request request(final @NonNull Request initialRequest) {
     return initialRequest.newBuilder()
       .header("Kickstarter-Android-App", release.versionCode().toString())
       .header("Kickstarter-App-Id", release.applicationId())

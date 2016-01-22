@@ -7,72 +7,72 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class KSUri {
-  public static boolean isApiUri(@NonNull final Uri uri, @NonNull final String webEndpoint) {
+  public static boolean isApiUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && API_PATTERN.matcher(uri.getHost()).matches();
   }
 
-  public static boolean isCookiesUri(@NonNull final Uri uri, @NonNull final String webEndpoint) {
+  public static boolean isCookiesUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && uri.getPath().equals("/cookies");
   }
 
-  public static boolean isDiscoverCategoriesPath(@NonNull final String path) {
+  public static boolean isDiscoverCategoriesPath(final @NonNull String path) {
     return DISCOVER_CATEGORIES_PATTERN.matcher(path).matches();
   }
 
-  public static boolean isDiscoverScopePath(@NonNull final String path, @NonNull final String scope) {
+  public static boolean isDiscoverScopePath(final @NonNull String path, final @NonNull String scope) {
     final Matcher matcher = DISCOVER_SCOPE_PATTERN.matcher(path);
     return matcher.matches() && scope.equals(matcher.group(1));
   }
 
-  public static boolean isDiscoverPlacesPath(@NonNull final String path) {
+  public static boolean isDiscoverPlacesPath(final @NonNull String path) {
     return DISCOVER_PLACES_PATTERN.matcher(path).matches();
   }
 
-  public static boolean isHelloUri(@NonNull final Uri uri, @NonNull final String webEndpoint) {
+  public static boolean isHelloUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && uri.getPath().equals("/hello");
   }
 
-  public static boolean isHivequeenUri(@NonNull final Uri uri, @NonNull final String webEndpoint) {
+  public static boolean isHivequeenUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && HIVEQUEEN_PATTERN.matcher(uri.getHost()).matches();
   }
 
- public static boolean isKickstarterUri(@NonNull final Uri uri, @NonNull final String webEndpoint) {
+ public static boolean isKickstarterUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return uri.getHost().equals(Uri.parse(webEndpoint).getHost());
   }
 
-  public static boolean isProjectUri(@NonNull final Uri uri, @NonNull final String webEndpoint) {
+  public static boolean isProjectUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && PROJECT_PATTERN.matcher(uri.getPath()).matches();
   }
 
-  public static boolean isSignupUri(@NonNull final Uri uri, @NonNull final String webEndpoint) {
+  public static boolean isSignupUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && uri.getPath().equals("/signup");
   }
 
-  public static boolean isStagingUri(@NonNull final Uri uri, @NonNull final String webEndpoint) {
+  public static boolean isStagingUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && STAGING_PATTERN.matcher(uri.getHost()).matches();
   }
 
-  public static boolean isCheckoutThanksUri(@NonNull final Uri uri, @NonNull final String webEndpoint) {
+  public static boolean isCheckoutThanksUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && CHECKOUT_THANKS_PATTERN.matcher(uri.getPath()).matches();
   }
 
-  public static boolean isModalUri(@NonNull final Uri uri, @NonNull final String webEndpoint) {
+  public static boolean isModalUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && uri.getQueryParameter("modal") != null && uri.getQueryParameter("modal").equals("true");
   }
 
-  public static boolean isPrivacyUri(@NonNull final Uri uri, @NonNull final String webEndpoint) {
+  public static boolean isPrivacyUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && uri.getPath().equals("/privacy");
   }
 
-  public static boolean isProjectNewPledgeUri(@NonNull final Uri uri, @NonNull final String webEndpoint) {
+  public static boolean isProjectNewPledgeUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && NEW_PLEDGE_PATTERN.matcher(uri.getPath()).matches();
   }
 
-  public static boolean isTermsOfUseUri(@NonNull final Uri uri, @NonNull final String webEndpoint) {
+  public static boolean isTermsOfUseUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && uri.getPath().equals("/terms-of-use");
   }
 
-  public static boolean isWebUri(@NonNull final Uri uri, @NonNull final String webEndpoint) {
+  public static boolean isWebUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && !isApiUri(uri, webEndpoint);
   }
 

@@ -14,7 +14,7 @@ public class PlayServicesUtils {
   /**
    * Check the device to make sure it has the Google Play Services APK.
    */
-  public static boolean isAvailable(@NonNull final Context context) {
+  public static boolean isAvailable(final @NonNull Context context) {
     final GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
     final int resultCode = apiAvailability.isGooglePlayServicesAvailable(context);
     if (resultCode != ConnectionResult.SUCCESS) {

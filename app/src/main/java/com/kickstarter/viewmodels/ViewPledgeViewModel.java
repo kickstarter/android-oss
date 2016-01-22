@@ -37,7 +37,7 @@ public final class ViewPledgeViewModel extends ViewModel<ViewPledgeActivity> imp
   }
 
   @Override
-  protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
@@ -58,11 +58,11 @@ public final class ViewPledgeViewModel extends ViewModel<ViewPledgeActivity> imp
     );
   }
 
-  public void initialize(@NonNull final Project project) {
+  public void initialize(final @NonNull Project project) {
     this.project.onNext(project);
   }
 
-  public Observable<Backing> fetchProjectBacking(@NonNull final Project project, @NonNull final User user) {
+  public Observable<Backing> fetchProjectBacking(final @NonNull Project project, final @NonNull User user) {
     return client.fetchProjectBacking(project, user)
       .compose(Transformers.pipeApiErrorsTo(backingLoadFailed))
       .compose(Transformers.neverError());

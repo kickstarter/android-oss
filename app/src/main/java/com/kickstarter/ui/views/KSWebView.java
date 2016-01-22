@@ -17,15 +17,15 @@ import javax.inject.Inject;
 public class KSWebView extends WebView {
   @Inject KSWebViewClient client;
 
-  public KSWebView(@NonNull final Context context) {
+  public KSWebView(final @NonNull Context context) {
     this(context, null);
   }
 
-  public KSWebView(@NonNull final Context context, @Nullable final AttributeSet attrs) {
+  public KSWebView(final @NonNull Context context, final @Nullable AttributeSet attrs) {
     this(context, attrs, android.R.attr.webViewStyle);
   }
 
-  public KSWebView(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyle) {
+  public KSWebView(final @NonNull Context context, final @Nullable AttributeSet attrs, final int defStyle) {
     super(context, attrs, defStyle);
 
     if (isInEditMode()) {

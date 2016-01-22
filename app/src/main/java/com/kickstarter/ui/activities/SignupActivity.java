@@ -43,7 +43,7 @@ public final class SignupActivity extends BaseActivity<SignupViewModel> {
   @BindString(R.string.signup_error_title) String errorTitleString;
 
   @Override
-  protected void onCreate(@Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.signup_layout);
@@ -88,17 +88,17 @@ public final class SignupActivity extends BaseActivity<SignupViewModel> {
   }
 
   @OnTextChanged(R.id.full_name)
-  void onNameTextChanged(@NonNull final CharSequence fullName) {
+  void onNameTextChanged(final @NonNull CharSequence fullName) {
     viewModel.inputs.fullName(fullName.toString());
   }
 
   @OnTextChanged(R.id.email)
-  void onEmailTextChanged(@NonNull final CharSequence email) {
+  void onEmailTextChanged(final @NonNull CharSequence email) {
     viewModel.inputs.email(email.toString());
   }
 
   @OnTextChanged(R.id.password)
-  void onPasswordTextChange(@NonNull final CharSequence password) {
+  void onPasswordTextChange(final @NonNull CharSequence password) {
     viewModel.inputs.password(password.toString());
   }
 

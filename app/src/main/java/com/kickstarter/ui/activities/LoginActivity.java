@@ -50,7 +50,7 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
   @Inject KSString ksString;
 
   @Override
-  protected void onCreate(@Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.login_layout);
@@ -95,7 +95,7 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
   }
 
   @Override
-  protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
+  protected void onActivityResult(final int requestCode, final int resultCode, final @NonNull Intent intent) {
     if (requestCode != ActivityRequestCodes.LOGIN_ACTIVITY_TWO_FACTOR_ACTIVITY_FORWARD) {
       return;
     }
@@ -112,12 +112,12 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
   }
 
   @OnTextChanged(R.id.email)
-  void onEmailTextChanged(@NonNull final CharSequence email) {
+  void onEmailTextChanged(final @NonNull CharSequence email) {
     viewModel.inputs.email(email.toString());
   }
 
   @OnTextChanged(R.id.password)
-  void onPasswordTextChanged(@NonNull final CharSequence password) {
+  void onPasswordTextChanged(final @NonNull CharSequence password) {
     viewModel.inputs.password(password.toString());
   }
 

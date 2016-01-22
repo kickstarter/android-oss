@@ -85,7 +85,7 @@ public class FacebookConfirmationViewModel extends ViewModel<FacebookConfirmatio
   }
 
   @Override
-  protected void onCreate(@NonNull final Context context, @Nullable Bundle savedInstanceState) {
+  protected void onCreate(final @NonNull Context context, @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
@@ -106,13 +106,13 @@ public class FacebookConfirmationViewModel extends ViewModel<FacebookConfirmatio
     koala.trackRegisterFormView();
   }
 
-  public Observable<AccessTokenEnvelope> createNewAccount(@NonNull final String fbAccessToken, final boolean sendNewsletters) {
+  public Observable<AccessTokenEnvelope> createNewAccount(final @NonNull String fbAccessToken, final boolean sendNewsletters) {
     return client.registerWithFacebook(fbAccessToken, sendNewsletters)
       .compose(Transformers.pipeApiErrorsTo(signupError))
       .compose(Transformers.neverError());
   }
 
-  private void registerWithFacebookSuccess(@NonNull final AccessTokenEnvelope envelope) {
+  private void registerWithFacebookSuccess(final @NonNull AccessTokenEnvelope envelope) {
     currentUser.login(envelope.user(), envelope.accessToken());
     signupSuccess.onNext(null);
   }

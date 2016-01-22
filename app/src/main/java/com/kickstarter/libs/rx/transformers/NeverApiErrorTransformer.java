@@ -15,12 +15,12 @@ final class NeverApiErrorTransformer<T> implements Observable.Transformer<T, T> 
     this.errorAction = null;
   }
 
-  protected NeverApiErrorTransformer(@Nullable final Action1<ErrorEnvelope> errorAction) {
+  protected NeverApiErrorTransformer(final @Nullable Action1<ErrorEnvelope> errorAction) {
     this.errorAction = errorAction;
   }
 
   @Override
-  public @NonNull Observable<T> call(@NonNull final Observable<T> source) {
+  public @NonNull Observable<T> call(final @NonNull Observable<T> source) {
     return source
       .doOnError(e -> {
         final ErrorEnvelope env = ErrorEnvelope.fromThrowable(e);

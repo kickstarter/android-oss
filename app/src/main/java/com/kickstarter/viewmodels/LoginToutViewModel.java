@@ -37,9 +37,9 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
   protected final class ActivityResultData {
     final int requestCode;
     final int resultCode;
-    @NonNull final Intent intent;
+    final @NonNull Intent intent;
 
-    protected ActivityResultData(final int requestCode, final int resultCode, @NonNull final Intent intent) {
+    protected ActivityResultData(final int requestCode, final int resultCode, final @NonNull Intent intent) {
       this.requestCode = requestCode;
       this.resultCode = resultCode;
       this.intent = intent;
@@ -100,7 +100,7 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
     final CallbackManager callbackManager = CallbackManager.Factory.create();
     LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
       @Override
-      public void onSuccess(@NonNull final LoginResult result) {
+      public void onSuccess(final @NonNull LoginResult result) {
         facebookAccessToken.onNext(result.getAccessToken().getToken());
       }
 
@@ -110,7 +110,7 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
       }
 
       @Override
-      public void onError(@NonNull final FacebookException error) {
+      public void onError(final @NonNull FacebookException error) {
         if (error instanceof FacebookAuthorizationException) {
           facebookAuthorizationError.onNext(error);
         }
@@ -132,7 +132,7 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
   }
 
   @Override
-  protected void onCreate(@NonNull final Context context, @Nullable Bundle savedInstanceState) {
+  protected void onCreate(final @NonNull Context context, @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
     addSubscription(reason.take(1).subscribe(koala::trackLoginRegisterTout));
@@ -148,33 +148,33 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
   }
 
   @Override
-  public void activityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
+  public void activityResult(final int requestCode, final int resultCode, final @NonNull Intent intent) {
     final ActivityResultData activityResultData = new ActivityResultData(requestCode, resultCode, intent);
     activityResult.onNext(activityResultData);
   }
 
-  public void clearFacebookSession(@NonNull final FacebookException e) {
+  public void clearFacebookSession(final @NonNull FacebookException e) {
     LoginManager.getInstance().logOut();
   }
 
   @Override
-  public void facebookLoginClick(@NonNull final LoginToutActivity activity, @NonNull List<String> facebookPermissions) {
+  public void facebookLoginClick(final @NonNull LoginToutActivity activity, @NonNull List<String> facebookPermissions) {
     LoginManager.getInstance().logInWithReadPermissions(activity, facebookPermissions);
   }
 
-  public void facebookLoginSuccess(@NonNull final AccessTokenEnvelope envelope) {
+  public void facebookLoginSuccess(final @NonNull AccessTokenEnvelope envelope) {
     currentUser.login(envelope.user(), envelope.accessToken());
     facebookLoginSuccess.onNext(null);
   }
 
-  private Observable<AccessTokenEnvelope> loginWithFacebookAccessToken(@NonNull final String fbAccessToken) {
+  private Observable<AccessTokenEnvelope> loginWithFacebookAccessToken(final @NonNull String fbAccessToken) {
     return client.loginWithFacebook(fbAccessToken)
       .compose(Transformers.pipeApiErrorsTo(loginError))
       .compose(Transformers.neverError());
   }
 
   @Override
-  public void reason(@Nullable final String r) {
+  public void reason(final @Nullable String r) {
     reason.onNext(r);
   }
 }

@@ -34,7 +34,7 @@ public final class VideoPlayerActivity extends BaseActivity implements KSVideoPl
   public @Bind(R.id.video_frame) AspectRatioFrameLayout videoFrame;
 
   @Override
-  public void onCreate(@Nullable final Bundle savedInstanceState) {
+  public void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.video_player_layout);
     ButterKnife.bind(this);

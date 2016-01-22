@@ -38,7 +38,7 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
   private static String SAVE_URL_KEY = "save_url";
 
   @Override
-  protected void onCreate(@Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.checkout_layout);
     ButterKnife.bind(this);
@@ -60,7 +60,7 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
   }
 
   @Override
-  protected void onRestoreInstanceState(@Nullable final Bundle savedInstanceState) {
+  protected void onRestoreInstanceState(final @Nullable Bundle savedInstanceState) {
    super.onRestoreInstanceState(savedInstanceState);
 
     if (savedInstanceState != null) {
@@ -79,7 +79,7 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
   }
 
   @Override
-  protected void onSaveInstanceState(@NonNull final Bundle outState) {
+  protected void onSaveInstanceState(final @NonNull Bundle outState) {
     urlToReload = webView.lastClientUrl();
     outState.putString(SAVE_URL_KEY, urlToReload);
     super.onSaveInstanceState(outState);
@@ -91,14 +91,14 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
-  private boolean handleCheckoutThanksUriRequest(@NonNull final Request request, @NonNull final WebView webView) {
+  private boolean handleCheckoutThanksUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
     final Intent intent = new Intent(this, ThanksActivity.class)
       .putExtra(IntentKey.PROJECT, project);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
     return true;
   }
 
-  private boolean handleSignupUriRequest(@NonNull final Request request, @NonNull final WebView webView) {
+  private boolean handleSignupUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
     final Intent intent = new Intent(this, LoginToutActivity.class)
       .putExtra(IntentKey.FORWARD, true)
       .putExtra(IntentKey.LOGIN_TYPE, LoginToutActivity.REASON_BACK_PROJECT);
@@ -107,7 +107,7 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
   }
 
   @Override
-  protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
+  protected void onActivityResult(final int requestCode, final int resultCode, final @NonNull Intent intent) {
     if (requestCode != ActivityRequestCodes.CHECKOUT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED) {
       return;
     }

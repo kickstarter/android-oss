@@ -75,7 +75,7 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
   public final ActivityFeedViewModelOutputs outputs = this;
 
   @Override
-  protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
@@ -151,35 +151,35 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
     );
   }
 
-  public void emptyActivityFeedDiscoverProjectsClicked(@NonNull final EmptyActivityFeedViewHolder viewHolder) {
+  public void emptyActivityFeedDiscoverProjectsClicked(final @NonNull EmptyActivityFeedViewHolder viewHolder) {
     discoverProjectsClick.onNext(null);
   }
 
-  public void emptyActivityFeedLoginClicked(@NonNull final EmptyActivityFeedViewHolder viewHolder) {
+  public void emptyActivityFeedLoginClicked(final @NonNull EmptyActivityFeedViewHolder viewHolder) {
     loginClick.onNext(null);
   }
 
-  public void friendBackingClicked(@NonNull final FriendBackingViewHolder viewHolder, @NonNull final Activity activity) {
+  public void friendBackingClicked(final @NonNull FriendBackingViewHolder viewHolder, final @NonNull Activity activity) {
     friendBackingClick.onNext(activity);
   }
 
-  public void projectStateChangedClicked(@NonNull final ProjectStateChangedViewHolder viewHolder,
-    @NonNull final Activity activity) {
+  public void projectStateChangedClicked(final @NonNull ProjectStateChangedViewHolder viewHolder,
+    final @NonNull Activity activity) {
     projectStateChangedClick.onNext(activity);
   }
 
-  public void projectStateChangedPositiveClicked(@NonNull final ProjectStateChangedPositiveViewHolder viewHolder,
-    @NonNull final Activity activity) {
+  public void projectStateChangedPositiveClicked(final @NonNull ProjectStateChangedPositiveViewHolder viewHolder,
+    final @NonNull Activity activity) {
     projectStateChangedPositiveClick.onNext(activity);
   }
 
-  public void projectUpdateProjectClicked(@NonNull final ProjectUpdateViewHolder viewHolder,
-    @NonNull final Activity activity) {
+  public void projectUpdateProjectClicked(final @NonNull ProjectUpdateViewHolder viewHolder,
+    final @NonNull Activity activity) {
     projectUpdateProjectClick.onNext(activity);
   }
 
-  public void projectUpdateClicked(@NonNull final ProjectUpdateViewHolder viewHolder,
-    @NonNull final Activity activity) {
+  public void projectUpdateClicked(final @NonNull ProjectUpdateViewHolder viewHolder,
+    final @NonNull Activity activity) {
     projectUpdateUpdateClick.onNext(activity);
   }
 }

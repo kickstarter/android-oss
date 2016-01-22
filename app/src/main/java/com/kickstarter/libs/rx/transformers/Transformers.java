@@ -24,7 +24,7 @@ public final class Transformers {
    * and any errors that occur will be piped into the supplied errors publish
    * subject. `null` values will never be sent to the publish subject.
    */
-  public static <T> NeverErrorTransformer<T> pipeErrorsTo(@NonNull final PublishSubject<Throwable> errorSubject) {
+  public static <T> NeverErrorTransformer<T> pipeErrorsTo(final @NonNull PublishSubject<Throwable> errorSubject) {
     return new NeverErrorTransformer<>(errorSubject::onNext);
   }
 
@@ -33,7 +33,7 @@ public final class Transformers {
    * and any errors that occur will be piped into the supplied errors action.
    * `null` values will never be sent to the publish subject.
    */
-  public static <T> NeverErrorTransformer<T> pipeErrorsTo(@NonNull final Action1<Throwable> errorAction) {
+  public static <T> NeverErrorTransformer<T> pipeErrorsTo(final @NonNull Action1<Throwable> errorAction) {
     return new NeverErrorTransformer<>(errorAction);
   }
 
@@ -50,7 +50,7 @@ public final class Transformers {
    * errors publish subject. `null` values will never be sent to
    * the publish subject.
    */
-  public static <T> NeverApiErrorTransformer<T> pipeApiErrorsTo(@NonNull final PublishSubject<ErrorEnvelope> errorSubject) {
+  public static <T> NeverApiErrorTransformer<T> pipeApiErrorsTo(final @NonNull PublishSubject<ErrorEnvelope> errorSubject) {
     return new NeverApiErrorTransformer<>(errorSubject::onNext);
   }
 
@@ -59,7 +59,7 @@ public final class Transformers {
    * and any errors that do occur will be piped into the supplied
    * errors actions. `null` values will never be sent to the action.
    */
-  public static <T> NeverApiErrorTransformer<T> pipeApiErrorsTo(@NonNull final Action1<ErrorEnvelope> errorAction) {
+  public static <T> NeverApiErrorTransformer<T> pipeApiErrorsTo(final @NonNull Action1<ErrorEnvelope> errorAction) {
     return new NeverApiErrorTransformer<>(errorAction);
   }
 
@@ -67,7 +67,7 @@ public final class Transformers {
    * Emits the latest value of the source observable whenever the `when`
    * observable emits.
    */
-  public static <S, T> TakeWhenTransformer<S, T> takeWhen(@NonNull final Observable<T> when) {
+  public static <S, T> TakeWhenTransformer<S, T> takeWhen(final @NonNull Observable<T> when) {
     return new TakeWhenTransformer<>(when);
   }
 
@@ -75,21 +75,21 @@ public final class Transformers {
    * Emits the latest value of the source `when` observable whenever the
    * `when` observable emits.
    */
-  public static <S, T> TakePairWhenTransformer<S, T> takePairWhen(@NonNull final Observable<T> when) {
+  public static <S, T> TakePairWhenTransformer<S, T> takePairWhen(final @NonNull Observable<T> when) {
     return new TakePairWhenTransformer<>(when);
   }
 
   /**
    * Zips two observables up into an observable of pairs.
    */
-  public static <S, T> ZipPairTransformer<S, T> zipPair(@NonNull final Observable<T> second) {
+  public static <S, T> ZipPairTransformer<S, T> zipPair(final @NonNull Observable<T> second) {
     return new ZipPairTransformer<>(second);
   }
 
   /**
    * Emits the latest values from two observables whenever either emits.
    */
-  public static <S, T> CombineLatestPairTransformer<S, T> combineLatestPair(@NonNull final Observable<T> second) {
+  public static <S, T> CombineLatestPairTransformer<S, T> combineLatestPair(final @NonNull Observable<T> second) {
     return new CombineLatestPairTransformer<>(second);
   }
 
@@ -103,7 +103,7 @@ public final class Transformers {
    *   .subscribe(show)
    * ```
    */
-  @NonNull public static <T, R> WaitUntilTransformer<T, R> waitUntil(@NonNull final Observable<R> until) {
+  @NonNull public static <T, R> WaitUntilTransformer<T, R> waitUntil(final @NonNull Observable<R> until) {
     return new WaitUntilTransformer<>(until);
   }
 

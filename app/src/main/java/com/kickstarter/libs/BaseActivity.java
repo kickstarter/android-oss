@@ -63,7 +63,7 @@ public class BaseActivity<ViewModelType extends ViewModel> extends AppCompatActi
 
   @CallSuper
   @Override
-  protected void onCreate(@Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Timber.d("onCreate %s", this.toString());
 
@@ -133,7 +133,7 @@ public class BaseActivity<ViewModelType extends ViewModel> extends AppCompatActi
 
   @CallSuper
   @Override
-  protected void onSaveInstanceState(@NonNull final Bundle outState) {
+  protected void onSaveInstanceState(final @NonNull Bundle outState) {
     super.onSaveInstanceState(outState);
     Timber.d("onSaveInstanceState %s", this.toString());
 
@@ -145,8 +145,8 @@ public class BaseActivity<ViewModelType extends ViewModel> extends AppCompatActi
     outState.putBundle(VIEW_MODEL_KEY, viewModelEnvelope);
   }
 
-  protected final void startActivityWithTransition(@NonNull final Intent intent, @AnimRes final int enterAnim,
-    @AnimRes final int exitAnim) {
+  protected final void startActivityWithTransition(final @NonNull Intent intent, final @AnimRes int enterAnim,
+    final @AnimRes int exitAnim) {
     startActivity(intent);
     overridePendingTransition(enterAnim, exitAnim);
   }
@@ -155,11 +155,11 @@ public class BaseActivity<ViewModelType extends ViewModel> extends AppCompatActi
    * @deprecated Use {@link #bindToLifecycle()} or {@link #bindUntilEvent(ActivityEvent)} instead.
    */
   @Deprecated
-  protected final void addSubscription(@NonNull final Subscription subscription) {
+  protected final void addSubscription(final @NonNull Subscription subscription) {
     subscriptions.add(subscription);
   }
 
-  private void fetchViewModel(@Nullable final Bundle viewModelEnvelope) {
+  private void fetchViewModel(final @Nullable Bundle viewModelEnvelope) {
     if (viewModel == null) {
       final RequiresViewModel annotation = getClass().getAnnotation(RequiresViewModel.class);
       final Class<ViewModelType> viewModelClass = annotation == null ? null : (Class<ViewModelType>) annotation.value();

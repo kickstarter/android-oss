@@ -24,13 +24,13 @@ public class ViewModel<ViewType> {
   private final List<Subscription> subscriptions = new ArrayList<>();
 
   @CallSuper
-  protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     Timber.d("onCreate %s", this.toString());
     dropView();
   }
 
   @CallSuper
-  protected void onResume(@NonNull final ViewType view) {
+  protected void onResume(final @NonNull ViewType view) {
     Timber.d("onResume %s", this.toString());
     onTakeView(view);
   }
@@ -50,7 +50,7 @@ public class ViewModel<ViewType> {
     viewChange.onCompleted();
   }
 
-  private void onTakeView(@NonNull final ViewType view) {
+  private void onTakeView(final @NonNull ViewType view) {
     Timber.d("onTakeView %s %s", this.toString(), view.toString());
     viewChange.onNext(view);
   }
@@ -68,12 +68,12 @@ public class ViewModel<ViewType> {
     return viewChange;
   }
 
-  public final void addSubscription(@NonNull final Subscription subscription) {
+  public final void addSubscription(final @NonNull Subscription subscription) {
     subscriptions.add(subscription);
   }
 
   @CallSuper
-  protected void save(@NonNull final Bundle state) {
+  protected void save(final @NonNull Bundle state) {
     Timber.d("save %s", this.toString());
     // TODO
   }

@@ -19,14 +19,14 @@ import dagger.Provides;
 public class InternalApplicationModule {
   @Provides
   @Singleton
-  ApiEndpoint provideApiEndpoint(@ApiEndpointPreference @NonNull final StringPreference apiEndpointPreference) {
+  ApiEndpoint provideApiEndpoint(@ApiEndpointPreference final @NonNull StringPreference apiEndpointPreference) {
     return ApiEndpoint.from(apiEndpointPreference.get());
   }
 
   @Provides
   @Singleton
   @ApiEndpointPreference
-  StringPreference provideApiEndpointPreference(@NonNull final SharedPreferences sharedPreferences) {
+  StringPreference provideApiEndpointPreference(final @NonNull SharedPreferences sharedPreferences) {
     return new StringPreference(sharedPreferences, "debug_api_endpoint", ApiEndpoint.PRODUCTION.url);
   }
 

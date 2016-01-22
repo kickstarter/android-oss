@@ -11,7 +11,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public interface BuildCheck {
-  void bind(@NonNull final DiscoveryViewModel viewModel, @NonNull final WebClient client);
+  void bind(final @NonNull DiscoveryViewModel viewModel, final @NonNull WebClient client);
 
   BuildCheck DEFAULT = (viewModel, client) -> {
     final Subscription subscription = client.pingBeta()

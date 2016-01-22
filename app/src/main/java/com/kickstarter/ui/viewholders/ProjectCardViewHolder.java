@@ -90,7 +90,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     void projectCardViewHolderClick(ProjectCardViewHolder viewHolder, Project project);
   }
 
-  public ProjectCardViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
+  public ProjectCardViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
     this.delegate = delegate;
     this.context = view.getContext();
@@ -143,7 +143,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   }
 
   @Override
-  public void onClick(@NonNull final View view) {
+  public void onClick(final @NonNull View view) {
     delegate.projectCardViewHolderClick(this, project);
   }
 

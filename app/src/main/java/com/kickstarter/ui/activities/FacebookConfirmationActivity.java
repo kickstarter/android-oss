@@ -39,7 +39,7 @@ public class FacebookConfirmationActivity extends BaseActivity<FacebookConfirmat
   private boolean forward;
 
   @Override
-  public void onCreate(@Nullable final Bundle savedInstanceState) {
+  public void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.facebook_confirmation_layout);

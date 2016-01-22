@@ -27,15 +27,15 @@ public class DebugPushNotificationsView extends ScrollView {
   private static final String USER_PHOTO = "https://ksr-ugc.imgix.net/avatars/1583412/portrait.original.png?v=1330782076&w=120&h=120&fit=crop&auto=format&q=92&s=a9029da56a3deab8c4b87818433e3430";
   private static final Long PROJECT_ID = 1929840910L;
 
-  public DebugPushNotificationsView(@NonNull final Context context) {
+  public DebugPushNotificationsView(final @NonNull Context context) {
     this(context, null);
   }
 
-  public DebugPushNotificationsView(@NonNull final Context context, @Nullable final AttributeSet attrs) {
+  public DebugPushNotificationsView(final @NonNull Context context, final @Nullable AttributeSet attrs) {
     this(context, attrs, 0);
   }
 
-  public DebugPushNotificationsView(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
+  public DebugPushNotificationsView(final @NonNull Context context, final @Nullable AttributeSet attrs, final int defStyleAttr) {
     super(context, attrs, defStyleAttr);
   }
 

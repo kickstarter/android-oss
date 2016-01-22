@@ -11,12 +11,12 @@ import auto.parcel.AutoParcel;
 @AutoParcel
 public abstract class Activity implements Parcelable {
   @com.kickstarter.models.Activity.Category public abstract String category();
-  @Nullable public abstract Long commentId();
+  public abstract @Nullable Long commentId();
   public abstract long id();
-  @Nullable public abstract Long projectId();
-  @Nullable public abstract String projectPhoto();
-  @Nullable public abstract String userPhoto();
-  @Nullable public abstract Long updateId();
+  public abstract @Nullable Long projectId();
+  public abstract @Nullable String projectPhoto();
+  public abstract @Nullable String userPhoto();
+  public abstract @Nullable Long updateId();
 
   @AutoParcel.Builder
   public abstract static class Builder {

@@ -39,7 +39,7 @@ public final class CommentViewHolder extends KSViewHolder {
   protected @Inject CurrentUser currentUser;
   protected @Inject KSString ksString;
 
-  public CommentViewHolder(@NonNull final View view) {
+  public CommentViewHolder(final @NonNull View view) {
     super(view);
     ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
     ButterKnife.bind(this, view);

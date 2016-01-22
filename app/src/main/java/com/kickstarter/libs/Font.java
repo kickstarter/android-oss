@@ -10,7 +10,7 @@ public class Font {
   private Typeface sansSerifTypeface;
   private Typeface ssKickstarterTypeface;
 
-  public Font(@NonNull final AssetManager assetManager) {
+  public Font(final @NonNull AssetManager assetManager) {
     this.materialIconsTypeface = Typeface.createFromAsset(assetManager, "fonts/MaterialIcons-Regular.ttf");
     this.sansSerifLightTypeface = Typeface.create("sans-serif-light", Typeface.NORMAL);
     this.sansSerifTypeface = Typeface.create("sans-serif", Typeface.NORMAL);

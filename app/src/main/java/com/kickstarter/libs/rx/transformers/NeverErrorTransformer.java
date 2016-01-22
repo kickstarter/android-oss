@@ -18,7 +18,7 @@ public final class NeverErrorTransformer<T> implements Observable.Transformer<T,
   }
 
   @Override
-  @NonNull public Observable<T> call(@NonNull final Observable<T> source) {
+  @NonNull public Observable<T> call(final @NonNull Observable<T> source) {
     return source
       .doOnError(e -> {
         if (errorAction != null) {

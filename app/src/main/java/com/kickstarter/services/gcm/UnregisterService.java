@@ -16,7 +16,7 @@ public class UnregisterService extends IntentService {
   }
 
   @Override
-  protected void onHandleIntent(@NonNull final Intent intent) {
+  protected void onHandleIntent(final @NonNull Intent intent) {
     Timber.d("onHandleIntent");
 
     try {

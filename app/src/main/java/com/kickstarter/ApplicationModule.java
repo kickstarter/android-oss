@@ -69,7 +69,7 @@ import retrofit.RxJavaCallAdapterFactory;
 public class ApplicationModule {
   private final Application application;
 
-  public ApplicationModule(@NonNull final Application application) {
+  public ApplicationModule(final @NonNull Application application) {
     this.application = application;
   }
 
@@ -77,16 +77,16 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  ApiClientType provideApiClientType(@NonNull final ApiService apiService, @NonNull final Gson gson) {
+  ApiClientType provideApiClientType(final @NonNull ApiService apiService, final @NonNull Gson gson) {
     return new ApiClient(apiService, gson);
   }
 
   @Provides
   @Singleton
   @NonNull
-  OkHttpClient provideOkHttpClient(@NonNull final ApiRequestInterceptor apiRequestInterceptor, @NonNull final CookieManager cookieManager,
-    @NonNull final HttpLoggingInterceptor httpLoggingInterceptor, @NonNull final KSRequestInterceptor ksRequestInterceptor,
-    @NonNull final WebRequestInterceptor webRequestInterceptor) {
+  OkHttpClient provideOkHttpClient(final @NonNull ApiRequestInterceptor apiRequestInterceptor, final @NonNull CookieManager cookieManager,
+    final @NonNull HttpLoggingInterceptor httpLoggingInterceptor, final @NonNull KSRequestInterceptor ksRequestInterceptor,
+    final @NonNull WebRequestInterceptor webRequestInterceptor) {
     final OkHttpClient okHttpClient = new OkHttpClient();
 
     okHttpClient.interceptors().addAll(
@@ -99,29 +99,29 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @Named("ApiRetrofit")
-  @NonNull Retrofit provideApiRetrofit(@NonNull final ApiEndpoint apiEndpoint,
-    @NonNull final Gson gson,
-    @NonNull final OkHttpClient okHttpClient) {
+  @NonNull Retrofit provideApiRetrofit(final @NonNull ApiEndpoint apiEndpoint,
+    final @NonNull Gson gson,
+    final @NonNull OkHttpClient okHttpClient) {
     return createRetrofit(apiEndpoint.url, gson, okHttpClient);
   }
 
   @Provides
   @Singleton
-  @NonNull ApiRequestInterceptor provideApiRequestInterceptor(@NonNull final String clientId,
-    @NonNull final CurrentUser currentUser, @NonNull final ApiEndpoint endpoint) {
+  @NonNull ApiRequestInterceptor provideApiRequestInterceptor(final @NonNull String clientId,
+    final @NonNull CurrentUser currentUser, final @NonNull ApiEndpoint endpoint) {
     return new ApiRequestInterceptor(clientId, currentUser, endpoint.url);
   }
 
   @Provides
   @Singleton
   @NonNull
-  ApiService provideApiService(@Named("ApiRetrofit") @NonNull final Retrofit retrofit) {
+  ApiService provideApiService(@Named("ApiRetrofit") final @NonNull Retrofit retrofit) {
     return retrofit.create(ApiService.class);
   }
 
   @Provides
   @Singleton
-  String provideClientId(@NonNull final ApiEndpoint apiEndpoint) {
+  String provideClientId(final @NonNull ApiEndpoint apiEndpoint) {
     return apiEndpoint == ApiEndpoint.PRODUCTION ?
       "***REMOVED***" :
       "***REMOVED***";
@@ -129,7 +129,7 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  @NonNull KSRequestInterceptor provideKSRequestInterceptor(@NonNull final Release release) {
+  @NonNull KSRequestInterceptor provideKSRequestInterceptor(final @NonNull Release release) {
     return new KSRequestInterceptor(release);
   }
 
@@ -143,7 +143,7 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  @NonNull WebClient provideWebClient(@NonNull final WebService webService) {
+  @NonNull WebClient provideWebClient(final @NonNull WebService webService) {
     return new WebClient(webService);
   }
 
@@ -151,8 +151,8 @@ public class ApplicationModule {
   @Singleton
   @Named("WebRetrofit")
   @NonNull Retrofit provideWebRetrofit(@NonNull @WebEndpoint final String webEndpoint,
-    @NonNull final Gson gson,
-    @NonNull final OkHttpClient okHttpClient) {
+    final @NonNull Gson gson,
+    final @NonNull OkHttpClient okHttpClient) {
     return createRetrofit(webEndpoint, gson, okHttpClient);
   }
 
@@ -166,11 +166,11 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  WebService provideWebService(@Named("WebRetrofit") @NonNull final Retrofit retrofit) {
+  WebService provideWebService(@Named("WebRetrofit") final @NonNull Retrofit retrofit) {
     return retrofit.create(WebService.class);
   }
 
-  private @NonNull Retrofit createRetrofit(@NonNull String baseUrl, @NonNull final Gson gson, @NonNull final OkHttpClient okHttpClient) {
+  private @NonNull Retrofit createRetrofit(@NonNull String baseUrl, final @NonNull Gson gson, final @NonNull OkHttpClient okHttpClient) {
     return new Retrofit.Builder()
       .client(okHttpClient)
       .baseUrl(baseUrl)
@@ -184,7 +184,7 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @AccessTokenPreference
-  @NonNull StringPreference provideAccessTokenPreference(@NonNull final SharedPreferences sharedPreferences) {
+  @NonNull StringPreference provideAccessTokenPreference(final @NonNull SharedPreferences sharedPreferences) {
     return new StringPreference(sharedPreferences, "access_token");
   }
 
@@ -198,14 +198,14 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @ActivitySamplePreference
-  @NonNull IntPreference provideActivitySamplePreference(@NonNull final SharedPreferences sharedPreferences) {
+  @NonNull IntPreference provideActivitySamplePreference(final @NonNull SharedPreferences sharedPreferences) {
     return new IntPreference(sharedPreferences, "last_seen_activity_id");
   }
 
   @Provides
   @Singleton
   @AppRatingPreference
-  @NonNull BooleanPreference provideAppRatingPreference(@NonNull final SharedPreferences sharedPreferences) {
+  @NonNull BooleanPreference provideAppRatingPreference(final @NonNull SharedPreferences sharedPreferences) {
     return new BooleanPreference(sharedPreferences, "has_seen_app_rating");
   }
 
@@ -217,7 +217,7 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  Koala provideKoala(@ForApplication @NonNull final Context context, @NonNull final CurrentUser currentUser) {
+  Koala provideKoala(@ForApplication final @NonNull Context context, final @NonNull CurrentUser currentUser) {
     return new Koala(new KoalaTrackingClient(context, currentUser));
   }
 
@@ -236,7 +236,7 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  Release provideRelease(@NonNull final PackageInfo packageInfo) {
+  Release provideRelease(final @NonNull PackageInfo packageInfo) {
     return new Release(packageInfo);
   }
 
@@ -256,9 +256,9 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  CurrentUser provideCurrentUser(@AccessTokenPreference @NonNull final StringPreference accessTokenPreference,
-    @NonNull final DeviceRegistrarType deviceRegistrar,
-    @NonNull final Gson gson,
+  CurrentUser provideCurrentUser(@AccessTokenPreference final @NonNull StringPreference accessTokenPreference,
+    final @NonNull DeviceRegistrarType deviceRegistrar,
+    final @NonNull Gson gson,
     @NonNull @UserPreference final StringPreference userPreference) {
     return new CurrentUser(accessTokenPreference, deviceRegistrar, gson, userPreference);
   }
@@ -272,7 +272,7 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @WebEndpoint
-  @NonNull String provideWebEndpoint(@NonNull final ApiEndpoint apiEndpoint) {
+  @NonNull String provideWebEndpoint(final @NonNull ApiEndpoint apiEndpoint) {
     return (apiEndpoint == ApiEndpoint.PRODUCTION) ?
       "https://www.kickstarter.com" :
       apiEndpoint.url.replaceAll("(?<=\\Ahttps?:\\/\\/)api.", "");
@@ -280,7 +280,7 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  Font provideFont(@NonNull final AssetManager assetManager) {
+  Font provideFont(final @NonNull AssetManager assetManager) {
     return new Font(assetManager);
   }
 
@@ -307,14 +307,14 @@ public class ApplicationModule {
   }
 
   @Provides
-  KSWebViewClient provideKSWebViewClient(@NonNull final OkHttpClient okHttpClient,
+  KSWebViewClient provideKSWebViewClient(final @NonNull OkHttpClient okHttpClient,
     @WebEndpoint final String webEndpoint) {
     return new KSWebViewClient(okHttpClient, webEndpoint);
   }
 
   @Provides
   @Singleton
-  Logout provideLogout(@NonNull final CookieManager cookieManager, @NonNull final CurrentUser currentUser) {
+  Logout provideLogout(final @NonNull CookieManager cookieManager, final @NonNull CurrentUser currentUser) {
     return new Logout(cookieManager, currentUser);
   }
 
@@ -327,7 +327,7 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  PackageInfo providePackageInfo(@NonNull final Application application) {
+  PackageInfo providePackageInfo(final @NonNull Application application) {
     try {
       return application.getPackageManager().getPackageInfo(application.getPackageName(), 0);
     } catch (PackageManager.NameNotFoundException e) {
@@ -339,13 +339,13 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @Named("PackageName")
-  String providePackageName(@NonNull final Application application) {
+  String providePackageName(final @NonNull Application application) {
     return application.getPackageName();
   }
 
   @Provides
   @Singleton
-  Resources provideResources(@ForApplication @NonNull final Context context) {
+  Resources provideResources(@ForApplication final @NonNull Context context) {
     return context.getResources();
   }
 
@@ -358,7 +358,7 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @UserPreference
-  StringPreference provideUserPreference(@NonNull final SharedPreferences sharedPreferences) {
+  StringPreference provideUserPreference(final @NonNull SharedPreferences sharedPreferences) {
     return new StringPreference(sharedPreferences, "user");
   }
 }

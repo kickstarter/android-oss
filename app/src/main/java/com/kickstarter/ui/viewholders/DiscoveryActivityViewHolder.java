@@ -145,10 +145,11 @@ public class DiscoveryActivityViewHolder extends KSViewHolder {
     final LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(context.getResources().getDimensionPixelSize(R.dimen.discovery_activity_photo_width),
       context.getResources().getDimensionPixelSize(R.dimen.discovery_activity_photo_height));
     activityImageView.setLayoutParams(layoutParams);
-    activityTitleTextView.setText(project.name());
 
+    activityTitleTextView.setText(project.name());
     activityTitleTextView.setMaxLines(2);
     activityTitleTextView.setEllipsize(TextUtils.TruncateAt.END);
+
     activitysubTitleTextView.setMaxLines(2);
     activitysubTitleTextView.setEllipsize(TextUtils.TruncateAt.END);
 

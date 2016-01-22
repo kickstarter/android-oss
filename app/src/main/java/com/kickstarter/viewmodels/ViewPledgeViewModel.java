@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
@@ -14,47 +13,45 @@ import com.kickstarter.models.Backing;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
-import com.kickstarter.services.apiresponses.ErrorEnvelope;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ViewPledgeActivity;
-import com.kickstarter.viewmodels.errors.ViewPledgeViewModelErrors;
+import com.kickstarter.viewmodels.outputs.ViewPledgeViewModelOutputs;
 
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public final class ViewPledgeViewModel extends ViewModel<ViewPledgeActivity> implements ViewPledgeViewModelErrors {
+public final class ViewPledgeViewModel extends ViewModel<ViewPledgeActivity> implements ViewPledgeViewModelOutputs  {
   private final PublishSubject<Project> project = PublishSubject.create();
 
   protected @Inject ApiClientType client;
   protected @Inject CurrentUser currentUser;
 
-  // Errors
-  private PublishSubject<ErrorEnvelope> backingLoadFailed = PublishSubject.create();
-  public Observable<Void> backingLoadFailed() {
-    return backingLoadFailed.map(__ -> null);
+  private final BehaviorSubject<Backing> backing = BehaviorSubject.create();
+  @Override
+  public Observable<Backing> backing() {
+    return backing;
   }
+
+  public final ViewPledgeViewModelOutputs outputs = this;
 
   @Override
   protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    final Observable<Backing> backing = project
-      .compose(Transformers.combineLatestPair(currentUser.observable()))
-      .filter(pu -> pu.second != null)
-      .switchMap(pu -> fetchProjectBacking(pu.first, pu.second))
-      .share();
+    final Observable<Project> project = intent
+      .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
+      .ofType(Project.class);
 
-    final Observable<Pair<ViewPledgeActivity, Backing>> viewAndBacking = view
-      .compose(Transformers.takePairWhen(backing))
-      .share();
-
-    addSubscription(viewAndBacking
-        .compose(Transformers.takeWhen(backing))
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(vb -> vb.first.show(vb.second))
+    addSubscription(
+      project
+        .compose(Transformers.combineLatestPair(currentUser.observable()))
+        .filter(pu -> pu.second != null)
+        .switchMap(pu -> fetchProjectBacking(pu.first, pu.second))
+        .subscribe(backing::onNext)
     );
   }
 
@@ -64,7 +61,7 @@ public final class ViewPledgeViewModel extends ViewModel<ViewPledgeActivity> imp
 
   public Observable<Backing> fetchProjectBacking(@NonNull final Project project, @NonNull final User user) {
     return client.fetchProjectBacking(project, user)
-      .compose(Transformers.pipeApiErrorsTo(backingLoadFailed))
+      .retry(3)
       .compose(Transformers.neverError());
   }
 }

@@ -405,10 +405,10 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
 
     // Seed selected params when we are freshly launching the app with no data.
     intent
+      .take(1)
       .map(Intent::getAction)
       .filter(Intent.ACTION_MAIN::equals)
       .map(__ -> DiscoveryParams.builder().staffPicks(true).build())
-      .take(1)
       .subscribe(selectedParams::onNext);
   }
 

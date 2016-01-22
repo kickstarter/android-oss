@@ -1,6 +1,5 @@
 package com.kickstarter.ui.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,7 +17,6 @@ import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Project;
-import com.kickstarter.ui.IntentKey;
 import com.kickstarter.viewmodels.ViewPledgeViewModel;
 import com.squareup.picasso.Picasso;
 
@@ -28,6 +26,7 @@ import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresViewModel(ViewPledgeViewModel.class)
 public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel> {
@@ -59,9 +58,10 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel> 
     ButterKnife.bind(this);
     ((KSApplication) getApplication()).component().inject(this);
 
-    final Intent intent = getIntent();
-    final Project project = intent.getParcelableExtra(IntentKey.PROJECT);
-    viewModel.initialize(project);
+    viewModel.outputs.backing()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::show);
   }
 
   public void show(final @NonNull Backing backing) {

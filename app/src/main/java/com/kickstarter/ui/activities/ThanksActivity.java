@@ -80,8 +80,6 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
 
     displayWoohooBackground();
     displayRating();
-
-    viewModel.takeProject(getIntent().getExtras().getParcelable(IntentKey.PROJECT));
   }
 
   public void show(final @NonNull Project project) {

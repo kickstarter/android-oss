@@ -13,8 +13,8 @@ import com.google.android.exoplayer.AspectRatioFrameLayout;
 import com.google.android.exoplayer.ExoPlayer;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.KSVideoPlayer;
 import com.kickstarter.libs.KSRendererBuilder;
+import com.kickstarter.libs.KSVideoPlayer;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Video;
 import com.kickstarter.ui.IntentKey;
@@ -42,6 +42,9 @@ public final class VideoPlayerActivity extends BaseActivity implements KSVideoPl
     final Intent intent = getIntent();
     final Project project = intent.getParcelableExtra(IntentKey.PROJECT);
     video = project.video();
+
+    mediaController = new MediaController(this);
+    mediaController.setAnchorView(rootView);
 
     rootView.setOnTouchListener(((view, motionEvent) -> {
       if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
@@ -111,9 +114,7 @@ public final class VideoPlayerActivity extends BaseActivity implements KSVideoPl
     player.seekTo(playerPosition);  // todo: will be used for inline video playing
 
     // Set media controller
-    mediaController = new MediaController(this);
     mediaController.setMediaPlayer(player.getPlayerControl());
-    mediaController.setAnchorView(rootView);
     mediaController.setEnabled(true);
 
     player.prepare();

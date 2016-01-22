@@ -37,7 +37,7 @@ public class DiscoveryActivityViewHolder extends KSViewHolder {
   protected @Bind(R.id.activity_click_area) LinearLayout activityClickArea;
   protected @Bind(R.id.activity_image) ImageView activityImageView;
   protected @Bind(R.id.activity_title) TextView activityTitleTextView;
-  protected @Bind(R.id.activity_subtitle) TextView activitysubTitleTextView;
+  protected @Bind(R.id.activity_subtitle) TextView activitySubtitleTextView;
   protected @Bind(R.id.see_activity_button) Button seeActivityButton;
   protected @BindString(R.string.activity_friend_backed_project_name_by_creator_name) String categoryBackingString;
   protected @BindString(R.string.activity_user_name_is_now_following_you) String categoryFollowingString;
@@ -74,7 +74,7 @@ public class DiscoveryActivityViewHolder extends KSViewHolder {
     final Context context = view.getContext();
 
     activityTitleTextView.setVisibility(View.GONE);
-    activitysubTitleTextView.setVisibility(View.GONE);
+    activitySubtitleTextView.setVisibility(View.GONE);
     activityImageView.setVisibility(View.GONE);
 
     final User user = activity.user();
@@ -91,26 +91,26 @@ public class DiscoveryActivityViewHolder extends KSViewHolder {
 
   private void setBackingView(final @NonNull Context context, final @NonNull User user, final @NonNull Project project) {
     activityImageView.setVisibility(View.VISIBLE);
-    activitysubTitleTextView.setVisibility(View.VISIBLE);
+    activitySubtitleTextView.setVisibility(View.VISIBLE);
 
     Picasso.with(context).load(user.avatar()
       .small())
       .transform(new CircleTransformation())
       .into(activityImageView);
 
-    activitysubTitleTextView.setText(Html.fromHtml(ksString.format(categoryBackingString,
+    activitySubtitleTextView.setText(Html.fromHtml(ksString.format(categoryBackingString,
       "friend_name", user.name(),
       "project_name", project.name(),
       "creator_name", project.creator().name())));
 
-    activitysubTitleTextView.setMaxLines(3);
-    activitysubTitleTextView.setEllipsize(TextUtils.TruncateAt.END);
+    activitySubtitleTextView.setMaxLines(3);
+    activitySubtitleTextView.setEllipsize(TextUtils.TruncateAt.END);
   }
 
   private void setFollowView(final @NonNull Context context, final @NonNull User user) {
     activityImageView.setVisibility(View.VISIBLE);
     activityTitleTextView.setVisibility(View.VISIBLE);
-    activitysubTitleTextView.setVisibility(View.VISIBLE);
+    activitySubtitleTextView.setVisibility(View.VISIBLE);
 
     Picasso.with(context).load(user.avatar()
       .small())
@@ -118,11 +118,11 @@ public class DiscoveryActivityViewHolder extends KSViewHolder {
       .into(activityImageView);
 
     activityTitleTextView.setText(ksString.format(categoryFollowingString, "user_name", user.name()));
-    activitysubTitleTextView.setText(categoryFollowBackString);
+    activitySubtitleTextView.setText(categoryFollowBackString);
 
     // temp until followable :
     activityClickArea.setBackgroundResource(0);
-    activitysubTitleTextView.setVisibility(View.GONE);
+    activitySubtitleTextView.setVisibility(View.GONE);
   }
 
   private void setProjectView(final @NonNull Context context, final @NonNull Project project, final @Nullable User user) {
@@ -140,7 +140,7 @@ public class DiscoveryActivityViewHolder extends KSViewHolder {
 
     activityImageView.setVisibility(View.VISIBLE);
     activityTitleTextView.setVisibility(View.VISIBLE);
-    activitysubTitleTextView.setVisibility(View.VISIBLE);
+    activitySubtitleTextView.setVisibility(View.VISIBLE);
 
     final LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(context.getResources().getDimensionPixelSize(R.dimen.discovery_activity_photo_width),
       context.getResources().getDimensionPixelSize(R.dimen.discovery_activity_photo_height));
@@ -150,31 +150,31 @@ public class DiscoveryActivityViewHolder extends KSViewHolder {
     activityTitleTextView.setMaxLines(2);
     activityTitleTextView.setEllipsize(TextUtils.TruncateAt.END);
 
-    activitysubTitleTextView.setMaxLines(2);
-    activitysubTitleTextView.setEllipsize(TextUtils.TruncateAt.END);
+    activitySubtitleTextView.setMaxLines(2);
+    activitySubtitleTextView.setEllipsize(TextUtils.TruncateAt.END);
 
     switch(activity.category()) {
       case Activity.CATEGORY_FAILURE:
-        activitysubTitleTextView.setText(categoryFailureString);
+        activitySubtitleTextView.setText(categoryFailureString);
         break;
       case Activity.CATEGORY_CANCELLATION:
-        activitysubTitleTextView.setText(categoryCancellationString);
+        activitySubtitleTextView.setText(categoryCancellationString);
         break;
       case Activity.CATEGORY_LAUNCH:
         if (user == null) {
           break;
         }
-        activitysubTitleTextView.setText(ksString.format(categoryLaunchString, "user_name", user.name()));
+        activitySubtitleTextView.setText(ksString.format(categoryLaunchString, "user_name", user.name()));
         break;
       case Activity.CATEGORY_SUCCESS:
-        activitysubTitleTextView.setText(categorySuccessString);
+        activitySubtitleTextView.setText(categorySuccessString);
         break;
       case Activity.CATEGORY_UPDATE:
         final Update update = activity.update();
         if (update == null) {
           break;
         }
-        activitysubTitleTextView.setText(ksString.format(categoryUpdateString,
+        activitySubtitleTextView.setText(ksString.format(categoryUpdateString,
           "update_number", String.valueOf(update.sequence()),
           "update_title", update.title()));
         break;

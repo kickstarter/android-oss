@@ -303,7 +303,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
       currentUser.loggedInUser()
         .compose(Transformers.combineLatestPair(selectedParams))
         .flatMap(__ -> this.fetchActivity())
-        //.filter(this::activityHasNotBeenSeen)
+        .filter(this::activityHasNotBeenSeen)
         .doOnNext(this::saveLastSeenActivityId)
         .subscribe(activity::onNext)
     );

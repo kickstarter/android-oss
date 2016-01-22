@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Html;
+import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -100,6 +102,9 @@ public class DiscoveryActivityViewHolder extends KSViewHolder {
       "friend_name", user.name(),
       "project_name", project.name(),
       "creator_name", project.creator().name())));
+
+    activitysubTitleTextView.setMaxLines(3);
+    activitysubTitleTextView.setEllipsize(TextUtils.TruncateAt.END);
   }
 
   private void setFollowView(final @NonNull Context context, final @NonNull User user) {
@@ -126,6 +131,11 @@ public class DiscoveryActivityViewHolder extends KSViewHolder {
       Picasso.with(context)
         .load(photo.little())
         .into(activityImageView);
+
+      final int paddingTop = 10 * (int)context.getResources().getDisplayMetrics().density;
+      activityImageView.setPadding(0, paddingTop, 0, 0);
+
+      activityClickArea.setGravity(Gravity.NO_GRAVITY);
     }
 
     activityImageView.setVisibility(View.VISIBLE);
@@ -135,8 +145,12 @@ public class DiscoveryActivityViewHolder extends KSViewHolder {
     final LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(context.getResources().getDimensionPixelSize(R.dimen.discovery_activity_photo_width),
       context.getResources().getDimensionPixelSize(R.dimen.discovery_activity_photo_height));
     activityImageView.setLayoutParams(layoutParams);
-
     activityTitleTextView.setText(project.name());
+
+    activityTitleTextView.setMaxLines(2);
+    activityTitleTextView.setEllipsize(TextUtils.TruncateAt.END);
+    activitysubTitleTextView.setMaxLines(2);
+    activitysubTitleTextView.setEllipsize(TextUtils.TruncateAt.END);
 
     switch(activity.category()) {
       case Activity.CATEGORY_FAILURE:

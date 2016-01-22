@@ -40,20 +40,22 @@
         android:background="@drawable/click_indicator_light_masked"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <ImageView
           android:id="@+id/activity_image"
+          android:background="@color/transparent"
           android:layout_gravity="top"
-          android:layout_marginTop="@dimen/grid_1_half"
           android:layout_width="@dimen/grid_4"
           android:layout_height="@dimen/grid_4"
           android:scaleType="centerCrop"/>
 
         <LinearLayout
-          android:layout_gravity="center_vertical"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:layout_marginTop="-3dp"
           android:layout_marginLeft="@dimen/grid_3_half"
           android:orientation="vertical">
 
@@ -62,15 +64,13 @@
             android:id="@+id/activity_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:text="Exploding"/>
+            android:layout_marginTop="3dp" />
 
           <TextView
             style="@style/BodyPrimary"
             android:id="@+id/activity_subtitle"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Posted update" />
+            android:layout_height="wrap_content" />
 
         </LinearLayout>
 

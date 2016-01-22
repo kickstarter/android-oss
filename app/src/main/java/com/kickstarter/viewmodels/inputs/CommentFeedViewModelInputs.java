@@ -7,6 +7,11 @@ public interface CommentFeedViewModelInputs {
   void commentBody(String __);
 
   /**
+   * Call when the comment button is clicked.
+   */
+  void commentButtonClicked();
+
+  /**
    * Invoke when pagination should happen.
    */
   void nextPage();

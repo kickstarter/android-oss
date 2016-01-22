@@ -44,7 +44,6 @@ import rx.android.schedulers.AndroidSchedulers;
 @RequiresViewModel(CommentFeedViewModel.class)
 public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel> implements CommentFeedAdapter.Delegate {
   private CommentFeedAdapter adapter;
-  private Project project;
   private RecyclerViewPaginator recyclerViewPaginator;
   private SwipeRefresher swipeRefresher;
   @Nullable private AlertDialog commentDialog;
@@ -63,9 +62,6 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
     super.onCreate(savedInstanceState);
     setContentView(R.layout.comment_feed_layout);
     ButterKnife.bind(this);
-
-    final Intent intent = getIntent();
-    project = intent.getParcelableExtra(IntentKey.PROJECT);
 
     adapter = new CommentFeedAdapter(this);
     recyclerView.setAdapter(adapter);
@@ -88,7 +84,7 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
     viewModel.outputs.showCommentDialog()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> showCommentDialog());
+      .subscribe(this::showCommentDialog);
 
     viewModel.outputs.commentPosted()
       .compose(bindToLifecycle())
@@ -122,7 +118,11 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
   }
 
   @OnClick(R.id.comment_button)
-  public void showCommentDialog() {
+  protected void commentButtonClicked() {
+    viewModel.inputs.commentButtonClicked();
+  }
+
+  public void showCommentDialog(final @NonNull Project project) {
     commentDialog = new AlertDialog.Builder(this)
       .setView(R.layout.comment_dialog)
       .create();

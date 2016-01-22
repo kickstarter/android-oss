@@ -42,14 +42,19 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   public void refresh() {
     refresh.onNext(null);
   }
+  private final PublishSubject<Void> commentButtonClicked = PublishSubject.create();
+  @Override
+  public void commentButtonClicked() {
+    commentButtonClicked.onNext(null);
+  }
 
   // OUTPUTS
   private final PublishSubject<Void> commentPosted = PublishSubject.create();
   public Observable<Void> commentPosted() { return commentPosted.asObservable(); }
   private final PublishSubject<Boolean> isFetchingComments = PublishSubject.create();
   public final Observable<Boolean> isFetchingComments() { return isFetchingComments; }
-  private final PublishSubject<Void> showCommentDialog = PublishSubject.create();
-  public Observable<Void> showCommentDialog() { return showCommentDialog; }
+  private final PublishSubject<Project> showCommentDialog = PublishSubject.create();
+  public Observable<Project> showCommentDialog() { return showCommentDialog; }
   private final BehaviorSubject<Boolean> showCommentButton = BehaviorSubject.create();
   public Observable<Boolean> showCommentButton() { return showCommentButton; }
 
@@ -112,13 +117,20 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .switchMap(pb -> postComment(pb.first, pb.second))
       .share();
 
-    addSubscription(project
+    addSubscription(
+      project
         .compose(Transformers.takeWhen(loginSuccess))
         .filter(Project::isBacking)
         .take(1)
-        .compose(Transformers.ignoreValues())
         .subscribe(showCommentDialog)
-      );
+    );
+
+    addSubscription(
+      project
+        .compose(Transformers.takeWhen(commentButtonClicked))
+        .filter(Project::isBacking)
+        .subscribe(showCommentDialog)
+    );
 
     addSubscription(Observable.combineLatest(
         currentUser.observable(),

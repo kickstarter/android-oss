@@ -67,13 +67,13 @@ public final class ApiClient implements ApiClientType {
   @Override
   public @NonNull Observable<ActivityEnvelope> fetchActivities(final @Nullable Integer count) {
     final List<String> categories = Arrays.asList(
-      Activity.CATEGORY_BACKING,
+      //Activity.CATEGORY_BACKING,
       Activity.CATEGORY_CANCELLATION,
       Activity.CATEGORY_FAILURE,
       Activity.CATEGORY_LAUNCH,
       Activity.CATEGORY_SUCCESS,
-      Activity.CATEGORY_UPDATE,
-      Activity.CATEGORY_FOLLOW
+      Activity.CATEGORY_UPDATE
+      //Activity.CATEGORY_FOLLOW
     );
 
     return service

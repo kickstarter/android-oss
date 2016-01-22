@@ -250,18 +250,22 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       featuredViewGroup.setVisibility(View.GONE);
     }
 
-    else if (project.isFeaturedToday() && project.category() != null) {
-      final Category rootCategory = project.category().root();
+    else if (project.isFeaturedToday()) {
+      final Category category = project.category();
+      if (category != null) {
+        final Category rootCategory = category.root();
+        if (rootCategory != null) {
+          projectMetadataViewGroup.setVisibility(View.VISIBLE);
+          featuredViewGroup.setVisibility(View.VISIBLE);
+          featuredTextView.setText(ksString.format(featuredInString,
+            "category_name", rootCategory.name()));
+          adjustCardViewTopMargin(grid1Dimen);
 
-      projectMetadataViewGroup.setVisibility(View.VISIBLE);
-      featuredViewGroup.setVisibility(View.VISIBLE);
-      featuredTextView.setText(ksString.format(featuredInString,
-        "category_name", rootCategory.name()));
-      adjustCardViewTopMargin(grid1Dimen);
-
-      backingViewGroup.setVisibility(View.GONE);
-      starredViewGroup.setVisibility(View.GONE);
-      potdViewGroup.setVisibility(View.GONE);
+          backingViewGroup.setVisibility(View.GONE);
+          starredViewGroup.setVisibility(View.GONE);
+          potdViewGroup.setVisibility(View.GONE);
+        }
+      }
     }
 
     else {

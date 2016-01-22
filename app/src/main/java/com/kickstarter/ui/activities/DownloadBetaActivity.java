@@ -38,7 +38,7 @@ public final class DownloadBetaActivity extends BaseActivity<DownloadBetaViewMod
       .map(InternalBuildEnvelope::build)
       .filter(ObjectUtils::isNotNull)
       .map(Object::toString);
-    
+
     build
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())

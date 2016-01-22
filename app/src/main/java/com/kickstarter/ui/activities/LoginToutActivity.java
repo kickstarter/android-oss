@@ -32,9 +32,9 @@ import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresViewModel(LoginToutViewModel.class)
 public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
+
   public static final String REASON_BACK_PROJECT = "pledge";
   public static final String REASON_GENERIC = "generic";
-  public static final String REASON_LOGIN_TAB = "login_tab";
   public static final String REASON_MESSAGE_CREATOR = "new_message";
   public static final String REASON_STAR_PROJECT = "star";
 
@@ -61,6 +61,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
     ButterKnife.bind(this);
     loginToolbar.setTitle(loginOrSignUpString);
 
+    // TODO: refactor intent
     final Intent intent = getIntent();
     forward = intent.getBooleanExtra(IntentKey.FORWARD, false);
 

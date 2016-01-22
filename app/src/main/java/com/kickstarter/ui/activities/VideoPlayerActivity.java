@@ -72,7 +72,7 @@ public final class VideoPlayerActivity extends BaseActivity implements KSVideoPl
   @Override
   public void onStateChanged(final boolean playWhenReady, final int playbackState) {
     if (playbackState == ExoPlayer.STATE_ENDED) {
-      mediaController.show();
+      finish();
     }
 
     if (playbackState == ExoPlayer.STATE_BUFFERING) {
@@ -125,7 +125,7 @@ public final class VideoPlayerActivity extends BaseActivity implements KSVideoPl
     if (mediaController.isShowing()) {
       mediaController.hide();
     } else {
-      mediaController.show(0);
+      mediaController.show();
     }
   }
 }

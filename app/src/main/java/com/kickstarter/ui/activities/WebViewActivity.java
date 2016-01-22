@@ -18,6 +18,7 @@ import com.kickstarter.viewmodels.WebViewViewModel;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresViewModel(WebViewViewModel.class)
 public final class WebViewActivity extends BaseActivity<WebViewViewModel> implements KSWebViewClient.Delegate {
@@ -31,14 +32,17 @@ public final class WebViewActivity extends BaseActivity<WebViewViewModel> implem
     setContentView(R.layout.web_view_layout);
     ButterKnife.bind(this);
 
-    final String toolbarTitle = getIntent().getExtras().getString(IntentKey.TOOLBAR_TITLE, "");
-    toolbar.setTitle(toolbarTitle);
-
-    final String url = getIntent().getExtras().getString(IntentKey.URL);
-    webView.loadUrl(url);
-
-    viewModel.inputs.takePushNotificationEnvelope(getIntent().getParcelableExtra(IntentKey.PUSH_NOTIFICATION_ENVELOPE));
     webView.client().setDelegate(this);
+
+    viewModel.outputs.toolbarTitle()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(toolbar::setTitle);
+
+    viewModel.outputs.url()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(webView::loadUrl);
   }
 
   @Override

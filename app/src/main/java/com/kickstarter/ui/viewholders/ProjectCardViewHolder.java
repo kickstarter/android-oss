@@ -24,10 +24,13 @@ import com.kickstarter.libs.utils.SocialUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.User;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -208,14 +211,17 @@ public final class ProjectCardViewHolder extends KSViewHolder {
 
     // always show social
     if (project.isFriendBacking()) {
-      friendBackingViewGroup.setVisibility(View.VISIBLE);
+      final List<User> friends = project.friends();
+      if (friends != null && friends.size() > 0) {
+        friendBackingViewGroup.setVisibility(View.VISIBLE);
 
-      Picasso.with(context).load(project.friends().get(0).avatar()
-        .small())
-        .transform(new CircleTransformation())
-        .into(friendBackingAvatarImageView);
+        Picasso.with(context).load(friends.get(0).avatar()
+          .small())
+          .transform(new CircleTransformation())
+          .into(friendBackingAvatarImageView);
 
-      friendBackingMessageTextView.setText(SocialUtils.projectCardFriendNamepile(project.friends(), ksString));
+        friendBackingMessageTextView.setText(SocialUtils.projectCardFriendNamepile(friends, ksString));
+      }
     } else {
       friendBackingViewGroup.setVisibility(View.GONE);
     }
@@ -250,18 +256,22 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       featuredViewGroup.setVisibility(View.GONE);
     }
 
-    else if (project.isFeaturedToday() && project.category() != null) {
-      final Category rootCategory = project.category().root();
+    else if (project.isFeaturedToday()) {
+      final Category category = project.category();
+      if (category != null) {
+        final Category rootCategory = category.root();
+        if (rootCategory != null) {
+          projectMetadataViewGroup.setVisibility(View.VISIBLE);
+          featuredViewGroup.setVisibility(View.VISIBLE);
+          featuredTextView.setText(ksString.format(featuredInString,
+            "category_name", rootCategory.name()));
+          adjustCardViewTopMargin(grid1Dimen);
 
-      projectMetadataViewGroup.setVisibility(View.VISIBLE);
-      featuredViewGroup.setVisibility(View.VISIBLE);
-      featuredTextView.setText(ksString.format(featuredInString,
-        "category_name", rootCategory.name()));
-      adjustCardViewTopMargin(grid1Dimen);
-
-      backingViewGroup.setVisibility(View.GONE);
-      starredViewGroup.setVisibility(View.GONE);
-      potdViewGroup.setVisibility(View.GONE);
+          backingViewGroup.setVisibility(View.GONE);
+          starredViewGroup.setVisibility(View.GONE);
+          potdViewGroup.setVisibility(View.GONE);
+        }
+      }
     }
 
     else {

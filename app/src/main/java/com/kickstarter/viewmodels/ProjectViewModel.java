@@ -110,10 +110,6 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
   public void loginSuccess() {
     this.loginSuccess.onNext(null);
   }
-  private final PublishSubject<RefTag> intentRefTag = PublishSubject.create();
-  public void intentRefTag(final @Nullable RefTag refTag) {
-    intentRefTag.onNext(refTag);
-  }
   final PublishSubject<PushNotificationEnvelope> pushNotificationEnvelope = PublishSubject.create();
   public void takePushNotificationEnvelope(final @Nullable PushNotificationEnvelope envelope) {
     pushNotificationEnvelope.onNext(envelope);
@@ -174,6 +170,9 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
       .flatMap(i -> ProjectIntentMapper.project(i, client))
       .share();
 
+    final Observable<RefTag> refTag = intent
+      .flatMap(ProjectIntentMapper::refTag);
+
     final Observable<User> loggedInUserOnStarClick = currentUser.observable()
       .compose(Transformers.takeWhen(starClicked))
       .filter(u -> u != null);
@@ -223,7 +222,7 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
       .map(p -> RefTagUtils.storedCookieRefTagForProject(p, cookieManager, sharedPreferences));
 
     addSubscription(
-      Observable.combineLatest(intentRefTag, cookieRefTag, project, RefTagsAndProject::new)
+      Observable.combineLatest(refTag, cookieRefTag, project, RefTagsAndProject::new)
         .take(1)
         .subscribe(data -> {
           // If a cookie hasn't been set for this ref+project then do so.

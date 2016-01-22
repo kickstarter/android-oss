@@ -23,11 +23,6 @@ public interface ProjectViewModelInputs {
   void loginSuccess();
 
   /**
-   * Call with the un-parceled ref tag from the activity. Pass `null` if there is no parceled ref tag.
-   */
-  void intentRefTag(final @Nullable RefTag refTag);
-
-  /**
    * Call when a push notification envelope is unparceled from the intent.
    */
   void takePushNotificationEnvelope(final @Nullable PushNotificationEnvelope envelope);

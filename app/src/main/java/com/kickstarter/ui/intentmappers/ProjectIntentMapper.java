@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Project;
@@ -37,6 +38,13 @@ public final class ProjectIntentMapper {
       .retry(3)
       .compose(Transformers.neverError())
       .startWith(parceledProjectFromIntent);
+  }
+
+  /**
+   * Returns a {@link RefTag} observable. If there is no parceled RefTag, emit `null`.
+   */
+  public static @NonNull Observable<RefTag> refTag(final @NonNull Intent intent) {
+    return Observable.just(intent.getParcelableExtra(IntentKey.REF_TAG));
   }
 
   private static @Nullable Project projectFromIntent(final @NonNull Intent intent) {

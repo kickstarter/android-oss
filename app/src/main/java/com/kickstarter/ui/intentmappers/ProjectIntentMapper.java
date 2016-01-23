@@ -10,6 +10,7 @@ import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
+import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 import com.kickstarter.ui.IntentKey;
 
 import java.util.regex.Matcher;
@@ -22,7 +23,7 @@ public final class ProjectIntentMapper {
 
   final static Pattern PROJECT_PATTERN = Pattern.compile("\\A\\/projects\\/([a-zA-Z0-9_-]+)(\\/([a-zA-Z0-9_-]+)).*");
 
-  public static Observable<Project> project(final @NonNull Intent intent, final @NonNull ApiClientType client) {
+  public static @NonNull Observable<Project> project(final @NonNull Intent intent, final @NonNull ApiClientType client) {
 
     final Observable<Project> parceledProjectFromIntent = Observable.just(projectFromIntent(intent))
       .filter(ObjectUtils::isNotNull);
@@ -45,6 +46,11 @@ public final class ProjectIntentMapper {
    */
   public static @NonNull Observable<RefTag> refTag(final @NonNull Intent intent) {
     return Observable.just(intent.getParcelableExtra(IntentKey.REF_TAG));
+  }
+
+  public static @NonNull Observable<PushNotificationEnvelope> pushNotificationEnvelope(final @NonNull Intent intent) {
+    return Observable.just(intent.getParcelableExtra(IntentKey.PUSH_NOTIFICATION_ENVELOPE))
+      .ofType(PushNotificationEnvelope.class);
   }
 
   private static @Nullable Project projectFromIntent(final @NonNull Intent intent) {

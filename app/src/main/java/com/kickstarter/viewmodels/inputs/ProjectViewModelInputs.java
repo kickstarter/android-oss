@@ -21,9 +21,4 @@ public interface ProjectViewModelInputs {
   void starClicked();
   void rewardClicked(final @NonNull Reward reward);
   void loginSuccess();
-
-  /**
-   * Call when a push notification envelope is unparceled from the intent.
-   */
-  void takePushNotificationEnvelope(final @Nullable PushNotificationEnvelope envelope);
 }

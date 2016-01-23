@@ -14,7 +14,6 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.RefTagUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
@@ -110,10 +109,6 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
   public void loginSuccess() {
     this.loginSuccess.onNext(null);
   }
-  final PublishSubject<PushNotificationEnvelope> pushNotificationEnvelope = PublishSubject.create();
-  public void takePushNotificationEnvelope(final @Nullable PushNotificationEnvelope envelope) {
-    pushNotificationEnvelope.onNext(envelope);
-  }
   public final ProjectViewModelInputs inputs = this;
 
   // OUTPUTS
@@ -172,6 +167,9 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
 
     final Observable<RefTag> refTag = intent
       .flatMap(ProjectIntentMapper::refTag);
+
+    final Observable<PushNotificationEnvelope> pushNotificationEnvelope = intent
+      .flatMap(ProjectIntentMapper::pushNotificationEnvelope);
 
     final Observable<User> loggedInUserOnStarClick = currentUser.observable()
       .compose(Transformers.takeWhen(starClicked))
@@ -238,12 +236,9 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
         })
     );
 
-    addSubscription(
-      pushNotificationEnvelope
-        .filter(ObjectUtils::isNotNull)
-        .take(1)
-        .subscribe(koala::trackPushNotification)
-    );
+    pushNotificationEnvelope
+      .take(1)
+      .subscribe(koala::trackPushNotification);
   }
 
   public void projectViewHolderBackProjectClicked(final @NonNull ProjectViewHolder viewHolder) {

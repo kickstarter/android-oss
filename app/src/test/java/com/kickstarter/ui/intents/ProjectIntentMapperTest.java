@@ -5,9 +5,11 @@ import android.net.Uri;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.ProjectFactory;
+import com.kickstarter.factories.PushNotificationEnvelopeFactory;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.MockApiClient;
+import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper;
 
@@ -83,5 +85,26 @@ public final class ProjectIntentMapperTest extends KSRobolectricTestCase {
 
     resultTest.assertValue(null);
   }
-}
 
+  @Test
+  public void testPushNotificationEnvelope_emitsFromEnvelope() {
+    final PushNotificationEnvelope envelope = PushNotificationEnvelopeFactory.envelope();
+    final Intent intent = new Intent().putExtra(IntentKey.PUSH_NOTIFICATION_ENVELOPE, envelope);
+
+    final TestSubscriber<PushNotificationEnvelope> resultTest = TestSubscriber.create();
+    ProjectIntentMapper.pushNotificationEnvelope(intent).subscribe(resultTest);
+
+    resultTest.assertValue(envelope);
+  }
+
+  @Test
+  public void testPushNotificationEnvelope_doesNotEmitWithoutEnvelope() {
+    final PushNotificationEnvelope envelope = PushNotificationEnvelopeFactory.envelope();
+    final Intent intent = new Intent();
+
+    final TestSubscriber<PushNotificationEnvelope> resultTest = TestSubscriber.create();
+    ProjectIntentMapper.pushNotificationEnvelope(intent).subscribe(resultTest);
+
+    resultTest.assertNoValues();
+  }
+}

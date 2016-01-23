@@ -79,8 +79,6 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     projectRecyclerView.setAdapter(adapter);
     projectRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    viewModel.inputs.takePushNotificationEnvelope(getIntent().getParcelableExtra(IntentKey.PUSH_NOTIFICATION_ENVELOPE));
-
     this.viewModel.outputs.projectAndConfig()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())

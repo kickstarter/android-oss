@@ -168,8 +168,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   public void startProjectIntent(final @NonNull Project project) {
     final Intent intent = new Intent(this, ProjectActivity.class)
       .putExtra(IntentKey.PROJECT, project)
-      .putExtra(IntentKey.REF_TAG, RefTag.thanks())
-      .setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+      .putExtra(IntentKey.REF_TAG, RefTag.thanks());
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 

@@ -26,24 +26,16 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public final class ThanksViewModel extends ViewModel<ThanksActivity> implements ThanksAdapter.Delegate {
   protected @Inject ApiClientType apiClient;
 
-  // INPUTS
   private final PublishSubject<Void> facebookClick = PublishSubject.create();
   private final PublishSubject<Void> shareClick = PublishSubject.create();
   private final PublishSubject<Void> twitterClick = PublishSubject.create();
   private final PublishSubject<Project> projectCardMiniClick = PublishSubject.create();
   private final PublishSubject<Category> categoryPromoClick = PublishSubject.create();
-
-  // OUTPUTS
-  private final BehaviorSubject<List<Project>> projects = BehaviorSubject.create();
-  public Observable<List<Project>> projects() {
-    return projects;
-  }
 
   @Override
   protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {

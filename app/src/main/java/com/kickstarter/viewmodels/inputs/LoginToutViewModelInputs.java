@@ -1,13 +1,13 @@
 package com.kickstarter.viewmodels.inputs;
 
-import android.content.Intent;
+import android.support.annotation.NonNull;
 
 import com.kickstarter.ui.activities.LoginToutActivity;
-import com.kickstarter.ui.data.LoginReason;
+import com.kickstarter.ui.data.ActivityResult;
 
 import java.util.List;
 
 public interface LoginToutViewModelInputs {
-  void activityResult(int requestCode, int resultCode, Intent intent);
-  void facebookLoginClick(LoginToutActivity activity, List<String> facebookPermissions);
+  void activityResult(final @NonNull ActivityResult activityResult);
+  void facebookLoginClick(final @NonNull LoginToutActivity activity, final @NonNull List<String> facebookPermissions);
 }

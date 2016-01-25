@@ -16,6 +16,7 @@ import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.ui.IntentKey;
+import com.kickstarter.ui.data.ActivityResult;
 import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.viewmodels.LoginToutViewModel;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
@@ -135,7 +136,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
   @Override
   protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
     super.onActivityResult(requestCode, resultCode, intent);
-    viewModel.inputs.activityResult(requestCode, resultCode, intent);
+    viewModel.inputs.activityResult(ActivityResult.create(requestCode, resultCode, intent));
 
     if (requestCode != ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_LOGIN_ACTIVITY_FORWARD) {
       return;

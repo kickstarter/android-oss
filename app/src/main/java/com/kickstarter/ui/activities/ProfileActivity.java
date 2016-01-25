@@ -84,6 +84,7 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
   protected void onDestroy() {
     super.onDestroy();
     paginator.stop();
+    recyclerView.setAdapter(null);
   }
 
   private void loadProjects(final @NonNull List<Project> projects) {

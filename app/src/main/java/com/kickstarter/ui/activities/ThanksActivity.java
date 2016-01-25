@@ -84,6 +84,12 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
     viewModel.takeProject(getIntent().getExtras().getParcelable(IntentKey.PROJECT));
   }
 
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    recommendedProjectsRecyclerView.setAdapter(null);
+  }
+
   public void show(final @NonNull Project project) {
     backedProjectTextView.setText(Html.fromHtml(ksString.format(youJustBackedString, "project_name", project.name())));
   }

@@ -65,6 +65,7 @@ public final class SearchActivity extends BaseActivity<SearchViewModel> implemen
   protected void onDestroy() {
     super.onDestroy();
     paginator.stop();
+    recyclerView.setAdapter(null);
   }
 
   public void projectSearchResultClick(final @NonNull ProjectSearchResultViewHolder viewHolder, final @NonNull Project project) {

@@ -52,6 +52,12 @@ public final class ManageNotificationActivity extends BaseActivity<ManageNotific
   }
 
   @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    recyclerView.setAdapter(null);
+  }
+
+  @Override
   public void onBackPressed() {
     super.onBackPressed();
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);

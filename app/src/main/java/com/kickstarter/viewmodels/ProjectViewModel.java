@@ -192,58 +192,61 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
       .switchMap(this::starProject)
       .share();
 
-    addSubscription(
-      initializer
-        .mergeWith(projectOnUserChangeStar)
-        .mergeWith(starredProjectOnLoginSuccess)
-        .subscribe(this.project::onNext)
-    );
+    initializer
+      .mergeWith(projectOnUserChangeStar)
+      .mergeWith(starredProjectOnLoginSuccess)
+      .compose(bindToLifecycle())
+      .subscribe(this.project::onNext);
 
-    addSubscription(
-      projectOnUserChangeStar.mergeWith(starredProjectOnLoginSuccess)
-        .filter(Project::isStarred)
-        .filter(Project::isLive)
-        .filter(p -> !p.isApproachingDeadline())
-        .subscribe(__ -> this.showStarredPrompt.onNext(null))
-    );
+    projectOnUserChangeStar.mergeWith(starredProjectOnLoginSuccess)
+      .filter(Project::isStarred)
+      .filter(Project::isLive)
+      .filter(p -> !p.isApproachingDeadline())
+      .compose(bindToLifecycle())
+      .subscribe(__ -> this.showStarredPrompt.onNext(null));
 
-    addSubscription(loggedOutUserOnStarClick.subscribe(__ -> this.showLoginTout.onNext(null)));
+    loggedOutUserOnStarClick
+      .compose(bindToLifecycle())
+      .subscribe(__ -> this.showLoginTout.onNext(null));
 
-    addSubscription(shareClicked.subscribe(__ -> koala.trackShowProjectShareSheet()));
+    shareClicked
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackShowProjectShareSheet());
 
-    addSubscription(playVideoClicked.subscribe(__ -> koala.trackVideoStart(project.getValue())));
+    playVideoClicked
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackVideoStart(project.getValue()));
 
-    addSubscription(projectOnUserChangeStar.mergeWith(starredProjectOnLoginSuccess)
-      .subscribe(koala::trackProjectStar));
+    projectOnUserChangeStar.mergeWith(starredProjectOnLoginSuccess)
+      .compose(bindToLifecycle())
+      .subscribe(koala::trackProjectStar);
 
     // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
     final Observable<RefTag> cookieRefTag = project
       .take(1)
       .map(p -> RefTagUtils.storedCookieRefTagForProject(p, cookieManager, sharedPreferences));
 
-    addSubscription(
-      Observable.combineLatest(intentRefTag, cookieRefTag, project, RefTagsAndProject::new)
-        .take(1)
-        .subscribe(data -> {
-          // If a cookie hasn't been set for this ref+project then do so.
-          if (data.refTagFromCookie == null && data.refTagFromIntent != null) {
-            RefTagUtils.storeCookie(data.refTagFromIntent, data.project, cookieManager, sharedPreferences);
-          }
+    Observable.combineLatest(intentRefTag, cookieRefTag, project, RefTagsAndProject::new)
+      .take(1)
+      .compose(bindToLifecycle())
+      .subscribe(data -> {
+        // If a cookie hasn't been set for this ref+project then do so.
+        if (data.refTagFromCookie == null && data.refTagFromIntent != null) {
+          RefTagUtils.storeCookie(data.refTagFromIntent, data.project, cookieManager, sharedPreferences);
+        }
 
-          koala.trackProjectShow(
-            data.project,
-            data.refTagFromIntent,
-            RefTagUtils.storedCookieRefTagForProject(data.project, cookieManager, sharedPreferences)
-          );
-        })
-    );
+        koala.trackProjectShow(
+          data.project,
+          data.refTagFromIntent,
+          RefTagUtils.storedCookieRefTagForProject(data.project, cookieManager, sharedPreferences)
+        );
+      });
 
-    addSubscription(
-      pushNotificationEnvelope
-        .filter(ObjectUtils::isNotNull)
-        .take(1)
-        .subscribe(koala::trackPushNotification)
-    );
+    pushNotificationEnvelope
+      .filter(ObjectUtils::isNotNull)
+      .take(1)
+      .compose(bindToLifecycle())
+      .subscribe(koala::trackPushNotification);
   }
 
   public void projectViewHolderBackProjectClicked(final @NonNull ProjectViewHolder viewHolder) {

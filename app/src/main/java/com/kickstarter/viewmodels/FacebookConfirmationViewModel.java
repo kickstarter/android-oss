@@ -72,16 +72,15 @@ public class FacebookConfirmationViewModel extends ViewModel<FacebookConfirmatio
     final Observable<Pair<String, Boolean>> tokenAndNewsletter = fbAccessToken
       .compose(Transformers.combineLatestPair(sendNewslettersIsChecked));
 
-    addSubscription(
-      tokenAndNewsletter
-        .compose(Transformers.takeWhen(createNewAccountClick))
-        .flatMap(tn -> createNewAccount(tn.first, tn.second))
-        .subscribe(this::registerWithFacebookSuccess)
-    );
+    tokenAndNewsletter
+      .compose(Transformers.takeWhen(createNewAccountClick))
+      .flatMap(tn -> createNewAccount(tn.first, tn.second))
+      .compose(bindToLifecycle())
+      .subscribe(this::registerWithFacebookSuccess);
 
-    addSubscription(
-      sendNewslettersClick.subscribe(sendNewslettersIsChecked::onNext)
-    );
+    sendNewslettersClick
+      .compose(bindToLifecycle())
+      .subscribe(sendNewslettersIsChecked::onNext);
   }
 
   @Override
@@ -94,14 +93,21 @@ public class FacebookConfirmationViewModel extends ViewModel<FacebookConfirmatio
       .map(config -> I18nUtils.isCountryUS(config.countryCode()))
       .subscribe(sendNewslettersIsChecked::onNext);
 
-    addSubscription(signupError.subscribe(__ -> koala.trackRegisterError()));
-    addSubscription(sendNewslettersClick.subscribe(koala::trackSignupNewsletterToggle));
-    addSubscription(signupSuccess
-        .subscribe(__ -> {
-          koala.trackLoginSuccess();
-          koala.trackRegisterSuccess();
-        })
-    );
+    signupError
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackRegisterError());
+
+    sendNewslettersClick
+      .compose(bindToLifecycle())
+      .subscribe(koala::trackSignupNewsletterToggle);
+
+    signupSuccess
+      .compose(bindToLifecycle())
+      .subscribe(__ -> {
+        koala.trackLoginSuccess();
+        koala.trackRegisterSuccess();
+      });
+
     koala.trackFacebookConfirmation();
     koala.trackRegisterFormView();
   }

@@ -42,13 +42,21 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    addSubscription(shareClick.subscribe(__ -> koala.trackCheckoutShowShareSheet()));
+    shareClick
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackCheckoutShowShareSheet());
 
-    addSubscription(twitterClick.subscribe(__ -> koala.trackCheckoutShowTwitterShareView()));
+    twitterClick
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackCheckoutShowTwitterShareView());
 
-    addSubscription(facebookClick.subscribe(__ -> koala.trackCheckoutShowFacebookShareView()));
+    facebookClick
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackCheckoutShowFacebookShareView());
 
-    addSubscription(projectCardMiniClick.subscribe(__ -> koala.trackCheckoutFinishJumpToProject()));
+    projectCardMiniClick
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackCheckoutFinishJumpToProject());
   }
 
   public void takeProject(final @NonNull Project project) {
@@ -56,34 +64,40 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .compose(Transformers.combineLatestPair(Observable.just(project)))
       .filter(vp -> vp.first != null);
 
-    addSubscription(viewAndProject
+    viewAndProject
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.show(vp.second)));
+      .compose(bindToLifecycle())
+      .subscribe(vp -> vp.first.show(vp.second));
 
-    addSubscription(viewAndProject
+    viewAndProject
       .compose(Transformers.takeWhen(facebookClick))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.startFacebookShareIntent(vp.second)));
+      .compose(bindToLifecycle())
+      .subscribe(vp -> vp.first.startFacebookShareIntent(vp.second));
 
-    addSubscription(viewAndProject
+    viewAndProject
       .compose(Transformers.takeWhen(shareClick))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.startShareIntent(vp.second)));
+      .compose(bindToLifecycle())
+      .subscribe(vp -> vp.first.startShareIntent(vp.second));
 
-    addSubscription(viewAndProject
+    viewAndProject
       .compose(Transformers.takeWhen(twitterClick))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.startTwitterShareIntent(vp.second)));
+      .compose(bindToLifecycle())
+      .subscribe(vp -> vp.first.startTwitterShareIntent(vp.second));
 
-    addSubscription(viewChange
+    viewChange
       .compose(Transformers.takePairWhen(projectCardMiniClick))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.startProjectIntent(vp.second)));
+      .compose(bindToLifecycle())
+      .subscribe(vp -> vp.first.startProjectIntent(vp.second));
 
-    addSubscription(viewChange
+    viewChange
       .compose(Transformers.takePairWhen(categoryPromoClick))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.startDiscoveryCategoryIntent(vp.second)));
+      .compose(bindToLifecycle())
+      .subscribe(vp -> vp.first.startDiscoveryCategoryIntent(vp.second));
 
     final Category projectCategory = project.category();
     if (projectCategory != null) {
@@ -93,26 +107,24 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       final Observable<Pair<List<Project>, Category>> projectsAndRootCategory = moreProjects(project)
         .compose(Transformers.zipPair(rootCategory));
 
-      addSubscription(view
-          .compose(Transformers.combineLatestPair(projectsAndRootCategory))
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribe(vpc -> {
-            final ThanksActivity view = vpc.first;
-            final List<Project> ps = vpc.second.first;
-            final Category category = vpc.second.second;
-            view.showRecommended(ps, category);
-          })
-      );
+      view
+        .compose(Transformers.combineLatestPair(projectsAndRootCategory))
+        .observeOn(AndroidSchedulers.mainThread())
+        .compose(bindToLifecycle())
+        .subscribe(vpc -> {
+          final ThanksActivity view = vpc.first;
+          final List<Project> ps = vpc.second.first;
+          final Category category = vpc.second.second;
+          view.showRecommended(ps, category);
+        });
     }
 
-    addSubscription(
-      categoryPromoClick
-        .subscribe(__ -> koala.trackCheckoutFinishJumpToDiscovery())
-    );
-    addSubscription(
-      projectCardMiniClick
-        .subscribe(__ -> koala.trackCheckoutFinishJumpToProject())
-    );
+    categoryPromoClick
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackCheckoutFinishJumpToDiscovery());
+    projectCardMiniClick
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackCheckoutFinishJumpToProject());
   }
 
   /**

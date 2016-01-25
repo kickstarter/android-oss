@@ -136,39 +136,50 @@ public final class TwoFactorViewModel extends ViewModel<TwoFactorActivity> imple
     final Observable<Pair<String, String>> emailAndPassword = email
       .compose(Transformers.combineLatestPair(password));
 
-    addSubscription(tfaData
+    tfaData
       .map(TfaData::isValid)
-      .subscribe(formIsValid));
+      .compose(bindToLifecycle())
+      .subscribe(formIsValid);
 
-    addSubscription(tfaData
+    tfaData
       .compose(Transformers.takeWhen(loginClick))
       .filter(data -> !data.isFacebookLogin)
       .flatMap(this::submit)
-      .subscribe(this::success));
+      .compose(bindToLifecycle())
+      .subscribe(this::success);
 
-    addSubscription(tfaData
+    tfaData
       .compose(Transformers.takeWhen(loginClick))
       .filter(data -> data.isFacebookLogin)
       .flatMap(data -> loginWithFacebook(data.fbAccessToken, data.code))
-      .subscribe(this::success));
+      .compose(bindToLifecycle())
+      .subscribe(this::success);
 
-    addSubscription(emailAndPassword
+    emailAndPassword
       .compose(Transformers.takeWhen(resendClick))
       .filter(ep -> ep.first != null)
       .switchMap(ep -> resendCode(ep.first, ep.second))
-      .subscribe());
+      .compose(bindToLifecycle())
+      .subscribe();
 
-    addSubscription(fbAccessToken
+    fbAccessToken
       .compose(Transformers.takeWhen(resendClick))
       .filter(token -> token != null)
       .switchMap(this::resendCodeFbLogin)
-      .subscribe());
+      .compose(bindToLifecycle())
+      .subscribe();
 
-    addSubscription(tfaSuccess.subscribe(__ -> koala.trackLoginSuccess()));
+    tfaSuccess
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackLoginSuccess());
 
-    addSubscription(resendClick.subscribe(__ -> koala.trackTwoFactorResendCode()));
+    resendClick
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackTwoFactorResendCode());
 
-    addSubscription(tfaError.subscribe(__ -> koala.trackLoginError()));
+    tfaError
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackLoginError());
 
     koala.trackTwoFactorAuthView();
   }

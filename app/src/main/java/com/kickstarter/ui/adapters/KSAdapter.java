@@ -72,7 +72,7 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
 
     holder.lifecycleEvent(ActivityEvent.RESUME);
   }
-  
+
   @Override
   public final @NonNull KSViewHolder onCreateViewHolder(final @NonNull ViewGroup viewGroup, final @LayoutRes int layout) {
     final View view = inflateView(viewGroup, layout);

@@ -46,13 +46,6 @@ public abstract class KSViewHolder extends RecyclerView.ViewHolder implements Vi
    */
   abstract public void bindData(final @Nullable Object data) throws Exception;
 
-  @NonNull
-  public <T> Observable.Transformer<T, T> bindToLifecycle() {
-    return source -> source.takeUntil(
-      lifecycle.takeFirst(ActivityEvent.DESTROY::equals)
-    );
-  }
-
   @Override
   public Observable<ActivityEvent> lifecycle() {
     return lifecycle;

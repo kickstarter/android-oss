@@ -14,9 +14,4 @@ public interface LifecycleType {
    * An observable that describes the lifecycle of the object, from CREATE to DESTROY.
    */
   Observable<ActivityEvent> lifecycle();
-
-  /**
-   * Transforms an observable into one that completes when `lifecycle` emits.
-   */
-  <T> Observable.Transformer<T, T> bindToLifecycle();
 }

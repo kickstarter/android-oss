@@ -22,7 +22,9 @@ import rx.Subscription;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
-public class BaseActivity<ViewModelType extends ViewModel> extends AppCompatActivity implements ActivityLifecycleProvider {
+public class BaseActivity<ViewModelType extends ViewModel> extends AppCompatActivity implements ActivityLifecycleProvider,
+  LifecycleType {
+
   private final BehaviorSubject<ActivityEvent> lifecycle = BehaviorSubject.create();
   protected ViewModelType viewModel;
   private static final String VIEW_MODEL_KEY = "viewModel";

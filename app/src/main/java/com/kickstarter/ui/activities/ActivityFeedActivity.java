@@ -80,6 +80,7 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
   protected void onDestroy() {
     super.onDestroy();
     recyclerViewPaginator.stop();
+    recyclerView.setAdapter(null);
   }
 
   public void showActivities(final @NonNull List<Activity> activities) {

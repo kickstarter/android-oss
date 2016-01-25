@@ -67,4 +67,7 @@ public final class WebViewActivity extends BaseActivity<WebViewViewModel> implem
     animation.setFillAfter(true);
     loadingIndicatorView.startAnimation(animation);
   }
+
+  @Override
+  public void webViewPageIntercepted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {}
 }

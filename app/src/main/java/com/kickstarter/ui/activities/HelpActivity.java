@@ -124,4 +124,7 @@ public class HelpActivity extends BaseActivity<HelpViewModel> implements KSWebVi
     animation.setFillAfter(true);
     loadingIndicatorView.startAnimation(animation);
   }
+
+  @Override
+  public void webViewPageIntercepted(final @NonNull KSWebViewClient webViewClient, final @NonNull String url) {}
 }

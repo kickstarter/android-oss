@@ -48,11 +48,4 @@ public class KSWebView extends WebView {
   public KSWebViewClient client() {
     return client;
   }
-
-  /**
-   * Returns last Url String handled by the web view client.
-   */
-  public String lastClientUrl() {
-    return client.lastKickstarterUrl();
-  }
 }

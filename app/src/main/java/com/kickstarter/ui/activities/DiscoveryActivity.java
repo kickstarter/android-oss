@@ -26,6 +26,7 @@ import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.DiscoveryAdapter;
 import com.kickstarter.ui.adapters.DiscoveryDrawerAdapter;
+import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
 
@@ -179,7 +180,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
 
   private void startSettingsActivity() {
     final Intent intent = new Intent(this, SettingsActivity.class)
-      .putExtra(IntentKey.LOGIN_TYPE, LoginToutActivity.REASON_GENERIC);
+      .putExtra(IntentKey.LOGIN_REASON, LoginReason.DEFAULT);
     startActivity(intent);
   }
 

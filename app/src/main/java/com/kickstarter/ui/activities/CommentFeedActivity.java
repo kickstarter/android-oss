@@ -27,6 +27,7 @@ import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.ui.IntentKey;
+import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.viewmodels.CommentFeedViewModel;
 import com.kickstarter.ui.adapters.CommentFeedAdapter;
 import com.kickstarter.ui.viewholders.EmptyCommentFeedViewHolder;
@@ -112,8 +113,7 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
 
   public void commentFeedLogin() {
     final Intent intent = new Intent(this, LoginToutActivity.class)
-      .putExtra(IntentKey.FORWARD, true)
-      .putExtra(IntentKey.LOGIN_TYPE, LoginToutActivity.REASON_GENERIC);
+      .putExtra(IntentKey.LOGIN_REASON, LoginReason.COMMENT_FEED);
     startActivityForResult(intent, ActivityRequestCodes.COMMENT_FEED_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
   }
 

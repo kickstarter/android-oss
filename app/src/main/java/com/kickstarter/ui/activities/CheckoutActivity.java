@@ -17,6 +17,7 @@ import com.kickstarter.services.KSUri;
 import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.services.RequestHandler;
 import com.kickstarter.ui.IntentKey;
+import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.ui.toolbars.KSToolbar;
 import com.kickstarter.ui.views.KSWebView;
 import com.kickstarter.viewmodels.CheckoutViewModel;
@@ -85,8 +86,7 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
 
   private boolean handleSignupUriRequest(@NonNull final Request request, @NonNull final WebView webView) {
     final Intent intent = new Intent(this, LoginToutActivity.class)
-      .putExtra(IntentKey.FORWARD, true)
-      .putExtra(IntentKey.LOGIN_TYPE, LoginToutActivity.REASON_BACK_PROJECT);
+      .putExtra(IntentKey.LOGIN_REASON, LoginReason.BACK_PROJECT);
     startActivityForResult(intent, ActivityRequestCodes.CHECKOUT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
     return true;
   }

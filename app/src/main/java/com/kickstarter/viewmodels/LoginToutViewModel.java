@@ -123,7 +123,7 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
   protected @Inject CurrentUser currentUser;
   protected @Inject ApiClientType client;
 
-  private Observable<LoginReason> loginReason;
+  private final PublishSubject<LoginReason> loginReason = PublishSubject.create();
   private final PublishSubject<ErrorEnvelope> loginError = PublishSubject.create();
 
   public final LoginToutViewModelInputs inputs = this;
@@ -137,9 +137,10 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
 
     registerFacebookCallback();
 
-    loginReason = intent
+    addSubscription(intent
       .map(i -> i.getSerializableExtra(IntentKey.LOGIN_REASON))
-      .ofType(LoginReason.class);
+      .ofType(LoginReason.class)
+      .subscribe(loginReason::onNext));
 
     Observable<AccessTokenEnvelope> facebookLoginSuccess = facebookAccessToken
       .switchMap(this::loginWithFacebookAccessToken)

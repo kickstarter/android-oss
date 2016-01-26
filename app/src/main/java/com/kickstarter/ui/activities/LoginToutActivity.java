@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.facebook.AccessToken;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
@@ -64,7 +63,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
     viewModel.errors.confirmFacebookSignupError()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::startFacebookConfirmationActivity);
+      .subscribe(ur -> this.startFacebookConfirmationActivity(ur.first, ur.second));
 
     viewModel.errors.tfaChallenge()
       .compose(bindToLifecycle())
@@ -76,15 +75,15 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(ViewUtils.showToast(this));
 
-    viewModel.outputs.loginClickContextualFlow()
+    viewModel.outputs.startLogin()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::loginClickContextualFlow);
+      .subscribe(this::startLogin);
 
-    viewModel.outputs.loginClickDefaultFlow()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::loginClickDefaultFlow);
+//    viewModel.outputs.loginClickDefaultFlow()
+//      .compose(bindToLifecycle())
+//      .observeOn(AndroidSchedulers.mainThread())
+//      .subscribe(this::loginClickDefaultFlow);
 
     viewModel.outputs.loginSuccessContextualFlow()
       .compose(bindToLifecycle())
@@ -142,18 +141,15 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
     finish();
   }
 
-  public void startFacebookConfirmationActivity(@NonNull final ErrorEnvelope.FacebookUser facebookUser) {
-/*    final Intent intent = new Intent(this, FacebookConfirmationActivity.class)
-      .putExtra(IntentKey.LOGIN_REASON, loginReason)
-      .putExtra(IntentKey.FACEBOOK_USER, facebookUser)
-      .putExtra(IntentKey.FACEBOOK_TOKEN, AccessToken.getCurrentAccessToken().getToken());
+  public void startFacebookConfirmationActivity(final @NonNull ErrorEnvelope.FacebookUser facebookUser,
+    final @NonNull LoginReason loginReason) {
 
-    if (loginReason.isDefault()) {
-      startActivity(intent);
-    } else {
-      startActivityForResult(intent, ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_FACEBOOK_CONFIRMATION_ACTIVITY_FORWARD);
-    }
-    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);*/
+    final Intent intent = new Intent(this, FacebookConfirmationActivity.class)
+      .putExtra(IntentKey.LOGIN_REASON, loginReason)
+      .putExtra(IntentKey.FACEBOOK_USER, facebookUser);
+
+    startActivityForResult(intent, ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_FACEBOOK_CONFIRMATION_ACTIVITY_FORWARD);
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   public void startTwoFactorActivity(final boolean isFacebookLogin) {
@@ -170,15 +166,15 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);*/
   }
 
-  private void loginClickContextualFlow(final @NonNull LoginReason loginReason) {
+  private void startLogin(final @NonNull LoginReason loginReason) {
     startActivityForResult(loginIntent(loginReason), ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_LOGIN_ACTIVITY_CONTEXTUAL_FLOW);
     TransitionUtils.slideInFromRight(this);
   }
 
-  private void loginClickDefaultFlow(final @NonNull LoginReason loginReason) {
-    startActivity(loginIntent(loginReason));
-    TransitionUtils.slideInFromRight(this);
-  }
+//  private void loginClickDefaultFlow(final @NonNull LoginReason loginReason) {
+//    startActivity(loginIntent(loginReason));
+//    TransitionUtils.slideInFromRight(this);
+//  }
 
   private @NonNull Intent loginIntent(final @NonNull LoginReason loginReason) {
     return new Intent(this, LoginActivity.class)

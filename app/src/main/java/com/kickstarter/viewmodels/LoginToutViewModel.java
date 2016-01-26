@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookAuthorizationException;
@@ -15,7 +16,6 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
@@ -34,7 +34,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
-import timber.log.Timber;
 
 public final class LoginToutViewModel extends ViewModel<LoginToutActivity> implements LoginToutViewModelInputs,
   LoginToutViewModelOutputs, LoginToutViewModelErrors {
@@ -65,51 +64,55 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
   }
 
   // OUTPUTS
-  BehaviorSubject<LoginReason> loginClickContextualFlow = BehaviorSubject.create();
-  public final @NonNull Observable<LoginReason> loginClickContextualFlow() {
-    return loginClickContextualFlow;
+  private final BehaviorSubject<LoginReason> startLogin = BehaviorSubject.create();
+  public @NonNull Observable<LoginReason> startLogin() {
+    return startLogin;
   }
 
-  BehaviorSubject<LoginReason> loginClickDefaultFlow = BehaviorSubject.create();
-  public final @NonNull Observable<LoginReason> loginClickDefaultFlow() {
+  private final BehaviorSubject<LoginReason> loginClickDefaultFlow = BehaviorSubject.create();
+  public @NonNull Observable<LoginReason> loginClickDefaultFlow() {
     return loginClickDefaultFlow;
   }
 
-  BehaviorSubject<Void> loginSuccessContextualFlow = BehaviorSubject.create();
-  public final @NonNull Observable<Void> loginSuccessContextualFlow() {
+  private final BehaviorSubject<Void> loginSuccessContextualFlow = BehaviorSubject.create();
+  public @NonNull Observable<Void> loginSuccessContextualFlow() {
     return loginSuccessContextualFlow;
   }
 
-  BehaviorSubject<Void> loginSuccessDefaultFlow = BehaviorSubject.create();
-  public final @NonNull Observable<Void> loginSuccessDefaultFlow() {
+  private final BehaviorSubject<Void> loginSuccessDefaultFlow = BehaviorSubject.create();
+  public @NonNull Observable<Void> loginSuccessDefaultFlow() {
     return loginSuccessDefaultFlow;
   }
 
-  BehaviorSubject<LoginReason> signupClickContextualFlow = BehaviorSubject.create();
-  public final @NonNull Observable<LoginReason> signupClickContextualFlow() {
+  private final BehaviorSubject<LoginReason> signupClickContextualFlow = BehaviorSubject.create();
+  public @NonNull Observable<LoginReason> signupClickContextualFlow() {
     return signupClickContextualFlow;
   }
 
   BehaviorSubject<LoginReason> signupClickDefaultFlow = BehaviorSubject.create();
-  public final @NonNull Observable<LoginReason> signupClickDefaultFlow() {
+  public @NonNull Observable<LoginReason> signupClickDefaultFlow() {
     return signupClickDefaultFlow;
   }
 
   // ERRORS
   private final PublishSubject<FacebookException> facebookAuthorizationError = PublishSubject.create();
-  public final Observable<String> facebookAuthorizationError() {
+  public Observable<String> facebookAuthorizationError() {
     return facebookAuthorizationError
       .map(FacebookException::getLocalizedMessage);
   }
 
   private final PublishSubject<ErrorEnvelope> loginError = PublishSubject.create();
-  public final Observable<ErrorEnvelope.FacebookUser> confirmFacebookSignupError() {
-   return loginError
-     .filter(ErrorEnvelope::isConfirmFacebookSignupError)
-     .map(ErrorEnvelope::facebookUser);
-  }
 
-  public final Observable<String> missingFacebookEmailError() {
+  @NonNull
+  @Override
+  public Observable<Pair<ErrorEnvelope.FacebookUser, LoginReason>> confirmFacebookSignupError() {
+    return loginError
+      .filter(ErrorEnvelope::isConfirmFacebookSignupError)
+      .map(ErrorEnvelope::facebookUser)
+      .compose(Transformers.combineLatestPair(loginReason));
+  }
+  @Override
+  public Observable<String> missingFacebookEmailError() {
     return loginError
       .filter(ErrorEnvelope::isMissingFacebookEmailError)
       .map(ErrorEnvelope::errorMessage);
@@ -121,14 +124,16 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
       .map(ErrorEnvelope::errorMessage);
   }
 
-  public final Observable<Void> tfaChallenge() {
-    return loginError
-      .filter(ErrorEnvelope::isTfaRequiredError)
-      .map(__ -> null);
+  @Override
+  public Observable<LoginReason> tfaChallenge() {
+    return loginReason
+      .compose(Transformers.takeWhen(loginError.filter(ErrorEnvelope::isTfaRequiredError)));
   }
 
   protected @Inject CurrentUser currentUser;
   protected @Inject ApiClientType client;
+
+  Observable<LoginReason> loginReason;
 
   public final LoginToutViewModelInputs inputs = this;
   public final LoginToutViewModelOutputs outputs = this;
@@ -141,14 +146,14 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
 
     registerFacebookCallback();
 
-    final Observable<LoginReason> loginReason = intent
+    loginReason = intent
       .map(i -> i.getSerializableExtra(IntentKey.LOGIN_REASON))
       .ofType(LoginReason.class);
 
-    Observable<LoginReason> contextualFlow = loginReason
+    Observable<LoginReason> contextualLoginReason = loginReason
       .filter(LoginReason::isContextualFlow);
 
-    Observable<LoginReason> defaultFlow = loginReason
+    Observable<LoginReason> defaultLoginReason = loginReason
       .filter(LoginReason::isDefaultFlow);
 
     Observable<AccessTokenEnvelope> facebookLoginSuccess = facebookAccessToken
@@ -171,27 +176,27 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
 
     addSubscription(facebookLoginSuccess.subscribe(__ -> koala.trackFacebookLoginSuccess()));
 
-    addSubscription(contextualFlow
+    addSubscription(contextualLoginReason
       .compose(Transformers.takeWhen(loginClick))
-      .subscribe(loginClickContextualFlow::onNext));
+      .subscribe(startLogin::onNext));
 
-    addSubscription(defaultFlow
+    addSubscription(defaultLoginReason
       .compose(Transformers.takeWhen(loginClick))
-      .subscribe(loginClickDefaultFlow::onNext));
+      .subscribe(startLogin::onNext));
 
-    addSubscription(contextualFlow
+    addSubscription(contextualLoginReason
       .compose(Transformers.takeWhen(facebookLoginSuccess))
       .subscribe(__ -> loginSuccessContextualFlow.onNext(null)));
 
-    addSubscription(defaultFlow
+    addSubscription(defaultLoginReason
       .compose(Transformers.takeWhen(facebookLoginSuccess))
       .subscribe(__ -> loginSuccessDefaultFlow.onNext(null)));
 
-    addSubscription(contextualFlow
+    addSubscription(contextualLoginReason
       .compose(Transformers.takeWhen(signupClick))
       .subscribe(signupClickContextualFlow::onNext));
 
-    addSubscription(defaultFlow
+    addSubscription(defaultLoginReason
       .compose(Transformers.takeWhen(signupClick))
       .subscribe(signupClickDefaultFlow::onNext));
 

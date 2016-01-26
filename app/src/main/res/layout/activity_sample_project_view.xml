@@ -6,18 +6,7 @@
   android:layout_height="match_parent">
 
   <android.support.v7.widget.CardView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    card_view:cardCornerRadius="4dp"
-    card_view:cardBackgroundColor="@color/white"
-    card_view:cardElevation="@dimen/card_elevation"
-    android:focusable="true"
-    android:layout_marginBottom="@dimen/grid_1"
-    android:layout_marginTop="@dimen/grid_3"
-    android:layout_marginLeft="@dimen/grid_2"
-    android:layout_marginStart="@dimen/grid_2"
-    android:layout_marginRight="@dimen/grid_2"
-    android:layout_marginEnd="@dimen/grid_2">
+    style="@style/ActivitySampleCard">
 
     <LinearLayout
       android:background="@color/white"
@@ -83,12 +72,8 @@
       </LinearLayout>
 
       <Button
-        style="@style/BorderButton"
-        android:id="@+id/see_activity_button"
-        android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/grid_5_half"
-        android:layout_marginBottom="@dimen/grid_3"
-        android:text="@string/discovery_activity_sample_button_see_all_activity" />
+        style="@style/ActivitySampleSeeAllButton"
+        android:id="@+id/see_activity_button" />
 
     </LinearLayout>
 

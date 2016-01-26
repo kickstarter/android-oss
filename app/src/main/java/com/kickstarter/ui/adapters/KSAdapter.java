@@ -57,7 +57,7 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
   protected abstract @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view);
 
   @Override
-  public void onViewDetachedFromWindow(KSViewHolder holder) {
+  public void onViewDetachedFromWindow(final @NonNull KSViewHolder holder) {
     super.onViewDetachedFromWindow(holder);
 
     holder.lifecycleEvent(ActivityEvent.PAUSE);
@@ -67,7 +67,7 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
   }
 
   @Override
-  public void onViewAttachedToWindow(KSViewHolder holder) {
+  public void onViewAttachedToWindow(final @NonNull KSViewHolder holder) {
     super.onViewAttachedToWindow(holder);
 
     holder.lifecycleEvent(ActivityEvent.RESUME);

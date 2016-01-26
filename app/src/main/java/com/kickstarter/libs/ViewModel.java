@@ -85,7 +85,7 @@ public class ViewModel<ViewType extends LifecycleType> {
    * It is required that *every* observable in a view model do `.compose(bindToLifecycle())` before calling
    * `subscribe`.
    */
-  public <T> Observable.Transformer<T, T> bindToLifecycle() {
+  public @NonNull <T> Observable.Transformer<T, T> bindToLifecycle() {
     return source -> source.takeUntil(
       view.flatMap(v -> v.lifecycle().map(e -> Pair.create(v, e)))
         .filter(ve -> isFinished(ve.first, ve.second))

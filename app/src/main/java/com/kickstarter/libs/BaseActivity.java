@@ -62,6 +62,9 @@ public class BaseActivity<ViewModelType extends ViewModel> extends AppCompatActi
     return RxLifecycle.bindActivity(lifecycle);
   }
 
+  /**
+   * Sends activity result data to the view model.
+   */
   @CallSuper
   @Override
   protected void onActivityResult(final int requestCode, final int resultCode, final @Nullable Intent intent) {
@@ -81,9 +84,12 @@ public class BaseActivity<ViewModelType extends ViewModel> extends AppCompatActi
     viewModel.intent(getIntent());
   }
 
+  /**
+   * Called when an activity is set to `singleTop` and it is relaunched while at the top of the activity stack.
+   */
   @CallSuper
   @Override
-  protected void onNewIntent(Intent intent) {
+  protected void onNewIntent(final Intent intent) {
     super.onNewIntent(intent);
     viewModel.intent(intent);
   }

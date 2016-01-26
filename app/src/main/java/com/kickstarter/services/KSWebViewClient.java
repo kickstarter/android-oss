@@ -241,11 +241,13 @@ public final class KSWebViewClient extends WebViewClient {
     return false;
   }
 
+  /**
+   * Calls the delegate when a new page has been intercepted by the client.
+   */
   private void webViewPageIntercepted(final @NonNull String url) {
     if (delegate != null) {
       delegate.webViewPageIntercepted(this, url);
     }
-
   }
 
   public class MimeHeaders {

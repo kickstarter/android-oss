@@ -28,12 +28,18 @@ public class ViewModel<ViewType> {
   private final List<Subscription> subscriptions = new ArrayList<>();
 
   protected final PublishSubject<ActivityResult> activityResult = PublishSubject.create();
+  /**
+   * Takes activity result data from the activity.
+   */
   public void activityResult(final @NonNull ActivityResult activityResult) {
     this.activityResult.onNext(activityResult);
   }
 
   // TODO: Justify BehaviorSubject vs PublishSubject
   protected final BehaviorSubject<Intent> intent = BehaviorSubject.create();
+  /*
+   * Takes intent data from the view.
+   */
   public void intent(final @NonNull Intent intent) {
     this.intent.onNext(intent);
   }

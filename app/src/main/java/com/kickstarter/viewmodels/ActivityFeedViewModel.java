@@ -101,10 +101,9 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
         .subscribe(__ -> refresh())
     );
 
-    addSubscription(currentUser.loggedInUser()
-      .compose(Transformers.combineLatestPair(activities))
-      .filter(ua -> ua.second.size() == 0)
-      .map(ua -> ua.first)
+    addSubscription(activities
+      .filter(List::isEmpty)
+      .switchMap(__ -> currentUser.loggedInUser())
       .subscribe(userForLoggedInEmptyState::onNext)
     );
 

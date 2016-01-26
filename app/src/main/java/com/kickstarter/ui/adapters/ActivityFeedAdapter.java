@@ -37,6 +37,7 @@ public final class ActivityFeedAdapter extends KSAdapter {
 
   public void takeActivities(final @NonNull List<Activity> activities) {
     if (activities.size() > 0) {
+      setSection(SECTION_EMPTY_VIEW, Collections.emptyList());
       setSection(SECTION_ACTIVITIES_VIEW, activities);
       notifyDataSetChanged();
     }

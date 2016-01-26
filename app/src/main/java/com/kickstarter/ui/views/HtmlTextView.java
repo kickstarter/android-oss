@@ -9,12 +9,12 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 public final class HtmlTextView extends TextView {
-  public HtmlTextView(@NonNull final Context context) {
+  public HtmlTextView(final @NonNull Context context) {
     super(context);
     init();
   }
 
-  public HtmlTextView(@NonNull final Context context, @Nullable final AttributeSet attrs) {
+  public HtmlTextView(final @NonNull Context context, final @Nullable AttributeSet attrs) {
     super(context, attrs);
     init();
   }

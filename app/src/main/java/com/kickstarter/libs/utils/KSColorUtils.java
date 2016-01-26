@@ -89,7 +89,7 @@ public class KSColorUtils {
     return !isLight(color);
   }
 
-  public static @ColorInt int foregroundColor(final int backgroundColor, @NonNull final Context context) {
+  public static @ColorInt int foregroundColor(final int backgroundColor, final @NonNull Context context) {
     final @ColorRes int colorId = isLight(backgroundColor) ? darkColorId() : lightColorId();
     return ContextCompat.getColor(context, colorId);
   }

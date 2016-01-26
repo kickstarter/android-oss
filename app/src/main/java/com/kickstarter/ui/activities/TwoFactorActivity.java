@@ -38,19 +38,12 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel> {
   @BindString(R.string.login_errors_title) String errorTitleString;
 
   @Override
-  protected void onCreate(@Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.two_factor_layout);
     ButterKnife.bind(this);
     loginToolbar.setTitle(verifyString);
-
-    final Intent intent = getIntent();
-
-    viewModel.inputs.email(intent.getExtras().getString(IntentKey.EMAIL));
-    viewModel.inputs.isFacebookLogin(intent.getBooleanExtra(IntentKey.FACEBOOK_LOGIN, false));
-    viewModel.inputs.fbAccessToken(intent.getExtras().getString(IntentKey.FACEBOOK_TOKEN));
-    viewModel.inputs.password(intent.getExtras().getString(IntentKey.PASSWORD));
 
     viewModel.outputs.tfaSuccess()
       .compose(bindToLifecycle())
@@ -79,7 +72,7 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel> {
   }
 
   @OnTextChanged(R.id.code)
-  public void codeEditTextOnTextChanged(@NonNull final CharSequence code) {
+  public void codeEditTextOnTextChanged(final @NonNull CharSequence code) {
     viewModel.inputs.code(code.toString());
   }
 

@@ -39,8 +39,8 @@ import java.util.regex.Pattern;
 public final class KSWebViewClient extends WebViewClient {
 
   public interface Delegate {
-    void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, @Nullable final String url);
-    void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, @Nullable final String url);
+    void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url);
+    void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, final @Nullable String url);
     void webViewPageIntercepted(final @NonNull KSWebViewClient webViewClient, final @NonNull String url);
   }
 
@@ -81,7 +81,7 @@ public final class KSWebViewClient extends WebViewClient {
   }
 
   @Override
-  public void onPageFinished(@NonNull final WebView view, @NonNull final String url) {
+  public void onPageFinished(final @NonNull WebView view, final @NonNull String url) {
     if (delegate != null) {
       delegate.webViewOnPageFinished(this, url);
     }
@@ -89,7 +89,7 @@ public final class KSWebViewClient extends WebViewClient {
   }
 
   @Override
-  public WebResourceResponse shouldInterceptRequest(@NonNull final WebView view, @NonNull final String url) {
+  public WebResourceResponse shouldInterceptRequest(final @NonNull WebView view, final @NonNull String url) {
     if (!isInterceptable(Uri.parse(url))) {
       return null;
     }
@@ -127,16 +127,16 @@ public final class KSWebViewClient extends WebViewClient {
 
   // The order of request handlers is important - we iterate through the request handlers
   // sequentially until a match is found.
-  public void registerRequestHandlers(@NonNull final List<RequestHandler> requestHandlers) {
+  public void registerRequestHandlers(final @NonNull List<RequestHandler> requestHandlers) {
     this.requestHandlers.addAll(0, requestHandlers);
   }
 
-  public void setFormContents(@NonNull final FormContents formContents) {
+  public void setFormContents(final @NonNull FormContents formContents) {
     this.formContents = formContents;
   }
 
-  protected InputStream constructBody(@NonNull final Context context, @NonNull final Response response,
-    @NonNull final MimeHeaders mimeHeaders) throws IOException {
+  protected InputStream constructBody(final @NonNull Context context, final @NonNull Response response,
+    final @NonNull MimeHeaders mimeHeaders) throws IOException {
     InputStream body = response.body().byteStream();
 
     if (mimeHeaders.type != null && mimeHeaders.type.equals("text/html")) {
@@ -146,7 +146,7 @@ public final class KSWebViewClient extends WebViewClient {
     return body;
   }
 
-  protected Request buildRequest(@NonNull final String url) {
+  protected Request buildRequest(final @NonNull String url) {
     final Request.Builder requestBuilder = new Request.Builder().url(url);
 
     RequestBody requestBody = null;
@@ -160,7 +160,7 @@ public final class KSWebViewClient extends WebViewClient {
     return requestBuilder.build();
   }
 
-  protected InputStream insertWebViewJavascript(@NonNull final Context context, @NonNull final InputStream originalBody)
+  protected InputStream insertWebViewJavascript(final @NonNull Context context, final @NonNull InputStream originalBody)
     throws IOException {
     final Document document = Jsoup.parse(new String(IOUtils.readFully(originalBody)));
     document.outputSettings().prettyPrint(true);
@@ -185,7 +185,7 @@ public final class KSWebViewClient extends WebViewClient {
     return httpMethod;
   }
 
-  protected boolean isInterceptable(@NonNull final Uri uri) {
+  protected boolean isInterceptable(final @NonNull Uri uri) {
     return KSUri.isKickstarterUri(uri, webEndpoint);
   }
 
@@ -200,7 +200,7 @@ public final class KSWebViewClient extends WebViewClient {
     );
   }
 
-  private boolean startModalWebViewActivity(@NonNull final Request request, @NonNull final WebView webView) {
+  private boolean startModalWebViewActivity(final @NonNull Request request, final @NonNull WebView webView) {
     final Activity context = (Activity) webView.getContext();
     final Intent intent = new Intent(context, WebViewActivity.class)
       .putExtra(IntentKey.URL, request.urlString());
@@ -210,7 +210,7 @@ public final class KSWebViewClient extends WebViewClient {
     return true;
   }
 
-  private boolean startProjectActivity(@NonNull final Request request, @NonNull final WebView webView) {
+  private boolean startProjectActivity(final @NonNull Request request, final @NonNull WebView webView) {
     final Matcher matcher = Pattern.compile("[a-zA-Z0-9_-]+\\z").matcher(Uri.parse(request.urlString()).getPath());
     if (!matcher.find()) {
       return false;
@@ -224,7 +224,7 @@ public final class KSWebViewClient extends WebViewClient {
     return true;
   }
 
-  private boolean handleRequest(@NonNull final Request request, @NonNull final WebView webView) {
+  private boolean handleRequest(final @NonNull Request request, final @NonNull WebView webView) {
     if (initialPageLoad) {
       // Avoid infinite loop where webView.loadUrl is intercepted, invoking a new activity, which is the same URL
       // and therefore also intercepted.
@@ -252,7 +252,7 @@ public final class KSWebViewClient extends WebViewClient {
     public String type = null;
     public String encoding = null;
 
-    public MimeHeaders(@NonNull final String contentType) {
+    public MimeHeaders(final @NonNull String contentType) {
       // Extract mime and encoding from string, e.g. "text/html; charset=utf-8"
       final Matcher matcher = Pattern.compile("(\\A[\\w\\/]+); charset=([\\w/-]+)\\z")
         .matcher(contentType);

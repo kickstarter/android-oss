@@ -242,7 +242,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   public final DiscoveryViewModelOutputs outputs = this;
 
   @Override
-  protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 

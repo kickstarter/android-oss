@@ -11,7 +11,7 @@ import org.joda.time.DateTimeZone;
 public class Release {
   final PackageInfo packageInfo;
 
-  public Release(@NonNull final PackageInfo packageInfo) {
+  public Release(final @NonNull PackageInfo packageInfo) {
     this.packageInfo = packageInfo;
   }
 

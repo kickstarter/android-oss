@@ -9,8 +9,8 @@ import auto.parcel.AutoParcel;
 
 @AutoGson @AutoParcel
 public abstract class InternalBuildEnvelope implements Parcelable {
-  @Nullable public abstract Integer build();
-  @Nullable public abstract String changelog();
+  public abstract @Nullable Integer build();
+  public abstract @Nullable String changelog();
   public abstract boolean newerBuildAvailable();
 
   @AutoParcel.Builder

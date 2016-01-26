@@ -13,7 +13,7 @@ import com.kickstarter.libs.qualifiers.AutoGson;
 public final class AutoParcelAdapterFactory implements TypeAdapterFactory {
   @SuppressWarnings("unchecked")
   @Override
-  public <T> TypeAdapter<T> create(@NonNull final Gson gson, @NonNull final TypeToken<T> type) {
+  public <T> TypeAdapter<T> create(final @NonNull Gson gson, final @NonNull TypeToken<T> type) {
     final Class<? super T> rawType = type.getRawType();
     if (!rawType.isAnnotationPresent(AutoGson.class)) {
       return null;

@@ -61,7 +61,7 @@ public final class RewardViewHolder extends KSViewHolder {
     void rewardViewHolderClicked(RewardViewHolder viewHolder, Reward reward);
   }
 
-  public RewardViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
+  public RewardViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
     this.delegate = delegate;
     this.context = view.getContext();
@@ -200,7 +200,7 @@ public final class RewardViewHolder extends KSViewHolder {
   }
 
   @Override
-  public void onClick(@NonNull final View view) {
+  public void onClick(final @NonNull View view) {
     delegate.rewardViewHolderClicked(this, reward);
   }
 }

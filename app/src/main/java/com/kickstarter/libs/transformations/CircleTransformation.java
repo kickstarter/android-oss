@@ -31,7 +31,7 @@ public class CircleTransformation implements Transformation {
   private int y;
 
   @Override
-  public Bitmap transform(@NonNull final Bitmap source) {
+  public Bitmap transform(final @NonNull Bitmap source) {
     final int size = Math.min(source.getWidth(), source.getHeight());
 
     this.x = (source.getWidth() - size) / 2;

@@ -60,7 +60,7 @@ public final class ResetPasswordViewModel extends ViewModel<ResetPasswordActivit
   public final ResetPasswordViewModelErrors errors = this;
 
   @Override
-  public void email(@NonNull final String s) {
+  public void email(final @NonNull String s) {
     email.onNext(s);
   }
 
@@ -83,7 +83,7 @@ public final class ResetPasswordViewModel extends ViewModel<ResetPasswordActivit
   }
 
   @Override
-  public void onCreate(@NonNull final Context context, @Nullable Bundle savedInstanceState) {
+  public void onCreate(final @NonNull Context context, @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
@@ -94,7 +94,7 @@ public final class ResetPasswordViewModel extends ViewModel<ResetPasswordActivit
     koala.trackResetPasswordFormView();
   }
 
-  private Observable<User> submitEmail(@NonNull final String email) {
+  private Observable<User> submitEmail(final @NonNull String email) {
     return client.resetPassword(email)
       .compose(Transformers.pipeApiErrorsTo(resetError))
       .compose(Transformers.neverError())

@@ -12,21 +12,21 @@ import auto.parcel.AutoParcel;
 @AutoGson
 @AutoParcel
 public abstract class Backing implements Parcelable {
-  @Nullable public abstract DateTime completedAt();
+  public abstract @Nullable DateTime completedAt();
   public abstract String projectCountry();
-  @Nullable public abstract Reward reward();
+  public abstract @Nullable Reward reward();
   public abstract String status();
   public abstract float shippingAmount();
   public abstract float amount();
-  @Nullable public abstract Project project();
+  public abstract @Nullable Project project();
   public abstract long backerId();
-  @Nullable public abstract Location location();
+  public abstract @Nullable Location location();
   public abstract DateTime pledgedAt();
-  @Nullable public abstract Long rewardId();
+  public abstract @Nullable Long rewardId();
   public abstract long id();
   public abstract long projectId();
   public abstract long sequence(); // backer #
-  @Nullable public abstract User backer();
+  public abstract @Nullable User backer();
 
   @AutoParcel.Builder
   public abstract static class Builder {

@@ -28,7 +28,7 @@ public final class KoalaTrackingClient implements TrackingClientType {
   // Cached values
   private @Nullable Boolean isGooglePlayServicesAvailable = null;
 
-  public KoalaTrackingClient(@ForApplication @NonNull final Context context, @NonNull final CurrentUser currentUser) {
+  public KoalaTrackingClient(@ForApplication final @NonNull Context context, final @NonNull CurrentUser currentUser) {
     this.context = context;
     this.currentUser = currentUser;
 
@@ -39,12 +39,12 @@ public final class KoalaTrackingClient implements TrackingClientType {
   }
 
   @Override
-  public void track(@NonNull final String eventName) {
+  public void track(final @NonNull String eventName) {
     track(eventName, new HashMap<>());
   }
 
   @Override
-  public void track(@NonNull final String eventName, @NonNull final Map<String, Object> properties) {
+  public void track(final @NonNull String eventName, final @NonNull Map<String, Object> properties) {
     final Map<String, Object> newProperties = new HashMap<>(properties);
     newProperties.putAll(defaultProperties());
 

@@ -12,12 +12,12 @@ public class StringPreference {
   private final String key;
   private final String defaultValue;
 
-  public StringPreference(@NonNull final SharedPreferences sharedPreferences, @NonNull final String key) {
+  public StringPreference(final @NonNull SharedPreferences sharedPreferences, final @NonNull String key) {
     this(sharedPreferences, key, null);
   }
 
-  public StringPreference(@NonNull final SharedPreferences sharedPreferences, @NonNull final String key,
-    @Nullable final String defaultValue) {
+  public StringPreference(final @NonNull SharedPreferences sharedPreferences, final @NonNull String key,
+    final @Nullable String defaultValue) {
     this.sharedPreferences = sharedPreferences;
     this.key = key;
     this.defaultValue = defaultValue;
@@ -31,7 +31,7 @@ public class StringPreference {
     return sharedPreferences.contains(key);
   }
 
-  public void set(@NonNull final String value) {
+  public void set(final @NonNull String value) {
     sharedPreferences.edit().putString(key, value).apply();
   }
 

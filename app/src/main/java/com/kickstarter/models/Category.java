@@ -19,10 +19,10 @@ public abstract class Category implements Parcelable, Comparable<Category> {
   public abstract int color();
   public abstract long id();
   public abstract String name();
-  @Nullable public abstract Category parent();
-  @Nullable public abstract Long parentId();
+  public abstract @Nullable Category parent();
+  public abstract @Nullable Long parentId();
   public abstract int position();
-  @Nullable public abstract Integer projectsCount();
+  public abstract @Nullable Integer projectsCount();
   public abstract String slug();
 
   @AutoParcel.Builder
@@ -75,7 +75,7 @@ public abstract class Category implements Parcelable, Comparable<Category> {
     return isRoot() ? id() : parentId();
   }
 
-  public int secondaryColor(@NonNull final Context context) {
+  public int secondaryColor(final @NonNull Context context) {
     final int identifier;
     switch ((int) rootId()) {
       case 1:   identifier = R.color.category_secondary_art; break;

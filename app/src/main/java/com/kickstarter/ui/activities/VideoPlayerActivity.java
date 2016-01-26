@@ -36,7 +36,7 @@ public final class VideoPlayerActivity extends BaseActivity<VideoPlayerViewModel
   public @Bind(R.id.video_frame) AspectRatioFrameLayout videoFrame;
 
   @Override
-  public void onCreate(@Nullable final Bundle savedInstanceState) {
+  public void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.video_player_layout);
     ButterKnife.bind(this);
@@ -45,6 +45,9 @@ public final class VideoPlayerActivity extends BaseActivity<VideoPlayerViewModel
       .compose(Transformers.takeWhen(lifecycle().filter(ActivityEvent.RESUME::equals)))
       .compose(bindToLifecycle())
       .subscribe(this::preparePlayer);
+
+    mediaController = new MediaController(this);
+    mediaController.setAnchorView(rootView);
 
     rootView.setOnTouchListener(((view, motionEvent) -> {
       if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
@@ -69,7 +72,7 @@ public final class VideoPlayerActivity extends BaseActivity<VideoPlayerViewModel
   @Override
   public void onStateChanged(final boolean playWhenReady, final int playbackState) {
     if (playbackState == ExoPlayer.STATE_ENDED) {
-      mediaController.show();
+      finish();
     }
 
     if (playbackState == ExoPlayer.STATE_BUFFERING) {
@@ -108,9 +111,7 @@ public final class VideoPlayerActivity extends BaseActivity<VideoPlayerViewModel
     player.seekTo(playerPosition);  // todo: will be used for inline video playing
 
     // Set media controller
-    mediaController = new MediaController(this);
     mediaController.setMediaPlayer(player.getPlayerControl());
-    mediaController.setAnchorView(rootView);
     mediaController.setEnabled(true);
 
     player.prepare();
@@ -122,7 +123,7 @@ public final class VideoPlayerActivity extends BaseActivity<VideoPlayerViewModel
     if (mediaController.isShowing()) {
       mediaController.hide();
     } else {
-      mediaController.show(0);
+      mediaController.show();
     }
   }
 }

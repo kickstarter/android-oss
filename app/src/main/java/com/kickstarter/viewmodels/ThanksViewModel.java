@@ -32,6 +32,7 @@ import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public final class ThanksViewModel extends ViewModel<ThanksActivity> implements ThanksViewModelOutputs, ThanksAdapter.Delegate {
+
   private final PublishSubject<Void> facebookClick = PublishSubject.create();
   private final PublishSubject<Void> shareClick = PublishSubject.create();
   private final PublishSubject<Void> twitterClick = PublishSubject.create();
@@ -49,7 +50,7 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
   public final ThanksViewModelOutputs outputs = this;
 
   @Override
-  protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
@@ -203,12 +204,12 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
   }
 
   @Override
-  public void categoryPromoClick(@NonNull final CategoryPromoViewHolder viewHolder, @NonNull final Category category) {
+  public void categoryPromoClick(final @NonNull CategoryPromoViewHolder viewHolder, final @NonNull Category category) {
     categoryPromoClick.onNext(category);
   }
 
   @Override
-  public void projectCardMiniClick(@NonNull final ProjectCardMiniViewHolder viewHolder, @NonNull final Project project) {
+  public void projectCardMiniClick(final @NonNull ProjectCardMiniViewHolder viewHolder, final @NonNull Project project) {
     projectCardMiniClick.onNext(project);
   }
 }

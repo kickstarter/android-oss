@@ -7,8 +7,8 @@ public class FormContents {
   public final String method;
   public final String encodingType;
 
-  public FormContents(@NonNull final String serialized, @NonNull final String method,
-    @NonNull final String encodingType) {
+  public FormContents(final @NonNull String serialized, final @NonNull String method,
+    final @NonNull String encodingType) {
     this.serialized = serialized;
     this.method = method;
     this.encodingType = encodingType;

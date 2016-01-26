@@ -12,15 +12,15 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public final class ProjectToolbar extends KSToolbar {
-  public ProjectToolbar(@NonNull final Context context) {
+  public ProjectToolbar(final @NonNull Context context) {
     super(context);
   }
 
-  public ProjectToolbar(@NonNull final Context context, @Nullable final AttributeSet attrs) {
+  public ProjectToolbar(final @NonNull Context context, final @Nullable AttributeSet attrs) {
     super(context, attrs);
   }
 
-  public ProjectToolbar(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
+  public ProjectToolbar(final @NonNull Context context, final @Nullable AttributeSet attrs, final int defStyleAttr) {
     super(context, attrs, defStyleAttr);
   }
 

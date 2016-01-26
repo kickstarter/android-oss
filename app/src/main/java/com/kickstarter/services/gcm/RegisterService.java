@@ -35,7 +35,7 @@ public class RegisterService extends IntentService {
   }
 
   @Override
-  protected void onHandleIntent(@NonNull final Intent intent) {
+  protected void onHandleIntent(final @NonNull Intent intent) {
     Timber.d("onHandleIntent");
 
     try {
@@ -59,7 +59,7 @@ public class RegisterService extends IntentService {
    *
    * @param token The new token.
    */
-  private void sendTokenToApi(@NonNull final String token) {
+  private void sendTokenToApi(final @NonNull String token) {
     currentUser.observable()
       .take(1)
       .filter(ObjectUtils::isNotNull)
@@ -75,7 +75,7 @@ public class RegisterService extends IntentService {
    *
    * @throws IOException if unable to reach the GCM PubSub service
    */
-  private void subscribeToGlobalTopic(@NonNull final String token) throws IOException {
+  private void subscribeToGlobalTopic(final @NonNull String token) throws IOException {
     GcmPubSub.getInstance(this).subscribe(token, "/topics/global", null);
   }
 }

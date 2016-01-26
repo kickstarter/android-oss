@@ -20,7 +20,7 @@ public class EnumAdapter<T extends Enum<T>> extends BindableAdapter<T> {
   @LayoutRes private final int spinnerItemResource;
   private final int nullOffset;
 
-  public EnumAdapter(@NonNull final Context context, @NonNull final Class<T> enumType, final boolean showNull, @LayoutRes final int spinnerItemResource) {
+  public EnumAdapter(final @NonNull Context context, final @NonNull Class<T> enumType, final boolean showNull, final @LayoutRes int spinnerItemResource) {
     super(context);
     this.enumConstants = enumType.getEnumConstants();
     this.showNull = showNull;
@@ -48,22 +48,22 @@ public class EnumAdapter<T extends Enum<T>> extends BindableAdapter<T> {
   }
 
   @Override
-  public View newView(@NonNull final LayoutInflater inflater, final int position, @Nullable final ViewGroup container) {
+  public View newView(final @NonNull LayoutInflater inflater, final int position, final @Nullable ViewGroup container) {
     return inflater.inflate(spinnerItemResource, container, false);
   }
 
   @Override
-  public final void bindView(@NonNull final T item, final int position, @NonNull final View view) {
+  public final void bindView(final @NonNull T item, final int position, final @NonNull View view) {
     final TextView tv = ButterKnife.findById(view, android.R.id.text1);
     tv.setText(getName(item));
   }
 
   @Override
-  public final View newDropDownView(@NonNull final LayoutInflater inflater, final int position, @Nullable final ViewGroup container) {
+  public final View newDropDownView(final @NonNull LayoutInflater inflater, final int position, final @Nullable ViewGroup container) {
     return inflater.inflate(android.R.layout.simple_spinner_dropdown_item, container, false);
   }
 
-  protected String getName(@NonNull final T item) {
+  protected String getName(final @NonNull T item) {
     return String.valueOf(item);
   }
 }

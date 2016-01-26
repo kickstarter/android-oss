@@ -11,11 +11,11 @@ public class IntPreference {
   private final String key;
   private final int defaultValue;
 
-  public IntPreference(@NonNull final SharedPreferences sharedPreferences, @NonNull final String key) {
+  public IntPreference(final @NonNull SharedPreferences sharedPreferences, final @NonNull String key) {
     this(sharedPreferences, key, 0);
   }
 
-  public IntPreference(@NonNull final SharedPreferences sharedPreferences, @NonNull final String key,
+  public IntPreference(final @NonNull SharedPreferences sharedPreferences, final @NonNull String key,
     final int defaultValue) {
     this.sharedPreferences = sharedPreferences;
     this.key = key;

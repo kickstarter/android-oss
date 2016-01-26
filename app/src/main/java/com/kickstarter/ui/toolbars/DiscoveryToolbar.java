@@ -38,15 +38,15 @@ public final class DiscoveryToolbar extends KSToolbar {
   @Inject CurrentUser currentUser;
   @Inject Logout logout;
 
-  public DiscoveryToolbar(@NonNull final Context context) {
+  public DiscoveryToolbar(final @NonNull Context context) {
     super(context);
   }
 
-  public DiscoveryToolbar(@NonNull final Context context, @Nullable final AttributeSet attrs) {
+  public DiscoveryToolbar(final @NonNull Context context, final @Nullable AttributeSet attrs) {
     super(context, attrs);
   }
 
-  public DiscoveryToolbar(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
+  public DiscoveryToolbar(final @NonNull Context context, final @Nullable AttributeSet attrs, final int defStyleAttr) {
     super(context, attrs, defStyleAttr);
   }
 
@@ -73,7 +73,7 @@ public final class DiscoveryToolbar extends KSToolbar {
     activity.discoveryLayout().openDrawer(GravityCompat.START);
   }
 
-  public void loadParams(@NonNull final DiscoveryParams params) {
+  public void loadParams(final @NonNull DiscoveryParams params) {
     final DiscoveryActivity activity = (DiscoveryActivity) getContext();
 
     filterTextView.setText(params.filterString(activity));
@@ -100,7 +100,7 @@ public final class DiscoveryToolbar extends KSToolbar {
   }
 
   @OnClick(R.id.search_button)
-  public void searchButtonClick(@NonNull final View view) {
+  public void searchButtonClick(final @NonNull View view) {
     final Context context = getContext();
     context.startActivity(new Intent(context, SearchActivity.class));
   }

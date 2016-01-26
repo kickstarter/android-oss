@@ -91,7 +91,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
     currentUser.observable().take(1).subscribe(this::submitBugReport);
   }
 
-  private void submitBugReport(@Nullable final User user) {
+  private void submitBugReport(final @Nullable User user) {
     final String email = "chrstphrwrght+21qbymyz894ttajaomwh@***REMOVED***";
 
     final List<String> debugInfo = Arrays.asList(
@@ -128,7 +128,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
     endpointSpinner.setSelection(currentApiEndpoint.ordinal());
     endpointSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
       @Override
-      public void onItemSelected(@NonNull final AdapterView<?> adapterView, @NonNull final View view,
+      public void onItemSelected(final @NonNull AdapterView<?> adapterView, final @NonNull View view,
         final int position, final long id) {
         final ApiEndpoint selected = endpointAdapter.getItem(position);
         if (selected != currentApiEndpoint) {
@@ -141,7 +141,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
       }
 
       @Override
-      public void onNothingSelected(@NonNull final AdapterView<?> adapterView) {}
+      public void onNothingSelected(final @NonNull AdapterView<?> adapterView) {}
     });
   }
 
@@ -153,7 +153,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
     versionName.setText(release.versionName());
   }
 
-  private void showCustomEndpointDialog(final int originalSelection, @NonNull final String defaultUrl) {
+  private void showCustomEndpointDialog(final int originalSelection, final @NonNull String defaultUrl) {
     final View view = LayoutInflater.from(this).inflate(R.layout.api_endpoint_layout, null);
     final EditText url = ButterKnife.findById(view, R.id.url);
     url.setText(defaultUrl);
@@ -186,7 +186,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
       .show();
   }
 
-  private void setEndpointAndRelaunch(@NonNull final String endpoint) {
+  private void setEndpointAndRelaunch(final @NonNull String endpoint) {
     apiEndpointPreference.set(endpoint);
     logout.execute();
     ProcessPhoenix.triggerRebirth(this);

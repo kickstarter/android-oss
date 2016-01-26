@@ -139,7 +139,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     void projectViewHolderViewPledgeClicked(ProjectViewHolder viewHolder);
   }
 
-  public ProjectViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
+  public ProjectViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
     this.delegate = delegate;
     this.context = view.getContext();

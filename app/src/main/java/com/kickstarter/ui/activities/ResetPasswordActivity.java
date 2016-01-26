@@ -33,7 +33,7 @@ public final class ResetPasswordActivity extends BaseActivity<ResetPasswordViewM
   @BindString(R.string.general_error_oops) String errorTitleString;
 
   @Override
-  protected void onCreate(@Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.reset_password_layout);
@@ -69,7 +69,7 @@ public final class ResetPasswordActivity extends BaseActivity<ResetPasswordViewM
   }
 
   @OnTextChanged(R.id.email)
-  void onEmailTextChanged(@NonNull final CharSequence email) {
+  void onEmailTextChanged(final @NonNull CharSequence email) {
     viewModel.inputs.email(email.toString());
   }
 

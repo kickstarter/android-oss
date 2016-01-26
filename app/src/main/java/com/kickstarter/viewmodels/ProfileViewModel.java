@@ -46,7 +46,7 @@ public final class ProfileViewModel extends ViewModel<ProfileActivity> implement
     return projects;
   }
   @Override public Observable<User> user() {
-    return currentUser.observable();
+    return currentUser.loggedInUser();
   }
   private final PublishSubject<Project> showProject = PublishSubject.create();
   @Override

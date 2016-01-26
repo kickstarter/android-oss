@@ -54,10 +54,10 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
   /**
    * Returns a new KSViewHolder given a layout and view.
    */
-  protected abstract @NonNull KSViewHolder viewHolder(@LayoutRes final int layout, final @NonNull View view);
+  protected abstract @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view);
 
   @Override
-  public final @NonNull KSViewHolder onCreateViewHolder(final @NonNull ViewGroup viewGroup, @LayoutRes final int layout) {
+  public final @NonNull KSViewHolder onCreateViewHolder(final @NonNull ViewGroup viewGroup, final @LayoutRes int layout) {
     final View view = inflateView(viewGroup, layout);
     return viewHolder(layout, view);
   }
@@ -132,7 +132,7 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
     throw new RuntimeException("Position " + position + " not found in sections");
   }
 
-  private @NonNull View inflateView(final @NonNull ViewGroup viewGroup, @LayoutRes final int viewType) {
+  private @NonNull View inflateView(final @NonNull ViewGroup viewGroup, final @LayoutRes int viewType) {
     final LayoutInflater layoutInflater = LayoutInflater.from(viewGroup.getContext());
     return layoutInflater.inflate(viewType, viewGroup, false);
   }

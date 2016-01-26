@@ -18,10 +18,10 @@ import auto.parcel.AutoParcel;
 @AutoGson
 @AutoParcel
 public abstract class ErrorEnvelope implements Parcelable {
-  @Nullable public abstract List<String> errorMessages();
+  public abstract @Nullable List<String> errorMessages();
   public abstract int httpCode();
-  @Nullable public abstract String ksrCode();
-  @Nullable public abstract FacebookUser facebookUser();
+  public abstract @Nullable String ksrCode();
+  public abstract @Nullable FacebookUser facebookUser();
 
   @AutoGson
   @AutoParcel
@@ -60,7 +60,7 @@ public abstract class ErrorEnvelope implements Parcelable {
    * Tries to extract an {@link ErrorEnvelope} from an exception, and if it
    * can't returns null.
    */
-  public static @Nullable ErrorEnvelope fromThrowable(@NonNull final Throwable t) {
+  public static @Nullable ErrorEnvelope fromThrowable(final @NonNull Throwable t) {
     if (t instanceof ApiException) {
       final ApiException exception = (ApiException) t;
       return exception.errorEnvelope();

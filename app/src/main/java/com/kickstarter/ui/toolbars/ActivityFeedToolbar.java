@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 
 public final class ActivityFeedToolbar extends KSToolbar {
-  public ActivityFeedToolbar(@NonNull final Context context) {
+  public ActivityFeedToolbar(final @NonNull Context context) {
     super(context);
   }
 

@@ -78,7 +78,7 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
     viewModel.outputs.userForLoggedInEmptyState()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(adapter::takeLoggedInEmptyState);
+      .subscribe(adapter::takeLoggedInUserForEmptyState);
   }
 
   @Override

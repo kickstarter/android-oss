@@ -42,7 +42,7 @@ public final class ActivityFeedAdapter extends KSAdapter {
     }
   }
 
-  public void takeLoggedInEmptyState(final @NonNull User user) {
+  public void takeLoggedInUserForEmptyState(final @NonNull User user) {
     setSection(SECTION_EMPTY_VIEW, Collections.singletonList(user));
     notifyDataSetChanged();
   }

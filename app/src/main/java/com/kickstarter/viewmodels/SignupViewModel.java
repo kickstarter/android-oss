@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentConfig;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.ViewModel;
@@ -15,9 +14,7 @@ import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
-import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.SignupActivity;
-import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.viewmodels.errors.SignupViewModelErrors;
 import com.kickstarter.viewmodels.inputs.SignupViewModelInputs;
 import com.kickstarter.viewmodels.outputs.SignupViewModelOutputs;
@@ -105,10 +102,7 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
   public final SignupViewModelOutputs outputs = this;
   public final SignupViewModelErrors errors = this;
 
-  @Override
-  public void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
-    super.onCreate(context, savedInstanceState);
-    ((KSApplication) context.getApplicationContext()).component().inject(this);
+  public SignupViewModel() {
 
     final Observable<SignupData> signupData = Observable.combineLatest(
       fullName, email, password, sendNewslettersIsChecked,
@@ -129,6 +123,11 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
         .flatMap(this::submit)
         .subscribe(this::success)
     );
+  }
+
+  @Override
+  protected void onCreate(@NonNull Context context, @Nullable Bundle savedInstanceState) {
+    super.onCreate(context, savedInstanceState);
 
     currentConfig.observable()
       .take(1)

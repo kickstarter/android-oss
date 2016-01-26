@@ -27,7 +27,6 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
-import timber.log.Timber;
 
 public final class LoginViewModel extends ViewModel<LoginActivity> implements LoginViewModelInputs, LoginViewModelOutputs, LoginViewModelErrors {
   // INPUTS
@@ -36,9 +35,9 @@ public final class LoginViewModel extends ViewModel<LoginActivity> implements Lo
   private final PublishSubject<String> password = PublishSubject.create();
 
   // OUTPUTS
-  private final BehaviorSubject<String> prefillEmail = BehaviorSubject.create();
-  public @NonNull Observable<String> prefillEmail() {
-    return prefillEmail;
+  private final BehaviorSubject<String> prefillEmailFromPasswordReset = BehaviorSubject.create();
+  public @NonNull Observable<String> prefillEmailFromPasswordReset() {
+    return prefillEmailFromPasswordReset;
   }
 
   private final PublishSubject<Void> loginSuccess = PublishSubject.create();
@@ -101,7 +100,7 @@ public final class LoginViewModel extends ViewModel<LoginActivity> implements Lo
     addSubscription(intent
       .map(i -> i.getStringExtra(IntentKey.EMAIL))
       .ofType(String.class)
-      .subscribe(prefillEmail::onNext));
+      .subscribe(prefillEmailFromPasswordReset::onNext));
 
     addSubscription(view
         .compose(Transformers.combineLatestPair(isValid))

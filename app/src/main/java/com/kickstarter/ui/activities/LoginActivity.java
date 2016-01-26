@@ -74,13 +74,13 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> onSuccess());
 
-    viewModel.outputs.prefillEmail()
+    viewModel.outputs.prefillEmailFromPasswordReset()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::prefillEmail);
+      .subscribe(this::prefillEmailFromPasswordReset);
   }
 
-  private void prefillEmail(final @NonNull String email) {
+  private void prefillEmailFromPasswordReset(final @NonNull String email) {
     final String message = ksString.format(forgotPasswordSentEmailString, "email", email);
     ViewUtils.showDialog(this, null, message);
     emailEditText.setText(email);

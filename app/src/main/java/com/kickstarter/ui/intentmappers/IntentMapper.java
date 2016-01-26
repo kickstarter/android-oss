@@ -11,6 +11,11 @@ import android.support.annotation.Nullable;
  * class and feed it any intent it encounters via the `intent()` method.
  */
 public abstract class IntentMapper {
+
+  /**
+   * Attempts to extract a uri from the intent data. There may be a uri in intent data if the intent launched from a url,
+   * e.g. with a deep link.
+   */
   protected static @Nullable Uri uri(final @NonNull Intent intent) {
     final String string = intent.getDataString();
     if (string == null) {

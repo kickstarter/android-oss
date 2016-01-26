@@ -18,6 +18,9 @@ public enum LoginReason {
     return !isDefaultFlow();
   }
 
+  /**
+   * Tracking string for Koala.
+   */
   public @NonNull String trackingString() {
     switch (this) {
       case BACK_PROJECT:

@@ -113,6 +113,7 @@ public final class SignupActivity extends BaseActivity<SignupViewModel> {
       finish();
     } else {
       final Intent intent = new Intent(this, DiscoveryActivity.class)
+        .setAction(Intent.ACTION_MAIN)
         .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
       startActivity(intent);
     }

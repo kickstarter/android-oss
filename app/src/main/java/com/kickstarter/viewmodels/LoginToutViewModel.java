@@ -137,14 +137,14 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
 
     registerFacebookCallback();
 
+    Observable<AccessTokenEnvelope> facebookLoginSuccess = facebookAccessToken
+      .switchMap(this::loginWithFacebookAccessToken)
+      .share();
+
     addSubscription(intent
       .map(i -> i.getSerializableExtra(IntentKey.LOGIN_REASON))
       .ofType(LoginReason.class)
       .subscribe(loginReason::onNext));
-
-    Observable<AccessTokenEnvelope> facebookLoginSuccess = facebookAccessToken
-      .switchMap(this::loginWithFacebookAccessToken)
-      .share();
 
     addSubscription(loginReason.take(1).subscribe(koala::trackLoginRegisterTout));
 

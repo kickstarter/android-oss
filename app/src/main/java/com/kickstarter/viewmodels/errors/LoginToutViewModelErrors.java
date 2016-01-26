@@ -1,13 +1,16 @@
 package com.kickstarter.viewmodels.errors;
 
+import android.util.Pair;
+
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
+import com.kickstarter.ui.data.LoginReason;
 
 import rx.Observable;
 
 public interface LoginToutViewModelErrors {
-  Observable<ErrorEnvelope.FacebookUser> confirmFacebookSignupError();
-  Observable<String> missingFacebookEmailError();
-  Observable<String> facebookInvalidAccessTokenError();
+  Observable<Pair<ErrorEnvelope.FacebookUser, LoginReason>> confirmFacebookSignupError();
   Observable<String> facebookAuthorizationError();
-  Observable<Void> tfaChallenge();
+  Observable<String> facebookInvalidAccessTokenError();
+  Observable<String> missingFacebookEmailError();
+  Observable<LoginReason> startTwoFactorChallenge();
 }

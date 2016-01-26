@@ -194,8 +194,9 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   }
 
   @Override
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    facebookCallbackManager.onActivityResult(requestCode, resultCode, data);
+  protected void onActivityResult(final int requestCode, final int resultCode, final @Nullable Intent intent) {
+    super.onActivityResult(requestCode, resultCode, intent);
+
+    facebookCallbackManager.onActivityResult(requestCode, resultCode, intent);
   }
 }

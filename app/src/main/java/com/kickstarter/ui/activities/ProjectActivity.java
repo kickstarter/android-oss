@@ -24,6 +24,7 @@ import com.kickstarter.models.Reward;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ProjectAdapter;
+import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.ui.views.IconButton;
 import com.kickstarter.viewmodels.ProjectViewModel;
 
@@ -257,9 +258,8 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
 
   private void startLoginToutActivity() {
     final Intent intent = new Intent(this, LoginToutActivity.class)
-      .putExtra(IntentKey.FORWARD, true)
-      .putExtra(IntentKey.LOGIN_TYPE, LoginToutActivity.REASON_STAR_PROJECT);
-    startActivityForResult(intent, ActivityRequestCodes.PROJECT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
+      .putExtra(IntentKey.LOGIN_REASON, LoginReason.STAR_PROJECT);
+    startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
   }
 
   private void startViewPledgeActivity(final @NonNull Project project) {
@@ -275,8 +275,10 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   }
 
   @Override
-  protected void onActivityResult(final int requestCode, final int resultCode, final @NonNull Intent intent) {
-    if (requestCode != ActivityRequestCodes.PROJECT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED) {
+  protected void onActivityResult(final int requestCode, final int resultCode, final @Nullable Intent intent) {
+    super.onActivityResult(requestCode, resultCode, intent);
+
+    if (requestCode != ActivityRequestCodes.LOGIN_FLOW) {
       return;
     }
     if (resultCode != RESULT_OK) {

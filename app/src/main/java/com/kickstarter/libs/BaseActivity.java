@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.BundleUtils;
+import com.kickstarter.ui.data.ActivityResult;
 import com.trello.rxlifecycle.ActivityEvent;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.trello.rxlifecycle.components.ActivityLifecycleProvider;
@@ -59,6 +60,13 @@ public class BaseActivity<ViewModelType extends ViewModel> extends AppCompatActi
    */
   public final <T> Observable.Transformer<T, T> bindToLifecycle() {
     return RxLifecycle.bindActivity(lifecycle);
+  }
+
+  @CallSuper
+  @Override
+  protected void onActivityResult(final int requestCode, final int resultCode, final @Nullable Intent intent) {
+    super.onActivityResult(requestCode, resultCode, intent);
+    viewModel.activityResult(ActivityResult.create(requestCode, resultCode, intent));
   }
 
   @CallSuper

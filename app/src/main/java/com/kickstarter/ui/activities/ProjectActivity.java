@@ -275,7 +275,9 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   }
 
   @Override
-  protected void onActivityResult(final int requestCode, final int resultCode, final @NonNull Intent intent) {
+  protected void onActivityResult(final int requestCode, final int resultCode, final @Nullable Intent intent) {
+    super.onActivityResult(requestCode, resultCode, intent);
+
     if (requestCode != ActivityRequestCodes.LOGIN_FLOW) {
       return;
     }

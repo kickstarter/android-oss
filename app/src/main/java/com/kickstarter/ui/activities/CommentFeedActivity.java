@@ -184,7 +184,9 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
   }
 
   @Override
-  protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
+  protected void onActivityResult(final int requestCode, final int resultCode, final @Nullable Intent intent) {
+    super.onActivityResult(requestCode, resultCode, intent);
+
     if (requestCode != ActivityRequestCodes.LOGIN_FLOW) {
       return;
     }

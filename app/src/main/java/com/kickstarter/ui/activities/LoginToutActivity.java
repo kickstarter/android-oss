@@ -14,6 +14,7 @@ import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.TransitionUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.data.ActivityResult;
@@ -75,15 +76,25 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(ViewUtils.showToast(this));
 
-    viewModel.outputs.returnResultAfterLoginSuccess()
+    viewModel.outputs.loginClickContextualFlow()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> returnResultAfterLoginSuccess());
+      .subscribe(this::loginClickContextualFlow);
 
-    viewModel.outputs.startDiscoveryAfterLoginSuccess()
+    viewModel.outputs.loginClickDefaultFlow()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> startDiscoveryAfterAfterLoginSuccess());
+      .subscribe(this::loginClickDefaultFlow);
+
+    viewModel.outputs.loginSuccessContextualFlow()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> loginSuccessContextualFlow());
+
+    viewModel.outputs.loginSuccessDefaultFlow()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> loginSuccessDefaultFlow());
   }
 
   private Observable<String> errorMessages() {
@@ -109,28 +120,12 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
 
   @OnClick(R.id.login_button)
   public void loginButtonClick() {
-    final Intent intent = new Intent(this, LoginActivity.class);
-    if (loginReason.isDefault()) {
-      startActivity(intent);
-    } else {
-      intent.putExtra(IntentKey.FORWARD, true);
-      startActivityForResult(intent,
-        ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_LOGIN_ACTIVITY_FORWARD);
-    }
-    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+    viewModel.inputs.loginClick();
   }
 
   @OnClick(R.id.sign_up_button)
   public void signupButtonClick() {
-    final Intent intent = new Intent(this, SignupActivity.class);
-    if (loginReason.isDefault()) {
-      startActivity(intent);
-    } else {
-      intent.putExtra(IntentKey.FORWARD, true);
-      startActivityForResult(intent,
-        ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_LOGIN_ACTIVITY_FORWARD);
-    }
-    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+    viewModel.inputs.signupClick();
   }
 
   @Override
@@ -138,7 +133,8 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
     super.onActivityResult(requestCode, resultCode, intent);
     viewModel.inputs.activityResult(ActivityResult.create(requestCode, resultCode, intent));
 
-    if (requestCode != ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_LOGIN_ACTIVITY_FORWARD) {
+    if (requestCode != ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_LOGIN_ACTIVITY_CONTEXTUAL_FLOW &&
+      requestCode != ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_SIGNUP_ACTIVITY_CONTEXTUAL_FLOW) {
       return;
     }
 
@@ -147,7 +143,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
   }
 
   public void startFacebookConfirmationActivity(@NonNull final ErrorEnvelope.FacebookUser facebookUser) {
-    final Intent intent = new Intent(this, FacebookConfirmationActivity.class)
+/*    final Intent intent = new Intent(this, FacebookConfirmationActivity.class)
       .putExtra(IntentKey.LOGIN_REASON, loginReason)
       .putExtra(IntentKey.FACEBOOK_USER, facebookUser)
       .putExtra(IntentKey.FACEBOOK_TOKEN, AccessToken.getCurrentAccessToken().getToken());
@@ -157,11 +153,11 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
     } else {
       startActivityForResult(intent, ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_FACEBOOK_CONFIRMATION_ACTIVITY_FORWARD);
     }
-    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);*/
   }
 
   public void startTwoFactorActivity(final boolean isFacebookLogin) {
-    final Intent intent = new Intent(this, TwoFactorActivity.class)
+/*    final Intent intent = new Intent(this, TwoFactorActivity.class)
       .putExtra(IntentKey.FACEBOOK_LOGIN, isFacebookLogin)
       .putExtra(IntentKey.FACEBOOK_TOKEN, AccessToken.getCurrentAccessToken().getToken())
       .putExtra(IntentKey.LOGIN_REASON, loginReason);
@@ -169,19 +165,49 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
     if (loginReason.isDefault()) {
       startActivity(intent);
     } else {
-      startActivityForResult(intent, ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_LOGIN_ACTIVITY_FORWARD);
+      startActivityForResult(intent, ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_LOGIN_ACTIVITY_CONTEXTUAL_FLOW);
     }
-    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);*/
   }
 
-  private void startDiscoveryAfterAfterLoginSuccess() {
+  private void loginClickContextualFlow(final @NonNull LoginReason loginReason) {
+    startActivityForResult(loginIntent(loginReason), ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_LOGIN_ACTIVITY_CONTEXTUAL_FLOW);
+    TransitionUtils.slideInFromRight(this);
+  }
+
+  private void loginClickDefaultFlow(final @NonNull LoginReason loginReason) {
+    startActivity(loginIntent(loginReason));
+    TransitionUtils.slideInFromRight(this);
+  }
+
+  private @NonNull Intent loginIntent(final @NonNull LoginReason loginReason) {
+    return new Intent(this, LoginActivity.class)
+      .putExtra(IntentKey.LOGIN_REASON, loginReason);
+  }
+
+  private void loginSuccessContextualFlow() {
+    setResult(Activity.RESULT_OK);
+    finish();
+  }
+
+  private void loginSuccessDefaultFlow() {
     final Intent intent = new Intent(this, DiscoveryActivity.class)
       .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
     startActivity(intent);
   }
 
-  private void returnResultAfterLoginSuccess() {
-    setResult(Activity.RESULT_OK);
-    finish();
+  private void signupClickContextualFlow(final @NonNull LoginReason loginReason) {
+    startActivityForResult(signupIntent(loginReason), ActivityRequestCodes.LOGIN_TOUT_ACTIVITY_SIGNUP_ACTIVITY_CONTEXTUAL_FLOW);
+    TransitionUtils.slideInFromRight(this);
+  }
+
+  private void signupClickDefaultFlow(final @NonNull LoginReason loginReason) {
+    startActivity(signupIntent(loginReason));
+    TransitionUtils.slideInFromRight(this);
+  }
+
+  private @NonNull Intent signupIntent(final @NonNull LoginReason loginReason) {
+    return new Intent(this, SignupActivity.class)
+      .putExtra(IntentKey.LOGIN_REASON, loginReason);
   }
 }

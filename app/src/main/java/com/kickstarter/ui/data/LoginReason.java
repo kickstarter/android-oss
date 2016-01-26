@@ -10,12 +10,12 @@ public enum LoginReason {
   MESSAGE_CREATOR,
   STAR_PROJECT;
 
-  public boolean doesNotReturnResult() {
+  public boolean isDefaultFlow() {
     return this == DEFAULT;
   }
 
-  public boolean returnsResult() {
-    return this != DEFAULT;
+  public boolean isContextualFlow() {
+    return !isDefaultFlow();
   }
 
   public @NonNull String trackingString() {

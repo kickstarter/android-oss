@@ -2,9 +2,15 @@ package com.kickstarter.viewmodels.outputs;
 
 import android.support.annotation.NonNull;
 
+import com.kickstarter.ui.data.LoginReason;
+
 import rx.Observable;
 
 public interface LoginToutViewModelOutputs {
-  @NonNull Observable<Void> returnResultAfterLoginSuccess();
-  @NonNull Observable<Void> startDiscoveryAfterLoginSuccess();
+  @NonNull Observable<LoginReason> loginClickContextualFlow();
+  @NonNull Observable<LoginReason> loginClickDefaultFlow();
+  @NonNull Observable<Void> loginSuccessContextualFlow();
+  @NonNull Observable<Void> loginSuccessDefaultFlow();
+  @NonNull Observable<LoginReason> signupClickContextualFlow();
+  @NonNull Observable<LoginReason> signupClickDefaultFlow();
 }

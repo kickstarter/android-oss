@@ -159,7 +159,8 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
   }
 
   private void startLoginToutActivity() {
-    final Intent intent = new Intent(this, LoginToutActivity.class);
+    final Intent intent = new Intent(this, LoginToutActivity.class)
+      .putExtra(IntentKey.LOGIN_REASON, LoginReason.DEFAULT);
     startActivity(intent);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }

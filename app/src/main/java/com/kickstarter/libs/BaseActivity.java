@@ -160,6 +160,11 @@ public class BaseActivity<ViewModelType extends ViewModel> extends AppCompatActi
     overridePendingTransition(enterAnim, exitAnim);
   }
 
+  protected final void startActivityForResultWithTransition(@NonNull final Intent intent, final int requestCode, @AnimRes final int enterAnim,
+    @AnimRes final int exitAnim) {
+    startActivityForResult(intent, requestCode);
+  }
+
   /**
    * @deprecated Use {@link #bindToLifecycle()} or {@link #bindUntilEvent(ActivityEvent)} instead.
    */

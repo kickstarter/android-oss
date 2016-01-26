@@ -59,9 +59,6 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
     loginToolbar.setTitle(loginString);
     forgotPasswordTextView.setText(Html.fromHtml(forgotPasswordString));
 
-    final Intent intent = getIntent();
-    final boolean forward = intent.getBooleanExtra(IntentKey.FORWARD, false);
-
     errorMessages()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
@@ -70,12 +67,12 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
     viewModel.errors.tfaChallenge()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> startTwoFactorActivity(forward));
+      .subscribe(__ -> startTwoFactorActivity());
 
     viewModel.outputs.loginSuccess()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> onSuccess(forward));
+      .subscribe(__ -> onSuccess());
 
     final boolean confirmResetPassword = getIntent().getBooleanExtra(IntentKey.CONFIRM_RESET_PASSWORD, false);
     if (confirmResetPassword) {
@@ -95,7 +92,9 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
   }
 
   @Override
-  protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
+  protected void onActivityResult(final int requestCode, final int resultCode, final @NonNull Intent intent) {
+    super.onActivityResult(requestCode, resultCode, intent);
+
     if (requestCode != ActivityRequestCodes.LOGIN_FLOW) {
       return;
     }
@@ -132,31 +131,20 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
     viewModel.inputs.loginClick();
   }
 
-  public void onSuccess(final boolean forward) {
-    if (forward) {
-      setResult(Activity.RESULT_OK);
-      finish();
-    } else {
-      final Intent intent = new Intent(this, DiscoveryActivity.class)
-        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-      startActivity(intent);
-    }
+  public void onSuccess() {
+    setResult(Activity.RESULT_OK);
+    finish();
   }
 
   public void setFormEnabled(final boolean enabled) {
     loginButton.setEnabled(enabled);
   }
 
-  public void startTwoFactorActivity(final boolean forward) {
+  public void startTwoFactorActivity() {
     final Intent intent = new Intent(this, TwoFactorActivity.class)
       .putExtra(IntentKey.EMAIL, emailEditText.getText().toString())
-      .putExtra(IntentKey.PASSWORD, passwordEditText.getText().toString())
-      .putExtra(IntentKey.FORWARD, forward);
-    if (forward) {
-      startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
-    } else {
-      startActivity(intent);
-    }
+      .putExtra(IntentKey.PASSWORD, passwordEditText.getText().toString());
+    startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 }

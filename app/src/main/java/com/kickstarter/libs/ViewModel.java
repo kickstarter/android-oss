@@ -7,6 +7,8 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.kickstarter.ui.data.ActivityResult;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,11 @@ public class ViewModel<ViewType> {
   protected final PublishSubject<ViewType> viewChange = PublishSubject.create();
   protected final Observable<ViewType> view = viewChange.filter(v -> v != null);
   private final List<Subscription> subscriptions = new ArrayList<>();
+
+  protected final PublishSubject<ActivityResult> activityResult = PublishSubject.create();
+  public void activityResult(final @NonNull ActivityResult activityResult) {
+    this.activityResult.onNext(activityResult);
+  }
 
   // TODO: Justify BehaviorSubject vs PublishSubject
   protected final BehaviorSubject<Intent> intent = BehaviorSubject.create();

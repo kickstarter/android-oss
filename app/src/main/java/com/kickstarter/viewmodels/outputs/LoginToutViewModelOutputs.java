@@ -9,5 +9,5 @@ import rx.Observable;
 public interface LoginToutViewModelOutputs {
   @NonNull Observable<Void> finishWithSuccessfulResult();
   @NonNull Observable<LoginReason> startLogin();
-  @NonNull Observable<LoginReason> startSignup();
+  @NonNull Observable<Void> startSignup();
 }

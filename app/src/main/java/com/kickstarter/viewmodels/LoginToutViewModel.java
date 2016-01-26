@@ -42,12 +42,6 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
   private CallbackManager callbackManager;
 
   // INPUTS
-  private final PublishSubject<ActivityResult> activityResult = PublishSubject.create();
-  @Override
-  public void activityResult(final @NonNull ActivityResult activityResult) {
-    this.activityResult.onNext(activityResult);
-  }
-
   @Override
   public void facebookLoginClick(@NonNull final LoginToutActivity activity, @NonNull List<String> facebookPermissions) {
     LoginManager.getInstance().logInWithReadPermissions(activity, facebookPermissions);
@@ -78,9 +72,9 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
     return startLogin;
   }
 
-  private final BehaviorSubject<LoginReason> startSignup = BehaviorSubject.create();
+  private final BehaviorSubject<Void> startSignup = BehaviorSubject.create();
   @Override
-  public @NonNull Observable<LoginReason> startSignup() {
+  public @NonNull Observable<Void> startSignup() {
     return startSignup;
   }
 
@@ -169,8 +163,7 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
       .compose(Transformers.takeWhen(loginClick))
       .subscribe(startLogin::onNext));
 
-    addSubscription(loginReason
-      .compose(Transformers.takeWhen(signupClick))
+    addSubscription(signupClick
       .subscribe(startSignup::onNext));
 
     addSubscription(missingFacebookEmailError()

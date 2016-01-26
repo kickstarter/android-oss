@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.KSApplication;
+import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.CurrentUser;
@@ -33,6 +34,7 @@ import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
+import com.kickstarter.ui.data.ActivityResult;
 import com.kickstarter.ui.intentmappers.DiscoveryIntentMapper;
 import com.kickstarter.ui.viewholders.DiscoveryActivityViewHolder;
 import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
@@ -410,6 +412,12 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
       .filter(Intent.ACTION_MAIN::equals)
       .map(__ -> DiscoveryParams.builder().staffPicks(true).build())
       .subscribe(selectedParams::onNext);
+
+    // TODO: Merge with action main
+    addSubscription(activityResult
+      .filter(DiscoveryViewModel::isSuccessfulLogin)
+      .map(__ -> DiscoveryParams.builder().staffPicks(true).build())
+      .subscribe(selectedParams::onNext));
   }
 
   private boolean isOnboardingVisible(final @NonNull DiscoveryParams currentParams, final boolean isLoggedIn) {
@@ -445,6 +453,10 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     return activity != null && activity.id() != activitySamplePreference.get();
   }
 
+  private static boolean isSuccessfulLogin(final @NonNull ActivityResult activityResult) {
+    return activityResult.requestCode() == ActivityRequestCodes.LOGIN_FLOW &&
+      activityResult.resultCode() == android.app.Activity.RESULT_OK;
+  }
   private static @Nullable Category toggleExpandedCategory(final @Nullable Category expandedCategory, final @NonNull Category clickedCategory) {
     if (expandedCategory != null && clickedCategory.id() == expandedCategory.id()) {
       return null;

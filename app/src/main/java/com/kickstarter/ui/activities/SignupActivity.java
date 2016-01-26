@@ -1,7 +1,6 @@
 package com.kickstarter.ui.activities;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,10 +15,9 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.SwitchCompatUtils;
 import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.ui.IntentKey;
+import com.kickstarter.ui.toolbars.LoginToolbar;
 import com.kickstarter.ui.views.LoginPopupMenu;
 import com.kickstarter.viewmodels.SignupViewModel;
-import com.kickstarter.ui.toolbars.LoginToolbar;
 
 import butterknife.Bind;
 import butterknife.BindString;
@@ -50,12 +48,10 @@ public final class SignupActivity extends BaseActivity<SignupViewModel> {
     ButterKnife.bind(this);
     loginToolbar.setTitle(signUpString);
 
-    final boolean forward = getIntent().getBooleanExtra(IntentKey.FORWARD, false);
-
     viewModel.outputs.signupSuccess()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> onSuccess(forward));
+      .subscribe(__ -> onSuccess());
 
     viewModel.outputs.formSubmitting()
       .compose(bindToLifecycle())
@@ -107,15 +103,9 @@ public final class SignupActivity extends BaseActivity<SignupViewModel> {
     viewModel.inputs.signupClick();
   }
 
-  public void onSuccess(final boolean forward) {
-    if (forward) {
-      setResult(Activity.RESULT_OK);
-      finish();
-    } else {
-      final Intent intent = new Intent(this, DiscoveryActivity.class)
-        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-      startActivity(intent);
-    }
+  public void onSuccess() {
+    setResult(Activity.RESULT_OK);
+    finish();
   }
 
   @Override

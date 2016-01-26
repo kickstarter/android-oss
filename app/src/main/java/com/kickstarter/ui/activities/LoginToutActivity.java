@@ -69,7 +69,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
     viewModel.outputs.startSignup()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::startSignup);
+      .subscribe(__ -> startSignup());
 
     viewModel.errors.confirmFacebookSignupError()
       .compose(bindToLifecycle())
@@ -124,9 +124,8 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
   }
 
   @Override
-  protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
+  protected void onActivityResult(final int requestCode, final int resultCode, final @Nullable Intent intent) {
     super.onActivityResult(requestCode, resultCode, intent);
-    viewModel.inputs.activityResult(ActivityResult.create(requestCode, resultCode, intent));
 
     if (requestCode != ActivityRequestCodes.LOGIN_FLOW) {
       return;
@@ -156,8 +155,10 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
     startActivityForLoginFlow(LoginActivity.class, loginReason);
   }
 
-  private void startSignup(final @NonNull LoginReason loginReason) {
-    startActivityForLoginFlow(SignupActivity.class, loginReason);
+  private void startSignup() {
+    final Intent intent = new Intent(this, SignupActivity.class);
+    startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
+    TransitionUtils.slideInFromRight(this);
   }
 
   private void startActivityForLoginFlow(final Class<? extends Activity> cls, final @NonNull LoginReason loginReason) {

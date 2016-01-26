@@ -3,6 +3,7 @@ package com.kickstarter.ui.data;
 import android.content.Intent;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import auto.parcel.AutoParcel;
 
@@ -10,7 +11,7 @@ import auto.parcel.AutoParcel;
 public abstract class ActivityResult implements Parcelable {
   public abstract int requestCode();
   public abstract int resultCode();
-  public abstract @NonNull Intent intent();
+  public abstract @Nullable Intent intent();
 
   @AutoParcel.Builder
   public abstract static class Builder {
@@ -20,7 +21,7 @@ public abstract class ActivityResult implements Parcelable {
     public abstract ActivityResult build();
   }
 
-  public static @NonNull ActivityResult create(final int requestCode, final int resultCode, final @NonNull Intent intent) {
+  public static @NonNull ActivityResult create(final int requestCode, final int resultCode, final @Nullable Intent intent) {
     return ActivityResult.builder()
       .requestCode(requestCode)
       .resultCode(resultCode)

@@ -37,7 +37,7 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
   @Bind(R.id.checkout_loading_indicator) View loadingIndicatorView;
 
   @Override
-  protected void onCreate(@Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.checkout_layout);
     ButterKnife.bind(this);
@@ -75,7 +75,7 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
-  private boolean handleCheckoutThanksUriRequest(@NonNull final Request request, @NonNull final WebView webView) {
+  private boolean handleCheckoutThanksUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
     final Intent intent = new Intent(this, ThanksActivity.class)
       .putExtra(IntentKey.PROJECT, project);
 
@@ -84,7 +84,7 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
     return true;
   }
 
-  private boolean handleSignupUriRequest(@NonNull final Request request, @NonNull final WebView webView) {
+  private boolean handleSignupUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
     final Intent intent = new Intent(this, LoginToutActivity.class)
       .putExtra(IntentKey.LOGIN_REASON, LoginReason.BACK_PROJECT);
     startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);

@@ -20,10 +20,10 @@ public abstract class Activity implements Parcelable {
   @Category public abstract String category();
   public abstract DateTime createdAt();
   public abstract long id();
-  @Nullable public abstract Project project();
-  @Nullable public abstract Update update();
+  public abstract @Nullable Project project();
+  public abstract @Nullable Update update();
   public abstract DateTime updatedAt();
-  @Nullable public abstract User user();
+  public abstract @Nullable User user();
 
   @AutoParcel.Builder
   public abstract static class Builder {

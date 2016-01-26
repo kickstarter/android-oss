@@ -24,8 +24,8 @@ public class ViewModels {
   }
 
   @SuppressWarnings("unchecked")
-  public <T extends ViewModel> T fetch(@NonNull final Context context, @NonNull final Class<T> viewModelClass,
-    @Nullable final Bundle savedInstanceState) {
+  public <T extends ViewModel> T fetch(final @NonNull Context context, final @NonNull Class<T> viewModelClass,
+    final @Nullable Bundle savedInstanceState) {
     final String id = fetchId(savedInstanceState);
     ViewModel viewModel = viewModels.get(id);
 
@@ -43,7 +43,7 @@ public class ViewModels {
     return (T) viewModel;
   }
 
-  public void destroy(@NonNull final ViewModel viewModel) {
+  public void destroy(final @NonNull ViewModel viewModel) {
     viewModel.onDestroy();
 
     Iterator<Map.Entry<String, ViewModel>> iterator = viewModels.entrySet().iterator();
@@ -55,7 +55,7 @@ public class ViewModels {
     }
   }
 
-  public void save(@NonNull final ViewModel viewModel, @NonNull final Bundle envelope) {
+  public void save(final @NonNull ViewModel viewModel, final @NonNull Bundle envelope) {
     envelope.putString(VIEW_MODEL_ID_KEY, findIdForViewModel(viewModel));
 
     final Bundle state = new Bundle();
@@ -63,13 +63,13 @@ public class ViewModels {
     envelope.putBundle(VIEW_MODEL_STATE_KEY, state);
   }
 
-  private String fetchId(@Nullable final Bundle savedInstanceState) {
+  private String fetchId(final @Nullable Bundle savedInstanceState) {
     return savedInstanceState != null ?
       savedInstanceState.getString(VIEW_MODEL_ID_KEY) :
       UUID.randomUUID().toString();
   }
 
-  private String findIdForViewModel(@NonNull final ViewModel viewModel) {
+  private String findIdForViewModel(final @NonNull ViewModel viewModel) {
     for (final Map.Entry<String, ViewModel> entry : viewModels.entrySet()) {
       if (viewModel.equals(entry.getValue())) {
         return entry.getKey();

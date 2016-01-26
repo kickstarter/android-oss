@@ -19,14 +19,14 @@ public final class ThanksAdapter extends KSAdapter {
 
   public interface Delegate extends CategoryPromoViewHolder.Delegate, ProjectCardMiniViewHolder.Delegate {}
 
-  public ThanksAdapter(@NonNull final List<Project> projects, @NonNull final Category category,
-    @NonNull final Delegate delegate) {
+  public ThanksAdapter(final @NonNull List<Project> projects, final @NonNull Category category,
+    final @NonNull Delegate delegate) {
     this.delegate = delegate;
     addSection(projects);
     addSection(Collections.singletonList(category));
   }
 
-  protected @LayoutRes int layout(@NonNull final SectionRow sectionRow) {
+  protected @LayoutRes int layout(final @NonNull SectionRow sectionRow) {
     if (sectionRow.section() == 0) {
       return R.layout.project_card_mini_view;
     } else {
@@ -34,7 +34,7 @@ public final class ThanksAdapter extends KSAdapter {
     }
   }
 
-  protected @NonNull KSViewHolder viewHolder(@LayoutRes final int layout, @NonNull final View view) {
+  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     if (layout == R.layout.project_card_mini_view) {
       return new ProjectCardMiniViewHolder(view, delegate);
     }

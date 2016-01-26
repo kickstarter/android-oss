@@ -19,10 +19,10 @@ public final class SwipeRefresher {
    * @param refreshAction Action to call when a refresh event is emitted, likely a viewModel input.
    * @param isRefreshing Observable that emits events when the refreshing status changes.
    */
-  public SwipeRefresher(@NonNull final BaseActivity<? extends ViewModel> activity,
-    @NonNull final SwipeRefreshLayout layout,
-    @NonNull final Action0 refreshAction,
-    @NonNull final Func0<Observable<Boolean>> isRefreshing) {
+  public SwipeRefresher(final @NonNull BaseActivity<? extends ViewModel> activity,
+    final @NonNull SwipeRefreshLayout layout,
+    final @NonNull Action0 refreshAction,
+    final @NonNull Func0<Observable<Boolean>> isRefreshing) {
 
     // Iterate through colors in loading spinner while waiting for refresh
     layout.setColorSchemeResources(R.color.green, R.color.green_darken_10, R.color.green_darken_20, R.color.green_darken_10);

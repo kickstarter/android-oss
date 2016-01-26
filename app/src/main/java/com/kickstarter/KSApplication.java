@@ -73,7 +73,7 @@ public class KSApplication extends MultiDexApplication {
     return component;
   }
 
-  public static RefWatcher getRefWatcher(@NonNull final Context context) {
+  public static RefWatcher getRefWatcher(final @NonNull Context context) {
     final KSApplication application = (KSApplication) context.getApplicationContext();
     return application.refWatcher;
   }

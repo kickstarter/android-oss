@@ -172,7 +172,6 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
       .mergeWith(facebookAuthorizationError())
       .subscribe(__ -> koala.trackFacebookLoginError()));
 
-
     addSubscription(activityResult
       .filter(r -> r.isRequestCode(ActivityRequestCodes.LOGIN_FLOW))
       .filter(ActivityResult::isOk)

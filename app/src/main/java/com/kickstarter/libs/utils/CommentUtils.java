@@ -11,7 +11,7 @@ public class CommentUtils {
     throw new AssertionError();
   }
 
-  public static boolean isUserAuthor(@NonNull final Comment comment, @Nullable final User user) {
+  public static boolean isUserAuthor(final @NonNull Comment comment, final @Nullable User user) {
     return user != null && comment.author().id() == user.id();
   }
 }

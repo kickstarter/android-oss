@@ -10,7 +10,7 @@ import timber.log.Timber;
 public abstract class KSViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
   protected final View view;
 
-  public KSViewHolder(@NonNull final View view) {
+  public KSViewHolder(final @NonNull View view) {
     super(view);
     this.view = view;
 
@@ -21,7 +21,7 @@ public abstract class KSViewHolder extends RecyclerView.ViewHolder implements Vi
    * No-op click implementation. Subclasses should override this method to implement click handling.
    */
   @Override
-  public void onClick(@NonNull final View view) {
+  public void onClick(final @NonNull View view) {
     Timber.d("Default KSViewHolder onClick event");
   }
 

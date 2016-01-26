@@ -25,7 +25,7 @@ public abstract class ActivityEnvelope implements Parcelable {
     @AutoParcel
     public abstract static class ApiEnvelope implements Parcelable {
       public abstract String moreActivities();
-      @Nullable public abstract String newerActivities();
+      public abstract @Nullable String newerActivities();
     }
   }
 }

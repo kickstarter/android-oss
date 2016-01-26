@@ -77,12 +77,12 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   public final CommentFeedViewModelErrors errors = this;
 
   @Override
-  public void commentBody(@NonNull final String string) {
+  public void commentBody(final @NonNull String string) {
     commentBody.onNext(string);
   }
 
   @Override
-  protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
@@ -188,7 +188,7 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
     project.take(1).subscribe(__ -> refresh.onNext(null));
   }
 
-  private Observable<Comment> postComment(@NonNull final Project project, @NonNull final String body) {
+  private Observable<Comment> postComment(final @NonNull Project project, final @NonNull String body) {
     return client.postProjectComment(project, body)
       .compose(Transformers.pipeApiErrorsTo(postCommentError))
       .compose(Transformers.neverError())
@@ -199,7 +199,7 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       });
   }
 
-  public void postClick(@NonNull final String body) {
+  public void postClick(final @NonNull String body) {
     bodyOnPostClick.onNext(body);
   }
 

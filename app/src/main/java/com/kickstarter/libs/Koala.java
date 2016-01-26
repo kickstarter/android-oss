@@ -127,7 +127,7 @@ public final class Koala {
   }
 
   // SESSION EVENTS
-  public void trackLoginRegisterTout(final LoginReason loginReason) {
+  public void trackLoginRegisterTout(final @NonNull LoginReason loginReason) {
     client.track("Application Login or Signup", new HashMap<String, Object>() {{
       put("intent", loginReason.trackingString());
     }});

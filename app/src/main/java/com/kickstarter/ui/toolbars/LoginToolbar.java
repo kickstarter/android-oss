@@ -16,15 +16,15 @@ import butterknife.OnClick;
 public class LoginToolbar extends KSToolbar {
   @Bind(R.id.help_button) TextView helpButton;
 
-  public LoginToolbar(@NonNull final Context context) {
+  public LoginToolbar(final @NonNull Context context) {
     super(context);
   }
 
-  public LoginToolbar(@NonNull final Context context, @Nullable final AttributeSet attrs) {
+  public LoginToolbar(final @NonNull Context context, final @Nullable AttributeSet attrs) {
     super(context, attrs);
   }
 
-  public LoginToolbar(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
+  public LoginToolbar(final @NonNull Context context, final @Nullable AttributeSet attrs, final int defStyleAttr) {
     super(context, attrs, defStyleAttr);
   }
 

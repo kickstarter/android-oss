@@ -35,12 +35,12 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
   protected @Inject CurrentConfig currentConfig;
 
   protected final static class SignupData {
-    @NonNull final String fullName;
-    @NonNull final String email;
-    @NonNull final String password;
+    final @NonNull String fullName;
+    final @NonNull String email;
+    final @NonNull String password;
     final boolean sendNewsletters;
 
-    protected SignupData(@NonNull final String fullName, @NonNull final String email, @NonNull final String password,
+    protected SignupData(final @NonNull String fullName, final @NonNull String email, final @NonNull String password,
       final boolean sendNewsletters) {
       this.fullName = fullName;
       this.email = email;

@@ -15,14 +15,14 @@ import java.lang.reflect.Type;
 
 public class DateTimeTypeConverter implements JsonSerializer<DateTime>, JsonDeserializer<DateTime> {
   @Override
-  public JsonElement serialize(@NonNull final DateTime src, @NonNull final Type srcType,
-    @NonNull final JsonSerializationContext context) {
+  public JsonElement serialize(final @NonNull DateTime src, final @NonNull Type srcType,
+    final @NonNull JsonSerializationContext context) {
     return new JsonPrimitive(src.getMillis() / 1000);
   }
 
   @Override
-  public DateTime deserialize(@NonNull final JsonElement json, @NonNull final Type type,
-    @NonNull final JsonDeserializationContext context) {
+  public DateTime deserialize(final @NonNull JsonElement json, final @NonNull Type type,
+    final @NonNull JsonDeserializationContext context) {
     return new DateTime(json.getAsInt() * 1000L);
   }
 }

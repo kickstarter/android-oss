@@ -15,9 +15,9 @@ import auto.parcel.AutoParcel;
 @AutoGson
 @AutoParcel
 public abstract class PushNotificationEnvelope implements Parcelable {
-  @Nullable public abstract Activity activity();
+  public abstract @Nullable Activity activity();
   public abstract GCM gcm();
-  @Nullable public abstract Project project();
+  public abstract @Nullable Project project();
 
   private final static List<String> PROJECT_NOTIFICATION_CATEGORIES = Arrays.asList(
     com.kickstarter.models.Activity.CATEGORY_BACKING,

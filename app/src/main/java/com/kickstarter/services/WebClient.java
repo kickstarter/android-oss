@@ -11,7 +11,7 @@ import rx.schedulers.Schedulers;
 public final class WebClient {
   private final WebService service;
 
-  public WebClient(@NonNull final WebService service) {
+  public WebClient(final @NonNull WebService service) {
     this.service = service;
   }
 

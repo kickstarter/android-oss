@@ -20,13 +20,13 @@ public class KSRendererBuilder implements RendererBuilder {
   private Context context;
   private String videoLink;
 
-  public KSRendererBuilder(@NonNull final Context context, @NonNull final String videoLink) {
+  public KSRendererBuilder(final @NonNull Context context, final @NonNull String videoLink) {
     this.context = context;
     this.videoLink = videoLink;
   }
 
   @Override
-  public void buildRenderers(@NonNull final KSVideoPlayer player) {
+  public void buildRenderers(final @NonNull KSVideoPlayer player) {
     final Allocator allocator = new DefaultAllocator(BUFFER_SEGMENT_SIZE);
     final DataSource dataSource = new DefaultUriDataSource(context, videoLink);
     final ExtractorSampleSource sampleSource = new ExtractorSampleSource(Uri.parse(videoLink), dataSource,

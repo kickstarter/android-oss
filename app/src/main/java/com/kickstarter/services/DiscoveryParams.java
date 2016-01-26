@@ -24,22 +24,22 @@ import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
 @AutoGson
 @AutoParcel
 public abstract class DiscoveryParams implements Parcelable {
-  @Nullable public abstract Integer backed();
-  @Nullable public abstract Category category();
-  @Nullable public abstract String categoryParam();
-  @Nullable public abstract Location location();
-  @Nullable public abstract String locationParam();
-  @Nullable public abstract Integer page();
-  @Nullable public abstract Integer perPage();
-  @Nullable public abstract Integer pledged();
-  @Nullable public abstract Boolean staffPicks();
-  @Nullable public abstract Integer starred();
-  @Nullable public abstract Integer social();
-  @Nullable public abstract Sort sort();
-  @Nullable public abstract Boolean recommended();
-  @Nullable public abstract Project similarTo();
-  @Nullable public abstract State state();
-  @Nullable public abstract String term();
+  public abstract @Nullable Integer backed();
+  public abstract @Nullable Category category();
+  public abstract @Nullable String categoryParam();
+  public abstract @Nullable Location location();
+  public abstract @Nullable String locationParam();
+  public abstract @Nullable Integer page();
+  public abstract @Nullable Integer perPage();
+  public abstract @Nullable Integer pledged();
+  public abstract @Nullable Boolean staffPicks();
+  public abstract @Nullable Integer starred();
+  public abstract @Nullable Integer social();
+  public abstract @Nullable Sort sort();
+  public abstract @Nullable Boolean recommended();
+  public abstract @Nullable Project similarTo();
+  public abstract @Nullable State state();
+  public abstract @Nullable String term();
 
   public enum Sort {
     MAGIC, POPULAR, ENDING_SOON, NEWEST, MOST_FUNDED;
@@ -429,7 +429,7 @@ public abstract class DiscoveryParams implements Parcelable {
     return queryParams().toString();
   }
 
-  public @NonNull String filterString(@NonNull final Context context) {
+  public @NonNull String filterString(final @NonNull Context context) {
     if (isTrue(staffPicks())) {
       return context.getString(R.string.discovery_recommended);
     } else if (starred() != null && starred() == 1) {

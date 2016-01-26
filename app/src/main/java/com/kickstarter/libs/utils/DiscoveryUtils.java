@@ -21,27 +21,27 @@ import rx.Observable;
 public class DiscoveryUtils {
   private DiscoveryUtils() {}
 
-  public static @ColorInt int primaryColor(@NonNull final Context context, @NonNull final DiscoveryParams params) {
+  public static @ColorInt int primaryColor(final @NonNull Context context, final @NonNull DiscoveryParams params) {
     return params.category() != null ?
       params.category().colorWithAlpha() :
       ContextCompat.getColor(context, R.color.discovery_primary);
   }
 
-  public static @ColorInt int secondaryColor(@NonNull final Context context, @NonNull final DiscoveryParams params) {
+  public static @ColorInt int secondaryColor(final @NonNull Context context, final @NonNull DiscoveryParams params) {
     return params.category() != null ?
       params.category().secondaryColor(context) :
       ContextCompat.getColor(context, R.color.discovery_secondary);
   }
 
-  public static boolean overlayShouldBeLight(@NonNull final DiscoveryParams params) {
+  public static boolean overlayShouldBeLight(final @NonNull DiscoveryParams params) {
     return params.category() == null || params.category().overlayShouldBeLight();
   }
 
-  public static @ColorInt int overlayTextColor(@NonNull final Context context, @NonNull final DiscoveryParams params) {
+  public static @ColorInt int overlayTextColor(final @NonNull Context context, final @NonNull DiscoveryParams params) {
     return overlayTextColor(context, overlayShouldBeLight(params));
   }
 
-  public static @ColorInt int overlayTextColor(@NonNull final Context context, final boolean light) {
+  public static @ColorInt int overlayTextColor(final @NonNull Context context, final boolean light) {
     final @ColorRes int color = light ? KSColorUtils.lightColorId() : KSColorUtils.darkColorId();
     return ContextCompat.getColor(context, color);
   }

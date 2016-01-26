@@ -74,7 +74,7 @@ public class ProfileCardViewHolder extends KSViewHolder {
   }
 
   @Override
-  public void onClick(@NonNull final View view) {
+  public void onClick(final @NonNull View view) {
     delegate.profileCardViewHolderClicked(this, project);
   }
 

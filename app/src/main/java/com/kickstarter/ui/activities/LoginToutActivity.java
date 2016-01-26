@@ -49,7 +49,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
   @BindString(R.string.login_tout_errors_facebook_authorization_exception_button) String tryAgainString;
 
   @Override
-  protected void onCreate(@Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.login_tout_layout);

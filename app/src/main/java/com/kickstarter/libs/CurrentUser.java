@@ -19,10 +19,10 @@ public class CurrentUser {
   private final BehaviorSubject<User> user = BehaviorSubject.create();
   private User currentUser;
 
-  public CurrentUser(@NonNull final StringPreference accessTokenPreference,
-    @NonNull final DeviceRegistrarType deviceRegistrar,
-    @NonNull final Gson gson,
-    @NonNull final StringPreference userPreference) {
+  public CurrentUser(final @NonNull StringPreference accessTokenPreference,
+    final @NonNull DeviceRegistrarType deviceRegistrar,
+    final @NonNull Gson gson,
+    final @NonNull StringPreference userPreference) {
     this.accessTokenPreference = accessTokenPreference;
     this.deviceRegistrar = deviceRegistrar;
     this.userPreference = userPreference;
@@ -50,7 +50,7 @@ public class CurrentUser {
     return accessTokenPreference.get();
   }
 
-  public void login(@NonNull final User newUser, @NonNull final String accessToken) {
+  public void login(final @NonNull User newUser, final @NonNull String accessToken) {
     Timber.d("Login user %s", newUser.name());
 
     accessTokenPreference.set(accessToken);

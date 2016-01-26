@@ -7,15 +7,15 @@ import android.util.AttributeSet;
 import android.widget.Button;
 
 public class IconButton extends IconTextView {
-  public IconButton(@NonNull final Context context) {
+  public IconButton(final @NonNull Context context) {
     super(context);
   }
 
-  public IconButton(@NonNull final Context context, @Nullable final AttributeSet attrs) {
+  public IconButton(final @NonNull Context context, final @Nullable AttributeSet attrs) {
     super(context, attrs);
   }
 
-  public IconButton(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
+  public IconButton(final @NonNull Context context, final @Nullable AttributeSet attrs, final int defStyleAttr) {
     super(context, attrs, defStyleAttr);
   }
 

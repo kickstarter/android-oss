@@ -13,7 +13,7 @@ public abstract class Video implements Parcelable {
   public abstract String base();
   public abstract String frame();
   public abstract String high();
-  @Nullable public abstract String webm();
+  public abstract @Nullable String webm();
 
   @AutoParcel.Builder
   public abstract static class Builder {

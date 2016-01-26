@@ -11,11 +11,11 @@ public class BooleanPreference {
   private final String key;
   private final boolean defaultValue;
 
-  public BooleanPreference(@NonNull final SharedPreferences sharedPreferences, @NonNull final String key) {
+  public BooleanPreference(final @NonNull SharedPreferences sharedPreferences, final @NonNull String key) {
     this(sharedPreferences, key, false);
   }
 
-  public BooleanPreference(@NonNull final SharedPreferences sharedPreferences, @NonNull final String key,
+  public BooleanPreference(final @NonNull SharedPreferences sharedPreferences, final @NonNull String key,
     final boolean defaultValue) {
     this.sharedPreferences = sharedPreferences;
     this.key = key;

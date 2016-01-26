@@ -12,6 +12,7 @@ import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
@@ -64,6 +65,10 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
   public final Observable<Boolean> showLoggedOutEmptyState() {
     return showLoggedOutEmptyState;
   }
+  private final BehaviorSubject<User> userForLoggedInEmptyState = BehaviorSubject.create();
+  public final Observable<User> userForLoggedInEmptyState() {
+    return userForLoggedInEmptyState;
+  }
   private final PublishSubject<Boolean> isFetchingActivities = PublishSubject.create();
   public final Observable<Boolean> isFetchingActivities() {
     return isFetchingActivities;
@@ -94,6 +99,12 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
     addSubscription(currentUser.loggedInUser()
         .take(1)
         .subscribe(__ -> refresh())
+    );
+
+    addSubscription(activities
+      .filter(List::isEmpty)
+      .switchMap(__ -> currentUser.loggedInUser())
+      .subscribe(userForLoggedInEmptyState::onNext)
     );
 
     addSubscription(currentUser.isLoggedIn().subscribe(showLoggedOutEmptyState));

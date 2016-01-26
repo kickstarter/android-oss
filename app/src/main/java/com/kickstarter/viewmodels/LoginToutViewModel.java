@@ -35,12 +35,10 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
+import timber.log.Timber;
 
 public final class LoginToutViewModel extends ViewModel<LoginToutActivity> implements LoginToutViewModelInputs,
   LoginToutViewModelOutputs, LoginToutViewModelErrors {
-
-  private final PublishSubject<String> facebookAccessToken = PublishSubject.create();
-  private CallbackManager callbackManager;
 
   // INPUTS
   @Override
@@ -67,9 +65,9 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
     return finishWithSuccessfulResult;
   }
 
-  private final BehaviorSubject<LoginReason> startLogin = BehaviorSubject.create();
+  private final BehaviorSubject<Void> startLogin = BehaviorSubject.create();
   @Override
-  public @NonNull Observable<LoginReason> startLogin() {
+  public @NonNull Observable<Void> startLogin() {
     return startLogin;
   }
 
@@ -81,11 +79,10 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
 
   // ERRORS
   @Override
-  public @NonNull Observable<Pair<ErrorEnvelope.FacebookUser, LoginReason>> confirmFacebookSignupError() {
+  public @NonNull Observable<ErrorEnvelope.FacebookUser> confirmFacebookSignupError() {
     return loginError
       .filter(ErrorEnvelope::isConfirmFacebookSignupError)
-      .map(ErrorEnvelope::facebookUser)
-      .compose(Transformers.combineLatestPair(loginReason));
+      .map(ErrorEnvelope::facebookUser);
   }
 
   private final PublishSubject<FacebookException> facebookAuthorizationError = PublishSubject.create();
@@ -110,16 +107,19 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
   }
 
   @Override
-  public Observable<LoginReason> startTwoFactorChallenge() {
-    return loginReason
-      .compose(Transformers.takeWhen(loginError.filter(ErrorEnvelope::isTfaRequiredError)));
+  public Observable<Void> startTwoFactorChallenge() {
+    return loginError
+      .filter(ErrorEnvelope::isTfaRequiredError)
+      .map(__ -> null);
   }
+
+  private CallbackManager callbackManager;
+  private final PublishSubject<String> facebookAccessToken = PublishSubject.create();
+  private final PublishSubject<LoginReason> loginReason = PublishSubject.create();
+  private final PublishSubject<ErrorEnvelope> loginError = PublishSubject.create();
 
   protected @Inject CurrentUser currentUser;
   protected @Inject ApiClientType client;
-
-  private final PublishSubject<LoginReason> loginReason = PublishSubject.create();
-  private final PublishSubject<ErrorEnvelope> loginError = PublishSubject.create();
 
   public final LoginToutViewModelInputs inputs = this;
   public final LoginToutViewModelOutputs outputs = this;
@@ -160,8 +160,7 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
 
     addSubscription(facebookLoginSuccess.subscribe(__ -> koala.trackFacebookLoginSuccess()));
 
-    addSubscription(loginReason
-      .compose(Transformers.takeWhen(loginClick))
+    addSubscription(loginClick
       .subscribe(startLogin::onNext));
 
     addSubscription(signupClick

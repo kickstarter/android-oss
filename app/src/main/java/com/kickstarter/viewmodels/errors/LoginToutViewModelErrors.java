@@ -8,9 +8,9 @@ import com.kickstarter.ui.data.LoginReason;
 import rx.Observable;
 
 public interface LoginToutViewModelErrors {
-  Observable<Pair<ErrorEnvelope.FacebookUser, LoginReason>> confirmFacebookSignupError();
+  Observable<ErrorEnvelope.FacebookUser> confirmFacebookSignupError();
   Observable<String> facebookAuthorizationError();
   Observable<String> facebookInvalidAccessTokenError();
   Observable<String> missingFacebookEmailError();
-  Observable<LoginReason> startTwoFactorChallenge();
+  Observable<Void> startTwoFactorChallenge();
 }

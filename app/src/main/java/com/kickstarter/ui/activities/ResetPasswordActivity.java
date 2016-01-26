@@ -81,7 +81,6 @@ public final class ResetPasswordActivity extends BaseActivity<ResetPasswordViewM
   private void onResetSuccess() {
     setFormEnabled(false);
     final Intent intent = new Intent(this, LoginActivity.class)
-      .putExtra(IntentKey.CONFIRM_RESET_PASSWORD, true)
       .putExtra(IntentKey.EMAIL, email.getText().toString());
     startActivityWithTransition(intent, R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }

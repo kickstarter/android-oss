@@ -13,6 +13,7 @@ import com.facebook.FacebookException;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.kickstarter.KSApplication;
+import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
@@ -170,6 +171,13 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
       .mergeWith(facebookInvalidAccessTokenError())
       .mergeWith(facebookAuthorizationError())
       .subscribe(__ -> koala.trackFacebookLoginError()));
+
+
+    addSubscription(activityResult
+      .filter(r -> r.isRequestCode(ActivityRequestCodes.LOGIN_FLOW))
+      .filter(ActivityResult::isOk)
+      .subscribe(__ -> finishWithSuccessfulResult.onNext(null))
+    );
   }
 
   private void clearFacebookSession(final @NonNull FacebookException e) {

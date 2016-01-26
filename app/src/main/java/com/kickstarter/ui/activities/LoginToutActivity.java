@@ -123,18 +123,6 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
     viewModel.inputs.signupClick();
   }
 
-  @Override
-  protected void onActivityResult(final int requestCode, final int resultCode, final @Nullable Intent intent) {
-    super.onActivityResult(requestCode, resultCode, intent);
-
-    if (requestCode != ActivityRequestCodes.LOGIN_FLOW) {
-      return;
-    }
-
-    setResult(resultCode, intent);
-    finish();
-  }
-
   private void finishWithSuccessfulResult() {
     setResult(Activity.RESULT_OK);
     finish();

@@ -74,13 +74,16 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> onSuccess());
 
-    final boolean confirmResetPassword = getIntent().getBooleanExtra(IntentKey.CONFIRM_RESET_PASSWORD, false);
-    if (confirmResetPassword) {
-      final String email = getIntent().getExtras().getString(IntentKey.EMAIL);
-      final String message = ksString.format(forgotPasswordSentEmailString, "email", email);
-      ViewUtils.showDialog(this, null, message);
-      emailEditText.setText(email);
-    }
+    viewModel.outputs.prefillEmail()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::prefillEmail);
+  }
+
+  private void prefillEmail(final @NonNull String email) {
+    final String message = ksString.format(forgotPasswordSentEmailString, "email", email);
+    ViewUtils.showDialog(this, null, message);
+    emailEditText.setText(email);
   }
 
   private Observable<String> errorMessages() {
@@ -106,7 +109,6 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
   @Override
   public void onBackPressed() {
     super.onBackPressed();
-
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 

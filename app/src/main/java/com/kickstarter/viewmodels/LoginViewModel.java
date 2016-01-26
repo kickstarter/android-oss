@@ -15,6 +15,7 @@ import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.LoginActivity;
 import com.kickstarter.viewmodels.errors.LoginViewModelErrors;
 import com.kickstarter.viewmodels.inputs.LoginViewModelInputs;
@@ -24,7 +25,9 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
+import timber.log.Timber;
 
 public final class LoginViewModel extends ViewModel<LoginActivity> implements LoginViewModelInputs, LoginViewModelOutputs, LoginViewModelErrors {
   // INPUTS
@@ -33,8 +36,13 @@ public final class LoginViewModel extends ViewModel<LoginActivity> implements Lo
   private final PublishSubject<String> password = PublishSubject.create();
 
   // OUTPUTS
+  private final BehaviorSubject<String> prefillEmail = BehaviorSubject.create();
+  public @NonNull Observable<String> prefillEmail() {
+    return prefillEmail;
+  }
+
   private final PublishSubject<Void> loginSuccess = PublishSubject.create();
-  public final Observable<Void> loginSuccess() {
+  public @NonNull Observable<Void> loginSuccess() {
     return loginSuccess.asObservable();
   }
 
@@ -89,6 +97,11 @@ public final class LoginViewModel extends ViewModel<LoginActivity> implements Lo
 
     final Observable<Boolean> isValid = emailAndPassword
       .map(ep -> LoginViewModel.isValid(ep.first, ep.second));
+
+    addSubscription(intent
+      .map(i -> i.getStringExtra(IntentKey.EMAIL))
+      .ofType(String.class)
+      .subscribe(prefillEmail::onNext));
 
     addSubscription(view
         .compose(Transformers.combineLatestPair(isValid))

@@ -1,5 +1,6 @@
 package com.kickstarter.ui.data;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -34,4 +35,16 @@ public abstract class ActivityResult implements Parcelable {
   }
 
   public abstract Builder toBuilder();
+
+  public boolean isCanceled() {
+    return resultCode() == Activity.RESULT_CANCELED;
+  }
+
+  public boolean isOk() {
+    return resultCode() == Activity.RESULT_OK;
+  }
+
+  public boolean isRequestCode(final int v) {
+    return requestCode() == v;
+  }
 }

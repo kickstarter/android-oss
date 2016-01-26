@@ -8,7 +8,6 @@ public final class IntentKey {
    * http://developer.android.com/reference/android/content/Intent.html#putExtra%28java.lang.String,%20boolean%29
    */
   public static final String COMMENT = "com.kickstarter.kickstarter.intent_comment";
-  public static final String CONFIRM_RESET_PASSWORD = "com.kickstarter.kickstarter.intent_confirm_reset_password";
   public static final String DISCOVERY_PARAMS = "com.kickstarter.kickstarter.intent_discovery_params";
   public static final String EMAIL = "com.kickstarter.kickstarter.intent_email";
   public static final String FACEBOOK_LOGIN = "com.kickstarter.kickstarter.intent_facebook_login";

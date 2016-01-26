@@ -45,13 +45,6 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel> {
     ButterKnife.bind(this);
     loginToolbar.setTitle(verifyString);
 
-    final Intent intent = getIntent();
-
-    viewModel.inputs.email(intent.getExtras().getString(IntentKey.EMAIL));
-    viewModel.inputs.isFacebookLogin(intent.getBooleanExtra(IntentKey.FACEBOOK_LOGIN, false));
-    viewModel.inputs.fbAccessToken(intent.getExtras().getString(IntentKey.FACEBOOK_TOKEN));
-    viewModel.inputs.password(intent.getExtras().getString(IntentKey.PASSWORD));
-
     viewModel.outputs.tfaSuccess()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())

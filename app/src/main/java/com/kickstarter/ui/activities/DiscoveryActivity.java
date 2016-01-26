@@ -13,11 +13,13 @@ import android.support.v7.widget.RecyclerView;
 import com.jakewharton.rxbinding.support.v4.widget.RxDrawerLayout;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.utils.TransitionUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
@@ -161,8 +163,8 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
   private void startLoginToutActivity() {
     final Intent intent = new Intent(this, LoginToutActivity.class)
       .putExtra(IntentKey.LOGIN_REASON, LoginReason.DEFAULT);
-    startActivity(intent);
-    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+    startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
+    TransitionUtils.slideInFromRight(this);
   }
 
   private void startProfileActivity() {

@@ -87,13 +87,13 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
   private boolean handleSignupUriRequest(@NonNull final Request request, @NonNull final WebView webView) {
     final Intent intent = new Intent(this, LoginToutActivity.class)
       .putExtra(IntentKey.LOGIN_REASON, LoginReason.BACK_PROJECT);
-    startActivityForResult(intent, ActivityRequestCodes.CHECKOUT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
+    startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
     return true;
   }
 
   @Override
   protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
-    if (requestCode != ActivityRequestCodes.CHECKOUT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED) {
+    if (requestCode != ActivityRequestCodes.LOGIN_FLOW) {
       return;
     }
 

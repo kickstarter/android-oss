@@ -96,7 +96,7 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
 
   @Override
   protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
-    if (requestCode != ActivityRequestCodes.LOGIN_ACTIVITY_TWO_FACTOR_ACTIVITY_FORWARD) {
+    if (requestCode != ActivityRequestCodes.LOGIN_FLOW) {
       return;
     }
 
@@ -153,7 +153,7 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
       .putExtra(IntentKey.PASSWORD, passwordEditText.getText().toString())
       .putExtra(IntentKey.FORWARD, forward);
     if (forward) {
-      startActivityForResult(intent, ActivityRequestCodes.LOGIN_ACTIVITY_TWO_FACTOR_ACTIVITY_FORWARD);
+      startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
     } else {
       startActivity(intent);
     }

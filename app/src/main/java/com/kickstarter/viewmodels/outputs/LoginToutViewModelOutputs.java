@@ -7,10 +7,7 @@ import com.kickstarter.ui.data.LoginReason;
 import rx.Observable;
 
 public interface LoginToutViewModelOutputs {
+  @NonNull Observable<Void> finishWithSuccessfulResult();
   @NonNull Observable<LoginReason> startLogin();
-//  @NonNull Observable<LoginReason> loginClickDefaultFlow();
-  @NonNull Observable<Void> loginSuccessContextualFlow();
-  @NonNull Observable<Void> loginSuccessDefaultFlow();
-  @NonNull Observable<LoginReason> signupClickContextualFlow();
-  @NonNull Observable<LoginReason> signupClickDefaultFlow();
+  @NonNull Observable<LoginReason> startSignup();
 }

@@ -114,7 +114,7 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
   public void commentFeedLogin() {
     final Intent intent = new Intent(this, LoginToutActivity.class)
       .putExtra(IntentKey.LOGIN_REASON, LoginReason.COMMENT_FEED);
-    startActivityForResult(intent, ActivityRequestCodes.COMMENT_FEED_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
+    startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
   }
 
   @OnClick(R.id.comment_button)
@@ -185,7 +185,7 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
 
   @Override
   protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
-    if (requestCode != ActivityRequestCodes.COMMENT_FEED_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED) {
+    if (requestCode != ActivityRequestCodes.LOGIN_FLOW) {
       return;
     }
     if (resultCode != RESULT_OK) {

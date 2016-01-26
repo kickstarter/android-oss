@@ -94,7 +94,7 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
   public void activityFeedLogin() {
     final Intent intent = new Intent(this, LoginToutActivity.class)
       .putExtra(IntentKey.LOGIN_REASON, LoginReason.ACTIVITY_FEED);
-    startActivityForResult(intent, ActivityRequestCodes.ACTIVITY_FEED_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
+    startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
   }
 
   public void discoverProjectsButtonOnClick() {

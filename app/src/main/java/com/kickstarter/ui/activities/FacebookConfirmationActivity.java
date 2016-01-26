@@ -92,7 +92,7 @@ public class FacebookConfirmationActivity extends BaseActivity<FacebookConfirmat
     if (forward) {
       intent.putExtra(IntentKey.FORWARD, true);
       startActivityForResult(intent,
-        ActivityRequestCodes.FACEBOOK_CONFIRMATION_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
+        ActivityRequestCodes.LOGIN_FLOW);
     } else {
       startActivity(intent);
     }

@@ -259,7 +259,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   private void startLoginToutActivity() {
     final Intent intent = new Intent(this, LoginToutActivity.class)
       .putExtra(IntentKey.LOGIN_REASON, LoginReason.STAR_PROJECT);
-    startActivityForResult(intent, ActivityRequestCodes.PROJECT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
+    startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
   }
 
   private void startViewPledgeActivity(final @NonNull Project project) {
@@ -276,7 +276,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
 
   @Override
   protected void onActivityResult(final int requestCode, final int resultCode, final @NonNull Intent intent) {
-    if (requestCode != ActivityRequestCodes.PROJECT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED) {
+    if (requestCode != ActivityRequestCodes.LOGIN_FLOW) {
       return;
     }
     if (resultCode != RESULT_OK) {

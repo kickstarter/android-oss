@@ -78,11 +78,17 @@ public class ViewModel<ViewType extends LifecycleType> {
     // TODO
   }
 
+  /**
+   * By composing this transformer with an observable you guarantee that every observable in your view model
+   * will be properly completed when the view model completes.
+   *
+   * It is required that *every* observable in a view model do `.compose(bindToLifecycle())` before calling
+   * `subscribe`.
+   */
   public <T> Observable.Transformer<T, T> bindToLifecycle() {
     return source -> source.takeUntil(
-      view.flatMap(v -> v.lifecycle().map(e -> Pair.create(v, e))
+      view.flatMap(v -> v.lifecycle().map(e -> Pair.create(v, e)))
         .filter(ve -> isFinished(ve.first, ve.second))
-      )
     );
   }
 

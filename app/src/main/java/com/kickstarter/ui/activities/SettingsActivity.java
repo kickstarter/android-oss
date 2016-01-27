@@ -20,6 +20,7 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.Release;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.utils.IntentUtils;
 import com.kickstarter.libs.utils.SwitchCompatUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.User;
@@ -159,10 +160,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
 
   private void logout() {
     logout.execute();
-    final Intent intent = new Intent(this, DiscoveryActivity.class)
-      .setAction(Intent.ACTION_MAIN)
-      .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-    startActivity(intent);
+    startActivity(IntentUtils.discoveryIntent(this));
   }
 
   protected void composeContactEmail(final @Nullable User user) {

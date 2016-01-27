@@ -69,9 +69,7 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
   private void handleConfigApiError(final @NonNull ErrorEnvelope error) {
     if (error.httpCode() == 401) {
       logout.execute();
-      final Intent intent = new Intent(this.application, DiscoveryActivity.class)
-        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-      this.application.startActivity(intent);
+      this.application.startActivity(IntentUtils.discoveryIntent(this.application));
     }
   }
 

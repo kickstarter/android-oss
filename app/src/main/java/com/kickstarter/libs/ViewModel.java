@@ -1,6 +1,7 @@
 package com.kickstarter.libs;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
@@ -9,6 +10,8 @@ import android.util.Pair;
 
 import com.trello.rxlifecycle.ActivityEvent;
 
+import com.kickstarter.ui.data.ActivityResult;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +19,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
@@ -25,6 +29,23 @@ public class ViewModel<ViewType extends LifecycleType> {
   protected final PublishSubject<ViewType> viewChange = PublishSubject.create();
   protected final Observable<ViewType> view = viewChange.filter(v -> v != null);
   private final List<Subscription> subscriptions = new ArrayList<>();
+
+  protected final PublishSubject<ActivityResult> activityResult = PublishSubject.create();
+  /**
+   * Takes activity result data from the activity.
+   */
+  public void activityResult(final @NonNull ActivityResult activityResult) {
+    this.activityResult.onNext(activityResult);
+  }
+
+  // TODO: Justify BehaviorSubject vs PublishSubject
+  protected final BehaviorSubject<Intent> intent = BehaviorSubject.create();
+  /*
+   * Takes intent data from the view.
+   */
+  public void intent(final @NonNull Intent intent) {
+    this.intent.onNext(intent);
+  }
 
   @CallSuper
   protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {

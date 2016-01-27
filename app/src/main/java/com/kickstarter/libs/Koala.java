@@ -9,6 +9,7 @@ import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
+import com.kickstarter.ui.data.LoginReason;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -126,9 +127,9 @@ public final class Koala {
   }
 
   // SESSION EVENTS
-  public void trackLoginRegisterTout(final @Nullable String intent) {
+  public void trackLoginRegisterTout(final @NonNull LoginReason loginReason) {
     client.track("Application Login or Signup", new HashMap<String, Object>() {{
-      put("intent", intent);
+      put("intent", loginReason.trackingString());
     }});
   }
 

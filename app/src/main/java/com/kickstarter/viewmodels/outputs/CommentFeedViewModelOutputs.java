@@ -1,5 +1,7 @@
 package com.kickstarter.viewmodels.outputs;
 
+import com.kickstarter.models.Project;
+
 import rx.Observable;
 
 public interface CommentFeedViewModelOutputs {
@@ -19,7 +21,7 @@ public interface CommentFeedViewModelOutputs {
   Observable<Boolean> isFetchingComments();
 
   /**
-   * Emits when the comment dialog should be displayed.
+   * Emits the project when the comment dialog should be displayed.
    */
-  Observable<Void> showCommentDialog();
+  Observable<Project> showCommentDialog();
 }

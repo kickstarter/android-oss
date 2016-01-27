@@ -1,6 +1,5 @@
 package com.kickstarter.ui.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,16 +8,18 @@ import android.support.v7.widget.RecyclerView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.models.Project;
-import com.kickstarter.ui.IntentKey;
+import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.ui.adapters.ProjectSocialAdapter;
 import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
+import com.kickstarter.viewmodels.ProjectSocialViewModel;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.android.schedulers.AndroidSchedulers;
 
-public final class ProjectSocialActivity extends BaseActivity implements ProjectSocialAdapter.Delegate {
+@RequiresViewModel(ProjectSocialViewModel.class)
+public final class ProjectSocialActivity extends BaseActivity<ProjectSocialViewModel> implements ProjectSocialAdapter.Delegate {
   protected @Bind(R.id.project_social_recycler_view) RecyclerView recyclerView;
 
   @Override
@@ -27,13 +28,15 @@ public final class ProjectSocialActivity extends BaseActivity implements Project
     setContentView(R.layout.project_social_layout);
     ButterKnife.bind(this);
 
-    final Intent intent = getIntent();
-    final Project project = intent.getParcelableExtra(IntentKey.PROJECT);
     final ProjectSocialAdapter adapter = new ProjectSocialAdapter(this);
 
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
-    adapter.takeProject(project);
+
+    viewModel.outputs.project()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(adapter::takeProject);
   }
 
   @Override

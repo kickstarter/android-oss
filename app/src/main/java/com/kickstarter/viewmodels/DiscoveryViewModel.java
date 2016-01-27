@@ -1,12 +1,14 @@
 package com.kickstarter.viewmodels;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.KSApplication;
+import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.CurrentUser;
@@ -32,6 +34,8 @@ import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
+import com.kickstarter.ui.data.ActivityResult;
+import com.kickstarter.ui.intentmappers.DiscoveryIntentMapper;
 import com.kickstarter.ui.viewholders.DiscoveryActivityViewHolder;
 import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
@@ -69,11 +73,6 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     nextPage.onNext(null);
   }
 
-  private final PublishSubject<DiscoveryParams> initializer = PublishSubject.create();
-  @Override
-  public void initializer(final @NonNull DiscoveryParams params) {
-    initializer.onNext(params);
-  }
   private final PublishSubject<Boolean> openDrawer = PublishSubject.create();
   @Override
   public void openDrawer(boolean open) {
@@ -397,10 +396,27 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
       .subscribe(__ -> koala.trackDiscoveryFilters());
 
     expandedParams.onNext(null);
-    initializer
+
+    intent
+      .flatMap(i -> DiscoveryIntentMapper.params(i, apiClient))
       .compose(bindToLifecycle())
       .subscribe(selectedParams::onNext);
-    initializer.onNext(DiscoveryParams.builder().staffPicks(true).build());
+
+    // Seed selected params when we are freshly launching the app with no data.
+    intent
+      .take(1)
+      .map(Intent::getAction)
+      .filter(Intent.ACTION_MAIN::equals)
+      .map(__ -> DiscoveryParams.builder().staffPicks(true).build())
+      .compose(bindToLifecycle())
+      .subscribe(selectedParams::onNext);
+
+    // TODO: Merge with action main
+    activityResult
+      .filter(DiscoveryViewModel::isSuccessfulLogin)
+      .map(__ -> DiscoveryParams.builder().staffPicks(true).build())
+      .compose(bindToLifecycle())
+      .subscribe(selectedParams::onNext);
   }
 
   private boolean isOnboardingVisible(final @NonNull DiscoveryParams currentParams, final boolean isLoggedIn) {
@@ -434,6 +450,10 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
 
   private boolean activityHasNotBeenSeen(final @Nullable Activity activity) {
     return activity != null && activity.id() != activitySamplePreference.get();
+  }
+
+  private static boolean isSuccessfulLogin(final @NonNull ActivityResult activityResult) {
+    return activityResult.isOk() && activityResult.isRequestCode(ActivityRequestCodes.LOGIN_FLOW);
   }
 
   private static @Nullable Category toggleExpandedCategory(final @Nullable Category expandedCategory, final @NonNull Category clickedCategory) {

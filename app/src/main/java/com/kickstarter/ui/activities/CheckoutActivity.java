@@ -17,6 +17,7 @@ import com.kickstarter.services.KSUri;
 import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.services.RequestHandler;
 import com.kickstarter.ui.IntentKey;
+import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.ui.toolbars.KSToolbar;
 import com.kickstarter.ui.views.KSWebView;
 import com.kickstarter.viewmodels.CheckoutViewModel;
@@ -26,16 +27,14 @@ import java.util.Arrays;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresViewModel(CheckoutViewModel.class)
 public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> implements KSWebViewClient.Delegate {
   private Project project;
-  private String urlToReload;
   @Bind(R.id.checkout_toolbar) KSToolbar checkoutToolbar;
   @Bind(R.id.web_view) KSWebView webView;
   @Bind(R.id.checkout_loading_indicator) View loadingIndicatorView;
-
-  private static String SAVE_URL_KEY = "save_url";
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -43,46 +42,31 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
     setContentView(R.layout.checkout_layout);
     ButterKnife.bind(this);
 
-    final Intent intent = getIntent();
-    if (savedInstanceState == null) {
-      urlToReload = intent.getExtras().getString(IntentKey.URL);
-    }
-    project = intent.getExtras().getParcelable(IntentKey.PROJECT);
-
-    final String title = intent.getExtras().getString(IntentKey.TOOLBAR_TITLE, "");
-    checkoutToolbar.setTitle(title);
-
     webView.client().registerRequestHandlers(Arrays.asList(
       new RequestHandler(KSUri::isCheckoutThanksUri, this::handleCheckoutThanksUriRequest),
       new RequestHandler(KSUri::isSignupUri, this::handleSignupUriRequest)
     ));
+
     webView.client().setDelegate(this);
-  }
 
-  @Override
-  protected void onRestoreInstanceState(final @Nullable Bundle savedInstanceState) {
-   super.onRestoreInstanceState(savedInstanceState);
+    viewModel.outputs.project()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(project -> this.project = project);
 
-    if (savedInstanceState != null) {
-      urlToReload = savedInstanceState.getString(SAVE_URL_KEY);
-    }
+    viewModel.outputs.title()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(checkoutToolbar::setTitle);
   }
 
   @Override
   protected void onResume() {
     super.onResume();
 
-    if (urlToReload != null) {
-      webView.loadUrl(urlToReload);
-    }
-    urlToReload = null;
-  }
-
-  @Override
-  protected void onSaveInstanceState(final @NonNull Bundle outState) {
-    urlToReload = webView.lastClientUrl();
-    outState.putString(SAVE_URL_KEY, urlToReload);
-    super.onSaveInstanceState(outState);
+    viewModel.outputs.url()
+      .take(1)
+      .subscribe(webView::loadUrl);
   }
 
   @Override
@@ -94,21 +78,24 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
   private boolean handleCheckoutThanksUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
     final Intent intent = new Intent(this, ThanksActivity.class)
       .putExtra(IntentKey.PROJECT, project);
+
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+
     return true;
   }
 
   private boolean handleSignupUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
     final Intent intent = new Intent(this, LoginToutActivity.class)
-      .putExtra(IntentKey.FORWARD, true)
-      .putExtra(IntentKey.LOGIN_TYPE, LoginToutActivity.REASON_BACK_PROJECT);
-    startActivityForResult(intent, ActivityRequestCodes.CHECKOUT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
+      .putExtra(IntentKey.LOGIN_REASON, LoginReason.BACK_PROJECT);
+    startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
     return true;
   }
 
   @Override
-  protected void onActivityResult(final int requestCode, final int resultCode, final @NonNull Intent intent) {
-    if (requestCode != ActivityRequestCodes.CHECKOUT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED) {
+  protected void onActivityResult(final int requestCode, final int resultCode, final @Nullable Intent intent) {
+    super.onActivityResult(requestCode, resultCode, intent);
+
+    if (requestCode != ActivityRequestCodes.LOGIN_FLOW) {
       return;
     }
 
@@ -131,5 +118,10 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
     animation.setDuration(300l);
     animation.setFillAfter(true);
     loadingIndicatorView.startAnimation(animation);
+  }
+
+  @Override
+  public void webViewPageIntercepted(final @NonNull KSWebViewClient webViewClient, final @NonNull String url) {
+    viewModel.inputs.pageIntercepted(url);
   }
 }

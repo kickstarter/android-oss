@@ -1,7 +1,6 @@
 package com.kickstarter.ui.activities;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,9 +12,8 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.ui.IntentKey;
-import com.kickstarter.viewmodels.TwoFactorViewModel;
 import com.kickstarter.ui.toolbars.LoginToolbar;
+import com.kickstarter.viewmodels.TwoFactorViewModel;
 
 import butterknife.Bind;
 import butterknife.BindString;
@@ -44,13 +42,6 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel> {
     setContentView(R.layout.two_factor_layout);
     ButterKnife.bind(this);
     loginToolbar.setTitle(verifyString);
-
-    final Intent intent = getIntent();
-
-    viewModel.inputs.email(intent.getExtras().getString(IntentKey.EMAIL));
-    viewModel.inputs.isFacebookLogin(intent.getBooleanExtra(IntentKey.FACEBOOK_LOGIN, false));
-    viewModel.inputs.fbAccessToken(intent.getExtras().getString(IntentKey.FACEBOOK_TOKEN));
-    viewModel.inputs.password(intent.getExtras().getString(IntentKey.PASSWORD));
 
     viewModel.outputs.tfaSuccess()
       .compose(bindToLifecycle())
@@ -83,10 +74,6 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel> {
     viewModel.inputs.code(code.toString());
   }
 
-  public boolean forward() {
-    return getIntent().getBooleanExtra(IntentKey.FORWARD, false);
-  }
-
   @OnClick(R.id.resend_button)
   public void resendButtonOnClick() {
     viewModel.inputs.resendClick();
@@ -105,14 +92,8 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel> {
   }
 
   public void onSuccess() {
-    if (forward()) {
-      setResult(Activity.RESULT_OK);
-      finish();
-    } else {
-      final Intent intent = new Intent(this, DiscoveryActivity.class)
-        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-      startActivity(intent);
-    }
+    setResult(Activity.RESULT_OK);
+    finish();
   }
 
   public void setFormEnabled(final boolean enabled) {

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentConfig;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.ViewModel;
@@ -104,6 +103,7 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
   public final SignupViewModelErrors errors = this;
 
   public SignupViewModel() {
+
     final Observable<SignupData> signupData = Observable.combineLatest(
       fullName, email, password, sendNewslettersIsChecked,
       SignupData::new);
@@ -126,9 +126,8 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
   }
 
   @Override
-  public void onCreate(final @NonNull Context context, @Nullable Bundle savedInstanceState) {
+  protected void onCreate(@NonNull Context context, @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
-    ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     currentConfig.observable()
       .take(1)

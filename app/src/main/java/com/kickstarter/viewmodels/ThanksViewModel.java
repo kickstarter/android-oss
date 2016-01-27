@@ -15,10 +15,12 @@ import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ThanksActivity;
 import com.kickstarter.ui.adapters.ThanksAdapter;
 import com.kickstarter.ui.viewholders.CategoryPromoViewHolder;
 import com.kickstarter.ui.viewholders.ProjectCardMiniViewHolder;
+import com.kickstarter.viewmodels.outputs.ThanksViewModelOutputs;
 
 import java.util.List;
 
@@ -26,10 +28,10 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public final class ThanksViewModel extends ViewModel<ThanksActivity> implements ThanksAdapter.Delegate {
-  protected @Inject ApiClientType apiClient;
+public final class ThanksViewModel extends ViewModel<ThanksActivity> implements ThanksViewModelOutputs, ThanksAdapter.Delegate {
 
   private final PublishSubject<Void> facebookClick = PublishSubject.create();
   private final PublishSubject<Void> shareClick = PublishSubject.create();
@@ -37,10 +39,31 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
   private final PublishSubject<Project> projectCardMiniClick = PublishSubject.create();
   private final PublishSubject<Category> categoryPromoClick = PublishSubject.create();
 
+  protected @Inject ApiClientType apiClient;
+
+  private final BehaviorSubject<Project> project = BehaviorSubject.create();
+  @Override
+  public Observable<Project> project() {
+    return project;
+  }
+
+  public final ThanksViewModelOutputs outputs = this;
+
   @Override
   protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
+
+    final Observable<Pair<ThanksActivity, Project>> viewAndProject = view
+      .compose(Transformers.combineLatestPair(project))
+      .filter(vp -> vp.first != null);
+
+    intent
+      .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
+      .ofType(Project.class)
+      .take(1)
+      .compose(bindToLifecycle())
+      .subscribe(project::onNext);
 
     shareClick
       .compose(bindToLifecycle())
@@ -57,12 +80,6 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
     projectCardMiniClick
       .compose(bindToLifecycle())
       .subscribe(__ -> koala.trackCheckoutFinishJumpToProject());
-  }
-
-  public void takeProject(final @NonNull Project project) {
-    final Observable<Pair<ThanksActivity, Project>> viewAndProject = view
-      .compose(Transformers.combineLatestPair(Observable.just(project)))
-      .filter(vp -> vp.first != null);
 
     viewAndProject
       .observeOn(AndroidSchedulers.mainThread())
@@ -99,39 +116,71 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .compose(bindToLifecycle())
       .subscribe(vp -> vp.first.startDiscoveryCategoryIntent(vp.second));
 
-    final Category projectCategory = project.category();
-    if (projectCategory != null) {
-      final Observable<Category> rootCategory = apiClient.fetchCategory(String.valueOf(projectCategory.rootId()))
-        .compose(Transformers.neverError());
+    final Observable<Category> rootCategory = project.flatMap(this::rootCategory);
+    final Observable<Pair<List<Project>, Category>> projectsAndRootCategory = project
+      .flatMap(this::relatedProjects)
+      .compose(bindToLifecycle())
+      .compose(Transformers.zipPair(rootCategory));
 
-      final Observable<Pair<List<Project>, Category>> projectsAndRootCategory = moreProjects(project)
-        .compose(Transformers.zipPair(rootCategory));
-
-      view
-        .compose(Transformers.combineLatestPair(projectsAndRootCategory))
-        .observeOn(AndroidSchedulers.mainThread())
-        .compose(bindToLifecycle())
-        .subscribe(vpc -> {
-          final ThanksActivity view = vpc.first;
-          final List<Project> ps = vpc.second.first;
-          final Category category = vpc.second.second;
-          view.showRecommended(ps, category);
-        });
-    }
+    view
+      .compose(Transformers.combineLatestPair(projectsAndRootCategory))
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(vpc -> {
+        final ThanksActivity view = vpc.first;
+        final List<Project> ps = vpc.second.first;
+        final Category category = vpc.second.second;
+        view.showRecommended(ps, category);
+      });
 
     categoryPromoClick
       .compose(bindToLifecycle())
       .subscribe(__ -> koala.trackCheckoutFinishJumpToDiscovery());
+
+    projectCardMiniClick
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackCheckoutFinishJumpToProject());
+
+    shareClick
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackCheckoutShowShareSheet());
+
+    twitterClick
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackCheckoutShowTwitterShareView());
+
+    facebookClick
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackCheckoutShowFacebookShareView());
+
     projectCardMiniClick
       .compose(bindToLifecycle())
       .subscribe(__ -> koala.trackCheckoutFinishJumpToProject());
   }
 
   /**
+   * Given a project, returns an observable that emits the project's root category.
+   */
+  private @NonNull Observable<Category> rootCategory(final @NonNull Project project) {
+    final Category category = project.category();
+
+    if (category == null) {
+      return Observable.empty();
+    }
+
+    if (category.parent() != null) {
+      return Observable.just(category.parent());
+    }
+
+    return apiClient.fetchCategory(String.valueOf(category.rootId()))
+      .compose(Transformers.neverError());
+  }
+
+  /**
    * Returns a shuffled list of 3 recommended projects, with fallbacks to similar and staff picked projects
    * for users with fewer than 3 recommendations.
    */
-  public Observable<List<Project>> moreProjects(final @NonNull Project project) {
+  private @NonNull Observable<List<Project>> relatedProjects(final @NonNull Project project) {
     final DiscoveryParams recommendedParams = DiscoveryParams.builder()
       .backed(-1)
       .recommended(true)

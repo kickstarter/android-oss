@@ -41,10 +41,10 @@ public final class KSWebViewClient extends WebViewClient {
   public interface Delegate {
     void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url);
     void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, final @Nullable String url);
+    void webViewPageIntercepted(final @NonNull KSWebViewClient webViewClient, final @NonNull String url);
   }
 
   private boolean initialPageLoad = true;
-  private String lastUrl;
   private final OkHttpClient client;
   private final String webEndpoint;
   private final List<RequestHandler> requestHandlers = new ArrayList<>();
@@ -71,14 +71,6 @@ public final class KSWebViewClient extends WebViewClient {
 
   public @Nullable Delegate delegate() {
     return delegate;
-  }
-
-  /**
-   * Returns the last Kickstarter Url String handled by the client. If a request is redirected, this would return the
-   * redirect Url.
-   */
-  public String lastKickstarterUrl() {
-    return lastUrl;
   }
 
   @Override
@@ -122,7 +114,7 @@ public final class KSWebViewClient extends WebViewClient {
       final InputStream body = constructBody(view.getContext(), response, mimeHeaders);
 
       if (mimeHeaders.type != null && mimeHeaders.type.equals("text/html")) {
-        lastUrl = response.request().urlString();
+        webViewPageIntercepted(response.request().urlString());
       }
 
       return new WebResourceResponse(mimeHeaders.type, mimeHeaders.encoding, body);
@@ -247,6 +239,15 @@ public final class KSWebViewClient extends WebViewClient {
     }
 
     return false;
+  }
+
+  /**
+   * Calls the delegate when a new page has been intercepted by the client.
+   */
+  private void webViewPageIntercepted(final @NonNull String url) {
+    if (delegate != null) {
+      delegate.webViewPageIntercepted(this, url);
+    }
   }
 
   public class MimeHeaders {

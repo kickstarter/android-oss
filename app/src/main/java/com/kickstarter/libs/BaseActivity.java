@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.BundleUtils;
+import com.kickstarter.ui.data.ActivityResult;
 import com.trello.rxlifecycle.ActivityEvent;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.trello.rxlifecycle.components.ActivityLifecycleProvider;
@@ -63,6 +64,16 @@ public class BaseActivity<ViewModelType extends ViewModel> extends AppCompatActi
     return RxLifecycle.bindActivity(lifecycle);
   }
 
+  /**
+   * Sends activity result data to the view model.
+   */
+  @CallSuper
+  @Override
+  protected void onActivityResult(final int requestCode, final int resultCode, final @Nullable Intent intent) {
+    super.onActivityResult(requestCode, resultCode, intent);
+    viewModel.activityResult(ActivityResult.create(requestCode, resultCode, intent));
+  }
+
   @CallSuper
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -71,6 +82,18 @@ public class BaseActivity<ViewModelType extends ViewModel> extends AppCompatActi
 
     lifecycle.onNext(ActivityEvent.CREATE);
     fetchViewModel(savedInstanceState);
+
+    viewModel.intent(getIntent());
+  }
+
+  /**
+   * Called when an activity is set to `singleTop` and it is relaunched while at the top of the activity stack.
+   */
+  @CallSuper
+  @Override
+  protected void onNewIntent(final Intent intent) {
+    super.onNewIntent(intent);
+    viewModel.intent(intent);
   }
 
   @CallSuper

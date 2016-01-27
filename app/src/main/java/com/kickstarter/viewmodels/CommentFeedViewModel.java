@@ -10,13 +10,14 @@ import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Comment;
-import com.kickstarter.models.Empty;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.CommentFeedActivity;
 import com.kickstarter.viewmodels.errors.CommentFeedViewModelErrors;
 import com.kickstarter.viewmodels.inputs.CommentFeedViewModelInputs;
@@ -31,18 +32,20 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
-import rx.subjects.ReplaySubject;
 
 public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> implements CommentFeedViewModelInputs, CommentFeedViewModelOutputs, CommentFeedViewModelErrors {
   // INPUTS
-  private final ReplaySubject<Project> initialProject = ReplaySubject.createWithSize(1);
-  public void initialProject(final @NonNull Project project) { initialProject.onNext(project); }
   private final PublishSubject<String> commentBody = PublishSubject.create();
   private final PublishSubject<Void> nextPage = PublishSubject.create();
   public void nextPage() { nextPage.onNext(null); }
-  private final BehaviorSubject<Empty> refresh = BehaviorSubject.create(Empty.get());
+  private final BehaviorSubject<Void> refresh = BehaviorSubject.create((Void)null);
   public void refresh() {
-    refresh.onNext(Empty.get());
+    refresh.onNext(null);
+  }
+  private final PublishSubject<Void> commentButtonClicked = PublishSubject.create();
+  @Override
+  public void commentButtonClicked() {
+    commentButtonClicked.onNext(null);
   }
 
   // OUTPUTS
@@ -50,8 +53,8 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   public Observable<Void> commentPosted() { return commentPosted.asObservable(); }
   private final PublishSubject<Boolean> isFetchingComments = PublishSubject.create();
   public final Observable<Boolean> isFetchingComments() { return isFetchingComments; }
-  private final PublishSubject<Void> showCommentDialog = PublishSubject.create();
-  public Observable<Void> showCommentDialog() { return showCommentDialog; }
+  private final PublishSubject<Project> showCommentDialog = PublishSubject.create();
+  public Observable<Project> showCommentDialog() { return showCommentDialog; }
   private final BehaviorSubject<Boolean> showCommentButton = BehaviorSubject.create();
   public Observable<Boolean> showCommentButton() { return showCommentButton; }
 
@@ -83,6 +86,11 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
+    final Observable<Project> initialProject = intent
+      .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
+      .ofType(Project.class)
+      .filter(ObjectUtils::isNotNull);
+
     final Observable<Project> project = initialProject
       .compose(Transformers.takeWhen(loginSuccess))
       .flatMap(p -> client.fetchProject(p).compose(Transformers.neverError()))
@@ -92,7 +100,7 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
     final ApiPaginator<Comment, CommentsEnvelope, Void> paginator =
       ApiPaginator.<Comment, CommentsEnvelope, Void>builder()
         .nextPage(nextPage)
-        .startOverWith(refresh.compose(Transformers.ignoreValues()))
+        .startOverWith(refresh)
         .envelopeToListOfData(CommentsEnvelope::comments)
         .envelopeToMoreUrl(env -> env.urls().api().moreComments())
         .loadWithParams(__ -> initialProject.take(1).flatMap(client::fetchProjectComments))
@@ -113,18 +121,23 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .compose(Transformers.takeWhen(loginSuccess))
       .filter(Project::isBacking)
       .take(1)
-      .compose(Transformers.ignoreValues())
+      .compose(bindToLifecycle())
+      .subscribe(showCommentDialog);
+
+    project
+      .compose(Transformers.takeWhen(commentButtonClicked))
+      .filter(Project::isBacking)
       .compose(bindToLifecycle())
       .subscribe(showCommentDialog);
 
     Observable.combineLatest(
-      currentUser.observable(),
-      view,
-      comments,
-      project,
-      Arrays::asList)
-      .compose(bindToLifecycle())
+        currentUser.observable(),
+        view,
+        comments,
+        project,
+        Arrays::asList)
       .observeOn(AndroidSchedulers.mainThread())
+      .compose(bindToLifecycle())
       .subscribe(uvcp -> {
         final User u = (User) uvcp.get(0);
         final CommentFeedActivity view = (CommentFeedActivity) uvcp.get(1);
@@ -142,12 +155,12 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
     postedComment
       .compose(Transformers.ignoreValues())
       .compose(bindToLifecycle())
-      .subscribe(__ -> refresh.onNext(Empty.get()));
+      .subscribe(__ -> refresh.onNext(null));
 
     view
       .compose(Transformers.combineLatestPair(commentHasBody))
-      .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
+      .compose(bindToLifecycle())
       .subscribe(ve -> ve.first.enablePostButton(ve.second));
 
     view
@@ -160,10 +173,11 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .compose(Transformers.takePairWhen(postedComment))
       .compose(bindToLifecycle())
       .subscribe(cp -> koala.trackProjectCommentCreate(cp.first, cp.second));
-    initialProject
-      .take(1)
+
+    initialProject.take(1)
       .compose(bindToLifecycle())
       .subscribe(koala::trackProjectCommentsView);
+
     initialProject
       .compose(Transformers.takeWhen(nextPage.skip(1)))
       .compose(bindToLifecycle())
@@ -176,7 +190,7 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
     project
       .take(1)
       .compose(bindToLifecycle())
-      .subscribe(__ -> refresh.onNext(Empty.get()));
+      .subscribe(__ -> refresh.onNext(null));
   }
 
   private Observable<Comment> postComment(final @NonNull Project project, final @NonNull String body) {

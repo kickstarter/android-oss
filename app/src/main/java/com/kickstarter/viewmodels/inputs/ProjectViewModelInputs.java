@@ -9,7 +9,6 @@ import com.kickstarter.models.Reward;
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 
 public interface ProjectViewModelInputs {
-  void initializer(final @NonNull Project project);
   void backProjectClicked();
   void shareClicked();
   void blurbClicked();
@@ -22,14 +21,4 @@ public interface ProjectViewModelInputs {
   void starClicked();
   void rewardClicked(final @NonNull Reward reward);
   void loginSuccess();
-
-  /**
-   * Call with the un-parceled ref tag from the activity. Pass `null` if there is no parceled ref tag.
-   */
-  void intentRefTag(final @Nullable RefTag refTag);
-
-  /**
-   * Call when a push notification envelope is unparceled from the intent.
-   */
-  void takePushNotificationEnvelope(final @Nullable PushNotificationEnvelope envelope);
 }

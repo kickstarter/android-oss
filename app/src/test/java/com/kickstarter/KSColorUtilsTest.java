@@ -6,6 +6,14 @@ import org.junit.Test;
 
 public class KSColorUtilsTest extends KSRobolectricTestCase {
   @Test
+  public void testSetAlpha() {
+    assertEquals(0x00FFFFFF, KSColorUtils.setAlpha(0xFFFFFFFF, 0));
+    assertEquals(0xFFFFFFFF, KSColorUtils.setAlpha(0x00FFFFFF, 255));
+    assertEquals(0x0ACCCCCC, KSColorUtils.setAlpha(0xCCCCCC, 10));
+    assertEquals(0x0ACCCCCC, KSColorUtils.setAlpha(0xFFCCCCCC, 10));
+  }
+
+  @Test
   public void testDarken() {
     assertEquals(0xFF1DB75B, KSColorUtils.darken(0xFF2BDE73, 0.2f));
   }

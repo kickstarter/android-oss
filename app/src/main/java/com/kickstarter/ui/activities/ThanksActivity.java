@@ -99,6 +99,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   @OnClick(R.id.close_button)
   protected void closeButtonClick() {
     final Intent intent = new Intent(this, DiscoveryActivity.class)
+      .setAction(Intent.ACTION_MAIN)
       .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
     startActivity(intent);
   }

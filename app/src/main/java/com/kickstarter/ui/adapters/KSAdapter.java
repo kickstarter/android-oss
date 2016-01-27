@@ -60,7 +60,11 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
   public void onViewDetachedFromWindow(final @NonNull KSViewHolder holder) {
     super.onViewDetachedFromWindow(holder);
 
-    holder.lifecycleEvent(ActivityEvent.PAUSE);
+    // View holders are "stopped" when they are detached from the window for recycling
+    holder.lifecycleEvent(ActivityEvent.STOP);
+
+    // View holders are "destroy" when they are detached from the window and no adapter is listening
+    // to events, so ostensibly the view holder is being deallocated.
     if (!hasObservers()) {
       holder.lifecycleEvent(ActivityEvent.DESTROY);
     }
@@ -70,15 +74,18 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
   public void onViewAttachedToWindow(final @NonNull KSViewHolder holder) {
     super.onViewAttachedToWindow(holder);
 
-    holder.lifecycleEvent(ActivityEvent.RESUME);
+    // View holders are "started" when they are attached to the new window because this means
+    // it has been recycled.
+    holder.lifecycleEvent(ActivityEvent.START);
   }
 
   @Override
   public final @NonNull KSViewHolder onCreateViewHolder(final @NonNull ViewGroup viewGroup, final @LayoutRes int layout) {
     final View view = inflateView(viewGroup, layout);
     final KSViewHolder viewHolder = viewHolder(layout, view);
+
     viewHolder.lifecycleEvent(ActivityEvent.CREATE);
-    viewHolder.lifecycleEvent(ActivityEvent.START);
+
     return viewHolder;
   }
 

@@ -50,23 +50,20 @@ public class ProjectNotificationViewModel extends ViewModel<ProjectNotificationV
   public ProjectNotificationViewModel(final @NonNull Notification notification, final @NonNull ApiClientType client) {
     notificationInput = BehaviorSubject.create(notification);
 
-    addSubscription(
-      notificationInput
-        .compose(Transformers.takePairWhen(checked))
-        .switchMap(nc -> updateNotification(client, nc.first, nc.second))
-        .subscribe(this::success)
-    );
+    notificationInput
+      .compose(Transformers.takePairWhen(checked))
+      .switchMap(nc -> updateNotification(client, nc.first, nc.second))
+      .compose(bindToLifecycle())
+      .subscribe(this::success);
 
-    addSubscription(
-      notificationInput
-        .subscribe(this.notificationOutput)
-    );
+    notificationInput
+      .compose(bindToLifecycle())
+      .subscribe(this.notificationOutput);
 
-    addSubscription(
-      this.notificationOutput
-        .compose(Transformers.takeWhen(unableToSavePreferenceError))
-        .subscribe(this.notificationOutput::onNext)
-    );
+    this.notificationOutput
+      .compose(Transformers.takeWhen(unableToSavePreferenceError))
+      .compose(bindToLifecycle())
+      .subscribe(this.notificationOutput::onNext);
   }
 
   private void success(final @NonNull Notification notification) {

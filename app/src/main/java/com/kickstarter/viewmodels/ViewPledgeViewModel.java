@@ -51,11 +51,11 @@ public final class ViewPledgeViewModel extends ViewModel<ViewPledgeActivity> imp
       .compose(Transformers.takePairWhen(backing))
       .share();
 
-    addSubscription(viewAndBacking
-        .compose(Transformers.takeWhen(backing))
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(vb -> vb.first.show(vb.second))
-    );
+    viewAndBacking
+      .compose(Transformers.takeWhen(backing))
+      .observeOn(AndroidSchedulers.mainThread())
+      .compose(bindToLifecycle())
+      .subscribe(vb -> vb.first.show(vb.second));
   }
 
   public void initialize(final @NonNull Project project) {

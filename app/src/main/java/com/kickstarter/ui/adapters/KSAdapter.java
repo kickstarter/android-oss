@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.kickstarter.BuildConfig;
 import com.kickstarter.libs.utils.ExceptionUtils;
 import com.kickstarter.ui.viewholders.KSViewHolder;
+import com.trello.rxlifecycle.ActivityEvent;
 
 import net.hockeyapp.android.ExceptionHandler;
 
@@ -45,7 +46,6 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
     sections.add(location, new ArrayList<>(section));
   }
 
-
   /**
    * Fetch the layout id associated with a sectionRow.
    */
@@ -57,9 +57,36 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
   protected abstract @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view);
 
   @Override
+  public void onViewDetachedFromWindow(final @NonNull KSViewHolder holder) {
+    super.onViewDetachedFromWindow(holder);
+
+    // View holders are "stopped" when they are detached from the window for recycling
+    holder.lifecycleEvent(ActivityEvent.STOP);
+
+    // View holders are "destroy" when they are detached from the window and no adapter is listening
+    // to events, so ostensibly the view holder is being deallocated.
+    if (!hasObservers()) {
+      holder.lifecycleEvent(ActivityEvent.DESTROY);
+    }
+  }
+
+  @Override
+  public void onViewAttachedToWindow(final @NonNull KSViewHolder holder) {
+    super.onViewAttachedToWindow(holder);
+
+    // View holders are "started" when they are attached to the new window because this means
+    // it has been recycled.
+    holder.lifecycleEvent(ActivityEvent.START);
+  }
+
+  @Override
   public final @NonNull KSViewHolder onCreateViewHolder(final @NonNull ViewGroup viewGroup, final @LayoutRes int layout) {
     final View view = inflateView(viewGroup, layout);
-    return viewHolder(layout, view);
+    final KSViewHolder viewHolder = viewHolder(layout, view);
+
+    viewHolder.lifecycleEvent(ActivityEvent.CREATE);
+
+    return viewHolder;
   }
 
   @Override

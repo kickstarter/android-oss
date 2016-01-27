@@ -32,11 +32,10 @@ public final class WebViewViewModel extends ViewModel<WebViewActivity> implement
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    addSubscription(
-      pushNotificationEnvelope
-        .filter(ObjectUtils::isNotNull)
-        .take(1)
-        .subscribe(koala::trackPushNotification)
-    );
+    pushNotificationEnvelope
+      .filter(ObjectUtils::isNotNull)
+      .take(1)
+      .compose(bindToLifecycle())
+      .subscribe(koala::trackPushNotification);
   }
 }

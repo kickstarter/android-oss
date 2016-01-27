@@ -117,34 +117,43 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
       }
     });
 
-    addSubscription(activityResult
-      .subscribe(r -> callbackManager.onActivityResult(r.requestCode, r.resultCode, r.intent))
-    );
+    activityResult
+      .compose(bindToLifecycle())
+      .subscribe(r -> callbackManager.onActivityResult(r.requestCode, r.resultCode, r.intent));
 
-    addSubscription(facebookAccessToken
+    facebookAccessToken
       .switchMap(this::loginWithFacebookAccessToken)
-      .subscribe(this::facebookLoginSuccess)
-    );
+      .compose(bindToLifecycle())
+      .subscribe(this::facebookLoginSuccess);
 
-    addSubscription(facebookAuthorizationError
-      .subscribe(this::clearFacebookSession)
-    );
+    facebookAuthorizationError
+      .compose(bindToLifecycle())
+      .subscribe(this::clearFacebookSession);
   }
 
   @Override
   protected void onCreate(final @NonNull Context context, @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
-    addSubscription(reason.take(1).subscribe(koala::trackLoginRegisterTout));
 
-    addSubscription(loginError.subscribe(__ -> koala.trackLoginError()));
+    reason
+      .take(1)
+      .compose(bindToLifecycle())
+      .subscribe(koala::trackLoginRegisterTout);
 
-    addSubscription(facebookLoginSuccess.subscribe(__ -> koala.trackFacebookLoginSuccess()));
+    loginError
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackLoginError());
 
-    addSubscription(missingFacebookEmailError()
+    facebookLoginSuccess
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackFacebookLoginSuccess());
+
+    missingFacebookEmailError()
       .mergeWith(facebookInvalidAccessTokenError())
       .mergeWith(facebookAuthorizationError())
-      .subscribe(__ -> koala.trackFacebookLoginError()));
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackFacebookLoginError());
   }
 
   @Override

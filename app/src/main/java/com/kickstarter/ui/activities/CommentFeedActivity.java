@@ -102,6 +102,7 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
   protected void onDestroy() {
     super.onDestroy();
     recyclerViewPaginator.stop();
+    recyclerView.setAdapter(null);
   }
 
   public void show(final @NonNull Project project, final @NonNull List<Comment> comments,

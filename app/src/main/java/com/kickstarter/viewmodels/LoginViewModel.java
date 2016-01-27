@@ -90,26 +90,25 @@ public final class LoginViewModel extends ViewModel<LoginActivity> implements Lo
     final Observable<Boolean> isValid = emailAndPassword
       .map(ep -> LoginViewModel.isValid(ep.first, ep.second));
 
-    addSubscription(view
-        .compose(Transformers.combineLatestPair(isValid))
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(viewAndValid -> viewAndValid.first.setFormEnabled(viewAndValid.second))
-    );
+    view
+      .compose(Transformers.combineLatestPair(isValid))
+      .observeOn(AndroidSchedulers.mainThread())
+      .compose(bindToLifecycle())
+      .subscribe(viewAndValid -> viewAndValid.first.setFormEnabled(viewAndValid.second));
 
-    addSubscription(emailAndPassword
-        .compose(Transformers.takeWhen(loginClick))
-        .switchMap(ep -> submit(ep.first, ep.second))
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this::success)
-    );
+    emailAndPassword
+      .compose(Transformers.takeWhen(loginClick))
+      .switchMap(ep -> submit(ep.first, ep.second))
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::success);
 
-    addSubscription(loginSuccess.subscribe(__ -> koala.trackLoginSuccess()));
+    loginSuccess
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackLoginSuccess());
 
-    addSubscription(invalidLoginError().mergeWith(genericLoginError())
-        .subscribe(__ -> {
-          koala.trackLoginError();
-        })
-    );
+    invalidLoginError().mergeWith(genericLoginError())
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackLoginError());
   }
 
   private static boolean isValid(final @NonNull String email, final @NonNull String password) {

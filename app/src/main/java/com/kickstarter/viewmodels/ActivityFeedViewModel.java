@@ -93,73 +93,86 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
       .loadWithPaginationPath(client::fetchActivitiesWithPaginationPath)
       .build();
 
-    addSubscription(paginator.paginatedData.subscribe(activities));
-    addSubscription(paginator.isFetching.subscribe(isFetchingActivities));
+    paginator.paginatedData
+      .compose(bindToLifecycle())
+      .subscribe(activities);
 
-    addSubscription(currentUser.loggedInUser()
-        .take(1)
-        .subscribe(__ -> refresh())
-    );
+    paginator.isFetching
+      .compose(bindToLifecycle())
+      .subscribe(isFetchingActivities);
 
-    addSubscription(activities
+    currentUser.loggedInUser()
+      .take(1)
+      .compose(bindToLifecycle())
+      .subscribe(__ -> refresh());
+
+    currentUser.isLoggedIn()
+      .compose(bindToLifecycle())
+      .subscribe(showLoggedOutEmptyState);
+
+    activities
       .filter(List::isEmpty)
       .switchMap(__ -> currentUser.loggedInUser())
-      .subscribe(userForLoggedInEmptyState::onNext)
-    );
+      .compose(bindToLifecycle())
+      .subscribe(userForLoggedInEmptyState::onNext);
 
-    addSubscription(currentUser.isLoggedIn().subscribe(showLoggedOutEmptyState));
-
-    addSubscription(view
+    view
       .compose(Transformers.takeWhen(discoverProjectsClick))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(ActivityFeedActivity::discoverProjectsButtonOnClick));
+      .compose(bindToLifecycle())
+      .subscribe(ActivityFeedActivity::discoverProjectsButtonOnClick);
 
-    addSubscription(view
+    view
       .compose(Transformers.takePairWhen(friendBackingClick))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.startProjectActivity(vp.second.project())));
+      .compose(bindToLifecycle())
+      .subscribe(vp -> vp.first.startProjectActivity(vp.second.project()));
 
-    addSubscription(view
+    view
       .compose(Transformers.takeWhen(loginClick))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(ActivityFeedActivity::activityFeedLogin));
+      .compose(bindToLifecycle())
+      .subscribe(ActivityFeedActivity::activityFeedLogin);
 
-    addSubscription(view
+    view
       .compose(Transformers.takePairWhen(projectStateChangedClick))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.startProjectActivity(vp.second.project())));
+      .compose(bindToLifecycle())
+      .subscribe(vp -> vp.first.startProjectActivity(vp.second.project()));
 
-    addSubscription(view
+    view
       .compose(Transformers.takePairWhen(projectStateChangedPositiveClick))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.startProjectActivity(vp.second.project())));
+      .compose(bindToLifecycle())
+      .subscribe(vp -> vp.first.startProjectActivity(vp.second.project()));
 
-    addSubscription(view
+    view
       .compose(Transformers.takePairWhen(projectUpdateProjectClick))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.startProjectActivity(vp.second.project())));
+      .compose(bindToLifecycle())
+      .subscribe(vp -> vp.first.startProjectActivity(vp.second.project()));
 
-    addSubscription(view
+    view
       .compose(Transformers.takePairWhen(projectUpdateUpdateClick))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.showProjectUpdate(vp.second)));
+      .compose(bindToLifecycle())
+      .subscribe(vp -> vp.first.showProjectUpdate(vp.second));
 
     // Track viewing and paginating activity.
-    addSubscription(nextPage
-        .compose(Transformers.incrementalCount())
-        .subscribe(koala::trackActivityView)
-    );
+    nextPage
+      .compose(Transformers.incrementalCount())
+      .compose(bindToLifecycle())
+      .subscribe(koala::trackActivityView);
 
     // Track tapping on any of the activity items.
-    addSubscription(
-      Observable.merge(
-        friendBackingClick,
-        projectStateChangedPositiveClick,
-        projectStateChangedClick,
-        projectUpdateProjectClick,
-        projectUpdateUpdateClick
-      ).subscribe(koala::trackActivityTapped)
-    );
+    Observable.merge(
+      friendBackingClick,
+      projectStateChangedPositiveClick,
+      projectStateChangedClick,
+      projectUpdateProjectClick,
+      projectUpdateUpdateClick)
+      .compose(bindToLifecycle())
+      .subscribe(koala::trackActivityTapped);
   }
 
   public void emptyActivityFeedDiscoverProjectsClicked(final @NonNull EmptyActivityFeedViewHolder viewHolder) {

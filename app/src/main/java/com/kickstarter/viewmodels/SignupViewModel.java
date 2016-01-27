@@ -108,21 +108,21 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
       fullName, email, password, sendNewslettersIsChecked,
       SignupData::new);
 
-    addSubscription(
-      sendNewslettersClick.subscribe(sendNewslettersIsChecked::onNext)
-    );
 
-    addSubscription(signupData
-        .map(SignupData::isValid)
-        .subscribe(formIsValid)
-    );
+    sendNewslettersClick
+      .compose(bindToLifecycle())
+      .subscribe(sendNewslettersIsChecked::onNext);
 
-    addSubscription(
-      signupData
-        .compose(Transformers.takeWhen(signupClick))
-        .flatMap(this::submit)
-        .subscribe(this::success)
-    );
+    signupData
+      .map(SignupData::isValid)
+      .compose(bindToLifecycle())
+      .subscribe(formIsValid);
+
+    signupData
+      .compose(Transformers.takeWhen(signupClick))
+      .flatMap(this::submit)
+      .compose(bindToLifecycle())
+      .subscribe(this::success);
   }
 
   @Override
@@ -133,16 +133,24 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
     currentConfig.observable()
       .take(1)
       .map(config -> I18nUtils.isCountryUS(config.countryCode()))
+      .compose(bindToLifecycle())
       .subscribe(sendNewslettersIsChecked::onNext);
 
-    addSubscription(signupError.subscribe(__ -> koala.trackRegisterError()));
-    addSubscription(sendNewslettersClick.subscribe(koala::trackSignupNewsletterToggle));
-    addSubscription(signupSuccess
-        .subscribe(__ -> {
-          koala.trackLoginSuccess();
-          koala.trackRegisterSuccess();
-        })
-    );
+    signupError
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackRegisterError());
+
+    sendNewslettersClick
+      .compose(bindToLifecycle())
+      .subscribe(koala::trackSignupNewsletterToggle);
+
+    signupSuccess
+      .compose(bindToLifecycle())
+      .subscribe(__ -> {
+        koala.trackLoginSuccess();
+        koala.trackRegisterSuccess();
+      });
+
     koala.trackRegisterFormView();
   }
 

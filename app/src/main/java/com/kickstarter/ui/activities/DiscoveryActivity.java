@@ -158,6 +158,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
   protected void onDestroy() {
     super.onDestroy();
     recyclerViewPaginator.stop();
+    recyclerView.setAdapter(null);
   }
 
   public @NonNull DrawerLayout discoveryLayout() {

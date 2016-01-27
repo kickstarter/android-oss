@@ -12,6 +12,7 @@ import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
@@ -32,6 +33,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
+import timber.log.Timber;
 
 public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity> implements ActivityFeedAdapter.Delegate,
   ActivityFeedViewModelInputs, ActivityFeedViewModelOutputs {
@@ -64,6 +66,10 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
   public final Observable<Boolean> showLoggedOutEmptyState() {
     return showLoggedOutEmptyState;
   }
+  private final BehaviorSubject<User> userForLoggedInEmptyState = BehaviorSubject.create();
+  public final Observable<User> userForLoggedInEmptyState() {
+    return userForLoggedInEmptyState;
+  }
   private final PublishSubject<Boolean> isFetchingActivities = PublishSubject.create();
   public final Observable<Boolean> isFetchingActivities() {
     return isFetchingActivities;
@@ -75,7 +81,7 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
   public final ActivityFeedViewModelOutputs outputs = this;
 
   @Override
-  protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
@@ -88,98 +94,117 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
       .loadWithPaginationPath(client::fetchActivitiesWithPaginationPath)
       .build();
 
-    addSubscription(paginator.paginatedData.subscribe(activities));
-    addSubscription(paginator.isFetching.subscribe(isFetchingActivities));
+    paginator.paginatedData
+      .compose(bindToLifecycle())
+      .subscribe(activities);
 
-    addSubscription(currentUser.loggedInUser()
-        .take(1)
-        .subscribe(__ -> refresh())
-    );
+    paginator.isFetching
+      .compose(bindToLifecycle())
+      .subscribe(isFetchingActivities);
 
-    addSubscription(currentUser.isLoggedIn().subscribe(showLoggedOutEmptyState));
+    currentUser.loggedInUser()
+      .take(1)
+      .compose(bindToLifecycle())
+      .subscribe(__ -> refresh());
 
-    addSubscription(view
+    currentUser.isLoggedIn()
+      .compose(bindToLifecycle())
+      .subscribe(showLoggedOutEmptyState);
+
+    activities
+      .filter(List::isEmpty)
+      .switchMap(__ -> currentUser.loggedInUser())
+      .compose(bindToLifecycle())
+      .subscribe(userForLoggedInEmptyState::onNext);
+
+    view
       .compose(Transformers.takeWhen(discoverProjectsClick))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(ActivityFeedActivity::discoverProjectsButtonOnClick));
+      .compose(bindToLifecycle())
+      .subscribe(ActivityFeedActivity::discoverProjectsButtonOnClick);
 
-    addSubscription(view
+    view
       .compose(Transformers.takePairWhen(friendBackingClick))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.startProjectActivity(vp.second.project())));
+      .compose(bindToLifecycle())
+      .subscribe(vp -> vp.first.startProjectActivity(vp.second.project()));
 
-    addSubscription(view
+    view
       .compose(Transformers.takeWhen(loginClick))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(ActivityFeedActivity::activityFeedLogin));
+      .compose(bindToLifecycle())
+      .subscribe(ActivityFeedActivity::activityFeedLogin);
 
-    addSubscription(view
+    view
       .compose(Transformers.takePairWhen(projectStateChangedClick))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.startProjectActivity(vp.second.project())));
+      .compose(bindToLifecycle())
+      .subscribe(vp -> vp.first.startProjectActivity(vp.second.project()));
 
-    addSubscription(view
+    view
       .compose(Transformers.takePairWhen(projectStateChangedPositiveClick))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.startProjectActivity(vp.second.project())));
+      .compose(bindToLifecycle())
+      .subscribe(vp -> vp.first.startProjectActivity(vp.second.project()));
 
-    addSubscription(view
+    view
       .compose(Transformers.takePairWhen(projectUpdateProjectClick))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.startProjectActivity(vp.second.project())));
+      .compose(bindToLifecycle())
+      .subscribe(vp -> vp.first.startProjectActivity(vp.second.project()));
 
-    addSubscription(view
+    view
       .compose(Transformers.takePairWhen(projectUpdateUpdateClick))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.showProjectUpdate(vp.second)));
+      .compose(bindToLifecycle())
+      .subscribe(vp -> vp.first.showProjectUpdate(vp.second));
 
     // Track viewing and paginating activity.
-    addSubscription(nextPage
-        .compose(Transformers.incrementalCount())
-        .subscribe(koala::trackActivityView)
-    );
+    nextPage
+      .compose(Transformers.incrementalCount())
+      .compose(bindToLifecycle())
+      .subscribe(koala::trackActivityView);
 
     // Track tapping on any of the activity items.
-    addSubscription(
-      Observable.merge(
-        friendBackingClick,
-        projectStateChangedPositiveClick,
-        projectStateChangedClick,
-        projectUpdateProjectClick,
-        projectUpdateUpdateClick
-      ).subscribe(koala::trackActivityTapped)
-    );
+    Observable.merge(
+      friendBackingClick,
+      projectStateChangedPositiveClick,
+      projectStateChangedClick,
+      projectUpdateProjectClick,
+      projectUpdateUpdateClick)
+      .compose(bindToLifecycle())
+      .subscribe(koala::trackActivityTapped);
   }
 
-  public void emptyActivityFeedDiscoverProjectsClicked(@NonNull final EmptyActivityFeedViewHolder viewHolder) {
+  public void emptyActivityFeedDiscoverProjectsClicked(final @NonNull EmptyActivityFeedViewHolder viewHolder) {
     discoverProjectsClick.onNext(null);
   }
 
-  public void emptyActivityFeedLoginClicked(@NonNull final EmptyActivityFeedViewHolder viewHolder) {
+  public void emptyActivityFeedLoginClicked(final @NonNull EmptyActivityFeedViewHolder viewHolder) {
     loginClick.onNext(null);
   }
 
-  public void friendBackingClicked(@NonNull final FriendBackingViewHolder viewHolder, @NonNull final Activity activity) {
+  public void friendBackingClicked(final @NonNull FriendBackingViewHolder viewHolder, final @NonNull Activity activity) {
     friendBackingClick.onNext(activity);
   }
 
-  public void projectStateChangedClicked(@NonNull final ProjectStateChangedViewHolder viewHolder,
-    @NonNull final Activity activity) {
+  public void projectStateChangedClicked(final @NonNull ProjectStateChangedViewHolder viewHolder,
+    final @NonNull Activity activity) {
     projectStateChangedClick.onNext(activity);
   }
 
-  public void projectStateChangedPositiveClicked(@NonNull final ProjectStateChangedPositiveViewHolder viewHolder,
-    @NonNull final Activity activity) {
+  public void projectStateChangedPositiveClicked(final @NonNull ProjectStateChangedPositiveViewHolder viewHolder,
+    final @NonNull Activity activity) {
     projectStateChangedPositiveClick.onNext(activity);
   }
 
-  public void projectUpdateProjectClicked(@NonNull final ProjectUpdateViewHolder viewHolder,
-    @NonNull final Activity activity) {
+  public void projectUpdateProjectClicked(final @NonNull ProjectUpdateViewHolder viewHolder,
+    final @NonNull Activity activity) {
     projectUpdateProjectClick.onNext(activity);
   }
 
-  public void projectUpdateClicked(@NonNull final ProjectUpdateViewHolder viewHolder,
-    @NonNull final Activity activity) {
+  public void projectUpdateClicked(final @NonNull ProjectUpdateViewHolder viewHolder,
+    final @NonNull Activity activity) {
     projectUpdateUpdateClick.onNext(activity);
   }
 }

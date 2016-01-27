@@ -35,6 +35,7 @@
 
       <com.kickstarter.ui.views.IconButton
         android:id="@+id/play_button_overlay"
+        android:background="@drawable/video_button_background"
         android:contentDescription="@string/accessibility_projects_buttons_play_video"
         android:focusable="true"
         android:visibility="visible"
@@ -43,8 +44,9 @@
         android:layout_marginEnd="@dimen/grid_3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/project_play_button_size"
-        android:text="@string/play_circle_outline_icon"
+        android:padding="14dp"
+        android:textSize="@dimen/grid_5"
+        android:text="@string/play_arrow"
         android:textColor="@color/white" />
 
       <RelativeLayout
@@ -56,7 +58,7 @@
 
         <TextView
           android:id="@+id/project_name"
-          android:text="Secret Hitler"
+          android:text="Secret Bunnies"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:maxLines="2"
@@ -67,7 +69,7 @@
         <TextView
           android:id="@+id/creator_name"
           android:layout_below="@id/project_name"
-          android:text="by Max Temkin"
+          android:text="by Beatrix Potter"
           android:focusable="true"
           android:singleLine="true"
           android:layout_width="wrap_content"

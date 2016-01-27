@@ -25,12 +25,12 @@ import rx.Subscriber;
 public final class ApiErrorOperator<T> implements Observable.Operator<T, retrofit.Response<T>> {
   private final Gson gson;
 
-  public ApiErrorOperator(@NonNull final Gson gson) {
+  public ApiErrorOperator(final @NonNull Gson gson) {
     this.gson = gson;
   }
 
   @Override
-  public Subscriber<? super Response<T>> call(@NonNull final Subscriber<? super T> subscriber) {
+  public Subscriber<? super Response<T>> call(final @NonNull Subscriber<? super T> subscriber) {
     return new Subscriber<retrofit.Response<T>>() {
       @Override
       public void onCompleted() {
@@ -40,14 +40,14 @@ public final class ApiErrorOperator<T> implements Observable.Operator<T, retrofi
       }
 
       @Override
-      public void onError(@NonNull final Throwable e) {
+      public void onError(final @NonNull Throwable e) {
         if (!subscriber.isUnsubscribed()) {
           subscriber.onError(e);
         }
       }
 
       @Override
-      public void onNext(@NonNull final retrofit.Response<T> response) {
+      public void onNext(final @NonNull retrofit.Response<T> response) {
         if (subscriber.isUnsubscribed()) {
           return;
         }
@@ -56,7 +56,7 @@ public final class ApiErrorOperator<T> implements Observable.Operator<T, retrofi
           try {
             final ErrorEnvelope envelope = gson.fromJson(response.errorBody().string(), ErrorEnvelope.class);
             subscriber.onError(new ApiException(envelope, response));
-          } catch (@NonNull final IOException e) {
+          } catch (final @NonNull IOException e) {
             subscriber.onError(new ResponseException(response));
           }
         }

@@ -25,11 +25,11 @@ public final class CommentFeedAdapter extends KSAdapter {
 
   public interface Delegate extends ProjectContextViewHolder.Delegate, EmptyCommentFeedViewHolder.Delegate {}
 
-  public CommentFeedAdapter(@NonNull final Delegate delegate) {
+  public CommentFeedAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;
   }
 
-  protected @LayoutRes int layout(@NonNull final SectionRow sectionRow) {
+  protected @LayoutRes int layout(final @NonNull SectionRow sectionRow) {
     if (sectionRow.section() == 0) {
       return R.layout.project_context_view;
     } else if (sectionRow.section() == 1){
@@ -39,8 +39,8 @@ public final class CommentFeedAdapter extends KSAdapter {
     }
   }
 
-  public void takeProjectComments(@NonNull final Project project, @NonNull final List<Comment> comments,
-    @Nullable final User user) {
+  public void takeProjectComments(final @NonNull Project project, final @NonNull List<Comment> comments,
+    final @Nullable User user) {
     sections().clear();
 
     sections().add(Collections.singletonList(project));
@@ -58,7 +58,7 @@ public final class CommentFeedAdapter extends KSAdapter {
     notifyDataSetChanged();
   }
 
-  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, @NonNull final View view) {
+  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     if (layout == R.layout.project_context_view) {
       return new ProjectContextViewHolder(view, delegate);
     } else if (layout == R.layout.empty_comment_feed_layout) {

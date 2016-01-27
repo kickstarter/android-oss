@@ -16,9 +16,12 @@
 
   <TextView
     style="@style/EditorialSubhead"
+    android:gravity="center_horizontal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/grid_1"
+    android:paddingLeft="@dimen/grid_4"
+    android:paddingRight="@dimen/grid_4"
     android:text="@string/discovery_onboarding_title_bring_creative_projects_to_life" />
 
   <Button

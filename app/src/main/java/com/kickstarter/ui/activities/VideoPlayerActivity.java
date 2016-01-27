@@ -1,7 +1,7 @@
 package com.kickstarter.ui.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
@@ -13,20 +13,22 @@ import com.google.android.exoplayer.AspectRatioFrameLayout;
 import com.google.android.exoplayer.ExoPlayer;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.KSVideoPlayer;
 import com.kickstarter.libs.KSRendererBuilder;
-import com.kickstarter.models.Project;
+import com.kickstarter.libs.KSVideoPlayer;
+import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Video;
-import com.kickstarter.ui.IntentKey;
+import com.kickstarter.viewmodels.VideoPlayerViewModel;
+import com.trello.rxlifecycle.ActivityEvent;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public final class VideoPlayerActivity extends BaseActivity implements KSVideoPlayer.Listener {
+@RequiresViewModel(VideoPlayerViewModel.class)
+public final class VideoPlayerActivity extends BaseActivity<VideoPlayerViewModel> implements KSVideoPlayer.Listener {
   private MediaController mediaController;
   private KSVideoPlayer player;
   private long playerPosition;
-  private Video video;
 
   public @Bind(R.id.video_player_layout) View rootView;
   public @Bind(R.id.surface_view) SurfaceView surfaceView;
@@ -34,14 +36,18 @@ public final class VideoPlayerActivity extends BaseActivity implements KSVideoPl
   public @Bind(R.id.video_frame) AspectRatioFrameLayout videoFrame;
 
   @Override
-  public void onCreate(@Nullable final Bundle savedInstanceState) {
+  public void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.video_player_layout);
     ButterKnife.bind(this);
 
-    final Intent intent = getIntent();
-    final Project project = intent.getParcelableExtra(IntentKey.PROJECT);
-    video = project.video();
+    viewModel.outputs.video()
+      .compose(Transformers.takeWhen(lifecycle().filter(ActivityEvent.RESUME::equals)))
+      .compose(bindToLifecycle())
+      .subscribe(this::preparePlayer);
+
+    mediaController = new MediaController(this);
+    mediaController.setAnchorView(rootView);
 
     rootView.setOnTouchListener(((view, motionEvent) -> {
       if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
@@ -58,12 +64,6 @@ public final class VideoPlayerActivity extends BaseActivity implements KSVideoPl
   }
 
   @Override
-  public void onResume() {
-    super.onResume();
-    preparePlayer();
-  }
-
-  @Override
   public void onPause() {
     super.onPause();
     releasePlayer();
@@ -72,7 +72,7 @@ public final class VideoPlayerActivity extends BaseActivity implements KSVideoPl
   @Override
   public void onStateChanged(final boolean playWhenReady, final int playbackState) {
     if (playbackState == ExoPlayer.STATE_ENDED) {
-      mediaController.show();
+      finish();
     }
 
     if (playbackState == ExoPlayer.STATE_BUFFERING) {
@@ -104,16 +104,14 @@ public final class VideoPlayerActivity extends BaseActivity implements KSVideoPl
     }
   }
 
-  public void preparePlayer() {
+  public void preparePlayer(final @NonNull Video video) {
     // Create player
     player = new KSVideoPlayer(new KSRendererBuilder(this, video.high()));
     player.setListener(this);
     player.seekTo(playerPosition);  // todo: will be used for inline video playing
 
     // Set media controller
-    mediaController = new MediaController(this);
     mediaController.setMediaPlayer(player.getPlayerControl());
-    mediaController.setAnchorView(rootView);
     mediaController.setEnabled(true);
 
     player.prepare();
@@ -125,7 +123,7 @@ public final class VideoPlayerActivity extends BaseActivity implements KSVideoPl
     if (mediaController.isShowing()) {
       mediaController.hide();
     } else {
-      mediaController.show(0);
+      mediaController.show();
     }
   }
 }

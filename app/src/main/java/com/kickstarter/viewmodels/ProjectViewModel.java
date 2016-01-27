@@ -14,7 +14,6 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.RefTagUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
@@ -23,6 +22,7 @@ import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.kickstarter.ui.adapters.ProjectAdapter;
+import com.kickstarter.ui.intentmappers.ProjectIntentMapper;
 import com.kickstarter.ui.viewholders.ProjectViewHolder;
 import com.kickstarter.ui.viewholders.RewardViewHolder;
 import com.kickstarter.viewmodels.inputs.ProjectViewModelInputs;
@@ -61,10 +61,6 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
   }
 
   // INPUTS
-  private final PublishSubject<Project> initializer = PublishSubject.create();
-  public void initializer(final @NonNull Project project) {
-    initializer.onNext(project);
-  }
   private final PublishSubject<Void> backProjectClicked = PublishSubject.create();
   public void backProjectClicked() {
     this.backProjectClicked.onNext(null);
@@ -112,14 +108,6 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
   private final PublishSubject<Void> loginSuccess = PublishSubject.create();
   public void loginSuccess() {
     this.loginSuccess.onNext(null);
-  }
-  private final PublishSubject<RefTag> intentRefTag = PublishSubject.create();
-  public void intentRefTag(final @Nullable RefTag refTag) {
-    intentRefTag.onNext(refTag);
-  }
-  final PublishSubject<PushNotificationEnvelope> pushNotificationEnvelope = PublishSubject.create();
-  public void takePushNotificationEnvelope(final @Nullable PushNotificationEnvelope envelope) {
-    pushNotificationEnvelope.onNext(envelope);
   }
   public final ProjectViewModelInputs inputs = this;
 
@@ -169,9 +157,24 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
   public final ProjectViewModelOutputs outputs = this;
 
   @Override
-  protected void onCreate(final @NonNull Context context, @Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
+
+    // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
+    final Observable<RefTag> cookieRefTag = project
+      .take(1)
+      .map(p -> RefTagUtils.storedCookieRefTagForProject(p, cookieManager, sharedPreferences));
+
+    final Observable<Project> initialProject = intent
+      .flatMap(i -> ProjectIntentMapper.project(i, client))
+      .share();
+
+    final Observable<RefTag> refTag = intent
+      .flatMap(ProjectIntentMapper::refTag);
+
+    final Observable<PushNotificationEnvelope> pushNotificationEnvelope = intent
+      .flatMap(ProjectIntentMapper::pushNotificationEnvelope);
 
     final Observable<User> loggedInUserOnStarClick = currentUser.observable()
       .compose(Transformers.takeWhen(starClicked))
@@ -181,69 +184,67 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
       .compose(Transformers.takeWhen(starClicked))
       .filter(u -> u == null);
 
-    final Observable<Project> projectOnUserChangeStar = initializer
+    final Observable<Project> projectOnUserChangeStar = initialProject
       .compose(Transformers.takeWhen(loggedInUserOnStarClick))
       .switchMap(this::toggleProjectStar)
       .share();
 
-    final Observable<Project> starredProjectOnLoginSuccess = initializer
+    final Observable<Project> starredProjectOnLoginSuccess = initialProject
       .compose(Transformers.takeWhen(loginSuccess))
       .take(1)
       .switchMap(this::starProject)
       .share();
 
-    addSubscription(
-      initializer
-        .mergeWith(projectOnUserChangeStar)
-        .mergeWith(starredProjectOnLoginSuccess)
-        .subscribe(this.project::onNext)
-    );
+    initialProject
+      .mergeWith(projectOnUserChangeStar)
+      .mergeWith(starredProjectOnLoginSuccess)
+      .compose(bindToLifecycle())
+      .subscribe(this.project::onNext);
 
-    addSubscription(
-      projectOnUserChangeStar.mergeWith(starredProjectOnLoginSuccess)
-        .filter(Project::isStarred)
-        .filter(Project::isLive)
-        .filter(p -> !p.isApproachingDeadline())
-        .subscribe(__ -> this.showStarredPrompt.onNext(null))
-    );
+    projectOnUserChangeStar.mergeWith(starredProjectOnLoginSuccess)
+      .filter(Project::isStarred)
+      .filter(Project::isLive)
+      .filter(p -> !p.isApproachingDeadline())
+      .compose(bindToLifecycle())
+      .subscribe(__ -> this.showStarredPrompt.onNext(null));
 
-    addSubscription(loggedOutUserOnStarClick.subscribe(__ -> this.showLoginTout.onNext(null)));
+    loggedOutUserOnStarClick
+      .compose(bindToLifecycle())
+      .subscribe(__ -> this.showLoginTout.onNext(null));
 
-    addSubscription(shareClicked.subscribe(__ -> koala.trackShowProjectShareSheet()));
+    shareClicked
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackShowProjectShareSheet());
 
-    addSubscription(playVideoClicked.subscribe(__ -> koala.trackVideoStart(project.getValue())));
+    playVideoClicked
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackVideoStart(project.getValue()));
 
-    addSubscription(projectOnUserChangeStar.mergeWith(starredProjectOnLoginSuccess)
-      .subscribe(koala::trackProjectStar));
+    projectOnUserChangeStar
+      .mergeWith(starredProjectOnLoginSuccess)
+      .compose(bindToLifecycle())
+      .subscribe(koala::trackProjectStar);
 
-    // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
-    final Observable<RefTag> cookieRefTag = project
+    Observable.combineLatest(refTag, cookieRefTag, project, RefTagsAndProject::new)
       .take(1)
-      .map(p -> RefTagUtils.storedCookieRefTagForProject(p, cookieManager, sharedPreferences));
+      .compose(bindToLifecycle())
+      .subscribe(data -> {
+        // If a cookie hasn't been set for this ref+project then do so.
+        if (data.refTagFromCookie == null && data.refTagFromIntent != null) {
+          RefTagUtils.storeCookie(data.refTagFromIntent, data.project, cookieManager, sharedPreferences);
+        }
 
-    addSubscription(
-      Observable.combineLatest(intentRefTag, cookieRefTag, project, RefTagsAndProject::new)
-        .take(1)
-        .subscribe(data -> {
-          // If a cookie hasn't been set for this ref+project then do so.
-          if (data.refTagFromCookie == null && data.refTagFromIntent != null) {
-            RefTagUtils.storeCookie(data.refTagFromIntent, data.project, cookieManager, sharedPreferences);
-          }
+        koala.trackProjectShow(
+          data.project,
+          data.refTagFromIntent,
+          RefTagUtils.storedCookieRefTagForProject(data.project, cookieManager, sharedPreferences)
+        );
+      });
 
-          koala.trackProjectShow(
-            data.project,
-            data.refTagFromIntent,
-            RefTagUtils.storedCookieRefTagForProject(data.project, cookieManager, sharedPreferences)
-          );
-        })
-    );
-
-    addSubscription(
-      pushNotificationEnvelope
-        .filter(ObjectUtils::isNotNull)
-        .take(1)
-        .subscribe(koala::trackPushNotification)
-    );
+    pushNotificationEnvelope
+      .take(1)
+      .compose(bindToLifecycle())
+      .subscribe(koala::trackPushNotification);
   }
 
   public void projectViewHolderBackProjectClicked(final @NonNull ProjectViewHolder viewHolder) {

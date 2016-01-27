@@ -6,22 +6,26 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
-import com.kickstarter.ui.IntentKey;
+import com.kickstarter.viewmodels.DownloadBetaViewModel;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 
-public final class DownloadBetaActivity extends AppCompatActivity {
+@RequiresViewModel(DownloadBetaViewModel.class)
+public final class DownloadBetaActivity extends BaseActivity<DownloadBetaViewModel> {
   protected @Bind(R.id.build) TextView buildTextView;
   protected @Bind(R.id.changelog) TextView changelogTextView;
-  InternalBuildEnvelope internalBuildEnvelope;
 
   @Override
   public void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -30,13 +34,26 @@ public final class DownloadBetaActivity extends AppCompatActivity {
     setContentView(R.layout.download_beta_layout);
     ButterKnife.bind(this);
 
-    internalBuildEnvelope = getIntent().getExtras()
-      .getParcelable(IntentKey.INTERNAL_BUILD_ENVELOPE);
+    final Observable<String> build = viewModel.outputs.internalBuildEnvelope()
+      .map(InternalBuildEnvelope::build)
+      .filter(ObjectUtils::isNotNull)
+      .map(Object::toString);
 
-    buildTextView.setText(internalBuildEnvelope.build().toString());
-    changelogTextView.setText(internalBuildEnvelope.changelog());
+    build
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(buildTextView::setText);
 
-    requestDownload();
+    build
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::requestDownload);
+
+    viewModel.outputs.internalBuildEnvelope()
+      .map(InternalBuildEnvelope::changelog)
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(changelogTextView::setText);
   }
 
   @OnClick(R.id.open_downloads_button)
@@ -45,9 +62,9 @@ public final class DownloadBetaActivity extends AppCompatActivity {
     startActivity(intent);
   }
 
-  private void requestDownload() {
+  private void requestDownload(final @NonNull String build) {
     final Intent intent = new Intent(Intent.ACTION_VIEW)
-      .setData(Uri.parse("https://www.kickstarter.com/mobile/beta/builds/" + internalBuildEnvelope.build()));
+      .setData(Uri.parse("https://www.kickstarter.com/mobile/beta/builds/" + build));
     startActivity(intent);
   }
 }

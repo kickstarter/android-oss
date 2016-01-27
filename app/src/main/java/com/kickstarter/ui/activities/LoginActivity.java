@@ -50,7 +50,7 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
   @Inject KSString ksString;
 
   @Override
-  protected void onCreate(@Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.login_layout);
@@ -58,9 +58,6 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
     ButterKnife.bind(this);
     loginToolbar.setTitle(loginString);
     forgotPasswordTextView.setText(Html.fromHtml(forgotPasswordString));
-
-    final Intent intent = getIntent();
-    final boolean forward = intent.getBooleanExtra(IntentKey.FORWARD, false);
 
     errorMessages()
       .compose(bindToLifecycle())
@@ -70,20 +67,23 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
     viewModel.errors.tfaChallenge()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> startTwoFactorActivity(forward));
+      .subscribe(__ -> startTwoFactorActivity());
 
     viewModel.outputs.loginSuccess()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> onSuccess(forward));
+      .subscribe(__ -> onSuccess());
 
-    final boolean confirmResetPassword = getIntent().getBooleanExtra(IntentKey.CONFIRM_RESET_PASSWORD, false);
-    if (confirmResetPassword) {
-      final String email = getIntent().getExtras().getString(IntentKey.EMAIL);
-      final String message = ksString.format(forgotPasswordSentEmailString, "email", email);
-      ViewUtils.showDialog(this, null, message);
-      emailEditText.setText(email);
-    }
+    viewModel.outputs.prefillEmailFromPasswordReset()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::prefillEmailFromPasswordReset);
+  }
+
+  private void prefillEmailFromPasswordReset(final @NonNull String email) {
+    final String message = ksString.format(forgotPasswordSentEmailString, "email", email);
+    ViewUtils.showDialog(this, null, message);
+    emailEditText.setText(email);
   }
 
   private Observable<String> errorMessages() {
@@ -95,8 +95,10 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
   }
 
   @Override
-  protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
-    if (requestCode != ActivityRequestCodes.LOGIN_ACTIVITY_TWO_FACTOR_ACTIVITY_FORWARD) {
+  protected void onActivityResult(final int requestCode, final int resultCode, final @Nullable Intent intent) {
+    super.onActivityResult(requestCode, resultCode, intent);
+
+    if (requestCode != ActivityRequestCodes.LOGIN_FLOW) {
       return;
     }
 
@@ -107,17 +109,16 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
   @Override
   public void onBackPressed() {
     super.onBackPressed();
-
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
   @OnTextChanged(R.id.email)
-  void onEmailTextChanged(@NonNull final CharSequence email) {
+  void onEmailTextChanged(final @NonNull CharSequence email) {
     viewModel.inputs.email(email.toString());
   }
 
   @OnTextChanged(R.id.password)
-  void onPasswordTextChanged(@NonNull final CharSequence password) {
+  void onPasswordTextChanged(final @NonNull CharSequence password) {
     viewModel.inputs.password(password.toString());
   }
 
@@ -132,31 +133,20 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
     viewModel.inputs.loginClick();
   }
 
-  public void onSuccess(final boolean forward) {
-    if (forward) {
-      setResult(Activity.RESULT_OK);
-      finish();
-    } else {
-      final Intent intent = new Intent(this, DiscoveryActivity.class)
-        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-      startActivity(intent);
-    }
+  public void onSuccess() {
+    setResult(Activity.RESULT_OK);
+    finish();
   }
 
   public void setFormEnabled(final boolean enabled) {
     loginButton.setEnabled(enabled);
   }
 
-  public void startTwoFactorActivity(final boolean forward) {
+  public void startTwoFactorActivity() {
     final Intent intent = new Intent(this, TwoFactorActivity.class)
       .putExtra(IntentKey.EMAIL, emailEditText.getText().toString())
-      .putExtra(IntentKey.PASSWORD, passwordEditText.getText().toString())
-      .putExtra(IntentKey.FORWARD, forward);
-    if (forward) {
-      startActivityForResult(intent, ActivityRequestCodes.LOGIN_ACTIVITY_TWO_FACTOR_ACTIVITY_FORWARD);
-    } else {
-      startActivity(intent);
-    }
+      .putExtra(IntentKey.PASSWORD, passwordEditText.getText().toString());
+    startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 }

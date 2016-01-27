@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentConfig;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.ViewModel;
@@ -33,12 +32,12 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
   protected @Inject CurrentConfig currentConfig;
 
   protected final static class SignupData {
-    @NonNull final String fullName;
-    @NonNull final String email;
-    @NonNull final String password;
+    final @NonNull String fullName;
+    final @NonNull String email;
+    final @NonNull String password;
     final boolean sendNewsletters;
 
-    protected SignupData(@NonNull final String fullName, @NonNull final String email, @NonNull final String password,
+    protected SignupData(final @NonNull String fullName, final @NonNull String email, final @NonNull String password,
       final boolean sendNewsletters) {
       this.fullName = fullName;
       this.email = email;
@@ -104,45 +103,53 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
   public final SignupViewModelErrors errors = this;
 
   public SignupViewModel() {
+
     final Observable<SignupData> signupData = Observable.combineLatest(
       fullName, email, password, sendNewslettersIsChecked,
       SignupData::new);
 
-    addSubscription(
-      sendNewslettersClick.subscribe(sendNewslettersIsChecked::onNext)
-    );
 
-    addSubscription(signupData
-        .map(SignupData::isValid)
-        .subscribe(formIsValid)
-    );
+    sendNewslettersClick
+      .compose(bindToLifecycle())
+      .subscribe(sendNewslettersIsChecked::onNext);
 
-    addSubscription(
-      signupData
-        .compose(Transformers.takeWhen(signupClick))
-        .flatMap(this::submit)
-        .subscribe(this::success)
-    );
+    signupData
+      .map(SignupData::isValid)
+      .compose(bindToLifecycle())
+      .subscribe(formIsValid);
+
+    signupData
+      .compose(Transformers.takeWhen(signupClick))
+      .flatMap(this::submit)
+      .compose(bindToLifecycle())
+      .subscribe(this::success);
   }
 
   @Override
-  public void onCreate(final @NonNull Context context, @Nullable Bundle savedInstanceState) {
+  protected void onCreate(@NonNull Context context, @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
-    ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     currentConfig.observable()
       .take(1)
       .map(config -> I18nUtils.isCountryUS(config.countryCode()))
+      .compose(bindToLifecycle())
       .subscribe(sendNewslettersIsChecked::onNext);
 
-    addSubscription(signupError.subscribe(__ -> koala.trackRegisterError()));
-    addSubscription(sendNewslettersClick.subscribe(koala::trackSignupNewsletterToggle));
-    addSubscription(signupSuccess
-        .subscribe(__ -> {
-          koala.trackLoginSuccess();
-          koala.trackRegisterSuccess();
-        })
-    );
+    signupError
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackRegisterError());
+
+    sendNewslettersClick
+      .compose(bindToLifecycle())
+      .subscribe(koala::trackSignupNewsletterToggle);
+
+    signupSuccess
+      .compose(bindToLifecycle())
+      .subscribe(__ -> {
+        koala.trackLoginSuccess();
+        koala.trackRegisterSuccess();
+      });
+
     koala.trackRegisterFormView();
   }
 

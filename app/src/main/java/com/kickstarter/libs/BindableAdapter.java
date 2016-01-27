@@ -16,7 +16,7 @@ public abstract class BindableAdapter<T> extends BaseAdapter {
   private final Context context;
   private final LayoutInflater inflater;
 
-  public BindableAdapter(@NonNull final Context context) {
+  public BindableAdapter(final @NonNull Context context) {
     this.context = context;
     this.inflater = LayoutInflater.from(context);
   }
@@ -39,12 +39,12 @@ public abstract class BindableAdapter<T> extends BaseAdapter {
   }
 
   /** Create a new instance of a view for the specified position. */
-  public abstract View newView(@NonNull final LayoutInflater inflater, final int position, @Nullable final ViewGroup container);
+  public abstract View newView(final @NonNull LayoutInflater inflater, final int position, final @Nullable ViewGroup container);
 
   /** Bind the data for the specified {@code position} to the view. */
   public abstract void bindView(final T item, final int position, final View view);
 
-  @Override public final View getDropDownView(final int position, View view, @Nullable final ViewGroup container) {
+  @Override public final View getDropDownView(final int position, View view, final @Nullable ViewGroup container) {
     if (view == null) {
       view = newDropDownView(inflater, position, container);
       if (view == null) {
@@ -56,12 +56,12 @@ public abstract class BindableAdapter<T> extends BaseAdapter {
   }
 
   /** Create a new instance of a drop-down view for the specified position. */
-  public View newDropDownView(@NonNull final LayoutInflater inflater, final int position, @Nullable final ViewGroup container) {
+  public View newDropDownView(final @NonNull LayoutInflater inflater, final int position, final @Nullable ViewGroup container) {
     return newView(inflater, position, container);
   }
 
   /** Bind the data for the specified {@code position} to the drop-down view. */
-  public void bindDropDownView(@NonNull final T item, final int position, @NonNull final View view) {
+  public void bindDropDownView(final @NonNull T item, final int position, final @NonNull View view) {
     bindView(item, position, view);
   }
 }

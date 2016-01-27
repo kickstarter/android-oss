@@ -1,4 +1,4 @@
-package com.kickstarter.ui.intents;
+package com.kickstarter.ui.intentmappers;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -11,39 +11,30 @@ import com.kickstarter.models.Location;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.IntentKey;
-import com.trello.rxlifecycle.ActivityEvent;
-import com.trello.rxlifecycle.RxLifecycle;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
-import rx.functions.Action1;
 
-public final class DiscoveryIntentAction extends IntentAction {
-  private final ApiClientType client;
+public final class DiscoveryIntentMapper {
+  private DiscoveryIntentMapper() {}
 
-  public DiscoveryIntentAction(final @NonNull Action1<DiscoveryParams> initializer,
-    final @NonNull Observable<ActivityEvent> lifecycle, final @NonNull ApiClientType client) {
+  public static Observable<DiscoveryParams> params(final @NonNull Intent intent,
+    final @NonNull ApiClientType client) {
 
-    this.client = client;
+    final Observable<DiscoveryParams> paramsFromParcel = Observable.just(paramsFromIntent(intent))
+      .filter(ObjectUtils::isNotNull);
 
-    intent
-      .compose(RxLifecycle.bindActivity(lifecycle))
-      .map(this::uri)
+    final Observable<DiscoveryParams> paramsFromUri = Observable.just(IntentMapper.uri(intent))
       .filter(ObjectUtils::isNotNull)
       .map(DiscoveryParams::fromUri)
-      .flatMap(this::paramsFromUri)
-      .subscribe(initializer);
+      .flatMap(uri -> paramsFromUri(uri, client));
 
-    intent
-      .compose(RxLifecycle.bindActivity(lifecycle))
-      .map(this::parceledParams)
-      .filter(ObjectUtils::isNotNull)
-      .subscribe(initializer);
+    return paramsFromParcel.mergeWith(paramsFromUri);
   }
 
-  private @Nullable DiscoveryParams parceledParams(final @NonNull Intent intent) {
+  private static @Nullable DiscoveryParams paramsFromIntent(final @NonNull Intent intent) {
     return intent.getParcelableExtra(IntentKey.DISCOVERY_PARAMS);
   }
 
@@ -51,8 +42,9 @@ public final class DiscoveryIntentAction extends IntentAction {
    * Returns params where category and location params have been converted into {@link Category}
    * and {@link Location} objects.
    */
-  private @NonNull Observable<DiscoveryParams> paramsFromUri(final @NonNull DiscoveryParams params) {
-    return Observable.zip(paramBuilders(params), builders -> {
+  private static @NonNull Observable<DiscoveryParams> paramsFromUri(final @NonNull DiscoveryParams params,
+    final @NonNull ApiClientType client) {
+    return Observable.zip(paramBuilders(params, client), builders -> {
       DiscoveryParams.Builder builder = DiscoveryParams.builder();
 
       for (final Object object : builders) {
@@ -72,7 +64,9 @@ public final class DiscoveryIntentAction extends IntentAction {
    * @return A list of observables, each responsible for retrieving more data from the API. The
    * observables emit *builders* of params, and hence can later be merged into a single params object.
    */
-  private @NonNull List<Observable<DiscoveryParams.Builder>> paramBuilders(final @NonNull DiscoveryParams params) {
+  private static @NonNull List<Observable<DiscoveryParams.Builder>> paramBuilders(final @NonNull DiscoveryParams params,
+    final @NonNull ApiClientType client) {
+
     final List<Observable<DiscoveryParams.Builder>> paramBuilders = new ArrayList<>();
 
     final String categoryParam = params.categoryParam();

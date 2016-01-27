@@ -80,8 +80,12 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
 
     displayWoohooBackground();
     displayRating();
+  }
 
-    viewModel.takeProject(getIntent().getExtras().getParcelable(IntentKey.PROJECT));
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    recommendedProjectsRecyclerView.setAdapter(null);
   }
 
   public void show(final @NonNull Project project) {
@@ -169,8 +173,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
     final Intent intent = new Intent(this, ProjectActivity.class)
       .putExtra(IntentKey.PROJECT, project)
       .putExtra(IntentKey.REF_TAG, RefTag.thanks());
-    startActivity(intent);
-    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   private String shareString(final @NonNull Project project) {
@@ -196,8 +199,9 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   }
 
   @Override
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    facebookCallbackManager.onActivityResult(requestCode, resultCode, data);
+  protected void onActivityResult(final int requestCode, final int resultCode, final @Nullable Intent intent) {
+    super.onActivityResult(requestCode, resultCode, intent);
+
+    facebookCallbackManager.onActivityResult(requestCode, resultCode, intent);
   }
 }

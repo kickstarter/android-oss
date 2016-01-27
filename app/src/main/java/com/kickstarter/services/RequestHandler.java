@@ -10,24 +10,24 @@ public final class RequestHandler {
   private final RequestHandler.Matcher matcher;
   private final RequestHandler.Action action;
 
-  public RequestHandler(@NonNull final RequestHandler.Matcher matcher, @NonNull final RequestHandler.Action action) {
+  public RequestHandler(final @NonNull RequestHandler.Matcher matcher, final @NonNull RequestHandler.Action action) {
     this.matcher = matcher;
     this.action = action;
   }
 
-  public boolean matches(@NonNull final Uri uri, @NonNull final String webEndpoint) {
+  public boolean matches(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return matcher.call(uri, webEndpoint);
   }
 
-  public boolean action(@NonNull final Request request, @NonNull final WebView webView) {
+  public boolean action(final @NonNull Request request, final @NonNull WebView webView) {
     return action.call(request, webView);
   }
 
   public interface Matcher {
-    boolean call(@NonNull final Uri uri, @NonNull final String webEndpoint);
+    boolean call(final @NonNull Uri uri, final @NonNull String webEndpoint);
   }
 
   public interface Action {
-    boolean call(@NonNull final Request request, @NonNull final WebView webView);
+    boolean call(final @NonNull Request request, final @NonNull WebView webView);
   }
 }

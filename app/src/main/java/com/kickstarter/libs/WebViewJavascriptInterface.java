@@ -8,13 +8,13 @@ import com.kickstarter.services.KSWebViewClient;
 public class WebViewJavascriptInterface {
   private final KSWebViewClient webViewClient;
 
-  public WebViewJavascriptInterface(@NonNull final KSWebViewClient webViewClient) {
+  public WebViewJavascriptInterface(final @NonNull KSWebViewClient webViewClient) {
     this.webViewClient = webViewClient;
   }
 
   @JavascriptInterface
-  public void setFormContents(@NonNull final String serialized, @NonNull final String method,
-    @NonNull final String encodingType) {
+  public void setFormContents(final @NonNull String serialized, final @NonNull String method,
+    final @NonNull String encodingType) {
     /*
      *  WebViewJavascript.html is inserted into Kickstarter web view pages - it intercepts form submits,
      *  captures form info (serialized fields, method, encoding type) and sends it to this method, before continuing

@@ -27,6 +27,7 @@ import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.ui.IntentKey;
+import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.viewmodels.CommentFeedViewModel;
 import com.kickstarter.ui.adapters.CommentFeedAdapter;
 import com.kickstarter.ui.viewholders.EmptyCommentFeedViewHolder;
@@ -44,7 +45,6 @@ import rx.android.schedulers.AndroidSchedulers;
 @RequiresViewModel(CommentFeedViewModel.class)
 public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel> implements CommentFeedAdapter.Delegate {
   private CommentFeedAdapter adapter;
-  private Project project;
   private RecyclerViewPaginator recyclerViewPaginator;
   private SwipeRefresher swipeRefresher;
   @Nullable private AlertDialog commentDialog;
@@ -59,19 +59,14 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
   @BindString(R.string.project_comments_posted) String commentPostedString;
 
   @Override
-  protected void onCreate(@Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.comment_feed_layout);
     ButterKnife.bind(this);
 
-    final Intent intent = getIntent();
-    project = intent.getParcelableExtra(IntentKey.PROJECT);
-
     adapter = new CommentFeedAdapter(this);
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-    viewModel.inputs.initialProject(project);
 
     recyclerViewPaginator = new RecyclerViewPaginator(recyclerView, viewModel.inputs::nextPage);
     swipeRefresher = new SwipeRefresher(this, swipeRefreshLayout, viewModel.inputs::refresh, viewModel.outputs::isFetchingComments);
@@ -90,7 +85,7 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
     viewModel.outputs.showCommentDialog()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> showCommentDialog());
+      .subscribe(this::showCommentDialog);
 
     viewModel.outputs.commentPosted()
       .compose(bindToLifecycle())
@@ -102,10 +97,11 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
   protected void onDestroy() {
     super.onDestroy();
     recyclerViewPaginator.stop();
+    recyclerView.setAdapter(null);
   }
 
-  public void show(@NonNull final Project project, @NonNull final List<Comment> comments,
-    @Nullable final User user) {
+  public void show(final @NonNull Project project, final @NonNull List<Comment> comments,
+    final @Nullable User user) {
     adapter.takeProjectComments(project, comments, user);
   }
 
@@ -118,13 +114,16 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
 
   public void commentFeedLogin() {
     final Intent intent = new Intent(this, LoginToutActivity.class)
-      .putExtra(IntentKey.FORWARD, true)
-      .putExtra(IntentKey.LOGIN_TYPE, LoginToutActivity.REASON_GENERIC);
-    startActivityForResult(intent, ActivityRequestCodes.COMMENT_FEED_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
+      .putExtra(IntentKey.LOGIN_REASON, LoginReason.COMMENT_FEED);
+    startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
   }
 
   @OnClick(R.id.comment_button)
-  public void showCommentDialog() {
+  protected void commentButtonClicked() {
+    viewModel.inputs.commentButtonClicked();
+  }
+
+  public void showCommentDialog(final @NonNull Project project) {
     commentDialog = new AlertDialog.Builder(this)
       .setView(R.layout.comment_dialog)
       .create();
@@ -138,19 +137,19 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
     postCommentButton = ButterKnife.findById(commentDialog, R.id.post_button);
 
     projectNameTextView.setText(project.name());
-    cancelButtonTextView.setOnClickListener((@NonNull final View v) -> dismissCommentDialog());
+    cancelButtonTextView.setOnClickListener((final @NonNull View v) -> dismissCommentDialog());
     if (commentBodyEditText != null) {
       commentBodyEditText.addTextChangedListener(new TextWatcher() {
-        public void beforeTextChanged(@NonNull final CharSequence s, final int start, final int count, final int after) {}
-        public void onTextChanged(@NonNull final CharSequence s, final int start, final int before, final int count) {}
-        public void afterTextChanged(@NonNull final Editable s) {
+        public void beforeTextChanged(final @NonNull CharSequence s, final int start, final int count, final int after) {}
+        public void onTextChanged(final @NonNull CharSequence s, final int start, final int before, final int count) {}
+        public void afterTextChanged(final @NonNull Editable s) {
           viewModel.inputs.commentBody(s.toString());
         }
       });
     }
 
     if (postCommentButton != null && commentBodyEditText != null) {
-      postCommentButton.setOnClickListener((@NonNull final View v) -> {
+      postCommentButton.setOnClickListener((final @NonNull View v) -> {
         viewModel.postClick(commentBodyEditText.getText().toString());
       });
     }
@@ -176,18 +175,20 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
   }
 
   @Override
-  public void projectContextClicked(@NonNull final ProjectContextViewHolder viewHolder) {
+  public void projectContextClicked(final @NonNull ProjectContextViewHolder viewHolder) {
     onBackPressed();
   }
 
   @Override
-  public void emptyCommentFeedLoginClicked(@NonNull final EmptyCommentFeedViewHolder viewHolder) {
+  public void emptyCommentFeedLoginClicked(final @NonNull EmptyCommentFeedViewHolder viewHolder) {
     commentFeedLogin();
   }
 
   @Override
-  protected void onActivityResult(final int requestCode, final int resultCode, @NonNull final Intent intent) {
-    if (requestCode != ActivityRequestCodes.COMMENT_FEED_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED) {
+  protected void onActivityResult(final int requestCode, final int resultCode, final @Nullable Intent intent) {
+    super.onActivityResult(requestCode, resultCode, intent);
+
+    if (requestCode != ActivityRequestCodes.LOGIN_FLOW) {
       return;
     }
     if (resultCode != RESULT_OK) {

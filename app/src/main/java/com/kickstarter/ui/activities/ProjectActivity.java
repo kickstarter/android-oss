@@ -24,7 +24,7 @@ import com.kickstarter.models.Reward;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ProjectAdapter;
-import com.kickstarter.ui.intents.ProjectIntentAction;
+import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.ui.views.IconButton;
 import com.kickstarter.viewmodels.ProjectViewModel;
 
@@ -41,7 +41,6 @@ import rx.android.schedulers.AndroidSchedulers;
 @RequiresViewModel(ProjectViewModel.class)
 public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   private ProjectAdapter adapter;
-  private ProjectIntentAction intentAction;
 
   protected @Bind(R.id.project_recycler_view) RecyclerView projectRecyclerView;
   protected @Bind(R.id.star_icon) IconButton starButton;
@@ -77,15 +76,9 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     final int bottomButtonVisibility = ViewUtils.isLandscape(this) ? View.GONE : View.VISIBLE;
     projectActionButtonsViewGroup.setVisibility(bottomButtonVisibility);
 
-    intentAction = new ProjectIntentAction(viewModel.inputs::initializer, lifecycle(), client);
-    intentAction.intent(getIntent());
-
     adapter = new ProjectAdapter(viewModel);
     projectRecyclerView.setAdapter(adapter);
     projectRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-    this.viewModel.inputs.intentRefTag(getIntent().getParcelableExtra(IntentKey.REF_TAG));
-    viewModel.inputs.takePushNotificationEnvelope(getIntent().getParcelableExtra(IntentKey.PUSH_NOTIFICATION_ENVELOPE));
 
     this.viewModel.outputs.projectAndConfig()
       .compose(bindToLifecycle())
@@ -154,6 +147,11 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
       .subscribe(__ -> this.startLoginToutActivity());
   }
 
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    projectRecyclerView.setAdapter(null);
+  }
   private void renderProject(final @NonNull Project project, final @NonNull String configCountry) {
     adapter.takeProject(project, configCountry);
     ProjectUtils.setActionButton(project, backProjectButton, managePledgeButton, viewPledgeButton);
@@ -265,9 +263,8 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
 
   private void startLoginToutActivity() {
     final Intent intent = new Intent(this, LoginToutActivity.class)
-      .putExtra(IntentKey.FORWARD, true)
-      .putExtra(IntentKey.LOGIN_TYPE, LoginToutActivity.REASON_STAR_PROJECT);
-    startActivityForResult(intent, ActivityRequestCodes.PROJECT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
+      .putExtra(IntentKey.LOGIN_REASON, LoginReason.STAR_PROJECT);
+    startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
   }
 
   private void startViewPledgeActivity(final @NonNull Project project) {
@@ -283,8 +280,10 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   }
 
   @Override
-  protected void onActivityResult(final int requestCode, final int resultCode, final @NonNull Intent intent) {
-    if (requestCode != ActivityRequestCodes.PROJECT_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED) {
+  protected void onActivityResult(final int requestCode, final int resultCode, final @Nullable Intent intent) {
+    super.onActivityResult(requestCode, resultCode, intent);
+
+    if (requestCode != ActivityRequestCodes.LOGIN_FLOW) {
       return;
     }
     if (resultCode != RESULT_OK) {

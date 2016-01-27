@@ -4,6 +4,7 @@ $:.unshift File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'milkrun'
 require_relative '../config/initializer'
 require 'commander'
+require 'fileutils'
 
 class MilkrunApplication
   include Commander::Methods
@@ -50,9 +51,11 @@ Release checklist!
 2) Run view tests: ./gradlew connectedExternalPre21DebugAndroidTest
 3) Build and run locally in externalPre21Release mode, test core features on a real device.
 CHECKLIST
-        file_path = Milkrun::Build.new(audience: audience, build_type: build_type).compile
+        output_path = Milkrun::Build.new(audience: audience, build_type: build_type).compile
+        pretty_path = File.join(File.dirname(output_path), "kickstarter-#{version_name}.apk")
+        FileUtils.cp(output_path, pretty_path)
         Milkrun::HockeyApp.new(audience: audience, version_code: version_code, version_name: version_name).create_version
-        Milkrun.say "HockeyApp updated, now upload the .apk at #{file_path} to the Google Play Console 👌"
+        Milkrun.say "HockeyApp updated, now upload the .apk at #{pretty_path} to the Google Play Console 👌"
       end
     end
 

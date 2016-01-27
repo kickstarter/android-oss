@@ -140,7 +140,7 @@ public abstract class Project implements Parcelable {
   @AutoGson
   public abstract static class Urls implements Parcelable {
     public abstract Web web();
-    @Nullable public abstract Api api();
+    public abstract @Nullable Api api();
 
     @AutoParcel.Builder
     public abstract static class Builder {
@@ -159,9 +159,9 @@ public abstract class Project implements Parcelable {
     @AutoGson
     public abstract static class Web implements Parcelable {
       public abstract String project();
-      @Nullable public abstract String projectShort();
+      public abstract @Nullable String projectShort();
       public abstract String rewards();
-      @Nullable public abstract String updates();
+      public abstract @Nullable String updates();
 
       @AutoParcel.Builder
       public abstract static class Builder {
@@ -196,9 +196,9 @@ public abstract class Project implements Parcelable {
     @AutoParcel
     @AutoGson
     public abstract static class Api implements Parcelable {
-      @Nullable public abstract String project();
-      @Nullable public abstract String comments();
-      @Nullable public abstract String updates();
+      public abstract @Nullable String project();
+      public abstract @Nullable String comments();
+      public abstract @Nullable String updates();
 
       @AutoParcel.Builder
       public abstract static class Builder {

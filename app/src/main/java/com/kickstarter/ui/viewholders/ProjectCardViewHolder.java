@@ -67,6 +67,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.successfully_funded_text_view) TextView successfullyFundedTextView;
 
   protected @BindDimen(R.dimen.grid_1) int grid1Dimen;
+  protected @BindDimen(R.dimen.grid_4) int grid4Dimen;
 
   protected @BindDrawable(R.drawable.gray_gradient) Drawable grayGradientDrawable;
 
@@ -89,7 +90,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     void projectCardViewHolderClick(ProjectCardViewHolder viewHolder, Project project);
   }
 
-  public ProjectCardViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
+  public ProjectCardViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
     this.delegate = delegate;
     this.context = view.getContext();
@@ -124,7 +125,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     if (photo != null) {
       photoImageView.setVisibility(View.VISIBLE);
 
-      final int targetImageWidth = (int) (getScreenWidthDp(context) * getScreenDensity(context));
+      final int targetImageWidth = (int) (getScreenWidthDp(context) * getScreenDensity(context) - grid4Dimen);
       photoImageView.setMaxHeight(photoHeightFromWidthRatio(targetImageWidth));
 
       Picasso.with(context)
@@ -142,7 +143,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   }
 
   @Override
-  public void onClick(@NonNull final View view) {
+  public void onClick(final @NonNull View view) {
     delegate.projectCardViewHolderClick(this, project);
   }
 
@@ -249,18 +250,22 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       featuredViewGroup.setVisibility(View.GONE);
     }
 
-    else if (project.isFeaturedToday() && project.category() != null) {
-      final Category rootCategory = project.category().root();
+    else if (project.isFeaturedToday()) {
+      final Category category = project.category();
+      if (category != null) {
+        final Category rootCategory = category.root();
+        if (rootCategory != null) {
+          projectMetadataViewGroup.setVisibility(View.VISIBLE);
+          featuredViewGroup.setVisibility(View.VISIBLE);
+          featuredTextView.setText(ksString.format(featuredInString,
+            "category_name", rootCategory.name()));
+          adjustCardViewTopMargin(grid1Dimen);
 
-      projectMetadataViewGroup.setVisibility(View.VISIBLE);
-      featuredViewGroup.setVisibility(View.VISIBLE);
-      featuredTextView.setText(ksString.format(featuredInString,
-        "category_name", rootCategory.name()));
-      adjustCardViewTopMargin(grid1Dimen);
-
-      backingViewGroup.setVisibility(View.GONE);
-      starredViewGroup.setVisibility(View.GONE);
-      potdViewGroup.setVisibility(View.GONE);
+          backingViewGroup.setVisibility(View.GONE);
+          starredViewGroup.setVisibility(View.GONE);
+          potdViewGroup.setVisibility(View.GONE);
+        }
+      }
     }
 
     else {

@@ -17,19 +17,19 @@ public final class ApiRequestInterceptor implements Interceptor {
   final CurrentUser currentUser;
   final String endpoint;
 
-  public ApiRequestInterceptor(@NonNull final String clientId, @NonNull final CurrentUser currentUser,
-    @NonNull final String endpoint) {
+  public ApiRequestInterceptor(final @NonNull String clientId, final @NonNull CurrentUser currentUser,
+    final @NonNull String endpoint) {
     this.clientId = clientId;
     this.currentUser = currentUser;
     this.endpoint = endpoint;
   }
 
   @Override
-  public Response intercept(@NonNull final Chain chain) throws IOException {
+  public Response intercept(final @NonNull Chain chain) throws IOException {
     return chain.proceed(request(chain.request()));
   }
 
-  private Request request(@NonNull final Request initialRequest) {
+  private Request request(final @NonNull Request initialRequest) {
     if (!shouldIntercept(initialRequest)) {
       return initialRequest;
     }
@@ -40,7 +40,7 @@ public final class ApiRequestInterceptor implements Interceptor {
       .build();
   }
 
-  private HttpUrl url(@NonNull final HttpUrl initialHttpUrl) {
+  private HttpUrl url(final @NonNull HttpUrl initialHttpUrl) {
     final HttpUrl.Builder builder = initialHttpUrl.newBuilder()
       .setQueryParameter("client_id", clientId);
     if (currentUser.exists()) {
@@ -50,7 +50,7 @@ public final class ApiRequestInterceptor implements Interceptor {
     return builder.build();
   }
 
-  private boolean shouldIntercept(@NonNull final Request request) {
+  private boolean shouldIntercept(final @NonNull Request request) {
     return KSUri.isApiUri(Uri.parse(request.urlString()), endpoint);
   }
 }

@@ -33,7 +33,7 @@ public class MessageService extends GcmListenerService {
    * @param data Data bundle containing message data as key/value pairs.
    */
   @Override
-  public void onMessageReceived(@NonNull final String from, @NonNull final Bundle data) {
+  public void onMessageReceived(final @NonNull String from, final @NonNull Bundle data) {
     final String senderId = getString(R.string.gcm_defaultSenderId);
     if (!from.equals(senderId)) {
       Timber.e("Received a message from %s, expecting %s", from, senderId);

@@ -6,6 +6,14 @@ import org.junit.Test;
 
 public class KSColorUtilsTest extends KSRobolectricTestCase {
   @Test
+  public void testSetAlpha() {
+    assertEquals(0x00FFFFFF, KSColorUtils.setAlpha(0xFFFFFFFF, 0));
+    assertEquals(0xFFFFFFFF, KSColorUtils.setAlpha(0x00FFFFFF, 255));
+    assertEquals(0x0ACCCCCC, KSColorUtils.setAlpha(0xCCCCCC, 10));
+    assertEquals(0x0ACCCCCC, KSColorUtils.setAlpha(0xFFCCCCCC, 10));
+  }
+
+  @Test
   public void testDarken() {
     assertEquals(0xFF1DB75B, KSColorUtils.darken(0xFF2BDE73, 0.2f));
   }
@@ -27,86 +35,86 @@ public class KSColorUtilsTest extends KSRobolectricTestCase {
 
   @Test
   public void testArtIsLight() {
-    assertEquals(true, KSColorUtils.isLight(0xFFFFBDAB));
+    assertTrue(KSColorUtils.isLight(0xFFFFBDAB));
   }
 
   @Test
   public void testComicsIsLight() {
-    assertEquals(true, KSColorUtils.isLight(0xFFFFFB78));
+    assertTrue(KSColorUtils.isLight(0xFFFFFB78));
   }
 
   @Test
   public void testCraftsIsNotLight() {
-    assertEquals(false, KSColorUtils.isLight(0xFFFF81AC));
+    assertFalse(KSColorUtils.isLight(0xFFFF81AC));
   }
 
   @Test
   public void testDanceIsNotLight() {
-    assertEquals(false, KSColorUtils.isLight(0xFFA695F9));
+    assertFalse(KSColorUtils.isLight(0xFFA695F9));
   }
 
   @Test
   public void testDesignIsNotLight() {
-    assertEquals(false, KSColorUtils.isLight(0xFF2752FF));
+    assertFalse(KSColorUtils.isLight(0xFF2752FF));
   }
 
   @Test
   public void testFashionIsNotLight() {
-    assertEquals(false, KSColorUtils.isLight(0xFFFF9FD6));
+    assertFalse(KSColorUtils.isLight(0xFFFF9FD6));
   }
 
   @Test
   public void testFilmAndVideoIsNotLight() {
-    assertEquals(false, KSColorUtils.isLight(0xFFFF596E));
+    assertFalse(KSColorUtils.isLight(0xFFFF596E));
   }
 
   @Test
   public void testFoodIsNotLight() {
-    assertEquals(false, KSColorUtils.isLight(0xFFFF3642));
+    assertFalse(KSColorUtils.isLight(0xFFFF3642));
   }
 
   @Test
   public void testGamesIsNotLight() {
-    assertEquals(false, KSColorUtils.isLight(0xFF00C9AB));
+    assertFalse(KSColorUtils.isLight(0xFF00C9AB));
   }
 
   @Test
   public void testJournalismIsNotLight() {
-    assertEquals(false, KSColorUtils.isLight(0xFF12BCEA));
+    assertFalse(KSColorUtils.isLight(0xFF12BCEA));
   }
 
   @Test
   public void testMusicIsLight() {
-    assertEquals(true, KSColorUtils.isLight(0xFFA5FFD3));
+    assertTrue(KSColorUtils.isLight(0xFFA5FFD3));
   }
 
   @Test
   public void testPhotographyIsNotLight() {
-    assertEquals(false, KSColorUtils.isLight(0xFF00E3E5));
+    assertFalse(KSColorUtils.isLight(0xFF00E3E5));
   }
 
   @Test
   public void testPublishingIsLight() {
-    assertEquals(true, KSColorUtils.isLight(0xFFE2DCD0));
+    assertTrue(KSColorUtils.isLight(0xFFE2DCD0));
   }
 
   @Test
   public void testTechnologyIsNotLight() {
-    assertEquals(false, KSColorUtils.isLight(0xFF6396FC));
+    assertFalse(KSColorUtils.isLight(0xFF6396FC));
   }
 
   @Test
   public void testTheaterIsNotLight() {
-    assertEquals(false, KSColorUtils.isLight(0xFFFF7D5F));
+    assertFalse(KSColorUtils.isLight(0xFFFF7D5F));
   }
 
   @Test
   public void testBlackIsDark() {
-    assertEquals(true, KSColorUtils.isDark(0xFF000000));
+    assertTrue(KSColorUtils.isDark(0xFF000000));
   }
 
   @Test
   public void testWhiteIsNotDark() {
-    assertEquals(false, KSColorUtils.isDark(0xFFFFFFFF));
+    assertFalse(KSColorUtils.isDark(0xFFFFFFFF));
   }
 }

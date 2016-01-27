@@ -23,15 +23,15 @@ public class KSToolbar extends Toolbar {
   @Nullable @Bind(R.id.title_text_view) TextView titleTextView;
   private final List<Subscription> subscriptions = new ArrayList<>();
 
-  public KSToolbar(@NonNull final Context context) {
+  public KSToolbar(final @NonNull Context context) {
     super(context);
   }
 
-  public KSToolbar(@NonNull final Context context, @Nullable final AttributeSet attrs) {
+  public KSToolbar(final @NonNull Context context, final @Nullable AttributeSet attrs) {
     super(context, attrs);
   }
 
-  public KSToolbar(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
+  public KSToolbar(final @NonNull Context context, final @Nullable AttributeSet attrs, final int defStyleAttr) {
     super(context, attrs, defStyleAttr);
   }
 
@@ -46,7 +46,7 @@ public class KSToolbar extends Toolbar {
   /**
    * If the toolbar has a textview with id title_text_view, set its title.
    */
-  public void setTitle(@NonNull final String title) {
+  public void setTitle(final @NonNull String title) {
     if (titleTextView != null) {
       titleTextView.setText(title);
     }
@@ -75,7 +75,7 @@ public class KSToolbar extends Toolbar {
     }
   }
 
-  protected final void addSubscription(@NonNull final Subscription subscription) {
+  protected final void addSubscription(final @NonNull Subscription subscription) {
     subscriptions.add(subscription);
   }
 }

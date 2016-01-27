@@ -28,7 +28,7 @@ public final class EmptyCommentFeedViewHolder extends KSViewHolder {
     void emptyCommentFeedLoginClicked(EmptyCommentFeedViewHolder viewHolder);
   }
 
-  public EmptyCommentFeedViewHolder(@NonNull final View view, @NonNull final Delegate delegate) {
+  public EmptyCommentFeedViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
     this.delegate = delegate;
     ButterKnife.bind(this, view);

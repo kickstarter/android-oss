@@ -1,6 +1,7 @@
 package com.kickstarter.models;
 
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Html;
 
@@ -14,18 +15,18 @@ import auto.parcel.AutoParcel;
 @AutoParcel
 public abstract class Update implements Parcelable {
   public abstract String body();
-  @Nullable public abstract Integer commentsCount();
-  @Nullable public abstract Boolean hasLiked();
+  public abstract @Nullable Integer commentsCount();
+  public abstract @Nullable Boolean hasLiked();
   public abstract long id();
-  @Nullable public abstract Integer likesCount();
+  public abstract @Nullable Integer likesCount();
   public abstract long projectId();
-  @Nullable public abstract DateTime publishedAt();
+  public abstract @Nullable DateTime publishedAt();
   public abstract int sequence();
   public abstract String title();
-  @Nullable public abstract DateTime updatedAt();
+  public abstract @Nullable DateTime updatedAt();
   public abstract Urls urls();
-  @Nullable public abstract User user();
-  @Nullable public abstract Boolean visible();
+  public abstract @Nullable User user();
+  public abstract @Nullable Boolean visible();
 
   @AutoParcel.Builder
   public abstract static class Builder {
@@ -55,7 +56,7 @@ public abstract class Update implements Parcelable {
   @AutoGson
   public abstract static class Urls implements Parcelable {
     public abstract Web web();
-    @Nullable public abstract Api api();
+    public abstract @Nullable Api api();
 
     @AutoParcel.Builder
     public abstract static class Builder {
@@ -93,8 +94,8 @@ public abstract class Update implements Parcelable {
     @AutoParcel
     @AutoGson
     public abstract static class Api implements Parcelable {
-      @Nullable public abstract String comments();
-      @Nullable public abstract String update();
+      public abstract @Nullable String comments();
+      public abstract @Nullable String update();
 
       @AutoParcel.Builder
       public abstract static class Builder {
@@ -114,11 +115,13 @@ public abstract class Update implements Parcelable {
   private static final int TRUNCATED_BODY_LENGTH = 400;
 
   public String truncatedBody() {
-    String str = Html.fromHtml(body()).toString();
-    if (str.length() > TRUNCATED_BODY_LENGTH) {
-      str = str.substring(0, TRUNCATED_BODY_LENGTH - 1) + "\u2026";
-    }
-
-    return str;
+    try {
+      String str = Html.fromHtml(body()).toString();
+      if (str.length() > TRUNCATED_BODY_LENGTH) {
+        str = str.substring(0, TRUNCATED_BODY_LENGTH - 1) + "\u2026";
+      }
+      return str;
+    } catch (final @NonNull NullPointerException ignore) {}
+    return "";
   }
 }

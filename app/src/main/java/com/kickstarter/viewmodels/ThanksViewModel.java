@@ -15,10 +15,12 @@ import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ThanksActivity;
 import com.kickstarter.ui.adapters.ThanksAdapter;
 import com.kickstarter.ui.viewholders.CategoryPromoViewHolder;
 import com.kickstarter.ui.viewholders.ProjectCardMiniViewHolder;
+import com.kickstarter.viewmodels.outputs.ThanksViewModelOutputs;
 
 import java.util.List;
 
@@ -26,9 +28,11 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public final class ThanksViewModel extends ViewModel<ThanksActivity> implements ThanksAdapter.Delegate {
+public final class ThanksViewModel extends ViewModel<ThanksActivity> implements ThanksViewModelOutputs, ThanksAdapter.Delegate {
+
   private final PublishSubject<Void> facebookClick = PublishSubject.create();
   private final PublishSubject<Void> shareClick = PublishSubject.create();
   private final PublishSubject<Void> twitterClick = PublishSubject.create();
@@ -37,85 +41,146 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
 
   protected @Inject ApiClientType apiClient;
 
+  private final BehaviorSubject<Project> project = BehaviorSubject.create();
   @Override
-  protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
+  public Observable<Project> project() {
+    return project;
+  }
+
+  public final ThanksViewModelOutputs outputs = this;
+
+  @Override
+  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    addSubscription(shareClick.subscribe(__ -> koala.trackCheckoutShowShareSheet()));
-
-    addSubscription(twitterClick.subscribe(__ -> koala.trackCheckoutShowTwitterShareView()));
-
-    addSubscription(facebookClick.subscribe(__ -> koala.trackCheckoutShowFacebookShareView()));
-
-    addSubscription(projectCardMiniClick.subscribe(__ -> koala.trackCheckoutFinishJumpToProject()));
-  }
-
-  public void takeProject(@NonNull final Project project) {
     final Observable<Pair<ThanksActivity, Project>> viewAndProject = view
-      .compose(Transformers.combineLatestPair(Observable.just(project)))
+      .compose(Transformers.combineLatestPair(project))
       .filter(vp -> vp.first != null);
 
-    addSubscription(viewAndProject
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.show(vp.second)));
+    intent
+      .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
+      .ofType(Project.class)
+      .take(1)
+      .compose(bindToLifecycle())
+      .subscribe(project::onNext);
 
-    addSubscription(viewAndProject
+    shareClick
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackCheckoutShowShareSheet());
+
+    twitterClick
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackCheckoutShowTwitterShareView());
+
+    facebookClick
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackCheckoutShowFacebookShareView());
+
+    projectCardMiniClick
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackCheckoutFinishJumpToProject());
+
+    viewAndProject
+      .observeOn(AndroidSchedulers.mainThread())
+      .compose(bindToLifecycle())
+      .subscribe(vp -> vp.first.show(vp.second));
+
+    viewAndProject
       .compose(Transformers.takeWhen(facebookClick))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.startFacebookShareIntent(vp.second)));
+      .compose(bindToLifecycle())
+      .subscribe(vp -> vp.first.startFacebookShareIntent(vp.second));
 
-    addSubscription(viewAndProject
+    viewAndProject
       .compose(Transformers.takeWhen(shareClick))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.startShareIntent(vp.second)));
+      .compose(bindToLifecycle())
+      .subscribe(vp -> vp.first.startShareIntent(vp.second));
 
-    addSubscription(viewAndProject
+    viewAndProject
       .compose(Transformers.takeWhen(twitterClick))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.startTwitterShareIntent(vp.second)));
+      .compose(bindToLifecycle())
+      .subscribe(vp -> vp.first.startTwitterShareIntent(vp.second));
 
-    addSubscription(viewChange
+    viewChange
       .compose(Transformers.takePairWhen(projectCardMiniClick))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.startProjectIntent(vp.second)));
+      .compose(bindToLifecycle())
+      .subscribe(vp -> vp.first.startProjectIntent(vp.second));
 
-    addSubscription(viewChange
+    viewChange
       .compose(Transformers.takePairWhen(categoryPromoClick))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vp -> vp.first.startDiscoveryCategoryIntent(vp.second)));
+      .compose(bindToLifecycle())
+      .subscribe(vp -> vp.first.startDiscoveryCategoryIntent(vp.second));
 
-    final Observable<Category> rootCategory = apiClient.fetchCategory(String.valueOf(project.category().rootId()))
-      .compose(Transformers.neverError());
-    final Observable<Pair<List<Project>, Category>> projectsAndRootCategory = moreProjects(project)
+    final Observable<Category> rootCategory = project.flatMap(this::rootCategory);
+    final Observable<Pair<List<Project>, Category>> projectsAndRootCategory = project
+      .flatMap(this::relatedProjects)
+      .compose(bindToLifecycle())
       .compose(Transformers.zipPair(rootCategory));
 
-    addSubscription(view
-        .compose(Transformers.combineLatestPair(projectsAndRootCategory))
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(vpc -> {
-          final ThanksActivity view = vpc.first;
-          final List<Project> ps = vpc.second.first;
-          final Category category = vpc.second.second;
-          view.showRecommended(ps, category);
-        })
-    );
+    view
+      .compose(Transformers.combineLatestPair(projectsAndRootCategory))
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(vpc -> {
+        final ThanksActivity view = vpc.first;
+        final List<Project> ps = vpc.second.first;
+        final Category category = vpc.second.second;
+        view.showRecommended(ps, category);
+      });
 
-    addSubscription(
-      categoryPromoClick
-        .subscribe(__ -> koala.trackCheckoutFinishJumpToDiscovery())
-    );
-    addSubscription(
-      projectCardMiniClick
-        .subscribe(__ -> koala.trackCheckoutFinishJumpToProject())
-    );
+    categoryPromoClick
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackCheckoutFinishJumpToDiscovery());
+
+    projectCardMiniClick
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackCheckoutFinishJumpToProject());
+
+    shareClick
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackCheckoutShowShareSheet());
+
+    twitterClick
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackCheckoutShowTwitterShareView());
+
+    facebookClick
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackCheckoutShowFacebookShareView());
+
+    projectCardMiniClick
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackCheckoutFinishJumpToProject());
+  }
+
+  /**
+   * Given a project, returns an observable that emits the project's root category.
+   */
+  private @NonNull Observable<Category> rootCategory(final @NonNull Project project) {
+    final Category category = project.category();
+
+    if (category == null) {
+      return Observable.empty();
+    }
+
+    if (category.parent() != null) {
+      return Observable.just(category.parent());
+    }
+
+    return apiClient.fetchCategory(String.valueOf(category.rootId()))
+      .compose(Transformers.neverError());
   }
 
   /**
    * Returns a shuffled list of 3 recommended projects, with fallbacks to similar and staff picked projects
    * for users with fewer than 3 recommendations.
    */
-  public Observable<List<Project>> moreProjects(final @NonNull Project project) {
+  private @NonNull Observable<List<Project>> relatedProjects(final @NonNull Project project) {
     final DiscoveryParams recommendedParams = DiscoveryParams.builder()
       .backed(-1)
       .recommended(true)
@@ -173,12 +238,12 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
   }
 
   @Override
-  public void categoryPromoClick(@NonNull final CategoryPromoViewHolder viewHolder, @NonNull final Category category) {
+  public void categoryPromoClick(final @NonNull CategoryPromoViewHolder viewHolder, final @NonNull Category category) {
     categoryPromoClick.onNext(category);
   }
 
   @Override
-  public void projectCardMiniClick(@NonNull final ProjectCardMiniViewHolder viewHolder, @NonNull final Project project) {
+  public void projectCardMiniClick(final @NonNull ProjectCardMiniViewHolder viewHolder, final @NonNull Project project) {
     projectCardMiniClick.onNext(project);
   }
 }

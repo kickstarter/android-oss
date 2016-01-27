@@ -3,13 +3,17 @@ package com.kickstarter.ui.activities;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.View;
+import android.view.animation.AlphaAnimation;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.qualifiers.WebEndpoint;
+import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.ui.views.KSWebView;
 import com.kickstarter.viewmodels.HelpViewModel;
 
@@ -22,7 +26,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 @RequiresViewModel(HelpViewModel.class)
-public class HelpActivity extends BaseActivity<HelpViewModel> {
+public class HelpActivity extends BaseActivity<HelpViewModel> implements KSWebViewClient.Delegate {
   public static final int HELP_TYPE_TERMS = 0;
   public static final int HELP_TYPE_PRIVACY = 1;
   public static final int HELP_TYPE_HOW_IT_WORKS = 2;
@@ -36,6 +40,7 @@ public class HelpActivity extends BaseActivity<HelpViewModel> {
   @HelpType int helpType;
 
   protected @Bind(R.id.kickstarter_web_view) KSWebView kickstarterWebView;
+  protected @Bind(R.id.checkout_loading_indicator) View loadingIndicatorView;
 
   @Inject @WebEndpoint String webEndpoint;
 
@@ -79,6 +84,7 @@ public class HelpActivity extends BaseActivity<HelpViewModel> {
 
     final String url = getUrlForHelpType(this.helpType);
     kickstarterWebView.loadUrl(url);
+    kickstarterWebView.client().setDelegate(this);
   }
 
   protected String getUrlForHelpType(final @HelpType int helpType) {
@@ -102,4 +108,23 @@ public class HelpActivity extends BaseActivity<HelpViewModel> {
     }
     return builder.toString();
   }
+
+  @Override
+  public void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
+    final AlphaAnimation animation = new AlphaAnimation(0.0f, 1.0f);
+    animation.setDuration(300l);
+    animation.setFillAfter(true);
+    loadingIndicatorView.startAnimation(animation);
+  }
+
+  @Override
+  public void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
+    final AlphaAnimation animation = new AlphaAnimation(1.0f, 0.0f);
+    animation.setDuration(300l);
+    animation.setFillAfter(true);
+    loadingIndicatorView.startAnimation(animation);
+  }
+
+  @Override
+  public void webViewPageIntercepted(final @NonNull KSWebViewClient webViewClient, final @NonNull String url) {}
 }

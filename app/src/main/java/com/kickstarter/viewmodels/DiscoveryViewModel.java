@@ -1,12 +1,14 @@
 package com.kickstarter.viewmodels;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.KSApplication;
+import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.CurrentUser;
@@ -35,6 +37,8 @@ import com.kickstarter.ui.adapters.data.NavigationDrawerData;
 import com.kickstarter.ui.viewholders.ActivitySampleFriendBackingViewHolder;
 import com.kickstarter.ui.viewholders.ActivitySampleFriendFollowViewHolder;
 import com.kickstarter.ui.viewholders.ActivitySampleProjectViewHolder;
+import com.kickstarter.ui.data.ActivityResult;
+import com.kickstarter.ui.intentmappers.DiscoveryIntentMapper;
 import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.ChildFilterViewHolder;
@@ -71,11 +75,6 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     nextPage.onNext(null);
   }
 
-  private final PublishSubject<DiscoveryParams> initializer = PublishSubject.create();
-  @Override
-  public void initializer(final @NonNull DiscoveryParams params) {
-    initializer.onNext(params);
-  }
   private final PublishSubject<Boolean> openDrawer = PublishSubject.create();
   @Override
   public void openDrawer(boolean open) {
@@ -263,7 +262,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   public final DiscoveryViewModelOutputs outputs = this;
 
   @Override
-  protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
@@ -284,7 +283,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
       .map(NavigationDrawerData.Section.Row::params)
       .map(DiscoveryParams::category);
 
-    PublishSubject<Category> expandedParams = PublishSubject.create();
+    final PublishSubject<Category> expandedParams = PublishSubject.create();
 
     final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
       ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
@@ -298,130 +297,146 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .concater(ListUtils::concatDistinct)
         .build();
 
-    addSubscription(
-      paginator.paginatedData
-        .compose(Transformers.combineLatestPair(rootCategories))
-        .map(pc -> DiscoveryUtils.fillRootCategoryForFeaturedProjects(pc.first, pc.second))
-        .subscribe(projects::onNext)
-    );
+    paginator.paginatedData
+      .compose(Transformers.combineLatestPair(rootCategories))
+      .map(pc -> DiscoveryUtils.fillRootCategoryForFeaturedProjects(pc.first, pc.second))
+      .compose(bindToLifecycle())
+      .subscribe(projects::onNext);
 
-    addSubscription(
-      selectedParams.compose(Transformers.takePairWhen(paginator.loadingPage))
-        .map(paramsAndPage -> paramsAndPage.first.toBuilder().page(paramsAndPage.second).build())
-        .subscribe(p -> koala.trackDiscovery(p, !hasSeenOnboarding))
-    );
+    selectedParams.compose(Transformers.takePairWhen(paginator.loadingPage))
+      .map(paramsAndPage -> paramsAndPage.first.toBuilder().page(paramsAndPage.second).build())
+      .compose(bindToLifecycle())
+      .subscribe(p -> koala.trackDiscovery(p, !hasSeenOnboarding));
 
-    addSubscription(
-      selectedParams
-        .compose(Transformers.combineLatestPair(currentUser.isLoggedIn()))
-        .map(pu -> isOnboardingVisible(pu.first, pu.second))
-        .doOnNext(show -> hasSeenOnboarding = show || hasSeenOnboarding)
-        .subscribe(shouldShowOnboarding::onNext)
-    );
+    selectedParams
+      .compose(Transformers.combineLatestPair(currentUser.isLoggedIn()))
+      .map(pu -> isOnboardingVisible(pu.first, pu.second))
+      .doOnNext(show -> hasSeenOnboarding = show || hasSeenOnboarding)
+      .compose(bindToLifecycle())
+      .subscribe(shouldShowOnboarding::onNext);
 
-    addSubscription(
-      currentUser.loggedInUser()
-        .compose(Transformers.combineLatestPair(selectedParams))
-        .flatMap(__ -> this.fetchActivity())
-        .filter(this::activityHasNotBeenSeen)
-        .doOnNext(this::saveLastSeenActivityId)
-        .subscribe(activity::onNext)
-    );
+    currentUser.loggedInUser()
+      .compose(Transformers.combineLatestPair(selectedParams))
+      .flatMap(__ -> this.fetchActivity())
+      .filter(this::activityHasNotBeenSeen)
+      .doOnNext(this::saveLastSeenActivityId)
+      .compose(bindToLifecycle())
+      .subscribe(activity::onNext);
 
     // Clear activity sample when params change
-    addSubscription(
-      selectedParams
-        .map(__ -> (Activity) null)
-        .subscribe(activity::onNext)
-    );
+    selectedParams
+      .map(__ -> (Activity) null)
+      .compose(bindToLifecycle())
+      .subscribe(activity::onNext);
 
-    addSubscription(
-      Observable.combineLatest(
-        categories,
-        selectedParams,
-        expandedParams,
-        currentUser.observable(),
-        DiscoveryDrawerUtils::deriveNavigationDrawerData)
-        .subscribe(navigationDrawerData::onNext)
-    );
+    Observable.combineLatest(
+      categories,
+      selectedParams,
+      expandedParams,
+      currentUser.observable(),
+      DiscoveryDrawerUtils::deriveNavigationDrawerData
+    )
+      .compose(bindToLifecycle())
+      .subscribe(navigationDrawerData::onNext);
     
-    addSubscription(selectedParams
-        .compose(Transformers.takePairWhen(clickProject))
-        .map(pp -> DiscoveryViewModel.projectAndRefTagFromParamsAndProject(pp.first, pp.second))
-        .subscribe(showProject::onNext)
-    );
+    selectedParams
+      .compose(Transformers.takePairWhen(clickProject))
+      .map(pp -> DiscoveryViewModel.projectAndRefTagFromParamsAndProject(pp.first, pp.second))
+      .compose(bindToLifecycle())
+      .subscribe(showProject::onNext);
 
-    addSubscription(clickActivityProject
-        .map(p -> Pair.create(p, RefTag.activitySample()))
-        .subscribe(showProject::onNext)
-    );
+    clickActivityProject
+      .map(p -> Pair.create(p, RefTag.activitySample()))
+      .compose(bindToLifecycle())
+      .subscribe(showProject::onNext);
 
-    addSubscription(
-      childFilterRowClick
-        .mergeWith(topFilterRowClick)
-        .map(__ -> false)
-        .subscribe(drawerIsOpen::onNext)
-    );
+    childFilterRowClick
+      .mergeWith(topFilterRowClick)
+      .map(__ -> false)
+      .compose(bindToLifecycle())
+      .subscribe(drawerIsOpen::onNext);
 
-    addSubscription(
-      openDrawer.subscribe(drawerIsOpen::onNext)
-    );
+    openDrawer
+      .compose(bindToLifecycle())
+      .subscribe(drawerIsOpen::onNext);
 
-    final Observable<DiscoveryParams> paramsClicked =
-      childFilterRowClick
+    final Observable<DiscoveryParams> paramsClicked = childFilterRowClick
         .mergeWith(topFilterRowClick)
         .map(NavigationDrawerData.Section.Row::params);
 
-    addSubscription(
-      paramsClicked
-        .subscribe(selectedParams::onNext)
-    );
+    paramsClicked
+      .compose(bindToLifecycle())
+      .subscribe(selectedParams::onNext);
 
-    addSubscription(topFilterRowClick.subscribe(__ -> expandedParams.onNext(null)));
+    topFilterRowClick
+      .compose(bindToLifecycle())
+      .subscribe(__ -> expandedParams.onNext(null));
 
-    addSubscription(
-      navigationDrawerData
-        .map(NavigationDrawerData::expandedCategory)
-        .compose(Transformers.takePairWhen(clickedCategory))
-        .map(expandedAndClickedCategory -> toggleExpandedCategory(expandedAndClickedCategory.first, expandedAndClickedCategory.second))
-        .subscribe(expandedParams::onNext)
-    );
+    navigationDrawerData
+      .map(NavigationDrawerData::expandedCategory)
+      .compose(Transformers.takePairWhen(clickedCategory))
+      .map(expandedAndClickedCategory -> toggleExpandedCategory(expandedAndClickedCategory.first, expandedAndClickedCategory.second))
+      .compose(bindToLifecycle())
+      .subscribe(expandedParams::onNext);
 
-    addSubscription(internalToolsClick.subscribe(__ -> showInternalTools.onNext(null)));
-    addSubscription(profileClick.subscribe(__ -> showProfile.onNext(null)));
-    addSubscription(settingsClick.subscribe(__ -> showSettings.onNext(null)));
-    addSubscription(
-      discoveryOnboardingLoginToutClick
-        .mergeWith(loggedOutLoginToutClick)
-        .subscribe(__ -> showLoginTout.onNext(null)));
+    internalToolsClick
+      .compose(bindToLifecycle())
+      .subscribe(__ -> showInternalTools.onNext(null));
+    profileClick
+      .compose(bindToLifecycle())
+      .subscribe(__ -> showProfile.onNext(null));
+    settingsClick
+      .compose(bindToLifecycle())
+      .subscribe(__ -> showSettings.onNext(null));
+
+    discoveryOnboardingLoginToutClick
+      .mergeWith(loggedOutLoginToutClick)
+      .compose(bindToLifecycle())
+      .subscribe(__ -> showLoginTout.onNext(null));
 
     // Closing the drawer while starting an activity is a little overwhelming,
     // so put the close on a delay so it happens out of sight.
-    addSubscription(
-      profileClick
-        .mergeWith(internalToolsClick)
-        .mergeWith(settingsClick)
-        .mergeWith(discoveryOnboardingLoginToutClick)
-        .mergeWith(loggedOutLoginToutClick)
-        .delay(1, TimeUnit.SECONDS)
-        .map(__ -> false)
-        .subscribe(drawerIsOpen::onNext)
-    );
+    profileClick
+      .mergeWith(internalToolsClick)
+      .mergeWith(settingsClick)
+      .mergeWith(discoveryOnboardingLoginToutClick)
+      .mergeWith(loggedOutLoginToutClick)
+      .delay(1, TimeUnit.SECONDS)
+      .map(__ -> false)
+      .compose(bindToLifecycle())
+      .subscribe(drawerIsOpen::onNext);
 
-    addSubscription(
-      paramsClicked
-        .subscribe(koala::trackDiscoveryFilterSelected)
-    );
-    addSubscription(
-      openDrawer
-        .filter(BooleanUtils::isTrue)
-        .subscribe(__ -> koala.trackDiscoveryFilters())
-    );
+    paramsClicked
+      .compose(bindToLifecycle())
+      .subscribe(koala::trackDiscoveryFilterSelected);
 
+    openDrawer
+      .filter(BooleanUtils::isTrue)
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackDiscoveryFilters());
 
     expandedParams.onNext(null);
-    addSubscription(initializer.subscribe(selectedParams::onNext));
-    initializer.onNext(DiscoveryParams.builder().staffPicks(true).build());
+
+    intent
+      .flatMap(i -> DiscoveryIntentMapper.params(i, apiClient))
+      .compose(bindToLifecycle())
+      .subscribe(selectedParams::onNext);
+
+    // Seed selected params when we are freshly launching the app with no data.
+    intent
+      .take(1)
+      .map(Intent::getAction)
+      .filter(Intent.ACTION_MAIN::equals)
+      .map(__ -> DiscoveryParams.builder().staffPicks(true).build())
+      .compose(bindToLifecycle())
+      .subscribe(selectedParams::onNext);
+
+    // TODO: Merge with action main
+    activityResult
+      .filter(DiscoveryViewModel::isSuccessfulLogin)
+      .map(__ -> DiscoveryParams.builder().staffPicks(true).build())
+      .compose(bindToLifecycle())
+      .subscribe(selectedParams::onNext);
   }
 
   private boolean isOnboardingVisible(final @NonNull DiscoveryParams currentParams, final boolean isLoggedIn) {
@@ -455,6 +470,10 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
 
   private boolean activityHasNotBeenSeen(final @Nullable Activity activity) {
     return activity != null && activity.id() != activitySamplePreference.get();
+  }
+
+  private static boolean isSuccessfulLogin(final @NonNull ActivityResult activityResult) {
+    return activityResult.isOk() && activityResult.isRequestCode(ActivityRequestCodes.LOGIN_FLOW);
   }
 
   private static @Nullable Category toggleExpandedCategory(final @Nullable Category expandedCategory, final @NonNull Category clickedCategory) {

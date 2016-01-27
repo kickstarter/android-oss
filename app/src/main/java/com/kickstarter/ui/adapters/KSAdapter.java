@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.kickstarter.BuildConfig;
 import com.kickstarter.libs.utils.ExceptionUtils;
 import com.kickstarter.ui.viewholders.KSViewHolder;
+import com.trello.rxlifecycle.ActivityEvent;
 
 import net.hockeyapp.android.ExceptionHandler;
 
@@ -45,7 +46,6 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
     sections.add(location, new ArrayList<>(section));
   }
 
-
   /**
    * Fetch the layout id associated with a sectionRow.
    */
@@ -54,12 +54,39 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
   /**
    * Returns a new KSViewHolder given a layout and view.
    */
-  protected abstract @NonNull KSViewHolder viewHolder(@LayoutRes final int layout, final @NonNull View view);
+  protected abstract @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view);
 
   @Override
-  public final @NonNull KSViewHolder onCreateViewHolder(final @NonNull ViewGroup viewGroup, @LayoutRes final int layout) {
+  public void onViewDetachedFromWindow(final @NonNull KSViewHolder holder) {
+    super.onViewDetachedFromWindow(holder);
+
+    // View holders are "stopped" when they are detached from the window for recycling
+    holder.lifecycleEvent(ActivityEvent.STOP);
+
+    // View holders are "destroy" when they are detached from the window and no adapter is listening
+    // to events, so ostensibly the view holder is being deallocated.
+    if (!hasObservers()) {
+      holder.lifecycleEvent(ActivityEvent.DESTROY);
+    }
+  }
+
+  @Override
+  public void onViewAttachedToWindow(final @NonNull KSViewHolder holder) {
+    super.onViewAttachedToWindow(holder);
+
+    // View holders are "started" when they are attached to the new window because this means
+    // it has been recycled.
+    holder.lifecycleEvent(ActivityEvent.START);
+  }
+
+  @Override
+  public final @NonNull KSViewHolder onCreateViewHolder(final @NonNull ViewGroup viewGroup, final @LayoutRes int layout) {
     final View view = inflateView(viewGroup, layout);
-    return viewHolder(layout, view);
+    final KSViewHolder viewHolder = viewHolder(layout, view);
+
+    viewHolder.lifecycleEvent(ActivityEvent.CREATE);
+
+    return viewHolder;
   }
 
   @Override
@@ -73,6 +100,7 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
       if (BuildConfig.DEBUG) {
         ExceptionUtils.rethrowAsRuntimeException(e);
       } else {
+        // TODO: alter the exception message to say we are just reporting it and it's not a real crash.
         ExceptionHandler.saveException(e, null);
       }
     }
@@ -131,7 +159,7 @@ public abstract class KSAdapter extends RecyclerView.Adapter<KSViewHolder> {
     throw new RuntimeException("Position " + position + " not found in sections");
   }
 
-  private @NonNull View inflateView(final @NonNull ViewGroup viewGroup, @LayoutRes final int viewType) {
+  private @NonNull View inflateView(final @NonNull ViewGroup viewGroup, final @LayoutRes int viewType) {
     final LayoutInflater layoutInflater = LayoutInflater.from(viewGroup.getContext());
     return layoutInflater.inflate(viewType, viewGroup, false);
   }

@@ -3,6 +3,7 @@ package com.kickstarter.ui.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.SwitchCompat;
 import android.widget.TextView;
@@ -13,13 +14,13 @@ import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.SwitchCompatUtils;
+import com.kickstarter.libs.utils.TransitionUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.IntentKey;
+import com.kickstarter.ui.toolbars.LoginToolbar;
 import com.kickstarter.ui.views.LoginPopupMenu;
 import com.kickstarter.viewmodels.FacebookConfirmationViewModel;
-import com.kickstarter.services.apiresponses.ErrorEnvelope;
-import com.kickstarter.ui.toolbars.LoginToolbar;
 
 import butterknife.Bind;
 import butterknife.BindString;
@@ -40,21 +41,17 @@ public class FacebookConfirmationActivity extends BaseActivity<FacebookConfirmat
   private boolean forward;
 
   @Override
-  public void onCreate(@Nullable final Bundle savedInstanceState) {
+  public void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.facebook_confirmation_layout);
     ButterKnife.bind(this);
     signUpWithFacebookToolbar.setTitle(signUpWithFacebookString);
 
-    final Intent intent = getIntent();
-    forward = intent.getBooleanExtra(IntentKey.FORWARD, false);
-
-    final ErrorEnvelope.FacebookUser fbUser = intent.getParcelableExtra(IntentKey.FACEBOOK_USER);
-    emailTextView.setText(fbUser.email());
-
-    final String fbAccessToken = intent.getStringExtra(IntentKey.FACEBOOK_TOKEN);
-    viewModel.inputs.fbAccessToken(fbAccessToken);
+    viewModel.outputs.prefillEmail()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::prefillEmail);
 
     viewModel.outputs.signupSuccess()
       .compose(bindToLifecycle())
@@ -89,14 +86,8 @@ public class FacebookConfirmationActivity extends BaseActivity<FacebookConfirmat
   @OnClick(R.id.login_button)
   public void loginWithEmailClick() {
     final Intent intent = new Intent(this, LoginActivity.class);
-    if (forward) {
-      intent.putExtra(IntentKey.FORWARD, true);
-      startActivityForResult(intent,
-        ActivityRequestCodes.FACEBOOK_CONFIRMATION_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
-    } else {
-      startActivity(intent);
-    }
-    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+    startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
+    TransitionUtils.slideInFromRight(this);
   }
 
   @Override
@@ -112,8 +103,13 @@ public class FacebookConfirmationActivity extends BaseActivity<FacebookConfirmat
       finish();
     } else {
       final Intent intent = new Intent(this, DiscoveryActivity.class)
+        .setAction(Intent.ACTION_MAIN)
         .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
       startActivity(intent);
     }
+  }
+
+  private void prefillEmail(final @NonNull String email) {
+    emailTextView.setText(email);
   }
 }

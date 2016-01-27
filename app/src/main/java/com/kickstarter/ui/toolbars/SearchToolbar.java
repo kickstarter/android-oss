@@ -22,15 +22,15 @@ public final class SearchToolbar extends KSToolbar {
   public @Bind(R.id.clear_button) IconButton clearButton;
   public @Bind(R.id.search_edit_text) EditText searchEditText;
 
-  public SearchToolbar(@NonNull final Context context) {
+  public SearchToolbar(final @NonNull Context context) {
     super(context);
   }
 
-  public SearchToolbar(@NonNull final Context context, @Nullable final AttributeSet attrs) {
+  public SearchToolbar(final @NonNull Context context, final @Nullable AttributeSet attrs) {
     super(context, attrs);
   }
 
-  public SearchToolbar(@NonNull final Context context, @Nullable final AttributeSet attrs, final int defStyleAttr) {
+  public SearchToolbar(final @NonNull Context context, final @Nullable AttributeSet attrs, final int defStyleAttr) {
     super(context, attrs, defStyleAttr);
   }
 

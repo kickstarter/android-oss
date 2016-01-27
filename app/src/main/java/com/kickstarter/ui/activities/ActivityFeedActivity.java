@@ -22,6 +22,7 @@ import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ActivityFeedAdapter;
+import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.viewmodels.ActivityFeedViewModel;
 
 import java.util.List;
@@ -73,28 +74,29 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
       .filter(loggedIn -> !loggedIn)
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> this.showLoggedOutEmptyState());
+      .subscribe(__ -> adapter.takeLoggedOutEmptyState());
+
+    viewModel.outputs.userForLoggedInEmptyState()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(adapter::takeLoggedInUserForEmptyState);
   }
 
   @Override
   protected void onDestroy() {
     super.onDestroy();
     recyclerViewPaginator.stop();
+    recyclerView.setAdapter(null);
   }
 
   public void showActivities(final @NonNull List<Activity> activities) {
     adapter.takeActivities(activities);
   }
 
-  public void showLoggedOutEmptyState() {
-    adapter.takeLoggedOutEmptyState();
-  }
-
   public void activityFeedLogin() {
     final Intent intent = new Intent(this, LoginToutActivity.class)
-      .putExtra(IntentKey.FORWARD, true)
-      .putExtra(IntentKey.LOGIN_TYPE, LoginToutActivity.REASON_GENERIC);
-    startActivityForResult(intent, ActivityRequestCodes.ACTIVITY_FEED_ACTIVITY_LOGIN_TOUT_ACTIVITY_USER_REQUIRED);
+      .putExtra(IntentKey.LOGIN_REASON, LoginReason.ACTIVITY_FEED);
+    startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
   }
 
   public void discoverProjectsButtonOnClick() {

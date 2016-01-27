@@ -1,11 +1,8 @@
 package com.kickstarter.libs.utils;
 
-import com.kickstarter.ui.intents.IntentAction;
-
 import junit.framework.TestCase;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import rx.functions.Func2;

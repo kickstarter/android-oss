@@ -232,7 +232,7 @@ public final class ApiPaginator<Data, Envelope, Params> {
     try {
       final URL url = new URL(envelopeToMoreUrl.call(envelope));
       _morePath.onNext(pathAndQueryFromURL(url));
-    } catch (MalformedURLException e) {}
+    } catch (MalformedURLException ignored) {}
   }
 
   private @NonNull String pathAndQueryFromURL(final @NonNull URL url) {

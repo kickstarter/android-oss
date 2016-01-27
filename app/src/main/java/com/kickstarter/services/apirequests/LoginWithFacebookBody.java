@@ -11,7 +11,7 @@ import auto.parcel.AutoParcel;
 @AutoParcel
 public abstract class LoginWithFacebookBody implements Parcelable {
   public abstract String accessToken();
-  @Nullable public abstract String code();
+  public abstract @Nullable String code();
 
   @AutoParcel.Builder
   public abstract static class Builder {

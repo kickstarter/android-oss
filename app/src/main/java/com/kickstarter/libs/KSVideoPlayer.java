@@ -31,7 +31,7 @@ public final class KSVideoPlayer implements ExoPlayer.Listener {
     void buildRenderers(KSVideoPlayer player);
   }
 
-  public KSVideoPlayer(@NonNull final RendererBuilder rendererBuilder) {
+  public KSVideoPlayer(final @NonNull RendererBuilder rendererBuilder) {
     this.player = ExoPlayer.Factory.newInstance(TRACK_RENDERER_COUNT);
     this.rendererBuilder = rendererBuilder;
     playerControl = new PlayerControl(player);
@@ -49,7 +49,7 @@ public final class KSVideoPlayer implements ExoPlayer.Listener {
   }
 
   @Override
-  public void onPlayerError(@NonNull final ExoPlaybackException error) {
+  public void onPlayerError(final @NonNull ExoPlaybackException error) {
 
   }
 
@@ -87,8 +87,8 @@ public final class KSVideoPlayer implements ExoPlayer.Listener {
     rendererBuilder.buildRenderers(this);
   }
 
-  public void prepareRenderers(@NonNull final MediaCodecVideoTrackRenderer videoRenderer,
-    @NonNull final MediaCodecAudioTrackRenderer audioTrackRenderer) {
+  public void prepareRenderers(final @NonNull MediaCodecVideoTrackRenderer videoRenderer,
+    final @NonNull MediaCodecAudioTrackRenderer audioTrackRenderer) {
     this.videoRenderer = videoRenderer;
     player.sendMessage(videoRenderer, MediaCodecVideoTrackRenderer.MSG_SET_SURFACE, surface);
     player.prepare(videoRenderer, audioTrackRenderer);
@@ -115,7 +115,7 @@ public final class KSVideoPlayer implements ExoPlayer.Listener {
     player.seekTo(position);
   }
 
-  public void setListener(@NonNull final Listener listener) {
+  public void setListener(final @NonNull Listener listener) {
     this.listener = listener;
   }
 
@@ -123,7 +123,7 @@ public final class KSVideoPlayer implements ExoPlayer.Listener {
     player.setPlayWhenReady(playWhenReady);
   }
 
-  public void setSurface(@NonNull final Surface surface) {
+  public void setSurface(final @NonNull Surface surface) {
     this.surface = surface;
     pushSurface(false);
   }

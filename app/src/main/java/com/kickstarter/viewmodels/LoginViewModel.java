@@ -15,6 +15,7 @@ import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.LoginActivity;
 import com.kickstarter.viewmodels.errors.LoginViewModelErrors;
 import com.kickstarter.viewmodels.inputs.LoginViewModelInputs;
@@ -24,6 +25,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public final class LoginViewModel extends ViewModel<LoginActivity> implements LoginViewModelInputs, LoginViewModelOutputs, LoginViewModelErrors {
@@ -33,8 +35,13 @@ public final class LoginViewModel extends ViewModel<LoginActivity> implements Lo
   private final PublishSubject<String> password = PublishSubject.create();
 
   // OUTPUTS
+  private final BehaviorSubject<String> prefillEmailFromPasswordReset = BehaviorSubject.create();
+  public @NonNull Observable<String> prefillEmailFromPasswordReset() {
+    return prefillEmailFromPasswordReset;
+  }
+
   private final PublishSubject<Void> loginSuccess = PublishSubject.create();
-  public final Observable<Void> loginSuccess() {
+  public @NonNull Observable<Void> loginSuccess() {
     return loginSuccess.asObservable();
   }
 
@@ -65,7 +72,7 @@ public final class LoginViewModel extends ViewModel<LoginActivity> implements Lo
   public final LoginViewModelErrors errors = this;
 
   @Override
-  public void email(@NonNull final String s) {
+  public void email(final @NonNull String s) {
     email.onNext(s);
   }
 
@@ -75,12 +82,12 @@ public final class LoginViewModel extends ViewModel<LoginActivity> implements Lo
   }
 
   @Override
-  public void password(@NonNull final String s) {
+  public void password(final @NonNull String s) {
     password.onNext(s);
   }
 
   @Override
-  protected void onCreate(@NonNull final Context context, @Nullable Bundle savedInstanceState) {
+  protected void onCreate(final @NonNull Context context, @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
@@ -90,39 +97,46 @@ public final class LoginViewModel extends ViewModel<LoginActivity> implements Lo
     final Observable<Boolean> isValid = emailAndPassword
       .map(ep -> LoginViewModel.isValid(ep.first, ep.second));
 
-    addSubscription(view
-        .compose(Transformers.combineLatestPair(isValid))
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(viewAndValid -> viewAndValid.first.setFormEnabled(viewAndValid.second))
-    );
+    intent
+      .map(i -> i.getStringExtra(IntentKey.EMAIL))
+      .ofType(String.class)
+      .compose(bindToLifecycle())
+      .subscribe(prefillEmailFromPasswordReset::onNext);
 
-    addSubscription(emailAndPassword
-        .compose(Transformers.takeWhen(loginClick))
-        .switchMap(ep -> submit(ep.first, ep.second))
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this::success)
-    );
+    view
+      .compose(Transformers.combineLatestPair(isValid))
+      .observeOn(AndroidSchedulers.mainThread())
+      .compose(bindToLifecycle())
+      .subscribe(viewAndValid -> viewAndValid.first.setFormEnabled(viewAndValid.second));
 
-    addSubscription(loginSuccess.subscribe(__ -> koala.trackLoginSuccess()));
+    emailAndPassword
+      .compose(Transformers.takeWhen(loginClick))
+      .switchMap(ep -> submit(ep.first, ep.second))
+      .observeOn(AndroidSchedulers.mainThread())
+      .compose(bindToLifecycle())
+      .subscribe(this::success);
 
-    addSubscription(invalidLoginError().mergeWith(genericLoginError())
-        .subscribe(__ -> {
-          koala.trackLoginError();
-        })
-    );
+    loginSuccess
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackLoginSuccess());
+
+    invalidLoginError()
+      .mergeWith(genericLoginError())
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackLoginError());
   }
 
-  private static boolean isValid(@NonNull final String email, @NonNull final String password) {
+  private static boolean isValid(final @NonNull String email, final @NonNull String password) {
     return StringUtils.isEmail(email) && password.length() > 0;
   }
 
-  private Observable<AccessTokenEnvelope> submit(@NonNull final String email, @NonNull final String password) {
+  private Observable<AccessTokenEnvelope> submit(final @NonNull String email, final @NonNull String password) {
     return client.login(email, password)
       .compose(Transformers.pipeApiErrorsTo(loginError))
       .compose(Transformers.neverError());
   }
 
-  private void success(@NonNull final AccessTokenEnvelope envelope) {
+  private void success(final @NonNull AccessTokenEnvelope envelope) {
     currentUser.login(envelope.user(), envelope.accessToken());
     loginSuccess.onNext(null);
   }

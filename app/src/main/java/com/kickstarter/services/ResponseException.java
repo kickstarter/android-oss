@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 public class ResponseException extends RuntimeException {
   private final retrofit.Response response;
 
-  public ResponseException(@NonNull final retrofit.Response response) {
+  public ResponseException(final @NonNull retrofit.Response response) {
     this.response = response;
   }
 

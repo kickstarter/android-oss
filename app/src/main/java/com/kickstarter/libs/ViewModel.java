@@ -1,10 +1,16 @@
 package com.kickstarter.libs;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
+
+import com.trello.rxlifecycle.ActivityEvent;
+
+import com.kickstarter.ui.data.ActivityResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,24 +19,42 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
-public class ViewModel<ViewType> {
+public class ViewModel<ViewType extends LifecycleType> {
   @Inject protected Koala koala;
 
   protected final PublishSubject<ViewType> viewChange = PublishSubject.create();
   protected final Observable<ViewType> view = viewChange.filter(v -> v != null);
   private final List<Subscription> subscriptions = new ArrayList<>();
 
+  protected final PublishSubject<ActivityResult> activityResult = PublishSubject.create();
+  /**
+   * Takes activity result data from the activity.
+   */
+  public void activityResult(final @NonNull ActivityResult activityResult) {
+    this.activityResult.onNext(activityResult);
+  }
+
+  // TODO: Justify BehaviorSubject vs PublishSubject
+  protected final BehaviorSubject<Intent> intent = BehaviorSubject.create();
+  /*
+   * Takes intent data from the view.
+   */
+  public void intent(final @NonNull Intent intent) {
+    this.intent.onNext(intent);
+  }
+
   @CallSuper
-  protected void onCreate(@NonNull final Context context, @Nullable final Bundle savedInstanceState) {
+  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     Timber.d("onCreate %s", this.toString());
     dropView();
   }
 
   @CallSuper
-  protected void onResume(@NonNull final ViewType view) {
+  protected void onResume(final @NonNull ViewType view) {
     Timber.d("onResume %s", this.toString());
     onTakeView(view);
   }
@@ -50,7 +74,7 @@ public class ViewModel<ViewType> {
     viewChange.onCompleted();
   }
 
-  private void onTakeView(@NonNull final ViewType view) {
+  private void onTakeView(final @NonNull ViewType view) {
     Timber.d("onTakeView %s %s", this.toString(), view.toString());
     viewChange.onNext(view);
   }
@@ -60,21 +84,44 @@ public class ViewModel<ViewType> {
     viewChange.onNext(null);
   }
 
-  public final Observable<ViewType> view() {
+  protected final Observable<ViewType> view() {
     return view;
   }
 
-  public final PublishSubject<ViewType> viewChange() {
-    return viewChange;
-  }
-
-  public final void addSubscription(@NonNull final Subscription subscription) {
+  @Deprecated
+  public final void addSubscription(final @NonNull Subscription subscription) {
     subscriptions.add(subscription);
   }
 
   @CallSuper
-  protected void save(@NonNull final Bundle state) {
+  protected void save(final @NonNull Bundle state) {
     Timber.d("save %s", this.toString());
     // TODO
+  }
+
+  /**
+   * By composing this transformer with an observable you guarantee that every observable in your view model
+   * will be properly completed when the view model completes.
+   *
+   * It is required that *every* observable in a view model do `.compose(bindToLifecycle())` before calling
+   * `subscribe`.
+   */
+  public @NonNull <T> Observable.Transformer<T, T> bindToLifecycle() {
+    return source -> source.takeUntil(
+      view.flatMap(v -> v.lifecycle().map(e -> Pair.create(v, e)))
+        .filter(ve -> isFinished(ve.first, ve.second))
+    );
+  }
+
+  /**
+   * Determines from a view and lifecycle event if the view's life is over.
+   */
+  private boolean isFinished(final @NonNull ViewType view, final @NonNull ActivityEvent event) {
+
+    if (view instanceof BaseActivity) {
+      return event == ActivityEvent.DESTROY && ((BaseActivity) view).isFinishing();
+    }
+
+    return event == ActivityEvent.DESTROY;
   }
 }

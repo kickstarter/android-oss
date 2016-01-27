@@ -1,15 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
-  <include layout="@layout/web_view_toolbar" />
+  <include
+    android:id="@+id/web_view_toolbar"
+    layout="@layout/web_view_toolbar"/>
 
   <com.kickstarter.ui.views.KSWebView
     android:id="@+id/web_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent"
+    android:layout_below="@id/web_view_toolbar"/>
 
-</LinearLayout>
+  <RelativeLayout
+    android:id="@+id/checkout_loading_indicator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_below="@id/web_view_toolbar">
 
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/white_alpha_60"/>
+
+    <ProgressBar
+      android:id="@+id/loading_indicator"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerVertical="true"
+      android:layout_centerHorizontal="true"/>
+
+  </RelativeLayout>
+
+</RelativeLayout>

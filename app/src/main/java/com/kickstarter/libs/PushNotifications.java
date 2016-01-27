@@ -79,7 +79,7 @@ public class PushNotifications {
     deviceRegistrar.registerDevice();
   }
 
-  public void add(@NonNull final PushNotificationEnvelope envelope) {
+  public void add(final @NonNull PushNotificationEnvelope envelope) {
     notifications.onNext(envelope);
   }
 

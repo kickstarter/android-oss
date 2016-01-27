@@ -30,21 +30,21 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
   private final KSApplication application;
   private boolean isInBackground = true;
 
-  public ApplicationLifecycleUtil(@NonNull final KSApplication application) {
+  public ApplicationLifecycleUtil(final @NonNull KSApplication application) {
     this.application = application;
     application.component().inject(this);
   }
 
   @Override
-  public void onActivityCreated(@NonNull final Activity activity, @Nullable final Bundle bundle) {
+  public void onActivityCreated(final @NonNull Activity activity, final @Nullable Bundle bundle) {
   }
 
   @Override
-  public void onActivityStarted(@NonNull final Activity activity) {
+  public void onActivityStarted(final @NonNull Activity activity) {
   }
 
   @Override
-  public void onActivityResumed(@NonNull final Activity activity) {
+  public void onActivityResumed(final @NonNull Activity activity) {
     if(isInBackground){
       koala.trackAppOpen();
 
@@ -76,25 +76,25 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
   }
 
   @Override
-  public void onActivityPaused(@NonNull final Activity activity) {
+  public void onActivityPaused(final @NonNull Activity activity) {
     // Facebook: logs 'app deactivate' App Event.
     AppEventsLogger.deactivateApp(activity);
   }
 
   @Override
-  public void onActivityStopped(@NonNull final Activity activity) {
+  public void onActivityStopped(final @NonNull Activity activity) {
   }
 
   @Override
-  public void onActivitySaveInstanceState(@NonNull final Activity activity, @Nullable final Bundle bundle) {
+  public void onActivitySaveInstanceState(final @NonNull Activity activity, final @Nullable Bundle bundle) {
   }
 
   @Override
-  public void onActivityDestroyed(@NonNull final Activity activity) {
+  public void onActivityDestroyed(final @NonNull Activity activity) {
   }
 
   @Override
-  public void onConfigurationChanged(@NonNull final Configuration configuration) {
+  public void onConfigurationChanged(final @NonNull Configuration configuration) {
   }
 
   @Override

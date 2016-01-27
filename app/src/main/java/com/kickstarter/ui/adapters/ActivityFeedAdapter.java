@@ -6,7 +6,7 @@ import android.view.View;
 
 import com.kickstarter.R;
 import com.kickstarter.models.Activity;
-import com.kickstarter.models.Empty;
+import com.kickstarter.models.User;
 import com.kickstarter.ui.viewholders.EmptyActivityFeedViewHolder;
 import com.kickstarter.ui.viewholders.EmptyViewHolder;
 import com.kickstarter.ui.viewholders.FriendBackingViewHolder;
@@ -20,6 +20,9 @@ import java.util.Collections;
 import java.util.List;
 
 public final class ActivityFeedAdapter extends KSAdapter {
+  private static final int SECTION_EMPTY_VIEW = 0;
+  private static final int SECTION_ACTIVITIES_VIEW = 1;
+
   private final Delegate delegate;
 
   public interface Delegate extends FriendBackingViewHolder.Delegate, ProjectStateChangedPositiveViewHolder.Delegate,
@@ -27,49 +30,58 @@ public final class ActivityFeedAdapter extends KSAdapter {
 
   public ActivityFeedAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;
+
+    insertSection(SECTION_EMPTY_VIEW, Collections.emptyList());
+    insertSection(SECTION_ACTIVITIES_VIEW, Collections.emptyList());
   }
 
   public void takeActivities(final @NonNull List<Activity> activities) {
-    sections().clear();
-    if (activities.size() == 0) {
-      addSection(Collections.singletonList(Empty.get()));
-    } else {
-      addSection(activities);
+    if (activities.size() > 0) {
+      setSection(SECTION_EMPTY_VIEW, Collections.emptyList());
+      setSection(SECTION_ACTIVITIES_VIEW, activities);
+      notifyDataSetChanged();
     }
+  }
+
+  public void takeLoggedInUserForEmptyState(final @NonNull User user) {
+    setSection(SECTION_EMPTY_VIEW, Collections.singletonList(user));
     notifyDataSetChanged();
   }
 
   public void takeLoggedOutEmptyState() {
-    sections().clear();
-    sections().add(Collections.singletonList(null));
+    setSection(SECTION_EMPTY_VIEW, Collections.singletonList(null));
     notifyDataSetChanged();
   }
 
   @Override
   protected @LayoutRes int layout(final @NonNull SectionRow sectionRow) {
-    if (objectFromSectionRow(sectionRow) instanceof Activity) {
-      final Activity activity = (Activity) objectFromSectionRow(sectionRow);
-      switch (activity.category()) {
-        case Activity.CATEGORY_BACKING:
-          return R.layout.activity_friend_backing_view;
-        case Activity.CATEGORY_FOLLOW:
-          return R.layout.activity_friend_follow_view;
-        case Activity.CATEGORY_FAILURE:
-        case Activity.CATEGORY_CANCELLATION:
-        case Activity.CATEGORY_SUSPENSION:
-          return R.layout.activity_project_state_changed_view;
-        case Activity.CATEGORY_LAUNCH:
-        case Activity.CATEGORY_SUCCESS:
-          return R.layout.activity_project_state_changed_positive_view;
-        case Activity.CATEGORY_UPDATE:
-          return R.layout.activity_project_update_view;
-        default:
-          return R.layout.empty_view;
-      }
-    } else {
+    if (sectionRow.section() == SECTION_EMPTY_VIEW) {
       return R.layout.empty_activity_feed_view;
+    } else if (sectionRow.section() == SECTION_ACTIVITIES_VIEW) {
+      if (objectFromSectionRow(sectionRow) instanceof Activity) {
+        final Activity activity = (Activity) objectFromSectionRow(sectionRow);
+        switch (activity.category()) {
+          case Activity.CATEGORY_BACKING:
+            return R.layout.activity_friend_backing_view;
+          case Activity.CATEGORY_FOLLOW:
+            return R.layout.activity_friend_follow_view;
+          case Activity.CATEGORY_FAILURE:
+          case Activity.CATEGORY_CANCELLATION:
+          case Activity.CATEGORY_SUSPENSION:
+            return R.layout.activity_project_state_changed_view;
+          case Activity.CATEGORY_LAUNCH:
+          case Activity.CATEGORY_SUCCESS:
+            return R.layout.activity_project_state_changed_positive_view;
+          case Activity.CATEGORY_UPDATE:
+            return R.layout.activity_project_update_view;
+          default:
+            return R.layout.empty_view;
+        }
+      }
     }
+    return R.layout.empty_view;
   }
+
 
   @Override
   protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {

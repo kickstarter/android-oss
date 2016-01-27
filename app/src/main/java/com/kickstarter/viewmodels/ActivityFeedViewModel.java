@@ -12,6 +12,7 @@ import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
@@ -64,6 +65,10 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
   public final Observable<Boolean> showLoggedOutEmptyState() {
     return showLoggedOutEmptyState;
   }
+  private final BehaviorSubject<User> userForLoggedInEmptyState = BehaviorSubject.create();
+  public final Observable<User> userForLoggedInEmptyState() {
+    return userForLoggedInEmptyState;
+  }
   private final PublishSubject<Boolean> isFetchingActivities = PublishSubject.create();
   public final Observable<Boolean> isFetchingActivities() {
     return isFetchingActivities;
@@ -91,6 +96,7 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
     paginator.paginatedData
       .compose(bindToLifecycle())
       .subscribe(activities);
+
     paginator.isFetching
       .compose(bindToLifecycle())
       .subscribe(isFetchingActivities);
@@ -103,6 +109,12 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
     currentUser.isLoggedIn()
       .compose(bindToLifecycle())
       .subscribe(showLoggedOutEmptyState);
+
+    activities
+      .filter(List::isEmpty)
+      .switchMap(__ -> currentUser.loggedInUser())
+      .compose(bindToLifecycle())
+      .subscribe(userForLoggedInEmptyState::onNext);
 
     view
       .compose(Transformers.takeWhen(discoverProjectsClick))

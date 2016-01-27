@@ -24,7 +24,7 @@ public class KSColorUtils {
    * @param alpha   the new alpha value, between 0 and 255.
    */
   public static @ColorInt int setAlpha(final int color, @IntRange(from=0, to=255) final int alpha) {
-    return color | (alpha << 24);
+    return (color & 0x00FFFFFF) | (alpha << 24);
   }
 
   public static @ColorInt int darkColor(final Context context) {

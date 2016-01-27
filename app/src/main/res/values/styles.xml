@@ -177,6 +177,13 @@
     <item name="android:fontFamily">@string/font_family_medium</item>
   </style>
 
+  <style name="ActivitySampleSeeAllButton" parent="BorderButton">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_marginTop">@dimen/grid_5_half</item>
+    <item name="android:layout_marginBottom">@dimen/grid_3</item>
+    <item name="android:text">@string/discovery_activity_sample_button_see_all_activity</item>
+  </style>
+
   <style name="KSSettingsMailIcon">
     <item name="android:text">@string/mail_icon</item>
     <item name="android:focusable">true</item>
@@ -346,6 +353,21 @@
     <item name="android:layout_marginEnd">@dimen/activity_padding_x</item>
     <item name="android:layout_marginLeft">@dimen/activity_padding_x</item>
     <item name="android:layout_marginRight">@dimen/activity_padding_x</item>
+  </style>
+
+  <style name="ActivitySampleCard">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="cardCornerRadius">4dp</item>
+    <item name="cardBackgroundColor">@color/white</item>
+    <item name="cardElevation">@dimen/card_elevation</item>
+    <item name="android:focusable">true</item>
+    <item name="android:layout_marginBottom">@dimen/grid_1</item>
+    <item name="android:layout_marginTop">@dimen/grid_3</item>
+    <item name="android:layout_marginLeft">@dimen/grid_2</item>
+    <item name="android:layout_marginStart">@dimen/grid_2</item>
+    <item name="android:layout_marginRight">@dimen/grid_2</item>
+    <item name="android:layout_marginEnd">@dimen/grid_2</item>
   </style>
 
 </resources>

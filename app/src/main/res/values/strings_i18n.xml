@@ -290,6 +290,7 @@
   <string name="discovery_activity_sample_alert_follow_friend_name" formatted="false">Follow %{friend_name}?</string>
   <string name="discovery_activity_sample_button_see_all_activity" formatted="false">See all activity</string>
   <string name="discovery_activity_sample_title_Since_your_last_visit" formatted="false">Since your last visit</string>
+  <string name="discovery_activity_sample_title_since_youve_been_gone" formatted="false">Since you\'ve been gone...</string>
   <string name="discovery_all_of_scope" formatted="false">All of %{scope}</string>
   <string name="discovery_backing" formatted="false">Backing</string>
   <string name="discovery_baseball_card_accessibility_category_label" formatted="false">Category</string>

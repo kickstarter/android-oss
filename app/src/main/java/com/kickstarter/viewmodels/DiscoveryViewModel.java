@@ -34,9 +34,11 @@ import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
+import com.kickstarter.ui.viewholders.ActivitySampleFriendBackingViewHolder;
+import com.kickstarter.ui.viewholders.ActivitySampleFriendFollowViewHolder;
+import com.kickstarter.ui.viewholders.ActivitySampleProjectViewHolder;
 import com.kickstarter.ui.data.ActivityResult;
 import com.kickstarter.ui.intentmappers.DiscoveryIntentMapper;
-import com.kickstarter.ui.viewholders.DiscoveryActivityViewHolder;
 import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.ChildFilterViewHolder;
@@ -144,18 +146,36 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   // ACTIVITY SAMPLE DELEGATE INPUTS
   private PublishSubject<Project> clickActivityProject = PublishSubject.create();
   @Override
-  public void discoveryActivityViewHolderProjectClicked(final @NonNull DiscoveryActivityViewHolder viewHolder, final @NonNull Project project) {
-    clickActivityProject.onNext(project);
-  }
-
-  @Override
-  public void discoveryActivityViewHolderSeeActivityClicked(final @NonNull DiscoveryActivityViewHolder viewHolder) {
-    showActivityFeed.onNext(null);
-  }
-
-  @Override
-  public void discoveryActivityViewHolderUpdateClicked(final @NonNull DiscoveryActivityViewHolder viewHolder, final @NonNull Activity activity) {
+  public void activitySampleProjectViewHolderUpdateClicked(final @NonNull ActivitySampleProjectViewHolder viewHolder,
+    final @NonNull Activity activity) {
     showActivityUpdate.onNext(activity);
+  }
+
+  @Override
+  public void activitySampleProjectViewHolderProjectClicked(final @NonNull ActivitySampleProjectViewHolder viewHolder,
+    final @NonNull Project project) {
+    activitySampleProjectClicked(project);
+  }
+
+  @Override
+  public void activitySampleFriendBackingViewHolderProjectClicked(final @NonNull ActivitySampleFriendBackingViewHolder viewHolder,
+    final @NonNull Project project) {
+    activitySampleProjectClicked(project);
+  }
+
+  @Override
+  public void activitySampleFriendBackingViewHolderSeeActivityClicked(final @NonNull ActivitySampleFriendBackingViewHolder viewHolder) {
+    seeActivityClicked();
+  }
+
+  @Override
+  public void activitySampleFriendFollowViewHolderSeeActivityClicked(final @NonNull ActivitySampleFriendFollowViewHolder viewHolder) {
+    seeActivityClicked();
+  }
+
+  @Override
+  public void activitySampleProjectViewHolderSeeActivityClicked(final @NonNull ActivitySampleProjectViewHolder viewHolder) {
+    seeActivityClicked();
   }
 
   // OUTPUTS
@@ -467,5 +487,13 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     if (activity != null) {
       activitySamplePreference.set((int) activity.id());
     }
+  }
+
+  private void seeActivityClicked() {
+    showActivityFeed.onNext(null);
+  }
+
+  private void activitySampleProjectClicked(final @NonNull Project project) {
+    clickActivityProject.onNext(project);
   }
 }

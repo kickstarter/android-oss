@@ -8,7 +8,9 @@ import android.view.View;
 import com.kickstarter.R;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
-import com.kickstarter.ui.viewholders.DiscoveryActivityViewHolder;
+import com.kickstarter.ui.viewholders.ActivitySampleFriendBackingViewHolder;
+import com.kickstarter.ui.viewholders.ActivitySampleFriendFollowViewHolder;
+import com.kickstarter.ui.viewholders.ActivitySampleProjectViewHolder;
 import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
 import com.kickstarter.ui.viewholders.EmptyViewHolder;
 import com.kickstarter.ui.viewholders.KSViewHolder;
@@ -25,7 +27,8 @@ public final class DiscoveryAdapter extends KSAdapter {
   private final Delegate delegate;
 
   public interface Delegate extends ProjectCardViewHolder.Delegate, DiscoveryOnboardingViewHolder.Delegate,
-  DiscoveryActivityViewHolder.Delegate {}
+    ActivitySampleFriendFollowViewHolder.Delegate, ActivitySampleFriendBackingViewHolder.Delegate,
+    ActivitySampleProjectViewHolder.Delegate {}
 
   public DiscoveryAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;
@@ -63,7 +66,17 @@ public final class DiscoveryAdapter extends KSAdapter {
     if (sectionRow.section() == SECTION_ONBOARDING_VIEW) {
       return R.layout.discovery_onboarding_view;
     } else if (sectionRow.section() == SECTION_ACTIVITY_SAMPLE_VIEW) {
-      return R.layout.discovery_activity_sample_view;
+      if (objectFromSectionRow(sectionRow) instanceof Activity) {
+        final Activity activity = (Activity) objectFromSectionRow(sectionRow);
+        if (activity.category().equals(Activity.CATEGORY_BACKING)) {
+          return R.layout.activity_sample_friend_backing_view;
+        } else if (activity.category().equals(Activity.CATEGORY_FOLLOW)) {
+          return R.layout.activity_sample_friend_follow_view;
+        } else {
+          return R.layout.activity_sample_project_view;
+        }
+      }
+      return R.layout.empty_view;
     } else {
       return R.layout.project_card_view;
     }
@@ -74,10 +87,14 @@ public final class DiscoveryAdapter extends KSAdapter {
     switch (layout) {
       case R.layout.discovery_onboarding_view:
         return new DiscoveryOnboardingViewHolder(view, delegate);
-      case R.layout.discovery_activity_sample_view:
-        return new DiscoveryActivityViewHolder(view, delegate);
       case R.layout.project_card_view:
         return new ProjectCardViewHolder(view, delegate);
+      case R.layout.activity_sample_friend_backing_view:
+        return new ActivitySampleFriendBackingViewHolder(view, delegate);
+      case R.layout.activity_sample_friend_follow_view:
+        return new ActivitySampleFriendFollowViewHolder(view, delegate);
+      case R.layout.activity_sample_project_view:
+        return new ActivitySampleProjectViewHolder(view, delegate);
       default:
         return new EmptyViewHolder(view);
     }

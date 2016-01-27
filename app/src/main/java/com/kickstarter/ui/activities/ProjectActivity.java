@@ -147,6 +147,11 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
       .subscribe(__ -> this.startLoginToutActivity());
   }
 
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    projectRecyclerView.setAdapter(null);
+  }
   private void renderProject(final @NonNull Project project, final @NonNull String configCountry) {
     adapter.takeProject(project, configCountry);
     ProjectUtils.setActionButton(project, backProjectButton, managePledgeButton, viewPledgeButton);

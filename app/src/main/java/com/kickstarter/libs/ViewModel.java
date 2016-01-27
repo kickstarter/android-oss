@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
+
+import com.trello.rxlifecycle.ActivityEvent;
 
 import com.kickstarter.ui.data.ActivityResult;
 
@@ -20,7 +23,7 @@ import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
-public class ViewModel<ViewType> {
+public class ViewModel<ViewType extends LifecycleType> {
   @Inject protected Koala koala;
 
   protected final PublishSubject<ViewType> viewChange = PublishSubject.create();
@@ -81,14 +84,11 @@ public class ViewModel<ViewType> {
     viewChange.onNext(null);
   }
 
-  public final Observable<ViewType> view() {
+  protected final Observable<ViewType> view() {
     return view;
   }
 
-  public final PublishSubject<ViewType> viewChange() {
-    return viewChange;
-  }
-
+  @Deprecated
   public final void addSubscription(final @NonNull Subscription subscription) {
     subscriptions.add(subscription);
   }
@@ -97,5 +97,31 @@ public class ViewModel<ViewType> {
   protected void save(final @NonNull Bundle state) {
     Timber.d("save %s", this.toString());
     // TODO
+  }
+
+  /**
+   * By composing this transformer with an observable you guarantee that every observable in your view model
+   * will be properly completed when the view model completes.
+   *
+   * It is required that *every* observable in a view model do `.compose(bindToLifecycle())` before calling
+   * `subscribe`.
+   */
+  public @NonNull <T> Observable.Transformer<T, T> bindToLifecycle() {
+    return source -> source.takeUntil(
+      view.flatMap(v -> v.lifecycle().map(e -> Pair.create(v, e)))
+        .filter(ve -> isFinished(ve.first, ve.second))
+    );
+  }
+
+  /**
+   * Determines from a view and lifecycle event if the view's life is over.
+   */
+  private boolean isFinished(final @NonNull ViewType view, final @NonNull ActivityEvent event) {
+
+    if (view instanceof BaseActivity) {
+      return event == ActivityEvent.DESTROY && ((BaseActivity) view).isFinishing();
+    }
+
+    return event == ActivityEvent.DESTROY;
   }
 }

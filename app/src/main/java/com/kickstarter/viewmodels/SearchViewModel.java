@@ -69,19 +69,20 @@ public final class SearchViewModel extends ViewModel<SearchActivity> implements 
         .loadWithPaginationPath(apiClient::fetchProjects)
         .build();
 
-    search.subscribe(__ -> searchProjects.onNext(ListUtils.empty()));
+    search
+      .compose(bindToLifecycle())
+      .subscribe(__ -> searchProjects.onNext(ListUtils.empty()));
 
-    addSubscription(
-      params
-        .compose(Transformers.takePairWhen(paginator.paginatedData))
-        .subscribe(paramsAndProjects -> {
-          if (paramsAndProjects.first.sort() == DiscoveryParams.Sort.POPULAR) {
-            popularProjects.onNext(paramsAndProjects.second);
-          } else {
-            searchProjects.onNext(paramsAndProjects.second);
-          }
-        })
-    );
+    params
+      .compose(Transformers.takePairWhen(paginator.paginatedData))
+      .compose(bindToLifecycle())
+      .subscribe(paramsAndProjects -> {
+        if (paramsAndProjects.first.sort() == DiscoveryParams.Sort.POPULAR) {
+          popularProjects.onNext(paramsAndProjects.second);
+        } else {
+          searchProjects.onNext(paramsAndProjects.second);
+        }
+      });
 
     // Track us viewing this page
     koala.trackSearchView();
@@ -91,10 +92,10 @@ public final class SearchViewModel extends ViewModel<SearchActivity> implements 
     final Observable<String> query = params
       .filter(p -> p.sort() == DiscoveryParams.Sort.POPULAR)
       .map(DiscoveryParams::term);
-    addSubscription(query
+    query
       .compose(Transformers.takePairWhen(pageCount))
-      .subscribe(qp -> koala.trackSearchResults(qp.first, qp.second))
-    );
+      .compose(bindToLifecycle())
+      .subscribe(qp -> koala.trackSearchResults(qp.first, qp.second));
   }
 
   private @NonNull DiscoveryParams paramsFromSearch(final @NonNull String search) {

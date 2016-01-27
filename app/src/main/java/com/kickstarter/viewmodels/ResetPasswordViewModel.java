@@ -71,15 +71,16 @@ public final class ResetPasswordViewModel extends ViewModel<ResetPasswordActivit
 
   public ResetPasswordViewModel() {
 
-    addSubscription(email
+    email
         .map(StringUtils::isEmail)
-        .subscribe(isFormValid)
-    );
+      .compose(bindToLifecycle())
+      .subscribe(isFormValid);
 
-    addSubscription(email
+    email
       .compose(Transformers.takeWhen(resetPasswordClick))
       .switchMap(this::submitEmail)
-      .subscribe(__ -> success()));
+      .compose(bindToLifecycle())
+      .subscribe(__ -> success());
   }
 
   @Override
@@ -87,9 +88,13 @@ public final class ResetPasswordViewModel extends ViewModel<ResetPasswordActivit
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    addSubscription(resetError.subscribe(__ -> koala.trackResetPasswordError()));
+    resetError
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackResetPasswordError());
 
-    addSubscription(resetSuccess.subscribe(__ -> koala.trackResetPasswordSuccess()));
+    resetSuccess
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackResetPasswordSuccess());
 
     koala.trackResetPasswordFormView();
   }

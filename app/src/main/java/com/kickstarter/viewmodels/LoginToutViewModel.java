@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookAuthorizationException;
@@ -35,7 +34,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
-import timber.log.Timber;
 
 public final class LoginToutViewModel extends ViewModel<LoginToutActivity> implements LoginToutViewModelInputs,
   LoginToutViewModelOutputs, LoginToutViewModelErrors {
@@ -136,46 +134,58 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
       .switchMap(this::loginWithFacebookAccessToken)
       .share();
 
-    addSubscription(intent
+    intent
       .map(i -> i.getSerializableExtra(IntentKey.LOGIN_REASON))
       .ofType(LoginReason.class)
-      .subscribe(loginReason::onNext));
+      .compose(bindToLifecycle())
+      .subscribe(loginReason::onNext);
 
-    addSubscription(loginReason.take(1).subscribe(koala::trackLoginRegisterTout));
+    loginReason.take(1)
+      .compose(bindToLifecycle())
+      .subscribe(koala::trackLoginRegisterTout);
 
-    addSubscription(loginError.subscribe(__ -> koala.trackLoginError()));
+    loginError
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackLoginError());
 
-    addSubscription(activityResult
-        .subscribe(r -> callbackManager.onActivityResult(r.requestCode(), r.resultCode(), r.intent()))
-    );
+    activityResult
+      .compose(bindToLifecycle())
+      .subscribe(r -> callbackManager.onActivityResult(r.requestCode(), r.resultCode(), r.intent()));
 
-    addSubscription(facebookAuthorizationError
-        .subscribe(this::clearFacebookSession)
-    );
+    facebookAuthorizationError
+      .compose(bindToLifecycle())
+      .subscribe(this::clearFacebookSession);
 
-    addSubscription(facebookLoginSuccess.subscribe(envelope -> {
-      currentUser.login(envelope.user(), envelope.accessToken());
-      finishWithSuccessfulResult.onNext(null);
-    }));
+    facebookLoginSuccess
+      .compose(bindToLifecycle())
+      .subscribe(envelope -> {
+        currentUser.login(envelope.user(), envelope.accessToken());
+        finishWithSuccessfulResult.onNext(null);
+      });
 
-    addSubscription(facebookLoginSuccess.subscribe(__ -> koala.trackFacebookLoginSuccess()));
+    loginError
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackLoginError());
 
-    addSubscription(loginClick
-      .subscribe(startLogin::onNext));
+    loginClick
+      .compose(bindToLifecycle())
+      .subscribe(startLogin::onNext);
 
-    addSubscription(signupClick
-      .subscribe(startSignup::onNext));
+    signupClick
+      .compose(bindToLifecycle())
+      .subscribe(startSignup::onNext);
 
-    addSubscription(missingFacebookEmailError()
+    missingFacebookEmailError()
       .mergeWith(facebookInvalidAccessTokenError())
       .mergeWith(facebookAuthorizationError())
-      .subscribe(__ -> koala.trackFacebookLoginError()));
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackFacebookLoginError());
 
-    addSubscription(activityResult
+    activityResult
       .filter(r -> r.isRequestCode(ActivityRequestCodes.LOGIN_FLOW))
       .filter(ActivityResult::isOk)
-      .subscribe(__ -> finishWithSuccessfulResult.onNext(null))
-    );
+      .compose(bindToLifecycle())
+      .subscribe(__ -> finishWithSuccessfulResult.onNext(null));
   }
 
   private void clearFacebookSession(final @NonNull FacebookException e) {
@@ -192,7 +202,7 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
     callbackManager = CallbackManager.Factory.create();
     LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
       @Override
-      public void onSuccess(@NonNull final LoginResult result) {
+      public void onSuccess(final @NonNull LoginResult result) {
         facebookAccessToken.onNext(result.getAccessToken().getToken());
       }
 
@@ -202,7 +212,7 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
       }
 
       @Override
-      public void onError(@NonNull final FacebookException error) {
+      public void onError(final @NonNull FacebookException error) {
         if (error instanceof FacebookAuthorizationException) {
           facebookAuthorizationError.onNext(error);
         }

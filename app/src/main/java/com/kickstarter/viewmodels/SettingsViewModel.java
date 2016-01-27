@@ -140,64 +140,57 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    addSubscription(
-      client.fetchCurrentUser()
-        .retry(2)
-        .compose(Transformers.neverError())
-        .subscribe(currentUser::refresh)
-    );
+    client.fetchCurrentUser()
+      .retry(2)
+      .compose(Transformers.neverError())
+      .compose(bindToLifecycle())
+      .subscribe(currentUser::refresh);
 
-    addSubscription(
-      currentUser.observable()
-        .take(1)
-        .subscribe(userOutput::onNext)
-    );
+    currentUser.observable()
+      .take(1)
+      .compose(bindToLifecycle())
+      .subscribe(userOutput::onNext);
 
-    addSubscription(
-      userInput
-        .concatMap(this::updateSettings)
-        .subscribe(this::success)
-    );
+    userInput
+      .concatMap(this::updateSettings)
+      .compose(bindToLifecycle())
+      .subscribe(this::success);
 
-    addSubscription(
-      userInput
-        .subscribe(userOutput)
-    );
+    userInput
+      .compose(bindToLifecycle())
+      .subscribe(userOutput);
 
-    addSubscription(
-      userOutput
-        .window(2, 1)
-        .flatMap(Observable::toList)
-        .map(ListUtils::first)
-        .compose(Transformers.takeWhen(unableToSavePreferenceError))
-        .subscribe(userOutput)
-    );
+    userOutput
+      .window(2, 1)
+      .flatMap(Observable::toList)
+      .map(ListUtils::first)
+      .compose(Transformers.takeWhen(unableToSavePreferenceError))
+      .compose(bindToLifecycle())
+      .subscribe(userOutput);
 
-    addSubscription(
-      currentUser.observable()
-        .compose(Transformers.takePairWhen(newsletterInput))
-        .filter(us -> requiresDoubleOptIn(us.first, us.second.first))
-        .map(us -> us.second.second)
-        .subscribe(sendNewsletterConfirmation)
-    );
+    currentUser.observable()
+      .compose(Transformers.takePairWhen(newsletterInput))
+      .filter(us -> requiresDoubleOptIn(us.first, us.second.first))
+      .map(us -> us.second.second)
+      .compose(bindToLifecycle())
+      .subscribe(sendNewsletterConfirmation);
 
-    addSubscription(
-      contactEmailClicked.subscribe(__ -> koala.trackContactEmailClicked())
-    );
 
-    addSubscription(
-      newsletterInput
-        .map(bs -> bs.first)
-        .subscribe(koala::trackNewsletterToggle)
-    );
+    contactEmailClicked
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackContactEmailClicked());
 
-    addSubscription(
-      confirmLogoutClicked
-        .subscribe(__ -> {
-          koala.trackLogout();
-          logout.onNext(null);
-        })
-    );
+    newsletterInput
+      .map(bs -> bs.first)
+      .compose(bindToLifecycle())
+      .subscribe(koala::trackNewsletterToggle);
+
+    confirmLogoutClicked
+      .compose(bindToLifecycle())
+      .subscribe(__ -> {
+        koala.trackLogout();
+        logout.onNext(null);
+      });
 
     koala.trackSettingsView();
   }

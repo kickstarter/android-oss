@@ -44,30 +44,28 @@ public final class WebViewViewModel extends ViewModel<WebViewActivity> implement
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    addSubscription(
-      intent
-        .map(i -> i.getStringExtra(IntentKey.TOOLBAR_TITLE))
-        .ofType(String.class)
-        .subscribe(toolbarTitle::onNext)
-    );
+    intent
+      .map(i -> i.getStringExtra(IntentKey.TOOLBAR_TITLE))
+      .ofType(String.class)
+      .compose(bindToLifecycle())
+      .subscribe(toolbarTitle::onNext);
 
-    addSubscription(
-      intent
-        .map(i -> i.getStringExtra(IntentKey.URL))
-        .ofType(String.class)
-        .subscribe(url::onNext)
-    );
+    intent
+      .map(i -> i.getStringExtra(IntentKey.URL))
+      .ofType(String.class)
+      .compose(bindToLifecycle())
+      .subscribe(url::onNext);
 
-    addSubscription(
-      intent
-        .map(i -> i.getParcelableExtra(IntentKey.PUSH_NOTIFICATION_ENVELOPE))
-        .ofType(PushNotificationEnvelope.class)
-        .subscribe(pushNotificationEnvelope::onNext)
-    );
+    intent
+      .map(i -> i.getParcelableExtra(IntentKey.PUSH_NOTIFICATION_ENVELOPE))
+      .ofType(PushNotificationEnvelope.class)
+      .compose(bindToLifecycle())
+      .subscribe(pushNotificationEnvelope::onNext);
 
     pushNotificationEnvelope
       .filter(ObjectUtils::isNotNull)
       .take(1)
+      .compose(bindToLifecycle())
       .subscribe(koala::trackPushNotification);
   }
 }

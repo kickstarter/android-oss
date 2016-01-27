@@ -161,6 +161,11 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
+    // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
+    final Observable<RefTag> cookieRefTag = project
+      .take(1)
+      .map(p -> RefTagUtils.storedCookieRefTagForProject(p, cookieManager, sharedPreferences));
+
     final Observable<Project> initialProject = intent
       .flatMap(i -> ProjectIntentMapper.project(i, client))
       .share();
@@ -190,54 +195,55 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
       .switchMap(this::starProject)
       .share();
 
-    addSubscription(
-      initialProject
-        .mergeWith(projectOnUserChangeStar)
-        .mergeWith(starredProjectOnLoginSuccess)
-        .subscribe(this.project::onNext)
-    );
+    initialProject
+      .mergeWith(projectOnUserChangeStar)
+      .mergeWith(starredProjectOnLoginSuccess)
+      .compose(bindToLifecycle())
+      .subscribe(this.project::onNext);
 
-    addSubscription(
-      projectOnUserChangeStar.mergeWith(starredProjectOnLoginSuccess)
-        .filter(Project::isStarred)
-        .filter(Project::isLive)
-        .filter(p -> !p.isApproachingDeadline())
-        .subscribe(__ -> this.showStarredPrompt.onNext(null))
-    );
+    projectOnUserChangeStar.mergeWith(starredProjectOnLoginSuccess)
+      .filter(Project::isStarred)
+      .filter(Project::isLive)
+      .filter(p -> !p.isApproachingDeadline())
+      .compose(bindToLifecycle())
+      .subscribe(__ -> this.showStarredPrompt.onNext(null));
 
-    addSubscription(loggedOutUserOnStarClick.subscribe(__ -> this.showLoginTout.onNext(null)));
+    loggedOutUserOnStarClick
+      .compose(bindToLifecycle())
+      .subscribe(__ -> this.showLoginTout.onNext(null));
 
-    addSubscription(shareClicked.subscribe(__ -> koala.trackShowProjectShareSheet()));
+    shareClicked
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackShowProjectShareSheet());
 
-    addSubscription(playVideoClicked.subscribe(__ -> koala.trackVideoStart(project.getValue())));
+    playVideoClicked
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackVideoStart(project.getValue()));
 
-    addSubscription(projectOnUserChangeStar.mergeWith(starredProjectOnLoginSuccess)
-      .subscribe(koala::trackProjectStar));
+    projectOnUserChangeStar
+      .mergeWith(starredProjectOnLoginSuccess)
+      .compose(bindToLifecycle())
+      .subscribe(koala::trackProjectStar);
 
-    // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
-    final Observable<RefTag> cookieRefTag = project
+    Observable.combineLatest(refTag, cookieRefTag, project, RefTagsAndProject::new)
       .take(1)
-      .map(p -> RefTagUtils.storedCookieRefTagForProject(p, cookieManager, sharedPreferences));
+      .compose(bindToLifecycle())
+      .subscribe(data -> {
+        // If a cookie hasn't been set for this ref+project then do so.
+        if (data.refTagFromCookie == null && data.refTagFromIntent != null) {
+          RefTagUtils.storeCookie(data.refTagFromIntent, data.project, cookieManager, sharedPreferences);
+        }
 
-    addSubscription(
-      Observable.combineLatest(refTag, cookieRefTag, project, RefTagsAndProject::new)
-        .take(1)
-        .subscribe(data -> {
-          // If a cookie hasn't been set for this ref+project then do so.
-          if (data.refTagFromCookie == null && data.refTagFromIntent != null) {
-            RefTagUtils.storeCookie(data.refTagFromIntent, data.project, cookieManager, sharedPreferences);
-          }
-
-          koala.trackProjectShow(
-            data.project,
-            data.refTagFromIntent,
-            RefTagUtils.storedCookieRefTagForProject(data.project, cookieManager, sharedPreferences)
-          );
-        })
-    );
+        koala.trackProjectShow(
+          data.project,
+          data.refTagFromIntent,
+          RefTagUtils.storedCookieRefTagForProject(data.project, cookieManager, sharedPreferences)
+        );
+      });
 
     pushNotificationEnvelope
       .take(1)
+      .compose(bindToLifecycle())
       .subscribe(koala::trackPushNotification);
   }
 

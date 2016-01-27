@@ -117,75 +117,80 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .switchMap(pb -> postComment(pb.first, pb.second))
       .share();
 
-    addSubscription(
-      project
-        .compose(Transformers.takeWhen(loginSuccess))
-        .filter(Project::isBacking)
-        .take(1)
-        .subscribe(showCommentDialog)
-    );
+    project
+      .compose(Transformers.takeWhen(loginSuccess))
+      .filter(Project::isBacking)
+      .take(1)
+      .compose(bindToLifecycle())
+      .subscribe(showCommentDialog);
 
-    addSubscription(
-      project
-        .compose(Transformers.takeWhen(commentButtonClicked))
-        .filter(Project::isBacking)
-        .subscribe(showCommentDialog)
-    );
+    project
+      .compose(Transformers.takeWhen(commentButtonClicked))
+      .filter(Project::isBacking)
+      .compose(bindToLifecycle())
+      .subscribe(showCommentDialog);
 
-    addSubscription(Observable.combineLatest(
+    Observable.combineLatest(
         currentUser.observable(),
         view,
         comments,
         project,
         Arrays::asList)
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(uvcp -> {
-          final User u = (User) uvcp.get(0);
-          final CommentFeedActivity view = (CommentFeedActivity) uvcp.get(1);
-          final List<Comment> cs = (List<Comment>) uvcp.get(2);
-          final Project p = (Project) uvcp.get(3);
-          view.show(p, cs, u);
-        })
-    );
+      .observeOn(AndroidSchedulers.mainThread())
+      .compose(bindToLifecycle())
+      .subscribe(uvcp -> {
+        final User u = (User) uvcp.get(0);
+        final CommentFeedActivity view = (CommentFeedActivity) uvcp.get(1);
+        final List<Comment> cs = (List<Comment>) uvcp.get(2);
+        final Project p = (Project) uvcp.get(3);
+        view.show(p, cs, u);
+      });
 
-    addSubscription(project
-        .map(Project::isBacking)
-        .distinctUntilChanged()
-        .subscribe(showCommentButton)
-    );
+    project
+      .map(Project::isBacking)
+      .distinctUntilChanged()
+      .compose(bindToLifecycle())
+      .subscribe(showCommentButton);
 
-    addSubscription(postedComment
-        .compose(Transformers.ignoreValues())
-        .subscribe(__ -> refresh.onNext(null))
-    );
+    postedComment
+      .compose(Transformers.ignoreValues())
+      .compose(bindToLifecycle())
+      .subscribe(__ -> refresh.onNext(null));
 
-    addSubscription(view
-        .compose(Transformers.combineLatestPair(commentHasBody))
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(ve -> ve.first.enablePostButton(ve.second))
-    );
+    view
+      .compose(Transformers.combineLatestPair(commentHasBody))
+      .observeOn(AndroidSchedulers.mainThread())
+      .compose(bindToLifecycle())
+      .subscribe(ve -> ve.first.enablePostButton(ve.second));
 
-    addSubscription(view
+    view
         .compose(Transformers.takePairWhen(commentIsPosting))
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(vp -> vp.first.disablePostButton(vp.second))
-    );
+        .subscribe(vp -> vp.first.disablePostButton(vp.second));
 
     // Koala tracking
-    addSubscription(initialProject
+    initialProject
       .compose(Transformers.takePairWhen(postedComment))
-      .subscribe(cp -> koala.trackProjectCommentCreate(cp.first, cp.second))
-    );
-    addSubscription(initialProject.take(1).subscribe(koala::trackProjectCommentsView));
-    addSubscription(
-      initialProject
-        .compose(Transformers.takeWhen(nextPage.skip(1)))
-        .subscribe(koala::trackProjectCommentLoadMore)
-    );
+      .compose(bindToLifecycle())
+      .subscribe(cp -> koala.trackProjectCommentCreate(cp.first, cp.second));
 
-    addSubscription(paginator.isFetching.subscribe(isFetchingComments));
+    initialProject.take(1)
+      .compose(bindToLifecycle())
+      .subscribe(koala::trackProjectCommentsView);
 
-    project.take(1).subscribe(__ -> refresh.onNext(null));
+    initialProject
+      .compose(Transformers.takeWhen(nextPage.skip(1)))
+      .compose(bindToLifecycle())
+      .subscribe(koala::trackProjectCommentLoadMore);
+
+    paginator.isFetching
+      .compose(bindToLifecycle())
+      .subscribe(isFetchingComments);
+
+    project
+      .take(1)
+      .compose(bindToLifecycle())
+      .subscribe(__ -> refresh.onNext(null));
   }
 
   private Observable<Comment> postComment(final @NonNull Project project, final @NonNull String body) {

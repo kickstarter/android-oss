@@ -40,6 +40,11 @@ public final class ProjectSocialActivity extends BaseActivity<ProjectSocialViewM
   }
 
   @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    recyclerView.setAdapter(null);
+  }
+  @Override
   @OnClick(R.id.back_button)
   public void onBackPressed() {
     super.onBackPressed();

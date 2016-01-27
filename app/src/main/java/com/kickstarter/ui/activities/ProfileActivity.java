@@ -16,7 +16,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.transformations.CircleTransformation;
-import com.kickstarter.libs.utils.IntentUtils;
+import com.kickstarter.libs.utils.ApplicationUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
@@ -127,13 +127,13 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
     }
   }
 
+  private void startDiscoveryActivity() {
+    ApplicationUtils.restartActionMain(this);
+  }
+
   private void startProjectActivity(final @NonNull Project project) {
     final Intent intent = new Intent(this, ProjectActivity.class)
       .putExtra(IntentKey.PROJECT, project);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
-  }
-
-  private void startDiscoveryActivity() {
-    startActivity(IntentUtils.discoveryIntent(this));
   }
 }

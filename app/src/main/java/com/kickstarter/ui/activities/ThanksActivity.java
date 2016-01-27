@@ -29,7 +29,7 @@ import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.preferences.BooleanPreference;
 import com.kickstarter.libs.qualifiers.AppRatingPreference;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
-import com.kickstarter.libs.utils.IntentUtils;
+import com.kickstarter.libs.utils.ApplicationUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.libs.vendor.TweetComposer;
 import com.kickstarter.models.Category;
@@ -99,7 +99,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
 
   @OnClick(R.id.close_button)
   protected void closeButtonClick() {
-    startActivity(IntentUtils.discoveryIntent(this));
+    ApplicationUtils.restartActionMain(this);
   }
 
   @OnClick(R.id.share_button)
@@ -162,7 +162,8 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
 
   public void startDiscoveryCategoryIntent(final @NonNull Category category) {
     final DiscoveryParams params = DiscoveryParams.builder().category(category).build();
-    final Intent intent = IntentUtils.discoveryIntent(this)
+    final Intent intent = new Intent(this, DiscoveryActivity.class)
+      .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
       .putExtra(IntentKey.DISCOVERY_PARAMS, params);
     startActivity(intent);
   }

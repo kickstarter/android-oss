@@ -5,8 +5,8 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Activity;
-import com.kickstarter.models.User;
 import com.kickstarter.ui.viewholders.EmptyActivityFeedViewHolder;
 import com.kickstarter.ui.viewholders.EmptyViewHolder;
 import com.kickstarter.ui.viewholders.FriendBackingViewHolder;
@@ -20,8 +20,9 @@ import java.util.Collections;
 import java.util.List;
 
 public final class ActivityFeedAdapter extends KSAdapter {
-  private static final int SECTION_EMPTY_VIEW = 0;
-  private static final int SECTION_ACTIVITIES_VIEW = 1;
+  private static final int SECTION_LOGGED_IN_EMPTY_VIEW = 0;
+  private static final int SECTION_LOGGED_OUT_EMPTY_VIEW = 1;
+  private static final int SECTION_ACTIVITIES_VIEW = 2;
 
   private final Delegate delegate;
 
@@ -31,31 +32,31 @@ public final class ActivityFeedAdapter extends KSAdapter {
   public ActivityFeedAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;
 
-    insertSection(SECTION_EMPTY_VIEW, Collections.emptyList());
+    insertSection(SECTION_LOGGED_IN_EMPTY_VIEW, Collections.emptyList());
+    insertSection(SECTION_LOGGED_OUT_EMPTY_VIEW, Collections.emptyList());
     insertSection(SECTION_ACTIVITIES_VIEW, Collections.emptyList());
   }
 
   public void takeActivities(final @NonNull List<Activity> activities) {
-    if (activities.size() > 0) {
-      setSection(SECTION_EMPTY_VIEW, Collections.emptyList());
-      setSection(SECTION_ACTIVITIES_VIEW, activities);
-      notifyDataSetChanged();
-    }
-  }
-
-  public void takeLoggedInUserForEmptyState(final @NonNull User user) {
-    setSection(SECTION_EMPTY_VIEW, Collections.singletonList(user));
+    setSection(SECTION_ACTIVITIES_VIEW, activities);
     notifyDataSetChanged();
   }
 
-  public void takeLoggedOutEmptyState() {
-    setSection(SECTION_EMPTY_VIEW, Collections.singletonList(null));
+  public void showLoggedInEmptyState(final boolean show) {
+    setSection(SECTION_LOGGED_IN_EMPTY_VIEW, show ? Collections.singletonList(true) : ListUtils.empty());
+    notifyDataSetChanged();
+  }
+
+  public void showLoggedOutEmptyState(final boolean show) {
+    setSection(SECTION_LOGGED_OUT_EMPTY_VIEW, show ? Collections.singletonList(false) : ListUtils.empty());
     notifyDataSetChanged();
   }
 
   @Override
   protected @LayoutRes int layout(final @NonNull SectionRow sectionRow) {
-    if (sectionRow.section() == SECTION_EMPTY_VIEW) {
+    if (sectionRow.section() == SECTION_LOGGED_IN_EMPTY_VIEW) {
+      return R.layout.empty_activity_feed_view;
+    } else if (sectionRow.section() == SECTION_LOGGED_OUT_EMPTY_VIEW) {
       return R.layout.empty_activity_feed_view;
     } else if (sectionRow.section() == SECTION_ACTIVITIES_VIEW) {
       if (objectFromSectionRow(sectionRow) instanceof Activity) {

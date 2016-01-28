@@ -67,7 +67,7 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
   private void handleConfigApiError(final @NonNull ErrorEnvelope error) {
     if (error.httpCode() == 401) {
       logout.execute();
-      ApplicationUtils.restartActionMain(this.application);
+      ApplicationUtils.startNewDiscoveryActivity(this.application);
     }
   }
 

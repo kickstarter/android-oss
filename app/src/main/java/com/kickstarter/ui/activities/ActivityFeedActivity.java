@@ -101,7 +101,7 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
   }
 
   public void discoverProjectsButtonOnClick() {
-    ApplicationUtils.restartActionMain(this);
+    ApplicationUtils.resumeDiscoveryActivity(this);
   }
 
   public void showProjectUpdate(final @NonNull Activity activity) {

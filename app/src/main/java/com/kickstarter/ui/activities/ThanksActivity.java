@@ -99,7 +99,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
 
   @OnClick(R.id.close_button)
   protected void closeButtonClick() {
-    ApplicationUtils.restartActionMain(this);
+    ApplicationUtils.resumeDiscoveryActivity(this);
   }
 
   @OnClick(R.id.share_button)

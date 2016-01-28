@@ -160,7 +160,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
 
   private void logout() {
     logout.execute();
-    ApplicationUtils.restartActionMain(this);
+    ApplicationUtils.startNewDiscoveryActivity(this);
   }
 
   protected void composeContactEmail(final @Nullable User user) {

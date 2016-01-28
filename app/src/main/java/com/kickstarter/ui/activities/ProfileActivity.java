@@ -128,7 +128,7 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
   }
 
   private void startDiscoveryActivity() {
-    ApplicationUtils.restartActionMain(this);
+    ApplicationUtils.resumeDiscoveryActivity(this);
   }
 
   private void startProjectActivity(final @NonNull Project project) {

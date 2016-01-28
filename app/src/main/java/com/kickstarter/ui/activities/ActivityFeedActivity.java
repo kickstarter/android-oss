@@ -17,6 +17,7 @@ import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.SwipeRefresher;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.utils.ApplicationUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
@@ -100,8 +101,7 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
   }
 
   public void discoverProjectsButtonOnClick() {
-    final Intent intent = new Intent(this, DiscoveryActivity.class);
-    startActivity(intent);
+    ApplicationUtils.resumeDiscoveryActivity(this);
   }
 
   public void showProjectUpdate(final @NonNull Activity activity) {

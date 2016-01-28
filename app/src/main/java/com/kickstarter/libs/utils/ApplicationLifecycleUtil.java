@@ -3,7 +3,6 @@ package com.kickstarter.libs.utils;
 import android.app.Activity;
 import android.app.Application;
 import android.content.ComponentCallbacks2;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,7 +16,6 @@ import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
-import com.kickstarter.ui.activities.DiscoveryActivity;
 
 import javax.inject.Inject;
 
@@ -69,9 +67,7 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
   private void handleConfigApiError(final @NonNull ErrorEnvelope error) {
     if (error.httpCode() == 401) {
       logout.execute();
-      final Intent intent = new Intent(this.application, DiscoveryActivity.class)
-        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-      this.application.startActivity(intent);
+      ApplicationUtils.startNewDiscoveryActivity(this.application);
     }
   }
 

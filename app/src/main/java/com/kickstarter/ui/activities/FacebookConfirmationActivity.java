@@ -16,8 +16,6 @@ import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.SwitchCompatUtils;
 import com.kickstarter.libs.utils.TransitionUtils;
 import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.services.apiresponses.ErrorEnvelope;
-import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 import com.kickstarter.ui.views.LoginPopupMenu;
 import com.kickstarter.viewmodels.FacebookConfirmationViewModel;
@@ -56,7 +54,7 @@ public class FacebookConfirmationActivity extends BaseActivity<FacebookConfirmat
     viewModel.outputs.signupSuccess()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> onSuccess(forward));
+      .subscribe(__ -> onSuccess());
 
     viewModel.outputs.sendNewslettersIsChecked()
       .compose(bindToLifecycle())
@@ -97,16 +95,9 @@ public class FacebookConfirmationActivity extends BaseActivity<FacebookConfirmat
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
-  public void onSuccess(final boolean forward) {
-    if (forward) {
-      setResult(Activity.RESULT_OK);
-      finish();
-    } else {
-      final Intent intent = new Intent(this, DiscoveryActivity.class)
-        .setAction(Intent.ACTION_MAIN)
-        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-      startActivity(intent);
-    }
+  public void onSuccess() {
+    setResult(Activity.RESULT_OK);
+    finish();
   }
 
   private void prefillEmail(final @NonNull String email) {

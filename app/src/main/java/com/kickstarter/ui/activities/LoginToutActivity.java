@@ -16,13 +16,11 @@ import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.TransitionUtils;
 import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.data.ActivityResult;
-import com.kickstarter.ui.data.LoginReason;
-import com.kickstarter.viewmodels.LoginToutViewModel;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 import com.kickstarter.ui.views.LoginPopupMenu;
+import com.kickstarter.viewmodels.LoginToutViewModel;
 
 import java.util.Arrays;
 
@@ -71,10 +69,10 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> startSignup());
 
-    viewModel.errors.confirmFacebookSignupError()
+    viewModel.outputs.startConfirmFacebookSignup()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::startFacebookConfirmationActivity);
+      .subscribe(ua -> startFacebookConfirmationActivity(ua.first, ua.second));
 
     viewModel.errors.facebookAuthorizationError()
       .compose(bindToLifecycle())
@@ -89,7 +87,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
     viewModel.errors.startTwoFactorChallenge()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> startTwoFactorChallenge());
+      .subscribe(__ -> startTwoFactorFacebookChallenge());
   }
 
   private Observable<String> errorMessages() {
@@ -128,9 +126,11 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
     finish();
   }
 
-  public void startFacebookConfirmationActivity(final @NonNull ErrorEnvelope.FacebookUser facebookUser) {
+  public void startFacebookConfirmationActivity(final @NonNull ErrorEnvelope.FacebookUser facebookUser,
+    final @NonNull String accessTokenString) {
     final Intent intent = new Intent(this, FacebookConfirmationActivity.class)
-      .putExtra(IntentKey.FACEBOOK_USER, facebookUser);
+      .putExtra(IntentKey.FACEBOOK_USER, facebookUser)
+      .putExtra(IntentKey.FACEBOOK_TOKEN, accessTokenString);
     startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
     TransitionUtils.slideInFromRight(this);
   }
@@ -147,7 +147,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
     TransitionUtils.slideInFromRight(this);
   }
 
-  public void startTwoFactorChallenge() {
+  public void startTwoFactorFacebookChallenge() {
     final Intent intent = new Intent(this, TwoFactorActivity.class)
       .putExtra(IntentKey.FACEBOOK_LOGIN, true)
       .putExtra(IntentKey.FACEBOOK_TOKEN, AccessToken.getCurrentAccessToken().getToken());

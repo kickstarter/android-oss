@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.google.android.exoplayer.MediaCodecAudioTrackRenderer;
+import com.google.android.exoplayer.MediaCodecSelector;
 import com.google.android.exoplayer.MediaCodecVideoTrackRenderer;
 import com.google.android.exoplayer.extractor.ExtractorSampleSource;
 import com.google.android.exoplayer.upstream.Allocator;
@@ -33,8 +34,8 @@ public class KSRendererBuilder implements RendererBuilder {
       allocator, BUFFER_SEGMENT_COUNT * BUFFER_SEGMENT_SIZE);
 
     final MediaCodecVideoTrackRenderer videoRenderer = new MediaCodecVideoTrackRenderer(context, sampleSource,
-      MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT);
-    final MediaCodecAudioTrackRenderer audioRenderer = new MediaCodecAudioTrackRenderer(sampleSource);
+      MediaCodecSelector.DEFAULT, MediaCodec.VIDEO_SCALING_MODE_SCALE_TO_FIT);
+    final MediaCodecAudioTrackRenderer audioRenderer = new MediaCodecAudioTrackRenderer(sampleSource, MediaCodecSelector.DEFAULT);
 
     player.prepareRenderers(videoRenderer, audioRenderer);
   }

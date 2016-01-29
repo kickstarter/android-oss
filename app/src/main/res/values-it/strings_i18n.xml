@@ -290,6 +290,7 @@
   <string name="discovery_activity_sample_alert_follow_friend_name" formatted="false">Follow %{friend_name}?</string>
   <string name="discovery_activity_sample_button_see_all_activity" formatted="false">See all activity</string>
   <string name="discovery_activity_sample_title_Since_your_last_visit" formatted="false">Since your last visit</string>
+  <string name="discovery_activity_sample_title_since_youve_been_gone" formatted="false">Since you\'ve been gone...</string>
   <string name="discovery_all_of_scope" formatted="false">All of %{scope}</string>
   <string name="discovery_backing" formatted="false">Backing</string>
   <string name="discovery_baseball_card_accessibility_category_label" formatted="false">Category</string>
@@ -302,7 +303,8 @@
   <string name="discovery_baseball_card_deadline_units_secs" formatted="false">secs</string>
   <string name="discovery_baseball_card_metadata_backer" formatted="false">You’re a backer!</string>
   <string name="discovery_baseball_card_metadata_featured_project" formatted="false">Featured in %{category_name}</string>
-  <string name="discovery_baseball_card_metadata_potd" formatted="false">Project of the day!</string>
+  <string name="discovery_baseball_card_metadata_potd" formatted="false">Project of the Day!</string>
+  <string name="discovery_baseball_card_metadata_project_of_the_Day" formatted="false">Project of the Day</string>
   <string name="discovery_baseball_card_metadata_starred" formatted="false">You starred this project.</string>
   <string name="discovery_baseball_card_read_more" formatted="false">Read%{space}more%{space}</string>
   <string name="discovery_baseball_card_social_friends_are_backers_few" formatted="false">%{friend_name}, %{second_friend_name}, and %{remaining_count} more are backers.</string>

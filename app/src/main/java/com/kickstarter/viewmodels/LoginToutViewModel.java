@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookAuthorizationException;
@@ -75,14 +76,13 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
     return startSignup;
   }
 
-  // ERRORS
+  private final BehaviorSubject<Pair<ErrorEnvelope.FacebookUser, String>> startConfirmFacebookSignup = BehaviorSubject.create();
   @Override
-  public @NonNull Observable<ErrorEnvelope.FacebookUser> confirmFacebookSignupError() {
-    return loginError
-      .filter(ErrorEnvelope::isConfirmFacebookSignupError)
-      .map(ErrorEnvelope::facebookUser);
+  public @NonNull Observable<Pair<ErrorEnvelope.FacebookUser, String>> startConfirmFacebookSignup() {
+    return startConfirmFacebookSignup;
   }
 
+  // ERRORS
   private final PublishSubject<FacebookException> facebookAuthorizationError = PublishSubject.create();
   @Override
   public @NonNull Observable<String> facebookAuthorizationError() {
@@ -130,7 +130,7 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
 
     registerFacebookCallback();
 
-    Observable<AccessTokenEnvelope> facebookLoginSuccess = facebookAccessToken
+    Observable<AccessTokenEnvelope> facebookSuccessTokenEnvelope = facebookAccessToken
       .switchMap(this::loginWithFacebookAccessToken)
       .share();
 
@@ -140,32 +140,26 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
       .compose(bindToLifecycle())
       .subscribe(loginReason::onNext);
 
-    loginReason.take(1)
-      .compose(bindToLifecycle())
-      .subscribe(koala::trackLoginRegisterTout);
-
-    loginError
-      .compose(bindToLifecycle())
-      .subscribe(__ -> koala.trackLoginError());
-
     activityResult
       .compose(bindToLifecycle())
       .subscribe(r -> callbackManager.onActivityResult(r.requestCode(), r.resultCode(), r.intent()));
+
+    activityResult
+      .filter(r -> r.isRequestCode(ActivityRequestCodes.LOGIN_FLOW))
+      .filter(ActivityResult::isOk)
+      .compose(bindToLifecycle())
+      .subscribe(__ -> finishWithSuccessfulResult.onNext(null));
 
     facebookAuthorizationError
       .compose(bindToLifecycle())
       .subscribe(this::clearFacebookSession);
 
-    facebookLoginSuccess
+    facebookSuccessTokenEnvelope
       .compose(bindToLifecycle())
       .subscribe(envelope -> {
         currentUser.login(envelope.user(), envelope.accessToken());
         finishWithSuccessfulResult.onNext(null);
       });
-
-    loginError
-      .compose(bindToLifecycle())
-      .subscribe(__ -> koala.trackLoginError());
 
     loginClick
       .compose(bindToLifecycle())
@@ -175,17 +169,26 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
       .compose(bindToLifecycle())
       .subscribe(startSignup::onNext);
 
+    loginError
+      .filter(ErrorEnvelope::isConfirmFacebookSignupError)
+      .map(ErrorEnvelope::facebookUser)
+      .compose(Transformers.combineLatestPair(facebookAccessToken))
+      .compose(bindToLifecycle())
+      .subscribe(startConfirmFacebookSignup::onNext);
+
+    loginReason.take(1)
+      .compose(bindToLifecycle())
+      .subscribe(koala::trackLoginRegisterTout);
+
+    loginError
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackLoginError());
+
     missingFacebookEmailError()
       .mergeWith(facebookInvalidAccessTokenError())
       .mergeWith(facebookAuthorizationError())
       .compose(bindToLifecycle())
       .subscribe(__ -> koala.trackFacebookLoginError());
-
-    activityResult
-      .filter(r -> r.isRequestCode(ActivityRequestCodes.LOGIN_FLOW))
-      .filter(ActivityResult::isOk)
-      .compose(bindToLifecycle())
-      .subscribe(__ -> finishWithSuccessfulResult.onNext(null));
   }
 
   private void clearFacebookSession(final @NonNull FacebookException e) {

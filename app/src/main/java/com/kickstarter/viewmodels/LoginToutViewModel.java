@@ -184,10 +184,6 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
       .compose(bindToLifecycle())
       .subscribe(__ -> koala.trackLoginError());
 
-    loginError
-      .compose(bindToLifecycle())
-      .subscribe(__ -> koala.trackLoginError());
-
     missingFacebookEmailError()
       .mergeWith(facebookInvalidAccessTokenError())
       .mergeWith(facebookAuthorizationError())

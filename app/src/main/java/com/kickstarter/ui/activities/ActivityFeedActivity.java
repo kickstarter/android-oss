@@ -71,16 +71,15 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::showActivities);
 
-    viewModel.outputs.showLoggedOutEmptyState()
-      .filter(loggedIn -> !loggedIn)
+    viewModel.outputs.loggedOutEmptyStateIsVisible()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> adapter.takeLoggedOutEmptyState());
+      .subscribe(adapter::showLoggedOutEmptyState);
 
-    viewModel.outputs.userForLoggedInEmptyState()
+    viewModel.outputs.loggedInEmptyStateIsVisible()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(adapter::takeLoggedInUserForEmptyState);
+      .subscribe(adapter::showLoggedInEmptyState);
   }
 
   @Override

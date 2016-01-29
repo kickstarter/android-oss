@@ -35,7 +35,7 @@ public class FacebookConfirmationActivity extends BaseActivity<FacebookConfirmat
 
   protected @BindString(R.string.facebook_confirmation_navbar_title) String signUpWithFacebookString;
   protected @BindString(R.string.signup_error_title) String errorTitleString;
-  
+
   @Override
   public void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);

@@ -72,7 +72,8 @@
             }
           },
           "metadata": {
-            "potd": "Project of the day!",
+            "potd": "Project of the Day!",
+            "project_of_the_Day": "Project of the Day",
             "starred": "You starred this project.",
             "backer": "You’re a backer!",
             "featured_project": "Featured in %{category_name}"
@@ -121,7 +122,8 @@
         },
         "activity_sample": {
           "title": {
-            "Since_your_last_visit": "Since your last visit"
+            "Since_your_last_visit": "Since your last visit",
+            "since_youve_been_gone": "Since you've been gone..."
           },
           "button": {
             "see_all_activity": "See all activity"
@@ -1377,6 +1379,7 @@
           },
           "metadata": {
             "potd": "Projekt des Tages!",
+            "project_of_the_Day": "Projekt des Tages",
             "starred": "Gehört zu deinen Favoriten.",
             "backer": "Du gehörst jetzt zu den Unterstützern!",
             "featured_project": "Vorgestellt in %{category_name}"
@@ -1425,7 +1428,8 @@
         },
         "activity_sample": {
           "title": {
-            "Since_your_last_visit": "Seit deinem letzten Besuch"
+            "Since_your_last_visit": "Seit deinem letzten Besuch",
+            "since_youve_been_gone": "Seit deinem letzten Besuch ..."
           },
           "button": {
             "see_all_activity": "Alle Aktivitäten anzeigen"
@@ -1532,7 +1536,7 @@
         "friend_backed_publishing_project": "%{friend_name} hat ein Publishing-Projekt unterstützt.",
         "friend_backed_tech_project": "%{friend_name} hat ein Technologie-Projekt unterstützt.",
         "friend_backed_theater_project": "%{friend_name} hat ein Theater-Projekt unterstützt.",
-        "friend_backed_project_name_by_creator_name": "<b>%{friend_name} backed</b> %{project_name} by %{creator_name}",
+        "friend_backed_project_name_by_creator_name": "<b>%{friend_name} hat das Projekt </b> %{project_name} von %{creator_name} unterstützt",
         "friend_follow": {
           "is_following_you": "folgt dir!",
           "buttons": {
@@ -1625,9 +1629,9 @@
           },
           "empty_state": {
             "message": "Du hast noch keine Projekte unterstützt. Das sollten wir ändern!",
-            "message_no_backed_projects_yet": "No backed projects yet",
+            "message_no_backed_projects_yet": "Keine unterstützten Projekte",
             "button": "Projekte entdecken",
-            "button_explore_new_projects": "Explore new projects"
+            "button_explore_new_projects": "Erkunde neue Projekte"
           },
           "status": {
             "canceled": "Zurückgezogen",
@@ -1699,8 +1703,8 @@
               "rate_now": "Jetzt bewerten",
               "remind_later": "Später",
               "no_thanks": "Nein, Danke",
-              "title_show_us_some_love": "Show us some love",
-              "message_if_you_enjoy_using_Kickstarter": "If you enjoy using the Kickstarter app, would you mind taking a moment to rate it in the Play store?\n\nThank you for your support!"
+              "title_show_us_some_love": "Dir gefällt die App?",
+              "message_if_you_enjoy_using_Kickstarter": "Hättest du einen Moment Zeit, die App im Play Store zu bewerten?"
             }
           },
           "version_number": "Version %{version_number}"
@@ -1797,7 +1801,7 @@
         },
         "disclaimer": {
           "by_signing_up_you_agree_to_terms": "Mit der Registrierung stimmst du unseren Nutzungsbedingungen, Datenschutzrichtlinien und Cookie-Richtlinien zu.",
-          "by_signing_up_you_agree_to_terms_html": "By signing up, you agree to our <u>terms of use</u>, <u>privacy policy</u>, and <u>cookie policy</u>.",
+          "by_signing_up_you_agree_to_terms_html": "Durch deine Anmeldung erklärst du dich mir unseren <u>terms of use</u>, <u>privacy policy</u>, und <u>cookie policy</u> einverstanden.",
           "we_never_post_anything_without_permission": "Wir veröffentlichen niemals etwas ohne deine Zustimmung.",
           "read_more": "Weiterlesen"
         },
@@ -1951,7 +1955,7 @@
               "share": "Teilen",
               "tweet": "Twittern",
               "more": "Mehr",
-              "more_share_options": "More share options"
+              "more_share_options": "Weitere Optionen"
             },
             "twitter_via_kickstarter": "%{project_or_update_title}, über Kickstarter",
             "title_via_kickstarter": "%{project_or_update_title}, über Kickstarter",
@@ -2681,6 +2685,7 @@
           },
           "metadata": {
             "potd": "¡Proyecto del día!",
+            "project_of_the_Day": "Proyecto del día",
             "starred": "Entre tus proyectos destacados.",
             "backer": "¡Eres un patrocinador!",
             "featured_project": "Presentado en %{category_name}"
@@ -2729,7 +2734,8 @@
         },
         "activity_sample": {
           "title": {
-            "Since_your_last_visit": "Desde tu última visita"
+            "Since_your_last_visit": "Desde tu última visita",
+            "since_youve_been_gone": "Lo que ocurrió desde tu última visita:"
           },
           "button": {
             "see_all_activity": "Ver toda la actividad"
@@ -2836,7 +2842,7 @@
         "friend_backed_publishing_project": "%{friend_name} patrocinó un proyecto de Publicaciones.",
         "friend_backed_tech_project": "%{friend_name} patrocinó un proyecto de Tecnología.",
         "friend_backed_theater_project": "%{friend_name} patrocinó un proyecto de Teatro.",
-        "friend_backed_project_name_by_creator_name": "<b>%{friend_name} backed</b> %{project_name} by %{creator_name}",
+        "friend_backed_project_name_by_creator_name": "<b>%{friend_name} contribuyó al proyecto </b> %{project_name} de %{creator_name}",
         "friend_follow": {
           "is_following_you": "te sigue",
           "buttons": {
@@ -2929,9 +2935,9 @@
           },
           "empty_state": {
             "message": "Aún no has patrocinado ningún proyecto.\n¡Es hora de cambiar esto!",
-            "message_no_backed_projects_yet": "No backed projects yet",
+            "message_no_backed_projects_yet": "Todavía no ha contribuido a ningún proyecto",
             "button": "Descubre proyectos",
-            "button_explore_new_projects": "Explore new projects"
+            "button_explore_new_projects": "Explora proyectos nuevos"
           },
           "status": {
             "canceled": "Cancelado",
@@ -2985,7 +2991,7 @@
             "privacy": "Política de privacidad",
             "cookie": "Política de cookies",
             "faq": "Preguntas frecuentes",
-            "faq_short": "FAQ"
+            "faq_short": "Preguntas frecuentes"
           },
           "log_out_button": "Cerrar sesión",
           "logout_alert": {
@@ -3003,8 +3009,8 @@
               "rate_now": "Califícala ahora",
               "remind_later": "Recordarme más tarde",
               "no_thanks": "No, gracias",
-              "title_show_us_some_love": "Show us some love",
-              "message_if_you_enjoy_using_Kickstarter": "If you enjoy using the Kickstarter app, would you mind taking a moment to rate it in the Play store?\n\nThank you for your support!"
+              "title_show_us_some_love": "¿Te gusta la app de Kickstarter?",
+              "message_if_you_enjoy_using_Kickstarter": "Si es así, ¿tendrías un momento para calificarla en Play Store?"
             }
           },
           "version_number": "Versión %{version_number}"
@@ -3101,7 +3107,7 @@
         },
         "disclaimer": {
           "by_signing_up_you_agree_to_terms": "Al registrarte, estás aceptando nuestros términos de uso, nuestra política de privacidad y de cookies.",
-          "by_signing_up_you_agree_to_terms_html": "By signing up, you agree to our <u>terms of use</u>, <u>privacy policy</u>, and <u>cookie policy</u>.",
+          "by_signing_up_you_agree_to_terms_html": "Con la registración confirmas tu conformidad con nuestros <u>terms of use</u>, <u>privacy policy</u>, y <u>cookie policy</u>.",
           "we_never_post_anything_without_permission": "Nunca publicaremos nada sin tu consentimiento.",
           "read_more": "Leer más"
         },
@@ -3255,7 +3261,7 @@
               "share": "Compartir",
               "tweet": "Tweet",
               "more": "Más",
-              "more_share_options": "More share options"
+              "more_share_options": "Más opciones para compartir"
             },
             "twitter_via_kickstarter": "%{project_or_update_title}, via Kickstarter",
             "title_via_kickstarter": "%{project_or_update_title}, vía Kickstarter",
@@ -3985,6 +3991,7 @@
           },
           "metadata": {
             "potd": "Projet du jour !",
+            "project_of_the_Day": "Projet du jour ",
             "starred": "Mes projets préférés !",
             "backer": "Vous êtes contributeur !",
             "featured_project": "Un projet sélectionné de la catégorie %{category_name}"
@@ -4033,7 +4040,8 @@
         },
         "activity_sample": {
           "title": {
-            "Since_your_last_visit": "Depuis votre dernière visite"
+            "Since_your_last_visit": "Depuis votre dernière visite",
+            "since_youve_been_gone": "Depuis votre dernière visite..."
           },
           "button": {
             "see_all_activity": "Toutes les activités"
@@ -5288,7 +5296,8 @@
             }
           },
           "metadata": {
-            "potd": "Project of the day!",
+            "potd": "Project of the Day!",
+            "project_of_the_Day": "Project of the Day",
             "starred": "You starred this project.",
             "backer": "You’re a backer!",
             "featured_project": "Featured in %{category_name}"
@@ -5337,7 +5346,8 @@
         },
         "activity_sample": {
           "title": {
-            "Since_your_last_visit": "Since your last visit"
+            "Since_your_last_visit": "Since your last visit",
+            "since_youve_been_gone": "Since you've been gone..."
           },
           "button": {
             "see_all_activity": "See all activity"
@@ -6672,8 +6682,8 @@
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
     "native_iphone_horiz_vs_vert": "control",
-    "recs_thanks_combo_inputs": "collaborative_backings_v2",
-    "recs_hp_combo_v1": "combo_v1"
+    "recs_thanks_combo_inputs": "combo_inputs",
+    "recs_hp_combo_v1": "collaborative_backings_v2"
   },
   "stripe": {
     "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"

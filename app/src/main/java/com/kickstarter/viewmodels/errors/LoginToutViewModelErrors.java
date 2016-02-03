@@ -1,15 +1,8 @@
 package com.kickstarter.viewmodels.errors;
 
-import com.kickstarter.services.apiresponses.ErrorEnvelope;
-
 import rx.Observable;
 
 public interface LoginToutViewModelErrors {
-  /**
-   * Emits after a user has signed up on Facebook, and we want to show the confirmation screen.
-   */
-  Observable<ErrorEnvelope.FacebookUser> confirmFacebookSignupError();
-
   /**
    * String to display when a user has failed to authenticate using Facebook.
    */

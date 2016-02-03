@@ -6,14 +6,14 @@ import android.view.View;
 import android.widget.Button;
 
 import com.kickstarter.R;
-import com.kickstarter.models.User;
+import com.kickstarter.libs.utils.BooleanUtils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public final class EmptyActivityFeedViewHolder extends KSViewHolder {
-  User user;
+  boolean isLoggedIn;
   protected @Bind(R.id.discover_projects_button) Button discoverProjectsButton;
   protected @Bind(R.id.login_button) Button loginButton;
 
@@ -32,17 +32,17 @@ public final class EmptyActivityFeedViewHolder extends KSViewHolder {
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
-    user = (User) data;
+    this.isLoggedIn = BooleanUtils.isTrue((Boolean) data);
   }
 
   @Override
   public void onBind() {
-    if (user == null) {
-      discoverProjectsButton.setVisibility(View.GONE);
-      loginButton.setVisibility(View.VISIBLE);
-    } else  {
+    if (isLoggedIn) {
       discoverProjectsButton.setVisibility(View.VISIBLE);
       loginButton.setVisibility(View.GONE);
+    } else  {
+      discoverProjectsButton.setVisibility(View.GONE);
+      loginButton.setVisibility(View.VISIBLE);
     }
   }
 

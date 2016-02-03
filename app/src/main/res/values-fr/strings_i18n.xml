@@ -290,6 +290,7 @@
   <string name="discovery_activity_sample_alert_follow_friend_name" formatted="false">Suivre %{friend_name} ?</string>
   <string name="discovery_activity_sample_button_see_all_activity" formatted="false">Toutes les activités</string>
   <string name="discovery_activity_sample_title_Since_your_last_visit" formatted="false">Depuis votre dernière visite</string>
+  <string name="discovery_activity_sample_title_since_youve_been_gone" formatted="false">Depuis votre dernière visite...</string>
   <string name="discovery_all_of_scope" formatted="false">Toute la catégorie %{scope}</string>
   <string name="discovery_backing" formatted="false">Engagements</string>
   <string name="discovery_baseball_card_accessibility_category_label" formatted="false">Catégorie</string>
@@ -303,6 +304,7 @@
   <string name="discovery_baseball_card_metadata_backer" formatted="false">Vous êtes contributeur !</string>
   <string name="discovery_baseball_card_metadata_featured_project" formatted="false">Un projet sélectionné de la catégorie %{category_name}</string>
   <string name="discovery_baseball_card_metadata_potd" formatted="false">Projet du jour !</string>
+  <string name="discovery_baseball_card_metadata_project_of_the_Day" formatted="false">Projet du jour </string>
   <string name="discovery_baseball_card_metadata_starred" formatted="false">Mes projets préférés !</string>
   <string name="discovery_baseball_card_read_more" formatted="false">En savoir%{space}plus%{space}</string>
   <string name="discovery_baseball_card_social_friends_are_backers_few" formatted="false">%{friend_name}, %{second_friend_name} et %{remaining_count} autres personnes sont contributeurs.</string>

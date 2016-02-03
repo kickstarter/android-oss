@@ -57,7 +57,7 @@
   <string name="activity_friend_backed_journalism_project" formatted="false">%{friend_name} patrocinó un proyecto de Periodismo.</string>
   <string name="activity_friend_backed_music_project" formatted="false">%{friend_name} patrocinó un proyecto de Música.</string>
   <string name="activity_friend_backed_photography_project" formatted="false">%{friend_name} patrocinó un proyecto de Fotografía.</string>
-  <string name="activity_friend_backed_project_name_by_creator_name" formatted="false">&lt;b>%{friend_name} backed&lt;/b> %{project_name} by %{creator_name}</string>
+  <string name="activity_friend_backed_project_name_by_creator_name" formatted="false">&lt;b>%{friend_name} contribuyó al proyecto &lt;/b> %{project_name} de %{creator_name}</string>
   <string name="activity_friend_backed_publishing_project" formatted="false">%{friend_name} patrocinó un proyecto de Publicaciones.</string>
   <string name="activity_friend_backed_tech_project" formatted="false">%{friend_name} patrocinó un proyecto de Tecnología.</string>
   <string name="activity_friend_backed_theater_project" formatted="false">%{friend_name} patrocinó un proyecto de Teatro.</string>
@@ -290,6 +290,7 @@
   <string name="discovery_activity_sample_alert_follow_friend_name" formatted="false">Seguir a %{friend_name}?</string>
   <string name="discovery_activity_sample_button_see_all_activity" formatted="false">Ver toda la actividad</string>
   <string name="discovery_activity_sample_title_Since_your_last_visit" formatted="false">Desde tu última visita</string>
+  <string name="discovery_activity_sample_title_since_youve_been_gone" formatted="false">Lo que ocurrió desde tu última visita:</string>
   <string name="discovery_all_of_scope" formatted="false">Todos en %{scope}</string>
   <string name="discovery_backing" formatted="false">Proyectos patrocinados</string>
   <string name="discovery_baseball_card_accessibility_category_label" formatted="false">Categoría</string>
@@ -303,6 +304,7 @@
   <string name="discovery_baseball_card_metadata_backer" formatted="false">¡Eres un patrocinador!</string>
   <string name="discovery_baseball_card_metadata_featured_project" formatted="false">Presentado en %{category_name}</string>
   <string name="discovery_baseball_card_metadata_potd" formatted="false">¡Proyecto del día!</string>
+  <string name="discovery_baseball_card_metadata_project_of_the_Day" formatted="false">Proyecto del día</string>
   <string name="discovery_baseball_card_metadata_starred" formatted="false">Entre tus proyectos destacados.</string>
   <string name="discovery_baseball_card_read_more" formatted="false">Leer%{space}más%{space}</string>
   <string name="discovery_baseball_card_social_friends_are_backers_few" formatted="false">%{friend_name}, %{second_friend_name}, y %{remaining_count} más patrocinan este proyecto.</string>
@@ -437,7 +439,7 @@
   <string name="login_tout_default_intent_traditional_signup_button" formatted="false">Registrar</string>
   <string name="login_tout_default_intent_traditional_title" formatted="false">Utiliza tu dirección de correo electrónico:</string>
   <string name="login_tout_disclaimer_by_signing_up_you_agree_to_terms" formatted="false">Al registrarte, estás aceptando nuestros términos de uso, nuestra política de privacidad y de cookies.</string>
-  <string name="login_tout_disclaimer_by_signing_up_you_agree_to_terms_html" formatted="false">By signing up, you agree to our &lt;u>terms of use&lt;/u>, &lt;u>privacy policy&lt;/u>, and &lt;u>cookie policy&lt;/u>.</string>
+  <string name="login_tout_disclaimer_by_signing_up_you_agree_to_terms_html" formatted="false">Con la registración confirmas tu conformidad con nuestros &lt;u>terms of use&lt;/u>, &lt;u>privacy policy&lt;/u>, y &lt;u>cookie policy&lt;/u>.</string>
   <string name="login_tout_disclaimer_read_more" formatted="false">Leer más</string>
   <string name="login_tout_disclaimer_we_never_post_anything_without_permission" formatted="false">Nunca publicaremos nada sin tu consentimiento.</string>
   <string name="login_tout_errors_button_ok" formatted="false">Ok</string>
@@ -506,10 +508,10 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="profile_projects_backed_projects" formatted="false">Proyectos patrocinados</string>
   <string name="profile_projects_created_projects" formatted="false">Proyectos creados</string>
   <string name="profile_projects_empty_state_button" formatted="false">Descubre proyectos</string>
-  <string name="profile_projects_empty_state_button_explore_new_projects" formatted="false">Explore new projects</string>
+  <string name="profile_projects_empty_state_button_explore_new_projects" formatted="false">Explora proyectos nuevos</string>
   <string name="profile_projects_empty_state_message" formatted="false">Aún no has patrocinado ningún proyecto.\n
 ¡Es hora de cambiar esto!</string>
-  <string name="profile_projects_empty_state_message_no_backed_projects_yet" formatted="false">No backed projects yet</string>
+  <string name="profile_projects_empty_state_message_no_backed_projects_yet" formatted="false">Todavía no ha contribuido a ningún proyecto</string>
   <string name="profile_projects_status_canceled" formatted="false">Cancelado</string>
   <string name="profile_projects_status_successful" formatted="false">Exitoso</string>
   <string name="profile_projects_status_suspended" formatted="false">Suspendido</string>
@@ -518,7 +520,7 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="profile_settings_about_contact" formatted="false">Contacto</string>
   <string name="profile_settings_about_cookie" formatted="false">Política de cookies</string>
   <string name="profile_settings_about_faq" formatted="false">Preguntas frecuentes</string>
-  <string name="profile_settings_about_faq_short" formatted="false">FAQ</string>
+  <string name="profile_settings_about_faq_short" formatted="false">Preguntas frecuentes</string>
   <string name="profile_settings_about_how_it_works" formatted="false">Cómo funciona Kickstarter</string>
   <string name="profile_settings_about_privacy" formatted="false">Política de privacidad</string>
   <string name="profile_settings_about_terms" formatted="false">Condiciones de uso</string>
@@ -551,13 +553,11 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="profile_settings_rating_message" formatted="false">Gracias por usar la aplicación de Kickstarter.\n
 Si tienes un momento, ¿te importaría calificar tu experiencia?\n
 ¡Te lo agradeceríamos!</string>
-  <string name="profile_settings_rating_option_message_if_you_enjoy_using_Kickstarter" formatted="false">If you enjoy using the Kickstarter app, would you mind taking a moment to rate it in the Play store?\n
-\n
-Thank you for your support!</string>
+  <string name="profile_settings_rating_option_message_if_you_enjoy_using_Kickstarter" formatted="false">Si es así, ¿tendrías un momento para calificarla en Play Store?</string>
   <string name="profile_settings_rating_option_no_thanks" formatted="false">No, gracias</string>
   <string name="profile_settings_rating_option_rate_now" formatted="false">Califícala ahora</string>
   <string name="profile_settings_rating_option_remind_later" formatted="false">Recordarme más tarde</string>
-  <string name="profile_settings_rating_option_title_show_us_some_love" formatted="false">Show us some love</string>
+  <string name="profile_settings_rating_option_title_show_us_some_love" formatted="false">¿Te gusta la app de Kickstarter?</string>
   <string name="profile_settings_rating_rate_us" formatted="false">¡Califícanos en la App Store!</string>
   <string name="profile_settings_rating_rate_us_play_store" formatted="false">¡Califícanos en el Play Store!</string>
   <string name="profile_settings_rating_title" formatted="false">¡Somos todo oídos!</string>
@@ -584,7 +584,7 @@ Thank you for your support!</string>
   <string name="project_checkout_share_alert_button_ok" formatted="false">Ok</string>
   <string name="project_checkout_share_alert_this_device_not_capable_of_sending_email" formatted="false">Este dispositivo no puede enviar correos.</string>
   <string name="project_checkout_share_buttons_more" formatted="false">Más</string>
-  <string name="project_checkout_share_buttons_more_share_options" formatted="false">More share options</string>
+  <string name="project_checkout_share_buttons_more_share_options" formatted="false">Más opciones para compartir</string>
   <string name="project_checkout_share_buttons_share" formatted="false">Compartir</string>
   <string name="project_checkout_share_buttons_tweet" formatted="false">Tweet</string>
   <string name="project_checkout_share_exclamation" formatted="false">Yu-Juu!</string>

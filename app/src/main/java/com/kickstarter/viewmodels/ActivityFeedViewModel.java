@@ -12,7 +12,6 @@ import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
-import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
@@ -33,7 +32,6 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
-import timber.log.Timber;
 
 public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity> implements ActivityFeedAdapter.Delegate,
   ActivityFeedViewModelInputs, ActivityFeedViewModelOutputs {
@@ -62,13 +60,13 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
   public final ActivityFeedViewModelInputs inputs = this;
 
   // OUTPUTS
-  private final BehaviorSubject<Boolean> showLoggedOutEmptyState = BehaviorSubject.create();
-  public final Observable<Boolean> showLoggedOutEmptyState() {
-    return showLoggedOutEmptyState;
+  private final BehaviorSubject<Boolean> loggedOutEmptyStateIsVisible = BehaviorSubject.create();
+  public final Observable<Boolean> loggedOutEmptyStateIsVisible() {
+    return loggedOutEmptyStateIsVisible;
   }
-  private final BehaviorSubject<User> userForLoggedInEmptyState = BehaviorSubject.create();
-  public final Observable<User> userForLoggedInEmptyState() {
-    return userForLoggedInEmptyState;
+  private final BehaviorSubject<Boolean> loggedInEmptyStateIsVisible = BehaviorSubject.create();
+  public final Observable<Boolean> loggedInEmptyStateIsVisible() {
+    return loggedInEmptyStateIsVisible;
   }
   private final PublishSubject<Boolean> isFetchingActivities = PublishSubject.create();
   public final Observable<Boolean> isFetchingActivities() {
@@ -108,14 +106,15 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
       .subscribe(__ -> refresh());
 
     currentUser.isLoggedIn()
+      .map(loggedIn -> !loggedIn)
       .compose(bindToLifecycle())
-      .subscribe(showLoggedOutEmptyState);
+      .subscribe(loggedOutEmptyStateIsVisible::onNext);
 
-    activities
-      .filter(List::isEmpty)
-      .switchMap(__ -> currentUser.loggedInUser())
+    currentUser.observable()
+      .compose(Transformers.takePairWhen(activities))
+      .map(ua -> ua.first != null && ua.second.size() == 0)
       .compose(bindToLifecycle())
-      .subscribe(userForLoggedInEmptyState::onNext);
+      .subscribe(loggedInEmptyStateIsVisible::onNext);
 
     view
       .compose(Transformers.takeWhen(discoverProjectsClick))

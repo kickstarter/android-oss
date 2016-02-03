@@ -44,7 +44,7 @@ public class FacebookConfirmationViewModel extends ViewModel<FacebookConfirmatio
   }
 
   // OUTPUTS
-  private final PublishSubject<String> prefillEmail = PublishSubject.create();
+  private final BehaviorSubject<String> prefillEmail = BehaviorSubject.create();
   public @NonNull Observable<String> prefillEmail() {
     return prefillEmail;
   }
@@ -71,13 +71,20 @@ public class FacebookConfirmationViewModel extends ViewModel<FacebookConfirmatio
   public final FacebookConfirmationViewModelErrors errors = this;
 
   public FacebookConfirmationViewModel() {
+
     final Observable<String> facebookAccessToken = intent
-      .map(i -> i.getParcelableExtra(IntentKey.FACEBOOK_USER))
-      .ofType(ErrorEnvelope.FacebookUser.class)
-      .map(ErrorEnvelope.FacebookUser::email);
+      .map(i -> i.getStringExtra(IntentKey.FACEBOOK_TOKEN))
+      .ofType(String.class);
 
     final Observable<Pair<String, Boolean>> tokenAndNewsletter = facebookAccessToken
       .compose(Transformers.combineLatestPair(sendNewslettersIsChecked));
+
+    intent
+      .map(i -> i.getParcelableExtra(IntentKey.FACEBOOK_USER))
+      .ofType(ErrorEnvelope.FacebookUser.class)
+      .map(ErrorEnvelope.FacebookUser::email)
+      .compose(bindToLifecycle())
+      .subscribe(prefillEmail::onNext);
 
     tokenAndNewsletter
       .compose(Transformers.takeWhen(createNewAccountClick))

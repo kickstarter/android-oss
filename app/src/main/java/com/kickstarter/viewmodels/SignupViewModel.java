@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentConfig;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.ViewModel;
@@ -128,6 +129,8 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
   @Override
   protected void onCreate(@NonNull Context context, @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
+    
+    ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     currentConfig.observable()
       .take(1)

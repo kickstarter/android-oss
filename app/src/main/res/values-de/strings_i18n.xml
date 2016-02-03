@@ -57,7 +57,7 @@
   <string name="activity_friend_backed_journalism_project" formatted="false">%{friend_name} hat ein Journalismus-Projekt unterstützt.</string>
   <string name="activity_friend_backed_music_project" formatted="false">%{friend_name} hat ein Musik-Projekt unterstützt.</string>
   <string name="activity_friend_backed_photography_project" formatted="false">%{friend_name} hat ein Fotografie-Projekt unterstützt.</string>
-  <string name="activity_friend_backed_project_name_by_creator_name" formatted="false">&lt;b>%{friend_name} backed&lt;/b> %{project_name} by %{creator_name}</string>
+  <string name="activity_friend_backed_project_name_by_creator_name" formatted="false">&lt;b>%{friend_name} hat das Projekt &lt;/b> %{project_name} von %{creator_name} unterstützt</string>
   <string name="activity_friend_backed_publishing_project" formatted="false">%{friend_name} hat ein Publishing-Projekt unterstützt.</string>
   <string name="activity_friend_backed_tech_project" formatted="false">%{friend_name} hat ein Technologie-Projekt unterstützt.</string>
   <string name="activity_friend_backed_theater_project" formatted="false">%{friend_name} hat ein Theater-Projekt unterstützt.</string>
@@ -304,7 +304,7 @@
   <string name="discovery_baseball_card_metadata_backer" formatted="false">Du gehörst jetzt zu den Unterstützern!</string>
   <string name="discovery_baseball_card_metadata_featured_project" formatted="false">Vorgestellt in %{category_name}</string>
   <string name="discovery_baseball_card_metadata_potd" formatted="false">Projekt des Tages!</string>
-  <string name="discovery_baseball_card_metadata_project_of_the_Day" formatted="false">Project of the Day</string>
+  <string name="discovery_baseball_card_metadata_project_of_the_Day" formatted="false">Projekt des Tages</string>
   <string name="discovery_baseball_card_metadata_starred" formatted="false">Gehört zu deinen Favoriten.</string>
   <string name="discovery_baseball_card_read_more" formatted="false">Mehr%{space}Info%{space}</string>
   <string name="discovery_baseball_card_social_friends_are_backers_few" formatted="false">%{friend_name}, %{second_friend_name}, und %{remaining_count} weitere unterstützen dieses Projekt.</string>
@@ -439,7 +439,7 @@
   <string name="login_tout_default_intent_traditional_signup_button" formatted="false">Registrieren</string>
   <string name="login_tout_default_intent_traditional_title" formatted="false">Benutze deine E-Mail-Adresse:</string>
   <string name="login_tout_disclaimer_by_signing_up_you_agree_to_terms" formatted="false">Mit der Registrierung stimmst du unseren Nutzungsbedingungen, Datenschutzrichtlinien und Cookie-Richtlinien zu.</string>
-  <string name="login_tout_disclaimer_by_signing_up_you_agree_to_terms_html" formatted="false">By signing up, you agree to our &lt;u>terms of use&lt;/u>, &lt;u>privacy policy&lt;/u>, and &lt;u>cookie policy&lt;/u>.</string>
+  <string name="login_tout_disclaimer_by_signing_up_you_agree_to_terms_html" formatted="false">Durch deine Anmeldung erklärst du dich mir unseren &lt;u>terms of use&lt;/u>, &lt;u>privacy policy&lt;/u>, und &lt;u>cookie policy&lt;/u> einverstanden.</string>
   <string name="login_tout_disclaimer_read_more" formatted="false">Weiterlesen</string>
   <string name="login_tout_disclaimer_we_never_post_anything_without_permission" formatted="false">Wir veröffentlichen niemals etwas ohne deine Zustimmung.</string>
   <string name="login_tout_errors_button_ok" formatted="false">OK</string>
@@ -508,9 +508,9 @@ Für gewöhnlich kann das Problem behoben werden, indem du in den iOS Einstellun
   <string name="profile_projects_backed_projects" formatted="false">Unterstützte Projekte</string>
   <string name="profile_projects_created_projects" formatted="false">Erstellte Projekte</string>
   <string name="profile_projects_empty_state_button" formatted="false">Projekte entdecken</string>
-  <string name="profile_projects_empty_state_button_explore_new_projects" formatted="false">Explore new projects</string>
+  <string name="profile_projects_empty_state_button_explore_new_projects" formatted="false">Erkunde neue Projekte</string>
   <string name="profile_projects_empty_state_message" formatted="false">Du hast noch keine Projekte unterstützt. Das sollten wir ändern!</string>
-  <string name="profile_projects_empty_state_message_no_backed_projects_yet" formatted="false">No backed projects yet</string>
+  <string name="profile_projects_empty_state_message_no_backed_projects_yet" formatted="false">Keine unterstützten Projekte</string>
   <string name="profile_projects_status_canceled" formatted="false">Zurückgezogen</string>
   <string name="profile_projects_status_successful" formatted="false">Erfolgreich</string>
   <string name="profile_projects_status_suspended" formatted="false">Ausgesetzt</string>
@@ -552,13 +552,11 @@ Für gewöhnlich kann das Problem behoben werden, indem du in den iOS Einstellun
   <string name="profile_settings_rating_message" formatted="false">Danke für die Nutzung der Kickstarter App.\n
 Falls du einen Moment Zeit hast, könntest du deine Erfahrung bewerten?\n
 Wir würden uns sehr darüber freuen!</string>
-  <string name="profile_settings_rating_option_message_if_you_enjoy_using_Kickstarter" formatted="false">If you enjoy using the Kickstarter app, would you mind taking a moment to rate it in the Play store?\n
-\n
-Thank you for your support!</string>
+  <string name="profile_settings_rating_option_message_if_you_enjoy_using_Kickstarter" formatted="false">Hättest du einen Moment Zeit, die App im Play Store zu bewerten?</string>
   <string name="profile_settings_rating_option_no_thanks" formatted="false">Nein, Danke</string>
   <string name="profile_settings_rating_option_rate_now" formatted="false">Jetzt bewerten</string>
   <string name="profile_settings_rating_option_remind_later" formatted="false">Später</string>
-  <string name="profile_settings_rating_option_title_show_us_some_love" formatted="false">Show us some love</string>
+  <string name="profile_settings_rating_option_title_show_us_some_love" formatted="false">Dir gefällt die App?</string>
   <string name="profile_settings_rating_rate_us" formatted="false">Bewerte uns im App Store!</string>
   <string name="profile_settings_rating_rate_us_play_store" formatted="false">Bewerte uns im Play Store!</string>
   <string name="profile_settings_rating_title" formatted="false">Wir sind ganz Ohr!</string>
@@ -585,7 +583,7 @@ Thank you for your support!</string>
   <string name="project_checkout_share_alert_button_ok" formatted="false">OK</string>
   <string name="project_checkout_share_alert_this_device_not_capable_of_sending_email" formatted="false">Dieses Gerät kann keine E-Mails versenden.</string>
   <string name="project_checkout_share_buttons_more" formatted="false">Mehr</string>
-  <string name="project_checkout_share_buttons_more_share_options" formatted="false">More share options</string>
+  <string name="project_checkout_share_buttons_more_share_options" formatted="false">Weitere Optionen</string>
   <string name="project_checkout_share_buttons_share" formatted="false">Teilen</string>
   <string name="project_checkout_share_buttons_tweet" formatted="false">Twittern</string>
   <string name="project_checkout_share_exclamation" formatted="false">Super!</string>

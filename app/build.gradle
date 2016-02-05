@@ -57,7 +57,6 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             if (isCircle) {
                 // The release build generated on CircleCI doesn't need to be signed with our real
                 // keystore - we just need a release build to verify that it compiles. Using the

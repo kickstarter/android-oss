@@ -51,7 +51,13 @@ public final class DateTimeUtils {
    * e.g.: Dec 17, 2015.
    */
   public static @NonNull String fullDate(final @NonNull DateTime dateTime, final @NonNull Locale locale) {
-    return dateTime.toString(DateTimeFormat.fullDate().withLocale(locale).withZoneUTC());
+    try {
+      return dateTime.toString(DateTimeFormat.fullDate().withLocale(locale).withZoneUTC());
+    } catch (final IllegalArgumentException e) {
+      // JodaTime doesn't support the 'cccc' pattern, triggered by fullDate and fullDateTime. See: https://github.com/dlew/joda-time-android/issues/30
+      // Instead just return a medium date.
+      return mediumDate(dateTime, locale);
+    }
   }
 
   /**

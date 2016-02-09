@@ -229,6 +229,9 @@ public class BaseActivity<ViewModelType extends ViewModel> extends AppCompatActi
     subscriptions.add(subscription);
   }
 
+  /**
+   * Triggers a back press with an optional transition.
+   */
   private void goBack() {
     super.onBackPressed();
 

@@ -123,6 +123,12 @@ public final class VideoPlayerActivity extends BaseActivity<VideoPlayerViewModel
     if (mediaController.isShowing()) {
       mediaController.hide();
     } else {
+      if (mediaController.isAttachedToWindow()) {
+        // Attempt fix for crash reports from Remix Mini / 5.1 where the media controller is attached to a window
+        // but not showing. Adding it again crashes the app, so return to avoid that.
+        return;
+      }
+
       mediaController.show();
     }
   }

@@ -123,6 +123,15 @@
       android:text="Project update"
       style="@style/BorderButton" />
 
+    <Button
+      android:id="@+id/simulate_burst_button"
+      android:layout_marginTop="@dimen/grid_1_half"
+      android:layout_marginBottom="@dimen/grid_1_half"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="Simulate burst"
+      style="@style/BorderButton" />
+
   </LinearLayout>
 
 </com.kickstarter.ui.views.DebugPushNotificationsView>

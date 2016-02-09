@@ -55,21 +55,25 @@ public class PushNotifications {
 
   public void initialize() {
     subscriptions.add(notifications
+      .onBackpressureBuffer()
       .filter(PushNotificationEnvelope::isFriendFollow)
       .observeOn(Schedulers.newThread())
       .subscribe(this::displayNotificationFromFriendFollowActivity));
 
     subscriptions.add(notifications
+      .onBackpressureBuffer()
       .filter(PushNotificationEnvelope::isProjectActivity)
       .observeOn(Schedulers.newThread())
       .subscribe(this::displayNotificationFromProjectActivity));
 
     subscriptions.add(notifications
+      .onBackpressureBuffer()
       .filter(PushNotificationEnvelope::isProjectReminder)
       .observeOn(Schedulers.newThread())
       .subscribe(this::displayNotificationFromProjectReminder));
 
     subscriptions.add(notifications
+      .onBackpressureBuffer()
       .filter(PushNotificationEnvelope::isProjectUpdateActivity)
       .flatMap(this::fetchUpdateWithEnvelope)
       .filter(ObjectUtils::isNotNull)

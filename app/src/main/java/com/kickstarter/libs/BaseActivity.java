@@ -7,6 +7,7 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Pair;
 
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.BundleUtils;
@@ -20,12 +21,15 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 public class BaseActivity<ViewModelType extends ViewModel> extends AppCompatActivity implements ActivityLifecycleProvider,
   LifecycleType {
 
+  private final PublishSubject<Void> back = PublishSubject.create();
   private final BehaviorSubject<ActivityEvent> lifecycle = BehaviorSubject.create();
   protected ViewModelType viewModel;
   private static final String VIEW_MODEL_KEY = "viewModel";
@@ -81,6 +85,7 @@ public class BaseActivity<ViewModelType extends ViewModel> extends AppCompatActi
     Timber.d("onCreate %s", this.toString());
 
     lifecycle.onNext(ActivityEvent.CREATE);
+
     fetchViewModel(savedInstanceState);
 
     viewModel.intent(getIntent());
@@ -102,6 +107,11 @@ public class BaseActivity<ViewModelType extends ViewModel> extends AppCompatActi
     super.onStart();
     Timber.d("onStart %s", this.toString());
     lifecycle.onNext(ActivityEvent.START);
+
+    back
+      .compose(bindUntilEvent(ActivityEvent.STOP))
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> goBack());
   }
 
   @CallSuper
@@ -156,27 +166,44 @@ public class BaseActivity<ViewModelType extends ViewModel> extends AppCompatActi
     }
   }
 
+  /**
+   * @deprecated Use {@link #back()} instead.
+   *
+   *             In rare situations, onBackPressed can be triggered after {@link #onSaveInstanceState(Bundle)} has been called.
+   *             This causes an {@link IllegalStateException} in the fragment manager's `checkStateLoss` method, because the
+   *             UI state has changed after being saved. The sequence of events might look like this:
+   *
+   *             onSaveInstanceState -> onStop -> onBackPressed
+   *
+   *             To avoid that situation, we need to ignore calls to `onBackPressed` after the activity has been saved. Since
+   *             the activity is stopped after `onSaveInstanceState` is called, we can create an observable tied to the activity
+   *             lifecycle that completes when the activity is stopped, and simply ignore any new requests to go back after that occurs.
+   */
   @CallSuper
   @Override
+  @Deprecated
   public void onBackPressed() {
-    if (isFinishing()) {
-      // Possible fix for android.support.v4.app.FragmentManagerImpl.checkStateLoss:
-      // java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState.
-      return;
-    }
+    back();
+  }
 
-    super.onBackPressed();
+  /**
+   * Call when the user wants triggers a back event, e.g. clicking back in a toolbar or pressing the device back button.
+   */
+  public void back() {
+    back.onNext(null);
+  }
+
+  /**
+   * Override in subclasses for custom exit transitions. First item in pair is the enter animation,
+   * second item in pair is the exit animation.
+   */
+  protected @Nullable Pair<Integer, Integer> exitTransition() {
+    return null;
   }
 
   @CallSuper
   @Override
   protected void onSaveInstanceState(final @NonNull Bundle outState) {
-    if (isFinishing()) {
-      // Possible fix for android.support.v4.app.FragmentManagerImpl.checkStateLoss:
-      // java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState.
-      return;
-    }
-
     super.onSaveInstanceState(outState);
     Timber.d("onSaveInstanceState %s", this.toString());
 
@@ -200,6 +227,15 @@ public class BaseActivity<ViewModelType extends ViewModel> extends AppCompatActi
   @Deprecated
   protected final void addSubscription(final @NonNull Subscription subscription) {
     subscriptions.add(subscription);
+  }
+
+  private void goBack() {
+    super.onBackPressed();
+
+    final Pair<Integer, Integer> exitTransitions = exitTransition();
+    if (exitTransitions != null) {
+      overridePendingTransition(exitTransitions.first, exitTransitions.second);
+    }
   }
 
   private void fetchViewModel(final @Nullable Bundle viewModelEnvelope) {

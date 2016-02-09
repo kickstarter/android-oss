@@ -3,6 +3,7 @@ package com.kickstarter.ui.activities;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 
@@ -19,6 +20,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
+
+import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresViewModel(WebViewViewModel.class)
 public final class WebViewActivity extends BaseActivity<WebViewViewModel> implements KSWebViewClient.Delegate {
@@ -45,11 +48,9 @@ public final class WebViewActivity extends BaseActivity<WebViewViewModel> implem
       .subscribe(webView::loadUrl);
   }
 
-  @Override
   @OnClick(R.id.back_button)
-  public void onBackPressed() {
-    super.onBackPressed();
-    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
+  public void backButtonClick() {
+    back();
   }
 
   @Override
@@ -70,4 +71,8 @@ public final class WebViewActivity extends BaseActivity<WebViewViewModel> implem
 
   @Override
   public void webViewPageIntercepted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {}
+
+  protected @Nullable Pair<Integer, Integer> exitTransition() {
+    return slideInFromLeft();
+  }
 }

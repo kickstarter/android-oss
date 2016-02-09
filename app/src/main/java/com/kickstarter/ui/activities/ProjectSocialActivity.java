@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
@@ -15,8 +16,9 @@ import com.kickstarter.viewmodels.ProjectSocialViewModel;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
+
+import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresViewModel(ProjectSocialViewModel.class)
 public final class ProjectSocialActivity extends BaseActivity<ProjectSocialViewModel> implements ProjectSocialAdapter.Delegate {
@@ -44,15 +46,13 @@ public final class ProjectSocialActivity extends BaseActivity<ProjectSocialViewM
     super.onDestroy();
     recyclerView.setAdapter(null);
   }
-  @Override
-  @OnClick(R.id.back_button)
-  public void onBackPressed() {
-    super.onBackPressed();
-    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
-  }
 
   @Override
   public void projectContextClicked(final @NonNull ProjectContextViewHolder viewHolder) {
-    onBackPressed();
+    back();
+  }
+
+  protected @Nullable Pair<Integer, Integer> exitTransition() {
+    return slideInFromLeft();
   }
 }

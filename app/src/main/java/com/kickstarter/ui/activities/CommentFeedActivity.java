@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Pair;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -27,11 +28,11 @@ import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.data.LoginReason;
-import com.kickstarter.viewmodels.CommentFeedViewModel;
 import com.kickstarter.ui.adapters.CommentFeedAdapter;
+import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.ui.viewholders.EmptyCommentFeedViewHolder;
 import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
+import com.kickstarter.viewmodels.CommentFeedViewModel;
 
 import java.util.List;
 
@@ -41,6 +42,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+
+import static com.kickstarter.libs.utils.TransitionUtils.*;
 
 @RequiresViewModel(CommentFeedViewModel.class)
 public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel> implements CommentFeedAdapter.Delegate {
@@ -107,9 +110,8 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
 
   @Nullable
   @OnClick({R.id.project_context_view})
-  public void onBackPressed() {
-    super.onBackPressed();
-    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
+  public void projectContextViewClick() {
+    back();
   }
 
   public void commentFeedLogin() {
@@ -176,7 +178,7 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
 
   @Override
   public void projectContextClicked(final @NonNull ProjectContextViewHolder viewHolder) {
-    onBackPressed();
+    back();
   }
 
   @Override
@@ -195,6 +197,10 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
       return;
     }
     viewModel.takeLoginSuccess();
+  }
+
+  protected @Nullable Pair<Integer, Integer> exitTransition() {
+    return slideInFromLeft();
   }
 
   private Observable<String> toastMessages() {

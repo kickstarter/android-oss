@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -22,6 +23,8 @@ import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+
+import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresViewModel(TwoFactorViewModel.class)
 public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel> {
@@ -84,13 +87,6 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel> {
     viewModel.inputs.loginClick();
   }
 
-  @Override
-  public void onBackPressed() {
-    super.onBackPressed();
-
-    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
-  }
-
   public void onSuccess() {
     setResult(Activity.RESULT_OK);
     finish();
@@ -102,5 +98,9 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel> {
 
   public void setFormDisabled(final boolean disabled) {
     setFormEnabled(!disabled);
+  }
+
+  protected @Nullable Pair<Integer, Integer> exitTransition() {
+    return slideInFromLeft();
   }
 }

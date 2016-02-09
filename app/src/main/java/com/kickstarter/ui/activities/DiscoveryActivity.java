@@ -19,7 +19,6 @@ import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
-import com.kickstarter.libs.utils.TransitionUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
@@ -37,6 +36,9 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
+
+import static com.kickstarter.libs.utils.TransitionUtils.slideInFromRight;
+import static com.kickstarter.libs.utils.TransitionUtils.transition;
 
 @RequiresViewModel(DiscoveryViewModel.class)
 public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
@@ -165,7 +167,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
     final Intent intent = new Intent(this, LoginToutActivity.class)
       .putExtra(IntentKey.LOGIN_REASON, LoginReason.DEFAULT);
     startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
-    TransitionUtils.slideInFromRight(this);
+    transition(this, slideInFromRight());
   }
 
   private void startProfileActivity() {

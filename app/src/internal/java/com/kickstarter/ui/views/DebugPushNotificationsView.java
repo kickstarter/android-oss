@@ -166,20 +166,7 @@ public class DebugPushNotificationsView extends ScrollView {
 
   @OnClick(R.id.simulate_project_success_button)
   public void simulateProjectSuccessButtonClick() {
-    final GCM gcm = GCM.builder()
-      .title("Time to celebrate!")
-      .alert("Double Fine Adventure has been successfully funded.")
-      .build();
-
-    final Activity activity = Activity.builder()
-      .category(com.kickstarter.models.Activity.CATEGORY_SUCCESS)
-      .id(6)
-      .projectId(PROJECT_ID)
-      .projectPhoto(PROJECT_PHOTO)
-      .build();
-
-    final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder().activity(activity).gcm(gcm).build();
-    pushNotifications.add(envelope);
+    pushNotifications.add(projectSuccessEnvelope());
   }
 
   @OnClick(R.id.simulate_project_update_button)
@@ -199,5 +186,31 @@ public class DebugPushNotificationsView extends ScrollView {
 
     final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder().activity(activity).gcm(gcm).build();
     pushNotifications.add(envelope);
+  }
+
+  @OnClick(R.id.simulate_burst_button)
+  public void simulateBurstClick() {
+    final PushNotificationEnvelope baseEnvelope = projectSuccessEnvelope();
+    for (int i = 0; i < 100; i++) {
+      // Create a different signature for each push notification
+      final GCM gcm = baseEnvelope.gcm().toBuilder().alert(Integer.toString(i)).build();
+      pushNotifications.add(baseEnvelope.toBuilder().gcm(gcm).build());
+    }
+  }
+
+  private @NonNull PushNotificationEnvelope projectSuccessEnvelope() {
+    final GCM gcm = GCM.builder()
+      .title("Time to celebrate!")
+      .alert("Double Fine Adventure has been successfully funded.")
+      .build();
+
+    final Activity activity = Activity.builder()
+      .category(com.kickstarter.models.Activity.CATEGORY_SUCCESS)
+      .id(6)
+      .projectId(PROJECT_ID)
+      .projectPhoto(PROJECT_PHOTO)
+      .build();
+
+    return PushNotificationEnvelope.builder().activity(activity).gcm(gcm).build();
   }
 }

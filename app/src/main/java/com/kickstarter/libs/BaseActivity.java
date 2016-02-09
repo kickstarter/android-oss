@@ -158,7 +158,25 @@ public class BaseActivity<ViewModelType extends ViewModel> extends AppCompatActi
 
   @CallSuper
   @Override
+  public void onBackPressed() {
+    if (isFinishing()) {
+      // Possible fix for android.support.v4.app.FragmentManagerImpl.checkStateLoss:
+      // java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState.
+      return;
+    }
+
+    super.onBackPressed();
+  }
+
+  @CallSuper
+  @Override
   protected void onSaveInstanceState(final @NonNull Bundle outState) {
+    if (isFinishing()) {
+      // Possible fix for android.support.v4.app.FragmentManagerImpl.checkStateLoss:
+      // java.lang.IllegalStateException: Can not perform this action after onSaveInstanceState.
+      return;
+    }
+
     super.onSaveInstanceState(outState);
     Timber.d("onSaveInstanceState %s", this.toString());
 

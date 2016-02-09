@@ -5,5 +5,6 @@
 
   <application>
     <activity android:name=".ui.activities.InternalToolsActivity" />
+    <activity android:name=".ui.activities.PlaygroundActivity" />
   </application>
 </manifest>

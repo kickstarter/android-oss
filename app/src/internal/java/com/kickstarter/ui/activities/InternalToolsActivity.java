@@ -76,6 +76,11 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
     overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
+  @OnClick(R.id.playground_button)
+  public void playgroundClick() {
+    startActivity(new Intent(this, PlaygroundActivity.class));
+  }
+
   @OnClick(R.id.push_notifications_button)
   public void pushNotificationsButtonClick() {
     final View view = LayoutInflater.from(this).inflate(R.layout.debug_push_notifications_layout, null);

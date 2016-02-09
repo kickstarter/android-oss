@@ -176,8 +176,8 @@ public class BaseActivity<ViewModelType extends ViewModel> extends AppCompatActi
    *             onSaveInstanceState -> onStop -> onBackPressed
    *
    *             To avoid that situation, we need to ignore calls to `onBackPressed` after the activity has been saved. Since
-   *             the activity is stopped after `onSaveInstanceState` is called, we can create an observable tied to the activity
-   *             lifecycle that completes when the activity is stopped, and simply ignore any new requests to go back after that occurs.
+   *             the activity is stopped after `onSaveInstanceState` is called, we can create an observable of back events,
+   *             and a subscription that calls super.onBackPressed() only when the activity has not been stopped.
    */
   @CallSuper
   @Override

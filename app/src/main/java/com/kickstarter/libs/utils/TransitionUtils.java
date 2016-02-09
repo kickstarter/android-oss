@@ -7,8 +7,14 @@ import android.util.Pair;
 import com.kickstarter.R;
 
 public final class TransitionUtils {
-  public static void transition(final @NonNull Activity activity, final @NonNull Pair<Integer, Integer> transitions) {
-    activity.overridePendingTransition(transitions.first, transitions.second);
+  /**
+   * Explicitly set a transition after starting an activity.
+   *
+   * @param activity The activity that started the new intent.
+   * @param transition A pair of animation ids, first is the enter animation, second is the exit animation.
+   */
+  public static void transition(final @NonNull Activity activity, final @NonNull Pair<Integer, Integer> transition) {
+    activity.overridePendingTransition(transition.first, transition.second);
   }
 
   public static @NonNull Pair<Integer, Integer> slideInFromRight() {

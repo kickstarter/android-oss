@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.webkit.WebView;
@@ -12,6 +13,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.utils.TransitionUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.KSUri;
 import com.kickstarter.services.KSWebViewClient;
@@ -28,6 +30,8 @@ import java.util.Arrays;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
+
+import static com.kickstarter.libs.utils.TransitionUtils.*;
 
 @RequiresViewModel(CheckoutViewModel.class)
 public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> implements KSWebViewClient.Delegate {
@@ -67,12 +71,6 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
     viewModel.outputs.url()
       .take(1)
       .subscribe(webView::loadUrl);
-  }
-
-  @Override
-  public void onBackPressed() {
-    super.onBackPressed();
-    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
   private boolean handleCheckoutThanksUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
@@ -123,5 +121,9 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
   @Override
   public void webViewPageIntercepted(final @NonNull KSWebViewClient webViewClient, final @NonNull String url) {
     viewModel.inputs.pageIntercepted(url);
+  }
+
+  protected @Nullable Pair<Integer, Integer> exitTransition() {
+    return slideInFromLeft();
   }
 }

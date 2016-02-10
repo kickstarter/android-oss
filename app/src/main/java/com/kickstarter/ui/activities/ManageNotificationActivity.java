@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
@@ -20,6 +21,8 @@ import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
+
+import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresViewModel(ManageNotificationsViewModel.class)
 public final class ManageNotificationActivity extends BaseActivity<ManageNotificationsViewModel> {
@@ -57,9 +60,7 @@ public final class ManageNotificationActivity extends BaseActivity<ManageNotific
     recyclerView.setAdapter(null);
   }
 
-  @Override
-  public void onBackPressed() {
-    super.onBackPressed();
-    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
+  protected @Nullable Pair<Integer, Integer> exitTransition() {
+    return slideInFromLeft();
   }
 }

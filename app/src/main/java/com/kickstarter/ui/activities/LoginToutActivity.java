@@ -14,7 +14,6 @@ import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.libs.utils.TransitionUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.IntentKey;
@@ -30,6 +29,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+
+import static com.kickstarter.libs.utils.TransitionUtils.slideInFromRight;
+import static com.kickstarter.libs.utils.TransitionUtils.transition;
 
 @RequiresViewModel(LoginToutViewModel.class)
 public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
@@ -132,19 +134,19 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
       .putExtra(IntentKey.FACEBOOK_USER, facebookUser)
       .putExtra(IntentKey.FACEBOOK_TOKEN, accessTokenString);
     startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
-    TransitionUtils.slideInFromRight(this);
+    transition(this, slideInFromRight());
   }
 
   private void startLogin() {
     final Intent intent = new Intent(this, LoginActivity.class);
     startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
-    TransitionUtils.slideInFromRight(this);
+    transition(this, slideInFromRight());
   }
 
   private void startSignup() {
     final Intent intent = new Intent(this, SignupActivity.class);
     startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
-    TransitionUtils.slideInFromRight(this);
+    transition(this, slideInFromRight());
   }
 
   public void startTwoFactorFacebookChallenge() {
@@ -153,6 +155,6 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
       .putExtra(IntentKey.FACEBOOK_TOKEN, AccessToken.getCurrentAccessToken().getToken());
 
     startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
-    TransitionUtils.slideInFromRight(this);
+    transition(this, slideInFromRight());
   }
 }

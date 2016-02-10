@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
 
 import butterknife.ButterKnife;
@@ -32,6 +33,6 @@ public final class ProjectToolbar extends KSToolbar {
 
   @OnClick(R.id.back_icon)
   public void backIconClick() {
-    ((ProjectActivity) getContext()).onBackPressed();
+    ((BaseActivity) getContext()).back();
   }
 }

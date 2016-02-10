@@ -3,6 +3,7 @@ package com.kickstarter.ui.activities;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,6 +28,8 @@ import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
+
+import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresViewModel(ViewPledgeViewModel.class)
 public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel> {
@@ -117,12 +120,10 @@ public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel> 
 
   @OnClick(R.id.project_context_view)
   public void projectContextClicked() {
-    onBackPressed();
+    back();
   }
 
-  @Override
-  public void onBackPressed() {
-    super.onBackPressed();
-    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
+  protected @Nullable Pair<Integer, Integer> exitTransition() {
+    return slideInFromLeft();
   }
 }

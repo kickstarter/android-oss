@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Html;
+import android.util.Pair;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -31,6 +32,8 @@ import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+
+import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresViewModel(LoginViewModel.class)
 public final class LoginActivity extends BaseActivity<LoginViewModel> {
@@ -106,12 +109,6 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
     finish();
   }
 
-  @Override
-  public void onBackPressed() {
-    super.onBackPressed();
-    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
-  }
-
   @OnTextChanged(R.id.email)
   void onEmailTextChanged(final @NonNull CharSequence email) {
     viewModel.inputs.email(email.toString());
@@ -148,5 +145,9 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
       .putExtra(IntentKey.PASSWORD, passwordEditText.getText().toString());
     startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
     overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  protected @Nullable Pair<Integer, Integer> exitTransition() {
+    return slideInFromLeft();
   }
 }

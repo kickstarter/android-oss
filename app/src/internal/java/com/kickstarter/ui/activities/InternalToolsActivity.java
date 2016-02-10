@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -43,6 +44,8 @@ import butterknife.BindDrawable;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
+
 @RequiresViewModel(InternalToolsViewModel.class)
 public final class InternalToolsActivity extends BaseActivity<InternalToolsViewModel> {
   @Inject @ApiEndpointPreference StringPreference apiEndpointPreference;
@@ -68,12 +71,6 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
 
     setupNetworkSection();
     setupBuildInformationSection();
-  }
-
-  @Override
-  public void onBackPressed() {
-    super.onBackPressed();
-    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 
   @OnClick(R.id.playground_button)
@@ -195,5 +192,9 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
     apiEndpointPreference.set(endpoint);
     logout.execute();
     ProcessPhoenix.triggerRebirth(this);
+  }
+
+  protected @Nullable Pair<Integer, Integer> exitTransition() {
+    return slideInFromLeft();
   }
 }

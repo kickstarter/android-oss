@@ -35,12 +35,9 @@ public class KSToolbar extends Toolbar {
     super(context, attrs, defStyleAttr);
   }
 
-  /**
-   * Default back button behavior, override for custom transitions.
-   */
   @Nullable @OnClick(R.id.back_button)
   protected void backButtonClick() {
-    ((BaseActivity) getContext()).onBackPressed();
+    ((BaseActivity) getContext()).back();
   }
 
   /**

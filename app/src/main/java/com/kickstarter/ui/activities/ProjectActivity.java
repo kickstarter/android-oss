@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -178,16 +179,6 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     viewModel.inputs.viewPledgeClicked();
   }
 
-  @Override
-  public void onBackPressed() {
-    super.onBackPressed();
-    overrideExitTransition();
-  }
-
-  private void overrideExitTransition() {
-    overridePendingTransition(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
-  }
-
   @OnClick(R.id.star_icon)
   public void starProjectClick() {
     viewModel.inputs.starClicked();
@@ -290,5 +281,9 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
       return;
     }
     viewModel.inputs.loginSuccess();
+  }
+
+  protected @Nullable Pair<Integer, Integer> exitTransition() {
+    return Pair.create(R.anim.fade_in_slide_in_left, R.anim.slide_out_right);
   }
 }

@@ -91,7 +91,7 @@ CHECKLIST
     command :"update-strings" do |c|
       c.syntax = "milkrun update-strings"
       c.description = "refresh config and create string resources"
-      c.option "--local", "Use local development server instead of production"
+      c.option "--local", "Use local development server instead of production. Config generated from the local server should not be committed; your local environment may not have the latest translations. Useful if you have a branch in the Kickstarter app and you want the keys to be pulled in to Android while waiting for the code to be deployed to production."
       c.action do |args, options|
         Milkrun::ServerConfigRefresher.new(local: (options.local || false)).refresh
         Milkrun::I18nStringResources.new.create

@@ -411,11 +411,13 @@
       },
       "support_email": {
         "to": "app@kickstarter.com",
+        "to_android": "android@kickstarter.com",
         "subject": "Hello Kickstarter App Support",
         "body": "How can we help you? Please try to be as specific as possible.\n\n\n\n\n--------\n",
         "noemail": {
           "title": "Support",
-          "message": "Looks like you don’t have an e-mail account on your device. Please contact us at app@kickstarter.com."
+          "message": "Looks like you don’t have an e-mail account on your device. Please contact us at app@kickstarter.com.",
+          "message_android": "Looks like you don’t have an e-mail account on your device. Please contact us at android@kickstarter.com."
         },
         "button": {
           "ok": "OK"
@@ -1717,11 +1719,13 @@
       },
       "support_email": {
         "to": "app@kickstarter.com",
+        "to_android": "android@kickstarter.com",
         "subject": "Hallo Kickstarter App Support",
         "body": "Wie können wir dir helfen? Mache deine Angaben bitte so genau wie möglich.\n",
         "noemail": {
           "title": "Support",
-          "message": "Es sieht so aus, als hättest du keinen E-Mail-Account auf deinem Gerät. Bitte kontaktiere uns unter app@kickstarter.com."
+          "message": "Es sieht so aus, als hättest du keinen E-Mail-Account auf deinem Gerät. Bitte kontaktiere uns unter app@kickstarter.com.",
+          "message_android": "Looks like you don’t have an e-mail account on your device. Please contact us at android@kickstarter.com."
         },
         "button": {
           "ok": "OK"
@@ -3023,11 +3027,13 @@
       },
       "support_email": {
         "to": "app@kickstarter.com",
+        "to_android": "android@kickstarter.com",
         "subject": "Saludos al equipo de atención al cliente de Kickstarter",
         "body": "¿Cómo podemos ayudarte? Por favor, trata de ser lo más específico posible.\n\n\n\n\n--------\n",
         "noemail": {
           "title": "Atención al cliente",
-          "message": "Parece que no tienes una cuenta de correo electrónico en tu dispositivo. Por favor ponte en contacto con nosotros a través de app@kickstarter.com."
+          "message": "Parece que no tienes una cuenta de correo electrónico en tu dispositivo. Por favor ponte en contacto con nosotros a través de app@kickstarter.com.",
+          "message_android": "Looks like you don’t have an e-mail account on your device. Please contact us at android@kickstarter.com."
         },
         "button": {
           "ok": "Ok"
@@ -4329,11 +4335,13 @@
       },
       "support_email": {
         "to": "app@kickstarter.com",
+        "to_android": "android@kickstarter.com",
         "subject": "Bonjour, Assistance de l'application Kickstarter",
         "body": "Comment pouvons-nous vous aider ? Merci d'être aussi précis que possible.\n\n\n\n\n--------\n",
         "noemail": {
           "title": "Assistance",
-          "message": "On dirait que vous n'avez pas de compte e-mail sur votre appareil. Veuillez nous contacter à l'adresse app@kickstarter.com."
+          "message": "On dirait que vous n'avez pas de compte e-mail sur votre appareil. Veuillez nous contacter à l'adresse app@kickstarter.com.",
+          "message_android": "Looks like you don’t have an e-mail account on your device. Please contact us at android@kickstarter.com."
         },
         "button": {
           "ok": "OK"
@@ -5635,11 +5643,13 @@
       },
       "support_email": {
         "to": "app@kickstarter.com",
+        "to_android": "android@kickstarter.com",
         "subject": "Hello Kickstarter App Support",
         "body": "How can we help you? Please try to be as specific as possible.\n\n\n\n\n--------\n",
         "noemail": {
           "title": "Support",
-          "message": "Looks like you don’t have an e-mail account on your device. Please contact us at app@kickstarter.com."
+          "message": "Looks like you don’t have an e-mail account on your device. Please contact us at app@kickstarter.com.",
+          "message_android": "Looks like you don’t have an e-mail account on your device. Please contact us at android@kickstarter.com."
         },
         "button": {
           "ok": "OK"

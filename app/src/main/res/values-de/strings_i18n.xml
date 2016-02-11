@@ -728,9 +728,11 @@ Wir würden uns sehr darüber freuen!</string>
   <string name="support_email_button_ok" formatted="false">OK</string>
   <string name="support_email_chooser" formatted="false">Auswahl E-Mail-App:</string>
   <string name="support_email_noemail_message" formatted="false">Es sieht so aus, als hättest du keinen E-Mail-Account auf deinem Gerät. Bitte kontaktiere uns unter app@kickstarter.com.</string>
+  <string name="support_email_noemail_message_android" formatted="false">Looks like you don’t have an e-mail account on your device. Please contact us at android@kickstarter.com.</string>
   <string name="support_email_noemail_title" formatted="false">Support</string>
   <string name="support_email_subject" formatted="false">Hallo Kickstarter App Support</string>
   <string name="support_email_to" formatted="false">app@kickstarter.com</string>
+  <string name="support_email_to_android" formatted="false">android@kickstarter.com</string>
   <string name="tabbar_activity" formatted="false">Aktivität</string>
   <string name="tabbar_dashboard" formatted="false">Dashboard</string>
   <string name="tabbar_discover" formatted="false">Entdecken</string>

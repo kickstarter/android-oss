@@ -734,9 +734,11 @@ Si tienes un momento, ¿te importaría calificar tu experiencia?\n
   <string name="support_email_button_ok" formatted="false">Ok</string>
   <string name="support_email_chooser" formatted="false">Escoge la app de correo:</string>
   <string name="support_email_noemail_message" formatted="false">Parece que no tienes una cuenta de correo electrónico en tu dispositivo. Por favor ponte en contacto con nosotros a través de app@kickstarter.com.</string>
+  <string name="support_email_noemail_message_android" formatted="false">Looks like you don’t have an e-mail account on your device. Please contact us at android@kickstarter.com.</string>
   <string name="support_email_noemail_title" formatted="false">Atención al cliente</string>
   <string name="support_email_subject" formatted="false">Saludos al equipo de atención al cliente de Kickstarter</string>
   <string name="support_email_to" formatted="false">app@kickstarter.com</string>
+  <string name="support_email_to_android" formatted="false">android@kickstarter.com</string>
   <string name="tabbar_activity" formatted="false">Actividad</string>
   <string name="tabbar_dashboard" formatted="false">Panel de control</string>
   <string name="tabbar_discover" formatted="false">Descubrir</string>

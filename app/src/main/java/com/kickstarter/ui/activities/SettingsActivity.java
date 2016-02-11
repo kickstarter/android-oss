@@ -70,7 +70,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   protected @BindString(R.string.profile_settings_accessibility_subscribe_notifications) String subscribeString;
   protected @BindString(R.string.support_email_body) String supportEmailBodyString;
   protected @BindString(R.string.support_email_subject) String supportEmailSubjectString;
-  protected @BindString(R.string.support_email_to) String supportEmailString;
+  protected @BindString(R.string.support_email_to_android) String supportEmailString;
   protected @BindString(R.string.profile_settings_error) String unableToSaveString;
   protected @BindString(R.string.profile_settings_accessibility_unsubscribe_mobile_notifications) String unsubscribeMobileString;
   protected @BindString(R.string.profile_settings_accessibility_unsubscribe_notifications) String unsubscribeString;

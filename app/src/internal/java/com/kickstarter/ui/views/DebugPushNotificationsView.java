@@ -23,9 +23,9 @@ public class DebugPushNotificationsView extends ScrollView {
   protected @Inject DeviceRegistrarType deviceRegistrar;
   protected @Inject PushNotifications pushNotifications;
 
-  private static final String PROJECT_PHOTO = "https://ksr-ugc.imgix.net/projects/73409/photo-original.jpg?v=1397770628&w=120&h=120&fit=crop&auto=format&q=92&s=5adcd60781d0a7644975f845f03a4cf6";
+  private static final String PROJECT_PHOTO = "https://ksr-ugc.imgix.net/projects/1176555/photo-original.png?v=1407175667&w=120&h=120&fit=crop&auto=format&q=92&s=2065d33620d4fef280c4c2d451c2fa93";
   private static final String USER_PHOTO = "https://ksr-ugc.imgix.net/avatars/1583412/portrait.original.png?v=1330782076&w=120&h=120&fit=crop&auto=format&q=92&s=a9029da56a3deab8c4b87818433e3430";
-  private static final Long PROJECT_ID = 1929840910L;
+  private static final Long PROJECT_ID = 1761344210L;
 
   public DebugPushNotificationsView(final @NonNull Context context) {
     this(context, null);
@@ -65,7 +65,7 @@ public class DebugPushNotificationsView extends ScrollView {
   public void simulateFriendBackingButtonClick() {
     final GCM gcm = GCM.builder()
       .title("Check it out")
-      .alert("Christopher Wright backed Double Fine Adventure.")
+      .alert("Christopher Wright backed SKULL GRAPHIC TEE.")
       .build();
 
     final Activity activity = Activity.builder()
@@ -100,7 +100,7 @@ public class DebugPushNotificationsView extends ScrollView {
   public void simulateProjectCancellationButtonClick() {
     final GCM gcm = GCM.builder()
       .title("Kickstarter")
-      .alert("Double Fine Adventure has been canceled.")
+      .alert("SKULL GRAPHIC TEE has been canceled.")
       .build();
 
     final Activity activity = Activity.builder()
@@ -118,7 +118,7 @@ public class DebugPushNotificationsView extends ScrollView {
   public void simulateProjectFailureButtonClick() {
     final GCM gcm = GCM.builder()
       .title("Kickstarter")
-      .alert("Double Fine Adventure was not successfully funded.")
+      .alert("SKULL GRAPHIC TEE was not successfully funded.")
       .build();
 
     final Activity activity = Activity.builder()
@@ -136,14 +136,13 @@ public class DebugPushNotificationsView extends ScrollView {
   public void simulateProjectLaunchButtonClick() {
     final GCM gcm = GCM.builder()
       .title("Want to be the first backer?")
-      .alert("Double Fine just launched a project!")
+      .alert("Taylor Moore just launched a project!")
       .build();
 
     final Activity activity = Activity.builder()
       .category(com.kickstarter.models.Activity.CATEGORY_LAUNCH)
       .id(5)
       .projectId(PROJECT_ID)
-      .projectPhoto(PROJECT_PHOTO)
       .build();
 
     final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder().activity(activity).gcm(gcm).build();
@@ -154,7 +153,7 @@ public class DebugPushNotificationsView extends ScrollView {
   public void simulateProjectReminderButtonClick() {
     final GCM gcm = GCM.builder()
       .title("Last call")
-      .alert("Reminder! Double Fine Adventure is ending soon.")
+      .alert("Reminder! SKULL GRAPHIC TEE is ending soon.")
       .build();
 
     final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder()
@@ -172,8 +171,8 @@ public class DebugPushNotificationsView extends ScrollView {
   @OnClick(R.id.simulate_project_update_button)
   public void simulateProjectUpdateButtonClick() {
     final GCM gcm = GCM.builder()
-      .title("News from Double Fine")
-      .alert("Update #1 posted by Double Fine Adventure.")
+      .title("News from Taylor Moore")
+      .alert("Update #1 posted by SKULL GRAPHIC TEE.")
       .build();
 
     final Activity activity = Activity.builder()
@@ -181,7 +180,7 @@ public class DebugPushNotificationsView extends ScrollView {
       .id(7)
       .projectId(PROJECT_ID)
       .projectPhoto(PROJECT_PHOTO)
-      .updateId(175622L)
+      .updateId(1033848L)
       .build();
 
     final PushNotificationEnvelope envelope = PushNotificationEnvelope.builder().activity(activity).gcm(gcm).build();
@@ -201,7 +200,7 @@ public class DebugPushNotificationsView extends ScrollView {
   private @NonNull PushNotificationEnvelope projectSuccessEnvelope() {
     final GCM gcm = GCM.builder()
       .title("Time to celebrate!")
-      .alert("Double Fine Adventure has been successfully funded.")
+      .alert("SKULL GRAPHIC TEE has been successfully funded.")
       .build();
 
     final Activity activity = Activity.builder()

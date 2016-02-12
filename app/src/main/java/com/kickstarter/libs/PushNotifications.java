@@ -104,20 +104,21 @@ public class PushNotifications {
 
     final Activity activity = envelope.activity();
     if (activity == null) { return; }
-    final String projectPhoto = activity.projectPhoto();
-    if (projectPhoto == null) { return; }
     final Long projectId = activity.projectId();
     if (projectId == null) { return; }
+    final String projectPhoto = activity.projectPhoto();
 
     final String projectParam = ObjectUtils.toString(projectId);
 
-    final Notification notification = notificationBuilder(gcm.title(), gcm.alert())
-      .setContentIntent(projectContentIntent(envelope, projectParam))
-      .setLargeIcon(fetchBitmap(projectPhoto, false))
-      .build();
+    NotificationCompat.Builder notificationBuilder = notificationBuilder(gcm.title(), gcm.alert())
+      .setContentIntent(projectContentIntent(envelope, projectParam));
+    if (projectPhoto != null) {
+      notificationBuilder = notificationBuilder.setLargeIcon(fetchBitmap(projectPhoto, false));
+    }
+    final Notification notification = notificationBuilder.build();
+
     notificationManager().notify(envelope.signature(), notification);
   }
-
 
   private void displayNotificationFromProjectReminder(final @NonNull PushNotificationEnvelope envelope) {
     final GCM gcm = envelope.gcm();

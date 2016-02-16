@@ -7,11 +7,12 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.Release;
 import com.kickstarter.services.KSUri;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import java.io.IOException;
+
+import okhttp3.Interceptor;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import static com.kickstarter.libs.utils.ObjectUtils.isNotNull;
 
@@ -57,11 +58,11 @@ public final class WebRequestInterceptor implements Interceptor {
   }
 
   private boolean shouldIntercept(final @NonNull Request request) {
-    return KSUri.isWebUri(Uri.parse(request.urlString()), endpoint);
+    return KSUri.isWebUri(Uri.parse(request.url().toString()), endpoint);
   }
 
   private boolean shouldAddBasicAuthorizationHeader(final @NonNull Request request) {
-    final Uri initialRequestUri = Uri.parse(request.urlString());
+    final Uri initialRequestUri = Uri.parse(request.url().toString());
     return KSUri.isHivequeenUri(initialRequestUri, endpoint) || KSUri.isStagingUri(initialRequestUri, endpoint);
   }
 

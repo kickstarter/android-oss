@@ -18,8 +18,8 @@ import com.kickstarter.libs.AutoParcelAdapterFactory;
 import com.kickstarter.libs.CurrentConfig;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.DateTimeTypeConverter;
-import com.kickstarter.libs.DeviceRegistrarType;
 import com.kickstarter.libs.DeviceRegistrar;
+import com.kickstarter.libs.DeviceRegistrarType;
 import com.kickstarter.libs.Font;
 import com.kickstarter.libs.ForApplication;
 import com.kickstarter.libs.InternalToolsType;
@@ -48,22 +48,23 @@ import com.kickstarter.services.WebService;
 import com.kickstarter.services.interceptors.ApiRequestInterceptor;
 import com.kickstarter.services.interceptors.KSRequestInterceptor;
 import com.kickstarter.services.interceptors.WebRequestInterceptor;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 
 import org.joda.time.DateTime;
 
 import java.net.CookieManager;
-import java.util.Arrays;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import retrofit.GsonConverterFactory;
-import retrofit.Retrofit;
-import retrofit.RxJavaCallAdapterFactory;
+import okhttp3.CookieJar;
+import okhttp3.JavaNetCookieJar;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module
 public class ApplicationModule {
@@ -73,7 +74,6 @@ public class ApplicationModule {
     this.application = application;
   }
 
-  // BEGIN: EXTRACT INTO SERVICES MODULE
   @Provides
   @Singleton
   @NonNull
@@ -84,16 +84,17 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  OkHttpClient provideOkHttpClient(final @NonNull ApiRequestInterceptor apiRequestInterceptor, final @NonNull CookieManager cookieManager,
+  OkHttpClient provideOkHttpClient(final @NonNull ApiRequestInterceptor apiRequestInterceptor, final @NonNull CookieJar cookieJar,
     final @NonNull HttpLoggingInterceptor httpLoggingInterceptor, final @NonNull KSRequestInterceptor ksRequestInterceptor,
     final @NonNull WebRequestInterceptor webRequestInterceptor) {
-    final OkHttpClient okHttpClient = new OkHttpClient();
 
-    okHttpClient.interceptors().addAll(
-      Arrays.asList(httpLoggingInterceptor, apiRequestInterceptor, webRequestInterceptor, ksRequestInterceptor));
-    okHttpClient.setCookieHandler(cookieManager);
-
-    return okHttpClient;
+    return new OkHttpClient.Builder()
+      .addInterceptor(httpLoggingInterceptor)
+      .addInterceptor(apiRequestInterceptor)
+      .addInterceptor(webRequestInterceptor)
+      .addInterceptor(ksRequestInterceptor)
+      .cookieJar(cookieJar)
+      .build();
   }
 
   @Provides
@@ -178,8 +179,6 @@ public class ApplicationModule {
       .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
       .build();
   }
-  // END: EXTRACT INTO SERVICES MODULE
-
 
   @Provides
   @Singleton
@@ -246,6 +245,12 @@ public class ApplicationModule {
     final @NonNull Gson gson,
     final @ConfigPreference @NonNull StringPreference configPreference) {
     return new CurrentConfig(assetManager, gson, configPreference);
+  }
+
+  @Provides
+  @Singleton
+  CookieJar provideCookieJar(final @NonNull CookieManager cookieManager) {
+    return new JavaNetCookieJar(cookieManager);
   }
 
   @Provides

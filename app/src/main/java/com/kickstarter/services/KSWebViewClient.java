@@ -17,11 +17,6 @@ import com.kickstarter.libs.utils.IOUtils;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.kickstarter.ui.activities.WebViewActivity;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -35,6 +30,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public final class KSWebViewClient extends WebViewClient {
 
@@ -114,7 +115,7 @@ public final class KSWebViewClient extends WebViewClient {
       final InputStream body = constructBody(view.getContext(), response, mimeHeaders);
 
       if (mimeHeaders.type != null && mimeHeaders.type.equals("text/html")) {
-        webViewPageIntercepted(response.request().urlString());
+        webViewPageIntercepted(response.request().url().toString());
       }
 
       return new WebResourceResponse(mimeHeaders.type, mimeHeaders.encoding, body);
@@ -203,7 +204,7 @@ public final class KSWebViewClient extends WebViewClient {
   private boolean startModalWebViewActivity(final @NonNull Request request, final @NonNull WebView webView) {
     final Activity context = (Activity) webView.getContext();
     final Intent intent = new Intent(context, WebViewActivity.class)
-      .putExtra(IntentKey.URL, request.urlString());
+      .putExtra(IntentKey.URL, request.url().toString());
     context.startActivity(intent);
     context.overridePendingTransition(R.anim.slide_in_bottom, R.anim.fade_out);
 
@@ -211,7 +212,7 @@ public final class KSWebViewClient extends WebViewClient {
   }
 
   private boolean startProjectActivity(final @NonNull Request request, final @NonNull WebView webView) {
-    final Matcher matcher = Pattern.compile("[a-zA-Z0-9_-]+\\z").matcher(Uri.parse(request.urlString()).getPath());
+    final Matcher matcher = Pattern.compile("[a-zA-Z0-9_-]+\\z").matcher(Uri.parse(request.url().toString()).getPath());
     if (!matcher.find()) {
       return false;
     }
@@ -231,7 +232,7 @@ public final class KSWebViewClient extends WebViewClient {
       return false;
     }
 
-    final Uri uri = Uri.parse(request.urlString());
+    final Uri uri = Uri.parse(request.url().toString());
     for (final RequestHandler requestHandler : requestHandlers) {
       if (requestHandler.matches(uri, webEndpoint) && requestHandler.action(request, webView)) {
         return true;

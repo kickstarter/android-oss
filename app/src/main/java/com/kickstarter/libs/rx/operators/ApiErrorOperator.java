@@ -9,12 +9,12 @@ import com.kickstarter.services.apiresponses.ErrorEnvelope;
 
 import java.io.IOException;
 
-import retrofit.Response;
+import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
 
 /**
- * Takes a {@link retrofit.Response}, if it's successful send it to {@link Subscriber#onNext}, otherwise
+ * Takes a {@link retrofit2.Response}, if it's successful send it to {@link Subscriber#onNext}, otherwise
  * attempt to parse the error.
  *
  * Errors that conform to the API's error format are converted into an {@link ApiException} exception and sent to
@@ -22,7 +22,7 @@ import rx.Subscriber;
  *
  * @param <T> The response type.
  */
-public final class ApiErrorOperator<T> implements Observable.Operator<T, retrofit.Response<T>> {
+public final class ApiErrorOperator<T> implements Observable.Operator<T, retrofit2.Response<T>> {
   private final Gson gson;
 
   public ApiErrorOperator(final @NonNull Gson gson) {
@@ -31,7 +31,7 @@ public final class ApiErrorOperator<T> implements Observable.Operator<T, retrofi
 
   @Override
   public Subscriber<? super Response<T>> call(final @NonNull Subscriber<? super T> subscriber) {
-    return new Subscriber<retrofit.Response<T>>() {
+    return new Subscriber<retrofit2.Response<T>>() {
       @Override
       public void onCompleted() {
         if (!subscriber.isUnsubscribed()) {
@@ -47,7 +47,7 @@ public final class ApiErrorOperator<T> implements Observable.Operator<T, retrofi
       }
 
       @Override
-      public void onNext(final @NonNull retrofit.Response<T> response) {
+      public void onNext(final @NonNull retrofit2.Response<T> response) {
         if (subscriber.isUnsubscribed()) {
           return;
         }

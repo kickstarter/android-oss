@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 
-import retrofit.Response;
+import retrofit2.Response;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 

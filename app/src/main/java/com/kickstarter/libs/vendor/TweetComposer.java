@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
+ * ***
+ *
+ * Original: https://github.com/twitter/twitter-kit-android/blob/a9ff5134a736d10f70331ddea4db35c13cb86c89/tweet-composer/src/main/java/com/twitter/sdk/android/tweetcomposer/TweetComposer.java
+ * Modifications: Kickstarter have added some modifiers and annotations. References to `java.net.URL` have also been
+ *   changed to `android.net.URI`.
  */
-
-// Adapted from: https://github.com/twitter/twitter-kit-android/blob/a9ff5134a736d10f70331ddea4db35c13cb86c89/tweet-composer/src/main/java/com/twitter/sdk/android/tweetcomposer/TweetComposer.java
 
 package com.kickstarter.libs.vendor;
 

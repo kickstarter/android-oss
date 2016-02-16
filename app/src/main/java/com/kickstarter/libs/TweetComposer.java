@@ -20,7 +20,7 @@
  *   changed to `android.net.URI`.
  */
 
-package com.kickstarter.libs.vendor;
+package com.kickstarter.libs;
 
 import android.content.Context;
 import android.content.Intent;

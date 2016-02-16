@@ -14,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Pair;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.transformations.CropSquareTransformation;
@@ -38,14 +39,14 @@ import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 public class PushNotifications {
-  protected final @ForApplication Context context;
+  protected final @ApplicationContext Context context;
   protected final ApiClientType client;
   protected final DeviceRegistrarType deviceRegistrar;
 
   protected PublishSubject<PushNotificationEnvelope> notifications = PublishSubject.create();
   protected CompositeSubscription subscriptions = new CompositeSubscription();
 
-  public PushNotifications(final @ForApplication @NonNull Context context, final @NonNull ApiClientType client,
+  public PushNotifications(final @ApplicationContext @NonNull Context context, final @NonNull ApiClientType client,
     final @NonNull DeviceRegistrarType deviceRegistrar) {
 
     this.context = context;

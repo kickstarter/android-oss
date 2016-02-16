@@ -1,8 +1,6 @@
 package com.kickstarter.libs.transformations;
 
 /*
- * https://gist.github.com/julianshen/5829333
- *
  * Copyright 2014 Julian Shen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +14,11 @@ package com.kickstarter.libs.transformations;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * ***
+ *
+ * Original: https://gist.github.com/julianshen/5829333
+ * Modifications: Some modifiers and annotations have been added by Kickstarter.
  */
 
 import android.graphics.Bitmap;

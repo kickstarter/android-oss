@@ -31,7 +31,7 @@ import com.kickstarter.libs.qualifiers.AppRatingPreference;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ApplicationUtils;
 import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.libs.vendor.TweetComposer;
+import com.kickstarter.libs.TweetComposer;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;

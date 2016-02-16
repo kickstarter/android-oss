@@ -13,7 +13,6 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
-import com.kickstarter.libs.utils.TransitionUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.KSUri;
 import com.kickstarter.services.KSWebViewClient;
@@ -23,12 +22,12 @@ import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.ui.toolbars.KSToolbar;
 import com.kickstarter.ui.views.KSWebView;
 import com.kickstarter.viewmodels.CheckoutViewModel;
-import com.squareup.okhttp.Request;
 
 import java.util.Arrays;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import okhttp3.Request;
 import rx.android.schedulers.AndroidSchedulers;
 
 import static com.kickstarter.libs.utils.TransitionUtils.*;

@@ -10,7 +10,7 @@ import com.kickstarter.services.apiresponses.ErrorEnvelope;
 public final class ApiException extends ResponseException {
   private final ErrorEnvelope errorEnvelope;
 
-  public ApiException(final @NonNull ErrorEnvelope errorEnvelope, final @NonNull retrofit.Response response) {
+  public ApiException(final @NonNull ErrorEnvelope errorEnvelope, final @NonNull retrofit2.Response response) {
     super(response);
     this.errorEnvelope = errorEnvelope;
   }

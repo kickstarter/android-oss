@@ -5,12 +5,13 @@ import android.support.annotation.NonNull;
 
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.services.KSUri;
-import com.squareup.okhttp.HttpUrl;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import java.io.IOException;
+
+import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public final class ApiRequestInterceptor implements Interceptor {
   final String clientId;
@@ -36,7 +37,7 @@ public final class ApiRequestInterceptor implements Interceptor {
 
     return initialRequest.newBuilder()
       .header("Accept", "application/json")
-      .url(url(initialRequest.httpUrl()))
+      .url(url(initialRequest.url()))
       .build();
   }
 
@@ -51,6 +52,6 @@ public final class ApiRequestInterceptor implements Interceptor {
   }
 
   private boolean shouldIntercept(final @NonNull Request request) {
-    return KSUri.isApiUri(Uri.parse(request.urlString()), endpoint);
+    return KSUri.isApiUri(Uri.parse(request.url().toString()), endpoint);
   }
 }

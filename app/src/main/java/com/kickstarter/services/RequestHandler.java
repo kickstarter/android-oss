@@ -4,7 +4,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.webkit.WebView;
 
-import com.squareup.okhttp.Request;
+import okhttp3.Request;
 
 public final class RequestHandler {
   private final RequestHandler.Matcher matcher;

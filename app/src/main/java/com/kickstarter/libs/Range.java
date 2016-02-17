@@ -29,4 +29,11 @@ public final class Range {
     }
     return false;
   }
+
+  @Override
+  public int hashCode() {
+    int result = start;
+    result = 31 * result + length;
+    return result;
+  }
 }

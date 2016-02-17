@@ -71,11 +71,4 @@ public abstract class RefTag implements Parcelable {
   public static @NonNull RefTag activitySample() {
     return new AutoParcel_RefTag("discovery_activity_sample");
   }
-
-  @Override public boolean equals(final @Nullable Object other) {
-    if (other != null && other instanceof RefTag) {
-      return tag().equals(((RefTag) other).tag());
-    }
-    return false;
-  }
 }

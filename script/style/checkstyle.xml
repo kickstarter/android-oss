@@ -79,6 +79,9 @@
     <module name="IllegalImport" />
     <module name="RedundantImport" />
     <module name="UnusedImports" />
+
+    <!-- Miscellaneous -->
+    <module name="ArrayTypeStyle" />
   </module>
 
   <module name="FileLength">

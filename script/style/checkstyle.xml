@@ -59,6 +59,23 @@
 
     <!-- Imports -->
     <module name="AvoidStarImport" />
+    <module name="AvoidStaticImport">
+      <!-- Allow static imports for utils files that enhance Java or Android.
+        Avoid excluding files that contain Kickstarter business logic, unless they
+        improve the readability of tests. -->
+      <property name="excludes" value="com.kickstarter.libs.utils.ApplicationUtils.*" />
+      <property name="excludes" value="com.kickstarter.libs.utils.BooleanUtils.*" />
+      <property name="excludes" value="com.kickstarter.libs.utils.BundleUtils.*" />
+      <property name="excludes" value="com.kickstarter.libs.utils.DateTimeUtils.*" />
+      <property name="excludes" value="com.kickstarter.libs.utils.ExceptionUtils.*" />
+      <property name="excludes" value="com.kickstarter.libs.utils.IntegerUtils.*" />
+      <property name="excludes" value="com.kickstarter.libs.utils.ObjectUtils.*" />
+      <property name="excludes" value="com.kickstarter.libs.utils.StringUtils.*" />
+      <property name="excludes" value="com.kickstarter.libs.utils.TransitionUtils.*" />
+      <property name="excludes" value="com.kickstarter.libs.utils.ViewUtils.*" />
+      <property name="excludes" value="com.kickstarter.TestUtils.*" />
+      <property name="excludes" value="org.mockito.Mockito.*" />
+    </module>
   </module>
 
   <module name="FileLength">

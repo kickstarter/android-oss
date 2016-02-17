@@ -53,7 +53,6 @@ import static com.kickstarter.libs.utils.DateTimeUtils.mediumDate;
 import static com.kickstarter.libs.utils.DateTimeUtils.mediumDateShortTime;
 import static com.kickstarter.libs.utils.ObjectUtils.coalesce;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
-import static com.kickstarter.libs.utils.ProjectUtils.photoHeightFromWidthRatio;
 import static com.kickstarter.libs.utils.ViewUtils.getScreenDensity;
 import static com.kickstarter.libs.utils.ViewUtils.getScreenHeightDp;
 import static com.kickstarter.libs.utils.ViewUtils.getScreenWidthDp;
@@ -160,7 +159,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     final Photo photo = project.photo();
     if (photo != null) {
       final int targetImageWidth = (int) (getScreenWidthDp(context) * getScreenDensity(context));
-      photoImageView.setMaxHeight(photoHeightFromWidthRatio(targetImageWidth));
+      photoImageView.setMaxHeight(ProjectUtils.photoHeightFromWidthRatio(targetImageWidth));
 
       Picasso.with(context)
         .load(photo.full())

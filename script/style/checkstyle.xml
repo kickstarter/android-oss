@@ -77,6 +77,8 @@
       <property name="excludes" value="org.mockito.Mockito.*" />
     </module>
     <module name="IllegalImport" />
+    <module name="RedundantImport" />
+    <module name="UnusedImports" />
   </module>
 
   <module name="FileLength">

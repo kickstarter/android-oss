@@ -3,7 +3,6 @@ package com.kickstarter.viewmodels.inputs;
 import android.support.annotation.NonNull;
 
 import com.kickstarter.ui.activities.LoginToutActivity;
-import com.kickstarter.ui.data.ActivityResult;
 
 import java.util.List;
 

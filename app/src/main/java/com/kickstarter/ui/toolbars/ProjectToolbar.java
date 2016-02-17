@@ -7,7 +7,6 @@ import android.util.AttributeSet;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.ui.activities.ProjectActivity;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;

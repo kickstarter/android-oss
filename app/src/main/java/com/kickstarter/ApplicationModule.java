@@ -67,7 +67,7 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module
-public class ApplicationModule {
+public final class ApplicationModule {
   private final Application application;
 
   public ApplicationModule(final @NonNull Application application) {

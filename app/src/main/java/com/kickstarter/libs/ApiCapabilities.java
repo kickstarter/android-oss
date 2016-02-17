@@ -1,6 +1,6 @@
 package com.kickstarter.libs;
 
-public class ApiCapabilities {
+public final class ApiCapabilities {
   private ApiCapabilities() {}
 
   public static boolean canDebugWebViews() {

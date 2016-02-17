@@ -14,6 +14,9 @@
     <module name="LeftCurly" />
     <module name="NeedBraces" />
     <module name="RightCurly" />
+
+    <!-- Class design -->
+    <module name="FinalClass" />
   </module>
 
   <module name="FileLength">

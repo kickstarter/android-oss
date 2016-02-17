@@ -19,7 +19,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class DebugPushNotificationsView extends ScrollView {
+public final class DebugPushNotificationsView extends ScrollView {
   protected @Inject DeviceRegistrarType deviceRegistrar;
   protected @Inject PushNotifications pushNotifications;
 

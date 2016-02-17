@@ -14,7 +14,7 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(includes = ApplicationModule.class)
-public class ExternalApplicationModule {
+public final class ExternalApplicationModule {
   @Provides
   @Singleton
   ApiEndpoint provideApiEndpoint() {

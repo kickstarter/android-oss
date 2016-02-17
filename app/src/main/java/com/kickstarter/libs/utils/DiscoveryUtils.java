@@ -18,7 +18,7 @@ import java.util.List;
 
 import rx.Observable;
 
-public class DiscoveryUtils {
+public final class DiscoveryUtils {
   private DiscoveryUtils() {}
 
   public static @ColorInt int primaryColor(final @NonNull Context context, final @NonNull DiscoveryParams params) {

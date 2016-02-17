@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.not;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
-public class LoginTest {
+public final class LoginTest {
   @Rule
   public ActivityTestRule<LoginActivity> activityRule =
     new ActivityTestRule<>(LoginActivity.class);

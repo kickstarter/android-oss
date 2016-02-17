@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 
 import rx.functions.Func1;
 
-public class ObjectUtils {
+public final class ObjectUtils {
   private ObjectUtils(){}
 
   public static boolean isNull(final @Nullable Object object) {

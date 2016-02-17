@@ -48,7 +48,7 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
    * A light-weight value to hold two ref tags and a project. Two ref tags are stored: one comes from parceled
    * data in the activity and the other comes from the ref stored in a cookie associated to the project.
    */
-  private class RefTagsAndProject {
+  private final class RefTagsAndProject {
     final @Nullable RefTag refTagFromIntent;
     final @Nullable RefTag refTagFromCookie;
     final @NonNull Project project;

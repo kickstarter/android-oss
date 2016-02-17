@@ -12,7 +12,7 @@ import android.support.v4.graphics.ColorUtils;
 
 import com.kickstarter.R;
 
-public class KSColorUtils {
+public final class KSColorUtils {
   private KSColorUtils() {}
 
   private final static float KICKSTARTER_LIGHTNESS_THRESHOLD = 0.72f;

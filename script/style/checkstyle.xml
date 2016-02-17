@@ -48,8 +48,12 @@
     <module name="ModifiedControlVariable" />
     <module name="MultipleVariableDeclarations" />
     <module name="NoClone" />
+    <module name="NoFinalizer" />
     <module name="OneStatementPerLine" />
     <module name="ParameterAssignment" />
+    <module name="SimplifyBooleanExpression" />
+    <module name="SimplifyBooleanReturn" />
+    <module name="StringLiteralEquality" />
   </module>
 
   <module name="FileLength">

@@ -56,6 +56,9 @@
     <module name="StringLiteralEquality" />
     <module name="UnnecessaryParentheses" />
     <module name="VariableDeclarationUsageDistance" />
+
+    <!-- Imports -->
+    <module name="AvoidStarImport" />
   </module>
 
   <module name="FileLength">

@@ -165,7 +165,7 @@ public final class DateTimeUtils {
       }
     }
 
-    if (happenedAgo && unit.equals("days") && difference == 1) {
+    if (happenedAgo && "days".equals(unit) && difference == 1) {
       return context.getString(R.string.dates_yesterday);
     }
 

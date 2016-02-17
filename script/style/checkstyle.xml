@@ -4,8 +4,16 @@
   "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
 <module name="Checker">
   <module name="TreeWalker">
+    <!-- Annotations -->
     <module name="AnnotationUseStyle" />
     <module name="MissingDeprecated" />
+
+    <!-- Block checks -->
+    <module name="AvoidNestedBlocks" />
+    <module name="EmptyBlock" />
+    <module name="LeftCurly" />
+    <module name="NeedBraces" />
+    <module name="RightCurly" />
   </module>
 
   <module name="FileLength">

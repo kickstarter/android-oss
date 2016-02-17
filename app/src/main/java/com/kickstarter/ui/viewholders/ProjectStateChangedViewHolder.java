@@ -46,11 +46,17 @@ public final class ProjectStateChangedViewHolder extends ActivityListViewHolder 
   @Override
   public void onBind() {
     final Project project = activity.project();
-    if (project == null) { return; }
+    if (project == null) {
+      return;
+    }
     final User user = activity.user();
-    if (user == null) { return; }
+    if (user == null) {
+      return;
+    }
     final Photo photo = project.photo();
-    if (photo == null) { return; }
+    if (photo == null) {
+      return;
+    }
 
     Picasso.with(view.getContext())
       .load(photo.little())

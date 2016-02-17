@@ -37,7 +37,9 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   // INPUTS
   private final PublishSubject<String> commentBody = PublishSubject.create();
   private final PublishSubject<Void> nextPage = PublishSubject.create();
-  public void nextPage() { nextPage.onNext(null); }
+  public void nextPage() {
+    nextPage.onNext(null);
+  }
   private final BehaviorSubject<Void> refresh = BehaviorSubject.create((Void)null);
   public void refresh() {
     refresh.onNext(null);
@@ -50,13 +52,21 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
 
   // OUTPUTS
   private final PublishSubject<Void> commentPosted = PublishSubject.create();
-  public Observable<Void> commentPosted() { return commentPosted.asObservable(); }
+  public Observable<Void> commentPosted() {
+    return commentPosted.asObservable();
+  }
   private final PublishSubject<Boolean> isFetchingComments = PublishSubject.create();
-  public final Observable<Boolean> isFetchingComments() { return isFetchingComments; }
+  public final Observable<Boolean> isFetchingComments() {
+    return isFetchingComments;
+  }
   private final PublishSubject<Project> showCommentDialog = PublishSubject.create();
-  public Observable<Project> showCommentDialog() { return showCommentDialog; }
+  public Observable<Project> showCommentDialog() {
+    return showCommentDialog;
+  }
   private final BehaviorSubject<Boolean> showCommentButton = BehaviorSubject.create();
-  public Observable<Boolean> showCommentButton() { return showCommentButton; }
+  public Observable<Boolean> showCommentButton() {
+    return showCommentButton;
+  }
 
   // ERRORS
   private final PublishSubject<ErrorEnvelope> postCommentError = PublishSubject.create();

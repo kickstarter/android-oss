@@ -32,9 +32,8 @@ public class ViewModels {
     if (viewModel == null) {
       try {
         viewModel = viewModelClass.newInstance();
-      }
-      catch (InstantiationException | IllegalAccessException e) {
-        throw new RuntimeException(e);
+      } catch (final @NonNull InstantiationException | IllegalAccessException exception) {
+        throw new RuntimeException(exception);
       }
       viewModels.put(id, viewModel);
       viewModel.onCreate(context, BundleUtils.maybeGetBundle(savedInstanceState, VIEW_MODEL_STATE_KEY));

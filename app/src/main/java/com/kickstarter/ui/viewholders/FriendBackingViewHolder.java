@@ -54,15 +54,25 @@ public final class FriendBackingViewHolder extends ActivityListViewHolder {
     final Context context = view.getContext();
 
     final User activityUser = activity.user();
-    if (activityUser == null) { return; }
+    if (activityUser == null) {
+      return;
+    }
     final Project activityProject = activity.project();
-    if (activityProject == null) { return; }
+    if (activityProject == null) {
+      return;
+    }
     final User projectCreator = activityProject.creator();
-    if (projectCreator == null) { return; }
+    if (projectCreator == null) {
+      return;
+    }
     final Category projectCategory = activityProject.category();
-    if (projectCategory == null) { return; }
+    if (projectCategory == null) {
+      return;
+    }
     final Photo projectPhoto = activityProject.photo();
-    if (projectPhoto == null) { return ; }
+    if (projectPhoto == null) {
+      return;
+    }
 
     Picasso.with(context)
       .load(activityUser.avatar().small())

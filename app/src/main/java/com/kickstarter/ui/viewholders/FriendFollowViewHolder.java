@@ -32,7 +32,9 @@ public final class FriendFollowViewHolder extends ActivityListViewHolder {
     final Context context = view.getContext();
 
     final User friend = activity.user();
-    if (friend == null) { return; }
+    if (friend == null) {
+      return;
+    }
 
     Picasso.with(context)
       .load(friend.avatar().small())

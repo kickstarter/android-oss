@@ -58,13 +58,21 @@ public final class ProjectUpdateViewHolder extends ActivityListViewHolder {
     final Context context = view.getContext();
 
     final Project project = activity.project();
-    if (project == null) { return; }
+    if (project == null) {
+      return;
+    }
     final User user = activity.user();
-    if (user == null) { return; }
+    if (user == null) {
+      return;
+    }
     final Photo photo = project.photo();
-    if (photo == null) { return; }
+    if (photo == null) {
+      return;
+    }
     final Update update = activity.update();
-    if (update == null) { return; }
+    if (update == null) {
+      return;
+    }
     final DateTime publishedAt = ObjectUtils.coalesce(update.publishedAt(), new DateTime());
 
     projectNameTextView.setText(project.name());

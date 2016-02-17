@@ -70,11 +70,17 @@ public final class ProjectStateChangedPositiveViewHolder extends ActivityListVie
     final Context context = view.getContext();
 
     final Project project = activity.project();
-    if (project == null) { return; }
+    if (project == null) {
+      return;
+    }
     final User user = activity.user();
-    if (user == null) { return; }
+    if (user == null) {
+      return;
+    }
     final Photo photo = project.photo();
-    if (photo == null) { return; }
+    if (photo == null) {
+      return;
+    }
 
     switch (activity.category()) {
       case Activity.CATEGORY_LAUNCH:

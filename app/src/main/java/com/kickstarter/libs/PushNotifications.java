@@ -91,7 +91,9 @@ public class PushNotifications {
     final GCM gcm = envelope.gcm();
 
     final Activity activity = envelope.activity();
-    if (activity == null) { return; }
+    if (activity == null) {
+      return;
+    }
 
     final Notification notification = notificationBuilder(gcm.title(), gcm.alert())
       .setLargeIcon(fetchBitmap(activity.userPhoto(), true))
@@ -103,9 +105,13 @@ public class PushNotifications {
     final GCM gcm = envelope.gcm();
 
     final Activity activity = envelope.activity();
-    if (activity == null) { return; }
+    if (activity == null) {
+      return;
+    }
     final Long projectId = activity.projectId();
-    if (projectId == null) { return; }
+    if (projectId == null) {
+      return;
+    }
     final String projectPhoto = activity.projectPhoto();
 
     final String projectParam = ObjectUtils.toString(projectId);
@@ -124,7 +130,9 @@ public class PushNotifications {
     final GCM gcm = envelope.gcm();
 
     final PushNotificationEnvelope.Project project = envelope.project();
-    if (project == null) { return; }
+    if (project == null) {
+      return;
+    }
 
     final Notification notification = notificationBuilder(gcm.title(), gcm.alert())
       .setContentIntent(projectContentIntent(envelope, ObjectUtils.toString(project.id())))
@@ -138,11 +146,17 @@ public class PushNotifications {
     final GCM gcm = envelope.gcm();
 
     final Activity activity = envelope.activity();
-    if (activity == null) { return; }
+    if (activity == null) {
+      return;
+    }
     final Long updateId = activity.updateId();
-    if (updateId == null) { return; }
+    if (updateId == null) {
+      return;
+    }
     final Long projectId = activity.projectId();
-    if (projectId == null) { return; }
+    if (projectId == null) {
+      return;
+    }
 
     final String projectParam = ObjectUtils.toString(projectId);
 
@@ -213,13 +227,19 @@ public class PushNotifications {
 
   private @Nullable Observable<Pair<PushNotificationEnvelope, Update>> fetchUpdateWithEnvelope(final @NonNull PushNotificationEnvelope envelope) {
     final Activity activity = envelope.activity();
-    if (activity == null) { return null; }
+    if (activity == null) {
+      return null;
+    }
 
     final Long updateId = activity.updateId();
-    if (updateId == null) { return null; }
+    if (updateId == null) {
+      return null;
+    }
 
     final Long projectId = activity.projectId();
-    if (projectId == null) { return null; }
+    if (projectId == null) {
+      return null;
+    }
 
     final String projectParam = ObjectUtils.toString(projectId);
     final String updateParam = ObjectUtils.toString(updateId);

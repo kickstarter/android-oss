@@ -228,9 +228,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       starredViewGroup.setVisibility(View.GONE);
       potdViewGroup.setVisibility(View.GONE);
       featuredViewGroup.setVisibility(View.GONE);
-    }
-
-    else if (project.isStarred()) {
+    } else if (project.isStarred()) {
       projectMetadataViewGroup.setVisibility(View.VISIBLE);
       starredViewGroup.setVisibility(View.VISIBLE);
       adjustCardViewTopMargin(grid1Dimen);
@@ -238,9 +236,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       backingViewGroup.setVisibility(View.GONE);
       potdViewGroup.setVisibility(View.GONE);
       featuredViewGroup.setVisibility(View.GONE);
-    }
-
-    else if (project.isPotdToday()) {
+    } else if (project.isPotdToday()) {
       projectMetadataViewGroup.setVisibility(View.VISIBLE);
       potdViewGroup.setVisibility(View.VISIBLE);
       adjustCardViewTopMargin(grid1Dimen);
@@ -248,9 +244,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       backingViewGroup.setVisibility(View.GONE);
       starredViewGroup.setVisibility(View.GONE);
       featuredViewGroup.setVisibility(View.GONE);
-    }
-
-    else if (project.isFeaturedToday()) {
+    } else if (project.isFeaturedToday()) {
       final Category category = project.category();
       if (category != null) {
         final Category rootCategory = category.root();
@@ -266,9 +260,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
           potdViewGroup.setVisibility(View.GONE);
         }
       }
-    }
-
-    else {
+    } else {
       projectMetadataViewGroup.setVisibility(View.GONE);
       adjustCardViewTopMargin(0);
     }

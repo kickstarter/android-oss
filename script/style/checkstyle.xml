@@ -49,6 +49,7 @@
     <module name="MultipleVariableDeclarations" />
     <module name="NoClone" />
     <module name="OneStatementPerLine" />
+    <module name="ParameterAssignment" />
   </module>
 
   <module name="FileLength">

@@ -23,15 +23,15 @@ import rx.subjects.PublishSubject;
 public final class WebViewViewModel extends ViewModel<WebViewActivity> implements WebViewViewModelOutputs {
   protected @Inject Koala koala;
 
-  final PublishSubject<PushNotificationEnvelope> pushNotificationEnvelope = PublishSubject.create();
+  private final PublishSubject<PushNotificationEnvelope> pushNotificationEnvelope = PublishSubject.create();
 
-  final BehaviorSubject<String> toolbarTitle = BehaviorSubject.create();
+  private final BehaviorSubject<String> toolbarTitle = BehaviorSubject.create();
   @Override
   public @NonNull Observable<String> toolbarTitle() {
     return toolbarTitle;
   }
 
-  final BehaviorSubject<String> url = BehaviorSubject.create();
+  private final BehaviorSubject<String> url = BehaviorSubject.create();
   @Override
   public @NonNull Observable<String> url() {
     return url;
@@ -44,19 +44,19 @@ public final class WebViewViewModel extends ViewModel<WebViewActivity> implement
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    intent
+    intent()
       .map(i -> i.getStringExtra(IntentKey.TOOLBAR_TITLE))
       .ofType(String.class)
       .compose(bindToLifecycle())
       .subscribe(toolbarTitle::onNext);
 
-    intent
+    intent()
       .map(i -> i.getStringExtra(IntentKey.URL))
       .ofType(String.class)
       .compose(bindToLifecycle())
       .subscribe(url::onNext);
 
-    intent
+    intent()
       .map(i -> i.getParcelableExtra(IntentKey.PUSH_NOTIFICATION_ENVELOPE))
       .ofType(PushNotificationEnvelope.class)
       .compose(bindToLifecycle())

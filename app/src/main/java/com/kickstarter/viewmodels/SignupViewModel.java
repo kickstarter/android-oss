@@ -86,7 +86,7 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
   public final Observable<Boolean> formIsValid() {
     return formIsValid.asObservable();
   }
-  final BehaviorSubject<Boolean> sendNewslettersIsChecked = BehaviorSubject.create();
+  private final BehaviorSubject<Boolean> sendNewslettersIsChecked = BehaviorSubject.create();
   public final Observable<Boolean> sendNewslettersIsChecked() {
     return sendNewslettersIsChecked;
   }

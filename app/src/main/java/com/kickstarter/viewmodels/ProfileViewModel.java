@@ -87,7 +87,7 @@ public final class ProfileViewModel extends ViewModel<ProfileActivity> implement
         .loadWithPaginationPath(client::fetchProjects)
         .build();
 
-    paginator.paginatedData
+    paginator.paginatedData()
       .compose(bindToLifecycle())
       .subscribe(projects::onNext);
 

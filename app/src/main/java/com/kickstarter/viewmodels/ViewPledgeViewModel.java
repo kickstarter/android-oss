@@ -41,11 +41,11 @@ public final class ViewPledgeViewModel extends ViewModel<ViewPledgeActivity> imp
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    final Observable<Project> project = intent
+    final Observable<Project> project = intent()
       .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
       .ofType(Project.class);
 
-    final Observable<Pair<ViewPledgeActivity, Backing>> viewAndBacking = view
+    final Observable<Pair<ViewPledgeActivity, Backing>> viewAndBacking = view()
       .compose(Transformers.takePairWhen(backing))
       .share();
 

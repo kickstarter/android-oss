@@ -96,7 +96,7 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    final Observable<Project> initialProject = intent
+    final Observable<Project> initialProject = intent()
       .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
       .ofType(Project.class)
       .filter(ObjectUtils::isNotNull);
@@ -117,7 +117,7 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
         .loadWithPaginationPath(client::fetchProjectComments)
         .build();
 
-    final Observable<List<Comment>> comments = paginator.paginatedData.share();
+    final Observable<List<Comment>> comments = paginator.paginatedData().share();
 
     final Observable<Boolean> commentHasBody = commentBody
       .map(body -> body.length() > 0);
@@ -142,7 +142,7 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
 
     Observable.combineLatest(
         currentUser.observable(),
-        view,
+        view(),
         comments,
         project,
         Arrays::asList)
@@ -167,13 +167,13 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .compose(bindToLifecycle())
       .subscribe(__ -> refresh.onNext(null));
 
-    view
+    view()
       .compose(Transformers.combineLatestPair(commentHasBody))
       .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
       .subscribe(ve -> ve.first.enablePostButton(ve.second));
 
-    view
+    view()
         .compose(Transformers.takePairWhen(commentIsPosting))
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(vp -> vp.first.disablePostButton(vp.second));
@@ -193,7 +193,7 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .compose(bindToLifecycle())
       .subscribe(koala::trackProjectCommentLoadMore);
 
-    paginator.isFetching
+    paginator.isFetching()
       .compose(bindToLifecycle())
       .subscribe(isFetchingComments);
 

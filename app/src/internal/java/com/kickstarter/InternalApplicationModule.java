@@ -27,7 +27,7 @@ public final class InternalApplicationModule {
   @Singleton
   @ApiEndpointPreference
   StringPreference provideApiEndpointPreference(final @NonNull SharedPreferences sharedPreferences) {
-    return new StringPreference(sharedPreferences, "debug_api_endpoint", ApiEndpoint.PRODUCTION.url);
+    return new StringPreference(sharedPreferences, "debug_api_endpoint", ApiEndpoint.PRODUCTION.url());
   }
 
   @Provides

@@ -29,9 +29,9 @@ public final class FriendFollowViewHolder extends ActivityListViewHolder {
 
   @Override
   public void onBind() {
-    final Context context = view.getContext();
+    final Context context = context();
 
-    final User friend = activity.user();
+    final User friend = activity().user();
     if (friend == null) {
       return;
     }

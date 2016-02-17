@@ -51,13 +51,13 @@ public final class FriendBackingViewHolder extends ActivityListViewHolder {
 
   @Override
   public void onBind() {
-    final Context context = view.getContext();
+    final Context context = context();
 
-    final User activityUser = activity.user();
+    final User activityUser = activity().user();
     if (activityUser == null) {
       return;
     }
-    final Project activityProject = activity.project();
+    final Project activityProject = activity().project();
     if (activityProject == null) {
       return;
     }
@@ -100,7 +100,7 @@ public final class FriendBackingViewHolder extends ActivityListViewHolder {
 
   @OnClick(R.id.friend_backing_card_view)
   public void onClick() {
-    delegate.friendBackingClicked(this, activity);
+    delegate.friendBackingClicked(this, activity());
   }
 }
 

@@ -23,7 +23,7 @@ public class ProjectNotificationViewModel extends ViewModel<ProjectNotificationV
   public final void switchClick(boolean checked) {
     this.checked.onNext(checked);
   }
-  final BehaviorSubject<Notification> notificationInput;
+  private final BehaviorSubject<Notification> notificationInput;
 
   // OUTPUTS
   private final BehaviorSubject<Notification> notificationOutput = BehaviorSubject.create();

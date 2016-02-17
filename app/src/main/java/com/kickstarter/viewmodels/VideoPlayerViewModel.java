@@ -30,7 +30,7 @@ public final class VideoPlayerViewModel extends ViewModel<VideoPlayerActivity> i
   protected void onCreate(@NonNull Context context, @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
 
-    intent
+    intent()
       .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
       .ofType(Project.class)
       .filter(ObjectUtils::isNotNull)

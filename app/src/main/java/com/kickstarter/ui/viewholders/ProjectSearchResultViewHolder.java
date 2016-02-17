@@ -51,7 +51,7 @@ public final class ProjectSearchResultViewHolder extends KSViewHolder {
   }
 
   public void onBind() {
-    final Context context = view.getContext();
+    final Context context = context();
 
     creatorNameTextView.setText(ksString.format(byCreatorString,
       "creator_name", project.creator().name()

@@ -8,8 +8,8 @@ import com.kickstarter.BuildConfig;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
-public class Release {
-  final PackageInfo packageInfo;
+public final class Release {
+  private final PackageInfo packageInfo;
 
   public Release(final @NonNull PackageInfo packageInfo) {
     this.packageInfo = packageInfo;

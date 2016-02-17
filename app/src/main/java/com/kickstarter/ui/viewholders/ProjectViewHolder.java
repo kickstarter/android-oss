@@ -125,8 +125,8 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @BindString(R.string.discovery_baseball_card_stats_pledged_of_goal_short) String ofGoalString;
   protected @BindString(R.string.discovery_baseball_card_stats_backers) String backersString;
 
-  @Inject KSCurrency ksCurrency;
-  @Inject KSString ksString;
+  protected @Inject KSCurrency ksCurrency;
+  protected @Inject KSString ksString;
 
   public interface Delegate {
     void projectViewHolderBackProjectClicked(ProjectViewHolder viewHolder);

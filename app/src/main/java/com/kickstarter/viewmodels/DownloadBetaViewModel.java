@@ -31,7 +31,7 @@ public final class DownloadBetaViewModel extends ViewModel<DownloadBetaActivity>
     super.onCreate(context, savedInstanceState);
 
     addSubscription(
-      intent
+      intent()
         .map(i -> i.getParcelableExtra(IntentKey.INTERNAL_BUILD_ENVELOPE))
         .ofType(InternalBuildEnvelope.class)
         .subscribe(internalBuildEnvelope)

@@ -97,13 +97,13 @@ public final class LoginViewModel extends ViewModel<LoginActivity> implements Lo
     final Observable<Boolean> isValid = emailAndPassword
       .map(ep -> LoginViewModel.isValid(ep.first, ep.second));
 
-    intent
+    intent()
       .map(i -> i.getStringExtra(IntentKey.EMAIL))
       .ofType(String.class)
       .compose(bindToLifecycle())
       .subscribe(prefillEmailFromPasswordReset::onNext);
 
-    view
+    view()
       .compose(Transformers.combineLatestPair(isValid))
       .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())

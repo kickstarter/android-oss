@@ -39,9 +39,18 @@ public final class ApiPaginator<Data, Envelope, Params> {
   private final @NonNull PublishSubject<Boolean> _isFetching = PublishSubject.create();
 
   // Outputs
-  public final @NonNull Observable<List<Data>> paginatedData;
-  public final @NonNull Observable<Boolean> isFetching = _isFetching;
-  public final @NonNull Observable<Integer> loadingPage;
+  public @NonNull Observable<List<Data>> paginatedData() {
+    return paginatedData;
+  }
+  private final @NonNull Observable<List<Data>> paginatedData;
+  public @NonNull Observable<Boolean> isFetching() {
+    return isFetching;
+  }
+  private final @NonNull Observable<Boolean> isFetching = _isFetching;
+  public @NonNull Observable<Integer> loadingPage() {
+    return loadingPage;
+  }
+  private final @NonNull Observable<Integer> loadingPage;
 
   private ApiPaginator(
     final @NonNull Observable<Void> nextPage,

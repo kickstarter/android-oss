@@ -79,12 +79,12 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @BindString(R.string.discovery_baseball_card_metadata_featured_project) String featuredInString;
   protected @BindString(R.string.discovery_baseball_card_stats_pledged_of_goal) String pledgedOfGoalString;
 
-  protected Project project;
+  private Project project;
   private Context context;
   private final Delegate delegate;
-  protected DiscoveryViewModel viewModel;
+  private DiscoveryViewModel viewModel;
 
-  @Inject KSString ksString;
+  protected @Inject KSString ksString;
 
   public interface Delegate {
     void projectCardViewHolderClick(ProjectCardViewHolder viewHolder, Project project);

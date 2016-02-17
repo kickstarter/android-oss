@@ -19,9 +19,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class KSDialog extends AppCompatDialog {
-  protected final @Nullable String title;
-  protected final @NonNull String message;
-  protected final @Nullable String buttonText;
+  private final @Nullable String title;
+  private final @NonNull String message;
+  private final @Nullable String buttonText;
 
   protected @Bind(R.id.title_text_view) TextView titleTextView;
   protected @Bind(R.id.message_text_view) TextView messageTextView;

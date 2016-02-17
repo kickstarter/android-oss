@@ -13,7 +13,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public final class EmptyActivityFeedViewHolder extends KSViewHolder {
-  boolean isLoggedIn;
+  private boolean isLoggedIn;
   protected @Bind(R.id.discover_projects_button) Button discoverProjectsButton;
   protected @Bind(R.id.login_button) Button loginButton;
 

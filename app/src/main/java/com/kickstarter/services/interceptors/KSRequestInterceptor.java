@@ -15,7 +15,7 @@ import okhttp3.Response;
  * Interceptor to apply to all outgoing requests.
  */
 public final class KSRequestInterceptor implements Interceptor {
-  final Release release;
+  private final Release release;
 
   public KSRequestInterceptor(final @NonNull Release release) {
     this.release = release;

@@ -29,7 +29,7 @@ public final class ProjectSocialViewModel extends ViewModel<ProjectSocialActivit
     super.onCreate(context, savedInstanceState);
 
     addSubscription(
-      intent
+      intent()
         .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
         .ofType(Project.class)
         .subscribe(project::onNext)

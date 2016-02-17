@@ -103,14 +103,14 @@ public final class ApplicationModule {
   @NonNull Retrofit provideApiRetrofit(final @NonNull ApiEndpoint apiEndpoint,
     final @NonNull Gson gson,
     final @NonNull OkHttpClient okHttpClient) {
-    return createRetrofit(apiEndpoint.url, gson, okHttpClient);
+    return createRetrofit(apiEndpoint.url(), gson, okHttpClient);
   }
 
   @Provides
   @Singleton
   @NonNull ApiRequestInterceptor provideApiRequestInterceptor(final @NonNull String clientId,
     final @NonNull CurrentUser currentUser, final @NonNull ApiEndpoint endpoint) {
-    return new ApiRequestInterceptor(clientId, currentUser, endpoint.url);
+    return new ApiRequestInterceptor(clientId, currentUser, endpoint.url());
   }
 
   @Provides
@@ -280,7 +280,7 @@ public final class ApplicationModule {
   @NonNull String provideWebEndpoint(final @NonNull ApiEndpoint apiEndpoint) {
     return (apiEndpoint == ApiEndpoint.PRODUCTION) ?
       "https://www.kickstarter.com" :
-      apiEndpoint.url.replaceAll("(?<=\\Ahttps?:\\/\\/)api.", "");
+      apiEndpoint.url().replaceAll("(?<=\\Ahttps?:\\/\\/)api.", "");
   }
 
   @Provides

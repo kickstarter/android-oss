@@ -10,7 +10,7 @@ import com.kickstarter.models.Activity;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
 public abstract class ActivityListViewHolder extends KSViewHolder {
-  protected Activity activity;
+  private Activity activity;
 
   public ActivityListViewHolder(final @NonNull View view) {
     super(view);
@@ -19,5 +19,9 @@ public abstract class ActivityListViewHolder extends KSViewHolder {
   @CallSuper @Override
   public void bindData(final @Nullable Object data) throws Exception {
     activity = requireNonNull((Activity) data, Activity.class);
+  }
+
+  protected @NonNull Activity activity() {
+    return activity;
   }
 }

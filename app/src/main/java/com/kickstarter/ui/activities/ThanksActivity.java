@@ -62,8 +62,8 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   protected @BindString(R.string.project_accessibility_button_share_label) String shareThisProjectString;
   protected @BindString(R.string.project_checkout_share_you_just_backed_project_share_this_project_html) String youJustBackedString;
 
-  public CallbackManager facebookCallbackManager;
-  public ShareDialog shareDialog;
+  private CallbackManager facebookCallbackManager;
+  private ShareDialog shareDialog;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {

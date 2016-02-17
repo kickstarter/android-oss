@@ -107,13 +107,13 @@ public final class TwoFactorViewModel extends ViewModel<TwoFactorActivity> imple
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 
-    final Observable<String> email = intent
+    final Observable<String> email = intent()
       .map(i -> i.getStringExtra(IntentKey.EMAIL));
-    final Observable<String> fbAccessToken = intent
+    final Observable<String> fbAccessToken = intent()
       .map(i -> i.getStringExtra(IntentKey.FACEBOOK_TOKEN));
-    final Observable<Boolean> isFacebookLogin = intent
+    final Observable<Boolean> isFacebookLogin = intent()
       .map(i -> i.getBooleanExtra(IntentKey.FACEBOOK_LOGIN, false));
-    final Observable<String> password= intent
+    final Observable<String> password= intent()
       .map(i -> i.getStringExtra(IntentKey.PASSWORD));
 
     final Observable<TfaData> tfaData = Observable.combineLatest(email, fbAccessToken, isFacebookLogin, password, code,

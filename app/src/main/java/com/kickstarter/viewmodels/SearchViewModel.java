@@ -80,7 +80,7 @@ public final class SearchViewModel extends ViewModel<SearchActivity> implements 
       .subscribe(__ -> searchProjects.onNext(ListUtils.empty()));
 
     params
-      .compose(Transformers.takePairWhen(paginator.paginatedData))
+      .compose(Transformers.takePairWhen(paginator.paginatedData()))
       .compose(bindToLifecycle())
       .subscribe(paramsAndProjects -> {
         if (paramsAndProjects.first.sort() == DiscoveryParams.Sort.POPULAR) {
@@ -94,7 +94,7 @@ public final class SearchViewModel extends ViewModel<SearchActivity> implements 
     koala.trackSearchView();
 
     // Track search results and pagination
-    final Observable<Integer> pageCount = paginator.loadingPage;
+    final Observable<Integer> pageCount = paginator.loadingPage();
     final Observable<String> query = params
       .filter(p -> p.sort() == DiscoveryParams.Sort.POPULAR)
       .map(DiscoveryParams::term);

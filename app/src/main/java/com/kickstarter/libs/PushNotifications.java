@@ -37,13 +37,13 @@ import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
-public class PushNotifications {
-  protected final @ForApplication Context context;
-  protected final ApiClientType client;
-  protected final DeviceRegistrarType deviceRegistrar;
+public final class PushNotifications {
+  private final @ForApplication Context context;
+  private final ApiClientType client;
+  private final DeviceRegistrarType deviceRegistrar;
 
-  protected PublishSubject<PushNotificationEnvelope> notifications = PublishSubject.create();
-  protected CompositeSubscription subscriptions = new CompositeSubscription();
+  private final PublishSubject<PushNotificationEnvelope> notifications = PublishSubject.create();
+  private final CompositeSubscription subscriptions = new CompositeSubscription();
 
   public PushNotifications(final @ForApplication @NonNull Context context, final @NonNull ApiClientType client,
     final @NonNull DeviceRegistrarType deviceRegistrar) {

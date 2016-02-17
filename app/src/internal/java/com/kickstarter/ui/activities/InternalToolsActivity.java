@@ -137,7 +137,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
           if (selected == ApiEndpoint.CUSTOM) {
             showCustomEndpointDialog(currentApiEndpoint.ordinal(), "https://");
           } else {
-            setEndpointAndRelaunch(selected.url);
+            setEndpointAndRelaunch(selected.url());
           }
         }
       }

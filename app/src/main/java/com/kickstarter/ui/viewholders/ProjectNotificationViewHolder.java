@@ -30,7 +30,7 @@ public final class ProjectNotificationViewHolder extends KSViewHolder {
 
   protected @BindString(R.string.profile_settings_error) String unableToSaveString;
 
-  final PublishSubject<ProjectNotificationViewModel> viewModel = PublishSubject.create();
+  private final PublishSubject<ProjectNotificationViewModel> viewModel = PublishSubject.create();
 
   public ProjectNotificationViewHolder(final @NonNull View view) {
     super(view);

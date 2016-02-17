@@ -55,7 +55,7 @@ public final class ChildFilterViewHolder extends KSViewHolder {
 
   @Override
   public void onBind() {
-    final Context context = view.getContext();
+    final Context context = context();
 
     final Category category = item.params().category();
     if (category != null && category.isRoot()) {

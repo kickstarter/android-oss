@@ -297,13 +297,13 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
         .concater(ListUtils::concatDistinct)
         .build();
 
-    paginator.paginatedData
+    paginator.paginatedData()
       .compose(Transformers.combineLatestPair(rootCategories))
       .map(pc -> DiscoveryUtils.fillRootCategoryForFeaturedProjects(pc.first, pc.second))
       .compose(bindToLifecycle())
       .subscribe(projects::onNext);
 
-    selectedParams.compose(Transformers.takePairWhen(paginator.loadingPage))
+    selectedParams.compose(Transformers.takePairWhen(paginator.loadingPage()))
       .map(paramsAndPage -> paramsAndPage.first.toBuilder().page(paramsAndPage.second).build())
       .compose(bindToLifecycle())
       .subscribe(p -> koala.trackDiscovery(p, !hasSeenOnboarding));
@@ -417,13 +417,13 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
 
     expandedParams.onNext(null);
 
-    intent
+    intent()
       .flatMap(i -> DiscoveryIntentMapper.params(i, apiClient))
       .compose(bindToLifecycle())
       .subscribe(selectedParams::onNext);
 
     // Seed selected params when we are freshly launching the app with no data.
-    intent
+    intent()
       .take(1)
       .map(Intent::getAction)
       .filter(Intent.ACTION_MAIN::equals)
@@ -432,7 +432,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
       .subscribe(selectedParams::onNext);
 
     // TODO: Merge with action main
-    activityResult
+    activityResult()
       .filter(DiscoveryViewModel::isSuccessfulLogin)
       .map(__ -> DiscoveryParams.builder().staffPicks(true).build())
       .compose(bindToLifecycle())

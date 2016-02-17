@@ -18,6 +18,19 @@
     <!-- Class design -->
     <module name="FinalClass" />
     <module name="HideUtilityClassConstructor" />
+    <module name="InterfaceIsType" />
+    <module name="MutableException" />
+    <module name="VisibilityModifier">
+      <property name="ignoreAnnotationCanonicalNames" value="Bind" />
+      <property name="ignoreAnnotationCanonicalNames" value="BindBool" />
+      <property name="ignoreAnnotationCanonicalNames" value="BindColor" />
+      <property name="ignoreAnnotationCanonicalNames" value="BindDimen" />
+      <property name="ignoreAnnotationCanonicalNames" value="BindDrawable" />
+      <property name="ignoreAnnotationCanonicalNames" value="BindInt" />
+      <property name="ignoreAnnotationCanonicalNames" value="BindString" />
+      <property name="ignoreAnnotationCanonicalNames" value="Inject" />
+      <property name="publicMemberPattern" value="^(inputs|outputs|errors|viewModel)$" />
+    </module>
   </module>
 
   <module name="FileLength">

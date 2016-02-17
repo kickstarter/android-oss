@@ -1,5 +1,6 @@
 package com.kickstarter.ui.viewholders;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -15,7 +16,7 @@ import timber.log.Timber;
 public abstract class KSViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
   LifecycleType {
 
-  protected final View view;
+  private final View view;
   private final @NonNull PublishSubject<ActivityEvent> lifecycle = PublishSubject.create();
 
   public KSViewHolder(final @NonNull View view) {
@@ -57,5 +58,13 @@ public abstract class KSViewHolder extends RecyclerView.ViewHolder implements Vi
    */
   public void lifecycleEvent(final @NonNull ActivityEvent event) {
     lifecycle.onNext(event);
+  }
+
+  protected @NonNull View view() {
+    return view;
+  }
+
+  protected @NonNull Context context() {
+    return view.getContext();
   }
 }

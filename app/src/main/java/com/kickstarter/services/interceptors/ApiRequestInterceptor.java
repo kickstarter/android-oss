@@ -14,9 +14,9 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public final class ApiRequestInterceptor implements Interceptor {
-  final String clientId;
-  final CurrentUser currentUser;
-  final String endpoint;
+  private final String clientId;
+  private final CurrentUser currentUser;
+  private final String endpoint;
 
   public ApiRequestInterceptor(final @NonNull String clientId, final @NonNull CurrentUser currentUser,
     final @NonNull String endpoint) {

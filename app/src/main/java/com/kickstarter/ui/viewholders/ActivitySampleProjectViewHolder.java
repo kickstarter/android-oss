@@ -41,7 +41,7 @@ public class ActivitySampleProjectViewHolder extends KSViewHolder {
   protected @BindString(R.string.activity_funding_canceled) String categoryCancellationString;
   protected @BindString(R.string.activity_posted_update_number_title) String categoryUpdateString;
 
-  protected Activity activity;
+  private Activity activity;
 
   private final Delegate delegate;
   public interface Delegate {
@@ -64,7 +64,7 @@ public class ActivitySampleProjectViewHolder extends KSViewHolder {
   }
 
   public void onBind() {
-    final Context context = view.getContext();
+    final Context context = context();
 
     final Project project = activity.project();
     if (project != null) {

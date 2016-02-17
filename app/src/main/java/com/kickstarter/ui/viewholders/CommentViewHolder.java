@@ -54,7 +54,7 @@ public final class CommentViewHolder extends KSViewHolder {
   }
 
   public void onBind() {
-    final Context context = view.getContext();
+    final Context context = context();
 
     creatorLabelTextView.setVisibility(View.GONE);
     userLabelTextView.setVisibility(View.GONE);

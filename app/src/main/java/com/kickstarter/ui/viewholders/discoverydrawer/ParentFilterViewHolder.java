@@ -41,7 +41,7 @@ public final class ParentFilterViewHolder extends KSViewHolder {
 
   @Override
   public void onBind() {
-    final Context context = view.getContext();
+    final Context context = context();
 
     filterTextView.setText(item.params().filterString(context));
 

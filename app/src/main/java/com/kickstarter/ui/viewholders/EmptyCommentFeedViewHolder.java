@@ -18,8 +18,8 @@ import butterknife.OnClick;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
 public final class EmptyCommentFeedViewHolder extends KSViewHolder {
-  Project project;
-  User user;
+  private Project project;
+  private User user;
   private final Delegate delegate;
   protected @Bind(R.id.comment_feed_login_button) Button commentFeedLoginButton;
   protected @Bind(R.id.no_comments_message) TextView noCommentsMessageTextView;

@@ -45,11 +45,11 @@ public final class ProjectStateChangedViewHolder extends ActivityListViewHolder 
 
   @Override
   public void onBind() {
-    final Project project = activity.project();
+    final Project project = activity().project();
     if (project == null) {
       return;
     }
-    final User user = activity.user();
+    final User user = activity().user();
     if (user == null) {
       return;
     }
@@ -58,11 +58,11 @@ public final class ProjectStateChangedViewHolder extends ActivityListViewHolder 
       return;
     }
 
-    Picasso.with(view.getContext())
+    Picasso.with(context())
       .load(photo.little())
       .into(projectPhotoImageView);
 
-    switch (activity.category()) {
+    switch (activity().category()) {
       case Activity.CATEGORY_FAILURE:
         titleTextView.setText(ksString.format(projectNotSuccessfullyFundedString, "project_name", project.name()));
         break;
@@ -79,6 +79,6 @@ public final class ProjectStateChangedViewHolder extends ActivityListViewHolder 
 
   @OnClick(R.id.card_view)
   public void stateChangeCardClick() {
-    delegate.projectStateChangedClicked(this, activity);
+    delegate.projectStateChangedClicked(this, activity());
   }
 }

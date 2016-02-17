@@ -134,17 +134,17 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
       .switchMap(this::loginWithFacebookAccessToken)
       .share();
 
-    intent
+    intent()
       .map(i -> i.getSerializableExtra(IntentKey.LOGIN_REASON))
       .ofType(LoginReason.class)
       .compose(bindToLifecycle())
       .subscribe(loginReason::onNext);
 
-    activityResult
+    activityResult()
       .compose(bindToLifecycle())
       .subscribe(r -> callbackManager.onActivityResult(r.requestCode(), r.resultCode(), r.intent()));
 
-    activityResult
+    activityResult()
       .filter(r -> r.isRequestCode(ActivityRequestCodes.LOGIN_FLOW))
       .filter(ActivityResult::isOk)
       .compose(bindToLifecycle())

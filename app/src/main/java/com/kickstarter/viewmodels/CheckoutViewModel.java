@@ -51,21 +51,21 @@ public final class CheckoutViewModel extends ViewModel<CheckoutActivity> impleme
     super.onCreate(context, savedInstanceState);
 
     addSubscription(
-      intent
+      intent()
         .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
         .ofType(Project.class)
         .subscribe(project::onNext)
     );
 
     addSubscription(
-      intent
+      intent()
         .map(i -> i.getStringExtra(IntentKey.TOOLBAR_TITLE))
         .ofType(String.class)
         .subscribe(title::onNext)
     );
 
     addSubscription(
-      intent
+      intent()
         .map(i -> i.getStringExtra(IntentKey.URL))
         .ofType(String.class)
         .take(1)

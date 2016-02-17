@@ -33,7 +33,7 @@ public class ProjectSocialViewHolder extends KSViewHolder {
 
   @Override
   public void onBind() {
-    Picasso.with(view.getContext()).load(user
+    Picasso.with(context()).load(user
       .avatar()
       .small())
     .transform(new CircleTransformation())

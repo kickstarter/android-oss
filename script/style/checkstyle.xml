@@ -31,6 +31,11 @@
       <property name="ignoreAnnotationCanonicalNames" value="Inject" />
       <property name="publicMemberPattern" value="^(inputs|outputs|errors|viewModel)$" />
     </module>
+
+    <!-- Coding -->
+    <module name="CovariantEquals" />
+    <module name="DefaultComesLast" />
+    <module name="EmptyStatement" />
   </module>
 
   <module name="FileLength">

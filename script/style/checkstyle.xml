@@ -82,6 +82,7 @@
 
     <!-- Miscellaneous -->
     <module name="ArrayTypeStyle" />
+    <module name="CommentsIndentation" />
   </module>
 
   <module name="FileLength">

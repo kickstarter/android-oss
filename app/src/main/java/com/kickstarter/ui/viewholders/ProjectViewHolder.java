@@ -200,7 +200,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(project, context, ksString));
     backersCountTextView.setText(NumberUtils.format(project.backersCount()));
 
-     /* Creator */
+    /* Creator */
     Picasso.with(context).load(project.creator().avatar()
       .medium())
       .transform(new CircleTransformation())

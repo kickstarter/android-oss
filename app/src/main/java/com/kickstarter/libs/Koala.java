@@ -196,7 +196,7 @@ public final class Koala {
   }
 
   // SETTINGS
-   public void trackContactEmailClicked() {
+  public void trackContactEmailClicked() {
     client.track("Contact Email Clicked");
   }
 

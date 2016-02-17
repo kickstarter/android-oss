@@ -5,7 +5,7 @@ import android.util.Pair;
 
 import rx.Observable;
 
-public final class CombineLatestPairTransformer <S, T> implements Observable.Transformer<S, Pair<S, T>> {
+public final class CombineLatestPairTransformer<S, T> implements Observable.Transformer<S, Pair<S, T>> {
   @NonNull private final Observable<T> second;
 
   public CombineLatestPairTransformer(final @NonNull Observable<T> second) {

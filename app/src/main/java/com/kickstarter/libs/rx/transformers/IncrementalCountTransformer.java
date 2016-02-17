@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import rx.Observable;
 
-public final class IncrementalCountTransformer <T> implements Observable.Transformer<T, Integer> {
+public final class IncrementalCountTransformer<T> implements Observable.Transformer<T, Integer> {
   final int firstPage;
 
   public IncrementalCountTransformer() {

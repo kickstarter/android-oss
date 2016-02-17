@@ -191,7 +191,7 @@ public final class ListUtils {
    */
   public static <T> List<T> mutatingConcatDistinct(final @NonNull List<T> xs, final @NonNull List<T> ys) {
     for (final T y : ys) {
-      if (! xs.contains(y)) {
+      if (!xs.contains(y)) {
         xs.add(y);
       }
     }

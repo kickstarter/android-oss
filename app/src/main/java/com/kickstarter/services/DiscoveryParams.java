@@ -325,7 +325,7 @@ public abstract class DiscoveryParams implements Parcelable {
 
   public abstract Builder toBuilder();
 
-  public @NonNull DiscoveryParams nextPage () {
+  public @NonNull DiscoveryParams nextPage() {
     final Integer page = page();
     return page != null ? toBuilder().page(page + 1).build() : this;
   }

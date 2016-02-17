@@ -45,6 +45,9 @@
     <module name="IllegalToken" />
     <module name="IllegalTokenText" />
     <module name="IllegalType" />
+    <module name="ModifiedControlVariable" />
+    <module name="MultipleVariableDeclarations" />
+    <module name="NoClone" />
   </module>
 
   <module name="FileLength">

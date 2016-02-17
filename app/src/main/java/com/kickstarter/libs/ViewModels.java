@@ -17,7 +17,7 @@ public class ViewModels {
   private static final String VIEW_MODEL_STATE_KEY = "view_model_state";
 
   private static final ViewModels instance = new ViewModels();
-  private HashMap<String, ViewModel> viewModels = new HashMap<>();
+  private Map<String, ViewModel> viewModels = new HashMap<>();
 
   public static ViewModels getInstance() {
     return instance;

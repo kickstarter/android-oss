@@ -12,6 +12,7 @@ import com.kickstarter.ui.adapters.data.NavigationDrawerData;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 import rx.Observable;
@@ -157,7 +158,7 @@ public final class DiscoveryDrawerUtils {
    * category, and the list contains all subcategories.
    */
   private static @NonNull List<List<DiscoveryParams>> paramsGroupedByRootCategory(final @NonNull List<DiscoveryParams> ps) {
-    final TreeMap<String, List<DiscoveryParams>> grouped = new TreeMap<>();
+    final Map<String, List<DiscoveryParams>> grouped = new TreeMap<>();
     for (final DiscoveryParams p : ps) {
       if (!grouped.containsKey(p.category().root().name())) {
         grouped.put(p.category().root().name(), new ArrayList<>());

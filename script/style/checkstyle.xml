@@ -41,6 +41,7 @@
     <module name="ExplicitInitialization" />
     <module name="FallThrough" />
     <module name="FinalLocalVariable" />
+    <module name="IllegalType" />
   </module>
 
   <module name="FileLength">

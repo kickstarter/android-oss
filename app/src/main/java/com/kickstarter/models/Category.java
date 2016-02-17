@@ -141,8 +141,10 @@ public abstract class Category implements Parcelable, Comparable<Category> {
       case 3:
       case 14:
       case 15:
-      case 18:  return true;
-      default:  return false;
+      case 18:
+        return true;
+      default:
+        return false;
     }
   }
 

@@ -55,22 +55,24 @@ public final class KoalaTrackingClient implements TrackingClientType {
   @Override
   public Map<String, Object> defaultProperties() {
 
-    return new HashMap<String, Object>() {{
-      if (loggedInUser != null) {
-        putAll(KoalaUtils.userProperties(loggedInUser));
+    return new HashMap<String, Object>() {
+      {
+        if (loggedInUser != null) {
+          putAll(KoalaUtils.userProperties(loggedInUser));
+        }
+
+        put("client_type", "native");
+        put("android_play_services_available", isGooglePlayServicesAvailable());
+        put("client_platform", "android");
+        put("device_orientation", deviceOrientation());
+        put("device_format", deviceFormat());
+        put("device_fingerprint", mixpanel.getDistinctId());
+        put("android_uuid", mixpanel.getDistinctId());
+
+        // TODO: any way to detect if android pay is available?
+        // put("android_pay_capable", false);
       }
-
-      put("client_type", "native");
-      put("android_play_services_available", isGooglePlayServicesAvailable());
-      put("client_platform", "android");
-      put("device_orientation", deviceOrientation());
-      put("device_format", deviceFormat());
-      put("device_fingerprint", mixpanel.getDistinctId());
-      put("android_uuid", mixpanel.getDistinctId());
-
-      // TODO: any way to detect if android pay is available?
-      // put("android_pay_capable", false);
-    }};
+    };
   }
 
   /**

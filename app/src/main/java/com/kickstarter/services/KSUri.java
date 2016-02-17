@@ -38,7 +38,7 @@ public final class KSUri {
     return isKickstarterUri(uri, webEndpoint) && HIVEQUEEN_PATTERN.matcher(uri.getHost()).matches();
   }
 
- public static boolean isKickstarterUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
+  public static boolean isKickstarterUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return uri.getHost().equals(Uri.parse(webEndpoint).getHost());
   }
 

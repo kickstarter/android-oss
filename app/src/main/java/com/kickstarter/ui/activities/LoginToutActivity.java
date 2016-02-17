@@ -101,7 +101,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
       );
   }
 
-  @OnClick({R.id.disclaimer_text_view})
+  @OnClick(R.id.disclaimer_text_view)
   public void disclaimerTextViewClick() {
     new LoginPopupMenu(this, helpButton).show();
   }

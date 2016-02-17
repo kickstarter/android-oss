@@ -3,8 +3,13 @@
   "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
   "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
 <module name="Checker">
+  <module name="TreeWalker">
+    <module name="AnnotationUseStyle" />
+  </module>
+
   <module name="FileLength">
     <property name="max" value="800" />
   </module>
+
   <module name="NewlineAtEndOfFile" />
 </module>

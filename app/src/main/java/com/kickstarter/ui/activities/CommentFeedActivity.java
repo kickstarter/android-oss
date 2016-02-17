@@ -109,7 +109,7 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
   }
 
   @Nullable
-  @OnClick({R.id.project_context_view})
+  @OnClick(R.id.project_context_view)
   public void projectContextViewClick() {
     back();
   }

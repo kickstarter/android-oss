@@ -27,7 +27,7 @@ public final class ManageNotificationsViewModel extends ViewModel<ManageNotifica
 
   // OUTPUTS
   private Observable<List<Notification>> notifications;
-  public final Observable<List<Notification>> notifications() {
+  public Observable<List<Notification>> notifications() {
     return notifications;
   }
 

@@ -55,15 +55,15 @@ public final class TwoFactorViewModel extends ViewModel<TwoFactorActivity> imple
 
   // OUTPUTS
   private final PublishSubject<Boolean> formSubmitting = PublishSubject.create();
-  public final Observable<Boolean> formSubmitting() {
+  public Observable<Boolean> formSubmitting() {
     return formSubmitting.asObservable();
   }
   private final PublishSubject<Boolean> formIsValid = PublishSubject.create();
-  public final Observable<Boolean> formIsValid() {
+  public Observable<Boolean> formIsValid() {
     return formIsValid.asObservable();
   }
   private final PublishSubject<Void> tfaSuccess = PublishSubject.create();
-  public final Observable<Void> tfaSuccess() {
+  public Observable<Void> tfaSuccess() {
     return tfaSuccess.asObservable();
   }
 

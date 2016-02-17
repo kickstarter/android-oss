@@ -91,6 +91,11 @@
       <property name="throwsIndent" value="2" />
       <property name="lineWrappingIndentation" value="2" />
     </module>
+
+    <!-- Modifiers -->
+    <!-- TODO: Maybe add ModiferOrder? -->
+    <!-- <module name="ModifierOrder"/> -->
+    <module name="RedundantModifier"/>
   </module>
 
   <module name="FileLength">

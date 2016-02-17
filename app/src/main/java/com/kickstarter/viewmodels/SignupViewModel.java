@@ -75,25 +75,25 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
 
   // OUTPUTS
   private final PublishSubject<Void> signupSuccess = PublishSubject.create();
-  public final Observable<Void> signupSuccess() {
+  public Observable<Void> signupSuccess() {
     return signupSuccess.asObservable();
   }
   private final PublishSubject<Boolean> formSubmitting = PublishSubject.create();
-  public final Observable<Boolean> formSubmitting() {
+  public Observable<Boolean> formSubmitting() {
     return formSubmitting.asObservable();
   }
   private final PublishSubject<Boolean> formIsValid = PublishSubject.create();
-  public final Observable<Boolean> formIsValid() {
+  public Observable<Boolean> formIsValid() {
     return formIsValid.asObservable();
   }
   private final BehaviorSubject<Boolean> sendNewslettersIsChecked = BehaviorSubject.create();
-  public final Observable<Boolean> sendNewslettersIsChecked() {
+  public Observable<Boolean> sendNewslettersIsChecked() {
     return sendNewslettersIsChecked;
   }
 
   // ERRORS
   private final PublishSubject<ErrorEnvelope> signupError = PublishSubject.create();
-  public final Observable<String> signupError() {
+  public Observable<String> signupError() {
     return signupError
       .takeUntil(signupSuccess)
       .map(ErrorEnvelope::errorMessage);

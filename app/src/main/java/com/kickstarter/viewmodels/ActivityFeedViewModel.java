@@ -61,19 +61,19 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
 
   // OUTPUTS
   private final BehaviorSubject<Boolean> loggedOutEmptyStateIsVisible = BehaviorSubject.create();
-  public final Observable<Boolean> loggedOutEmptyStateIsVisible() {
+  public Observable<Boolean> loggedOutEmptyStateIsVisible() {
     return loggedOutEmptyStateIsVisible;
   }
   private final BehaviorSubject<Boolean> loggedInEmptyStateIsVisible = BehaviorSubject.create();
-  public final Observable<Boolean> loggedInEmptyStateIsVisible() {
+  public Observable<Boolean> loggedInEmptyStateIsVisible() {
     return loggedInEmptyStateIsVisible;
   }
   private final PublishSubject<Boolean> isFetchingActivities = PublishSubject.create();
-  public final Observable<Boolean> isFetchingActivities() {
+  public Observable<Boolean> isFetchingActivities() {
     return isFetchingActivities;
   }
   private final BehaviorSubject<List<Activity>> activities = BehaviorSubject.create();
-  public final Observable<List<Activity>> activities() {
+  public Observable<List<Activity>> activities() {
     return activities;
   }
   public final ActivityFeedViewModelOutputs outputs = this;

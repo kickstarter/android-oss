@@ -32,21 +32,21 @@ public final class ResetPasswordViewModel extends ViewModel<ResetPasswordActivit
 
   // OUTPUTS
   private final PublishSubject<Void> resetSuccess = PublishSubject.create();
-  public final Observable<Void> resetSuccess() {
+  public Observable<Void> resetSuccess() {
     return resetSuccess.asObservable();
   }
   private final PublishSubject<Boolean> isFormSubmitting = PublishSubject.create();
-  public final Observable<Boolean> isFormSubmitting() {
+  public Observable<Boolean> isFormSubmitting() {
     return isFormSubmitting.asObservable();
   }
   private final PublishSubject<Boolean> isFormValid = PublishSubject.create();
-  public final Observable<Boolean> isFormValid() {
+  public Observable<Boolean> isFormValid() {
     return isFormValid.asObservable();
   }
 
   // ERRORS
   private final PublishSubject<ErrorEnvelope> resetError = PublishSubject.create();
-  public final Observable<String> resetError() {
+  public Observable<String> resetError() {
     return resetError
       .takeUntil(resetSuccess)
       .map(ErrorEnvelope::errorMessage);

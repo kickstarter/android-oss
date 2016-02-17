@@ -125,7 +125,7 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
 
   // OUTPUTS
   private final BehaviorSubject<Project> project = BehaviorSubject.create();
-  public final Observable<Pair<Project, Config>> projectAndConfig() {
+  public Observable<Pair<Project, Config>> projectAndConfig() {
     return project.compose(Transformers.combineLatestPair(currentConfig.observable()));
   }
   public Observable<Project> showShareSheet() {

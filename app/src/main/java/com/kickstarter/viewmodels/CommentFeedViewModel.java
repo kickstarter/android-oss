@@ -56,7 +56,7 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
     return commentPosted.asObservable();
   }
   private final PublishSubject<Boolean> isFetchingComments = PublishSubject.create();
-  public final Observable<Boolean> isFetchingComments() {
+  public Observable<Boolean> isFetchingComments() {
     return isFetchingComments;
   }
   private final PublishSubject<Project> showCommentDialog = PublishSubject.create();

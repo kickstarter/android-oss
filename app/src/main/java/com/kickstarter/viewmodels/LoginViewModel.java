@@ -47,18 +47,18 @@ public final class LoginViewModel extends ViewModel<LoginActivity> implements Lo
 
   // ERRORS
   private final PublishSubject<ErrorEnvelope> loginError = PublishSubject.create();
-  public final Observable<String> invalidLoginError() {
+  public Observable<String> invalidLoginError() {
     return loginError
       .filter(ErrorEnvelope::isInvalidLoginError)
       .map(ErrorEnvelope::errorMessage);
   }
-  public final Observable<Void> tfaChallenge() {
+  public Observable<Void> tfaChallenge() {
     return loginError
       .filter(ErrorEnvelope::isTfaRequiredError)
       .map(__ -> null);
   }
 
-  public final Observable<String> genericLoginError() {
+  public Observable<String> genericLoginError() {
     return loginError
       .filter(ErrorEnvelope::isGenericLoginError)
       .map(ErrorEnvelope::errorMessage);

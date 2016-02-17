@@ -13,7 +13,7 @@ import rx.functions.Action0;
 public final class RecyclerViewPaginator {
   private final @NonNull RecyclerView recyclerView;
   private final @NonNull Action0 nextPage;
-  private Subscription subscription = null;
+  private Subscription subscription;
 
   public RecyclerViewPaginator(final @NonNull RecyclerView recyclerView, final @NonNull Action0 nextPage) {
     this.recyclerView = recyclerView;

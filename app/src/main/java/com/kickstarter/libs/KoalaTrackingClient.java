@@ -26,7 +26,7 @@ public final class KoalaTrackingClient implements TrackingClientType {
   private final @NonNull MixpanelAPI mixpanel;
 
   // Cached values
-  private @Nullable Boolean isGooglePlayServicesAvailable = null;
+  private @Nullable Boolean isGooglePlayServicesAvailable;
 
   public KoalaTrackingClient(@ForApplication final @NonNull Context context, final @NonNull CurrentUser currentUser) {
     this.context = context;

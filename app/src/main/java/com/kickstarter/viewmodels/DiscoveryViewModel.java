@@ -256,7 +256,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
     return drawerIsOpen;
   }
 
-  private boolean hasSeenOnboarding = false;
+  private boolean hasSeenOnboarding;
 
   public final DiscoveryViewModelInputs inputs = this;
   public final DiscoveryViewModelOutputs outputs = this;

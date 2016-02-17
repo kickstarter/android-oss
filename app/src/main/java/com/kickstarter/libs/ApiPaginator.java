@@ -85,7 +85,7 @@ public final class ApiPaginator<Data, Envelope, Params> {
     private Func1<String, Observable<Envelope>> loadWithPaginationPath;
     private Func1<Envelope, String> envelopeToMoreUrl;
     private Func1<List<Data>, List<Data>> pageTransformation;
-    private boolean clearWhenStartingOver = false;
+    private boolean clearWhenStartingOver;
     private Func2<List<Data>, List<Data>, List<Data>> concater = ListUtils::concat;
 
     /**

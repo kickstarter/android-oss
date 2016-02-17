@@ -49,7 +49,7 @@ public final class KSWebViewClient extends WebViewClient {
   private final OkHttpClient client;
   private final String webEndpoint;
   private final List<RequestHandler> requestHandlers = new ArrayList<>();
-  private FormContents formContents = null;
+  private FormContents formContents;
   private @Nullable Delegate delegate;
 
   public KSWebViewClient(final @NonNull OkHttpClient client, final @NonNull String webEndpoint) {
@@ -252,8 +252,8 @@ public final class KSWebViewClient extends WebViewClient {
   }
 
   public class MimeHeaders {
-    private String type = null;
-    private String encoding = null;
+    private String type;
+    private String encoding;
 
     public MimeHeaders(final @NonNull String contentType) {
       // Extract mime and encoding from string, e.g. "text/html; charset=utf-8"

@@ -55,7 +55,7 @@ public final class WebViewActivity extends BaseActivity<WebViewViewModel> implem
   @Override
   public void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
     final AlphaAnimation animation = new AlphaAnimation(0.0f, 1.0f);
-    animation.setDuration(300L);
+    animation.setDuration(300l);
     animation.setFillAfter(true);
     loadingIndicatorView.startAnimation(animation);
   }
@@ -63,7 +63,7 @@ public final class WebViewActivity extends BaseActivity<WebViewViewModel> implem
   @Override
   public void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
     final AlphaAnimation animation = new AlphaAnimation(1.0f, 0.0f);
-    animation.setDuration(300L);
+    animation.setDuration(300l);
     animation.setFillAfter(true);
     loadingIndicatorView.startAnimation(animation);
   }

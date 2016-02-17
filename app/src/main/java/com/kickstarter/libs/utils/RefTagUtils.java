@@ -95,7 +95,7 @@ public final class RefTagUtils {
     if (deadline != null) {
       cookie.setMaxAge(ProjectUtils.timeInSecondsUntilDeadline(project));
     } else {
-      cookie.setMaxAge(new DateTime().plusDays(10).getMillis() / 1000L);
+      cookie.setMaxAge(new DateTime().plusDays(10).getMillis() / 1000l);
     }
 
     return cookie;

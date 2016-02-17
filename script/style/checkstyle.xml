@@ -91,7 +91,6 @@
       <property name="throwsIndent" value="2" />
       <property name="lineWrappingIndentation" value="2" />
     </module>
-    <module name="UpperEll" />
   </module>
 
   <module name="FileLength">

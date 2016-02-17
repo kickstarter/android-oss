@@ -39,6 +39,7 @@
     <module name="EqualsAvoidNull" />
     <module name="EqualsHashCode" />
     <module name="ExplicitInitialization" />
+    <module name="FallThrough" />
   </module>
 
   <module name="FileLength">

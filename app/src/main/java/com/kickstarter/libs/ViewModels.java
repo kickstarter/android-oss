@@ -45,7 +45,7 @@ public class ViewModels {
   public void destroy(final @NonNull ViewModel viewModel) {
     viewModel.onDestroy();
 
-    Iterator<Map.Entry<String, ViewModel>> iterator = viewModels.entrySet().iterator();
+    final Iterator<Map.Entry<String, ViewModel>> iterator = viewModels.entrySet().iterator();
     while (iterator.hasNext()) {
       final Map.Entry<String, ViewModel> entry = iterator.next();
       if (viewModel.equals(entry.getValue())) {

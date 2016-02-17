@@ -23,7 +23,7 @@ public final class KSString {
    * Replace each key found in the string with its corresponding value.
    */
   public @NonNull String format(final @NonNull String string, final @NonNull String key1, final @Nullable String value1) {
-    Map<String, String> substitutions = new HashMap<String, String>() {{
+    final Map<String, String> substitutions = new HashMap<String, String>() {{
       put(key1, value1);
     }};
     return replace(string, substitutions);

@@ -130,7 +130,7 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
 
     registerFacebookCallback();
 
-    Observable<AccessTokenEnvelope> facebookSuccessTokenEnvelope = facebookAccessToken
+    final Observable<AccessTokenEnvelope> facebookSuccessTokenEnvelope = facebookAccessToken
       .switchMap(this::loginWithFacebookAccessToken)
       .share();
 

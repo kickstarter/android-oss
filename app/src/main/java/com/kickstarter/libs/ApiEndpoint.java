@@ -31,7 +31,7 @@ public enum ApiEndpoint {
         return value;
       }
     }
-    ApiEndpoint endpoint = CUSTOM;
+    final ApiEndpoint endpoint = CUSTOM;
     endpoint.url = url;
     return endpoint;
   }

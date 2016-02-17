@@ -54,7 +54,7 @@ public class DiscoveryDrawerAdapter extends KSAdapter {
 
   private int layoutForDatum(Object datum, SectionRow sectionRow) {
     if (datum instanceof NavigationDrawerData.Section.Row) {
-      NavigationDrawerData.Section.Row row = (NavigationDrawerData.Section.Row) datum;
+      final NavigationDrawerData.Section.Row row = (NavigationDrawerData.Section.Row) datum;
       if (sectionRow.row() == 0) {
         return row.params().isCategorySet() ?
           R.layout.discovery_drawer_parent_filter_view :
@@ -125,11 +125,11 @@ public class DiscoveryDrawerAdapter extends KSAdapter {
 
     newSections.add(Collections.singletonList(data.user()));
 
-    List<NavigationDrawerData.Section> topFilterSections = Observable.from(data.sections())
+    final List<NavigationDrawerData.Section> topFilterSections = Observable.from(data.sections())
       .filter(NavigationDrawerData.Section::isTopFilter)
       .toList().toBlocking().single();
 
-    List<NavigationDrawerData.Section> categoryFilterSections = Observable.from(data.sections())
+    final List<NavigationDrawerData.Section> categoryFilterSections = Observable.from(data.sections())
       .filter(NavigationDrawerData.Section::isCategoryFilter)
       .toList().toBlocking().single();
 

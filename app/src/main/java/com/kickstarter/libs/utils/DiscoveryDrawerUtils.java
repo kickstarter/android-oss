@@ -35,7 +35,7 @@ public final class DiscoveryDrawerUtils {
 
     final NavigationDrawerData.Builder builder = NavigationDrawerData.builder();
 
-    List<NavigationDrawerData.Section> categorySections = Observable.from(categories)
+    final List<NavigationDrawerData.Section> categorySections = Observable.from(categories)
       .filter(c -> isVisible(c, expandedCategory))
       .flatMap(c -> doubleRootIfExpanded(c, expandedCategory))
       .map(c -> DiscoveryParams.builder().category(c).build())
@@ -134,7 +134,7 @@ public final class DiscoveryDrawerUtils {
    * @param user The currently logged in user, can be `null`.
    */
   private static @NonNull List<NavigationDrawerData.Section> topSections(final @Nullable User user) {
-    List<DiscoveryParams> filters = ListUtils.empty();
+    final List<DiscoveryParams> filters = ListUtils.empty();
 
     filters.add(DiscoveryParams.builder().staffPicks(true).build());
     if (user != null) {
@@ -157,7 +157,7 @@ public final class DiscoveryDrawerUtils {
    * category, and the list contains all subcategories.
    */
   private static @NonNull List<List<DiscoveryParams>> paramsGroupedByRootCategory(final @NonNull List<DiscoveryParams> ps) {
-    TreeMap<String, List<DiscoveryParams>> grouped = new TreeMap<>();
+    final TreeMap<String, List<DiscoveryParams>> grouped = new TreeMap<>();
     for (final DiscoveryParams p : ps) {
       if (!grouped.containsKey(p.category().root().name())) {
         grouped.put(p.category().root().name(), new ArrayList<>());

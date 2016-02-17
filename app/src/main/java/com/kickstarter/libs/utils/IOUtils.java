@@ -6,7 +6,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class IOUtils {
+public final class IOUtils {
+  private IOUtils() {}
+
   public static byte[] readFully(final @NonNull InputStream inputStream) throws IOException {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     byte[] buffer = new byte[1024];

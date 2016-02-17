@@ -2,7 +2,9 @@ package com.kickstarter.factories;
 
 import com.kickstarter.models.User;
 
-public class UserFactory {
+public final class UserFactory {
+  private UserFactory() {}
+
   public static User user() {
     return User.builder()
       .avatar(AvatarFactory.avatar())

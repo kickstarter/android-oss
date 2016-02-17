@@ -8,8 +8,8 @@ import com.google.android.gms.common.GoogleApiAvailability;
 
 import timber.log.Timber;
 
-public class PlayServicesUtils {
-  public PlayServicesUtils() {}
+public final class PlayServicesUtils {
+  private PlayServicesUtils() {}
 
   /**
    * Check the device to make sure it has the Google Play Services APK.

@@ -5,6 +5,7 @@ import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 
 public final class SwitchCompatUtils {
+  private SwitchCompatUtils() {}
 
   /**
    * Hide toggle animation when switch state is programmatically set to an initial emitted value.

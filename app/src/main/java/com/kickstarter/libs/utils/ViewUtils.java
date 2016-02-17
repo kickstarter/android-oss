@@ -22,8 +22,8 @@ import com.kickstarter.ui.views.KSDialog;
 
 import rx.functions.Action1;
 
-public class ViewUtils {
-  public ViewUtils() {}
+public final class ViewUtils {
+  private ViewUtils() {}
 
   public static float getScreenDensity(final @NonNull Context context) {
     return context.getResources().getDisplayMetrics().density;

@@ -17,6 +17,7 @@
 
     <!-- Class design -->
     <module name="FinalClass" />
+    <module name="HideUtilityClassConstructor" />
   </module>
 
   <module name="FileLength">

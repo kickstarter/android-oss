@@ -36,11 +36,17 @@ public class CurrentUser {
     user.onNext(gson.fromJson(userPreference.get(), User.class));
   }
 
+  /**
+   * @deprecated Prefer {@link #observable()} instead.
+   */
   @Deprecated
   public User getUser() {
     return currentUser;
   }
 
+  /**
+   * @deprecated Prefer {@link #observable()} instead.
+   */
   @Deprecated
   public boolean exists() {
     return getUser() != null;

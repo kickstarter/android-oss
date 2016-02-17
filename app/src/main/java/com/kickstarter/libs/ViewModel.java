@@ -88,6 +88,9 @@ public class ViewModel<ViewType extends LifecycleType> {
     return view;
   }
 
+  /**
+   * @deprecated Prefer composing with {@link #bindToLifecycle()}.
+   */
   @Deprecated
   public final void addSubscription(final @NonNull Subscription subscription) {
     subscriptions.add(subscription);

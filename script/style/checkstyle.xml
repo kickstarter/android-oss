@@ -5,6 +5,7 @@
 <module name="Checker">
   <module name="TreeWalker">
     <module name="AnnotationUseStyle" />
+    <module name="MissingDeprecated" />
   </module>
 
   <module name="FileLength">

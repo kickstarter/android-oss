@@ -76,6 +76,7 @@
       <property name="excludes" value="com.kickstarter.TestUtils.*" />
       <property name="excludes" value="org.mockito.Mockito.*" />
     </module>
+    <module name="IllegalImport" />
   </module>
 
   <module name="FileLength">

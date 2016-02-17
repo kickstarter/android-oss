@@ -41,6 +41,9 @@
     <module name="ExplicitInitialization" />
     <module name="FallThrough" />
     <module name="FinalLocalVariable" />
+    <module name="IllegalInstantiation" />
+    <module name="IllegalToken" />
+    <module name="IllegalTokenText" />
     <module name="IllegalType" />
   </module>
 

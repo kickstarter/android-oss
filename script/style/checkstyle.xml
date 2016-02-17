@@ -48,6 +48,7 @@
     <module name="ModifiedControlVariable" />
     <module name="MultipleVariableDeclarations" />
     <module name="NoClone" />
+    <module name="OneStatementPerLine" />
   </module>
 
   <module name="FileLength">

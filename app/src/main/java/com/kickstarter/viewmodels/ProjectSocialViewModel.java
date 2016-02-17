@@ -25,7 +25,7 @@ public final class ProjectSocialViewModel extends ViewModel<ProjectSocialActivit
   public final ProjectSocialViewModelOutputs outputs = this;
 
   @Override
-  protected void onCreate(@NonNull Context context, @Nullable Bundle savedInstanceState) {
+  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
 
     addSubscription(

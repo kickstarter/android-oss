@@ -167,7 +167,7 @@ public final class ListUtils {
   /**
    * Returns a list containing the elements of `lhs` that exist in `rhs`, where equality is determined by the given function.
    */
-  public static @NonNull <T> List<T> intersection(final @NonNull List<T> lhs, final @NonNull List<T> rhs, Func2<T, T, Boolean> equality) {
+  public static @NonNull <T> List<T> intersection(final @NonNull List<T> lhs, final @NonNull List<T> rhs, final @NonNull Func2<T, T, Boolean> equality) {
     final List<T> result = new ArrayList<>();
     for (final T litem : lhs) {
       if (ListUtils.contains(rhs, litem, equality)) {

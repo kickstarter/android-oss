@@ -77,28 +77,28 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
 
   private final PublishSubject<Boolean> openDrawer = PublishSubject.create();
   @Override
-  public void openDrawer(boolean open) {
+  public void openDrawer(final boolean open) {
     openDrawer.onNext(open);
   }
 
   // ONBOARDING DELEGATE INPUTS
   private PublishSubject<Void> discoveryOnboardingLoginToutClick = PublishSubject.create();
   @Override
-  public void discoveryOnboardingViewHolderLoginToutClick(DiscoveryOnboardingViewHolder viewHolder) {
+  public void discoveryOnboardingViewHolderLoginToutClick(final @NonNull DiscoveryOnboardingViewHolder viewHolder) {
     discoveryOnboardingLoginToutClick.onNext(null);
   }
 
   // PROJECT VIEW HOLDER DELEGATE INPUTS
   private PublishSubject<Project> clickProject = PublishSubject.create();
   @Override
-  public void projectCardViewHolderClick(ProjectCardViewHolder viewHolder, Project project) {
+  public void projectCardViewHolderClick(final @NonNull ProjectCardViewHolder viewHolder, final @NonNull Project project) {
     clickProject.onNext(project);
   }
 
   // NAVIGATION DRAWER DELEGATE INPUTS
   private PublishSubject<NavigationDrawerData.Section.Row> childFilterRowClick = PublishSubject.create();
   @Override
-  public void childFilterViewHolderRowClick(@NonNull ChildFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
+  public void childFilterViewHolderRowClick(final @NonNull ChildFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row) {
     childFilterRowClick.onNext(row);
   }
 
@@ -110,7 +110,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
 
   private PublishSubject<NavigationDrawerData.Section.Row> parentFilterRowClick = PublishSubject.create();
   @Override
-  public void parentFilterViewHolderRowClick(@NonNull ParentFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
+  public void parentFilterViewHolderRowClick(final @NonNull ParentFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row) {
     parentFilterRowClick.onNext(row);
   }
 
@@ -139,7 +139,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
 
   private PublishSubject<NavigationDrawerData.Section.Row> topFilterRowClick = PublishSubject.create();
   @Override
-  public void topFilterViewHolderRowClick(@NonNull TopFilterViewHolder viewHolder, @NonNull NavigationDrawerData.Section.Row row) {
+  public void topFilterViewHolderRowClick(final @NonNull TopFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row) {
     topFilterRowClick.onNext(row);
   }
 

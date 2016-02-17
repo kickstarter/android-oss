@@ -127,7 +127,7 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
   }
 
   @Override
-  protected void onCreate(@NonNull Context context, @Nullable Bundle savedInstanceState) {
+  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     
     ((KSApplication) context.getApplicationContext()).component().inject(this);

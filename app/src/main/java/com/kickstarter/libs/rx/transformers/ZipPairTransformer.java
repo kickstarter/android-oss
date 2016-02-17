@@ -13,7 +13,7 @@ public final class ZipPairTransformer<T, R> implements Observable.Transformer<T,
   }
 
   @Override
-  @NonNull public Observable<Pair<T, R>> call(Observable<T> first) {
+  @NonNull public Observable<Pair<T, R>> call(final @NonNull Observable<T> first) {
     return Observable.zip(first, second, Pair::new);
   }
 }

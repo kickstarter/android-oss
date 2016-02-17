@@ -87,7 +87,7 @@ public final class LoginViewModel extends ViewModel<LoginActivity> implements Lo
   }
 
   @Override
-  protected void onCreate(final @NonNull Context context, @Nullable Bundle savedInstanceState) {
+  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 

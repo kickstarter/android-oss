@@ -41,7 +41,7 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
 
   // INPUTS
   @Override
-  public void facebookLoginClick(@NonNull final LoginToutActivity activity, @NonNull List<String> facebookPermissions) {
+  public void facebookLoginClick(final @NonNull LoginToutActivity activity, final @NonNull List<String> facebookPermissions) {
     LoginManager.getInstance().logInWithReadPermissions(activity, facebookPermissions);
   }
 
@@ -124,7 +124,7 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
   public final LoginToutViewModelErrors errors = this;
 
   @Override
-  protected void onCreate(@NonNull final Context context, @Nullable Bundle savedInstanceState) {
+  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 

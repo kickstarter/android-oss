@@ -22,7 +22,7 @@ public final class KoalaUtils {
     return discoveryParamsProperties(params, "discover_");
   }
 
-  @NonNull public static Map<String, Object> discoveryParamsProperties(final @NonNull DiscoveryParams params, @NonNull String prefix) {
+  @NonNull public static Map<String, Object> discoveryParamsProperties(final @NonNull DiscoveryParams params, final @NonNull String prefix) {
 
     final Map<String, Object> properties = Collections.unmodifiableMap(new HashMap<String, Object>() {{
 

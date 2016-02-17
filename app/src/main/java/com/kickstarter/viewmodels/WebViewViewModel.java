@@ -40,7 +40,7 @@ public final class WebViewViewModel extends ViewModel<WebViewActivity> implement
   public final WebViewViewModelOutputs outputs = this;
 
   @Override
-  protected void onCreate(@NonNull Context context, @Nullable Bundle savedInstanceState) {
+  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 

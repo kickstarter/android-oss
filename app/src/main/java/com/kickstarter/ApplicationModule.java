@@ -171,7 +171,7 @@ public final class ApplicationModule {
     return retrofit.create(WebService.class);
   }
 
-  private @NonNull Retrofit createRetrofit(@NonNull String baseUrl, final @NonNull Gson gson, final @NonNull OkHttpClient okHttpClient) {
+  private @NonNull Retrofit createRetrofit(final @NonNull String baseUrl, final @NonNull Gson gson, final @NonNull OkHttpClient okHttpClient) {
     return new Retrofit.Builder()
       .client(okHttpClient)
       .baseUrl(baseUrl)

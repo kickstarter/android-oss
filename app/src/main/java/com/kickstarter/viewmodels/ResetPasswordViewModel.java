@@ -84,7 +84,7 @@ public final class ResetPasswordViewModel extends ViewModel<ResetPasswordActivit
   }
 
   @Override
-  public void onCreate(final @NonNull Context context, @Nullable Bundle savedInstanceState) {
+  public void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
     ((KSApplication) context.getApplicationContext()).component().inject(this);
 

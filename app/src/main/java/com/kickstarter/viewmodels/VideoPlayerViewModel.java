@@ -27,7 +27,7 @@ public final class VideoPlayerViewModel extends ViewModel<VideoPlayerActivity> i
   public final VideoPlayerViewModel outputs = this;
 
   @Override
-  protected void onCreate(@NonNull Context context, @Nullable Bundle savedInstanceState) {
+  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
 
     intent()

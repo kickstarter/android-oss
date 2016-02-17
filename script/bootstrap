@@ -44,6 +44,8 @@ if [ $? -ne 0 ]; then
   cp $REPOSITORY_STYLE_PATH $ANDROID_STYLE_PATH
 fi
 
+brew install checkstyle
+
 # Remove author from new files
 FILE_HEADER_PATH="${ANDROID_STUDIO_PREFERENCES_PATH}/fileTemplates/includes/File Header.java"
 if [ -f "$FILE_HEADER_PATH" ]; then

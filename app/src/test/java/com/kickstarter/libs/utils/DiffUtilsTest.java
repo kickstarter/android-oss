@@ -46,7 +46,7 @@ public class DiffUtilsTest extends TestCase {
   public void testDiff_WithTheWholeEnchilada() {
     final List<Integer> oldItems = Arrays.asList(1, 2, 3, 40, 41, 42, 43, 5);
     final List<Integer> newItems = Arrays.asList(1, 2, 6, 61, 62, 63, 4, 5);
-    final Func2<Integer, Integer, Boolean> equality = (x, y) -> (x.equals(y) || (x == 4 && y == 40) || (x == 40 && y == 4));
+    final Func2<Integer, Integer, Boolean> equality = (x, y) -> x.equals(y) || (x == 4 && y == 40) || (x == 40 && y == 4);
 
     final DiffUtils.Diff expected = DiffUtils.Diff.builder()
       .insertions(Arrays.asList(2, 3, 4, 5))

@@ -160,7 +160,7 @@ public class TweetComposer {
     }
 
     Intent createWebIntent() {
-      final String uri = (this.uri == null ? "" : this.uri.toString());
+      final String uri = this.uri == null ? "" : this.uri.toString();
 
 
       final String tweetUrl =

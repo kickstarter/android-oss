@@ -132,8 +132,8 @@ public final class SocialUtils {
    * Returns a namepile for a list of friends.
    */
   public static @NonNull String projectCardFriendNamepile(final @NonNull List<User> friends, final @NonNull KSString ksString) {
-    final String friendName = (friends.size() >= 1 ? friends.get(0).name() : "");
-    final String secondFriendName = (friends.size() >= 2 ? friends.get(1).name() : "");
+    final String friendName = friends.size() >= 1 ? friends.get(0).name() : "";
+    final String secondFriendName = friends.size() >= 2 ? friends.get(1).name() : "";
     final String remainingCount = NumberUtils.format(Math.max(0, friends.size() - 2));
 
     return ksString.format("discovery_baseball_card_social_friends_are_backers", friends.size(),

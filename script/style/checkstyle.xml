@@ -54,6 +54,7 @@
     <module name="SimplifyBooleanExpression" />
     <module name="SimplifyBooleanReturn" />
     <module name="StringLiteralEquality" />
+    <module name="UnnecessaryParentheses" />
   </module>
 
   <module name="FileLength">

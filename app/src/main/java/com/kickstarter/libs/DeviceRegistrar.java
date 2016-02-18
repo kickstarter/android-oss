@@ -4,14 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
+import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.utils.PlayServicesUtils;
 import com.kickstarter.services.gcm.RegisterService;
 import com.kickstarter.services.gcm.UnregisterService;
 
 public final class DeviceRegistrar implements DeviceRegistrarType {
-  private @ForApplication @NonNull Context context;
+  private @ApplicationContext @NonNull Context context;
 
-  public DeviceRegistrar(final @ForApplication @NonNull Context context) {
+  public DeviceRegistrar(final @ApplicationContext @NonNull Context context) {
     this.context = context;
   }
 

@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.kickstarter.R;
+import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.utils.KoalaUtils;
 import com.kickstarter.libs.utils.MapUtils;
 import com.kickstarter.models.User;
@@ -28,7 +29,7 @@ public final class KoalaTrackingClient implements TrackingClientType {
   // Cached values
   private @Nullable Boolean isGooglePlayServicesAvailable;
 
-  public KoalaTrackingClient(@ForApplication final @NonNull Context context, final @NonNull CurrentUser currentUser) {
+  public KoalaTrackingClient(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUser currentUser) {
     this.context = context;
     this.currentUser = currentUser;
 

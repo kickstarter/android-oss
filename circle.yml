@@ -1,14 +1,14 @@
 general:
-    artifacts:
-        - app/build/outputs
-        - app/build/reports
+  artifacts:
+    - app/build/outputs
+    - app/build/reports
 
 machine:
   java:
-      version: oraclejdk8
+    version: oraclejdk8
   environment:
-      ADB_INSTALL_TIMEOUT: 8
-      GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx512m -XX:+HeapDumpOnOutOfMemoryError"'
+    ADB_INSTALL_TIMEOUT: 8
+    GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx512m -XX:+HeapDumpOnOutOfMemoryError"'
 
 dependencies:
   override:

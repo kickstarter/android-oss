@@ -21,7 +21,6 @@ import com.kickstarter.libs.DateTimeTypeConverter;
 import com.kickstarter.libs.DeviceRegistrar;
 import com.kickstarter.libs.DeviceRegistrarType;
 import com.kickstarter.libs.Font;
-import com.kickstarter.libs.ForApplication;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
@@ -35,10 +34,14 @@ import com.kickstarter.libs.preferences.IntPreference;
 import com.kickstarter.libs.preferences.StringPreference;
 import com.kickstarter.libs.qualifiers.AccessTokenPreference;
 import com.kickstarter.libs.qualifiers.ActivitySamplePreference;
+import com.kickstarter.libs.qualifiers.ApiRetrofit;
 import com.kickstarter.libs.qualifiers.AppRatingPreference;
+import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.qualifiers.ConfigPreference;
+import com.kickstarter.libs.qualifiers.PackageNameString;
 import com.kickstarter.libs.qualifiers.UserPreference;
 import com.kickstarter.libs.qualifiers.WebEndpoint;
+import com.kickstarter.libs.qualifiers.WebRetrofit;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.ApiService;
@@ -99,7 +102,7 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  @Named("ApiRetrofit")
+  @ApiRetrofit
   @NonNull Retrofit provideApiRetrofit(final @NonNull ApiEndpoint apiEndpoint,
     final @NonNull Gson gson,
     final @NonNull OkHttpClient okHttpClient) {
@@ -116,7 +119,7 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  ApiService provideApiService(@Named("ApiRetrofit") final @NonNull Retrofit retrofit) {
+  ApiService provideApiService(final @ApiRetrofit @NonNull Retrofit retrofit) {
     return retrofit.create(ApiService.class);
   }
 
@@ -150,7 +153,7 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  @Named("WebRetrofit")
+  @WebRetrofit
   @NonNull Retrofit provideWebRetrofit(@NonNull @WebEndpoint final String webEndpoint,
     final @NonNull Gson gson,
     final @NonNull OkHttpClient okHttpClient) {
@@ -167,7 +170,7 @@ public class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  WebService provideWebService(@Named("WebRetrofit") final @NonNull Retrofit retrofit) {
+  WebService provideWebService(final @WebRetrofit @NonNull Retrofit retrofit) {
     return retrofit.create(WebService.class);
   }
 
@@ -216,13 +219,13 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  Koala provideKoala(@ForApplication final @NonNull Context context, final @NonNull CurrentUser currentUser) {
+  Koala provideKoala(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUser currentUser) {
     return new Koala(new KoalaTrackingClient(context, currentUser));
   }
 
   @Provides
   @Singleton
-  @ForApplication
+  @ApplicationContext
   Context provideApplicationContext() {
     return application;
   }
@@ -270,7 +273,7 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  @NonNull DeviceRegistrarType provideDeviceRegistrar(final @ForApplication @NonNull Context context) {
+  @NonNull DeviceRegistrarType provideDeviceRegistrar(final @ApplicationContext @NonNull Context context) {
     return new DeviceRegistrar(context);
   }
 
@@ -307,7 +310,7 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  @NonNull KSString provideKSString(final @Named("PackageName") @NonNull String packageName, final @NonNull Resources resources) {
+  @NonNull KSString provideKSString(final @PackageNameString @NonNull String packageName, final @NonNull Resources resources) {
     return new KSString(packageName, resources);
   }
 
@@ -325,7 +328,7 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  @NonNull PushNotifications providePushNotifications(final @ForApplication @NonNull Context context, final @NonNull ApiClientType client,
+  @NonNull PushNotifications providePushNotifications(final @ApplicationContext @NonNull Context context, final @NonNull ApiClientType client,
     final @NonNull DeviceRegistrarType deviceRegistrar) {
     return new PushNotifications(context, client, deviceRegistrar);
   }
@@ -343,14 +346,14 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  @Named("PackageName")
+  @PackageNameString
   String providePackageName(final @NonNull Application application) {
     return application.getPackageName();
   }
 
   @Provides
   @Singleton
-  Resources provideResources(@ForApplication final @NonNull Context context) {
+  Resources provideResources(final @ApplicationContext @NonNull Context context) {
     return context.getResources();
   }
 

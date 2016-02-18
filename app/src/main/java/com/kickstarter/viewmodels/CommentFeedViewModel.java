@@ -40,7 +40,7 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   public void nextPage() {
     nextPage.onNext(null);
   }
-  private final BehaviorSubject<Void> refresh = BehaviorSubject.create((Void)null);
+  private final BehaviorSubject<Void> refresh = BehaviorSubject.create((Void) null);
   public void refresh() {
     refresh.onNext(null);
   }

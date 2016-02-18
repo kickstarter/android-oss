@@ -99,9 +99,17 @@
 
     <!-- Whitespace -->
     <module name="GenericWhitespace" />
-    <module name="MethodParamPad"/>
-    <module name="NoWhitespaceAfter"/>
-    <module name="NoWhitespaceBefore"/>
+    <module name="MethodParamPad" />
+    <module name="NoLineWrap" />
+    <module name="NoWhitespaceAfter" />
+    <module name="NoWhitespaceBefore" />
+    <module name="ParenPad" />
+    <module name="SeparatorWrap">
+      <property name="option" value="nl" />
+      <property name="tokens" value="DOT" />
+    </module>
+    <module name="TypecastParenPad" />
+    <module name="WhitespaceAfter" />
   </module>
 
   <module name="FileLength">

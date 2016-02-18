@@ -25,6 +25,7 @@ public class KSWebView extends WebView {
     this(context, attrs, android.R.attr.webViewStyle);
   }
 
+  @SuppressWarnings("SetJavaScriptEnabled")
   public KSWebView(final @NonNull Context context, final @Nullable AttributeSet attrs, final int defStyle) {
     super(context, attrs, defStyle);
 

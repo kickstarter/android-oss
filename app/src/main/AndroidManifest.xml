@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
   package="com.kickstarter"
-  xmlns:android="http://schemas.android.com/apk/res/android">
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools">
 
   <!-- PERMISSIONS -->
 
@@ -80,7 +81,8 @@
       <!-- Setting autoVerify to true in any intent filter for the manifest enables the app for
         23+ app links: https://www.youtube.com/watch?v=LQoohRwojmw -->
       <intent-filter
-        android:autoVerify="true">
+        android:autoVerify="true"
+        tools:ignore="UnusedAttribute">
         <action android:name="android.intent.action.VIEW" />
         <category android:name="android.intent.category.DEFAULT" />
         <category android:name="android.intent.category.BROWSABLE" />

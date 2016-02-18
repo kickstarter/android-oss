@@ -20,5 +20,5 @@ dependencies:
 
 test:
   override:
-    - ./gradlew clean assembleInternalPre21Release testInternalPre21Release -PdisablePreDex
-    - ./gradlew clean assembleExternalPre21Release -PdisablePreDex
+    - ./gradlew assembleExternalPre21Release -PdisablePreDex
+    - ./gradlew checkstyle

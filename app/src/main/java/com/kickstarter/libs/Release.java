@@ -1,5 +1,6 @@
 package com.kickstarter.libs;
 
+import android.annotation.SuppressLint;
 import android.content.pm.PackageInfo;
 import android.support.annotation.NonNull;
 
@@ -35,6 +36,7 @@ public final class Release {
     return packageInfo.versionName;
   }
 
+  @SuppressLint("DefaultLocale")
   public String variant() {
     // e.g. internalDebug, externalRelease
     return new StringBuilder().append(BuildConfig.FLAVOR_AUDIENCE)

@@ -36,6 +36,7 @@ public final class StatusBarUtils {
     setIconOverlay(activity, false);
   }
 
+  @SuppressWarnings("InlinedApi")
   private static void setIconOverlay(final @NonNull BaseActivity activity, final boolean light) {
     if (!ApiCapabilities.canSetDarkStatusBarIcons()) {
       return;

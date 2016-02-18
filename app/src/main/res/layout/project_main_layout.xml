@@ -24,7 +24,7 @@
 
     <TextView
       android:id="@+id/project_name"
-      android:text="Secret Hitler"
+      android:text="Project name"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       style="@style/EditorialHeadline"
@@ -38,7 +38,7 @@
 
       <TextView
         android:id="@+id/creator_name"
-        android:text="by Max Temkin"
+        android:text="Creator name"
         android:focusable="true"
         android:layout_weight="3"
         android:singleLine="true"

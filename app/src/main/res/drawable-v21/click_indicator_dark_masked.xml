@@ -7,7 +7,7 @@
 -->
 <ripple
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:color="@color/ripple_material_dark">
+  android:color="@color/ripple_dark">
   <item android:id="@android:id/mask">
     <color android:color="@color/black"/>
   </item>

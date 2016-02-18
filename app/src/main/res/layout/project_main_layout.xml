@@ -6,7 +6,8 @@
   android:id="@+id/project_scroll_view"
   android:layout_width="match_parent"
   android:background="@color/white"
-  android:layout_height="match_parent">
+  android:layout_height="match_parent"
+  xmlns:tools="http://schemas.android.com/tools">
 
   <include layout="@layout/project_media_header"/>
 
@@ -28,7 +29,8 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       style="@style/EditorialHeadline"
-      android:paddingBottom="@dimen/grid_1_half" />
+      android:paddingBottom="@dimen/grid_1_half"
+      tools:ignore="InconsistentLayout" />
 
     <LinearLayout
       android:weightSum="3"
@@ -45,7 +47,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/click_indicator_light_masked"
-        style="@style/BodySecondary" />
+        style="@style/BodySecondary"
+        tools:ignore="InconsistentLayout" />
 
       <LinearLayout
         android:id="@+id/backer_label"
@@ -87,7 +90,8 @@
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_2"
       android:layout_marginBottom="@dimen/grid_2"
-      android:paddingBottom="@dimen/grid_1" />
+      android:paddingBottom="@dimen/grid_1"
+      tools:ignore="InconsistentLayout" />
 
     <LinearLayout
       android:orientation="horizontal"
@@ -110,7 +114,8 @@
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/grid_1_half"
         android:paddingRight="@dimen/grid_2"
-        style="@style/BodyPrimary" />
+        style="@style/BodyPrimary"
+        tools:ignore="InconsistentLayout" />
 
       <com.kickstarter.ui.views.IconTextView
         android:id="@+id/location_icon"

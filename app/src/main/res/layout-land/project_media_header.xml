@@ -4,6 +4,7 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
+  xmlns:tools="http://schemas.android.com/tools"
   android:orientation="vertical">
 
   <ImageView
@@ -64,7 +65,8 @@
           android:maxLines="2"
           style="@style/EditorialHeadline"
           android:textColor="@color/white"
-          android:paddingBottom="@dimen/grid_1_half" />
+          android:paddingBottom="@dimen/grid_1_half"
+          tools:ignore="InconsistentLayout" />
 
         <TextView
           android:id="@+id/creator_name"
@@ -75,7 +77,8 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:background="@drawable/click_indicator_light_masked"
-          style="@style/BodyWhite" />
+          style="@style/BodyWhite"
+          tools:ignore="InconsistentLayout" />
 
         <LinearLayout
           android:id="@+id/backer_label"
@@ -131,7 +134,8 @@
         android:background="@drawable/click_indicator_light_masked"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/grid_1" />
+        android:paddingBottom="@dimen/grid_1"
+        tools:ignore="InconsistentLayout" />
 
       <LinearLayout
         android:layout_marginTop="@dimen/grid_3"
@@ -155,7 +159,8 @@
           android:layout_height="wrap_content"
           android:paddingLeft="@dimen/grid_1_half"
           android:paddingRight="@dimen/grid_2"
-          style="@style/BodyWhite" />
+          style="@style/BodyWhite"
+          tools:ignore="InconsistentLayout" />
 
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/location_icon"

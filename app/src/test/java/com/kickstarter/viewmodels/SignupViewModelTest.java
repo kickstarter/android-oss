@@ -11,23 +11,23 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testSignupViewModel_formValidation() {
-    final SignupViewModel p = new SignupViewModel(environment());
+    final SignupViewModel vm = new SignupViewModel(environment());
     final TestSubscriber<Boolean> test = new TestSubscriber<>();
-    p.outputs.formIsValid().subscribe(test);
+    vm.outputs.formIsValid().subscribe(test);
     
-    p.inputs.fullName("brandon");
+    vm.inputs.fullName("brandon");
     test.assertNoValues();
 
-    p.inputs.email("hello@kickstarter.com");
+    vm.inputs.email("hello@kickstarter.com");
     test.assertNoValues();
 
-    p.inputs.password("danisawesome");
+    vm.inputs.password("danisawesome");
     test.assertNoValues();
 
-    p.inputs.sendNewslettersClick(true);
+    vm.inputs.sendNewslettersClick(true);
     test.assertValues(true);
 
-    p.inputs.email("incorrect@kickstarter");
+    vm.inputs.email("incorrect@kickstarter");
     test.assertValues(true, false);
   }
 }

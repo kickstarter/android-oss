@@ -80,11 +80,6 @@ public final class ResetPasswordViewModel extends ViewModel<ResetPasswordActivit
       .switchMap(this::submitEmail)
       .compose(bindToLifecycle())
       .subscribe(__ -> success());
-  }
-
-  @Override
-  public void onCreate(final @NonNull Context context, @Nullable Bundle savedInstanceState) {
-    super.onCreate(context, savedInstanceState);
 
     resetError
       .compose(bindToLifecycle())

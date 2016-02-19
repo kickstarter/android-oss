@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
@@ -51,7 +50,6 @@ public final class ResetPasswordViewModel extends ViewModel<ResetPasswordActivit
   }
 
   private final ApiClientType client;
-  private final CurrentUser currentUser;
 
   public final ResetPasswordViewModelInputs inputs = this;
   public final ResetPasswordViewModelOutputs outputs = this;
@@ -71,7 +69,6 @@ public final class ResetPasswordViewModel extends ViewModel<ResetPasswordActivit
     super(environment);
 
     this.client = environment.apiClient();
-    this.currentUser = environment.currentUser();
 
     email
       .map(StringUtils::isEmail)

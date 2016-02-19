@@ -74,7 +74,7 @@ public final class ResetPasswordViewModel extends ViewModel<ResetPasswordActivit
     this.currentUser = environment.currentUser();
 
     email
-        .map(StringUtils::isEmail)
+      .map(StringUtils::isEmail)
       .compose(bindToLifecycle())
       .subscribe(isFormValid);
 

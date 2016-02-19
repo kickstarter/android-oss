@@ -15,15 +15,6 @@ public class TestKSApplication extends KSApplication {
   }
 
   @Override
-  protected void createComponent() {
-    final ApplicationComponent component = DaggerApplicationComponent.builder()
-      .applicationModule(new TestApplicationModule(this))
-      .build();
-    component(component);
-    component.inject(this);
-  }
-
-  @Override
   protected boolean isInUnitTests() {
     return true;
   }

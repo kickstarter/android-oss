@@ -106,8 +106,7 @@ public class ApplicationModule {
 
   @Provides
   @Singleton
-  @NonNull
-  ApiClientType provideApiClientType(final @NonNull ApiService apiService, final @NonNull Gson gson) {
+  @NonNull ApiClientType provideApiClientType(final @NonNull ApiService apiService, final @NonNull Gson gson) {
     return new ApiClient(apiService, gson);
   }
 

@@ -68,7 +68,7 @@ public final class ResetPasswordViewModel extends ViewModel<ResetPasswordActivit
   public ResetPasswordViewModel(final @NonNull Environment environment) {
     super(environment);
 
-    this.client = environment.apiClient();
+    client = environment.apiClient();
 
     email
       .map(StringUtils::isEmail)

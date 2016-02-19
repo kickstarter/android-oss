@@ -13,7 +13,6 @@ public class ResetPasswordViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<Boolean> test = new TestSubscriber<>();
 
     vm.outputs.isFormValid().subscribe(test);
-
     test.assertNoValues();
 
     vm.inputs.email("incorrect@kickstarter");
@@ -21,5 +20,23 @@ public class ResetPasswordViewModelTest extends KSRobolectricTestCase {
 
     vm.inputs.email("hello@kickstarter.com");
     test.assertValues(false, true);
+  }
+
+  @Test
+  public void testResetPasswordViewModel_resetSuccess() {
+    final ResetPasswordViewModel vm = new ResetPasswordViewModel(environment());
+    final TestSubscriber<Void> test = new TestSubscriber<>();
+
+    vm.outputs.resetSuccess().subscribe(test);
+    test.assertNoValues();
+
+    vm.inputs.resetPasswordClick();
+    test.assertNoValues();
+
+    vm.inputs.email("hello@kickstarter.com");
+    test.assertNoValues();
+
+    vm.inputs.resetPasswordClick();
+    test.assertValueCount(1);
   }
 }

@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import com.kickstarter.factories.CategoryFactory;
 import com.kickstarter.factories.LocationFactory;
 import com.kickstarter.factories.ProjectFactory;
+import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.Config;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Category;
@@ -161,7 +162,7 @@ public class MockApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<User> resetPassword(final @NonNull String email) {
-    return Observable.empty();
+    return Observable.just(UserFactory.user());
   }
 
   @Override

@@ -55,7 +55,6 @@ public final class ResetPasswordViewModelTest extends KSRobolectricTestCase {
       }
     };
     final Environment environment = environment().toBuilder().apiClient(apiClient).build();
-
     final ResetPasswordViewModel vm = new ResetPasswordViewModel(environment);
     final TestSubscriber<String> test = new TestSubscriber<>();
 

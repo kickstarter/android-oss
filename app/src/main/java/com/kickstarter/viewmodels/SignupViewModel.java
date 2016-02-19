@@ -5,9 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentConfig;
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.I18nUtils;
@@ -20,17 +20,15 @@ import com.kickstarter.viewmodels.errors.SignupViewModelErrors;
 import com.kickstarter.viewmodels.inputs.SignupViewModelInputs;
 import com.kickstarter.viewmodels.outputs.SignupViewModelOutputs;
 
-import javax.inject.Inject;
-
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public final class SignupViewModel extends ViewModel<SignupActivity> implements SignupViewModelInputs, SignupViewModelOutputs,
   SignupViewModelErrors {
-  protected @Inject ApiClientType client;
-  protected @Inject CurrentUser currentUser;
-  protected @Inject CurrentConfig currentConfig;
+  private final ApiClientType client;
+  private final CurrentUser currentUser;
+  private final CurrentConfig currentConfig;
 
   protected final static class SignupData {
     final @NonNull String fullName;
@@ -103,7 +101,12 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
   public final SignupViewModelOutputs outputs = this;
   public final SignupViewModelErrors errors = this;
 
-  public SignupViewModel() {
+  public SignupViewModel(final @NonNull Environment environment) {
+    super(environment);
+
+    client = environment.apiClient();
+    currentConfig = environment.currentConfig();
+    currentUser = environment.currentUser();
 
     final Observable<SignupData> signupData = Observable.combineLatest(
       fullName, email, password, sendNewslettersIsChecked,
@@ -129,8 +132,6 @@ public final class SignupViewModel extends ViewModel<SignupActivity> implements 
   @Override
   protected void onCreate(@NonNull Context context, @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
-    
-    ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     currentConfig.observable()
       .take(1)

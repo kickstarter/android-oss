@@ -3,6 +3,7 @@ package com.kickstarter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KSString;
 
 import junit.framework.TestCase;
@@ -28,6 +29,10 @@ public abstract class KSRobolectricTestCase extends TestCase {
 
   protected @NonNull Context context() {
     return application().getApplicationContext();
+  }
+
+  protected @NonNull Environment environment() {
+    return application().component().environment();
   }
 
   protected @NonNull KSString ksString() {

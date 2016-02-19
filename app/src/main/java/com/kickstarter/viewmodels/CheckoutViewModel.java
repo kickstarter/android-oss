@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.IntentKey;
@@ -45,6 +46,10 @@ public final class CheckoutViewModel extends ViewModel<CheckoutActivity> impleme
 
   public final CheckoutViewModelInputs inputs = this;
   public final CheckoutViewModelOutputs outputs = this;
+
+  public CheckoutViewModel(final @NonNull Environment environment) {
+    super(environment);
+  }
 
   @Override
   protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {

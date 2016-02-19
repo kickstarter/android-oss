@@ -7,8 +7,8 @@ import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.View;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.StringUtils;
@@ -20,8 +20,6 @@ import com.kickstarter.ui.activities.LoginActivity;
 import com.kickstarter.viewmodels.errors.LoginViewModelErrors;
 import com.kickstarter.viewmodels.inputs.LoginViewModelInputs;
 import com.kickstarter.viewmodels.outputs.LoginViewModelOutputs;
-
-import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -64,8 +62,8 @@ public final class LoginViewModel extends ViewModel<LoginActivity> implements Lo
       .map(ErrorEnvelope::errorMessage);
   }
 
-  protected @Inject ApiClientType client;
-  protected @Inject CurrentUser currentUser;
+  private final ApiClientType client;
+  private final CurrentUser currentUser;
 
   public final LoginViewModelInputs inputs = this;
   public final LoginViewModelOutputs outputs = this;
@@ -86,10 +84,16 @@ public final class LoginViewModel extends ViewModel<LoginActivity> implements Lo
     password.onNext(s);
   }
 
+  public LoginViewModel(final @NonNull Environment environment) {
+    super(environment);
+
+    client = environment.apiClient();
+    currentUser = environment.currentUser();
+  }
+
   @Override
   protected void onCreate(final @NonNull Context context, @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
-    ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     final Observable<Pair<String, String>> emailAndPassword = email
       .compose(Transformers.combineLatestPair(password));

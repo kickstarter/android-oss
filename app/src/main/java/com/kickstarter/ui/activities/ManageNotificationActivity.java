@@ -30,14 +30,11 @@ public final class ManageNotificationActivity extends BaseActivity<ManageNotific
 
   protected @BindString(R.string.general_error_something_wrong) String generalErrorString;
 
-  protected @Inject ApiClientType client;
-
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.manage_notifications_layout);
     ButterKnife.bind(this);
-    ((KSApplication) getApplication()).component().inject(this);
 
     final ManageNotificationsAdapter adapter = new ManageNotificationsAdapter();
     recyclerView.setAdapter(adapter);
@@ -46,7 +43,7 @@ public final class ManageNotificationActivity extends BaseActivity<ManageNotific
     viewModel.outputs.notifications()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(n -> adapter.takeNotifications(n, client));
+      .subscribe(n -> adapter.takeNotifications(n, component().environment()));
 
     viewModel.errors.unableToFetchNotificationsError()
       .compose(bindToLifecycle())

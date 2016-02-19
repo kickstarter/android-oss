@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels;
 
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.libs.Environment;
 
 import org.junit.Test;
 
@@ -10,8 +11,7 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testSignupViewModel_formValidation() {
-
-    final SignupViewModel p = new SignupViewModel();
+    final SignupViewModel p = new SignupViewModel(environment());
     final TestSubscriber<Boolean> test = new TestSubscriber<>();
     p.outputs.formIsValid().subscribe(test);
     

@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import com.kickstarter.KSApplication;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Project;
@@ -24,15 +25,13 @@ import com.kickstarter.viewmodels.outputs.ProfileViewModelOutputs;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public final class ProfileViewModel extends ViewModel<ProfileActivity> implements ProfileAdapter.Delegate, ProfileViewModelInputs, ProfileViewModelOutputs {
-  protected @Inject ApiClientType client;
-  protected @Inject CurrentUser currentUser;
+  private final ApiClientType client;
+  private final CurrentUser currentUser;
 
   // INPUTS
   private final PublishSubject<Void> nextPage = PublishSubject.create();
@@ -62,10 +61,16 @@ public final class ProfileViewModel extends ViewModel<ProfileActivity> implement
   public final ProfileViewModelInputs inputs = this;
   public final ProfileViewModelOutputs outputs = this;
 
+  public ProfileViewModel(final @NonNull Environment environment) {
+    super(environment);
+
+    client = environment.apiClient();
+    currentUser = environment.currentUser();
+  }
+
   @Override
   protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
-    ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     final Observable<User> freshUser = client.fetchCurrentUser()
       .retry(2)

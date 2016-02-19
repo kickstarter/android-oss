@@ -6,8 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.services.ApiClientType;
@@ -18,8 +18,6 @@ import com.kickstarter.ui.activities.TwoFactorActivity;
 import com.kickstarter.viewmodels.errors.TwoFactorViewModelErrors;
 import com.kickstarter.viewmodels.inputs.TwoFactorViewModelInputs;
 import com.kickstarter.viewmodels.outputs.TwoFactorViewModelOutputs;
-
-import javax.inject.Inject;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -80,8 +78,8 @@ public final class TwoFactorViewModel extends ViewModel<TwoFactorActivity> imple
       .map(__ -> null);
   }
 
-  protected @Inject CurrentUser currentUser;
-  protected @Inject ApiClientType client;
+  private final ApiClientType client;
+  private final CurrentUser currentUser;
 
   public final TwoFactorViewModelInputs inputs = this;
   public final TwoFactorViewModelOutputs outputs = this;
@@ -102,10 +100,16 @@ public final class TwoFactorViewModel extends ViewModel<TwoFactorActivity> imple
     resendClick.onNext(null);
   }
 
+  public TwoFactorViewModel(final @NonNull Environment environment) {
+    super(environment);
+
+    currentUser = environment.currentUser();
+    client = environment.apiClient();
+  }
+
   @Override
   protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
-    ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     final Observable<String> email = intent
       .map(i -> i.getStringExtra(IntentKey.EMAIL));

@@ -12,9 +12,9 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.kickstarter.KSApplication;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.services.ApiClientType;
@@ -29,8 +29,6 @@ import com.kickstarter.viewmodels.inputs.LoginToutViewModelInputs;
 import com.kickstarter.viewmodels.outputs.LoginToutViewModelOutputs;
 
 import java.util.List;
-
-import javax.inject.Inject;
 
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
@@ -116,17 +114,23 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
   private final PublishSubject<LoginReason> loginReason = PublishSubject.create();
   private final PublishSubject<ErrorEnvelope> loginError = PublishSubject.create();
 
-  protected @Inject CurrentUser currentUser;
-  protected @Inject ApiClientType client;
+  private final CurrentUser currentUser;
+  private final ApiClientType client;
 
   public final LoginToutViewModelInputs inputs = this;
   public final LoginToutViewModelOutputs outputs = this;
   public final LoginToutViewModelErrors errors = this;
 
+  public LoginToutViewModel(final @NonNull Environment environment) {
+    super(environment);
+
+    client = environment.apiClient();
+    currentUser = environment.currentUser();
+  }
+
   @Override
   protected void onCreate(@NonNull final Context context, @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
-    ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     registerFacebookCallback();
 

@@ -53,10 +53,7 @@ public class KSApplication extends MultiDexApplication {
 
     JodaTimeAndroid.init(this);
 
-    component = DaggerApplicationComponent.builder()
-      .applicationModule(new ApplicationModule(this))
-      .build();
-    component().inject(this);
+    createComponent();
 
     CookieHandler.setDefault(cookieManager);
 
@@ -73,9 +70,16 @@ public class KSApplication extends MultiDexApplication {
     return component;
   }
 
-  public static RefWatcher getRefWatcher(final @NonNull Context context) {
-    final KSApplication application = (KSApplication) context.getApplicationContext();
-    return application.refWatcher;
+  protected void component(final @NonNull ApplicationComponent component) {
+    this.component = component;
+  }
+
+  protected void createComponent() {
+    component = DaggerApplicationComponent.builder()
+      .applicationModule(new ApplicationModule(this))
+      .build();
+    component().inject(this);
+
   }
 
   /**

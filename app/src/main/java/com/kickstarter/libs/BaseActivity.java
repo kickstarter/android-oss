@@ -223,10 +223,16 @@ public class BaseActivity<ViewModelType extends ViewModel> extends AppCompatActi
     overridePendingTransition(enterAnim, exitAnim);
   }
 
+  /**
+   * Returns the {@link KSApplication} instance.
+   */
   protected @NonNull KSApplication application() {
     return (KSApplication) getApplication();
   }
 
+  /**
+   * Convenience method to return a Dagger component.
+   */
   protected @NonNull ApplicationComponent component() {
     return application().component();
   }

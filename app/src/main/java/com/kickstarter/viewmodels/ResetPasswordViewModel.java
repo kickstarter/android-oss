@@ -1,12 +1,8 @@
 package com.kickstarter.viewmodels;
 
-import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import com.kickstarter.KSApplication;
-import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.StringUtils;
@@ -17,8 +13,6 @@ import com.kickstarter.ui.activities.ResetPasswordActivity;
 import com.kickstarter.viewmodels.errors.ResetPasswordViewModelErrors;
 import com.kickstarter.viewmodels.inputs.ResetPasswordViewModelInputs;
 import com.kickstarter.viewmodels.outputs.ResetPasswordViewModelOutputs;
-
-import javax.inject.Inject;
 
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -52,8 +46,7 @@ public final class ResetPasswordViewModel extends ViewModel<ResetPasswordActivit
       .map(ErrorEnvelope::errorMessage);
   }
 
-  protected @Inject ApiClientType client;
-  protected @Inject CurrentUser currentUser;
+  private final ApiClientType client;
 
   public final ResetPasswordViewModelInputs inputs = this;
   public final ResetPasswordViewModelOutputs outputs = this;
@@ -69,10 +62,13 @@ public final class ResetPasswordViewModel extends ViewModel<ResetPasswordActivit
     resetPasswordClick.onNext(null);
   }
 
-  public ResetPasswordViewModel() {
+  public ResetPasswordViewModel(final @NonNull Environment environment) {
+    super(environment);
+
+    client = environment.apiClient();
 
     email
-        .map(StringUtils::isEmail)
+      .map(StringUtils::isEmail)
       .compose(bindToLifecycle())
       .subscribe(isFormValid);
 
@@ -81,12 +77,6 @@ public final class ResetPasswordViewModel extends ViewModel<ResetPasswordActivit
       .switchMap(this::submitEmail)
       .compose(bindToLifecycle())
       .subscribe(__ -> success());
-  }
-
-  @Override
-  public void onCreate(final @NonNull Context context, @Nullable Bundle savedInstanceState) {
-    super.onCreate(context, savedInstanceState);
-    ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     resetError
       .compose(bindToLifecycle())

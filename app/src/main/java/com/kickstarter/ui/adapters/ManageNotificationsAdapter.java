@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.Environment;
 import com.kickstarter.models.Notification;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.viewholders.KSViewHolder;
@@ -21,10 +22,10 @@ public final class ManageNotificationsAdapter extends KSAdapter {
     return R.layout.manage_notification_view;
   }
 
-  public void takeNotifications(final @NonNull List<Notification> projectNotifications, final @NonNull ApiClientType client) {
+  public void takeNotifications(final @NonNull List<Notification> projectNotifications, final @NonNull Environment environment) {
     sections().clear();
     for (final Notification notification : projectNotifications) {
-      sections().add(Collections.singletonList(new ProjectNotificationViewModel(notification, client)));
+      sections().add(Collections.singletonList(new ProjectNotificationViewModel(notification, environment)));
     }
     notifyDataSetChanged();
   }

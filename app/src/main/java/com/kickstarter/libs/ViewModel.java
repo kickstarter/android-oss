@@ -8,14 +8,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
-import com.trello.rxlifecycle.ActivityEvent;
-
 import com.kickstarter.ui.data.ActivityResult;
+import com.trello.rxlifecycle.ActivityEvent;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
@@ -24,11 +21,15 @@ import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 public class ViewModel<ViewType extends LifecycleType> {
-  @Inject protected Koala koala;
+  protected final Koala koala;
 
   protected final PublishSubject<ViewType> viewChange = PublishSubject.create();
   protected final Observable<ViewType> view = viewChange.filter(v -> v != null);
   private final List<Subscription> subscriptions = new ArrayList<>();
+
+  public ViewModel(final @NonNull Environment environment) {
+    koala = environment.koala();
+  }
 
   protected final PublishSubject<ActivityResult> activityResult = PublishSubject.create();
   /**

@@ -9,6 +9,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Pair;
 
+import com.kickstarter.ApplicationComponent;
+import com.kickstarter.KSApplication;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.BundleUtils;
 import com.kickstarter.ui.data.ActivityResult;
@@ -219,6 +221,20 @@ public class BaseActivity<ViewModelType extends ViewModel> extends AppCompatActi
     final @AnimRes int exitAnim) {
     startActivity(intent);
     overridePendingTransition(enterAnim, exitAnim);
+  }
+
+  /**
+   * Returns the {@link KSApplication} instance.
+   */
+  protected @NonNull KSApplication application() {
+    return (KSApplication) getApplication();
+  }
+
+  /**
+   * Convenience method to return a Dagger component.
+   */
+  protected @NonNull ApplicationComponent component() {
+    return application().component();
   }
 
   /**

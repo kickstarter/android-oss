@@ -12,13 +12,24 @@ public abstract class CurrentUserType {
 
   public abstract void login(final @NonNull User newUser, final @NonNull String accessToken);
   public abstract void logout();
-  public abstract String getAccessToken();
+  public abstract @Nullable String getAccessToken();
   public abstract void refresh(final @NonNull User freshUser);
-  public abstract Observable<User> observable();
 
+  /**
+   * Returns an observable representing the current user. It emits immediately
+   * with the current user, and then again each time the user is updated.
+   */
+  public abstract @NonNull Observable<User> observable();
+
+  /**
+   * Returns the most recently emitted user from the user observable.
+   */
   @Deprecated
   public abstract @Nullable User getUser();
 
+  /**
+   * Returns a boolean that determines if there is a currently logged in user or not.
+   */
   @Deprecated
   public boolean exists() {
     return getUser() != null;
@@ -36,14 +47,14 @@ public abstract class CurrentUserType {
   /**
    * Emits only values of a logged in user. The returned observable may never emit.
    */
-  public Observable<User> loggedInUser() {
+  public @NonNull Observable<User> loggedInUser() {
     return observable().filter(ObjectUtils::isNotNull);
   }
 
   /**
    * Emits only values of a logged out user. The returned observable may never emit.
    */
-  public Observable<User> loggedOutUser() {
+  public @NonNull Observable<User> loggedOutUser() {
     return observable().filter(ObjectUtils::isNull);
   }
 }

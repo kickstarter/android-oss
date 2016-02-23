@@ -34,18 +34,12 @@ public class CurrentUser extends CurrentUserType {
     user.onNext(gson.fromJson(userPreference.get(), User.class));
   }
 
-  /**
-   * @deprecated Prefer {@link #observable()} instead.
-   */
-  @Deprecated
+  @Override
   public @Nullable User getUser() {
     return user.getValue();
   }
 
-  /**
-   * @deprecated Prefer {@link #observable()} instead.
-   */
-  @Deprecated
+  @Override
   public boolean exists() {
     return getUser() != null;
   }
@@ -54,6 +48,7 @@ public class CurrentUser extends CurrentUserType {
     return accessTokenPreference.get();
   }
 
+  @Override
   public void login(final @NonNull User newUser, final @NonNull String accessToken) {
     Timber.d("Login user %s", newUser.name());
 
@@ -62,6 +57,7 @@ public class CurrentUser extends CurrentUserType {
     deviceRegistrar.registerDevice();
   }
 
+  @Override
   public void logout() {
     Timber.d("Logout current user");
 
@@ -71,14 +67,12 @@ public class CurrentUser extends CurrentUserType {
     deviceRegistrar.unregisterDevice();
   }
 
+  @Override
   public void refresh(final @NonNull User freshUser) {
     user.onNext(freshUser);
   }
 
-  /**
-   * Returns an observable representing the current user. It emits immediately
-   * with the current user, and then again each time the user is updated.
-   */
+  @Override
   public Observable<User> observable() {
     return user;
   }

@@ -30,20 +30,20 @@ public final class ProjectIntentMapper {
    */
   public static @NonNull Observable<Project> project(final @NonNull Intent intent, final @NonNull ApiClientType client) {
 
-    final Observable<Project> parceledProjectFromIntent = Observable.just(projectFromIntent(intent))
-      .filter(ObjectUtils::isNotNull);
-
-    final Observable<String> paramFromParceledProject = parceledProjectFromIntent.map(Project::param);
-
-    final Observable<String> paramFromIntent = Observable.just(paramFromIntent(intent))
-      .filter(ObjectUtils::isNotNull);
-
-    return paramFromParceledProject
-      .mergeWith(paramFromIntent)
+    final Project intentProject = projectFromIntent(intent);
+    final Observable<Project> projectFromParceledProject = intentProject == null ? Observable.empty() : Observable.just(intentProject)
       .flatMap(client::fetchProject)
-      .retry(3)
-      .compose(Transformers.neverError())
-      .startWith(parceledProjectFromIntent);
+      .startWith(intentProject)
+      .retry(3);
+
+    final Observable<Project> projectFromParceledParam = Observable.just(paramFromIntent(intent))
+      .filter(ObjectUtils::isNotNull)
+      .flatMap(client::fetchProject)
+      .retry(3);
+
+    return projectFromParceledProject
+      .mergeWith(projectFromParceledParam)
+      .compose(Transformers.neverError());
   }
 
   /**

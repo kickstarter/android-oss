@@ -67,16 +67,22 @@ public final class ProjectStateChangedPositiveViewHolder extends ActivityListVie
 
   @Override
   public void onBind() {
-    final Context context = view.getContext();
+    final Context context = context();
 
-    final Project project = activity.project();
-    if (project == null) { return; }
-    final User user = activity.user();
-    if (user == null) { return; }
+    final Project project = activity().project();
+    if (project == null) {
+      return;
+    }
+    final User user = activity().user();
+    if (user == null) {
+      return;
+    }
     final Photo photo = project.photo();
-    if (photo == null) { return; }
+    if (photo == null) {
+      return;
+    }
 
-    switch (activity.category()) {
+    switch (activity().category()) {
       case Activity.CATEGORY_LAUNCH:
         final DateTime launchedAt = coalesce(project.launchedAt(), new DateTime());
         cardView.setCardBackgroundColor(blueDarken10Color);
@@ -101,7 +107,7 @@ public final class ProjectStateChangedPositiveViewHolder extends ActivityListVie
           ksCurrency.format(project.goal(), project, true)
         ));
         rightStatFirstTextView.setText(fundedString);
-        rightStatSecondTextView.setText(DateTimeUtils.mediumDate(activity.createdAt()));
+        rightStatSecondTextView.setText(DateTimeUtils.mediumDate(activity().createdAt()));
         titleTextView.setText(ksString.format(
           projectSuccessfullyFundedString,
           "project_name",
@@ -126,6 +132,6 @@ public final class ProjectStateChangedPositiveViewHolder extends ActivityListVie
 
   @OnClick(R.id.card_view)
   public void onClick() {
-    delegate.projectStateChangedPositiveClicked(this, activity);
+    delegate.projectStateChangedPositiveClicked(this, activity());
   }
 }

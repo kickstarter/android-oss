@@ -3,6 +3,8 @@ package com.kickstarter.libs.utils;
 import android.support.annotation.Nullable;
 
 public final class IntegerUtils {
+  private IntegerUtils() {}
+
   /**
    * Returns `false` if `value` is `null` or `0`, and `true` otherwise.
    */

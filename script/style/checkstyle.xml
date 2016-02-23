@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+  "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
+  "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+<module name="Checker">
+  <module name="TreeWalker">
+    <!-- Annotations -->
+    <module name="AnnotationUseStyle" />
+    <module name="MissingDeprecated" />
+
+    <!-- Block checks -->
+    <module name="AvoidNestedBlocks" />
+    <module name="EmptyBlock" />
+    <module name="LeftCurly" />
+    <module name="NeedBraces" />
+    <module name="RightCurly" />
+
+    <!-- Class design -->
+    <module name="FinalClass" />
+    <module name="HideUtilityClassConstructor" />
+    <module name="InterfaceIsType" />
+    <module name="MutableException" />
+
+    <!-- Coding -->
+    <module name="CovariantEquals" />
+    <module name="DefaultComesLast" />
+    <module name="EmptyStatement" />
+    <module name="EqualsAvoidNull" />
+    <module name="EqualsHashCode" />
+    <module name="ExplicitInitialization" />
+    <module name="FallThrough" />
+    <module name="FinalLocalVariable" />
+    <module name="IllegalInstantiation" />
+    <module name="IllegalToken" />
+    <module name="IllegalTokenText" />
+    <module name="IllegalType" />
+    <module name="ModifiedControlVariable" />
+    <module name="MultipleVariableDeclarations" />
+    <module name="NoClone" />
+    <module name="NoFinalizer" />
+    <module name="OneStatementPerLine" />
+    <module name="ParameterAssignment" />
+    <module name="SimplifyBooleanExpression" />
+    <module name="SimplifyBooleanReturn" />
+    <module name="StringLiteralEquality" />
+    <module name="UnnecessaryParentheses" />
+    <module name="VariableDeclarationUsageDistance" />
+
+    <!-- Imports -->
+    <module name="AvoidStarImport" />
+    <module name="AvoidStaticImport">
+      <!-- Allow static imports for utils files that enhance Java or Android.
+        Avoid excluding files that contain Kickstarter business logic, unless they
+        improve the readability of tests. -->
+      <property name="excludes" value="com.kickstarter.libs.utils.ApplicationUtils.*" />
+      <property name="excludes" value="com.kickstarter.libs.utils.BooleanUtils.*" />
+      <property name="excludes" value="com.kickstarter.libs.utils.BundleUtils.*" />
+      <property name="excludes" value="com.kickstarter.libs.utils.DateTimeUtils.*" />
+      <property name="excludes" value="com.kickstarter.libs.utils.ExceptionUtils.*" />
+      <property name="excludes" value="com.kickstarter.libs.utils.IntegerUtils.*" />
+      <property name="excludes" value="com.kickstarter.libs.utils.ObjectUtils.*" />
+      <property name="excludes" value="com.kickstarter.libs.utils.StringUtils.*" />
+      <property name="excludes" value="com.kickstarter.libs.utils.TransitionUtils.*" />
+      <property name="excludes" value="com.kickstarter.libs.utils.ViewUtils.*" />
+      <property name="excludes" value="com.kickstarter.TestUtils.*" />
+      <property name="excludes" value="org.mockito.Mockito.*" />
+    </module>
+    <module name="IllegalImport" />
+    <module name="RedundantImport" />
+    <module name="UnusedImports" />
+
+    <!-- Miscellaneous -->
+    <module name="ArrayTypeStyle" />
+    <module name="CommentsIndentation" />
+    <module name="FinalParameters" />
+    <module name="Indentation">
+      <property name="basicOffset" value="2" />
+      <property name="arrayInitIndent" value="2" />
+      <property name="caseIndent" value="2" />
+      <property name="throwsIndent" value="2" />
+      <property name="lineWrappingIndentation" value="2" />
+    </module>
+
+    <!-- Modifiers -->
+    <!-- TODO: Maybe add ModiferOrder? -->
+    <!-- <module name="ModifierOrder" /> -->
+    <module name="RedundantModifier" />
+
+    <!-- Whitespace -->
+    <module name="EmptyForInitializerPad" />
+    <module name="GenericWhitespace" />
+    <module name="MethodParamPad" />
+    <module name="NoLineWrap" />
+    <module name="NoWhitespaceAfter" />
+    <module name="NoWhitespaceBefore" />
+    <module name="ParenPad" />
+    <module name="SeparatorWrap">
+      <property name="option" value="nl" />
+      <property name="tokens" value="DOT" />
+    </module>
+    <module name="TypecastParenPad" />
+    <module name="WhitespaceAfter" />
+  </module>
+
+  <module name="FileLength">
+    <property name="max" value="800" />
+  </module>
+
+  <module name="FileTabCharacter" />
+
+  <module name="NewlineAtEndOfFile" />
+</module>

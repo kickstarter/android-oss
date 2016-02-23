@@ -7,6 +7,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class KSUri {
+  private KSUri() {}
+
   public static boolean isApiUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && API_PATTERN.matcher(uri.getHost()).matches();
   }
@@ -36,7 +38,7 @@ public final class KSUri {
     return isKickstarterUri(uri, webEndpoint) && HIVEQUEEN_PATTERN.matcher(uri.getHost()).matches();
   }
 
- public static boolean isKickstarterUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
+  public static boolean isKickstarterUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return uri.getHost().equals(Uri.parse(webEndpoint).getHost());
   }
 

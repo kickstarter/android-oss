@@ -37,7 +37,7 @@ public class ActivitySampleFriendBackingViewHolder extends KSViewHolder {
   protected @Bind(R.id.see_activity_button) Button seeActivityButton;
   protected @BindString(R.string.activity_friend_backed_project_name_by_creator_name) String categoryBackingString;
 
-  protected Activity activity;
+  private Activity activity;
 
   private final Delegate delegate;
   public interface Delegate {
@@ -59,7 +59,7 @@ public class ActivitySampleFriendBackingViewHolder extends KSViewHolder {
   }
 
   public void onBind() {
-    final Context context = view.getContext();
+    final Context context = context();
 
     final User user = activity.user();
     final Project project = activity.project();

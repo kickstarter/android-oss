@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
@@ -26,7 +25,7 @@ public final class ManageNotificationsViewModel extends ViewModel<ManageNotifica
 
   // OUTPUTS
   private Observable<List<Notification>> notifications;
-  public final Observable<List<Notification>> notifications() {
+  public Observable<List<Notification>> notifications() {
     return notifications;
   }
 

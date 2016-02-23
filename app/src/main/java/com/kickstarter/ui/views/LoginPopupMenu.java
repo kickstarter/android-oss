@@ -15,7 +15,7 @@ public class LoginPopupMenu extends PopupMenu {
   public LoginPopupMenu(final @NonNull Context context, final @NonNull View anchor) {
     super(context, anchor);
     getMenuInflater().inflate(R.menu.login_help_menu, getMenu());
-    BaseActivity activity = (BaseActivity) context;
+    final BaseActivity activity = (BaseActivity) context;
 
     setOnMenuItemClickListener(item -> {
       final Intent intent;

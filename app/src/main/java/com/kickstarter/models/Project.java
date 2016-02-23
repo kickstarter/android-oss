@@ -346,7 +346,7 @@ public abstract class Project implements Parcelable {
   @Override
   public final boolean equals(final @Nullable Object o) {
     if (o != null && o instanceof Project) {
-      final Project p = (Project)o;
+      final Project p = (Project) o;
       return id() == p.id();
     }
     return false;
@@ -354,6 +354,6 @@ public abstract class Project implements Parcelable {
 
   @Override
   public final int hashCode() {
-    return (int)id();
+    return (int) id();
   }
 }

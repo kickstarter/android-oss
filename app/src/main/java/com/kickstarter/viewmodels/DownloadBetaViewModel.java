@@ -32,11 +32,11 @@ public final class DownloadBetaViewModel extends ViewModel<DownloadBetaActivity>
   }
 
   @Override
-  protected void onCreate(@NonNull Context context, @Nullable Bundle savedInstanceState) {
+  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
 
     addSubscription(
-      intent
+      intent()
         .map(i -> i.getParcelableExtra(IntentKey.INTERNAL_BUILD_ENVELOPE))
         .ofType(InternalBuildEnvelope.class)
         .subscribe(internalBuildEnvelope)

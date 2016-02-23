@@ -30,7 +30,7 @@ import butterknife.ButterKnife;
 import okhttp3.Request;
 import rx.android.schedulers.AndroidSchedulers;
 
-import static com.kickstarter.libs.utils.TransitionUtils.*;
+import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresViewModel(CheckoutViewModel.class)
 public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> implements KSWebViewClient.Delegate {

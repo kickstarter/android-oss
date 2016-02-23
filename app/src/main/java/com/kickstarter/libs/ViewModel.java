@@ -21,17 +21,21 @@ import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 public class ViewModel<ViewType extends LifecycleType> {
-  protected final Koala koala;
 
-  protected final PublishSubject<ViewType> viewChange = PublishSubject.create();
-  protected final Observable<ViewType> view = viewChange.filter(v -> v != null);
+  private final PublishSubject<ViewType> viewChange = PublishSubject.create();
+  private final Observable<ViewType> view = viewChange.filter(v -> v != null);
   private final List<Subscription> subscriptions = new ArrayList<>();
+
+  private final PublishSubject<ActivityResult> activityResult = PublishSubject.create();
+
+  // TODO: Justify BehaviorSubject vs PublishSubject
+  private final BehaviorSubject<Intent> intent = BehaviorSubject.create();
+  protected final Koala koala;
 
   public ViewModel(final @NonNull Environment environment) {
     koala = environment.koala();
   }
 
-  protected final PublishSubject<ActivityResult> activityResult = PublishSubject.create();
   /**
    * Takes activity result data from the activity.
    */
@@ -39,8 +43,6 @@ public class ViewModel<ViewType extends LifecycleType> {
     this.activityResult.onNext(activityResult);
   }
 
-  // TODO: Justify BehaviorSubject vs PublishSubject
-  protected final BehaviorSubject<Intent> intent = BehaviorSubject.create();
   /*
    * Takes intent data from the view.
    */
@@ -85,10 +87,33 @@ public class ViewModel<ViewType extends LifecycleType> {
     viewChange.onNext(null);
   }
 
-  protected final Observable<ViewType> view() {
+  protected @NonNull Observable<ActivityResult> activityResult() {
+    return activityResult;
+  }
+
+  protected @NonNull Observable<Intent> intent() {
+    return intent;
+  }
+
+  /**
+   * @deprecated Avoid accessing views directly from the viewmodel, use inputs, outputs and errors to communicate instead.
+   */
+  @Deprecated
+  protected @NonNull Observable<ViewType> view() {
     return view;
   }
 
+  /**
+   * @deprecated Avoid accessing views directly from the viewmodel, use inputs, outputs and errors to communicate instead.
+   */
+  @Deprecated
+  protected @NonNull PublishSubject<ViewType> viewChange() {
+    return viewChange;
+  }
+
+  /**
+   * @deprecated Prefer composing with {@link #bindToLifecycle()}.
+   */
   @Deprecated
   public final void addSubscription(final @NonNull Subscription subscription) {
     subscriptions.add(subscription);

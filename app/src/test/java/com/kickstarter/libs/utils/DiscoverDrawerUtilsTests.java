@@ -24,9 +24,6 @@ public class DiscoverDrawerUtilsTests extends KSRobolectricTestCase {
     CategoryFactory.worldMusicCategory()
   );
 
-  //NavigationDrawerData deriveNavigationDrawerData(final @NonNull List<Category> categories,
-    //final @NonNull DiscoveryParams selected, final @Nullable Category expandedCategory, final @Nullable User user) {
-
   @Test
   public void testDeriveNavigationDrawerData_LoggedOut_DefaultSelected() {
 

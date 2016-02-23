@@ -7,7 +7,6 @@ import android.view.View;
 import com.kickstarter.R;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.models.Notification;
-import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.ProjectNotificationViewHolder;
 import com.kickstarter.viewmodels.ProjectNotificationViewModel;

@@ -18,7 +18,7 @@ public final class ListUtilsTest extends TestCase {
 
   public void testContains() {
     final List<Integer> xs = Arrays.asList(1, 2, 3, 4, 5);
-    final Func2<Integer, Integer, Boolean> equality = (x, y) -> (x % 2 == 0 && y % 2 == 0);
+    final Func2<Integer, Integer, Boolean> equality = (x, y) -> x % 2 == 0 && y % 2 == 0;
 
     assertTrue(ListUtils.contains(xs, 8, equality));
     assertFalse(ListUtils.contains(xs, 1, equality));
@@ -35,7 +35,7 @@ public final class ListUtilsTest extends TestCase {
 
   public void testIndexOf() {
     final List<Integer> xs = Arrays.asList(1, 2, 3, 4, 5);
-    final Func2<Integer, Integer, Boolean> equality = (x, y) -> (x % 2 == 0 && y % 2 == 0);
+    final Func2<Integer, Integer, Boolean> equality = (x, y) -> x % 2 == 0 && y % 2 == 0;
 
     assertEquals(1, ListUtils.indexOf(xs, 2, equality));
     assertEquals(1, ListUtils.indexOf(xs, 4, equality));
@@ -52,7 +52,7 @@ public final class ListUtilsTest extends TestCase {
 
   public void testFind() {
     final List<Integer> xs = Arrays.asList(1, 2, 3, 4, 5);
-    final Func2<Integer, Integer, Boolean> equality = (x, y) -> (x % 2 == 0 && y % 2 == 0);
+    final Func2<Integer, Integer, Boolean> equality = (x, y) -> x % 2 == 0 && y % 2 == 0;
 
     assertEquals(Integer.valueOf(2), ListUtils.find(xs, 2, equality));
     assertEquals(Integer.valueOf(2), ListUtils.find(xs, 4, equality));

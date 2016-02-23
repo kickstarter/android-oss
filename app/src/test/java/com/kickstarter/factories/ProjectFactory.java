@@ -8,6 +8,8 @@ import com.kickstarter.models.User;
 import org.joda.time.DateTime;
 
 public final class ProjectFactory {
+  private ProjectFactory() {}
+
   public static @NonNull Project project() {
     final User creator = UserFactory.creator();
     final String slug = "slug-1";

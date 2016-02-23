@@ -43,7 +43,7 @@ public final class TopFilterViewHolder extends KSViewHolder {
 
   @Override
   public void onBind() {
-    final Context context = view.getContext();
+    final Context context = context();
 
     filterTextView.setText(item.params().filterString(context));
     filterTextView.setTextAppearance(context, item.selected() ? R.style.SubheadPrimaryMedium : R.style.SubheadPrimary);

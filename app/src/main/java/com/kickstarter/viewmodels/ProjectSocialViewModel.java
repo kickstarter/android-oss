@@ -30,11 +30,11 @@ public final class ProjectSocialViewModel extends ViewModel<ProjectSocialActivit
   }
 
   @Override
-  protected void onCreate(@NonNull Context context, @Nullable Bundle savedInstanceState) {
+  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
 
     addSubscription(
-      intent
+      intent()
         .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
         .ofType(Project.class)
         .subscribe(project::onNext)

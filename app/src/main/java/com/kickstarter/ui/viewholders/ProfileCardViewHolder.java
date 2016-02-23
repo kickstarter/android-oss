@@ -21,9 +21,9 @@ import butterknife.BindDrawable;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 
-public class ProfileCardViewHolder extends KSViewHolder {
+public final class ProfileCardViewHolder extends KSViewHolder {
   private final Delegate delegate;
-  protected Project project;
+  private Project project;
 
   protected @Bind(R.id.funding_unsuccessful_text_view) TextView fundingUnsuccessfulTextView;
   protected @Bind(R.id.percentage_funded) ProgressBar percentageFundedProgressBar;
@@ -60,7 +60,7 @@ public class ProfileCardViewHolder extends KSViewHolder {
 
     if (photo != null) {
       profileCardImageView.setVisibility(View.VISIBLE);
-      Picasso.with(view.getContext()).load(photo.med())
+      Picasso.with(context()).load(photo.med())
         .placeholder(grayGradientDrawable)
         .into(profileCardImageView);
     } else {

@@ -53,7 +53,6 @@ import static com.kickstarter.libs.utils.DateTimeUtils.mediumDate;
 import static com.kickstarter.libs.utils.DateTimeUtils.mediumDateShortTime;
 import static com.kickstarter.libs.utils.ObjectUtils.coalesce;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
-import static com.kickstarter.libs.utils.ProjectUtils.photoHeightFromWidthRatio;
 import static com.kickstarter.libs.utils.ViewUtils.getScreenDensity;
 import static com.kickstarter.libs.utils.ViewUtils.getScreenHeightDp;
 import static com.kickstarter.libs.utils.ViewUtils.getScreenWidthDp;
@@ -125,8 +124,8 @@ public final class ProjectViewHolder extends KSViewHolder {
   protected @BindString(R.string.discovery_baseball_card_stats_pledged_of_goal_short) String ofGoalString;
   protected @BindString(R.string.discovery_baseball_card_stats_backers) String backersString;
 
-  @Inject KSCurrency ksCurrency;
-  @Inject KSString ksString;
+  protected @Inject KSCurrency ksCurrency;
+  protected @Inject KSString ksString;
 
   public interface Delegate {
     void projectViewHolderBackProjectClicked(ProjectViewHolder viewHolder);
@@ -160,7 +159,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     final Photo photo = project.photo();
     if (photo != null) {
       final int targetImageWidth = (int) (getScreenWidthDp(context) * getScreenDensity(context));
-      photoImageView.setMaxHeight(photoHeightFromWidthRatio(targetImageWidth));
+      photoImageView.setMaxHeight(ProjectUtils.photoHeightFromWidthRatio(targetImageWidth));
 
       Picasso.with(context)
         .load(photo.full())
@@ -201,7 +200,7 @@ public final class ProjectViewHolder extends KSViewHolder {
     deadlineCountdownUnitTextView.setText(ProjectUtils.deadlineCountdownDetail(project, context, ksString));
     backersCountTextView.setText(NumberUtils.format(project.backersCount()));
 
-     /* Creator */
+    /* Creator */
     Picasso.with(context).load(project.creator().avatar()
       .medium())
       .transform(new CircleTransformation())

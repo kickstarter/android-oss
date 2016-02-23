@@ -55,16 +55,24 @@ public final class ProjectUpdateViewHolder extends ActivityListViewHolder {
 
   @Override
   public void onBind() {
-    final Context context = view.getContext();
+    final Context context = context();
 
-    final Project project = activity.project();
-    if (project == null) { return; }
-    final User user = activity.user();
-    if (user == null) { return; }
+    final Project project = activity().project();
+    if (project == null) {
+      return;
+    }
+    final User user = activity().user();
+    if (user == null) {
+      return;
+    }
     final Photo photo = project.photo();
-    if (photo == null) { return; }
-    final Update update = activity.update();
-    if (update == null) { return; }
+    if (photo == null) {
+      return;
+    }
+    final Update update = activity().update();
+    if (update == null) {
+      return;
+    }
     final DateTime publishedAt = ObjectUtils.coalesce(update.publishedAt(), new DateTime());
 
     projectNameTextView.setText(project.name());
@@ -88,11 +96,11 @@ public final class ProjectUpdateViewHolder extends ActivityListViewHolder {
 
   @OnClick(R.id.project_info)
   public void projectOnClick() {
-    delegate.projectUpdateProjectClicked(this, activity);
+    delegate.projectUpdateProjectClicked(this, activity());
   }
 
   @OnClick(R.id.update_info)
   public void updateOnClick() {
-    delegate.projectUpdateClicked(this, activity);
+    delegate.projectUpdateClicked(this, activity());
   }
 }

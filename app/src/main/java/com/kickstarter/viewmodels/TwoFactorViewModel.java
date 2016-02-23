@@ -53,15 +53,15 @@ public final class TwoFactorViewModel extends ViewModel<TwoFactorActivity> imple
 
   // OUTPUTS
   private final PublishSubject<Boolean> formSubmitting = PublishSubject.create();
-  public final Observable<Boolean> formSubmitting() {
+  public Observable<Boolean> formSubmitting() {
     return formSubmitting.asObservable();
   }
   private final PublishSubject<Boolean> formIsValid = PublishSubject.create();
-  public final Observable<Boolean> formIsValid() {
+  public Observable<Boolean> formIsValid() {
     return formIsValid.asObservable();
   }
   private final PublishSubject<Void> tfaSuccess = PublishSubject.create();
-  public final Observable<Void> tfaSuccess() {
+  public Observable<Void> tfaSuccess() {
     return tfaSuccess.asObservable();
   }
 
@@ -111,13 +111,13 @@ public final class TwoFactorViewModel extends ViewModel<TwoFactorActivity> imple
   protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
 
-    final Observable<String> email = intent
+    final Observable<String> email = intent()
       .map(i -> i.getStringExtra(IntentKey.EMAIL));
-    final Observable<String> fbAccessToken = intent
+    final Observable<String> fbAccessToken = intent()
       .map(i -> i.getStringExtra(IntentKey.FACEBOOK_TOKEN));
-    final Observable<Boolean> isFacebookLogin = intent
+    final Observable<Boolean> isFacebookLogin = intent()
       .map(i -> i.getBooleanExtra(IntentKey.FACEBOOK_LOGIN, false));
-    final Observable<String> password= intent
+    final Observable<String> password= intent()
       .map(i -> i.getStringExtra(IntentKey.PASSWORD));
 
     final Observable<TfaData> tfaData = Observable.combineLatest(email, fbAccessToken, isFacebookLogin, password, code,

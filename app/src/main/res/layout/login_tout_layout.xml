@@ -25,7 +25,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 
-      <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+      <ImageView
         android:id="@+id/logo"
         android:layout_marginTop="@dimen/grid_8"
         android:layout_marginBottom="@dimen/grid_6"

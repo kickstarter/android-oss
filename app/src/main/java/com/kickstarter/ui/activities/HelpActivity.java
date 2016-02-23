@@ -37,40 +37,44 @@ public class HelpActivity extends BaseActivity<HelpViewModel> implements KSWebVi
   @Retention(RetentionPolicy.SOURCE)
   public @interface HelpType {}
 
-  @HelpType int helpType;
+  private @HelpType int helpType;
 
   protected @Bind(R.id.kickstarter_web_view) KSWebView kickstarterWebView;
   protected @Bind(R.id.checkout_loading_indicator) View loadingIndicatorView;
 
   @Inject @WebEndpoint String webEndpoint;
 
+  protected void helpType(final @HelpType int helpType) {
+    this.helpType = helpType;
+  }
+
   public static class Terms extends HelpActivity {
     public Terms() {
-      this.helpType = HELP_TYPE_TERMS;
+      helpType(HELP_TYPE_TERMS);
     }
   }
 
   public static class Privacy extends HelpActivity {
     public Privacy() {
-      this.helpType = HELP_TYPE_PRIVACY;
+      helpType(HELP_TYPE_PRIVACY);
     }
   }
 
   public static class HowItWorks extends HelpActivity {
     public HowItWorks() {
-      this.helpType = HELP_TYPE_HOW_IT_WORKS;
+      helpType(HELP_TYPE_HOW_IT_WORKS);
     }
   }
 
   public static class CookiePolicy extends HelpActivity {
     public CookiePolicy() {
-      this.helpType = HELP_TYPE_COOKIE_POLICY;
+      helpType(HELP_TYPE_COOKIE_POLICY);
     }
   }
 
   public static class Faq extends HelpActivity {
     public Faq() {
-      this.helpType = HELP_TYPE_FAQ;
+      helpType(HELP_TYPE_FAQ);
     }
   }
 

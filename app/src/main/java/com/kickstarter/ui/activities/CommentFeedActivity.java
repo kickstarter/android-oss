@@ -43,7 +43,7 @@ import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
-import static com.kickstarter.libs.utils.TransitionUtils.*;
+import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresViewModel(CommentFeedViewModel.class)
 public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel> implements CommentFeedAdapter.Delegate {
@@ -109,7 +109,7 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
   }
 
   @Nullable
-  @OnClick({R.id.project_context_view})
+  @OnClick(R.id.project_context_view)
   public void projectContextViewClick() {
     back();
   }

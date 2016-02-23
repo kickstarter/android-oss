@@ -3,6 +3,7 @@ package com.kickstarter.libs.utils;
 import android.support.annotation.Nullable;
 
 public final class BooleanUtils {
+  private BooleanUtils() {}
 
   /**
    * Returns `false` if the boolean is `null` or `false`, and `true` otherwise.

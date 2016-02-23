@@ -115,15 +115,13 @@ public final class RewardViewHolder extends KSViewHolder {
 
   public void toggleClickableReward() {
     if (project.isBacking()) {
-      view.setClickable(false);
-    }
-    else if (!project.isLive()) {
-      view.setClickable(false);
-    }
-    else if (reward.isAllGone()) {
-      view.setClickable(false);
+      view().setClickable(false);
+    } else if (!project.isLive()) {
+      view().setClickable(false);
+    } else if (reward.isAllGone()) {
+      view().setClickable(false);
     } else {
-      view.setClickable(true);
+      view().setClickable(true);
     }
   }
 

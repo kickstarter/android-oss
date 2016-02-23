@@ -97,7 +97,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
     final String email = "chrstphrwrght+21qbymyz894ttajaomwh@***REMOVED***";
 
     final List<String> debugInfo = Arrays.asList(
-      (user != null ? user.name() : "Logged Out"),
+      user != null ? user.name() : "Logged Out",
       release.variant(),
       release.versionName(),
       release.versionCode().toString(),
@@ -137,7 +137,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
           if (selected == ApiEndpoint.CUSTOM) {
             showCustomEndpointDialog(currentApiEndpoint.ordinal(), "https://");
           } else {
-            setEndpointAndRelaunch(selected.url);
+            setEndpointAndRelaunch(selected.url());
           }
         }
       }

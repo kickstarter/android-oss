@@ -51,7 +51,7 @@ public class FacebookConfirmationViewModel extends ViewModel<FacebookConfirmatio
   public @NonNull Observable<Void> signupSuccess() {
     return signupSuccess;
   }
-  final BehaviorSubject<Boolean> sendNewslettersIsChecked = BehaviorSubject.create();
+  private final BehaviorSubject<Boolean> sendNewslettersIsChecked = BehaviorSubject.create();
   public @NonNull Observable<Boolean> sendNewslettersIsChecked() {
     return sendNewslettersIsChecked;
   }
@@ -75,14 +75,14 @@ public class FacebookConfirmationViewModel extends ViewModel<FacebookConfirmatio
     this.currentConfig = environment.currentConfig();
     this.currentUser = environment.currentUser();
 
-    final Observable<String> facebookAccessToken = intent
+    final Observable<String> facebookAccessToken = intent()
       .map(i -> i.getStringExtra(IntentKey.FACEBOOK_TOKEN))
       .ofType(String.class);
 
     final Observable<Pair<String, Boolean>> tokenAndNewsletter = facebookAccessToken
       .compose(Transformers.combineLatestPair(sendNewslettersIsChecked));
 
-    intent
+    intent()
       .map(i -> i.getParcelableExtra(IntentKey.FACEBOOK_USER))
       .ofType(ErrorEnvelope.FacebookUser.class)
       .map(ErrorEnvelope.FacebookUser::email)
@@ -101,7 +101,7 @@ public class FacebookConfirmationViewModel extends ViewModel<FacebookConfirmatio
   }
 
   @Override
-  protected void onCreate(final @NonNull Context context, @Nullable Bundle savedInstanceState) {
+  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
 
     currentConfig.observable()

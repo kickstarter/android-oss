@@ -1,12 +1,8 @@
 package com.kickstarter.viewmodels.inputs;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import com.kickstarter.libs.RefTag;
-import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
-import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 
 public interface ProjectViewModelInputs {
   void backProjectClicked();

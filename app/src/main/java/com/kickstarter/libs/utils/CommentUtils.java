@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.User;
 
-public class CommentUtils {
+public final class CommentUtils {
   private CommentUtils() {
     throw new AssertionError();
   }

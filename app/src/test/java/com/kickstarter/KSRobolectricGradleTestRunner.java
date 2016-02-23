@@ -16,12 +16,12 @@ public class KSRobolectricGradleTestRunner extends RobolectricTestRunner {
   public static final int DEFAULT_SDK = 21;
   private static final String BUILD_OUTPUT = "build/intermediates";
 
-  public KSRobolectricGradleTestRunner(Class<?> testClass) throws InitializationError {
+  public KSRobolectricGradleTestRunner(final Class<?> testClass) throws InitializationError {
     super(testClass);
   }
 
   @Override
-  protected AndroidManifest getAppManifest(Config config) {
+  protected AndroidManifest getAppManifest(final Config config) {
     if (config.constants() == Void.class) {
       Logger.error("Field 'constants' not specified in @Config annotation");
       Logger.error("This is required when using RobolectricGradleTestRunner!");
@@ -70,7 +70,7 @@ public class KSRobolectricGradleTestRunner extends RobolectricTestRunner {
     };
   }
 
-  private static String getType(Config config) {
+  private static String getType(final Config config) {
     try {
       return ReflectionHelpers.getStaticField(config.constants(), "BUILD_TYPE");
     } catch (Throwable e) {
@@ -78,7 +78,7 @@ public class KSRobolectricGradleTestRunner extends RobolectricTestRunner {
     }
   }
 
-  private static String getFlavor(Config config) {
+  private static String getFlavor(final Config config) {
     try {
       return ReflectionHelpers.getStaticField(config.constants(), "FLAVOR");
     } catch (Throwable e) {
@@ -86,7 +86,7 @@ public class KSRobolectricGradleTestRunner extends RobolectricTestRunner {
     }
   }
 
-  private static String getPackageName(Config config) {
+  private static String getPackageName(final Config config) {
     try {
       final String packageName = config.packageName();
       if (packageName != null && !packageName.isEmpty()) {

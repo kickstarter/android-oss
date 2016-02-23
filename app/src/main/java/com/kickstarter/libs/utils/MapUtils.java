@@ -13,7 +13,7 @@ public final class MapUtils {
    */
   @NonNull public static <T> Map<String, T> prefixKeys(final @NonNull Map<String, T> source, final @NonNull String prefix) {
     // Early out on a case that can come up often.
-    if (prefix.equals("")) {
+    if ("".equals(prefix)) {
       return source;
     }
 

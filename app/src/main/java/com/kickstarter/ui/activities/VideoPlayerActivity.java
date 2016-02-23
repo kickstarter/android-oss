@@ -49,12 +49,12 @@ public final class VideoPlayerActivity extends BaseActivity<VideoPlayerViewModel
     mediaController = new MediaController(this);
     mediaController.setAnchorView(rootView);
 
-    rootView.setOnTouchListener(((view, motionEvent) -> {
+    rootView.setOnTouchListener((view, motionEvent) -> {
       if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
         toggleControlsVisibility();
       }
       return true;
-    }));
+    });
   }
 
   @Override

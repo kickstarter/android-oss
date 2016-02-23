@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-public class InputUtils {
+public final class InputUtils {
   private InputUtils() {}
 
   public static void hideKeyboard(final @NonNull Context context, final @Nullable View view) {

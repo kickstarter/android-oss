@@ -20,7 +20,7 @@ public class ViewModels {
   private static final String VIEW_MODEL_STATE_KEY = "view_model_state";
 
   private static final ViewModels instance = new ViewModels();
-  private HashMap<String, ViewModel> viewModels = new HashMap<>();
+  private Map<String, ViewModel> viewModels = new HashMap<>();
 
   public static ViewModels getInstance() {
     return instance;
@@ -42,7 +42,7 @@ public class ViewModels {
   public void destroy(final @NonNull ViewModel viewModel) {
     viewModel.onDestroy();
 
-    Iterator<Map.Entry<String, ViewModel>> iterator = viewModels.entrySet().iterator();
+    final Iterator<Map.Entry<String, ViewModel>> iterator = viewModels.entrySet().iterator();
     while (iterator.hasNext()) {
       final Map.Entry<String, ViewModel> entry = iterator.next();
       if (viewModel.equals(entry.getValue())) {
@@ -64,13 +64,12 @@ public class ViewModels {
 
     final KSApplication application = (KSApplication) context.getApplicationContext();
     final Environment environment = application.component().environment();
-    ViewModel viewModel;
+    final ViewModel viewModel;
 
     try {
       final Constructor constructor = viewModelClass.getConstructor(Environment.class);
       viewModel = (ViewModel) constructor.newInstance(environment);
-    }
-    catch (IllegalAccessException | InvocationTargetException | InstantiationException | NoSuchMethodException exception) {
+    } catch (IllegalAccessException | InvocationTargetException | InstantiationException | NoSuchMethodException exception) {
       throw new RuntimeException(exception);
     }
 

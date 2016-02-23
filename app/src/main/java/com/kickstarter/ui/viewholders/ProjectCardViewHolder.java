@@ -38,7 +38,6 @@ import butterknife.BindString;
 import butterknife.ButterKnife;
 
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
-import static com.kickstarter.libs.utils.ProjectUtils.photoHeightFromWidthRatio;
 import static com.kickstarter.libs.utils.ViewUtils.getScreenDensity;
 import static com.kickstarter.libs.utils.ViewUtils.getScreenWidthDp;
 
@@ -79,12 +78,12 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @BindString(R.string.discovery_baseball_card_metadata_featured_project) String featuredInString;
   protected @BindString(R.string.discovery_baseball_card_stats_pledged_of_goal) String pledgedOfGoalString;
 
-  protected Project project;
+  private Project project;
   private Context context;
   private final Delegate delegate;
-  protected DiscoveryViewModel viewModel;
+  private DiscoveryViewModel viewModel;
 
-  @Inject KSString ksString;
+  protected @Inject KSString ksString;
 
   public interface Delegate {
     void projectCardViewHolderClick(ProjectCardViewHolder viewHolder, Project project);
@@ -126,7 +125,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       photoImageView.setVisibility(View.VISIBLE);
 
       final int targetImageWidth = (int) (getScreenWidthDp(context) * getScreenDensity(context) - grid4Dimen);
-      photoImageView.setMaxHeight(photoHeightFromWidthRatio(targetImageWidth));
+      photoImageView.setMaxHeight(ProjectUtils.photoHeightFromWidthRatio(targetImageWidth));
 
       Picasso.with(context)
         .load(photo.full())
@@ -228,9 +227,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       starredViewGroup.setVisibility(View.GONE);
       potdViewGroup.setVisibility(View.GONE);
       featuredViewGroup.setVisibility(View.GONE);
-    }
-
-    else if (project.isStarred()) {
+    } else if (project.isStarred()) {
       projectMetadataViewGroup.setVisibility(View.VISIBLE);
       starredViewGroup.setVisibility(View.VISIBLE);
       adjustCardViewTopMargin(grid1Dimen);
@@ -238,9 +235,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       backingViewGroup.setVisibility(View.GONE);
       potdViewGroup.setVisibility(View.GONE);
       featuredViewGroup.setVisibility(View.GONE);
-    }
-
-    else if (project.isPotdToday()) {
+    } else if (project.isPotdToday()) {
       projectMetadataViewGroup.setVisibility(View.VISIBLE);
       potdViewGroup.setVisibility(View.VISIBLE);
       adjustCardViewTopMargin(grid1Dimen);
@@ -248,9 +243,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       backingViewGroup.setVisibility(View.GONE);
       starredViewGroup.setVisibility(View.GONE);
       featuredViewGroup.setVisibility(View.GONE);
-    }
-
-    else if (project.isFeaturedToday()) {
+    } else if (project.isFeaturedToday()) {
       final Category category = project.category();
       if (category != null) {
         final Category rootCategory = category.root();
@@ -266,9 +259,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
           potdViewGroup.setVisibility(View.GONE);
         }
       }
-    }
-
-    else {
+    } else {
       projectMetadataViewGroup.setVisibility(View.GONE);
       adjustCardViewTopMargin(0);
     }

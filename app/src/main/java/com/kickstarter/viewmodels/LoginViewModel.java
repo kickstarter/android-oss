@@ -45,18 +45,18 @@ public final class LoginViewModel extends ViewModel<LoginActivity> implements Lo
 
   // ERRORS
   private final PublishSubject<ErrorEnvelope> loginError = PublishSubject.create();
-  public final Observable<String> invalidLoginError() {
+  public Observable<String> invalidLoginError() {
     return loginError
       .filter(ErrorEnvelope::isInvalidLoginError)
       .map(ErrorEnvelope::errorMessage);
   }
-  public final Observable<Void> tfaChallenge() {
+  public Observable<Void> tfaChallenge() {
     return loginError
       .filter(ErrorEnvelope::isTfaRequiredError)
       .map(__ -> null);
   }
 
-  public final Observable<String> genericLoginError() {
+  public Observable<String> genericLoginError() {
     return loginError
       .filter(ErrorEnvelope::isGenericLoginError)
       .map(ErrorEnvelope::errorMessage);
@@ -92,7 +92,7 @@ public final class LoginViewModel extends ViewModel<LoginActivity> implements Lo
   }
 
   @Override
-  protected void onCreate(final @NonNull Context context, @Nullable Bundle savedInstanceState) {
+  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
 
     final Observable<Pair<String, String>> emailAndPassword = email
@@ -101,13 +101,13 @@ public final class LoginViewModel extends ViewModel<LoginActivity> implements Lo
     final Observable<Boolean> isValid = emailAndPassword
       .map(ep -> LoginViewModel.isValid(ep.first, ep.second));
 
-    intent
+    intent()
       .map(i -> i.getStringExtra(IntentKey.EMAIL))
       .ofType(String.class)
       .compose(bindToLifecycle())
       .subscribe(prefillEmailFromPasswordReset::onNext);
 
-    view
+    view()
       .compose(Transformers.combineLatestPair(isValid))
       .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())

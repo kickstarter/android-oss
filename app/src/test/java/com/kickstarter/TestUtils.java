@@ -10,9 +10,11 @@ import java.util.List;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class TestUtils {
+public final class TestUtils {
+  private TestUtils() {}
+
   static CurrentConfig mockCurrentConfig(final Config config) {
-    CurrentConfig currentConfig = mock(CurrentConfig.class);
+    final CurrentConfig currentConfig = mock(CurrentConfig.class);
     when(currentConfig.getConfig()).thenReturn(config);
     return currentConfig;
   }

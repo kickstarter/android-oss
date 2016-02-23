@@ -18,15 +18,15 @@ import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public final class WebViewViewModel extends ViewModel<WebViewActivity> implements WebViewViewModelOutputs {
-  final PublishSubject<PushNotificationEnvelope> pushNotificationEnvelope = PublishSubject.create();
+  private final PublishSubject<PushNotificationEnvelope> pushNotificationEnvelope = PublishSubject.create();
 
-  final BehaviorSubject<String> toolbarTitle = BehaviorSubject.create();
+  private final BehaviorSubject<String> toolbarTitle = BehaviorSubject.create();
   @Override
   public @NonNull Observable<String> toolbarTitle() {
     return toolbarTitle;
   }
 
-  final BehaviorSubject<String> url = BehaviorSubject.create();
+  private final BehaviorSubject<String> url = BehaviorSubject.create();
   @Override
   public @NonNull Observable<String> url() {
     return url;
@@ -39,22 +39,22 @@ public final class WebViewViewModel extends ViewModel<WebViewActivity> implement
   }
 
   @Override
-  protected void onCreate(@NonNull Context context, @Nullable Bundle savedInstanceState) {
+  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
 
-    intent
+    intent()
       .map(i -> i.getStringExtra(IntentKey.TOOLBAR_TITLE))
       .ofType(String.class)
       .compose(bindToLifecycle())
       .subscribe(toolbarTitle::onNext);
 
-    intent
+    intent()
       .map(i -> i.getStringExtra(IntentKey.URL))
       .ofType(String.class)
       .compose(bindToLifecycle())
       .subscribe(url::onNext);
 
-    intent
+    intent()
       .map(i -> i.getParcelableExtra(IntentKey.PUSH_NOTIFICATION_ENVELOPE))
       .ofType(PushNotificationEnvelope.class)
       .compose(bindToLifecycle())

@@ -57,11 +57,11 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
   protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
 
-    final Observable<Pair<ThanksActivity, Project>> viewAndProject = view
+    final Observable<Pair<ThanksActivity, Project>> viewAndProject = view()
       .compose(Transformers.combineLatestPair(project))
       .filter(vp -> vp.first != null);
 
-    intent
+    intent()
       .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
       .ofType(Project.class)
       .take(1)
@@ -107,13 +107,13 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .compose(bindToLifecycle())
       .subscribe(vp -> vp.first.startTwitterShareIntent(vp.second));
 
-    viewChange
+    viewChange()
       .compose(Transformers.takePairWhen(projectCardMiniClick))
       .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
       .subscribe(vp -> vp.first.startProjectIntent(vp.second));
 
-    viewChange
+    viewChange()
       .compose(Transformers.takePairWhen(categoryPromoClick))
       .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
@@ -125,7 +125,7 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .compose(bindToLifecycle())
       .compose(Transformers.zipPair(rootCategory));
 
-    view
+    view()
       .compose(Transformers.combineLatestPair(projectsAndRootCategory))
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())

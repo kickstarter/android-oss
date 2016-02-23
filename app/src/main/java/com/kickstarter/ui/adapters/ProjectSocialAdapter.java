@@ -38,7 +38,7 @@ public final class ProjectSocialAdapter extends KSAdapter {
   }
 
   @Override
-  protected @NonNull KSViewHolder viewHolder(@LayoutRes int layout, final @NonNull View view) {
+  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     if (layout == R.layout.project_context_view) {
       return new ProjectContextViewHolder(view, delegate);
     } else {

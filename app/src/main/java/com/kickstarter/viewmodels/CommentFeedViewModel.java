@@ -35,8 +35,10 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   // INPUTS
   private final PublishSubject<String> commentBody = PublishSubject.create();
   private final PublishSubject<Void> nextPage = PublishSubject.create();
-  public void nextPage() { nextPage.onNext(null); }
-  private final BehaviorSubject<Void> refresh = BehaviorSubject.create((Void)null);
+  public void nextPage() {
+    nextPage.onNext(null);
+  }
+  private final BehaviorSubject<Void> refresh = BehaviorSubject.create((Void) null);
   public void refresh() {
     refresh.onNext(null);
   }
@@ -48,13 +50,21 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
 
   // OUTPUTS
   private final PublishSubject<Void> commentPosted = PublishSubject.create();
-  public Observable<Void> commentPosted() { return commentPosted.asObservable(); }
+  public Observable<Void> commentPosted() {
+    return commentPosted.asObservable();
+  }
   private final PublishSubject<Boolean> isFetchingComments = PublishSubject.create();
-  public final Observable<Boolean> isFetchingComments() { return isFetchingComments; }
+  public Observable<Boolean> isFetchingComments() {
+    return isFetchingComments;
+  }
   private final PublishSubject<Project> showCommentDialog = PublishSubject.create();
-  public Observable<Project> showCommentDialog() { return showCommentDialog; }
+  public Observable<Project> showCommentDialog() {
+    return showCommentDialog;
+  }
   private final BehaviorSubject<Boolean> showCommentButton = BehaviorSubject.create();
-  public Observable<Boolean> showCommentButton() { return showCommentButton; }
+  public Observable<Boolean> showCommentButton() {
+    return showCommentButton;
+  }
 
   // ERRORS
   private final PublishSubject<ErrorEnvelope> postCommentError = PublishSubject.create();
@@ -90,7 +100,7 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
 
-    final Observable<Project> initialProject = intent
+    final Observable<Project> initialProject = intent()
       .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
       .ofType(Project.class)
       .filter(ObjectUtils::isNotNull);
@@ -111,7 +121,7 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
         .loadWithPaginationPath(client::fetchProjectComments)
         .build();
 
-    final Observable<List<Comment>> comments = paginator.paginatedData.share();
+    final Observable<List<Comment>> comments = paginator.paginatedData().share();
 
     final Observable<Boolean> commentHasBody = commentBody
       .map(body -> body.length() > 0);
@@ -136,7 +146,7 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
 
     Observable.combineLatest(
         currentUser.observable(),
-        view,
+        view(),
         comments,
         project,
         Arrays::asList)
@@ -161,13 +171,13 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .compose(bindToLifecycle())
       .subscribe(__ -> refresh.onNext(null));
 
-    view
+    view()
       .compose(Transformers.combineLatestPair(commentHasBody))
       .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
       .subscribe(ve -> ve.first.enablePostButton(ve.second));
 
-    view
+    view()
         .compose(Transformers.takePairWhen(commentIsPosting))
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(vp -> vp.first.disablePostButton(vp.second));
@@ -187,7 +197,7 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .compose(bindToLifecycle())
       .subscribe(koala::trackProjectCommentLoadMore);
 
-    paginator.isFetching
+    paginator.isFetching()
       .compose(bindToLifecycle())
       .subscribe(isFetchingComments);
 

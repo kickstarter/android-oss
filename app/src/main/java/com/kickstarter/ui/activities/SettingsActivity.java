@@ -165,7 +165,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
 
   protected void composeContactEmail(final @Nullable User user) {
     final List<String> debugInfo = Arrays.asList(
-      (user != null ? user.name() : loggedOutString),
+      user != null ? user.name() : loggedOutString,
       release.variant(),
       release.versionName(),
       release.versionCode().toString(),

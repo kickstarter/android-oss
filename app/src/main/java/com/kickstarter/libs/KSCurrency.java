@@ -11,7 +11,7 @@ import java.math.RoundingMode;
 import auto.parcel.AutoParcel;
 
 public final class KSCurrency {
-  final CurrentConfig currentConfig;
+  private final CurrentConfig currentConfig;
 
   public KSCurrency(final @NonNull CurrentConfig currentConfig) {
     this.currentConfig = currentConfig;
@@ -59,7 +59,7 @@ public final class KSCurrency {
     final boolean showCurrencyCode = showCurrencyCode(currencyOptions, excludeCurrencyCode);
 
     final NumberOptions numberOptions = NumberOptions.builder()
-      .currencyCode((showCurrencyCode ? currencyOptions.currencyCode() : ""))
+      .currencyCode(showCurrencyCode ? currencyOptions.currencyCode() : "")
       .currencySymbol(currencyOptions.currencySymbol())
       .roundingMode(RoundingMode.DOWN)
       .build();
@@ -76,19 +76,21 @@ public final class KSCurrency {
 
     final Config config = currentConfig.getConfig();
     final Float staticUsdRate = project.staticUsdRate();
-    return ((preferUSD && config.countryCode().equals("US") && staticUsdRate != null) ?
-      CurrencyOptions.builder()
+    if (preferUSD && config.countryCode().equals("US") && staticUsdRate != null) {
+      return CurrencyOptions.builder()
         .country("US")
         .currencySymbol("$")
         .currencyCode("")
         .value(value * staticUsdRate)
-        .build() :
-      CurrencyOptions.builder()
+        .build();
+    } else {
+      return CurrencyOptions.builder()
         .country(project.country())
         .currencyCode(project.currency())
         .currencySymbol(project.currencySymbol())
         .value(value)
-        .build());
+        .build();
+    }
   }
 
   /**

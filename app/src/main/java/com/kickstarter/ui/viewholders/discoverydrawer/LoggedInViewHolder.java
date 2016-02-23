@@ -46,7 +46,7 @@ public final class LoggedInViewHolder extends KSViewHolder {
 
   @Override
   public void onBind() {
-    final Context context = view.getContext();
+    final Context context = context();
 
     userNameTextView.setText(user.name());
     Picasso.with(context)

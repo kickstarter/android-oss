@@ -78,22 +78,54 @@ public abstract class Category implements Parcelable, Comparable<Category> {
   public int secondaryColor(final @NonNull Context context) {
     final int identifier;
     switch ((int) rootId()) {
-      case 1:   identifier = R.color.category_secondary_art; break;
-      case 3:   identifier = R.color.category_secondary_comics; break;
-      case 26:  identifier = R.color.category_secondary_crafts; break;
-      case 6:   identifier = R.color.category_secondary_dance; break;
-      case 7:   identifier = R.color.category_secondary_design; break;
-      case 9:   identifier = R.color.category_secondary_fashion; break;
-      case 11:  identifier = R.color.category_secondary_film; break;
-      case 10:  identifier = R.color.category_secondary_food; break;
-      case 12:  identifier = R.color.category_secondary_games; break;
-      case 13:  identifier = R.color.category_secondary_journalism; break;
-      case 14:  identifier = R.color.category_secondary_music; break;
-      case 15:  identifier = R.color.category_secondary_photography; break;
-      case 18:  identifier = R.color.category_secondary_publishing; break;
-      case 16:  identifier = R.color.category_secondary_technology; break;
-      case 17:  identifier = R.color.category_secondary_theater; break;
-      default:  identifier = R.color.white; break;
+      case 1:
+        identifier = R.color.category_secondary_art;
+        break;
+      case 3:
+        identifier = R.color.category_secondary_comics;
+        break;
+      case 26:
+        identifier = R.color.category_secondary_crafts;
+        break;
+      case 6:
+        identifier = R.color.category_secondary_dance;
+        break;
+      case 7:
+        identifier = R.color.category_secondary_design;
+        break;
+      case 9:
+        identifier = R.color.category_secondary_fashion;
+        break;
+      case 11:
+        identifier = R.color.category_secondary_film;
+        break;
+      case 10:
+        identifier = R.color.category_secondary_food;
+        break;
+      case 12:
+        identifier = R.color.category_secondary_games;
+        break;
+      case 13:
+        identifier = R.color.category_secondary_journalism;
+        break;
+      case 14:
+        identifier = R.color.category_secondary_music;
+        break;
+      case 15:
+        identifier = R.color.category_secondary_photography;
+        break;
+      case 18:
+        identifier = R.color.category_secondary_publishing;
+        break;
+      case 16:
+        identifier = R.color.category_secondary_technology;
+        break;
+      case 17:
+        identifier = R.color.category_secondary_theater;
+        break;
+      default:
+        identifier = R.color.white;
+        break;
     }
 
     return ContextCompat.getColor(context, identifier);
@@ -109,8 +141,10 @@ public abstract class Category implements Parcelable, Comparable<Category> {
       case 3:
       case 14:
       case 15:
-      case 18:  return true;
-      default:  return false;
+      case 18:
+        return true;
+      default:
+        return false;
     }
   }
 

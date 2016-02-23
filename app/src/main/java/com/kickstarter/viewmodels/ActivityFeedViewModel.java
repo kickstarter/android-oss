@@ -59,19 +59,19 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
 
   // OUTPUTS
   private final BehaviorSubject<Boolean> loggedOutEmptyStateIsVisible = BehaviorSubject.create();
-  public final Observable<Boolean> loggedOutEmptyStateIsVisible() {
+  public Observable<Boolean> loggedOutEmptyStateIsVisible() {
     return loggedOutEmptyStateIsVisible;
   }
   private final BehaviorSubject<Boolean> loggedInEmptyStateIsVisible = BehaviorSubject.create();
-  public final Observable<Boolean> loggedInEmptyStateIsVisible() {
+  public Observable<Boolean> loggedInEmptyStateIsVisible() {
     return loggedInEmptyStateIsVisible;
   }
   private final PublishSubject<Boolean> isFetchingActivities = PublishSubject.create();
-  public final Observable<Boolean> isFetchingActivities() {
+  public Observable<Boolean> isFetchingActivities() {
     return isFetchingActivities;
   }
   private final BehaviorSubject<List<Activity>> activities = BehaviorSubject.create();
-  public final Observable<List<Activity>> activities() {
+  public Observable<List<Activity>> activities() {
     return activities;
   }
   public final ActivityFeedViewModelOutputs outputs = this;
@@ -96,11 +96,11 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
       .loadWithPaginationPath(client::fetchActivitiesWithPaginationPath)
       .build();
 
-    paginator.paginatedData
+    paginator.paginatedData()
       .compose(bindToLifecycle())
       .subscribe(activities);
 
-    paginator.isFetching
+    paginator.isFetching()
       .compose(bindToLifecycle())
       .subscribe(isFetchingActivities);
 
@@ -120,43 +120,43 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
       .compose(bindToLifecycle())
       .subscribe(loggedInEmptyStateIsVisible::onNext);
 
-    view
+    view()
       .compose(Transformers.takeWhen(discoverProjectsClick))
       .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
       .subscribe(ActivityFeedActivity::discoverProjectsButtonOnClick);
 
-    view
+    view()
       .compose(Transformers.takePairWhen(friendBackingClick))
       .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
       .subscribe(vp -> vp.first.startProjectActivity(vp.second.project()));
 
-    view
+    view()
       .compose(Transformers.takeWhen(loginClick))
       .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
       .subscribe(ActivityFeedActivity::activityFeedLogin);
 
-    view
+    view()
       .compose(Transformers.takePairWhen(projectStateChangedClick))
       .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
       .subscribe(vp -> vp.first.startProjectActivity(vp.second.project()));
 
-    view
+    view()
       .compose(Transformers.takePairWhen(projectStateChangedPositiveClick))
       .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
       .subscribe(vp -> vp.first.startProjectActivity(vp.second.project()));
 
-    view
+    view()
       .compose(Transformers.takePairWhen(projectUpdateProjectClick))
       .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
       .subscribe(vp -> vp.first.startProjectActivity(vp.second.project()));
 
-    view
+    view()
       .compose(Transformers.takePairWhen(projectUpdateUpdateClick))
       .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())

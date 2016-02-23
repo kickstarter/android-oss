@@ -16,7 +16,7 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(includes = ApplicationModule.class)
-public class InternalApplicationModule {
+public final class InternalApplicationModule {
   @Provides
   @Singleton
   ApiEndpoint provideApiEndpoint(@ApiEndpointPreference final @NonNull StringPreference apiEndpointPreference) {
@@ -27,7 +27,7 @@ public class InternalApplicationModule {
   @Singleton
   @ApiEndpointPreference
   StringPreference provideApiEndpointPreference(final @NonNull SharedPreferences sharedPreferences) {
-    return new StringPreference(sharedPreferences, "debug_api_endpoint", ApiEndpoint.PRODUCTION.url);
+    return new StringPreference(sharedPreferences, "debug_api_endpoint", ApiEndpoint.PRODUCTION.url());
   }
 
   @Provides

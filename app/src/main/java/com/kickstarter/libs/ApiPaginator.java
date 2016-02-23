@@ -39,9 +39,18 @@ public final class ApiPaginator<Data, Envelope, Params> {
   private final @NonNull PublishSubject<Boolean> _isFetching = PublishSubject.create();
 
   // Outputs
-  public final @NonNull Observable<List<Data>> paginatedData;
-  public final @NonNull Observable<Boolean> isFetching = _isFetching;
-  public final @NonNull Observable<Integer> loadingPage;
+  public @NonNull Observable<List<Data>> paginatedData() {
+    return paginatedData;
+  }
+  private final @NonNull Observable<List<Data>> paginatedData;
+  public @NonNull Observable<Boolean> isFetching() {
+    return isFetching;
+  }
+  private final @NonNull Observable<Boolean> isFetching = _isFetching;
+  public @NonNull Observable<Integer> loadingPage() {
+    return loadingPage;
+  }
+  private final @NonNull Observable<Integer> loadingPage;
 
   private ApiPaginator(
     final @NonNull Observable<Void> nextPage,
@@ -76,7 +85,7 @@ public final class ApiPaginator<Data, Envelope, Params> {
     private Func1<String, Observable<Envelope>> loadWithPaginationPath;
     private Func1<Envelope, String> envelopeToMoreUrl;
     private Func1<List<Data>, List<Data>> pageTransformation;
-    private boolean clearWhenStartingOver = false;
+    private boolean clearWhenStartingOver;
     private Func2<List<Data>, List<Data>, List<Data>> concater = ListUtils::concat;
 
     /**

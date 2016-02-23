@@ -9,12 +9,16 @@ public enum ApiEndpoint {
   LOCAL("Local", "http://api.ksr.10.0.3.2.xip.io"),
   CUSTOM("Custom", null);
 
-  public String name;
-  public String url;
+  private String name;
+  private String url;
 
   ApiEndpoint(final @NonNull String name, final @Nullable String url) {
     this.name = name;
     this.url = url;
+  }
+
+  public @NonNull String url() {
+    return url;
   }
 
   @Override public String toString() {
@@ -27,7 +31,7 @@ public enum ApiEndpoint {
         return value;
       }
     }
-    ApiEndpoint endpoint = CUSTOM;
+    final ApiEndpoint endpoint = CUSTOM;
     endpoint.url = url;
     return endpoint;
   }

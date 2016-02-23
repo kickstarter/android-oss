@@ -39,7 +39,7 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
 
   // INPUTS
   @Override
-  public void facebookLoginClick(@NonNull final LoginToutActivity activity, @NonNull List<String> facebookPermissions) {
+  public void facebookLoginClick(final @NonNull LoginToutActivity activity, final @NonNull List<String> facebookPermissions) {
     LoginManager.getInstance().logInWithReadPermissions(activity, facebookPermissions);
   }
 
@@ -129,26 +129,26 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
   }
 
   @Override
-  protected void onCreate(@NonNull final Context context, @Nullable Bundle savedInstanceState) {
+  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
 
     registerFacebookCallback();
 
-    Observable<AccessTokenEnvelope> facebookSuccessTokenEnvelope = facebookAccessToken
+    final Observable<AccessTokenEnvelope> facebookSuccessTokenEnvelope = facebookAccessToken
       .switchMap(this::loginWithFacebookAccessToken)
       .share();
 
-    intent
+    intent()
       .map(i -> i.getSerializableExtra(IntentKey.LOGIN_REASON))
       .ofType(LoginReason.class)
       .compose(bindToLifecycle())
       .subscribe(loginReason::onNext);
 
-    activityResult
+    activityResult()
       .compose(bindToLifecycle())
       .subscribe(r -> callbackManager.onActivityResult(r.requestCode(), r.resultCode(), r.intent()));
 
-    activityResult
+    activityResult()
       .filter(r -> r.isRequestCode(ActivityRequestCodes.LOGIN_FLOW))
       .filter(ActivityResult::isOk)
       .compose(bindToLifecycle())

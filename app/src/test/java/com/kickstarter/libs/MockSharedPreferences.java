@@ -17,38 +17,38 @@ public class MockSharedPreferences implements SharedPreferences {
 
   @Nullable
   @Override
-  public String getString(String key, String defValue) {
+  public String getString(final String key, final String defValue) {
     return null;
   }
 
   @Nullable
   @Override
-  public Set<String> getStringSet(String key, Set<String> defValues) {
+  public Set<String> getStringSet(final String key, final Set<String> defValues) {
     return null;
   }
 
   @Override
-  public int getInt(String key, int defValue) {
+  public int getInt(final String key, final int defValue) {
     return 0;
   }
 
   @Override
-  public long getLong(String key, long defValue) {
+  public long getLong(final String key, final long defValue) {
     return 0;
   }
 
   @Override
-  public float getFloat(String key, float defValue) {
+  public float getFloat(final String key, final float defValue) {
     return 0;
   }
 
   @Override
-  public boolean getBoolean(String key, boolean defValue) {
+  public boolean getBoolean(final String key, final boolean defValue) {
     return false;
   }
 
   @Override
-  public boolean contains(String key) {
+  public boolean contains(final String key) {
     return false;
   }
 
@@ -58,10 +58,10 @@ public class MockSharedPreferences implements SharedPreferences {
   }
 
   @Override
-  public void registerOnSharedPreferenceChangeListener(OnSharedPreferenceChangeListener listener) {
+  public void registerOnSharedPreferenceChangeListener(final OnSharedPreferenceChangeListener listener) {
   }
 
   @Override
-  public void unregisterOnSharedPreferenceChangeListener(OnSharedPreferenceChangeListener listener) {
+  public void unregisterOnSharedPreferenceChangeListener(final OnSharedPreferenceChangeListener listener) {
   }
 }

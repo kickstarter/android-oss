@@ -2,11 +2,7 @@ package com.kickstarter.libs.utils;
 
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.util.Pair;
 
-import com.kickstarter.libs.preferences.BooleanPreference;
-
-import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 

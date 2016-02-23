@@ -22,7 +22,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-import static com.kickstarter.libs.utils.ObjectUtils.*;
+import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
 public final class ChildFilterViewHolder extends KSViewHolder {
   protected @Bind(R.id.filter_view) LinearLayout filterView;
@@ -55,7 +55,7 @@ public final class ChildFilterViewHolder extends KSViewHolder {
 
   @Override
   public void onBind() {
-    final Context context = view.getContext();
+    final Context context = context();
 
     final Category category = item.params().category();
     if (category != null && category.isRoot()) {

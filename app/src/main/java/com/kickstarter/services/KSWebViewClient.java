@@ -49,7 +49,7 @@ public final class KSWebViewClient extends WebViewClient {
   private final OkHttpClient client;
   private final String webEndpoint;
   private final List<RequestHandler> requestHandlers = new ArrayList<>();
-  private FormContents formContents = null;
+  private FormContents formContents;
   private @Nullable Delegate delegate;
 
   public KSWebViewClient(final @NonNull OkHttpClient client, final @NonNull String webEndpoint) {
@@ -153,7 +153,7 @@ public final class KSWebViewClient extends WebViewClient {
     RequestBody requestBody = null;
     if (httpMethod().equals("POST")) {
       requestBody = RequestBody.create(MediaType.parse("application/x-www-form-urlencoded; charset=utf-8"),
-        formContents.serialized);
+        formContents.serialized());
     }
 
     requestBuilder.method(httpMethod(), requestBody);
@@ -180,8 +180,8 @@ public final class KSWebViewClient extends WebViewClient {
 
   protected String httpMethod() {
     String httpMethod = "GET";
-    if (formContents != null && formContents.method != null) {
-      httpMethod = formContents.method.toUpperCase();
+    if (formContents != null && formContents.method() != null) {
+      httpMethod = formContents.method().toUpperCase();
     }
     return httpMethod;
   }
@@ -252,8 +252,8 @@ public final class KSWebViewClient extends WebViewClient {
   }
 
   public class MimeHeaders {
-    public String type = null;
-    public String encoding = null;
+    private String type;
+    private String encoding;
 
     public MimeHeaders(final @NonNull String contentType) {
       // Extract mime and encoding from string, e.g. "text/html; charset=utf-8"
@@ -263,6 +263,14 @@ public final class KSWebViewClient extends WebViewClient {
         type = matcher.group(1);
         encoding = matcher.group(2).toUpperCase();
       }
+    }
+
+    public String encoding() {
+      return encoding;
+    }
+
+    public String type() {
+      return type;
     }
   }
 }

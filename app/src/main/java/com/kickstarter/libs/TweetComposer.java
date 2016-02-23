@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import java.util.List;
@@ -53,21 +54,14 @@ public class TweetComposer {
     /**
      * Initializes a new {@link TweetComposer.Builder}
      */
-    public Builder(Context context) {
-      if (context == null) {
-        throw new IllegalArgumentException("Context must not be null.");
-      }
+    public Builder(final @NonNull Context context) {
       this.context = context;
     }
 
     /**
      * Sets Text for Tweet Intent, no length validation is performed
      */
-    public Builder text(String text) {
-      if (text == null) {
-        throw new IllegalArgumentException("text must not be null.");
-      }
-
+    public Builder text(final @NonNull String text) {
       if (this.text != null) {
         throw new IllegalStateException("text already set.");
       }
@@ -79,11 +73,7 @@ public class TweetComposer {
     /**
      * Sets Uri for Tweet Intent, no length validation is performed
      */
-    public Builder uri(Uri uri) {
-      if (uri == null) {
-        throw new IllegalArgumentException("uri must not be null.");
-      }
-
+    public Builder uri(final @NonNull Uri uri) {
       if (this.uri != null) {
         throw new IllegalStateException("url already set.");
       }
@@ -96,11 +86,7 @@ public class TweetComposer {
      * installed.
      * The Uri should be a file Uri to a local file (e.g. <pre><code>Uri.fromFile(someExternalStorageFile)</code></pre>))
      */
-    public Builder image(Uri imageUri) {
-      if (imageUri == null) {
-        throw new IllegalArgumentException("imageUri must not be null.");
-      }
-
+    public Builder image(final @NonNull Uri imageUri) {
       if (this.imageUri != null) {
         throw new IllegalStateException("imageUri already set.");
       }
@@ -163,7 +149,7 @@ public class TweetComposer {
     }
 
     Intent createWebIntent() {
-      final String uri = (this.uri == null ? "" : this.uri.toString());
+      final String uri = this.uri == null ? "" : this.uri.toString();
 
 
       final String tweetUrl =

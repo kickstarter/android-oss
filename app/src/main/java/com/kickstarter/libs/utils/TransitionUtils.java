@@ -7,6 +7,8 @@ import android.util.Pair;
 import com.kickstarter.R;
 
 public final class TransitionUtils {
+  private TransitionUtils() {}
+
   /**
    * Explicitly set a transition after starting an activity.
    *

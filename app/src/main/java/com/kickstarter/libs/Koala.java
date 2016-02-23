@@ -42,9 +42,11 @@ public final class Koala {
   }
 
   public void trackDiscoveryFilters() {
-    client.track("Discover Switch Modal", new HashMap<String, Object>() {{
-      put("modal_type", "filters");
-    }});
+    client.track("Discover Switch Modal", new HashMap<String, Object>() {
+      {
+        put("modal_type", "filters");
+      }
+    });
   }
 
   public void trackDiscoveryFilterSelected(final @NonNull DiscoveryParams params) {
@@ -98,9 +100,11 @@ public final class Koala {
     if (pageCount == 0) {
       client.track("Activity View");
     } else {
-      client.track("Activity Load More", new HashMap<String, Object>() {{
-        put("page_count", pageCount);
-      }});
+      client.track("Activity Load More", new HashMap<String, Object>() {
+        {
+          put("page_count", pageCount);
+        }
+      });
     }
   }
 
@@ -111,14 +115,18 @@ public final class Koala {
 
   public void trackSearchResults(final @NonNull String query, final int pageCount) {
     if (pageCount == 1) {
-      client.track("Discover Search Results", new HashMap<String, Object>() {{
-        put("search_term", query);
-      }});
+      client.track("Discover Search Results", new HashMap<String, Object>() {
+        {
+          put("search_term", query);
+        }
+      });
     } else {
-      client.track("Discover Search Results Load More", new HashMap<String, Object>() {{
-        put("search_term", query);
-        put("page_count", pageCount);
-      }});
+      client.track("Discover Search Results Load More", new HashMap<String, Object>() {
+        {
+          put("search_term", query);
+          put("page_count", pageCount);
+        }
+      });
     }
   }
 
@@ -128,9 +136,11 @@ public final class Koala {
 
   // SESSION EVENTS
   public void trackLoginRegisterTout(final @NonNull LoginReason loginReason) {
-    client.track("Application Login or Signup", new HashMap<String, Object>() {{
-      put("intent", loginReason.trackingString());
-    }});
+    client.track("Application Login or Signup", new HashMap<String, Object>() {
+      {
+        put("intent", loginReason.trackingString());
+      }
+    });
   }
 
   public void trackLoginSuccess() {
@@ -190,13 +200,15 @@ public final class Koala {
   }
 
   public void trackSignupNewsletterToggle(final boolean sendNewsletters) {
-    client.track("Signup Newsletter Toggle", new HashMap<String, Object>() {{
-      put("send_newsletters", sendNewsletters);
-    }});
+    client.track("Signup Newsletter Toggle", new HashMap<String, Object>() {
+      {
+        put("send_newsletters", sendNewsletters);
+      }
+    });
   }
 
   // SETTINGS
-   public void trackContactEmailClicked() {
+  public void trackContactEmailClicked() {
     client.track("Contact Email Clicked");
   }
 
@@ -204,7 +216,7 @@ public final class Koala {
     if (sendNewsletter) {
       client.track("Newsletter Subscribe");
     } else {
-     client.track("Newsletter Unsubscribe");
+      client.track("Newsletter Unsubscribe");
     }
   }
 
@@ -233,15 +245,19 @@ public final class Koala {
   }
 
   public void trackCheckoutShowFacebookShareView() {
-    client.track("Checkout Show Share", new HashMap<String, Object>() {{
-      put("share_type", "facebook");
-    }});
+    client.track("Checkout Show Share", new HashMap<String, Object>() {
+      {
+        put("share_type", "facebook");
+      }
+    });
   }
 
   public void trackCheckoutShowTwitterShareView() {
-    client.track("Checkout Show Share", new HashMap<String, Object>() {{
-      put("share_type", "twitter");
-    }});
+    client.track("Checkout Show Share", new HashMap<String, Object>() {
+      {
+        put("share_type", "twitter");
+      }
+    });
   }
 
   public void trackCheckoutShareFinished() {
@@ -266,27 +282,35 @@ public final class Koala {
   }
 
   public void trackShowProjectFacebookShareView() {
-    client.track("Project Show Share", new HashMap<String, Object>() {{
-      put("share_type", "facebook");
-    }});
+    client.track("Project Show Share", new HashMap<String, Object>() {
+      {
+        put("share_type", "facebook");
+      }
+    });
   }
 
   public void trackShowProjectTwitterShareView() {
-    client.track("Project Show Share", new HashMap<String, Object>() {{
-      put("share_type", "twitter");
-    }});
+    client.track("Project Show Share", new HashMap<String, Object>() {
+      {
+        put("share_type", "twitter");
+      }
+    });
   }
 
   public void trackProjectFacebookShare() {
-    client.track("Project Share", new HashMap<String, Object>() {{
-      put("share_type", "facebook");
-    }});
+    client.track("Project Share", new HashMap<String, Object>() {
+      {
+        put("share_type", "facebook");
+      }
+    });
   }
 
   public void trackProjectTwitterShare() {
-    client.track("Project Share", new HashMap<String, Object>() {{
-      put("share_type", "twitter");
-    }});
+    client.track("Project Share", new HashMap<String, Object>() {
+      {
+        put("share_type", "twitter");
+      }
+    });
   }
 
   // PROFILE
@@ -314,14 +338,16 @@ public final class Koala {
 
   // PUSH NOTIFICATIONS
   public void trackPushNotification(final @NonNull PushNotificationEnvelope envelope) {
-    final Map<String, Object> properties = new HashMap<String, Object>() {{
-      put("notification_type", "push");
+    final Map<String, Object> properties = new HashMap<String, Object>() {
+      {
+        put("notification_type", "push");
 
-      if (envelope.activity() != null) {
-        put("notification_subject", "activity");
-        put("notification_activity_category", envelope.activity().category());
+        if (envelope.activity() != null) {
+          put("notification_subject", "activity");
+          put("notification_activity_category", envelope.activity().category());
+        }
       }
-    }};
+    };
 
     client.track("Notification Opened", properties);
   }

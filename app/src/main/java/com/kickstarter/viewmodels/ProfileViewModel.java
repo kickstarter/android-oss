@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Environment;
@@ -92,7 +91,7 @@ public final class ProfileViewModel extends ViewModel<ProfileActivity> implement
         .loadWithPaginationPath(client::fetchProjects)
         .build();
 
-    paginator.paginatedData
+    paginator.paginatedData()
       .compose(bindToLifecycle())
       .subscribe(projects::onNext);
 

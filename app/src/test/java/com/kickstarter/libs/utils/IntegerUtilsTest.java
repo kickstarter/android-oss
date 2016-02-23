@@ -19,7 +19,7 @@ public class IntegerUtilsTest extends TestCase {
   }
 
   public void testIntValueOrZero() {
-    assertEquals(5 , IntegerUtils.intValueOrZero(5));
+    assertEquals(5, IntegerUtils.intValueOrZero(5));
     assertEquals(0, IntegerUtils.intValueOrZero(null));
   }
 }

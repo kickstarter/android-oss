@@ -29,7 +29,9 @@ public final class SearchViewModel extends ViewModel<SearchActivity> implements 
   // INPUTS
   private final BehaviorSubject<String> search = BehaviorSubject.create("");
   private final PublishSubject<Void> nextPage = PublishSubject.create();
-  public void nextPage() { nextPage.onNext(null); }
+  public void nextPage() {
+    nextPage.onNext(null);
+  }
   public SearchViewModelInputs inputs = this;
   @Override public void search(final @NonNull String s) {
     search.onNext(s);
@@ -39,8 +41,12 @@ public final class SearchViewModel extends ViewModel<SearchActivity> implements 
   private final BehaviorSubject<List<Project>> popularProjects = BehaviorSubject.create();
   private final BehaviorSubject<List<Project>> searchProjects = BehaviorSubject.create();
   public final SearchViewModelOutputs outputs = this;
-  @Override public Observable<List<Project>> popularProjects() { return popularProjects; }
-  @Override public Observable<List<Project>> searchProjects() { return searchProjects; }
+  @Override public Observable<List<Project>> popularProjects() {
+    return popularProjects;
+  }
+  @Override public Observable<List<Project>> searchProjects() {
+    return searchProjects;
+  }
 
   private final DiscoveryParams defaultParams = DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build();
 
@@ -77,7 +83,7 @@ public final class SearchViewModel extends ViewModel<SearchActivity> implements 
       .subscribe(__ -> searchProjects.onNext(ListUtils.empty()));
 
     params
-      .compose(Transformers.takePairWhen(paginator.paginatedData))
+      .compose(Transformers.takePairWhen(paginator.paginatedData()))
       .compose(bindToLifecycle())
       .subscribe(paramsAndProjects -> {
         if (paramsAndProjects.first.sort() == DiscoveryParams.Sort.POPULAR) {
@@ -91,7 +97,7 @@ public final class SearchViewModel extends ViewModel<SearchActivity> implements 
     koala.trackSearchView();
 
     // Track search results and pagination
-    final Observable<Integer> pageCount = paginator.loadingPage;
+    final Observable<Integer> pageCount = paginator.loadingPage();
     final Observable<String> query = params
       .filter(p -> p.sort() == DiscoveryParams.Sort.POPULAR)
       .map(DiscoveryParams::term);

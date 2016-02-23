@@ -1,7 +1,6 @@
 package com.kickstarter.viewmodels;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.libs.Environment;
 
 import org.junit.Test;
 

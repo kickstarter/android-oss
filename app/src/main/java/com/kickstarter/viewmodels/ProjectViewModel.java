@@ -46,15 +46,27 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
    * A light-weight value to hold two ref tags and a project. Two ref tags are stored: one comes from parceled
    * data in the activity and the other comes from the ref stored in a cookie associated to the project.
    */
-  private class RefTagsAndProject {
-    final @Nullable RefTag refTagFromIntent;
-    final @Nullable RefTag refTagFromCookie;
-    final @NonNull Project project;
+  private final class RefTagsAndProject {
+    private final @Nullable RefTag refTagFromIntent;
+    private final @Nullable RefTag refTagFromCookie;
+    private final @NonNull Project project;
 
     private RefTagsAndProject(final @Nullable RefTag refTagFromIntent, final @Nullable RefTag refTagFromCookie, final @NonNull Project project) {
       this.refTagFromIntent = refTagFromIntent;
       this.refTagFromCookie = refTagFromCookie;
       this.project = project;
+    }
+
+    public @Nullable RefTag refTagFromIntent() {
+      return refTagFromIntent;
+    }
+
+    public @Nullable RefTag refTagFromCookie() {
+      return refTagFromCookie;
+    }
+
+    public @NonNull Project project() {
+      return project;
     }
   }
 
@@ -110,8 +122,8 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
   public final ProjectViewModelInputs inputs = this;
 
   // OUTPUTS
-  final BehaviorSubject<Project> project = BehaviorSubject.create();
-  public final Observable<Pair<Project, Config>> projectAndConfig() {
+  private final BehaviorSubject<Project> project = BehaviorSubject.create();
+  public Observable<Pair<Project, Config>> projectAndConfig() {
     return project.compose(Transformers.combineLatestPair(currentConfig.observable()));
   }
   public Observable<Project> showShareSheet() {
@@ -173,14 +185,14 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
       .take(1)
       .map(p -> RefTagUtils.storedCookieRefTagForProject(p, cookieManager, sharedPreferences));
 
-    final Observable<Project> initialProject = intent
+    final Observable<Project> initialProject = intent()
       .flatMap(i -> ProjectIntentMapper.project(i, client))
       .share();
 
-    final Observable<RefTag> refTag = intent
+    final Observable<RefTag> refTag = intent()
       .flatMap(ProjectIntentMapper::refTag);
 
-    final Observable<PushNotificationEnvelope> pushNotificationEnvelope = intent
+    final Observable<PushNotificationEnvelope> pushNotificationEnvelope = intent()
       .flatMap(ProjectIntentMapper::pushNotificationEnvelope);
 
     final Observable<User> loggedInUserOnStarClick = currentUser.observable()

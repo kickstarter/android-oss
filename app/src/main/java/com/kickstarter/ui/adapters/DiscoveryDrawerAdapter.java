@@ -32,7 +32,7 @@ public class DiscoveryDrawerAdapter extends KSAdapter {
   }
 
   @Override
-  public long getItemId(int position) {
+  public long getItemId(final int position) {
     return position;
   }
 
@@ -40,7 +40,7 @@ public class DiscoveryDrawerAdapter extends KSAdapter {
     TopFilterViewHolder.Delegate, ParentFilterViewHolder.Delegate, ChildFilterViewHolder.Delegate {}
 
   @Override
-  protected int layout(@NonNull SectionRow sectionRow) {
+  protected int layout(final @NonNull SectionRow sectionRow) {
     final Object object = objectFromSectionRow(sectionRow);
     switch (sectionRow.section()) {
       case 0:
@@ -52,9 +52,9 @@ public class DiscoveryDrawerAdapter extends KSAdapter {
     }
   }
 
-  private int layoutForDatum(Object datum, SectionRow sectionRow) {
+  private int layoutForDatum(final @NonNull Object datum, final @NonNull SectionRow sectionRow) {
     if (datum instanceof NavigationDrawerData.Section.Row) {
-      NavigationDrawerData.Section.Row row = (NavigationDrawerData.Section.Row) datum;
+      final NavigationDrawerData.Section.Row row = (NavigationDrawerData.Section.Row) datum;
       if (sectionRow.row() == 0) {
         return row.params().isCategorySet() ?
           R.layout.discovery_drawer_parent_filter_view :
@@ -67,7 +67,7 @@ public class DiscoveryDrawerAdapter extends KSAdapter {
   }
 
   @Override
-  protected Object objectFromSectionRow(@NonNull SectionRow sectionRow) {
+  protected @Nullable Object objectFromSectionRow(final @NonNull SectionRow sectionRow) {
     final Object object = super.objectFromSectionRow(sectionRow);
 
     if (object == null) {
@@ -93,9 +93,8 @@ public class DiscoveryDrawerAdapter extends KSAdapter {
       .build();
   }
 
-  @NonNull
   @Override
-  protected KSViewHolder viewHolder(@LayoutRes int layout, @NonNull View view) {
+  protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     switch (layout) {
       case R.layout.discovery_drawer_logged_in_view:
         return new LoggedInViewHolder(view, delegate);
@@ -120,16 +119,16 @@ public class DiscoveryDrawerAdapter extends KSAdapter {
     notifyDataSetChanged();
   }
 
-  List<List<Object>> sectionsFromData(NavigationDrawerData data) {
+  private @NonNull List<List<Object>> sectionsFromData(final @NonNull NavigationDrawerData data) {
     final List<List<Object>> newSections = new ArrayList<>();
 
     newSections.add(Collections.singletonList(data.user()));
 
-    List<NavigationDrawerData.Section> topFilterSections = Observable.from(data.sections())
+    final List<NavigationDrawerData.Section> topFilterSections = Observable.from(data.sections())
       .filter(NavigationDrawerData.Section::isTopFilter)
       .toList().toBlocking().single();
 
-    List<NavigationDrawerData.Section> categoryFilterSections = Observable.from(data.sections())
+    final List<NavigationDrawerData.Section> categoryFilterSections = Observable.from(data.sections())
       .filter(NavigationDrawerData.Section::isCategoryFilter)
       .toList().toBlocking().single();
 

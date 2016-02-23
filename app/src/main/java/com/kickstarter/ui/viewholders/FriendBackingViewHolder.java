@@ -51,18 +51,28 @@ public final class FriendBackingViewHolder extends ActivityListViewHolder {
 
   @Override
   public void onBind() {
-    final Context context = view.getContext();
+    final Context context = context();
 
-    final User activityUser = activity.user();
-    if (activityUser == null) { return; }
-    final Project activityProject = activity.project();
-    if (activityProject == null) { return; }
+    final User activityUser = activity().user();
+    if (activityUser == null) {
+      return;
+    }
+    final Project activityProject = activity().project();
+    if (activityProject == null) {
+      return;
+    }
     final User projectCreator = activityProject.creator();
-    if (projectCreator == null) { return; }
+    if (projectCreator == null) {
+      return;
+    }
     final Category projectCategory = activityProject.category();
-    if (projectCategory == null) { return; }
+    if (projectCategory == null) {
+      return;
+    }
     final Photo projectPhoto = activityProject.photo();
-    if (projectPhoto == null) { return ; }
+    if (projectPhoto == null) {
+      return;
+    }
 
     Picasso.with(context)
       .load(activityUser.avatar().small())
@@ -90,7 +100,7 @@ public final class FriendBackingViewHolder extends ActivityListViewHolder {
 
   @OnClick(R.id.friend_backing_card_view)
   public void onClick() {
-    delegate.friendBackingClicked(this, activity);
+    delegate.friendBackingClicked(this, activity());
   }
 }
 

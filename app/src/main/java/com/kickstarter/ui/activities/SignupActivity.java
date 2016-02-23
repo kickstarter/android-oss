@@ -83,7 +83,7 @@ public final class SignupActivity extends BaseActivity<SignupViewModel> {
 
   @OnClick(R.id.disclaimer)
   public void disclaimerClick() {
-   new LoginPopupMenu(this, helpButton).show();
+    new LoginPopupMenu(this, helpButton).show();
   }
 
   @OnTextChanged(R.id.full_name)

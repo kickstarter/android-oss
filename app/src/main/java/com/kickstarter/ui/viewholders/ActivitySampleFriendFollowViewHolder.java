@@ -34,7 +34,7 @@ public class ActivitySampleFriendFollowViewHolder extends KSViewHolder {
   protected @BindString(R.string.activity_user_name_is_now_following_you) String categoryFollowingString;
   protected @BindString(R.string.activity_follow_back) String categoryFollowBackString;
 
-  protected Activity activity;
+  private Activity activity;
 
   private final Delegate delegate;
   public interface Delegate {
@@ -55,7 +55,7 @@ public class ActivitySampleFriendFollowViewHolder extends KSViewHolder {
   }
 
   public void onBind() {
-    final Context context = view.getContext();
+    final Context context = context();
 
     final User user = activity.user();
     if (user != null) {

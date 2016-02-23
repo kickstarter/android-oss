@@ -2,7 +2,9 @@ package com.kickstarter.factories;
 
 import com.kickstarter.models.Category;
 
-public class CategoryFactory {
+public final class CategoryFactory {
+  private CategoryFactory() {}
+
   public static Category artCategory() {
     return Category.builder()
       .color(16760235)

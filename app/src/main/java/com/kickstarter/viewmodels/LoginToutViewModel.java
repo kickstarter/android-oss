@@ -13,7 +13,7 @@ import com.facebook.FacebookException;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.kickstarter.libs.ActivityRequestCodes;
-import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
@@ -114,7 +114,7 @@ public final class LoginToutViewModel extends ViewModel<LoginToutActivity> imple
   private final PublishSubject<LoginReason> loginReason = PublishSubject.create();
   private final PublishSubject<ErrorEnvelope> loginError = PublishSubject.create();
 
-  private final CurrentUser currentUser;
+  private final CurrentUserType currentUser;
   private final ApiClientType client;
 
   public final LoginToutViewModelInputs inputs = this;

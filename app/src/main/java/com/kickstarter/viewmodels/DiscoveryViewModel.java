@@ -10,7 +10,7 @@ import android.util.Pair;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.BuildCheck;
-import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.ViewModel;
@@ -63,7 +63,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   private final ApiClientType apiClient;
   private final WebClientType webClient;
   private final BuildCheck buildCheck;
-  private final CurrentUser currentUser;
+  private final CurrentUserType currentUser;
   private final @ActivitySamplePreference IntPreference activitySamplePreference;
 
   // INPUTS

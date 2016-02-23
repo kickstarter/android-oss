@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
-import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
@@ -78,7 +78,7 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
   public final SettingsViewModelErrors errors = this;
 
   private final ApiClientType client;
-  private final CurrentUser currentUser;
+  private final CurrentUserType currentUser;
 
   @Override
   public void contactEmailClicked() {

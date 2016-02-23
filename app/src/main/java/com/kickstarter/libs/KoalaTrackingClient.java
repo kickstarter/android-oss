@@ -19,7 +19,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-public final class KoalaTrackingClient implements TrackingClientType {
+public final class KoalaTrackingClient extends TrackingClientType {
   @Inject CurrentUser currentUser;
   @Nullable private User loggedInUser;
   private final @NonNull Context context;
@@ -37,11 +37,6 @@ public final class KoalaTrackingClient implements TrackingClientType {
     this.currentUser.observable().subscribe(u -> loggedInUser = u);
 
     mixpanel = MixpanelAPI.getInstance(context, "koala");
-  }
-
-  @Override
-  public void track(final @NonNull String eventName) {
-    track(eventName, new HashMap<>());
   }
 
   @Override

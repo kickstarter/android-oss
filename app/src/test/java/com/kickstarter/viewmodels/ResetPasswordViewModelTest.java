@@ -15,10 +15,13 @@ import rx.Observable;
 import rx.observers.TestSubscriber;
 
 public final class ResetPasswordViewModelTest extends KSRobolectricTestCase {
+
   @Test
   public void testResetPasswordViewModel_formValidation() {
     final ResetPasswordViewModel vm = new ResetPasswordViewModel(environment());
     final TestSubscriber<Boolean> test = new TestSubscriber<>();
+
+    koalaTest.assertValues("Forgot Password View");
 
     vm.outputs.isFormValid().subscribe(test);
 
@@ -27,12 +30,16 @@ public final class ResetPasswordViewModelTest extends KSRobolectricTestCase {
 
     vm.inputs.email("hello@kickstarter.com");
     test.assertValues(false, true);
+
+    koalaTest.assertValueCount(1);
   }
 
   @Test
   public void testResetPasswordViewModel_resetSuccess() {
     final ResetPasswordViewModel vm = new ResetPasswordViewModel(environment());
     final TestSubscriber<Void> test = new TestSubscriber<>();
+
+    koalaTest.assertValues("Forgot Password View");
 
     vm.outputs.resetSuccess().subscribe(test);
 
@@ -44,6 +51,8 @@ public final class ResetPasswordViewModelTest extends KSRobolectricTestCase {
 
     vm.inputs.resetPasswordClick();
     test.assertValueCount(1);
+
+    koalaTest.assertValues("Forgot Password View", "Forgot Password Requested");
   }
 
   @Test
@@ -54,15 +63,23 @@ public final class ResetPasswordViewModelTest extends KSRobolectricTestCase {
         return Observable.error(ApiExceptionFactory.badRequestException());
       }
     };
-    final Environment environment = environment().toBuilder().apiClient(apiClient).build();
-    final ResetPasswordViewModel vm = new ResetPasswordViewModel(environment);
-    final TestSubscriber<String> test = new TestSubscriber<>();
 
-    vm.errors.resetError().subscribe(test);
+    final Environment environment = environment().toBuilder()
+      .apiClient(apiClient)
+      .build();
+
+    final ResetPasswordViewModel vm = new ResetPasswordViewModel(environment);
+    final TestSubscriber<String> errorTest = new TestSubscriber<>();
+
+    koalaTest.assertValues("Forgot Password View");
+
+    vm.errors.resetError().subscribe(errorTest);
 
     vm.inputs.email("hello@kickstarter.com");
     vm.inputs.resetPasswordClick();
 
-    test.assertValue("bad request");
+    errorTest.assertValue("bad request");
+
+    koalaTest.assertValues("Forgot Password View", "Forgot Password Errored");
   }
 }

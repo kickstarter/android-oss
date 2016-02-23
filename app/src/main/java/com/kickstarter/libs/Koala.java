@@ -21,6 +21,10 @@ public final class Koala {
     this.client = client;
   }
 
+  public TrackingClientType client() {
+    return client;
+  }
+
   // APPLICATION LIFECYCLE
   public void trackAppOpen() {
     client.track("App Open");

@@ -6,16 +6,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.adapters.ManageNotificationsAdapter;
 import com.kickstarter.viewmodels.ManageNotificationsViewModel;
-
-import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.BindString;

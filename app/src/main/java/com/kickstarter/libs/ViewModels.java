@@ -64,13 +64,12 @@ public class ViewModels {
 
     final KSApplication application = (KSApplication) context.getApplicationContext();
     final Environment environment = application.component().environment();
-    ViewModel viewModel;
+    final ViewModel viewModel;
 
     try {
       final Constructor constructor = viewModelClass.getConstructor(Environment.class);
       viewModel = (ViewModel) constructor.newInstance(environment);
-    }
-    catch (IllegalAccessException | InvocationTargetException | InstantiationException | NoSuchMethodException exception) {
+    } catch (IllegalAccessException | InvocationTargetException | InstantiationException | NoSuchMethodException exception) {
       throw new RuntimeException(exception);
     }
 

@@ -21,7 +21,6 @@ import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 public class ViewModel<ViewType extends LifecycleType> {
-  protected final Koala koala;
 
   private final PublishSubject<ViewType> viewChange = PublishSubject.create();
   private final Observable<ViewType> view = viewChange.filter(v -> v != null);
@@ -31,6 +30,7 @@ public class ViewModel<ViewType extends LifecycleType> {
 
   // TODO: Justify BehaviorSubject vs PublishSubject
   private final BehaviorSubject<Intent> intent = BehaviorSubject.create();
+  protected final Koala koala;
 
   public ViewModel(final @NonNull Environment environment) {
     koala = environment.koala();
@@ -42,6 +42,7 @@ public class ViewModel<ViewType extends LifecycleType> {
   public void activityResult(final @NonNull ActivityResult activityResult) {
     this.activityResult.onNext(activityResult);
   }
+
   /*
    * Takes intent data from the view.
    */

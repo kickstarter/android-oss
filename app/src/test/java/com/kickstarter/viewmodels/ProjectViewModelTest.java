@@ -1,7 +1,6 @@
 package com.kickstarter.viewmodels;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.ProjectFactory;
@@ -10,13 +9,10 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.models.Project;
-import com.kickstarter.services.ApiClientType;
-import com.kickstarter.services.MockApiClient;
 import com.kickstarter.ui.IntentKey;
 
 import org.junit.Test;
 
-import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.observers.TestSubscriber;
 
@@ -116,19 +112,9 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testProjectViewModel_StarProjectThatIsSuccessful() {
-    final Project project = ProjectFactory.successfulProject();
-
-    final ApiClientType apiClient = new MockApiClient() {
-      @Override
-      public @NonNull Observable<Project> fetchProject(final @NonNull String param) {
-        return Observable.just(project);
-      }
-    };
-
     final CurrentUserType currentUser = new MockCurrentUser();
     final Environment environment = environment().toBuilder()
       .currentUser(currentUser)
-      .apiClient(apiClient)
       .build();
 
     final ProjectViewModel vm = new ProjectViewModel(environment);
@@ -137,7 +123,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     vm.outputs.showStarredPrompt().subscribe(showStarredPromptTest);
 
     // Start the view model with a successful project
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.successfulProject()));
 
     // Login
     currentUser.refresh(UserFactory.user());

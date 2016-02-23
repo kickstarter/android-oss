@@ -35,7 +35,7 @@ public class BaseActivity<ViewModelType extends ViewModel> extends AppCompatActi
   private final BehaviorSubject<ActivityEvent> lifecycle = BehaviorSubject.create();
   private static final String VIEW_MODEL_KEY = "viewModel";
   private final List<Subscription> subscriptions = new ArrayList<>();
-  public ViewModelType viewModel;
+  protected ViewModelType viewModel;
 
   /**
    * Get viewModel.

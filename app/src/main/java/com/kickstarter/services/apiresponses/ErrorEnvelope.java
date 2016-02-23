@@ -45,6 +45,21 @@ public abstract class ErrorEnvelope implements Parcelable {
     public abstract Builder toBuilder();
   }
 
+  @AutoParcel.Builder
+  public abstract static class Builder {
+    public abstract Builder errorMessages(List<String> __);
+    public abstract Builder httpCode(int __);
+    public abstract Builder ksrCode(String __);
+    public abstract Builder facebookUser(FacebookUser __);
+    public abstract ErrorEnvelope build();
+  }
+
+  public static Builder builder() {
+    return new AutoParcel_ErrorEnvelope.Builder();
+  }
+
+  public abstract Builder toBuilder();
+
   public static final String CONFIRM_FACEBOOK_SIGNUP = "confirm_facebook_signup";
   public static final String INVALID_XAUTH_LOGIN = "invalid_xauth_login";
   public static final String TFA_FAILED = "tfa_failed";

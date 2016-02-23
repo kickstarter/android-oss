@@ -5,8 +5,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.kickstarter.KSApplication;
 import com.kickstarter.libs.utils.BundleUtils;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -30,13 +33,7 @@ public class ViewModels {
     ViewModel viewModel = viewModels.get(id);
 
     if (viewModel == null) {
-      try {
-        viewModel = viewModelClass.newInstance();
-      } catch (final @NonNull InstantiationException | IllegalAccessException exception) {
-        throw new RuntimeException(exception);
-      }
-      viewModels.put(id, viewModel);
-      viewModel.onCreate(context, BundleUtils.maybeGetBundle(savedInstanceState, VIEW_MODEL_STATE_KEY));
+      viewModel = create(context, viewModelClass, savedInstanceState, id);
     }
 
     return (T) viewModel;
@@ -60,6 +57,27 @@ public class ViewModels {
     final Bundle state = new Bundle();
     viewModel.save(state);
     envelope.putBundle(VIEW_MODEL_STATE_KEY, state);
+  }
+
+  private <T extends ViewModel> ViewModel create(final @NonNull Context context, final @NonNull Class<T> viewModelClass,
+    final @Nullable Bundle savedInstanceState, final @NonNull String id) {
+
+    final KSApplication application = (KSApplication) context.getApplicationContext();
+    final Environment environment = application.component().environment();
+    ViewModel viewModel;
+
+    try {
+      final Constructor constructor = viewModelClass.getConstructor(Environment.class);
+      viewModel = (ViewModel) constructor.newInstance(environment);
+    }
+    catch (IllegalAccessException | InvocationTargetException | InstantiationException | NoSuchMethodException exception) {
+      throw new RuntimeException(exception);
+    }
+
+    viewModels.put(id, viewModel);
+    viewModel.onCreate(context, BundleUtils.maybeGetBundle(savedInstanceState, VIEW_MODEL_STATE_KEY));
+
+    return viewModel;
   }
 
   private String fetchId(final @Nullable Bundle savedInstanceState) {

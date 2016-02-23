@@ -3,7 +3,10 @@ package com.kickstarter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KSString;
+import com.kickstarter.services.MockApiClient;
+import com.kickstarter.services.MockWebClient;
 
 import junit.framework.TestCase;
 
@@ -16,6 +19,7 @@ import org.robolectric.shadows.multidex.ShadowMultiDex;
 @Config(constants = BuildConfig.class, shadows = ShadowMultiDex.class, sdk = KSRobolectricGradleTestRunner.DEFAULT_SDK)
 public abstract class KSRobolectricTestCase extends TestCase {
   private TestKSApplication application;
+  private Environment environment;
 
   protected @NonNull TestKSApplication application() {
     if (application != null) {
@@ -28,6 +32,19 @@ public abstract class KSRobolectricTestCase extends TestCase {
 
   protected @NonNull Context context() {
     return application().getApplicationContext();
+  }
+
+  protected @NonNull Environment environment() {
+    if (environment != null) {
+      return environment;
+    }
+
+    environment = application().component().environment().toBuilder()
+      .apiClient(new MockApiClient())
+      .webClient(new MockWebClient())
+      .build();
+
+    return environment;
   }
 
   protected @NonNull KSString ksString() {

@@ -7,11 +7,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.preferences.IntPreference;
@@ -29,16 +29,16 @@ import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
-import com.kickstarter.services.WebClient;
+import com.kickstarter.services.WebClientType;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
+import com.kickstarter.ui.data.ActivityResult;
+import com.kickstarter.ui.intentmappers.DiscoveryIntentMapper;
 import com.kickstarter.ui.viewholders.ActivitySampleFriendBackingViewHolder;
 import com.kickstarter.ui.viewholders.ActivitySampleFriendFollowViewHolder;
 import com.kickstarter.ui.viewholders.ActivitySampleProjectViewHolder;
-import com.kickstarter.ui.data.ActivityResult;
-import com.kickstarter.ui.intentmappers.DiscoveryIntentMapper;
 import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.ChildFilterViewHolder;
@@ -52,8 +52,6 @@ import com.kickstarter.viewmodels.outputs.DiscoveryViewModelOutputs;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Inject;
-
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
@@ -62,11 +60,11 @@ import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
 
 public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> implements DiscoveryViewModelInputs,
   DiscoveryViewModelOutputs {
-  protected @Inject ApiClientType apiClient;
-  protected @Inject WebClient webClient;
-  protected @Inject BuildCheck buildCheck;
-  protected @Inject CurrentUser currentUser;
-  protected @Inject @ActivitySamplePreference IntPreference activitySamplePreference;
+  private final ApiClientType apiClient;
+  private final WebClientType webClient;
+  private final BuildCheck buildCheck;
+  private final CurrentUser currentUser;
+  private final @ActivitySamplePreference IntPreference activitySamplePreference;
 
   // INPUTS
   private final PublishSubject<Void> nextPage = PublishSubject.create();
@@ -261,10 +259,19 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   public final DiscoveryViewModelInputs inputs = this;
   public final DiscoveryViewModelOutputs outputs = this;
 
+  public DiscoveryViewModel(final @NonNull Environment environment) {
+    super(environment);
+
+    this.activitySamplePreference = environment.activitySamplePreference();
+    this.apiClient = environment.apiClient();
+    this.buildCheck = environment.buildCheck();
+    this.currentUser = environment.currentUser();
+    this.webClient = environment.webClient();
+  }
+
   @Override
   protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
-    ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     buildCheck.bind(this, webClient);
 

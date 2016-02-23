@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
-import com.kickstarter.KSApplication;
+import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
@@ -24,8 +24,6 @@ import com.kickstarter.viewmodels.outputs.ThanksViewModelOutputs;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;
@@ -39,7 +37,7 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
   private final PublishSubject<Project> projectCardMiniClick = PublishSubject.create();
   private final PublishSubject<Category> categoryPromoClick = PublishSubject.create();
 
-  protected @Inject ApiClientType apiClient;
+  private final ApiClientType apiClient;
 
   private final BehaviorSubject<Project> project = BehaviorSubject.create();
   @Override
@@ -49,10 +47,15 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
 
   public final ThanksViewModelOutputs outputs = this;
 
+  public ThanksViewModel(final @NonNull Environment environment) {
+    super(environment);
+
+    apiClient = environment.apiClient();
+  }
+
   @Override
   protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
-    ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     final Observable<Pair<ThanksActivity, Project>> viewAndProject = view()
       .compose(Transformers.combineLatestPair(project))

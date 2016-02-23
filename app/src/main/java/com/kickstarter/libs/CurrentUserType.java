@@ -23,12 +23,14 @@ public abstract class CurrentUserType {
 
   /**
    * Returns the most recently emitted user from the user observable.
+   * * @deprecated Prefer {@link #observable()}
    */
   @Deprecated
   public abstract @Nullable User getUser();
 
   /**
    * Returns a boolean that determines if there is a currently logged in user or not.
+   * @deprecated Prefer {@link #observable()}
    */
   @Deprecated
   public boolean exists() {

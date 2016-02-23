@@ -120,8 +120,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
 
     final ApiClientType apiClient = new MockApiClient() {
       @Override
-      public @NonNull
-      Observable<Project> fetchProject(@NonNull String param) {
+      public @NonNull Observable<Project> fetchProject(final @NonNull String param) {
         return Observable.just(project);
       }
     };

@@ -59,12 +59,17 @@ public class MockApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<Project> fetchProject(final @NonNull String param) {
-    return Observable.just(ProjectFactory.project());
+    return Observable.just(
+      ProjectFactory.project()
+        .toBuilder()
+        .slug(param)
+        .build()
+    );
   }
 
   @Override
   public @NonNull Observable<Project> fetchProject(final @NonNull Project project) {
-    return Observable.empty();
+    return Observable.just(project);
   }
 
   @Override
@@ -168,17 +173,27 @@ public class MockApiClient implements ApiClientType {
   @Override
   public @NonNull Observable<AccessTokenEnvelope> signup(final @NonNull String name, final @NonNull String email,
     final @NonNull String password, final @NonNull String passwordConfirmation, final boolean sendNewsletters) {
-    return Observable.empty();
+
+    return Observable.just(
+      AccessTokenEnvelope.builder()
+        .user(UserFactory.user()
+          .toBuilder()
+          .name(name)
+          .build()
+        )
+      .accessToken("deadbeef")
+      .build()
+    );
   }
 
   @Override
   public @NonNull Observable<Project> starProject(final @NonNull Project project) {
-    return Observable.empty();
+    return Observable.just(project.toBuilder().isStarred(true).build());
   }
 
   @Override
   public @NonNull Observable<Project> toggleProjectStar(final @NonNull Project project) {
-    return Observable.empty();
+    return Observable.just(project.toBuilder().isStarred(!project.isStarred()).build());
   }
 
   @Override

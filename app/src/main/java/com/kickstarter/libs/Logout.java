@@ -8,9 +8,9 @@ import java.net.CookieManager;
 
 public class Logout {
   private final CookieManager cookieManager;
-  private final CurrentUser currentUser;
+  private final CurrentUserType currentUser;
 
-  public Logout(final @NonNull CookieManager cookieManager, final @NonNull CurrentUser currentUser) {
+  public Logout(final @NonNull CookieManager cookieManager, final @NonNull CurrentUserType currentUser) {
     this.cookieManager = cookieManager;
     this.currentUser = currentUser;
   }

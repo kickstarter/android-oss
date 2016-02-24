@@ -1,12 +1,9 @@
 package com.kickstarter.viewmodels;
 
-import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.kickstarter.libs.ApiPaginator;
-import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
@@ -30,7 +27,7 @@ import rx.subjects.PublishSubject;
 
 public final class ProfileViewModel extends ViewModel<ProfileActivity> implements ProfileAdapter.Delegate, ProfileViewModelInputs, ProfileViewModelOutputs {
   private final ApiClientType client;
-  private final CurrentUser currentUser;
+  private final CurrentUserType currentUser;
 
   // INPUTS
   private final PublishSubject<Void> nextPage = PublishSubject.create();
@@ -65,11 +62,6 @@ public final class ProfileViewModel extends ViewModel<ProfileActivity> implement
 
     client = environment.apiClient();
     currentUser = environment.currentUser();
-  }
-
-  @Override
-  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
-    super.onCreate(context, savedInstanceState);
 
     final Observable<User> freshUser = client.fetchCurrentUser()
       .retry(2)

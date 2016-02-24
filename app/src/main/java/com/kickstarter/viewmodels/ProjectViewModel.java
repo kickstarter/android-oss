@@ -1,15 +1,13 @@
 package com.kickstarter.viewmodels;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfig;
-import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.ViewModel;
@@ -37,7 +35,7 @@ import rx.subjects.PublishSubject;
 public final class ProjectViewModel extends ViewModel<ProjectActivity> implements ProjectAdapter.Delegate,
   ProjectViewModelInputs, ProjectViewModelOutputs {
   private final ApiClientType client;
-  private final CurrentUser currentUser;
+  private final CurrentUserType currentUser;
   private final CookieManager cookieManager;
   private final CurrentConfig currentConfig;
   private final SharedPreferences sharedPreferences;
@@ -174,11 +172,6 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
     currentConfig = environment.currentConfig();
     currentUser = environment.currentUser();
     sharedPreferences = environment.sharedPreferences();
-  }
-
-  @Override
-  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
-    super.onCreate(context, savedInstanceState);
 
     // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
     final Observable<RefTag> cookieRefTag = project

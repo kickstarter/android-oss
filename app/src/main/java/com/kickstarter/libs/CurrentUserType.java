@@ -10,9 +10,25 @@ import rx.Observable;
 
 public abstract class CurrentUserType {
 
+  /**
+   * Call when a user has logged in. The implementation of `CurrentUserType` is responsible
+   * for persisting the user and access token.
+   */
   public abstract void login(final @NonNull User newUser, final @NonNull String accessToken);
+
+  /**
+   * Call when a user should be logged out.
+   */
   public abstract void logout();
+
+  /**
+   * Get the logged in user's access token.
+   */
   public abstract @Nullable String getAccessToken();
+
+  /**
+   * Updates the persisted current user with a fresh, new user.
+   */
   public abstract void refresh(final @NonNull User freshUser);
 
   /**
@@ -23,7 +39,7 @@ public abstract class CurrentUserType {
 
   /**
    * Returns the most recently emitted user from the user observable.
-   * * @deprecated Prefer {@link #observable()}
+   * @deprecated Prefer {@link #observable()}
    */
   @Deprecated
   public abstract @Nullable User getUser();

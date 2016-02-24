@@ -21,7 +21,7 @@ public final class Koala {
     this.client = client;
   }
 
-  public TrackingClientType client() {
+  public @NonNull TrackingClientType client() {
     return client;
   }
 

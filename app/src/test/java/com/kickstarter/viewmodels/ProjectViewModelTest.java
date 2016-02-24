@@ -24,7 +24,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<Project> projectTest = new TestSubscriber<>();
     vm.outputs.projectAndConfig().map(pc -> pc.first).subscribe(projectTest);
 
-    final Project project = ProjectFactory.halfWayProject();
+    final Project project = ProjectFactory.project();
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
 
     projectTest.assertValues(project, project);
@@ -63,6 +63,9 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     starredTest.assertValues(false, false);
     showStarredPromptTest.assertValueCount(0);
     loginToutTest.assertValueCount(1);
+
+    // A koala event for starring should NOT be tracked
+    koalaTest.assertValues("Project Page");
 
     // Login
     currentUser.refresh(UserFactory.user());

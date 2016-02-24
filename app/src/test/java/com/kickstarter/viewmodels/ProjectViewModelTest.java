@@ -54,9 +54,6 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     // Start the view model with a project
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.halfWayProject()));
 
-    // A koala event should NOT be tracked
-    koalaTest.assertValues("Project Page");
-
     starredTest.assertValues(false, false);
 
     // Try starring while logged out
@@ -75,7 +72,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     starredTest.assertValues(false, false, true);
     showStarredPromptTest.assertValueCount(1);
 
-    // A koala event should be tracked
+    // A koala event for starring should be tracked
     koalaTest.assertValues("Project Page", "Project Star");
   }
 

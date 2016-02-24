@@ -13,7 +13,6 @@ import com.kickstarter.ui.IntentKey;
 
 import org.junit.Test;
 
-import rx.android.schedulers.AndroidSchedulers;
 import rx.observers.TestSubscriber;
 
 public class ProjectViewModelTest extends KSRobolectricTestCase {
@@ -23,10 +22,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     final ProjectViewModel vm = new ProjectViewModel(environment());
 
     final TestSubscriber<Project> projectTest = new TestSubscriber<>();
-    vm.outputs.projectAndConfig().map(pc -> pc.first)
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribeOn(AndroidSchedulers.mainThread())
-      .subscribe(projectTest);
+    vm.outputs.projectAndConfig().map(pc -> pc.first).subscribe(projectTest);
 
     final Project project = ProjectFactory.halfWayProject();
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));

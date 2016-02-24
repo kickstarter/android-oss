@@ -93,6 +93,9 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<Void> showStarredPromptTest = new TestSubscriber<>();
     vm.outputs.showStarredPrompt().subscribe(showStarredPromptTest);
 
+    final TestSubscriber<Boolean> starredTest = new TestSubscriber<>();
+    vm.outputs.projectAndConfig().map(pc -> pc.first).map(Project::isStarred).subscribe(starredTest);
+
     // Start the view model with an almost completed project
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
 
@@ -103,6 +106,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     vm.inputs.starClicked();
 
     // The project should be starred, and a star prompt should NOT be shown.
+    starredTest.assertValues(false, false, true);
     showStarredPromptTest.assertValueCount(0);
   }
 
@@ -118,6 +122,9 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<Void> showStarredPromptTest = new TestSubscriber<>();
     vm.outputs.showStarredPrompt().subscribe(showStarredPromptTest);
 
+    final TestSubscriber<Boolean> starredTest = new TestSubscriber<>();
+    vm.outputs.projectAndConfig().map(pc -> pc.first).map(Project::isStarred).subscribe(starredTest);
+
     // Start the view model with a successful project
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.successfulProject()));
 
@@ -128,6 +135,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     vm.inputs.starClicked();
 
     // The project should be starred, and a star prompt should NOT be shown.
+    starredTest.assertValues(false, false, true);
     showStarredPromptTest.assertValueCount(0);
   }
 }

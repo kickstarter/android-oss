@@ -22,7 +22,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     final ProjectViewModel vm = new ProjectViewModel(environment());
 
     final TestSubscriber<Project> projectTest = new TestSubscriber<>();
-    vm.outputs.projectAndConfig().map(pc -> pc.first).subscribe(projectTest);
+    vm.outputs.projectAndUserCountry().map(pc -> pc.first).subscribe(projectTest);
 
     final Project project = ProjectFactory.project();
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
@@ -49,7 +49,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     vm.outputs.showStarredPrompt().subscribe(showStarredPromptTest);
 
     final TestSubscriber<Boolean> starredTest = new TestSubscriber<>();
-    vm.outputs.projectAndConfig().map(pc -> pc.first).map(Project::isStarred).subscribe(starredTest);
+    vm.outputs.projectAndUserCountry().map(pc -> pc.first).map(Project::isStarred).subscribe(starredTest);
 
     // Start the view model with a project
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.halfWayProject()));
@@ -94,7 +94,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     vm.outputs.showStarredPrompt().subscribe(showStarredPromptTest);
 
     final TestSubscriber<Boolean> starredTest = new TestSubscriber<>();
-    vm.outputs.projectAndConfig().map(pc -> pc.first).map(Project::isStarred).subscribe(starredTest);
+    vm.outputs.projectAndUserCountry().map(pc -> pc.first).map(Project::isStarred).subscribe(starredTest);
 
     // Start the view model with an almost completed project
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
@@ -123,7 +123,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     vm.outputs.showStarredPrompt().subscribe(showStarredPromptTest);
 
     final TestSubscriber<Boolean> starredTest = new TestSubscriber<>();
-    vm.outputs.projectAndConfig().map(pc -> pc.first).map(Project::isStarred).subscribe(starredTest);
+    vm.outputs.projectAndUserCountry().map(pc -> pc.first).map(Project::isStarred).subscribe(starredTest);
 
     // Start the view model with a successful project
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.successfulProject()));

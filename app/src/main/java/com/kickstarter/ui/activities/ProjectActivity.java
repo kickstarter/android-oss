@@ -81,10 +81,10 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     projectRecyclerView.setAdapter(adapter);
     projectRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    this.viewModel.outputs.projectAndConfig()
+    this.viewModel.outputs.projectAndUserCountry()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(pc -> this.renderProject(pc.first, pc.second.countryCode()));
+      .subscribe(pc -> this.renderProject(pc.first, pc.second));
 
     this.viewModel.outputs.showCampaign()
       .compose(bindToLifecycle())

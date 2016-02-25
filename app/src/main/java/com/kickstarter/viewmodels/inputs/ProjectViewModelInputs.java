@@ -5,6 +5,16 @@ import android.support.annotation.NonNull;
 import com.kickstarter.models.Reward;
 
 public interface ProjectViewModelInputs {
+  /**
+   * Call when the star button has been clicked.
+   */
+  void starClicked();
+
+  /**
+   * Call when the user has successfully logged in.
+   */
+  void loginSuccess();
+
   void backProjectClicked();
   void shareClicked();
   void blurbClicked();
@@ -14,7 +24,5 @@ public interface ProjectViewModelInputs {
   void updatesClicked();
   void playVideoClicked();
   void viewPledgeClicked();
-  void starClicked();
   void rewardClicked(final @NonNull Reward reward);
-  void loginSuccess();
 }

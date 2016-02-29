@@ -1,9 +1,6 @@
 package com.kickstarter.viewmodels;
 
-import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.libs.CurrentUserType;
@@ -173,7 +170,6 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
       .map(us -> us.second.second)
       .compose(bindToLifecycle())
       .subscribe(sendNewsletterConfirmation);
-
 
     contactEmailClicked
       .compose(bindToLifecycle())

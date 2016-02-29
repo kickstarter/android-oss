@@ -6,6 +6,7 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.models.User;
+import com.kickstarter.ui.data.Newsletter;
 
 import org.junit.Test;
 
@@ -26,6 +27,9 @@ public final class SettingsViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<User> currentUserTest = new TestSubscriber<>();
     currentUser.observable().subscribe(currentUserTest);
 
+    final TestSubscriber<Newsletter> sendNewsletterConfirmationTest = new TestSubscriber<>();
+    vm.sendNewsletterConfirmation().subscribe(sendNewsletterConfirmationTest);
+
     currentUserTest.assertValues(user);
     koalaTest.assertValues("Settings View");
 
@@ -36,6 +40,8 @@ public final class SettingsViewModelTest extends KSRobolectricTestCase {
     vm.inputs.sendHappeningNewsletter(false);
     koalaTest.assertValues("Settings View", "Newsletter Subscribe", "Newsletter Unsubscribe");
     currentUserTest.assertValues(user, user.toBuilder().happeningNewsletter(true).build(), user);
+
+    sendNewsletterConfirmationTest.assertNoValues();
   }
 
   @Test
@@ -51,6 +57,9 @@ public final class SettingsViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<User> currentUserTest = new TestSubscriber<>();
     currentUser.observable().subscribe(currentUserTest);
 
+    final TestSubscriber<Newsletter> sendNewsletterConfirmationTest = new TestSubscriber<>();
+    vm.sendNewsletterConfirmation().subscribe(sendNewsletterConfirmationTest);
+
     currentUserTest.assertValues(user);
     koalaTest.assertValues("Settings View");
 
@@ -61,6 +70,8 @@ public final class SettingsViewModelTest extends KSRobolectricTestCase {
     vm.inputs.sendPromoNewsletter(false);
     koalaTest.assertValues("Settings View", "Newsletter Subscribe", "Newsletter Unsubscribe");
     currentUserTest.assertValues(user, user.toBuilder().promoNewsletter(true).build(), user);
+
+    sendNewsletterConfirmationTest.assertNoValues();
   }
 
   @Test
@@ -76,6 +87,9 @@ public final class SettingsViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<User> currentUserTest = new TestSubscriber<>();
     currentUser.observable().subscribe(currentUserTest);
 
+    final TestSubscriber<Newsletter> sendNewsletterConfirmationTest = new TestSubscriber<>();
+    vm.sendNewsletterConfirmation().subscribe(sendNewsletterConfirmationTest);
+
     currentUserTest.assertValues(user);
     koalaTest.assertValues("Settings View");
 
@@ -86,5 +100,7 @@ public final class SettingsViewModelTest extends KSRobolectricTestCase {
     vm.inputs.sendWeeklyNewsletter(false);
     koalaTest.assertValues("Settings View", "Newsletter Subscribe", "Newsletter Unsubscribe");
     currentUserTest.assertValues(user, user.toBuilder().weeklyNewsletter(true).build(), user);
+
+    sendNewsletterConfirmationTest.assertNoValues();
   }
 }

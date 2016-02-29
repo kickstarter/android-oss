@@ -25,16 +25,19 @@ public final class SettingsViewModelTest extends KSRobolectricTestCase {
     currentUser.refresh(user);
 
     final SettingsViewModel vm = new SettingsViewModel(environment);
-    final TestSubscriber<User> currentUserTest = new TestSubscriber<>();
 
+    final TestSubscriber<User> currentUserTest = new TestSubscriber<>();
     currentUser.observable().subscribe(currentUserTest);
 
     currentUserTest.assertValues(user);
     koalaTest.assertValues("Settings View");
 
     vm.inputs.sendHappeningNewsletter(true, "Happening Now");
-
     koalaTest.assertValues("Settings View", "Newsletter Subscribe");
     currentUserTest.assertValues(user, user.toBuilder().happeningNewsletter(true).build());
+
+    vm.inputs.sendHappeningNewsletter(false, "Happening Now");
+    koalaTest.assertValues("Settings View", "Newsletter Subscribe", "Newsletter Unsubscribe");
+    currentUserTest.assertValues(user, user.toBuilder().happeningNewsletter(true).build(), user);
   }
 }

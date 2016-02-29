@@ -189,12 +189,31 @@
           <TextView
             style="@style/SubheadPrimary"
             android:layout_centerVertical="true"
-            android:text="@string/profile_settings_newsletter_weekly"
+            android:text="@string/profile_settings_newsletter_happening"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
           <android.support.v7.widget.SwitchCompat
-            android:id="@+id/projects_we_love_switch"
+            android:id="@+id/happening_now_switch"
+            style="@style/EndSettingsWidget"/>
+
+        </RelativeLayout>
+
+        <include layout="@layout/horizontal_line_1dp_view"/>
+
+        <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/grid_8">
+
+          <TextView
+            style="@style/SubheadPrimary"
+            android:layout_centerVertical="true"
+            android:text="@string/profile_settings_newsletter_games"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+          <android.support.v7.widget.SwitchCompat
+            android:id="@+id/games_switch"
             style="@style/EndSettingsWidget"/>
 
         </RelativeLayout>
@@ -227,12 +246,12 @@
           <TextView
             style="@style/SubheadPrimary"
             android:layout_centerVertical="true"
-            android:text="@string/profile_settings_newsletter_happening"
+            android:text="@string/profile_settings_newsletter_weekly"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
           <android.support.v7.widget.SwitchCompat
-            android:id="@+id/happening_now_switch"
+            android:id="@+id/projects_we_love_switch"
             style="@style/EndSettingsWidget"/>
 
         </RelativeLayout>

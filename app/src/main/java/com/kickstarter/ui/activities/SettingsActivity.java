@@ -46,6 +46,7 @@ import static com.kickstarter.libs.utils.IntegerUtils.intValueOrZero;
 
 @RequiresViewModel(SettingsViewModel.class)
 public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
+  protected @Bind(R.id.games_switch) SwitchCompat gamesNewsletterSwitch;
   protected @Bind(R.id.happening_now_switch) SwitchCompat happeningNewsletterSwitch;
   protected @Bind(R.id.friend_activity_mail_icon) IconTextView friendActivityMailIconTextView;
   protected @Bind(R.id.friend_activity_phone_icon) IconTextView friendActivityPhoneIconTextView;
@@ -60,6 +61,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   protected @BindColor(R.color.green) int green;
   protected @BindColor(R.color.gray) int gray;
 
+  protected @BindString(R.string.profile_settings_newsletter_games) String gamesNewsletterString;
   protected @BindString(R.string.profile_settings_newsletter_happening) String happeningNewsletterString;
   protected @BindString(R.string.mailto) String mailtoString;
   protected @BindString(R.string.Logged_Out) String loggedOutString;
@@ -111,15 +113,19 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> ViewUtils.showToast(this, unableToSaveString));
 
-    RxView.clicks(this.happeningNewsletterSwitch)
+    RxView.clicks(gamesNewsletterSwitch)
+      .compose(bindToLifecycle())
+      .subscribe(__ -> viewModel.inputs.sendGamesNewsletter(gamesNewsletterSwitch.isChecked()));
+
+    RxView.clicks(happeningNewsletterSwitch)
       .compose(bindToLifecycle())
       .subscribe(__ -> viewModel.inputs.sendHappeningNewsletter(happeningNewsletterSwitch.isChecked()));
 
-    RxView.clicks(this.promoNewsletterSwitch)
+    RxView.clicks(promoNewsletterSwitch)
       .compose(bindToLifecycle())
       .subscribe(__ -> viewModel.inputs.sendPromoNewsletter(promoNewsletterSwitch.isChecked()));
 
-    RxView.clicks(this.weeklyNewsletterSwitch)
+    RxView.clicks(weeklyNewsletterSwitch)
       .compose(bindToLifecycle())
       .subscribe(__ -> viewModel.inputs.sendWeeklyNewsletter(weeklyNewsletterSwitch.isChecked()));
 
@@ -137,7 +143,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
     viewModel.outputs.logout()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> this.logout());
+      .subscribe(__ -> logout());
   }
 
   /**
@@ -233,6 +239,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
     toggleIconColor(projectUpdatesMailIconTextView, false, notifyOfUpdates);
     toggleIconColor(projectUpdatesPhoneIconTextView, true, notifyMobileOfUpdates);
 
+    SwitchCompatUtils.setCheckedWithoutAnimation(gamesNewsletterSwitch, isTrue(user.gamesNewsletter()));
     SwitchCompatUtils.setCheckedWithoutAnimation(happeningNewsletterSwitch, isTrue(user.happeningNewsletter()));
     SwitchCompatUtils.setCheckedWithoutAnimation(promoNewsletterSwitch, isTrue(user.promoNewsletter()));
     SwitchCompatUtils.setCheckedWithoutAnimation(weeklyNewsletterSwitch, isTrue(user.weeklyNewsletter()));
@@ -331,13 +338,14 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
 
   private @Nullable String newsletterString(final @NonNull Newsletter newsletter) {
     switch (newsletter) {
+      case GAMES:
+        return gamesNewsletterString;
       case HAPPENING:
         return happeningNewsletterString;
       case PROMO:
         return promoNewsletterString;
       case WEEKLY:
         return weeklyNewsletterString;
-      case GAMES: // TODO
       default:
         return null;
     }

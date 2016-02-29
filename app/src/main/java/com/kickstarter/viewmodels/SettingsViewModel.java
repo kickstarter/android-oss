@@ -114,6 +114,12 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
   }
 
   @Override
+  public void sendGamesNewsletter(final boolean checked) {
+    userInput.onNext(userOutput.getValue().toBuilder().gamesNewsletter(checked).build());
+    newsletterInput.onNext(new Pair<>(checked, Newsletter.GAMES));
+  }
+
+  @Override
   public void sendHappeningNewsletter(final boolean checked) {
     userInput.onNext(userOutput.getValue().toBuilder().happeningNewsletter(checked).build());
     newsletterInput.onNext(new Pair<>(checked, Newsletter.HAPPENING));

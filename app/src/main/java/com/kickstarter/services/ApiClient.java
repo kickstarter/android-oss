@@ -340,6 +340,7 @@ public final class ApiClient implements ApiClientType {
           .notifyOfFollower(isTrue(user.notifyOfFollower()))
           .notifyOfFriendActivity(isTrue(user.notifyOfFriendActivity()))
           .notifyOfUpdates(isTrue(user.notifyOfUpdates()))
+          .gamesNewsletter(isTrue(user.gamesNewsletter()) ? 1 : 0)
           .happeningNewsletter(isTrue(user.happeningNewsletter()) ? 1 : 0)
           .promoNewsletter(isTrue(user.promoNewsletter()) ? 1 : 0)
           .weeklyNewsletter(isTrue(user.weeklyNewsletter()) ? 1 : 0)

@@ -138,11 +138,6 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
 
     client = environment.apiClient();
     currentUser = environment.currentUser();
-  }
-
-  @Override
-  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
-    super.onCreate(context, savedInstanceState);
 
     client.fetchCurrentUser()
       .retry(2)

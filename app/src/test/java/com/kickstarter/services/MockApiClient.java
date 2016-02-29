@@ -203,6 +203,6 @@ public class MockApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<User> updateUserSettings(final @NonNull User user) {
-    return Observable.empty();
+    return Observable.just(user);
   }
 }

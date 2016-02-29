@@ -13,6 +13,7 @@ import com.kickstarter.models.Location;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.activities.SettingsActivity;
+import com.kickstarter.ui.data.Newsletter;
 import com.kickstarter.viewmodels.errors.SettingsViewModelErrors;
 import com.kickstarter.viewmodels.inputs.SettingsViewModelInputs;
 import com.kickstarter.viewmodels.outputs.SettingsViewModelOutputs;
@@ -26,7 +27,7 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
 
   // INPUTS
   private final PublishSubject<Void> contactEmailClicked = PublishSubject.create();
-  private final PublishSubject<Pair<Boolean, String>> newsletterInput = PublishSubject.create();
+  private final PublishSubject<Pair<Boolean, Newsletter>> newsletterInput = PublishSubject.create();
   private final PublishSubject<User> userInput = PublishSubject.create();
   public void logoutClicked() {
     showConfirmLogoutPrompt.onNext(true);
@@ -41,8 +42,8 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
   }
 
   // OUTPUTS
-  private final PublishSubject<String> sendNewsletterConfirmation = PublishSubject.create();
-  public Observable<String> sendNewsletterConfirmation() {
+  private final PublishSubject<Newsletter> sendNewsletterConfirmation = PublishSubject.create();
+  public Observable<Newsletter> sendNewsletterConfirmation() {
     return sendNewsletterConfirmation;
   }
   private final PublishSubject<Void> updateSuccess = PublishSubject.create();
@@ -113,21 +114,21 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
   }
 
   @Override
-  public void sendHappeningNewsletter(final boolean checked, final @NonNull String name) {
+  public void sendHappeningNewsletter(final boolean checked) {
     userInput.onNext(userOutput.getValue().toBuilder().happeningNewsletter(checked).build());
-    newsletterInput.onNext(new Pair<>(checked, name));
+    newsletterInput.onNext(new Pair<>(checked, Newsletter.HAPPENING));
   }
 
   @Override
-  public void sendPromoNewsletter(final boolean checked, final @NonNull String name) {
+  public void sendPromoNewsletter(final boolean checked) {
     userInput.onNext(userOutput.getValue().toBuilder().promoNewsletter(checked).build());
-    newsletterInput.onNext(new Pair<>(checked, name));
+    newsletterInput.onNext(new Pair<>(checked, Newsletter.PROMO));
   }
 
   @Override
-  public void sendWeeklyNewsletter(final boolean checked, final @NonNull String name) {
+  public void sendWeeklyNewsletter(final boolean checked) {
     userInput.onNext(userOutput.getValue().toBuilder().weeklyNewsletter(checked).build());
-    newsletterInput.onNext(new Pair<>(checked, name));
+    newsletterInput.onNext(new Pair<>(checked, Newsletter.WEEKLY));
   }
 
   public SettingsViewModel(final @NonNull Environment environment) {

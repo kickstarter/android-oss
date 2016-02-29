@@ -8,9 +8,9 @@ public interface SettingsViewModelInputs {
   void notifyOfFollower(boolean checked);
   void notifyOfFriendActivity(boolean checked);
   void notifyOfUpdates(boolean checked);
-  void sendHappeningNewsletter(boolean checked, String name);
-  void sendPromoNewsletter(boolean checked, String name);
-  void sendWeeklyNewsletter(boolean checked, String name);
+  void sendHappeningNewsletter(boolean checked);
+  void sendPromoNewsletter(boolean checked);
+  void sendWeeklyNewsletter(boolean checked);
 
   /**
    * Call when the user taps the logout button

@@ -1,11 +1,12 @@
 package com.kickstarter.viewmodels.outputs;
 
 import com.kickstarter.models.User;
+import com.kickstarter.ui.data.Newsletter;
 
 import rx.Observable;
 
 public interface SettingsViewModelOutputs {
-  Observable<String> sendNewsletterConfirmation();
+  Observable<Newsletter> sendNewsletterConfirmation();
   Observable<Void> updateSuccess();
   Observable<User> user();
 

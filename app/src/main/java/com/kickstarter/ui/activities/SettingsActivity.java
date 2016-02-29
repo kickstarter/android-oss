@@ -24,6 +24,7 @@ import com.kickstarter.libs.utils.ApplicationUtils;
 import com.kickstarter.libs.utils.SwitchCompatUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.User;
+import com.kickstarter.ui.data.Newsletter;
 import com.kickstarter.ui.views.IconTextView;
 import com.kickstarter.viewmodels.SettingsViewModel;
 
@@ -112,15 +113,15 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
 
     RxView.clicks(this.happeningNewsletterSwitch)
       .compose(bindToLifecycle())
-      .subscribe(__ -> viewModel.inputs.sendHappeningNewsletter(happeningNewsletterSwitch.isChecked(), happeningNewsletterString));
+      .subscribe(__ -> viewModel.inputs.sendHappeningNewsletter(happeningNewsletterSwitch.isChecked()));
 
     RxView.clicks(this.promoNewsletterSwitch)
       .compose(bindToLifecycle())
-      .subscribe(__ -> viewModel.inputs.sendPromoNewsletter(promoNewsletterSwitch.isChecked(), promoNewsletterString));
+      .subscribe(__ -> viewModel.inputs.sendPromoNewsletter(promoNewsletterSwitch.isChecked()));
 
     RxView.clicks(this.weeklyNewsletterSwitch)
       .compose(bindToLifecycle())
-      .subscribe(__ -> viewModel.inputs.sendWeeklyNewsletter(weeklyNewsletterSwitch.isChecked(), weeklyNewsletterString));
+      .subscribe(__ -> viewModel.inputs.sendWeeklyNewsletter(weeklyNewsletterSwitch.isChecked()));
 
     viewModel.outputs.showConfirmLogoutPrompt()
       .compose(bindToLifecycle())
@@ -205,8 +206,13 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
     startHelpActivity(HelpActivity.CookiePolicy.class);
   }
 
-  public void displayNewsletterConfirmation(final @NonNull String name) {
-    final String optInDialogMessageString = ksString.format(optInMessageString, "newsletter", name);
+  public void displayNewsletterConfirmation(final @NonNull Newsletter newsletter) {
+    final String string = newsletterString(newsletter);
+    if (string == null) {
+      return;
+    }
+
+    final String optInDialogMessageString = ksString.format(optInMessageString, "newsletter", string);
     ViewUtils.showDialog(this, optInTitleString, optInDialogMessageString);
   }
 
@@ -321,5 +327,19 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
       contentDescription = subscribeString;
     }
     iconTextView.setContentDescription(contentDescription);
+  }
+
+  private @Nullable String newsletterString(final @NonNull Newsletter newsletter) {
+    switch (newsletter) {
+      case HAPPENING:
+        return happeningNewsletterString;
+      case PROMO:
+        return promoNewsletterString;
+      case WEEKLY:
+        return weeklyNewsletterString;
+      case GAMES: // TODO
+      default:
+        return null;
+    }
   }
 }

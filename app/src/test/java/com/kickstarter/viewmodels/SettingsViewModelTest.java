@@ -15,14 +15,11 @@ public final class SettingsViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testSettingsViewModel_sendHappeningNewsletter() {
-    final CurrentUserType currentUser = new MockCurrentUser();
+    final User user = UserFactory.user().toBuilder().happeningNewsletter(false).build();
+    final CurrentUserType currentUser = new MockCurrentUser(user);
     final Environment environment = environment().toBuilder()
       .currentUser(currentUser)
       .build();
-
-    // Settings requires a user
-    final User user = UserFactory.user().toBuilder().happeningNewsletter(false).build();
-    currentUser.refresh(user);
 
     final SettingsViewModel vm = new SettingsViewModel(environment);
 
@@ -32,11 +29,36 @@ public final class SettingsViewModelTest extends KSRobolectricTestCase {
     currentUserTest.assertValues(user);
     koalaTest.assertValues("Settings View");
 
-    vm.inputs.sendHappeningNewsletter(true, "Happening Now");
+    vm.inputs.sendHappeningNewsletter(true);
     koalaTest.assertValues("Settings View", "Newsletter Subscribe");
     currentUserTest.assertValues(user, user.toBuilder().happeningNewsletter(true).build());
 
-    vm.inputs.sendHappeningNewsletter(false, "Happening Now");
+    vm.inputs.sendHappeningNewsletter(false);
+    koalaTest.assertValues("Settings View", "Newsletter Subscribe", "Newsletter Unsubscribe");
+    currentUserTest.assertValues(user, user.toBuilder().happeningNewsletter(true).build(), user);
+  }
+
+  @Test
+  public void testSettingsViewModel_sendProjectsWeLoveNewsletter() {
+    final User user = UserFactory.user().toBuilder().weeklyNewsletter(false).build();
+    final CurrentUserType currentUser = new MockCurrentUser(user);
+    final Environment environment = environment().toBuilder()
+      .currentUser(currentUser)
+      .build();
+
+    final SettingsViewModel vm = new SettingsViewModel(environment);
+
+    final TestSubscriber<User> currentUserTest = new TestSubscriber<>();
+    currentUser.observable().subscribe(currentUserTest);
+
+    currentUserTest.assertValues(user);
+    koalaTest.assertValues("Settings View");
+
+    vm.inputs.sendHappeningNewsletter(true);
+    koalaTest.assertValues("Settings View", "Newsletter Subscribe");
+    currentUserTest.assertValues(user, user.toBuilder().happeningNewsletter(true).build());
+
+    vm.inputs.sendHappeningNewsletter(false);
     koalaTest.assertValues("Settings View", "Newsletter Subscribe", "Newsletter Unsubscribe");
     currentUserTest.assertValues(user, user.toBuilder().happeningNewsletter(true).build(), user);
   }

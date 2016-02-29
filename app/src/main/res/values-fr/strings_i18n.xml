@@ -396,7 +396,7 @@
   <string name="general_navigation_accessibility_button_close_label" formatted="false">Fermer</string>
   <string name="general_navigation_accessibility_button_help_menu_label" formatted="false">Menu Aide</string>
   <string name="general_navigation_accessibility_button_navigate_back_label" formatted="false">Retour</string>
-  <string name="general_navigation_accessibility_button_overflow_menu_label" formatted="false">Overflow menu</string>
+  <string name="general_navigation_accessibility_button_overflow_menu_label" formatted="false">Sous-menu overflow</string>
   <string name="general_navigation_buttons_cancel" formatted="false">Annuler</string>
   <string name="general_navigation_buttons_close" formatted="false">Fermer</string>
   <string name="general_navigation_buttons_comment" formatted="false">Commenter</string>
@@ -543,6 +543,7 @@ Ce problème peut généralement être résolu en accédant à Réglages iOS > F
   <string name="profile_settings_logout_alert_title" formatted="false">Déconnexion</string>
   <string name="profile_settings_navbar_title" formatted="false">Paramètres</string>
   <string name="profile_settings_navbar_title_notifications" formatted="false">Notifications</string>
+  <string name="profile_settings_newsletter_games" formatted="false">Kickstarter Loves Games</string>
   <string name="profile_settings_newsletter_happening" formatted="false">Happening</string>
   <string name="profile_settings_newsletter_opt_in_message" formatted="false">Nous vous avons envoyé un e-mail de confirmation à l\'adresse associée à votre compte ! Veuillez ouvrir votre boîte de réception et confirmer votre abonnement à %{newsletter}.</string>
   <string name="profile_settings_newsletter_opt_in_title" formatted="false">Dernière étape !</string>
@@ -734,7 +735,7 @@ Merci pour votre soutien !</string>
   <string name="support_email_button_ok" formatted="false">OK</string>
   <string name="support_email_chooser" formatted="false">Choisissez une application e-mail :</string>
   <string name="support_email_noemail_message" formatted="false">On dirait que vous n\'avez pas de compte e-mail sur votre appareil. Veuillez nous contacter à l\'adresse app@kickstarter.com.</string>
-  <string name="support_email_noemail_message_android" formatted="false">Looks like you don’t have an e-mail account on your device. Please contact us at android@kickstarter.com.</string>
+  <string name="support_email_noemail_message_android" formatted="false">On dirait que vous n\'avez pas de compte e-mail sur votre appareil. Veuillez nous contacter à l\'adresse android@kickstarter.com.</string>
   <string name="support_email_noemail_title" formatted="false">Assistance</string>
   <string name="support_email_subject" formatted="false">Bonjour, Assistance de l\'application Kickstarter</string>
   <string name="support_email_to" formatted="false">app@kickstarter.com</string>

@@ -113,10 +113,6 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
   public void rewardClicked(final @NonNull Reward reward) {
     this.rewardClicked.onNext(reward);
   }
-  private final PublishSubject<Void> loginSuccess = PublishSubject.create();
-  public void loginSuccess() {
-    this.loginSuccess.onNext(null);
-  }
   public final ProjectViewModelInputs inputs = this;
 
   // OUTPUTS
@@ -201,8 +197,10 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
       .switchMap(this::toggleProjectStar)
       .share();
 
-    final Observable<Project> starredProjectOnLoginSuccess = initialProject
-      .compose(Transformers.takeWhen(loginSuccess))
+    final Observable<Project> starredProjectOnLoginSuccess = showLoginTout
+      .compose(Transformers.combineLatestPair(currentUser.observable()))
+      .filter(su -> su.second != null)
+      .withLatestFrom(initialProject, (__, p) -> p)
       .take(1)
       .switchMap(this::starProject)
       .share();

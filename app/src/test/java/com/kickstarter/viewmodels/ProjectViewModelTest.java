@@ -69,7 +69,6 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
 
     // Login
     currentUser.refresh(UserFactory.user());
-    vm.inputs.loginSuccess();
 
     // The project should be starred, and a star prompt should be shown.
     starredTest.assertValues(false, false, true);

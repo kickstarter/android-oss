@@ -10,11 +10,6 @@ public interface ProjectViewModelInputs {
    */
   void starClicked();
 
-  /**
-   * Call when the user has successfully logged in.
-   */
-  void loginSuccess();
-
   void backProjectClicked();
   void shareClicked();
   void blurbClicked();

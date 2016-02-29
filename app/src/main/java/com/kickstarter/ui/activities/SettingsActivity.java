@@ -101,10 +101,10 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::displayPreferences);
 
-    viewModel.outputs.sendNewsletterConfirmation()
+    viewModel.outputs.showOptInPrompt()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::displayNewsletterConfirmation);
+      .subscribe(this::showOptInPrompt);
 
     viewModel.errors.unableToSavePreferenceError()
       .compose(bindToLifecycle())
@@ -206,7 +206,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
     startHelpActivity(HelpActivity.CookiePolicy.class);
   }
 
-  public void displayNewsletterConfirmation(final @NonNull Newsletter newsletter) {
+  public void showOptInPrompt(final @NonNull Newsletter newsletter) {
     final String string = newsletterString(newsletter);
     if (string == null) {
       return;

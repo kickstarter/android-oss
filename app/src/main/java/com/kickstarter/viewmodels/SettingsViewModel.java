@@ -42,9 +42,9 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
   }
 
   // OUTPUTS
-  private final PublishSubject<Newsletter> sendNewsletterConfirmation = PublishSubject.create();
-  public Observable<Newsletter> sendNewsletterConfirmation() {
-    return sendNewsletterConfirmation;
+  private final PublishSubject<Newsletter> showOptInPrompt = PublishSubject.create();
+  public Observable<Newsletter> showOptInPrompt() {
+    return showOptInPrompt;
   }
   private final PublishSubject<Void> updateSuccess = PublishSubject.create();
   public final Observable<Void> updateSuccess() {
@@ -170,7 +170,7 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
       .filter(us -> requiresDoubleOptIn(us.first, us.second.first))
       .map(us -> us.second.second)
       .compose(bindToLifecycle())
-      .subscribe(sendNewsletterConfirmation);
+      .subscribe(showOptInPrompt);
 
     contactEmailClicked
       .compose(bindToLifecycle())

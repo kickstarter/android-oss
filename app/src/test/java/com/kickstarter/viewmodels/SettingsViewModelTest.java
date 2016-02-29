@@ -27,7 +27,7 @@ public final class SettingsViewModelTest extends KSRobolectricTestCase {
     currentUser.observable().subscribe(currentUserTest);
 
     final TestSubscriber<Newsletter> showOptInPromptTest = new TestSubscriber<>();
-    vm.showOptInPrompt().subscribe(showOptInPromptTest);
+    vm.outputs.showOptInPrompt().subscribe(showOptInPromptTest);
 
     currentUserTest.assertValues(user);
     koalaTest.assertValues("Settings View");
@@ -57,7 +57,7 @@ public final class SettingsViewModelTest extends KSRobolectricTestCase {
     currentUser.observable().subscribe(currentUserTest);
 
     final TestSubscriber<Newsletter> showOptInPromptTest = new TestSubscriber<>();
-    vm.showOptInPrompt().subscribe(showOptInPromptTest);
+    vm.outputs.showOptInPrompt().subscribe(showOptInPromptTest);
 
     currentUserTest.assertValues(user);
     koalaTest.assertValues("Settings View");
@@ -87,7 +87,7 @@ public final class SettingsViewModelTest extends KSRobolectricTestCase {
     currentUser.observable().subscribe(currentUserTest);
 
     final TestSubscriber<Newsletter> showOptInPromptTest = new TestSubscriber<>();
-    vm.showOptInPrompt().subscribe(showOptInPromptTest);
+    vm.outputs.showOptInPrompt().subscribe(showOptInPromptTest);
 
     currentUserTest.assertValues(user);
     koalaTest.assertValues("Settings View");
@@ -117,7 +117,7 @@ public final class SettingsViewModelTest extends KSRobolectricTestCase {
     currentUser.observable().subscribe(currentUserTest);
 
     final TestSubscriber<Newsletter> showOptInPromptTest = new TestSubscriber<>();
-    vm.showOptInPrompt().subscribe(showOptInPromptTest);
+    vm.outputs.showOptInPrompt().subscribe(showOptInPromptTest);
 
     currentUserTest.assertValues(user);
     koalaTest.assertValues("Settings View");

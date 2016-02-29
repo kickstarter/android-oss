@@ -1,9 +1,6 @@
 package com.kickstarter.viewmodels;
 
-import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.libs.Environment;
@@ -51,11 +48,6 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
     super(environment);
 
     apiClient = environment.apiClient();
-  }
-
-  @Override
-  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
-    super.onCreate(context, savedInstanceState);
 
     final Observable<Pair<ThanksActivity, Project>> viewAndProject = view()
       .compose(Transformers.combineLatestPair(project))

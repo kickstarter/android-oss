@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Pair;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -107,6 +108,16 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::showBackedProject);
 
+    viewModel.outputs.showRecommendations()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::showRecommendations);
+
+    viewModel.outputs.startDiscovery()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::startDiscovery);
+
     viewModel.outputs.startProject()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
@@ -134,21 +145,9 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
     recommendedProjectsRecyclerView.setAdapter(null);
   }
 
-  public void showRecommended(final @NonNull List<Project> projects, final @NonNull Category category) {
-    recommendedProjectsRecyclerView.setAdapter(new ThanksAdapter(projects, category, viewModel));
-  }
-
   @OnClick(R.id.close_button)
   protected void closeButtonClick() {
     ApplicationUtils.resumeDiscoveryActivity(this);
-  }
-
-  public void startDiscoveryCategoryIntent(final @NonNull Category category) {
-    final DiscoveryParams params = DiscoveryParams.builder().category(category).build();
-    final Intent intent = new Intent(this, DiscoveryActivity.class)
-      .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
-      .putExtra(IntentKey.DISCOVERY_PARAMS, params);
-    startActivity(intent);
   }
 
   @Override
@@ -178,6 +177,17 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
 
   private String shareString(final @NonNull Project project) {
     return ksString.format(iJustBackedString, "project_name", project.name());
+  }
+
+  private void showRecommendations(final @NonNull Pair<List<Project>, Category> projectsAndRootCategory) {
+    recommendedProjectsRecyclerView.setAdapter(new ThanksAdapter(projectsAndRootCategory.first, projectsAndRootCategory.second, viewModel));
+  }
+
+  private void startDiscovery(final @NonNull DiscoveryParams params) {
+    final Intent intent = new Intent(this, DiscoveryActivity.class)
+      .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
+      .putExtra(IntentKey.DISCOVERY_PARAMS, params);
+    startActivity(intent);
   }
 
   private void startProject(final @NonNull Project project) {

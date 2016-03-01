@@ -52,6 +52,7 @@
       <!-- Allow static imports for utils files that enhance Java or Android.
         Avoid excluding files that contain Kickstarter business logic, unless they
         improve the readability of tests. -->
+      <property name="excludes" value="com.kickstarter.libs.rx.transformers.Transformers.*" />
       <property name="excludes" value="com.kickstarter.libs.utils.ApplicationUtils.*" />
       <property name="excludes" value="com.kickstarter.libs.utils.BooleanUtils.*" />
       <property name="excludes" value="com.kickstarter.libs.utils.BundleUtils.*" />

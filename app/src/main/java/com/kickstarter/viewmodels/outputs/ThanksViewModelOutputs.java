@@ -1,6 +1,12 @@
 package com.kickstarter.viewmodels.outputs;
 
+import android.util.Pair;
+
+import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
+import com.kickstarter.services.DiscoveryParams;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -9,6 +15,16 @@ public interface ThanksViewModelOutputs {
    * Emits the backing's project name.
    */
   Observable<String> projectName();
+
+  /**
+   * Show recommended projects and a category tout.
+   */
+  Observable<Pair<List<Project>, Category>> showRecommendations();
+
+  /**
+   * Start a new discovery activity with the emitted params.
+   */
+  Observable<DiscoveryParams> startDiscovery();
 
   /**
    * Start a new project activity.

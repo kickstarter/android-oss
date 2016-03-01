@@ -22,13 +22,10 @@ import com.kickstarter.viewmodels.outputs.ThanksViewModelOutputs;
 import java.util.List;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
-import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.zipPair;
 
@@ -39,6 +36,8 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
   private final PublishSubject<Void> shareClick = PublishSubject.create();
   private final PublishSubject<Void> shareOnFacebookClick = PublishSubject.create();
   private final PublishSubject<Void> shareOnTwitterClick = PublishSubject.create();
+  private final BehaviorSubject<Pair<List<Project>, Category>> showRecommendations = BehaviorSubject.create();
+  private final BehaviorSubject<DiscoveryParams> startDiscovery = BehaviorSubject.create();
   private final BehaviorSubject<Project> startProject = BehaviorSubject.create();
   private final BehaviorSubject<Project> startShare = BehaviorSubject.create();
   private final BehaviorSubject<Project> startShareOnFacebook = BehaviorSubject.create();
@@ -57,14 +56,21 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .take(1)
       .compose(bindToLifecycle());
 
-    final Observable<Pair<ThanksActivity, Project>> viewAndProject = view()
-      .compose(combineLatestPair(project))
-      .filter(vp -> vp.first != null);
+    final Observable<Category> rootCategory = project.flatMap(this::rootCategory);
+    final Observable<Pair<List<Project>, Category>> projectsAndRootCategory = project
+      .flatMap(this::relatedProjects)
+      .compose(bindToLifecycle())
+      .compose(zipPair(rootCategory));
 
     project
       .map(Project::name)
       .compose(bindToLifecycle())
       .subscribe(projectName::onNext);
+
+    project
+      .compose(takeWhen(projectClick))
+      .compose(bindToLifecycle())
+      .subscribe(startProject::onNext);
 
     project
       .compose(takeWhen(shareClick))
@@ -81,34 +87,15 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .compose(bindToLifecycle())
       .subscribe(startShareOnTwitter::onNext);
 
-    project
-      .compose(takeWhen(projectClick))
+    categoryClick
       .compose(bindToLifecycle())
-      .subscribe(startProject::onNext);
+      .subscribe(c -> startDiscovery.onNext(DiscoveryParams.builder().category(c).build()));
 
-    viewChange()
-      .compose(takePairWhen(categoryClick))
-      .observeOn(AndroidSchedulers.mainThread())
+    projectsAndRootCategory
       .compose(bindToLifecycle())
-      .subscribe(vp -> vp.first.startDiscoveryCategoryIntent(vp.second));
+      .subscribe(showRecommendations::onNext);
 
-    final Observable<Category> rootCategory = project.flatMap(this::rootCategory);
-    final Observable<Pair<List<Project>, Category>> projectsAndRootCategory = project
-      .flatMap(this::relatedProjects)
-      .compose(bindToLifecycle())
-      .compose(zipPair(rootCategory));
-
-    view()
-      .compose(combineLatestPair(projectsAndRootCategory))
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vpc -> {
-        final ThanksActivity view = vpc.first;
-        final List<Project> ps = vpc.second.first;
-        final Category category = vpc.second.second;
-        view.showRecommended(ps, category);
-      });
-
+    // Event tracking
     categoryClick
       .compose(bindToLifecycle())
       .subscribe(__ -> koala.trackCheckoutFinishJumpToDiscovery());
@@ -235,6 +222,16 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
   @Override
   public @NonNull Observable<String> projectName() {
     return projectName;
+  }
+
+  @Override
+  public @NonNull Observable<Pair<List<Project>, Category>> showRecommendations() {
+    return showRecommendations;
+  }
+
+  @Override
+  public @NonNull Observable<DiscoveryParams> startDiscovery() {
+    return startDiscovery;
   }
 
   @Override

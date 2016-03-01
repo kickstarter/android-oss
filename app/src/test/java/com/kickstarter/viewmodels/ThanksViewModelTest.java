@@ -60,12 +60,15 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
 
     vm.inputs.shareClick();
     startShareTest.assertValues(project);
+    koalaTest.assertValues("Checkout Show Share Sheet");
 
     vm.inputs.shareOnFacebookClick();
     startShareOnFacebookTest.assertValues(project);
+    koalaTest.assertValues("Checkout Show Share Sheet", "Checkout Show Share");
 
     vm.inputs.shareOnTwitterClick();
     startShareOnTwitterTest.assertValues(project);
+    koalaTest.assertValues("Checkout Show Share Sheet", "Checkout Show Share", "Checkout Show Share");
   }
 
   @Test
@@ -78,6 +81,8 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
 
     vm.inputs.categoryClick(null, category);
     startDiscoveryTest.assertValues(DiscoveryParams.builder().category(category).build());
+
+    koalaTest.assertValue("Checkout Finished Discover More");
   }
 
   @Test
@@ -90,5 +95,7 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
 
     vm.inputs.projectClick(null, project);
     startProjectTest.assertValues(project);
+
+    koalaTest.assertValue("Checkout Finished Discover Open Project");
   }
 }

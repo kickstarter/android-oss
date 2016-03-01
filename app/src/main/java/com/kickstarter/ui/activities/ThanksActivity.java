@@ -106,6 +106,21 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::showBackedProject);
+
+    viewModel.outputs.startShareIntent()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::startShareIntent);
+
+    viewModel.outputs.startShareOnFacebookIntent()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::startShareOnFacebookIntent);
+
+    viewModel.outputs.startShareOnTwitterIntent()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::startShareOnTwitterIntent);
   }
 
   @Override
@@ -123,7 +138,60 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
     ApplicationUtils.resumeDiscoveryActivity(this);
   }
 
-  public void startFacebookShareIntent(final @NonNull Project project) {
+  public void startDiscoveryCategoryIntent(final @NonNull Category category) {
+    final DiscoveryParams params = DiscoveryParams.builder().category(category).build();
+    final Intent intent = new Intent(this, DiscoveryActivity.class)
+      .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
+      .putExtra(IntentKey.DISCOVERY_PARAMS, params);
+    startActivity(intent);
+  }
+
+  public void startProjectIntent(final @NonNull Project project) {
+    final Intent intent = new Intent(this, ProjectActivity.class)
+      .putExtra(IntentKey.PROJECT, project)
+      .putExtra(IntentKey.REF_TAG, RefTag.thanks());
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  private String shareString(final @NonNull Project project) {
+    return ksString.format(iJustBackedString, "project_name", project.name());
+  }
+
+  @Override
+  protected void onActivityResult(final int requestCode, final int resultCode, final @Nullable Intent intent) {
+    super.onActivityResult(requestCode, resultCode, intent);
+
+    facebookCallbackManager.onActivityResult(requestCode, resultCode, intent);
+  }
+
+  private void displayRating() {
+    if (!hasSeenAppRatingPreference.get()) {
+      new Handler().postDelayed(() -> {
+        ViewUtils.showRatingDialog(this);
+      }, 700);
+    }
+  }
+
+  private void displayWoohooBackground() {
+    new Handler().postDelayed(() -> {
+      woohooBackgroundImageView.animate().setDuration(Long.parseLong(getString(R.string.woohoo_duration))).alpha(1);
+      final Drawable drawable = woohooBackgroundImageView.getDrawable();
+      if (drawable instanceof Animatable) {
+        ((Animatable) drawable).start();
+      }
+    }, 500);
+  }
+
+  private void startShareIntent(final @NonNull Project project) {
+    final Intent intent = new Intent(android.content.Intent.ACTION_SEND)
+      .setType("text/plain")
+      .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
+      .putExtra(Intent.EXTRA_TEXT, shareString(project) + " " + project.webProjectUrl());
+
+    startActivity(Intent.createChooser(intent, shareThisProjectString));
+  }
+
+  private void startShareOnFacebookIntent(final @NonNull Project project) {
     if (!ShareDialog.canShow(ShareLinkContent.class)) {
       return;
     }
@@ -150,67 +218,14 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
     shareDialog.show(content);
   }
 
-  public void startShareIntent(final @NonNull Project project) {
-    final Intent intent = new Intent(android.content.Intent.ACTION_SEND)
-      .setType("text/plain")
-      .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
-      .putExtra(Intent.EXTRA_TEXT, shareString(project) + " " + project.webProjectUrl());
-
-    startActivity(Intent.createChooser(intent, shareThisProjectString));
-  }
-
-  public void startTwitterShareIntent(final @NonNull Project project) {
+  private void startShareOnTwitterIntent(final @NonNull Project project) {
     new TweetComposer.Builder(this)
       .text(shareString(project))
       .uri(Uri.parse(project.webProjectUrl()))
       .show();
   }
 
-  public void startDiscoveryCategoryIntent(final @NonNull Category category) {
-    final DiscoveryParams params = DiscoveryParams.builder().category(category).build();
-    final Intent intent = new Intent(this, DiscoveryActivity.class)
-      .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
-      .putExtra(IntentKey.DISCOVERY_PARAMS, params);
-    startActivity(intent);
-  }
-
-  public void startProjectIntent(final @NonNull Project project) {
-    final Intent intent = new Intent(this, ProjectActivity.class)
-      .putExtra(IntentKey.PROJECT, project)
-      .putExtra(IntentKey.REF_TAG, RefTag.thanks());
-    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
-  }
-
-  private String shareString(final @NonNull Project project) {
-    return ksString.format(iJustBackedString, "project_name", project.name());
-  }
-
-  private void displayWoohooBackground() {
-    new Handler().postDelayed(() -> {
-      woohooBackgroundImageView.animate().setDuration(Long.parseLong(getString(R.string.woohoo_duration))).alpha(1);
-      final Drawable drawable = woohooBackgroundImageView.getDrawable();
-      if (drawable instanceof Animatable) {
-        ((Animatable) drawable).start();
-      }
-    }, 500);
-  }
-
-  private void displayRating() {
-    if (!hasSeenAppRatingPreference.get()) {
-      new Handler().postDelayed(() -> {
-        ViewUtils.showRatingDialog(this);
-      }, 700);
-    }
-  }
-
   private void showBackedProject(final @NonNull String projectName) {
     backedProjectTextView.setText(Html.fromHtml(ksString.format(youJustBackedString, "project_name", projectName)));
-  }
-
-  @Override
-  protected void onActivityResult(final int requestCode, final int resultCode, final @Nullable Intent intent) {
-    super.onActivityResult(requestCode, resultCode, intent);
-
-    facebookCallbackManager.onActivityResult(requestCode, resultCode, intent);
   }
 }

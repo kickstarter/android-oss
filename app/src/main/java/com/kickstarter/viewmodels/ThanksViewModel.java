@@ -5,7 +5,6 @@ import android.util.Pair;
 
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
-import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
@@ -27,6 +26,12 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
+import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
+import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
+import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
+import static com.kickstarter.libs.rx.transformers.Transformers.zipPair;
+
 public final class ThanksViewModel extends ViewModel<ThanksActivity> implements ThanksViewModelInputs, ThanksViewModelOutputs, ThanksAdapter.Delegate {
   private final PublishSubject<Category> categoryPromoClick = PublishSubject.create();
   private final PublishSubject<Project> projectCardMiniClick = PublishSubject.create();
@@ -34,6 +39,9 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
   private final PublishSubject<Void> shareClick = PublishSubject.create();
   private final PublishSubject<Void> shareOnFacebookClick = PublishSubject.create();
   private final PublishSubject<Void> shareOnTwitterClick = PublishSubject.create();
+  private final BehaviorSubject<Project> startShareIntent = BehaviorSubject.create();
+  private final BehaviorSubject<Project> startShareOnFacebookIntent = BehaviorSubject.create();
+  private final BehaviorSubject<Project> startShareOnTwitterIntent = BehaviorSubject.create();
 
   private final ApiClientType apiClient;
 
@@ -49,56 +57,37 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .compose(bindToLifecycle());
 
     final Observable<Pair<ThanksActivity, Project>> viewAndProject = view()
-      .compose(Transformers.combineLatestPair(project))
+      .compose(combineLatestPair(project))
       .filter(vp -> vp.first != null);
-
-    shareClick
-      .compose(bindToLifecycle())
-      .subscribe(__ -> koala.trackCheckoutShowShareSheet());
-
-    shareOnTwitterClick
-      .compose(bindToLifecycle())
-      .subscribe(__ -> koala.trackCheckoutShowTwitterShareView());
-
-    shareOnFacebookClick
-      .compose(bindToLifecycle())
-      .subscribe(__ -> koala.trackCheckoutShowFacebookShareView());
-
-    projectCardMiniClick
-      .compose(bindToLifecycle())
-      .subscribe(__ -> koala.trackCheckoutFinishJumpToProject());
 
     project
       .map(Project::name)
       .compose(bindToLifecycle())
       .subscribe(projectName::onNext);
 
-    viewAndProject
-      .compose(Transformers.takeWhen(shareOnFacebookClick))
-      .observeOn(AndroidSchedulers.mainThread())
+    project
+      .compose(takeWhen(shareClick))
       .compose(bindToLifecycle())
-      .subscribe(vp -> vp.first.startFacebookShareIntent(vp.second));
+      .subscribe(startShareIntent::onNext);
 
-    viewAndProject
-      .compose(Transformers.takeWhen(shareClick))
-      .observeOn(AndroidSchedulers.mainThread())
+    project
+      .compose(takeWhen(shareOnFacebookClick))
       .compose(bindToLifecycle())
-      .subscribe(vp -> vp.first.startShareIntent(vp.second));
+      .subscribe(startShareOnFacebookIntent::onNext);
 
-    viewAndProject
-      .compose(Transformers.takeWhen(shareOnTwitterClick))
-      .observeOn(AndroidSchedulers.mainThread())
+    project
+      .compose(takeWhen(shareOnTwitterClick))
       .compose(bindToLifecycle())
-      .subscribe(vp -> vp.first.startTwitterShareIntent(vp.second));
+      .subscribe(startShareOnTwitterIntent::onNext);
 
     viewChange()
-      .compose(Transformers.takePairWhen(projectCardMiniClick))
+      .compose(takePairWhen(projectCardMiniClick))
       .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
       .subscribe(vp -> vp.first.startProjectIntent(vp.second));
 
     viewChange()
-      .compose(Transformers.takePairWhen(categoryPromoClick))
+      .compose(takePairWhen(categoryPromoClick))
       .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
       .subscribe(vp -> vp.first.startDiscoveryCategoryIntent(vp.second));
@@ -107,10 +96,10 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
     final Observable<Pair<List<Project>, Category>> projectsAndRootCategory = project
       .flatMap(this::relatedProjects)
       .compose(bindToLifecycle())
-      .compose(Transformers.zipPair(rootCategory));
+      .compose(zipPair(rootCategory));
 
     view()
-      .compose(Transformers.combineLatestPair(projectsAndRootCategory))
+      .compose(combineLatestPair(projectsAndRootCategory))
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(vpc -> {
@@ -132,13 +121,13 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .compose(bindToLifecycle())
       .subscribe(__ -> koala.trackCheckoutShowShareSheet());
 
-    shareOnTwitterClick
-      .compose(bindToLifecycle())
-      .subscribe(__ -> koala.trackCheckoutShowTwitterShareView());
-
     shareOnFacebookClick
       .compose(bindToLifecycle())
       .subscribe(__ -> koala.trackCheckoutShowFacebookShareView());
+
+    shareOnTwitterClick
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackCheckoutShowTwitterShareView());
 
     projectCardMiniClick
       .compose(bindToLifecycle())
@@ -160,7 +149,7 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
     }
 
     return apiClient.fetchCategory(String.valueOf(category.rootId()))
-      .compose(Transformers.neverError());
+      .compose(neverError());
   }
 
   /**
@@ -206,7 +195,7 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .flatMap(Observable::from);
 
     return Observable.concat(recommendedProjects, similarToProjects, staffPickProjects)
-      .compose(Transformers.neverError())
+      .compose(neverError())
       .distinct()
       .take(3)
       .toList();
@@ -246,5 +235,20 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
   @Override
   public @NonNull Observable<String> projectName() {
     return projectName;
+  }
+
+  @Override
+  public @NonNull Observable<Project> startShareIntent() {
+    return startShareIntent;
+  }
+
+  @Override
+  public @NonNull Observable<Project> startShareOnFacebookIntent() {
+    return startShareOnFacebookIntent;
+  }
+
+  @Override
+  public @NonNull Observable<Project> startShareOnTwitterIntent() {
+    return startShareOnTwitterIntent;
   }
 }

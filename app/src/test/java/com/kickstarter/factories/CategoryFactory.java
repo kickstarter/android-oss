@@ -7,6 +7,10 @@ import com.kickstarter.models.Category;
 public final class CategoryFactory {
   private CategoryFactory() {}
 
+  public static @NonNull Category category() {
+    return musicCategory();
+  }
+
   public static @NonNull Category artCategory() {
     return Category.builder()
       .color(16760235)

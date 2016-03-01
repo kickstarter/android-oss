@@ -13,7 +13,6 @@ import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ThanksActivity;
-import com.kickstarter.ui.adapters.ThanksAdapter;
 import com.kickstarter.ui.viewholders.ThanksCategoryViewHolder;
 import com.kickstarter.ui.viewholders.ThanksProjectViewHolder;
 import com.kickstarter.viewmodels.inputs.ThanksViewModelInputs;
@@ -29,7 +28,7 @@ import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.zipPair;
 
-public final class ThanksViewModel extends ViewModel<ThanksActivity> implements ThanksViewModelInputs, ThanksViewModelOutputs, ThanksAdapter.Delegate {
+public final class ThanksViewModel extends ViewModel<ThanksActivity> implements ThanksViewModelInputs, ThanksViewModelOutputs {
   private final PublishSubject<Category> categoryClick = PublishSubject.create();
   private final PublishSubject<Project> projectClick = PublishSubject.create();
   private final BehaviorSubject<String> projectName = BehaviorSubject.create();

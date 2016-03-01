@@ -1,6 +1,8 @@
 package com.kickstarter.viewmodels.inputs;
 
-public interface ThanksViewModelInputs {
+import com.kickstarter.ui.adapters.ThanksAdapter;
+
+public interface ThanksViewModelInputs extends ThanksAdapter.Delegate {
   /**
    * Generic button to share the backing.
    */

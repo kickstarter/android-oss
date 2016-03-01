@@ -113,10 +113,6 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
     shareOnTwitterClick
       .compose(bindToLifecycle())
       .subscribe(__ -> koala.trackCheckoutShowTwitterShareView());
-
-    projectClick
-      .compose(bindToLifecycle())
-      .subscribe(__ -> koala.trackCheckoutFinishJumpToProject());
   }
 
   /**

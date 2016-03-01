@@ -3,8 +3,11 @@ package com.kickstarter.viewmodels;
 import android.content.Intent;
 
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.factories.CategoryFactory;
 import com.kickstarter.factories.ProjectFactory;
+import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
+import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.IntentKey;
 
 import org.junit.Test;
@@ -46,5 +49,17 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
 
     vm.inputs.shareOnTwitterClick();
     startShareOnTwitterTest.assertValues(project);
+  }
+
+  @Test
+  public void testThanksViewModel_startDiscovery() {
+    final ThanksViewModel vm = new ThanksViewModel(environment());
+    final Category category = CategoryFactory.category();
+
+    final TestSubscriber<DiscoveryParams> startDiscoveryTest = new TestSubscriber<>();
+    vm.outputs.startDiscovery().subscribe(startDiscoveryTest);
+
+    vm.inputs.categoryClick(null, category);
+    startDiscoveryTest.assertValues(DiscoveryParams.builder().category(category).build());
   }
 }

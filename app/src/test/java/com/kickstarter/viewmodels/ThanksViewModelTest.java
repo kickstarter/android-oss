@@ -62,4 +62,16 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
     vm.inputs.categoryClick(null, category);
     startDiscoveryTest.assertValues(DiscoveryParams.builder().category(category).build());
   }
+
+  @Test
+  public void testThanksViewModel_startProject() {
+    final ThanksViewModel vm = new ThanksViewModel(environment());
+    final Project project = ProjectFactory.project();
+
+    final TestSubscriber<Project> startProjectTest = new TestSubscriber<>();
+    vm.outputs.startProject().subscribe(startProjectTest);
+
+    vm.inputs.projectClick(null, project);
+    startProjectTest.assertValues(project);
+  }
 }

@@ -66,8 +66,7 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .compose(bindToLifecycle())
       .subscribe(projectName::onNext);
 
-    project
-      .compose(takeWhen(projectClick))
+    projectClick
       .compose(bindToLifecycle())
       .subscribe(startProject::onNext);
 

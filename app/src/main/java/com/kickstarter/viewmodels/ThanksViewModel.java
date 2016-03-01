@@ -17,6 +17,7 @@ import com.kickstarter.ui.activities.ThanksActivity;
 import com.kickstarter.ui.adapters.ThanksAdapter;
 import com.kickstarter.ui.viewholders.CategoryPromoViewHolder;
 import com.kickstarter.ui.viewholders.ProjectCardMiniViewHolder;
+import com.kickstarter.viewmodels.inputs.ThanksViewModelInputs;
 import com.kickstarter.viewmodels.outputs.ThanksViewModelOutputs;
 
 import java.util.List;
@@ -26,45 +27,36 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public final class ThanksViewModel extends ViewModel<ThanksActivity> implements ThanksViewModelOutputs, ThanksAdapter.Delegate {
-
-  private final PublishSubject<Void> facebookClick = PublishSubject.create();
-  private final PublishSubject<Void> shareClick = PublishSubject.create();
-  private final PublishSubject<Void> twitterClick = PublishSubject.create();
-  private final PublishSubject<Project> projectCardMiniClick = PublishSubject.create();
+public final class ThanksViewModel extends ViewModel<ThanksActivity> implements ThanksViewModelInputs, ThanksViewModelOutputs, ThanksAdapter.Delegate {
   private final PublishSubject<Category> categoryPromoClick = PublishSubject.create();
+  private final PublishSubject<Void> facebookClick = PublishSubject.create();
+  private final PublishSubject<Project> projectCardMiniClick = PublishSubject.create();
+  private final BehaviorSubject<String> projectName = BehaviorSubject.create();
+  private final PublishSubject<Void> shareClick = PublishSubject.create();
+  private final PublishSubject<Void> shareOnTwitterClick = PublishSubject.create();
 
   private final ApiClientType apiClient;
-
-  private final BehaviorSubject<Project> project = BehaviorSubject.create();
-  @Override
-  public Observable<Project> project() {
-    return project;
-  }
-
-  public final ThanksViewModelOutputs outputs = this;
 
   public ThanksViewModel(final @NonNull Environment environment) {
     super(environment);
 
     apiClient = environment.apiClient();
 
-    final Observable<Pair<ThanksActivity, Project>> viewAndProject = view()
-      .compose(Transformers.combineLatestPair(project))
-      .filter(vp -> vp.first != null);
-
-    intent()
+    final Observable<Project> project = intent()
       .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
       .ofType(Project.class)
       .take(1)
-      .compose(bindToLifecycle())
-      .subscribe(project::onNext);
+      .compose(bindToLifecycle());
+
+    final Observable<Pair<ThanksActivity, Project>> viewAndProject = view()
+      .compose(Transformers.combineLatestPair(project))
+      .filter(vp -> vp.first != null);
 
     shareClick
       .compose(bindToLifecycle())
       .subscribe(__ -> koala.trackCheckoutShowShareSheet());
 
-    twitterClick
+    shareOnTwitterClick
       .compose(bindToLifecycle())
       .subscribe(__ -> koala.trackCheckoutShowTwitterShareView());
 
@@ -76,10 +68,10 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .compose(bindToLifecycle())
       .subscribe(__ -> koala.trackCheckoutFinishJumpToProject());
 
-    viewAndProject
-      .observeOn(AndroidSchedulers.mainThread())
+    project
+      .map(Project::name)
       .compose(bindToLifecycle())
-      .subscribe(vp -> vp.first.show(vp.second));
+      .subscribe(projectName::onNext);
 
     viewAndProject
       .compose(Transformers.takeWhen(facebookClick))
@@ -94,7 +86,7 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .subscribe(vp -> vp.first.startShareIntent(vp.second));
 
     viewAndProject
-      .compose(Transformers.takeWhen(twitterClick))
+      .compose(Transformers.takeWhen(shareOnTwitterClick))
       .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
       .subscribe(vp -> vp.first.startTwitterShareIntent(vp.second));
@@ -140,7 +132,7 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .compose(bindToLifecycle())
       .subscribe(__ -> koala.trackCheckoutShowShareSheet());
 
-    twitterClick
+    shareOnTwitterClick
       .compose(bindToLifecycle())
       .subscribe(__ -> koala.trackCheckoutShowTwitterShareView());
 
@@ -220,17 +212,8 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .toList();
   }
 
-  public void takeFacebookClick() {
-    facebookClick.onNext(null);
-  }
-
-  public void takeShareClick() {
-    shareClick.onNext(null);
-  }
-
-  public void takeTwitterClick() {
-    twitterClick.onNext(null);
-  }
+  // INPUTS
+  public final ThanksViewModelInputs inputs = this;
 
   @Override
   public void categoryPromoClick(final @NonNull CategoryPromoViewHolder viewHolder, final @NonNull Category category) {
@@ -238,7 +221,30 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
   }
 
   @Override
+  public void facebookClick() {
+    facebookClick.onNext(null);
+  }
+
+  @Override
   public void projectCardMiniClick(final @NonNull ProjectCardMiniViewHolder viewHolder, final @NonNull Project project) {
     projectCardMiniClick.onNext(project);
+  }
+
+  @Override
+  public void shareClick() {
+    shareClick.onNext(null);
+  }
+
+  @Override
+  public void shareOnTwitterClick() {
+    shareOnTwitterClick.onNext(null);
+  }
+
+  // OUTPUTS
+  public final ThanksViewModelOutputs outputs = this;
+
+  @Override
+  public @NonNull Observable<String> projectName() {
+    return projectName;
   }
 }

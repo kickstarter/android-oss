@@ -26,12 +26,12 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.RefTag;
+import com.kickstarter.libs.TweetComposer;
 import com.kickstarter.libs.preferences.BooleanPreference;
 import com.kickstarter.libs.qualifiers.AppRatingPreference;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ApplicationUtils;
 import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.libs.TweetComposer;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Photo;
 import com.kickstarter.models.Project;
@@ -48,6 +48,7 @@ import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresViewModel(ThanksViewModel.class)
 public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
@@ -72,7 +73,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
     ButterKnife.bind(this);
     ((KSApplication) getApplication()).component().inject(this);
 
-    facebookCallbackManager = CallbackManager.Factory.create(); // TODO: Use this to track Facebook shares
+    facebookCallbackManager = CallbackManager.Factory.create();
     shareDialog = new ShareDialog(this);
 
     final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -81,16 +82,17 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
 
     displayWoohooBackground();
     displayRating();
+
+    viewModel.outputs.projectName()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::showBackedProject);
   }
 
   @Override
   protected void onDestroy() {
     super.onDestroy();
     recommendedProjectsRecyclerView.setAdapter(null);
-  }
-
-  public void show(final @NonNull Project project) {
-    backedProjectTextView.setText(Html.fromHtml(ksString.format(youJustBackedString, "project_name", project.name())));
   }
 
   public void showRecommended(final @NonNull List<Project> projects, final @NonNull Category category) {
@@ -195,6 +197,10 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
         ViewUtils.showRatingDialog(this);
       }, 700);
     }
+  }
+
+  private void showBackedProject(final @NonNull String projectName) {
+    backedProjectTextView.setText(Html.fromHtml(ksString.format(youJustBackedString, "project_name", projectName)));
   }
 
   @Override

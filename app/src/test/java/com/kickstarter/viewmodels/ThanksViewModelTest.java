@@ -17,10 +17,10 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
     final ThanksViewModel vm = new ThanksViewModel(environment());
     final Project project = ProjectFactory.project();
 
-    final TestSubscriber<Project> projectTest = new TestSubscriber<>();
-    vm.outputs.project().subscribe(projectTest);
+    final TestSubscriber<String> projectNameTest = new TestSubscriber<>();
+    vm.outputs.projectName().subscribe(projectNameTest);
 
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()));
-    projectTest.assertValues(project);
+    projectNameTest.assertValues(project.name());
   }
 }

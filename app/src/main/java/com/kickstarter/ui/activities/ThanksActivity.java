@@ -16,7 +16,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.CallbackManager;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.ShareOpenGraphAction;
 import com.facebook.share.model.ShareOpenGraphContent;
@@ -68,7 +67,6 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   protected @BindString(R.string.project_accessibility_button_share_label) String shareThisProjectString;
   protected @BindString(R.string.project_checkout_share_you_just_backed_project_share_this_project_html) String youJustBackedString;
 
-  private CallbackManager facebookCallbackManager;
   private ShareDialog shareDialog;
 
   @Override
@@ -78,7 +76,6 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
     ButterKnife.bind(this);
     ((KSApplication) getApplication()).component().inject(this);
 
-    facebookCallbackManager = CallbackManager.Factory.create();
     shareDialog = new ShareDialog(this);
 
     final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -148,13 +145,6 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   @OnClick(R.id.close_button)
   protected void closeButtonClick() {
     ApplicationUtils.resumeDiscoveryActivity(this);
-  }
-
-  @Override
-  protected void onActivityResult(final int requestCode, final int resultCode, final @Nullable Intent intent) {
-    super.onActivityResult(requestCode, resultCode, intent);
-
-    facebookCallbackManager.onActivityResult(requestCode, resultCode, intent);
   }
 
   private void displayRating() {

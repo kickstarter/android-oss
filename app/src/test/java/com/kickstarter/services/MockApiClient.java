@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.kickstarter.factories.CategoryFactory;
+import com.kickstarter.factories.DiscoverEnvelopeFactory;
 import com.kickstarter.factories.LocationFactory;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.UserFactory;
@@ -22,6 +23,7 @@ import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 
+import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
@@ -74,7 +76,9 @@ public class MockApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
-    return Observable.empty();
+    return Observable.just(
+      DiscoverEnvelopeFactory.discoverEnvelope(Collections.singletonList(ProjectFactory.project()))
+    );
   }
 
   @Override

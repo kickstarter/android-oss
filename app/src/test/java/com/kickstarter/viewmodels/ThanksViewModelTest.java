@@ -23,4 +23,28 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()));
     projectNameTest.assertValues(project.name());
   }
+
+  @Test
+  public void testThanksViewModel_share() {
+    final ThanksViewModel vm = new ThanksViewModel(environment());
+    final Project project = ProjectFactory.project();
+
+    final TestSubscriber<Project> startShareTest = new TestSubscriber<>();
+    vm.outputs.startShare().subscribe(startShareTest);
+    final TestSubscriber<Project> startShareOnFacebookTest = new TestSubscriber<>();
+    vm.outputs.startShareOnFacebook().subscribe(startShareOnFacebookTest);
+    final TestSubscriber<Project> startShareOnTwitterTest = new TestSubscriber<>();
+    vm.outputs.startShareOnTwitter().subscribe(startShareOnTwitterTest);
+
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()));
+
+    vm.inputs.shareClick();
+    startShareTest.assertValues(project);
+
+    vm.inputs.shareOnFacebookClick();
+    startShareOnFacebookTest.assertValues(project);
+
+    vm.inputs.shareOnTwitterClick();
+    startShareOnTwitterTest.assertValues(project);
+  }
 }

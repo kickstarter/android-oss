@@ -11,7 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,6 +21,7 @@ import com.facebook.share.model.ShareOpenGraphAction;
 import com.facebook.share.model.ShareOpenGraphContent;
 import com.facebook.share.model.ShareOpenGraphObject;
 import com.facebook.share.widget.ShareDialog;
+import com.jakewharton.rxbinding.view.RxView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
@@ -57,6 +58,9 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
 
   protected @Bind(R.id.backed_project) TextView backedProjectTextView;
   protected @Bind(R.id.recommended_projects_recycler_view) RecyclerView recommendedProjectsRecyclerView;
+  protected @Bind(R.id.share_button) Button shareButton;
+  protected @Bind(R.id.share_on_facebook_button) Button shareOnFacebookButton;
+  protected @Bind(R.id.share_on_twitter_button) Button shareOnTwitterButton;
   protected @Bind(R.id.woohoo_background) ImageView woohooBackgroundImageView;
 
   protected @BindString(R.string.project_checkout_share_twitter_I_just_backed_project_on_kickstarter) String iJustBackedString;
@@ -83,6 +87,21 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
     displayWoohooBackground();
     displayRating();
 
+    RxView.clicks(shareButton)
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> viewModel.inputs.shareClick());
+
+    RxView.clicks(shareOnFacebookButton)
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> viewModel.inputs.shareOnFacebookClick());
+
+    RxView.clicks(shareOnTwitterButton)
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> viewModel.inputs.shareOnTwitterClick());
+
     viewModel.outputs.projectName()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
@@ -102,21 +121,6 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   @OnClick(R.id.close_button)
   protected void closeButtonClick() {
     ApplicationUtils.resumeDiscoveryActivity(this);
-  }
-
-  @OnClick(R.id.share_button)
-  public void onShareClick() {
-    viewModel.takeShareClick();
-  }
-
-  @OnClick(R.id.facebook_button)
-  public void onFacebookButtonClick(final @NonNull View view) {
-    viewModel.takeFacebookClick();
-  }
-
-  @OnClick(R.id.twitter_button)
-  public void onTwitterButtonClick(final @NonNull View view) {
-    viewModel.takeTwitterClick();
   }
 
   public void startFacebookShareIntent(final @NonNull Project project) {

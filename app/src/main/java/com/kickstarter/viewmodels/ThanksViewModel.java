@@ -29,10 +29,10 @@ import rx.subjects.PublishSubject;
 
 public final class ThanksViewModel extends ViewModel<ThanksActivity> implements ThanksViewModelInputs, ThanksViewModelOutputs, ThanksAdapter.Delegate {
   private final PublishSubject<Category> categoryPromoClick = PublishSubject.create();
-  private final PublishSubject<Void> facebookClick = PublishSubject.create();
   private final PublishSubject<Project> projectCardMiniClick = PublishSubject.create();
   private final BehaviorSubject<String> projectName = BehaviorSubject.create();
   private final PublishSubject<Void> shareClick = PublishSubject.create();
+  private final PublishSubject<Void> shareOnFacebookClick = PublishSubject.create();
   private final PublishSubject<Void> shareOnTwitterClick = PublishSubject.create();
 
   private final ApiClientType apiClient;
@@ -60,7 +60,7 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .compose(bindToLifecycle())
       .subscribe(__ -> koala.trackCheckoutShowTwitterShareView());
 
-    facebookClick
+    shareOnFacebookClick
       .compose(bindToLifecycle())
       .subscribe(__ -> koala.trackCheckoutShowFacebookShareView());
 
@@ -74,7 +74,7 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .subscribe(projectName::onNext);
 
     viewAndProject
-      .compose(Transformers.takeWhen(facebookClick))
+      .compose(Transformers.takeWhen(shareOnFacebookClick))
       .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
       .subscribe(vp -> vp.first.startFacebookShareIntent(vp.second));
@@ -136,7 +136,7 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .compose(bindToLifecycle())
       .subscribe(__ -> koala.trackCheckoutShowTwitterShareView());
 
-    facebookClick
+    shareOnFacebookClick
       .compose(bindToLifecycle())
       .subscribe(__ -> koala.trackCheckoutShowFacebookShareView());
 
@@ -221,11 +221,6 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
   }
 
   @Override
-  public void facebookClick() {
-    facebookClick.onNext(null);
-  }
-
-  @Override
   public void projectCardMiniClick(final @NonNull ProjectCardMiniViewHolder viewHolder, final @NonNull Project project) {
     projectCardMiniClick.onNext(project);
   }
@@ -233,6 +228,11 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
   @Override
   public void shareClick() {
     shareClick.onNext(null);
+  }
+
+  @Override
+  public void shareOnFacebookClick() {
+    shareOnFacebookClick.onNext(null);
   }
 
   @Override

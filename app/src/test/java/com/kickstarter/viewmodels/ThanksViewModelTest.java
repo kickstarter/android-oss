@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels;
 
 import android.content.Intent;
+import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.CategoryFactory;
@@ -11,6 +12,8 @@ import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.IntentKey;
 
 import org.junit.Test;
+
+import java.util.List;
 
 import rx.observers.TestSubscriber;
 
@@ -24,7 +27,21 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
     vm.outputs.projectName().subscribe(projectNameTest);
 
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+
     projectNameTest.assertValues(project.name());
+  }
+
+  @Test
+  public void testThanksViewModel_showRecommendations() {
+    final ThanksViewModel vm = new ThanksViewModel(environment());
+    final Project project = ProjectFactory.project();
+
+    final TestSubscriber<Pair<List<Project>, Category>> showRecommendationsTest = new TestSubscriber<>();
+    vm.outputs.showRecommendations().subscribe(showRecommendationsTest);
+
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+
+    showRecommendationsTest.assertValueCount(1);
   }
 
   @Test

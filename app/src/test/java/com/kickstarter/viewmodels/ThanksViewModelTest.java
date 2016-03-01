@@ -13,7 +13,7 @@ import rx.observers.TestSubscriber;
 
 public final class ThanksViewModelTest extends KSRobolectricTestCase {
   @Test
-  public void testThanksViewModel_project() {
+  public void testThanksViewModel_projectName() {
     final ThanksViewModel vm = new ThanksViewModel(environment());
     final Project project = ProjectFactory.project();
 

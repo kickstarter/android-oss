@@ -7,9 +7,9 @@ import android.view.View;
 import com.kickstarter.R;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
-import com.kickstarter.ui.viewholders.CategoryPromoViewHolder;
+import com.kickstarter.ui.viewholders.ThanksCategoryViewHolder;
 import com.kickstarter.ui.viewholders.KSViewHolder;
-import com.kickstarter.ui.viewholders.ProjectCardMiniViewHolder;
+import com.kickstarter.ui.viewholders.ThanksProjectViewHolder;
 
 import java.util.Collections;
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.List;
 public final class ThanksAdapter extends KSAdapter {
   private final Delegate delegate;
 
-  public interface Delegate extends CategoryPromoViewHolder.Delegate, ProjectCardMiniViewHolder.Delegate {}
+  public interface Delegate extends ThanksCategoryViewHolder.Delegate, ThanksProjectViewHolder.Delegate {}
 
   public ThanksAdapter(final @NonNull List<Project> projects, final @NonNull Category category,
     final @NonNull Delegate delegate) {
@@ -28,16 +28,16 @@ public final class ThanksAdapter extends KSAdapter {
 
   protected @LayoutRes int layout(final @NonNull SectionRow sectionRow) {
     if (sectionRow.section() == 0) {
-      return R.layout.project_card_mini_view;
+      return R.layout.thanks_project_view;
     } else {
-      return R.layout.category_promo_view;
+      return R.layout.thanks_category_view;
     }
   }
 
   protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
-    if (layout == R.layout.project_card_mini_view) {
-      return new ProjectCardMiniViewHolder(view, delegate);
+    if (layout == R.layout.thanks_project_view) {
+      return new ThanksProjectViewHolder(view, delegate);
     }
-    return new CategoryPromoViewHolder(view, delegate);
+    return new ThanksCategoryViewHolder(view, delegate);
   }
 }

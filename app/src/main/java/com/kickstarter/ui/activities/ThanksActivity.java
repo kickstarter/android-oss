@@ -107,20 +107,25 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::showBackedProject);
 
-    viewModel.outputs.startShareIntent()
+    viewModel.outputs.startProject()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::startShareIntent);
+      .subscribe(this::startProject);
 
-    viewModel.outputs.startShareOnFacebookIntent()
+    viewModel.outputs.startShare()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::startShareOnFacebookIntent);
+      .subscribe(this::startShare);
 
-    viewModel.outputs.startShareOnTwitterIntent()
+    viewModel.outputs.startShareOnFacebook()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::startShareOnTwitterIntent);
+      .subscribe(this::startShareOnFacebook);
+
+    viewModel.outputs.startShareOnTwitter()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::startShareOnTwitter);
   }
 
   @Override
@@ -144,17 +149,6 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
       .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
       .putExtra(IntentKey.DISCOVERY_PARAMS, params);
     startActivity(intent);
-  }
-
-  public void startProjectIntent(final @NonNull Project project) {
-    final Intent intent = new Intent(this, ProjectActivity.class)
-      .putExtra(IntentKey.PROJECT, project)
-      .putExtra(IntentKey.REF_TAG, RefTag.thanks());
-    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
-  }
-
-  private String shareString(final @NonNull Project project) {
-    return ksString.format(iJustBackedString, "project_name", project.name());
   }
 
   @Override
@@ -182,7 +176,18 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
     }, 500);
   }
 
-  private void startShareIntent(final @NonNull Project project) {
+  private String shareString(final @NonNull Project project) {
+    return ksString.format(iJustBackedString, "project_name", project.name());
+  }
+
+  private void startProject(final @NonNull Project project) {
+    final Intent intent = new Intent(this, ProjectActivity.class)
+      .putExtra(IntentKey.PROJECT, project)
+      .putExtra(IntentKey.REF_TAG, RefTag.thanks());
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  private void startShare(final @NonNull Project project) {
     final Intent intent = new Intent(android.content.Intent.ACTION_SEND)
       .setType("text/plain")
       .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
@@ -191,7 +196,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
     startActivity(Intent.createChooser(intent, shareThisProjectString));
   }
 
-  private void startShareOnFacebookIntent(final @NonNull Project project) {
+  private void startShareOnFacebook(final @NonNull Project project) {
     if (!ShareDialog.canShow(ShareLinkContent.class)) {
       return;
     }
@@ -218,7 +223,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
     shareDialog.show(content);
   }
 
-  private void startShareOnTwitterIntent(final @NonNull Project project) {
+  private void startShareOnTwitter(final @NonNull Project project) {
     new TweetComposer.Builder(this)
       .text(shareString(project))
       .uri(Uri.parse(project.webProjectUrl()))

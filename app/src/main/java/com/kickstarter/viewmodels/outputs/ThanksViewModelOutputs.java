@@ -11,17 +11,22 @@ public interface ThanksViewModelOutputs {
   Observable<String> projectName();
 
   /**
+   * Start a new project activity.
+   */
+  Observable<Project> startProject();
+
+  /**
    * Share the project using Android's app chooser.
    */
-  Observable<Project> startShareIntent();
+  Observable<Project> startShare();
 
   /**
    * Share the project on Facebook.
    */
-  Observable<Project> startShareOnFacebookIntent();
+  Observable<Project> startShareOnFacebook();
 
   /**
    * Share the project on Twitter.
    */
-  Observable<Project> startShareOnTwitterIntent();
+  Observable<Project> startShareOnTwitter();
 }

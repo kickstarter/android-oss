@@ -4,17 +4,17 @@ import com.kickstarter.ui.adapters.ThanksAdapter;
 
 public interface ThanksViewModelInputs extends ThanksAdapter.Delegate {
   /**
-   * Generic button to share the backing.
+   * Call when the share button is clicked.
    */
   void shareClick();
 
   /**
-   * Share backing on Facebook.
+   * Call when the share on Facebook button is clicked.
    */
   void shareOnFacebookClick();
 
   /**
-   * Share backing on Twitter.
+   * Call when the share on Twitter button is clicked.
    */
   void shareOnTwitterClick();
 }

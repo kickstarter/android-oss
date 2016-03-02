@@ -10,31 +10,27 @@ public interface SettingsViewModelInputs {
   void notifyOfUpdates(boolean checked);
 
   /**
-   * Changes the user's subscription state to the Kickstarter Loves Games newsletter.
-   * @param checked `true` to subscribe, `false` to unsubscribe.
+   * Call when the user toggles the Kickstarter Loves Games newsletter switch.
    */
   void sendGamesNewsletter(boolean checked);
 
   /**
-   * Changes the user's subscription state to the Happening newsletter.
-   * @param checked `true` to subscribe, `false` to unsubscribe.
+   * Call when the user toggles the Happening newsletter switch.
    */
   void sendHappeningNewsletter(boolean checked);
 
   /**
-   * Changes the user's subscription state to the Kickstarter News & Events newsletter.
-   * @param checked `true` to subscribe, `false` to unsubscribe.
+   * Call when the user toggles the Kickstarter News & Events newsletter switch.
    */
   void sendPromoNewsletter(boolean checked);
 
   /**
-   * Changes the user's subscription state to the Kickstarter Loves Games newsletter.
-   * @param checked `true` to subscribe, `false` to unsubscribe.
+   * Call when the user toggles the Projects We Love newsletter switch.
    */
   void sendWeeklyNewsletter(boolean checked);
 
   /**
-   * Call when the user taps the logout button
+   * Call when the user taps the logout button.
    */
   void logoutClicked();
 

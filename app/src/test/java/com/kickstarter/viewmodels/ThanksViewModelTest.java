@@ -36,8 +36,6 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testThanksViewModel_showRatingDialog() {
     MockBooleanPreference hasSeenAppRatingPreference = new MockBooleanPreference(false);
-    final TestSubscriber<Boolean> hasSeenAppRatingPreferenceTest = new TestSubscriber<>();
-    hasSeenAppRatingPreference.observable().subscribe(hasSeenAppRatingPreferenceTest);
 
     final Environment environment = environment()
       .toBuilder()
@@ -53,14 +51,12 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
 
     showRatingDialogTest.assertValueCount(1);
-    hasSeenAppRatingPreferenceTest.assertValues(false, true);
   }
 
   @Test
   public void testThanksViewModel_dontShowRatingDialogIfAlreadySeen() {
     MockBooleanPreference hasSeenAppRatingPreference = new MockBooleanPreference(true);
-    final TestSubscriber<Boolean> hasSeenAppRatingPreferenceTest = new TestSubscriber<>();
-    hasSeenAppRatingPreference.observable().subscribe(hasSeenAppRatingPreferenceTest);
+
     final Environment environment = environment()
       .toBuilder()
       .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
@@ -75,7 +71,6 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
 
     showRatingDialogTest.assertValueCount(0);
-    hasSeenAppRatingPreferenceTest.assertValues(true);
   }
 
   @Test

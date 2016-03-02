@@ -103,18 +103,16 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
 
     // Show app rating dialog if it hasn't already been seen
     Observable.just(hasSeenAppRatingPreference.get())
+      .take(1)
       .filter(b -> !b)
       .map(__ -> null)
       .compose(bindToLifecycle())
       .subscribe(__ -> showRatingDialog.onNext(null));
 
-    showRatingDialog
-      .compose(bindToLifecycle())
-      .subscribe(__ -> hasSeenAppRatingPreference.set(true));
-
     // Show games newsletter dialog if it hasn't already been seen, the user *has* seen the app rating dialog,
     // and the backing's root category is games.
     Observable.just(hasSeenGamesNewsletterPreference.get())
+      .take(1)
       .filter(b -> !b)
       .compose(combineLatestPair(rootCategory.filter(c -> "games".equals(c.slug()))))
       .map(__ -> null)

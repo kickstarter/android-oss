@@ -21,6 +21,7 @@ public abstract class Environment implements Parcelable {
   public abstract CurrentConfig currentConfig();
   public abstract CurrentUserType currentUser();
   public abstract BooleanPreferenceType hasSeenAppRatingPreference();
+  public abstract BooleanPreferenceType hasSeenGamesNewsletterPreference();
   public abstract Koala koala();
   public abstract SharedPreferences sharedPreferences();
   public abstract WebClientType webClient();
@@ -34,6 +35,7 @@ public abstract class Environment implements Parcelable {
     public abstract Builder currentConfig(CurrentConfig __);
     public abstract Builder currentUser(CurrentUserType __);
     public abstract Builder hasSeenAppRatingPreference(BooleanPreferenceType __);
+    public abstract Builder hasSeenGamesNewsletterPreference(BooleanPreferenceType __);
     public abstract Builder koala(Koala __);
     public abstract Builder sharedPreferences(SharedPreferences __);
     public abstract Builder webClient(WebClientType __);

@@ -59,6 +59,8 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testThanksViewModel_dontShowRatingDialogIfAlreadySeen() {
     MockBooleanPreference hasSeenAppRatingPreference = new MockBooleanPreference(true);
+    final TestSubscriber<Boolean> hasSeenAppRatingPreferenceTest = new TestSubscriber<>();
+    hasSeenAppRatingPreference.observable().subscribe(hasSeenAppRatingPreferenceTest);
     final Environment environment = environment()
       .toBuilder()
       .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
@@ -73,6 +75,122 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
 
     showRatingDialogTest.assertValueCount(0);
+    hasSeenAppRatingPreferenceTest.assertValues(true);
+  }
+
+  @Test
+  public void testThanksViewModel_showGamesNewsletterDialog() {
+    // Games newsletter will not display unless user has already seen the app rating dialog.
+    MockBooleanPreference hasSeenAppRatingPreference = new MockBooleanPreference(true);
+
+    MockBooleanPreference hasSeenGamesNewsletterPreference = new MockBooleanPreference(false);
+    final TestSubscriber<Boolean> hasSeenGamesNewsletterPreferenceTest = new TestSubscriber<>();
+    hasSeenGamesNewsletterPreference.observable().subscribe(hasSeenGamesNewsletterPreferenceTest);
+
+    final Environment environment = environment()
+      .toBuilder()
+      .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
+      .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
+      .build();
+
+    final ThanksViewModel vm = new ThanksViewModel(environment);
+    final Project project = ProjectFactory.project()
+      .toBuilder()
+      .category(CategoryFactory.tabletopGamesCategory())
+      .build();
+
+    final TestSubscriber<Void> showGamesNewsletterDialogTest = new TestSubscriber<>();
+    vm.outputs.showGamesNewsletterDialog().subscribe(showGamesNewsletterDialogTest);
+
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+
+    showGamesNewsletterDialogTest.assertValueCount(1);
+    hasSeenGamesNewsletterPreferenceTest.assertValues(false, true);
+  }
+
+  @Test
+  public void testThanksViewModel_dontShowGamesNewsletterDialogIfRootCategoryIsNotGames() {
+    MockBooleanPreference hasSeenAppRatingPreference = new MockBooleanPreference(true);
+
+    MockBooleanPreference hasSeenGamesNewsletterPreference = new MockBooleanPreference(false);
+    final TestSubscriber<Boolean> hasSeenGamesNewsletterPreferenceTest = new TestSubscriber<>();
+    hasSeenGamesNewsletterPreference.observable().subscribe(hasSeenGamesNewsletterPreferenceTest);
+
+    final Environment environment = environment()
+      .toBuilder()
+      .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
+      .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
+      .build();
+
+    final ThanksViewModel vm = new ThanksViewModel(environment);
+    final Project project = ProjectFactory.project()
+      .toBuilder()
+      .category(CategoryFactory.ceramicsCategory())
+      .build();
+
+    final TestSubscriber<Void> showGamesNewsletterDialogTest = new TestSubscriber<>();
+    vm.outputs.showGamesNewsletterDialog().subscribe(showGamesNewsletterDialogTest);
+
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+
+    showGamesNewsletterDialogTest.assertValueCount(0);
+    hasSeenGamesNewsletterPreferenceTest.assertValues(false);
+  }
+
+  @Test
+  public void testThanksViewModel_dontShowGamesNewsletterDialogIfUserHasAlreadySeen() {
+    MockBooleanPreference hasSeenAppRatingPreference = new MockBooleanPreference(true);
+    MockBooleanPreference hasSeenGamesNewsletterPreference = new MockBooleanPreference(true);
+    final TestSubscriber<Boolean> hasSeenGamesNewsletterPreferenceTest = new TestSubscriber<>();
+    hasSeenGamesNewsletterPreference.observable().subscribe(hasSeenGamesNewsletterPreferenceTest);
+
+    final Environment environment = environment()
+      .toBuilder()
+      .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
+      .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
+      .build();
+
+    final ThanksViewModel vm = new ThanksViewModel(environment);
+    final Project project = ProjectFactory.project()
+      .toBuilder()
+      .category(CategoryFactory.tabletopGamesCategory())
+      .build();
+
+    final TestSubscriber<Void> showGamesNewsletterDialogTest = new TestSubscriber<>();
+    vm.outputs.showGamesNewsletterDialog().subscribe(showGamesNewsletterDialogTest);
+
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+
+    showGamesNewsletterDialogTest.assertValueCount(0);
+    hasSeenGamesNewsletterPreferenceTest.assertValues(true);
+  }
+
+  @Test
+  public void testThanksViewModel_dontShowGamesNewsletterDialogIfUserHasntSeenAppRatingDialog() {
+    MockBooleanPreference hasSeenAppRatingPreference = new MockBooleanPreference(false);
+    MockBooleanPreference hasSeenGamesNewsletterPreference = new MockBooleanPreference(false);
+    final TestSubscriber<Boolean> hasSeenGamesNewsletterPreferenceTest = new TestSubscriber<>();
+    hasSeenGamesNewsletterPreference.observable().subscribe(hasSeenGamesNewsletterPreferenceTest);
+
+    final Environment environment = environment()
+      .toBuilder()
+      .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
+      .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
+      .build();
+
+    final ThanksViewModel vm = new ThanksViewModel(environment);
+    final Project project = ProjectFactory.project()
+      .toBuilder()
+      .category(CategoryFactory.musicCategory())
+      .build();
+
+    final TestSubscriber<Void> showGamesNewsletterDialogTest = new TestSubscriber<>();
+    vm.outputs.showGamesNewsletterDialog().subscribe(showGamesNewsletterDialogTest);
+
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+
+    showGamesNewsletterDialogTest.assertValueCount(0);
+    hasSeenGamesNewsletterPreferenceTest.assertValues(false);
   }
 
   @Test

@@ -17,6 +17,11 @@ public interface ThanksViewModelOutputs {
   Observable<String> projectName();
 
   /**
+   * Show a dialog prompting the user to sign-up to the games newsletter.
+   */
+  Observable<Void> showGamesNewsletterDialog();
+
+  /**
    * Show a dialog prompting the user to rate the app.
    */
   Observable<Void> showRatingDialog();

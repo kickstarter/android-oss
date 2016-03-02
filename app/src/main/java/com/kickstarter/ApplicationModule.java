@@ -42,6 +42,7 @@ import com.kickstarter.libs.qualifiers.ApiRetrofit;
 import com.kickstarter.libs.qualifiers.AppRatingPreference;
 import com.kickstarter.libs.qualifiers.ApplicationContext;
 import com.kickstarter.libs.qualifiers.ConfigPreference;
+import com.kickstarter.libs.qualifiers.GamesNewsletterPreference;
 import com.kickstarter.libs.qualifiers.PackageNameString;
 import com.kickstarter.libs.qualifiers.UserPreference;
 import com.kickstarter.libs.qualifiers.WebEndpoint;
@@ -90,6 +91,7 @@ public final class ApplicationModule {
     final @NonNull CurrentConfig currentConfig,
     final @NonNull CurrentUser currentUser,
     final @NonNull @AppRatingPreference BooleanPreferenceType hasSeenAppRatingPreference,
+    final @NonNull @GamesNewsletterPreference BooleanPreferenceType hasSeenGamesNewsletterPreference,
     final @NonNull Koala koala,
     final @NonNull SharedPreferences sharedPreferences,
     final @NonNull WebClientType webClient) {
@@ -102,6 +104,7 @@ public final class ApplicationModule {
       .currentConfig(currentConfig)
       .currentUser(currentUser)
       .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
+      .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
       .koala(koala)
       .sharedPreferences(sharedPreferences)
       .webClient(webClient)
@@ -305,6 +308,13 @@ public final class ApplicationModule {
   @Singleton
   @NonNull DeviceRegistrarType provideDeviceRegistrar(final @ApplicationContext @NonNull Context context) {
     return new DeviceRegistrar(context);
+  }
+
+  @Provides
+  @Singleton
+  @GamesNewsletterPreference
+  @NonNull BooleanPreferenceType provideGamesNewsletterPreference(final @NonNull SharedPreferences sharedPreferences) {
+    return new BooleanPreference(sharedPreferences, "has_seen_games_newsletter");
   }
 
   @Provides

@@ -109,6 +109,13 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::showBackedProject);
 
+    viewModel.outputs.showGamesNewsletterDialog()
+      .compose(bindToLifecycle())
+      .take(1)
+      .delay(700L, TimeUnit.MILLISECONDS)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> showGamesNewsletterDialog());
+
     viewModel.outputs.showRatingDialog()
       .compose(bindToLifecycle())
       .take(1)
@@ -170,6 +177,18 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
     return ksString.format(iJustBackedString, "project_name", project.name());
   }
 
+  private void showBackedProject(final @NonNull String projectName) {
+    backedProjectTextView.setText(Html.fromHtml(ksString.format(youJustBackedString, "project_name", projectName)));
+  }
+
+  private void showGamesNewsletterDialog() {
+    // TODO
+  }
+
+  private void showRatingDialog() {
+    ViewUtils.showRatingDialog(this);
+  }
+
   private void showRecommendations(final @NonNull Pair<List<Project>, Category> projectsAndRootCategory) {
     recommendedProjectsRecyclerView.setAdapter(new ThanksAdapter(projectsAndRootCategory.first, projectsAndRootCategory.second, viewModel));
   }
@@ -229,13 +248,5 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
       .text(shareString(project))
       .uri(Uri.parse(project.webProjectUrl()))
       .show();
-  }
-
-  private void showBackedProject(final @NonNull String projectName) {
-    backedProjectTextView.setText(Html.fromHtml(ksString.format(youJustBackedString, "project_name", projectName)));
-  }
-
-  private void showRatingDialog() {
-    ViewUtils.showRatingDialog(this);
   }
 }

@@ -17,6 +17,11 @@ public interface ThanksViewModelOutputs {
   Observable<String> projectName();
 
   /**
+   * Show a dialog prompting the user to rate the app.
+   */
+  Observable<Void> showRatingDialog();
+
+  /**
    * Show recommended projects and a category tout.
    */
   Observable<Pair<List<Project>, Category>> showRecommendations();

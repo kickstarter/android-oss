@@ -5,7 +5,6 @@ import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,7 +27,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.TweetComposer;
-import com.kickstarter.libs.preferences.BooleanPreference;
+import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.qualifiers.AppRatingPreference;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ApplicationUtils;
@@ -42,6 +41,7 @@ import com.kickstarter.ui.adapters.ThanksAdapter;
 import com.kickstarter.viewmodels.ThanksViewModel;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -49,12 +49,13 @@ import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 @RequiresViewModel(ThanksViewModel.class)
 public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   protected @Inject KSString ksString;
-  protected @Inject @AppRatingPreference BooleanPreference hasSeenAppRatingPreference;
 
   protected @Bind(R.id.backed_project) TextView backedProjectTextView;
   protected @Bind(R.id.recommended_projects_recycler_view) RecyclerView recommendedProjectsRecyclerView;
@@ -82,8 +83,11 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
     layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
     recommendedProjectsRecyclerView.setLayoutManager(layoutManager);
 
-    displayWoohooBackground();
-    displayRating();
+    Observable.timer(500L, TimeUnit.MILLISECONDS, Schedulers.newThread())
+      .map(__ -> null)
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> animateBackground());
 
     RxView.clicks(shareButton)
       .compose(bindToLifecycle())
@@ -104,6 +108,13 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::showBackedProject);
+
+    viewModel.outputs.showRatingDialog()
+      .compose(bindToLifecycle())
+      .take(1)
+      .delay(700L, TimeUnit.MILLISECONDS)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> showRatingDialog());
 
     viewModel.outputs.showRecommendations()
       .compose(bindToLifecycle())
@@ -147,22 +158,12 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
     ApplicationUtils.resumeDiscoveryActivity(this);
   }
 
-  private void displayRating() {
-    if (!hasSeenAppRatingPreference.get()) {
-      new Handler().postDelayed(() -> {
-        ViewUtils.showRatingDialog(this);
-      }, 700);
+  private void animateBackground() {
+    woohooBackgroundImageView.animate().setDuration(Long.parseLong(getString(R.string.woohoo_duration))).alpha(1);
+    final Drawable drawable = woohooBackgroundImageView.getDrawable();
+    if (drawable instanceof Animatable) {
+      ((Animatable) drawable).start();
     }
-  }
-
-  private void displayWoohooBackground() {
-    new Handler().postDelayed(() -> {
-      woohooBackgroundImageView.animate().setDuration(Long.parseLong(getString(R.string.woohoo_duration))).alpha(1);
-      final Drawable drawable = woohooBackgroundImageView.getDrawable();
-      if (drawable instanceof Animatable) {
-        ((Animatable) drawable).start();
-      }
-    }, 500);
   }
 
   private String shareString(final @NonNull Project project) {
@@ -232,5 +233,9 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
 
   private void showBackedProject(final @NonNull String projectName) {
     backedProjectTextView.setText(Html.fromHtml(ksString.format(youJustBackedString, "project_name", projectName)));
+  }
+
+  private void showRatingDialog() {
+    ViewUtils.showRatingDialog(this);
   }
 }

@@ -5,6 +5,8 @@ import android.util.Pair;
 
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
+import com.kickstarter.libs.preferences.BooleanPreferenceType;
+import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
@@ -35,6 +37,7 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
   private final PublishSubject<Void> shareClick = PublishSubject.create();
   private final PublishSubject<Void> shareOnFacebookClick = PublishSubject.create();
   private final PublishSubject<Void> shareOnTwitterClick = PublishSubject.create();
+  private final BehaviorSubject<Void> showRatingDialog = BehaviorSubject.create();
   private final BehaviorSubject<Pair<List<Project>, Category>> showRecommendations = BehaviorSubject.create();
   private final BehaviorSubject<DiscoveryParams> startDiscovery = BehaviorSubject.create();
   private final BehaviorSubject<Project> startProject = BehaviorSubject.create();
@@ -43,11 +46,13 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
   private final BehaviorSubject<Project> startShareOnTwitter = BehaviorSubject.create();
 
   private final ApiClientType apiClient;
+  private final BooleanPreferenceType hasSeenAppRatingPreference;
 
   public ThanksViewModel(final @NonNull Environment environment) {
     super(environment);
 
     apiClient = environment.apiClient();
+    hasSeenAppRatingPreference = environment.hasSeenAppRatingPreference();
 
     final Observable<Project> project = intent()
       .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
@@ -92,6 +97,17 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
     projectsAndRootCategory
       .compose(bindToLifecycle())
       .subscribe(showRecommendations::onNext);
+
+    // Show app rating dialog if it hasn't already been seen
+    Observable.just(hasSeenAppRatingPreference.get())
+      .filter(b -> !b)
+      .map(__ -> null)
+      .compose(bindToLifecycle())
+      .subscribe(__ -> showRatingDialog.onNext(null));
+
+    showRatingDialog
+      .compose(bindToLifecycle())
+      .subscribe(__ -> hasSeenAppRatingPreference.set(true));
 
     // Event tracking
     categoryClick
@@ -216,6 +232,11 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
   @Override
   public @NonNull Observable<String> projectName() {
     return projectName;
+  }
+
+  @Override
+  public @NonNull Observable<Void> showRatingDialog() {
+    return showRatingDialog;
   }
 
   @Override

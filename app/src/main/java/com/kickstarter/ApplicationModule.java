@@ -32,7 +32,9 @@ import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.Release;
 import com.kickstarter.libs.preferences.BooleanPreference;
+import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.preferences.IntPreference;
+import com.kickstarter.libs.preferences.IntPreferenceType;
 import com.kickstarter.libs.preferences.StringPreference;
 import com.kickstarter.libs.qualifiers.AccessTokenPreference;
 import com.kickstarter.libs.qualifiers.ActivitySamplePreference;
@@ -81,12 +83,13 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
-  Environment provideEnvironment(final @NonNull @ActivitySamplePreference IntPreference activitySamplePreference,
+  Environment provideEnvironment(final @NonNull @ActivitySamplePreference IntPreferenceType activitySamplePreference,
     final @NonNull ApiClientType apiClient,
     final @NonNull BuildCheck buildCheck,
     final @NonNull CookieManager cookieManager,
     final @NonNull CurrentConfig currentConfig,
     final @NonNull CurrentUser currentUser,
+    final @NonNull @AppRatingPreference BooleanPreferenceType hasSeenAppRatingPreference,
     final @NonNull Koala koala,
     final @NonNull SharedPreferences sharedPreferences,
     final @NonNull WebClientType webClient) {
@@ -98,6 +101,7 @@ public final class ApplicationModule {
       .cookieManager(cookieManager)
       .currentConfig(currentConfig)
       .currentUser(currentUser)
+      .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
       .koala(koala)
       .sharedPreferences(sharedPreferences)
       .webClient(webClient)
@@ -226,14 +230,14 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   @ActivitySamplePreference
-  @NonNull IntPreference provideActivitySamplePreference(final @NonNull SharedPreferences sharedPreferences) {
+  @NonNull IntPreferenceType provideActivitySamplePreference(final @NonNull SharedPreferences sharedPreferences) {
     return new IntPreference(sharedPreferences, "last_seen_activity_id");
   }
 
   @Provides
   @Singleton
   @AppRatingPreference
-  @NonNull BooleanPreference provideAppRatingPreference(final @NonNull SharedPreferences sharedPreferences) {
+  @NonNull BooleanPreferenceType provideAppRatingPreference(final @NonNull SharedPreferences sharedPreferences) {
     return new BooleanPreference(sharedPreferences, "has_seen_app_rating");
   }
 

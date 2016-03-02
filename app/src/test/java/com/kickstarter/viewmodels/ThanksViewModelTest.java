@@ -6,6 +6,8 @@ import android.util.Pair;
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.CategoryFactory;
 import com.kickstarter.factories.ProjectFactory;
+import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.preferences.MockBooleanPreference;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
@@ -29,6 +31,48 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
 
     projectNameTest.assertValues(project.name());
+  }
+
+  @Test
+  public void testThanksViewModel_showRatingDialog() {
+    MockBooleanPreference hasSeenAppRatingPreference = new MockBooleanPreference(false);
+    final TestSubscriber<Boolean> hasSeenAppRatingPreferenceTest = new TestSubscriber<>();
+    hasSeenAppRatingPreference.observable().subscribe(hasSeenAppRatingPreferenceTest);
+
+    final Environment environment = environment()
+      .toBuilder()
+      .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
+      .build();
+
+    final ThanksViewModel vm = new ThanksViewModel(environment);
+    final Project project = ProjectFactory.project();
+
+    final TestSubscriber<Void> showRatingDialogTest = new TestSubscriber<>();
+    vm.outputs.showRatingDialog().subscribe(showRatingDialogTest);
+
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+
+    showRatingDialogTest.assertValueCount(1);
+    hasSeenAppRatingPreferenceTest.assertValues(false, true);
+  }
+
+  @Test
+  public void testThanksViewModel_dontShowRatingDialogIfAlreadySeen() {
+    MockBooleanPreference hasSeenAppRatingPreference = new MockBooleanPreference(true);
+    final Environment environment = environment()
+      .toBuilder()
+      .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
+      .build();
+
+    final ThanksViewModel vm = new ThanksViewModel(environment);
+    final Project project = ProjectFactory.project();
+
+    final TestSubscriber<Void> showRatingDialogTest = new TestSubscriber<>();
+    vm.outputs.showRatingDialog().subscribe(showRatingDialogTest);
+
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+
+    showRatingDialogTest.assertValueCount(0);
   }
 
   @Test

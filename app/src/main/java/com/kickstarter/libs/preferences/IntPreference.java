@@ -24,7 +24,7 @@ package com.kickstarter.libs.preferences;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
-public class IntPreference {
+public final class IntPreference implements IntPreferenceType {
   private final SharedPreferences sharedPreferences;
   private final String key;
   private final int defaultValue;
@@ -40,18 +40,22 @@ public class IntPreference {
     this.defaultValue = defaultValue;
   }
 
+  @Override
   public int get() {
     return sharedPreferences.getInt(key, defaultValue);
   }
 
+  @Override
   public boolean isSet() {
     return sharedPreferences.contains(key);
   }
 
+  @Override
   public void set(final int value) {
     sharedPreferences.edit().putInt(key, value).apply();
   }
 
+  @Override
   public void delete() {
     sharedPreferences.edit().remove(key).apply();
   }

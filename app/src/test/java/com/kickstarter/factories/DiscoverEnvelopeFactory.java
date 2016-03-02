@@ -8,6 +8,8 @@ import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import java.util.List;
 
 public final class DiscoverEnvelopeFactory {
+  private DiscoverEnvelopeFactory() {}
+
   public static @NonNull DiscoverEnvelope discoverEnvelope(final @NonNull List<Project> projects) {
     return DiscoverEnvelope.builder()
       .projects(projects)

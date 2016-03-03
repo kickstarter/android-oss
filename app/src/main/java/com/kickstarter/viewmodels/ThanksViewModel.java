@@ -3,12 +3,15 @@ package com.kickstarter.viewmodels;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 
+import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
+import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
@@ -25,6 +28,7 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
@@ -40,6 +44,7 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
   private final BehaviorSubject<Void> showGamesNewsletterDialog = BehaviorSubject.create();
   private final BehaviorSubject<Void> showRatingDialog = BehaviorSubject.create();
   private final BehaviorSubject<Pair<List<Project>, Category>> showRecommendations = BehaviorSubject.create();
+  private final PublishSubject<Void> signupToGamesNewsletterClick = PublishSubject.create();
   private final BehaviorSubject<DiscoveryParams> startDiscovery = BehaviorSubject.create();
   private final BehaviorSubject<Project> startProject = BehaviorSubject.create();
   private final BehaviorSubject<Project> startShare = BehaviorSubject.create();
@@ -49,11 +54,13 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
   private final ApiClientType apiClient;
   private final BooleanPreferenceType hasSeenAppRatingPreference;
   private final BooleanPreferenceType hasSeenGamesNewsletterPreference;
+  private final CurrentUserType currentUser;
 
   public ThanksViewModel(final @NonNull Environment environment) {
     super(environment);
 
     apiClient = environment.apiClient();
+    currentUser = environment.currentUser();
     hasSeenAppRatingPreference = environment.hasSeenAppRatingPreference();
     hasSeenGamesNewsletterPreference = environment.hasSeenGamesNewsletterPreference();
 
@@ -68,6 +75,20 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .flatMap(this::relatedProjects)
       .compose(bindToLifecycle())
       .compose(zipPair(rootCategory));
+
+    final Observable<Boolean> isGamesCategory = rootCategory
+      .map(c -> "games".equals(c.slug()));
+
+    final Observable<Boolean> hasSeenGamesNewsletterDialog = Observable.just(hasSeenGamesNewsletterPreference.get());
+
+    final Observable<Boolean> isSignedUpToGamesNewsletter = currentUser.observable()
+      .map(u -> u != null && isTrue(u.gamesNewsletter()));
+
+    final Observable<Boolean> canShowGamesNewsletterDialog = isGamesCategory
+      .compose(combineLatestPair(hasSeenGamesNewsletterDialog))
+      .compose(combineLatestPair(isSignedUpToGamesNewsletter))
+      .map(cds -> cds.first.first && !cds.first.second && !cds.second)
+      .take(1);
 
     project
       .map(Project::name)
@@ -101,21 +122,16 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .compose(bindToLifecycle())
       .subscribe(showRecommendations::onNext);
 
-    // Show app rating dialog if it hasn't already been seen
     Observable.just(hasSeenAppRatingPreference.get())
       .take(1)
-      .filter(b -> !b)
+      .compose(combineLatestPair(canShowGamesNewsletterDialog))
+      .filter(ag -> !ag.first && !ag.second)
       .map(__ -> null)
       .compose(bindToLifecycle())
       .subscribe(__ -> showRatingDialog.onNext(null));
 
-    // Show games newsletter dialog if it hasn't already been seen, the user *has* seen the app rating dialog,
-    // and the backing's root category is games.
-    Observable.just(hasSeenGamesNewsletterPreference.get())
-      .take(1)
-      .filter(b -> !b)
-      .compose(combineLatestPair(rootCategory.filter(c -> "games".equals(c.slug()))))
-      .map(__ -> null)
+    canShowGamesNewsletterDialog
+      .filter(x -> x)
       .compose(bindToLifecycle())
       .subscribe(__ -> showGamesNewsletterDialog.onNext(null));
 
@@ -238,6 +254,11 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
   @Override
   public void shareOnTwitterClick() {
     shareOnTwitterClick.onNext(null);
+  }
+
+  @Override
+  public void signupToGamesNewsletterClick() {
+    signupToGamesNewsletterClick.onNext(null);
   }
 
   // OUTPUTS

@@ -30,6 +30,7 @@ import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
+import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.zipPair;
@@ -87,10 +88,10 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
     final Observable<Boolean> isSignedUpToGamesNewsletter = currentUser.observable()
       .map(u -> u != null && isTrue(u.gamesNewsletter()));
 
-    final Observable<Boolean> showGamesNewsletter = isGamesCategory
-      .compose(combineLatestPair(hasSeenGamesNewsletterDialog))
-      .compose(combineLatestPair(isSignedUpToGamesNewsletter))
-      .map(cds -> cds.first.first && !cds.first.second && !cds.second)
+    final Observable<Boolean> showGamesNewsletter = Observable.combineLatest(
+        isGamesCategory, hasSeenGamesNewsletterDialog, isSignedUpToGamesNewsletter,
+        (isGames, hasSeen, isSignedUp) -> isGames && !hasSeen && !isSignedUp
+      )
       .take(1);
 
     project
@@ -118,10 +119,13 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .subscribe(startShareOnTwitter::onNext);
 
     categoryClick
+      .map(c -> DiscoveryParams.builder().category(c).build())
       .compose(bindToLifecycle())
-      .subscribe(c -> startDiscovery.onNext(DiscoveryParams.builder().category(c).build()));
+      .subscribe(startDiscovery::onNext);
 
-    projectsAndRootCategory
+    project
+      .flatMap(this::relatedProjects)
+      .compose(zipPair(rootCategory))
       .compose(bindToLifecycle())
       .subscribe(showRecommendations::onNext);
 
@@ -129,7 +133,7 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .take(1)
       .compose(combineLatestPair(showGamesNewsletter))
       .filter(ag -> !ag.first && !ag.second)
-      .map(__ -> null)
+      .compose(ignoreValues())
       .compose(bindToLifecycle())
       .subscribe(__ -> showRatingDialog.onNext(null));
 

@@ -52,6 +52,8 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
+
 @RequiresViewModel(ThanksViewModel.class)
 public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   protected @Inject KSString ksString;
@@ -94,7 +96,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
     recommendedProjectsRecyclerView.setAdapter(adapter);
 
     Observable.timer(500L, TimeUnit.MILLISECONDS, Schedulers.newThread())
-      .map(__ -> null)
+      .compose(ignoreValues())
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> animateBackground());

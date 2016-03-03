@@ -33,8 +33,12 @@ import rx.Observable;
 import rx.subjects.PublishSubject;
 
 public class MockApiClient implements ApiClientType {
-  final PublishSubject<Pair<String, Map<String, Object>>> observable = PublishSubject.create();
+  private final PublishSubject<Pair<String, Map<String, Object>>> observable = PublishSubject.create();
 
+  /**
+   * Emits when endpoints on the client are called. The key in the pair is the underscore-separated
+   * name of the method, and the value is a map of argument names/values.
+   */
   public @NonNull Observable<Pair<String, Map<String, Object>>> observable() {
     return observable;
   }

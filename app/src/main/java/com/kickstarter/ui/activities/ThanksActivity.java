@@ -69,6 +69,8 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   protected @BindString(R.string.project_checkout_games_alert_want_the_coolest_games_delivered_to_your_inbox) String gamesAlertMessage;
   protected @BindString(R.string.project_checkout_games_alert_no_thanks) String gamesAlertNo;
   protected @BindString(R.string.project_checkout_games_alert_yes_please) String gamesAlertYes;
+  protected @BindString(R.string.general_alert_buttons_ok) String okString;
+  protected @BindString(R.string.profile_settings_newsletter_games) String newsletterGamesString;
   protected @BindString(R.string.profile_settings_newsletter_opt_in_message) String optInMessageString;
   protected @BindString(R.string.profile_settings_newsletter_opt_in_title) String optInTitleString;
   protected @BindString(R.string.project_checkout_share_you_just_backed_project_share_this_project_html) String youJustBackedString;
@@ -192,9 +194,12 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   }
 
   private void showConfirmGamesNewsletterDialog() {
+    final String optInDialogMessageString = ksString.format(optInMessageString, "newsletter", newsletterGamesString);
+
     final AlertDialog.Builder builder = new AlertDialog.Builder(this)
-      .setMessage(optInMessageString)
-      .setTitle(optInTitleString);
+      .setMessage(optInDialogMessageString)
+      .setTitle(optInTitleString)
+      .setPositiveButton(okString, (dialog, which) -> {});
 
     builder.show();
   }

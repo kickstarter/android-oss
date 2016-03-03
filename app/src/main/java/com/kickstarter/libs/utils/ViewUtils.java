@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import com.kickstarter.R;
 import com.kickstarter.ui.views.AppRatingDialog;
-import com.kickstarter.ui.views.KSDialog;
+import com.kickstarter.ui.views.ConfirmDialog;
 
 import rx.functions.Action1;
 
@@ -73,12 +73,12 @@ public final class ViewUtils {
    * Show a dialog box to the user.
    */
   public static void showDialog(final @NonNull Context context, final @Nullable String title, final @NonNull String message) {
-    new KSDialog(context, title, message).show();
+    new ConfirmDialog(context, title, message).show();
   }
 
   public static void showDialog(final @NonNull Context context, final @Nullable String title,
     final @NonNull String message, final @NonNull String buttonMessage) {
-    new KSDialog(context, title, message, buttonMessage).show();
+    new ConfirmDialog(context, title, message, buttonMessage).show();
   }
 
   public static void showRatingDialog(final @NonNull Context context) {

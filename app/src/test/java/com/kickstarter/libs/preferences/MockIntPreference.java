@@ -2,41 +2,44 @@ package com.kickstarter.libs.preferences;
 
 import android.support.annotation.NonNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 
 public final class MockIntPreference implements IntPreferenceType {
-  private final @NonNull BehaviorSubject<Integer> values = BehaviorSubject.create();
+  private final List<Integer> values = new ArrayList<Integer>();
 
   public MockIntPreference() {
-    values.onNext(null);
+    values.add(null);
   }
 
   public MockIntPreference(final int value) {
-    values.onNext(value);
+    values.add(value);
   }
 
   @Override
   public int get() {
-    return values.take(1).toBlocking().last();
+    return values.get(values.size() - 1);
   }
 
   @Override
   public boolean isSet() {
-    return values.take(1).toBlocking().last() != null;
+    return values.get(values.size() - 1) != null;
   }
 
   @Override
   public void set(final int value) {
-    values.onNext(value);
+    values.add(value);
   }
 
   @Override
   public void delete() {
-    values.onNext(null);
+    values.add(null);
   }
 
-  public Observable<Integer> observable() {
+  public @NonNull List<Integer> values() {
     return values;
   }
 }

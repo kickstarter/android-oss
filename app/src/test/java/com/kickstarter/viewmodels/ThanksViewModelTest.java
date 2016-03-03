@@ -21,6 +21,7 @@ import com.kickstarter.ui.IntentKey;
 
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 import rx.observers.TestSubscriber;
@@ -87,8 +88,6 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
   public void testThanksViewModel_dontShowRatingDialogIfGamesNewsletterWillDisplay() {
     final MockBooleanPreference hasSeenAppRatingPreference = new MockBooleanPreference(false);
     final MockBooleanPreference hasSeenGamesNewsletterPreference = new MockBooleanPreference(false);
-    final TestSubscriber<Boolean> hasSeenGamesNewsletterPreferenceTest = new TestSubscriber<>();
-    hasSeenGamesNewsletterPreference.observable().subscribe(hasSeenGamesNewsletterPreferenceTest);
 
     final User user = UserFactory.user().toBuilder().gamesNewsletter(false).build();
     final CurrentUserType currentUser = new MockCurrentUser(user);
@@ -117,8 +116,6 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testThanksViewModel_showGamesNewsletterDialog() {
     final MockBooleanPreference hasSeenGamesNewsletterPreference = new MockBooleanPreference(false);
-    final TestSubscriber<Boolean> hasSeenGamesNewsletterPreferenceTest = new TestSubscriber<>();
-    hasSeenGamesNewsletterPreference.observable().subscribe(hasSeenGamesNewsletterPreferenceTest);
 
     final User user = UserFactory.user().toBuilder().gamesNewsletter(false).build();
     final CurrentUserType currentUser = new MockCurrentUser(user);
@@ -141,7 +138,7 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
 
     showGamesNewsletterDialogTest.assertValueCount(1);
-    hasSeenGamesNewsletterPreferenceTest.assertValues(false, true);
+    assertEquals(Arrays.asList(false, true), hasSeenGamesNewsletterPreference.values());
 
     koalaTest.assertValueCount(0);
   }

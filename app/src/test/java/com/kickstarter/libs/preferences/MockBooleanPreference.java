@@ -2,41 +2,44 @@ package com.kickstarter.libs.preferences;
 
 import android.support.annotation.NonNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 
 public final class MockBooleanPreference implements BooleanPreferenceType {
-  private final @NonNull BehaviorSubject<Boolean> values = BehaviorSubject.create();
+  private final @NonNull List<Boolean> values = new ArrayList<Boolean>();
 
   public MockBooleanPreference() {
-    values.onNext(null);
+    values.add(null);
   }
 
   public MockBooleanPreference(final boolean value) {
-    values.onNext(value);
+    values.add(value);
   }
 
   @Override
   public boolean get() {
-    return values.take(1).toBlocking().last();
+    return values.get(values.size() -1);
   }
 
   @Override
   public boolean isSet() {
-    return values.take(1).toBlocking().last() != null;
+    return values.get(values.size() -1) != null;
   }
 
   @Override
   public void set(final boolean value) {
-    values.onNext(value);
+    values.add(value);
   }
 
   @Override
   public void delete() {
-    values.onNext(null);
+    values.add(null);
   }
 
-  public Observable<Boolean> observable() {
+  public @NonNull List<Boolean> values() {
     return values;
   }
 }

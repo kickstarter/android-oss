@@ -2,41 +2,44 @@ package com.kickstarter.libs.preferences;
 
 import android.support.annotation.NonNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 
 public final class MockStringPreference implements StringPreferenceType {
-  private final @NonNull BehaviorSubject<String> values = BehaviorSubject.create();
+  private final List<String> values = new ArrayList<String>();
 
   public MockStringPreference() {
-    values.onNext(null);
+    values.add(null);
   }
 
   public MockStringPreference(final String value) {
-    values.onNext(value);
+    values.add(value);
   }
 
   @Override
   public String get() {
-    return values.take(1).toBlocking().last();
+    return values.get(values.size() - 1);
   }
 
   @Override
   public boolean isSet() {
-    return values.take(1).toBlocking().last() != null;
+    return values.get(values.size() - 1) != null;
   }
 
   @Override
   public void set(final String value) {
-    values.onNext(value);
+    values.add(value);
   }
 
   @Override
   public void delete() {
-    values.onNext(null);
+    values.add(null);
   }
 
-  public Observable<String> observable() {
+  public @NonNull List<String> values() {
     return values;
   }
 }

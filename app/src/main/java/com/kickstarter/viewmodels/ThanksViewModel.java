@@ -89,9 +89,9 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .map(u -> u != null && isTrue(u.gamesNewsletter()));
 
     final Observable<Boolean> showGamesNewsletter = Observable.combineLatest(
-        isGamesCategory, hasSeenGamesNewsletterDialog, isSignedUpToGamesNewsletter,
-        (isGames, hasSeen, isSignedUp) -> isGames && !hasSeen && !isSignedUp
-      )
+      isGamesCategory, hasSeenGamesNewsletterDialog, isSignedUpToGamesNewsletter,
+      (isGames, hasSeen, isSignedUp) -> isGames && !hasSeen && !isSignedUp
+    )
       .take(1);
 
     project

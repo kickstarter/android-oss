@@ -5,9 +5,6 @@ import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Observable;
-import rx.subjects.BehaviorSubject;
-
 public final class MockStringPreference implements StringPreferenceType {
   private final List<String> values = new ArrayList<String>();
 

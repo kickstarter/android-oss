@@ -5,9 +5,6 @@ import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Observable;
-import rx.subjects.BehaviorSubject;
-
 public final class MockBooleanPreference implements BooleanPreferenceType {
   private final @NonNull List<Boolean> values = new ArrayList<Boolean>();
 

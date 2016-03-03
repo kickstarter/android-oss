@@ -8,6 +8,7 @@ import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.InternalTools;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.preferences.StringPreference;
+import com.kickstarter.libs.preferences.StringPreferenceType;
 import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
 
 import javax.inject.Singleton;
@@ -26,7 +27,7 @@ public final class InternalApplicationModule {
   @Provides
   @Singleton
   @ApiEndpointPreference
-  StringPreference provideApiEndpointPreference(final @NonNull SharedPreferences sharedPreferences) {
+  @NonNull StringPreferenceType provideApiEndpointPreference(final @NonNull SharedPreferences sharedPreferences) {
     return new StringPreference(sharedPreferences, "debug_api_endpoint", ApiEndpoint.PRODUCTION.url());
   }
 

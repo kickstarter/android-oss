@@ -36,6 +36,7 @@ import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.preferences.IntPreference;
 import com.kickstarter.libs.preferences.IntPreferenceType;
 import com.kickstarter.libs.preferences.StringPreference;
+import com.kickstarter.libs.preferences.StringPreferenceType;
 import com.kickstarter.libs.qualifiers.AccessTokenPreference;
 import com.kickstarter.libs.qualifiers.ActivitySamplePreference;
 import com.kickstarter.libs.qualifiers.ApiRetrofit;
@@ -219,14 +220,14 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   @AccessTokenPreference
-  @NonNull StringPreference provideAccessTokenPreference(final @NonNull SharedPreferences sharedPreferences) {
+  @NonNull StringPreferenceType provideAccessTokenPreference(final @NonNull SharedPreferences sharedPreferences) {
     return new StringPreference(sharedPreferences, "access_token");
   }
 
   @Provides
   @Singleton
   @ConfigPreference
-  @NonNull StringPreference providesConfigPreference(final @NonNull SharedPreferences sharedPreferences) {
+  @NonNull StringPreferenceType providesConfigPreference(final @NonNull SharedPreferences sharedPreferences) {
     return new StringPreference(sharedPreferences, "config");
   }
 
@@ -279,7 +280,7 @@ public final class ApplicationModule {
   @Singleton
   CurrentConfig provideCurrentConfig(final @NonNull AssetManager assetManager,
     final @NonNull Gson gson,
-    final @ConfigPreference @NonNull StringPreference configPreference) {
+    final @ConfigPreference @NonNull StringPreferenceType configPreference) {
     return new CurrentConfig(assetManager, gson, configPreference);
   }
 
@@ -297,10 +298,10 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
-  CurrentUser provideCurrentUser(@AccessTokenPreference final @NonNull StringPreference accessTokenPreference,
+  CurrentUser provideCurrentUser(@AccessTokenPreference final @NonNull StringPreferenceType accessTokenPreference,
     final @NonNull DeviceRegistrarType deviceRegistrar,
     final @NonNull Gson gson,
-    @NonNull @UserPreference final StringPreference userPreference) {
+    @NonNull @UserPreference final StringPreferenceType userPreference) {
     return new CurrentUser(accessTokenPreference, deviceRegistrar, gson, userPreference);
   }
 
@@ -406,7 +407,7 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   @UserPreference
-  StringPreference provideUserPreference(final @NonNull SharedPreferences sharedPreferences) {
+  @NonNull StringPreferenceType provideUserPreference(final @NonNull SharedPreferences sharedPreferences) {
     return new StringPreference(sharedPreferences, "user");
   }
 }

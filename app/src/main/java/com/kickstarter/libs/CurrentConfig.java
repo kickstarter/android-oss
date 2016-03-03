@@ -4,7 +4,7 @@ import android.content.res.AssetManager;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
-import com.kickstarter.libs.preferences.StringPreference;
+import com.kickstarter.libs.preferences.StringPreferenceType;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ObjectUtils;
 
@@ -23,7 +23,7 @@ public class CurrentConfig {
 
   public CurrentConfig(final @NonNull AssetManager assetManager,
     final @NonNull Gson gson,
-    final @NonNull StringPreference configPreference) {
+    final @NonNull StringPreferenceType configPreference) {
 
     // Loads config from disk
     final Observable<Config> diskConfig = Observable.just(ASSET_PATH)
@@ -35,7 +35,7 @@ public class CurrentConfig {
 
     // Loads config from string preference
     final Observable<Config> prefConfig = Observable.just(configPreference)
-      .map(StringPreference::get)
+      .map(StringPreferenceType::get)
       .map(json -> gson.fromJson(json, Config.class))
       .filter(ObjectUtils::isNotNull)
       .compose(Transformers.neverError())

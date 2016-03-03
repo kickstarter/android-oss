@@ -202,7 +202,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
     final AlertDialog.Builder builder = new AlertDialog.Builder(this)
       .setMessage(optInDialogMessageString)
       .setTitle(optInTitleString)
-      .setPositiveButton(okString, (dialog, which) -> {});
+      .setPositiveButton(okString, (__, ___) -> {});
 
     builder.show();
   }
@@ -210,10 +210,10 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   private void showGamesNewsletterDialog() {
     final AlertDialog.Builder builder = new AlertDialog.Builder(this)
       .setMessage(gamesAlertMessage)
-      .setPositiveButton(gamesAlertYes, (dialog, which) -> {
+      .setPositiveButton(gamesAlertYes, (__, ___) -> {
         viewModel.inputs.signupToGamesNewsletterClick();
       })
-      .setNegativeButton(gamesAlertNo, (dialog, which) -> {
+      .setNegativeButton(gamesAlertNo, (__, ___) -> {
         // Nothing to do!
       });
 

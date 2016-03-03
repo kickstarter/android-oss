@@ -87,10 +87,11 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
   public void testThanksViewModel_dontShowRatingDialogIfGamesNewsletterWillDisplay() {
     final MockBooleanPreference hasSeenAppRatingPreference = new MockBooleanPreference(false);
     final MockBooleanPreference hasSeenGamesNewsletterPreference = new MockBooleanPreference(false);
-    final User user = UserFactory.user().toBuilder().gamesNewsletter(false).build();
-    final CurrentUserType currentUser = new MockCurrentUser(user);
     final TestSubscriber<Boolean> hasSeenGamesNewsletterPreferenceTest = new TestSubscriber<>();
     hasSeenGamesNewsletterPreference.observable().subscribe(hasSeenGamesNewsletterPreferenceTest);
+
+    final User user = UserFactory.user().toBuilder().gamesNewsletter(false).build();
+    final CurrentUserType currentUser = new MockCurrentUser(user);
 
     final Environment environment = environment()
       .toBuilder()
@@ -116,10 +117,11 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testThanksViewModel_showGamesNewsletterDialog() {
     final MockBooleanPreference hasSeenGamesNewsletterPreference = new MockBooleanPreference(false);
-    final User user = UserFactory.user().toBuilder().gamesNewsletter(false).build();
-    final CurrentUserType currentUser = new MockCurrentUser(user);
     final TestSubscriber<Boolean> hasSeenGamesNewsletterPreferenceTest = new TestSubscriber<>();
     hasSeenGamesNewsletterPreference.observable().subscribe(hasSeenGamesNewsletterPreferenceTest);
+
+    final User user = UserFactory.user().toBuilder().gamesNewsletter(false).build();
+    final CurrentUserType currentUser = new MockCurrentUser(user);
 
     final Environment environment = environment()
       .toBuilder()

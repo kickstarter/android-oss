@@ -7,11 +7,9 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
-import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
-import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
@@ -28,11 +26,11 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.zipPair;
+import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
 
 public final class ThanksViewModel extends ViewModel<ThanksActivity> implements ThanksViewModelInputs, ThanksViewModelOutputs {
   private final PublishSubject<Category> categoryClick = PublishSubject.create();

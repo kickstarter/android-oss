@@ -82,7 +82,7 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
     final Observable<Boolean> isSignedUpToGamesNewsletter = currentUser.observable()
       .map(u -> u != null && isTrue(u.gamesNewsletter()));
 
-    final Observable<Boolean> canShowGamesNewsletterDialog = isGamesCategory
+    final Observable<Boolean> showGamesNewsletter = isGamesCategory
       .compose(combineLatestPair(hasSeenGamesNewsletterDialog))
       .compose(combineLatestPair(isSignedUpToGamesNewsletter))
       .map(cds -> cds.first.first && !cds.first.second && !cds.second)
@@ -122,13 +122,13 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
 
     Observable.just(hasSeenAppRatingPreference.get())
       .take(1)
-      .compose(combineLatestPair(canShowGamesNewsletterDialog))
+      .compose(combineLatestPair(showGamesNewsletter))
       .filter(ag -> !ag.first && !ag.second)
       .map(__ -> null)
       .compose(bindToLifecycle())
       .subscribe(__ -> showRatingDialog.onNext(null));
 
-    canShowGamesNewsletterDialog
+    showGamesNewsletter
       .filter(x -> x)
       .compose(bindToLifecycle())
       .subscribe(__ -> showGamesNewsletterDialog.onNext(null));

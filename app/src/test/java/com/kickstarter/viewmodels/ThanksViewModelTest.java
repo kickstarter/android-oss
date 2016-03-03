@@ -142,6 +142,8 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
 
     showGamesNewsletterDialogTest.assertValueCount(1);
     hasSeenGamesNewsletterPreferenceTest.assertValues(false, true);
+
+    koalaTest.assertValueCount(0);
   }
 
   @Test
@@ -289,6 +291,8 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
     vm.signupToGamesNewsletterClick();
     updateUserSettingsTest.assertValues(user.toBuilder().gamesNewsletter(true).build());
     showConfirmGamesNewsletterDialogTest.assertValueCount(0);
+
+    koalaTest.assertValues("Newsletter Subscribe");
   }
 
   @Test
@@ -313,6 +317,8 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
 
     vm.signupToGamesNewsletterClick();
     showConfirmGamesNewsletterDialogTest.assertValueCount(1);
+
+    koalaTest.assertValues("Newsletter Subscribe");
   }
 
   @Test

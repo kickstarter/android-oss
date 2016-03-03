@@ -2994,7 +2994,7 @@
             "weekly": "Nuestros Favoritos",
             "promo": "Novedades y eventos de Kickstarter",
             "happening": "Eventos",
-            "games": "Kickstarter Loves Games",
+            "games": "Nos encantan los juegos",
             "opt_in": {
               "title": "¡Sólo un último paso!",
               "message": "Hemos enviado una confirmación a la dirección de correo electrónico asociada con tu cuenta. Por favor checa tu bandeja de entrada y confirma la subscripción a %{newsletter}."
@@ -3314,9 +3314,9 @@
             }
           },
           "games_alert": {
-            "want_the_coolest_games_delivered_to_your_inbox": "Want the coolest games delivered to your inbox? Our Games team has a newsletter just for you.",
-            "yes_please": "Yes please!",
-            "no_thanks": "No thanks."
+            "want_the_coolest_games_delivered_to_your_inbox": "¿Qué tal si pudieras recibir automáticamente lo último acerca de videojuegos por correo electrónico? ¡Trato hecho - nuestro equipo de juegos tienen un boletín hecho a tu medida!",
+            "yes_please": "¡Claro que sí!",
+            "no_thanks": "No, gracias."
           }
         },
         "disclaimer": {

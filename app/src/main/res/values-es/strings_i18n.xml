@@ -544,7 +544,7 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="profile_settings_logout_alert_title" formatted="false">Cerrar sesión</string>
   <string name="profile_settings_navbar_title" formatted="false">Configuración</string>
   <string name="profile_settings_navbar_title_notifications" formatted="false">Notificaciones</string>
-  <string name="profile_settings_newsletter_games" formatted="false">Kickstarter Loves Games</string>
+  <string name="profile_settings_newsletter_games" formatted="false">Nos encantan los juegos</string>
   <string name="profile_settings_newsletter_happening" formatted="false">Eventos</string>
   <string name="profile_settings_newsletter_opt_in_message" formatted="false">Hemos enviado una confirmación a la dirección de correo electrónico asociada con tu cuenta. Por favor checa tu bandeja de entrada y confirma la subscripción a %{newsletter}.</string>
   <string name="profile_settings_newsletter_opt_in_title" formatted="false">¡Sólo un último paso!</string>
@@ -579,9 +579,9 @@ Si tienes un momento, ¿te importaría calificar tu experiencia?\n
   <string name="project_checkout_finalizing_timeout_message" formatted="false">¡Que pena! Parece que está tardando más de lo normal. Te enviaremos un correo electrónico una vez haya finalizado tu contribución.</string>
   <string name="project_checkout_finalizing_title" formatted="false">Procesando</string>
   <string name="project_checkout_finalizing_we_are_finalizing_your_pledge_to_project" formatted="false">Estamos finalizando tu contribución para %{project_name}. ¡Sólo nos tomará un momento!</string>
-  <string name="project_checkout_games_alert_no_thanks" formatted="false">No thanks.</string>
-  <string name="project_checkout_games_alert_want_the_coolest_games_delivered_to_your_inbox" formatted="false">Want the coolest games delivered to your inbox? Our Games team has a newsletter just for you.</string>
-  <string name="project_checkout_games_alert_yes_please" formatted="false">Yes please!</string>
+  <string name="project_checkout_games_alert_no_thanks" formatted="false">No, gracias.</string>
+  <string name="project_checkout_games_alert_want_the_coolest_games_delivered_to_your_inbox" formatted="false">¿Qué tal si pudieras recibir automáticamente lo último acerca de videojuegos por correo electrónico? ¡Trato hecho - nuestro equipo de juegos tienen un boletín hecho a tu medida!</string>
+  <string name="project_checkout_games_alert_yes_please" formatted="false">¡Claro que sí!</string>
   <string name="project_checkout_looking_for_more_projects_check_these_out" formatted="false">¿Estás buscando nuevos proyectos? Échales un vistazo a éstos.</string>
   <string name="project_checkout_manage_navbar_title" formatted="false">Administrar contribución</string>
   <string name="project_checkout_navigation_next" formatted="false">Siguiente</string>

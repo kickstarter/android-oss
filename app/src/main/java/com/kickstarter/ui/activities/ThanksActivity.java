@@ -184,7 +184,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   }
 
   private void showGamesNewsletterDialog() {
-    AlertDialog.Builder builder = new AlertDialog.Builder(this)
+    final AlertDialog.Builder builder = new AlertDialog.Builder(this)
       .setMessage(gamesAlertMessage)
       .setPositiveButton(gamesAlertYes, (dialog, which) -> {
         viewModel.inputs.signupToGamesNewsletterClick();

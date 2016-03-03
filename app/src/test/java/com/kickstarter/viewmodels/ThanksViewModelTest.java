@@ -39,8 +39,8 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testThanksViewModel_showRatingDialog() {
-    MockBooleanPreference hasSeenAppRatingPreference = new MockBooleanPreference(false);
-    MockBooleanPreference hasSeenGamesNewsletterPreference = new MockBooleanPreference(true);
+    final MockBooleanPreference hasSeenAppRatingPreference = new MockBooleanPreference(false);
+    final MockBooleanPreference hasSeenGamesNewsletterPreference = new MockBooleanPreference(true);
 
     final Environment environment = environment()
       .toBuilder()
@@ -61,8 +61,8 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testThanksViewModel_dontShowRatingDialogIfAlreadySeen() {
-    MockBooleanPreference hasSeenAppRatingPreference = new MockBooleanPreference(true);
-    MockBooleanPreference hasSeenGamesNewsletterPreference = new MockBooleanPreference(true);
+    final MockBooleanPreference hasSeenAppRatingPreference = new MockBooleanPreference(true);
+    final MockBooleanPreference hasSeenGamesNewsletterPreference = new MockBooleanPreference(true);
 
     final Environment environment = environment()
       .toBuilder()
@@ -83,8 +83,8 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testThanksViewModel_dontShowRatingDialogIfGamesNewsletterWillDisplay() {
-    MockBooleanPreference hasSeenAppRatingPreference = new MockBooleanPreference(false);
-    MockBooleanPreference hasSeenGamesNewsletterPreference = new MockBooleanPreference(false);
+    final MockBooleanPreference hasSeenAppRatingPreference = new MockBooleanPreference(false);
+    final MockBooleanPreference hasSeenGamesNewsletterPreference = new MockBooleanPreference(false);
     final User user = UserFactory.user().toBuilder().gamesNewsletter(false).build();
     final CurrentUserType currentUser = new MockCurrentUser(user);
     final TestSubscriber<Boolean> hasSeenGamesNewsletterPreferenceTest = new TestSubscriber<>();
@@ -113,7 +113,7 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testThanksViewModel_showGamesNewsletterDialog() {
-    MockBooleanPreference hasSeenGamesNewsletterPreference = new MockBooleanPreference(false);
+    final MockBooleanPreference hasSeenGamesNewsletterPreference = new MockBooleanPreference(false);
     final User user = UserFactory.user().toBuilder().gamesNewsletter(false).build();
     final CurrentUserType currentUser = new MockCurrentUser(user);
     final TestSubscriber<Boolean> hasSeenGamesNewsletterPreferenceTest = new TestSubscriber<>();
@@ -142,7 +142,7 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testThanksViewModel_dontShowGamesNewsletterDialogIfRootCategoryIsNotGames() {
-    MockBooleanPreference hasSeenGamesNewsletterPreference = new MockBooleanPreference(false);
+    final MockBooleanPreference hasSeenGamesNewsletterPreference = new MockBooleanPreference(false);
     final User user = UserFactory.user().toBuilder().gamesNewsletter(false).build();
     final CurrentUserType currentUser = new MockCurrentUser(user);
 
@@ -169,7 +169,7 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testThanksViewModel_dontShowGamesNewsletterDialogIfUserHasAlreadySeen() {
-    MockBooleanPreference hasSeenGamesNewsletterPreference = new MockBooleanPreference(true);
+    final MockBooleanPreference hasSeenGamesNewsletterPreference = new MockBooleanPreference(true);
     final User user = UserFactory.user().toBuilder().gamesNewsletter(false).build();
     final CurrentUserType currentUser = new MockCurrentUser(user);
 
@@ -195,7 +195,7 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testThanksViewModel_dontShowGamesNewsletterDialogIfUserHasAlreadySignedUp() {
-    MockBooleanPreference hasSeenGamesNewsletterPreference = new MockBooleanPreference(false);
+    final MockBooleanPreference hasSeenGamesNewsletterPreference = new MockBooleanPreference(false);
     final User user = UserFactory.user().toBuilder().gamesNewsletter(true).build();
     final CurrentUserType currentUser = new MockCurrentUser(user);
 

@@ -20,7 +20,7 @@ import dagger.Provides;
 public final class InternalApplicationModule {
   @Provides
   @Singleton
-  ApiEndpoint provideApiEndpoint(@ApiEndpointPreference final @NonNull StringPreference apiEndpointPreference) {
+  ApiEndpoint provideApiEndpoint(@ApiEndpointPreference final @NonNull StringPreferenceType apiEndpointPreference) {
     return ApiEndpoint.from(apiEndpointPreference.get());
   }
 

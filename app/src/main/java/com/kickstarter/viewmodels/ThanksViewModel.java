@@ -8,8 +8,10 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.utils.ListUtils;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
@@ -137,6 +139,12 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .compose(bindToLifecycle())
       .subscribe(__ -> hasSeenGamesNewsletterPreference.set(true));
 
+    currentUser.observable()
+      .filter(ObjectUtils::isNotNull)
+      .compose(takeWhen(signupToGamesNewsletterClick))
+      .compose(bindToLifecycle())
+      .subscribe(this::signupToGamesNewsletter);
+
     // Event tracking
     categoryClick
       .compose(bindToLifecycle())
@@ -224,6 +232,12 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .distinct()
       .take(3)
       .toList();
+  }
+
+  private Observable<User> signupToGamesNewsletter(final @NonNull User user) {
+    return apiClient
+      .updateUserSettings(user.toBuilder().gamesNewsletter(true).build())
+      .compose(neverError());
   }
 
   // INPUTS

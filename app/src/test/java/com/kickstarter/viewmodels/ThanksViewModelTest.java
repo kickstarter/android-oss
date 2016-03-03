@@ -15,6 +15,7 @@ import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.DiscoveryParams;
+import com.kickstarter.services.MockApiClient;
 import com.kickstarter.ui.IntentKey;
 
 import org.junit.Test;
@@ -257,6 +258,30 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
     vm.inputs.shareOnTwitterClick();
     startShareOnTwitterTest.assertValues(project);
     koalaTest.assertValues("Checkout Show Share Sheet", "Checkout Show Share", "Checkout Show Share");
+  }
+
+  @Test
+  public void testThanksViewModel_signupToGamesNewsletterOnClick() {
+    final User user = UserFactory.user().toBuilder().gamesNewsletter(false).build();
+    final CurrentUserType currentUser = new MockCurrentUser(user);
+
+    final Environment environment = environment().toBuilder()
+      .currentUser(currentUser)
+      .build();
+
+    final ThanksViewModel vm = new ThanksViewModel(environment);
+
+    final TestSubscriber<User> updateUserSettingsTest = new TestSubscriber<>();
+    ((MockApiClient) environment.apiClient()).observable()
+      .filter(e -> "update_user_settings".equals(e.first))
+      .map(e -> (User) e.second.get("user"))
+      .subscribe(updateUserSettingsTest);
+
+    final Project project = ProjectFactory.project().toBuilder().category(CategoryFactory.tabletopGamesCategory()).build();
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+
+    vm.signupToGamesNewsletterClick();
+    updateUserSettingsTest.assertValues(user.toBuilder().gamesNewsletter(true).build());
   }
 
   @Test

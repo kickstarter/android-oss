@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -27,8 +28,6 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.TweetComposer;
-import com.kickstarter.libs.preferences.BooleanPreferenceType;
-import com.kickstarter.libs.qualifiers.AppRatingPreference;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ApplicationUtils;
 import com.kickstarter.libs.utils.ViewUtils;
@@ -66,6 +65,9 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
 
   protected @BindString(R.string.project_checkout_share_twitter_I_just_backed_project_on_kickstarter) String iJustBackedString;
   protected @BindString(R.string.project_accessibility_button_share_label) String shareThisProjectString;
+  protected @BindString(R.string.project_checkout_games_alert_want_the_coolest_games_delivered_to_your_inbox) String gamesAlertMessage;
+  protected @BindString(R.string.project_checkout_games_alert_no_thanks) String gamesAlertNo;
+  protected @BindString(R.string.project_checkout_games_alert_yes_please) String gamesAlertYes;
   protected @BindString(R.string.project_checkout_share_you_just_backed_project_share_this_project_html) String youJustBackedString;
 
   private ShareDialog shareDialog;
@@ -182,7 +184,16 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   }
 
   private void showGamesNewsletterDialog() {
-    // TODO
+    AlertDialog.Builder builder = new AlertDialog.Builder(this)
+      .setMessage(gamesAlertMessage)
+      .setPositiveButton(gamesAlertYes, (dialog, which) -> {
+        viewModel.inputs.signupToGamesNewsletterClick();
+      })
+      .setNegativeButton(gamesAlertNo, (dialog, which) -> {
+        // Nothing to do!
+      });
+
+    builder.show();
   }
 
   private void showRatingDialog() {

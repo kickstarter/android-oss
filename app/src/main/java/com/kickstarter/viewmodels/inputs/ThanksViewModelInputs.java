@@ -17,4 +17,9 @@ public interface ThanksViewModelInputs extends ThanksAdapter.Delegate {
    * Call when the share on Twitter button is clicked.
    */
   void shareOnTwitterClick();
+
+  /**
+   * Call when the user accepts the prompt to signup to the Games newsletter.
+   */
+  void signupToGamesNewsletterClick();
 }

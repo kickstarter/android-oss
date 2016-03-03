@@ -37,7 +37,6 @@ import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ThanksAdapter;
-import com.kickstarter.ui.data.Newsletter;
 import com.kickstarter.viewmodels.ThanksViewModel;
 
 import java.util.List;

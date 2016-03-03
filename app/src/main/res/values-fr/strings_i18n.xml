@@ -580,6 +580,9 @@ Merci pour votre soutien !</string>
   <string name="project_checkout_finalizing_timeout_message" formatted="false">Nous sommes désolés. On dirait que cette opération prend plus de temps que d\'habitude. Nous vous enverrons un e-mail une fois votre engagement finalisé.</string>
   <string name="project_checkout_finalizing_title" formatted="false">Traitement en cours</string>
   <string name="project_checkout_finalizing_we_are_finalizing_your_pledge_to_project" formatted="false">Nous sommes en train de finaliser votre engagement pour le projet %{project_name}. Merci de patienter quelques instants !</string>
+  <string name="project_checkout_games_alert_no_thanks" formatted="false">No thanks.</string>
+  <string name="project_checkout_games_alert_want_the_coolest_games_delivered_to_your_inbox" formatted="false">Want the coolest games delivered to your inbox? Our Games team has a newsletter just for you.</string>
+  <string name="project_checkout_games_alert_yes_please" formatted="false">Yes please!</string>
   <string name="project_checkout_looking_for_more_projects_check_these_out" formatted="false">Vous recherchez plus de projets ? En voici quelques uns.</string>
   <string name="project_checkout_manage_navbar_title" formatted="false">Gérer</string>
   <string name="project_checkout_navigation_next" formatted="false">Suivant</string>

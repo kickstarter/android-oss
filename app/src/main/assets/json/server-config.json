@@ -684,6 +684,11 @@
                 "ok": "OK"
               }
             }
+          },
+          "games_alert": {
+            "want_the_coolest_games_delivered_to_your_inbox": "Want the coolest games delivered to your inbox? Our Games team has a newsletter just for you.",
+            "yes_please": "Yes please!",
+            "no_thanks": "No thanks."
           }
         },
         "disclaimer": {
@@ -1675,7 +1680,7 @@
             "weekly": "Unsere Lieblingsprojekte",
             "promo": "Kickstarter Neuigkeiten und Events",
             "happening": "Happening Now",
-            "games": "Kickstarter Loves Games",
+            "games": "Wir lieben Spiele",
             "opt_in": {
               "title": "Nur noch ein letzter Schritt!",
               "message": "Wir haben eine Bestätigung an die mit deinem Konto verbundene E-Mail-Adresse geschickt! Bitte sieh in deinem Posteingang nach und bestätige dein Abo von %{newsletter}."
@@ -1993,6 +1998,11 @@
                 "ok": "OK"
               }
             }
+          },
+          "games_alert": {
+            "want_the_coolest_games_delivered_to_your_inbox": "Wie wäre es, wenn du die coolsten Games direkt in deine Inbox geliefert bekämst? Kein Problem - unser Games-Team hat einen Newsletter für dich!",
+            "yes_please": "Gerne!",
+            "no_thanks": "Nein, danke."
           }
         },
         "disclaimer": {
@@ -3302,6 +3312,11 @@
                 "ok": "Ok"
               }
             }
+          },
+          "games_alert": {
+            "want_the_coolest_games_delivered_to_your_inbox": "Want the coolest games delivered to your inbox? Our Games team has a newsletter just for you.",
+            "yes_please": "Yes please!",
+            "no_thanks": "No thanks."
           }
         },
         "disclaimer": {
@@ -4611,6 +4626,11 @@
                 "ok": "OK"
               }
             }
+          },
+          "games_alert": {
+            "want_the_coolest_games_delivered_to_your_inbox": "Want the coolest games delivered to your inbox? Our Games team has a newsletter just for you.",
+            "yes_please": "Yes please!",
+            "no_thanks": "No thanks."
           }
         },
         "disclaimer": {
@@ -5920,6 +5940,11 @@
                 "ok": "OK"
               }
             }
+          },
+          "games_alert": {
+            "want_the_coolest_games_delivered_to_your_inbox": "Want the coolest games delivered to your inbox? Our Games team has a newsletter just for you.",
+            "yes_please": "Yes please!",
+            "no_thanks": "No thanks."
           }
         },
         "disclaimer": {
@@ -6694,7 +6719,7 @@
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
     "native_iphone_horiz_vs_vert": "experimental",
-    "recs_hp_combo_v1": "combo_v1"
+    "recs_hp_combo_v1": "collaborative_backings_v2"
   },
   "stripe": {
     "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"

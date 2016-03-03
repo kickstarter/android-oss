@@ -9,7 +9,7 @@ public final class UserUtils {
   private UserUtils() {}
 
   /**
-   * Returns whether the user's location setting is Germany.
+   * Returns whether the user's location setting is in Germany.
    */
   public static boolean isLocationGermany(final @NonNull User user) {
     final Location location = user.location();

@@ -2,6 +2,7 @@ package com.kickstarter.services;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 
 import com.kickstarter.factories.CategoryFactory;
 import com.kickstarter.factories.DiscoverEnvelopeFactory;
@@ -24,11 +25,23 @@ import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
+import rx.observers.TestSubscriber;
+import rx.schedulers.TestScheduler;
+import rx.subjects.PublishSubject;
+import rx.subjects.TestSubject;
 
 public class MockApiClient implements ApiClientType {
+  final PublishSubject<Pair<String, Map<String, Object>>> observable = PublishSubject.create();
+
+  public @NonNull Observable<Pair<String, Map<String, Object>>> observable() {
+    return observable;
+  }
+
   @Override
   public @NonNull Observable<Config> config() {
     return Observable.empty();
@@ -207,6 +220,13 @@ public class MockApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<User> updateUserSettings(final @NonNull User user) {
+    observable.onNext(
+      Pair.create("update_user_settings", new HashMap<String, Object>() {
+        {
+          put("user", user);
+        }
+      })
+    );
     return Observable.just(user);
   }
 }

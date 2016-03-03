@@ -5,6 +5,7 @@ import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.CategoryFactory;
+import com.kickstarter.factories.LocationFactory;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.CurrentUserType;
@@ -277,11 +278,39 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
       .map(e -> (User) e.second.get("user"))
       .subscribe(updateUserSettingsTest);
 
+    final TestSubscriber<Void> showConfirmGamesNewsletterDialogTest = TestSubscriber.create();
+    vm.outputs.showConfirmGamesNewsletterDialog().subscribe(showConfirmGamesNewsletterDialogTest);
+
     final Project project = ProjectFactory.project().toBuilder().category(CategoryFactory.tabletopGamesCategory()).build();
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
 
     vm.signupToGamesNewsletterClick();
     updateUserSettingsTest.assertValues(user.toBuilder().gamesNewsletter(true).build());
+    showConfirmGamesNewsletterDialogTest.assertValueCount(0);
+  }
+
+  @Test
+  public void testThanksViewModel_showNewsletterConfirmationPromptAfterSignupForGermanUser() {
+    final User user = UserFactory.user().toBuilder()
+      .gamesNewsletter(false)
+      .location(LocationFactory.germany())
+      .build();
+    final CurrentUserType currentUser = new MockCurrentUser(user);
+
+    final Environment environment = environment().toBuilder()
+      .currentUser(currentUser)
+      .build();
+
+    final ThanksViewModel vm = new ThanksViewModel(environment);
+
+    final TestSubscriber<Void> showConfirmGamesNewsletterDialogTest = TestSubscriber.create();
+    vm.outputs.showConfirmGamesNewsletterDialog().subscribe(showConfirmGamesNewsletterDialogTest);
+
+    final Project project = ProjectFactory.project().toBuilder().category(CategoryFactory.tabletopGamesCategory()).build();
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+
+    vm.signupToGamesNewsletterClick();
+    showConfirmGamesNewsletterDialogTest.assertValueCount(1);
   }
 
   @Test

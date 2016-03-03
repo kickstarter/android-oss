@@ -7,8 +7,10 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
+import com.kickstarter.libs.utils.I18nUtils;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.UserUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
@@ -41,9 +43,11 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
   private final PublishSubject<Void> shareClick = PublishSubject.create();
   private final PublishSubject<Void> shareOnFacebookClick = PublishSubject.create();
   private final PublishSubject<Void> shareOnTwitterClick = PublishSubject.create();
+  private final BehaviorSubject<Void> showConfirmGamesNewsletterDialog = BehaviorSubject.create();
   private final BehaviorSubject<Void> showGamesNewsletterDialog = BehaviorSubject.create();
   private final BehaviorSubject<Void> showRatingDialog = BehaviorSubject.create();
   private final BehaviorSubject<Pair<List<Project>, Category>> showRecommendations = BehaviorSubject.create();
+  private final PublishSubject<User> signedUpToGamesNewsletter = PublishSubject.create();
   private final PublishSubject<Void> signupToGamesNewsletterClick = PublishSubject.create();
   private final BehaviorSubject<DiscoveryParams> startDiscovery = BehaviorSubject.create();
   private final BehaviorSubject<Project> startProject = BehaviorSubject.create();
@@ -142,8 +146,16 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
     currentUser.observable()
       .filter(ObjectUtils::isNotNull)
       .compose(takeWhen(signupToGamesNewsletterClick))
+      .flatMap(this::signupToGamesNewsletter)
       .compose(bindToLifecycle())
-      .subscribe(this::signupToGamesNewsletter);
+      .subscribe(signedUpToGamesNewsletter::onNext);
+
+    currentUser.observable()
+      .filter(ObjectUtils::isNotNull)
+      .compose(takeWhen(signedUpToGamesNewsletter))
+      .filter(UserUtils::isLocationGermany)
+      .compose(bindToLifecycle())
+      .subscribe(__ -> showConfirmGamesNewsletterDialog.onNext(null));
 
     // Event tracking
     categoryClick
@@ -279,6 +291,11 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
   @Override
   public @NonNull Observable<String> projectName() {
     return projectName;
+  }
+
+  @Override
+  public @NonNull Observable<Void> showConfirmGamesNewsletterDialog() {
+    return showConfirmGamesNewsletterDialog;
   }
 
   @Override

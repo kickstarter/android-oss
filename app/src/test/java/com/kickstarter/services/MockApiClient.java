@@ -30,10 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
-import rx.observers.TestSubscriber;
-import rx.schedulers.TestScheduler;
 import rx.subjects.PublishSubject;
-import rx.subjects.TestSubject;
 
 public class MockApiClient implements ApiClientType {
   final PublishSubject<Pair<String, Map<String, Object>>> observable = PublishSubject.create();

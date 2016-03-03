@@ -17,6 +17,11 @@ public interface ThanksViewModelOutputs {
   Observable<String> projectName();
 
   /**
+   * Show a dialog confirming the user will be signed up to the games newsletter. Required for German users.
+   */
+  Observable<Void> showConfirmGamesNewsletterDialog();
+
+  /**
    * Show a dialog prompting the user to sign-up to the games newsletter.
    */
   Observable<Void> showGamesNewsletterDialog();

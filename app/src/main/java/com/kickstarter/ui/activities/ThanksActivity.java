@@ -37,6 +37,7 @@ import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ThanksAdapter;
+import com.kickstarter.ui.data.Newsletter;
 import com.kickstarter.viewmodels.ThanksViewModel;
 
 import java.util.List;
@@ -68,6 +69,8 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   protected @BindString(R.string.project_checkout_games_alert_want_the_coolest_games_delivered_to_your_inbox) String gamesAlertMessage;
   protected @BindString(R.string.project_checkout_games_alert_no_thanks) String gamesAlertNo;
   protected @BindString(R.string.project_checkout_games_alert_yes_please) String gamesAlertYes;
+  protected @BindString(R.string.profile_settings_newsletter_opt_in_message) String optInMessageString;
+  protected @BindString(R.string.profile_settings_newsletter_opt_in_title) String optInTitleString;
   protected @BindString(R.string.project_checkout_share_you_just_backed_project_share_this_project_html) String youJustBackedString;
 
   private ShareDialog shareDialog;
@@ -110,6 +113,11 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::showBackedProject);
+
+    viewModel.outputs.showConfirmGamesNewsletterDialog()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> showConfirmGamesNewsletterDialog());
 
     viewModel.outputs.showGamesNewsletterDialog()
       .compose(bindToLifecycle())
@@ -181,6 +189,14 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
 
   private void showBackedProject(final @NonNull String projectName) {
     backedProjectTextView.setText(Html.fromHtml(ksString.format(youJustBackedString, "project_name", projectName)));
+  }
+
+  private void showConfirmGamesNewsletterDialog() {
+    final AlertDialog.Builder builder = new AlertDialog.Builder(this)
+      .setMessage(optInMessageString)
+      .setTitle(optInTitleString);
+
+    builder.show();
   }
 
   private void showGamesNewsletterDialog() {

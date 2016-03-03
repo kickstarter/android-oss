@@ -42,29 +42,29 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
 
   // OUTPUTS
   private final PublishSubject<Newsletter> showOptInPrompt = PublishSubject.create();
-  public Observable<Newsletter> showOptInPrompt() {
+  public @NonNull Observable<Newsletter> showOptInPrompt() {
     return showOptInPrompt;
   }
   private final PublishSubject<Void> updateSuccess = PublishSubject.create();
-  public final Observable<Void> updateSuccess() {
+  public @NonNull final Observable<Void> updateSuccess() {
     return updateSuccess;
   }
   private final BehaviorSubject<User> userOutput = BehaviorSubject.create();
-  public Observable<User> user() {
+  public @NonNull Observable<User> user() {
     return userOutput;
   }
   private final BehaviorSubject<Boolean> showConfirmLogoutPrompt = BehaviorSubject.create();
-  public Observable<Boolean> showConfirmLogoutPrompt() {
+  public @NonNull Observable<Boolean> showConfirmLogoutPrompt() {
     return showConfirmLogoutPrompt;
   }
   private final BehaviorSubject<Void> logout = BehaviorSubject.create();
   @Override
-  public Observable<Void> logout() {
+  public @NonNull Observable<Void> logout() {
     return logout;
   }
   // ERRORS
   private final PublishSubject<Throwable> unableToSavePreferenceError = PublishSubject.create();
-  public final Observable<String> unableToSavePreferenceError() {
+  public @NonNull final Observable<String> unableToSavePreferenceError() {
     return unableToSavePreferenceError
       .takeUntil(updateSuccess)
       .map(__ -> null);
@@ -205,7 +205,7 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
     this.updateSuccess.onNext(null);
   }
 
-  private Observable<User> updateSettings(final @NonNull User user) {
+  private @NonNull Observable<User> updateSettings(final @NonNull User user) {
     return client.updateUserSettings(user)
       .compose(Transformers.pipeErrorsTo(unableToSavePreferenceError));
   }

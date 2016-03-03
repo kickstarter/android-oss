@@ -19,11 +19,8 @@ public final class ThanksAdapter extends KSAdapter {
 
   public interface Delegate extends ThanksCategoryViewHolder.Delegate, ThanksProjectViewHolder.Delegate {}
 
-  public ThanksAdapter(final @NonNull List<Project> projects, final @NonNull Category category,
-    final @NonNull Delegate delegate) {
+  public ThanksAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;
-    addSection(projects);
-    addSection(Collections.singletonList(category));
   }
 
   protected @LayoutRes int layout(final @NonNull SectionRow sectionRow) {
@@ -39,5 +36,12 @@ public final class ThanksAdapter extends KSAdapter {
       return new ThanksProjectViewHolder(view, delegate);
     }
     return new ThanksCategoryViewHolder(view, delegate);
+  }
+
+  public void data(final @NonNull List<Project> projects, final @NonNull Category category) {
+    clearSections();
+    addSection(projects);
+    addSection(Collections.singletonList(category));
+    notifyDataSetChanged();
   }
 }

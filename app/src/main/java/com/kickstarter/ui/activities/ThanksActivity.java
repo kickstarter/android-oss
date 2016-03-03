@@ -74,6 +74,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   protected @BindString(R.string.profile_settings_newsletter_opt_in_title) String optInTitleString;
   protected @BindString(R.string.project_checkout_share_you_just_backed_project_share_this_project_html) String youJustBackedString;
 
+  private ThanksAdapter adapter;
   private ShareDialog shareDialog;
 
   @Override
@@ -88,6 +89,9 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
     final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
     layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
     recommendedProjectsRecyclerView.setLayoutManager(layoutManager);
+
+    adapter = new ThanksAdapter(viewModel);
+    recommendedProjectsRecyclerView.setAdapter(adapter);
 
     Observable.timer(500L, TimeUnit.MILLISECONDS, Schedulers.newThread())
       .map(__ -> null)
@@ -221,7 +225,7 @@ public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   }
 
   private void showRecommendations(final @NonNull Pair<List<Project>, Category> projectsAndRootCategory) {
-    recommendedProjectsRecyclerView.setAdapter(new ThanksAdapter(projectsAndRootCategory.first, projectsAndRootCategory.second, viewModel));
+    adapter.data(projectsAndRootCategory.first, projectsAndRootCategory.second);
   }
 
   private void startDiscovery(final @NonNull DiscoveryParams params) {

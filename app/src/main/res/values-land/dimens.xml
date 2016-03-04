@@ -8,7 +8,6 @@
   <dimen name="form_margin_x">@dimen/grid_9</dimen>
   <dimen name="project_action_button_height">60dp</dimen>
   <dimen name="project_padding_x">@dimen/grid_4</dimen>
-  <dimen name="project_play_button_size">80sp</dimen>
   <dimen name="project_social_photo_height">@dimen/grid_6</dimen>
   <dimen name="settings_icon_margin_x">@dimen/grid_7</dimen>
   <dimen name="star_fab_margin_x">@dimen/grid_5_half</dimen>

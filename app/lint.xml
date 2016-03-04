@@ -3,6 +3,12 @@
   <issue id="AllowBackup">
     <ignore path="src/internal/AndroidManifest.xml" />
   </issue>
+
+  <!-- UseCompoundDrawables suggests combining a LinearLayout with an ImageView and TextView into a single
+     TextView with the image as the drawable, but typically our ImageViews require fetching an image dynamically
+     rather than simply specifiying a drawable. -->
+  <issue id="UseCompoundDrawables" severity="ignore" />
+
   <issue id="InvalidPackage" severity="ignore" />
   <issue id="MissingTranslation" severity="ignore" />
   <issue id="Typos" severity="ignore" />

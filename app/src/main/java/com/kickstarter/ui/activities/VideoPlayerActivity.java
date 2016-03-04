@@ -31,10 +31,10 @@ public final class VideoPlayerActivity extends BaseActivity<VideoPlayerViewModel
   private KSVideoPlayer player;
   private long playerPosition;
 
-  public @Bind(R.id.video_player_layout) View rootView;
-  public @Bind(R.id.surface_view) SurfaceView surfaceView;
-  public @Bind(R.id.loading_indicator) ProgressBar loadingIndicatorProgressBar;
-  public @Bind(R.id.video_frame) AspectRatioFrameLayout videoFrame;
+  protected @Bind(R.id.video_player_layout) View rootView;
+  protected @Bind(R.id.surface_view) SurfaceView surfaceView;
+  protected @Bind(R.id.loading_indicator) ProgressBar loadingIndicatorProgressBar;
+  protected @Bind(R.id.video_frame) AspectRatioFrameLayout videoFrame;
 
   @Override
   public void onCreate(final @Nullable Bundle savedInstanceState) {

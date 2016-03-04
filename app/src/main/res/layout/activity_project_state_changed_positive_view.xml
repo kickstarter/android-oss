@@ -41,69 +41,64 @@
     </LinearLayout>
 
     <LinearLayout
+      android:baselineAligned="false"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_1"
+      android:orientation="horizontal"
       android:layout_weight="0">
 
       <LinearLayout
-        android:baselineAligned="false"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-        <LinearLayout
-          android:layout_width="0dp"
+        <TextView
+          style="@style/SubheadPrimaryMedium"
+          android:id="@+id/left_stat_first"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_weight="1"
-          android:orientation="vertical">
+          android:text="Left Stat First"
+          android:textColor="@color/white"
+          android:textStyle="bold" />
 
-          <TextView
-            style="@style/SubheadPrimaryMedium"
-            android:id="@+id/left_stat_first"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Left Stat First"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
-
-          <TextView
-            style="@style/SubheadPrimaryMedium"
-            android:id="@+id/left_stat_second"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Left Stat Second"
-            android:textColor="@color/white" />
-
-        </LinearLayout>
-
-        <LinearLayout
-          android:layout_width="0dp"
+        <TextView
+          style="@style/SubheadPrimaryMedium"
+          android:id="@+id/left_stat_second"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_weight="1"
-          android:gravity="end"
-          android:orientation="vertical">
-
-          <TextView
-            style="@style/SubheadPrimaryMedium"
-            android:id="@+id/right_stat_first"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Right Stat First"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
-
-          <TextView
-            style="@style/SubheadPrimaryMedium"
-            android:id="@+id/right_stat_second"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Right Stat Second"
-            android:textColor="@color/white" />
-        </LinearLayout>
+          android:text="Left Stat Second"
+          android:textColor="@color/white" />
 
       </LinearLayout>
 
+      <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="end"
+        android:orientation="vertical">
+
+        <TextView
+          style="@style/SubheadPrimaryMedium"
+          android:id="@+id/right_stat_first"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Right Stat First"
+          android:textColor="@color/white"
+          android:textStyle="bold" />
+
+        <TextView
+          style="@style/SubheadPrimaryMedium"
+          android:id="@+id/right_stat_second"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Right Stat Second"
+          android:textColor="@color/white" />
+      </LinearLayout>
+
     </LinearLayout>
+
   </LinearLayout>
 </android.support.v7.widget.CardView>

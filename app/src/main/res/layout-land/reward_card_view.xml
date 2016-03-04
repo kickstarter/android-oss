@@ -95,105 +95,96 @@
       </RelativeLayout>
 
       <LinearLayout
-        android:orientation="horizontal"
-        android:baselineAligned="false"
+        android:id="@+id/backer_reward_info"
+        android:orientation="vertical"
+        android:layout_marginRight="@dimen/grid_3"
+        android:layout_marginEnd="@dimen/grid_3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <TextView
+          android:id="@+id/reward_backers_count"
+          android:text="# backers"
+          style="@style/BodyPrimaryMedium"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"/>
+
+        <TextView
+          android:id="@+id/limited"
+          android:background="@color/yellow"
+          android:visibility="gone"
+          android:layout_marginTop="@dimen/grid_1"
+          style="@style/BodyPrimary"
+          android:text="@string/rewards_info_limited_rewards_remaining_left_of_reward_limit"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
+
+        <TextView
+          android:id="@+id/all_gone"
+          android:background="@color/medium_gray"
+          android:visibility="gone"
+          android:layout_marginTop="@dimen/grid_1"
+          android:text="@string/rewards_info_all_gone"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
+
+        <TextView
+          android:id="@+id/reward_description"
+          android:text="Description about this reward."
+          style="@style/BodyPrimary"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:paddingTop="@dimen/grid_2"
+          android:paddingBottom="@dimen/grid_2"/>
+
         <LinearLayout
-          android:id="@+id/backer_reward_info"
-          android:layout_weight="1"
-          android:orientation="vertical"
-          android:layout_marginRight="@dimen/grid_3"
-          android:layout_marginEnd="@dimen/grid_3"
-          android:layout_width="0dp"
+          android:orientation="horizontal"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content">
 
-          <TextView
-            android:id="@+id/reward_backers_count"
-            android:text="# backers"
-            style="@style/BodyPrimaryMedium"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-          <TextView
-            android:id="@+id/limited"
-            android:background="@color/yellow"
-            android:visibility="gone"
-            android:layout_marginTop="@dimen/grid_1"
-            style="@style/BodyPrimary"
-            android:text="@string/rewards_info_limited_rewards_remaining_left_of_reward_limit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-          <TextView
-            android:id="@+id/all_gone"
-            android:background="@color/medium_gray"
-            android:visibility="gone"
-            android:layout_marginTop="@dimen/grid_1"
-            android:text="@string/rewards_info_all_gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-          <TextView
-            android:id="@+id/reward_description"
-            android:text="Description about this reward."
-            style="@style/BodyPrimary"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="@dimen/grid_2"
-            android:paddingBottom="@dimen/grid_2"/>
-
           <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
+            android:id="@+id/estimate"
+            android:layout_marginRight="@dimen/grid_4"
+            android:layout_marginEnd="@dimen/grid_4"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <LinearLayout
-              android:id="@+id/estimate"
-              android:layout_marginRight="@dimen/grid_4"
-              android:layout_marginEnd="@dimen/grid_4"
-              android:orientation="vertical"
+            <TextView
+              android:id="@+id/estimated_delivery"
+              android:text="@string/rewards_info_estimated_delivery"
               android:layout_width="wrap_content"
-              android:layout_height="wrap_content">
+              android:layout_height="wrap_content"
+              style="@style/CaptionSecondary"/>
 
-              <TextView
-                android:id="@+id/estimated_delivery"
-                android:text="@string/rewards_info_estimated_delivery"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/CaptionSecondary"/>
-
-              <TextView
-                android:id="@+id/estimated_delivery_date"
-                style="@style/CaptionPrimary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/grid_1"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-              android:orientation="vertical"
+            <TextView
+              android:id="@+id/estimated_delivery_date"
+              style="@style/CaptionPrimary"
               android:layout_width="wrap_content"
-              android:layout_height="wrap_content">
+              android:layout_height="wrap_content"
+              android:paddingBottom="@dimen/grid_1"/>
 
-              <TextView
-                android:id="@+id/shipping_destination"
-                style="@style/CaptionSecondary"
-                android:text="@string/rewards_info_shipping_destinations"
-                android:visibility="visible"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+          </LinearLayout>
 
-              <TextView
-                android:id="@+id/shipping_summary"
-                style="@style/CaptionPrimary"
-                android:text="@string/rewards_shipping_preferences_location_unrestricted"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+          <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-            </LinearLayout>
+            <TextView
+              android:id="@+id/shipping_destination"
+              style="@style/CaptionSecondary"
+              android:text="@string/rewards_info_shipping_destinations"
+              android:visibility="visible"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"/>
+
+            <TextView
+              android:id="@+id/shipping_summary"
+              style="@style/CaptionPrimary"
+              android:text="@string/rewards_shipping_preferences_location_unrestricted"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content" />
 
           </LinearLayout>
 

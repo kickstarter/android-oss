@@ -34,37 +34,29 @@
       android:id="@+id/project_state_view_group"
       android:visibility="gone"
       android:gravity="center_vertical"
-      android:layout_marginTop="@dimen/grid_3"
-      android:orientation="horizontal"
+      android:layout_marginTop="@dimen/grid_5"
+      android:layout_marginLeft="@dimen/grid_3"
+      android:layout_marginRight="@dimen/grid_3"
+      android:layout_marginStart="@dimen/grid_3"
+      android:layout_marginEnd="@dimen/grid_3"
+      android:layout_marginBottom="@dimen/grid_2"
+      android:orientation="vertical"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 
-      <LinearLayout
-        android:orientation="vertical"
-        android:layout_marginTop="@dimen/grid_2"
-        android:layout_marginLeft="@dimen/grid_3"
-        android:layout_marginRight="@dimen/grid_3"
-        android:layout_marginStart="@dimen/grid_3"
-        android:layout_marginEnd="@dimen/grid_3"
-        android:layout_marginBottom="@dimen/grid_2"
+      <TextView
+        android:id="@+id/project_state_header_text_view"
+        android:text="Funded!"
+        style="@style/BodyPrimaryMedium"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content" />
 
-        <TextView
-          android:id="@+id/project_state_header_text_view"
-          android:text="Funded!"
-          style="@style/BodyPrimaryMedium"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content" />
-
-        <TextView
-          android:id="@+id/project_state_subhead_text_view"
-          android:text="This project was funded on"
-          style="@style/CaptionPrimary"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content" />
-
-      </LinearLayout>
+      <TextView
+        android:id="@+id/project_state_subhead_text_view"
+        android:text="This project was funded on"
+        style="@style/CaptionPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     </LinearLayout>
 

@@ -10,9 +10,6 @@
   <dimen name="project_padding_x">@dimen/grid_4</dimen>
   <dimen name="project_social_photo_height">@dimen/grid_6</dimen>
   <dimen name="settings_icon_margin_x">@dimen/grid_7</dimen>
-  <dimen name="star_fab_margin_x">@dimen/grid_5_half</dimen>
-  <dimen name="star_fab_margin_y">@dimen/grid_5_half</dimen>
-  <dimen name="star_fab_pre21_margin_y">@dimen/grid_1_half</dimen>
   <dimen name="profile_empty_padding_y">@dimen/grid_5_half</dimen>
 
   <!-- Popup menus -->

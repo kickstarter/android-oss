@@ -30,7 +30,19 @@
   <issue id="UseCompoundDrawables" severity="ignore" />
 
   <issue id="UnusedResources">
+    <!-- Keeping colors around in case we need them. -->
     <ignore path="src/main/res/values/colors.xml" />
+
+    <!-- Will need this when we allow following friends. -->
+    <ignore path="src/main/res/drawable-*/ic_follow.png" />
+
+    <!-- Too many false-positives -->
+    <ignore path="src/main/res/layout/**" />
     <ignore path="src/internal/res/**" />
+
+    <!-- False-positives -->
+    <ignore path="src/main/res/drawable-*/ic_kickstarter_k.png" />
+    <ignore path="src/main/res/anim/fade_out.xml" />
+    <ignore path="src/main/res/menu/login_help_menu.xml" />
   </issue>
 </lint>

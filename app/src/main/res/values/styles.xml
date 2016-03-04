@@ -12,8 +12,8 @@
     <item name="android:windowAllowEnterTransitionOverlap">true</item>
     <item name="android:windowAllowReturnTransitionOverlap">true</item>
 
-    <!-- Pop-up menu -->
     <item name="popupMenuStyle">@style/PopupMenu</item>
+    <item name="alertDialogTheme">@style/Dialog</item>
 
     <!-- Toolbar -->
     <!-- Using toolbar, so disable the action bar -->
@@ -104,6 +104,10 @@
   <style name="ProgressBar" parent="Base.Widget.AppCompat.ProgressBar">
     <item name="android:indeterminateOnly">false</item>
     <item name="android:progressDrawable">@drawable/progress_bar_horizontal</item>
+  </style>
+
+  <style name="Dialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+    <item name="colorAccent">@color/text_secondary</item>
   </style>
 
   <style name="Button" parent="Base.Widget.AppCompat.Button">

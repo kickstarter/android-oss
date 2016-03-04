@@ -8,12 +8,29 @@ public interface SettingsViewModelInputs {
   void notifyOfFollower(boolean checked);
   void notifyOfFriendActivity(boolean checked);
   void notifyOfUpdates(boolean checked);
-  void sendHappeningNewsletter(boolean checked, String name);
-  void sendPromoNewsletter(boolean checked, String name);
-  void sendWeeklyNewsletter(boolean checked, String name);
 
   /**
-   * Call when the user taps the logout button
+   * Call when the user toggles the Kickstarter Loves Games newsletter switch.
+   */
+  void sendGamesNewsletter(boolean checked);
+
+  /**
+   * Call when the user toggles the Happening newsletter switch.
+   */
+  void sendHappeningNewsletter(boolean checked);
+
+  /**
+   * Call when the user toggles the Kickstarter News & Events newsletter switch.
+   */
+  void sendPromoNewsletter(boolean checked);
+
+  /**
+   * Call when the user toggles the Projects We Love newsletter switch.
+   */
+  void sendWeeklyNewsletter(boolean checked);
+
+  /**
+   * Call when the user taps the logout button.
    */
   void logoutClicked();
 

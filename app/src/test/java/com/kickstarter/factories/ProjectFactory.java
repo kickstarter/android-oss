@@ -23,6 +23,7 @@ public final class ProjectFactory {
     return Project.builder()
       .backersCount(100)
       .blurb("Some blurb")
+      .category(CategoryFactory.category())
       .creator(UserFactory.creator())
       .country("US")
       .createdAt(DateTime.now())

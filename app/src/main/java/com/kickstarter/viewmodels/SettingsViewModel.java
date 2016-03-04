@@ -1,21 +1,18 @@
 package com.kickstarter.viewmodels;
 
-import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.I18nUtils;
 import com.kickstarter.libs.utils.ListUtils;
-import com.kickstarter.models.Location;
+import com.kickstarter.libs.utils.UserUtils;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.activities.SettingsActivity;
+import com.kickstarter.ui.data.Newsletter;
 import com.kickstarter.viewmodels.errors.SettingsViewModelErrors;
 import com.kickstarter.viewmodels.inputs.SettingsViewModelInputs;
 import com.kickstarter.viewmodels.outputs.SettingsViewModelOutputs;
@@ -29,7 +26,7 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
 
   // INPUTS
   private final PublishSubject<Void> contactEmailClicked = PublishSubject.create();
-  private final PublishSubject<Pair<Boolean, String>> newsletterInput = PublishSubject.create();
+  private final PublishSubject<Pair<Boolean, Newsletter>> newsletterInput = PublishSubject.create();
   private final PublishSubject<User> userInput = PublishSubject.create();
   public void logoutClicked() {
     showConfirmLogoutPrompt.onNext(true);
@@ -44,30 +41,30 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
   }
 
   // OUTPUTS
-  private final PublishSubject<String> sendNewsletterConfirmation = PublishSubject.create();
-  public Observable<String> sendNewsletterConfirmation() {
-    return sendNewsletterConfirmation;
+  private final PublishSubject<Newsletter> showOptInPrompt = PublishSubject.create();
+  public @NonNull Observable<Newsletter> showOptInPrompt() {
+    return showOptInPrompt;
   }
   private final PublishSubject<Void> updateSuccess = PublishSubject.create();
-  public final Observable<Void> updateSuccess() {
+  public @NonNull final Observable<Void> updateSuccess() {
     return updateSuccess;
   }
   private final BehaviorSubject<User> userOutput = BehaviorSubject.create();
-  public Observable<User> user() {
+  public @NonNull Observable<User> user() {
     return userOutput;
   }
   private final BehaviorSubject<Boolean> showConfirmLogoutPrompt = BehaviorSubject.create();
-  public Observable<Boolean> showConfirmLogoutPrompt() {
+  public @NonNull Observable<Boolean> showConfirmLogoutPrompt() {
     return showConfirmLogoutPrompt;
   }
   private final BehaviorSubject<Void> logout = BehaviorSubject.create();
   @Override
-  public Observable<Void> logout() {
+  public @NonNull Observable<Void> logout() {
     return logout;
   }
   // ERRORS
   private final PublishSubject<Throwable> unableToSavePreferenceError = PublishSubject.create();
-  public final Observable<String> unableToSavePreferenceError() {
+  public @NonNull final Observable<String> unableToSavePreferenceError() {
     return unableToSavePreferenceError
       .takeUntil(updateSuccess)
       .map(__ -> null);
@@ -116,21 +113,27 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
   }
 
   @Override
-  public void sendHappeningNewsletter(final boolean checked, final @NonNull String name) {
+  public void sendGamesNewsletter(final boolean checked) {
+    userInput.onNext(userOutput.getValue().toBuilder().gamesNewsletter(checked).build());
+    newsletterInput.onNext(new Pair<>(checked, Newsletter.GAMES));
+  }
+
+  @Override
+  public void sendHappeningNewsletter(final boolean checked) {
     userInput.onNext(userOutput.getValue().toBuilder().happeningNewsletter(checked).build());
-    newsletterInput.onNext(new Pair<>(checked, name));
+    newsletterInput.onNext(new Pair<>(checked, Newsletter.HAPPENING));
   }
 
   @Override
-  public void sendPromoNewsletter(final boolean checked, final @NonNull String name) {
+  public void sendPromoNewsletter(final boolean checked) {
     userInput.onNext(userOutput.getValue().toBuilder().promoNewsletter(checked).build());
-    newsletterInput.onNext(new Pair<>(checked, name));
+    newsletterInput.onNext(new Pair<>(checked, Newsletter.PROMO));
   }
 
   @Override
-  public void sendWeeklyNewsletter(final boolean checked, final @NonNull String name) {
+  public void sendWeeklyNewsletter(final boolean checked) {
     userInput.onNext(userOutput.getValue().toBuilder().weeklyNewsletter(checked).build());
-    newsletterInput.onNext(new Pair<>(checked, name));
+    newsletterInput.onNext(new Pair<>(checked, Newsletter.WEEKLY));
   }
 
   public SettingsViewModel(final @NonNull Environment environment) {
@@ -138,11 +141,6 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
 
     client = environment.apiClient();
     currentUser = environment.currentUser();
-  }
-
-  @Override
-  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
-    super.onCreate(context, savedInstanceState);
 
     client.fetchCurrentUser()
       .retry(2)
@@ -177,8 +175,7 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
       .filter(us -> requiresDoubleOptIn(us.first, us.second.first))
       .map(us -> us.second.second)
       .compose(bindToLifecycle())
-      .subscribe(sendNewsletterConfirmation);
-
+      .subscribe(showOptInPrompt);
 
     contactEmailClicked
       .compose(bindToLifecycle())
@@ -200,8 +197,7 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
   }
 
   private boolean requiresDoubleOptIn(final @NonNull User user, final boolean checked) {
-    final Location location = user.location();
-    return location != null && I18nUtils.isCountryGermany(location.country()) && checked;
+    return UserUtils.isLocationGermany(user) && checked;
   }
 
   private void success(final @NonNull User user) {
@@ -209,7 +205,7 @@ public class SettingsViewModel extends ViewModel<SettingsActivity> implements Se
     this.updateSuccess.onNext(null);
   }
 
-  private Observable<User> updateSettings(final @NonNull User user) {
+  private @NonNull Observable<User> updateSettings(final @NonNull User user) {
     return client.updateUserSettings(user)
       .compose(Transformers.pipeErrorsTo(unableToSavePreferenceError));
   }

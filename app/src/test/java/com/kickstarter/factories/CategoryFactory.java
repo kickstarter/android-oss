@@ -1,11 +1,17 @@
 package com.kickstarter.factories;
 
+import android.support.annotation.NonNull;
+
 import com.kickstarter.models.Category;
 
 public final class CategoryFactory {
   private CategoryFactory() {}
 
-  public static Category artCategory() {
+  public static @NonNull Category category() {
+    return musicCategory();
+  }
+
+  public static @NonNull Category artCategory() {
     return Category.builder()
       .color(16760235)
       .id(1)
@@ -16,7 +22,7 @@ public final class CategoryFactory {
       .build();
   }
 
-  public static Category bluesCategory() {
+  public static @NonNull Category bluesCategory() {
     return Category.builder()
       .color(10878931)
       .id(316)
@@ -29,7 +35,7 @@ public final class CategoryFactory {
       .build();
   }
 
-  public static Category ceramicsCategory() {
+  public static @NonNull Category ceramicsCategory() {
     return Category.builder()
       .color(16760235)
       .id(287)
@@ -42,7 +48,18 @@ public final class CategoryFactory {
       .build();
   }
 
-  public static Category musicCategory() {
+  public static @NonNull Category gamesCategory() {
+    return Category.builder()
+      .color(51627)
+      .id(12)
+      .name("Games")
+      .position(9)
+      .projectsCount(595)
+      .slug("games")
+      .build();
+  }
+
+  public static @NonNull Category musicCategory() {
     return Category.builder()
       .color(10878931)
       .id(14)
@@ -53,7 +70,7 @@ public final class CategoryFactory {
       .build();
   }
 
-  public static Category photographyCategory() {
+  public static @NonNull Category photographyCategory() {
     return Category.builder()
       .color(58341)
       .id(12)
@@ -64,7 +81,20 @@ public final class CategoryFactory {
       .build();
   }
 
-  public static Category textilesCategory() {
+  public static @NonNull Category tabletopGamesCategory() {
+    return Category.builder()
+      .color(51627)
+      .id(34)
+      .name("Tabletop Games")
+      .parent(gamesCategory())
+      .parentId(gamesCategory().id())
+      .position(6)
+      .projectsCount(226)
+      .slug("games/tabletop games")
+      .build();
+  }
+
+  public static @NonNull Category textilesCategory() {
     return Category.builder()
       .color(16760235)
       .id(289)
@@ -77,7 +107,7 @@ public final class CategoryFactory {
       .build();
   }
 
-  public static Category worldMusicCategory() {
+  public static @NonNull Category worldMusicCategory() {
     return Category.builder()
       .color(10878931)
       .id(44)

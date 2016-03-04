@@ -18,7 +18,7 @@ import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class KSDialog extends AppCompatDialog {
+public class ConfirmDialog extends AppCompatDialog {
   private final @Nullable String title;
   private final @NonNull String message;
   private final @Nullable String buttonText;
@@ -29,14 +29,14 @@ public class KSDialog extends AppCompatDialog {
 
   protected @BindString(R.string.general_alert_buttons_ok) String okString;
 
-  public KSDialog(final @NonNull Context context, final @Nullable String title, final @NonNull String message) {
+  public ConfirmDialog(final @NonNull Context context, final @Nullable String title, final @NonNull String message) {
     super(context);
     this.title = title;
     this.message = message;
     this.buttonText = null;
   }
 
-  public KSDialog(final @NonNull Context context, final @Nullable String title, final @NonNull String message,
+  public ConfirmDialog(final @NonNull Context context, final @Nullable String title, final @NonNull String message,
     final @Nullable String buttonText) {
     super(context);
     this.title = title;

@@ -14,8 +14,7 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.ViewModel;
-import com.kickstarter.libs.preferences.IntPreference;
-import com.kickstarter.libs.qualifiers.ActivitySamplePreference;
+import com.kickstarter.libs.preferences.IntPreferenceType;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.DiscoveryDrawerUtils;
@@ -64,7 +63,7 @@ public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> imple
   private final WebClientType webClient;
   private final BuildCheck buildCheck;
   private final CurrentUserType currentUser;
-  private final @ActivitySamplePreference IntPreference activitySamplePreference;
+  private final IntPreferenceType activitySamplePreference;
 
   // INPUTS
   private final PublishSubject<Void> nextPage = PublishSubject.create();

@@ -366,6 +366,7 @@
             "weekly": "Projects We Love",
             "promo": "Kickstarter News and Events",
             "happening": "Happening Now",
+            "games": "Kickstarter Loves Games",
             "opt_in": {
               "title": "One final step!",
               "message": "We've sent a confirmation email to the address associated with your account! Please check your email in order to confirm that you'd like to subscribe to %{newsletter}."
@@ -683,6 +684,11 @@
                 "ok": "OK"
               }
             }
+          },
+          "games_alert": {
+            "want_the_coolest_games_delivered_to_your_inbox": "Want the coolest games delivered to your inbox? Our Games team has a newsletter just for you.",
+            "yes_please": "Yes please!",
+            "no_thanks": "No thanks."
           }
         },
         "disclaimer": {
@@ -1674,6 +1680,7 @@
             "weekly": "Unsere Lieblingsprojekte",
             "promo": "Kickstarter Neuigkeiten und Events",
             "happening": "Happening Now",
+            "games": "Wir lieben Spiele",
             "opt_in": {
               "title": "Nur noch ein letzter Schritt!",
               "message": "Wir haben eine Bestätigung an die mit deinem Konto verbundene E-Mail-Adresse geschickt! Bitte sieh in deinem Posteingang nach und bestätige dein Abo von %{newsletter}."
@@ -1725,7 +1732,7 @@
         "noemail": {
           "title": "Support",
           "message": "Es sieht so aus, als hättest du keinen E-Mail-Account auf deinem Gerät. Bitte kontaktiere uns unter app@kickstarter.com.",
-          "message_android": "Looks like you don’t have an e-mail account on your device. Please contact us at android@kickstarter.com."
+          "message_android": "Es sieht so aus, als hättest du keinen E-Mail-Account auf deinem Gerät. Bitte kontaktiere uns unter android@kickstarter.com."
         },
         "button": {
           "ok": "OK"
@@ -1991,6 +1998,11 @@
                 "ok": "OK"
               }
             }
+          },
+          "games_alert": {
+            "want_the_coolest_games_delivered_to_your_inbox": "Wie wäre es, wenn du die coolsten Games direkt in deine Inbox geliefert bekämst? Kein Problem - unser Games-Team hat einen Newsletter für dich!",
+            "yes_please": "Gerne!",
+            "no_thanks": "Nein, danke."
           }
         },
         "disclaimer": {
@@ -2982,6 +2994,7 @@
             "weekly": "Nuestros Favoritos",
             "promo": "Novedades y eventos de Kickstarter",
             "happening": "Eventos",
+            "games": "Nos encantan los juegos",
             "opt_in": {
               "title": "¡Sólo un último paso!",
               "message": "Hemos enviado una confirmación a la dirección de correo electrónico asociada con tu cuenta. Por favor checa tu bandeja de entrada y confirma la subscripción a %{newsletter}."
@@ -3033,7 +3046,7 @@
         "noemail": {
           "title": "Atención al cliente",
           "message": "Parece que no tienes una cuenta de correo electrónico en tu dispositivo. Por favor ponte en contacto con nosotros a través de app@kickstarter.com.",
-          "message_android": "Looks like you don’t have an e-mail account on your device. Please contact us at android@kickstarter.com."
+          "message_android": "Parece que no tienes una cuenta de correo electrónico en tu dispositivo. Contáctanos en app@kickstarter.com."
         },
         "button": {
           "ok": "Ok"
@@ -3299,6 +3312,11 @@
                 "ok": "Ok"
               }
             }
+          },
+          "games_alert": {
+            "want_the_coolest_games_delivered_to_your_inbox": "¿Qué tal si pudieras recibir automáticamente lo último acerca de videojuegos por correo electrónico? ¡Trato hecho - nuestro equipo de juegos tienen un boletín hecho a tu medida!",
+            "yes_please": "¡Claro que sí!",
+            "no_thanks": "No, gracias."
           }
         },
         "disclaimer": {
@@ -4290,6 +4308,7 @@
             "weekly": "Nos coups de cœur",
             "promo": "Nouvelles et évènements Kickstarter",
             "happening": "Happening",
+            "games": "Kickstarter Loves Games",
             "opt_in": {
               "title": "Dernière étape !",
               "message": "Nous vous avons envoyé un e-mail de confirmation à l'adresse associée à votre compte ! Veuillez ouvrir votre boîte de réception et confirmer votre abonnement à %{newsletter}."
@@ -4341,7 +4360,7 @@
         "noemail": {
           "title": "Assistance",
           "message": "On dirait que vous n'avez pas de compte e-mail sur votre appareil. Veuillez nous contacter à l'adresse app@kickstarter.com.",
-          "message_android": "Looks like you don’t have an e-mail account on your device. Please contact us at android@kickstarter.com."
+          "message_android": "On dirait que vous n'avez pas de compte e-mail sur votre appareil. Veuillez nous contacter à l'adresse android@kickstarter.com."
         },
         "button": {
           "ok": "OK"
@@ -4607,6 +4626,11 @@
                 "ok": "OK"
               }
             }
+          },
+          "games_alert": {
+            "want_the_coolest_games_delivered_to_your_inbox": "Want the coolest games delivered to your inbox? Our Games team has a newsletter just for you.",
+            "yes_please": "Yes please!",
+            "no_thanks": "No thanks."
           }
         },
         "disclaimer": {
@@ -5040,7 +5064,7 @@
               "label": "Menu Aide"
             },
             "button_overflow_menu": {
-              "label": "Overflow menu"
+              "label": "Sous-menu overflow"
             }
           }
         },
@@ -5598,6 +5622,7 @@
             "weekly": "Projects We Love",
             "promo": "Kickstarter News and Events",
             "happening": "Happening Now",
+            "games": "Kickstarter Loves Games",
             "opt_in": {
               "title": "One final step!",
               "message": "We've sent a confirmation email to the address associated with your account! Please check your email in order to confirm that you'd like to subscribe to %{newsletter}."
@@ -5915,6 +5940,11 @@
                 "ok": "OK"
               }
             }
+          },
+          "games_alert": {
+            "want_the_coolest_games_delivered_to_your_inbox": "Want the coolest games delivered to your inbox? Our Games team has a newsletter just for you.",
+            "yes_please": "Yes please!",
+            "no_thanks": "No thanks."
           }
         },
         "disclaimer": {
@@ -6545,25 +6575,19 @@
     "elasticsearch": true,
     "koala_tracking": true,
     "koala_devices": true,
+    "device_id2": true,
     "security_history_read": true,
     "security_history_write": true,
     "redshift": true,
     "advanced_discovery_es": true,
+    "facebook_ajax_requests": true,
     "ios_crashlytics": true,
     "ios_koala": true,
     "ios_i18n": true,
     "ios_tappable_category_location": true,
     "ios_favorite_categories": true,
-    "US": true,
-    "DE": true,
-    "FR": true,
-    "ES": true,
-    "IT": true,
-    "AT": true,
-    "BE": true,
-    "LU": true,
-    "CH": true,
     "handbook_hero": true,
+    "android_pay": true,
     "i18n_discovery_touts": true,
     "i18n_start_tout": true,
     "password_reset_banner": true,
@@ -6574,19 +6598,28 @@
     "recaptcha": true,
     "log_devices": true,
     "backer_report_formats": true,
-    "discover_cards": true
+    "discover_cards": true,
+    "recommendations_landing": true,
+    "homepage_recs": true,
+    "community_tab": true
   },
   "launched_countries": [
     {
-      "name": "US",
-      "currency_code": "USD",
+      "name": "AT",
+      "currency_code": "EUR",
+      "currency_symbol": "€",
+      "trailing_code": false
+    },
+    {
+      "name": "AU",
+      "currency_code": "AUD",
       "currency_symbol": "$",
       "trailing_code": true
     },
     {
-      "name": "GB",
-      "currency_code": "GBP",
-      "currency_symbol": "£",
+      "name": "BE",
+      "currency_code": "EUR",
+      "currency_symbol": "€",
       "trailing_code": false
     },
     {
@@ -6596,28 +6629,16 @@
       "trailing_code": true
     },
     {
-      "name": "AU",
-      "currency_code": "AUD",
-      "currency_symbol": "$",
-      "trailing_code": true
-    },
-    {
-      "name": "NZ",
-      "currency_code": "NZD",
-      "currency_symbol": "$",
-      "trailing_code": true
-    },
-    {
-      "name": "NL",
-      "currency_code": "EUR",
-      "currency_symbol": "€",
+      "name": "CH",
+      "currency_code": "CHF",
+      "currency_symbol": "Fr ",
       "trailing_code": false
     },
     {
-      "name": "SE",
-      "currency_code": "SEK",
-      "currency_symbol": "kr",
-      "trailing_code": true
+      "name": "DE",
+      "currency_code": "EUR",
+      "currency_symbol": "€",
+      "trailing_code": false
     },
     {
       "name": "DK",
@@ -6626,19 +6647,7 @@
       "trailing_code": true
     },
     {
-      "name": "NO",
-      "currency_code": "NOK",
-      "currency_symbol": "kr",
-      "trailing_code": true
-    },
-    {
-      "name": "IE",
-      "currency_code": "EUR",
-      "currency_symbol": "€",
-      "trailing_code": false
-    },
-    {
-      "name": "DE",
+      "name": "ES",
       "currency_code": "EUR",
       "currency_symbol": "€",
       "trailing_code": false
@@ -6650,7 +6659,13 @@
       "trailing_code": false
     },
     {
-      "name": "ES",
+      "name": "GB",
+      "currency_code": "GBP",
+      "currency_symbol": "£",
+      "trailing_code": false
+    },
+    {
+      "name": "IE",
       "currency_code": "EUR",
       "currency_symbol": "€",
       "trailing_code": false
@@ -6662,28 +6677,40 @@
       "trailing_code": false
     },
     {
-      "name": "AT",
-      "currency_code": "EUR",
-      "currency_symbol": "€",
-      "trailing_code": false
-    },
-    {
-      "name": "BE",
-      "currency_code": "EUR",
-      "currency_symbol": "€",
-      "trailing_code": false
-    },
-    {
       "name": "LU",
       "currency_code": "EUR",
       "currency_symbol": "€",
       "trailing_code": false
     },
     {
-      "name": "CH",
-      "currency_code": "CHF",
-      "currency_symbol": "Fr ",
+      "name": "NL",
+      "currency_code": "EUR",
+      "currency_symbol": "€",
       "trailing_code": false
+    },
+    {
+      "name": "NO",
+      "currency_code": "NOK",
+      "currency_symbol": "kr",
+      "trailing_code": true
+    },
+    {
+      "name": "NZ",
+      "currency_code": "NZD",
+      "currency_symbol": "$",
+      "trailing_code": true
+    },
+    {
+      "name": "SE",
+      "currency_code": "SEK",
+      "currency_symbol": "kr",
+      "trailing_code": true
+    },
+    {
+      "name": "US",
+      "currency_code": "USD",
+      "currency_symbol": "$",
+      "trailing_code": true
     }
   ],
   "ab_experiments": {
@@ -6691,8 +6718,7 @@
     "native_ios_aa": "control",
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
-    "native_iphone_horiz_vs_vert": "control",
-    "recs_thanks_combo_inputs": "combo_inputs",
+    "native_iphone_horiz_vs_vert": "experimental",
     "recs_hp_combo_v1": "collaborative_backings_v2"
   },
   "stripe": {

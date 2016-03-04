@@ -31,5 +31,6 @@
 
   <issue id="UnusedResources">
     <ignore path="src/main/res/values/colors.xml" />
+    <ignore path="src/internal/res/**" />
   </issue>
 </lint>

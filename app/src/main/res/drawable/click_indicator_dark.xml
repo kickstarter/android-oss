@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<selector
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  tools:ignore="UnusedResources">
   <item android:drawable="@color/light_gray_click" android:state_focused="true" />
   <item android:drawable="@color/light_gray_click" android:state_pressed="true" />
   <item android:drawable="@color/light_gray_click" android:state_selected="true" />

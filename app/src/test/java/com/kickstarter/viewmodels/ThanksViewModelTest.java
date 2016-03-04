@@ -160,7 +160,6 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<Void> showGamesNewsletterDialogTest = new TestSubscriber<>();
     vm.outputs.showGamesNewsletterDialog().subscribe(showGamesNewsletterDialogTest);
 
-
     final Project project = ProjectFactory.project()
       .toBuilder()
       .category(CategoryFactory.ceramicsCategory())

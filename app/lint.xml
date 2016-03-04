@@ -28,4 +28,8 @@
      TextView with the image as the drawable, but typically our ImageViews require fetching an image dynamically
      rather than simply specifiying a drawable. -->
   <issue id="UseCompoundDrawables" severity="ignore" />
+
+  <issue id="UnusedResources">
+    <ignore path="src/main/res/values/colors.xml" />
+  </issue>
 </lint>

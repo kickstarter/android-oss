@@ -43,6 +43,7 @@
     <!-- False-positives -->
     <ignore path="src/main/res/drawable-*/ic_kickstarter_k.png" />
     <ignore path="src/main/res/anim/fade_out.xml" />
+    <ignore path="src/main/res/anim/slide_in_bottom.xml" />
     <ignore path="src/main/res/menu/login_help_menu.xml" />
   </issue>
 </lint>

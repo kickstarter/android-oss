@@ -49,6 +49,7 @@ public class IconTextView extends TextView {
     final int defStyleRes) {
     final TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.IconTextView, defStyleAttr, defStyleRes);
     iconType = attributes.getInt(R.styleable.IconTextView_iconType, DEFAULT_ICON_TYPE);
+    attributes.recycle();
   }
 
   @Override

@@ -6,16 +6,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.adapters.ManageNotificationsAdapter;
 import com.kickstarter.viewmodels.ManageNotificationsViewModel;
-
-import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.BindString;
@@ -30,14 +26,11 @@ public final class ManageNotificationActivity extends BaseActivity<ManageNotific
 
   protected @BindString(R.string.general_error_something_wrong) String generalErrorString;
 
-  protected @Inject ApiClientType client;
-
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.manage_notifications_layout);
     ButterKnife.bind(this);
-    ((KSApplication) getApplication()).component().inject(this);
 
     final ManageNotificationsAdapter adapter = new ManageNotificationsAdapter();
     recyclerView.setAdapter(adapter);
@@ -46,7 +39,7 @@ public final class ManageNotificationActivity extends BaseActivity<ManageNotific
     viewModel.outputs.notifications()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(n -> adapter.takeNotifications(n, client));
+      .subscribe(n -> adapter.takeNotifications(n, component().environment()));
 
     viewModel.errors.unableToFetchNotificationsError()
       .compose(bindToLifecycle())

@@ -5,9 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.libs.ApiPaginator;
-import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.CurrentUserType;
+import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Activity;
@@ -26,8 +26,6 @@ import com.kickstarter.viewmodels.outputs.ActivityFeedViewModelOutputs;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;
@@ -35,8 +33,8 @@ import rx.subjects.PublishSubject;
 
 public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity> implements ActivityFeedAdapter.Delegate,
   ActivityFeedViewModelInputs, ActivityFeedViewModelOutputs {
-  protected @Inject ApiClientType client;
-  protected @Inject CurrentUser currentUser;
+  private final ApiClientType client;
+  private final CurrentUserType currentUser;
 
   private final PublishSubject<Project> discoverProjectsClick = PublishSubject.create();
   private final PublishSubject<Activity> friendBackingClick = PublishSubject.create();
@@ -78,10 +76,16 @@ public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity>
   }
   public final ActivityFeedViewModelOutputs outputs = this;
 
+  public ActivityFeedViewModel(final @NonNull Environment environment) {
+    super(environment);
+
+    this.client = environment.apiClient();
+    this.currentUser = environment.currentUser();
+  }
+
   @Override
   protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
-    ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     final ApiPaginator<Activity, ActivityEnvelope, Void> paginator = ApiPaginator.<Activity, ActivityEnvelope, Void>builder()
       .nextPage(nextPage)

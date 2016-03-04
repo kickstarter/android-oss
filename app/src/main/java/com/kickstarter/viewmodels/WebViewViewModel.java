@@ -5,8 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.kickstarter.KSApplication;
-import com.kickstarter.libs.Koala;
+import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
@@ -14,15 +13,11 @@ import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.WebViewActivity;
 import com.kickstarter.viewmodels.outputs.WebViewViewModelOutputs;
 
-import javax.inject.Inject;
-
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public final class WebViewViewModel extends ViewModel<WebViewActivity> implements WebViewViewModelOutputs {
-  protected @Inject Koala koala;
-
   private final PublishSubject<PushNotificationEnvelope> pushNotificationEnvelope = PublishSubject.create();
 
   private final BehaviorSubject<String> toolbarTitle = BehaviorSubject.create();
@@ -39,10 +34,13 @@ public final class WebViewViewModel extends ViewModel<WebViewActivity> implement
 
   public final WebViewViewModelOutputs outputs = this;
 
+  public WebViewViewModel(final @NonNull Environment environment) {
+    super(environment);
+  }
+
   @Override
   protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
-    ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     intent()
       .map(i -> i.getStringExtra(IntentKey.TOOLBAR_TITLE))

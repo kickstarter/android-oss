@@ -8,14 +8,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
-import com.trello.rxlifecycle.ActivityEvent;
-
 import com.kickstarter.ui.data.ActivityResult;
+import com.trello.rxlifecycle.ActivityEvent;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;
@@ -24,7 +21,6 @@ import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 public class ViewModel<ViewType extends LifecycleType> {
-  @Inject protected Koala koala;
 
   private final PublishSubject<ViewType> viewChange = PublishSubject.create();
   private final Observable<ViewType> view = viewChange.filter(v -> v != null);
@@ -34,6 +30,11 @@ public class ViewModel<ViewType extends LifecycleType> {
 
   // TODO: Justify BehaviorSubject vs PublishSubject
   private final BehaviorSubject<Intent> intent = BehaviorSubject.create();
+  protected final Koala koala;
+
+  public ViewModel(final @NonNull Environment environment) {
+    koala = environment.koala();
+  }
 
   /**
    * Takes activity result data from the activity.
@@ -41,6 +42,7 @@ public class ViewModel<ViewType extends LifecycleType> {
   public void activityResult(final @NonNull ActivityResult activityResult) {
     this.activityResult.onNext(activityResult);
   }
+
   /*
    * Takes intent data from the view.
    */

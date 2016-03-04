@@ -1,16 +1,14 @@
 package com.kickstarter.viewmodels;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfig;
-import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.CurrentUserType;
+import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
@@ -30,19 +28,17 @@ import com.kickstarter.viewmodels.outputs.ProjectViewModelOutputs;
 
 import java.net.CookieManager;
 
-import javax.inject.Inject;
-
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public final class ProjectViewModel extends ViewModel<ProjectActivity> implements ProjectAdapter.Delegate,
   ProjectViewModelInputs, ProjectViewModelOutputs {
-  protected @Inject ApiClientType client;
-  protected @Inject CurrentUser currentUser;
-  protected @Inject CookieManager cookieManager;
-  protected @Inject CurrentConfig currentConfig;
-  protected @Inject SharedPreferences sharedPreferences;
+  private final ApiClientType client;
+  private final CurrentUserType currentUser;
+  private final CookieManager cookieManager;
+  private final CurrentConfig currentConfig;
+  private final SharedPreferences sharedPreferences;
 
   /**
    * A light-weight value to hold two ref tags and a project. Two ref tags are stored: one comes from parceled
@@ -117,16 +113,12 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
   public void rewardClicked(final @NonNull Reward reward) {
     this.rewardClicked.onNext(reward);
   }
-  private final PublishSubject<Void> loginSuccess = PublishSubject.create();
-  public void loginSuccess() {
-    this.loginSuccess.onNext(null);
-  }
   public final ProjectViewModelInputs inputs = this;
 
   // OUTPUTS
   private final BehaviorSubject<Project> project = BehaviorSubject.create();
-  public Observable<Pair<Project, Config>> projectAndConfig() {
-    return project.compose(Transformers.combineLatestPair(currentConfig.observable()));
+  public Observable<Pair<Project, String>> projectAndUserCountry() {
+    return project.compose(Transformers.combineLatestPair(currentConfig.observable().map(Config::countryCode)));
   }
   public Observable<Project> showShareSheet() {
     return this.project.compose(Transformers.takeWhen(this.shareClicked));
@@ -168,10 +160,14 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
   }
   public final ProjectViewModelOutputs outputs = this;
 
-  @Override
-  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
-    super.onCreate(context, savedInstanceState);
-    ((KSApplication) context.getApplicationContext()).component().inject(this);
+  public ProjectViewModel(final @NonNull Environment environment) {
+    super(environment);
+
+    client = environment.apiClient();
+    cookieManager = environment.cookieManager();
+    currentConfig = environment.currentConfig();
+    currentUser = environment.currentUser();
+    sharedPreferences = environment.sharedPreferences();
 
     // An observable of the ref tag stored in the cookie for the project. Can emit `null`.
     final Observable<RefTag> cookieRefTag = project
@@ -201,8 +197,10 @@ public final class ProjectViewModel extends ViewModel<ProjectActivity> implement
       .switchMap(this::toggleProjectStar)
       .share();
 
-    final Observable<Project> starredProjectOnLoginSuccess = initialProject
-      .compose(Transformers.takeWhen(loginSuccess))
+    final Observable<Project> starredProjectOnLoginSuccess = showLoginTout
+      .compose(Transformers.combineLatestPair(currentUser.observable()))
+      .filter(su -> su.second != null)
+      .withLatestFrom(initialProject, (__, p) -> p)
       .take(1)
       .switchMap(this::starProject)
       .share();

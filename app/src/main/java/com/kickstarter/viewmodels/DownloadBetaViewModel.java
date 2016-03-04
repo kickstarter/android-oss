@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.IntentKey;
@@ -25,6 +26,10 @@ public final class DownloadBetaViewModel extends ViewModel<DownloadBetaActivity>
   }
 
   public final DownloadBetaViewModelOutputs outputs = this;
+
+  public DownloadBetaViewModel(final @NonNull Environment environment) {
+    super(environment);
+  }
 
   @Override
   protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {

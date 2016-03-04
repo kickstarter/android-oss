@@ -3,7 +3,7 @@ package com.kickstarter.services.interceptors;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
-import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.services.KSUri;
 
 import java.io.IOException;
@@ -15,10 +15,10 @@ import okhttp3.Response;
 
 public final class ApiRequestInterceptor implements Interceptor {
   private final String clientId;
-  private final CurrentUser currentUser;
+  private final CurrentUserType currentUser;
   private final String endpoint;
 
-  public ApiRequestInterceptor(final @NonNull String clientId, final @NonNull CurrentUser currentUser,
+  public ApiRequestInterceptor(final @NonNull String clientId, final @NonNull CurrentUserType currentUser,
     final @NonNull String endpoint) {
     this.clientId = clientId;
     this.currentUser = currentUser;

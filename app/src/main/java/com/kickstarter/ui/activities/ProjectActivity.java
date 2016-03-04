@@ -15,14 +15,12 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
-import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ProjectAdapter;
 import com.kickstarter.ui.data.LoginReason;
@@ -63,8 +61,6 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   protected @BindString(R.string.project_subpages_menu_buttons_creator) String creatorString;
   protected @BindString(R.string.project_subpages_menu_buttons_updates) String updatesString;
 
-  protected @Inject ApiClientType client;
-  protected @Inject KSCurrency ksCurrency;
   protected @Inject KSString ksString;
 
   @Override
@@ -81,10 +77,10 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     projectRecyclerView.setAdapter(adapter);
     projectRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    this.viewModel.outputs.projectAndConfig()
+    this.viewModel.outputs.projectAndUserCountry()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(pc -> this.renderProject(pc.first, pc.second.countryCode()));
+      .subscribe(pc -> this.renderProject(pc.first, pc.second));
 
     this.viewModel.outputs.showCampaign()
       .compose(bindToLifecycle())
@@ -268,19 +264,6 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     final Intent intent = new Intent(this, VideoPlayerActivity.class)
       .putExtra(IntentKey.PROJECT, project);
     startActivity(intent);
-  }
-
-  @Override
-  protected void onActivityResult(final int requestCode, final int resultCode, final @Nullable Intent intent) {
-    super.onActivityResult(requestCode, resultCode, intent);
-
-    if (requestCode != ActivityRequestCodes.LOGIN_FLOW) {
-      return;
-    }
-    if (resultCode != RESULT_OK) {
-      return;
-    }
-    viewModel.inputs.loginSuccess();
   }
 
   protected @Nullable Pair<Integer, Integer> exitTransition() {

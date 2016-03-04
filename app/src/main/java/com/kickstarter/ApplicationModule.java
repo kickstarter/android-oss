@@ -15,11 +15,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.AutoParcelAdapterFactory;
+import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.CurrentConfig;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.DateTimeTypeConverter;
 import com.kickstarter.libs.DeviceRegistrar;
 import com.kickstarter.libs.DeviceRegistrarType;
+import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.Font;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.KSCurrency;
@@ -47,6 +49,7 @@ import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.ApiService;
 import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.services.WebClient;
+import com.kickstarter.services.WebClientType;
 import com.kickstarter.services.WebService;
 import com.kickstarter.services.interceptors.ApiRequestInterceptor;
 import com.kickstarter.services.interceptors.KSRequestInterceptor;
@@ -78,8 +81,32 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
-  @NonNull
-  ApiClientType provideApiClientType(final @NonNull ApiService apiService, final @NonNull Gson gson) {
+  Environment provideEnvironment(final @NonNull @ActivitySamplePreference IntPreference activitySamplePreference,
+    final @NonNull ApiClientType apiClient,
+    final @NonNull BuildCheck buildCheck,
+    final @NonNull CookieManager cookieManager,
+    final @NonNull CurrentConfig currentConfig,
+    final @NonNull CurrentUser currentUser,
+    final @NonNull Koala koala,
+    final @NonNull SharedPreferences sharedPreferences,
+    final @NonNull WebClientType webClient) {
+
+    return Environment.builder()
+      .activitySamplePreference(activitySamplePreference)
+      .apiClient(apiClient)
+      .buildCheck(buildCheck)
+      .cookieManager(cookieManager)
+      .currentConfig(currentConfig)
+      .currentUser(currentUser)
+      .koala(koala)
+      .sharedPreferences(sharedPreferences)
+      .webClient(webClient)
+      .build();
+  }
+
+  @Provides
+  @Singleton
+  @NonNull ApiClientType provideApiClientType(final @NonNull ApiService apiService, final @NonNull Gson gson) {
     return new ApiClient(apiService, gson);
   }
 
@@ -146,7 +173,7 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
-  @NonNull WebClient provideWebClient(final @NonNull WebService webService) {
+  @NonNull WebClientType provideWebClientType(final @NonNull WebService webService) {
     return new WebClient(webService);
   }
 

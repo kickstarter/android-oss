@@ -2,14 +2,27 @@ package com.kickstarter.viewmodels.outputs;
 
 import android.util.Pair;
 
-import com.kickstarter.libs.Config;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 
 import rx.Observable;
 
 public interface ProjectViewModelOutputs {
-  Observable<Pair<Project, Config>> projectAndConfig();
+  /**
+   * Emits a project and country when a new value is available. If the view model is created with a full project
+   * model, this observable will emit that project immediately, and then again when it has updated from the api.
+   */
+  Observable<Pair<Project, String>> projectAndUserCountry();
+
+  /**
+   * Emits when the success prompt for starring should be displayed.
+   */
+  Observable<Void> showStarredPrompt();
+
+  /**
+   * Emits when a login prompt should be displayed.
+   */
+  Observable<Void> showLoginTout();
 
   Observable<Project> showShareSheet();
   Observable<Project> playVideo();
@@ -22,6 +35,4 @@ public interface ProjectViewModelOutputs {
   Observable<Project> startViewPledge();
   Observable<Pair<Project, Reward>> startCheckoutWithReward();
 
-  Observable<Void> showStarredPrompt();
-  Observable<Void> showLoginTout();
 }

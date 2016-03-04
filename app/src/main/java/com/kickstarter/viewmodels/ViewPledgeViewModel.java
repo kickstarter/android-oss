@@ -6,8 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
-import com.kickstarter.KSApplication;
-import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.CurrentUserType;
+import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Backing;
@@ -18,15 +18,13 @@ import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ViewPledgeActivity;
 import com.kickstarter.viewmodels.outputs.ViewPledgeViewModelOutputs;
 
-import javax.inject.Inject;
-
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;
 
 public final class ViewPledgeViewModel extends ViewModel<ViewPledgeActivity> implements ViewPledgeViewModelOutputs  {
-  protected @Inject ApiClientType client;
-  protected @Inject CurrentUser currentUser;
+  private final ApiClientType client;
+  private final CurrentUserType currentUser;
 
   private final BehaviorSubject<Backing> backing = BehaviorSubject.create();
   @Override
@@ -36,10 +34,16 @@ public final class ViewPledgeViewModel extends ViewModel<ViewPledgeActivity> imp
 
   public final ViewPledgeViewModelOutputs outputs = this;
 
+  public ViewPledgeViewModel(final @NonNull Environment environment) {
+    super(environment);
+
+    client = environment.apiClient();
+    currentUser = environment.currentUser();
+  }
+
   @Override
   protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
-    ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     final Observable<Project> project = intent()
       .map(i -> i.getParcelableExtra(IntentKey.PROJECT))

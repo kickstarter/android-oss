@@ -5,9 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.libs.ApiPaginator;
-import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.CurrentUserType;
+import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ObjectUtils;
@@ -25,8 +25,6 @@ import com.kickstarter.viewmodels.outputs.CommentFeedViewModelOutputs;
 
 import java.util.Arrays;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -79,8 +77,8 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   private final PublishSubject<String> bodyOnPostClick = PublishSubject.create();
   private final PublishSubject<Boolean> commentIsPosting = PublishSubject.create();
 
-  protected @Inject ApiClientType client;
-  protected @Inject CurrentUser currentUser;
+  private final ApiClientType client;
+  private final CurrentUserType currentUser;
 
   public final CommentFeedViewModelInputs inputs = this;
   public final CommentFeedViewModelOutputs outputs = this;
@@ -91,10 +89,16 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
     commentBody.onNext(string);
   }
 
+  public CommentFeedViewModel(final @NonNull Environment environment) {
+    super(environment);
+
+    this.client = environment.apiClient();
+    this.currentUser = environment.currentUser();
+  }
+
   @Override
   protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
-    ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     final Observable<Project> initialProject = intent()
       .map(i -> i.getParcelableExtra(IntentKey.PROJECT))

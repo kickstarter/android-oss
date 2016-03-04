@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
 
+import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Notification;
@@ -47,7 +48,10 @@ public class ProjectNotificationViewModel extends ViewModel<ProjectNotificationV
   public final ProjectNotificationViewModelOutputs outputs = this;
   public final ProjectNotificationViewModelErrors errors = this;
 
-  public ProjectNotificationViewModel(final @NonNull Notification notification, final @NonNull ApiClientType client) {
+  public ProjectNotificationViewModel(final @NonNull Notification notification, final @NonNull Environment environment) {
+    super(environment);
+    final ApiClientType client = environment.apiClient();
+
     notificationInput = BehaviorSubject.create(notification);
 
     notificationInput

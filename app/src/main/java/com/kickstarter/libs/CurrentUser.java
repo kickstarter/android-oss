@@ -1,23 +1,22 @@
 package com.kickstarter.libs;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.kickstarter.libs.preferences.StringPreference;
-import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.User;
 
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
-public class CurrentUser {
+public class CurrentUser extends CurrentUserType {
   private final StringPreference accessTokenPreference;
   private final DeviceRegistrarType deviceRegistrar;
   private final StringPreference userPreference;
 
   private final BehaviorSubject<User> user = BehaviorSubject.create();
-  private User currentUser;
 
   public CurrentUser(final @NonNull StringPreference accessTokenPreference,
     final @NonNull DeviceRegistrarType deviceRegistrar,
@@ -27,7 +26,6 @@ public class CurrentUser {
     this.deviceRegistrar = deviceRegistrar;
     this.userPreference = userPreference;
 
-    user.subscribe(user -> currentUser = user);
     user
       .skip(1)
       .filter(user -> user != null)
@@ -36,18 +34,12 @@ public class CurrentUser {
     user.onNext(gson.fromJson(userPreference.get(), User.class));
   }
 
-  /**
-   * @deprecated Prefer {@link #observable()} instead.
-   */
-  @Deprecated
-  public User getUser() {
-    return currentUser;
+  @Override
+  public @Nullable User getUser() {
+    return user.getValue();
   }
 
-  /**
-   * @deprecated Prefer {@link #observable()} instead.
-   */
-  @Deprecated
+  @Override
   public boolean exists() {
     return getUser() != null;
   }
@@ -56,6 +48,7 @@ public class CurrentUser {
     return accessTokenPreference.get();
   }
 
+  @Override
   public void login(final @NonNull User newUser, final @NonNull String accessToken) {
     Timber.d("Login user %s", newUser.name());
 
@@ -64,6 +57,7 @@ public class CurrentUser {
     deviceRegistrar.registerDevice();
   }
 
+  @Override
   public void logout() {
     Timber.d("Logout current user");
 
@@ -73,50 +67,13 @@ public class CurrentUser {
     deviceRegistrar.unregisterDevice();
   }
 
+  @Override
   public void refresh(final @NonNull User freshUser) {
     user.onNext(freshUser);
   }
 
-  /**
-   * Returns an observable representing the current user. It emits immediately
-   * with the current user, and then again each time the user is updated.
-   */
+  @Override
   public Observable<User> observable() {
     return user;
-  }
-
-  /**
-   * Emits every time the user's logged in state changes. It will emit `true`
-   * if the user went from logged out to logged in, and `false` otherwise.
-   */
-  public Observable<Boolean> loginChange() {
-    return user.buffer(2, 1)
-      .map(prevAndNewUser -> {
-        final User[] users = prevAndNewUser.toArray(new User[prevAndNewUser.size()]);
-        return users[0] == null && users[1] != null;
-      });
-  }
-
-  /**
-   * Emits a boolean that determines if the user is logged in or not. The returned
-   * observable will emit immediately with the logged in state, and then again
-   * each time the current user is updated.
-   */
-  public @NonNull Observable<Boolean> isLoggedIn() {
-    return user.map(ObjectUtils::isNotNull);
-  }
-
-  /**
-   * Emits only values of a logged in user. The returned observable may never emit.
-   */
-  public Observable<User> loggedInUser() {
-    return observable().filter(ObjectUtils::isNotNull);
-  }
-
-  /**
-   * Emits only values of a logged out user. The returned observable may never emit.
-   */
-  public Observable<User> loggedOutUser() {
-    return observable().filter(ObjectUtils::isNull);
   }
 }

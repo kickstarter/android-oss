@@ -3,15 +3,15 @@ package com.kickstarter.libs;
 import android.support.annotation.NonNull;
 
 import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.services.WebClientType;
 import com.kickstarter.viewmodels.DiscoveryViewModel;
-import com.kickstarter.services.WebClient;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import timber.log.Timber;
 
 public interface BuildCheck {
-  void bind(final @NonNull DiscoveryViewModel viewModel, final @NonNull WebClient client);
+  void bind(final @NonNull DiscoveryViewModel viewModel, final @NonNull WebClientType client);
 
   BuildCheck DEFAULT = (viewModel, client) -> {
     final Subscription subscription = client.pingBeta()

@@ -86,4 +86,19 @@ public final class ProjectFactory {
       .staticUsdRate(1.5f)
       .build();
   }
+
+  public static @NonNull Project almostCompletedProject() {
+    return project()
+      .toBuilder()
+      .deadline(new DateTime().plusDays(1))
+      .build();
+  }
+
+  public static @NonNull Project successfulProject() {
+    return project()
+      .toBuilder()
+      .deadline(new DateTime().minus(2))
+      .state(Project.STATE_SUCCESSFUL)
+      .build();
+  }
 }

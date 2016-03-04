@@ -6,9 +6,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.libs.CurrentConfig;
-import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.CurrentUserType;
+import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.I18nUtils;
@@ -21,17 +21,15 @@ import com.kickstarter.viewmodels.errors.FacebookConfirmationViewModelErrors;
 import com.kickstarter.viewmodels.inputs.FacebookConfirmationViewModelInputs;
 import com.kickstarter.viewmodels.outputs.FacebookConfirmationViewModelOutputs;
 
-import javax.inject.Inject;
-
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public class FacebookConfirmationViewModel extends ViewModel<FacebookConfirmationActivity> implements
   FacebookConfirmationViewModelInputs, FacebookConfirmationViewModelOutputs, FacebookConfirmationViewModelErrors {
-  protected @Inject ApiClientType client;
-  protected @Inject CurrentUser currentUser;
-  protected @Inject CurrentConfig currentConfig;
+  private final ApiClientType client;
+  private final CurrentUserType currentUser;
+  private final CurrentConfig currentConfig;
 
   // INPUTS
   private final PublishSubject<Void> createNewAccountClick = PublishSubject.create();
@@ -70,7 +68,12 @@ public class FacebookConfirmationViewModel extends ViewModel<FacebookConfirmatio
   public final FacebookConfirmationViewModelOutputs outputs = this;
   public final FacebookConfirmationViewModelErrors errors = this;
 
-  public FacebookConfirmationViewModel() {
+  public FacebookConfirmationViewModel(final @NonNull Environment environment) {
+    super(environment);
+
+    this.client = environment.apiClient();
+    this.currentConfig = environment.currentConfig();
+    this.currentUser = environment.currentUser();
 
     final Observable<String> facebookAccessToken = intent()
       .map(i -> i.getStringExtra(IntentKey.FACEBOOK_TOKEN))
@@ -100,7 +103,6 @@ public class FacebookConfirmationViewModel extends ViewModel<FacebookConfirmatio
   @Override
   protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
     super.onCreate(context, savedInstanceState);
-    ((KSApplication) context.getApplicationContext()).component().inject(this);
 
     currentConfig.observable()
       .take(1)

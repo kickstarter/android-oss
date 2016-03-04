@@ -1,146 +1,171 @@
 package com.kickstarter.viewmodels;
 
-import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 
+import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
-import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.utils.ListUtils;
+import com.kickstarter.libs.utils.ObjectUtils;
+import com.kickstarter.libs.utils.UserUtils;
 import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ThanksActivity;
-import com.kickstarter.ui.adapters.ThanksAdapter;
-import com.kickstarter.ui.viewholders.CategoryPromoViewHolder;
-import com.kickstarter.ui.viewholders.ProjectCardMiniViewHolder;
+import com.kickstarter.ui.viewholders.ThanksCategoryViewHolder;
+import com.kickstarter.ui.viewholders.ThanksProjectViewHolder;
+import com.kickstarter.viewmodels.inputs.ThanksViewModelInputs;
 import com.kickstarter.viewmodels.outputs.ThanksViewModelOutputs;
 
 import java.util.List;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public final class ThanksViewModel extends ViewModel<ThanksActivity> implements ThanksViewModelOutputs, ThanksAdapter.Delegate {
+import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
+import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
+import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
+import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
+import static com.kickstarter.libs.rx.transformers.Transformers.zipPair;
+import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
 
-  private final PublishSubject<Void> facebookClick = PublishSubject.create();
+public final class ThanksViewModel extends ViewModel<ThanksActivity> implements ThanksViewModelInputs, ThanksViewModelOutputs {
+  private final PublishSubject<Category> categoryClick = PublishSubject.create();
+  private final PublishSubject<Project> projectClick = PublishSubject.create();
+  private final BehaviorSubject<String> projectName = BehaviorSubject.create();
   private final PublishSubject<Void> shareClick = PublishSubject.create();
-  private final PublishSubject<Void> twitterClick = PublishSubject.create();
-  private final PublishSubject<Project> projectCardMiniClick = PublishSubject.create();
-  private final PublishSubject<Category> categoryPromoClick = PublishSubject.create();
+  private final PublishSubject<Void> shareOnFacebookClick = PublishSubject.create();
+  private final PublishSubject<Void> shareOnTwitterClick = PublishSubject.create();
+  private final BehaviorSubject<Void> showConfirmGamesNewsletterDialog = BehaviorSubject.create();
+  private final BehaviorSubject<Void> showGamesNewsletterDialog = BehaviorSubject.create();
+  private final BehaviorSubject<Void> showRatingDialog = BehaviorSubject.create();
+  private final BehaviorSubject<Pair<List<Project>, Category>> showRecommendations = BehaviorSubject.create();
+  private final PublishSubject<User> signedUpToGamesNewsletter = PublishSubject.create();
+  private final PublishSubject<Void> signupToGamesNewsletterClick = PublishSubject.create();
+  private final BehaviorSubject<DiscoveryParams> startDiscovery = BehaviorSubject.create();
+  private final BehaviorSubject<Project> startProject = BehaviorSubject.create();
+  private final BehaviorSubject<Project> startShare = BehaviorSubject.create();
+  private final BehaviorSubject<Project> startShareOnFacebook = BehaviorSubject.create();
+  private final BehaviorSubject<Project> startShareOnTwitter = BehaviorSubject.create();
 
   private final ApiClientType apiClient;
-
-  private final BehaviorSubject<Project> project = BehaviorSubject.create();
-  @Override
-  public Observable<Project> project() {
-    return project;
-  }
-
-  public final ThanksViewModelOutputs outputs = this;
+  private final BooleanPreferenceType hasSeenAppRatingPreference;
+  private final BooleanPreferenceType hasSeenGamesNewsletterPreference;
+  private final CurrentUserType currentUser;
 
   public ThanksViewModel(final @NonNull Environment environment) {
     super(environment);
 
     apiClient = environment.apiClient();
-  }
+    currentUser = environment.currentUser();
+    hasSeenAppRatingPreference = environment.hasSeenAppRatingPreference();
+    hasSeenGamesNewsletterPreference = environment.hasSeenGamesNewsletterPreference();
 
-  @Override
-  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
-    super.onCreate(context, savedInstanceState);
-
-    final Observable<Pair<ThanksActivity, Project>> viewAndProject = view()
-      .compose(Transformers.combineLatestPair(project))
-      .filter(vp -> vp.first != null);
-
-    intent()
+    final Observable<Project> project = intent()
       .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
       .ofType(Project.class)
       .take(1)
-      .compose(bindToLifecycle())
-      .subscribe(project::onNext);
-
-    shareClick
-      .compose(bindToLifecycle())
-      .subscribe(__ -> koala.trackCheckoutShowShareSheet());
-
-    twitterClick
-      .compose(bindToLifecycle())
-      .subscribe(__ -> koala.trackCheckoutShowTwitterShareView());
-
-    facebookClick
-      .compose(bindToLifecycle())
-      .subscribe(__ -> koala.trackCheckoutShowFacebookShareView());
-
-    projectCardMiniClick
-      .compose(bindToLifecycle())
-      .subscribe(__ -> koala.trackCheckoutFinishJumpToProject());
-
-    viewAndProject
-      .observeOn(AndroidSchedulers.mainThread())
-      .compose(bindToLifecycle())
-      .subscribe(vp -> vp.first.show(vp.second));
-
-    viewAndProject
-      .compose(Transformers.takeWhen(facebookClick))
-      .observeOn(AndroidSchedulers.mainThread())
-      .compose(bindToLifecycle())
-      .subscribe(vp -> vp.first.startFacebookShareIntent(vp.second));
-
-    viewAndProject
-      .compose(Transformers.takeWhen(shareClick))
-      .observeOn(AndroidSchedulers.mainThread())
-      .compose(bindToLifecycle())
-      .subscribe(vp -> vp.first.startShareIntent(vp.second));
-
-    viewAndProject
-      .compose(Transformers.takeWhen(twitterClick))
-      .observeOn(AndroidSchedulers.mainThread())
-      .compose(bindToLifecycle())
-      .subscribe(vp -> vp.first.startTwitterShareIntent(vp.second));
-
-    viewChange()
-      .compose(Transformers.takePairWhen(projectCardMiniClick))
-      .observeOn(AndroidSchedulers.mainThread())
-      .compose(bindToLifecycle())
-      .subscribe(vp -> vp.first.startProjectIntent(vp.second));
-
-    viewChange()
-      .compose(Transformers.takePairWhen(categoryPromoClick))
-      .observeOn(AndroidSchedulers.mainThread())
-      .compose(bindToLifecycle())
-      .subscribe(vp -> vp.first.startDiscoveryCategoryIntent(vp.second));
+      .compose(bindToLifecycle());
 
     final Observable<Category> rootCategory = project.flatMap(this::rootCategory);
     final Observable<Pair<List<Project>, Category>> projectsAndRootCategory = project
       .flatMap(this::relatedProjects)
       .compose(bindToLifecycle())
-      .compose(Transformers.zipPair(rootCategory));
+      .compose(zipPair(rootCategory));
 
-    view()
-      .compose(Transformers.combineLatestPair(projectsAndRootCategory))
+    final Observable<Boolean> isGamesCategory = rootCategory
+      .map(c -> "games".equals(c.slug()));
+
+    final Observable<Boolean> hasSeenGamesNewsletterDialog = Observable.just(hasSeenGamesNewsletterPreference.get());
+
+    final Observable<Boolean> isSignedUpToGamesNewsletter = currentUser.observable()
+      .map(u -> u != null && isTrue(u.gamesNewsletter()));
+
+    final Observable<Boolean> showGamesNewsletter = Observable.combineLatest(
+      isGamesCategory, hasSeenGamesNewsletterDialog, isSignedUpToGamesNewsletter,
+      (isGames, hasSeen, isSignedUp) -> isGames && !hasSeen && !isSignedUp
+    )
+      .take(1);
+
+    project
+      .map(Project::name)
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(vpc -> {
-        final ThanksActivity view = vpc.first;
-        final List<Project> ps = vpc.second.first;
-        final Category category = vpc.second.second;
-        view.showRecommended(ps, category);
-      });
+      .subscribe(projectName::onNext);
 
-    categoryPromoClick
+    projectClick
+      .compose(bindToLifecycle())
+      .subscribe(startProject::onNext);
+
+    project
+      .compose(takeWhen(shareClick))
+      .compose(bindToLifecycle())
+      .subscribe(startShare::onNext);
+
+    project
+      .compose(takeWhen(shareOnFacebookClick))
+      .compose(bindToLifecycle())
+      .subscribe(startShareOnFacebook::onNext);
+
+    project
+      .compose(takeWhen(shareOnTwitterClick))
+      .compose(bindToLifecycle())
+      .subscribe(startShareOnTwitter::onNext);
+
+    categoryClick
+      .map(c -> DiscoveryParams.builder().category(c).build())
+      .compose(bindToLifecycle())
+      .subscribe(startDiscovery::onNext);
+
+    project
+      .flatMap(this::relatedProjects)
+      .compose(zipPair(rootCategory))
+      .compose(bindToLifecycle())
+      .subscribe(showRecommendations::onNext);
+
+    Observable.just(hasSeenAppRatingPreference.get())
+      .take(1)
+      .compose(combineLatestPair(showGamesNewsletter))
+      .filter(ag -> !ag.first && !ag.second)
+      .compose(ignoreValues())
+      .compose(bindToLifecycle())
+      .subscribe(__ -> showRatingDialog.onNext(null));
+
+    showGamesNewsletter
+      .filter(x -> x)
+      .compose(bindToLifecycle())
+      .subscribe(__ -> showGamesNewsletterDialog.onNext(null));
+
+    showGamesNewsletterDialog
+      .compose(bindToLifecycle())
+      .subscribe(__ -> hasSeenGamesNewsletterPreference.set(true));
+
+    currentUser.observable()
+      .filter(ObjectUtils::isNotNull)
+      .compose(takeWhen(signupToGamesNewsletterClick))
+      .flatMap(this::signupToGamesNewsletter)
+      .compose(bindToLifecycle())
+      .subscribe(signedUpToGamesNewsletter::onNext);
+
+    currentUser.observable()
+      .filter(ObjectUtils::isNotNull)
+      .compose(takeWhen(signedUpToGamesNewsletter))
+      .filter(UserUtils::isLocationGermany)
+      .compose(bindToLifecycle())
+      .subscribe(__ -> showConfirmGamesNewsletterDialog.onNext(null));
+
+    // Event tracking
+    categoryClick
       .compose(bindToLifecycle())
       .subscribe(__ -> koala.trackCheckoutFinishJumpToDiscovery());
 
-    projectCardMiniClick
+    projectClick
       .compose(bindToLifecycle())
       .subscribe(__ -> koala.trackCheckoutFinishJumpToProject());
 
@@ -148,17 +173,17 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .compose(bindToLifecycle())
       .subscribe(__ -> koala.trackCheckoutShowShareSheet());
 
-    twitterClick
-      .compose(bindToLifecycle())
-      .subscribe(__ -> koala.trackCheckoutShowTwitterShareView());
-
-    facebookClick
+    shareOnFacebookClick
       .compose(bindToLifecycle())
       .subscribe(__ -> koala.trackCheckoutShowFacebookShareView());
 
-    projectCardMiniClick
+    shareOnTwitterClick
       .compose(bindToLifecycle())
-      .subscribe(__ -> koala.trackCheckoutFinishJumpToProject());
+      .subscribe(__ -> koala.trackCheckoutShowTwitterShareView());
+
+    signedUpToGamesNewsletter
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackNewsletterToggle(true));
   }
 
   /**
@@ -176,7 +201,7 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
     }
 
     return apiClient.fetchCategory(String.valueOf(category.rootId()))
-      .compose(Transformers.neverError());
+      .compose(neverError());
   }
 
   /**
@@ -222,31 +247,101 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
       .flatMap(Observable::from);
 
     return Observable.concat(recommendedProjects, similarToProjects, staffPickProjects)
-      .compose(Transformers.neverError())
+      .compose(neverError())
       .distinct()
       .take(3)
       .toList();
   }
 
-  public void takeFacebookClick() {
-    facebookClick.onNext(null);
+  private Observable<User> signupToGamesNewsletter(final @NonNull User user) {
+    return apiClient
+      .updateUserSettings(user.toBuilder().gamesNewsletter(true).build())
+      .compose(neverError());
   }
 
-  public void takeShareClick() {
+  // INPUTS
+  public final ThanksViewModelInputs inputs = this;
+
+  @Override
+  public void categoryClick(final @NonNull ThanksCategoryViewHolder viewHolder, final @NonNull Category category) {
+    categoryClick.onNext(category);
+  }
+
+  @Override
+  public void projectClick(final @NonNull ThanksProjectViewHolder viewHolder, final @NonNull Project project) {
+    projectClick.onNext(project);
+  }
+
+  @Override
+  public void shareClick() {
     shareClick.onNext(null);
   }
 
-  public void takeTwitterClick() {
-    twitterClick.onNext(null);
+  @Override
+  public void shareOnFacebookClick() {
+    shareOnFacebookClick.onNext(null);
   }
 
   @Override
-  public void categoryPromoClick(final @NonNull CategoryPromoViewHolder viewHolder, final @NonNull Category category) {
-    categoryPromoClick.onNext(category);
+  public void shareOnTwitterClick() {
+    shareOnTwitterClick.onNext(null);
   }
 
   @Override
-  public void projectCardMiniClick(final @NonNull ProjectCardMiniViewHolder viewHolder, final @NonNull Project project) {
-    projectCardMiniClick.onNext(project);
+  public void signupToGamesNewsletterClick() {
+    signupToGamesNewsletterClick.onNext(null);
+  }
+
+  // OUTPUTS
+  public final ThanksViewModelOutputs outputs = this;
+
+  @Override
+  public @NonNull Observable<String> projectName() {
+    return projectName;
+  }
+
+  @Override
+  public @NonNull Observable<Void> showConfirmGamesNewsletterDialog() {
+    return showConfirmGamesNewsletterDialog;
+  }
+
+  @Override
+  public @NonNull Observable<Void> showGamesNewsletterDialog() {
+    return showGamesNewsletterDialog;
+  }
+
+  @Override
+  public @NonNull Observable<Void> showRatingDialog() {
+    return showRatingDialog;
+  }
+
+  @Override
+  public @NonNull Observable<Pair<List<Project>, Category>> showRecommendations() {
+    return showRecommendations;
+  }
+
+  @Override
+  public @NonNull Observable<DiscoveryParams> startDiscovery() {
+    return startDiscovery;
+  }
+
+  @Override
+  public @NonNull Observable<Project> startProject() {
+    return startProject;
+  }
+
+  @Override
+  public @NonNull Observable<Project> startShare() {
+    return startShare;
+  }
+
+  @Override
+  public @NonNull Observable<Project> startShareOnFacebook() {
+    return startShareOnFacebook;
+  }
+
+  @Override
+  public @NonNull Observable<Project> startShareOnTwitter() {
+    return startShareOnTwitter;
   }
 }

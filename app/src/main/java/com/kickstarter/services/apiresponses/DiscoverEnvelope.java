@@ -24,6 +24,39 @@ public abstract class DiscoverEnvelope implements Parcelable {
     @AutoParcel
     public abstract static class ApiEnvelope implements Parcelable {
       public abstract String moreProjects();
+
+      @AutoParcel.Builder
+      public abstract static class Builder {
+        public abstract Builder moreProjects(String __);
+        public abstract ApiEnvelope build();
+      }
+
+      public static Builder builder() {
+        return new AutoParcel_DiscoverEnvelope_UrlsEnvelope_ApiEnvelope.Builder();
+      }
+    }
+
+    @AutoParcel.Builder
+    public abstract static class Builder {
+      public abstract Builder api(ApiEnvelope __);
+      public abstract UrlsEnvelope build();
+    }
+
+    public static Builder builder() {
+      return new AutoParcel_DiscoverEnvelope_UrlsEnvelope.Builder();
     }
   }
+
+  @AutoParcel.Builder
+  public abstract static class Builder {
+    public abstract Builder projects(List<Project> __);
+    public abstract Builder urls(UrlsEnvelope __);
+    public abstract DiscoverEnvelope build();
+  }
+
+  public static Builder builder() {
+    return new AutoParcel_DiscoverEnvelope.Builder();
+  }
+
+  public abstract Builder toBuilder();
 }

@@ -2,8 +2,10 @@ package com.kickstarter.services;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 
 import com.kickstarter.factories.CategoryFactory;
+import com.kickstarter.factories.DiscoverEnvelopeFactory;
 import com.kickstarter.factories.LocationFactory;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.UserFactory;
@@ -22,11 +24,25 @@ import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
+import rx.subjects.PublishSubject;
 
 public class MockApiClient implements ApiClientType {
+  private final PublishSubject<Pair<String, Map<String, Object>>> observable = PublishSubject.create();
+
+  /**
+   * Emits when endpoints on the client are called. The key in the pair is the underscore-separated
+   * name of the method, and the value is a map of argument names/values.
+   */
+  public @NonNull Observable<Pair<String, Map<String, Object>>> observable() {
+    return observable;
+  }
+
   @Override
   public @NonNull Observable<Config> config() {
     return Observable.empty();
@@ -74,7 +90,9 @@ public class MockApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
-    return Observable.empty();
+    return Observable.just(
+      DiscoverEnvelopeFactory.discoverEnvelope(Collections.singletonList(ProjectFactory.project()))
+    );
   }
 
   @Override
@@ -203,6 +221,13 @@ public class MockApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<User> updateUserSettings(final @NonNull User user) {
-    return Observable.empty();
+    observable.onNext(
+      Pair.create("update_user_settings", new HashMap<String, Object>() {
+        {
+          put("user", user);
+        }
+      })
+    );
+    return Observable.just(user);
   }
 }

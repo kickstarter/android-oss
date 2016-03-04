@@ -23,7 +23,7 @@ import butterknife.ButterKnife;
 
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
-public final class ProjectCardMiniViewHolder extends KSViewHolder {
+public final class ThanksProjectViewHolder extends KSViewHolder {
   private Project project;
   private final Context context;
   private final Delegate delegate;
@@ -36,10 +36,10 @@ public final class ProjectCardMiniViewHolder extends KSViewHolder {
   protected @Inject KSString ksString;
 
   public interface Delegate {
-    void projectCardMiniClick(ProjectCardMiniViewHolder viewHolder, Project project);
+    void projectClick(ThanksProjectViewHolder viewHolder, Project project);
   }
 
-  public ProjectCardMiniViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
+  public ThanksProjectViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
     this.delegate = delegate;
     this.context = view.getContext();
@@ -77,6 +77,6 @@ public final class ProjectCardMiniViewHolder extends KSViewHolder {
 
   @Override
   public void onClick(final @NonNull View view) {
-    delegate.projectCardMiniClick(this, project);
+    delegate.projectClick(this, project);
   }
 }

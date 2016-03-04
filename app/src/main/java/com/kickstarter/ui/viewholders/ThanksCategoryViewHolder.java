@@ -22,25 +22,25 @@ import butterknife.ButterKnife;
 
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
-public final class CategoryPromoViewHolder extends KSViewHolder {
+public final class ThanksCategoryViewHolder extends KSViewHolder {
   private Category category;
   private final Context context;
   private final Delegate delegate;
 
-  protected @Bind(R.id.card_view) CardView cardView;
+  protected @Bind(R.id.thanks_category_view) CardView cardView;
   protected @Bind(R.id.explore_text_view) TextView exploreTextView;
   protected @Bind(R.id.live_projects_text_view) TextView liveProjectsTextView;
 
   protected @BindString(R.string.category_promo_explore_category) String exploreCategoryString;
   protected @BindString(R.string.category_promo_project_count_live_projects) String countLiveProjectsString;
 
-  @Inject KSString ksString;
+  protected @Inject KSString ksString;
 
   public interface Delegate {
-    void categoryPromoClick(CategoryPromoViewHolder viewHolder, Category category);
+    void categoryClick(ThanksCategoryViewHolder viewHolder, Category category);
   }
 
-  public CategoryPromoViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
+  public ThanksCategoryViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
     this.delegate = delegate;
     this.context = view.getContext();
@@ -77,6 +77,6 @@ public final class CategoryPromoViewHolder extends KSViewHolder {
 
   @Override
   public void onClick(final @NonNull View view) {
-    delegate.categoryPromoClick(this, category);
+    delegate.categoryClick(this, category);
   }
 }

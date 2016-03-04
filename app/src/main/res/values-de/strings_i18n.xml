@@ -543,6 +543,7 @@ Für gewöhnlich kann das Problem behoben werden, indem du in den iOS Einstellun
   <string name="profile_settings_logout_alert_title" formatted="false">Abmelden</string>
   <string name="profile_settings_navbar_title" formatted="false">Einstellungen</string>
   <string name="profile_settings_navbar_title_notifications" formatted="false">Benachrichtigungen</string>
+  <string name="profile_settings_newsletter_games" formatted="false">Wir lieben Spiele</string>
   <string name="profile_settings_newsletter_happening" formatted="false">Happening Now</string>
   <string name="profile_settings_newsletter_opt_in_message" formatted="false">Wir haben eine Bestätigung an die mit deinem Konto verbundene E-Mail-Adresse geschickt! Bitte sieh in deinem Posteingang nach und bestätige dein Abo von %{newsletter}.</string>
   <string name="profile_settings_newsletter_opt_in_title" formatted="false">Nur noch ein letzter Schritt!</string>
@@ -577,6 +578,9 @@ Wir würden uns sehr darüber freuen!</string>
   <string name="project_checkout_finalizing_timeout_message" formatted="false">Wie peinlich! Dieser Vorgang scheint länger zu dauern als üblich. Wir schicken dir eine E-Mail, sobald dein Finanzierungsbeitrag bearbeitet ist.</string>
   <string name="project_checkout_finalizing_title" formatted="false">Verarbeitung läuft</string>
   <string name="project_checkout_finalizing_we_are_finalizing_your_pledge_to_project" formatted="false">Dein Finanzierungsbeitrag für %{project_name} wird gerade bearbeitet. Das dauert nur einen kurzen Moment!</string>
+  <string name="project_checkout_games_alert_no_thanks" formatted="false">Nein, danke.</string>
+  <string name="project_checkout_games_alert_want_the_coolest_games_delivered_to_your_inbox" formatted="false">Wie wäre es, wenn du die coolsten Games direkt in deine Inbox geliefert bekämst? Kein Problem - unser Games-Team hat einen Newsletter für dich!</string>
+  <string name="project_checkout_games_alert_yes_please" formatted="false">Gerne!</string>
   <string name="project_checkout_looking_for_more_projects_check_these_out" formatted="false">Du suchst weitere Projekte? Schau dir diese doch mal näher an.</string>
   <string name="project_checkout_manage_navbar_title" formatted="false">Finanzierungsbeitrag verwalten</string>
   <string name="project_checkout_navigation_next" formatted="false">Weiter</string>
@@ -728,7 +732,7 @@ Wir würden uns sehr darüber freuen!</string>
   <string name="support_email_button_ok" formatted="false">OK</string>
   <string name="support_email_chooser" formatted="false">Auswahl E-Mail-App:</string>
   <string name="support_email_noemail_message" formatted="false">Es sieht so aus, als hättest du keinen E-Mail-Account auf deinem Gerät. Bitte kontaktiere uns unter app@kickstarter.com.</string>
-  <string name="support_email_noemail_message_android" formatted="false">Looks like you don’t have an e-mail account on your device. Please contact us at android@kickstarter.com.</string>
+  <string name="support_email_noemail_message_android" formatted="false">Es sieht so aus, als hättest du keinen E-Mail-Account auf deinem Gerät. Bitte kontaktiere uns unter android@kickstarter.com.</string>
   <string name="support_email_noemail_title" formatted="false">Support</string>
   <string name="support_email_subject" formatted="false">Hallo Kickstarter App Support</string>
   <string name="support_email_to" formatted="false">app@kickstarter.com</string>

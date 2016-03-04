@@ -11,7 +11,7 @@ import android.widget.Button;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.Koala;
-import com.kickstarter.libs.preferences.BooleanPreference;
+import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.qualifiers.AppRatingPreference;
 import com.kickstarter.libs.utils.ViewUtils;
 
@@ -22,7 +22,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class AppRatingDialog extends AppCompatDialog {
-  protected @Inject @AppRatingPreference BooleanPreference hasSeenAppRatingPreference;
+  protected @Inject @AppRatingPreference BooleanPreferenceType hasSeenAppRatingPreference;
   protected @Inject Koala koala;
 
   protected @Bind(R.id.no_thanks_button) Button noThanksButton;

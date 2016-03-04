@@ -24,7 +24,7 @@ package com.kickstarter.libs.preferences;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
-public class BooleanPreference {
+public final class BooleanPreference implements BooleanPreferenceType {
   private final SharedPreferences sharedPreferences;
   private final String key;
   private final boolean defaultValue;
@@ -40,18 +40,22 @@ public class BooleanPreference {
     this.defaultValue = defaultValue;
   }
 
+  @Override
   public boolean get() {
     return sharedPreferences.getBoolean(key, defaultValue);
   }
 
+  @Override
   public boolean isSet() {
     return sharedPreferences.contains(key);
   }
 
+  @Override
   public void set(final boolean value) {
     sharedPreferences.edit().putBoolean(key, value).apply();
   }
 
+  @Override
   public void delete() {
     sharedPreferences.edit().remove(key).apply();
   }

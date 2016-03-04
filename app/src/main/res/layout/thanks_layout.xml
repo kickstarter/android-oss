@@ -65,7 +65,7 @@
 
           <Button
             style="@style/FacebookButton"
-            android:id="@+id/facebook_button"
+            android:id="@+id/share_on_facebook_button"
             android:ellipsize="none"
             android:layout_marginRight="@dimen/grid_3_half"
             android:layout_weight="1"
@@ -75,7 +75,7 @@
 
           <Button
             style="@style/TwitterButton"
-            android:id="@+id/twitter_button"
+            android:id="@+id/share_on_twitter_button"
             android:ellipsize="none"
             android:layout_weight="1"
             android:layout_width="0dp"

@@ -396,7 +396,7 @@
   <string name="general_navigation_accessibility_button_close_label" formatted="false">Fermer</string>
   <string name="general_navigation_accessibility_button_help_menu_label" formatted="false">Menu Aide</string>
   <string name="general_navigation_accessibility_button_navigate_back_label" formatted="false">Retour</string>
-  <string name="general_navigation_accessibility_button_overflow_menu_label" formatted="false">Overflow menu</string>
+  <string name="general_navigation_accessibility_button_overflow_menu_label" formatted="false">Sous-menu overflow</string>
   <string name="general_navigation_buttons_cancel" formatted="false">Annuler</string>
   <string name="general_navigation_buttons_close" formatted="false">Fermer</string>
   <string name="general_navigation_buttons_comment" formatted="false">Commenter</string>
@@ -543,6 +543,7 @@ Ce problème peut généralement être résolu en accédant à Réglages iOS > F
   <string name="profile_settings_logout_alert_title" formatted="false">Déconnexion</string>
   <string name="profile_settings_navbar_title" formatted="false">Paramètres</string>
   <string name="profile_settings_navbar_title_notifications" formatted="false">Notifications</string>
+  <string name="profile_settings_newsletter_games" formatted="false">Kickstarter Loves Games</string>
   <string name="profile_settings_newsletter_happening" formatted="false">Happening</string>
   <string name="profile_settings_newsletter_opt_in_message" formatted="false">Nous vous avons envoyé un e-mail de confirmation à l\'adresse associée à votre compte ! Veuillez ouvrir votre boîte de réception et confirmer votre abonnement à %{newsletter}.</string>
   <string name="profile_settings_newsletter_opt_in_title" formatted="false">Dernière étape !</string>
@@ -579,6 +580,9 @@ Merci pour votre soutien !</string>
   <string name="project_checkout_finalizing_timeout_message" formatted="false">Nous sommes désolés. On dirait que cette opération prend plus de temps que d\'habitude. Nous vous enverrons un e-mail une fois votre engagement finalisé.</string>
   <string name="project_checkout_finalizing_title" formatted="false">Traitement en cours</string>
   <string name="project_checkout_finalizing_we_are_finalizing_your_pledge_to_project" formatted="false">Nous sommes en train de finaliser votre engagement pour le projet %{project_name}. Merci de patienter quelques instants !</string>
+  <string name="project_checkout_games_alert_no_thanks" formatted="false">No thanks.</string>
+  <string name="project_checkout_games_alert_want_the_coolest_games_delivered_to_your_inbox" formatted="false">Want the coolest games delivered to your inbox? Our Games team has a newsletter just for you.</string>
+  <string name="project_checkout_games_alert_yes_please" formatted="false">Yes please!</string>
   <string name="project_checkout_looking_for_more_projects_check_these_out" formatted="false">Vous recherchez plus de projets ? En voici quelques uns.</string>
   <string name="project_checkout_manage_navbar_title" formatted="false">Gérer</string>
   <string name="project_checkout_navigation_next" formatted="false">Suivant</string>
@@ -734,7 +738,7 @@ Merci pour votre soutien !</string>
   <string name="support_email_button_ok" formatted="false">OK</string>
   <string name="support_email_chooser" formatted="false">Choisissez une application e-mail :</string>
   <string name="support_email_noemail_message" formatted="false">On dirait que vous n\'avez pas de compte e-mail sur votre appareil. Veuillez nous contacter à l\'adresse app@kickstarter.com.</string>
-  <string name="support_email_noemail_message_android" formatted="false">Looks like you don’t have an e-mail account on your device. Please contact us at android@kickstarter.com.</string>
+  <string name="support_email_noemail_message_android" formatted="false">On dirait que vous n\'avez pas de compte e-mail sur votre appareil. Veuillez nous contacter à l\'adresse android@kickstarter.com.</string>
   <string name="support_email_noemail_title" formatted="false">Assistance</string>
   <string name="support_email_subject" formatted="false">Bonjour, Assistance de l\'application Kickstarter</string>
   <string name="support_email_to" formatted="false">app@kickstarter.com</string>

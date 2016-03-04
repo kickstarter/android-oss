@@ -25,7 +25,7 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.EnumAdapter;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.Release;
-import com.kickstarter.libs.preferences.StringPreference;
+import com.kickstarter.libs.preferences.StringPreferenceType;
 import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.models.User;
@@ -48,7 +48,7 @@ import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresViewModel(InternalToolsViewModel.class)
 public final class InternalToolsActivity extends BaseActivity<InternalToolsViewModel> {
-  @Inject @ApiEndpointPreference StringPreference apiEndpointPreference;
+  @Inject @ApiEndpointPreference StringPreferenceType apiEndpointPreference;
   @Inject Release release;
   @Inject CurrentUser currentUser;
   @Inject Logout logout;

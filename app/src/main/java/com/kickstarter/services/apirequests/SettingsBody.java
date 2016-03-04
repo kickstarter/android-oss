@@ -13,6 +13,7 @@ public abstract class SettingsBody {
   public abstract boolean notifyOfFollower();
   public abstract boolean notifyOfFriendActivity();
   public abstract boolean notifyOfUpdates();
+  public abstract int gamesNewsletter();
   public abstract int happeningNewsletter();
   public abstract int promoNewsletter();
   public abstract int weeklyNewsletter();
@@ -25,6 +26,7 @@ public abstract class SettingsBody {
     public abstract Builder notifyOfFollower(boolean __);
     public abstract Builder notifyOfFriendActivity(boolean __);
     public abstract Builder notifyOfUpdates(boolean __);
+    public abstract Builder gamesNewsletter(int __);
     public abstract Builder happeningNewsletter(int __);
     public abstract Builder promoNewsletter(int __);
     public abstract Builder weeklyNewsletter(int __);

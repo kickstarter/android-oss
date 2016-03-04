@@ -24,6 +24,7 @@ import com.kickstarter.libs.utils.ApplicationUtils;
 import com.kickstarter.libs.utils.SwitchCompatUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.User;
+import com.kickstarter.ui.data.Newsletter;
 import com.kickstarter.ui.views.IconTextView;
 import com.kickstarter.viewmodels.SettingsViewModel;
 
@@ -45,6 +46,7 @@ import static com.kickstarter.libs.utils.IntegerUtils.intValueOrZero;
 
 @RequiresViewModel(SettingsViewModel.class)
 public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
+  protected @Bind(R.id.games_switch) SwitchCompat gamesNewsletterSwitch;
   protected @Bind(R.id.happening_now_switch) SwitchCompat happeningNewsletterSwitch;
   protected @Bind(R.id.friend_activity_mail_icon) IconTextView friendActivityMailIconTextView;
   protected @Bind(R.id.friend_activity_phone_icon) IconTextView friendActivityPhoneIconTextView;
@@ -59,6 +61,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   protected @BindColor(R.color.green) int green;
   protected @BindColor(R.color.gray) int gray;
 
+  protected @BindString(R.string.profile_settings_newsletter_games) String gamesNewsletterString;
   protected @BindString(R.string.profile_settings_newsletter_happening) String happeningNewsletterString;
   protected @BindString(R.string.mailto) String mailtoString;
   protected @BindString(R.string.Logged_Out) String loggedOutString;
@@ -100,27 +103,31 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::displayPreferences);
 
-    viewModel.outputs.sendNewsletterConfirmation()
+    viewModel.outputs.showOptInPrompt()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::displayNewsletterConfirmation);
+      .subscribe(this::showOptInPrompt);
 
     viewModel.errors.unableToSavePreferenceError()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> ViewUtils.showToast(this, unableToSaveString));
 
-    RxView.clicks(this.happeningNewsletterSwitch)
+    RxView.clicks(gamesNewsletterSwitch)
       .compose(bindToLifecycle())
-      .subscribe(__ -> viewModel.inputs.sendHappeningNewsletter(happeningNewsletterSwitch.isChecked(), happeningNewsletterString));
+      .subscribe(__ -> viewModel.inputs.sendGamesNewsletter(gamesNewsletterSwitch.isChecked()));
 
-    RxView.clicks(this.promoNewsletterSwitch)
+    RxView.clicks(happeningNewsletterSwitch)
       .compose(bindToLifecycle())
-      .subscribe(__ -> viewModel.inputs.sendPromoNewsletter(promoNewsletterSwitch.isChecked(), promoNewsletterString));
+      .subscribe(__ -> viewModel.inputs.sendHappeningNewsletter(happeningNewsletterSwitch.isChecked()));
 
-    RxView.clicks(this.weeklyNewsletterSwitch)
+    RxView.clicks(promoNewsletterSwitch)
       .compose(bindToLifecycle())
-      .subscribe(__ -> viewModel.inputs.sendWeeklyNewsletter(weeklyNewsletterSwitch.isChecked(), weeklyNewsletterString));
+      .subscribe(__ -> viewModel.inputs.sendPromoNewsletter(promoNewsletterSwitch.isChecked()));
+
+    RxView.clicks(weeklyNewsletterSwitch)
+      .compose(bindToLifecycle())
+      .subscribe(__ -> viewModel.inputs.sendWeeklyNewsletter(weeklyNewsletterSwitch.isChecked()));
 
     viewModel.outputs.showConfirmLogoutPrompt()
       .compose(bindToLifecycle())
@@ -136,58 +143,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
     viewModel.outputs.logout()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> this.logout());
-  }
-
-  /**
-   * Lazily creates a logout confirmation dialog and stores it in an instance variable.
-   */
-  private @NonNull AlertDialog lazyLogoutConfirmationDialog() {
-    if (logoutConfirmationDialog == null) {
-      logoutConfirmationDialog = new AlertDialog.Builder(this)
-        .setTitle(getString(R.string.profile_settings_logout_alert_title))
-        .setMessage(getString(R.string.profile_settings_logout_alert_message))
-        .setPositiveButton(getString(R.string.profile_settings_logout_alert_confirm_button), (__, ___) -> {
-          viewModel.inputs.confirmLogoutClicked();
-        })
-        .setNegativeButton(getString(R.string.profile_settings_logout_alert_cancel_button), (__, ___) -> {
-          viewModel.inputs.closeLogoutConfirmationClicked();
-        })
-        .create();
-    }
-    return logoutConfirmationDialog;
-  }
-
-  private void logout() {
-    logout.execute();
-    ApplicationUtils.startNewDiscoveryActivity(this);
-  }
-
-  protected void composeContactEmail(final @Nullable User user) {
-    final List<String> debugInfo = Arrays.asList(
-      user != null ? user.name() : loggedOutString,
-      release.variant(),
-      release.versionName(),
-      release.versionCode().toString(),
-      release.sha(),
-      Build.VERSION.RELEASE + " (SDK " + Integer.toString(Build.VERSION.SDK_INT) + ")",
-      Build.MANUFACTURER + " " + Build.MODEL,
-      Locale.getDefault().getLanguage()
-    );
-
-    final String body = new StringBuilder()
-      .append(supportEmailBodyString)
-      .append(TextUtils.join(" | ", debugInfo))
-      .toString();
-
-    final Intent intent = new Intent(Intent.ACTION_SENDTO)
-      .setData(Uri.parse(mailtoString))
-      .putExtra(Intent.EXTRA_SUBJECT, "[Android] " + supportEmailSubjectString)
-      .putExtra(Intent.EXTRA_TEXT, body)
-      .putExtra(Intent.EXTRA_EMAIL, new String[]{supportEmailString});
-    if (intent.resolveActivity(getPackageManager()) != null) {
-      startActivity(Intent.createChooser(intent, getString(R.string.support_email_chooser)));
-    }
+      .subscribe(__ -> logout());
   }
 
   @OnClick(R.id.contact)
@@ -203,33 +159,6 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   @OnClick(R.id.cookie_policy)
   public void cookiePolicyClick() {
     startHelpActivity(HelpActivity.CookiePolicy.class);
-  }
-
-  public void displayNewsletterConfirmation(final @NonNull String name) {
-    final String optInDialogMessageString = ksString.format(optInMessageString, "newsletter", name);
-    ViewUtils.showDialog(this, optInTitleString, optInDialogMessageString);
-  }
-
-  public void displayPreferences(final @NonNull User user) {
-    projectNotificationsCountTextView.setText(String.valueOf(intValueOrZero(user.backedProjectsCount())));
-
-    notifyMobileOfFriendActivity = isTrue(user.notifyMobileOfFriendActivity());
-    notifyOfFriendActivity = isTrue(user.notifyOfFriendActivity());
-    notifyMobileOfFollower = isTrue(user.notifyMobileOfFollower());
-    notifyOfFollower = isTrue(user.notifyOfFollower());
-    notifyMobileOfUpdates = isTrue(user.notifyMobileOfUpdates());
-    notifyOfUpdates = isTrue(user.notifyOfUpdates());
-
-    toggleIconColor(friendActivityMailIconTextView, false, notifyOfFriendActivity);
-    toggleIconColor(friendActivityPhoneIconTextView, true, notifyMobileOfFriendActivity);
-    toggleIconColor(newFollowersMailIconTextView, false, notifyOfFollower);
-    toggleIconColor(newFollowersPhoneIconTextView, true, notifyMobileOfFollower);
-    toggleIconColor(projectUpdatesMailIconTextView, false, notifyOfUpdates);
-    toggleIconColor(projectUpdatesPhoneIconTextView, true, notifyMobileOfUpdates);
-
-    SwitchCompatUtils.setCheckedWithoutAnimation(happeningNewsletterSwitch, isTrue(user.happeningNewsletter()));
-    SwitchCompatUtils.setCheckedWithoutAnimation(promoNewsletterSwitch, isTrue(user.promoNewsletter()));
-    SwitchCompatUtils.setCheckedWithoutAnimation(weeklyNewsletterSwitch, isTrue(user.weeklyNewsletter()));
   }
 
   @OnClick(R.id.faq)
@@ -303,7 +232,106 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
     ViewUtils.openStoreRating(this, getPackageName());
   }
 
-  public void toggleIconColor(final @NonNull TextView iconTextView, final boolean typeMobile, final boolean enabled) {
+  private void composeContactEmail(final @Nullable User user) {
+    final List<String> debugInfo = Arrays.asList(
+      user != null ? user.name() : loggedOutString,
+      release.variant(),
+      release.versionName(),
+      release.versionCode().toString(),
+      release.sha(),
+      Build.VERSION.RELEASE + " (SDK " + Integer.toString(Build.VERSION.SDK_INT) + ")",
+      Build.MANUFACTURER + " " + Build.MODEL,
+      Locale.getDefault().getLanguage()
+    );
+
+    final String body = new StringBuilder()
+      .append(supportEmailBodyString)
+      .append(TextUtils.join(" | ", debugInfo))
+      .toString();
+
+    final Intent intent = new Intent(Intent.ACTION_SENDTO)
+      .setData(Uri.parse(mailtoString))
+      .putExtra(Intent.EXTRA_SUBJECT, "[Android] " + supportEmailSubjectString)
+      .putExtra(Intent.EXTRA_TEXT, body)
+      .putExtra(Intent.EXTRA_EMAIL, new String[]{supportEmailString});
+    if (intent.resolveActivity(getPackageManager()) != null) {
+      startActivity(Intent.createChooser(intent, getString(R.string.support_email_chooser)));
+    }
+  }
+
+  private void displayPreferences(final @NonNull User user) {
+    projectNotificationsCountTextView.setText(String.valueOf(intValueOrZero(user.backedProjectsCount())));
+
+    notifyMobileOfFriendActivity = isTrue(user.notifyMobileOfFriendActivity());
+    notifyOfFriendActivity = isTrue(user.notifyOfFriendActivity());
+    notifyMobileOfFollower = isTrue(user.notifyMobileOfFollower());
+    notifyOfFollower = isTrue(user.notifyOfFollower());
+    notifyMobileOfUpdates = isTrue(user.notifyMobileOfUpdates());
+    notifyOfUpdates = isTrue(user.notifyOfUpdates());
+
+    toggleIconColor(friendActivityMailIconTextView, false, notifyOfFriendActivity);
+    toggleIconColor(friendActivityPhoneIconTextView, true, notifyMobileOfFriendActivity);
+    toggleIconColor(newFollowersMailIconTextView, false, notifyOfFollower);
+    toggleIconColor(newFollowersPhoneIconTextView, true, notifyMobileOfFollower);
+    toggleIconColor(projectUpdatesMailIconTextView, false, notifyOfUpdates);
+    toggleIconColor(projectUpdatesPhoneIconTextView, true, notifyMobileOfUpdates);
+
+    SwitchCompatUtils.setCheckedWithoutAnimation(gamesNewsletterSwitch, isTrue(user.gamesNewsletter()));
+    SwitchCompatUtils.setCheckedWithoutAnimation(happeningNewsletterSwitch, isTrue(user.happeningNewsletter()));
+    SwitchCompatUtils.setCheckedWithoutAnimation(promoNewsletterSwitch, isTrue(user.promoNewsletter()));
+    SwitchCompatUtils.setCheckedWithoutAnimation(weeklyNewsletterSwitch, isTrue(user.weeklyNewsletter()));
+  }
+
+  /**
+   * Lazily creates a logout confirmation dialog and stores it in an instance variable.
+   */
+  private @NonNull AlertDialog lazyLogoutConfirmationDialog() {
+    if (logoutConfirmationDialog == null) {
+      logoutConfirmationDialog = new AlertDialog.Builder(this)
+        .setTitle(getString(R.string.profile_settings_logout_alert_title))
+        .setMessage(getString(R.string.profile_settings_logout_alert_message))
+        .setPositiveButton(getString(R.string.profile_settings_logout_alert_confirm_button), (__, ___) -> {
+          viewModel.inputs.confirmLogoutClicked();
+        })
+        .setNegativeButton(getString(R.string.profile_settings_logout_alert_cancel_button), (__, ___) -> {
+          viewModel.inputs.closeLogoutConfirmationClicked();
+        })
+        .create();
+    }
+    return logoutConfirmationDialog;
+  }
+
+  private void logout() {
+    logout.execute();
+    ApplicationUtils.startNewDiscoveryActivity(this);
+  }
+
+  private @Nullable String newsletterString(final @NonNull Newsletter newsletter) {
+    switch (newsletter) {
+      case GAMES:
+        return gamesNewsletterString;
+      case HAPPENING:
+        return happeningNewsletterString;
+      case PROMO:
+        return promoNewsletterString;
+      case WEEKLY:
+        return weeklyNewsletterString;
+      default:
+        return null;
+    }
+  }
+
+  private void showOptInPrompt(final @NonNull Newsletter newsletter) {
+    final String string = newsletterString(newsletter);
+    if (string == null) {
+      return;
+    }
+
+    final String optInDialogMessageString = ksString.format(optInMessageString, "newsletter", string);
+    ViewUtils.showDialog(this, optInTitleString, optInDialogMessageString);
+  }
+
+  private void toggleIconColor(final @NonNull TextView iconTextView, final boolean typeMobile, final boolean enabled) {
     final int color = enabled ? green : gray;
     iconTextView.setTextColor(color);
 

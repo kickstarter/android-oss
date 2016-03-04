@@ -105,7 +105,6 @@
           android:orientation="vertical"
           android:layout_marginRight="@dimen/grid_3"
           android:layout_marginEnd="@dimen/grid_3"
-          android:layout_below="@id/pledge_minimum"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content">
 
@@ -113,7 +112,6 @@
             android:id="@+id/reward_backers_count"
             android:text="# backers"
             style="@style/BodyPrimaryMedium"
-            android:layout_centerVertical="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 

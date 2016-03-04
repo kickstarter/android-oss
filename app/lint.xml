@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <lint>
+  <issue id="AllowBackup">
+    <ignore path="src/internal/AndroidManifest.xml" />
+  </issue>
   <issue id="InvalidPackage" severity="ignore" />
   <issue id="MissingTranslation" severity="ignore" />
   <issue id="Typos" severity="ignore" />

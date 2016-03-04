@@ -4,23 +4,23 @@
   android:drawable="@drawable/woohoo_vector" >
   <target
     android:name="square_1"
-    android:animation="@anim/woohoo_square_1" />
+    android:animation="@animator/woohoo_square_1" />
   <target
     android:name="square_2"
-    android:animation="@anim/woohoo_square_2" />
+    android:animation="@animator/woohoo_square_2" />
   <target
     android:name="square_3"
-    android:animation="@anim/woohoo_square_3" />
+    android:animation="@animator/woohoo_square_3" />
   <target
     android:name="square_4"
-    android:animation="@anim/woohoo_square_4" />
+    android:animation="@animator/woohoo_square_4" />
   <target
     android:name="square_5"
-    android:animation="@anim/woohoo_square_5" />
+    android:animation="@animator/woohoo_square_5" />
   <target
     android:name="square_6"
-    android:animation="@anim/woohoo_square_6" />
+    android:animation="@animator/woohoo_square_6" />
   <target
     android:name="square_7"
-    android:animation="@anim/woohoo_square_7" />
+    android:animation="@animator/woohoo_square_7" />
 </animated-vector>

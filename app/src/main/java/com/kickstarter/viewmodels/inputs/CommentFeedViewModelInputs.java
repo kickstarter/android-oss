@@ -12,6 +12,11 @@ public interface CommentFeedViewModelInputs {
   void commentButtonClicked();
 
   /**
+   * Call when the comment dialog should be restored on rotation.
+   */
+  void dismissCommentDialog();
+
+  /**
    * Invoke when pagination should happen.
    */
   void nextPage();

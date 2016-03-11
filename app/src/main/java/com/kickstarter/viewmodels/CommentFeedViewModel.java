@@ -4,26 +4,27 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.libs.utils.CommentUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
-import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.CommentFeedActivity;
+import com.kickstarter.ui.adapters.data.CommentFeedData;
 import com.kickstarter.viewmodels.errors.CommentFeedViewModelErrors;
 import com.kickstarter.viewmodels.inputs.CommentFeedViewModelInputs;
 import com.kickstarter.viewmodels.outputs.CommentFeedViewModelOutputs;
 
-import java.util.Arrays;
 import java.util.List;
 
 import rx.Observable;
@@ -31,9 +32,15 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> implements CommentFeedViewModelInputs, CommentFeedViewModelOutputs, CommentFeedViewModelErrors {
+public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> implements CommentFeedViewModelInputs,
+  CommentFeedViewModelOutputs, CommentFeedViewModelErrors {
   // INPUTS
   private final PublishSubject<String> commentBody = PublishSubject.create();
+  private final PublishSubject<Void> dismissCommentDialog = PublishSubject.create();
+  @Override
+  public void dismissCommentDialog() {
+    dismissCommentDialog.onNext(null);
+  }
   private final PublishSubject<Void> nextPage = PublishSubject.create();
   public void nextPage() {
     nextPage.onNext(null);
@@ -49,16 +56,32 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   }
 
   // OUTPUTS
-  private final PublishSubject<Void> commentPosted = PublishSubject.create();
+  private final BehaviorSubject<Void> commentPosted = BehaviorSubject.create();
+  @Override
   public Observable<Void> commentPosted() {
     return commentPosted.asObservable();
   }
-  private final PublishSubject<Boolean> isFetchingComments = PublishSubject.create();
+  private final BehaviorSubject<CommentFeedData> commentFeedData = BehaviorSubject.create();
+  @Override
+  public Observable<CommentFeedData> commentFeedData() {
+    return commentFeedData;
+  }
+  private final BehaviorSubject<Boolean> enablePostButton = BehaviorSubject.create();
+  @Override
+  public Observable<Boolean> enablePostButton() {
+    return enablePostButton;
+  }
+  private final BehaviorSubject<String> initialCommentBody = BehaviorSubject.create();
+  @Override
+  public Observable<String> initialCommentBody() {
+    return initialCommentBody;
+  }
+  private final BehaviorSubject<Boolean> isFetchingComments = BehaviorSubject.create();
   public Observable<Boolean> isFetchingComments() {
     return isFetchingComments;
   }
-  private final PublishSubject<Project> showCommentDialog = PublishSubject.create();
-  public Observable<Project> showCommentDialog() {
+  private final BehaviorSubject<Pair<Project, Boolean>> showCommentDialog = BehaviorSubject.create();
+  public Observable<Pair<Project, Boolean>> showCommentDialog() {
     return showCommentDialog;
   }
   private final BehaviorSubject<Boolean> showCommentButton = BehaviorSubject.create();
@@ -135,30 +158,38 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .compose(Transformers.takeWhen(loginSuccess))
       .filter(Project::isBacking)
       .take(1)
+      .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
-      .subscribe(showCommentDialog);
+      .subscribe(p -> showCommentDialog.onNext(Pair.create(p, true)));
 
     project
       .compose(Transformers.takeWhen(commentButtonClicked))
       .filter(Project::isBacking)
-      .compose(bindToLifecycle())
-      .subscribe(showCommentDialog);
-
-    Observable.combineLatest(
-        currentUser.observable(),
-        view(),
-        comments,
-        project,
-        Arrays::asList)
       .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
-      .subscribe(uvcp -> {
-        final User u = (User) uvcp.get(0);
-        final CommentFeedActivity view = (CommentFeedActivity) uvcp.get(1);
-        final List<Comment> cs = (List<Comment>) uvcp.get(2);
-        final Project p = (Project) uvcp.get(3);
-        view.show(p, cs, u);
-      });
+      .subscribe(p -> showCommentDialog.onNext(Pair.create(p, true)));
+
+    project
+      .compose(Transformers.takeWhen(dismissCommentDialog))
+      .observeOn(AndroidSchedulers.mainThread())
+      .compose(bindToLifecycle())
+      .subscribe(p -> showCommentDialog.onNext(Pair.create(p, false)));
+
+    // Seed initial comment body with user input, if any.
+    commentBody
+      .observeOn(AndroidSchedulers.mainThread())
+      .compose(bindToLifecycle())
+      .subscribe(initialCommentBody::onNext);
+
+    Observable.combineLatest(
+      project,
+      comments,
+      currentUser.observable(),
+      CommentUtils::deriveCommentFeedData
+    )
+      .observeOn(AndroidSchedulers.mainThread())
+      .compose(bindToLifecycle())
+      .subscribe(commentFeedData::onNext);
 
     project
       .map(Project::isBacking)
@@ -171,16 +202,15 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .compose(bindToLifecycle())
       .subscribe(__ -> refresh.onNext(null));
 
-    view()
-      .compose(Transformers.combineLatestPair(commentHasBody))
+    commentHasBody
       .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
-      .subscribe(ve -> ve.first.enablePostButton(ve.second));
+      .subscribe(enablePostButton::onNext);
 
-    view()
-        .compose(Transformers.takePairWhen(commentIsPosting))
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(vp -> vp.first.disablePostButton(vp.second));
+    commentIsPosting
+      .observeOn(AndroidSchedulers.mainThread())
+      .compose(bindToLifecycle())
+      .subscribe(b -> enablePostButton.onNext(!b));
 
     // Koala tracking
     initialProject

@@ -8,14 +8,14 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Pair;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding.widget.RxTextView;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
@@ -24,17 +24,13 @@ import com.kickstarter.libs.SwipeRefresher;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
-import com.kickstarter.models.User;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.CommentFeedAdapter;
 import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.ui.viewholders.EmptyCommentFeedViewHolder;
 import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
 import com.kickstarter.viewmodels.CommentFeedViewModel;
-
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.BindString;
@@ -50,13 +46,12 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
   private CommentFeedAdapter adapter;
   private RecyclerViewPaginator recyclerViewPaginator;
   private SwipeRefresher swipeRefresher;
-  @Nullable private AlertDialog commentDialog;
+  private @Nullable AlertDialog commentDialog;
 
-  public @Bind(R.id.comment_button) TextView commentButtonTextView;
+  protected @Bind(R.id.comment_button) TextView commentButtonTextView;
   protected @Bind(R.id.comment_feed_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
-  public @Bind(R.id.comment_feed_recycler_view) RecyclerView recyclerView;
-  @Nullable @Bind(R.id.comment_body) EditText commentBodyEditText;
-  public @Nullable @Bind(R.id.post_button) TextView postCommentButton;
+  protected @Bind(R.id.comment_feed_recycler_view) RecyclerView recyclerView;
+  protected @Nullable @Bind(R.id.post_button) TextView postCommentButton;
 
   @BindString(R.string.social_error_could_not_post_try_again) String postCommentErrorString;
   @BindString(R.string.project_comments_posted) String commentPostedString;
@@ -79,6 +74,16 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(ViewUtils.showToast(this));
 
+    viewModel.outputs.commentFeedData()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(adapter::takeProjectComments);
+
+    viewModel.outputs.enablePostButton()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::enablePostButton);
+
     viewModel.outputs.showCommentButton()
       .map(show -> show ? View.VISIBLE : View.GONE)
       .compose(bindToLifecycle())
@@ -86,9 +91,10 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
       .subscribe(commentButtonTextView::setVisibility);
 
     viewModel.outputs.showCommentDialog()
+      .filter(projectAndShow -> projectAndShow.second)
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::showCommentDialog);
+      .subscribe(projectAndShow -> showCommentDialog(projectAndShow.first));
 
     viewModel.outputs.commentPosted()
       .compose(bindToLifecycle())
@@ -99,13 +105,14 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
   @Override
   protected void onDestroy() {
     super.onDestroy();
+
+    if (commentDialog != null) {
+      viewModel.inputs.dismissCommentDialog();
+      dismissCommentDialog();
+    }
+
     recyclerViewPaginator.stop();
     recyclerView.setAdapter(null);
-  }
-
-  public void show(final @NonNull Project project, final @NonNull List<Comment> comments,
-    final @Nullable User user) {
-    adapter.takeProjectComments(project, comments, user);
   }
 
   @Nullable
@@ -132,29 +139,36 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
     commentDialog.show();
     commentDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
-    /* Toolbar actions */
+    /* Toolbar UI actions */
     final TextView projectNameTextView = ButterKnife.findById(commentDialog, R.id.comment_project_name);
     final TextView cancelButtonTextView = ButterKnife.findById(commentDialog, R.id.cancel_button);
-    commentBodyEditText = ButterKnife.findById(commentDialog, R.id.comment_body);
+    final EditText commentBodyEditText = ButterKnife.findById(commentDialog, R.id.comment_body);
     postCommentButton = ButterKnife.findById(commentDialog, R.id.post_button);
 
     projectNameTextView.setText(project.name());
-    cancelButtonTextView.setOnClickListener((final @NonNull View v) -> dismissCommentDialog());
-    if (commentBodyEditText != null) {
-      commentBodyEditText.addTextChangedListener(new TextWatcher() {
-        public void beforeTextChanged(final @NonNull CharSequence s, final int start, final int count, final int after) {}
-        public void onTextChanged(final @NonNull CharSequence s, final int start, final int before, final int count) {}
-        public void afterTextChanged(final @NonNull Editable s) {
-          viewModel.inputs.commentBody(s.toString());
-        }
-      });
-    }
 
-    if (postCommentButton != null && commentBodyEditText != null) {
-      postCommentButton.setOnClickListener((final @NonNull View v) -> {
-        viewModel.postClick(commentBodyEditText.getText().toString());
+    RxView.clicks(cancelButtonTextView)
+      .observeOn(AndroidSchedulers.mainThread())
+      .compose(bindToLifecycle())
+      .subscribe(__ -> {
+        viewModel.inputs.dismissCommentDialog();
+        dismissCommentDialog();
       });
-    }
+
+    viewModel.outputs.initialCommentBody()
+      .take(1)
+      .observeOn(AndroidSchedulers.mainThread())
+      .compose(bindToLifecycle())
+      .subscribe(commentBodyEditText::append);
+
+    RxTextView.textChanges(commentBodyEditText)
+      .compose(bindToLifecycle())
+      .subscribe(s -> viewModel.inputs.commentBody(s.toString()));
+
+    RxView.clicks(postCommentButton)
+      .observeOn(AndroidSchedulers.mainThread())
+      .compose(bindToLifecycle())
+      .subscribe(v -> viewModel.postClick(commentBodyEditText.getText().toString()));
   }
 
   public void dismissCommentDialog() {
@@ -167,12 +181,6 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
   public void enablePostButton(final boolean enabled) {
     if (postCommentButton != null) {
       postCommentButton.setEnabled(enabled);
-    }
-  }
-
-  public void disablePostButton(final boolean disabled) {
-    if (postCommentButton != null) {
-      postCommentButton.setEnabled(!disabled);
     }
   }
 

@@ -1,6 +1,5 @@
 package com.kickstarter.ui.adapters.data;
 
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -13,7 +12,7 @@ import java.util.List;
 import auto.parcel.AutoParcel;
 
 @AutoParcel
-public abstract class CommentFeedData implements Parcelable {
+public abstract class CommentFeedData {
   public abstract @NonNull Project project();
   public abstract @Nullable List<Comment> comments();
   public abstract @Nullable User user();

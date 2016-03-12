@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -53,8 +54,8 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
   protected @Bind(R.id.comment_feed_recycler_view) RecyclerView recyclerView;
   protected @Nullable @Bind(R.id.post_button) TextView postCommentButton;
 
-  @BindString(R.string.social_error_could_not_post_try_again) String postCommentErrorString;
-  @BindString(R.string.project_comments_posted) String commentPostedString;
+  protected @BindString(R.string.social_error_could_not_post_try_again) String postCommentErrorString;
+  protected @BindString(R.string.project_comments_posted) String commentPostedString;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -107,7 +108,6 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
     super.onDestroy();
 
     if (commentDialog != null) {
-      viewModel.inputs.dismissCommentDialog();
       dismissCommentDialog();
     }
 
@@ -147,14 +147,6 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
 
     projectNameTextView.setText(project.name());
 
-    RxView.clicks(cancelButtonTextView)
-      .observeOn(AndroidSchedulers.mainThread())
-      .compose(bindToLifecycle())
-      .subscribe(__ -> {
-        viewModel.inputs.dismissCommentDialog();
-        dismissCommentDialog();
-      });
-
     viewModel.outputs.initialCommentBody()
       .take(1)
       .observeOn(AndroidSchedulers.mainThread())
@@ -169,6 +161,20 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
       .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
       .subscribe(v -> viewModel.postClick(commentBodyEditText.getText().toString()));
+
+    RxView.clicks(cancelButtonTextView)
+      .observeOn(AndroidSchedulers.mainThread())
+      .compose(bindToLifecycle())
+      .subscribe(__ -> {
+        viewModel.inputs.dismissCommentDialog();
+        dismissCommentDialog();
+      });
+
+    // Handle cancel-click region outside of dialog modal.
+    commentDialog.setOnCancelListener((final @NonNull DialogInterface dialogInterface) -> {
+      viewModel.inputs.dismissCommentDialog();
+      dismissCommentDialog();
+    });
   }
 
   public void dismissCommentDialog() {

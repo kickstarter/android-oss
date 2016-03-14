@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 
 import com.kickstarter.libs.utils.KoalaUtils;
 import com.kickstarter.models.Activity;
-import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
@@ -87,7 +86,7 @@ public final class Koala {
   }
 
   // COMMENTING
-  public void trackProjectCommentCreate(final @NonNull Project project, final @NonNull Comment comment) {
+  public void trackProjectCommentCreate(final @NonNull Project project) {
     client.track("Project Comment Create", KoalaUtils.projectProperties(project));
   }
 

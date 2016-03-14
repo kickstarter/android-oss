@@ -52,7 +52,6 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
   private SwipeRefresher swipeRefresher;
 
   private @NonNull PublishSubject<AlertDialog> alertDialog = PublishSubject.create();
-  private @NonNull PublishSubject<Void> cancelAlertDialogClick = PublishSubject.create();
 
   protected @Bind(R.id.comment_button) TextView commentButtonTextView;
   protected @Bind(R.id.comment_feed_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
@@ -160,12 +159,6 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
       // .compose(bindToLifecycle())
       .take(1)
       .subscribe(this::dismissCommentDialog);
-
-    cancelAlertDialogClick
-      .compose(Transformers.combineLatestPair(alertDialog))
-      .map(ad -> ad.second)
-      .compose(bindToLifecycle())
-      .subscribe(this::dismissCommentDialog);
   }
 
   @Override
@@ -193,7 +186,6 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
     viewModel.inputs.commentButtonClicked();
   }
 
-  // fixme refactor with Rx
   public void showCommentDialog(final @NonNull Project project) {
     final AlertDialog commentDialog = new AlertDialog.Builder(this)
       .setView(R.layout.comment_dialog)

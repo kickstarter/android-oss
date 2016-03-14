@@ -35,6 +35,10 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   CommentFeedViewModelOutputs, CommentFeedViewModelErrors {
   // INPUTS
   private final PublishSubject<String> commentBody = PublishSubject.create();
+  @Override
+  public void commentBody(final @NonNull String string) {
+    commentBody.onNext(string);
+  }
   private final PublishSubject<Void> dismissCommentDialog = PublishSubject.create();
   @Override
   public void dismissCommentDialog() {
@@ -109,11 +113,6 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   public final CommentFeedViewModelInputs inputs = this;
   public final CommentFeedViewModelOutputs outputs = this;
   public final CommentFeedViewModelErrors errors = this;
-
-  @Override
-  public void commentBody(final @NonNull String string) {
-    commentBody.onNext(string);
-  }
 
   public CommentFeedViewModel(final @NonNull Environment environment) {
     super(environment);
@@ -208,9 +207,10 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .subscribe(enablePostButton::onNext);
 
     commentIsPosting
+      .map(b -> !b)
       .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
-      .subscribe(b -> enablePostButton.onNext(!b));
+      .subscribe(enablePostButton::onNext);
 
     // Koala tracking
     initialProject

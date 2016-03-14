@@ -42,7 +42,7 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
     // Comment button should be shown.
     showCommentButtonTest.assertValue(true);
 
-    // Click comment button to show comment dialog.
+    // Click comment button. Comment dialog should be shown.
     vm.inputs.commentButtonClicked();
     showCommentDialogTest.assertValue(Pair.create(project, true));
 
@@ -52,10 +52,11 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
     vm.inputs.commentBody("Some comment");
     postButtonIsEnabledTest.assertValues(false, true);
 
-    // Post comment. Dialog should be dismissed
+    // Post comment. Dialog should be dismissed.
     vm.inputs.postCommentClicked();
     showCommentDialogTest.assertValues(Pair.create(project, true), Pair.create(project, false));
 
+    // Comment should be posted.
     commentPostedTest.assertValueCount(1);
 
     // A koala event for commenting should be tracked.
@@ -73,7 +74,7 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()));
     koalaTest.assertValues("Project Comment View");
 
-    // Comment button should not be shown if non-backing.
+    // Comment button should not be shown if not backing.
     showCommentButtonTest.assertValue(false);
   }
 
@@ -149,21 +150,6 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testCommentFeedViewModel_postButtonEnabled() {
-
-  }
-
-  @Test
-  public void testCommentFeedViewModel_postButtonDisabled() {
-
-  }
-
-  @Test
-  public void testCommentFeedViewModel_refresh() {
-
-  }
-
-  @Test
   public void testCommentFeedViewModel_showCommentButton() {
     final CommentFeedViewModel vm = new CommentFeedViewModel(environment());
 
@@ -189,6 +175,7 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
 
     // Start the view model with a backed project.
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+    koalaTest.assertValues("Project Comment View");
 
     showCommentDialogTest.assertNoValues();
 
@@ -197,7 +184,5 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
 
     // The comment dialog should be shown.
     showCommentDialogTest.assertValue(Pair.create(project, true));
-
-    koalaTest.assertValues("Project Comment View");
   }
 }

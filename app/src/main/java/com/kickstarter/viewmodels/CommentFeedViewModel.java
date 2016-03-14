@@ -44,6 +44,11 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   public void dismissCommentDialog() {
     dismissCommentDialog.onNext(null);
   }
+  private final PublishSubject<Void> loginSuccess = PublishSubject.create();
+  @Override
+  public void loginSuccess() {
+    loginSuccess.onNext(null);
+  }
   private final PublishSubject<Void> nextPage = PublishSubject.create();
   public void nextPage() {
     nextPage.onNext(null);
@@ -104,7 +109,6 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .map(ErrorEnvelope::errorMessage);
   }
 
-  private final PublishSubject<Void> loginSuccess = PublishSubject.create();
   private final PublishSubject<Boolean> commentIsPosting = PublishSubject.create();
 
   private final ApiClientType client;
@@ -248,9 +252,5 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
         commentIsPosting.onNext(false);
         commentPosted.onNext(null);
       });
-  }
-
-  public void takeLoginSuccess() {
-    loginSuccess.onNext(null);
   }
 }

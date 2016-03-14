@@ -16,6 +16,9 @@ public interface CommentFeedViewModelInputs {
    */
   void dismissCommentDialog();
 
+
+  void loginSuccess();
+
   /**
    * Invoke when pagination should happen.
    */

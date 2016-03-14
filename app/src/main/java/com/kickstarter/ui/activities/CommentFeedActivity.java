@@ -230,7 +230,7 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
     if (resultCode != RESULT_OK) {
       return;
     }
-    viewModel.takeLoginSuccess();
+    viewModel.inputs.loginSuccess();
   }
 
   protected @Nullable Pair<Integer, Integer> exitTransition() {

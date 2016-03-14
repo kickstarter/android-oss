@@ -182,7 +182,6 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       currentUser.observable(),
       CommentFeedData::deriveData
     )
-      .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
       .subscribe(commentFeedData::onNext);
 
@@ -198,13 +197,11 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .subscribe(__ -> refresh.onNext(null));
 
     commentHasBody
-      .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
       .subscribe(postButtonIsEnabled::onNext);
 
     commentIsPosting
       .map(b -> !b)
-      .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
       .subscribe(postButtonIsEnabled::onNext);
 

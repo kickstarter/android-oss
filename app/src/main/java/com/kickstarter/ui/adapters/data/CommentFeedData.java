@@ -30,4 +30,14 @@ public abstract class CommentFeedData {
   }
 
   public abstract Builder toBuilder();
+
+  public static @NonNull CommentFeedData deriveData(final @NonNull Project project,
+    final @Nullable List<Comment> comments, final @Nullable User user) {
+
+    return CommentFeedData.builder()
+      .project(project)
+      .comments(comments)
+      .user(user)
+      .build();
+  }
 }

@@ -11,7 +11,6 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.CommentUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
@@ -186,7 +185,7 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       project,
       comments,
       currentUser.observable(),
-      CommentUtils::deriveCommentFeedData
+      CommentFeedData::deriveData
     )
       .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())

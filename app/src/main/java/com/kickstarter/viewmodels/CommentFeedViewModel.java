@@ -212,11 +212,13 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .compose(bindToLifecycle())
       .subscribe(enablePostButton::onNext);
 
-    // Koala tracking
     initialProject
-      .compose(Transformers.takePairWhen(postedComment))
+      .compose(Transformers.takeWhen(commentPosted))
       .compose(bindToLifecycle())
-      .subscribe(cp -> koala.trackProjectCommentCreate(cp.first, cp.second));
+      .subscribe(p -> {
+        koala.trackProjectCommentCreate(p);
+        dismissCommentDialog.onNext(null);
+      });
 
     initialProject.take(1)
       .compose(bindToLifecycle())

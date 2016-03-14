@@ -143,13 +143,6 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::dismissCommentDialog);
 
-    viewModel.outputs.commentPosted()
-      .compose(Transformers.combineLatestPair(alertDialog))
-      .map(ad -> ad.second)
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::dismissCommentDialog);
-
     lifecycle()
       .compose(Transformers.combineLatestPair(alertDialog))
       .filter(ad -> ad.first == ActivityEvent.DESTROY)

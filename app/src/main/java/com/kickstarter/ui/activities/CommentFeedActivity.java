@@ -12,7 +12,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -23,6 +22,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.SwipeRefresher;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
@@ -32,6 +32,7 @@ import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.ui.viewholders.EmptyCommentFeedViewHolder;
 import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
 import com.kickstarter.viewmodels.CommentFeedViewModel;
+import com.trello.rxlifecycle.ActivityEvent;
 
 import butterknife.Bind;
 import butterknife.BindString;
@@ -39,7 +40,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.utils.BooleanUtils.isFalse;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresViewModel(CommentFeedViewModel.class)
@@ -47,12 +50,13 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
   private CommentFeedAdapter adapter;
   private RecyclerViewPaginator recyclerViewPaginator;
   private SwipeRefresher swipeRefresher;
-  private @Nullable AlertDialog commentDialog;
+
+  private @NonNull PublishSubject<AlertDialog> alertDialog = PublishSubject.create();
+  private @NonNull PublishSubject<Void> cancelAlertDialogClick = PublishSubject.create();
 
   protected @Bind(R.id.comment_button) TextView commentButtonTextView;
   protected @Bind(R.id.comment_feed_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
   protected @Bind(R.id.comment_feed_recycler_view) RecyclerView recyclerView;
-  protected @Nullable @Bind(R.id.post_button) TextView postCommentButton;
 
   protected @BindString(R.string.social_error_could_not_post_try_again) String postCommentErrorString;
   protected @BindString(R.string.project_comments_posted) String commentPostedString;
@@ -70,6 +74,38 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
     recyclerViewPaginator = new RecyclerViewPaginator(recyclerView, viewModel.inputs::nextPage);
     swipeRefresher = new SwipeRefresher(this, swipeRefreshLayout, viewModel.inputs::refresh, viewModel.outputs::isFetchingComments);
 
+    final Observable<TextView> commentBodyEditText = alertDialog
+      .map(a -> ButterKnife.findById(a, R.id.comment_body));
+
+    final Observable<TextView> postCommentButton = alertDialog
+      .map(a -> ButterKnife.findById(a, R.id.post_button));
+
+    final Observable<TextView> cancelButton = alertDialog
+      .map(a -> ButterKnife.findById(a, R.id.cancel_button));
+
+    cancelButton
+      .switchMap(RxView::clicks)
+      .compose(bindToLifecycle())
+      .subscribe(__ -> viewModel.inputs.dismissCommentDialog());
+
+    postCommentButton
+      .switchMap(RxView::clicks)
+      .compose(bindToLifecycle())
+      .subscribe(__ -> viewModel.inputs.postCommentClicked());
+
+    commentBodyEditText
+      .switchMap(RxTextView::textChanges)
+      .map(CharSequence::toString)
+      .compose(bindToLifecycle())
+      .subscribe(viewModel.inputs::commentBody);
+
+    viewModel.outputs.initialCommentBody()
+      .take(1)
+      .compose(Transformers.combineLatestPair(commentBodyEditText))
+      .observeOn(AndroidSchedulers.mainThread())
+      .compose(bindToLifecycle())
+      .subscribe(ce -> ce.second.append(ce.first));
+
     toastMessages()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
@@ -78,12 +114,13 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
     viewModel.outputs.commentFeedData()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(adapter::takeProjectComments);
+      .subscribe(adapter::takeData);
 
-    viewModel.outputs.enablePostButton()
+    viewModel.outputs.postButtonIsEnabled()
+      .compose(Transformers.combineLatestPair(postCommentButton))
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::enablePostButton);
+      .subscribe(bb -> setPostButtonEnabled(bb.second, bb.first));
 
     viewModel.outputs.showCommentButton()
       .map(show -> show ? View.VISIBLE : View.GONE)
@@ -93,23 +130,47 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
 
     viewModel.outputs.showCommentDialog()
       .filter(projectAndShow -> projectAndShow.second)
+      .map(projectAndShow -> projectAndShow.first)
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(projectAndShow -> showCommentDialog(projectAndShow.first));
+      .subscribe(this::showCommentDialog);
+
+    viewModel.outputs.showCommentDialog()
+      .map(projectAndShow -> projectAndShow.second)
+      .compose(Transformers.combineLatestPair(alertDialog))
+      .filter(bd -> isFalse(bd.first))
+      .map(bd -> bd.second)
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::dismissCommentDialog);
 
     viewModel.outputs.commentPosted()
+      .compose(Transformers.combineLatestPair(alertDialog))
+      .map(ad -> ad.second)
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> dismissCommentDialog());
+      .subscribe(this::dismissCommentDialog);
+
+    lifecycle()
+      .compose(Transformers.combineLatestPair(alertDialog))
+      .filter(ad -> ad.first == ActivityEvent.DESTROY)
+      .map(ad -> ad.second)
+      .observeOn(AndroidSchedulers.mainThread())
+      // NB: We dont want to bind to lifecycle because we want the destroy event.
+      // .compose(bindToLifecycle())
+      .take(1)
+      .subscribe(this::dismissCommentDialog);
+
+    cancelAlertDialogClick
+      .compose(Transformers.combineLatestPair(alertDialog))
+      .map(ad -> ad.second)
+      .compose(bindToLifecycle())
+      .subscribe(this::dismissCommentDialog);
   }
 
   @Override
   protected void onDestroy() {
     super.onDestroy();
-
-    if (commentDialog != null) {
-      dismissCommentDialog();
-    }
 
     recyclerViewPaginator.stop();
     recyclerView.setAdapter(null);
@@ -132,8 +193,9 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
     viewModel.inputs.commentButtonClicked();
   }
 
+  // fixme refactor with Rx
   public void showCommentDialog(final @NonNull Project project) {
-    commentDialog = new AlertDialog.Builder(this)
+    final AlertDialog commentDialog = new AlertDialog.Builder(this)
       .setView(R.layout.comment_dialog)
       .create();
     commentDialog.show();
@@ -141,50 +203,23 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
 
     /* Toolbar UI actions */
     final TextView projectNameTextView = ButterKnife.findById(commentDialog, R.id.comment_project_name);
-    final TextView cancelButtonTextView = ButterKnife.findById(commentDialog, R.id.cancel_button);
-    final EditText commentBodyEditText = ButterKnife.findById(commentDialog, R.id.comment_body);
-    postCommentButton = ButterKnife.findById(commentDialog, R.id.post_button);
-
     projectNameTextView.setText(project.name());
-
-    viewModel.outputs.initialCommentBody()
-      .take(1)
-      .observeOn(AndroidSchedulers.mainThread())
-      .compose(bindToLifecycle())
-      .subscribe(commentBodyEditText::append);
-
-    RxTextView.textChanges(commentBodyEditText)
-      .compose(bindToLifecycle())
-      .subscribe(s -> viewModel.inputs.commentBody(s.toString()));
-
-    RxView.clicks(postCommentButton)
-      .observeOn(AndroidSchedulers.mainThread())
-      .compose(bindToLifecycle())
-      .subscribe(v -> viewModel.postClick(commentBodyEditText.getText().toString()));
-
-    RxView.clicks(cancelButtonTextView)
-      .observeOn(AndroidSchedulers.mainThread())
-      .compose(bindToLifecycle())
-      .subscribe(__ -> {
-        viewModel.inputs.dismissCommentDialog();
-        dismissCommentDialog();
-      });
 
     // Handle cancel-click region outside of dialog modal.
     commentDialog.setOnCancelListener((final @NonNull DialogInterface dialogInterface) -> {
       viewModel.inputs.dismissCommentDialog();
-      dismissCommentDialog();
     });
+
+    alertDialog.onNext(commentDialog);
   }
 
-  public void dismissCommentDialog() {
-    if (commentDialog != null) {
-      commentDialog.dismiss();
-      commentDialog = null;
+  public void dismissCommentDialog(final @Nullable AlertDialog dialog) {
+    if (dialog != null) {
+      dialog.dismiss();
     }
   }
 
-  public void enablePostButton(final boolean enabled) {
+  public void setPostButtonEnabled(final @Nullable TextView postCommentButton, final boolean enabled) {
     if (postCommentButton != null) {
       postCommentButton.setEnabled(enabled);
     }

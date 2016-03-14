@@ -45,6 +45,11 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   public void nextPage() {
     nextPage.onNext(null);
   }
+  private final PublishSubject<Void> postCommentClicked = PublishSubject.create();
+  @Override
+  public void postCommentClicked() {
+    postCommentClicked.onNext(null);
+  }
   private final BehaviorSubject<Void> refresh = BehaviorSubject.create((Void) null);
   public void refresh() {
     refresh.onNext(null);
@@ -68,7 +73,7 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   }
   private final BehaviorSubject<Boolean> enablePostButton = BehaviorSubject.create();
   @Override
-  public Observable<Boolean> enablePostButton() {
+  public Observable<Boolean> postButtonIsEnabled() {
     return enablePostButton;
   }
   private final BehaviorSubject<String> initialCommentBody = BehaviorSubject.create();
@@ -97,7 +102,6 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   }
 
   private final PublishSubject<Void> loginSuccess = PublishSubject.create();
-  private final PublishSubject<String> bodyOnPostClick = PublishSubject.create();
   private final PublishSubject<Boolean> commentIsPosting = PublishSubject.create();
 
   private final ApiClientType client;
@@ -150,7 +154,8 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .map(body -> body.length() > 0);
 
     final Observable<Comment> postedComment = project
-      .compose(Transformers.takePairWhen(bodyOnPostClick))
+      .compose(Transformers.combineLatestPair(commentBody))
+      .compose(Transformers.takeWhen(postCommentClicked))
       .switchMap(pb -> postComment(pb.first, pb.second))
       .share();
 
@@ -158,26 +163,22 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .compose(Transformers.takeWhen(loginSuccess))
       .filter(Project::isBacking)
       .take(1)
-      .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
       .subscribe(p -> showCommentDialog.onNext(Pair.create(p, true)));
 
     project
       .compose(Transformers.takeWhen(commentButtonClicked))
       .filter(Project::isBacking)
-      .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
       .subscribe(p -> showCommentDialog.onNext(Pair.create(p, true)));
 
     project
       .compose(Transformers.takeWhen(dismissCommentDialog))
-      .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
       .subscribe(p -> showCommentDialog.onNext(Pair.create(p, false)));
 
     // Seed initial comment body with user input, if any.
     commentBody
-      .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
       .subscribe(initialCommentBody::onNext);
 
@@ -246,10 +247,6 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
         commentIsPosting.onNext(false);
         commentPosted.onNext(null);
       });
-  }
-
-  public void postClick(final @NonNull String body) {
-    bodyOnPostClick.onNext(body);
   }
 
   public void takeLoginSuccess() {

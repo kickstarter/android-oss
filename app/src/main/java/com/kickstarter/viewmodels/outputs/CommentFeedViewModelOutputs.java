@@ -21,13 +21,16 @@ public interface CommentFeedViewModelOutputs {
   /**
    * Emits a boolean indicating when the post button should be enabled.
    */
-  Observable<Boolean> enablePostButton();
+  Observable<Boolean> postButtonIsEnabled();
 
   /**
    * Emits a boolean indicating whether comments are being fetched from the API.
    */
   Observable<Boolean> isFetchingComments();
 
+  /**
+   * Emits the string that should be displayed in the comment dialog when it is shown.
+   */
   Observable<String> initialCommentBody();
 
   /**
@@ -36,7 +39,7 @@ public interface CommentFeedViewModelOutputs {
   Observable<Boolean> showCommentButton();
 
   /**
-   * Emits the project when the comment dialog should be displayed.
+   * Emits a project and boolean to determine when the comment dialog should be displayed.
    */
   Observable<Pair<Project, Boolean>> showCommentDialog();
 }

@@ -39,7 +39,7 @@ public final class CommentFeedAdapter extends KSAdapter {
     }
   }
 
-  public void takeProjectComments(final @NonNull CommentFeedData data) {
+  public void takeData(final @NonNull CommentFeedData data) {
     final Project project = data.project();
     final List<Comment> comments = data.comments();
     final User user = data.user();

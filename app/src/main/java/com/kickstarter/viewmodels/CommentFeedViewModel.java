@@ -1,9 +1,6 @@
 package com.kickstarter.viewmodels;
 
-import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.libs.ApiPaginator;
@@ -72,17 +69,17 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   private final BehaviorSubject<Void> commentPosted = BehaviorSubject.create();
   @Override
   public Observable<Void> commentPosted() {
-    return commentPosted.asObservable();
+    return commentPosted;
   }
   private final BehaviorSubject<CommentFeedData> commentFeedData = BehaviorSubject.create();
   @Override
   public Observable<CommentFeedData> commentFeedData() {
     return commentFeedData;
   }
-  private final BehaviorSubject<Boolean> enablePostButton = BehaviorSubject.create();
+  private final BehaviorSubject<Boolean> postButtonIsEnabled = BehaviorSubject.create();
   @Override
   public Observable<Boolean> postButtonIsEnabled() {
-    return enablePostButton;
+    return postButtonIsEnabled;
   }
   private final BehaviorSubject<String> initialCommentBody = BehaviorSubject.create();
   @Override
@@ -123,11 +120,6 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
 
     this.client = environment.apiClient();
     this.currentUser = environment.currentUser();
-  }
-
-  @Override
-  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
-    super.onCreate(context, savedInstanceState);
 
     final Observable<Project> initialProject = intent()
       .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
@@ -198,7 +190,7 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .map(Project::isBacking)
       .distinctUntilChanged()
       .compose(bindToLifecycle())
-      .subscribe(showCommentButton);
+      .subscribe(showCommentButton::onNext);
 
     postedComment
       .compose(Transformers.ignoreValues())
@@ -208,13 +200,13 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
     commentHasBody
       .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
-      .subscribe(enablePostButton::onNext);
+      .subscribe(postButtonIsEnabled::onNext);
 
     commentIsPosting
       .map(b -> !b)
       .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
-      .subscribe(enablePostButton::onNext);
+      .subscribe(postButtonIsEnabled::onNext);
 
     initialProject
       .compose(Transformers.takeWhen(commentPosted))

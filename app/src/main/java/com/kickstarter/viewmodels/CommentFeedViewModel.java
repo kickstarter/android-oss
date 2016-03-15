@@ -66,7 +66,7 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   }
 
   // OUTPUTS
-  private final BehaviorSubject<Void> commentPosted = BehaviorSubject.create();
+  private final PublishSubject<Void> commentPosted = PublishSubject.create();
   @Override
   public Observable<Void> commentPosted() {
     return commentPosted;

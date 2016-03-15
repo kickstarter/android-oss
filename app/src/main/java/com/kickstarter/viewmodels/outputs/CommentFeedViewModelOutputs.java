@@ -19,6 +19,11 @@ public interface CommentFeedViewModelOutputs {
   Observable<Void> commentIsPosted();
 
   /**
+   * Emits when the comment dialog should be dismissed.
+   */
+  Observable<Void> dismissCommentDialog();
+
+  /**
    * Emits a boolean indicating when the post button should be enabled.
    */
   Observable<Boolean> postButtonIsEnabled();
@@ -39,7 +44,7 @@ public interface CommentFeedViewModelOutputs {
   Observable<Boolean> showCommentButton();
 
   /**
-   * Emits a project and boolean to determine when the comment dialog should be displayed.
+   * Emits a project and boolean to determine when the comment dialog should be shown.
    */
   Observable<Pair<Project, Boolean>> showCommentDialog();
 }

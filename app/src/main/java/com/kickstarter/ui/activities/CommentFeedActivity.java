@@ -42,7 +42,6 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-import static com.kickstarter.libs.utils.BooleanUtils.isFalse;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresViewModel(CommentFeedViewModel.class)
@@ -84,8 +83,9 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
 
     cancelButton
       .switchMap(RxView::clicks)
+      .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
-      .subscribe(__ -> viewModel.inputs.dismissCommentDialog());
+      .subscribe(__ -> viewModel.inputs.commentDialogDismissed());
 
     postCommentButton
       .switchMap(RxView::clicks)
@@ -105,15 +105,16 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
       .compose(bindToLifecycle())
       .subscribe(ce -> ce.second.append(ce.first));
 
-    toastMessages()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(ViewUtils.showToast(this));
-
     viewModel.outputs.commentFeedData()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(adapter::takeData);
+
+    commentBodyEditText
+      .compose(Transformers.takeWhen(viewModel.outputs.commentIsPosted()))
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::clearTextView);
 
     viewModel.outputs.postButtonIsEnabled()
       .compose(Transformers.combineLatestPair(postCommentButton))
@@ -128,19 +129,16 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
       .subscribe(commentButtonTextView::setVisibility);
 
     viewModel.outputs.showCommentDialog()
-      .filter(projectAndShow -> projectAndShow.second)
+      .filter(projectAndShow -> projectAndShow != null)
       .map(projectAndShow -> projectAndShow.first)
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::showCommentDialog);
 
-    viewModel.outputs.showCommentDialog()
-      .map(projectAndShow -> projectAndShow.second)
-      .compose(Transformers.combineLatestPair(alertDialog))
-      .filter(bd -> isFalse(bd.first))
-      .map(bd -> bd.second)
-      .compose(bindToLifecycle())
+    alertDialog
+      .compose(Transformers.takeWhen(viewModel.outputs.dismissCommentDialog()))
       .observeOn(AndroidSchedulers.mainThread())
+      .compose(bindToLifecycle())
       .subscribe(this::dismissCommentDialog);
 
     lifecycle()
@@ -152,6 +150,11 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
       // .compose(bindToLifecycle())
       .take(1)
       .subscribe(this::dismissCommentDialog);
+
+    toastMessages()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(ViewUtils.showToast(this));
   }
 
   @Override
@@ -179,6 +182,16 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
     viewModel.inputs.commentButtonClicked();
   }
 
+  public void clearTextView(final @NonNull TextView textView) {
+    textView.setText("");
+  }
+
+  public void dismissCommentDialog(final @Nullable AlertDialog dialog) {
+    if (dialog != null) {
+      dialog.dismiss();
+    }
+  }
+
   public void showCommentDialog(final @NonNull Project project) {
     final AlertDialog commentDialog = new AlertDialog.Builder(this)
       .setView(R.layout.comment_dialog)
@@ -192,16 +205,10 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
 
     // Handle cancel-click region outside of dialog modal.
     commentDialog.setOnCancelListener((final @NonNull DialogInterface dialogInterface) -> {
-      viewModel.inputs.dismissCommentDialog();
+      viewModel.inputs.commentDialogDismissed();
     });
 
     alertDialog.onNext(commentDialog);
-  }
-
-  public void dismissCommentDialog(final @Nullable AlertDialog dialog) {
-    if (dialog != null) {
-      dialog.dismiss();
-    }
   }
 
   public void setPostButtonEnabled(final @Nullable TextView postCommentButton, final boolean enabled) {

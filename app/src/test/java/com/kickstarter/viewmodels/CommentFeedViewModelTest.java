@@ -26,6 +26,9 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<Void> commentPostedTest = new TestSubscriber<>();
     vm.outputs.commentIsPosted().subscribe(commentPostedTest);
 
+    final TestSubscriber<Void> dismissCommentDialogTest = new TestSubscriber<>();
+    vm.outputs.dismissCommentDialog().subscribe(dismissCommentDialogTest);
+
     final TestSubscriber<Boolean> postButtonIsEnabledTest = new TestSubscriber<>();
     vm.outputs.postButtonIsEnabled().subscribe(postButtonIsEnabledTest);
 
@@ -54,7 +57,7 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
 
     // Post comment. Dialog should be dismissed.
     vm.inputs.postCommentClicked();
-    showCommentDialogTest.assertValues(Pair.create(project, true), Pair.create(project, false));
+    dismissCommentDialogTest.assertValueCount(1);
 
     // Comment should be posted.
     commentPostedTest.assertValueCount(1);
@@ -82,6 +85,9 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
   public void testCommentFeedViewModel_dismissCommentDialog() {
     final CommentFeedViewModel vm = new CommentFeedViewModel(environment());
 
+    final TestSubscriber<Void> dismissCommentDialogTest = new TestSubscriber<>();
+    vm.outputs.dismissCommentDialog().subscribe(dismissCommentDialogTest);
+
     final TestSubscriber<Pair<Project, Boolean>> showCommentDialogTest = new TestSubscriber<>();
     vm.outputs.showCommentDialog().subscribe(showCommentDialogTest);
 
@@ -93,12 +99,14 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
 
     // The comment dialog should not be shown.
     showCommentDialogTest.assertNoValues();
+    dismissCommentDialogTest.assertNoValues();
 
     // Dismiss the comment dialog.
-    vm.inputs.dismissCommentDialog();
+    vm.inputs.commentDialogDismissed();
 
     // The comment dialog should be dismissed.
-    showCommentDialogTest.assertValue(Pair.create(project, false));
+    dismissCommentDialogTest.assertValueCount(1);
+    showCommentDialogTest.assertValue(null);
   }
 
   @Test
@@ -143,7 +151,6 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
     vm.outputs.initialCommentBody().subscribe(initialCommentBodyTest);
 
     initialCommentBodyTest.assertNoValues();
-    koalaTest.assertValues("Project Comment View");
 
     vm.inputs.commentBody("Hello");
     initialCommentBodyTest.assertValues("Hello");

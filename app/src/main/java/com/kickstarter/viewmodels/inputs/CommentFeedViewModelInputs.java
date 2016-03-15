@@ -14,9 +14,11 @@ public interface CommentFeedViewModelInputs {
   /**
    * Call when the comment dialog should be dismissed.
    */
-  void dismissCommentDialog();
+  void commentDialogDismissed();
 
-
+  /**
+   * Call when returning to activity with login success.
+   */
   void loginSuccess();
 
   /**

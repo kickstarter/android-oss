@@ -35,10 +35,10 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   public void commentBody(final @NonNull String string) {
     commentBody.onNext(string);
   }
-  private final PublishSubject<Void> dismissCommentDialog = PublishSubject.create();
+  private final PublishSubject<Void> commentDialogDismissed = PublishSubject.create();
   @Override
-  public void dismissCommentDialog() {
-    dismissCommentDialog.onNext(null);
+  public void commentDialogDismissed() {
+    commentDialogDismissed.onNext(null);
   }
   private final PublishSubject<Void> loginSuccess = PublishSubject.create();
   @Override
@@ -74,6 +74,11 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   @Override
   public Observable<CommentFeedData> commentFeedData() {
     return commentFeedData;
+  }
+  private final BehaviorSubject<Void> dismissCommentDialog = BehaviorSubject.create();
+  @Override
+  public Observable<Void> dismissCommentDialog() {
+    return dismissCommentDialog;
   }
   private final BehaviorSubject<Boolean> postButtonIsEnabled = BehaviorSubject.create();
   @Override
@@ -166,9 +171,9 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .subscribe(p -> showCommentDialog.onNext(Pair.create(p, true)));
 
     project
-      .compose(Transformers.takeWhen(dismissCommentDialog))
+      .compose(Transformers.takeWhen(commentDialogDismissed))
       .compose(bindToLifecycle())
-      .subscribe(p -> showCommentDialog.onNext(Pair.create(p, false)));
+      .subscribe(p -> showCommentDialog.onNext(null));
 
     // Seed initial comment body with user input, if any.
     commentBody
@@ -203,6 +208,10 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .map(b -> !b)
       .compose(bindToLifecycle())
       .subscribe(postButtonIsEnabled::onNext);
+
+    commentDialogDismissed
+      .compose(bindToLifecycle())
+      .subscribe(dismissCommentDialog::onNext);
 
     initialProject
       .compose(Transformers.takeWhen(commentIsPosted))

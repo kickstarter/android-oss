@@ -170,12 +170,14 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .compose(bindToLifecycle())
       .subscribe(p -> showCommentDialog.onNext(Pair.create(p, true)));
 
-    project
-      .compose(Transformers.takeWhen(commentDialogDismissed))
+    commentDialogDismissed
       .compose(bindToLifecycle())
-      .subscribe(p -> showCommentDialog.onNext(null));
+      .subscribe(__ -> {
+        showCommentDialog.onNext(null);
+        dismissCommentDialog.onNext(null);
+      });
 
-    // Seed initial comment body with user input, if any.
+    // Seed comment body with user input.
     commentBodyInput
       .compose(bindToLifecycle())
       .subscribe(showCommentBody::onNext);
@@ -209,17 +211,14 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .compose(bindToLifecycle())
       .subscribe(enablePostButton::onNext);
 
-    commentDialogDismissed
-      .compose(bindToLifecycle())
-      .subscribe(dismissCommentDialog::onNext);
-
     initialProject
       .compose(Transformers.takeWhen(commentIsPosted))
       .compose(bindToLifecycle())
-      .subscribe(p -> {
-        koala.trackProjectCommentCreate(p);
-        dismissCommentDialog.onNext(null);
-      });
+      .subscribe(koala::trackProjectCommentCreate);
+
+    commentIsPosted
+      .compose(bindToLifecycle())
+      .subscribe(commentDialogDismissed::onNext);
 
     initialProject.take(1)
       .compose(bindToLifecycle())

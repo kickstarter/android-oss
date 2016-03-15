@@ -119,16 +119,13 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
 
     final CommentFeedViewModel vm = new CommentFeedViewModel(environment);
 
-    final Project backedProjectWithNoComments = ProjectFactory.backedProject()
-      .toBuilder()
-      .commentsCount(0)
-      .build();
+    final Project project = ProjectFactory.backedProject();
 
     final TestSubscriber<Pair<Project, Boolean>> showCommentDialogTest = new TestSubscriber<>();
     vm.outputs.showCommentDialog().subscribe(showCommentDialogTest);
 
     // Start the view model with a project.
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, backedProjectWithNoComments));
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
     koalaTest.assertValues("Project Comment View");
 
     // The comment dialog should be hidden from logged out user.
@@ -139,7 +136,7 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
     vm.inputs.loginSuccess();
 
     // The comment dialog should be shown to backer.
-    showCommentDialogTest.assertValue(Pair.create(backedProjectWithNoComments, true));
+    showCommentDialogTest.assertValue(Pair.create(project, true));
   }
 
 

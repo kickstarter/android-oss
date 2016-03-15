@@ -26,7 +26,7 @@ public interface CommentFeedViewModelOutputs {
   /**
    * Emits a boolean indicating when the post button should be enabled.
    */
-  Observable<Boolean> postButtonIsEnabled();
+  Observable<Boolean> enablePostButton();
 
   /**
    * Emits a boolean indicating whether comments are being fetched from the API.
@@ -36,7 +36,7 @@ public interface CommentFeedViewModelOutputs {
   /**
    * Emits the string that should be displayed in the comment dialog when it is shown.
    */
-  Observable<String> initialCommentBody();
+  Observable<String> showCommentBody();
 
   /**
    * Emits a boolean that determines if the comment button should be visible.

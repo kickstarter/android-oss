@@ -30,7 +30,7 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
     vm.outputs.dismissCommentDialog().subscribe(dismissCommentDialogTest);
 
     final TestSubscriber<Boolean> postButtonIsEnabledTest = new TestSubscriber<>();
-    vm.outputs.postButtonIsEnabled().subscribe(postButtonIsEnabledTest);
+    vm.outputs.enablePostButton().subscribe(postButtonIsEnabledTest);
 
     final TestSubscriber<Boolean> showCommentButtonTest = new TestSubscriber<>();
     vm.outputs.showCommentButton().subscribe(showCommentButtonTest);
@@ -50,9 +50,9 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
     showCommentDialogTest.assertValue(Pair.create(project, true));
 
     // Write a comment. The post button should be enabled with valid comment body.
-    vm.inputs.commentBody("");
+    vm.inputs.commentBodyInput("");
     postButtonIsEnabledTest.assertValues(false);
-    vm.inputs.commentBody("Some comment");
+    vm.inputs.commentBodyInput("Some comment");
     postButtonIsEnabledTest.assertValues(false, true);
 
     // Post comment. Dialog should be dismissed.
@@ -141,16 +141,16 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
 
 
   @Test
-  public void testCommentFeedViewModel_initialCommentBody() {
+  public void testCommentFeedViewModel_showCommentBody() {
     final CommentFeedViewModel vm = new CommentFeedViewModel(environment());
 
-    final TestSubscriber<String> initialCommentBodyTest = new TestSubscriber<>();
-    vm.outputs.initialCommentBody().subscribe(initialCommentBodyTest);
+    final TestSubscriber<String> showCommentBodyTest = new TestSubscriber<>();
+    vm.outputs.showCommentBody().subscribe(showCommentBodyTest);
 
-    initialCommentBodyTest.assertNoValues();
+    showCommentBodyTest.assertNoValues();
 
-    vm.inputs.commentBody("Hello");
-    initialCommentBodyTest.assertValues("Hello");
+    vm.inputs.commentBodyInput("Hello");
+    showCommentBodyTest.assertValues("Hello");
   }
 
   @Test

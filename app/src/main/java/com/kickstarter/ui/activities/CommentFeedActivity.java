@@ -96,9 +96,9 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
       .switchMap(RxTextView::textChanges)
       .map(CharSequence::toString)
       .compose(bindToLifecycle())
-      .subscribe(viewModel.inputs::commentBody);
+      .subscribe(viewModel.inputs::commentBodyInput);
 
-    viewModel.outputs.initialCommentBody()
+    viewModel.outputs.showCommentBody()
       .take(1)
       .compose(Transformers.combineLatestPair(commentBodyEditText))
       .observeOn(AndroidSchedulers.mainThread())
@@ -116,7 +116,7 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::clearTextView);
 
-    viewModel.outputs.postButtonIsEnabled()
+    viewModel.outputs.enablePostButton()
       .compose(Transformers.combineLatestPair(postCommentButton))
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())

@@ -4,7 +4,7 @@ public interface CommentFeedViewModelInputs {
   /**
    * Invoke with the comment body every time it changes.
    */
-  void commentBody(String __);
+  void commentBodyInput(String __);
 
   /**
    * Call when the comment button is clicked.

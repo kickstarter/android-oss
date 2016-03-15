@@ -30,10 +30,10 @@ import rx.subjects.PublishSubject;
 public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> implements CommentFeedViewModelInputs,
   CommentFeedViewModelOutputs, CommentFeedViewModelErrors {
   // INPUTS
-  private final PublishSubject<String> commentBody = PublishSubject.create();
+  private final PublishSubject<String> commentBodyInput = PublishSubject.create();
   @Override
-  public void commentBody(final @NonNull String string) {
-    commentBody.onNext(string);
+  public void commentBodyInput(final @NonNull String string) {
+    commentBodyInput.onNext(string);
   }
   private final PublishSubject<Void> commentDialogDismissed = PublishSubject.create();
   @Override
@@ -80,15 +80,15 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   public Observable<Void> dismissCommentDialog() {
     return dismissCommentDialog;
   }
-  private final BehaviorSubject<Boolean> postButtonIsEnabled = BehaviorSubject.create();
+  private final BehaviorSubject<Boolean> enablePostButton = BehaviorSubject.create();
   @Override
-  public Observable<Boolean> postButtonIsEnabled() {
-    return postButtonIsEnabled;
+  public Observable<Boolean> enablePostButton() {
+    return enablePostButton;
   }
-  private final BehaviorSubject<String> initialCommentBody = BehaviorSubject.create();
+  private final BehaviorSubject<String> showCommentBody = BehaviorSubject.create();
   @Override
-  public Observable<String> initialCommentBody() {
-    return initialCommentBody;
+  public Observable<String> showCommentBody() {
+    return showCommentBody;
   }
   private final BehaviorSubject<Boolean> isFetchingComments = BehaviorSubject.create();
   public Observable<Boolean> isFetchingComments() {
@@ -148,11 +148,11 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
 
     final Observable<List<Comment>> comments = paginator.paginatedData().share();
 
-    final Observable<Boolean> commentHasBody = commentBody
+    final Observable<Boolean> commentHasBody = commentBodyInput
       .map(body -> body.length() > 0);
 
     final Observable<Comment> postedComment = project
-      .compose(Transformers.combineLatestPair(commentBody))
+      .compose(Transformers.combineLatestPair(commentBodyInput))
       .compose(Transformers.takeWhen(postCommentClicked))
       .switchMap(pb -> postComment(pb.first, pb.second))
       .share();
@@ -176,9 +176,9 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .subscribe(p -> showCommentDialog.onNext(null));
 
     // Seed initial comment body with user input, if any.
-    commentBody
+    commentBodyInput
       .compose(bindToLifecycle())
-      .subscribe(initialCommentBody::onNext);
+      .subscribe(showCommentBody::onNext);
 
     Observable.combineLatest(
       project,
@@ -202,12 +202,12 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
 
     commentHasBody
       .compose(bindToLifecycle())
-      .subscribe(postButtonIsEnabled::onNext);
+      .subscribe(enablePostButton::onNext);
 
     commentIsPosting
       .map(b -> !b)
       .compose(bindToLifecycle())
-      .subscribe(postButtonIsEnabled::onNext);
+      .subscribe(enablePostButton::onNext);
 
     commentDialogDismissed
       .compose(bindToLifecycle())

@@ -24,7 +24,7 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
     final Project project = ProjectFactory.backedProject();
 
     final TestSubscriber<Void> commentPostedTest = new TestSubscriber<>();
-    vm.outputs.commentPosted().subscribe(commentPostedTest);
+    vm.outputs.commentIsPosted().subscribe(commentPostedTest);
 
     final TestSubscriber<Boolean> postButtonIsEnabledTest = new TestSubscriber<>();
     vm.outputs.postButtonIsEnabled().subscribe(postButtonIsEnabledTest);

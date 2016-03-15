@@ -24,7 +24,6 @@ import com.kickstarter.viewmodels.outputs.CommentFeedViewModelOutputs;
 import java.util.List;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
@@ -66,10 +65,10 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   }
 
   // OUTPUTS
-  private final PublishSubject<Void> commentPosted = PublishSubject.create();
+  private final PublishSubject<Void> commentIsPosted = PublishSubject.create();
   @Override
-  public Observable<Void> commentPosted() {
-    return commentPosted;
+  public Observable<Void> commentIsPosted() {
+    return commentIsPosted;
   }
   private final BehaviorSubject<CommentFeedData> commentFeedData = BehaviorSubject.create();
   @Override
@@ -206,7 +205,7 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .subscribe(postButtonIsEnabled::onNext);
 
     initialProject
-      .compose(Transformers.takeWhen(commentPosted))
+      .compose(Transformers.takeWhen(commentIsPosted))
       .compose(bindToLifecycle())
       .subscribe(p -> {
         koala.trackProjectCommentCreate(p);
@@ -239,7 +238,7 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .doOnSubscribe(() -> commentIsPosting.onNext(true))
       .finallyDo(() -> {
         commentIsPosting.onNext(false);
-        commentPosted.onNext(null);
+        commentIsPosted.onNext(null);
       });
   }
 }

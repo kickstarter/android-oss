@@ -16,7 +16,7 @@ public interface CommentFeedViewModelOutputs {
   /**
    * Emits when a comment has been successfully posted.
    */
-  Observable<Void> commentPosted();
+  Observable<Void> commentIsPosted();
 
   /**
    * Emits a boolean indicating when the post button should be enabled.

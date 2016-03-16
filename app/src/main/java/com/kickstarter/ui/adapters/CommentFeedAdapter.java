@@ -2,7 +2,6 @@ package com.kickstarter.ui.adapters;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.View;
 
@@ -10,6 +9,7 @@ import com.kickstarter.R;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
+import com.kickstarter.ui.adapters.data.CommentFeedData;
 import com.kickstarter.ui.viewholders.CommentViewHolder;
 import com.kickstarter.ui.viewholders.EmptyCommentFeedViewHolder;
 import com.kickstarter.ui.viewholders.KSViewHolder;
@@ -39,8 +39,11 @@ public final class CommentFeedAdapter extends KSAdapter {
     }
   }
 
-  public void takeProjectComments(final @NonNull Project project, final @NonNull List<Comment> comments,
-    final @Nullable User user) {
+  public void takeData(final @NonNull CommentFeedData data) {
+    final Project project = data.project();
+    final List<Comment> comments = data.comments();
+    final User user = data.user();
+
     sections().clear();
 
     sections().add(Collections.singletonList(project));

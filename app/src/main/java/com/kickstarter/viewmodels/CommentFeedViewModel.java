@@ -220,6 +220,11 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .compose(bindToLifecycle())
       .subscribe(commentDialogDismissed::onNext);
 
+    commentIsPosted
+      .map(__ -> "")
+      .compose(bindToLifecycle())
+      .subscribe(commentBodyInput::onNext);
+
     initialProject.take(1)
       .compose(bindToLifecycle())
       .subscribe(koala::trackProjectCommentsView);

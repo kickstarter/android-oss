@@ -109,12 +109,6 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(adapter::takeData);
 
-    commentBodyEditText
-      .compose(Transformers.takeWhen(viewModel.outputs.commentIsPosted()))
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::clearTextView);
-
     viewModel.outputs.enablePostButton()
       .compose(Transformers.combineLatestPair(postCommentButton))
       .compose(bindToLifecycle())
@@ -179,10 +173,6 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
   @OnClick(R.id.comment_button)
   protected void commentButtonClicked() {
     viewModel.inputs.commentButtonClicked();
-  }
-
-  public void clearTextView(final @NonNull TextView textView) {
-    textView.setText("");
   }
 
   public void dismissCommentDialog(final @Nullable AlertDialog dialog) {

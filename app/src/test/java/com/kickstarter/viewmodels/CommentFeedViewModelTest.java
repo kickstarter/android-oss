@@ -67,6 +67,35 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testCommentFeedViewModel_loggedOutShowDialogFlow() {
+    final CurrentUserType currentUser = new MockCurrentUser();
+
+    final Environment environment = environment().toBuilder()
+      .currentUser(currentUser)
+      .build();
+
+    final CommentFeedViewModel vm = new CommentFeedViewModel(environment);
+
+    final Project project = ProjectFactory.backedProject();
+
+    final TestSubscriber<Pair<Project, Boolean>> showCommentDialogTest = new TestSubscriber<>();
+    vm.outputs.showCommentDialog().subscribe(showCommentDialogTest);
+
+    // Start the view model with a project.
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+
+    // The comment dialog should be hidden from logged out user.
+    showCommentDialogTest.assertNoValues();
+
+    // Login.
+    currentUser.refresh(UserFactory.user());
+    vm.inputs.loginSuccess();
+
+    // The comment dialog should be shown to backer.
+    showCommentDialogTest.assertValue(Pair.create(project, true));
+  }
+
+  @Test
   public void testCommentFeedViewModel_commentButtonHidden() {
     final CommentFeedViewModel vm = new CommentFeedViewModel(environment());
 
@@ -75,7 +104,6 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
 
     // Start the view model with a project.
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()));
-    koalaTest.assertValues("Project Comment View");
 
     // Comment button should not be shown if not backing.
     showCommentButtonTest.assertValue(false);
@@ -95,7 +123,6 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
 
     // Start the view model with a project.
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
-    koalaTest.assertValues("Project Comment View");
 
     // The comment dialog should not be shown.
     showCommentDialogTest.assertNoValues();
@@ -110,47 +137,16 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testCommentFeedViewModel_loggedOutShowDialogFlow() {
-    final CurrentUserType currentUser = new MockCurrentUser();
-
-    final Environment environment = environment().toBuilder()
-      .currentUser(currentUser)
-      .build();
-
-    final CommentFeedViewModel vm = new CommentFeedViewModel(environment);
-
-    final Project project = ProjectFactory.backedProject();
-
-    final TestSubscriber<Pair<Project, Boolean>> showCommentDialogTest = new TestSubscriber<>();
-    vm.outputs.showCommentDialog().subscribe(showCommentDialogTest);
-
-    // Start the view model with a project.
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
-    koalaTest.assertValues("Project Comment View");
-
-    // The comment dialog should be hidden from logged out user.
-    showCommentDialogTest.assertNoValues();
-
-    // Login.
-    currentUser.refresh(UserFactory.user());
-    vm.inputs.loginSuccess();
-
-    // The comment dialog should be shown to backer.
-    showCommentDialogTest.assertValue(Pair.create(project, true));
-  }
-
-
-  @Test
-  public void testCommentFeedViewModel_showCommentBody() {
+  public void testCommentFeedViewModel_currentCommentBody() {
     final CommentFeedViewModel vm = new CommentFeedViewModel(environment());
 
-    final TestSubscriber<String> showCommentBodyTest = new TestSubscriber<>();
-    vm.outputs.currentCommentBody().subscribe(showCommentBodyTest);
+    final TestSubscriber<String> currentCommentBodyTest = new TestSubscriber<>();
+    vm.outputs.currentCommentBody().subscribe(currentCommentBodyTest);
 
-    showCommentBodyTest.assertNoValues();
+    currentCommentBodyTest.assertNoValues();
 
     vm.inputs.commentBodyInput("Hello");
-    showCommentBodyTest.assertValues("Hello");
+    currentCommentBodyTest.assertValues("Hello");
   }
 
   @Test
@@ -162,7 +158,6 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
 
     // Start the view model with a backed project.
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()));
-    koalaTest.assertValues("Project Comment View");
 
     // The comment button should be shown to backer.
     showCommentButtonTest.assertValue(true);
@@ -179,7 +174,6 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
 
     // Start the view model with a backed project.
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
-    koalaTest.assertValues("Project Comment View");
 
     showCommentDialogTest.assertNoValues();
 

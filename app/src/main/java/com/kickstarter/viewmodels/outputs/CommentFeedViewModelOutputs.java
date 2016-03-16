@@ -36,7 +36,7 @@ public interface CommentFeedViewModelOutputs {
   /**
    * Emits the string that should be displayed in the comment dialog when it is shown.
    */
-  Observable<String> showCommentBody();
+  Observable<String> currentCommentBody();
 
   /**
    * Emits a boolean that determines if the comment button should be visible.

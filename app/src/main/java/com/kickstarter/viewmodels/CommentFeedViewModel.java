@@ -85,10 +85,10 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   public Observable<Boolean> enablePostButton() {
     return enablePostButton;
   }
-  private final BehaviorSubject<String> showCommentBody = BehaviorSubject.create();
+  private final BehaviorSubject<String> currentCommentBody = BehaviorSubject.create();
   @Override
-  public Observable<String> showCommentBody() {
-    return showCommentBody;
+  public Observable<String> currentCommentBody() {
+    return currentCommentBody;
   }
   private final BehaviorSubject<Boolean> isFetchingComments = BehaviorSubject.create();
   public Observable<Boolean> isFetchingComments() {
@@ -180,7 +180,7 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
     // Seed comment body with user input.
     commentBodyInput
       .compose(bindToLifecycle())
-      .subscribe(showCommentBody::onNext);
+      .subscribe(currentCommentBody::onNext);
 
     Observable.combineLatest(
       project,

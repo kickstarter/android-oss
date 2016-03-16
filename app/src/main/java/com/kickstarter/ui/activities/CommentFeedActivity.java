@@ -93,14 +93,13 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
       .subscribe(__ -> viewModel.inputs.postCommentClicked());
 
     commentBodyEditText
-      .switchMap(RxTextView::textChanges)
+      .switchMap(t -> RxTextView.textChanges(t).skip(1))
       .map(CharSequence::toString)
       .compose(bindToLifecycle())
       .subscribe(viewModel.inputs::commentBodyInput);
 
-    viewModel.outputs.showCommentBody()
-      .take(1)
-      .compose(Transformers.combineLatestPair(commentBodyEditText))
+    viewModel.outputs.currentCommentBody()
+      .compose(Transformers.takePairWhen(commentBodyEditText))
       .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
       .subscribe(ce -> ce.second.append(ce.first));

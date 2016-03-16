@@ -145,7 +145,7 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
     final CommentFeedViewModel vm = new CommentFeedViewModel(environment());
 
     final TestSubscriber<String> showCommentBodyTest = new TestSubscriber<>();
-    vm.outputs.showCommentBody().subscribe(showCommentBodyTest);
+    vm.outputs.currentCommentBody().subscribe(showCommentBodyTest);
 
     showCommentBodyTest.assertNoValues();
 

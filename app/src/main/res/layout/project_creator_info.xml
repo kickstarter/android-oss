@@ -78,7 +78,8 @@
       android:layout_height="@dimen/grid_11_half" >
 
       <TextView
-        android:id="@+id/campaign_text_view"
+        android:layout_toStartOf="@+id/campaign_button"
+        android:layout_toLeftOf="@+id/campaign_button"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
@@ -89,6 +90,7 @@
         android:text="@string/project_menu_buttons_campaign" />
 
       <com.kickstarter.ui.views.IconButton
+        android:id="@+id/campaign_button"
         android:textSize="@dimen/chevron_right_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -115,6 +117,8 @@
       <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_toLeftOf="@+id/updates_count"
+        android:layout_toStartOf="@+id/updates_count"
         android:gravity="center_vertical"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
@@ -151,6 +155,8 @@
       <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_toLeftOf="@+id/comments_count"
+        android:layout_toStartOf="@+id/comments_count"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:gravity="center_vertical"

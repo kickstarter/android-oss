@@ -32,59 +32,61 @@
 
       <include layout="@layout/horizontal_line_thin_right_margin_view" />
 
-      <RelativeLayout
+      <LinearLayout
         android:layout_marginEnd="@dimen/settings_icon_margin_x"
         android:layout_marginRight="@dimen/settings_icon_margin_x"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:layout_width="match_parent"
         android:layout_height="@dimen/grid_8">
 
         <TextView
           style="@style/SubheadPrimary"
-          android:layout_centerVertical="true"
+          android:layout_weight="1"
           android:text="@string/profile_settings_backer_project_updates"
-          android:layout_width="wrap_content"
+          android:layout_width="0dp"
           android:layout_height="wrap_content" />
 
         <com.kickstarter.ui.views.IconTextView
-          android:id="@+id/project_updates_mail_icon"
-          app:iconType="ss_kickstarter"
           style="@style/KSSettingsMailIcon"
-          android:layout_toLeftOf="@+id/project_updates_phone_icon"
-          android:layout_toStartOf="@id/project_updates_phone_icon" />
+          android:id="@+id/project_updates_mail_icon"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          app:iconType="ss_kickstarter" />
 
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/project_updates_phone_icon"
-          style="@style/KSSettingsPhoneIcon"/>
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
 
-      </RelativeLayout>
+      </LinearLayout>
 
       <include layout="@layout/horizontal_line_thin_right_margin_view" />
 
-      <RelativeLayout
+      <LinearLayout
         android:id="@+id/manage_project_notifications"
+        android:orientation="horizontal"
         android:layout_marginEnd="@dimen/settings_icon_margin_x"
         android:layout_marginRight="@dimen/settings_icon_margin_x"
         android:focusable="true"
+        android:gravity="center_vertical"
         android:background="@drawable/click_indicator_light_masked"
         android:layout_width="match_parent"
         android:layout_height="@dimen/grid_8">
 
         <TextView
           style="@style/SubheadPrimary"
-          android:layout_centerVertical="true"
           android:text="@string/profile_settings_backer_notifications"
-          android:layout_width="wrap_content"
+          android:layout_weight="1"
+          android:layout_width="0dp"
           android:layout_height="wrap_content" />
 
         <TextView
           android:id="@+id/project_notifications_count"
-          android:layout_centerVertical="true"
           android:background="@drawable/text_view_rounded_background"
           android:textColor="@color/white"
           android:textSize="@dimen/caption"
           android:padding="@dimen/grid_1_half"
-          android:layout_toLeftOf="@+id/manage_notifications_chevron_icon"
-          android:layout_toStartOf="@+id/manage_notifications_chevron_icon"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 
@@ -95,7 +97,7 @@
           android:textColor="@color/gray_black"
           android:text="@string/chevron_right_icon"/>
 
-      </RelativeLayout>
+      </LinearLayout>
 
       <include layout="@layout/horizontal_line_thin_right_margin_view" />
 
@@ -109,37 +111,37 @@
 
       <include layout="@layout/horizontal_line_thin_right_margin_view" />
 
-      <RelativeLayout
+      <LinearLayout
         android:layout_marginEnd="@dimen/settings_icon_margin_x"
         android:layout_marginRight="@dimen/settings_icon_margin_x"
+        android:layout_gravity="center_vertical"
         android:layout_width="match_parent"
         android:layout_height="@dimen/grid_8">
 
         <TextView
           style="@style/SubheadPrimary"
-          android:layout_centerVertical="true"
+          android:layout_weight="1"
           android:layout_marginEnd="@dimen/settings_icon_margin_x"
           android:layout_marginRight="@dimen/settings_icon_margin_x"
           android:text="@string/profile_settings_social_followers"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content" />
+          android:layout_height="wrap_content"
+          android:layout_width="0dp" />
 
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/new_followers_mail_icon"
           app:iconType="ss_kickstarter"
-          style="@style/KSSettingsMailIcon"
-          android:layout_toLeftOf="@+id/new_followers_phone_icon"
-          android:layout_toStartOf="@id/new_followers_phone_icon" />
+          style="@style/KSSettingsMailIcon" />
 
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/new_followers_phone_icon"
           style="@style/KSSettingsPhoneIcon" />
 
-      </RelativeLayout>
+      </LinearLayout>
 
       <include layout="@layout/horizontal_line_thin_right_margin_view" />
 
-      <RelativeLayout
+      <LinearLayout
+        android:orientation="horizontal"
         android:layout_marginEnd="@dimen/settings_icon_margin_x"
         android:layout_marginRight="@dimen/settings_icon_margin_x"
         android:layout_width="match_parent"
@@ -147,23 +149,21 @@
 
         <TextView
           style="@style/SubheadPrimary"
-          android:layout_centerVertical="true"
+          android:layout_weight="1"
           android:text="@string/profile_settings_social_friend_backs"
-          android:layout_width="wrap_content"
+          android:layout_width="0dp"
           android:layout_height="wrap_content" />
 
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/friend_activity_mail_icon"
           app:iconType="ss_kickstarter"
-          style="@style/KSSettingsMailIcon"
-          android:layout_toLeftOf="@+id/friend_activity_phone_icon"
-          android:layout_toStartOf="@+id/friend_activity_phone_icon" />
+          style="@style/KSSettingsMailIcon" />
 
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/friend_activity_phone_icon"
           style="@style/KSSettingsPhoneIcon" />
 
-      </RelativeLayout>
+      </LinearLayout>
 
       <include layout="@layout/horizontal_line_thin_right_margin_view" />
 

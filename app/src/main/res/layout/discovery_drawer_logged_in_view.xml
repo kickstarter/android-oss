@@ -51,6 +51,8 @@
     <LinearLayout
       android:orientation="horizontal"
       android:layout_centerVertical="true"
+      android:layout_toEndOf="@+id/user_container"
+      android:layout_toRightOf="@+id/user_container"
       android:gravity="center_vertical"
       android:layout_alignParentEnd="true"
       android:layout_alignParentRight="true"

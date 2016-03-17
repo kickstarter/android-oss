@@ -72,6 +72,8 @@
           android:layout_alignParentTop="true"
           android:layout_alignParentRight="true"
           android:layout_alignParentEnd="true"
+          android:layout_toRightOf="@+id/pledge_minimum"
+          android:layout_toEndOf="@+id/pledge_minimum"
           android:background="@drawable/text_view_gray_rounded_border"
           android:text="@string/rewards_select_label_select"
           style="@style/BodyPrimaryMedium"

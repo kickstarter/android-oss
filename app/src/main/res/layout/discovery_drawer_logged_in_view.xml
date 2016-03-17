@@ -9,7 +9,7 @@
   android:orientation="vertical"
   android:theme="@style/ThemeOverlay.AppCompat.Light">
 
-  <RelativeLayout
+  <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="@dimen/grid_7"
     android:paddingTop="@dimen/grid_1"
@@ -21,13 +21,13 @@
       android:id="@+id/user_container"
       android:background="@drawable/click_indicator_light"
       android:orientation="horizontal"
-      android:layout_centerVertical="true"
+      android:layout_weight="1"
       android:paddingLeft="@dimen/grid_2"
       android:paddingStart="@dimen/grid_2"
       android:paddingRight="@dimen/grid_2"
       android:paddingEnd="@dimen/grid_2"
       android:gravity="center_vertical"
-      android:layout_width="wrap_content"
+      android:layout_width="0dp"
       android:layout_height="match_parent">
 
       <ImageView
@@ -50,12 +50,7 @@
 
     <LinearLayout
       android:orientation="horizontal"
-      android:layout_centerVertical="true"
-      android:layout_toEndOf="@+id/user_container"
-      android:layout_toRightOf="@+id/user_container"
       android:gravity="center_vertical"
-      android:layout_alignParentEnd="true"
-      android:layout_alignParentRight="true"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content">
 
@@ -72,7 +67,7 @@
         android:text="@string/settings_icon" />
     </LinearLayout>
 
-  </RelativeLayout>
+  </LinearLayout>
 
   <include layout="@layout/horizontal_line_0_5dp_view" />
 

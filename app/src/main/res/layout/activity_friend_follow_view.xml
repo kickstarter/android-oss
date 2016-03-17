@@ -31,8 +31,8 @@
       android:layout_height="wrap_content"
       android:layout_marginLeft="@dimen/grid_1"
       android:layout_marginRight="@dimen/grid_1"
-      android:text="Username is following you!"
-      android:layout_weight="1" />
+      android:layout_weight="1"
+      tools:text="Username is following you!" />
 
   </LinearLayout>
 

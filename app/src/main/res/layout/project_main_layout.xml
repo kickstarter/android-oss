@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-  android:orientation="vertical"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:orientation="vertical"
   android:id="@+id/project_scroll_view"
   android:layout_width="match_parent"
   android:background="@color/white"
-  android:layout_height="match_parent"
-  xmlns:tools="http://schemas.android.com/tools">
+  android:layout_height="match_parent">
 
   <include layout="@layout/project_media_header"/>
 
@@ -25,12 +25,12 @@
 
     <TextView
       android:id="@+id/project_name"
-      android:text="Project name"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       style="@style/EditorialHeadline"
       android:paddingBottom="@dimen/grid_1_half"
-      tools:ignore="InconsistentLayout" />
+      tools:ignore="InconsistentLayout"
+      tools:text="Project name" />
 
     <LinearLayout
       android:weightSum="3"
@@ -40,7 +40,6 @@
 
       <TextView
         android:id="@+id/creator_name"
-        android:text="Creator name"
         android:focusable="true"
         android:layout_weight="3"
         android:singleLine="true"
@@ -48,7 +47,8 @@
         android:layout_height="wrap_content"
         android:background="@drawable/click_indicator_light_masked"
         style="@style/BodySecondary"
-        tools:ignore="InconsistentLayout" />
+        tools:ignore="InconsistentLayout"
+        tools:text="Creator name" />
 
       <LinearLayout
         android:id="@+id/backer_label"
@@ -83,7 +83,6 @@
     <TextView
       android:id="@+id/blurb"
       style="@style/BodyPrimary"
-      android:text="Description about this project."
       android:focusable="true"
       android:background="@drawable/click_indicator_light_masked"
       android:layout_width="match_parent"
@@ -91,7 +90,8 @@
       android:layout_marginTop="@dimen/grid_2"
       android:layout_marginBottom="@dimen/grid_2"
       android:paddingBottom="@dimen/grid_1"
-      tools:ignore="InconsistentLayout" />
+      tools:ignore="InconsistentLayout"
+      tools:text="Description about this project." />
 
     <LinearLayout
       android:orientation="horizontal"
@@ -109,13 +109,13 @@
 
       <TextView
         android:id="@+id/category"
-        android:text="Category name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/grid_1_half"
         android:paddingRight="@dimen/grid_2"
         style="@style/BodyPrimary"
-        tools:ignore="InconsistentLayout" />
+        tools:ignore="InconsistentLayout"
+        tools:text="Category name" />
 
       <com.kickstarter.ui.views.IconTextView
         android:id="@+id/location_icon"
@@ -127,7 +127,6 @@
 
       <TextView
         android:id="@+id/location"
-        android:text="Location"
         android:ellipsize="end"
         android:singleLine="true"
         android:layout_width="wrap_content"
@@ -136,7 +135,8 @@
         android:paddingRight="@dimen/grid_1_half"
         android:paddingStart="@dimen/grid_1_half"
         android:paddingEnd="@dimen/grid_1_half"
-        style="@style/BodyPrimary" />
+        style="@style/BodyPrimary"
+        tools:text="Location" />
 
     </LinearLayout>
 
@@ -166,17 +166,17 @@
 
       <TextView
         android:id="@+id/project_state_header_text_view"
-        android:text="Funded!"
         style="@style/BodyPrimaryMedium"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        tools:text="Funded!" />
 
       <TextView
         android:id="@+id/project_state_subhead_text_view"
-        android:text="This project was funded on"
         style="@style/CaptionPrimary"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        tools:text="This project was funded on" />
 
     </LinearLayout>
 
@@ -192,11 +192,11 @@
       <TextView
         android:id="@+id/usd_conversion_text_view"
         android:visibility="gone"
-        android:text="Converted from"
         style="@style/CaptionSecondary"
         android:layout_marginTop="@dimen/grid_2"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        tools:text="Converted from" />
 
     </LinearLayout>
 
@@ -223,9 +223,9 @@
         style="@style/CaptionPrimaryMedium"
         android:layout_marginStart="@dimen/grid_2"
         android:layout_marginLeft="@dimen/grid_2"
-        android:text="Gina Binetti, Christopher Wright, and 5 more are backers"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        tools:text="Gina Binetti, Christopher Wright, and 5 more are backers" />
 
     </LinearLayout>
 

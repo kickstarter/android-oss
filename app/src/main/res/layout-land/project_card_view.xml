@@ -62,13 +62,13 @@
 
         <TextView
           android:id="@+id/name"
-          android:text="Name"
           android:lines="2"
           android:maxLines="2"
           android:ellipsize="end"
           style="@style/SubheadPrimaryMedium"
           android:layout_width="wrap_content"
-          android:layout_height="wrap_content" />
+          android:layout_height="wrap_content"
+          tools:text="Name" />
 
         <TextView
           android:id="@+id/blurb"
@@ -78,9 +78,9 @@
           android:ellipsize="end"
           android:paddingTop="@dimen/grid_1"
           android:paddingBottom="@dimen/grid_2"
-          android:text="blurb"
           android:layout_width="wrap_content"
-          android:layout_height="wrap_content" />
+          android:layout_height="wrap_content"
+          tools:text="blurb" />
 
         <ProgressBar
           style="@style/ProgressBar"

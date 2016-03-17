@@ -67,7 +67,7 @@
             android:id="@+id/created_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0" />
+            tools:text="0" />
 
           <View
             android:id="@+id/divider"
@@ -92,7 +92,7 @@
             android:id="@+id/backed_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0" />
+            tools:text="0" />
 
         </LinearLayout>
       </LinearLayout>

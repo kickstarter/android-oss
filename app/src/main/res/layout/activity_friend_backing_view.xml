@@ -48,7 +48,7 @@
           android:layout_height="wrap_content"
           android:layout_marginBottom="@dimen/grid_1_half"
           android:maxLines="3"
-          android:text="Project name" />
+          tools:text="Project name" />
 
         <TextView
           style="@style/CaptionSecondary"
@@ -57,7 +57,7 @@
           android:layout_height="wrap_content"
           android:layout_marginBottom="@dimen/grid_1_half"
           android:maxLines="2"
-          android:text="by Creator" />
+          tools:text="by Creator" />
       </LinearLayout>
 
     </RelativeLayout>
@@ -91,7 +91,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/grid_1"
         android:layout_marginStart="@dimen/grid_2"
-        android:text="Friend Name backed a Category project" />
+        tools:text="Friend Name backed a Category project" />
 
     </LinearLayout>
 

@@ -46,7 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/grid_1_half"
         android:maxLines="3"
-        android:text="Name" />
+        tools:text="Name" />
 
       <TextView
         style="@style/CaptionSecondary"

@@ -36,9 +36,9 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Project name was successfully funded!"
         android:textColor="@color/white"
-        android:gravity="center" />
+        android:gravity="center"
+        tools:text="Project name was successfully funded!" />
 
     </LinearLayout>
 
@@ -60,17 +60,17 @@
           android:id="@+id/left_stat_first"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="Left Stat First"
           android:textColor="@color/white"
-          android:textStyle="bold" />
+          android:textStyle="bold"
+          tools:text="Left Stat First" />
 
         <TextView
           style="@style/SubheadPrimaryMedium"
           android:id="@+id/left_stat_second"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="Left Stat Second"
-          android:textColor="@color/white" />
+          android:textColor="@color/white"
+          tools:text="Left Stat Second" />
 
       </LinearLayout>
 
@@ -86,17 +86,17 @@
           android:id="@+id/right_stat_first"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="Right Stat First"
           android:textColor="@color/white"
-          android:textStyle="bold" />
+          android:textStyle="bold"
+          tools:text="Right Stat First" />
 
         <TextView
           style="@style/SubheadPrimaryMedium"
           android:id="@+id/right_stat_second"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="Right Stat Second"
-          android:textColor="@color/white" />
+          android:textColor="@color/white"
+          tools:text="Right Stat Second" />
       </LinearLayout>
 
     </LinearLayout>

@@ -42,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxLines="3"
-        android:text="Project name" />
+        tools:text="Project name" />
 
     </RelativeLayout>
 
@@ -78,15 +78,15 @@
           android:layout_height="wrap_content"
           android:layout_marginEnd="@dimen/grid_2"
           android:layout_marginRight="@dimen/grid_2"
-          android:text="Update #"
-          android:textColor="@color/green" />
+          android:textColor="@color/green"
+          tools:text="Update #" />
 
         <TextView
           style="@style/CaptionSecondary"
           android:id="@+id/timestamp"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="Timestamp" />
+          tools:text="Timestamp" />
       </LinearLayout>
 
       <TextView
@@ -95,7 +95,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/grid_1"
-        android:text="Update Title" />
+        tools:text="Update Title" />
 
       <TextView
         style="@style/BodyPrimary"
@@ -103,10 +103,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/grid_1"
-        android:text="Update Body"/>
+        tools:text="Update Body"/>
 
     </LinearLayout>
 
-
   </LinearLayout>
+
 </android.support.v7.widget.CardView>

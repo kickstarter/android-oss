@@ -3,6 +3,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="wrap_content"
   android:layout_height="wrap_content"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_marginBottom="@dimen/grid_2"
   android:orientation="horizontal">
 
@@ -14,10 +15,10 @@
 
     <TextView
       android:id="@+id/backers_count"
-      android:text="47"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      style="@style/Headline" />
+      style="@style/Headline"
+      tools:text="47" />
 
     <TextView
       android:importantForAccessibility="no"
@@ -36,18 +37,19 @@
 
     <TextView
       android:id="@+id/pledged"
-      android:text="$69 USD"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      style="@style/Headline" />
+      style="@style/Headline"
+      tools:text="$10 USD" />
 
     <TextView
       android:id="@+id/goal"
-      android:text="pledged of $70 USD"
       android:importantForAccessibility="no"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      style="@style/BodySecondary" />
+      style="@style/BodySecondary"
+      tools:text="pledged of $70 USD" />
+
   </LinearLayout>
 
   <LinearLayout
@@ -59,18 +61,18 @@
     <TextView
       android:id="@+id/deadline_countdown_text_view"
       android:singleLine="true"
-      android:text="22"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      style="@style/Headline" />
+      style="@style/Headline"
+      tools:text="22" />
 
     <TextView
-      android:text="days to go"
       android:id="@+id/deadline_countdown_unit_text_view"
       android:importantForAccessibility="no"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      style="@style/BodySecondary" />
+      style="@style/BodySecondary"
+      tools:text="days to go" />
 
   </LinearLayout>
 

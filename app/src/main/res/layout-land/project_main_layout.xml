@@ -47,17 +47,17 @@
 
       <TextView
         android:id="@+id/project_state_header_text_view"
-        android:text="Funded!"
         style="@style/BodyPrimaryMedium"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        tools:text="Funded!" />
 
       <TextView
         android:id="@+id/project_state_subhead_text_view"
-        android:text="This project was funded on"
         style="@style/CaptionPrimary"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        tools:text="This project was funded on" />
 
     </LinearLayout>
 
@@ -101,12 +101,12 @@
       <TextView
         android:id="@+id/usd_conversion_text_view"
         android:visibility="gone"
-        android:text="Converted from"
         android:layout_below="@id/stats_view"
         style="@style/BodySecondary"
         android:layout_marginTop="@dimen/grid_2"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        tools:text="Converted from" />
 
     </RelativeLayout>
 

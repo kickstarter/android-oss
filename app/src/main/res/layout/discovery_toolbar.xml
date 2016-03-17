@@ -54,7 +54,6 @@
           android:background="@drawable/button_selector"
           android:ellipsize="end"
           android:singleLine="true"
-          android:text="Staff Picks"
           android:textColor="@color/white"
           android:layout_width="fill_parent"
           android:layout_height="match_parent"
@@ -62,7 +61,8 @@
           android:paddingStart="@dimen/grid_3_half"
           android:paddingRight="@dimen/grid_3_half"
           android:paddingEnd="@dimen/grid_3_half"
-          android:gravity="center_vertical" />
+          android:gravity="center_vertical"
+          tools:text="Staff Picks" />
 
       </LinearLayout>
 

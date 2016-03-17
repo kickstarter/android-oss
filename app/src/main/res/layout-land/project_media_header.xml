@@ -13,7 +13,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/gray_gradient"
-    android:adjustViewBounds="true" />
+    android:adjustViewBounds="true"
+    tools:ignore="ContentDescription" />
 
   <View
     android:id="@+id/photo_gradient"

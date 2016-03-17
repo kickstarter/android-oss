@@ -3,6 +3,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_marginBottom="@dimen/grid_1"
   android:layout_marginTop="@dimen/discovery_drawer_status_bar_height"
   android:orientation="vertical"
@@ -33,7 +34,8 @@
         android:id="@+id/user_image_view"
         android:adjustViewBounds="true"
         android:layout_width="@dimen/grid_4"
-        android:layout_height="@dimen/grid_4" />
+        android:layout_height="@dimen/grid_4"
+        tools:ignore="ContentDescription" />
 
       <TextView
         style="@style/BodyPrimaryMedium"

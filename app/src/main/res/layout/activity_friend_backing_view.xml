@@ -2,6 +2,7 @@
 <android.support.v7.widget.CardView
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:card_view="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/friend_backing_card_view"
   card_view:contentPadding="@dimen/grid_2"
   android:focusable="true"
@@ -25,7 +26,8 @@
         android:adjustViewBounds="true"
         android:layout_width="85dp"
         android:layout_height="64dp"
-        android:layout_marginTop="6dp" />
+        android:layout_marginTop="6dp"
+        tools:ignore="ContentDescription" />
 
       <LinearLayout
         android:orientation="vertical"
@@ -79,7 +81,8 @@
         android:layout_marginRight="@dimen/grid_1"
         android:layout_marginEnd="@dimen/grid_2"
         android:layout_width="30dp"
-        android:layout_height="30dp" />
+        android:layout_height="30dp"
+        tools:ignore="ContentDescription" />
 
       <TextView
         style="@style/CaptionPrimary"

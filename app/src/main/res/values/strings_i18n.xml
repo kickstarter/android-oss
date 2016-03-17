@@ -389,6 +389,7 @@
   <string name="forgot_password_placeholder_email" formatted="false">Email address</string>
   <string name="forgot_password_title" formatted="false">Forgot your password?</string>
   <string name="forgot_password_we_sent_an_email_to_email_address_with_instructions_to_reset_your_password" formatted="false">We’ve sent an email to %{email} with instructions to reset your password.</string>
+  <string name="general_accessibility_kickstarter" formatted="false">Kickstarter</string>
   <string name="general_alert_buttons_ok" formatted="false">OK</string>
   <string name="general_error_oops" formatted="false">Oops!</string>
   <string name="general_error_something_wrong" formatted="false">Something went wrong.</string>

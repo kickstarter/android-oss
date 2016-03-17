@@ -11,4 +11,5 @@
   android:alpha="0"
   android:layout_centerHorizontal="true"
   android:layout_centerVertical="true"
-  android:orientation="horizontal" />
+  android:orientation="horizontal"
+  tools:ignore="ContentDescription" />

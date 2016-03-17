@@ -5,7 +5,8 @@
   android:id="@+id/project_scroll_view"
   android:layout_width="match_parent"
   android:background="@color/white"
-  android:layout_height="match_parent">
+  android:layout_height="match_parent"
+  xmlns:tools="http://schemas.android.com/tools">
 
   <include layout="@layout/project_media_header"/>
 
@@ -125,7 +126,8 @@
         android:id="@+id/project_social_image"
         android:visibility="gone"
         android:layout_width="@dimen/project_social_photo_height"
-        android:layout_height="@dimen/project_social_photo_height" />
+        android:layout_height="@dimen/project_social_photo_height"
+        tools:ignore="ContentDescription" />
 
       <TextView
         android:id="@+id/project_social_text"

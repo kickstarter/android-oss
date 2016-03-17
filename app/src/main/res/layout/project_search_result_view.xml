@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/project_search_result_view"
   android:focusable="true"
   android:background="@color/transparent"
@@ -24,7 +26,8 @@
       android:layout_alignParentRight="true"
       android:adjustViewBounds="true"
       android:layout_width="80dp"
-      android:layout_height="60dp" />
+      android:layout_height="60dp"
+      tools:ignore="ContentDescription" />
 
     <LinearLayout
       android:orientation="vertical"

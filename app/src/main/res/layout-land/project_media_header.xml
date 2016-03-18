@@ -8,11 +8,17 @@
 
   <ImageView
     android:id="@+id/project_photo"
-    android:scaleType="fitXY"
+    android:scaleType="centerCrop"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/gray_gradient"
     android:adjustViewBounds="true" />
+
+  <View
+    android:background="@drawable/project_photo_gradient"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/grid_16"
+    android:layout_alignParentBottom="true"/>
 
   <View
     android:id="@+id/photo_gradient"
@@ -136,6 +142,7 @@
       <LinearLayout
         android:layout_marginTop="@dimen/grid_3"
         android:orientation="horizontal"
+        android:layout_marginBottom="@dimen/grid_3"
         android:gravity="center_vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

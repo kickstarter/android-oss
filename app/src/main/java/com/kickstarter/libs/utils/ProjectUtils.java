@@ -78,10 +78,10 @@ public final class ProjectUtils {
   }
 
   /**
-   * Returns 4:3 height relative to input width.
+   * Returns 16:9 height relative to input width.
    */
   public static int photoHeightFromWidthRatio(final int width) {
-    return width * 3 / 4;
+    return width * 9 / 16;
   }
 
   /**

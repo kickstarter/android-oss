@@ -22,7 +22,7 @@ public final class ProjectUtilsTest extends TestCase {
   }
 
   public void testPhotoHeightFromWidthRatio() {
-    assertEquals(480, ProjectUtils.photoHeightFromWidthRatio(640));
-    assertEquals(768, ProjectUtils.photoHeightFromWidthRatio(1024));
+    assertEquals(360, ProjectUtils.photoHeightFromWidthRatio(640));
+    assertEquals(576, ProjectUtils.photoHeightFromWidthRatio(1024));
   }
 }

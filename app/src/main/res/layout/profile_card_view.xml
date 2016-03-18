@@ -24,7 +24,6 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent">
 
-      <!-- TODO: 16:9-->
       <ImageView
         android:id="@+id/profile_card_image"
         android:scaleType="fitCenter"

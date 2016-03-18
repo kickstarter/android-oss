@@ -26,6 +26,7 @@
   <dimen name="grid_18">144dp</dimen>
   <dimen name="grid_19">152dp</dimen>
   <dimen name="grid_20">160dp</dimen>
+  <dimen name="grid_22">176dp</dimen>
   <dimen name="grid_26">208dp</dimen>
   <dimen name="grid_35">280dp</dimen>
   <dimen name="grid_38">304dp</dimen>
@@ -56,7 +57,7 @@
   <dimen name="card_margin_x">@dimen/grid_2</dimen>
   <dimen name="card_margin_y">@dimen/grid_1</dimen>
   <dimen name="card_padding_action_half">@dimen/grid_1_half</dimen>
-  <dimen name="profile_card_height">@dimen/grid_26</dimen>
+  <dimen name="profile_card_height">178dp</dimen>
 
   <!-- Discovery drawer -->
   <dimen name="discovery_drawer_filter_padding_y">14dp</dimen>
@@ -91,25 +92,30 @@
 
   <!-- Photos -->
   <dimen name="discovery_activity_photo_width">62dp</dimen>
-  <dimen name="discovery_activity_photo_height">48dp</dimen>
+  <dimen name="discovery_activity_photo_height">35dp</dimen>
   <dimen name="activity_feed_avatar_width">60dp</dimen>
   <dimen name="activity_feed_avatar_height">60dp</dimen>
-  <dimen name="activity_feed_small_photo_width">96dp</dimen>
-  <dimen name="activity_feed_small_photo_height">72dp</dimen>
+  <dimen name="activity_feed_backing_photo_width">@dimen/grid_12</dimen>
+  <dimen name="activity_feed_backing_photo_height">54dp</dimen>
+  <dimen name="activity_feed_update_photo_width">138dp</dimen>
+  <dimen name="activity_feed_update_photo_height">78dp</dimen>
   <dimen name="activity_feed_medium_photo_width">120dp</dimen>
-  <dimen name="activity_feed_medium_photo_height">90dp</dimen>
+  <dimen name="activity_feed_medium_photo_height">68dp</dimen>
   <dimen name="comments_feed_avatar_width">@dimen/grid_11_half</dimen>
   <dimen name="comments_feed_avatar_height">@dimen/grid_11_half</dimen>
   <dimen name="profile_avatar_width">100dp</dimen>
   <dimen name="profile_avatar_height">@dimen/profile_avatar_width</dimen>
-  <dimen name="profile_card_photo_height">@dimen/grid_15</dimen>
+  <dimen name="profile_card_photo_height">90dp</dimen>
   <dimen name="profile_card_photo_width">@dimen/grid_20</dimen>
   <dimen name="project_avatar_width">@dimen/grid_8</dimen>
   <dimen name="project_avatar_height">@dimen/grid_8</dimen>
-  <dimen name="project_card_photo_med_height">200dp</dimen>
-  <dimen name="project_card_photo_med_width">266dp</dimen>
+  <dimen name="project_card_photo_landscape_height">155dp</dimen>
+  <dimen name="project_card_photo_landscape_width">275dp</dimen>
   <dimen name="project_social_photo_height">@dimen/grid_4</dimen>
-  <dimen name="project_photo_full_height">420dp</dimen>
+  <dimen name="search_result_photo_width">107dp</dimen>
+  <dimen name="search_result_photo_height">60dp</dimen>
+  <dimen name="thanks_project_photo_width">200dp</dimen>
+  <dimen name="thanks_project_photo_height">113dp</dimen>
 
   <!-- TextViews -->
   <dimen name="text_view_corner_radius">@dimen/grid_1_half</dimen>

@@ -21,12 +21,13 @@
 
       <ImageView
         android:id="@+id/project_photo"
+        android:scaleType="fitCenter"
         android:background="@drawable/gray_gradient"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:adjustViewBounds="true"
-        android:layout_width="138dp"
-        android:layout_height="104dp" />
+        android:layout_width="@dimen/activity_feed_update_photo_width"
+        android:layout_height="@dimen/activity_feed_update_photo_height" />
 
       <TextView
         style="@style/BodyPrimary"

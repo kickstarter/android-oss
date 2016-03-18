@@ -22,9 +22,10 @@
         android:background="@drawable/gray_gradient"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:scaleType="fitCenter"
         android:adjustViewBounds="true"
-        android:layout_width="85dp"
-        android:layout_height="64dp"
+        android:layout_width="@dimen/activity_feed_backing_photo_width"
+        android:layout_height="@dimen/activity_feed_backing_photo_height"
         android:layout_marginTop="6dp" />
 
       <LinearLayout

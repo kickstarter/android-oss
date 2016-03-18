@@ -389,6 +389,7 @@
   <string name="forgot_password_placeholder_email" formatted="false">Email address</string>
   <string name="forgot_password_title" formatted="false">Forgot your password?</string>
   <string name="forgot_password_we_sent_an_email_to_email_address_with_instructions_to_reset_your_password" formatted="false">We’ve sent an email to %{email} with instructions to reset your password.</string>
+  <string name="general_accessibility_kickstarter" formatted="false">Kickstarter</string>
   <string name="general_alert_buttons_ok" formatted="false">OK</string>
   <string name="general_error_oops" formatted="false">Oops!</string>
   <string name="general_error_something_wrong" formatted="false">Something went wrong.</string>
@@ -573,6 +574,12 @@ Thank you for your support!</string>
   <string name="project_accessibility_button_star_label" formatted="false">Star this project</string>
   <string name="project_back_button" formatted="false">Back this project</string>
   <string name="project_backer_title" formatted="false">You’re a backer!</string>
+  <string name="project_checkout_android_pay_backer_101" formatted="false">&lt;b>Questions?&lt;/b> Read the &lt;u>backer 101&lt;/u>.</string>
+  <string name="project_checkout_android_pay_change" formatted="false">Change</string>
+  <string name="project_checkout_android_pay_confirm" formatted="false">Confirm</string>
+  <string name="project_checkout_android_pay_payment_method" formatted="false">Payment Method</string>
+  <string name="project_checkout_android_pay_pledge_disclaimer" formatted="false">Your payment method will not be charged at this time. If the project is successfully funded, your card will be charged %{charge_amount} when the project ends.</string>
+  <string name="project_checkout_android_pay_terms_and_privacy" formatted="false">By pledging you agree to Kickstarter\'s &lt;u>terms of use&lt;/u> and &lt;u>privacy policy&lt;/u>.</string>
   <string name="project_checkout_apple_pay_alert_button_ok" formatted="false">OK</string>
   <string name="project_checkout_apple_pay_alert_error" formatted="false">Error</string>
   <string name="project_checkout_backing_navbar_title" formatted="false">Back this project</string>

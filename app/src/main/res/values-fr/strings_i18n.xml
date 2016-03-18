@@ -314,7 +314,7 @@
   <string name="discovery_baseball_card_social_friends_are_backers_zero" formatted="false">Vos amis n\'ont pas soutenu ce projet.</string>
   <string name="discovery_baseball_card_stats_backers" formatted="false">contributeurs</string>
   <string name="discovery_baseball_card_stats_convert_from_pledged_of_goal" formatted="false">Conversion de %{pledged} engagés pour un objectif de %{goal}</string>
-  <string name="discovery_baseball_card_stats_funded" formatted="false">funded</string>
+  <string name="discovery_baseball_card_stats_funded" formatted="false">financé</string>
   <string name="discovery_baseball_card_stats_pledged_of_goal" formatted="false">sur %{goal}</string>
   <string name="discovery_baseball_card_stats_pledged_of_goal_short" formatted="false">sur %{goal}</string>
   <string name="discovery_baseball_card_status_banner_canceled" formatted="false">Financement annulé</string>
@@ -389,6 +389,7 @@
   <string name="forgot_password_placeholder_email" formatted="false">Adresse e-mail</string>
   <string name="forgot_password_title" formatted="false">Mot de passe oublié ?</string>
   <string name="forgot_password_we_sent_an_email_to_email_address_with_instructions_to_reset_your_password" formatted="false">Nous avons envoyé un e-mail à %{email} contenant les instructions nécessaires pour réinitialiser votre mot de passe.</string>
+  <string name="general_accessibility_kickstarter" formatted="false">Kickstarter</string>
   <string name="general_alert_buttons_ok" formatted="false">OK</string>
   <string name="general_error_oops" formatted="false">Oups !</string>
   <string name="general_error_something_wrong" formatted="false">Un erreur s\'est produite.</string>
@@ -543,7 +544,7 @@ Ce problème peut généralement être résolu en accédant à Réglages iOS > F
   <string name="profile_settings_logout_alert_title" formatted="false">Déconnexion</string>
   <string name="profile_settings_navbar_title" formatted="false">Paramètres</string>
   <string name="profile_settings_navbar_title_notifications" formatted="false">Notifications</string>
-  <string name="profile_settings_newsletter_games" formatted="false">Kickstarter Loves Games</string>
+  <string name="profile_settings_newsletter_games" formatted="false">Kickstarter aime les jeux</string>
   <string name="profile_settings_newsletter_happening" formatted="false">Happening</string>
   <string name="profile_settings_newsletter_opt_in_message" formatted="false">Nous vous avons envoyé un e-mail de confirmation à l\'adresse associée à votre compte ! Veuillez ouvrir votre boîte de réception et confirmer votre abonnement à %{newsletter}.</string>
   <string name="profile_settings_newsletter_opt_in_title" formatted="false">Dernière étape !</string>
@@ -572,6 +573,12 @@ Merci pour votre soutien !</string>
   <string name="project_accessibility_button_star_label" formatted="false">Ajouter à mes projets préférés</string>
   <string name="project_back_button" formatted="false">Je soutiens ce projet</string>
   <string name="project_backer_title" formatted="false">Vous êtes contributeur !</string>
+  <string name="project_checkout_android_pay_backer_101" formatted="false">&lt;b>Des questions ?&lt;/b> Lisez la section &lt;u>Notions de base&lt;/u>.</string>
+  <string name="project_checkout_android_pay_change" formatted="false">Modifier</string>
+  <string name="project_checkout_android_pay_confirm" formatted="false">Confirmer</string>
+  <string name="project_checkout_android_pay_payment_method" formatted="false">Moyen de paiement</string>
+  <string name="project_checkout_android_pay_pledge_disclaimer" formatted="false">Votre moyen de paiement ne sera pas débité tout de suite. Si le projet est intégralement financé, votre carte sera débitée de %{charge_amount} en fin de campagne.</string>
+  <string name="project_checkout_android_pay_terms_and_privacy" formatted="false">En vous engageant, vous acceptez les &lt;u>conditions d\'utilisation&lt;/u> et la &lt;u>politique de confidentialité&lt;/u> de Kickstarter.</string>
   <string name="project_checkout_apple_pay_alert_button_ok" formatted="false">OK</string>
   <string name="project_checkout_apple_pay_alert_error" formatted="false">Erreur</string>
   <string name="project_checkout_backing_navbar_title" formatted="false">Je soutiens ce projet</string>
@@ -580,9 +587,9 @@ Merci pour votre soutien !</string>
   <string name="project_checkout_finalizing_timeout_message" formatted="false">Nous sommes désolés. On dirait que cette opération prend plus de temps que d\'habitude. Nous vous enverrons un e-mail une fois votre engagement finalisé.</string>
   <string name="project_checkout_finalizing_title" formatted="false">Traitement en cours</string>
   <string name="project_checkout_finalizing_we_are_finalizing_your_pledge_to_project" formatted="false">Nous sommes en train de finaliser votre engagement pour le projet %{project_name}. Merci de patienter quelques instants !</string>
-  <string name="project_checkout_games_alert_no_thanks" formatted="false">No thanks.</string>
-  <string name="project_checkout_games_alert_want_the_coolest_games_delivered_to_your_inbox" formatted="false">Want the coolest games delivered to your inbox? Our Games team has a newsletter just for you.</string>
-  <string name="project_checkout_games_alert_yes_please" formatted="false">Yes please!</string>
+  <string name="project_checkout_games_alert_no_thanks" formatted="false">Non merci.</string>
+  <string name="project_checkout_games_alert_want_the_coolest_games_delivered_to_your_inbox" formatted="false">Envie de tout savoir sur les jeux les plus cools ? La lettre d\'information de notre équipe Jeux est faite pour vous.</string>
+  <string name="project_checkout_games_alert_yes_please" formatted="false">Oui !</string>
   <string name="project_checkout_looking_for_more_projects_check_these_out" formatted="false">Vous recherchez plus de projets ? En voici quelques uns.</string>
   <string name="project_checkout_manage_navbar_title" formatted="false">Gérer</string>
   <string name="project_checkout_navigation_next" formatted="false">Suivant</string>

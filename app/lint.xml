@@ -45,7 +45,7 @@
     <ignore path="src/internal/res/**" />
 
     <!-- Confirmed false-positives -->
-    <ignore path="**/res/google-services/internalMin21/debug/values/values.xml" />
+    <ignore path="**/res/google-services/**/values/values.xml" />
     <ignore path="src/main/res/drawable-*/ic_kickstarter_k.png" />
     <ignore path="src/main/res/anim/fade_out.xml" />
     <ignore path="src/main/res/anim/slide_in_bottom.xml" />

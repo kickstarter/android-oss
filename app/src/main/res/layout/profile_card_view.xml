@@ -26,7 +26,7 @@
 
       <ImageView
         android:id="@+id/profile_card_image"
-        android:scaleType="fitXY"
+        android:scaleType="centerCrop"
         android:background="@drawable/gray_gradient"
         android:layout_alignParentTop="true"
         android:layout_width="match_parent"

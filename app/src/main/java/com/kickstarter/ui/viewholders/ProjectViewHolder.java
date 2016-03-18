@@ -159,11 +159,12 @@ public final class ProjectViewHolder extends KSViewHolder {
     final Photo photo = project.photo();
     if (photo != null) {
       final int targetImageWidth = (int) (getScreenWidthDp(context) * getScreenDensity(context));
-      photoImageView.setMaxHeight(ProjectUtils.photoHeightFromWidthRatio(targetImageWidth));
+      final int targetImageHeight = ProjectUtils.photoHeightFromWidthRatio(targetImageWidth);
+      photoImageView.setMaxHeight(targetImageHeight);
 
       Picasso.with(context)
         .load(photo.full())
-        .resize(targetImageWidth, 0)
+        .resize(targetImageWidth, targetImageHeight)
         .placeholder(grayGradientDrawable)
         .into(photoImageView);
     }

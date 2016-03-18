@@ -125,11 +125,12 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       photoImageView.setVisibility(View.VISIBLE);
 
       final int targetImageWidth = (int) (getScreenWidthDp(context) * getScreenDensity(context) - grid4Dimen);
-      photoImageView.setMaxHeight(ProjectUtils.photoHeightFromWidthRatio(targetImageWidth));
+      final int targetImageHeight = ProjectUtils.photoHeightFromWidthRatio(targetImageWidth);
+      photoImageView.setMaxHeight(targetImageHeight);
 
       Picasso.with(context)
         .load(photo.full())
-        .resize(targetImageWidth, 0)  // required to fit properly into apis < 18
+        .resize(targetImageWidth, targetImageHeight)  // required to fit properly into apis < 18
         .placeholder(grayGradientDrawable)
         .into(photoImageView);
 

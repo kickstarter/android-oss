@@ -9,6 +9,8 @@ import com.kickstarter.BuildConfig;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
+import java.util.Locale;
+
 public final class Release {
   private final PackageInfo packageInfo;
 
@@ -36,11 +38,10 @@ public final class Release {
     return packageInfo.versionName;
   }
 
-  @SuppressLint("DefaultLocale")
   public String variant() {
     // e.g. internalDebug, externalRelease
     return new StringBuilder().append(BuildConfig.FLAVOR_AUDIENCE)
-      .append(BuildConfig.BUILD_TYPE.substring(0, 1).toUpperCase())
+      .append(BuildConfig.BUILD_TYPE.substring(0, 1).toUpperCase(Locale.US))
       .append(BuildConfig.BUILD_TYPE.substring(1))
       .toString();
   }

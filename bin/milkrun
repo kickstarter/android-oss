@@ -42,14 +42,13 @@ class MilkrunApplication
         Milkrun::ServerConfigRefresher.new.refresh
         Milkrun::I18nStringResources.new.create
 
-        version_code = Milkrun::VersionCode.new.bump
-        version_name = Milkrun::VersionName.new.prompt
+        version_code = Milkrun::VersionCode.new(audience: audience).bump
+        version_name = Milkrun::VersionName.new(audience: audience).prompt
         Milkrun.prompt <<-CHECKLIST
 Release checklist!
 
 1) Make sure the build passes in CircleCI.
-2) Run view tests: ./gradlew connectedExternalPre21DebugAndroidTest
-3) Build and run locally in externalPre21Release mode, test core features on a real device.
+2) Build and run locally in externalPre21Release mode, test core features on a real device.
 CHECKLIST
         output_path = Milkrun::Build.new(audience: audience, build_type: build_type).compile
         pretty_path = File.join(File.dirname(output_path), "kickstarter-#{version_name}.apk")
@@ -71,14 +70,13 @@ CHECKLIST
         Milkrun::ServerConfigRefresher.new.refresh
         Milkrun::I18nStringResources.new.create
 
-        version_code = Milkrun::VersionCode.new.bump
-        version_name = Milkrun::VersionName.new.prompt
+        version_code = Milkrun::VersionCode.new(audience: audience).bump
+        version_name = Milkrun::VersionName.new(audience: audience).prompt
         Milkrun.prompt <<-CHECKLIST
 Release checklist!
 
 1) Make sure the build passes in CircleCI.
-2) Run view tests: ./gradlew connectedInternalMin21DebugAndroidTest
-3) Build and run locally in internalPre21Release mode, test core features on a real device.
+2) Build and run locally in internalPre21Release mode, test core features on a real device.
 CHECKLIST
         file_path = Milkrun::Build.new(audience: audience, build_type: build_type).compile
         Milkrun::HockeyApp.new(audience: audience, version_code: version_code, version_name: version_name).create_version

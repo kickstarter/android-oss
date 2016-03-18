@@ -106,7 +106,7 @@
       <android.support.v7.widget.RecyclerView
         android:id="@+id/recommended_projects_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/grid_14"
+        android:layout_height="@dimen/grid_15"
         android:layout_marginBottom="@dimen/grid_2"
         android:layout_marginTop="@dimen/grid_2"
         android:layout_marginLeft="@dimen/grid_2"

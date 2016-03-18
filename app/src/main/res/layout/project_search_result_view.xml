@@ -22,6 +22,7 @@
       android:id="@+id/project_image_view"
       android:layout_alignParentEnd="true"
       android:layout_alignParentRight="true"
+      android:scaleType="centerCrop"
       android:adjustViewBounds="true"
       android:layout_width="80dp"
       android:layout_height="60dp" />

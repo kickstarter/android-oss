@@ -26,6 +26,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
         android:layout_width="138dp"
         android:layout_height="104dp"
         tools:ignore="ContentDescription" />

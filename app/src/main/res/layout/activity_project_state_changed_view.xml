@@ -17,6 +17,7 @@
       android:id="@+id/project_photo"
       android:background="@drawable/gray_gradient"
       android:adjustViewBounds="true"
+      android:scaleType="centerCrop"
       android:layout_width="@dimen/activity_feed_medium_photo_width"
       android:layout_height="@dimen/activity_feed_medium_photo_height"
       tools:ignore="ContentDescription" />

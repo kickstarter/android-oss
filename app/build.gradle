@@ -6,8 +6,10 @@ apply from: 'quality.gradle'
 def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
 def date = new Date();
 def buildDate = date.format("yyyy-MM-dd'T'HH:mm:ss'Z'", TimeZone.getTimeZone("UTC"))
-def privateVersion = new File(project.rootDir.path + "/app/version_code.txt").text.trim().toInteger()
-def publicVersion = new File(project.rootDir.path + "/app/version_name.txt").text.trim()
+def externalPrivateVersion = new File(project.rootDir.path + "/app/external_version_code.txt").text.trim().toInteger()
+def externalPublicVersion = new File(project.rootDir.path + "/app/external_version_name.txt").text.trim()
+def internalPrivateVersion = new File(project.rootDir.path + "/app/internal_version_code.txt").text.trim().toInteger()
+def internalPublicVersion = new File(project.rootDir.path + "/app/internal_version_name.txt").text.trim()
 def isCircle = "true".equals(System.getenv("CIRCLECI"))
 
 ext.signing = [
@@ -33,11 +35,6 @@ android {
 
         buildConfigField "String", "GIT_SHA", "\"${gitSha}\""
         buildConfigField "String", "BUILD_DATE", "\"${buildDate}\""
-
-        // Version code is an internal/private version number
-        versionCode privateVersion
-        // Version name is shown to users
-        versionName publicVersion
 
         // Enable Multidex to support over 65K methods
         multiDexEnabled true
@@ -91,10 +88,14 @@ android {
         internal {
             dimension "AUDIENCE"
             applicationId "com.kickstarter.kickstarter.internal"
+            versionCode internalPrivateVersion
+            versionName internalPublicVersion
         }
         external {
             dimension "AUDIENCE"
             applicationId "com.kickstarter.kickstarter"
+            versionCode externalPrivateVersion
+            versionName externalPublicVersion
         }
     }
 

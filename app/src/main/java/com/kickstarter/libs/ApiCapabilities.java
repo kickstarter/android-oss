@@ -1,7 +1,13 @@
 package com.kickstarter.libs;
 
+import android.view.ViewGroup;
+
 public final class ApiCapabilities {
   private ApiCapabilities() {}
+
+  public static boolean canCheckMediaControllerIsAttachedToWindow() {
+    return android.os.Build.VERSION.SDK_INT >= 19;
+  }
 
   public static boolean canDebugWebViews() {
     return android.os.Build.VERSION.SDK_INT >= 19;
@@ -19,6 +25,13 @@ public final class ApiCapabilities {
 
   public static boolean canSetDarkStatusBarIcons() {
     return android.os.Build.VERSION.SDK_INT >= 23;
+  }
+
+  /**
+   * For {@link ViewGroup#setNestedScrollingEnabled}.
+   */
+  public static boolean canSetNestingScrollingEnabled() {
+    return android.os.Build.VERSION.SDK_INT >= 21;
   }
 
   public static boolean canSetStatusBarColor() {

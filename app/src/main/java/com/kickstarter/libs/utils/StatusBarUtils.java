@@ -1,5 +1,6 @@
 package com.kickstarter.libs.utils;
 
+import android.annotation.TargetApi;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -12,6 +13,8 @@ import com.kickstarter.libs.BaseActivity;
 public final class StatusBarUtils {
   private StatusBarUtils() {}
 
+  @SuppressWarnings("InlinedApi")
+  @TargetApi(21)
   public static void apply(final @NonNull BaseActivity activity, final @ColorInt int color) {
     if (!ApiCapabilities.canSetStatusBarColor()) {
       return;

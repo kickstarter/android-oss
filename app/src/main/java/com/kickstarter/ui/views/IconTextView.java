@@ -1,5 +1,6 @@
 package com.kickstarter.ui.views;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.NonNull;
@@ -38,7 +39,7 @@ public class IconTextView extends TextView {
     initialize(context, attrs, defStyleAttr, 0);
   }
 
-  @SuppressWarnings("deprecation")
+  @TargetApi(21)
   public IconTextView(final @NonNull Context context, final @Nullable AttributeSet attrs, final int defStyleAttr,
     final int defStyleRes) {
     super(context, attrs, defStyleAttr, defStyleRes);

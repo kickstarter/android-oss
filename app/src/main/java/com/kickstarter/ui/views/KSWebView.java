@@ -1,5 +1,6 @@
 package com.kickstarter.ui.views;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -38,15 +39,19 @@ public class KSWebView extends WebView {
     setWebChromeClient(new WebChromeClient());
     getSettings().setJavaScriptEnabled(true);
     getSettings().setAllowFileAccess(false);
-
-    if (ApiCapabilities.canDebugWebViews()) {
-      setWebContentsDebuggingEnabled(true);
-    }
+    enableDebugging();
 
     addJavascriptInterface(new WebViewJavascriptInterface(this.client), "WebViewJavascriptInterface");
   }
 
   public KSWebViewClient client() {
     return client;
+  }
+
+  @TargetApi(19)
+  private void enableDebugging() {
+    if (ApiCapabilities.canDebugWebViews()) {
+      setWebContentsDebuggingEnabled(true);
+    }
   }
 }

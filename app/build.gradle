@@ -109,7 +109,7 @@ android {
     }
 
     lintOptions {
-        quiet true
+        warningsAsErrors true
     }
 
     packagingOptions {

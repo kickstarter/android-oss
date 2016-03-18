@@ -7,7 +7,7 @@
 
   <ImageView
     android:id="@+id/project_photo"
-    android:scaleType="fitXY"
+    android:scaleType="fitCenter"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/gray_gradient"
@@ -22,7 +22,7 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:padding="14dp"
-    android:textSize="@dimen/grid_5"
+    android:textSize="40sp"
     android:text="@string/play_arrow"
     android:textColor="@color/white"
     android:visibility="gone" />

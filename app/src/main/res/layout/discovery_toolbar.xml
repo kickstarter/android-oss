@@ -10,7 +10,8 @@
   android:background="@color/discovery_toolbar"
   android:elevation="@dimen/toolbar_elevation"
   app:contentInsetLeft="0dp"
-  app:contentInsetStart="0dp">
+  app:contentInsetStart="0dp"
+  tools:ignore="UnusedAttribute">
 
   <LinearLayout
     android:orientation="vertical"

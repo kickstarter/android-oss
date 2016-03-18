@@ -6,32 +6,18 @@
   <style name="None">
   </style>
 
-  <style name="KSTheme" parent="Theme.AppCompat.Light.NoActionBar">
-    <!-- Shared view activity animations -->
-    <item name="android:windowContentTransitions">true</item>
-    <item name="android:windowAllowEnterTransitionOverlap">true</item>
-    <item name="android:windowAllowReturnTransitionOverlap">true</item>
+  <style name="KSTheme" parent="KSThemeBase" />
 
+  <style name="KSThemeBase" parent="Theme.AppCompat.Light.NoActionBar">
     <item name="popupMenuStyle">@style/PopupMenu</item>
     <item name="alertDialogTheme">@style/Dialog</item>
 
-    <!-- Toolbar -->
-    <!-- Using toolbar, so disable the action bar -->
     <item name="android:windowNoTitle">true</item>
     <item name="android:windowActionBar">false</item>
 
-    <!-- More on Color Palette:
-      http://www.google.com/design/spec/style/color.html#color-color-palette
-      http://developer.android.com/training/material/theme.html#ColorPalette -->
-
-    <!-- colorPrimary is used for the default action bar background -->
     <item name="colorPrimary">@color/primary</item>
-    <!-- colorPrimaryDark is used for the status bar -->
     <item name="colorPrimaryDark">@color/primary_dark</item>
-    <!-- colorAccent is used as the default value for colorControlActivated which
-      is used to tint widgets -->
     <item name="colorAccent">@color/accent</item>
-    <item name="android:colorControlHighlight">@color/accent_alpha_20</item>
     <item name="android:textColorLink">@color/accent</item>
     <item name="android:textColorPrimary">@color/text_primary</item>
     <item name="android:textColorSecondary">@color/text_secondary</item>
@@ -54,11 +40,9 @@
 
   <style name="DiscoveryBase" parent="KSTheme">
     <item name="android:windowBackground">@color/discovery_background</item>
-    <item name="android:colorPrimaryDark">@color/discovery_status_bar</item>
   </style>
 
-  <style name="DiscoveryActivity" parent="DiscoveryBase">
-  </style>
+  <style name="DiscoveryActivity" parent="DiscoveryBase" />
 
   <style name="HelpActivity" parent="KSTheme">
     <item name="android:windowBackground">@color/white</item>
@@ -84,11 +68,12 @@
     <item name="android:windowBackground">@color/white</item>
   </style>
 
-  <style name="VideoPlayerActivity" parent="KSTheme">
-    <item name="android:statusBarColor">@color/transparent</item>
+  <style name="VideoPlayerBase" parent="KSTheme">
     <item name="android:windowNoTitle">true</item>
     <item name="android:windowBackground">@color/black</item>
   </style>
+
+  <style name="VideoPlayerActivity" parent="VideoPlayerBase" />
 
   <style name="ViewPledgeActivity" parent="KSTheme">
     <item name="android:windowBackground">@color/white</item>
@@ -144,23 +129,23 @@
     <item name="android:drawableStart">@drawable/ic_social_facebook</item>
   </style>
 
-  <style name="GreenRoundedButton" parent="Button">
+  <style name="GreenRoundedButtonBase" parent="Button">
     <item name="android:background">@drawable/button_green_rounded</item>
     <item name="android:paddingLeft">@dimen/grid_5</item>
     <item name="android:paddingRight">@dimen/grid_5</item>
-    <item name="android:paddingStart">@dimen/grid_5</item>
-    <item name="android:paddingEnd">@dimen/grid_5</item>
     <item name="android:fontFamily">@string/font_family_medium</item>
   </style>
 
-  <style name="BlueRoundedButton" parent="Button">
+  <style name="GreenRoundedButton" parent="GreenRoundedButtonBase" />
+
+  <style name="BlueRoundedButtonBase" parent="Button">
     <item name="android:background">@drawable/button_blue_rounded</item>
     <item name="android:paddingLeft">@dimen/grid_5</item>
     <item name="android:paddingRight">@dimen/grid_5</item>
-    <item name="android:paddingStart">@dimen/grid_5</item>
-    <item name="android:paddingEnd">@dimen/grid_5</item>
     <item name="android:fontFamily">@string/font_family_medium</item>
   </style>
+
+  <style name="BlueRoundedButton" parent="BlueRoundedButtonBase" />
 
   <style name="TwitterButton" parent="Base.Widget.AppCompat.Button.Borderless">
     <item name="android:background">@drawable/button_twitter</item>
@@ -200,15 +185,16 @@
     <item name="android:background">@drawable/click_indicator_light</item>
   </style>
 
-  <style name="EndSettingsWidget">
+  <style name="EndSettingsWidgetBase">
     <item name="android:layout_centerVertical">true</item>
     <item name="android:textSize">@dimen/settings_icon</item>
     <item name="android:layout_height">match_parent</item>
     <item name="android:layout_width">wrap_content</item>
     <item name="android:gravity">center</item>
     <item name="android:layout_alignParentRight">true</item>
-    <item name="android:layout_alignParentEnd">true</item>
   </style>
+
+  <style name="EndSettingsWidget" parent="EndSettingsWidget" />
 
   <style name="KSSettingsPhoneIcon" parent="EndSettingsWidget">
     <item name="android:focusable">true</item>
@@ -219,13 +205,14 @@
     <item name="android:text">@string/phone_android_icon</item>
   </style>
 
-  <style name="Toolbar" parent="Base.Widget.AppCompat.Toolbar">
+  <style name="ToolbarBase" parent="Base.Widget.AppCompat.Toolbar">
     <item name="android:background">@color/primary</item>
-    <item name="android:elevation">1dp</item>
     <item name="android:foregroundGravity">center_vertical</item>
     <item name="android:layout_height">?attr/actionBarSize</item>
     <item name="android:layout_width">match_parent</item>
   </style>
+
+  <style name="Toolbar" parent="ToolbarBase" />
 
   <style name="ToolbarIcon">
     <item name="android:background">@drawable/click_indicator_light</item>
@@ -243,15 +230,16 @@
     <item name="android:textColor">@color/white</item>
   </style>
 
-  <style name="ToolbarTitle" parent="Headline">
+  <style name="ToolbarTitleBase" parent="Headline">
     <item name="android:layout_height">wrap_content</item>
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_centerVertical">true</item>
     <item name="android:color">@color/black</item>
     <item name="android:textColorHint">@color/dark_gray</item>
     <item name="android:layout_marginLeft">@dimen/grid_9</item>
-    <item name="android:layout_marginStart">@dimen/grid_9</item>
   </style>
+
+  <style name="ToolbarTitle" parent="ToolbarTitleBase" />
 
   <!-- Typography -->
   <style name="TextPrimary">
@@ -344,7 +332,7 @@
   </style>
 
   <!-- Cards -->
-  <style name="ActivityFeedCard">
+  <style name="ActivityFeedCardBase">
     <item name="android:foreground">@drawable/click_indicator_light</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:layout_marginTop">@dimen/activity_feed_view_margin_top</item>
@@ -353,13 +341,13 @@
     <item name="cardBackgroundColor">@color/white</item>
     <item name="cardCornerRadius">0dp</item>
     <item name="cardElevation">0dp</item>
-    <item name="android:layout_marginStart">@dimen/activity_padding_x</item>
-    <item name="android:layout_marginEnd">@dimen/activity_padding_x</item>
     <item name="android:layout_marginLeft">@dimen/activity_padding_x</item>
     <item name="android:layout_marginRight">@dimen/activity_padding_x</item>
   </style>
 
-  <style name="ActivitySampleCard">
+  <style name="ActivityFeedCard" parent="ActivityFeedCardBase" />
+
+  <style name="ActivitySampleCardBase">
     <item name="android:layout_width">match_parent</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="cardCornerRadius">4dp</item>
@@ -369,9 +357,9 @@
     <item name="android:layout_marginBottom">@dimen/grid_1</item>
     <item name="android:layout_marginTop">@dimen/grid_3</item>
     <item name="android:layout_marginLeft">@dimen/grid_2</item>
-    <item name="android:layout_marginStart">@dimen/grid_2</item>
     <item name="android:layout_marginRight">@dimen/grid_2</item>
-    <item name="android:layout_marginEnd">@dimen/grid_2</item>
   </style>
+
+  <style name="ActivitySampleCard" parent="ActivitySampleCardBase" />
 
 </resources>

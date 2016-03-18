@@ -10,7 +10,8 @@
   android:background="@color/light_gray"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
-  android:elevation="@dimen/toolbar_elevation">
+  android:elevation="@dimen/toolbar_elevation"
+  tools:ignore="UnusedAttribute">
 
   <RelativeLayout
     android:layout_width="match_parent"

@@ -2,6 +2,7 @@
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:card_view="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
   style="@style/ActivityFeedCard"
   card_view:cardBackgroundColor="@color/white"
   android:background="@color/white"
@@ -12,7 +13,8 @@
   android:paddingTop="@dimen/grid_5"
   android:paddingBottom="@dimen/grid_6"
   android:elevation="2dp"
-  android:gravity="center_horizontal">
+  android:gravity="center_horizontal"
+  tools:ignore="UnusedAttribute">
 
   <com.kickstarter.ui.views.IconTextView
     android:layout_width="wrap_content"

@@ -12,9 +12,19 @@ public interface CommentFeedViewModelInputs {
   void commentButtonClicked();
 
   /**
+   * Call when the comment dialog should be dismissed.
+   */
+  void dismissCommentDialog();
+
+  /**
    * Invoke when pagination should happen.
    */
   void nextPage();
+
+  /**
+   * Call when the post comment button is clicked.
+   */
+  void postCommentClicked();
 
   /**
    * Invoke when the feed should be refreshed.

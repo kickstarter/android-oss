@@ -11,7 +11,9 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingRight="@dimen/grid_2">
+    android:paddingEnd="@dimen/grid_2"
+    android:paddingRight="@dimen/grid_2"
+    tools:ignore="RtlSymmetry">
 
     <TextView
       android:id="@+id/backers_count"
@@ -33,7 +35,9 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingRight="@dimen/grid_2">
+    android:paddingEnd="@dimen/grid_2"
+    android:paddingRight="@dimen/grid_2"
+    tools:ignore="RtlSymmetry">
 
     <TextView
       android:id="@+id/pledged"
@@ -56,7 +60,9 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingRight="@dimen/grid_1">
+    android:paddingEnd="@dimen/grid_1"
+    android:paddingRight="@dimen/grid_1"
+    tools:ignore="RtlSymmetry">
 
     <TextView
       android:id="@+id/deadline_countdown_text_view"

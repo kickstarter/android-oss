@@ -34,6 +34,8 @@
       android:text="@string/project_menu_created_by"
       android:paddingLeft="@dimen/grid_2"
       android:paddingStart="@dimen/grid_2"
+      android:paddingRight="@dimen/grid_2"
+      android:paddingEnd="@dimen/grid_2"
       android:layout_toRightOf="@id/avatar"
       android:layout_toEndOf="@id/avatar"
       android:paddingTop="@dimen/grid_1"

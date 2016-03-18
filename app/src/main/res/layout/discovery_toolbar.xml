@@ -41,7 +41,8 @@
         android:clipChildren="false"
         android:clipToPadding="false"
         android:paddingRight="@dimen/grid_2"
-        android:paddingEnd="@dimen/grid_2">
+        android:paddingEnd="@dimen/grid_2"
+        tools:ignore="RtlSymmetry">
 
         <com.kickstarter.ui.views.IconButton
           style="@style/ToolbarIconDarkBackground"

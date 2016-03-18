@@ -58,7 +58,10 @@
             android:id="@+id/created"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/grid_1_half"
+            android:paddingStart="@dimen/grid_1_half"
             android:paddingRight="@dimen/grid_1_half"
+            android:paddingEnd="@dimen/grid_1_half"
             android:text="@string/profile_projects_created_projects"
             android:textColor="@color/text_secondary" />
 
@@ -67,15 +70,19 @@
             android:id="@+id/created_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/grid_1_half"
+            android:layout_marginRight="@dimen/grid_1_half"
             tools:text="0" />
 
           <View
             android:id="@+id/divider"
             android:background="@color/black_alpha_10"
             android:layout_width="1dp"
-            android:layout_height="16dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
+            android:layout_height="@dimen/grid_2"
+            android:layout_marginLeft="@dimen/grid_1"
+            android:layout_marginStart="@dimen/grid_1"
+            android:layout_marginRight="@dimen/grid_1"
+            android:layout_marginEnd="@dimen/grid_1"
             android:layout_marginTop="3dp"/>
 
           <TextView
@@ -83,6 +90,9 @@
             android:id="@+id/backed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/grid_1_half"
+            android:paddingStart="@dimen/grid_1_half"
+            android:paddingEnd="@dimen/grid_1_half"
             android:paddingRight="@dimen/grid_1_half"
             android:text="@string/profile_projects_backed_projects"
             android:textColor="@color/text_secondary" />
@@ -111,6 +121,7 @@
     android:clipChildren="false"
     android:clipToPadding="false"
     android:scrollbars="vertical"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:ignore="RtlSymmetry" />
 
 </android.support.design.widget.CoordinatorLayout>

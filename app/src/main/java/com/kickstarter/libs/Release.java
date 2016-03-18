@@ -1,6 +1,5 @@
 package com.kickstarter.libs;
 
-import android.annotation.SuppressLint;
 import android.content.pm.PackageInfo;
 import android.support.annotation.NonNull;
 

@@ -685,6 +685,14 @@
               }
             }
           },
+          "android_pay": {
+            "pledge_disclaimer": "Your payment method will not be charged at this time. If the project is successfully funded, your card will be charged %{charge_amount} when the project ends.",
+            "terms_and_privacy": "By pledging you agree to Kickstarter's <u>terms of use</u> and <u>privacy policy</u>.",
+            "backer_101": "<b>Questions?</b> Read the <u>backer 101</u>.",
+            "confirm": "Confirm",
+            "payment_method": "Payment Method",
+            "change": "Change"
+          },
           "games_alert": {
             "want_the_coolest_games_delivered_to_your_inbox": "Want the coolest games delivered to your inbox? Our Games team has a newsletter just for you.",
             "yes_please": "Yes please!",
@@ -1143,6 +1151,9 @@
           "buttons": {
             "ok": "OK"
           }
+        },
+        "accessibility": {
+          "kickstarter": "Kickstarter"
         }
       },
       "dates": {
@@ -1999,6 +2010,14 @@
               }
             }
           },
+          "android_pay": {
+            "pledge_disclaimer": "Deine Zahlungsmethode wird jetzt noch nicht belastet. Erst nachdem das Projekt erfolgreich finanziert wurde, wird sie nach Ablauf desselben mit %{charge_amount} belastet.",
+            "terms_and_privacy": "Durch Leistung deines Beitrags erklärst du dich mit Kickstarters <u>terms of use</u> und <u>privacy policy</u> einverstanden.",
+            "backer_101": "<b>Fragen?</b> Einfach im <u>Unterstützer-Einmaleins</u> nachlesen!",
+            "confirm": "Bestätigen",
+            "payment_method": "Zahlungmethode",
+            "change": "Ändern"
+          },
           "games_alert": {
             "want_the_coolest_games_delivered_to_your_inbox": "Wie wäre es, wenn du die coolsten Games direkt in deine Inbox geliefert bekämst? Kein Problem - unser Games-Team hat einen Newsletter für dich!",
             "yes_please": "Gerne!",
@@ -2457,6 +2476,9 @@
           "buttons": {
             "ok": "OK"
           }
+        },
+        "accessibility": {
+          "kickstarter": "Kickstarter"
         }
       },
       "dates": {
@@ -3313,6 +3335,14 @@
               }
             }
           },
+          "android_pay": {
+            "pledge_disclaimer": "Todavía no se le hará ningún cargo a tu método de pago. Se efectuará un cargo de %{charge_amount} una vez que el proyecto haya sido financiado exitosamente.",
+            "terms_and_privacy": "Al contribuir, aceptas los <u>terms of use</u> y la <u>privacy policy</u> de Kickstarter.",
+            "backer_101": "<b>¿Preguntas?</b> Encontrarás respuestas en el <u>manual básico del patrocinador</u>.",
+            "confirm": "Confirmar",
+            "payment_method": "Método de pago",
+            "change": "Cambiar"
+          },
           "games_alert": {
             "want_the_coolest_games_delivered_to_your_inbox": "¿Qué tal si pudieras recibir automáticamente lo último acerca de videojuegos por correo electrónico? ¡Trato hecho - nuestro equipo de juegos tienen un boletín hecho a tu medida!",
             "yes_please": "¡Claro que sí!",
@@ -3771,6 +3801,9 @@
           "buttons": {
             "ok": "OK"
           }
+        },
+        "accessibility": {
+          "kickstarter": "Kickstarter"
         }
       },
       "dates": {
@@ -4031,7 +4064,7 @@
           },
           "stats": {
             "backers": "contributeurs",
-            "funded": "funded",
+            "funded": "financé",
             "pledged_of_goal": "sur %{goal}",
             "pledged_of_goal_short": "sur %{goal}",
             "convert_from_pledged_of_goal": "Conversion de %{pledged} engagés pour un objectif de %{goal}"
@@ -4308,7 +4341,7 @@
             "weekly": "Nos coups de cœur",
             "promo": "Nouvelles et évènements Kickstarter",
             "happening": "Happening",
-            "games": "Kickstarter Loves Games",
+            "games": "Kickstarter aime les jeux",
             "opt_in": {
               "title": "Dernière étape !",
               "message": "Nous vous avons envoyé un e-mail de confirmation à l'adresse associée à votre compte ! Veuillez ouvrir votre boîte de réception et confirmer votre abonnement à %{newsletter}."
@@ -4627,10 +4660,18 @@
               }
             }
           },
+          "android_pay": {
+            "pledge_disclaimer": "Votre moyen de paiement ne sera pas débité tout de suite. Si le projet est intégralement financé, votre carte sera débitée de %{charge_amount} en fin de campagne.",
+            "terms_and_privacy": "En vous engageant, vous acceptez les <u>conditions d'utilisation</u> et la <u>politique de confidentialité</u> de Kickstarter.",
+            "backer_101": "<b>Des questions ?</b> Lisez la section <u>Notions de base</u>.",
+            "confirm": "Confirmer",
+            "payment_method": "Moyen de paiement",
+            "change": "Modifier"
+          },
           "games_alert": {
-            "want_the_coolest_games_delivered_to_your_inbox": "Want the coolest games delivered to your inbox? Our Games team has a newsletter just for you.",
-            "yes_please": "Yes please!",
-            "no_thanks": "No thanks."
+            "want_the_coolest_games_delivered_to_your_inbox": "Envie de tout savoir sur les jeux les plus cools ? La lettre d'information de notre équipe Jeux est faite pour vous.",
+            "yes_please": "Oui !",
+            "no_thanks": "Non merci."
           }
         },
         "disclaimer": {
@@ -5085,6 +5126,9 @@
           "buttons": {
             "ok": "OK"
           }
+        },
+        "accessibility": {
+          "kickstarter": "Kickstarter"
         }
       },
       "dates": {
@@ -5941,6 +5985,14 @@
               }
             }
           },
+          "android_pay": {
+            "pledge_disclaimer": "Your payment method will not be charged at this time. If the project is successfully funded, your card will be charged %{charge_amount} when the project ends.",
+            "terms_and_privacy": "By pledging you agree to Kickstarter's <u>terms of use</u> and <u>privacy policy</u>.",
+            "backer_101": "<b>Questions?</b> Read the <u>backer 101</u>.",
+            "confirm": "Confirm",
+            "payment_method": "Payment Method",
+            "change": "Change"
+          },
           "games_alert": {
             "want_the_coolest_games_delivered_to_your_inbox": "Want the coolest games delivered to your inbox? Our Games team has a newsletter just for you.",
             "yes_please": "Yes please!",
@@ -6399,6 +6451,9 @@
           "buttons": {
             "ok": "OK"
           }
+        },
+        "accessibility": {
+          "kickstarter": "Kickstarter"
         }
       },
       "dates": {
@@ -6598,10 +6653,7 @@
     "recaptcha": true,
     "log_devices": true,
     "backer_report_formats": true,
-    "discover_cards": true,
-    "recommendations_landing": true,
-    "homepage_recs": true,
-    "community_tab": true
+    "discover_cards": true
   },
   "launched_countries": [
     {
@@ -6719,7 +6771,7 @@
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
     "native_iphone_horiz_vs_vert": "experimental",
-    "recs_hp_combo_v1": "collaborative_backings_v2"
+    "thanks_cards_money": "control"
   },
   "stripe": {
     "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"

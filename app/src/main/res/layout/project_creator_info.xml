@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:background="@color/light_gray"
@@ -25,13 +26,16 @@
       android:layout_height="@dimen/project_avatar_height"
       android:layout_alignParentStart="true"
       android:layout_alignParentLeft="true"
-      android:scaleType="centerCrop" />
+      android:scaleType="centerCrop"
+      tools:ignore="ContentDescription" />
 
     <TextView
       android:id="@+id/created_by"
       android:text="@string/project_menu_created_by"
       android:paddingLeft="@dimen/grid_2"
       android:paddingStart="@dimen/grid_2"
+      android:paddingRight="@dimen/grid_2"
+      android:paddingEnd="@dimen/grid_2"
       android:layout_toRightOf="@id/avatar"
       android:layout_toEndOf="@id/avatar"
       android:paddingTop="@dimen/grid_1"
@@ -41,7 +45,6 @@
 
     <TextView
       android:id="@+id/avatar_name"
-      android:text="Creator Name"
       android:maxLines="2"
       android:paddingLeft="@dimen/grid_2"
       android:paddingStart="@dimen/grid_2"
@@ -53,7 +56,8 @@
       style="@style/SubheadPrimaryMedium"
       android:layout_below="@id/created_by"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content" />
+      android:layout_height="wrap_content"
+      tools:text="Creator Name" />
 
   </RelativeLayout>
 
@@ -76,7 +80,8 @@
       android:layout_height="@dimen/grid_11_half" >
 
       <TextView
-        android:id="@+id/campaign_text_view"
+        android:layout_toStartOf="@+id/campaign_button"
+        android:layout_toLeftOf="@+id/campaign_button"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
@@ -87,6 +92,7 @@
         android:text="@string/project_menu_buttons_campaign" />
 
       <com.kickstarter.ui.views.IconButton
+        android:id="@+id/campaign_button"
         android:textSize="@dimen/chevron_right_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -113,6 +119,8 @@
       <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_toLeftOf="@+id/updates_count"
+        android:layout_toStartOf="@+id/updates_count"
         android:gravity="center_vertical"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
@@ -149,6 +157,8 @@
       <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_toLeftOf="@+id/comments_count"
+        android:layout_toStartOf="@+id/comments_count"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:gravity="center_vertical"

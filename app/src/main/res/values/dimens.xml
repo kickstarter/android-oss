@@ -16,21 +16,13 @@
   <dimen name="grid_8">64dp</dimen>
   <dimen name="grid_9">72dp</dimen>
   <dimen name="grid_10">80dp</dimen>
-  <dimen name="grid_11">88dp</dimen>
   <dimen name="grid_12">96dp</dimen>
-  <dimen name="grid_13">104dp</dimen>
-  <dimen name="grid_14">112dp</dimen>
   <dimen name="grid_15">120dp</dimen>
   <dimen name="grid_16">128dp</dimen>
-  <dimen name="grid_17">136dp</dimen>
-  <dimen name="grid_18">144dp</dimen>
-  <dimen name="grid_19">152dp</dimen>
   <dimen name="grid_20">160dp</dimen>
   <dimen name="grid_26">208dp</dimen>
   <dimen name="grid_35">280dp</dimen>
-  <dimen name="grid_38">304dp</dimen>
   <dimen name="grid_40">320dp</dimen>
-  <dimen name="grid_50">400dp</dimen>
 
   <!-- Typography-->
   <dimen name="caption">12sp</dimen>
@@ -53,9 +45,6 @@
   <!-- Cards -->
   <dimen name="card_corner_radius">4dp</dimen>
   <dimen name="card_elevation">2dp</dimen>
-  <dimen name="card_margin_x">@dimen/grid_2</dimen>
-  <dimen name="card_margin_y">@dimen/grid_1</dimen>
-  <dimen name="card_padding_action_half">@dimen/grid_1_half</dimen>
   <dimen name="profile_card_height">@dimen/grid_26</dimen>
 
   <!-- Discovery drawer -->
@@ -84,18 +73,12 @@
   <dimen name="progress_bar_min_height">3dp</dimen>
   <dimen name="progress_bar_height">3dp</dimen>
   <dimen name="project_action_button_height">60dp</dimen>
-  <dimen name="star_fab_margin_x">@dimen/grid_5_half</dimen>
-  <dimen name="star_fab_margin_y">30dp</dimen>
-  <dimen name="star_fab_pre21_margin_x">@dimen/grid_1</dimen>
-  <dimen name="star_fab_pre21_margin_y">@dimen/grid_3_half</dimen>
 
   <!-- Photos -->
   <dimen name="discovery_activity_photo_width">62dp</dimen>
   <dimen name="discovery_activity_photo_height">48dp</dimen>
   <dimen name="activity_feed_avatar_width">60dp</dimen>
   <dimen name="activity_feed_avatar_height">60dp</dimen>
-  <dimen name="activity_feed_small_photo_width">96dp</dimen>
-  <dimen name="activity_feed_small_photo_height">72dp</dimen>
   <dimen name="activity_feed_medium_photo_width">120dp</dimen>
   <dimen name="activity_feed_medium_photo_height">90dp</dimen>
   <dimen name="comments_feed_avatar_width">@dimen/grid_11_half</dimen>
@@ -109,7 +92,6 @@
   <dimen name="project_card_photo_med_height">200dp</dimen>
   <dimen name="project_card_photo_med_width">266dp</dimen>
   <dimen name="project_social_photo_height">@dimen/grid_4</dimen>
-  <dimen name="project_photo_full_height">420dp</dimen>
 
   <!-- TextViews -->
   <dimen name="text_view_corner_radius">@dimen/grid_1_half</dimen>

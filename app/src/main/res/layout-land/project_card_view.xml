@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/project_card_view_group"
   android:layout_height="match_parent"
   android:layout_width="match_parent">
@@ -61,13 +62,13 @@
 
         <TextView
           android:id="@+id/name"
-          android:text="Name"
           android:lines="2"
           android:maxLines="2"
           android:ellipsize="end"
           style="@style/SubheadPrimaryMedium"
           android:layout_width="wrap_content"
-          android:layout_height="wrap_content" />
+          android:layout_height="wrap_content"
+          tools:text="Name" />
 
         <TextView
           android:id="@+id/blurb"
@@ -77,9 +78,9 @@
           android:ellipsize="end"
           android:paddingTop="@dimen/grid_1"
           android:paddingBottom="@dimen/grid_2"
-          android:text="blurb"
           android:layout_width="wrap_content"
-          android:layout_height="wrap_content" />
+          android:layout_height="wrap_content"
+          tools:text="blurb" />
 
         <ProgressBar
           style="@style/ProgressBar"
@@ -126,7 +127,8 @@
       android:layout_marginRight="@dimen/grid_1_half"
       android:layout_marginEnd="@dimen/grid_1_half"
       android:layout_width="@dimen/grid_3"
-      android:layout_height="@dimen/grid_3" />
+      android:layout_height="@dimen/grid_3"
+      tools:ignore="ContentDescription" />
 
     <TextView
       android:id="@+id/friend_backing_message"

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="vertical"
   android:gravity="center_horizontal"
   android:layout_marginBottom="@dimen/grid_3_half"
@@ -11,7 +12,8 @@
     android:layout_marginTop="@dimen/grid_3"
     android:layout_width="130dp"
     android:layout_height="15dp"
-    android:src="@drawable/logo" />
+    android:src="@drawable/logo"
+    android:contentDescription="@string/general_accessibility_kickstarter" />
 
   <TextView
     style="@style/EditorialSubhead"

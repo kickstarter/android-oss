@@ -10,7 +10,8 @@
   android:background="@color/discovery_toolbar"
   android:elevation="@dimen/toolbar_elevation"
   app:contentInsetLeft="0dp"
-  app:contentInsetStart="0dp">
+  app:contentInsetStart="0dp"
+  tools:ignore="UnusedAttribute">
 
   <LinearLayout
     android:orientation="vertical"
@@ -27,11 +28,12 @@
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="?attr/actionBarSize"
+      android:baselineAligned="false"
       android:gravity="center_vertical"
       android:orientation="horizontal">
 
       <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:focusable="true"
         android:layout_weight="1"
@@ -40,7 +42,8 @@
         android:clipChildren="false"
         android:clipToPadding="false"
         android:paddingRight="@dimen/grid_2"
-        android:paddingEnd="@dimen/grid_2">
+        android:paddingEnd="@dimen/grid_2"
+        tools:ignore="RtlSymmetry">
 
         <com.kickstarter.ui.views.IconButton
           style="@style/ToolbarIconDarkBackground"
@@ -53,7 +56,6 @@
           android:background="@drawable/button_selector"
           android:ellipsize="end"
           android:singleLine="true"
-          android:text="Staff Picks"
           android:textColor="@color/white"
           android:layout_width="fill_parent"
           android:layout_height="match_parent"
@@ -61,7 +63,8 @@
           android:paddingStart="@dimen/grid_3_half"
           android:paddingRight="@dimen/grid_3_half"
           android:paddingEnd="@dimen/grid_3_half"
-          android:gravity="center_vertical" />
+          android:gravity="center_vertical"
+          tools:text="Staff Picks" />
 
       </LinearLayout>
 

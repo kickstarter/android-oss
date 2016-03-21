@@ -1,9 +1,9 @@
 package com.kickstarter.ui.activities;
 
+import android.annotation.TargetApi;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.MediaController;
@@ -11,7 +11,9 @@ import android.widget.ProgressBar;
 
 import com.google.android.exoplayer.AspectRatioFrameLayout;
 import com.google.android.exoplayer.ExoPlayer;
+import com.jakewharton.rxbinding.view.RxView;
 import com.kickstarter.R;
+import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSRendererBuilder;
 import com.kickstarter.libs.KSVideoPlayer;
@@ -23,6 +25,7 @@ import com.trello.rxlifecycle.ActivityEvent;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.android.schedulers.AndroidSchedulers;
 
 @RequiresViewModel(VideoPlayerViewModel.class)
 public final class VideoPlayerActivity extends BaseActivity<VideoPlayerViewModel> implements KSVideoPlayer.Listener {
@@ -30,10 +33,10 @@ public final class VideoPlayerActivity extends BaseActivity<VideoPlayerViewModel
   private KSVideoPlayer player;
   private long playerPosition;
 
-  public @Bind(R.id.video_player_layout) View rootView;
-  public @Bind(R.id.surface_view) SurfaceView surfaceView;
-  public @Bind(R.id.loading_indicator) ProgressBar loadingIndicatorProgressBar;
-  public @Bind(R.id.video_frame) AspectRatioFrameLayout videoFrame;
+  protected @Bind(R.id.video_player_layout) View rootView;
+  protected @Bind(R.id.surface_view) SurfaceView surfaceView;
+  protected @Bind(R.id.loading_indicator) ProgressBar loadingIndicatorProgressBar;
+  protected @Bind(R.id.video_frame) AspectRatioFrameLayout videoFrame;
 
   @Override
   public void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -49,12 +52,10 @@ public final class VideoPlayerActivity extends BaseActivity<VideoPlayerViewModel
     mediaController = new MediaController(this);
     mediaController.setAnchorView(rootView);
 
-    rootView.setOnTouchListener((view, motionEvent) -> {
-      if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-        toggleControlsVisibility();
-      }
-      return true;
-    });
+    RxView.clicks(rootView)
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(__ -> toggleControlsVisibility());
   }
 
   @Override
@@ -123,7 +124,7 @@ public final class VideoPlayerActivity extends BaseActivity<VideoPlayerViewModel
     if (mediaController.isShowing()) {
       mediaController.hide();
     } else {
-      if (mediaController.isAttachedToWindow()) {
+      if (isMediaControllerAttachedToWindow()) {
         // Attempt fix for crash reports from Remix Mini / 5.1 where the media controller is attached to a window
         // but not showing. Adding it again crashes the app, so return to avoid that.
         return;
@@ -131,5 +132,10 @@ public final class VideoPlayerActivity extends BaseActivity<VideoPlayerViewModel
 
       mediaController.show();
     }
+  }
+
+  @TargetApi(19)
+  private boolean isMediaControllerAttachedToWindow() {
+    return ApiCapabilities.canCheckMediaControllerIsAttachedToWindow() && mediaController.isAttachedToWindow();
   }
 }

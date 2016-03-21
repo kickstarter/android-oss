@@ -1,11 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+  <style name="KSTheme" parent="KSThemeBase">
+    <item name="android:colorControlHighlight">@color/accent_alpha_20</item>
+
+    <item name="android:windowContentTransitions">true</item>
+    <item name="android:windowAllowEnterTransitionOverlap">true</item>
+    <item name="android:windowAllowReturnTransitionOverlap">true</item>
+  </style>
+
   <style name="StarFab">
     <item name="android:layout_margin">@dimen/grid_3</item>
   </style>
 
   <style name="DiscoveryActivity" parent="DiscoveryBase">
-    <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    <item name="android:colorPrimaryDark">@color/discovery_status_bar</item>
     <item name="android:statusBarColor">@android:color/transparent</item>
+    <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+  </style>
+
+  <style name="VideoPlayerActivity" parent="DiscoveryBase">
+    <item name="android:statusBarColor">@color/transparent</item>
+  </style>
+
+  <style name="GreenRoundedButton" parent="GreenRoundedButtonBase">
+    <item name="android:paddingStart">@dimen/grid_5</item>
+    <item name="android:paddingEnd">@dimen/grid_5</item>
+  </style>
+
+  <style name="BlueRoundedButton" parent="BlueRoundedButtonBase">
+    <item name="android:paddingStart">@dimen/grid_5</item>
+    <item name="android:paddingEnd">@dimen/grid_5</item>
+  </style>
+
+  <style name="EndSettingsWidget" parent="EndSettingsWidgetBase">
+    <item name="android:layout_alignParentEnd">true</item>
+  </style>
+
+  <style name="Toolbar" parent="ToolbarBase">
+    <item name="android:elevation">1dp</item>
+  </style>
+
+  <style name="ToolbarTitle" parent="ToolbarTitleBase">
+    <item name="android:layout_marginStart">@dimen/grid_9</item>
+  </style>
+
+  <style name="ActivityFeedCard" parent="ActivityFeedCardBase">
+    <item name="android:layout_marginStart">@dimen/activity_padding_x</item>
+    <item name="android:layout_marginEnd">@dimen/activity_padding_x</item>
+  </style>
+
+  <style name="ActivitySampleCard" parent="ActivitySampleCardBase">
+    <item name="android:layout_marginStart">@dimen/grid_2</item>
+    <item name="android:layout_marginEnd">@dimen/grid_2</item>
   </style>
 </resources>

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
   package="com.kickstarter"
-  xmlns:android="http://schemas.android.com/apk/res/android">
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools">
 
   <!-- PERMISSIONS -->
 
@@ -23,8 +24,10 @@
   <application
     android:name=".KSApplication"
     android:allowBackup="true"
+    android:fullBackupContent="@xml/full_backup_content"
     android:icon="@mipmap/ic_launcher"
     android:label="@string/app_name"
+    android:supportsRtl="false"
     android:theme="@style/KSTheme">
 
     <!-- ACTIVITIES -->
@@ -80,7 +83,8 @@
       <!-- Setting autoVerify to true in any intent filter for the manifest enables the app for
         23+ app links: https://www.youtube.com/watch?v=LQoohRwojmw -->
       <intent-filter
-        android:autoVerify="true">
+        android:autoVerify="true"
+        tools:ignore="UnusedAttribute">
         <action android:name="android.intent.action.VIEW" />
         <category android:name="android.intent.category.DEFAULT" />
         <category android:name="android.intent.category.BROWSABLE" />
@@ -401,12 +405,14 @@
     </service>
 
     <provider
+      tools:ignore="ExportedContentProvider"
       android:authorities="com.facebook.app.FacebookContentProvider${applicationId}"
       android:name="com.facebook.FacebookContentProvider"
       android:exported="true"/>
 
     <!-- See https://mixpanel.com/help/reference/android#referrer_tracking -->
     <receiver
+      tools:ignore="ExportedReceiver"
       android:name="com.mixpanel.android.mpmetrics.InstallReferrerReceiver"
       android:exported="true">
       <intent-filter>

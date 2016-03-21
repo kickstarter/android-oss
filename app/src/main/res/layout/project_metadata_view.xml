@@ -1,6 +1,7 @@
 <RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/project_metadata_view_group"
   android:visibility="gone"
   android:clipToPadding="false"
@@ -18,7 +19,8 @@
   android:background="@drawable/metadata_label_rounded_background"
   android:gravity="center_vertical"
   android:layout_width="wrap_content"
-  android:layout_height="@dimen/grid_4">
+  android:layout_height="@dimen/grid_4"
+  tools:ignore="UnusedAttribute">
 
   <LinearLayout
     android:id="@+id/backing_group"

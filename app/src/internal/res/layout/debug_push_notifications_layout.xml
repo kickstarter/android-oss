@@ -17,7 +17,7 @@
       style="@style/SubheadPrimaryMedium"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="Device registration" />
+      android:text="@string/debug_push_notifications_device_registration" />
 
     <Button
       android:id="@+id/register_device_button"
@@ -25,7 +25,7 @@
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_1_half"
       android:layout_marginBottom="@dimen/grid_1_half"
-      android:text="Register device"
+      android:text="@string/debug_push_notifications_register_device"
       style="@style/BorderButton" />
 
     <Button
@@ -34,7 +34,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginBottom="@dimen/grid_2"
-      android:text="Unregister device"
+      android:text="@string/debug_push_notifications_unregister_device"
       style="@style/BorderButton" />
 
     <include
@@ -49,7 +49,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/grid_2"
-      android:text="Simulate notifications" />
+      android:text="@string/debug_push_notifications_simulate_notifications" />
 
     <Button
       android:id="@+id/simulate_project_launch_button"
@@ -57,7 +57,7 @@
       android:layout_marginBottom="@dimen/grid_1_half"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="Project launch"
+      android:text="@string/debug_push_notifications_project_launch"
       style="@style/BorderButton" />
 
     <Button
@@ -66,7 +66,7 @@
       android:layout_marginBottom="@dimen/grid_1_half"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="Project success"
+      android:text="@string/debug_push_notifications_project_success"
       style="@style/BorderButton" />
 
     <Button
@@ -75,7 +75,7 @@
       android:layout_marginBottom="@dimen/grid_1_half"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="Project cancellation"
+      android:text="@string/debug_push_notifications_project_cancellation"
       style="@style/BorderButton" />
 
     <Button
@@ -84,7 +84,7 @@
       android:layout_marginBottom="@dimen/grid_1_half"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="Project failure"
+      android:text="@string/debug_push_notifications_project_failure"
       style="@style/BorderButton" />
 
     <Button
@@ -93,7 +93,7 @@
       android:layout_marginBottom="@dimen/grid_1_half"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="Friend backing"
+      android:text="@string/debug_push_notifications_friend_backing"
       style="@style/BorderButton" />
 
     <Button
@@ -102,7 +102,7 @@
       android:layout_marginBottom="@dimen/grid_1_half"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="Friend follow"
+      android:text="@string/debug_push_notifications_friend_follow"
       style="@style/BorderButton" />
 
     <Button
@@ -111,7 +111,7 @@
       android:layout_marginBottom="@dimen/grid_1_half"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="Project reminder"
+      android:text="@string/debug_push_notifications_project_reminder"
       style="@style/BorderButton" />
 
     <Button
@@ -120,7 +120,7 @@
       android:layout_marginBottom="@dimen/grid_1_half"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="Project update"
+      android:text="@string/debug_push_notifications_project_update"
       style="@style/BorderButton" />
 
     <Button
@@ -129,7 +129,7 @@
       android:layout_marginBottom="@dimen/grid_1_half"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="Simulate burst"
+      android:text="@string/debug_push_notifications_simulate_burst"
       style="@style/BorderButton" />
 
   </LinearLayout>

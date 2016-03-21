@@ -12,7 +12,8 @@
   android:layout_height="@dimen/grid_10"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
-  app:layout_collapseMode="pin">
+  app:layout_collapseMode="pin"
+  tools:ignore="UnusedAttribute">
 
   <RelativeLayout
     android:layout_width="match_parent"

@@ -1,5 +1,6 @@
 package com.kickstarter.services;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Parcelable;
@@ -94,6 +95,7 @@ public abstract class DiscoveryParams implements Parcelable {
     }
   }
 
+  @SuppressLint("DefaultLocale")
   public enum State {
     STARTED, SUBMITTED, LIVE, SUCCESSFUL, CANCELED, FAILED;
     @Override

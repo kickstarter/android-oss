@@ -22,3 +22,4 @@ test:
   override:
     - ./gradlew assembleExternalPre21Release -PdisablePreDex
     - ./gradlew checkstyle
+    - ./gradlew lintExternalPre21Release

@@ -14,14 +14,14 @@ public interface CommentFeedViewModelOutputs {
   Observable<CommentFeedData> commentFeedData();
 
   /**
-   * Emits when a comment has been successfully posted.
+   * Emits when the comment dialog should be dismissed.
    */
-  Observable<Void> commentPosted();
+  Observable<Void> dismissCommentDialog();
 
   /**
    * Emits a boolean indicating when the post button should be enabled.
    */
-  Observable<Boolean> postButtonIsEnabled();
+  Observable<Boolean> enablePostButton();
 
   /**
    * Emits a boolean indicating whether comments are being fetched from the API.
@@ -31,7 +31,7 @@ public interface CommentFeedViewModelOutputs {
   /**
    * Emits the string that should be displayed in the comment dialog when it is shown.
    */
-  Observable<String> initialCommentBody();
+  Observable<String> currentCommentBody();
 
   /**
    * Emits a boolean that determines if the comment button should be visible.
@@ -39,7 +39,12 @@ public interface CommentFeedViewModelOutputs {
   Observable<Boolean> showCommentButton();
 
   /**
-   * Emits a project and boolean to determine when the comment dialog should be displayed.
+   * Emits a project and boolean to determine when the comment dialog should be shown.
    */
   Observable<Pair<Project, Boolean>> showCommentDialog();
+
+  /**
+   * Emits when comment posted toast message should be displayed.
+   */
+  Observable<Void> showCommentPostedToast();
 }

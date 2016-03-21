@@ -1,5 +1,6 @@
 package com.kickstarter.services;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -178,6 +179,7 @@ public final class KSWebViewClient extends WebViewClient {
     return IOUtils.readFully(context.getAssets().open("www/WebViewJavascript.html"));
   }
 
+  @SuppressLint("DefaultLocale")
   protected String httpMethod() {
     String httpMethod = "GET";
     if (formContents != null && formContents.method() != null) {
@@ -255,6 +257,7 @@ public final class KSWebViewClient extends WebViewClient {
     private String type;
     private String encoding;
 
+    @SuppressLint("DefaultLocale")
     public MimeHeaders(final @NonNull String contentType) {
       // Extract mime and encoding from string, e.g. "text/html; charset=utf-8"
       final Matcher matcher = Pattern.compile("(\\A[\\w\\/]+); charset=([\\w/-]+)\\z")

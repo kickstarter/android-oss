@@ -110,8 +110,8 @@ android {
     }
 
     lintOptions {
-        disable 'InvalidPackage'
-        disable 'MissingTranslation'
+        quiet true
+        warningsAsErrors true
     }
 
     packagingOptions {

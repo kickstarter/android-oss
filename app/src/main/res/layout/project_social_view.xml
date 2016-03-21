@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:orientation="vertical"
   android:layout_marginStart="@dimen/feed_padding_x"
   android:layout_marginRight="@dimen/feed_padding_x"
@@ -22,7 +23,8 @@
       android:layout_marginRight="@dimen/grid_3"
       android:layout_marginEnd="@dimen/grid_3"
       android:layout_width="@dimen/comments_feed_avatar_width"
-      android:layout_height="@dimen/comments_feed_avatar_height" />
+      android:layout_height="@dimen/comments_feed_avatar_height"
+      tools:ignore="ContentDescription" />
 
     <TextView
       android:id="@+id/friend_name"

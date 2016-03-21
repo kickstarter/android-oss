@@ -31,7 +31,8 @@
         android:layout_marginBottom="@dimen/grid_6"
         android:layout_width="170dp"
         android:layout_height="20.06dp"
-        android:src="@drawable/logo" />
+        android:src="@drawable/logo"
+        android:contentDescription="@string/general_accessibility_kickstarter" />
 
       <Button
         android:id="@+id/facebook_login_button"

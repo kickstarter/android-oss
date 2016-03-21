@@ -34,6 +34,7 @@ import com.kickstarter.viewmodels.DiscoveryViewModel;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -55,6 +56,9 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
   protected @Bind(R.id.discovery_toolbar) DiscoveryToolbar discoveryToolbar;
   protected @Bind(R.id.recycler_view) RecyclerView recyclerView;
   protected @Bind(R.id.discovery_drawer_recycler_view) RecyclerView drawerRecyclerView;
+
+  protected @BindString(R.string.A_newer_build_is_available) String aNewerBuildIsAvailableString;
+  protected @BindString(R.string.Upgrade_app) String upgradeAppString;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -202,8 +206,8 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
 
   public void showBuildAlert(final @NonNull InternalBuildEnvelope envelope) {
     new AlertDialog.Builder(this)
-      .setTitle(getString(R.string.Upgrade_app))
-      .setMessage(getString(R.string.A_newer_build_is_available))
+      .setTitle(upgradeAppString)
+      .setMessage(aNewerBuildIsAvailableString)
       .setPositiveButton(android.R.string.yes, (dialog, which) -> {
         final Intent intent = new Intent(this, DownloadBetaActivity.class)
           .putExtra(IntentKey.INTERNAL_BUILD_ENVELOPE, envelope);

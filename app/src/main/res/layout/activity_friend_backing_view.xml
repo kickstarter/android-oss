@@ -2,6 +2,7 @@
 <android.support.v7.widget.CardView
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:card_view="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/friend_backing_card_view"
   card_view:contentPadding="@dimen/grid_2"
   android:focusable="true"
@@ -20,11 +21,12 @@
       <ImageView
         android:id="@+id/project_photo"
         android:background="@drawable/gray_gradient"
-        android:scaleType="fitCenter"
         android:adjustViewBounds="true"
         android:layout_width="@dimen/activity_feed_backing_photo_width"
         android:layout_height="@dimen/activity_feed_backing_photo_height"
-        android:layout_marginTop="6dp" />
+        android:layout_marginTop="6dp"
+        android:scaleType="centerCrop"
+        tools:ignore="ContentDescription" />
 
       <LinearLayout
         android:orientation="vertical"
@@ -41,7 +43,7 @@
           android:layout_height="wrap_content"
           android:layout_marginBottom="@dimen/grid_1_half"
           android:maxLines="3"
-          android:text="Project name" />
+          tools:text="Project name" />
 
         <TextView
           style="@style/CaptionSecondary"
@@ -50,7 +52,7 @@
           android:layout_height="wrap_content"
           android:layout_marginBottom="@dimen/grid_1_half"
           android:maxLines="2"
-          android:text="by Creator" />
+          tools:text="by Creator" />
       </LinearLayout>
 
     </LinearLayout>
@@ -74,7 +76,8 @@
         android:layout_marginRight="@dimen/grid_1"
         android:layout_marginEnd="@dimen/grid_2"
         android:layout_width="30dp"
-        android:layout_height="30dp" />
+        android:layout_height="30dp"
+        tools:ignore="ContentDescription" />
 
       <TextView
         style="@style/CaptionPrimary"
@@ -83,7 +86,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/grid_1"
         android:layout_marginStart="@dimen/grid_2"
-        android:text="Friend Name backed a Category project" />
+        tools:text="Friend Name backed a Category project" />
 
     </LinearLayout>
   </LinearLayout>

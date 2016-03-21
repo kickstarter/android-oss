@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
@@ -23,7 +24,7 @@
       android:id="@+id/build"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="201506261815" />
+      tools:text="201506261815" />
 
     <TextView
       style="@style/SubheadPrimaryMedium"
@@ -38,7 +39,7 @@
       android:id="@+id/changelog"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="Changelog" />
+      tools:text="The changelog" />
 
     <TextView
       style="@style/SubheadPrimaryMedium"

@@ -17,6 +17,8 @@
   <color name="discovery_status_bar">@color/black</color>
   <color name="discovery_drawer_item_selected">#ffededed</color>
   <color name="discovery_drawer_header">@color/light_gray</color>
+  <color name="ripple_dark">#33ffffff</color>
+  <color name="ripple_light">#1f000000</color>
 
   <!-- Kickstarter colors -->
   <color name="black">#000000</color>

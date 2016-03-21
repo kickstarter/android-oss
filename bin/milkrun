@@ -86,6 +86,26 @@ CHECKLIST
       end
     end
 
+    command :quality do |c|
+      c.syntax = "milkrun quality"
+      c.description = "run checkstyle, lint"
+      c.action do
+        checkstyle = Milkrun::Checkstyle.new
+        checkstyle.run
+        lint = Milkrun::Lint.new
+        lint.run
+
+        { "Lint" => lint, "Checkstyle" => checkstyle }.each do |name, report|
+          if report.result
+            Milkrun.say "#{name} successful 👌"
+          else
+            Milkrun.error "#{name} failed, see #{report.report_path} for report 🍤"
+            system("open #{report.report_path}")
+          end
+        end
+      end
+    end
+
     command :"update-strings" do |c|
       c.syntax = "milkrun update-strings"
       c.description = "refresh config and create string resources"

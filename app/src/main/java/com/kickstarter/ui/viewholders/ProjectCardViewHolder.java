@@ -134,6 +134,7 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       Picasso.with(context)
         .load(photo.full())
         .resize(targetImageWidth, targetImageHeight)  // required to fit properly into apis < 18
+        .centerCrop()
         .placeholder(grayGradientDrawable)
         .into(photoImageView);
 

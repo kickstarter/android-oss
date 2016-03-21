@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/project_search_result_view"
   android:focusable="true"
   android:background="@color/transparent"
@@ -20,13 +22,14 @@
 
     <ImageView
       android:id="@+id/project_image_view"
-      android:scaleType="fitCenter"
+      android:scaleType="centerCrop"
       android:background="@drawable/gray_gradient"
       android:layout_alignParentEnd="true"
       android:layout_alignParentRight="true"
       android:adjustViewBounds="true"
       android:layout_width="@dimen/search_result_photo_width"
-      android:layout_height="@dimen/search_result_photo_height" />
+      android:layout_height="@dimen/search_result_photo_height"
+      tools:ignore="ContentDescription" />
 
     <LinearLayout
       android:orientation="vertical"
@@ -45,7 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/grid_1_half"
         android:maxLines="3"
-        android:text="Name" />
+        tools:text="Name" />
 
       <TextView
         style="@style/CaptionSecondary"

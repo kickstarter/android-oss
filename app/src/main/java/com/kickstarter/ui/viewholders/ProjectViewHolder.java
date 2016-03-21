@@ -165,6 +165,7 @@ public final class ProjectViewHolder extends KSViewHolder {
       Picasso.with(context)
         .load(photo.full())
         .resize(targetImageWidth, targetImageHeight)
+        .centerCrop()
         .placeholder(grayGradientDrawable)
         .into(photoImageView);
     }

@@ -2,7 +2,8 @@
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
+  android:layout_height="match_parent"
+  xmlns:tools="http://schemas.android.com/tools">
 
   <android.support.v7.widget.CardView
     style="@style/ActivitySampleCard">
@@ -21,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/grid_2"
-        android:text="@string/discovery_activity_sample_title_since_youve_been_gone" />
+        tools:text="@string/discovery_activity_sample_title_since_youve_been_gone" />
 
       <LinearLayout
         android:id="@+id/activity_click_area"
@@ -38,7 +39,8 @@
           android:layout_width="@dimen/discovery_activity_photo_width"
           android:layout_height="@dimen/discovery_activity_photo_height"
           android:layout_marginTop="@dimen/grid_1_half"
-          android:scaleType="fitCenter"/>
+          android:scaleType="centerCrop"
+          tools:ignore="ContentDescription" />
 
         <LinearLayout
           android:layout_width="match_parent"
@@ -55,7 +57,7 @@
             android:layout_marginTop="3dp"
             android:maxLines="2"
             android:ellipsize="end"
-            android:text="Vegan Black Metal Chel: The SEitanic Spellbook" />
+            tools:text="Vegan Black Metal Chel: The SEitanic Spellbook" />
 
           <TextView
             style="@style/BodyPrimary"
@@ -64,7 +66,7 @@
             android:layout_height="wrap_content"
             android:maxLines="2"
             android:ellipsize="end"
-            android:text="Vegan Black Metal Chel: The SEitanic Spellbook spellbook spellbook"/>
+            tools:text="Vegan Black Metal Chel: The SEitanic Spellbook spellbook spellbook"/>
 
         </LinearLayout>
 

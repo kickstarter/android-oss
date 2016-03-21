@@ -1,9 +1,6 @@
 package com.kickstarter.viewmodels;
 
-import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.libs.ApiPaginator;
@@ -27,22 +24,26 @@ import com.kickstarter.viewmodels.outputs.CommentFeedViewModelOutputs;
 import java.util.List;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> implements CommentFeedViewModelInputs,
   CommentFeedViewModelOutputs, CommentFeedViewModelErrors {
   // INPUTS
-  private final PublishSubject<String> commentBody = PublishSubject.create();
+  private final PublishSubject<String> commentBodyInput = PublishSubject.create();
   @Override
-  public void commentBody(final @NonNull String string) {
-    commentBody.onNext(string);
+  public void commentBodyInput(final @NonNull String string) {
+    commentBodyInput.onNext(string);
   }
-  private final PublishSubject<Void> dismissCommentDialog = PublishSubject.create();
+  private final PublishSubject<Void> commentDialogDismissed = PublishSubject.create();
   @Override
-  public void dismissCommentDialog() {
-    dismissCommentDialog.onNext(null);
+  public void commentDialogDismissed() {
+    commentDialogDismissed.onNext(null);
+  }
+  private final PublishSubject<Void> loginSuccess = PublishSubject.create();
+  @Override
+  public void loginSuccess() {
+    loginSuccess.onNext(null);
   }
   private final PublishSubject<Void> nextPage = PublishSubject.create();
   public void nextPage() {
@@ -64,25 +65,25 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   }
 
   // OUTPUTS
-  private final BehaviorSubject<Void> commentPosted = BehaviorSubject.create();
-  @Override
-  public Observable<Void> commentPosted() {
-    return commentPosted.asObservable();
-  }
   private final BehaviorSubject<CommentFeedData> commentFeedData = BehaviorSubject.create();
   @Override
   public Observable<CommentFeedData> commentFeedData() {
     return commentFeedData;
   }
+  private final BehaviorSubject<Void> dismissCommentDialog = BehaviorSubject.create();
+  @Override
+  public Observable<Void> dismissCommentDialog() {
+    return dismissCommentDialog;
+  }
   private final BehaviorSubject<Boolean> enablePostButton = BehaviorSubject.create();
   @Override
-  public Observable<Boolean> postButtonIsEnabled() {
+  public Observable<Boolean> enablePostButton() {
     return enablePostButton;
   }
-  private final BehaviorSubject<String> initialCommentBody = BehaviorSubject.create();
+  private final BehaviorSubject<String> currentCommentBody = BehaviorSubject.create();
   @Override
-  public Observable<String> initialCommentBody() {
-    return initialCommentBody;
+  public Observable<String> currentCommentBody() {
+    return currentCommentBody;
   }
   private final BehaviorSubject<Boolean> isFetchingComments = BehaviorSubject.create();
   public Observable<Boolean> isFetchingComments() {
@@ -96,6 +97,11 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   public Observable<Boolean> showCommentButton() {
     return showCommentButton;
   }
+  private final PublishSubject<Void> showCommentPostedToast = PublishSubject.create();
+  @Override
+  public Observable<Void> showCommentPostedToast() {
+    return showCommentPostedToast;
+  }
 
   // ERRORS
   private final PublishSubject<ErrorEnvelope> postCommentError = PublishSubject.create();
@@ -104,7 +110,6 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .map(ErrorEnvelope::errorMessage);
   }
 
-  private final PublishSubject<Void> loginSuccess = PublishSubject.create();
   private final PublishSubject<Boolean> commentIsPosting = PublishSubject.create();
 
   private final ApiClientType client;
@@ -119,11 +124,6 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
 
     this.client = environment.apiClient();
     this.currentUser = environment.currentUser();
-  }
-
-  @Override
-  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
-    super.onCreate(context, savedInstanceState);
 
     final Observable<Project> initialProject = intent()
       .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
@@ -148,11 +148,13 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
 
     final Observable<List<Comment>> comments = paginator.paginatedData().share();
 
-    final Observable<Boolean> commentHasBody = commentBody
+    final PublishSubject<Void> commentIsPosted = PublishSubject.create();
+
+    final Observable<Boolean> commentHasBody = commentBodyInput
       .map(body -> body.length() > 0);
 
     final Observable<Comment> postedComment = project
-      .compose(Transformers.combineLatestPair(commentBody))
+      .compose(Transformers.combineLatestPair(commentBodyInput))
       .compose(Transformers.takeWhen(postCommentClicked))
       .switchMap(pb -> postComment(pb.first, pb.second))
       .share();
@@ -170,15 +172,17 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .compose(bindToLifecycle())
       .subscribe(p -> showCommentDialog.onNext(Pair.create(p, true)));
 
-    project
-      .compose(Transformers.takeWhen(dismissCommentDialog))
+    commentDialogDismissed
       .compose(bindToLifecycle())
-      .subscribe(p -> showCommentDialog.onNext(Pair.create(p, false)));
+      .subscribe(__ -> {
+        showCommentDialog.onNext(null);
+        dismissCommentDialog.onNext(null);
+      });
 
-    // Seed initial comment body with user input, if any.
-    commentBody
+    // Seed comment body with user input.
+    commentBodyInput
       .compose(bindToLifecycle())
-      .subscribe(initialCommentBody::onNext);
+      .subscribe(currentCommentBody::onNext);
 
     Observable.combineLatest(
       project,
@@ -186,7 +190,6 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       currentUser.observable(),
       CommentFeedData::deriveData
     )
-      .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
       .subscribe(commentFeedData::onNext);
 
@@ -194,29 +197,41 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .map(Project::isBacking)
       .distinctUntilChanged()
       .compose(bindToLifecycle())
-      .subscribe(showCommentButton);
+      .subscribe(showCommentButton::onNext);
 
     postedComment
       .compose(Transformers.ignoreValues())
       .compose(bindToLifecycle())
-      .subscribe(__ -> refresh.onNext(null));
+      .subscribe(__ -> {
+        refresh.onNext(null);
+        commentIsPosted.onNext(null);
+      });
 
     commentHasBody
-      .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
       .subscribe(enablePostButton::onNext);
 
     commentIsPosting
       .map(b -> !b)
-      .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
       .subscribe(enablePostButton::onNext);
 
-    // Koala tracking
     initialProject
-      .compose(Transformers.takePairWhen(postedComment))
+      .compose(Transformers.takeWhen(commentIsPosted))
       .compose(bindToLifecycle())
-      .subscribe(cp -> koala.trackProjectCommentCreate(cp.first, cp.second));
+      .subscribe(koala::trackProjectCommentCreate);
+
+    commentIsPosted
+      .compose(bindToLifecycle())
+      .subscribe(__ -> {
+        commentDialogDismissed.onNext(null);
+        showCommentPostedToast.onNext(null);
+      });
+
+    commentIsPosted
+      .map(__ -> "")
+      .compose(bindToLifecycle())
+      .subscribe(commentBodyInput::onNext);
 
     initialProject.take(1)
       .compose(bindToLifecycle())
@@ -242,13 +257,6 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .compose(Transformers.pipeApiErrorsTo(postCommentError))
       .compose(Transformers.neverError())
       .doOnSubscribe(() -> commentIsPosting.onNext(true))
-      .finallyDo(() -> {
-        commentIsPosting.onNext(false);
-        commentPosted.onNext(null);
-      });
-  }
-
-  public void takeLoginSuccess() {
-    loginSuccess.onNext(null);
+      .finallyDo(() -> commentIsPosting.onNext(false));
   }
 }

@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
@@ -93,11 +95,18 @@ public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
       recyclerView.setLayoutManager(new LinearLayoutManager(this));
       recyclerView.setPadding(0, recyclerView.getPaddingTop(), recyclerView.getPaddingRight(), recyclerView.getPaddingBottom());
       if (ViewUtils.isPortrait(this)) {
-        recyclerView.setNestedScrollingEnabled(false);
+        disableNestedScrolling();
       }
     }
 
     adapter.takeProjects(projects);
+  }
+
+  @TargetApi(21)
+  private void disableNestedScrolling() {
+    if (ApiCapabilities.canSetNestingScrollingEnabled()) {
+      recyclerView.setNestedScrollingEnabled(false);
+    }
   }
 
   private void setViews(final @NonNull User user) {

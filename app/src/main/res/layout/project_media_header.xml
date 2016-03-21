@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:orientation="vertical">
+  android:orientation="vertical"
+  tools:ignore="MergeRootFrame">
 
   <ImageView
     android:id="@+id/project_photo"
-    android:scaleType="fitCenter"
+    android:scaleType="centerCrop"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/gray_gradient"
-    android:adjustViewBounds="true"/>
+    android:adjustViewBounds="true"
+    tools:ignore="ContentDescription" />
 
   <com.kickstarter.ui.views.IconButton
     android:id="@+id/play_button_overlay"

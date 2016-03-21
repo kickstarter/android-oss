@@ -12,7 +12,8 @@
     android:id="@+id/context_photo"
     android:scaleType="centerCrop"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/grid_12"/>
+    android:layout_height="@dimen/grid_12"
+    tools:ignore="ContentDescription" />
 
   <View
     android:id="@+id/overlay"

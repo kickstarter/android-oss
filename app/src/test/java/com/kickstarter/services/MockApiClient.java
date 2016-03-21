@@ -176,15 +176,7 @@ public class MockApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<Comment> postProjectComment(final @NonNull Project project, final @NonNull String body) {
-    final Comment comment = CommentFactory.comment().toBuilder().body(body).build();
-    observable.onNext(
-      Pair.create("post_project_comment", new HashMap<String, Object>() {
-        {
-          put("comment", comment);
-        }
-      })
-    );
-    return Observable.just(comment);
+    return Observable.just(CommentFactory.comment().toBuilder().body(body).build());
   }
 
   @Override

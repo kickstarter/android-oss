@@ -200,7 +200,10 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
     postedComment
       .compose(Transformers.ignoreValues())
       .compose(bindToLifecycle())
-      .subscribe(__ -> refresh.onNext(null));
+      .subscribe(__ -> {
+        refresh.onNext(null);
+        commentIsPosted.onNext(null);
+      });
 
     commentHasBody
       .compose(bindToLifecycle())
@@ -249,9 +252,6 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
       .compose(Transformers.pipeApiErrorsTo(postCommentError))
       .compose(Transformers.neverError())
       .doOnSubscribe(() -> commentIsPosting.onNext(true))
-      .finallyDo(() -> {
-        commentIsPosting.onNext(false);
-        commentIsPosted.onNext(null);
-      });
+      .finallyDo(() -> commentIsPosting.onNext(false));
   }
 }

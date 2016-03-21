@@ -9,9 +9,7 @@ import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
-import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
-import com.kickstarter.services.MockApiClient;
 import com.kickstarter.ui.IntentKey;
 
 import org.junit.Test;
@@ -66,30 +64,6 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
 
     // A koala event for commenting should be tracked.
     koalaTest.assertValues("Project Comment View", "Project Comment Create");
-  }
-
-  @Test
-  public void testCommentFeedViewModel_commentPostedSuccessfully() {
-    final CommentFeedViewModel vm = new CommentFeedViewModel(environment());
-    final Project project = ProjectFactory.backedProject();
-
-    final TestSubscriber<Void> commentIsPostedTest = new TestSubscriber<>();
-    vm.outputs.commentIsPosted().subscribe(commentIsPostedTest);
-
-    final TestSubscriber<Comment> commentSuccessfullyPostedTest = new TestSubscriber<>();
-    ((MockApiClient) environment().apiClient()).observable()
-      .filter(e -> "post_project_comment".equals(e.first))
-      .map(e -> (Comment) e.second.get("comment"))
-      .subscribe(commentSuccessfullyPostedTest);
-
-    // Start the view model with a project.
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
-
-    vm.inputs.commentBodyInput("Some comment");
-    vm.inputs.postCommentClicked();
-
-    commentIsPostedTest.assertValueCount(1);
-    commentSuccessfullyPostedTest.assertValueCount(1);
   }
 
   @Test

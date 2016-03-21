@@ -2,7 +2,6 @@ package com.kickstarter.ui.activities;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,7 +23,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.EnumAdapter;
 import com.kickstarter.libs.Logout;
-import com.kickstarter.libs.Release;
+import com.kickstarter.libs.Build;
 import com.kickstarter.libs.preferences.StringPreferenceType;
 import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
@@ -49,7 +48,7 @@ import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 @RequiresViewModel(InternalToolsViewModel.class)
 public final class InternalToolsActivity extends BaseActivity<InternalToolsViewModel> {
   @Inject @ApiEndpointPreference StringPreferenceType apiEndpointPreference;
-  @Inject Release release;
+  @Inject Build build;
   @Inject CurrentUser currentUser;
   @Inject Logout logout;
 
@@ -98,12 +97,12 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
 
     final List<String> debugInfo = Arrays.asList(
       user != null ? user.name() : "Logged Out",
-      release.variant(),
-      release.versionName(),
-      release.versionCode().toString(),
-      release.sha(),
-      Integer.toString(Build.VERSION.SDK_INT),
-      Build.MANUFACTURER + " " + Build.MODEL,
+      build.variant(),
+      build.versionName(),
+      build.versionCode().toString(),
+      build.sha(),
+      Integer.toString(android.os.Build.VERSION.SDK_INT),
+      android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL,
       Locale.getDefault().getLanguage()
     );
 
@@ -148,11 +147,11 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
   }
 
   private void setupBuildInformationSection() {
-    buildDate.setText(release.dateTime().toString(DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss aa zzz")));
-    sha.setText(release.sha());
-    variant.setText(release.variant());
-    versionCode.setText(release.versionCode().toString());
-    versionName.setText(release.versionName());
+    buildDate.setText(build.dateTime().toString(DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss aa zzz")));
+    sha.setText(build.sha());
+    variant.setText(build.variant());
+    versionCode.setText(build.versionCode().toString());
+    versionName.setText(build.versionName());
   }
 
   private void showCustomEndpointDialog(final int originalSelection, final @NonNull String defaultUrl) {

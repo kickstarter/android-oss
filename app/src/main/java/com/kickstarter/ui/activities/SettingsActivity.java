@@ -2,7 +2,6 @@ package com.kickstarter.ui.activities;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,10 +14,10 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.Build;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.Logout;
-import com.kickstarter.libs.Release;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ApplicationUtils;
 import com.kickstarter.libs.utils.SwitchCompatUtils;
@@ -81,7 +80,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   @Inject CurrentUser currentUser;
   @Inject KSString ksString;
   @Inject Logout logout;
-  @Inject Release release;
+  @Inject Build build;
 
   private boolean notifyMobileOfFollower;
   private boolean notifyMobileOfFriendActivity;
@@ -235,12 +234,12 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   private void composeContactEmail(final @Nullable User user) {
     final List<String> debugInfo = Arrays.asList(
       user != null ? user.name() : loggedOutString,
-      release.variant(),
-      release.versionName(),
-      release.versionCode().toString(),
-      release.sha(),
-      Build.VERSION.RELEASE + " (SDK " + Integer.toString(Build.VERSION.SDK_INT) + ")",
-      Build.MANUFACTURER + " " + Build.MODEL,
+      build.variant(),
+      build.versionName(),
+      build.versionCode().toString(),
+      build.sha(),
+      android.os.Build.VERSION.RELEASE + " (SDK " + Integer.toString(android.os.Build.VERSION.SDK_INT) + ")",
+      android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL,
       Locale.getDefault().getLanguage()
     );
 

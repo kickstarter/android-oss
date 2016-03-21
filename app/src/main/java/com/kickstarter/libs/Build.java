@@ -10,10 +10,10 @@ import org.joda.time.DateTimeZone;
 
 import java.util.Locale;
 
-public final class Release {
+public final class Build {
   private final PackageInfo packageInfo;
 
-  public Release(final @NonNull PackageInfo packageInfo) {
+  public Build(final @NonNull PackageInfo packageInfo) {
     this.packageInfo = packageInfo;
   }
 
@@ -23,6 +23,20 @@ public final class Release {
 
   public DateTime dateTime() {
     return new DateTime(BuildConfig.BUILD_DATE, DateTimeZone.UTC).withZone(DateTimeZone.getDefault());
+  }
+
+  /**
+   * Returns `true` if the build is compiled in debug mode, `false` otherwise.
+   */
+  public boolean isDebug() {
+    return BuildConfig.DEBUG;
+  }
+
+  /**
+   * Returns `true` if the build is compiled in release mode, `false` otherwise.
+   */
+  public boolean isRelease() {
+    return !BuildConfig.DEBUG;
   }
 
   public String sha() {

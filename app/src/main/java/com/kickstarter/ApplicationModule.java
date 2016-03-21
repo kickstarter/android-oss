@@ -123,10 +123,16 @@ public final class ApplicationModule {
   @NonNull
   OkHttpClient provideOkHttpClient(final @NonNull ApiRequestInterceptor apiRequestInterceptor, final @NonNull CookieJar cookieJar,
     final @NonNull HttpLoggingInterceptor httpLoggingInterceptor, final @NonNull KSRequestInterceptor ksRequestInterceptor,
-    final @NonNull WebRequestInterceptor webRequestInterceptor) {
+    final @NonNull Release release, final @NonNull WebRequestInterceptor webRequestInterceptor) {
 
-    return new OkHttpClient.Builder()
-      .addInterceptor(httpLoggingInterceptor)
+    final OkHttpClient.Builder builder = new OkHttpClient.Builder();
+
+    // Only log in debug mode to avoid leaking sensitive information.
+    if (release.isDebug()) {
+      builder.addInterceptor(httpLoggingInterceptor);
+    }
+
+    return builder
       .addInterceptor(apiRequestInterceptor)
       .addInterceptor(webRequestInterceptor)
       .addInterceptor(ksRequestInterceptor)

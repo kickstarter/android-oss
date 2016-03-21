@@ -25,6 +25,20 @@ public final class Release {
     return new DateTime(BuildConfig.BUILD_DATE, DateTimeZone.UTC).withZone(DateTimeZone.getDefault());
   }
 
+  /**
+   * Returns `true` if the build is compiled in debug mode, `false` otherwise.
+   */
+  public boolean isDebug() {
+    return BuildConfig.DEBUG;
+  }
+
+  /**
+   * Returns `true` if the build is compiled in release mode, `false` otherwise.
+   */
+  public boolean isRelease() {
+    return !BuildConfig.DEBUG;
+  }
+
   public String sha() {
     return BuildConfig.GIT_SHA;
   }

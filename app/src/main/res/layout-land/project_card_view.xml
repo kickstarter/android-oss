@@ -25,6 +25,7 @@
     android:layout_marginBottom="@dimen/grid_1">
 
     <LinearLayout
+      android:id="@+id/land_card_view_group"
       android:background="@color/white"
       android:orientation="horizontal"
       android:padding="@dimen/grid_2"

@@ -23,8 +23,8 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
     final CommentFeedViewModel vm = new CommentFeedViewModel(environment());
     final Project project = ProjectFactory.backedProject();
 
-    final TestSubscriber<Void> commentPostedTest = new TestSubscriber<>();
-    vm.outputs.commentIsPosted().subscribe(commentPostedTest);
+    final TestSubscriber<Void> showCommentPostedToastTest = new TestSubscriber<>();
+    vm.outputs.showCommentPostedToast().subscribe(showCommentPostedToastTest);
 
     final TestSubscriber<Void> dismissCommentDialogTest = new TestSubscriber<>();
     vm.outputs.dismissCommentDialog().subscribe(dismissCommentDialogTest);
@@ -59,8 +59,8 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
     vm.inputs.postCommentClicked();
     dismissCommentDialogTest.assertValueCount(1);
 
-    // Comment should be posted.
-    commentPostedTest.assertValueCount(1);
+    // Comment posted toast should be shown.
+    showCommentPostedToastTest.assertValueCount(1);
 
     // A koala event for commenting should be tracked.
     koalaTest.assertValues("Project Comment View", "Project Comment Create");

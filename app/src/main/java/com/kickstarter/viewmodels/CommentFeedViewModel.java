@@ -65,11 +65,6 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   }
 
   // OUTPUTS
-  private final PublishSubject<Void> commentIsPosted = PublishSubject.create();
-  @Override
-  public Observable<Void> commentIsPosted() {
-    return commentIsPosted;
-  }
   private final BehaviorSubject<CommentFeedData> commentFeedData = BehaviorSubject.create();
   @Override
   public Observable<CommentFeedData> commentFeedData() {
@@ -101,6 +96,11 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
   private final BehaviorSubject<Boolean> showCommentButton = BehaviorSubject.create();
   public Observable<Boolean> showCommentButton() {
     return showCommentButton;
+  }
+  private final PublishSubject<Void> showCommentPostedToast = PublishSubject.create();
+  @Override
+  public Observable<Void> showCommentPostedToast() {
+    return showCommentPostedToast;
   }
 
   // ERRORS
@@ -147,6 +147,8 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
         .build();
 
     final Observable<List<Comment>> comments = paginator.paginatedData().share();
+
+    final PublishSubject<Void> commentIsPosted = PublishSubject.create();
 
     final Observable<Boolean> commentHasBody = commentBodyInput
       .map(body -> body.length() > 0);
@@ -221,7 +223,10 @@ public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> i
 
     commentIsPosted
       .compose(bindToLifecycle())
-      .subscribe(commentDialogDismissed::onNext);
+      .subscribe(__ -> {
+        commentDialogDismissed.onNext(null);
+        showCommentPostedToast.onNext(null);
+      });
 
     commentIsPosted
       .map(__ -> "")

@@ -14,11 +14,6 @@ public interface CommentFeedViewModelOutputs {
   Observable<CommentFeedData> commentFeedData();
 
   /**
-   * Emits when a comment has been successfully posted.
-   */
-  Observable<Void> commentIsPosted();
-
-  /**
    * Emits when the comment dialog should be dismissed.
    */
   Observable<Void> dismissCommentDialog();
@@ -47,4 +42,9 @@ public interface CommentFeedViewModelOutputs {
    * Emits a project and boolean to determine when the comment dialog should be shown.
    */
   Observable<Pair<Project, Boolean>> showCommentDialog();
+
+  /**
+   * Emits when comment posted toast message should be displayed.
+   */
+  Observable<Void> showCommentPostedToast();
 }

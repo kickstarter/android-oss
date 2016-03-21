@@ -10,10 +10,10 @@ import org.joda.time.DateTimeZone;
 
 import java.util.Locale;
 
-public final class Release {
+public final class Build {
   private final PackageInfo packageInfo;
 
-  public Release(final @NonNull PackageInfo packageInfo) {
+  public Build(final @NonNull PackageInfo packageInfo) {
     this.packageInfo = packageInfo;
   }
 

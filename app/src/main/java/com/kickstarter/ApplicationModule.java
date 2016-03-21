@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.AutoParcelAdapterFactory;
+import com.kickstarter.libs.Build;
 import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.CurrentConfig;
 import com.kickstarter.libs.CurrentUser;
@@ -30,7 +31,6 @@ import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.KoalaTrackingClient;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.PushNotifications;
-import com.kickstarter.libs.Release;
 import com.kickstarter.libs.preferences.BooleanPreference;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.preferences.IntPreference;
@@ -123,12 +123,12 @@ public final class ApplicationModule {
   @NonNull
   OkHttpClient provideOkHttpClient(final @NonNull ApiRequestInterceptor apiRequestInterceptor, final @NonNull CookieJar cookieJar,
     final @NonNull HttpLoggingInterceptor httpLoggingInterceptor, final @NonNull KSRequestInterceptor ksRequestInterceptor,
-    final @NonNull Release release, final @NonNull WebRequestInterceptor webRequestInterceptor) {
+    final @NonNull Build build, final @NonNull WebRequestInterceptor webRequestInterceptor) {
 
     final OkHttpClient.Builder builder = new OkHttpClient.Builder();
 
     // Only log in debug mode to avoid leaking sensitive information.
-    if (release.isDebug()) {
+    if (build.isDebug()) {
       builder.addInterceptor(httpLoggingInterceptor);
     }
 
@@ -173,8 +173,8 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
-  @NonNull KSRequestInterceptor provideKSRequestInterceptor(final @NonNull Release release) {
-    return new KSRequestInterceptor(release);
+  @NonNull KSRequestInterceptor provideKSRequestInterceptor(final @NonNull Build build) {
+    return new KSRequestInterceptor(build);
   }
 
   @Provides
@@ -203,8 +203,8 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   @NonNull WebRequestInterceptor provideWebRequestInterceptor(final @NonNull CurrentUser currentUser,
-    @NonNull @WebEndpoint final String endpoint, final @NonNull InternalToolsType internalTools, final @NonNull Release release) {
-    return new WebRequestInterceptor(currentUser, endpoint, internalTools, release);
+    @NonNull @WebEndpoint final String endpoint, final @NonNull InternalToolsType internalTools, final @NonNull Build build) {
+    return new WebRequestInterceptor(currentUser, endpoint, internalTools, build);
   }
 
   @Provides
@@ -278,8 +278,8 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
-  Release provideRelease(final @NonNull PackageInfo packageInfo) {
-    return new Release(packageInfo);
+  @NonNull Build provideBuild(final @NonNull PackageInfo packageInfo) {
+    return new Build(packageInfo);
   }
 
   @Provides

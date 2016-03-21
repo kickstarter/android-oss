@@ -99,7 +99,7 @@ CHECKLIST
           if report.result
             Milkrun.say "#{name} successful 👌"
           else
-            Milkrun.error "#{name} failed, see #{report.report_path} for report 💔"
+            Milkrun.error "#{name} failed, see #{report.report_path} for report 🍤"
             system("open #{report.report_path}")
           end
         end

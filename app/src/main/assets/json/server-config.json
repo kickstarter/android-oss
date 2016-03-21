@@ -6770,7 +6770,7 @@
     "native_ios_aa": "control",
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
-    "native_iphone_horiz_vs_vert": "experimental",
+    "native_iphone_horiz_vs_vert": "control",
     "thanks_cards_money": "control"
   },
   "stripe": {

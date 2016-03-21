@@ -42,7 +42,6 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
-import static com.kickstarter.libs.utils.BooleanUtils.isFalse;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresViewModel(CommentFeedViewModel.class)
@@ -84,8 +83,9 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
 
     cancelButton
       .switchMap(RxView::clicks)
+      .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
-      .subscribe(__ -> viewModel.inputs.dismissCommentDialog());
+      .subscribe(__ -> viewModel.inputs.commentDialogDismissed());
 
     postCommentButton
       .switchMap(RxView::clicks)
@@ -93,29 +93,23 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
       .subscribe(__ -> viewModel.inputs.postCommentClicked());
 
     commentBodyEditText
-      .switchMap(RxTextView::textChanges)
+      .switchMap(t -> RxTextView.textChanges(t).skip(1))
       .map(CharSequence::toString)
       .compose(bindToLifecycle())
-      .subscribe(viewModel.inputs::commentBody);
+      .subscribe(viewModel.inputs::commentBodyInput);
 
-    viewModel.outputs.initialCommentBody()
-      .take(1)
-      .compose(Transformers.combineLatestPair(commentBodyEditText))
+    viewModel.outputs.currentCommentBody()
+      .compose(Transformers.takePairWhen(commentBodyEditText))
       .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
       .subscribe(ce -> ce.second.append(ce.first));
-
-    toastMessages()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(ViewUtils.showToast(this));
 
     viewModel.outputs.commentFeedData()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(adapter::takeData);
 
-    viewModel.outputs.postButtonIsEnabled()
+    viewModel.outputs.enablePostButton()
       .compose(Transformers.combineLatestPair(postCommentButton))
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
@@ -128,26 +122,16 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
       .subscribe(commentButtonTextView::setVisibility);
 
     viewModel.outputs.showCommentDialog()
-      .filter(projectAndShow -> projectAndShow.second)
+      .filter(projectAndShow -> projectAndShow != null)
       .map(projectAndShow -> projectAndShow.first)
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::showCommentDialog);
 
-    viewModel.outputs.showCommentDialog()
-      .map(projectAndShow -> projectAndShow.second)
-      .compose(Transformers.combineLatestPair(alertDialog))
-      .filter(bd -> isFalse(bd.first))
-      .map(bd -> bd.second)
-      .compose(bindToLifecycle())
+    alertDialog
+      .compose(Transformers.takeWhen(viewModel.outputs.dismissCommentDialog()))
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::dismissCommentDialog);
-
-    viewModel.outputs.commentPosted()
-      .compose(Transformers.combineLatestPair(alertDialog))
-      .map(ad -> ad.second)
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::dismissCommentDialog);
 
     lifecycle()
@@ -159,6 +143,11 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
       // .compose(bindToLifecycle())
       .take(1)
       .subscribe(this::dismissCommentDialog);
+
+    toastMessages()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(ViewUtils.showToast(this));
   }
 
   @Override
@@ -186,6 +175,12 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
     viewModel.inputs.commentButtonClicked();
   }
 
+  public void dismissCommentDialog(final @Nullable AlertDialog dialog) {
+    if (dialog != null) {
+      dialog.dismiss();
+    }
+  }
+
   public void showCommentDialog(final @NonNull Project project) {
     final AlertDialog commentDialog = new AlertDialog.Builder(this)
       .setView(R.layout.comment_dialog)
@@ -199,16 +194,10 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
 
     // Handle cancel-click region outside of dialog modal.
     commentDialog.setOnCancelListener((final @NonNull DialogInterface dialogInterface) -> {
-      viewModel.inputs.dismissCommentDialog();
+      viewModel.inputs.commentDialogDismissed();
     });
 
     alertDialog.onNext(commentDialog);
-  }
-
-  public void dismissCommentDialog(final @Nullable AlertDialog dialog) {
-    if (dialog != null) {
-      dialog.dismiss();
-    }
   }
 
   public void setPostButtonEnabled(final @Nullable TextView postCommentButton, final boolean enabled) {
@@ -237,7 +226,7 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
     if (resultCode != RESULT_OK) {
       return;
     }
-    viewModel.takeLoginSuccess();
+    viewModel.inputs.loginSuccess();
   }
 
   protected @Nullable Pair<Integer, Integer> exitTransition() {
@@ -247,6 +236,6 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
   private Observable<String> toastMessages() {
     return viewModel.errors.postCommentError()
       .map(ObjectUtils.coalesceWith(postCommentErrorString))
-      .mergeWith(viewModel.outputs.commentPosted().map(__ -> commentPostedString));
+      .mergeWith(viewModel.outputs.showCommentPostedToast().map(__ -> commentPostedString));
   }
 }

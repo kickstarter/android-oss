@@ -86,7 +86,7 @@ public abstract class DiscoveryParams implements Parcelable {
         case ENDING_SOON:
           return "_ending_soon";
         case NEWEST:
-          return "_popular";
+          return "_newest";
         case MOST_FUNDED:
           return "_most_funded";
         default:

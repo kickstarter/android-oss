@@ -44,6 +44,20 @@ public final class ProjectFactory {
       .build();
   }
 
+  public static @NonNull Project projectWithComments() {
+    return project()
+      .toBuilder()
+      .commentsCount(10)
+      .build();
+  }
+
+  public static @NonNull Project backedProject() {
+    return project()
+      .toBuilder()
+      .isBacking(true)
+      .build();
+  }
+
   public static @NonNull Project halfWayProject() {
     return project()
       .toBuilder()

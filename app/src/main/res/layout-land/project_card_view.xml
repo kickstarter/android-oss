@@ -35,18 +35,17 @@
       <include
         layout="@layout/project_card_photo_view"
         android:id="@+id/project_card_photo"
+        android:layout_marginTop="4dp"
         android:layout_height="@dimen/project_card_photo_landscape_height"
         android:layout_width="@dimen/project_card_photo_landscape_width"/>
 
       <LinearLayout
         android:id="@+id/project_card_info"
         android:orientation="vertical"
-        android:layout_gravity="center_vertical"
         android:layout_marginStart="@dimen/grid_3"
         android:layout_marginLeft="@dimen/grid_3"
         android:layout_marginEnd="@dimen/grid_3"
         android:layout_marginRight="@dimen/grid_3"
-        android:paddingBottom="@dimen/grid_1_half"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

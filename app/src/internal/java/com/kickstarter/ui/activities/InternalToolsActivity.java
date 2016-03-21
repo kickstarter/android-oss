@@ -94,7 +94,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
   }
 
   private void submitBugReport(final @Nullable User user) {
-    final String email = "chrstphrwrght+21qbymyz894ttajaomwh@***REMOVED***";
+    final String email = "***REMOVED***";
 
     final List<String> debugInfo = Arrays.asList(
       user != null ? user.name() : "Logged Out",

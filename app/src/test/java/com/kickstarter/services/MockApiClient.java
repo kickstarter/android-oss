@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.factories.CategoryFactory;
+import com.kickstarter.factories.CommentFactory;
 import com.kickstarter.factories.DiscoverEnvelopeFactory;
 import com.kickstarter.factories.LocationFactory;
 import com.kickstarter.factories.ProjectFactory;
@@ -175,7 +176,15 @@ public class MockApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<Comment> postProjectComment(final @NonNull Project project, final @NonNull String body) {
-    return Observable.empty();
+    final Comment comment = CommentFactory.comment().toBuilder().body(body).build();
+    observable.onNext(
+      Pair.create("post_project_comment", new HashMap<String, Object>() {
+        {
+          put("comment", comment);
+        }
+      })
+    );
+    return Observable.just(comment);
   }
 
   @Override

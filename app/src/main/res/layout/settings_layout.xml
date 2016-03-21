@@ -23,12 +23,10 @@
       android:layout_height="wrap_content">
 
       <TextView
-        style="@style/BodySecondary"
-        android:layout_marginTop="@dimen/grid_4"
-        android:layout_marginBottom="@dimen/grid_2"
+        style="@style/SettingsSectionTitle"
         android:text="@string/profile_settings_backer_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_marginTop="@dimen/grid_4"
+        android:layout_marginBottom="@dimen/grid_2"/>
 
       <include layout="@layout/horizontal_line_thin_right_margin_view" />
 
@@ -41,23 +39,17 @@
         android:layout_height="@dimen/grid_8">
 
         <TextView
-          style="@style/SubheadPrimary"
-          android:layout_weight="1"
-          android:text="@string/profile_settings_backer_project_updates"
-          android:layout_width="0dp"
-          android:layout_height="wrap_content" />
+          style="@style/SettingsSectionLabel"
+          android:text="@string/profile_settings_backer_project_updates" />
 
         <com.kickstarter.ui.views.IconTextView
-          style="@style/KSSettingsMailIcon"
           android:id="@+id/project_updates_mail_icon"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          app:iconType="ss_kickstarter" />
+          app:iconType="ss_kickstarter"
+          style="@style/KSSettingsMailIcon" />
 
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/project_updates_phone_icon"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content" />
+          style="@style/KSSettingsPhoneIcon" />
 
       </LinearLayout>
 
@@ -75,11 +67,8 @@
         android:layout_height="@dimen/grid_8">
 
         <TextView
-          style="@style/SubheadPrimary"
-          android:text="@string/profile_settings_backer_notifications"
-          android:layout_weight="1"
-          android:layout_width="0dp"
-          android:layout_height="wrap_content" />
+          style="@style/SettingsSectionLabel"
+          android:text="@string/profile_settings_backer_notifications"/>
 
         <TextView
           android:id="@+id/project_notifications_count"
@@ -92,8 +81,7 @@
 
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/manage_notifications_chevron_icon"
-          style="@style/EndSettingsWidget"
-          android:layout_width="@dimen/settings_icon_fixed_width"
+          style="@style/KSSettingsPhoneIcon"
           android:textColor="@color/gray_black"
           android:text="@string/chevron_right_icon"/>
 
@@ -102,12 +90,8 @@
       <include layout="@layout/horizontal_line_thin_right_margin_view" />
 
       <TextView
-        style="@style/BodySecondary"
-        android:layout_marginTop="@dimen/grid_11_half"
-        android:layout_marginBottom="@dimen/grid_2"
-        android:text="@string/profile_settings_social_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        style="@style/SettingsSectionTitle"
+        android:text="@string/profile_settings_social_title" />
 
       <include layout="@layout/horizontal_line_thin_right_margin_view" />
 
@@ -119,13 +103,8 @@
         android:layout_height="@dimen/grid_8">
 
         <TextView
-          style="@style/SubheadPrimary"
-          android:layout_weight="1"
-          android:layout_marginEnd="@dimen/settings_icon_margin_x"
-          android:layout_marginRight="@dimen/settings_icon_margin_x"
-          android:text="@string/profile_settings_social_followers"
-          android:layout_height="wrap_content"
-          android:layout_width="0dp" />
+          style="@style/SettingsSectionLabel"
+          android:text="@string/profile_settings_social_followers" />
 
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/new_followers_mail_icon"
@@ -148,11 +127,8 @@
         android:layout_height="@dimen/grid_8">
 
         <TextView
-          style="@style/SubheadPrimary"
-          android:layout_weight="1"
-          android:text="@string/profile_settings_social_friend_backs"
-          android:layout_width="0dp"
-          android:layout_height="wrap_content" />
+          style="@style/SettingsSectionLabel"
+          android:text="@string/profile_settings_social_friend_backs"/>
 
         <com.kickstarter.ui.views.IconTextView
           android:id="@+id/friend_activity_mail_icon"
@@ -175,269 +151,235 @@
         android:layout_height="wrap_content">
 
         <TextView
-          style="@style/BodySecondary"
-          android:layout_marginTop="@dimen/grid_11_half"
-          android:layout_marginBottom="@dimen/grid_2"
-          android:text="@string/profile_settings_newsletter_title"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content" />
+          style="@style/SettingsSectionTitle"
+          android:text="@string/profile_settings_newsletter_title"/>
 
         <include layout="@layout/horizontal_line_1dp_view"/>
 
-        <RelativeLayout
+        <LinearLayout
+          android:orientation="horizontal"
           android:layout_width="match_parent"
           android:layout_height="@dimen/grid_8">
 
           <TextView
-            style="@style/SubheadPrimary"
-            android:layout_centerVertical="true"
-            android:text="@string/profile_settings_newsletter_happening"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            style="@style/SettingsSectionLabel"
+            android:text="@string/profile_settings_newsletter_happening" />
 
           <android.support.v7.widget.SwitchCompat
             android:id="@+id/happening_now_switch"
             style="@style/EndSettingsWidget"/>
 
-        </RelativeLayout>
+        </LinearLayout>
 
         <include layout="@layout/horizontal_line_1dp_view"/>
 
-        <RelativeLayout
+        <LinearLayout
+          android:orientation="horizontal"
           android:layout_width="match_parent"
           android:layout_height="@dimen/grid_8">
 
           <TextView
-            style="@style/SubheadPrimary"
-            android:layout_centerVertical="true"
-            android:text="@string/profile_settings_newsletter_games"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            style="@style/SettingsSectionLabel"
+            android:text="@string/profile_settings_newsletter_games" />
 
           <android.support.v7.widget.SwitchCompat
             android:id="@+id/games_switch"
             style="@style/EndSettingsWidget"/>
 
-        </RelativeLayout>
+        </LinearLayout>
 
         <include layout="@layout/horizontal_line_1dp_view"/>
 
-        <RelativeLayout
+        <LinearLayout
+          android:orientation="horizontal"
           android:layout_width="match_parent"
           android:layout_height="@dimen/grid_8">
 
           <TextView
-            style="@style/SubheadPrimary"
-            android:layout_centerVertical="true"
-            android:text="@string/profile_settings_newsletter_promo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            style="@style/SettingsSectionLabel"
+            android:text="@string/profile_settings_newsletter_promo" />
 
           <android.support.v7.widget.SwitchCompat
             android:id="@+id/kickstarter_news_and_events_switch"
             style="@style/EndSettingsWidget"/>
 
-        </RelativeLayout>
+        </LinearLayout>
 
         <include layout="@layout/horizontal_line_1dp_view"/>
 
-        <RelativeLayout
+        <LinearLayout
+          android:orientation="horizontal"
           android:layout_width="match_parent"
           android:layout_height="@dimen/grid_8">
 
           <TextView
-            style="@style/SubheadPrimary"
-            android:layout_centerVertical="true"
-            android:text="@string/profile_settings_newsletter_weekly"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            style="@style/SettingsSectionLabel"
+            android:text="@string/profile_settings_newsletter_weekly"/>
 
           <android.support.v7.widget.SwitchCompat
             android:id="@+id/projects_we_love_switch"
             style="@style/EndSettingsWidget"/>
 
-        </RelativeLayout>
+        </LinearLayout>
 
         <include layout="@layout/horizontal_line_1dp_view"/>
 
         <TextView
-          style="@style/BodySecondary"
-          android:layout_marginTop="@dimen/grid_11_half"
-          android:layout_marginBottom="@dimen/grid_2"
-          android:text="@string/profile_settings_about_title"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content" />
+          style="@style/SettingsSectionTitle"
+          android:text="@string/profile_settings_about_title" />
 
         <include layout="@layout/horizontal_line_1dp_view"/>
 
-        <RelativeLayout
+        <LinearLayout
           android:id="@+id/faq"
+          android:orientation="horizontal"
           android:focusable="true"
           android:background="@drawable/click_indicator_light_masked"
           android:layout_width="match_parent"
           android:layout_height="@dimen/grid_8">
 
           <TextView
-            style="@style/SubheadPrimary"
-            android:layout_centerVertical="true"
-            android:text="@string/profile_settings_about_faq"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            style="@style/SettingsSectionLabel"
+            android:text="@string/profile_settings_about_faq"/>
 
           <com.kickstarter.ui.views.IconTextView
             style="@style/EndSettingsWidget"
             android:textColor="@color/gray_black"
             android:text="@string/chevron_right_icon" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
         <include layout="@layout/horizontal_line_1dp_view"/>
 
-        <RelativeLayout
+        <LinearLayout
           android:id="@+id/contact"
+          android:orientation="horizontal"
           android:focusable="true"
           android:background="@drawable/click_indicator_light_masked"
           android:layout_width="match_parent"
           android:layout_height="@dimen/grid_8">
 
           <TextView
-            style="@style/SubheadPrimary"
-            android:layout_centerVertical="true"
-            android:text="@string/profile_settings_about_contact"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            style="@style/SettingsSectionLabel"
+            android:text="@string/profile_settings_about_contact"/>
 
           <com.kickstarter.ui.views.IconTextView
             style="@style/EndSettingsWidget"
             android:textColor="@color/gray_black"
             android:text="@string/chevron_right_icon" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
         <include layout="@layout/horizontal_line_1dp_view"/>
 
-        <RelativeLayout
+        <LinearLayout
           android:id="@+id/how_kickstarter_works"
+          android:orientation="horizontal"
           android:focusable="true"
           android:background="@drawable/click_indicator_light_masked"
           android:layout_width="match_parent"
           android:layout_height="@dimen/grid_8">
 
           <TextView
-            style="@style/SubheadPrimary"
-            android:layout_centerVertical="true"
-            android:text="@string/profile_settings_about_how_it_works"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            style="@style/SettingsSectionLabel"
+            android:text="@string/profile_settings_about_how_it_works" />
 
           <com.kickstarter.ui.views.IconTextView
             style="@style/EndSettingsWidget"
             android:textColor="@color/gray_black"
             android:text="@string/chevron_right_icon" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
         <include layout="@layout/horizontal_line_1dp_view"/>
 
-        <RelativeLayout
+        <LinearLayout
           android:id="@+id/terms_of_use"
+          android:orientation="horizontal"
           android:focusable="true"
           android:background="@drawable/click_indicator_light_masked"
           android:layout_width="match_parent"
           android:layout_height="@dimen/grid_8">
 
           <TextView
-            style="@style/SubheadPrimary"
-            android:layout_centerVertical="true"
-            android:text="@string/profile_settings_about_terms"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            style="@style/SettingsSectionLabel"
+            android:text="@string/profile_settings_about_terms" />
 
           <com.kickstarter.ui.views.IconTextView
             style="@style/EndSettingsWidget"
             android:textColor="@color/gray_black"
             android:text="@string/chevron_right_icon" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
         <include layout="@layout/horizontal_line_1dp_view"/>
 
-        <RelativeLayout
+        <LinearLayout
           android:id="@+id/privacy_policy"
+          android:orientation="horizontal"
           android:focusable="true"
           android:background="@drawable/click_indicator_light_masked"
           android:layout_width="match_parent"
           android:layout_height="@dimen/grid_8">
 
           <TextView
-            style="@style/SubheadPrimary"
-            android:layout_centerVertical="true"
-            android:text="@string/profile_settings_about_privacy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            style="@style/SettingsSectionLabel"
+            android:text="@string/profile_settings_about_privacy" />
 
           <com.kickstarter.ui.views.IconTextView
             style="@style/EndSettingsWidget"
             android:textColor="@color/gray_black"
             android:text="@string/chevron_right_icon" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
         <include layout="@layout/horizontal_line_1dp_view"/>
 
-        <RelativeLayout
+        <LinearLayout
           android:id="@+id/cookie_policy"
           android:focusable="true"
+          android:orientation="horizontal"
           android:background="@drawable/click_indicator_light_masked"
           android:layout_width="match_parent"
           android:layout_height="@dimen/grid_8">
 
           <TextView
-            style="@style/SubheadPrimary"
-            android:layout_centerVertical="true"
-            android:text="@string/profile_settings_about_cookie"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            style="@style/SettingsSectionLabel"
+            android:text="@string/profile_settings_about_cookie" />
 
           <com.kickstarter.ui.views.IconTextView
             style="@style/EndSettingsWidget"
             android:textColor="@color/gray_black"
             android:text="@string/chevron_right_icon" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
         <include layout="@layout/horizontal_line_1dp_view"/>
 
         <TextView
-          style="@style/BodySecondary"
-          android:layout_marginTop="@dimen/grid_11_half"
-          android:layout_marginBottom="@dimen/grid_2"
-          android:text="@string/profile_settings_rating_title"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content" />
+          style="@style/SettingsSectionTitle"
+          android:text="@string/profile_settings_rating_title" />
 
         <include layout="@layout/horizontal_line_1dp_view"/>
 
-        <RelativeLayout
+        <LinearLayout
           android:id="@+id/settings_rate_us"
+          android:orientation="horizontal"
           android:focusable="true"
           android:background="@drawable/click_indicator_light_masked"
           android:layout_width="match_parent"
           android:layout_height="@dimen/grid_8">
 
           <TextView
-            style="@style/SubheadPrimary"
-            android:layout_centerVertical="true"
-            android:text="@string/profile_settings_rating_rate_us_play_store"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            style="@style/SettingsSectionLabel"
+            android:text="@string/profile_settings_rating_rate_us_play_store"/>
 
           <com.kickstarter.ui.views.IconTextView
             style="@style/EndSettingsWidget"
             android:textColor="@color/gray_black"
             android:text="@string/chevron_right_icon" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
         <include layout="@layout/horizontal_line_1dp_view" />
 

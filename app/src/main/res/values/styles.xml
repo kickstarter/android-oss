@@ -194,7 +194,7 @@
     <item name="android:layout_alignParentRight">true</item>
   </style>
 
-  <style name="EndSettingsWidget" parent="EndSettingsWidget" />
+  <style name="EndSettingsWidget" parent="EndSettingsWidgetBase"/>
 
   <style name="KSSettingsPhoneIcon" parent="EndSettingsWidget">
     <item name="android:focusable">true</item>
@@ -203,6 +203,19 @@
     <item name="android:layout_width">@dimen/settings_icon_fixed_width</item>
     <item name="android:background">@drawable/click_indicator_light</item>
     <item name="android:text">@string/phone_android_icon</item>
+  </style>
+
+  <style name="SettingsSectionLabel" parent="SubheadPrimary">
+    <item name="android:layout_weight">1</item>
+    <item name="android:layout_width">0dp</item>
+    <item name="android:layout_height">wrap_content</item>
+  </style>
+
+  <style name="SettingsSectionTitle" parent="BodySecondary">
+    <item name="android:layout_marginTop">@dimen/grid_11_half</item>
+    <item name="android:layout_marginBottom">@dimen/grid_2</item>
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">wrap_content</item>
   </style>
 
   <style name="ToolbarBase" parent="Base.Widget.AppCompat.Toolbar">

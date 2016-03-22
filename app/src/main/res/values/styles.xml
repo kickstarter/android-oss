@@ -205,6 +205,15 @@
     <item name="android:text">@string/phone_android_icon</item>
   </style>
 
+  <style name="SettingsClickableSection">
+    <item name="android:orientation">horizontal</item>
+    <item name="android:gravity">center_vertical</item>
+    <item name="android:focusable">true</item>
+    <item name="android:background">@drawable/click_indicator_light_masked</item>
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">@dimen/grid_8</item>
+  </style>
+
   <style name="SettingsSectionLabel" parent="SubheadPrimary">
     <item name="android:layout_weight">1</item>
     <item name="android:layout_width">0dp</item>

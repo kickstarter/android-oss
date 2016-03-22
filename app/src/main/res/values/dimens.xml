@@ -21,8 +21,6 @@
   <dimen name="grid_15">120dp</dimen>
   <dimen name="grid_16">128dp</dimen>
   <dimen name="grid_20">160dp</dimen>
-  <dimen name="grid_22">176dp</dimen>
-  <dimen name="grid_26">208dp</dimen>
   <dimen name="grid_35">280dp</dimen>
   <dimen name="grid_40">320dp</dimen>
 

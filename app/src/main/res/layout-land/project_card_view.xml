@@ -31,7 +31,8 @@
       android:orientation="horizontal"
       android:padding="@dimen/grid_2"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
+      android:layout_height="wrap_content"
+      tools:ignore="InconsistentLayout">
 
       <include
         layout="@layout/project_card_photo_view"
@@ -52,7 +53,7 @@
           android:id="@+id/category"
           style="@style/CaptionSecondaryMedium"
           android:layout_marginBottom="@dimen/grid_1"
-          android:text="Category"
+          tools:text="Category"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
 

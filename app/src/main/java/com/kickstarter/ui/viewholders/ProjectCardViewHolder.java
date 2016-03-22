@@ -151,7 +151,9 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     delegate.projectCardViewHolderClick(this, project);
   }
 
-  // adjust spacing between cards when metadata label is present
+  /**
+   *  Adjust spacing between cards when metadata label is present.
+   */
   public void adjustViewGroupTopMargin(final @NonNull ViewGroup viewGroup, final int topMargin) {
     final RelativeLayout.MarginLayoutParams marginParams = new RelativeLayout.MarginLayoutParams(
       viewGroup.getLayoutParams()
@@ -159,6 +161,16 @@ public final class ProjectCardViewHolder extends KSViewHolder {
 
     marginParams.setMargins(0, topMargin, 0, 0);
     viewGroup.setLayoutParams(marginParams);
+  }
+
+  /**
+   * Adjust card content spacing when metadata label is present.
+   */
+  public void adjustLandscapeTopPadding(final @Nullable ViewGroup landscapeViewGroup, final int left, final int top,
+    final int right, final int bottom) {
+    if (landscapeViewGroup != null) {
+      landscapeViewGroup.setPadding(left, top, right, bottom);
+    }
   }
 
   public void setProjectStateView(final @NonNull Context context) {
@@ -205,13 +217,6 @@ public final class ProjectCardViewHolder extends KSViewHolder {
         percentageFundedProgressBar.setVisibility(View.VISIBLE);
         projectStateViewGroup.setVisibility(View.GONE);
         break;
-    }
-  }
-
-  public void adjustLandscapeTopPadding(final @Nullable ViewGroup landscapeViewGroup, final int left, final int top,
-    final int right, final int bottom) {
-    if (landscapeViewGroup != null) {
-      landscapeViewGroup.setPadding(left, top, right, bottom);
     }
   }
 

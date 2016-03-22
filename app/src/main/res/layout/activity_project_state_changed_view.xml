@@ -4,7 +4,7 @@
   xmlns:card_view="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/card_view"
-  card_view:contentPaddingTop="@dimen/grid_3"
+  card_view:contentPadding="@dimen/grid_2"
   android:focusable="true"
   style="@style/ActivityFeedCard">
 

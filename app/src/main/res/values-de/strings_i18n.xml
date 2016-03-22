@@ -576,6 +576,7 @@ Wir würden uns sehr darüber freuen!</string>
   <string name="project_checkout_android_pay_confirm" formatted="false">Bestätigen</string>
   <string name="project_checkout_android_pay_payment_method" formatted="false">Zahlungmethode</string>
   <string name="project_checkout_android_pay_pledge_disclaimer" formatted="false">Deine Zahlungsmethode wird jetzt noch nicht belastet. Erst nachdem das Projekt erfolgreich finanziert wurde, wird sie nach Ablauf desselben mit %{charge_amount} belastet.</string>
+  <string name="project_checkout_android_pay_pledged_disclaimer" formatted="false">Your payment method will not be charged at this time. If the project is successfully funded, your card will be charged %{charge_amount} when the project ends.</string>
   <string name="project_checkout_android_pay_terms_and_privacy" formatted="false">Durch Leistung deines Beitrags erklärst du dich mit Kickstarters &lt;u>terms of use&lt;/u> und &lt;u>privacy policy&lt;/u> einverstanden.</string>
   <string name="project_checkout_apple_pay_alert_button_ok" formatted="false">OK</string>
   <string name="project_checkout_apple_pay_alert_error" formatted="false">Fehler</string>

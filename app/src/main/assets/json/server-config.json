@@ -687,8 +687,9 @@
           },
           "android_pay": {
             "pledge_disclaimer": "Your payment method will not be charged at this time. If the project is successfully funded, your card will be charged %{charge_amount} when the project ends.",
-            "terms_and_privacy": "By pledging you agree to Kickstarter's <u>terms of use</u> and <u>privacy policy</u>.",
+            "terms_and_privacy": "By pledging you agree to Kickstarter’s <u>terms of use</u> and <u>privacy policy</u>.",
             "backer_101": "<b>Questions?</b> Read the <u>backer 101</u>.",
+            "pledged_disclaimer": "Your payment method will not be charged at this time. If the project is successfully funded, your card will be charged %{charge_amount} when the project ends.",
             "confirm": "Confirm",
             "payment_method": "Payment Method",
             "change": "Change"
@@ -2014,6 +2015,7 @@
             "pledge_disclaimer": "Deine Zahlungsmethode wird jetzt noch nicht belastet. Erst nachdem das Projekt erfolgreich finanziert wurde, wird sie nach Ablauf desselben mit %{charge_amount} belastet.",
             "terms_and_privacy": "Durch Leistung deines Beitrags erklärst du dich mit Kickstarters <u>terms of use</u> und <u>privacy policy</u> einverstanden.",
             "backer_101": "<b>Fragen?</b> Einfach im <u>Unterstützer-Einmaleins</u> nachlesen!",
+            "pledged_disclaimer": "Your payment method will not be charged at this time. If the project is successfully funded, your card will be charged %{charge_amount} when the project ends.",
             "confirm": "Bestätigen",
             "payment_method": "Zahlungmethode",
             "change": "Ändern"
@@ -3339,6 +3341,7 @@
             "pledge_disclaimer": "Todavía no se le hará ningún cargo a tu método de pago. Se efectuará un cargo de %{charge_amount} una vez que el proyecto haya sido financiado exitosamente.",
             "terms_and_privacy": "Al contribuir, aceptas los <u>terms of use</u> y la <u>privacy policy</u> de Kickstarter.",
             "backer_101": "<b>¿Preguntas?</b> Encontrarás respuestas en el <u>manual básico del patrocinador</u>.",
+            "pledged_disclaimer": "Your payment method will not be charged at this time. If the project is successfully funded, your card will be charged %{charge_amount} when the project ends.",
             "confirm": "Confirmar",
             "payment_method": "Método de pago",
             "change": "Cambiar"
@@ -4664,6 +4667,7 @@
             "pledge_disclaimer": "Votre moyen de paiement ne sera pas débité tout de suite. Si le projet est intégralement financé, votre carte sera débitée de %{charge_amount} en fin de campagne.",
             "terms_and_privacy": "En vous engageant, vous acceptez les <u>conditions d'utilisation</u> et la <u>politique de confidentialité</u> de Kickstarter.",
             "backer_101": "<b>Des questions ?</b> Lisez la section <u>Notions de base</u>.",
+            "pledged_disclaimer": "Votre moyen de paiement ne sera pas débité tout de suite. Si le projet est intégralement financé, votre carte sera débitée de %{charge_amount} en fin de campagne.",
             "confirm": "Confirmer",
             "payment_method": "Moyen de paiement",
             "change": "Modifier"
@@ -5987,8 +5991,9 @@
           },
           "android_pay": {
             "pledge_disclaimer": "Your payment method will not be charged at this time. If the project is successfully funded, your card will be charged %{charge_amount} when the project ends.",
-            "terms_and_privacy": "By pledging you agree to Kickstarter's <u>terms of use</u> and <u>privacy policy</u>.",
+            "terms_and_privacy": "By pledging you agree to Kickstarter’s <u>terms of use</u> and <u>privacy policy</u>.",
             "backer_101": "<b>Questions?</b> Read the <u>backer 101</u>.",
+            "pledged_disclaimer": "Your payment method will not be charged at this time. If the project is successfully funded, your card will be charged %{charge_amount} when the project ends.",
             "confirm": "Confirm",
             "payment_method": "Payment Method",
             "change": "Change"
@@ -6642,7 +6647,6 @@
     "ios_tappable_category_location": true,
     "ios_favorite_categories": true,
     "handbook_hero": true,
-    "android_pay": true,
     "i18n_discovery_touts": true,
     "i18n_start_tout": true,
     "password_reset_banner": true,
@@ -6770,7 +6774,7 @@
     "native_ios_aa": "experimental",
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
-    "native_iphone_horiz_vs_vert": "control",
+    "native_iphone_horiz_vs_vert": "experimental",
     "thanks_cards_money": "control"
   },
   "stripe": {

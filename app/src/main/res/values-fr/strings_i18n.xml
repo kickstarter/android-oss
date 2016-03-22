@@ -578,6 +578,7 @@ Merci pour votre soutien !</string>
   <string name="project_checkout_android_pay_confirm" formatted="false">Confirmer</string>
   <string name="project_checkout_android_pay_payment_method" formatted="false">Moyen de paiement</string>
   <string name="project_checkout_android_pay_pledge_disclaimer" formatted="false">Votre moyen de paiement ne sera pas débité tout de suite. Si le projet est intégralement financé, votre carte sera débitée de %{charge_amount} en fin de campagne.</string>
+  <string name="project_checkout_android_pay_pledged_disclaimer" formatted="false">Votre moyen de paiement ne sera pas débité tout de suite. Si le projet est intégralement financé, votre carte sera débitée de %{charge_amount} en fin de campagne.</string>
   <string name="project_checkout_android_pay_terms_and_privacy" formatted="false">En vous engageant, vous acceptez les &lt;u>conditions d\'utilisation&lt;/u> et la &lt;u>politique de confidentialité&lt;/u> de Kickstarter.</string>
   <string name="project_checkout_apple_pay_alert_button_ok" formatted="false">OK</string>
   <string name="project_checkout_apple_pay_alert_error" formatted="false">Erreur</string>

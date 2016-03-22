@@ -19,7 +19,7 @@
   android:background="@drawable/metadata_label_rounded_background"
   android:gravity="center_vertical"
   android:layout_width="wrap_content"
-  android:layout_height="@dimen/grid_4"
+  android:layout_height="@dimen/metadata_label_height"
   tools:ignore="UnusedAttribute">
 
   <LinearLayout

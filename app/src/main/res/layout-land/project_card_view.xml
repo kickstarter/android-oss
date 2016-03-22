@@ -104,7 +104,13 @@
 
   </android.support.v7.widget.CardView>
 
-  <include layout="@layout/project_metadata_view"/>
+  <include
+    layout="@layout/project_metadata_view"
+    android:layout_height="@dimen/metadata_label_height"
+    android:layout_width="wrap_content"
+    android:layout_marginTop="@dimen/grid_3_half"
+    android:layout_marginStart="@dimen/grid_4"
+    android:layout_marginLeft="@dimen/grid_4"/>
 
   <LinearLayout
     android:id="@+id/friend_backing_group"

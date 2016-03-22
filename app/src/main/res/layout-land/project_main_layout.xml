@@ -35,12 +35,14 @@
       android:id="@+id/project_state_view_group"
       android:visibility="gone"
       android:gravity="center_vertical"
-      android:layout_marginTop="@dimen/grid_5"
-      android:layout_marginLeft="@dimen/grid_3"
-      android:layout_marginRight="@dimen/grid_3"
-      android:layout_marginStart="@dimen/grid_3"
-      android:layout_marginEnd="@dimen/grid_3"
+      android:layout_marginTop="@dimen/grid_3"
       android:layout_marginBottom="@dimen/grid_2"
+      android:paddingTop="@dimen/grid_2"
+      android:paddingLeft="@dimen/grid_3"
+      android:paddingRight="@dimen/grid_3"
+      android:paddingStart="@dimen/grid_3"
+      android:paddingEnd="@dimen/grid_3"
+      android:paddingBottom="@dimen/grid_2"
       android:orientation="vertical"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
@@ -75,6 +77,7 @@
         android:id="@+id/project_action_buttons"
         android:layout_alignTop="@id/stats_view"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:focusable="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -109,7 +112,6 @@
         tools:text="Converted from" />
 
     </RelativeLayout>
-
 
     <LinearLayout
       android:id="@+id/project_social_view"

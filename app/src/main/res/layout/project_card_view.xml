@@ -16,12 +16,12 @@
     card_view:cardElevation="@dimen/card_elevation"
     android:foreground="@drawable/click_indicator_light"
     android:focusable="true"
-    android:layout_marginBottom="@dimen/grid_1"
-    android:layout_marginTop="@dimen/grid_3"
-    android:layout_marginLeft="@dimen/grid_2"
-    android:layout_marginStart="@dimen/grid_2"
-    android:layout_marginRight="@dimen/grid_2"
-    android:layout_marginEnd="@dimen/grid_2">
+    android:layout_marginBottom="@dimen/project_card_margin_bottom"
+    android:layout_marginTop="@dimen/project_card_margin_top"
+    android:layout_marginLeft="@dimen/card_margin_x"
+    android:layout_marginStart="@dimen/card_margin_x"
+    android:layout_marginRight="@dimen/card_margin_x"
+    android:layout_marginEnd="@dimen/card_margin_x">
 
     <LinearLayout
       android:orientation="vertical"

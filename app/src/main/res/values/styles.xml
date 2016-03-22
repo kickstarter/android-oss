@@ -378,8 +378,8 @@
     <item name="android:focusable">true</item>
     <item name="android:layout_marginBottom">@dimen/grid_1</item>
     <item name="android:layout_marginTop">@dimen/grid_3</item>
-    <item name="android:layout_marginLeft">@dimen/grid_2</item>
-    <item name="android:layout_marginRight">@dimen/grid_2</item>
+    <item name="android:layout_marginLeft">@dimen/card_margin_x</item>
+    <item name="android:layout_marginRight">@dimen/card_margin_x</item>
   </style>
 
   <style name="ActivitySampleCard" parent="ActivitySampleCardBase" />

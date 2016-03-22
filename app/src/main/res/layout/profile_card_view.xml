@@ -8,8 +8,8 @@
   android:layout_height="wrap_content"
   android:layout_width="wrap_content"
   android:layout_marginTop="@dimen/grid_2"
-  android:layout_marginRight="@dimen/grid_2"
-  android:layout_marginEnd="@dimen/grid_2">
+  android:layout_marginRight="@dimen/card_margin_x"
+  android:layout_marginEnd="@dimen/card_margin_x">
 
   <android.support.v7.widget.CardView
     xmlns:card_view="http://schemas.android.com/apk/res-auto"

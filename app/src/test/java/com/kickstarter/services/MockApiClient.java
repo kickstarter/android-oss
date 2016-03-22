@@ -123,13 +123,30 @@ public class MockApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String accessToken) {
-    return Observable.empty();
+
+    return Observable.just(
+      AccessTokenEnvelope.builder()
+        .user(UserFactory.user()
+            .toBuilder()
+            .build()
+        )
+        .accessToken("deadbeef")
+        .build()
+    );
   }
 
   @Override
   public @NonNull Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String fbAccessToken,
     final @NonNull String code) {
-    return Observable.empty();
+    return Observable.just(
+      AccessTokenEnvelope.builder()
+        .user(UserFactory.user()
+            .toBuilder()
+            .build()
+        )
+        .accessToken("deadbeef")
+        .build()
+    );
   }
 
   @Override
@@ -165,13 +182,29 @@ public class MockApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password) {
-    return Observable.empty();
+    return Observable.just(
+      AccessTokenEnvelope.builder()
+        .user(UserFactory.user()
+            .toBuilder()
+            .build()
+        )
+        .accessToken("deadbeef")
+        .build()
+    );
   }
 
   @Override
   public @NonNull Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password,
     final @NonNull String code) {
-    return Observable.empty();
+    return Observable.just(
+      AccessTokenEnvelope.builder()
+        .user(UserFactory.user()
+            .toBuilder()
+            .build()
+        )
+        .accessToken("deadbeef")
+        .build()
+    );
   }
 
   @Override

@@ -1,7 +1,5 @@
 package com.kickstarter.viewmodels;
 
-import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
@@ -48,8 +46,20 @@ public final class TwoFactorViewModel extends ViewModel<TwoFactorActivity> imple
 
   // INPUTS
   private final PublishSubject<String> code = PublishSubject.create();
+  @Override
+  public void code(@NonNull final String s) {
+    code.onNext(s);
+  }
   private final PublishSubject<Void> loginClick = PublishSubject.create();
+  @Override
+  public void loginClick() {
+    loginClick.onNext(null);
+  }
   private final PublishSubject<Void> resendClick = PublishSubject.create();
+  @Override
+  public void resendClick() {
+    resendClick.onNext(null);
+  }
 
   // OUTPUTS
   private final PublishSubject<Boolean> formSubmitting = PublishSubject.create();
@@ -85,31 +95,11 @@ public final class TwoFactorViewModel extends ViewModel<TwoFactorActivity> imple
   public final TwoFactorViewModelOutputs outputs = this;
   public final TwoFactorViewModelErrors errors = this;
 
-  @Override
-  public void code(@NonNull final String s) {
-    code.onNext(s);
-  }
-
-  @Override
-  public void loginClick() {
-    loginClick.onNext(null);
-  }
-
-  @Override
-  public void resendClick() {
-    resendClick.onNext(null);
-  }
-
   public TwoFactorViewModel(final @NonNull Environment environment) {
     super(environment);
 
     currentUser = environment.currentUser();
     client = environment.apiClient();
-  }
-
-  @Override
-  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
-    super.onCreate(context, savedInstanceState);
 
     final Observable<String> email = intent()
       .map(i -> i.getStringExtra(IntentKey.EMAIL));
@@ -193,6 +183,7 @@ public final class TwoFactorViewModel extends ViewModel<TwoFactorActivity> imple
       .finallyDo(() -> formSubmitting.onNext(false));
   }
 
+  // TODO: create an output to let the user know a code has been sent and we can test these are working
   private Observable<AccessTokenEnvelope> resendCode(final @NonNull String email, final @NonNull String password) {
     return client.login(email, password)
       .compose(Transformers.neverError());

@@ -25,7 +25,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     vm.intent(new Intent().putExtra(IntentKey.EMAIL, "gina@kickstarter.com"));
     vm.intent(new Intent().putExtra(IntentKey.PASSWORD, "hello"));
     vm.intent(new Intent().putExtra(IntentKey.FACEBOOK_LOGIN, false));
-    vm.intent(new Intent().putExtra(IntentKey.FACEBOOK_TOKEN, "pajamas1234"));
+    vm.intent(new Intent().putExtra(IntentKey.FACEBOOK_TOKEN, ""));
 
     final TestSubscriber<Boolean> formIsValid = new TestSubscriber<>();
     vm.outputs.formIsValid().subscribe(formIsValid);
@@ -57,6 +57,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     vm.outputs.formSubmitting().subscribe(formSubmitting);
 
     vm.inputs.loginClick();
+
     formSubmitting.assertValues(true, false);
     tfaSuccess.assertValueCount(1);
 
@@ -64,7 +65,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testTwoFactorViewModel_FacebookLoginSuccess() {
+  public void testTwoFactorViewModel_TfaSuccessFacebook() {
     final TwoFactorViewModel vm = new TwoFactorViewModel(environment());
     vm.intent(new Intent().putExtra(IntentKey.EMAIL, "gina@kickstarter.com"));
     vm.intent(new Intent().putExtra(IntentKey.PASSWORD, "hello"));
@@ -79,6 +80,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     vm.outputs.formSubmitting().subscribe(formSubmitting);
 
     vm.inputs.loginClick();
+
     formSubmitting.assertValues(true, false);
     tfaSuccess.assertValueCount(1);
 

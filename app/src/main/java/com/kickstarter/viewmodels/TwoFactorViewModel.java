@@ -1,7 +1,6 @@
 package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.libs.CurrentUserType;
@@ -24,14 +23,14 @@ public final class TwoFactorViewModel extends ViewModel<TwoFactorActivity> imple
   TwoFactorViewModelOutputs, TwoFactorViewModelErrors {
 
   protected final static class TfaData {
-    final @Nullable String email;
-    final @Nullable String fbAccessToken;
+    final @NonNull String email;
+    final @NonNull String fbAccessToken;
     final boolean isFacebookLogin;
-    final @Nullable String password;
+    final @NonNull String password;
     final @NonNull String code;
 
-    protected TfaData(final @Nullable String email, final @Nullable String fbAccessToken, final boolean isFacebookLogin,
-      final @Nullable String password, final @NonNull String code) {
+    protected TfaData(final @NonNull String email, final @NonNull String fbAccessToken, final boolean isFacebookLogin,
+      final @NonNull String password, final @NonNull String code) {
       this.email = email;
       this.fbAccessToken = fbAccessToken;
       this.isFacebookLogin = isFacebookLogin;
@@ -74,13 +73,17 @@ public final class TwoFactorViewModel extends ViewModel<TwoFactorActivity> imple
   public Observable<Void> tfaSuccess() {
     return tfaSuccess.asObservable();
   }
+  private final PublishSubject<Void> showResendCodeConfirmation = PublishSubject.create();
+  public Observable<Void> showResendCodeConfirmation() {
+    return showResendCodeConfirmation.asObservable();
+  }
 
   // ERRORS
   private final PublishSubject<ErrorEnvelope> tfaError = PublishSubject.create();
   public Observable<String> tfaCodeMismatchError() {
     return tfaError
       .filter(ErrorEnvelope::isTfaFailedError)
-      .map(ErrorEnvelope::errorMessage);
+      .map(__ -> null);
   }
   public Observable<Void> genericTfaError() {
     return tfaError
@@ -183,14 +186,15 @@ public final class TwoFactorViewModel extends ViewModel<TwoFactorActivity> imple
       .finallyDo(() -> formSubmitting.onNext(false));
   }
 
-  // TODO: create an output to let the user know a code has been sent and we can test these are working
   private Observable<AccessTokenEnvelope> resendCode(final @NonNull String email, final @NonNull String password) {
     return client.login(email, password)
-      .compose(Transformers.neverError());
+      .compose(Transformers.neverError())
+      .doOnSubscribe(() -> showResendCodeConfirmation.onNext(null));
   }
 
   private Observable<AccessTokenEnvelope> resendCodeFbLogin(final @NonNull String fbAccessToken) {
     return client.loginWithFacebook(fbAccessToken)
-      .compose(Transformers.neverError());
+      .compose(Transformers.neverError())
+      .doOnSubscribe(() -> showResendCodeConfirmation.onNext(null));
   }
 }

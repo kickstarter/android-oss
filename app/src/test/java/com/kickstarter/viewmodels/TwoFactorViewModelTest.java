@@ -1,12 +1,20 @@
 package com.kickstarter.viewmodels;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.factories.ApiExceptionFactory;
+import com.kickstarter.libs.Environment;
+import com.kickstarter.services.ApiClientType;
+import com.kickstarter.services.MockApiClient;
+import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
+import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.IntentKey;
 
 import org.junit.Test;
 
+import rx.Observable;
 import rx.observers.TestSubscriber;
 
 public class TwoFactorViewModelTest extends KSRobolectricTestCase {
@@ -39,7 +47,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     vm.intent(new Intent().putExtra(IntentKey.EMAIL, "gina@kickstarter.com"));
     vm.intent(new Intent().putExtra(IntentKey.PASSWORD, "hello"));
     vm.intent(new Intent().putExtra(IntentKey.FACEBOOK_LOGIN, false));
-    vm.intent(new Intent().putExtra(IntentKey.FACEBOOK_TOKEN, "pajamas1234"));
+    vm.intent(new Intent().putExtra(IntentKey.FACEBOOK_TOKEN, ""));
     vm.inputs.code("88888");
 
     final TestSubscriber<Void> tfaSuccess = new TestSubscriber<>();
@@ -83,9 +91,14 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     vm.intent(new Intent().putExtra(IntentKey.EMAIL, "gina@kickstarter.com"));
     vm.intent(new Intent().putExtra(IntentKey.PASSWORD, "hello"));
     vm.intent(new Intent().putExtra(IntentKey.FACEBOOK_LOGIN, false));
+    vm.intent(new Intent().putExtra(IntentKey.FACEBOOK_TOKEN, ""));
+
+    final TestSubscriber<Void> showResendCodeConfirmation = new TestSubscriber<>();
+    vm.outputs.showResendCodeConfirmation().subscribe(showResendCodeConfirmation);
 
     vm.inputs.resendClick();
 
+    showResendCodeConfirmation.assertValueCount(1);
     koalaTest.assertValues("Two-factor Authentication Confirm View", "Two-factor Authentication Resend Code");
   }
 
@@ -97,40 +110,90 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     vm.intent(new Intent().putExtra(IntentKey.FACEBOOK_LOGIN, true));
     vm.intent(new Intent().putExtra(IntentKey.FACEBOOK_TOKEN, "pajamas1234"));
 
+    final TestSubscriber<Void> showResendCodeConfirmation = new TestSubscriber<>();
+    vm.outputs.showResendCodeConfirmation().subscribe(showResendCodeConfirmation);
+
     vm.inputs.resendClick();
 
+    showResendCodeConfirmation.assertValueCount(1);
     koalaTest.assertValues("Two-factor Authentication Confirm View", "Two-factor Authentication Resend Code");
   }
 
   @Test
   public void testTwoFactorViewModel_GenericError() {
-    final TwoFactorViewModel vm = new TwoFactorViewModel(environment());
+    final ApiClientType apiClient = new MockApiClient() {
+      @Override
+      public @NonNull
+      Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password,
+        final @NonNull String code) {
+        return Observable.error(ApiExceptionFactory.apiError(
+          ErrorEnvelope.builder().httpCode(400).build()
+        ));
+      }
+    };
+
+    final Environment environment = environment().toBuilder().apiClient(apiClient).build();
+
+    final TwoFactorViewModel vm = new TwoFactorViewModel(environment);
     vm.intent(new Intent().putExtra(IntentKey.EMAIL, "gina@kickstarter.com"));
     vm.intent(new Intent().putExtra(IntentKey.PASSWORD, "hello"));
     vm.intent(new Intent().putExtra(IntentKey.FACEBOOK_LOGIN, false));
     vm.intent(new Intent().putExtra(IntentKey.FACEBOOK_TOKEN, "pajamas1234"));
     vm.inputs.code("88888");
+
+    final TestSubscriber<Void> tfaSuccess = new TestSubscriber<>();
+    vm.outputs.tfaSuccess().subscribe(tfaSuccess);
+
+    final TestSubscriber<Boolean> formSubmitting = new TestSubscriber<>();
+    vm.outputs.formSubmitting().subscribe(formSubmitting);
 
     final TestSubscriber<Void> genericTfaError = new TestSubscriber<>();
     vm.errors.genericTfaError().subscribe(genericTfaError);
 
-    //genericTfaError.assertValueCount(1);
-    //koalaTest.assertValues("Two-factor Authentication Confirm View", "Errored User Login");
+    vm.inputs.loginClick();
+
+    formSubmitting.assertValues(true, false);
+    tfaSuccess.assertValueCount(0);
+    genericTfaError.assertValueCount(1);
+    koalaTest.assertValues("Two-factor Authentication Confirm View", "Errored User Login");
   }
 
   @Test
   public void testTwoFactorViewModel_CodeMismatchError() {
-    final TwoFactorViewModel vm = new TwoFactorViewModel(environment());
+    final ApiClientType apiClient = new MockApiClient() {
+      @Override
+      public @NonNull
+      Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password,
+        final @NonNull String code) {
+        return Observable.error(ApiExceptionFactory.tfaError(
+          ErrorEnvelope.builder().httpCode(400).build()
+        ));
+      }
+    };
+
+    final Environment environment = environment().toBuilder().apiClient(apiClient).build();
+
+    final TwoFactorViewModel vm = new TwoFactorViewModel(environment);
     vm.intent(new Intent().putExtra(IntentKey.EMAIL, "gina@kickstarter.com"));
     vm.intent(new Intent().putExtra(IntentKey.PASSWORD, "hello"));
     vm.intent(new Intent().putExtra(IntentKey.FACEBOOK_LOGIN, false));
     vm.intent(new Intent().putExtra(IntentKey.FACEBOOK_TOKEN, "pajamas1234"));
     vm.inputs.code("88888");
 
+    final TestSubscriber<Void> tfaSuccess = new TestSubscriber<>();
+    vm.outputs.tfaSuccess().subscribe(tfaSuccess);
+
+    final TestSubscriber<Boolean> formSubmitting = new TestSubscriber<>();
+    vm.outputs.formSubmitting().subscribe(formSubmitting);
+
     final TestSubscriber<String> tfaCodeMismatchError = new TestSubscriber<>();
     vm.errors.tfaCodeMismatchError().subscribe(tfaCodeMismatchError);
 
-    //tfaCodeMismatchError.assertValueCount(1);
-    //koalaTest.assertValues("Two-factor Authentication Confirm View", "Errored User Login");
+    vm.inputs.loginClick();
+
+    formSubmitting.assertValues(true, false);
+    tfaSuccess.assertValueCount(0);
+    tfaCodeMismatchError.assertValueCount(1);
+    koalaTest.assertValues("Two-factor Authentication Confirm View", "Errored User Login");
   }
 }

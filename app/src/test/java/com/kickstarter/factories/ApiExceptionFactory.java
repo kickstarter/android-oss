@@ -36,4 +36,16 @@ public final class ApiExceptionFactory {
 
     return new ApiException(envelope, response);
   }
+
+  public static @NonNull ApiException tfaError(final @NonNull ErrorEnvelope errorEnvelope) {
+    final ErrorEnvelope envelope = ErrorEnvelope.builder()
+      .errorMessages(errorEnvelope.errorMessages())
+      .httpCode(errorEnvelope.httpCode())
+      .ksrCode(ErrorEnvelope.TFA_FAILED)
+      .build();
+    final ResponseBody body = ResponseBody.create(null, new Gson().toJson(errorEnvelope));
+    final retrofit2.Response<Observable<User>> response = retrofit2.Response.error(errorEnvelope.httpCode(), body);
+
+    return new ApiException(envelope, response);
+  }
 }

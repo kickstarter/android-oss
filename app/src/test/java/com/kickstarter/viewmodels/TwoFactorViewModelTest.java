@@ -21,11 +21,14 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testTwoFactorViewModel_FormValidation() {
+    final Intent intent = new Intent();
+    intent.putExtra(IntentKey.EMAIL, "gina@kickstarter.com");
+    intent.putExtra(IntentKey.PASSWORD, "hello");
+    intent.putExtra(IntentKey.FACEBOOK_LOGIN, false);
+    intent.putExtra(IntentKey.FACEBOOK_TOKEN, "");
+
     final TwoFactorViewModel vm = new TwoFactorViewModel(environment());
-    vm.intent(new Intent().putExtra(IntentKey.EMAIL, "gina@kickstarter.com"));
-    vm.intent(new Intent().putExtra(IntentKey.PASSWORD, "hello"));
-    vm.intent(new Intent().putExtra(IntentKey.FACEBOOK_LOGIN, false));
-    vm.intent(new Intent().putExtra(IntentKey.FACEBOOK_TOKEN, ""));
+    vm.intent(intent);
 
     final TestSubscriber<Boolean> formIsValid = new TestSubscriber<>();
     vm.outputs.formIsValid().subscribe(formIsValid);
@@ -43,12 +46,14 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testTwoFactorViewModel_TfaSuccess() {
+    final Intent intent = new Intent();
+    intent.putExtra(IntentKey.EMAIL, "gina@kickstarter.com");
+    intent.putExtra(IntentKey.PASSWORD, "hello");
+    intent.putExtra(IntentKey.FACEBOOK_LOGIN, false);
+    intent.putExtra(IntentKey.FACEBOOK_TOKEN, "");
+
     final TwoFactorViewModel vm = new TwoFactorViewModel(environment());
-    vm.intent(new Intent().putExtra(IntentKey.EMAIL, "gina@kickstarter.com"));
-    vm.intent(new Intent().putExtra(IntentKey.PASSWORD, "hello"));
-    vm.intent(new Intent().putExtra(IntentKey.FACEBOOK_LOGIN, false));
-    vm.intent(new Intent().putExtra(IntentKey.FACEBOOK_TOKEN, ""));
-    vm.inputs.code("88888");
+    vm.intent(intent);
 
     final TestSubscriber<Void> tfaSuccess = new TestSubscriber<>();
     vm.outputs.tfaSuccess().subscribe(tfaSuccess);
@@ -56,6 +61,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<Boolean> formSubmitting = new TestSubscriber<>();
     vm.outputs.formSubmitting().subscribe(formSubmitting);
 
+    vm.inputs.code("88888");
     vm.inputs.loginClick();
 
     formSubmitting.assertValues(true, false);
@@ -66,12 +72,14 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testTwoFactorViewModel_TfaSuccessFacebook() {
+    final Intent intent = new Intent();
+    intent.putExtra(IntentKey.EMAIL, "gina@kickstarter.com");
+    intent.putExtra(IntentKey.PASSWORD, "hello");
+    intent.putExtra(IntentKey.FACEBOOK_LOGIN, true);
+    intent.putExtra(IntentKey.FACEBOOK_TOKEN, "pajamas1234");
+
     final TwoFactorViewModel vm = new TwoFactorViewModel(environment());
-    vm.intent(new Intent().putExtra(IntentKey.EMAIL, "gina@kickstarter.com"));
-    vm.intent(new Intent().putExtra(IntentKey.PASSWORD, "hello"));
-    vm.intent(new Intent().putExtra(IntentKey.FACEBOOK_LOGIN, true));
-    vm.intent(new Intent().putExtra(IntentKey.FACEBOOK_TOKEN, "pajamas1234"));
-    vm.inputs.code("88888");
+    vm.intent(intent);
 
     final TestSubscriber<Void> tfaSuccess = new TestSubscriber<>();
     vm.outputs.tfaSuccess().subscribe(tfaSuccess);
@@ -79,6 +87,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<Boolean> formSubmitting = new TestSubscriber<>();
     vm.outputs.formSubmitting().subscribe(formSubmitting);
 
+    vm.inputs.code("88888");
     vm.inputs.loginClick();
 
     formSubmitting.assertValues(true, false);
@@ -89,11 +98,14 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
 
   @Test
    public void testTwoFactorViewModel_ResendCode() {
+    final Intent intent = new Intent();
+    intent.putExtra(IntentKey.EMAIL, "gina@kickstarter.com");
+    intent.putExtra(IntentKey.PASSWORD, "hello");
+    intent.putExtra(IntentKey.FACEBOOK_LOGIN, false);
+    intent.putExtra(IntentKey.FACEBOOK_TOKEN, "");
+
     final TwoFactorViewModel vm = new TwoFactorViewModel(environment());
-    vm.intent(new Intent().putExtra(IntentKey.EMAIL, "gina@kickstarter.com"));
-    vm.intent(new Intent().putExtra(IntentKey.PASSWORD, "hello"));
-    vm.intent(new Intent().putExtra(IntentKey.FACEBOOK_LOGIN, false));
-    vm.intent(new Intent().putExtra(IntentKey.FACEBOOK_TOKEN, ""));
+    vm.intent(intent);
 
     final TestSubscriber<Void> showResendCodeConfirmation = new TestSubscriber<>();
     vm.outputs.showResendCodeConfirmation().subscribe(showResendCodeConfirmation);
@@ -106,11 +118,14 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testTwoFactorViewModel_ResendCodeFacebook() {
+    final Intent intent = new Intent();
+    intent.putExtra(IntentKey.EMAIL, "gina@kickstarter.com");
+    intent.putExtra(IntentKey.PASSWORD, "hello");
+    intent.putExtra(IntentKey.FACEBOOK_LOGIN, true);
+    intent.putExtra(IntentKey.FACEBOOK_TOKEN, "pajamas1234");
+
     final TwoFactorViewModel vm = new TwoFactorViewModel(environment());
-    vm.intent(new Intent().putExtra(IntentKey.EMAIL, "gina@kickstarter.com"));
-    vm.intent(new Intent().putExtra(IntentKey.PASSWORD, "hello"));
-    vm.intent(new Intent().putExtra(IntentKey.FACEBOOK_LOGIN, true));
-    vm.intent(new Intent().putExtra(IntentKey.FACEBOOK_TOKEN, "pajamas1234"));
+    vm.intent(intent);
 
     final TestSubscriber<Void> showResendCodeConfirmation = new TestSubscriber<>();
     vm.outputs.showResendCodeConfirmation().subscribe(showResendCodeConfirmation);
@@ -126,7 +141,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     final ApiClientType apiClient = new MockApiClient() {
       @Override
       public @NonNull
-      Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password,
+        Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password,
         final @NonNull String code) {
         return Observable.error(ApiExceptionFactory.apiError(
           ErrorEnvelope.builder().httpCode(400).build()
@@ -136,12 +151,14 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
 
     final Environment environment = environment().toBuilder().apiClient(apiClient).build();
 
+    final Intent intent = new Intent();
+    intent.putExtra(IntentKey.EMAIL, "gina@kickstarter.com");
+    intent.putExtra(IntentKey.PASSWORD, "hello");
+    intent.putExtra(IntentKey.FACEBOOK_LOGIN, false);
+    intent.putExtra(IntentKey.FACEBOOK_TOKEN, "");
+
     final TwoFactorViewModel vm = new TwoFactorViewModel(environment);
-    vm.intent(new Intent().putExtra(IntentKey.EMAIL, "gina@kickstarter.com"));
-    vm.intent(new Intent().putExtra(IntentKey.PASSWORD, "hello"));
-    vm.intent(new Intent().putExtra(IntentKey.FACEBOOK_LOGIN, false));
-    vm.intent(new Intent().putExtra(IntentKey.FACEBOOK_TOKEN, "pajamas1234"));
-    vm.inputs.code("88888");
+    vm.intent(intent);
 
     final TestSubscriber<Void> tfaSuccess = new TestSubscriber<>();
     vm.outputs.tfaSuccess().subscribe(tfaSuccess);
@@ -152,10 +169,11 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<Void> genericTfaError = new TestSubscriber<>();
     vm.errors.genericTfaError().subscribe(genericTfaError);
 
+    vm.inputs.code("88888");
     vm.inputs.loginClick();
 
     formSubmitting.assertValues(true, false);
-    tfaSuccess.assertValueCount(0);
+    tfaSuccess.assertNoValues();
     genericTfaError.assertValueCount(1);
     koalaTest.assertValues("Two-factor Authentication Confirm View", "Errored User Login");
   }
@@ -165,7 +183,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     final ApiClientType apiClient = new MockApiClient() {
       @Override
       public @NonNull
-      Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password,
+        Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password,
         final @NonNull String code) {
         return Observable.error(ApiExceptionFactory.tfaError(
           ErrorEnvelope.builder().httpCode(400).build()
@@ -175,12 +193,14 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
 
     final Environment environment = environment().toBuilder().apiClient(apiClient).build();
 
+    final Intent intent = new Intent();
+    intent.putExtra(IntentKey.EMAIL, "gina@kickstarter.com");
+    intent.putExtra(IntentKey.PASSWORD, "hello");
+    intent.putExtra(IntentKey.FACEBOOK_LOGIN, false);
+    intent.putExtra(IntentKey.FACEBOOK_TOKEN, "");
+
     final TwoFactorViewModel vm = new TwoFactorViewModel(environment);
-    vm.intent(new Intent().putExtra(IntentKey.EMAIL, "gina@kickstarter.com"));
-    vm.intent(new Intent().putExtra(IntentKey.PASSWORD, "hello"));
-    vm.intent(new Intent().putExtra(IntentKey.FACEBOOK_LOGIN, false));
-    vm.intent(new Intent().putExtra(IntentKey.FACEBOOK_TOKEN, "pajamas1234"));
-    vm.inputs.code("88888");
+    vm.intent(intent);
 
     final TestSubscriber<Void> tfaSuccess = new TestSubscriber<>();
     vm.outputs.tfaSuccess().subscribe(tfaSuccess);
@@ -188,13 +208,14 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<Boolean> formSubmitting = new TestSubscriber<>();
     vm.outputs.formSubmitting().subscribe(formSubmitting);
 
-    final TestSubscriber<String> tfaCodeMismatchError = new TestSubscriber<>();
+    final TestSubscriber<Void> tfaCodeMismatchError = new TestSubscriber<>();
     vm.errors.tfaCodeMismatchError().subscribe(tfaCodeMismatchError);
 
+    vm.inputs.code("88888");
     vm.inputs.loginClick();
 
     formSubmitting.assertValues(true, false);
-    tfaSuccess.assertValueCount(0);
+    tfaSuccess.assertNoValues();
     tfaCodeMismatchError.assertValueCount(1);
     koalaTest.assertValues("Two-factor Authentication Confirm View", "Errored User Login");
   }

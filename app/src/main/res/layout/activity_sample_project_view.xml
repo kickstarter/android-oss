@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/grid_2"
-        tools:text="@string/discovery_activity_sample_title_since_youve_been_gone" />
+        android:text="@string/discovery_activity_sample_title_since_youve_been_gone" />
 
       <LinearLayout
         android:id="@+id/activity_click_area"

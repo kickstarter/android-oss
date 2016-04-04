@@ -2015,7 +2015,7 @@
             "pledge_disclaimer": "Deine Zahlungsmethode wird jetzt noch nicht belastet. Erst nachdem das Projekt erfolgreich finanziert wurde, wird sie nach Ablauf desselben mit %{charge_amount} belastet.",
             "terms_and_privacy": "Durch Leistung deines Beitrags erklärst du dich mit Kickstarters <u>terms of use</u> und <u>privacy policy</u> einverstanden.",
             "backer_101": "<b>Fragen?</b> Einfach im <u>Unterstützer-Einmaleins</u> nachlesen!",
-            "pledged_disclaimer": "Your payment method will not be charged at this time. If the project is successfully funded, your card will be charged %{charge_amount} when the project ends.",
+            "pledged_disclaimer": "Deine Zahlungsmethode wird jetzt noch nicht belastet. Erst nachdem das Projekt erfolgreich finanziert wurde, wird sie nach Ablauf desselben mit %{charge_amount} belastet.",
             "confirm": "Bestätigen",
             "payment_method": "Zahlungmethode",
             "change": "Ändern"
@@ -3341,7 +3341,7 @@
             "pledge_disclaimer": "Todavía no se le hará ningún cargo a tu método de pago. Se efectuará un cargo de %{charge_amount} una vez que el proyecto haya sido financiado exitosamente.",
             "terms_and_privacy": "Al contribuir, aceptas los <u>terms of use</u> y la <u>privacy policy</u> de Kickstarter.",
             "backer_101": "<b>¿Preguntas?</b> Encontrarás respuestas en el <u>manual básico del patrocinador</u>.",
-            "pledged_disclaimer": "Your payment method will not be charged at this time. If the project is successfully funded, your card will be charged %{charge_amount} when the project ends.",
+            "pledged_disclaimer": "Todavía no se le hará ningún cargo a tu método de pago. Se efectuará un cargo de %{charge_amount} una vez que el proyecto haya sido financiado exitosamente.",
             "confirm": "Confirmar",
             "payment_method": "Método de pago",
             "change": "Cambiar"
@@ -6633,6 +6633,7 @@
   },
   "features": {
     "elasticsearch": true,
+    "elasticsearch_sync_diffs": true,
     "koala_tracking": true,
     "koala_devices": true,
     "device_id2": true,
@@ -6641,6 +6642,7 @@
     "redshift": true,
     "advanced_discovery_es": true,
     "facebook_ajax_requests": true,
+    "exacttarget": true,
     "ios_crashlytics": true,
     "ios_koala": true,
     "ios_i18n": true,
@@ -6657,7 +6659,8 @@
     "recaptcha": true,
     "log_devices": true,
     "backer_report_formats": true,
-    "discover_cards": true
+    "discover_cards": true,
+    "16x9_preview": true
   },
   "launched_countries": [
     {

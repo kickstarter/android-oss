@@ -577,7 +577,7 @@ Si tienes un momento, ¿te importaría calificar tu experiencia?\n
   <string name="project_checkout_android_pay_confirm" formatted="false">Confirmar</string>
   <string name="project_checkout_android_pay_payment_method" formatted="false">Método de pago</string>
   <string name="project_checkout_android_pay_pledge_disclaimer" formatted="false">Todavía no se le hará ningún cargo a tu método de pago. Se efectuará un cargo de %{charge_amount} una vez que el proyecto haya sido financiado exitosamente.</string>
-  <string name="project_checkout_android_pay_pledged_disclaimer" formatted="false">Your payment method will not be charged at this time. If the project is successfully funded, your card will be charged %{charge_amount} when the project ends.</string>
+  <string name="project_checkout_android_pay_pledged_disclaimer" formatted="false">Todavía no se le hará ningún cargo a tu método de pago. Se efectuará un cargo de %{charge_amount} una vez que el proyecto haya sido financiado exitosamente.</string>
   <string name="project_checkout_android_pay_terms_and_privacy" formatted="false">Al contribuir, aceptas los &lt;u>terms of use&lt;/u> y la &lt;u>privacy policy&lt;/u> de Kickstarter.</string>
   <string name="project_checkout_apple_pay_alert_button_ok" formatted="false">Ok</string>
   <string name="project_checkout_apple_pay_alert_error" formatted="false">Error</string>

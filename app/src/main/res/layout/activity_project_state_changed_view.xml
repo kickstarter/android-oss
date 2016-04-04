@@ -4,7 +4,7 @@
   xmlns:card_view="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/card_view"
-  card_view:contentPaddingTop="@dimen/grid_3"
+  card_view:contentPadding="@dimen/grid_2"
   android:focusable="true"
   style="@style/ActivityFeedCard">
 
@@ -17,9 +17,9 @@
       android:id="@+id/project_photo"
       android:background="@drawable/gray_gradient"
       android:adjustViewBounds="true"
+      android:layout_width="@dimen/activity_feed_update_photo_width"
+      android:layout_height="@dimen/activity_feed_update_photo_height"
       android:scaleType="centerCrop"
-      android:layout_width="@dimen/activity_feed_medium_photo_width"
-      android:layout_height="@dimen/activity_feed_medium_photo_height"
       tools:ignore="ContentDescription" />
 
     <LinearLayout
@@ -27,7 +27,7 @@
       android:layout_height="wrap_content"
       android:layout_marginLeft="@dimen/grid_2"
       android:layout_marginStart="@dimen/grid_2"
-      android:minHeight="@dimen/activity_feed_medium_photo_height"
+      android:minHeight="@dimen/activity_feed_update_photo_height"
       android:layout_weight="1"
       android:gravity="center_vertical"
       android:padding="@dimen/grid_1">

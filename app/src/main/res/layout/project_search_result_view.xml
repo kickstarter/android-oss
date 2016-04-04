@@ -22,12 +22,13 @@
 
     <ImageView
       android:id="@+id/project_image_view"
+      android:scaleType="centerCrop"
+      android:background="@drawable/gray_gradient"
       android:layout_alignParentEnd="true"
       android:layout_alignParentRight="true"
-      android:scaleType="centerCrop"
       android:adjustViewBounds="true"
-      android:layout_width="80dp"
-      android:layout_height="60dp"
+      android:layout_width="@dimen/search_result_photo_width"
+      android:layout_height="@dimen/search_result_photo_height"
       tools:ignore="ContentDescription" />
 
     <LinearLayout

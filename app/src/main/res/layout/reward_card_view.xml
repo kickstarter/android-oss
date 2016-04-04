@@ -6,7 +6,7 @@
   android:id="@+id/reward_card_view"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  app:cardCornerRadius="4dp"
+  app:cardCornerRadius="@dimen/card_corner_radius"
   app:cardBackgroundColor="@color/white"
   app:cardPreventCornerOverlap="false"
   android:foreground="@drawable/click_indicator_light"

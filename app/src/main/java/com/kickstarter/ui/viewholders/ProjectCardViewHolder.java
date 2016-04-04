@@ -44,6 +44,7 @@ import static com.kickstarter.libs.utils.ViewUtils.getScreenWidthDp;
 public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.backers_count) TextView backersCountTextView;
   protected @Bind(R.id.backing_group) ViewGroup backingViewGroup;
+  protected @Bind(R.id.blurb) TextView blurbTextView;
   protected @Bind(R.id.category) TextView categoryTextView;
   protected @Bind(R.id.deadline_countdown) TextView deadlineCountdownTextView;
   protected @Bind(R.id.deadline_countdown_unit) TextView deadlineCountdownUnitTextView;
@@ -53,8 +54,8 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.friend_backing_message) TextView friendBackingMessageTextView;
   protected @Bind(R.id.friend_backing_group) ViewGroup friendBackingViewGroup;
   protected @Bind(R.id.funding_unsuccessful_text_view) TextView fundingUnsuccessfulTextView;
+  protected @Nullable @Bind(R.id.land_card_view_group) ViewGroup landCardViewGroup;
   protected @Bind(R.id.name) TextView nameTextView;
-  protected @Bind(R.id.blurb) TextView blurbTextView;
   protected @Bind(R.id.percent) TextView percentTextView;
   protected @Bind(R.id.percentage_funded) ProgressBar percentageFundedProgressBar;
   protected @Bind(R.id.photo) ImageView photoImageView;
@@ -66,6 +67,8 @@ public final class ProjectCardViewHolder extends KSViewHolder {
   protected @Bind(R.id.successfully_funded_text_view) TextView successfullyFundedTextView;
 
   protected @BindDimen(R.dimen.grid_1) int grid1Dimen;
+  protected @BindDimen(R.dimen.grid_2) int grid2Dimen;
+  protected @BindDimen(R.dimen.grid_3) int grid3Dimen;
   protected @BindDimen(R.dimen.grid_4) int grid4Dimen;
 
   protected @BindDrawable(R.drawable.gray_gradient) Drawable grayGradientDrawable;
@@ -148,14 +151,26 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     delegate.projectCardViewHolderClick(this, project);
   }
 
-  // adjust spacing between cards when metadata label is present
-  public void adjustCardViewTopMargin(final int topMargin) {
+  /**
+   *  Adjust spacing between cards when metadata label is present.
+   */
+  public void adjustViewGroupTopMargin(final @NonNull ViewGroup viewGroup, final int topMargin) {
     final RelativeLayout.MarginLayoutParams marginParams = new RelativeLayout.MarginLayoutParams(
-      projectCardViewGroup.getLayoutParams()
+      viewGroup.getLayoutParams()
     );
 
     marginParams.setMargins(0, topMargin, 0, 0);
-    projectCardViewGroup.setLayoutParams(marginParams);
+    viewGroup.setLayoutParams(marginParams);
+  }
+
+  /**
+   * Adjust card content spacing when metadata label is present.
+   */
+  public void adjustLandscapeTopPadding(final @Nullable ViewGroup landscapeViewGroup, final int left, final int top,
+    final int right, final int bottom) {
+    if (landscapeViewGroup != null) {
+      landscapeViewGroup.setPadding(left, top, right, bottom);
+    }
   }
 
   public void setProjectStateView(final @NonNull Context context) {
@@ -224,7 +239,9 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     if (project.isBacking()) {
       projectMetadataViewGroup.setVisibility(View.VISIBLE);
       backingViewGroup.setVisibility(View.VISIBLE);
-      adjustCardViewTopMargin(grid1Dimen);
+
+      adjustLandscapeTopPadding(landCardViewGroup, grid2Dimen, grid3Dimen, grid2Dimen, grid2Dimen);
+      adjustViewGroupTopMargin(projectCardViewGroup, grid1Dimen);
 
       starredViewGroup.setVisibility(View.GONE);
       potdViewGroup.setVisibility(View.GONE);
@@ -232,7 +249,9 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     } else if (project.isStarred()) {
       projectMetadataViewGroup.setVisibility(View.VISIBLE);
       starredViewGroup.setVisibility(View.VISIBLE);
-      adjustCardViewTopMargin(grid1Dimen);
+
+      adjustLandscapeTopPadding(landCardViewGroup, grid2Dimen, grid3Dimen, grid2Dimen, grid2Dimen);
+      adjustViewGroupTopMargin(projectCardViewGroup, grid1Dimen);
 
       backingViewGroup.setVisibility(View.GONE);
       potdViewGroup.setVisibility(View.GONE);
@@ -240,7 +259,9 @@ public final class ProjectCardViewHolder extends KSViewHolder {
     } else if (project.isPotdToday()) {
       projectMetadataViewGroup.setVisibility(View.VISIBLE);
       potdViewGroup.setVisibility(View.VISIBLE);
-      adjustCardViewTopMargin(grid1Dimen);
+
+      adjustLandscapeTopPadding(landCardViewGroup, grid2Dimen, grid3Dimen, grid2Dimen, grid2Dimen);
+      adjustViewGroupTopMargin(projectCardViewGroup, grid1Dimen);
 
       backingViewGroup.setVisibility(View.GONE);
       starredViewGroup.setVisibility(View.GONE);
@@ -254,7 +275,9 @@ public final class ProjectCardViewHolder extends KSViewHolder {
           featuredViewGroup.setVisibility(View.VISIBLE);
           featuredTextView.setText(ksString.format(featuredInString,
             "category_name", rootCategory.name()));
-          adjustCardViewTopMargin(grid1Dimen);
+
+          adjustLandscapeTopPadding(landCardViewGroup, grid2Dimen, grid3Dimen, grid2Dimen, grid2Dimen);
+          adjustViewGroupTopMargin(projectCardViewGroup, grid1Dimen);
 
           backingViewGroup.setVisibility(View.GONE);
           starredViewGroup.setVisibility(View.GONE);
@@ -263,7 +286,8 @@ public final class ProjectCardViewHolder extends KSViewHolder {
       }
     } else {
       projectMetadataViewGroup.setVisibility(View.GONE);
-      adjustCardViewTopMargin(0);
+      adjustLandscapeTopPadding(landCardViewGroup, grid2Dimen, grid2Dimen, grid2Dimen, grid2Dimen);
+      adjustViewGroupTopMargin(projectCardViewGroup, 0);
     }
   }
 }

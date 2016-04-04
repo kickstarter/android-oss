@@ -26,9 +26,9 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:adjustViewBounds="true"
+        android:layout_width="@dimen/activity_feed_update_photo_width"
+        android:layout_height="@dimen/activity_feed_update_photo_height"
         android:scaleType="centerCrop"
-        android:layout_width="138dp"
-        android:layout_height="104dp"
         tools:ignore="ContentDescription" />
 
       <TextView

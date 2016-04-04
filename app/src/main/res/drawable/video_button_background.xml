@@ -2,7 +2,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
   android:shape="oval">
   <solid android:color="@color/black_alpha_50" />
-  <stroke android:width="4dp" android:color="@color/white" />
+  <stroke android:width="@dimen/grid_1_half" android:color="@color/white" />
   <size
     android:height="@dimen/grid_2"
     android:width="@dimen/grid_2" />

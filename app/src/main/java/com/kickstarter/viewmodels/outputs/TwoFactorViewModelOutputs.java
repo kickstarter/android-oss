@@ -6,4 +6,5 @@ public interface TwoFactorViewModelOutputs {
   Observable<Void> tfaSuccess();
   Observable<Boolean> formSubmitting();
   Observable<Boolean> formIsValid();
+  Observable<Void> showResendCodeConfirmation();
 }

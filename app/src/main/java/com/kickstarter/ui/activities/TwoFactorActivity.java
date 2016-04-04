@@ -11,7 +11,6 @@ import android.widget.EditText;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
-import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 import com.kickstarter.viewmodels.TwoFactorViewModel;
@@ -68,7 +67,7 @@ public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel> {
   }
 
   private Observable<String> errorMessages() {
-    return viewModel.errors.tfaCodeMismatchError().map(ObjectUtils.coalesceWith(codeMismatchString))
+    return viewModel.errors.tfaCodeMismatchError().map(__ -> codeMismatchString)
       .mergeWith(viewModel.errors.genericTfaError().map(__ -> unableToLoginString));
   }
 

@@ -4,7 +4,7 @@ import rx.Observable;
 
 public interface TwoFactorViewModelErrors {
   // Emits when a submitted TFA code does not match.
-  Observable<String> tfaCodeMismatchError();
+  Observable<Void> tfaCodeMismatchError();
 
   // Emits when submitting TFA code errored for an unknown reason.
   Observable<Void> genericTfaError();

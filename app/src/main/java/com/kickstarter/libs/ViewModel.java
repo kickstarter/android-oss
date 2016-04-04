@@ -134,7 +134,7 @@ public class ViewModel<ViewType extends LifecycleType> {
    */
   public @NonNull <T> Observable.Transformer<T, T> bindToLifecycle() {
     return source -> source.takeUntil(
-      view.flatMap(v -> v.lifecycle().map(e -> Pair.create(v, e)))
+      view.switchMap(v -> v.lifecycle().map(e -> Pair.create(v, e)))
         .filter(ve -> isFinished(ve.first, ve.second))
     );
   }

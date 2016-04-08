@@ -233,14 +233,10 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
 
   private void composeContactEmail(final @Nullable User user) {
     final List<String> debugInfo = Arrays.asList(
-      user != null ? user.name() : loggedOutString,
-      build.variant(),
+      user != null ? String.valueOf(user.id()) : loggedOutString,
       build.versionName(),
-      build.versionCode().toString(),
-      build.sha(),
       android.os.Build.VERSION.RELEASE + " (SDK " + Integer.toString(android.os.Build.VERSION.SDK_INT) + ")",
-      android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL,
-      Locale.getDefault().getLanguage()
+      android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL
     );
 
     final String body = new StringBuilder()

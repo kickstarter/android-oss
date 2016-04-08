@@ -29,7 +29,6 @@ import com.kickstarter.viewmodels.SettingsViewModel;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 import javax.inject.Inject;
 

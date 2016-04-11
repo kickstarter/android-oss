@@ -39,7 +39,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     final Environment environment = environment().toBuilder()
       .currentUser(currentUser)
       .build();
-
+    
     final ProjectViewModel vm = new ProjectViewModel(environment);
 
     final TestSubscriber<Void> loginToutTest = new TestSubscriber<>();

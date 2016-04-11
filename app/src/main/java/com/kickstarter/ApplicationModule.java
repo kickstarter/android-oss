@@ -74,6 +74,8 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import rx.Scheduler;
+import rx.schedulers.Schedulers;
 
 @Module
 public final class ApplicationModule {
@@ -94,6 +96,7 @@ public final class ApplicationModule {
     final @NonNull @AppRatingPreference BooleanPreferenceType hasSeenAppRatingPreference,
     final @NonNull @GamesNewsletterPreference BooleanPreferenceType hasSeenGamesNewsletterPreference,
     final @NonNull Koala koala,
+    final @NonNull Scheduler scheduler,
     final @NonNull SharedPreferences sharedPreferences,
     final @NonNull WebClientType webClient) {
 
@@ -107,6 +110,7 @@ public final class ApplicationModule {
       .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
       .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
       .koala(koala)
+      .scheduler(scheduler)
       .sharedPreferences(sharedPreferences)
       .webClient(webClient)
       .build();
@@ -261,6 +265,12 @@ public final class ApplicationModule {
   @Singleton
   Koala provideKoala(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUser currentUser) {
     return new Koala(new KoalaTrackingClient(context, currentUser));
+  }
+
+  @Provides
+  @Singleton
+  Scheduler provideScheduler() {
+    return Schedulers.computation();
   }
 
   @Provides

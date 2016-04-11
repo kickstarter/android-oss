@@ -6,7 +6,6 @@ import android.util.Pair;
 
 import com.kickstarter.factories.CategoryFactory;
 import com.kickstarter.factories.CommentFactory;
-import com.kickstarter.factories.DiscoverEnvelopeFactory;
 import com.kickstarter.factories.LocationFactory;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.UserFactory;
@@ -25,7 +24,7 @@ import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,7 +91,27 @@ public class MockApiClient implements ApiClientType {
   @Override
   public @NonNull Observable<DiscoverEnvelope> fetchProjects(final @NonNull DiscoveryParams params) {
     return Observable.just(
-      DiscoverEnvelopeFactory.discoverEnvelope(Collections.singletonList(ProjectFactory.project()))
+      DiscoverEnvelope
+        .builder()
+        .projects(
+          Arrays.asList(
+            ProjectFactory.project(),
+            ProjectFactory.allTheWayProject(),
+            ProjectFactory.successfulProject()
+          )
+        )
+        .urls(
+          DiscoverEnvelope.UrlsEnvelope
+            .builder()
+            .api(
+              DiscoverEnvelope.UrlsEnvelope.ApiEnvelope
+                .builder()
+                .moreProjects("http://more.projects.please")
+                .build()
+            )
+            .build()
+        )
+        .build()
     );
   }
 

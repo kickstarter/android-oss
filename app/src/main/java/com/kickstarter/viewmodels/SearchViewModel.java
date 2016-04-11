@@ -1,15 +1,13 @@
 package com.kickstarter.viewmodels;
 
-import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
+import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
@@ -22,49 +20,53 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.Scheduler;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public final class SearchViewModel extends ViewModel<SearchActivity> implements SearchViewModelInputs, SearchViewModelOutputs {
   // INPUTS
-  private final BehaviorSubject<String> search = BehaviorSubject.create("");
+  private final PublishSubject<String> search = PublishSubject.create();
+  @Override public void search(final @NonNull String s) {
+    search.onNext(s);
+  }
   private final PublishSubject<Void> nextPage = PublishSubject.create();
   public void nextPage() {
     nextPage.onNext(null);
   }
-  public SearchViewModelInputs inputs = this;
-  @Override public void search(final @NonNull String s) {
-    search.onNext(s);
-  }
 
   // OUTPUTS
   private final BehaviorSubject<List<Project>> popularProjects = BehaviorSubject.create();
-  private final BehaviorSubject<List<Project>> searchProjects = BehaviorSubject.create();
-  public final SearchViewModelOutputs outputs = this;
   @Override public Observable<List<Project>> popularProjects() {
     return popularProjects;
   }
+  private final BehaviorSubject<List<Project>> searchProjects = BehaviorSubject.create();
   @Override public Observable<List<Project>> searchProjects() {
     return searchProjects;
   }
 
-  private final DiscoveryParams defaultParams = DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build();
+  private static final DiscoveryParams defaultParams = DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build();
 
-  private final ApiClientType apiClient;
+  public final SearchViewModelInputs inputs = this;
+  public final SearchViewModelOutputs outputs = this;
 
   public SearchViewModel(final @NonNull Environment environment) {
     super(environment);
 
-    apiClient = environment.apiClient();
-  }
+    final ApiClientType apiClient = environment.apiClient();
+    final Scheduler scheduler = environment.scheduler();
 
-  @Override
-  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
-    super.onCreate(context, savedInstanceState);
+    final Observable<DiscoveryParams> searchParams = search
+      .filter(StringUtils::isPresent)
+      .debounce(300, TimeUnit.MILLISECONDS, scheduler)
+      .map(s -> DiscoveryParams.builder().term(s).build());
 
-    final Observable<DiscoveryParams> params = search
-      .map(this::paramsFromSearch)
-      .debounce(300, TimeUnit.MILLISECONDS);
+    final Observable<DiscoveryParams> popularParams = search
+      .filter(StringUtils::isEmpty)
+      .map(__ -> defaultParams)
+      .startWith(defaultParams);
+
+    final Observable<DiscoveryParams> params = Observable.merge(searchParams, popularParams);
 
     final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
       ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
@@ -79,8 +81,11 @@ public final class SearchViewModel extends ViewModel<SearchActivity> implements 
         .build();
 
     search
+      .filter(StringUtils::isEmpty)
       .compose(bindToLifecycle())
-      .subscribe(__ -> searchProjects.onNext(ListUtils.empty()));
+      .subscribe(__ -> {
+        searchProjects.onNext(ListUtils.empty());
+      });
 
     params
       .compose(Transformers.takePairWhen(paginator.paginatedData()))
@@ -99,19 +104,11 @@ public final class SearchViewModel extends ViewModel<SearchActivity> implements 
     // Track search results and pagination
     final Observable<Integer> pageCount = paginator.loadingPage();
     final Observable<String> query = params
-      .filter(p -> p.sort() == DiscoveryParams.Sort.POPULAR)
       .map(DiscoveryParams::term);
     query
       .compose(Transformers.takePairWhen(pageCount))
+      .filter(qp -> StringUtils.isPresent(qp.first))
       .compose(bindToLifecycle())
       .subscribe(qp -> koala.trackSearchResults(qp.first, qp.second));
-  }
-
-  private @NonNull DiscoveryParams paramsFromSearch(final @NonNull String search) {
-    if (search.trim().isEmpty()) {
-      return defaultParams;
-    } else {
-      return DiscoveryParams.builder().term(search).build();
-    }
   }
 }

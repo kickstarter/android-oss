@@ -15,10 +15,35 @@ public abstract class DiscoverEnvelope implements Parcelable {
   public abstract List<Project> projects();
   public abstract UrlsEnvelope urls();
 
+  @AutoParcel.Builder
+  public abstract static class Builder {
+    public abstract Builder projects(List<Project> __);
+    public abstract Builder urls(UrlsEnvelope __);
+    public abstract DiscoverEnvelope build();
+  }
+
+  public static Builder builder() {
+    return new AutoParcel_DiscoverEnvelope.Builder();
+  }
+
+  public abstract Builder toBuilder();
+
   @AutoGson
   @AutoParcel
   public abstract static class UrlsEnvelope implements Parcelable {
     public abstract ApiEnvelope api();
+
+    @AutoParcel.Builder
+    public abstract static class Builder {
+      public abstract Builder api(ApiEnvelope __);
+      public abstract UrlsEnvelope build();
+    }
+
+    public static Builder builder() {
+      return new AutoParcel_DiscoverEnvelope_UrlsEnvelope.Builder();
+    }
+
+    public abstract Builder toBuilder();
 
     @AutoGson
     @AutoParcel
@@ -35,28 +60,5 @@ public abstract class DiscoverEnvelope implements Parcelable {
         return new AutoParcel_DiscoverEnvelope_UrlsEnvelope_ApiEnvelope.Builder();
       }
     }
-
-    @AutoParcel.Builder
-    public abstract static class Builder {
-      public abstract Builder api(ApiEnvelope __);
-      public abstract UrlsEnvelope build();
-    }
-
-    public static Builder builder() {
-      return new AutoParcel_DiscoverEnvelope_UrlsEnvelope.Builder();
-    }
   }
-
-  @AutoParcel.Builder
-  public abstract static class Builder {
-    public abstract Builder projects(List<Project> __);
-    public abstract Builder urls(UrlsEnvelope __);
-    public abstract DiscoverEnvelope build();
-  }
-
-  public static Builder builder() {
-    return new AutoParcel_DiscoverEnvelope.Builder();
-  }
-
-  public abstract Builder toBuilder();
 }

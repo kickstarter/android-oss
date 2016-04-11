@@ -11,6 +11,7 @@ import com.kickstarter.services.WebClientType;
 import java.net.CookieManager;
 
 import auto.parcel.AutoParcel;
+import rx.Scheduler;
 
 @AutoParcel
 public abstract class Environment implements Parcelable {
@@ -23,6 +24,7 @@ public abstract class Environment implements Parcelable {
   public abstract BooleanPreferenceType hasSeenAppRatingPreference();
   public abstract BooleanPreferenceType hasSeenGamesNewsletterPreference();
   public abstract Koala koala();
+  public abstract Scheduler scheduler();
   public abstract SharedPreferences sharedPreferences();
   public abstract WebClientType webClient();
 
@@ -37,6 +39,7 @@ public abstract class Environment implements Parcelable {
     public abstract Builder hasSeenAppRatingPreference(BooleanPreferenceType __);
     public abstract Builder hasSeenGamesNewsletterPreference(BooleanPreferenceType __);
     public abstract Builder koala(Koala __);
+    public abstract Builder scheduler(Scheduler __);
     public abstract Builder sharedPreferences(SharedPreferences __);
     public abstract Builder webClient(WebClientType __);
     public abstract Environment build();

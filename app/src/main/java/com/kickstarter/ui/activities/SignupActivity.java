@@ -77,6 +77,7 @@ public final class SignupActivity extends BaseActivity<SignupViewModel> {
       .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e));
 
     RxView.clicks(newsletterSwitch)
+      .skip(1)
       .compose(bindToLifecycle())
       .subscribe(__ -> viewModel.inputs.sendNewslettersClick(newsletterSwitch.isChecked()));
   }

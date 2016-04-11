@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import rx.Observable;
-import rx.schedulers.Schedulers;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
@@ -31,7 +31,7 @@ public class CurrentConfig {
       .map(json -> gson.fromJson(json, Config.class))
       .filter(ObjectUtils::isNotNull)
       .compose(Transformers.neverError())
-      .subscribeOn(Schedulers.io());
+      .subscribeOn(AndroidSchedulers.mainThread());
 
     // Loads config from string preference
     final Observable<Config> prefConfig = Observable.just(configPreference)
@@ -39,7 +39,7 @@ public class CurrentConfig {
       .map(json -> gson.fromJson(json, Config.class))
       .filter(ObjectUtils::isNotNull)
       .compose(Transformers.neverError())
-      .subscribeOn(Schedulers.io());
+      .subscribeOn(AndroidSchedulers.mainThread());
 
     // Seed config observable with what's cached
     Observable.concat(prefConfig, diskConfig)

@@ -26,7 +26,12 @@
   <issue id="ResourceType">
     <ignore path="**/*$$ViewBinder.java" />
   </issue>
-
+  
+  <issue id="TrustAllX509TrustManager">
+    <!-- We don't make HTTP requests using Jsoup, safe to ignore. -->
+    <ignore path="org/jsoup/helper/*" severity="ignore" />
+  </issue>
+ 
   <!-- UseCompoundDrawables suggests combining a LinearLayout with an ImageView and TextView into a single
      TextView with the image as the drawable, but typically our ImageViews require fetching an image dynamically
      rather than simply specifiying a drawable. -->
@@ -43,6 +48,7 @@
     <ignore path="src/main/res/layout/**" />
     <ignore path="src/main/res/values/strings*.xml" />
     <ignore path="src/internal/res/**" />
+    <ignore path="src/main/res/**" />
 
     <!-- Confirmed false-positives -->
     <ignore path="**/res/google-services/**/values/values.xml" />

@@ -1,13 +1,18 @@
 package com.kickstarter.libs.utils;
 
-import junit.framework.TestCase;
+import com.kickstarter.KSRobolectricTestCase;
 
-public class StringUtilsTest extends TestCase {
+import org.junit.Test;
 
+public class StringUtilsTest extends KSRobolectricTestCase {
+
+  @Test
   public void testIsEmail() {
     assertTrue(StringUtils.isEmail("hello@kickstarter.com"));
+    assertFalse(StringUtils.isEmail("hello@kickstarter"));
   }
 
+  @Test
   public void testIsEmpty() {
     assertTrue(StringUtils.isEmpty(""));
     assertTrue(StringUtils.isEmpty(" "));
@@ -17,6 +22,7 @@ public class StringUtilsTest extends TestCase {
     assertFalse(StringUtils.isEmpty(" a "));
   }
 
+  @Test
   public void testIsPresent() {
     assertFalse(StringUtils.isPresent(""));
     assertFalse(StringUtils.isPresent(" "));

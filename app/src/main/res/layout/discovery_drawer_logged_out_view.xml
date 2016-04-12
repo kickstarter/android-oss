@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/grid_1"
         android:layout_marginStart="@dimen/grid_1"
-        android:text="@string/___Log_in"
+        android:text="@string/tabbar_login"
         android:textColor="@color/black" />
 
     </LinearLayout>

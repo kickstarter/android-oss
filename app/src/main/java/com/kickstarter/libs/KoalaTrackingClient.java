@@ -56,6 +56,7 @@ public final class KoalaTrackingClient extends TrackingClientType {
         if (loggedInUser != null) {
           putAll(KoalaUtils.userProperties(loggedInUser));
         }
+        put("user_logged_in", loggedInUser != null);
 
         put("client_type", "native");
         put("android_play_services_available", isGooglePlayServicesAvailable());

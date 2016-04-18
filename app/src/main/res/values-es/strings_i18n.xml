@@ -575,6 +575,8 @@ Si tienes un momento, ¿te importaría calificar tu experiencia?\n
   <string name="project_checkout_android_pay_backer_101" formatted="false">&lt;b>¿Preguntas?&lt;/b> Encontrarás respuestas en el &lt;u>manual básico del patrocinador&lt;/u>.</string>
   <string name="project_checkout_android_pay_change" formatted="false">Cambiar</string>
   <string name="project_checkout_android_pay_confirm" formatted="false">Confirmar</string>
+  <string name="project_checkout_android_pay_error_message" formatted="false">Lamentamos no poder procesar el pago con Android Pay en estos momentos. Por favor inténtalo de nuevo.</string>
+  <string name="project_checkout_android_pay_error_title" formatted="false">Error de Android Pay</string>
   <string name="project_checkout_android_pay_payment_method" formatted="false">Método de pago</string>
   <string name="project_checkout_android_pay_pledge_disclaimer" formatted="false">Todavía no se le hará ningún cargo a tu método de pago. Se efectuará un cargo de %{charge_amount} una vez que el proyecto haya sido financiado exitosamente.</string>
   <string name="project_checkout_android_pay_pledged_disclaimer" formatted="false">Todavía no se le hará ningún cargo a tu método de pago. Se efectuará un cargo de %{charge_amount} una vez que el proyecto haya sido financiado exitosamente.</string>

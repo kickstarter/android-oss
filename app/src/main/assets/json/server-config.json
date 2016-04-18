@@ -692,7 +692,11 @@
             "pledged_disclaimer": "Your payment method will not be charged at this time. If the project is successfully funded, your card will be charged %{charge_amount} when the project ends.",
             "confirm": "Confirm",
             "payment_method": "Payment Method",
-            "change": "Change"
+            "change": "Change",
+            "error": {
+              "title": "Android Pay error",
+              "message": "We’re sorry but we are unable to process your Android Pay request right now. Please try again."
+            }
           },
           "games_alert": {
             "want_the_coolest_games_delivered_to_your_inbox": "Want the coolest games delivered to your inbox? Our Games team has a newsletter just for you.",
@@ -2018,7 +2022,11 @@
             "pledged_disclaimer": "Deine Zahlungsmethode wird jetzt noch nicht belastet. Erst nachdem das Projekt erfolgreich finanziert wurde, wird sie nach Ablauf desselben mit %{charge_amount} belastet.",
             "confirm": "Bestätigen",
             "payment_method": "Zahlungmethode",
-            "change": "Ändern"
+            "change": "Ändern",
+            "error": {
+              "title": "Fehler bei Android Pay aufgetreten",
+              "message": "Der Zahlungsvorgang mit Android Pay kann im Moment leider nicht bearbeitet werden. Bitte erneut versuchen."
+            }
           },
           "games_alert": {
             "want_the_coolest_games_delivered_to_your_inbox": "Wie wäre es, wenn du die coolsten Games direkt in deine Inbox geliefert bekämst? Kein Problem - unser Games-Team hat einen Newsletter für dich!",
@@ -3344,7 +3352,11 @@
             "pledged_disclaimer": "Todavía no se le hará ningún cargo a tu método de pago. Se efectuará un cargo de %{charge_amount} una vez que el proyecto haya sido financiado exitosamente.",
             "confirm": "Confirmar",
             "payment_method": "Método de pago",
-            "change": "Cambiar"
+            "change": "Cambiar",
+            "error": {
+              "title": "Error de Android Pay",
+              "message": "Lamentamos no poder procesar el pago con Android Pay en estos momentos. Por favor inténtalo de nuevo."
+            }
           },
           "games_alert": {
             "want_the_coolest_games_delivered_to_your_inbox": "¿Qué tal si pudieras recibir automáticamente lo último acerca de videojuegos por correo electrónico? ¡Trato hecho - nuestro equipo de juegos tienen un boletín hecho a tu medida!",
@@ -4670,7 +4682,11 @@
             "pledged_disclaimer": "Votre moyen de paiement ne sera pas débité tout de suite. Si le projet est intégralement financé, votre carte sera débitée de %{charge_amount} en fin de campagne.",
             "confirm": "Confirmer",
             "payment_method": "Moyen de paiement",
-            "change": "Modifier"
+            "change": "Modifier",
+            "error": {
+              "title": "Erreur Android Pay",
+              "message": "Nous sommes désolés, mais nous ne sommes pas en mesure de traiter votre demande Android Pay pour le moment. Veuillez réessayer ultérieurement."
+            }
           },
           "games_alert": {
             "want_the_coolest_games_delivered_to_your_inbox": "Envie de tout savoir sur les jeux les plus cools ? La lettre d'information de notre équipe Jeux est faite pour vous.",
@@ -5996,7 +6012,11 @@
             "pledged_disclaimer": "Your payment method will not be charged at this time. If the project is successfully funded, your card will be charged %{charge_amount} when the project ends.",
             "confirm": "Confirm",
             "payment_method": "Payment Method",
-            "change": "Change"
+            "change": "Change",
+            "error": {
+              "title": "Android Pay error",
+              "message": "We’re sorry but we are unable to process your Android Pay request right now. Please try again."
+            }
           },
           "games_alert": {
             "want_the_coolest_games_delivered_to_your_inbox": "Want the coolest games delivered to your inbox? Our Games team has a newsletter just for you.",
@@ -6642,7 +6662,7 @@
     "redshift": true,
     "advanced_discovery_es": true,
     "facebook_ajax_requests": true,
-    "exacttarget": true,
+    "exacttarget_user_subscription": true,
     "ios_crashlytics": true,
     "ios_koala": true,
     "ios_i18n": true,
@@ -6659,8 +6679,7 @@
     "recaptcha": true,
     "log_devices": true,
     "backer_report_formats": true,
-    "discover_cards": true,
-    "16x9_preview": true
+    "discover_cards": true
   },
   "launched_countries": [
     {
@@ -6774,7 +6793,7 @@
   ],
   "ab_experiments": {
     "discover_sorts_vs_subcategories": "experimental",
-    "native_ios_aa": "control",
+    "native_ios_aa": "experimental",
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
     "native_iphone_horiz_vs_vert": "experimental",

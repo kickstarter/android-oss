@@ -574,6 +574,8 @@ Wir würden uns sehr darüber freuen!</string>
   <string name="project_checkout_android_pay_backer_101" formatted="false">&lt;b>Fragen?&lt;/b> Einfach im &lt;u>Unterstützer-Einmaleins&lt;/u> nachlesen!</string>
   <string name="project_checkout_android_pay_change" formatted="false">Ändern</string>
   <string name="project_checkout_android_pay_confirm" formatted="false">Bestätigen</string>
+  <string name="project_checkout_android_pay_error_message" formatted="false">Der Zahlungsvorgang mit Android Pay kann im Moment leider nicht bearbeitet werden. Bitte erneut versuchen.</string>
+  <string name="project_checkout_android_pay_error_title" formatted="false">Fehler bei Android Pay aufgetreten</string>
   <string name="project_checkout_android_pay_payment_method" formatted="false">Zahlungmethode</string>
   <string name="project_checkout_android_pay_pledge_disclaimer" formatted="false">Deine Zahlungsmethode wird jetzt noch nicht belastet. Erst nachdem das Projekt erfolgreich finanziert wurde, wird sie nach Ablauf desselben mit %{charge_amount} belastet.</string>
   <string name="project_checkout_android_pay_pledged_disclaimer" formatted="false">Deine Zahlungsmethode wird jetzt noch nicht belastet. Erst nachdem das Projekt erfolgreich finanziert wurde, wird sie nach Ablauf desselben mit %{charge_amount} belastet.</string>

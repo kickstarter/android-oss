@@ -576,6 +576,8 @@ Merci pour votre soutien !</string>
   <string name="project_checkout_android_pay_backer_101" formatted="false">&lt;b>Des questions ?&lt;/b> Lisez la section &lt;u>Notions de base&lt;/u>.</string>
   <string name="project_checkout_android_pay_change" formatted="false">Modifier</string>
   <string name="project_checkout_android_pay_confirm" formatted="false">Confirmer</string>
+  <string name="project_checkout_android_pay_error_message" formatted="false">Nous sommes désolés, mais nous ne sommes pas en mesure de traiter votre demande Android Pay pour le moment. Veuillez réessayer ultérieurement.</string>
+  <string name="project_checkout_android_pay_error_title" formatted="false">Erreur Android Pay</string>
   <string name="project_checkout_android_pay_payment_method" formatted="false">Moyen de paiement</string>
   <string name="project_checkout_android_pay_pledge_disclaimer" formatted="false">Votre moyen de paiement ne sera pas débité tout de suite. Si le projet est intégralement financé, votre carte sera débitée de %{charge_amount} en fin de campagne.</string>
   <string name="project_checkout_android_pay_pledged_disclaimer" formatted="false">Votre moyen de paiement ne sera pas débité tout de suite. Si le projet est intégralement financé, votre carte sera débitée de %{charge_amount} en fin de campagne.</string>

@@ -36,29 +36,117 @@ import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.zipPair;
 import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
 
-public final class ThanksViewModel extends ViewModel<ThanksActivity> implements ThanksViewModelInputs, ThanksViewModelOutputs {
-  private final PublishSubject<Category> categoryClick = PublishSubject.create();
-  private final PublishSubject<Project> projectClick = PublishSubject.create();
-  private final BehaviorSubject<String> projectName = BehaviorSubject.create();
-  private final PublishSubject<Void> shareClick = PublishSubject.create();
-  private final PublishSubject<Void> shareOnFacebookClick = PublishSubject.create();
-  private final PublishSubject<Void> shareOnTwitterClick = PublishSubject.create();
-  private final BehaviorSubject<Void> showConfirmGamesNewsletterDialog = BehaviorSubject.create();
-  private final BehaviorSubject<Void> showGamesNewsletterDialog = BehaviorSubject.create();
-  private final BehaviorSubject<Void> showRatingDialog = BehaviorSubject.create();
-  private final BehaviorSubject<Pair<List<Project>, Category>> showRecommendations = BehaviorSubject.create();
-  private final PublishSubject<User> signedUpToGamesNewsletter = PublishSubject.create();
-  private final PublishSubject<Void> signupToGamesNewsletterClick = PublishSubject.create();
-  private final BehaviorSubject<DiscoveryParams> startDiscovery = BehaviorSubject.create();
-  private final BehaviorSubject<Project> startProject = BehaviorSubject.create();
-  private final BehaviorSubject<Project> startShare = BehaviorSubject.create();
-  private final BehaviorSubject<Project> startShareOnFacebook = BehaviorSubject.create();
-  private final BehaviorSubject<Project> startShareOnTwitter = BehaviorSubject.create();
-
+public final class ThanksViewModel extends ViewModel<ThanksActivity> implements ThanksViewModelInputs,
+  ThanksViewModelOutputs {
   private final ApiClientType apiClient;
   private final BooleanPreferenceType hasSeenAppRatingPreference;
   private final BooleanPreferenceType hasSeenGamesNewsletterPreference;
   private final CurrentUserType currentUser;
+
+  // INPUTS
+  private final PublishSubject<Void> shareClick = PublishSubject.create();
+  @Override
+  public void shareClick() {
+    shareClick.onNext(null);
+  }
+
+  private final PublishSubject<Void> shareOnFacebookClick = PublishSubject.create();
+  @Override
+  public void shareOnFacebookClick() {
+    shareOnFacebookClick.onNext(null);
+  }
+
+  private final PublishSubject<Void> shareOnTwitterClick = PublishSubject.create();
+  @Override
+  public void shareOnTwitterClick() {
+    shareOnTwitterClick.onNext(null);
+  }
+
+  private final PublishSubject<Void> signupToGamesNewsletterClick = PublishSubject.create();
+  @Override
+  public void signupToGamesNewsletterClick() {
+    signupToGamesNewsletterClick.onNext(null);
+  }
+
+  // THANKS PROJECT VIEW HOLDER INPUT
+  private final PublishSubject<Project> projectClick = PublishSubject.create();
+  @Override
+  public void projectClick(final @NonNull ThanksProjectViewHolder viewHolder, final @NonNull Project project) {
+    projectClick.onNext(project);
+  }
+
+  // THANKS CATEGORY VIEW HOLDER INPUT
+  private final PublishSubject<Category> categoryClick = PublishSubject.create();
+  @Override
+  public void categoryClick(final @NonNull ThanksCategoryViewHolder viewHolder, final @NonNull Category category) {
+    categoryClick.onNext(category);
+  }
+
+  // OUTPUTS
+  private final BehaviorSubject<String> projectName = BehaviorSubject.create();
+  @Override
+  public @NonNull Observable<String> projectName() {
+    return projectName;
+  }
+
+  private final PublishSubject<Void> showConfirmGamesNewsletterDialog = PublishSubject.create();
+  @Override
+  public @NonNull Observable<Void> showConfirmGamesNewsletterDialog() {
+    return showConfirmGamesNewsletterDialog;
+  }
+
+  private final PublishSubject<Void> showGamesNewsletterDialog = PublishSubject.create();
+  @Override
+  public @NonNull Observable<Void> showGamesNewsletterDialog() {
+    return showGamesNewsletterDialog;
+  }
+
+  private final PublishSubject<Void> showRatingDialog = PublishSubject.create();
+  @Override
+  public @NonNull Observable<Void> showRatingDialog() {
+    return showRatingDialog;
+  }
+
+  private final BehaviorSubject<Pair<List<Project>, Category>> showRecommendations = BehaviorSubject.create();
+  @Override
+  public @NonNull Observable<Pair<List<Project>, Category>> showRecommendations() {
+    return showRecommendations;
+  }
+
+  private final PublishSubject<DiscoveryParams> startDiscovery = PublishSubject.create();
+  @Override
+  public @NonNull Observable<DiscoveryParams> startDiscovery() {
+    return startDiscovery;
+  }
+
+  private final PublishSubject<Project> startProject = PublishSubject.create();
+  @Override
+  public @NonNull Observable<Project> startProject() {
+    return startProject;
+  }
+
+  private final PublishSubject<Project> startShare = PublishSubject.create();
+  @Override
+  public @NonNull Observable<Project> startShare() {
+    return startShare;
+  }
+
+  private final PublishSubject<Project> startShareOnFacebook = PublishSubject.create();
+  @Override
+  public @NonNull Observable<Project> startShareOnFacebook() {
+    return startShareOnFacebook;
+  }
+
+  private final PublishSubject<Project> startShareOnTwitter = PublishSubject.create();
+  @Override
+  public @NonNull Observable<Project> startShareOnTwitter() {
+    return startShareOnTwitter;
+  }
+
+  private final PublishSubject<User> signedUpToGamesNewsletter = PublishSubject.create();
+
+  public final ThanksViewModelInputs inputs = this;
+  public final ThanksViewModelOutputs outputs = this;
 
   public ThanksViewModel(final @NonNull Environment environment) {
     super(environment);
@@ -257,91 +345,5 @@ public final class ThanksViewModel extends ViewModel<ThanksActivity> implements 
     return apiClient
       .updateUserSettings(user.toBuilder().gamesNewsletter(true).build())
       .compose(neverError());
-  }
-
-  // INPUTS
-  public final ThanksViewModelInputs inputs = this;
-
-  @Override
-  public void categoryClick(final @NonNull ThanksCategoryViewHolder viewHolder, final @NonNull Category category) {
-    categoryClick.onNext(category);
-  }
-
-  @Override
-  public void projectClick(final @NonNull ThanksProjectViewHolder viewHolder, final @NonNull Project project) {
-    projectClick.onNext(project);
-  }
-
-  @Override
-  public void shareClick() {
-    shareClick.onNext(null);
-  }
-
-  @Override
-  public void shareOnFacebookClick() {
-    shareOnFacebookClick.onNext(null);
-  }
-
-  @Override
-  public void shareOnTwitterClick() {
-    shareOnTwitterClick.onNext(null);
-  }
-
-  @Override
-  public void signupToGamesNewsletterClick() {
-    signupToGamesNewsletterClick.onNext(null);
-  }
-
-  // OUTPUTS
-  public final ThanksViewModelOutputs outputs = this;
-
-  @Override
-  public @NonNull Observable<String> projectName() {
-    return projectName;
-  }
-
-  @Override
-  public @NonNull Observable<Void> showConfirmGamesNewsletterDialog() {
-    return showConfirmGamesNewsletterDialog;
-  }
-
-  @Override
-  public @NonNull Observable<Void> showGamesNewsletterDialog() {
-    return showGamesNewsletterDialog;
-  }
-
-  @Override
-  public @NonNull Observable<Void> showRatingDialog() {
-    return showRatingDialog;
-  }
-
-  @Override
-  public @NonNull Observable<Pair<List<Project>, Category>> showRecommendations() {
-    return showRecommendations;
-  }
-
-  @Override
-  public @NonNull Observable<DiscoveryParams> startDiscovery() {
-    return startDiscovery;
-  }
-
-  @Override
-  public @NonNull Observable<Project> startProject() {
-    return startProject;
-  }
-
-  @Override
-  public @NonNull Observable<Project> startShare() {
-    return startShare;
-  }
-
-  @Override
-  public @NonNull Observable<Project> startShareOnFacebook() {
-    return startShareOnFacebook;
-  }
-
-  @Override
-  public @NonNull Observable<Project> startShareOnTwitter() {
-    return startShareOnTwitter;
   }
 }

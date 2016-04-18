@@ -16,6 +16,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.FormContents;
 import com.kickstarter.libs.utils.IOUtils;
 import com.kickstarter.ui.IntentKey;
+import com.kickstarter.ui.activities.CheckoutActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.kickstarter.ui.activities.WebViewActivity;
 
@@ -88,6 +89,23 @@ public final class KSWebViewClient extends WebViewClient {
       delegate.webViewOnPageFinished(this, url);
     }
     initialPageLoad = false;
+  }
+
+  @Override
+  public boolean shouldOverrideUrlLoading(final @NonNull WebView view, final @NonNull String url) {
+    // NB: Stop requests that are identified as android pay related and contain a payload  parameter,
+    //     and let the checkout activity handle it
+    // TODO: Allow activities to add their own handlers
+    final Uri uri = Uri.parse(url);
+    final String payload = uri.getQueryParameter("payload");
+    final Context context = view.getContext();
+    if (KSUri.isAndroidPayUri(uri, webEndpoint) && payload != null && (context instanceof CheckoutActivity)) {
+      final CheckoutActivity checkoutActivity = (CheckoutActivity) context;
+      checkoutActivity.takeAndroidPayPayloadString(payload);
+      return true;
+    }
+
+    return false;
   }
 
   @Override

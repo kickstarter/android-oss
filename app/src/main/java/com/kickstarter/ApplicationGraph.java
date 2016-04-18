@@ -9,6 +9,7 @@ import com.kickstarter.libs.utils.ApplicationLifecycleUtil;
 import com.kickstarter.services.gcm.MessageService;
 import com.kickstarter.services.gcm.RegisterService;
 import com.kickstarter.ui.activities.ActivityFeedActivity;
+import com.kickstarter.ui.activities.CheckoutActivity;
 import com.kickstarter.ui.activities.CommentFeedActivity;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.activities.HelpActivity;
@@ -50,6 +51,7 @@ public interface ApplicationGraph {
   void inject(ApplicationLifecycleUtil __);
   void inject(AppRatingDialog __);
   void inject(ThanksCategoryViewHolder __);
+  void inject(CheckoutActivity __);
   void inject(CommentFeedActivity __);
   void inject(CommentViewHolder __);
   void inject(CurrentUser __);

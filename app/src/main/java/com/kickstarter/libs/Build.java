@@ -25,6 +25,14 @@ public final class Build {
     return new DateTime(BuildConfig.BUILD_DATE, DateTimeZone.UTC).withZone(DateTimeZone.getDefault());
   }
 
+  public boolean isInternal() {
+    return BuildConfig.FLAVOR_AUDIENCE.equals("internal");
+  }
+
+  public boolean isExternal() {
+    return !isInternal();
+  }
+
   /**
    * Returns `true` if the build is compiled in debug mode, `false` otherwise.
    */

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
   <string name="A_newer_build_is_available">A newer build is available. Download upgrade?</string>
   <string name="A_request_has_been_made_to_download_the_latest_build">
     A request has been made to download the latest build. When the request has completed, open your downloads
@@ -48,4 +48,7 @@
   <string name="Version_name">Version Name</string>
 
   <bool name="isTablet">false</bool>
+
+  <string name="stripe_publishable_key">pk_live_zjuK52lEUYcvBhIXEUnOEJzk</string>
+  <string tools:ignore="TypographyDashes" name="stripe_version">2015-08-07</string>
 </resources>

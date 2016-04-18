@@ -9,4 +9,10 @@ public class BooleanUtilsTest extends TestCase {
     assertFalse(BooleanUtils.isTrue(false));
     assertFalse(BooleanUtils.isTrue(null));
   }
+
+  public void testIsFalse() throws Exception {
+    assertFalse(BooleanUtils.isFalse(true));
+    assertTrue(BooleanUtils.isFalse(false));
+    assertTrue(BooleanUtils.isFalse(null));
+  }
 }

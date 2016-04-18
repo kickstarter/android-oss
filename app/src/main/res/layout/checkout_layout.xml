@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   android:orientation="vertical"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
@@ -14,7 +15,144 @@
     android:id="@+id/web_view"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:layout_below="@id/checkout_toolbar"/>
+    android:layout_below="@id/checkout_toolbar" />
+
+  <ScrollView
+    android:id="@+id/confirmation_group"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="gone"
+    android:layout_below="@id/checkout_toolbar">
+
+    <LinearLayout
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <include layout="@layout/project_context_view" />
+
+      <!-- Our custom wallet UI -->
+      <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/grid_2"
+        android:paddingRight="@dimen/grid_2"
+        android:layout_marginTop="@dimen/grid_2"
+        android:orientation="vertical" >
+
+        <FrameLayout
+          android:id="@+id/confirmation_masked_wallet_fragment"
+          android:visibility="gone"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content">
+        </FrameLayout>
+
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal"
+          android:layout_marginBottom="@dimen/grid_2">
+
+          <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              style="@style/Headline"
+              android:text="@string/project_checkout_android_pay_payment_method"/>
+            <LinearLayout
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="@dimen/grid_1_half"
+              android:orientation="horizontal">
+              <ImageView
+                android:layout_width="@dimen/grid_4"
+                android:layout_height="@dimen/grid_4"
+                android:scaleType="centerInside"
+                android:layout_marginEnd="@dimen/grid_1"
+                android:src="@drawable/android_pay_logo"
+                tools:ignore="ContentDescription"/>
+              <TextView
+                android:id="@+id/android_pay_instrument_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                style="@style/SubheadPrimary" />
+            </LinearLayout>
+
+            <TextView
+              android:id="@+id/android_pay_email"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="@dimen/grid_1_half"
+              style="@style/BodyPrimary" />
+          </LinearLayout>
+
+          <Button
+            android:id="@+id/android_pay_change"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/grid_4"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
+            style="@style/BorderButton"
+            android:textAppearance="@style/CaptionPrimary"
+            android:text="@string/project_checkout_android_pay_change"
+            android:layout_gravity="center" />
+
+        </LinearLayout>
+
+        <include layout="@layout/horizontal_line_0_5dp_view" />
+
+        <TextView
+          android:id="@+id/pledge_disclaimer"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/grid_2"
+          style="@style/SubheadPrimary" />
+
+        <Button
+          android:id="@+id/android_pay_confirmation_button"
+          android:layout_width="match_parent"
+          android:text="@string/project_checkout_android_pay_confirm"
+          android:layout_marginTop="@dimen/grid_2"
+          style="@style/BorderButton" />
+
+        <TextView
+          android:id="@+id/terms_and_privacy"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="center"
+          android:layout_marginTop="@dimen/grid_1"
+          android:layout_marginBottom="@dimen/grid_4"
+          android:background="@drawable/click_indicator_light_masked"
+          style="@style/CaptionSecondary" />
+
+        <include layout="@layout/horizontal_line_0_5dp_view"/>
+
+        <TextView
+          android:id="@+id/backer_101"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/grid_4"
+          android:gravity="center"
+          android:layout_marginBottom="@dimen/grid_8"
+          android:background="@drawable/click_indicator_dark_masked"
+          style="@style/CaptionSecondary" />
+
+      </LinearLayout>
+
+    </LinearLayout>
+
+  </ScrollView>
+
+  <FrameLayout
+    android:id="@+id/masked_wallet_fragment"
+    android:visibility="gone"
+    android:layout_width="0dp"
+    android:layout_height="0dp" />
 
   <RelativeLayout
     android:id="@+id/checkout_loading_indicator"

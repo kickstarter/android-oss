@@ -37,6 +37,19 @@ public final class Koala {
     client.track("App Memory Warning");
   }
 
+  // ANDROID PAY
+  public void trackShowAndroidPaySheet() {
+    client.track("Android Pay Show Sheet");
+  }
+
+  public void trackAndroidPayFinished() {
+    client.track("Android Pay Finished");
+  }
+
+  public void trackAndroidPayCanceled() {
+    client.track("Android Pay Canceled");
+  }
+
   // DISCOVERY
   public void trackDiscovery(final @NonNull DiscoveryParams params, final boolean isOnboardingVisible) {
     final Map<String, Object> props = KoalaUtils.discoveryParamsProperties(params);

@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.kickstarter.libs.AndroidPayCapability;
 import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.AutoParcelAdapterFactory;
 import com.kickstarter.libs.Build;
@@ -48,6 +49,7 @@ import com.kickstarter.libs.qualifiers.PackageNameString;
 import com.kickstarter.libs.qualifiers.UserPreference;
 import com.kickstarter.libs.qualifiers.WebEndpoint;
 import com.kickstarter.libs.qualifiers.WebRetrofit;
+import com.kickstarter.libs.utils.PlayServicesCapability;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.ApiService;
@@ -88,28 +90,34 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   Environment provideEnvironment(final @NonNull @ActivitySamplePreference IntPreferenceType activitySamplePreference,
+    final @NonNull AndroidPayCapability androidPayCapability,
     final @NonNull ApiClientType apiClient,
     final @NonNull BuildCheck buildCheck,
     final @NonNull CookieManager cookieManager,
     final @NonNull CurrentConfig currentConfig,
     final @NonNull CurrentUser currentUser,
+    final @NonNull Gson gson,
     final @NonNull @AppRatingPreference BooleanPreferenceType hasSeenAppRatingPreference,
     final @NonNull @GamesNewsletterPreference BooleanPreferenceType hasSeenGamesNewsletterPreference,
     final @NonNull Koala koala,
+    final @NonNull PlayServicesCapability playServicesCapability,
     final @NonNull Scheduler scheduler,
     final @NonNull SharedPreferences sharedPreferences,
     final @NonNull WebClientType webClient) {
 
     return Environment.builder()
       .activitySamplePreference(activitySamplePreference)
+      .androidPayCapability(androidPayCapability)
       .apiClient(apiClient)
       .buildCheck(buildCheck)
       .cookieManager(cookieManager)
       .currentConfig(currentConfig)
       .currentUser(currentUser)
+      .gson(gson)
       .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
       .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
       .koala(koala)
+      .playServicesCapability(playServicesCapability)
       .scheduler(scheduler)
       .sharedPreferences(sharedPreferences)
       .webClient(webClient)
@@ -207,8 +215,8 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   @NonNull WebRequestInterceptor provideWebRequestInterceptor(final @NonNull CurrentUser currentUser,
-    @NonNull @WebEndpoint final String endpoint, final @NonNull InternalToolsType internalTools, final @NonNull Build build) {
-    return new WebRequestInterceptor(currentUser, endpoint, internalTools, build);
+    @NonNull @WebEndpoint final String endpoint, final @NonNull InternalToolsType internalTools, final @NonNull Build build, final @NonNull AndroidPayCapability androidPayCapability) {
+    return new WebRequestInterceptor(currentUser, endpoint, internalTools, build, androidPayCapability);
   }
 
   @Provides
@@ -232,6 +240,19 @@ public final class ApplicationModule {
   @AccessTokenPreference
   @NonNull StringPreferenceType provideAccessTokenPreference(final @NonNull SharedPreferences sharedPreferences) {
     return new StringPreference(sharedPreferences, "access_token");
+  }
+
+  @Provides
+  @Singleton
+  @NonNull AndroidPayCapability provideAndroidPayCapability(final @NonNull PlayServicesCapability playServicesCapability,
+    final @ApplicationContext @NonNull Context context) {
+    return new AndroidPayCapability(playServicesCapability, context);
+  }
+
+  @Provides
+  @Singleton
+  @NonNull PlayServicesCapability providePlayServicesCapability(final @ApplicationContext @NonNull Context context) {
+    return new PlayServicesCapability(context);
   }
 
   @Provides
@@ -323,8 +344,9 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
-  @NonNull DeviceRegistrarType provideDeviceRegistrar(final @ApplicationContext @NonNull Context context) {
-    return new DeviceRegistrar(context);
+  @NonNull DeviceRegistrarType provideDeviceRegistrar(final @NonNull PlayServicesCapability playServicesCapability,
+    final @ApplicationContext @NonNull Context context) {
+    return new DeviceRegistrar(playServicesCapability, context);
   }
 
   @Provides

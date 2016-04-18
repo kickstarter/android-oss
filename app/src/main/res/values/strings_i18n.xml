@@ -581,6 +581,8 @@ Thank you for your support!</string>
   <string name="project_checkout_android_pay_pledge_disclaimer" formatted="false">Your payment method will not be charged at this time. If the project is successfully funded, your card will be charged %{charge_amount} when the project ends.</string>
   <string name="project_checkout_android_pay_pledged_disclaimer" formatted="false">Your payment method will not be charged at this time. If the project is successfully funded, your card will be charged %{charge_amount} when the project ends.</string>
   <string name="project_checkout_android_pay_terms_and_privacy" formatted="false">By pledging you agree to Kickstarter’s &lt;u>terms of use&lt;/u> and &lt;u>privacy policy&lt;/u>.</string>
+  <string name="project_checkout_android_pay_error_title" formatted="false">Android Pay error</string>
+  <string name="project_checkout_android_pay_error_message" formatted="false">We’re sorry but we are unable to process your Android Pay request right now. Please try again.</string>
   <string name="project_checkout_apple_pay_alert_button_ok" formatted="false">OK</string>
   <string name="project_checkout_apple_pay_alert_error" formatted="false">Error</string>
   <string name="project_checkout_backing_navbar_title" formatted="false">Back this project</string>

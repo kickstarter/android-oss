@@ -15,7 +15,7 @@ public class TestKSApplication extends KSApplication {
   }
 
   @Override
-  protected boolean isInUnitTests() {
+  public boolean isInUnitTests() {
     return true;
   }
 }

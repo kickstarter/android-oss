@@ -119,4 +119,8 @@
   <dimen name="popup_menu_horizontal_offset">-151dp</dimen>
   <dimen name="popup_menu_vertical_offset">-46dp</dimen>
 
+  <!-- Android Pay -->
+  <dimen name="buy_button_height">48dp</dimen>
+  <dimen name="buy_button_width">300dp</dimen>
+
 </resources>

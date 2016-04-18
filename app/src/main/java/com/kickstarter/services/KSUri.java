@@ -9,6 +9,11 @@ import java.util.regex.Pattern;
 public final class KSUri {
   private KSUri() {}
 
+  public static boolean isAndroidPayUri(@NonNull final Uri uri, @NonNull final String webEndpoint) {
+    return isKickstarterUri(uri, webEndpoint) && (ANDROID_PAY_PATTERN_1.matcher(uri.getPath()).matches() ||
+      ANDROID_PAY_PATTERN_2.matcher(uri.getPath()).matches());
+  }
+
   public static boolean isApiUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && API_PATTERN.matcher(uri.getHost()).matches();
   }
@@ -77,6 +82,12 @@ public final class KSUri {
   public static boolean isWebUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && !isApiUri(uri, webEndpoint);
   }
+
+  // ***REMOVED***
+  private static final Pattern ANDROID_PAY_PATTERN_1 = Pattern.compile("\\A\\/checkouts\\/\\d+\\/payments\\/android-pay\\z");
+  // ***REMOVED***
+  // ***REMOVED***
+  private static final Pattern ANDROID_PAY_PATTERN_2 = Pattern.compile("\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/(pledge\\/)?android-pay\\z");
 
   // ***REMOVED***
   // ***REMOVED***

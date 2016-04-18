@@ -78,10 +78,7 @@ public class KSApplication extends MultiDexApplication {
     return application.refWatcher;
   }
 
-  /**
-   * Tests subclass KSApplication and override this method.
-   */
-  protected boolean isInUnitTests() {
+  public boolean isInUnitTests() {
     return false;
   }
 

@@ -284,8 +284,9 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
-  Koala provideKoala(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUser currentUser) {
-    return new Koala(new KoalaTrackingClient(context, currentUser));
+  Koala provideKoala(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUser currentUser,
+    final @NonNull AndroidPayCapability androidPayCapability) {
+    return new Koala(new KoalaTrackingClient(context, currentUser, androidPayCapability));
   }
 
   @Provides

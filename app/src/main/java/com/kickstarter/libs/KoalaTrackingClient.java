@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 public final class KoalaTrackingClient extends TrackingClientType {
   @Inject CurrentUser currentUser;
+  @Inject AndroidPayCapability androidPayCapability;
   @Nullable private User loggedInUser;
   private final @NonNull Context context;
 
@@ -29,9 +30,14 @@ public final class KoalaTrackingClient extends TrackingClientType {
   // Cached values
   private @Nullable Boolean isGooglePlayServicesAvailable;
 
-  public KoalaTrackingClient(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUser currentUser) {
+  public KoalaTrackingClient(
+    final @ApplicationContext @NonNull Context context,
+    final @NonNull CurrentUser currentUser,
+    final @NonNull AndroidPayCapability androidPayCapability) {
+
     this.context = context;
     this.currentUser = currentUser;
+    this.androidPayCapability = androidPayCapability;
 
     // Cache the most recent logged in user for default Koala properties.
     this.currentUser.observable().subscribe(u -> loggedInUser = u);
@@ -65,9 +71,7 @@ public final class KoalaTrackingClient extends TrackingClientType {
         put("device_format", deviceFormat());
         put("device_fingerprint", mixpanel.getDistinctId());
         put("android_uuid", mixpanel.getDistinctId());
-
-        // TODO: any way to detect if android pay is available?
-        // put("android_pay_capable", false);
+        put("android_pay_capable", androidPayCapability.isCapable());
       }
     };
   }

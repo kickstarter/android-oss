@@ -4835,7 +4835,7 @@
           "limited_rewards_remaining_left_of_reward_limit": "Stock limité (il en reste %{rewards_remaining} sur %{reward_limit})",
           "all_gone": "Épuisé",
           "shipping_destinations": "Expédition",
-          "shipping": "Shipping",
+          "shipping": "Expédition",
           "estimated_delivery": "Livraison prévue"
         }
       },
@@ -6802,7 +6802,7 @@
     "native_ios_aa": "experimental",
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
-    "native_iphone_horiz_vs_vert": "experimental",
+    "native_iphone_horiz_vs_vert": "control",
     "thanks_cards_money": "control"
   },
   "stripe": {

@@ -842,6 +842,7 @@
           "limited_rewards_remaining_left_of_reward_limit": "Limited (%{rewards_remaining} left of %{reward_limit})",
           "all_gone": "All gone",
           "shipping_destinations": "Shipping destinations",
+          "shipping": "Shipping",
           "estimated_delivery": "Estimated Delivery"
         }
       },
@@ -2172,6 +2173,7 @@
           "limited_rewards_remaining_left_of_reward_limit": "Begrenzt (%{rewards_remaining} von %{reward_limit} übrig)",
           "all_gone": "Alle weg",
           "shipping_destinations": "Versandziele",
+          "shipping": "Shipping",
           "estimated_delivery": "Voraussichtliche Lieferung"
         }
       },
@@ -3502,6 +3504,7 @@
           "limited_rewards_remaining_left_of_reward_limit": "Limitado (quedan %{rewards_remaining} de %{reward_limit})",
           "all_gone": "¡Recompensas agotadas!",
           "shipping_destinations": "Destinos de envío",
+          "shipping": "Shipping",
           "estimated_delivery": "Entrega aproximada"
         }
       },
@@ -4832,6 +4835,7 @@
           "limited_rewards_remaining_left_of_reward_limit": "Stock limité (il en reste %{rewards_remaining} sur %{reward_limit})",
           "all_gone": "Épuisé",
           "shipping_destinations": "Expédition",
+          "shipping": "Shipping",
           "estimated_delivery": "Livraison prévue"
         }
       },
@@ -6162,6 +6166,7 @@
           "limited_rewards_remaining_left_of_reward_limit": "Limited (%{rewards_remaining} left of %{reward_limit})",
           "all_gone": "All gone",
           "shipping_destinations": "Shipping destinations",
+          "shipping": "Shipping",
           "estimated_delivery": "Estimated Delivery"
         }
       },
@@ -6669,6 +6674,7 @@
     "ios_tappable_category_location": true,
     "ios_favorite_categories": true,
     "handbook_hero": true,
+    "android_pay": true,
     "i18n_discovery_touts": true,
     "i18n_start_tout": true,
     "password_reset_banner": true,
@@ -6793,10 +6799,10 @@
   ],
   "ab_experiments": {
     "discover_sorts_vs_subcategories": "experimental",
-    "native_ios_aa": "control",
+    "native_ios_aa": "experimental",
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
-    "native_iphone_horiz_vs_vert": "control",
+    "native_iphone_horiz_vs_vert": "experimental",
     "thanks_cards_money": "control"
   },
   "stripe": {

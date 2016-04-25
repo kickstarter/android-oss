@@ -681,6 +681,7 @@ Wir würden uns sehr darüber freuen!</string>
   <string name="rewards_info_backer_count_backers_zero" formatted="false">0 Unterstützer</string>
   <string name="rewards_info_estimated_delivery" formatted="false">Voraussichtliche Lieferung</string>
   <string name="rewards_info_limited_rewards_remaining_left_of_reward_limit" formatted="false">Begrenzt (%{rewards_remaining} von %{reward_limit} übrig)</string>
+  <string name="rewards_info_shipping" formatted="false">Shipping</string>
   <string name="rewards_info_shipping_destinations" formatted="false">Versandziele</string>
   <string name="rewards_select_label_select" formatted="false">Auswählen</string>
   <string name="rewards_selected_label_you_selected" formatted="false">Deine Auswahl</string>

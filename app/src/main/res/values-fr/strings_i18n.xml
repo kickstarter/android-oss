@@ -682,6 +682,7 @@ Merci pour votre soutien !</string>
   <string name="rewards_info_backer_count_backers_zero" formatted="false">0 contributeurs</string>
   <string name="rewards_info_estimated_delivery" formatted="false">Livraison prévue</string>
   <string name="rewards_info_limited_rewards_remaining_left_of_reward_limit" formatted="false">Stock limité (il en reste %{rewards_remaining} sur %{reward_limit})</string>
+  <string name="rewards_info_shipping" formatted="false">Shipping</string>
   <string name="rewards_info_shipping_destinations" formatted="false">Expédition</string>
   <string name="rewards_select_label_select" formatted="false">Sélectionner</string>
   <string name="rewards_selected_label_you_selected" formatted="false">Votre sélection</string>

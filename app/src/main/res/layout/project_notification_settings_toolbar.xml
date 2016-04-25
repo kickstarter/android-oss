@@ -4,8 +4,8 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   style="@style/Toolbar"
-  android:id="@+id/settings_toolbar"
-  tools:showIn="@layout/manage_notifications_layout"
+  android:id="@+id/project_notification_settings_toolbar"
+  tools:showIn="@layout/project_notification_settings_layout"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp">
 

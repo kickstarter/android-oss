@@ -212,7 +212,7 @@
     </activity>
 
     <activity
-      android:name=".ui.activities.ManageNotificationActivity"
+      android:name=".ui.activities.ProjectNotificationSettingsActivity"
       android:parentActivityName=".ui.activities.SettingsActivity">
 
       <meta-data

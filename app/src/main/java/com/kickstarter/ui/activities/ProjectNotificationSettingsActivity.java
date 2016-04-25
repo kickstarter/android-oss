@@ -10,8 +10,8 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
 import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.ui.adapters.ManageNotificationsAdapter;
-import com.kickstarter.viewmodels.ManageNotificationsViewModel;
+import com.kickstarter.ui.adapters.ProjectNotificationSettingsAdapter;
+import com.kickstarter.viewmodels.ProjectNotificationSettingsViewModel;
 
 import butterknife.Bind;
 import butterknife.BindString;
@@ -20,31 +20,32 @@ import rx.android.schedulers.AndroidSchedulers;
 
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
-@RequiresViewModel(ManageNotificationsViewModel.class)
-public final class ManageNotificationActivity extends BaseActivity<ManageNotificationsViewModel> {
-  protected @Bind(R.id.project_notifications_recycler_view) RecyclerView recyclerView;
+@RequiresViewModel(ProjectNotificationSettingsViewModel.class)
+public final class ProjectNotificationSettingsActivity extends BaseActivity<ProjectNotificationSettingsViewModel> {
+  protected @Bind(R.id.project_notification_settings_recycler_view) RecyclerView recyclerView;
 
   protected @BindString(R.string.general_error_something_wrong) String generalErrorString;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.manage_notifications_layout);
+    setContentView(R.layout.project_notification_settings_layout);
     ButterKnife.bind(this);
 
-    final ManageNotificationsAdapter adapter = new ManageNotificationsAdapter();
+    final ProjectNotificationSettingsAdapter adapter = new ProjectNotificationSettingsAdapter();
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    viewModel.outputs.notifications()
+    viewModel.outputs.projectNotifications()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(n -> adapter.takeNotifications(n, component().environment()));
+      .subscribe(adapter::projectNotifications);
 
-    viewModel.errors.unableToFetchNotificationsError()
+    viewModel.errors.unableToFetchProjectNotificationsError()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> ViewUtils.showToast(this, generalErrorString));
+      .map(__ -> generalErrorString)
+      .subscribe(ViewUtils.showToast(this));
   }
 
   @Override
@@ -53,6 +54,7 @@ public final class ManageNotificationActivity extends BaseActivity<ManageNotific
     recyclerView.setAdapter(null);
   }
 
+  @Override
   protected @Nullable Pair<Integer, Integer> exitTransition() {
     return slideInFromLeft();
   }

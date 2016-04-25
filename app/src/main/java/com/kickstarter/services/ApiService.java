@@ -9,13 +9,13 @@ import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.Location;
-import com.kickstarter.models.Notification;
+import com.kickstarter.models.ProjectNotification;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apirequests.CommentBody;
 import com.kickstarter.services.apirequests.LoginWithFacebookBody;
-import com.kickstarter.services.apirequests.NotificationBody;
+import com.kickstarter.services.apirequests.ProjectNotificationBody;
 import com.kickstarter.services.apirequests.PushTokenBody;
 import com.kickstarter.services.apirequests.RegisterWithFacebookBody;
 import com.kickstarter.services.apirequests.ResetPasswordBody;
@@ -76,7 +76,7 @@ public interface ApiService {
   Observable<Response<AccessTokenEnvelope>> login(@Body RegisterWithFacebookBody body);
 
   @GET("/v1/users/self/notifications")
-  Observable<Response<List<Notification>>> notifications();
+  Observable<Response<List<ProjectNotification>>> projectNotifications();
 
   @GET
   Observable<Response<CommentsEnvelope>> paginatedProjectComments(@Url String paginationPath);
@@ -121,8 +121,8 @@ public interface ApiService {
   Observable<Response<Update>> update(@Path("project_param") String projectParam, @Path("update_param") String updateParam);
 
   @PUT("/v1/users/self/notifications/{id}")
-  Observable<Response<Notification>> updateProjectNotifications(@Path("id") long notificationId,
-    @Body NotificationBody notificationBody);
+  Observable<Response<ProjectNotification>> updateProjectNotifications(@Path("id") long projectNotificationId,
+    @Body ProjectNotificationBody projectNotificationBody);
 
   @PUT("/v1/users/self")
   Observable<Response<User>> updateUserSettings(@Body SettingsBody body);

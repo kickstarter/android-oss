@@ -8,7 +8,7 @@ import auto.parcel.AutoParcel;
 
 @AutoGson
 @AutoParcel
-public abstract class NotificationBody implements Parcelable {
+public abstract class ProjectNotificationBody implements Parcelable {
   public abstract boolean email();
   public abstract boolean mobile();
 
@@ -16,11 +16,11 @@ public abstract class NotificationBody implements Parcelable {
   public abstract static class Builder {
     public abstract Builder email(boolean __);
     public abstract Builder mobile(boolean __);
-    public abstract NotificationBody build();
+    public abstract ProjectNotificationBody build();
   }
 
   public static Builder builder() {
-    return new AutoParcel_NotificationBody.Builder();
+    return new AutoParcel_ProjectNotificationBody.Builder();
   }
 
   public abstract Builder toBuilder();

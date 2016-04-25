@@ -9,7 +9,7 @@ import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.Location;
-import com.kickstarter.models.Notification;
+import com.kickstarter.models.ProjectNotification;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
@@ -41,7 +41,7 @@ public interface ApiClientType {
 
   @NonNull Observable<Location> fetchLocation(final @NonNull String param);
 
-  @NonNull Observable<List<Notification>> fetchNotifications();
+  @NonNull Observable<List<ProjectNotification>> fetchProjectNotifications();
 
   @NonNull Observable<Project> fetchProject(final @NonNull String param);
 
@@ -84,7 +84,7 @@ public interface ApiClientType {
 
   @NonNull Observable<Project> toggleProjectStar(final @NonNull Project project);
 
-  @NonNull Observable<Notification> updateNotifications(final @NonNull Notification notification, final boolean checked);
+  @NonNull Observable<ProjectNotification> updateProjectNotifications(final @NonNull ProjectNotification projectNotification, final boolean checked);
 
   @NonNull Observable<User> updateUserSettings(final @NonNull User user);
 }

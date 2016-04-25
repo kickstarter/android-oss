@@ -4,80 +4,96 @@ import android.support.annotation.NonNull;
 
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.ViewModel;
-import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.models.Notification;
+import com.kickstarter.models.ProjectNotification;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.viewholders.ProjectNotificationViewHolder;
 import com.kickstarter.viewmodels.errors.ProjectNotificationViewModelErrors;
 import com.kickstarter.viewmodels.inputs.ProjectNotificationViewModelInputs;
 import com.kickstarter.viewmodels.outputs.ProjectNotificationViewModelOutputs;
 
+import rx.Notification;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public class ProjectNotificationViewModel extends ViewModel<ProjectNotificationViewHolder> implements
+import static com.kickstarter.libs.rx.transformers.Transformers.errors;
+import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
+import static com.kickstarter.libs.rx.transformers.Transformers.values;
+
+public final class ProjectNotificationViewModel extends ViewModel<ProjectNotificationViewHolder> implements
   ProjectNotificationViewModelInputs, ProjectNotificationViewModelOutputs, ProjectNotificationViewModelErrors {
-
-  // INPUTS
-  private final PublishSubject<Boolean> checked = PublishSubject.create();
-  public final void switchClick(final boolean checked) {
-    this.checked.onNext(checked);
-  }
-  private final BehaviorSubject<Notification> notificationInput;
-
-  // OUTPUTS
-  private final BehaviorSubject<Notification> notificationOutput = BehaviorSubject.create();
-  public final Observable<Notification> notification() {
-    return notificationOutput;
-  }
-  private final PublishSubject<Void> updateSuccess = PublishSubject.create();
-  public Observable<Void> updateSuccess() {
-    return updateSuccess;
-  }
-
-  // ERRORS
-  private final PublishSubject<Throwable> unableToSavePreferenceError = PublishSubject.create();
-  public Observable<String> unableToSavePreferenceError() {
-    return unableToSavePreferenceError
-      .takeUntil(updateSuccess)
-      .map(__ -> null);
-  }
-
-  public final ProjectNotificationViewModelInputs inputs = this;
-  public final ProjectNotificationViewModelOutputs outputs = this;
-  public final ProjectNotificationViewModelErrors errors = this;
-
-  public ProjectNotificationViewModel(final @NonNull Notification notification, final @NonNull Environment environment) {
+  public ProjectNotificationViewModel(final @NonNull Environment environment) {
     super(environment);
+
     final ApiClientType client = environment.apiClient();
 
-    notificationInput = BehaviorSubject.create(notification);
+    // When the enable switch is clicked, update the project notification.
+    final Observable<Notification<ProjectNotification>> updateNotification = projectNotification
+      .compose(takePairWhen(enabledSwitchClick))
+      .switchMap(ne ->
+        client
+          .updateProjectNotifications(ne.first, ne.second)
+          .materialize()
+      )
+      .share();
 
-    notificationInput
-      .compose(Transformers.takePairWhen(checked))
-      .switchMap(nc -> updateNotification(client, nc.first, nc.second))
+    updateNotification
+      .compose(values())
       .compose(bindToLifecycle())
-      .subscribe(this::success);
+      .subscribe(projectNotification::onNext);
 
-    notificationInput
+    updateNotification
+      .compose(errors())
       .compose(bindToLifecycle())
-      .subscribe(this.notificationOutput);
+      .subscribe(__ -> showUnableToSaveProjectNotificationError.onNext(null));
 
-    this.notificationOutput
-      .compose(Transformers.takeWhen(unableToSavePreferenceError))
+    // Update the project name when a project notification emits.
+    projectNotification
+      .map(n -> n.project().name())
       .compose(bindToLifecycle())
-      .subscribe(this.notificationOutput::onNext);
+      .subscribe(projectName::onNext);
+
+    // Update the enabled switch when a project notification emits.
+    projectNotification
+      .map(n -> n.email() && n.mobile())
+      .compose(bindToLifecycle())
+      .subscribe(enabledSwitch::onNext);
   }
 
-  private void success(final @NonNull Notification notification) {
-    notificationInput.onNext(notification);
-    this.updateSuccess.onNext(null);
+  private PublishSubject<Boolean> enabledSwitchClick = PublishSubject.create();
+  private PublishSubject<ProjectNotification> projectNotification = PublishSubject.create();
+
+  private BehaviorSubject<String> projectName = BehaviorSubject.create();
+  private BehaviorSubject<Boolean> enabledSwitch = BehaviorSubject.create();
+
+  private PublishSubject<Void> showUnableToSaveProjectNotificationError = PublishSubject.create();
+
+  public ProjectNotificationViewModelInputs inputs = this;
+  public ProjectNotificationViewModelOutputs outputs = this;
+  public ProjectNotificationViewModelErrors errors = this;
+
+  @Override
+  public void enabledSwitchClick(final boolean enabled) {
+    enabledSwitchClick.onNext(enabled);
   }
 
-  private Observable<Notification> updateNotification(final @NonNull ApiClientType client,
-    final @NonNull Notification notification, final boolean checked) {
-    return client.updateNotifications(notification, checked)
-      .compose(Transformers.pipeErrorsTo(unableToSavePreferenceError));
+  @Override
+  public void projectNotification(final @NonNull ProjectNotification projectNotification) {
+    this.projectNotification.onNext(projectNotification);
+  }
+
+  @Override
+  public @NonNull Observable<String> projectName() {
+    return projectName;
+  }
+
+  @Override
+  public @NonNull Observable<Boolean> enabledSwitch() {
+    return enabledSwitch;
+  }
+
+  @Override
+  public @NonNull Observable<Void> showUnableToSaveProjectNotificationError() {
+    return showUnableToSaveProjectNotificationError;
   }
 }

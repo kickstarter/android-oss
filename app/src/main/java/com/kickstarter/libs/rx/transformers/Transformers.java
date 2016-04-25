@@ -13,6 +13,20 @@ public final class Transformers {
   private Transformers() {}
 
   /**
+   * Emits when a materialized stream is completed.
+   */
+  public static @NonNull <T> CompletedTransformer<T> completed() {
+    return new CompletedTransformer<>();
+  }
+
+  /**
+   * Emits when an error is thrown in a materialized stream.
+   */
+  public static @NonNull <T> ErrorsTransformer<T> errors() {
+    return new ErrorsTransformer<>();
+  }
+
+  /**
    * Prevents an observable from erroring by chaining `onErrorResumeNext`.
    */
   public static <T> NeverErrorTransformer<T> neverError() {
@@ -23,7 +37,10 @@ public final class Transformers {
    * Prevents an observable from erroring by chaining `onErrorResumeNext`,
    * and any errors that occur will be piped into the supplied errors publish
    * subject. `null` values will never be sent to the publish subject.
+   *
+   * @deprecated Use {@link Observable#materialize()} instead.
    */
+  @Deprecated
   public static <T> NeverErrorTransformer<T> pipeErrorsTo(final @NonNull PublishSubject<Throwable> errorSubject) {
     return new NeverErrorTransformer<>(errorSubject::onNext);
   }
@@ -32,7 +49,10 @@ public final class Transformers {
    * Prevents an observable from erroring by chaining `onErrorResumeNext`,
    * and any errors that occur will be piped into the supplied errors action.
    * `null` values will never be sent to the publish subject.
+   *
+   * @deprecated Use {@link Observable#materialize()} instead.
    */
+  @Deprecated
   public static <T> NeverErrorTransformer<T> pipeErrorsTo(final @NonNull Action1<Throwable> errorAction) {
     return new NeverErrorTransformer<>(errorAction);
   }
@@ -49,7 +69,10 @@ public final class Transformers {
    * and any errors that do occur will be piped into the supplied
    * errors publish subject. `null` values will never be sent to
    * the publish subject.
+   *
+   * @deprecated Use {@link Observable#materialize()} instead.
    */
+  @Deprecated
   public static <T> NeverApiErrorTransformer<T> pipeApiErrorsTo(final @NonNull PublishSubject<ErrorEnvelope> errorSubject) {
     return new NeverApiErrorTransformer<>(errorSubject::onNext);
   }
@@ -58,7 +81,10 @@ public final class Transformers {
    * Prevents an observable from erroring on any {@link ApiException} exceptions,
    * and any errors that do occur will be piped into the supplied
    * errors actions. `null` values will never be sent to the action.
+   *
+   * @deprecated Use {@link Observable#materialize()} instead.
    */
+  @Deprecated
   public static <T> NeverApiErrorTransformer<T> pipeApiErrorsTo(final @NonNull Action1<ErrorEnvelope> errorAction) {
     return new NeverApiErrorTransformer<>(errorAction);
   }
@@ -131,5 +157,12 @@ public final class Transformers {
    */
   @NonNull public static <T> IncrementalCountTransformer<T> incrementalCount() {
     return new IncrementalCountTransformer<>();
+  }
+
+  /**
+   * Emits an observable of values from a materialized stream.
+   */
+  public static @NonNull <T> ValuesTransformer<T> values() {
+    return new ValuesTransformer<>();
   }
 }

@@ -176,7 +176,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
 
   @OnClick(R.id.manage_project_notifications)
   public void manageProjectNotifications() {
-    final Intent intent = new Intent(this, ManageNotificationActivity.class);
+    final Intent intent = new Intent(this, ProjectNotificationSettingsActivity.class);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 

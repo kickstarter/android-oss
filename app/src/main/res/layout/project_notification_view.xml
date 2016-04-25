@@ -13,8 +13,8 @@
       style="@style/BodyPrimary"
       android:singleLine="true"
       android:ellipsize="end"
-      android:layout_toLeftOf="@+id/notification_switch"
-      android:layout_toStartOf="@+id/notification_switch"
+      android:layout_toLeftOf="@+id/enabled_switch"
+      android:layout_toStartOf="@+id/enabled_switch"
       android:layout_marginRight="@dimen/grid_2"
       android:layout_marginEnd="@dimen/grid_2"
       android:paddingTop="@dimen/feed_padding_y"
@@ -23,7 +23,7 @@
       android:layout_height="wrap_content" />
 
     <android.support.v7.widget.SwitchCompat
-      android:id="@+id/notification_switch"
+      android:id="@+id/enabled_switch"
       style="@style/EndSettingsWidget"/>
 
   </RelativeLayout>

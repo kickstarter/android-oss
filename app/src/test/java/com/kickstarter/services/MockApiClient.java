@@ -15,7 +15,7 @@ import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.Location;
-import com.kickstarter.models.Notification;
+import com.kickstarter.models.ProjectNotification;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
@@ -69,7 +69,7 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<List<Notification>> fetchNotifications() {
+  public @NonNull Observable<List<ProjectNotification>> fetchProjectNotifications() {
     return Observable.empty();
   }
 
@@ -268,8 +268,8 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<Notification> updateNotifications(final @NonNull Notification notification, final boolean checked) {
-    return Observable.empty();
+  public @NonNull Observable<ProjectNotification> updateProjectNotifications(final @NonNull ProjectNotification projectNotification, final boolean checked) {
+    return Observable.just(projectNotification.toBuilder().email(checked).mobile(checked).build());
   }
 
   @Override

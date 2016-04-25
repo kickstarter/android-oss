@@ -9,61 +9,59 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.kickstarter.R;
 import com.kickstarter.libs.qualifiers.RequiresViewModel;
-import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.SwitchCompatUtils;
 import com.kickstarter.libs.utils.ViewUtils;
-import com.kickstarter.models.Notification;
+import com.kickstarter.models.ProjectNotification;
 import com.kickstarter.viewmodels.ProjectNotificationViewModel;
 
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
 @RequiresViewModel(ProjectNotificationViewModel.class)
 public final class ProjectNotificationViewHolder extends KSViewHolder {
+  private final ProjectNotificationViewModel viewModel;
+
+  protected @Bind(R.id.enabled_switch) SwitchCompat enabledSwitch;
   protected @Bind(R.id.project_name) TextView projectNameTextView;
-  protected @Bind(R.id.notification_switch) SwitchCompat notificationSwitch;
 
   protected @BindString(R.string.profile_settings_error) String unableToSaveString;
-
-  private final PublishSubject<ProjectNotificationViewModel> viewModel = PublishSubject.create();
 
   public ProjectNotificationViewHolder(final @NonNull View view) {
     super(view);
     ButterKnife.bind(this, view);
 
-    // TODO: bind to lifecycle
-    viewModel
-      .compose(Transformers.takeWhen(RxView.clicks(this.notificationSwitch)))
-      .subscribe(vm -> vm.inputs.switchClick(this.notificationSwitch.isChecked()));
+    viewModel = new ProjectNotificationViewModel(environment());
 
-    viewModel
-      .switchMap(vm -> vm.outputs.notification())
+    RxView.clicks(enabledSwitch)
+      .map(__ -> enabledSwitch.isChecked())
+      .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::renderNotification);
+      .subscribe(viewModel.inputs::enabledSwitchClick);
 
-    viewModel
-      .switchMap(vm -> vm.errors.unableToSavePreferenceError())
+    viewModel.outputs.projectName()
+      .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(__ -> ViewUtils.showToast(view.getContext(), unableToSaveString));
+      .subscribe(projectNameTextView::setText);
+
+    viewModel.outputs.enabledSwitch()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(SwitchCompatUtils.setCheckedWithoutAnimation(enabledSwitch));
+
+    viewModel.errors.showUnableToSaveProjectNotificationError()
+      .map(__ -> unableToSaveString)
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(ViewUtils.showToast(context()));
   }
 
   @Override
   public void bindData(final @Nullable Object data) throws Exception {
-    final ProjectNotificationViewModel viewModel = requireNonNull((ProjectNotificationViewModel) data, ProjectNotificationViewModel.class);
-    this.viewModel.onNext(viewModel);
-  }
-
-  @Override
-  public void onBind() {
-  }
-
-  public void renderNotification(final @NonNull Notification notification) {
-    projectNameTextView.setText(notification.project().name());
-    SwitchCompatUtils.setCheckedWithoutAnimation(notificationSwitch, notification.email() && notification.mobile());
+    final ProjectNotification projectNotification = requireNonNull((ProjectNotification) data, ProjectNotification.class);
+    viewModel.projectNotification(projectNotification);
   }
 }

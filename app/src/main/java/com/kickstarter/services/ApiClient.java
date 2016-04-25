@@ -14,13 +14,13 @@ import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.Location;
-import com.kickstarter.models.Notification;
+import com.kickstarter.models.ProjectNotification;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apirequests.CommentBody;
 import com.kickstarter.services.apirequests.LoginWithFacebookBody;
-import com.kickstarter.services.apirequests.NotificationBody;
+import com.kickstarter.services.apirequests.ProjectNotificationBody;
 import com.kickstarter.services.apirequests.PushTokenBody;
 import com.kickstarter.services.apirequests.RegisterWithFacebookBody;
 import com.kickstarter.services.apirequests.ResetPasswordBody;
@@ -128,9 +128,9 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<List<Notification>> fetchNotifications() {
+  public @NonNull Observable<List<ProjectNotification>> fetchProjectNotifications() {
     return service
-      .notifications()
+      .projectNotifications()
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
@@ -318,10 +318,10 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<Notification> updateNotifications(final @NonNull Notification notification, final boolean checked) {
+  public @NonNull Observable<ProjectNotification> updateProjectNotifications(final @NonNull ProjectNotification projectNotification, final boolean checked) {
     return service
-      .updateProjectNotifications(notification.id(),
-        NotificationBody.builder()
+      .updateProjectNotifications(projectNotification.id(),
+        ProjectNotificationBody.builder()
           .email(checked)
           .mobile(checked)
           .build())

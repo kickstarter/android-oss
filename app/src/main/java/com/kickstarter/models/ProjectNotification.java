@@ -8,7 +8,7 @@ import auto.parcel.AutoParcel;
 
 @AutoParcel
 @AutoGson
-public abstract class Notification implements Parcelable {
+public abstract class ProjectNotification implements Parcelable {
   public abstract Project project();
   public abstract long id();
   public abstract boolean email();
@@ -22,11 +22,11 @@ public abstract class Notification implements Parcelable {
     public abstract Builder email(boolean __);
     public abstract Builder mobile(boolean __);
     public abstract Builder urls(Urls __);
-    public abstract Notification build();
+    public abstract ProjectNotification build();
   }
 
   public static Builder builder() {
-    return new AutoParcel_Notification.Builder();
+    return new AutoParcel_ProjectNotification.Builder();
   }
 
   public abstract Builder toBuilder();
@@ -45,7 +45,7 @@ public abstract class Notification implements Parcelable {
     }
 
     public static Builder builder() {
-      return new AutoParcel_Notification_Project.Builder();
+      return new AutoParcel_ProjectNotification_Project.Builder();
     }
   }
 
@@ -61,7 +61,7 @@ public abstract class Notification implements Parcelable {
     }
 
     public static Builder builder() {
-      return new AutoParcel_Notification_Urls.Builder();
+      return new AutoParcel_ProjectNotification_Urls.Builder();
     }
 
     @AutoParcel
@@ -76,7 +76,7 @@ public abstract class Notification implements Parcelable {
       }
 
       public static Builder builder() {
-        return new AutoParcel_Notification_Urls_Api.Builder();
+        return new AutoParcel_ProjectNotification_Urls_Api.Builder();
       }
     }
   }

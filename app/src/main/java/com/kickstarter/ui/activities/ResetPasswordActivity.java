@@ -10,7 +10,7 @@ import android.widget.EditText;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.viewmodels.ResetPasswordViewModel;
@@ -25,7 +25,7 @@ import rx.android.schedulers.AndroidSchedulers;
 
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
-@RequiresViewModel(ResetPasswordViewModel.class)
+@RequiresActivityViewModel(ResetPasswordViewModel.class)
 public final class ResetPasswordActivity extends BaseActivity<ResetPasswordViewModel> {
   @Bind (R.id.email) EditText email;
   @Bind (R.id.reset_password_button) Button resetPasswordButton;

@@ -28,7 +28,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.TweetComposer;
-import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.ApplicationUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Category;
@@ -54,7 +54,7 @@ import rx.schedulers.Schedulers;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 
-@RequiresViewModel(ThanksViewModel.class)
+@RequiresActivityViewModel(ThanksViewModel.class)
 public final class ThanksActivity extends BaseActivity<ThanksViewModel> {
   protected @Inject KSString ksString;
 

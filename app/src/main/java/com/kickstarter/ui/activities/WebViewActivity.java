@@ -9,7 +9,7 @@ import android.view.animation.AlphaAnimation;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.ui.toolbars.KSToolbar;
 import com.kickstarter.ui.views.KSWebView;
@@ -22,7 +22,7 @@ import rx.android.schedulers.AndroidSchedulers;
 
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
-@RequiresViewModel(WebViewViewModel.class)
+@RequiresActivityViewModel(WebViewViewModel.class)
 public final class WebViewActivity extends BaseActivity<WebViewViewModel> implements KSWebViewClient.Delegate {
   protected @Bind(R.id.web_view_toolbar) KSToolbar toolbar;
   protected @Bind(R.id.web_view) KSWebView webView;

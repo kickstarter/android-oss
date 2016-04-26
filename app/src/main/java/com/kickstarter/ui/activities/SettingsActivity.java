@@ -18,7 +18,7 @@ import com.kickstarter.libs.Build;
 import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.Logout;
-import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.ApplicationUtils;
 import com.kickstarter.libs.utils.SwitchCompatUtils;
 import com.kickstarter.libs.utils.ViewUtils;
@@ -42,7 +42,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
 import static com.kickstarter.libs.utils.IntegerUtils.intValueOrZero;
 
-@RequiresViewModel(SettingsViewModel.class)
+@RequiresActivityViewModel(SettingsViewModel.class)
 public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   protected @Bind(R.id.games_switch) SwitchCompat gamesNewsletterSwitch;
   protected @Bind(R.id.happening_now_switch) SwitchCompat happeningNewsletterSwitch;

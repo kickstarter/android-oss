@@ -16,7 +16,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSString;
-import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
@@ -37,7 +37,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
 
-@RequiresViewModel(ProjectViewModel.class)
+@RequiresActivityViewModel(ProjectViewModel.class)
 public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   private ProjectAdapter adapter;
 

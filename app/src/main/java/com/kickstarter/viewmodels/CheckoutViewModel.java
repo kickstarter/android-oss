@@ -8,9 +8,9 @@ import com.google.android.gms.wallet.FullWallet;
 import com.google.android.gms.wallet.MaskedWallet;
 import com.google.android.gms.wallet.WalletConstants;
 import com.google.gson.Gson;
+import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.AndroidPayCapability;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.models.AndroidPayPayload;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.AndroidPayUtils;
@@ -28,7 +28,7 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public final class CheckoutViewModel extends ViewModel<CheckoutActivity> implements CheckoutViewModelInputs,
+public final class CheckoutViewModel extends ActivityViewModel<CheckoutActivity> implements CheckoutViewModelInputs,
   CheckoutViewModelOutputs, CheckoutViewModelErrors {
   private AndroidPayCapability androidPayCapability;
   private Gson gson;

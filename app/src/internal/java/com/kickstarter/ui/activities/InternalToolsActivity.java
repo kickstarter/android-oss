@@ -26,7 +26,7 @@ import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.preferences.StringPreferenceType;
 import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
-import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.models.User;
 import com.kickstarter.ui.viewmodels.InternalToolsViewModel;
 
@@ -45,7 +45,7 @@ import butterknife.OnClick;
 
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
-@RequiresViewModel(InternalToolsViewModel.class)
+@RequiresActivityViewModel(InternalToolsViewModel.class)
 public final class InternalToolsActivity extends BaseActivity<InternalToolsViewModel> {
   @Inject @ApiEndpointPreference StringPreferenceType apiEndpointPreference;
   @Inject Build build;

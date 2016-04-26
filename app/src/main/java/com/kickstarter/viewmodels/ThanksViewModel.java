@@ -5,7 +5,7 @@ import android.util.Pair;
 
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.ViewModel;
+import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.preferences.BooleanPreferenceType;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
@@ -36,7 +36,7 @@ import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.zipPair;
 import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
 
-public final class ThanksViewModel extends ViewModel<ThanksActivity> implements ThanksViewModelInputs,
+public final class ThanksViewModel extends ActivityViewModel<ThanksActivity> implements ThanksViewModelInputs,
   ThanksViewModelOutputs {
   private final ApiClientType apiClient;
   private final BooleanPreferenceType hasSeenAppRatingPreference;

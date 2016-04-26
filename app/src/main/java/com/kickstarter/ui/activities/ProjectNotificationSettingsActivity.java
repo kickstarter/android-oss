@@ -8,7 +8,7 @@ import android.util.Pair;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.ui.adapters.ProjectNotificationSettingsAdapter;
 import com.kickstarter.viewmodels.ProjectNotificationSettingsViewModel;
@@ -20,7 +20,7 @@ import rx.android.schedulers.AndroidSchedulers;
 
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
-@RequiresViewModel(ProjectNotificationSettingsViewModel.class)
+@RequiresActivityViewModel(ProjectNotificationSettingsViewModel.class)
 public final class ProjectNotificationSettingsActivity extends BaseActivity<ProjectNotificationSettingsViewModel> {
   protected @Bind(R.id.project_notification_settings_recycler_view) RecyclerView recyclerView;
 

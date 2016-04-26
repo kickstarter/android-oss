@@ -8,7 +8,7 @@ import android.util.Pair;
 
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.ViewModel;
+import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Backing;
 import com.kickstarter.models.Project;
@@ -22,7 +22,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;
 
-public final class ViewPledgeViewModel extends ViewModel<ViewPledgeActivity> implements ViewPledgeViewModelOutputs  {
+public final class ViewPledgeViewModel extends ActivityViewModel<ViewPledgeActivity> implements ViewPledgeViewModelOutputs  {
   private final ApiClientType client;
   private final CurrentUserType currentUser;
 

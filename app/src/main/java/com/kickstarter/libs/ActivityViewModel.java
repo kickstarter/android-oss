@@ -20,7 +20,7 @@ import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
-public class ViewModel<ViewType extends LifecycleType> {
+public class ActivityViewModel<ViewType extends ActivityLifecycleType> {
 
   private final PublishSubject<ViewType> viewChange = PublishSubject.create();
   private final Observable<ViewType> view = viewChange.filter(v -> v != null);
@@ -32,7 +32,7 @@ public class ViewModel<ViewType extends LifecycleType> {
   private final BehaviorSubject<Intent> intent = BehaviorSubject.create();
   protected final Koala koala;
 
-  public ViewModel(final @NonNull Environment environment) {
+  public ActivityViewModel(final @NonNull Environment environment) {
     koala = environment.koala();
   }
 

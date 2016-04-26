@@ -13,7 +13,7 @@ import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
-import com.kickstarter.libs.ViewModel;
+import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.preferences.IntPreferenceType;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.BooleanUtils;
@@ -57,7 +57,7 @@ import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
 
-public final class DiscoveryViewModel extends ViewModel<DiscoveryActivity> implements DiscoveryViewModelInputs,
+public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivity> implements DiscoveryViewModelInputs,
   DiscoveryViewModelOutputs {
   private final ApiClientType apiClient;
   private final WebClientType webClient;

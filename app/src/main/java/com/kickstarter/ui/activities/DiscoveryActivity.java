@@ -18,7 +18,7 @@ import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.RefTag;
-import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
@@ -41,7 +41,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromRight;
 import static com.kickstarter.libs.utils.TransitionUtils.transition;
 
-@RequiresViewModel(DiscoveryViewModel.class)
+@RequiresActivityViewModel(DiscoveryViewModel.class)
 public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
   private DiscoveryAdapter adapter;
   private LinearLayoutManager layoutManager;

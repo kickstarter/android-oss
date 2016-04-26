@@ -19,7 +19,7 @@ public final class SwipeRefresher {
    * @param refreshAction Action to call when a refresh event is emitted, likely a viewModel input.
    * @param isRefreshing Observable that emits events when the refreshing status changes.
    */
-  public SwipeRefresher(final @NonNull BaseActivity<? extends ViewModel> activity,
+  public SwipeRefresher(final @NonNull BaseActivity<? extends ActivityViewModel> activity,
     final @NonNull SwipeRefreshLayout layout,
     final @NonNull Action0 refreshAction,
     final @NonNull Func0<Observable<Boolean>> isRefreshing) {

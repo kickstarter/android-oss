@@ -9,7 +9,7 @@ import android.view.View;
 
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.ViewModel;
+import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.services.ApiClientType;
@@ -26,7 +26,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public final class LoginViewModel extends ViewModel<LoginActivity> implements LoginViewModelInputs, LoginViewModelOutputs, LoginViewModelErrors {
+public final class LoginViewModel extends ActivityViewModel<LoginActivity> implements LoginViewModelInputs, LoginViewModelOutputs, LoginViewModelErrors {
   // INPUTS
   private final PublishSubject<String> email = PublishSubject.create();
   private final PublishSubject<View> loginClick = PublishSubject.create();

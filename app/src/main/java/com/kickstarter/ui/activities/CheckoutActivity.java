@@ -37,7 +37,7 @@ import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.models.AndroidPayAuthorizedPayload;
 import com.kickstarter.libs.models.AndroidPayPayload;
-import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.AndroidPayUtils;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
@@ -67,7 +67,7 @@ import rx.android.schedulers.AndroidSchedulers;
 
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
-@RequiresViewModel(CheckoutViewModel.class)
+@RequiresActivityViewModel(CheckoutViewModel.class)
 public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> implements KSWebViewClient.Delegate {
   private @Nullable Project project;
 

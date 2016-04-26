@@ -6,7 +6,7 @@ import android.util.Pair;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.ViewModel;
+import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Comment;
@@ -27,7 +27,7 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public final class CommentFeedViewModel extends ViewModel<CommentFeedActivity> implements CommentFeedViewModelInputs,
+public final class CommentFeedViewModel extends ActivityViewModel<CommentFeedActivity> implements CommentFeedViewModelInputs,
   CommentFeedViewModelOutputs, CommentFeedViewModelErrors {
   // INPUTS
   private final PublishSubject<String> commentBodyInput = PublishSubject.create();

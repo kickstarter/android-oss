@@ -11,7 +11,7 @@ import android.util.Pair;
 
 import com.kickstarter.ApplicationComponent;
 import com.kickstarter.KSApplication;
-import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.BundleUtils;
 import com.kickstarter.ui.data.ActivityResult;
 import com.trello.rxlifecycle.ActivityEvent;
@@ -28,8 +28,8 @@ import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
-public class BaseActivity<ViewModelType extends ViewModel> extends AppCompatActivity implements ActivityLifecycleProvider,
-  LifecycleType {
+public class BaseActivity<ViewModelType extends ActivityViewModel> extends AppCompatActivity implements ActivityLifecycleProvider,
+  ActivityLifecycleType {
 
   private final PublishSubject<Void> back = PublishSubject.create();
   private final BehaviorSubject<ActivityEvent> lifecycle = BehaviorSubject.create();
@@ -159,7 +159,7 @@ public class BaseActivity<ViewModelType extends ViewModel> extends AppCompatActi
 
     if (isFinishing()) {
       if (viewModel != null) {
-        ViewModels.getInstance().destroy(viewModel);
+        ActivityViewModelManager.getInstance().destroy(viewModel);
         viewModel = null;
       }
     }
@@ -208,7 +208,7 @@ public class BaseActivity<ViewModelType extends ViewModel> extends AppCompatActi
 
     final Bundle viewModelEnvelope = new Bundle();
     if (viewModel != null) {
-      ViewModels.getInstance().save(viewModel, viewModelEnvelope);
+      ActivityViewModelManager.getInstance().save(viewModel, viewModelEnvelope);
     }
 
     outState.putBundle(VIEW_MODEL_KEY, viewModelEnvelope);
@@ -256,10 +256,10 @@ public class BaseActivity<ViewModelType extends ViewModel> extends AppCompatActi
 
   private void fetchViewModel(final @Nullable Bundle viewModelEnvelope) {
     if (viewModel == null) {
-      final RequiresViewModel annotation = getClass().getAnnotation(RequiresViewModel.class);
+      final RequiresActivityViewModel annotation = getClass().getAnnotation(RequiresActivityViewModel.class);
       final Class<ViewModelType> viewModelClass = annotation == null ? null : (Class<ViewModelType>) annotation.value();
       if (viewModelClass != null) {
-        viewModel = ViewModels.getInstance().fetch(this,
+        viewModel = ActivityViewModelManager.getInstance().fetch(this,
           viewModelClass,
           BundleUtils.maybeGetBundle(viewModelEnvelope, VIEW_MODEL_KEY));
       }

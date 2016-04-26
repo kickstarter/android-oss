@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import com.kickstarter.libs.CurrentConfig;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.ViewModel;
+import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.I18nUtils;
 import com.kickstarter.libs.utils.StringUtils;
@@ -21,7 +21,7 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public final class SignupViewModel extends ViewModel<SignupActivity> implements SignupViewModelInputs, SignupViewModelOutputs,
+public final class SignupViewModel extends ActivityViewModel<SignupActivity> implements SignupViewModelInputs, SignupViewModelOutputs,
   SignupViewModelErrors {
   private final ApiClientType client;
   private final CurrentUserType currentUser;

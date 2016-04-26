@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.viewmodels.DownloadBetaViewModel;
@@ -22,7 +22,7 @@ import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
-@RequiresViewModel(DownloadBetaViewModel.class)
+@RequiresActivityViewModel(DownloadBetaViewModel.class)
 public final class DownloadBetaActivity extends BaseActivity<DownloadBetaViewModel> {
   protected @Bind(R.id.build) TextView buildTextView;
   protected @Bind(R.id.changelog) TextView changelogTextView;

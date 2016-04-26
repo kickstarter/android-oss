@@ -9,7 +9,7 @@ import android.util.Pair;
 import com.kickstarter.libs.CurrentConfig;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.ViewModel;
+import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.I18nUtils;
 import com.kickstarter.services.ApiClientType;
@@ -25,7 +25,7 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public class FacebookConfirmationViewModel extends ViewModel<FacebookConfirmationActivity> implements
+public class FacebookConfirmationViewModel extends ActivityViewModel<FacebookConfirmationActivity> implements
   FacebookConfirmationViewModelInputs, FacebookConfirmationViewModelOutputs, FacebookConfirmationViewModelErrors {
   private final ApiClientType client;
   private final CurrentUserType currentUser;

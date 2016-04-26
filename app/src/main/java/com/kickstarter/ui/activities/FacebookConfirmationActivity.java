@@ -13,7 +13,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.SwitchCompatUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.ui.toolbars.LoginToolbar;
@@ -30,7 +30,7 @@ import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromRight;
 import static com.kickstarter.libs.utils.TransitionUtils.transition;
 
-@RequiresViewModel(FacebookConfirmationViewModel.class)
+@RequiresActivityViewModel(FacebookConfirmationViewModel.class)
 public class FacebookConfirmationActivity extends BaseActivity<FacebookConfirmationViewModel> {
   protected @Bind(R.id.email) TextView emailTextView;
   protected @Bind(R.id.help_button) TextView helpButton;

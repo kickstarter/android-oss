@@ -7,8 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.kickstarter.KSApplication;
+import com.kickstarter.libs.ActivityLifecycleType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.LifecycleType;
 import com.trello.rxlifecycle.ActivityEvent;
 import com.trello.rxlifecycle.RxLifecycle;
 
@@ -17,7 +17,7 @@ import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 public abstract class KSViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
-  LifecycleType {
+  ActivityLifecycleType {
 
   private final View view;
   private final @NonNull PublishSubject<ActivityEvent> lifecycle = PublishSubject.create();

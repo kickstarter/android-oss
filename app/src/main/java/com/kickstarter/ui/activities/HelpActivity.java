@@ -11,7 +11,7 @@ import android.view.animation.AlphaAnimation;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.qualifiers.WebEndpoint;
 import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.ui.views.KSWebView;
@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-@RequiresViewModel(HelpViewModel.class)
+@RequiresActivityViewModel(HelpViewModel.class)
 public class HelpActivity extends BaseActivity<HelpViewModel> implements KSWebViewClient.Delegate {
   public static final int HELP_TYPE_TERMS = 0;
   public static final int HELP_TYPE_PRIVACY = 1;

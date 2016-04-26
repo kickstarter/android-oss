@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.ViewModel;
+import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
@@ -25,7 +25,7 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public final class ProfileViewModel extends ViewModel<ProfileActivity> implements ProfileAdapter.Delegate, ProfileViewModelInputs, ProfileViewModelOutputs {
+public final class ProfileViewModel extends ActivityViewModel<ProfileActivity> implements ProfileAdapter.Delegate, ProfileViewModelInputs, ProfileViewModelOutputs {
   private final ApiClientType client;
   private final CurrentUserType currentUser;
 

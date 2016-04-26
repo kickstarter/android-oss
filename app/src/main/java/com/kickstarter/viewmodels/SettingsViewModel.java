@@ -3,9 +3,9 @@ package com.kickstarter.viewmodels;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 
+import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.UserUtils;
@@ -21,7 +21,7 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public class SettingsViewModel extends ViewModel<SettingsActivity> implements SettingsViewModelInputs,
+public class SettingsViewModel extends ActivityViewModel<SettingsActivity> implements SettingsViewModelInputs,
   SettingsViewModelErrors, SettingsViewModelOutputs {
 
   // INPUTS

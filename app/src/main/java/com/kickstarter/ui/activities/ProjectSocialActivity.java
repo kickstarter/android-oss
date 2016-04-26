@@ -9,7 +9,7 @@ import android.util.Pair;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.ui.adapters.ProjectSocialAdapter;
 import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
 import com.kickstarter.viewmodels.ProjectSocialViewModel;
@@ -20,7 +20,7 @@ import rx.android.schedulers.AndroidSchedulers;
 
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
-@RequiresViewModel(ProjectSocialViewModel.class)
+@RequiresActivityViewModel(ProjectSocialViewModel.class)
 public final class ProjectSocialActivity extends BaseActivity<ProjectSocialViewModel> implements ProjectSocialAdapter.Delegate {
   protected @Bind(R.id.project_social_recycler_view) RecyclerView recyclerView;
 

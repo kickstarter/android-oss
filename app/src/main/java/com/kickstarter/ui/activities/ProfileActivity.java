@@ -16,7 +16,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RecyclerViewPaginator;
-import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.ApplicationUtils;
 import com.kickstarter.libs.utils.ViewUtils;
@@ -35,7 +35,7 @@ import rx.android.schedulers.AndroidSchedulers;
 
 import static com.kickstarter.libs.utils.IntegerUtils.isNonZero;
 
-@RequiresViewModel(ProfileViewModel.class)
+@RequiresActivityViewModel(ProfileViewModel.class)
 public final class ProfileActivity extends BaseActivity<ProfileViewModel> {
   private ProfileAdapter adapter;
   private RecyclerViewPaginator paginator;

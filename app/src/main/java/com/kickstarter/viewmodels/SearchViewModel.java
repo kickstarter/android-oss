@@ -2,9 +2,9 @@ package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
 
+import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.libs.utils.StringUtils;
@@ -24,7 +24,7 @@ import rx.Scheduler;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public final class SearchViewModel extends ViewModel<SearchActivity> implements SearchViewModelInputs, SearchViewModelOutputs {
+public final class SearchViewModel extends ActivityViewModel<SearchActivity> implements SearchViewModelInputs, SearchViewModelOutputs {
   // INPUTS
   private final PublishSubject<String> search = PublishSubject.create();
   @Override public void search(final @NonNull String s) {

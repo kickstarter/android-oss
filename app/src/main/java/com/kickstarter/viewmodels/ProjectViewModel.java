@@ -5,12 +5,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
+import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfig;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
-import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.RefTagUtils;
 import com.kickstarter.models.Project;
@@ -32,7 +32,7 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public final class ProjectViewModel extends ViewModel<ProjectActivity> implements ProjectAdapter.Delegate,
+public final class ProjectViewModel extends ActivityViewModel<ProjectActivity> implements ProjectAdapter.Delegate,
   ProjectViewModelInputs, ProjectViewModelOutputs {
   private final ApiClientType client;
   private final CurrentUserType currentUser;

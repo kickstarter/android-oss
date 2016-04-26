@@ -21,7 +21,7 @@ import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.SwipeRefresher;
-import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
@@ -44,7 +44,7 @@ import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
-@RequiresViewModel(CommentFeedViewModel.class)
+@RequiresActivityViewModel(CommentFeedViewModel.class)
 public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel> implements CommentFeedAdapter.Delegate {
   private CommentFeedAdapter adapter;
   private RecyclerViewPaginator recyclerViewPaginator;

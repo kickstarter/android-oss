@@ -16,7 +16,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSString;
-import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.ui.IntentKey;
@@ -35,7 +35,7 @@ import rx.android.schedulers.AndroidSchedulers;
 
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
-@RequiresViewModel(LoginViewModel.class)
+@RequiresActivityViewModel(LoginViewModel.class)
 public final class LoginActivity extends BaseActivity<LoginViewModel> {
   protected @Bind(R.id.email) EditText emailEditText;
   protected @Bind(R.id.forgot_your_password_text_view) TextView forgotPasswordTextView;

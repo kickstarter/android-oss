@@ -17,7 +17,7 @@ import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSRendererBuilder;
 import com.kickstarter.libs.KSVideoPlayer;
-import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Video;
 import com.kickstarter.viewmodels.VideoPlayerViewModel;
@@ -27,7 +27,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 
-@RequiresViewModel(VideoPlayerViewModel.class)
+@RequiresActivityViewModel(VideoPlayerViewModel.class)
 public final class VideoPlayerActivity extends BaseActivity<VideoPlayerViewModel> implements KSVideoPlayer.Listener {
   private MediaController mediaController;
   private KSVideoPlayer player;

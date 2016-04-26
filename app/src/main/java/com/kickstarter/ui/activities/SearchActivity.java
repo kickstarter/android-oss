@@ -12,7 +12,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.RefTag;
-import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.InputUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.IntentKey;
@@ -25,7 +25,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 
-@RequiresViewModel(SearchViewModel.class)
+@RequiresActivityViewModel(SearchViewModel.class)
 public final class SearchActivity extends BaseActivity<SearchViewModel> implements SearchAdapter.Delegate {
   private SearchAdapter adapter;
   private RecyclerViewPaginator paginator;

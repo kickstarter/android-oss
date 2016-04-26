@@ -5,10 +5,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
@@ -31,7 +31,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public final class ActivityFeedViewModel extends ViewModel<ActivityFeedActivity> implements ActivityFeedAdapter.Delegate,
+public final class ActivityFeedViewModel extends ActivityViewModel<ActivityFeedActivity> implements ActivityFeedAdapter.Delegate,
   ActivityFeedViewModelInputs, ActivityFeedViewModelOutputs {
   private final ApiClientType client;
   private final CurrentUserType currentUser;

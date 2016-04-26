@@ -10,7 +10,7 @@ import android.widget.EditText;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.ui.toolbars.LoginToolbar;
 import com.kickstarter.viewmodels.TwoFactorViewModel;
@@ -25,7 +25,7 @@ import rx.android.schedulers.AndroidSchedulers;
 
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
-@RequiresViewModel(TwoFactorViewModel.class)
+@RequiresActivityViewModel(TwoFactorViewModel.class)
 public final class TwoFactorActivity extends BaseActivity<TwoFactorViewModel> {
   public @Bind(R.id.code) EditText codeEditText;
   public @Bind(R.id.resend_button) Button resendButton;

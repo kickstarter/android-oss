@@ -2,8 +2,8 @@ package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
 
+import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.StringUtils;
 import com.kickstarter.models.User;
@@ -17,7 +17,7 @@ import com.kickstarter.viewmodels.outputs.ResetPasswordViewModelOutputs;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-public final class ResetPasswordViewModel extends ViewModel<ResetPasswordActivity> implements ResetPasswordViewModelInputs,
+public final class ResetPasswordViewModel extends ActivityViewModel<ResetPasswordActivity> implements ResetPasswordViewModelInputs,
   ResetPasswordViewModelOutputs, ResetPasswordViewModelErrors {
 
   // INPUTS

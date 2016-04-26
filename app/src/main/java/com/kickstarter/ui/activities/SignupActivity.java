@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding.view.RxView;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.SwitchCompatUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.ui.toolbars.LoginToolbar;
@@ -29,7 +29,7 @@ import rx.android.schedulers.AndroidSchedulers;
 
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
-@RequiresViewModel(SignupViewModel.class)
+@RequiresActivityViewModel(SignupViewModel.class)
 public final class SignupActivity extends BaseActivity<SignupViewModel> {
   @Bind(R.id.full_name) EditText nameEditText;
   @Bind(R.id.email) EditText emailEditText;

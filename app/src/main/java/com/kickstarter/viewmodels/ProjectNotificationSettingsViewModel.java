@@ -2,8 +2,8 @@ package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
 
+import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.models.ProjectNotification;
 import com.kickstarter.services.ApiClientType;
@@ -16,7 +16,7 @@ import java.util.List;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-public final class ProjectNotificationSettingsViewModel extends ViewModel<ProjectNotificationSettingsActivity> implements
+public final class ProjectNotificationSettingsViewModel extends ActivityViewModel<ProjectNotificationSettingsActivity> implements
   ProjectNotificationSettingsViewModelOutputs, ProjectNotificationSettingsViewModelErrors {
 
   public ProjectNotificationSettingsViewModel(final @NonNull Environment environment) {

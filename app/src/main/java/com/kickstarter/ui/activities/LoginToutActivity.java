@@ -12,7 +12,7 @@ import com.facebook.AccessToken;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
@@ -33,7 +33,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromRight;
 import static com.kickstarter.libs.utils.TransitionUtils.transition;
 
-@RequiresViewModel(LoginToutViewModel.class)
+@RequiresActivityViewModel(LoginToutViewModel.class)
 public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
   @Bind(R.id.disclaimer_text_view) TextView disclaimerTextView;
   @Bind(R.id.login_button) Button loginButton;

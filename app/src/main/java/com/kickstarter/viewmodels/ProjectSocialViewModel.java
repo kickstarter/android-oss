@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.ViewModel;
+import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.ProjectSocialActivity;
@@ -15,7 +15,7 @@ import com.kickstarter.viewmodels.outputs.ProjectSocialViewModelOutputs;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 
-public final class ProjectSocialViewModel extends ViewModel<ProjectSocialActivity> implements ProjectSocialViewModelOutputs {
+public final class ProjectSocialViewModel extends ActivityViewModel<ProjectSocialActivity> implements ProjectSocialViewModelOutputs {
 
   private final BehaviorSubject<Project> project = BehaviorSubject.create();
   @Override

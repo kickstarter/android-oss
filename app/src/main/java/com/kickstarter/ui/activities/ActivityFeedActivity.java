@@ -16,7 +16,7 @@ import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.SwipeRefresher;
-import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.ApplicationUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Activity;
@@ -34,7 +34,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 
-@RequiresViewModel(ActivityFeedViewModel.class)
+@RequiresActivityViewModel(ActivityFeedViewModel.class)
 public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewModel> {
   private ActivityFeedAdapter adapter;
   public @Bind(R.id.recycler_view) RecyclerView recyclerView;

@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
 import com.kickstarter.R;
-import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.SwitchCompatUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.ProjectNotification;
@@ -21,7 +21,7 @@ import rx.android.schedulers.AndroidSchedulers;
 
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
-@RequiresViewModel(ProjectNotificationViewModel.class)
+@RequiresActivityViewModel(ProjectNotificationViewModel.class)
 public final class ProjectNotificationViewHolder extends KSViewHolder {
   private final ProjectNotificationViewModel viewModel;
 

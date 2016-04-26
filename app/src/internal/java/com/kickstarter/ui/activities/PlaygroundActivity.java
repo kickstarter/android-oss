@@ -6,10 +6,10 @@ import android.support.annotation.Nullable;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.Playground;
-import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.ui.viewmodels.PlaygroundViewModel;
 
-@RequiresViewModel(PlaygroundViewModel.class)
+@RequiresActivityViewModel(PlaygroundViewModel.class)
 public final class PlaygroundActivity extends BaseActivity<PlaygroundViewModel> {
   private final Playground playground = new Playground();
 

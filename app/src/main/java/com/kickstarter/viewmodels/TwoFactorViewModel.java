@@ -2,9 +2,9 @@ package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
 
+import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.ViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
@@ -18,7 +18,7 @@ import com.kickstarter.viewmodels.outputs.TwoFactorViewModelOutputs;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-public final class TwoFactorViewModel extends ViewModel<TwoFactorActivity> implements TwoFactorViewModelInputs,
+public final class TwoFactorViewModel extends ActivityViewModel<TwoFactorActivity> implements TwoFactorViewModelInputs,
   TwoFactorViewModelOutputs, TwoFactorViewModelErrors {
 
   protected final static class TfaData {

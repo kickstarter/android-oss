@@ -12,7 +12,7 @@ import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.KSString;
-import com.kickstarter.libs.qualifiers.RequiresViewModel;
+import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.DateTimeUtils;
 import com.kickstarter.libs.utils.NumberUtils;
@@ -31,7 +31,7 @@ import rx.android.schedulers.AndroidSchedulers;
 
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
-@RequiresViewModel(ViewPledgeViewModel.class)
+@RequiresActivityViewModel(ViewPledgeViewModel.class)
 public final class ViewPledgeActivity extends BaseActivity<ViewPledgeViewModel> {
   protected @Bind(R.id.avatar) ImageView avatarImageView;
   protected @Bind(R.id.context_photo) ImageView contextPhotoImageView;

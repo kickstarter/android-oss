@@ -1,45 +1,28 @@
 package com.kickstarter.viewmodels;
 
-import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.kickstarter.libs.ActivityRequestCodes;
-import com.kickstarter.libs.ApiPaginator;
+import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.RefTag;
-import com.kickstarter.libs.ActivityViewModel;
-import com.kickstarter.libs.preferences.IntPreferenceType;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.DiscoveryDrawerUtils;
-import com.kickstarter.libs.utils.DiscoveryParamsUtils;
 import com.kickstarter.libs.utils.DiscoveryUtils;
-import com.kickstarter.libs.utils.ListUtils;
-import com.kickstarter.libs.utils.ObjectUtils;
-import com.kickstarter.models.Activity;
 import com.kickstarter.models.Category;
-import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.WebClientType;
-import com.kickstarter.services.apiresponses.ActivityEnvelope;
-import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 import com.kickstarter.ui.activities.DiscoveryActivity;
+import com.kickstarter.ui.adapters.DiscoveryPagerAdapter;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
 import com.kickstarter.ui.data.ActivityResult;
 import com.kickstarter.ui.intentmappers.DiscoveryIntentMapper;
-import com.kickstarter.ui.viewholders.ActivitySampleFriendBackingViewHolder;
-import com.kickstarter.ui.viewholders.ActivitySampleFriendFollowViewHolder;
-import com.kickstarter.ui.viewholders.ActivitySampleProjectViewHolder;
-import com.kickstarter.ui.viewholders.DiscoveryOnboardingViewHolder;
-import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.ChildFilterViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.LoggedInViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.LoggedOutViewHolder;
@@ -49,13 +32,13 @@ import com.kickstarter.viewmodels.inputs.DiscoveryViewModelInputs;
 import com.kickstarter.viewmodels.outputs.DiscoveryViewModelOutputs;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
+import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
+import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
 
 public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivity> implements DiscoveryViewModelInputs,
   DiscoveryViewModelOutputs {
@@ -63,33 +46,25 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
   private final WebClientType webClient;
   private final BuildCheck buildCheck;
   private final CurrentUserType currentUser;
-  private final IntPreferenceType activitySamplePreference;
 
   // INPUTS
-  private final PublishSubject<Void> nextPage = PublishSubject.create();
-  @Override
-  public void nextPage() {
-    nextPage.onNext(null);
-  }
-
   private final PublishSubject<Boolean> openDrawer = PublishSubject.create();
   @Override
   public void openDrawer(final boolean open) {
     openDrawer.onNext(open);
   }
 
-  // ONBOARDING DELEGATE INPUTS
-  private PublishSubject<Void> discoveryOnboardingLoginToutClick = PublishSubject.create();
+  private final PublishSubject<Integer> pageChanged = PublishSubject.create();
   @Override
-  public void discoveryOnboardingViewHolderLoginToutClick(final @NonNull DiscoveryOnboardingViewHolder viewHolder) {
-    discoveryOnboardingLoginToutClick.onNext(null);
+  public void pageChanged(final int position) {
+    pageChanged.onNext(position);
   }
 
-  // PROJECT VIEW HOLDER DELEGATE INPUTS
-  private PublishSubject<Project> clickProject = PublishSubject.create();
+  // DiscoveryPagerAdapter.Delegate inputs
+  private final PublishSubject<Integer> pagerCreatedPage = PublishSubject.create();
   @Override
-  public void projectCardViewHolderClick(final @NonNull ProjectCardViewHolder viewHolder, final @NonNull Project project) {
-    clickProject.onNext(project);
+  public void discoveryPagerAdapterCreatedPage(final DiscoveryPagerAdapter adapter, final int position) {
+    pagerCreatedPage.onNext(position);
   }
 
   // NAVIGATION DRAWER DELEGATE INPUTS
@@ -102,7 +77,7 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
   private PublishSubject<Void> loggedOutLoginToutClick = PublishSubject.create();
   @Override
   public void loggedOutViewHolderLoginToutClick(final @NonNull LoggedOutViewHolder viewHolder) {
-    discoveryOnboardingLoginToutClick.onNext(null);
+    loggedOutLoginToutClick.onNext(null);
   }
 
   private PublishSubject<NavigationDrawerData.Section.Row> parentFilterRowClick = PublishSubject.create();
@@ -140,102 +115,26 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
     topFilterRowClick.onNext(row);
   }
 
-  // ACTIVITY SAMPLE DELEGATE INPUTS
-  private PublishSubject<Project> clickActivityProject = PublishSubject.create();
-  @Override
-  public void activitySampleProjectViewHolderUpdateClicked(final @NonNull ActivitySampleProjectViewHolder viewHolder,
-    final @NonNull Activity activity) {
-    showActivityUpdate.onNext(activity);
-  }
-
-  @Override
-  public void activitySampleProjectViewHolderProjectClicked(final @NonNull ActivitySampleProjectViewHolder viewHolder,
-    final @NonNull Project project) {
-    activitySampleProjectClicked(project);
-  }
-
-  @Override
-  public void activitySampleFriendBackingViewHolderProjectClicked(final @NonNull ActivitySampleFriendBackingViewHolder viewHolder,
-    final @NonNull Project project) {
-    activitySampleProjectClicked(project);
-  }
-
-  @Override
-  public void activitySampleFriendBackingViewHolderSeeActivityClicked(final @NonNull ActivitySampleFriendBackingViewHolder viewHolder) {
-    seeActivityClicked();
-  }
-
-  @Override
-  public void activitySampleFriendFollowViewHolderSeeActivityClicked(final @NonNull ActivitySampleFriendFollowViewHolder viewHolder) {
-    seeActivityClicked();
-  }
-
-  @Override
-  public void activitySampleProjectViewHolderSeeActivityClicked(final @NonNull ActivitySampleProjectViewHolder viewHolder) {
-    seeActivityClicked();
-  }
-
   // OUTPUTS
-  private final BehaviorSubject<List<Project>> projects = BehaviorSubject.create();
-  @Override
-  public Observable<List<Project>> projects() {
-    return projects;
-  }
-
-  private final BehaviorSubject<DiscoveryParams> selectedParams = BehaviorSubject.create();
-
-  @Override
-  public Observable<DiscoveryParams> selectedParams() {
-    return selectedParams;
-  }
-  private final BehaviorSubject<Activity> activity = BehaviorSubject.create();
-  public Observable<Activity> activity() {
-    return activity;
-  }
-
-  private final BehaviorSubject<Boolean> shouldShowOnboarding = BehaviorSubject.create();
-  @Override
-  public Observable<Boolean> shouldShowOnboarding() {
-    return shouldShowOnboarding;
-  }
-
-  private final PublishSubject<Void> showInternalTools = PublishSubject.create();
+  private final Observable<Void> showInternalTools;
   @Override
   public Observable<Void> showInternalTools() {
     return showInternalTools;
   }
 
-  private final PublishSubject<Void> showProfile = PublishSubject.create();
+  private final Observable<Void> showProfile;
   @Override
   public Observable<Void> showProfile() {
     return showProfile;
   }
 
-  private final PublishSubject<Pair<Project, RefTag>> showProject = PublishSubject.create();
-  @Override
-  public Observable<Pair<Project, RefTag>> showProject() {
-    return showProject;
-  }
-
-  private final PublishSubject<Activity> showActivityUpdate = PublishSubject.create();
-  @Override
-  public Observable<Activity> showActivityUpdate() {
-    return showActivityUpdate;
-  }
-
-  private final PublishSubject<Void> showActivityFeed = PublishSubject.create();
-  @Override
-  public Observable<Void> showActivityFeed() {
-    return showActivityFeed;
-  }
-
-  private final PublishSubject<Void> showLoginTout = PublishSubject.create();
+  private final Observable<Void> showLoginTout;
   @Override
   public Observable<Void> showLoginTout() {
     return showLoginTout;
   }
 
-  private final PublishSubject<Void> showSettings = PublishSubject.create();
+  private final Observable<Void> showSettings;
   @Override
   public Observable<Void> showSettings() {
     return showSettings;
@@ -247,13 +146,34 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
     return navigationDrawerData;
   }
 
-  private BehaviorSubject<Boolean> drawerIsOpen = BehaviorSubject.create(false);
+  private BehaviorSubject<Boolean> drawerIsOpen = BehaviorSubject.create();
   @Override
   public Observable<Boolean> drawerIsOpen() {
     return drawerIsOpen;
   }
 
-  private boolean hasSeenOnboarding;
+  final BehaviorSubject<DiscoveryParams> updateToolbarWithParams = BehaviorSubject.create();
+  @Override
+  public Observable<DiscoveryParams> updateToolbarWithParams() {
+    return updateToolbarWithParams;
+  }
+
+  final PublishSubject<Pair<DiscoveryParams, Integer>> updateParamsForPage = PublishSubject.create();
+  @Override
+  public Observable<Pair<DiscoveryParams, Integer>> updateParamsForPage() {
+    return updateParamsForPage;
+  }
+
+  final PublishSubject<List<Integer>> clearPages = PublishSubject.create();
+  public Observable<List<Integer>> clearPages() {
+    return clearPages;
+  }
+
+  final BehaviorSubject<Boolean> expandSortTabLayout = BehaviorSubject.create();
+  @Override
+  public Observable<Boolean> expandSortTabLayout() {
+    return expandSortTabLayout;
+  }
 
   public final DiscoveryViewModelInputs inputs = this;
   public final DiscoveryViewModelOutputs outputs = this;
@@ -261,245 +181,142 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
   public DiscoveryViewModel(final @NonNull Environment environment) {
     super(environment);
 
-    this.activitySamplePreference = environment.activitySamplePreference();
-    this.apiClient = environment.apiClient();
-    this.buildCheck = environment.buildCheck();
-    this.currentUser = environment.currentUser();
-    this.webClient = environment.webClient();
-  }
-
-  @Override
-  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
-    super.onCreate(context, savedInstanceState);
+    apiClient = environment.apiClient();
+    buildCheck = environment.buildCheck();
+    currentUser = environment.currentUser();
+    webClient = environment.webClient();
 
     buildCheck.bind(this, webClient);
 
+    // Seed params when we are freshly launching the app with no data.
+    final Observable<DiscoveryParams> paramsFromInitialIntent = intent()
+      .take(1)
+      .map(Intent::getAction)
+      .filter(Intent.ACTION_MAIN::equals)
+      .map(__ -> DiscoveryParams.builder().staffPicks(true).build());
+
+    final Observable<DiscoveryParams> paramsFromIntent = intent()
+      .flatMap(i -> DiscoveryIntentMapper.params(i, apiClient));
+
+    final Observable<DiscoveryParams> drawerParamsClicked = childFilterRowClick
+      .mergeWith(topFilterRowClick)
+      .map(NavigationDrawerData.Section.Row::params);
+
+    // Keep current params upon successful login.
+    final Observable<DiscoveryParams> paramsAfterLogin = activityResult()
+      .filter(DiscoveryViewModel::isSuccessfulLogin)
+      .switchMap(__ -> updateParamsForPage.map(pp -> pp.first));
+
+    // Merge various param data sources to one true selected params value.
+    final Observable<DiscoveryParams> params = Observable.merge(
+      paramsFromInitialIntent,
+      paramsFromIntent,
+      drawerParamsClicked,
+      paramsAfterLogin
+    );
+
+    // Emit only the first event in which the view pager creates a page--we only care about the first creation event
+    // since pages are only created in memory once.
+    final Observable<DiscoveryParams.Sort> pagerSelectedSort = pagerCreatedPage.take(1)
+      // Start with page 0 since we skip the RxViewPager binding's immediate emission, which happens before
+      // the adapter and fragment are ready. Map the resulting current pager position to its corresponding sort param.
+      .switchMap(__ -> pageChanged.startWith(0))
+      .map(DiscoveryUtils::sortFromPosition)
+      .distinctUntilChanged();
+
+    final Observable<DiscoveryParams> paramsOnSortChange = params
+      .compose(takePairWhen(pagerSelectedSort))
+      .map(ps -> ps.first.toBuilder().sort(ps.second).build());
+
+    final Observable<DiscoveryParams> paramsOnDrawerSelection = pagerSelectedSort
+      .compose(takePairWhen(drawerParamsClicked))
+      .map(sp -> sp.second.toBuilder().sort(sp.first).build());
+
     final Observable<List<Category>> categories = apiClient.fetchCategories()
-      .compose(Transformers.neverError())
+      .compose(neverError())
       .flatMap(Observable::from)
       .toSortedList()
       .share();
 
-    final Observable<List<Category>> rootCategories = categories
-      .flatMap(Observable::from)
-      .filter(Category::isRoot)
-      .toList();
-
-    final Observable<Category> clickedCategory = parentFilterRowClick
+    final Observable<Category> drawerClickedParentCategory = parentFilterRowClick
       .map(NavigationDrawerData.Section.Row::params)
       .map(DiscoveryParams::category);
 
-    final PublishSubject<Category> expandedParams = PublishSubject.create();
-
-    final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
-      ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
-        .nextPage(nextPage)
-        .startOverWith(selectedParams)
-        .envelopeToListOfData(DiscoverEnvelope::projects)
-        .envelopeToMoreUrl(env -> env.urls().api().moreProjects())
-        .loadWithParams(apiClient::fetchProjects)
-        .loadWithPaginationPath(apiClient::fetchProjects)
-        .clearWhenStartingOver(true)
-        .concater(ListUtils::concatDistinct)
-        .build();
-
-    paginator.paginatedData()
-      .compose(Transformers.combineLatestPair(rootCategories))
-      .map(pc -> DiscoveryUtils.fillRootCategoryForFeaturedProjects(pc.first, pc.second))
+    // Accumulate a list of pages to clear when the params change, to avoid displaying old data.
+    pageChanged
+      .compose(Transformers.takeWhen(params))
+      .flatMap(currentPage -> Observable.from(DiscoveryParams.Sort.values())
+          .map(DiscoveryUtils::positionFromSort)
+          .filter(sortPosition -> !sortPosition.equals(currentPage))
+          .toList()
+      )
       .compose(bindToLifecycle())
-      .subscribe(projects::onNext);
+      .subscribe(clearPages);
 
-    selectedParams.compose(Transformers.takePairWhen(paginator.loadingPage()))
-      .map(paramsAndPage -> paramsAndPage.first.toBuilder().page(paramsAndPage.second).build())
-      .compose(bindToLifecycle())
-      .subscribe(p -> koala.trackDiscovery(p, !hasSeenOnboarding));
+    final Observable<Category> expandedCategory = Observable.merge(
+        topFilterRowClick.map(__ -> (Category) null),
+        drawerClickedParentCategory
+      )
+      .scan((Category) null, (previous, next) -> {
+        if (previous != null && next != null && previous.equals(next)) {
+          return null;
+        }
+        return next;
+      });
 
-    selectedParams
-      .compose(Transformers.combineLatestPair(currentUser.isLoggedIn()))
-      .map(pu -> isOnboardingVisible(pu.first, pu.second))
-      .doOnNext(show -> hasSeenOnboarding = show || hasSeenOnboarding)
+    params.distinctUntilChanged()
       .compose(bindToLifecycle())
-      .subscribe(shouldShowOnboarding::onNext);
+      .subscribe(updateToolbarWithParams);
 
-    currentUser.loggedInUser()
-      .compose(Transformers.combineLatestPair(selectedParams))
-      .flatMap(__ -> this.fetchActivity())
-      .filter(this::activityHasNotBeenSeen)
-      .doOnNext(this::saveLastSeenActivityId)
+    Observable.merge(paramsOnSortChange, paramsOnDrawerSelection)
+      .map(p -> Pair.create(p, DiscoveryUtils.positionFromSort(p.sort())))
       .compose(bindToLifecycle())
-      .subscribe(activity::onNext);
+      .subscribe(updateParamsForPage);
 
-    // Clear activity sample when params change
-    selectedParams
-      .map(__ -> (Activity) null)
+    updateParamsForPage.map(__ -> true)
       .compose(bindToLifecycle())
-      .subscribe(activity::onNext);
+      .subscribe(expandSortTabLayout);
+
+    showInternalTools = internalToolsClick;
+    showLoginTout = loggedOutLoginToutClick;
+    showProfile = profileClick;
+    showSettings = settingsClick;
 
     Observable.combineLatest(
       categories,
-      selectedParams,
-      expandedParams,
+      params,
+      expandedCategory,
       currentUser.observable(),
       DiscoveryDrawerUtils::deriveNavigationDrawerData
     )
+      .distinctUntilChanged()
       .compose(bindToLifecycle())
-      .subscribe(navigationDrawerData::onNext);
-    
-    selectedParams
-      .compose(Transformers.takePairWhen(clickProject))
-      .map(pp -> DiscoveryViewModel.projectAndRefTagFromParamsAndProject(pp.first, pp.second))
-      .compose(bindToLifecycle())
-      .subscribe(showProject::onNext);
+      .subscribe(navigationDrawerData);
 
-    clickActivityProject
-      .map(p -> Pair.create(p, RefTag.activitySample()))
-      .compose(bindToLifecycle())
-      .subscribe(showProject::onNext);
-
-    childFilterRowClick
-      .mergeWith(topFilterRowClick)
-      .map(__ -> false)
-      .compose(bindToLifecycle())
-      .subscribe(drawerIsOpen::onNext);
-
-    openDrawer
-      .compose(bindToLifecycle())
-      .subscribe(drawerIsOpen::onNext);
-
-    final Observable<DiscoveryParams> paramsClicked = childFilterRowClick
-        .mergeWith(topFilterRowClick)
-        .map(NavigationDrawerData.Section.Row::params);
-
-    paramsClicked
-      .compose(bindToLifecycle())
-      .subscribe(selectedParams::onNext);
-
-    topFilterRowClick
-      .compose(bindToLifecycle())
-      .subscribe(__ -> expandedParams.onNext(null));
-
-    navigationDrawerData
-      .map(NavigationDrawerData::expandedCategory)
-      .compose(Transformers.takePairWhen(clickedCategory))
-      .map(expandedAndClickedCategory -> toggleExpandedCategory(expandedAndClickedCategory.first, expandedAndClickedCategory.second))
-      .compose(bindToLifecycle())
-      .subscribe(expandedParams::onNext);
-
-    internalToolsClick
-      .compose(bindToLifecycle())
-      .subscribe(__ -> showInternalTools.onNext(null));
-    profileClick
-      .compose(bindToLifecycle())
-      .subscribe(__ -> showProfile.onNext(null));
-    settingsClick
-      .compose(bindToLifecycle())
-      .subscribe(__ -> showSettings.onNext(null));
-
-    discoveryOnboardingLoginToutClick
-      .mergeWith(loggedOutLoginToutClick)
-      .compose(bindToLifecycle())
-      .subscribe(__ -> showLoginTout.onNext(null));
-
-    // Closing the drawer while starting an activity is a little overwhelming,
-    // so put the close on a delay so it happens out of sight.
-    profileClick
-      .mergeWith(internalToolsClick)
-      .mergeWith(settingsClick)
-      .mergeWith(discoveryOnboardingLoginToutClick)
-      .mergeWith(loggedOutLoginToutClick)
-      .delay(1, TimeUnit.SECONDS)
-      .map(__ -> false)
-      .compose(bindToLifecycle())
-      .subscribe(drawerIsOpen::onNext);
-
-    paramsClicked
+    drawerParamsClicked
       .compose(bindToLifecycle())
       .subscribe(koala::trackDiscoveryFilterSelected);
+
+    Observable.merge(
+      openDrawer,
+      childFilterRowClick.map(__ -> false),
+      topFilterRowClick.map(__ -> false),
+      internalToolsClick.map(__ -> false),
+      loggedOutLoginToutClick.map(__ -> false),
+      profileClick.map(__ -> false),
+      settingsClick.map(__ -> false)
+    )
+      .distinctUntilChanged()
+      .compose(bindToLifecycle())
+      .subscribe(drawerIsOpen);
 
     openDrawer
       .filter(BooleanUtils::isTrue)
       .compose(bindToLifecycle())
       .subscribe(__ -> koala.trackDiscoveryFilters());
-
-    expandedParams.onNext(null);
-
-    intent()
-      .flatMap(i -> DiscoveryIntentMapper.params(i, apiClient))
-      .compose(bindToLifecycle())
-      .subscribe(selectedParams::onNext);
-
-    // Seed selected params when we are freshly launching the app with no data.
-    intent()
-      .take(1)
-      .map(Intent::getAction)
-      .filter(Intent.ACTION_MAIN::equals)
-      .map(__ -> DiscoveryParams.builder().staffPicks(true).build())
-      .compose(bindToLifecycle())
-      .subscribe(selectedParams::onNext);
-
-    // TODO: Merge with action main
-    activityResult()
-      .filter(DiscoveryViewModel::isSuccessfulLogin)
-      .map(__ -> DiscoveryParams.builder().staffPicks(true).build())
-      .compose(bindToLifecycle())
-      .subscribe(selectedParams::onNext);
-  }
-
-  private boolean isOnboardingVisible(final @NonNull DiscoveryParams currentParams, final boolean isLoggedIn) {
-    return !isLoggedIn && !hasSeenOnboarding && isTrue(currentParams.staffPicks());
-  }
-
-  /**
-   * Converts a pair (params, project) into a (project, refTag) pair that does some extra logic around POTD and
-   * featured projects..
-   */
-  private static @NonNull Pair<Project, RefTag> projectAndRefTagFromParamsAndProject(final @NonNull DiscoveryParams params, final @NonNull Project project) {
-    final RefTag refTag;
-    if (project.isPotdToday()) {
-      refTag = RefTag.discoverPotd();
-    } else if (project.isFeaturedToday()) {
-      refTag = RefTag.categoryFeatured();
-    } else {
-      refTag = DiscoveryParamsUtils.refTag(params);
-    }
-
-    return new Pair<>(project, refTag);
-  }
-
-  public Observable<Activity> fetchActivity() {
-    return apiClient.fetchActivities(1)
-      .map(ActivityEnvelope::activities)
-      .map(ListUtils::first)
-      .filter(ObjectUtils::isNotNull)
-      .compose(Transformers.neverError());
-  }
-
-  private boolean activityHasNotBeenSeen(final @Nullable Activity activity) {
-    return activity != null && activity.id() != activitySamplePreference.get();
   }
 
   private static boolean isSuccessfulLogin(final @NonNull ActivityResult activityResult) {
     return activityResult.isOk() && activityResult.isRequestCode(ActivityRequestCodes.LOGIN_FLOW);
-  }
-
-  private static @Nullable Category toggleExpandedCategory(final @Nullable Category expandedCategory, final @NonNull Category clickedCategory) {
-    if (expandedCategory != null && clickedCategory.id() == expandedCategory.id()) {
-      return null;
-    }
-    return clickedCategory;
-  }
-
-  private void saveLastSeenActivityId(final @Nullable Activity activity) {
-    if (activity != null) {
-      activitySamplePreference.set((int) activity.id());
-    }
-  }
-
-  private void seeActivityClicked() {
-    showActivityFeed.onNext(null);
-  }
-
-  private void activitySampleProjectClicked(final @NonNull Project project) {
-    clickActivityProject.onNext(project);
   }
 }

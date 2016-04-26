@@ -85,7 +85,7 @@ public class BaseActivity<ViewModelType extends ActivityViewModel> extends AppCo
 
     lifecycle.onNext(ActivityEvent.CREATE);
 
-    fetchViewModel(savedInstanceState);
+    assignViewModel(savedInstanceState);
 
     viewModel.intent(getIntent());
   }
@@ -120,7 +120,7 @@ public class BaseActivity<ViewModelType extends ActivityViewModel> extends AppCo
     Timber.d("onResume %s", this.toString());
     lifecycle.onNext(ActivityEvent.RESUME);
 
-    fetchViewModel(null);
+    assignViewModel(null);
     if (viewModel != null) {
       viewModel.onResume(this);
     }
@@ -254,7 +254,7 @@ public class BaseActivity<ViewModelType extends ActivityViewModel> extends AppCo
     }
   }
 
-  private void fetchViewModel(final @Nullable Bundle viewModelEnvelope) {
+  private void assignViewModel(final @Nullable Bundle viewModelEnvelope) {
     if (viewModel == null) {
       final RequiresActivityViewModel annotation = getClass().getAnnotation(RequiresActivityViewModel.class);
       final Class<ViewModelType> viewModelClass = annotation == null ? null : (Class<ViewModelType>) annotation.value();

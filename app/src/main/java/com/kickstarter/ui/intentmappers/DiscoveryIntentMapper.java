@@ -31,7 +31,7 @@ public final class DiscoveryIntentMapper {
       .map(DiscoveryParams::fromUri)
       .flatMap(uri -> paramsFromUri(uri, client));
 
-    return paramsFromParcel.mergeWith(paramsFromUri);
+    return Observable.merge(paramsFromParcel, paramsFromUri);
   }
 
   private static @Nullable DiscoveryParams paramsFromIntent(final @NonNull Intent intent) {

@@ -123,4 +123,7 @@
   <dimen name="buy_button_height">48dp</dimen>
   <dimen name="buy_button_width">300dp</dimen>
 
+  <!-- Sort tabs -->
+  <dimen name="sort_tab_divider_margin_top_negative">-0.5dp</dimen>
+
 </resources>

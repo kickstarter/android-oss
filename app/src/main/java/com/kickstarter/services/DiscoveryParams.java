@@ -43,7 +43,7 @@ public abstract class DiscoveryParams implements Parcelable {
   public abstract @Nullable String term();
 
   public enum Sort {
-    MAGIC, POPULAR, ENDING_SOON, NEWEST, MOST_FUNDED;
+    MAGIC, POPULAR, NEWEST, ENDING_SOON, MOST_FUNDED;
     @Override
     public @NonNull String toString() {
       switch (this) {
@@ -51,10 +51,10 @@ public abstract class DiscoveryParams implements Parcelable {
           return "magic";
         case POPULAR:
           return "popularity";
-        case ENDING_SOON:
-          return "end_date";
         case NEWEST:
           return "newest";
+        case ENDING_SOON:
+          return "end_date";
         case MOST_FUNDED:
           return "most_funded";
       }
@@ -67,10 +67,10 @@ public abstract class DiscoveryParams implements Parcelable {
           return MAGIC;
         case "popularity":
           return POPULAR;
-        case "end_date":
-          return ENDING_SOON;
         case "newest":
           return NEWEST;
+        case "end_date":
+          return ENDING_SOON;
         case "most_funded":
           return MOST_FUNDED;
       }
@@ -83,10 +83,10 @@ public abstract class DiscoveryParams implements Parcelable {
           return "";
         case POPULAR:
           return "_popular";
-        case ENDING_SOON:
-          return "_ending_soon";
         case NEWEST:
           return "_newest";
+        case ENDING_SOON:
+          return "_ending_soon";
         case MOST_FUNDED:
           return "_most_funded";
         default:

@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
+import com.kickstarter.factories.ActivityEnvelopeFactory;
+import com.kickstarter.factories.ActivityFactory;
 import com.kickstarter.factories.CategoryFactory;
 import com.kickstarter.factories.CommentFactory;
 import com.kickstarter.factories.LocationFactory;
@@ -25,6 +27,7 @@ import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.DiscoverEnvelope;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,12 +53,14 @@ public class MockApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<ActivityEnvelope> fetchActivities() {
-    return Observable.empty();
+    return Observable.just(
+      ActivityEnvelopeFactory.activityEnvelope(Collections.singletonList(ActivityFactory.activity()))
+    );
   }
 
   @Override
   public @NonNull Observable<ActivityEnvelope> fetchActivities(final @Nullable Integer count) {
-    return Observable.empty();
+    return fetchActivities().take(count);
   }
 
   @Override
@@ -65,7 +70,19 @@ public class MockApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<List<Category>> fetchCategories() {
-    return Observable.empty();
+    return Observable.just(
+      Arrays.asList(
+        CategoryFactory.artCategory(),
+        CategoryFactory.bluesCategory(),
+        CategoryFactory.ceramicsCategory(),
+        CategoryFactory.gamesCategory(),
+        CategoryFactory.musicCategory(),
+        CategoryFactory.photographyCategory(),
+        CategoryFactory.tabletopGamesCategory(),
+        CategoryFactory.textilesCategory(),
+        CategoryFactory.worldMusicCategory()
+      )
+    );
   }
 
   @Override

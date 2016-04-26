@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 
 import com.kickstarter.R;
@@ -18,24 +19,54 @@ import rx.Observable;
 public final class DiscoveryUtils {
   private DiscoveryUtils() {}
 
-  public static @ColorInt int primaryColor(final @NonNull Context context, final @NonNull DiscoveryParams params) {
-    return params.category() != null ?
-      params.category().colorWithAlpha() :
+  /**
+   * Return the corresponding tab position for a given sort param.
+   */
+  public static int positionFromSort(final @Nullable DiscoveryParams.Sort sort) {
+    if (sort == null) {
+      return 0;
+    }
+    switch (sort) {
+      case MAGIC:
+        return 0;
+      case POPULAR:
+        return 1;
+      case NEWEST:
+        return 2;
+      case ENDING_SOON:
+        return 3;
+      case MOST_FUNDED:
+        return 4;
+      default:
+        return 0;
+    }
+  }
+
+  /**
+   * Return the corresponding sort for a given tab position.
+   */
+  public static @NonNull DiscoveryParams.Sort sortFromPosition(final int position) {
+    return DiscoveryParams.Sort.values()[position];
+  }
+
+  public static @ColorInt int primaryColor(final @NonNull Context context, final @Nullable Category category) {
+    return category != null ?
+      category.colorWithAlpha() :
       ContextCompat.getColor(context, R.color.discovery_primary);
   }
 
-  public static @ColorInt int secondaryColor(final @NonNull Context context, final @NonNull DiscoveryParams params) {
-    return params.category() != null ?
-      params.category().secondaryColor(context) :
+  public static @ColorInt int secondaryColor(final @NonNull Context context, final @Nullable Category category) {
+    return category != null ?
+      category.secondaryColor(context) :
       ContextCompat.getColor(context, R.color.discovery_secondary);
   }
 
-  public static boolean overlayShouldBeLight(final @NonNull DiscoveryParams params) {
-    return params.category() == null || params.category().overlayShouldBeLight();
+  public static boolean overlayShouldBeLight(final @Nullable Category category) {
+    return category == null || category.overlayShouldBeLight();
   }
 
-  public static @ColorInt int overlayTextColor(final @NonNull Context context, final @NonNull DiscoveryParams params) {
-    return overlayTextColor(context, overlayShouldBeLight(params));
+  public static @ColorInt int overlayTextColor(final @NonNull Context context, final @Nullable Category category) {
+    return overlayTextColor(context, overlayShouldBeLight(category));
   }
 
   public static @ColorInt int overlayTextColor(final @NonNull Context context, final boolean light) {

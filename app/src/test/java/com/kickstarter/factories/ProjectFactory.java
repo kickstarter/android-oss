@@ -82,6 +82,13 @@ public final class ProjectFactory {
       .build();
   }
 
+  public static @NonNull Project failedProject() {
+    return project()
+      .toBuilder()
+      .state(Project.STATE_FAILED)
+      .build();
+  }
+
   public static @NonNull Project caProject() {
     return project()
       .toBuilder()

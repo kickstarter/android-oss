@@ -8,7 +8,8 @@
   android:id="@+id/discovery_toolbar"
   tools:showIn="@layout/discovery_layout"
   android:background="@color/discovery_toolbar"
-  android:elevation="@dimen/toolbar_elevation"
+  android:elevation="0dp"
+  app:layout_scrollFlags="scroll|exitUntilCollapsed"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp"
   tools:ignore="UnusedAttribute">

@@ -22,7 +22,7 @@ public class ActivityViewModelManager {
   private static final ActivityViewModelManager instance = new ActivityViewModelManager();
   private Map<String, ActivityViewModel> viewModels = new HashMap<>();
 
-  public static ActivityViewModelManager getInstance() {
+  public static @NonNull ActivityViewModelManager getInstance() {
     return instance;
   }
 
@@ -55,7 +55,6 @@ public class ActivityViewModelManager {
     envelope.putString(VIEW_MODEL_ID_KEY, findIdForViewModel(activityViewModel));
 
     final Bundle state = new Bundle();
-    activityViewModel.save(state);
     envelope.putBundle(VIEW_MODEL_STATE_KEY, state);
   }
 

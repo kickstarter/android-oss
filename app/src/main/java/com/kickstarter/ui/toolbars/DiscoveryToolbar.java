@@ -79,22 +79,22 @@ public final class DiscoveryToolbar extends KSToolbar {
     filterTextView.setText(params.filterString(activity));
 
     if (ApiCapabilities.canSetStatusBarColor() && ApiCapabilities.canSetDarkStatusBarIcons()) {
-      discoveryStatusBar.setBackgroundColor(DiscoveryUtils.secondaryColor(activity, params));
-      if (DiscoveryUtils.overlayShouldBeLight(params)) {
+      discoveryStatusBar.setBackgroundColor(DiscoveryUtils.secondaryColor(activity, params.category()));
+      if (DiscoveryUtils.overlayShouldBeLight(params.category())) {
         StatusBarUtils.setLightStatusBarIcons(activity);
       } else {
         StatusBarUtils.setDarkStatusBarIcons(activity);
       }
     }
 
-    this.setBackgroundColor(DiscoveryUtils.primaryColor(activity, params));
+    this.setBackgroundColor(DiscoveryUtils.primaryColor(activity, params.category()));
 
     final Observable<TextView> views = Observable.just(activityFeedButton,
       filterTextView,
       menuButton,
       searchButton);
 
-    final @ColorInt int overlayTextColor = DiscoveryUtils.overlayTextColor(activity, params);
+    final @ColorInt int overlayTextColor = DiscoveryUtils.overlayTextColor(activity, params.category());
 
     views.subscribe(view -> view.setTextColor(overlayTextColor));
   }

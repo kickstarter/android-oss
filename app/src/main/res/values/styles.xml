@@ -79,6 +79,11 @@
     <item name="android:windowBackground">@color/white</item>
   </style>
 
+  <style name="TabTextAppearance">
+    <item name="android:textAllCaps">false</item>
+    <item name="android:textSize">@dimen/body</item>
+  </style>
+
   <!-- Widgets -->
   <style name="PopupMenu" parent="Base.Widget.AppCompat.PopupMenu">
     <item name="android:popupBackground">@drawable/dialog_alert_rounded</item>

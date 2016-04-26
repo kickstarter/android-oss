@@ -30,7 +30,7 @@ public final class KoalaUtils {
         put("starred", params.starred());
         put("social", params.social());
         put("term", params.term());
-        put("sort", params.sort());
+        put("sort", params.sort() != null ? String.valueOf(params.sort()) : "");
         put("page", params.page());
         put("per_page", params.perPage());
 

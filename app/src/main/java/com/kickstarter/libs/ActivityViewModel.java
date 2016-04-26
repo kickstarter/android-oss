@@ -16,7 +16,6 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscription;
-import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
@@ -29,7 +28,7 @@ public class ActivityViewModel<ViewType extends ActivityLifecycleType> {
   private final PublishSubject<ActivityResult> activityResult = PublishSubject.create();
 
   // TODO: Justify BehaviorSubject vs PublishSubject
-  private final BehaviorSubject<Intent> intent = BehaviorSubject.create();
+  private final PublishSubject<Intent> intent = PublishSubject.create();
   protected final Koala koala;
 
   public ActivityViewModel(final @NonNull Environment environment) {
@@ -43,7 +42,7 @@ public class ActivityViewModel<ViewType extends ActivityLifecycleType> {
     this.activityResult.onNext(activityResult);
   }
 
-  /*
+  /**
    * Takes intent data from the view.
    */
   public void intent(final @NonNull Intent intent) {
@@ -117,12 +116,6 @@ public class ActivityViewModel<ViewType extends ActivityLifecycleType> {
   @Deprecated
   public final void addSubscription(final @NonNull Subscription subscription) {
     subscriptions.add(subscription);
-  }
-
-  @CallSuper
-  protected void save(final @NonNull Bundle state) {
-    Timber.d("save %s", this.toString());
-    // TODO
   }
 
   /**

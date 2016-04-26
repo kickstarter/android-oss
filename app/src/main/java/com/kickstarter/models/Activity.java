@@ -17,7 +17,7 @@ import auto.parcel.AutoParcel;
 @AutoGson
 @AutoParcel
 public abstract class Activity implements Parcelable {
-  @Category public abstract String category();
+  public abstract @Category String category();
   public abstract DateTime createdAt();
   public abstract long id();
   public abstract @Nullable Project project();

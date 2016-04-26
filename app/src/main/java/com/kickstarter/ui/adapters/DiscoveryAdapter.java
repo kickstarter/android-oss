@@ -38,21 +38,22 @@ public final class DiscoveryAdapter extends KSAdapter {
     insertSection(SECTION_PROJECT_CARD_VIEW, Collections.emptyList());
   }
 
-  public void setShouldShowOnboardingView(final boolean shouldShowOnboardingView) {
-    if (shouldShowOnboardingView) {
-      setSection(SECTION_ONBOARDING_VIEW, Collections.singletonList(null));
-    } else {
-      setSection(SECTION_ONBOARDING_VIEW, Collections.emptyList());
-    }
-    notifyDataSetChanged();
-  }
-
   public void takeActivity(final @Nullable Activity activity) {
     if (activity == null) {
       setSection(SECTION_ACTIVITY_SAMPLE_VIEW, Collections.emptyList());
     } else {
       setSection(SECTION_ACTIVITY_SAMPLE_VIEW, Collections.singletonList(activity));
     }
+    notifyDataSetChanged();
+  }
+
+  public void setShouldShowOnboardingView(final boolean shouldShowOnboardingView) {
+    if (shouldShowOnboardingView) {
+      setSection(SECTION_ONBOARDING_VIEW, Collections.singletonList(null));
+    } else {
+      setSection(SECTION_ONBOARDING_VIEW, Collections.emptyList());
+    }
+
     notifyDataSetChanged();
   }
 

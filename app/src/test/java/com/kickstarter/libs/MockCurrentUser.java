@@ -9,7 +9,7 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 
 public class MockCurrentUser extends CurrentUserType {
-  private final BehaviorSubject<User> user = BehaviorSubject.create();
+  private final BehaviorSubject<User> user = BehaviorSubject.create((User) null);
   private @Nullable String accessToken;
 
   public MockCurrentUser() {

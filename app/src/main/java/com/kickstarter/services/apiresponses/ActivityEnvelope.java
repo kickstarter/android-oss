@@ -26,6 +26,40 @@ public abstract class ActivityEnvelope implements Parcelable {
     public abstract static class ApiEnvelope implements Parcelable {
       public abstract String moreActivities();
       public abstract @Nullable String newerActivities();
+
+      @AutoParcel.Builder
+      public abstract static class Builder {
+        public abstract Builder moreActivities(String __);
+        public abstract Builder newerActivities(String __);
+        public abstract ApiEnvelope build();
+      }
+
+      public static Builder builder() {
+        return new AutoParcel_ActivityEnvelope_UrlsEnvelope_ApiEnvelope.Builder();
+      }
+    }
+
+    @AutoParcel.Builder
+    public abstract static class Builder {
+      public abstract Builder api(ApiEnvelope __);
+      public abstract UrlsEnvelope build();
+    }
+
+    public static Builder builder() {
+      return new AutoParcel_ActivityEnvelope_UrlsEnvelope.Builder();
     }
   }
+
+  @AutoParcel.Builder
+  public abstract static class Builder {
+    public abstract Builder activities(List<Activity> __);
+    public abstract Builder urls(UrlsEnvelope __);
+    public abstract ActivityEnvelope build();
+  }
+
+  public static Builder builder() {
+    return new AutoParcel_ActivityEnvelope.Builder();
+  }
+
+  public abstract Builder toBuilder();
 }

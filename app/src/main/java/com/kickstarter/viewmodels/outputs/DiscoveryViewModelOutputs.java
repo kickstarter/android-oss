@@ -2,9 +2,6 @@ package com.kickstarter.viewmodels.outputs;
 
 import android.util.Pair;
 
-import com.kickstarter.libs.RefTag;
-import com.kickstarter.models.Activity;
-import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
 
@@ -13,55 +10,36 @@ import java.util.List;
 import rx.Observable;
 
 public interface DiscoveryViewModelOutputs {
-  Observable<NavigationDrawerData> navigationDrawerData();
-
   /**
    * Emits a boolean that determines if the drawer is open or not.
    */
   Observable<Boolean> drawerIsOpen();
 
   /**
-   * Emits a list of projects to display
+   * Emits a booelan that determines if the sort tab layout should be expanded/collapsed.
    */
-  Observable<List<Project>> projects();
+  Observable<Boolean> expandSortTabLayout();
 
   /**
-   * Emits discovery params when an update to projects and related view elements is needed
+   * Emits when params change so that the tool bar can adjust accordingly.
    */
-  Observable<DiscoveryParams> selectedParams();
+  Observable<DiscoveryParams> updateToolbarWithParams();
 
   /**
-   * Emits an activity for the activity sampler view
+   * Emits when the params of a particular page should be updated. The page will be responsible for
+   * taking those params and creating paginating projects from it.
    */
-  Observable<Activity> activity();
+  Observable<Pair<DiscoveryParams, Integer>> updateParamsForPage();
+
+  Observable<NavigationDrawerData> navigationDrawerData();
 
   /**
-   * Emtis a boolean to determine if onboarding should be shown
+   * Emits a list of pages that should be cleared of all their content.
    */
-  Observable<Boolean> shouldShowOnboarding();
+  Observable<List<Integer>> clearPages();
 
-  /**
-   * Emits a pair containing a project and a ref tag when a project should be shown
-   */
-  Observable<Pair<Project, RefTag>> showProject();
-
-  /**
-   * Emits when the login tout activity should be shown
-   */
   Observable<Void> showLoginTout();
-
-  /**
-   * Emits when the activity feed should be shown
-   */
-  Observable<Void> showActivityFeed();
-
-  /**
-   * Emits an activity when an update should be shown
-   */
-  Observable<Activity> showActivityUpdate();
-
   Observable<Void> showProfile();
   Observable<Void> showSettings();
-
   Observable<Void> showInternalTools();
 }

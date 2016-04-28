@@ -682,7 +682,7 @@ Si tienes un momento, ¿te importaría calificar tu experiencia?\n
   <string name="rewards_info_backer_count_backers_zero" formatted="false">0 patrocinadores</string>
   <string name="rewards_info_estimated_delivery" formatted="false">Entrega aproximada</string>
   <string name="rewards_info_limited_rewards_remaining_left_of_reward_limit" formatted="false">Limitado (quedan %{rewards_remaining} de %{reward_limit})</string>
-  <string name="rewards_info_shipping" formatted="false">Shipping</string>
+  <string name="rewards_info_shipping" formatted="false">Envío</string>
   <string name="rewards_info_shipping_destinations" formatted="false">Destinos de envío</string>
   <string name="rewards_select_label_select" formatted="false">Seleccionar</string>
   <string name="rewards_selected_label_you_selected" formatted="false">Seleccionaste</string>

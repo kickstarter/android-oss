@@ -3504,7 +3504,7 @@
           "limited_rewards_remaining_left_of_reward_limit": "Limitado (quedan %{rewards_remaining} de %{reward_limit})",
           "all_gone": "¡Recompensas agotadas!",
           "shipping_destinations": "Destinos de envío",
-          "shipping": "Shipping",
+          "shipping": "Envío",
           "estimated_delivery": "Entrega aproximada"
         }
       },
@@ -6799,10 +6799,10 @@
   ],
   "ab_experiments": {
     "discover_sorts_vs_subcategories": "experimental",
-    "native_ios_aa": "control",
+    "native_ios_aa": "experimental",
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
-    "native_iphone_horiz_vs_vert": "control",
+    "native_iphone_horiz_vs_vert": "experimental",
     "thanks_cards_money": "control"
   },
   "stripe": {

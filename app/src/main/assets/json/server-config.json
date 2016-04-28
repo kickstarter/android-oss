@@ -6667,7 +6667,7 @@
     "redshift": true,
     "advanced_discovery_es": true,
     "facebook_ajax_requests": true,
-    "exacttarget_user_subscription": true,
+    "exacttarget_backing_project": true,
     "ios_crashlytics": true,
     "ios_koala": true,
     "ios_i18n": true,
@@ -6802,7 +6802,7 @@
     "native_ios_aa": "experimental",
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
-    "native_iphone_horiz_vs_vert": "experimental",
+    "native_iphone_horiz_vs_vert": "control",
     "thanks_cards_money": "control"
   },
   "stripe": {

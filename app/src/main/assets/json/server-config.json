@@ -6799,7 +6799,7 @@
   ],
   "ab_experiments": {
     "discover_sorts_vs_subcategories": "experimental",
-    "native_ios_aa": "experimental",
+    "native_ios_aa": "control",
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
     "native_iphone_horiz_vs_vert": "control",

@@ -202,17 +202,11 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
       .mergeWith(topFilterRowClick)
       .map(NavigationDrawerData.Section.Row::params);
 
-    // Keep current params upon successful login.
-    final Observable<DiscoveryParams> paramsAfterLogin = activityResult()
-      .filter(DiscoveryViewModel::isSuccessfulLogin)
-      .switchMap(__ -> updateParamsForPage.map(pp -> pp.first));
-
     // Merge various param data sources to one true selected params value.
     final Observable<DiscoveryParams> params = Observable.merge(
       paramsFromInitialIntent,
       paramsFromIntent,
-      drawerParamsClicked,
-      paramsAfterLogin
+      drawerParamsClicked
     );
 
     // Emit only the first event in which the view pager creates a page--we only care about the first creation event

@@ -6,10 +6,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 
-import com.kickstarter.libs.CurrentConfig;
+import com.kickstarter.libs.ActivityViewModel;
+import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.I18nUtils;
 import com.kickstarter.services.ApiClientType;
@@ -29,7 +29,7 @@ public class FacebookConfirmationViewModel extends ActivityViewModel<FacebookCon
   FacebookConfirmationViewModelInputs, FacebookConfirmationViewModelOutputs, FacebookConfirmationViewModelErrors {
   private final ApiClientType client;
   private final CurrentUserType currentUser;
-  private final CurrentConfig currentConfig;
+  private final CurrentConfigType currentConfig;
 
   // INPUTS
   private final PublishSubject<Void> createNewAccountClick = PublishSubject.create();

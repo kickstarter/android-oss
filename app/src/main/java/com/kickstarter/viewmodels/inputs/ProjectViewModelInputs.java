@@ -1,9 +1,5 @@
 package com.kickstarter.viewmodels.inputs;
 
-import android.support.annotation.NonNull;
-
-import com.kickstarter.models.Reward;
-
 public interface ProjectViewModelInputs {
   /**
    * Call when the star button has been clicked.
@@ -19,5 +15,4 @@ public interface ProjectViewModelInputs {
   void updatesClicked();
   void playVideoClicked();
   void viewPledgeClicked();
-  void rewardClicked(final @NonNull Reward reward);
 }

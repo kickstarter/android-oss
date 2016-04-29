@@ -7,14 +7,13 @@ import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Config;
-import com.kickstarter.libs.CurrentConfig;
+import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.RefTagUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.models.Reward;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
@@ -22,7 +21,6 @@ import com.kickstarter.ui.activities.ProjectActivity;
 import com.kickstarter.ui.adapters.ProjectAdapter;
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper;
 import com.kickstarter.ui.viewholders.ProjectViewHolder;
-import com.kickstarter.ui.viewholders.RewardViewHolder;
 import com.kickstarter.viewmodels.inputs.ProjectViewModelInputs;
 import com.kickstarter.viewmodels.outputs.ProjectViewModelOutputs;
 
@@ -37,7 +35,7 @@ public final class ProjectViewModel extends ActivityViewModel<ProjectActivity> i
   private final ApiClientType client;
   private final CurrentUserType currentUser;
   private final CookieManager cookieManager;
-  private final CurrentConfig currentConfig;
+  private final CurrentConfigType currentConfig;
   private final SharedPreferences sharedPreferences;
 
   /**
@@ -109,10 +107,6 @@ public final class ProjectViewModel extends ActivityViewModel<ProjectActivity> i
   public void starClicked() {
     this.starClicked.onNext(null);
   }
-  private final PublishSubject<Reward> rewardClicked = PublishSubject.create();
-  public void rewardClicked(final @NonNull Reward reward) {
-    this.rewardClicked.onNext(reward);
-  }
   public final ProjectViewModelInputs inputs = this;
 
   // OUTPUTS
@@ -146,9 +140,6 @@ public final class ProjectViewModel extends ActivityViewModel<ProjectActivity> i
   }
   public Observable<Project> startViewPledge() {
     return this.project.compose(Transformers.takeWhen(this.viewPledgeClicked));
-  }
-  public Observable<Pair<Project, Reward>> startCheckoutWithReward() {
-    return this.project.compose(Transformers.takePairWhen(this.rewardClicked));
   }
   private final PublishSubject<Void> showStarredPrompt = PublishSubject.create();
   public Observable<Void> showStarredPrompt() {
@@ -287,10 +278,6 @@ public final class ProjectViewModel extends ActivityViewModel<ProjectActivity> i
 
   public void projectViewHolderUpdatesClicked(final @NonNull ProjectViewHolder viewHolder) {
     this.updatesClicked();
-  }
-
-  public void rewardViewHolderClicked(final @NonNull RewardViewHolder viewHolder, final @NonNull Reward reward) {
-    this.rewardClicked(reward);
   }
 
   public Observable<Project> starProject(final @NonNull Project project) {

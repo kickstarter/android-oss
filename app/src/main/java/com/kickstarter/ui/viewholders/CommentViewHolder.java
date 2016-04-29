@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
-import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.transformations.CircleTransformation;
 import com.kickstarter.libs.utils.CommentUtils;
@@ -36,7 +36,7 @@ public final class CommentViewHolder extends KSViewHolder {
   public @Bind(R.id.post_date) TextView postDateTextView;
   public @Bind(R.id.comment_body) TextView commentBodyTextView;
 
-  protected @Inject CurrentUser currentUser;
+  protected @Inject CurrentUserType currentUser;
   protected @Inject KSString ksString;
 
   public CommentViewHolder(final @NonNull View view) {

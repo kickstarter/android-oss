@@ -11,9 +11,9 @@ import java.math.RoundingMode;
 import auto.parcel.AutoParcel;
 
 public final class KSCurrency {
-  private final CurrentConfig currentConfig;
+  private final CurrentConfigType currentConfig;
 
-  public KSCurrency(final @NonNull CurrentConfig currentConfig) {
+  public KSCurrency(final @NonNull CurrentConfigType currentConfig) {
     this.currentConfig = currentConfig;
   }
 

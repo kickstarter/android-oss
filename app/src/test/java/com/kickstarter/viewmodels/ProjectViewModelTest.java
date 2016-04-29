@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels;
 import android.content.Intent;
 
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.factories.ConfigFactory;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.CurrentUserType;
@@ -19,7 +20,9 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testProjectViewModel_EmitsProjectWithStandardSetUp() {
-    final ProjectViewModel vm = new ProjectViewModel(environment());
+    final Environment environment = environment();
+    environment.currentConfig().config(ConfigFactory.config());
+    final ProjectViewModel vm = new ProjectViewModel(environment);
 
     final TestSubscriber<Project> projectTest = new TestSubscriber<>();
     vm.outputs.projectAndUserCountry().map(pc -> pc.first).subscribe(projectTest);
@@ -39,7 +42,8 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     final Environment environment = environment().toBuilder()
       .currentUser(currentUser)
       .build();
-    
+    environment.currentConfig().config(ConfigFactory.config());
+
     final ProjectViewModel vm = new ProjectViewModel(environment);
 
     final TestSubscriber<Void> loginToutTest = new TestSubscriber<>();
@@ -86,6 +90,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     final Environment environment = environment().toBuilder()
       .currentUser(currentUser)
       .build();
+    environment.currentConfig().config(ConfigFactory.config());
 
     final ProjectViewModel vm = new ProjectViewModel(environment);
 
@@ -115,6 +120,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     final Environment environment = environment().toBuilder()
       .currentUser(currentUser)
       .build();
+    environment.currentConfig().config(ConfigFactory.config());
 
     final ProjectViewModel vm = new ProjectViewModel(environment);
 

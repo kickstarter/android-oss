@@ -2,10 +2,10 @@ package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
 
-import com.kickstarter.libs.CurrentConfig;
+import com.kickstarter.libs.ActivityViewModel;
+import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.I18nUtils;
 import com.kickstarter.libs.utils.StringUtils;
@@ -25,7 +25,7 @@ public final class SignupViewModel extends ActivityViewModel<SignupActivity> imp
   SignupViewModelErrors {
   private final ApiClientType client;
   private final CurrentUserType currentUser;
-  private final CurrentConfig currentConfig;
+  private final CurrentConfigType currentConfig;
 
   protected final static class SignupData {
     final @NonNull String fullName;

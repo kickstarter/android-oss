@@ -12,15 +12,15 @@ import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.ProjectViewHolder;
 import com.kickstarter.ui.viewholders.RewardViewHolder;
 
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import rx.Observable;
 
 public final class ProjectAdapter extends KSAdapter {
   private final Delegate delegate;
 
-  public interface Delegate extends ProjectViewHolder.Delegate, RewardViewHolder.Delegate {}
+  public interface Delegate extends ProjectViewHolder.Delegate {}
 
   public ProjectAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;
@@ -41,11 +41,12 @@ public final class ProjectAdapter extends KSAdapter {
     sections().clear();
     sections().add(Collections.singletonList(Pair.create(project, configCountry)));
 
-    if (project.hasRewards()) {
-      addSection(Observable.from(project.rewards())
-          .filter(Reward::isReward)
-          .map(reward -> Arrays.asList(project, reward, configCountry))
-          .toList().toBlocking().single()
+    final List<Reward> rewards = project.rewards();
+    if (rewards != null) {
+      addSection(Observable.from(rewards)
+        .filter(Reward::isReward)
+        .map(reward -> Pair.create(project, reward))
+        .toList().toBlocking().single()
       );
     }
     notifyDataSetChanged();
@@ -55,6 +56,6 @@ public final class ProjectAdapter extends KSAdapter {
     if (layout == R.layout.project_main_layout) {
       return new ProjectViewHolder(view, delegate);
     }
-    return new RewardViewHolder(view, delegate);
+    return new RewardViewHolder(view);
   }
 }

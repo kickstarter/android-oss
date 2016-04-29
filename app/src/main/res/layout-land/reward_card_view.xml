@@ -145,7 +145,7 @@
           android:layout_height="wrap_content">
 
           <LinearLayout
-            android:id="@+id/estimate"
+            android:id="@+id/estimated_section"
             android:layout_marginRight="@dimen/grid_4"
             android:layout_marginEnd="@dimen/grid_4"
             android:orientation="vertical"
@@ -169,6 +169,7 @@
           </LinearLayout>
 
           <LinearLayout
+            android:id="@+id/shipping_section"
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">

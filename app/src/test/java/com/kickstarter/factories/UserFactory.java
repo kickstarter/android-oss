@@ -8,9 +8,8 @@ public final class UserFactory {
   public static User user() {
     return User.builder()
       .avatar(AvatarFactory.avatar())
-      .id(1)
-      .name("Sammy Sosa")
       .id(1234567890)
+      .name("Sammy Sosa")
       .location(LocationFactory.unitedStates())
       .build();
   }

@@ -9,7 +9,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
-import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.services.ApiClientType;
@@ -22,7 +22,7 @@ import timber.log.Timber;
 
 public class RegisterService extends IntentService {
   protected @Inject ApiClientType apiClient;
-  protected @Inject CurrentUser currentUser;
+  protected @Inject CurrentUserType currentUser;
 
   public RegisterService() {
     super("RegisterService");

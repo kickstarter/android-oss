@@ -20,7 +20,6 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.ProjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
-import com.kickstarter.models.Reward;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ProjectAdapter;
 import com.kickstarter.ui.data.LoginReason;
@@ -116,12 +115,6 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::startCheckoutActivity);
-
-    this.viewModel.outputs.startCheckoutWithReward()
-      .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(
-        projectAndReward -> this.startRewardSelectedCheckout(projectAndReward.first, projectAndReward.second));
 
     this.viewModel.outputs.startManagePledge()
       .compose(bindToLifecycle())
@@ -220,14 +213,6 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   private void startCommentsActivity(final @NonNull Project project) {
     final Intent intent = new Intent(this, CommentFeedActivity.class)
       .putExtra(IntentKey.PROJECT, project);
-    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
-  }
-
-  private void startRewardSelectedCheckout(final @NonNull Project project, final @NonNull Reward reward) {
-    final Intent intent = new Intent(this, CheckoutActivity.class)
-      .putExtra(IntentKey.PROJECT, project)
-      .putExtra(IntentKey.TOOLBAR_TITLE, projectBackButtonString)
-      .putExtra(IntentKey.URL, project.rewardSelectedUrl(reward));
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 

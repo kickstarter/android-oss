@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.kickstarter.libs.AndroidPayCapability;
 import com.kickstarter.libs.Build;
-import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.InternalToolsType;
 import com.kickstarter.services.KSUri;
 
@@ -21,13 +21,13 @@ import static com.kickstarter.libs.utils.ObjectUtils.isNotNull;
  * Interceptor for web requests to Kickstarter, not API requests. Used by web views and the web client.
  */
 public final class WebRequestInterceptor implements Interceptor {
-  private final @NonNull CurrentUser currentUser;
+  private final @NonNull CurrentUserType currentUser;
   private final @NonNull String endpoint;
   private final @NonNull InternalToolsType internalTools;
   private final @NonNull Build build;
   private final @NonNull AndroidPayCapability androidPayCapability;
 
-  public WebRequestInterceptor(final @NonNull CurrentUser currentUser, final @NonNull String endpoint,
+  public WebRequestInterceptor(final @NonNull CurrentUserType currentUser, final @NonNull String endpoint,
     final InternalToolsType internalTools, final @NonNull Build build,
     final @NonNull AndroidPayCapability androidPayCapability) {
     this.currentUser = currentUser;

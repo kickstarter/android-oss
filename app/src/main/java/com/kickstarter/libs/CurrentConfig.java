@@ -16,7 +16,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
-public class CurrentConfig {
+public final class CurrentConfig implements CurrentConfigType {
   private final static String ASSET_PATH = "json/server-config.json";
 
   private final BehaviorSubject<Config> config = BehaviorSubject.create();
@@ -67,12 +67,8 @@ public class CurrentConfig {
     return this.config.getValue();
   }
 
-  /**
-   * Call when a fresh config has been loaded from the API.
-   * @param freshConfig The fresh config object.
-   */
-  public void refresh(final @NonNull Config freshConfig) {
-    this.config.onNext(freshConfig);
+  public void config(final @NonNull Config config) {
+    this.config.onNext(config);
   }
 
   /**

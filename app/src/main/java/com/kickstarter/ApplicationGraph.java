@@ -1,6 +1,5 @@
 package com.kickstarter;
 
-import com.kickstarter.libs.CurrentUser;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.Koala;
@@ -22,13 +21,11 @@ import com.kickstarter.ui.toolbars.DiscoveryToolbar;
 import com.kickstarter.ui.viewholders.ActivitySampleFriendBackingViewHolder;
 import com.kickstarter.ui.viewholders.ActivitySampleFriendFollowViewHolder;
 import com.kickstarter.ui.viewholders.ActivitySampleProjectViewHolder;
-import com.kickstarter.ui.viewholders.ThanksCategoryViewHolder;
 import com.kickstarter.ui.viewholders.CommentViewHolder;
 import com.kickstarter.ui.viewholders.EmptyActivityFeedViewHolder;
 import com.kickstarter.ui.viewholders.EmptyCommentFeedViewHolder;
 import com.kickstarter.ui.viewholders.FriendBackingViewHolder;
 import com.kickstarter.ui.viewholders.ProfileCardViewHolder;
-import com.kickstarter.ui.viewholders.ThanksProjectViewHolder;
 import com.kickstarter.ui.viewholders.ProjectCardViewHolder;
 import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
 import com.kickstarter.ui.viewholders.ProjectSearchResultViewHolder;
@@ -37,6 +34,8 @@ import com.kickstarter.ui.viewholders.ProjectStateChangedViewHolder;
 import com.kickstarter.ui.viewholders.ProjectUpdateViewHolder;
 import com.kickstarter.ui.viewholders.ProjectViewHolder;
 import com.kickstarter.ui.viewholders.RewardViewHolder;
+import com.kickstarter.ui.viewholders.ThanksCategoryViewHolder;
+import com.kickstarter.ui.viewholders.ThanksProjectViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.ChildFilterViewHolder;
 import com.kickstarter.ui.views.AppRatingDialog;
 import com.kickstarter.ui.views.IconTextView;
@@ -54,7 +53,6 @@ public interface ApplicationGraph {
   void inject(CheckoutActivity __);
   void inject(CommentFeedActivity __);
   void inject(CommentViewHolder __);
-  void inject(CurrentUser __);
   void inject(Koala __);
   void inject(DiscoveryActivity __);
   void inject(DiscoveryToolbar __);

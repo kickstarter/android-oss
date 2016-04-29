@@ -19,7 +19,9 @@ import com.kickstarter.libs.AutoParcelAdapterFactory;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.CurrentConfig;
+import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.DateTimeTypeConverter;
 import com.kickstarter.libs.DeviceRegistrar;
 import com.kickstarter.libs.DeviceRegistrarType;
@@ -94,12 +96,14 @@ public final class ApplicationModule {
     final @NonNull ApiClientType apiClient,
     final @NonNull BuildCheck buildCheck,
     final @NonNull CookieManager cookieManager,
-    final @NonNull CurrentConfig currentConfig,
-    final @NonNull CurrentUser currentUser,
+    final @NonNull CurrentConfigType currentConfig,
+    final @NonNull CurrentUserType currentUser,
     final @NonNull Gson gson,
     final @NonNull @AppRatingPreference BooleanPreferenceType hasSeenAppRatingPreference,
     final @NonNull @GamesNewsletterPreference BooleanPreferenceType hasSeenGamesNewsletterPreference,
     final @NonNull Koala koala,
+    final @NonNull KSCurrency ksCurrency,
+    final @NonNull KSString ksString,
     final @NonNull PlayServicesCapability playServicesCapability,
     final @NonNull Scheduler scheduler,
     final @NonNull SharedPreferences sharedPreferences,
@@ -117,6 +121,8 @@ public final class ApplicationModule {
       .hasSeenAppRatingPreference(hasSeenAppRatingPreference)
       .hasSeenGamesNewsletterPreference(hasSeenGamesNewsletterPreference)
       .koala(koala)
+      .ksCurrency(ksCurrency)
+      .ksString(ksString)
       .playServicesCapability(playServicesCapability)
       .scheduler(scheduler)
       .sharedPreferences(sharedPreferences)
@@ -164,7 +170,7 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   @NonNull ApiRequestInterceptor provideApiRequestInterceptor(final @NonNull String clientId,
-    final @NonNull CurrentUser currentUser, final @NonNull ApiEndpoint endpoint) {
+    final @NonNull CurrentUserType currentUser, final @NonNull ApiEndpoint endpoint) {
     return new ApiRequestInterceptor(clientId, currentUser, endpoint.url());
   }
 
@@ -214,7 +220,7 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
-  @NonNull WebRequestInterceptor provideWebRequestInterceptor(final @NonNull CurrentUser currentUser,
+  @NonNull WebRequestInterceptor provideWebRequestInterceptor(final @NonNull CurrentUserType currentUser,
     @NonNull @WebEndpoint final String endpoint, final @NonNull InternalToolsType internalTools, final @NonNull Build build, final @NonNull AndroidPayCapability androidPayCapability) {
     return new WebRequestInterceptor(currentUser, endpoint, internalTools, build, androidPayCapability);
   }
@@ -284,7 +290,7 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
-  Koala provideKoala(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUser currentUser,
+  Koala provideKoala(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUserType currentUser,
     final @NonNull AndroidPayCapability androidPayCapability) {
     return new Koala(new KoalaTrackingClient(context, currentUser, androidPayCapability));
   }
@@ -316,7 +322,7 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
-  CurrentConfig provideCurrentConfig(final @NonNull AssetManager assetManager,
+  CurrentConfigType provideCurrentConfig(final @NonNull AssetManager assetManager,
     final @NonNull Gson gson,
     final @ConfigPreference @NonNull StringPreferenceType configPreference) {
     return new CurrentConfig(assetManager, gson, configPreference);
@@ -336,7 +342,7 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
-  CurrentUser provideCurrentUser(@AccessTokenPreference final @NonNull StringPreferenceType accessTokenPreference,
+  CurrentUserType provideCurrentUser(@AccessTokenPreference final @NonNull StringPreferenceType accessTokenPreference,
     final @NonNull DeviceRegistrarType deviceRegistrar,
     final @NonNull Gson gson,
     @NonNull @UserPreference final StringPreferenceType userPreference) {
@@ -384,7 +390,7 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
-  KSCurrency provideKSCurrency(final @NonNull CurrentConfig currentConfig) {
+  KSCurrency provideKSCurrency(final @NonNull CurrentConfigType currentConfig) {
     return new KSCurrency(currentConfig);
   }
 
@@ -402,7 +408,7 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
-  Logout provideLogout(final @NonNull CookieManager cookieManager, final @NonNull CurrentUser currentUser) {
+  Logout provideLogout(final @NonNull CookieManager cookieManager, final @NonNull CurrentUserType currentUser) {
     return new Logout(cookieManager, currentUser);
   }
 

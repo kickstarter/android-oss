@@ -10,7 +10,7 @@ import android.support.annotation.Nullable;
 
 import com.facebook.appevents.AppEventsLogger;
 import com.kickstarter.KSApplication;
-import com.kickstarter.libs.CurrentConfig;
+import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.Koala;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.rx.transformers.Transformers;
@@ -22,7 +22,7 @@ import javax.inject.Inject;
 public final class ApplicationLifecycleUtil implements Application.ActivityLifecycleCallbacks, ComponentCallbacks2 {
   protected @Inject Koala koala;
   protected @Inject ApiClientType client;
-  protected @Inject CurrentConfig config;
+  protected @Inject CurrentConfigType config;
   protected @Inject Logout logout;
 
   private final KSApplication application;
@@ -53,7 +53,7 @@ public final class ApplicationLifecycleUtil implements Application.ActivityLifec
       this.client.config()
         .compose(Transformers.pipeApiErrorsTo(this::handleConfigApiError))
         .compose(Transformers.neverError())
-        .subscribe(this.config::refresh);
+        .subscribe(this.config::config);
 
       isInBackground = false;
     }

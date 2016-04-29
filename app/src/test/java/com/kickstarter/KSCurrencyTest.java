@@ -1,12 +1,14 @@
 package com.kickstarter;
 
+import com.kickstarter.factories.ConfigFactory;
 import com.kickstarter.factories.ProjectFactory;
+import com.kickstarter.libs.Config;
+import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.KSCurrency;
+import com.kickstarter.libs.MockCurrentConfig;
 import com.kickstarter.models.Project;
 
 import junit.framework.TestCase;
-
-import static com.kickstarter.TestUtils.createKSCurrency;
 
 public class KSCurrencyTest extends TestCase {
   public void testFormatCurrency_withUserInUS() {
@@ -59,5 +61,16 @@ public class KSCurrencyTest extends TestCase {
     assertEquals("$100", currency.format(100.5f, project));
     assertEquals("$101", currency.format(101.5f, project));
     assertEquals("$100", currency.format(100.9f, project));
+  }
+
+  private static KSCurrency createKSCurrency(final String countryCode) {
+    final Config config = ConfigFactory.config().toBuilder()
+      .countryCode(countryCode)
+      .build();
+
+    final CurrentConfigType currentConfig = new MockCurrentConfig();
+    currentConfig.config(config);
+
+    return new KSCurrency(currentConfig);
   }
 }

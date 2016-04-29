@@ -15,7 +15,7 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.Build;
-import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
@@ -76,7 +76,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
   protected @BindString(R.string.profile_settings_accessibility_unsubscribe_mobile_notifications) String unsubscribeMobileString;
   protected @BindString(R.string.profile_settings_accessibility_unsubscribe_notifications) String unsubscribeString;
 
-  @Inject CurrentUser currentUser;
+  @Inject CurrentUserType currentUser;
   @Inject KSString ksString;
   @Inject Logout logout;
   @Inject Build build;

@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ApiCapabilities;
-import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.StatusBarUtils;
@@ -35,7 +35,7 @@ public final class DiscoveryToolbar extends KSToolbar {
   @Bind(R.id.discovery_status_bar) View discoveryStatusBar;
   @Bind(R.id.menu_button) TextView menuButton;
   @Bind(R.id.search_button) TextView searchButton;
-  @Inject CurrentUser currentUser;
+  @Inject CurrentUserType currentUser;
   @Inject Logout logout;
 
   public DiscoveryToolbar(final @NonNull Context context) {

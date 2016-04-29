@@ -20,7 +20,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 public final class KoalaTrackingClient extends TrackingClientType {
-  @Inject CurrentUser currentUser;
+  @Inject CurrentUserType currentUser;
   @Inject AndroidPayCapability androidPayCapability;
   @Nullable private User loggedInUser;
   private final @NonNull Context context;
@@ -32,7 +32,7 @@ public final class KoalaTrackingClient extends TrackingClientType {
 
   public KoalaTrackingClient(
     final @ApplicationContext @NonNull Context context,
-    final @NonNull CurrentUser currentUser,
+    final @NonNull CurrentUserType currentUser,
     final @NonNull AndroidPayCapability androidPayCapability) {
 
     this.context = context;

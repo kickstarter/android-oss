@@ -1,6 +1,7 @@
 package com.kickstarter.libs.utils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 
@@ -12,10 +13,15 @@ public final class TransitionUtils {
   /**
    * Explicitly set a transition after starting an activity.
    *
-   * @param activity The activity that started the new intent.
+   * @param context The activity that started the new intent.
    * @param transition A pair of animation ids, first is the enter animation, second is the exit animation.
    */
-  public static void transition(final @NonNull Activity activity, final @NonNull Pair<Integer, Integer> transition) {
+  public static void transition(final @NonNull Context context, final @NonNull Pair<Integer, Integer> transition) {
+    if (!(context instanceof Activity)) {
+      return;
+    }
+
+    final Activity activity = (Activity) context;
     activity.overridePendingTransition(transition.first, transition.second);
   }
 

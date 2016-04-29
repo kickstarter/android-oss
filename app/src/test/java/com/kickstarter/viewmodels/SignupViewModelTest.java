@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.ApiExceptionFactory;
+import com.kickstarter.factories.ConfigFactory;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.MockApiClient;
@@ -19,7 +20,9 @@ public class SignupViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testSignupViewModel_FormValidation() {
-    final SignupViewModel vm = new SignupViewModel(environment());
+    final Environment environment = environment();
+    environment.currentConfig().config(ConfigFactory.config());
+    final SignupViewModel vm = new SignupViewModel(environment);
 
     final TestSubscriber<Boolean> formIsValidTest = new TestSubscriber<>();
     vm.outputs.formIsValid().subscribe(formIsValidTest);

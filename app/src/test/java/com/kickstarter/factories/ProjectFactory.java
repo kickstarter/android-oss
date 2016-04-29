@@ -2,7 +2,9 @@ package com.kickstarter.factories;
 
 import android.support.annotation.NonNull;
 
+import com.kickstarter.models.Backing;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.Reward;
 import com.kickstarter.models.User;
 
 import org.joda.time.DateTime;
@@ -52,8 +54,26 @@ public final class ProjectFactory {
   }
 
   public static @NonNull Project backedProject() {
-    return project()
+    final Project project = project();
+
+    final Reward reward = RewardFactory.reward();
+
+    final Backing backing = Backing.builder()
+      .amount(10.0f)
+      .backerId(1)
+      .id(1)
+      .sequence(1)
+      .rewardId(reward.id())
+      .pledgedAt(DateTime.now())
+      .projectCountry(project.country())
+      .projectId(project.id())
+      .shippingAmount(0.0f)
+      .status(Backing.STATUS_PLEDGED)
+      .build();
+
+    return project
       .toBuilder()
+      .backing(backing)
       .isBacking(true)
       .build();
   }

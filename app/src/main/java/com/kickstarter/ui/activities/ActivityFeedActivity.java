@@ -12,7 +12,7 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ActivityRequestCodes;
 import com.kickstarter.libs.BaseActivity;
-import com.kickstarter.libs.CurrentUser;
+import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.SwipeRefresher;
@@ -40,7 +40,7 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
   public @Bind(R.id.recycler_view) RecyclerView recyclerView;
   protected @Bind(R.id.activity_feed_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
 
-  @Inject CurrentUser currentUser;
+  @Inject CurrentUserType currentUser;
 
   private RecyclerViewPaginator recyclerViewPaginator;
   private SwipeRefresher swipeRefresher;

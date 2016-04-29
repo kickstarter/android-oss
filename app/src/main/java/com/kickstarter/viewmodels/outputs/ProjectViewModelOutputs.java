@@ -3,7 +3,6 @@ package com.kickstarter.viewmodels.outputs;
 import android.util.Pair;
 
 import com.kickstarter.models.Project;
-import com.kickstarter.models.Reward;
 
 import rx.Observable;
 
@@ -33,6 +32,4 @@ public interface ProjectViewModelOutputs {
   Observable<Project> startCheckout();
   Observable<Project> startManagePledge();
   Observable<Project> startViewPledge();
-  Observable<Pair<Project, Reward>> startCheckoutWithReward();
-
 }

@@ -11,12 +11,28 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.IntentKey;
+import com.kickstarter.ui.adapters.data.CommentFeedData;
 
 import org.junit.Test;
 
 import rx.observers.TestSubscriber;
 
 public class CommentFeedViewModelTest extends KSRobolectricTestCase {
+
+  @Test
+  public void testCommentFeedViewModel_commentsEmit() {
+    final CommentFeedViewModel vm = new CommentFeedViewModel(environment());
+
+    final TestSubscriber<CommentFeedData> commentFeedData = new TestSubscriber<>();
+    vm.outputs.commentFeedData().subscribe(commentFeedData);
+
+    // Start the view model with a project.
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()));
+    koalaTest.assertValues("Project Comment View");
+
+    // Comments should emit.
+    commentFeedData.assertValueCount(1);
+  }
 
   @Test
   public void testCommentFeedViewModel_postCommentFlow() {

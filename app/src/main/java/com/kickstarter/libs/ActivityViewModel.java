@@ -27,7 +27,6 @@ public class ActivityViewModel<ViewType extends ActivityLifecycleType> {
 
   private final PublishSubject<ActivityResult> activityResult = PublishSubject.create();
 
-  // TODO: Justify BehaviorSubject vs PublishSubject
   private final PublishSubject<Intent> intent = PublishSubject.create();
   protected final Koala koala;
 

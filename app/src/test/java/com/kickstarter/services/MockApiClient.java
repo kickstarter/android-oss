@@ -17,8 +17,8 @@ import com.kickstarter.models.Category;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Empty;
 import com.kickstarter.models.Location;
-import com.kickstarter.models.ProjectNotification;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.ProjectNotification;
 import com.kickstarter.models.Update;
 import com.kickstarter.models.User;
 import com.kickstarter.services.apiresponses.AccessTokenEnvelope;
@@ -139,7 +139,17 @@ public class MockApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<CommentsEnvelope> fetchProjectComments(final @NonNull Project project) {
-    return Observable.empty();
+    return Observable.just(
+      CommentsEnvelope.builder()
+        .urls(CommentsEnvelope.UrlsEnvelope.builder()
+          .api(CommentsEnvelope.UrlsEnvelope.ApiEnvelope.builder()
+            .moreComments("more comments please")
+            .newerComments("newer comments please")
+            .build())
+          .build())
+        .comments(Collections.singletonList(CommentFactory.comment()))
+        .build()
+    );
   }
 
   @Override

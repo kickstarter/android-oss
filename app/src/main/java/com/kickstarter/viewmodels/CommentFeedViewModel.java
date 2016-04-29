@@ -3,10 +3,10 @@ package com.kickstarter.viewmodels;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 
+import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Comment;
@@ -54,7 +54,7 @@ public final class CommentFeedViewModel extends ActivityViewModel<CommentFeedAct
   public void postCommentClicked() {
     postCommentClicked.onNext(null);
   }
-  private final BehaviorSubject<Void> refresh = BehaviorSubject.create((Void) null);
+  private final PublishSubject<Void> refresh = PublishSubject.create();
   public void refresh() {
     refresh.onNext(null);
   }
@@ -136,13 +136,18 @@ public final class CommentFeedViewModel extends ActivityViewModel<CommentFeedAct
       .mergeWith(initialProject)
       .share();
 
-    final ApiPaginator<Comment, CommentsEnvelope, Void> paginator =
-      ApiPaginator.<Comment, CommentsEnvelope, Void>builder()
+    final Observable<Project> startOverWith = Observable.merge(
+      initialProject.take(1),
+      initialProject.compose(Transformers.takeWhen(refresh))
+      );
+
+    final ApiPaginator<Comment, CommentsEnvelope, Project> paginator =
+      ApiPaginator.<Comment, CommentsEnvelope, Project>builder()
         .nextPage(nextPage)
-        .startOverWith(refresh)
+        .startOverWith(startOverWith)
         .envelopeToListOfData(CommentsEnvelope::comments)
         .envelopeToMoreUrl(env -> env.urls().api().moreComments())
-        .loadWithParams(__ -> initialProject.take(1).flatMap(client::fetchProjectComments))
+        .loadWithParams(client::fetchProjectComments)
         .loadWithPaginationPath(client::fetchProjectComments)
         .build();
 

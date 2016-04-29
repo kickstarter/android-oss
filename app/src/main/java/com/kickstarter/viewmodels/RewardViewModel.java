@@ -147,17 +147,15 @@ public final class RewardViewModel extends ActivityViewModel<RewardViewHolder> i
   }
 
   private static boolean isClickable(final @NonNull Project project, final @NonNull Reward reward) {
-    // Can't select a reward when the project isn't live.
     if (!project.isLive()) {
       return false;
     }
 
-    // Can't select a reward when the limit has been reached and the user didn't back it.
-    if (RewardUtils.isLimitReached(reward) && !project.isBacking()) {
+    if (project.isBacking()) {
       return false;
     }
 
-    return true;
+    return !RewardUtils.isLimitReached(reward);
   }
 
   private final PublishSubject<Pair<Project, Reward>> projectAndReward = PublishSubject.create();

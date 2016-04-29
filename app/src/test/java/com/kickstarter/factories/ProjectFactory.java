@@ -63,6 +63,7 @@ public final class ProjectFactory {
       .backerId(1)
       .id(1)
       .sequence(1)
+      .reward(reward)
       .rewardId(reward.id())
       .pledgedAt(DateTime.now())
       .projectCountry(project.country())

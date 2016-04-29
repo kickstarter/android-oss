@@ -3,12 +3,14 @@ package com.kickstarter.viewmodels;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.factories.BackingFactory;
 import com.kickstarter.factories.ConfigFactory;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.RewardFactory;
 import com.kickstarter.libs.Config;
 import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.models.Backing;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 
@@ -56,23 +58,21 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
     vm.inputs.projectAndReward(ProjectFactory.project(), RewardFactory.reward());
     clickableTest.assertValue(true);
 
-    // Rewards from projects that aren't live is not clickable.
+    // Reward from project that isn't live is not clickable.
     vm.inputs.projectAndReward(ProjectFactory.successfulProject(), RewardFactory.reward());
     clickableTest.assertValues(true, false);
 
-    // Live project with limit reached and is not clickable if the user hasn't backed it.
+    // Reward not clickable if user has already backed.
+    final Project backedProject = ProjectFactory.backedProject();
+    vm.inputs.projectAndReward(backedProject, backedProject.backing().reward());
+    clickableTest.assertValues(true, false, false);
+
+    // Live project with limit reached is not clickable.
     vm.inputs.projectAndReward(
       ProjectFactory.project(),
       RewardFactory.rewardWithLimitReached()
     );
-    clickableTest.assertValues(true, false, false);
-
-    // Live project with limit reached is clickable if the user has backed it.
-    vm.inputs.projectAndReward(
-      ProjectFactory.project().toBuilder().isBacking(true).build(),
-      RewardFactory.rewardWithLimitReached()
-    );
-    clickableTest.assertValues(true, false, false, true);
+    clickableTest.assertValues(true, false, false, false);
   }
 
   @Test

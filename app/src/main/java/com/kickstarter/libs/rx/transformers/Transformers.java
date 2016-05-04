@@ -13,6 +13,13 @@ public final class Transformers {
   private Transformers() {}
 
   /**
+   * Transforms `null` values emitted from an observable into `theDefault`.
+   */
+  public static @NonNull <T> CoalesceTransformer<T> coalesceTransformer(final @NonNull T theDefault) {
+    return new CoalesceTransformer<>(theDefault);
+  }
+
+  /**
    * Emits when a materialized stream is completed.
    */
   public static @NonNull <T> CompletedTransformer<T> completed() {

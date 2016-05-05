@@ -14,6 +14,7 @@ public abstract class Comment implements Parcelable {
   public abstract User author();
   public abstract String body();
   public abstract DateTime createdAt();
+  public abstract DateTime deletedAt();
   public abstract long id();
 
   @AutoParcel.Builder
@@ -21,6 +22,7 @@ public abstract class Comment implements Parcelable {
     public abstract Builder author(User __);
     public abstract Builder body(String __);
     public abstract Builder createdAt(DateTime __);
+    public abstract Builder deletedAt(DateTime __);
     public abstract Builder id(long __);
     public abstract Comment build();
   }

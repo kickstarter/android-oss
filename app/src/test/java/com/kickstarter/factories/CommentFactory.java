@@ -12,6 +12,7 @@ public final class CommentFactory {
       .author(UserFactory.user())
       .body("Some comment")
       .createdAt(DateTime.now())
+      .deletedAt(DateTime.parse("1970-01-01T00:00:00Z"))
       .id(20160321)
       .build();
   }

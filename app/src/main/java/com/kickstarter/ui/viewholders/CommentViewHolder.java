@@ -1,6 +1,7 @@
 package com.kickstarter.ui.viewholders;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
@@ -22,6 +23,7 @@ import com.squareup.picasso.Picasso;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import butterknife.BindColor;
 import butterknife.ButterKnife;
 
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
@@ -35,6 +37,9 @@ public final class CommentViewHolder extends KSViewHolder {
   public @Bind(R.id.name) TextView nameTextView;
   public @Bind(R.id.post_date) TextView postDateTextView;
   public @Bind(R.id.comment_body) TextView commentBodyTextView;
+
+  public @BindColor(R.color.text_secondary) int textSecondaryColor;
+  public @BindColor(R.color.text_primary) int textPrimaryColor;
 
   protected @Inject CurrentUserType currentUser;
   protected @Inject KSString ksString;
@@ -72,6 +77,14 @@ public final class CommentViewHolder extends KSViewHolder {
       .into(avatarImageView);
     nameTextView.setText(comment.author().name());
     postDateTextView.setText(DateTimeUtils.relative(context, ksString, comment.createdAt()));
+
+    if (CommentUtils.isDeleted(comment)) {
+      commentBodyTextView.setTextColor(textSecondaryColor);
+      commentBodyTextView.setTypeface(commentBodyTextView.getTypeface(), Typeface.ITALIC);
+    } else {
+      commentBodyTextView.setTextColor(textPrimaryColor);
+      commentBodyTextView.setTypeface(commentBodyTextView.getTypeface(), Typeface.NORMAL);
+    }
     commentBodyTextView.setText(comment.body());
   }
 }

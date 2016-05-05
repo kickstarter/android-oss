@@ -27,6 +27,13 @@ public final class DateTimeUtilsTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testIsEpoch() {
+    assertTrue(DateTimeUtils.isEpoch(DateTime.parse("1970-01-01T00:00:00Z")));
+    assertTrue(DateTimeUtils.isEpoch(DateTime.parse("1969-12-31T19:00:00.000-05:00")));
+    assertFalse(DateTimeUtils.isEpoch(DateTime.parse("2015-12-17T18:35:05Z")));
+  }
+
+  @Test
   public void testMediumDate() {
     assertEquals("Dec 17, 2015", DateTimeUtils.mediumDate(DateTime.parse("2015-12-17T18:35:05Z")));
     assertEquals("17 déc. 2015", DateTimeUtils.mediumDate(DateTime.parse("2015-12-17T18:35:05Z"), Locale.FRENCH));

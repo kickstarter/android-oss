@@ -7,7 +7,7 @@
   android:layout_marginLeft="@dimen/feed_padding_x"
   android:layout_marginEnd="@dimen/feed_padding_x"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
+  android:layout_height="wrap_content">
 
   <LinearLayout
     android:focusable="true"

@@ -102,14 +102,6 @@ public class ActivityViewModel<ViewType extends ActivityLifecycleType> {
   }
 
   /**
-   * @deprecated Avoid accessing views directly from the viewmodel, use inputs, outputs and errors to communicate instead.
-   */
-  @Deprecated
-  protected @NonNull PublishSubject<ViewType> viewChange() {
-    return viewChange;
-  }
-
-  /**
    * @deprecated Prefer composing with {@link #bindToLifecycle()}.
    */
   @Deprecated

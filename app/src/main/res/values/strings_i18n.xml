@@ -674,6 +674,12 @@ Thank you for your support!</string>
   <string name="project_updates_empty_state_non_backer_message" formatted="false">Backers are notified when there are new project updates.</string>
   <string name="project_updates_empty_state_non_backer_title" formatted="false">No updates</string>
   <string name="project_view_button" formatted="false">View pledge</string>
+  <string name="project_view_pledge_includes" formatted="false">Includes</string>
+  <string name="project_view_pledge_status_canceled" formatted="false">Canceled</string>
+  <string name="project_view_pledge_status_collected" formatted="false">Collected</string>
+  <string name="project_view_pledge_status_dropped" formatted="false">Dropped</string>
+  <string name="project_view_pledge_status_errored" formatted="false">Errored</string>
+  <string name="project_view_pledge_status_pledged" formatted="false">Pledged</string>
   <string name="push_notifications_alert_buttons_close" formatted="false">Close</string>
   <string name="push_notifications_alert_buttons_view" formatted="false">View</string>
   <string name="rewards_info_all_gone" formatted="false">All gone</string>
@@ -682,10 +688,18 @@ Thank you for your support!</string>
   <string name="rewards_info_backer_count_backers_one" formatted="false">1 backer</string>
   <string name="rewards_info_backer_count_backers_two" formatted="false">2 backers</string>
   <string name="rewards_info_backer_count_backers_zero" formatted="false">0 backers</string>
-  <string name="rewards_info_estimated_delivery" formatted="false">Estimated Delivery</string>
+  <string name="rewards_info_estimated_delivery" formatted="false">Estimated delivery</string>
+  <string name="rewards_info_includes" formatted="false">Includes</string>
+  <string name="rewards_info_item_quantity_title_few" formatted="false">(%{quantity}) %{title}</string>
+  <string name="rewards_info_item_quantity_title_many" formatted="false">(%{quantity}) %{title}</string>
+  <string name="rewards_info_item_quantity_title_one" formatted="false">%{title}</string>
+  <string name="rewards_info_item_quantity_title_two" formatted="false">(%{quantity}) %{title}</string>
+  <string name="rewards_info_item_quantity_title_zero" formatted="false">(%{quantity}) %{title}</string>
   <string name="rewards_info_limited_rewards_remaining_left_of_reward_limit" formatted="false">Limited (%{rewards_remaining} left of %{reward_limit})</string>
   <string name="rewards_info_shipping" formatted="false">Shipping</string>
   <string name="rewards_info_shipping_destinations" formatted="false">Shipping destinations</string>
+  <string name="rewards_info_ships_to" formatted="false">Ships to</string>
+  <string name="rewards_info_time_left" formatted="false">%{time} left</string>
   <string name="rewards_select_label_select" formatted="false">Select</string>
   <string name="rewards_selected_label_you_selected" formatted="false">You selected</string>
   <string name="rewards_shipping_preferences_location_unrestricted" formatted="false">Shipping anywhere in the world</string>

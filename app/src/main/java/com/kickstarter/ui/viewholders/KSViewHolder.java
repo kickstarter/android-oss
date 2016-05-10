@@ -65,6 +65,10 @@ public abstract class KSViewHolder extends RecyclerView.ViewHolder implements Vi
    */
   public void lifecycleEvent(final @NonNull ActivityEvent event) {
     lifecycle.onNext(event);
+
+    if (ActivityEvent.DESTROY.equals(event)) {
+      destroy();
+    }
   }
 
   /**
@@ -82,6 +86,12 @@ public abstract class KSViewHolder extends RecyclerView.ViewHolder implements Vi
   public final @NonNull <T> Observable.Transformer<T, T> bindToLifecycle() {
     return RxLifecycle.bindActivity(lifecycle);
   }
+
+  /**
+   * Called when the ViewHolder is being detached. Subclasses should override if they need to do any work
+   * when the ViewHolder is being de-allocated.
+   */
+  protected void destroy() {}
 
   protected @NonNull View view() {
     return view;

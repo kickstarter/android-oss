@@ -16,7 +16,7 @@ public final class ProjectNotificationFactory {
 
   public static @NonNull ProjectNotification enabled() {
     return ProjectNotification.builder()
-      .id(1)
+      .id(IdFactory.id())
       .email(true)
       .mobile(true)
       .project(project())
@@ -25,7 +25,7 @@ public final class ProjectNotificationFactory {
   }
 
   private static @NonNull ProjectNotification.Project project() {
-    return ProjectNotification.Project.builder().id(1).name("SKULL GRAPHIC TEE").build();
+    return ProjectNotification.Project.builder().id(IdFactory.id()).name("SKULL GRAPHIC TEE").build();
   }
 
   private static @NonNull ProjectNotification.Urls urls() {

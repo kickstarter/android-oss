@@ -30,7 +30,7 @@ public final class ProjectAdapter extends KSAdapter {
     if (sectionRow.section() == 0) {
       return R.layout.project_main_layout;
     } else {
-      return R.layout.reward_card_view;
+      return R.layout.reward_view;
     }
   }
 

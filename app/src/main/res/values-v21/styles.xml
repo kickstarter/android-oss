@@ -22,12 +22,7 @@
     <item name="android:statusBarColor">@color/transparent</item>
   </style>
 
-  <style name="GreenRoundedButton" parent="GreenRoundedButtonBase">
-    <item name="android:paddingStart">@dimen/grid_5</item>
-    <item name="android:paddingEnd">@dimen/grid_5</item>
-  </style>
-
-  <style name="BlueRoundedButton" parent="BlueRoundedButtonBase">
+  <style name="RoundedButton" parent="RoundedButtonBase">
     <item name="android:paddingStart">@dimen/grid_5</item>
     <item name="android:paddingEnd">@dimen/grid_5</item>
   </style>

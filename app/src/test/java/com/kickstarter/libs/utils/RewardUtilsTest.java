@@ -6,16 +6,33 @@ import com.kickstarter.models.Reward;
 import junit.framework.TestCase;
 
 public final class RewardUtilsTest extends TestCase {
-  public void testLimitReachedWhenRemainingIsGreaterThanZero() {
-    final Reward reward = RewardFactory.reward().toBuilder()
-      .limit(100)
-      .remaining(50)
-      .build();
 
-    assertFalse(RewardUtils.isLimitReached(reward));
+  public void testIsLimited() {
+    final Reward rewardWithRemaining = RewardFactory.reward().toBuilder()
+      .remaining(5)
+      .limit(10)
+      .build();
+    assertTrue(RewardUtils.isLimited(rewardWithRemaining));
+
+    final Reward rewardWithNoneRemaining = RewardFactory.reward().toBuilder()
+      .remaining(0)
+      .limit(10)
+      .build();
+    assertFalse(RewardUtils.isLimited(rewardWithNoneRemaining));
+
+    final Reward rewardWithNoLimitAndRemainingSet = RewardFactory.reward().toBuilder()
+      .remaining(null)
+      .limit(null)
+      .build();
+    assertFalse(RewardUtils.isLimited(rewardWithNoLimitAndRemainingSet));
   }
 
-  public void testLimitReachedWhenLimitSetAndRemainingIsZero() {
+  public void testIsItemized() {
+    assertFalse(RewardUtils.isItemized(RewardFactory.reward()));
+    assertTrue(RewardUtils.isItemized(RewardFactory.itemizedReward()));
+  }
+
+  public void testIsLimitReachedWhenLimitSetAndRemainingIsZero() {
     final Reward reward = RewardFactory.reward().toBuilder()
       .limit(100)
       .remaining(0)
@@ -23,10 +40,35 @@ public final class RewardUtilsTest extends TestCase {
     assertTrue(RewardUtils.isLimitReached(reward));
   }
 
-  public void testLimitNotReachedWhenLimitSetButRemainingIsNull() {
+  public void testIsLimitNotReachedWhenLimitSetButRemainingIsNull() {
     final Reward reward = RewardFactory.reward().toBuilder()
       .limit(100)
       .build();
     assertFalse(RewardUtils.isLimitReached(reward));
+  }
+
+  public void testIsLimitReachedWhenRemainingIsGreaterThanZero() {
+    final Reward reward = RewardFactory.reward().toBuilder()
+      .limit(100)
+      .remaining(50)
+      .build();
+    assertFalse(RewardUtils.isLimitReached(reward));
+  }
+
+  public void testIsShippable() {
+    final Reward rewardWithNullShippingEnabled = RewardFactory.reward().toBuilder()
+      .shippingEnabled(null)
+      .build();
+    assertFalse(RewardUtils.isShippable(rewardWithNullShippingEnabled));
+
+    final Reward rewardWithFalseShippingEnabled = RewardFactory.reward().toBuilder()
+      .shippingEnabled(false)
+      .build();
+    assertFalse(RewardUtils.isShippable(rewardWithFalseShippingEnabled));
+
+    final Reward rewardWithShippingEnabled = RewardFactory.reward().toBuilder()
+      .shippingEnabled(true)
+      .build();
+    assertTrue(RewardUtils.isShippable(rewardWithShippingEnabled));
   }
 }

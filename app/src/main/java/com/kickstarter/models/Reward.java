@@ -7,6 +7,8 @@ import com.kickstarter.libs.qualifiers.AutoGson;
 
 import org.joda.time.DateTime;
 
+import java.util.List;
+
 import auto.parcel.AutoParcel;
 
 import static com.kickstarter.libs.utils.IntegerUtils.isZero;
@@ -21,10 +23,12 @@ public abstract class Reward implements Parcelable {
   public abstract float minimum();
   public abstract @Nullable DateTime estimatedDeliveryOn();
   public abstract @Nullable Integer remaining();
-  public abstract String reward();
+  public abstract @Nullable String reward();
+  public abstract @Nullable List<RewardsItem> rewardsItems();
   public abstract @Nullable Boolean shippingEnabled();
   public abstract @Nullable String shippingPreference();
   public abstract @Nullable String shippingSummary();
+  public abstract @Nullable String title();
 
   @AutoParcel.Builder
   public abstract static class Builder {
@@ -36,9 +40,11 @@ public abstract class Reward implements Parcelable {
     public abstract Builder estimatedDeliveryOn(DateTime __);
     public abstract Builder remaining(Integer __);
     public abstract Builder reward(String __);
+    public abstract Builder rewardsItems(List<RewardsItem> __);
     public abstract Builder shippingEnabled(Boolean __);
     public abstract Builder shippingPreference(String __);
     public abstract Builder shippingSummary(String __);
+    public abstract Builder title(String __);
     public abstract Reward build();
   }
 

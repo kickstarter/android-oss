@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:orientation="horizontal"
+  android:paddingTop="@dimen/grid_1"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <TextView
+    style="@style/BodySecondary"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="@dimen/grid_1"
+    android:layout_marginEnd="@dimen/grid_1"
+    android:text="\u2022"
+    tools:ignore="HardcodedText" />
+
+  <TextView
+    style="@style/BodyPrimary"
+    android:id="@+id/rewards_item_title"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:text="3 T-Shirts" />
+
+</LinearLayout>

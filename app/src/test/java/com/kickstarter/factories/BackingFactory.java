@@ -21,7 +21,7 @@ public final class BackingFactory {
       .amount(10.0f)
       .backer(backer)
       .backerId(backer.id())
-      .id(1)
+      .id(IdFactory.id())
       .pledgedAt(DateTime.now())
       .project(project)
       .projectCountry(project.country())

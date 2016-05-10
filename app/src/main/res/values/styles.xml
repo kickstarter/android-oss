@@ -121,6 +121,14 @@
     <item name="android:paddingRight">@dimen/grid_3</item>
   </style>
 
+  <style name="RoundedButtonBase" parent="Button">
+    <item name="android:paddingLeft">@dimen/grid_5</item>
+    <item name="android:paddingRight">@dimen/grid_5</item>
+    <item name="android:fontFamily">@string/font_family_medium</item>
+  </style>
+
+  <style name="RoundedButton" parent="Button" />
+
   <style name="FacebookButton" parent="Base.Widget.AppCompat.Button.Borderless">
     <item name="android:background">@drawable/button_facebook</item>
     <item name="android:layout_width">wrap_content</item>
@@ -134,23 +142,22 @@
     <item name="android:drawableStart">@drawable/ic_social_facebook</item>
   </style>
 
-  <style name="GreenRoundedButtonBase" parent="Button">
-    <item name="android:background">@drawable/button_green_rounded</item>
-    <item name="android:paddingLeft">@dimen/grid_5</item>
-    <item name="android:paddingRight">@dimen/grid_5</item>
-    <item name="android:fontFamily">@string/font_family_medium</item>
-  </style>
-
-  <style name="GreenRoundedButton" parent="GreenRoundedButtonBase" />
-
-  <style name="BlueRoundedButtonBase" parent="Button">
+  <style name="BlueRoundedButton" parent="RoundedButton">
     <item name="android:background">@drawable/button_blue_rounded</item>
-    <item name="android:paddingLeft">@dimen/grid_5</item>
-    <item name="android:paddingRight">@dimen/grid_5</item>
-    <item name="android:fontFamily">@string/font_family_medium</item>
   </style>
 
-  <style name="BlueRoundedButton" parent="BlueRoundedButtonBase" />
+  <style name="GrayRoundedButton" parent="RoundedButton">
+    <item name="android:background">@drawable/button_gray_rounded</item>
+    <item name="android:textColor">@color/dark_gray</item>
+  </style>
+
+  <style name="GreenRoundedButton" parent="RoundedButton">
+    <item name="android:background">@drawable/button_green_rounded</item>
+  </style>
+
+  <style name="BlueRoundedButtonBase" parent="RoundedButton">
+    <item name="android:background">@drawable/button_blue_rounded</item>
+  </style>
 
   <style name="TwitterButton" parent="Base.Widget.AppCompat.Button.Borderless">
     <item name="android:background">@drawable/button_twitter</item>
@@ -388,5 +395,10 @@
   </style>
 
   <style name="ActivitySampleCard" parent="ActivitySampleCardBase" />
+
+  <!-- Rewards -->
+  <style name="RewardLimitedText" parent="CaptionPrimaryMedium">
+    <item name="android:textColor">@color/reward_orange_dark</item>
+  </style>
 
 </resources>

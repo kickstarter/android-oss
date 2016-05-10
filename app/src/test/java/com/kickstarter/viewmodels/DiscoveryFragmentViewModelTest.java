@@ -1,9 +1,11 @@
 package com.kickstarter.viewmodels;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.factories.ActivityEnvelopeFactory;
 import com.kickstarter.factories.ActivityFactory;
 import com.kickstarter.factories.CategoryFactory;
 import com.kickstarter.factories.ProjectFactory;
@@ -18,12 +20,15 @@ import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.MockApiClient;
+import com.kickstarter.services.apiresponses.ActivityEnvelope;
 import com.kickstarter.ui.ArgumentsKey;
 
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.List;
 
+import rx.Observable;
 import rx.observers.TestSubscriber;
 
 public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
@@ -92,7 +97,15 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testShowHeaderViews() {
     final CurrentUserType currentUser = new MockCurrentUser();
-    final ApiClientType apiClient = new MockApiClient();
+    final Activity activity = ActivityFactory.activity();
+    final ApiClientType apiClient = new MockApiClient() {
+      @Override
+      public @NonNull Observable<ActivityEnvelope> fetchActivities() {
+        return Observable.just(
+          ActivityEnvelopeFactory.activityEnvelope(Collections.singletonList(activity))
+        );
+      }
+    };
     final MockIntPreference activitySamplePreference = new MockIntPreference(987654321);
 
     final Environment environment = environment().toBuilder()
@@ -103,34 +116,34 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
     final DiscoveryFragmentViewModel vm = new DiscoveryFragmentViewModel(environment);
 
-    final TestSubscriber<Activity> activity = new TestSubscriber<>();
-    vm.outputs.activity().subscribe(activity);
+    final TestSubscriber<Activity> activityTest = new TestSubscriber<>();
+    vm.outputs.activity().subscribe(activityTest);
 
-    final TestSubscriber<Boolean> shouldShowOnboardingView = new TestSubscriber<>();
-    vm.outputs.shouldShowOnboardingView().subscribe(shouldShowOnboardingView);
+    final TestSubscriber<Boolean> shouldShowOnboardingViewTest = new TestSubscriber<>();
+    vm.outputs.shouldShowOnboardingView().subscribe(shouldShowOnboardingViewTest);
 
     // Initial magic staff pick params.
     vm.inputs.paramsFromActivity(DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.MAGIC).build());
 
     // Should show onboarding view.
-    shouldShowOnboardingView.assertValues(true);
-    activity.assertValue(null);
+    shouldShowOnboardingViewTest.assertValues(true);
+    activityTest.assertValue(null);
 
     // Change params. Onboarding view should not be shown.
     vm.inputs.paramsFromActivity(DiscoveryParams.builder().build());
-    shouldShowOnboardingView.assertValues(true, false);
-    activity.assertValues(null, null);
+    shouldShowOnboardingViewTest.assertValues(true, false);
+    activityTest.assertValues(null, null);
 
     // Login.
     currentUser.refresh(UserFactory.user());
 
     // Activity sampler should be shown rather than onboarding view.
-    shouldShowOnboardingView.assertValues(true, false, false);
-    activity.assertValues(null, null, ActivityFactory.activity());
+    shouldShowOnboardingViewTest.assertValues(true, false, false);
+    activityTest.assertValues(null, null, activity);
 
     // Change params. Activity sampler should not be shown.
     vm.inputs.paramsFromActivity(DiscoveryParams.builder().build());
-    activity.assertValues(null, null, ActivityFactory.activity(), null);
+    activityTest.assertValues(null, null, activity, null);
   }
 
   @Test

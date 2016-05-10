@@ -64,7 +64,9 @@
       <property name="excludes" value="com.kickstarter.libs.utils.TransitionUtils.*" />
       <property name="excludes" value="com.kickstarter.libs.utils.ViewUtils.*" />
       <property name="excludes" value="com.kickstarter.TestUtils.*" />
+      <property name="excludes" value="java.util.Collections.emptyList" />
       <property name="excludes" value="org.mockito.Mockito.*" />
+      <property name="excludes" value="rx.android.schedulers.AndroidSchedulers.*" />
     </module>
     <module name="IllegalImport" />
     <module name="RedundantImport" />

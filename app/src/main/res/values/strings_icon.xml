@@ -7,6 +7,7 @@
   <string name="account_circle">\ue853</string>
   <string name="arrow_back_icon">\ue5c4</string>
   <string name="bug_report_icon">\ue868</string>
+  <string name="check_icon">\ue5ca</string>
   <string name="chevron_right_icon">\ue5cc</string>
   <string name="close_icon">\ue5cd</string>
   <string name="comment_icon">\ue0b9</string>
@@ -33,6 +34,7 @@
   <string name="share_icon">\ue80d</string>
   <string name="speaker_notes_icon">\ue8cd</string>
   <string name="star_icon">\ue838</string>
+  <string name="timer_icon">\ue425</string>
   <string name="trending_up_icon">\ue8e5</string>
   <string name="whatshot_icon">\ue80e</string>
 

@@ -15,7 +15,7 @@ public final class Transformers {
   /**
    * Transforms `null` values emitted from an observable into `theDefault`.
    */
-  public static @NonNull <T> CoalesceTransformer<T> coalesceTransformer(final @NonNull T theDefault) {
+  public static @NonNull <T> CoalesceTransformer<T> coalesce(final @NonNull T theDefault) {
     return new CoalesceTransformer<>(theDefault);
   }
 

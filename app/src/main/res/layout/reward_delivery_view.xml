@@ -1,0 +1,59 @@
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:paddingTop="@dimen/grid_2"
+  android:orientation="horizontal"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  tools:showIn="@layout/reward_view">
+
+  <LinearLayout
+    android:id="@+id/reward_estimated_delivery_date_section"
+    android:orientation="vertical"
+    android:paddingEnd="@dimen/grid_3"
+    android:paddingRight="@dimen/grid_3"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <TextView
+      style="@style/BodySecondary"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/grid_1_half"
+      android:text="@string/rewards_info_estimated_delivery" />
+
+    <TextView
+      style="@style/BodyPrimary"
+      android:id="@+id/reward_estimated_delivery_date_text_view"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:maxLines="1"
+      tools:text="September 2017" />
+
+  </LinearLayout>
+
+  <LinearLayout
+    android:id="@+id/reward_shipping_section"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <TextView
+      style="@style/BodySecondary"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/grid_1_half"
+      android:text="@string/rewards_info_ships_to" />
+
+    <TextView
+      style="@style/BodyPrimary"
+      android:id="@+id/reward_shipping_summary_text_view"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:maxLines="1"
+      tools:text="Anywhere" />
+
+  </LinearLayout>
+
+</LinearLayout>
+

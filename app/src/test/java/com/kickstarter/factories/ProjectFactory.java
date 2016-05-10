@@ -33,7 +33,7 @@ public final class ProjectFactory {
       .currencySymbol("$")
       .currencyTrailingCode(true)
       .goal(100.0f)
-      .id(1_2345_6789)
+      .id(IdFactory.id())
       .pledged(50.0f)
       .name("Some Name")
       .state(Project.STATE_LIVE)
@@ -60,8 +60,60 @@ public final class ProjectFactory {
 
     final Backing backing = Backing.builder()
       .amount(10.0f)
-      .backerId(1)
-      .id(1)
+      .backerId(IdFactory.id())
+      .id(IdFactory.id())
+      .sequence(1)
+      .reward(reward)
+      .rewardId(reward.id())
+      .pledgedAt(DateTime.now())
+      .projectCountry(project.country())
+      .projectId(project.id())
+      .shippingAmount(0.0f)
+      .status(Backing.STATUS_PLEDGED)
+      .build();
+
+    return project
+      .toBuilder()
+      .backing(backing)
+      .isBacking(true)
+      .build();
+  }
+
+  public static @NonNull Project backedProjectWithRewardLimited() {
+    final Project project = project();
+
+    final Reward reward = RewardFactory.limitedReward();
+
+    final Backing backing = Backing.builder()
+      .amount(10.0f)
+      .backerId(IdFactory.id())
+      .id(IdFactory.id())
+      .sequence(1)
+      .reward(reward)
+      .rewardId(reward.id())
+      .pledgedAt(DateTime.now())
+      .projectCountry(project.country())
+      .projectId(project.id())
+      .shippingAmount(0.0f)
+      .status(Backing.STATUS_PLEDGED)
+      .build();
+
+    return project
+      .toBuilder()
+      .backing(backing)
+      .isBacking(true)
+      .build();
+  }
+
+  public static @NonNull Project backedProjectWithRewardLimitReached() {
+    final Project project = project();
+
+    final Reward reward = RewardFactory.rewardWithLimitReached();
+
+    final Backing backing = Backing.builder()
+      .amount(10.0f)
+      .backerId(IdFactory.id())
+      .id(IdFactory.id())
       .sequence(1)
       .reward(reward)
       .rewardId(reward.id())

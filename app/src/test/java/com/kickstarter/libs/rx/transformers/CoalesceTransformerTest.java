@@ -6,7 +6,7 @@ import rx.Observable;
 import rx.observers.TestSubscriber;
 import rx.subjects.PublishSubject;
 
-import static com.kickstarter.libs.rx.transformers.Transformers.coalesceTransformer;
+import static com.kickstarter.libs.rx.transformers.Transformers.coalesce;
 
 public final class CoalesceTransformerTest {
   @Test
@@ -14,7 +14,7 @@ public final class CoalesceTransformerTest {
     final Integer theDefault = 100;
     final PublishSubject<Integer> source = PublishSubject.create();
     final Observable<Integer> result = source
-      .compose(coalesceTransformer(theDefault));
+      .compose(coalesce(theDefault));
 
     final TestSubscriber<Integer> resultTest = TestSubscriber.create();
     result.subscribe(resultTest);

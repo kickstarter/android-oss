@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/reward_view"
+  android:focusable="true"
+  android:foreground="@drawable/click_indicator_light"
+  android:layout_marginTop="@dimen/grid_1"
+  android:layout_marginStart="@dimen/project_padding_x"
+  android:layout_marginLeft="@dimen/project_padding_x"
+  android:layout_marginRight="@dimen/project_padding_x"
+  android:layout_marginEnd="@dimen/project_padding_x"
+  android:layout_marginBottom="@dimen/grid_2"
+  android:layout_height="wrap_content"
+  android:layout_width="match_parent"
+  app:cardBackgroundColor="@color/white"
+  app:cardCornerRadius="@dimen/card_corner_radius"
+  app:cardElevation="1dp"
+  app:cardPreventCornerOverlap="false">
+
+  <FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <LinearLayout
+        android:id="@+id/reward_limit_header"
+        android:baselineAligned="false"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/grid_6"
+        android:orientation="horizontal"
+        android:background="@color/reward_orange"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <LinearLayout
+          android:id="@+id/reward_time_limit_section"
+          android:orientation="horizontal"
+          android:gravity="center"
+          android:paddingLeft="@dimen/grid_2"
+          android:paddingStart="@dimen/grid_2"
+          android:paddingRight="@dimen/grid_2"
+          android:paddingEnd="@dimen/grid_2"
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:layout_weight="0.5">
+
+          <com.kickstarter.ui.views.IconTextView
+            style="@style/BodyPrimaryMedium"
+            android:color="@color/reward_orange_dark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="@dimen/grid_1_half"
+            android:paddingEnd="@dimen/grid_1_half"
+            android:text="@string/timer_icon" />
+
+          <TextView
+            style="@style/RewardLimitedText"
+            android:id="@+id/reward_time_limit_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="15 days left" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          android:id="@+id/reward_limit_divider"
+          android:orientation="vertical"
+          android:layout_width="wrap_content"
+          android:layout_height="fill_parent">
+
+          <View
+            android:layout_width="1dp"
+            android:layout_height="fill_parent"
+            android:background="#33000000" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          android:id="@+id/reward_limit_and_remaining_section"
+          android:gravity="center"
+          android:paddingLeft="@dimen/grid_2"
+          android:paddingStart="@dimen/grid_2"
+          android:paddingRight="@dimen/grid_2"
+          android:paddingEnd="@dimen/grid_2"
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:layout_weight="0.5">
+
+          <TextView
+            android:id="@+id/reward_limit_and_remaining_text_view"
+            style="@style/RewardLimitedText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Limited (20 left of 30)" />
+
+        </LinearLayout>
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:id="@+id/reward_all_gone_header"
+        android:background="@color/gray"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/grid_2"
+        android:paddingStart="@dimen/grid_2"
+        android:paddingRight="@dimen/grid_2"
+        android:paddingEnd="@dimen/grid_2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/grid_6"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <com.kickstarter.ui.views.IconTextView
+          style="@style/CaptionPrimaryMedium"
+          android:paddingRight="@dimen/grid_1_half"
+          android:paddingEnd="@dimen/grid_1_half"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/timer_icon" />
+
+        <TextView
+          style="@style/CaptionPrimaryMedium"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/rewards_info_all_gone" />
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:id="@+id/reward_selected_header"
+        android:background="@color/green"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/grid_2"
+        android:paddingStart="@dimen/grid_2"
+        android:paddingRight="@dimen/grid_2"
+        android:paddingEnd="@dimen/grid_2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/grid_6"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <com.kickstarter.ui.views.IconTextView
+          style="@style/CaptionSecondaryMedium"
+          android:textColor="@color/white"
+          android:paddingRight="@dimen/grid_1_half"
+          android:paddingEnd="@dimen/grid_1_half"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/check_icon" />
+
+        <TextView
+          style="@style/CaptionSecondaryMedium"
+          android:textColor="@color/white"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/rewards_selected_label_you_selected" />
+
+      </LinearLayout>
+
+      <LinearLayout
+        android:id="@+id/reward_body_section"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/grid_2">
+
+        <LinearLayout
+          android:orientation="horizontal"
+          android:gravity="center_vertical"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content">
+
+          <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <TextView
+              style="@style/SubheadPrimaryMedium"
+              android:id="@+id/reward_title_text_view"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:paddingRight="@dimen/grid_2"
+              android:paddingEnd="@dimen/grid_2"
+              android:maxLines="2"
+              tools:text="Digital bundle" />
+
+            <TextView
+              style="@style/CaptionSecondary"
+              android:id="@+id/reward_usd_conversion_text_view"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:paddingTop="@dimen/grid_1"
+              tools:text="About $15 USD" />
+
+          </LinearLayout>
+
+          <Button
+            style="@style/GreenRoundedButton"
+            android:id="@+id/reward_minimum_button"
+            android:clickable="false"
+            android:layout_margin="0dp"
+            android:padding="0dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:text="$20 AUD" />
+
+          <TextView
+            android:id="@+id/reward_minimum_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_primary"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:text="$20 AUD" />
+
+        </LinearLayout>
+
+        <TextView
+          style="@style/BodyPrimary"
+          android:id="@+id/reward_description_text_view"
+          android:paddingTop="@dimen/grid_2"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          tools:text="You'll receive a download link to the project, free of DRM!" />
+
+        <LinearLayout
+          android:id="@+id/reward_rewards_item_section"
+          android:orientation="vertical"
+          android:paddingTop="@dimen/grid_2"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content">
+
+          <TextView
+            style="@style/BodySecondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rewards_info_includes" />
+
+          <android.support.v7.widget.RecyclerView
+            android:id="@+id/reward_rewards_item_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <include layout="@layout/reward_delivery_view" />
+
+
+        <TextView
+          style="@style/BodyPrimaryMedium"
+          android:id="@+id/reward_backers_text_view"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:paddingTop="@dimen/grid_2"
+          tools:text="25 backers" />
+
+      </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+      android:id="@+id/reward_white_overlay_view"
+      android:visibility="invisible"
+      android:alpha="0.6"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/white" />
+
+  </FrameLayout>
+
+</android.support.v7.widget.CardView>

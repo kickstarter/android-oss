@@ -4,46 +4,44 @@ import android.util.Pair;
 
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
+import com.kickstarter.models.RewardsItem;
 
 import org.joda.time.DateTime;
+
+import java.util.List;
 
 import rx.Observable;
 
 public interface RewardViewModelOutputs {
   /**
-   * Show an indicator that a reward's limit has been reached.
+   * Returns `true` if the all gone header should be hidden, `false` otherwise.
    */
-  Observable<Boolean> allGoneIsHidden();
+  Observable<Boolean> allGoneHeaderIsHidden();
 
   /**
-   * Show the number of backers.
+   * Set the backers TextView's text.
    */
-  Observable<Integer> backers();
+  Observable<Integer> backersTextViewText();
 
   /**
-   * Returns `true` if the estimated delivery section should be hidden, `false` otherwise.
+   * Returns `true` if the number of backers TextView should be hidden, `false` otherwise.
    */
-  Observable<Boolean> backersIsHidden();
+  Observable<Boolean> backersTextViewIsHidden();
 
   /**
-   * Returns `true` if the user can click the reward, `false` otherwise.
+   * Set the description TextView's text.
    */
-  Observable<Boolean> clickable();
+  Observable<String> descriptionTextViewText();
 
   /**
-   * Show the reward's description.
+   * Set the estimated delivery date TextView's text.
    */
-  Observable<String> description();
-
-  /**
-   * Show the estimated delivery date.
-   */
-  Observable<DateTime> estimatedDelivery();
+  Observable<DateTime> estimatedDeliveryDateTextViewText();
 
   /**
    * Returns `true` if the estimated delivery section should be hidden, `false` otherwise.
    */
-  Observable<Boolean> estimatedDeliveryIsHidden();
+  Observable<Boolean> estimatedDeliveryDateSectionIsHidden();
 
   /**
    * Start checkout with the project's reward selected.
@@ -51,42 +49,127 @@ public interface RewardViewModelOutputs {
   Observable<Pair<Project, Reward>> goToCheckout();
 
   /**
-   * Show the reward limit and number remaining.
+   * Start checkout with the project's reward selected.
    */
-  Observable<Pair<String, String>> limitAndRemaining();
+  Observable<Project> goToViewPledge();
 
   /**
-   * Returns `true` if the limit section should be hidden, `false` otherwise.
+   * Returns `true` if reward can be clicked, `false` otherwise.
    */
-  Observable<Boolean> limitIsHidden();
+  Observable<Boolean> isClickable();
 
   /**
-   * Show the reward's minimum pledge.
+   * Returns `true` if the limit and remaining section should be center-aligned, `false` otherwise.
    */
-  Observable<String> minimum();
+  Observable<Boolean> limitAndRemainingSectionIsCenterAligned();
 
   /**
-   * Returns `true` if selected reward section should be hidden, `false` otherwise.
+   * Returns `true` if the limit quantity section should be hidden, `false` otherwise.
    */
-  Observable<Boolean> selectedRewardIsHidden();
+  Observable<Boolean> limitAndRemainingSectionIsHidden();
 
   /**
-   * Show the shipping summary.
+   * Set the limit and remaining TextView's text.
    */
-  Observable<String> shippingSummary();
+  Observable<Pair<String, String>> limitAndRemainingTextViewText();
+
+  /**
+   * Returns `true` if the divider between the time limit and the quantity limit should be hidden, `false` otherwise.
+   */
+  Observable<Boolean> limitDividerIsHidden();
+
+  /**
+   * Returns `true` if the limit header should be hidden, `false` otherwise.
+   */
+  Observable<Boolean> limitHeaderIsHidden();
+
+  /**
+   * Set the minimum button's text.
+   */
+  Observable<String> minimumButtonText();
+
+  /**
+   * Returns `true` if the minimum button should be hidden, `false` otherwise.
+   */
+  Observable<Boolean> minimumButtonIsHidden();
+
+  /**
+   * Set the minimum TextView's text.
+   */
+  Observable<String> minimumTextViewText();
+
+  /**
+   * Returns `true` if the minimum text view should be hidden, `false` otherwise.
+   */
+  Observable<Boolean> minimumTextViewIsHidden();
+
+  /**
+   * Set the title's text using the minimum pledge.
+   */
+  Observable<String> minimumTitleTextViewText();
+
+  /**
+   * Show the rewards items.
+   */
+  Observable<List<RewardsItem>> rewardsItems();
+
+  /**
+   * Returns `true` if the items section should be hidden, `false` otherwise.
+   */
+  Observable<Boolean> rewardsItemsAreHidden();
+
+  /**
+   * Use the reward's title to set the title text.
+   */
+  Observable<String> rewardTitleTextViewText();
+
+  /**
+   * Returns `true` if selected header should be hidden, `false` otherwise.
+   */
+  Observable<Boolean> selectedHeaderIsHidden();
+
+  /**
+   * Returns `true` if selected overlay should be hidden, `false` otherwise.
+   */
+  Observable<Boolean> selectedOverlayIsHidden();
 
   /**
    * Returns `true` if the shipping section should be hidden, `false` otherwise.
    */
-  Observable<Boolean> shippingSummaryIsHidden();
+  Observable<Boolean> shippingSummarySectionIsHidden();
 
   /**
-   * Show the USD conversion.
+   * Set the shipping summary TextView's text.
    */
-  Observable<String> usdConversion();
+  Observable<String> shippingSummaryTextViewText();
+
+  /**
+   * Returns `true` if the time limit should be hidden, `false` otherwise.
+   */
+  Observable<Boolean> timeLimitSectionIsHidden();
+
+  /**
+   * Set the time limit.
+   */
+  Observable<String> timeLimitTextViewText();
+
+  /**
+   * Returns `true` if the time limit should be center-aligned, `false` otherwise.
+   */
+  Observable<Boolean> timeLimitSectionIsCenterAligned();
 
   /**
    * Returns `true` if the USD conversion section should be hidden, `false` otherwise.
    */
-  Observable<Boolean> usdConversionIsHidden();
+  Observable<Boolean> usdConversionTextViewIsHidden();
+
+  /**
+   * Set the USD conversion.
+   */
+  Observable<String> usdConversionTextViewText();
+
+  /**
+   * Returns `true` if the white overlay indicating a reward is disabled should be hidden, `false` otherwise.
+   */
+  Observable<Boolean> whiteOverlayIsHidden();
 }

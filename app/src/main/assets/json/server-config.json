@@ -767,6 +767,16 @@
             "many": "%{backer_count} more"
           }
         },
+        "view_pledge": {
+          "includes": "Includes",
+          "status": {
+            "canceled": "Canceled",
+            "collected": "Collected",
+            "dropped": "Dropped",
+            "errored": "Errored",
+            "pledged": "Pledged"
+          }
+        },
         "accessibility": {
           "button_share": {
             "label": "Share this project"
@@ -839,11 +849,21 @@
             "few": "%{backer_count} backers",
             "many": "%{backer_count} backers"
           },
+          "item_quantity_title": {
+            "zero": "(%{quantity}) %{title}",
+            "one": "%{title}",
+            "two": "(%{quantity}) %{title}",
+            "few": "(%{quantity}) %{title}",
+            "many": "(%{quantity}) %{title}"
+          },
           "limited_rewards_remaining_left_of_reward_limit": "Limited (%{rewards_remaining} left of %{reward_limit})",
           "all_gone": "All gone",
-          "shipping_destinations": "Shipping destinations",
+          "estimated_delivery": "Estimated delivery",
+          "includes": "Includes",
           "shipping": "Shipping",
-          "estimated_delivery": "Estimated Delivery"
+          "shipping_destinations": "Shipping destinations",
+          "ships_to": "Ships to",
+          "time_left": "%{time} left"
         }
       },
       "search": {
@@ -2098,6 +2118,16 @@
             "many": "%{backer_count} weitere"
           }
         },
+        "view_pledge": {
+          "includes": "Includes",
+          "status": {
+            "canceled": "Canceled",
+            "collected": "Collected",
+            "dropped": "Dropped",
+            "errored": "Errored",
+            "pledged": "Pledged"
+          }
+        },
         "accessibility": {
           "button_share": {
             "label": "Andere über dieses Projekt informieren"
@@ -2170,11 +2200,21 @@
             "few": "%{backer_count} Unterstützer",
             "many": "%{backer_count} Unterstützer"
           },
+          "item_quantity_title": {
+            "zero": "(%{quantity}) %{title}",
+            "one": "%{title}",
+            "two": "(%{quantity}) %{title}",
+            "few": "(%{quantity}) %{title}",
+            "many": "(%{quantity}) %{title}"
+          },
           "limited_rewards_remaining_left_of_reward_limit": "Begrenzt (%{rewards_remaining} von %{reward_limit} übrig)",
           "all_gone": "Alle weg",
+          "estimated_delivery": "Voraussichtliche Lieferung",
+          "includes": "Includes",
+          "shipping": "Versand",
           "shipping_destinations": "Versandziele",
-          "shipping": "Shipping",
-          "estimated_delivery": "Voraussichtliche Lieferung"
+          "ships_to": "Ships to",
+          "time_left": "%{time} left"
         }
       },
       "search": {
@@ -3429,6 +3469,16 @@
             "many": "%{backer_count} más"
           }
         },
+        "view_pledge": {
+          "includes": "Includes",
+          "status": {
+            "canceled": "Canceled",
+            "collected": "Collected",
+            "dropped": "Dropped",
+            "errored": "Errored",
+            "pledged": "Pledged"
+          }
+        },
         "accessibility": {
           "button_share": {
             "label": "Compartir este proyecto"
@@ -3501,11 +3551,21 @@
             "few": "%{backer_count} patrocinadores",
             "many": "%{backer_count} patrocinadores"
           },
+          "item_quantity_title": {
+            "zero": "(%{quantity}) %{title}",
+            "one": "%{title}",
+            "two": "(%{quantity}) %{title}",
+            "few": "(%{quantity}) %{title}",
+            "many": "(%{quantity}) %{title}"
+          },
           "limited_rewards_remaining_left_of_reward_limit": "Limitado (quedan %{rewards_remaining} de %{reward_limit})",
           "all_gone": "¡Recompensas agotadas!",
-          "shipping_destinations": "Destinos de envío",
+          "estimated_delivery": "Entrega aproximada",
+          "includes": "Includes",
           "shipping": "Envío",
-          "estimated_delivery": "Entrega aproximada"
+          "shipping_destinations": "Destinos de envío",
+          "ships_to": "Ships to",
+          "time_left": "%{time} left"
         }
       },
       "search": {
@@ -4760,6 +4820,16 @@
             "many": "%{backer_count} autres personnes"
           }
         },
+        "view_pledge": {
+          "includes": "Includes",
+          "status": {
+            "canceled": "Canceled",
+            "collected": "Collected",
+            "dropped": "Dropped",
+            "errored": "Errored",
+            "pledged": "Pledged"
+          }
+        },
         "accessibility": {
           "button_share": {
             "label": "Partager ce projet"
@@ -4832,11 +4902,21 @@
             "few": "%{backer_count} contributeurs",
             "many": "%{backer_count} contributeurs"
           },
+          "item_quantity_title": {
+            "zero": "(%{quantity}) %{title}",
+            "one": "%{title}",
+            "two": "(%{quantity}) %{title}",
+            "few": "(%{quantity}) %{title}",
+            "many": "(%{quantity}) %{title}"
+          },
           "limited_rewards_remaining_left_of_reward_limit": "Stock limité (il en reste %{rewards_remaining} sur %{reward_limit})",
           "all_gone": "Épuisé",
-          "shipping_destinations": "Expédition",
+          "estimated_delivery": "Livraison prévue",
+          "includes": "Includes",
           "shipping": "Expédition",
-          "estimated_delivery": "Livraison prévue"
+          "shipping_destinations": "Expédition",
+          "ships_to": "Ships to",
+          "time_left": "%{time} left"
         }
       },
       "search": {
@@ -6091,6 +6171,16 @@
             "many": "%{backer_count} more"
           }
         },
+        "view_pledge": {
+          "includes": "Includes",
+          "status": {
+            "canceled": "Canceled",
+            "collected": "Collected",
+            "dropped": "Dropped",
+            "errored": "Errored",
+            "pledged": "Pledged"
+          }
+        },
         "accessibility": {
           "button_share": {
             "label": "Share this project"
@@ -6163,11 +6253,21 @@
             "few": "%{backer_count} backers",
             "many": "%{backer_count} backers"
           },
+          "item_quantity_title": {
+            "zero": "(%{quantity}) %{title}",
+            "one": "%{title}",
+            "two": "(%{quantity}) %{title}",
+            "few": "(%{quantity}) %{title}",
+            "many": "(%{quantity}) %{title}"
+          },
           "limited_rewards_remaining_left_of_reward_limit": "Limited (%{rewards_remaining} left of %{reward_limit})",
           "all_gone": "All gone",
-          "shipping_destinations": "Shipping destinations",
+          "estimated_delivery": "Estimated delivery",
+          "includes": "Includes",
           "shipping": "Shipping",
-          "estimated_delivery": "Estimated Delivery"
+          "shipping_destinations": "Shipping destinations",
+          "ships_to": "Ships to",
+          "time_left": "%{time} left"
         }
       },
       "search": {

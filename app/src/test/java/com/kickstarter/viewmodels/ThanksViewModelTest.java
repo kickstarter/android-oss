@@ -246,7 +246,7 @@ public final class ThanksViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<Project> startShareOnTwitterTest = new TestSubscriber<>();
     vm.outputs.startShareOnTwitter().subscribe(startShareOnTwitterTest);
 
-    vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()));
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
 
     vm.inputs.shareClick();
     startShareTest.assertValues(project);

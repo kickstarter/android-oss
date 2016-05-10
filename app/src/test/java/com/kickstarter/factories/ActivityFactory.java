@@ -13,7 +13,7 @@ public final class ActivityFactory {
     return Activity.builder()
       .category(Activity.CATEGORY_WATCH)
       .createdAt(new DateTime(123))
-      .id(12345678)
+      .id(IdFactory.id())
       .updatedAt(new DateTime(456))
       .project(ProjectFactory.project())
       .user(UserFactory.user())

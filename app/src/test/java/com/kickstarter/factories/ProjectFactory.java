@@ -36,6 +36,7 @@ public final class ProjectFactory {
       .id(IdFactory.id())
       .pledged(50.0f)
       .name("Some Name")
+      .photo(PhotoFactory.photo())
       .state(Project.STATE_LIVE)
       .staticUsdRate(1.0f)
       .slug(slug)

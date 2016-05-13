@@ -16,7 +16,6 @@ import com.kickstarter.ui.activities.LoginActivity;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.kickstarter.ui.activities.SettingsActivity;
 import com.kickstarter.ui.activities.ThanksActivity;
-import com.kickstarter.ui.activities.ViewPledgeActivity;
 import com.kickstarter.ui.toolbars.DiscoveryToolbar;
 import com.kickstarter.ui.viewholders.ActivitySampleFriendBackingViewHolder;
 import com.kickstarter.ui.viewholders.ActivitySampleFriendFollowViewHolder;
@@ -82,5 +81,4 @@ public interface ApplicationGraph {
   void inject(RewardViewHolder __);
   void inject(SettingsActivity __);
   void inject(ThanksActivity __);
-  void inject(ViewPledgeActivity __);
 }

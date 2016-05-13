@@ -10,12 +10,14 @@ public final class RewardFactory {
   private RewardFactory() {}
 
   public static @NonNull Reward reward() {
+    final String description = "A digital download of the album and documentary.";
     return Reward.builder()
       .backersCount(123)
       .id(IdFactory.id())
-      .description("A digital download of the album and documentary.")
+      .description(description)
       .minimum(20.0f)
       .title("Digital Bundle")
+      .reward(description)
       .build();
   }
 

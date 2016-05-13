@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
-  tools:showIn="@layout/empty_comment_feed_layout"
   android:focusable="true"
   android:layout_width="match_parent"
   android:layout_height="@dimen/grid_10"
@@ -9,14 +8,13 @@
   android:clickable="true">
 
   <ImageView
-    android:id="@+id/context_photo"
+    android:id="@+id/project_context_image_view"
     android:scaleType="centerCrop"
     android:layout_width="match_parent"
     android:layout_height="@dimen/grid_12"
     tools:ignore="ContentDescription" />
 
   <View
-    android:id="@+id/overlay"
     android:alpha="0.6"
     android:background="@color/black"
     android:layout_width="match_parent"
@@ -29,22 +27,24 @@
     android:layout_height="wrap_content">
 
     <TextView
-      android:id="@+id/project_name"
+      android:id="@+id/project_context_project_name"
       android:gravity="center"
       android:layout_centerHorizontal="true"
       android:textStyle="bold"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:textColor="@color/white"/>
+      android:textColor="@color/white"
+      tools:text="SKULL GRAPHIC TEE" />
 
     <TextView
-      android:id="@+id/creator_name"
+      android:id="@+id/project_context_creator_name"
       android:gravity="center"
       android:layout_centerHorizontal="true"
-      android:layout_below="@id/project_name"
+      android:layout_below="@id/project_context_project_name"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:textColor="@color/white"/>
+      android:textColor="@color/white"
+      tools:text="Taylor Moore" />
   </RelativeLayout>
 
 </RelativeLayout>

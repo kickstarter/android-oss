@@ -13,10 +13,14 @@ public final class BackingFactory {
   private BackingFactory() {}
 
   public static @NonNull Backing backing() {
-    final Project project = ProjectFactory.project();
-    final Reward reward = RewardFactory.reward();
-    final User backer = UserFactory.user();
+    return backing(ProjectFactory.project(), UserFactory.user());
+  }
 
+  public static @NonNull Backing backing(final @NonNull Project project, final @NonNull User backer) {
+    return backing(project, backer, RewardFactory.reward());
+  }
+
+  public static @NonNull Backing backing(final @NonNull Project project, final @NonNull User backer, final @NonNull Reward reward) {
     return Backing.builder()
       .amount(10.0f)
       .backer(backer)

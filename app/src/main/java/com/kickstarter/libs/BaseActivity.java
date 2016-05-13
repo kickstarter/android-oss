@@ -235,6 +235,13 @@ public class BaseActivity<ViewModelType extends ActivityViewModel> extends AppCo
   }
 
   /**
+   * Returns the application's {@link Environment}.
+   */
+  protected @NonNull Environment environment() {
+    return component().environment();
+  }
+
+  /**
    * @deprecated Use {@link #bindToLifecycle()} or {@link #bindUntilEvent(ActivityEvent)} instead.
    */
   @Deprecated

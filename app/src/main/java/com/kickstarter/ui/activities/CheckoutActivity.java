@@ -84,9 +84,9 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
   protected @Bind(R.id.android_pay_email) TextView androidPayEmailTextView;
 
   // Project context view bindings
-  protected @Bind(R.id.context_photo) ImageView contextPhotoImageView;
-  protected @Bind(R.id.creator_name) TextView creatorNameTextView;
-  protected @Bind(R.id.project_name) TextView projectNameTextView;
+  protected @Bind(R.id.project_context_image_view) ImageView contextPhotoImageView;
+  protected @Bind(R.id.project_context_creator_name) TextView creatorNameTextView;
+  protected @Bind(R.id.project_context_project_name) TextView projectNameTextView;
 
   protected @BindString(R.string.profile_settings_about_terms) String termsOfUseString;
   protected @BindString(R.string.profile_settings_about_privacy) String privacyPolicyString;

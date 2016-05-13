@@ -6,6 +6,7 @@ import android.util.Pair;
 
 import com.kickstarter.factories.ActivityEnvelopeFactory;
 import com.kickstarter.factories.ActivityFactory;
+import com.kickstarter.factories.BackingFactory;
 import com.kickstarter.factories.CategoryFactory;
 import com.kickstarter.factories.CommentFactory;
 import com.kickstarter.factories.LocationFactory;
@@ -203,7 +204,8 @@ public class MockApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<Backing> fetchProjectBacking(final @NonNull Project project, final @NonNull User user) {
-    return Observable.empty();
+
+    return Observable.just(BackingFactory.backing(project, user));
   }
 
   @Override

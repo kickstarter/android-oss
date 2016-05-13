@@ -6,6 +6,8 @@ import com.kickstarter.models.Backing;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 
+import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
+
 public final class BackingUtils {
   private BackingUtils() {}
 
@@ -21,5 +23,13 @@ public final class BackingUtils {
     }
 
     return rewardId == reward.id();
+  }
+
+  public static boolean isShippable(final @NonNull Backing backing) {
+    final Reward reward = backing.reward();
+    if (reward == null) {
+      return false;
+    }
+    return isTrue(reward.shippingEnabled());
   }
 }

@@ -177,10 +177,16 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
       .toList()
       .share();
 
+    final Observable<DiscoveryParams> selectedParams = Observable.combineLatest(
+      currentUser.observable(),
+      paramsFromActivity.distinctUntilChanged(),
+      (__, params) -> params
+    );
+
     final ApiPaginator<Project, DiscoverEnvelope, DiscoveryParams> paginator =
       ApiPaginator.<Project, DiscoverEnvelope, DiscoveryParams>builder()
         .nextPage(nextPage)
-        .startOverWith(paramsFromActivity.distinctUntilChanged())
+        .startOverWith(selectedParams)
         .envelopeToListOfData(DiscoverEnvelope::projects)
         .envelopeToMoreUrl(env -> env.urls().api().moreProjects())
         .loadWithParams(apiClient::fetchProjects)

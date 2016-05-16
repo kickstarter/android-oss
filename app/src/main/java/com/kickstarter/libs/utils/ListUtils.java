@@ -199,6 +199,13 @@ public final class ListUtils {
   }
 
   /**
+   * Checks the size of a list and returns `true` if the list is non empty.
+   */
+  public static <T> boolean nonEmpty(final @NonNull List<T> xs) {
+    return xs.size() > 0;
+  }
+
+  /**
    * Prepends `x` to the beginning of the list `xs`.
    */
   public static <T> List<T> prepend(final @NonNull List<T> xs, final @NonNull T x) {

@@ -9,7 +9,6 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.BuildCheck;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.DiscoveryDrawerUtils;
 import com.kickstarter.libs.utils.DiscoveryUtils;
@@ -37,8 +36,10 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
+import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
 public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivity> implements DiscoveryViewModelInputs,
   DiscoveryViewModelOutputs {
@@ -236,17 +237,6 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
       .map(NavigationDrawerData.Section.Row::params)
       .map(DiscoveryParams::category);
 
-    // Accumulate a list of pages to clear when the params change, to avoid displaying old data.
-    pageChanged
-      .compose(Transformers.takeWhen(params))
-      .flatMap(currentPage -> Observable.from(DiscoveryParams.Sort.values())
-          .map(DiscoveryUtils::positionFromSort)
-          .filter(sortPosition -> !sortPosition.equals(currentPage))
-          .toList()
-      )
-      .compose(bindToLifecycle())
-      .subscribe(clearPages);
-
     final Observable<Category> expandedCategory = Observable.merge(
         topFilterRowClick.map(__ -> (Category) null),
         drawerClickedParentCategory
@@ -257,6 +247,20 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
         }
         return next;
       });
+
+    // Accumulate a list of pages to clear when the params or user changes,
+    // to avoid displaying old data.
+    pageChanged
+      .compose(takeWhen(params))
+      .compose(combineLatestPair(currentUser.observable()))
+      .map(pageAndUser -> pageAndUser.first)
+      .flatMap(currentPage -> Observable.from(DiscoveryParams.Sort.values())
+        .map(DiscoveryUtils::positionFromSort)
+        .filter(sortPosition -> !sortPosition.equals(currentPage))
+        .toList()
+      )
+      .compose(bindToLifecycle())
+      .subscribe(clearPages);
 
     params.distinctUntilChanged()
       .compose(bindToLifecycle())

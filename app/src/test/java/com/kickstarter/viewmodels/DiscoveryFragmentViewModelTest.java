@@ -1,6 +1,5 @@
 package com.kickstarter.viewmodels;
 
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 
@@ -15,13 +14,13 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.preferences.MockIntPreference;
+import com.kickstarter.libs.utils.ListUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.MockApiClient;
 import com.kickstarter.services.apiresponses.ActivityEnvelope;
-import com.kickstarter.ui.ArgumentsKey;
 
 import org.junit.Test;
 
@@ -38,12 +37,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     final DiscoveryFragmentViewModel vm = new DiscoveryFragmentViewModel(environment());
 
     final TestSubscriber<Boolean> hasProjects = new TestSubscriber<>();
-    vm.outputs.projects().map(ps -> ps.size() > 0).subscribe(hasProjects);
-
-    // Initialize the view model with MAGIC sort param.
-    final Bundle bundle = new Bundle();
-    bundle.putSerializable(ArgumentsKey.DISCOVERY_SORT_POSITION, 0);
-    vm.arguments(bundle);
+    vm.outputs.projects().map(ListUtils::nonEmpty).subscribe(hasProjects);
 
     // Load initial params from activity.
     vm.inputs.paramsFromActivity(DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.MAGIC).build());
@@ -71,12 +65,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     final DiscoveryFragmentViewModel vm = new DiscoveryFragmentViewModel(environment());
 
     final TestSubscriber<List<Project>> projects = new TestSubscriber<>();
-    vm.outputs.projects().filter(ps -> ps.size() > 0).subscribe(projects);
-
-    // Initialize the view model with MAGIC sort tab.
-    final Bundle magicBundle = new Bundle();
-    magicBundle.putSerializable(ArgumentsKey.DISCOVERY_SORT_POSITION, 0);
-    vm.arguments(magicBundle);
+    vm.outputs.projects().filter(ListUtils::nonEmpty).subscribe(projects);
 
     // Initial load.
     vm.inputs.paramsFromActivity(DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.MAGIC).build());
@@ -85,13 +74,35 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     koalaTest.assertValues("Discover List View");
 
     // Popularity tab clicked.
-    final Bundle popularBundle = new Bundle();
-    popularBundle.putSerializable(ArgumentsKey.DISCOVERY_SORT_POSITION, 1);
-    vm.arguments(popularBundle);
-
     vm.inputs.paramsFromActivity(DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.POPULAR).build());
     projects.assertValueCount(2);
     koalaTest.assertValues("Discover List View", "Discover List View");
+  }
+
+  @Test
+  public void testProjectsRefreshAfterLogin() {
+    final CurrentUserType currentUser = new MockCurrentUser();
+
+    final Environment environment = environment().toBuilder()
+      .currentUser(currentUser)
+      .build();
+
+    final DiscoveryFragmentViewModel vm = new DiscoveryFragmentViewModel(environment);
+
+    final TestSubscriber<List<Project>> projects = new TestSubscriber<>();
+    vm.outputs.projects().filter(ListUtils::nonEmpty).subscribe(projects);
+
+    // Initial load.
+    vm.inputs.paramsFromActivity(DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.MAGIC).build());
+
+    // Projects should emit.
+    projects.assertValueCount(1);
+
+    // Log in.
+    currentUser.refresh(UserFactory.user());
+
+    // Projects should emit again.
+    projects.assertValueCount(2);
   }
 
   @Test
@@ -161,11 +172,6 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
     final TestSubscriber<Pair<Project, RefTag>> showProject = new TestSubscriber<>();
     vm.outputs.showProject().subscribe(showProject);
-
-    // Start the view model with a MAGIC sort param.
-    final Bundle bundle = new Bundle();
-    bundle.putSerializable(ArgumentsKey.DISCOVERY_SORT_POSITION, 0);
-    vm.arguments(bundle);
 
     // Clicking see activity feed button on sampler should show activity feed.
     showActivityFeed.assertNoValues();

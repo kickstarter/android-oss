@@ -17,7 +17,6 @@ public final class RewardFactory {
       .description(description)
       .minimum(20.0f)
       .title("Digital Bundle")
-      .reward(description)
       .build();
   }
 

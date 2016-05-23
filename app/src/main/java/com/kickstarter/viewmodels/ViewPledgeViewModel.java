@@ -170,7 +170,7 @@ public final class ViewPledgeViewModel extends ActivityViewModel<ViewPledgeActiv
     final @NonNull Project project, final @NonNull Reward reward) {
 
     final String minimum = ksCurrency.format(reward.minimum(), project);
-    return Pair.create(minimum, reward.reward());
+    return Pair.create(minimum, reward.description());
   }
 
   private final PublishSubject<Void> projectClicked = PublishSubject.create();

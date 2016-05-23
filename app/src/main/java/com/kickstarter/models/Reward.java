@@ -23,7 +23,6 @@ public abstract class Reward implements Parcelable {
   public abstract float minimum();
   public abstract @Nullable DateTime estimatedDeliveryOn();
   public abstract @Nullable Integer remaining();
-  public abstract @Nullable String reward();
   public abstract @Nullable List<RewardsItem> rewardsItems();
   public abstract @Nullable Boolean shippingEnabled();
   public abstract @Nullable String shippingPreference();
@@ -39,7 +38,6 @@ public abstract class Reward implements Parcelable {
     public abstract Builder minimum(float __);
     public abstract Builder estimatedDeliveryOn(DateTime __);
     public abstract Builder remaining(Integer __);
-    public abstract Builder reward(String __);
     public abstract Builder rewardsItems(List<RewardsItem> __);
     public abstract Builder shippingEnabled(Boolean __);
     public abstract Builder shippingPreference(String __);

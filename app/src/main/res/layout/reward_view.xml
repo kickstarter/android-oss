@@ -255,7 +255,6 @@
 
         <include layout="@layout/reward_delivery_view" />
 
-
         <TextView
           style="@style/BodyPrimaryMedium"
           android:id="@+id/reward_backers_text_view"

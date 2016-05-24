@@ -28,7 +28,6 @@
       android:id="@+id/reward_estimated_delivery_date_text_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:maxLines="1"
       tools:text="September 2017" />
 
   </LinearLayout>
@@ -52,7 +51,6 @@
       android:id="@+id/reward_shipping_summary_text_view"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:maxLines="1"
       tools:text="Anywhere" />
 
   </LinearLayout>

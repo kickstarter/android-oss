@@ -38,8 +38,8 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
-import rx.android.schedulers.AndroidSchedulers;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromRight;
 import static com.kickstarter.libs.utils.TransitionUtils.transition;
 
@@ -95,58 +95,58 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
 
     viewModel.outputs.expandSortTabLayout()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(sortAppBarLayout::setExpanded);
 
     viewModel.outputs.updateToolbarWithParams()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(discoveryToolbar::loadParams);
 
     viewModel.outputs.updateParamsForPage()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(pp -> pagerAdapter.takeParams(pp.first, pp.second));
 
     viewModel.outputs.clearPages()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(pagerAdapter::clearPages);
 
     viewModel.outputs.showInternalTools()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(__ -> internalTools.maybeStartInternalToolsActivity(this));
 
     viewModel.outputs.showLoginTout()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(__ -> this.startLoginToutActivity());
 
     viewModel.outputs.showProfile()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(__ -> this.startProfileActivity());
 
     viewModel.outputs.showSettings()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(__ -> this.startSettingsActivity());
 
     viewModel.outputs.navigationDrawerData()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(drawerAdapter::takeData);
 
     viewModel.outputs.drawerIsOpen()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(RxDrawerLayout.open(discoveryLayout, GravityCompat.START));
 
     RxDrawerLayout.drawerOpen(discoveryLayout, GravityCompat.START)
       .skip(1)
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(viewModel.inputs::openDrawer);
   }
 

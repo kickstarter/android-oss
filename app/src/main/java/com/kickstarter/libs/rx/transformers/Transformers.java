@@ -172,4 +172,12 @@ public final class Transformers {
   public static @NonNull <T> ValuesTransformer<T> values() {
     return new ValuesTransformer<>();
   }
+
+  /**
+   * If called on the main thread, schedule the work immediately. Otherwise delay execution of the work by adding it
+   * to a message queue, where it will be executed on the main thread.
+   */
+  public static @NonNull <T> ObserveForUITransformer<T> observeForUI() {
+    return new ObserveForUITransformer<>();
+  }
 }

@@ -30,8 +30,7 @@ import com.kickstarter.ui.adapters.DiscoveryAdapter;
 import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.viewmodels.DiscoveryFragmentViewModel;
 
-import rx.android.schedulers.AndroidSchedulers;
-
+import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromRight;
 import static com.kickstarter.libs.utils.TransitionUtils.transition;
 
@@ -64,38 +63,38 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
     recyclerViewPaginator = new RecyclerViewPaginator(recyclerView, viewModel.inputs::nextPage);
 
     viewModel.outputs.activity()
-      .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
+      .compose(observeForUI())
       .subscribe(adapter::takeActivity);
 
     viewModel.outputs.projects()
-      .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
+      .compose(observeForUI())
       .subscribe(adapter::takeProjects);
 
     viewModel.outputs.shouldShowOnboardingView()
-      .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
+      .compose(observeForUI())
       .subscribe(adapter::setShouldShowOnboardingView);
 
     viewModel.outputs.showActivityFeed()
-      .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
+      .compose(observeForUI())
       .subscribe(__ -> startActivityFeedActivity());
 
     viewModel.outputs.showActivityUpdate()
-      .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
+      .compose(observeForUI())
       .subscribe(this::startActivityUpdateActivity);
 
     viewModel.outputs.showProject()
-      .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
+      .compose(observeForUI())
       .subscribe(projectAndRefTag -> this.startProjectActivity(projectAndRefTag.first, projectAndRefTag.second));
 
     viewModel.outputs.showLoginTout()
-      .observeOn(AndroidSchedulers.mainThread())
       .compose(bindToLifecycle())
+      .compose(observeForUI())
       .subscribe(__ -> this.startLoginToutActivity());
 
     return recyclerView;

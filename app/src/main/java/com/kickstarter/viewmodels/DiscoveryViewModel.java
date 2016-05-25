@@ -33,6 +33,7 @@ import com.kickstarter.viewmodels.outputs.DiscoveryViewModelOutputs;
 import java.util.List;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
@@ -212,7 +213,12 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
 
     // Emit only the first event in which the view pager creates a page--we only care about the first creation event
     // since pages are only created in memory once.
-    final Observable<DiscoveryParams.Sort> pagerSelectedSort = pagerCreatedPage.take(1)
+    final Observable<DiscoveryParams.Sort> pagerSelectedSort = pagerCreatedPage
+      // This needs to be observed on the main thread to handle a delay between when a fragment is constructed,
+      // and when it is available via the FragmentManager. This is not a pattern we should repeat, need to consider
+      // how to robustly avoid this race condition.
+      .observeOn(AndroidSchedulers.mainThread())
+      .take(1)
       // Start with page 0 since we skip the RxViewPager binding's immediate emission, which happens before
       // the adapter and fragment are ready. Map the resulting current pager position to its corresponding sort param.
       .switchMap(__ -> pageChanged.startWith(0))

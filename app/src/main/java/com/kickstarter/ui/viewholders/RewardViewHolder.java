@@ -32,10 +32,10 @@ import butterknife.BindColor;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromRight;
 import static com.kickstarter.libs.utils.TransitionUtils.transition;
-import static rx.android.schedulers.AndroidSchedulers.mainThread;
 
 public final class RewardViewHolder extends KSViewHolder {
   private final RewardViewModel viewModel;
@@ -87,160 +87,160 @@ public final class RewardViewHolder extends KSViewHolder {
 
     RxView.clicks(rewardView)
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(__ -> viewModel.inputs.rewardClicked());
 
     viewModel.outputs.allGoneHeaderIsHidden()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(ViewUtils.setGone(allGoneHeader));
 
     viewModel.outputs.backersTextViewIsHidden()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(ViewUtils.setGone(backersTextView));
 
     viewModel.outputs.backersTextViewText()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(this::setBackersTextView);
 
     viewModel.outputs.descriptionTextViewText()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(descriptionTextView::setText);
 
     viewModel.outputs.estimatedDeliveryDateSectionIsHidden()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(ViewUtils.setGone(estimatedDeliveryDateSection));
 
     viewModel.outputs.estimatedDeliveryDateTextViewText()
       .map(DateTimeUtils::estimatedDeliveryOn)
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(estimatedDeliveryDateTextView::setText);
 
     viewModel.outputs.goToCheckout()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(pr -> goToCheckout(pr.first, pr.second));
 
     viewModel.outputs.goToViewPledge()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(this::goToViewPledge);
 
     viewModel.outputs.isClickable()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(rewardView::setClickable);
 
     viewModel.outputs.limitAndRemainingSectionIsCenterAligned()
       .map(a -> a ? Gravity.CENTER : Gravity.CENTER_VERTICAL)
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(limitAndRemainingSection::setGravity);
 
     viewModel.outputs.limitAndRemainingSectionIsHidden()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(ViewUtils.setGone(limitAndRemainingSection));
 
     viewModel.outputs.limitAndRemainingTextViewText()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(lr -> setLimitAndRemainingTextView(lr.first, lr.second));
 
     viewModel.outputs.limitDividerIsHidden()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(ViewUtils.setInvisible(limitDividerView));
 
     viewModel.outputs.limitHeaderIsHidden()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(ViewUtils.setGone(limitHeader));
 
     viewModel.outputs.minimumButtonText()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(minimumButton::setText);
 
     viewModel.outputs.minimumButtonIsHidden()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(ViewUtils.setGone(minimumButton));
 
     viewModel.outputs.minimumTextViewIsHidden()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(ViewUtils.setGone(minimumTextView));
 
     viewModel.outputs.minimumTextViewText()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(minimumTextView::setText);
 
     viewModel.outputs.minimumTitleTextViewText()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(this::setTitleTextView);
 
     viewModel.outputs.rewardsItems()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(rewardsItemAdapter::rewardsItems);
 
     viewModel.outputs.rewardsItemsAreHidden()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(ViewUtils.setGone(rewardsItemSection));
 
     viewModel.outputs.rewardTitleTextViewText()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(titleTextView::setText);
 
     viewModel.outputs.selectedHeaderIsHidden()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(ViewUtils.setGone(selectedHeader));
 
     viewModel.outputs.selectedOverlayIsHidden()
       .map(hidden -> hidden ? whiteColor : lightGreenColor)
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(bodySection::setBackgroundColor);
 
     viewModel.outputs.shippingSummarySectionIsHidden()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(ViewUtils.setGone(shippingSection));
 
     viewModel.outputs.shippingSummaryTextViewText()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(shippingSummaryTextView::setText);
 
     viewModel.outputs.timeLimitSectionIsHidden()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(ViewUtils.setGone(timeLimitSection));
 
     viewModel.outputs.usdConversionTextViewIsHidden()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(ViewUtils.setGone(usdConversionTextView));
 
     viewModel.outputs.usdConversionTextViewText()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(this::setUsdConversionTextView);
 
     viewModel.outputs.whiteOverlayIsHidden()
       .compose(bindToLifecycle())
-      .observeOn(mainThread())
+      .compose(observeForUI())
       .subscribe(ViewUtils.setInvisible(whiteOverlayView));
   }
 

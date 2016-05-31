@@ -195,7 +195,7 @@ public final class ViewPledgeViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testRewardsItemAreEmitted() {
-    final Reward reward = RewardFactory.itemizedReward();
+    final Reward reward = RewardFactory.itemized();
     final Backing backing = BackingFactory.backing().toBuilder()
       .reward(reward)
       .build();

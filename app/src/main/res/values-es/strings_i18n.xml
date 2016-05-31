@@ -131,6 +131,7 @@
   <string name="dashboard_graphs_referrers_percent_external" formatted="false">%{percent_external} Externos</string>
   <string name="dashboard_graphs_referrers_percent_kickstarter" formatted="false">%{percent_kickstarter} Kickstarter</string>
   <string name="dashboard_graphs_referrers_pledged" formatted="false">Contribuido</string>
+  <string name="dashboard_graphs_referrers_pledged_via_custom" formatted="false">Contribuciones personalizadas</string>
   <string name="dashboard_graphs_referrers_pledged_via_external" formatted="false">Contribuido a través de externos</string>
   <string name="dashboard_graphs_referrers_pledged_via_kickstarter" formatted="false">Contribuido a través de Kickstarter</string>
   <string name="dashboard_graphs_referrers_show_more" formatted="false">Mostrar más referer</string>
@@ -366,6 +367,7 @@
   <string name="discovery_search_cancel" formatted="false">Cancelar</string>
   <string name="discovery_sort_types_end_date" formatted="false">Fecha de terminación</string>
   <string name="discovery_sort_types_magic" formatted="false">Arte de magia</string>
+  <string name="discovery_sort_types_most_backed" formatted="false">número de patrocinadores</string>
   <string name="discovery_sort_types_most_funded" formatted="false">Más financiados</string>
   <string name="discovery_sort_types_newest" formatted="false">Más recientes</string>
   <string name="discovery_sort_types_popularity" formatted="false">Popularidad</string>
@@ -672,12 +674,12 @@ Si tienes un momento, ¿te importaría calificar tu experiencia?\n
   <string name="project_updates_empty_state_non_backer_message" formatted="false">Se notificarán a los patrocinadores cuando hay actualizaciones del proyecto.</string>
   <string name="project_updates_empty_state_non_backer_title" formatted="false">No hay actualizaciones</string>
   <string name="project_view_button" formatted="false">Ver contribución</string>
-  <string name="project_view_pledge_includes" formatted="false">Includes</string>
-  <string name="project_view_pledge_status_canceled" formatted="false">Canceled</string>
-  <string name="project_view_pledge_status_collected" formatted="false">Collected</string>
-  <string name="project_view_pledge_status_dropped" formatted="false">Dropped</string>
-  <string name="project_view_pledge_status_errored" formatted="false">Errored</string>
-  <string name="project_view_pledge_status_pledged" formatted="false">Pledged</string>
+  <string name="project_view_pledge_includes" formatted="false">Incluye</string>
+  <string name="project_view_pledge_status_canceled" formatted="false">Cancelada</string>
+  <string name="project_view_pledge_status_collected" formatted="false">Recaudada</string>
+  <string name="project_view_pledge_status_dropped" formatted="false">Descartada</string>
+  <string name="project_view_pledge_status_errored" formatted="false">Error</string>
+  <string name="project_view_pledge_status_pledged" formatted="false">Contribuyó</string>
   <string name="push_notifications_alert_buttons_close" formatted="false">Cerrar</string>
   <string name="push_notifications_alert_buttons_view" formatted="false">Ver</string>
   <string name="rewards_info_all_gone" formatted="false">¡Recompensas agotadas!</string>
@@ -687,7 +689,7 @@ Si tienes un momento, ¿te importaría calificar tu experiencia?\n
   <string name="rewards_info_backer_count_backers_two" formatted="false">2 patrocinadores</string>
   <string name="rewards_info_backer_count_backers_zero" formatted="false">0 patrocinadores</string>
   <string name="rewards_info_estimated_delivery" formatted="false">Entrega aproximada</string>
-  <string name="rewards_info_includes" formatted="false">Includes</string>
+  <string name="rewards_info_includes" formatted="false">Incluye</string>
   <string name="rewards_info_item_quantity_title_few" formatted="false">(%{quantity}) %{title}</string>
   <string name="rewards_info_item_quantity_title_many" formatted="false">(%{quantity}) %{title}</string>
   <string name="rewards_info_item_quantity_title_one" formatted="false">%{title}</string>
@@ -696,8 +698,8 @@ Si tienes un momento, ¿te importaría calificar tu experiencia?\n
   <string name="rewards_info_limited_rewards_remaining_left_of_reward_limit" formatted="false">Limitado (quedan %{rewards_remaining} de %{reward_limit})</string>
   <string name="rewards_info_shipping" formatted="false">Envío</string>
   <string name="rewards_info_shipping_destinations" formatted="false">Destinos de envío</string>
-  <string name="rewards_info_ships_to" formatted="false">Ships to</string>
-  <string name="rewards_info_time_left" formatted="false">%{time} left</string>
+  <string name="rewards_info_ships_to" formatted="false">Envío a</string>
+  <string name="rewards_info_time_left" formatted="false">Tiempo restante: {{time}}</string>
   <string name="rewards_select_label_select" formatted="false">Seleccionar</string>
   <string name="rewards_selected_label_you_selected" formatted="false">Seleccionaste</string>
   <string name="rewards_shipping_preferences_location_unrestricted" formatted="false">Envíos a cualquier lugar del mundo</string>

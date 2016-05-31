@@ -10,6 +10,7 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KSCurrency;
 import com.kickstarter.libs.utils.BackingUtils;
 import com.kickstarter.libs.utils.BooleanUtils;
+import com.kickstarter.libs.utils.IntegerUtils;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ProjectUtils;
@@ -33,7 +34,6 @@ import rx.subjects.PublishSubject;
 import static com.kickstarter.libs.rx.transformers.Transformers.coalesce;
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
-import static com.kickstarter.libs.utils.ObjectUtils.isNull;
 
 public final class RewardViewModel extends ActivityViewModel<RewardViewHolder> implements
   RewardViewModelInputs, RewardViewModelOutputs {
@@ -70,16 +70,16 @@ public final class RewardViewModel extends ActivityViewModel<RewardViewHolder> i
       .map(pr -> !RewardUtils.isLimitReached(pr.second) || BackingUtils.isBacked(pr.first, pr.second))
       .distinctUntilChanged()
       .compose(bindToLifecycle())
-      .subscribe(allGoneHeaderIsHidden);
+      .subscribe(allGoneTextViewIsHidden);
 
     reward
-      .map(Reward::isNoReward)
+      .map(r -> RewardUtils.isNoReward(r) || !RewardUtils.hasBackers(r))
       .distinctUntilChanged()
       .compose(bindToLifecycle())
       .subscribe(backersTextViewIsHidden);
 
     reward
-      .filter(Reward::isReward)
+      .filter(r -> RewardUtils.isReward(r) || RewardUtils.hasBackers(r))
       .map(Reward::backersCount)
       .filter(ObjectUtils::isNotNull)
       .compose(bindToLifecycle())
@@ -121,18 +121,19 @@ public final class RewardViewModel extends ActivityViewModel<RewardViewHolder> i
       .compose(bindToLifecycle())
       .subscribe(goToViewPledge);
 
-    Observable.just(false)
-      .compose(takeWhen(projectAndReward))
+    reward
+      .map(r -> IntegerUtils.isNonZero(r.limit()) && IntegerUtils.isNonZero(r.backersCount()))
+      .map(BooleanUtils::negate)
       .distinctUntilChanged()
       .compose(bindToLifecycle())
-      .subscribe(limitAndRemainingSectionIsCenterAligned);
+      .subscribe(limitAndBackersSeparatorIsHidden);
 
     reward
       .map(RewardUtils::isLimited)
       .map(BooleanUtils::negate)
       .distinctUntilChanged()
       .compose(bindToLifecycle())
-      .subscribe(limitAndRemainingSectionIsHidden);
+      .subscribe(limitAndRemainingTextViewIsHidden);
 
     reward
       .map(r -> Pair.create(r.limit(), r.remaining()))
@@ -140,13 +141,6 @@ public final class RewardViewModel extends ActivityViewModel<RewardViewHolder> i
       .map(rr -> Pair.create(NumberUtils.format(rr.first), NumberUtils.format(rr.second)))
       .compose(bindToLifecycle())
       .subscribe(limitAndRemainingTextViewText);
-
-    // Implement this properly when rewards can be time-limited.
-    Observable.just(true)
-      .compose(takeWhen(projectAndReward))
-      .distinctUntilChanged()
-      .compose(bindToLifecycle())
-      .subscribe(limitDividerIsHidden);
 
     // Hide limit header if reward is not limited, or reward has been backed by user.
     projectAndReward
@@ -157,34 +151,7 @@ public final class RewardViewModel extends ActivityViewModel<RewardViewHolder> i
 
     formattedMinimum
       .compose(bindToLifecycle())
-      .subscribe(minimumButtonText);
-
-    projectAndReward
-      .map(pr -> isNull(pr.second.title()) || !isSelectable(pr.first, pr.second))
-      .distinctUntilChanged()
-      .compose(bindToLifecycle())
-      .subscribe(minimumButtonIsHidden);
-
-    projectAndReward
-      .map(pr -> isNull(pr.second.title()) || isSelectable(pr.first, pr.second))
-      .distinctUntilChanged()
-      .compose(bindToLifecycle())
-      .subscribe(minimumTextViewIsHidden);
-
-    formattedMinimum
-      .compose(bindToLifecycle())
       .subscribe(minimumTextViewText);
-
-    formattedMinimum
-      .compose(
-        takeWhen(
-          reward
-            .map(Reward::title)
-            .filter(ObjectUtils::isNull)
-        )
-      )
-      .compose(bindToLifecycle())
-      .subscribe(minimumTitleTextViewText);
 
     reward
       .map(Reward::rewardsItems)
@@ -198,12 +165,6 @@ public final class RewardViewModel extends ActivityViewModel<RewardViewHolder> i
       .distinctUntilChanged()
       .compose(bindToLifecycle())
       .subscribe(rewardsItemsAreHidden);
-
-    reward
-      .map(Reward::title)
-      .filter(ObjectUtils::isNotNull)
-      .compose(bindToLifecycle())
-      .subscribe(rewardTitleTextViewText);
 
     rewardIsSelected
       .map(BooleanUtils::negate)
@@ -230,12 +191,17 @@ public final class RewardViewModel extends ActivityViewModel<RewardViewHolder> i
       .compose(bindToLifecycle())
       .subscribe(shippingSummarySectionIsHidden);
 
-    // Not implemented in backend yet
-    Observable.just(true)
-      .compose(takeWhen(projectAndReward))
-      .distinctUntilChanged()
+    reward
+      .map(Reward::title)
+      .map(ObjectUtils::isNull)
       .compose(bindToLifecycle())
-      .subscribe(timeLimitSectionIsHidden);
+      .subscribe(titleTextViewIsHidden);
+
+    reward
+      .map(Reward::title)
+      .filter(ObjectUtils::isNotNull)
+      .compose(bindToLifecycle())
+      .subscribe(titleTextViewText);
 
     shouldDisplayUsdConversion
       .map(BooleanUtils::negate)
@@ -252,8 +218,8 @@ public final class RewardViewModel extends ActivityViewModel<RewardViewHolder> i
       .compose(bindToLifecycle())
       .subscribe(usdConversionTextViewText);
 
-    reward
-      .map(RewardUtils::isLimitReached)
+    projectAndReward
+      .map(pr -> RewardUtils.isLimitReached(pr.second) && !BackingUtils.isBacked(pr.first, pr.second))
       .map(BooleanUtils::negate)
       .distinctUntilChanged()
       .compose(bindToLifecycle())
@@ -275,7 +241,7 @@ public final class RewardViewModel extends ActivityViewModel<RewardViewHolder> i
   private final PublishSubject<Pair<Project, Reward>> projectAndReward = PublishSubject.create();
   private final PublishSubject<Void> rewardClicked = PublishSubject.create();
 
-  private final BehaviorSubject<Boolean> allGoneHeaderIsHidden = BehaviorSubject.create();
+  private final BehaviorSubject<Boolean> allGoneTextViewIsHidden = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> backersTextViewIsHidden = BehaviorSubject.create();
   private final BehaviorSubject<Integer> backersTextViewText = BehaviorSubject.create();
   private final BehaviorSubject<String> descriptionTextViewText = BehaviorSubject.create();
@@ -284,26 +250,19 @@ public final class RewardViewModel extends ActivityViewModel<RewardViewHolder> i
   private final PublishSubject<Pair<Project, Reward>> goToCheckout = PublishSubject.create();
   private final PublishSubject<Project> goToViewPledge = PublishSubject.create();
   private final BehaviorSubject<Boolean> isClickable = BehaviorSubject.create();
-  private final BehaviorSubject<Boolean> limitAndRemainingSectionIsCenterAligned = BehaviorSubject.create();
-  private final BehaviorSubject<Boolean> limitAndRemainingSectionIsHidden = BehaviorSubject.create();
+  private final BehaviorSubject<Boolean> limitAndBackersSeparatorIsHidden = BehaviorSubject.create();
+  private final BehaviorSubject<Boolean> limitAndRemainingTextViewIsHidden = BehaviorSubject.create();
   private final BehaviorSubject<Pair<String, String>> limitAndRemainingTextViewText = BehaviorSubject.create();
-  private final BehaviorSubject<Boolean> limitDividerIsHidden = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> limitHeaderIsHidden = BehaviorSubject.create();
-  private final BehaviorSubject<String> minimumButtonText = BehaviorSubject.create();
-  private final BehaviorSubject<String> minimumTitleTextViewText = BehaviorSubject.create();
-  private final BehaviorSubject<Boolean> minimumButtonIsHidden = BehaviorSubject.create();
   private final BehaviorSubject<String> minimumTextViewText = BehaviorSubject.create();
-  private final BehaviorSubject<Boolean> minimumTextViewIsHidden = BehaviorSubject.create();
   private final BehaviorSubject<List<RewardsItem>> rewardsItems = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> rewardsItemsAreHidden = BehaviorSubject.create();
-  private final BehaviorSubject<String> rewardTitleTextViewText = BehaviorSubject.create();
+  private final BehaviorSubject<Boolean> titleTextViewIsHidden = BehaviorSubject.create();
+  private final BehaviorSubject<String> titleTextViewText = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> selectedHeaderIsHidden = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> selectedOverlayIsHidden = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> shippingSummarySectionIsHidden = BehaviorSubject.create();
   private final BehaviorSubject<String> shippingSummaryTextViewText = BehaviorSubject.create();
-  private final BehaviorSubject<Boolean> timeLimitSectionIsCenterAligned = BehaviorSubject.create();
-  private final BehaviorSubject<Boolean> timeLimitSectionIsHidden = BehaviorSubject.create();
-  private final BehaviorSubject<String> timeLimitTextViewText = BehaviorSubject.create();
   private final BehaviorSubject<String> usdConversionTextViewText = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> usdConversionTextViewIsHidden = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> whiteOverlayIsHidden = BehaviorSubject.create();
@@ -319,8 +278,8 @@ public final class RewardViewModel extends ActivityViewModel<RewardViewHolder> i
     rewardClicked.onNext(null);
   }
 
-  @Override public @NonNull Observable<Boolean> allGoneHeaderIsHidden() {
-    return allGoneHeaderIsHidden;
+  @Override public @NonNull Observable<Boolean> allGoneTextViewIsHidden() {
+    return allGoneTextViewIsHidden;
   }
 
   @Override public @NonNull Observable<Boolean> backersTextViewIsHidden() {
@@ -355,44 +314,24 @@ public final class RewardViewModel extends ActivityViewModel<RewardViewHolder> i
     return goToViewPledge;
   }
 
-  @Override public @NonNull Observable<Pair<String, String>> limitAndRemainingTextViewText() {
-    return limitAndRemainingTextViewText;
+  @Override public @NonNull Observable<Boolean> limitAndBackersSeparatorIsHidden() {
+    return limitAndBackersSeparatorIsHidden;
   }
 
-  @Override public @NonNull Observable<Boolean> limitDividerIsHidden() {
-    return limitDividerIsHidden;
+  @Override public @NonNull Observable<Boolean> limitAndRemainingTextViewIsHidden() {
+    return limitAndRemainingTextViewIsHidden;
+  }
+
+  @Override public @NonNull Observable<Pair<String, String>> limitAndRemainingTextViewText() {
+    return limitAndRemainingTextViewText;
   }
 
   @Override public @NonNull Observable<Boolean> limitHeaderIsHidden() {
     return limitHeaderIsHidden;
   }
 
-  @Override public @NonNull Observable<String> minimumButtonText() {
-    return minimumButtonText;
-  }
-
-  @Override public @NonNull Observable<Boolean> minimumButtonIsHidden() {
-    return minimumButtonIsHidden;
-  }
-
-  @Override public @NonNull Observable<Boolean> minimumTextViewIsHidden() {
-    return minimumTextViewIsHidden;
-  }
-
   @Override public @NonNull Observable<String> minimumTextViewText() {
     return minimumTextViewText;
-  }
-
-  @Override public @NonNull Observable<String> minimumTitleTextViewText() {
-    return minimumTitleTextViewText;
-  }
-
-  @Override public @NonNull Observable<Boolean> limitAndRemainingSectionIsCenterAligned() {
-    return limitAndRemainingSectionIsCenterAligned;
-  }
-
-  @Override public @NonNull Observable<Boolean> limitAndRemainingSectionIsHidden() {
-    return limitAndRemainingSectionIsHidden;
   }
 
   @Override public @NonNull Observable<List<RewardsItem>> rewardsItems() {
@@ -401,10 +340,6 @@ public final class RewardViewModel extends ActivityViewModel<RewardViewHolder> i
 
   @Override public @NonNull Observable<Boolean> rewardsItemsAreHidden() {
     return rewardsItemsAreHidden;
-  }
-
-  @Override public @NonNull Observable<String> rewardTitleTextViewText() {
-    return rewardTitleTextViewText;
   }
 
   @Override public @NonNull Observable<Boolean> selectedHeaderIsHidden() {
@@ -423,16 +358,12 @@ public final class RewardViewModel extends ActivityViewModel<RewardViewHolder> i
     return shippingSummaryTextViewText;
   }
 
-  @Override public @NonNull Observable<String> timeLimitTextViewText() {
-    return timeLimitTextViewText;
+  @Override public @NonNull Observable<Boolean> titleTextViewIsHidden() {
+    return titleTextViewIsHidden;
   }
 
-  @Override public @NonNull Observable<Boolean> timeLimitSectionIsCenterAligned() {
-    return timeLimitSectionIsCenterAligned;
-  }
-
-  @Override public @NonNull Observable<Boolean> timeLimitSectionIsHidden() {
-    return timeLimitSectionIsHidden;
+  @Override public @NonNull Observable<String> titleTextViewText() {
+    return titleTextViewText;
   }
 
   @Override public @NonNull Observable<Boolean> usdConversionTextViewIsHidden() {

@@ -4,13 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -40,26 +38,21 @@ import static com.kickstarter.libs.utils.TransitionUtils.transition;
 public final class RewardViewHolder extends KSViewHolder {
   private final RewardViewModel viewModel;
 
-  protected @Bind(R.id.reward_all_gone_header) View allGoneHeader;
+  protected @Bind(R.id.reward_all_gone_text_view) TextView allGoneTextView;
   protected @Bind(R.id.reward_backers_text_view) TextView backersTextView;
   protected @Bind(R.id.reward_description_text_view) TextView descriptionTextView;
   protected @Bind(R.id.reward_estimated_delivery_date_section) View estimatedDeliveryDateSection;
   protected @Bind(R.id.reward_estimated_delivery_date_text_view) TextView estimatedDeliveryDateTextView;
-  protected @Bind(R.id.reward_body_section) View bodySection;
-  protected @Bind(R.id.reward_limit_and_remaining_section) LinearLayout limitAndRemainingSection;
+  protected @Bind(R.id.reward_limit_and_backers_separator_text_view) TextView limitAndBackersSeparatorTextView;
   protected @Bind(R.id.reward_limit_and_remaining_text_view) TextView limitAndRemainingTextView;
-  protected @Bind(R.id.reward_limit_divider) View limitDividerView;
-  protected @Bind(R.id.reward_limit_header) View limitHeader;
-  protected @Bind(R.id.reward_minimum_button) Button minimumButton;
   protected @Bind(R.id.reward_minimum_text_view) TextView minimumTextView;
   protected @Bind(R.id.reward_rewards_item_recycler_view) RecyclerView rewardsItemRecyclerView;
   protected @Bind(R.id.reward_rewards_item_section) View rewardsItemSection;
   protected @Bind(R.id.reward_selected_header) View selectedHeader;
   protected @Bind(R.id.reward_shipping_section) View shippingSection;
   protected @Bind(R.id.reward_shipping_summary_text_view) TextView shippingSummaryTextView;
-  protected @Bind(R.id.reward_time_limit_section) View timeLimitSection;
   protected @Bind(R.id.reward_title_text_view) TextView titleTextView;
-  protected @Bind(R.id.reward_view) View rewardView;
+  protected @Bind(R.id.reward_view) CardView rewardView;
   protected @Bind(R.id.reward_usd_conversion_text_view) TextView usdConversionTextView;
   protected @Bind(R.id.reward_white_overlay_view) View whiteOverlayView;
 
@@ -90,10 +83,10 @@ public final class RewardViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(__ -> viewModel.inputs.rewardClicked());
 
-    viewModel.outputs.allGoneHeaderIsHidden()
+    viewModel.outputs.allGoneTextViewIsHidden()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(allGoneHeader));
+      .subscribe(ViewUtils.setGone(allGoneTextView));
 
     viewModel.outputs.backersTextViewIsHidden()
       .compose(bindToLifecycle())
@@ -136,56 +129,25 @@ public final class RewardViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(rewardView::setClickable);
 
-    viewModel.outputs.limitAndRemainingSectionIsCenterAligned()
-      .map(a -> a ? Gravity.CENTER : Gravity.CENTER_VERTICAL)
+    viewModel.outputs.limitAndBackersSeparatorIsHidden()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(limitAndRemainingSection::setGravity);
+      .subscribe(ViewUtils.setGone(limitAndBackersSeparatorTextView));
 
-    viewModel.outputs.limitAndRemainingSectionIsHidden()
+    viewModel.outputs.limitAndRemainingTextViewIsHidden()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(limitAndRemainingSection));
+      .subscribe(ViewUtils.setGone(limitAndRemainingTextView));
 
     viewModel.outputs.limitAndRemainingTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(lr -> setLimitAndRemainingTextView(lr.first, lr.second));
 
-    viewModel.outputs.limitDividerIsHidden()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setInvisible(limitDividerView));
-
-    viewModel.outputs.limitHeaderIsHidden()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(limitHeader));
-
-    viewModel.outputs.minimumButtonText()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(minimumButton::setText);
-
-    viewModel.outputs.minimumButtonIsHidden()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(minimumButton));
-
-    viewModel.outputs.minimumTextViewIsHidden()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(minimumTextView));
-
     viewModel.outputs.minimumTextViewText()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(minimumTextView::setText);
-
-    viewModel.outputs.minimumTitleTextViewText()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this::setTitleTextView);
+      .subscribe(this::setMinimumTextView);
 
     viewModel.outputs.rewardsItems()
       .compose(bindToLifecycle())
@@ -197,11 +159,6 @@ public final class RewardViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(ViewUtils.setGone(rewardsItemSection));
 
-    viewModel.outputs.rewardTitleTextViewText()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(titleTextView::setText);
-
     viewModel.outputs.selectedHeaderIsHidden()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -211,7 +168,7 @@ public final class RewardViewHolder extends KSViewHolder {
       .map(hidden -> hidden ? whiteColor : lightGreenColor)
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(bodySection::setBackgroundColor);
+      .subscribe(rewardView::setBackgroundColor);
 
     viewModel.outputs.shippingSummarySectionIsHidden()
       .compose(bindToLifecycle())
@@ -223,10 +180,15 @@ public final class RewardViewHolder extends KSViewHolder {
       .compose(observeForUI())
       .subscribe(shippingSummaryTextView::setText);
 
-    viewModel.outputs.timeLimitSectionIsHidden()
+    viewModel.outputs.titleTextViewIsHidden()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(ViewUtils.setGone(timeLimitSection));
+      .subscribe(ViewUtils.setGone(titleTextView));
+
+    viewModel.outputs.titleTextViewText()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(titleTextView::setText);
 
     viewModel.outputs.usdConversionTextViewIsHidden()
       .compose(bindToLifecycle())
@@ -280,8 +242,8 @@ public final class RewardViewHolder extends KSViewHolder {
     backersTextView.setText(backersCountText);
   }
 
-  private void setTitleTextView(final @NonNull String minimum) {
-    titleTextView.setText(ksString.format(
+  private void setMinimumTextView(final @NonNull String minimum) {
+    minimumTextView.setText(ksString.format(
       pledgeRewardCurrencyOrMoreString,
       "reward_currency", minimum
     ));

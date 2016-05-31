@@ -52,23 +52,11 @@ public abstract class Reward implements Parcelable {
 
   public abstract Builder toBuilder();
 
-  public boolean hasEstimatedDelivery() {
-    return this.estimatedDeliveryOn() != null;
-  }
-
   public boolean isAllGone() {
     return isZero(this.remaining());
   }
 
   public boolean isLimited() {
     return this.limit() != null && !this.isAllGone();
-  }
-
-  public boolean isReward() {
-    return this.id() != 0;
-  }
-
-  public boolean isNoReward() {
-    return this.id() == 0;
   }
 }

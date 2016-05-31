@@ -25,21 +25,21 @@ import static java.util.Collections.emptyList;
 public final class RewardViewModelTest extends KSRobolectricTestCase {
 
   @Test
-  public void testAllGoneHeaderIsHidden() {
+  public void testAllGoneTextViewIsHidden() {
     final RewardViewModel vm = new RewardViewModel(environment());
     final Project project = ProjectFactory.backedProjectWithRewardLimitReached();
 
-    final TestSubscriber<Boolean> allGoneHeaderIsHidden = TestSubscriber.create();
-    vm.outputs.allGoneHeaderIsHidden().subscribe(allGoneHeaderIsHidden);
+    final TestSubscriber<Boolean> allGoneTextViewIsHidden = TestSubscriber.create();
+    vm.outputs.allGoneTextViewIsHidden().subscribe(allGoneTextViewIsHidden);
 
     // When an unlimited reward is not backed, hide the 'all gone' header.
     vm.inputs.projectAndReward(project, RewardFactory.reward());
-    allGoneHeaderIsHidden.assertValues(true);
+    allGoneTextViewIsHidden.assertValues(true);
 
     // When an unlimited reward is backed, hide the 'all gone' header (distinct until changed).
     final Reward backedReward = project.backing().reward();
     vm.inputs.projectAndReward(project, backedReward);
-    allGoneHeaderIsHidden.assertValues(true);
+    allGoneTextViewIsHidden.assertValues(true);
 
     // When a backed reward's limit has been reached, hide the 'all gone' header – the selected banner will be shown instead.
     final Reward backedRewardWithLimitReached = backedReward.toBuilder()
@@ -47,37 +47,44 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
       .remaining(0)
       .build();
     vm.inputs.projectAndReward(project, backedRewardWithLimitReached);
-    allGoneHeaderIsHidden.assertValues(true);
+    allGoneTextViewIsHidden.assertValues(true);
 
     // When a reward's limit has been reached and it has not been backed, show the 'all gone' header.
-    vm.inputs.projectAndReward(project, RewardFactory.rewardWithLimitReached());
-    allGoneHeaderIsHidden.assertValues(true, false);
+    vm.inputs.projectAndReward(project, RewardFactory.limitReached());
+    allGoneTextViewIsHidden.assertValues(true, false);
+  }
+
+  @Test
+  public void testBackersTextViewIsHidden() {
+    final RewardViewModel vm = new RewardViewModel(environment());
+    final Project project = ProjectFactory.project();
+
+    final TestSubscriber<Boolean> backersTextViewIsHiddenTest = TestSubscriber.create();
+    vm.outputs.backersTextViewIsHidden().subscribe(backersTextViewIsHiddenTest);
+
+    vm.inputs.projectAndReward(project, RewardFactory.noBackers());
+    backersTextViewIsHiddenTest.assertValues(true);
+
+    vm.inputs.projectAndReward(project, RewardFactory.noReward());
+    backersTextViewIsHiddenTest.assertValues(true);
+
+    vm.inputs.projectAndReward(project, RewardFactory.backers());
+    backersTextViewIsHiddenTest.assertValues(true, false);
   }
 
   @Test
   public void testBackersTextView() {
     final RewardViewModel vm = new RewardViewModel(environment());
     final Project project = ProjectFactory.project();
-    final Reward rewardWithBackers = RewardFactory.reward().toBuilder()
-      .backersCount(10)
-      .build();
+    final Reward rewardWithBackers = RewardFactory.reward().toBuilder().backersCount(100).build();
 
     final TestSubscriber<Integer> backersTextViewTextTest = TestSubscriber.create();
     vm.outputs.backersTextViewText().subscribe(backersTextViewTextTest);
 
-    final TestSubscriber<Boolean> backersTextViewIsHiddenTest = TestSubscriber.create();
-    vm.outputs.backersTextViewIsHidden().subscribe(backersTextViewIsHiddenTest);
-
     // Show reward backer count.
     vm.inputs.projectAndReward(project, rewardWithBackers);
 
-    backersTextViewTextTest.assertValue(10);
-    backersTextViewIsHiddenTest.assertValue(false);
-
-    // If reward is 'no reward', backers should be hidden.
-    vm.inputs.projectAndReward(project, RewardFactory.noReward());
-    backersTextViewTextTest.assertValues(10);
-    backersTextViewIsHiddenTest.assertValues(false, true);
+    backersTextViewTextTest.assertValue(100);
   }
 
   @Test
@@ -243,20 +250,33 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
     isClickableTest.assertValues(true, false, true);
 
     // A reward with its limit reached should not be clickable.
-    vm.inputs.projectAndReward(ProjectFactory.project(), RewardFactory.rewardWithLimitReached());
+    vm.inputs.projectAndReward(ProjectFactory.project(), RewardFactory.limitReached());
     isClickableTest.assertValues(true, false, true, false);
   }
 
   @Test
-  public void testLimitDividerIsHidden() {
+  public void testLimitAndBackersSeparatorIsHidden() {
     final RewardViewModel vm = new RewardViewModel(environment());
+    final Project project = ProjectFactory.project();
 
-    final TestSubscriber<Boolean> limitDividerIsHiddenTest = TestSubscriber.create();
-    vm.outputs.limitDividerIsHidden().subscribe(limitDividerIsHiddenTest);
+    final TestSubscriber<Boolean> limitAndBackersSeparatorIsHiddenTest = TestSubscriber.create();
+    vm.outputs.limitAndBackersSeparatorIsHidden().subscribe(limitAndBackersSeparatorIsHiddenTest);
 
-    // Time limit is not implemented in backend, just assert that the divider is not shown for now.
-    vm.inputs.projectAndReward(ProjectFactory.project(), RewardFactory.reward());
-    limitDividerIsHiddenTest.assertValue(true);
+    // When reward has no limit or backers, separator should be hidden.
+    vm.inputs.projectAndReward(project, RewardFactory.noBackers());
+    limitAndBackersSeparatorIsHiddenTest.assertValues(true);
+
+    // When reward has no limit and backers, separator should be hidden.
+    vm.inputs.projectAndReward(project, RewardFactory.reward());
+    limitAndBackersSeparatorIsHiddenTest.assertValues(true);
+
+    // When reward has limit and no backers, separator should be hidden.
+    vm.inputs.projectAndReward(project, RewardFactory.limited().toBuilder().backersCount(0).build());
+    limitAndBackersSeparatorIsHiddenTest.assertValues(true);
+
+    // When reward has limit and backers, separator should be visible.
+    vm.inputs.projectAndReward(project, RewardFactory.limited().toBuilder().build());
+    limitAndBackersSeparatorIsHiddenTest.assertValues(true, false);
   }
 
   @Test
@@ -266,8 +286,8 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
 
     final TestSubscriber<Pair<String, String>> limitAndRemainingTextViewTextTest = TestSubscriber.create();
     vm.outputs.limitAndRemainingTextViewText().subscribe(limitAndRemainingTextViewTextTest);
-    final TestSubscriber<Boolean> limitAndRemainingSectionIsHidden = TestSubscriber.create();
-    vm.outputs.limitAndRemainingSectionIsHidden().subscribe(limitAndRemainingSectionIsHidden);
+    final TestSubscriber<Boolean> limitAndRemainingTextViewIsHiddenTest = TestSubscriber.create();
+    vm.outputs.limitAndRemainingTextViewIsHidden().subscribe(limitAndRemainingTextViewIsHiddenTest);
 
     // When reward is limited, quantity should be shown.
     final Reward limitedReward = RewardFactory.reward().toBuilder()
@@ -276,27 +296,15 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
       .build();
     vm.inputs.projectAndReward(project, limitedReward);
     limitAndRemainingTextViewTextTest.assertValue(Pair.create("10", "5"));
-    limitAndRemainingSectionIsHidden.assertValue(false);
+    limitAndRemainingTextViewIsHiddenTest.assertValue(false);
 
     // When reward's limit has been reached, don't show quantity.
-    vm.inputs.projectAndReward(project, RewardFactory.rewardWithLimitReached());
-    limitAndRemainingSectionIsHidden.assertValues(false, true);
+    vm.inputs.projectAndReward(project, RewardFactory.limitReached());
+    limitAndRemainingTextViewIsHiddenTest.assertValues(false, true);
 
     // When reward has no limit, don't show quantity (distinct until changed).
     vm.inputs.projectAndReward(project, RewardFactory.reward());
-    limitAndRemainingSectionIsHidden.assertValues(false, true);
-  }
-
-  @Test
-  public void testLimitAndRemainingSectionIsCenterAligned() {
-    final RewardViewModel vm = new RewardViewModel(environment());
-
-    final TestSubscriber<Boolean> limitAndRemainingSectionIsCenterAligned = TestSubscriber.create();
-    vm.outputs.limitAndRemainingSectionIsCenterAligned().subscribe(limitAndRemainingSectionIsCenterAligned);
-
-    // Time limit is not implemented yet, so just always default this to false.
-    vm.inputs.projectAndReward(ProjectFactory.project(), RewardFactory.reward());
-    limitAndRemainingSectionIsCenterAligned.assertValue(false);
+    limitAndRemainingTextViewIsHiddenTest.assertValues(false, true);
   }
 
   @Test
@@ -308,7 +316,7 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
 
     // If the reward is limited and has not been backed, show the limit header.
     final Project backedProjectWithLimitedReward = ProjectFactory.backedProjectWithRewardLimited();
-    vm.inputs.projectAndReward(backedProjectWithLimitedReward, RewardFactory.limitedReward());
+    vm.inputs.projectAndReward(backedProjectWithLimitedReward, RewardFactory.limited());
     limitHeaderIsHiddenTest.assertValues(false);
 
     // If the reward is limited and has been backed, don't show the limit header.
@@ -318,76 +326,6 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
     // If the reward is not limited, don't show the limit header.
     vm.inputs.projectAndReward(ProjectFactory.project(), RewardFactory.reward());
     limitHeaderIsHiddenTest.assertValues(false, true);
-  }
-
-  @Test
-  public void testMinimumButtonIsHidden() {
-    final RewardViewModel vm = new RewardViewModel(environment());
-    final Project project = ProjectFactory.project();
-
-    final TestSubscriber<Boolean> minimumButtonIsHiddenTest = TestSubscriber.create();
-    vm.outputs.minimumButtonIsHidden().subscribe(minimumButtonIsHiddenTest);
-
-    // When reward is unlimited, show minimum button.
-    vm.inputs.projectAndReward(project, RewardFactory.reward());
-    minimumButtonIsHiddenTest.assertValue(false);
-
-    // When reward's limit has been reached, hide minimum button.
-    vm.inputs.projectAndReward(project, RewardFactory.rewardWithLimitReached());
-    minimumButtonIsHiddenTest.assertValues(false, true);
-
-    // If reward has no title, hide minimum button (distinct until changed).
-    final Reward rewardWithNoTitle = RewardFactory.reward().toBuilder()
-      .title(null)
-      .build();
-    vm.inputs.projectAndReward(project, rewardWithNoTitle);
-    minimumButtonIsHiddenTest.assertValues(false, true);
-  }
-
-  @Test
-  public void testMinimumButtonText() {
-    final RewardViewModel vm = new RewardViewModel(environment());
-    final Project project = ProjectFactory.project();
-    final Reward reward = RewardFactory.reward().toBuilder()
-      .minimum(10)
-      .build();
-
-    final TestSubscriber<String> minimumButtonText = TestSubscriber.create();
-    vm.outputs.minimumButtonText().subscribe(minimumButtonText);
-
-    vm.inputs.projectAndReward(project, reward);
-
-    minimumButtonText.assertValue("$10");
-  }
-
-  @Test
-  public void testMinimumTextViewIsHidden() {
-    final RewardViewModel vm = new RewardViewModel(environment());
-    final Project liveProject = ProjectFactory.project();
-    final Project successfulProject = ProjectFactory.successfulProject();
-
-    final TestSubscriber<Boolean> minimumTextViewIsHiddenTest = TestSubscriber.create();
-    vm.outputs.minimumTextViewIsHidden().subscribe(minimumTextViewIsHiddenTest);
-
-    // For rewards with no limit and a live project, hide minimum text view.
-    vm.inputs.projectAndReward(liveProject, RewardFactory.reward());
-    minimumTextViewIsHiddenTest.assertValue(true);
-
-    // For rewards with no limit and a finished project, show minimum text view.
-    vm.inputs.projectAndReward(successfulProject, RewardFactory.reward());
-    minimumTextViewIsHiddenTest.assertValues(true, false);
-
-    // If reward has no title, hide minimum text view.
-    final Reward rewardWithNoTitle = RewardFactory.reward().toBuilder()
-      .title(null)
-      .build();
-    vm.inputs.projectAndReward(successfulProject, rewardWithNoTitle);
-    minimumTextViewIsHiddenTest.assertValues(true, false, true);
-
-    // If reward's limit has been reached, show minimum text view.
-    final Reward rewardWithLimitReached = RewardFactory.rewardWithLimitReached();
-    vm.inputs.projectAndReward(liveProject, rewardWithLimitReached);
-    minimumTextViewIsHiddenTest.assertValues(true, false, true, false);
   }
 
   @Test
@@ -407,29 +345,6 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testMinimumTitleTextViewText() {
-    final RewardViewModel vm = new RewardViewModel(environment());
-    final Project project = ProjectFactory.project();
-
-    final TestSubscriber<String> minimumTitleTextViewTest = TestSubscriber.create();
-    vm.outputs.minimumTitleTextViewText().subscribe(minimumTitleTextViewTest);
-
-    // Minimum title is only used when the reward has no title.
-    final Reward rewardWithTitle = RewardFactory.reward().toBuilder()
-      .title("Digital bundle")
-      .build();
-    vm.inputs.projectAndReward(project, rewardWithTitle);
-    minimumTitleTextViewTest.assertNoValues();
-
-    final Reward rewardWithNoTitle = RewardFactory.reward().toBuilder()
-      .minimum(10.0f)
-      .title(null)
-      .build();
-    vm.inputs.projectAndReward(project, rewardWithNoTitle);
-    minimumTitleTextViewTest.assertValues("$10");
-  }
-
-  @Test
   public void testRewardsItems() {
     final RewardViewModel vm = new RewardViewModel(environment());
     final Project project = ProjectFactory.project();
@@ -444,26 +359,29 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
     rewardsItemsAreHiddenTest.assertValue(true);
     rewardsItemsTest.assertValue(emptyList());
 
-    final Reward itemizedReward = RewardFactory.itemizedReward();
+    final Reward itemizedReward = RewardFactory.itemized();
     vm.inputs.projectAndReward(project, itemizedReward);
     rewardsItemsAreHiddenTest.assertValues(true, false);
     rewardsItemsTest.assertValues(emptyList(), itemizedReward.rewardsItems());
   }
 
   @Test
-  public void testRewardTitleTextViewText() {
+  public void testTitleTextViewText() {
     final RewardViewModel vm = new RewardViewModel(environment());
     final Project project = ProjectFactory.project();
 
-    final TestSubscriber<String> rewardTitleTextViewTest = TestSubscriber.create();
-    vm.outputs.rewardTitleTextViewText().subscribe(rewardTitleTextViewTest);
+    final TestSubscriber<Boolean> titleTextViewIsHidden = TestSubscriber.create();
+    vm.outputs.titleTextViewIsHidden().subscribe(titleTextViewIsHidden);
+    final TestSubscriber<String> titleTextViewTextTest = TestSubscriber.create();
+    vm.outputs.titleTextViewText().subscribe(titleTextViewTextTest);
 
     // Reward with no title should be hidden.
     final Reward rewardWithNoTitle = RewardFactory.reward().toBuilder()
       .title(null)
       .build();
     vm.inputs.projectAndReward(project, rewardWithNoTitle);
-    rewardTitleTextViewTest.assertNoValues();
+    titleTextViewIsHidden.assertValues(true);
+    titleTextViewTextTest.assertNoValues();
 
     // Reward with title should be visible.
     final String title = "Digital bundle";
@@ -471,7 +389,8 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
       .title(title)
       .build();
     vm.inputs.projectAndReward(project, rewardWithTitle);
-    rewardTitleTextViewTest.assertValue(title);
+    titleTextViewIsHidden.assertValues(true, false);
+    titleTextViewTextTest.assertValue(title);
   }
 
   @Test
@@ -513,21 +432,6 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
     vm.inputs.projectAndReward(project, rewardWithShipping);
     shippingSummaryTextViewTextTest.assertValue(rewardWithShipping.shippingSummary());
     shippingSummarySectionIsHiddenTest.assertValues(true, false);
-  }
-
-  @Test
-  public void testTimeLimit() {
-    final RewardViewModel vm = new RewardViewModel(environment());
-
-    final TestSubscriber<String> timeLimitTextViewTextTest = TestSubscriber.create();
-    vm.outputs.timeLimitTextViewText().subscribe(timeLimitTextViewTextTest);
-    final TestSubscriber<Boolean> timeLimitSectionIsHiddenTest = TestSubscriber.create();
-    vm.outputs.timeLimitSectionIsHidden().subscribe(timeLimitSectionIsHiddenTest);
-
-    // Not implemented in backend, just assert that this isn't shown for now.
-    vm.inputs.projectAndReward(ProjectFactory.project(), RewardFactory.reward());
-    timeLimitTextViewTextTest.assertNoValues();
-    timeLimitSectionIsHiddenTest.assertValue(true);
   }
 
   @Test
@@ -603,7 +507,11 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
     vm.inputs.projectAndReward(project, RewardFactory.reward());
     whiteOverlayIsHiddenTest.assertValue(true);
 
-    vm.inputs.projectAndReward(project, RewardFactory.rewardWithLimitReached());
+    final Project backedProjectWithRewardLimitReached = ProjectFactory.backedProjectWithRewardLimitReached();
+    vm.inputs.projectAndReward(backedProjectWithRewardLimitReached, backedProjectWithRewardLimitReached.backing().reward());
+    whiteOverlayIsHiddenTest.assertValues(true);
+
+    vm.inputs.projectAndReward(project, RewardFactory.limitReached());
     whiteOverlayIsHiddenTest.assertValues(true, false);
   }
 }

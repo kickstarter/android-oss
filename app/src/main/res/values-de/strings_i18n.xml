@@ -131,6 +131,7 @@
   <string name="dashboard_graphs_referrers_percent_external" formatted="false">%{percent_external} Extern</string>
   <string name="dashboard_graphs_referrers_percent_kickstarter" formatted="false">%{percent_kickstarter} Kickstarter</string>
   <string name="dashboard_graphs_referrers_pledged" formatted="false">Beiträge gesamt</string>
+  <string name="dashboard_graphs_referrers_pledged_via_custom" formatted="false">Pledged via custom</string>
   <string name="dashboard_graphs_referrers_pledged_via_external" formatted="false">Externe Beiträge</string>
   <string name="dashboard_graphs_referrers_pledged_via_kickstarter" formatted="false">Beiträge über Kickstarter</string>
   <string name="dashboard_graphs_referrers_show_more" formatted="false">Weitere Referrer anzeigen</string>
@@ -366,6 +367,7 @@
   <string name="discovery_search_cancel" formatted="false">Abbrechen</string>
   <string name="discovery_sort_types_end_date" formatted="false">Enddatum</string>
   <string name="discovery_sort_types_magic" formatted="false">Zufall</string>
+  <string name="discovery_sort_types_most_backed" formatted="false">Meist unterstüzt</string>
   <string name="discovery_sort_types_most_funded" formatted="false">Meist finanziert</string>
   <string name="discovery_sort_types_newest" formatted="false">Neueste</string>
   <string name="discovery_sort_types_popularity" formatted="false">Beliebtheit</string>
@@ -671,12 +673,12 @@ Wir würden uns sehr darüber freuen!</string>
   <string name="project_updates_empty_state_non_backer_message" formatted="false">Unterstützer werden bei neuen Projekt-Updates benachrichtigt.</string>
   <string name="project_updates_empty_state_non_backer_title" formatted="false">Keine Updates</string>
   <string name="project_view_button" formatted="false">Finanzierungsbeitrag anzeigen</string>
-  <string name="project_view_pledge_includes" formatted="false">Includes</string>
-  <string name="project_view_pledge_status_canceled" formatted="false">Canceled</string>
-  <string name="project_view_pledge_status_collected" formatted="false">Collected</string>
-  <string name="project_view_pledge_status_dropped" formatted="false">Dropped</string>
-  <string name="project_view_pledge_status_errored" formatted="false">Errored</string>
-  <string name="project_view_pledge_status_pledged" formatted="false">Pledged</string>
+  <string name="project_view_pledge_includes" formatted="false">Enthält:</string>
+  <string name="project_view_pledge_status_canceled" formatted="false">Zurückgezogen</string>
+  <string name="project_view_pledge_status_collected" formatted="false">Abgebucht</string>
+  <string name="project_view_pledge_status_dropped" formatted="false">Nicht übernommen</string>
+  <string name="project_view_pledge_status_errored" formatted="false">Fehlerhaft</string>
+  <string name="project_view_pledge_status_pledged" formatted="false">Finanzierungsbeitrag:</string>
   <string name="push_notifications_alert_buttons_close" formatted="false">Schließen</string>
   <string name="push_notifications_alert_buttons_view" formatted="false">Anzeigen</string>
   <string name="rewards_info_all_gone" formatted="false">Alle weg</string>
@@ -686,7 +688,7 @@ Wir würden uns sehr darüber freuen!</string>
   <string name="rewards_info_backer_count_backers_two" formatted="false">2 Unterstützer</string>
   <string name="rewards_info_backer_count_backers_zero" formatted="false">0 Unterstützer</string>
   <string name="rewards_info_estimated_delivery" formatted="false">Voraussichtliche Lieferung</string>
-  <string name="rewards_info_includes" formatted="false">Includes</string>
+  <string name="rewards_info_includes" formatted="false">Enthält:</string>
   <string name="rewards_info_item_quantity_title_few" formatted="false">(%{quantity}) %{title}</string>
   <string name="rewards_info_item_quantity_title_many" formatted="false">(%{quantity}) %{title}</string>
   <string name="rewards_info_item_quantity_title_one" formatted="false">%{title}</string>
@@ -695,8 +697,8 @@ Wir würden uns sehr darüber freuen!</string>
   <string name="rewards_info_limited_rewards_remaining_left_of_reward_limit" formatted="false">Begrenzt (%{rewards_remaining} von %{reward_limit} übrig)</string>
   <string name="rewards_info_shipping" formatted="false">Versand</string>
   <string name="rewards_info_shipping_destinations" formatted="false">Versandziele</string>
-  <string name="rewards_info_ships_to" formatted="false">Ships to</string>
-  <string name="rewards_info_time_left" formatted="false">%{time} left</string>
+  <string name="rewards_info_ships_to" formatted="false">Versandziel</string>
+  <string name="rewards_info_time_left" formatted="false">{{time}} verbleibend</string>
   <string name="rewards_select_label_select" formatted="false">Auswählen</string>
   <string name="rewards_selected_label_you_selected" formatted="false">Deine Auswahl</string>
   <string name="rewards_shipping_preferences_location_unrestricted" formatted="false">Weltweiter Versand</string>

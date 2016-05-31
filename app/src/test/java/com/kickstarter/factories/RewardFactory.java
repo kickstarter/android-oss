@@ -20,7 +20,13 @@ public final class RewardFactory {
       .build();
   }
 
-  public static @NonNull Reward itemizedReward() {
+  public static @NonNull Reward backers() {
+    return reward().toBuilder()
+      .backersCount(100)
+      .build();
+  }
+
+  public static @NonNull Reward itemized() {
     final long rewardId = IdFactory.id();
 
     return reward().toBuilder()
@@ -35,14 +41,20 @@ public final class RewardFactory {
       .build();
   }
 
-  public static @NonNull Reward limitedReward() {
+  public static @NonNull Reward limited() {
     return reward().toBuilder()
       .limit(10)
       .remaining(5)
       .build();
   }
 
-  public static @NonNull Reward rewardWithLimitReached() {
+  public static @NonNull Reward noBackers() {
+    return reward().toBuilder()
+      .backersCount(0)
+      .build();
+  }
+
+  public static @NonNull Reward limitReached() {
     return Reward.builder()
       .backersCount(123)
       .id(IdFactory.id())

@@ -131,6 +131,7 @@
   <string name="dashboard_graphs_referrers_percent_external" formatted="false">%{percent_external} External</string>
   <string name="dashboard_graphs_referrers_percent_kickstarter" formatted="false">%{percent_kickstarter} Kickstarter</string>
   <string name="dashboard_graphs_referrers_pledged" formatted="false">Pledged</string>
+  <string name="dashboard_graphs_referrers_pledged_via_custom" formatted="false">Pledged via custom</string>
   <string name="dashboard_graphs_referrers_pledged_via_external" formatted="false">Pledged via external</string>
   <string name="dashboard_graphs_referrers_pledged_via_kickstarter" formatted="false">Pledged via Kickstarter</string>
   <string name="dashboard_graphs_referrers_show_more" formatted="false">Show more referrers</string>
@@ -366,6 +367,7 @@
   <string name="discovery_search_cancel" formatted="false">Cancel</string>
   <string name="discovery_sort_types_end_date" formatted="false">End Date</string>
   <string name="discovery_sort_types_magic" formatted="false">Magic</string>
+  <string name="discovery_sort_types_most_backed" formatted="false">Most Backed</string>
   <string name="discovery_sort_types_most_funded" formatted="false">Most Funded</string>
   <string name="discovery_sort_types_newest" formatted="false">Newest</string>
   <string name="discovery_sort_types_popularity" formatted="false">Popularity</string>
@@ -690,11 +692,11 @@ Thank you for your support!</string>
   <string name="rewards_info_backer_count_backers_zero" formatted="false">0 backers</string>
   <string name="rewards_info_estimated_delivery" formatted="false">Estimated delivery</string>
   <string name="rewards_info_includes" formatted="false">Includes</string>
-  <string name="rewards_info_item_quantity_title_few" formatted="false">(%{quantity}) %{title}</string>
-  <string name="rewards_info_item_quantity_title_many" formatted="false">(%{quantity}) %{title}</string>
+  <string name="rewards_info_item_quantity_title_few" formatted="false">%{title} (x%{quantity})</string>
+  <string name="rewards_info_item_quantity_title_many" formatted="false">%{title} (x%{quantity})</string>
   <string name="rewards_info_item_quantity_title_one" formatted="false">%{title}</string>
-  <string name="rewards_info_item_quantity_title_two" formatted="false">(%{quantity}) %{title}</string>
-  <string name="rewards_info_item_quantity_title_zero" formatted="false">(%{quantity}) %{title}</string>
+  <string name="rewards_info_item_quantity_title_two" formatted="false">%{title} (x%{quantity})</string>
+  <string name="rewards_info_item_quantity_title_zero" formatted="false">%{title} (x%{quantity})</string>
   <string name="rewards_info_limited_rewards_remaining_left_of_reward_limit" formatted="false">Limited (%{rewards_remaining} left of %{reward_limit})</string>
   <string name="rewards_info_shipping" formatted="false">Shipping</string>
   <string name="rewards_info_shipping_destinations" formatted="false">Shipping destinations</string>

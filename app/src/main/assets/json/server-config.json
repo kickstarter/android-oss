@@ -39,7 +39,8 @@
           "popularity": "Popularity",
           "newest": "Newest",
           "end_date": "End Date",
-          "most_funded": "Most Funded"
+          "most_funded": "Most Funded",
+          "most_backed": "Most Backed"
         },
         "location": {
           "disabled_state": {
@@ -850,11 +851,11 @@
             "many": "%{backer_count} backers"
           },
           "item_quantity_title": {
-            "zero": "(%{quantity}) %{title}",
+            "zero": "%{title} (x%{quantity})",
             "one": "%{title}",
-            "two": "(%{quantity}) %{title}",
-            "few": "(%{quantity}) %{title}",
-            "many": "(%{quantity}) %{title}"
+            "two": "%{title} (x%{quantity})",
+            "few": "%{title} (x%{quantity})",
+            "many": "%{title} (x%{quantity})"
           },
           "limited_rewards_remaining_left_of_reward_limit": "Limited (%{rewards_remaining} left of %{reward_limit})",
           "all_gone": "All gone",
@@ -938,6 +939,7 @@
             "show_more": "Show more referrers",
             "pledged_via_kickstarter": "Pledged via Kickstarter",
             "pledged_via_external": "Pledged via external",
+            "pledged_via_custom": "Pledged via custom",
             "average_pledge_amount": "Average pledge amount",
             "percent_kickstarter": "%{percent_kickstarter} Kickstarter",
             "percent_external": "%{percent_external} External"
@@ -1390,7 +1392,8 @@
           "popularity": "Beliebtheit",
           "newest": "Neueste",
           "end_date": "Enddatum",
-          "most_funded": "Meist finanziert"
+          "most_funded": "Meist finanziert",
+          "most_backed": "Meist unterstüzt"
         },
         "location": {
           "disabled_state": {
@@ -2119,13 +2122,13 @@
           }
         },
         "view_pledge": {
-          "includes": "Includes",
+          "includes": "Enthält:",
           "status": {
-            "canceled": "Canceled",
-            "collected": "Collected",
-            "dropped": "Dropped",
-            "errored": "Errored",
-            "pledged": "Pledged"
+            "canceled": "Zurückgezogen",
+            "collected": "Abgebucht",
+            "dropped": "Nicht übernommen",
+            "errored": "Fehlerhaft",
+            "pledged": "Finanzierungsbeitrag:"
           }
         },
         "accessibility": {
@@ -2210,11 +2213,11 @@
           "limited_rewards_remaining_left_of_reward_limit": "Begrenzt (%{rewards_remaining} von %{reward_limit} übrig)",
           "all_gone": "Alle weg",
           "estimated_delivery": "Voraussichtliche Lieferung",
-          "includes": "Includes",
+          "includes": "Enthält:",
           "shipping": "Versand",
           "shipping_destinations": "Versandziele",
-          "ships_to": "Ships to",
-          "time_left": "%{time} left"
+          "ships_to": "Versandziel",
+          "time_left": "{{time}} verbleibend"
         }
       },
       "search": {
@@ -2289,6 +2292,7 @@
             "show_more": "Weitere Referrer anzeigen",
             "pledged_via_kickstarter": "Beiträge über Kickstarter",
             "pledged_via_external": "Externe Beiträge",
+            "pledged_via_custom": "Pledged via custom",
             "average_pledge_amount": "Durchschnittlicher Beitrag",
             "percent_kickstarter": "%{percent_kickstarter} Kickstarter",
             "percent_external": "%{percent_external} Extern"
@@ -2741,7 +2745,8 @@
           "popularity": "Popularidad",
           "newest": "Más recientes",
           "end_date": "Fecha de terminación",
-          "most_funded": "Más financiados"
+          "most_funded": "Más financiados",
+          "most_backed": "número de patrocinadores"
         },
         "location": {
           "disabled_state": {
@@ -3470,13 +3475,13 @@
           }
         },
         "view_pledge": {
-          "includes": "Includes",
+          "includes": "Incluye",
           "status": {
-            "canceled": "Canceled",
-            "collected": "Collected",
-            "dropped": "Dropped",
-            "errored": "Errored",
-            "pledged": "Pledged"
+            "canceled": "Cancelada",
+            "collected": "Recaudada",
+            "dropped": "Descartada",
+            "errored": "Error",
+            "pledged": "Contribuyó"
           }
         },
         "accessibility": {
@@ -3561,11 +3566,11 @@
           "limited_rewards_remaining_left_of_reward_limit": "Limitado (quedan %{rewards_remaining} de %{reward_limit})",
           "all_gone": "¡Recompensas agotadas!",
           "estimated_delivery": "Entrega aproximada",
-          "includes": "Includes",
+          "includes": "Incluye",
           "shipping": "Envío",
           "shipping_destinations": "Destinos de envío",
-          "ships_to": "Ships to",
-          "time_left": "%{time} left"
+          "ships_to": "Envío a",
+          "time_left": "Tiempo restante: {{time}}"
         }
       },
       "search": {
@@ -3640,6 +3645,7 @@
             "show_more": "Mostrar más referer",
             "pledged_via_kickstarter": "Contribuido a través de Kickstarter",
             "pledged_via_external": "Contribuido a través de externos",
+            "pledged_via_custom": "Contribuciones personalizadas",
             "average_pledge_amount": "Importe de contribución medio",
             "percent_kickstarter": "%{percent_kickstarter} Kickstarter",
             "percent_external": "%{percent_external} Externos"
@@ -4092,7 +4098,8 @@
           "popularity": "Popularité",
           "newest": "Ancienneté",
           "end_date": "Date de fin",
-          "most_funded": "Financement"
+          "most_funded": "Financement",
+          "most_backed": "Most Backed"
         },
         "location": {
           "disabled_state": {
@@ -4823,11 +4830,11 @@
         "view_pledge": {
           "includes": "Includes",
           "status": {
-            "canceled": "Canceled",
-            "collected": "Collected",
-            "dropped": "Dropped",
-            "errored": "Errored",
-            "pledged": "Pledged"
+            "canceled": "Annulé",
+            "collected": "Fonds collectés",
+            "dropped": "Abandonné",
+            "errored": "Erreur",
+            "pledged": "Engagement"
           }
         },
         "accessibility": {
@@ -4903,11 +4910,11 @@
             "many": "%{backer_count} contributeurs"
           },
           "item_quantity_title": {
-            "zero": "(%{quantity}) %{title}",
+            "zero": "%{title} (x%{quantity})",
             "one": "%{title}",
-            "two": "(%{quantity}) %{title}",
-            "few": "(%{quantity}) %{title}",
-            "many": "(%{quantity}) %{title}"
+            "two": "%{title} (x%{quantity})",
+            "few": "%{title} (x%{quantity})",
+            "many": "%{title} (x%{quantity})"
           },
           "limited_rewards_remaining_left_of_reward_limit": "Stock limité (il en reste %{rewards_remaining} sur %{reward_limit})",
           "all_gone": "Épuisé",
@@ -4915,7 +4922,7 @@
           "includes": "Includes",
           "shipping": "Expédition",
           "shipping_destinations": "Expédition",
-          "ships_to": "Ships to",
+          "ships_to": "Livraison",
           "time_left": "%{time} left"
         }
       },
@@ -4991,6 +4998,7 @@
             "show_more": "Afficher plus de référents",
             "pledged_via_kickstarter": "Montant engagé via Kickstarter",
             "pledged_via_external": "Engagements externes",
+            "pledged_via_custom": "Pledged via custom",
             "average_pledge_amount": "Engagement moyen",
             "percent_kickstarter": "%{percent_kickstarter} via Kickstarter",
             "percent_external": "%{percent_external} de sources externes"
@@ -5443,7 +5451,8 @@
           "popularity": "Popularity",
           "newest": "Newest",
           "end_date": "End Date",
-          "most_funded": "Most Funded"
+          "most_funded": "Most Funded",
+          "most_backed": "Most Backed"
         },
         "location": {
           "disabled_state": {
@@ -6254,11 +6263,11 @@
             "many": "%{backer_count} backers"
           },
           "item_quantity_title": {
-            "zero": "(%{quantity}) %{title}",
+            "zero": "%{title} (x%{quantity})",
             "one": "%{title}",
-            "two": "(%{quantity}) %{title}",
-            "few": "(%{quantity}) %{title}",
-            "many": "(%{quantity}) %{title}"
+            "two": "%{title} (x%{quantity})",
+            "few": "%{title} (x%{quantity})",
+            "many": "%{title} (x%{quantity})"
           },
           "limited_rewards_remaining_left_of_reward_limit": "Limited (%{rewards_remaining} left of %{reward_limit})",
           "all_gone": "All gone",
@@ -6342,6 +6351,7 @@
             "show_more": "Show more referrers",
             "pledged_via_kickstarter": "Pledged via Kickstarter",
             "pledged_via_external": "Pledged via external",
+            "pledged_via_custom": "Pledged via custom",
             "average_pledge_amount": "Average pledge amount",
             "percent_kickstarter": "%{percent_kickstarter} Kickstarter",
             "percent_external": "%{percent_external} External"

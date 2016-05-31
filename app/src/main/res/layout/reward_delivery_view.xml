@@ -19,7 +19,6 @@
       style="@style/BodySecondary"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="@dimen/grid_1_half"
       android:text="@string/rewards_info_estimated_delivery" />
 
     <TextView
@@ -41,7 +40,6 @@
       style="@style/BodySecondary"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="@dimen/grid_1_half"
       android:text="@string/rewards_info_shipping" />
 
     <TextView

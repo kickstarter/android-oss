@@ -6,6 +6,7 @@ import android.util.Pair;
 import android.view.View;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.utils.RewardUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Reward;
 import com.kickstarter.ui.viewholders.KSViewHolder;
@@ -44,7 +45,7 @@ public final class ProjectAdapter extends KSAdapter {
     final List<Reward> rewards = project.rewards();
     if (rewards != null) {
       addSection(Observable.from(rewards)
-        .filter(Reward::isReward)
+        .filter(RewardUtils::isReward)
         .map(reward -> Pair.create(project, reward))
         .toList().toBlocking().single()
       );

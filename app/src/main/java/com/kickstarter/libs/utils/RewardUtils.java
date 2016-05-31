@@ -13,6 +13,13 @@ public final class RewardUtils {
   private RewardUtils() {}
 
   /**
+   * Returns `true` if the reward has backers, `false` otherwise.
+   */
+  public static boolean hasBackers(final @NonNull Reward reward) {
+    return IntegerUtils.isNonZero(reward.backersCount());
+  }
+
+  /**
    * Returns `true` if the reward has items, `false` otherwise.
    */
   public static boolean isItemized(final @NonNull Reward reward) {
@@ -36,6 +43,21 @@ public final class RewardUtils {
     return reward.limit() != null
       && remaining != null
       && remaining <= 0;
+  }
+
+  /**
+   * Returns `true` if the reward is considered the 'non-reward' option, i.e. the reward is the option
+   * backers select when they want to pledge to a project without selecting a particular reward.
+   */
+  public static boolean isNoReward(final @NonNull Reward reward) {
+    return reward.id() == 0;
+  }
+
+  /**
+   * Returns `true` if the reward is a specific reward for a project, i.e. it is not the 'no-reward' option.
+   */
+  public static boolean isReward(final @NonNull Reward reward) {
+    return !isNoReward(reward);
   }
 
   /**

@@ -14,9 +14,9 @@ import rx.Observable;
 
 public interface RewardViewModelOutputs {
   /**
-   * Returns `true` if the all gone header should be hidden, `false` otherwise.
+   * Returns `true` if the all gone TextView should be hidden, `false` otherwise.
    */
-  Observable<Boolean> allGoneHeaderIsHidden();
+  Observable<Boolean> allGoneTextViewIsHidden();
 
   /**
    * Set the backers TextView's text.
@@ -59,14 +59,14 @@ public interface RewardViewModelOutputs {
   Observable<Boolean> isClickable();
 
   /**
-   * Returns `true` if the limit and remaining section should be center-aligned, `false` otherwise.
+   * Returns `true` if the separator between the limit and backers TextViews should be hidden, `false` otherwise.
    */
-  Observable<Boolean> limitAndRemainingSectionIsCenterAligned();
+  Observable<Boolean> limitAndBackersSeparatorIsHidden();
 
   /**
-   * Returns `true` if the limit quantity section should be hidden, `false` otherwise.
+   * Returns `true` if the limit TextView should be hidden, `false` otherwise.
    */
-  Observable<Boolean> limitAndRemainingSectionIsHidden();
+  Observable<Boolean> limitAndRemainingTextViewIsHidden();
 
   /**
    * Set the limit and remaining TextView's text.
@@ -74,39 +74,14 @@ public interface RewardViewModelOutputs {
   Observable<Pair<String, String>> limitAndRemainingTextViewText();
 
   /**
-   * Returns `true` if the divider between the time limit and the quantity limit should be hidden, `false` otherwise.
-   */
-  Observable<Boolean> limitDividerIsHidden();
-
-  /**
    * Returns `true` if the limit header should be hidden, `false` otherwise.
    */
   Observable<Boolean> limitHeaderIsHidden();
 
   /**
-   * Set the minimum button's text.
-   */
-  Observable<String> minimumButtonText();
-
-  /**
-   * Returns `true` if the minimum button should be hidden, `false` otherwise.
-   */
-  Observable<Boolean> minimumButtonIsHidden();
-
-  /**
    * Set the minimum TextView's text.
    */
   Observable<String> minimumTextViewText();
-
-  /**
-   * Returns `true` if the minimum text view should be hidden, `false` otherwise.
-   */
-  Observable<Boolean> minimumTextViewIsHidden();
-
-  /**
-   * Set the title's text using the minimum pledge.
-   */
-  Observable<String> minimumTitleTextViewText();
 
   /**
    * Show the rewards items.
@@ -117,11 +92,6 @@ public interface RewardViewModelOutputs {
    * Returns `true` if the items section should be hidden, `false` otherwise.
    */
   Observable<Boolean> rewardsItemsAreHidden();
-
-  /**
-   * Use the reward's title to set the title text.
-   */
-  Observable<String> rewardTitleTextViewText();
 
   /**
    * Returns `true` if selected header should be hidden, `false` otherwise.
@@ -144,19 +114,14 @@ public interface RewardViewModelOutputs {
   Observable<String> shippingSummaryTextViewText();
 
   /**
-   * Returns `true` if the time limit should be hidden, `false` otherwise.
+   * Returns `true` if the title TextView should be hidden, `false` otherwise.
    */
-  Observable<Boolean> timeLimitSectionIsHidden();
+  Observable<Boolean> titleTextViewIsHidden();
 
   /**
-   * Set the time limit.
+   * Use the reward's title to set the title text.
    */
-  Observable<String> timeLimitTextViewText();
-
-  /**
-   * Returns `true` if the time limit should be center-aligned, `false` otherwise.
-   */
-  Observable<Boolean> timeLimitSectionIsCenterAligned();
+  Observable<String> titleTextViewText();
 
   /**
    * Returns `true` if the USD conversion section should be hidden, `false` otherwise.

@@ -7,6 +7,11 @@ import junit.framework.TestCase;
 
 public final class RewardUtilsTest extends TestCase {
 
+  public void testHasBackers() {
+    assertTrue(RewardUtils.hasBackers(RewardFactory.backers()));
+    assertFalse(RewardUtils.hasBackers(RewardFactory.noBackers()));
+  }
+
   public void testIsLimited() {
     final Reward rewardWithRemaining = RewardFactory.reward().toBuilder()
       .remaining(5)
@@ -29,7 +34,7 @@ public final class RewardUtilsTest extends TestCase {
 
   public void testIsItemized() {
     assertFalse(RewardUtils.isItemized(RewardFactory.reward()));
-    assertTrue(RewardUtils.isItemized(RewardFactory.itemizedReward()));
+    assertTrue(RewardUtils.isItemized(RewardFactory.itemized()));
   }
 
   public void testIsLimitReachedWhenLimitSetAndRemainingIsZero() {
@@ -53,6 +58,16 @@ public final class RewardUtilsTest extends TestCase {
       .remaining(50)
       .build();
     assertFalse(RewardUtils.isLimitReached(reward));
+  }
+
+  public void testIsReward() {
+    assertTrue(RewardUtils.isReward(RewardFactory.reward()));
+    assertFalse(RewardUtils.isReward(RewardFactory.noReward()));
+  }
+
+  public void testIsNoReward() {
+    assertTrue(RewardUtils.isNoReward(RewardFactory.noReward()));
+    assertFalse(RewardUtils.isNoReward(RewardFactory.reward()));
   }
 
   public void testIsShippable() {

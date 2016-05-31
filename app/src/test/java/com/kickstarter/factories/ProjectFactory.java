@@ -83,7 +83,7 @@ public final class ProjectFactory {
   public static @NonNull Project backedProjectWithRewardLimited() {
     final Project project = project();
 
-    final Reward reward = RewardFactory.limitedReward();
+    final Reward reward = RewardFactory.limited();
 
     final Backing backing = Backing.builder()
       .amount(10.0f)
@@ -109,7 +109,7 @@ public final class ProjectFactory {
   public static @NonNull Project backedProjectWithRewardLimitReached() {
     final Project project = project();
 
-    final Reward reward = RewardFactory.rewardWithLimitReached();
+    final Reward reward = RewardFactory.limitReached();
 
     final Backing backing = Backing.builder()
       .amount(10.0f)

@@ -17,6 +17,7 @@ import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.WebClientType;
+import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.adapters.DiscoveryPagerAdapter;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
@@ -88,6 +89,12 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
     parentFilterRowClick.onNext(row);
   }
 
+  private PublishSubject<InternalBuildEnvelope> newerBuildIsAvailable = PublishSubject.create();
+  @Override
+  public void newerBuildIsAvailable(final @NonNull InternalBuildEnvelope envelope) {
+    newerBuildIsAvailable.onNext(envelope);
+  }
+
   private PublishSubject<Void> internalToolsClick = PublishSubject.create();
   @Override
   public void loggedInViewHolderInternalToolsClick(final @NonNull LoggedInViewHolder viewHolder) {
@@ -118,6 +125,12 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
   }
 
   // OUTPUTS
+  private final Observable<InternalBuildEnvelope> showBuildCheckAlert;
+  @Override
+  public Observable<InternalBuildEnvelope> showBuildCheckAlert() {
+    return showBuildCheckAlert;
+  }
+
   private final Observable<Void> showInternalTools;
   @Override
   public Observable<Void> showInternalTools() {
@@ -189,6 +202,12 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
     webClient = environment.webClient();
 
     buildCheck.bind(this, webClient);
+
+    showBuildCheckAlert = newerBuildIsAvailable;
+    showInternalTools = internalToolsClick;
+    showLoginTout = loggedOutLoginToutClick;
+    showProfile = profileClick;
+    showSettings = settingsClick;
 
     // Seed params when we are freshly launching the app with no data.
     final Observable<DiscoveryParams> paramsFromInitialIntent = intent()
@@ -280,11 +299,6 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
     updateParamsForPage.map(__ -> true)
       .compose(bindToLifecycle())
       .subscribe(expandSortTabLayout);
-
-    showInternalTools = internalToolsClick;
-    showLoginTout = loggedOutLoginToutClick;
-    showProfile = profileClick;
-    showSettings = settingsClick;
 
     Observable.combineLatest(
       categories,

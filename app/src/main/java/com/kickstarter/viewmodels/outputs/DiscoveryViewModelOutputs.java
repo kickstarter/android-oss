@@ -3,6 +3,7 @@ package com.kickstarter.viewmodels.outputs;
 import android.util.Pair;
 
 import com.kickstarter.services.DiscoveryParams;
+import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
 
 import java.util.List;
@@ -37,6 +38,11 @@ public interface DiscoveryViewModelOutputs {
    * Emits a list of pages that should be cleared of all their content.
    */
   Observable<List<Integer>> clearPages();
+
+  /**
+   * Emits when a newer build is available and an alert should be shown.
+   */
+  Observable<InternalBuildEnvelope> showBuildCheckAlert();
 
   Observable<Void> showLoginTout();
   Observable<Void> showProfile();

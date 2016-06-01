@@ -4,11 +4,13 @@ import android.content.Intent;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.CategoryFactory;
+import com.kickstarter.factories.InternalBuildEnvelopeFactory;
 import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.services.DiscoveryParams;
+import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
 
 import org.junit.Test;
@@ -19,6 +21,22 @@ import java.util.List;
 import rx.observers.TestSubscriber;
 
 public class DiscoveryViewModelTest extends KSRobolectricTestCase {
+
+  @Test
+  public void testBuildCheck() {
+    final DiscoveryViewModel vm = new DiscoveryViewModel(environment());
+    final InternalBuildEnvelope buildEnvelope = InternalBuildEnvelopeFactory.newerBuildAvailable();
+
+    final TestSubscriber<InternalBuildEnvelope> showBuildCheckAlert = new TestSubscriber<>();
+    vm.outputs.showBuildCheckAlert().subscribe(showBuildCheckAlert);
+
+    // Build check should not be shown.
+    showBuildCheckAlert.assertNoValues();
+
+    // Build check should be shown when newer build is available.
+    vm.inputs.newerBuildIsAvailable(buildEnvelope);
+    showBuildCheckAlert.assertValue(buildEnvelope);
+  }
 
   @Test
   public void testDrawerData() {

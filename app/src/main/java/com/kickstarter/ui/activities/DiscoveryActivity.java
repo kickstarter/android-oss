@@ -113,6 +113,11 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
       .compose(observeForUI())
       .subscribe(pagerAdapter::clearPages);
 
+    viewModel.outputs.showBuildCheckAlert()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::showBuildAlert);
+
     viewModel.outputs.showInternalTools()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -173,7 +178,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
     startActivity(intent);
   }
 
-  public void showBuildAlert(final @NonNull InternalBuildEnvelope envelope) {
+  private void showBuildAlert(final @NonNull InternalBuildEnvelope envelope) {
     new AlertDialog.Builder(this)
       .setTitle(upgradeAppString)
       .setMessage(aNewerBuildIsAvailableString)

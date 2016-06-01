@@ -131,7 +131,7 @@
   <string name="dashboard_graphs_referrers_percent_external" formatted="false">%{percent_external} de sources externes</string>
   <string name="dashboard_graphs_referrers_percent_kickstarter" formatted="false">%{percent_kickstarter} via Kickstarter</string>
   <string name="dashboard_graphs_referrers_pledged" formatted="false">Engagements</string>
-  <string name="dashboard_graphs_referrers_pledged_via_custom" formatted="false">Pledged via custom</string>
+  <string name="dashboard_graphs_referrers_pledged_via_custom" formatted="false">Montant engagé via des sites référents personnalisés</string>
   <string name="dashboard_graphs_referrers_pledged_via_external" formatted="false">Engagements externes</string>
   <string name="dashboard_graphs_referrers_pledged_via_kickstarter" formatted="false">Montant engagé via Kickstarter</string>
   <string name="dashboard_graphs_referrers_show_more" formatted="false">Afficher plus de référents</string>
@@ -367,7 +367,7 @@
   <string name="discovery_search_cancel" formatted="false">Annuler</string>
   <string name="discovery_sort_types_end_date" formatted="false">Date de fin</string>
   <string name="discovery_sort_types_magic" formatted="false">Magie</string>
-  <string name="discovery_sort_types_most_backed" formatted="false">Most Backed</string>
+  <string name="discovery_sort_types_most_backed" formatted="false">Nombre d\'engagements</string>
   <string name="discovery_sort_types_most_funded" formatted="false">Financement</string>
   <string name="discovery_sort_types_newest" formatted="false">Ancienneté</string>
   <string name="discovery_sort_types_popularity" formatted="false">Popularité</string>
@@ -674,7 +674,7 @@ Merci pour votre soutien !</string>
   <string name="project_updates_empty_state_non_backer_message" formatted="false">Les contributeurs reçoivent une notification quand de nouvelles actus sont publiées.</string>
   <string name="project_updates_empty_state_non_backer_title" formatted="false">Pas d\'actus</string>
   <string name="project_view_button" formatted="false">Afficher mon engagement</string>
-  <string name="project_view_pledge_includes" formatted="false">Includes</string>
+  <string name="project_view_pledge_includes" formatted="false">Comprend</string>
   <string name="project_view_pledge_status_canceled" formatted="false">Annulé</string>
   <string name="project_view_pledge_status_collected" formatted="false">Fonds collectés</string>
   <string name="project_view_pledge_status_dropped" formatted="false">Abandonné</string>
@@ -689,9 +689,9 @@ Merci pour votre soutien !</string>
   <string name="rewards_info_backer_count_backers_two" formatted="false">2 contributeurs</string>
   <string name="rewards_info_backer_count_backers_zero" formatted="false">0 contributeurs</string>
   <string name="rewards_info_estimated_delivery" formatted="false">Livraison prévue</string>
-  <string name="rewards_info_includes" formatted="false">Includes</string>
   <string name="rewards_info_item_quantity_title_few" formatted="false">%{title} (x%{quantity})</string>
   <string name="rewards_info_item_quantity_title_many" formatted="false">%{title} (x%{quantity})</string>
+  <string name="rewards_info_includes" formatted="false">Comprend</string>
   <string name="rewards_info_item_quantity_title_one" formatted="false">%{title}</string>
   <string name="rewards_info_item_quantity_title_two" formatted="false">%{title} (x%{quantity})</string>
   <string name="rewards_info_item_quantity_title_zero" formatted="false">%{title} (x%{quantity})</string>
@@ -699,7 +699,7 @@ Merci pour votre soutien !</string>
   <string name="rewards_info_shipping" formatted="false">Expédition</string>
   <string name="rewards_info_shipping_destinations" formatted="false">Expédition</string>
   <string name="rewards_info_ships_to" formatted="false">Livraison</string>
-  <string name="rewards_info_time_left" formatted="false">%{time} left</string>
+  <string name="rewards_info_time_left" formatted="false">Plus que %{time}</string>
   <string name="rewards_select_label_select" formatted="false">Sélectionner</string>
   <string name="rewards_selected_label_you_selected" formatted="false">Votre sélection</string>
   <string name="rewards_shipping_preferences_location_unrestricted" formatted="false">Livraison dans le monde entier</string>

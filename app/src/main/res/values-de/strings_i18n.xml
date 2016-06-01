@@ -131,7 +131,7 @@
   <string name="dashboard_graphs_referrers_percent_external" formatted="false">%{percent_external} Extern</string>
   <string name="dashboard_graphs_referrers_percent_kickstarter" formatted="false">%{percent_kickstarter} Kickstarter</string>
   <string name="dashboard_graphs_referrers_pledged" formatted="false">Beiträge gesamt</string>
-  <string name="dashboard_graphs_referrers_pledged_via_custom" formatted="false">Pledged via custom</string>
+  <string name="dashboard_graphs_referrers_pledged_via_custom" formatted="false">Benutzerdefinierte Beiträge</string>
   <string name="dashboard_graphs_referrers_pledged_via_external" formatted="false">Externe Beiträge</string>
   <string name="dashboard_graphs_referrers_pledged_via_kickstarter" formatted="false">Beiträge über Kickstarter</string>
   <string name="dashboard_graphs_referrers_show_more" formatted="false">Weitere Referrer anzeigen</string>

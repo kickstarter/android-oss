@@ -2292,7 +2292,7 @@
             "show_more": "Weitere Referrer anzeigen",
             "pledged_via_kickstarter": "Beiträge über Kickstarter",
             "pledged_via_external": "Externe Beiträge",
-            "pledged_via_custom": "Pledged via custom",
+            "pledged_via_custom": "Benutzerdefinierte Beiträge",
             "average_pledge_amount": "Durchschnittlicher Beitrag",
             "percent_kickstarter": "%{percent_kickstarter} Kickstarter",
             "percent_external": "%{percent_external} Extern"
@@ -4099,7 +4099,7 @@
           "newest": "Ancienneté",
           "end_date": "Date de fin",
           "most_funded": "Financement",
-          "most_backed": "Most Backed"
+          "most_backed": "Nombre d'engagements"
         },
         "location": {
           "disabled_state": {
@@ -4828,7 +4828,7 @@
           }
         },
         "view_pledge": {
-          "includes": "Includes",
+          "includes": "Comprend",
           "status": {
             "canceled": "Annulé",
             "collected": "Fonds collectés",
@@ -4919,11 +4919,11 @@
           "limited_rewards_remaining_left_of_reward_limit": "Stock limité (il en reste %{rewards_remaining} sur %{reward_limit})",
           "all_gone": "Épuisé",
           "estimated_delivery": "Livraison prévue",
-          "includes": "Includes",
+          "includes": "Comprend",
           "shipping": "Expédition",
           "shipping_destinations": "Expédition",
           "ships_to": "Livraison",
-          "time_left": "%{time} left"
+          "time_left": "Plus que %{time}"
         }
       },
       "search": {
@@ -4998,7 +4998,7 @@
             "show_more": "Afficher plus de référents",
             "pledged_via_kickstarter": "Montant engagé via Kickstarter",
             "pledged_via_external": "Engagements externes",
-            "pledged_via_custom": "Pledged via custom",
+            "pledged_via_custom": "Montant engagé via des sites référents personnalisés",
             "average_pledge_amount": "Engagement moyen",
             "percent_kickstarter": "%{percent_kickstarter} via Kickstarter",
             "percent_external": "%{percent_external} de sources externes"

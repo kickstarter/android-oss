@@ -168,7 +168,7 @@ public final class RewardViewHolder extends KSViewHolder {
       .map(hidden -> hidden ? whiteColor : lightGreenColor)
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(rewardView::setBackgroundColor);
+      .subscribe(rewardView::setCardBackgroundColor);
 
     viewModel.outputs.shippingSummarySectionIsHidden()
       .compose(bindToLifecycle())

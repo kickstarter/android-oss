@@ -25,10 +25,15 @@
   <string name="activity_creator_actions_user_name_commented_on_update_number" formatted="false">%{user_name} commented on Update #%{update_number}:</string>
   <string name="activity_creator_actions_user_name_commented_on_your_project" formatted="false">%{user_name} commented on your project:</string>
   <string name="activity_creator_actions_user_name_pledged" formatted="false">%{user_name} pledged:</string>
+  <string name="activity_creator_actions_user_name_posted_update_number" formatted="false">%{user_name} posted Update #%{update_number}:</string>
+  <string name="activity_creator_actions_you_adjusted_your_pledge" formatted="false">You adjusted your pledge:</string>
+  <string name="activity_creator_actions_you_canceled_your_pledge" formatted="false">You canceled your pledge:</string>
+  <string name="activity_creator_actions_you_changed_your_reward" formatted="false">You changed your reward:</string>
   <string name="activity_creator_actions_you_commented_on_update_number" formatted="false">You commented on Update #%{update_number}:</string>
   <string name="activity_creator_actions_you_commented_on_update_number_pronoun" formatted="false">You</string>
   <string name="activity_creator_actions_you_commented_on_your_project" formatted="false">You commented on your project:</string>
   <string name="activity_creator_actions_you_commented_on_your_project_pronoun" formatted="false">You</string>
+  <string name="activity_creator_actions_you_pledged" formatted="false">You pledged:</string>
   <string name="activity_creator_actions_you_posted_update_number" formatted="false">You posted Update #%{update_number}:</string>
   <string name="activity_creator_actions_you_posted_update_number_pronoun" formatted="false">You</string>
   <string name="activity_creator_buttons_backing_info" formatted="false">Backing info</string>
@@ -108,6 +113,29 @@
   <string name="creator_project_preview_subtitle_funding_canceled" formatted="false">Funding canceled</string>
   <string name="creator_project_preview_subtitle_funding_unsuccessful_on_deadline" formatted="false">Funding unsuccessful on %{deadline}</string>
   <string name="creator_project_preview_subtitle_project_suspended" formatted="false">Project suspended</string>
+  <string name="dashboard_activity_backing_info" formatted="false">Backing info</string>
+  <string name="dashboard_activity_no_reward_selected" formatted="false">No reward selected</string>
+  <string name="dashboard_activity_project_name_launched" formatted="false">&lt;b>%{project_name}&lt;/b> launched on %{launch_date} with a goal of raising &lt;b>%{goal}&lt;/b></string>
+  <string name="dashboard_activity_project_name_was_canceled" formatted="false">&lt;b>%{project_name}&lt;/b> was canceled on %{cancellation_date}</string>
+  <string name="dashboard_activity_project_name_was_suspended" formatted="false">&lt;b>%{project_name}&lt;/b> was suspended on %{suspension_date}</string>
+  <string name="dashboard_activity_project_name_was_unsuccessful" formatted="false">&lt;b>%{project_name}&lt;/b> was unsuccessful on %{unsuccessful_date}</string>
+  <string name="dashboard_activity_reply" formatted="false">Reply</string>
+  <string name="dashboard_activity_reward_name" formatted="false">&lt;b>Reward:&lt;/b> %{reward_name}</string>
+  <string name="dashboard_activity_send_message" formatted="false">Send message</string>
+  <string name="dashboard_activity_successfully_raised_pledged" formatted="false">Successfully raised &lt;b>%{pledged}&lt;/b> with &lt;b>%{backers}&lt;/b> on %{deadline}</string>
+  <string name="dashboard_activity_update_number_posted_time_count_days_ago" formatted="false">Update #&lt;b>%{update_number}&lt;/b> posted %{time_count_days_ago}</string>
+  <string name="dashboard_activity_user_name_adjusted_their_pledge" formatted="false">&lt;b>%{user_name}&lt;/b> adjusted their pledge</string>
+  <string name="dashboard_activity_user_name_canceled_their_pledge" formatted="false">&lt;b>%{user_name}&lt;/b> canceled their pledge</string>
+  <string name="dashboard_activity_user_name_changed_their_reward" formatted="false">&lt;b>%{user_name}&lt;/b> changed their reward</string>
+  <string name="dashboard_activity_user_name_commented_on_update_number" formatted="false">&lt;b>%{user_name}&lt;/b> commented on Update #%{update_number}</string>
+  <string name="dashboard_activity_user_name_commented_on_your_project" formatted="false">&lt;b>%{user_name}&lt;/b> commented on your project</string>
+  <string name="dashboard_activity_user_name_pledged" formatted="false">&lt;b>%{user_name}&lt;/b> pledged</string>
+  <string name="dashboard_activity_you_adjusted_your_pledge" formatted="false">&lt;b>You&lt;/b> adjusted your pledge</string>
+  <string name="dashboard_activity_you_canceled_your_pledge" formatted="false">&lt;b>You&lt;/b> canceled your pledge</string>
+  <string name="dashboard_activity_you_changed_your_reward" formatted="false">&lt;b>You&lt;/b> changed your reward</string>
+  <string name="dashboard_activity_you_commented_on_update_number" formatted="false">&lt;b>You&lt;/b> commented on Update #%{update_number}</string>
+  <string name="dashboard_activity_you_commented_on_your_project" formatted="false">&lt;b>You&lt;/b> commented on your project</string>
+  <string name="dashboard_activity_you_pledged" formatted="false">&lt;b>You&lt;/b> pledged</string>
   <string name="dashboard_buttons_activity" formatted="false">Activity</string>
   <string name="dashboard_buttons_messages" formatted="false">Messages</string>
   <string name="dashboard_buttons_post_update" formatted="false">Post update</string>
@@ -122,6 +150,7 @@
   <string name="dashboard_graphs_funding_one_hundred_percent" formatted="false">100%</string>
   <string name="dashboard_graphs_funding_pledged" formatted="false">Pledged</string>
   <string name="dashboard_graphs_funding_title" formatted="false">FUNDING PROGRESS</string>
+  <string name="dashboard_graphs_funding_title_funding_progress" formatted="false">Funding Progress</string>
   <string name="dashboard_graphs_funding_today" formatted="false">Today</string>
   <string name="dashboard_graphs_funding_total" formatted="false">Total</string>
   <string name="dashboard_graphs_funding_yesterday" formatted="false">Yesterday</string>
@@ -137,17 +166,30 @@
   <string name="dashboard_graphs_referrers_show_more" formatted="false">Show more referrers</string>
   <string name="dashboard_graphs_referrers_source" formatted="false">Source</string>
   <string name="dashboard_graphs_referrers_title" formatted="false">REFERRERS</string>
+  <string name="dashboard_graphs_referrers_title_referrers" formatted="false">Referrers</string>
+  <string name="dashboard_graphs_referrers_view_more_referrer_stats" formatted="false">View more referrer stats</string>
   <string name="dashboard_graphs_rewards_backers" formatted="false">Backers</string>
+  <string name="dashboard_graphs_rewards_no_reward" formatted="false">No reward</string>
   <string name="dashboard_graphs_rewards_percent" formatted="false">Percent</string>
   <string name="dashboard_graphs_rewards_pledged" formatted="false">Pledged</string>
   <string name="dashboard_graphs_rewards_see_all" formatted="false">See all reward tiers</string>
   <string name="dashboard_graphs_rewards_title" formatted="false">REWARDS</string>
+  <string name="dashboard_graphs_rewards_title_rewards" formatted="false">Rewards</string>
   <string name="dashboard_graphs_rewards_top_rewards" formatted="false">Top Rewards</string>
+  <string name="dashboard_graphs_rewards_view_more_reward_stats" formatted="false">View more reward stats</string>
   <string name="dashboard_graphs_video_stats_external_start_count_off_site" formatted="false">%{external_start_count} off-site</string>
   <string name="dashboard_graphs_video_stats_internal_start_count_on_kickstarter" formatted="false">%{internal_start_count} on Kickstarter</string>
+  <string name="dashboard_graphs_video_stats_off_site" formatted="false">off-site</string>
+  <string name="dashboard_graphs_video_stats_on_kickstarter" formatted="false">on Kickstarter</string>
   <string name="dashboard_graphs_video_stats_percent_plays_completed" formatted="false">%{percent_plays_completed} of plays completed</string>
   <string name="dashboard_graphs_video_stats_total_plays" formatted="false">%{total_start_count} plays</string>
+  <string name="dashboard_graphs_video_stats_total_plays_count_few" formatted="false">&lt;b>%{total_start_count}&lt;/b> total plays</string>
+  <string name="dashboard_graphs_video_stats_total_plays_count_many" formatted="false">&lt;b>%{total_start_count}&lt;/b> total plays</string>
+  <string name="dashboard_graphs_video_stats_total_plays_count_one" formatted="false">&lt;b>1&lt;/b> total play</string>
+  <string name="dashboard_graphs_video_stats_total_plays_count_two" formatted="false">&lt;b>2&lt;/b> total plays</string>
+  <string name="dashboard_graphs_video_stats_total_plays_count_zero" formatted="false">&lt;b>0&lt;/b> total plays</string>
   <string name="dashboard_graphs_video_title" formatted="false">VIDEO PLAYS</string>
+  <string name="dashboard_graphs_video_title_video_plays" formatted="false">Video Plays</string>
   <string name="dashboard_post_update_button_subtitle_last_updated_on_date" formatted="false">Last updated on %{date}.</string>
   <string name="dashboard_post_update_button_subtitle_last_updated_on_date_relative_date" formatted="false">Last updated on %{date} (%{relative_date}).</string>
   <string name="dashboard_post_update_button_subtitle_you_have_not_posted_an_update_yet" formatted="false">You haven’t posted an update yet.</string>
@@ -363,6 +405,7 @@
   <string name="discovery_onboarding_title_bring_creative_projects_to_life" formatted="false">Bring creative projects to life</string>
   <string name="discovery_popular" formatted="false">Popular</string>
   <string name="discovery_recommended" formatted="false">Staff Picks</string>
+  <string name="discovery_recommended_for_you" formatted="false">Recommended for you</string>
   <string name="discovery_saved" formatted="false">Starred</string>
   <string name="discovery_search_cancel" formatted="false">Cancel</string>
   <string name="discovery_sort_types_end_date" formatted="false">End Date</string>
@@ -393,6 +436,11 @@
   <string name="forgot_password_we_sent_an_email_to_email_address_with_instructions_to_reset_your_password" formatted="false">We’ve sent an email to %{email} with instructions to reset your password.</string>
   <string name="general_accessibility_kickstarter" formatted="false">Kickstarter</string>
   <string name="general_alert_buttons_ok" formatted="false">OK</string>
+  <string name="general_backer_count_backers_few" formatted="false">%{backer_count} backers</string>
+  <string name="general_backer_count_backers_many" formatted="false">%{backer_count} backers</string>
+  <string name="general_backer_count_backers_one" formatted="false">1 backer</string>
+  <string name="general_backer_count_backers_two" formatted="false">2 backers</string>
+  <string name="general_backer_count_backers_zero" formatted="false">0 backers</string>
   <string name="general_error_oops" formatted="false">Oops!</string>
   <string name="general_error_something_wrong" formatted="false">Something went wrong.</string>
   <string name="general_loading" formatted="false">Loading...</string>
@@ -480,6 +528,7 @@ This is commonly fixed by going to iOS Settings > Facebook and toggling access f
   <string name="login_tout_save_intent_traditional_signup_button" formatted="false">Sign up</string>
   <string name="login_tout_save_intent_traditional_title" formatted="false">Use your email address:</string>
   <string name="messages_could_not_load_messages" formatted="false">Couldn\'t load messages</string>
+  <string name="messages_dialog_generic_error" formatted="false">Sorry, your message could not be posted.</string>
   <string name="messages_empty_state_message_backer" formatted="false">You have not sent a message to the creator.</string>
   <string name="messages_empty_state_message_creator" formatted="false">You have not sent a message to this backer.</string>
   <string name="messages_empty_state_title" formatted="false">No messages</string>
@@ -627,6 +676,7 @@ Thank you for your support!</string>
   <string name="project_comments_empty_state_logged_out_title" formatted="false">No comments</string>
   <string name="project_comments_empty_state_non_backer_message" formatted="false">Aw, how sad. Become a backer to leave a comment.</string>
   <string name="project_comments_empty_state_non_backer_title" formatted="false">No comments</string>
+  <string name="project_comments_error_posting" formatted="false">Sorry, your comment could not be posted.</string>
   <string name="project_comments_posted" formatted="false">Comment posted!</string>
   <string name="project_creator_by_creator" formatted="false">by %{creator_name}</string>
   <string name="project_creator_by_creator_html" formatted="false">by &lt;u>%{creator_name}&lt;/u></string>
@@ -757,6 +807,7 @@ Thank you for your support!</string>
   <string name="social_public_comment" formatted="false">Public comment</string>
   <string name="social_update" formatted="false">Update</string>
   <string name="social_update_number" formatted="false">Update #%{update_number}</string>
+  <string name="social_update_sequence_and_title" formatted="false">Update #%{update_number}: %{update_title}</string>
   <string name="support_email_body" formatted="false">How can we help you? Please try to be as specific as possible.\n
 \n
 \n

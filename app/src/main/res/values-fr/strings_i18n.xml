@@ -115,6 +115,7 @@
   <string name="creator_project_preview_subtitle_project_suspended" formatted="false">Projet suspendu</string>
   <string name="dashboard_activity_backing_info" formatted="false">Infos sur la contribution</string>
   <string name="dashboard_activity_no_reward_selected" formatted="false">Pas de récompense sélectionnée</string>
+  <string name="dashboard_activity_pledge_info" formatted="false">Infos sur mon engagement</string>
   <string name="dashboard_activity_project_name_launched" formatted="false">&lt;b>%{project_name}&lt;/b> lancé le %{launch_date} avec un objectif de &lt;b>%{goal}&lt;/b></string>
   <string name="dashboard_activity_project_name_was_canceled" formatted="false">&lt;b>%{project_name}&lt;/b> a été annulé le %{cancellation_date}</string>
   <string name="dashboard_activity_project_name_was_suspended" formatted="false">&lt;b>%{project_name}&lt;/b> a été suspendu le %{suspension_date}</string>
@@ -228,6 +229,7 @@
   <string name="dashboard_post_update_preview_confirmation_alert_title" formatted="false">Prêt ?</string>
   <string name="dashboard_post_update_privacy_backers_only" formatted="false">Contributeurs seulement</string>
   <string name="dashboard_post_update_privacy_public" formatted="false">Public</string>
+  <string name="dashboard_switcher_project_number" formatted="false">Projet no. %{current_project_index}</string>
   <string name="dashboard_tout_backers" formatted="false">contributeurs</string>
   <string name="dashboard_tout_pledged" formatted="false">engagés</string>
   <string name="dashboard_tout_remaining" formatted="false">restants</string>

@@ -115,6 +115,7 @@
   <string name="creator_project_preview_subtitle_project_suspended" formatted="false">Project suspended</string>
   <string name="dashboard_activity_backing_info" formatted="false">Backing info</string>
   <string name="dashboard_activity_no_reward_selected" formatted="false">No reward selected</string>
+  <string name="dashboard_activity_pledge_info" formatted="false">Pledge info</string>
   <string name="dashboard_activity_project_name_launched" formatted="false">&lt;b>%{project_name}&lt;/b> launched on %{launch_date} with a goal of raising &lt;b>%{goal}&lt;/b></string>
   <string name="dashboard_activity_project_name_was_canceled" formatted="false">&lt;b>%{project_name}&lt;/b> was canceled on %{cancellation_date}</string>
   <string name="dashboard_activity_project_name_was_suspended" formatted="false">&lt;b>%{project_name}&lt;/b> was suspended on %{suspension_date}</string>
@@ -123,17 +124,17 @@
   <string name="dashboard_activity_reward_name" formatted="false">&lt;b>Reward:&lt;/b> %{reward_name}</string>
   <string name="dashboard_activity_send_message" formatted="false">Send message</string>
   <string name="dashboard_activity_successfully_raised_pledged" formatted="false">Successfully raised &lt;b>%{pledged}&lt;/b> with &lt;b>%{backers}&lt;/b> on %{deadline}</string>
-  <string name="dashboard_activity_update_number_posted_time_count_days_ago" formatted="false">Update #&lt;b>%{update_number}&lt;/b> posted %{time_count_days_ago}</string>
+  <string name="dashboard_activity_update_number_posted_time_count_days_ago" formatted="false">&lt;b>Update%{space}#%{update_number}&lt;/b> posted %{time_count_days_ago}</string>
   <string name="dashboard_activity_user_name_adjusted_their_pledge" formatted="false">&lt;b>%{user_name}&lt;/b> adjusted their pledge</string>
   <string name="dashboard_activity_user_name_canceled_their_pledge" formatted="false">&lt;b>%{user_name}&lt;/b> canceled their pledge</string>
   <string name="dashboard_activity_user_name_changed_their_reward" formatted="false">&lt;b>%{user_name}&lt;/b> changed their reward</string>
-  <string name="dashboard_activity_user_name_commented_on_update_number" formatted="false">&lt;b>%{user_name}&lt;/b> commented on Update #%{update_number}</string>
+  <string name="dashboard_activity_user_name_commented_on_update_number" formatted="false">&lt;b>%{user_name}&lt;/b> commented on &lt;b>Update%{space}#%{update_number}&lt;/b></string>
   <string name="dashboard_activity_user_name_commented_on_your_project" formatted="false">&lt;b>%{user_name}&lt;/b> commented on your project</string>
   <string name="dashboard_activity_user_name_pledged" formatted="false">&lt;b>%{user_name}&lt;/b> pledged</string>
   <string name="dashboard_activity_you_adjusted_your_pledge" formatted="false">&lt;b>You&lt;/b> adjusted your pledge</string>
   <string name="dashboard_activity_you_canceled_your_pledge" formatted="false">&lt;b>You&lt;/b> canceled your pledge</string>
   <string name="dashboard_activity_you_changed_your_reward" formatted="false">&lt;b>You&lt;/b> changed your reward</string>
-  <string name="dashboard_activity_you_commented_on_update_number" formatted="false">&lt;b>You&lt;/b> commented on Update #%{update_number}</string>
+  <string name="dashboard_activity_you_commented_on_update_number" formatted="false">&lt;b>You&lt;/b> commented on &lt;b>Update%{space}#%{update_number}&lt;/b></string>
   <string name="dashboard_activity_you_commented_on_your_project" formatted="false">&lt;b>You&lt;/b> commented on your project</string>
   <string name="dashboard_activity_you_pledged" formatted="false">&lt;b>You&lt;/b> pledged</string>
   <string name="dashboard_buttons_activity" formatted="false">Activity</string>
@@ -228,6 +229,7 @@
   <string name="dashboard_post_update_preview_confirmation_alert_title" formatted="false">Ready?</string>
   <string name="dashboard_post_update_privacy_backers_only" formatted="false">Backers only</string>
   <string name="dashboard_post_update_privacy_public" formatted="false">Public</string>
+  <string name="dashboard_switcher_project_number" formatted="false">Project #%{current_project_index}</string>
   <string name="dashboard_tout_backers" formatted="false">backers</string>
   <string name="dashboard_tout_pledged" formatted="false">pledged</string>
   <string name="dashboard_tout_remaining" formatted="false">remaining</string>

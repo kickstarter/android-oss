@@ -115,6 +115,7 @@
   <string name="creator_project_preview_subtitle_project_suspended" formatted="false">Proyecto suspendido</string>
   <string name="dashboard_activity_backing_info" formatted="false">Info sobre patrocinamiento</string>
   <string name="dashboard_activity_no_reward_selected" formatted="false">No se seleccionó ninguna recompensa</string>
+  <string name="dashboard_activity_pledge_info" formatted="false">Info sobre contribución</string>
   <string name="dashboard_activity_project_name_launched" formatted="false">&lt;b>%{project_name}&lt;/b>, publicado el %{launch_date}, meta de financiamiento: &lt;b>%{goal}&lt;/b></string>
   <string name="dashboard_activity_project_name_was_canceled" formatted="false">&lt;b>%{project_name}&lt;/b> fue cancelado el %{cancellation_date}</string>
   <string name="dashboard_activity_project_name_was_suspended" formatted="false">&lt;b>%{project_name}&lt;/b> fue suspendido el %{suspension_date}</string>
@@ -228,6 +229,7 @@
   <string name="dashboard_post_update_preview_confirmation_alert_title" formatted="false">¿Listo?</string>
   <string name="dashboard_post_update_privacy_backers_only" formatted="false">Sólo para patrocinadores</string>
   <string name="dashboard_post_update_privacy_public" formatted="false">Público</string>
+  <string name="dashboard_switcher_project_number" formatted="false">Proyecto n° %{current_project_index}</string>
   <string name="dashboard_tout_backers" formatted="false">patrocinadores</string>
   <string name="dashboard_tout_pledged" formatted="false">contribuido</string>
   <string name="dashboard_tout_remaining" formatted="false">restante</string>

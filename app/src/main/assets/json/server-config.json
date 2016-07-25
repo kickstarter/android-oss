@@ -904,6 +904,7 @@
         "activity": {
           "backing_info": "Backing info",
           "no_reward_selected": "No reward selected",
+          "pledge_info": "Pledge info",
           "project_name_launched": "<b>%{project_name}</b> launched on %{launch_date} with a goal of raising <b>%{goal}</b>",
           "project_name_was_canceled": "<b>%{project_name}</b> was canceled on %{cancellation_date}",
           "project_name_was_suspended": "<b>%{project_name}</b> was suspended on %{suspension_date}",
@@ -912,17 +913,17 @@
           "reward_name": "<b>Reward:</b> %{reward_name}",
           "send_message": "Send message",
           "successfully_raised_pledged": "Successfully raised <b>%{pledged}</b> with <b>%{backers}</b> on %{deadline}",
-          "update_number_posted_time_count_days_ago": "Update #<b>%{update_number}</b> posted %{time_count_days_ago}",
+          "update_number_posted_time_count_days_ago": "<b>Update%{space}#%{update_number}</b> posted %{time_count_days_ago}",
           "user_name_adjusted_their_pledge": "<b>%{user_name}</b> adjusted their pledge",
           "user_name_canceled_their_pledge": "<b>%{user_name}</b> canceled their pledge",
           "user_name_changed_their_reward": "<b>%{user_name}</b> changed their reward",
-          "user_name_commented_on_update_number": "<b>%{user_name}</b> commented on Update #%{update_number}",
+          "user_name_commented_on_update_number": "<b>%{user_name}</b> commented on <b>Update%{space}#%{update_number}</b>",
           "user_name_commented_on_your_project": "<b>%{user_name}</b> commented on your project",
           "user_name_pledged": "<b>%{user_name}</b> pledged",
           "you_adjusted_your_pledge": "<b>You</b> adjusted your pledge",
           "you_canceled_your_pledge": "<b>You</b> canceled your pledge",
           "you_changed_your_reward": "<b>You</b> changed your reward",
-          "you_commented_on_update_number": "<b>You</b> commented on Update #%{update_number}",
+          "you_commented_on_update_number": "<b>You</b> commented on <b>Update%{space}#%{update_number}</b>",
           "you_commented_on_your_project": "<b>You</b> commented on your project",
           "you_pledged": "<b>You</b> pledged"
         },
@@ -1082,6 +1083,9 @@
             "public": "Public",
             "backers_only": "Backers only"
           }
+        },
+        "switcher": {
+          "project_number": "Project #%{current_project_index}"
         }
       },
       "creator_project_preview": {
@@ -2314,29 +2318,30 @@
       },
       "dashboard": {
         "activity": {
-          "backing_info": "Backing info",
-          "no_reward_selected": "No reward selected",
-          "project_name_launched": "<b>%{project_name}</b> launched on %{launch_date} with a goal of raising <b>%{goal}</b>",
-          "project_name_was_canceled": "<b>%{project_name}</b> was canceled on %{cancellation_date}",
-          "project_name_was_suspended": "<b>%{project_name}</b> was suspended on %{suspension_date}",
-          "project_name_was_unsuccessful": "<b>%{project_name}</b> was unsuccessful on %{unsuccessful_date}",
-          "reply": "Reply",
-          "reward_name": "<b>Reward:</b> %{reward_name}",
-          "send_message": "Send message",
-          "successfully_raised_pledged": "Successfully raised <b>%{pledged}</b> with <b>%{backers}</b> on %{deadline}",
-          "update_number_posted_time_count_days_ago": "Update #<b>%{update_number}</b> posted %{time_count_days_ago}",
-          "user_name_adjusted_their_pledge": "<b>%{user_name}</b> adjusted their pledge",
-          "user_name_canceled_their_pledge": "<b>%{user_name}</b> canceled their pledge",
-          "user_name_changed_their_reward": "<b>%{user_name}</b> changed their reward",
-          "user_name_commented_on_update_number": "<b>%{user_name}</b> commented on Update #%{update_number}",
-          "user_name_commented_on_your_project": "<b>%{user_name}</b> commented on your project",
-          "user_name_pledged": "<b>%{user_name}</b> pledged",
-          "you_adjusted_your_pledge": "<b>You</b> adjusted your pledge",
-          "you_canceled_your_pledge": "<b>You</b> canceled your pledge",
-          "you_changed_your_reward": "<b>You</b> changed your reward",
-          "you_commented_on_update_number": "<b>You</b> commented on Update #%{update_number}",
-          "you_commented_on_your_project": "<b>You</b> commented on your project",
-          "you_pledged": "<b>You</b> pledged"
+          "backing_info": "Infos zur Unterstützung",
+          "no_reward_selected": "Keine Belohnung ausgewählt",
+          "pledge_info": "Info zu Finanzierungsbeitrag",
+          "project_name_launched": "<b>%{project_name}</b> veröffentlicht am %{launch_date}, Finanzierungsziel: <b>%{goal}</b>",
+          "project_name_was_canceled": "<b>%{project_name}</b> wurde am %{cancellation_date} abgebrochen",
+          "project_name_was_suspended": "<b>%{project_name}</b> wurde am %{suspension_date} ausgesetzt",
+          "project_name_was_unsuccessful": "<b>%{project_name}</b> hat das Finanzierungsziel nicht erreicht. Stand: %{unsuccessful_date}",
+          "reply": "Antworten",
+          "reward_name": "<b>Belohnung:</b> %{reward_name}",
+          "send_message": "Nachricht senden",
+          "successfully_raised_pledged": "Wurde erfoglreich abgeschlossen: <b>%{pledged}</b> erreicht am %{deadline} dank <b>%{backers}</b>",
+          "update_number_posted_time_count_days_ago": "Update <b>%{update_number}</b> vor %{time_count_days_ago} gepostet",
+          "user_name_adjusted_their_pledge": "Der Finanzierungsbeitrag von <b>%{user_name}</b> wurde geändert",
+          "user_name_canceled_their_pledge": "Der Finanzierungsbeitrag von <b>%{user_name}</b> wurde zurückgezogen",
+          "user_name_changed_their_reward": "Die Belohnung von <b>%{user_name}</b> wurde geändert",
+          "user_name_commented_on_update_number": "<b>%{user_name}</b> hat Update %{update_number} kommentiert",
+          "user_name_commented_on_your_project": "<b>%{user_name}</b> hat dein Projekt kommentiert",
+          "user_name_pledged": "<b>%{user_name}</b> hat einen Finanzierungsbeitrag geleistet",
+          "you_adjusted_your_pledge": "<b>Du</b> hast deinen Finanzierungsbeitrag geändert",
+          "you_canceled_your_pledge": "<b>Du</b> hast deinen Finanzierungsbeitrag zurückgezogen",
+          "you_changed_your_reward": "<b>Du</b> hast deine Belohnung geändert",
+          "you_commented_on_update_number": "<b>Du</b> hast Update %{update_number} kommentiert",
+          "you_commented_on_your_project": "<b>Du</b> hast dein Projekt kommentiert",
+          "you_pledged": "<b>Du</b> hast einen Finanzierungsbeitrag geleistet"
         },
         "buttons": {
           "messages": "Nachrichten",
@@ -2361,7 +2366,7 @@
         },
         "graphs": {
           "funding": {
-            "title_funding_progress": "Funding Progress",
+            "title_funding_progress": "Finanzierungsfortschritt",
             "title": "FINANZIERUNGS-VERLAUF",
             "today": "Heute",
             "yesterday": "Gestern",
@@ -2371,7 +2376,7 @@
             "one_hundred_percent": "100%"
           },
           "rewards": {
-            "title_rewards": "Rewards",
+            "title_rewards": "Belohnungen",
             "title": "BELOHNUNGEN",
             "view_more_reward_stats": "Mehr ansehen",
             "see_all": "Alle Belohnungsstufen anzeigen",
@@ -2382,13 +2387,13 @@
             "no_reward": "Keine Belohnung"
           },
           "referrers": {
-            "title_referrers": "Referrers",
+            "title_referrers": "Referrer",
             "title": "Referrer",
             "source": "Quelle",
             "backers": "Unterstützer",
             "pledged": "Beiträge gesamt",
             "percent": "Prozent",
-            "view_more_referrer_stats": "View more referrer stats",
+            "view_more_referrer_stats": "Mehr ansehen",
             "show_more": "Weitere Referrer anzeigen",
             "pledged_via_kickstarter": "Beiträge über Kickstarter",
             "pledged_via_external": "Externe Beiträge",
@@ -2398,20 +2403,20 @@
             "percent_external": "%{percent_external} Extern"
           },
           "video": {
-            "title_video_plays": "Video Plays",
+            "title_video_plays": "Video/Aufrufe",
             "title": "Videoaufrufe",
             "stats": {
-              "on_kickstarter": "on Kickstarter",
-              "off_site": "off-site",
+              "on_kickstarter": "auf Kickstarter",
+              "off_site": "außerhalb Kickstarters",
               "internal_start_count_on_kickstarter": "%{internal_start_count} auf Kickstarter",
               "external_start_count_off_site": "%{external_start_count} extern",
               "total_plays": "%{total_start_count} Aufrufe",
               "total_plays_count": {
-                "zero": "<b>0</b> total plays",
-                "one": "<b>1</b> total play",
-                "two": "<b>2</b> total plays",
-                "few": "<b>%{total_start_count}</b> total plays",
-                "many": "<b>%{total_start_count}</b> total plays"
+                "zero": "<b>0</b>Aufrufe",
+                "one": "<b>0</b>Aufruf",
+                "two": "<b>0</b>Aufrufe",
+                "few": "<b>%{total_start_count}</b> Aufrufe",
+                "many": "<b>%{total_start_count}</b> Aufrufe"
               },
               "percent_plays_completed": "%{percent_plays_completed} aller Aufrufe wurden bis zum Ende wiedergegeben"
             }
@@ -2494,6 +2499,9 @@
             "public": "Öffentlich",
             "backers_only": "Nur für Unterstützer"
           }
+        },
+        "switcher": {
+          "project_number": "Projekt Nr. %{current_project_index}"
         }
       },
       "creator_project_preview": {
@@ -2599,11 +2607,11 @@
       },
       "general": {
         "backer_count_backers": {
-          "zero": "0 backers",
-          "one": "1 backer",
-          "two": "2 backers",
-          "few": "%{backer_count} backers",
-          "many": "%{backer_count} backers"
+          "zero": "0 Unterstützer",
+          "one": "1 Unterstützer",
+          "two": "2 Unterstützer",
+          "few": "%{backer_count} Unterstützer",
+          "many": "%{backer_count} Unterstützer"
         },
         "navigation": {
           "buttons": {
@@ -3728,6 +3736,7 @@
         "activity": {
           "backing_info": "Info sobre patrocinamiento",
           "no_reward_selected": "No se seleccionó ninguna recompensa",
+          "pledge_info": "Info sobre contribución",
           "project_name_launched": "<b>%{project_name}</b>, publicado el %{launch_date}, meta de financiamiento: <b>%{goal}</b>",
           "project_name_was_canceled": "<b>%{project_name}</b> fue cancelado el %{cancellation_date}",
           "project_name_was_suspended": "<b>%{project_name}</b> fue suspendido el %{suspension_date}",
@@ -3906,6 +3915,9 @@
             "public": "Público",
             "backers_only": "Sólo para patrocinadores"
           }
+        },
+        "switcher": {
+          "project_number": "Proyecto n° %{current_project_index}"
         }
       },
       "creator_project_preview": {
@@ -5140,6 +5152,7 @@
         "activity": {
           "backing_info": "Infos sur la contribution",
           "no_reward_selected": "Pas de récompense sélectionnée",
+          "pledge_info": "Infos sur mon engagement",
           "project_name_launched": "<b>%{project_name}</b> lancé le %{launch_date} avec un objectif de <b>%{goal}</b>",
           "project_name_was_canceled": "<b>%{project_name}</b> a été annulé le %{cancellation_date}",
           "project_name_was_suspended": "<b>%{project_name}</b> a été suspendu le %{suspension_date}",
@@ -5318,6 +5331,9 @@
             "public": "Public",
             "backers_only": "Contributeurs seulement"
           }
+        },
+        "switcher": {
+          "project_number": "Projet no. %{current_project_index}"
         }
       },
       "creator_project_preview": {
@@ -6552,6 +6568,7 @@
         "activity": {
           "backing_info": "Backing info",
           "no_reward_selected": "No reward selected",
+          "pledge_info": "Pledge info",
           "project_name_launched": "<b>%{project_name}</b> launched on %{launch_date} with a goal of raising <b>%{goal}</b>",
           "project_name_was_canceled": "<b>%{project_name}</b> was canceled on %{cancellation_date}",
           "project_name_was_suspended": "<b>%{project_name}</b> was suspended on %{suspension_date}",
@@ -6560,17 +6577,17 @@
           "reward_name": "<b>Reward:</b> %{reward_name}",
           "send_message": "Send message",
           "successfully_raised_pledged": "Successfully raised <b>%{pledged}</b> with <b>%{backers}</b> on %{deadline}",
-          "update_number_posted_time_count_days_ago": "Update #<b>%{update_number}</b> posted %{time_count_days_ago}",
+          "update_number_posted_time_count_days_ago": "<b>Update%{space}#%{update_number}</b> posted %{time_count_days_ago}",
           "user_name_adjusted_their_pledge": "<b>%{user_name}</b> adjusted their pledge",
           "user_name_canceled_their_pledge": "<b>%{user_name}</b> canceled their pledge",
           "user_name_changed_their_reward": "<b>%{user_name}</b> changed their reward",
-          "user_name_commented_on_update_number": "<b>%{user_name}</b> commented on Update #%{update_number}",
+          "user_name_commented_on_update_number": "<b>%{user_name}</b> commented on <b>Update%{space}#%{update_number}</b>",
           "user_name_commented_on_your_project": "<b>%{user_name}</b> commented on your project",
           "user_name_pledged": "<b>%{user_name}</b> pledged",
           "you_adjusted_your_pledge": "<b>You</b> adjusted your pledge",
           "you_canceled_your_pledge": "<b>You</b> canceled your pledge",
           "you_changed_your_reward": "<b>You</b> changed your reward",
-          "you_commented_on_update_number": "<b>You</b> commented on Update #%{update_number}",
+          "you_commented_on_update_number": "<b>You</b> commented on <b>Update%{space}#%{update_number}</b>",
           "you_commented_on_your_project": "<b>You</b> commented on your project",
           "you_pledged": "<b>You</b> pledged"
         },
@@ -6730,6 +6747,9 @@
             "public": "Public",
             "backers_only": "Backers only"
           }
+        },
+        "switcher": {
+          "project_number": "Project #%{current_project_index}"
         }
       },
       "creator_project_preview": {
@@ -7065,7 +7085,6 @@
     "elasticsearch": true,
     "elasticsearch_sync_diffs": true,
     "koala_tracking": true,
-    "device_earlybird": true,
     "security_history_read": true,
     "security_history_write": true,
     "redshift": true,
@@ -7090,7 +7109,6 @@
     "backer_report_formats": true,
     "itemization": true,
     "recs_on_project": true,
-    "mars_banners": true,
     "summerfest_hero": true
   },
   "launched_countries": [
@@ -7204,12 +7222,13 @@
     }
   ],
   "ab_experiments": {
-    "checkout_faqs_display": "control",
+    "checkout_error_messages": "control",
+    "checkout_big_button": "control",
     "discover_sorts_vs_subcategories": "experimental",
-    "native_ios_aa": "control",
+    "native_ios_aa": "experimental",
     "native_ios_expand_categories": "experimental",
     "native_iphone_read_more": "control",
-    "native_iphone_horiz_vs_vert": "experimental",
+    "native_iphone_horiz_vs_vert": "control",
     "new_start_strings": "control",
     "project_page_recs": "control"
   },

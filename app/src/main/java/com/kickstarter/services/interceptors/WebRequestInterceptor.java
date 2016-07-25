@@ -51,11 +51,10 @@ public final class WebRequestInterceptor implements Interceptor {
       .header("User-Agent", userAgent());
 
     final String basicAuthorizationHeader = internalTools.basicAuthorizationHeader();
-    if (shouldAddBasicAuthorizationHeader(initialRequest) && isNotNull(basicAuthorizationHeader)) {
-      requestBuilder.addHeader("Authorization", basicAuthorizationHeader);
-    }
     if (currentUser.exists()) {
       requestBuilder.addHeader("Authorization", "token " + currentUser.getAccessToken());
+    } else if (shouldAddBasicAuthorizationHeader(initialRequest) && isNotNull(basicAuthorizationHeader)) {
+      requestBuilder.addHeader("Authorization", basicAuthorizationHeader);
     }
     if (androidPayCapability.isCapable()) {
       requestBuilder.addHeader("Kickstarter-Android-Pay", "1");
@@ -69,6 +68,9 @@ public final class WebRequestInterceptor implements Interceptor {
   }
 
   private boolean shouldAddBasicAuthorizationHeader(final @NonNull Request request) {
+    if (currentUser.exists()) {
+      return false;
+    }
     final Uri initialRequestUri = Uri.parse(request.url().toString());
     return KSUri.isHivequeenUri(initialRequestUri, endpoint) || KSUri.isStagingUri(initialRequestUri, endpoint);
   }

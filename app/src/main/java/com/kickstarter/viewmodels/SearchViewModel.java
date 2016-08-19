@@ -45,7 +45,9 @@ public final class SearchViewModel extends ActivityViewModel<SearchActivity> imp
     return searchProjects;
   }
 
-  private static final DiscoveryParams defaultParams = DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build();
+
+  private static final DiscoveryParams.Sort defaultSort = DiscoveryParams.Sort.POPULAR;
+  private static final DiscoveryParams defaultParams = DiscoveryParams.builder().sort(defaultSort).build();
 
   public final SearchViewModelInputs inputs = this;
   public final SearchViewModelOutputs outputs = this;
@@ -91,7 +93,7 @@ public final class SearchViewModel extends ActivityViewModel<SearchActivity> imp
       .compose(Transformers.takePairWhen(paginator.paginatedData()))
       .compose(bindToLifecycle())
       .subscribe(paramsAndProjects -> {
-        if (paramsAndProjects.first.sort() == DiscoveryParams.Sort.POPULAR) {
+        if (paramsAndProjects.first.sort() == defaultSort) {
           popularProjects.onNext(paramsAndProjects.second);
         } else {
           searchProjects.onNext(paramsAndProjects.second);

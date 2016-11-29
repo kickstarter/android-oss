@@ -12,6 +12,8 @@ machine:
 
 dependencies:
   override:
+    - git submodule update --init --recursive
+    - script/bootstrap_configs
     - echo y | android update sdk --no-ui --all --filter android-23,build-tools-23.0.1,extra-android-m2repository,extra-google-m2repository,extra-android-support
     - ./gradlew dependencies
   cache_directories:

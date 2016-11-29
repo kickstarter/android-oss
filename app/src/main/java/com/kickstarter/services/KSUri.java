@@ -3,6 +3,8 @@ package com.kickstarter.services;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
+import com.kickstarter.libs.utils.Secrets;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,12 +12,13 @@ public final class KSUri {
   private KSUri() {}
 
   public static boolean isAndroidPayUri(@NonNull final Uri uri, @NonNull final String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) && (ANDROID_PAY_PATTERN_1.matcher(uri.getPath()).matches() ||
-      ANDROID_PAY_PATTERN_2.matcher(uri.getPath()).matches());
+    return isKickstarterUri(uri, webEndpoint)
+      && (Secrets.ANDROID_PAY_PATTERN_1.matcher(uri.getPath()).matches()
+        || Secrets.ANDROID_PAY_PATTERN_2.matcher(uri.getPath()).matches());
   }
 
   public static boolean isApiUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) && API_PATTERN.matcher(uri.getHost()).matches();
+    return isKickstarterUri(uri, webEndpoint) && Secrets.API_PATTERN.matcher(uri.getHost()).matches();
   }
 
   public static boolean isCookiesUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
@@ -40,7 +43,7 @@ public final class KSUri {
   }
 
   public static boolean isHivequeenUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) && HIVEQUEEN_PATTERN.matcher(uri.getHost()).matches();
+    return isKickstarterUri(uri, webEndpoint) && Secrets.HIVEQUEEN_PATTERN.matcher(uri.getHost()).matches();
   }
 
   public static boolean isKickstarterUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
@@ -83,16 +86,6 @@ public final class KSUri {
     return isKickstarterUri(uri, webEndpoint) && !isApiUri(uri, webEndpoint);
   }
 
-  // ***REMOVED***
-  private static final Pattern ANDROID_PAY_PATTERN_1 = Pattern.compile("\\A\\/checkouts\\/\\d+\\/payments\\/android-pay\\z");
-  // ***REMOVED***
-  // ***REMOVED***
-  private static final Pattern ANDROID_PAY_PATTERN_2 = Pattern.compile("\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/(pledge\\/)?android-pay\\z");
-
-  // ***REMOVED***
-  // ***REMOVED***
-  private static final Pattern API_PATTERN = Pattern.compile("\\Aapi(-[a-z0-9\\.]+)?\\.kickstarter.com\\z");
-
   // /discover/categories/param
   private static final Pattern DISCOVER_CATEGORIES_PATTERN = Pattern.compile("\\A\\/discover\\/categories\\/.*");
 
@@ -101,9 +94,6 @@ public final class KSUri {
 
   // /discover/places/param
   private static final Pattern DISCOVER_PLACES_PATTERN = Pattern.compile("\\A\\/discover\\/places\\/[a-zA-Z0-9-_]+\\z");
-
-  // environment.***REMOVED***
-  private static final Pattern HIVEQUEEN_PATTERN = Pattern.compile("\\A([a-z0-9]+\\-)?[a-z0-9]+\\.dev\\.kickstarter.com\\z");
 
   // /projects/param-1/param-2
   private static final Pattern PROJECT_PATTERN = Pattern.compile("\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/?\\z");

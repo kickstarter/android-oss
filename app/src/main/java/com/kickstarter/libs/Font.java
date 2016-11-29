@@ -14,7 +14,11 @@ public class Font {
     this.materialIconsTypeface = Typeface.createFromAsset(assetManager, "fonts/MaterialIcons-Regular.ttf");
     this.sansSerifLightTypeface = Typeface.create("sans-serif-light", Typeface.NORMAL);
     this.sansSerifTypeface = Typeface.create("sans-serif", Typeface.NORMAL);
-    this.ssKickstarterTypeface = Typeface.createFromAsset(assetManager, "fonts/ss-kickstarter.otf");
+    try {
+      this.ssKickstarterTypeface = Typeface.createFromAsset(assetManager, "fonts/ss-kickstarter.otf");
+    } catch (RuntimeException e) {
+      this.ssKickstarterTypeface = this.materialIconsTypeface;
+    }
   }
 
   public Typeface materialIconsTypeface() {

@@ -1,6 +1,7 @@
 require 'net/http'
 require 'uri'
 require 'json'
+require_relative 'secrets'
 
 module Milkrun
   class ServerConfigRefresher
@@ -33,8 +34,8 @@ module Milkrun
 
     def url
       local ?
-        URI.parse("http://api.ksr.dev/v1/app/android/config?client_id=***REMOVED***&all_locales=true") :
-        URI.parse("https://***REMOVED***/v1/app/android/config?client_id=***REMOVED***&all_locales=true")
+        URI.parse("http://api.ksr.dev/v1/app/android/config?client_id=#{Secrets::API_CLIENT_LOCAL}&all_locales=true") :
+        URI.parse("https://#{Secrets::API_SERVER_PRODUCTION}/v1/app/android/config?client_id=#{Secrets::API_CLIENT_PRODUCTION}&all_locales=true")
     end
   end
 end

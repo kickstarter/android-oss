@@ -52,6 +52,7 @@ import com.kickstarter.libs.qualifiers.UserPreference;
 import com.kickstarter.libs.qualifiers.WebEndpoint;
 import com.kickstarter.libs.qualifiers.WebRetrofit;
 import com.kickstarter.libs.utils.PlayServicesCapability;
+import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.services.ApiClient;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.ApiService;
@@ -184,9 +185,9 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   String provideClientId(final @NonNull ApiEndpoint apiEndpoint) {
-    return apiEndpoint == ApiEndpoint.PRODUCTION ?
-      "***REMOVED***" :
-      "***REMOVED***";
+    return apiEndpoint == ApiEndpoint.PRODUCTION
+      ? Secrets.API_CLIENT_PRODUCTION
+      : Secrets.API_CLIENT_STAGING;
   }
 
   @Provides

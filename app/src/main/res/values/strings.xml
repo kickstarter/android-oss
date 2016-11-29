@@ -10,6 +10,8 @@
   <string name="Build_date">Build Date</string>
   <string name="Build_information">Build Information</string>
   <string name="Changelog">Changelog</string>
+  <string name="Change_endpoint">Change endpoint</string>
+  <string name="Custom">Custom</string>
   <string name="Development_settings">Development Settings</string>
   <string name="debug_push_notifications_register_device">Register device</string>
   <string name="debug_push_notifications_device_registration">Device registration</string>
@@ -25,10 +27,9 @@
   <string name="debug_push_notifications_simulate_notifications">Simulate notifications</string>
   <string name="debug_push_notifications_unregister_device">Unregister device</string>
   <string name="Endpoint">Endpoint</string>
-  <string name="Enter_the_base_url_of_the_api">
-    Enter the base URL of the API you’d like to use.\n\n
-    e.g.: https://api-christopher.***REMOVED***
-  </string>
+  <string name="Enter_the_base_url_of_the_api">Enter the base URL of the API</string>
+  <string name="Enter_Hivequeen_name">Enter Hivequeen name (e.g.: christopher)</string>
+  <string name="Hivequeen">Hivequeen</string>
   <string name="Instructions">Instructions</string>
   <string name="internal_tools_internal_tools">Internal tools</string>
   <string name="internal_tools_playground">Playground</string>
@@ -39,8 +40,10 @@
   <string name="Not_implemented_yet">Not implemented yet, coming soon!</string>
   <string name="Open_downloads_folder">Open Downloads folder</string>
   <string name="playground_playground">Playground</string>
+  <string name="Production">Production</string>
   <string name="Select_email_application">Select email application:</string>
   <string name="Sha">SHA</string>
+  <string name="Staging">Staging</string>
   <string name="Submit_feedback">Submit feedback</string>
   <string name="Upgrade_app">Upgrade app</string>
   <string name="Variant">Variant</string>

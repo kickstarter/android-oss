@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 public enum ApiEndpoint {
   PRODUCTION("Production", "https://***REMOVED***"),
   STAGING("Staging", "https://***REMOVED***"),
-  LOCAL("Local", "http://api.ksr.10.0.3.2.xip.io"),
   CUSTOM("Custom", null);
 
   private String name;

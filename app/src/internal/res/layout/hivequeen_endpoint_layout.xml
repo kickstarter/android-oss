@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:padding="@dimen/grid_3">
+
+  <android.support.design.widget.TextInputLayout
+    app:hintTextAppearance="@style/BodySecondary"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/grid_1">
+
+    <EditText
+      android:id="@+id/hivequeen_name_edit_text"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/grid_2"
+      style="@style/SubheadPrimary"
+      android:hint="@string/Enter_Hivequeen_name"
+      android:inputType="text" />
+
+  </android.support.design.widget.TextInputLayout>
+
+</LinearLayout>
+

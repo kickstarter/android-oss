@@ -21,49 +21,71 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content">
 
+      <Button
+        style="@style/BorderButton"
+        android:id="@+id/submit_bug_report_button"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="@dimen/grid_1"
+        android:text="@string/Submit_feedback"
+        android:layout_marginTop="@dimen/grid_1" />
+
+      <Button
+        style="@style/BorderButton"
+        android:id="@+id/push_notifications_button"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/grid_1"
+        android:layout_marginBottom="@dimen/grid_3"
+        android:text="@string/internal_tools_push_notifications" />
+
+      <include layout="@layout/horizontal_line_1dp_view" />
+
+      <TextView
+        style="@style/SubheadPrimaryMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_3"
+        android:text="@string/Change_endpoint" />
+
+      <Button
+        style="@style/BorderButton"
+        android:id="@+id/change_endpoint_production_button"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/grid_2"
+        android:layout_marginBottom="@dimen/grid_1"
+        android:text="@string/Production" />
+
+      <Button
+        style="@style/BorderButton"
+        android:id="@+id/change_endpoint_staging_button"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/grid_1"
+        android:layout_marginBottom="@dimen/grid_1"
+        android:text="@string/Staging" />
+
+      <Button
+        style="@style/BorderButton"
+        android:id="@+id/change_endpoint_hivequeen_button"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/grid_1"
+        android:layout_marginBottom="@dimen/grid_1"
+        android:text="@string/Hivequeen" />
+
+      <Button
+        style="@style/BorderButton"
+        android:id="@+id/change_endpoint_custom_button"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/grid_1"
+        android:layout_marginBottom="@dimen/grid_3"
+        android:text="@string/Custom" />
+
+      <include layout="@layout/horizontal_line_1dp_view" />
+
       <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_3"
         android:layout_marginBottom="@dimen/grid_1"
         android:stretchColumns="*">
-
-        <TableRow
-          android:layout_marginTop="@dimen/grid_1"
-          android:layout_marginBottom="@dimen/grid_1"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:weightSum="1" >
-
-          <TextView
-            style="@style/SubheadPrimaryMedium"
-            android:layout_span="2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/Network" />
-
-        </TableRow>
-
-        <TableRow
-          android:layout_marginTop="@dimen/grid_1"
-          android:layout_marginBottom="@dimen/grid_1"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:weightSum="1" >
-
-          <TextView
-            style="@style/BodySecondary"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/Endpoint"
-            android:layout_column="0" />
-
-          <Spinner
-            android:id="@+id/endpoint_spinner"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_column="1" />
-
-        </TableRow>
 
         <TableRow
           android:layout_marginTop="@dimen/grid_1"
@@ -198,29 +220,6 @@
 
       </TableLayout>
 
-      <Button
-        style="@style/BorderButton"
-        android:id="@+id/submit_bug_report_button"
-        android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/grid_1"
-        android:layout_marginBottom="@dimen/grid_1"
-        android:text="@string/Submit_feedback" />
-
-      <Button
-        style="@style/BorderButton"
-        android:id="@+id/push_notifications_button"
-        android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/grid_1"
-        android:layout_marginBottom="@dimen/grid_1"
-        android:text="@string/internal_tools_push_notifications" />
-
-      <Button
-        style="@style/BorderButton"
-        android:id="@+id/playground_button"
-        android:layout_width="match_parent"
-        android:layout_marginTop="@dimen/grid_1"
-        android:layout_marginBottom="@dimen/grid_1"
-        android:text="@string/internal_tools_playground" />
 
     </LinearLayout>
 

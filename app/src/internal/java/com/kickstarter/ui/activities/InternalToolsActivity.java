@@ -10,9 +10,8 @@ import android.text.TextUtils;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
+import android.webkit.URLUtil;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.jakewharton.processphoenix.ProcessPhoenix;
@@ -22,7 +21,6 @@ import com.kickstarter.libs.ApiEndpoint;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.Build;
 import com.kickstarter.libs.CurrentUserType;
-import com.kickstarter.libs.EnumAdapter;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.preferences.StringPreferenceType;
 import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
@@ -53,7 +51,6 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
   @Inject Logout logout;
 
   @Bind(R.id.build_date) TextView buildDate;
-  @Bind(R.id.endpoint_spinner) Spinner endpointSpinner;
   @Bind(R.id.sha) TextView sha;
   @Bind(R.id.variant) TextView variant;
   @Bind(R.id.version_code) TextView versionCode;
@@ -68,13 +65,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
 
     ((KSApplication) getApplicationContext()).component().inject(this);
 
-    setupNetworkSection();
     setupBuildInformationSection();
-  }
-
-  @OnClick(R.id.playground_button)
-  public void playgroundClick() {
-    startActivity(new Intent(this, PlaygroundActivity.class));
   }
 
   @OnClick(R.id.push_notifications_button)
@@ -85,6 +76,26 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
       .setTitle("Push notifications")
       .setView(view)
       .show();
+  }
+
+  @OnClick(R.id.change_endpoint_custom_button)
+  public void changeEndpointCustomButton() {
+    showCustomEndpointDialog();
+  }
+
+  @OnClick(R.id.change_endpoint_hivequeen_button)
+  public void changeEndpointHivequeenButton() {
+    showHivequeenEndpointDialog();
+  }
+
+  @OnClick(R.id.change_endpoint_staging_button)
+  public void changeEndpointStagingButton() {
+    setEndpointAndRelaunch(ApiEndpoint.STAGING);
+  }
+
+  @OnClick(R.id.change_endpoint_production_button)
+  public void changeEndpointProductionButton() {
+    setEndpointAndRelaunch(ApiEndpoint.PRODUCTION);
   }
 
   @OnClick(R.id.submit_bug_report_button)
@@ -121,29 +132,44 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
     startActivity(Intent.createChooser(intent, getString(R.string.Select_email_application)));
   }
 
-  private void setupNetworkSection() {
-    final ApiEndpoint currentApiEndpoint = ApiEndpoint.from(apiEndpointPreference.get());
-    final EnumAdapter<ApiEndpoint> endpointAdapter =
-      new EnumAdapter<>(this, ApiEndpoint.class, false, R.layout.black_spinner_item);
-    endpointSpinner.setAdapter(endpointAdapter);
-    endpointSpinner.setSelection(currentApiEndpoint.ordinal());
-    endpointSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-      @Override
-      public void onItemSelected(final @NonNull AdapterView<?> adapterView, final @NonNull View view,
-        final int position, final long id) {
-        final ApiEndpoint selected = endpointAdapter.getItem(position);
-        if (selected != currentApiEndpoint) {
-          if (selected == ApiEndpoint.CUSTOM) {
-            showCustomEndpointDialog(currentApiEndpoint.ordinal(), "https://");
-          } else {
-            setEndpointAndRelaunch(selected.url());
-          }
-        }
-      }
+  private void showCustomEndpointDialog() {
+    final View view = LayoutInflater.from(this).inflate(R.layout.custom_endpoint_layout, null);
+    final EditText customEndpointEditText = ButterKnife.findById(view, R.id.custom_endpoint_edit_text);
 
-      @Override
-      public void onNothingSelected(final @NonNull AdapterView<?> adapterView) {}
-    });
+    new AlertDialog.Builder(this)
+      .setTitle("Change endpoint")
+      .setView(view)
+      .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+        final String url = customEndpointEditText.getText().toString();
+        if (URLUtil.isValidUrl(url)) {
+          setEndpointAndRelaunch(ApiEndpoint.from(url));
+        }
+      })
+      .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+        dialog.cancel();
+      })
+      .setIcon(icDialogAlertDrawable)
+      .show();
+  }
+
+  private void showHivequeenEndpointDialog() {
+    final View view = LayoutInflater.from(this).inflate(R.layout.hivequeen_endpoint_layout, null);
+    final EditText hivequeenNameEditText = ButterKnife.findById(view, R.id.hivequeen_name_edit_text);
+
+    new AlertDialog.Builder(this)
+      .setTitle("Change endpoint")
+      .setView(view)
+      .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+        final String hivequeenName = hivequeenNameEditText.getText().toString();
+        if (hivequeenName.length() > 0) {
+          setEndpointAndRelaunch(ApiEndpoint.from("***REMOVED***"));
+        }
+      })
+      .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+        dialog.cancel();
+      })
+      .setIcon(icDialogAlertDrawable)
+      .show();
   }
 
   private void setupBuildInformationSection() {
@@ -154,41 +180,8 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
     versionName.setText(build.versionName());
   }
 
-  private void showCustomEndpointDialog(final int originalSelection, final @NonNull String defaultUrl) {
-    final View view = LayoutInflater.from(this).inflate(R.layout.api_endpoint_layout, null);
-    final EditText url = ButterKnife.findById(view, R.id.url);
-    url.setText(defaultUrl);
-    url.setSelection(url.length());
-
-    new AlertDialog.Builder(this)
-      .setTitle("Set API Endpoint")
-      .setView(view)
-      .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-        String inputUrl = url.getText().toString();
-        if (inputUrl.length() > 0) {
-          // Remove trailing '/'
-          if (inputUrl.charAt(inputUrl.length() - 1) == '/') {
-            inputUrl = inputUrl.substring(0, inputUrl.length() - 1);
-          }
-          setEndpointAndRelaunch(inputUrl);
-        } else {
-          endpointSpinner.setSelection(originalSelection);
-        }
-      })
-      .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
-        endpointSpinner.setSelection(originalSelection);
-        dialog.cancel();
-      })
-      .setOnCancelListener(dialogInterface -> {
-        // TODO: Is this redundant?
-        endpointSpinner.setSelection(originalSelection);
-      })
-      .setIcon(icDialogAlertDrawable)
-      .show();
-  }
-
-  private void setEndpointAndRelaunch(final @NonNull String endpoint) {
-    apiEndpointPreference.set(endpoint);
+  private void setEndpointAndRelaunch(final @NonNull ApiEndpoint apiEndpoint) {
+    apiEndpointPreference.set(apiEndpoint.url());
     logout.execute();
     ProcessPhoenix.triggerRebirth(this);
   }

@@ -1,9 +1,6 @@
 package com.kickstarter.viewmodels;
 
-import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
@@ -29,17 +26,11 @@ public final class DownloadBetaViewModel extends ActivityViewModel<DownloadBetaA
 
   public DownloadBetaViewModel(final @NonNull Environment environment) {
     super(environment);
-  }
 
-  @Override
-  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
-    super.onCreate(context, savedInstanceState);
-
-    addSubscription(
-      intent()
-        .map(i -> i.getParcelableExtra(IntentKey.INTERNAL_BUILD_ENVELOPE))
-        .ofType(InternalBuildEnvelope.class)
-        .subscribe(internalBuildEnvelope)
-    );
+    intent()
+      .map(i -> i.getParcelableExtra(IntentKey.INTERNAL_BUILD_ENVELOPE))
+      .ofType(InternalBuildEnvelope.class)
+      .compose(bindToLifecycle())
+      .subscribe(internalBuildEnvelope);
   }
 }

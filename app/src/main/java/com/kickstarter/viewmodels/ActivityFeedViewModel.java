@@ -1,9 +1,6 @@
 package com.kickstarter.viewmodels;
 
-import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
@@ -27,7 +24,6 @@ import com.kickstarter.viewmodels.outputs.ActivityFeedViewModelOutputs;
 import java.util.List;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
@@ -36,56 +32,22 @@ public final class ActivityFeedViewModel extends ActivityViewModel<ActivityFeedA
   private final ApiClientType client;
   private final CurrentUserType currentUser;
 
-  private final PublishSubject<Project> discoverProjectsClick = PublishSubject.create();
-  private final PublishSubject<Activity> friendBackingClick = PublishSubject.create();
-  private final PublishSubject<Void> loginClick = PublishSubject.create();
-  private final PublishSubject<Activity> projectStateChangedPositiveClick = PublishSubject.create();
-  private final PublishSubject<Activity> projectStateChangedClick = PublishSubject.create();
-  private final PublishSubject<Activity> projectUpdateProjectClick = PublishSubject.create();
-  private final PublishSubject<Activity> projectUpdateUpdateClick = PublishSubject.create();
-
-  private final PublishSubject<String> moreActivitiesUrl = PublishSubject.create();
-
-  // INPUTS
-  private final PublishSubject<Void> nextPage = PublishSubject.create();
-  public void nextPage() {
-    nextPage.onNext(null);
-  }
-  private final PublishSubject<Void> refresh = PublishSubject.create();
-  public void refresh() {
-    refresh.onNext(null);
-  }
-  public final ActivityFeedViewModelInputs inputs = this;
-
-  // OUTPUTS
-  private final BehaviorSubject<Boolean> loggedOutEmptyStateIsVisible = BehaviorSubject.create();
-  public Observable<Boolean> loggedOutEmptyStateIsVisible() {
-    return loggedOutEmptyStateIsVisible;
-  }
-  private final BehaviorSubject<Boolean> loggedInEmptyStateIsVisible = BehaviorSubject.create();
-  public Observable<Boolean> loggedInEmptyStateIsVisible() {
-    return loggedInEmptyStateIsVisible;
-  }
-  private final PublishSubject<Boolean> isFetchingActivities = PublishSubject.create();
-  public Observable<Boolean> isFetchingActivities() {
-    return isFetchingActivities;
-  }
-  private final BehaviorSubject<List<Activity>> activities = BehaviorSubject.create();
-  public Observable<List<Activity>> activities() {
-    return activities;
-  }
-  public final ActivityFeedViewModelOutputs outputs = this;
-
   public ActivityFeedViewModel(final @NonNull Environment environment) {
     super(environment);
 
-    this.client = environment.apiClient();
-    this.currentUser = environment.currentUser();
-  }
+    client = environment.apiClient();
+    currentUser = environment.currentUser();
 
-  @Override
-  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
-    super.onCreate(context, savedInstanceState);
+    goToDiscovery = discoverProjectsClick;
+    goToLogin = loginClick;
+    goToProjectUpdate = projectUpdateClick;
+    goToProject = Observable.merge(
+      friendBackingClick,
+      projectStateChangedClick,
+      projectStateChangedPositiveClick,
+      projectUpdateProjectClick
+    )
+      .map(Activity::project);
 
     final ApiPaginator<Activity, ActivityEnvelope, Void> paginator = ApiPaginator.<Activity, ActivityEnvelope, Void>builder()
       .nextPage(nextPage)
@@ -112,59 +74,18 @@ public final class ActivityFeedViewModel extends ActivityViewModel<ActivityFeedA
     currentUser.isLoggedIn()
       .map(loggedIn -> !loggedIn)
       .compose(bindToLifecycle())
-      .subscribe(loggedOutEmptyStateIsVisible::onNext);
+      .subscribe(loggedOutEmptyStateIsVisible);
 
     currentUser.observable()
       .compose(Transformers.takePairWhen(activities))
       .map(ua -> ua.first != null && ua.second.size() == 0)
       .compose(bindToLifecycle())
-      .subscribe(loggedInEmptyStateIsVisible::onNext);
-
-    view()
-      .compose(Transformers.takeWhen(discoverProjectsClick))
-      .observeOn(AndroidSchedulers.mainThread())
-      .compose(bindToLifecycle())
-      .subscribe(ActivityFeedActivity::discoverProjectsButtonOnClick);
-
-    view()
-      .compose(Transformers.takePairWhen(friendBackingClick))
-      .observeOn(AndroidSchedulers.mainThread())
-      .compose(bindToLifecycle())
-      .subscribe(vp -> vp.first.startProjectActivity(vp.second.project()));
-
-    view()
-      .compose(Transformers.takeWhen(loginClick))
-      .observeOn(AndroidSchedulers.mainThread())
-      .compose(bindToLifecycle())
-      .subscribe(ActivityFeedActivity::activityFeedLogin);
-
-    view()
-      .compose(Transformers.takePairWhen(projectStateChangedClick))
-      .observeOn(AndroidSchedulers.mainThread())
-      .compose(bindToLifecycle())
-      .subscribe(vp -> vp.first.startProjectActivity(vp.second.project()));
-
-    view()
-      .compose(Transformers.takePairWhen(projectStateChangedPositiveClick))
-      .observeOn(AndroidSchedulers.mainThread())
-      .compose(bindToLifecycle())
-      .subscribe(vp -> vp.first.startProjectActivity(vp.second.project()));
-
-    view()
-      .compose(Transformers.takePairWhen(projectUpdateProjectClick))
-      .observeOn(AndroidSchedulers.mainThread())
-      .compose(bindToLifecycle())
-      .subscribe(vp -> vp.first.startProjectActivity(vp.second.project()));
-
-    view()
-      .compose(Transformers.takePairWhen(projectUpdateUpdateClick))
-      .observeOn(AndroidSchedulers.mainThread())
-      .compose(bindToLifecycle())
-      .subscribe(vp -> vp.first.showProjectUpdate(vp.second));
+      .subscribe(loggedInEmptyStateIsVisible);
 
     // Track viewing and paginating activity.
     nextPage
       .compose(Transformers.incrementalCount())
+      .startWith(0)
       .compose(bindToLifecycle())
       .subscribe(koala::trackActivityView);
 
@@ -173,41 +94,103 @@ public final class ActivityFeedViewModel extends ActivityViewModel<ActivityFeedA
       friendBackingClick,
       projectStateChangedPositiveClick,
       projectStateChangedClick,
-      projectUpdateProjectClick,
-      projectUpdateUpdateClick)
+      projectUpdateProjectClick
+    )
       .compose(bindToLifecycle())
       .subscribe(koala::trackActivityTapped);
   }
 
-  public void emptyActivityFeedDiscoverProjectsClicked(final @NonNull EmptyActivityFeedViewHolder viewHolder) {
+  private final PublishSubject<Void> discoverProjectsClick = PublishSubject.create();
+  private final PublishSubject<Activity> friendBackingClick = PublishSubject.create();
+  private final PublishSubject<Void> loginClick = PublishSubject.create();
+  private final PublishSubject<Void> nextPage = PublishSubject.create();
+  private final PublishSubject<Activity> projectStateChangedClick = PublishSubject.create();
+  private final PublishSubject<Activity> projectStateChangedPositiveClick = PublishSubject.create();
+  private final PublishSubject<Activity> projectUpdateClick = PublishSubject.create();
+  private final PublishSubject<Activity> projectUpdateProjectClick = PublishSubject.create();
+  private final PublishSubject<Void> refresh = PublishSubject.create();
+
+  private final BehaviorSubject<List<Activity>> activities = BehaviorSubject.create();
+  private final BehaviorSubject<Boolean> isFetchingActivities= BehaviorSubject.create();
+  private final BehaviorSubject<Boolean> loggedInEmptyStateIsVisible = BehaviorSubject.create();
+  private final BehaviorSubject<Boolean> loggedOutEmptyStateIsVisible = BehaviorSubject.create();
+  private final Observable<Void> goToDiscovery;
+  private final Observable<Void> goToLogin;
+  private final Observable<Project> goToProject;
+  private final Observable<Activity> goToProjectUpdate;
+
+  public final ActivityFeedViewModelInputs inputs = this;
+  public final ActivityFeedViewModelOutputs outputs = this;
+
+  @Override public void emptyActivityFeedDiscoverProjectsClicked(final @NonNull EmptyActivityFeedViewHolder viewHolder) {
     discoverProjectsClick.onNext(null);
   }
 
-  public void emptyActivityFeedLoginClicked(final @NonNull EmptyActivityFeedViewHolder viewHolder) {
+  @Override public void emptyActivityFeedLoginClicked(final @NonNull EmptyActivityFeedViewHolder viewHolder) {
     loginClick.onNext(null);
   }
 
-  public void friendBackingClicked(final @NonNull FriendBackingViewHolder viewHolder, final @NonNull Activity activity) {
+  @Override public void friendBackingClicked(final @NonNull FriendBackingViewHolder viewHolder, final @NonNull Activity activity) {
     friendBackingClick.onNext(activity);
   }
 
-  public void projectStateChangedClicked(final @NonNull ProjectStateChangedViewHolder viewHolder,
+  @Override public void nextPage() {
+    nextPage.onNext(null);
+  }
+
+  @Override public void projectStateChangedClicked(final @NonNull ProjectStateChangedViewHolder viewHolder,
     final @NonNull Activity activity) {
     projectStateChangedClick.onNext(activity);
   }
 
-  public void projectStateChangedPositiveClicked(final @NonNull ProjectStateChangedPositiveViewHolder viewHolder,
+  @Override public void projectStateChangedPositiveClicked(final @NonNull ProjectStateChangedPositiveViewHolder viewHolder,
     final @NonNull Activity activity) {
     projectStateChangedPositiveClick.onNext(activity);
   }
 
-  public void projectUpdateProjectClicked(final @NonNull ProjectUpdateViewHolder viewHolder,
+  @Override public void projectUpdateClicked(final @NonNull ProjectUpdateViewHolder viewHolder,
+    final @NonNull Activity activity) {
+    projectUpdateClick.onNext(activity);
+  }
+
+  @Override public void projectUpdateProjectClicked(final @NonNull ProjectUpdateViewHolder viewHolder,
     final @NonNull Activity activity) {
     projectUpdateProjectClick.onNext(activity);
   }
 
-  public void projectUpdateClicked(final @NonNull ProjectUpdateViewHolder viewHolder,
-    final @NonNull Activity activity) {
-    projectUpdateUpdateClick.onNext(activity);
+  @Override public void refresh() {
+    refresh.onNext(null);
+  }
+
+  @Override public @NonNull Observable<List<Activity>> activities() {
+    return activities;
+  }
+
+  @Override public @NonNull Observable<Boolean> isFetchingActivities() {
+    return isFetchingActivities;
+  }
+
+  @Override public @NonNull Observable<Boolean> loggedInEmptyStateIsVisible() {
+    return loggedInEmptyStateIsVisible;
+  }
+
+  @Override public @NonNull Observable<Boolean> loggedOutEmptyStateIsVisible() {
+    return loggedOutEmptyStateIsVisible;
+  }
+
+  @Override public @NonNull Observable<Void> goToDiscovery() {
+    return goToDiscovery;
+  }
+
+  @Override public @NonNull Observable<Void> goToLogin() {
+    return goToLogin;
+  }
+
+  @Override public @NonNull Observable<Project> goToProject() {
+    return goToProject;
+  }
+
+  @Override public @NonNull Observable<Activity> goToProjectUpdate() {
+    return goToProjectUpdate;
   }
 }

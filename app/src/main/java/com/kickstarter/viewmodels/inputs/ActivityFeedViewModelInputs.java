@@ -1,6 +1,8 @@
 package com.kickstarter.viewmodels.inputs;
 
-public interface ActivityFeedViewModelInputs {
+import com.kickstarter.ui.adapters.ActivityFeedAdapter;
+
+public interface ActivityFeedViewModelInputs extends ActivityFeedAdapter.Delegate {
   /**
    * Invoke when pagination should happen.
    */

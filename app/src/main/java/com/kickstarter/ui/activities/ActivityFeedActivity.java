@@ -32,12 +32,13 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import rx.android.schedulers.AndroidSchedulers;
+
+import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 
 @RequiresActivityViewModel(ActivityFeedViewModel.class)
 public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewModel> {
   private ActivityFeedAdapter adapter;
-  public @Bind(R.id.recycler_view) RecyclerView recyclerView;
+  protected @Bind(R.id.recycler_view) RecyclerView recyclerView;
   protected @Bind(R.id.activity_feed_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
 
   @Inject CurrentUserType currentUser;
@@ -52,7 +53,7 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
     setContentView(R.layout.activity_feed_layout);
     ButterKnife.bind(this);
 
-    adapter = new ActivityFeedAdapter(viewModel);
+    adapter = new ActivityFeedAdapter(viewModel.inputs);
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -63,23 +64,43 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
     currentUser.observable()
       .map(ObjectUtils::isNotNull)
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(swipeRefreshLayout::setEnabled);
 
     viewModel.outputs.activities()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(this::showActivities);
 
     viewModel.outputs.loggedOutEmptyStateIsVisible()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(adapter::showLoggedOutEmptyState);
 
     viewModel.outputs.loggedInEmptyStateIsVisible()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(adapter::showLoggedInEmptyState);
+
+    viewModel.outputs.goToDiscovery()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> resumeDiscoveryActivity());
+
+    viewModel.outputs.goToLogin()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(__ -> startActivityFeedLogin());
+
+    viewModel.outputs.goToProject()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::startProjectActivity);
+
+    viewModel.outputs.goToProjectUpdate()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::startProjectUpdateActivity);
   }
 
   @Override
@@ -89,30 +110,30 @@ public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewMod
     recyclerView.setAdapter(null);
   }
 
-  public void showActivities(final @NonNull List<Activity> activities) {
+  private void showActivities(final @NonNull List<Activity> activities) {
     adapter.takeActivities(activities);
   }
 
-  public void activityFeedLogin() {
+  private void resumeDiscoveryActivity() {
+    ApplicationUtils.resumeDiscoveryActivity(this);
+  }
+
+  private void startActivityFeedLogin() {
     final Intent intent = new Intent(this, LoginToutActivity.class)
       .putExtra(IntentKey.LOGIN_REASON, LoginReason.ACTIVITY_FEED);
     startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
   }
 
-  public void discoverProjectsButtonOnClick() {
-    ApplicationUtils.resumeDiscoveryActivity(this);
-  }
-
-  public void showProjectUpdate(final @NonNull Activity activity) {
-    final Intent intent = new Intent(this, WebViewActivity.class)
-      .putExtra(IntentKey.URL, activity.projectUpdateUrl());
-    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
-  }
-
-  public void startProjectActivity(final @NonNull Project project) {
+  private void startProjectActivity(final @NonNull Project project) {
     final Intent intent = new Intent(this, ProjectActivity.class)
       .putExtra(IntentKey.PROJECT, project)
       .putExtra(IntentKey.REF_TAG, RefTag.activity());
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  private void startProjectUpdateActivity(final @NonNull Activity activity) {
+    final Intent intent = new Intent(this, WebViewActivity.class)
+      .putExtra(IntentKey.URL, activity.projectUpdateUrl());
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 }

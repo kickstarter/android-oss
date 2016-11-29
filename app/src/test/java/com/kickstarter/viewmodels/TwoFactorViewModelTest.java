@@ -185,9 +185,7 @@ public class TwoFactorViewModelTest extends KSRobolectricTestCase {
       public @NonNull
         Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password,
         final @NonNull String code) {
-        return Observable.error(ApiExceptionFactory.tfaError(
-          ErrorEnvelope.builder().httpCode(400).build()
-        ));
+        return Observable.error(ApiExceptionFactory.tfaFailed());
       }
     };
 

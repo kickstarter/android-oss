@@ -290,6 +290,7 @@ public final class SettingsActivity extends BaseActivity<SettingsViewModel> {
         .setNegativeButton(getString(R.string.profile_settings_logout_alert_cancel_button), (__, ___) -> {
           viewModel.inputs.closeLogoutConfirmationClicked();
         })
+        .setOnCancelListener(__ -> viewModel.inputs.closeLogoutConfirmationClicked())
         .create();
     }
     return logoutConfirmationDialog;

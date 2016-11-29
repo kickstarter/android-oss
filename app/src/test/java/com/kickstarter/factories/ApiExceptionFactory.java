@@ -27,24 +27,44 @@ public final class ApiExceptionFactory {
   }
 
   public static @NonNull ApiException apiError(final @NonNull ErrorEnvelope errorEnvelope) {
-    final ErrorEnvelope envelope = ErrorEnvelope.builder()
-      .errorMessages(errorEnvelope.errorMessages())
-      .httpCode(errorEnvelope.httpCode())
-      .build();
     final ResponseBody body = ResponseBody.create(null, new Gson().toJson(errorEnvelope));
     final retrofit2.Response<Observable<User>> response = retrofit2.Response.error(errorEnvelope.httpCode(), body);
+
+    return new ApiException(errorEnvelope, response);
+  }
+
+  public static @NonNull ApiException invalidLoginException() {
+    final ErrorEnvelope envelope = ErrorEnvelope.builder()
+      .errorMessages(Collections.singletonList("Invalid login."))
+      .httpCode(401)
+      .ksrCode(ErrorEnvelope.INVALID_XAUTH_LOGIN)
+      .build();
+
+    final ResponseBody body = ResponseBody.create(null, new Gson().toJson(envelope));
+    final retrofit2.Response<Observable<User>> response = retrofit2.Response.error(envelope.httpCode(), body);
 
     return new ApiException(envelope, response);
   }
 
-  public static @NonNull ApiException tfaError(final @NonNull ErrorEnvelope errorEnvelope) {
+  public static @NonNull ApiException tfaRequired() {
     final ErrorEnvelope envelope = ErrorEnvelope.builder()
-      .errorMessages(errorEnvelope.errorMessages())
-      .httpCode(errorEnvelope.httpCode())
-      .ksrCode(ErrorEnvelope.TFA_FAILED)
+      .ksrCode(ErrorEnvelope.TFA_REQUIRED)
+      .httpCode(403)
+      .errorMessages(Collections.singletonList("Two-factor authentication required."))
       .build();
-    final ResponseBody body = ResponseBody.create(null, new Gson().toJson(errorEnvelope));
-    final retrofit2.Response<Observable<User>> response = retrofit2.Response.error(errorEnvelope.httpCode(), body);
+    final ResponseBody body = ResponseBody.create(null, new Gson().toJson(envelope));
+    final retrofit2.Response<Observable<User>> response = retrofit2.Response.error(envelope.httpCode(), body);
+
+    return new ApiException(envelope, response);
+  }
+
+  public static @NonNull ApiException tfaFailed() {
+    final ErrorEnvelope envelope = ErrorEnvelope.builder()
+      .ksrCode(ErrorEnvelope.TFA_FAILED)
+      .httpCode(400)
+      .build();
+    final ResponseBody body = ResponseBody.create(null, new Gson().toJson(envelope));
+    final retrofit2.Response<Observable<User>> response = retrofit2.Response.error(envelope.httpCode(), body);
 
     return new ApiException(envelope, response);
   }

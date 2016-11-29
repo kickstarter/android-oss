@@ -20,8 +20,9 @@ import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.ui.IntentKey;
-import com.kickstarter.viewmodels.LoginViewModel;
 import com.kickstarter.ui.toolbars.LoginToolbar;
+import com.kickstarter.ui.views.ConfirmDialog;
+import com.kickstarter.viewmodels.LoginViewModel;
 
 import javax.inject.Inject;
 
@@ -31,8 +32,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresActivityViewModel(LoginViewModel.class)
@@ -50,6 +51,8 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
   protected @BindString(R.string.login_buttons_log_in) String loginString;
   protected @BindString(R.string.login_errors_title) String errorTitleString;
 
+  private ConfirmDialog confirmResetPasswordSuccessDialog;
+
   @Inject KSString ksString;
 
   @Override
@@ -64,29 +67,57 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
 
     errorMessages()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(e -> ViewUtils.showDialog(this, errorTitleString, e));
 
     viewModel.errors.tfaChallenge()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(__ -> startTwoFactorActivity());
 
     viewModel.outputs.loginSuccess()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
+      .compose(observeForUI())
       .subscribe(__ -> onSuccess());
 
     viewModel.outputs.prefillEmailFromPasswordReset()
       .compose(bindToLifecycle())
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::prefillEmailFromPasswordReset);
+      .compose(observeForUI())
+      .subscribe(emailEditText::setText);
+
+    viewModel.outputs.showResetPasswordSuccessDialog()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(showAndEmail -> {
+        final boolean show = showAndEmail.first;
+        final String email = showAndEmail.second;
+        if (show) {
+          resetPasswordSuccessDialog(email).show();
+        } else {
+          resetPasswordSuccessDialog(email).dismiss();
+        }
+      });
+
+    viewModel.outputs.setLoginButtonIsEnabled()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setLoginButtonEnabled);
   }
 
-  private void prefillEmailFromPasswordReset(final @NonNull String email) {
-    final String message = ksString.format(forgotPasswordSentEmailString, "email", email);
-    ViewUtils.showDialog(this, null, message);
-    emailEditText.setText(email);
+  /**
+   * Lazily creates a reset password success confirmation dialog and stores it in an instance variable.
+   */
+  private @NonNull ConfirmDialog resetPasswordSuccessDialog(final @NonNull String email) {
+    if (confirmResetPasswordSuccessDialog == null) {
+      final String message = ksString.format(forgotPasswordSentEmailString, "email", email);
+      confirmResetPasswordSuccessDialog = new ConfirmDialog(this, null, message);
+
+      confirmResetPasswordSuccessDialog
+        .setOnDismissListener(__ -> viewModel.inputs.resetPasswordConfirmationDialogDismissed());
+      confirmResetPasswordSuccessDialog
+        .setOnCancelListener(__ -> viewModel.inputs.resetPasswordConfirmationDialogDismissed());
+    }
+    return confirmResetPasswordSuccessDialog;
   }
 
   private Observable<String> errorMessages() {
@@ -135,7 +166,7 @@ public final class LoginActivity extends BaseActivity<LoginViewModel> {
     finish();
   }
 
-  public void setFormEnabled(final boolean enabled) {
+  public void setLoginButtonEnabled(final boolean enabled) {
     loginButton.setEnabled(enabled);
   }
 

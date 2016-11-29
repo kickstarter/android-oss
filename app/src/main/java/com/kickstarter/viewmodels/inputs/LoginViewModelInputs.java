@@ -15,4 +15,9 @@ public interface LoginViewModelInputs {
    * Call when the password field is changed.
    */
   void password(String __);
+
+  /**
+   * Call when the user cancels or dismisses the reset password success confirmation dialog.
+   */
+  void resetPasswordConfirmationDialogDismissed();
 }

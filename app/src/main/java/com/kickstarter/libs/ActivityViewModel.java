@@ -94,22 +94,6 @@ public class ActivityViewModel<ViewType extends ActivityLifecycleType> {
   }
 
   /**
-   * @deprecated Avoid accessing views directly from the viewmodel, use inputs, outputs and errors to communicate instead.
-   */
-  @Deprecated
-  protected @NonNull Observable<ViewType> view() {
-    return view;
-  }
-
-  /**
-   * @deprecated Prefer composing with {@link #bindToLifecycle()}.
-   */
-  @Deprecated
-  public final void addSubscription(final @NonNull Subscription subscription) {
-    subscriptions.add(subscription);
-  }
-
-  /**
    * By composing this transformer with an observable you guarantee that every observable in your view model
    * will be properly completed when the view model completes.
    *

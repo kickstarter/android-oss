@@ -47,13 +47,6 @@ public final class ProjectFactory {
       .build();
   }
 
-  public static @NonNull Project projectWithComments() {
-    return project()
-      .toBuilder()
-      .commentsCount(10)
-      .build();
-  }
-
   public static @NonNull Project backedProject() {
     final Project project = project();
 

@@ -59,7 +59,7 @@ public final class KSUri {
   }
 
   public static boolean isStagingUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) && STAGING_PATTERN.matcher(uri.getHost()).matches();
+    return isKickstarterUri(uri, webEndpoint) && Secrets.STAGING_PATTERN.matcher(uri.getHost()).matches();
   }
 
   public static boolean isCheckoutThanksUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
@@ -97,9 +97,6 @@ public final class KSUri {
 
   // /projects/param-1/param-2
   private static final Pattern PROJECT_PATTERN = Pattern.compile("\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/?\\z");
-
-  // ***REMOVED***
-  private static final Pattern STAGING_PATTERN = Pattern.compile("\\Astaging\\.kickstarter\\.com\\z");
 
   // /projects/param-1/param-2/checkouts/1/thanks
   private static final Pattern CHECKOUT_THANKS_PATTERN = Pattern.compile("\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/checkouts\\/\\d+\\/thanks\\z");

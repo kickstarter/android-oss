@@ -25,6 +25,7 @@ import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.preferences.StringPreferenceType;
 import com.kickstarter.libs.qualifiers.ApiEndpointPreference;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
+import com.kickstarter.libs.utils.Secrets;
 import com.kickstarter.models.User;
 import com.kickstarter.ui.viewmodels.InternalToolsViewModel;
 
@@ -104,7 +105,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
   }
 
   private void submitBugReport(final @Nullable User user) {
-    final String email = "***REMOVED***";
+    final String email = Secrets.FIELD_REPORT_EMAIL;
 
     final List<String> debugInfo = Arrays.asList(
       user != null ? user.name() : "Logged Out",
@@ -162,7 +163,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
       .setPositiveButton(android.R.string.yes, (dialog, which) -> {
         final String hivequeenName = hivequeenNameEditText.getText().toString();
         if (hivequeenName.length() > 0) {
-          setEndpointAndRelaunch(ApiEndpoint.from("***REMOVED***"));
+          setEndpointAndRelaunch(ApiEndpoint.from(Secrets.hqApiHost(hivequeenName)));
         }
       })
       .setNegativeButton(android.R.string.cancel, (dialog, which) -> {

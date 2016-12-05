@@ -59,3 +59,5 @@ config/*.yml
 app/src/main/java/com/kickstarter/libs/utils/Secrets.java
 lib/milkrun/secrets.rb
 app/src/main/assets/fonts/ss-kickstarter.otf
+app/src/main/res/values/koala_endpoint.xml
+app/src/debug/res/values/koala_endpoint.xml

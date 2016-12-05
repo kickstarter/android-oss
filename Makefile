@@ -7,7 +7,8 @@ dependencies: submodules
 
 submodules:
 	git submodule sync --recursive
-	git submodule update --init --recursive
+	git submodule update --init --recursive || true
+	git submodule foreach git checkout $(sha1)
 
 secrets:
 	# Copy java secrets over, and fallback to the example secrets if they don't exist.

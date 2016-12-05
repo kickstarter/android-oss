@@ -12,6 +12,7 @@ machine:
 
 dependencies:
   override:
+    - $ANDROID_HOME/tools/android list target
     - make bootstrap-circle
     - echo y | android update sdk --no-ui --all --filter android-23,build-tools-23.0.1,extra-android-m2repository,extra-google-m2repository,extra-android-support
     - ./gradlew dependencies

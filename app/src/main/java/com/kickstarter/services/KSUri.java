@@ -13,12 +13,12 @@ public final class KSUri {
 
   public static boolean isAndroidPayUri(@NonNull final Uri uri, @NonNull final String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint)
-      && (Secrets.ANDROID_PAY_PATTERN_1.matcher(uri.getPath()).matches()
-        || Secrets.ANDROID_PAY_PATTERN_2.matcher(uri.getPath()).matches());
+      && (Secrets.RegExpPattern.ANDROID_PAY_1.matcher(uri.getPath()).matches()
+        || Secrets.RegExpPattern.ANDROID_PAY_2.matcher(uri.getPath()).matches());
   }
 
   public static boolean isApiUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) && Secrets.API_PATTERN.matcher(uri.getHost()).matches();
+    return isKickstarterUri(uri, webEndpoint) && Secrets.RegExpPattern.API.matcher(uri.getHost()).matches();
   }
 
   public static boolean isCookiesUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
@@ -43,7 +43,7 @@ public final class KSUri {
   }
 
   public static boolean isHivequeenUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) && Secrets.HIVEQUEEN_PATTERN.matcher(uri.getHost()).matches();
+    return isKickstarterUri(uri, webEndpoint) && Secrets.RegExpPattern.HIVEQUEEN.matcher(uri.getHost()).matches();
   }
 
   public static boolean isKickstarterUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
@@ -59,7 +59,7 @@ public final class KSUri {
   }
 
   public static boolean isStagingUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) && Secrets.STAGING_PATTERN.matcher(uri.getHost()).matches();
+    return isKickstarterUri(uri, webEndpoint) && Secrets.RegExpPattern.STAGING.matcher(uri.getHost()).matches();
   }
 
   public static boolean isCheckoutThanksUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {

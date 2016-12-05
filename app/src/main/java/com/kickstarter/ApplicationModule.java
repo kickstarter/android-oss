@@ -186,8 +186,8 @@ public final class ApplicationModule {
   @Singleton
   String provideClientId(final @NonNull ApiEndpoint apiEndpoint) {
     return apiEndpoint == ApiEndpoint.PRODUCTION
-      ? Secrets.API_CLIENT_PRODUCTION
-      : Secrets.API_CLIENT_STAGING;
+      ? Secrets.Api.Client.PRODUCTION
+      : Secrets.Api.Client.STAGING;
   }
 
   @Provides

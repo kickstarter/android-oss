@@ -10,7 +10,7 @@
    export PATH=${HOME}/Library/Android/sdk/platform-tools:${HOME}/Library/Android/sdk/tools:$PATH
    ```
 
-5. Bootstrap your Android development environment by running `script/bootstrap`.
+5. Bootstrap your Android development environment by running `make bootstrap`.
    Keep an eye on the output to see if any manual steps are required.
 6. Import the project. Open Android Studio, then click `File > Import Project` and
    select `build.gradle` in the root of the repository.

@@ -8,8 +8,10 @@ import android.support.multidex.MultiDexApplication;
 
 import com.facebook.FacebookSdk;
 import com.kickstarter.libs.ApiCapabilities;
+import com.kickstarter.libs.Build;
 import com.kickstarter.libs.PushNotifications;
 import com.kickstarter.libs.utils.ApplicationLifecycleUtil;
+import com.kickstarter.libs.utils.Secrets;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
@@ -29,6 +31,7 @@ public class KSApplication extends MultiDexApplication {
   private RefWatcher refWatcher;
   @Inject protected CookieManager cookieManager;
   @Inject protected PushNotifications pushNotifications;
+  @Inject protected Build build;
 
   @Override
   @CallSuper
@@ -83,7 +86,11 @@ public class KSApplication extends MultiDexApplication {
   }
 
   private void checkForCrashes() {
-    CrashManager.register(this, getString(R.string.hockey_app_id), new CrashManagerListener() {
+    final String appId = this.build.isExternal()
+      ? Secrets.HockeyAppId.EXTERNAL
+      : Secrets.HockeyAppId.INTERNAL;
+
+    CrashManager.register(this, appId, new CrashManagerListener() {
       public boolean shouldAutoUploadCrashes() {
         return true;
       }

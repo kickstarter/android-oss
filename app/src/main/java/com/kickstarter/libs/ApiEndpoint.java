@@ -6,8 +6,8 @@ import android.support.annotation.Nullable;
 import com.kickstarter.libs.utils.Secrets;
 
 public enum ApiEndpoint {
-  PRODUCTION("Production", Secrets.API_SERVER_PRODUCTION),
-  STAGING("Staging", Secrets.API_SERVER_STAGING),
+  PRODUCTION("Production", Secrets.Api.Endpoint.PRODUCTION),
+  STAGING("Staging", Secrets.Api.Endpoint.STAGING),
   LOCAL("Local", "http://api.ksr.10.0.3.2.xip.io"),
   CUSTOM("Custom", null);
 

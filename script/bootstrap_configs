@@ -8,7 +8,3 @@ do
   test -e $dest || cp $src $dest
 done
 cd ..
-
-cp vendor/native-secrets/android/Secrets.java app/src/main/java/com/kickstarter/libs/utils/Secrets.java
-cp vendor/native-secrets/ruby/secrets.rb lib/milkrun/secrets.rb
-cp vendor/native-secrets/fonts/ss-kickstarter.otf app/src/main/assets/fonts/ss-kickstarter.otf

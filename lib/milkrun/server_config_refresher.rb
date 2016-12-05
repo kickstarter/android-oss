@@ -34,8 +34,8 @@ module Milkrun
 
     def url
       local ?
-        URI.parse("http://api.ksr.dev/v1/app/android/config?client_id=#{Secrets::API_CLIENT_LOCAL}&all_locales=true") :
-        URI.parse("https://#{Secrets::API_SERVER_PRODUCTION}/v1/app/android/config?client_id=#{Secrets::API_CLIENT_PRODUCTION}&all_locales=true")
+        URI.parse("http://api.ksr.dev/v1/app/android/config?client_id=#{Secrets::Api::Client::LOCAL}&all_locales=true") :
+        URI.parse("https://#{Secrets::Api::Endpoint::PRODUCTION}/v1/app/android/config?client_id=#{Secrets::Api::Client::PRODUCTION}&all_locales=true")
     end
   end
 end

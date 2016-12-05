@@ -1,6 +1,7 @@
 require 'configs'
 require 'json'
 require 'excon'
+require_relative 'secrets'
 
 module Milkrun
   class HockeyApp
@@ -41,7 +42,7 @@ module Milkrun
     protected
 
     def app_id
-      Configs[:hockey_app][audience][:app_id]
+      audience == 'external' ? Secrets::HockeyAppId::EXTERNAL : Secrets::HockeyAppId::INTERNAL
     end
 
     def base_url

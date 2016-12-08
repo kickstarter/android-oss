@@ -3,7 +3,7 @@ bootstrap: dependencies secrets
 
 bootstrap-circle: dependencies secrets
 
-dependencies: submodules
+dependencies: submodules secrets
 
 submodules:
 	git submodule sync --recursive

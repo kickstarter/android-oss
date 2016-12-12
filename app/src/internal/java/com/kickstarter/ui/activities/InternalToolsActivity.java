@@ -163,7 +163,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
       .setPositiveButton(android.R.string.yes, (dialog, which) -> {
         final String hivequeenName = hivequeenNameEditText.getText().toString();
         if (hivequeenName.length() > 0) {
-          setEndpointAndRelaunch(ApiEndpoint.from(Secrets.hqApiHost(hivequeenName)));
+          setEndpointAndRelaunch(ApiEndpoint.from(Secrets.Api.Endpoint.hqHost(hivequeenName)));
         }
       })
       .setNegativeButton(android.R.string.cancel, (dialog, which) -> {

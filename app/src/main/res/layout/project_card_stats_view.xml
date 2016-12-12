@@ -55,7 +55,7 @@
     <TextView
       style="@style/CaptionPrimaryMedium"
       android:id="@+id/deadline_countdown"
-      android:singleLine="true"
+      android:maxLines="1"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       tools:text="5" />

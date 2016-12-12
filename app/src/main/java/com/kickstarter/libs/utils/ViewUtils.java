@@ -1,5 +1,6 @@
 package com.kickstarter.libs.utils;
 
+import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -107,6 +108,7 @@ public final class ViewUtils {
   /**
    * Show a toast with default bottom gravity to the user.
    */
+  @SuppressLint("InflateParams")
   public static void showToast(final @NonNull Context context, final @NonNull String message) {
     final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     final View view = inflater.inflate(R.layout.toast, null);
@@ -118,6 +120,7 @@ public final class ViewUtils {
     toast.show();
   }
 
+  @SuppressLint("InflateParams")
   public static void showToastFromTop(final @NonNull Context context, final @NonNull String message, final int xOffset,
     final int yOffset) {
     final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

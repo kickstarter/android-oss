@@ -28,7 +28,7 @@ import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
-public class BaseActivity<ViewModelType extends ActivityViewModel> extends AppCompatActivity implements ActivityLifecycleProvider,
+public abstract class BaseActivity<ViewModelType extends ActivityViewModel> extends AppCompatActivity implements ActivityLifecycleProvider,
   ActivityLifecycleType {
 
   private final PublishSubject<Void> back = PublishSubject.create();

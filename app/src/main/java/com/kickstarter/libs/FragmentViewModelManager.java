@@ -68,7 +68,15 @@ public final class FragmentViewModelManager {
     try {
       final Constructor constructor = viewModelClass.getConstructor(Environment.class);
       viewModel = (FragmentViewModel) constructor.newInstance(environment);
-    } catch (IllegalAccessException | InvocationTargetException | InstantiationException | NoSuchMethodException exception) {
+      // Need to catch these exceptions separately, otherwise the compiler turns them into `ReflectiveOperationException`.
+      // That exception is only available in API19+
+    } catch (IllegalAccessException exception) {
+      throw new RuntimeException(exception);
+    } catch (InvocationTargetException exception) {
+      throw new RuntimeException(exception);
+    } catch (InstantiationException exception) {
+      throw new RuntimeException(exception);
+    } catch (NoSuchMethodException exception) {
       throw new RuntimeException(exception);
     }
 

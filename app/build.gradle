@@ -166,7 +166,6 @@ dependencies {
     compile 'com.jakewharton.rxbinding:rxbinding-support-v4:0.3.0'
     compile 'net.danlew:android.joda:2.7.2'
     compile 'net.hockeyapp.android:HockeySDK:3.6.1'
-    ***REMOVED***
     compile 'org.jsoup:jsoup:1.8.2'
     compile "com.mixpanel.android:mixpanel-android:4.6.4"
 

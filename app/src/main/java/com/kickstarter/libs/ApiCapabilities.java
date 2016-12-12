@@ -27,6 +27,10 @@ public final class ApiCapabilities {
     return android.os.Build.VERSION.SDK_INT >= 23;
   }
 
+  public static boolean canSetImmersiveSystemUI() {
+    return android.os.Build.VERSION.SDK_INT >= 19;
+  }
+
   /**
    * For {@link ViewGroup#setNestedScrollingEnabled}.
    */

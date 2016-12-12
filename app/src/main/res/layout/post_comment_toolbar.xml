@@ -42,8 +42,8 @@
         android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:singleLine="true"
         android:ellipsize="end"
+        android:maxLines="1"
         android:text="@string/social_public_comment"/>
 
       <TextView
@@ -52,7 +52,7 @@
         android:layout_below="@id/comment_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:singleLine="true"
+        android:maxLines="1"
         android:ellipsize="end" />
 
     </RelativeLayout>

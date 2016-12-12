@@ -81,10 +81,10 @@
           android:id="@+id/successfully_funded_text_view"
           android:visibility="gone"
           style="@style/CaptionPrimaryMedium"
-          android:singleLine="true"
           android:textColor="@color/white"
           android:background="@color/green"
           android:gravity="center"
+          android:maxLines="1"
           android:layout_width="match_parent"
           android:layout_height="match_parent"/>
 
@@ -92,10 +92,10 @@
           android:id="@+id/funding_unsuccessful_text_view"
           android:visibility="gone"
           style="@style/CaptionPrimaryMedium"
-          android:singleLine="true"
           android:textColor="@color/white"
           android:background="@color/dark_gray"
           android:gravity="center"
+          android:maxLines="1"
           android:layout_width="match_parent"
           android:layout_height="match_parent"/>
 

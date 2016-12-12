@@ -42,7 +42,7 @@
         android:id="@+id/creator_name"
         android:focusable="true"
         android:layout_weight="3"
-        android:singleLine="true"
+        android:maxLines="1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/click_indicator_light_masked"
@@ -55,11 +55,12 @@
         android:visibility="gone"
         android:orientation="horizontal"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        tools:ignore="InconsistentLayout">
 
         <TextView
           android:text="@string/project_creator_youre_a_backer"
-          android:singleLine="true"
+          android:maxLines="1"
           style="@style/BodySecondary"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
@@ -128,7 +129,7 @@
       <TextView
         android:id="@+id/location"
         android:ellipsize="end"
-        android:singleLine="true"
+        android:maxLines="1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/grid_1_half"
@@ -136,7 +137,8 @@
         android:paddingStart="@dimen/grid_1_half"
         android:paddingEnd="@dimen/grid_1_half"
         style="@style/BodyPrimary"
-        tools:text="Location" />
+        tools:text="Location"
+        tools:ignore="InconsistentLayout" />
 
     </LinearLayout>
 

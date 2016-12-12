@@ -33,13 +33,15 @@
     android:id="@+id/land_overlay_text"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:ignore="InconsistentLayout">
 
     <RelativeLayout
       android:id="@+id/name_creator_view"
       android:layout_marginBottom="@dimen/grid_1"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content">
+      android:layout_height="wrap_content"
+      tools:ignore="InconsistentLayout">
 
       <com.kickstarter.ui.views.IconButton
         android:id="@+id/play_button_overlay"
@@ -79,7 +81,7 @@
           android:id="@+id/creator_name"
           android:layout_below="@id/project_name"
           android:focusable="true"
-          android:singleLine="true"
+          android:maxLines="1"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:background="@drawable/click_indicator_light_masked"
@@ -95,13 +97,14 @@
           android:layout_alignTop="@id/creator_name"
           android:orientation="horizontal"
           android:layout_width="wrap_content"
-          android:layout_height="wrap_content">
+          android:layout_height="wrap_content"
+          tools:ignore="InconsistentLayout">
 
           <TextView
             android:text="@string/project_creator_youre_a_backer"
-            android:singleLine="true"
             style="@style/BodyWhite"
             android:layout_marginLeft="@dimen/grid_1_half"
+            android:maxLines="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -181,15 +184,16 @@
         <TextView
           android:id="@+id/location"
           android:ellipsize="end"
-          android:singleLine="true"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:maxLines="1"
           android:paddingLeft="@dimen/grid_1_half"
           android:paddingRight="@dimen/grid_1_half"
           android:paddingStart="@dimen/grid_1_half"
           android:paddingEnd="@dimen/grid_1_half"
           style="@style/BodyWhite"
-          tools:text="Location" />
+          tools:text="Location"
+          tools:ignore="InconsistentLayout" />
 
       </LinearLayout>
 

@@ -88,13 +88,19 @@ public final class VideoPlayerActivity extends BaseActivity<VideoPlayerViewModel
     super.onWindowFocusChanged(hasFocus);
 
     if (hasFocus) {
-      rootView.setSystemUiVisibility(
-        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-          | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-          | View.SYSTEM_UI_FLAG_FULLSCREEN
-          | View.SYSTEM_UI_FLAG_IMMERSIVE
-      );
+      rootView.setSystemUiVisibility(systemUIFlags());
     }
+  }
+
+  @TargetApi(19)
+  private int systemUIFlags() {
+    final int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+      | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+      | View.SYSTEM_UI_FLAG_FULLSCREEN;
+
+    return ApiCapabilities.canSetImmersiveSystemUI()
+      ? flags | View.SYSTEM_UI_FLAG_IMMERSIVE
+      : flags;
   }
 
   private void releasePlayer() {

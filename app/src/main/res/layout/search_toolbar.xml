@@ -26,7 +26,7 @@
       android:background="@color/transparent"
       android:maxLength="25"
       android:inputType="textNoSuggestions"
-      android:singleLine="true"
+      android:maxLines="1"
       android:hint="@string/tabbar_search_projects"
       android:textCursorDrawable="@null" />
 

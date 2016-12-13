@@ -1,4 +1,4 @@
-# Kickstarter for Android
+# Kickstarter for Android™
 
 [![CircleCI](https://circleci.com/gh/kickstarter/android-oss.svg?style=svg)](https://circleci.com/gh/kickstarter/android-oss)
 

@@ -1,4 +1,4 @@
-# Kickstarter for Android
+# Kickstarter for Android™
 
 [![CircleCI](https://circleci.com/gh/kickstarter/android-oss.svg?style=svg)](https://circleci.com/gh/kickstarter/android-oss)
 
@@ -9,8 +9,7 @@ filled [view models](https://github.com/kickstarter/android-oss/tree/master/app/
 and maybe even _create_ an issue or two.
 
 We've also open sourced our iOS app, written in Swift:
-[check it out here](https://github.com/kickstarter/ios-oss).
-Read more about our journey to open source [here](https://kickstarter.engineering/open-sourcing-our-android-and-ios-apps-6891be909fcd#.o1fe86s6w).
+[check it out here](https://github.com/kickstarter/ios-oss). Read more about our journey to open source [here](https://kickstarter.engineering/open-sourcing-our-android-and-ios-apps-6891be909fcd#.o1fe86s6w).
 
 ![Kickstarter for Android](.github/app.png)
 
@@ -56,6 +55,10 @@ product, for our community, in a safe and open space. We work as we live, as
 kind and considerate human beings who learn and grow from giving and receiving
 positive, constructive feedback. We reserve the right to delete or ban any
 behavior violating this base foundation of respect.
+
+## Find this interesting?
+
+We do too, and we’re [hiring](https://www.kickstarter.com/jobs?ref=gh_android_oss)!
 
 ## License
 

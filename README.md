@@ -9,8 +9,9 @@ filled [view models](https://github.com/kickstarter/android-oss/tree/master/app/
 and maybe even _create_ an issue or two.
 
 We've also open sourced our iOS app, written in Swift:
-[check it out here](https://github.com/kickstarter/ios-oss).
-Read more about our journey to open source [here](https://kickstarter.engineering/open-sourcing-our-android-and-ios-apps-6891be909fcd).
+[check it out here](https://github.com/kickstarter/ios-oss). Read more about our journey to open source [here](https://kickstarter.engineering/open-sourcing-our-android-and-ios-apps-6891be909fcd#.o1fe86s6w).
+
+![Kickstarter for Android](.github/app.png)
 
 ## Getting Started
 

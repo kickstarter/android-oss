@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.neenbedankt.android-apt'
 apply from: 'quality.gradle'
 
 def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
@@ -139,12 +138,12 @@ dependencies {
     compile 'com.android.support:support-annotations:23.3.0'
     compile 'com.facebook.android:facebook-android-sdk:4.7.0'
     compile 'com.github.frankiesardo:auto-parcel:0.3.1'
-    apt 'com.github.frankiesardo:auto-parcel-processor:0.3.1'
+    annotationProcessor 'com.github.frankiesardo:auto-parcel-processor:0.3.1'
     compile 'com.google.android.gms:play-services-gcm:8.4.0'
     compile 'com.google.android.gms:play-services-wallet:8.4.0'
     compile 'com.google.android.exoplayer:exoplayer:r1.5.5'
     compile 'com.google.dagger:dagger:2.0'
-    apt 'com.google.dagger:dagger-compiler:2.0'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.0'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.jakewharton:process-phoenix:1.0.2'
     compile 'com.jakewharton.timber:timber:3.0.1'

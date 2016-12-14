@@ -11,19 +11,16 @@ import android.util.Pair;
 import com.kickstarter.ui.data.ActivityResult;
 import com.trello.rxlifecycle.ActivityEvent;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import rx.Observable;
-import rx.Subscription;
 import rx.subjects.PublishSubject;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 public class ActivityViewModel<ViewType extends ActivityLifecycleType> {
 
   private final PublishSubject<ViewType> viewChange = PublishSubject.create();
   private final Observable<ViewType> view = viewChange.filter(v -> v != null);
-  private final List<Subscription> subscriptions = new ArrayList<>();
+  private final CompositeSubscription subscriptions = new CompositeSubscription();
 
   private final PublishSubject<ActivityResult> activityResult = PublishSubject.create();
 
@@ -69,9 +66,8 @@ public class ActivityViewModel<ViewType extends ActivityLifecycleType> {
   @CallSuper
   protected void onDestroy() {
     Timber.d("onDestroy %s", this.toString());
-    for (final Subscription subscription : subscriptions) {
-      subscription.unsubscribe();
-    }
+
+    subscriptions.clear();
     viewChange.onCompleted();
   }
 

@@ -55,6 +55,10 @@ kind and considerate human beings who learn and grow from giving and receiving
 positive, constructive feedback. We reserve the right to delete or ban any
 behavior violating this base foundation of respect.
 
+## Find this interesting?
+
+We do too, and we’re [hiring](https://www.kickstarter.com/jobs?ref=gh_android_oss)!
+
 ## License
 
 ```

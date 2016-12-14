@@ -12,6 +12,8 @@ We've also open sourced our iOS app, written in Swift:
 [check it out here](https://github.com/kickstarter/ios-oss).
 Read more about our journey to open source [here (TODO LINK)]().
 
+![Kickstarter for Android](.github/app.jpg)
+
 ## Getting Started
 
 _Follow these instructions to build and run the project without data; note that

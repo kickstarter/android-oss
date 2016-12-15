@@ -15,16 +15,16 @@ dependencies:
     - $ANDROID_HOME/tools/android list target
     - make bootstrap-circle
     - echo y | android update sdk --no-ui --all --filter android-23,build-tools-23.0.1,extra-android-m2repository,extra-google-m2repository,extra-android-support
-    - ./gradlew dependencies
+    - ./gradlew dependencies --console=plain
   cache_directories:
     - ~/.gradle
     - ~/.android
 
 test:
   override:
-    - ./gradlew checkstyle
-    - ./gradlew lintExternalPre21Release
-    - ./gradlew assembleExternalPre21Release testExternalPre21Release -PdisablePreDex
+    - ./gradlew checkstyle --console=plain
+    - ./gradlew lintExternalPre21Release --console=plain
+    - ./gradlew assembleExternalPre21Release testExternalPre21Release -PdisablePreDex --console=plain
 
 experimental:
   notify:

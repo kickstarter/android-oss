@@ -1,6 +1,5 @@
 package com.kickstarter.ui.activities;
 
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -41,6 +40,7 @@ import butterknife.Bind;
 import butterknife.BindDrawable;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.cketti.mailto.EmailIntentBuilder;
 
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
@@ -124,13 +124,11 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
       .append("—————————————\r\n")
       .toString();
 
-    final Intent intent = new Intent(android.content.Intent.ACTION_SEND)
-      .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
-      .setType("message/rfc822")
-      .putExtra(Intent.EXTRA_TEXT, body)
-      .putExtra(Intent.EXTRA_EMAIL, new String[]{email});
-
-    startActivity(Intent.createChooser(intent, getString(R.string.Select_email_application)));
+    EmailIntentBuilder.from(this)
+      .to(email)
+      .subject("Bug report")
+      .body(body)
+      .start();
   }
 
   private void showCustomEndpointDialog() {

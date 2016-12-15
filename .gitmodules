@@ -1,6 +1,3 @@
 [submodule "vendor/material-design-icons"]
   path = vendor/material-design-icons
   url = https://github.com/google/material-design-icons
-[submodule "vendor/native-secrets"]
-  path = vendor/native-secrets
-  url = git@github.com:kickstarter/native-secrets.git

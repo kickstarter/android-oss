@@ -33,7 +33,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "GIT_SHA", "\"DUMMY\""
-        buildConfigField "String", "BUILD_DATE", "\"${buildDate}\""
+        buildConfigField "String", "BUILD_DATE", "\"DUMMY\""
 
         // Enable Multidex to support over 65K methods
         multiDexEnabled true
@@ -54,6 +54,7 @@ android {
     buildTypes {
         release {
             buildConfigField "String", "GIT_SHA", "\"${gitSha}\""
+            buildConfigField "String", "BUILD_DATE", "\"${buildDate}\""
             minifyEnabled false
             if (isCircle) {
                 // The release build generated on CircleCI doesn't need to be signed with our real

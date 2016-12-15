@@ -12,7 +12,7 @@ submodules:
 
 secrets:
 	-rm -rf vendor/native-secrets
-	-git clone https://github.com/kickstarter/native-secrets1 vendor/native-secrets
+	-git clone https://github.com/kickstarter/native-secrets vendor/native-secrets
 	if [ ! -d vendor/native-secrets ]; \
 	then \
 		cp app/src/main/java/com/kickstarter/libs/utils/Secrets.java.example app/src/main/java/com/kickstarter/libs/utils/Secrets.java \

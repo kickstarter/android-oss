@@ -15,7 +15,8 @@ secrets:
 	-git clone https://github.com/kickstarter/native-secrets vendor/native-secrets
 	if [ ! -d vendor/native-secrets ]; \
 	then \
-		cp app/src/main/java/com/kickstarter/libs/utils/Secrets.java.example app/src/main/java/com/kickstarter/libs/utils/Secrets.java \
+		mkdir -p app/src/debug/res/values \
+			&& cp app/src/main/java/com/kickstarter/libs/utils/Secrets.java.example app/src/main/java/com/kickstarter/libs/utils/Secrets.java \
 			&& cp config/koala_endpoint.xml.example app/src/debug/res/values/koala_endpoint.xml \
 			&& cp config/koala_endpoint.xml.example app/src/main/res/values/koala_endpoint.xml \
 			&& cp -rf config/WebViewJavascriptInterface.java app/src/main/java/com/kickstarter/libs/WebViewJavascriptInterface.java \

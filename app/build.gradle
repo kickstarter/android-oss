@@ -207,7 +207,5 @@ gradle.taskGraph.beforeTask { Task task ->
     }
 }
 
-
-apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.google.gms.google-services'

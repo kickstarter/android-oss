@@ -31,7 +31,6 @@ public class KSApplication extends MultiDexApplication {
   private RefWatcher refWatcher;
   @Inject protected CookieManager cookieManager;
   @Inject protected PushNotifications pushNotifications;
-  @Inject protected Build build;
 
   @Override
   @CallSuper
@@ -86,7 +85,7 @@ public class KSApplication extends MultiDexApplication {
   }
 
   private void checkForCrashes() {
-    final String appId = this.build.isExternal()
+    final String appId = Build.isExternal()
       ? Secrets.HockeyAppId.EXTERNAL
       : Secrets.HockeyAppId.INTERNAL;
 

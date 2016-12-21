@@ -7,4 +7,14 @@ do
   dest=`basename $src .example`
   test -e $dest || cp $src $dest
 done
+
+VARIANTS="externalMin21Debug externalPre21Debug externalMin21Release externalPre21Release \
+  internalMin21Debug internalPre21Debug internalMin21Release internalPre21Release"
+
 cd ..
+
+# Copy google services over. Fallback to example if they don't exist.
+for v in $VARIANTS
+do
+  cp vendor/native-secrets/android/"$v"/google-services.json app/src/"$v"/google-services.json || cp config/google-services.example.json app/src/"$v"/google-services.json
+done

@@ -40,7 +40,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     vm.outputs.projects().map(ListUtils::nonEmpty).subscribe(hasProjects);
 
     // Load initial params from activity.
-    vm.inputs.paramsFromActivity(DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.MAGIC).build());
+    vm.inputs.paramsFromActivity(DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.HOME).build());
 
     // Should emit current fragment's projects.
     hasProjects.assertValues(false, true);
@@ -50,7 +50,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     vm.inputs.paramsFromActivity(
       DiscoveryParams.builder()
         .category(CategoryFactory.artCategory())
-        .sort(DiscoveryParams.Sort.MAGIC)
+        .sort(DiscoveryParams.Sort.HOME)
         .build()
     );
     hasProjects.assertValues(false, true, false, true);
@@ -68,7 +68,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     vm.outputs.projects().filter(ListUtils::nonEmpty).subscribe(projects);
 
     // Initial load.
-    vm.inputs.paramsFromActivity(DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.MAGIC).build());
+    vm.inputs.paramsFromActivity(DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.HOME).build());
 
     projects.assertValueCount(1);
     koalaTest.assertValues("Discover List View");
@@ -93,7 +93,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     vm.outputs.projects().filter(ListUtils::nonEmpty).subscribe(projects);
 
     // Initial load.
-    vm.inputs.paramsFromActivity(DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.MAGIC).build());
+    vm.inputs.paramsFromActivity(DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.HOME).build());
 
     // Projects should emit.
     projects.assertValueCount(1);
@@ -133,8 +133,8 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<Boolean> shouldShowOnboardingViewTest = new TestSubscriber<>();
     vm.outputs.shouldShowOnboardingView().subscribe(shouldShowOnboardingViewTest);
 
-    // Initial magic staff pick params.
-    vm.inputs.paramsFromActivity(DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.MAGIC).build());
+    // Initial home staff pick params.
+    vm.inputs.paramsFromActivity(DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.HOME).build());
 
     // Should show onboarding view.
     shouldShowOnboardingViewTest.assertValues(true);

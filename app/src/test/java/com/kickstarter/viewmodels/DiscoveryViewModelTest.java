@@ -205,7 +205,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     // Initial params should emit. Page should not be updated yet.
     updateParams.assertValues(
-      DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.MAGIC).build()
+      DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.HOME).build()
     );
     updatePage.assertValues(0);
 
@@ -214,7 +214,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     // Params and page should update with new POPULAR sort values.
     updateParams.assertValues(
-      DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.MAGIC).build(),
+      DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.HOME).build(),
       DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.POPULAR).build()
     );
     updatePage.assertValues(0, 1);
@@ -228,22 +228,22 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     // Params should update with new category; page should remain the same.
     updateParams.assertValues(
-      DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.MAGIC).build(),
+      DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.HOME).build(),
       DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.POPULAR).build(),
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).category(CategoryFactory.artCategory()).build()
     );
     updatePage.assertValues(0, 1, 1);
     koalaTest.assertValues("Discover Modal Selected Filter");
 
-    // Select MAGIC sort position.
+    // Select HOME sort position.
     vm.inputs.pageChanged(0);
 
-    // Params and page should update with new MAGIC sort value.
+    // Params and page should update with new HOME sort value.
     updateParams.assertValues(
-      DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.MAGIC).build(),
+      DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.HOME).build(),
       DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.POPULAR).build(),
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).category(CategoryFactory.artCategory()).build(),
-      DiscoveryParams.builder().sort(DiscoveryParams.Sort.MAGIC).category(CategoryFactory.artCategory()).build()
+      DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).category(CategoryFactory.artCategory()).build()
     );
     updatePage.assertValues(0, 1, 1, 0);
 

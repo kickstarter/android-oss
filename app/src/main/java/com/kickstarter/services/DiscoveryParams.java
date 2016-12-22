@@ -43,12 +43,12 @@ public abstract class DiscoveryParams implements Parcelable {
   public abstract @Nullable String term();
 
   public enum Sort {
-    MAGIC, POPULAR, NEWEST, ENDING_SOON, MOST_FUNDED;
+    HOME, POPULAR, NEWEST, ENDING_SOON, MOST_FUNDED;
     @Override
     public @NonNull String toString() {
       switch (this) {
-        case MAGIC:
-          return "magic";
+        case HOME:
+          return "home";
         case POPULAR:
           return "popularity";
         case NEWEST:
@@ -63,8 +63,8 @@ public abstract class DiscoveryParams implements Parcelable {
 
     public static @Nullable Sort fromString(final @NonNull String string) {
       switch (string) {
-        case "magic":
-          return MAGIC;
+        case "home":
+          return HOME;
         case "popularity":
           return POPULAR;
         case "newest":
@@ -74,12 +74,12 @@ public abstract class DiscoveryParams implements Parcelable {
         case "most_funded":
           return MOST_FUNDED;
       }
-      return MAGIC;
+      return HOME;
     }
 
     public @NonNull String refTagSuffix() {
       switch (this) {
-        case MAGIC:
+        case HOME:
           return "";
         case POPULAR:
           return "_popular";
@@ -417,7 +417,7 @@ public abstract class DiscoveryParams implements Parcelable {
    * POTD comes back.
    */
   public boolean shouldIncludePotd() {
-    return isTrue(staffPicks()) && page() != null && page() == 1 && (sort() == null || sort() == Sort.MAGIC);
+    return isTrue(staffPicks()) && page() != null && page() == 1 && (sort() == null || sort() == Sort.HOME);
   }
 
   /**
@@ -425,7 +425,7 @@ public abstract class DiscoveryParams implements Parcelable {
    * featured project for the category comes back.
    */
   public boolean shouldIncludeFeatured() {
-    return category() != null && page() != null && page() == 1 && (sort() == null || sort() == Sort.MAGIC);
+    return category() != null && page() != null && page() == 1 && (sort() == null || sort() == Sort.HOME);
   }
 
   @Override

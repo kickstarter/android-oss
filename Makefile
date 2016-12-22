@@ -2,6 +2,7 @@ bootstrap: dependencies secrets
 	./script/bootstrap
 
 bootstrap-circle: dependencies secrets
+	./script/bootstrap_configs
 
 dependencies: submodules secrets
 
@@ -13,10 +14,6 @@ submodules:
 secrets:
 	-rm -rf vendor/native-secrets
 	-git clone https://github.com/kickstarter/native-secrets vendor/native-secrets
-
-	# TODO: temp bootstrap-circle workaround. Consolidate the cp services commands.
-	mkdir -p app/src/externalPre21Release/
-	cp config/google-services.example.json app/src/externalPre21Release/google-services.json
 
 	# Copy java secrets over. Fallback to example secrets if they don't exist.
 	cp vendor/native-secrets/android/Secrets.java app/src/main/java/com/kickstarter/libs/utils/Secrets.java \

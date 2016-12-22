@@ -170,7 +170,7 @@ public final class TwoFactorViewModel extends ActivityViewModel<TwoFactorActivit
       .compose(Transformers.pipeApiErrorsTo(tfaError))
       .compose(Transformers.neverError())
       .doOnSubscribe(() -> formSubmitting.onNext(true))
-      .finallyDo(() -> formSubmitting.onNext(false));
+      .doAfterTerminate(() -> formSubmitting.onNext(false));
   }
 
   public Observable<AccessTokenEnvelope> loginWithFacebook(final @NonNull String code, final @NonNull String fbAccessToken) {
@@ -178,7 +178,7 @@ public final class TwoFactorViewModel extends ActivityViewModel<TwoFactorActivit
       .compose(Transformers.pipeApiErrorsTo(tfaError))
       .compose(Transformers.neverError())
       .doOnSubscribe(() -> formSubmitting.onNext(true))
-      .finallyDo(() -> formSubmitting.onNext(false));
+      .doAfterTerminate(() -> formSubmitting.onNext(false));
   }
 
   private Observable<AccessTokenEnvelope> resendCode(final @NonNull String email, final @NonNull String password) {

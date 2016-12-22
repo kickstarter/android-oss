@@ -15,6 +15,7 @@ secrets:
 	-git clone https://github.com/kickstarter/native-secrets vendor/native-secrets
 
 	# TODO: temp bootstrap-circle workaround. Consolidate the cp services commands.
+	mkdir -p app/src/externalPre21Release/
 	cp config/google-services.example.json app/src/externalPre21Release/google-services.json
 
 	# Copy java secrets over. Fallback to example secrets if they don't exist.

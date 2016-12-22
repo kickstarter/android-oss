@@ -441,7 +441,7 @@ public abstract class DiscoveryParams implements Parcelable {
     } else if (backed() != null && backed() == 1) {
       return context.getString(R.string.discovery_backing);
     } else if (social() != null && social() == 1) {
-      return context.getString(R.string.discovery_friends_backed);
+      return context.getString(R.string.Following);
     } else if (category() != null) {
       return category().name();
     } else if (location() != null) {

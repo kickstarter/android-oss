@@ -69,7 +69,7 @@
       android:layout_height="wrap_content" />
 
     <TextView
-      android:text="@string/discovery_baseball_card_metadata_starred"
+      android:text="@string/You_saved_this_project"
       android:includeFontPadding="false"
       style="@style/BodyPrimaryMedium"
       android:layout_gravity="center_vertical"

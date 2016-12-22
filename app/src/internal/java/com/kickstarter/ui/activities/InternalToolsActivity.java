@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;

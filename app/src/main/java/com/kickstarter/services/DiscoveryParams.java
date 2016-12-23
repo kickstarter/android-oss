@@ -20,6 +20,7 @@ import java.util.Map;
 
 import auto.parcel.AutoParcel;
 
+import static com.kickstarter.libs.utils.BooleanUtils.isFalse;
 import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
 
 @AutoGson
@@ -417,7 +418,7 @@ public abstract class DiscoveryParams implements Parcelable {
    * POTD comes back.
    */
   public boolean shouldIncludePotd() {
-    return isTrue(staffPicks()) && page() != null && page() == 1 && (sort() == null || sort() == Sort.HOME);
+    return isAllProjects() && page() != null && page() == 1 && (sort() == null || sort() == Sort.HOME);
   }
 
   /**
@@ -449,6 +450,15 @@ public abstract class DiscoveryParams implements Parcelable {
     } else {
       return context.getString(R.string.discovery_everything);
     }
+  }
+
+  /**
+   * Determines if params are for All Projects ("Everything"), i.e. discovery without params.
+   * @return true if is All Projects.
+   */
+  public boolean isAllProjects() {
+    return isFalse(staffPicks()) && (starred() == null || starred() != 1) && (backed() == null || backed() != 1)
+      && (social() == null || social() != 1) && category() == null && location() == null;
   }
 
   public boolean isCategorySet() {

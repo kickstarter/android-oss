@@ -17,5 +17,5 @@ cd ..
 for v in $VARIANTS
 do
   test -d app/src/"$v" ||  mkdir -p app/src/"$v"/
-  cp vendor/native-secrets/android/"$v"/google-services.json app/src/"$v"/google-services.json || cp config/google-services.example.json app/src/"$v"/google-services.json
+  cp vendor/native-secrets/android/"$v"/google-services.json app/src/"$v"/google-services.json || cp config/"$v"/google-services.example.json app/src/"$v"/google-services.json
 done

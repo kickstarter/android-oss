@@ -154,7 +154,7 @@ public final class SignupViewModel extends ActivityViewModel<SignupActivity> imp
       .compose(Transformers.pipeApiErrorsTo(signupError))
       .compose(Transformers.neverError())
       .doOnSubscribe(() -> formSubmitting.onNext(true))
-      .finallyDo(() -> formSubmitting.onNext(false));
+      .doAfterTerminate(() -> formSubmitting.onNext(false));
   }
 
   private void success(final @NonNull AccessTokenEnvelope envelope) {

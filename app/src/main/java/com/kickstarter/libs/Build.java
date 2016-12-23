@@ -25,11 +25,11 @@ public final class Build {
     return new DateTime(BuildConfig.BUILD_DATE, DateTimeZone.UTC).withZone(DateTimeZone.getDefault());
   }
 
-  public boolean isInternal() {
+  public static boolean isInternal() {
     return BuildConfig.FLAVOR_AUDIENCE.equals("internal");
   }
 
-  public boolean isExternal() {
+  public static boolean isExternal() {
     return !isInternal();
   }
 

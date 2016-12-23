@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -8,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Pair;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.URLUtil;
 import android.widget.EditText;
@@ -71,7 +71,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
 
   @OnClick(R.id.push_notifications_button)
   public void pushNotificationsButtonClick() {
-    final View view = LayoutInflater.from(this).inflate(R.layout.debug_push_notifications_layout, null);
+    final View view = View.inflate(this, R.layout.debug_push_notifications_layout, null);
 
     new AlertDialog.Builder(this)
       .setTitle("Push notifications")
@@ -134,7 +134,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
   }
 
   private void showCustomEndpointDialog() {
-    final View view = LayoutInflater.from(this).inflate(R.layout.custom_endpoint_layout, null);
+    final View view = View.inflate(this, R.layout.custom_endpoint_layout, null);
     final EditText customEndpointEditText = ButterKnife.findById(view, R.id.custom_endpoint_edit_text);
 
     new AlertDialog.Builder(this)
@@ -154,7 +154,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
   }
 
   private void showHivequeenEndpointDialog() {
-    final View view = LayoutInflater.from(this).inflate(R.layout.hivequeen_endpoint_layout, null);
+    final View view = View.inflate(this, R.layout.hivequeen_endpoint_layout, null);
     final EditText hivequeenNameEditText = ButterKnife.findById(view, R.id.hivequeen_name_edit_text);
 
     new AlertDialog.Builder(this)
@@ -173,6 +173,7 @@ public final class InternalToolsActivity extends BaseActivity<InternalToolsViewM
       .show();
   }
 
+  @SuppressLint("SetTextI18n")
   private void setupBuildInformationSection() {
     buildDate.setText(build.dateTime().toString(DateTimeFormat.forPattern("yyyy-MM-dd hh:mm:ss aa zzz")));
     sha.setText(build.sha());

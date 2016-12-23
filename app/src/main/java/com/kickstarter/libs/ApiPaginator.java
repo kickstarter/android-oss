@@ -234,7 +234,7 @@ public final class ApiPaginator<Data, Envelope, Params> {
       .map(envelopeToListOfData)
       .map(pageTransformation)
       .doOnSubscribe(() -> _isFetching.onNext(true))
-      .finallyDo(() -> _isFetching.onNext(false));
+      .doAfterTerminate(() -> _isFetching.onNext(false));
   }
 
   private void keepMorePath(final @NonNull Envelope envelope) {

@@ -94,7 +94,7 @@ public final class ResetPasswordViewModel extends ActivityViewModel<ResetPasswor
       .compose(Transformers.pipeApiErrorsTo(resetError))
       .compose(Transformers.neverError())
       .doOnSubscribe(() -> isFormSubmitting.onNext(true))
-      .finallyDo(() -> isFormSubmitting.onNext(false));
+      .doAfterTerminate(() -> isFormSubmitting.onNext(false));
   }
 
   private void success() {

@@ -262,6 +262,6 @@ public final class CommentFeedViewModel extends ActivityViewModel<CommentFeedAct
       .compose(Transformers.pipeApiErrorsTo(postCommentError))
       .compose(Transformers.neverError())
       .doOnSubscribe(() -> commentIsPosting.onNext(true))
-      .finallyDo(() -> commentIsPosting.onNext(false));
+      .doAfterTerminate(() -> commentIsPosting.onNext(false));
   }
 }

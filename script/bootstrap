@@ -27,6 +27,7 @@ test -e app/signing.gradle || cp app/signing.gradle.example app/signing.gradle
 say "Running bundle install\n"
 bundle install
 
+say "Bootstrapping configs\n"
 script/bootstrap_configs
 
 # Update Kickstarter style

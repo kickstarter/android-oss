@@ -67,3 +67,5 @@ config/koala_endpoint.xml
 app/src/main/assets/www/WebViewJavascript.html
 app/src/main/java/com/kickstarter/libs/WebViewJavascriptInterface.java
 app/src/main/java/com/kickstarter/services/KSWebViewClient.java
+vendor/native-secrets
+app/src/**/google-services.json

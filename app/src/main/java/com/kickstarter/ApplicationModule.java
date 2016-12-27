@@ -92,7 +92,7 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
-  Environment provideEnvironment(final @NonNull @ActivitySamplePreference IntPreferenceType activitySamplePreference,
+  static Environment provideEnvironment(final @NonNull @ActivitySamplePreference IntPreferenceType activitySamplePreference,
     final @NonNull AndroidPayCapability androidPayCapability,
     final @NonNull ApiClientType apiClient,
     final @NonNull BuildCheck buildCheck,
@@ -133,14 +133,15 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
-  @NonNull ApiClientType provideApiClientType(final @NonNull ApiService apiService, final @NonNull Gson gson) {
+  @NonNull
+  static ApiClientType provideApiClientType(final @NonNull ApiService apiService, final @NonNull Gson gson) {
     return new ApiClient(apiService, gson);
   }
 
   @Provides
   @Singleton
   @NonNull
-  OkHttpClient provideOkHttpClient(final @NonNull ApiRequestInterceptor apiRequestInterceptor, final @NonNull CookieJar cookieJar,
+  static OkHttpClient provideOkHttpClient(final @NonNull ApiRequestInterceptor apiRequestInterceptor, final @NonNull CookieJar cookieJar,
     final @NonNull HttpLoggingInterceptor httpLoggingInterceptor, final @NonNull KSRequestInterceptor ksRequestInterceptor,
     final @NonNull Build build, final @NonNull WebRequestInterceptor webRequestInterceptor) {
 
@@ -162,7 +163,8 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   @ApiRetrofit
-  @NonNull Retrofit provideApiRetrofit(final @NonNull ApiEndpoint apiEndpoint,
+  @NonNull
+  static Retrofit provideApiRetrofit(final @NonNull ApiEndpoint apiEndpoint,
     final @NonNull Gson gson,
     final @NonNull OkHttpClient okHttpClient) {
     return createRetrofit(apiEndpoint.url(), gson, okHttpClient);
@@ -170,7 +172,8 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
-  @NonNull ApiRequestInterceptor provideApiRequestInterceptor(final @NonNull String clientId,
+  @NonNull
+  static ApiRequestInterceptor provideApiRequestInterceptor(final @NonNull String clientId,
     final @NonNull CurrentUserType currentUser, final @NonNull ApiEndpoint endpoint) {
     return new ApiRequestInterceptor(clientId, currentUser, endpoint.url());
   }
@@ -178,13 +181,13 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  ApiService provideApiService(final @ApiRetrofit @NonNull Retrofit retrofit) {
+  static ApiService provideApiService(final @ApiRetrofit @NonNull Retrofit retrofit) {
     return retrofit.create(ApiService.class);
   }
 
   @Provides
   @Singleton
-  String provideClientId(final @NonNull ApiEndpoint apiEndpoint) {
+  static String provideClientId(final @NonNull ApiEndpoint apiEndpoint) {
     return apiEndpoint == ApiEndpoint.PRODUCTION
       ? Secrets.Api.Client.PRODUCTION
       : Secrets.Api.Client.STAGING;
@@ -192,13 +195,15 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
-  @NonNull KSRequestInterceptor provideKSRequestInterceptor(final @NonNull Build build) {
+  @NonNull
+  static KSRequestInterceptor provideKSRequestInterceptor(final @NonNull Build build) {
     return new KSRequestInterceptor(build);
   }
 
   @Provides
   @Singleton
-  @NonNull HttpLoggingInterceptor provideHttpLoggingInterceptor() {
+  @NonNull
+  static HttpLoggingInterceptor provideHttpLoggingInterceptor() {
     final HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
     interceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
     return interceptor;
@@ -206,14 +211,16 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
-  @NonNull WebClientType provideWebClientType(final @NonNull WebService webService) {
+  @NonNull
+  static WebClientType provideWebClientType(final @NonNull WebService webService) {
     return new WebClient(webService);
   }
 
   @Provides
   @Singleton
   @WebRetrofit
-  @NonNull Retrofit provideWebRetrofit(@NonNull @WebEndpoint final String webEndpoint,
+  @NonNull
+  static Retrofit provideWebRetrofit(@NonNull @WebEndpoint final String webEndpoint,
     final @NonNull Gson gson,
     final @NonNull OkHttpClient okHttpClient) {
     return createRetrofit(webEndpoint, gson, okHttpClient);
@@ -221,7 +228,9 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
-  @NonNull WebRequestInterceptor provideWebRequestInterceptor(final @NonNull CurrentUserType currentUser,
+  @NonNull
+  static
+  WebRequestInterceptor provideWebRequestInterceptor(final @NonNull CurrentUserType currentUser,
     @NonNull @WebEndpoint final String endpoint, final @NonNull InternalToolsType internalTools, final @NonNull Build build, final @NonNull AndroidPayCapability androidPayCapability) {
     return new WebRequestInterceptor(currentUser, endpoint, internalTools, build, androidPayCapability);
   }
@@ -229,11 +238,12 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   @NonNull
-  WebService provideWebService(final @WebRetrofit @NonNull Retrofit retrofit) {
+  static WebService provideWebService(final @WebRetrofit @NonNull Retrofit retrofit) {
     return retrofit.create(WebService.class);
   }
 
-  private @NonNull Retrofit createRetrofit(final @NonNull String baseUrl, final @NonNull Gson gson, final @NonNull OkHttpClient okHttpClient) {
+  private @NonNull
+  static Retrofit createRetrofit(final @NonNull String baseUrl, final @NonNull Gson gson, final @NonNull OkHttpClient okHttpClient) {
     return new Retrofit.Builder()
       .client(okHttpClient)
       .baseUrl(baseUrl)
@@ -245,41 +255,47 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   @AccessTokenPreference
-  @NonNull StringPreferenceType provideAccessTokenPreference(final @NonNull SharedPreferences sharedPreferences) {
+  @NonNull
+  static StringPreferenceType provideAccessTokenPreference(final @NonNull SharedPreferences sharedPreferences) {
     return new StringPreference(sharedPreferences, "access_token");
   }
 
   @Provides
   @Singleton
-  @NonNull AndroidPayCapability provideAndroidPayCapability(final @NonNull PlayServicesCapability playServicesCapability,
+  @NonNull
+  static AndroidPayCapability provideAndroidPayCapability(final @NonNull PlayServicesCapability playServicesCapability,
     final @ApplicationContext @NonNull Context context) {
     return new AndroidPayCapability(playServicesCapability, context);
   }
 
   @Provides
   @Singleton
-  @NonNull PlayServicesCapability providePlayServicesCapability(final @ApplicationContext @NonNull Context context) {
+  @NonNull
+  static PlayServicesCapability providePlayServicesCapability(final @ApplicationContext @NonNull Context context) {
     return new PlayServicesCapability(context);
   }
 
   @Provides
   @Singleton
   @ConfigPreference
-  @NonNull StringPreferenceType providesConfigPreference(final @NonNull SharedPreferences sharedPreferences) {
+  @NonNull
+  static StringPreferenceType providesConfigPreference(final @NonNull SharedPreferences sharedPreferences) {
     return new StringPreference(sharedPreferences, "config");
   }
 
   @Provides
   @Singleton
   @ActivitySamplePreference
-  @NonNull IntPreferenceType provideActivitySamplePreference(final @NonNull SharedPreferences sharedPreferences) {
+  @NonNull
+  static IntPreferenceType provideActivitySamplePreference(final @NonNull SharedPreferences sharedPreferences) {
     return new IntPreference(sharedPreferences, "last_seen_activity_id");
   }
 
   @Provides
   @Singleton
   @AppRatingPreference
-  @NonNull BooleanPreferenceType provideAppRatingPreference(final @NonNull SharedPreferences sharedPreferences) {
+  @NonNull
+  static BooleanPreferenceType provideAppRatingPreference(final @NonNull SharedPreferences sharedPreferences) {
     return new BooleanPreference(sharedPreferences, "has_seen_app_rating");
   }
 
@@ -291,14 +307,14 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
-  Koala provideKoala(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUserType currentUser,
-    final @NonNull AndroidPayCapability androidPayCapability) {
+  static Koala provideKoala(final @ApplicationContext @NonNull Context context, final @NonNull CurrentUserType currentUser,
+                            final @NonNull AndroidPayCapability androidPayCapability) {
     return new Koala(new KoalaTrackingClient(context, currentUser, androidPayCapability));
   }
 
   @Provides
   @Singleton
-  Scheduler provideScheduler() {
+  static Scheduler provideScheduler() {
     return Schedulers.computation();
   }
 
@@ -317,57 +333,61 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
-  @NonNull Build provideBuild(final @NonNull PackageInfo packageInfo) {
+  @NonNull
+  static Build provideBuild(final @NonNull PackageInfo packageInfo) {
     return new Build(packageInfo);
   }
 
   @Provides
   @Singleton
-  CurrentConfigType provideCurrentConfig(final @NonNull AssetManager assetManager,
-    final @NonNull Gson gson,
-    final @ConfigPreference @NonNull StringPreferenceType configPreference) {
+  static CurrentConfigType provideCurrentConfig(final @NonNull AssetManager assetManager,
+                                                final @NonNull Gson gson,
+                                                final @ConfigPreference @NonNull StringPreferenceType configPreference) {
     return new CurrentConfig(assetManager, gson, configPreference);
   }
 
   @Provides
   @Singleton
-  CookieJar provideCookieJar(final @NonNull CookieManager cookieManager) {
+  static CookieJar provideCookieJar(final @NonNull CookieManager cookieManager) {
     return new JavaNetCookieJar(cookieManager);
   }
 
   @Provides
   @Singleton
-  CookieManager provideCookieManager() {
+  static CookieManager provideCookieManager() {
     return new CookieManager();
   }
 
   @Provides
   @Singleton
-  CurrentUserType provideCurrentUser(@AccessTokenPreference final @NonNull StringPreferenceType accessTokenPreference,
-    final @NonNull DeviceRegistrarType deviceRegistrar,
-    final @NonNull Gson gson,
-    @NonNull @UserPreference final StringPreferenceType userPreference) {
+  static CurrentUserType provideCurrentUser(@AccessTokenPreference final @NonNull StringPreferenceType accessTokenPreference,
+                                            final @NonNull DeviceRegistrarType deviceRegistrar,
+                                            final @NonNull Gson gson,
+                                            @NonNull @UserPreference final StringPreferenceType userPreference) {
     return new CurrentUser(accessTokenPreference, deviceRegistrar, gson, userPreference);
   }
 
   @Provides
   @Singleton
-  @NonNull DeviceRegistrarType provideDeviceRegistrar(final @NonNull PlayServicesCapability playServicesCapability,
-    final @ApplicationContext @NonNull Context context) {
+  @NonNull
+  static DeviceRegistrarType provideDeviceRegistrar(final @NonNull PlayServicesCapability playServicesCapability,
+                                                    final @ApplicationContext @NonNull Context context) {
     return new DeviceRegistrar(playServicesCapability, context);
   }
 
   @Provides
   @Singleton
   @GamesNewsletterPreference
-  @NonNull BooleanPreferenceType provideGamesNewsletterPreference(final @NonNull SharedPreferences sharedPreferences) {
+  @NonNull
+  static BooleanPreferenceType provideGamesNewsletterPreference(final @NonNull SharedPreferences sharedPreferences) {
     return new BooleanPreference(sharedPreferences, "has_seen_games_newsletter");
   }
 
   @Provides
   @Singleton
   @WebEndpoint
-  @NonNull String provideWebEndpoint(final @NonNull ApiEndpoint apiEndpoint) {
+  @NonNull
+  static String provideWebEndpoint(final @NonNull ApiEndpoint apiEndpoint) {
     return (apiEndpoint == ApiEndpoint.PRODUCTION) ?
       "https://www.kickstarter.com" :
       apiEndpoint.url().replaceAll("(?<=\\Ahttps?:\\/\\/)api.", "");
@@ -375,13 +395,13 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
-  Font provideFont(final @NonNull AssetManager assetManager) {
+  static Font provideFont(final @NonNull AssetManager assetManager) {
     return new Font(assetManager);
   }
 
   @Provides
   @Singleton
-  Gson provideGson() {
+  static Gson provideGson() {
     return new GsonBuilder()
       .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
       .registerTypeAdapter(DateTime.class, new DateTimeTypeConverter())
@@ -391,38 +411,40 @@ public final class ApplicationModule {
 
   @Provides
   @Singleton
-  KSCurrency provideKSCurrency(final @NonNull CurrentConfigType currentConfig) {
+  static KSCurrency provideKSCurrency(final @NonNull CurrentConfigType currentConfig) {
     return new KSCurrency(currentConfig);
   }
 
   @Provides
   @Singleton
-  @NonNull KSString provideKSString(final @PackageNameString @NonNull String packageName, final @NonNull Resources resources) {
+  @NonNull
+  static KSString provideKSString(final @PackageNameString @NonNull String packageName, final @NonNull Resources resources) {
     return new KSString(packageName, resources);
   }
 
   @Provides
-  KSWebViewClient provideKSWebViewClient(final @NonNull OkHttpClient okHttpClient,
-    @WebEndpoint final String webEndpoint) {
+  static KSWebViewClient provideKSWebViewClient(final @NonNull OkHttpClient okHttpClient,
+                                                @WebEndpoint final String webEndpoint) {
     return new KSWebViewClient(okHttpClient, webEndpoint);
   }
 
   @Provides
   @Singleton
-  Logout provideLogout(final @NonNull CookieManager cookieManager, final @NonNull CurrentUserType currentUser) {
+  static Logout provideLogout(final @NonNull CookieManager cookieManager, final @NonNull CurrentUserType currentUser) {
     return new Logout(cookieManager, currentUser);
   }
 
   @Provides
   @Singleton
-  @NonNull PushNotifications providePushNotifications(final @ApplicationContext @NonNull Context context, final @NonNull ApiClientType client,
-    final @NonNull DeviceRegistrarType deviceRegistrar) {
+  @NonNull
+  static PushNotifications providePushNotifications(final @ApplicationContext @NonNull Context context, final @NonNull ApiClientType client,
+                                                    final @NonNull DeviceRegistrarType deviceRegistrar) {
     return new PushNotifications(context, client, deviceRegistrar);
   }
 
   @Provides
   @Singleton
-  PackageInfo providePackageInfo(final @NonNull Application application) {
+  static PackageInfo providePackageInfo(final @NonNull Application application) {
     try {
       return application.getPackageManager().getPackageInfo(application.getPackageName(), 0);
     } catch (PackageManager.NameNotFoundException e) {
@@ -434,13 +456,13 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   @PackageNameString
-  String providePackageName(final @NonNull Application application) {
+  static String providePackageName(final @NonNull Application application) {
     return application.getPackageName();
   }
 
   @Provides
   @Singleton
-  Resources provideResources(final @ApplicationContext @NonNull Context context) {
+  static Resources provideResources(final @ApplicationContext @NonNull Context context) {
     return context.getResources();
   }
 
@@ -453,7 +475,8 @@ public final class ApplicationModule {
   @Provides
   @Singleton
   @UserPreference
-  @NonNull StringPreferenceType provideUserPreference(final @NonNull SharedPreferences sharedPreferences) {
+  @NonNull
+  static StringPreferenceType provideUserPreference(final @NonNull SharedPreferences sharedPreferences) {
     return new StringPreference(sharedPreferences, "user");
   }
 }

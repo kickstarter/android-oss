@@ -497,6 +497,28 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testUsdConversionTextRoundsUp() {
+    // Set user's country to US.
+    final Config config = ConfigFactory.configForUSUser();
+    final Environment environment = environment();
+    environment.currentConfig().config(config);
+    final RewardViewModel vm = new RewardViewModel(environment);
+
+    // Set project's country to CA and reward minimum to $0.40.
+    final Project project = ProjectFactory.project().toBuilder().country("CA").build();
+    final Reward reward = RewardFactory.reward().toBuilder().minimum(0.3f).build();
+
+    final TestSubscriber<String> usdConversionTextViewText = TestSubscriber.create();
+    vm.outputs.usdConversionTextViewText().subscribe(usdConversionTextViewText);
+    final TestSubscriber<Boolean> usdConversionSectionIsHidden = TestSubscriber.create();
+    vm.outputs.usdConversionTextViewIsHidden().subscribe(usdConversionSectionIsHidden);
+
+    // USD conversion should be rounded up.
+    vm.inputs.projectAndReward(project, reward);
+    usdConversionTextViewText.assertValue("$1");
+  }
+
+  @Test
   public void testWhiteOverlayIsHidden() {
     final RewardViewModel vm = new RewardViewModel(environment());
     final Project project = ProjectFactory.project();

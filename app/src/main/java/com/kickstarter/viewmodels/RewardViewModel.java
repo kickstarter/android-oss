@@ -210,7 +210,7 @@ public final class RewardViewModel extends ActivityViewModel<RewardViewHolder> i
       .subscribe(usdConversionTextViewIsHidden);
 
     projectAndReward
-      .map(pr -> ksCurrency.format(pr.second.minimum(), pr.first, true, true))
+      .map(pr -> ksCurrency.format((float) Math.ceil(pr.second.minimum()), pr.first, true, true))
       .compose(takeWhen(
         shouldDisplayUsdConversion
           .filter(BooleanUtils::isTrue)

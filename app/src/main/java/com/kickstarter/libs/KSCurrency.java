@@ -61,7 +61,7 @@ public final class KSCurrency {
     final NumberOptions numberOptions = NumberOptions.builder()
       .currencyCode(showCurrencyCode ? currencyOptions.currencyCode() : "")
       .currencySymbol(currencyOptions.currencySymbol())
-      .roundingMode(RoundingMode.UP)
+      .roundingMode(RoundingMode.DOWN)
       .build();
 
     return NumberUtils.format(currencyOptions.value(), numberOptions);

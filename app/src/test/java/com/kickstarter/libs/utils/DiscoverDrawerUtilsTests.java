@@ -29,7 +29,7 @@ public class DiscoverDrawerUtilsTests extends KSRobolectricTestCase {
 
     final NavigationDrawerData data = DiscoveryDrawerUtils.deriveNavigationDrawerData(
       categories,
-      DiscoveryParams.builder().staffPicks(true).build(),
+      DiscoveryParams.builder().build(),
       null,
       null
     );
@@ -48,7 +48,7 @@ public class DiscoverDrawerUtilsTests extends KSRobolectricTestCase {
 
     final NavigationDrawerData data = DiscoveryDrawerUtils.deriveNavigationDrawerData(
       categories,
-      DiscoveryParams.builder().staffPicks(true).build(),
+      DiscoveryParams.builder().build(),
       null,
       UserFactory.user()
     );
@@ -68,7 +68,7 @@ public class DiscoverDrawerUtilsTests extends KSRobolectricTestCase {
 
     final NavigationDrawerData data = DiscoveryDrawerUtils.deriveNavigationDrawerData(
       categories,
-      DiscoveryParams.builder().staffPicks(true).build(),
+      DiscoveryParams.builder().build(),
       null,
       UserFactory.socialUser()
     );
@@ -89,7 +89,7 @@ public class DiscoverDrawerUtilsTests extends KSRobolectricTestCase {
 
     final NavigationDrawerData data = DiscoveryDrawerUtils.deriveNavigationDrawerData(
       categories,
-      DiscoveryParams.builder().staffPicks(true).build(),
+      DiscoveryParams.builder().build(),
       CategoryFactory.artCategory(),
       null
     );

@@ -40,7 +40,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     vm.outputs.projects().map(ListUtils::nonEmpty).subscribe(hasProjects);
 
     // Load initial params from activity.
-    vm.inputs.paramsFromActivity(DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.HOME).build());
+    vm.inputs.paramsFromActivity(DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build());
 
     // Should emit current fragment's projects.
     hasProjects.assertValues(false, true);
@@ -68,13 +68,13 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     vm.outputs.projects().filter(ListUtils::nonEmpty).subscribe(projects);
 
     // Initial load.
-    vm.inputs.paramsFromActivity(DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.HOME).build());
+    vm.inputs.paramsFromActivity(DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build());
 
     projects.assertValueCount(1);
     koalaTest.assertValues("Discover List View");
 
     // Popularity tab clicked.
-    vm.inputs.paramsFromActivity(DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.POPULAR).build());
+    vm.inputs.paramsFromActivity(DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build());
     projects.assertValueCount(2);
     koalaTest.assertValues("Discover List View", "Discover List View");
   }
@@ -93,7 +93,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     vm.outputs.projects().filter(ListUtils::nonEmpty).subscribe(projects);
 
     // Initial load.
-    vm.inputs.paramsFromActivity(DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.HOME).build());
+    vm.inputs.paramsFromActivity(DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build());
 
     // Projects should emit.
     projects.assertValueCount(1);

@@ -444,7 +444,7 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
     final RewardViewModel vm = new RewardViewModel(environment);
 
     // Set project's country to CA.
-    final Project project = ProjectFactory.project().toBuilder().country("CA").build();
+    final Project project = ProjectFactory.caProject();
     final Reward reward = RewardFactory.reward();
 
     final TestSubscriber<String> usdConversionTextViewText = TestSubscriber.create();
@@ -504,8 +504,8 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
     environment.currentConfig().config(config);
     final RewardViewModel vm = new RewardViewModel(environment);
 
-    // Set project's country to CA and reward minimum to $0.40.
-    final Project project = ProjectFactory.project().toBuilder().country("CA").build();
+    // Set project's country to CA and reward minimum to $0.30.
+    final Project project = ProjectFactory.caProject();
     final Reward reward = RewardFactory.reward().toBuilder().minimum(0.3f).build();
 
     final TestSubscriber<String> usdConversionTextViewText = TestSubscriber.create();

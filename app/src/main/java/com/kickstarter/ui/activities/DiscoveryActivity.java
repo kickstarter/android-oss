@@ -64,7 +64,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
   protected @BindString(R.string.Home) String homeString;
   protected @BindString(R.string.Popular) String popularString;
   protected @BindString(R.string.discovery_sort_types_newest) String newestString;
-  protected @BindString(R.string.discovery_sort_types_end_date) String endDateString;
+  protected @BindString(R.string.Ending_soon) String endingSoonString;
   protected @BindString(R.string.discovery_sort_types_most_funded) String mostFundedString;
 
   @Override
@@ -80,7 +80,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
     drawerAdapter = new DiscoveryDrawerAdapter(viewModel.inputs);
     drawerRecyclerView.setAdapter(drawerAdapter);
 
-    final List<String> viewPagerTitles = Arrays.asList(homeString, popularString, newestString, endDateString,
+    final List<String> viewPagerTitles = Arrays.asList(homeString, popularString, newestString, endingSoonString,
       mostFundedString);
     pagerAdapter = new DiscoveryPagerAdapter(getSupportFragmentManager(), viewPagerTitles, viewModel.inputs);
     sortViewPager.setAdapter(pagerAdapter);

@@ -10,6 +10,8 @@ import com.kickstarter.models.Project;
 
 import junit.framework.TestCase;
 
+import java.math.RoundingMode;
+
 public class KSCurrencyTest extends TestCase {
   public void testFormatCurrency_withUserInUS() {
     final KSCurrency currency = createKSCurrency("US");
@@ -46,12 +48,12 @@ public class KSCurrencyTest extends TestCase {
 
   public void testFormatCurrency_withUserInUSAndUSDPreferred() {
     final KSCurrency currency = createKSCurrency("US");
-    assertEquals("$150", currency.format(100.0f, ProjectFactory.ukProject(), false, true));
+    assertEquals("$150", currency.format(100.0f, ProjectFactory.ukProject(), false, true, RoundingMode.DOWN));
   }
 
   public void testFormatCurrency_withUserInUKAndUSDPreferred() {
     final KSCurrency currency = createKSCurrency("UK");
-    assertEquals("£100", currency.format(100.0f, ProjectFactory.ukProject(), false, true));
+    assertEquals("£100", currency.format(100.0f, ProjectFactory.ukProject(), false, true, RoundingMode.DOWN));
   }
 
   public void testFormatCurrency_roundsDown() {

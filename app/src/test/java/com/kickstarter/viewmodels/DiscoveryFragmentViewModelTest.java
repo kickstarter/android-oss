@@ -133,8 +133,8 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<Boolean> shouldShowOnboardingViewTest = new TestSubscriber<>();
     vm.outputs.shouldShowOnboardingView().subscribe(shouldShowOnboardingViewTest);
 
-    // Initial home staff pick params.
-    vm.inputs.paramsFromActivity(DiscoveryParams.builder().staffPicks(true).sort(DiscoveryParams.Sort.HOME).build());
+    // Initial home all projects params.
+    vm.inputs.paramsFromActivity(DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build());
 
     // Should show onboarding view.
     shouldShowOnboardingViewTest.assertValues(true);

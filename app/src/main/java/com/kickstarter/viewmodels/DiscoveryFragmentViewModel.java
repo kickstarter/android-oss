@@ -275,7 +275,7 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
   private boolean isOnboardingVisible(final @NonNull DiscoveryParams params, final boolean isLoggedIn) {
     final DiscoveryParams.Sort sort = params.sort();
     final boolean isSortHome = DiscoveryParams.Sort.HOME.equals(sort);
-    return isTrue(params.staffPicks()) && isSortHome && !isLoggedIn;
+    return isTrue(params.isAllProjects()) && isSortHome && !isLoggedIn;
   }
 
   /**

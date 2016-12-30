@@ -448,12 +448,12 @@ public abstract class DiscoveryParams implements Parcelable {
     } else if (location() != null) {
       return location().displayableName();
     } else {
-      return context.getString(R.string.discovery_everything);
+      return context.getString(R.string.All_Projects);
     }
   }
 
   /**
-   * Determines if params are for All Projects ("Everything"), i.e. discovery without params.
+   * Determines if params are for All Projects, i.e. discovery without params.
    * @return true if is All Projects.
    */
   public boolean isAllProjects() {

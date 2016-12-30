@@ -124,7 +124,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     // Unchanged toolbar params should not emit.
     updateToolbarWithParams.assertValues(DiscoveryParams.builder().build());
 
-    // Select EVERYTHING filter from drawer.
+    // Select ALL PROJECTS filter from drawer.
     vm.inputs.topFilterViewHolderRowClick(null,
       NavigationDrawerData.Section.Row.builder().params(DiscoveryParams.builder().build()).build()
     );

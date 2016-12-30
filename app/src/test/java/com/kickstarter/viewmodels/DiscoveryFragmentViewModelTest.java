@@ -73,7 +73,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     projects.assertValueCount(1);
     koalaTest.assertValues("Discover List View");
 
-    // Popularity tab clicked.
+    // Popular tab clicked.
     vm.inputs.paramsFromActivity(DiscoveryParams.builder().sort(DiscoveryParams.Sort.POPULAR).build());
     projects.assertValueCount(2);
     koalaTest.assertValues("Discover List View", "Discover List View");

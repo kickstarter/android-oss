@@ -59,9 +59,9 @@ public final class ChildFilterViewHolder extends KSViewHolder {
 
     final Category category = item.params().category();
     if (category != null && category.isRoot()) {
-      filterTextView.setText(ksString.format(context.getString(R.string.discovery_filters_all_of_category), "category_name", item.params().filterString(context)));
+      filterTextView.setText(item.params().filterString(context, ksString));
     } else {
-      filterTextView.setText(item.params().filterString(context));
+      filterTextView.setText(item.params().filterString(context, ksString));
     }
     if (item.selected()) {
       filterTextView.setTextAppearance(context, R.style.SubheadPrimaryMedium);

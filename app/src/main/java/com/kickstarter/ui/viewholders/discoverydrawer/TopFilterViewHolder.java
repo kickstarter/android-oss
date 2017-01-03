@@ -7,9 +7,13 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.kickstarter.KSApplication;
 import com.kickstarter.R;
+import com.kickstarter.libs.KSString;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
 import com.kickstarter.ui.viewholders.KSViewHolder;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.BindColor;
@@ -26,6 +30,8 @@ public final class TopFilterViewHolder extends KSViewHolder {
   private NavigationDrawerData.Section.Row item;
   private Delegate delegate;
 
+  protected @Inject KSString ksString;
+
   public interface Delegate {
     void topFilterViewHolderRowClick(final @NonNull TopFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row);
   }
@@ -33,6 +39,7 @@ public final class TopFilterViewHolder extends KSViewHolder {
   public TopFilterViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
     this.delegate = delegate;
+    ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
     ButterKnife.bind(this, view);
   }
 
@@ -45,7 +52,7 @@ public final class TopFilterViewHolder extends KSViewHolder {
   public void onBind() {
     final Context context = context();
 
-    filterTextView.setText(item.params().filterString(context));
+    filterTextView.setText(item.params().filterString(context, ksString));
     filterTextView.setTextAppearance(context, item.selected() ? R.style.SubheadPrimaryMedium : R.style.SubheadPrimary);
 
     filterView.setBackgroundColor(item.selected() ? filterSelectedColor : filterUnselectedColor);

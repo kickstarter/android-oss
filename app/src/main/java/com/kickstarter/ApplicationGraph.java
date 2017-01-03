@@ -36,6 +36,8 @@ import com.kickstarter.ui.viewholders.RewardViewHolder;
 import com.kickstarter.ui.viewholders.ThanksCategoryViewHolder;
 import com.kickstarter.ui.viewholders.ThanksProjectViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.ChildFilterViewHolder;
+import com.kickstarter.ui.viewholders.discoverydrawer.ParentFilterViewHolder;
+import com.kickstarter.ui.viewholders.discoverydrawer.TopFilterViewHolder;
 import com.kickstarter.ui.views.AppRatingDialog;
 import com.kickstarter.ui.views.IconTextView;
 import com.kickstarter.ui.views.KSWebView;
@@ -67,6 +69,7 @@ public interface ApplicationGraph {
   void inject(LoginActivity __);
   void inject(MessageService __);
   void inject(KSCurrency __);
+  void inject(ParentFilterViewHolder __);
   void inject(ProfileCardViewHolder __);
   void inject(ProjectContextViewHolder __);
   void inject(ProjectActivity __);
@@ -81,4 +84,5 @@ public interface ApplicationGraph {
   void inject(RewardViewHolder __);
   void inject(SettingsActivity __);
   void inject(ThanksActivity __);
+  void inject(TopFilterViewHolder __);
 }

@@ -24,6 +24,7 @@ import com.kickstarter.viewmodels.outputs.RewardViewModelOutputs;
 
 import org.joda.time.DateTime;
 
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -210,7 +211,7 @@ public final class RewardViewModel extends ActivityViewModel<RewardViewHolder> i
       .subscribe(usdConversionTextViewIsHidden);
 
     projectAndReward
-      .map(pr -> ksCurrency.format(pr.second.minimum(), pr.first, true, true))
+      .map(pr -> ksCurrency.format(pr.second.minimum(), pr.first, true, true, RoundingMode.UP))
       .compose(takeWhen(
         shouldDisplayUsdConversion
           .filter(BooleanUtils::isTrue)

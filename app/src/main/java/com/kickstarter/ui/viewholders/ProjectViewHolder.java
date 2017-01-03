@@ -39,6 +39,8 @@ import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
 
+import java.math.RoundingMode;
+
 import javax.inject.Inject;
 
 import butterknife.Bind;
@@ -302,10 +304,10 @@ public final class ProjectViewHolder extends KSViewHolder {
   }
 
   public void setPledgedOfGoalView() {
-    pledgedTextView.setText(ksCurrency.format(project.pledged(), project, false, true));
+    pledgedTextView.setText(ksCurrency.format(project.pledged(), project, false, true, RoundingMode.DOWN));
 
     /* a11y */
-    final String goalString = ksCurrency.format(project.goal(), project, false, true);
+    final String goalString = ksCurrency.format(project.goal(), project, false, true, RoundingMode.DOWN);
     final String goalText = ViewUtils.isFontScaleLarge(context) ?
       ksString.format(ofGoalString, "goal", goalString) : ksString.format(pledgedOfGoalString, "goal", goalString);
     goalTextView.setText(goalText);

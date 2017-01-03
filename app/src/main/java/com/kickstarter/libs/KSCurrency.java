@@ -24,7 +24,7 @@ public final class KSCurrency {
    * @param project      The project to use to look up currency information.
    */
   public @NonNull String format(final float initialValue, final @NonNull Project project) {
-    return format(initialValue, project, false, false);
+    return format(initialValue, project, false, false, RoundingMode.DOWN);
   }
 
   /**
@@ -38,7 +38,7 @@ public final class KSCurrency {
   public @NonNull String format(final float initialValue, final @NonNull Project project,
     final boolean excludeCurrencyCode) {
 
-    return format(initialValue, project, excludeCurrencyCode, false);
+    return format(initialValue, project, excludeCurrencyCode, false, RoundingMode.DOWN);
   }
 
   /**
@@ -52,7 +52,7 @@ public final class KSCurrency {
    *                            the US.
    */
   public @NonNull String format(final float initialValue, final @NonNull Project project,
-    final boolean excludeCurrencyCode, final boolean preferUSD) {
+    final boolean excludeCurrencyCode, final boolean preferUSD, final @NonNull RoundingMode roundingMode) {
 
     final CurrencyOptions currencyOptions = currencyOptions(initialValue, project, preferUSD);
 
@@ -61,7 +61,7 @@ public final class KSCurrency {
     final NumberOptions numberOptions = NumberOptions.builder()
       .currencyCode(showCurrencyCode ? currencyOptions.currencyCode() : "")
       .currencySymbol(currencyOptions.currencySymbol())
-      .roundingMode(RoundingMode.DOWN)
+      .roundingMode(roundingMode)
       .build();
 
     return NumberUtils.format(currencyOptions.value(), numberOptions);

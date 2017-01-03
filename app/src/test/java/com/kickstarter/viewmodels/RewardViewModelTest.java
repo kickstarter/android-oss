@@ -510,8 +510,6 @@ public final class RewardViewModelTest extends KSRobolectricTestCase {
 
     final TestSubscriber<String> usdConversionTextViewText = TestSubscriber.create();
     vm.outputs.usdConversionTextViewText().subscribe(usdConversionTextViewText);
-    final TestSubscriber<Boolean> usdConversionSectionIsHidden = TestSubscriber.create();
-    vm.outputs.usdConversionTextViewIsHidden().subscribe(usdConversionSectionIsHidden);
 
     // USD conversion should be rounded up.
     vm.inputs.projectAndReward(project, reward);

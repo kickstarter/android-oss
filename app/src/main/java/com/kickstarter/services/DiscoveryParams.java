@@ -465,7 +465,7 @@ public abstract class DiscoveryParams implements Parcelable {
         : category().name();
     } else if (location() != null) {
       return location().displayableName();
-    } else if (recommended() != null && recommended()) {
+    } else if (isTrue(recommended())) {
       return context.getString(R.string.discovery_recommended_for_you);
     } else {
       return context.getString(R.string.All_Projects);
@@ -478,8 +478,7 @@ public abstract class DiscoveryParams implements Parcelable {
    */
   public boolean isAllProjects() {
     return isFalse(staffPicks()) && (starred() == null || starred() != 1) && (backed() == null || backed() != 1)
-      && (social() == null || social() != 1) && category() == null && location() == null
-      && (recommended() == null || !recommended());
+      && (social() == null || social() != 1) && category() == null && location() == null && isFalse(recommended());
   }
 
   public boolean isCategorySet() {

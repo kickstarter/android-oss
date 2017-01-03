@@ -53,7 +53,7 @@ public class DiscoverDrawerUtilsTests extends KSRobolectricTestCase {
       UserFactory.user()
     );
 
-    assertEquals(6, data.sections().size());
+    assertEquals(7, data.sections().size());
 
     assertEquals(1, data.sections().get(0).rows().size());
     assertEquals(1, data.sections().get(1).rows().size());
@@ -61,6 +61,7 @@ public class DiscoverDrawerUtilsTests extends KSRobolectricTestCase {
     assertEquals(1, data.sections().get(3).rows().size());
     assertEquals(1, data.sections().get(4).rows().size());
     assertEquals(1, data.sections().get(5).rows().size());
+    assertEquals(1, data.sections().get(6).rows().size());
   }
 
   @Test
@@ -73,7 +74,7 @@ public class DiscoverDrawerUtilsTests extends KSRobolectricTestCase {
       UserFactory.socialUser()
     );
 
-    assertEquals(7, data.sections().size());
+    assertEquals(8, data.sections().size());
 
     assertEquals(1, data.sections().get(0).rows().size());
     assertEquals(1, data.sections().get(1).rows().size());
@@ -82,6 +83,7 @@ public class DiscoverDrawerUtilsTests extends KSRobolectricTestCase {
     assertEquals(1, data.sections().get(4).rows().size());
     assertEquals(1, data.sections().get(5).rows().size());
     assertEquals(1, data.sections().get(6).rows().size());
+    assertEquals(1, data.sections().get(7).rows().size());
   }
 
   @Test

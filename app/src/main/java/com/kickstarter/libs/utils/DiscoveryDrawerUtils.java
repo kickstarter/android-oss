@@ -137,14 +137,17 @@ public final class DiscoveryDrawerUtils {
   private static @NonNull List<NavigationDrawerData.Section> topSections(final @Nullable User user) {
     final List<DiscoveryParams> filters = ListUtils.empty();
 
+    filters.add(DiscoveryParams.builder().build());
     filters.add(DiscoveryParams.builder().staffPicks(true).build());
+
     if (user != null) {
       filters.add(DiscoveryParams.builder().starred(1).build());
+      filters.add(DiscoveryParams.builder().recommended(true).build());
+
       if (isTrue(user.social())) {
         filters.add(DiscoveryParams.builder().social(1).build());
       }
     }
-    filters.add(DiscoveryParams.builder().build());
 
     return Observable.from(filters)
       .map(p -> NavigationDrawerData.Section.Row.builder().params(p).build())

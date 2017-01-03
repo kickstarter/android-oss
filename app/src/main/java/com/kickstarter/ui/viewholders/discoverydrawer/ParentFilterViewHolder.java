@@ -43,7 +43,7 @@ public final class ParentFilterViewHolder extends KSViewHolder {
   public void onBind() {
     final Context context = context();
 
-    filterTextView.setText(item.params().filterString(context));
+    filterTextView.setText(item.params().filterString(context, environment().ksString(), false, true));
 
     if (item.rootIsExpanded()) {
       expandButton.setVisibility(View.GONE);

@@ -29,7 +29,7 @@ public class DiscoverDrawerUtilsTests extends KSRobolectricTestCase {
 
     final NavigationDrawerData data = DiscoveryDrawerUtils.deriveNavigationDrawerData(
       categories,
-      DiscoveryParams.builder().staffPicks(true).build(),
+      DiscoveryParams.builder().build(),
       null,
       null
     );
@@ -48,29 +48,9 @@ public class DiscoverDrawerUtilsTests extends KSRobolectricTestCase {
 
     final NavigationDrawerData data = DiscoveryDrawerUtils.deriveNavigationDrawerData(
       categories,
-      DiscoveryParams.builder().staffPicks(true).build(),
+      DiscoveryParams.builder().build(),
       null,
       UserFactory.user()
-    );
-
-    assertEquals(6, data.sections().size());
-
-    assertEquals(1, data.sections().get(0).rows().size());
-    assertEquals(1, data.sections().get(1).rows().size());
-    assertEquals(1, data.sections().get(2).rows().size());
-    assertEquals(1, data.sections().get(3).rows().size());
-    assertEquals(1, data.sections().get(4).rows().size());
-    assertEquals(1, data.sections().get(5).rows().size());
-  }
-
-  @Test
-  public void testDeriveNavigationDrawerData_LoggedIn_Social_DefaultSelected() {
-
-    final NavigationDrawerData data = DiscoveryDrawerUtils.deriveNavigationDrawerData(
-      categories,
-      DiscoveryParams.builder().staffPicks(true).build(),
-      null,
-      UserFactory.socialUser()
     );
 
     assertEquals(7, data.sections().size());
@@ -85,11 +65,33 @@ public class DiscoverDrawerUtilsTests extends KSRobolectricTestCase {
   }
 
   @Test
+  public void testDeriveNavigationDrawerData_LoggedIn_Social_DefaultSelected() {
+
+    final NavigationDrawerData data = DiscoveryDrawerUtils.deriveNavigationDrawerData(
+      categories,
+      DiscoveryParams.builder().build(),
+      null,
+      UserFactory.socialUser()
+    );
+
+    assertEquals(8, data.sections().size());
+
+    assertEquals(1, data.sections().get(0).rows().size());
+    assertEquals(1, data.sections().get(1).rows().size());
+    assertEquals(1, data.sections().get(2).rows().size());
+    assertEquals(1, data.sections().get(3).rows().size());
+    assertEquals(1, data.sections().get(4).rows().size());
+    assertEquals(1, data.sections().get(5).rows().size());
+    assertEquals(1, data.sections().get(6).rows().size());
+    assertEquals(1, data.sections().get(7).rows().size());
+  }
+
+  @Test
   public void testDeriveNavigationDrawerData_LoggedOut_ArtExpanded() {
 
     final NavigationDrawerData data = DiscoveryDrawerUtils.deriveNavigationDrawerData(
       categories,
-      DiscoveryParams.builder().staffPicks(true).build(),
+      DiscoveryParams.builder().build(),
       CategoryFactory.artCategory(),
       null
     );

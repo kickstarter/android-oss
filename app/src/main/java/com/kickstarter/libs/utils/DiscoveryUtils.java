@@ -27,7 +27,7 @@ public final class DiscoveryUtils {
       return 0;
     }
     switch (sort) {
-      case MAGIC:
+      case HOME:
         return 0;
       case POPULAR:
         return 1;

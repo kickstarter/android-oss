@@ -214,7 +214,7 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
       .take(1)
       .map(Intent::getAction)
       .filter(Intent.ACTION_MAIN::equals)
-      .map(__ -> DiscoveryParams.builder().staffPicks(true).build());
+      .map(__ -> DiscoveryParams.builder().build());
 
     final Observable<DiscoveryParams> paramsFromIntent = intent()
       .flatMap(i -> DiscoveryIntentMapper.params(i, apiClient));

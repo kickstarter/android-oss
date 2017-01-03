@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.kickstarter.R;
+import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.qualifiers.AutoGson;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Category;
@@ -20,6 +21,7 @@ import java.util.Map;
 
 import auto.parcel.AutoParcel;
 
+import static com.kickstarter.libs.utils.BooleanUtils.isFalse;
 import static com.kickstarter.libs.utils.BooleanUtils.isTrue;
 
 @AutoGson
@@ -43,12 +45,12 @@ public abstract class DiscoveryParams implements Parcelable {
   public abstract @Nullable String term();
 
   public enum Sort {
-    MAGIC, POPULAR, NEWEST, ENDING_SOON, MOST_FUNDED;
+    HOME, POPULAR, NEWEST, ENDING_SOON, MOST_FUNDED;
     @Override
     public @NonNull String toString() {
       switch (this) {
-        case MAGIC:
-          return "magic";
+        case HOME:
+          return "home";
         case POPULAR:
           return "popularity";
         case NEWEST:
@@ -63,8 +65,8 @@ public abstract class DiscoveryParams implements Parcelable {
 
     public static @Nullable Sort fromString(final @NonNull String string) {
       switch (string) {
-        case "magic":
-          return MAGIC;
+        case "home":
+          return HOME;
         case "popularity":
           return POPULAR;
         case "newest":
@@ -74,12 +76,12 @@ public abstract class DiscoveryParams implements Parcelable {
         case "most_funded":
           return MOST_FUNDED;
       }
-      return MAGIC;
+      return HOME;
     }
 
     public @NonNull String refTagSuffix() {
       switch (this) {
-        case MAGIC:
+        case HOME:
           return "";
         case POPULAR:
           return "_popular";
@@ -417,7 +419,7 @@ public abstract class DiscoveryParams implements Parcelable {
    * POTD comes back.
    */
   public boolean shouldIncludePotd() {
-    return isTrue(staffPicks()) && page() != null && page() == 1 && (sort() == null || sort() == Sort.MAGIC);
+    return isAllProjects() && page() != null && page() == 1 && (sort() == null || sort() == Sort.HOME);
   }
 
   /**
@@ -425,7 +427,7 @@ public abstract class DiscoveryParams implements Parcelable {
    * featured project for the category comes back.
    */
   public boolean shouldIncludeFeatured() {
-    return category() != null && page() != null && page() == 1 && (sort() == null || sort() == Sort.MAGIC);
+    return category() != null && page() != null && page() == 1 && (sort() == null || sort() == Sort.HOME);
   }
 
   @Override
@@ -433,22 +435,50 @@ public abstract class DiscoveryParams implements Parcelable {
     return queryParams().toString();
   }
 
-  public @NonNull String filterString(final @NonNull Context context) {
+  public @NonNull String filterString(final @NonNull Context context, final @NonNull KSString ksString) {
+    return filterString(context, ksString, false, false);
+  }
+
+  /**
+   * Determines the correct string to display for a filter depending on where it is shown.
+   *
+   * @param context           context
+   * @param ksString          ksString for string formatting
+   * @param isToolbar         true if string is being displayed in the {@link com.kickstarter.ui.toolbars.DiscoveryToolbar}
+   * @param isParentFilter    true if string is being displayed as a {@link com.kickstarter.ui.viewholders.discoverydrawer.ParentFilterViewHolder}
+   *
+   * @return the appropriate filter string
+   */
+  public @NonNull String filterString(final @NonNull Context context, final @NonNull KSString ksString,
+    final boolean isToolbar, final boolean isParentFilter) {
     if (isTrue(staffPicks())) {
-      return context.getString(R.string.discovery_recommended);
+      return context.getString(R.string.Projects_We_Love);
     } else if (starred() != null && starred() == 1) {
-      return context.getString(R.string.discovery_saved);
+      return context.getString(R.string.Saved);
     } else if (backed() != null && backed() == 1) {
       return context.getString(R.string.discovery_backing);
     } else if (social() != null && social() == 1) {
-      return context.getString(R.string.discovery_friends_backed);
+      return isToolbar ? context.getString(R.string.Following) : context.getString(R.string.Backed_by_people_you_follow);
     } else if (category() != null) {
-      return category().name();
+      return category().isRoot() && !isParentFilter
+        ? ksString.format(context.getString(R.string.All_category_name_Projects), "category_name", category().name())
+        : category().name();
     } else if (location() != null) {
       return location().displayableName();
+    } else if (isTrue(recommended())) {
+      return context.getString(R.string.discovery_recommended_for_you);
     } else {
-      return context.getString(R.string.discovery_everything);
+      return context.getString(R.string.All_Projects);
     }
+  }
+
+  /**
+   * Determines if params are for All Projects, i.e. discovery without params.
+   * @return true if is All Projects.
+   */
+  public boolean isAllProjects() {
+    return isFalse(staffPicks()) && (starred() == null || starred() != 1) && (backed() == null || backed() != 1)
+      && (social() == null || social() != 1) && category() == null && location() == null && isFalse(recommended());
   }
 
   public boolean isCategorySet() {

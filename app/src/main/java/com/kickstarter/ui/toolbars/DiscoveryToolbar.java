@@ -14,6 +14,7 @@ import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.ApiCapabilities;
 import com.kickstarter.libs.CurrentUserType;
+import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.Logout;
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.libs.utils.StatusBarUtils;
@@ -36,6 +37,7 @@ public final class DiscoveryToolbar extends KSToolbar {
   @Bind(R.id.menu_button) TextView menuButton;
   @Bind(R.id.search_button) TextView searchButton;
   @Inject CurrentUserType currentUser;
+  @Inject KSString ksString;
   @Inject Logout logout;
 
   public DiscoveryToolbar(final @NonNull Context context) {
@@ -76,7 +78,7 @@ public final class DiscoveryToolbar extends KSToolbar {
   public void loadParams(final @NonNull DiscoveryParams params) {
     final DiscoveryActivity activity = (DiscoveryActivity) getContext();
 
-    filterTextView.setText(params.filterString(activity));
+    filterTextView.setText(params.filterString(activity, ksString, true, false));
 
     if (ApiCapabilities.canSetStatusBarColor() && ApiCapabilities.canSetDarkStatusBarIcons()) {
       discoveryStatusBar.setBackgroundColor(DiscoveryUtils.secondaryColor(activity, params.category()));

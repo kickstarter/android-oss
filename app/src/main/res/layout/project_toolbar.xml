@@ -33,7 +33,7 @@
       android:id="@+id/star_icon"
       android:focusable="true"
       android:nextFocusRight="@+id/share_icon"
-      android:contentDescription="@string/project_accessibility_button_star_label"
+      android:contentDescription="@string/Save_this_project"
       android:layout_toLeftOf="@+id/share_icon"
       android:layout_toStartOf="@+id/share_icon"
       android:text="@string/star_icon" />

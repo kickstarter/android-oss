@@ -35,7 +35,6 @@ import com.kickstarter.ui.viewholders.ProjectViewHolder;
 import com.kickstarter.ui.viewholders.RewardViewHolder;
 import com.kickstarter.ui.viewholders.ThanksCategoryViewHolder;
 import com.kickstarter.ui.viewholders.ThanksProjectViewHolder;
-import com.kickstarter.ui.viewholders.discoverydrawer.ChildFilterViewHolder;
 import com.kickstarter.ui.views.AppRatingDialog;
 import com.kickstarter.ui.views.IconTextView;
 import com.kickstarter.ui.views.KSWebView;
@@ -58,7 +57,6 @@ public interface ApplicationGraph {
   void inject(EmptyActivityFeedViewHolder __);
   void inject(EmptyCommentFeedViewHolder __);
   void inject(FriendBackingViewHolder __);
-  void inject(ChildFilterViewHolder __);
   void inject(HelpActivity __);
   void inject(IconTextView __);
   void inject(KoalaTrackingClient __);

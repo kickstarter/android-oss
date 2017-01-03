@@ -6,14 +6,10 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
-import com.kickstarter.libs.KSString;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.views.IconButton;
-
-import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -28,8 +24,6 @@ public final class ParentFilterViewHolder extends KSViewHolder {
   private NavigationDrawerData.Section.Row item;
   private Delegate delegate;
 
-  protected @Inject KSString ksString;
-
   public interface Delegate {
     void parentFilterViewHolderRowClick(final @NonNull ParentFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row);
   }
@@ -37,7 +31,6 @@ public final class ParentFilterViewHolder extends KSViewHolder {
   public ParentFilterViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
     this.delegate = delegate;
-    ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
     ButterKnife.bind(this, view);
   }
 
@@ -50,7 +43,7 @@ public final class ParentFilterViewHolder extends KSViewHolder {
   public void onBind() {
     final Context context = context();
 
-    filterTextView.setText(item.params().filterString(context, ksString, false, true));
+    filterTextView.setText(item.params().filterString(context, environment().ksString(), false, true));
 
     if (item.rootIsExpanded()) {
       expandButton.setVisibility(View.GONE);

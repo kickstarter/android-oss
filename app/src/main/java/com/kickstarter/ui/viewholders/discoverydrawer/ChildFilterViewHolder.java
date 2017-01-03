@@ -7,14 +7,11 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.kickstarter.KSApplication;
 import com.kickstarter.R;
 import com.kickstarter.libs.KSString;
 import com.kickstarter.models.Category;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
 import com.kickstarter.ui.viewholders.KSViewHolder;
-
-import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.BindColor;
@@ -32,7 +29,7 @@ public final class ChildFilterViewHolder extends KSViewHolder {
   protected @BindColor(R.color.discovery_drawer_item_selected) int filterSelectedColor;
   protected @BindColor(R.color.transparent) int filterUnselectedColor;
 
-  protected @Inject KSString ksString;
+  private final KSString ksString;
 
   private NavigationDrawerData.Section.Row item;
   private Delegate delegate;
@@ -44,7 +41,7 @@ public final class ChildFilterViewHolder extends KSViewHolder {
   public ChildFilterViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
     this.delegate = delegate;
-    ((KSApplication) view.getContext().getApplicationContext()).component().inject(this);
+    this.ksString = environment().ksString();
     ButterKnife.bind(this, view);
   }
 

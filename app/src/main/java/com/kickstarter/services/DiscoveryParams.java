@@ -460,13 +460,13 @@ public abstract class DiscoveryParams implements Parcelable {
     } else if (social() != null && social() == 1) {
       return isToolbar ? context.getString(R.string.Following) : context.getString(R.string.Backed_by_people_you_follow);
     } else if (category() != null) {
-      return category().isRoot() && !isParentFilter
+      return category().isRoot() && !isParentFilter && !isToolbar
         ? ksString.format(context.getString(R.string.All_category_name_Projects), "category_name", category().name())
         : category().name();
     } else if (location() != null) {
       return location().displayableName();
     } else if (isTrue(recommended())) {
-      return context.getString(R.string.discovery_recommended_for_you);
+      return isToolbar ? context.getString(R.string.Recommended) : context.getString(R.string.discovery_recommended_for_you);
     } else {
       return context.getString(R.string.All_Projects);
     }

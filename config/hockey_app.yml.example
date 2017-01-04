@@ -1,0 +1,6 @@
+default:
+  token: '' # Create an API token with full access at https://rink.hockeyapp.net/manage/auth_tokens
+  internal:
+    app_id: ''
+  external:
+    app_id: ''

@@ -51,7 +51,7 @@ app/signing.gradle
 # Google API key for GCM, overwritten during builds depending on the variant
 app/google-services.json
 
-# Credentials for uploading builds to S3
+# Credentials for uploading builds
 config/*.yml
 
 # Temp file for writing changelogs

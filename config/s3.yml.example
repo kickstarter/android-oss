@@ -1,4 +1,3 @@
-# TODO: Instructions on fetching details
 default:
   access_key: ''
   secret_key: ''

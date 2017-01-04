@@ -60,7 +60,7 @@ Unterstützer</string>
   <string name="Creator_name_is_live_now" formatted="false">&lt;b>%{creator_name}&lt;/b> is live now</string>
   <string name="Creator_name_is_streaming_live_on_Kickstarter" formatted="false">%{creator_name} is streaming live on Kickstarter</string>
   <string name="Creator_name_needs_some_information_to_deliver_your_reward_for_project_name" formatted="false">&lt;b>%{creator_name}&lt;/b> benötigt einige Angaben, um dir deine Belohnung für &lt;b>%{project_name}&lt;/b> zustellen zu können.</string>
-  <string name="Creator_name_was_live_time_ago" formatted="false">&lt;b>%{creator_name}&lt;/b> was live %{time_ago}</string>
+  <string name="Creator_name_was_live_time_ago" formatted="false">&lt;b>%{creator_name}&lt;/b> war vor %{time_ago} live</string>
   <string name="Creator_name_was_streaming_live_on_Kickstarter" formatted="false">%{creator_name} was streaming live on Kickstarter</string>
   <string name="Creator_name_will_be_streaming_live_on_Kickstarter_in_duration" formatted="false">%{creator_name} will be streaming live on Kickstarter %{in_duration}</string>
   <string name="Discover_more_projects" formatted="false">Erkunde mehr Projekte.</string>

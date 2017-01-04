@@ -1890,7 +1890,7 @@
       "Couldnt_add_attachment": "Anhang konnte nicht hinzugefügt werden",
       "Couldnt_remove_attachment": "Anhang konnte nicht entfernt werden",
       "Created_projects_projects_count": "Erstellte Projekte: %{projects_count}",
-      "Creator_name_was_live_time_ago": "<b>%{creator_name}</b> was live %{time_ago}",
+      "Creator_name_was_live_time_ago": "<b>%{creator_name}</b> war vor %{time_ago} live",
       "Creator_name_is_live_now": "<b>%{creator_name}</b> is live now",
       "Creator_name_is_streaming_live_on_Kickstarter": "%{creator_name} is streaming live on Kickstarter",
       "Creator_name_needs_some_information_to_deliver_your_reward_for_project_name": "<b>%{creator_name}</b> benötigt einige Angaben, um dir deine Belohnung für <b>%{project_name}</b> zustellen zu können.",
@@ -7535,7 +7535,7 @@
     "project_header_redesign_version_five": "control",
     "bb_cards_no_money": "control",
     "checkout_layout": "control",
-    "koala_alt_frontend_tracking": "control"
+    "koala_alt_frontend_tracking": "experimental"
   },
   "stripe": {
     "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"

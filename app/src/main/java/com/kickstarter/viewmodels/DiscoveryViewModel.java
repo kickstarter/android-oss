@@ -38,7 +38,6 @@ import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
-import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
 public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivity> implements DiscoveryViewModelInputs,
@@ -78,7 +77,7 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
       .mergeWith(topFilterRowClick)
       .map(NavigationDrawerData.Section.Row::params);
 
-    // Merge various param data sources to one true selected params value.
+    // Merge various param data sources.
     final Observable<DiscoveryParams> params = Observable.merge(
       paramsFromInitialIntent,
       paramsFromIntent,
@@ -99,13 +98,12 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
       .map(DiscoveryUtils::sortFromPosition)
       .distinctUntilChanged();
 
-    final Observable<DiscoveryParams> paramsOnSortChange = params
-      .compose(takePairWhen(pagerSelectedSort))
-      .map(ps -> ps.first.toBuilder().sort(ps.second).build());
-
-    final Observable<DiscoveryParams> paramsOnDrawerSelection = pagerSelectedSort
-      .compose(takePairWhen(drawerParamsClicked))
-      .map(sp -> sp.second.toBuilder().sort(sp.first).build());
+    // Combine params with latest sort pager signal for the page.
+    final Observable<DiscoveryParams> pageParams = Observable.combineLatest(
+      params,
+      pagerSelectedSort,
+      (p, s) -> p.toBuilder().sort(s).build()
+    );
 
     final Observable<List<Category>> categories = apiClient.fetchCategories()
       .compose(neverError())
@@ -121,7 +119,7 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
         topFilterRowClick.map(__ -> (Category) null),
         drawerClickedParentCategory
       )
-      .scan((Category) null, (previous, next) -> {
+      .scan(null, (previous, next) -> {
         if (previous != null && next != null && previous.equals(next)) {
           return null;
         }
@@ -146,8 +144,11 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
       .compose(bindToLifecycle())
       .subscribe(updateToolbarWithParams);
 
-    Observable.merge(paramsOnSortChange, paramsOnDrawerSelection)
-      .map(p -> Pair.create(p, DiscoveryUtils.positionFromSort(p.sort())))
+    Observable.combineLatest(
+      categories,
+      pageParams,
+      Pair::create
+    )
       .compose(bindToLifecycle())
       .subscribe(updateParamsForPage);
 
@@ -210,7 +211,7 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
   private final Observable<Void> showLoginTout;
   private final Observable<Void> showProfile;
   private final Observable<Void> showSettings;
-  private final PublishSubject<Pair<DiscoveryParams, Integer>> updateParamsForPage = PublishSubject.create();
+  private final PublishSubject<Pair<List<Category>, DiscoveryParams>> updateParamsForPage = PublishSubject.create();
   private final BehaviorSubject<DiscoveryParams> updateToolbarWithParams = BehaviorSubject.create();
 
   public final DiscoveryViewModelInputs inputs = this;
@@ -280,7 +281,7 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
   @Override public Observable<Void> showSettings() {
     return showSettings;
   }
-  @Override public Observable<Pair<DiscoveryParams, Integer>> updateParamsForPage() {
+  @Override public Observable<Pair<List<Category>, DiscoveryParams>> updateParamsForPage() {
     return updateParamsForPage;
   }
   @Override public Observable<DiscoveryParams> updateToolbarWithParams() {

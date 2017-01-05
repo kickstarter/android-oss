@@ -9,6 +9,7 @@ import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
@@ -195,9 +196,9 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     final DiscoveryViewModel vm = new DiscoveryViewModel(environment());
 
     final TestSubscriber<DiscoveryParams> updateParams= new TestSubscriber<>();
-    vm.outputs.updateParamsForPage().map(pair -> pair.first).subscribe(updateParams);
+    vm.outputs.updateParamsForPage().map(cp -> cp.second).subscribe(updateParams);
     final TestSubscriber<Integer> updatePage = new TestSubscriber<>();
-    vm.outputs.updateParamsForPage().map(pair -> pair.second).subscribe(updatePage);
+    vm.outputs.updateParamsForPage().map(cp -> DiscoveryUtils.positionFromSort(cp.second.sort())).subscribe(updatePage);
 
     // Start initial activity.
     final Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -253,9 +254,9 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     // Simulate rotating the device and hitting initial inputs again.
     final TestSubscriber<DiscoveryParams> rotatedUpdateParams= new TestSubscriber<>();
-    vm.outputs.updateParamsForPage().map(pair -> pair.first).subscribe(rotatedUpdateParams);
+    vm.outputs.updateParamsForPage().map(cp -> cp.second).subscribe(rotatedUpdateParams);
     final TestSubscriber<Integer> rotatedUpdatePage = new TestSubscriber<>();
-    vm.outputs.updateParamsForPage().map(pair -> pair.second).subscribe(rotatedUpdatePage);
+    vm.outputs.updateParamsForPage().map(cp -> DiscoveryUtils.positionFromSort(cp.second.sort())).subscribe(rotatedUpdatePage);
 
     vm.inputs.discoveryPagerAdapterCreatedPage(null, 0);
     vm.inputs.discoveryPagerAdapterCreatedPage(null, 1);

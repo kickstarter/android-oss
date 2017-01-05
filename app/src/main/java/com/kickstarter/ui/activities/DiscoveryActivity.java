@@ -106,7 +106,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
     viewModel.outputs.updateParamsForPage()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(pp -> pagerAdapter.takeParams(pp.first, pp.second));
+      .subscribe(cp -> pagerAdapter.takeParams(cp.first, cp.second));
 
     viewModel.outputs.clearPages()
       .compose(bindToLifecycle())

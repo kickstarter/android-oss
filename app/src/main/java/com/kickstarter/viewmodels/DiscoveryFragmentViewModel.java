@@ -225,7 +225,7 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
     activityUpdateClick.onNext(activity);
   }
   @Override public void rootCategories(final @NonNull List<Category> rootCategories) {
-    rootCategories.onNext(rootCategories);
+    this.rootCategories.onNext(rootCategories);
   }
   @Override public void clearPage() {
     clearPage.onNext(null);

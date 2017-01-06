@@ -4,6 +4,9 @@ import android.support.annotation.NonNull;
 
 import com.kickstarter.models.Category;
 
+import java.util.Arrays;
+import java.util.List;
+
 public final class CategoryFactory {
   private CategoryFactory() {}
 
@@ -79,6 +82,10 @@ public final class CategoryFactory {
       .projectsCount(160)
       .slug("photography")
       .build();
+  }
+
+  public static @NonNull List<Category> rootCategories() {
+    return Arrays.asList(artCategory(), gamesCategory(), musicCategory(), photographyCategory());
   }
 
   public static @NonNull Category tabletopGamesCategory() {

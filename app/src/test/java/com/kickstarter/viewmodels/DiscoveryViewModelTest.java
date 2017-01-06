@@ -262,9 +262,11 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     vm.inputs.discoveryPagerAdapterCreatedPage(null, 0);
     vm.inputs.discoveryPagerAdapterCreatedPage(null, 1);
 
-    // Params and page should not update.
-    rotatedUpdateParams.assertNoValues();
-    rotatedUpdatePage.assertNoValues();
+    // Should emit again with same params.
+    rotatedUpdateParams.assertValues(
+      DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).category(CategoryFactory.artCategory()).build()
+    );
+    rotatedUpdatePage.assertValues(0);
   }
 
   @Test

@@ -208,7 +208,7 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
   private final PublishSubject<Void> settingsClick = PublishSubject.create();
   private final PublishSubject<NavigationDrawerData.Section.Row> topFilterRowClick = PublishSubject.create();
 
-  private final PublishSubject<List<Integer>> clearPages = PublishSubject.create();
+  private final BehaviorSubject<List<Integer>> clearPages = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> drawerIsOpen = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> expandSortTabLayout = BehaviorSubject.create();
   private final BehaviorSubject<NavigationDrawerData> navigationDrawerData = BehaviorSubject.create();
@@ -218,7 +218,7 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
   private final Observable<Void> showLoginTout;
   private final Observable<Void> showProfile;
   private final Observable<Void> showSettings;
-  private final PublishSubject<DiscoveryParams> updateParamsForPage = PublishSubject.create();
+  private final BehaviorSubject<DiscoveryParams> updateParamsForPage = BehaviorSubject.create();
   private final BehaviorSubject<DiscoveryParams> updateToolbarWithParams = BehaviorSubject.create();
 
   public final DiscoveryViewModelInputs inputs = this;

@@ -98,18 +98,32 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
       .map(DiscoveryUtils::sortFromPosition)
       .distinctUntilChanged();
 
-    // Combine params with latest sort pager signal for the page.
-    final Observable<DiscoveryParams> pageParams = Observable.combineLatest(
+    // Combine params with the selected sort position.
+    Observable.combineLatest(
       params,
       pagerSelectedSort,
       (p, s) -> p.toBuilder().sort(s).build()
-    );
+    )
+      .compose(bindToLifecycle())
+      .subscribe(updateParamsForPage);
 
     final Observable<List<Category>> categories = apiClient.fetchCategories()
       .compose(neverError())
       .flatMap(Observable::from)
       .toSortedList()
       .share();
+
+    // Combine root categories with the selected sort position.
+    Observable.combineLatest(
+      categories
+        .flatMap(Observable::from)
+        .filter(Category::isRoot)
+        .toList(),
+      pagerSelectedSort.map(DiscoveryUtils::positionFromSort),
+      Pair::create
+    )
+      .compose(bindToLifecycle())
+      .subscribe(rootCategoriesAndPosition);
 
     final Observable<Category> drawerClickedParentCategory = parentFilterRowClick
       .map(NavigationDrawerData.Section.Row::params)
@@ -143,14 +157,6 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
     params.distinctUntilChanged()
       .compose(bindToLifecycle())
       .subscribe(updateToolbarWithParams);
-
-    Observable.combineLatest(
-      categories,
-      pageParams,
-      Pair::create
-    )
-      .compose(bindToLifecycle())
-      .subscribe(updateParamsForPage);
 
     updateParamsForPage.map(__ -> true)
       .compose(bindToLifecycle())
@@ -206,12 +212,13 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
   private final BehaviorSubject<Boolean> drawerIsOpen = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> expandSortTabLayout = BehaviorSubject.create();
   private final BehaviorSubject<NavigationDrawerData> navigationDrawerData = BehaviorSubject.create();
+  private final BehaviorSubject<Pair<List<Category>, Integer>> rootCategoriesAndPosition = BehaviorSubject.create();
   private final Observable<InternalBuildEnvelope> showBuildCheckAlert;
   private final Observable<Void> showInternalTools;
   private final Observable<Void> showLoginTout;
   private final Observable<Void> showProfile;
   private final Observable<Void> showSettings;
-  private final PublishSubject<Pair<List<Category>, DiscoveryParams>> updateParamsForPage = PublishSubject.create();
+  private final PublishSubject<DiscoveryParams> updateParamsForPage = PublishSubject.create();
   private final BehaviorSubject<DiscoveryParams> updateToolbarWithParams = BehaviorSubject.create();
 
   public final DiscoveryViewModelInputs inputs = this;
@@ -266,6 +273,9 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
   @Override public Observable<NavigationDrawerData> navigationDrawerData() {
     return navigationDrawerData;
   }
+  @Override public Observable<Pair<List<Category>, Integer>> rootCategoriesAndPosition() {
+    return rootCategoriesAndPosition;
+  }
   @Override public Observable<InternalBuildEnvelope> showBuildCheckAlert() {
     return showBuildCheckAlert;
   }
@@ -281,7 +291,7 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
   @Override public Observable<Void> showSettings() {
     return showSettings;
   }
-  @Override public Observable<Pair<List<Category>, DiscoveryParams>> updateParamsForPage() {
+  @Override public Observable<DiscoveryParams> updateParamsForPage() {
     return updateParamsForPage;
   }
   @Override public Observable<DiscoveryParams> updateToolbarWithParams() {

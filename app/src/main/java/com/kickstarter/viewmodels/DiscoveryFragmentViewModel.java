@@ -55,15 +55,6 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
     activitySamplePreference = environment.activitySamplePreference();
     currentUser = environment.currentUser();
 
-    final Observable<List<Category>> rootCategories = apiClient.fetchCategories()
-      .compose(neverError())
-      .flatMap(Observable::from)
-      .toSortedList()
-      .flatMap(Observable::from)
-      .filter(Category::isRoot)
-      .toList()
-      .share();
-
     final Observable<DiscoveryParams> selectedParams = Observable.combineLatest(
       currentUser.observable(),
       paramsFromActivity.distinctUntilChanged(),
@@ -89,9 +80,11 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
     final Observable<Pair<Project, RefTag>> activitySampleProjectClick = this.activitySampleProjectClick
       .map(p -> Pair.create(p, RefTag.activitySample()));
 
-    paginator.paginatedData()
-      .compose(combineLatestPair(rootCategories))
-      .map(pc -> DiscoveryUtils.fillRootCategoryForFeaturedProjects(pc.first, pc.second))
+    Observable.combineLatest(
+      paginator.paginatedData(),
+      rootCategories,
+      DiscoveryUtils::fillRootCategoryForFeaturedProjects
+    )
       .compose(bindToLifecycle())
       .subscribe(projects);
 
@@ -197,6 +190,7 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
   private final PublishSubject<Boolean> discoveryOnboardingLoginToutClick = PublishSubject.create();
   private final PublishSubject<Void> nextPage = PublishSubject.create();
   private final PublishSubject<DiscoveryParams> paramsFromActivity = PublishSubject.create();
+  private final PublishSubject<List<Category>> rootCategories = PublishSubject.create();
 
   private final BehaviorSubject<Activity> activity = BehaviorSubject.create();
   private final BehaviorSubject<List<Project>> projects = BehaviorSubject.create();
@@ -229,6 +223,9 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
   @Override public void activitySampleProjectViewHolderUpdateClicked(final @NonNull ActivitySampleProjectViewHolder viewHolder,
     final @NonNull Activity activity) {
     activityUpdateClick.onNext(activity);
+  }
+  @Override public void rootCategories(final @NonNull List<Category> rootCategories) {
+    rootCategories.onNext(rootCategories);
   }
   @Override public void clearPage() {
     clearPage.onNext(null);

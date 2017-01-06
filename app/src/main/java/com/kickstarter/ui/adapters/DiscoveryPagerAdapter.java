@@ -50,16 +50,29 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
   }
 
   /**
+   * Passes along root categories to its fragment position to help fetch appropriate projects.
+   */
+  public void takeCategoriesForPosition(final @NonNull List<Category> categories, final int position) {
+    Observable.from(fragmentManager.getFragments())
+      .ofType(DiscoveryFragment.class)
+      .filter(frag -> {
+        final int fragmentPosition = frag.getArguments().getInt(ArgumentsKey.DISCOVERY_SORT_POSITION);
+        return fragmentPosition == position;
+      })
+      .subscribe(frag -> frag.takeCategories(categories));
+  }
+
+  /**
    * Take current params from activity and pass to the appropriate fragment.
    */
-  public void takeParams(final @NonNull List<Category> categories, final @NonNull DiscoveryParams params) {
+  public void takeParams(final @NonNull DiscoveryParams params) {
     Observable.from(fragmentManager.getFragments())
       .ofType(DiscoveryFragment.class)
       .filter(frag -> {
         final int fragmentPosition = frag.getArguments().getInt(ArgumentsKey.DISCOVERY_SORT_POSITION);
         return DiscoveryUtils.positionFromSort(params.sort()) == fragmentPosition;
       })
-      .subscribe(frag -> frag.updateParams(params));  // todo: add categories next
+      .subscribe(frag -> frag.updateParams(params));
   }
 
   /**

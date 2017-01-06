@@ -106,12 +106,17 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
     viewModel.outputs.updateParamsForPage()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(cp -> pagerAdapter.takeParams(cp.first, cp.second));
+      .subscribe(pagerAdapter::takeParams);
 
     viewModel.outputs.clearPages()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(pagerAdapter::clearPages);
+
+    viewModel.outputs.rootCategoriesAndPosition()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(cp -> pagerAdapter.takeCategoriesForPosition(cp.first, cp.second));
 
     viewModel.outputs.showBuildCheckAlert()
       .compose(bindToLifecycle())

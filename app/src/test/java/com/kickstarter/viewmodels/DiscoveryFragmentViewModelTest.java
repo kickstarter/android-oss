@@ -39,11 +39,12 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<Boolean> hasProjects = new TestSubscriber<>();
     vm.outputs.projects().map(ListUtils::nonEmpty).subscribe(hasProjects);
 
-    // Load initial params from activity.
+    // Load initial params and root categories from activity.
     vm.inputs.paramsFromActivity(DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build());
+    vm.inputs.rootCategories(CategoryFactory.rootCategories());
 
     // Should emit current fragment's projects.
-    hasProjects.assertValues(false, true);
+    hasProjects.assertValues(true);
     koalaTest.assertValues("Discover List View");
 
     // Select a new category.
@@ -53,11 +54,13 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
         .sort(DiscoveryParams.Sort.HOME)
         .build()
     );
-    hasProjects.assertValues(false, true, false, true);
+
+    // Projects are cleared, new projects load.
+    hasProjects.assertValues(true, false, true);
     koalaTest.assertValues("Discover List View", "Discover List View");
 
     vm.inputs.clearPage();
-    hasProjects.assertValues(false, true, false, true, false);
+    hasProjects.assertValues(true, false, true, false);
   }
 
   @Test
@@ -69,6 +72,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
     // Initial load.
     vm.inputs.paramsFromActivity(DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build());
+    vm.inputs.rootCategories(CategoryFactory.rootCategories());
 
     projects.assertValueCount(1);
     koalaTest.assertValues("Discover List View");
@@ -93,6 +97,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     vm.outputs.projects().filter(ListUtils::nonEmpty).subscribe(projects);
 
     // Initial load.
+    vm.inputs.rootCategories(CategoryFactory.rootCategories());
     vm.inputs.paramsFromActivity(DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build());
 
     // Projects should emit.
@@ -135,6 +140,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
 
     // Initial home all projects params.
     vm.inputs.paramsFromActivity(DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build());
+    vm.inputs.rootCategories(CategoryFactory.rootCategories());
 
     // Should show onboarding view.
     shouldShowOnboardingViewTest.assertValues(true);

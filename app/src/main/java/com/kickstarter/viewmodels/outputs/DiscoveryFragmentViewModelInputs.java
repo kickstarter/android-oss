@@ -1,7 +1,10 @@
 package com.kickstarter.viewmodels.outputs;
 
+import com.kickstarter.models.Category;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.adapters.DiscoveryAdapter;
+
+import java.util.List;
 
 public interface DiscoveryFragmentViewModelInputs extends DiscoveryAdapter.Delegate {
   /**
@@ -18,4 +21,9 @@ public interface DiscoveryFragmentViewModelInputs extends DiscoveryAdapter.Deleg
    * Call for project pagination.
    */
   void nextPage();
+
+  /**
+   * Call when we should load the root categories.
+   */
+  void rootCategories(final List<Category> rootCategories);
 }

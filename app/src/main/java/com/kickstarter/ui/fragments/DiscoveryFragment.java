@@ -18,6 +18,7 @@ import com.kickstarter.libs.RecyclerViewPaginator;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.qualifiers.RequiresFragmentViewModel;
 import com.kickstarter.models.Activity;
+import com.kickstarter.models.Category;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.ui.ArgumentsKey;
@@ -29,6 +30,8 @@ import com.kickstarter.ui.activities.WebViewActivity;
 import com.kickstarter.ui.adapters.DiscoveryAdapter;
 import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.viewmodels.DiscoveryFragmentViewModel;
+
+import java.util.List;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromRight;
@@ -137,6 +140,10 @@ public final class DiscoveryFragment extends BaseFragment<DiscoveryFragmentViewM
       .putExtra(IntentKey.REF_TAG, refTag);
     startActivity(intent);
     transition(getActivity(), slideInFromRight());
+  }
+
+  public void takeCategories(final @NonNull List<Category> categories) {
+    viewModel.inputs.rootCategories(categories);
   }
 
   public void updateParams(final @NonNull DiscoveryParams params) {

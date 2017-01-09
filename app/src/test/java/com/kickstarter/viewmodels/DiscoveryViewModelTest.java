@@ -9,6 +9,8 @@ import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.libs.utils.DiscoveryUtils;
+import com.kickstarter.models.Category;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
@@ -195,9 +197,9 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     final DiscoveryViewModel vm = new DiscoveryViewModel(environment());
 
     final TestSubscriber<DiscoveryParams> updateParams= new TestSubscriber<>();
-    vm.outputs.updateParamsForPage().map(pair -> pair.first).subscribe(updateParams);
+    vm.outputs.updateParamsForPage().subscribe(updateParams);
     final TestSubscriber<Integer> updatePage = new TestSubscriber<>();
-    vm.outputs.updateParamsForPage().map(pair -> pair.second).subscribe(updatePage);
+    vm.outputs.updateParamsForPage().map(params -> DiscoveryUtils.positionFromSort(params.sort())).subscribe(updatePage);
 
     // Start initial activity.
     final Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -253,9 +255,9 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     // Simulate rotating the device and hitting initial inputs again.
     final TestSubscriber<DiscoveryParams> rotatedUpdateParams= new TestSubscriber<>();
-    vm.outputs.updateParamsForPage().map(pair -> pair.first).subscribe(rotatedUpdateParams);
+    vm.outputs.updateParamsForPage().subscribe(rotatedUpdateParams);
     final TestSubscriber<Integer> rotatedUpdatePage = new TestSubscriber<>();
-    vm.outputs.updateParamsForPage().map(pair -> pair.second).subscribe(rotatedUpdatePage);
+    vm.outputs.updateParamsForPage().map(params -> DiscoveryUtils.positionFromSort(params.sort())).subscribe(rotatedUpdatePage);
 
     vm.inputs.discoveryPagerAdapterCreatedPage(null, 0);
     vm.inputs.discoveryPagerAdapterCreatedPage(null, 1);
@@ -309,5 +311,44 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     );
 
     clearPages.assertValues(Arrays.asList(0, 1, 2, 3), Arrays.asList(0, 2, 3, 4));
+  }
+
+  @Test
+  public void testRootCategoriesEmitWithPosition() {
+    final DiscoveryViewModel vm = new DiscoveryViewModel(environment());
+
+    final TestSubscriber<List<Category>> rootCategories = new TestSubscriber<>();
+    final TestSubscriber<Integer> position = new TestSubscriber<>();
+    vm.outputs.rootCategoriesAndPosition().map(cp -> cp.first).subscribe(rootCategories);
+    vm.outputs.rootCategoriesAndPosition().map(cp -> cp.second).subscribe(position);
+
+    // Start initial activity.
+    vm.intent(new Intent(Intent.ACTION_MAIN));
+
+    // Notify activity when pager adapter pages are created.
+    vm.inputs.discoveryPagerAdapterCreatedPage(null, 0);
+    vm.inputs.discoveryPagerAdapterCreatedPage(null, 1);
+
+    // Root categories should emit for the initial HOME sort position.
+    rootCategories.assertValueCount(1);
+    position.assertValues(0);
+
+    // Select POPULAR sort position.
+    vm.inputs.pageChanged(1);
+
+    // Root categories should emit for the POPULAR sort position.
+    rootCategories.assertValueCount(2);
+    position.assertValues(0, 1);
+
+    // Select ART category from the drawer.
+    vm.inputs.childFilterViewHolderRowClick(null,
+      NavigationDrawerData.Section.Row.builder()
+        .params(DiscoveryParams.builder().category(CategoryFactory.artCategory()).build())
+        .build()
+    );
+
+    // Root categories should not emit again for the same position.
+    rootCategories.assertValueCount(2);
+    position.assertValues(0, 1);
   }
 }

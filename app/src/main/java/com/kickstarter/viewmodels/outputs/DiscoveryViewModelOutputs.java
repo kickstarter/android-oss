@@ -2,6 +2,7 @@ package com.kickstarter.viewmodels.outputs;
 
 import android.util.Pair;
 
+import com.kickstarter.models.Category;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.InternalBuildEnvelope;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
@@ -30,9 +31,15 @@ public interface DiscoveryViewModelOutputs {
    * Emits when the params of a particular page should be updated. The page will be responsible for
    * taking those params and creating paginating projects from it.
    */
-  Observable<Pair<DiscoveryParams, Integer>> updateParamsForPage();
+  Observable<DiscoveryParams> updateParamsForPage();
 
   Observable<NavigationDrawerData> navigationDrawerData();
+
+  /**
+   * Emits the root categories and position. Position is used to determine the appropriate fragment
+   * to pass the categories to.
+   */
+  Observable<Pair<List<Category>, Integer>> rootCategoriesAndPosition();
 
   /**
    * Emits a list of pages that should be cleared of all their content.

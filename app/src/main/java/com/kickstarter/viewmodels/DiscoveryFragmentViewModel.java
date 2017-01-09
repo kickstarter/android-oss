@@ -239,29 +239,29 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
   @Override public void paramsFromActivity(final @NonNull DiscoveryParams params) {
     paramsFromActivity.onNext(params);
   }
-  @Override public void projectCardViewHolderClick(final @NonNull ProjectCardViewHolder viewHolder, final Project project) {
+  @Override public void projectCardViewHolderClick(final @NonNull ProjectCardViewHolder viewHolder, final @NonNull Project project) {
     clickProject.onNext(project);
   }
 
-  @Override public Observable<Activity> activity() {
+  @Override public @NonNull Observable<Activity> activity() {
     return activity;
   }
-  @Override public Observable<List<Project>> projects() {
+  @Override public @NonNull Observable<List<Project>> projects() {
     return projects;
   }
-  @Override public Observable<Boolean> showActivityFeed() {
+  @Override public @NonNull Observable<Boolean> showActivityFeed() {
     return showActivityFeed;
   }
-  @Override public Observable<Activity> showActivityUpdate() {
+  @Override public @NonNull Observable<Activity> showActivityUpdate() {
     return showActivityUpdate;
   }
-  @Override public Observable<Boolean> showLoginTout() {
+  @Override public @NonNull Observable<Boolean> showLoginTout() {
     return showLoginTout;
   }
-  @Override public Observable<Pair<Project, RefTag>> showProject() {
+  @Override public @NonNull Observable<Pair<Project, RefTag>> showProject() {
     return showProject;
   }
-  @Override public Observable<Boolean> shouldShowOnboardingView() {
+  @Override public @NonNull Observable<Boolean> shouldShowOnboardingView() {
     return shouldShowOnboardingView;
   }
 }

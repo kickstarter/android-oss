@@ -227,7 +227,7 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
   @Override public void childFilterViewHolderRowClick(final @NonNull ChildFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row) {
     childFilterRowClick.onNext(row);
   }
-  @Override public void discoveryPagerAdapterCreatedPage(final @NonNull DiscoveryPagerAdapter adapter, final int position) {
+  @Override public void discoveryPagerAdapterCreatedPage(final DiscoveryPagerAdapter adapter, final int position) {
     pagerCreatedPage.onNext(position);
   }
   @Override public void loggedInViewHolderInternalToolsClick(final @NonNull LoggedInViewHolder viewHolder) {
@@ -248,8 +248,12 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
   @Override public void newerBuildIsAvailable(final @NonNull InternalBuildEnvelope envelope) {
     newerBuildIsAvailable.onNext(envelope);
   }
-  @Override public void openDrawer(final boolean open) { openDrawer.onNext(open); }
-  @Override public void pageChanged(final int position) { pageChanged.onNext(position); }
+  @Override public void openDrawer(final boolean open) {
+    openDrawer.onNext(open);
+  }
+  @Override public void pageChanged(final int position) {
+    pageChanged.onNext(position);
+  }
   @Override public void parentFilterViewHolderRowClick(final @NonNull ParentFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row) {
     parentFilterRowClick.onNext(row);
   }
@@ -257,18 +261,40 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
     topFilterRowClick.onNext(row);
   }
 
-  @Override public @NonNull Observable<List<Integer>> clearPages() { return clearPages; }
-  @Override public @NonNull Observable<Boolean> drawerIsOpen() { return drawerIsOpen; }
-  @Override public @NonNull Observable<Boolean> expandSortTabLayout() { return expandSortTabLayout; }
-  @Override public @NonNull Observable<NavigationDrawerData> navigationDrawerData() { return navigationDrawerData; }
-  @Override public @NonNull Observable<Pair<List<Category>, Integer>> rootCategoriesAndPosition() {
+  @Override public Observable<List<Integer>> clearPages() {
+    return clearPages;
+  }
+  @Override public Observable<Boolean> drawerIsOpen() {
+    return drawerIsOpen;
+  }
+  @Override public Observable<Boolean> expandSortTabLayout() {
+    return expandSortTabLayout;
+  }
+  @Override public Observable<NavigationDrawerData> navigationDrawerData() {
+    return navigationDrawerData;
+  }
+  @Override public Observable<Pair<List<Category>, Integer>> rootCategoriesAndPosition() {
     return rootCategoriesAndPosition;
   }
-  @Override public @NonNull Observable<InternalBuildEnvelope> showBuildCheckAlert() { return showBuildCheckAlert; }
-  @Override public @NonNull Observable<Void> showInternalTools() { return showInternalTools; }
-  @Override public @NonNull Observable<Void> showLoginTout() { return showLoginTout; }
-  @Override public @NonNull Observable<Void> showProfile() { return showProfile; }
-  @Override public @NonNull Observable<Void> showSettings() { return showSettings; }
-  @Override public @NonNull Observable<DiscoveryParams> updateParamsForPage() { return updateParamsForPage; }
-  @Override public @NonNull Observable<DiscoveryParams> updateToolbarWithParams() { return updateToolbarWithParams; }
+  @Override public Observable<InternalBuildEnvelope> showBuildCheckAlert() {
+    return showBuildCheckAlert;
+  }
+  @Override public Observable<Void> showInternalTools() {
+    return showInternalTools;
+  }
+  @Override public Observable<Void> showLoginTout() {
+    return showLoginTout;
+  }
+  @Override public Observable<Void> showProfile() {
+    return showProfile;
+  }
+  @Override public Observable<Void> showSettings() {
+    return showSettings;
+  }
+  @Override public Observable<DiscoveryParams> updateParamsForPage() {
+    return updateParamsForPage;
+  }
+  @Override public Observable<DiscoveryParams> updateToolbarWithParams() {
+    return updateToolbarWithParams;
+  }
 }

@@ -19,7 +19,7 @@
   <string name="All_Publishing_Projects" formatted="false">Tous les projets de la catégorie Édition</string>
   <string name="All_Tech_Projects" formatted="false">Tous les projets de la catégorie Technologie</string>
   <string name="All_Theater_Projects" formatted="false">Tous les projets de la catégorie Théâtre</string>
-  <string name="All_category_name_Projects" formatted="false">All %{category_name} Projects</string>
+  <string name="All_category_name_Projects" formatted="false">Tous les projets de la catégorie %{category_name}</string>
   <string name="All_gone" formatted="false">Épuisé</string>
   <string name="Amount_previous_amount" formatted="false">Montant : %{amount}, montant précédant : %{previous_amount}</string>
   <string name="Amount_reward" formatted="false">Montant : %{amount}, %{reward}</string>

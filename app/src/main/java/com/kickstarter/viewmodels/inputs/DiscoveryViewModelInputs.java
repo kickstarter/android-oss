@@ -16,7 +16,7 @@ public interface DiscoveryViewModelInputs extends DiscoveryDrawerAdapter.Delegat
   void openDrawer(final boolean open);
 
   /**
-   * Call when a tab is selected by the user.
+   * Call when a sort tab is selected by the user.
    */
-  void pageChanged(final int position);
+  void pageSelected(final int position);
 }

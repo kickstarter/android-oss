@@ -111,6 +111,9 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     vm.inputs.discoveryPagerAdapterCreatedPage(null, 0);
     vm.inputs.discoveryPagerAdapterCreatedPage(null, 1);
 
+    // Initial HOME page selected.
+    vm.inputs.pageSelected(0);
+
     // Sort tab should be expanded.
     expandSortTabLayout.assertValues(true);
 
@@ -118,7 +121,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     updateToolbarWithParams.assertValues(DiscoveryParams.builder().build());
 
     // Select POPULAR sort.
-    vm.inputs.pageChanged(1);
+    vm.inputs.pageSelected(1);
 
     // Sort tab should be expanded.
     expandSortTabLayout.assertValues(true, true);
@@ -209,6 +212,9 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     vm.inputs.discoveryPagerAdapterCreatedPage(null, 0);
     vm.inputs.discoveryPagerAdapterCreatedPage(null, 1);
 
+    // Initial HOME page selected.
+    vm.inputs.pageSelected(0);
+
     // Initial params should emit. Page should not be updated yet.
     updateParams.assertValues(
       DiscoveryParams.builder().sort(DiscoveryParams.Sort.HOME).build()
@@ -216,7 +222,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     updatePage.assertValues(0);
 
     // Select POPULAR sort position.
-    vm.inputs.pageChanged(1);
+    vm.inputs.pageSelected(1);
 
     // Params and page should update with new POPULAR sort values.
     updateParams.assertValues(
@@ -242,7 +248,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     koalaTest.assertValues("Discover Modal Selected Filter");
 
     // Select HOME sort position.
-    vm.inputs.pageChanged(0);
+    vm.inputs.pageSelected(0);
 
     // Params and page should update with new HOME sort value.
     updateParams.assertValues(
@@ -286,11 +292,11 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     clearPages.assertNoValues();
 
-    vm.inputs.pageChanged(1);
+    vm.inputs.pageSelected(1);
 
     clearPages.assertNoValues();
 
-    vm.inputs.pageChanged(4);
+    vm.inputs.pageSelected(4);
 
     clearPages.assertNoValues();
 
@@ -303,7 +309,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     clearPages.assertValues(Arrays.asList(0, 1, 2, 3));
 
-    vm.inputs.pageChanged(1);
+    vm.inputs.pageSelected(1);
 
     // Select MUSIC category from the drawer.
     vm.inputs.childFilterViewHolderRowClick(null,
@@ -331,12 +337,15 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     vm.inputs.discoveryPagerAdapterCreatedPage(null, 0);
     vm.inputs.discoveryPagerAdapterCreatedPage(null, 1);
 
+    // Initial HOME page selected.
+    vm.inputs.pageSelected(0);
+
     // Root categories should emit for the initial HOME sort position.
     rootCategories.assertValueCount(1);
     position.assertValues(0);
 
     // Select POPULAR sort position.
-    vm.inputs.pageChanged(1);
+    vm.inputs.pageSelected(1);
 
     // Root categories should emit for the POPULAR sort position.
     rootCategories.assertValueCount(2);

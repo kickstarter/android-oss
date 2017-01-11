@@ -86,22 +86,44 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
 
     // Emit only the first event in which the view pager creates a page--we only care about the first creation event
     // since pages are only created in memory once.
-    final Observable<DiscoveryParams.Sort> pagerSelectedSort = pagerCreatedPage
-      // This needs to be observed on the main thread to handle a delay between when a fragment is constructed,
-      // and when it is available via the FragmentManager. This is not a pattern we should repeat, need to consider
-      // how to robustly avoid this race condition.
+//    final Observable<DiscoveryParams.Sort> pagerSelectedSort = pagerCreatedPage
+//      // This needs to be observed on the main thread to handle a delay between when a fragment is constructed,
+//      // and when it is available via the FragmentManager. This is not a pattern we should repeat, need to consider
+//      // how to robustly avoid this race condition.
+//      .observeOn(AndroidSchedulers.mainThread())  /// this is fishy
+////      .take(1)
+//      // Start with page 0 since we skip the RxViewPager binding's immediate emission, which happens before
+//      // the adapter and fragment are ready. Map the resulting current pager position to its corresponding sort param.
+//      .switchMap(__ -> pageChanged)
+//      .map(DiscoveryUtils::sortFromPosition)
+//      .distinctUntilChanged();
+
+    // This needs to emit initially after pageReady, but subsequently as pageChanged emits.
+    final Observable<DiscoveryParams.Sort> testSort = Observable.merge(
+      pagerCreatedPage, // this is when the page is ready
+      pageChanged
+    )
       .observeOn(AndroidSchedulers.mainThread())
-      .take(1)
-      // Start with page 0 since we skip the RxViewPager binding's immediate emission, which happens before
-      // the adapter and fragment are ready. Map the resulting current pager position to its corresponding sort param.
-      .switchMap(__ -> pageChanged.startWith(0))
       .map(DiscoveryUtils::sortFromPosition)
-      .distinctUntilChanged();
+      .share();
+
+    // this value does not fire again on relaunch
+    pagerCreatedPage.subscribe(page -> {
+      Log.d("DEBUG", "DiscoveryViewModel pagerCreatedPage " + page);
+    });
+
+    pageChanged.subscribe(page -> {
+      Log.d("DEBUG", "DiscoveryViewModel pageChanged " + page);
+    });
+
+    testSort.subscribe(page -> {
+      Log.d("DEBUG", "DiscoveryViewModel testSort " + page);
+    });
 
     // Combine params with the selected sort position.
     Observable.combineLatest(
       params,
-      pagerSelectedSort,
+      testSort,
       (p, s) -> p.toBuilder().sort(s).build()
     )
       .compose(bindToLifecycle())
@@ -119,7 +141,7 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
         .flatMap(Observable::from)
         .filter(Category::isRoot)
         .toList(),
-      pagerSelectedSort.map(DiscoveryUtils::positionFromSort),
+      testSort.map(DiscoveryUtils::positionFromSort),
       Pair::create
     )
       .compose(bindToLifecycle())

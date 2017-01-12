@@ -32,7 +32,6 @@ import com.kickstarter.viewmodels.DiscoveryViewModel;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -88,9 +87,6 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
     sortTabLayout.setupWithViewPager(sortViewPager);
 
     RxViewPager.pageSelections(sortViewPager)
-      // RxViewPager emits immediately on subscribe. Delay the page selection signal
-      // to wait until the pager is ready.
-      .delay(500L, TimeUnit.MILLISECONDS)
       .compose(bindToLifecycle())
       .subscribe(viewModel.inputs::pageSelected);
 

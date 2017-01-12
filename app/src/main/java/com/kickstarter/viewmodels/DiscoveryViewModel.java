@@ -32,6 +32,7 @@ import com.kickstarter.viewmodels.outputs.DiscoveryViewModelOutputs;
 import java.util.List;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
@@ -83,10 +84,31 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
       drawerParamsClicked
     );
 
+    // fixme: this is our ideal Observable to handle params on process resume.
+    // fixme: this Observable does not fire even when `pageSelected` fires.
+//    final Observable<Integer> page = Observable.combineLatest(
+//      pagerCreatedPage, // This signal does not ping on return to process.
+//      pageSelected,
+//      (__, selectedPage) -> selectedPage
+//    )
+//      .observeOn(AndroidSchedulers.mainThread());
+
+    // todo: note, this logic is solid in surviving process stoppage for all
+    // todo: pages but the first (0)
+    final Observable<Integer> page = Observable.merge(
+      pagerCreatedPage.take(1),
+      // RxViewPager emits immediately on subscribe. Skip to wait until the pager is ready.
+      pageSelected.skip(1)
+    )
+      // This needs to be observed on the main thread to handle a delay between when a fragment is constructed,
+      // and when it is available via the FragmentManager. This is not a pattern we should repeat, need to consider
+      // how to robustly avoid this race condition.
+      .observeOn(AndroidSchedulers.mainThread());
+
     // Combine params with the selected sort position.
     Observable.combineLatest(
       params,
-      pageSelected.map(DiscoveryUtils::sortFromPosition),
+      page.map(DiscoveryUtils::sortFromPosition),
       (p, s) -> p.toBuilder().sort(s).build()
     )
       .compose(bindToLifecycle())
@@ -104,7 +126,7 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
         .flatMap(Observable::from)
         .filter(Category::isRoot)
         .toList(),
-      pageSelected,
+      page,
       Pair::create
     )
       .compose(bindToLifecycle())

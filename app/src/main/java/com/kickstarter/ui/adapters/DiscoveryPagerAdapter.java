@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.view.ViewGroup;
 
 import com.kickstarter.libs.utils.DiscoveryUtils;
 import com.kickstarter.models.Category;
@@ -21,7 +22,7 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
   private List<String> pageTitles;
 
   public interface Delegate {
-    void discoveryPagerAdapterCreatedPage(DiscoveryPagerAdapter adapter, int position);
+    void discoveryPagerAdapterSetPrimaryPage(DiscoveryPagerAdapter adapter, int position);
   }
 
   public DiscoveryPagerAdapter(final @NonNull FragmentManager fragmentManager, final @NonNull List<String> pageTitles,
@@ -33,10 +34,14 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
   }
 
   @Override
-  public Fragment getItem(final int position) {
-    final Fragment result = DiscoveryFragment.newInstance(position);
-    delegate.discoveryPagerAdapterCreatedPage(this, position);
-    return result;
+  public void setPrimaryItem(ViewGroup container, int position, Object object) {
+    super.setPrimaryItem(container, position, object);
+    delegate.discoveryPagerAdapterSetPrimaryPage(this, position);
+  }
+
+  @Override
+  public @NonNull Fragment getItem(final int position) {
+    return DiscoveryFragment.newInstance(position);
   }
 
   @Override

@@ -12,7 +12,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.jakewharton.rxbinding.support.v4.view.RxViewPager;
 import com.jakewharton.rxbinding.support.v4.widget.RxDrawerLayout;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
@@ -85,10 +84,6 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
     pagerAdapter = new DiscoveryPagerAdapter(getSupportFragmentManager(), viewPagerTitles, viewModel.inputs);
     sortViewPager.setAdapter(pagerAdapter);
     sortTabLayout.setupWithViewPager(sortViewPager);
-
-    RxViewPager.pageSelections(sortViewPager)
-      .compose(bindToLifecycle())
-      .subscribe(viewModel.inputs::pageSelected);
 
     viewModel.outputs.expandSortTabLayout()
       .compose(bindToLifecycle())

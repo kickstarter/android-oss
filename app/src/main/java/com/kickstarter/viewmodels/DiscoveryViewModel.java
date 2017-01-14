@@ -30,14 +30,15 @@ import com.kickstarter.viewmodels.inputs.DiscoveryViewModelInputs;
 import com.kickstarter.viewmodels.outputs.DiscoveryViewModelOutputs;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
+import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
 public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivity> implements DiscoveryViewModelInputs,
@@ -68,7 +69,8 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
       .take(1)
       .map(Intent::getAction)
       .filter(Intent.ACTION_MAIN::equals)
-      .map(__ -> DiscoveryParams.builder().build());  // Todo: relaunch is an ACTION_MAIN intent
+      .map(__ -> DiscoveryParams.builder().build())
+      .share();
 
     final Observable<DiscoveryParams> paramsFromIntent = intent()
       .flatMap(i -> DiscoveryIntentMapper.params(i, apiClient));
@@ -84,26 +86,9 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
       drawerParamsClicked
     );
 
-    // fixme: this is our ideal Observable to handle params on process resume.
-    // fixme: this Observable does not fire even when `pageSelected` fires.
-//    final Observable<Integer> page = Observable.combineLatest(
-//      pagerCreatedPage, // This signal does not ping on return to process.
-//      pageSelected,
-//      (__, selectedPage) -> selectedPage
-//    )
-//      .observeOn(AndroidSchedulers.mainThread());
-
-    // todo: note, this logic is solid in surviving process stoppage for all
-    // todo: pages but the first (0)
-    final Observable<Integer> page = Observable.merge(
-      pagerCreatedPage.take(1),
-      // RxViewPager emits immediately on subscribe. Skip to wait until the pager is ready.
-      pageSelected.skip(1)
-    )
-      // This needs to be observed on the main thread to handle a delay between when a fragment is constructed,
-      // and when it is available via the FragmentManager. This is not a pattern we should repeat, need to consider
-      // how to robustly avoid this race condition.
-      .observeOn(AndroidSchedulers.mainThread());
+    final Observable<Integer> page = pagerSetPrimaryPage
+      .distinctUntilChanged()
+      .delay(0, TimeUnit.SECONDS); // Delays until next run loop, needs more thought
 
     // Combine params with the selected sort position.
     Observable.combineLatest(
@@ -149,7 +134,7 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
 
     // Accumulate a list of pages to clear when the params or user changes,
     // to avoid displaying old data.
-    pageSelected
+    page
       .compose(takeWhen(params))
       .compose(combineLatestPair(currentUser.observable()))
       .map(pageAndUser -> pageAndUser.first)
@@ -208,8 +193,8 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
   private final PublishSubject<Void> loggedOutLoginToutClick = PublishSubject.create();
   private final PublishSubject<InternalBuildEnvelope> newerBuildIsAvailable = PublishSubject.create();
   private final PublishSubject<Boolean> openDrawer = PublishSubject.create();
-  private final PublishSubject<Integer> pageSelected = PublishSubject.create();
   private final PublishSubject<Integer> pagerCreatedPage = PublishSubject.create();
+  private final PublishSubject<Integer> pagerSetPrimaryPage = PublishSubject.create();
   private final PublishSubject<NavigationDrawerData.Section.Row> parentFilterRowClick = PublishSubject.create();
   private final PublishSubject<Void> profileClick = PublishSubject.create();
   private final PublishSubject<Void> settingsClick = PublishSubject.create();
@@ -234,8 +219,8 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
   @Override public void childFilterViewHolderRowClick(final @NonNull ChildFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row) {
     childFilterRowClick.onNext(row);
   }
-  @Override public void discoveryPagerAdapterCreatedPage(final @NonNull DiscoveryPagerAdapter adapter, final int position) {
-    pagerCreatedPage.onNext(position);
+  @Override public void discoveryPagerAdapterSetPrimaryPage(final @NonNull DiscoveryPagerAdapter adapter, final int position) {
+    pagerSetPrimaryPage.onNext(position);
   }
   @Override public void loggedInViewHolderInternalToolsClick(final @NonNull LoggedInViewHolder viewHolder) {
     internalToolsClick.onNext(null);
@@ -257,9 +242,6 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
   }
   @Override public void openDrawer(final boolean open) {
     openDrawer.onNext(open);
-  }
-  @Override public void pageSelected(final int position) {
-    pageSelected.onNext(position);
   }
   @Override public void parentFilterViewHolderRowClick(final @NonNull ParentFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row) {
     parentFilterRowClick.onNext(row);

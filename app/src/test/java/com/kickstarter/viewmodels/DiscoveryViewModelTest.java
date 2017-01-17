@@ -107,12 +107,8 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     final Intent intent = new Intent(Intent.ACTION_MAIN);
     vm.intent(intent);
 
-    // Notify activity that pager adapter has created fragment pages.
-    vm.inputs.discoveryPagerAdapterCreatedPage(null, 0);
-    vm.inputs.discoveryPagerAdapterCreatedPage(null, 1);
-
     // Initial HOME page selected.
-    vm.inputs.pageSelected(0);
+    vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 0);
 
     // Sort tab should be expanded.
     expandSortTabLayout.assertValues(true);
@@ -121,7 +117,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     updateToolbarWithParams.assertValues(DiscoveryParams.builder().build());
 
     // Select POPULAR sort.
-    vm.inputs.pageSelected(1);
+    vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
 
     // Sort tab should be expanded.
     expandSortTabLayout.assertValues(true, true);
@@ -155,9 +151,8 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<Boolean> rotatedExpandSortTabLayout = new TestSubscriber<>();
     vm.outputs.expandSortTabLayout().subscribe(rotatedExpandSortTabLayout);
 
-    // Simulate recreating current and next fragment.
-    vm.inputs.discoveryPagerAdapterCreatedPage(null, 0);
-    vm.inputs.discoveryPagerAdapterCreatedPage(null, 1);
+    // Simulate recreating and setting POPULAR fragment, the previous position before rotation.
+    vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
 
     // Sort tab and toolbar params should emit again with same params.
     rotatedExpandSortTabLayout.assertValues(true);
@@ -208,12 +203,8 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     final Intent intent = new Intent(Intent.ACTION_MAIN);
     vm.intent(intent);
 
-    // Notify activity when pager adapter pages are created.
-    vm.inputs.discoveryPagerAdapterCreatedPage(null, 0);
-    vm.inputs.discoveryPagerAdapterCreatedPage(null, 1);
-
     // Initial HOME page selected.
-    vm.inputs.pageSelected(0);
+    vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 0);
 
     // Initial params should emit. Page should not be updated yet.
     updateParams.assertValues(
@@ -222,7 +213,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     updatePage.assertValues(0);
 
     // Select POPULAR sort position.
-    vm.inputs.pageSelected(1);
+    vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
 
     // Params and page should update with new POPULAR sort values.
     updateParams.assertValues(
@@ -248,7 +239,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     koalaTest.assertValues("Discover Modal Selected Filter");
 
     // Select HOME sort position.
-    vm.inputs.pageSelected(0);
+    vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 0);
 
     // Params and page should update with new HOME sort value.
     updateParams.assertValues(
@@ -264,9 +255,6 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     vm.outputs.updateParamsForPage().subscribe(rotatedUpdateParams);
     final TestSubscriber<Integer> rotatedUpdatePage = new TestSubscriber<>();
     vm.outputs.updateParamsForPage().map(params -> DiscoveryUtils.positionFromSort(params.sort())).subscribe(rotatedUpdatePage);
-
-    vm.inputs.discoveryPagerAdapterCreatedPage(null, 0);
-    vm.inputs.discoveryPagerAdapterCreatedPage(null, 1);
 
     // Should emit again with same params.
     rotatedUpdateParams.assertValues(
@@ -286,17 +274,13 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     final Intent intent = new Intent(Intent.ACTION_MAIN);
     vm.intent(intent);
 
-    // Notify activity when pager adapter pages are created.
-    vm.inputs.discoveryPagerAdapterCreatedPage(null, 0);
-    vm.inputs.discoveryPagerAdapterCreatedPage(null, 1);
+    clearPages.assertNoValues();
+
+    vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
 
     clearPages.assertNoValues();
 
-    vm.inputs.pageSelected(1);
-
-    clearPages.assertNoValues();
-
-    vm.inputs.pageSelected(4);
+    vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 4);
 
     clearPages.assertNoValues();
 
@@ -309,7 +293,7 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
 
     clearPages.assertValues(Arrays.asList(0, 1, 2, 3));
 
-    vm.inputs.pageSelected(1);
+    vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
 
     // Select MUSIC category from the drawer.
     vm.inputs.childFilterViewHolderRowClick(null,
@@ -333,19 +317,15 @@ public class DiscoveryViewModelTest extends KSRobolectricTestCase {
     // Start initial activity.
     vm.intent(new Intent(Intent.ACTION_MAIN));
 
-    // Notify activity when pager adapter pages are created.
-    vm.inputs.discoveryPagerAdapterCreatedPage(null, 0);
-    vm.inputs.discoveryPagerAdapterCreatedPage(null, 1);
-
     // Initial HOME page selected.
-    vm.inputs.pageSelected(0);
+    vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 0);
 
     // Root categories should emit for the initial HOME sort position.
     rootCategories.assertValueCount(1);
     position.assertValues(0);
 
     // Select POPULAR sort position.
-    vm.inputs.pageSelected(1);
+    vm.inputs.discoveryPagerAdapterSetPrimaryPage(null, 1);
 
     // Root categories should emit for the POPULAR sort position.
     rootCategories.assertValueCount(2);

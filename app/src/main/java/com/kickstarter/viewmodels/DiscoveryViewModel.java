@@ -38,7 +38,6 @@ import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
-import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
 public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivity> implements DiscoveryViewModelInputs,
@@ -193,7 +192,6 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
   private final PublishSubject<Void> loggedOutLoginToutClick = PublishSubject.create();
   private final PublishSubject<InternalBuildEnvelope> newerBuildIsAvailable = PublishSubject.create();
   private final PublishSubject<Boolean> openDrawer = PublishSubject.create();
-  private final PublishSubject<Integer> pagerCreatedPage = PublishSubject.create();
   private final PublishSubject<Integer> pagerSetPrimaryPage = PublishSubject.create();
   private final PublishSubject<NavigationDrawerData.Section.Row> parentFilterRowClick = PublishSubject.create();
   private final PublishSubject<Void> profileClick = PublishSubject.create();

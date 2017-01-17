@@ -32,7 +32,6 @@ import com.kickstarter.viewmodels.outputs.DiscoveryViewModelOutputs;
 import java.util.List;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
@@ -85,9 +84,7 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
       drawerParamsClicked
     );
 
-    final Observable<Integer> pagerSelectedPage = pagerSetPrimaryPage
-      .distinctUntilChanged()
-      .observeOn(AndroidSchedulers.mainThread());
+    final Observable<Integer> pagerSelectedPage = pagerSetPrimaryPage.distinctUntilChanged();
 
     // Combine params with the selected sort position.
     Observable.combineLatest(

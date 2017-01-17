@@ -176,6 +176,9 @@ public final class Transformers {
   /**
    * If called on the main thread, schedule the work immediately. Otherwise delay execution of the work by adding it
    * to a message queue, where it will be executed on the main thread.
+   *
+   * This is useful for `RecyclerView`s where new data can appear immediately rather than waiting for a frame
+   * to appear when observing directly on `AndroidSchedulers.mainThread()`.
    */
   public static @NonNull <T> ObserveForUITransformer<T> observeForUI() {
     return new ObserveForUITransformer<>();

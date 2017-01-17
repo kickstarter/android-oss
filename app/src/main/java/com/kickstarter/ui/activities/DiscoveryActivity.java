@@ -37,6 +37,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
+import rx.android.schedulers.AndroidSchedulers;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromRight;
@@ -97,7 +98,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
 
     viewModel.outputs.updateParamsForPage()
       .compose(bindToLifecycle())
-      .compose(observeForUI())
+      .observeOn(AndroidSchedulers.mainThread())
       .subscribe(pagerAdapter::takeParams);
 
     viewModel.outputs.clearPages()
@@ -107,7 +108,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
 
     viewModel.outputs.rootCategoriesAndPosition()
       .compose(bindToLifecycle())
-      .compose(observeForUI())
+      .observeOn(AndroidSchedulers.mainThread())
       .subscribe(cp -> pagerAdapter.takeCategoriesForPosition(cp.first, cp.second));
 
     viewModel.outputs.showBuildCheckAlert()

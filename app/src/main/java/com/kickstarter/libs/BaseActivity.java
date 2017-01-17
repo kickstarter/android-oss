@@ -18,14 +18,12 @@ import com.trello.rxlifecycle.ActivityEvent;
 import com.trello.rxlifecycle.RxLifecycle;
 import com.trello.rxlifecycle.components.ActivityLifecycleProvider;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
+import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
 public abstract class BaseActivity<ViewModelType extends ActivityViewModel> extends AppCompatActivity implements ActivityLifecycleProvider,
@@ -34,7 +32,7 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
   private final PublishSubject<Void> back = PublishSubject.create();
   private final BehaviorSubject<ActivityEvent> lifecycle = BehaviorSubject.create();
   private static final String VIEW_MODEL_KEY = "viewModel";
-  private final List<Subscription> subscriptions = new ArrayList<>();
+  private final CompositeSubscription subscriptions = new CompositeSubscription();
   protected ViewModelType viewModel;
 
   /**
@@ -153,9 +151,7 @@ public abstract class BaseActivity<ViewModelType extends ActivityViewModel> exte
     super.onDestroy();
     Timber.d("onDestroy %s", this.toString());
 
-    for (final Subscription subscription : subscriptions) {
-      subscription.unsubscribe();
-    }
+    subscriptions.clear();
 
     if (isFinishing()) {
       if (viewModel != null) {

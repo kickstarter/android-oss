@@ -30,9 +30,9 @@ import com.kickstarter.viewmodels.inputs.DiscoveryViewModelInputs;
 import com.kickstarter.viewmodels.outputs.DiscoveryViewModelOutputs;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
@@ -85,14 +85,14 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
       drawerParamsClicked
     );
 
-    final Observable<Integer> page = pagerSetPrimaryPage
+    final Observable<Integer> pagerSelectedPage = pagerSetPrimaryPage
       .distinctUntilChanged()
-      .delay(0, TimeUnit.SECONDS); // Delays until next run loop, needs more thought
+      .observeOn(AndroidSchedulers.mainThread());
 
     // Combine params with the selected sort position.
     Observable.combineLatest(
       params,
-      page.map(DiscoveryUtils::sortFromPosition),
+      pagerSelectedPage.map(DiscoveryUtils::sortFromPosition),
       (p, s) -> p.toBuilder().sort(s).build()
     )
       .compose(bindToLifecycle())
@@ -110,7 +110,7 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
         .flatMap(Observable::from)
         .filter(Category::isRoot)
         .toList(),
-      page,
+      pagerSelectedPage,
       Pair::create
     )
       .compose(bindToLifecycle())
@@ -133,7 +133,7 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
 
     // Accumulate a list of pages to clear when the params or user changes,
     // to avoid displaying old data.
-    page
+    pagerSelectedPage
       .compose(takeWhen(params))
       .compose(combineLatestPair(currentUser.observable()))
       .map(pageAndUser -> pageAndUser.first)

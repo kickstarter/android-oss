@@ -34,7 +34,7 @@ public final class DiscoveryPagerAdapter extends FragmentPagerAdapter {
   }
 
   @Override
-  public void setPrimaryItem(final @NonNull  ViewGroup container, final int position, final @NonNull Object object) {
+  public void setPrimaryItem(final @NonNull ViewGroup container, final int position, final @NonNull Object object) {
     super.setPrimaryItem(container, position, object);
     delegate.discoveryPagerAdapterSetPrimaryPage(this, position);
   }

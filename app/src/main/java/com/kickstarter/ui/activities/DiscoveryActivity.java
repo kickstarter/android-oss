@@ -12,7 +12,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.jakewharton.rxbinding.support.v4.view.RxViewPager;
 import com.jakewharton.rxbinding.support.v4.widget.RxDrawerLayout;
 import com.kickstarter.KSApplication;
 import com.kickstarter.R;
@@ -38,6 +37,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
+import rx.android.schedulers.AndroidSchedulers;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromRight;
@@ -86,13 +86,6 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
     sortViewPager.setAdapter(pagerAdapter);
     sortTabLayout.setupWithViewPager(sortViewPager);
 
-    RxViewPager.pageSelections(sortViewPager)
-      // pagerAdapter is not ready yet - skip the first value
-      // RxViewPager emits immediately on subscribe.
-      .skip(1)
-      .compose(bindToLifecycle())
-      .subscribe(viewModel.inputs::pageChanged);
-
     viewModel.outputs.expandSortTabLayout()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -105,7 +98,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
 
     viewModel.outputs.updateParamsForPage()
       .compose(bindToLifecycle())
-      .compose(observeForUI())
+      .observeOn(AndroidSchedulers.mainThread())
       .subscribe(pagerAdapter::takeParams);
 
     viewModel.outputs.clearPages()
@@ -115,7 +108,7 @@ public final class DiscoveryActivity extends BaseActivity<DiscoveryViewModel> {
 
     viewModel.outputs.rootCategoriesAndPosition()
       .compose(bindToLifecycle())
-      .compose(observeForUI())
+      .observeOn(AndroidSchedulers.mainThread())
       .subscribe(cp -> pagerAdapter.takeCategoriesForPosition(cp.first, cp.second));
 
     viewModel.outputs.showBuildCheckAlert()

@@ -14,9 +14,4 @@ public interface DiscoveryViewModelInputs extends DiscoveryDrawerAdapter.Delegat
    * Call when you want to open or close the drawer.
    */
   void openDrawer(final boolean open);
-
-  /**
-   * Call when a tab is selected by the user.
-   */
-  void pageChanged(final int position);
 }

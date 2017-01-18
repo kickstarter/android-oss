@@ -32,7 +32,6 @@ import com.kickstarter.viewmodels.outputs.DiscoveryViewModelOutputs;
 import java.util.List;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
@@ -68,7 +67,8 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
       .take(1)
       .map(Intent::getAction)
       .filter(Intent.ACTION_MAIN::equals)
-      .map(__ -> DiscoveryParams.builder().build());
+      .map(__ -> DiscoveryParams.builder().build())
+      .share();
 
     final Observable<DiscoveryParams> paramsFromIntent = intent()
       .flatMap(i -> DiscoveryIntentMapper.params(i, apiClient));
@@ -84,24 +84,12 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
       drawerParamsClicked
     );
 
-    // Emit only the first event in which the view pager creates a page--we only care about the first creation event
-    // since pages are only created in memory once.
-    final Observable<DiscoveryParams.Sort> pagerSelectedSort = pagerCreatedPage
-      // This needs to be observed on the main thread to handle a delay between when a fragment is constructed,
-      // and when it is available via the FragmentManager. This is not a pattern we should repeat, need to consider
-      // how to robustly avoid this race condition.
-      .observeOn(AndroidSchedulers.mainThread())
-      .take(1)
-      // Start with page 0 since we skip the RxViewPager binding's immediate emission, which happens before
-      // the adapter and fragment are ready. Map the resulting current pager position to its corresponding sort param.
-      .switchMap(__ -> pageChanged.startWith(0))
-      .map(DiscoveryUtils::sortFromPosition)
-      .distinctUntilChanged();
+    final Observable<Integer> pagerSelectedPage = pagerSetPrimaryPage.distinctUntilChanged();
 
     // Combine params with the selected sort position.
     Observable.combineLatest(
       params,
-      pagerSelectedSort,
+      pagerSelectedPage.map(DiscoveryUtils::sortFromPosition),
       (p, s) -> p.toBuilder().sort(s).build()
     )
       .compose(bindToLifecycle())
@@ -119,7 +107,7 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
         .flatMap(Observable::from)
         .filter(Category::isRoot)
         .toList(),
-      pagerSelectedSort.map(DiscoveryUtils::positionFromSort),
+      pagerSelectedPage,
       Pair::create
     )
       .compose(bindToLifecycle())
@@ -142,7 +130,7 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
 
     // Accumulate a list of pages to clear when the params or user changes,
     // to avoid displaying old data.
-    pageChanged
+    pagerSelectedPage
       .compose(takeWhen(params))
       .compose(combineLatestPair(currentUser.observable()))
       .map(pageAndUser -> pageAndUser.first)
@@ -201,14 +189,13 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
   private final PublishSubject<Void> loggedOutLoginToutClick = PublishSubject.create();
   private final PublishSubject<InternalBuildEnvelope> newerBuildIsAvailable = PublishSubject.create();
   private final PublishSubject<Boolean> openDrawer = PublishSubject.create();
-  private final PublishSubject<Integer> pageChanged = PublishSubject.create();
-  private final PublishSubject<Integer> pagerCreatedPage = PublishSubject.create();
+  private final PublishSubject<Integer> pagerSetPrimaryPage = PublishSubject.create();
   private final PublishSubject<NavigationDrawerData.Section.Row> parentFilterRowClick = PublishSubject.create();
   private final PublishSubject<Void> profileClick = PublishSubject.create();
   private final PublishSubject<Void> settingsClick = PublishSubject.create();
   private final PublishSubject<NavigationDrawerData.Section.Row> topFilterRowClick = PublishSubject.create();
 
-  private final PublishSubject<List<Integer>> clearPages = PublishSubject.create();
+  private final BehaviorSubject<List<Integer>> clearPages = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> drawerIsOpen = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> expandSortTabLayout = BehaviorSubject.create();
   private final BehaviorSubject<NavigationDrawerData> navigationDrawerData = BehaviorSubject.create();
@@ -218,7 +205,7 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
   private final Observable<Void> showLoginTout;
   private final Observable<Void> showProfile;
   private final Observable<Void> showSettings;
-  private final PublishSubject<DiscoveryParams> updateParamsForPage = PublishSubject.create();
+  private final BehaviorSubject<DiscoveryParams> updateParamsForPage = BehaviorSubject.create();
   private final BehaviorSubject<DiscoveryParams> updateToolbarWithParams = BehaviorSubject.create();
 
   public final DiscoveryViewModelInputs inputs = this;
@@ -227,8 +214,8 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
   @Override public void childFilterViewHolderRowClick(final @NonNull ChildFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row) {
     childFilterRowClick.onNext(row);
   }
-  @Override public void discoveryPagerAdapterCreatedPage(final @NonNull DiscoveryPagerAdapter adapter, final int position) {
-    pagerCreatedPage.onNext(position);
+  @Override public void discoveryPagerAdapterSetPrimaryPage(final @NonNull DiscoveryPagerAdapter adapter, final int position) {
+    pagerSetPrimaryPage.onNext(position);
   }
   @Override public void loggedInViewHolderInternalToolsClick(final @NonNull LoggedInViewHolder viewHolder) {
     internalToolsClick.onNext(null);
@@ -250,9 +237,6 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
   }
   @Override public void openDrawer(final boolean open) {
     openDrawer.onNext(open);
-  }
-  @Override public void pageChanged(final int position) {
-    pageChanged.onNext(position);
   }
   @Override public void parentFilterViewHolderRowClick(final @NonNull ParentFilterViewHolder viewHolder, final @NonNull NavigationDrawerData.Section.Row row) {
     parentFilterRowClick.onNext(row);

@@ -11,17 +11,15 @@ import android.widget.TextView;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Subscription;
+import rx.subscriptions.CompositeSubscription;
 
 public class KSToolbar extends Toolbar {
   @Nullable @Bind(R.id.title_text_view) TextView titleTextView;
-  private final List<Subscription> subscriptions = new ArrayList<>();
+  private final CompositeSubscription subscriptions = new CompositeSubscription();
 
   public KSToolbar(final @NonNull Context context) {
     super(context);
@@ -67,9 +65,7 @@ public class KSToolbar extends Toolbar {
   protected void onDetachedFromWindow() {
     super.onDetachedFromWindow();
 
-    for (final Subscription subscription : subscriptions) {
-      subscription.unsubscribe();
-    }
+    subscriptions.clear();
   }
 
   protected final void addSubscription(final @NonNull Subscription subscription) {

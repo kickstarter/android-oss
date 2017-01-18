@@ -1833,7 +1833,7 @@
       "About_reward_amount": "Ungefähr %{reward_amount}",
       "Add_attachments": "Anhänge hinzufügen ...",
       "All_Projects": "Alle Projekte",
-      "All_category_name_Projects": "All %{category_name} Projects",
+      "All_category_name_Projects": "Alle Projekte der Kategorie %{category_name}",
       "All_Art_Projects": "Alle Projekte der Kategorie Kunst",
       "All_Comics_Projects": "Alle Projekte der Kategorie Comics",
       "All_Crafts_Projects": "Alle Projekte der Kategorie Kunsthandwerk",
@@ -1853,7 +1853,7 @@
       "Amount_previous_amount": "Jetziger Betrag: %{amount}, vorheriger Betrag: %{previous_amount}",
       "Amount_reward": "Betrag: %{amount}, %{reward}",
       "Ask_me_anything": "Frage stellen",
-      "Available_to_watch_for_time_more_units": "Available to watch for %{time} more %{units}",
+      "Available_to_watch_for_time_more_units": "Kann noch %{time} %{units} angesehen werden",
       "Back": "Zurück",
       "Back_this_project_below": "Folgendes Projekt unterstützen",
       "Backed_by_Friends": "Von Freunden unterstützt",
@@ -1891,11 +1891,11 @@
       "Couldnt_remove_attachment": "Anhang konnte nicht entfernt werden",
       "Created_projects_projects_count": "Erstellte Projekte: %{projects_count}",
       "Creator_name_was_live_time_ago": "<b>%{creator_name}</b> war vor %{time_ago} live",
-      "Creator_name_is_live_now": "<b>%{creator_name}</b> is live now",
-      "Creator_name_is_streaming_live_on_Kickstarter": "%{creator_name} is streaming live on Kickstarter",
+      "Creator_name_is_live_now": "<b>%{creator_name}</b> ist jetzt live",
+      "Creator_name_is_streaming_live_on_Kickstarter": "%{creator_name} streamt gerade live auf Kickstarter",
       "Creator_name_needs_some_information_to_deliver_your_reward_for_project_name": "<b>%{creator_name}</b> benötigt einige Angaben, um dir deine Belohnung für <b>%{project_name}</b> zustellen zu können.",
-      "Creator_name_was_streaming_live_on_Kickstarter": "%{creator_name} was streaming live on Kickstarter",
-      "Creator_name_will_be_streaming_live_on_Kickstarter_in_duration": "%{creator_name} will be streaming live on Kickstarter %{in_duration}",
+      "Creator_name_was_streaming_live_on_Kickstarter": "Der Stream von %{creator_name} war gerade live auf Kickstarter",
+      "Creator_name_will_be_streaming_live_on_Kickstarter_in_duration": "%{creator_name} wird in %{in_duration} live auf Kickstarter streamen",
       "Discover_more_projects": "Erkunde mehr Projekte.",
       "Dismiss": "Verwerfen",
       "Done": "Fertig!",
@@ -1906,8 +1906,8 @@
       "ellipsis_more": "... weiterlesen",
       "Estimated_to_fulfill": "Versanddatum:",
       "Expands_subcategories": "Erweitert die Anzeige der Unterkategorien.",
-      "Failed_to_retrieve_live_stream_event_details": "Failed to retrieve live stream event details",
-      "Failed_to_update_subscription": "Failed to update subscription",
+      "Failed_to_retrieve_live_stream_event_details": "Details zu Live-Stream-Event konnten nicht geladen werden",
+      "Failed_to_update_subscription": "Abo konnte nicht aktualisiert werden",
       "Filter_by_all_projects": "Filter: Alle Projekte",
       "Filter_by_category_name": "Filter: %{category_name}",
       "Filter_by_projects_backed_by_friends": "Filter: Von Freunden unterstützte Projekte",
@@ -1956,7 +1956,7 @@
       "Its_better_with_friends": "Gemeinsam mehr erreichen",
       "Just_for_you": "Nur für dich.",
       "Keep_reading": "Mehr lesen",
-      "Keep_up_with_future_live_streams": "Keep up with future live streams",
+      "Keep_up_with_future_live_streams": "Zeitnahe Info zu zukünftigen Live-Streams",
       "Kickstarter_if_funded": "Kickstarter (bei Finanzierung)",
       "Kickstarter_is_not_a_store": "Kickstarter ist kein Geschäft.",
       "Learn_more_about_accountability": "Weitere Informationen zur Rechenschaftspflicht",
@@ -1968,10 +1968,10 @@
         "many": "%{left_count} übrig"
       },
       "Live": "Live",
-      "Live_Stream": "Live Stream",
-      "Live_stream_countdown": "Live stream countdown",
-      "Live_Streaming_now": "Live Streaming now",
-      "Loading": "Loading",
+      "Live_Stream": "Live-Stream",
+      "Live_stream_countdown": "Live-Stream Countdown",
+      "Live_Streaming_now": "Jetzt live",
+      "Loading": "Ladevorgang läuft",
       "Log_in_or_sign_up_to_subscribe": "Bitte einloggen oder registrieren",
       "Log_in_to_leave_a_comment": "Melde dich an, um einen Kommentar zu hinterlassen.",
       "Log_in_to_save_this_project_and_we_ll_remind_you": "Melde dich an, um dieses Projekt zu speichern. Wir senden dir eine Benachrichtigung vor Ablauf des Projekts.",
@@ -1984,7 +1984,7 @@
       "No_comments_yet": "Bisher noch keine Kommentare.",
       "No_one_has_posted_an_update_yet": "Es wurden noch keine Updates gepostet.",
       "No_pledges_from_friends_yet": "Es gibt noch keine Beiträge von Freunden.",
-      "No_replay_is_available_for_this_live_stream": "No replay is available for this live stream.",
+      "No_replay_is_available_for_this_live_stream": "Kein Replay verügbar für diesen Live-Stream.",
       "Once_you_back_a_project_well_share": "Wenn du ein Projekt unterstützt, werden wir dir hier maßgeschneiderte Empfehlungen machen.",
       "Opens_comments": "Öffnet Kommentare.",
       "Opens_creator_profile": "Öffnet das Profil des Projektgründers.",
@@ -2021,8 +2021,8 @@
       "Push_notifications": "Push-Benachrichtigungen",
       "Read_more_about_the_campaign_arrow": "Mehr über diese Kampagne lesen  →",
       "Recommended": "Empfehlungen",
-      "Recorded_live_with_creator_name": "Recorded live with <b>%{creator_name}</b>",
-      "Recorded_Live": "Recorded Live",
+      "Recorded_live_with_creator_name": "Live aufgenommen von <b>%{creator_name}</b>",
+      "Recorded_Live": "Live aufgenommen",
       "Replay": "Replay",
       "Rewards_count_rewards": {
         "zero": "%{rewards_count} Belohnungen",
@@ -2061,17 +2061,17 @@
       "Shows_list_of_subcategories": "Unterkategorien anzeigen.",
       "Signs_up_with_Email": "Mit E-Mail-Adresse registrieren.",
       "Something_catch_your_eye": "Etwas interessantes gefunden?",
-      "Subscribe": "Subscribe",
-      "Subscribed": "Subscribed",
+      "Subscribe": "Abonnieren",
+      "Subscribed": "Abo aktiviert",
       "Survey": "Befragung",
-      "Starting_soon": "Starting soon",
+      "Starting_soon": "Beginnt in Kürze",
       "Tap_the_star_on_each_project_page_to_save_it": "Klicke einfach auf den Stern, um es zu markieren. Wir werden dir 48 Stunden vor Ablauf des Projekts eine Benachrichtigung schicken.",
       "Thank_you_for_supporting_this_project": "Vielen Dank für deine Unterstützung dieses Projekts.",
       "The_email_associated_with_this_Facebook_account_is_already_registered": "Diese E-Mail-Adresse ist bereits einem anderen Kickstarter-Nutzer zugeordnet.",
-      "The_replay_will_start_soon": "The replay will start soon",
-      "The_live_stream_failed_to_connect": "The live stream failed to connect",
-      "The_live_stream_was_interrupted": "The live stream was interrupted",
-      "The_live_stream_will_start_soon": "The live stream will start soon",
+      "The_replay_will_start_soon": "Replay started in Kürze",
+      "The_live_stream_failed_to_connect": "Keine Verbindungn zu Live-Stream",
+      "The_live_stream_was_interrupted": "Live-Stream wurde unterbrochen",
+      "The_live_stream_will_start_soon": "Live-Stream started in Kürze",
       "This_facebook_account_is_already_linked_to_another_Kickstarter_user": "Dieses Facebook-Konto ist bereits einem anderen Kickstarter-Nutzer zugeordnet.",
       "Time_left_left": "%{time_left} übrig",
       "updates_count_updates": {
@@ -2084,10 +2084,10 @@
       "Unsaves_project": "Macht Speichern dieses Projektes rückgängig.",
       "Unfollows_friend_name": "%{friend_name} nicht mehr folgen.",
       "Unsuccessfully_Funded": "Finanzierung fehlgeschlagen.",
-      "Upcoming_with_creator_name": "Upcoming with<br/><b>%{creator_name}</b>",
+      "Upcoming_with_creator_name": "Demnächst: Video von <br/><b>%{creator_name}</b>",
       "Update_pledge": "Beitrag aktualisieren",
       "View": "Anzeigen",
-      "Watch_live": "Watch live",
+      "Watch_live": "Live ansehen",
       "When_you_save_a_project_we_ll_send_you_a_reminder": "Wenn du ein Projekt speicherst, senden wir dir 48 Stunden vor Ablauf eine Erinnerungs-E-Mail",
       "You_saved_this_project": "Du hast dieses Projekt gespeichert.",
       "Your_pledge_amount": "Dein Beitrag:",
@@ -3390,60 +3390,60 @@
       },
       "dates": {
         "day": {
-          "zero": "days",
-          "one": "day",
-          "two": "days",
-          "few": "days",
-          "many": "days"
+          "zero": "Tage",
+          "one": "Tag",
+          "two": "Tg",
+          "few": "Tg",
+          "many": "Tg"
         },
         "day_abbreviated": {
-          "zero": "days",
-          "one": "day",
-          "two": "days",
-          "few": "days",
-          "many": "days"
+          "zero": "Tg",
+          "one": "Tag",
+          "two": "Tg",
+          "few": "Tg",
+          "many": "Tg"
         },
         "hour": {
-          "zero": "hours",
-          "one": "hour",
-          "two": "hours",
-          "few": "hours",
-          "many": "hours"
+          "zero": "Std",
+          "one": "Std",
+          "two": "Std",
+          "few": "Std",
+          "many": "Std"
         },
         "hour_abbreviated": {
-          "zero": "hrs",
-          "one": "hr",
-          "two": "hrs",
-          "few": "hrs",
-          "many": "hrs"
+          "zero": "Std",
+          "one": "Std",
+          "two": "Std",
+          "few": "Std",
+          "many": "Std"
         },
         "minute": {
-          "zero": "minutes",
-          "one": "minute",
-          "two": "minutes",
-          "few": "minutes",
-          "many": "minutes"
+          "zero": "Min",
+          "one": "Min",
+          "two": "Min",
+          "few": "Min",
+          "many": "Min"
         },
         "minute_abbreviated": {
-          "zero": "mins",
-          "one": "min",
-          "two": "mins",
-          "few": "mins",
-          "many": "mins"
+          "zero": "Min",
+          "one": "Min",
+          "two": "Min",
+          "few": "Min",
+          "many": "Min"
         },
         "second": {
-          "zero": "seconds",
-          "one": "second",
-          "two": "seconds",
-          "few": "seconds",
-          "many": "seconds"
+          "zero": "Sek",
+          "one": "Sek",
+          "two": "Sek",
+          "few": "Sek",
+          "many": "Sek"
         },
         "second_abbreviated": {
-          "zero": "secs",
-          "one": "sec",
-          "two": "secs",
-          "few": "secs",
-          "many": "secs"
+          "zero": "Sek",
+          "one": "Sek",
+          "two": "Sek",
+          "few": "Sek",
+          "many": "Sek"
         },
         "time_in_minutes_abbreviated": {
           "zero": "in 0 Min",
@@ -3488,18 +3488,18 @@
           "many": "in %{time_count} Tagen"
         },
         "time_in_seconds_abbreviated": {
-          "zero": "in 0 secs",
-          "one": "in 1 sec",
-          "two": "in 2 secs",
-          "few": "in \"%{time_count} secs\"",
-          "many": "in \"%{time_count} secs\""
+          "zero": "in 0 Sek",
+          "one": "in 1 Sek",
+          "two": "in 2 Sek",
+          "few": "in \"%{time_count} Sek\"",
+          "many": "in \"%{time_count} Sek\""
         },
         "time_in_seconds": {
-          "zero": "in 0 seconds",
-          "one": "in 1 second",
-          "two": "in 2 seconds",
-          "few": "in \"%{time_count} seconds\"",
-          "many": "in \"%{time_count} seconds\""
+          "zero": "in 0 Sekunden",
+          "one": "in 1 Sekunde",
+          "two": "in 2 Sekunden",
+          "few": "in \"%{time_count} Sekunden\"",
+          "many": "in \"%{time_count} Sekunden\""
         },
         "time_minutes_ago_abbreviated": {
           "zero": "vor 0 Min",
@@ -3544,18 +3544,18 @@
           "many": "vor %{time_count} Tagen"
         },
         "time_seconds_ago_abbreviated": {
-          "zero": "0 seconds ago",
-          "one": "1 second ago",
-          "two": "2 seconds ago",
-          "few": "%{time_count} seconds ago",
-          "many": "%{time_count} seconds ago"
+          "zero": "vor 0 Sekunden",
+          "one": "vor 1 Sekunde",
+          "two": "vor 2 Sekunden",
+          "few": "vor %{time_count} Sekunden",
+          "many": "vor %{time_count} Sekunden"
         },
         "time_seconds_ago": {
-          "zero": "0 secs ago",
-          "one": "1 sec ago",
-          "two": "2 secs ago",
-          "few": "%{time_count} secs ago",
-          "many": "%{time_count} secs ago"
+          "zero": "vor 0 Sekunden",
+          "one": "vor 1 Sekunde",
+          "two": "vor 2 Sek",
+          "few": "vor %{time_count} Sek",
+          "many": "vor %{time_count} Sek"
         },
         "time_minutes_abbreviated": {
           "zero": "0 Min",
@@ -3600,18 +3600,18 @@
           "many": "%{time_count} Tage"
         },
         "time_seconds_abbreviated": {
-          "zero": "0 seconds",
-          "one": "1 second",
-          "two": "2 seconds",
-          "few": "%{time_count} seconds",
-          "many": "%{time_count} seconds"
+          "zero": "0 Sekunden",
+          "one": "1 Sekunde",
+          "two": "2 Sekunden",
+          "few": "%{time_count} Sekunden",
+          "many": "%{time_count} Sekunden"
         },
         "time_seconds": {
-          "zero": "0 secs",
-          "one": "1 sec",
-          "two": "2 secs",
-          "few": "%{time_count} secs",
-          "many": "%{time_count} secs"
+          "zero": "0 Sek",
+          "one": "1 Sek",
+          "two": "2 Sek",
+          "few": "%{time_count} Sek",
+          "many": "%{time_count} Sek"
         },
         "just_now": "Gerade eben",
         "right_now": "Gerade eben",
@@ -3662,7 +3662,7 @@
       "About_reward_amount": "Aprox. %{reward_amount}",
       "Add_attachments": "Agregar anexos …",
       "All_Projects": "Todos los proyectos",
-      "All_category_name_Projects": "All %{category_name} Projects",
+      "All_category_name_Projects": "Todos los proyectos de la categoría %{category_name}",
       "All_Art_Projects": "Todos los proyectos de la categoría Arte",
       "All_Comics_Projects": "Todos los proyectos de la categoría Comics",
       "All_Crafts_Projects": "Todos los proyectos de la categoría Artesanías",
@@ -3682,7 +3682,7 @@
       "Amount_previous_amount": "Monto actual: %{amount}, monto previo: %{previous_amount}",
       "Amount_reward": "Monto: %{amount}, %{reward}",
       "Ask_me_anything": "¡Pregúntame!",
-      "Available_to_watch_for_time_more_units": "Available to watch for %{time} more %{units}",
+      "Available_to_watch_for_time_more_units": "Disponible para reproducción %{time} %{units} más",
       "Back": "Atrás",
       "Back_this_project_below": "Patrocina este proyecto:",
       "Backed_by_Friends": "Patrocinados por amigos",
@@ -3719,12 +3719,12 @@
       "Couldnt_add_attachment": "No se pudo añadir el anexo",
       "Couldnt_remove_attachment": "No se pudo remover el anexo",
       "Created_projects_projects_count": "Proyectos creados: %{projects_count}",
-      "Creator_name_was_live_time_ago": "<b>%{creator_name}</b> was live %{time_ago}",
-      "Creator_name_is_live_now": "<b>%{creator_name}</b> is live now",
-      "Creator_name_is_streaming_live_on_Kickstarter": "%{creator_name} is streaming live on Kickstarter",
+      "Creator_name_was_live_time_ago": "<b>%{creator_name}</b> transmitió en vivo hace %{time_ago}",
+      "Creator_name_is_live_now": "<b>%{creator_name}</b> está transmitiendo en vivo",
+      "Creator_name_is_streaming_live_on_Kickstarter": "%{creator_name} está transmitiendo en vivo en Kickstarter",
       "Creator_name_needs_some_information_to_deliver_your_reward_for_project_name": "<b>%{creator_name}</b> necesita un par de datos para entregarte tu recompensa de <b>%{project_name}</b>.",
-      "Creator_name_was_streaming_live_on_Kickstarter": "%{creator_name} was streaming live on Kickstarter",
-      "Creator_name_will_be_streaming_live_on_Kickstarter_in_duration": "%{creator_name} will be streaming live on Kickstarter %{in_duration}",
+      "Creator_name_was_streaming_live_on_Kickstarter": "%{creator_name} estuvo transmitiendo en vivo en Kickstarter",
+      "Creator_name_will_be_streaming_live_on_Kickstarter_in_duration": "%{creator_name} estará trasnmitiendo en vivo en Kickstarter %{in_duration}",
       "Discover_more_projects": "Descubre más proyectos.",
       "Dismiss": "Descartar",
       "Done": "Listo",
@@ -3735,8 +3735,8 @@
       "ellipsis_more": "... leer más",
       "Estimated_to_fulfill": "Fecha de envío:",
       "Expands_subcategories": "Muestra más subcategorías.",
-      "Failed_to_retrieve_live_stream_event_details": "Failed to retrieve live stream event details",
-      "Failed_to_update_subscription": "Failed to update subscription",
+      "Failed_to_retrieve_live_stream_event_details": "No se pudo cargar la información acerca del evento en vivo",
+      "Failed_to_update_subscription": "No se pudo actualizar la suscripción",
       "Filter_by_all_projects": "Filtro: Todos los proyectos",
       "Filter_by_category_name": "Filtro: %{category_name}",
       "Filter_by_projects_backed_by_friends": "Filtro: Proyectos patrocinados por amigos",
@@ -3785,7 +3785,7 @@
       "Its_better_with_friends": "Todo en la vida es mejor con amigos ...",
       "Just_for_you": "Sólo para ti.",
       "Keep_reading": "Leer más",
-      "Keep_up_with_future_live_streams": "Keep up with future live streams",
+      "Keep_up_with_future_live_streams": "Recibe info sobre live streams futuros",
       "Kickstarter_if_funded": "Kickstarter (si la financiación es exitosa)",
       "Kickstarter_is_not_a_store": "Kickstarter no es una tienda.",
       "Learn_more_about_accountability": "Más información sobre las responsabilidades",
@@ -3796,12 +3796,12 @@
         "few": "%{left_count} restantes",
         "many": "%{left_count} restantes"
       },
-      "Live": "Live",
-      "Live_Stream": "Live Stream",
-      "Live_stream_countdown": "Live stream countdown",
-      "Live_Streaming_now": "Live Streaming now",
-      "Loading": "Loading",
-      "Log_in_or_sign_up_to_subscribe": "Log in or sign up to subscribe",
+      "Live": "En vivo",
+      "Live_Stream": "Live Streaming",
+      "Live_stream_countdown": "Live Stream - Cuenta atrás",
+      "Live_Streaming_now": "En vivo ahora",
+      "Loading": "Cargando",
+      "Log_in_or_sign_up_to_subscribe": "Para activar la suscripción, por favor inicia sesión o regístrate",
       "Log_in_to_leave_a_comment": "Inicia sesión para dejar un comentario.",
       "Log_in_to_save_this_project_and_we_ll_remind_you": "Inicia sesión para guardar este proyecto y te lo recordamos antes de que finalice.",
       "Make_a_pledge_without_a_reward": "Contribuir sin recompensa",
@@ -3813,7 +3813,7 @@
       "No_comments_yet": "No hay comentarios todavia.",
       "No_one_has_posted_an_update_yet": "Todavía no se han publicado actualizaciones.",
       "No_pledges_from_friends_yet": "Todavía no hay contribuciones de amigos.",
-      "No_replay_is_available_for_this_live_stream": "No replay is available for this live stream.",
+      "No_replay_is_available_for_this_live_stream": "Este Live Stream no cuenta con repetición.",
       "Once_you_back_a_project_well_share": "Tu patrocinio de un proyecto nos ayuda a hacerte recomendaciones personalizadas.",
       "Opens_comments": "Abre comentarios.",
       "Opens_creator_profile": "Abre el perfil del creador.",
@@ -3850,9 +3850,9 @@
       "Push_notifications": "Notificaciones Push",
       "Read_more_about_the_campaign_arrow": "Leer más sobre esta campaña  →",
       "Recommended": "Recomendados",
-      "Recorded_live_with_creator_name": "Recorded live with <b>%{creator_name}</b>",
-      "Recorded_Live": "Recorded Live",
-      "Replay": "Replay",
+      "Recorded_live_with_creator_name": "Grabado en vivo por <b>%{creator_name}</b>",
+      "Recorded_Live": "Grabado en vivo",
+      "Replay": "Repetición",
       "Rewards_count_rewards": {
         "zero": "%{rewards_count} recompensas",
         "one": "%{rewards_count} recompensa",
@@ -3890,17 +3890,17 @@
       "Shows_list_of_subcategories": "Mostrar lista de subcategorías.",
       "Signs_up_with_Email": "Registro con correo electrónico.",
       "Something_catch_your_eye": "¿Algo que te haya llamado la atención?",
-      "Subscribe": "Subscribe",
-      "Subscribed": "Subscribed",
+      "Subscribe": "Suscribir",
+      "Subscribed": "Suscripción activa",
       "Survey": "Cuestionario",
-      "Starting_soon": "Starting soon",
+      "Starting_soon": "Comienza en breve",
       "Tap_the_star_on_each_project_page_to_save_it": "Simplemente márcalo con asterisco, entonces te mandaremos una notificación 48 horas antes de que termine.",
       "Thank_you_for_supporting_this_project": "Gracias por apoyar este proyecto.",
       "The_email_associated_with_this_Facebook_account_is_already_registered": "Esta cuenta de correo electrónico ya está asociada a otro usuario de Kickstarter.",
-      "The_replay_will_start_soon": "The replay will start soon",
-      "The_live_stream_failed_to_connect": "The live stream failed to connect",
-      "The_live_stream_was_interrupted": "The live stream was interrupted",
-      "The_live_stream_will_start_soon": "The live stream will start soon",
+      "The_replay_will_start_soon": "Repetición comienza en breve",
+      "The_live_stream_failed_to_connect": "No se pudo conectar la transmisión en directo",
+      "The_live_stream_was_interrupted": "Transmisión en vivo fue interrumpida",
+      "The_live_stream_will_start_soon": "Transmisión en vivo comienza en breve",
       "This_facebook_account_is_already_linked_to_another_Kickstarter_user": "Esta cuenta de Facebook ya está asociada a otro usuario de Kickstarter.",
       "Time_left_left": "%{time_left} restantes",
       "updates_count_updates": {
@@ -3913,10 +3913,10 @@
       "Unsaves_project": "Deshacer \"guardar proyecto\".",
       "Unfollows_friend_name": "Dejar de seguir a %{friend_name}.",
       "Unsuccessfully_Funded": "Financiación falló.",
-      "Upcoming_with_creator_name": "Upcoming with<br/><b>%{creator_name}</b>",
+      "Upcoming_with_creator_name": "Próximamente: Video de <br/><b>%{creator_name}</b>",
       "Update_pledge": "Actualizar contribución",
       "View": "Ver",
-      "Watch_live": "Watch live",
+      "Watch_live": "Ver en vivo",
       "When_you_save_a_project_we_ll_send_you_a_reminder": "Cuando guardes un proyecto, te enviaremos un recordatorio por correo electrónico 48 horas antes de que finalice",
       "You_saved_this_project": "Uno de tus proyectos guardados.",
       "Your_pledge_amount": "Monto de tu contribución:",
@@ -5219,39 +5219,39 @@
       },
       "dates": {
         "day": {
-          "zero": "days",
-          "one": "day",
-          "two": "days",
-          "few": "days",
-          "many": "days"
+          "zero": "días",
+          "one": "día",
+          "two": "días",
+          "few": "días",
+          "many": "días"
         },
         "day_abbreviated": {
-          "zero": "days",
-          "one": "day",
-          "two": "days",
-          "few": "days",
-          "many": "days"
+          "zero": "días",
+          "one": "día",
+          "two": "días",
+          "few": "días",
+          "many": "días"
         },
         "hour": {
-          "zero": "hours",
-          "one": "hour",
-          "two": "hours",
-          "few": "hours",
-          "many": "hours"
+          "zero": "horas",
+          "one": "hora",
+          "two": "horas",
+          "few": "horas",
+          "many": "horas"
         },
         "hour_abbreviated": {
-          "zero": "hrs",
+          "zero": "horas",
           "one": "hr",
           "two": "hrs",
           "few": "hrs",
           "many": "hrs"
         },
         "minute": {
-          "zero": "minutes",
-          "one": "minute",
-          "two": "minutes",
-          "few": "minutes",
-          "many": "minutes"
+          "zero": "minutos",
+          "one": "minuto",
+          "two": "minutos",
+          "few": "minutos",
+          "many": "minutos"
         },
         "minute_abbreviated": {
           "zero": "mins",
@@ -5261,18 +5261,18 @@
           "many": "mins"
         },
         "second": {
-          "zero": "seconds",
-          "one": "second",
-          "two": "seconds",
-          "few": "seconds",
-          "many": "seconds"
+          "zero": "segundos",
+          "one": "segundo",
+          "two": "segundos",
+          "few": "segundos",
+          "many": "segundos"
         },
         "second_abbreviated": {
-          "zero": "secs",
-          "one": "sec",
-          "two": "secs",
-          "few": "secs",
-          "many": "secs"
+          "zero": "segs",
+          "one": "seg",
+          "two": "segs",
+          "few": "segs",
+          "many": "segs"
         },
         "time_in_minutes_abbreviated": {
           "zero": "en 0 mins",
@@ -5317,18 +5317,18 @@
           "many": "en %{time_count} días"
         },
         "time_in_seconds_abbreviated": {
-          "zero": "in 0 secs",
-          "one": "in 1 sec",
-          "two": "in 2 secs",
-          "few": "in \"%{time_count} secs\"",
-          "many": "in \"%{time_count} secs\""
+          "zero": "en 0 segs",
+          "one": "en 1 seg",
+          "two": "en 2 segs",
+          "few": "en \"%{time_count} segs\"",
+          "many": "en \"%{time_count} segs\""
         },
         "time_in_seconds": {
-          "zero": "in 0 seconds",
-          "one": "in 1 second",
-          "two": "in 2 seconds",
-          "few": "in \"%{time_count} seconds\"",
-          "many": "in \"%{time_count} seconds\""
+          "zero": "en 0 segundos",
+          "one": "en 1 segundo",
+          "two": "en 2 segundos",
+          "few": "en \"%{time_count} segundos\"",
+          "many": "en \"%{time_count} segundos\""
         },
         "time_minutes_ago_abbreviated": {
           "zero": "hace 0 mins",
@@ -5373,18 +5373,18 @@
           "many": "hace %{time_count} días"
         },
         "time_seconds_ago_abbreviated": {
-          "zero": "0 seconds ago",
-          "one": "1 second ago",
-          "two": "2 seconds ago",
-          "few": "%{time_count} seconds ago",
-          "many": "%{time_count} seconds ago"
+          "zero": "hace 0 segundos",
+          "one": "hace 1 segundo",
+          "two": "hace 2 segundos",
+          "few": "hace %{time_count} segundos",
+          "many": "hace %{time_count} segundos"
         },
         "time_seconds_ago": {
-          "zero": "0 secs ago",
-          "one": "1 sec ago",
-          "two": "2 secs ago",
-          "few": "%{time_count} secs ago",
-          "many": "%{time_count} secs ago"
+          "zero": "hace 0 segs",
+          "one": "hace 1 seg",
+          "two": "hace 2 segs",
+          "few": "hace %{time_count} segs",
+          "many": "hace %{time_count} segs"
         },
         "time_minutes_abbreviated": {
           "zero": "0 mins",
@@ -5429,18 +5429,18 @@
           "many": "%{time_count} días"
         },
         "time_seconds_abbreviated": {
-          "zero": "0 seconds",
-          "one": "1 second",
-          "two": "2 seconds",
-          "few": "%{time_count} seconds",
-          "many": "%{time_count} seconds"
+          "zero": "0 segundos",
+          "one": "1 segundo",
+          "two": "2 segundos",
+          "few": "%{time_count} segundos",
+          "many": "%{time_count} segundos"
         },
         "time_seconds": {
-          "zero": "0 secs",
-          "one": "1 sec",
-          "two": "2 secs",
-          "few": "%{time_count} secs",
-          "many": "%{time_count} secs"
+          "zero": "0 segs",
+          "one": "1 seg",
+          "two": "2 segs",
+          "few": "%{time_count} segs",
+          "many": "%{time_count} segs"
         },
         "just_now": "En este momento",
         "right_now": "En este momento",
@@ -5742,7 +5742,7 @@
       "Unsaves_project": "Annule l'enregistrement du projet.",
       "Unfollows_friend_name": "Désabonnement des actus de %{friend_name}.",
       "Unsuccessfully_Funded": "Non financé.",
-      "Upcoming_with_creator_name": "<br /><b>%{creator_name}</b> bientôt en direct",
+      "Upcoming_with_creator_name": "<br/><b>%{creator_name}</b> bientôt en direct",
       "Update_pledge": "Modifier mon engagement",
       "View": "Afficher",
       "Watch_live": "Regarder en direct",
@@ -7332,6 +7332,7 @@
     "ios_i18n": true,
     "ios_tappable_category_location": true,
     "ios_favorite_categories": true,
+    "ios_live_streams": true,
     "handbook_hero": true,
     "android_pay": true,
     "apple_pay_spain": true,
@@ -7359,7 +7360,8 @@
     "huzza_new_design": true,
     "discovery_overlay": true,
     "recommendations_v2": true,
-    "sassy_classifier": true
+    "sassy_classifier": true,
+    "async_checkout": true
   },
   "launched_countries": [
     {
@@ -7532,10 +7534,10 @@
     }
   ],
   "ab_experiments": {
-    "project_header_redesign_version_five": "control",
+    "project_header_redesign_version_six": "experimental",
     "bb_cards_no_money": "control",
-    "checkout_layout": "control",
-    "koala_alt_frontend_tracking": "experimental"
+    "koala_alt_frontend_tracking": "control",
+    "credit_card_input_placement": "control"
   },
   "stripe": {
     "publishable_key": "pk_live_zjuK52lEUYcvBhIXEUnOEJzk"

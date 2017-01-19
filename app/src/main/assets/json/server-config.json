@@ -7534,9 +7534,8 @@
     }
   ],
   "ab_experiments": {
-    "project_header_redesign_version_six": "experimental",
     "bb_cards_no_money": "control",
-    "koala_alt_frontend_tracking": "control",
+    "koala_alt_frontend_tracking": "experimental",
     "credit_card_input_placement": "control"
   },
   "stripe": {

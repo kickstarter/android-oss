@@ -17,7 +17,6 @@ import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.CommentFeedActivity;
 import com.kickstarter.ui.adapters.data.CommentFeedData;
-import com.kickstarter.viewmodels.errors.CommentFeedViewModelErrors;
 import com.kickstarter.viewmodels.inputs.CommentFeedViewModelInputs;
 import com.kickstarter.viewmodels.outputs.CommentFeedViewModelOutputs;
 
@@ -28,7 +27,7 @@ import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public final class CommentFeedViewModel extends ActivityViewModel<CommentFeedActivity> implements CommentFeedViewModelInputs,
-  CommentFeedViewModelOutputs, CommentFeedViewModelErrors {
+  CommentFeedViewModelOutputs {
   // INPUTS
   private final PublishSubject<String> commentBodyInput = PublishSubject.create();
   @Override
@@ -102,11 +101,10 @@ public final class CommentFeedViewModel extends ActivityViewModel<CommentFeedAct
   public Observable<Void> showCommentPostedToast() {
     return showCommentPostedToast;
   }
-
-  // ERRORS
-  private final PublishSubject<ErrorEnvelope> postCommentError = PublishSubject.create();
-  public Observable<String> postCommentError() {
-    return postCommentError
+  private final PublishSubject<ErrorEnvelope> showPostCommentErrorToast = PublishSubject.create();
+  @Override
+  public Observable<String> showPostCommentErrorToast() {
+    return showPostCommentErrorToast
       .map(ErrorEnvelope::errorMessage);
   }
 
@@ -117,7 +115,6 @@ public final class CommentFeedViewModel extends ActivityViewModel<CommentFeedAct
 
   public final CommentFeedViewModelInputs inputs = this;
   public final CommentFeedViewModelOutputs outputs = this;
-  public final CommentFeedViewModelErrors errors = this;
 
   public CommentFeedViewModel(final @NonNull Environment environment) {
     super(environment);
@@ -259,7 +256,7 @@ public final class CommentFeedViewModel extends ActivityViewModel<CommentFeedAct
 
   private Observable<Comment> postComment(final @NonNull Project project, final @NonNull String body) {
     return client.postProjectComment(project, body)
-      .compose(Transformers.pipeApiErrorsTo(postCommentError))
+      .compose(Transformers.pipeApiErrorsTo(showPostCommentErrorToast))
       .compose(Transformers.neverError())
       .doOnSubscribe(() -> commentIsPosting.onNext(true))
       .doAfterTerminate(() -> commentIsPosting.onNext(false));

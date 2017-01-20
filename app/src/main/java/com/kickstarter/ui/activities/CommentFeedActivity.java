@@ -234,7 +234,7 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
   }
 
   private Observable<String> toastMessages() {
-    return viewModel.errors.postCommentError()
+    return viewModel.outputs.showPostCommentErrorToast()
       .map(ObjectUtils.coalesceWith(postCommentErrorString))
       .mergeWith(viewModel.outputs.showCommentPostedToast().map(__ -> commentPostedString));
   }

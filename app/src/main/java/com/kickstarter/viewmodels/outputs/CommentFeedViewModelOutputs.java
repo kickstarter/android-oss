@@ -34,6 +34,11 @@ public interface CommentFeedViewModelOutputs {
   Observable<String> currentCommentBody();
 
   /**
+   * Emits when we should display a post comment error toast.
+   */
+  Observable<String> showPostCommentErrorToast();
+
+  /**
    * Emits a boolean that determines if the comment button should be visible.
    */
   Observable<Boolean> showCommentButton();

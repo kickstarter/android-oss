@@ -14,6 +14,11 @@ public interface CommentFeedViewModelOutputs {
   Observable<CommentFeedData> commentFeedData();
 
   /**
+   * Emits the string that should be displayed in the comment dialog when it is shown.
+   */
+  Observable<String> currentCommentBody();
+
+  /**
    * Emits when the comment dialog should be dismissed.
    */
   Observable<Void> dismissCommentDialog();
@@ -29,16 +34,6 @@ public interface CommentFeedViewModelOutputs {
   Observable<Boolean> isFetchingComments();
 
   /**
-   * Emits the string that should be displayed in the comment dialog when it is shown.
-   */
-  Observable<String> currentCommentBody();
-
-  /**
-   * Emits when we should display a post comment error toast.
-   */
-  Observable<String> showPostCommentErrorToast();
-
-  /**
    * Emits a boolean that determines if the comment button should be visible.
    */
   Observable<Boolean> showCommentButton();
@@ -52,4 +47,9 @@ public interface CommentFeedViewModelOutputs {
    * Emits when comment posted toast message should be displayed.
    */
   Observable<Void> showCommentPostedToast();
+
+  /**
+   * Emits when we should display a post comment error toast.
+   */
+  Observable<String> showPostCommentErrorToast();
 }

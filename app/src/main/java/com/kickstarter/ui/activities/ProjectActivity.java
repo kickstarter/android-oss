@@ -211,7 +211,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
   }
 
   private void startCommentsActivity(final @NonNull Project project) {
-    final Intent intent = new Intent(this, CommentFeedActivity.class)
+    final Intent intent = new Intent(this, CommentsActivity.class)
       .putExtra(IntentKey.PROJECT, project);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }

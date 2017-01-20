@@ -1,6 +1,6 @@
 package com.kickstarter.viewmodels.inputs;
 
-public interface CommentFeedViewModelInputs {
+public interface CommentsViewModelInputs {
   /**
    * Call when the comment body changes.
    */

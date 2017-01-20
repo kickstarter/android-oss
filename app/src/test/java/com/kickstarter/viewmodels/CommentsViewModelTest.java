@@ -11,32 +11,32 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.adapters.data.CommentFeedData;
+import com.kickstarter.ui.adapters.data.CommentsData;
 
 import org.junit.Test;
 
 import rx.observers.TestSubscriber;
 
-public class CommentFeedViewModelTest extends KSRobolectricTestCase {
+public class CommentsViewModelTest extends KSRobolectricTestCase {
 
   @Test
-  public void testCommentFeedViewModel_commentsEmit() {
-    final CommentFeedViewModel vm = new CommentFeedViewModel(environment());
+  public void testCommentsViewModel_commentsEmit() {
+    final CommentsViewModel vm = new CommentsViewModel(environment());
 
-    final TestSubscriber<CommentFeedData> commentFeedData = new TestSubscriber<>();
-    vm.outputs.commentFeedData().subscribe(commentFeedData);
+    final TestSubscriber<CommentsData> commentsData = new TestSubscriber<>();
+    vm.outputs.commentsData().subscribe(commentsData);
 
     // Start the view model with a project.
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()));
     koalaTest.assertValues("Project Comment View");
 
     // Comments should emit.
-    commentFeedData.assertValueCount(1);
+    commentsData.assertValueCount(1);
   }
 
   @Test
-  public void testCommentFeedViewModel_postCommentFlow() {
-    final CommentFeedViewModel vm = new CommentFeedViewModel(environment());
+  public void testCommentsViewModel_postCommentFlow() {
+    final CommentsViewModel vm = new CommentsViewModel(environment());
     final Project project = ProjectFactory.backedProject();
 
     final TestSubscriber<Void> showCommentPostedToastTest = new TestSubscriber<>();
@@ -83,14 +83,14 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testCommentFeedViewModel_loggedOutShowDialogFlow() {
+  public void testCommentsViewModel_loggedOutShowDialogFlow() {
     final CurrentUserType currentUser = new MockCurrentUser();
 
     final Environment environment = environment().toBuilder()
       .currentUser(currentUser)
       .build();
 
-    final CommentFeedViewModel vm = new CommentFeedViewModel(environment);
+    final CommentsViewModel vm = new CommentsViewModel(environment);
 
     final Project project = ProjectFactory.backedProject();
 
@@ -112,8 +112,8 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testCommentFeedViewModel_commentButtonHidden() {
-    final CommentFeedViewModel vm = new CommentFeedViewModel(environment());
+  public void testCommentsViewModel_commentButtonHidden() {
+    final CommentsViewModel vm = new CommentsViewModel(environment());
 
     final TestSubscriber<Boolean> showCommentButtonTest = new TestSubscriber<>();
     vm.outputs.showCommentButton().subscribe(showCommentButtonTest);
@@ -126,8 +126,8 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testCommentFeedViewModel_dismissCommentDialog() {
-    final CommentFeedViewModel vm = new CommentFeedViewModel(environment());
+  public void testCommentsViewModel_dismissCommentDialog() {
+    final CommentsViewModel vm = new CommentsViewModel(environment());
 
     final TestSubscriber<Void> dismissCommentDialogTest = new TestSubscriber<>();
     vm.outputs.dismissCommentDialog().subscribe(dismissCommentDialogTest);
@@ -153,8 +153,8 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testCommentFeedViewModel_currentCommentBody() {
-    final CommentFeedViewModel vm = new CommentFeedViewModel(environment());
+  public void testCommentsViewModel_currentCommentBody() {
+    final CommentsViewModel vm = new CommentsViewModel(environment());
 
     final TestSubscriber<String> currentCommentBodyTest = new TestSubscriber<>();
     vm.outputs.currentCommentBody().subscribe(currentCommentBodyTest);
@@ -166,8 +166,8 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testCommentFeedViewModel_showCommentButton() {
-    final CommentFeedViewModel vm = new CommentFeedViewModel(environment());
+  public void testCommentsViewModel_showCommentButton() {
+    final CommentsViewModel vm = new CommentsViewModel(environment());
 
     final TestSubscriber<Boolean> showCommentButtonTest = new TestSubscriber<>();
     vm.outputs.showCommentButton().subscribe(showCommentButtonTest);
@@ -180,8 +180,8 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testCommentFeedViewModel_showCommentDialog() {
-    final CommentFeedViewModel vm = new CommentFeedViewModel(environment());
+  public void testCommentsViewModel_showCommentDialog() {
+    final CommentsViewModel vm = new CommentsViewModel(environment());
 
     final TestSubscriber<Pair<Project, Boolean>> showCommentDialogTest = new TestSubscriber<>();
     vm.outputs.showCommentDialog().subscribe(showCommentDialogTest);

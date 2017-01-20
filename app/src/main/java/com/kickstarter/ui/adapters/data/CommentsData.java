@@ -12,7 +12,7 @@ import java.util.List;
 import auto.parcel.AutoParcel;
 
 @AutoParcel
-public abstract class CommentFeedData {
+public abstract class CommentsData {
   public abstract @NonNull Project project();
   public abstract @Nullable List<Comment> comments();
   public abstract @Nullable User user();
@@ -22,19 +22,19 @@ public abstract class CommentFeedData {
     public abstract Builder project(Project __);
     public abstract Builder comments(List<Comment> __);
     public abstract Builder user(User __);
-    public abstract CommentFeedData build();
+    public abstract CommentsData build();
   }
 
   public static Builder builder() {
-    return new AutoParcel_CommentFeedData.Builder();
+    return new AutoParcel_CommentsData.Builder();
   }
 
   public abstract Builder toBuilder();
 
-  public static @NonNull CommentFeedData deriveData(final @NonNull Project project,
+  public static @NonNull CommentsData deriveData(final @NonNull Project project,
     final @Nullable List<Comment> comments, final @Nullable User user) {
 
-    return CommentFeedData.builder()
+    return CommentsData.builder()
       .project(project)
       .comments(comments)
       .user(user)

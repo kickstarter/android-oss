@@ -15,10 +15,10 @@ import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.activities.CommentFeedActivity;
-import com.kickstarter.ui.adapters.data.CommentFeedData;
-import com.kickstarter.viewmodels.inputs.CommentFeedViewModelInputs;
-import com.kickstarter.viewmodels.outputs.CommentFeedViewModelOutputs;
+import com.kickstarter.ui.activities.CommentsActivity;
+import com.kickstarter.ui.adapters.data.CommentsData;
+import com.kickstarter.viewmodels.inputs.CommentsViewModelInputs;
+import com.kickstarter.viewmodels.outputs.CommentsViewModelOutputs;
 
 import java.util.List;
 
@@ -26,12 +26,12 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public final class CommentFeedViewModel extends ActivityViewModel<CommentFeedActivity> implements CommentFeedViewModelInputs,
-  CommentFeedViewModelOutputs {
+public final class CommentsViewModel extends ActivityViewModel<CommentsActivity> implements CommentsViewModelInputs,
+  CommentsViewModelOutputs {
   private final ApiClientType client;
   private final CurrentUserType currentUser;
 
-  public CommentFeedViewModel(final @NonNull Environment environment) {
+  public CommentsViewModel(final @NonNull Environment environment) {
     super(environment);
 
     this.client = environment.apiClient();
@@ -105,10 +105,10 @@ public final class CommentFeedViewModel extends ActivityViewModel<CommentFeedAct
       project,
       comments,
       currentUser.observable(),
-      CommentFeedData::deriveData
+      CommentsData::deriveData
     )
       .compose(bindToLifecycle())
-      .subscribe(commentFeedData::onNext);
+      .subscribe(commentsData::onNext);
 
     project
       .map(Project::isBacking)
@@ -186,7 +186,7 @@ public final class CommentFeedViewModel extends ActivityViewModel<CommentFeedAct
   private final PublishSubject<Void> postCommentClicked = PublishSubject.create();
   private final PublishSubject<Void> refresh = PublishSubject.create();
 
-  private final BehaviorSubject<CommentFeedData> commentFeedData = BehaviorSubject.create();
+  private final BehaviorSubject<CommentsData> commentsData = BehaviorSubject.create();
   private final BehaviorSubject<String> currentCommentBody = BehaviorSubject.create();
   private final BehaviorSubject<Void> dismissCommentDialog = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> enablePostButton = BehaviorSubject.create();
@@ -196,8 +196,8 @@ public final class CommentFeedViewModel extends ActivityViewModel<CommentFeedAct
   private final PublishSubject<Void> showCommentPostedToast = PublishSubject.create();
   private final PublishSubject<ErrorEnvelope> showPostCommentErrorToast = PublishSubject.create();
 
-  public final CommentFeedViewModelInputs inputs = this;
-  public final CommentFeedViewModelOutputs outputs = this;
+  public final CommentsViewModelInputs inputs = this;
+  public final CommentsViewModelOutputs outputs = this;
 
   @Override public void commentBodyChanged(final @NonNull String string) {
     commentBodyChanged.onNext(string);
@@ -221,8 +221,8 @@ public final class CommentFeedViewModel extends ActivityViewModel<CommentFeedAct
     refresh.onNext(null);
   }
 
-  @Override public @NonNull Observable<CommentFeedData> commentFeedData() {
-    return commentFeedData;
+  @Override public @NonNull Observable<CommentsData> commentsData() {
+    return commentsData;
   }
   @Override public @NonNull Observable<String> currentCommentBody() {
     return currentCommentBody;

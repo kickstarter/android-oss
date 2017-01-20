@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.kickstarter.ui.toolbars.KSToolbar
-  android:id="@+id/comment_feed_toolbar"
+  android:id="@+id/comments_toolbar"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   style="@style/Toolbar"
-  tools:showIn="@layout/comment_feed_layout"
+  tools:showIn="@layout/comments_layout"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp">
 

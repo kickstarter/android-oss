@@ -3,15 +3,15 @@ package com.kickstarter.viewmodels.outputs;
 import android.util.Pair;
 
 import com.kickstarter.models.Project;
-import com.kickstarter.ui.adapters.data.CommentFeedData;
+import com.kickstarter.ui.adapters.data.CommentsData;
 
 import rx.Observable;
 
-public interface CommentFeedViewModelOutputs {
+public interface CommentsViewModelOutputs {
   /**
-   * Emits data to display comment feed.
+   * Emits data to display comments.
    */
-  Observable<CommentFeedData> commentFeedData();
+  Observable<CommentsData> commentsData();
 
   /**
    * Emits the string that should be displayed in the comment dialog when it is shown.

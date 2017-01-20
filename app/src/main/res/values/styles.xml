@@ -34,7 +34,7 @@
     <item name="android:windowBackground">@color/white</item>
   </style>
 
-  <style name="CommentFeedActivity" parent="KSTheme">
+  <style name="CommentsActivity" parent="KSTheme">
     <item name="android:windowBackground">@color/white</item>
   </style>
 

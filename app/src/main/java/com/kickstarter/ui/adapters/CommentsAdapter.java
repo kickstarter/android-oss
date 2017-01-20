@@ -9,9 +9,9 @@ import com.kickstarter.R;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
-import com.kickstarter.ui.adapters.data.CommentFeedData;
+import com.kickstarter.ui.adapters.data.CommentsData;
 import com.kickstarter.ui.viewholders.CommentViewHolder;
-import com.kickstarter.ui.viewholders.EmptyCommentFeedViewHolder;
+import com.kickstarter.ui.viewholders.EmptyCommentsViewHolder;
 import com.kickstarter.ui.viewholders.KSViewHolder;
 import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
 
@@ -20,12 +20,12 @@ import java.util.List;
 
 import rx.Observable;
 
-public final class CommentFeedAdapter extends KSAdapter {
+public final class CommentsAdapter extends KSAdapter {
   private final Delegate delegate;
 
-  public interface Delegate extends ProjectContextViewHolder.Delegate, EmptyCommentFeedViewHolder.Delegate {}
+  public interface Delegate extends ProjectContextViewHolder.Delegate, EmptyCommentsViewHolder.Delegate {}
 
-  public CommentFeedAdapter(final @NonNull Delegate delegate) {
+  public CommentsAdapter(final @NonNull Delegate delegate) {
     this.delegate = delegate;
   }
 
@@ -35,11 +35,11 @@ public final class CommentFeedAdapter extends KSAdapter {
     } else if (sectionRow.section() == 1){
       return R.layout.comment_card_view;
     } else {
-      return R.layout.empty_comment_feed_layout;
+      return R.layout.empty_comments_layout;
     }
   }
 
-  public void takeData(final @NonNull CommentFeedData data) {
+  public void takeData(final @NonNull CommentsData data) {
     final Project project = data.project();
     final List<Comment> comments = data.comments();
     final User user = data.user();
@@ -64,8 +64,8 @@ public final class CommentFeedAdapter extends KSAdapter {
   protected @NonNull KSViewHolder viewHolder(final @LayoutRes int layout, final @NonNull View view) {
     if (layout == R.layout.project_context_view) {
       return new ProjectContextViewHolder(view, delegate);
-    } else if (layout == R.layout.empty_comment_feed_layout) {
-      return new EmptyCommentFeedViewHolder(view, delegate);
+    } else if (layout == R.layout.empty_comments_layout) {
+      return new EmptyCommentsViewHolder(view, delegate);
     } else {
       return new CommentViewHolder(view);
     }

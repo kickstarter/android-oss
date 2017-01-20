@@ -193,7 +193,7 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
   private final BehaviorSubject<Boolean> isFetchingComments = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> showCommentButton = BehaviorSubject.create();
   private final BehaviorSubject<Pair<Project, Boolean>> showCommentDialog = BehaviorSubject.create();
-  private final PublishSubject<Void> showCommentPostedToast = PublishSubject.create();
+  private final BehaviorSubject<Void> showCommentPostedToast = BehaviorSubject.create();
   private final PublishSubject<ErrorEnvelope> showPostCommentErrorToast = PublishSubject.create();
 
   public final CommentsViewModelInputs inputs = this;

@@ -2,9 +2,9 @@ package com.kickstarter.viewmodels.inputs;
 
 public interface CommentFeedViewModelInputs {
   /**
-   * Invoke with the comment body every time it changes.
+   * Call when the comment body changes.
    */
-  void commentBodyInput(String __);
+  void commentBodyChanged(String __);
 
   /**
    * Call when the comment button is clicked.

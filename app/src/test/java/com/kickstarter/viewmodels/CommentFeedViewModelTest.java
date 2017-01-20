@@ -66,9 +66,9 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
     showCommentDialogTest.assertValue(Pair.create(project, true));
 
     // Write a comment. The post button should be enabled with valid comment body.
-    vm.inputs.commentBodyInput("");
+    vm.inputs.commentBodyChanged("");
     postButtonIsEnabledTest.assertValues(false);
-    vm.inputs.commentBodyInput("Some comment");
+    vm.inputs.commentBodyChanged("Some comment");
     postButtonIsEnabledTest.assertValues(false, true);
 
     // Post comment. Dialog should be dismissed.
@@ -161,7 +161,7 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
 
     currentCommentBodyTest.assertNoValues();
 
-    vm.inputs.commentBodyInput("Hello");
+    vm.inputs.commentBodyChanged("Hello");
     currentCommentBodyTest.assertValues("Hello");
   }
 

@@ -96,7 +96,7 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
       .switchMap(t -> RxTextView.textChanges(t).skip(1))
       .map(CharSequence::toString)
       .compose(bindToLifecycle())
-      .subscribe(viewModel.inputs::commentBodyInput);
+      .subscribe(viewModel.inputs::commentBodyChanged);
 
     viewModel.outputs.currentCommentBody()
       .compose(Transformers.takePairWhen(commentBodyEditText))

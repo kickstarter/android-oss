@@ -67,11 +67,11 @@ public final class CommentFeedViewModel extends ActivityViewModel<CommentFeedAct
 
     final PublishSubject<Void> commentIsPosted = PublishSubject.create();
 
-    final Observable<Boolean> commentHasBody = commentBodyInput
+    final Observable<Boolean> commentHasBody = commentBodyChanged
       .map(body -> body.length() > 0);
 
     final Observable<Comment> postedComment = project
-      .compose(Transformers.combineLatestPair(commentBodyInput))
+      .compose(Transformers.combineLatestPair(commentBodyChanged))
       .compose(Transformers.takeWhen(postCommentClicked))
       .switchMap(pb -> postComment(pb.first, pb.second))
       .share();
@@ -97,7 +97,7 @@ public final class CommentFeedViewModel extends ActivityViewModel<CommentFeedAct
       });
 
     // Seed comment body with user input.
-    commentBodyInput
+    commentBodyChanged
       .compose(bindToLifecycle())
       .subscribe(currentCommentBody::onNext);
 
@@ -148,7 +148,7 @@ public final class CommentFeedViewModel extends ActivityViewModel<CommentFeedAct
     commentIsPosted
       .map(__ -> "")
       .compose(bindToLifecycle())
-      .subscribe(commentBodyInput::onNext);
+      .subscribe(commentBodyChanged::onNext);
 
     initialProject.take(1)
       .compose(bindToLifecycle())
@@ -177,7 +177,7 @@ public final class CommentFeedViewModel extends ActivityViewModel<CommentFeedAct
       .doAfterTerminate(() -> commentIsPosting.onNext(false));
   }
 
-  private final PublishSubject<String> commentBodyInput = PublishSubject.create();
+  private final PublishSubject<String> commentBodyChanged = PublishSubject.create();
   private final PublishSubject<Void> commentButtonClicked = PublishSubject.create();
   private final PublishSubject<Void> commentDialogDismissed = PublishSubject.create();
   private final PublishSubject<Boolean> commentIsPosting = PublishSubject.create();
@@ -199,8 +199,8 @@ public final class CommentFeedViewModel extends ActivityViewModel<CommentFeedAct
   public final CommentFeedViewModelInputs inputs = this;
   public final CommentFeedViewModelOutputs outputs = this;
 
-  @Override public void commentBodyInput(final @NonNull String string) {
-    commentBodyInput.onNext(string);
+  @Override public void commentBodyChanged(final @NonNull String string) {
+    commentBodyChanged.onNext(string);
   }
   @Override public void commentButtonClicked() {
     commentButtonClicked.onNext(null);

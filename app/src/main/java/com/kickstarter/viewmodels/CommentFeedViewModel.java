@@ -28,93 +28,8 @@ import rx.subjects.PublishSubject;
 
 public final class CommentFeedViewModel extends ActivityViewModel<CommentFeedActivity> implements CommentFeedViewModelInputs,
   CommentFeedViewModelOutputs {
-  // INPUTS
-  private final PublishSubject<String> commentBodyInput = PublishSubject.create();
-  @Override
-  public void commentBodyInput(final @NonNull String string) {
-    commentBodyInput.onNext(string);
-  }
-  private final PublishSubject<Void> commentDialogDismissed = PublishSubject.create();
-  @Override
-  public void commentDialogDismissed() {
-    commentDialogDismissed.onNext(null);
-  }
-  private final PublishSubject<Void> loginSuccess = PublishSubject.create();
-  @Override
-  public void loginSuccess() {
-    loginSuccess.onNext(null);
-  }
-  private final PublishSubject<Void> nextPage = PublishSubject.create();
-  public void nextPage() {
-    nextPage.onNext(null);
-  }
-  private final PublishSubject<Void> postCommentClicked = PublishSubject.create();
-  @Override
-  public void postCommentClicked() {
-    postCommentClicked.onNext(null);
-  }
-  private final PublishSubject<Void> refresh = PublishSubject.create();
-  public void refresh() {
-    refresh.onNext(null);
-  }
-  private final PublishSubject<Void> commentButtonClicked = PublishSubject.create();
-  @Override
-  public void commentButtonClicked() {
-    commentButtonClicked.onNext(null);
-  }
-
-  // OUTPUTS
-  private final BehaviorSubject<CommentFeedData> commentFeedData = BehaviorSubject.create();
-  @Override
-  public Observable<CommentFeedData> commentFeedData() {
-    return commentFeedData;
-  }
-  private final BehaviorSubject<Void> dismissCommentDialog = BehaviorSubject.create();
-  @Override
-  public Observable<Void> dismissCommentDialog() {
-    return dismissCommentDialog;
-  }
-  private final BehaviorSubject<Boolean> enablePostButton = BehaviorSubject.create();
-  @Override
-  public Observable<Boolean> enablePostButton() {
-    return enablePostButton;
-  }
-  private final BehaviorSubject<String> currentCommentBody = BehaviorSubject.create();
-  @Override
-  public Observable<String> currentCommentBody() {
-    return currentCommentBody;
-  }
-  private final BehaviorSubject<Boolean> isFetchingComments = BehaviorSubject.create();
-  public Observable<Boolean> isFetchingComments() {
-    return isFetchingComments;
-  }
-  private final BehaviorSubject<Pair<Project, Boolean>> showCommentDialog = BehaviorSubject.create();
-  public Observable<Pair<Project, Boolean>> showCommentDialog() {
-    return showCommentDialog;
-  }
-  private final BehaviorSubject<Boolean> showCommentButton = BehaviorSubject.create();
-  public Observable<Boolean> showCommentButton() {
-    return showCommentButton;
-  }
-  private final PublishSubject<Void> showCommentPostedToast = PublishSubject.create();
-  @Override
-  public Observable<Void> showCommentPostedToast() {
-    return showCommentPostedToast;
-  }
-  private final PublishSubject<ErrorEnvelope> showPostCommentErrorToast = PublishSubject.create();
-  @Override
-  public Observable<String> showPostCommentErrorToast() {
-    return showPostCommentErrorToast
-      .map(ErrorEnvelope::errorMessage);
-  }
-
-  private final PublishSubject<Boolean> commentIsPosting = PublishSubject.create();
-
   private final ApiClientType client;
   private final CurrentUserType currentUser;
-
-  public final CommentFeedViewModelInputs inputs = this;
-  public final CommentFeedViewModelOutputs outputs = this;
 
   public CommentFeedViewModel(final @NonNull Environment environment) {
     super(environment);
@@ -260,5 +175,78 @@ public final class CommentFeedViewModel extends ActivityViewModel<CommentFeedAct
       .compose(Transformers.neverError())
       .doOnSubscribe(() -> commentIsPosting.onNext(true))
       .doAfterTerminate(() -> commentIsPosting.onNext(false));
+  }
+
+  private final PublishSubject<String> commentBodyInput = PublishSubject.create();
+  private final PublishSubject<Void> commentButtonClicked = PublishSubject.create();
+  private final PublishSubject<Void> commentDialogDismissed = PublishSubject.create();
+  private final PublishSubject<Boolean> commentIsPosting = PublishSubject.create();
+  private final PublishSubject<Void> loginSuccess = PublishSubject.create();
+  private final PublishSubject<Void> nextPage = PublishSubject.create();
+  private final PublishSubject<Void> postCommentClicked = PublishSubject.create();
+  private final PublishSubject<Void> refresh = PublishSubject.create();
+
+  private final BehaviorSubject<CommentFeedData> commentFeedData = BehaviorSubject.create();
+  private final BehaviorSubject<String> currentCommentBody = BehaviorSubject.create();
+  private final BehaviorSubject<Void> dismissCommentDialog = BehaviorSubject.create();
+  private final BehaviorSubject<Boolean> enablePostButton = BehaviorSubject.create();
+  private final BehaviorSubject<Boolean> isFetchingComments = BehaviorSubject.create();
+  private final BehaviorSubject<Boolean> showCommentButton = BehaviorSubject.create();
+  private final BehaviorSubject<Pair<Project, Boolean>> showCommentDialog = BehaviorSubject.create();
+  private final PublishSubject<Void> showCommentPostedToast = PublishSubject.create();
+  private final PublishSubject<ErrorEnvelope> showPostCommentErrorToast = PublishSubject.create();
+
+  public final CommentFeedViewModelInputs inputs = this;
+  public final CommentFeedViewModelOutputs outputs = this;
+
+  @Override public void commentBodyInput(final @NonNull String string) {
+    commentBodyInput.onNext(string);
+  }
+  @Override public void commentButtonClicked() {
+    commentButtonClicked.onNext(null);
+  }
+  @Override public void commentDialogDismissed() {
+    commentDialogDismissed.onNext(null);
+  }
+  @Override public void loginSuccess() {
+    loginSuccess.onNext(null);
+  }
+  @Override public void nextPage() {
+    nextPage.onNext(null);
+  }
+  @Override public void postCommentClicked() {
+    postCommentClicked.onNext(null);
+  }
+  @Override public void refresh() {
+    refresh.onNext(null);
+  }
+
+  @Override public @NonNull Observable<CommentFeedData> commentFeedData() {
+    return commentFeedData;
+  }
+  @Override public @NonNull Observable<String> currentCommentBody() {
+    return currentCommentBody;
+  }
+  @Override public @NonNull Observable<Void> dismissCommentDialog() {
+    return dismissCommentDialog;
+  }
+  @Override public @NonNull Observable<Boolean> enablePostButton() {
+    return enablePostButton;
+  }
+  @Override public @NonNull Observable<Boolean> isFetchingComments() {
+    return isFetchingComments;
+  }
+  @Override public @NonNull Observable<Boolean> showCommentButton() {
+    return showCommentButton;
+  }
+  @Override public @NonNull Observable<Pair<Project, Boolean>> showCommentDialog() {
+    return showCommentDialog;
+  }
+  @Override public @NonNull Observable<Void> showCommentPostedToast() {
+    return showCommentPostedToast;
+  }
+  @Override public @NonNull Observable<String> showPostCommentErrorToast() {
+    return showPostCommentErrorToast
+      .map(ErrorEnvelope::errorMessage);
   }
 }

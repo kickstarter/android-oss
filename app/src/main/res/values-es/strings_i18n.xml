@@ -143,6 +143,7 @@ patrocinadores</string>
   <string name="Manage_your_reward" formatted="false">Administra tu recompensa</string>
   <string name="Message_backer" formatted="false">Enviar mensaje a patrocinador</string>
   <string name="Message_creator" formatted="false">Enviar mensaje al creador</string>
+  <string name="No_Results" formatted="false">No Results</string>
   <string name="No_comments_yet" formatted="false">No hay comentarios todavia.</string>
   <string name="No_one_has_posted_an_update_yet" formatted="false">Todavía no se han publicado actualizaciones.</string>
   <string name="No_pledges_from_friends_yet" formatted="false">Todavía no hay contribuciones de amigos.</string>
@@ -230,6 +231,7 @@ patrocinadores</string>
   <string name="View_your_pledge" formatted="false">Revisa tu contribución</string>
   <string name="View_your_reward" formatted="false">Mostrar recompensa</string>
   <string name="Watch_live" formatted="false">Ver en vivo</string>
+  <string name="We_couldnt_find_anything_for_search_term" formatted="false">We couldn\'t find anything for %{search_term}.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">Cuando guardes un proyecto, te enviaremos un recordatorio por correo electrónico 48 horas antes de que finalice</string>
   <string name="You_Launched" formatted="false">¡Tu proyecto fue publicado!</string>
   <string name="You_backed_this_project" formatted="false">Patrocinaste este proyecto.</string>

@@ -66,6 +66,7 @@ public abstract class ErrorEnvelope implements Parcelable {
   public static final String TFA_REQUIRED = "tfa_required";
   public static final String MISSING_FACEBOOK_EMAIL = "missing_facebook_email";
   public static final String FACEBOOK_INVALID_ACCESS_TOKEN = "facebook_invalid_access_token";
+  public static final String UNAUTHORIZED = "unauthorized";
 
   @StringDef({INVALID_XAUTH_LOGIN, TFA_FAILED, TFA_REQUIRED})
   @Retention(RetentionPolicy.SOURCE)
@@ -106,6 +107,10 @@ public abstract class ErrorEnvelope implements Parcelable {
 
   public boolean isFacebookInvalidAccessTokenError() {
     return FACEBOOK_INVALID_ACCESS_TOKEN.equals(ksrCode());
+  }
+
+  public boolean isUnauthorizedError() {
+    return UNAUTHORIZED.equals(ksrCode());
   }
 
   /*

@@ -1,9 +1,6 @@
 package com.kickstarter.viewmodels;
 
-import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.facebook.CallbackManager;
@@ -24,7 +21,6 @@ import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.LoginToutActivity;
 import com.kickstarter.ui.data.ActivityResult;
 import com.kickstarter.ui.data.LoginReason;
-import com.kickstarter.viewmodels.errors.LoginToutViewModelErrors;
 import com.kickstarter.viewmodels.inputs.LoginToutViewModelInputs;
 import com.kickstarter.viewmodels.outputs.LoginToutViewModelOutputs;
 
@@ -35,102 +31,16 @@ import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 public final class LoginToutViewModel extends ActivityViewModel<LoginToutActivity> implements LoginToutViewModelInputs,
-  LoginToutViewModelOutputs, LoginToutViewModelErrors {
-
-  // INPUTS
-  @Override
-  public void facebookLoginClick(final @NonNull LoginToutActivity activity, final @NonNull List<String> facebookPermissions) {
-    LoginManager.getInstance().logInWithReadPermissions(activity, facebookPermissions);
-  }
-
-  private final PublishSubject<Void> loginClick = PublishSubject.create();
-  @Override
-  public void loginClick() {
-    loginClick.onNext(null);
-  }
-
-  private final PublishSubject<Void> signupClick = PublishSubject.create();
-  @Override
-  public void signupClick() {
-    signupClick.onNext(null);
-  }
-
-  // OUTPUTS
-  private final BehaviorSubject<Void> finishWithSuccessfulResult = BehaviorSubject.create();
-  @Override
-  public @NonNull Observable<Void> finishWithSuccessfulResult() {
-    return finishWithSuccessfulResult;
-  }
-
-  private final BehaviorSubject<Void> startLogin = BehaviorSubject.create();
-  @Override
-  public @NonNull Observable<Void> startLogin() {
-    return startLogin;
-  }
-
-  private final BehaviorSubject<Void> startSignup = BehaviorSubject.create();
-  @Override
-  public @NonNull Observable<Void> startSignup() {
-    return startSignup;
-  }
-
-  private final BehaviorSubject<Pair<ErrorEnvelope.FacebookUser, String>> startConfirmFacebookSignup = BehaviorSubject.create();
-  @Override
-  public @NonNull Observable<Pair<ErrorEnvelope.FacebookUser, String>> startConfirmFacebookSignup() {
-    return startConfirmFacebookSignup;
-  }
-
-  // ERRORS
-  private final PublishSubject<FacebookException> facebookAuthorizationError = PublishSubject.create();
-  @Override
-  public @NonNull Observable<String> facebookAuthorizationError() {
-    return facebookAuthorizationError
-      .map(FacebookException::getLocalizedMessage);
-  }
-
-  @Override
-  public @NonNull Observable<String> facebookInvalidAccessTokenError() {
-    return loginError
-      .filter(ErrorEnvelope::isFacebookInvalidAccessTokenError)
-      .map(ErrorEnvelope::errorMessage);
-  }
-
-  @Override
-  public @NonNull Observable<String> missingFacebookEmailError() {
-    return loginError
-      .filter(ErrorEnvelope::isMissingFacebookEmailError)
-      .map(ErrorEnvelope::errorMessage);
-  }
-
-  @Override
-  public Observable<Void> startTwoFactorChallenge() {
-    return loginError
-      .filter(ErrorEnvelope::isTfaRequiredError)
-      .map(__ -> null);
-  }
-
+  LoginToutViewModelOutputs {
   private CallbackManager callbackManager;
-  private final PublishSubject<String> facebookAccessToken = PublishSubject.create();
-  private final PublishSubject<LoginReason> loginReason = PublishSubject.create();
-  private final PublishSubject<ErrorEnvelope> loginError = PublishSubject.create();
-
   private final CurrentUserType currentUser;
   private final ApiClientType client;
-
-  public final LoginToutViewModelInputs inputs = this;
-  public final LoginToutViewModelOutputs outputs = this;
-  public final LoginToutViewModelErrors errors = this;
 
   public LoginToutViewModel(final @NonNull Environment environment) {
     super(environment);
 
     client = environment.apiClient();
     currentUser = environment.currentUser();
-  }
-
-  @Override
-  protected void onCreate(final @NonNull Context context, final @Nullable Bundle savedInstanceState) {
-    super.onCreate(context, savedInstanceState);
 
     registerFacebookCallback();
 
@@ -165,20 +75,13 @@ public final class LoginToutViewModel extends ActivityViewModel<LoginToutActivit
         finishWithSuccessfulResult.onNext(null);
       });
 
-    loginClick
-      .compose(bindToLifecycle())
-      .subscribe(startLogin::onNext);
-
-    signupClick
-      .compose(bindToLifecycle())
-      .subscribe(startSignup::onNext);
-
-    loginError
+    startFacebookConfirmationActivity = loginError
       .filter(ErrorEnvelope::isConfirmFacebookSignupError)
       .map(ErrorEnvelope::facebookUser)
-      .compose(Transformers.combineLatestPair(facebookAccessToken))
-      .compose(bindToLifecycle())
-      .subscribe(startConfirmFacebookSignup::onNext);
+      .compose(Transformers.combineLatestPair(facebookAccessToken));
+
+    startLoginActivity = loginClick;
+    startSignupActivity = signupClick;
 
     loginReason.take(1)
       .compose(bindToLifecycle())
@@ -188,9 +91,9 @@ public final class LoginToutViewModel extends ActivityViewModel<LoginToutActivit
       .compose(bindToLifecycle())
       .subscribe(__ -> koala.trackLoginError());
 
-    missingFacebookEmailError()
-      .mergeWith(facebookInvalidAccessTokenError())
-      .mergeWith(facebookAuthorizationError())
+    showMissingFacebookEmailErrorToast()
+      .mergeWith(showFacebookInvalidAccessTokenErrorToast())
+      .mergeWith(showFacebookAuthorizationErrorDialog())
       .compose(bindToLifecycle())
       .subscribe(__ -> koala.trackFacebookLoginError());
   }
@@ -225,5 +128,67 @@ public final class LoginToutViewModel extends ActivityViewModel<LoginToutActivit
         }
       }
     });
+  }
+
+  private final PublishSubject<String> facebookAccessToken = PublishSubject.create();
+  private final PublishSubject<Void> loginClick = PublishSubject.create();
+  private final PublishSubject<ErrorEnvelope> loginError = PublishSubject.create();
+  private final PublishSubject<LoginReason> loginReason = PublishSubject.create();
+  private final PublishSubject<Void> signupClick = PublishSubject.create();
+
+  private final BehaviorSubject<FacebookException> facebookAuthorizationError = BehaviorSubject.create();
+  private final BehaviorSubject<Void> finishWithSuccessfulResult = BehaviorSubject.create();
+  private final Observable<Pair<ErrorEnvelope.FacebookUser, String>> startFacebookConfirmationActivity;
+  private final Observable<Void> startLoginActivity;
+  private final Observable<Void> startSignupActivity;
+
+  public final LoginToutViewModelInputs inputs = this;
+  public final LoginToutViewModelOutputs outputs = this;
+
+  @Override public void facebookLoginClick(final @NonNull LoginToutActivity activity, final @NonNull List<String> facebookPermissions) {
+    LoginManager.getInstance().logInWithReadPermissions(activity, facebookPermissions);
+  }
+  @Override public void loginClick() {
+    loginClick.onNext(null);
+  }
+  @Override public void signupClick() {
+    signupClick.onNext(null);
+  }
+
+  @Override public @NonNull Observable<Void> finishWithSuccessfulResult() {
+    return finishWithSuccessfulResult;
+  }
+  @Override public @NonNull Observable<String> showFacebookAuthorizationErrorDialog() {
+    return facebookAuthorizationError
+      .map(FacebookException::getLocalizedMessage);
+  }
+  @Override public @NonNull Observable<String> showFacebookInvalidAccessTokenErrorToast() {
+    return loginError
+      .filter(ErrorEnvelope::isFacebookInvalidAccessTokenError)
+      .map(ErrorEnvelope::errorMessage);
+  }
+  @Override public @NonNull Observable<String> showMissingFacebookEmailErrorToast() {
+    return loginError
+      .filter(ErrorEnvelope::isMissingFacebookEmailError)
+      .map(ErrorEnvelope::errorMessage);
+  }
+  @Override public @NonNull Observable<String> showUnauthorizedErrorDialog() {
+    return loginError
+      .filter(ErrorEnvelope::isUnauthorizedError)
+      .map(ErrorEnvelope::errorMessage);
+  }
+  @Override public @NonNull Observable<Pair<ErrorEnvelope.FacebookUser, String>> startFacebookConfirmationActivity() {
+    return startFacebookConfirmationActivity;
+  }
+  @Override public @NonNull Observable<Void> startLoginActivity() {
+    return startLoginActivity;
+  }
+  @Override public @NonNull Observable<Void> startSignupActivity() {
+    return startSignupActivity;
+  }
+  @Override public @NonNull Observable<Void> startTwoFactorChallenge() {
+    return loginError
+      .filter(ErrorEnvelope::isTfaRequiredError)
+      .map(__ -> null);
   }
 }

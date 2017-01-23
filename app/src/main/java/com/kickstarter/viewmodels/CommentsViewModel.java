@@ -7,11 +7,11 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
+import com.kickstarter.services.ApiException;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.IntentKey;
@@ -22,9 +22,17 @@ import com.kickstarter.viewmodels.outputs.CommentsViewModelOutputs;
 
 import java.util.List;
 
+import rx.Notification;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
+
+import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
+import static com.kickstarter.libs.rx.transformers.Transformers.errors;
+import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
+import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
+import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
+import static com.kickstarter.libs.rx.transformers.Transformers.values;
 
 public final class CommentsViewModel extends ActivityViewModel<CommentsActivity> implements CommentsViewModelInputs,
   CommentsViewModelOutputs {
@@ -43,14 +51,14 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
       .filter(ObjectUtils::isNotNull);
 
     final Observable<Project> project = initialProject
-      .compose(Transformers.takeWhen(loginSuccess))
-      .flatMap(p -> client.fetchProject(p).compose(Transformers.neverError()))
+      .compose(takeWhen(loginSuccess))
+      .flatMap(p -> client.fetchProject(p).compose(neverError()))
       .mergeWith(initialProject)
       .share();
 
     final Observable<Project> startOverWith = Observable.merge(
       initialProject.take(1),
-      initialProject.compose(Transformers.takeWhen(refresh))
+      initialProject.compose(takeWhen(refresh))
       );
 
     final ApiPaginator<Comment, CommentsEnvelope, Project> paginator =
@@ -65,26 +73,39 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
 
     final Observable<List<Comment>> comments = paginator.paginatedData().share();
 
-    final PublishSubject<Void> commentIsPosted = PublishSubject.create();
-
     final Observable<Boolean> commentHasBody = commentBodyChanged
       .map(body -> body.length() > 0);
 
-    final Observable<Comment> postedComment = project
-      .compose(Transformers.combineLatestPair(commentBodyChanged))
-      .compose(Transformers.takeWhen(postCommentClicked))
-      .switchMap(pb -> postComment(pb.first, pb.second))
+    final Observable<Notification<Comment>> commentNotification = project
+      .compose(combineLatestPair(commentBodyChanged))
+      .compose(takeWhen(postCommentClicked))
+      .switchMap(pb ->
+        client
+          .postProjectComment(pb.first, pb.second)
+          .doOnSubscribe(() -> commentIsPosting.onNext(true))
+          .doAfterTerminate(() -> commentIsPosting.onNext(false))
+          .materialize()
+      )
       .share();
 
+    final Observable<Comment> postedComment = commentNotification
+      .compose(values())
+      .ofType(Comment.class);
+
+    commentNotification
+      .compose(errors())
+      .ofType(ApiException.class)
+      .subscribe(e -> showPostCommentErrorToast.onNext(e.errorEnvelope()));
+
     project
-      .compose(Transformers.takeWhen(loginSuccess))
+      .compose(takeWhen(loginSuccess))
       .filter(Project::isBacking)
       .take(1)
       .compose(bindToLifecycle())
       .subscribe(p -> showCommentDialog.onNext(Pair.create(p, true)));
 
     project
-      .compose(Transformers.takeWhen(commentButtonClicked))
+      .compose(takeWhen(commentButtonClicked))
       .filter(Project::isBacking)
       .compose(bindToLifecycle())
       .subscribe(p -> showCommentDialog.onNext(Pair.create(p, true)));
@@ -117,12 +138,9 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
       .subscribe(showCommentButton::onNext);
 
     postedComment
-      .compose(Transformers.ignoreValues())
+      .compose(ignoreValues())
       .compose(bindToLifecycle())
-      .subscribe(__ -> {
-        refresh.onNext(null);
-        commentIsPosted.onNext(null);
-      });
+      .subscribe(refresh::onNext);
 
     commentHasBody
       .compose(bindToLifecycle())
@@ -134,18 +152,18 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
       .subscribe(enablePostButton::onNext);
 
     initialProject
-      .compose(Transformers.takeWhen(commentIsPosted))
+      .compose(takeWhen(postedComment))
       .compose(bindToLifecycle())
       .subscribe(koala::trackProjectCommentCreate);
 
-    commentIsPosted
+    postedComment
       .compose(bindToLifecycle())
       .subscribe(__ -> {
         commentDialogDismissed.onNext(null);
         showCommentPostedToast.onNext(null);
       });
 
-    commentIsPosted
+    postedComment
       .map(__ -> "")
       .compose(bindToLifecycle())
       .subscribe(commentBodyChanged::onNext);
@@ -155,7 +173,7 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
       .subscribe(koala::trackProjectCommentsView);
 
     initialProject
-      .compose(Transformers.takeWhen(nextPage.skip(1)))
+      .compose(takeWhen(nextPage.skip(1)))
       .compose(bindToLifecycle())
       .subscribe(koala::trackProjectCommentLoadMore);
 
@@ -167,14 +185,6 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
       .take(1)
       .compose(bindToLifecycle())
       .subscribe(__ -> refresh.onNext(null));
-  }
-
-  private Observable<Comment> postComment(final @NonNull Project project, final @NonNull String body) {
-    return client.postProjectComment(project, body)
-      .compose(Transformers.pipeApiErrorsTo(showPostCommentErrorToast))
-      .compose(Transformers.neverError())
-      .doOnSubscribe(() -> commentIsPosting.onNext(true))
-      .doAfterTerminate(() -> commentIsPosting.onNext(false));
   }
 
   private final PublishSubject<String> commentBodyChanged = PublishSubject.create();
@@ -193,7 +203,7 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
   private final BehaviorSubject<Boolean> isFetchingComments = BehaviorSubject.create();
   private final BehaviorSubject<Boolean> showCommentButton = BehaviorSubject.create();
   private final BehaviorSubject<Pair<Project, Boolean>> showCommentDialog = BehaviorSubject.create();
-  private final BehaviorSubject<Void> showCommentPostedToast = BehaviorSubject.create();
+  private final PublishSubject<Void> showCommentPostedToast = PublishSubject.create();
   private final PublishSubject<ErrorEnvelope> showPostCommentErrorToast = PublishSubject.create();
 
   public final CommentsViewModelInputs inputs = this;

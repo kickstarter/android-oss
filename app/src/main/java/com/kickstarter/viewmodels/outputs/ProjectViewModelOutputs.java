@@ -25,10 +25,10 @@ public interface ProjectViewModelOutputs {
 
   Observable<Project> showShareSheet();
   Observable<Project> playVideo();
-  Observable<Project> showCampaign();
-  Observable<Project> showCreator();
-  Observable<Project> showUpdates();
-  Observable<Project> showComments();
+  Observable<Project> startCampaignWebViewActivity();
+  Observable<Project> startCreatorBioWebViewActivity();
+  Observable<Project> startProjectUpdatesActivity();
+  Observable<Project> startCommentsActivity();
   Observable<Project> startCheckout();
   Observable<Project> startManagePledge();
   Observable<Project> startViewPledge();

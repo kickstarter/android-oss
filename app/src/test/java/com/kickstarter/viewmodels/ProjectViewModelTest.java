@@ -143,4 +143,20 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     starredTest.assertValues(false, false, true);
     showStarredPromptTest.assertValueCount(0);
   }
+
+  @Test
+  public void testProjectViewMdoel_StartProjectUpdatesActivity() {
+    final ProjectViewModel vm = new ProjectViewModel(environment());
+    final Project project = ProjectFactory.project();
+
+    final TestSubscriber<Project> startProjectUpdatesActivity = new TestSubscriber<>();
+    vm.outputs.startProjectUpdatesActivity().subscribe(startProjectUpdatesActivity);
+
+    // Start the view model with a project.
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+
+    // Click on Updates button.
+    vm.inputs.updatesClicked();
+    startProjectUpdatesActivity.assertValues(project);
+  }
 }

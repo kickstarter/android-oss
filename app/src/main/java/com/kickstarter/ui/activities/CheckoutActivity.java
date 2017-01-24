@@ -210,7 +210,7 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
     viewModel.inputs.takePayloadString(payloadString);
   }
 
-  private boolean handleCheckoutThanksUriRequest(@NonNull final Request request, @NonNull final WebView webView) {
+  private boolean handleCheckoutThanksUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
     final Intent intent = new Intent(this, ThanksActivity.class)
       .putExtra(IntentKey.PROJECT, project);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);

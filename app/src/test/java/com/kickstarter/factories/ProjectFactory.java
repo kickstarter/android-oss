@@ -20,6 +20,7 @@ public final class ProjectFactory {
     final Project.Urls.Web web = Project.Urls.Web.builder()
       .project(projectUrl)
       .rewards(projectUrl + "/rewards")
+      .updates(projectUrl + "/posts")
       .build();
 
     return Project.builder()

@@ -37,7 +37,7 @@
 
   <Button
     style="@style/BorderButton"
-    android:id="@+id/comment_feed_login_button"
+    android:id="@+id/comments_login_button"
     android:background="@drawable/button_white_border_dark_gray"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"

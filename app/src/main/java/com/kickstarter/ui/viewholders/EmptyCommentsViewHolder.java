@@ -17,18 +17,18 @@ import butterknife.OnClick;
 
 import static com.kickstarter.libs.utils.ObjectUtils.requireNonNull;
 
-public final class EmptyCommentFeedViewHolder extends KSViewHolder {
+public final class EmptyCommentsViewHolder extends KSViewHolder {
   private Project project;
   private User user;
   private final Delegate delegate;
-  protected @Bind(R.id.comment_feed_login_button) Button commentFeedLoginButton;
+  protected @Bind(R.id.comments_login_button) Button commentsLoginButton;
   protected @Bind(R.id.no_comments_message) TextView noCommentsMessageTextView;
 
   public interface Delegate {
-    void emptyCommentFeedLoginClicked(EmptyCommentFeedViewHolder viewHolder);
+    void emptyCommentsLoginClicked(EmptyCommentsViewHolder viewHolder);
   }
 
-  public EmptyCommentFeedViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
+  public EmptyCommentsViewHolder(final @NonNull View view, final @NonNull Delegate delegate) {
     super(view);
     this.delegate = delegate;
     ButterKnife.bind(this, view);
@@ -44,20 +44,20 @@ public final class EmptyCommentFeedViewHolder extends KSViewHolder {
 
   public void onBind() {
     if (user == null) {
-      commentFeedLoginButton.setVisibility(View.VISIBLE);
+      commentsLoginButton.setVisibility(View.VISIBLE);
       noCommentsMessageTextView.setText(R.string.project_comments_empty_state_logged_out_message_log_in);
     } else if (project.isBacking()) {
-      commentFeedLoginButton.setVisibility(View.GONE);
+      commentsLoginButton.setVisibility(View.GONE);
       noCommentsMessageTextView.setText(R.string.project_comments_empty_state_backer_message);
     } else {
-      commentFeedLoginButton.setVisibility(View.GONE);
+      commentsLoginButton.setVisibility(View.GONE);
       noCommentsMessageTextView.setText(R.string.update_comments_empty_state_non_backer_message);
     }
   }
 
   @Nullable
-  @OnClick(R.id.comment_feed_login_button)
-  public void emptyCommentFeedLogin() {
-    delegate.emptyCommentFeedLoginClicked(this);
+  @OnClick(R.id.comments_login_button)
+  public void emptyCommentsLogin() {
+    delegate.emptyCommentsLoginClicked(this);
   }
 }

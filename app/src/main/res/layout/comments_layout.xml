@@ -5,15 +5,15 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
-  <include layout="@layout/comment_feed_toolbar"/>
+  <include layout="@layout/comments_toolbar"/>
 
   <android.support.v4.widget.SwipeRefreshLayout
-    android:id="@+id/comment_feed_swipe_refresh_layout"
+    android:id="@+id/comments_swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <android.support.v7.widget.RecyclerView
-      android:id="@+id/comment_feed_recycler_view"
+      android:id="@+id/comments_recycler_view"
       android:background="@color/white"
       android:layout_width="match_parent"
       android:layout_height="match_parent"/>

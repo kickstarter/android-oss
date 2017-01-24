@@ -27,11 +27,11 @@ import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.libs.utils.ViewUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.adapters.CommentFeedAdapter;
+import com.kickstarter.ui.adapters.CommentsAdapter;
 import com.kickstarter.ui.data.LoginReason;
-import com.kickstarter.ui.viewholders.EmptyCommentFeedViewHolder;
+import com.kickstarter.ui.viewholders.EmptyCommentsViewHolder;
 import com.kickstarter.ui.viewholders.ProjectContextViewHolder;
-import com.kickstarter.viewmodels.CommentFeedViewModel;
+import com.kickstarter.viewmodels.CommentsViewModel;
 import com.trello.rxlifecycle.ActivityEvent;
 
 import butterknife.Bind;
@@ -44,17 +44,17 @@ import rx.subjects.PublishSubject;
 
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
-@RequiresActivityViewModel(CommentFeedViewModel.class)
-public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel> implements CommentFeedAdapter.Delegate {
-  private CommentFeedAdapter adapter;
+@RequiresActivityViewModel(CommentsViewModel.class)
+public final class CommentsActivity extends BaseActivity<CommentsViewModel> implements CommentsAdapter.Delegate {
+  private CommentsAdapter adapter;
   private RecyclerViewPaginator recyclerViewPaginator;
   private SwipeRefresher swipeRefresher;
 
   private @NonNull PublishSubject<AlertDialog> alertDialog = PublishSubject.create();
 
   protected @Bind(R.id.comment_button) TextView commentButtonTextView;
-  protected @Bind(R.id.comment_feed_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
-  protected @Bind(R.id.comment_feed_recycler_view) RecyclerView recyclerView;
+  protected @Bind(R.id.comments_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
+  protected @Bind(R.id.comments_recycler_view) RecyclerView recyclerView;
 
   protected @BindString(R.string.social_error_could_not_post_try_again) String postCommentErrorString;
   protected @BindString(R.string.project_comments_posted) String commentPostedString;
@@ -62,10 +62,10 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.comment_feed_layout);
+    setContentView(R.layout.comments_layout);
     ButterKnife.bind(this);
 
-    adapter = new CommentFeedAdapter(this);
+    adapter = new CommentsAdapter(this);
     recyclerView.setAdapter(adapter);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -96,7 +96,7 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
       .switchMap(t -> RxTextView.textChanges(t).skip(1))
       .map(CharSequence::toString)
       .compose(bindToLifecycle())
-      .subscribe(viewModel.inputs::commentBodyInput);
+      .subscribe(viewModel.inputs::commentBodyChanged);
 
     viewModel.outputs.currentCommentBody()
       .compose(Transformers.takePairWhen(commentBodyEditText))
@@ -104,7 +104,7 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
       .compose(bindToLifecycle())
       .subscribe(ce -> ce.second.append(ce.first));
 
-    viewModel.outputs.commentFeedData()
+    viewModel.outputs.commentsData()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(adapter::takeData);
@@ -164,7 +164,7 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
     back();
   }
 
-  public void commentFeedLogin() {
+  public void commentsLogin() {
     final Intent intent = new Intent(this, LoginToutActivity.class)
       .putExtra(IntentKey.LOGIN_REASON, LoginReason.COMMENT_FEED);
     startActivityForResult(intent, ActivityRequestCodes.LOGIN_FLOW);
@@ -212,8 +212,8 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
   }
 
   @Override
-  public void emptyCommentFeedLoginClicked(final @NonNull EmptyCommentFeedViewHolder viewHolder) {
-    commentFeedLogin();
+  public void emptyCommentsLoginClicked(final @NonNull EmptyCommentsViewHolder viewHolder) {
+    commentsLogin();
   }
 
   @Override
@@ -234,7 +234,7 @@ public final class CommentFeedActivity extends BaseActivity<CommentFeedViewModel
   }
 
   private Observable<String> toastMessages() {
-    return viewModel.errors.postCommentError()
+    return viewModel.outputs.showPostCommentErrorToast()
       .map(ObjectUtils.coalesceWith(postCommentErrorString))
       .mergeWith(viewModel.outputs.showCommentPostedToast().map(__ -> commentPostedString));
   }

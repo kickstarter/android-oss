@@ -1,42 +1,83 @@
 package com.kickstarter.viewmodels;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
+import com.kickstarter.factories.ApiExceptionFactory;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
+import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
+import com.kickstarter.services.ApiClientType;
+import com.kickstarter.services.MockApiClient;
 import com.kickstarter.ui.IntentKey;
-import com.kickstarter.ui.adapters.data.CommentFeedData;
+import com.kickstarter.ui.adapters.data.CommentsData;
 
 import org.junit.Test;
 
+import rx.Observable;
 import rx.observers.TestSubscriber;
 
-public class CommentFeedViewModelTest extends KSRobolectricTestCase {
+public class CommentsViewModelTest extends KSRobolectricTestCase {
 
   @Test
-  public void testCommentFeedViewModel_commentsEmit() {
-    final CommentFeedViewModel vm = new CommentFeedViewModel(environment());
+  public void testCommentsViewModel_commentsEmit() {
+    final CommentsViewModel vm = new CommentsViewModel(environment());
 
-    final TestSubscriber<CommentFeedData> commentFeedData = new TestSubscriber<>();
-    vm.outputs.commentFeedData().subscribe(commentFeedData);
+    final TestSubscriber<CommentsData> commentsData = new TestSubscriber<>();
+    vm.outputs.commentsData().subscribe(commentsData);
+
+    final TestSubscriber<Boolean> isFetchingComments = new TestSubscriber<>();
+    vm.outputs.isFetchingComments().subscribe(isFetchingComments);
 
     // Start the view model with a project.
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()));
     koalaTest.assertValues("Project Comment View");
 
     // Comments should emit.
-    commentFeedData.assertValueCount(1);
+    commentsData.assertValueCount(1);
+    isFetchingComments.assertValues(true, false);
   }
 
   @Test
-  public void testCommentFeedViewModel_postCommentFlow() {
-    final CommentFeedViewModel vm = new CommentFeedViewModel(environment());
+  public void testCommentsViewModel_postCommentError() {
+    final ApiClientType apiClient = new MockApiClient() {
+      @Override
+      public @NonNull Observable<Comment> postProjectComment(final @NonNull Project project, final @NonNull String body) {
+        return Observable.error(ApiExceptionFactory.badRequestException());
+      }
+    };
+
+    final Environment env = environment().toBuilder().apiClient(apiClient).build();
+    final CommentsViewModel vm = new CommentsViewModel(env);
+
+    final TestSubscriber<String> showPostCommentErrorToast = new TestSubscriber<>();
+    vm.outputs.showPostCommentErrorToast().subscribe(showPostCommentErrorToast);
+
+    final TestSubscriber<Void> showCommentPostedToast = new TestSubscriber<>();
+    vm.outputs.showCommentPostedToast().subscribe(showCommentPostedToast);
+
+    // Start the view model with a project.
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()));
+
+    // Click the comment button and write a comment.
+    vm.inputs.commentButtonClicked();
+    vm.inputs.commentBodyChanged("Mic check mic check.");
+
+    // Post comment. Error should be shown. Comment posted toast should not be shown.
+    vm.inputs.postCommentClicked();
+    showPostCommentErrorToast.assertValueCount(1);
+    showCommentPostedToast.assertNoValues();
+  }
+
+  @Test
+  public void testCommentsViewModel_postCommentFlow() {
+    final CommentsViewModel vm = new CommentsViewModel(environment());
     final Project project = ProjectFactory.backedProject();
 
     final TestSubscriber<Void> showCommentPostedToastTest = new TestSubscriber<>();
@@ -66,9 +107,9 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
     showCommentDialogTest.assertValue(Pair.create(project, true));
 
     // Write a comment. The post button should be enabled with valid comment body.
-    vm.inputs.commentBodyInput("");
+    vm.inputs.commentBodyChanged("");
     postButtonIsEnabledTest.assertValues(false);
-    vm.inputs.commentBodyInput("Some comment");
+    vm.inputs.commentBodyChanged("Some comment");
     postButtonIsEnabledTest.assertValues(false, true);
 
     // Post comment. Dialog should be dismissed.
@@ -83,14 +124,14 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testCommentFeedViewModel_loggedOutShowDialogFlow() {
+  public void testCommentsViewModel_loggedOutShowDialogFlow() {
     final CurrentUserType currentUser = new MockCurrentUser();
 
     final Environment environment = environment().toBuilder()
       .currentUser(currentUser)
       .build();
 
-    final CommentFeedViewModel vm = new CommentFeedViewModel(environment);
+    final CommentsViewModel vm = new CommentsViewModel(environment);
 
     final Project project = ProjectFactory.backedProject();
 
@@ -112,8 +153,8 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testCommentFeedViewModel_commentButtonHidden() {
-    final CommentFeedViewModel vm = new CommentFeedViewModel(environment());
+  public void testCommentsViewModel_commentButtonHidden() {
+    final CommentsViewModel vm = new CommentsViewModel(environment());
 
     final TestSubscriber<Boolean> showCommentButtonTest = new TestSubscriber<>();
     vm.outputs.showCommentButton().subscribe(showCommentButtonTest);
@@ -126,8 +167,8 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testCommentFeedViewModel_dismissCommentDialog() {
-    final CommentFeedViewModel vm = new CommentFeedViewModel(environment());
+  public void testCommentsViewModel_dismissCommentDialog() {
+    final CommentsViewModel vm = new CommentsViewModel(environment());
 
     final TestSubscriber<Void> dismissCommentDialogTest = new TestSubscriber<>();
     vm.outputs.dismissCommentDialog().subscribe(dismissCommentDialogTest);
@@ -153,21 +194,21 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testCommentFeedViewModel_currentCommentBody() {
-    final CommentFeedViewModel vm = new CommentFeedViewModel(environment());
+  public void testCommentsViewModel_currentCommentBody() {
+    final CommentsViewModel vm = new CommentsViewModel(environment());
 
     final TestSubscriber<String> currentCommentBodyTest = new TestSubscriber<>();
     vm.outputs.currentCommentBody().subscribe(currentCommentBodyTest);
 
     currentCommentBodyTest.assertNoValues();
 
-    vm.inputs.commentBodyInput("Hello");
+    vm.inputs.commentBodyChanged("Hello");
     currentCommentBodyTest.assertValues("Hello");
   }
 
   @Test
-  public void testCommentFeedViewModel_showCommentButton() {
-    final CommentFeedViewModel vm = new CommentFeedViewModel(environment());
+  public void testCommentsViewModel_showCommentButton() {
+    final CommentsViewModel vm = new CommentsViewModel(environment());
 
     final TestSubscriber<Boolean> showCommentButtonTest = new TestSubscriber<>();
     vm.outputs.showCommentButton().subscribe(showCommentButtonTest);
@@ -180,8 +221,8 @@ public class CommentFeedViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testCommentFeedViewModel_showCommentDialog() {
-    final CommentFeedViewModel vm = new CommentFeedViewModel(environment());
+  public void testCommentsViewModel_showCommentDialog() {
+    final CommentsViewModel vm = new CommentsViewModel(environment());
 
     final TestSubscriber<Pair<Project, Boolean>> showCommentDialogTest = new TestSubscriber<>();
     vm.outputs.showCommentDialog().subscribe(showCommentDialogTest);

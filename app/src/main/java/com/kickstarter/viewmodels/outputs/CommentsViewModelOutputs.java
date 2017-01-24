@@ -3,15 +3,20 @@ package com.kickstarter.viewmodels.outputs;
 import android.util.Pair;
 
 import com.kickstarter.models.Project;
-import com.kickstarter.ui.adapters.data.CommentFeedData;
+import com.kickstarter.ui.adapters.data.CommentsData;
 
 import rx.Observable;
 
-public interface CommentFeedViewModelOutputs {
+public interface CommentsViewModelOutputs {
   /**
-   * Emits data to display comment feed.
+   * Emits data to display comments.
    */
-  Observable<CommentFeedData> commentFeedData();
+  Observable<CommentsData> commentsData();
+
+  /**
+   * Emits the string that should be displayed in the comment dialog when it is shown.
+   */
+  Observable<String> currentCommentBody();
 
   /**
    * Emits when the comment dialog should be dismissed.
@@ -29,11 +34,6 @@ public interface CommentFeedViewModelOutputs {
   Observable<Boolean> isFetchingComments();
 
   /**
-   * Emits the string that should be displayed in the comment dialog when it is shown.
-   */
-  Observable<String> currentCommentBody();
-
-  /**
    * Emits a boolean that determines if the comment button should be visible.
    */
   Observable<Boolean> showCommentButton();
@@ -47,4 +47,9 @@ public interface CommentFeedViewModelOutputs {
    * Emits when comment posted toast message should be displayed.
    */
   Observable<Void> showCommentPostedToast();
+
+  /**
+   * Emits when we should display a post comment error toast.
+   */
+  Observable<String> showPostCommentErrorToast();
 }

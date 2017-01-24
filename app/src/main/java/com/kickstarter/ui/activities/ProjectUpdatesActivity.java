@@ -5,22 +5,27 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
+import android.webkit.WebView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
+import com.kickstarter.services.KSUri;
 import com.kickstarter.services.KSWebViewClient;
+import com.kickstarter.services.RequestHandler;
 import com.kickstarter.ui.views.KSWebView;
 import com.kickstarter.viewmodels.ProjectUpdatesViewModel;
 
+import java.util.Arrays;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import okhttp3.Request;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 
 @RequiresActivityViewModel(ProjectUpdatesViewModel.class)
 public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel> implements KSWebViewClient.Delegate {
-
   protected @Bind(R.id.web_view) KSWebView ksWebView;
   protected @Bind(R.id.loading_indicator_view) View loadingIndicatorView;
 
@@ -31,6 +36,10 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
     ButterKnife.bind(this);
 
     this.ksWebView.client().setDelegate(this);
+    this.ksWebView.client().registerRequestHandlers(Arrays.asList(
+      new RequestHandler(KSUri::isProjectUpdateCommentsUri, this::handleProjectUpdateCommentsUriRequest),
+      new RequestHandler(KSUri::isProjectUpdateUri, this::handleProjectUpdateUriRequest)
+    ));
 
     this.viewModel.outputs.webViewUrl()
       .compose(bindToLifecycle())
@@ -38,13 +47,25 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
       .subscribe(this.ksWebView::loadUrl);
   }
 
+  private boolean handleProjectUpdateCommentsUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
+    // start comments activity
+    return true;
+  }
+
+  private boolean handleProjectUpdateUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
+    // todo: maybe we don't need this one
+    return true;
+  }
+
+  // big todo: properly navigate back on webviews.
+
   @Override
   public void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
     // todo: maybe we should reuse these indicator animations for all our webviews
     final AlphaAnimation animation = new AlphaAnimation(1.0f, 0.0f);
     animation.setDuration(300L);
     animation.setFillAfter(true);
-    loadingIndicatorView.startAnimation(animation);
+    this.loadingIndicatorView.startAnimation(animation);
   }
 
   @Override
@@ -52,11 +73,11 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
     final AlphaAnimation animation = new AlphaAnimation(0.0f, 1.0f);
     animation.setDuration(300L);
     animation.setFillAfter(true);
-    loadingIndicatorView.startAnimation(animation);
+    this.loadingIndicatorView.startAnimation(animation);
   }
 
   @Override
   public void webViewPageIntercepted(final @NonNull KSWebViewClient webViewClient, final @NonNull String url) {
-    viewModel.inputs.pageInterceptedUrl(url);
+    this.viewModel.inputs.pageInterceptedUrl(url);
   }
 }

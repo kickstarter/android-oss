@@ -256,6 +256,16 @@
     </activity>
 
     <activity
+      android:name=".ui.activities.ProjectUpdatesActivity"
+      android:parentActivityName=".ui.activities.ProjectActivity">
+
+      <meta-data
+        android:name="android.support.PARENT_ACTIVITY"
+        android:value=".ui.activities.ProjectActivity"/>
+
+    </activity>
+
+    <activity
       android:name=".ui.activities.SearchActivity"
       android:parentActivityName=".ui.activities.DiscoveryActivity"
       android:theme="@style/SearchActivity">

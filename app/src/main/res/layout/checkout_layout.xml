@@ -155,7 +155,7 @@
     android:layout_height="0dp" />
 
   <RelativeLayout
-    android:id="@+id/checkout_loading_indicator"
+    android:id="@+id/loading_indicator_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_below="@id/checkout_toolbar">

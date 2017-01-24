@@ -26,7 +26,7 @@ import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 public final class WebViewActivity extends BaseActivity<WebViewViewModel> implements KSWebViewClient.Delegate {
   protected @Bind(R.id.web_view_toolbar) KSToolbar toolbar;
   protected @Bind(R.id.web_view) KSWebView webView;
-  protected @Bind(R.id.checkout_loading_indicator) View loadingIndicatorView;
+  protected @Bind(R.id.loading_indicator_view) View loadingIndicatorView;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {

@@ -43,6 +43,7 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
   @Bind(R.id.login_toolbar) LoginToolbar loginToolbar;
 
   @BindString(R.string.login_tout_navbar_title) String loginOrSignUpString;
+  @BindString(R.string.login_errors_title) String loginErrorTitleString;
   @BindString(R.string.login_errors_unable_to_log_in) String unableToLoginString;
   @BindString(R.string.general_error_oops) String errorTitleString;
   @BindString(R.string.login_tout_errors_facebook_authorization_exception_message) String troubleLoggingInString;
@@ -61,42 +62,47 @@ public final class LoginToutActivity extends BaseActivity<LoginToutViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> finishWithSuccessfulResult());
 
-    viewModel.outputs.startLogin()
+    viewModel.outputs.startLoginActivity()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> startLogin());
 
-    viewModel.outputs.startSignup()
+    viewModel.outputs.startSignupActivity()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> startSignup());
 
-    viewModel.outputs.startConfirmFacebookSignup()
+    viewModel.outputs.startFacebookConfirmationActivity()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(ua -> startFacebookConfirmationActivity(ua.first, ua.second));
 
-    viewModel.errors.facebookAuthorizationError()
+    viewModel.outputs.showFacebookAuthorizationErrorDialog()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> ViewUtils.showDialog(this, errorTitleString, troubleLoggingInString, tryAgainString));
 
-    errorMessages()
+    showErrorMessageToasts()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(ViewUtils.showToast(this));
 
-    viewModel.errors.startTwoFactorChallenge()
+    viewModel.outputs.startTwoFactorChallenge()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(__ -> startTwoFactorFacebookChallenge());
+
+    viewModel.outputs.showUnauthorizedErrorDialog()
+      .compose(bindToLifecycle())
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(errorMessage -> ViewUtils.showDialog(this, loginErrorTitleString, errorMessage));
   }
 
-  private Observable<String> errorMessages() {
-    return viewModel.errors.missingFacebookEmailError()
+  private @NonNull Observable<String> showErrorMessageToasts() {
+    return viewModel.outputs.showMissingFacebookEmailErrorToast()
       .map(ObjectUtils.coalesceWith(unableToLoginString))
       .mergeWith(
-        viewModel.errors.facebookInvalidAccessTokenError()
+        viewModel.outputs.showFacebookInvalidAccessTokenErrorToast()
           .map(ObjectUtils.coalesceWith(unableToLoginString))
       );
   }

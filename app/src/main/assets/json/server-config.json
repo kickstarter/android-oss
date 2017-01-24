@@ -156,6 +156,7 @@
       "No_one_has_posted_an_update_yet": "No one has posted an update yet.",
       "No_pledges_from_friends_yet": "No pledges \nfrom friends yet.",
       "No_replay_is_available_for_this_live_stream": "No replay is available for this live stream.",
+      "No_Results": "No Results",
       "Once_you_back_a_project_well_share": "Once you back a project, we’ll share personalized recommendations in this space.",
       "Opens_comments": "Opens comments.",
       "Opens_creator_profile": "Opens creator profile.",
@@ -260,6 +261,7 @@
       "View": "View",
       "Watch_live": "Watch live",
       "When_you_save_a_project_we_ll_send_you_a_reminder": "When you save a project we’ll send you a reminder 48 hours before it ends",
+      "We_couldnt_find_anything_for_search_term": "We couldn't find anything for %{search_term}.",
       "You_saved_this_project": "You saved this project.",
       "Your_pledge_amount": "Your pledge amount:",
       "Your_shipping_destination": "Your shipping destination",
@@ -1985,6 +1987,7 @@
       "No_one_has_posted_an_update_yet": "Es wurden noch keine Updates gepostet.",
       "No_pledges_from_friends_yet": "Es gibt noch keine Beiträge von Freunden.",
       "No_replay_is_available_for_this_live_stream": "Kein Replay verügbar für diesen Live-Stream.",
+      "No_Results": "No Results",
       "Once_you_back_a_project_well_share": "Wenn du ein Projekt unterstützt, werden wir dir hier maßgeschneiderte Empfehlungen machen.",
       "Opens_comments": "Öffnet Kommentare.",
       "Opens_creator_profile": "Öffnet das Profil des Projektgründers.",
@@ -2089,6 +2092,7 @@
       "View": "Anzeigen",
       "Watch_live": "Live ansehen",
       "When_you_save_a_project_we_ll_send_you_a_reminder": "Wenn du ein Projekt speicherst, senden wir dir 48 Stunden vor Ablauf eine Erinnerungs-E-Mail",
+      "We_couldnt_find_anything_for_search_term": "We couldn't find anything for %{search_term}.",
       "You_saved_this_project": "Du hast dieses Projekt gespeichert.",
       "Your_pledge_amount": "Dein Beitrag:",
       "Your_shipping_destination": "Dein Versandziel",
@@ -3814,6 +3818,7 @@
       "No_one_has_posted_an_update_yet": "Todavía no se han publicado actualizaciones.",
       "No_pledges_from_friends_yet": "Todavía no hay contribuciones de amigos.",
       "No_replay_is_available_for_this_live_stream": "Este Live Stream no cuenta con repetición.",
+      "No_Results": "No Results",
       "Once_you_back_a_project_well_share": "Tu patrocinio de un proyecto nos ayuda a hacerte recomendaciones personalizadas.",
       "Opens_comments": "Abre comentarios.",
       "Opens_creator_profile": "Abre el perfil del creador.",
@@ -3918,6 +3923,7 @@
       "View": "Ver",
       "Watch_live": "Ver en vivo",
       "When_you_save_a_project_we_ll_send_you_a_reminder": "Cuando guardes un proyecto, te enviaremos un recordatorio por correo electrónico 48 horas antes de que finalice",
+      "We_couldnt_find_anything_for_search_term": "We couldn't find anything for %{search_term}.",
       "You_saved_this_project": "Uno de tus proyectos guardados.",
       "Your_pledge_amount": "Monto de tu contribución:",
       "Your_shipping_destination": "Tu destino de envío",
@@ -5643,6 +5649,7 @@
       "No_one_has_posted_an_update_yet": "Pas d'actus publiées pour le moment.",
       "No_pledges_from_friends_yet": "Mes amis \nn'ont rien soutenu.",
       "No_replay_is_available_for_this_live_stream": "Pas de rediffusion possible pour cette diffusion en direct.",
+      "No_Results": "No Results",
       "Once_you_back_a_project_well_share": "Une fois que vous aurez soutenu un projet, des recommandations personnalisées s'afficheront ici.",
       "Opens_comments": "Ouvre les commentaires.",
       "Opens_creator_profile": "Ouvre le profil du créateur.",
@@ -5747,6 +5754,7 @@
       "View": "Afficher",
       "Watch_live": "Regarder en direct",
       "When_you_save_a_project_we_ll_send_you_a_reminder": "Pour chaque projet que vous enregistrez, nous vous enverrons un rappel 48 heures avant la fin de sa campagne.",
+      "We_couldnt_find_anything_for_search_term": "We couldn't find anything for %{search_term}.",
       "You_saved_this_project": "Vous avez enregistré ce projet.",
       "Your_pledge_amount": "Montant engagé :",
       "Your_shipping_destination": "Destination d'expédition",
@@ -7349,6 +7357,7 @@
     "log_devices": true,
     "backer_report_formats": true,
     "itemization": true,
+    "impact_page": true,
     "follow_creators": true,
     "mexico_creator_launch": true,
     "summerfest_hero": true,
@@ -7359,9 +7368,7 @@
     "huzza_creator_integration": true,
     "huzza_new_design": true,
     "discovery_overlay": true,
-    "recommendations_v2": true,
-    "sassy_classifier": true,
-    "async_checkout": true
+    "sassy_classifier": true
   },
   "launched_countries": [
     {
@@ -7535,7 +7542,7 @@
   ],
   "ab_experiments": {
     "bb_cards_no_money": "control",
-    "koala_alt_frontend_tracking": "experimental",
+    "koala_alt_frontend_tracking": "control",
     "credit_card_input_placement": "control"
   },
   "stripe": {

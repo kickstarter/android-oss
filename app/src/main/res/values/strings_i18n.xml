@@ -144,6 +144,7 @@ with friends.</string>
   <string name="Manage_your_reward" formatted="false">Manage your reward</string>
   <string name="Message_backer" formatted="false">Message backer</string>
   <string name="Message_creator" formatted="false">Message creator</string>
+  <string name="No_Results" formatted="false">No Results</string>
   <string name="No_comments_yet" formatted="false">No comments yet.</string>
   <string name="No_one_has_posted_an_update_yet" formatted="false">No one has posted an update yet.</string>
   <string name="No_pledges_from_friends_yet" formatted="false">No pledges \n
@@ -234,6 +235,7 @@ catch your eye?</string>
   <string name="View_your_pledge" formatted="false">View your pledge</string>
   <string name="View_your_reward" formatted="false">View your reward</string>
   <string name="Watch_live" formatted="false">Watch live</string>
+  <string name="We_couldnt_find_anything_for_search_term" formatted="false">We couldn\'t find anything for %{search_term}.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">When you save a project we’ll send you a reminder 48 hours before it ends</string>
   <string name="You_Launched" formatted="false">You Launched!</string>
   <string name="You_backed_this_project" formatted="false">You backed this project.</string>

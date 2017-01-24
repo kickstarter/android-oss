@@ -7365,7 +7365,6 @@
     "huzza": true,
     "view_prototype_gallery": true,
     "edit_prototype_gallery": true,
-    "fullstory": true,
     "huzza_creator_integration": true,
     "huzza_new_design": true,
     "discovery_overlay": true,
@@ -7543,7 +7542,7 @@
   ],
   "ab_experiments": {
     "bb_cards_no_money": "control",
-    "koala_alt_frontend_tracking": "experimental",
+    "koala_alt_frontend_tracking": "control",
     "credit_card_input_placement": "control"
   },
   "stripe": {

@@ -11,6 +11,7 @@ import com.kickstarter.factories.CategoryFactory;
 import com.kickstarter.factories.CommentFactory;
 import com.kickstarter.factories.LocationFactory;
 import com.kickstarter.factories.ProjectFactory;
+import com.kickstarter.factories.UpdateFactory;
 import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.Config;
 import com.kickstarter.models.Backing;
@@ -160,7 +161,7 @@ public class MockApiClient implements ApiClientType {
 
   @Override
   public @NonNull Observable<Update> fetchUpdate(final @NonNull String projectParam, final @NonNull String updateParam) {
-    return Observable.empty();
+    return Observable.just(UpdateFactory.update());
   }
 
   @Override

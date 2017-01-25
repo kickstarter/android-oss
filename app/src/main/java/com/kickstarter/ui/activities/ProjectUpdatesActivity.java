@@ -41,6 +41,11 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
       new RequestHandler(KSUri::isProjectUpdateUri, this::handleProjectUpdateUriRequest)
     ));
 
+    this.viewModel.outputs.startCommentsActivity()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::startCommentsActivity);
+
     this.viewModel.outputs.webViewUrl()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -48,13 +53,19 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
   }
 
   private boolean handleProjectUpdateCommentsUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
-    // start comments activity
+    this.viewModel.inputs.updateCommentsRequest(request);
     return true;
   }
 
   private boolean handleProjectUpdateUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
     // todo: maybe we don't need this one
     return true;
+  }
+
+  private void startCommentsActivity(final @NonNull Update update) {
+//    final Intent intent = new Intent(this, CommentsActivity.class)
+//      .putExtra(IntentKey.UPDATE, update);
+//    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   // big todo: properly navigate back on webviews.

@@ -1,9 +1,11 @@
 package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
+import android.support.v4.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
@@ -13,6 +15,7 @@ import com.kickstarter.ui.activities.ProjectUpdatesActivity;
 import com.kickstarter.viewmodels.inputs.ProjectUpdatesViewModelInputs;
 import com.kickstarter.viewmodels.outputs.ProjectUpdatesViewModelOutputs;
 
+import okhttp3.Request;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
@@ -38,12 +41,31 @@ public final class ProjectUpdatesViewModel extends ActivityViewModel<ProjectUpda
       .compose(bindToLifecycle())
       .subscribe(this.webViewUrl::onNext);
 
-    startCommentsActivity = PublishSubject.create();
+    final Observable<String> updateParam = updateCommentsRequestSubject
+      .map(this::updateParamFromRequest);
+
+    Observable.combineLatest(
+      initialProject.map(Project::param),
+      updateParam,
+      Pair::create
+    )
+      .switchMap(pu ->
+        client
+          .fetchUpdate(pu.first, pu.second)
+          .compose(Transformers.neverError())
+      )
+      .subscribe(this.startCommentsActivity::onNext);
+  }
+
+  private final String updateParamFromRequest(final @NonNull Request request) {
+    // todo: build a safer param matcher helper
+    return request.url().encodedPathSegments().get(4);
   }
 
   private final PublishSubject<String> pageInterceptedUrlSubject = PublishSubject.create();
+  private final PublishSubject<Request> updateCommentsRequestSubject = PublishSubject.create();
 
-  private final Observable<Update> startCommentsActivity;
+  private final BehaviorSubject<Update> startCommentsActivity = BehaviorSubject.create();
   private final BehaviorSubject<String> webViewUrl = BehaviorSubject.create();
 
   public final ProjectUpdatesViewModelInputs inputs = this;
@@ -51,6 +73,9 @@ public final class ProjectUpdatesViewModel extends ActivityViewModel<ProjectUpda
 
   @Override public void pageInterceptedUrl(final @NonNull String url) {
     this.pageInterceptedUrlSubject.onNext(url);
+  }
+  @Override public void updateCommentsRequest(final @NonNull Request request) {
+    this.updateCommentsRequestSubject.onNext(request);
   }
 
   @Override public @NonNull Observable<Update> startCommentsActivity() {

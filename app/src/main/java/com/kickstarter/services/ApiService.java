@@ -120,6 +120,9 @@ public interface ApiService {
   @GET("/v1/projects/{project_param}/updates/{update_param}")
   Observable<Response<Update>> update(@Path("project_param") String projectParam, @Path("update_param") String updateParam);
 
+  @GET("/v1/projects/{project_id}/posts/{update_id}/comments")
+  Observable<Response<CommentsEnvelope>> updateComments(@Path("project_id") long projectId, @Path("update_id") long updateId);
+
   @PUT("/v1/users/self/notifications/{id}")
   Observable<Response<ProjectNotification>> updateProjectNotifications(@Path("id") long projectNotificationId,
     @Body ProjectNotificationBody projectNotificationBody);

@@ -53,9 +53,11 @@ public interface ApiClientType {
 
   @NonNull Observable<Backing> fetchProjectBacking(final @NonNull Project project, final @NonNull User user);
 
-  @NonNull Observable<CommentsEnvelope> fetchProjectComments(final @NonNull Project project);
+  @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull Project project);
 
-  @NonNull Observable<CommentsEnvelope> fetchProjectComments(final @NonNull String paginationPath);
+  @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull String paginationPath);
+
+  @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull Update update);
 
   @NonNull Observable<Update> fetchUpdate(final @NonNull String projectParam, final @NonNull String updateParam);
 

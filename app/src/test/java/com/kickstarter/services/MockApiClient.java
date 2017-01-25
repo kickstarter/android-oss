@@ -140,7 +140,7 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<CommentsEnvelope> fetchProjectComments(final @NonNull Project project) {
+  public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull Project project) {
     return Observable.just(
       CommentsEnvelope.builder()
         .urls(CommentsEnvelope.UrlsEnvelope.builder()
@@ -155,7 +155,7 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<CommentsEnvelope> fetchProjectComments(final @NonNull String paginationPath) {
+  public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull String paginationPath) {
     return Observable.empty();
   }
 

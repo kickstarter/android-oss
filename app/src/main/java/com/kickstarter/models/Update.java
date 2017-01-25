@@ -114,7 +114,7 @@ public abstract class Update implements Parcelable {
 
   private static final int TRUNCATED_BODY_LENGTH = 400;
 
-  public String truncatedBody() {
+  public @NonNull String truncatedBody() {
     try {
       String str = Html.fromHtml(body()).toString();
       if (str.length() > TRUNCATED_BODY_LENGTH) {

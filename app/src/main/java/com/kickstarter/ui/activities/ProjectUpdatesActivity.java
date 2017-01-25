@@ -1,5 +1,6 @@
 package com.kickstarter.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,9 +11,11 @@ import android.webkit.WebView;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
+import com.kickstarter.models.Update;
 import com.kickstarter.services.KSUri;
 import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.services.RequestHandler;
+import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.views.KSWebView;
 import com.kickstarter.viewmodels.ProjectUpdatesViewModel;
 
@@ -63,9 +66,9 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
   }
 
   private void startCommentsActivity(final @NonNull Update update) {
-//    final Intent intent = new Intent(this, CommentsActivity.class)
-//      .putExtra(IntentKey.UPDATE, update);
-//    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+    final Intent intent = new Intent(this, CommentsActivity.class)
+      .putExtra(IntentKey.UPDATE, update);
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   // big todo: properly navigate back on webviews.

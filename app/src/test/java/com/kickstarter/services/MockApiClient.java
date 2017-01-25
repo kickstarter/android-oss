@@ -155,6 +155,21 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
+  public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull Update update) {
+    return Observable.just(
+      CommentsEnvelope.builder()
+        .urls(CommentsEnvelope.UrlsEnvelope.builder()
+          .api(CommentsEnvelope.UrlsEnvelope.ApiEnvelope.builder()
+            .moreComments("more comments please")
+            .newerComments("newer comments please")
+            .build())
+          .build())
+        .comments(Collections.singletonList(CommentFactory.comment()))
+        .build()
+    );
+  }
+
+  @Override
   public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull String paginationPath) {
     return Observable.empty();
   }

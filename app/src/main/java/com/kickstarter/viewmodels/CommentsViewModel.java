@@ -10,6 +10,7 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.Update;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.ApiException;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
@@ -33,6 +34,8 @@ import static com.kickstarter.libs.rx.transformers.Transformers.ignoreValues;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 import static com.kickstarter.libs.rx.transformers.Transformers.values;
+import static rx.Observable.combineLatest;
+import static rx.Observable.merge;
 
 public final class CommentsViewModel extends ActivityViewModel<CommentsActivity> implements CommentsViewModelInputs,
   CommentsViewModelOutputs {
@@ -47,8 +50,12 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
 
     final Observable<Project> initialProject = intent()
       .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
-      .ofType(Project.class)
-      .filter(ObjectUtils::isNotNull);
+      .ofType(Project.class);
+
+    // TODO: Either projectOrUpdate
+    final Observable<Update> update = intent()
+      .map(i -> i.getParcelableExtra(IntentKey.UPDATE))
+      .ofType(Update.class);
 
     final Observable<Project> project = initialProject
       .compose(takeWhen(loginSuccess))
@@ -56,19 +63,34 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
       .mergeWith(initialProject)
       .share();
 
-    final Observable<Project> startOverWith = Observable.merge(
-      initialProject.take(1),
-      initialProject.compose(takeWhen(refresh))
-      );
+    final Observable<Pair<Project, Update>> projectOrUpdate = combineLatest(project, update, Pair::create);
 
-    final ApiPaginator<Comment, CommentsEnvelope, Project> paginator =
-      ApiPaginator.<Comment, CommentsEnvelope, Project>builder()
+    final Observable<Pair<Project, Update>> startOverWith = combineLatest(
+      merge(
+        projectOrUpdate
+          .map(pu -> pu.first)
+          .filter(ObjectUtils::isNotNull)
+          .take(1),
+        initialProject.compose(takeWhen(refresh))
+      ),
+      projectOrUpdate
+        .map(pu -> pu.second)
+        .filter(ObjectUtils::isNotNull),
+      Pair::create  // so one of these will be null
+    );
+
+    final ApiPaginator<Comment, CommentsEnvelope, Pair<Project, Update>> paginator =
+      ApiPaginator.<Comment, CommentsEnvelope, Pair<Project, Update>>builder()
         .nextPage(nextPage)
         .startOverWith(startOverWith)
         .envelopeToListOfData(CommentsEnvelope::comments)
         .envelopeToMoreUrl(env -> env.urls().api().moreComments())
-        .loadWithParams(client::fetchProjectComments)
-        .loadWithPaginationPath(client::fetchProjectComments)
+        .loadWithParams(pu ->
+          pu.first == null
+            ? client.fetchComments(pu.second)
+            : client.fetchComments(pu.first)
+        )
+        .loadWithPaginationPath(client::fetchComments)
         .build();
 
     final Observable<List<Comment>> comments = paginator.paginatedData().share();
@@ -122,7 +144,7 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
       .compose(bindToLifecycle())
       .subscribe(currentCommentBody::onNext);
 
-    Observable.combineLatest(
+    combineLatest(
       project,
       comments,
       currentUser.observable(),
@@ -185,6 +207,8 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
       .take(1)
       .compose(bindToLifecycle())
       .subscribe(__ -> refresh.onNext(null));
+
+    // todo: instrument update comments
   }
 
   private final PublishSubject<String> commentBodyChanged = PublishSubject.create();

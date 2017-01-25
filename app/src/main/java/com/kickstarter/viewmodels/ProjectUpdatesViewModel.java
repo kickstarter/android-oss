@@ -20,6 +20,8 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
+import static rx.Observable.combineLatest;
+
 public final class ProjectUpdatesViewModel extends ActivityViewModel<ProjectUpdatesActivity> implements ProjectUpdatesViewModelInputs,
   ProjectUpdatesViewModelOutputs {
   private final ApiClientType client;
@@ -34,7 +36,7 @@ public final class ProjectUpdatesViewModel extends ActivityViewModel<ProjectUpda
       .ofType(Project.class)
       .filter(ObjectUtils::isNotNull);
 
-    // todo: more url logic
+    // todo: add external url logic
     final Observable<String> initialIndexUrl = initialProject.map(Project::updatesUrl);
 
     initialIndexUrl
@@ -44,7 +46,7 @@ public final class ProjectUpdatesViewModel extends ActivityViewModel<ProjectUpda
     final Observable<String> updateParam = updateCommentsRequestSubject
       .map(this::updateParamFromRequest);
 
-    Observable.combineLatest(
+    combineLatest(
       initialProject.map(Project::param),
       updateParam,
       Pair::create
@@ -58,7 +60,7 @@ public final class ProjectUpdatesViewModel extends ActivityViewModel<ProjectUpda
   }
 
   private final String updateParamFromRequest(final @NonNull Request request) {
-    // todo: build a safer param matcher helper
+    // todo: build a safer param matcher helper--give group names to segments
     return request.url().encodedPathSegments().get(4);
   }
 

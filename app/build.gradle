@@ -121,6 +121,7 @@ android {
         androidTest {
             java.srcDir file('src/androidTest')
         }
+        main.java.srcDirs += 'src/main/kotlin'
     }
 }
 
@@ -147,6 +148,7 @@ dependencies {
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.jakewharton:process-phoenix:1.0.2'
     compile 'com.jakewharton.timber:timber:3.0.1'
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile 'com.stripe:stripe-android:1.0.3'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'
@@ -182,12 +184,15 @@ dependencies {
 }
 
 buildscript {
+    ext.kotlin_version = '1.0.6'
+
     repositories {
         mavenCentral()
     }
 
     dependencies {
         classpath 'me.tatarka:gradle-retrolambda:3.4.0'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
@@ -208,3 +213,4 @@ gradle.taskGraph.beforeTask { Task task ->
 
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'kotlin-android'

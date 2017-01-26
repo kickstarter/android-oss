@@ -15,12 +15,10 @@ class Either<out A, out B> private constructor (val left: A?, val right: B?) {
     if (this.left != null) {
       return ifLeft(this.left)
     }
-
     if (this.right != null) {
       return ifRight(this.right)
     }
-
-    throw Exception("Exception: neither left nor right values found")
+    throw Exception("Exception: Invalid left or right values.")
   }
 
   fun isLeft(): Boolean {
@@ -34,18 +32,32 @@ class Either<out A, out B> private constructor (val left: A?, val right: B?) {
   /**
    * Maps the right side of an `Either` value.
    *
-   * @param transform:    A transformation
-   * @return              A new `Either` value.
+   * @param transform    A transformation
+   * @return             A new `Either` value.
    */
   fun <C> map(transform: (B) -> C): Either<A, C> {
     if (this.left != null) {
       return Companion.left(this.left)
     }
-
     if (this.right != null) {
       return Companion.right(transform(this.right))
     }
+    throw Exception("Exception: Invalid left or right values.")
+  }
 
-    throw Exception()
+  /**
+   * Maps the left side of an `Either` value.
+   *
+   * @param transform    A transformation
+   * @return             A new `Either` value.
+   */
+  fun <C> mapLeft(transform: (A) -> C): Either<C, B> {
+    if (this.left != null) {
+      return Companion.left(transform(this.left))
+    }
+    if (this.right != null) {
+      return Companion.right(this.right)
+    }
+    throw Exception("Exception: Invalid left or right values.")
   }
 }

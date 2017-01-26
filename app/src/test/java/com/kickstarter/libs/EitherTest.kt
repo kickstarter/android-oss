@@ -9,7 +9,7 @@ class EitherTest {
     val square: (Int) -> Int = { it * it }
     val length: (String) -> Int = String::length
 
-    assertEquals(4, Either.Companion.left<Int, String>(2).either(ifLeft = square, ifRight = length))
+    assertEquals(9, Either.Companion.left<Int, String>(3).either(ifLeft = square, ifRight = length))
     assertEquals(5, Either.Companion.right<Int, String>("hello").either(ifLeft = square, ifRight = length))
   }
 
@@ -36,6 +36,14 @@ class EitherTest {
     assertEquals(
       Either.Companion.right<Int, String>("hellohello").right,
       Either.Companion.right<Int, String>("hello").map(double).right
+    )
+  }
+
+  @Test fun testEither_MapLeft() {
+    val square: (Int) -> Int = { it * it }
+    assertEquals(
+      Either.Companion.left<Int, String>(9).left,
+      Either.Companion.left<Int, String>(3).mapLeft(square).left
     )
   }
 

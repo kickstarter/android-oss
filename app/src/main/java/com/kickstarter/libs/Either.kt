@@ -1,8 +1,8 @@
 package com.kickstarter.libs
 
 sealed class Either<out A, out B> {
-  class Left<out L, out R>(val left: L) : Either<L, R>()
-  class Right<out L, out R>(val right: R) : Either<L, R>()
+  class Left<out L, out R>(internal val left: L) : Either<L, R>()
+  class Right<out L, out R>(internal val right: R) : Either<L, R>()
 
   fun <C> either(ifLeft: (A) -> C, ifRight: (B) -> C): C = when(this) {
     is Left -> ifLeft(this.left)

@@ -27,13 +27,14 @@ class EitherTest {
 
   @Test fun testEither_Left() {
     val intOrString = Either.Left<Int, String>(1)
-    assertEquals(1, intOrString.left)
+    assertEquals(1, intOrString.left())
   }
 
   @Test fun testEither_Map() {
     val double: (String) -> String = { it + it }
+
     assertEquals(
-      Either.Right<Int, String>("hellohello").right,
+      Either.Right<Int, String>("hellohello").right(),
       Either.Right<Int, String>("hello").map(double).right()
     )
   }
@@ -41,13 +42,13 @@ class EitherTest {
   @Test fun testEither_MapLeft() {
     val square: (Int) -> Int = { it * it }
     assertEquals(
-      Either.Left<Int, String>(9).left,
+      Either.Left<Int, String>(9).left(),
       Either.Left<Int, String>(3).mapLeft(square).left()
     )
   }
 
   @Test fun testEither_Right() {
     val intOrString = Either.Right<Int, String>("hello")
-    assertEquals("hello", intOrString.right)
+    assertEquals("hello", intOrString.right())
   }
 }

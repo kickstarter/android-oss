@@ -1,32 +1,40 @@
 package com.kickstarter.libs
 
-class Either<out A, out B> private constructor (val left: A?, val right: B?) {
-  companion object {
-    fun <A, B> left(left: A): Either<A, B> {
-      return Either(left, null)
-    }
+sealed class Either<out A, out B> {
+  class Left<out L, out R>(val left: L) : Either<L, R>()
+  class Right<out L, out R>(val right: R) : Either<L, R>()
 
-    fun <A, B> right(right: B): Either<A, B> {
-      return Either(null, right)
-    }
-  }
-
-  fun <C> either(ifLeft: (A) -> C, ifRight: (B) -> C): C {
-    if (this.left != null) {
-      return ifLeft(this.left)
-    }
-    if (this.right != null) {
-      return ifRight(this.right)
-    }
-    throw Exception("Exception: Invalid left or right values.")
+  fun <C> either(ifLeft: (A) -> C, ifRight: (B) -> C): C = when(this) {
+    is Left -> ifLeft(this.left)
+    is Right -> ifRight(this.right)
   }
 
   fun isLeft(): Boolean {
-    return this.left != null
+    return this is Left
   }
 
   fun isRight(): Boolean {
-    return this.right != null
+    return this is Right
+  }
+
+  /**
+   * Extracts the `left` value from an either.
+   *
+   * @return    A value of type `A` if this is a left either, `null` otherwise.
+   */
+  fun left(): A? = when(this) {
+    is Left -> this.left
+    is Right -> null
+  }
+
+  /**
+   * Extracts the `right` value from an either.
+   *
+   * @return    A value of type `B` if this is a left either, `null` otherwise.
+   */
+  fun right(): B? = when(this) {
+    is Left -> null
+    is Right -> this.right
   }
 
   /**
@@ -35,14 +43,9 @@ class Either<out A, out B> private constructor (val left: A?, val right: B?) {
    * @param transform    A transformation
    * @return             A new `Either` value.
    */
-  fun <C> map(transform: (B) -> C): Either<A, C> {
-    if (this.left != null) {
-      return Companion.left(this.left)
-    }
-    if (this.right != null) {
-      return Companion.right(transform(this.right))
-    }
-    throw Exception("Exception: Invalid left or right values.")
+  fun <C> map(transform: (B) -> C): Either<A, C> = when(this) {
+    is Left -> Left(this.left)
+    is Right -> Right(transform(this.right))
   }
 
   /**
@@ -51,13 +54,8 @@ class Either<out A, out B> private constructor (val left: A?, val right: B?) {
    * @param transform    A transformation
    * @return             A new `Either` value.
    */
-  fun <C> mapLeft(transform: (A) -> C): Either<C, B> {
-    if (this.left != null) {
-      return Companion.left(transform(this.left))
-    }
-    if (this.right != null) {
-      return Companion.right(this.right)
-    }
-    throw Exception("Exception: Invalid left or right values.")
+  fun <C> mapLeft(transform: (A) -> C): Either<C, B> = when(this) {
+    is Left -> Left(transform(this.left))
+    is Right -> Right(this.right)
   }
 }

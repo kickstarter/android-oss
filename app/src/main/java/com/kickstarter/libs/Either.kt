@@ -30,4 +30,22 @@ class Either<out A, out B> private constructor (val left: A?, val right: B?) {
   fun isRight(): Boolean {
     return this.right != null
   }
+
+  /**
+   * Maps the right side of an `Either` value.
+   *
+   * @param transform:    A transformation
+   * @return              A new `Either` value.
+   */
+  fun <C> map(transform: (B) -> C): Either<A, C> {
+    if (this.left != null) {
+      return Companion.left(this.left)
+    }
+
+    if (this.right != null) {
+      return Companion.right(transform(this.right))
+    }
+
+    throw Exception()
+  }
 }

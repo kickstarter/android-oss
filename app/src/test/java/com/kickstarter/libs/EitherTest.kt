@@ -4,6 +4,7 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class EitherTest {
+
   @Test fun testEither_CaseAnalysis() {
     val square: (Int) -> Int = { it * it }
     val length: (String) -> Int = String::length
@@ -28,6 +29,14 @@ class EitherTest {
     val intOrString = Either.Companion.left<Int, String>(1)
     assertEquals(1, intOrString.left)
     assertEquals(null, intOrString.right)
+  }
+
+  @Test fun testEither_Map() {
+    val double: (String) -> String = { it + it }
+    assertEquals(
+      Either.Companion.right<Int, String>("hellohello").right,
+      Either.Companion.right<Int, String>("hello").map(double).right
+    )
   }
 
   @Test fun testEither_Right() {

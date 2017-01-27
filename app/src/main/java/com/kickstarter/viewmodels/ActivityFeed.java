@@ -28,56 +28,36 @@ import rx.subjects.PublishSubject;
 public interface ActivityFeed {
 
   interface Inputs extends ActivityFeedAdapter.Delegate {
-    /**
-     * Invoke when pagination should happen.
-     */
+    /** Invoke when pagination should happen. */
     void nextPage();
 
-    /**
-     * Invoke when the feed should be refreshed.
-     */
+    /** Invoke when the feed should be refreshed. */
     void refresh();
   }
 
   interface Outputs {
-    /**
-     * Emits a list of activities representing the user's activity feed.
-     */
+    /** Emits a list of activities representing the user's activity feed. */
     Observable<List<Activity>> activities();
 
-    /**
-     * Emits when view should be returned to Discovery projects.
-     */
+    /** Emits when view should be returned to Discovery projects. */
     Observable<Void> goToDiscovery();
 
-    /**
-     * Emits a boolean that determines if a logged-out, empty state should be displayed.
-     */
+    /** Emits a boolean that determines if a logged-out, empty state should be displayed. */
     Observable<Boolean> loggedOutEmptyStateIsVisible();
 
-    /**
-     * Emits a logged-in user with zero activities in order to display an empty state.
-     */
+    /** Emits a logged-in user with zero activities in order to display an empty state. */
     Observable<Boolean> loggedInEmptyStateIsVisible();
 
-    /**
-     * Emits a boolean indicating whether activities are being fetched from the API.
-     */
+    /** Emits a boolean indicating whether activities are being fetched from the API. */
     Observable<Boolean> isFetchingActivities();
 
-    /**
-     * Emits when login tout should be shown.
-     */
+    /** Emits when login tout should be shown. */
     Observable<Void> goToLogin();
 
-    /**
-     * Emits a project when it should be shown.
-     */
+    /** Emits a project when it should be shown. */
     Observable<Project> goToProject();
 
-    /**
-     * Emits an activity when project update should be shown.
-     */
+    /** Emits an activity when project update should be shown. */
     Observable<Activity> goToProjectUpdate();
   }
 

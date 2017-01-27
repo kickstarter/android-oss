@@ -25,9 +25,9 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public final class ActivityFeed {
+public interface ActivityFeed {
 
-  public interface Inputs extends ActivityFeedAdapter.Delegate {
+  interface Inputs extends ActivityFeedAdapter.Delegate {
     /**
      * Invoke when pagination should happen.
      */
@@ -39,7 +39,7 @@ public final class ActivityFeed {
     void refresh();
   }
 
-  public interface Outputs {
+  interface Outputs {
     /**
      * Emits a list of activities representing the user's activity feed.
      */
@@ -81,13 +81,13 @@ public final class ActivityFeed {
     Observable<Activity> goToProjectUpdate();
   }
 
-  public static final class ViewModel extends ActivityViewModel<ActivityFeedActivity> implements ActivityFeedAdapter.Delegate,
+  final class ViewModel extends ActivityViewModel<ActivityFeedActivity> implements ActivityFeedAdapter.Delegate,
     Inputs, Outputs {
 
     private final ApiClientType client;
     private final CurrentUserType currentUser;
 
-    public ViewModel(final @NonNull Environment environment) {
+    ViewModel(final @NonNull Environment environment) {
       super(environment);
 
       client = environment.apiClient();

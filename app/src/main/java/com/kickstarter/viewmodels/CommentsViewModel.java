@@ -103,7 +103,7 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
       .compose(takeWhen(postCommentClicked))
       .switchMap(pb ->
         client
-          .postProjectComment(pb.first, pb.second)
+          .postComment(pb.first, pb.second)
           .doOnSubscribe(() -> commentIsPosting.onNext(true))
           .doAfterTerminate(() -> commentIsPosting.onNext(false))
           .materialize()

@@ -124,7 +124,7 @@ public final class ApiPaginator<Data, Envelope, Params> {
      * [Required] A function that makes an API request with a pagination URL.
      */
     public @NonNull Builder<Data, Envelope, Params> loadWithPaginationPath(final @NonNull Func1<String, Observable<Envelope>> loadWithPaginationPath) {
-      this.loadWithPaginationPath= loadWithPaginationPath;
+      this.loadWithPaginationPath = loadWithPaginationPath;
       return this;
     }
 

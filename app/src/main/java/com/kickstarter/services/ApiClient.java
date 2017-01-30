@@ -266,12 +266,21 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<Comment> postProjectComment(final @NonNull Project project, final @NonNull String body) {
+  public @NonNull Observable<Comment> postComment(final @NonNull Project project, final @NonNull String body) {
     return service
       .postProjectComment(project.param(), CommentBody.builder().body(body).build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }
+
+  @Override
+  public @NonNull Observable<Comment> postComment(final @NonNull Update update, final @NonNull String body) {
+    return service
+      .postUpdateComment(update.projectId(), update.id(), CommentBody.builder().body(body).build())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
 
   @Override
   public @NonNull Observable<Empty> registerPushToken(final @NonNull String token) {

@@ -71,7 +71,9 @@ public interface ApiClientType {
 
   @NonNull Observable<AccessTokenEnvelope> login(final @NonNull String email, final @NonNull String password, final @NonNull String code);
 
-  @NonNull Observable<Comment> postProjectComment(final @NonNull Project project, final @NonNull String body);
+  @NonNull Observable<Comment> postComment(final @NonNull Project project, final @NonNull String body);
+
+  @NonNull Observable<Comment> postComment(final @NonNull Update update, final @NonNull String body);
 
   @NonNull Observable<Empty> registerPushToken(final @NonNull String token);
 

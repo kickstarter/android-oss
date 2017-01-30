@@ -84,6 +84,10 @@ public interface ApiService {
   @POST("/v1/projects/{param}/comments/")
   Observable<Response<Comment>> postProjectComment(@Path("param") String param, @Body CommentBody body);
 
+  @POST("/v1/projects/{project_id}/updates/{update_id}/comments")
+  Observable<Response<Comment>> postUpdateComment(@Path("project_id") long projectId, @Path("update_id") long updateId,
+    @Body CommentBody body);
+
   @GET("/v1/projects/{project_param}/backers/{user_param}")
   Observable<Response<Backing>> projectBacking(
     @Path("project_param") String projectParam,
@@ -120,7 +124,7 @@ public interface ApiService {
   @GET("/v1/projects/{project_param}/updates/{update_param}")
   Observable<Response<Update>> update(@Path("project_param") String projectParam, @Path("update_param") String updateParam);
 
-  @GET("/v1/projects/{project_id}/posts/{update_id}/comments")
+  @GET("/v1/projects/{project_id}/updates/{update_id}/comments")
   Observable<Response<CommentsEnvelope>> updateComments(@Path("project_id") long projectId, @Path("update_id") long updateId);
 
   @PUT("/v1/users/self/notifications/{id}")

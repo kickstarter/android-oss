@@ -32,15 +32,33 @@ public class DiscoveryParamsTest extends KSRobolectricTestCase {
 
   @Test
   public void testFromUri_filters() {
-    final DiscoveryParams params = DiscoveryParams.builder()
+    final DiscoveryParams allParams = DiscoveryParams.builder()
       .recommended(true)
       .social(1)
       .staffPicks(true)
       .starred(1)
       .build();
 
-    final Uri uri = Uri.parse("https://www.kickstarter.com/discover/advanced?recommended=true&social=1&staff_picks=true&starred=1");
-    assertEquals(params, DiscoveryParams.fromUri(uri));
+    final Uri allParamsUri = Uri.parse(
+      "https://www.kickstarter.com/discover/advanced?recommended=true&social=1&staff_picks=true&starred=1"
+    );
+    assertEquals(allParams, DiscoveryParams.fromUri(allParamsUri));
+
+    final DiscoveryParams recommendedParams = DiscoveryParams.builder().recommended(true).build();
+    final Uri recommendedUri = Uri.parse("https://www.kickstarter.com/discover/advanced?recommended=true");
+    assertEquals(recommendedParams, DiscoveryParams.fromUri(recommendedUri));
+
+    final DiscoveryParams socialParams = DiscoveryParams.builder().social(1).build();
+    final Uri socialUri = Uri.parse("https://www.kickstarter.com/discover/advanced?social=1");
+    assertEquals(socialParams, DiscoveryParams.fromUri(socialUri));
+
+    final DiscoveryParams staffPickParams = DiscoveryParams.builder().staffPicks(true).build();
+    final Uri staffPicksUri = Uri.parse("https://www.kickstarter.com/discover/advanced?staff_picks=true");
+    assertEquals(staffPickParams, DiscoveryParams.fromUri(staffPicksUri));
+
+    final DiscoveryParams starredParams = DiscoveryParams.builder().starred(1).build();
+    final Uri starredUri = Uri.parse("https://www.kickstarter.com/discover/advanced?starred=1");
+    assertEquals(starredParams, DiscoveryParams.fromUri(starredUri));
   }
 
   @Test
@@ -75,10 +93,6 @@ public class DiscoveryParamsTest extends KSRobolectricTestCase {
     final DiscoveryParams recentlyLaunchedParams = DiscoveryParams.builder().sort(DiscoveryParams.Sort.NEWEST).build();
     final Uri recentlyLaunchedUri = Uri.parse("https://www.kickstarter.com/discover/recently-launched");
     assertEquals(recentlyLaunchedParams, DiscoveryParams.fromUri(recentlyLaunchedUri));
-
-    final DiscoveryParams recommendedParams = DiscoveryParams.builder().staffPicks(true).build();
-    final Uri recommendedUri = Uri.parse("https://www.kickstarter.com/discover/recommended");
-    assertEquals(recommendedParams, DiscoveryParams.fromUri(recommendedUri));
 
     final DiscoveryParams smallProjectsParams = DiscoveryParams.builder().pledged(0).build();
     final Uri smallProjectsUri = Uri.parse("https://www.kickstarter.com/discover/small-projects");

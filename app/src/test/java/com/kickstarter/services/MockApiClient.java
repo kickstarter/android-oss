@@ -272,9 +272,15 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<Comment> postProjectComment(final @NonNull Project project, final @NonNull String body) {
+  public @NonNull Observable<Comment> postComment(final @NonNull Project project, final @NonNull String body) {
     return Observable.just(CommentFactory.comment().toBuilder().body(body).build());
   }
+
+  @Override
+  public @NonNull Observable<Comment> postComment(final @NonNull Update update, final @NonNull String body) {
+    return Observable.just(CommentFactory.comment().toBuilder().body(body).build());
+  }
+
 
   @Override
   public @NonNull Observable<Empty> registerPushToken(final @NonNull String token) {

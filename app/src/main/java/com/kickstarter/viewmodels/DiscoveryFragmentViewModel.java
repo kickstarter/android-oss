@@ -144,7 +144,7 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
     return activity != null && activity.id() != activitySamplePreference.get();
   }
 
-  public Observable<Activity> fetchActivity() {
+  private Observable<Activity> fetchActivity() {
     return apiClient.fetchActivities(1)
       .map(ActivityEnvelope::activities)
       .map(ListUtils::first)

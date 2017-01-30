@@ -48,7 +48,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
   public void testCommentsViewModel_postCommentError() {
     final ApiClientType apiClient = new MockApiClient() {
       @Override
-      public @NonNull Observable<Comment> postProjectComment(final @NonNull Project project, final @NonNull String body) {
+      public @NonNull Observable<Comment> postComment(final @NonNull Project project, final @NonNull String body) {
         return Observable.error(ApiExceptionFactory.badRequestException());
       }
     };

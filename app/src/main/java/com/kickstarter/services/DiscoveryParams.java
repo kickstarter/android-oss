@@ -159,10 +159,6 @@ public abstract class DiscoveryParams implements Parcelable {
       builder = builder.sort(Sort.NEWEST);
     }
 
-    if (KSUri.isDiscoverScopePath(uri.getPath(), "recommended")) {
-      builder = builder.staffPicks(true);
-    }
-
     if (KSUri.isDiscoverScopePath(uri.getPath(), "small-projects")) {
       builder = builder.pledged(0);
     }

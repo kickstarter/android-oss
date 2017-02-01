@@ -26,7 +26,10 @@ public interface ProjectUpdates {
     void pageInterceptedUrl(String url);
 
     /** Call when a project update comments uri request has been made. */
-    void updateCommentsRequest(Request request);
+    void goToCommentsRequest(Request request);
+
+    /** Call when a project update uri request has been made. */
+    void goToUpdateRequest(Request request);
   }
 
   interface Outputs {
@@ -53,7 +56,7 @@ public interface ProjectUpdates {
         .ofType(Project.class)
         .filter(ObjectUtils::isNotNull);
 
-      // todo: add external url logic
+      // todo: add external url and goToUpdateRequest logic
       final Observable<String> initialIndexUrl = initialProject.map(Project::updatesUrl);
 
       initialIndexUrl
@@ -63,7 +66,7 @@ public interface ProjectUpdates {
       // todo: bind proper strings, add index title
       toolbarTitle = initialIndexUrl.map(__ -> "Updates");
 
-      final Observable<String> updateParam = updateCommentsRequestSubject
+      final Observable<String> updateParam = goToCommentsRequestSubject
         .map(this::updateParamFromRequest);
 
       combineLatest(
@@ -85,7 +88,8 @@ public interface ProjectUpdates {
     }
 
     private final PublishSubject<String> pageInterceptedUrlSubject = PublishSubject.create();
-    private final PublishSubject<Request> updateCommentsRequestSubject = PublishSubject.create();
+    private final PublishSubject<Request> goToCommentsRequestSubject = PublishSubject.create();
+    private final PublishSubject<Request> goToUpdateRequestSubject = PublishSubject.create();
 
     private final BehaviorSubject<Update> startCommentsActivity = BehaviorSubject.create();
     private final Observable<String> toolbarTitle;
@@ -97,10 +101,12 @@ public interface ProjectUpdates {
     @Override public void pageInterceptedUrl(final @NonNull String url) {
       this.pageInterceptedUrlSubject.onNext(url);
     }
-    @Override public void updateCommentsRequest(final @NonNull Request request) {
-      this.updateCommentsRequestSubject.onNext(request);
+    @Override public void goToCommentsRequest(final @NonNull Request request) {
+      this.goToCommentsRequestSubject.onNext(request);
     }
-
+    @Override public void goToUpdateRequest(final @NonNull Request request) {
+      this.goToUpdateRequestSubject.onNext(request);
+    }
     @Override public @NonNull Observable<Update> startCommentsActivity() {
       return startCommentsActivity;
     }

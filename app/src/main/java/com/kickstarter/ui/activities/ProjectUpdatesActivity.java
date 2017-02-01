@@ -16,6 +16,7 @@ import com.kickstarter.services.KSUri;
 import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.services.RequestHandler;
 import com.kickstarter.ui.IntentKey;
+import com.kickstarter.ui.toolbars.KSToolbar;
 import com.kickstarter.ui.views.KSWebView;
 import com.kickstarter.viewmodels.ProjectUpdates;
 
@@ -31,6 +32,7 @@ import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdates.ViewModel> implements KSWebViewClient.Delegate {
   protected @Bind(R.id.web_view) KSWebView ksWebView;
   protected @Bind(R.id.loading_indicator_view) View loadingIndicatorView;
+  protected @Bind(R.id.web_view_toolbar) KSToolbar webViewToolbar;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -49,6 +51,11 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdates.ViewMode
       .compose(observeForUI())
       .subscribe(this::startCommentsActivity);
 
+    this.viewModel.outputs.toolbarTitle()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.webViewToolbar::setTitle);
+
     this.viewModel.outputs.webViewUrl()
       .compose(bindToLifecycle())
       .compose(observeForUI())
@@ -56,12 +63,12 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdates.ViewMode
   }
 
   private boolean handleProjectUpdateCommentsUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
-    this.viewModel.inputs.updateCommentsRequest(request);
+    this.viewModel.inputs.goToCommentsRequest(request);
     return true;
   }
 
   private boolean handleProjectUpdateUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
-    // todo: maybe we don't need this one
+    this.viewModel.inputs.goToUpdateRequest(request);
     return true;
   }
 

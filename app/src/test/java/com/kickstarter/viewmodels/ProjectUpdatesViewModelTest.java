@@ -40,7 +40,7 @@ public class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
     vm.outputs.startCommentsActivity().subscribe(startCommentsActivity);
 
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
-    vm.inputs.updateCommentsRequest(commentsRequest);
+    vm.inputs.goToCommentsRequest(commentsRequest);
 
     startCommentsActivity.assertValueCount(1);
   }

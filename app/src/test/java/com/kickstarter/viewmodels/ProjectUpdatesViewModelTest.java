@@ -17,7 +17,7 @@ public class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testProjectUpdatesViewModel_LoadsInitialIndexUrl() {
-    final ProjectUpdatesViewModel vm = new ProjectUpdatesViewModel(environment());
+    final ProjectUpdates.ViewModel vm = new ProjectUpdates.ViewModel(environment());
     final Project project = ProjectFactory.project();
 
     final TestSubscriber<String> initialIndexUrl = new TestSubscriber<>();
@@ -29,7 +29,7 @@ public class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testProjectUpdatesViewModel_StartCommentsActivity() {
-    final ProjectUpdatesViewModel vm = new ProjectUpdatesViewModel(environment());
+    final ProjectUpdates.ViewModel vm = new ProjectUpdates.ViewModel(environment());
     final Project project = ProjectFactory.project();
 
     final Request commentsRequest = new Request.Builder()

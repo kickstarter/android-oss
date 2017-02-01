@@ -17,7 +17,7 @@ import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.services.RequestHandler;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.views.KSWebView;
-import com.kickstarter.viewmodels.ProjectUpdatesViewModel;
+import com.kickstarter.viewmodels.ProjectUpdates;
 
 import java.util.Arrays;
 
@@ -27,8 +27,8 @@ import okhttp3.Request;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 
-@RequiresActivityViewModel(ProjectUpdatesViewModel.class)
-public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel> implements KSWebViewClient.Delegate {
+@RequiresActivityViewModel(ProjectUpdates.ViewModel.class)
+public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdates.ViewModel> implements KSWebViewClient.Delegate {
   protected @Bind(R.id.web_view) KSWebView ksWebView;
   protected @Bind(R.id.loading_indicator_view) View loadingIndicatorView;
 

@@ -62,6 +62,18 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdates.ViewMode
       .subscribe(this.ksWebView::loadUrl);
   }
 
+  // todo: 3. properly navigate from webview to webview.
+  @Override
+  protected void onResume() {
+    super.onResume();
+
+    this.viewModel.outputs.webViewUrl()
+      .take(1)
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this.ksWebView::loadUrl);
+  }
+
   private boolean handleProjectUpdateCommentsUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
     this.viewModel.inputs.goToCommentsRequest(request);
     return true;
@@ -77,8 +89,6 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdates.ViewMode
       .putExtra(IntentKey.UPDATE, update);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
-
-  // big todo: properly navigate back on webviews.
 
   @Override
   public void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {

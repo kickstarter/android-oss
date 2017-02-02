@@ -1,6 +1,7 @@
 package com.kickstarter.viewmodels;
 
 import android.content.Intent;
+import android.support.v4.util.Pair;
 
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.ProjectFactory;
@@ -25,6 +26,7 @@ public class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
 
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
     initialIndexUrl.assertValues(project.updatesUrl());
+    koalaTest.assertValues("Viewed Updates");
   }
 
   @Test
@@ -43,5 +45,23 @@ public class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
     vm.inputs.goToCommentsRequest(commentsRequest);
 
     startCommentsActivity.assertValueCount(1);
+  }
+
+  @Test
+  public void testProjectUpdatesViewModel_StartUpdateActivity() {
+    final ProjectUpdates.ViewModel vm = new ProjectUpdates.ViewModel(environment());
+    final Project project = ProjectFactory.project();
+
+    final Request updateRequest = new Request.Builder()
+      .url("https://kck.str/projects/param/param/posts/id")
+      .build();
+
+    final TestSubscriber<Pair<Project, Update>> startUpdateActivity = new TestSubscriber<>();
+    vm.outputs.startUpdateActivity().subscribe(startUpdateActivity);
+
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+    vm.inputs.goToUpdateRequest(updateRequest);
+
+    startUpdateActivity.assertValueCount(1);
   }
 }

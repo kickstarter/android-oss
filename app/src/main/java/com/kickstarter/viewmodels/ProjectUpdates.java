@@ -19,6 +19,8 @@ import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
 import static rx.Observable.combineLatest;
+import static rx.Observable.merge;
+import static rx.Observable.zip;
 
 public interface ProjectUpdates {
   interface Inputs {
@@ -36,8 +38,8 @@ public interface ProjectUpdates {
     /** Emits an update to start the comments activity with. */
     Observable<Update> startCommentsActivity();
 
-    /** Emits a title string to display in the toolbar. */
-    Observable<String> toolbarTitle();
+    /** Emits a project and an update to start the update activity with. */
+    Observable<Pair<Project, Update>> startUpdateActivity();
 
     /** Emits a web view url to display. */
     Observable<String> webViewUrl();
@@ -46,7 +48,7 @@ public interface ProjectUpdates {
   final class ViewModel extends ActivityViewModel<ProjectUpdatesActivity> implements Inputs, Outputs {
     private final ApiClientType client;
 
-    public ViewModel(final @NonNull Environment environment) {
+    ViewModel(final @NonNull Environment environment) {
       super(environment);
 
       client = environment.apiClient();
@@ -56,20 +58,17 @@ public interface ProjectUpdates {
         .ofType(Project.class)
         .filter(ObjectUtils::isNotNull);
 
-      // todo: add external url and goToUpdateRequest logic
-      final Observable<String> initialIndexUrl = initialProject.map(Project::updatesUrl);
-
-      initialIndexUrl
+      initialProject.map(Project::updatesUrl)
         .compose(bindToLifecycle())
         .subscribe(this.webViewUrl::onNext);
 
-      // todo: bind proper strings, add index title
-      toolbarTitle = initialIndexUrl.map(__ -> "Updates");
-
-      final Observable<String> updateParam = goToCommentsRequestSubject
+      final Observable<String> updateParam = merge(
+        goToCommentsRequestSubject,
+        goToUpdateRequestSubject
+      )
         .map(this::updateParamFromRequest);
 
-      combineLatest(
+      final Observable<Update> updateFromParams = combineLatest(
         initialProject.map(Project::param),
         updateParam,
         Pair::create
@@ -78,8 +77,20 @@ public interface ProjectUpdates {
           client
             .fetchUpdate(pu.first, pu.second)
             .compose(Transformers.neverError())
-        )
+        );
+
+      updateFromParams
+        .compose(bindToLifecycle())
         .subscribe(this.startCommentsActivity::onNext);
+
+      zip(initialProject, updateFromParams, Pair::create)
+        .compose(bindToLifecycle())
+        .subscribe(this.startUpdateActivity::onNext);
+
+      initialProject
+        .take(1)
+        .compose(bindToLifecycle())
+        .subscribe(__ -> koala.trackViewedUpdates());
     }
 
     private @NonNull String updateParamFromRequest(final @NonNull Request request) {
@@ -92,7 +103,7 @@ public interface ProjectUpdates {
     private final PublishSubject<Request> goToUpdateRequestSubject = PublishSubject.create();
 
     private final BehaviorSubject<Update> startCommentsActivity = BehaviorSubject.create();
-    private final Observable<String> toolbarTitle;
+    private final BehaviorSubject<Pair<Project, Update>> startUpdateActivity = BehaviorSubject.create();
     private final BehaviorSubject<String> webViewUrl = BehaviorSubject.create();
 
     public final Inputs inputs = this;
@@ -110,8 +121,8 @@ public interface ProjectUpdates {
     @Override public @NonNull Observable<Update> startCommentsActivity() {
       return startCommentsActivity;
     }
-    @Override public Observable<String> toolbarTitle() {
-      return toolbarTitle;
+    @Override public @NonNull Observable<Pair<Project, Update>> startUpdateActivity() {
+      return startUpdateActivity;
     }
     @Override public @NonNull Observable<String> webViewUrl() {
       return webViewUrl;

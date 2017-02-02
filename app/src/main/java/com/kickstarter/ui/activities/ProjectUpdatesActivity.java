@@ -11,6 +11,7 @@ import android.webkit.WebView;
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
+import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
 import com.kickstarter.services.KSUri;
 import com.kickstarter.services.KSWebViewClient;
@@ -40,6 +41,8 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdates.ViewMode
     setContentView(R.layout.web_view_layout);
     ButterKnife.bind(this);
 
+    this.webViewToolbar.setTitle(R.string.project_subpages_menu_buttons_updates);
+
     this.ksWebView.client().setDelegate(this);
     this.ksWebView.client().registerRequestHandlers(Arrays.asList(
       new RequestHandler(KSUri::isProjectUpdateCommentsUri, this::handleProjectUpdateCommentsUriRequest),
@@ -51,18 +54,12 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdates.ViewMode
       .compose(observeForUI())
       .subscribe(this::startCommentsActivity);
 
-    this.viewModel.outputs.toolbarTitle()
+    this.viewModel.outputs.startUpdateActivity()
       .compose(bindToLifecycle())
       .compose(observeForUI())
-      .subscribe(this.webViewToolbar::setTitle);
-
-    this.viewModel.outputs.webViewUrl()
-      .compose(bindToLifecycle())
-      .compose(observeForUI())
-      .subscribe(this.ksWebView::loadUrl);
+      .subscribe(pu -> this.startUpdateActivity(pu.first, pu.second));
   }
 
-  // todo: 3. properly navigate from webview to webview.
   @Override
   protected void onResume() {
     super.onResume();
@@ -88,6 +85,10 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdates.ViewMode
     final Intent intent = new Intent(this, CommentsActivity.class)
       .putExtra(IntentKey.UPDATE, update);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  private void startUpdateActivity(final @NonNull Project project, final @NonNull Update update) {
+
   }
 
   @Override

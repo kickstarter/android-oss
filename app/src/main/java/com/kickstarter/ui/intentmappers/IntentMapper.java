@@ -31,7 +31,7 @@ public abstract class IntentMapper {
       return false;
     } else {
       final String queryParam = uri.getQueryParameter("app_banner");
-      return queryParam != null && queryParam.equals("1");
+      return queryParam != null && "1".equals(queryParam);
     }
   }
 }

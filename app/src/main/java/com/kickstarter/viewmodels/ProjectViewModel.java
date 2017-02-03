@@ -249,7 +249,7 @@ public final class ProjectViewModel extends ActivityViewModel<ProjectActivity> i
       .subscribe(koala::trackPushNotification);
 
     intent()
-      .filter(IntentMapper::intentFromAppBanner)
+      .filter(IntentMapper::appBannerIsSet)
       .compose(bindToLifecycle())
       .subscribe(__ -> koala.trackOpenedAppBanner());
   }

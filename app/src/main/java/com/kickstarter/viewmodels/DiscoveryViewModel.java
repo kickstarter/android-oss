@@ -185,7 +185,7 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
       .subscribe(__ -> koala.trackDiscoveryFilters());
 
     intent()
-      .filter(IntentMapper::intentFromAppBanner)
+      .filter(IntentMapper::appBannerIsSet)
       .compose(bindToLifecycle())
       .subscribe(__ -> koala.trackOpenedAppBanner());
   }

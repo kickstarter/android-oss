@@ -18,7 +18,7 @@ public class IntentMapperTest extends KSRobolectricTestCase {
     final Uri appBannerUri = Uri.parse("https://www.kickstarter.com/?app_banner=1");
     final Intent appBannerIntent = new Intent(Intent.ACTION_VIEW, appBannerUri);
 
-    assertFalse(IntentMapper.intentFromAppBanner(intent));
-    assertTrue(IntentMapper.intentFromAppBanner(appBannerIntent));
+    assertFalse(IntentMapper.appBannerIsSet(intent));
+    assertTrue(IntentMapper.appBannerIsSet(appBannerIntent));
   }
 }

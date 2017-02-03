@@ -25,13 +25,16 @@ public abstract class IntentMapper {
     return Uri.parse(string);
   }
 
-  public static boolean intentFromAppBanner(final @NonNull Intent intent) {
+  /**
+   * Returns `true` if the "app_banner" query param is set in the intent uri.
+   */
+  public static boolean appBannerIsSet(final @NonNull Intent intent) {
     final Uri uri = uri(intent);
     if (uri == null) {
       return false;
     } else {
       final String queryParam = uri.getQueryParameter("app_banner");
-      return queryParam != null && "1".equals(queryParam);
+      return "1".equals(queryParam);
     }
   }
 }

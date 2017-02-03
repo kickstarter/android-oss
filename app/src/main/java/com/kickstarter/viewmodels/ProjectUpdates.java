@@ -118,6 +118,7 @@ public interface ProjectUpdates {
     @Override public void goToUpdateRequest(final @NonNull Request request) {
       this.goToUpdateRequestSubject.onNext(request);
     }
+
     @Override public @NonNull Observable<Update> startCommentsActivity() {
       return startCommentsActivity;
     }

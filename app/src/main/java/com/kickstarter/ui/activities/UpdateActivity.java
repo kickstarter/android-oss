@@ -8,6 +8,7 @@ import android.view.animation.AlphaAnimation;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
+import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.ui.toolbars.KSToolbar;
@@ -15,6 +16,7 @@ import com.kickstarter.ui.views.KSWebView;
 import com.kickstarter.viewmodels.Update;
 
 import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -26,20 +28,32 @@ public class UpdateActivity extends BaseActivity<Update.ViewModel> implements KS
   protected @Bind(R.id.loading_indicator_view) View loadingIndicatorView;
   protected @Bind(R.id.update_toolbar) KSToolbar toolbar;
 
+  protected @BindString(R.string.social_update_number) String updateNumberString;
+
+  private KSString ksString;
+
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.update_layout);
     ButterKnife.bind(this);
 
-    this.toolbar.setTitle("Update #");
-
+    this.ksString = environment().ksString();
     this.ksWebView.client().setDelegate(this);
 
     this.viewModel.outputs.webViewUrl()
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.ksWebView::loadUrl);
+
+    this.viewModel.outputs.updateSequence()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::setToolbarTitle);
+  }
+
+  private void setToolbarTitle(final @NonNull String updateSequence) {
+    this.toolbar.setTitle(ksString.format(updateNumberString, "update_number", updateSequence));
   }
 
   @OnClick(R.id.share_icon_button)

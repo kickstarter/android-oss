@@ -1,7 +1,7 @@
 package com.kickstarter.viewmodels;
 
 import android.support.annotation.NonNull;
-import android.support.v4.util.Pair;
+import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
@@ -17,10 +17,6 @@ import okhttp3.Request;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
-
-import static rx.Observable.combineLatest;
-import static rx.Observable.merge;
-import static rx.Observable.zip;
 
 public interface ProjectUpdates {
 
@@ -63,28 +59,17 @@ public interface ProjectUpdates {
         .compose(bindToLifecycle())
         .subscribe(this.webViewUrl::onNext);
 
-      final Observable<String> updateParam = merge(
-        goToCommentsRequestSubject,
-        goToUpdateRequestSubject
-      )
-        .map(this::updateParamFromRequest);
-
-      final Observable<Update> updateFromParams = combineLatest(
-        initialProject.map(Project::param),
-        updateParam,
-        Pair::create
-      )
-        .switchMap(pu ->
-          client
-            .fetchUpdate(pu.first, pu.second)
-            .compose(Transformers.neverError())
-        );
-
-      updateFromParams
-        .compose(bindToLifecycle())
+      goToCommentsRequestSubject
+        .map(this::projectUpdateParams)
+        .switchMap(this::fetchUpdate)
         .subscribe(this.startCommentsActivity::onNext);
 
-      zip(initialProject, updateFromParams, Pair::create)
+      final Observable<Update> goToUpdateRequest = goToUpdateRequestSubject
+        .map(this::projectUpdateParams)
+        .switchMap(this::fetchUpdate);
+
+      initialProject
+        .compose(Transformers.takePairWhen(goToUpdateRequest))
         .compose(bindToLifecycle())
         .subscribe(this.startUpdateActivity::onNext);
 
@@ -94,17 +79,31 @@ public interface ProjectUpdates {
         .subscribe(__ -> koala.trackViewedUpdates());
     }
 
-    private @NonNull String updateParamFromRequest(final @NonNull Request request) {
+    private @NonNull Observable<Update> fetchUpdate(final @NonNull Pair<String, String> projectAndUpdateParams) {
+      return client
+        .fetchUpdate(projectAndUpdateParams.first, projectAndUpdateParams.second)
+        .compose(Transformers.neverError());
+    }
+
+    /**
+     * Parses a request for project and update params.
+     *
+     * @param request   Comments or update request.
+     * @return          Pair of project param string and update param string.
+     */
+    private @NonNull Pair<String, String> projectUpdateParams(final @NonNull Request request) {
       // todo: build a safer param matcher helper--give group names to segments
-      return request.url().encodedPathSegments().get(4);
+      final String projectParam = request.url().encodedPathSegments().get(2);
+      final String updateParam = request.url().encodedPathSegments().get(4);
+      return Pair.create(projectParam, updateParam);
     }
 
     private final PublishSubject<String> pageInterceptedUrlSubject = PublishSubject.create();
     private final PublishSubject<Request> goToCommentsRequestSubject = PublishSubject.create();
     private final PublishSubject<Request> goToUpdateRequestSubject = PublishSubject.create();
 
-    private final BehaviorSubject<Update> startCommentsActivity = BehaviorSubject.create();
-    private final BehaviorSubject<Pair<Project, Update>> startUpdateActivity = BehaviorSubject.create();
+    private final PublishSubject<Update> startCommentsActivity = PublishSubject.create();
+    private final PublishSubject<Pair<Project, Update>> startUpdateActivity = PublishSubject.create();
     private final BehaviorSubject<String> webViewUrl = BehaviorSubject.create();
 
     public final Inputs inputs = this;

@@ -142,7 +142,7 @@ public final class DiscoveryDrawerUtils {
 
     if (user != null) {
       filters.add(DiscoveryParams.builder().starred(1).build());
-      filters.add(DiscoveryParams.builder().recommended(true).build());
+      filters.add(DiscoveryParams.builder().recommended(true).backed(-1).build());
 
       if (isTrue(user.social())) {
         filters.add(DiscoveryParams.builder().social(1).build());

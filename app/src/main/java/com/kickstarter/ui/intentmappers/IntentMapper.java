@@ -24,4 +24,14 @@ public abstract class IntentMapper {
 
     return Uri.parse(string);
   }
+
+  public static boolean intentFromAppBanner(final @NonNull Intent intent) {
+    final Uri uri = uri(intent);
+    if (uri == null) {
+      return false;
+    } else {
+      final String queryParam = uri.getQueryParameter("app_banner");
+      return queryParam != null && queryParam.equals("1");
+    }
+  }
 }

@@ -37,6 +37,10 @@ public final class Koala {
     client.track("App Memory Warning");
   }
 
+  public void trackOpenedAppBanner() {
+    client.track("Opened App Banner");
+  }
+
   // ANDROID PAY
   public void trackShowAndroidPaySheet() {
     client.track("Android Pay Show Sheet");

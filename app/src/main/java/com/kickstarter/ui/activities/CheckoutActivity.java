@@ -10,7 +10,6 @@ import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.util.Pair;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -39,6 +38,7 @@ import com.kickstarter.libs.models.AndroidPayAuthorizedPayload;
 import com.kickstarter.libs.models.AndroidPayPayload;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.AndroidPayUtils;
+import com.kickstarter.libs.utils.AnimationUtils;
 import com.kickstarter.libs.utils.BooleanUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Project;
@@ -417,18 +417,12 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
 
   @Override
   public void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    final AlphaAnimation animation = new AlphaAnimation(0.0f, 1.0f);
-    animation.setDuration(300L);
-    animation.setFillAfter(true);
-    loadingIndicatorView.startAnimation(animation);
+    loadingIndicatorView.startAnimation(AnimationUtils.loadingIndicatorOnPageStarted());
   }
 
   @Override
   public void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    final AlphaAnimation animation = new AlphaAnimation(1.0f, 0.0f);
-    animation.setDuration(300L);
-    animation.setFillAfter(true);
-    loadingIndicatorView.startAnimation(animation);
+    loadingIndicatorView.startAnimation(AnimationUtils.loadingIndicatorOnPageFinished());
   }
 
   @Override

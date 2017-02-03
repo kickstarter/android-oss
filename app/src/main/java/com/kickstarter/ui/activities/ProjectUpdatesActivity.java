@@ -5,12 +5,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
 import android.webkit.WebView;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
+import com.kickstarter.libs.utils.AnimationUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
 import com.kickstarter.services.KSUri;
@@ -99,19 +99,12 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdates.ViewMode
 
   @Override
   public void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    // todo: maybe we should reuse these indicator animations for all our webviews
-    final AlphaAnimation animation = new AlphaAnimation(1.0f, 0.0f);
-    animation.setDuration(300L);
-    animation.setFillAfter(true);
-    this.loadingIndicatorView.startAnimation(animation);
+    this.loadingIndicatorView.startAnimation(AnimationUtils.loadingIndicatorOnPageFinished());
   }
 
   @Override
   public void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    final AlphaAnimation animation = new AlphaAnimation(0.0f, 1.0f);
-    animation.setDuration(300L);
-    animation.setFillAfter(true);
-    this.loadingIndicatorView.startAnimation(animation);
+    this.loadingIndicatorView.startAnimation(AnimationUtils.loadingIndicatorOnPageStarted());
   }
 
   @Override

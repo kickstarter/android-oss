@@ -23,6 +23,7 @@ import static rx.Observable.merge;
 import static rx.Observable.zip;
 
 public interface ProjectUpdates {
+
   interface Inputs {
     /** Call when the web view page url has been intercepted. */
     void pageInterceptedUrl(String url);
@@ -48,7 +49,7 @@ public interface ProjectUpdates {
   final class ViewModel extends ActivityViewModel<ProjectUpdatesActivity> implements Inputs, Outputs {
     private final ApiClientType client;
 
-    ViewModel(final @NonNull Environment environment) {
+    public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
       client = environment.apiClient();

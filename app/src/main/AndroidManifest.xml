@@ -334,6 +334,16 @@
     </activity>
 
     <activity
+      android:name=".ui.activities.UpdateActivity"
+      android:parentActivityName=".ui.activities.ProjectUpdatesActivity">
+
+      <meta-data
+        android:name="android.support.PARENT_ACTIVITY"
+        android:value=".ui.activities.ProjectUpdatesActivity" />
+
+    </activity>
+
+    <activity
       android:name=".ui.activities.VideoPlayerActivity"
       android:parentActivityName=".ui.activities.ProjectActivity"
       android:theme="@style/VideoPlayerActivity"

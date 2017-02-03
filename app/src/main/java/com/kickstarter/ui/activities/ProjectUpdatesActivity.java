@@ -24,6 +24,7 @@ import com.kickstarter.viewmodels.ProjectUpdates;
 import java.util.Arrays;
 
 import butterknife.Bind;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 import okhttp3.Request;
 
@@ -35,13 +36,15 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdates.ViewMode
   protected @Bind(R.id.loading_indicator_view) View loadingIndicatorView;
   protected @Bind(R.id.web_view_toolbar) KSToolbar webViewToolbar;
 
+  protected @BindString(R.string.project_subpages_menu_buttons_updates) String updatesTitleString;
+
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.web_view_layout);
     ButterKnife.bind(this);
 
-    this.webViewToolbar.setTitle(R.string.project_subpages_menu_buttons_updates);
+    this.webViewToolbar.setTitle(updatesTitleString);
 
     this.ksWebView.client().setDelegate(this);
     this.ksWebView.client().registerRequestHandlers(Arrays.asList(
@@ -88,7 +91,10 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdates.ViewMode
   }
 
   private void startUpdateActivity(final @NonNull Project project, final @NonNull Update update) {
-
+    final Intent intent = new Intent(this, UpdateActivity.class)
+      .putExtra(IntentKey.PROJECT, project)
+      .putExtra(IntentKey.UPDATE, update);
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   @Override

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.kickstarter.ui.toolbars.KSToolbar
-  android:id="@+id/web_view_toolbar"
+  android:id="@+id/update_toolbar"
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
-  tools:showIn="@layout/project_social_layout"
+  tools:showIn="@layout/update_layout"
   style="@style/Toolbar"
   app:contentInsetLeft="0dp"
   app:contentInsetStart="0dp">
@@ -25,6 +25,18 @@
     <TextView
       style="@style/ToolbarTitle"
       android:id="@+id/title_text_view" />
+
+    <!-- Override the text size because this looks enormous compared to the back icon -->
+    <com.kickstarter.ui.views.IconButton
+      style="@style/ToolbarIcon"
+      android:id="@+id/share_icon_button"
+      android:focusable="true"
+      android:nextFocusLeft="@id/back_icon"
+      android:contentDescription="@string/project_accessibility_button_share_label"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentRight="true"
+      android:textSize="20sp"
+      android:text="@string/share_icon"/>
 
   </RelativeLayout>
 

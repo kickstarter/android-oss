@@ -48,7 +48,7 @@ public interface ProjectUpdates {
     public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
-      client = environment.apiClient();
+      this.client = environment.apiClient();
 
       final Observable<Project> initialProject = intent()
         .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
@@ -59,12 +59,12 @@ public interface ProjectUpdates {
         .compose(bindToLifecycle())
         .subscribe(this.webViewUrl::onNext);
 
-      goToCommentsRequestSubject
+      this.goToCommentsRequestSubject
         .map(this::projectUpdateParams)
         .switchMap(this::fetchUpdate)
         .subscribe(this.startCommentsActivity::onNext);
 
-      final Observable<Update> goToUpdateRequest = goToUpdateRequestSubject
+      final Observable<Update> goToUpdateRequest = this.goToUpdateRequestSubject
         .map(this::projectUpdateParams)
         .switchMap(this::fetchUpdate);
 
@@ -76,11 +76,11 @@ public interface ProjectUpdates {
       initialProject
         .take(1)
         .compose(bindToLifecycle())
-        .subscribe(__ -> koala.trackViewedUpdates());
+        .subscribe(__ -> this.koala.trackViewedUpdates());
     }
 
     private @NonNull Observable<Update> fetchUpdate(final @NonNull Pair<String, String> projectAndUpdateParams) {
-      return client
+      return this.client
         .fetchUpdate(projectAndUpdateParams.first, projectAndUpdateParams.second)
         .compose(Transformers.neverError());
     }
@@ -120,13 +120,13 @@ public interface ProjectUpdates {
     }
 
     @Override public @NonNull Observable<Update> startCommentsActivity() {
-      return startCommentsActivity;
+      return this.startCommentsActivity;
     }
     @Override public @NonNull Observable<Pair<Project, Update>> startUpdateActivity() {
-      return startUpdateActivity;
+      return this.startUpdateActivity;
     }
     @Override public @NonNull Observable<String> webViewUrl() {
-      return webViewUrl;
+      return this.webViewUrl;
     }
   }
 }

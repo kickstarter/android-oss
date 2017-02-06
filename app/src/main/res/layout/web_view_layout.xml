@@ -15,7 +15,7 @@
     android:layout_below="@id/web_view_toolbar"/>
 
   <RelativeLayout
-    android:id="@+id/checkout_loading_indicator"
+    android:id="@+id/loading_indicator_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_below="@id/web_view_toolbar">

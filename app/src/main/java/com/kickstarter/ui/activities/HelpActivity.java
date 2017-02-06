@@ -40,7 +40,7 @@ public class HelpActivity extends BaseActivity<HelpViewModel> implements KSWebVi
   private @HelpType int helpType;
 
   protected @Bind(R.id.kickstarter_web_view) KSWebView kickstarterWebView;
-  protected @Bind(R.id.checkout_loading_indicator) View loadingIndicatorView;
+  protected @Bind(R.id.loading_indicator_view) View loadingIndicatorView;
 
   @Inject @WebEndpoint String webEndpoint;
 

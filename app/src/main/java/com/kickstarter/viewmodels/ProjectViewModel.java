@@ -11,7 +11,6 @@ import com.kickstarter.libs.CurrentConfigType;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
-import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.RefTagUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
@@ -31,6 +30,10 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPair;
+import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
+import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
+
 public final class ProjectViewModel extends ActivityViewModel<ProjectActivity> implements ProjectAdapter.Delegate,
   ProjectViewModelInputs, ProjectViewModelOutputs {
   private final ApiClientType client;
@@ -48,110 +51,18 @@ public final class ProjectViewModel extends ActivityViewModel<ProjectActivity> i
     private final @Nullable RefTag refTagFromCookie;
     private final @NonNull Project project;
 
-    private RefTagsAndProject(final @Nullable RefTag refTagFromIntent, final @Nullable RefTag refTagFromCookie, final @NonNull Project project) {
+    private RefTagsAndProject(final @Nullable RefTag refTagFromIntent, final @Nullable RefTag refTagFromCookie,
+      final @NonNull Project project) {
       this.refTagFromIntent = refTagFromIntent;
       this.refTagFromCookie = refTagFromCookie;
       this.project = project;
-    }
-
-    public @Nullable RefTag refTagFromIntent() {
-      return refTagFromIntent;
-    }
-
-    public @Nullable RefTag refTagFromCookie() {
-      return refTagFromCookie;
     }
 
     public @NonNull Project project() {
       return project;
     }
   }
-
-  // INPUTS
-  private final PublishSubject<Void> backProjectClicked = PublishSubject.create();
-  public void backProjectClicked() {
-    this.backProjectClicked.onNext(null);
-  }
-  private final PublishSubject<Void> shareClicked = PublishSubject.create();
-  public void shareClicked() {
-    this.shareClicked.onNext(null);
-  }
-  private final PublishSubject<Void> blurbClicked = PublishSubject.create();
-  public void blurbClicked() {
-    this.blurbClicked.onNext(null);
-  }
-  private final PublishSubject<Void> commentsClicked = PublishSubject.create();
-  public void commentsClicked() {
-    this.commentsClicked.onNext(null);
-  }
-  private final PublishSubject<Void> creatorNameClicked = PublishSubject.create();
-  public void creatorNameClicked() {
-    this.creatorNameClicked.onNext(null);
-  }
-  private final PublishSubject<Void> managePledgeClicked = PublishSubject.create();
-  public void managePledgeClicked() {
-    this.managePledgeClicked.onNext(null);
-  }
-  private final PublishSubject<Void> updatesClicked = PublishSubject.create();
-  public void updatesClicked() {
-    this.updatesClicked.onNext(null);
-  }
-  private final PublishSubject<Void> playVideoClicked = PublishSubject.create();
-  public void playVideoClicked() {
-    this.playVideoClicked.onNext(null);
-  }
-  private final PublishSubject<Void> viewPledgeClicked = PublishSubject.create();
-  public void viewPledgeClicked() {
-    this.viewPledgeClicked.onNext(null);
-  }
-  private final PublishSubject<Void> starClicked = PublishSubject.create();
-  public void starClicked() {
-    this.starClicked.onNext(null);
-  }
-  public final ProjectViewModelInputs inputs = this;
-
-  // OUTPUTS
-  private final BehaviorSubject<Project> project = BehaviorSubject.create();
-  public Observable<Pair<Project, String>> projectAndUserCountry() {
-    return project.compose(Transformers.combineLatestPair(currentConfig.observable().map(Config::countryCode)));
-  }
-  public Observable<Project> showShareSheet() {
-    return this.project.compose(Transformers.takeWhen(this.shareClicked));
-  }
-  public Observable<Project> playVideo() {
-    return this.project.compose(Transformers.takeWhen(this.playVideoClicked));
-  }
-  public Observable<Project> showCampaign() {
-    return this.project.compose(Transformers.takeWhen(this.blurbClicked));
-  }
-  public Observable<Project> showCreator() {
-    return this.project.compose(Transformers.takeWhen(this.creatorNameClicked));
-  }
-  public Observable<Project> showUpdates() {
-    return this.project.compose(Transformers.takeWhen(this.updatesClicked));
-  }
-  public Observable<Project> showComments() {
-    return this.project.compose(Transformers.takeWhen(this.commentsClicked));
-  }
-  public Observable<Project> startCheckout() {
-    return this.project.compose(Transformers.takeWhen(this.backProjectClicked));
-  }
-  public Observable<Project> startManagePledge() {
-    return this.project.compose(Transformers.takeWhen(this.managePledgeClicked));
-  }
-  public Observable<Project> startViewPledge() {
-    return this.project.compose(Transformers.takeWhen(this.viewPledgeClicked));
-  }
-  private final PublishSubject<Void> showStarredPrompt = PublishSubject.create();
-  public Observable<Void> showStarredPrompt() {
-    return this.showStarredPrompt;
-  }
-  private final PublishSubject<Void> showLoginTout = PublishSubject.create();
-  public Observable<Void> showLoginTout() {
-    return this.showLoginTout;
-  }
-  public final ProjectViewModelOutputs outputs = this;
-
+  
   public ProjectViewModel(final @NonNull Environment environment) {
     super(environment);
 
@@ -177,20 +88,20 @@ public final class ProjectViewModel extends ActivityViewModel<ProjectActivity> i
       .flatMap(ProjectIntentMapper::pushNotificationEnvelope);
 
     final Observable<User> loggedInUserOnStarClick = currentUser.observable()
-      .compose(Transformers.takeWhen(starClicked))
+      .compose(takeWhen(starClicked))
       .filter(u -> u != null);
 
     final Observable<User> loggedOutUserOnStarClick = currentUser.observable()
-      .compose(Transformers.takeWhen(starClicked))
+      .compose(takeWhen(starClicked))
       .filter(u -> u == null);
 
     final Observable<Project> projectOnUserChangeStar = initialProject
-      .compose(Transformers.takeWhen(loggedInUserOnStarClick))
+      .compose(takeWhen(loggedInUserOnStarClick))
       .switchMap(this::toggleProjectStar)
       .share();
 
     final Observable<Project> starredProjectOnLoginSuccess = showLoginTout
-      .compose(Transformers.combineLatestPair(currentUser.observable()))
+      .compose(combineLatestPair(currentUser.observable()))
       .filter(su -> su.second != null)
       .withLatestFrom(initialProject, (__, p) -> p)
       .take(1)
@@ -254,45 +165,123 @@ public final class ProjectViewModel extends ActivityViewModel<ProjectActivity> i
       .subscribe(__ -> koala.trackOpenedAppBanner());
   }
 
+  public @NonNull Observable<Project> starProject(final @NonNull Project project) {
+    return client.starProject(project)
+      .compose(neverError());
+  }
+
+  public @NonNull Observable<Project> toggleProjectStar(final @NonNull Project project) {
+    return client.toggleProjectStar(project)
+      .compose(neverError());
+  }
+
+  private final PublishSubject<Void> backProjectClicked = PublishSubject.create();
+  private final PublishSubject<Void> shareClicked = PublishSubject.create();
+  private final PublishSubject<Void> blurbClicked = PublishSubject.create();
+  private final PublishSubject<Void> commentsClicked = PublishSubject.create();
+  private final PublishSubject<Void> creatorNameClicked = PublishSubject.create();
+  private final PublishSubject<Void> managePledgeClicked = PublishSubject.create();
+  private final PublishSubject<Void> updatesClicked = PublishSubject.create();
+  private final PublishSubject<Void> playVideoClicked = PublishSubject.create();
+  private final PublishSubject<Void> viewPledgeClicked = PublishSubject.create();
+  private final PublishSubject<Void> starClicked = PublishSubject.create();
+
+  private final BehaviorSubject<Project> project = BehaviorSubject.create();
+  private final PublishSubject<Void> showLoginTout = PublishSubject.create();
+  private final PublishSubject<Void> showStarredPrompt = PublishSubject.create();
+
+  public final ProjectViewModelInputs inputs = this;
+  public final ProjectViewModelOutputs outputs = this;
+  
+  public void backProjectClicked() {
+    this.backProjectClicked.onNext(null);
+  }
+  public void blurbClicked() {
+    this.blurbClicked.onNext(null);
+  }
+  public void commentsClicked() {
+    this.commentsClicked.onNext(null);
+  }
+  public void creatorNameClicked() {
+    this.creatorNameClicked.onNext(null);
+  }
+  public void managePledgeClicked() {
+    this.managePledgeClicked.onNext(null);
+  }
+  public void playVideoClicked() {
+    this.playVideoClicked.onNext(null);
+  }
   public void projectViewHolderBackProjectClicked(final @NonNull ProjectViewHolder viewHolder) {
     this.backProjectClicked();
   }
-
   public void projectViewHolderBlurbClicked(final @NonNull ProjectViewHolder viewHolder) {
     this.blurbClicked();
   }
-
   public void projectViewHolderCommentsClicked(final @NonNull ProjectViewHolder viewHolder) {
     this.commentsClicked();
   }
-
   public void projectViewHolderCreatorClicked(final @NonNull ProjectViewHolder viewHolder){
     this.creatorNameClicked();
   }
-
   public void projectViewHolderManagePledgeClicked(final @NonNull ProjectViewHolder viewHolder) {
     this.managePledgeClicked();
   }
-
   public void projectViewHolderVideoStarted(final @NonNull ProjectViewHolder viewHolder) {
     this.playVideoClicked();
   }
-
   public void projectViewHolderViewPledgeClicked(final @NonNull ProjectViewHolder viewHolder) {
     this.viewPledgeClicked();
   }
-
   public void projectViewHolderUpdatesClicked(final @NonNull ProjectViewHolder viewHolder) {
     this.updatesClicked();
   }
-
-  public Observable<Project> starProject(final @NonNull Project project) {
-    return client.starProject(project)
-      .compose(Transformers.neverError());
+  public void shareClicked() {
+    this.shareClicked.onNext(null);
+  }
+  public void starClicked() {
+    this.starClicked.onNext(null);
+  }
+  public void updatesClicked() {
+    this.updatesClicked.onNext(null);
+  }
+  public void viewPledgeClicked() {
+    this.viewPledgeClicked.onNext(null);
   }
 
-  public Observable<Project> toggleProjectStar(final @NonNull Project project) {
-    return client.toggleProjectStar(project)
-      .compose(Transformers.neverError());
+  @Override public @NonNull Observable<Project> playVideo() {
+    return this.project.compose(takeWhen(this.playVideoClicked));
+  }
+  @Override public @NonNull Observable<Pair<Project, String>> projectAndUserCountry() {
+    return this.project.compose(combineLatestPair(this.currentConfig.observable().map(Config::countryCode)));
+  }
+  @Override public @NonNull Observable<Project> startCampaignWebViewActivity() {
+    return this.project.compose(takeWhen(this.blurbClicked));
+  }
+  @Override public @NonNull Observable<Project> startCreatorBioWebViewActivity() {
+    return this.project.compose(takeWhen(this.creatorNameClicked));
+  }
+  @Override public @NonNull Observable<Project> startCommentsActivity() {
+    return this.project.compose(takeWhen(this.commentsClicked));
+  }
+  @Override public @NonNull Observable<Void> showLoginTout() {
+    return this.showLoginTout;
+  }
+  @Override public @NonNull Observable<Project> showShareSheet() {
+    return this.project.compose(takeWhen(this.shareClicked));
+  }
+  @Override public @NonNull Observable<Void> showStarredPrompt() {
+    return this.showStarredPrompt;
+  }
+  @Override public @NonNull Observable<Project> startProjectUpdatesActivity() {
+    return this.project.compose(takeWhen(this.updatesClicked));
+  }
+  @Override public @NonNull Observable<Project> startCheckout() {
+    return this.project.compose(takeWhen(this.backProjectClicked));
+  }
+  @Override public @NonNull Observable<Project> startManagePledge() {
+    return this.project.compose(takeWhen(this.managePledgeClicked));
+  }
+  @Override public @NonNull Observable<Project> startViewPledge() {
+    return this.project.compose(takeWhen(this.viewPledgeClicked));
   }
 }

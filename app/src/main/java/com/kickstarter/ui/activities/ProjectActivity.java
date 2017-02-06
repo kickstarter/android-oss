@@ -81,30 +81,30 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(pc -> this.renderProject(pc.first, pc.second));
 
-    this.viewModel.outputs.showCampaign()
+    this.viewModel.outputs.startCampaignWebViewActivity()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::showProjectDescription);
+      .subscribe(this::startCampaignWebViewActivity);
 
-    this.viewModel.outputs.showComments()
+    this.viewModel.outputs.startCommentsActivity()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::startCommentsActivity);
 
-    this.viewModel.outputs.showCreator()
+    this.viewModel.outputs.startCreatorBioWebViewActivity()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::showCreatorBio);
+      .subscribe(this::startCreatorBioWebViewActivity);
 
     this.viewModel.outputs.showShareSheet()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::startShareIntent);
 
-    this.viewModel.outputs.showUpdates()
+    this.viewModel.outputs.startProjectUpdatesActivity()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::showUpdates);
+      .subscribe(this::startProjectUpdatesActivity);
 
     this.viewModel.outputs.playVideo()
       .compose(bindToLifecycle())
@@ -178,15 +178,15 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
     viewModel.inputs.shareClicked();
   }
 
-  private void showProjectDescription(final @NonNull Project project) {
+  private void startCampaignWebViewActivity(final @NonNull Project project) {
     startWebViewActivity(campaignString, project.descriptionUrl());
   }
 
-  private void showCreatorBio(final @NonNull Project project) {
+  private void startCreatorBioWebViewActivity(final @NonNull Project project) {
     startWebViewActivity(creatorString, project.creatorBioUrl());
   }
 
-  private void showUpdates(final @NonNull Project project) {
+  private void startProjectUpdatesActivity(final @NonNull Project project) {
     startWebViewActivity(updatesString, project.updatesUrl());
   }
 

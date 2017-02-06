@@ -9,7 +9,6 @@ import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
-import com.kickstarter.models.Project;
 import com.kickstarter.ui.IntentKey;
 
 import org.junit.Test;
@@ -22,12 +21,12 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
   public void testProjectViewModel_EmitsProjectWithStandardSetUp() {
     final Environment environment = environment();
     environment.currentConfig().config(ConfigFactory.config());
-    final ProjectViewModel vm = new ProjectViewModel(environment);
+    final Project.ViewModel vm = new Project.ViewModel(environment);
 
-    final TestSubscriber<Project> projectTest = new TestSubscriber<>();
+    final TestSubscriber<com.kickstarter.models.Project> projectTest = new TestSubscriber<>();
     vm.outputs.projectAndUserCountry().map(pc -> pc.first).subscribe(projectTest);
 
-    final Project project = ProjectFactory.project();
+    final com.kickstarter.models.Project project = ProjectFactory.project();
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
 
     projectTest.assertValues(project, project);
@@ -44,7 +43,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
       .build();
     environment.currentConfig().config(ConfigFactory.config());
 
-    final ProjectViewModel vm = new ProjectViewModel(environment);
+    final Project.ViewModel vm = new Project.ViewModel(environment);
 
     final TestSubscriber<Void> loginToutTest = new TestSubscriber<>();
     vm.outputs.showLoginTout().subscribe(loginToutTest);
@@ -53,7 +52,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     vm.outputs.showStarredPrompt().subscribe(showStarredPromptTest);
 
     final TestSubscriber<Boolean> starredTest = new TestSubscriber<>();
-    vm.outputs.projectAndUserCountry().map(pc -> pc.first).map(Project::isStarred).subscribe(starredTest);
+    vm.outputs.projectAndUserCountry().map(pc -> pc.first.isStarred()).subscribe(starredTest);
 
     // Start the view model with a project
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.halfWayProject()));
@@ -84,7 +83,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testProjectViewModel_StarProjectThatIsAlmostCompleted() {
-    final Project project = ProjectFactory.almostCompletedProject();
+    final com.kickstarter.models.Project project = ProjectFactory.almostCompletedProject();
 
     final CurrentUserType currentUser = new MockCurrentUser();
     final Environment environment = environment().toBuilder()
@@ -92,13 +91,13 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
       .build();
     environment.currentConfig().config(ConfigFactory.config());
 
-    final ProjectViewModel vm = new ProjectViewModel(environment);
+    final Project.ViewModel vm = new Project.ViewModel(environment);
 
     final TestSubscriber<Void> showStarredPromptTest = new TestSubscriber<>();
     vm.outputs.showStarredPrompt().subscribe(showStarredPromptTest);
 
     final TestSubscriber<Boolean> starredTest = new TestSubscriber<>();
-    vm.outputs.projectAndUserCountry().map(pc -> pc.first).map(Project::isStarred).subscribe(starredTest);
+    vm.outputs.projectAndUserCountry().map(pc -> pc.first.isStarred()).subscribe(starredTest);
 
     // Start the view model with an almost completed project
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
@@ -122,13 +121,13 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
       .build();
     environment.currentConfig().config(ConfigFactory.config());
 
-    final ProjectViewModel vm = new ProjectViewModel(environment);
+    final Project.ViewModel vm = new Project.ViewModel(environment);
 
     final TestSubscriber<Void> showStarredPromptTest = new TestSubscriber<>();
     vm.outputs.showStarredPrompt().subscribe(showStarredPromptTest);
 
     final TestSubscriber<Boolean> starredTest = new TestSubscriber<>();
-    vm.outputs.projectAndUserCountry().map(pc -> pc.first).map(Project::isStarred).subscribe(starredTest);
+    vm.outputs.projectAndUserCountry().map(pc -> pc.first.isStarred()).subscribe(starredTest);
 
     // Start the view model with a successful project
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.successfulProject()));

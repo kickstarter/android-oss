@@ -67,7 +67,7 @@ public interface ActivityFeed {
     private final ApiClientType client;
     private final CurrentUserType currentUser;
 
-    ViewModel(final @NonNull Environment environment) {
+    public ViewModel(final @NonNull Environment environment) {
       super(environment);
 
       client = environment.apiClient();

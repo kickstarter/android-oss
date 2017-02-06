@@ -417,12 +417,12 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
 
   @Override
   public void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    loadingIndicatorView.startAnimation(AnimationUtils.loadingIndicatorOnPageStarted());
+    loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.appearAnimation());
   }
 
   @Override
   public void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    loadingIndicatorView.startAnimation(AnimationUtils.loadingIndicatorOnPageFinished());
+    loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.disappearAnimation());
   }
 
   @Override

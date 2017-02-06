@@ -60,7 +60,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     starredTest.assertValues(false, false);
 
     // Try starring while logged out
-    vm.inputs.starClicked();
+    vm.inputs.starButtonClicked();
 
     // The project shouldn't be starred, and a login prompt should be shown.
     starredTest.assertValues(false, false);
@@ -106,7 +106,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     currentUser.refresh(UserFactory.user());
 
     // Star the project
-    vm.inputs.starClicked();
+    vm.inputs.starButtonClicked();
 
     // The project should be starred, and a star prompt should NOT be shown.
     starredTest.assertValues(false, false, true);
@@ -136,7 +136,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     currentUser.refresh(UserFactory.user());
 
     // Star the project
-    vm.inputs.starClicked();
+    vm.inputs.starButtonClicked();
 
     // The project should be starred, and a star prompt should NOT be shown.
     starredTest.assertValues(false, false, true);

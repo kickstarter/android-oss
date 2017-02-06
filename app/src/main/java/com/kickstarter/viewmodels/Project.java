@@ -34,35 +34,35 @@ import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 public interface Project {
 
   interface Inputs {
-    /** Call when the star button is clicked. */
-    void starClicked();
-
     /** Call when the back project button is clicked. */
-    void backProjectClicked();
+    void backProjectButtonClicked();
 
-    /** Call when the share button is clicked. */
-    void shareClicked();
+    /** Call when the blurb view is clicked. */
+    void blurbTextViewClicked();
 
-    /** Call when the blurb is clicked. */
-    void blurbClicked();
-
-    /** Call when the comments button is clicked. */
-    void commentsClicked();
+    /** Call when the comments text view is clicked. */
+    void commentsTextViewClicked();
 
     /** Call when the creator name is clicked. */
-    void creatorNameClicked();
+    void creatorNameTextViewClicked();
+
+    /** Call when the share button is clicked. */
+    void shareButtonClicked();
 
     /** Call when the manage pledge button is clicked. */
-    void managePledgeClicked();
-
-    /** Call when the updates button is clicked. */
-    void updatesClicked();
+    void managePledgeButtonClicked();
 
     /** Call when the play video button is clicked. */
-    void playVideoClicked();
+    void playVideoButtonClicked();
+
+    /** Call when the star button is clicked. */
+    void starButtonClicked();
+
+    /** Call when the updates button is clicked. */
+    void updatesTextViewClicked();
 
     /** Call when the view pledge button is clicked. */
-    void viewPledgeClicked();
+    void viewPledgeButtonClicked();
   }
 
   interface Outputs {
@@ -136,11 +136,11 @@ public interface Project {
         .flatMap(ProjectIntentMapper::pushNotificationEnvelope);
 
       final Observable<User> loggedInUserOnStarClick = this.currentUser.observable()
-        .compose(takeWhen(this.starClicked))
+        .compose(takeWhen(this.starButtonClickedSubject))
         .filter(u -> u != null);
 
       final Observable<User> loggedOutUserOnStarClick = this.currentUser.observable()
-        .compose(takeWhen(this.starClicked))
+        .compose(takeWhen(this.starButtonClickedSubject))
         .filter(u -> u == null);
 
       final Observable<com.kickstarter.models.Project> projectOnUserChangeStar = initialProject
@@ -173,11 +173,11 @@ public interface Project {
         .compose(bindToLifecycle())
         .subscribe(__ -> this.showLoginTout.onNext(null));
 
-      this.shareClicked
+      this.shareButtonClickedSubject
         .compose(bindToLifecycle())
         .subscribe(__ -> this.koala.trackShowProjectShareSheet());
 
-      this.playVideoClicked
+      this.playVideoButtonClickedSubject
         .compose(bindToLifecycle())
         .subscribe(__ -> this.koala.trackVideoStart(this.project.getValue()));
 
@@ -244,16 +244,16 @@ public interface Project {
         .compose(neverError());
     }
 
-    private final PublishSubject<Void> backProjectClicked = PublishSubject.create();
-    private final PublishSubject<Void> shareClicked = PublishSubject.create();
-    private final PublishSubject<Void> blurbClicked = PublishSubject.create();
-    private final PublishSubject<Void> commentsClicked = PublishSubject.create();
-    private final PublishSubject<Void> creatorNameClicked = PublishSubject.create();
-    private final PublishSubject<Void> managePledgeClicked = PublishSubject.create();
-    private final PublishSubject<Void> updatesClicked = PublishSubject.create();
-    private final PublishSubject<Void> playVideoClicked = PublishSubject.create();
-    private final PublishSubject<Void> viewPledgeClicked = PublishSubject.create();
-    private final PublishSubject<Void> starClicked = PublishSubject.create();
+    private final PublishSubject<Void> backProjectButtonClickedSubject = PublishSubject.create();
+    private final PublishSubject<Void> blurbTextViewClickedSubject = PublishSubject.create();
+    private final PublishSubject<Void> commentsTextViewClickedSubject = PublishSubject.create();
+    private final PublishSubject<Void> creatorNameTextViewClickedSubject = PublishSubject.create();
+    private final PublishSubject<Void> managePledgeButtonClickedSubject = PublishSubject.create();
+    private final PublishSubject<Void> playVideoButtonClickedSubject = PublishSubject.create();
+    private final PublishSubject<Void> shareButtonClickedSubject = PublishSubject.create();
+    private final PublishSubject<Void> starButtonClickedSubject = PublishSubject.create();
+    private final PublishSubject<Void> updatesTextViewClickedSubject = PublishSubject.create();
+    private final PublishSubject<Void> viewPledgeButtonClickedSubject = PublishSubject.create();
 
     private final BehaviorSubject<com.kickstarter.models.Project> project = BehaviorSubject.create();
     private final PublishSubject<Void> showLoginTout = PublishSubject.create();
@@ -262,96 +262,96 @@ public interface Project {
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
-    @Override public void backProjectClicked() {
-      this.backProjectClicked.onNext(null);
+    @Override public void backProjectButtonClicked() {
+      this.backProjectButtonClickedSubject.onNext(null);
     }
-    @Override public void blurbClicked() {
-      this.blurbClicked.onNext(null);
+    @Override public void blurbTextViewClicked() {
+      this.blurbTextViewClickedSubject.onNext(null);
     }
-    @Override public void commentsClicked() {
-      this.commentsClicked.onNext(null);
+    @Override public void commentsTextViewClicked() {
+      this.commentsTextViewClickedSubject.onNext(null);
     }
-    @Override public void creatorNameClicked() {
-      this.creatorNameClicked.onNext(null);
+    @Override public void creatorNameTextViewClicked() {
+      this.creatorNameTextViewClickedSubject.onNext(null);
     }
-    @Override public void managePledgeClicked() {
-      this.managePledgeClicked.onNext(null);
+    @Override public void managePledgeButtonClicked() {
+      this.managePledgeButtonClickedSubject.onNext(null);
     }
-    @Override public void playVideoClicked() {
-      this.playVideoClicked.onNext(null);
+    @Override public void playVideoButtonClicked() {
+      this.playVideoButtonClickedSubject.onNext(null);
     }
     @Override public void projectViewHolderBackProjectClicked(final @NonNull ProjectViewHolder viewHolder) {
-      this.backProjectClicked();
+      this.backProjectButtonClicked();
     }
     @Override public void projectViewHolderBlurbClicked(final @NonNull ProjectViewHolder viewHolder) {
-      this.blurbClicked();
+      this.blurbTextViewClicked();
     }
     @Override public void projectViewHolderCommentsClicked(final @NonNull ProjectViewHolder viewHolder) {
-      this.commentsClicked();
+      this.commentsTextViewClicked();
     }
     @Override public void projectViewHolderCreatorClicked(final @NonNull ProjectViewHolder viewHolder){
-      this.creatorNameClicked();
+      this.creatorNameTextViewClicked();
     }
     @Override public void projectViewHolderManagePledgeClicked(final @NonNull ProjectViewHolder viewHolder) {
-      this.managePledgeClicked();
+      this.managePledgeButtonClicked();
     }
     @Override public void projectViewHolderVideoStarted(final @NonNull ProjectViewHolder viewHolder) {
-      this.playVideoClicked();
+      this.playVideoButtonClicked();
     }
     @Override public void projectViewHolderViewPledgeClicked(final @NonNull ProjectViewHolder viewHolder) {
-      this.viewPledgeClicked();
+      this.viewPledgeButtonClicked();
     }
     @Override public void projectViewHolderUpdatesClicked(final @NonNull ProjectViewHolder viewHolder) {
-      this.updatesClicked();
+      this.updatesTextViewClicked();
     }
-    @Override public void shareClicked() {
-      this.shareClicked.onNext(null);
+    @Override public void shareButtonClicked() {
+      this.shareButtonClickedSubject.onNext(null);
     }
-    @Override public void starClicked() {
-      this.starClicked.onNext(null);
+    @Override public void starButtonClicked() {
+      this.starButtonClickedSubject.onNext(null);
     }
-    @Override public void updatesClicked() {
-      this.updatesClicked.onNext(null);
+    @Override public void updatesTextViewClicked() {
+      this.updatesTextViewClickedSubject.onNext(null);
     }
-    @Override public void viewPledgeClicked() {
-      this.viewPledgeClicked.onNext(null);
+    @Override public void viewPledgeButtonClicked() {
+      this.viewPledgeButtonClickedSubject.onNext(null);
     }
 
     @Override public @NonNull Observable<com.kickstarter.models.Project> playVideo() {
-      return this.project.compose(takeWhen(this.playVideoClicked));
+      return this.project.compose(takeWhen(this.playVideoButtonClickedSubject));
     }
     @Override public @NonNull Observable<Pair<com.kickstarter.models.Project, String>> projectAndUserCountry() {
       return this.project.compose(combineLatestPair(this.currentConfig.observable().map(Config::countryCode)));
     }
     @Override public @NonNull Observable<com.kickstarter.models.Project> startCampaignWebViewActivity() {
-      return this.project.compose(takeWhen(this.blurbClicked));
+      return this.project.compose(takeWhen(this.blurbTextViewClickedSubject));
     }
     @Override public @NonNull Observable<com.kickstarter.models.Project> startCreatorBioWebViewActivity() {
-      return this.project.compose(takeWhen(this.creatorNameClicked));
+      return this.project.compose(takeWhen(this.creatorNameTextViewClickedSubject));
     }
     @Override public @NonNull Observable<com.kickstarter.models.Project> startCommentsActivity() {
-      return this.project.compose(takeWhen(this.commentsClicked));
+      return this.project.compose(takeWhen(this.commentsTextViewClickedSubject));
     }
     @Override public @NonNull Observable<Void> showLoginTout() {
       return this.showLoginTout;
     }
     @Override public @NonNull Observable<com.kickstarter.models.Project> showShareSheet() {
-      return this.project.compose(takeWhen(this.shareClicked));
+      return this.project.compose(takeWhen(this.shareButtonClickedSubject));
     }
     @Override public @NonNull Observable<Void> showStarredPrompt() {
       return this.showStarredPrompt;
     }
     @Override public @NonNull Observable<com.kickstarter.models.Project> startProjectUpdatesActivity() {
-      return this.project.compose(takeWhen(this.updatesClicked));
+      return this.project.compose(takeWhen(this.updatesTextViewClickedSubject));
     }
     @Override public @NonNull Observable<com.kickstarter.models.Project> startCheckout() {
-      return this.project.compose(takeWhen(this.backProjectClicked));
+      return this.project.compose(takeWhen(this.backProjectButtonClickedSubject));
     }
     @Override public @NonNull Observable<com.kickstarter.models.Project> startManagePledge() {
-      return this.project.compose(takeWhen(this.managePledgeClicked));
+      return this.project.compose(takeWhen(this.managePledgeButtonClickedSubject));
     }
     @Override public @NonNull Observable<com.kickstarter.models.Project> startViewPledge() {
-      return this.project.compose(takeWhen(this.viewPledgeClicked));
+      return this.project.compose(takeWhen(this.viewPledgeButtonClickedSubject));
     }
   }
 }

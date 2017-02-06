@@ -24,6 +24,7 @@ import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ProjectAdapter;
 import com.kickstarter.ui.data.LoginReason;
 import com.kickstarter.ui.views.IconButton;
+import com.kickstarter.viewmodels.ProjectViewModel;
 
 import javax.inject.Inject;
 
@@ -35,8 +36,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
 
-@RequiresActivityViewModel(com.kickstarter.viewmodels.Project.ViewModel.class)
-public final class ProjectActivity extends BaseActivity<com.kickstarter.viewmodels.Project.ViewModel> {
+@RequiresActivityViewModel(ProjectViewModel.ViewModel.class)
+public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewModel> {
   private ProjectAdapter adapter;
 
   protected @Bind(R.id.project_recycler_view) RecyclerView projectRecyclerView;

@@ -9,6 +9,7 @@ import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.MockCurrentUser;
+import com.kickstarter.models.Project;
 import com.kickstarter.ui.IntentKey;
 
 import org.junit.Test;
@@ -21,12 +22,12 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
   public void testProjectViewModel_EmitsProjectWithStandardSetUp() {
     final Environment environment = environment();
     environment.currentConfig().config(ConfigFactory.config());
-    final Project.ViewModel vm = new Project.ViewModel(environment);
+    final ProjectViewModel.ViewModel vm = new ProjectViewModel.ViewModel(environment);
 
-    final TestSubscriber<com.kickstarter.models.Project> projectTest = new TestSubscriber<>();
+    final TestSubscriber<Project> projectTest = new TestSubscriber<>();
     vm.outputs.projectAndUserCountry().map(pc -> pc.first).subscribe(projectTest);
 
-    final com.kickstarter.models.Project project = ProjectFactory.project();
+    final Project project = ProjectFactory.project();
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
 
     projectTest.assertValues(project, project);
@@ -43,7 +44,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
       .build();
     environment.currentConfig().config(ConfigFactory.config());
 
-    final Project.ViewModel vm = new Project.ViewModel(environment);
+    final ProjectViewModel.ViewModel vm = new ProjectViewModel.ViewModel(environment);
 
     final TestSubscriber<Void> loginToutTest = new TestSubscriber<>();
     vm.outputs.showLoginTout().subscribe(loginToutTest);
@@ -83,7 +84,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testProjectViewModel_StarProjectThatIsAlmostCompleted() {
-    final com.kickstarter.models.Project project = ProjectFactory.almostCompletedProject();
+    final Project project = ProjectFactory.almostCompletedProject();
 
     final CurrentUserType currentUser = new MockCurrentUser();
     final Environment environment = environment().toBuilder()
@@ -91,7 +92,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
       .build();
     environment.currentConfig().config(ConfigFactory.config());
 
-    final Project.ViewModel vm = new Project.ViewModel(environment);
+    final ProjectViewModel.ViewModel vm = new ProjectViewModel.ViewModel(environment);
 
     final TestSubscriber<Void> showStarredPromptTest = new TestSubscriber<>();
     vm.outputs.showStarredPrompt().subscribe(showStarredPromptTest);
@@ -121,7 +122,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
       .build();
     environment.currentConfig().config(ConfigFactory.config());
 
-    final Project.ViewModel vm = new Project.ViewModel(environment);
+    final ProjectViewModel.ViewModel vm = new ProjectViewModel.ViewModel(environment);
 
     final TestSubscriber<Void> showStarredPromptTest = new TestSubscriber<>();
     vm.outputs.showStarredPrompt().subscribe(showStarredPromptTest);

@@ -12,6 +12,7 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.RefTagUtils;
+import com.kickstarter.models.Project;
 import com.kickstarter.models.User;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
@@ -31,7 +32,7 @@ import static com.kickstarter.libs.rx.transformers.Transformers.combineLatestPai
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
-public interface Project {
+public interface ProjectViewModel {
 
   interface Inputs {
     /** Call when the back project button is clicked. */
@@ -68,7 +69,7 @@ public interface Project {
   interface Outputs {
     /** Emits a project and country when a new value is available. If the view model is created with a full project
      * model, this observable will emit that project immediately, and then again when it has updated from the api. */
-    Observable<Pair<com.kickstarter.models.Project, String>> projectAndUserCountry();
+    Observable<Pair<Project, String>> projectAndUserCountry();
 
     /** Emits when the success prompt for starring should be displayed. */
     Observable<Void> showStarredPrompt();
@@ -77,31 +78,31 @@ public interface Project {
     Observable<Void> showLoginTout();
 
     /** Emits when we should show the share sheet. */
-    Observable<com.kickstarter.models.Project> showShareSheet();
+    Observable<Project> showShareSheet();
 
     /** Emits when we should play the video. */
-    Observable<com.kickstarter.models.Project> playVideo();
+    Observable<Project> playVideo();
 
     /** Emits when we should start the campaign {@link com.kickstarter.ui.activities.WebViewActivity}. */
-    Observable<com.kickstarter.models.Project> startCampaignWebViewActivity();
+    Observable<Project> startCampaignWebViewActivity();
 
     /** Emits when we should start the creator bio {@link com.kickstarter.ui.activities.WebViewActivity}. */
-    Observable<com.kickstarter.models.Project> startCreatorBioWebViewActivity();
+    Observable<Project> startCreatorBioWebViewActivity();
 
     /** Emits when we should start the `ProjectUpdatesActivity.` */
-    Observable<com.kickstarter.models.Project> startProjectUpdatesActivity();
+    Observable<Project> startProjectUpdatesActivity();
 
     /** Emits when we should start {@link com.kickstarter.ui.activities.CommentsActivity}. */
-    Observable<com.kickstarter.models.Project> startCommentsActivity();
+    Observable<Project> startCommentsActivity();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.CheckoutActivity}. */
-    Observable<com.kickstarter.models.Project> startCheckout();
+    Observable<Project> startCheckout();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.CheckoutActivity} to manage the plege. */
-    Observable<com.kickstarter.models.Project> startManagePledge();
+    Observable<Project> startManagePledge();
 
     /** Emits when we should start the {@link com.kickstarter.ui.activities.ViewPledgeActivity}. */
-    Observable<com.kickstarter.models.Project> startViewPledge();
+    Observable<Project> startViewPledge();
   }
 
   final class ViewModel extends ActivityViewModel<ProjectActivity> implements ProjectAdapter.Delegate, Inputs, Outputs {
@@ -125,7 +126,7 @@ public interface Project {
         .take(1)
         .map(p -> RefTagUtils.storedCookieRefTagForProject(p, this.cookieManager, this.sharedPreferences));
 
-      final Observable<com.kickstarter.models.Project> initialProject = intent()
+      final Observable<Project> initialProject = intent()
         .flatMap(i -> ProjectIntentMapper.project(i, this.client))
         .share();
 
@@ -143,12 +144,12 @@ public interface Project {
         .compose(takeWhen(this.starButtonClickedSubject))
         .filter(u -> u == null);
 
-      final Observable<com.kickstarter.models.Project> projectOnUserChangeStar = initialProject
+      final Observable<Project> projectOnUserChangeStar = initialProject
         .compose(takeWhen(loggedInUserOnStarClick))
         .switchMap(this::toggleProjectStar)
         .share();
 
-      final Observable<com.kickstarter.models.Project> starredProjectOnLoginSuccess = this.showLoginTout
+      final Observable<Project> starredProjectOnLoginSuccess = this.showLoginTout
         .compose(combineLatestPair(this.currentUser.observable()))
         .filter(su -> su.second != null)
         .withLatestFrom(initialProject, (__, p) -> p)
@@ -186,7 +187,7 @@ public interface Project {
         .compose(bindToLifecycle())
         .subscribe(this.koala::trackProjectStar);
 
-      Observable.combineLatest(refTag, cookieRefTag, this.project, Project.ViewModel.RefTagsAndProject::new)
+      Observable.combineLatest(refTag, cookieRefTag, this.project, ProjectViewModel.ViewModel.RefTagsAndProject::new)
         .take(1)
         .compose(bindToLifecycle())
         .subscribe(data -> {
@@ -234,12 +235,12 @@ public interface Project {
       }
     }
 
-    public @NonNull Observable<com.kickstarter.models.Project> starProject(final @NonNull com.kickstarter.models.Project project) {
+    public @NonNull Observable<Project> starProject(final @NonNull com.kickstarter.models.Project project) {
       return this.client.starProject(project)
         .compose(neverError());
     }
 
-    public @NonNull Observable<com.kickstarter.models.Project> toggleProjectStar(final @NonNull com.kickstarter.models.Project project) {
+    public @NonNull Observable<Project> toggleProjectStar(final @NonNull com.kickstarter.models.Project project) {
       return this.client.toggleProjectStar(project)
         .compose(neverError());
     }
@@ -255,7 +256,7 @@ public interface Project {
     private final PublishSubject<Void> updatesTextViewClickedSubject = PublishSubject.create();
     private final PublishSubject<Void> viewPledgeButtonClickedSubject = PublishSubject.create();
 
-    private final BehaviorSubject<com.kickstarter.models.Project> project = BehaviorSubject.create();
+    private final BehaviorSubject<Project> project = BehaviorSubject.create();
     private final PublishSubject<Void> showLoginTout = PublishSubject.create();
     private final PublishSubject<Void> showStarredPrompt = PublishSubject.create();
 
@@ -317,40 +318,40 @@ public interface Project {
       this.viewPledgeButtonClickedSubject.onNext(null);
     }
 
-    @Override public @NonNull Observable<com.kickstarter.models.Project> playVideo() {
+    @Override public @NonNull Observable<Project> playVideo() {
       return this.project.compose(takeWhen(this.playVideoButtonClickedSubject));
     }
-    @Override public @NonNull Observable<Pair<com.kickstarter.models.Project, String>> projectAndUserCountry() {
+    @Override public @NonNull Observable<Pair<Project, String>> projectAndUserCountry() {
       return this.project.compose(combineLatestPair(this.currentConfig.observable().map(Config::countryCode)));
     }
-    @Override public @NonNull Observable<com.kickstarter.models.Project> startCampaignWebViewActivity() {
+    @Override public @NonNull Observable<Project> startCampaignWebViewActivity() {
       return this.project.compose(takeWhen(this.blurbTextViewClickedSubject));
     }
-    @Override public @NonNull Observable<com.kickstarter.models.Project> startCreatorBioWebViewActivity() {
+    @Override public @NonNull Observable<Project> startCreatorBioWebViewActivity() {
       return this.project.compose(takeWhen(this.creatorNameTextViewClickedSubject));
     }
-    @Override public @NonNull Observable<com.kickstarter.models.Project> startCommentsActivity() {
+    @Override public @NonNull Observable<Project> startCommentsActivity() {
       return this.project.compose(takeWhen(this.commentsTextViewClickedSubject));
     }
     @Override public @NonNull Observable<Void> showLoginTout() {
       return this.showLoginTout;
     }
-    @Override public @NonNull Observable<com.kickstarter.models.Project> showShareSheet() {
+    @Override public @NonNull Observable<Project> showShareSheet() {
       return this.project.compose(takeWhen(this.shareButtonClickedSubject));
     }
     @Override public @NonNull Observable<Void> showStarredPrompt() {
       return this.showStarredPrompt;
     }
-    @Override public @NonNull Observable<com.kickstarter.models.Project> startProjectUpdatesActivity() {
+    @Override public @NonNull Observable<Project> startProjectUpdatesActivity() {
       return this.project.compose(takeWhen(this.updatesTextViewClickedSubject));
     }
-    @Override public @NonNull Observable<com.kickstarter.models.Project> startCheckout() {
+    @Override public @NonNull Observable<Project> startCheckout() {
       return this.project.compose(takeWhen(this.backProjectButtonClickedSubject));
     }
-    @Override public @NonNull Observable<com.kickstarter.models.Project> startManagePledge() {
+    @Override public @NonNull Observable<Project> startManagePledge() {
       return this.project.compose(takeWhen(this.managePledgeButtonClickedSubject));
     }
-    @Override public @NonNull Observable<com.kickstarter.models.Project> startViewPledge() {
+    @Override public @NonNull Observable<Project> startViewPledge() {
       return this.project.compose(takeWhen(this.viewPledgeButtonClickedSubject));
     }
   }

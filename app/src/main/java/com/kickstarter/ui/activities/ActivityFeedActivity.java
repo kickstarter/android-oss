@@ -24,7 +24,7 @@ import com.kickstarter.models.Project;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.ActivityFeedAdapter;
 import com.kickstarter.ui.data.LoginReason;
-import com.kickstarter.viewmodels.ActivityFeed;
+import com.kickstarter.viewmodels.ActivityFeedViewModel;
 
 import java.util.List;
 
@@ -35,8 +35,8 @@ import butterknife.ButterKnife;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 
-@RequiresActivityViewModel(ActivityFeed.ViewModel.class)
-public final class ActivityFeedActivity extends BaseActivity<ActivityFeed.ViewModel> {
+@RequiresActivityViewModel(ActivityFeedViewModel.ViewModel.class)
+public final class ActivityFeedActivity extends BaseActivity<ActivityFeedViewModel.ViewModel> {
   private ActivityFeedAdapter adapter;
   protected @Bind(R.id.recycler_view) RecyclerView recyclerView;
   protected @Bind(R.id.activity_feed_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;

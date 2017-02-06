@@ -25,7 +25,7 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public interface ActivityFeed {
+public interface ActivityFeedViewModel {
 
   interface Inputs extends ActivityFeedAdapter.Delegate {
     /** Invoke when pagination should happen. */

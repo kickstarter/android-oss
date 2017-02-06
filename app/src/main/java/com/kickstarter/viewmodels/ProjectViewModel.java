@@ -19,6 +19,7 @@ import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 import com.kickstarter.ui.activities.ProjectActivity;
 import com.kickstarter.ui.adapters.ProjectAdapter;
+import com.kickstarter.ui.intentmappers.IntentMapper;
 import com.kickstarter.ui.intentmappers.ProjectIntentMapper;
 import com.kickstarter.ui.viewholders.ProjectViewHolder;
 import com.kickstarter.viewmodels.inputs.ProjectViewModelInputs;
@@ -246,6 +247,11 @@ public final class ProjectViewModel extends ActivityViewModel<ProjectActivity> i
       .take(1)
       .compose(bindToLifecycle())
       .subscribe(koala::trackPushNotification);
+
+    intent()
+      .filter(IntentMapper::appBannerIsSet)
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackOpenedAppBanner());
   }
 
   public void projectViewHolderBackProjectClicked(final @NonNull ProjectViewHolder viewHolder) {

@@ -21,6 +21,7 @@ import com.kickstarter.ui.activities.DiscoveryActivity;
 import com.kickstarter.ui.adapters.DiscoveryPagerAdapter;
 import com.kickstarter.ui.adapters.data.NavigationDrawerData;
 import com.kickstarter.ui.intentmappers.DiscoveryIntentMapper;
+import com.kickstarter.ui.intentmappers.IntentMapper;
 import com.kickstarter.ui.viewholders.discoverydrawer.ChildFilterViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.LoggedInViewHolder;
 import com.kickstarter.ui.viewholders.discoverydrawer.LoggedOutViewHolder;
@@ -182,6 +183,11 @@ public final class DiscoveryViewModel extends ActivityViewModel<DiscoveryActivit
       .filter(BooleanUtils::isTrue)
       .compose(bindToLifecycle())
       .subscribe(__ -> koala.trackDiscoveryFilters());
+
+    intent()
+      .filter(IntentMapper::appBannerIsSet)
+      .compose(bindToLifecycle())
+      .subscribe(__ -> koala.trackOpenedAppBanner());
   }
 
   private final PublishSubject<NavigationDrawerData.Section.Row> childFilterRowClick = PublishSubject.create();

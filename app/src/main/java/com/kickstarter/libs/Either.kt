@@ -9,8 +9,6 @@ sealed class Either<out A, out B> {
     is Right -> ifRight(this.right)
   }
 
-  // todo: implement ifLeft and ifRight
-
   fun isLeft(): Boolean {
     return this is Left
   }

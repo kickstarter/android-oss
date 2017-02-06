@@ -203,8 +203,6 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
       .take(1)
       .compose(bindToLifecycle())
       .subscribe(__ -> refresh.onNext(null));
-
-    // todo: instrument update comments
   }
 
   private @NonNull Observable<Comment> postComment(final @NonNull Either<Project, Update> projectOrUpdate, final @NonNull String body) {

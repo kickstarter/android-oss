@@ -92,7 +92,7 @@ public interface ProjectUpdates {
      * @return          Pair of project param string and update param string.
      */
     private @NonNull Pair<String, String> projectUpdateParams(final @NonNull Request request) {
-      // todo: build a safer param matcher helper--give group names to segments
+      // todo: build a safer param matcher helper
       final String projectParam = request.url().encodedPathSegments().get(2);
       final String updateParam = request.url().encodedPathSegments().get(4);
       return Pair.create(projectParam, updateParam);

@@ -14,13 +14,14 @@ import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.AnimationUtils;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.Update;
 import com.kickstarter.services.KSUri;
 import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.services.RequestHandler;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.toolbars.KSToolbar;
 import com.kickstarter.ui.views.KSWebView;
-import com.kickstarter.viewmodels.Update;
+import com.kickstarter.viewmodels.UpdateViewModel;
 
 import java.util.Arrays;
 
@@ -32,8 +33,8 @@ import okhttp3.Request;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 
-@RequiresActivityViewModel(Update.ViewModel.class)
-public class UpdateActivity extends BaseActivity<Update.ViewModel> implements KSWebViewClient.Delegate {
+@RequiresActivityViewModel(UpdateViewModel.ViewModel.class)
+public class UpdateActivity extends BaseActivity<UpdateViewModel.ViewModel> implements KSWebViewClient.Delegate {
   protected @Bind(R.id.update_web_view) KSWebView ksWebView;
   protected @Bind(R.id.loading_indicator_view) View loadingIndicatorView;
   protected @Bind(R.id.update_toolbar) KSToolbar toolbar;
@@ -97,7 +98,7 @@ public class UpdateActivity extends BaseActivity<Update.ViewModel> implements KS
     this.toolbar.setTitle(ksString.format(updateNumberString, "update_number", updateSequence));
   }
 
-  private void startCommentsActivity(final @NonNull com.kickstarter.models.Update update) {
+  private void startCommentsActivity(final @NonNull Update update) {
     final Intent intent = new Intent(this, CommentsActivity.class)
       .putExtra(IntentKey.UPDATE, update);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
@@ -115,12 +116,12 @@ public class UpdateActivity extends BaseActivity<Update.ViewModel> implements KS
 
   @Override
   public void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    this.loadingIndicatorView.startAnimation(AnimationUtils.loadingIndicatorOnPageFinished());
+    this.loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.disappearAnimation());
   }
 
   @Override
   public void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    this.loadingIndicatorView.startAnimation(AnimationUtils.loadingIndicatorOnPageStarted());
+    this.loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.appearAnimation());
   }
 
   @Override

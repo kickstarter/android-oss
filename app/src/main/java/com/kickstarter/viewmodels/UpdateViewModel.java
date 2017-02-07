@@ -9,6 +9,7 @@ import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.Update;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.activities.UpdateActivity;
@@ -21,7 +22,7 @@ import rx.subjects.PublishSubject;
 import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
-public interface Update {
+public interface UpdateViewModel {
 
   interface Inputs {
     /** Call when a project update comments uri request has been made. */
@@ -33,7 +34,7 @@ public interface Update {
 
   interface Outputs {
     /** Emits an update to start the comments activity with. */
-    Observable<com.kickstarter.models.Update> startCommentsActivity();
+    Observable<Update> startCommentsActivity();
 
     /** Emits a project and a ref tag to start the project activity with. */
     Observable<Pair<Project, RefTag>> startProjectActivity();
@@ -53,9 +54,9 @@ public interface Update {
 
       this.client = environment.apiClient();
 
-      final Observable<com.kickstarter.models.Update> update = intent()
+      final Observable<Update> update = intent()
         .map(i -> i.getParcelableExtra(IntentKey.UPDATE))
-        .ofType(com.kickstarter.models.Update.class)
+        .ofType(Update.class)
         .filter(ObjectUtils::isNotNull);
 
       update
@@ -82,7 +83,7 @@ public interface Update {
     private final PublishSubject<Request> goToCommentsRequestSubject = PublishSubject.create();
     private final PublishSubject<Request> goToProjectRequestSubject = PublishSubject.create();
 
-    private final BehaviorSubject<com.kickstarter.models.Update> startCommentsActivity = BehaviorSubject.create();
+    private final BehaviorSubject<Update> startCommentsActivity = BehaviorSubject.create();
     private final BehaviorSubject<Pair<Project, RefTag>> startProjectActivity = BehaviorSubject.create();
     private final BehaviorSubject<String> updateSequence = BehaviorSubject.create();
     private final BehaviorSubject<String> webViewUrl = BehaviorSubject.create();
@@ -97,7 +98,7 @@ public interface Update {
       this.goToProjectRequestSubject.onNext(request);
     }
 
-    @Override public @NonNull Observable<com.kickstarter.models.Update> startCommentsActivity() {
+    @Override public @NonNull Observable<Update> startCommentsActivity() {
       return this.startCommentsActivity;
     }
     @Override public @NonNull Observable<Pair<Project, RefTag>> startProjectActivity() {

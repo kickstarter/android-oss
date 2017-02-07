@@ -8,6 +8,7 @@ import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.UpdateFactory;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.Update;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.MockApiClient;
 import com.kickstarter.ui.IntentKey;
@@ -22,8 +23,8 @@ public class UpdateViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testUpdateViewModel_LoadsInitialUpdateUrl() {
-    final Update.ViewModel vm = new Update.ViewModel(environment());
-    final com.kickstarter.models.Update update = UpdateFactory.update();
+    final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment());
+    final Update update = UpdateFactory.update();
 
     final TestSubscriber<String> initialUpdateUrl = new TestSubscriber<>();
     vm.outputs.webViewUrl().subscribe(initialUpdateUrl);
@@ -34,14 +35,14 @@ public class UpdateViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testUpdateViewModel_StartCommentsActivity() {
-    final Update.ViewModel vm = new Update.ViewModel(environment());
-    final com.kickstarter.models.Update update = UpdateFactory.update();
+    final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment());
+    final Update update = UpdateFactory.update();
 
     final Request commentsRequest = new Request.Builder()
       .url("https://kck.str/projects/param/param/posts/id/comments")
       .build();
 
-    final TestSubscriber<com.kickstarter.models.Update> startCommentsActivity = new TestSubscriber<>();
+    final TestSubscriber<Update> startCommentsActivity = new TestSubscriber<>();
     vm.outputs.startCommentsActivity().subscribe(startCommentsActivity);
 
     vm.intent(new Intent().putExtra(IntentKey.UPDATE, update));
@@ -52,7 +53,7 @@ public class UpdateViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testUpdateViewModel_StartProjectActivity() {
-    final com.kickstarter.models.Update update = UpdateFactory.update()
+    final Update update = UpdateFactory.update()
       .toBuilder()
       .projectId(1234)
       .build();
@@ -74,7 +75,7 @@ public class UpdateViewModelTest extends KSRobolectricTestCase {
     };
 
     final Environment environment = environment().toBuilder().apiClient(apiClient).build();
-    final Update.ViewModel vm = new Update.ViewModel(environment);
+    final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment);
 
     final TestSubscriber<Project> startProjectActivity = new TestSubscriber<>();
     vm.outputs.startProjectActivity().map(pr -> pr.first).subscribe(startProjectActivity);

@@ -19,7 +19,7 @@ import com.kickstarter.services.RequestHandler;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.toolbars.KSToolbar;
 import com.kickstarter.ui.views.KSWebView;
-import com.kickstarter.viewmodels.ProjectUpdates;
+import com.kickstarter.viewmodels.ProjectUpdatesViewModel;
 
 import java.util.Arrays;
 
@@ -30,8 +30,8 @@ import okhttp3.Request;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
 
-@RequiresActivityViewModel(ProjectUpdates.ViewModel.class)
-public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdates.ViewModel> implements KSWebViewClient.Delegate {
+@RequiresActivityViewModel(ProjectUpdatesViewModel.ViewModel.class)
+public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel.ViewModel> implements KSWebViewClient.Delegate {
   protected @Bind(R.id.web_view) KSWebView ksWebView;
   protected @Bind(R.id.loading_indicator_view) View loadingIndicatorView;
   protected @Bind(R.id.web_view_toolbar) KSToolbar webViewToolbar;
@@ -99,12 +99,12 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdates.ViewMode
 
   @Override
   public void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    this.loadingIndicatorView.startAnimation(AnimationUtils.loadingIndicatorOnPageFinished());
+    this.loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.disappearAnimation());
   }
 
   @Override
   public void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    this.loadingIndicatorView.startAnimation(AnimationUtils.loadingIndicatorOnPageStarted());
+    this.loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.appearAnimation());
   }
 
   @Override

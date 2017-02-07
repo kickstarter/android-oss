@@ -18,7 +18,7 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-public interface ProjectUpdates {
+public interface ProjectUpdatesViewModel {
 
   interface Inputs {
     /** Call when the web view page url has been intercepted. */

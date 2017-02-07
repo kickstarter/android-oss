@@ -5,11 +5,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
 
 import com.kickstarter.R;
 import com.kickstarter.libs.BaseActivity;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
+import com.kickstarter.libs.utils.AnimationUtils;
 import com.kickstarter.services.KSWebViewClient;
 import com.kickstarter.ui.toolbars.KSToolbar;
 import com.kickstarter.ui.views.KSWebView;
@@ -26,7 +26,7 @@ import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 public final class WebViewActivity extends BaseActivity<WebViewViewModel> implements KSWebViewClient.Delegate {
   protected @Bind(R.id.web_view_toolbar) KSToolbar toolbar;
   protected @Bind(R.id.web_view) KSWebView webView;
-  protected @Bind(R.id.checkout_loading_indicator) View loadingIndicatorView;
+  protected @Bind(R.id.loading_indicator_view) View loadingIndicatorView;
 
   @Override
   protected void onCreate(final @Nullable Bundle savedInstanceState) {
@@ -54,18 +54,12 @@ public final class WebViewActivity extends BaseActivity<WebViewViewModel> implem
 
   @Override
   public void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    final AlphaAnimation animation = new AlphaAnimation(0.0f, 1.0f);
-    animation.setDuration(300L);
-    animation.setFillAfter(true);
-    loadingIndicatorView.startAnimation(animation);
+    loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.appearAnimation());
   }
 
   @Override
   public void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    final AlphaAnimation animation = new AlphaAnimation(1.0f, 0.0f);
-    animation.setDuration(300L);
-    animation.setFillAfter(true);
-    loadingIndicatorView.startAnimation(animation);
+    loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.disappearAnimation());
   }
 
   @Override

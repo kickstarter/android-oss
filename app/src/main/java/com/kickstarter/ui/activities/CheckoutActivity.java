@@ -73,7 +73,7 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
 
   protected @Bind(R.id.checkout_toolbar) KSToolbar checkoutToolbar;
   protected @Bind(R.id.web_view) KSWebView webView;
-  protected @Bind(R.id.loading_indicator_view) View loadingIndicatorView;
+  protected @Bind(R.id.checkout_loading_indicator) View loadingIndicatorView;
   protected @Bind(R.id.confirmation_group) View confirmationGroup;
   protected @Bind(R.id.pledge_disclaimer) TextView pledgeDisclaimerTextView;
   protected @Bind(R.id.terms_and_privacy) TextView termsAndPrivacyTextView;
@@ -417,12 +417,12 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
 
   @Override
   public void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    loadingIndicatorView.startAnimation(AnimationUtils.loadingIndicatorOnPageStarted());
+    loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.appearAnimation());
   }
 
   @Override
   public void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    loadingIndicatorView.startAnimation(AnimationUtils.loadingIndicatorOnPageFinished());
+    loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.disappearAnimation());
   }
 
   @Override

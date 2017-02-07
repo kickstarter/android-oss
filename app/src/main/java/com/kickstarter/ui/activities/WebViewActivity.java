@@ -54,12 +54,12 @@ public final class WebViewActivity extends BaseActivity<WebViewViewModel> implem
 
   @Override
   public void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    loadingIndicatorView.startAnimation(AnimationUtils.loadingIndicatorOnPageStarted());
+    loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.appearAnimation());
   }
 
   @Override
   public void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
-    loadingIndicatorView.startAnimation(AnimationUtils.loadingIndicatorOnPageFinished());
+    loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.disappearAnimation());
   }
 
   @Override

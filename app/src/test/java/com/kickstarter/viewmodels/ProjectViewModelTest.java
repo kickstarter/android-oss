@@ -22,7 +22,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
   public void testProjectViewModel_EmitsProjectWithStandardSetUp() {
     final Environment environment = environment();
     environment.currentConfig().config(ConfigFactory.config());
-    final ProjectViewModel vm = new ProjectViewModel(environment);
+    final ProjectViewModel.ViewModel vm = new ProjectViewModel.ViewModel(environment);
 
     final TestSubscriber<Project> projectTest = new TestSubscriber<>();
     vm.outputs.projectAndUserCountry().map(pc -> pc.first).subscribe(projectTest);
@@ -44,7 +44,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
       .build();
     environment.currentConfig().config(ConfigFactory.config());
 
-    final ProjectViewModel vm = new ProjectViewModel(environment);
+    final ProjectViewModel.ViewModel vm = new ProjectViewModel.ViewModel(environment);
 
     final TestSubscriber<Void> loginToutTest = new TestSubscriber<>();
     vm.outputs.showLoginTout().subscribe(loginToutTest);
@@ -53,7 +53,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     vm.outputs.showStarredPrompt().subscribe(showStarredPromptTest);
 
     final TestSubscriber<Boolean> starredTest = new TestSubscriber<>();
-    vm.outputs.projectAndUserCountry().map(pc -> pc.first).map(Project::isStarred).subscribe(starredTest);
+    vm.outputs.projectAndUserCountry().map(pc -> pc.first.isStarred()).subscribe(starredTest);
 
     // Start the view model with a project
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.halfWayProject()));
@@ -61,7 +61,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     starredTest.assertValues(false, false);
 
     // Try starring while logged out
-    vm.inputs.starClicked();
+    vm.inputs.starButtonClicked();
 
     // The project shouldn't be starred, and a login prompt should be shown.
     starredTest.assertValues(false, false);
@@ -92,13 +92,13 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
       .build();
     environment.currentConfig().config(ConfigFactory.config());
 
-    final ProjectViewModel vm = new ProjectViewModel(environment);
+    final ProjectViewModel.ViewModel vm = new ProjectViewModel.ViewModel(environment);
 
     final TestSubscriber<Void> showStarredPromptTest = new TestSubscriber<>();
     vm.outputs.showStarredPrompt().subscribe(showStarredPromptTest);
 
     final TestSubscriber<Boolean> starredTest = new TestSubscriber<>();
-    vm.outputs.projectAndUserCountry().map(pc -> pc.first).map(Project::isStarred).subscribe(starredTest);
+    vm.outputs.projectAndUserCountry().map(pc -> pc.first.isStarred()).subscribe(starredTest);
 
     // Start the view model with an almost completed project
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
@@ -107,7 +107,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     currentUser.refresh(UserFactory.user());
 
     // Star the project
-    vm.inputs.starClicked();
+    vm.inputs.starButtonClicked();
 
     // The project should be starred, and a star prompt should NOT be shown.
     starredTest.assertValues(false, false, true);
@@ -122,13 +122,13 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
       .build();
     environment.currentConfig().config(ConfigFactory.config());
 
-    final ProjectViewModel vm = new ProjectViewModel(environment);
+    final ProjectViewModel.ViewModel vm = new ProjectViewModel.ViewModel(environment);
 
     final TestSubscriber<Void> showStarredPromptTest = new TestSubscriber<>();
     vm.outputs.showStarredPrompt().subscribe(showStarredPromptTest);
 
     final TestSubscriber<Boolean> starredTest = new TestSubscriber<>();
-    vm.outputs.projectAndUserCountry().map(pc -> pc.first).map(Project::isStarred).subscribe(starredTest);
+    vm.outputs.projectAndUserCountry().map(pc -> pc.first.isStarred()).subscribe(starredTest);
 
     // Start the view model with a successful project
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.successfulProject()));
@@ -137,7 +137,7 @@ public class ProjectViewModelTest extends KSRobolectricTestCase {
     currentUser.refresh(UserFactory.user());
 
     // Star the project
-    vm.inputs.starClicked();
+    vm.inputs.starButtonClicked();
 
     // The project should be starred, and a star prompt should NOT be shown.
     starredTest.assertValues(false, false, true);

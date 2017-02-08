@@ -39,8 +39,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromRight;
 import static com.kickstarter.libs.utils.TransitionUtils.transition;
 
-@RequiresActivityViewModel(ProjectViewModel.class)
-public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
+@RequiresActivityViewModel(ProjectViewModel.ViewModel.class)
+public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewModel> {
   private ProjectAdapter adapter;
 
   protected @Bind(R.id.project_recycler_view) RecyclerView projectRecyclerView;
@@ -158,27 +158,27 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
 
   @OnClick(R.id.back_project_button)
   public void backProjectButtonOnClick() {
-    viewModel.inputs.backProjectClicked();
+    viewModel.inputs.backProjectButtonClicked();
   }
 
   @OnClick(R.id.manage_pledge_button)
   public void managePledgeOnClick() {
-    viewModel.inputs.managePledgeClicked();
+    viewModel.inputs.managePledgeButtonClicked();
   }
 
   @OnClick(R.id.view_pledge_button)
   public void viewPledgeOnClick() {
-    viewModel.inputs.viewPledgeClicked();
+    viewModel.inputs.viewPledgeButtonClicked();
   }
 
   @OnClick(R.id.star_icon)
   public void starProjectClick() {
-    viewModel.inputs.starClicked();
+    viewModel.inputs.starButtonClicked();
   }
 
   @OnClick(R.id.share_icon)
   public void shareProjectClick() {
-    viewModel.inputs.shareClicked();
+    viewModel.inputs.shareButtonClicked();
   }
 
   private void startCampaignWebViewActivity(final @NonNull Project project) {

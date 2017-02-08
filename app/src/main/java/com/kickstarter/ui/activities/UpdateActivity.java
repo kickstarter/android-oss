@@ -13,6 +13,7 @@ import com.kickstarter.libs.KSString;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.qualifiers.RequiresActivityViewModel;
 import com.kickstarter.libs.utils.AnimationUtils;
+import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
 import com.kickstarter.services.KSUri;
@@ -40,6 +41,7 @@ public class UpdateActivity extends BaseActivity<UpdateViewModel.ViewModel> impl
   protected @Bind(R.id.update_toolbar) KSToolbar toolbar;
 
   protected @BindString(R.string.social_update_number) String updateNumberString;
+  protected @BindString(R.string.activity_project_update_update_count) String shareUpdateCountString;
 
   private KSString ksString;
 
@@ -66,6 +68,11 @@ public class UpdateActivity extends BaseActivity<UpdateViewModel.ViewModel> impl
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(projectAndRefTag -> this.startProjectActivity(projectAndRefTag.first, projectAndRefTag.second));
+
+    this.viewModel.outputs.startShareIntent()
+      .compose(bindToLifecycle())
+      .compose(observeForUI())
+      .subscribe(this::startShareIntent);
 
     this.viewModel.outputs.updateSequence()
       .compose(bindToLifecycle())
@@ -110,8 +117,20 @@ public class UpdateActivity extends BaseActivity<UpdateViewModel.ViewModel> impl
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
+  private void startShareIntent(final @NonNull Update update) {
+    final String shareMessage = ksString.format(shareUpdateCountString, "update_count", NumberUtils.format(update.sequence()))
+      + ": " + update.title();
+
+    final Intent intent = new Intent(Intent.ACTION_SEND)
+      .setType("text/plain")
+      .putExtra(Intent.EXTRA_TEXT, shareMessage + " " + update.urls().web().update());
+    startActivity(intent);
+  }
+
   @OnClick(R.id.share_icon_button)
-  public void shareIconButtonPressed() {}
+  public void shareIconButtonPressed() {
+    this.viewModel.inputs.shareIconButtonClicked();
+  }
 
   @Override
   public void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {

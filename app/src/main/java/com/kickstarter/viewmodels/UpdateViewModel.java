@@ -30,9 +30,15 @@ public interface UpdateViewModel {
 
     /** Call when a project update uri request has been made. */
     void goToProjectRequest(Request request);
+
+    /** Call when the share button is clicked. */
+    void shareIconButtonClicked();
   }
 
   interface Outputs {
+    /** Emits when we should start the share intent to show the share sheet. */
+    Observable<Update> startShareIntent();
+
     /** Emits an update to start the comments activity with. */
     Observable<Update> startCommentsActivity();
 
@@ -60,6 +66,10 @@ public interface UpdateViewModel {
         .filter(ObjectUtils::isNotNull);
 
       update
+        .compose(takeWhen(this.shareButtonClickedSubject))
+        .subscribe(this.startShareIntent::onNext);
+
+      update
         .compose(takeWhen(this.goToCommentsRequestSubject))
         .subscribe(this.startCommentsActivity::onNext);
 
@@ -73,7 +83,7 @@ public interface UpdateViewModel {
 
       update
         .compose(takeWhen(this.goToProjectRequestSubject))
-        .switchMap(u -> client
+        .switchMap(u -> this.client
           .fetchProject(String.valueOf(u.projectId()))
           .compose(neverError())
         )
@@ -82,7 +92,9 @@ public interface UpdateViewModel {
 
     private final PublishSubject<Request> goToCommentsRequestSubject = PublishSubject.create();
     private final PublishSubject<Request> goToProjectRequestSubject = PublishSubject.create();
+    private final PublishSubject<Void> shareButtonClickedSubject = PublishSubject.create();
 
+    private final BehaviorSubject<Update> startShareIntent = BehaviorSubject.create();
     private final BehaviorSubject<Update> startCommentsActivity = BehaviorSubject.create();
     private final BehaviorSubject<Pair<Project, RefTag>> startProjectActivity = BehaviorSubject.create();
     private final BehaviorSubject<String> updateSequence = BehaviorSubject.create();
@@ -97,7 +109,13 @@ public interface UpdateViewModel {
     @Override public void goToProjectRequest(final @NonNull Request request) {
       this.goToProjectRequestSubject.onNext(request);
     }
+    @Override public void shareIconButtonClicked() {
+      this.shareButtonClickedSubject.onNext(null);
+    }
 
+    @Override public Observable<Update> startShareIntent() {
+      return this.startShareIntent;
+    }
     @Override public @NonNull Observable<Update> startCommentsActivity() {
       return this.startCommentsActivity;
     }

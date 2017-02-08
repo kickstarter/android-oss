@@ -85,4 +85,19 @@ public class UpdateViewModelTest extends KSRobolectricTestCase {
 
     startProjectActivity.assertValues(project);
   }
+
+  @Test
+  public void testUpdateViewModel_StartShareIntent() {
+    final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment());
+
+    final Update update = UpdateFactory.update();
+
+    final TestSubscriber<Update> startShareIntent = new TestSubscriber<>();
+    vm.outputs.startShareIntent().subscribe(startShareIntent);
+
+    vm.intent(new Intent().putExtra(IntentKey.UPDATE, update));
+    vm.inputs.shareIconButtonClicked();
+
+    startShareIntent.assertValues(update);
+  }
 }

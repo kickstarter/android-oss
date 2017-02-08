@@ -357,10 +357,6 @@ public final class Koala {
   }
 
   // PROJECT UPDATES
-  public void trackViewedUpdateComments() {
-    client.track("Viewed Update Comments");
-  }
-
   public void trackViewedUpdates() {
     client.track("Viewed Updates");
   }

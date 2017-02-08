@@ -36,9 +36,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
 
-import static com.kickstarter.libs.utils.TransitionUtils.slideInFromRight;
-import static com.kickstarter.libs.utils.TransitionUtils.transition;
-
 @RequiresActivityViewModel(ProjectViewModel.ViewModel.class)
 public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewModel> {
   private ProjectAdapter adapter;
@@ -192,8 +189,7 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewMod
   private void startProjectUpdatesActivity(final @NonNull Project project) {
     final Intent intent = new Intent(this, ProjectUpdatesActivity.class)
       .putExtra(IntentKey.PROJECT, project);
-    startActivity(intent);
-    transition(this, slideInFromRight());
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   private void showStarToast() {

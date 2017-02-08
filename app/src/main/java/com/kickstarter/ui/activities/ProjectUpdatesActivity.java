@@ -68,7 +68,6 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
     super.onResume();
 
     this.viewModel.outputs.webViewUrl()
-      .take(1)
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.ksWebView::loadUrl);
@@ -108,7 +107,5 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
   }
 
   @Override
-  public void webViewPageIntercepted(final @NonNull KSWebViewClient webViewClient, final @NonNull String url) {
-    this.viewModel.inputs.pageInterceptedUrl(url);
-  }
+  public void webViewPageIntercepted(final @NonNull KSWebViewClient webViewClient, final @NonNull String url) {}
 }

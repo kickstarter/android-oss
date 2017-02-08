@@ -281,7 +281,6 @@ public final class ApiClient implements ApiClientType {
       .subscribeOn(Schedulers.io());
   }
 
-
   @Override
   public @NonNull Observable<Empty> registerPushToken(final @NonNull String token) {
     return service

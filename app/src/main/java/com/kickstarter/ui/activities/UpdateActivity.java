@@ -78,7 +78,6 @@ public class UpdateActivity extends BaseActivity<UpdateViewModel.ViewModel> impl
     super.onResume();
 
     this.viewModel.outputs.webViewUrl()
-      .take(1)
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.ksWebView::loadUrl);

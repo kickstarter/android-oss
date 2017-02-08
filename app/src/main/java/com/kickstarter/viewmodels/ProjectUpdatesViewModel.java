@@ -21,9 +21,6 @@ import rx.subjects.PublishSubject;
 public interface ProjectUpdatesViewModel {
 
   interface Inputs {
-    /** Call when the web view page url has been intercepted. */
-    void pageInterceptedUrl(String url);
-
     /** Call when a project update comments uri request has been made. */
     void goToCommentsRequest(Request request);
 
@@ -92,13 +89,12 @@ public interface ProjectUpdatesViewModel {
      * @return          Pair of project param string and update param string.
      */
     private @NonNull Pair<String, String> projectUpdateParams(final @NonNull Request request) {
-      // todo: build a safer param matcher helper
+      // todo: build a Navigation helper for better param extraction
       final String projectParam = request.url().encodedPathSegments().get(2);
       final String updateParam = request.url().encodedPathSegments().get(4);
       return Pair.create(projectParam, updateParam);
     }
 
-    private final PublishSubject<String> pageInterceptedUrlSubject = PublishSubject.create();
     private final PublishSubject<Request> goToCommentsRequestSubject = PublishSubject.create();
     private final PublishSubject<Request> goToUpdateRequestSubject = PublishSubject.create();
 
@@ -109,9 +105,6 @@ public interface ProjectUpdatesViewModel {
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
-    @Override public void pageInterceptedUrl(final @NonNull String url) {
-      this.pageInterceptedUrlSubject.onNext(url);
-    }
     @Override public void goToCommentsRequest(final @NonNull Request request) {
       this.goToCommentsRequestSubject.onNext(request);
     }

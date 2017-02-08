@@ -21,7 +21,7 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testActivitiesEmit() {
-    final ActivityFeed.ViewModel vm = new ActivityFeed.ViewModel(environment());
+    final ActivityFeedViewModel.ViewModel vm = new ActivityFeedViewModel.ViewModel(environment());
 
     final TestSubscriber<List<Activity>> activities = new TestSubscriber<>();
     vm.outputs.activities().subscribe(activities);
@@ -41,7 +41,7 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testClickingInterfaceElements() {
-    final ActivityFeed.ViewModel vm = new ActivityFeed.ViewModel(environment());
+    final ActivityFeedViewModel.ViewModel vm = new ActivityFeedViewModel.ViewModel(environment());
 
     final TestSubscriber<Void> goToDiscovery = new TestSubscriber<>();
     vm.outputs.goToDiscovery().subscribe(goToDiscovery);
@@ -86,7 +86,7 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
       .currentUser(currentUser)
       .build();
 
-    final ActivityFeed.ViewModel vm = new ActivityFeed.ViewModel(environment);
+    final ActivityFeedViewModel.ViewModel vm = new ActivityFeedViewModel.ViewModel(environment);
 
     final TestSubscriber<List<Activity>> activities = new TestSubscriber<>();
     vm.outputs.activities().subscribe(activities);

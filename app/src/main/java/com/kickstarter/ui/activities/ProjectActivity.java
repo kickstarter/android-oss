@@ -36,8 +36,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
 
-@RequiresActivityViewModel(ProjectViewModel.class)
-public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
+@RequiresActivityViewModel(ProjectViewModel.ViewModel.class)
+public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewModel> {
   private ProjectAdapter adapter;
 
   protected @Bind(R.id.project_recycler_view) RecyclerView projectRecyclerView;
@@ -81,30 +81,30 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(pc -> this.renderProject(pc.first, pc.second));
 
-    this.viewModel.outputs.showCampaign()
+    this.viewModel.outputs.startCampaignWebViewActivity()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::showProjectDescription);
+      .subscribe(this::startCampaignWebViewActivity);
 
-    this.viewModel.outputs.showComments()
+    this.viewModel.outputs.startCommentsActivity()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::startCommentsActivity);
 
-    this.viewModel.outputs.showCreator()
+    this.viewModel.outputs.startCreatorBioWebViewActivity()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::showCreatorBio);
+      .subscribe(this::startCreatorBioWebViewActivity);
 
     this.viewModel.outputs.showShareSheet()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
       .subscribe(this::startShareIntent);
 
-    this.viewModel.outputs.showUpdates()
+    this.viewModel.outputs.startProjectUpdatesActivity()
       .compose(bindToLifecycle())
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribe(this::showUpdates);
+      .subscribe(this::startProjectUpdatesActivity);
 
     this.viewModel.outputs.playVideo()
       .compose(bindToLifecycle())
@@ -155,38 +155,38 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel> {
 
   @OnClick(R.id.back_project_button)
   public void backProjectButtonOnClick() {
-    viewModel.inputs.backProjectClicked();
+    viewModel.inputs.backProjectButtonClicked();
   }
 
   @OnClick(R.id.manage_pledge_button)
   public void managePledgeOnClick() {
-    viewModel.inputs.managePledgeClicked();
+    viewModel.inputs.managePledgeButtonClicked();
   }
 
   @OnClick(R.id.view_pledge_button)
   public void viewPledgeOnClick() {
-    viewModel.inputs.viewPledgeClicked();
+    viewModel.inputs.viewPledgeButtonClicked();
   }
 
   @OnClick(R.id.star_icon)
   public void starProjectClick() {
-    viewModel.inputs.starClicked();
+    viewModel.inputs.starButtonClicked();
   }
 
   @OnClick(R.id.share_icon)
   public void shareProjectClick() {
-    viewModel.inputs.shareClicked();
+    viewModel.inputs.shareButtonClicked();
   }
 
-  private void showProjectDescription(final @NonNull Project project) {
+  private void startCampaignWebViewActivity(final @NonNull Project project) {
     startWebViewActivity(campaignString, project.descriptionUrl());
   }
 
-  private void showCreatorBio(final @NonNull Project project) {
+  private void startCreatorBioWebViewActivity(final @NonNull Project project) {
     startWebViewActivity(creatorString, project.creatorBioUrl());
   }
 
-  private void showUpdates(final @NonNull Project project) {
+  private void startProjectUpdatesActivity(final @NonNull Project project) {
     startWebViewActivity(updatesString, project.updatesUrl());
   }
 

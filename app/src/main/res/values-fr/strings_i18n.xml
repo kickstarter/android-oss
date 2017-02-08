@@ -28,7 +28,7 @@
   <string name="Back" formatted="false">Retour</string>
   <string name="Back_this_project_below" formatted="false">Je soutiens ce projet</string>
   <string name="Backed_by_Friends" formatted="false">Soutenu par mes amis</string>
-  <string name="Backed_by_people_you_follow" formatted="false">Soutenus par les personnes que vous suivez</string>
+  <string name="Backed_by_people_you_follow" formatted="false">Soutenus par ceux que vous suivez</string>
   <string name="Backed_projects_projects_count" formatted="false">Projets soutenus : %{project_count}</string>
   <string name="Backers_count_separator_backers_few" formatted="false">%{backers_count}\n
 contributeurs</string>
@@ -45,8 +45,10 @@ contributeurs</string>
   <string name="Cancel_your_pledge" formatted="false">Annuler mon engagement</string>
   <string name="Change_payment_method" formatted="false">Changer de moyen de paiement</string>
   <string name="Chooses_location_for_shipping" formatted="false">Sélectionne %{location} pour la livraison.</string>
+  <string name="Close_live_stream" formatted="false">Fermer la diffusion en direct</string>
   <string name="Close_project" formatted="false">Fermer le projet</string>
   <string name="Closes_filters" formatted="false">Ferme les filtres.</string>
+  <string name="Closes_live_stream" formatted="false">Ferme la diffusion en direct.</string>
   <string name="Closes_project" formatted="false">Ferme le projet.</string>
   <string name="Collapses_subcategories" formatted="false">Masque les sous-catégories.</string>
   <string name="Collections" formatted="false">Collections</string>
@@ -55,6 +57,7 @@ contributeurs</string>
   <string name="Continue_to_payment" formatted="false">Continuer vers le paiement</string>
   <string name="Continue_to_update_pledge" formatted="false">Continuer la modification de mon engagement</string>
   <string name="Couldnt_add_attachment" formatted="false">Impossible d\'ajouter la pièce jointe</string>
+  <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">Impossible d\'ouvrir la diffusion en direct. Veuillez réessayer plus tard.</string>
   <string name="Couldnt_remove_attachment" formatted="false">Impossible de supprimer la pièce jointe</string>
   <string name="Created_projects_projects_count" formatted="false">Projets créés : %{projects_count}</string>
   <string name="Creator_name_is_live_now" formatted="false">&lt;b>%{creator_name}&lt;/b> est en direct en ce moment</string>
@@ -69,7 +72,7 @@ contributeurs</string>
   <string name="Earth" formatted="false">Terre</string>
   <string name="Email_notifications" formatted="false">Notifications par e-mail</string>
   <string name="Ending_soon" formatted="false">Campagnes bientôt terminées</string>
-  <string name="Estimated_to_fulfill" formatted="false">Livraison prévue :</string>
+  <string name="Estimated_delivery" formatted="false">Livraison prévue :</string>
   <string name="Expands_subcategories" formatted="false">Développe les sous-catégories.</string>
   <string name="Explore_projects" formatted="false">Découvrir des projets</string>
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">Impossible de récupérer les détails de la diffusion en direct</string>
@@ -86,6 +89,7 @@ contributeurs</string>
   <string name="Filter_name_project_count_live_projects_one" formatted="false">%{filter_name} : %{project_count} projet en cours</string>
   <string name="Filter_name_project_count_live_projects_two" formatted="false">%{filter_name} : %{project_count} projets en cours</string>
   <string name="Filter_name_project_count_live_projects_zero" formatted="false">%{filter_name} : %{project_count} projets en cours</string>
+  <string name="Filters_by_projects_with_upcoming_and_past_live_streams" formatted="false">Filtrage des projets ayant des diffusions en direct à venir et passées.</string>
   <string name="Find_Facebook_Friends" formatted="false">Retrouver mes amis Facebook</string>
   <string name="Find_and_follow_friends" formatted="false">Retrouver et suivre mes amis</string>
   <string name="Find_projects_youll_love_and_help_bring" formatted="false">Découvrez de beaux projets et participez à la concrétisation d\'idées créatives.</string>
@@ -113,6 +117,8 @@ contributeurs</string>
   <string name="Friend_backed_tech_project" formatted="false">&lt;b>%{friend_name}&lt;/b> a soutenu un projet de &lt;i>technologie&lt;/i>.</string>
   <string name="Friend_backed_theater_project" formatted="false">&lt;b>%{friend_name}&lt;/b> a soutenu un projet de &lt;i>théâtre&lt;/i>.</string>
   <string name="Friend_name_launched_a_project" formatted="false">%{friend_name} a lancé un projet !</string>
+  <string name="Get_notified_about_this_creators_live_streams" formatted="false">Envoyez-moi des notifications au sujet des diffusions en direct de ce créateur.</string>
+  <string name="Go_to_project_page" formatted="false">Accéder à la page de projet</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">Merci ! Vos réponses au questionnaire ont bien été envoyées.</string>
   <string name="Home" formatted="false">Accueil</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Je souhaite simplement soutenir le projet.</string>
@@ -131,8 +137,10 @@ contributeurs</string>
   <string name="Left_count_left_zero" formatted="false">%{left_count} restantes</string>
   <string name="Live" formatted="false">En direct</string>
   <string name="Live_Stream" formatted="false">Diffusion en direct</string>
-  <string name="Live_Streaming_now" formatted="false">Diffusion en direct en cours</string>
+  <string name="Live_now" formatted="false">En direct en ce moment</string>
   <string name="Live_stream_countdown" formatted="false">Compte à rebours de la diffusion en direct</string>
+  <string name="Live_stream_date" formatted="false">Diffusion en direct – %{date}</string>
+  <string name="Live_streaming_now" formatted="false">Diffusion en direct en cours</string>
   <string name="Loading" formatted="false">Chargement</string>
   <string name="Log_in_or_sign_up_to_subscribe" formatted="false">Connectez-vous ou inscrivez-vous pour vous abonner</string>
   <string name="Log_in_to_leave_a_comment" formatted="false">Connectez-vous pour laisser un commentaire.</string>
@@ -143,13 +151,14 @@ contributeurs</string>
   <string name="Manage_your_reward" formatted="false">Gérer votre récompense</string>
   <string name="Message_backer" formatted="false">Envoyer un message au contributeur</string>
   <string name="Message_creator" formatted="false">Envoyer un message au créateur</string>
-  <string name="No_Results" formatted="false">No Results</string>
+  <string name="No_Results" formatted="false">Pas de résultats</string>
   <string name="No_comments_yet" formatted="false">Pas de commentaires.</string>
   <string name="No_one_has_posted_an_update_yet" formatted="false">Pas d\'actus publiées pour le moment.</string>
   <string name="No_pledges_from_friends_yet" formatted="false">Mes amis \n
 n\'ont rien soutenu.</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">Pas de rediffusion possible pour cette diffusion en direct.</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">Une fois que vous aurez soutenu un projet, des recommandations personnalisées s\'afficheront ici.</string>
+  <string name="Only_amount_of_time_left_to_watch_this" formatted="false">Plus que %{amount_of_time} pour regarder cette diffusion.</string>
   <string name="Opens_comments" formatted="false">Ouvre les commentaires.</string>
   <string name="Opens_creator_profile" formatted="false">Ouvre le profil du créateur.</string>
   <string name="Opens_email_composer" formatted="false">Ouvre l\'éditeur d\'e-mail.</string>
@@ -168,6 +177,7 @@ n\'ont rien soutenu.</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">Choisissez le montant de votre engagement à soutenir ce projet.</string>
   <string name="Pledge_without_a_reward" formatted="false">Engagement sans récompense</string>
   <string name="Popular" formatted="false">Tendances</string>
+  <string name="Popular_Projects" formatted="false">Les tendances</string>
   <string name="Project_Cancelled" formatted="false">Projet annulé.</string>
   <string name="Project_Suspended" formatted="false">Projet suspendu.</string>
   <string name="Projects_We_Love" formatted="false">Nos coups de cœur</string>
@@ -175,10 +185,13 @@ n\'ont rien soutenu.</string>
   <string name="Pursue_daring_ideas" formatted="false">Des idées audacieuses.</string>
   <string name="Push_notifications" formatted="false">Notifications push</string>
   <string name="Read_more_about_the_campaign_arrow" formatted="false">En savoir plus sur la campagne →</string>
+  <string name="Recent_live_stream" formatted="false">Diffusion en direct récente</string>
   <string name="Recommended" formatted="false">Rien que pour vous</string>
   <string name="Recorded_Live" formatted="false">Enregistré en direct</string>
   <string name="Recorded_live_with_creator_name" formatted="false">Enregistré en direct avec &lt;b>%{creator_name}&lt;/b></string>
   <string name="Replay" formatted="false">Rediffuser</string>
+  <string name="Replay_live_stream_with_creator_name" formatted="false">Revoir la diffusion en direct de &lt;br>&lt;b>%{creator_name}&lt;/b></string>
+  <string name="Replay_past_live_streams" formatted="false">Revoir des diffusions en direct passées</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} questionnaires</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} questionnaires</string>
   <string name="Reward_Surveys_one" formatted="false">Questionnaire</string>
@@ -202,6 +215,7 @@ n\'ont rien soutenu.</string>
   <string name="Select_this_reward" formatted="false">Sélectionner cette récompense</string>
   <string name="Select_this_reward_instead" formatted="false">Choisir cette récompense</string>
   <string name="Share_an_update_about_your_project" formatted="false">Parlez de votre projet dans une actu.</string>
+  <string name="Share_this_live_stream" formatted="false">Partager cette diffusion en direct.</string>
   <string name="Share_this_project_on_Facebook" formatted="false">Partagez ce projet sur Facebook.</string>
   <string name="Share_this_project_on_Twitter" formatted="false">Partagez ce projet sur Twitter.</string>
   <string name="Share_update" formatted="false">Partager</string>
@@ -213,6 +227,7 @@ n\'ont rien soutenu.</string>
   <string name="Starting_soon" formatted="false">Bientôt en direct</string>
   <string name="Subscribe" formatted="false">S\'abonner</string>
   <string name="Subscribed" formatted="false">Abonné </string>
+  <string name="Subscribes_to_upcoming_lives_streams" formatted="false">Abonnement aux diffusions en direct à venir.</string>
   <string name="Survey" formatted="false">Questionnaire</string>
   <string name="Tap_the_star_on_each_project_page_to_save_it" formatted="false">Cliquez sur l\'étoile qui apparaît sur la page du projet pour l\'ajouter à vos favoris. Nous vous enverrons un petit rappel 48 heures avant la fin de la campagne.</string>
   <string name="Thank_you_for_supporting_this_project" formatted="false">Merci pour votre soutien.</string>
@@ -220,19 +235,25 @@ n\'ont rien soutenu.</string>
   <string name="The_live_stream_failed_to_connect" formatted="false">Échec de connexion à la diffusion en direct</string>
   <string name="The_live_stream_was_interrupted" formatted="false">Diffusion en direct interrompue</string>
   <string name="The_live_stream_will_start_soon" formatted="false">La diffusion en direct va bientôt commencer</string>
+  <string name="The_live_stream_will_start_time" formatted="false">La diffusion en direct commence dans %{time}.</string>
   <string name="The_replay_will_start_soon" formatted="false">La rediffusion sera bientôt disponible</string>
   <string name="This_facebook_account_is_already_linked_to_another_Kickstarter_user" formatted="false">Ce compte Facebook est déjà relié à un autre utilisateur Kickstarter.</string>
   <string name="Time_left_left" formatted="false">Plus que %{time_left}</string>
   <string name="Unfollows_friend_name" formatted="false">Désabonnement des actus de %{friend_name}.</string>
   <string name="Unsaves_project" formatted="false">Annule l\'enregistrement du projet.</string>
+  <string name="Unsubscribe" formatted="false">Se désabonner</string>
+  <string name="Unsubscribes_from_upcoming_lives_streams" formatted="false">Désabonnement des diffusions en direct à venir.</string>
   <string name="Unsuccessfully_Funded" formatted="false">Non financé.</string>
+  <string name="Upcoming_live_stream" formatted="false">Diffusion en direct à venir</string>
   <string name="Upcoming_with_creator_name" formatted="false">&lt;br/>&lt;b>%{creator_name}&lt;/b> bientôt en direct</string>
   <string name="Update_pledge" formatted="false">Modifier mon engagement</string>
   <string name="View" formatted="false">Afficher</string>
   <string name="View_your_pledge" formatted="false">Afficher mon engagement</string>
   <string name="View_your_reward" formatted="false">Afficher ma récompense</string>
   <string name="Watch_live" formatted="false">Regarder en direct</string>
-  <string name="We_couldnt_find_anything_for_search_term" formatted="false">We couldn\'t find anything for %{search_term}.</string>
+  <string name="We_couldnt_find_anything_for_search_term" formatted="false">Pas de résultats pour « %{search_term} ».</string>
+  <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">Nous n\'avons pas été en mesure de charger les destinations d\'expédition.\n
+Veuillez réessayer ultérieurement.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">Pour chaque projet que vous enregistrez, nous vous enverrons un rappel 48 heures avant la fin de sa campagne.</string>
   <string name="You_Launched" formatted="false">Projet lancé !</string>
   <string name="You_backed_this_project" formatted="false">Vous avez soutenu ce projet.</string>
@@ -499,48 +520,8 @@ n\'ont rien soutenu.</string>
   <string name="dashboard_tout_backers" formatted="false">contributeurs</string>
   <string name="dashboard_tout_pledged" formatted="false">engagés</string>
   <string name="dashboard_tout_remaining" formatted="false">restants</string>
-  <string name="dates_day_abbreviated_few" formatted="false">jours</string>
-  <string name="dates_day_abbreviated_many" formatted="false">jours</string>
-  <string name="dates_day_abbreviated_one" formatted="false">jour</string>
-  <string name="dates_day_abbreviated_two" formatted="false">jours</string>
-  <string name="dates_day_abbreviated_zero" formatted="false">jours</string>
-  <string name="dates_day_few" formatted="false">jours</string>
-  <string name="dates_day_many" formatted="false">jours</string>
-  <string name="dates_day_one" formatted="false">jour</string>
-  <string name="dates_day_two" formatted="false">jours</string>
-  <string name="dates_day_zero" formatted="false">jours</string>
-  <string name="dates_hour_abbreviated_few" formatted="false">h</string>
-  <string name="dates_hour_abbreviated_many" formatted="false">h</string>
-  <string name="dates_hour_abbreviated_one" formatted="false">h</string>
-  <string name="dates_hour_abbreviated_two" formatted="false">h</string>
-  <string name="dates_hour_abbreviated_zero" formatted="false">h</string>
-  <string name="dates_hour_few" formatted="false">heures</string>
-  <string name="dates_hour_many" formatted="false">heures</string>
-  <string name="dates_hour_one" formatted="false">heure</string>
-  <string name="dates_hour_two" formatted="false">heures</string>
-  <string name="dates_hour_zero" formatted="false">heures</string>
   <string name="dates_just_now" formatted="false">il y a quelques secondes</string>
-  <string name="dates_minute_abbreviated_few" formatted="false">min</string>
-  <string name="dates_minute_abbreviated_many" formatted="false">min</string>
-  <string name="dates_minute_abbreviated_one" formatted="false">min</string>
-  <string name="dates_minute_abbreviated_two" formatted="false">min</string>
-  <string name="dates_minute_abbreviated_zero" formatted="false">min</string>
-  <string name="dates_minute_few" formatted="false">minutes</string>
-  <string name="dates_minute_many" formatted="false">minutes</string>
-  <string name="dates_minute_one" formatted="false">minute</string>
-  <string name="dates_minute_two" formatted="false">minutes</string>
-  <string name="dates_minute_zero" formatted="false">minutes</string>
   <string name="dates_right_now" formatted="false">à l\'instant</string>
-  <string name="dates_second_abbreviated_few" formatted="false">s</string>
-  <string name="dates_second_abbreviated_many" formatted="false">s</string>
-  <string name="dates_second_abbreviated_one" formatted="false">s</string>
-  <string name="dates_second_abbreviated_two" formatted="false">s</string>
-  <string name="dates_second_abbreviated_zero" formatted="false">s</string>
-  <string name="dates_second_few" formatted="false">secondes</string>
-  <string name="dates_second_many" formatted="false">secondes</string>
-  <string name="dates_second_one" formatted="false">seconde</string>
-  <string name="dates_second_two" formatted="false">secondes</string>
-  <string name="dates_second_zero" formatted="false">secondes</string>
   <string name="dates_time_days_abbreviated_few" formatted="false">%{time_count} jours</string>
   <string name="dates_time_days_abbreviated_many" formatted="false">%{time_count} jours</string>
   <string name="dates_time_days_abbreviated_one" formatted="false">1 jour</string>
@@ -662,6 +643,7 @@ n\'ont rien soutenu.</string>
   <string name="dates_time_seconds_two" formatted="false">2 s</string>
   <string name="dates_time_seconds_zero" formatted="false">0 s</string>
   <string name="dates_yesterday" formatted="false">hier</string>
+  <string name="days" formatted="false">jours</string>
   <string name="discovery_accessibility_buttons_sort_hint" formatted="false">Modifie le tri.</string>
   <string name="discovery_accessibility_buttons_sort_label" formatted="false">Trier par %{sort}</string>
   <string name="discovery_accessibility_live_project_count" formatted="false">Projets en cours</string>
@@ -713,7 +695,7 @@ n\'ont rien soutenu.</string>
   <string name="discovery_baseball_card_status_banner_canceled" formatted="false">Financement annulé</string>
   <string name="discovery_baseball_card_status_banner_canceled_date" formatted="false">Campagne annulée le %{date}</string>
   <string name="discovery_baseball_card_status_banner_funding_unsuccessful_date" formatted="false">Non financé %{date}</string>
-  <string name="discovery_baseball_card_status_banner_successful" formatted="false">Intégralement financé !</string>
+  <string name="discovery_baseball_card_status_banner_successful" formatted="false">Financé !</string>
   <string name="discovery_baseball_card_status_banner_successful_date" formatted="false">Intégralement financé le %{date}</string>
   <string name="discovery_baseball_card_status_banner_suspended" formatted="false">Financement suspendu %{date}</string>
   <string name="discovery_baseball_card_status_banner_suspended_date" formatted="false">Campagne suspendue le %{date}</string>
@@ -753,7 +735,7 @@ n\'ont rien soutenu.</string>
   <string name="discovery_onboarding_buttons_signup_or_login" formatted="false">Inscription ou connexion</string>
   <string name="discovery_onboarding_learn_login_conjunction_or" formatted="false">ou</string>
   <string name="discovery_onboarding_title_bring_creative_projects_to_life" formatted="false">Soutenez des projets créatifs</string>
-  <string name="discovery_popular" formatted="false">Populaires</string>
+  <string name="discovery_popular" formatted="false">Tendances</string>
   <string name="discovery_recommended" formatted="false">Nos sélections</string>
   <string name="discovery_recommended_for_you" formatted="false">Rien que pour vous</string>
   <string name="discovery_saved" formatted="false">Projets préférés</string>
@@ -763,7 +745,7 @@ n\'ont rien soutenu.</string>
   <string name="discovery_sort_types_most_backed" formatted="false">Nombre d\'engagements</string>
   <string name="discovery_sort_types_most_funded" formatted="false">Financement</string>
   <string name="discovery_sort_types_newest" formatted="false">Ancienneté</string>
-  <string name="discovery_sort_types_popularity" formatted="false">Popularité</string>
+  <string name="discovery_sort_types_popularity" formatted="false">Tendances</string>
   <string name="discovery_sorted_by" formatted="false">triés par</string>
   <string name="discovery_survey_button_respond_now" formatted="false">Répondre</string>
   <string name="discovery_survey_creator_needs_some_info_to_deliver_reward_for_project" formatted="false">%{creator_name} a besoin de quelques informations pour vous envoyer votre récompense pour le projet %{project_name}.</string>
@@ -813,6 +795,7 @@ n\'ont rien soutenu.</string>
   <string name="general_social_buttons_connect_with_twitter" formatted="false">Connexion Twitter</string>
   <string name="general_switch_toggle_off" formatted="false">OFF</string>
   <string name="general_switch_toggle_on" formatted="false">ON</string>
+  <string name="hours" formatted="false">heures</string>
   <string name="invalid_api_client_alert_cancel" formatted="false">Annuler</string>
   <string name="invalid_api_client_alert_message" formatted="false">On dirait que vous utilisez une ancienne version de l\'application. Veuillez la mettre à jour depuis l\'App Store pour continuer à l\'utiliser.</string>
   <string name="invalid_api_client_alert_title" formatted="false">Veuillez mettre à jour</string>
@@ -890,6 +873,7 @@ Ce problème peut généralement être résolu en accédant à Réglages iOS > F
   <string name="messages_navigation_sent" formatted="false">Envoyé</string>
   <string name="messages_search_placeholder_search_messages" formatted="false">Rechercher</string>
   <string name="messages_sent_date" formatted="false">envoyé le %{sent_date}</string>
+  <string name="minutes" formatted="false">minutes</string>
   <string name="percentage_funded" formatted="false">Financé à %{percentage}</string>
   <string name="plus_shipping_cost" formatted="false">+ %{shipping_cost}</string>
   <string name="profile_buttons_messages" formatted="false">Messages</string>
@@ -1115,6 +1099,7 @@ Merci pour votre soutien !</string>
   <string name="rewards_title_pledge_reward_currency_or_more" formatted="false">Contribution de %{reward_currency} ou plus</string>
   <string name="search_by_creator" formatted="false">par %{creator_name}</string>
   <string name="search_most_popular" formatted="false">Les tendances</string>
+  <string name="seconds" formatted="false">secondes</string>
   <string name="signup_button" formatted="false">Inscription</string>
   <string name="signup_button_email" formatted="false">Inscription avec votre adresse e-mail</string>
   <string name="signup_error_something_wrong" formatted="false">Un erreur s\'est produite.</string>
@@ -1150,7 +1135,7 @@ Merci pour votre soutien !</string>
   <string name="social_following_header_button_find_your_friends" formatted="false">Rechercher vos amis</string>
   <string name="social_following_header_connect_with_facebook_to_follow" formatted="false">Connectez-vous avec votre compte Facebook pour suivre vos amis et recevoir une notification chaque fois qu\'ils soutiennent ou lancent un nouveau projet.</string>
   <string name="social_following_header_connect_with_your_friends_to_find_projects" formatted="false">Suivez vos amis Facebook pour recevoir une notification chaque fois qu\'ils soutiennent ou lancent un nouveau projet.</string>
-  <string name="social_following_header_friends_recommend_the_best_projects" formatted="false">Découvrez plus de projets.</string>
+  <string name="social_following_header_friends_recommend_the_best_projects" formatted="false">Découvrir plus de projets</string>
   <string name="social_following_navigation_title_follow_your_friends" formatted="false">Suivez vos amis</string>
   <string name="social_following_nice_youre_about_to_follow_all_friends" formatted="false">Super ! Vous êtes sur le point de suivre tous vos amis.</string>
   <string name="social_following_stats_backed_projects" formatted="false">projets soutenus</string>

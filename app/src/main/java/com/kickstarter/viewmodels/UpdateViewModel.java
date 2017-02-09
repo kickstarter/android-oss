@@ -48,7 +48,7 @@ public interface UpdateViewModel {
     /** Emits a string to display in the toolbar title. */
     Observable<String> updateSequence();
 
-    /** Emits a web view url to display. */
+    /** Emits a url to load in the web view. */
     Observable<String> webViewUrl();
   }
 
@@ -65,20 +65,26 @@ public interface UpdateViewModel {
         .ofType(Update.class)
         .filter(ObjectUtils::isNotNull);
 
+      final Observable<String> initialUpdateUrl = update
+        .map(u -> u.urls().web().update());
+
+      initialUpdateUrl
+        .compose(bindToLifecycle())
+        .subscribe(this.webViewUrl::onNext);
+
       update
         .compose(takeWhen(this.shareButtonClickedSubject))
+        .compose(bindToLifecycle())
         .subscribe(this.startShareIntent::onNext);
 
       update
         .compose(takeWhen(this.goToCommentsRequestSubject))
+        .compose(bindToLifecycle())
         .subscribe(this.startCommentsActivity::onNext);
 
       update
-        .map(u -> u.urls().web().update())
-        .subscribe(this.webViewUrl::onNext);
-
-      update
         .map(u -> NumberUtils.format(u.sequence()))
+        .compose(bindToLifecycle())
         .subscribe(this.updateSequence::onNext);
 
       update
@@ -87,6 +93,7 @@ public interface UpdateViewModel {
           .fetchProject(String.valueOf(u.projectId()))
           .compose(neverError())
         )
+        .compose(bindToLifecycle())
         .subscribe(p -> this.startProjectActivity.onNext(Pair.create(p, RefTag.update())));
     }
 

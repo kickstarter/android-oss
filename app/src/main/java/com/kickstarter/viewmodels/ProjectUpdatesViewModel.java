@@ -35,7 +35,7 @@ public interface ProjectUpdatesViewModel {
     /** Emits a project and an update to start the update activity with. */
     Observable<Pair<Project, Update>> startUpdateActivity();
 
-    /** Emits a web view url to display. */
+    /** Emits a url to load in the web view. */
     Observable<String> webViewUrl();
   }
 
@@ -59,6 +59,7 @@ public interface ProjectUpdatesViewModel {
       this.goToCommentsRequestSubject
         .map(this::projectUpdateParams)
         .switchMap(this::fetchUpdate)
+        .compose(bindToLifecycle())
         .subscribe(this.startCommentsActivity::onNext);
 
       final Observable<Update> goToUpdateRequest = this.goToUpdateRequestSubject

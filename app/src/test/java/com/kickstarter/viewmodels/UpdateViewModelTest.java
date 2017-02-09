@@ -7,6 +7,7 @@ import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.UpdateFactory;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
 import com.kickstarter.services.ApiClientType;
@@ -99,5 +100,33 @@ public class UpdateViewModelTest extends KSRobolectricTestCase {
     vm.inputs.shareIconButtonClicked();
 
     startShareIntent.assertValues(update);
+  }
+
+  @Test
+  public void testUpdateViewModel_UpdateSequence() {
+    final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment());
+    final Update update = UpdateFactory.update().toBuilder().sequence(1234).build();
+
+    final TestSubscriber<String> updateSequence = new TestSubscriber<>();
+    vm.outputs.updateSequence().subscribe(updateSequence);
+
+    vm.intent(new Intent().putExtra(IntentKey.UPDATE, update));
+
+    // Initial update's sequence number emits.
+    updateSequence.assertValues(NumberUtils.format(update.sequence()));
+  }
+
+  @Test
+  public void testUpdateViewModel_WebViewUrl() {
+    final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment());
+    final Update update = UpdateFactory.update();
+
+    final TestSubscriber<String> webViewUrl = new TestSubscriber<>();
+    vm.outputs.webViewUrl().subscribe(webViewUrl);
+
+    vm.intent(new Intent().putExtra(IntentKey.UPDATE, update));
+
+    // Initial update index url emits.
+    webViewUrl.assertValues(update.urls().web().update());
   }
 }

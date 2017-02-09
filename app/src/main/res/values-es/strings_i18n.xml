@@ -45,8 +45,10 @@ patrocinadores</string>
   <string name="Cancel_your_pledge" formatted="false">Cancela tu contribución</string>
   <string name="Change_payment_method" formatted="false">Cambiar método de pago</string>
   <string name="Chooses_location_for_shipping" formatted="false">Destino determinado: %{location}.</string>
+  <string name="Close_live_stream" formatted="false">Cerrar Live Stream</string>
   <string name="Close_project" formatted="false">Cerrar proyecto</string>
   <string name="Closes_filters" formatted="false">Cierra filtros.</string>
+  <string name="Closes_live_stream" formatted="false">Cierra Live-Stream.</string>
   <string name="Closes_project" formatted="false">Cierra el proyecto.</string>
   <string name="Collapses_subcategories" formatted="false">Muestra menos subcategorías.</string>
   <string name="Collections" formatted="false">Colecciones</string>
@@ -55,6 +57,7 @@ patrocinadores</string>
   <string name="Continue_to_payment" formatted="false">Continuar a pago</string>
   <string name="Continue_to_update_pledge" formatted="false">Continuar a Actualizar contribución</string>
   <string name="Couldnt_add_attachment" formatted="false">No se pudo añadir el anexo</string>
+  <string name="Couldnt_open_live_stream_Try_again_later" formatted="false">No se pudo abrir este live stream, por favor inténtalo de nuevo más tarde.</string>
   <string name="Couldnt_remove_attachment" formatted="false">No se pudo remover el anexo</string>
   <string name="Created_projects_projects_count" formatted="false">Proyectos creados: %{projects_count}</string>
   <string name="Creator_name_is_live_now" formatted="false">&lt;b>%{creator_name}&lt;/b> está transmitiendo en vivo</string>
@@ -69,7 +72,7 @@ patrocinadores</string>
   <string name="Earth" formatted="false">Tierra</string>
   <string name="Email_notifications" formatted="false">Notificaciones por correo electrónico</string>
   <string name="Ending_soon" formatted="false">Finaliza pronto</string>
-  <string name="Estimated_to_fulfill" formatted="false">Fecha de envío:</string>
+  <string name="Estimated_delivery" formatted="false">Entrega estimada:</string>
   <string name="Expands_subcategories" formatted="false">Muestra más subcategorías.</string>
   <string name="Explore_projects" formatted="false">Explora proyectos</string>
   <string name="Failed_to_retrieve_live_stream_event_details" formatted="false">No se pudo cargar la información acerca del evento en vivo</string>
@@ -86,6 +89,7 @@ patrocinadores</string>
   <string name="Filter_name_project_count_live_projects_one" formatted="false">%{filter_name}: %{project_count} proyecto activo</string>
   <string name="Filter_name_project_count_live_projects_two" formatted="false">%{filter_name}: %{project_count} proyectos activos</string>
   <string name="Filter_name_project_count_live_projects_zero" formatted="false">%{filter_name}: %{project_count} proyectos activos</string>
+  <string name="Filters_by_projects_with_upcoming_and_past_live_streams" formatted="false">Ordenar por proyectos con live streams futuros/pasados.</string>
   <string name="Find_Facebook_Friends" formatted="false">Encuentra amigos en Facebook</string>
   <string name="Find_and_follow_friends" formatted="false">Encontrar y seguir a amigos</string>
   <string name="Find_projects_youll_love_and_help_bring" formatted="false">Aquí encuentras proyectos a tu gusto - ¡tu contribución ayudará a hacerlos realidad!</string>
@@ -113,6 +117,8 @@ patrocinadores</string>
   <string name="Friend_backed_tech_project" formatted="false">&lt;b>%{friend_name}&lt;/b> patrocinó un proyecto de &lt;i>Tecnología&lt;/i>.</string>
   <string name="Friend_backed_theater_project" formatted="false">&lt;b>%{friend_name}&lt;/b> patrocinó un proyecto de &lt;i>Teatro&lt;/i>.</string>
   <string name="Friend_name_launched_a_project" formatted="false">¡%{friend_name} publicó un proyecto!</string>
+  <string name="Get_notified_about_this_creators_live_streams" formatted="false">Recibe notificaciones sobre los Live Streams de este creador</string>
+  <string name="Go_to_project_page" formatted="false">Ir a la página de proyecto</string>
   <string name="Got_it_your_survey_response_has_been_submitted" formatted="false">¡Listo! Hemos recibido tus respuestas a nuestro cuestionario.</string>
   <string name="Home" formatted="false">Inicio</string>
   <string name="Id_just_like_to_support_the_project" formatted="false">Sólo quiero apoyar este proyecto.</string>
@@ -131,8 +137,10 @@ patrocinadores</string>
   <string name="Left_count_left_zero" formatted="false">%{left_count} restantes</string>
   <string name="Live" formatted="false">En vivo</string>
   <string name="Live_Stream" formatted="false">Live Streaming</string>
-  <string name="Live_Streaming_now" formatted="false">En vivo ahora</string>
+  <string name="Live_now" formatted="false">En vivo</string>
   <string name="Live_stream_countdown" formatted="false">Live Stream - Cuenta atrás</string>
+  <string name="Live_stream_date" formatted="false">Live-Stream – %{date}</string>
+  <string name="Live_streaming_now" formatted="false">En vivo ahora</string>
   <string name="Loading" formatted="false">Cargando</string>
   <string name="Log_in_or_sign_up_to_subscribe" formatted="false">Para activar la suscripción, por favor inicia sesión o regístrate</string>
   <string name="Log_in_to_leave_a_comment" formatted="false">Inicia sesión para dejar un comentario.</string>
@@ -143,12 +151,13 @@ patrocinadores</string>
   <string name="Manage_your_reward" formatted="false">Administra tu recompensa</string>
   <string name="Message_backer" formatted="false">Enviar mensaje a patrocinador</string>
   <string name="Message_creator" formatted="false">Enviar mensaje al creador</string>
-  <string name="No_Results" formatted="false">No Results</string>
+  <string name="No_Results" formatted="false">Sin resultados</string>
   <string name="No_comments_yet" formatted="false">No hay comentarios todavia.</string>
   <string name="No_one_has_posted_an_update_yet" formatted="false">Todavía no se han publicado actualizaciones.</string>
   <string name="No_pledges_from_friends_yet" formatted="false">Todavía no hay contribuciones de amigos.</string>
   <string name="No_replay_is_available_for_this_live_stream" formatted="false">Este Live Stream no cuenta con repetición.</string>
   <string name="Once_you_back_a_project_well_share" formatted="false">Tu patrocinio de un proyecto nos ayuda a hacerte recomendaciones personalizadas.</string>
+  <string name="Only_amount_of_time_left_to_watch_this" formatted="false">Queda poco tiempo para verlo (%{amount_of_time}).</string>
   <string name="Opens_comments" formatted="false">Abre comentarios.</string>
   <string name="Opens_creator_profile" formatted="false">Abre el perfil del creador.</string>
   <string name="Opens_email_composer" formatted="false">Abre plantilla de correo.</string>
@@ -167,6 +176,7 @@ patrocinadores</string>
   <string name="Pledge_any_amount_to_help_bring_this_project_to_life" formatted="false">Puedes contribuir un monto de libre selección para apoyar este proyecto.</string>
   <string name="Pledge_without_a_reward" formatted="false">Contribuir sin recompensa</string>
   <string name="Popular" formatted="false">Popular</string>
+  <string name="Popular_Projects" formatted="false">Proyectos populares</string>
   <string name="Project_Cancelled" formatted="false">Proyecto cancelado.</string>
   <string name="Project_Suspended" formatted="false">Proyecto suspendido.</string>
   <string name="Projects_We_Love" formatted="false">Nuestros Favoritos</string>
@@ -174,10 +184,13 @@ patrocinadores</string>
   <string name="Pursue_daring_ideas" formatted="false">Un universo de geniales ideas.</string>
   <string name="Push_notifications" formatted="false">Notificaciones Push</string>
   <string name="Read_more_about_the_campaign_arrow" formatted="false">Leer más sobre esta campaña  →</string>
+  <string name="Recent_live_stream" formatted="false">Live-Stream reciente</string>
   <string name="Recommended" formatted="false">Recomendados</string>
   <string name="Recorded_Live" formatted="false">Grabado en vivo</string>
   <string name="Recorded_live_with_creator_name" formatted="false">Grabado en vivo por &lt;b>%{creator_name}&lt;/b></string>
   <string name="Replay" formatted="false">Repetición</string>
+  <string name="Replay_live_stream_with_creator_name" formatted="false">Repetir live stream de&lt;br>&lt;b>%{creator_name}&lt;/b></string>
+  <string name="Replay_past_live_streams" formatted="false">Repetir live streams pasados</string>
   <string name="Reward_Surveys_few" formatted="false">%{reward_survey_count} cuestionarios</string>
   <string name="Reward_Surveys_many" formatted="false">%{reward_survey_count} cuestionarios</string>
   <string name="Reward_Surveys_one" formatted="false">Cuestionario</string>
@@ -201,6 +214,7 @@ patrocinadores</string>
   <string name="Select_this_reward" formatted="false">Seleccionar esta recompensa</string>
   <string name="Select_this_reward_instead" formatted="false">Selecciona esta recompensa</string>
   <string name="Share_an_update_about_your_project" formatted="false">Comparte una actualización de tu proyecto …</string>
+  <string name="Share_this_live_stream" formatted="false">Compartir este Live-Stream.</string>
   <string name="Share_this_project_on_Facebook" formatted="false">Compartir este proyecto en Facebook.</string>
   <string name="Share_this_project_on_Twitter" formatted="false">Compartir este proyecto en Twitter.</string>
   <string name="Share_update" formatted="false">Compartir</string>
@@ -212,6 +226,7 @@ patrocinadores</string>
   <string name="Starting_soon" formatted="false">Comienza en breve</string>
   <string name="Subscribe" formatted="false">Suscribir</string>
   <string name="Subscribed" formatted="false">Suscripción activa</string>
+  <string name="Subscribes_to_upcoming_lives_streams" formatted="false">Activa subscripción a futuros Live-Streams.</string>
   <string name="Survey" formatted="false">Cuestionario</string>
   <string name="Tap_the_star_on_each_project_page_to_save_it" formatted="false">Simplemente márcalo con asterisco, entonces te mandaremos una notificación 48 horas antes de que termine.</string>
   <string name="Thank_you_for_supporting_this_project" formatted="false">Gracias por apoyar este proyecto.</string>
@@ -219,19 +234,25 @@ patrocinadores</string>
   <string name="The_live_stream_failed_to_connect" formatted="false">No se pudo conectar la transmisión en directo</string>
   <string name="The_live_stream_was_interrupted" formatted="false">Transmisión en vivo fue interrumpida</string>
   <string name="The_live_stream_will_start_soon" formatted="false">Transmisión en vivo comienza en breve</string>
+  <string name="The_live_stream_will_start_time" formatted="false">Live-Stream comienza en %{time}.</string>
   <string name="The_replay_will_start_soon" formatted="false">Repetición comienza en breve</string>
   <string name="This_facebook_account_is_already_linked_to_another_Kickstarter_user" formatted="false">Esta cuenta de Facebook ya está asociada a otro usuario de Kickstarter.</string>
   <string name="Time_left_left" formatted="false">%{time_left} restantes</string>
   <string name="Unfollows_friend_name" formatted="false">Dejar de seguir a %{friend_name}.</string>
   <string name="Unsaves_project" formatted="false">Deshacer "guardar proyecto".</string>
+  <string name="Unsubscribe" formatted="false">Anular suscripción</string>
+  <string name="Unsubscribes_from_upcoming_lives_streams" formatted="false">Desactiva subscripción a futuros Live-Streams.</string>
   <string name="Unsuccessfully_Funded" formatted="false">Financiación falló.</string>
+  <string name="Upcoming_live_stream" formatted="false">Futuro Live-Stream</string>
   <string name="Upcoming_with_creator_name" formatted="false">Próximamente: Video de &lt;br/>&lt;b>%{creator_name}&lt;/b></string>
   <string name="Update_pledge" formatted="false">Actualizar contribución</string>
   <string name="View" formatted="false">Ver</string>
   <string name="View_your_pledge" formatted="false">Revisa tu contribución</string>
   <string name="View_your_reward" formatted="false">Mostrar recompensa</string>
   <string name="Watch_live" formatted="false">Ver en vivo</string>
-  <string name="We_couldnt_find_anything_for_search_term" formatted="false">We couldn\'t find anything for %{search_term}.</string>
+  <string name="We_couldnt_find_anything_for_search_term" formatted="false">La búsqueda "%{search_term}" no dio resultados.</string>
+  <string name="We_were_unable_to_load_the_shipping_destinations" formatted="false">No se pudieron cargar los destinos de envío.\n
+Por favor inténtalo de nuevo más tarde.</string>
   <string name="When_you_save_a_project_we_ll_send_you_a_reminder" formatted="false">Cuando guardes un proyecto, te enviaremos un recordatorio por correo electrónico 48 horas antes de que finalice</string>
   <string name="You_Launched" formatted="false">¡Tu proyecto fue publicado!</string>
   <string name="You_backed_this_project" formatted="false">Patrocinaste este proyecto.</string>
@@ -498,48 +519,8 @@ patrocinadores</string>
   <string name="dashboard_tout_backers" formatted="false">patrocinadores</string>
   <string name="dashboard_tout_pledged" formatted="false">contribuido</string>
   <string name="dashboard_tout_remaining" formatted="false">restante</string>
-  <string name="dates_day_abbreviated_few" formatted="false">días</string>
-  <string name="dates_day_abbreviated_many" formatted="false">días</string>
-  <string name="dates_day_abbreviated_one" formatted="false">día</string>
-  <string name="dates_day_abbreviated_two" formatted="false">días</string>
-  <string name="dates_day_abbreviated_zero" formatted="false">días</string>
-  <string name="dates_day_few" formatted="false">días</string>
-  <string name="dates_day_many" formatted="false">días</string>
-  <string name="dates_day_one" formatted="false">día</string>
-  <string name="dates_day_two" formatted="false">días</string>
-  <string name="dates_day_zero" formatted="false">días</string>
-  <string name="dates_hour_abbreviated_few" formatted="false">hrs</string>
-  <string name="dates_hour_abbreviated_many" formatted="false">hrs</string>
-  <string name="dates_hour_abbreviated_one" formatted="false">hr</string>
-  <string name="dates_hour_abbreviated_two" formatted="false">hrs</string>
-  <string name="dates_hour_abbreviated_zero" formatted="false">horas</string>
-  <string name="dates_hour_few" formatted="false">horas</string>
-  <string name="dates_hour_many" formatted="false">horas</string>
-  <string name="dates_hour_one" formatted="false">hora</string>
-  <string name="dates_hour_two" formatted="false">horas</string>
-  <string name="dates_hour_zero" formatted="false">horas</string>
   <string name="dates_just_now" formatted="false">En este momento</string>
-  <string name="dates_minute_abbreviated_few" formatted="false">mins</string>
-  <string name="dates_minute_abbreviated_many" formatted="false">mins</string>
-  <string name="dates_minute_abbreviated_one" formatted="false">min</string>
-  <string name="dates_minute_abbreviated_two" formatted="false">mins</string>
-  <string name="dates_minute_abbreviated_zero" formatted="false">mins</string>
-  <string name="dates_minute_few" formatted="false">minutos</string>
-  <string name="dates_minute_many" formatted="false">minutos</string>
-  <string name="dates_minute_one" formatted="false">minuto</string>
-  <string name="dates_minute_two" formatted="false">minutos</string>
-  <string name="dates_minute_zero" formatted="false">minutos</string>
   <string name="dates_right_now" formatted="false">En este momento</string>
-  <string name="dates_second_abbreviated_few" formatted="false">segs</string>
-  <string name="dates_second_abbreviated_many" formatted="false">segs</string>
-  <string name="dates_second_abbreviated_one" formatted="false">seg</string>
-  <string name="dates_second_abbreviated_two" formatted="false">segs</string>
-  <string name="dates_second_abbreviated_zero" formatted="false">segs</string>
-  <string name="dates_second_few" formatted="false">segundos</string>
-  <string name="dates_second_many" formatted="false">segundos</string>
-  <string name="dates_second_one" formatted="false">segundo</string>
-  <string name="dates_second_two" formatted="false">segundos</string>
-  <string name="dates_second_zero" formatted="false">segundos</string>
   <string name="dates_time_days_abbreviated_few" formatted="false">%{time_count} días</string>
   <string name="dates_time_days_abbreviated_many" formatted="false">%{time_count} días</string>
   <string name="dates_time_days_abbreviated_one" formatted="false">1 dia</string>
@@ -661,6 +642,7 @@ patrocinadores</string>
   <string name="dates_time_seconds_two" formatted="false">2 segs</string>
   <string name="dates_time_seconds_zero" formatted="false">0 segs</string>
   <string name="dates_yesterday" formatted="false">Ayer</string>
+  <string name="days" formatted="false">días</string>
   <string name="discovery_accessibility_buttons_sort_hint" formatted="false">Clasif. de cambios.</string>
   <string name="discovery_accessibility_buttons_sort_label" formatted="false">Clasificar por %{sort}</string>
   <string name="discovery_accessibility_live_project_count" formatted="false">Proyectos activos</string>
@@ -712,7 +694,7 @@ patrocinadores</string>
   <string name="discovery_baseball_card_status_banner_canceled" formatted="false">Financiamiento cancelado</string>
   <string name="discovery_baseball_card_status_banner_canceled_date" formatted="false">Financiamiento cancelado el %{date}</string>
   <string name="discovery_baseball_card_status_banner_funding_unsuccessful_date" formatted="false">Financiamiento fallido %{date}</string>
-  <string name="discovery_baseball_card_status_banner_successful" formatted="false">¡Financiado con éxito!</string>
+  <string name="discovery_baseball_card_status_banner_successful" formatted="false">¡Financiado!</string>
   <string name="discovery_baseball_card_status_banner_successful_date" formatted="false">Financiado con éxito el %{date}</string>
   <string name="discovery_baseball_card_status_banner_suspended" formatted="false">Financiamiento suspendido %{date}</string>
   <string name="discovery_baseball_card_status_banner_suspended_date" formatted="false">Financiamiento suspendido el %{date}</string>
@@ -812,6 +794,7 @@ patrocinadores</string>
   <string name="general_social_buttons_connect_with_twitter" formatted="false">Conectar con Twitter</string>
   <string name="general_switch_toggle_off" formatted="false">NO</string>
   <string name="general_switch_toggle_on" formatted="false">SÍ</string>
+  <string name="hours" formatted="false">horas</string>
   <string name="invalid_api_client_alert_cancel" formatted="false">Cancelar</string>
   <string name="invalid_api_client_alert_message" formatted="false">Parece que estás usando una versión muy antigua de esta aplicación. Por favor descarga la última versión en la App Store para continuar usándola.</string>
   <string name="invalid_api_client_alert_title" formatted="false">Por favor actualizar</string>
@@ -889,6 +872,7 @@ Normalmente, esto puede solucionarse al ir a Configuración iOS > Facebook y act
   <string name="messages_navigation_sent" formatted="false">Enviados</string>
   <string name="messages_search_placeholder_search_messages" formatted="false">Buscar mensajes</string>
   <string name="messages_sent_date" formatted="false">enviado %{sent_date}</string>
+  <string name="minutes" formatted="false">minutos</string>
   <string name="percentage_funded" formatted="false">%{percentage} financiado</string>
   <string name="plus_shipping_cost" formatted="false">+%{shipping_cost}</string>
   <string name="profile_buttons_messages" formatted="false">Mensajes</string>
@@ -1114,6 +1098,7 @@ Si tienes un momento, ¿podrías calificar tu experiencia?\n
   <string name="rewards_title_pledge_reward_currency_or_more" formatted="false">Contribuye %{reward_currency} o más</string>
   <string name="search_by_creator" formatted="false">de %{creator_name}</string>
   <string name="search_most_popular" formatted="false">Los más populares</string>
+  <string name="seconds" formatted="false">segundos</string>
   <string name="signup_button" formatted="false">Regístrar</string>
   <string name="signup_button_email" formatted="false">Registro con correo electrónico</string>
   <string name="signup_error_something_wrong" formatted="false">Algo pasó aquí.</string>

@@ -87,7 +87,7 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
       .compose(values())
       .ofType(Comment.class);
 
-    final Observable<Either<Project, Update>> startOverWith = merge(
+    final Observable<Either<Project, Update>> startOverWith = Observable.merge(
       projectOrUpdate,
       projectOrUpdate.compose(takeWhen(refresh))
     );
@@ -138,7 +138,7 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
       .compose(bindToLifecycle())
       .subscribe(currentCommentBody::onNext);
 
-    combineLatest(
+    Observable.combineLatest(
       project,
       comments,
       currentUser.observable(),

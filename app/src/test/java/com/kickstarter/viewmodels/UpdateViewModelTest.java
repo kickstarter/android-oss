@@ -20,7 +20,7 @@ import okhttp3.Request;
 import rx.Observable;
 import rx.observers.TestSubscriber;
 
-public class UpdateViewModelTest extends KSRobolectricTestCase {
+public final class UpdateViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testUpdateViewModel_LoadsInitialUpdateUrl() {
@@ -70,7 +70,7 @@ public class UpdateViewModelTest extends KSRobolectricTestCase {
 
     final ApiClientType apiClient = new MockApiClient() {
       @Override
-      public @NonNull Observable<Project> fetchProject(@NonNull String param) {
+      public @NonNull Observable<Project> fetchProject(final @NonNull String param) {
         return Observable.just(project);
       }
     };

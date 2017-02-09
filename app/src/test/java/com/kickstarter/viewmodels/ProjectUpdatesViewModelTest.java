@@ -14,7 +14,7 @@ import org.junit.Test;
 import okhttp3.Request;
 import rx.observers.TestSubscriber;
 
-public class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
+public final class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testProjectUpdatesViewModel_LoadsInitialIndexUrl() {

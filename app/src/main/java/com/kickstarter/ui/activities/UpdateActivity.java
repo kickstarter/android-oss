@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.view.View;
 import android.webkit.WebView;
 
@@ -33,6 +34,7 @@ import butterknife.OnClick;
 import okhttp3.Request;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
+import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresActivityViewModel(UpdateViewModel.ViewModel.class)
 public class UpdateActivity extends BaseActivity<UpdateViewModel.ViewModel> implements KSWebViewClient.Delegate {
@@ -125,6 +127,10 @@ public class UpdateActivity extends BaseActivity<UpdateViewModel.ViewModel> impl
       .setType("text/plain")
       .putExtra(Intent.EXTRA_TEXT, shareMessage + " " + update.urls().web().update());
     startActivity(intent);
+  }
+
+  protected @Nullable Pair<Integer, Integer> exitTransition() {
+    return slideInFromLeft();
   }
 
   @OnClick(R.id.share_icon_button)

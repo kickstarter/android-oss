@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.view.View;
 import android.webkit.WebView;
 
@@ -29,6 +30,7 @@ import butterknife.ButterKnife;
 import okhttp3.Request;
 
 import static com.kickstarter.libs.rx.transformers.Transformers.observeForUI;
+import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
 
 @RequiresActivityViewModel(ProjectUpdatesViewModel.ViewModel.class)
 public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel.ViewModel> implements KSWebViewClient.Delegate {
@@ -94,6 +96,10 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
       .putExtra(IntentKey.PROJECT, project)
       .putExtra(IntentKey.UPDATE, update);
     startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
+  }
+
+  protected @Nullable Pair<Integer, Integer> exitTransition() {
+    return slideInFromLeft();
   }
 
   @Override

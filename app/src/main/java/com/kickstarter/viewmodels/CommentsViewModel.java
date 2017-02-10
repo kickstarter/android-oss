@@ -12,7 +12,6 @@ import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
 import com.kickstarter.services.ApiClientType;
-import com.kickstarter.services.ApiException;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.services.apiresponses.ErrorEnvelope;
 import com.kickstarter.ui.IntentKey;
@@ -56,25 +55,30 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
       });
 
     final Observable<Project> initialProject = projectOrUpdate
-      .flatMap(pu ->
-        pu.isLeft()
-          ? Observable.just(pu.left())
-          : client.fetchProject(String.valueOf(pu.right().projectId())).compose(neverError())
+      .flatMap(pOrU ->
+        pOrU.either(
+          Observable::just,
+          u -> client.fetchProject(String.valueOf(u.projectId())).compose(neverError())
+        )
       )
       .share();
 
-    final Observable<Project> project = initialProject
-      .compose(takeWhen(loginSuccess))
-      .flatMap(p -> client.fetchProject(p).compose(neverError()))
-      .mergeWith(initialProject)
+    final Observable<Project> project = Observable.merge(
+      initialProject,
+
+      initialProject
+        .compose(takeWhen(loginSuccess))
+        .flatMap(p -> client.fetchProject(p).compose(neverError()))
+
+      )
       .share();
 
     final Observable<Boolean> commentHasBody = commentBodyChanged
       .map(body -> body.length() > 0);
 
     final Observable<Notification<Comment>> commentNotification = projectOrUpdate
-      .compose(combineLatestPair(commentBodyChanged))
-      .compose(takeWhen(postCommentClicked))
+      .compose(combineLatestPair(this.commentBodyChanged))
+      .compose(takeWhen(this.postCommentClicked))
       .switchMap(projectOrUpdateAndBody ->
         this.postComment(projectOrUpdateAndBody.first, projectOrUpdateAndBody.second)
           .doOnSubscribe(() -> commentIsPosting.onNext(true))
@@ -84,8 +88,7 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
       .share();
 
     final Observable<Comment> postedComment = commentNotification
-      .compose(values())
-      .ofType(Comment.class);
+      .compose(values());
 
     final Observable<Either<Project, Update>> startOverWith = Observable.merge(
       projectOrUpdate,
@@ -98,11 +101,7 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
         .startOverWith(startOverWith)
         .envelopeToListOfData(CommentsEnvelope::comments)
         .envelopeToMoreUrl(env -> env.urls().api().moreComments())
-        .loadWithParams(pu ->
-          pu.isLeft()
-            ? client.fetchComments(pu.left())
-            : client.fetchComments(pu.right())
-        )
+        .loadWithParams(pu -> pu.either(client::fetchComments, client::fetchComments))
         .loadWithPaginationPath(client::fetchComments)
         .build();
 
@@ -110,8 +109,8 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
 
     commentNotification
       .compose(errors())
-      .ofType(ApiException.class)
-      .subscribe(e -> showPostCommentErrorToast.onNext(e.errorEnvelope()));
+      .map(ErrorEnvelope::fromThrowable)
+      .subscribe(showPostCommentErrorToast::onNext);
 
     project
       .compose(takeWhen(loginSuccess))
@@ -204,9 +203,10 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
   }
 
   private @NonNull Observable<Comment> postComment(final @NonNull Either<Project, Update> projectOrUpdate, final @NonNull String body) {
-    return projectOrUpdate.isLeft()
-      ? client.postComment(projectOrUpdate.left(), body)
-      : client.postComment(projectOrUpdate.right(), body);
+    return projectOrUpdate.either(
+      p -> client.postComment(p, body),
+      u -> client.postComment(u, body)
+    );
   }
 
   private final PublishSubject<String> commentBodyChanged = PublishSubject.create();

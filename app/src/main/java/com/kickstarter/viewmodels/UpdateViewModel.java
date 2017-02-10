@@ -89,9 +89,10 @@ public interface UpdateViewModel {
 
       update
         .compose(takeWhen(this.goToProjectRequestSubject))
-        .switchMap(u -> this.client
-          .fetchProject(String.valueOf(u.projectId()))
-          .compose(neverError())
+        .switchMap(u ->
+          this.client
+            .fetchProject(String.valueOf(u.projectId()))
+            .compose(neverError())
         )
         .compose(bindToLifecycle())
         .subscribe(p -> this.startProjectActivity.onNext(Pair.create(p, RefTag.update())));

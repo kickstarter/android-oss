@@ -52,7 +52,8 @@ public interface ProjectUpdatesViewModel {
         .ofType(Project.class)
         .filter(ObjectUtils::isNotNull);
 
-      initialProject.map(Project::updatesUrl)
+      initialProject
+        .map(Project::updatesUrl)
         .compose(bindToLifecycle())
         .subscribe(this.webViewUrl::onNext);
 
@@ -64,7 +65,8 @@ public interface ProjectUpdatesViewModel {
 
       final Observable<Update> goToUpdateRequest = this.goToUpdateRequestSubject
         .map(this::projectUpdateParams)
-        .switchMap(this::fetchUpdate);
+        .switchMap(this::fetchUpdate)
+        .share();
 
       initialProject
         .compose(Transformers.takePairWhen(goToUpdateRequest))

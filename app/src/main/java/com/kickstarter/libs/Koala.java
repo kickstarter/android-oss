@@ -357,8 +357,8 @@ public final class Koala {
   }
 
   // PROJECT UPDATES
-  public void trackViewedUpdates() {
-    client.track("Viewed Updates");
+  public void trackViewedUpdates(final @NonNull Project project) {
+    client.track("Viewed Updates", KoalaUtils.projectProperties(project));
   }
 
   // PUSH NOTIFICATIONS

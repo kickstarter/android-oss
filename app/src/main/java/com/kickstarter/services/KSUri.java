@@ -94,7 +94,7 @@ public final class KSUri {
     return isKickstarterUri(uri, webEndpoint) && !isApiUri(uri, webEndpoint);
   }
 
-  // /discover/categories/:category_id
+  // /discover/categories/param
   private static final Pattern DISCOVER_CATEGORIES_PATTERN = Pattern.compile("\\A\\/discover\\/categories\\/.*");
 
   // /discover/param

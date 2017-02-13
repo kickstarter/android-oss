@@ -76,7 +76,7 @@ public interface ProjectUpdatesViewModel {
       initialProject
         .take(1)
         .compose(bindToLifecycle())
-        .subscribe(__ -> this.koala.trackViewedUpdates());
+        .subscribe(this.koala::trackViewedUpdates);
     }
 
     private @NonNull Observable<Update> fetchUpdate(final @NonNull Pair<String, String> projectAndUpdateParams) {

@@ -72,7 +72,6 @@ public final class ProjectCardViewHolder extends KSViewHolder {
 
   protected @BindDrawable(R.drawable.gray_gradient) Drawable grayGradientDrawable;
 
-  protected @BindString(R.string.project_creator_by_creator) String byCreatorString;
   protected @BindString(R.string.discovery_baseball_card_status_banner_canceled_date) String bannerCanceledDateString;
   protected @BindString(R.string.discovery_baseball_card_status_banner_suspended_date) String bannerSuspendedDateString;
   protected @BindString(R.string.discovery_baseball_card_status_banner_funding_unsuccessful_date) String fundingUnsuccessfulDateString;

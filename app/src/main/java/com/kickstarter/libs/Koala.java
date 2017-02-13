@@ -356,6 +356,11 @@ public final class Koala {
     client.track("Project Video Start", KoalaUtils.projectProperties(project));
   }
 
+  // PROJECT UPDATES
+  public void trackViewedUpdates(final @NonNull Project project) {
+    client.track("Viewed Updates", KoalaUtils.projectProperties(project));
+  }
+
   // PUSH NOTIFICATIONS
   public void trackPushNotification(final @NonNull PushNotificationEnvelope envelope) {
     final Map<String, Object> properties = new HashMap<String, Object>() {

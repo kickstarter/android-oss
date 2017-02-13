@@ -187,7 +187,9 @@ public final class ProjectActivity extends BaseActivity<ProjectViewModel.ViewMod
   }
 
   private void startProjectUpdatesActivity(final @NonNull Project project) {
-    startWebViewActivity(updatesString, project.updatesUrl());
+    final Intent intent = new Intent(this, ProjectUpdatesActivity.class)
+      .putExtra(IntentKey.PROJECT, project);
+    startActivityWithTransition(intent, R.anim.slide_in_right, R.anim.fade_out_slide_out_left);
   }
 
   private void showStarToast() {

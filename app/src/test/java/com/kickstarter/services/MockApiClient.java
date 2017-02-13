@@ -11,6 +11,7 @@ import com.kickstarter.factories.CategoryFactory;
 import com.kickstarter.factories.CommentFactory;
 import com.kickstarter.factories.LocationFactory;
 import com.kickstarter.factories.ProjectFactory;
+import com.kickstarter.factories.UpdateFactory;
 import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.Config;
 import com.kickstarter.models.Backing;
@@ -139,7 +140,7 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<CommentsEnvelope> fetchProjectComments(final @NonNull Project project) {
+  public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull Project project) {
     return Observable.just(
       CommentsEnvelope.builder()
         .urls(CommentsEnvelope.UrlsEnvelope.builder()
@@ -154,13 +155,28 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<CommentsEnvelope> fetchProjectComments(final @NonNull String paginationPath) {
+  public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull Update update) {
+    return Observable.just(
+      CommentsEnvelope.builder()
+        .urls(CommentsEnvelope.UrlsEnvelope.builder()
+          .api(CommentsEnvelope.UrlsEnvelope.ApiEnvelope.builder()
+            .moreComments("more comments please")
+            .newerComments("newer comments please")
+            .build())
+          .build())
+        .comments(Collections.singletonList(CommentFactory.comment()))
+        .build()
+    );
+  }
+
+  @Override
+  public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull String paginationPath) {
     return Observable.empty();
   }
 
   @Override
   public @NonNull Observable<Update> fetchUpdate(final @NonNull String projectParam, final @NonNull String updateParam) {
-    return Observable.empty();
+    return Observable.just(UpdateFactory.update());
   }
 
   @Override
@@ -256,9 +272,15 @@ public class MockApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<Comment> postProjectComment(final @NonNull Project project, final @NonNull String body) {
+  public @NonNull Observable<Comment> postComment(final @NonNull Project project, final @NonNull String body) {
     return Observable.just(CommentFactory.comment().toBuilder().body(body).build());
   }
+
+  @Override
+  public @NonNull Observable<Comment> postComment(final @NonNull Update update, final @NonNull String body) {
+    return Observable.just(CommentFactory.comment().toBuilder().body(body).build());
+  }
+
 
   @Override
   public @NonNull Observable<Empty> registerPushToken(final @NonNull String token) {

@@ -173,7 +173,7 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<CommentsEnvelope> fetchProjectComments(final @NonNull Project project) {
+  public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull Project project) {
     return service
       .projectComments(project.param())
       .lift(apiErrorOperator())
@@ -181,7 +181,15 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<CommentsEnvelope> fetchProjectComments(final @NonNull String paginationPath) {
+  public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull Update update) {
+    return service
+      .updateComments(update.projectId(), update.id())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
+  @Override
+  public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull String paginationPath) {
     return service
       .paginatedProjectComments(paginationPath)
       .lift(apiErrorOperator())
@@ -258,9 +266,17 @@ public final class ApiClient implements ApiClientType {
   }
 
   @Override
-  public @NonNull Observable<Comment> postProjectComment(final @NonNull Project project, final @NonNull String body) {
+  public @NonNull Observable<Comment> postComment(final @NonNull Project project, final @NonNull String body) {
     return service
       .postProjectComment(project.param(), CommentBody.builder().body(body).build())
+      .lift(apiErrorOperator())
+      .subscribeOn(Schedulers.io());
+  }
+
+  @Override
+  public @NonNull Observable<Comment> postComment(final @NonNull Update update, final @NonNull String body) {
+    return service
+      .postUpdateComment(update.projectId(), update.id(), CommentBody.builder().body(body).build())
       .lift(apiErrorOperator())
       .subscribeOn(Schedulers.io());
   }

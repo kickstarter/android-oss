@@ -164,8 +164,8 @@ public interface ProjectViewModel {
         .subscribe(this.project::onNext);
 
       projectOnUserChangeStar.mergeWith(starredProjectOnLoginSuccess)
-        .filter(com.kickstarter.models.Project::isStarred)
-        .filter(com.kickstarter.models.Project::isLive)
+        .filter(Project::isStarred)
+        .filter(Project::isLive)
         .filter(p -> !p.isApproachingDeadline())
         .compose(bindToLifecycle())
         .subscribe(__ -> this.showStarredPrompt.onNext(null));
@@ -221,26 +221,26 @@ public interface ProjectViewModel {
     private final class RefTagsAndProject {
       private final @Nullable RefTag refTagFromIntent;
       private final @Nullable RefTag refTagFromCookie;
-      private final @NonNull com.kickstarter.models.Project project;
+      private final @NonNull Project project;
 
       private RefTagsAndProject(final @Nullable RefTag refTagFromIntent, final @Nullable RefTag refTagFromCookie,
-        final @NonNull com.kickstarter.models.Project project) {
+        final @NonNull Project project) {
         this.refTagFromIntent = refTagFromIntent;
         this.refTagFromCookie = refTagFromCookie;
         this.project = project;
       }
 
-      public @NonNull com.kickstarter.models.Project project() {
+      public @NonNull Project project() {
         return this.project;
       }
     }
 
-    public @NonNull Observable<Project> starProject(final @NonNull com.kickstarter.models.Project project) {
+    public @NonNull Observable<Project> starProject(final @NonNull Project project) {
       return this.client.starProject(project)
         .compose(neverError());
     }
 
-    public @NonNull Observable<Project> toggleProjectStar(final @NonNull com.kickstarter.models.Project project) {
+    public @NonNull Observable<Project> toggleProjectStar(final @NonNull Project project) {
       return this.client.toggleProjectStar(project)
         .compose(neverError());
     }

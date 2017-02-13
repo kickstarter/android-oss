@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.kickstarter.ui.toolbars.KSToolbar
+  android:id="@+id/update_toolbar"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  tools:showIn="@layout/update_layout"
+  style="@style/Toolbar"
+  app:contentInsetLeft="0dp"
+  app:contentInsetStart="0dp">
+
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <com.kickstarter.ui.views.IconButton
+      style="@style/ToolbarIcon"
+      android:id="@+id/back_button"
+      android:focusable="true"
+      android:contentDescription="@string/general_navigation_accessibility_button_navigate_back_label"
+      android:text="@string/arrow_back_icon" />
+
+    <TextView
+      style="@style/ToolbarTitle"
+      android:id="@+id/title_text_view" />
+
+    <!-- Override the text size because this looks enormous compared to the back icon -->
+    <com.kickstarter.ui.views.IconButton
+      style="@style/ToolbarIcon"
+      android:id="@+id/share_icon_button"
+      android:focusable="true"
+      android:nextFocusLeft="@id/back_icon"
+      android:contentDescription="@string/project_accessibility_button_share_label"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentRight="true"
+      android:textSize="20sp"
+      android:text="@string/share_icon"/>
+
+  </RelativeLayout>
+
+</com.kickstarter.ui.toolbars.KSToolbar>

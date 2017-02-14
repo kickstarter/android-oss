@@ -142,7 +142,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
     showCommentPostedToastTest.assertValueCount(1);
 
     // A koala event for commenting should be tracked.
-    koalaTest.assertValues("Viewed Comments", "Project Comment View", "Project Comment Create");
+    koalaTest.assertValues("Viewed Comments", "Project Comment View", "Posted Comment", "Project Comment Create");
   }
 
   @Test

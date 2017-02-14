@@ -133,7 +133,7 @@ public final class Koala {
   }
 
   public void trackPostedComment(final @NonNull Project project, final @Nullable Update update,
-    final @NonNull KoalaContext.CommentDialog context) {
+    final @NonNull String context) {
 
     final Map<String, Object> props = update == null
       ? KoalaUtils.projectProperties(project)
@@ -143,7 +143,7 @@ public final class Koala {
     client.track("Posted Comment", props);
   }
 
-  /** @deprecated Use {@link #trackPostedComment(Project, Update, KoalaContext.CommentDialog)} instead. */
+  /** @deprecated Use {@link #trackPostedComment(Project, Update, String)} instead. */
   @Deprecated
   public void trackProjectCommentCreate(final @NonNull Project project) {
     client.track("Project Comment Create", KoalaUtils.projectProperties(project));

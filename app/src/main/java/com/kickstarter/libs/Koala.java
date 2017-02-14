@@ -104,65 +104,54 @@ public final class Koala {
   }
 
   // COMMENTS
-  public void trackLoadedNewerComments(final @NonNull Project project, final @Nullable Update update,
-    final @NonNull String context) {
-
-    final Map<String, Object> props = update == null
-      ? KoalaUtils.projectProperties(project)
-      : KoalaUtils.updateProperties(project, update);
-    props.put("context", context);
-
-    client.track("Loaded Newer Comments", props);
-  }
-
   public void trackLoadedOlderComments(final @NonNull Project project, final @Nullable Update update,
-    final @NonNull String context) {
+    final @NonNull KoalaContext.Comments context) {
 
     final Map<String, Object> props = update == null
       ? KoalaUtils.projectProperties(project)
       : KoalaUtils.updateProperties(project, update);
-    props.put("context", context);
+    props.put("context", context.getTrackingString());
 
     client.track("Loaded Older Comments", props);
   }
 
-  /** @deprecated Use {@link #trackLoadedOlderComments(Project, Update, String)} instead. */
+  /** @deprecated Use {@link #trackLoadedOlderComments(Project, Update, KoalaContext.Comments)} instead. */
   @Deprecated
   public void trackLoadedOlderProjectComments(final @NonNull Project project) {
     client.track("Project Comment Load Older", KoalaUtils.projectProperties(project));
   }
 
   public void trackPostedComment(final @NonNull Project project, final @Nullable Update update,
-    final @NonNull String context) {
+    final @NonNull KoalaContext.CommentDialog context) {
 
     final Map<String, Object> props = update == null
       ? KoalaUtils.projectProperties(project)
       : KoalaUtils.updateProperties(project, update);
-    props.put("context", context);
+    props.put("context", context.getTrackingString());
 
     client.track("Posted Comment", props);
   }
 
-  /** @deprecated Use {@link #trackPostedComment(Project, Update, String)} instead. */
+  /** @deprecated Use {@link #trackPostedComment(Project, Update, KoalaContext.CommentDialog)} instead. */
   @Deprecated
   public void trackProjectCommentCreate(final @NonNull Project project) {
     client.track("Project Comment Create", KoalaUtils.projectProperties(project));
   }
 
-  /** @deprecated Use {@link #trackViewedComments(Project, Update, String)} instead. */
+  /** @deprecated Use {@link #trackViewedComments(Project, Update, KoalaContext.Comments)} instead. */
   @Deprecated
   public void trackProjectCommentsView(final @NonNull Project project) {
     client.track("Project Comment View", KoalaUtils.projectProperties(project));
   }
 
   public void trackViewedComments(final @NonNull Project project, final @Nullable Update update,
-    final @NonNull String context) {
+    final @NonNull KoalaContext.Comments context) {
 
     final Map<String, Object> props = update == null
       ? KoalaUtils.projectProperties(project)
       : KoalaUtils.updateProperties(project, update);
 
-    props.put("context", context);
+    props.put("context", context.getTrackingString());
     client.track("Viewed Comments", props);
   }
 
@@ -408,9 +397,9 @@ public final class Koala {
   }
 
   // PROJECT UPDATES
-  public void trackViewedUpdate(final @NonNull Project project, final @NonNull String context) {
+  public void trackViewedUpdate(final @NonNull Project project, final @NonNull KoalaContext.Update context) {
     final Map<String, Object> props = KoalaUtils.projectProperties(project);
-    props.put("context", context);
+    props.put("context", context.getTrackingString());
     client.track("Viewed Update", props);
   }
 

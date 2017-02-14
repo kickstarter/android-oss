@@ -65,11 +65,9 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
 
     final Observable<Project> project = Observable.merge(
       initialProject,
-
       initialProject
         .compose(takeWhen(loginSuccess))
         .flatMap(p -> client.fetchProject(p).compose(neverError()))
-
       )
       .share();
 

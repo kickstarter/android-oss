@@ -18,6 +18,7 @@ public final class UpdateFactory {
     return Update.builder()
       .body("Update body")
       .id(1234)
+      .isPublic(true)
       .projectId(5678)
       .sequence(11111)
       .title("First update")

@@ -193,9 +193,8 @@ public final class KoalaUtils {
         put("title", update.title());
         put("visible", update.visible());
         put("comments_count", update.commentsCount());
+        put("public", update.isPublic());
 
-        // TODO: add `public` to `Update` model
-        // put("public")
         // TODO: how to convert update.publishedAt() to seconds since 1970
         // put("published_at", update.publishedAt())
       }

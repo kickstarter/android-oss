@@ -408,10 +408,10 @@ public final class Koala {
   }
 
   // PROJECT UPDATES
-  public void trackViewedUpdate(final @NonNull Project project, final @NonNull KoalaContext.Update context) {
+  public void trackViewedUpdate(final @NonNull Project project, final @NonNull String context) {
     final Map<String, Object> props = KoalaUtils.projectProperties(project);
     props.put("context", context);
-    client.track("Viewed Update");
+    client.track("Viewed Update", props);
   }
 
   public void trackViewedUpdates(final @NonNull Project project) {

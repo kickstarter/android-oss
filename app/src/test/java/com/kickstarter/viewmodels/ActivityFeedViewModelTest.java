@@ -59,7 +59,9 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     goToLogin.assertNoValues();
     goToProject.assertNoValues();
     goToProjectUpdate.assertNoValues();
+    koalaTest.assertValues("Activity View");
 
+    // Empty activity feed clicks do not trigger events yet.
     vm.inputs.emptyActivityFeedDiscoverProjectsClicked(null);
     goToDiscovery.assertValueCount(1);
 
@@ -70,10 +72,17 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     vm.inputs.projectStateChangedClicked(null, ActivityFactory.projectStateChangedActivity());
     vm.inputs.projectStateChangedPositiveClicked(null, ActivityFactory.projectStateChangedPositiveActivity());
     vm.inputs.projectUpdateProjectClicked(null, ActivityFactory.updateActivity());
+
+    koalaTest.assertValues(
+      "Activity View", "Activity View Item", "Activity View Item", "Activity View Item", "Activity View Item"
+    );
     goToProject.assertValueCount(4);
 
     vm.inputs.projectUpdateClicked(null, ActivityFactory.activity());
+
     goToProjectUpdate.assertValueCount(1);
+    koalaTest.assertValues("Activity View", "Activity View Item", "Activity View Item", "Activity View Item",
+      "Activity View Item", "Viewed Update");
   }
 
   @Test

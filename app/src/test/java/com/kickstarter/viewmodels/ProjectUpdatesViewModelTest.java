@@ -63,5 +63,6 @@ public final class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
     vm.inputs.goToUpdateRequest(updateRequest);
 
     startUpdateActivity.assertValueCount(1);
+    koalaTest.assertValues("Viewed Updates", "Viewed Update");
   }
 }

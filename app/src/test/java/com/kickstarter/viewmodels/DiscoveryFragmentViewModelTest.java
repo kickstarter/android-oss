@@ -192,6 +192,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     showActivityUpdate.assertNoValues();
     vm.inputs.activitySampleProjectViewHolderUpdateClicked(null, ActivityFactory.updateActivity());
     showActivityUpdate.assertValueCount(1);
+    koalaTest.assertValues("Viewed Update");
 
     // Clicking login on onboarding view should show login tout.
     showLoginTout.assertNoValues();

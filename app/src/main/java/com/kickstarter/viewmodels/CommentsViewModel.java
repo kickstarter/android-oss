@@ -188,7 +188,7 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
 
     final Observable<Update> update = projectOrUpdate.map(Either::right);
 
-    // todo: we need a nextPage Int value to distinguish older / newer load events.
+    // Todo: add a pageCount to RecyclerViewPaginator to track loading newer comments.
     Observable.combineLatest(project, update, Pair::create)
       .compose(takeWhen(nextPage.skip(1)))
       .compose(bindToLifecycle())

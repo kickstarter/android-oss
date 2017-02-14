@@ -104,13 +104,32 @@ public final class Koala {
   }
 
   // COMMENTS
+  public void trackLoadedNewerComments(final @NonNull Project project, final @Nullable Update update,
+    final @NonNull String context) {
+
+    final Map<String, Object> props = update == null
+      ? KoalaUtils.projectProperties(project)
+      : KoalaUtils.updateProperties(project, update);
+    props.put("context", context);
+
+    client.track("Loaded Newer Comments", props);
+  }
+
+  public void trackLoadedOlderComments(final @NonNull Project project, final @Nullable Update update,
+    final @NonNull String context) {
+
+    final Map<String, Object> props = update == null
+      ? KoalaUtils.projectProperties(project)
+      : KoalaUtils.updateProperties(project, update);
+    props.put("context", context);
+
+    client.track("Loaded Older Comments", props);
+  }
+
+  /** @deprecated Use {@link #trackLoadedOlderComments(Project, Update, String)} instead. */
+  @Deprecated
   public void trackLoadedOlderProjectComments(final @NonNull Project project) {
-    final Map<String, Object> props = KoalaUtils.projectProperties(project);
-
-    // Deprecated event
-    client.track("Project Comment Load Older", props);
-
-    client.track("Loaded Older Project Comments", props);
+    client.track("Project Comment Load Older", KoalaUtils.projectProperties(project));
   }
 
   public void trackPostedComment(final @NonNull Project project, final @Nullable Update update,

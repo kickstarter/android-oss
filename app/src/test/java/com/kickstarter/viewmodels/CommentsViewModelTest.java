@@ -27,6 +27,27 @@ import rx.observers.TestSubscriber;
 public class CommentsViewModelTest extends KSRobolectricTestCase {
 
   @Test
+  public void testCommentsViewModel_LoadMoreComments() {
+    final CommentsViewModel vm = new CommentsViewModel(environment());
+
+    final TestSubscriber<CommentsData> commentsData = new TestSubscriber<>();
+    vm.outputs.commentsData().subscribe(commentsData);
+
+    // Start the view model with a project.
+    vm.intent(new Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()));
+
+    // Next page signal emits immediately on subscribe.
+    vm.inputs.nextPage();
+
+    // Load older comments event should not fire yet.
+    koalaTest.assertValues("Viewed Comments");
+
+    // Paginate for older comments.
+    vm.inputs.nextPage();
+    koalaTest.assertValues("Viewed Comments", "Loaded Older Comments");
+  }
+
+  @Test
   public void testCommentsViewModel_ProjectCommentsEmit() {
     final CommentsViewModel vm = new CommentsViewModel(environment());
 
@@ -252,8 +273,6 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
     // Start the view model with an update.
     vm.intent(new Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()));
     koalaTest.assertValues("Viewed Comments");
-
-    assertEquals("update", this.trackingClient.propertiesForKey("context", String.class));
 
     // Comments should emit.
     commentsData.assertValueCount(1);

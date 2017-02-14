@@ -194,13 +194,25 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
           pu.second == null ? KoalaContext.Comments.PROJECT : KoalaContext.Comments.UPDATE)
       );
 
+    // todo: we need a nextPage Int value to distinguish older / newer load events.
+    Observable.combineLatest(project, update, Pair::create)
+      .compose(takeWhen(nextPage.skip(1)))
+      .compose(bindToLifecycle())
+      .subscribe(pu ->
+        koala.trackLoadedOlderComments(
+          pu.first, pu.second,
+          pu.second == null ? KoalaContext.Comments.PROJECT : KoalaContext.Comments.UPDATE)
+      );
+
     projectOrUpdate
       .filter(Either::isLeft)
       .map(Either::left)
       .compose(bindToLifecycle())
       .subscribe(koala::trackProjectCommentsView);
 
-    initialProject
+    projectOrUpdate
+      .filter(Either::isLeft)
+      .map(Either::left)
       .compose(takeWhen(nextPage.skip(1)))
       .compose(bindToLifecycle())
       .subscribe(koala::trackLoadedOlderProjectComments);

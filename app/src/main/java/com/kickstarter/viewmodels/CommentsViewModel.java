@@ -8,6 +8,7 @@ import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Either;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
@@ -181,14 +182,28 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
       .compose(bindToLifecycle())
       .subscribe(commentBodyChanged::onNext);
 
-    initialProject.take(1)
+    final Observable<Update> update = projectOrUpdate.map(Either::right);
+
+    Observable.combineLatest(project, update, Pair::create)
+      .take(1)
+      .compose(bindToLifecycle())
+      .subscribe(pu ->
+        koala.trackViewedComments(
+          pu.first,
+          pu.second,
+          pu.second == null ? KoalaContext.Comments.PROJECT : KoalaContext.Comments.UPDATE)
+      );
+
+    projectOrUpdate
+      .filter(Either::isLeft)
+      .map(Either::left)
       .compose(bindToLifecycle())
       .subscribe(koala::trackProjectCommentsView);
 
     initialProject
       .compose(takeWhen(nextPage.skip(1)))
       .compose(bindToLifecycle())
-      .subscribe(koala::trackProjectCommentLoadMore);
+      .subscribe(koala::trackLoadedOlderProjectComments);
 
     paginator.isFetching()
       .compose(bindToLifecycle())

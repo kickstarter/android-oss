@@ -7,6 +7,7 @@ import android.util.Pair;
 import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.ApiExceptionFactory;
 import com.kickstarter.factories.ProjectFactory;
+import com.kickstarter.factories.UpdateFactory;
 import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
@@ -26,7 +27,7 @@ import rx.observers.TestSubscriber;
 public class CommentsViewModelTest extends KSRobolectricTestCase {
 
   @Test
-  public void testCommentsViewModel_commentsEmit() {
+  public void testCommentsViewModel_ProjectCommentsEmit() {
     final CommentsViewModel vm = new CommentsViewModel(environment());
 
     final TestSubscriber<CommentsData> commentsData = new TestSubscriber<>();
@@ -37,7 +38,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
 
     // Start the view model with a project.
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()));
-    koalaTest.assertValues("Project Comment View");
+    koalaTest.assertValues("Viewed Comments", "Project Comment View");
 
     // Comments should emit.
     commentsData.assertValueCount(1);
@@ -97,7 +98,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
 
     // Start the view model with a project.
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
-    koalaTest.assertValues("Project Comment View");
+    koalaTest.assertValues("Viewed Comments", "Project Comment View");
 
     // Comment button should be shown.
     showCommentButtonTest.assertValue(true);
@@ -120,7 +121,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
     showCommentPostedToastTest.assertValueCount(1);
 
     // A koala event for commenting should be tracked.
-    koalaTest.assertValues("Project Comment View", "Project Comment Create");
+    koalaTest.assertValues("Viewed Comments", "Project Comment View", "Project Comment Create");
   }
 
   @Test
@@ -239,5 +240,22 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
 
     // The comment dialog should be shown.
     showCommentDialogTest.assertValue(Pair.create(project, true));
+  }
+
+  @Test
+  public void testCommentsViewModel_UpdateCommentsEmit() {
+    final CommentsViewModel vm = new CommentsViewModel(environment());
+
+    final TestSubscriber<CommentsData> commentsData = new TestSubscriber<>();
+    vm.outputs.commentsData().subscribe(commentsData);
+
+    // Start the view model with an update.
+    vm.intent(new Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()));
+    koalaTest.assertValues("Viewed Comments");
+
+    assertEquals("update", this.trackingClient.propertiesForKey("context", String.class));
+
+    // Comments should emit.
+    commentsData.assertValueCount(1);
   }
 }

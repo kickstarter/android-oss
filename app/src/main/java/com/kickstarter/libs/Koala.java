@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import com.kickstarter.libs.utils.KoalaUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.Update;
 import com.kickstarter.services.DiscoveryParams;
 import com.kickstarter.services.apiresponses.PushNotificationEnvelope;
 import com.kickstarter.ui.data.LoginReason;
@@ -102,17 +103,48 @@ public final class Koala {
     }
   }
 
-  // COMMENTING
+  // COMMENTS
+  public void trackLoadedOlderProjectComments(final @NonNull Project project) {
+    final Map<String, Object> props = KoalaUtils.projectProperties(project);
+
+    // Deprecated event
+    client.track("Project Comment Load Older", props);
+
+    client.track("Loaded Older Project Comments", props);
+  }
+
+  public void trackPostedComment(final @NonNull Project project, final @Nullable Update update,
+    final @NonNull KoalaContext.CommentDialog context) {
+
+    final Map<String, Object> props = update == null
+      ? KoalaUtils.projectProperties(project)
+      : KoalaUtils.updateProperties(project, update);
+    props.put("context", context);
+
+    client.track("Posted Comment", props);
+  }
+
+  /** @deprecated Use {@link #trackPostedComment(Project, Update, KoalaContext.CommentDialog)} instead. */
+  @Deprecated
   public void trackProjectCommentCreate(final @NonNull Project project) {
     client.track("Project Comment Create", KoalaUtils.projectProperties(project));
   }
 
+  /** @deprecated Use {@link #trackViewedComments(Project, Update, String)} instead. */
+  @Deprecated
   public void trackProjectCommentsView(final @NonNull Project project) {
     client.track("Project Comment View", KoalaUtils.projectProperties(project));
   }
 
-  public void trackProjectCommentLoadMore(final @NonNull Project project) {
-    client.track("Project Comment Load Older", KoalaUtils.projectProperties(project));
+  public void trackViewedComments(final @NonNull Project project, final @Nullable Update update,
+    final @NonNull String context) {
+
+    final Map<String, Object> props = update == null
+      ? KoalaUtils.projectProperties(project)
+      : KoalaUtils.updateProperties(project, update);
+
+    props.put("context", context);
+    client.track("Viewed Comments", props);
   }
 
   // ACTIVITY
@@ -357,6 +389,12 @@ public final class Koala {
   }
 
   // PROJECT UPDATES
+  public void trackViewedUpdate(final @NonNull Project project, final @NonNull KoalaContext.Update context) {
+    final Map<String, Object> props = KoalaUtils.projectProperties(project);
+    props.put("context", context);
+    client.track("Viewed Update");
+  }
+
   public void trackViewedUpdates(final @NonNull Project project) {
     client.track("Viewed Updates", KoalaUtils.projectProperties(project));
   }

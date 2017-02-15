@@ -4,7 +4,7 @@ class KoalaContext {
 
   /**
    * Determines the place from which the comments dialog was presented.
-
+   *
    * PROJECT_ACTIVITY: The creator's project activity screen.
    * PROJECT_COMMENTS: The comments screen for a project.
    * UPDATE_COMMENTS:  The comments screen for an update.
@@ -17,7 +17,7 @@ class KoalaContext {
 
   /**
    * Determines the place from which the comments were presented.
-
+   *
    * PROJECT: The comments for a project.
    * UPDATE:  The comments for an update.
    */
@@ -28,7 +28,7 @@ class KoalaContext {
 
   /**
    * Determines the place from which the Update was presented.
-
+   *
    * UPDATES:           The updates index.
    * ACTIVITY:          The activity feed.
    * ACTIVITY_SAMPLE:   The activity sample.

@@ -115,7 +115,9 @@ public final class Koala {
     client.track("Loaded Older Comments", props);
   }
 
-  /** @deprecated Use {@link #trackLoadedOlderComments(Project, Update, KoalaContext.Comments)} instead. */
+  /**
+   * @deprecated Use {@link #trackLoadedOlderComments(Project, Update, KoalaContext.Comments)} instead.
+   */
   @Deprecated
   public void trackLoadedOlderProjectComments(final @NonNull Project project) {
     client.track("Project Comment Load Older", KoalaUtils.projectProperties(project));
@@ -132,13 +134,17 @@ public final class Koala {
     client.track("Posted Comment", props);
   }
 
-  /** @deprecated Use {@link #trackPostedComment(Project, Update, KoalaContext.CommentDialog)} instead. */
+  /**
+   * @deprecated Use {@link #trackPostedComment(Project, Update, KoalaContext.CommentDialog)} instead.
+   */
   @Deprecated
   public void trackProjectCommentCreate(final @NonNull Project project) {
     client.track("Project Comment Create", KoalaUtils.projectProperties(project));
   }
 
-  /** @deprecated Use {@link #trackViewedComments(Project, Update, KoalaContext.Comments)} instead. */
+  /**
+   * @deprecated Use {@link #trackViewedComments(Project, Update, KoalaContext.Comments)} instead.
+   */
   @Deprecated
   public void trackProjectCommentsView(final @NonNull Project project) {
     client.track("Project Comment View", KoalaUtils.projectProperties(project));

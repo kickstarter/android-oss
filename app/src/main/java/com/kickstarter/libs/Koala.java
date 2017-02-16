@@ -1,8 +1,10 @@
 package com.kickstarter.libs;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.kickstarter.R;
 import com.kickstarter.libs.utils.KoalaUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
@@ -16,9 +18,21 @@ import java.util.Map;
 
 public final class Koala {
   private final @NonNull TrackingClientType client;
+  private final @NonNull Context context;
 
-  public Koala(final @NonNull TrackingClientType client) {
+  private final @NonNull String contextKeyString;
+  private final @NonNull String pageCountKeyString;
+  private final @NonNull String searchTermKeyString;
+  private final @NonNull String shareTypeKeyString;
+
+  public Koala(final @NonNull TrackingClientType client, final @NonNull Context context) {
     this.client = client;
+    this.context = context;
+
+    this.contextKeyString = context.getString(R.string.context);
+    this.pageCountKeyString = context.getString(R.string.page_count);
+    this.searchTermKeyString = context.getString(R.string.search_term);
+    this.shareTypeKeyString = context.getString(R.string.share_type);
   }
 
   public @NonNull TrackingClientType client() {
@@ -110,7 +124,7 @@ public final class Koala {
     final Map<String, Object> props = update == null
       ? KoalaUtils.projectProperties(project)
       : KoalaUtils.updateProperties(project, update);
-    props.put("context", context.getTrackingString());
+    props.put(contextKeyString, context.getTrackingString());
 
     client.track("Loaded Older Comments", props);
   }
@@ -129,7 +143,7 @@ public final class Koala {
     final Map<String, Object> props = update == null
       ? KoalaUtils.projectProperties(project)
       : KoalaUtils.updateProperties(project, update);
-    props.put("context", context.getTrackingString());
+    props.put(contextKeyString, context.getTrackingString());
 
     client.track("Posted Comment", props);
   }
@@ -157,7 +171,7 @@ public final class Koala {
       ? KoalaUtils.projectProperties(project)
       : KoalaUtils.updateProperties(project, update);
 
-    props.put("context", context.getTrackingString());
+    props.put(contextKeyString, context.getTrackingString());
     client.track("Viewed Comments", props);
   }
 
@@ -168,7 +182,7 @@ public final class Koala {
     } else {
       client.track("Activity Load More", new HashMap<String, Object>() {
         {
-          put("page_count", pageCount);
+          put(pageCountKeyString, pageCount);
         }
       });
     }
@@ -183,14 +197,14 @@ public final class Koala {
     if (pageCount == 1) {
       client.track("Discover Search Results", new HashMap<String, Object>() {
         {
-          put("search_term", query);
+          put(searchTermKeyString, query);
         }
       });
     } else {
       client.track("Discover Search Results Load More", new HashMap<String, Object>() {
         {
-          put("search_term", query);
-          put("page_count", pageCount);
+          put(searchTermKeyString, query);
+          put(pageCountKeyString, pageCount);
         }
       });
     }
@@ -321,7 +335,7 @@ public final class Koala {
   public void trackCheckoutShowTwitterShareView() {
     client.track("Checkout Show Share", new HashMap<String, Object>() {
       {
-        put("share_type", "twitter");
+        put(shareTypeKeyString, "twitter");
       }
     });
   }
@@ -350,7 +364,7 @@ public final class Koala {
   public void trackShowProjectFacebookShareView() {
     client.track("Project Show Share", new HashMap<String, Object>() {
       {
-        put("share_type", "facebook");
+        put(shareTypeKeyString, "facebook");
       }
     });
   }
@@ -358,7 +372,7 @@ public final class Koala {
   public void trackShowProjectTwitterShareView() {
     client.track("Project Show Share", new HashMap<String, Object>() {
       {
-        put("share_type", "twitter");
+        put(shareTypeKeyString, "twitter");
       }
     });
   }
@@ -366,7 +380,7 @@ public final class Koala {
   public void trackProjectFacebookShare() {
     client.track("Project Share", new HashMap<String, Object>() {
       {
-        put("share_type", "facebook");
+        put(shareTypeKeyString, "facebook");
       }
     });
   }
@@ -374,7 +388,7 @@ public final class Koala {
   public void trackProjectTwitterShare() {
     client.track("Project Share", new HashMap<String, Object>() {
       {
-        put("share_type", "twitter");
+        put(shareTypeKeyString, "twitter");
       }
     });
   }
@@ -405,12 +419,12 @@ public final class Koala {
   // PROJECT UPDATES
   public void trackViewedUpdate(final @NonNull Project project, final @NonNull KoalaContext.Update context) {
     final Map<String, Object> props = KoalaUtils.projectProperties(project);
-    props.put("context", context.getTrackingString());
-    client.track("Viewed Update", props);
+    props.put(contextKeyString, context.getTrackingString());
+    client.track(this.context.getString(R.string.Viewed_Update), props);
   }
 
   public void trackViewedUpdates(final @NonNull Project project) {
-    client.track("Viewed Updates", KoalaUtils.projectProperties(project));
+    client.track(context.getString(R.string.Viewed_Updates), KoalaUtils.projectProperties(project));
   }
 
   // PUSH NOTIFICATIONS

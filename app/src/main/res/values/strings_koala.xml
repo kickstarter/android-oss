@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="Activity_Load_More">Activity Load More</string>
+  <string name="Activity_View">Activity View</string>
+  <string name="Activity_View_Item">Activity View Item</string>
+  <string name="context">context</string>
+  <string name="page_count">page_count</string>
+  <string name="search_term">search_term</string>
+  <string name="share_type">share_type</string>
+  <string name="Viewed_Update">Viewed Update</string>
+  <string name="Viewed_Updates">Viewed Updates</string>
+</resources>

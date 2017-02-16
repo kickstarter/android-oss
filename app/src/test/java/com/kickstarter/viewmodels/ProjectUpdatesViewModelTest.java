@@ -17,6 +17,31 @@ import rx.observers.TestSubscriber;
 public final class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
 
   @Test
+  public void testProjectUpdatesViewModel_ExternalLinkRequest() {
+    final ProjectUpdatesViewModel.ViewModel vm = new ProjectUpdatesViewModel.ViewModel(environment());
+    final Project project = ProjectFactory.project();
+
+    final Request externalLinkRequest = new Request.Builder()
+      .url("https://thisexternalwebsite.rocks")
+      .build();
+
+    final TestSubscriber<String> webViewUrl = new TestSubscriber<>();
+    vm.outputs.webViewUrl().subscribe(webViewUrl);
+
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
+
+    // Initial updates index url is loaded.
+    webViewUrl.assertValueCount(1);
+
+    // Activate an external link.
+    vm.inputs.goToExternalLinkRequest(externalLinkRequest);
+
+    // External url is not loaded in our web view.
+    webViewUrl.assertValueCount(1);
+    koalaTest.assertValues("Viewed Updates", "Opened External Link");
+  }
+
+  @Test
   public void testProjectUpdatesViewModel_LoadsInitialIndexUrl() {
     final ProjectUpdatesViewModel.ViewModel vm = new ProjectUpdatesViewModel.ViewModel(environment());
     final Project project = ProjectFactory.project();

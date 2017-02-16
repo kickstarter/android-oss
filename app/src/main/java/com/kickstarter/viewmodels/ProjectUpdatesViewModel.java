@@ -24,6 +24,9 @@ public interface ProjectUpdatesViewModel {
     /** Call when a project update comments uri request has been made. */
     void goToCommentsRequest(Request request);
 
+    /** Call when an external link request has been made. */
+    void goToExternalLinkRequest(Request request);
+
     /** Call when a project update uri request has been made. */
     void goToUpdateRequest(Request request);
   }
@@ -74,6 +77,11 @@ public interface ProjectUpdatesViewModel {
         .subscribe(this.startUpdateActivity::onNext);
 
       initialProject
+        .compose(Transformers.takeWhen(goToExternalLinkRequest))
+        .compose(bindToLifecycle())
+        .subscribe(p -> this.koala.trackOpenedExternalLink(p));
+
+      initialProject
         .take(1)
         .compose(bindToLifecycle())
         .subscribe(this.koala::trackViewedUpdates);
@@ -99,6 +107,7 @@ public interface ProjectUpdatesViewModel {
     }
 
     private final PublishSubject<Request> goToCommentsRequestSubject = PublishSubject.create();
+    private final PublishSubject<Request> goToExternalLinkRequest = PublishSubject.create();
     private final PublishSubject<Request> goToUpdateRequestSubject = PublishSubject.create();
 
     private final PublishSubject<Update> startCommentsActivity = PublishSubject.create();
@@ -110,6 +119,9 @@ public interface ProjectUpdatesViewModel {
 
     @Override public void goToCommentsRequest(final @NonNull Request request) {
       this.goToCommentsRequestSubject.onNext(request);
+    }
+    @Override public void goToExternalLinkRequest(final @NonNull Request request) {
+      this.goToExternalLinkRequest.onNext(request);
     }
     @Override public void goToUpdateRequest(final @NonNull Request request) {
       this.goToUpdateRequestSubject.onNext(request);

@@ -376,4 +376,12 @@ public final class Koala {
 
     client.track("Notification Opened", properties);
   }
+
+  // WEB VIEWS
+  public void trackOpenedExternalLink(final @NonNull Project project) {
+    final Map<String, Object> properties = KoalaUtils.projectProperties(project);
+
+    // Todo: add contexts (project_creator, project_description, project_update, project_updates)
+    client.track("Opened External Link");
+  }
 }

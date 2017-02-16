@@ -51,7 +51,11 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
     this.ksWebView.client().setDelegate(this);
     this.ksWebView.client().registerRequestHandlers(Arrays.asList(
       new RequestHandler(KSUri::isProjectUpdateCommentsUri, this::handleProjectUpdateCommentsUriRequest),
-      new RequestHandler(KSUri::isProjectUpdateUri, this::handleProjectUpdateUriRequest)
+      new RequestHandler(KSUri::isProjectUpdateUri, this::handleProjectUpdateUriRequest),
+      new RequestHandler(
+        (uri, webEndpoint) -> !KSUri.isKickstarterUri(uri, webEndpoint),
+        this::handleExternalLinkRequest
+      )
     ));
 
     this.viewModel.outputs.startCommentsActivity()
@@ -73,6 +77,11 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(this.ksWebView::loadUrl);
+  }
+
+  private boolean handleExternalLinkRequest(final @NonNull Request request, final @NonNull WebView webView) {
+    this.viewModel.inputs.goToExternalLinkRequest(request);
+    return true;
   }
 
   private boolean handleProjectUpdateCommentsUriRequest(final @NonNull Request request, final @NonNull WebView webView) {

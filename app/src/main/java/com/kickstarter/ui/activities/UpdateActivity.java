@@ -139,7 +139,9 @@ public class UpdateActivity extends BaseActivity<UpdateViewModel.ViewModel> impl
   }
 
   @Override
-  public void webViewExternalLinkActivated(final @NonNull KSWebViewClient webViewClient, final @NonNull String url) {}
+  public void webViewExternalLinkActivated(final @NonNull KSWebViewClient webViewClient, final @NonNull String url) {
+    this.viewModel.inputs.externalLinkActivated();
+  }
 
   @Override
   public void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {

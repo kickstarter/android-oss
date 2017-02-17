@@ -19,12 +19,14 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
-import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
 public interface UpdateViewModel {
 
   interface Inputs {
+    /** Call when an external link has been activated. */
+    void externalLinkActivated();
+
     /** Call when a project update comments uri request has been made. */
     void goToCommentsRequest(Request request);
 
@@ -65,6 +67,11 @@ public interface UpdateViewModel {
         .ofType(Update.class)
         .filter(ObjectUtils::isNotNull);
 
+      final Observable<Project> project = intent()
+        .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
+        .ofType(Project.class)
+        .filter(ObjectUtils::isNotNull);
+
       final Observable<String> initialUpdateUrl = update
         .map(u -> u.urls().web().update());
 
@@ -87,17 +94,18 @@ public interface UpdateViewModel {
         .compose(bindToLifecycle())
         .subscribe(this.updateSequence::onNext);
 
-      update
+      project
         .compose(takeWhen(this.goToProjectRequestSubject))
-        .switchMap(u ->
-          this.client
-            .fetchProject(String.valueOf(u.projectId()))
-            .compose(neverError())
-        )
         .compose(bindToLifecycle())
         .subscribe(p -> this.startProjectActivity.onNext(Pair.create(p, RefTag.update())));
+
+      project
+        .compose(takeWhen(externalLinkActivated))
+        .compose(bindToLifecycle())
+        .subscribe(p -> this.koala.trackOpenedExternalLink(p)); // TODO: context
     }
 
+    private final PublishSubject<Request> externalLinkActivated = PublishSubject.create();
     private final PublishSubject<Request> goToCommentsRequestSubject = PublishSubject.create();
     private final PublishSubject<Request> goToProjectRequestSubject = PublishSubject.create();
     private final PublishSubject<Void> shareButtonClickedSubject = PublishSubject.create();
@@ -111,6 +119,9 @@ public interface UpdateViewModel {
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
+    @Override public void externalLinkActivated() {
+      this.externalLinkActivated.onNext(null);
+    }
     @Override public void goToCommentsRequest(final @NonNull Request request) {
       this.goToCommentsRequestSubject.onNext(request);
     }

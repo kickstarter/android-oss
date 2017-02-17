@@ -23,6 +23,20 @@ import rx.observers.TestSubscriber;
 public final class UpdateViewModelTest extends KSRobolectricTestCase {
 
   @Test
+  public void testUpdateViewModel_ExternalLinkActivated() {
+    final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment());
+
+    vm.intent(
+      new Intent()
+        .putExtra(IntentKey.PROJECT, ProjectFactory.project())
+        .putExtra(IntentKey.UPDATE, UpdateFactory.update())
+    );
+    vm.inputs.externalLinkActivated();
+
+    koalaTest.assertValues("Opened External Link");
+  }
+
+  @Test
   public void testUpdateViewModel_LoadsInitialUpdateUrl() {
     final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment());
     final Update update = UpdateFactory.update();

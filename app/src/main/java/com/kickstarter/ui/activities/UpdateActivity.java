@@ -83,6 +83,15 @@ public class UpdateActivity extends BaseActivity<UpdateViewModel.ViewModel> impl
   }
 
   @Override
+  public void back() {
+    if (ksWebView.canGoBack()) {
+      ksWebView.goBack();
+    } else {
+      super.back();
+    }
+  }
+
+  @Override
   protected void onResume() {
     super.onResume();
 

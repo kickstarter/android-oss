@@ -15,10 +15,13 @@ import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.MockApiClient;
+import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.data.CommentsData;
 
 import org.junit.Test;
+
+import java.util.List;
 
 import rx.Observable;
 import rx.observers.TestSubscriber;
@@ -29,19 +32,47 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
   public void testCommentsViewModel_commentsEmit() {
     final CommentsViewModel vm = new CommentsViewModel(environment());
 
-    final TestSubscriber<CommentsData> commentsData = new TestSubscriber<>();
-    vm.outputs.commentsData().subscribe(commentsData);
+    final TestSubscriber<List<Comment>> comments = new TestSubscriber<>();
+    vm.outputs.commentsData().map(CommentsData::comments).subscribe(comments);
 
     final TestSubscriber<Boolean> isFetchingComments = new TestSubscriber<>();
     vm.outputs.isFetchingComments().subscribe(isFetchingComments);
 
     // Start the view model with a project.
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()));
-    koalaTest.assertValues("Project Comment View");
 
     // Comments should emit.
-    commentsData.assertValueCount(1);
+    comments.assertValueCount(1);
     isFetchingComments.assertValues(true, false);
+    koalaTest.assertValues("Project Comment View");
+
+    vm.inputs.nextPage();
+
+    // Pagination should trigger koala event.
+    koalaTest.assertValues("Project Comment View", "Project Comment Load Older");
+  }
+
+  @Test
+  public void testCommentsViewModel_EmptyState() {
+    final ApiClientType apiClient = new MockApiClient() {
+      @NonNull
+      @Override
+      public Observable<CommentsEnvelope> fetchComments(final @NonNull Project project) {
+        return Observable.empty();
+      }
+    };
+
+    final Environment env = environment().toBuilder().apiClient(apiClient).build();
+    final CommentsViewModel vm = new CommentsViewModel(env);
+
+    final TestSubscriber<CommentsData> commentsData = new TestSubscriber<>();
+    vm.outputs.commentsData().subscribe(commentsData);
+
+    // Start the view model with a project.
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.backedProject()));
+
+    koalaTest.assertValues("Project Comment View");
+    commentsData.assertNoValues();
   }
 
   @Test

@@ -65,11 +65,9 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
 
     final Observable<Project> project = Observable.merge(
       initialProject,
-
       initialProject
         .compose(takeWhen(loginSuccess))
         .flatMap(p -> client.fetchProject(p).compose(neverError()))
-
       )
       .share();
 
@@ -188,7 +186,7 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
       .subscribe(koala::trackProjectCommentsView);
 
     initialProject
-      .compose(takeWhen(nextPage.skip(1)))
+      .compose(takeWhen(nextPage))
       .compose(bindToLifecycle())
       .subscribe(koala::trackProjectCommentLoadMore);
 

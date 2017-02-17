@@ -5,7 +5,6 @@ import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
-import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
@@ -18,14 +17,18 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
+import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
+import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
+
 public interface ProjectUpdatesViewModel {
 
   interface Inputs {
+    /** Call when an external link has been activated. */
+    void externalLinkActivated();
+
     /** Call when a project update comments uri request has been made. */
     void goToCommentsRequest(Request request);
-
-    /** Call when an external link request has been made. */
-    void goToExternalLinkRequest(Request request);
 
     /** Call when a project update uri request has been made. */
     void goToUpdateRequest(Request request);
@@ -72,14 +75,14 @@ public interface ProjectUpdatesViewModel {
         .share();
 
       initialProject
-        .compose(Transformers.takePairWhen(goToUpdateRequest))
+        .compose(takePairWhen(goToUpdateRequest))
         .compose(bindToLifecycle())
         .subscribe(this.startUpdateActivity::onNext);
 
       initialProject
-        .compose(Transformers.takeWhen(goToExternalLinkRequest))
+        .compose(takeWhen(this.externalLinkActivated))
         .compose(bindToLifecycle())
-        .subscribe(p -> this.koala.trackOpenedExternalLink(p));
+        .subscribe(p -> this.koala.trackOpenedExternalLink(p)); // TODO: context
 
       initialProject
         .take(1)
@@ -90,7 +93,7 @@ public interface ProjectUpdatesViewModel {
     private @NonNull Observable<Update> fetchUpdate(final @NonNull Pair<String, String> projectAndUpdateParams) {
       return this.client
         .fetchUpdate(projectAndUpdateParams.first, projectAndUpdateParams.second)
-        .compose(Transformers.neverError());
+        .compose(neverError());
     }
 
     /**
@@ -106,8 +109,8 @@ public interface ProjectUpdatesViewModel {
       return Pair.create(projectParam, updateParam);
     }
 
+    private final PublishSubject<Request> externalLinkActivated = PublishSubject.create();
     private final PublishSubject<Request> goToCommentsRequestSubject = PublishSubject.create();
-    private final PublishSubject<Request> goToExternalLinkRequest = PublishSubject.create();
     private final PublishSubject<Request> goToUpdateRequestSubject = PublishSubject.create();
 
     private final PublishSubject<Update> startCommentsActivity = PublishSubject.create();
@@ -117,11 +120,11 @@ public interface ProjectUpdatesViewModel {
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
+    @Override public void externalLinkActivated() {
+      this.externalLinkActivated.onNext(null);
+    }
     @Override public void goToCommentsRequest(final @NonNull Request request) {
       this.goToCommentsRequestSubject.onNext(request);
-    }
-    @Override public void goToExternalLinkRequest(final @NonNull Request request) {
-      this.goToExternalLinkRequest.onNext(request);
     }
     @Override public void goToUpdateRequest(final @NonNull Request request) {
       this.goToUpdateRequestSubject.onNext(request);

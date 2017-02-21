@@ -38,16 +38,30 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testUpdateViewModel_LoadsInitialUpdateUrl() {
+  public void testUpdateViewModel_LoadsWebViewUrl() {
     final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment());
     final Update update = UpdateFactory.update();
 
-    final TestSubscriber<String> initialUpdateUrl = new TestSubscriber<>();
-    vm.outputs.webViewUrl().subscribe(initialUpdateUrl);
+    final String anotherUpdateUrl = "https://kck.str/projects/param/param/posts/next-id";
+
+    final Request anotherUpdateRequest = new Request.Builder()
+      .url(anotherUpdateUrl)
+      .build();
+
+    final TestSubscriber<String> webViewUrl = new TestSubscriber<>();
+    vm.outputs.webViewUrl().subscribe(webViewUrl);
 
     // Start the intent with a project and update.
     vm.intent(defaultIntent);
-    initialUpdateUrl.assertValues(update.urls().web().update());
+
+    // Initial update's url emits.
+    webViewUrl.assertValues(update.urls().web().update());
+
+    // Make a request for another update.
+    vm.inputs.goToUpdateRequest(anotherUpdateRequest);
+
+    // New update url emits.
+    webViewUrl.assertValues(update.urls().web().update(), anotherUpdateUrl);
   }
 
   @Test

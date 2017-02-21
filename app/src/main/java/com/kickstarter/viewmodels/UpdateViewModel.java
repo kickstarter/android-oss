@@ -70,6 +70,7 @@ public interface UpdateViewModel {
       final Observable<Update> initialUpdate = intent()
         .map(i -> i.getParcelableExtra(IntentKey.UPDATE))
         .ofType(Update.class)
+        .take(1)
         .filter(ObjectUtils::isNotNull);
 
       final Observable<Project> project = intent()
@@ -80,7 +81,11 @@ public interface UpdateViewModel {
       final Observable<String> initialUpdateUrl = initialUpdate
         .map(u -> u.urls().web().update());
 
-      initialUpdateUrl
+      final Observable<String> anotherUpdateUrl = this.goToUpdateRequest
+        .map(request -> request.url().toString());
+
+      Observable.merge(initialUpdateUrl, anotherUpdateUrl)
+        .distinctUntilChanged()
         .compose(bindToLifecycle())
         .subscribe(this.webViewUrl::onNext);
 

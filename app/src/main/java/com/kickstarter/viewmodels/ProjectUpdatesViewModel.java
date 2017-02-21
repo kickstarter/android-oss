@@ -57,13 +57,13 @@ public interface ProjectUpdatesViewModel {
 
       this.client = environment.apiClient();
 
-      final Observable<Project> initialProject = intent()
+      final Observable<Project> project = intent()
         .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
         .ofType(Project.class)
         .take(1)
         .filter(ObjectUtils::isNotNull);
 
-      final Observable<String> initialUpdatesIndexUrl = initialProject
+      final Observable<String> initialUpdatesIndexUrl = project
         .map(Project::updatesUrl);
 
       final Observable<String> anotherIndexUrl = this.goToUpdatesRequest
@@ -85,22 +85,22 @@ public interface ProjectUpdatesViewModel {
         .switchMap(this::fetchUpdate)
         .share();
 
-      initialProject
+      project
         .compose(takePairWhen(goToUpdateRequest))
         .compose(bindToLifecycle())
         .subscribe(this.startUpdateActivity::onNext);
 
-      initialProject
+      project
         .compose(takeWhen(this.externalLinkActivated))
         .compose(bindToLifecycle())
         .subscribe(p -> this.koala.trackOpenedExternalLink(p, KoalaContext.ExternalLink.PROJECT_UPDATES));
 
-      initialProject
+      project
         .compose(takeWhen(goToUpdateRequest))
         .compose(bindToLifecycle())
         .subscribe(p -> this.koala.trackViewedUpdate(p, KoalaContext.Update.UPDATES));
 
-      initialProject
+      project
         .take(1)
         .compose(bindToLifecycle())
         .subscribe(this.koala::trackViewedUpdates);

@@ -17,6 +17,7 @@ import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.MockApiClient;
+import com.kickstarter.services.apiresponses.CommentsEnvelope;
 import com.kickstarter.ui.IntentKey;
 import com.kickstarter.ui.adapters.data.CommentsData;
 
@@ -28,6 +29,25 @@ import rx.observers.TestSubscriber;
 public class CommentsViewModelTest extends KSRobolectricTestCase {
 
   @Test
+  public void testCommentsViewModel_EmptyState() {
+    final ApiClientType apiClient = new MockApiClient() {
+      @Override
+      public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull Project project) {
+        return Observable.empty();
+      }
+    };
+
+    final Environment env = environment().toBuilder().apiClient(apiClient).build();
+    final CommentsViewModel vm = new CommentsViewModel(env);
+
+    // Start the view model with a project.
+    vm.intent(new Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()));
+
+    // Only Viewed Comments event should fire.
+    koalaTest.assertValues(KoalaEvent.VIEWED_COMMENTS);
+  }
+
+  @Test
   public void testCommentsViewModel_LoadMoreComments() {
     final CommentsViewModel vm = new CommentsViewModel(environment());
 
@@ -36,9 +56,6 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
 
     // Start the view model with a project.
     vm.intent(new Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()));
-
-    // Next page signal emits immediately on subscribe.
-    vm.inputs.nextPage();
 
     // Load older comments event should not fire yet.
     koalaTest.assertValues(KoalaEvent.VIEWED_COMMENTS);

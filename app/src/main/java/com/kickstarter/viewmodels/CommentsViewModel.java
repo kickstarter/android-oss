@@ -9,6 +9,7 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Either;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaContext;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
@@ -188,9 +189,16 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
 
     final Observable<Update> update = projectOrUpdate.map(Either::right);
 
-    // Todo: add a pageCount to RecyclerViewPaginator to track loading newer comments.
+    // NB: A temporary workaround for nextPage ping on empty state. Better fix is to filter out
+    // non-scrollable views in `RecyclerViewPaginator`.
+    final Observable<Void> nonEmptyNextPage = comments
+      .filter(ObjectUtils::isNotNull)
+      .compose(ignoreValues())
+      .compose(takeWhen(nextPage));
+
+    // TODO: add a pageCount to RecyclerViewPaginator to track loading newer comments.
     Observable.combineLatest(project, update, Pair::create)
-      .compose(takeWhen(nextPage.skip(1)))
+      .compose(takeWhen(nonEmptyNextPage))
       .compose(bindToLifecycle())
       .subscribe(pu ->
         koala.trackLoadedOlderComments(
@@ -221,7 +229,7 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
     projectOrUpdate
       .filter(Either::isLeft)
       .map(Either::left)
-      .compose(takeWhen(nextPage.skip(1)))
+      .compose(takeWhen(nonEmptyNextPage))
       .compose(bindToLifecycle())
       .subscribe(koala::trackLoadedOlderProjectComments);
 

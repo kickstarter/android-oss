@@ -112,7 +112,7 @@ public final class Koala {
       : KoalaUtils.updateProperties(project, update);
     props.put("context", context.getTrackingString());
 
-    client.track("Loaded Older Comments", props);
+    client.track(KoalaEvent.LOADED_OLDER_COMMENTS, props);
   }
 
   /**
@@ -131,7 +131,7 @@ public final class Koala {
       : KoalaUtils.updateProperties(project, update);
     props.put("context", context.getTrackingString());
 
-    client.track("Posted Comment", props);
+    client.track(KoalaEvent.POSTED_COMMENT, props);
   }
 
   /**
@@ -139,7 +139,7 @@ public final class Koala {
    */
   @Deprecated
   public void trackProjectCommentCreate(final @NonNull Project project) {
-    client.track("Project Comment Create", KoalaUtils.projectProperties(project));
+    client.track(KoalaEvent.PROJECT_COMMENT_CREATE, KoalaUtils.projectProperties(project));
   }
 
   /**
@@ -147,7 +147,7 @@ public final class Koala {
    */
   @Deprecated
   public void trackProjectCommentsView(final @NonNull Project project) {
-    client.track("Project Comment View", KoalaUtils.projectProperties(project));
+    client.track(KoalaEvent.PROJECT_COMMENT_VIEW, KoalaUtils.projectProperties(project));
   }
 
   public void trackViewedComments(final @NonNull Project project, final @Nullable Update update,
@@ -158,15 +158,15 @@ public final class Koala {
       : KoalaUtils.updateProperties(project, update);
 
     props.put("context", context.getTrackingString());
-    client.track("Viewed Comments", props);
+    client.track(KoalaEvent.VIEWED_COMMENTS, props);
   }
 
   // ACTIVITY
   public void trackActivityView(final int pageCount) {
     if (pageCount == 0) {
-      client.track("Activity View");
+      client.track(KoalaEvent.ACTIVITY_VIEW);
     } else {
-      client.track("Activity Load More", new HashMap<String, Object>() {
+      client.track(KoalaEvent.ACTIVITY_LOAD_MORE, new HashMap<String, Object>() {
         {
           put("page_count", pageCount);
         }
@@ -197,7 +197,7 @@ public final class Koala {
   }
 
   public void trackActivityTapped(final @NonNull Activity activity) {
-    client.track("Activity View Item", KoalaUtils.activityProperties(activity));
+    client.track(KoalaEvent.ACTIVITY_VIEW_ITEM, KoalaUtils.activityProperties(activity));
   }
 
   // SESSION EVENTS

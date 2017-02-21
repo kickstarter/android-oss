@@ -11,6 +11,7 @@ import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.preferences.MockIntPreference;
@@ -192,7 +193,7 @@ public class DiscoveryFragmentViewModelTest extends KSRobolectricTestCase {
     showActivityUpdate.assertNoValues();
     vm.inputs.activitySampleProjectViewHolderUpdateClicked(null, ActivityFactory.updateActivity());
     showActivityUpdate.assertValueCount(1);
-    koalaTest.assertValues("Viewed Update");
+    koalaTest.assertValues(KoalaEvent.VIEWED_UPDATE);
 
     // Clicking login on onboarding view should show login tout.
     showLoginTout.assertNoValues();

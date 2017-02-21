@@ -141,7 +141,7 @@ public interface UpdateViewModel {
     private final PublishSubject<Request> goToUpdateRequest = PublishSubject.create();
     private final PublishSubject<Void> shareButtonClicked = PublishSubject.create();
 
-    private final BehaviorSubject<Update> startShareIntent = BehaviorSubject.create();
+    private final PublishSubject<Update> startShareIntent = PublishSubject.create();
     private final BehaviorSubject<Update> startCommentsActivity = BehaviorSubject.create();
     private final BehaviorSubject<Pair<Project, RefTag>> startProjectActivity = BehaviorSubject.create();
     private final BehaviorSubject<String> updateSequence = BehaviorSubject.create();

@@ -83,7 +83,7 @@ public interface ProjectUpdatesViewModel {
       initialProject
         .compose(takeWhen(this.externalLinkActivated))
         .compose(bindToLifecycle())
-        .subscribe(p -> this.koala.trackOpenedExternalLink(p)); // TODO: context
+        .subscribe(p -> this.koala.trackOpenedExternalLink(p, KoalaContext.ExternalLink.PROJECT_UPDATES));
 
       initialProject
         .compose(takeWhen(goToUpdateRequest))

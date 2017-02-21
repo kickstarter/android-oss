@@ -35,7 +35,7 @@ public final class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
 
     // External url is not loaded in our web view.
     webViewUrl.assertValueCount(1);
-    koalaTest.assertValues("Viewed Updates", "Opened External Link");
+    koalaTest.assertValues(KoalaEvent.VIEWED_UPDATES, KoalaEvent.OPENED_EXTERNAL_LINK);
   }
 
   @Test

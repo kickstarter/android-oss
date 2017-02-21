@@ -7,6 +7,7 @@ import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.UpdateFactory;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
@@ -33,7 +34,7 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
     );
     vm.inputs.externalLinkActivated();
 
-    koalaTest.assertValues("Opened External Link");
+    koalaTest.assertValues(KoalaEvent.OPENED_EXTERNAL_LINK);
   }
 
   @Test

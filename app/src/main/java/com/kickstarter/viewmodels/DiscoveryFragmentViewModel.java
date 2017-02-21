@@ -8,6 +8,7 @@ import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.FragmentViewModel;
+import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.preferences.IntPreferenceType;
 import com.kickstarter.libs.utils.DiscoveryParamsUtils;
@@ -138,6 +139,12 @@ public final class DiscoveryFragmentViewModel extends FragmentViewModel<Discover
           isOnboardingVisible(paramsAndLoggedIn.first, paramsAndLoggedIn.second)
         );
       });
+
+    showActivityUpdate
+      .map(Activity::project)
+      .filter(ObjectUtils::isNotNull)
+      .compose(bindToLifecycle())
+      .subscribe(p -> koala.trackViewedUpdate(p, KoalaContext.Update.ACTIVITY_SAMPLE));
   }
 
   private boolean activityHasNotBeenSeen(final @Nullable Activity activity) {

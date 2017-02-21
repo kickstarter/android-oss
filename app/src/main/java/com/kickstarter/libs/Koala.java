@@ -120,7 +120,7 @@ public final class Koala {
    */
   @Deprecated
   public void trackLoadedOlderProjectComments(final @NonNull Project project) {
-    client.track("Project Comment Load Older", KoalaUtils.projectProperties(project));
+    client.track(KoalaEvent.PROJECT_COMMENT_LOAD_OLDER, KoalaUtils.projectProperties(project));
   }
 
   public void trackPostedComment(final @NonNull Project project, final @Nullable Update update,

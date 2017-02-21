@@ -9,6 +9,7 @@ public final class KoalaEvent {
   public static final String LOADED_OLDER_COMMENTS = "Loaded Older Comments";
   public static final String POSTED_COMMENT = "Posted Comment";
   public static final String PROJECT_COMMENT_CREATE = "Project Comment Create";
+  public static final String PROJECT_COMMENT_LOAD_OLDER = "Project Comment Load Older";
   public static final String PROJECT_COMMENT_VIEW = "Project Comment View";
   public static final String VIEWED_COMMENTS = "Viewed Comments";
   public static final String VIEWED_UPDATE = "Viewed Update";

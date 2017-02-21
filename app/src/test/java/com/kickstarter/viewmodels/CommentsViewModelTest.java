@@ -48,13 +48,28 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testCommentsViewModel_LoadMoreComments() {
+  public void testCommentsViewModel_LoadMoreProjectComments() {
     final CommentsViewModel vm = new CommentsViewModel(environment());
 
-    final TestSubscriber<CommentsData> commentsData = new TestSubscriber<>();
-    vm.outputs.commentsData().subscribe(commentsData);
-
     // Start the view model with a project.
+    vm.intent(new Intent().putExtra(IntentKey.PROJECT, ProjectFactory.project()));
+    koalaTest.assertValues(KoalaEvent.VIEWED_COMMENTS, KoalaEvent.PROJECT_COMMENT_VIEW);
+
+    // Paginate for older comments.
+    vm.inputs.nextPage();
+
+    // Modern and deprecated events emit for loading older project comments.
+    koalaTest.assertValues(
+      KoalaEvent.VIEWED_COMMENTS, KoalaEvent.PROJECT_COMMENT_VIEW, KoalaEvent.LOADED_OLDER_COMMENTS,
+      KoalaEvent.PROJECT_COMMENT_LOAD_OLDER
+    );
+  }
+
+  @Test
+  public void testCommentsViewModel_LoadMoreUpdateComments() {
+    final CommentsViewModel vm = new CommentsViewModel(environment());
+
+    // Start the view model with an update.
     vm.intent(new Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()));
 
     // Load older comments event should not fire yet.
@@ -160,8 +175,10 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
     showCommentPostedToastTest.assertValueCount(1);
 
     // A koala event for commenting should be tracked.
-    koalaTest.assertValues(KoalaEvent.VIEWED_COMMENTS, KoalaEvent.PROJECT_COMMENT_VIEW, KoalaEvent.POSTED_COMMENT,
-      KoalaEvent.PROJECT_COMMENT_CREATE);
+    koalaTest.assertValues(
+      KoalaEvent.VIEWED_COMMENTS, KoalaEvent.PROJECT_COMMENT_VIEW, KoalaEvent.POSTED_COMMENT,
+      KoalaEvent.PROJECT_COMMENT_CREATE
+    );
   }
 
   @Test

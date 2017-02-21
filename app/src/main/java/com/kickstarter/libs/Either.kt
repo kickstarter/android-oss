@@ -4,6 +4,14 @@ sealed class Either<out A, out B> {
   class Left<out L, out R>(internal val left: L) : Either<L, R>()
   class Right<out L, out R>(internal val right: R) : Either<L, R>()
 
+  /**
+   * Performs case analysis on `Either`, performing one of two functions depending on if the value is left or right.
+   *
+   * @param ifLeft    A function that transforms left values.
+   * @param ifRight   A function that transforms right values.
+   *
+   * @return A function that performs case analysis on an `Either` value.
+   */
   fun <C> either(ifLeft: (A) -> C, ifRight: (B) -> C): C = when(this) {
     is Left -> ifLeft(this.left)
     is Right -> ifRight(this.right)

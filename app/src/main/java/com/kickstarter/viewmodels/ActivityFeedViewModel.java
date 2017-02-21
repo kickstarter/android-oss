@@ -6,7 +6,9 @@ import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.rx.transformers.Transformers;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
 import com.kickstarter.services.ApiClientType;
@@ -133,6 +135,12 @@ public interface ActivityFeedViewModel {
       )
         .compose(bindToLifecycle())
         .subscribe(koala::trackActivityTapped);
+
+      goToProjectUpdate
+        .map(Activity::project)
+        .filter(ObjectUtils::isNotNull)
+        .compose(bindToLifecycle())
+        .subscribe(p -> koala.trackViewedUpdate(p, KoalaContext.Update.ACTIVITY));
     }
 
     private final PublishSubject<Void> discoverProjectsClick = PublishSubject.create();

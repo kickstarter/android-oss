@@ -86,6 +86,10 @@ public final class KSUri {
     return isKickstarterUri(uri, webEndpoint) && PROJECT_UPDATE_PATTERN.matcher(uri.getPath()).matches();
   }
 
+  public static boolean isProjectUpdatesUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
+    return isKickstarterUri(uri, webEndpoint) && PROJECT_UPDATES_PATTERN.matcher(uri.getPath()).matches();
+  }
+
   public static boolean isTermsOfUseUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && uri.getPath().equals("/terms-of-use");
   }
@@ -116,6 +120,11 @@ public final class KSUri {
   // /projects/:creator_param/:project_param/posts/:update_param
   private static final Pattern PROJECT_UPDATE_PATTERN = Pattern.compile(
     "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/posts\\/[a-zA-Z0-9-_]+\\z"
+  );
+
+  // /projects/:creator_param/:project_param/posts
+  private static final Pattern PROJECT_UPDATES_PATTERN = Pattern.compile(
+    "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/posts\\z"
   );
 
   // /projects/:creator_param/:project_param/checkouts/1/thanks

@@ -51,6 +51,7 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
     this.ksWebView.client().setDelegate(this);
     this.ksWebView.client().registerRequestHandlers(
       Arrays.asList(
+        new RequestHandler(KSUri::isProjectUpdatesUri, this::handleProjectUpdatesUriRequest),
         new RequestHandler(KSUri::isProjectUpdateCommentsUri, this::handleProjectUpdateCommentsUriRequest),
         new RequestHandler(KSUri::isProjectUpdateUri, this::handleProjectUpdateUriRequest)
       )
@@ -94,6 +95,11 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
   private boolean handleProjectUpdateUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
     this.viewModel.inputs.goToUpdateRequest(request);
     return true;
+  }
+
+  private boolean handleProjectUpdatesUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
+    this.viewModel.inputs.goToUpdatesRequest(request);
+    return false;
   }
 
   private void startCommentsActivity(final @NonNull Update update) {

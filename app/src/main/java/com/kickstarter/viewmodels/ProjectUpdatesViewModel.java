@@ -33,6 +33,9 @@ public interface ProjectUpdatesViewModel {
 
     /** Call when a project update uri request has been made. */
     void goToUpdateRequest(Request request);
+
+    /** Call when a project updates uri request has been made. */
+    void goToUpdatesRequest(Request request);
   }
 
   interface Outputs {
@@ -57,20 +60,27 @@ public interface ProjectUpdatesViewModel {
       final Observable<Project> initialProject = intent()
         .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
         .ofType(Project.class)
+        .take(1)
         .filter(ObjectUtils::isNotNull);
 
-      initialProject
-        .map(Project::updatesUrl)
+      final Observable<String> initialUpdatesIndexUrl = initialProject
+        .map(Project::updatesUrl);
+
+      final Observable<String> anotherIndexUrl = this.goToUpdatesRequest
+        .map(request -> request.url().toString());
+
+      Observable.merge(initialUpdatesIndexUrl, anotherIndexUrl)
+        .distinctUntilChanged()
         .compose(bindToLifecycle())
         .subscribe(this.webViewUrl::onNext);
 
-      this.goToCommentsRequestSubject
+      this.goToCommentsRequest
         .map(this::projectUpdateParams)
         .switchMap(this::fetchUpdate)
         .compose(bindToLifecycle())
         .subscribe(this.startCommentsActivity::onNext);
 
-      final Observable<Update> goToUpdateRequest = this.goToUpdateRequestSubject
+      final Observable<Update> goToUpdateRequest = this.goToUpdateRequest
         .map(this::projectUpdateParams)
         .switchMap(this::fetchUpdate)
         .share();
@@ -116,8 +126,9 @@ public interface ProjectUpdatesViewModel {
     }
 
     private final PublishSubject<Request> externalLinkActivated = PublishSubject.create();
-    private final PublishSubject<Request> goToCommentsRequestSubject = PublishSubject.create();
-    private final PublishSubject<Request> goToUpdateRequestSubject = PublishSubject.create();
+    private final PublishSubject<Request> goToCommentsRequest = PublishSubject.create();
+    private final PublishSubject<Request> goToUpdateRequest = PublishSubject.create();
+    private final PublishSubject<Request> goToUpdatesRequest = PublishSubject.create();
 
     private final PublishSubject<Update> startCommentsActivity = PublishSubject.create();
     private final PublishSubject<Pair<Project, Update>> startUpdateActivity = PublishSubject.create();
@@ -130,10 +141,14 @@ public interface ProjectUpdatesViewModel {
       this.externalLinkActivated.onNext(null);
     }
     @Override public void goToCommentsRequest(final @NonNull Request request) {
-      this.goToCommentsRequestSubject.onNext(request);
+      this.goToCommentsRequest.onNext(request);
     }
     @Override public void goToUpdateRequest(final @NonNull Request request) {
-      this.goToUpdateRequestSubject.onNext(request);
+      this.goToUpdateRequest.onNext(request);
+    }
+    @Override
+    public void goToUpdatesRequest(final @NonNull Request request) {
+      this.goToUpdatesRequest.onNext(request);
     }
 
     @Override public @NonNull Observable<Update> startCommentsActivity() {

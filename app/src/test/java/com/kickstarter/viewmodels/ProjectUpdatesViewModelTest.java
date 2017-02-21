@@ -39,15 +39,31 @@ public final class ProjectUpdatesViewModelTest extends KSRobolectricTestCase {
   }
 
   @Test
-  public void testProjectUpdatesViewModel_LoadsInitialIndexUrl() {
+  public void testProjectUpdatesViewModel_LoadsWebViewUrl() {
     final ProjectUpdatesViewModel.ViewModel vm = new ProjectUpdatesViewModel.ViewModel(environment());
     final Project project = ProjectFactory.project();
 
-    final TestSubscriber<String> initialIndexUrl = new TestSubscriber<>();
-    vm.outputs.webViewUrl().subscribe(initialIndexUrl);
+    final String anotherIndexUrl = "https://kck.str/projects/param/param/posts?page=another";
 
+    final Request anotherIndexRequest = new Request.Builder()
+      .url(anotherIndexUrl)
+      .build();
+
+    final TestSubscriber<String> webViewUrl = new TestSubscriber<>();
+    vm.outputs.webViewUrl().subscribe(webViewUrl);
+
+    // Start the intent with a project.
     vm.intent(new Intent().putExtra(IntentKey.PROJECT, project));
-    initialIndexUrl.assertValues(project.updatesUrl());
+
+    // Initial project updates index emits.
+    webViewUrl.assertValues(project.updatesUrl());
+    koalaTest.assertValues(KoalaEvent.VIEWED_UPDATES);
+
+    // Make a request for another update index.
+    vm.inputs.goToUpdatesRequest(anotherIndexRequest);
+
+    // New updates index url emits. Event is not tracked again.
+    webViewUrl.assertValues(project.updatesUrl(), anotherIndexUrl);
     koalaTest.assertValues(KoalaEvent.VIEWED_UPDATES);
   }
 

@@ -17,7 +17,6 @@ import com.kickstarter.viewmodels.WebViewViewModel;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
 
 import static com.kickstarter.libs.utils.TransitionUtils.slideInFromLeft;
@@ -47,9 +46,13 @@ public final class WebViewActivity extends BaseActivity<WebViewViewModel> implem
       .subscribe(webView::loadUrl);
   }
 
-  @OnClick(R.id.back_button)
-  public void backButtonClick() {
-    back();
+  @Override
+  public void back() {
+    if (webView.canGoBack()) {
+      webView.goBack();
+    } else {
+      super.back();
+    }
   }
 
   @Override

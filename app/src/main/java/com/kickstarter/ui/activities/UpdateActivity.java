@@ -56,10 +56,13 @@ public class UpdateActivity extends BaseActivity<UpdateViewModel.ViewModel> impl
     this.ksString = environment().ksString();
 
     this.ksWebView.client().setDelegate(this);
-    this.ksWebView.client().registerRequestHandlers(Arrays.asList(
-      new RequestHandler(KSUri::isProjectUpdateCommentsUri, this::handleProjectUpdateCommentsUriRequest),
-      new RequestHandler(KSUri::isProjectUri, this::handleProjectUriRequest)
-    ));
+    this.ksWebView.client().registerRequestHandlers(
+      Arrays.asList(
+        new RequestHandler(KSUri::isProjectUpdateUri, this::handleProjectUpdateUriRequest),
+        new RequestHandler(KSUri::isProjectUpdateCommentsUri, this::handleProjectUpdateCommentsUriRequest),
+        new RequestHandler(KSUri::isProjectUri, this::handleProjectUriRequest)
+      )
+    );
 
     this.viewModel.outputs.startCommentsActivity()
       .compose(bindToLifecycle())
@@ -104,6 +107,11 @@ public class UpdateActivity extends BaseActivity<UpdateViewModel.ViewModel> impl
   private boolean handleProjectUpdateCommentsUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
     this.viewModel.inputs.goToCommentsRequest(request);
     return true;
+  }
+
+  private boolean handleProjectUpdateUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
+    this.viewModel.inputs.goToUpdateRequest(request);
+    return false;
   }
 
   private boolean handleProjectUriRequest(final @NonNull Request request, final @NonNull WebView webView) {

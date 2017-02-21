@@ -20,6 +20,7 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
 import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
 
 public interface UpdateViewModel {
@@ -31,8 +32,11 @@ public interface UpdateViewModel {
     /** Call when a project update comments uri request has been made. */
     void goToCommentsRequest(Request request);
 
-    /** Call when a project update uri request has been made. */
+    /** Call when a project uri request has been made. */
     void goToProjectRequest(Request request);
+
+    /** Call when a project update uri request has been made. */
+    void goToUpdateRequest(Request request);
 
     /** Call when the share button is clicked. */
     void shareIconButtonClicked();
@@ -63,7 +67,7 @@ public interface UpdateViewModel {
 
       this.client = environment.apiClient();
 
-      final Observable<Update> update = intent()
+      final Observable<Update> initialUpdate = intent()
         .map(i -> i.getParcelableExtra(IntentKey.UPDATE))
         .ofType(Update.class)
         .filter(ObjectUtils::isNotNull);
@@ -73,30 +77,37 @@ public interface UpdateViewModel {
         .ofType(Project.class)
         .filter(ObjectUtils::isNotNull);
 
-      final Observable<String> initialUpdateUrl = update
+      final Observable<String> initialUpdateUrl = initialUpdate
         .map(u -> u.urls().web().update());
 
       initialUpdateUrl
         .compose(bindToLifecycle())
         .subscribe(this.webViewUrl::onNext);
 
-      update
-        .compose(takeWhen(this.shareButtonClickedSubject))
+      final Observable<Update> anotherUpdate = this.goToUpdateRequest
+        .map(this::projectUpdateParams)
+        .switchMap(pu -> this.client.fetchUpdate(pu.first, pu.second).compose(neverError()))
+        .share();
+
+      final Observable<Update> currentUpdate = Observable.merge(initialUpdate, anotherUpdate);
+
+      currentUpdate
+        .compose(takeWhen(this.shareButtonClicked))
         .compose(bindToLifecycle())
         .subscribe(this.startShareIntent::onNext);
 
-      update
-        .compose(takeWhen(this.goToCommentsRequestSubject))
+      currentUpdate
+        .compose(takeWhen(this.goToCommentsRequest))
         .compose(bindToLifecycle())
         .subscribe(this.startCommentsActivity::onNext);
 
-      update
+      currentUpdate
         .map(u -> NumberUtils.format(u.sequence()))
         .compose(bindToLifecycle())
         .subscribe(this.updateSequence::onNext);
 
       project
-        .compose(takeWhen(this.goToProjectRequestSubject))
+        .compose(takeWhen(this.goToProjectRequest))
         .compose(bindToLifecycle())
         .subscribe(p -> this.startProjectActivity.onNext(Pair.create(p, RefTag.update())));
 
@@ -106,10 +117,24 @@ public interface UpdateViewModel {
         .subscribe(p -> this.koala.trackOpenedExternalLink(p, KoalaContext.ExternalLink.PROJECT_UPDATE));
     }
 
+    /**
+     * Parses a request for project and update params.
+     *
+     * @param request   Comments or update request.
+     * @return          Pair of project param string and update param string.
+     */
+    private @NonNull Pair<String, String> projectUpdateParams(final @NonNull Request request) {
+      // todo: build a Navigation helper for better param extraction
+      final String projectParam = request.url().encodedPathSegments().get(2);
+      final String updateParam = request.url().encodedPathSegments().get(4);
+      return Pair.create(projectParam, updateParam);
+    }
+
     private final PublishSubject<Request> externalLinkActivated = PublishSubject.create();
-    private final PublishSubject<Request> goToCommentsRequestSubject = PublishSubject.create();
-    private final PublishSubject<Request> goToProjectRequestSubject = PublishSubject.create();
-    private final PublishSubject<Void> shareButtonClickedSubject = PublishSubject.create();
+    private final PublishSubject<Request> goToCommentsRequest = PublishSubject.create();
+    private final PublishSubject<Request> goToProjectRequest = PublishSubject.create();
+    private final PublishSubject<Request> goToUpdateRequest = PublishSubject.create();
+    private final PublishSubject<Void> shareButtonClicked = PublishSubject.create();
 
     private final BehaviorSubject<Update> startShareIntent = BehaviorSubject.create();
     private final BehaviorSubject<Update> startCommentsActivity = BehaviorSubject.create();
@@ -124,13 +149,16 @@ public interface UpdateViewModel {
       this.externalLinkActivated.onNext(null);
     }
     @Override public void goToCommentsRequest(final @NonNull Request request) {
-      this.goToCommentsRequestSubject.onNext(request);
+      this.goToCommentsRequest.onNext(request);
     }
     @Override public void goToProjectRequest(final @NonNull Request request) {
-      this.goToProjectRequestSubject.onNext(request);
+      this.goToProjectRequest.onNext(request);
+    }
+    @Override public void goToUpdateRequest(final @NonNull Request request) {
+      this.goToUpdateRequest.onNext(request);
     }
     @Override public void shareIconButtonClicked() {
-      this.shareButtonClickedSubject.onNext(null);
+      this.shareButtonClicked.onNext(null);
     }
 
     @Override public Observable<Update> startShareIntent() {

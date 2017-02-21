@@ -1,11 +1,11 @@
 package com.kickstarter.viewmodels;
 
 import com.kickstarter.KSRobolectricTestCase;
-import com.kickstarter.R;
 import com.kickstarter.factories.ActivityFactory;
 import com.kickstarter.factories.UserFactory;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.models.Activity;
 import com.kickstarter.models.Project;
@@ -19,20 +19,6 @@ import java.util.List;
 import rx.observers.TestSubscriber;
 
 public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
-  private String koalaActivityLoadMoreString;
-  private String koalaActivityViewString;
-  private String koalaActivityViewItemString;
-  private String koalaViewedUpdateString;
-
-  @Override
-  public void setUp() throws Exception {
-    super.setUp();
-
-    this.koalaActivityLoadMoreString = context().getString(R.string.Activity_Load_More);
-    this.koalaActivityViewString = context().getString(R.string.Activity_View);
-    this.koalaActivityViewItemString = context().getString(R.string.Activity_View_Item);
-    this.koalaViewedUpdateString = context().getString(R.string.Viewed_Update);
-  }
 
   @Test
   public void testActivitiesEmit() {
@@ -46,12 +32,12 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
 
     // Activities should emit.
     activities.assertValueCount(1);
-    koalaTest.assertValue(koalaActivityViewString);
+    koalaTest.assertValue(KoalaEvent.ACTIVITY_VIEW);
 
     // Paginate.
     vm.inputs.nextPage();
     activities.assertValueCount(1);
-    koalaTest.assertValues(koalaActivityViewString, koalaActivityLoadMoreString);
+    koalaTest.assertValues(KoalaEvent.ACTIVITY_VIEW, KoalaEvent.ACTIVITY_LOAD_MORE);
   }
 
   @Test
@@ -74,7 +60,7 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     goToLogin.assertNoValues();
     goToProject.assertNoValues();
     goToProjectUpdate.assertNoValues();
-    koalaTest.assertValues(koalaActivityViewString);
+    koalaTest.assertValues(KoalaEvent.ACTIVITY_VIEW);
 
     // Empty activity feed clicks do not trigger events yet.
     vm.inputs.emptyActivityFeedDiscoverProjectsClicked(null);
@@ -89,8 +75,8 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
     vm.inputs.projectUpdateProjectClicked(null, ActivityFactory.updateActivity());
 
     koalaTest.assertValues(
-      koalaActivityViewString, koalaActivityViewItemString, koalaActivityViewItemString, koalaActivityViewItemString,
-      koalaActivityViewItemString
+      KoalaEvent.ACTIVITY_VIEW, KoalaEvent.ACTIVITY_VIEW_ITEM, KoalaEvent.ACTIVITY_VIEW_ITEM, KoalaEvent.ACTIVITY_VIEW_ITEM,
+      KoalaEvent.ACTIVITY_VIEW_ITEM
     );
     goToProject.assertValueCount(4);
 
@@ -98,8 +84,8 @@ public class ActivityFeedViewModelTest extends KSRobolectricTestCase {
 
     goToProjectUpdate.assertValueCount(1);
     koalaTest.assertValues(
-      koalaActivityViewString, koalaActivityViewItemString, koalaActivityViewItemString, koalaActivityViewItemString,
-      koalaActivityViewItemString, koalaViewedUpdateString
+      KoalaEvent.ACTIVITY_VIEW, KoalaEvent.ACTIVITY_VIEW_ITEM, KoalaEvent.ACTIVITY_VIEW_ITEM, KoalaEvent.ACTIVITY_VIEW_ITEM,
+      KoalaEvent.ACTIVITY_VIEW_ITEM, KoalaEvent.VIEWED_UPDATE
     );
   }
 

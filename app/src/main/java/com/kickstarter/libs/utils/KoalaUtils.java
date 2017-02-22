@@ -18,11 +18,11 @@ import java.util.Map;
 public final class KoalaUtils {
   private KoalaUtils() {}
 
-  @NonNull public static Map<String, Object> discoveryParamsProperties(final @NonNull DiscoveryParams params) {
+  public static @NonNull Map<String, Object> discoveryParamsProperties(final @NonNull DiscoveryParams params) {
     return discoveryParamsProperties(params, "discover_");
   }
 
-  @NonNull public static Map<String, Object> discoveryParamsProperties(final @NonNull DiscoveryParams params, final @NonNull String prefix) {
+  public static @NonNull Map<String, Object> discoveryParamsProperties(final @NonNull DiscoveryParams params, final @NonNull String prefix) {
 
     final Map<String, Object> properties = Collections.unmodifiableMap(new HashMap<String, Object>() {
       {
@@ -49,11 +49,11 @@ public final class KoalaUtils {
     return MapUtils.prefixKeys(properties, prefix);
   }
 
-  @NonNull public static Map<String, Object> categoryProperties(final @NonNull Category category) {
+  public static @NonNull Map<String, Object> categoryProperties(final @NonNull Category category) {
     return categoryProperties(category, "category_");
   }
 
-  @NonNull public static Map<String, Object> categoryProperties(final @NonNull Category category, final @NonNull String prefix) {
+  public static @NonNull Map<String, Object> categoryProperties(final @NonNull Category category, final @NonNull String prefix) {
     final Map<String, Object> properties = new HashMap<String, Object>() {
       {
         put("id", String.valueOf(category.id()));
@@ -64,11 +64,11 @@ public final class KoalaUtils {
     return MapUtils.prefixKeys(properties, prefix);
   }
 
-  @NonNull public static Map<String, Object> locationProperties(final @NonNull Location location) {
+  public static @NonNull Map<String, Object> locationProperties(final @NonNull Location location) {
     return locationProperties(location, "location_");
   }
 
-  @NonNull public static Map<String, Object> locationProperties(final @NonNull Location location, final @NonNull String prefix) {
+  public static @NonNull Map<String, Object> locationProperties(final @NonNull Location location, final @NonNull String prefix) {
     final Map<String, Object> properties = new HashMap<String, Object>() {
       {
         put("id", location.id());
@@ -84,11 +84,11 @@ public final class KoalaUtils {
     return MapUtils.prefixKeys(properties, prefix);
   }
 
-  @NonNull public static Map<String, Object> userProperties(final @NonNull User user) {
+  public static @NonNull Map<String, Object> userProperties(final @NonNull User user) {
     return userProperties(user, "user_");
   }
 
-  @NonNull public static Map<String, Object> userProperties(final @NonNull User user, final @NonNull String prefix) {
+  public static @NonNull Map<String, Object> userProperties(final @NonNull User user, final @NonNull String prefix) {
     final Map<String, Object> properties = new HashMap<String, Object>() {
       {
         put("uid", user.id());
@@ -101,15 +101,15 @@ public final class KoalaUtils {
     return MapUtils.prefixKeys(properties, prefix);
   }
 
-  @NonNull public static Map<String, Object> projectProperties(final @NonNull Project project) {
+  public static @NonNull Map<String, Object> projectProperties(final @NonNull Project project) {
     return projectProperties(project, "project_");
   }
 
-  @NonNull public static Map<String, Object> projectProperties(final @NonNull Project project, final @NonNull String prefix) {
+  public static @NonNull Map<String, Object> projectProperties(final @NonNull Project project, final @NonNull String prefix) {
     return projectProperties(project, null, prefix);
   }
 
-  @NonNull public static Map<String, Object> projectProperties(final @NonNull Project project, final @Nullable User loggedInUser, final @NonNull String prefix) {
+  public static @NonNull Map<String, Object> projectProperties(final @NonNull Project project, final @Nullable User loggedInUser, final @NonNull String prefix) {
     final Map<String, Object> properties = new HashMap<String, Object>() {
       {
         put("backers_count", project.backersCount());
@@ -156,11 +156,11 @@ public final class KoalaUtils {
     return MapUtils.prefixKeys(properties, prefix);
   }
 
-  @NonNull public static Map<String, Object> activityProperties(final @NonNull Activity activity) {
+  public static @NonNull Map<String, Object> activityProperties(final @NonNull Activity activity) {
     return activityProperties(activity, "activity_");
   }
 
-  @NonNull public static Map<String, Object> activityProperties(final @NonNull Activity activity, final @NonNull String prefix) {
+  public static @NonNull Map<String, Object> activityProperties(final @NonNull Activity activity, final @NonNull String prefix) {
     Map<String, Object> properties = new HashMap<String, Object>() {
       {
         put("category", activity.category());
@@ -182,11 +182,11 @@ public final class KoalaUtils {
     return properties;
   }
 
-  @NonNull public static Map<String, Object> updateProperties(final @NonNull Project project, final @NonNull Update update) {
+  public static @NonNull Map<String, Object> updateProperties(final @NonNull Project project, final @NonNull Update update) {
     return updateProperties(project, update, "update_");
   }
 
-  @NonNull public static Map<String, Object> updateProperties(final @NonNull Project project, final @NonNull Update update, final @NonNull String prefix) {
+  public static @NonNull Map<String, Object> updateProperties(final @NonNull Project project, final @NonNull Update update, final @NonNull String prefix) {
     Map<String, Object> properties = new HashMap<String, Object>() {
       {
         put("id", update.id());

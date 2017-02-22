@@ -8,6 +8,8 @@ import com.kickstarter.libs.ApiPaginator;
 import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Either;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.KoalaContext;
+import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
@@ -164,11 +166,6 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
       .compose(bindToLifecycle())
       .subscribe(enablePostButton::onNext);
 
-    initialProject
-      .compose(takeWhen(postedComment))
-      .compose(bindToLifecycle())
-      .subscribe(koala::trackProjectCommentCreate);
-
     postedComment
       .compose(bindToLifecycle())
       .subscribe(__ -> {
@@ -181,15 +178,6 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
       .compose(bindToLifecycle())
       .subscribe(commentBodyChanged::onNext);
 
-    initialProject.take(1)
-      .compose(bindToLifecycle())
-      .subscribe(koala::trackProjectCommentsView);
-
-    initialProject
-      .compose(takeWhen(nextPage))
-      .compose(bindToLifecycle())
-      .subscribe(koala::trackProjectCommentLoadMore);
-
     paginator.isFetching()
       .compose(bindToLifecycle())
       .subscribe(isFetchingComments);
@@ -198,6 +186,58 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
       .take(1)
       .compose(bindToLifecycle())
       .subscribe(__ -> refresh.onNext(null));
+
+    final Observable<Update> update = projectOrUpdate.map(Either::right);
+
+    // TODO: add a pageCount to RecyclerViewPaginator to track loading newer comments.
+    Observable.combineLatest(project, update, Pair::create)
+      .compose(takeWhen(this.nextPage))
+      .compose(bindToLifecycle())
+      .subscribe(pu ->
+        koala.trackLoadedOlderComments(
+          pu.first, pu.second, pu.second == null ? KoalaContext.Comments.PROJECT : KoalaContext.Comments.UPDATE
+        )
+      );
+
+    Observable.combineLatest(project, update, Pair::create)
+      .take(1)
+      .compose(bindToLifecycle())
+      .subscribe(pu ->
+        koala.trackViewedComments(
+          pu.first, pu.second, pu.second == null ? KoalaContext.Comments.PROJECT : KoalaContext.Comments.UPDATE
+        )
+      );
+
+    Observable.combineLatest(project, update, Pair::create)
+      .compose(takeWhen(postedComment))
+      .compose(bindToLifecycle())
+      .subscribe(pu ->
+        koala.trackPostedComment(
+          pu.first,
+          pu.second,
+          pu.second == null ? KoalaContext.CommentDialog.PROJECT_COMMENTS : KoalaContext.CommentDialog.UPDATE_COMMENTS
+        )
+      );
+
+    projectOrUpdate
+      .filter(Either::isLeft)
+      .map(Either::left)
+      .compose(takeWhen(this.nextPage))
+      .compose(bindToLifecycle())
+      .subscribe(koala::trackLoadedOlderProjectComments);
+
+    projectOrUpdate
+      .filter(Either::isLeft)
+      .map(Either::left)
+      .compose(bindToLifecycle())
+      .subscribe(koala::trackProjectCommentsView);
+
+    projectOrUpdate
+      .filter(Either::isLeft)
+      .map(Either::left)
+      .compose(takeWhen(postedComment))
+      .compose(bindToLifecycle())
+      .subscribe(koala::trackProjectCommentCreate);
   }
 
   private @NonNull Observable<Comment> postComment(final @NonNull Either<Project, Update> projectOrUpdate, final @NonNull String body) {

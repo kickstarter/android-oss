@@ -5,6 +5,7 @@ import android.util.Pair;
 
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.rx.transformers.Transformers;
 import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Project;
@@ -72,6 +73,11 @@ public interface ProjectUpdatesViewModel {
         .compose(Transformers.takePairWhen(goToUpdateRequest))
         .compose(bindToLifecycle())
         .subscribe(this.startUpdateActivity::onNext);
+
+      initialProject
+        .compose(Transformers.takeWhen(goToUpdateRequest))
+        .compose(bindToLifecycle())
+        .subscribe(p -> this.koala.trackViewedUpdate(p, KoalaContext.Update.UPDATES));
 
       initialProject
         .take(1)

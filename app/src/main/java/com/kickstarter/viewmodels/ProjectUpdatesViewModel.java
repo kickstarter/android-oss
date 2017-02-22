@@ -6,7 +6,6 @@ import android.util.Pair;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaContext;
-import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
 import com.kickstarter.services.ApiClientType;
@@ -60,8 +59,7 @@ public interface ProjectUpdatesViewModel {
       final Observable<Project> project = intent()
         .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
         .ofType(Project.class)
-        .take(1)
-        .filter(ObjectUtils::isNotNull);
+        .take(1);
 
       final Observable<String> initialUpdatesIndexUrl = project
         .map(Project::updatesUrl);

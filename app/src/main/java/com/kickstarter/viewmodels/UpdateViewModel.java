@@ -8,7 +8,6 @@ import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaContext;
 import com.kickstarter.libs.RefTag;
 import com.kickstarter.libs.utils.NumberUtils;
-import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
 import com.kickstarter.services.ApiClientType;
@@ -70,13 +69,11 @@ public interface UpdateViewModel {
       final Observable<Update> initialUpdate = intent()
         .map(i -> i.getParcelableExtra(IntentKey.UPDATE))
         .ofType(Update.class)
-        .take(1)
-        .filter(ObjectUtils::isNotNull);
+        .take(1);
 
       final Observable<Project> project = intent()
         .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
-        .ofType(Project.class)
-        .filter(ObjectUtils::isNotNull);
+        .ofType(Project.class);
 
       final Observable<String> initialUpdateUrl = initialUpdate
         .map(u -> u.urls().web().update());

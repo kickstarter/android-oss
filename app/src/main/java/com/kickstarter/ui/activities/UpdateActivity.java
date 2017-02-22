@@ -139,6 +139,9 @@ public class UpdateActivity extends BaseActivity<UpdateViewModel.ViewModel> impl
   }
 
   @Override
+  public void webViewExternalLinkActivated(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {}
+
+  @Override
   public void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
     this.loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.disappearAnimation());
   }

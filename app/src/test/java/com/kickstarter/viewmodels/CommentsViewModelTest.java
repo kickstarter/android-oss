@@ -15,6 +15,7 @@ import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.MockCurrentUser;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
+import com.kickstarter.models.Update;
 import com.kickstarter.services.ApiClientType;
 import com.kickstarter.services.MockApiClient;
 import com.kickstarter.services.apiresponses.CommentsEnvelope;
@@ -33,8 +34,9 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
   @Test
   public void testCommentsViewModel_EmptyState() {
     final ApiClientType apiClient = new MockApiClient() {
+      @NonNull
       @Override
-      public @NonNull Observable<CommentsEnvelope> fetchComments(final @NonNull Project project) {
+      public Observable<CommentsEnvelope> fetchComments(final @NonNull Update update) {
         return Observable.empty();
       }
     };
@@ -45,7 +47,7 @@ public class CommentsViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<CommentsData> commentsData = new TestSubscriber<>();
     vm.outputs.commentsData().subscribe(commentsData);
 
-    // Start the view model with a project.
+    // Start the view model with an update.
     vm.intent(new Intent().putExtra(IntentKey.UPDATE, UpdateFactory.update()));
 
     // Only Viewed Comments event should fire.

@@ -103,6 +103,9 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
   }
 
   @Override
+  public void webViewExternalLinkActivated(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {}
+
+  @Override
   public void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
     this.loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.disappearAnimation());
   }

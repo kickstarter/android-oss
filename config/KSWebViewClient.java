@@ -19,6 +19,7 @@ public final class KSWebViewClient extends WebViewClient {
     void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url);
     void webViewOnPageFinished(final @NonNull KSWebViewClient webViewClient, final @Nullable String url);
     void webViewPageIntercepted(final @NonNull KSWebViewClient webViewClient, final @NonNull String url);
+    void webViewExternalLinkActivated(final @NonNull KSWebViewClient webViewClient, final @NonNull String url);
   }
 
   public KSWebViewClient(final @NonNull OkHttpClient client, final @NonNull String webEndpoint) {

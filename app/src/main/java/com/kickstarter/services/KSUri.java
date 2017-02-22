@@ -21,10 +21,6 @@ public final class KSUri {
     return isKickstarterUri(uri, webEndpoint) && Secrets.RegExpPattern.API.matcher(uri.getHost()).matches();
   }
 
-  public static boolean isCookiesUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) && uri.getPath().equals("/cookies");
-  }
-
   public static boolean isDiscoverCategoriesPath(final @NonNull String path) {
     return DISCOVER_CATEGORIES_PATTERN.matcher(path).matches();
   }
@@ -36,10 +32,6 @@ public final class KSUri {
 
   public static boolean isDiscoverPlacesPath(final @NonNull String path) {
     return DISCOVER_PLACES_PATTERN.matcher(path).matches();
-  }
-
-  public static boolean isHelloUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) && uri.getPath().equals("/hello");
   }
 
   public static boolean isHivequeenUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
@@ -70,14 +62,6 @@ public final class KSUri {
     return isKickstarterUri(uri, webEndpoint) && uri.getQueryParameter("modal") != null && uri.getQueryParameter("modal").equals("true");
   }
 
-  public static boolean isPrivacyUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) && uri.getPath().equals("/privacy");
-  }
-
-  public static boolean isProjectNewPledgeUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) && NEW_PLEDGE_PATTERN.matcher(uri.getPath()).matches();
-  }
-
   public static boolean isProjectUpdateCommentsUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
     return isKickstarterUri(uri, webEndpoint) && PROJECT_UPDATE_COMMENTS_PATTERN.matcher(uri.getPath()).matches();
   }
@@ -86,8 +70,8 @@ public final class KSUri {
     return isKickstarterUri(uri, webEndpoint) && PROJECT_UPDATE_PATTERN.matcher(uri.getPath()).matches();
   }
 
-  public static boolean isTermsOfUseUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
-    return isKickstarterUri(uri, webEndpoint) && uri.getPath().equals("/terms-of-use");
+  public static boolean isProjectUpdatesUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
+    return isKickstarterUri(uri, webEndpoint) && PROJECT_UPDATES_PATTERN.matcher(uri.getPath()).matches();
   }
 
   public static boolean isWebUri(final @NonNull Uri uri, final @NonNull String webEndpoint) {
@@ -118,13 +102,13 @@ public final class KSUri {
     "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/posts\\/[a-zA-Z0-9-_]+\\z"
   );
 
+  // /projects/:creator_param/:project_param/posts
+  private static final Pattern PROJECT_UPDATES_PATTERN = Pattern.compile(
+    "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/posts\\z"
+  );
+
   // /projects/:creator_param/:project_param/checkouts/1/thanks
   private static final Pattern CHECKOUT_THANKS_PATTERN = Pattern.compile(
     "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/checkouts\\/\\d+\\/thanks\\z"
-  );
-
-  // /projects/:creator_param/:project_param/pledge/new
-  private static final Pattern NEW_PLEDGE_PATTERN = Pattern.compile(
-    "\\A\\/projects(\\/[a-zA-Z0-9_-]+)?\\/[a-zA-Z0-9_-]+\\/pledge\\/new\\z"
   );
 }

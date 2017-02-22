@@ -6,7 +6,7 @@ import com.kickstarter.KSRobolectricTestCase;
 
 import org.junit.Test;
 
-public class DiscoveryParamsTest extends KSRobolectricTestCase {
+public final class DiscoveryParamsTest extends KSRobolectricTestCase {
   @Test
   public void testFromUri_discoverRoot() {
     final Uri uri = Uri.parse("https://www.kickstarter.com/discover");

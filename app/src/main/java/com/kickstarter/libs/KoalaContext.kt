@@ -27,6 +27,17 @@ class KoalaContext {
   }
 
   /**
+   * Determines the place from which the external link was presented.
+   *
+   * PROJECT_UPDATE:  The project update page.
+   * PROJECT_UPDATES: The project updates page.
+   */
+  enum class ExternalLink(val trackingString: String) {
+    PROJECT_UPDATE("project_update"),
+    PROJECT_UPDATES("project_updates")
+  }
+
+  /**
    * Determines the place from which the Update was presented.
    *
    * UPDATES:           The updates index.

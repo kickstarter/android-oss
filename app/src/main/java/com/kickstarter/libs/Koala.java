@@ -428,4 +428,12 @@ public final class Koala {
 
     client.track("Notification Opened", properties);
   }
+
+  // WEBVIEWS
+  public void trackOpenedExternalLink(final @NonNull Project project, final @NonNull KoalaContext.ExternalLink context) {
+    final Map<String, Object> props = KoalaUtils.projectProperties(project);
+    props.put("context", context.getTrackingString());
+
+    client.track(KoalaEvent.OPENED_EXTERNAL_LINK, props);
+  }
 }

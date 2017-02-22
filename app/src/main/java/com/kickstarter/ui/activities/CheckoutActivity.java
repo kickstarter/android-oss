@@ -416,6 +416,9 @@ public final class CheckoutActivity extends BaseActivity<CheckoutViewModel> impl
   }
 
   @Override
+  public void webViewExternalLinkActivated(final @NonNull KSWebViewClient webViewClient, final @NonNull String url) {}
+
+  @Override
   public void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {
     loadingIndicatorView.startAnimation(AnimationUtils.INSTANCE.appearAnimation());
   }

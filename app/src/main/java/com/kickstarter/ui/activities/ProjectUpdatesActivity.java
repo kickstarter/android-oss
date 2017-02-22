@@ -49,10 +49,13 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
     this.webViewToolbar.setTitle(updatesTitleString);
 
     this.ksWebView.client().setDelegate(this);
-    this.ksWebView.client().registerRequestHandlers(Arrays.asList(
-      new RequestHandler(KSUri::isProjectUpdateCommentsUri, this::handleProjectUpdateCommentsUriRequest),
-      new RequestHandler(KSUri::isProjectUpdateUri, this::handleProjectUpdateUriRequest)
-    ));
+    this.ksWebView.client().registerRequestHandlers(
+      Arrays.asList(
+        new RequestHandler(KSUri::isProjectUpdatesUri, this::handleProjectUpdatesUriRequest),
+        new RequestHandler(KSUri::isProjectUpdateCommentsUri, this::handleProjectUpdateCommentsUriRequest),
+        new RequestHandler(KSUri::isProjectUpdateUri, this::handleProjectUpdateUriRequest)
+      )
+    );
 
     this.viewModel.outputs.startCommentsActivity()
       .compose(bindToLifecycle())
@@ -63,6 +66,15 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
       .compose(bindToLifecycle())
       .compose(observeForUI())
       .subscribe(pu -> this.startUpdateActivity(pu.first, pu.second));
+  }
+
+  @Override
+  public void back() {
+    if (ksWebView.canGoBack()) {
+      ksWebView.goBack();
+    } else {
+      super.back();
+    }
   }
 
   @Override
@@ -85,6 +97,11 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
     return true;
   }
 
+  private boolean handleProjectUpdatesUriRequest(final @NonNull Request request, final @NonNull WebView webView) {
+    this.viewModel.inputs.goToUpdatesRequest(request);
+    return false;
+  }
+
   private void startCommentsActivity(final @NonNull Update update) {
     final Intent intent = new Intent(this, CommentsActivity.class)
       .putExtra(IntentKey.UPDATE, update);
@@ -100,6 +117,11 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
 
   protected @Nullable Pair<Integer, Integer> exitTransition() {
     return slideInFromLeft();
+  }
+
+  @Override
+  public void webViewExternalLinkActivated(final @NonNull KSWebViewClient webViewClient, final @NonNull String url) {
+    this.viewModel.inputs.externalLinkActivated();
   }
 
   @Override

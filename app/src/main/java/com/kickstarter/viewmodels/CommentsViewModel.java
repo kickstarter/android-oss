@@ -9,7 +9,6 @@ import com.kickstarter.libs.CurrentUserType;
 import com.kickstarter.libs.Either;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaContext;
-import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Comment;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
@@ -191,7 +190,7 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
 
     // TODO: add a pageCount to RecyclerViewPaginator to track loading newer comments.
     Observable.combineLatest(project, update, Pair::create)
-      .compose(takeWhen(this.nextPage))
+      .compose(takeWhen(nextPage))
       .compose(bindToLifecycle())
       .subscribe(pu ->
         koala.trackLoadedOlderComments(
@@ -222,7 +221,7 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
     projectOrUpdate
       .filter(Either::isLeft)
       .map(Either::left)
-      .compose(takeWhen(this.nextPage))
+      .compose(takeWhen(nextPage))
       .compose(bindToLifecycle())
       .subscribe(koala::trackLoadedOlderProjectComments);
 

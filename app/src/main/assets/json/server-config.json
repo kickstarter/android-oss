@@ -7302,6 +7302,7 @@
     "ios_favorite_categories": true,
     "ios_live_streams": true,
     "ios_live_stream_discovery": true,
+    "ios_scroll_output_observe_for_ui": true,
     "handbook_hero": true,
     "android_pay": true,
     "i18n_discovery_touts": true,
@@ -7323,6 +7324,7 @@
     "huzza": true,
     "view_prototype_gallery": true,
     "edit_prototype_gallery": true,
+    "fullstory": true,
     "huzza_creator_integration": true,
     "huzza_new_design": true,
     "discovery_overlay": true,
@@ -7500,7 +7502,7 @@
     }
   ],
   "ab_experiments": {
-    "koala_alt_frontend_tracking": "control",
+    "koala_alt_frontend_tracking": "experimental",
     "credit_card_input_placement": "control",
     "minimal_layout": "control",
     "lsi_vs_cf_recs": "control",

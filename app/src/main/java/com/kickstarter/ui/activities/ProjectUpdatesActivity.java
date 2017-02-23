@@ -69,15 +69,6 @@ public class ProjectUpdatesActivity extends BaseActivity<ProjectUpdatesViewModel
   }
 
   @Override
-  public void back() {
-    if (ksWebView.canGoBack()) {
-      ksWebView.goBack();
-    } else {
-      super.back();
-    }
-  }
-
-  @Override
   protected void onResume() {
     super.onResume();
 

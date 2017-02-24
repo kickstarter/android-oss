@@ -53,7 +53,8 @@ public final class CommentsViewModel extends ActivityViewModel<CommentsActivity>
         return project != null
           ? new Either.Left<Project, Update>(project)
           : new Either.Right<Project, Update>(i.getParcelableExtra(IntentKey.UPDATE));
-      });
+      })
+      .filter(ObjectUtils::isNotNull);
 
     final Observable<Project> initialProject = projectOrUpdate
       .flatMap(pOrU ->

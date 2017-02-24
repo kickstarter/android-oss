@@ -7,6 +7,7 @@ public final class KoalaEvent {
   public static final String ACTIVITY_VIEW = "Activity View";
   public static final String ACTIVITY_VIEW_ITEM = "Activity View Item";
   public static final String LOADED_OLDER_COMMENTS = "Loaded Older Comments";
+  public static final String OPENED_EXTERNAL_LINK = "Opened External Link";
   public static final String POSTED_COMMENT = "Posted Comment";
   public static final String PROJECT_COMMENT_CREATE = "Project Comment Create";
   public static final String PROJECT_COMMENT_LOAD_OLDER = "Project Comment Load Older";

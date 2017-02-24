@@ -6,8 +6,6 @@ import android.util.Pair;
 import com.kickstarter.libs.ActivityViewModel;
 import com.kickstarter.libs.Environment;
 import com.kickstarter.libs.KoalaContext;
-import com.kickstarter.libs.rx.transformers.Transformers;
-import com.kickstarter.libs.utils.ObjectUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
 import com.kickstarter.services.ApiClientType;
@@ -19,14 +17,24 @@ import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
+import static com.kickstarter.libs.rx.transformers.Transformers.neverError;
+import static com.kickstarter.libs.rx.transformers.Transformers.takePairWhen;
+import static com.kickstarter.libs.rx.transformers.Transformers.takeWhen;
+
 public interface ProjectUpdatesViewModel {
 
   interface Inputs {
+    /** Call when an external link has been activated. */
+    void externalLinkActivated();
+
     /** Call when a project update comments uri request has been made. */
     void goToCommentsRequest(Request request);
 
     /** Call when a project update uri request has been made. */
     void goToUpdateRequest(Request request);
+
+    /** Call when a project updates uri request has been made. */
+    void goToUpdatesRequest(Request request);
   }
 
   interface Outputs {
@@ -48,38 +56,49 @@ public interface ProjectUpdatesViewModel {
 
       this.client = environment.apiClient();
 
-      final Observable<Project> initialProject = intent()
+      final Observable<Project> project = intent()
         .map(i -> i.getParcelableExtra(IntentKey.PROJECT))
         .ofType(Project.class)
-        .filter(ObjectUtils::isNotNull);
+        .take(1);
 
-      initialProject
-        .map(Project::updatesUrl)
+      final Observable<String> initialUpdatesIndexUrl = project
+        .map(Project::updatesUrl);
+
+      final Observable<String> anotherIndexUrl = this.goToUpdatesRequest
+        .map(request -> request.url().toString());
+
+      Observable.merge(initialUpdatesIndexUrl, anotherIndexUrl)
+        .distinctUntilChanged()
         .compose(bindToLifecycle())
         .subscribe(this.webViewUrl::onNext);
 
-      this.goToCommentsRequestSubject
+      this.goToCommentsRequest
         .map(this::projectUpdateParams)
         .switchMap(this::fetchUpdate)
         .compose(bindToLifecycle())
         .subscribe(this.startCommentsActivity::onNext);
 
-      final Observable<Update> goToUpdateRequest = this.goToUpdateRequestSubject
+      final Observable<Update> goToUpdateRequest = this.goToUpdateRequest
         .map(this::projectUpdateParams)
         .switchMap(this::fetchUpdate)
         .share();
 
-      initialProject
-        .compose(Transformers.takePairWhen(goToUpdateRequest))
+      project
+        .compose(takePairWhen(goToUpdateRequest))
         .compose(bindToLifecycle())
         .subscribe(this.startUpdateActivity::onNext);
 
-      initialProject
-        .compose(Transformers.takeWhen(goToUpdateRequest))
+      project
+        .compose(takeWhen(this.externalLinkActivated))
+        .compose(bindToLifecycle())
+        .subscribe(p -> this.koala.trackOpenedExternalLink(p, KoalaContext.ExternalLink.PROJECT_UPDATES));
+
+      project
+        .compose(takeWhen(goToUpdateRequest))
         .compose(bindToLifecycle())
         .subscribe(p -> this.koala.trackViewedUpdate(p, KoalaContext.Update.UPDATES));
 
-      initialProject
+      project
         .take(1)
         .compose(bindToLifecycle())
         .subscribe(this.koala::trackViewedUpdates);
@@ -88,7 +107,7 @@ public interface ProjectUpdatesViewModel {
     private @NonNull Observable<Update> fetchUpdate(final @NonNull Pair<String, String> projectAndUpdateParams) {
       return this.client
         .fetchUpdate(projectAndUpdateParams.first, projectAndUpdateParams.second)
-        .compose(Transformers.neverError());
+        .compose(neverError());
     }
 
     /**
@@ -104,8 +123,10 @@ public interface ProjectUpdatesViewModel {
       return Pair.create(projectParam, updateParam);
     }
 
-    private final PublishSubject<Request> goToCommentsRequestSubject = PublishSubject.create();
-    private final PublishSubject<Request> goToUpdateRequestSubject = PublishSubject.create();
+    private final PublishSubject<Request> externalLinkActivated = PublishSubject.create();
+    private final PublishSubject<Request> goToCommentsRequest = PublishSubject.create();
+    private final PublishSubject<Request> goToUpdateRequest = PublishSubject.create();
+    private final PublishSubject<Request> goToUpdatesRequest = PublishSubject.create();
 
     private final PublishSubject<Update> startCommentsActivity = PublishSubject.create();
     private final PublishSubject<Pair<Project, Update>> startUpdateActivity = PublishSubject.create();
@@ -114,11 +135,18 @@ public interface ProjectUpdatesViewModel {
     public final Inputs inputs = this;
     public final Outputs outputs = this;
 
+    @Override public void externalLinkActivated() {
+      this.externalLinkActivated.onNext(null);
+    }
     @Override public void goToCommentsRequest(final @NonNull Request request) {
-      this.goToCommentsRequestSubject.onNext(request);
+      this.goToCommentsRequest.onNext(request);
     }
     @Override public void goToUpdateRequest(final @NonNull Request request) {
-      this.goToUpdateRequestSubject.onNext(request);
+      this.goToUpdateRequest.onNext(request);
+    }
+    @Override
+    public void goToUpdatesRequest(final @NonNull Request request) {
+      this.goToUpdatesRequest.onNext(request);
     }
 
     @Override public @NonNull Observable<Update> startCommentsActivity() {

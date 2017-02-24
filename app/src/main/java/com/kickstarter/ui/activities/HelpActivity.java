@@ -114,7 +114,7 @@ public class HelpActivity extends BaseActivity<HelpViewModel> implements KSWebVi
   }
 
   @Override
-  public void webViewExternalLinkActivated(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {}
+  public void webViewExternalLinkActivated(final @NonNull KSWebViewClient webViewClient, final @NonNull String url) {}
 
   @Override
   public void webViewOnPageStarted(final @NonNull KSWebViewClient webViewClient, final @Nullable String url) {

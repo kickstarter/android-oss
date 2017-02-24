@@ -7,6 +7,7 @@ import com.kickstarter.KSRobolectricTestCase;
 import com.kickstarter.factories.ProjectFactory;
 import com.kickstarter.factories.UpdateFactory;
 import com.kickstarter.libs.Environment;
+import com.kickstarter.libs.KoalaEvent;
 import com.kickstarter.libs.utils.NumberUtils;
 import com.kickstarter.models.Project;
 import com.kickstarter.models.Update;
@@ -21,17 +22,46 @@ import rx.Observable;
 import rx.observers.TestSubscriber;
 
 public final class UpdateViewModelTest extends KSRobolectricTestCase {
+  private final Intent defaultIntent = new Intent()
+    .putExtra(IntentKey.PROJECT, ProjectFactory.project())
+    .putExtra(IntentKey.UPDATE, UpdateFactory.update());
 
   @Test
-  public void testUpdateViewModel_LoadsInitialUpdateUrl() {
+  public void testUpdateViewModel_ExternalLinkActivated() {
+    final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment());
+
+    // Start the intent with a project and update.
+    vm.intent(defaultIntent);
+    vm.inputs.externalLinkActivated();
+
+    koalaTest.assertValues(KoalaEvent.OPENED_EXTERNAL_LINK);
+  }
+
+  @Test
+  public void testUpdateViewModel_LoadsWebViewUrl() {
     final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment());
     final Update update = UpdateFactory.update();
 
-    final TestSubscriber<String> initialUpdateUrl = new TestSubscriber<>();
-    vm.outputs.webViewUrl().subscribe(initialUpdateUrl);
+    final String anotherUpdateUrl = "https://kck.str/projects/param/param/posts/next-id";
 
-    vm.intent(new Intent().putExtra(IntentKey.UPDATE, update));
-    initialUpdateUrl.assertValues(update.urls().web().update());
+    final Request anotherUpdateRequest = new Request.Builder()
+      .url(anotherUpdateUrl)
+      .build();
+
+    final TestSubscriber<String> webViewUrl = new TestSubscriber<>();
+    vm.outputs.webViewUrl().subscribe(webViewUrl);
+
+    // Start the intent with a project and update.
+    vm.intent(defaultIntent);
+
+    // Initial update's url emits.
+    webViewUrl.assertValues(update.urls().web().update());
+
+    // Make a request for another update.
+    vm.inputs.goToUpdateRequest(anotherUpdateRequest);
+
+    // New update url emits.
+    webViewUrl.assertValues(update.urls().web().update(), anotherUpdateUrl);
   }
 
   @Test
@@ -46,7 +76,11 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<Update> startCommentsActivity = new TestSubscriber<>();
     vm.outputs.startCommentsActivity().subscribe(startCommentsActivity);
 
-    vm.intent(new Intent().putExtra(IntentKey.UPDATE, update));
+    // Start the intent with a project and update.
+    vm.intent(new Intent()
+      .putExtra(IntentKey.PROJECT, ProjectFactory.project())
+      .putExtra(IntentKey.UPDATE, update)
+    );
 
     vm.inputs.goToCommentsRequest(commentsRequest);
     startCommentsActivity.assertValues(update);
@@ -81,7 +115,12 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<Project> startProjectActivity = new TestSubscriber<>();
     vm.outputs.startProjectActivity().map(pr -> pr.first).subscribe(startProjectActivity);
 
-    vm.intent(new Intent().putExtra(IntentKey.UPDATE, update));
+    // Start the intent with a project and update.
+    vm.intent(new Intent()
+      .putExtra(IntentKey.PROJECT, project)
+      .putExtra(IntentKey.UPDATE, update)
+    );
+
     vm.inputs.goToProjectRequest(projectRequest);
 
     startProjectActivity.assertValues(project);
@@ -96,7 +135,11 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<Update> startShareIntent = new TestSubscriber<>();
     vm.outputs.startShareIntent().subscribe(startShareIntent);
 
-    vm.intent(new Intent().putExtra(IntentKey.UPDATE, update));
+    // Start the intent with a project and update.
+    vm.intent(new Intent()
+      .putExtra(IntentKey.PROJECT, ProjectFactory.project())
+      .putExtra(IntentKey.UPDATE, update)
+    );
     vm.inputs.shareIconButtonClicked();
 
     startShareIntent.assertValues(update);
@@ -104,16 +147,39 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
 
   @Test
   public void testUpdateViewModel_UpdateSequence() {
-    final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment());
-    final Update update = UpdateFactory.update().toBuilder().sequence(1234).build();
+    final Update initialUpdate = UpdateFactory.update().toBuilder().sequence(1).build();
+    final Update anotherUpdate = UpdateFactory.update().toBuilder().sequence(2).build();
+
+    final Request anotherUpdateRequest = new Request.Builder()
+      .url("https://kck.str/projects/param/param/posts/id")
+      .build();
+
+    final ApiClientType apiClient = new MockApiClient() {
+      @Override
+      public @NonNull Observable<Update> fetchUpdate(final @NonNull String projectParam, final @NonNull String updateParam) {
+        return Observable.just(anotherUpdate);
+      }
+    };
+
+    final Environment environment = environment().toBuilder().apiClient(apiClient).build();
+    final UpdateViewModel.ViewModel vm = new UpdateViewModel.ViewModel(environment);
 
     final TestSubscriber<String> updateSequence = new TestSubscriber<>();
     vm.outputs.updateSequence().subscribe(updateSequence);
 
-    vm.intent(new Intent().putExtra(IntentKey.UPDATE, update));
+    // Start the intent with a project and update.
+    vm.intent(new Intent()
+      .putExtra(IntentKey.PROJECT, ProjectFactory.project())
+      .putExtra(IntentKey.UPDATE, initialUpdate)
+    );
 
     // Initial update's sequence number emits.
-    updateSequence.assertValues(NumberUtils.format(update.sequence()));
+    updateSequence.assertValues(NumberUtils.format(initialUpdate.sequence()));
+
+    vm.inputs.goToUpdateRequest(anotherUpdateRequest);
+
+    // New sequence should emit for new update page.
+    updateSequence.assertValues(NumberUtils.format(initialUpdate.sequence()), NumberUtils.format(anotherUpdate.sequence()));
   }
 
   @Test
@@ -124,7 +190,11 @@ public final class UpdateViewModelTest extends KSRobolectricTestCase {
     final TestSubscriber<String> webViewUrl = new TestSubscriber<>();
     vm.outputs.webViewUrl().subscribe(webViewUrl);
 
-    vm.intent(new Intent().putExtra(IntentKey.UPDATE, update));
+    // Start the intent with a project and update.
+    vm.intent(new Intent()
+      .putExtra(IntentKey.PROJECT, ProjectFactory.project())
+      .putExtra(IntentKey.UPDATE, update)
+    );
 
     // Initial update index url emits.
     webViewUrl.assertValues(update.urls().web().update());

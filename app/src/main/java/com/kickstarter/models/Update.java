@@ -74,7 +74,7 @@ public abstract class Update implements Parcelable {
     @AutoParcel
     @AutoGson
     public abstract static class Web implements Parcelable {
-      public abstract String likes();
+      public abstract @Nullable String likes();
       public abstract String update();
 
       @AutoParcel.Builder

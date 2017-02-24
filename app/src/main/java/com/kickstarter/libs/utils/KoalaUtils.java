@@ -143,8 +143,9 @@ public final class KoalaUtils {
           put("location", location.name());
         }
 
+        putAll(userProperties(project.creator(), "creator_"));
+
         if (loggedInUser != null) {
-          putAll(userProperties(project.creator(), "creator_"));
           put("user_is_project_creator", ProjectUtils.userIsCreator(project, loggedInUser));
           put("user_is_backer", project.isBacking());
           put("user_has_starred", project.isStarred());

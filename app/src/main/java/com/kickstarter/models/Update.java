@@ -14,7 +14,7 @@ import auto.parcel.AutoParcel;
 @AutoGson
 @AutoParcel
 public abstract class Update implements Parcelable {
-  public abstract String body();
+  public abstract @Nullable String body();
   public abstract @Nullable Integer commentsCount();
   public abstract @Nullable Boolean hasLiked();
   public abstract long id();

@@ -91,16 +91,20 @@ public final class Koala {
       properties.put("referrer_credit", cookieRefTag.tag());
     }
 
-    client.track("Project Page", properties);
+    // Deprecated event
+    client.track(KoalaEvent.PROJECT_PAGE, properties);
+
+    client.track(KoalaEvent.VIEWED_PROJECT_PAGE, properties);
   }
 
   // PROJECT STAR
   public void trackProjectStar(final @NonNull Project project) {
-    if (project.isStarred()) {
-      client.track("Project Star");
-    } else {
-      client.track("Project Unstar");
-    }
+    final Map<String, Object> props = KoalaUtils.projectProperties(project);
+
+    // Deprecated events
+    client.track(project.isStarred() ? KoalaEvent.PROJECT_STAR : KoalaEvent.PROJECT_UNSTAR, props);
+
+    client.track(project.isStarred() ? KoalaEvent.STARRED_PROJECT : KoalaEvent.UNSTARRED_PROJECT, props);
   }
 
   // COMMENTS

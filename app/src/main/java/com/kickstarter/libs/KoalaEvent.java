@@ -12,7 +12,13 @@ public final class KoalaEvent {
   public static final String PROJECT_COMMENT_CREATE = "Project Comment Create";
   public static final String PROJECT_COMMENT_LOAD_OLDER = "Project Comment Load Older";
   public static final String PROJECT_COMMENT_VIEW = "Project Comment View";
+  public static final String PROJECT_PAGE = "Project Page";
+  public static final String PROJECT_STAR = "Project Star";
+  public static final String PROJECT_UNSTAR = "Project Unstar";
+  public static final String STARRED_PROJECT = "Starred Project";
+  public static final String UNSTARRED_PROJECT = "Unstarred Project";
   public static final String VIEWED_COMMENTS = "Viewed Comments";
+  public static final String VIEWED_PROJECT_PAGE = "Viewed Project Page";
   public static final String VIEWED_UPDATE = "Viewed Update";
   public static final String VIEWED_UPDATES = "Viewed Updates";
 }
